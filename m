@@ -2,85 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECC02C8750
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4D12C8743
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgK3O7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:59:32 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:9960 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727847AbgK3O73 (ORCPT
+        id S1727828AbgK3O6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:58:45 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:34653 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727771AbgK3O6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:59:29 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AUEonkT002183;
-        Mon, 30 Nov 2020 08:58:17 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=9VYWpCdY0I9xOemESRcvO83ePQj13AxQZIJRIQm2SPY=;
- b=PcfGy+IicFFuei15prL3Q/Mk+VRH1MQc4Qbr/lDnLUfvE8v8FFccNxNtlXEWPM21v6tt
- jISnwgm1rxxUcrVCPyKkk4ruQvo43wCeg7jhgogylGJ91T1zUnUdOJJs2wJweQAOlPKy
- UwE7OmOH3xr0UFRnlGufGRDYfGAXfYFl+sNesu9amL5L2cVlzGuLKXqSpGa3LWJpZ2aj
- zCyGSB9hbThSd+c7/SaP2TO4ssyUDTE9l94Tc0ei7USVOibY4VS+ulB9XjRQgDtXI6Tn
- vijW1kApg8NO7IXlVvJG3O7yYxz+icR8fO72VeHrSjwtmDouu5dBCAsbrhgkrvlg0RYE TQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 353mu7a4sd-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 30 Nov 2020 08:58:17 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 30 Nov
- 2020 14:58:14 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 30 Nov 2020 14:58:14 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (ausnpc0lsnw1.ad.cirrus.com [198.61.64.188])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0D2C22C1;
-        Mon, 30 Nov 2020 14:58:14 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <pmladek@suse.com>, <rostedt@goodmis.org>,
-        <sergey.senozhatsky@gmail.com>, <shuah@kernel.org>
-CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v2 4/4] MAINTAINERS: Add lib/test_scanf.c to VSPRINTF
-Date:   Mon, 30 Nov 2020 14:58:00 +0000
-Message-ID: <20201130145800.19960-4-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201130145800.19960-1-rf@opensource.cirrus.com>
-References: <20201130145800.19960-1-rf@opensource.cirrus.com>
+        Mon, 30 Nov 2020 09:58:44 -0500
+Received: by mail-pl1-f193.google.com with SMTP id l11so6628296plt.1;
+        Mon, 30 Nov 2020 06:58:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bmLCPYbeyHv0cOZ0Whz0ZC7+nNqmDxPfNcgMvcMFqAA=;
+        b=TiYi2Bafr9m8pMsuMYYurmvSt+IB+fm/aopyi/VpTiW6IMdJAnq0P+4CliMT9fnbTK
+         bjNlWEt7yL5ornoYiWTg1GLoVHSRt9zxR1csXhdU4hbe4V/lfNxH3k86fK1V3M7ufKsm
+         y3230kYhFOg0452TKec23SjZxcjar5E56BCHsNlg4IHVsXQK5667yN+VVnFb5Rs2u0u4
+         GeDdv/de+QS29dLEH/09JzZ8SYy1Qj74m9yvLELTiRkj+W8dxYBtTu/ejMWoNBnOsN6J
+         /FYArAOTtxlKNiagE2DepRbOVLNVYj7fepjQ5O64Q2nJZEPXAVl6HnXlFoF/MARUmkFe
+         dOoQ==
+X-Gm-Message-State: AOAM530i/xE3dYjcGMEGrI4ZTcg4TUSvBr5rVS6iOWxx19tYpAueBgGs
+        KbHkyn2eK6x6CfJObQVxPLo=
+X-Google-Smtp-Source: ABdhPJziBW/dCj4uXjRbNOAMWAoeSDGX96uG0HDLwLe3Azqbe82/ZeOMXkbbZTBn8QdJLI83LQIJcg==
+X-Received: by 2002:a17:90a:7087:: with SMTP id g7mr20485177pjk.200.1606748283435;
+        Mon, 30 Nov 2020 06:58:03 -0800 (PST)
+Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id x21sm14195050pfc.151.2020.11.30.06.58.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 06:58:02 -0800 (PST)
+Subject: Re: [PATCH V1] block: Fix use-after-free while iterating over
+ requests
+To:     Hannes Reinecke <hare@suse.de>, John Garry <john.garry@huawei.com>,
+        Pradeep P V K <ppvk@codeaurora.org>, axboe@kernel.dk,
+        linux-block@vger.kernel.org
+Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org,
+        Ming Lei <ming.lei@redhat.com>
+References: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
+ <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
+ <693ea723-aa9e-1166-8a19-a7787f724969@huawei.com>
+ <0c925db8-e481-5f21-b0fe-f691142b0437@suse.de>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <5c3ac5af-ed81-11e4-fee3-f92175f14daf@acm.org>
+Date:   Mon, 30 Nov 2020 06:58:00 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <0c925db8-e481-5f21-b0fe-f691142b0437@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 mlxscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
- suspectscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=839
- bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the new scanf test to the VSPRINTF group.
+On 11/29/20 11:04 PM, Hannes Reinecke wrote:
+> On 11/26/20 5:49 PM, John Garry wrote:
+>> On 26/11/2020 16:27, Bart Van Assche wrote:
+>>> On 11/26/20 7:02 AM, Pradeep P V K wrote:
+>>>> Observes below crash while accessing (use-after-free) request queue
+>>>> member of struct request.
+>>>>
+>>>> 191.784789:   <2> Unable to handle kernel paging request at virtual
+>>>> address ffffff81429a4440
+>>>> ...
+>>>> 191.786174:   <2> CPU: 3 PID: 213 Comm: kworker/3:1H Tainted: G S
+>>>> O      5.4.61-qgki-debug-ge45de39 #1
+>>>> ...
+>>>> 191.786226:   <2> Workqueue: kblockd blk_mq_timeout_work
+>>>> 191.786242:   <2> pstate: 20c00005 (nzCv daif +PAN +UAO)
+>>>> 191.786261:   <2> pc : bt_for_each+0x114/0x1a4
+>>>> 191.786274:   <2> lr : bt_for_each+0xe0/0x1a4
+>>>> ...
+>>>> 191.786494:   <2> Call trace:
+>>>> 191.786507:   <2>  bt_for_each+0x114/0x1a4
+>>>> 191.786519:   <2>  blk_mq_queue_tag_busy_iter+0x60/0xd4
+>>>> 191.786532:   <2>  blk_mq_timeout_work+0x54/0xe8
+>>>> 191.786549:   <2>  process_one_work+0x2cc/0x568
+>>>> 191.786562:   <2>  worker_thread+0x28c/0x518
+>>>> 191.786577:   <2>  kthread+0x160/0x170
+>>>> 191.786594:   <2>  ret_from_fork+0x10/0x18
+>>>> 191.786615:   <2> Code: 0b080148 f9404929 f8685921 b4fffe01 (f9400028)
+>>>> 191.786630:   <2> ---[ end trace 0f1f51d79ab3f955 ]---
+>>>> 191.786643:   <2> Kernel panic - not syncing: Fatal exception
+>>>>
+>>>> Fix this by updating the freed request with NULL.
+>>>> This could avoid accessing the already free request from other
+>>>> contexts while iterating over the requests.
+>>>>
+>>>> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
+>>>> ---
+>>>>   block/blk-mq.c | 1 +
+>>>>   block/blk-mq.h | 1 +
+>>>>   2 files changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/block/blk-mq.c b/block/blk-mq.c
+>>>> index 55bcee5..9996cb1 100644
+>>>> --- a/block/blk-mq.c
+>>>> +++ b/block/blk-mq.c
+>>>> @@ -492,6 +492,7 @@ static void __blk_mq_free_request(struct request
+>>>> *rq)
+>>>>       blk_crypto_free_request(rq);
+>>>>       blk_pm_mark_last_busy(rq);
+>>>> +    hctx->tags->rqs[rq->tag] = NULL;
+>>>>       rq->mq_hctx = NULL;
+>>>>       if (rq->tag != BLK_MQ_NO_TAG)
+>>>>           blk_mq_put_tag(hctx->tags, ctx, rq->tag);
+>>>> diff --git a/block/blk-mq.h b/block/blk-mq.h
+>>>> index a52703c..8747bf1 100644
+>>>> --- a/block/blk-mq.h
+>>>> +++ b/block/blk-mq.h
+>>>> @@ -224,6 +224,7 @@ static inline int
+>>>> __blk_mq_active_requests(struct blk_mq_hw_ctx *hctx)
+>>>>   static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx
+>>>> *hctx,
+>>>>                          struct request *rq)
+>>>>   {
+>>>> +    hctx->tags->rqs[rq->tag] = NULL;
+>>>>       blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
+>>>>       rq->tag = BLK_MQ_NO_TAG;
+>>>
+>>> Is this perhaps a block driver bug instead of a block layer core bug? If
+>>> this would be a block layer core bug, it would have been reported
+>>> before.
+>>
+>> Isn't this the same issue which as been reported many times:
+>>
+>> https://lore.kernel.org/linux-block/20200820180335.3109216-1-ming.lei@redhat.com/
+>>
+>>
+>> https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/
+>>
+>>
+>> But I never saw a crash, just kasan report.
+>>
+> And if that above were a concern, I would have thought one would need to
+> use a WRITE_ONCE() here; otherwise we might have a race condition where
+> other CPUs still see the old value, no?
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Hi Hannes,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7887d2161be4..d2bf38bd3d0c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18782,6 +18782,7 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pmladek/printk.git
- F:	Documentation/core-api/printk-formats.rst
- F:	lib/test_printf.c
-+F:	lib/test_scanf.c
- F:	lib/vsprintf.c
- 
- VT1211 HARDWARE MONITOR DRIVER
--- 
-2.20.1
+Freeing tag->rqs and tags->static_rqs with kfree_rcu() is probably a
+better solution than clearing request pointers. Even when using
+WRITE_ONCE() to clear tag pointers, it is still possible that another
+thread read the tag pointer before the WRITE_ONCE() and uses it after
+the WRITE_ONCE() has finished.
 
+Thanks,
+
+Bart.
