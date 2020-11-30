@@ -2,100 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE55E2C8700
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A970A2C8702
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgK3OnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:43:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51434 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725898AbgK3OnN (ORCPT
+        id S1726953AbgK3OnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:43:15 -0500
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:50781 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgK3OnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:43:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606747307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n7FeUibbReJ1gM5EGPZRonIL/+Uv7TtKGQkvjaCTCcQ=;
-        b=XMyQ1bzCIr5KB9x8bl/y9R4xgwJa+cBYFiIGUPGNsr5rryrVD+yc+f5CBspu5T6C9EmIO/
-        z/Ij81pGbSrJ1nzF0PWXqEjZsvqcoDG+PdKE0PFbtj2Il0QxEYpBYBnahC2fDe9e9Kjc7a
-        GJCwH1G5eM3Cr1K3CznL6qLr3fRUkJs=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-526-98V3-qVmMsy9IGehQxQSog-1; Mon, 30 Nov 2020 09:41:45 -0500
-X-MC-Unique: 98V3-qVmMsy9IGehQxQSog-1
-Received: by mail-ej1-f70.google.com with SMTP id t4so4175516eju.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:41:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n7FeUibbReJ1gM5EGPZRonIL/+Uv7TtKGQkvjaCTCcQ=;
-        b=i0KsNzIzJLYOqDxASlgjsW3JH7mPXlzq8rHMXXJdjo4RMCECF6C2bL/xD3JNKR9Ukd
-         Z0DLn/2Ovm3SBF0a1yQz5nOZ40ZKXyh5WjERc/+TbXVbLYbUqkLL+cN37HGJgy0clhjE
-         EBPtlxQ8ZTxbDUztYNSwxfmLMAoTF9AOBL9wtqLbGCOjuCQ3EHvWBDC5v0qfisvnO30+
-         jasj7SkAvKQpin1CCKXzjEt7Zl8VcrexipL5vfn+3U8rCXOU+VdjpRvkahSaTHfVKOow
-         efIow03YGWvtuaaB3pQUsPNLCoPwCQmWEABm0f7RMffWVz/ANH68Xe3Pkyb1gGGU4uku
-         0d9w==
-X-Gm-Message-State: AOAM530JUz6P0Cb1//W7QnnIPo3l0aYT1LUb5XLsInL4qjNl9jXazERu
-        7IjtK+RFvsipSQ5Ya3SPJ4s8sNQGFY7AfFp0lkTAdwo9mzigLCjS695ePpcUjvORRroxmpfJcQH
-        Ek5/1DvVPAjmOSPDgAIfD87tK
-X-Received: by 2002:a50:fa92:: with SMTP id w18mr21765486edr.44.1606747303795;
-        Mon, 30 Nov 2020 06:41:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwZ/QxihozNr0KBWUjMwea/F1FYvr85clicY2eNCGmdatOCBCrnXAfUrCzTcxDRtSmqzRBLow==
-X-Received: by 2002:a50:fa92:: with SMTP id w18mr21765476edr.44.1606747303629;
-        Mon, 30 Nov 2020 06:41:43 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id gt11sm5746859ejb.67.2020.11.30.06.41.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 06:41:42 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] KVM: SVM: Move asid to vcpu_svm
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     cavery@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mlevitsk@redhat.com,
-        vkuznets@redhat.com, wei.huang2@amd.com, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com
-References: <aadb4690-9b2b-4801-f2fc-783cb4ae7f60@redhat.com>
- <20201129094109.32520-1-Ashish.Kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f27e877e-b82b-ec9e-270e-cf8f23130b0b@redhat.com>
-Date:   Mon, 30 Nov 2020 15:41:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 30 Nov 2020 09:43:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606747393; x=1638283393;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MeoCuwYzk9FZHmVsCWWQGz51LHhUS5ecw0YQrZF+gTs=;
+  b=IQOU98rfvZB+0fUH+SWVYuHrbh6JlCzuIyZj2Uaso/uFyVgWUZ5kjrMD
+   dbEuLSiC/huh9mF7/vpKRH3IfZZ8W8l6GLXp2TUIEPAYXWMoT6Fu6mho3
+   Yeuvxg67erDVV8/vPpjUAKITOhXQlDmvQsf9mm05fE0rem0CYlqM/KpnV
+   4Hwr2xekoUcHoAHo6B+uxzeWD1uHUH2fYlyrrjsqsAVupBDE1To4mDFi7
+   kXF07eOA4e+zNp+tefNAZ2UyAQGUx50xCkq3Q7YGAk9QpbU//+MvWBcOh
+   R1khni2wP2sH0P1v4fNRPYwOMQo0EOciHVeGKexEp586Zr232Ept1lmBI
+   w==;
+IronPort-SDR: Ub3N7TXnR9VGpx3adA/rXPQhQo4rn1wE5Nx19iHQ/us3OYwjqi0okK2CqHm/vFUmbhkgq5xmkR
+ fbLOeZ/JLQGBEinSu6oPBnucbC1H/5FGp8ZFc8qhW6KxwkUMqxQ8YowsyVg0V9XsPnSkNxluPt
+ X4VTyKZFGpwzoTRf3HjE7BqhUctzhAHaspOiMdsYKKk8uqxv/wL70qdCPyR6gpwKyO4/6/6BTh
+ MIojR5Ep8nBhCL/FtHgyTt/azdNv5YO5uZK89XCzvKHtS0b2L3F7TD235mAZ2uWO/UthRVvOn5
+ oUI=
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="105481257"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Nov 2020 07:42:07 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 07:42:07 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 30 Nov 2020 07:42:07 -0700
+Date:   Mon, 30 Nov 2020 15:42:06 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201130144206.g7hnvwrtbblgblpm@mchp-dev-shegelun>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
+ <20201129173520.GF2234159@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20201129094109.32520-1-Ashish.Kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201129173520.GF2234159@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/20 10:41, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> This patch breaks SEV guests.
-> 
-> The patch stores current ASID in struct vcpu_svm and only moves it to VMCB in
-> svm_vcpu_run(), but by doing so, the ASID allocated for SEV guests and setup
-> in vmcb->control.asid by pre_sev_run() gets over-written by this ASID
-> stored in struct vcpu_svm and hence, VMRUN fails as SEV guest is bound/activated
-> on a different ASID then the one overwritten in vmcb->control.asid at VMRUN.
-> 
-> For example, asid#1 was activated for SEV guest and then vmcb->control.asid is
-> overwritten with asid#0 (svm->asid) as part of this patch in svm_vcpu_run() and
-> hence VMRUN fails.
-> 
+On 29.11.2020 18:35, Andrew Lunn wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>
+>> +#define SPX5_RD_(sparx5, id, tinst, tcnt,                    \
+>> +              gbase, ginst, gcnt, gwidth,                    \
+>> +              raddr, rinst, rcnt, rwidth)                    \
+>> +     readl(spx5_addr((sparx5)->regs, id, tinst, tcnt,        \
+>> +                     gbase, ginst, gcnt, gwidth,             \
+>> +                     raddr, rinst, rcnt, rwidth))
+>> +
+>> +#define SPX5_INST_RD_(iomem, id, tinst, tcnt,                        \
+>> +                   gbase, ginst, gcnt, gwidth,               \
+>> +                   raddr, rinst, rcnt, rwidth)               \
+>> +     readl(spx5_inst_addr(iomem,                             \
+>> +                          gbase, ginst, gcnt, gwidth,        \
+>> +                          raddr, rinst, rcnt, rwidth))
+>> +
+>> +#define SPX5_WR_(val, sparx5, id, tinst, tcnt,                       \
+>> +              gbase, ginst, gcnt, gwidth,                    \
+>> +              raddr, rinst, rcnt, rwidth)                    \
+>> +     writel(val, spx5_addr((sparx5)->regs, id, tinst, tcnt,  \
+>> +                           gbase, ginst, gcnt, gwidth,       \
+>> +                           raddr, rinst, rcnt, rwidth))
+>> +
+>> +#define SPX5_INST_WR_(val, iomem, id, tinst, tcnt,           \
+>> +                   gbase, ginst, gcnt, gwidth,               \
+>> +                   raddr, rinst, rcnt, rwidth)               \
+>> +     writel(val, spx5_inst_addr(iomem,                       \
+>> +                                gbase, ginst, gcnt, gwidth,  \
+>> +                                raddr, rinst, rcnt, rwidth))
+>> +
+>> +#define SPX5_RMW_(val, mask, sparx5, id, tinst, tcnt,                        \
+>> +               gbase, ginst, gcnt, gwidth,                           \
+>> +               raddr, rinst, rcnt, rwidth)                           \
+>> +     do {                                                            \
+>> +             u32 _v_;                                                \
+>> +             u32 _m_ = mask;                                         \
+>> +             void __iomem *addr =                                    \
+>> +                     spx5_addr((sparx5)->regs, id, tinst, tcnt,      \
+>> +                               gbase, ginst, gcnt, gwidth,           \
+>> +                               raddr, rinst, rcnt, rwidth);          \
+>> +             _v_ = readl(addr);                                      \
+>> +             _v_ = ((_v_ & ~(_m_)) | ((val) & (_m_)));               \
+>> +             writel(_v_, addr);                                      \
+>> +     } while (0)
+>> +
+>> +#define SPX5_INST_RMW_(val, mask, iomem, id, tinst, tcnt,            \
+>> +                    gbase, ginst, gcnt, gwidth,                      \
+>> +                    raddr, rinst, rcnt, rwidth)                      \
+>> +     do {                                                            \
+>> +             u32 _v_;                                                \
+>> +             u32 _m_ = mask;                                         \
+>> +             void __iomem *addr =                                    \
+>> +                     spx5_inst_addr(iomem,                           \
+>> +                                    gbase, ginst, gcnt, gwidth,      \
+>> +                                    raddr, rinst, rcnt, rwidth);     \
+>> +             _v_ = readl(addr);                                      \
+>> +             _v_ = ((_v_ & ~(_m_)) | ((val) & (_m_)));               \
+>> +             writel(_v_, addr);                                      \
+>> +     } while (0)
+>> +
+>> +#define SPX5_REG_RD_(regaddr)                        \
+>> +     readl(regaddr)
+>> +
+>> +#define SPX5_REG_WR_(val, regaddr)           \
+>> +     writel(val, regaddr)
+>> +
+>> +#define SPX5_REG_RMW_(val, mask, regaddr)                \
+>> +     do {                                                \
+>> +             u32 _v_;                                    \
+>> +             u32 _m_ = mask;                             \
+>> +             void __iomem *_r_ = regaddr;                \
+>> +             _v_ = readl(_r_);                           \
+>> +             _v_ = ((_v_ & ~(_m_)) | ((val) & (_m_)));   \
+>> +             writel(_v_, _r_);                           \
+>> +     } while (0)
+>> +
+>> +#define SPX5_REG_GET_(sparx5, id, tinst, tcnt,                       \
+>> +                   gbase, ginst, gcnt, gwidth,               \
+>> +                   raddr, rinst, rcnt, rwidth)               \
+>> +     spx5_addr((sparx5)->regs, id, tinst, tcnt,              \
+>> +               gbase, ginst, gcnt, gwidth,                   \
+>> +               raddr, rinst, rcnt, rwidth)
+>> +
+>> +#define SPX5_RD(...)  SPX5_RD_(__VA_ARGS__)
+>> +#define SPX5_WR(...)  SPX5_WR_(__VA_ARGS__)
+>> +#define SPX5_RMW(...) SPX5_RMW_(__VA_ARGS__)
+>> +#define SPX5_INST_RD(...) SPX5_INST_RD_(__VA_ARGS__)
+>> +#define SPX5_INST_WR(...) SPX5_INST_WR_(__VA_ARGS__)
+>> +#define SPX5_INST_RMW(...) SPX5_INST_RMW_(__VA_ARGS__)
+>> +#define SPX5_INST_GET(sparx5, id, tinst) ((sparx5)->regs[(id) + (tinst)])
+>> +#define SPX5_REG_RMW(...) SPX5_REG_RMW_(__VA_ARGS__)
+>> +#define SPX5_REG_WR(...) SPX5_REG_WR_(__VA_ARGS__)
+>> +#define SPX5_REG_RD(...) SPX5_REG_RD_(__VA_ARGS__)
+>> +#define SPX5_REG_GET(...) SPX5_REG_GET_(__VA_ARGS__)
+>
+>I don't see any reason for macro magic here. If this just left over
+>from HAL code? Please turn this all into functions.
+>
+>     Andrew
+>
 
-Thanks Ashish, I've sent a patch to fix it.
+Thanks for the comment.  I will transform this into functions.
 
-Would it be possible to add a minimal SEV test to 
-tools/testing/selftests/kvm?  It doesn't have to do full attestation 
-etc., if you can just write an "out" instruction using SEV_DBG_ENCRYPT 
-and check that you can run it that's enough.
+BR
+Steen
 
-Paolo
-
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
