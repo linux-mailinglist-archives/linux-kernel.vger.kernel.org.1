@@ -2,157 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E297F2C8BBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E782C8BB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387817AbgK3Rve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:51:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51876 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387411AbgK3Rve (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:51:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606758607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HSCV7T+Nrw6Gul8hhY06LNx7QhAZMZ6fOF3OCzdbisE=;
-        b=Tys5SdwTaNUH+aui1dhaTifh5z1MLFeU7jFI+ynRCvJ3L4IjFXLxJSoLWOhVDQp8T6lWe0
-        zfxYYq8f30MHy2IiUyEuPdFu3k/JKhuPVV4JjzgnyufKw/T/K0eL5tvsX5Rsih39W1FJiZ
-        UtDUIbJhRxUaZAsX3qCdavruAHU7SEo=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-6baJMqMxP9-QGjEcY3qq_A-1; Mon, 30 Nov 2020 12:50:04 -0500
-X-MC-Unique: 6baJMqMxP9-QGjEcY3qq_A-1
-Received: by mail-qk1-f198.google.com with SMTP id u67so1056632qkd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:50:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=HSCV7T+Nrw6Gul8hhY06LNx7QhAZMZ6fOF3OCzdbisE=;
-        b=szLPleCccHDq7YX6LUnb1rDfvy5OAn9WiZ/7wVnwTo0ovXGbtvI4yDdnKh8DPb0ctj
-         gE3uv8iUpd7+80Dxmxbsd3Y8wOElp30IL4ljODN4Z0FUGmnthkcIwwsyimSlPezojD1V
-         Ax2l7MkX4BBOPql4sup/oSe4sBGVw2rqFZMSo78rRhC6t7gAP1taZdBbosacDzSG+pyK
-         hRK/m0L0k2g8nAp2j2Cs6pYYRiKyYUCYXMI+RAxWYadDwxqINvu9HTO8TH6lyAq1c8Ug
-         DmkpqlHmUajmx21RSftSSTE6wRiq50gM85YSkeUfSUPEJRHjqRiDYuEnPjD1t1SitgB/
-         MXCQ==
-X-Gm-Message-State: AOAM5308hO4wLtEHfMWizg/m8hRYoKnRyylSi0YzwlXoFLLr6PL7j1Ng
-        aW3J8ECtetURUWiy8ggPDODaS2qcE/7ySM4ppz20AaTZ/Zc/lfWr+yjVc7Svjjn3CGwEzKLaeHy
-        DR7puZVCxIR/4iqBg+ZdzM56C
-X-Received: by 2002:ac8:588e:: with SMTP id t14mr22837100qta.375.1606758603656;
-        Mon, 30 Nov 2020 09:50:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzeE1KMRYS8ZnehWgh0wHCpn3AyJ9/3hJkmwxezbbi5OKJ+2cW7RrT9y4YlUKC7CiuoaENtYA==
-X-Received: by 2002:ac8:588e:: with SMTP id t14mr22837070qta.375.1606758603403;
-        Mon, 30 Nov 2020 09:50:03 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id w65sm16073360qtd.94.2020.11.30.09.50.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 09:50:02 -0800 (PST)
-References: <87h7pd6v2k.fsf@redhat.com>
- <bd1fd204-3596-b16c-5617-7e691ceac83b@linux.intel.com>
- <87a6v3hkd9.fsf@jsnitsel.users.ipa.redhat.com>
- <72a7b338-2481-8c0a-5641-6f448557f6ee@linux.intel.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@kernel.vger.org
-Subject: Re: Question about domain_init (v5.3-v5.7)
-In-reply-to: <72a7b338-2481-8c0a-5641-6f448557f6ee@linux.intel.com>
-Date:   Mon, 30 Nov 2020 10:50:01 -0700
-Message-ID: <87r1oaka46.fsf@redhat.com>
+        id S1729337AbgK3RvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:51:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725980AbgK3RvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:51:20 -0500
+Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 001962074A;
+        Mon, 30 Nov 2020 17:50:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606758640;
+        bh=PtvDTo7tVMct9zxtqKWYldLx76hz9d7Z8Jj3vHXV5sc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ibwt3G1jDq56t3e8ImHKCv1F22rOJADBnOE+Dq/izBqIrEjbI7G/cVXfhr7qX09Jy
+         jwedALc+Ty4bJqyuX7EMRHkS7Cr78ldqVF6LpDh666IFZ+nM6Ubetka0+2Knoap8CJ
+         pv1Ml9iG0rf+ZPaPTVsDxFkZhFCHQYb9Kly/1qAI=
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH 0/3] membarrier fixes
+Date:   Mon, 30 Nov 2020 09:50:32 -0800
+Message-Id: <cover.1606758530.git.luto@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all-
 
-Lu Baolu @ 2020-11-26 19:12 MST:
+x86's sync_core_before_usermode() was bogus.  Without the other
+patches applied, it would never be called in a problematic context,
+but that's about to change.  In any event, sync_core_before_usermode()
+should be correct.
 
-> Hi Jerry,
->
-> On 11/27/20 5:35 AM, Jerry Snitselaar wrote:
->> Lu Baolu @ 2020-11-26 04:01 MST:
->> 
->>> Hi Jerry,
->>>
->>> On 2020/11/26 4:27, Jerry Snitselaar wrote:
->>>> Is there a reason we check the requested guest address width against
->>>> the
->>>> iommu's mgaw, instead of the agaw that we already know for the iommu?
->>>> I've run into a case with a new system where the mgaw reported is 57,
->>>> but if they set PAE to 46 instead of 52 in the bios, then sagaw reports
->>>> the highest supported agaw is 48 and the domain_init code fails here. In
->>>
->>> Isn't this a platform bug? If it's too late to fix it in the BIOS, you
->>> maybe have to add a platform specific quirk to set mgaw to the highest
->>> supported agaw?
->>>
->>> Best regards,
->>> baolu
->> Is there somewhere you can point me to that discusses how they
->> should be
->> setting the mgaw? I misunderstood when I previously asked you about
->> whether the mgaw could be a value that was greater than any of sagaw.
->> If it is a bios issue, then they should fix it there.
->
-> MGAW indicates the max gpa width supported by 2nd translation. The VT-d
-> spec requires that this value must be at least equal to the host
-> physical addressibility. According to this, BIOS is good, right?
->
-> For this failure case, domain_init() just wants to find a suitable agaw
-> for the private domain. I think it makes sense to check against
-> iommu->agaw instead of cap_mgaw.
->
-> Best regards,
-> baolu
->
+The second patch fixes a minor issue, but it also makes the third patch
+nicer.
 
-From this bit in the spec about MGAW:
+The third patch is the biggie.  The old code looped over all CPUs
+without disabling migration, and it skipped the current CPU.  There
+were comments about how the scheduler's barriers made this okay.  This
+may well be true, but it was a mess, and it's considerably simpler to
+treat the current CPU just like all other CPUs.
 
-    Guest addressability for a given DMA request is limited to the
-    minimum of the value reported through this field and the adjusted
-    guest address width of the corresponding page-table structure.
-    (Adjusted guest address widths supported by hardware are reported
-    through the SAGAW field).
+The messy skip-the-current-CPU code masked what seems to be a couple
+of much bigger issues: if the membarrier() syscall ran all the way
+through _without_ being preempted, it completely failed to operate on
+the calling thread.  The smp_mb() calls sprinkled through the function
+would mask this problem for the normal barrier mode, but they wouldn't
+help for the core-serializing mode or rseq_preempt mode.  In other
+words, modifying some code, calling
+membarrier(MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE, 0), and running
+that modified code was not actually safe.  This seems to rather defeat
+the purpose.
 
-That does suggest it should be adjusted down to the sagaw value in this case, yes?
-Just want to make sure I'm understanding it correctly.
+Some or all of this might be -stable material.
 
->> 
->>>
->>>> other places like prepare_domain_attach_device, the dmar domain agaw
->>>> gets adjusted down to the iommu agaw. The agaw of the iommu gets
->>>> determined based off what is reported for sagaw. I'm wondering if it
->>>> can't instead do:
->>>> ---
->>>>    drivers/iommu/intel-iommu.c | 4 ++--
->>>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>> diff --git a/drivers/iommu/intel-iommu.c
->>>> b/drivers/iommu/intel-iommu.c
->>>> index 6ca5c92ef2e5..a8e41ec36d9e 100644
->>>> --- a/drivers/iommu/intel-iommu.c
->>>> +++ b/drivers/iommu/intel-iommu.c
->>>> @@ -1862,8 +1862,8 @@ static int domain_init(struct dmar_domain *domain, struct intel_iommu *iommu,
->>>>    	domain_reserve_special_ranges(domain);
->>>>    	/* calculate AGAW */
->>>> -	if (guest_width > cap_mgaw(iommu->cap))
->>>> -	        guest_width = cap_mgaw(iommu->cap);
->>>> +	if (guest_width > agaw_to_width(iommu->agaw))
->>>> +	        guest_width = agaw_to_width(iommu->agaw);
->>>>    	domain->gaw = guest_width;
->>>>    	adjust_width = guestwidth_to_adjustwidth(guest_width);
->>>>    	agaw = width_to_agaw(adjust_width);
->>>> --
->>>> 2.27.0
->>>>
->>>> Thoughts? With the former code the ehci device for the ilo fails when
->>>> trying to get a private domain.
->>>> Thanks,
->>>> Jerry
->>>>
->> 
+The global_expedited code looks similarly nasty.  Any volunteers to
+clean it up?
+
+Andy Lutomirski (3):
+  x86/membarrier: Get rid of a dubious optimization
+  membarrier: Add an actual barrier before rseq_preempt()
+  membarrier: Propagate SYNC_CORE and RSEQ actions more carefully
+
+ arch/x86/include/asm/sync_core.h |   9 +--
+ arch/x86/mm/tlb.c                |   6 +-
+ kernel/sched/membarrier.c        | 102 ++++++++++++++++++++++---------
+ 3 files changed, 83 insertions(+), 34 deletions(-)
+
+-- 
+2.28.0
 
