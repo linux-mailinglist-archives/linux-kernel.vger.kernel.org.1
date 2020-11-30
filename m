@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4782C925A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71072C9260
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgK3XRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:17:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        id S1729612AbgK3XSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgK3XRs (ORCPT
+        with ESMTP id S1725980AbgK3XSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:17:48 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEF5C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:17:07 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id v202so16110609oia.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:17:07 -0800 (PST)
+        Mon, 30 Nov 2020 18:18:53 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D9FC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:18:07 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id y74so16118522oia.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:18:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=0z0SXE8CVPIChDmKOmwTsYRaoR8qX/fK8KklCW+N/l8=;
-        b=JToaLIuO/p7X7k6oHV5a/TjdCpmD6sO7yrjy4OYXDtYmvBFEzKGRTkTai2AYYp5Uyj
-         O9GYoPtFHbbzWe0Bg5PB652fZDDIljPi+i+9TcGPGu+VycL4NdjSlFY2ep7LWaa8nVur
-         8cheF6iw3PCN6TDwHzNVHmc06dCEDdjr3XHo2lnHn1OWiFAzTUuCPYpSok3qZb8ON0LB
-         3+lETbFpb01TlQIBTxDcbZpXCnPfHQ7JqL3XOE9i4f/eexcTjTXlhTAU3z4EQXtsO/Xa
-         ievk6N7AaqW57Mi0iSqU7Gumso8Ccs/XredO27WBg2E0pAAMvsOrSy9BijmNQDt/fUfj
-         U4yQ==
+        bh=C7PinMSDxT1TDnGp4Uxl3lW8a+kzcDKRcBmpoKDWXck=;
+        b=QqGSR/CecXkCQqNWiUVQ3x7oIKUjYWSlbL/kIrQv76YPayngtzffCNfLlAMNyLIrWx
+         vJlIHFArtnWorW7U9iQFwHscmgrgKhkPRyM7X/AxNiiQU9MeSYOIwceX8InATsHxHEnD
+         mtB5OCTPcn+QX8tsij/VO00sUER+7WYE1i2mPttiq1fC7q51TR2DyODZ4Dt1viz3svQa
+         mombypA8IlE+Xn4O2ZcscFWGurbUkWwLyodOYQfNwdXsSzYGe1P47GRnnl+KU/ytYR0m
+         JtzGWkwfcUjh+IbTulu0MzSPyjKJz2G6wR+FJBaV0tunY8dvjFcmB30HCcZec4k3BlIi
+         fgFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0z0SXE8CVPIChDmKOmwTsYRaoR8qX/fK8KklCW+N/l8=;
-        b=egYVO8g3IW2XhwByr0GiIOtUq7IjMrFGPRunbeL8KPFYKyKXmfi2DUHjjvvXgeqduB
-         Q693rB5xKRIB7W1veptUmqc3+3EhnacqYJQFQrfncJfQWXD8Bgdh6BRFlW4/A3Rv3C5Y
-         d/g4prhTTp8AQjRfO6kQ6DbRAMJulruGri/2vzr15uS+v1faO+w2O//6ojEezzKB5l1U
-         6EOq8IgIhpCQOknZn3/u0xmJ8tEQDcRj1NtwhRoQlx+Qa4HkTNhT55rGDikjNgMYPFxc
-         Coy+kwUG1FK+4MKRKb6IRZKImMV+cqfj1mzLVCyHSotvY/GiIdrR40S4OLTehWfnqcDO
-         cqmw==
-X-Gm-Message-State: AOAM5315gSpI9E4knXE9UBEDIOeHCu0nPAu9lY0+a3Pag80je7YrF3uH
-        hKkOc5ir/POA1uANyK2f+r4jeCpAKEVXrROL49c=
-X-Google-Smtp-Source: ABdhPJwylG4/WrqmfM33rZKNpP1ekm16r2XICleifSiU/CfyOhbqgaz+wcFex7cFkK3t0YkVczLNTTDWgadxoyonD84=
-X-Received: by 2002:aca:4f53:: with SMTP id d80mr118887oib.120.1606778227470;
- Mon, 30 Nov 2020 15:17:07 -0800 (PST)
+        bh=C7PinMSDxT1TDnGp4Uxl3lW8a+kzcDKRcBmpoKDWXck=;
+        b=f2SsY4sTe4hINnfrzmcJl2NCxuobTXS7xEy1pTodEusj9fZatKLLHycSw/eqYHQxWS
+         sjnoIuwizJupzpKs0LUO7OG9k80fCVWsxdDBzU86v65Cr0vGxswhuy+mzFiRAqBKyYua
+         YyTKZDaqjIlnkT2x5vhQkcMRjOJIACOxG5qt0a4Y5QmXaoHWKZ7OiUJYbA/OC/9HBifX
+         t1eh6Ucid7HjDXFEwH6OFN+DVCNQd5h/wQnAmle7y0f39/Be9pKow8aREzoQr/z3Q119
+         yD7rX0IBsLe6yAU+DLc6vlTfl4Tyf9/M6Tqjj+p61bLfCSF4gtslOPczLqvyvM8TqgJs
+         pW4Q==
+X-Gm-Message-State: AOAM533tn/drxW7KU/Tl13gcj+wX310QTa6EXa71F4VpcqZqqQwitkja
+        A4YqTLEB47SMkRMvrMYJikY6xtAPuaTZ5JcJ5Yw=
+X-Google-Smtp-Source: ABdhPJyveZpV+lcjNiVSe5NCFpk5s0+ulSEhgu6bAY1Pjr4rDw///J9UhNlLTgqW5QGCLGrtX0hOFWL6KbmrsfNYIug=
+X-Received: by 2002:aca:f50e:: with SMTP id t14mr99714oih.123.1606778287242;
+ Mon, 30 Nov 2020 15:18:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-6-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-6-lee.jones@linaro.org>
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-7-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-7-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 18:16:56 -0500
-Message-ID: <CADnq5_MWwix=tbV_BZ-hrmVfYKw=xpXgUU2U2htL1roxvTbtYg@mail.gmail.com>
-Subject: Re: [PATCH 05/40] drm/amd/pm/powerplay/smumgr/vegam_smumgr: Make
- function called by reference static
+Date:   Mon, 30 Nov 2020 18:17:56 -0500
+Message-ID: <CADnq5_Ni=mj9KKcJn4wexsSKg1RK_GG_iDHz4Btk+6eBC0eHhQ@mail.gmail.com>
+Subject: Re: [PATCH 06/40] drm/amd/pm/powerplay/smumgr/smu9_smumgr: Include
+ our own header containing our prototypes
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -71,9 +71,18 @@ On Thu, Nov 26, 2020 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/vegam_smumgr.c:2249:5:=
- warning: no previous prototype for =E2=80=98vegam_thermal_avfs_enable=E2=
-=80=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/smu9_smumgr.c:38:6: wa=
+rning: no previous prototype for =E2=80=98smu9_is_smc_ram_running=E2=80=99 =
+[-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/smu9_smumgr.c:112:5: w=
+arning: no previous prototype for =E2=80=98smu9_send_msg_to_smc=E2=80=99 [-=
+Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/smu9_smumgr.c:140:5: w=
+arning: no previous prototype for =E2=80=98smu9_send_msg_to_smc_with_parame=
+ter=E2=80=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/smu9_smumgr.c:165:10: =
+warning: no previous prototype for =E2=80=98smu9_get_argument=E2=80=99 [-Wm=
+issing-prototypes]
 >
 > Cc: Evan Quan <evan.quan@amd.com>
 > Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -89,25 +98,22 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c b/dri=
-vers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c
-> index 38a5cdcf58967..7d024d3facef0 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/vegam_smumgr.c
-> @@ -2246,7 +2246,7 @@ static int vegam_update_sclk_threshold(struct pp_hw=
-mgr *hwmgr)
->         return result;
->  }
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c b/driv=
+ers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c
+> index 8a9aee85043ec..23e5de3c4ec16 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/smu9_smumgr.c
+> @@ -22,6 +22,7 @@
+>   */
 >
-> -int vegam_thermal_avfs_enable(struct pp_hwmgr *hwmgr)
-> +static int vegam_thermal_avfs_enable(struct pp_hwmgr *hwmgr)
->  {
->         struct smu7_hwmgr *data =3D (struct smu7_hwmgr *)(hwmgr->backend)=
-;
->         int ret;
+>  #include "smumgr.h"
+> +#include "smu9_smumgr.h"
+>  #include "vega10_inc.h"
+>  #include "soc15_common.h"
+>  #include "pp_debug.h"
 > --
 > 2.25.1
 >
