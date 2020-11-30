@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5112C92CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDA52C92D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388770AbgK3Xgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        id S2388847AbgK3Xh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:37:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388050AbgK3Xgv (ORCPT
+        with ESMTP id S1728499AbgK3Xh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:36:51 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE2EC0613D2;
-        Mon, 30 Nov 2020 15:36:10 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id u7so7291389vsq.11;
-        Mon, 30 Nov 2020 15:36:10 -0800 (PST)
+        Mon, 30 Nov 2020 18:37:57 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1E6C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:37:17 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id p5so13092675iln.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:37:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=mDHtJHxDKIp9CgY2O+nZjtN8N0N6lB3CW2FBJTaTi0A=;
-        b=gyWeTNzlTl0DeF+0j42TkxN+JVx0t5Ty6AEA4GMo3p1pG1UeZWsjFN85M1+NC8ED7M
-         waOdFNX9+wA2TZG1FisaLxU7kjiKBeQzbPepI+sZMIeJQ68SaVx3yoYRuUnrwq84e/XW
-         BJpC6lGxL9t3BSdAprb4Jt0wUMzMRygmAiS0AcN50NdDGNAUKWJYvMvAbfDSIhhWMoHe
-         ZalE7aBD98I/bc4zPzPNJe4vJVA6UUJPX9fRM/p11qNHyD37Reea/+unr6HMUCqHcg1T
-         P/g0iPtav6PPCys55tJjAtkkJqqPnW+TXjMfoGnr38x2K+u6t6TN4s9MK7fF00BKC/Qz
-         Hakw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lvd8Uu7EFbx7sQmZLqZeinPKN/f1EeBVJhIhvxXPxbQ=;
+        b=JJlgwRA8bfdj0bCBX+rh8DFqrF6nlg4L/Yo0ReowrvyPW2rglkZyZoDz69FOMJir/L
+         hXZF53WZ37hZgLyjjiw/g+JRNLm8FoCtmYk4B7KouLUQhpHfpOor+Hh6laJjd1y2zrD6
+         idVaSUk0W5dCMrpmr3vucYkzAPt4pSCalVoPLfTS19ZuueRUv8Jzmcfd1GrtnkGuVyZ4
+         U+RlrPIS0iQxnmFPYX1lnKP7c5uk2dYocqi/KtMlEI+LeCk7wwmS9f/epoHvOnB6mlxA
+         o1pYGhE2GWRIG3jOthnhdiL1QJReSmtWyf1EJpwVySjms9UldtVfzPOPv+1Q5lsoT8sR
+         eDqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=mDHtJHxDKIp9CgY2O+nZjtN8N0N6lB3CW2FBJTaTi0A=;
-        b=gMMLRoJFixa0Sk05XiJ1qIeHjpWUQHjqh2CKjdr6IFYM/IUaM5m0yFlSUGMnjCaIKm
-         3xKC8lXixcx7AChhDBJTimXqpLc2iNPirzXNs2KB5EPHQo/O2Ms3pamLuGa8ygfZKC9v
-         Y9AhVfcu/Hpr85MtUCxhbB/1uzXSm513COvJEOPJcpquedvVltxmB6H4k+qjZhPHCAeF
-         dT8viwO7F/p2edtEXT9FQaIPkoqINQIQuzh0PkpGcmjbgpKvJ3KEeaC9aO0RXrf3fSa0
-         UZo6w3L5hvJxok3mOn0r+eHQlM0gh4fvOf/cxRWx3ndX08etvOLqvWtd2xNTgYlgvcrh
-         uikw==
-X-Gm-Message-State: AOAM530kNp0C02vTNV5gD2ujON8ichk7GMcJ2BdlGkDCCnbkyXdOrIDT
-        uEzHUKkSyU9Np8NeBAS9n325DYGKMf2dVc4zlmygbJzGXJhwFQ==
-X-Google-Smtp-Source: ABdhPJw8hWLwPNAhzCwQctQI+dhysoI8RR/URK0EQWh0dD/LVbWKdFbfaLlA/iTzKzaJ+EjITf+2+PQvD87dhbceFkQ=
-X-Received: by 2002:a67:f883:: with SMTP id h3mr169632vso.47.1606779370211;
- Mon, 30 Nov 2020 15:36:10 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lvd8Uu7EFbx7sQmZLqZeinPKN/f1EeBVJhIhvxXPxbQ=;
+        b=Na8iLvSpwILPbsGLbRu7S6nwzb0oi9/F6a4IajMzRpYbws/tNL1Q5LAJe2C90MQSq1
+         /z5IcyQA8bKot/186keCGvKJ0BwsLs4MBM5rkKSeo1+GYTZFXg1nDGlCVmCBFltajj+q
+         pyqCumEv4IsXMs+dNHSvOITi5Hre9Kw6oYytc1nK+QhF/cuWfzdJULJfFNRErRjh160P
+         +qK9Pasvicmtg2peo7Ml02JNBUBuYTV8mjgY/eKRVQbA1GxocfkaPFq5Jqa1j9kxEj8g
+         JG0mj2HGKqAJwFgj4Xj+CehQ1AFetoxXqwO5wzD/Rb5W2KmB5UCc+l9RzNWm1NZcV8ht
+         1OFQ==
+X-Gm-Message-State: AOAM531odHHcZTIPZnEAlluMKe9mzWYKg051s1kVaZQQ7gXdTn4xvpZ2
+        6aSy9UfWVz5gvkqRnUcMA8PVGw==
+X-Google-Smtp-Source: ABdhPJxeiwWh/CGGvcYRueT8H0rGGqa/OucnmftkAFNDBMFXFkJPWqRpTL2M1Uv6XPwASW2HCU+pOQ==
+X-Received: by 2002:a05:6e02:1948:: with SMTP id x8mr96841ilu.225.1606779436403;
+        Mon, 30 Nov 2020 15:37:16 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id o195sm62574ila.38.2020.11.30.15.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 15:37:15 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/4] net: ipa: IPA v4.5 aggregation and Qtime
+Date:   Mon, 30 Nov 2020 17:37:08 -0600
+Message-Id: <20201130233712.29113-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Received: by 2002:ab0:6ecb:0:0:0:0:0 with HTTP; Mon, 30 Nov 2020 15:36:09
- -0800 (PST)
-In-Reply-To: <20201130153742.9163-2-johan@kernel.org>
-References: <20201130153742.9163-1-johan@kernel.org> <20201130153742.9163-2-johan@kernel.org>
-From:   Mychaela Falconia <mychaela.falconia@gmail.com>
-Date:   Mon, 30 Nov 2020 15:36:09 -0800
-Message-ID: <CA+uuBqZRyEw_YtNH7V2cSWhpLdKXWLgivkSbR6HqaLeH5CUaJg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] tty: add port flag to suppress ready signalling on open
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Add a NORDY port flag to suppress raising the modem-control lines on
-> open to signal DTE readiness.
->
-> This can be used to implement a NORDY termios control flag to complement
-> HUPCL, which controls lowering of the modem-control lines on final
-> close.
->
-> Initially drivers can export the flag through sysfs, which also allows
-> control over the lines on first open.
->
-> This can be use to prevent undesirable side-effects on open for
-> applications where the DTR and RTS lines are used for non-standard
-> purposes such as generating power-on and reset pulses.
->
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+This series updates some IPA register definitions that change in
+substantive ways for IPA v4.5.
 
-Reviewed-by: Mychaela N. Falconia <falcon@freecalypso.org>
+One register defines parameters used by an endpoint to aggregate
+multiple packets into a buffer.  The size and position of most
+fields in that register have changed with this new hardware version,
+and consequently the function that programs it needs to be done a
+bit differently.  The first patch takes care of this.
+
+Second, IPA v4.5 introduces a unified time keeping component to be
+used in several places by the IPA hardware.  A main clock divider
+provides a fundamental tick rate, and several timestamped features 
+now define their granularity based on that.  There is also a set of
+"pulse generators" derived from the main tick, and these are used
+to implement timers used for aggregation and head-of-line block
+avoidance.  The second patch adds IPA register updates to support
+Qtime along with its configuration, and the last two patches
+configure the timers that use it.
+
+					-Alex
+
+Alex Elder (4):
+  net: ipa: update IPA aggregation registers for IPA v4.5
+  net: ipa: set up IPA v4.5 Qtime configuration
+  net: ipa: use Qtime for IPA v4.5 aggregation time limit
+  net: ipa: use Qtime for IPA v4.5 head-of-line time limit
+
+ drivers/net/ipa/ipa_endpoint.c | 174 +++++++++++++++++++++++++--------
+ drivers/net/ipa/ipa_main.c     |  67 ++++++++++++-
+ drivers/net/ipa/ipa_reg.h      |  68 +++++++++++--
+ 3 files changed, 260 insertions(+), 49 deletions(-)
+
+-- 
+2.20.1
+
