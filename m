@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986532C91F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEB32C91F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388929AbgK3XEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:04:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
+        id S1730265AbgK3XEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:04:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgK3XEB (ORCPT
+        with ESMTP id S1728733AbgK3XEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:04:01 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAF3C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:03:15 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id o25so16115105oie.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:03:15 -0800 (PST)
+        Mon, 30 Nov 2020 18:04:47 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389BDC0613CF;
+        Mon, 30 Nov 2020 15:04:07 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id y24so13038346otk.3;
+        Mon, 30 Nov 2020 15:04:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=pbLBATuyJ3oCMMqucu/E4nnHTUnE5GYSa2HahZ+nUMY=;
-        b=N1sX3O1jLFNPsM+czYCS21z3e62Kchen6incjTpRzoK62lv9/g/JPxExhzCsNf5LPf
-         iVYQJDPSBiK1NE9VOMvjCjlqkC6IsUgZfRI6EK5SmGqHNSCnFc9zyHXuMQsu7Z+JPgmQ
-         hnl/GNMRWS4/EhS5URciA1m18YHqWVXI2RHbreKQEYUhbBP2NNsC0zguYEQxGXd4D8zy
-         JZGZxXSBYqKdieUKASmeVksBrU0U5/c3+EfMGFUwV3MhqjIucjeTvuAo+XUmLJgKvZrC
-         2F73/Ukl89DcV0JJiirW5qvlTyST1wotbPgXDRS8gPslhaYHdSGd1Sa4EdA/wtySQdMK
-         jrQw==
+        bh=/XTX3Z66O+BazeLjFxr+puLvZ6PetLfBClwP+q5Bj0g=;
+        b=dg5LflkcwriHvH2MBB/bPLeZFTWXs2sjvPKbydqgr1egeiLh1E9dYIVQGb7dBukd11
+         dfiz8U8PYmp2vPhsORB42k9TFvMpkFl6lLHbRbCAoWB4jet1fbQN7XiKkGfig+CYqan1
+         TtnIKPjym1jlrZDh8ngNrL1SLdVkGK/DNDtd+pgChVLGY6/eBwE2Zbi1h2+Llh/UH+v+
+         upUeixBTw87v+0qfjfA+pSaCpF3W8K4Rx+BY35fLDV17huqWtlSg7itqtEXWjc1xKyU2
+         Vx4pfqNG4rbpu10LtWQM/isrYJhmtzB+MXe+v687Kr5VkaBfVuvZMmp4ENlwP/9xNrop
+         Ov1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pbLBATuyJ3oCMMqucu/E4nnHTUnE5GYSa2HahZ+nUMY=;
-        b=RFOSnxx8WWZdNM6icziftJUX3GMbOC3E+Xd5WAew1mQqJz5zYt8WgSBDsu2A8uCdqS
-         QKFSHSXdTQ7AfSuzPfXMCyo6tnHwpQoVALIp+Y43qCx7+RY46HO3MoQPimWI1cbFLACR
-         M2gIApaso7d5uK15DMuRzDtFbwprX6EomTWY/ct7iOkf5BxWtjIVAycr0OYiZW/KWMLy
-         8n3uR2+rKDNM/XYp2bVXDslQXkAVz8xj2uZ6scoL1XU2q3+THMGGOVuIXRqyXdo3e/cD
-         99eA8+lenMJcw2c/3M7v6ng4G51NUQt59RtLlq/eozBXs2lZGxLtdaFPeTFgju/iprwP
-         1KMw==
-X-Gm-Message-State: AOAM533Re1RGs2AG8iM+xaZ4aj2OiEbKkd5gxnvuwiyYbJ+KZbn29EaO
-        tqNhTL5iqXdMH++wFwQQuvZysTTnzzDgN/e23ek=
-X-Google-Smtp-Source: ABdhPJyryqlUQ3q+jCwYtIZCuMTd9ebkXmhYBFh7xQINE5nHfAmLqnQlscgBCJBx8EV/1R0m5PLqL3eEmwr+BmNpifk=
-X-Received: by 2002:a54:4608:: with SMTP id p8mr60646oip.5.1606777394955; Mon,
- 30 Nov 2020 15:03:14 -0800 (PST)
+        bh=/XTX3Z66O+BazeLjFxr+puLvZ6PetLfBClwP+q5Bj0g=;
+        b=RTmhl6bkIbujyhDyrs+fsWbD0KQ9LFHCUlecaXcnTlucKMDw3owm0xx8NT5kv/1t45
+         2NOq6FXHiNUKoz3+qyhN15L7k1ToXFRf964jLeiKnD9sXFlCbUYNIay3EZEguRvsRHxo
+         FPbmaBQZj6wmJ0l5ESoUug0pjPzsz/YzoV9F4Imfq4e95NwwkXkU0ccdICd7cn3aFEzM
+         8LUAH765ej6Z29joejHpmE+jtmDknQbfluLe3VwjAeZ25URV3YWxm9KPNdR5Eg37ia32
+         Yu7qHwbWawPzuJlKEYX9jKPK3y8VitOalPLRvdpx5o6lZi5tGRp6GYcr5vO43HZ1QCzZ
+         3s3A==
+X-Gm-Message-State: AOAM530WjGDZYvW8YsWJVzE4DpHMS1WmeGmqcOy9yfjgvypOz7bVx6eF
+        XiBF4Y6qVVbozKNocdruILoeYkqxEDMxp/DyBzQuqf84
+X-Google-Smtp-Source: ABdhPJzFEcs1LGYfXam7Brnq4I4Rmdbke/J7wWbeEuPhw0Yq74o/WHrC0htfeQw4Reicm+MX5kc+4IXl7vhIg4OzjLA=
+X-Received: by 2002:a05:6830:22e4:: with SMTP id t4mr19122959otc.23.1606777445195;
+ Mon, 30 Nov 2020 15:04:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-40-lee.jones@linaro.org>
-In-Reply-To: <20201124193824.1118741-40-lee.jones@linaro.org>
+References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-41-lee.jones@linaro.org>
+In-Reply-To: <20201124193824.1118741-41-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 18:03:03 -0500
-Message-ID: <CADnq5_Pf-LD7gpzrp+TqpnhFYETjouSWKCp7ZnbnAN80NVKA1A@mail.gmail.com>
-Subject: Re: [PATCH 39/40] drm/amd/pm/powerplay/smumgr/fiji_smumgr: Remove
- unused variable 'result'
+Date:   Mon, 30 Nov 2020 18:03:53 -0500
+Message-ID: <CADnq5_PwGBLKU5cZtrLH4BUep9AgzwRW9xwj+rakxC_FY9RuGw@mail.gmail.com>
+Subject: Re: [PATCH 40/40] drm/amd/amdgpu/amdgpu_uvd: Add description for
+ amdgpu_uvd_cs_msg_decode()'s 'buf_sizes' param
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        linux-media <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -71,19 +73,18 @@ On Tue, Nov 24, 2020 at 2:45 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/fiji_smumgr.c: In func=
-tion =E2=80=98fiji_populate_smc_boot_level=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/fiji_smumgr.c:1603:6: =
-warning: variable =E2=80=98result=E2=80=99 set but not used [-Wunused-but-s=
-et-variable]
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:555: warning: Function parameter=
+ or member 'buf_sizes' not described in 'amdgpu_uvd_cs_msg_decode'
 >
-> Cc: Evan Quan <evan.quan@amd.com>
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
 Applied.  Thanks!
@@ -91,43 +92,24 @@ Applied.  Thanks!
 Alex
 
 > ---
->  .../gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c   | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c b/driv=
-ers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
-> index fef9d3906fccd..fea008cc1f254 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
-> @@ -1600,20 +1600,19 @@ static int fiji_populate_smc_uvd_level(struct pp_=
-hwmgr *hwmgr,
->  static int fiji_populate_smc_boot_level(struct pp_hwmgr *hwmgr,
->                 struct SMU73_Discrete_DpmTable *table)
->  {
-> -       int result =3D 0;
->         struct smu7_hwmgr *data =3D (struct smu7_hwmgr *)(hwmgr->backend)=
-;
->
->         table->GraphicsBootLevel =3D 0;
->         table->MemoryBootLevel =3D 0;
->
->         /* find boot level from dpm table */
-> -       result =3D phm_find_boot_level(&(data->dpm_table.sclk_table),
-> -                       data->vbios_boot_state.sclk_bootup_value,
-> -                       (uint32_t *)&(table->GraphicsBootLevel));
-> +       phm_find_boot_level(&(data->dpm_table.sclk_table),
-> +                           data->vbios_boot_state.sclk_bootup_value,
-> +                           (uint32_t *)&(table->GraphicsBootLevel));
->
-> -       result =3D phm_find_boot_level(&(data->dpm_table.mclk_table),
-> -                       data->vbios_boot_state.mclk_bootup_value,
-> -                       (uint32_t *)&(table->MemoryBootLevel));
-> +       phm_find_boot_level(&(data->dpm_table.mclk_table),
-> +                           data->vbios_boot_state.mclk_bootup_value,
-> +                           (uint32_t *)&(table->MemoryBootLevel));
->
->         table->BootVddc  =3D data->vbios_boot_state.vddc_bootup_value *
->                         VOLTAGE_SCALE;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/am=
+d/amdgpu/amdgpu_uvd.c
+> index f8f0384a8d9ad..7c5b60e534822 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+> @@ -547,6 +547,7 @@ static int amdgpu_uvd_cs_pass1(struct amdgpu_uvd_cs_c=
+tx *ctx)
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @msg: pointer to message structure
+> + * @buf_sizes: placeholder to put the different buffer lengths
+>   *
+>   * Peek into the decode message and calculate the necessary buffer sizes=
+.
+>   */
 > --
 > 2.25.1
 >
