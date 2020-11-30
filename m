@@ -2,147 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF52E2C8080
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964842C8085
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgK3JCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:02:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48122 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbgK3JC2 (ORCPT
+        id S1727375AbgK3JE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726629AbgK3JEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:02:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606726861;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xiPvp6x0gf1L8/yQBHxAgSJCq1BiNj+2S6D9QL93hd0=;
-        b=Whb/mUgPFZPfQU/S18NWZZInYqE+cl/VUwy/NN9HmkRIAKNR2U0eEZdmvl/gmHIXY/r9eC
-        8ChzTAZlnX+ffMCIMwTRobeuxCXAN78b7FyIpHD6rLnIUgq9qwFPaYmEMzbiwEdCHrq9HM
-        4ok9b5sANI5bs+7hfHNQU5tScPm80Vs=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-e2VpQ-sONAqTPZY_3tGl-g-1; Mon, 30 Nov 2020 04:00:57 -0500
-X-MC-Unique: e2VpQ-sONAqTPZY_3tGl-g-1
-Received: by mail-wm1-f71.google.com with SMTP id u123so4127474wmu.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:00:56 -0800 (PST)
+        Mon, 30 Nov 2020 04:04:25 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05FAC0613CF;
+        Mon, 30 Nov 2020 01:03:44 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id k65so10702304ybk.5;
+        Mon, 30 Nov 2020 01:03:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=+2ZRUyIjSZgEt9jrdh2AvSfUjnbTRrg7lUQuyst/vJU=;
+        b=kNDxG8ug0FrzPr6xyuTvBrlFGslARPWOIXfDSC2LECGMlAYZba6VjXMSoAJoDUWx0t
+         KvFcSNL6TQ3O7NjU9+A93NuzTli6K3mNbhlTAufspUOXoDABbJmtVWerTgsfHM0y+Vdx
+         TETdMIxDuwgT+TmECGeApk8t29prFoDjFMFlBkqpvW2+OzGerRNsWKWzpT3xc5/XIf1B
+         XxbUsxUpIeGV9X4K0L/Friqk4LA2B6dOeDbvvPVJJQfwyDaRG6eP703uvN0bU9iI2eca
+         H+NK7+cY2MahY+smxi7lk7yVbKm9dw7J2sdZlMIDMNzqx6ORnqQrp71MrGg6HVEib17w
+         vxTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xiPvp6x0gf1L8/yQBHxAgSJCq1BiNj+2S6D9QL93hd0=;
-        b=otlcraVossi2cOBlIkiYtI0cEq3U83rQGBJ1MOM21azPP+Zfun6HJYjLhd7QhaVFiS
-         nVH7UL1oVxmAWtBh9o0tG7hNbVMaiE7Qad4YNTYfwDrYDWOSP2vq4mrtSmvJtGAH8h6G
-         xckwLdxrJo0ROzjSmmDuOB3WaPxjsTfxK+w6FmazsThqu4hO+Q1odPPr8MFagfK0C/7n
-         VGtvEAjQEoiWnhJnFsQqZdqBV3r8R6W1CU/WOmDN3xUlH98bs0/am3aBGMZVDS7ETL2W
-         XzF8emP96pNM+vL8HzAk5h/YI/qQqjKudhn+thaw1mXkW7mDRuXdSo1fozePZHJ1UF8w
-         xi0A==
-X-Gm-Message-State: AOAM5334STyAFn5cQfzWOTSKSnaD/OXCrhCAj9CVXPeZS/9BNOxifMyH
-        XpSRoMcOKivwBwv6dOibaaJC76pusZwBByk9myIJAE1ggCOJoWgmRYPWJTFSVYyatTiV+GYdIY3
-        IUCCj65Bq/OqlUgnE6v/SE9km
-X-Received: by 2002:adf:dd0e:: with SMTP id a14mr26864305wrm.36.1606726855413;
-        Mon, 30 Nov 2020 01:00:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwM4Rcm5MkqH5pqPqXkkHFFYNovJ7rq0TY5MZ8/Ba8lx8HQAvuZuFy84/IfK1fWYLf7ESXbkQ==
-X-Received: by 2002:adf:dd0e:: with SMTP id a14mr26864285wrm.36.1606726855207;
-        Mon, 30 Nov 2020 01:00:55 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id q16sm28072755wrn.13.2020.11.30.01.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 01:00:54 -0800 (PST)
-Date:   Mon, 30 Nov 2020 04:00:51 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com
-Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
-Message-ID: <20201130035147-mutt-send-email-mst@kernel.org>
-References: <20201129064351.63618-1-elic@nvidia.com>
- <20201129150505-mutt-send-email-mst@kernel.org>
- <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=+2ZRUyIjSZgEt9jrdh2AvSfUjnbTRrg7lUQuyst/vJU=;
+        b=A95LmN+rYx2I3Rp1/0Z5GMVwSM3o+tnkPWV5Yt7/kXf0y/n1VEVSC7BkZ6RNdGAFrE
+         JyI7YUaNz0bUyBVPq2pxswmByqkSyrX0TxuOeQvejoFBmoRNIgKUvp8sB+KjGPUbrs+e
+         lJr6y6Bg2EYrY8WNQjceavUJJGPZogfQWONRlC5GmugJ9hSa/ZdHxPTpfrDu9VcIC1FN
+         Yi0Xb1uw549Lwu47ROLrQNNaOjhqQeCShNXw5OPADz3xMs/ioSLZjTsXJ5T6yP8BRO8/
+         krtSDw9ww3DnCS0yxVW/xyFXqWcEYY8dklcNaGDxA5W7JqY5JRoee2JgiBJvRH5XP7S3
+         GRNQ==
+X-Gm-Message-State: AOAM5304x3z9sXa5+xHrAsyShJkZhBujzNsrxvnTLumH/1xmbfakaCtS
+        zuqSKIl3+A6SuT+YSpKTucyyJ7QzKi7Lcu220a4=
+X-Google-Smtp-Source: ABdhPJzwXVVu1TaFVSyPXmmUoH5/53lLiX+2hkppSUADqrzNcbDlp1CM7kkS+zm8sADITtvhKyCb5TdinZSOxRAQjkw=
+X-Received: by 2002:a25:848e:: with SMTP id v14mr25950548ybk.153.1606727023979;
+ Mon, 30 Nov 2020 01:03:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx>
+Received: by 2002:a05:7110:63b6:b029:2b:7e30:9bac with HTTP; Mon, 30 Nov 2020
+ 01:03:43 -0800 (PST)
+In-Reply-To: <fc2e095f-d417-1547-4075-9ece1aeaaf4d@arm.com>
+References: <1606466112-31584-1-git-send-email-gao.yunxiao6@gmail.com>
+ <724ddf78-483c-2cf3-441c-4885af8425a9@arm.com> <1af5220c-f598-58f4-488e-fdd505477ed5@linaro.org>
+ <fc2e095f-d417-1547-4075-9ece1aeaaf4d@arm.com>
+From:   gao yunxiao <gao.yunxiao6@gmail.com>
+Date:   Mon, 30 Nov 2020 17:03:43 +0800
+Message-ID: <CANO_MS+n6CTom-o7Hs4dKtPf-2uih5R7_8BnU_b4Jv8g1a5dkg@mail.gmail.com>
+Subject: Re: [RFC 1/2] dt-bindings: thermal: sprd: Add virtual thermal documentation
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com,
+        amitk@kernel.org, robh+dt@kernel.org, javi.merino@kernel.org,
+        linux-pm@vger.kernel.org, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        "jeson.gao" <jeson.gao@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen wrote:
-> On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wrote:
-> > On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
-> > > We should not try to use the VF MAC address as that is used by the
-> > > regular (e.g. mlx5_core) NIC implementation. Instead, use a random
-> > > generated MAC address.
-> > > 
-> > > Suggested by: Cindy Lu <lulu@redhat.com>
-> > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > 
-> > I didn't realise it's possible to use VF in two ways
-> > with and without vdpa.
-> 
-> Using a VF you can create quite a few resources, e.g. send queues
-> recieve queues, virtio_net queues etc. So you can possibly create
-> several instances of vdpa net devices and nic net devices.
-> 
-> > Could you include a bit more description on the failure
-> > mode?
-> 
-> Well, using the MAC address of the nic vport is wrong since that is the
-> MAC of the regular NIC implementation of mlx5_core.
+Hi Daniel
 
-Right but ATM it doesn't coexist with vdpa so what's the problem?
+Thank you for your the new information
 
-> > Is switching to a random mac for such an unusual
-> > configuration really justified?
-> 
-> Since I can't use the NIC's MAC address, I have two options:
-> 1. To get the MAC address as was chosen by the user administering the
->    NIC. This should invoke the set_config callback. Unfortunately this
->    is not implemented yet.
-> 
-> 2. Use a random MAC address. This is OK since if (1) is implemented it
->    can always override this random configuration.
-> 
-> > It looks like changing a MAC could break some guests,
-> > can it not?
-> >
-> 
-> No, it will not. The current version of mlx5 VDPA does not allow regular
-> NIC driver and VDPA to co-exist. I have patches ready that enable that
-> from steering point of view. I will post them here once other patches on
-> which they depend will be merged.
-> 
-> https://patchwork.ozlabs.org/project/netdev/patch/20201120230339.651609-12-saeedm@nvidia.com/
+I have a question trouble to you
+We should choose which per-core thermal zone as the IPA's input
+reference temperature in the current kernel version? thank you.
 
-Could you be more explicit on the following points:
-- which configuration is broken ATM (as in, two device have identical
-  macs? any other issues)?
-- why won't device MAC change from guest point of view?
-
-
-> > > ---
-> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
-> > >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > index 1fa6fcac8299..80d06d958b8b 100644
-> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > @@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
-> > >  	if (err)
-> > >  		goto err_mtu;
-> > >  
-> > > -	err = mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
-> > > -	if (err)
-> > > -		goto err_mtu;
-> > > -
-> > > +	eth_random_addr(config->mac);
-> > >  	mvdev->vdev.dma_dev = mdev->device;
-> > >  	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
-> > >  	if (err)
-> > > -- 
-> > > 2.26.2
-> > 
-
+On 27/11/2020, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+>
+> On 11/27/20 1:26 PM, Daniel Lezcano wrote:
+>>
+>> Hi Lukasz,
+>>
+>> On 27/11/2020 10:27, Lukasz Luba wrote:
+>>>
+>>>
+>>> On 11/27/20 8:35 AM, gao.yunxiao6@gmail.com wrote:
+>>>> From: "jeson.gao" <jeson.gao@unisoc.com>
+>>>>
+>>>> virtual thermal node definition description in dts file
+>>>>
+>>>> Signed-off-by: jeson.gao <jeson.gao@unisoc.com>
+>>>> ---
+>>
+>> [ ... ]
+>>
+>>> It's coming back. There were attempts to solve this problem.
+>>> Javi tried to solved this using hierarchical thermal zones [1].
+>>> It was even agreed (IIRC during LPC) but couldn't continue. Then Eduardo
+>>> was going to continue this (last message at [3]). Unfortunately,
+>>> development stopped.
+>>>
+>>> I also have out-of-tree similar implementation for my Odroid-xu4,
+>>> which does no have an 'SoC' sensor, but have CPU sensors and needs
+>>> some aggregation function to get temperature.
+>>>
+>>> I can pick up Javi's patches and continue 'hierarchical thermal zones'
+>>> approach.
+>>>
+>>> Javi, Daniel, Rui what do you think?
+>>
+>> I already worked on the hierarchical thermal zones and my opinion is
+>> that fits not really well.
+>>
+>> We want to define a new feature because the thermal framework is built
+>> on the 1:1 relationship between a governor and a thermal zone.
+>>
+>> Practically speaking, we want to mitigate two thermal zones from one
+>> governor, especially here the IPA governor.
+>>
+>> The DTPM framework is being implemented to solve that by providing an
+>> automatic power rebalancing between the power manageable capable devices.
+>>
+>> In our case, the IPA would stick on the 'sustainable-power' resulting on
+>> the aggregation of the two performance domains and set the power limit
+>> on the parent node. The automatic power rebalancing will ensure maximum
+>> throughput between the two performance domains instead of capping the
+>> whole.
+>>
+>>
+>
+> Make sense. Thank you for sharing valuable opinion.
+>
+> Regards,
+> Lukasz
+>
