@@ -2,55 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161C22C82C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D242C82C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387394AbgK3LCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:02:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38414 "EHLO mail.kernel.org"
+        id S1726325AbgK3LCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:02:53 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:43677 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726955AbgK3LCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:02:12 -0500
-Received: from localhost (unknown [122.171.214.243])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2387446AbgK3LCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 06:02:51 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606734150; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=IGL15AAZU+PGlm+vPv6IhRcx7pud7hMHBeIih118egs=; b=sgLd2dq3LWyuYBSzNliUrLxL9/40zxRTv9S1dkNmjDJ/XTK0dpKi1tC0pMGN8Cjqxelmf4wg
+ Mi71jQzYKGCl/427IQUfU1SFNR99CvFTJFetGFBKz8ATHLhZpI85H5I44h6+rOLLO0pDhzrS
+ xLmu9d3AvFjqKpMz4+uvqFwXuhQ=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fc4d1261b731a5d9c8e3e3d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 11:01:58
+ GMT
+Sender: kathirav=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 21D8FC43462; Mon, 30 Nov 2020 11:01:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E437207F7;
-        Mon, 30 Nov 2020 11:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606734092;
-        bh=u2ceb1FjNxP1Dx10zTQidfx6V8dt7vhYLK26IK2uKBg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jesh5qnt6HKNiA2NUpIIQdXrXalDtPsfJE3eWCGpv0ZLMI07P0YSf/2S6slY17SPb
-         4TXa+2nElExsghiE2/nIwWG6YKwxL5lQSKeAiu3/JcZRI+FyBGVaOXw+buTUf9BoGN
-         iMjthMcbzHZsHy+70wAI1BhhHBBzJy94bMJzpL6w=
-Date:   Mon, 30 Nov 2020 16:31:13 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     kishon@ti.com, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: Re: [PATCH v3] phy: amlogic: phy-meson-gxl-usb2: keep ID pull-up
- even in Host mode
-Message-ID: <20201130110113.GR8403@vkoul-mobl>
-References: <20201120153855.3920757-1-narmstrong@baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120153855.3920757-1-narmstrong@baylibre.com>
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 54AACC43460;
+        Mon, 30 Nov 2020 11:01:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 54AACC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kathirav@codeaurora.org
+From:   Kathiravan T <kathirav@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kathirav@codeaurora.org
+Subject: [PATCH V3 0/1] Add QPIC NAND support for IPQ6018
+Date:   Mon, 30 Nov 2020 16:31:44 +0530
+Message-Id: <1606734105-12414-1-git-send-email-kathirav@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-11-20, 16:38, Neil Armstrong wrote:
-> In order to keep OTG ID detection even when in Host mode, the ID line of
-> the PHY (if the current phy is an OTG one) pull-up should be kept
-> enable in both modes.
-> 
-> This fixes OTG switch on GXL, GXM & AXG platforms, otherwise once switched
-> to Host, the ID detection doesn't work anymore to switch back to Device.
+IPQ6018 has the QPIC NAND controller of version 1.5.0, which
+uses the BAM DMA. Add support for the QPIC BAM, QPIC NAND and
+enable the same in the board DTS file.
 
-Applied, thanks
+[V3]:
+	- Rebased on v5.10-rc6
+	- Renamed the qpic bam dma node name from 'dma' to 'dma-controller'
+	- Update the device register space to 64bit format
 
+	Above mentioned last two points based on the latest changes in the QCOM tree.
+
+[V2]:
+	- Rebased on v5.10-rc2
+	- Replaced "ok" with "okay" for status property
+	- Dropped the MTD and dt-bindings patch as they are already picked in MTD tree
+
+Kathiravan T (1):
+  arm64: dts: ipq6018: Add the QPIC peripheral nodes
+
+ arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts | 16 ++++++++
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi        | 41 ++++++++++++++++++++
+ 2 files changed, 57 insertions(+)
+
+
+base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
 -- 
-~Vinod
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
