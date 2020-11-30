@@ -2,76 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1A12C83A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6CD2C83AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728981AbgK3MBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:01:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725976AbgK3MBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:01:08 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 179B52073C;
-        Mon, 30 Nov 2020 12:00:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606737627;
-        bh=HBOIO8GaCg6xuTGjJaH9CwIBSnKPzHwxyZUymO54yi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yzM9f+2t0xm2UaSKWFUKTi0QtGsVMKXqHXBS1Z7u81tBEmBY8l8f7Hsa1i2mw4qyd
-         fvd85qZ6OMwkW1qqkN71XY+4V/XfXkDnI1y+duNB0L2COvyVv3mGOw0HVIw6ROw3sk
-         6KhUBLTX11sbbhPwamUk+q9jexDlZ968PrKAzHsg=
-Date:   Mon, 30 Nov 2020 12:00:21 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v7 17/17] arm64: allow LTO_CLANG and THINLTO to be
- selected
-Message-ID: <20201130120021.GE24563@willie-the-truck>
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <20201118220731.925424-18-samitolvanen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118220731.925424-18-samitolvanen@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729138AbgK3MBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:01:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgK3MBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 07:01:15 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076EDC0613CF;
+        Mon, 30 Nov 2020 04:00:50 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id 131so10237352pfb.9;
+        Mon, 30 Nov 2020 04:00:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=lj9ZT1pXkce5/+KagnCXuquk6qct2qT6C8O4RgX4/Xg=;
+        b=IZ+kgCy7F2PIHzD82xdfzWESDTLBKVDit3oepMt6or94hwmauw9zsHoPuL0ec3B4AE
+         BiAfnxcDTQAzGXrHoFwTkx8xGQu1c25Lq48PslFQj1v6BzpjV6NdMjtsYggpLKEn2f7Q
+         HC78lhJ+6KD9CZ+39ufaMy8VTUP5Z9awImFifRP4Pcf+Hz3G9YFkGpG1iK1aIY1YP16L
+         9+dPpBP0wPwazWDrZ7+ZBHVwYxJzUi6UdGU22Eb3mfGbu3xtD1WwLp7tPfBd5NvLMIZG
+         s045nSacOV5F3DJ3oo1cBlD8UUjHAPlfjpH0wv9plcdeEXcpk76/jhcyoNA8jICUlo/w
+         eyAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lj9ZT1pXkce5/+KagnCXuquk6qct2qT6C8O4RgX4/Xg=;
+        b=RBzvJDiVMgNxhrjq6e1zeTRpxwMMP5EHRHwCYcffDMMgLt8ft3SzeTcmjizkBhISVQ
+         QxNB0y+6Lbl94aq9jCqiCuIs/9WmyFwD4u23svBnr7CscFxu3yE8lg16SGDV3iRo9YQX
+         9oYx7zpYigbLdWuukDCzqu3hRT8jBV6Dx/YstbuVgPwk6Qh7NM9t6EVnVM+X49H+r/xX
+         VW2JWqCwWfnWGjR3a5X/h4ojSW2+Uem10jroMqCXLNWx/cH0tGqsYZygwGRoIu9VJqMZ
+         qpPr0dCNd8pnYxjKYLTpE2ZqxyVTOW0Ipjw7hAftQ8r9oL5PZxmAdIXiUJ0Y1u0xqwc9
+         quSw==
+X-Gm-Message-State: AOAM533CuoUpjiTmxxcoOu6zTdfj8k/GkkTewTIDUavUAH6i7WbagDpU
+        /8S8XvZAcO/bPw3O2q6Fw99PZwJR1tY=
+X-Google-Smtp-Source: ABdhPJx3saLPTWk9JX5niWrD8QDAOqBEjZC/gsHloavwuqIlpVFqtG26bcVWa0MjLpyJXoXddoalpQ==
+X-Received: by 2002:a05:6a00:13a3:b029:18b:d5d2:196 with SMTP id t35-20020a056a0013a3b029018bd5d20196mr18635748pfg.62.1606737649541;
+        Mon, 30 Nov 2020 04:00:49 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id s17sm1802737pge.37.2020.11.30.04.00.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 04:00:48 -0800 (PST)
+From:   Bongsu jeon <bongsu.jeon2@gmail.com>
+X-Google-Original-From: Bongsu jeon
+To:     krzk@kernel.org
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH v2 net-next 1/4] dt-bindings: net: nfc: s3fwrn5: Support a UART interface
+Date:   Mon, 30 Nov 2020 21:00:27 +0900
+Message-Id: <1606737627-29485-1-git-send-email-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 02:07:31PM -0800, Sami Tolvanen wrote:
-> Allow CONFIG_LTO_CLANG and CONFIG_THINLTO to be enabled.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/arm64/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index c7f07978f5b6..56bd83a764f4 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -73,6 +73,8 @@ config ARM64
->  	select ARCH_USE_SYM_ANNOTATIONS
->  	select ARCH_SUPPORTS_MEMORY_FAILURE
->  	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
-> +	select ARCH_SUPPORTS_LTO_CLANG
-> +	select ARCH_SUPPORTS_THINLTO
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-Acked-by: Will Deacon <will@kernel.org>
+Since S3FWRN82 NFC Chip, The UART interface can be used.
+S3FWRN82 supports I2C and UART interface.
 
-Will
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+---
+
+Changes in v2:
+ -change the compatible name.
+ -change the const to enum for compatible.
+ -change the node name to nfc.
+
+ .../bindings/net/nfc/samsung,s3fwrn5.yaml          | 32 ++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+index cb0b8a5..481bbcc 100644
+--- a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
++++ b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+@@ -12,7 +12,10 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: samsung,s3fwrn5-i2c
++    oneOf:
++      - enum:
++        - samsung,s3fwrn5-i2c
++        - samsung,s3fwrn82
+ 
+   en-gpios:
+     maxItems: 1
+@@ -47,10 +50,19 @@ additionalProperties: false
+ required:
+   - compatible
+   - en-gpios
+-  - interrupts
+-  - reg
+   - wake-gpios
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: samsung,s3fwrn5-i2c
++    then:
++      required:
++        - interrupts
++        - reg
++
+ examples:
+   - |
+     #include <dt-bindings/gpio/gpio.h>
+@@ -71,3 +83,17 @@ examples:
+             wake-gpios = <&gpj0 2 GPIO_ACTIVE_HIGH>;
+         };
+     };
++  # UART example on Raspberry Pi
++  - |
++    uart0 {
++        status = "okay";
++
++        nfc {
++            compatible = "samsung,s3fwrn82";
++
++            en-gpios = <&gpio 20 0>;
++            wake-gpios = <&gpio 16 0>;
++
++            status = "okay";
++        };
++    };
+-- 
+1.9.1
+
