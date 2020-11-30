@@ -2,129 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B578D2C86B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F33922C86AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgK3O3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:29:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        id S1727243AbgK3O2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727359AbgK3O3A (ORCPT
+        with ESMTP id S1726265AbgK3O2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:29:00 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFF6C061A04
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:28:16 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id v14so13067238wml.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:28:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YC+CHaCok09rYh/O6VeZFt906CZ5WncrdXBXZsu9Deg=;
-        b=x0oInSN5K0DGybItSGSqgocXAKsO59Tv43WwTYl2mFz+HUgmEdGSZx8FctCdW+C92C
-         pJIp3ryu/Wyy5XmVBOFcLcHDfIdsGnINxK9zcwNSkDqqK15ggpG1N3ERtg7aymUFEmr6
-         HudBQPGsbVNYbktGhwOw7/KJVsD6drHpctT83bbLkycNjPyLykFfBdCeX6W1eNCa1tLL
-         ZQnwg3UucEj7vpp1Fi6bTcoMQWCVoASU7k37a1pfiUY9BMyHeQ6dfO5vY0Kg0sDENuu0
-         5EtRvVWmlufM6tOqzAwIRFVL092QR7sM3OGY6p/IMYh7t+INxdKE8UosxJw5SKvS0jIW
-         XYHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YC+CHaCok09rYh/O6VeZFt906CZ5WncrdXBXZsu9Deg=;
-        b=cey8PvC1qRj9F58lc6C1zjpk82ysSyeeBPuB8jd8WbKTvosw7n+XW2eBFYdW4isTsk
-         coR7IwxfYfFxiEAleZNeLA19/mAoUf/YfLyoUkbNjJT2QNDTT/X3XDMJmbPx40M5QukQ
-         8Q15jSlow8oOh8P5+3Lro1V9KYDPj8YXhUKWQh5UWliib8l1rbBvkvC0fJk/nQgMxe9e
-         PpRVMZ+7KsNx7mldA/hFZ83E7XSlUeHZpnSTD+q7LOSqjJ7OyYX29L6d9q0PZFTJ9spt
-         MbnjWhu8EBMf7QQGiX5TrfiZs5qzS4OzIsDuCgO5r2R/WsyYM/SYcxEcFyuMJdEBjs1j
-         B6JQ==
-X-Gm-Message-State: AOAM531iDGe5M4LBRHi5iHCXmTwkZUL85Y7smmbCh7qctpV30vIMer3M
-        Vp7J5NMYYR/FIfPIklJlTHwJNw==
-X-Google-Smtp-Source: ABdhPJyQFIZ33gaXyeO/XB+ll3rZvsk+O2uAhu3h1EtSn3BIE/hzSR7hvSSXXS+PqnDmhPSd+Od8uw==
-X-Received: by 2002:a1c:b107:: with SMTP id a7mr23490658wmf.121.1606746492513;
-        Mon, 30 Nov 2020 06:28:12 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id p19sm29446044wrg.18.2020.11.30.06.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 06:28:11 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATH v3 2/3] iio: adc: xilinx: use devm_krealloc() instead of kfree() + kcalloc()
-Date:   Mon, 30 Nov 2020 15:27:58 +0100
-Message-Id: <20201130142759.28216-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201130142759.28216-1-brgl@bgdev.pl>
-References: <20201130142759.28216-1-brgl@bgdev.pl>
+        Mon, 30 Nov 2020 09:28:49 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E5BC0613D3;
+        Mon, 30 Nov 2020 06:28:09 -0800 (PST)
+Date:   Mon, 30 Nov 2020 15:28:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606746487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JhhjWTvHpqu/MrU5zt4R7Kl4BBTN/cdgdM4DvMarTbg=;
+        b=3dvLW58jDbCkGYq836uWzvEPdYeLu0jH6E5hk7RHShRVZ+7SkvPcTilFkwvJbu2BaLTuMp
+        Pr+7YydW9/vzPIgCKggYBt3FxJEeIpXUKVjo0U+ipmOSNO9ynEgmps5L4HVualzv/Y2q9W
+        67eQcxAKdgzDIGAJLkIY+JDj+QgXAOoIEyaLxb3kGLCbW3C/AkGizMonJmJW3QvAxxLDoP
+        YaXesoUGXuFlnAjT87gG99b3uqrJ1G6bwDkLpT+kVD+/LOsdJHxMwCL7cvX6c0yPxoWsf4
+        XRsu0nFrrdKRfo7djQEzo2pftCFMmRf/g0qG0yHnJpMvgLyDzyoJ77UWRKR93g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606746487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JhhjWTvHpqu/MrU5zt4R7Kl4BBTN/cdgdM4DvMarTbg=;
+        b=y/LNifvj+o9uDsEcVQl+oFz0n0bGiYJRO2oE3oIG0FXzRZrkVMZLyBO8qYjNGl9QPWw7W9
+        UTVM58CIn1QKsRDg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Subject: Re: scheduling while atomic in z3fold
+Message-ID: <20201130142805.ah46i3gfazcdlujj@linutronix.de>
+References: <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
+ <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
+ <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
+ <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
+ <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
+ <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+ <20201129112922.db53kmtpu76xxukj@spock.localdomain>
+ <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+ <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
+ <20201130135322.zi7moa57ajbdvfpy@spock.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201130135322.zi7moa57ajbdvfpy@spock.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On 2020-11-30 14:53:22 [+0100], Oleksandr Natalenko wrote:
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index 78a20f7b00f2c..b24f761b9241c 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -394,7 +394,9 @@ struct zswap_comp {
+> >  	u8 *dstmem;
+> >  };
+> >  
+> > -static DEFINE_PER_CPU(struct zswap_comp, zswap_comp);
+> > +static DEFINE_PER_CPU(struct zswap_comp, zswap_comp) = {
+> > +	.lock = INIT_LOCAL_LOCK(lock),
+> 
+> Is it a residue?
 
-We now have devm_krealloc() in the kernel Use it indstead of calling
-kfree() and kcalloc() separately.
+It as been added on purpose.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/iio/adc/xilinx-xadc-core.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/iio/adc/xilinx-xadc-core.c b/drivers/iio/adc/xilinx-xadc-core.c
-index 8494eb424b33..6f89a97bb127 100644
---- a/drivers/iio/adc/xilinx-xadc-core.c
-+++ b/drivers/iio/adc/xilinx-xadc-core.c
-@@ -19,6 +19,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/overflow.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/sysfs.h>
-@@ -585,15 +586,22 @@ static int xadc_update_scan_mode(struct iio_dev *indio_dev,
- 	const unsigned long *mask)
- {
- 	struct xadc *xadc = iio_priv(indio_dev);
--	unsigned int n;
-+	size_t new_size, n;
-+	void *data;
- 
- 	n = bitmap_weight(mask, indio_dev->masklength);
- 
--	kfree(xadc->data);
--	xadc->data = kcalloc(n, sizeof(*xadc->data), GFP_KERNEL);
--	if (!xadc->data)
-+	if (check_mul_overflow(n, sizeof(*xadc->data), &new_size))
-+		return -ENOMEM;
-+
-+	data = devm_krealloc(indio_dev->dev.parent, xadc->data,
-+			     new_size, GFP_KERNEL);
-+	if (!data)
- 		return -ENOMEM;
- 
-+	memset(data, 0, new_size);
-+	xadc->data = data;
-+
- 	return 0;
- }
- 
-@@ -1372,7 +1380,6 @@ static int xadc_remove(struct platform_device *pdev)
- 	free_irq(xadc->irq, indio_dev);
- 	cancel_delayed_work_sync(&xadc->zynq_unmask_work);
- 	clk_disable_unprepare(xadc->clk);
--	kfree(xadc->data);
- 
- 	return 0;
- }
--- 
-2.29.1
-
+Sebastian
