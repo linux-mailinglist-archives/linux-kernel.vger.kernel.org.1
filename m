@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752F42C8757
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCC32C875A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgK3PBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:01:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727001AbgK3PBl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:01:41 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FB5C0613D2;
-        Mon, 30 Nov 2020 07:01:01 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id r9so1494187pjl.5;
-        Mon, 30 Nov 2020 07:01:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fnosl3bdoEpn6KZdMia0NkyW51N5t/HDyZii5SlByRo=;
-        b=sTKdupZ7LQ2c7vdCI3T62xVeLTMZs1zjI66FTrsZD5Kx3fQYlENu/yrxp7kl8x4fL2
-         anGx5SnYbNzc/3qoBEfoc6Mqd7KPWN1jLFRxHEGNbkSL6NLDMFo6TbRJ+NaAP836mmxD
-         oJCmFDNVkkwFnUpNyuGPJkm0xJ7jQajt1Z0YP9/Bki3P1z7oPqrxBvRSul88ECzKwC9r
-         tuEg+1t/A8ElYhahjCDU9Iz3nxMgHf6cnn9GPkbBEpyixLd7tlnQ57DPzjEVhGmqz55w
-         VvwChVyyPpy2NzBXle39e4ixUN3iUoB+gh7CmTnONWPHu5U0/Akm1Fav3wqdt1ShrLnQ
-         skBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fnosl3bdoEpn6KZdMia0NkyW51N5t/HDyZii5SlByRo=;
-        b=iqeW2hD/F6sW0K6JLR4TkrGVIJmMgmPO1dd2ZyGfnKYZdHMcQadSrf8llfGaGMDwcD
-         PvfVjjsMULMOuhXmKdluWucSjHlYfMuvCvNW0jA02besa5FOnZn6MOwjFCW4tFLFGriL
-         myEXLm24Pdcpfk9DusJgYkCp7/KuBKmhThLyAz7Xwpw4dUZyLcvsejekkEZvS4eXEKvl
-         hdgyp3RlH4xdh1JUJAXoDM3RohPlX21Es7ylvi1ev62v3owAuzx18XO+5NpkYSSOT38c
-         X+hgvK0tCNh+fdBJezDSAzV3ZhgDwTd9VgRRph5ZeIMfy6w7QLSimu70QzpwRubpKeQt
-         fV4A==
-X-Gm-Message-State: AOAM530i50+TvNEpB//549qFfvaiW4iXF3Gg98EBS1RTfksDLLLurVHL
-        myPED+FbjdBlGvf0Dl/JTgg=
-X-Google-Smtp-Source: ABdhPJzPjgP6w9OXYy++kPS2cEagt1D72A4JkKBgBgnQ8Mqf1j/IoW6H1JfT5OFVf3oy5Ts8BGbAIA==
-X-Received: by 2002:a17:90a:d307:: with SMTP id p7mr3665258pju.214.1606748461103;
-        Mon, 30 Nov 2020 07:01:01 -0800 (PST)
-Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id i13sm16765339pfo.139.2020.11.30.07.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 07:00:59 -0800 (PST)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv4] media: vb2: set cache sync hints when init buffers
-Date:   Tue,  1 Dec 2020 00:00:54 +0900
-Message-Id: <20201130150054.688003-1-sergey.senozhatsky@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727821AbgK3PD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:03:28 -0500
+Received: from mout.gmx.net ([212.227.15.19]:47151 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725899AbgK3PD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:03:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606748473;
+        bh=h5Xcjdxty0RDqjnuXY7w+TO7/Igyokq8MDI/tlnDKOc=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=HiZwWezbyPPtkIZjYVP26/gfM/XGZROwXdtVKmrz7Lw+fbLYBSbYm+hhqWJB5Tz0l
+         dCcKkg6aPB0uI5/BIDOQnQHjpFTNb6FSYbGrRqmIgRg1oU/zpsLl5VordqAwV/3rxQ
+         Pu5EM7+Su34g0UAP/uXELCKwhO/27LDhA9vG8AlI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.151.20]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MsHns-1jvuD52S1i-00tmua; Mon, 30
+ Nov 2020 16:01:13 +0100
+Message-ID: <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
+Subject: Re: scheduling while atomic in z3fold
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Date:   Mon, 30 Nov 2020 16:01:11 +0100
+In-Reply-To: <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
+References: <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
+         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
+         <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
+         <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
+         <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
+         <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+         <20201129112922.db53kmtpu76xxukj@spock.localdomain>
+         <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+         <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
+         <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
+         <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:doTPtowmIutSdqzABFuzY91S4epubBxrrlFCeAWfhn4H+RQLEeq
+ ni7mvzJjlOBu2nOVcXAgvsyU6P5UW0zK71SVdqHwfPIsq8/vCpNg5OM5sf1V+/Xellw4XiS
+ KDDUVhFgGp4TArY5yOyFpmFdmqsdXa36qwTmU7x7agBvYUR9SLUxhiskNGOGVZZeOwP9OrU
+ B/fCVgLKwaJAdd5qLlt/w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XH+FG8BWMj0=:wrmCJFtG4HyHn+yz0TfDBd
+ vGP8Hh22nk+RQEItNXAVxa+eleC861gGcXneGA31OQt7r+ePL6ysivi9CvW28Ts7ZmDpc1A9W
+ V4mQ4Lc6X03zLKVRQikPCfWFQWVbhOXeXZ0yU62bZNtaerK1IZIXnGEKFQMtw9JtU3B2e7gcA
+ RL7mKmCHr0oVaj+R4YEpqGkTFy8B8U9lCIDWSOcWOZQ3nFKMARUMsh8Z0+yf+j8nDBvZ8/huG
+ FEeo0DlO7y1PGwe7VXJX49F1TaHXCLBeiy9yDuVBFRwvJOCGl3MiBFiG5Fx8Wg4jSDxUdcWMS
+ 1unLEAaLvg8BmCrB7ycsWcuQLhF05eZ3biSmA9ptVrEKOLaaLttjyaIYEb6xVvo7p4yWxxn1p
+ GzafOQxIQ/LGGDFR6NhR7UBBR/VA0rGTu6Bb8luAB28qZa+FQO/p1apfwWn0qqb/d88kND9W3
+ zYHZiburOTkdUkpWqQBAwaoFlKdA09JDQsk/nLBPyH34QIDIWkx7F3dOYCcO31OF/gOD+nfh8
+ Yr57x8spw/u2CLAwackp3u/PAXyynWUlXLD0cF2SbYqbXTLQH44wvnnLHCFyeIH4T5ko3CuVo
+ 9m9sFb+m5LqDzJ8CG3veI4D19s8S4jYBG9Zt7xtdz4L5CPJbvAj1F99JFoSHEeIF06PAXcCD4
+ U+ZxEShJUdsDfaIG47SsR0kt3np6tS9YwAVTx1wDv6q9u9QCrAt74px6EYmTPE7LSkREz9Ujm
+ Mkd6B3rx2rqMLLwSAweKqtTV0IJwO0o3fqE7iVDslgkwBmzQZ1SYbXrW/T0OPzNP/JwkKR5qJ
+ YjEF+m9+K7fRG1MHs2+H472uL9CTtRi3BYmbWX6KUqdWD3wTLXhaq1JBsZ9NuWE0y+jPLhEwW
+ /ZGvx/VPkq3r08Ed9h/g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to set ->need_cache_sync_on_prepare and
-->need_cache_sync_on_finish when we initialize vb2 buffer.
+On Mon, 2020-11-30 at 15:52 +0100, Sebastian Andrzej Siewior wrote:
+> How do you test this? I triggered a few oom-killer and I have here git
+> gc running for a few hours now=E2=80=A6 Everything is fine.
 
-Currently these flags are set/adjusted only in V4L2's
-vb2_queue_or_prepare_buf(), which means that for the code
-paths that don't use V4L2 vb2 will always tell videobuf2
-core to skip ->prepare() and ->finish() cache syncs/flushes.
-Fix this by setting cache sync hints for new buffers; except
-VB2_MEMORY_DMABUF buffers, for which DMA exporter syncs
-caches.
+In an LTP install, ./runltp -f mm.  Shortly after box starts swapping
+insanely, it explodes quite reliably here with either z3fold or
+zsmalloc.. but not with zbud.
 
-Fixes: f5f5fa73fbfb ("media: videobuf2: handle V4L2 buffer cache flags")
-Reported-by: Tomasz Figa <tfiga@chromium.org>
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- drivers/media/common/videobuf2/videobuf2-core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 4eab6d81cce1..89e38392509c 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -414,6 +414,17 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
- 		vb->index = q->num_buffers + buffer;
- 		vb->type = q->type;
- 		vb->memory = memory;
-+		/*
-+		 * We need to set these flags here so that the videobuf2 core
-+		 * will call ->prepare()/->finish() cache sync/flush on vb2
-+		 * buffers when appropriate. However, we can avoid explicit
-+		 * ->prepare() and ->finish() cache sync for DMABUF buffers,
-+		 * because DMA exporter takes care of it.
-+		 */
-+		if (q->memory != VB2_MEMORY_DMABUF) {
-+			vb->need_cache_sync_on_prepare = 1;
-+			vb->need_cache_sync_on_finish = 1;
-+		}
- 		for (plane = 0; plane < num_planes; ++plane) {
- 			vb->planes[plane].length = plane_sizes[plane];
- 			vb->planes[plane].min_length = plane_sizes[plane];
--- 
-2.29.2
+	-Mike
 
