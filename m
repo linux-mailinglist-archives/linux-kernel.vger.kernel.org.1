@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858B82C8A51
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB252C8A59
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729061AbgK3RBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:01:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729002AbgK3RBK (ORCPT
+        id S1729080AbgK3RCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:02:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32549 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728837AbgK3RCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:01:10 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0513C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:00:30 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id h19so11997857otr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:00:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qYtC9M1bspDFOXZgZ8xo6XSnP8FNfyQGj+HdlUXi5ic=;
-        b=IABMGf9WrjddPqSaFG9QbmVHsAaSw8qcauxtUQ6cXcIPXN8G1K2SuaUeoXePjSaZlm
-         DZkOPqSvBnkFT05ytEvshm1Jxd8nKMz/Ez1dV1XthOtZxQjV4dV5GyWkkny6nYQRhq9M
-         vhdH76yVp47kyxEgU1dTjgaFb7R02c82BQnZhfk569gGPu+zkQ7Z4f8EvtGo6pwjnNaZ
-         X1+mkdhXO+EHQkSna9r7pgd2X4fovP/Eg54MW3Af6BrhuVdxDlj/T84nEhF18P7w/ZJg
-         EMpeMlRl7CGf8rtocAhHpK0pA+kAJL5a/38YaSViWI0xRIGLiT5Q/9HTmAcWTg9rcS6R
-         gFaQ==
+        Mon, 30 Nov 2020 12:02:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606755687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VgFd89DHnuHQ3v4vDDMB2aGeZJsjGIrSQaYmVa9y5pY=;
+        b=VEp9D8pBF4sMTGq8N3MVIOPnAgvLA8NREGcTrV0Tew8f1dZ+vamoAwm2l6YhCgUa70VJKd
+        MC8mVEpUc6v19fzcqKX+siLYFhX+AylL7on3CWxvCbRraFNtFNr1ePT/shRYBSh9rvLekJ
+        frDhUrMTqhuusYoYSxWNeEEEw22O7dY=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-Znzk7FiHPgKyuxryIfCcPA-1; Mon, 30 Nov 2020 12:01:19 -0500
+X-MC-Unique: Znzk7FiHPgKyuxryIfCcPA-1
+Received: by mail-ed1-f70.google.com with SMTP id g13so606695eds.10
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:01:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qYtC9M1bspDFOXZgZ8xo6XSnP8FNfyQGj+HdlUXi5ic=;
-        b=kaIEQM5qGLkngH7mWbG8zNwkXtK6uMfQJOgf2hjpEOyfu9uvNLCGVBFVeW8AdLlHro
-         cuvf12BsZTfn5MmHd1LtlY677rThTr3xhW51KGSHoocj36KsJF2utAiFUJWHcJXEK+rt
-         vEY3FVPEcnZBAh2IEgmRKfrzvge3uYUdKnzx29whFuJ2seZ9zBmpxd+3/3FzRm32BLd6
-         xAITI3aKwFjl0UqNLMGPIz99wTIwYb1bK66mNvNmMqSj/bJ8Yg31+Qa2Ksmo1hbIQF9W
-         Z05Rp7Y6ic5Sr7typUzZAEBY5g/t36nn6weOMUjYlc0BWW1hKZTnHIBwr9RQMMdAdAjo
-         kgzg==
-X-Gm-Message-State: AOAM532gsf4hLAWIQ8qEW90HkFVjHAjHfsGf185hJXT0C3ApcGOB0g9q
-        PJSFWZtv/qLF2PfJ5d90ycPItA==
-X-Google-Smtp-Source: ABdhPJw6EST3+EemQHFgvmqWIHQ0jHq/4hXRRphea3qDzv6XB92yP5K5TLaNUluAYKEfpnhQoltreA==
-X-Received: by 2002:a9d:694c:: with SMTP id p12mr18481707oto.236.1606755629679;
-        Mon, 30 Nov 2020 09:00:29 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x131sm6373327oif.52.2020.11.30.09.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 09:00:28 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: c630: Fix pinctrl pins properties
-Date:   Mon, 30 Nov 2020 11:00:28 -0600
-Message-Id: <20201130170028.319798-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        bh=VgFd89DHnuHQ3v4vDDMB2aGeZJsjGIrSQaYmVa9y5pY=;
+        b=JlVNbs6jLC23u63nvov4650HbPY+lteQQYb5QODVbeMrw+0PlDPebB7s9bk+5nihOu
+         oEYGVQO7+y9cn/vTQa497d83Nz4sW7RNNcSh2X5e8UAeXdDnciDD8a9X+QkeyrBT6G4Y
+         sMCIrU8bg4fLlxSy0VHVc7CJpLgFyNDaW+TGlsO31XwKdO/cfTuvOJuT0a1eSyfy7QbD
+         XjMUJmToLYba4OL+b8yb3pvH7RUHdW3miruPIvfxQz8l6rLzi/I43gAGeLgGS6nalk9q
+         IGSFHOD6ppXs/sjzFCASRxg0ZnbmX4A7Su1TfbaOtrZ2uZMJ99QlP1gwrdxHxwSgTljf
+         bPvw==
+X-Gm-Message-State: AOAM530223I15OHnT96WFWhF4W1CVViO+LG7jkagEriUa6iIPX8ZRos0
+        53giQT1AckohDXSc07bC3ZO7AzLeiBmmlGBITJvG7JhyaVJce8agfLKdoDvm0E5CP5+2sqtaKOv
+        fQT2eRbE42GG0gdFLCabmz+Gv
+X-Received: by 2002:a50:9991:: with SMTP id m17mr8474529edb.48.1606755678217;
+        Mon, 30 Nov 2020 09:01:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzuh5JY/rp8mBQt2cCoqr5FsmGZwPNmCeuL6bdGW9SV9BsoqQFM1sgKQnAFQijgEJHRpPd3MQ==
+X-Received: by 2002:a50:9991:: with SMTP id m17mr8474488edb.48.1606755678013;
+        Mon, 30 Nov 2020 09:01:18 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id e3sm9022319ejq.96.2020.11.30.09.01.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 09:01:17 -0800 (PST)
+Subject: Re: [PATCH 1/2] KVM: x86: implement
+ KVM_SET_TSC_PRECISE/KVM_GET_TSC_PRECISE
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Oliver Upton <oupton@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20201130133559.233242-1-mlevitsk@redhat.com>
+ <20201130133559.233242-2-mlevitsk@redhat.com>
+ <38602ef4-7ecf-a5fd-6db9-db86e8e974e4@redhat.com>
+ <ee06976738dff35e387077ba73e6ab375963abbf.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <005aaf41-9376-d535-211f-9ff08e53bcc4@redhat.com>
+Date:   Mon, 30 Nov 2020 18:01:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ee06976738dff35e387077ba73e6ab375963abbf.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "pins" property takes an array of pin _names_, not pin numbers. Fix
-this.
+On 30/11/20 16:58, Maxim Levitsky wrote:
+>> This is mostly useful for userspace that doesn't disable the quirk, right?
+> Isn't this the opposite? If I understand the original proposal correctly,
+> the reason that we include the TSC_ADJUST in the new ioctl, is that
+> we would like to disable the special kvm behavior (that is disable the quirk),
+> which would mean that tsc will jump on regular host initiated TSC_ADJUST write.
+> 
+> To avoid this, userspace would set TSC_ADJUST through this new interface.
 
-Fixes: 44acee207844 ("arm64: dts: qcom: Add Lenovo Yoga C630")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Yeah, that makes sense.  It removes the need to think "I have to set TSC 
+adjust before TSC".
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index 399aef2a0951..bb314973eb0c 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -432,7 +432,7 @@ &tlmm {
- 	gpio-reserved-ranges = <0 4>, <81 4>;
- 
- 	i2c3_hid_active: i2c2-hid-active {
--		pins = <37>;
-+		pins = "gpio37";
- 		function = "gpio";
- 
- 		input-enable;
-@@ -441,7 +441,7 @@ i2c3_hid_active: i2c2-hid-active {
- 	};
- 
- 	i2c5_hid_active: i2c5-hid-active {
--		pins = <125>;
-+		pins = "gpio125";
- 		function = "gpio";
- 
- 		input-enable;
-@@ -450,7 +450,7 @@ i2c5_hid_active: i2c5-hid-active {
- 	};
- 
- 	i2c11_hid_active: i2c11-hid-active {
--		pins = <92>;
-+		pins = "gpio92";
- 		function = "gpio";
- 
- 		input-enable;
-@@ -459,7 +459,7 @@ i2c11_hid_active: i2c11-hid-active {
- 	};
- 
- 	wcd_intr_default: wcd_intr_default {
--		pins = <54>;
-+		pins = "gpio54";
- 		function = "gpio";
- 
- 		input-enable;
--- 
-2.29.2
+> Do you think that this is an issue? If so I can make the code work with
+> signed numbers.
+
+Not sure if it's an issue, but I prefer to make the API "less 
+surprising" for userspace.  Who knows how it will be used.
+
+> About nsec == 0, this is to allow to use this API for VM initialization.
+> (That is to call KVM_SET_TSC_PRECISE prior to doing KVM_GET_TSC_PRECISE)
+
+I prefer using flags for that purpose.
+
+Paolo
 
