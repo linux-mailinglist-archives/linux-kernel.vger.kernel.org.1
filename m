@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268C02C8CC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D272C8CCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgK3S1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgK3S1q (ORCPT
+        id S2387544AbgK3S3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:29:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36411 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726977AbgK3S3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:27:46 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE78AC0613D6;
-        Mon, 30 Nov 2020 10:27:05 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id p6so6957669plr.7;
-        Mon, 30 Nov 2020 10:27:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kjq7AqurfeU73O1TvNnB5Y0LVcGlDBz5FkbYl20IufU=;
-        b=ImC2tXLjBq/6sX2N/46SyLLN8+pobdu3/UY54y5DuhKe6J39QsrDbaZU5si9EXoHNc
-         NhEdeNRNXAviG2HUrPIMO5G7uNSrBXakTKc51lSiLn86ioqSTxZg+MdlRJJwuqI3GAv6
-         y8Ll3j3fsWB1f7oSyJD/PBfMPLiEOP8Hdvj3sGpVhZ+uHy75cebuZS/q1h+23DMXby2K
-         G711GRW5TcmiPGCkkSr4pKJHOntAKwHzFE/s9kgu5y4Vuuki4+qHf6IKaGSAlUn+itdQ
-         qrNLr+fgU+dvn6ma14N/pxvmUZWGZQQxaT9r8VPvd5N5KdgF7w1irR/5VTPJV7JYf6in
-         qPLA==
+        Mon, 30 Nov 2020 13:29:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606760891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TbtreiyDGBEVJHR6bcT5fhYEmcIXMhysj30QJYe5Mbc=;
+        b=i+C1Z9t4OMYz3iu6Y8ygqvbxD45v4p3Vy5JVG3qncJ3aRYgaZvB3zQas/JLpiPZN+q8faW
+        q9pdunU/gvMhjLqCSv7cY7/2tVdRIDoyZuV8lq9MKj7eGmFOU3lzRPhyKo6eSOMBlgzDtE
+        LVnbBIYpeR+1j7xahcWojL79rhpl4S0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-oazmt_N0OP6eo_hIuHXidA-1; Mon, 30 Nov 2020 13:28:09 -0500
+X-MC-Unique: oazmt_N0OP6eo_hIuHXidA-1
+Received: by mail-ed1-f69.google.com with SMTP id s7so7211007eds.17
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:28:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kjq7AqurfeU73O1TvNnB5Y0LVcGlDBz5FkbYl20IufU=;
-        b=n8/hC9c+NSiD9TC31kDHk3FxLxPmZQ8AtSGgDyYsoiQUxKLZf6Kwetue4S7z9Kb/LM
-         eeJH7pr3XUKj7pkjKWgtsQMuA9HGUHcQTFnpoh02DHLXRrfTr+AH4g29y6rZmWvdl7Bl
-         lIW3AmHDPPYMcdh7rVVIRWbnj/HjE2YGrwqueGRrWHMFcyj0eJ705OdR1GS/TnAJmYhv
-         322DtA36aWFlxh03q2UawxgGtaTRIkPd9i4MP5iVhJ62QFytzTORaPp4rI0G/s6d5aQI
-         bx6HR20SfIcIW9XMOxmB8EoTuIbTk9fMofh/W7bEEmNAh/Nj5zhB0vkgSP7ChVBOtnM+
-         h4mw==
-X-Gm-Message-State: AOAM530qjuiKIacJ7nHCiJV911G6kSwFHs+gqmya34Eg5Xilmi50hO2v
-        1E+N4QVZ27zFzYn+7fHWYSeYwMxs1mh0ihQzV2GDv8tpw9s=
-X-Google-Smtp-Source: ABdhPJzZT74pc8LY5TmeNr2gqUnmChzjOPkZ/CaNXyHbonCAXs4PDvd/WvcAYTa4q0cV+/kDpY0/7aJllNiQdZtUY3c=
-X-Received: by 2002:a17:90b:350:: with SMTP id fh16mr121104pjb.228.1606760825351;
- Mon, 30 Nov 2020 10:27:05 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TbtreiyDGBEVJHR6bcT5fhYEmcIXMhysj30QJYe5Mbc=;
+        b=Y0pqTLrzoPeCzW6EXxYciaevtaR4S9cHcPY36ZkydekL88P++tkFWoT2nxK3jhsFrj
+         4Oi++suH1EJYw4Dff/AeuM429/IUAdpOegpixJzQyPuQ06Djl8CwaojHuUx6nGtvtNiD
+         iyNg4CcEBvfCElbcL1ZnmX3x5VW5W2wFujhugkCtS8I9MS4+3AIIWo260ktl5b3OYv1L
+         GPjDUBtTJtqjQ46NT8AdMpGLpY53sMGXgq1r4BYYWRRFaiA6vHWNX5YEEeFxZm3K6GOV
+         FRlwZUMc7JKD34sftu2E2jUsUBHBz0eZH4F8IEpFjoq843qZQGdNYbwVCFySecxGAP3L
+         E6zg==
+X-Gm-Message-State: AOAM5338P+bFoAUNpqxu7n0vGAop4y6y5glBCxYC0mDwcGT2CxEccuhL
+        1OvMcqHn00/YqsWNKooidPn0I5loJWM9mnb0MtXpx+zeb4OHMUyEMD99ytFcpXRRAuCLfD3uhFZ
+        XIQtzqXcdi0mEsWiHa3TtgnaS
+X-Received: by 2002:a17:906:f8ce:: with SMTP id lh14mr10719379ejb.267.1606760885802;
+        Mon, 30 Nov 2020 10:28:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzI2tx7KbgvM1BKmi17D0Z7B1t1G7JZTOJ0/e6KdoqzSVgxvZ4sYKtg8ul1h6q4pwzHyzCJHQ==
+X-Received: by 2002:a17:906:f8ce:: with SMTP id lh14mr10719164ejb.267.1606760883832;
+        Mon, 30 Nov 2020 10:28:03 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id h15sm6773411edz.95.2020.11.30.10.28.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 10:28:02 -0800 (PST)
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <e08f56496a52a3a974310fbe05bb19100fd6c1d8.1600114548.git.thomas.lendacky@amd.com>
+ <20200914213708.GC7192@sjchrist-ice>
+ <7fa6b074-6a62-3f8e-f047-c63851ebf7c9@amd.com>
+ <20200915163342.GC8420@sjchrist-ice>
+ <6486b1f3-35e2-bcb0-9860-1df56017c85f@amd.com>
+ <20200915224410.GI8420@sjchrist-ice>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [RFC PATCH 25/35] KVM: x86: Update __get_sregs() / __set_sregs()
+ to support SEV-ES
+Message-ID: <3f5bd68d-7b2f-8b1f-49b9-0e59587513c8@redhat.com>
+Date:   Mon, 30 Nov 2020 19:28:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201130153742.9163-1-johan@kernel.org> <20201130153742.9163-3-johan@kernel.org>
-In-Reply-To: <20201130153742.9163-3-johan@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 30 Nov 2020 20:27:54 +0200
-Message-ID: <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
- signalling on open
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200915224410.GI8420@sjchrist-ice>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 5:42 PM Johan Hovold <johan@kernel.org> wrote:
->
-> Add a nordy sysfs attribute to suppress raising the modem-control lines
-> on open to signal DTE readiness.
+On 16/09/20 00:44, Sean Christopherson wrote:
+>> KVM doesn't have control of them. They are part of the guest's encrypted
+>> state and that is what the guest uses. KVM can't alter the value that the
+>> guest is using for them once the VMSA is encrypted. However, KVM makes
+>> some decisions based on the values it thinks it knows.  For example, early
+>> on I remember the async PF support failing because the CR0 that KVM
+>> thought the guest had didn't have the PE bit set, even though the guest
+>> was in protected mode. So KVM didn't include the error code in the
+>> exception it injected (is_protmode() was false) and things failed. Without
+>> syncing these values after live migration, things also fail (probably for
+>> the same reason). So the idea is to just keep KVM apprised of the values
+>> that the guest has.
+> 
+> Ah, gotcha.  Migrating tracked state through the VMSA would probably be ideal.
+> The semantics of __set_sregs() kinda setting state but not reaaaally setting
+> state would be weird.
 
-Why not call it nomctrl ?
+How would that work with TDX?
 
-> This can be use to prevent undesirable side-effects on open for
+Paolo
 
-used
-
-> applications where the DTR and RTS lines are used for non-standard
-> purposes such as generating power-on and reset pulses.
-
-...
-
-> +static ssize_t nordy_store(struct device *dev, struct device_attribute *attr,
-> +                               const char *buf, size_t count)
-> +{
-> +       struct tty_port *port = dev_get_drvdata(dev);
-> +       unsigned int val;
-> +       int ret;
-> +
-> +       ret = kstrtouint(buf, 0, &val);
-> +       if (ret)
-> +               return ret;
-
-> +       if (val > 1)
-> +               return -EINVAL;
-
-Can't we utilise kstrtobool() instead?
-
-> +       tty_port_set_nordy(port, val);
-> +
-> +       return count;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
