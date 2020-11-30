@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6014F2C8685
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A3E2C8695
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgK3OU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:20:56 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55706 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgK3OU4 (ORCPT
+        id S1727190AbgK3OWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726757AbgK3OWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:20:56 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id D7FDC1F45036
-Subject: Re: [PATCH] media: rockchip: rkisp1: remove some dead code
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <X8TrSj3PbqVtN5XQ@mwanda>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <a6d9660f-84ec-317d-c3aa-9b3bda595d49@collabora.com>
-Date:   Mon, 30 Nov 2020 11:20:05 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 30 Nov 2020 09:22:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092D2C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:21:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XfECwCYY95Uh3FJvumBnHWCMSCcNGHqYoDsLHJkgtmY=; b=DulYgDsbWnEyuLXmSBSFxAmVBD
+        rzrMvEJrYA9iHJHu9cRKjC2MzjPvqfJhm4526H65Og1e6HLgPYAtR5rYblt1wlv1mjhmNVjvB0fp1
+        hZDo3BQt1oNO98JPp3NmUH2+bLgqJ3TOHbL4gEMHD5RYcmmapLIp5+m4XQtWq2O2ERC/rE0AsltKH
+        lzECodsfo0Qo9CU5Ed5Ctb6Jwcn66WEfcOm5fwKQIXJ8VkD1JMaqqcI15klEx+wrgCJ+/78do6vRk
+        LQifYfrEPUdrmsbv6Xn+7RWcNNyYFnwWKUyMbmkJxQEIgQXdSlq+YZxx7tKO1GdEOjGYxVxhd7Bnn
+        kkVE9upA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kjk3M-0000hQ-4Y; Mon, 30 Nov 2020 14:21:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D080330477A;
+        Mon, 30 Nov 2020 15:21:18 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C1936203DFA1C; Mon, 30 Nov 2020 15:21:18 +0100 (CET)
+Date:   Mon, 30 Nov 2020 15:21:18 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "aarcange@redhat.com" <aarcange@redhat.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "jroedel@suse.de" <jroedel@suse.de>
+Subject: Re: [RFC][PATCH 3/9] sh/mm: Make pmd_t similar to pte_t
+Message-ID: <20201130142118.GO2414@hirez.programming.kicks-ass.net>
+References: <20201130112705.900705277@infradead.org>
+ <20201130113602.959570640@infradead.org>
+ <e09e71048eb74d0c8eee68bf1f865d36@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <X8TrSj3PbqVtN5XQ@mwanda>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e09e71048eb74d0c8eee68bf1f865d36@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
-
-Thank you for your patch.
-
-On 11/30/20 9:53 AM, Dan Carpenter wrote:
-> The debugfs_create_dir() function never returns NULLs.  It's not supposed
-> to checked for errors in the normal case and there is no need to check
-> in this function so let's just delete this dead code.
+On Mon, Nov 30, 2020 at 02:10:42PM +0000, David Laight wrote:
+> From: Peter Zijlstra
+> > Sent: 30 November 2020 11:27
+> > 
+> > Just like 64bit pte_t, have a low/high split in pmd_t.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  arch/sh/include/asm/pgtable-3level.h |   10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> > 
+> > --- a/arch/sh/include/asm/pgtable-3level.h
+> > +++ b/arch/sh/include/asm/pgtable-3level.h
+> > @@ -28,9 +28,15 @@
+> >  #define pmd_ERROR(e) \
+> >  	printk("%s:%d: bad pmd %016llx.\n", __FILE__, __LINE__, pmd_val(e))
+> > 
+> > -typedef struct { unsigned long long pmd; } pmd_t;
+> > +typedef struct {
+> > +	struct {
+> > +		unsigned long pmd_low;
+> > +		unsigned long pmd_high;
+> > +	};
+> > +	unsigned long long pmd;
+> > +} pmd_t;
 > 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> index 9af137e4967f..68da1eed753d 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> @@ -430,10 +430,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
->  	struct rkisp1_debug *debug = &rkisp1->debug;
->  
->  	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
-> -	if (!debug->debugfs_dir) {
-> -		dev_dbg(rkisp1->dev, "failed to create debugfs directory\n");
-> -		return;
-> -	}
+> Would it be better to use u32 and u64?
 
-I was taking a look at the debugfs_create_dir() code, and I saw it can
-return ERR_PTR(), so ideally we should check for errors with IS_ERR() / PTR_ERR().
-
-Also from the docs:
-
- * <snip>  If an error occurs, ERR_PTR(-ERROR) will be
- * returned.
- *
- * If debugfs is not enabled in the kernel, the value -%ENODEV will be
- * returned.
-
-
-
->  	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
->  			     &debug->data_loss);
->  	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
-> 
-
-
-nit: I would change the name of the commit just to make it clear what it
-does.
-Example: Remove useless error check from debugfs_create_dir()
-
-Thanks,
-Helen
+That would be inconsistent with the rest of SH. If you want to go clean
+up SH, have at, but that's not what this series is for.
