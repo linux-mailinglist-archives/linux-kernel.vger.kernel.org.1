@@ -2,122 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7222C8BB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E297F2C8BBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387746AbgK3Rti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:49:38 -0500
-Received: from mga06.intel.com ([134.134.136.31]:12743 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728451AbgK3Rth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:49:37 -0500
-IronPort-SDR: YcQfBWwGkNvsrwLao5EbQgeofyVRm3sieO1UwKR7IOeEVkSU9lIH/69vJSNwj8Q8rJ/MxJ4zQl
- i284j3N4LMiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="234282882"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="234282882"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:48:57 -0800
-IronPort-SDR: DKX1R36kcJ1e/TseiEpK7K8gp22QqaV8g89+3Srof4CFXj/LO2URvtvot8+m+8afTCjjZZwdaG
- irKTEVhCz+mg==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="549195245"
-Received: from ggudukba-mobl.amr.corp.intel.com (HELO [10.209.42.187]) ([10.209.42.187])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:48:56 -0800
-Subject: Re: [PATCH -v6 2/3] NOT kernel/man-pages man2/set_mempolicy.2: Add
- mode flag MPOL_F_NUMA_BALANCING
-To:     Huang Ying <ying.huang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
-References: <20201126053219.234793-1-ying.huang@intel.com>
- <20201126053219.234793-3-ying.huang@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <a5d4c16b-74d7-403f-5f1c-8a1e8cbe4efb@intel.com>
-Date:   Mon, 30 Nov 2020 09:48:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387817AbgK3Rve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:51:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51876 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387411AbgK3Rve (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:51:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606758607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSCV7T+Nrw6Gul8hhY06LNx7QhAZMZ6fOF3OCzdbisE=;
+        b=Tys5SdwTaNUH+aui1dhaTifh5z1MLFeU7jFI+ynRCvJ3L4IjFXLxJSoLWOhVDQp8T6lWe0
+        zfxYYq8f30MHy2IiUyEuPdFu3k/JKhuPVV4JjzgnyufKw/T/K0eL5tvsX5Rsih39W1FJiZ
+        UtDUIbJhRxUaZAsX3qCdavruAHU7SEo=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-6baJMqMxP9-QGjEcY3qq_A-1; Mon, 30 Nov 2020 12:50:04 -0500
+X-MC-Unique: 6baJMqMxP9-QGjEcY3qq_A-1
+Received: by mail-qk1-f198.google.com with SMTP id u67so1056632qkd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:50:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=HSCV7T+Nrw6Gul8hhY06LNx7QhAZMZ6fOF3OCzdbisE=;
+        b=szLPleCccHDq7YX6LUnb1rDfvy5OAn9WiZ/7wVnwTo0ovXGbtvI4yDdnKh8DPb0ctj
+         gE3uv8iUpd7+80Dxmxbsd3Y8wOElp30IL4ljODN4Z0FUGmnthkcIwwsyimSlPezojD1V
+         Ax2l7MkX4BBOPql4sup/oSe4sBGVw2rqFZMSo78rRhC6t7gAP1taZdBbosacDzSG+pyK
+         hRK/m0L0k2g8nAp2j2Cs6pYYRiKyYUCYXMI+RAxWYadDwxqINvu9HTO8TH6lyAq1c8Ug
+         DmkpqlHmUajmx21RSftSSTE6wRiq50gM85YSkeUfSUPEJRHjqRiDYuEnPjD1t1SitgB/
+         MXCQ==
+X-Gm-Message-State: AOAM5308hO4wLtEHfMWizg/m8hRYoKnRyylSi0YzwlXoFLLr6PL7j1Ng
+        aW3J8ECtetURUWiy8ggPDODaS2qcE/7ySM4ppz20AaTZ/Zc/lfWr+yjVc7Svjjn3CGwEzKLaeHy
+        DR7puZVCxIR/4iqBg+ZdzM56C
+X-Received: by 2002:ac8:588e:: with SMTP id t14mr22837100qta.375.1606758603656;
+        Mon, 30 Nov 2020 09:50:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzeE1KMRYS8ZnehWgh0wHCpn3AyJ9/3hJkmwxezbbi5OKJ+2cW7RrT9y4YlUKC7CiuoaENtYA==
+X-Received: by 2002:ac8:588e:: with SMTP id t14mr22837070qta.375.1606758603403;
+        Mon, 30 Nov 2020 09:50:03 -0800 (PST)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id w65sm16073360qtd.94.2020.11.30.09.50.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 09:50:02 -0800 (PST)
+References: <87h7pd6v2k.fsf@redhat.com>
+ <bd1fd204-3596-b16c-5617-7e691ceac83b@linux.intel.com>
+ <87a6v3hkd9.fsf@jsnitsel.users.ipa.redhat.com>
+ <72a7b338-2481-8c0a-5641-6f448557f6ee@linux.intel.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@kernel.vger.org
+Subject: Re: Question about domain_init (v5.3-v5.7)
+In-reply-to: <72a7b338-2481-8c0a-5641-6f448557f6ee@linux.intel.com>
+Date:   Mon, 30 Nov 2020 10:50:01 -0700
+Message-ID: <87r1oaka46.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201126053219.234793-3-ying.huang@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/20 9:32 PM, Huang Ying wrote:
-> --- a/man2/set_mempolicy.2
-> +++ b/man2/set_mempolicy.2
-> @@ -113,6 +113,11 @@ A nonempty
->  .I nodemask
->  specifies node IDs that are relative to the set of
->  node IDs allowed by the process's current cpuset.
-> +.TP
-> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
-> +Enable the Linux kernel NUMA balancing for the task if it is supported
-> +by kernel.  If the flag isn't supported by Linux kernel, return -1 and
-> +errno is set to EINVAL.
 
-The one thing I learned about manpage CodingStyle is that new sentences
-go on new lines.  I think this needs to be:
+Lu Baolu @ 2020-11-26 19:12 MST:
 
-.TP
-.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
-Enable the Linux kernel NUMA balancing for the task if it is supported
-by kernel.
-If the flag isn't supported by Linux kernel, return -1 and errno is set
-to EINVAL.
+> Hi Jerry,
+>
+> On 11/27/20 5:35 AM, Jerry Snitselaar wrote:
+>> Lu Baolu @ 2020-11-26 04:01 MST:
+>> 
+>>> Hi Jerry,
+>>>
+>>> On 2020/11/26 4:27, Jerry Snitselaar wrote:
+>>>> Is there a reason we check the requested guest address width against
+>>>> the
+>>>> iommu's mgaw, instead of the agaw that we already know for the iommu?
+>>>> I've run into a case with a new system where the mgaw reported is 57,
+>>>> but if they set PAE to 46 instead of 52 in the bios, then sagaw reports
+>>>> the highest supported agaw is 48 and the domain_init code fails here. In
+>>>
+>>> Isn't this a platform bug? If it's too late to fix it in the BIOS, you
+>>> maybe have to add a platform specific quirk to set mgaw to the highest
+>>> supported agaw?
+>>>
+>>> Best regards,
+>>> baolu
+>> Is there somewhere you can point me to that discusses how they
+>> should be
+>> setting the mgaw? I misunderstood when I previously asked you about
+>> whether the mgaw could be a value that was greater than any of sagaw.
+>> If it is a bios issue, then they should fix it there.
+>
+> MGAW indicates the max gpa width supported by 2nd translation. The VT-d
+> spec requires that this value must be at least equal to the host
+> physical addressibility. According to this, BIOS is good, right?
+>
+> For this failure case, domain_init() just wants to find a suitable agaw
+> for the private domain. I think it makes sense to check against
+> iommu->agaw instead of cap_mgaw.
+>
+> Best regards,
+> baolu
+>
+
+From this bit in the spec about MGAW:
+
+    Guest addressability for a given DMA request is limited to the
+    minimum of the value reported through this field and the adjusted
+    guest address width of the corresponding page-table structure.
+    (Adjusted guest address widths supported by hardware are reported
+    through the SAGAW field).
+
+That does suggest it should be adjusted down to the sagaw value in this case, yes?
+Just want to make sure I'm understanding it correctly.
+
+>> 
+>>>
+>>>> other places like prepare_domain_attach_device, the dmar domain agaw
+>>>> gets adjusted down to the iommu agaw. The agaw of the iommu gets
+>>>> determined based off what is reported for sagaw. I'm wondering if it
+>>>> can't instead do:
+>>>> ---
+>>>>    drivers/iommu/intel-iommu.c | 4 ++--
+>>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>> diff --git a/drivers/iommu/intel-iommu.c
+>>>> b/drivers/iommu/intel-iommu.c
+>>>> index 6ca5c92ef2e5..a8e41ec36d9e 100644
+>>>> --- a/drivers/iommu/intel-iommu.c
+>>>> +++ b/drivers/iommu/intel-iommu.c
+>>>> @@ -1862,8 +1862,8 @@ static int domain_init(struct dmar_domain *domain, struct intel_iommu *iommu,
+>>>>    	domain_reserve_special_ranges(domain);
+>>>>    	/* calculate AGAW */
+>>>> -	if (guest_width > cap_mgaw(iommu->cap))
+>>>> -	        guest_width = cap_mgaw(iommu->cap);
+>>>> +	if (guest_width > agaw_to_width(iommu->agaw))
+>>>> +	        guest_width = agaw_to_width(iommu->agaw);
+>>>>    	domain->gaw = guest_width;
+>>>>    	adjust_width = guestwidth_to_adjustwidth(guest_width);
+>>>>    	agaw = width_to_agaw(adjust_width);
+>>>> --
+>>>> 2.27.0
+>>>>
+>>>> Thoughts? With the former code the ehci device for the ilo fails when
+>>>> trying to get a private domain.
+>>>> Thanks,
+>>>> Jerry
+>>>>
+>> 
+
