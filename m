@@ -2,296 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C47F2C86BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6FF2C86B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbgK3O3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
+        id S1727556AbgK3O3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727605AbgK3O3c (ORCPT
+        with ESMTP id S1727359AbgK3O3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:29:32 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97DCC061A49
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:28:24 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id g185so17371924wmf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:28:24 -0800 (PST)
+        Mon, 30 Nov 2020 09:29:08 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1A0C061A4C
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:28:40 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id n137so10515084pfd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:28:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eHLcaoGR3OBMxI8Ka9Vg7O4WIQrlDq3JLjO4ywGlLGY=;
-        b=dfMrMYg+Imtd1PT+Ug3KAxUR66mYTe9vAIQKEVg0p13ToattxxKgowHojH4QkVsl8o
-         qWCIFLhhk7c1mD01OWMkZ5hkSkRlkmPm+bVkb34eSimeJ1VnWw2ym78YElm9GSziyfkJ
-         EEgXBw3Tprvet3blzGCzAx/h7Dl9EX4sL5AEk=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Nn19QPaJ9gFHWnBmob/fWLI5r53lU06Q5xsDP7S+434=;
+        b=CVVtfse5/HIIrEEzgF+u2cob0m+TmMhyi2xe4IlLyJNcrPBSjTQZtKJN/my7h/uApU
+         lusyvIpamK7nUFEu7GTL4RqjOJl+0O5AgIddPYWojNFp5pzwGJOuAuddknIOxf/IFdMi
+         dQudxJqX+x2rw8YpZ8Ch4qu1UdMtL06JyJSGwS3/qDax6dFc+pmOicL0AlqoN2Iuc8M9
+         /KnHQOeZJLoVXo2KSg+ADobCCSH8+60OpxGmW2El4EOYOHkR9PpHU+fNl4UNd9Ql6nSQ
+         E9he71uVADK6MA3S58K2avAL86qTovX3oc+4y876/xdC1z3Dv02An25PeCOwzJerxwhZ
+         JAZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=eHLcaoGR3OBMxI8Ka9Vg7O4WIQrlDq3JLjO4ywGlLGY=;
-        b=nBAUMlsbj78raz075cj4tLx3Ha42PZu3aSRIDrchJ+4tn4OkG7/B2xI0/XiMuy1oDE
-         yAanZfYDpR3BJurCiNmfIYHh9uvSFqQszhPKUyw9dP8W2ODbpx0DjXdZxR1ctgrtkUsP
-         l/vNIJt7W3zZUyK0bM1STO2Hl+befFdyBFun5andGoajnLvGR7ieQ6CH3JT5BNfwAaWP
-         hhI+G8Zp+jkhZ2JT/mrzxJK9N+gHMGZ+rUFXBQ3t9Ia3ANGIkGGKF0afyqJQvH9/TRjz
-         olCVum0YRskus5HKFx15lKw4tQqMwkeon3OZazqZpWFtJGBQSG/5t4yOq6wubbMED/Qa
-         x9bg==
-X-Gm-Message-State: AOAM530Xfco4BYWO0g3mALNRNafDIG/byfGu6FLlji5Gx5754/zPiw11
-        NF6mGQ/WIkrSmmLS02J3WHui8A==
-X-Google-Smtp-Source: ABdhPJw0HCNBfCYYbfgmPNymctRPGyVxi7hp50ZBAm3Q4du98rsXy8jIiPNtdF8UeMGO2YaRzuWbEw==
-X-Received: by 2002:a7b:c05a:: with SMTP id u26mr23719527wmc.159.1606746503617;
-        Mon, 30 Nov 2020 06:28:23 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v3sm270080wrq.72.2020.11.30.06.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 06:28:22 -0800 (PST)
-Date:   Mon, 30 Nov 2020 15:28:20 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH v7 17/17] mm: add mmu_notifier argument to follow_pfn
-Message-ID: <20201130142820.GN401619@phenom.ffwll.local>
-Mail-Followup-To: kernel test robot <lkp@intel.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <20201127164131.2244124-18-daniel.vetter@ffwll.ch>
- <202011280356.rPWHFNW4-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202011280356.rPWHFNW4-lkp@intel.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Nn19QPaJ9gFHWnBmob/fWLI5r53lU06Q5xsDP7S+434=;
+        b=mri8If1+PNb6mFmF29Sdskbc9ZEwKG+xC2jWjtRa+yOaRzrXU5AbHrbJ0SdJm6nucP
+         BnRrS3MfMh5hQPqHsa/BgSVHlRNbN7R7GJu/uNuxZyuUznQ3w8TmEb/dQ6FW1/YKsqj8
+         d3+YIV9s2riJRqoMxJJPb0+4B5FOuM4I3vPnXvNcUCDtSVdHXfhwywPFogEhHiKqbBCj
+         cDgDxQ+/VWV+FksVzfXZaaEhke/tpWgqU0p6zdC4q7XzAYRfsFfEKWjkBYNuMznoPSLL
+         1Kc2PtDXH4gOgl58gAJwyM4z3ruJm+J96XB1P6erxpz+V9ss77ZN3X6vI/XIu+FYdzqx
+         /O1A==
+X-Gm-Message-State: AOAM533Ch63+60cBsycRsMjuHtlm+SRXoMofbXhpaGqgsKXD/dk5mBZK
+        tXvwtMhtE753d+KPRaSW+cA=
+X-Google-Smtp-Source: ABdhPJwQz2iTdagQqz8OY3eGXyJoXTSfQzCz/i1byckMEeHFyW3OVR6aBj+yxY4soWtnXJOdg0KvwA==
+X-Received: by 2002:aa7:9f0a:0:b029:197:e4a0:4e4d with SMTP id g10-20020aa79f0a0000b0290197e4a04e4dmr19160903pfr.68.1606746520407;
+        Mon, 30 Nov 2020 06:28:40 -0800 (PST)
+Received: from nj08008nbu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id 17sm15580479pfh.173.2020.11.30.06.28.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 06:28:39 -0800 (PST)
+From:   Kevin Tang <kevin3.tang@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com, kevin3.tang@gmail.com
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 0/6] Add Unisoc's drm kms module
+Date:   Mon, 30 Nov 2020 22:28:27 +0800
+Message-Id: <1606746513-30909-1-git-send-email-kevin3.tang@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So I guess kvm platforms that don't set KVM_ARCH_WANT_MMU_NOTIFIER exist,
-and at least on powerpc they're consistent with KVM_CAP_SYNC_MMU
-signalling that the guest pagetables stays in sync automatically with any
-updates. So for that case I guess we could use unsafe_follow_pfn.
+ChangeList:
+RFC v1:
+1. only upstream modeset and atomic at first commit. 
+2. remove some unused code;
+3. use alpha and blend_mode properties;
+3. add yaml support;
+4. remove auto-adaptive panel driver;
+5. bugfix
 
-But on s390 this seems different: No mmu notifier, but KVM_CAP_SYNC_MMU is
-set. So I guess there's some hardware magic on s390 that I don't know
-about.
+RFC v2:
+1. add sprd crtc and plane module for KMS, preparing for multi crtc&encoder
+2. remove gem drivers, use generic CMA handlers
+3. remove redundant "module_init", all the sub modules loading by KMS
 
-Not sure what to do with this now here ...
--Daniel
+RFC v3:
+1. multi crtc&encoder design have problem, so rollback to v1
 
+RFC v4:
+1. update to gcc-linaro-7.5.0
+2. update to Linux 5.6-rc3
+3. remove pm_runtime support
+4. add COMPILE_TEST, remove unused kconfig
+5. "drm_dev_put" on drm_unbind
+6. fix some naming convention issue
+7. remove semaphore lock for crtc flip
+8. remove static variables
 
-On Sat, Nov 28, 2020 at 03:10:40AM +0800, kernel test robot wrote:
-> Hi Daniel,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on linuxtv-media/master]
-> [also build test ERROR on char-misc/char-misc-testing v5.10-rc5]
-> [cannot apply to hnaz-linux-mm/master next-20201127]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Daniel-Vetter/follow_pfn-and-other-iomap-races/20201128-004421
-> base:   git://linuxtv.org/media_tree.git master
-> config: s390-randconfig-r032-20201127 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project f095ac11a9550530a4a54298debb8b04b36422be)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install s390 cross compiling tool for clang build
->         # apt-get install binutils-s390x-linux-gnu
->         # https://github.com/0day-ci/linux/commit/d76a3489433ce67d45da86aa12953385427f0ac9
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Daniel-Vetter/follow_pfn-and-other-iomap-races/20201128-004421
->         git checkout d76a3489433ce67d45da86aa12953385427f0ac9
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=s390 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from arch/s390/include/asm/kvm_para.h:25:
->    In file included from arch/s390/include/asm/diag.h:12:
->    In file included from include/linux/if_ether.h:19:
->    In file included from include/linux/skbuff.h:31:
->    In file included from include/linux/dma-mapping.h:10:
->    In file included from include/linux/scatterlist.h:9:
->    In file included from arch/s390/include/asm/io.h:80:
->    include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
->                                                            ~~~~~~~~~~ ^
->    include/uapi/linux/byteorder/big_endian.h:34:59: note: expanded from macro '__le32_to_cpu'
->    #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
->                                                              ^
->    include/uapi/linux/swab.h:119:21: note: expanded from macro '__swab32'
->            ___constant_swab32(x) :                 \
->                               ^
->    include/uapi/linux/swab.h:21:12: note: expanded from macro '___constant_swab32'
->            (((__u32)(x) & (__u32)0x00ff0000UL) >>  8) |            \
->                      ^
->    In file included from arch/s390/kvm/../../../virt/kvm/kvm_main.c:18:
->    In file included from include/linux/kvm_host.h:32:
->    In file included from include/linux/kvm_para.h:5:
->    In file included from include/uapi/linux/kvm_para.h:36:
->    In file included from arch/s390/include/asm/kvm_para.h:25:
->    In file included from arch/s390/include/asm/diag.h:12:
->    In file included from include/linux/if_ether.h:19:
->    In file included from include/linux/skbuff.h:31:
->    In file included from include/linux/dma-mapping.h:10:
->    In file included from include/linux/scatterlist.h:9:
->    In file included from arch/s390/include/asm/io.h:80:
->    include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
->                                                            ~~~~~~~~~~ ^
->    include/uapi/linux/byteorder/big_endian.h:34:59: note: expanded from macro '__le32_to_cpu'
->    #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
->                                                              ^
->    include/uapi/linux/swab.h:119:21: note: expanded from macro '__swab32'
->            ___constant_swab32(x) :                 \
->                               ^
->    include/uapi/linux/swab.h:22:12: note: expanded from macro '___constant_swab32'
->            (((__u32)(x) & (__u32)0xff000000UL) >> 24)))
->                      ^
->    In file included from arch/s390/kvm/../../../virt/kvm/kvm_main.c:18:
->    In file included from include/linux/kvm_host.h:32:
->    In file included from include/linux/kvm_para.h:5:
->    In file included from include/uapi/linux/kvm_para.h:36:
->    In file included from arch/s390/include/asm/kvm_para.h:25:
->    In file included from arch/s390/include/asm/diag.h:12:
->    In file included from include/linux/if_ether.h:19:
->    In file included from include/linux/skbuff.h:31:
->    In file included from include/linux/dma-mapping.h:10:
->    In file included from include/linux/scatterlist.h:9:
->    In file included from arch/s390/include/asm/io.h:80:
->    include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
->                                                            ~~~~~~~~~~ ^
->    include/uapi/linux/byteorder/big_endian.h:34:59: note: expanded from macro '__le32_to_cpu'
->    #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
->                                                              ^
->    include/uapi/linux/swab.h:120:12: note: expanded from macro '__swab32'
->            __fswab32(x))
->                      ^
->    In file included from arch/s390/kvm/../../../virt/kvm/kvm_main.c:18:
->    In file included from include/linux/kvm_host.h:32:
->    In file included from include/linux/kvm_para.h:5:
->    In file included from include/uapi/linux/kvm_para.h:36:
->    In file included from arch/s390/include/asm/kvm_para.h:25:
->    In file included from arch/s390/include/asm/diag.h:12:
->    In file included from include/linux/if_ether.h:19:
->    In file included from include/linux/skbuff.h:31:
->    In file included from include/linux/dma-mapping.h:10:
->    In file included from include/linux/scatterlist.h:9:
->    In file included from arch/s390/include/asm/io.h:80:
->    include/asm-generic/io.h:501:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writeb(value, PCI_IOBASE + addr);
->                                ~~~~~~~~~~ ^
->    include/asm-generic/io.h:511:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
->                                                          ~~~~~~~~~~ ^
->    include/asm-generic/io.h:521:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
->                                                          ~~~~~~~~~~ ^
->    include/asm-generic/io.h:609:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            readsb(PCI_IOBASE + addr, buffer, count);
->                   ~~~~~~~~~~ ^
->    include/asm-generic/io.h:617:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            readsw(PCI_IOBASE + addr, buffer, count);
->                   ~~~~~~~~~~ ^
->    include/asm-generic/io.h:625:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            readsl(PCI_IOBASE + addr, buffer, count);
->                   ~~~~~~~~~~ ^
->    include/asm-generic/io.h:634:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            writesb(PCI_IOBASE + addr, buffer, count);
->                    ~~~~~~~~~~ ^
->    include/asm-generic/io.h:643:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            writesw(PCI_IOBASE + addr, buffer, count);
->                    ~~~~~~~~~~ ^
->    include/asm-generic/io.h:652:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            writesl(PCI_IOBASE + addr, buffer, count);
->                    ~~~~~~~~~~ ^
-> >> arch/s390/kvm/../../../virt/kvm/kvm_main.c:1894:40: error: no member named 'mmu_notifier' in 'struct kvm'
->            r = follow_pfn(vma, addr, &pfn, &kvm->mmu_notifier);
->                                             ~~~  ^
->    arch/s390/kvm/../../../virt/kvm/kvm_main.c:1909:41: error: no member named 'mmu_notifier' in 'struct kvm'
->                    r = follow_pfn(vma, addr, &pfn, &kvm->mmu_notifier);
->                                                     ~~~  ^
->    20 warnings and 2 errors generated.
-> 
-> vim +1894 arch/s390/kvm/../../../virt/kvm/kvm_main.c
-> 
->   1885	
->   1886	static int hva_to_pfn_remapped(struct kvm *kvm, struct vm_area_struct *vma,
->   1887				       unsigned long addr, bool *async,
->   1888				       bool write_fault, bool *writable,
->   1889				       kvm_pfn_t *p_pfn)
->   1890	{
->   1891		unsigned long pfn;
->   1892		int r;
->   1893	
-> > 1894		r = follow_pfn(vma, addr, &pfn, &kvm->mmu_notifier);
->   1895		if (r) {
->   1896			/*
->   1897			 * get_user_pages fails for VM_IO and VM_PFNMAP vmas and does
->   1898			 * not call the fault handler, so do it here.
->   1899			 */
->   1900			bool unlocked = false;
->   1901			r = fixup_user_fault(current->mm, addr,
->   1902					     (write_fault ? FAULT_FLAG_WRITE : 0),
->   1903					     &unlocked);
->   1904			if (unlocked)
->   1905				return -EAGAIN;
->   1906			if (r)
->   1907				return r;
->   1908	
->   1909			r = follow_pfn(vma, addr, &pfn, &kvm->mmu_notifier);
->   1910			if (r)
->   1911				return r;
->   1912	
->   1913		}
->   1914	
->   1915		if (writable)
->   1916			*writable = true;
->   1917	
->   1918		/*
->   1919		 * Get a reference here because callers of *hva_to_pfn* and
->   1920		 * *gfn_to_pfn* ultimately call kvm_release_pfn_clean on the
->   1921		 * returned pfn.  This is only needed if the VMA has VM_MIXEDMAP
->   1922		 * set, but the kvm_get_pfn/kvm_release_pfn_clean pair will
->   1923		 * simply do nothing for reserved pfns.
->   1924		 *
->   1925		 * Whoever called remap_pfn_range is also going to call e.g.
->   1926		 * unmap_mapping_range before the underlying pages are freed,
->   1927		 * causing a call to our MMU notifier.
->   1928		 */ 
->   1929		kvm_get_pfn(pfn);
->   1930	
->   1931		*p_pfn = pfn;
->   1932		return 0;
->   1933	}
->   1934	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+RFC v5:
+1. optimize encoder and connector code implementation
+2. use "platform_get_irq" and "platform_get_resource"
+3. drop useless function return type, drop unless debug log
+4. custom properties should be separate, so drop it
+5. use DRM_XXX replase pr_xxx
+6. drop dsi&dphy hal callback ops
+7. drop unless callback ops checking
+8. add comments for sprd dpu structure
 
+RFC v6:
+1. Access registers via readl/writel
+2. Checking for unsupported KMS properties (format, rotation, blend_mode, etc) on plane_check ops
+3. Remove always true checks for dpu core ops
 
+RFC v7:
+1. Fix DTC unit name warnings
+2. Fix the problem of maintainers
+3. Call drmm_mode_config_init to mode config init
+4. Embed drm_device in sprd_drm and use devm_drm_dev_alloc
+5. Replace DRM_XXX with drm_xxx on KMS module, but not suitable for other subsystems
+6. Remove plane_update stuff, dpu handles all the HW update in crtc->atomic_flush
+7. Dsi&Dphy Code structure adjustment, all move to "sprd/"
+
+v0:
+1. Remove dpu_core_ops stuff layer for sprd drtc driver, but dpu_layer need to keeping.
+   Because all the HW update in crtc->atomic_flush, we need temporary storage all layers for
+   the dpu pageflip of atomic_flush.
+2. Add ports subnode with port@X.
+
+Kevin Tang (6):
+  dt-bindings: display: add Unisoc's drm master bindings
+  drm/sprd: add Unisoc's drm kms master
+  dt-bindings: display: add Unisoc's dpu bindings
+  drm/sprd: add Unisoc's drm display controller driver
+  dt-bindings: display: add Unisoc's mipi dsi&dphy bindings
+  drm/sprd: add Unisoc's drm mipi dsi&dphy driver
+
+ .../display/sprd/sprd,display-subsystem.yaml       |   39 +
+ .../bindings/display/sprd/sprd,sharkl3-dpu.yaml    |   83 ++
+ .../display/sprd/sprd,sharkl3-dsi-host.yaml        |  107 ++
+ .../display/sprd/sprd,sharkl3-dsi-phy.yaml         |   84 ++
+ drivers/gpu/drm/Kconfig                            |    2 +
+ drivers/gpu/drm/Makefile                           |    1 +
+ drivers/gpu/drm/sprd/Kconfig                       |   13 +
+ drivers/gpu/drm/sprd/Makefile                      |   12 +
+ drivers/gpu/drm/sprd/dpu_r2p0.c                    |  598 ++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.c                 |  792 +++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.h                 | 1475 ++++++++++++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c             |  276 ++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h             |   34 +
+ drivers/gpu/drm/sprd/megacores_pll.c               |  315 +++++
+ drivers/gpu/drm/sprd/megacores_pll.h               |  146 ++
+ drivers/gpu/drm/sprd/sprd_dphy.c                   |  335 +++++
+ drivers/gpu/drm/sprd/sprd_dphy.h                   |   39 +
+ drivers/gpu/drm/sprd/sprd_dpu.c                    |  457 ++++++
+ drivers/gpu/drm/sprd/sprd_dpu.h                    |  175 +++
+ drivers/gpu/drm/sprd/sprd_drm.c                    |  265 ++++
+ drivers/gpu/drm/sprd/sprd_drm.h                    |   22 +
+ drivers/gpu/drm/sprd/sprd_dsi.c                    | 1105 +++++++++++++++
+ drivers/gpu/drm/sprd/sprd_dsi.h                    |  105 ++
+ 23 files changed, 6480 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-host.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-phy.yaml
+ create mode 100644 drivers/gpu/drm/sprd/Kconfig
+ create mode 100644 drivers/gpu/drm/sprd/Makefile
+ create mode 100644 drivers/gpu/drm/sprd/dpu_r2p0.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.h
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.c
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dphy.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dphy.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.7.4
+
