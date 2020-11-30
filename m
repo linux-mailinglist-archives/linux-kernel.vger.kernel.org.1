@@ -2,129 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A392C88D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C63E92C88DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727670AbgK3QAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:00:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45569 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726860AbgK3QAe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:00:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606751947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WYyaNMWXIzphPUXACrUhTp271jhjXQRzrhohRKC0mcw=;
-        b=ZnGlVYlKXrvHMy/0o2lzr55LfGCu3NWWmnjtF45eFF9aV+X5t4tD3VUnAePVy6vZPowhyH
-        kZ8pIkfC7BEQUxDutfCUpn9aLvb1PljUBmqTF8Xxcvbispq7mhMiQnKWB0w2w6kylZWn+c
-        OXFasvHOFUzopG++XuhfFBdW2YRfLcI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-PEEJD8uZNkCkGJpbLxvTaw-1; Mon, 30 Nov 2020 10:59:03 -0500
-X-MC-Unique: PEEJD8uZNkCkGJpbLxvTaw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727728AbgK3QBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:01:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726614AbgK3QBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:01:38 -0500
+Received: from gaia (unknown [95.146.230.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B30025708B;
-        Mon, 30 Nov 2020 15:59:01 +0000 (UTC)
-Received: from starship (unknown [10.35.206.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F15B05D9C0;
-        Mon, 30 Nov 2020 15:58:55 +0000 (UTC)
-Message-ID: <ee06976738dff35e387077ba73e6ab375963abbf.camel@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: x86: implement
- KVM_SET_TSC_PRECISE/KVM_GET_TSC_PRECISE
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Oliver Upton <oupton@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 4591C205F4;
+        Mon, 30 Nov 2020 16:00:55 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 16:00:52 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Date:   Mon, 30 Nov 2020 17:58:54 +0200
-In-Reply-To: <38602ef4-7ecf-a5fd-6db9-db86e8e974e4@redhat.com>
-References: <20201130133559.233242-1-mlevitsk@redhat.com>
-         <20201130133559.233242-2-mlevitsk@redhat.com>
-         <38602ef4-7ecf-a5fd-6db9-db86e8e974e4@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Will Deacon <will@kernel.org>, andreyknvl@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Collingbourne <pcc@google.com>, steven.price@arm.com
+Subject: Re: [next] arm64: mte.c:176:17: error: 'struct thread_struct' has no
+ member named 'sctlr_tcf0'
+Message-ID: <20201130160052.GF3902@gaia>
+References: <CA+G9fYuTS-Kmwy4wfNrFMLnon0v5No3KQeu262c9L91wOrcxkA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYuTS-Kmwy4wfNrFMLnon0v5No3KQeu262c9L91wOrcxkA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-30 at 15:33 +0100, Paolo Bonzini wrote:
-> On 30/11/20 14:35, Maxim Levitsky wrote:
-> > +		if (guest_cpuid_has(vcpu, X86_FEATURE_TSC_ADJUST)) {
-> > +			tsc_state.tsc_adjust = vcpu->arch.ia32_tsc_adjust_msr;
-> > +			tsc_state.flags |= KVM_TSC_STATE_TSC_ADJUST_VALID;
-> > +		}
+On Mon, Nov 30, 2020 at 09:12:58PM +0530, Naresh Kamboju wrote:
+> Linux next tag 20201130 arm64 build failed due to below error,
+>   - gcc-9, gcc-10 and clang-10 build FAIL
+>   - gcc-8 build PASS.
 > 
-> This is mostly useful for userspace that doesn't disable the quirk, right?
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=arm64
+> CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
+> 'HOSTCC=sccache gcc'
+> arch/arm64/kernel/mte.c: In function 'set_sctlr_el1_tcf0':
+> arch/arm64/kernel/mte.c:176:17: error: 'struct thread_struct' has no
+> member named 'sctlr_tcf0'
+>   176 |  current->thread.sctlr_tcf0 = tcf0;
 
-Isn't this the opposite? If I understand the original proposal correctly,
-the reason that we include the TSC_ADJUST in the new ioctl, is that
-we would like to disable the special kvm behavior (that is disable the quirk),
-which would mean that tsc will jump on regular host initiated TSC_ADJUST write.
+Thanks for the report. There is a bodged conflict resolution, it should
+disappear when Stephen updates the -next tree.
 
-To avoid this, userspace would set TSC_ADJUST through this new interface.
-
-Note that I haven't yet disabled the quirk in the patches I posted to the qemu,
-because we need some infrastructure to manage which quirks we want to disable
-in qemu
-(That is, KVM_ENABLE_CAP is as I understand write only, so I can't just disable
-KVM_X86_QUIRK_TSC_HOST_ACCESS, in the code that enables x-precise-tsc in qemu).
-
-> 
-> > +		kvm_get_walltime(&wall_nsec, &host_tsc);
-> > +		diff = wall_nsec - tsc_state.nsec;
-> > +
-> > +		if (diff < 0 || tsc_state.nsec == 0)
-> > +			diff = 0;
-> > +
-> 
-> diff < 0 should be okay.  Also why the nsec==0 special case?  What about 
-> using a flag instead?
-
-In theory diff < 0 should indeed be okay (though this would mean that target,
-has unsynchronized clock or time travel happened).
-
-However for example nsec_to_cycles takes unsigned number, and then
-pvclock_scale_delta also takes unsigned number, and so on,
-so I was thinking why bother with this case.
-
-There is still (mostly?) theoretical issue, if on some vcpus 'diff' is positive 
-and on some is negative
-(this can happen if the migration was really fast, and target has the clock
-   A. that is only slightly ahead of the source).
-Do you think that this is an issue? If so I can make the code work with
-signed numbers.
-
-About nsec == 0, this is to allow to use this API for VM initialization.
-(That is to call KVM_SET_TSC_PRECISE prior to doing KVM_GET_TSC_PRECISE)
-
-This simplifies qemu code, and I don't think 
-that this makes the API much worse.
-
-Best regards,
-	Maxim Levitsky
-
-> 
-> Paolo
-> 
-
-
+-- 
+Catalin
