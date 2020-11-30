@@ -2,140 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EBD2C8C35
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825322C8C3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387973AbgK3SJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:09:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54720 "EHLO mail.kernel.org"
+        id S2388003AbgK3SJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:09:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726316AbgK3SJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:09:11 -0500
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        id S2387935AbgK3SJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:09:31 -0500
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B46120855
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:08:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCE702074A;
+        Mon, 30 Nov 2020 18:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606759710;
-        bh=TnCU4Aw2g9+Knu503dKHlfOBW7TvM1ez8D23YVMDj6U=;
+        s=default; t=1606759730;
+        bh=d9yV1lEnxveUgluSCBhCoa0hj6naPZXSjmqKjTGnqZM=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qd583t3maKQxXJ8R75fAfkdQEp7bRQaKg/HeZTGCy1TrM37gDF+WZG4mID94Zu78J
-         +xNWKAsGz6VRMPlzuFJLddqFcUZscOUd8Nv7iBhvy8Nnf5gLD6pJ9FGZbRvEJ+qSAP
-         peMJP5kWxTYCx03mH5t7v84+irwpDxBI35jAnMz8=
-Received: by mail-oi1-f180.google.com with SMTP id o25so15162481oie.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:08:30 -0800 (PST)
-X-Gm-Message-State: AOAM533OmXGn5a5p8GCqSNVZOU1+7O/EAm44aU9+SUQ9QEywZ9YmTR4o
-        lr7HGc1txmjynqz06+Ozt2Duu8ChspK2PgK79dM=
-X-Google-Smtp-Source: ABdhPJwjJ6WdtC6vWUgbuLjgeNFmD/byB0JJ4sdUPlmNfqDph9AsNcPCJRtqfE2Kjt5G3kBf3l+ekMLmEwVQTV+2D4s=
-X-Received: by 2002:aca:5ec2:: with SMTP id s185mr30062oib.33.1606759709386;
- Mon, 30 Nov 2020 10:08:29 -0800 (PST)
+        b=N6+Rb6NqtVzTm7cj5nI5LTYGHTw+f/9KD7YKEhPTp37nUluml0326Lt9AYPNb+7v+
+         FKZ91iOd6v2r6MJOe0s7i80u/YQeZv+o3IoGk5PcckK1us/9Kk+dBplNZKTnYfjm2i
+         VAONbr7C48ySDw3DgZBh9Z+iGkLQDOgFZafyRKH0=
+Received: by mail-ed1-f46.google.com with SMTP id m16so17445596edr.3;
+        Mon, 30 Nov 2020 10:08:49 -0800 (PST)
+X-Gm-Message-State: AOAM532MxsZQDJFA/Q43fF7V4LeW5X7YoVibF+5TqE1gFrFC9fdYwAdm
+        HoBUpRg3polj2mTJLtEgS8+NLN3hY9ZUVHJRCQ==
+X-Google-Smtp-Source: ABdhPJyalbIM7zr/ARvNlPV82k6Cgt37L4bcmR5TSLk5r69qVnqord2DUkoKhs5fFIwJgGOnz5KCzKqjvzYlAfk1W3c=
+X-Received: by 2002:aa7:c80c:: with SMTP id a12mr13080489edt.165.1606759728286;
+ Mon, 30 Nov 2020 10:08:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20201123073634.6854-1-swpenim@gmail.com> <CAMj1kXGsQ9K57SvZ74pmD+_=338sGXjc_t+hCXMh-9BPanXnhA@mail.gmail.com>
- <CAMj1kXGs-woGGnM2QkhY5NbRRKP8_N4BY9ScBtga8mcyHoK2+A@mail.gmail.com>
- <89n4o5sp-4432-7r33-r9s-54po13q25pnp@syhkavp.arg> <CAMj1kXGuHw+p5=YPrVwaHjp5hQ9uxsp7hbA0Vk-ppZ3_qHDVrA@mail.gmail.com>
- <85p0oop-5pq-p6o-7560-297sn1np3os@syhkavp.arg>
-In-Reply-To: <85p0oop-5pq-p6o-7560-297sn1np3os@syhkavp.arg>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 30 Nov 2020 19:08:18 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFyi9uc1bNuHrmBBqgW34tUU_mxV0BqVbrihsG_HMzMCA@mail.gmail.com>
-Message-ID: <CAMj1kXFyi9uc1bNuHrmBBqgW34tUU_mxV0BqVbrihsG_HMzMCA@mail.gmail.com>
-Subject: Re: [RESEND,PATCH] ARM: fix __div64_32() error when compiling with clang
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Antony Yu <swpenim@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201129000040.24777-1-sonals@xilinx.com>
+In-Reply-To: <20201129000040.24777-1-sonals@xilinx.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 30 Nov 2020 11:08:36 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqLod6FBGFhu7WXtMrB_z7wj8-up0EetM1QS9M3gjm8d7Q@mail.gmail.com>
+Message-ID: <CAL_JsqLod6FBGFhu7WXtMrB_z7wj8-up0EetM1QS9M3gjm8d7Q@mail.gmail.com>
+Subject: Re: [PATCH Xilinx Alveo 0/8] Xilinx Alveo/XRT patch overview
+To:     Sonal Santan <sonal.santan@xilinx.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sonal Santan <sonals@xilinx.com>, linux-fpga@vger.kernel.org,
+        maxz@xilinx.com, lizhih@xilinx.com,
+        Michal Simek <michal.simek@xilinx.com>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020 at 18:52, Nicolas Pitre <nico@fluxnic.net> wrote:
+On Sat, Nov 28, 2020 at 5:02 PM Sonal Santan <sonal.santan@xilinx.com> wrote:
 >
-> On Mon, 30 Nov 2020, Ard Biesheuvel wrote:
+> Hello,
 >
-> > On Mon, 30 Nov 2020 at 16:51, Nicolas Pitre <nico@fluxnic.net> wrote:
-> >
-> > > Here's my version of the fix which should be correct. Warning: this
-> > > is completely untested, but should in theory produce the same code on
-> > > modern gcc.
-> > >
-> > > diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/div64.h
-> > > index 898e9c78a7..595e538f5b 100644
-> > > --- a/arch/arm/include/asm/div64.h
-> > > +++ b/arch/arm/include/asm/div64.h
-> > > @@ -21,29 +21,20 @@
-> > >   * assembly implementation with completely non standard calling convention
-> > >   * for arguments and results (beware).
-> > >   */
-> > > -
-> > > -#ifdef __ARMEB__
-> > > -#define __xh "r0"
-> > > -#define __xl "r1"
-> > > -#else
-> > > -#define __xl "r0"
-> > > -#define __xh "r1"
-> > > -#endif
-> > > -
-> > >  static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
-> > >  {
-> > >         register unsigned int __base      asm("r4") = base;
-> > >         register unsigned long long __n   asm("r0") = *n;
-> > >         register unsigned long long __res asm("r2");
-> > > -       register unsigned int __rem       asm(__xh);
-> > > -       asm(    __asmeq("%0", __xh)
-> > > +       unsigned int __rem;
-> > > +       asm(    __asmeq("%0", "r0")
-> > >                 __asmeq("%1", "r2")
-> > > -               __asmeq("%2", "r0")
-> > > -               __asmeq("%3", "r4")
-> > > +               __asmeq("%2", "r4")
-> > >                 "bl     __do_div64"
-> > > -               : "=r" (__rem), "=r" (__res)
-> > > -               : "r" (__n), "r" (__base)
-> > > +               : "+r" (__n), "=r" (__res)
-> > > +               : "r" (__base)
-> > >                 : "ip", "lr", "cc");
-> > > +       __rem = __n >> 32;
-> >
-> > This treats {r0, r1} as a {low, high} pair, regardless of endianness,
-> > and so it puts the value of r0 into r1. Doesn't that mean the shift
-> > should only be done on little endian?
+> This patch series adds management physical function driver for Xilinx Alveo PCIe
+> accelerator cards, https://www.xilinx.com/products/boards-and-kits/alveo.html
+> This driver is part of Xilinx Runtime (XRT) open source stack.
 >
-> Not quite. r0-r1 = low-high is for little endian. Then "__n >> 32" is
-> actually translated into "mov r0, r1" to move it into __rem and returned
-> through r0.
+> The patch depends on the "PATCH Xilinx Alveo libfdt prep" which was posted
+> before.
 >
-> On big endial it is r0-r1 = high-low.  Here "__n >> 32" picks r0 and
-> moves it to __rem which is returned through r0 so no extra instruction
-> needed.
+> ALVEO PLATFORM ARCHITECTURE
 >
-> Of course the function is inlined so r0 can be anything, or optimized
-> away if__rem is not used.
+> Alveo PCIe FPGA based platforms have a static *shell* partition and a partial
+> re-configurable *user* partition. The shell partition is automatically loaded from
+> flash when host is booted and PCIe is enumerated by BIOS. Shell cannot be changed
+> till the next cold reboot. The shell exposes two PCIe physical functions:
 >
+> 1. management physical function
+> 2. user physical function
+>
+> The patch series includes Documentation/xrt.rst which describes Alveo
+> platform, xmgmt driver architecture and deployment model in more more detail.
+>
+> Users compile their high level design in C/C++/OpenCL or RTL into FPGA image
+> using Vitis https://www.xilinx.com/products/design-tools/vitis/vitis-platform.html
+> tools. The image is packaged as xclbin and contains partial bitstream for the
+> user partition and necessary metadata. Users can dynamically swap the image
+> running on the user partition in order to switch between different workloads.
+>
+> ALVEO DRIVERS
+>
+> Alveo Linux kernel driver *xmgmt* binds to management physical function of
+> Alveo platform. The modular driver framework is organized into several
+> platform drivers which primarily handle the following functionality:
+>
+> 1.  Loading firmware container also called xsabin at driver attach time
+> 2.  Loading of user compiled xclbin with FPGA Manager integration
+> 3.  Clock scaling of image running on user partition
+> 4.  In-band sensors: temp, voltage, power, etc.
+> 5.  Device reset and rescan
+> 6.  Flashing static *shell* partition
+>
+> The platform drivers are packaged into *xrt-lib* helper module with a well
+> defined interfaces the details of which can be found in Documentation/xrt.rst.
+>
+> xmgmt driver is second generation Alveo management driver and evolution of
+> the first generation (out of tree) Alveo management driver, xclmgmt. The
+> sources of the first generation drivers were posted on LKML last year--
+> https://lore.kernel.org/lkml/20190319215401.6562-1-sonal.santan@xilinx.com/
+>
+> Changes since the first generation driver include the following: the driver
+> has been re-architected as data driven modular driver; the driver has been
+> split into xmgmt and xrt-lib; user physical function driver has been removed
+> from the patch series.
+>
+> Alveo/XRT security and platform architecture is documented on the following
+> GitHub pages:
+> https://xilinx.github.io/XRT/master/html/security.html
+> https://xilinx.github.io/XRT/master/html/platforms_partitions.html
+>
+> User physical function driver is not included in this patch series.
+>
+> TESTING AND VALIDATION
+>
+> xmgmt driver can be tested with full XRT open source stack which includes
+> user space libraries, board utilities and (out of tree) first generation
+> user physical function driver xocl. XRT open source runtime stack is
+> available at https://github.com/Xilinx/XRT. This patch series has been
+> validated on Alveo U50 platform.
+>
+> Complete documentation for XRT open source stack can be found here--
+> https://xilinx.github.io/XRT/master/html/index.html
 
-OK, you're right. I got myself confused there, but a quick test with
-GCC confirms your explanation:
+I've not gotten into the patch details, but I'm not clear on what the
+lifecycle of the DT looks like here. What's the starting point and
+what manipulations to the DT are being done? I'm trying to understand
+if using libfdt is the right way versus operating on an unflattened
+tree.
 
-$ arm-linux-gnueabihf-gcc -mbig-endian -O2 -S -o - \
-   -xc - <<<"long f(long long l) { return l >> 32; }"
-
-just produces
-
-bx lr
-
-whereas removing the -mbig-endian gives
-
-mov r0, r1
-bx lr
-
-
-I tested the change and it builds and runs fine (although I am not
-sure how much coverage this code gets on an ordinary boot):
-
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Tested-by: Ard Biesheuvel <ardb@kernel.org>
+Rob
