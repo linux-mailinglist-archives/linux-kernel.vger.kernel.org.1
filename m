@@ -2,100 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87A52C8FBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FF02C8FC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388481AbgK3VNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388488AbgK3VNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 30 Nov 2020 16:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54224 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388399AbgK3VNe (ORCPT
+        with ESMTP id S2388470AbgK3VNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Nov 2020 16:13:34 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA93FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:13:18 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id f24so20256701ljk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:13:18 -0800 (PST)
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B98C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:13:19 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id m62so7129134vsd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:13:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=n3KWtTbyu910cgBxnHje89Hi5Pdj67SfhYeBysSLt7k=;
-        b=XKUoVsy05kCrVvddDePtP1hpa3frBZCDGjBpVl7lJPZTEaWp141MdeEkgWFXE2hMtZ
-         Jg80YRM8bwYP283gjRBtADdNaKGlvkz/bJu5fQm/Ckd7P+G5/SbnNroKAddGj1XgbO3v
-         PmRGS6aWjrAm44AlOHzhtyU+0r7PM3uciizC0Kq0ccOPUEqEqTFHvW/2BWQe/ceFeaS0
-         IHC+QLIsEs+SbquUOpbBHRlotQCu62+8vY6/MwuByvi2FhnrITWx+tJftLqlJH7ZJmKH
-         7Q8/QfqkKtI3fe5mJrlzsMGz2THKrM5iGkIAdTfeZ1ToA9oF4x+0TafKFFJ3JdZjCBq0
-         E1bg==
+        bh=XqzHfapJ3F/aP/Sj74fFO0QxtwYdPG/PGUQjcAovr1k=;
+        b=djo0Ivg+KsZ5rWvUBIcGBis6lXvAnNR55o+KHu/r4ezk21pgDp5P7XWlgs3yCRySQK
+         lR38TMl1fA8MIdM9IeocinICRorzA+NcOchTlplISt3pDDhOqDTRIrU8UPNVjFiW0Cek
+         MauP5GTlwQnJGIfcXHrLtyPv3Tn+EHcFzMOBNbvpsL9v9e16Jiusz+kN6ywKkNSvzhXU
+         KY1s7xyJ99COV18ZUFXw9dH9Clr44zcWTNLA1vuZ6AJbQ1qeHlgZezzOhYdERZ2vq8jS
+         zIBTwtF/HRqW2FWV/IVALKgPbo06JdcPd+KXFjYGARgULl431cz7JjtebM3PxhNj/FpE
+         YIuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=n3KWtTbyu910cgBxnHje89Hi5Pdj67SfhYeBysSLt7k=;
-        b=aXtrf13e+Tw7YGy0Iqs3kBIGgJ9lyQEWEPQsuJkq+bUydJ/66tP01q0Ldj9qhpIr8G
-         DjY/p77R4n762iSjsuevW3jZnopPkgamxz06ibqIpIIfjjcfDp2HNgxra+igcp13KgiG
-         4ELurj9OGwsXkx99j/a5XygH+9O2myLjY3NufsfinebqxH4b+W05er25+jzdOfhWeCTY
-         0h7V8LaJers/6CSAwe6UeEVn2r/ZyXhudClHaoo7ffOmeUSQ7neSRRRdiT5WWC3fHmbc
-         WB9Db4z3gmZ2GX7BKNnfpvbk8Tb8rOKkXOSrSJUFgMTdsZiR7ey9SGvTqySsPQfZClG3
-         PFqQ==
-X-Gm-Message-State: AOAM532TgC5aDXVLHUeZwMNHdIM+LYO/Q2QmgPBeo5C8l8QVdN2Vaz7y
-        WCGv45RGVWtcixGfl1BmBR8LLUX8E3REH1yRDEJGKw==
-X-Google-Smtp-Source: ABdhPJxPhOUEdXtkkQNUJiSzYLzLvwVafq/DEqFzMlodHcjTU8K1Kz2KqSKdPFiog2fz99yGTWDMpFJ1kGKHxWe+NY8=
-X-Received: by 2002:a2e:b16a:: with SMTP id a10mr11561573ljm.446.1606770797208;
- Mon, 30 Nov 2020 13:13:17 -0800 (PST)
+        bh=XqzHfapJ3F/aP/Sj74fFO0QxtwYdPG/PGUQjcAovr1k=;
+        b=FCjA/75yL8kgWjWHkwkWRs0lgnajXYPz19fP4RABaMD3oyovDZlHM88C8UUNYRFRJi
+         rOignWLKBs+fIZcQ+EQMI+VLwPM5yroq1jAgXQCQuutE0l6Yq2kBCXSIa11v0t8zJPhv
+         MEqwmEQJq9kukIi2Nu4hxFg/aPEeJdTs2wnNHJxukhWAQorSiLImxxLnqqjYXpMCJH+H
+         2FroF4kOCgigRroxiguPO2rqX10YjOynm4YKLBgcLK2u/ozEEOEboiRmI+g4tpFn/Lan
+         pJhezbyZ+5NRucKhCoK00FO+l5j9i7ugIggrcE4DRvEdOgFmNLx6Vg7WTZuaoC+usAY6
+         ssEA==
+X-Gm-Message-State: AOAM530w0TylWSSRqPTvnTR9/uvjA54DbrKAJxEMQahWQTrTMy7xhnLa
+        pLeK9u5yKg3OLa1V4qL+i2CdkntnyEL/1++iZm8mmw==
+X-Google-Smtp-Source: ABdhPJxsvZE/vxnMU3Fe1JLI0zpquMutlEXi68MVfogDgRtXehEQXxlO/XLBW3FdMghturJW3Teo3vGuvDOGNCxI54I=
+X-Received: by 2002:a67:f74f:: with SMTP id w15mr17805420vso.54.1606770798445;
+ Mon, 30 Nov 2020 13:13:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20201126005603.1293012-1-shakeelb@google.com> <20201130203425.GA1360286@carbon.DHCP.thefacebook.com>
- <CALvZod4qiFuiByjh0+fwRoVw_EYVzqADNsiThf42-zDiXyYvpg@mail.gmail.com> <20201130211050.GB1360286@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20201130211050.GB1360286@carbon.DHCP.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 30 Nov 2020 13:13:06 -0800
-Message-ID: <CALvZod6YVEcHRc7DHu5RrXSeSGW+Vqo_skSWmVsHNJHERQ-c6Q@mail.gmail.com>
-Subject: Re: [PATCH 0/2] memcg: add pagetable comsumption to memory.stat
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
+References: <20201124195940.27061-1-samitolvanen@google.com>
+ <20201124195940.27061-3-samitolvanen@google.com> <20201130114940.GB24563@willie-the-truck>
+In-Reply-To: <20201130114940.GB24563@willie-the-truck>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 30 Nov 2020 13:13:07 -0800
+Message-ID: <CABCJKud6UiidpqqwJcghnqLKDkqM3pzMUUwe3_HH3ODDqOdANA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] arm64: scs: use vmapped IRQ and SDEI shadow stacks
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 1:10 PM Roman Gushchin <guro@fb.com> wrote:
+On Mon, Nov 30, 2020 at 3:49 AM Will Deacon <will@kernel.org> wrote:
 >
-> On Mon, Nov 30, 2020 at 01:01:18PM -0800, Shakeel Butt wrote:
-> > On Mon, Nov 30, 2020 at 12:34 PM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Wed, Nov 25, 2020 at 04:56:01PM -0800, Shakeel Butt wrote:
-> > > > Many workloads consumes significant amount of memory in pagetables. This
-> > > > patch series exposes the pagetable comsumption for each memory cgroup.
-> > >
-> > > Hi Shakeel!
-> > >
-> > > The code looks good to me. However I'm not sure I understand what's the
-> > > use case for the new statistics? Can you, please, elaborate a bit more here?
-> > >
-> > > From a very first glance, the size of pagetables should be _roughly_ equal
-> > > to the size_of(pte)/PAGE_SIZE*(size of a cgroup) and should not exceed 1%
-> > > of the cgroup size. So for all but very large cgroups the value will be
-> > > in the noise of per-cpu counters. Perhaps I'm missing some important cases?
-> > >
+> On Tue, Nov 24, 2020 at 11:59:40AM -0800, Sami Tolvanen wrote:
+> > Use scs_alloc() to allocate also IRQ and SDEI shadow stacks instead of
+> > using statically allocated stacks.
 > >
-> > I think this is in general a good metric to have but one specific
-> > use-case we have is the user space network driver which mmaps the
-> > memory of the applications for zero copy data transfers. This driver
-> > can consume a large amount of memory in page tables. So, this metric
-> > becomes really useful here.
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > ---
+> >  arch/arm64/kernel/Makefile |  1 -
+> >  arch/arm64/kernel/entry.S  |  6 ++--
+> >  arch/arm64/kernel/irq.c    | 19 ++++++++++
+> >  arch/arm64/kernel/scs.c    | 16 ---------
+> >  arch/arm64/kernel/sdei.c   | 71 +++++++++++++++++++++++++++++++-------
+> >  include/linux/scs.h        |  4 ---
+> >  6 files changed, 81 insertions(+), 36 deletions(-)
+> >  delete mode 100644 arch/arm64/kernel/scs.c
 >
-> Got it, thank you for the explanation!
-> Would you mind to add this text to the cover letter as an example?
-
-Sure.
-
+> [...]
 >
-> Acked-by: Roman Gushchin <guro@fb.com>
-> for the series.
+> > @@ -70,18 +97,40 @@ static int _init_sdei_stack(unsigned long * __percpu *ptr, int cpu)
+> >       return 0;
+> >  }
+> >
+> > +static int _init_sdei_scs(unsigned long * __percpu *ptr, int cpu)
+> > +{
+> > +     void *s;
+> > +
+> > +     s = scs_alloc(cpu_to_node(cpu));
+> > +     if (!s)
+> > +             return -ENOMEM;
+> > +     per_cpu(*ptr, cpu) = s;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static int init_sdei_stacks(void)
+> >  {
+> >       int cpu;
+> >       int err = 0;
+> >
+> >       for_each_possible_cpu(cpu) {
+> > -             err = _init_sdei_stack(&sdei_stack_normal_ptr, cpu);
+> > -             if (err)
+> > -                     break;
+> > -             err = _init_sdei_stack(&sdei_stack_critical_ptr, cpu);
+> > -             if (err)
+> > -                     break;
+> > +             if (IS_ENABLED(CONFIG_VMAP_STACK)) {
+> > +                     err = _init_sdei_stack(&sdei_stack_normal_ptr, cpu);
+> > +                     if (err)
+> > +                             break;
+> > +                     err = _init_sdei_stack(&sdei_stack_critical_ptr, cpu);
+> > +                     if (err)
+> > +                             break;
+> > +             }
+> > +             if (IS_ENABLED(CONFIG_SHADOW_CALL_STACK)) {
+> > +                     err = _init_sdei_scs(&sdei_shadow_call_stack_normal_ptr, cpu);
+> > +                     if (err)
+> > +                             break;
+> > +                     err = _init_sdei_scs(&sdei_shadow_call_stack_critical_ptr, cpu);
+> > +                     if (err)
+> > +                             break;
+>
+> This looks ok to me, but I think it would be better to follow the same
+> approach as you have for the IRQ stacks and instead have a separate
+> init_sdei_scs() function (similarly for the free() path), which means
+> you can simply the IS_ENABLED() checks too.
 
-Thanks for the review.
+OK, I can change this in v3. It makes error handling in
+sdei_arch_get_entry_point() a bit more awkward though. We'll need
+something like this:
+
+        if (IS_ENABLED(CONFIG_VMAP_STACK)) {
+                if (init_sdei_stacks())
+                        return 0;
+        }
+
+        if (IS_ENABLED(CONFIG_SHADOW_CALL_STACK)) {
+                if (init_sdei_scs()) {
+                        if (IS_ENABLED(CONFIG_VMAP_STACK))
+                                free_sdei_stacks();
+                        return 0;
+                }
+        }
+
+Sami
