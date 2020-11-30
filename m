@@ -2,143 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01ACC2C8B1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 553C42C8B2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387568AbgK3RbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:31:23 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2181 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387521AbgK3RbW (ORCPT
+        id S2387633AbgK3RdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:33:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbgK3RdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:31:22 -0500
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ClByC5T2Cz67K8h;
-        Tue,  1 Dec 2020 01:27:47 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 30 Nov 2020 18:30:40 +0100
-Received: from [10.47.3.199] (10.47.3.199) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 30 Nov
- 2020 17:30:38 +0000
-Subject: Re: [PATCH] perf tools: add aarch64 registers to --user-regs
-To:     Alexandre Truong <alexandre.truong@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
-CC:     <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-References: <20201127153923.26717-1-alexandre.truong@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <9022edaa-78c5-2397-320a-4ca3d884fced@huawei.com>
-Date:   Mon, 30 Nov 2020 17:30:12 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Mon, 30 Nov 2020 12:33:18 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87B0C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:32:37 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id t6so23134874lfl.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:32:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PE8fp+K02SctplBIINuNHMFuhz2IiCxj8rV/VVtbRc4=;
+        b=XCfLarjdvF4B6QXu1MuLj8xXcDCUUSxB7m+BzaDrWlh3CDnGoStPuI+RcWZ3yVGyL7
+         2hSnjlmIkLsHC4oJBR7MZCNbRnDqNl5MlJ/DK4o1ZeFVnIA37ip/TvaZgzJHYuYRiV7s
+         9H/GPN74T/PzK9PDaG/KTThIKOHetiJX3hsMxAu2oX8l2DxPSnRVqxnwtub+5jo8E1Gz
+         SQTBhm3Y9QK5aAIJ+TvCpckp50ifpVl+DWwiPIaPPg1QZQOaQWT0CPE+wSnxGEEV2cjc
+         3x4arCyrog8OoRXESNMhEobaGSjSQAGs27Nqr+ejQhbiqcWHyBAuX3mniDtLQEPgIezF
+         4wCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PE8fp+K02SctplBIINuNHMFuhz2IiCxj8rV/VVtbRc4=;
+        b=LXbVgi2iyGEN8fFH4hWp9JN3EmjUhb+kOTGJPdjN6IPhKdJY+nDALFViXSe+aYsEIL
+         JbVd49xZIC1apgHE34uUDXhOtxluGPreewypzHjRclrujsAjqSsTp3Wpl3EwF/Q/79tf
+         sK6s+D6bADlUc1cV7WeCciudAQ3PorL9zwIOxYaKncqMy0HPUmGYBvRQTKph6QOisMlM
+         pCGLzySW7qo3IKBSzZhsWTDiZuf2nVnu6XMXdqOOorc0CxQCw0FF5AO0Q1L8fCFW9kwW
+         fGOYwKfy/OiCTcA9zuNJVM7vKxmLjEqVUa2pwkoGqXNAY/fHyKaAg3yGlrQ79av4WDp9
+         TxYA==
+X-Gm-Message-State: AOAM531oYtOn3TS61aBOQA2FNr4lQ8ZXRVKLp6kRdF+Td5nUl/EkB9uK
+        dzdcO4rhF1s1BnzG17MlNZVlSR/I5mWBusG8jXG6uQAhWeSVxvA5
+X-Google-Smtp-Source: ABdhPJzqA9bsEW0q/DO4Rr8ve27Ee1mCQ0wNwOSJkd87RsHSepIgRTxq06oZzdVW0QQxi+xwWlAHHFF3CY7zBWFK9Gg=
+X-Received: by 2002:ac2:51a4:: with SMTP id f4mr9808064lfk.365.1606757555939;
+ Mon, 30 Nov 2020 09:32:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201127153923.26717-1-alexandre.truong@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.3.199]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20201130144515.8320-1-dwaipayanray1@gmail.com>
+ <c8eeab847fc09368ce270ea3e06ea0bbbd7d1b7f.camel@perches.com>
+ <CABJPP5BLjbx3FbvB3nAOiHfkRLUo7s0n-vboE+AXJqrZXseUNQ@mail.gmail.com> <070109a56817288562a91dfeec74359eb948234e.camel@perches.com>
+In-Reply-To: <070109a56817288562a91dfeec74359eb948234e.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Mon, 30 Nov 2020 23:02:07 +0530
+Message-ID: <CABJPP5BxO20-YzbTZij4gZGm4R63iG_n2kH58pSz5mgyXXwVBw@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: fix TYPO_SPELLING check for words with apostrophe
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2020 15:39, Alexandre Truong wrote:
-> Previously, this command returns no help message on aarch64:
-> 
->    -> ./perf record --user-regs=?
-> 
->    available registers:
->    Usage: perf record [<options>] [<command>]
->        or: perf record [<options>] -- <command> [<options>]
-> 
-> With this change, the registers are listed.
-> 
->    -> ./perf record --user-regs=?
-> 
->    available registers: x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 lr sp pc
-> 
-> It's also now possible to record subsets of registers on aarch64:
-> 
->    -> ./perf record --user-regs=x4,x5 ls
->    -> ./perf report --dump-raw-trace
-> 
->    12801163749305260 0xc70 [0x40]: PERF_RECORD_SAMPLE(IP, 0x2): 51956/51956: 0xffffaa6571f0 period: 145785 addr: 0
->    ... user regs: mask 0x30 ABI 64-bit
->    .... x4    0x000000000000006c
->    .... x5    0x0000001001000001
->     ... thread: ls:51956
->      ...... dso: /usr/lib64/ld-2.17.so
-> 
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
+On Mon, Nov 30, 2020 at 10:54 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-11-30 at 22:33 +0530, Dwaipayan Ray wrote:
+> > On Mon, Nov 30, 2020 at 10:13 PM Joe Perches <joe@perches.com> wrote:
+> > >
+> > > On Mon, 2020-11-30 at 20:15 +0530, Dwaipayan Ray wrote:
+> > > > checkpatch reports a false TYPO_SPELLING warning for some words
+> > > > containing an apostrophe.
+> > > >
+> > > > A false positive is "doesn't". Occurrence of the word causes
+> > > > checkpatch to emit the following warning:
+> > > >
+> > > > "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
+> > > >
+> > > > Check the word boundary for such cases so that words like
+> > > > "doesn't", "zig-zag", etc. aren't misinterpreted due to wrong
+> > > > splitting of the word by the \b regex metacharacter.
+> > > []
+> > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > > []
+> > > > @@ -3106,7 +3106,7 @@ sub process {
+> > > >  # Check for various typo / spelling mistakes
+> > > >               if (defined($misspellings) &&
+> > > >                   ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+> > > > -                     while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
+> > > > +                     while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b(?![^\w]?[a-z@]+)|$|[^a-z@])/gi) {
+> > >
+> > > Wouldn't it be simpler to change the existing [^a-z@] blocks to [^a-z@'-] ?
+> > >
+> > Hi,
+> > I tried it and it doesn't seem to work. Probably because the first
+> > group already causes the
+> > word to be captured. In this case `doesn'` was already captured
+> > because of the \b group.
+> >
+> > Is the first group modification perhaps okay? Or would you suggest
+> > something else?
+>
+> Seems to work for me:
+>
+> $ git diff --stat -p scripts/checkpatch.pl
+>  scripts/checkpatch.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 7dc094445d83..a6d4d524ae66 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3106,7 +3106,7 @@ sub process {
+>  # Check for various typo / spelling mistakes
+>                 if (defined($misspellings) &&
+>                     ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+> -                       while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
+> +                       while ($rawline =~ /(?:^|[^a-z@'-])($misspellings)(?:\b|$|[^a-z@'-])/gi) {
+>                                 my $typo = $1;
+>                                 my $typo_fix = $spelling_fix{lc($typo)};
+>                                 $typo_fix = ucfirst($typo_fix) if ($typo =~ /^[A-Z]/);
+>
+> $ cat t_spell.c
+> // SPDX-License-Identifier: GPL-2.0-only
+> void foo(void)
+> {
+>         //misspelled arne't word
+> }
+>
+> $ ./scripts/checkpatch.pl -f --strict t_spell.c
+> CHECK: 'arne't' may be misspelled - perhaps 'aren't'?
+> #4: FILE: t_spell.c:4:
+> +       //misspelled arne't word
+>
+> total: 0 errors, 0 warnings, 1 checks, 5 lines checked
+>
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+>
+> t_spell.c has style problems, please review.
+>
+> NOTE: If any of the errors are false positives, please report
+>       them to the maintainer, see CHECKPATCH in MAINTAINERS.
+>
 
-This looks ok, just adding in more guys recorded as reviewers in 
-MAINTAINERS.
+Sorry I think i explained wrong. For words like "doesn't", it still
+has the same problem.
+With your suggested modification in place:
 
-John
+$ ./scripts/checkpatch.pl
+0001-checkpatch-fix-TYPO_SPELLING-check-for-words-with-ap.patch
+--codespell
+WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?
+#9:
+A false positive is "doesn't". Occurrence of the word causes
 
-> ---
->   tools/perf/arch/arm64/util/perf_regs.c | 33 ++++++++++++++++++++++++++
->   1 file changed, 33 insertions(+)
-> 
-> diff --git a/tools/perf/arch/arm64/util/perf_regs.c b/tools/perf/arch/arm64/util/perf_regs.c
-> index 2833e101a..54efa12fd 100644
-> --- a/tools/perf/arch/arm64/util/perf_regs.c
-> +++ b/tools/perf/arch/arm64/util/perf_regs.c
-> @@ -2,5 +2,38 @@
->   #include "../../../util/perf_regs.h"
->   
->   const struct sample_reg sample_reg_masks[] = {
-> +	SMPL_REG(x0, PERF_REG_ARM64_X0),
-> +	SMPL_REG(x1, PERF_REG_ARM64_X1),
-> +	SMPL_REG(x2, PERF_REG_ARM64_X2),
-> +	SMPL_REG(x3, PERF_REG_ARM64_X3),
-> +	SMPL_REG(x4, PERF_REG_ARM64_X4),
-> +	SMPL_REG(x5, PERF_REG_ARM64_X5),
-> +	SMPL_REG(x6, PERF_REG_ARM64_X6),
-> +	SMPL_REG(x7, PERF_REG_ARM64_X7),
-> +	SMPL_REG(x8, PERF_REG_ARM64_X8),
-> +	SMPL_REG(x9, PERF_REG_ARM64_X9),
-> +	SMPL_REG(x10, PERF_REG_ARM64_X10),
-> +	SMPL_REG(x11, PERF_REG_ARM64_X11),
-> +	SMPL_REG(x12, PERF_REG_ARM64_X12),
-> +	SMPL_REG(x13, PERF_REG_ARM64_X13),
-> +	SMPL_REG(x14, PERF_REG_ARM64_X14),
-> +	SMPL_REG(x15, PERF_REG_ARM64_X15),
-> +	SMPL_REG(x16, PERF_REG_ARM64_X16),
-> +	SMPL_REG(x17, PERF_REG_ARM64_X17),
-> +	SMPL_REG(x18, PERF_REG_ARM64_X18),
-> +	SMPL_REG(x19, PERF_REG_ARM64_X19),
-> +	SMPL_REG(x20, PERF_REG_ARM64_X20),
-> +	SMPL_REG(x21, PERF_REG_ARM64_X21),
-> +	SMPL_REG(x22, PERF_REG_ARM64_X22),
-> +	SMPL_REG(x23, PERF_REG_ARM64_X23),
-> +	SMPL_REG(x24, PERF_REG_ARM64_X24),
-> +	SMPL_REG(x25, PERF_REG_ARM64_X25),
-> +	SMPL_REG(x26, PERF_REG_ARM64_X26),
-> +	SMPL_REG(x27, PERF_REG_ARM64_X27),
-> +	SMPL_REG(x28, PERF_REG_ARM64_X28),
-> +	SMPL_REG(x29, PERF_REG_ARM64_X29),
-> +	SMPL_REG(lr, PERF_REG_ARM64_LR),
-> +	SMPL_REG(sp, PERF_REG_ARM64_SP),
-> +	SMPL_REG(pc, PERF_REG_ARM64_PC),
->   	SMPL_REG_END
->   };
-> 
+WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?
+#15:
+"doesn't", "zig-zag", etc. aren't misinterpreted due to wrong
 
+Thank you,
+Dwaipayan.
