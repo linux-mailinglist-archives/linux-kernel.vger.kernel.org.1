@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32892C8F38
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2512C8F33
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388510AbgK3Uag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:30:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48225 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388446AbgK3Uag (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:30:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606768149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dEMeF3AMNMcYI65aSQplkoFbo+sAWz3Tjmr7jvdlwP0=;
-        b=Oopktu6MWTE5iy6vwQ6V3b/xmWBqM7bK7nGmbD3MWgTvjuJmsSb9+mt6WKiG9JkOnyCR7z
-        66Nel0mvmaZYv7GCpuUvu2ZoecTMND4eF4P5T62779kp30DuLX//v2c3hR4cvdUkfFhLnh
-        UlyMzQfuQJbobJmyfqFF1+cGYXYhDUk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-427-YminHN6DPKq7VfB4tNHwaA-1; Mon, 30 Nov 2020 15:29:05 -0500
-X-MC-Unique: YminHN6DPKq7VfB4tNHwaA-1
-Received: by mail-ej1-f72.google.com with SMTP id t4so4646972eju.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:29:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dEMeF3AMNMcYI65aSQplkoFbo+sAWz3Tjmr7jvdlwP0=;
-        b=RLqaDRrvGj61+1MhdJml/Q9Uz2C3f1iPhU0JQhg+CEhIyFOIyPh2HFs5N5KEXTdiL6
-         +osy4FEfX2GGTPNoUn3glzvRKpQGk0Sp/GFa5tTKcrmwEDjA/LIiSOElP5Qc8jVuJfGT
-         iIuUfyY8CEPsADs+10ONOtD6KDpjU5ZB+eYCcTwYnO3EsSv9myeZZww9mg6rbuqW6hau
-         2iWi7yJpRlGR76YPhlWJjmq+BUcZC/SnepT0M5rKv6S0lfyHq/PezgCQBQBY0tHgjcxq
-         LFunXGq4H3aGy7T3beqYjq/MWubaLXRxwCwCrQ46h2JEHlofjeLKS3LH45j+x0qjt7ld
-         tI2g==
-X-Gm-Message-State: AOAM532CaFOHKEsgBZJPnae0xhwCGsMuqs4WvB096QfFjekpyXvKjHgZ
-        giFEabhPCCMuDSb2/7L8Iyu8PW7zrPXUDFTxAccfK9FmAdyj3rh2nF4XI2djrnV003Vzqnu+KSN
-        WyRsOssbaZO6bR9ElJNCPdPj3
-X-Received: by 2002:a05:6402:2070:: with SMTP id bd16mr11170015edb.107.1606768144731;
-        Mon, 30 Nov 2020 12:29:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxg9IglFIMQ0ZSm6k1KLj+p3mu5WZxF5QG0J+89nlaTxpR4umWpnoGsGHhv67ElcSjdL8GU8g==
-X-Received: by 2002:a05:6402:2070:: with SMTP id bd16mr11169987edb.107.1606768144486;
-        Mon, 30 Nov 2020 12:29:04 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id a13sm2400959edb.76.2020.11.30.12.29.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 12:29:03 -0800 (PST)
-Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
-To:     Mike Christie <michael.christie@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20201125153550.810101-1-sashal@kernel.org>
- <20201125153550.810101-22-sashal@kernel.org>
- <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
- <20201125180102.GL643756@sasha-vm>
- <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
- <20201129041314.GO643756@sasha-vm>
- <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
- <20201129210650.GP643756@sasha-vm>
- <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
- <20201130173832.GR643756@sasha-vm>
- <238cbdd1-dabc-d1c1-cff8-c9604a0c9b95@redhat.com>
- <9ec7dff6-d679-ce19-5e77-f7bcb5a63442@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4c1b2bc7-cf50-4dcd-bfd4-be07e515de2a@redhat.com>
-Date:   Mon, 30 Nov 2020 21:29:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730159AbgK3UaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:30:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728959AbgK3UaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 15:30:00 -0500
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A74742073C
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 20:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606768160;
+        bh=8p6NimbOeCayqmrZMD8vIX/ZAIUnX0r/wxjNZ1WnXaY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W+iVilSO1VWZAI5uV16yR1HA16GxYYT2Dj/k6we3Iy77DnVtZTjvG5EtIPyjCtsPn
+         H3pZ8VB7/poFR8T+ER5v1oogysTBrCEJfyDyJbQ645zP0FB4KNNviXO4UnhsrJsn4x
+         8LMLojOTM8uAsBybQS1LJhUoyCs0K/WMfJaCnGaY=
+Received: by mail-ed1-f50.google.com with SMTP id m16so18108187edr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:29:19 -0800 (PST)
+X-Gm-Message-State: AOAM5310S7i8j27eFtTUyXOiSQ8zUPvAQX+wo5DeNv8PxNwYVhbT1PDl
+        TiS+YxEkOluQLzT/EyNO0MW5cy5mCP/4sA2MCQ==
+X-Google-Smtp-Source: ABdhPJx253fAf5hg88WZhzFWnVy0Qrr8HJJkGqNvc+PO7FdlAlN4nMcqcJFZZwVUmJlwsPlgwbYTIlwO2QOQfdpd9TI=
+X-Received: by 2002:aa7:c816:: with SMTP id a22mr7112436edt.373.1606768158104;
+ Mon, 30 Nov 2020 12:29:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <9ec7dff6-d679-ce19-5e77-f7bcb5a63442@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1606746513-30909-1-git-send-email-kevin3.tang@gmail.com> <1606746513-30909-2-git-send-email-kevin3.tang@gmail.com>
+In-Reply-To: <1606746513-30909-2-git-send-email-kevin3.tang@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 30 Nov 2020 13:29:06 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+fC1TzygUopiwVtwBN8JtwmnGy=VMTEvkudSQUdXiMqg@mail.gmail.com>
+Message-ID: <CAL_Jsq+fC1TzygUopiwVtwBN8JtwmnGy=VMTEvkudSQUdXiMqg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: display: add Unisoc's drm master bindings
+To:     Kevin Tang <kevin3.tang@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/20 20:44, Mike Christie wrote:
-> I have never seen a public/open-source vhost-scsi testsuite.
-> 
-> For patch 23 (the one that adds the lun reset support which is built on
-> patch 22), we can't add it to stable right now if you wanted to, because
-> it has a bug in it. Michael T, sent the fix:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/commit/?h=linux-next&id=b4fffc177fad3c99ee049611a508ca9561bb6871
-> 
-> to Linus today.
+On Mon, Nov 30, 2020 at 7:28 AM Kevin Tang <kevin3.tang@gmail.com> wrote:
+>
+> From: Kevin Tang <kevin.tang@unisoc.com>
 
-Ok, so at least it was only a close call and anyway not for something 
-that most people would be running on their machines.  But it still seems 
-to me that the state of CI in Linux is abysmal compared to what is 
-needed to arbitrarily(*) pick up patches and commit them to "stable" trees.
+Once again, DT patches must Cc the DT list if you want them reviewed.
 
-Paolo
+>
+> The Unisoc DRM master device is a virtual device needed to list all
+> DPU devices or other display interface nodes that comprise the
+> graphics subsystem
+>
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+> ---
+>  .../display/sprd/sprd,display-subsystem.yaml       | 39 ++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml b/Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+> new file mode 100644
+> index 0000000..9487a39
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+> @@ -0,0 +1,39 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/sprd/sprd,display-subsystem.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Unisoc DRM master device
+> +
+> +maintainers:
+> +  - Kevin Tang <kevin.tang@unisoc.com>
+> +
+> +description: |
+> +  The Unisoc DRM master device is a virtual device needed to list all
+> +  DPU devices or other display interface nodes that comprise the
+> +  graphics subsystem.
+> +
+> +properties:
+> +  compatible:
+> +    const: sprd,display-subsystem
 
-(*) A ML bot is an arbitrary choice as far as we are concerned since we 
-cannot know how it makes a decision.
+As I said before, we try to avoid these virtual nodes. Make the DRM
+driver bind to the DPU node.
 
+The case where this might be needed is if you have h/w that's a
+mixture of shared and discrete blocks. I don't see anything here
+matching that.
+
+Rob
