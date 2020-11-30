@@ -2,66 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F25C2C86FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE55E2C8700
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727477AbgK3OlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:41:14 -0500
-Received: from outbound-smtp26.blacknight.com ([81.17.249.194]:50920 "EHLO
-        outbound-smtp26.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725859AbgK3OlN (ORCPT
+        id S1726562AbgK3OnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:43:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51434 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725898AbgK3OnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:41:13 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp26.blacknight.com (Postfix) with ESMTPS id D152BCB011
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:40:21 +0000 (GMT)
-Received: (qmail 28275 invoked from network); 30 Nov 2020 14:40:21 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 30 Nov 2020 14:40:21 -0000
-Date:   Mon, 30 Nov 2020 14:40:20 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH] sched/fair: Clear SMT siblings after determining the core is
- not idle
-Message-ID: <20201130144020.GS3371@techsingularity.net>
+        Mon, 30 Nov 2020 09:43:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606747307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n7FeUibbReJ1gM5EGPZRonIL/+Uv7TtKGQkvjaCTCcQ=;
+        b=XMyQ1bzCIr5KB9x8bl/y9R4xgwJa+cBYFiIGUPGNsr5rryrVD+yc+f5CBspu5T6C9EmIO/
+        z/Ij81pGbSrJ1nzF0PWXqEjZsvqcoDG+PdKE0PFbtj2Il0QxEYpBYBnahC2fDe9e9Kjc7a
+        GJCwH1G5eM3Cr1K3CznL6qLr3fRUkJs=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-526-98V3-qVmMsy9IGehQxQSog-1; Mon, 30 Nov 2020 09:41:45 -0500
+X-MC-Unique: 98V3-qVmMsy9IGehQxQSog-1
+Received: by mail-ej1-f70.google.com with SMTP id t4so4175516eju.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:41:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n7FeUibbReJ1gM5EGPZRonIL/+Uv7TtKGQkvjaCTCcQ=;
+        b=i0KsNzIzJLYOqDxASlgjsW3JH7mPXlzq8rHMXXJdjo4RMCECF6C2bL/xD3JNKR9Ukd
+         Z0DLn/2Ovm3SBF0a1yQz5nOZ40ZKXyh5WjERc/+TbXVbLYbUqkLL+cN37HGJgy0clhjE
+         EBPtlxQ8ZTxbDUztYNSwxfmLMAoTF9AOBL9wtqLbGCOjuCQ3EHvWBDC5v0qfisvnO30+
+         jasj7SkAvKQpin1CCKXzjEt7Zl8VcrexipL5vfn+3U8rCXOU+VdjpRvkahSaTHfVKOow
+         efIow03YGWvtuaaB3pQUsPNLCoPwCQmWEABm0f7RMffWVz/ANH68Xe3Pkyb1gGGU4uku
+         0d9w==
+X-Gm-Message-State: AOAM530JUz6P0Cb1//W7QnnIPo3l0aYT1LUb5XLsInL4qjNl9jXazERu
+        7IjtK+RFvsipSQ5Ya3SPJ4s8sNQGFY7AfFp0lkTAdwo9mzigLCjS695ePpcUjvORRroxmpfJcQH
+        Ek5/1DvVPAjmOSPDgAIfD87tK
+X-Received: by 2002:a50:fa92:: with SMTP id w18mr21765486edr.44.1606747303795;
+        Mon, 30 Nov 2020 06:41:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwZ/QxihozNr0KBWUjMwea/F1FYvr85clicY2eNCGmdatOCBCrnXAfUrCzTcxDRtSmqzRBLow==
+X-Received: by 2002:a50:fa92:: with SMTP id w18mr21765476edr.44.1606747303629;
+        Mon, 30 Nov 2020 06:41:43 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id gt11sm5746859ejb.67.2020.11.30.06.41.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 06:41:42 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] KVM: SVM: Move asid to vcpu_svm
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     cavery@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mlevitsk@redhat.com,
+        vkuznets@redhat.com, wei.huang2@amd.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com
+References: <aadb4690-9b2b-4801-f2fc-783cb4ae7f60@redhat.com>
+ <20201129094109.32520-1-Ashish.Kalra@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f27e877e-b82b-ec9e-270e-cf8f23130b0b@redhat.com>
+Date:   Mon, 30 Nov 2020 15:41:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201129094109.32520-1-Ashish.Kalra@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clearing of SMT siblings from the SIS mask before checking for an idle
-core is a small but unnecessary cost. Defer the clearing of the siblings
-until the scan moves to the next potential target. The cost of this was
-not measured as it is borderline noise but it should be self-evident.
+On 29/11/20 10:41, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> This patch breaks SEV guests.
+> 
+> The patch stores current ASID in struct vcpu_svm and only moves it to VMCB in
+> svm_vcpu_run(), but by doing so, the ASID allocated for SEV guests and setup
+> in vmcb->control.asid by pre_sev_run() gets over-written by this ASID
+> stored in struct vcpu_svm and hence, VMRUN fails as SEV guest is bound/activated
+> on a different ASID then the one overwritten in vmcb->control.asid at VMRUN.
+> 
+> For example, asid#1 was activated for SEV guest and then vmcb->control.asid is
+> overwritten with asid#0 (svm->asid) as part of this patch in svm_vcpu_run() and
+> hence VMRUN fails.
+> 
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks Ashish, I've sent a patch to fix it.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0d54d69ba1a5..d9acd55d309b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6087,10 +6087,11 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
- 				break;
- 			}
- 		}
--		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 
- 		if (idle)
- 			return core;
-+
-+		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 	}
- 
- 	/*
+Would it be possible to add a minimal SEV test to 
+tools/testing/selftests/kvm?  It doesn't have to do full attestation 
+etc., if you can just write an "out" instruction using SEV_DBG_ENCRYPT 
+and check that you can run it that's enough.
+
+Paolo
+
