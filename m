@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537722C8CA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E21B2C8CAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388052AbgK3SYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:24:10 -0500
-Received: from mail-il1-f193.google.com ([209.85.166.193]:33503 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727125AbgK3SYK (ORCPT
+        id S2388122AbgK3SYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:24:36 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:38077 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388112AbgK3SYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:24:10 -0500
-Received: by mail-il1-f193.google.com with SMTP id y9so12259270ilb.0;
-        Mon, 30 Nov 2020 10:23:54 -0800 (PST)
+        Mon, 30 Nov 2020 13:24:36 -0500
+Received: by mail-ed1-f67.google.com with SMTP id y4so17472354edy.5;
+        Mon, 30 Nov 2020 10:24:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0neMxzWOSFLOXSknMHOSEKClv5G9ep++zXnTP/Rc0O8=;
-        b=d2UxlyWgyZXI/Whc9L/l+nMUi/oHDXXWPi9QAfCiaYCNmplfik0llX+NQuopFCnlgC
-         z0epDf/Gn2R3hSUrn2rHcRJcpyqRAG9v4xb0JaaP/Jp9X4XMnaOGqUjo/DSf0YaFGtRL
-         xbNgiYiymexklk46FMIFNWqqlULbhV/WLk0V4lKCVxLeBvuOWTn95Z7e/x3BCkJ4CZjg
-         WL5ugCX0rjLQSUva8+zgjaBvIjy/5NKqiqY9HSIBGT5u/E3OexlmF6NYqsoPpLiNe1nh
-         2+7mnPn3No680kQXM/BzfYHRVn+t1e8zCi8XYy94sCY63S0tsebdBjboWggOitkMVkw7
-         knJA==
-X-Gm-Message-State: AOAM530s/UW591LODMcvBAaitUePNNmUTdbvIueXBYJkkLTYKPEh0yxM
-        SunSt7EFwgRBRcxfqNdKDhez6JlwvA==
-X-Google-Smtp-Source: ABdhPJzHXlx/TfQVfpIfEHQeSQemYh6/jCa4ib42N0v8d/w5/13Z4A2a0QvXXmVQUGCBpZNO2HvgFQ==
-X-Received: by 2002:a92:40c8:: with SMTP id d69mr19411707ill.66.1606760608911;
-        Mon, 30 Nov 2020 10:23:28 -0800 (PST)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id z6sm11205177ilm.69.2020.11.30.10.23.25
+        bh=I9ONVBtfScKIMTye82bfGQ5rddLKQrmuSaE2Zj5EgGI=;
+        b=irAHwtaB9jiuv+vG00w505UybL5aiKHDguodT6LJytjnXVtNtlwJ76oRFwituz8twK
+         WEPEW0R6JStai9TjYrNdp2xpsuZL7WgA/sRsUW7E6KdmtetiXt/tURyp4XuPYCpfqU8P
+         ABz3fqwZ6TKFKv5glz0IsRpd4miRvplFOKliaYL92niQOKVnogCK92Je/nJ75o6LYtEc
+         sNEMz1lQgDvtpgqAE+hccYt7VFx+OX87lUVhXvfxhg2GJsEIrcOSTNYgR+nbSV4wBKEi
+         l7NdNWUkryCRWIkformrHmA9jBPxXIk9IKbcrfwfUhq/CnqwW7be6khT7zadS96PwKCn
+         gSig==
+X-Gm-Message-State: AOAM533PavAV4lPijyay5l0BGiK+ve6wAtdtYgnN1skGvu5hg0laMHsG
+        kO21O1iyYd2qEoVvX0TR5WU=
+X-Google-Smtp-Source: ABdhPJwYHGbHVMApFqE392EkdKd4CbGtej8nEk3tKKJMIPVxgXA2gu998VoT05uHS0KZ4By5J9o3BA==
+X-Received: by 2002:a50:8f64:: with SMTP id 91mr23297490edy.310.1606760628069;
+        Mon, 30 Nov 2020 10:23:48 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id v18sm789274edx.30.2020.11.30.10.23.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 10:23:26 -0800 (PST)
-Received: (nullmailer pid 2759200 invoked by uid 1000);
-        Mon, 30 Nov 2020 18:23:24 -0000
-Date:   Mon, 30 Nov 2020 11:23:24 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Cc:     linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, richard@nod.at,
-        miquel.raynal@bootlin.com, heiko@sntech.de
-Subject: Re: [PATCH v14 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND
- flash controller
-Message-ID: <20201130182324.GA2757731@robh.at.kernel.org>
-References: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
- <20201120095613.20172-2-yifeng.zhao@rock-chips.com>
+        Mon, 30 Nov 2020 10:23:47 -0800 (PST)
+Date:   Mon, 30 Nov 2020 20:23:45 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v10 01/19] dt-bindings: memory: tegra20: emc: Document
+ opp-supported-hw property
+Message-ID: <20201130182345.GA28450@kozik-lap>
+References: <20201123002723.28463-1-digetx@gmail.com>
+ <20201123002723.28463-2-digetx@gmail.com>
+ <46b3bab7-1c2c-2f50-6e41-f411e532357b@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201120095613.20172-2-yifeng.zhao@rock-chips.com>
+In-Reply-To: <46b3bab7-1c2c-2f50-6e41-f411e532357b@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 17:56:10 +0800, Yifeng Zhao wrote:
-> Documentation support for Rockchip RK3xxx NAND flash controllers
+On Mon, Nov 30, 2020 at 11:48:18AM +0200, Georgi Djakov wrote:
+> On 23.11.20 2:27, Dmitry Osipenko wrote:
+> > Document opp-supported-hw property, which is not strictly necessary to
+> > have on Tegra20, but it's very convenient to have because all other SoC
+> > core devices will use hardware versioning, and thus, it's good to maintain
+> > the consistency.
 > 
-> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
-> ---
+> Hi Dmitry,
 > 
-> Changes in v14: None
-> Changes in v13: None
-> Changes in v12:
-> - Fix some warnings while make dt_binding_check
-> - Drop a allOf defined
-> 
-> Changes in v11: None
-> Changes in v10: None
-> Changes in v9: None
-> Changes in v8:
-> - Fix a error while make dt_binding_check
-> 
-> Changes in v7:
-> - Fix some wrong define
-> 
-> Changes in v6:
-> - Fix some wrong define
-> - Modified the definition of compatible
-> 
-> Changes in v5:
-> - Fix some wrong define.
-> - Add boot-medium define.
-> - Remove some compatible define.
-> 
-> Changes in v4:
-> - The compatible define with rkxx_nfc.
-> - Add assigned-clocks.
-> - Fix some wrong defineChanges in.
-> 
-> Changes in v3:
-> - Change the title for the dt-bindings.
-> 
-> Changes in v2: None
-> 
->  .../mtd/rockchip,nand-controller.yaml         | 161 ++++++++++++++++++
->  1 file changed, 161 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
-> 
+> I believe Krzysztof is waiting for Ack on the binding before merging
+> this patch (and the rest), but unfortunately it was not sent to the
+> DT mailing list for review.
 
+Indeed I am still waiting for Rob's and Thierry's acks for this and the
+following patches.  It has been just a week so I'll give it few more
+days.
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
-
-If a tag was not added on purpose, please state why and what changed.
+Best regards,
+Krzysztof
 
