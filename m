@@ -2,152 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2996D2C7CA7
+	by mail.lfdr.de (Postfix) with ESMTP id 9872C2C7CA8
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 03:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727433AbgK3CGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 21:06:51 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8884 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgK3CGv (ORCPT
+        id S1728199AbgK3CHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 21:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726520AbgK3CHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 21:06:51 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CkpVJ6JF8z6vcd;
-        Mon, 30 Nov 2020 10:05:44 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 30 Nov
- 2020 10:06:00 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: add compr_inode and compr_blocks sysfs
- nodes
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
-References: <20201016051455.1913795-1-daeho43@gmail.com>
- <f8359dde-7e0c-b2fc-451f-2984c50fa552@huawei.com>
- <CACOAw_wrTSZ3DWBUJA=ePe=fDRgEgqCfsbSqKmE6+ACW8A-RQg@mail.gmail.com>
- <2d354bbe-9d1e-f3e0-b918-b9ec023a93ba@huawei.com>
- <CACOAw_x1Zkn-yY-cmWwQUByHVg5mUDqYz86e+TFKWWuhas+_MA@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <3e3e3ec4-89cb-9dc6-e84b-ec4acfba4ffe@huawei.com>
-Date:   Mon, 30 Nov 2020 10:05:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Sun, 29 Nov 2020 21:07:12 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED9BC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 18:06:31 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id x16so11182393ejj.7
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 18:06:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=yUFTrmBcTv6s2WlseBa7/fojjPpOwHHi239KldjwbCQ=;
+        b=jCVFjKrlsOTWqDGb4O0NCvhBceF/Nu6W7EHItFnfB4It963FJCon2qmaCVn7odK21B
+         UTbRTW1Wmqqb3ZS1yVFyoUqGLAfo3cvs/17z9Ckdy8YrCEvyBUg6RY/3MIsjJXkVKn3I
+         YnlO/MsiAftCiiInM8RVtRD6O00mNaNvpH/av53qMZLQCL8BOvsKHB2bvWD+Yj0OVVWr
+         0Ev+HjjkHqOq/kJg1mwJK7tba88El97A1cE3F1OaZEOeoPIO7DfOhxZgNb5K2nYfr8cc
+         lXsgO8YMGWdK8HsJR5oP9GlTNNakyEVx2FkyABYnBs2sMqki0BnZ11B0fVf404ll8mWD
+         1T1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yUFTrmBcTv6s2WlseBa7/fojjPpOwHHi239KldjwbCQ=;
+        b=FGSGi6KYGV004uu6jqDnOETyYwcL8n+UHmmtJnYn+zlzhu7arPP79J+ft6O9JU+cDc
+         +a8I78W6gaUgXiyWy/cPA2/iiHneAuV3Cair0kHkFJXXEbVhNdFKQ2pyyr2GypyVfkxw
+         gFzQdtCyFXS0tvIyU7AFkFZT4mh3joUrxgDlEY9qErHkPaJiz10z1Up1DPhyJFAEXTD9
+         wqb5o9DHnfsYcjeOIEl20jE/BTW8aXu+gLlB9mOE5TEaA4fk6KRxNRFjdQeJrqb2hEWE
+         lWA4FUh5QO4KeuFfKGmy3/5zQCoaNkBqQxMLoRECuDdQsBmqIPb7GLHBo7BLO+IPuQ6M
+         kFxg==
+X-Gm-Message-State: AOAM5326mzp9Md7WrzJZjBsYuVlgxpEeL4fvKJXYiLUFsjDZlUhT3N2v
+        z0MJSelYfP2xc+RsBBoTFVPGig==
+X-Google-Smtp-Source: ABdhPJzwld2qWB0JvY0wVJqs9rtlmG3dUpTNk8zZ4y5WOAiV03tAlEcun196GwC7kmfo7ZrmIXuncQ==
+X-Received: by 2002:a17:906:7191:: with SMTP id h17mr2975447ejk.421.1606701990627;
+        Sun, 29 Nov 2020 18:06:30 -0800 (PST)
+Received: from ?IPv6:240e:82:0:92f3:e12d:4673:cbec:1111? ([240e:82:0:92f3:e12d:4673:cbec:1111])
+        by smtp.gmail.com with ESMTPSA id m7sm5905343eds.73.2020.11.29.18.06.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Nov 2020 18:06:30 -0800 (PST)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+raid@molgen.mpg.de
+References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
+Date:   Mon, 30 Nov 2020 03:06:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_x1Zkn-yY-cmWwQUByHVg5mUDqYz86e+TFKWWuhas+_MA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alright, let's export readonly stats in new directory once you have such requirement. :)
+
+
+On 11/28/20 13:25, Donald Buczek wrote:
+> Dear Linux mdraid people,
+> 
+> we are using raid6 on several servers. Occasionally we had failures, 
+> where a mdX_raid6 process seems to go into a busy loop and all I/O to 
+> the md device blocks. We've seen this on various kernel versions.
+> 
+> The last time this happened (in this case with Linux 5.10.0-rc4), I took 
+> some data.
+> 
+> The triggering event seems to be the md_check cron job trying to pause 
+> the ongoing check operation in the morning with
+> 
+>      echo idle > /sys/devices/virtual/block/md1/md/sync_action
+> 
+> This doesn't complete. Here's /proc/stack of this process:
+> 
+>      root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# ps -fp 23333
+>      UID        PID  PPID  C STIME TTY          TIME CMD
+>      root     23333 23331  0 02:00 ?        00:00:00 /bin/bash 
+> /usr/bin/mdcheck --continue --duration 06:00
+>      root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# cat 
+> /proc/23333/stack
+>      [<0>] kthread_stop+0x6e/0x150
+>      [<0>] md_unregister_thread+0x3e/0x70
+>      [<0>] md_reap_sync_thread+0x1f/0x1e0
+>      [<0>] action_store+0x141/0x2b0
+>      [<0>] md_attr_store+0x71/0xb0
+>      [<0>] kernfs_fop_write+0x113/0x1a0
+>      [<0>] vfs_write+0xbc/0x250
+>      [<0>] ksys_write+0xa1/0xe0
+>      [<0>] do_syscall_64+0x33/0x40
+>      [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Note, that md0 has been paused successfully just before.
+
+What is the personality of md0? Is it also raid6?
+
+> 
+>      2020-11-27T02:00:01+01:00 done CROND[23333]: (root) CMD 
+> (/usr/bin/mdcheck --continue --duration "06:00")
+>      2020-11-27T02:00:01+01:00 done root: mdcheck continue checking 
+> /dev/md0 from 10623180920
+>      2020-11-27T02:00:01.382994+01:00 done kernel: [378596.606381] md: 
+> data-check of RAID array md0
+>      2020-11-27T02:00:01+01:00 done root: mdcheck continue checking 
+> /dev/md1 from 11582849320
+>      2020-11-27T02:00:01.437999+01:00 done kernel: [378596.661559] md: 
+> data-check of RAID array md1
+>      2020-11-27T06:00:01.842003+01:00 done kernel: [392996.625147] md: 
+> md0: data-check interrupted.
+>      2020-11-27T06:00:02+01:00 done root: pause checking /dev/md0 at 
+> 13351127680
+>      2020-11-27T06:00:02.338989+01:00 done kernel: [392997.122520] md: 
+> md1: data-check interrupted.
+>      [ nothing related following.... ]
+> 
+> After that, we see md1_raid6 in a busy loop:
+> 
+>      PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ 
+> COMMAND
+>      2376 root     20   0       0      0      0 R 100.0  0.0   1387:38 
+> md1_raid6
+
+Seems the reap sync thread was trying to stop md1_raid6 while md1_raid6 
+was triggered again and again.
+
+> 
+> Also, all processes doing I/O do the md device block.
+> 
+> This is /proc/mdstat:
+> 
+>      Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4] 
+> [multipath]
+>      md1 : active raid6 sdk[0] sdj[15] sdi[14] sdh[13] sdg[12] sdf[11] 
+> sde[10] sdd[9] sdc[8] sdr[7] sdq[6] sdp[5] sdo[4] sdn[3] sdm[2] sdl[1]
+>            109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 
+> 2 [16/16] [UUUUUUUUUUUUUUUU]
+>            [==================>..]  check = 94.0% 
+> (7350290348/7813894144) finish=57189.3min speed=135K/sec
+>            bitmap: 0/59 pages [0KB], 65536KB chunk
+>      md0 : active raid6 sds[0] sdah[15] sdag[16] sdaf[13] sdae[12] 
+> sdad[11] sdac[10] sdab[9] sdaa[8] sdz[7] sdy[6] sdx[17] sdw[4] sdv[3] 
+> sdu[2] sdt[1]
+>            109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 
+> 2 [16/16] [UUUUUUUUUUUUUUUU]
+>            bitmap: 0/59 pages [0KB], 65536KB chunk
+> 
+
+So the RECOVERY_CHECK flag should be set, not sure if the simple changes
+helps, but you may give it a try.
+
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 98bac4f..e2697d0 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -9300,7 +9300,8 @@ void md_check_recovery(struct mddev *mddev)
+                         md_update_sb(mddev, 0);
+
+                 if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
+-                   !test_bit(MD_RECOVERY_DONE, &mddev->recovery)) {
++                   (!test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
++                    test_bit(MD_RECOVERY_CHECK, &mddev->recovery))) {
+                         /* resync/recovery still happening */
+                         clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+                         goto unlock;
 
 Thanks,
-
-On 2020/11/30 10:02, Daeho Jeong wrote:
-> Sure, but I don't think we need to expose compr_inode and compr_block right now.
-> 
-> 2020년 11월 27일 (금) 오후 6:44, Chao Yu <yuchao0@huawei.com>님이 작성:
->>
->> Daeho,
->>
->> How about updating this patch based on below patch?
->>
->>          f2fs: introduce a new per-sb directory in sysfs
->>
->> On 2020/10/22 10:53, Daeho Jeong wrote:
->>> Yep, It sounds good to me.
->>>
->>> 2020년 10월 21일 (수) 오후 3:08, Chao Yu <yuchao0@huawei.com>님이 작성:
->>>>
->>>> On 2020/10/16 13:14, Daeho Jeong wrote:
->>>>> From: Daeho Jeong <daehojeong@google.com>
->>>>>
->>>>> Added compr_inode to show compressed inode count and compr_blocks to
->>>>> show compressed block count in sysfs.
->>>>
->>>> As there are so many entries in ../f2fs/<disk>/ directory, it looks a mess
->>>> there, I suggest that we can add a new directory 'stats' in ../f2fs/<disk>/,
->>>> in where we can store all readonly stats related entries there later.
->>>>
->>>> How do you think?
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>>>> ---
->>>>>     Documentation/ABI/testing/sysfs-fs-f2fs | 10 ++++++++++
->>>>>     fs/f2fs/sysfs.c                         | 17 +++++++++++++++++
->>>>>     2 files changed, 27 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
->>>>> index 834d0becae6d..a01c26484c69 100644
->>>>> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
->>>>> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
->>>>> @@ -350,3 +350,13 @@ Date:            April 2020
->>>>>     Contact:    "Daeho Jeong" <daehojeong@google.com>
->>>>>     Description:        Give a way to change iostat_period time. 3secs by default.
->>>>>                 The new iostat trace gives stats gap given the period.
->>>>> +
->>>>> +What:                /sys/fs/f2fs/<disk>/compr_inode
->>>>> +Date:                October 2020
->>>>> +Contact:     "Daeho Jeong" <daehojeong@google.com>
->>>>> +Description: Show compressed inode count
->>>>> +
->>>>> +What:                /sys/fs/f2fs/<disk>/compr_blocks
->>>>> +Date:                October 2020
->>>>> +Contact:     "Daeho Jeong" <daehojeong@google.com>
->>>>> +Description: Show compressed block count
->>>>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
->>>>> index 94c98e412aa1..7139a29a00d3 100644
->>>>> --- a/fs/f2fs/sysfs.c
->>>>> +++ b/fs/f2fs/sysfs.c
->>>>> @@ -223,6 +223,19 @@ static ssize_t avg_vblocks_show(struct f2fs_attr *a,
->>>>>         f2fs_update_sit_info(sbi);
->>>>>         return sprintf(buf, "%llu\n", (unsigned long long)(si->avg_vblocks));
->>>>>     }
->>>>> +
->>>>> +static ssize_t compr_inode_show(struct f2fs_attr *a,
->>>>> +                             struct f2fs_sb_info *sbi, char *buf)
->>>>> +{
->>>>> +     return sprintf(buf, "%u\n", atomic_read(&sbi->compr_inode));
->>>>> +}
->>>>> +
->>>>> +static ssize_t compr_blocks_show(struct f2fs_attr *a,
->>>>> +                             struct f2fs_sb_info *sbi, char *buf)
->>>>> +{
->>>>> +     return sprintf(buf, "%llu\n", atomic64_read(&sbi->compr_blocks));
->>>>> +}
->>>>> +
->>>>>     #endif
->>>>>
->>>>>     static ssize_t main_blkaddr_show(struct f2fs_attr *a,
->>>>> @@ -591,6 +604,8 @@ F2FS_STAT_ATTR(STAT_INFO, f2fs_stat_info, gc_background_calls, bg_gc);
->>>>>     F2FS_GENERAL_RO_ATTR(moved_blocks_background);
->>>>>     F2FS_GENERAL_RO_ATTR(moved_blocks_foreground);
->>>>>     F2FS_GENERAL_RO_ATTR(avg_vblocks);
->>>>> +F2FS_GENERAL_RO_ATTR(compr_inode);
->>>>> +F2FS_GENERAL_RO_ATTR(compr_blocks);
->>>>>     #endif
->>>>>
->>>>>     #ifdef CONFIG_FS_ENCRYPTION
->>>>> @@ -675,6 +690,8 @@ static struct attribute *f2fs_attrs[] = {
->>>>>         ATTR_LIST(moved_blocks_foreground),
->>>>>         ATTR_LIST(moved_blocks_background),
->>>>>         ATTR_LIST(avg_vblocks),
->>>>> +     ATTR_LIST(compr_inode),
->>>>> +     ATTR_LIST(compr_blocks),
->>>>>     #endif
->>>>>         NULL,
->>>>>     };
->>>>>
->>> .
->>>
-> .
-> 
+Guoqing
