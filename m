@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2212C90BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421012C90C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730459AbgK3WMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:12:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
+        id S1730530AbgK3WNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:13:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730451AbgK3WMK (ORCPT
+        with ESMTP id S1728305AbgK3WNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:12:10 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB61AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:11:29 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id 11so12874916oty.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:11:29 -0800 (PST)
+        Mon, 30 Nov 2020 17:13:02 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA1CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:12:16 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id n12so12928568otk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:12:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=ETFvsz7DPdLzPT7VlFuUB/Fkyqm4Ejp9KpTAnp1NCwQ=;
-        b=ndXitIrz54miGNcQSrozcAEwWCdIJKXgWMZk62ZLI2HkixdmOHzTQM+TZwhUgswJ4n
-         EjtZGRieJtB+0N/H5SeXKdDjNiF3NU0v3Gvn6b2lIrHOCoEcaPTBsPt3oP5j+1g02XNZ
-         ZJkr3nA+Zsdc/ZMJP20Amy8Zs4N9o/TNrBEFB1OSzfr0Ls7aVKdz7n9ZDyQy7JdVoddS
-         Ax8ALMpE96jLs3MGl1xTeVQa0ig64u9ryjgZgwhsujSftvi1u6jb7RyaQO/48nVF2mX8
-         sXTjXQvr7v9PW3qT5IW1n5Z1fMBOZMDgexlhM4Oxo82n6ZXYW+IB4JBrmh6Z/RW3XxWD
-         gZTw==
+        bh=b6cW600D3AdtI4dxch+V0CvHl/L1hc8DgKLicXldcyE=;
+        b=uP8r4KF/iPSPgSAL2eeX+38BNuoBBZ7WxsB3MyXavd6tHtbge0x157ZkkUsbp1+SGc
+         uIWN9U6XADxT1kQ3y13NLuuzCiEnWUALOa5R6dKheQkeu0UnfC7AqDEzAVwh1AoBwNLR
+         +XTk0rIP9YbrYEaMXrlawdoSsqM/JDAszbHhfoh6iwp74Usp4LD56eORUU56r3iyKcFn
+         FJhGw1HdLxZ5QDJtMHdYdTUlQrGAbZWZ5x2vIZ9YrC0WAA96YnCLll1Kosz9lYnpz0mj
+         GIl0XOph05Kk1fJQtcX2albqz6VUrV2iVD5E0tj6bdaradDh4AND/X7vpDX2/1jtw0ax
+         PWZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ETFvsz7DPdLzPT7VlFuUB/Fkyqm4Ejp9KpTAnp1NCwQ=;
-        b=HagEksn8RZv7w+ve62aM9epL2ig1BbveEhNjJ4vfQBnLmb75x2AayXndFbh4E6jRg8
-         rfeu/V5yeH1/7WkHoE2LZIwWQ7iFHV/MnPuhIU0oDdqeqZBcNAmUTZo3LQ5FoFrWtlHl
-         eMXynzy+/1GKw9Y80vtfXQbuqXfqToif3PCtRXZkmyPCwZ8cgXsDScLT2sZx4E+QSR0F
-         lvRoEXuF2607PvTQ/huGwMf7a1a3cukG4xqrzML5fKkp+COi7PqQzFZlEIAgnTibwccH
-         4ePl+2gcfb99PzocJDYE9Mpx/gJ5gHXHjPqI3QMU8bGY1l6QqBEbCXNkFzis94Q2Pvhd
-         X1Xg==
-X-Gm-Message-State: AOAM532jY9IUETkSwY1jNXd4PIG7uc52Lnm/eDn0mTFKEAOJceoXBdUQ
-        SYlKcDVVNClgq3wXrzAt+ctJTxUKsmsOCgCKJPU=
-X-Google-Smtp-Source: ABdhPJwhOON7aAvHf5vEQnbPq+Zn1bRIyLJ221qqr9kjhkdxurNXiMOF4uiyqatAIebwHcYfxEj/y1hCzwWzyz0SJjM=
-X-Received: by 2002:a05:6830:22e4:: with SMTP id t4mr18967658otc.23.1606774289360;
- Mon, 30 Nov 2020 14:11:29 -0800 (PST)
+        bh=b6cW600D3AdtI4dxch+V0CvHl/L1hc8DgKLicXldcyE=;
+        b=AMpDjTgBywiJv88ZAHVBbKhWMuCN209RjDzj9Msk7by12VfUCJxU3pCLpqZu6Fn+ya
+         jzfoUwRBNBoWh6tdzRhhzo6FmFldPpLnaBch16J/qRRQV+c+dP8SlmoPpwy0cNIXQbN7
+         T205IVK2+E8kmA0VL5/JKRxJNa7yhj/QMMNKOxCZE8Mwi/tF4P5OmEvnbo2Ncz/XEqE2
+         tpngWCMOJGnqGO7lRReyppObQPpbOHwKYRjPTvUEpxsQ61+Bh/zGHxxR8P+UABNZnfLR
+         Yubwk1+uuDi1STt02Axyart3169XAo7GUyDt56j9e3S/TL1A+HYJbYd5R+odKFHrVvfZ
+         mLOg==
+X-Gm-Message-State: AOAM532RI6nJT06lpcdIlGk+4wVarJ9lCXPnB7gOQKhdvmvhtxSzjK0C
+        a7OYA/gDssYzNb1aThwFMyAoMAOUD1DabPPYWqQ=
+X-Google-Smtp-Source: ABdhPJx/35GQhdOnFw7VTCZ+lBVMh3ZBoBITfoOtzcBZzHFCjSoRcnFLao8KkNUGe+ziH7tpEa3K8I38SabcSVIZKuo=
+X-Received: by 2002:a9d:4713:: with SMTP id a19mr19149396otf.132.1606774335496;
+ Mon, 30 Nov 2020 14:12:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-12-lee.jones@linaro.org>
-In-Reply-To: <20201124193824.1118741-12-lee.jones@linaro.org>
+References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-13-lee.jones@linaro.org>
+In-Reply-To: <20201124193824.1118741-13-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 17:11:18 -0500
-Message-ID: <CADnq5_Oev8Kfxa1HGR=NRBktOMUe9N_11WKBYDzgi8MfB3BOtQ@mail.gmail.com>
-Subject: Re: [PATCH 11/40] drm/amd/amdgpu/psp_v11_0: Make local function
- 'psp_v11_0_wait_for_bootloader()' static
+Date:   Mon, 30 Nov 2020 17:12:03 -0500
+Message-ID: <CADnq5_OigHeSZuZv=EuPdJ8nfx3e1qY0gBYx7oO=kupo7Rqu8Q@mail.gmail.com>
+Subject: Re: [PATCH 12/40] drm/amd/amdgpu/dce_v10_0: Supply description for
+ function param 'async'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Luben Tuikov <luben.tuikov@amd.com>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -71,15 +71,14 @@ On Tue, Nov 24, 2020 at 2:45 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/psp_v11_0.c:223:5: warning: no previous proto=
-type for =E2=80=98psp_v11_0_wait_for_bootloader=E2=80=99 [-Wmissing-prototy=
-pes]
+>  drivers/gpu/drm/amd/amdgpu/dce_v10_0.c:237: warning: Function parameter =
+or member 'async' not described in 'dce_v10_0_page_flip'
 >
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Hawking Zhang <Hawking.Zhang@amd.com>
+> Cc: Luben Tuikov <luben.tuikov@amd.com>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
@@ -88,25 +87,25 @@ Applied.  Thanks!
 
 Alex
 
+
 > ---
->  drivers/gpu/drm/amd/amdgpu/psp_v11_0.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/amd/amdgpu/dce_v10_0.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c b/drivers/gpu/drm/amd=
-/amdgpu/psp_v11_0.c
-> index edd2d6bd1d86a..bd4248c93c49f 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> @@ -220,7 +220,7 @@ static int psp_v11_0_init_microcode(struct psp_contex=
-t *psp)
->         return err;
->  }
->
-> -int psp_v11_0_wait_for_bootloader(struct psp_context *psp)
-> +static int psp_v11_0_wait_for_bootloader(struct psp_context *psp)
->  {
->         struct amdgpu_device *adev =3D psp->adev;
->
+> diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c b/drivers/gpu/drm/amd=
+/amdgpu/dce_v10_0.c
+> index da240f8fafcf8..7944781e1086b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/dce_v10_0.c
+> @@ -228,6 +228,7 @@ static void dce_v10_0_pageflip_interrupt_fini(struct =
+amdgpu_device *adev)
+>   * @adev: amdgpu_device pointer
+>   * @crtc_id: crtc to cleanup pageflip on
+>   * @crtc_base: new address of the crtc (GPU MC address)
+> + * @async: asynchronous flip
+>   *
+>   * Triggers the actual pageflip by updating the primary
+>   * surface base address.
 > --
 > 2.25.1
 >
