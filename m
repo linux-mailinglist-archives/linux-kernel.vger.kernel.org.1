@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555252C7F81
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30552C7F92
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgK3III (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:08:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
+        id S1726623AbgK3IQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:16:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgK3III (ORCPT
+        with ESMTP id S1725880AbgK3IQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:08:08 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AD2C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:07:21 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id f9so17699373ejw.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:07:21 -0800 (PST)
+        Mon, 30 Nov 2020 03:16:42 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46115C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:16:02 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id a9so19810416lfh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:16:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/sejjbzH1VPFW9nCTItPee2k0fSpsfkmZsIeiucrGOg=;
-        b=SVdLFF7xWJW5PzYeW9PtVHqnHFgfFlnAz3/olfCk/llK8OyX90C4rRBhMB3CYrHmOe
-         A7EpvTlnGEtmlofIG8Hgiq9r91C59oqB8tfqi1kuujktvDkKf8o7UlUTtlV1hf36aIoP
-         ifQTGBWYcYhMS1ppQN/oUk/Q35LyHErN3ZSnwtDCCK6SIZsnvGj2bTD7P+hoviTsF/5M
-         TNrdCHepOsPVkyAfaNLGCfPri1BI1J3qlk+oXe01glbyFhcSWSuN6NzPZkz75KIHLrxp
-         5DU+d17e4kxx+hktfZ+VSAu9y6z9tVRrCQXh7mWdaQvVr/DNys2HPes/DASFldyXZ/Gd
-         N/1w==
+        bh=1WW7NdGi1sFdQkUxxy6Ct166Jaa/cUFKVp9VOVJXhJY=;
+        b=k498odRkC4CWp5FzcznjTxr/pCBlxIwv/+Y/qvje5oKOjju0LdiGuUZ1lgnB94z0oy
+         FWdK3JzZa5UHdKC63RBkuset2nF2DbNxmPfiyLMlqfjLE02AjSU7aLPPFDutBU1lyOKb
+         BUNlxoa2kVxrLFqvmCALsrTKR3Jl2X8/2EieNgI9128E0mCuXmVL02S+wSLUJgIXPGvW
+         y+FmnaOfNvvVveg6vytmTjZXJdzmeGnsrSvsziSsmhqcP48pE6farYihYXkVtSad14DD
+         n3DogRhll2CSweTE94qOIrzRj58brTwTba+B3/GwxOEaOnqpEGhrbsh+8iRjFmrEhesw
+         hiOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/sejjbzH1VPFW9nCTItPee2k0fSpsfkmZsIeiucrGOg=;
-        b=r+sP4SyyRsKCL1/wehQjR5EjVfByZF/wt3Nikgn/EJ15stDedT5F0eOcRvSYdVli6u
-         bbfHzDwVfQql75Tj3m0b63HJeRwJkfBwp2WbCrY1c5P9S4sadyJrJOWjXmpEH9TzgK+o
-         uWweQ2EqzL1mldWT4f9ZyL6SEWc6nw9SAnc4x2EwrQ2GksN9Zbr2DFkS25mbHa2y/c1v
-         6fTYnjiICJggxPwN+tXbW5FDxGUzpYZF8jgEb0aQPCeNPMquQpLI9gRgA63B1uVZFaxQ
-         egCQ1ZPomslJ4MCfnejalZV4B+t3eVyhaKACo7feAsVVh1qf8J1QkOxPr2eLL19ksUv9
-         envQ==
-X-Gm-Message-State: AOAM530WA8Pky+mbphLe8CQ5gStboHojEWR7SKqg7t8h3Ho0be9GotRl
-        SCvr7fwlTINnTw9JKMqnvnC2giY57++7GHF68uc=
-X-Google-Smtp-Source: ABdhPJzbpC2c788iOfFVJUuzN0hpuqAqFwFMRkrHuYn24eb+BC3ZwkiRkTEK0k9onIQ08SzxIQAQ7/HQE38FSorlRm0=
-X-Received: by 2002:a17:906:d8a9:: with SMTP id qc9mr19435353ejb.482.1606723640479;
- Mon, 30 Nov 2020 00:07:20 -0800 (PST)
+        bh=1WW7NdGi1sFdQkUxxy6Ct166Jaa/cUFKVp9VOVJXhJY=;
+        b=URgGexu2OJYLwhCCypoV/1FNDkdMimVARKJaTJOGwkd3ebC/0Ax2Trs5DdlxbVFY4w
+         +uDkdSUxt0s9FsSTd9/Zv9nj3+Thog7c0g+TKteVLC3+5tIC5PbXLSLwOzGIjiMhOC2W
+         cZBkoS0m3h6Ch06waNBcEzVZ1Ds69H+2MGpA2uy6tTzitaq0wDrJhq0Z4D1tSzFAQoiQ
+         W/h4jtRdZt2ph+8pMD+62IC5skCFjWPAxOyJ2Jo1eXqIVTEQ8cidaFqs/WtIvfjH1GK+
+         quFSJI/q/F95m5FxcF/EcaRQSHU9N/k3kwMZoZvpBffhcjgwYor/OPSDzxiMByHPhl+P
+         xx4g==
+X-Gm-Message-State: AOAM532V7jm2WEKrtZzjKV+GWCz3t57u88UvuT0o9R80dRBCOwvP6gwB
+        ybYQrYTUsIiNJwTGtDzxMkefeRS53K7K+aIHhzV+kN8dC1p8g/kt
+X-Google-Smtp-Source: ABdhPJwjUDapYSqhwuiyUqMZirMI2fiMMQRIx6Wm/py1dcEIOroSVXyUH1hK62LNIiM7QVZNWhF8/sT6/Qg0Qsrmjyk=
+X-Received: by 2002:ac2:4578:: with SMTP id k24mr8355336lfm.502.1606724160610;
+ Mon, 30 Nov 2020 00:16:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130053037.27006-1-tesheng@andestech.com>
-In-Reply-To: <20201130053037.27006-1-tesheng@andestech.com>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Mon, 30 Nov 2020 10:07:03 +0200
-Message-ID: <CAOJsxLH-tCyvydX_+djXNMpOAxW2Zr7rAZizLUwQVNyU8YreBg@mail.gmail.com>
-Subject: Re: [PATCH] riscv/mm: Prevent kernel module access user-space memory
- without uaccess routines
-To:     Eric Lin <tesheng@andestech.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>, dslin1010@gmail.com,
-        Alan Kao <alankao@andestech.com>
+References: <20201128235154.GF551434@darkstar.musicnaut.iki.fi> <20201129115748.GG551434@darkstar.musicnaut.iki.fi>
+In-Reply-To: <20201129115748.GG551434@darkstar.musicnaut.iki.fi>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 30 Nov 2020 09:15:49 +0100
+Message-ID: <CACRpkdb0+uaRpC7GwWGjPoQMd=re2-BNPY5ritq3HNMJWKOKpg@mail.gmail.com>
+Subject: Re: [BISECTED REGRESSION] Broken USB/GPIO on OMAP1 OSK
+To:     Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 7:33 AM Eric Lin <tesheng@andestech.com> wrote:
->
-> In the page fault handler, an access to user-space memory
-> without get/put_user() or copy_from/to_user() routines is
-> not resolved properly. Like arm and other architectures,
-> we need to let it die earlier in page fault handler.
+On Sun, Nov 29, 2020 at 12:57 PM Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
+> On Sun, Nov 29, 2020 at 01:51:54AM +0200, Aaro Koskinen wrote:
 
-Fix looks good to me. Can you elaborate on how you found the issue and
-how the bug manifests itself?
+> > I tried to upgrade my OMAP1 OSK board to v5.9, but the rootfs cannot
+> > be accessed anymore due to broken USB. It fails to probe with the
+> > following logs:
+> >
+> > [    9.219940] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
+> > [    9.250366] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
+> > [    9.731445] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
+> > [   10.342102] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
+> > [   10.966430] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
+> >
+> > Bisected to:
+> >
+> > commit 15d157e874437e381643c37a10922388d6e55b29
+> > Author: Linus Walleij <linus.walleij@linaro.org>
+> > Date:   Mon Jul 20 15:55:24 2020 +0200
+> >
+> >     usb: ohci-omap: Convert to use GPIO descriptors
+> >
+> > I suspect one of the issues is the name "i2c-tps65010" vs "tps65010":
+> >
+> > # cat /sys/devices/platform/omap_i2c.1/i2c-1/i2c-tps65010/gpio/gpiochip208/label
+> > tps65010
+> >
+> > However changing that in the lookup table still doesn't help much; I got rid
+> > of the "deferring" message but the USB still doesn't work. So far the only
+> > workaround I have is to revert the whole commit.
+>
+> GPIO numbering goes wrong... It's now trying to poke GPIO2.
 
->
-> Signed-off-by: Eric Lin <tesheng@andestech.com>
-> Cc: Alan Kao <alankao@andestech.com>
-> ---
->  arch/riscv/mm/fault.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
-> index 3c8b9e433c67..a452cfa266a2 100644
-> --- a/arch/riscv/mm/fault.c
-> +++ b/arch/riscv/mm/fault.c
-> @@ -232,6 +232,9 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
->         if (user_mode(regs))
->                 flags |= FAULT_FLAG_USER;
->
-> +       if (!user_mode(regs) && addr < TASK_SIZE && unlikely(!(regs->status & SR_SUM)))
-> +               die(regs, "Accessing user space memory without uaccess routines\n");
+Hm the old code looked like this:
 
-Let's introduce a die_kernel_fault() helper (similar to arm64, for
-example) to ensure same semantics for the different kernel faults. You
-can extract the helper from no_context().
+#define GPIO1  1
 
-> +
->         perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
->
->         if (cause == EXC_STORE_PAGE_FAULT)
-> --
-> 2.17.0
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+tps65010_set_gpio_out_value(GPIO1, LOW);
+
+And I missed that the code inside the tps65010 driver subtracts 1 from
+the passed parameter and the standard gpiolib accessors add 1 before
+calling the same function. I missed this.
+
+> Also gpiod_set_value_cansleep() probably should be used as tps65010
+> can sleep.
+
+OK I'll send a combined patch fixing all issues (I hope).
+
+Yours,
+Linus Walleij
