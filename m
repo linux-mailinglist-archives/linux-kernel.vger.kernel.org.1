@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04482C859D
+	by mail.lfdr.de (Postfix) with ESMTP id 64ABE2C859C
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgK3NhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:37:16 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8535 "EHLO
+        id S1726791AbgK3NhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:37:14 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8536 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgK3NhO (ORCPT
+        with ESMTP id S1726471AbgK3NhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Nov 2020 08:37:14 -0500
 Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cl5pv3L5NzhkhQ;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cl5pv36WgzhjMS;
         Mon, 30 Nov 2020 21:36:07 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
@@ -28,10 +28,12 @@ CC:     <dri-devel@lists.freedesktop.org>,
         <linux-rockchip@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH 0/3] drm/rockchip: fix reference leak of pm_runtime_get_sync
-Date:   Mon, 30 Nov 2020 21:44:24 +0800
-Message-ID: <20201130134427.57545-1-miaoqinglang@huawei.com>
+Subject: [PATCH 1/3] drm/rockchip: cdn-dp: fix reference leak when pm_runtime_get_sync fails
+Date:   Mon, 30 Nov 2020 21:44:25 +0800
+Message-ID: <20201130134427.57545-2-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201130134427.57545-1-miaoqinglang@huawei.com>
+References: <20201130134427.57545-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -41,20 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace pm_runtime_get_sync with pm_runtime_resume_and_get to keep usage
-counter balanced. 
+pm_runtime_get_sync will increment pm usage counter even
+failed. Forgetting to putting operation will result in a
+reference leak here.
 
-Qinglang Miao (3):
-  drm/rockchip: cdn-dp: fix reference leak when pm_runtime_get_sync
-    fails
-  drm/rockchip: vop: fix reference leak when pm_runtime_get_sync fails
-  drm/rockchip: lvds: fix reference leak when pm_runtime_get_sync fails
+Replace it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
- drivers/gpu/drm/rockchip/cdn-dp-core.c      | 2 +-
- drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 4 ++--
- drivers/gpu/drm/rockchip/rockchip_lvds.c    | 4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+Fixes: efe0220fc2d2 ("drm/rockchip: cdn-dp: Fix error handling")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ drivers/gpu/drm/rockchip/cdn-dp-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+index a4a45daf9..9b4406191 100644
+--- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
++++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+@@ -98,7 +98,7 @@ static int cdn_dp_clk_enable(struct cdn_dp_device *dp)
+ 		goto err_core_clk;
+ 	}
+ 
+-	ret = pm_runtime_get_sync(dp->dev);
++	ret = pm_runtime_resume_and_get(dp->dev);
+ 	if (ret < 0) {
+ 		DRM_DEV_ERROR(dp->dev, "cannot get pm runtime %d\n", ret);
+ 		goto err_pm_runtime_get;
 -- 
 2.23.0
 
