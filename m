@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03B92C8CAA
+	by mail.lfdr.de (Postfix) with ESMTP id 537722C8CA9
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388100AbgK3SYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:24:19 -0500
-Received: from relay06.th.seeweb.it ([5.144.164.167]:55127 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726977AbgK3SYT (ORCPT
+        id S2388052AbgK3SYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:24:10 -0500
+Received: from mail-il1-f193.google.com ([209.85.166.193]:33503 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727125AbgK3SYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:24:19 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 2858E40266;
-        Mon, 30 Nov 2020 19:23:21 +0100 (CET)
-Subject: Re: [PATCH 11/13] dt-bindings: cpufreq: Convert qcom-cpufreq-hw to
- YAML binding
-To:     Rob Herring <robh@kernel.org>
-Cc:     viresh.kumar@linaro.org, rjw@rjwysocki.net,
-        jorge.ramirez-ortiz@linaro.org, robh+dt@kernel.org,
-        konrad.dybcio@somainline.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org,
-        nks@flawful.org, lgirdwood@gmail.com, daniel.lezcano@linaro.org,
-        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        phone-devel@vger.kernel.org, broonie@kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org
-References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
- <20201126184559.3052375-12-angelogioacchino.delregno@somainline.org>
- <20201130172305.GA2661895@robh.at.kernel.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <9fc67c3f-4753-fe4f-ca1b-7faeee2abe7d@somainline.org>
-Date:   Mon, 30 Nov 2020 19:23:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 30 Nov 2020 13:24:10 -0500
+Received: by mail-il1-f193.google.com with SMTP id y9so12259270ilb.0;
+        Mon, 30 Nov 2020 10:23:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0neMxzWOSFLOXSknMHOSEKClv5G9ep++zXnTP/Rc0O8=;
+        b=d2UxlyWgyZXI/Whc9L/l+nMUi/oHDXXWPi9QAfCiaYCNmplfik0llX+NQuopFCnlgC
+         z0epDf/Gn2R3hSUrn2rHcRJcpyqRAG9v4xb0JaaP/Jp9X4XMnaOGqUjo/DSf0YaFGtRL
+         xbNgiYiymexklk46FMIFNWqqlULbhV/WLk0V4lKCVxLeBvuOWTn95Z7e/x3BCkJ4CZjg
+         WL5ugCX0rjLQSUva8+zgjaBvIjy/5NKqiqY9HSIBGT5u/E3OexlmF6NYqsoPpLiNe1nh
+         2+7mnPn3No680kQXM/BzfYHRVn+t1e8zCi8XYy94sCY63S0tsebdBjboWggOitkMVkw7
+         knJA==
+X-Gm-Message-State: AOAM530s/UW591LODMcvBAaitUePNNmUTdbvIueXBYJkkLTYKPEh0yxM
+        SunSt7EFwgRBRcxfqNdKDhez6JlwvA==
+X-Google-Smtp-Source: ABdhPJzHXlx/TfQVfpIfEHQeSQemYh6/jCa4ib42N0v8d/w5/13Z4A2a0QvXXmVQUGCBpZNO2HvgFQ==
+X-Received: by 2002:a92:40c8:: with SMTP id d69mr19411707ill.66.1606760608911;
+        Mon, 30 Nov 2020 10:23:28 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z6sm11205177ilm.69.2020.11.30.10.23.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 10:23:26 -0800 (PST)
+Received: (nullmailer pid 2759200 invoked by uid 1000);
+        Mon, 30 Nov 2020 18:23:24 -0000
+Date:   Mon, 30 Nov 2020 11:23:24 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Cc:     linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org, richard@nod.at,
+        miquel.raynal@bootlin.com, heiko@sntech.de
+Subject: Re: [PATCH v14 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND
+ flash controller
+Message-ID: <20201130182324.GA2757731@robh.at.kernel.org>
+References: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
+ <20201120095613.20172-2-yifeng.zhao@rock-chips.com>
 MIME-Version: 1.0
-In-Reply-To: <20201130172305.GA2661895@robh.at.kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120095613.20172-2-yifeng.zhao@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 30/11/20 18:23, Rob Herring ha scritto:
-> On Thu, 26 Nov 2020 19:45:57 +0100, AngeloGioacchino Del Regno wrote:
->> Convert the qcom-cpufreq-hw documentation to YAML binding as
->> qcom,cpufreq-hw.yaml.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->> ---
->>   .../bindings/cpufreq/cpufreq-qcom-hw.txt      | 173 +---------------
->>   .../bindings/cpufreq/qcom,cpufreq-hw.yaml     | 196 ++++++++++++++++++
->>   2 files changed, 197 insertions(+), 172 deletions(-)
->>   create mode 100644 Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
->>
+On Fri, 20 Nov 2020 17:56:10 +0800, Yifeng Zhao wrote:
+> Documentation support for Rockchip RK3xxx NAND flash controllers
 > 
+> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+> ---
 > 
-> My bot found errors running 'make dt_binding_check' on your patch:
+> Changes in v14: None
+> Changes in v13: None
+> Changes in v12:
+> - Fix some warnings while make dt_binding_check
+> - Drop a allOf defined
 > 
-> yamllint warnings/errors:
+> Changes in v11: None
+> Changes in v10: None
+> Changes in v9: None
+> Changes in v8:
+> - Fix a error while make dt_binding_check
 > 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: properties:clock-names: [{'const': 'xo'}, {'const': 'ref'}] is not of type 'object', 'boolean'
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: maintainers:0: 'TBD' is not a 'email'
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: ignoring, error in schema: properties: clock-names
-> warning: no schema found in file: ./Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
-> Error: Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.example.dts:150.3-151.1 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1364: dt_binding_check] Error 2
+> Changes in v7:
+> - Fix some wrong define
 > 
+> Changes in v6:
+> - Fix some wrong define
+> - Modified the definition of compatible
 > 
-> See https://patchwork.ozlabs.org/patch/1406857
+> Changes in v5:
+> - Fix some wrong define.
+> - Add boot-medium define.
+> - Remove some compatible define.
 > 
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
+> Changes in v4:
+> - The compatible define with rkxx_nfc.
+> - Add assigned-clocks.
+> - Fix some wrong defineChanges in.
 > 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
+> Changes in v3:
+> - Change the title for the dt-bindings.
 > 
-> pip3 install dtschema --upgrade
+> Changes in v2: None
 > 
-> Please check and re-submit.
+>  .../mtd/rockchip,nand-controller.yaml         | 161 ++++++++++++++++++
+>  1 file changed, 161 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
 > 
 
-Hello!
-All the errors that you've pointed out have been fixed on both the CPR,
-CPR3 and cpufreq-hw, but before pushing a V2 of this patch series...
 
-Well, I have a question: the qcom-cpufreq-hw driver has no MAINTAINERS
-entry and there was no maintainer for this driver specified in the old
-txt format binding.
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-What should I write in the "maintainers" field of the YAML binding for
-this driver?
-Should I assign it to the subsystem maintainer?
+If a tag was not added on purpose, please state why and what changed.
 
-Thanks,
-- Angelo
