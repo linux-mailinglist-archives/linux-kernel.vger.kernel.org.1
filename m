@@ -2,111 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0B22C8C80
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603C12C8C89
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgK3SRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:17:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42647 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728003AbgK3SRu (ORCPT
+        id S2388103AbgK3SR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:17:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388071AbgK3SR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:17:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606760183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GB+QDvrrhr+2OQoEfVEhq3uj15zijuotos8Vv+hlIcU=;
-        b=J+7BuJXUBW4t3j747wie6Pg66BgZp3x4Oyu3LMzKIAfuF8ncIi05rkAFqwbvJ8rGC67uys
-        Cw8wD4u2eI24NOOIzBzi4AQXoslw3vl7W+usz1Y7vcIlhIBPHj8OgJqDYo09PXhVXBh8hv
-        ARV+IuY8OA9ioSfgg1glDcac6Z1NIpU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-OG4WU-PcOWeG_NrsDSCrtw-1; Mon, 30 Nov 2020 13:16:22 -0500
-X-MC-Unique: OG4WU-PcOWeG_NrsDSCrtw-1
-Received: by mail-ed1-f71.google.com with SMTP id bt2so7236830edb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:16:21 -0800 (PST)
+        Mon, 30 Nov 2020 13:17:57 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD315C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:16:31 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id v3so2334319plz.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:16:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GNY/70CAQC3eXUNKhqPKEV6KDBxfhoyyaZSVMFjGEY8=;
+        b=IYOlgdTZd++fVWTYletOkoUT3ndMy448aAtQuAIXDNftZRVE+GdVf3fPiPCMKskPDE
+         sEktxLJpNMGGz7Oxbfz18HSeFME8OUGXj8f6WRq3b9UI9lgCYn9U8IaSQuJt8MrwQvtz
+         dJIi93LLvWtJlbJZPKnlStHRhPV1Jxs+vthk1vqmGEkhG1mnbfkMWVrMj9B+m/1akesX
+         D0rJ2Nl4fQ/uZ6C4E2nQ+G2pxRRwj5RgM0mIvCQAAKh0oJpQyPk3xPaTi1nWLR+9/cUX
+         2Ww78lpiLdcwg+xLAvUSMXCQ736Yu435e9wGr9Vy77yHpB0TSBBHjKlKvcfqoOrPlhxS
+         7XKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GB+QDvrrhr+2OQoEfVEhq3uj15zijuotos8Vv+hlIcU=;
-        b=n1iBRa3EtI5LvXgkD3vt6/7qvUV00x4x6xjWR3AvAZxXu5BiMYIkSSN57KNZXKhY8T
-         lvVQedJYAE3+/xaa+HXSa961WHESL2J3fxD6/8X7sUWLgaV712MxTvCxlrQWyD1T/glr
-         mpyKM+iGNYxbVJNq1R2QEcuABCC2Hm77clX6e3ERwqSYCrlW1tkikF4azzd9sOALgAEm
-         fOmcGRJLE1dc0v2lbGHc89y7kaoJQIgnrqlCqDKqEPQIIR114H2RzfF6lGKFRz/lrIin
-         dWmnazLSvWrNAK/EWzHUhTwe9WsignQWvHtwDDgGBKt05Zoyfbw8UvoxFNRFiMg6a1to
-         RVMw==
-X-Gm-Message-State: AOAM533DS4dutebivi18L2SHBAlWJO/jN2HsjPyeB0RIAAHwI4FvXr+0
-        OoIDudi+gXK0xOHFvdkRCDY8BrtH5VpZvQxlYkNFo5TsCCVLRysXaXJlNU12xRR98wmF4uv7C7O
-        IWrc9+gO8MvfstYPpKAf86abY
-X-Received: by 2002:a17:906:3899:: with SMTP id q25mr7080034ejd.173.1606760180720;
-        Mon, 30 Nov 2020 10:16:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx7tWtX+gRI/5P/ITr2Ls+Wj+e/A2iUFFZPdasfKzTJ61HjH/APuSl1lLqoHewiuQeismEZVw==
-X-Received: by 2002:a17:906:3899:: with SMTP id q25mr7079999ejd.173.1606760180400;
-        Mon, 30 Nov 2020 10:16:20 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id q23sm1533459edt.32.2020.11.30.10.16.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 10:16:19 -0800 (PST)
-Subject: Re: [RFC PATCH 23/35] KVM: SVM: Add support for CR4 write traps for
- an SEV-ES guest
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <97f610c7fcf0410985a3ff4cd6d4013f83fe59e6.1600114548.git.thomas.lendacky@amd.com>
- <20200914221651.GK7192@sjchrist-ice>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <263f5485-7e99-3db0-3234-f5ea02d1e119@redhat.com>
-Date:   Mon, 30 Nov 2020 19:16:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GNY/70CAQC3eXUNKhqPKEV6KDBxfhoyyaZSVMFjGEY8=;
+        b=tIzE3z9+shgcnCHiqyJQ76p8x0DjpIn/XbxPBMvalGrwtChIJelBH0S1wFpLCuJia1
+         iNoYI5mjuRqSmJQHWG9Dh3QCV/5j2190RgPtvmT6NO4pI3N2xtDPWcM42qDoRQPtj1KC
+         Z5gPC/Tw9D7cRj7StaeYM60nR28xeUMRD0mh/6PZypxA4ZRT/EbMIyW0mp+Fs7ZC9aAz
+         eBI5d9AJpKEw14/ANUdDnQcgH2w6y9y+gjDbQfWab42EF7oGOGub+bNPvgxtXAOyjUjE
+         gZx26t0J7O37AeuFJHQOc0zZbsEjI3tQ/djLup+RS/RskFQqTBLnZV/3YhfNxoIUV2lk
+         eOCQ==
+X-Gm-Message-State: AOAM531TxBqpANXRRIw0GTShejEGnJWjTKkXvp78G1s0oAXTrZ109oD5
+        4I8SJ4QFc2XhR7Tz0xMoVdyS9raNwexIT2g4jmlFdQ==
+X-Google-Smtp-Source: ABdhPJy8erv8/hCViVdBtcoO2Edpvc+flTtuVg1A4WD1itTSnPNxQkMkIAmbHOrLQ7mMhIFOJtuWXXvXhR/xwXw3JDY=
+X-Received: by 2002:a17:902:e901:b029:d8:e727:2595 with SMTP id
+ k1-20020a170902e901b02900d8e7272595mr19843120pld.56.1606760191169; Mon, 30
+ Nov 2020 10:16:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200914221651.GK7192@sjchrist-ice>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201128193335.219395-1-masahiroy@kernel.org>
+In-Reply-To: <20201128193335.219395-1-masahiroy@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 30 Nov 2020 10:16:20 -0800
+Message-ID: <CAKwvOd=azwa6m84Nyu+EVksmTRnQfd3PRe8gDBmx9vYVs1D_hQ@mail.gmail.com>
+Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/20 00:16, Sean Christopherson wrote:
->> +int kvm_track_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
->> +{
->> +	unsigned long old_cr4 = kvm_read_cr4(vcpu);
->> +	unsigned long pdptr_bits = X86_CR4_PGE | X86_CR4_PSE | X86_CR4_PAE |
->> +				   X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_PKE;
->> +
->> +	if (kvm_x86_ops.set_cr4(vcpu, cr4))
->> +		return 1;
-> Pretty much all the same comments as EFER and CR0, e.g. call svm_set_cr4()
-> directly instead of bouncing through kvm_x86_ops.  And with that, this can
-> be called __kvm_set_cr4() to be consistent with __kvm_set_cr0().
+On Sat, Nov 28, 2020 at 11:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
+>
+> A lot of warn_unused_result warnings existed in 2006, but until now
+> they have been fixed thanks to people doing allmodconfig tests.
+>
+> Our goal is to always enable __must_check where appropriate, so this
+> CONFIG option is no longer needed.
+>
+> I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
+>
+>     # CONFIG_ENABLE_MUST_CHECK is not set
+>
+> I did not touch them for now since it would be a big churn. If arch
+> maintainers want to clean them up, please go ahead.
+>
+> While I was here, I also moved __must_check to compiler_attributes.h
+> from compiler_types.h
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-I agree with calling svm_set_cr4 directly, but then this should be 
-kvm_post_set_cr4.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Paolo
+> ---
+>
+> Changes in v3:
+>   - Fix a typo
+>
+> Changes in v2:
+>   - Move __must_check to compiler_attributes.h
+>
+>  include/linux/compiler_attributes.h                 | 7 +++++++
+>  include/linux/compiler_types.h                      | 6 ------
+>  lib/Kconfig.debug                                   | 8 --------
+>  tools/testing/selftests/wireguard/qemu/debug.config | 1 -
+>  4 files changed, 7 insertions(+), 15 deletions(-)
+>
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index b2a3f4f641a7..5f3b7edad1a7 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -171,6 +171,13 @@
+>   */
+>  #define __mode(x)                       __attribute__((__mode__(x)))
+>
+> +/*
+> + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-warn_005funused_005fresult-function-attribute
+> + * clang: https://clang.llvm.org/docs/AttributeReference.html#nodiscard-warn-unused-result
+> + *
+> + */
+> +#define __must_check                    __attribute__((__warn_unused_result__))
+> +
+>  /*
+>   * Optional: only supported since gcc >= 7
+>   *
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index ac3fa37a84f9..7ef20d1a6c28 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -110,12 +110,6 @@ struct ftrace_likely_data {
+>         unsigned long                   constant;
+>  };
+>
+> -#ifdef CONFIG_ENABLE_MUST_CHECK
+> -#define __must_check           __attribute__((__warn_unused_result__))
+> -#else
+> -#define __must_check
+> -#endif
+> -
+>  #if defined(CC_USING_HOTPATCH)
+>  #define notrace                        __attribute__((hotpatch(0, 0)))
+>  #elif defined(CC_USING_PATCHABLE_FUNCTION_ENTRY)
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index c789b39ed527..cb8ef4fd0d02 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -286,14 +286,6 @@ config GDB_SCRIPTS
+>
+>  endif # DEBUG_INFO
+>
+> -config ENABLE_MUST_CHECK
+> -       bool "Enable __must_check logic"
+> -       default y
+> -       help
+> -         Enable the __must_check logic in the kernel build.  Disable this to
+> -         suppress the "warning: ignoring return value of 'foo', declared with
+> -         attribute warn_unused_result" messages.
+> -
+>  config FRAME_WARN
+>         int "Warn for stack frames larger than"
+>         range 0 8192
+> diff --git a/tools/testing/selftests/wireguard/qemu/debug.config b/tools/testing/selftests/wireguard/qemu/debug.config
+> index b50c2085c1ac..fe07d97df9fa 100644
+> --- a/tools/testing/selftests/wireguard/qemu/debug.config
+> +++ b/tools/testing/selftests/wireguard/qemu/debug.config
+> @@ -1,5 +1,4 @@
+>  CONFIG_LOCALVERSION="-debug"
+> -CONFIG_ENABLE_MUST_CHECK=y
+>  CONFIG_FRAME_POINTER=y
+>  CONFIG_STACK_VALIDATION=y
+>  CONFIG_DEBUG_KERNEL=y
+> --
+> 2.27.0
+>
 
->> +
->> +	if (((cr4 ^ old_cr4) & pdptr_bits) ||
->> +	    (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE)))
->> +		kvm_mmu_reset_context(vcpu);
->> +
->> +	if ((cr4 ^ old_cr4) & (X86_CR4_OSXSAVE | X86_CR4_PKE))
->> +		kvm_update_cpuid_runtime(vcpu);
->> +
->> +	return 0;
->> +}
 
+-- 
+Thanks,
+~Nick Desaulniers
