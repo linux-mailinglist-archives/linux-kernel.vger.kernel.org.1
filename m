@@ -2,130 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099C72C7E62
+	by mail.lfdr.de (Postfix) with ESMTP id 7725C2C7E63
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgK3HFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:05:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36092 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726364AbgK3HFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:05:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 145BAAC8F;
-        Mon, 30 Nov 2020 07:04:33 +0000 (UTC)
-Subject: Re: [PATCH V1] block: Fix use-after-free while iterating over
- requests
-To:     John Garry <john.garry@huawei.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Pradeep P V K <ppvk@codeaurora.org>, axboe@kernel.dk,
-        linux-block@vger.kernel.org
-Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>
-References: <1606402925-24420-1-git-send-email-ppvk@codeaurora.org>
- <c94fcada-7f6d-a1e3-4c88-d225af1a676e@acm.org>
- <693ea723-aa9e-1166-8a19-a7787f724969@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <0c925db8-e481-5f21-b0fe-f691142b0437@suse.de>
-Date:   Mon, 30 Nov 2020 08:04:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726234AbgK3HFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgK3HFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 02:05:50 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C516C0613CF;
+        Sun, 29 Nov 2020 23:05:10 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ckx7g6d6Rz9sTR;
+        Mon, 30 Nov 2020 18:05:03 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606719906;
+        bh=cLNf0rgmPwC7nqFGsDIsAzmTEpNLT/6a7pNcPmuzZBY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fmp5Hp2T9+Hfm2PUHtaHydjmVmlNfD2ODRPRTTlLzlwPR01hAVgLQS09pOiFbnLZE
+         CAFDg8wr79KWL7ru4uO+8+bsWdMmsZ8eJx673e9ZxLE4bahSZeccZ9GEnnVicswcWt
+         T41Y0ej12+cMyvaAKT39dneEu7u06Z2af1XDrDhFznK7jv+KUTPAJcAgvRJSqW2Dzp
+         o+PMgtQyb7U2xHddGzA82CUUFfOPvYqD07OVmeYmu3D7sJHUE3rP61+zy6agkdCp/n
+         aIREBkxtyuaCWiN/W4t2qKW9T5yRoCZIe0qUrS2omgb6rcD0c9+QOvMv6HQNGqBa2E
+         Pw7aZaHJyfIUw==
+Date:   Mon, 30 Nov 2020 18:05:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@suse.de>, Justin Ernst <justin.ernst@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the tip tree
+Message-ID: <20201130180503.5c173e05@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <693ea723-aa9e-1166-8a19-a7787f724969@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/jpA689yidw_7328zjw_W7+R";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/20 5:49 PM, John Garry wrote:
-> On 26/11/2020 16:27, Bart Van Assche wrote:
->> On 11/26/20 7:02 AM, Pradeep P V K wrote:
->>> Observes below crash while accessing (use-after-free) request queue
->>> member of struct request.
->>>
->>> 191.784789:   <2> Unable to handle kernel paging request at virtual
->>> address ffffff81429a4440
->>> ...
->>> 191.786174:   <2> CPU: 3 PID: 213 Comm: kworker/3:1H Tainted: G S
->>> O      5.4.61-qgki-debug-ge45de39 #1
->>> ...
->>> 191.786226:   <2> Workqueue: kblockd blk_mq_timeout_work
->>> 191.786242:   <2> pstate: 20c00005 (nzCv daif +PAN +UAO)
->>> 191.786261:   <2> pc : bt_for_each+0x114/0x1a4
->>> 191.786274:   <2> lr : bt_for_each+0xe0/0x1a4
->>> ...
->>> 191.786494:   <2> Call trace:
->>> 191.786507:   <2>  bt_for_each+0x114/0x1a4
->>> 191.786519:   <2>  blk_mq_queue_tag_busy_iter+0x60/0xd4
->>> 191.786532:   <2>  blk_mq_timeout_work+0x54/0xe8
->>> 191.786549:   <2>  process_one_work+0x2cc/0x568
->>> 191.786562:   <2>  worker_thread+0x28c/0x518
->>> 191.786577:   <2>  kthread+0x160/0x170
->>> 191.786594:   <2>  ret_from_fork+0x10/0x18
->>> 191.786615:   <2> Code: 0b080148 f9404929 f8685921 b4fffe01 (f9400028)
->>> 191.786630:   <2> ---[ end trace 0f1f51d79ab3f955 ]---
->>> 191.786643:   <2> Kernel panic - not syncing: Fatal exception
->>>
->>> Fix this by updating the freed request with NULL.
->>> This could avoid accessing the already free request from other
->>> contexts while iterating over the requests.
->>>
->>> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
->>> ---
->>>   block/blk-mq.c | 1 +
->>>   block/blk-mq.h | 1 +
->>>   2 files changed, 2 insertions(+)
->>>
->>> diff --git a/block/blk-mq.c b/block/blk-mq.c
->>> index 55bcee5..9996cb1 100644
->>> --- a/block/blk-mq.c
->>> +++ b/block/blk-mq.c
->>> @@ -492,6 +492,7 @@ static void __blk_mq_free_request(struct request 
->>> *rq)
->>>       blk_crypto_free_request(rq);
->>>       blk_pm_mark_last_busy(rq);
->>> +    hctx->tags->rqs[rq->tag] = NULL;
->>>       rq->mq_hctx = NULL;
->>>       if (rq->tag != BLK_MQ_NO_TAG)
->>>           blk_mq_put_tag(hctx->tags, ctx, rq->tag);
->>> diff --git a/block/blk-mq.h b/block/blk-mq.h
->>> index a52703c..8747bf1 100644
->>> --- a/block/blk-mq.h
->>> +++ b/block/blk-mq.h
->>> @@ -224,6 +224,7 @@ static inline int __blk_mq_active_requests(struct 
->>> blk_mq_hw_ctx *hctx)
->>>   static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx *hctx,
->>>                          struct request *rq)
->>>   {
->>> +    hctx->tags->rqs[rq->tag] = NULL;
->>>       blk_mq_put_tag(hctx->tags, rq->mq_ctx, rq->tag);
->>>       rq->tag = BLK_MQ_NO_TAG;
->>
->> Is this perhaps a block driver bug instead of a block layer core bug? If
->> this would be a block layer core bug, it would have been reported before.
-> 
-> Isn't this the same issue which as been reported many times:
-> 
-> https://lore.kernel.org/linux-block/20200820180335.3109216-1-ming.lei@redhat.com/ 
-> 
-> 
-> https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/ 
-> 
-> 
-> But I never saw a crash, just kasan report.
-> 
-And if that above were a concern, I would have thought one would need to 
-use a WRITE_ONCE() here; otherwise we might have a race condition where 
-other CPUs still see the old value, no?
+--Sig_/jpA689yidw_7328zjw_W7+R
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+After merging the tip tree, today's linux-next build (htmldocs) produced
+these warnings:
+
+Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected inde=
+ntation.
+Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected inde=
+ntation.
+Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected inde=
+ntation.
+
+Introduced by commit
+
+  7ac2f1017115 ("x86/platform/uv: Update ABI documentation of /sys/firmware=
+/sgi_uv/")
+
+--=20
 Cheers,
+Stephen Rothwell
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+--Sig_/jpA689yidw_7328zjw_W7+R
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/EmZ8ACgkQAVBC80lX
+0Gyybwf/b5iwP+CriYTDzgYCju9o+9FLxj9WnfdWRlE3i1Ae+ii3PFROPqfrwiYa
+h6Zgw0oPXzgUJdFhxEckl4K3HW1MGey6XgVYEaU27H41qGIwHtrNu5xU5da53Sof
+RzvP8AEchbsDAVOTZT+SAu8ylyT0M5nTD9lkfAHs+4pM5I9kJCQiaK8FPbpMlmF2
+sEMExOmp1uRqkTKyfkJszYrO48QDvonmWZgtrp8+RysMOjSSROu2/iDEnAxwTnJ6
+aQE1dBe8BkyFlmxelvV8+InMcVIg9zULx+wok/KDe4sC4+sAdVuLn8v6WGIVCgNA
+Jq9qrKUlaBuTFaO/+qCfIfNkUKIQ5Q==
+=EGCK
+-----END PGP SIGNATURE-----
+
+--Sig_/jpA689yidw_7328zjw_W7+R--
