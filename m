@@ -2,74 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F108C2C9083
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239CD2C9090
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730389AbgK3WEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:04:36 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:37042 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgK3WEf (ORCPT
+        id S1730372AbgK3WFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730359AbgK3WFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:04:35 -0500
-Received: by mail-io1-f67.google.com with SMTP id k3so5600171ioq.4;
-        Mon, 30 Nov 2020 14:04:19 -0800 (PST)
+        Mon, 30 Nov 2020 17:05:38 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB335C0613D2;
+        Mon, 30 Nov 2020 14:04:57 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id y3so3055034ooq.2;
+        Mon, 30 Nov 2020 14:04:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5jOvGDqYf8zwrULgytMiBGj6XTmbLQAdGK6UJTFHbSU=;
+        b=PAQIbC+HD7aZnMbhp9k94L+xvj5VCnYs1qRBegTa8+NGGphW9fIvh7QjHswN/vqJ+N
+         VEL1PZMabbMQ2vN40BSrZeXTlduFD5Z9sEPpE4HxLbduzIFROwjBoxoLn6BtlS9CXQ8W
+         JNlSchueWOcpR4KeIyvY4O8H2djoxCOkzsR4ypvdn3PwmNjW7yBaKIzyA1JhYBT5JhQH
+         atdvQ0gUclZI1PECyNBcCBQrB7FM3UO/m8gc+fQ09O7+0zQj/bIPNKKw/gtxb0M6wLOd
+         e2ntyVrhLyCQdKfkzcxpGzMhZunlkHjBRba540/jUu1kAZEDgohbsptCDrZB0qO/2gBk
+         klQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LDgTcXGFR+vTXwm6AltCH/wuRmdYVoDhpMzgf7Xk0Us=;
-        b=sFghrQmTmnZBSBVj5mMKNCK+R4jBUMPVOW1Yew7Grpq+LN1gp3/9NZPedA0qi/s+vf
-         hYjILnkDLD8lXzN9F6yoEm7vCKfcujnCZHdCIm0gCmTk+hs3q9U9xFFBUYDuUxJbH9uG
-         D1zVRuWMmbEMpsS/QRqTL8WqvS/6u+7dEkdaeCYu+f2B3amiiRzsEA7mjnLP73cdYG4v
-         jK4G82uaGPSkT4+mMkXX7qGicqxcpSJ/zr2kOEt/LwX9icmWZEZ9nXNxw/RgFNLEHTjZ
-         Bp3UL0k+/qE6qH/xeviDVZaUzIuVU7xLgtm96kBGf8rgCxZ8gGKc2LYfuk4Vqq7CzKkv
-         yFfg==
-X-Gm-Message-State: AOAM531OG13VPztMeVU+zs+efjrHYwhB3eFrqPdwcn0Vq8lOayiBZxZj
-        1pPfK8f51VuJ2txluMwtIg==
-X-Google-Smtp-Source: ABdhPJzW9SCDHhMS8gQJ9gnGG1JH1BQBi/KBvCkAtSKQoZMqqCc7hfmKkRhYAvugPumR+Iykavbgsw==
-X-Received: by 2002:a05:6638:124d:: with SMTP id o13mr21077467jas.98.1606773833504;
-        Mon, 30 Nov 2020 14:03:53 -0800 (PST)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id p7sm2562387iln.11.2020.11.30.14.03.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 14:03:52 -0800 (PST)
-Received: (nullmailer pid 3111931 invoked by uid 1000);
-        Mon, 30 Nov 2020 22:03:50 -0000
-Date:   Mon, 30 Nov 2020 15:03:50 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     nkristam@nvidia.com, kishon@ti.com, thierry.reding@gmail.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        jonathanh@nvidia.com, gregkh@linuxfoundation.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v5 10/16] dt-bindings: phy: tegra-xusb: Add nvidia,pmc
- prop
-Message-ID: <20201130220350.GA3111877@robh.at.kernel.org>
-References: <20201119085405.556138-1-jckuo@nvidia.com>
- <20201119085405.556138-11-jckuo@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5jOvGDqYf8zwrULgytMiBGj6XTmbLQAdGK6UJTFHbSU=;
+        b=g4y65RZdSvyWoJc21xvCHMyz+q6TSGEAFXa9lX5FtEtimJeQEYmhvAZx6oHUUJCyqr
+         X2xX/uQuRTycZwbXqhTMQ12he5AySghovo5eGCh8TraWx/lx7a+gyu4m4vm4v0421Gyi
+         WQuVd+WVjtGbUg1ge4pqVej2BpPHEdc40qRKewWpAvKbLr0E4KGXcAAoGWOiggOjmDDA
+         Ll1yW3z3gpcfCi9t7c7DZE/awJFyXxcFY5RhU+ofKPge+LRwmtUQJE5RKwSsh1mWroqs
+         llcvxOSCGvMYi058hkxSu7Z60Kix8PdV1dRvdi4UKUjdutZaDvVG3RdPFnTZhnSgtKVH
+         Q9yg==
+X-Gm-Message-State: AOAM532J3uRV70CTb+bOn0CNyo9I+m5FcqtDN5/R3sQz7ZujQMCRilHE
+        IKBOTgu2KW/CemwOgGhA2mk6yVuNOdx2AyIVzwdNOI4S
+X-Google-Smtp-Source: ABdhPJzdjixBlHwXzStQhUKKU6mUgnrY3S88+jIZBk29S2eq07JyrKnnbnUAJiA6e8+nCQCMloGuHeuHFCBlQgu31eE=
+X-Received: by 2002:a4a:3e91:: with SMTP id t139mr16906483oot.90.1606773897183;
+ Mon, 30 Nov 2020 14:04:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119085405.556138-11-jckuo@nvidia.com>
+References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-3-lee.jones@linaro.org>
+In-Reply-To: <20201124193824.1118741-3-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Nov 2020 17:04:45 -0500
+Message-ID: <CADnq5_OURGRBDONuMy9Bee2Jo+e6pfCaKyk8z6Fn60F2PcF_Ag@mail.gmail.com>
+Subject: Re: [PATCH 02/40] drm/amd/amdgpu/gmc_v10_0: Suppy some missing
+ function doc descriptions
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 16:53:59 +0800, JC Kuo wrote:
-> This commit describes the "nvidia,pmc" property for Tegra210 tegra-xusb
-> PHY driver. It is a phandle and specifier referring to the Tegra210
-> pmc@7000e400 node.
-> 
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
-> ---
-> v5:
->    replace "pmc@7000e400 node" -> with "PMC node"
-> v4:
->    new change to document "nvidia,pmc" prop
-> 
->  .../devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt      | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Tue, Nov 24, 2020 at 2:44 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:278: warning: Function parameter =
+or member 'vmhub' not described in 'gmc_v10_0_flush_gpu_tlb'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:278: warning: Function parameter =
+or member 'flush_type' not described in 'gmc_v10_0_flush_gpu_tlb'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:371: warning: Function parameter =
+or member 'flush_type' not described in 'gmc_v10_0_flush_gpu_tlb_pasid'
+>  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:371: warning: Function parameter =
+or member 'all_hub' not described in 'gmc_v10_0_flush_gpu_tlb_pasid'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Applied.  Thanks!
+
+Alex
+
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd=
+/amdgpu/gmc_v10_0.c
+> index d9399324be474..4887b0e66e975 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+> @@ -270,6 +270,8 @@ static void gmc_v10_0_flush_vm_hub(struct amdgpu_devi=
+ce *adev, uint32_t vmid,
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @vmid: vm instance to flush
+> + * @vmhub: vmhub type
+> + * @flush_type: the flush type
+>   *
+>   * Flush the TLB for the requested page table.
+>   */
+> @@ -362,6 +364,8 @@ static void gmc_v10_0_flush_gpu_tlb(struct amdgpu_dev=
+ice *adev, uint32_t vmid,
+>   *
+>   * @adev: amdgpu_device pointer
+>   * @pasid: pasid to be flush
+> + * @flush_type: the flush type
+> + * @all_hub: Used with PACKET3_INVALIDATE_TLBS_ALL_HUB()
+>   *
+>   * Flush the TLB for the requested pasid.
+>   */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
