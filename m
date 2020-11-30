@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8B42C7E00
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EFF2C7E04
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgK3GD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 01:03:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
+        id S1726201AbgK3GEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 01:04:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgK3GD3 (ORCPT
+        with ESMTP id S1725860AbgK3GEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 01:03:29 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5266DC0613D2
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:02:49 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id k5so5895979plt.6
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:02:49 -0800 (PST)
+        Mon, 30 Nov 2020 01:04:06 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D615C0613D3;
+        Sun, 29 Nov 2020 22:03:26 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id hk16so715920pjb.4;
+        Sun, 29 Nov 2020 22:03:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pJv7VvrnTFE2e/S4EEGaqG2NxGxQS8LiH4rC85el3jU=;
-        b=rcsj0TnPgBcz5X3llmMor76Npwj6U7VAOSot2BN1gjzY0Um/rI5pNgxOFYmq+U6J1Z
-         bHlt4WsMMVkPx8xhjwGZukiDd9I9ZN9upU6F3plfCyBVF/DSCaaVfqqKb0SFI3dq4KNz
-         9kF77OmpfcvlvI9mE9wGXtQd7o7l9fdMvQPCsIONkbYHGitNaEKXaMvwv09JO4u+j7xF
-         pcQxJzwhj4PWYwpp5TBEilU3N3NHbQ5nGVymh/FSr8zKIOg8wtgenka4r4sRumvk4U22
-         aTeBOmLvpjYrHUav9/WhDvkjxrUPjlGXF8/naGaL7UK92Cgwua6Zz8sTjuUsuHDu30Hj
-         tiwA==
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=zhVPQbT+XsqYAAdzPNfOUxHPVoA7ByFSiGyznpbOHYo=;
+        b=KqddcHl3nG9ICuWJI5DhumJWe0ZJ88hB6nEwLUN+dtqViY08r6a0vu16zc8qG+vR0n
+         8279aVJZl22tp+TSIAnn6PNyWHSN1u4dgWZozDehwOSQK0sGl1PKY1EEfxYG/6ZkmXyq
+         epXRr1a23/MvWPB4oli4SmPagrz6BAqGJG2rWIRo3+zDTK59gS49tNJJhxNH7lOACTec
+         gENqMi9CoNqfiYx3fBfHQvggMyXQ6/XQYh/vuo16n33RniWvfMCQpkvIJCS3dJRCptfv
+         UCbyj5DedjgoLaL0m9qsOp30fUQ5j6FioVqCbTXh7URQCqKmC1POMn9nJpY2d8cx2Gf5
+         de1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pJv7VvrnTFE2e/S4EEGaqG2NxGxQS8LiH4rC85el3jU=;
-        b=WwF+NSh17FQob7IM8b70hYakCxdTx5hR0H4wW+Df1tgPwD7nlySn+G+LcKpMq8g53r
-         vWXM2yJ8I9GkmwDoVIDDG7hlEc/kP4HxOdKPbg8Jnm5EI9l8Th4CWfgSYR2AjDcGiEOx
-         8Huptou0krFnksxsIVxz9nd3f6sq/LkWC0a0Ouvd7rMPpQ84YQUQX3uw0k+PVgA1u1ik
-         8NMratFy9UyzuaWDmG5nNwss8ciGrGJLV4Vz0yXVknsO6qUAk+hZKB3CnFvBRsM6aMz9
-         vPLbBkCHQTIrKT7GanCzgkcIVWpCWBoJ2s7Oi93f0I2SOKlTE0udP18i0i1I9eiOgHFy
-         W9jA==
-X-Gm-Message-State: AOAM53304aAl33Az3B5iKld8uGapSCpdsm6SmOczv66IDEHdbEsF0wiK
-        zVKX1gSpRs1F7P1bcmyFKos=
-X-Google-Smtp-Source: ABdhPJxE42VPjFJEg494drZWCjVskrdguINJ0R8+1cDpj+Dfr2POLCZbOz/JeNJbv44QS0F6SiN5Ng==
-X-Received: by 2002:a17:90b:a14:: with SMTP id gg20mr25042169pjb.46.1606716168930;
-        Sun, 29 Nov 2020 22:02:48 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id p1sm2249333pfb.208.2020.11.29.22.02.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 22:02:48 -0800 (PST)
-Date:   Mon, 30 Nov 2020 15:02:45 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH 0/3] clear_warn_once: add timed interval resetting
-Message-ID: <X8SLBcONiM5bQt4x@jagdpanzerIV.localdomain>
-References: <20201126063029.2030-1-paul.gortmaker@windriver.com>
- <X8ElwBh9tw+OLHF+@alley>
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=zhVPQbT+XsqYAAdzPNfOUxHPVoA7ByFSiGyznpbOHYo=;
+        b=nF43TUQBpvcuV3kgRqb/SjgO+leB9svfVHPnNRkLctTneWtiPivSBWIWKO/90ocIY7
+         7PaIxnJoQF3L+nhrvn2Lslx2mG381/vPKJgpfMFBZQI58WNjF5B+Xlx67eWIkH86IU0m
+         qEE221Ie6EtDf0eCmBKjZb/7UP0JVb3Tek7iL9ZT3T7oVgDTdWECNLz/XovVJvAF0KOh
+         JsST1VFSM2e3kdfbrHB9U/OjVZpmp6FRFsc3ssMvA3KdI629JV0eqN69bfYjDW6xAJFO
+         /yEGx1AahKMwDePtV+iGOMnGLCeNBE4WY+i7kTN63kcStM+zxfjdWJ+5sCrg7SVAXVq2
+         BieA==
+X-Gm-Message-State: AOAM530XZ+NbOS7O45Kb6MCPkHb15cJyybVfgaECV/m330t/0XTlXoEl
+        rcP16A1nRoStB9hLsfDSCiBb31JEvBQCeA==
+X-Google-Smtp-Source: ABdhPJzCZc1/oz48r0UAFMuCgh/kMY0v4ZvQ4ywv8DqkGU1WeB0wz/UvXP1kMHfB2QZFWxFbus8R9g==
+X-Received: by 2002:a17:902:b116:b029:d8:f5d7:5fe5 with SMTP id q22-20020a170902b116b02900d8f5d75fe5mr17220389plr.48.1606716205705;
+        Sun, 29 Nov 2020 22:03:25 -0800 (PST)
+Received: from anyang-linuxfactory-or-kr ([106.250.177.234])
+        by smtp.gmail.com with ESMTPSA id f123sm148057pfa.89.2020.11.29.22.03.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 29 Nov 2020 22:03:24 -0800 (PST)
+Date:   Mon, 30 Nov 2020 15:03:20 +0900
+From:   Dongjin Kim <tobetter@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: meson-sm1: fix typo in opp table
+Message-ID: <20201130060320.GA30098@anyang-linuxfactory-or-kr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X8ElwBh9tw+OLHF+@alley>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/11/27 17:13), Petr Mladek wrote:
-> 
-> + Move clear_warn_once from debugfs to a location that is always
->   available. For example, into /proc
+The freqency 1512000000 should be 1500000000.
 
-Or a printk module param, which user-space can write to from crontab?
-Hmm, but this has potential of becoming another /proc/sys/vm/drop_caches
-though.
+Signed-off-by: Dongjin Kim <tobetter@gmail.com>
+---
 
-	-ss
+Change in v2:
+  - wrong fix in the previous patch.
+    https://patchwork.kernel.org/project/linux-amlogic/patch/20201130054221.GA25448@anyang-linuxfactory-or-kr/ 
+
+---
+ arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+index 71317f5aada1..c309517abae3 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+@@ -130,7 +130,7 @@
+ 			opp-microvolt = <790000>;
+ 		};
+ 
+-		opp-1512000000 {
++		opp-1500000000 {
+ 			opp-hz = /bits/ 64 <1500000000>;
+ 			opp-microvolt = <800000>;
+ 		};
+-- 
+2.17.1
+
