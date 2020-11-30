@@ -2,343 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4092C8DD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DC62C8DE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbgK3TSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:18:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34472 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728678AbgK3TSj (ORCPT
+        id S1728906AbgK3TUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729865AbgK3TTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:18:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606763831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CfLmqkWBWEXsXi8mF8WiPMoexLzcqFMvnE5H0chb+ec=;
-        b=YpCDPwj4aCrYIYfIi7pBFWB9dy690/5apBiTFXZIicbExI4zQCbE3TUZKL0pATBKj+RQqh
-        n+Pd5iP799ew412p4ZuQhav960rpfk07b96EdY01vv+Oq64c3nU9z1Bk+pX10d+Ik4gfSt
-        ZPhNBgrOHHqydy7kHqsySjFeZTwbdnk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-NfV-EYBsPvGuf63yox1L3g-1; Mon, 30 Nov 2020 14:17:07 -0500
-X-MC-Unique: NfV-EYBsPvGuf63yox1L3g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C79B11006C86;
-        Mon, 30 Nov 2020 19:17:05 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E2E8E60C71;
-        Mon, 30 Nov 2020 19:17:04 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 5D76A416D87C; Mon, 30 Nov 2020 16:16:43 -0300 (-03)
-Date:   Mon, 30 Nov 2020 16:16:43 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
-Message-ID: <20201130191643.GA18861@fuller.cnet>
-References: <20201130133559.233242-1-mlevitsk@redhat.com>
+        Mon, 30 Nov 2020 14:19:40 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF9FC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:19:00 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id m62so6946855vsd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:19:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iMGjnal/Aq/KlLIqIqqw22222Z1xI0jO/CQiNQfVjOU=;
+        b=MVIWvWU2KEd1oVwr7wCYKt5eVbkImM44ifQyNFO6UawNRcaNv57nGaTuem9Gs4L023
+         gRwl98CmuhNEQJZ/VVF829iCXS4mFnBKkfgTh9GIkFtIvHJSta4dlEQ6HY7R6dga94ZF
+         hKJ1pvxqlbsVz4qW1W+Ml2DlmFeRaYGGfmvGM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iMGjnal/Aq/KlLIqIqqw22222Z1xI0jO/CQiNQfVjOU=;
+        b=eV5ZPgaK596wp2HIUUtPHrPlWc8OV1MwfV7vCWqSbXvEcldMnU2ZVp77HHYh2nAkb8
+         UZILyYuZBhdtA4BGifJY4D3enGTWyGdJUcxYxgNoZyff7w8IPSRRI/EknJf5+06tpe+z
+         DWvjKTKqoBkJJ3JBPq1WefOctUozPjf+dYXSmP/G4LjSOpVts7UYpVavuP9h7j4ul7Iz
+         UysojzTKqovfPTCWtXZ+AKdTuMi2cy8kYsYIZDq/co/58naprdr3qP+lNEVVWxJ9lWyo
+         J+zhszyLgt8u53Mts00lcCkFz6kvdA/EkIAaXW4NxJiHf4uyJGj+0RNlAh6HVMAsfeV7
+         98EA==
+X-Gm-Message-State: AOAM532edKOzwv6jYsY46o4cS8GK/rM/jrDIoQ/Ti+rb2ndun654ySBF
+        W8po+Xbh19EHYswt8kE6IlPpJoB1qVg3fA==
+X-Google-Smtp-Source: ABdhPJxtC4YLdvdYLuzy4ehdaDYM8ZToI1M8fjQKgcmtB5rQcVEf3Vjn8D1l8P32k1iHa9IvOR4T6Q==
+X-Received: by 2002:a67:fa01:: with SMTP id i1mr17426890vsq.17.1606763939351;
+        Mon, 30 Nov 2020 11:18:59 -0800 (PST)
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
+        by smtp.gmail.com with ESMTPSA id o36sm7911890uad.11.2020.11.30.11.18.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 11:18:58 -0800 (PST)
+Received: by mail-ua1-f44.google.com with SMTP id t15so4098528ual.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:18:58 -0800 (PST)
+X-Received: by 2002:a9f:3dcc:: with SMTP id e12mr19070983uaj.121.1606763937949;
+ Mon, 30 Nov 2020 11:18:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130133559.233242-1-mlevitsk@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201112200906.991086-1-kuabhs@chromium.org> <20201112200856.v2.1.Ia526132a366886e3b5cf72433d0d58bb7bb1be0f@changeid>
+ <CAD=FV=XKCLgL6Bt+3KfqKByyP5fpwXOh6TNHXAoXkaQJRzjKjQ@mail.gmail.com>
+ <002401d6c242$d78f2140$86ad63c0$@codeaurora.org> <CAD=FV=UnecON-M9eZVQePuNpdygN_E9OtLN495Xe1GL_PA94DQ@mail.gmail.com>
+ <002d01d6c2dd$4386d880$ca948980$@codeaurora.org>
+In-Reply-To: <002d01d6c2dd$4386d880$ca948980$@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 30 Nov 2020 11:18:46 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WQPMnor3oTefDHd6JP6UmpyBo7UsOJ1Sg4Ly1otxr6hw@mail.gmail.com>
+Message-ID: <CAD=FV=WQPMnor3oTefDHd6JP6UmpyBo7UsOJ1Sg4Ly1otxr6hw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ath10k: add option for chip-id based BDF selection
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     Abhishek Kumar <kuabhs@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        Brian Norris <briannorris@chromium.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxim,
-
-On Mon, Nov 30, 2020 at 03:35:57PM +0200, Maxim Levitsky wrote:
-> Hi!
-> 
-> This is the first version of the work to make TSC migration more accurate,
-> as was defined by Paulo at:
-> https://www.spinics.net/lists/kvm/msg225525.html
-
-Description from Oliver's patch:
-
-"To date, VMMs have typically restored the guest's TSCs by value using
-the KVM_SET_MSRS ioctl for each vCPU. However, restoring the TSCs by
-value introduces some challenges with synchronization as the TSCs
-continue to tick throughout the restoration process. As such, KVM has
-some heuristics around TSC writes to infer whether or not the guest or
-host is attempting to synchronize the TSCs."
-
-Not really. The synchronization logic tries to sync TSCs during
-BIOS boot (and CPU hotplug), because the TSC values are loaded
-sequentially, say:
-
-CPU		realtime	TSC val
-vcpu0		0 usec		0
-vcpu1		100 usec	0
-vcpu2		200 usec	0
-...
-
-And we'd like to see all vcpus to read the same value at all times.
-
-Other than that, comment makes sense. The problem with live migration
-is as follows:
-
-We'd like the TSC value to be written, ideally, just before the first
-VM-entry a vCPU (because at the moment the TSC_OFFSET has been written, 
-the vcpus tsc is ticking, which will cause a visible forward jump
-in vcpus tsc time).
-
-Before the first VM-entry is the farthest point in time before guest
-entry that one could do that.
-
-The window (or forward jump) between KVM_SET_TSC and VM-entry was about
-100ms last time i checked (which results in a 100ms time jump forward), 
-See QEMU's 6053a86fe7bd3d5b07b49dae6c05f2cd0d44e687.
-
-Have we measured any improvement with this patchset?
-
-Then Paolo mentions (with >), i am replying as usual.
-
-> Ok, after looking more at the code with Maxim I can confidently say that
-> it's a total mess.  And a lot of the synchronization code is dead
-> because 1) as far as we could see no guest synchronizes the TSC using
-> MSR_IA32_TSC; 
-
-Well, recent BIOS'es take care of synchronizing the TSC. So when Linux
-boots, it does not have to synchronize TSC in software. 
-
-However, upon migration (and initialization), the KVM_SET_TSC's do 
-not happen at exactly the same time (the MSRs for each vCPU are loaded
-in sequence). The synchronization code in kvm_set_tsc() is for those cases.
-
-> and 2) writing to MSR_IA32_TSC_ADJUST does not trigger the
-> synchronization code in kvm_write_tsc.
-
-Not familiar how guests are using MSR_IA32_TSC_ADJUST (or Linux)...
-Lets see:
-
-
-/*
- * Freshly booted CPUs call into this:
- */
-void check_tsc_sync_target(void)
-{
-        struct tsc_adjust *cur = this_cpu_ptr(&tsc_adjust);
-        unsigned int cpu = smp_processor_id();
-        cycles_t cur_max_warp, gbl_max_warp;
-        int cpus = 2;
-
-        /* Also aborts if there is no TSC. */
-        if (unsynchronized_tsc())
-                return;
-
-        /*
-         * Store, verify and sanitize the TSC adjust register. If
-         * successful skip the test.
-         *
-         * The test is also skipped when the TSC is marked reliable. This
-         * is true for SoCs which have no fallback clocksource. On these
-         * SoCs the TSC is frequency synchronized, but still the TSC ADJUST
-         * register might have been wreckaged by the BIOS..
-         */
-        if (tsc_store_and_check_tsc_adjust(false) || tsc_clocksource_reliable) {
-                atomic_inc(&skip_test);
-                return;
-        }
-
-retry:
-
-I'd force that synchronization path to be taken as a test-case.
-
-
-> I have a few thoughts about the kvm masterclock synchronization,
-> which relate to the Paulo's proposal that I implemented.
-> 
-> The idea of masterclock is that when the host TSC is synchronized
-> (or as kernel call it, stable), and the guest TSC is synchronized as well,
-> then we can base the kvmclock, on the same pair of
-> (host time in nsec, host tsc value), for all vCPUs.
-
-We _have_ to base. See the comment which starts with
-
-"Assuming a stable TSC across physical CPUS, and a stable TSC"
-
-at x86.c.
-
-> 
-> This makes the random error in calculation of this value invariant
-> across vCPUS, and allows the guest to do kvmclock calculation in userspace
-> (vDSO) since kvmclock parameters are vCPU invariant.
-
-Actually, without synchronized host TSCs (and the masterclock scheme,
-with a single base read from a vCPU), kvmclock in kernel is buggy as
-well:
-
-u64 pvclock_clocksource_read(struct pvclock_vcpu_time_info *src)
-{
-        unsigned version;
-        u64 ret;
-        u64 last;
-        u8 flags;
-
-        do {
-                version = pvclock_read_begin(src);
-                ret = __pvclock_read_cycles(src, rdtsc_ordered());
-                flags = src->flags;
-        } while (pvclock_read_retry(src, version));
-
-        if (unlikely((flags & PVCLOCK_GUEST_STOPPED) != 0)) {
-                src->flags &= ~PVCLOCK_GUEST_STOPPED;
-                pvclock_touch_watchdogs();
-        }
-
-        if ((valid_flags & PVCLOCK_TSC_STABLE_BIT) &&
-                (flags & PVCLOCK_TSC_STABLE_BIT))
-                return ret;
-
-The code that follows this (including cmpxchg) is a workaround for that 
-bug.
-
-Workaround would require each vCPU to write to a "global clock", on
-every clock read.
-
-> To ensure that the guest tsc is synchronized we currently track host/guest tsc
-> writes, and enable the master clock only when roughly the same guest's TSC value
-> was written across all vCPUs.
-
-Yes, because then you can do:
-
-vcpu0				vcpu1
-
-A = read TSC
-		... elapsed time ...
-
-				B = read TSC
-
-				delta = B - A
-
-> Recently this was disabled by Paulo
-
-What was disabled exactly?
-
-> and I agree with this, because I think
-> that we indeed should only make the guest TSC synchronized by default
-> (including new hotplugged vCPUs) and not do any tsc synchronization beyond that.
-> (Trying to guess when the guest syncs the TSC can cause more harm that good).
-> 
-> Besides, Linux guests don't sync the TSC via IA32_TSC write,
-> but rather use IA32_TSC_ADJUST which currently doesn't participate
-> in the tsc sync heruistics.
-
-Linux should not try to sync the TSC with IA32_TSC_ADJUST. It expects
-the BIOS to boot with synced TSCs.
-
-So i wonder what is making it attempt TSC sync in the first place?
-
-(one might also want to have Linux's synchronization via IA32_TSC_ADJUST 
-working, but it should not need to happen in the first place, as long as 
-QEMU and KVM are behaving properly).
-
-> And as far as I know, Linux guest is the primary (only?) user of the kvmclock.
-
-Only AFAIK.
-
-> I *do think* however that we should redefine KVM_CLOCK_TSC_STABLE
-> in the documentation to state that it only guarantees invariance if the guest
-> doesn't mess with its own TSC.
-> 
-> Also I think we should consider enabling the X86_FEATURE_TSC_RELIABLE
-> in the guest kernel, when kvm is detected to avoid the guest even from trying
-> to sync TSC on newly hotplugged vCPUs.
-
-See 7539b174aef405d9d57db48c58390ba360c91312. 
-
-Was hoping to make that (-cpu xxx,+invtsc) the default in QEMU once invariant TSC code
-becomes stable. Should be tested enough by now?
-
-> (The guest doesn't end up touching TSC_ADJUST usually, but it still might
-> in some cases due to scheduling of guest vCPUs)
-> 
-> (X86_FEATURE_TSC_RELIABLE short circuits tsc synchronization on CPU hotplug,
-> and TSC clocksource watchdog, and the later we might want to keep).
-
-The latter we want to keep.
-
-> For host TSC writes, just as Paulo proposed we can still do the tsc sync,
-> unless the new code that I implemented is in use.
-
-So Paolo's proposal is to
-
-"- for live migration, userspace is expected to use the new
-KVM_GET/SET_TSC_PRECISE (or whatever the name will be) to get/set a
-(nanosecond, TSC, TSC_ADJUST) tuple."
-
-Makes sense, so that no time between KVM_SET_TSC and
-MSR_WRITE(TSC_ADJUST) elapses, which would cause the TSC to go out
-of what is desired by the user.
-
-Since you are proposing this new ioctl, perhaps its useful to also
-reduce the 100ms jump? 
-
-"- for live migration, userspace is expected to use the new
-KVM_GET/SET_TSC_PRECISE (or whatever the name will be) to get/set a
-(nanosecond, TSC, TSC_ADJUST) tuple. This value will be written
-to the guest before the first VM-entry"
-
-Sounds like a good idea (to integrate the values in a tuple).
-
-> Few more random notes:
-> 
-> I have a weird feeling about using 'nsec since 1 January 1970'.
-> Common sense is telling me that a 64 bit value can hold about 580 years,
-> but still I see that it is more common to use timespec which is a (sec,nsec) pair.
-
-           struct timespec {
-               time_t   tv_sec;        /* seconds */
-               long     tv_nsec;       /* nanoseconds */
-           };
-
-> I feel that 'kvm_get_walltime' that I added is a bit of a hack.
-> Some refactoring might improve things here.
-
-Haven't read the patchset yet...
-
-> For example making kvm_get_walltime_and_clockread work in non tsc case as well
-> might make the code cleaner.
-> 
-> Patches to enable this feature in qemu are in process of being sent to
-> qemu-devel mailing list.
-> 
-> Best regards,
->        Maxim Levitsky
-> 
-> Maxim Levitsky (2):
->   KVM: x86: implement KVM_SET_TSC_PRECISE/KVM_GET_TSC_PRECISE
->   KVM: x86: introduce KVM_X86_QUIRK_TSC_HOST_ACCESS
-> 
->  Documentation/virt/kvm/api.rst  | 56 +++++++++++++++++++++
->  arch/x86/include/uapi/asm/kvm.h |  1 +
->  arch/x86/kvm/x86.c              | 88 +++++++++++++++++++++++++++++++--
->  include/uapi/linux/kvm.h        | 14 ++++++
->  4 files changed, 154 insertions(+), 5 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
-
+Hi,
+
+On Tue, Nov 24, 2020 at 7:44 PM Rakesh Pillai <pillair@codeaurora.org> wrote:
+>
+> > > I missed on reviewing this change. Also I agree with Doug that this is not
+> > the change I was looking for.
+> > >
+> > > The argument "with_variant" can be renamed to "with_extra_params".
+> > There is no need for any new argument to this function.
+> > > Case 1: with_extra_params=0,  ar->id.bdf_ext[0] = 0             ->   The default
+> > name will be used (bus=snoc,qmi_board_id=0xab)
+> > > Case 2: with_extra_params=1,  ar->id.bdf_ext[0] = 0             ->
+> > bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd
+> > > Case 3: with_extra_params=1,  ar->id.bdf_ext[0] = "xyz"      ->
+> > bus=snoc,qmi_board_id=0xab,qmi_chip_id=0xcd,variant=xyz
+> > >
+> > > ar->id.bdf_ext[0] depends on the DT entry for variant field.
+> >
+> > I'm confused about your suggestion.  Maybe you can help clarify.  Are
+> > you suggesting:
+> >
+> > a) Only two calls to ath10k_core_create_board_name()
+> >
+> > I'm pretty sure this will fail in some cases.  Specifically consider
+> > the case where the device tree has a "variant" defined but the BRD
+> > file only has one entry for (board-id) and one for (board-id +
+> > chip-id) but no entry for (board-id + chip-id + variant).  If you are
+> > only making two calls then I don't think you'll pick the right one.
+> >
+> > Said another way...
+> >
+> > If the device tree has a variant:
+> > 1. We should prefer a BRD entry that has board-id + chip-id + variant
+> > 2. If #1 isn't there, we should prefer a BRD entry that has board-id + chip-id
+> > 3. If #1 and #2 aren't there we fall back to a BRD entry that has board-id.
+> >
+> > ...without 3 calls to ath10k_core_create_board_name() we can't handle
+> > all 3 cases.
+>
+> This can be handled by two calls to ath10k_core_create_board_name
+> 1) ath10k_core_create_board_name(ar, boardname, sizeof(boardname), true)   :  As per my suggestions, this can result in two possible board names
+>     a) If DT have the "variant" node, it outputs the #1 from your suggestion  (1. We should prefer a BRD entry that has board-id + chip-id + variant)
+>     b) If DT does not have the "variant" node, it outputs the #2 from your suggestion (2. If #1 isn't there, we should prefer a BRD entry that has board-id + chip-id)
+>
+> 2) ath10k_core_create_board_name(ar, boardname, sizeof(boardname), false)    :  This is the second call to this function and outputs the #3 from your suggestion (3. If #1 and #2 aren't there we fall back to a BRD entry that has board-id)
+
+What I'm trying to say is this.  Imagine that:
+
+a) the device tree has the "variant" property.
+
+b) the BRD file has two entries, one for "board-id" (1) and one for
+"board-id + chip-id" (2).  It doesn't have one for "board-id + chip-id
++ variant" (3).
+
+With your suggestion we'll see the "variant" property in the device
+tree.  That means we'll search for (1) and (3).  (3) isn't there, so
+we'll pick (1).  ...but we really should have picked (2), right?
+
+-Doug
