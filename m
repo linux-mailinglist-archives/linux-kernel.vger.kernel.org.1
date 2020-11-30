@@ -2,184 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9072C82E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5C12C82EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgK3LKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728229AbgK3LKf (ORCPT
+        id S1726612AbgK3LLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:11:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24210 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725902AbgK3LLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:10:35 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19229C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:09:55 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id e25so5536335wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:09:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=og3JaCFKA1hxe7Er/aULg3U2LUsICgsDGCZfViXEnss=;
-        b=aFUJMrQqeG5iB9VwHdntb4vtkcGLRzJBFixJyb8WAuQ/TlJ2e2cypFJkIBARBnQw4j
-         ekg3X58hskXvhpwXY7gvmm7Ss21BowKL4WAxZ+gxShspWpZ5v6kk+AGF4OOL7vx+vpiv
-         Wd3frz3wCKf+GnU6JSWTxrl/vsckKrH4l7Jb6t2E70VF2G1KL658EwfVcaRLusuUyvJU
-         wOBo6l00x0Mk2EHjFl5AnNO9DtWV2L62fQ33vlhiWVvsZ7W7cxgxhjwR9pm4vWkuursA
-         WYDvxx/xfK9GsyMy3uX5SbUIdrCUkVJepUhRzR/4Y+Stz/W5rox9xDSMIuFjb8bS0Zk9
-         QGYg==
+        Mon, 30 Nov 2020 06:11:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606734622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bBA2P9rkCmIFocbgo88SKG1Ky5jlDdKUXcYMQbA/xcY=;
+        b=CeetdH0ylHGFawhzGS76tCL39S9AoajbaDfb4fkr27Gb9gu1IGA7v1eVZuKvreeIWcFivB
+        T8ga7qjJQz1ppa3y2T7UZ3EmEViwXSKDZj66lXuT8RsjjI/P6/LBmov+aXwfvPgmxFPt/E
+        /HSAR7SAU+CziIcRj/6XgAbvs26Kxn8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-ZX0dSAC8M8KGmWE1Zuf90Q-1; Mon, 30 Nov 2020 06:10:20 -0500
+X-MC-Unique: ZX0dSAC8M8KGmWE1Zuf90Q-1
+Received: by mail-wr1-f71.google.com with SMTP id f4so8297701wru.21
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:10:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=og3JaCFKA1hxe7Er/aULg3U2LUsICgsDGCZfViXEnss=;
-        b=nHwCE91fkx0iNmXk4ON4XMnoCfHCwlsHs6E45sxn5nGxg+DOZ3YHL6o7ctA3zd3yKG
-         HESnwvHOZAktvXejt6JtextZwpNaOW5Lxt+Fj9/w4z6LnHboMW3SOEh99zl+Tmz0iNYL
-         koiT+srCFoLr5L1USnvTQqE86/nX6fGWwemanjfTOvaNdkwATYbpUQN3g+6dCMsL6NVC
-         /3Lfa96FOczBSXGXcwsXeBeU55qTIbAMipnRGxdDEDlbf71EWBDegDQvrbwRs81ifUi2
-         2PFfSfNu7Ig+wXCBKRoMtn0uSlkXDcRJZQm3X5aqC0Prg6kObB5A5NSXRK0/fynSllSd
-         5nMg==
-X-Gm-Message-State: AOAM532FsJ3yvOEjDYo9sUZxjU5mwsff4mSpEKnUQC90QQIs6yiJ1+HC
-        NrRzHolY/oWgGO0lFv1bZZXKZg==
-X-Google-Smtp-Source: ABdhPJx6vvpCbL6tab1OUGiXTI002xSMilMhovTRPRdlcjtCL4zc3yZHcjJTAqw26ffLwV9N4Mz3yg==
-X-Received: by 2002:a05:600c:4101:: with SMTP id j1mr23115058wmi.35.1606734593807;
-        Mon, 30 Nov 2020 03:09:53 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id e3sm28205394wro.90.2020.11.30.03.09.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Nov 2020 03:09:53 -0800 (PST)
-Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK and
- LRCLK in LPAIF invalid state
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
- <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <4b680d9a-23eb-9746-e11e-1506d35e72c4@linaro.org>
-Date:   Mon, 30 Nov 2020 11:09:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bBA2P9rkCmIFocbgo88SKG1Ky5jlDdKUXcYMQbA/xcY=;
+        b=jxM8MnrayLxEy3n4DiKW+mtKX6LuqtNL1i3Xea/HZH+GVZbqdsP+Bwc/MMJPvBaITh
+         U2VCb8JC91dZrNUxpUNlrQaraQ9VZ9TQ1i35/kcqgq704/eefuERCuR1SYE3N+LK01ti
+         dz24j8rWoEKXH2augVRfx1uruX3h55zR4VzFC6eko/ezrWQTMK1RvvDEs0ME3w343BI9
+         HM7koADC3ZVhqjEf2hMrN0Q7WnvU+gGID6ppxI8E76bT1cVcLVfjJupVzw8/BiZRyHTd
+         OCLHmZpRr5S+LqcSDa9NyAIoILWSCPaWDTS/TPk/JgSVCzuy/AF06bTg9pq8DY3eQJbQ
+         BRHA==
+X-Gm-Message-State: AOAM5309xTylWvSmnOZkU4KuShtTeefpO67mtg3ltXjbEBx9ZpxLI0F3
+        YMyu0qv9DqAqFZhgfPrNJwrWsmSD/z+55xrUg042sKwhNyQB6gntmiPfpLuw3KiQswmenWt5hzp
+        Famrt0nzYFs+XhL9KQUkUZaUA
+X-Received: by 2002:adf:c452:: with SMTP id a18mr28254909wrg.189.1606734619413;
+        Mon, 30 Nov 2020 03:10:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJymQVb/kChQ/Fx2/IqMU8g40mwj11rjePfVOwyuBCUP+xmJ0inwWZbZZ1mfbCHPL0E3AvfBFg==
+X-Received: by 2002:adf:c452:: with SMTP id a18mr28254887wrg.189.1606734619219;
+        Mon, 30 Nov 2020 03:10:19 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id f199sm24129875wme.15.2020.11.30.03.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 03:10:18 -0800 (PST)
+Date:   Mon, 30 Nov 2020 12:10:15 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
+Subject: Re: [PATCH v2 02/17] vdpa_sim: remove unnecessary headers inclusion
+Message-ID: <20201130111015.74h3ratcegf6xlw5@steredhat>
+References: <20201126144950.92850-1-sgarzare@redhat.com>
+ <20201126144950.92850-3-sgarzare@redhat.com>
+ <f900316d-a642-714e-65b6-5b6cc4b79b48@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f900316d-a642-714e-65b6-5b6cc4b79b48@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 30, 2020 at 11:04:49AM +0800, Jason Wang wrote:
+>
+>On 2020/11/26 下午10:49, Stefano Garzarella wrote:
+>>Some headers are not necessary, so let's remove them to do
+>>some cleaning.
+>>
+>>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>>---
+>>  drivers/vdpa/vdpa_sim/vdpa_sim.c | 13 -------------
+>>  1 file changed, 13 deletions(-)
+>>
+>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>index 6a90fdb9cbfc..c6eaf62df8ec 100644
+>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>@@ -7,24 +7,11 @@
+>>   *
+>>   */
+>>-#include <linux/init.h>
+>>  #include <linux/module.h>
+>>-#include <linux/device.h>
+>
+>
+>I think the rule is to make sure e.g the structure definition can be 
+>via direct inclusion. E.g struct device {} is defined in this file.
+>
+>
+>>-#include <linux/kernel.h>
+>>-#include <linux/fs.h>
+>>-#include <linux/poll.h>
+>>-#include <linux/slab.h>
+>>-#include <linux/sched.h>
+>>-#include <linux/wait.h>
+>>-#include <linux/uuid.h>
+>>-#include <linux/iommu.h>
+>>  #include <linux/dma-map-ops.h>
+>>-#include <linux/sysfs.h>
+>>-#include <linux/file.h>
+>>  #include <linux/etherdevice.h>
+>>  #include <linux/vringh.h>
+>>  #include <linux/vdpa.h>
+>>-#include <linux/virtio_byteorder.h>
+>
+>
+>And the  __cpu_to_virtio16 is defined in this file.
+>
 
+Okay, I'll keep this two includes and check better the others.
 
-On 28/11/2020 04:59, Srinivasa Rao Mandadapu wrote:
-> This reverts part of commit b1824968221c
-> ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state")
+Thanks,
+Stefano
 
-This should probably go to Fixes tag!
-
-> 
-
-> To identify LPAIF invalid state after device suspend and resume,
-> made I2S and DMA control registers not volatile, which is not necessary.
-This comment is bit confusing!
-
-Basically it should be something like
-"DMA control registers are not volatile, so remove these from volatile 
-registers list"
-
---srini
-
-
-> Instead invalid reg state can be handled with regcache APIs.
-> The BCLK ref count is necessary to enable clock only it's in disable state.
-> 
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->   sound/soc/qcom/lpass-cpu.c      | 20 ++------------------
->   sound/soc/qcom/lpass-platform.c | 11 -----------
->   2 files changed, 2 insertions(+), 29 deletions(-)
-> 
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index af684fd..c5e99c2 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -270,18 +270,6 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->   	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
->   	unsigned int id = dai->driver->id;
->   	int ret = -EINVAL;
-> -	unsigned int val = 0;
-> -
-> -	ret = regmap_read(drvdata->lpaif_map,
-> -				LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id), &val);
-> -	if (ret) {
-> -		dev_err(dai->dev, "error reading from i2sctl reg: %d\n", ret);
-> -		return ret;
-> -	}
-> -	if (val == LPAIF_I2SCTL_RESET_STATE) {
-> -		dev_err(dai->dev, "error in i2sctl register state\n");
-> -		return -ENOTRECOVERABLE;
-> -	}
->   
->   	switch (cmd) {
->   	case SNDRV_PCM_TRIGGER_START:
-> @@ -454,20 +442,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
->   	struct lpass_variant *v = drvdata->variant;
->   	int i;
->   
-> -	for (i = 0; i < v->i2s_ports; ++i)
-> -		if (reg == LPAIF_I2SCTL_REG(v, i))
-> -			return true;
->   	for (i = 0; i < v->irq_ports; ++i)
->   		if (reg == LPAIF_IRQSTAT_REG(v, i))
->   			return true;
->   
->   	for (i = 0; i < v->rdma_channels; ++i)
-> -		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
-> +		if (reg == LPAIF_RDMACURR_REG(v, i))
->   			return true;
->   
->   	for (i = 0; i < v->wrdma_channels; ++i)
-> -		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
-> -			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
-> +		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
->   			return true;
->   
->   	return false;
-> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-> index 80b09de..0e71899 100644
-> --- a/sound/soc/qcom/lpass-platform.c
-> +++ b/sound/soc/qcom/lpass-platform.c
-> @@ -452,7 +452,6 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
->   	unsigned int reg_irqclr = 0, val_irqclr = 0;
->   	unsigned int  reg_irqen = 0, val_irqen = 0, val_mask = 0;
->   	unsigned int dai_id = cpu_dai->driver->id;
-> -	unsigned int dma_ctrl_reg = 0;
->   
->   	ch = pcm_data->dma_ch;
->   	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
-> @@ -469,17 +468,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
->   		id = pcm_data->dma_ch - v->wrdma_channel_start;
->   		map = drvdata->lpaif_map;
->   	}
-> -	ret = regmap_read(map, LPAIF_DMACTL_REG(v, ch, dir, dai_id), &dma_ctrl_reg);
-> -	if (ret) {
-> -		dev_err(soc_runtime->dev, "error reading from rdmactl reg: %d\n", ret);
-> -		return ret;
-> -	}
->   
-> -	if (dma_ctrl_reg == LPAIF_DMACTL_RESET_STATE ||
-> -		dma_ctrl_reg == LPAIF_DMACTL_RESET_STATE + 1) {
-> -		dev_err(soc_runtime->dev, "error in rdmactl register state\n");
-> -		return -ENOTRECOVERABLE;
-> -	}
->   	switch (cmd) {
->   	case SNDRV_PCM_TRIGGER_START:
->   	case SNDRV_PCM_TRIGGER_RESUME:
-> 
