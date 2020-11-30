@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EB22C7C47
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 02:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EC32C7C4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 02:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgK3BFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 20:05:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
+        id S1726755AbgK3BOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 20:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgK3BFL (ORCPT
+        with ESMTP id S1726470AbgK3BOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 20:05:11 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A68C0613CF;
-        Sun, 29 Nov 2020 17:04:25 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id ek7so4890498qvb.6;
-        Sun, 29 Nov 2020 17:04:25 -0800 (PST)
+        Sun, 29 Nov 2020 20:14:55 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3162FC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 17:14:15 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id w15so12497772oie.13
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 17:14:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9w+jIogOsKRBrpA0BOG2mGKZgZW7G/tIHqRWbeWWJW4=;
-        b=WU2glR0TsgL7F4/RiVfuwal0YDkOeqqQo1eMszLAWLO0V78Iff5/n64/V+Tel6qT40
-         0VZPZwJwnsbjpw844pzMgW2hYIqwz9mbmNNEs6O9eqV7TWRrdnQvvljYsI+oAgmSfU9d
-         JIxDowmXVsOG4M50gjV44mXjYipYLj/9fbmyh2K14okhPO2JuJkIbpuUnR81GPub6sfc
-         rlIoxazGL6HuV4KMjGROkoGEtAMmm7Vc+Pc82fuAAMqnezRvuWTfJB0nD/O/ozmK1le2
-         0iQc4nSTPnFUJ+egMZNoYLZ/ZHipkw5XcHC1btQ4QFt9SCnPc6sbU8WpdjVCohjcBAA6
-         sP4w==
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ci5CHLJxKEcy3QWlP5ZvQNWjEsU1uJaTooeTMXCOkpM=;
+        b=VJyTZOT2W29g9lbzViVerqyxYm7t7mekhgBqzEWmnluCOlHr2+wAAXF2oBjzVFQTdl
+         IVfHGeqn6AgbopUWPbI3iiRViRmWoo0w5XHuKhWOnWIpdgV8DwxmpEpt39eMuiM/TYEo
+         I38gNqc8yOFe2xA1nLldGR6sm272WxkmrazpQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9w+jIogOsKRBrpA0BOG2mGKZgZW7G/tIHqRWbeWWJW4=;
-        b=uBg+pLLcCaWLE0ZI5H6R84hlEEMKyD8wSPYQJju2zAQ5f4VO7CMaB9pgY9VLs87+6d
-         B4Axb0U8vFJ9yic/cG24srxEZfdMOLf0q0Asqgam2qVReSu0Jspe3+YHyQf8A1xCKvwQ
-         GcI88b0vEPBESsVbFfvlUnqtxQ5bfs78F0oENj9gCs1BibkB68lLqe6RUE4RTvm+BWd2
-         XYIbm9x2DLnHlvphaEzqtX+pdm1Gm9D4P0sHRvhffT7iBWkBCEnlENRiRWr6a4OoPt83
-         mUh7NHbOdoLLuwPrqVMGlMrZICayRKtVV2LVubJvr/z1b0mrQJ3iRGnZe+OwoRrDhOhA
-         3nrQ==
-X-Gm-Message-State: AOAM530zkGSD/jJNA7PQPrE+S2pbKxO1mE3N/giTnbtK0nfqshI4boSQ
-        GIFHR4pSLr3VfC114sEtFYk=
-X-Google-Smtp-Source: ABdhPJxNBQJpDe6Q+07RcfAa9BO9KXU9uK23WXodIbLjKY85NBzOpU1EHUFfTEHywAlwGfo76xkVUw==
-X-Received: by 2002:a0c:fe04:: with SMTP id x4mr17013047qvr.61.1606698264424;
-        Sun, 29 Nov 2020 17:04:24 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id e19sm14025778qtp.83.2020.11.29.17.04.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 17:04:23 -0800 (PST)
-Date:   Sun, 29 Nov 2020 18:04:22 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        wireguard@lists.zx2c4.com
-Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
-Message-ID: <20201130010422.GA1956616@ubuntu-m3-large-x86>
-References: <20201128193335.219395-1-masahiroy@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ci5CHLJxKEcy3QWlP5ZvQNWjEsU1uJaTooeTMXCOkpM=;
+        b=mUwVzSqgMLcLij50UmYqWPQsJs7vSDnT3jAKX0dH+rb9sKQUsulRAtQKUxo2lz3jIr
+         rYF5s/sAw2+DXqu1Gqj6IlDXUkLaGduV7GqNGuwAEntv//Pslg0wDbACQ8nxtlj+pk0A
+         T2EaKsK7MhWd00sVfRxcUMpJOliL7WfcGm4GOck7aXWiPtCFLn1OzfeQWmUP4EFt682I
+         bG4cRSsJEZ2YJqMuup6spxBhVaQTBLDP3mNyH7Ec9fUuw8dY66TuKqUR488ZfjpCRXlK
+         99HUmXQvif4DkLHVw5Prf1PRD1NZdF+ZGDmUJYrznLMNYm5lv4A5KqzN39c+B0kVSx86
+         TJHg==
+X-Gm-Message-State: AOAM53098Fg0FzD3rgfqiU7WWGmxxZWcpaJS21PM/mnEI0YM3tQrf08G
+        XNgST4XuFEo+1o3hwFem9lmz+aIQ6DOnrpJS9Ipa7g==
+X-Google-Smtp-Source: ABdhPJymLyefZTD/4eV25dOV/S5KuIzuKplJyzh8FiRAmYTfgDr8hG8J+7cMZ8JYzSdefgfeq0Wd7eeQhUWW/l4oDB8=
+X-Received: by 2002:aca:f3d6:: with SMTP id r205mr12752793oih.152.1606698854248;
+ Sun, 29 Nov 2020 17:14:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201128193335.219395-1-masahiroy@kernel.org>
+References: <20201130115603.48e91a19@canb.auug.org.au>
+In-Reply-To: <20201130115603.48e91a19@canb.auug.org.au>
+From:   Paul Barker <pbarker@konsulko.com>
+Date:   Mon, 30 Nov 2020 01:14:03 +0000
+Message-ID: <CAM9ZRVsq_VwYpuW70V7Dnfmqc7WXYcwsirGOo94B03Lp0uGyPQ@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the hwmon-staging tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 04:33:35AM +0900, Masahiro Yamada wrote:
-> Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
-> 
-> A lot of warn_unused_result warnings existed in 2006, but until now
-> they have been fixed thanks to people doing allmodconfig tests.
-> 
-> Our goal is to always enable __must_check where appropriate, so this
-> CONFIG option is no longer needed.
-> 
-> I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
-> 
->     # CONFIG_ENABLE_MUST_CHECK is not set
-> 
-> I did not touch them for now since it would be a big churn. If arch
-> maintainers want to clean them up, please go ahead.
-> 
-> While I was here, I also moved __must_check to compiler_attributes.h
-> from compiler_types.h
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+On Mon, 30 Nov 2020 at 00:56, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the hwmon-staging tree, today's linux-next build (arm
+> multi_v7_defconfig) produced this warning:
+>
+> drivers/hwmon/pwm-fan.c: In function 'pwm_fan_is_visible':
+> drivers/hwmon/pwm-fan.c:167:22: warning: unused variable 'ctx' [-Wunused-variable]
+>   167 |  struct pwm_fan_ctx *ctx = (struct pwm_fan_ctx *)data;
+>       |                      ^~~
+>
+> Introduced by commit
+>
+>   439ed83acc19 ("hwmon: (pwm-fan) Convert to hwmon_device_register_with_info API")
+>
 
-Acked-by: Nathan Chancellor <natechancellor@gmail.com>
+Ah yes. I removed the code that used ctx but forgot to remove the
+assignment itself. I'm surprised it didn't generate a warning for me.
+
+I can fix it up tomorrow and send a v3 patch series.
+
+Thanks,
+
+-- 
+Paul Barker
+Konsulko Group
