@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34FA2C8D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F312C8D1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388278AbgK3SoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:44:23 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:32914 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388264AbgK3SoW (ORCPT
+        id S2388180AbgK3Smp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:42:45 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:53894 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727626AbgK3Smp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:44:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUISrfb136966;
-        Mon, 30 Nov 2020 18:43:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=VGptTinuknU9DbQlqyBrHws2SfA6tHCjwTpy5V1HH5E=;
- b=Qbh+h95l030CzT3G17995r7xXySCzdhjs1aECHQ2aUN0ymUXmF2PZlxeg4PPg0dp6Pl7
- j7DAlo+YNdPEKSEBdpqGGd+Z9DIVaXxgLYJN23q0xPtVekofMxXgdb1JeAFKcwNBEnRA
- xdNTLD5Hltq9Civ3v62YA375d+cHHZ/dWpAyenj1ZEoTT80rYtd5j1nP9Z3Avf1YaULG
- y8/00o+CavKsZjm+Pn83DLq5DPT+d3hLKA+ZLWAxjRRd4e2hHuXs9I76GiHstsel1mPj
- crHtkub/nzoNbf+6hXBOkUYgDAoqxrFMLpwTQY9A1xBWclH6pTWZi6E4XdLKNLZo9a5o 9w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 353egkenkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 18:43:26 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUIU2HU141810;
-        Mon, 30 Nov 2020 18:41:25 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3540ewww14-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 18:41:25 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AUIfOST014950;
-        Mon, 30 Nov 2020 18:41:24 GMT
-Received: from [10.175.212.254] (/10.175.212.254)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 10:41:24 -0800
-Subject: Re: [PATCH RFC 11/39] KVM: x86/xen: evtchn signaling via eventfd
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-12-joao.m.martins@oracle.com>
- <874d1fa922cb56238676b90bbeeba930d0706500.camel@infradead.org>
- <e83f6438-7256-1dc8-3b13-5498fd5bbed1@oracle.com>
- <18e854e2a84750c2de2d32384710132b83d84286.camel@infradead.org>
- <0b9d3901-c10b-effd-6278-6afd1e95b09e@oracle.com>
- <315ea414c2bf938978f7f2c0598e80fa05b4c07b.camel@infradead.org>
- <05661003-64f0-a32a-5659-6463d4806ef9@oracle.com>
- <13bc2ca60ca4e6d74c619e65502889961a08c3ff.camel@infradead.org>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <35e45689-8225-7e5d-44ef-23479b563444@oracle.com>
-Date:   Mon, 30 Nov 2020 18:41:20 +0000
+        Mon, 30 Nov 2020 13:42:45 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjo7g-004lQG-08; Mon, 30 Nov 2020 11:42:04 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjo7e-0001dC-QW; Mon, 30 Nov 2020 11:42:03 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Wen Yang <wenyang@linux.alibaba.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201128175850.19484-1-wenyang@linux.alibaba.com>
+Date:   Mon, 30 Nov 2020 12:41:33 -0600
+In-Reply-To: <20201128175850.19484-1-wenyang@linux.alibaba.com> (Wen Yang's
+        message of "Sun, 29 Nov 2020 01:58:50 +0800")
+Message-ID: <87zh2yit5u.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <13bc2ca60ca4e6d74c619e65502889961a08c3ff.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- suspectscore=1 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=885
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=1
- phishscore=0 mlxlogscore=872 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300120
+Content-Type: text/plain
+X-XM-SPF: eid=1kjo7e-0001dC-QW;;;mid=<87zh2yit5u.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+D1VhZMNzyY+vufufIEE54onRJFTivgMQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMGappySubj_01
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Wen Yang <wenyang@linux.alibaba.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 644 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 8 (1.3%), b_tie_ro: 7 (1.1%), parse: 1.33 (0.2%),
+        extract_message_metadata: 23 (3.5%), get_uri_detail_list: 3.7 (0.6%),
+        tests_pri_-1000: 19 (3.0%), tests_pri_-950: 1.20 (0.2%),
+        tests_pri_-900: 0.97 (0.2%), tests_pri_-90: 205 (31.9%), check_bayes:
+        184 (28.6%), b_tokenize: 7 (1.1%), b_tok_get_all: 72 (11.2%),
+        b_comp_prob: 4.1 (0.6%), b_tok_touch_all: 97 (15.1%), b_finish: 0.97
+        (0.2%), tests_pri_0: 366 (56.8%), check_dkim_signature: 0.89 (0.1%),
+        check_dkim_adsp: 2.8 (0.4%), poll_dns_idle: 0.47 (0.1%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 13 (2.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] proc: add locking checks in proc_inode_is_dead
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 6:01 PM, David Woodhouse wrote:
-> On Mon, 2020-11-30 at 17:15 +0000, Joao Martins wrote:
->> On 11/30/20 4:48 PM, David Woodhouse wrote:
->>> On Mon, 2020-11-30 at 15:08 +0000, Joao Martins wrote:
->>>> On 11/30/20 12:55 PM, David Woodhouse wrote:
->>>>> On Mon, 2020-11-30 at 12:17 +0000, Joao Martins wrote:
->>>>>> On 11/30/20 9:41 AM, David Woodhouse wrote:
->>>>>>> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
+Wen Yang <wenyang@linux.alibaba.com> writes:
 
-[...]
+> The proc_inode_is_dead function might race with __unhash_process.
+> This will result in a whole bunch of stale proc entries being cached.
+> To prevent that, add the required locking.
 
->>>> I should comment on your other patch but: if we're going to make it generic for
->>>> the userspace hypercall handling, might as well move hyper-v there too. In this series,
->>>> I added KVM_EXIT_XEN, much like it exists KVM_EXIT_HYPERV -- but with a generic version
->>>> I wonder if a capability could gate KVM_EXIT_HYPERCALL to handle both guest types, while
->>>> disabling KVM_EXIT_HYPERV. But this is probably subject of its own separate patch :)
->>>
->>> There's a limit to how much consolidation we can do because the ABI is
->>> different; the args are in different registers.
->>>
->>
->> Yes. It would be optionally enabled of course and VMM would have to adjust to the new ABI
->> -- surely wouldn't want to break current users of KVM_EXIT_HYPERV.
-> 
-> True, but that means we'd have to keep KVM_EXIT_HYPERV around anyway,
-> and can't actually *remove* it. The "consolidation" gives us more
-> complexity, not less.
+I assume you are talking about during proc_task_readdir?
+
+It is completely possible for the proc_inode_is_dead to report
+the inode is still alive and then for unhash_process to
+happen when afterwards.
+
+Have you been able to trigger this race in practice?
+
+
+Ouch!!!!  Oleg I just looked the introduction of proc_inode_is_dead in
+d855a4b79f49 ("proc: don't (ab)use ->group_leader in proc_task_readdir()
+paths") introduced a ``regression''.
+
+Breaking the logic introduced in 7d8952440f40 ("[PATCH] procfs: Fix
+listing of /proc/NOT_A_TGID/task") to keep those directory listings not
+showing up.
+
+Given that it has been 6 years and no one has cared it doesn't look like
+an actual regression but it does suggest the proc_inode_is_dead can be
+removed entirely as it does not achieve anything in proc_task_readdir.
+
+
+
+As for removing the race.  I expect the thing to do is to modify
+proc_pid_is_alive to verify the that the pid is still alive.
+Oh but look get_task_pid verifies that thread_pid is not NULL
+and unhash_process sets thread_pid to NULL.
+
+
+My brain is too fuzzy right now to tell if it is possible for
+get_task_pid to return a pid and then for that pid to pass through
+unhash_process, while the code is still in proc_pid_make_inode.
+
+proc_inode_is_dead is definitely not the place to look to close races.
+
+Eric
+
+
+> Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+> Cc: Alexey Dobriyan <adobriyan@gmail.com>
+> Cc: Christian Brauner <christian@brauner.io>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-fsdevel@vger.kernel.org
+> ---
+>  fs/proc/base.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 >
-Fair point.
-
->>> I do suspect Hyper-V should have marshalled its arguments into the
->>> existing kvm_run->arch.hypercall and used KVM_EXIT_HYPERCALL but I
->>> don't think it makes sense to change it now since it's a user-facing
->>> ABI. I don't want to follow its lead by inventing *another* gratuitous
->>> exit type for Xen though.
->>>
->>
->> I definitely like the KVM_EXIT_HYPERCALL better than a KVM_EXIT_XEN userspace
->> exit type ;)
->>
->> But I guess you still need to co-relate a type of hypercall (Xen guest cap enabled?) to
->> tell it's Xen or KVM to specially enlighten certain opcodes (EVTCHNOP_send).
-> 
-> Sure, but if the VMM doesn't know what kind of guest it's hosting, we
-> have bigger problems... :)
-> 
-Right :)
-
-I was referring to the kernel here.
-
-Eventually we need to special case things for a given guest type case e.g.
-
-int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-{
-...
-        if (kvm_hv_hypercall_enabled(vcpu->kvm))
-                return kvm_hv_hypercall(...);
-
-        if (kvm_xen_hypercall_enabled(vcpu->kvm))
-                return kvm_xen_hypercall(...);
-...
-}
-
-And on kvm_xen_hypercall() for the cases VMM offloads to demarshal what the registers mean
-e.g. for event channel send 64-bit guest: RAX for opcode and RDI/RSI for cmd and port.
-
-The kernel logic wouldn't be much different at the core, so thought of tihs consolidation.
-But the added complexity would have come from having to deal with two userspace exit types
--- indeed probably not worth the trouble as you pointed out.
+> diff --git a/fs/proc/base.c b/fs/proc/base.c
+> index 1bc9bcd..59720bc 100644
+> --- a/fs/proc/base.c
+> +++ b/fs/proc/base.c
+> @@ -1994,7 +1994,13 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
+>  
+>  static inline bool proc_inode_is_dead(struct inode *inode)
+>  {
+> -	return !proc_pid(inode)->tasks[PIDTYPE_PID].first;
+> +	bool has_task;
+> +
+> +	read_lock(&tasklist_lock);
+> +	has_task = pid_has_task(proc_pid(inode), PIDTYPE_PID);
+> +	read_unlock(&tasklist_lock);
+> +
+> +	return !has_task;
+>  }
+>  
+>  int pid_delete_dentry(const struct dentry *dentry)
