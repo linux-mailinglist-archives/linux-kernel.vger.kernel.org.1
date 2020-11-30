@@ -2,149 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01852C8162
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 665EE2C8167
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbgK3JuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:50:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725972AbgK3JuM (ORCPT
+        id S1726955AbgK3JwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:52:05 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6906 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726325AbgK3JwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:50:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606729725;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tPvt5Fze9oePySh23BCqzPG4KjGI8dK/uioZmRf36R0=;
-        b=C+wJ0kQvjtVCvjR20IEZGBKE10DAE4HaAqieHw9sX4bTkJ/CxPCdTWCIT9e8TbIq3sPZjf
-        nbMPWIch7mTmZzSHcqYoX9rNek9Mjxzxur/SGDwyRVte4xf22vIeDCcKR1dLpgn5FvCygz
-        HKYeRgsl9ckQIoJKk91tpv20bYQfZ9s=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-160-kidLLTOrOjW7jhvrzqc-wg-1; Mon, 30 Nov 2020 04:48:44 -0500
-X-MC-Unique: kidLLTOrOjW7jhvrzqc-wg-1
-Received: by mail-ed1-f72.google.com with SMTP id dc6so4282069edb.14
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:48:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tPvt5Fze9oePySh23BCqzPG4KjGI8dK/uioZmRf36R0=;
-        b=kWzwoxfy4oMWYfFrpZvly1+LPPIS8vc08d7DKZMRAAhyyDuT7fVoMIrZJ3yPrAXgvW
-         8+y/K7VOcbrhbZvViVRRqLDwFZ5RgngHg675+64uXgKegMcFknKyLlhuFSfVfOVnC18k
-         QOHObUuGfAOqBPZl8jNMH8pdpi8RSuGwv2vMRZZWkwfRVn7UM2IZ6Ws4/6c+Cj5O+Mtm
-         zh8fcivMILGpkRQahjj2fvCP/Z0WWPL8YhlqbIAUskoIMfSQSU+LWPaYGqNOrZHllCZk
-         m8XTmdjQFgmpAH7c6uJ/R9Q153ud8F+0iYhrKIl7GdBfStZGo+PF04Falb/ErOU/U+lP
-         MBww==
-X-Gm-Message-State: AOAM533eITOrgEe520I/EKZ6kCHNFZMfua2pkJC1qIkXcBtw350J2uce
-        ZWFt0gk9gN4+InvlOmUMF135ymdxhpbt8wwhvJ7jcPYecE/B3OY2iGgIhntNWYlu9qfKw+G1Yxc
-        HGUTQj0zZnrnRHZgctcZ5EuGX
-X-Received: by 2002:a17:906:470a:: with SMTP id y10mr17599175ejq.180.1606729722710;
-        Mon, 30 Nov 2020 01:48:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwdlAzbk5hlkROC5+9ochugF0OWYYO091mqBJkAEk4CCgyNyUe0/uBeXhDUaExIqPmKu1O1ZQ==
-X-Received: by 2002:a17:906:470a:: with SMTP id y10mr17599165ejq.180.1606729722558;
-        Mon, 30 Nov 2020 01:48:42 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id k11sm8850492edh.72.2020.11.30.01.48.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 01:48:41 -0800 (PST)
-Subject: Re: [PATCH 1/2] uas: revert from scsi_add_host_with_dma() to
- scsi_add_host()
-To:     Tom Yan <tom.ty89@gmail.com>, hch@lst.de,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
-Cc:     mathias.nyman@intel.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, baolu.lu@linux.intel.com
-References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
- <20201128154849.3193-1-tom.ty89@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <62e0d5ea-e665-b913-5482-a75db0ac1368@redhat.com>
-Date:   Mon, 30 Nov 2020 10:48:41 +0100
+        Mon, 30 Nov 2020 04:52:04 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AU9WPaL050805;
+        Mon, 30 Nov 2020 04:51:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ycxEx1i1IRZUpVbXkfam4zlw10HsuI7crQWaxouBRTo=;
+ b=KORbiVe+XpLWjSnAkih0eD9hmeyuN/3sZz0uUf1/KQ6EDhmMLxdJXqXl3GTfgukBnb+V
+ DMRuQgLiP8PKNISPhZKjvn8hqRs07tYzd6dfUn9YbJg8SDX7yl2d9iK6rk2913RTLbqd
+ pg85zaHxXnQgx7CNrNdKOwwDLNPyUpLrmMzU4x7bAJDcUdPHc310TUQ4dZqd3I9Mz/l1
+ G3A0gYe07tKGfa8JMQTHG6ZSTovS7nbCCzVBxSEDsiydZFrKYmzoHgE9ZSLzwEw2p9HV
+ rN/TtrvJe+tA+T1UT+5y0/YNHKcgVTiJYuIjCUtjqVqs8XG8mK+iqa4EUM1RhSVbU09P sQ== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 354x45gk5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 04:51:23 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AU9Wg13020332;
+        Mon, 30 Nov 2020 09:51:21 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 353e682t23-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 09:51:21 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AU9o2PM27394496
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 09:50:03 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D368752054;
+        Mon, 30 Nov 2020 09:50:02 +0000 (GMT)
+Received: from [9.171.29.181] (unknown [9.171.29.181])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A165352052;
+        Mon, 30 Nov 2020 09:50:02 +0000 (GMT)
+Subject: Re: [PATCH v3] s390/pci: fix CPU address in MSI for directed IRQ
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1606410037-11436-1-git-send-email-agordeev@linux.ibm.com>
+ <20201127095633.60f8a544.pasic@linux.ibm.com>
+ <16fe9017-407f-1bb0-1599-fb46d93009fc@linux.ibm.com>
+ <20201127163936.38a51c15.pasic@linux.ibm.com>
+ <2400bc6a-ff0a-f0b8-66fc-25e11032dacb@linux.ibm.com>
+ <20201130095549.27da927f.pasic@linux.ibm.com>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <bc52205b-9ae8-98c6-0eb0-9fff551c7868@linux.ibm.com>
+Date:   Mon, 30 Nov 2020 10:50:02 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201128154849.3193-1-tom.ty89@gmail.com>
+In-Reply-To: <20201130095549.27da927f.pasic@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_02:2020-11-30,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 phishscore=0 suspectscore=0
+ bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 11/28/20 4:48 PM, Tom Yan wrote:
-> Apparently the former (with the chosen dma_dev) may cause problem in certain
-> case (e.g. where thunderbolt dock and intel iommu are involved). The error
-> observed was:
+
+On 11/30/20 9:55 AM, Halil Pasic wrote:
+> On Mon, 30 Nov 2020 09:30:33 +0100
+> Niklas Schnelle <schnelle@linux.ibm.com> wrote:
 > 
-> XHCI swiotlb buffer is full / DMAR: Device bounce map failed
+>> I'm not really familiar, with it but I think this is closely related
+>> to what I asked Bernd Nerz. I fear that if CPUs go away we might already
+>> be in trouble at the firmware/hardware/platform level because the CPU Address is
+>> "programmed into the device" so to speak. Thus a directed interrupt from
+>> a device may race with anything reordering/removing CPUs even if
+>> CPU addresses of dead CPUs are not reused and the mapping is stable.
 > 
-> For now we retain the clamp for hw_max_sectors against the dma_max_mapping_size.
-> Since the device/size for the clamp that is applied when the scsi request queue
-> is initialized/allocated is different than the one used here, we invalidate the
-> early clamping by making a fallback blk_queue_max_hw_sectors() call.
+> From your answer, I read that CPU hot-unplug is supported for LPAR. 
+
+I'm not sure about hot hot-unplug and firmware
+telling us about removed CPUs but at the very least there is:
+
+echo 0 > /sys/devices/system/cpu/cpu6/online
+
+>>
+>> Furthermore our floating fallback path will try to send a SIGP
+>> to the target CPU which clearly doesn't work when that is permanently
+>> gone. Either way I think these issues are out of scope for this fix
+>> so I will go ahead and merge this.
 > 
-> Signed-off-by: Tom Yan <tom.ty89@gmail.com>
-
-I can confirm that this fixes the network performance on a Lenovo Thunderbolt
-dock generation 2, which uses an USB attach NIC.
-
-With this patch added on top of 5.10-rc5 scp performance to another machine
-on the local gbit LAN goes back from the regressed 1 MB/s to its original 100MB/s
-as it should be:
-
-Tested-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-> ---
->  drivers/usb/storage/uas.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+> I agree, it makes on sense to delay this fix.
 > 
-> diff --git a/drivers/usb/storage/uas.c b/drivers/usb/storage/uas.c
-> index c8a577309e8f..5db1325cea20 100644
-> --- a/drivers/usb/storage/uas.c
-> +++ b/drivers/usb/storage/uas.c
-> @@ -843,18 +843,21 @@ static int uas_slave_alloc(struct scsi_device *sdev)
->  static int uas_slave_configure(struct scsi_device *sdev)
->  {
->  	struct uas_dev_info *devinfo = sdev->hostdata;
-> -	struct device *dev = sdev->host->dma_dev;
-> +	struct usb_device *udev = devinfo->udev;
->  
->  	if (devinfo->flags & US_FL_MAX_SECTORS_64)
->  		blk_queue_max_hw_sectors(sdev->request_queue, 64);
->  	else if (devinfo->flags & US_FL_MAX_SECTORS_240)
->  		blk_queue_max_hw_sectors(sdev->request_queue, 240);
-> -	else if (devinfo->udev->speed >= USB_SPEED_SUPER)
-> +	else if (udev->speed >= USB_SPEED_SUPER)
->  		blk_queue_max_hw_sectors(sdev->request_queue, 2048);
-> +	else
-> +		blk_queue_max_hw_sectors(sdev->request_queue,
-> +					 SCSI_DEFAULT_MAX_SECTORS);
->  
->  	blk_queue_max_hw_sectors(sdev->request_queue,
->  		min_t(size_t, queue_max_hw_sectors(sdev->request_queue),
-> -		      dma_max_mapping_size(dev) >> SECTOR_SHIFT));
-> +		      dma_max_mapping_size(udev->bus->sysdev) >> SECTOR_SHIFT));
->  
->  	if (devinfo->flags & US_FL_NO_REPORT_OPCODES)
->  		sdev->no_report_opcodes = 1;
-> @@ -1040,7 +1043,7 @@ static int uas_probe(struct usb_interface *intf, const struct usb_device_id *id)
->  	shost->can_queue = devinfo->qdepth - 2;
->  
->  	usb_set_intfdata(intf, shost);
-> -	result = scsi_add_host_with_dma(shost, &intf->dev, udev->bus->sysdev);
-> +	result = scsi_add_host(shost, &intf->dev);
->  	if (result)
->  		goto free_streams;
->  
-> 
+> But if CPU hot-unplug is supported, I believe we should react when
+> a CPU is unplugged, that is a target of directed interrupts. My guess
+> is, that in this scenario transient hiccups are unavoidable, and thus
+> should be accepted, but we should make sure that we recover.
 
+I agree, I just tested the above command on a firmware test system and
+deactivated 4 of 8 CPUs.
+This is in /proc/interrupts after that:
+
+...
+  3:       9392          0          0          0   PCI-MSI  mlx5_async@pci:0001:00:00.0
+  4:     282741          0          0          0   PCI-MSI  mlx5_comp0@pci:0001:00:00.0
+  5:          0          2          0          0   PCI-MSI  mlx5_comp1@pci:0001:00:00.0
+  6:          0          0        104          0   PCI-MSI  mlx5_comp2@pci:0001:00:00.0
+  7:          0          0          0          2   PCI-MSI  mlx5_comp3@pci:0001:00:00.0
+  8:          0          0          0          0   PCI-MSI  mlx5_comp4@pci:0001:00:00.0
+  9:          0          0          0          0   PCI-MSI  mlx5_comp5@pci:0001:00:00.0
+ 10:          0          0          0          0   PCI-MSI  mlx5_comp6@pci:0001:00:00.0
+ 11:          0          0          0          0   PCI-MSI  mlx5_comp7@pci:0001:00:00.0
+...
+
+So it looks like we are left with registered interrupts
+for CPUs which are offline. However I'm not sure how to
+trigger a problem with that. I think the drivers would
+usually only do a directed interrupt to a CPU that
+is currently running the process that triggered the
+I/O (I tested this assumption with "taskset -c 2 ping ...").
+Now with the CPU offline there cannot be such a
+process. So I think for the most part the queue would
+just remain unused. Still, if we do get a directed
+interrupt for it's my understanding that currently
+we will lose that.
+
+I think this could be fixed with
+something I tried in a prototype code a while back that
+is in zpci_handle_fallback_irq() I handled the IRQ locally.
+Back then it looked like Directed IRQs would make it to z15 GA 1.5 and
+this was done to help Bernd to debug a Millicode issue (Jup 905371).
+I also had a version of that code meant as a possible performance
+improvement that would check if the target CPU is
+available and only then send the SIGP and otherwise handle it
+locally.
+
+> 
+> Regards,
+> Halil
+> 
