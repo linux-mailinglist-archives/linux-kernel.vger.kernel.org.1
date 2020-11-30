@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8D02C882B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B512C8838
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgK3Ph1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:37:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43050 "EHLO mail.kernel.org"
+        id S1728209AbgK3Phn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:37:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727939AbgK3PhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:37:25 -0500
+        id S1728159AbgK3Phn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:37:43 -0500
 Received: from mail.kernel.org (ip5f5ad5b3.dynamic.kabel-deutschland.de [95.90.213.179])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC55F2076E;
+        by mail.kernel.org (Postfix) with ESMTPSA id BD02A207FF;
         Mon, 30 Nov 2020 15:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1606750604;
-        bh=V3i/kBBknOLk7wkOW3+WAsf7k8n9Au+dQuF5LLUipl4=;
+        bh=xO4S5NkIBdZ9OiG/3a+NJUdrNzV84loqbWK//hcnEx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dOv68oulKw5ZaRuQ8N5afo6Ubsc9hgvYVr7ETGH6DsQPwlobRmjOkTkqRChR9JJTh
-         EMcGWTVjfzO1MLVnaPeFV1lOlhzht0oB5kgQRvRFiKkU0hd4vHjV+DPdq8UbtpcOZv
-         C0H4AnVETTetjIYG5KRs8xofzzzSy4KG1JUma4XE=
+        b=0BXSsg1t0cWlTnNMBuhw0LnzRv4mBwghl+eLjna66P0gd3bFVLbychQH6FTTMT1hP
+         54yzAUhDgIqY99SUFoeaf0M9z6scMi29r9YqXDktl/8W/aolk8/1vX3cKPRaIGxLg9
+         3Ddsw1/4V+uTIbrLbcMwpRE23R5JeE5rplAm02qM=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kjlEI-00CjvN-EP; Mon, 30 Nov 2020 16:36:42 +0100
+        id 1kjlEI-00CjvP-FU; Mon, 30 Nov 2020 16:36:42 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] scripts: get_feat.pl: use its implementation for list-arch.sh
-Date:   Mon, 30 Nov 2020 16:36:32 +0100
-Message-Id: <a97f49677805ad4e6b982d02c0db8c9dfbbd20a6.1606748711.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 4/6] sphinx: kernel_feat.py: add a script to parse feature files
+Date:   Mon, 30 Nov 2020 16:36:33 +0100
+Message-Id: <bb2e51e5aa883e2583a4a6280f1c1b391bd8ef4c.1606748711.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1606748711.git.mchehab+huawei@kernel.org>
 References: <cover.1606748711.git.mchehab+huawei@kernel.org>
@@ -43,227 +45,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the same output format as the bash script,
-and use its implementation instead of the previous one.
-
-I opted to do such patch in order to have a single script
-responsible for parsing Documentation/features and
-produce different outputs.
-
-As someone may rely on the past format, which is easy
-to parse it, get_feat.pl now gains a new command with
-the same output format as the previous script.
-
-As a side effect, the perl script is a lot faster, as it reads
-each file only once, instead of parsing files several times
-via a for command and grep commands inside it.
-
-This patch also changes the features list order to be
-case-insensitive, in order to better match the output of
-the existing script.
+The feature files have a special well-defined format. Add
+a script that parses them, allowing to search for a feature
+and/or by an architecture and to produce ReST-compatible
+outputs.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/features/list-arch.sh | 17 +------
- scripts/get_feat.pl                 | 77 ++++++++++++++++++++++++-----
- 2 files changed, 66 insertions(+), 28 deletions(-)
+ Documentation/sphinx/kernel_feat.py | 169 ++++++++++++++++++++++++++++
+ 1 file changed, 169 insertions(+)
+ create mode 100644 Documentation/sphinx/kernel_feat.py
 
-diff --git a/Documentation/features/list-arch.sh b/Documentation/features/list-arch.sh
-index 1ec47c3bb5fa..e73aa35848f0 100755
---- a/Documentation/features/list-arch.sh
-+++ b/Documentation/features/list-arch.sh
-@@ -1,3 +1,4 @@
+diff --git a/Documentation/sphinx/kernel_feat.py b/Documentation/sphinx/kernel_feat.py
+new file mode 100644
+index 000000000000..2fee04f1dedd
+--- /dev/null
++++ b/Documentation/sphinx/kernel_feat.py
+@@ -0,0 +1,169 @@
++# coding=utf-8
 +# SPDX-License-Identifier: GPL-2.0
- #
- # Small script that visualizes the kernel feature support status
- # of an architecture.
-@@ -7,18 +8,4 @@
- 
- ARCH=${1:-$(uname -m | sed 's/x86_64/x86/' | sed 's/i386/x86/')}
- 
--cd $(dirname $0)
--echo "#"
--echo "# Kernel feature support matrix of the '$ARCH' architecture:"
--echo "#"
--
--for F in */*/arch-support.txt; do
--  SUBSYS=$(echo $F | cut -d/ -f1)
--  N=$(grep -h "^# Feature name:"        $F | cut -c25-)
--  C=$(grep -h "^#         Kconfig:"     $F | cut -c25-)
--  D=$(grep -h "^#         description:" $F | cut -c25-)
--  S=$(grep -hv "^#" $F | grep -w $ARCH | cut -d\| -f3)
--
--  printf "%10s/%-22s:%s| %35s # %s\n" "$SUBSYS" "$N" "$S" "$C" "$D"
--done
--
-+$(dirname $0)/../../scripts/get_feat.pl list --arch $ARCH
-diff --git a/scripts/get_feat.pl b/scripts/get_feat.pl
-index 7b92ebab7ddd..81d1b78d65c9 100755
---- a/scripts/get_feat.pl
-+++ b/scripts/get_feat.pl
-@@ -6,13 +6,18 @@ use Pod::Usage;
- use Getopt::Long;
- use File::Find;
- use Fcntl ':mode';
-+use Cwd 'abs_path';
- 
- my $help;
- my $man;
- my $debug;
- my $arch;
- my $feat;
--my $prefix="Documentation/features";
-+
-+my $basename = abs_path($0);
-+$basename =~ s,/[^/]+$,/,;
-+
-+my $prefix=$basename . "../Documentation/features";
- 
- GetOptions(
- 	"debug|d+" => \$debug,
-@@ -20,17 +25,19 @@ GetOptions(
- 	'help|?' => \$help,
- 	'arch=s' => \$arch,
- 	'feat=s' => \$feat,
-+	'feature=s' => \$feat,
- 	man => \$man
- ) or pod2usage(2);
- 
- pod2usage(1) if $help;
- pod2usage(-exitstatus => 0, -verbose => 2) if $man;
- 
--pod2usage(2) if (scalar @ARGV < 1 || @ARGV > 2);
-+pod2usage(1) if (scalar @ARGV < 1 || @ARGV > 2);
- 
- my ($cmd, $arg) = @ARGV;
- 
--pod2usage(2) if ($cmd ne "current" && $cmd ne "rest" && $cmd ne "validate");
-+pod2usage(2) if ($cmd ne "current" && $cmd ne "rest" && $cmd ne "validate"
-+		&& $cmd ne "ls" && $cmd ne "list");
- 
- require Data::Dumper if ($debug);
- 
-@@ -213,7 +220,7 @@ sub output_arch_table {
- 
- 	foreach my $name (sort {
- 				($data{$a}->{subsys} cmp $data{$b}->{subsys}) ||
--				($data{$a}->{name} cmp $data{$b}->{name})
-+				("\L$a" cmp "\L$b")
- 			       } keys %data) {
- 		next if ($feat && $name ne $feat);
- 
-@@ -222,7 +229,7 @@ sub output_arch_table {
- 		printf "%-${max_size_name}s  ", $name;
- 		printf "%-${max_size_kconfig}s  ", $data{$name}->{kconfig};
- 		printf "%-${max_size_status}s  ", $arch_table{$arch};
--		printf "%-${max_size_description}s\n", $data{$name}->{description};
-+		printf "%-s\n", $data{$name}->{description};
- 	}
- 
- 	print "=" x $max_size_subsys;
-@@ -237,6 +244,31 @@ sub output_arch_table {
- 	print "\n";
- }
- 
 +#
-+# list feature(s) for a given architecture
++u"""
++    kernel-feat
++    ~~~~~~~~~~~
++
++    Implementation of the ``kernel-feat`` reST-directive.
++
++    :copyright:  Copyright (C) 2016  Markus Heiser
++    :copyright:  Copyright (C) 2016-2019  Mauro Carvalho Chehab
++    :maintained-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
++    :license:    GPL Version 2, June 1991 see Linux/COPYING for details.
++
++    The ``kernel-feat`` (:py:class:`KernelFeat`) directive calls the
++    scripts/get_feat.pl script to parse the Kernel ABI files.
++
++    Overview of directive's argument and options.
++
++    .. code-block:: rst
++
++        .. kernel-feat:: <ABI directory location>
++            :debug:
++
++    The argument ``<ABI directory location>`` is required. It contains the
++    location of the ABI files to be parsed.
++
++    ``debug``
++      Inserts a code-block with the *raw* reST. Sometimes it is helpful to see
++      what reST is generated.
++
++"""
++
++import codecs
++import os
++import subprocess
++import sys
++
++from os import path
++
++from docutils import nodes, statemachine
++from docutils.statemachine import ViewList
++from docutils.parsers.rst import directives, Directive
++from docutils.utils.error_reporting import ErrorString
++
 +#
-+sub list_arch_features {
-+	print "#\n# Kernel feature support matrix of the '$arch' architecture:\n#\n";
++# AutodocReporter is only good up to Sphinx 1.7
++#
++import sphinx
 +
-+	foreach my $name (sort {
-+				($data{$a}->{subsys} cmp $data{$b}->{subsys}) ||
-+				("\L$a" cmp "\L$b")
-+			       } keys %data) {
-+		next if ($feat && $name ne $feat);
++Use_SSI = sphinx.__version__[:3] >= '1.7'
++if Use_SSI:
++    from sphinx.util.docutils import switch_source_input
++else:
++    from sphinx.ext.autodoc import AutodocReporter
 +
-+		my %arch_table = %{$data{$name}->{table}};
++__version__  = '1.0'
 +
-+		my $status = $arch_table{$arch};
-+		$status = " " x ((4 - length($status)) / 2) . $status;
++def setup(app):
 +
-+		printf " %${max_size_subsys}s/ ", $data{$name}->{subsys};
-+		printf "%-${max_size_name}s: ", $name;
-+		printf "%-5s|   ", $status;
-+		printf "%${max_size_kconfig}s # ", $data{$name}->{kconfig};
-+		printf " %s\n", $data{$name}->{description};
-+	}
-+}
++    app.add_directive("kernel-feat", KernelFeat)
++    return dict(
++        version = __version__
++        , parallel_read_safe = True
++        , parallel_write_safe = True
++    )
 +
- #
- # Output a feature on all architectures
- #
-@@ -337,7 +369,7 @@ sub output_matrix {
- 	my $cur_subsys = "";
- 	foreach my $name (sort {
- 				($data{$a}->{subsys} cmp $data{$b}->{subsys}) or
--				($a cmp $b)
-+				("\L$a" cmp "\L$b")
- 			       } keys %data) {
- 
- 		if ($cur_subsys ne $data{$name}->{subsys}) {
-@@ -400,6 +432,17 @@ if ($cmd eq "current") {
- 	$arch =~s/\s+$//;
- }
- 
-+if ($cmd eq "ls" or $cmd eq "list") {
-+	if (!$arch) {
-+		$arch = qx(uname -m | sed 's/x86_64/x86/' | sed 's/i386/x86/');
-+		$arch =~s/\s+$//;
-+	}
++class KernelFeat(Directive):
 +
-+	list_arch_features;
++    u"""KernelFeat (``kernel-feat``) directive"""
 +
-+	exit;
-+}
++    required_arguments = 1
++    optional_arguments = 2
++    has_content = False
++    final_argument_whitespace = True
 +
- if ($cmd ne "validate") {
- 	if ($arch) {
- 		output_arch_table;
-@@ -418,18 +461,26 @@ get_feat.pl - parse the Linux Feature files and produce a ReST book.
- 
- =head1 SYNOPSIS
- 
--B<get_feat.pl> [--debug] [--man] [--help] [--dir=<dir>]
--	       [--arch=<arch>] [--feat=<feature>] <COMAND> [<ARGUMENT>]
-+B<get_feat.pl> [--debug] [--man] [--help] [--dir=<dir>] [--arch=<arch>]
-+	       [--feature=<feature>|--feat=<feature>] <COMAND> [<ARGUMENT>]
- 
- Where <COMMAND> can be:
- 
- =over 8
- 
--B<current>               - output features for this machine's architecture
-+B<current>               - output table in ReST compatible ASCII format
-+			   with features for this machine's architecture
- 
--B<rest>                  - output features in ReST markup language
-+B<rest>                  - output table(s)  in ReST compatible ASCII format
-+			   with features in ReST markup language. The output
-+			   is affected by --arch or --feat/--feature flags.
- 
--B<validate>              - validate the feature contents
-+B<validate>              - validate the contents of the files under
-+			   Documentation/features.
++    option_spec = {
++        "debug"     : directives.flag
++    }
 +
-+B<ls> or B<list>         - list features for this machine's architecture,
-+			   using an easier to parse format.
-+			   The output is affected by --arch flag.
- 
- =back
- 
-@@ -442,9 +493,9 @@ B<validate>              - validate the feature contents
- Output features for an specific architecture, optionally filtering for
- a single specific feature.
- 
--=item B<--feat>
-+=item B<--feat> or B<--feature>
- 
--Output features for a single specific architecture.
-+Output features for a single specific feature.
- 
- =item B<--dir>
- 
++    def warn(self, message, **replace):
++        replace["fname"]   = self.state.document.current_source
++        replace["line_no"] = replace.get("line_no", self.lineno)
++        message = ("%(fname)s:%(line_no)s: [kernel-feat WARN] : " + message) % replace
++        self.state.document.settings.env.app.warn(message, prefix="")
++
++    def run(self):
++
++        doc = self.state.document
++        if not doc.settings.file_insertion_enabled:
++            raise self.warning("docutils: file insertion disabled")
++
++        env = doc.settings.env
++        cwd = path.dirname(doc.current_source)
++        cmd = "get_feat.pl rest --dir "
++        cmd += self.arguments[0]
++
++        if len(self.arguments) > 1:
++            cmd += " --arch " + self.arguments[1]
++
++        srctree = path.abspath(os.environ["srctree"])
++
++        fname = cmd
++
++        # extend PATH with $(srctree)/scripts
++        path_env = os.pathsep.join([
++            srctree + os.sep + "scripts",
++            os.environ["PATH"]
++        ])
++        shell_env = os.environ.copy()
++        shell_env["PATH"]    = path_env
++        shell_env["srctree"] = srctree
++
++        lines = self.runCmd(cmd, shell=True, cwd=cwd, env=shell_env)
++        nodeList = self.nestedParse(lines, fname)
++        return nodeList
++
++    def runCmd(self, cmd, **kwargs):
++        u"""Run command ``cmd`` and return it's stdout as unicode."""
++
++        try:
++            proc = subprocess.Popen(
++                cmd
++                , stdout = subprocess.PIPE
++                , stderr = subprocess.PIPE
++                , **kwargs
++            )
++            out, err = proc.communicate()
++
++            out, err = codecs.decode(out, 'utf-8'), codecs.decode(err, 'utf-8')
++
++            if proc.returncode != 0:
++                raise self.severe(
++                    u"command '%s' failed with return code %d"
++                    % (cmd, proc.returncode)
++                )
++        except OSError as exc:
++            raise self.severe(u"problems with '%s' directive: %s."
++                              % (self.name, ErrorString(exc)))
++        return out
++
++    def nestedParse(self, lines, fname):
++        content = ViewList()
++        node    = nodes.section()
++
++        if "debug" in self.options:
++            code_block = "\n\n.. code-block:: rst\n    :linenos:\n"
++            for l in lines.split("\n"):
++                code_block += "\n    " + l
++            lines = code_block + "\n\n"
++
++        for c, l in enumerate(lines.split("\n")):
++            content.append(l, fname, c)
++
++        buf  = self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter
++
++        if Use_SSI:
++            with switch_source_input(self.state, content):
++                self.state.nested_parse(content, 0, node, match_titles=1)
++        else:
++            self.state.memo.title_styles  = []
++            self.state.memo.section_level = 0
++            self.state.memo.reporter      = AutodocReporter(content, self.state.memo.reporter)
++            try:
++                self.state.nested_parse(content, 0, node, match_titles=1)
++            finally:
++                self.state.memo.title_styles, self.state.memo.section_level, self.state.memo.reporter = buf
++
++        return node.children
 -- 
 2.28.0
 
