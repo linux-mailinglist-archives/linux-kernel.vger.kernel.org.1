@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8BF2C8B37
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4922C8B3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387702AbgK3Rec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:34:32 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:39257 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387692AbgK3Reb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:34:31 -0500
-Received: by mail-io1-f67.google.com with SMTP id j23so12609937iog.6;
-        Mon, 30 Nov 2020 09:34:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B8WQC1B/ybLTFuUDD6wQDsUH4CVJeOnw5YrNPlfBilM=;
-        b=SAlTdO+BKoUU2E/WPkPUZ5j1CDH++PPUEPurEJIa/3HNlH2jwbX795IphBSp+kRZkj
-         D8WVV75HZIviKnQxTThJPhECy1aySsCbGxwEdzrfwuxf067OTH7kAzsB8ox/FnJpBPsV
-         USPWlA9zbotA1GdbN68Rb7wKKviO4lNs5jtbYnVunyEBNPt70JZpcO2FW+8otg5aTKQ+
-         +zCi/ppaWrMFFd2CgzA2OOjRi4ymXYNu2Y+QnMJBaH27PAONHRH4L2h8+O0708e9I+g5
-         81JwHJYzemXsXK7HLLguTTlHGDRChMrpMvNM7zuBt8dxvQvfTcKO26Zr2A8UepSYQW9u
-         +d6A==
-X-Gm-Message-State: AOAM532hLD2HwDikicDlshHWWCS5zAhicP17Q/rE9sH4n0uOQxhLfoM/
-        FaIuE+GJnGbOFExw5w4yDA==
-X-Google-Smtp-Source: ABdhPJywT5iLKdkjFtGlm/c/VnI4j+umxG0XmUInig+hKMPcQAtPBEa0/BK6Xapdk9l+dq7ClqR6oQ==
-X-Received: by 2002:a5d:9753:: with SMTP id c19mr17155179ioo.111.1606757630169;
-        Mon, 30 Nov 2020 09:33:50 -0800 (PST)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id q5sm7909850ilg.62.2020.11.30.09.33.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 09:33:48 -0800 (PST)
-Received: (nullmailer pid 2679137 invoked by uid 1000);
-        Mon, 30 Nov 2020 17:33:46 -0000
-Date:   Mon, 30 Nov 2020 10:33:46 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     linux-leds@vger.kernel.org, jacek.anaszewski@gmail.com,
-        Wilma.Wu@mediatek.com, benjamin.chao@mediatek.com,
-        devicetree@vger.kernel.org, gene_chen@richtek.com,
-        shufan_lee@richtek.com, dmurphy@ti.com,
-        linux-mediatek@lists.infradead.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        matthias.bgg@gmail.com, cy_huang@richtek.com, pavel@ucw.cz
-Subject: Re: [PATCH v10 5/6] dt-bindings: leds: Add bindings for MT6360 LED
-Message-ID: <20201130173346.GA2678817@robh.at.kernel.org>
-References: <1606447736-7944-1-git-send-email-gene.chen.richtek@gmail.com>
- <1606447736-7944-6-git-send-email-gene.chen.richtek@gmail.com>
+        id S2387712AbgK3RfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:35:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387505AbgK3RfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:35:22 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D8CB2073C;
+        Mon, 30 Nov 2020 17:34:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606757681;
+        bh=h2mSOc2MjK1hNd7ubl8zDnNrESM0nN8QfNkIPSrKIa8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jKH2vtu1zUtn2pkTnBJ4leZjTZuVbtifI7BhDN0kQoHRtp/8o8jcHF4U44pyZJV7D
+         y/OXSpHnu5n22jmRnXSU1EHgA5m940y+BZOCAvLPvrJwWEfkTV6suDAlJWMl6SbEQy
+         TMurzywftHn3Nk/p/t7zid4fYfpQSaJcyZZLh2q0=
+Date:   Mon, 30 Nov 2020 12:34:40 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+Message-ID: <20201130173440.GQ643756@sasha-vm>
+References: <20201125180102.GL643756@sasha-vm>
+ <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
+ <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+ <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
+ <X8TzeoIlR3G5awC6@kroah.com>
+ <17481d8c-c19d-69e3-653d-63a9efec2591@redhat.com>
+ <X8T6RWHOhgxW3tRK@kroah.com>
+ <8809319f-7c5b-1e85-f77c-bbc3f22951e4@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <1606447736-7944-6-git-send-email-gene.chen.richtek@gmail.com>
+In-Reply-To: <8809319f-7c5b-1e85-f77c-bbc3f22951e4@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 11:28:55 +0800, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
-> 
-> Add bindings document for LED support on MT6360 PMIC
-> 
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> ---
->  .../devicetree/bindings/leds/leds-mt6360.yaml      | 164 +++++++++++++++++++++
->  1 file changed, 164 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> 
+On Mon, Nov 30, 2020 at 03:00:13PM +0100, Paolo Bonzini wrote:
+>On 30/11/20 14:57, Greg KH wrote:
+>>>Every patch should be "fixing a real issue"---even a new feature.  But the
+>>>larger the patch, the more the submitters and maintainers should be trusted
+>>>rather than a bot.  The line between feature and bugfix_sometimes_  is
+>>>blurry, I would say that in this case it's not, and it makes me question how
+>>>the bot decided that this patch would be acceptable for stable (which AFAIK
+>>>is not something that can be answered).
+>>I thought that earlier Sasha said that this patch was needed as a
+>>prerequisite patch for a later fix, right?  If not, sorry, I've lost the
+>>train of thought in this thread...
+>
+>Yeah---sorry I am replying to 22/33 but referring to 23/33, which is 
+>the one that in my opinion should not be blindly accepted for stable 
+>kernels without the agreement of the submitter or maintainer.
 
+But it's not "blindly", right? I've sent this review mail over a week
+ago, and if it goes into the queue there will be at least two more
+emails going out to the author/maintainers.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+During all this time it gets tested by various entities who do things
+that go beyond simple boot testing.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/leds/leds-mt6360.yaml:57:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
+I'd argue that the backports we push in the stable tree sometimes get
+tested and reviewed better than the commits that land upstream.
 
-dtschema/dtc warnings/errors:
-
-
-See https://patchwork.ozlabs.org/patch/1406971
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+Thanks,
+Sasha
