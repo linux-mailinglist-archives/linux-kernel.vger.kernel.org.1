@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877352C89AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB4D2C89B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgK3Qi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgK3Qi2 (ORCPT
+        id S1728865AbgK3QjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:39:21 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:33875 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728670AbgK3QjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:38:28 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D2DC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:37:48 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id u19so15667400edx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:37:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MGdi8zw2UllbWy3UVgiIB3U1ISdHvVn0dXTWbzhqRHw=;
-        b=aB1zWDkK5NfvrmnrmOSCL/lbknzHRwKGj1aueBf2V03Sd6MpGnI0JfOynU1L+Ogb+x
-         wJytGRe8eBSCzk5p+hrSF8NRWQ9EzWELjDbujZIvG7t/Y6vf84OEwEXFbssX5NFpsO/S
-         U2Fy1chzzhaQHsSvYMli6eB50DPVcfkH/hq1h00mVi1+Xp3KaUDnT41QaRyaKzae1sAB
-         OwR6d/DjVUjb6cL4LJfm5G+E3KSFWs23XT9/FscKngVfULfqJqECez6rCyRDnk9W3wj+
-         g7EGgqpDVMjlU0mcjuOqvOY2x/PVn8LMZhFiiMPRh3RmjL9zpNi6BiJCedilbfGd2LOA
-         IfXQ==
+        Mon, 30 Nov 2020 11:39:20 -0500
+Received: by mail-io1-f68.google.com with SMTP id d7so3577383iok.1;
+        Mon, 30 Nov 2020 08:38:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MGdi8zw2UllbWy3UVgiIB3U1ISdHvVn0dXTWbzhqRHw=;
-        b=kPiIMwmJ3xUdi7yudW7jVZGfdnHEmTwraWsNuYQN5jti9R/Ol4sEqmJle2YhSk9IZ4
-         C2x4p5P474kOi4cET0bW/uLeYwgxgyVuqwM55mEjFqoqayjOqnUDk1MKmwt7uAQC0wN5
-         XAiIh3hnQ7aVJylgktTxFQKPlU67nCQi/DkqM52AWZiOJDVBR3w/vb6FV3Hs399Ul1u6
-         1Ak/ohgm7FmMspk/95yXV/zZD1B5KMxu4O6VPBVAwkZFHGaSmWT96ijWTAPmJguK58cC
-         gIYZ34uYlBCwkmw/idkb+WHLxuvCHlbDF09aKrNjRgqIcrhz4ytLcca9ey79V+A7dUCb
-         kEaw==
-X-Gm-Message-State: AOAM533Fx3P6rD8UZU2y2wlfe5H7QgHnzwImnmYa3WGtOl6kkU8kHUj6
-        KccptZjYdB6BFPTxCiG4NZgDS1AIeeZbeh4lZXZLUA==
-X-Google-Smtp-Source: ABdhPJwwPbz1lJhNl39w+VpN8EO/mmbxfDOKDsyQn4TG5vFIeHuiL/TfIgbs7NmsghfoNhd4IHozS7s3SvnOJwmvCUs=
-X-Received: by 2002:a05:6402:307c:: with SMTP id bs28mr1919331edb.186.1606754266882;
- Mon, 30 Nov 2020 08:37:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tFYu+zcPVaijJyMJm5EUKsYsvWv061fpjh0clpgn5vA=;
+        b=a6yEhklVNxGdEvn697Qn0gETYsfkQuW3OomXwYGuRQCRUJgDtZ5liBqrbJRQTAyQLs
+         Mepj9siQMWhmSnKFEdFN+gYOYuJvZGpoWPe9l4EWkOyPAIz5Z/+fdEMqQoWMKQMCgEgo
+         xtoQQ1L1iVayaET8dgPOKEbS/zco3uboRlTtY4cGdEYUpyAoP4/BsSQRJPNHjMH6nhG2
+         8RbVJfP/d7iazXTOoxA32pvhFythtoZmljasjnuZqjnQViQk5ZlVDePq9oMP80pXHvkX
+         lWLEKtz6lvKMmBIfobVCuA8Egbdr5vpVkaM36SFhHUq3NTCOJrCKFsY6DDzU2Xjcc+G7
+         Rqeg==
+X-Gm-Message-State: AOAM533d0ycgkU7GDp/bv1VN4U4FrfiP8MKSD/8/JTvtYwFiQlB/jIER
+        bNhSFiragOeSLJfLrYNyO38exiLY9Q==
+X-Google-Smtp-Source: ABdhPJwO8/AKHHQtotzeksDXX1wp3u3t+G5jA46XRQZErHhLBCCcrUV6i188c/xtoojwacdGbzMMXA==
+X-Received: by 2002:a6b:b514:: with SMTP id e20mr17078716iof.105.1606754313679;
+        Mon, 30 Nov 2020 08:38:33 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id u11sm8273653iol.51.2020.11.30.08.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 08:38:32 -0800 (PST)
+Received: (nullmailer pid 2592217 invoked by uid 1000);
+        Mon, 30 Nov 2020 16:38:29 -0000
+Date:   Mon, 30 Nov 2020 09:38:29 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        robh+dt@kernel.org, davem@davemloft.net, ioana.ciornei@nxp.com,
+        Ionut-robert Aron <ionut-robert.aron@nxp.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, corbet@lwn.net, leoyang.li@nxp.com,
+        linux-arm-kernel@lists.infradead.org, kuba@kernel.org
+Subject: Re: [PATCH v4] dt-bindings: misc: convert fsl,qoriq-mc from txt to
+ YAML
+Message-ID: <20201130163829.GA2590579@robh.at.kernel.org>
+References: <20201123090035.15734-1-laurentiu.tudor@nxp.com>
 MIME-Version: 1.0
-References: <20201119142104.85566-1-alexandru.ardelean@analog.com> <CAHp75VdkomLMPYZbB7-KerGmyxXxB8hQuAjLtJ0bhB5f5vfuNA@mail.gmail.com>
-In-Reply-To: <CAHp75VdkomLMPYZbB7-KerGmyxXxB8hQuAjLtJ0bhB5f5vfuNA@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 30 Nov 2020 17:37:35 +0100
-Message-ID: <CAMpxmJXbpiiKzxsrBk5mdLf1Kk5_-5pwJYOeCsTTqKmS2QUMTQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: xra1403: remove unneeded spi_set_drvdata()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nandor Han <nandor.han@ge.com>,
-        Semi Malinen <semi.malinen@ge.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123090035.15734-1-laurentiu.tudor@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 4:04 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Nov 19, 2020 at 4:17 PM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
-> >
-> > There is no matching spi_get_drvdata() call in the driver, so there is no
-> > need to do spi_set_drvdata(). This looks like it probably was copied from a
-> > driver that used both spi_set_drvdata() & spi_get_drvdata().
->
-> While above luckily (*) okay it may not always be the case.
->
-> *) it can be paired with dev_get_drvdata() which is usual for PM callbacks.
->
-> With amended commit message
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->
+On Mon, 23 Nov 2020 11:00:35 +0200, Laurentiu Tudor wrote:
+> From: Ionut-robert Aron <ionut-robert.aron@nxp.com>
+> 
+> Convert fsl,qoriq-mc to YAML in order to automate the verification
+> process of dts files. In addition, update MAINTAINERS accordingly
+> and, while at it, add some missing files.
+> 
+> Signed-off-by: Ionut-robert Aron <ionut-robert.aron@nxp.com>
+> [laurentiu.tudor@nxp.com: update MINTAINERS, updates & fixes in schema]
+> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> ---
+> Changes in v4:
+>  - use $ref to point to fsl,qoriq-mc-dpmac binding
+> 
+> Changes in v3:
+>  - dropped duplicated "fsl,qoriq-mc-dpmac" schema and replaced with
+>    reference to it
+>  - fixed a dt_binding_check warning
+> 
+> Changes in v2:
+>  - fixed errors reported by yamllint
+>  - dropped multiple unnecessary quotes
+>  - used schema instead of text in description
+>  - added constraints on dpmac reg property
+> 
+>  .../devicetree/bindings/misc/fsl,qoriq-mc.txt | 196 ------------------
+>  .../bindings/misc/fsl,qoriq-mc.yaml           | 186 +++++++++++++++++
+>  .../ethernet/freescale/dpaa2/overview.rst     |   5 +-
+>  MAINTAINERS                                   |   4 +-
+>  4 files changed, 193 insertions(+), 198 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/misc/fsl,qoriq-mc.txt
+>  create mode 100644 Documentation/devicetree/bindings/misc/fsl,qoriq-mc.yaml
+> 
 
-I applied this patch. I wasn't sure exactly how you want the commit
-message to be changed - it sounds pretty clear to me so I took it.
+As there's a dependency on fsl,qoriq-mc-dpmac, this needs to go via 
+netdev tree.
 
-Bartosz
-
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > ---
-> >  drivers/gpio/gpio-xra1403.c | 10 +---------
-> >  1 file changed, 1 insertion(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-xra1403.c b/drivers/gpio/gpio-xra1403.c
-> > index e2cac12092af..49c878cfd5c6 100644
-> > --- a/drivers/gpio/gpio-xra1403.c
-> > +++ b/drivers/gpio/gpio-xra1403.c
-> > @@ -186,15 +186,7 @@ static int xra1403_probe(struct spi_device *spi)
-> >                 return ret;
-> >         }
-> >
-> > -       ret = devm_gpiochip_add_data(&spi->dev, &xra->chip, xra);
-> > -       if (ret < 0) {
-> > -               dev_err(&spi->dev, "Unable to register gpiochip\n");
-> > -               return ret;
-> > -       }
-> > -
-> > -       spi_set_drvdata(spi, xra);
-> > -
-> > -       return 0;
-> > +       return devm_gpiochip_add_data(&spi->dev, &xra->chip, xra);
-> >  }
-> >
-> >  static const struct spi_device_id xra1403_ids[] = {
-> > --
-> > 2.17.1
+Reviewed-by: Rob Herring <robh@kernel.org>
