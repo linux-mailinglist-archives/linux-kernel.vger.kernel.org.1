@@ -2,194 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4F92C8737
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8893F2C873C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgK3Ozj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:55:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbgK3Ozi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:55:38 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27D0C0613CF;
-        Mon, 30 Nov 2020 06:54:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=hMBlS3B+/eehM23/OZy1pKBYA5RK8NwojMiRZ1UI/gQ=; b=E3TskXCiYizso8F+PQmfTp124
-        nmRqpKtaB7D3eNgaSb55H0YiRJPB6KXl2F9K1dLedYsGrzyYxs2fpHFlQ8nd/BoXLM+wiFZBg7sR9
-        CZ0B8IGAVCobXgQr/JSrgB5fN6kmueAqhugMvoIi6L7+yyELOZNlzROs9hGhSIAjQQI6BIHErYzDp
-        JAqershTPCbtZ9UaaPdrgMc3/B00yPaKoWiJTL65Bq9Veq3LbmKIHKu0z2JG2lSGQ7Zz4KBl5PsYB
-        G5AQcLGzG/8I0BtOYOPE7K0PNDLkCMM/Gl/CJG1fTTKg649H0hQUJlSwiIWIvcUSMIg+HG1ScqEdS
-        ipMJVFqww==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38034)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kjkZY-0006wo-2O; Mon, 30 Nov 2020 14:54:36 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kjkZX-00056G-Q6; Mon, 30 Nov 2020 14:54:35 +0000
-Date:   Mon, 30 Nov 2020 14:54:35 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
-Message-ID: <20201130145435.GY1551@shell.armlinux.org.uk>
-References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
- <20201127133307.2969817-3-steen.hegelund@microchip.com>
- <20201128190616.GF2191767@lunn.ch>
- <20201128222828.GQ1551@shell.armlinux.org.uk>
- <20201129105245.GG1605@shell.armlinux.org.uk>
- <20201129112814.GH1605@shell.armlinux.org.uk>
- <20201130143908.yodoocifsek55bb7@mchp-dev-shegelun>
+        id S1727672AbgK3O51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:57:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726026AbgK3O50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 09:57:26 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81489206D8;
+        Mon, 30 Nov 2020 14:56:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606748205;
+        bh=H9HW6M0N7P3/ljXHXDTtoOCZtSNFV7sHkFwrFta8g8Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e6g4ZLS8pGm/ueEw04sTAufe9NAGM4bJ4U4pSgVeJtaPOzRx00XYwAn35Mj2pM2xH
+         UaoaOV0YGkUykA2cI0T3BxLC6I5oVG14Hv7M02VshPMAuedJhrQ/flPaiKcmQjophg
+         3THh9W77jduh6FqqR5HC6XKOW+G3BXbZKKe1cZU0=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kjkbb-00Eizp-9b; Mon, 30 Nov 2020 14:56:43 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130143908.yodoocifsek55bb7@mchp-dev-shegelun>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 30 Nov 2020 14:56:43 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        eric.auger@redhat.com, Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
+In-Reply-To: <85bb389a75f347d29ab3f75e4cfae060@huawei.com>
+References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
+ <f8a97f360073fa495cae75acc11ecf4f@kernel.org>
+ <85bb389a75f347d29ab3f75e4cfae060@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <846387e4168f1a22638ad07ae670c531@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: shameerali.kolothum.thodi@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, eric.auger@redhat.com, linuxarm@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 03:39:08PM +0100, Steen Hegelund wrote:
-> On 29.11.2020 11:28, Russell King - ARM Linux admin wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On Sun, Nov 29, 2020 at 10:52:45AM +0000, Russell King - ARM Linux admin wrote:
-> > > On Sat, Nov 28, 2020 at 10:28:28PM +0000, Russell King - ARM Linux admin wrote:
-> > > > On Sat, Nov 28, 2020 at 08:06:16PM +0100, Andrew Lunn wrote:
-> > > > > > +static void sparx5_phylink_mac_config(struct phylink_config *config,
-> > > > > > +                                     unsigned int mode,
-> > > > > > +                                     const struct phylink_link_state *state)
-> > > > > > +{
-> > > > > > +       struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
-> > > > > > +       struct sparx5_port_config conf;
-> > > > > > +       int err = 0;
-> > > > > > +
-> > > > > > +       conf = port->conf;
-> > > > > > +       conf.autoneg = state->an_enabled;
-> > > > > > +       conf.pause = state->pause;
-> > > > > > +       conf.duplex = state->duplex;
-> > > > > > +       conf.power_down = false;
-> > > > > > +       conf.portmode = state->interface;
-> > > > > > +
-> > > > > > +       if (state->speed == SPEED_UNKNOWN) {
-> > > > > > +               /* When a SFP is plugged in we use capabilities to
-> > > > > > +                * default to the highest supported speed
-> > > > > > +                */
-> > > > >
-> > > > > This looks suspicious.
-> > > >
-> > > > Yes, it looks highly suspicious. The fact that
-> > > > sparx5_phylink_mac_link_up() is empty, and sparx5_phylink_mac_config()
-> > > > does all the work suggests that this was developed before the phylink
-> > > > re-organisation, and this code hasn't been updated for it.
-> > > >
-> > > > Any new code for the kernel really ought to be updated for the new
-> > > > phylink methodology before it is accepted.
-> > > >
-> > > > Looking at sparx5_port_config(), it also seems to use
-> > > > PHY_INTERFACE_MODE_1000BASEX for both 1000BASE-X and 2500BASE-X. All
-> > > > very well for the driver to do that internally, but it's confusing
-> > > > when it comes to reviewing this stuff, especially when people outside
-> > > > of the driver (such as myself) reviewing it need to understand what's
-> > > > going on with the configuration.
-> > > 
-> > > There are other issues too.
-> > > 
-> > > Looking at sparx5_get_1000basex_status(), we have:
-> > > 
-> > >  +       status->link = DEV2G5_PCS1G_LINK_STATUS_LINK_STATUS_GET(value) |
-> > >  +                      DEV2G5_PCS1G_LINK_STATUS_SYNC_STATUS_GET(value);
-> > > 
-> > > Why is the link status the logical OR of these?
-> > > 
-> > >  +                       if ((lp_abil >> 8) & 1) /* symmetric pause */
-> > >  +                               status->pause = MLO_PAUSE_RX | MLO_PAUSE_TX;
-> > >  +                       if (lp_abil & (1 << 7)) /* asymmetric pause */
-> > >  +                               status->pause |= MLO_PAUSE_RX;
-> > > 
-> > > is actually wrong, and I see I need to improve the documentation for
-> > > mac_pcs_get_state(). The intention in the documentation was concerning
-> > > hardware that indicated the _resolved_ status of pause modes. It was
-> > > not intended that drivers resolve the pause modes themselves.
-> > > 
-> > > Even so, the above is still wrong; it takes no account of what is being
-> > > advertised at the local end. If one looks at the implementation in
-> > > phylink_decode_c37_word(), one will notice there is code to deal with
-> > > this.
-> > > 
-> > > I think we ought to make phylink_decode_c37_word() and
-> > > phylink_decode_sgmii_word() public functions, and then this driver can
-> > > use these helpers to decode the link partner advertisement to the
-> > > phylink state.
-> > > 
-> > > Does the driver need to provide an ethtool .get_link function? That
-> > > seems to bypass phylink. Why can't ethtool_op_get_link() be used?
-> > > 
-> > > I think if ethtool_op_get_link() is used, we then have just one caller
-> > > for sparx5_get_port_status(), which means "struct sparx5_port_status"
-> > > can be eliminated and the code cleaned up to use the phylink decoding
-> > > helpers.
-> > 
-> > (Sorry, I keep spotting bits in the code - it's really not an easy
-> > chunk of code to review.)
-> > 
-> > I'm also not sure that this is really correct:
-> > 
-> > +       status->serdes_link = !phy_validate(port->serdes, PHY_MODE_ETHERNET,
-> > +                                           port->conf.portmode, NULL);
-> > 
-> > The documentation for phy_validate() says:
-> > 
-> > * Used to check that the current set of parameters can be handled by
-> > * the phy. Implementations are free to tune the parameters passed as
-> > * arguments if needed by some implementation detail or
-> > * constraints. It will not change any actual configuration of the
-> > * PHY, so calling it as many times as deemed fit will have no side
-> > * effect.
-> > 
-> > and clearly, passing NULL for opts, gives the function no opportunity
-> > to do what it's intended, so phy_validate() is being used for some
-> > other purpose than that which the drivers/phy subsystem intends it to
-> > be used for.
+Hi Shameer,
+
+On 2020-11-30 13:55, Shameerali Kolothum Thodi wrote:
+> Hi Marc,
 > 
-> Hi Russell,
+>> -----Original Message-----
+>> From: Marc Zyngier [mailto:maz@kernel.org]
+>> Sent: 30 November 2020 12:28
+>> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+>> Cc: linux-kernel@vger.kernel.org; 
+>> linux-arm-kernel@lists.infradead.org;
+>> eric.auger@redhat.com; Linuxarm <linuxarm@huawei.com>
+>> Subject: Re: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy 
+>> support
+>> 
+>> Hi Shameer,
+>> 
+>> On 2020-11-30 10:26, Shameer Kolothum wrote:
+>> > At present, the support for GICv2 backward compatibility on GICv3/v4
+>> > hardware is determined based on whether DT/ACPI provides a memory
+>> > mapped phys base address for GIC virtual CPU interface register(GICV).
+>> > This creates a problem that a Qemu guest boot with default GIC(GICv2)
+>> 
+>> That'd be true of *any* guest using GICv2, not just when using QEMU as
+>> the VMM, right?
 > 
-> Yes this is a bit of an overload of the phy_validate().
+> Yes, I would think so.
 > 
-> The Serdes driver validates the portmode, and if OK, it returns the
-> current state of the link (bool), so that the client (SwitchDev) can know if the
-> link parameters so far results in a operational link. It does not change
-> any configuration.
+>> > hangs when firmware falsely reports this address on systems that don't
+>> > have support for legacy mode.
+>> 
+>> And I guess it isn't just the guest that hangs, but the whole system 
+>> can
+>> go south (it would be totally legitimate for the HW to deliver a
+>> SError).
+> 
+> So far I haven’t seen that happening. I was able to kill the Guest and 
+> recover.
+> But the annoying thing is Guest boot hangs at random places without any
+> error reported and people end up spending lot of time only to be told 
+> later
+> that gic-version=3 is missing from their scripts.
 
-This seems very strange. What is the point of asking for a portmode
-which could be different from the current mode, and returning the
-link state for the current mode?
+That's pretty lucky. The guest has been reading/writing to random 
+places,
+and depending on where this maps in the physical space, anything can
+happen. Out  of (morbid) curiosity, what is at the address pointed to by
+GICC in MADT?
 
-I don't think that there is an alternative interface - maybe it
-would be a better idea to propose a new interface to the drivers/phy
-maintainers, rather than bodging an existing interface for your
-needs?
+> 
+>> > As per GICv3/v4 spec, in an implementation that does not support legacy
+>> > operation, affinity routing and system register access are permanently
+>> > enabled. This means that the associated control bits are RAO/WI. Hence
+>> > use the ICC_SRE_EL1.SRE bit to decide whether hardware supports GICv2
+>> > mode in addition to the above firmware based check.
+>> >
+>> > Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+>> > ---
+>> > On Hisilicon D06, UEFI sets the GIC MADT GICC gicv_base_address but the
+>> > GIC implementation on these boards doesn't have the GICv2 legacy
+>> > support.
+>> > This results in, Guest boot hang when Qemu uses the default GIC option.
+>> 
+>> What a bore. Is this glorious firmware really out in the wild?
+> 
+> :(. I am afraid it is.
 
-Thanks.
+Meh. We'll have to paper over it then. How urgent is that?
 
+[...]
+
+>> How about this instead? Completely untested, of course.
+> 
+> Thanks for that. I just tested and it works.
+
+OK. I'll rework it a bit and post it as a complete patch. Is there an
+erratum number on your side?
+
+Thanks,
+
+         M.
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Jazz is not dead. It just smells funny...
