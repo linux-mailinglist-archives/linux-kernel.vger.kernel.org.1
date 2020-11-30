@@ -2,218 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BE32C7D73
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EBB2C7D77
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbgK3Din (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 22:38:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgK3Dim (ORCPT
+        id S1727075AbgK3DrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 22:47:07 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51456 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726000AbgK3DrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 22:38:42 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD43FC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 19:38:02 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id o4so6989609pgj.0
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 19:38:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jhc+lVkqsX84CmnCJgcMdvNeWtYbhuxZA6U1hGDfCGs=;
-        b=sr5bOr50tz6ihMGBHJWaQvOhIk8Bg1X0QcALns6jQeSuYfKCKOwkjys6p28+ANBkXs
-         sPXVqph13y9tIu1ymUSN+KlVm/FbyHUf7sjCI7xgjyQQPNJOFjg6TVwThUHrF6fvV1bf
-         9VLjExX0ZVuWmHE/jaXZzP1e5nMwsCvvIi6l1PoClPWxVMafi1PloU85hdqCBxIB8ZwZ
-         hiToySufRSkARd/n87MR0F5wClOVoWgHn9DQ4xUtwAlfYo8z5RSIPDU+TABG4GitgXMV
-         6aeklxLi6g4D7HvLUasFZpsWa6pfM+uy2VXLpu4E/BTjBepw3CQGB276F343u1K5xrK7
-         TBuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jhc+lVkqsX84CmnCJgcMdvNeWtYbhuxZA6U1hGDfCGs=;
-        b=OF+nQ1SrOcQjtPJlHw/hlTvC8fLgmODJkfj9MPnAWQbs5GRVEvZjO/WzwNMWLLaRKF
-         8sWiZUWWSv92Jkt9KeZNdE2wwHRAZO8bQZkA3poigEKHwLuEk/qanReeFSOAvQlH8SrY
-         Xm+qUl5lM5w8KOvJHazBeIMg3YgGnGsUrE2u3xNPh0CGG0nqkKTZuP9nuvThKHeoYsp0
-         PYKITPQVCyU11sOWL15Vfygz25/XeX8Adu95GnjoU0y+W1fljReH8U5AoHzbju0G5C88
-         EFQ+M+IcTtUXRyQx4Wov9jAYdj+r5w+hV5zaNVaZCC3FBdaW5cCLHRfWpZR+V81+2GNE
-         Ln8Q==
-X-Gm-Message-State: AOAM530v21lHgV5TL6VrRRv5Cw0LGOa9mGK+dC/G6pL3LgY+XbXO9Vrp
-        F4MZPGHU4m813QKmrf3qyYU=
-X-Google-Smtp-Source: ABdhPJyqzPJpZ/psYEclGIIReWuFuHpYksWS8s0+fPSMVKqj2yfAaEieMi6Hmk4iHLZM5oIFsl9moA==
-X-Received: by 2002:a63:5664:: with SMTP id g36mr15874386pgm.33.1606707481029;
-        Sun, 29 Nov 2020 19:38:01 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id f18sm14786936pfa.167.2020.11.29.19.37.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 19:38:00 -0800 (PST)
-Date:   Mon, 30 Nov 2020 12:37:58 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH] posix_acl.h: define missing ACL functions on
- non-posix-acl build
-Message-ID: <X8RpFo+5m1i4L5Gn@jagdpanzerIV.localdomain>
-References: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
- <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org>
- <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
- <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain>
+        Sun, 29 Nov 2020 22:47:07 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AU3VZHO172154;
+        Sun, 29 Nov 2020 22:46:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Xp5fIqGpHDQ+y4QgSyvNqdOqBbkZYUmxTfBztZv32jk=;
+ b=XlHOoEthjRaAU617/LmOQ6pTiu2pnq34R3xsxmI1ROfoqNjNXvYPeaLTNmWCoOddo30n
+ +jWC+ClddRg/WfyCHCxalYYZA1rcCiy+OrjrA1f10tiC2tXUskQQaRY+R5/HcbBhfwH8
+ pmuLpgVv9XkkpuOqx77oTr+MBDHAlppQUC4KY/j7yClecHZPPXBt2d5j8SUn4epTt1zB
+ SWJdAMufX7KwWPfybr/Hzp6jZKAvxEfWOCm/F9LX/hr8gvVdfZGLfDvubs28pz6E7dCp
+ F9y7DIr0SqKsLXhzz9zgT85/cUoD5nU1/k/yljFsw0UYF00sOr11agwxt28hDd4CiCo6 5w== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 354rra0bk3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Nov 2020 22:46:23 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AU3fndo019654;
+        Mon, 30 Nov 2020 03:46:21 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 354fpd8b2v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 03:46:21 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AU3kI5k3277506
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 03:46:18 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC0ED4C04E;
+        Mon, 30 Nov 2020 03:46:18 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 696574C050;
+        Mon, 30 Nov 2020 03:46:18 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 30 Nov 2020 03:46:18 +0000 (GMT)
+Received: from [9.102.59.125] (unknown [9.102.59.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 2E7A260A2F;
+        Mon, 30 Nov 2020 14:46:17 +1100 (AEDT)
+Subject: Re: [ANNOUNCE] [CFP] Call for Sessions - linux.conf.au Online 2021
+ Kernel Miniconf
+To:     CRISTIAN ANDRES VARGAS GONZALEZ <vargascristian@americana.edu.co>
+Cc:     LKML <linux-kernel@vger.kernel.org>, lwn@lwn.net
+References: <f43afd8c-5ce6-c505-3f4c-bd8f130ff904@linux.ibm.com>
+ <CABfRCziSf1iw3tb--j6F0ebPwx+kgtL_Jk9fA37gN7uDqEVPvg@mail.gmail.com>
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+Message-ID: <aab61c32-e6ec-ff19-8434-069aca2cd41d@linux.ibm.com>
+Date:   Mon, 30 Nov 2020 14:46:16 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain>
+In-Reply-To: <CABfRCziSf1iw3tb--j6F0ebPwx+kgtL_Jk9fA37gN7uDqEVPvg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-29_12:2020-11-26,2020-11-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 clxscore=1011 mlxscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=939 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A quick question, shouldn't there be dummy definitions for
-the EXPORT_SYMBOL-s? So that external modules can be modprobed
-and used.
+On 30/11/20 2:38 pm, CRISTIAN ANDRES VARGAS GONZALEZ wrote:
+>  > More info: https://lca-kernel.ozlabs.org/2021-cfs.html 
+> <https://lca-kernel.ozlabs.org/2021-cfs.html>
+> Hi, this link no working. :c
 
-Some of posix_acl exported symbols have dummy definitions,
-others don't.
+Ugh, let me fix my TLS setup. In the meantime, try plain old unencrypted 
+HTTP: http://lca-kernel.ozlabs.org/2021-cfs.html
 
-E.g. posix_acl_create() is exported symbol and it's defined for
-both FS_POSIX_ACL and !FS_POSIX_ACL. While exported set_posix_acl()
-is defined only for FS_POSIX_ACL config.
+Thanks for reporting!
 
----
 
-diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
-index 90797f1b421d..8a6c77a69761 100644
---- a/include/linux/posix_acl.h
-+++ b/include/linux/posix_acl.h
-@@ -59,19 +59,19 @@ posix_acl_release(struct posix_acl *acl)
- 
- /* posix_acl.c */
- 
-+extern int posix_acl_permission(struct inode *, const struct posix_acl *, int);
-+
-+extern struct posix_acl *get_posix_acl(struct inode *, int);
-+
-+#ifdef CONFIG_FS_POSIX_ACL
- extern void posix_acl_init(struct posix_acl *, int);
- extern struct posix_acl *posix_acl_alloc(int, gfp_t);
--extern int posix_acl_valid(struct user_namespace *, const struct posix_acl *);
--extern int posix_acl_permission(struct inode *, const struct posix_acl *, int);
--extern struct posix_acl *posix_acl_from_mode(umode_t, gfp_t);
- extern int posix_acl_equiv_mode(const struct posix_acl *, umode_t *);
-+extern struct posix_acl *posix_acl_from_mode(umode_t, gfp_t);
- extern int __posix_acl_create(struct posix_acl **, gfp_t, umode_t *);
- extern int __posix_acl_chmod(struct posix_acl **, gfp_t, umode_t);
--
--extern struct posix_acl *get_posix_acl(struct inode *, int);
- extern int set_posix_acl(struct inode *, int, struct posix_acl *);
--
--#ifdef CONFIG_FS_POSIX_ACL
-+extern int posix_acl_valid(struct user_namespace *, const struct posix_acl *);
- extern int posix_acl_chmod(struct inode *, umode_t);
- extern int posix_acl_create(struct inode *, umode_t *, struct posix_acl **,
- 		struct posix_acl **);
-@@ -91,18 +91,61 @@ static inline void cache_no_acl(struct inode *inode)
- 	inode->i_acl = NULL;
- 	inode->i_default_acl = NULL;
- }
-+
-+struct posix_acl *get_acl(struct inode *inode, int type);
- #else
-+static inline void posix_acl_init(struct posix_acl *, int)
-+{
-+}
-+
-+static inline struct posix_acl *posix_acl_alloc(int, gfp_t)
-+{
-+	return NULL;
-+}
-+
-+static inline int posix_acl_valid(struct user_namespace *,
-+				  const struct posix_acl *)
-+{
-+	return 0;
-+}
-+
-+static inline int posix_acl_equiv_mode(const struct posix_acl *, umode_t *)
-+{
-+	return 0;
-+}
-+
-+static inline struct posix_acl *posix_acl_from_mode(umode_t, gfp_t)
-+{
-+	return NULL;
-+}
-+
- static inline int posix_acl_chmod(struct inode *inode, umode_t mode)
- {
- 	return 0;
- }
- 
-+static inline int set_posix_acl(struct inode *, int, struct posix_acl *)
-+{
-+	return 0;
-+}
-+
- #define simple_set_acl		NULL
- 
- static inline int simple_acl_create(struct inode *dir, struct inode *inode)
- {
- 	return 0;
- }
-+
-+static inline int __posix_acl_create(struct posix_acl **, gfp_t, umode_t *)
-+{
-+	return 0;
-+}
-+
-+static inline int __posix_acl_chmod(struct posix_acl **, gfp_t, umode_t)
-+{
-+	return 0;
-+}
-+
- static inline void cache_no_acl(struct inode *inode)
- {
- }
-@@ -117,8 +160,38 @@ static inline int posix_acl_create(struct inode *inode, umode_t *mode,
- static inline void forget_all_cached_acls(struct inode *inode)
- {
- }
-+
-+static inline struct posix_acl *get_cached_acl(struct inode *inode, int type)
-+{
-+	return NULL;
-+}
-+
-+static inline struct posix_acl *get_cached_acl_rcu(struct inode *inode,
-+						   int type)
-+{
-+	return NULL;
-+}
-+
-+static inline void set_cached_acl(struct inode *inode, int type,
-+				  struct posix_acl *acl)
-+{
-+}
-+
-+static inline void forget_cached_acl(struct inode *inode, int type)
-+{
-+}
-+
-+static inline struct posix_acl *get_acl(struct inode *inode, int type)
-+{
-+	return NULL;
-+}
-+
-+static inline int posix_acl_update_mode(struct inode *, umode_t *,
-+					struct posix_acl **)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_FS_POSIX_ACL */
- 
--struct posix_acl *get_acl(struct inode *inode, int type);
- 
- #endif  /* __LINUX_POSIX_ACL_H */
+Andrew
+
+-- 
+Andrew Donnellan              OzLabs, ADL Canberra
+ajd@linux.ibm.com             IBM Australia Limited
