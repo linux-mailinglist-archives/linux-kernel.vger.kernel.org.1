@@ -2,71 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A7E2C840E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A83B2C840F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgK3MX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:23:28 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48296 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbgK3MX1 (ORCPT
+        id S1725975AbgK3MXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:23:33 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:37741 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725298AbgK3MXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:23:27 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AUCMJdk088105;
-        Mon, 30 Nov 2020 06:22:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606738939;
-        bh=7UvRl7kK+AIqbIbQ7zEESs9Zed+8y5YgG+drM7dIuyg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=duUY7Z85XGCXylrYu6LJlZPVLVnx2qhTwyrXu8zHRhjCUcLepsjfQ2/bfWp/m1Pwh
-         fuqye3cGWGJTUshz+5SB9n6x6FtCeJT1x+2es1m9KgXiMtOLLbfT1u8khntydXmNlI
-         Y4zp7/dBrVvwRwYFdAX2rxWCXm0gUJ4XfFgxHIeA=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AUCMJrJ109759
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 06:22:19 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 30
- Nov 2020 06:22:19 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 30 Nov 2020 06:22:19 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AUCMJeD065699;
-        Mon, 30 Nov 2020 06:22:19 -0600
-Date:   Mon, 30 Nov 2020 06:22:19 -0600
-From:   Nishanth Menon <nm@ti.com>
+        Mon, 30 Nov 2020 07:23:31 -0500
+Received: by mail-wm1-f67.google.com with SMTP id h21so24874084wmb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 04:23:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uVCfLnDhqxnCaRnqSvXv1QBwbVLxk4XJomN3aTRMb7U=;
+        b=kJ2OAd1MyM9orIyUv13m2lv+dkAhm2PxAstEtHU9SNoK4GMN0aNK7Gbjn/lVPe8Epp
+         S8VqB5o7C4ccDt8eyLO67AyA16n0c1lH0mIQb6CWlO2ij3iErC/6K5grBikUREKeW8wQ
+         GroC2GinqbLevqmgFxK6hEDSbhVSUvjmRBADRrkZvaGLY2asDPT4wxDhQyZW7lkfWV0E
+         kXCAOybzN0E0sY2Kafqn3EBSwZm/C2HsDq9pN9UeE/eBC16r0twtYKGfdmOU/1L9pGKJ
+         zDP6ZekBM3lbKUMfgnBUFqoemV0IUmqW0GffjMCZQJx0gpbHa4z2Z0Y69+L63s4+NDTe
+         ds5g==
+X-Gm-Message-State: AOAM530JhQlFihvyMoj58ZYy0av9tHhzrX8fiEymeLUn7mD2IGGt1FdI
+        x5nW2ao3FQQomyOVzLd1IqQ=
+X-Google-Smtp-Source: ABdhPJx1kXDADddKTYym4xvkUo0QeZzXeP3j39wHQpZ1UMr5RBDu97WAIalP5pxhEG49pVI+dZoemQ==
+X-Received: by 2002:a1c:3d4:: with SMTP id 203mr23490666wmd.52.1606738968773;
+        Mon, 30 Nov 2020 04:22:48 -0800 (PST)
+Received: from pi3 (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id r1sm26967671wra.97.2020.11.30.04.22.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 04:22:47 -0800 (PST)
+Date:   Mon, 30 Nov 2020 13:22:45 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-CC:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <bjorn.andersson@linaro.org>, <shawnguo@kernel.org>,
-        <leoyang.li@nxp.com>, <vkoul@kernel.org>,
-        <geert+renesas@glider.be>, <Anson.Huang@nxp.com>,
-        <michael@walle.cc>, <krzk@kernel.org>, <olof@lixom.net>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        bjorn.andersson@linaro.org, shawnguo@kernel.org,
+        leoyang.li@nxp.com, vkoul@kernel.org, geert+renesas@glider.be,
+        Anson.Huang@nxp.com, michael@walle.cc, olof@lixom.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nishanth Menon <nm@ti.com>,
         Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH 1/2] arm64: defconfig: drop unused POWER_AVS option
-Message-ID: <20201130122219.zttxek6qtsfpsydk@strainer>
+Subject: Re: [PATCH 2/2] ARM: multi_v7_defconfig: drop unused POWER_AVS option
+Message-ID: <20201130122245.GB22590@pi3>
 References: <20201130112731.30599-1-andrey.zhizhikin@leica-geosystems.com>
- <20201130112731.30599-2-andrey.zhizhikin@leica-geosystems.com>
+ <20201130112731.30599-3-andrey.zhizhikin@leica-geosystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201130112731.30599-2-andrey.zhizhikin@leica-geosystems.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201130112731.30599-3-andrey.zhizhikin@leica-geosystems.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11:27-20201130, Andrey Zhizhikin wrote:
+On Mon, Nov 30, 2020 at 11:27:31AM +0000, Andrey Zhizhikin wrote:
 > Commit 785b5bb41b0a ("PM: AVS: Drop the avs directory and the
 > corresponding Kconfig") moved AVS code to SOC-specific folders, and
 > removed corresponding Kconfig from drivers/power, leaving original
-> POWER_AVS config option enabled in defconfig file.
+> POWER_AVS config option enabled in multi_v7_defconfig file.
 > 
 > Remove the option, which has no references in the tree anymore.
 > 
@@ -75,10 +69,7 @@ On 11:27-20201130, Andrey Zhizhikin wrote:
 > Cc: Ulf Hansson <ulf.hansson@linaro.org>
 > Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
 
-Reviewed-by: Nishanth Menon <nm@ti.com>
+Thanks for the patch. You should also remove it from the omap2plus config.
 
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Best regards,
+Krzysztof
