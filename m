@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCC32C875A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C23352C875F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgK3PD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:03:28 -0500
-Received: from mout.gmx.net ([212.227.15.19]:47151 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725899AbgK3PD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:03:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606748473;
-        bh=h5Xcjdxty0RDqjnuXY7w+TO7/Igyokq8MDI/tlnDKOc=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=HiZwWezbyPPtkIZjYVP26/gfM/XGZROwXdtVKmrz7Lw+fbLYBSbYm+hhqWJB5Tz0l
-         dCcKkg6aPB0uI5/BIDOQnQHjpFTNb6FSYbGrRqmIgRg1oU/zpsLl5VordqAwV/3rxQ
-         Pu5EM7+Su34g0UAP/uXELCKwhO/27LDhA9vG8AlI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.151.20]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MsHns-1jvuD52S1i-00tmua; Mon, 30
- Nov 2020 16:01:13 +0100
-Message-ID: <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
-Subject: Re: scheduling while atomic in z3fold
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Date:   Mon, 30 Nov 2020 16:01:11 +0100
-In-Reply-To: <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
-References: <20201128140924.iyqr2h52z2olt6zb@spock.localdomain>
-         <20201128142723.zik6d5skvt3uwu5f@spock.localdomain>
-         <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
-         <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
-         <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
-         <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
-         <20201129112922.db53kmtpu76xxukj@spock.localdomain>
-         <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
-         <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
-         <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
-         <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
+        id S1727743AbgK3PEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:04:13 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56162 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgK3PEN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:04:13 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: nicolas)
+        with ESMTPSA id 540D11F450AB
+Message-ID: <67aa7f00ae2ea7d7e59720ce37d32ebd0de8a60a.camel@collabora.com>
+Subject: Re: [PATCH 4/4] venus: venc: Add support for AUD NALU control
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Maheshwar Ajja <majja@codeaurora.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date:   Mon, 30 Nov 2020 10:03:21 -0500
+In-Reply-To: <20201130090859.25272-5-stanimir.varbanov@linaro.org>
+References: <20201130090859.25272-1-stanimir.varbanov@linaro.org>
+         <20201130090859.25272-5-stanimir.varbanov@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:doTPtowmIutSdqzABFuzY91S4epubBxrrlFCeAWfhn4H+RQLEeq
- ni7mvzJjlOBu2nOVcXAgvsyU6P5UW0zK71SVdqHwfPIsq8/vCpNg5OM5sf1V+/Xellw4XiS
- KDDUVhFgGp4TArY5yOyFpmFdmqsdXa36qwTmU7x7agBvYUR9SLUxhiskNGOGVZZeOwP9OrU
- B/fCVgLKwaJAdd5qLlt/w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XH+FG8BWMj0=:wrmCJFtG4HyHn+yz0TfDBd
- vGP8Hh22nk+RQEItNXAVxa+eleC861gGcXneGA31OQt7r+ePL6ysivi9CvW28Ts7ZmDpc1A9W
- V4mQ4Lc6X03zLKVRQikPCfWFQWVbhOXeXZ0yU62bZNtaerK1IZIXnGEKFQMtw9JtU3B2e7gcA
- RL7mKmCHr0oVaj+R4YEpqGkTFy8B8U9lCIDWSOcWOZQ3nFKMARUMsh8Z0+yf+j8nDBvZ8/huG
- FEeo0DlO7y1PGwe7VXJX49F1TaHXCLBeiy9yDuVBFRwvJOCGl3MiBFiG5Fx8Wg4jSDxUdcWMS
- 1unLEAaLvg8BmCrB7ycsWcuQLhF05eZ3biSmA9ptVrEKOLaaLttjyaIYEb6xVvo7p4yWxxn1p
- GzafOQxIQ/LGGDFR6NhR7UBBR/VA0rGTu6Bb8luAB28qZa+FQO/p1apfwWn0qqb/d88kND9W3
- zYHZiburOTkdUkpWqQBAwaoFlKdA09JDQsk/nLBPyH34QIDIWkx7F3dOYCcO31OF/gOD+nfh8
- Yr57x8spw/u2CLAwackp3u/PAXyynWUlXLD0cF2SbYqbXTLQH44wvnnLHCFyeIH4T5ko3CuVo
- 9m9sFb+m5LqDzJ8CG3veI4D19s8S4jYBG9Zt7xtdz4L5CPJbvAj1F99JFoSHEeIF06PAXcCD4
- U+ZxEShJUdsDfaIG47SsR0kt3np6tS9YwAVTx1wDv6q9u9QCrAt74px6EYmTPE7LSkREz9Ujm
- Mkd6B3rx2rqMLLwSAweKqtTV0IJwO0o3fqE7iVDslgkwBmzQZ1SYbXrW/T0OPzNP/JwkKR5qJ
- YjEF+m9+K7fRG1MHs2+H472uL9CTtRi3BYmbWX6KUqdWD3wTLXhaq1JBsZ9NuWE0y+jPLhEwW
- /ZGvx/VPkq3r08Ed9h/g==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-30 at 15:52 +0100, Sebastian Andrzej Siewior wrote:
-> How do you test this? I triggered a few oom-killer and I have here git
-> gc running for a few hours now=E2=80=A6 Everything is fine.
+Le lundi 30 novembre 2020 à 11:08 +0200, Stanimir Varbanov a écrit :
+> Add support for Access Unit Delimiter control into encoder.
+> 
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.h       |  1 +
+>  drivers/media/platform/qcom/venus/venc.c       | 14 ++++++++++++++
+>  drivers/media/platform/qcom/venus/venc_ctrls.c |  8 +++++++-
+>  3 files changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.h
+> b/drivers/media/platform/qcom/venus/core.h
+> index 52df8b3ea438..041d33ad7688 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -244,6 +244,7 @@ struct venc_controls {
+>         u32 header_mode;
+>         u32 intra_refresh_mode;
+>         u32 intra_refresh_mbs;
+> +       bool aud_enable;
+>  
+>         u32 profile;
+>         u32 level;
+> diff --git a/drivers/media/platform/qcom/venus/venc.c
+> b/drivers/media/platform/qcom/venus/venc.c
+> index 71b525099e45..986d33b633db 100644
+> --- a/drivers/media/platform/qcom/venus/venc.c
+> +++ b/drivers/media/platform/qcom/venus/venc.c
+> @@ -696,6 +696,20 @@ static int venc_set_properties(struct venus_inst *inst)
+>                         return ret;
+>         }
+>  
+> +       if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
+> +           inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
+> +               struct hfi_enable en = {};
+> +
+> +               ptype = HFI_PROPERTY_PARAM_VENC_H264_GENERATE_AUDNAL;
+> +
+> +               if (ctr->aud_enable)
+> +                       en.enable = 1;
+> +
+> +               ret = hfi_session_set_property(inst, ptype, &en);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+>         ret = venus_helper_set_profile_level(inst, ctr->profile, ctr->level);
+>         if (ret)
+>                 return ret;
+> diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c
+> b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> index 74b4269e2e9c..8d34a5396306 100644
+> --- a/drivers/media/platform/qcom/venus/venc_ctrls.c
+> +++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> @@ -202,6 +202,9 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>                 ctr->intra_refresh_mbs = ctrl->val;
+>                 ctr->intra_refresh_mode = HFI_INTRA_REFRESH_RANDOM;
+>                 break;
+> +       case V4L2_CID_MPEG_VIDEO_AU_DELIMITER:
+> +               ctr->aud_enable = ctrl->val;
+> +               break;
+>         default:
+>                 return -EINVAL;
+>         }
+> @@ -217,7 +220,7 @@ int venc_ctrl_init(struct venus_inst *inst)
+>  {
+>         int ret;
+>  
+> -       ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 34);
+> +       ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 35);
+>         if (ret)
+>                 return ret;
+>  
+> @@ -372,6 +375,9 @@ int venc_ctrl_init(struct venus_inst *inst)
+>                           V4L2_CID_MPEG_VIDEO_RANDOM_INTRA_REFRESH_MB, 0,
+>                           ((7680 * 4320) >> 8), 1, 0);
+>  
+> +       v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+> +                         V4L2_CID_MPEG_VIDEO_AU_DELIMITER, 0, 1, 1, 0);
+> +
 
-In an LTP install, ./runltp -f mm.  Shortly after box starts swapping
-insanely, it explodes quite reliably here with either z3fold or
-zsmalloc.. but not with zbud.
+Any rationale not to make this the default ? AUD is optional in H264/HEVC but is
+mandatory when contained into MPEG TS. Not enabling it by default lead to bugs
+where invalid file are being produced. That would be my rationale to always
+enable this, I'd be curious to see what you and others think of this proposal.
 
-	-Mike
+>         ret = inst->ctrl_handler.error;
+>         if (ret)
+>                 goto err;
+
 
