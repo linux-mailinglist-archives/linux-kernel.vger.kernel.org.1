@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65582C8544
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F542C8534
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgK3Nck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:32:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgK3Nch (ORCPT
+        id S1726761AbgK3NcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:32:23 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:54567 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgK3NcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:32:37 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2452C0613D3;
-        Mon, 30 Nov 2020 05:31:56 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id r3so16245414wrt.2;
-        Mon, 30 Nov 2020 05:31:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pBmA2HioX2UOik7KR00ouIZb6c9//C/JEc7oIKLhFcY=;
-        b=JVUuwkGJ4NaNb4HLNMLQMgIDISYvV/gUvh2+I8ROZLZfa2ArJ02t4klczA1AVqGmKA
-         8BhgJocg2bdn/9CLqAn59pwI/chqAFBGJitzVjZuNhPJokxYZvuiSwGIvR1kGAEPufBB
-         9h6zoAoKp0eoCsNVxTcNHvpcHUL1l4uT26DAtqXXhKdb3YhxrsJsn9nMR44YSaGuGqey
-         gHJ/5b4FDD0yej47dY1G6SnhFpjVsCh4GkYVE16P9aI/K+sJ5wacNAoDQ2SnVzADnfSo
-         QHY8qBwE9OdR/xrPm6iYuwsjLoNx2YrFmN/la1JTAMUNhTbAE+Qvr13cCPgSktyLSJ5C
-         zZRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pBmA2HioX2UOik7KR00ouIZb6c9//C/JEc7oIKLhFcY=;
-        b=UdF883nmhtYuFVlF4Fcei2VMg36joPnDTyJjXFpMlsDP0OLXygeFWqGGUHeSg7az1v
-         Sz4wc57iGS1z2xhuftBKujQHtRH3gbpbAyuqetsY7TPYlmLDbSEpZfghD0BHIgaUQeCG
-         csMrnp4o7V8Dx42GY99TRg9NDkWGZDede4zwybAQBBWk3747RPd6/OtAbJft0vupzQDK
-         M07o+9UhqHoeHMOLcpcEhFEGwdalNxG+q+tvcAnctIgWgLb1t4Hga/X5b3czcoCKjYj8
-         XgXXEwkc+EzNBylL/kLFXu5CRFTKvQ5O7xsZ6RNwcPVPZFMXNbaGx2eNtjRA5YxxUCDk
-         BIiQ==
-X-Gm-Message-State: AOAM5305HypKY2gFPuu2M+xF82HKllm8bPdjYB+52qEkP62gr1V8o0xm
-        LZ6ymfcrfaRNGgzQawKEGWNBVn1zQDdYNQoW
-X-Google-Smtp-Source: ABdhPJwJReLGmQDmMBx5sI3o4Ddyr/ckN/oTbfZCoRx7mDtrmB/TSoplbGx15zWUvGD03E8J9yGkhA==
-X-Received: by 2002:adf:916e:: with SMTP id j101mr29144408wrj.55.1606743115428;
-        Mon, 30 Nov 2020 05:31:55 -0800 (PST)
-Received: from valhalla.home ([2.31.224.80])
-        by smtp.gmail.com with ESMTPSA id g192sm7452333wme.48.2020.11.30.05.31.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 05:31:54 -0800 (PST)
-From:   Daniel Scally <djrscally@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: [PATCH 02/18] property: Add support for calling fwnode_graph_get_endpoint_by_id() for fwnode->secondary
-Date:   Mon, 30 Nov 2020 13:31:13 +0000
-Message-Id: <20201130133129.1024662-3-djrscally@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201130133129.1024662-1-djrscally@gmail.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
+        Mon, 30 Nov 2020 08:32:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606743141; x=1638279141;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kXuxm2SFFmakayAIpg4aqjkNFYDLoM8EqLjqA71TKWg=;
+  b=cTKi7nLWCNocoN1LGiBmfS5UIy62ZsYDwunkulkz1ErP87JNlAyRgDyt
+   3LMWMurjcAcZAQXZY9PVWoI0pwZuv5ohR7ASw6iqfu3Gt3A3bha0n+2XG
+   /BfpzKAQkjxD5yShDJRarYgT9vLQ5Y3jO4lgx8M9KAEJkwHsbyqzIYbgX
+   wvsuJzHngxtCgzE8UC2qG8t08E5lzLH7x0QqgU12Zq84vMrEwstgUv581
+   RIoh/lKcuZa4Y0DpTHmLRkj8iKwctA5S3w1Go6w4cIo6XKOUPAZOHFDRn
+   dXAmdZUMYP2g1AgWuX4+oji4efkAVB3jkOixMLzyVpMnBqp5wIMkKeO1M
+   Q==;
+IronPort-SDR: kVvkgijFzEzYWPdxlzGUfFjQ0x9KmdJsuefns7SvbWBLKeZVAZWjAd92TCD8pIjHQ08031Si0d
+ PRDGDbjqC/DNvPkw2jMYJaLu3i7CEZ+En3zY71dO1eFpD3qnFXlds4Lk5iSgw3FuvffWK1LDdw
+ GujkOYkvrtlYrQ1ZV9W5yk/+wBKvJruaPp3Hq2jmp3EoXV4RvmsfM5WhRSJ5XhUxAh3wN7nTbY
+ 1Texqpa64tY7b4uA0DiJAkOY9fsOxORxBKhHrK4KCQKmVlgcemVKv2wj8wTSU3YUkwM2YZ4ejf
+ hyk=
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="35429844"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Nov 2020 06:31:15 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 06:31:15 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 30 Nov 2020 06:31:15 -0700
+Date:   Mon, 30 Nov 2020 14:31:14 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201130133114.ifjtn366yanj2z3c@mchp-dev-shegelun>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
+ <20201129172607.GE2234159@lunn.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201129172607.GE2234159@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function is used to find fwnode endpoints against a device. In
-some instances those endpoints are software nodes which are children of
-fwnode->secondary. Add support to fwnode_graph_get_endpoint_by_id() to
-find those endpoints by recursively calling itself passing the ptr to
-fwnode->secondary in the event no endpoint is found for the primary.
+On 29.11.2020 18:26, Andrew Lunn wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>
+>> +static void sparx5_hw_lock(struct sparx5 *sparx5)
+>> +{
+>> +     mutex_lock(&sparx5->lock);
+>> +}
+>> +
+>> +static void sparx5_hw_unlock(struct sparx5 *sparx5)
+>> +{
+>> +     mutex_unlock(&sparx5->lock);
+>> +}
+>
+>Why is this mutex special and gets a wrapper where as the other two
+>don't? If there is no reason for the wrapper, please remove it.
+>
+>       Andrew
 
-Signed-off-by: Daniel Scally <djrscally@gmail.com>
----
-Changes since RFC v3:
 
-	Patch introduced. In discussion in the last submission I noted
-	that the CIO2 device doesn't have an ACPI fwnode - that turns
-	out to be true for _some_ devices but not others, so we need
-	this function to check the secondary too.
+Hi Andrew,
 
- drivers/base/property.c | 4 ++++
- 1 file changed, 4 insertions(+)
+There is no need for any special treatment, so I will remove the
+wrapper.
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index a5ca2306796f..4ece6b086e36 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -1162,6 +1162,10 @@ fwnode_graph_get_endpoint_by_id(const struct fwnode_handle *fwnode,
- 		best_ep_id = fwnode_ep.id;
- 	}
- 
-+	if (!best_ep && fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
-+		return fwnode_graph_get_endpoint_by_id(fwnode->secondary, port,
-+						       endpoint, flags);
-+
- 	return best_ep;
- }
- EXPORT_SYMBOL_GPL(fwnode_graph_get_endpoint_by_id);
--- 
-2.25.1
+BR
+Steen
 
+
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
