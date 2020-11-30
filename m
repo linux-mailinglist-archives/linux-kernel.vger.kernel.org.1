@@ -2,33 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535A42C8718
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56A92C871D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727711AbgK3Ota (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:49:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56002 "EHLO mail.kernel.org"
+        id S1727735AbgK3OuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:50:15 -0500
+Received: from mout02.posteo.de ([185.67.36.66]:52457 "EHLO mout02.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726688AbgK3Ot3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:49:29 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C0202087C;
-        Mon, 30 Nov 2020 14:48:48 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 09:48:46 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "J. Avila" <elavila@google.com>, mingo@redhat.com,
-        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: Potential Issue in Tracing Ring Buffer
-Message-ID: <20201130094846.6b8bc60b@gandalf.local.home>
-In-Reply-To: <20201126132613.7f737afe@oasis.local.home>
-References: <20201124223917.795844-1-elavila@google.com>
-        <X79CrSX1rnpnbqPd@kroah.com>
-        <20201126132613.7f737afe@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727713AbgK3OuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 09:50:14 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 16CAC240101
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:49:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1606747758; bh=j5eeyfAPUe9fI6d05dTrX8PAUimPSUijcPAOnrjGhDk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=W0dPQXSfnzd2AOVcaNbOWOOZv/ZG73k9shIO9Nj09wuWXok2yRCWmdUPbBgi7Nkiq
+         1n2AYVX3gDHeIN/L24Jd0fMVE52yTM+vCzPIzKeUdGS5ti15YpTUwmjLLIKM88E5Bs
+         Ejqe453iKl0Emws92y4ec/D6mm7VZ4y7yMPP/UdTf1JHNid9r5xeea9Imc1qvss1K3
+         AxiNN4HALVpHR8uLp8kguFFcjWieHcKC0MMCgejztTsGcLIfMtO8NdFELUin0VHxfE
+         MgQ+ai8zCpnn4VZekB3i3ru/ze51mavU4ugd9iI8jHPawyX2jl8YCUfxHMnWczA76g
+         lR2c/GvW8WLUw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Cl7RK19lGz9rxD;
+        Mon, 30 Nov 2020 15:49:17 +0100 (CET)
+Date:   Mon, 30 Nov 2020 15:49:15 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Thomas Backlund <tmb@iki.fi>
+Cc:     Jonas Malaco <jonas@protocubo.io>, linux-kernel@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] hwmon: corsair-psu: update supported devices
+Message-ID: <20201130154915.760923fd@monster.powergraphx.local>
+In-Reply-To: <4917cc59-aa35-7fb1-d2d0-75039523816f@iki.fi>
+References: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
+        <CANS_-EN8rgFEyE5rDw3=JLUYNwLQexafn7efvMC_=+4s2h1R6Q@mail.gmail.com>
+        <20201128113524.24f4f56f@monster.powergraphx.local>
+        <4917cc59-aa35-7fb1-d2d0-75039523816f@iki.fi>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -36,49 +48,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 13:26:13 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, 30 Nov 2020 14:43:44 +0200
+Thomas Backlund <tmb@iki.fi> wrote:
 
-> On Thu, 26 Nov 2020 06:52:45 +0100
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Tue, Nov 24, 2020 at 10:39:17PM +0000, J. Avila wrote:  
-> > > Hello,
-> > > 
-> > > In the ftrace logs we've collected internally, we have found that there are
-> > > situations where time seems to go backwards; this breaks userspace tools which
-> > > expect time to always go forward in these logs. For example, in this snippet
-> > > from a db845c running a 5.10-rc4 kernel[1] (thanks for getting us the trace,
-> > > John!), we see:    
+> Den 28.11.2020 kl. 12:35, skrev Wilken Gottwalt:
+> > On Sat, 28 Nov 2020 02:37:38 -0300
+> > Jonas Malaco <jonas@protocubo.io> wrote:
 > > 
-> > Does the patch at:
-> > 	https://lore.kernel.org/r/20201125225654.1618966-1-minchan@kernel.org
+> >> On Thu, Nov 26, 2020 at 8:43 AM Wilken Gottwalt
+> >> <wilken.gottwalt@posteo.net> wrote:
+> >>>
+> >>> Adds support for another Corsair PSUs series: AX760i, AX860i, AX1200i,
+> >>> AX1500i and AX1600i. The first 3 power supplies are supported through
+> >>> the Corsair Link USB Dongle which is some kind of USB/Serial/TTL
+> >>> converter especially made for the COM ports of these power supplies.
+> >>> There are 3 known revisions of these adapters. The AX1500i power supply
+> >>> has revision 3 built into the case and AX1600i is the only one in that
+> >>> series, which has an unique usb hid id like the RM/RX series.
+> >>
+> >> Can I ask what AXi power supplies were tested?
+> >>
+> >> I ask because, based on the user-space implementations I am aware of,
+> >> the AXi dongle protocol appears to be different from the RMi/HXi series.
 > > 
-> > resolve this issue for you?
-> >   
+> > I was not able to test this against the AX power supplies, they are really
+> > hard to find (and are far to expensive). But I went through all these tools
+> > and stuck to the most common commands, which all 3 series support. Not every
+> > series supports all commands (there also seem to be different firmwares in
+> > the micro-conrollers). But this is fine, some sensors will show up as N/A.
+> > Even my HX850i does not support all commands covered in this driver.
+> > 
 > 
-> I think I found the bug. Can you apply this patch and let me know if it
-> fixes the issue for you?
+> What kind of tests do you want / need ?
 > 
-> -- Steve
+> I have an AX860i here.
+
+Oh nice. Lets start with an usb info dump. Can you give me the full dump of
+lsusb -vd <device> of the Corsair USB dongle?
+
+greetings,
+Wilken
+
+> --
+> Regards
 > 
-> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> index dc83b3fa9fe7..bccaf88d3706 100644
-> --- a/kernel/trace/ring_buffer.c
-> +++ b/kernel/trace/ring_buffer.c
-> @@ -3291,7 +3291,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
->  			/* Nothing came after this event between C and E */
->  			info->delta = ts - info->after;
->  			(void)rb_time_cmpxchg(&cpu_buffer->write_stamp,
-> -					      info->after, info->ts);
-> +					      info->after, ts);
->  			info->ts = ts;
->  		} else {
->  			/*
+> Thomas Backlund
 > 
 
-Can I get a Tested-by from someone on the Google team, so that I can send
-this upstream? It already passed all my internal testing, but I want to
-make sure this is the fix for the issue I reference in the change log.
-
--- Steve
