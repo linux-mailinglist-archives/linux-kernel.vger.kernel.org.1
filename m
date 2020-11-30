@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BFF2C7D3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2455A2C7D3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgK3DRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 22:17:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50797 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726188AbgK3DRr (ORCPT
+        id S1727003AbgK3DSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 22:18:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbgK3DSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 22:17:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606706180;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3YOBvfhhlFFo3dwfriq09oew+AgJp9hrH3M7EIqOG/o=;
-        b=Xr/cSmwNk8kv8tkdq/fVesX0lUa67+tUgh7zXGt5ix/m05I7ieACzOO6JckZqfySpbm14h
-        sY35oVdYyrhhFtz4RQwdzDHBih+VAKhy8M9T3w9FPtu4BkWcLpeMvnJZnQLUbG5UZ8fkjW
-        IaiLNCAYRwPT1LFPjnmRClky4ff5vd8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-7lw4UWtvM06MFf3UiC0MfQ-1; Sun, 29 Nov 2020 22:16:18 -0500
-X-MC-Unique: 7lw4UWtvM06MFf3UiC0MfQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 778C11E7EF;
-        Mon, 30 Nov 2020 03:16:17 +0000 (UTC)
-Received: from [10.72.13.173] (ovpn-13-173.pek2.redhat.com [10.72.13.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F6135D9D2;
-        Mon, 30 Nov 2020 03:16:08 +0000 (UTC)
-Subject: Re: [PATCH v2 09/17] vdpa_sim: add work_fn in vdpasim_dev_attr
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
-References: <20201126144950.92850-1-sgarzare@redhat.com>
- <20201126144950.92850-10-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <6824a28b-8611-d83e-259c-d84be8513683@redhat.com>
-Date:   Mon, 30 Nov 2020 11:16:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 29 Nov 2020 22:18:24 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53904C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 19:17:44 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id bj5so5704139plb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 19:17:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zwbwZcpp3gI3cc3GYkT8OX/wHY+SvDyCSQpo9znuRHc=;
+        b=oQ4EXki5q+k/2QQHRJfVognb/E2BspR3JKt9edeiB5ImwUrn793BofB1b3ROvNic2r
+         796NjG+Vv+BdEPQleuTy0nafnjvTXwvuxqVFyyQMdYQ+9p0Y4D9ZqufAU/yZBfcTWI3C
+         9WLJ/ljNV3d3Vt6UMhcRYCSTD761qez81TdM92k2AGH4eaRetGAqoLt4RKQwql+BgVlp
+         W51QOtEacdImYHVXvQnmtv86HgJqpSL81aaYDJ5eny6BtAWyavfG+n8KWIXj3esR3/c2
+         UCvIRNK6d/prb8qh67c2jjMOFjJfjL93nFOP1MZoW2MunW+Ax/mWaTzgtTS/OEj95WQI
+         mfKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zwbwZcpp3gI3cc3GYkT8OX/wHY+SvDyCSQpo9znuRHc=;
+        b=tG7aOPsEDFUCWF7cMVTE8AEVfsuOfLDu+riP6oGwKjQD2uN68p/sQmwZUllLi06ivw
+         2lNP/jx9Z6bxzgSaFC4y4IUsCpSvOv6e/qm77CqvN0oAJuBI1S6BJVIA9DbKtXjdaQD7
+         GXso9fA4x9phIipP7YsrdmwdHqg3dNkponNAPqAvCRVho6y0RrvROazB515zCm90P8WC
+         eIcL+LiL3jxPoKALwURBfbwmFRt4N7wyDau9fHWO9rpWwotA0xpuwq6WgwiStwwiI8Nq
+         N/cKcpGFgHleZUAQ/FpbPGusOvRKmitqysdbNuvOk2Q+ln8ldYvii/GmkJcEIPSgjqGg
+         xaFQ==
+X-Gm-Message-State: AOAM531fwTWPXwhuG2gVf9nXLCjvEfQoZHkPjx5Fevhxn+b9t6EAfUMe
+        NJRwLX67W0axw54W4FnKs30=
+X-Google-Smtp-Source: ABdhPJzc+0ywB5gG6nhsmtRo3eT0VZ2DVebwgFc0YbIQioeskO1B9GCBcyRZWETcM2SNYkCCetlE6w==
+X-Received: by 2002:a17:902:744b:b029:da:74ca:b5f2 with SMTP id e11-20020a170902744bb02900da74cab5f2mr3484759plt.22.1606706263902;
+        Sun, 29 Nov 2020 19:17:43 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id j74sm14564506pfd.43.2020.11.29.19.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 19:17:43 -0800 (PST)
+Date:   Mon, 30 Nov 2020 12:17:40 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH] posix_acl.h: define missing ACL functions on
+ non-posix-acl build
+Message-ID: <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain>
+References: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
+ <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org>
+ <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20201126144950.92850-10-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (20/11/30 12:15), Sergey Senozhatsky wrote:
+> On (20/11/29 18:00), Randy Dunlap wrote:
+> > On 11/29/20 5:44 PM, Sergey Senozhatsky wrote:
+> > > Some functions that are declared when CONFIG_POSIX_ACL is defined
+> > > are not declared when CONFIG_POSIX_ACL is not defined. Add the
+> > > missing ones:
+> > >   set_posix_acl(), posix_acl_update_mode(), get_cached_acl(),
+> > >   get_cached_acl_rcu(), set_cached_acl(), forget_cached_acl().
+> > > 
+> > > Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> > 
+> > Hi,
+> > 
+> > I can't find CONFIG_POSIX_ACL in the kernel source tree.
+> > Should it be CONFIG_FS_POSIX_ACL ?
+> 
+> Oh, yes, CONFIG_POSIX_ACL. My bad.
 
-On 2020/11/26 下午10:49, Stefano Garzarella wrote:
-> Rename vdpasim_work() in vdpasim_net_work() and add it to
-> the vdpasim_dev_attr structure.
->
-> Co-developed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
+     ...   CONFIG_FS_POSIX_ACL. I did it again.
 
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 36677fc3631b..b84d9acd130c 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -60,6 +60,8 @@ struct vdpasim_dev_attr {
->   	u64 supported_features;
->   	int nvqs;
->   	u32 id;
-> +
-> +	work_func_t work_fn;
->   };
->   
->   /* State of each vdpasim device */
-> @@ -153,7 +155,7 @@ static void vdpasim_reset(struct vdpasim *vdpasim)
->   	++vdpasim->generation;
->   }
->   
-> -static void vdpasim_work(struct work_struct *work)
-> +static void vdpasim_net_work(struct work_struct *work)
->   {
->   	struct vdpasim *vdpasim = container_of(work, struct
->   						 vdpasim, work);
-> @@ -360,7 +362,7 @@ static struct vdpasim *vdpasim_create(struct vdpasim_dev_attr *dev_attr)
->   		goto err_alloc;
->   
->   	vdpasim->dev_attr = *dev_attr;
-> -	INIT_WORK(&vdpasim->work, vdpasim_work);
-> +	INIT_WORK(&vdpasim->work, dev_attr->work_fn);
->   	spin_lock_init(&vdpasim->lock);
->   	spin_lock_init(&vdpasim->iommu_lock);
->   
-> @@ -730,6 +732,7 @@ static int __init vdpasim_dev_init(void)
->   	dev_attr.id = VIRTIO_ID_NET;
->   	dev_attr.supported_features = VDPASIM_NET_FEATURES;
->   	dev_attr.nvqs = VDPASIM_VQ_NUM;
-> +	dev_attr.work_fn = vdpasim_net_work;
->   
->   	vdpasim_dev = vdpasim_create(&dev_attr);
->   
-
+	-ss
