@@ -2,124 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D1C2C8B8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBE02C8BED
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387819AbgK3Roa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:44:30 -0500
-Received: from mga06.intel.com ([134.134.136.31]:12248 "EHLO mga06.intel.com"
+        id S1729481AbgK3SAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:00:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387624AbgK3Roa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:44:30 -0500
-IronPort-SDR: lnwIffjm/X2Kc3zqafjzVtpuuK7+f1QIsRKE4t7DYvpEEbqxebFpPUV3/AlyotHgm843kJVS9z
- 4RS2wbBpfNIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="234282146"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="234282146"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:43:49 -0800
-IronPort-SDR: NmWFz9lr9cVCWxwmNdaLxscWdvSQzdS2m/WE1b8jhUlh5TDiRw+cLDja2Fr1cuzYfokrqkEJZM
- YDp6jUDs2/NQ==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="549193922"
-Received: from xshen14-linux.bj.intel.com ([10.238.155.105])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:43:44 -0800
-From:   Xiaochen Shen <xiaochen.shen@intel.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        tony.luck@intel.com, fenghua.yu@intel.com,
-        reinette.chatre@intel.com, willemb@google.com
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, pei.p.jia@intel.com,
-        xiaochen.shen@intel.com
-Subject: [PATCH v2] x86/resctrl: Clean up unused function parameter in rmdir path
-Date:   Tue,  1 Dec 2020 02:06:58 +0800
-Message-Id: <1606759618-13181-1-git-send-email-xiaochen.shen@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1604085117-31778-1-git-send-email-xiaochen.shen@intel.com>
-References: <1604085117-31778-1-git-send-email-xiaochen.shen@intel.com>
+        id S1728724AbgK3SAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:00:46 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6E8F206E3;
+        Mon, 30 Nov 2020 18:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606759206;
+        bh=J0AvqkAMAAVDLj/yz/VGpmBN4b8ppf8eyoYZVFmOL1g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QnHbG1Z0laDt7GYEWQy6kll++E+FMto2i6z/qpuO0vg3al59s3wZy2jR3j869Icy5
+         i2iRBedAm12rjFAYJSkRkyp9fjlyIeSki0cMULWMF2e2JDdSAoMUwk9CKv/SIXhfKb
+         x9hqN1SsEzVftV8S01iBuUs3AspxsaRn4UbUnAZs=
+Date:   Mon, 30 Nov 2020 17:59:37 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Jack Yu <jack.yu@realtek.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: linux-next: build failure after merge of the regmap tree
+Message-ID: <20201130175937.GA37431@sirena.org.uk>
+References: <20201127182411.07c15471@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Disposition: inline
+In-Reply-To: <20201127182411.07c15471@canb.auug.org.au>
+X-Cookie: Danger: do not shake.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit
 
-  fd8d9db3559a ("x86/resctrl: Remove superfluous kernfs_get() calls to prevent refcount leak")
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-removed superfluous kernfs_get() calls in rdtgroup_ctrl_remove() and
-rdtgroup_rmdir_ctrl(). That change resulted in an unused function
-parameter to these two functions.
+On Fri, Nov 27, 2020 at 06:24:11PM +1100, Stephen Rothwell wrote:
+> Caused by commit
+>=20
+>   6f4a038b9967 ("ASoC/SoundWire: rt715-sdca: First version of rt715 sdw s=
+dca codec driver")
+>=20
+> I have reverted that commit for today.
 
-Clean up the unused function parameter in rdtgroup_ctrl_remove(),
-rdtgroup_rmdir_mon() and their callers rdtgroup_rmdir_ctrl() and
-rdtgroup_rmdir().
+I'll drop this, hopefully it can be re-added in future.
 
-Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
----
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 6f4ca4bea625..b1bba837bd11 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -3018,8 +3018,7 @@ static int rdtgroup_mkdir(struct kernfs_node *parent_kn, const char *name,
- 	return -EPERM;
- }
- 
--static int rdtgroup_rmdir_mon(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
--			      cpumask_var_t tmpmask)
-+static int rdtgroup_rmdir_mon(struct rdtgroup *rdtgrp, cpumask_var_t tmpmask)
- {
- 	struct rdtgroup *prdtgrp = rdtgrp->mon.parent;
- 	int cpu;
-@@ -3051,8 +3050,7 @@ static int rdtgroup_rmdir_mon(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
- 	return 0;
- }
- 
--static int rdtgroup_ctrl_remove(struct kernfs_node *kn,
--				struct rdtgroup *rdtgrp)
-+static int rdtgroup_ctrl_remove(struct rdtgroup *rdtgrp)
- {
- 	rdtgrp->flags = RDT_DELETED;
- 	list_del(&rdtgrp->rdtgroup_list);
-@@ -3061,8 +3059,7 @@ static int rdtgroup_ctrl_remove(struct kernfs_node *kn,
- 	return 0;
- }
- 
--static int rdtgroup_rmdir_ctrl(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
--			       cpumask_var_t tmpmask)
-+static int rdtgroup_rmdir_ctrl(struct rdtgroup *rdtgrp, cpumask_var_t tmpmask)
- {
- 	int cpu;
- 
-@@ -3089,7 +3086,7 @@ static int rdtgroup_rmdir_ctrl(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
- 	closid_free(rdtgrp->closid);
- 	free_rmid(rdtgrp->mon.rmid);
- 
--	rdtgroup_ctrl_remove(kn, rdtgrp);
-+	rdtgroup_ctrl_remove(rdtgrp);
- 
- 	/*
- 	 * Free all the child monitor group rmids.
-@@ -3126,13 +3123,13 @@ static int rdtgroup_rmdir(struct kernfs_node *kn)
- 	    rdtgrp != &rdtgroup_default) {
- 		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP ||
- 		    rdtgrp->mode == RDT_MODE_PSEUDO_LOCKED) {
--			ret = rdtgroup_ctrl_remove(kn, rdtgrp);
-+			ret = rdtgroup_ctrl_remove(rdtgrp);
- 		} else {
--			ret = rdtgroup_rmdir_ctrl(kn, rdtgrp, tmpmask);
-+			ret = rdtgroup_rmdir_ctrl(rdtgrp, tmpmask);
- 		}
- 	} else if (rdtgrp->type == RDTMON_GROUP &&
- 		 is_mon_groups(parent_kn, kn->name)) {
--		ret = rdtgroup_rmdir_mon(kn, rdtgrp, tmpmask);
-+		ret = rdtgroup_rmdir_mon(rdtgrp, tmpmask);
- 	} else {
- 		ret = -EPERM;
- 	}
--- 
-1.8.3.1
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/FMwgACgkQJNaLcl1U
+h9APCwf+IHRatuJiMO7Wp0izrrQJQ5tO00M9etGev3ONEIJBf5d9MpAoWM6diG4p
+NSYXEZUIVe3eI3BaQmtTLYdQFKYZoni73QB0BvZwTGCchDpMtvVJpDndZq8TNv2h
+XZuyUIaPkEvTWYHgvFckoTCK/5kyPA5svNBhmRWMic57LIDZS0J4gtDMUe6osbw3
+UbdU67W+8rxx7F1219locflUk8fiWeKbUNLQimrcDv1hCaRtXSfgTut6j2gF0EvH
+02Ac1+8wtM9WMVtR8DCjnzTICYJ3EBt7MaLtBozZaITFJiDYaCJ4/dVzzKWp14lD
+SOQCP1tUpXJCr/tXCmcL0VulgCSnLg==
+=jOtQ
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
