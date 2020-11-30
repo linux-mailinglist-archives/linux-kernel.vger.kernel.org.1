@@ -2,335 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0701A2C7DA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 06:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6DA2C7DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 06:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbgK3FXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 00:23:34 -0500
-Received: from mout02.posteo.de ([185.67.36.66]:42701 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbgK3FXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 00:23:34 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 75EBB2400FC
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:22:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1606713754; bh=cHy6v5M4vlXdjZSZ5DtHaayJitURiqSEjOoiQbRF8uI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LaTqCdxXXTg9P8+Wy3VlW5dNZy4d20ld3SQcy/ZJx4VE3r7dj0WmXHgy2xab9IHgY
-         eZyKafgq1oxltwVqX5Hlw8A3OE91ZmOsP8YdWSO12gjdjJcM/M9fckwzJBmAE2L7wA
-         yL55BoN3YNWD6deO5DDGuVZrlyFIfOVLdrMHMguFQFoGVkoJF/gJs/IZdnsfjvFc5y
-         pQyXbpCQi7GYVPTXKdzsI76CzyzaAW227FCkFIFTlflFHct7rDHWWyajZluwQaCoe+
-         WXKNs1DOm+PtksAcMU0+hnO12BmpasNFp5+74oEzfZXGysCyjoS5hkv5IscdBjbvTG
-         neiCKFmwG5IKA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4CktsP2bthz9rxB;
-        Mon, 30 Nov 2020 06:22:33 +0100 (CET)
-Date:   Mon, 30 Nov 2020 06:22:30 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonas Malaco <jonas@protocubo.io>, linux-kernel@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH] hwmon: corsair-psu: update supported devices
-Message-ID: <20201130062230.2141750a@monster.powergraphx.local>
-In-Reply-To: <20201129215933.GA131003@roeck-us.net>
-References: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
-        <CANS_-EN8rgFEyE5rDw3=JLUYNwLQexafn7efvMC_=+4s2h1R6Q@mail.gmail.com>
-        <20201128113524.24f4f56f@monster.powergraphx.local>
-        <CANS_-EPK75zrVRtBKxO-00RZD-XWrixJD8DH1_d=80rbazXQng@mail.gmail.com>
-        <20201129073618.082c2291@monster.powergraphx.local>
-        <20201129130049.GB120875@roeck-us.net>
-        <20201129165443.51d22225@monster.powergraphx.local>
-        <20201129215933.GA131003@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726050AbgK3F10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 00:27:26 -0500
+Received: from mail-eopbgr80040.outbound.protection.outlook.com ([40.107.8.40]:45443
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725933AbgK3F10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 00:27:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EXGZaWBceRBeVN/NK25oDcu8ZA4Dr9yIIyT6g146zJmbvsZDY0UpWXKYZqCdIsIEo/Xy7NxGKb715/n74DQPST1l6Ie3UCQMNfwn2oj3qXcyJvKQaS5XBp83ZoJ1Y/z8H7L85OjM1nGvlAIoKs880KSrySEmHdi+0UTbi4l3g3CGKjCL2n9ox3T3C8Fi8lsh858/jZgJWg0N36VPRWR61XuNFx6PQFJhhZNrwkNZeyW4iJLl8jTgNw0BtxBtJeqBZPZ0Wwzjbk7EuEI7uscluD/oO+WL2o/xFNc+WrR1jxY5xSTCId/vqjMgfpanAKUJNBTLB6+nY8ix2sSefjIrXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8BYbGhwNIY4RDPIndnpv9Cg31GuKuTIFU6MUi16/BwY=;
+ b=eUyUg25/Oh4QhT9vf/bffOKtqZ8FTg/KBpa/6hi36CL63plUXpgZqKUv40WE54u23Zipb9GH3y9XoonDCNdIaTvFdIg1gE6Dxyd8CJ6s4Uw0cIkGwODDUFqHE9hpTb5epvD3kr0U5H4DHPTLrcrRC5mrDoAJ1oZC9sXldij8sHJLExS54eUuM8xaP7hSjDxfpVJIXcaXUCAdEALYBoaQCFbGY3e27v4lhnNtCOV00za23szWg5Xlkuvb6EWG0UHwDDfT68inC90b270+M7/bWqfFgmWymyBQaf0Jwmo4tkYumuq4evavpCaq9FhXLWRs1tpfw6b763+hnENRt8JJ2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8BYbGhwNIY4RDPIndnpv9Cg31GuKuTIFU6MUi16/BwY=;
+ b=Z6+U4Vk3HVf2CFaAGMBo2fw7OsrAjbVGdbnhaNEu8p/5djIaAFrWRbUzeNdCCLVAFlUu7VmAnw0ehjVohnaGMImnQhBXKwueI0q5TqzdfdBaK0nQh43W5P8m8KLyFhDiPh+CvVCIuRWIuoPzxv5SRyiU7ihfREeQtgWuo87HMos=
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com (2603:10a6:4:33::14)
+ by DB8PR04MB7066.eurprd04.prod.outlook.com (2603:10a6:10:12e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Mon, 30 Nov
+ 2020 05:26:33 +0000
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::f0c9:fd48:c8d1:5c22]) by DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::f0c9:fd48:c8d1:5c22%11]) with mapi id 15.20.3611.025; Mon, 30 Nov
+ 2020 05:26:33 +0000
+From:   "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
+CC:     Leo Li <leoyang.li@nxp.com>,
+        "linux@rempel-privat.de" <linux@rempel-privat.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "wsa@the-dreams.de" <wsa@the-dreams.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        Xiaobo Xie <xiaobo.xie@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [v10] i2c: imx: support slave mode for imx I2C driver
+Thread-Topic: [v10] i2c: imx: support slave mode for imx I2C driver
+Thread-Index: AQHWxtldQDR+r3I89UKiv6XOJFwXpQ==
+Date:   Mon, 30 Nov 2020 05:26:33 +0000
+Message-ID: <DB6PR0401MB2438ABAD9C1AD3EC403EBEF08FF50@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+References: <20201111113255.28710-1-biwen.li@oss.nxp.com>
+ <20201113135947.h7cek55eevilay2t@pengutronix.de>
+In-Reply-To: <20201113135947.h7cek55eevilay2t@pengutronix.de>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e4130495-e013-4472-d9fd-08d894f08024
+x-ms-traffictypediagnostic: DB8PR04MB7066:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR04MB70667C8B7FF7CDD3936E33A7CEF50@DB8PR04MB7066.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2089;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pepeYTxqXe4+BPmNQIfPu3xukoO0EsQ3bXTyU6zBAtttkVVc5Qmjd4LXaXCOyRLFjOKuhHl/G6azJTyrXJQ6d0Qdp4Rm1fUmQuSH7LqlQnmEsA4waD5NeUuA79KekyhGWAwymQh8rxnPdpF8K6yM9f/yMcknzTLA8sTG9GJBf/meeFfi9wnN09LKtFUw/TAlyxsemIDi4qAZHDp2kikBiXUFs9FKxHemhr3z+2wr7QH+t95WCa1iO5JClQWoNgSq+KM4ObGa+GQcGtv9dr5kPwNzxruobyC3Jg51hy3MBboOdFefbN8AR0SnxjZAUb13ToUlPFhS9Zaz1/ZYhQoRQg9V9u78bfglLzw+76dYoWKkDV4zb68WfmsUY2O8DNn3WhWsWDPEd+cZRiy+2aRzWIRm/K9kOpMxIxg/bYyq7eb0YT+9aoVHf5F7jmA1D5rpnv9YyD3J2gI3u2h/+69q9w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(346002)(136003)(396003)(52536014)(4326008)(30864003)(5660300002)(2906002)(9686003)(83080400002)(86362001)(71200400001)(64756008)(66446008)(66556008)(66476007)(76116006)(7416002)(8676002)(55016002)(966005)(478600001)(316002)(8936002)(110136005)(7696005)(66946007)(54906003)(33656002)(6506007)(26005)(186003)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?M01vVGFOaC95ajJvYklYSjhLYWExTXZkNHYrcHNiUU1YcEJCcW5DcXNLN1ZT?=
+ =?utf-8?B?cU9HcEZ4NzRub2xTWVgrQnZKNVlSOG55YmZrTGxiNjJ4Q2h3V3pReDVvVnNQ?=
+ =?utf-8?B?RWJ4U1NJSFB2QTRFQ0dWVTB2aGRydkFPeFFVVFVGNnRkQ2trUGx6T1Bub0s5?=
+ =?utf-8?B?dWtEVzNMdjA0L1NJWkRGKzUzdGZ4UkZNc3ZWcTFuQjVUYk0xUXBpY0tROS9P?=
+ =?utf-8?B?L0dUVkt4L2R1aGhndVMvNU5zajZDdnZDdFhWOGxxNFdGSzNDMGlHSUErZVVw?=
+ =?utf-8?B?cWJaQklUUVp3bCtXS0NTamp0OWppZElyNHJ0OVFZQ214NnFPZVRHZWxVeUQ4?=
+ =?utf-8?B?RVNYbk5VY0k4QjRpMmdtaXFMK0F0NWtVNS90WGhkMnlMOWdiNnBKRUtPMXhw?=
+ =?utf-8?B?dlZuQkRhZGdJY3RpeTgydk9uZzlrSXlTRVF1QzduMHNyWjc2NXFFZkNhQVFp?=
+ =?utf-8?B?Y0MxNHQ4WlVKeFhTNXdwaERTT0dOcmlsSEJORExXNmxtUFJlb3NGRHkxbHJj?=
+ =?utf-8?B?VFFTVEYycThVcmdGOHhtRjBNcFVOd2Y2MHV5dTJUYzh2OXNlRHY3WWhiT1RJ?=
+ =?utf-8?B?aVUvZk05RGhKdExJdzZjTFp3LzBTUWhnS25JRUF3NG5CNFVrdGU5LzdXVWpQ?=
+ =?utf-8?B?QUJUVXB3eEIwYXJjWUp4WW00dGM4UTF2OTQ2T2s2NjJvT1c3eDd6TzBHZ1oz?=
+ =?utf-8?B?QWFLVlNZTE0zc1FoODlqc1MxTnNieFU2dXFwTmtKWkNoVGIySnV6aG8vZWRH?=
+ =?utf-8?B?bUFLaGMrRDltVmptUy93dlkrVW9LczhrakdNNmk5dDRVNEpqRTRjUlRoVEhp?=
+ =?utf-8?B?SzJyZFVINVJsa21ZckNQSGxyUEhEbGxSNU9qU25Zb0J1M1R2V3h2REIxQjJN?=
+ =?utf-8?B?OTk1VlorY3dZdDJFaFc2UFptaGEyZEdmUE84Q3JCRUtDcHE5cVJsTUJaeTVK?=
+ =?utf-8?B?dW1GRENLNGFyM2hMdGVDZUJOcVEvQjY4eS9sOFJQb0Q4b05BKzVXVkxFMUxy?=
+ =?utf-8?B?bGt3RUdIZllEcEVWbi9rYzAzSVRBaE5KRXRCZ3E1VzVxWWRRWkZQd1ZhUktr?=
+ =?utf-8?B?S1ZqV0VvN0RUMmhBRVdVTTM1TmgwU2pUSEZPQmpJeUhvSUNtdE9nT01jMkJq?=
+ =?utf-8?B?YUZIQzhnaCtkdWloeFRuTmV2QWdmMmJZdTBaT1hFRUJJWVgxWGpobEJTWERI?=
+ =?utf-8?B?WTZtaUlvWG1tWllOZ0FoWkd0R2RXOEtLUUh1SkdEOW9oZjAybWx3cXdsSHM3?=
+ =?utf-8?B?NFB5ajFkbmN4YksxTld2RDJBaFBlV0gxL3RIRklkQ0lTZjdCWjc3cXJTUFdj?=
+ =?utf-8?Q?olJUsScVuD2EA=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4130495-e013-4472-d9fd-08d894f08024
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2020 05:26:33.4626
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sI5BqHT9cjtSND2+3J+q1PmBA4kobOdvNqTxznhJxRBu+j8SttIVHGHiJV9zNT5SoMVvCspszRdVaDJSOUWlMA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Nov 2020 13:59:33 -0800
-Guenter Roeck <linux@roeck-us.net> wrote:
-
-> On Sun, Nov 29, 2020 at 04:54:43PM +0100, Wilken Gottwalt wrote:
-> > On Sun, 29 Nov 2020 05:00:49 -0800
-> > Guenter Roeck <linux@roeck-us.net> wrote:
-> > 
-> > > On Sun, Nov 29, 2020 at 07:36:18AM +0100, Wilken Gottwalt wrote:
-> > > > On Sat, 28 Nov 2020 17:21:40 -0300
-> > > > Jonas Malaco <jonas@protocubo.io> wrote:
-> > > > 
-> > > > > On Sat, Nov 28, 2020 at 7:35 AM Wilken Gottwalt
-> > > > > <wilken.gottwalt@posteo.net> wrote:
-> > > > > >
-> > > > > > On Sat, 28 Nov 2020 02:37:38 -0300
-> > > > > > Jonas Malaco <jonas@protocubo.io> wrote:
-> > > > > >
-> > > > > > > On Thu, Nov 26, 2020 at 8:43 AM Wilken Gottwalt
-> > > > > > > <wilken.gottwalt@posteo.net> wrote:
-> > > > > > > >
-> > > > > > > > Adds support for another Corsair PSUs series: AX760i, AX860i, AX1200i,
-> > > > > > > > AX1500i and AX1600i. The first 3 power supplies are supported through
-> > > > > > > > the Corsair Link USB Dongle which is some kind of USB/Serial/TTL
-> > > > > > > > converter especially made for the COM ports of these power supplies.
-> > > > > > > > There are 3 known revisions of these adapters. The AX1500i power supply
-> > > > > > > > has revision 3 built into the case and AX1600i is the only one in that
-> > > > > > > > series, which has an unique usb hid id like the RM/RX series.
-> > > > > > >
-> > > > > > > Can I ask what AXi power supplies were tested?
-> > > > > > >
-> > > > > > > I ask because, based on the user-space implementations I am aware of,
-> > > > > > > the AXi dongle protocol appears to be different from the RMi/HXi series.
-> > > > > >
-> > > > > > I was not able to test this against the AX power supplies, they are really
-> > > > > > hard to find (and are far to expensive). But I went through all these tools
-> > > > > > and stuck to the most common commands, which all 3 series support. Not every
-> > > > > > series supports all commands (there also seem to be different firmwares in
-> > > > > > the micro-conrollers). But this is fine, some sensors will show up as N/A.
-> > > > > > Even my HX850i does not support all commands covered in this driver.
-> > > > > 
-> > > > > I think the similarities come from all using wrappers over the PMBus
-> > > > > interface to the voltage controller.  But I am not sure the wrapping
-> > > > > protocols are identical.
-> > > > > 
-> > > > > For example, cpsumon shows significantly more things going on during a
-> > > > > read than what is needed for the RMi/HXi series.[1]
-> > > > > 
-> > > > > [1] https://github.com/ka87/cpsumon/blob/fd639684d7f9/libcpsumon/src/cpsumon.c#L213-L231
-> > > > > 
-> > > > > 
-> > > > > >
-> > > > > > > AXi dongle:
-> > > > > > >  - https://github.com/ka87/cpsumon
-> > > > > >
-> > > > > > This tool made me to consider including the AX series, because it uses some
-> > > > > > of the same commands on the AX760i, AX860i, AX1200i and AX1500i. But it is
-> > > > > > a usb-serial tool only. But it was nice to know, that the commands are mostly
-> > > > > > the same. I left out all the commands for configuring, PCIe power rails,
-> > > > > > efficiency and others which do not really belong into hwmon.
-> > > > > >
-> > > > > > > RMi/HXi:
-> > > > > > >  - https://github.com/jonasmalacofilho/liquidctl
-> > > > > > >  - https://github.com/audiohacked/OpenCorsairLink
-> > > > > >
-> > > > > > This tool made me include the AX series, because it uses the rmi protocol
-> > > > > > component for the rmi driver (RM/HX series) and the corsair dongles.
-> > > > > 
-> > > > > The corsairlink_driver_dongle has no implementations for reading sensor
-> > > > > data (compare that with the corsairlink_driver_rmi).[2][3]  There is
-> > > > > also no code that actually tries to read (write) from (to) the device
-> > > > > using that dongle driver.[4]
-> > > > > 
-> > > > > I also looked at a few of the issues, and all of the ones I read
-> > > > > mentioned AXi support being under development, and the hypothesis of the
-> > > > > AXi series being compatible with the RMi/HXi code still remaining to be
-> > > > > confirmed.
-> > > > > 
-> > > > > [2]
-> > > > > https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/drivers/dongle.c#L33-L39
-> > > > > [3]
-> > > > > https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/drivers/rmi.c#L33-L57
-> > > > > [4] https://github.com/audiohacked/OpenCorsairLink/blob/61d336a61b85/main.c#L106
-> > > > > 
-> > > > > 
-> > > > > >
-> > > > > > >  - https://github.com/notaz/corsairmi
-> > > > > >
-> > > > > > This one covers only some HX/RM PSUs, but is uses the rawhid access which
-> > > > > > made me looking up the actual usb chips/bridges Corsair uses.
-> > > > > >
-> > > > > > >
-> > > > > > > One additional concern is that the non-HID AXi dongles may only have bulk
-> > > > > > > USB endpoints, and this is a HID driver.[1]
-> > > > > >
-> > > > > > You are right, in the case of the dongles it could be different. But I did
-> > > > > > some research on Corsair usb driven devices and they really like to stick to
-> > > > > > the cp210x, which is an usb hid bridge. The commit
-> > > > > > b9326057a3d8447f5d2e74a7b521ccf21add2ec0 actually covers two Corsair USB
-> > > > > > dongles as a cp210x device. So it is very likely that all Corsair PSUs with
-> > > > > > such an interface/dongle use usb hid. But I'm completely open to get proven
-> > > > > > wrong. Actually I really would like to see this tested by people who have
-> > > > > > access to the more rare devices.
-> > > > > 
-> > > > > I could be wrong (and I am sorry for the noise if that is the case), but
-> > > > > as far as I can see the cp210x does not create a HID device.
-> > > > 
-> > > > No no, this is fine. It really helps if some more people are looking into this.
-> > > > I wish I had access to at least one of the later models (AX1500i/AX1600i), I
-> > > > make mistakes from time to time. And it really doesn't help that Corsair changes
-> > > > single devices in the same product line by firmware update. The AX1600i seems to
-> > > > be the only one, which uses exactly the same protocol like the RM/HX series, but
-> > > > is missing the actual usb hid part. But there seems to be a firmware where the
-> > > > usb hid part was available for a short time. So, what to do? Remove the AXi part
-> > > > completely or keep only the AX1600i?
-> > > > 
-> > > > Guenter, what would you suggest?
-> > > > 
-> > > I'd suggest to remove it completely, and explain the reason. Anything else will
-> > > just create trouble with people demanding to know why their power supply is not
-> > > supported even though it is listed as supported. And, believe me, you don't want
-> > > to be on the receiving side of those complaints. The Internet is much less
-> > > friendly nowadays than it used to be.
-> > 
-> > So how is the procedure for this? Just revert it and make a common patch out of
-> > it with a proper explanation?
-> > 
-> > And yeah, I know exactly what you mean. I remember very well how the "internet"
-> > got it first ugly hit in the 90s with the upcoming of Flash ... and then the
-> > "social media". :D Thanks for your help.
-> > 
-> 
-> Can I just drop your previous patch and you send me another - more restrictive -
-> one ?
-
-Yeah, dropping is fine. There is no need for another patch after that, this was
-a patch only dealing with the AXi series.
-
-greetings,
-Wilken
-
-> Thanks,
-> Guenter
-> 
-> > greetings,
-> > Wilken
-> > 
-> > > Guenter
-> > > 
-> > > > > Thanks again,
-> > > > > Jonas
-> > > > > 
-> > > > > 
-> > > > > >
-> > > > > > > Thanks,
-> > > > > > > Jonas
-> > > > > > >
-> > > > > > > [1] https://github.com/ka87/cpsumon/issues/4
-> > > > > >
-> > > > > > Yes ... that one. The last revision of the dongle could indeed be a problem.
-> > > > > > But I'm not really sure what is described here. The last commenter is actually
-> > > > > > the one who provided the cp210x patch mentioned up there. The problem here is,
-> > > > > > the AX1500i has both connectors, USB and that other one. I call it the other
-> > > > > > one because it is the only PSU where it is labeled I2C COMM instead of COMM
-> > > > > > only. But at the same time this tools uses the same commands for this PSU.
-> > > > > >
-> > > > > > So, only some real hardware tests will show.
-> > > > > >
-> > > > > > Greetings,
-> > > > > > Wilken
-> > > > > >
-> > > > > > > >
-> > > > > > > > The patch also changes the usb hid ids to use upper case letters to be
-> > > > > > > > consistent with the rest of the hex numbers in the driver and updates
-> > > > > > > > the hwmon documentation.
-> > > > > > > >
-> > > > > > > > This patch adds:
-> > > > > > > > - hwmon/corsair-psu documentation update
-> > > > > > > > - corsair-psu driver update
-> > > > > > > >
-> > > > > > > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> > > > > > > > ---
-> > > > > > > >  Documentation/hwmon/corsair-psu.rst | 10 +++++++++
-> > > > > > > >  drivers/hwmon/Kconfig               |  7 +++---
-> > > > > > > >  drivers/hwmon/corsair-psu.c         | 33 +++++++++++++++++++----------
-> > > > > > > >  3 files changed, 36 insertions(+), 14 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/Documentation/hwmon/corsair-psu.rst
-> > > > > > > > b/Documentation/hwmon/corsair-psu.rst index 396b95c9a76a..6227e9046d73 100644
-> > > > > > > > --- a/Documentation/hwmon/corsair-psu.rst
-> > > > > > > > +++ b/Documentation/hwmon/corsair-psu.rst
-> > > > > > > > @@ -7,6 +7,16 @@ Supported devices:
-> > > > > > > >
-> > > > > > > >  * Corsair Power Supplies
-> > > > > > > >
-> > > > > > > > +  Corsair AX760i (by Corsair Link USB Dongle)
-> > > > > > > > +
-> > > > > > > > +  Corsair AX860i (by Corsair Link USB Dongle)
-> > > > > > > > +
-> > > > > > > > +  Corsair AX1200i (by Corsair Link USB Dongle)
-> > > > > > > > +
-> > > > > > > > +  Corsair AX1500i (by builtin Corsair Link USB Dongle)
-> > > > > > > > +
-> > > > > > > > +  Corsair AX1600i
-> > > > > > > > +
-> > > > > > > >    Corsair HX550i
-> > > > > > > >
-> > > > > > > >    Corsair HX650i
-> > > > > > > > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> > > > > > > > index 716df51edc87..3c059fc23cd6 100644
-> > > > > > > > --- a/drivers/hwmon/Kconfig
-> > > > > > > > +++ b/drivers/hwmon/Kconfig
-> > > > > > > > @@ -453,11 +453,12 @@ config SENSORS_CORSAIR_PSU
-> > > > > > > >         tristate "Corsair PSU HID controller"
-> > > > > > > >         depends on HID
-> > > > > > > >         help
-> > > > > > > > -         If you say yes here you get support for Corsair PSUs with a HID
-> > > > > > > > +         If you say yes here you get support for Corsair PSUs with an USB HID
-> > > > > > > >           interface.
-> > > > > > > >           Currently this driver supports the (RM/HX)550i, (RM/HX)650i,
-> > > > > > > > -         (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i and HX1200i power supplies
-> > > > > > > > -         by Corsair.
-> > > > > > > > +         (RM/HX)750i, (RM/HX)850i, (RM/HX)1000i, HX1200i and AX1600i power
-> > > > > > > > +         supplies by Corsair. The AX760i, AX860i, AX1200i and AX1500i
-> > > > > > > > +         power supplies are supported through the Corsair Link USB Dongle.
-> > > > > > > >
-> > > > > > > >           This driver can also be built as a module. If so, the module
-> > > > > > > >           will be called corsair-psu.
-> > > > > > > > diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
-> > > > > > > > index 99494056f4bd..0146dda3e2c3 100644
-> > > > > > > > --- a/drivers/hwmon/corsair-psu.c
-> > > > > > > > +++ b/drivers/hwmon/corsair-psu.c
-> > > > > > > > @@ -571,17 +571,28 @@ static int corsairpsu_raw_event(struct hid_device *hdev,
-> > > > > > > > struct hid_report *repo }
-> > > > > > > >
-> > > > > > > >  static const struct hid_device_id corsairpsu_idtable[] = {
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c03) }, /* Corsair HX550i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c04) }, /* Corsair HX650i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c05) }, /* Corsair HX750i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c06) }, /* Corsair HX850i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c07) }, /* Corsair HX1000i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c08) }, /* Corsair HX1200i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c09) }, /* Corsair RM550i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0a) }, /* Corsair RM650i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0b) }, /* Corsair RM750i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0c) }, /* Corsair RM850i */
-> > > > > > > > -       { HID_USB_DEVICE(0x1b1c, 0x1c0d) }, /* Corsair RM1000i */
-> > > > > > > > +       /*
-> > > > > > > > +        * The Corsair USB/COM Dongles appear in at least 3 different revisions,
-> > > > > > > > where rev 1 and 2
-> > > > > > > > +        * are commonly used with the AX760i, AX860i and AX1200i, while rev3 is
-> > > > > > > > rarely seen with
-> > > > > > > > +        * these PSUs. Rev3 is also build into the AX1500i, while the AX1600i is the
-> > > > > > > > first PSU of
-> > > > > > > > +        * this series which has an unique usb hid id. Though, the actual device
-> > > > > > > > name is part of
-> > > > > > > > +        * the HID message protocol, so it doesn't matter which dongle is connected.
-> > > > > > > > +        */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C00) }, /* Corsair Link USB/COM Dongle rev1 */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C01) }, /* Corsair Link USB/COM Dongle rev2 */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C02) }, /* Corsair Link USB/COM Dongle rev3
-> > > > > > > > (AX1500i) */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C03) }, /* Corsair HX550i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C04) }, /* Corsair HX650i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C05) }, /* Corsair HX750i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C06) }, /* Corsair HX850i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C07) }, /* Corsair HX1000i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C08) }, /* Corsair HX1200i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C09) }, /* Corsair RM550i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0A) }, /* Corsair RM650i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0B) }, /* Corsair RM750i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0C) }, /* Corsair RM850i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C0D) }, /* Corsair RM1000i */
-> > > > > > > > +       { HID_USB_DEVICE(0x1B1C, 0x1C11) }, /* Corsair AX1600i */
-> > > > > > > >         { },
-> > > > > > > >  };
-> > > > > > > >  MODULE_DEVICE_TABLE(hid, corsairpsu_idtable);
-> > > > > > > > --
-> > > > > > > > 2.29.2
-> > > > > > > >
-> > > > > >
-> > > > 
-> > 
-
+DQo+ID4NCj4gPiBUaGUgcGF0Y2ggc3VwcG9ydHMgc2xhdmUgbW9kZSBmb3IgaW14IEkyQyBkcml2
+ZXINCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEJpd2VuIExpIDxiaXdlbi5saUBueHAuY29tPg0K
+PiANCj4gVGhhbmsgeW91IGZvciB5b3VyIHdvcmshDQo+IA0KPiBBY2tlZC1ieTogT2xla3NpaiBS
+ZW1wZWwgPG8ucmVtcGVsQHBlbmd1dHJvbml4LmRlPg0KDQo+IA0KPiBAV29sZnJhbSwgQ2hyaXN0
+aWFuIEVnZ2VycyBJMlNSX0lBTCBwYXRjaGVzIHNob3VsZCBnbyBiZWZvcmUgdGhpcyBvbmUuDQpI
+aSBXb2xmcmFtLA0KDQpBbnkgcHJvZ3Jlc3M/DQoNClJlZ2FyZHMsDQpCaXdlbiBMaQ0KPiANCj4g
+PiAtLS0NCj4gPiBDaGFuZ2UgaW4gdjEwOg0KPiA+IAktIHRvdGFsbHkgcmVtb3ZlIENPTkZJR19J
+MkNfU0xBVkUNCj4gPiAJLSByZXBsYWNlIGFwaSB3aXRoIGkyY19pbXhfY2xhcnRfaXJxKCkNCj4g
+PiAJLSByZW1vdmUgcm9idXN0IGNvZGUNCj4gPiAJLSBwbGFjZSBwbV9ydW50aW1lX2dldCBpbiBp
+MmNfaW14X3NsYXZlX2luaXQoKQ0KPiA+IAkgIHRvIGkyY19pbXhfcmVnX3NsYXZlKCkNCj4gPiAJ
+LSBhcHBseSB0aGUgcGF0Y2ggb24gdG9wIG9mIHRoaXMgcGF0Y2ggc2V0Og0KPiA+IAkgIFtQQVRD
+SCB2NiAwLzNdIGkyYzogaW14OiBGaXggaGFuZGxpbmcgb2YgYXJiaXRyYXRpb24gbG9zcw0KPiA+
+IAkgIGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDIwLzEwLzkvNDA3DQo+ID4NCj4gPiBDaGFuZ2Ug
+aW4gdjk6DQo+ID4gCS0gcmVtb3ZlICNpZmRlZiBhZnRlciBzZWxlY3QgSTJDX1NMQVZFIGJ5IGRl
+ZmF1bHQNCj4gPg0KPiA+IENoYW5nZSBpbiB2ODoNCj4gPiAJLSBmaXggYnVpbGQgaXNzdWUNCj4g
+Pg0KPiA+IENoYW5nZSBpbiB2NzoNCj4gPiAJLSBzdXBwb3J0IGF1dG8gc3dpdGNoIG1vZGUgYmV0
+d2VlbiBtYXN0ZXIgYW5kIHNsYXZlDQo+ID4gCS0gZW5hYmxlIGludGVycnVwdCB3aGVuIGlkbGUg
+aW4gc2xhdmUgbW9kZQ0KPiA+IAktIHJlbW92ZSAjaWZkZWYNCj4gPg0KPiA+IENoYW5nZSBpbiB2
+NjoNCj4gPiAJLSBkZWxldGUgcm9idXN0IGxvZ3MgYW5kIGNvbW1lbnRzDQo+ID4gCS0gbm90IHJl
+YWQgc3RhdHVzIHJlZ2lzdGVyIGFnYWluIGluIG1hc3RlciBpc3IuDQo+ID4NCj4gPiBDaGFuZ2Ug
+aW4gdjU6DQo+ID4gCS0gZml4IGEgYnVnIHRoYXQgY2Fubm90IGRldGVybWluZSBpbiB3aGF0IG1v
+ZGUobWFzdGVyIG1vZGUgb3INCj4gPiAJICBzbGF2ZSBtb2RlKQ0KPiA+DQo+ID4gQ2hhbmdlIGlu
+IHY0Og0KPiA+IAktIGFkZCBNQUNSTyBDT05GSUdfSTJDX1NMQVZFIHRvIGZpeCBjb21waWxhdGlv
+biBpc3N1ZQ0KPiA+DQo+ID4gQ2hhbmdlIGluIHYzOg0KPiA+IAktIHN1cHBvcnQgbGF5ZXJzY2Fw
+ZSBhbmQgaS5teCBwbGF0Zm9ybQ0KPiA+DQo+ID4gQ2hhbmdlIGluIHYyOg0KPiA+IAktIHJlbW92
+ZSBNQUNSTyBDT05GSUdfSTJDX1NMQVZFDQo+ID4NCj4gPiAgZHJpdmVycy9pMmMvYnVzc2VzL0tj
+b25maWcgICB8ICAgMSArDQo+ID4gIGRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LmMgfCAyMTkN
+Cj4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQ0KPiA+ICAyIGZpbGVzIGNo
+YW5nZWQsIDE5NiBpbnNlcnRpb25zKCspLCAyNCBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvS2NvbmZpZyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9L
+Y29uZmlnDQo+ID4gaW5kZXggYTk3YTlkMDU4MTk4Li5lMmFkNjI0ODFmMjUgMTAwNjQ0DQo+ID4g
+LS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL0tjb25maWcNCj4gPiArKysgYi9kcml2ZXJzL2kyYy9i
+dXNzZXMvS2NvbmZpZw0KPiA+IEBAIC02NzUsNiArNjc1LDcgQEAgY29uZmlnIEkyQ19JTUcNCj4g
+PiAgY29uZmlnIEkyQ19JTVgNCj4gPiAgCXRyaXN0YXRlICJJTVggSTJDIGludGVyZmFjZSINCj4g
+PiAgCWRlcGVuZHMgb24gQVJDSF9NWEMgfHwgQVJDSF9MQVlFUlNDQVBFIHx8IENPTERGSVJFDQo+
+ID4gKwlzZWxlY3QgSTJDX1NMQVZFDQo+ID4gIAloZWxwDQo+ID4gIAkgIFNheSBZIGhlcmUgaWYg
+eW91IHdhbnQgdG8gdXNlIHRoZSBJSUMgYnVzIGNvbnRyb2xsZXIgb24NCj4gPiAgCSAgdGhlIEZy
+ZWVzY2FsZSBpLk1YL01YQywgTGF5ZXJzY2FwZSBvciBDb2xkRmlyZSBwcm9jZXNzb3JzLg0KPiA+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLWlteC5jDQo+ID4gYi9kcml2ZXJz
+L2kyYy9idXNzZXMvaTJjLWlteC5jIGluZGV4IGU2ZjhkNmU0NWExNS4uYThlOGFmNTdlMzNmIDEw
+MDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LmMNCj4gPiArKysgYi9k
+cml2ZXJzL2kyYy9idXNzZXMvaTJjLWlteC5jDQo+ID4gQEAgLTE3LDYgKzE3LDcgQEANCj4gPiAg
+ICoJQ29weXJpZ2h0IChDKSAyMDA4IERhcml1cyBBdWd1bGlzIDxkYXJpdXMuYXVndWxpcyBhdCB0
+ZWx0b25pa2EubHQ+DQo+ID4gICAqDQo+ID4gICAqCUNvcHlyaWdodCAyMDEzIEZyZWVzY2FsZSBT
+ZW1pY29uZHVjdG9yLCBJbmMuDQo+ID4gKyAqCUNvcHlyaWdodCAyMDIwIE5YUA0KPiA+ICAgKg0K
+PiA+ICAgKi8NCj4gPg0KPiA+IEBAIC03Myw2ICs3NCwxMSBAQA0KPiA+ICAjZGVmaW5lIElNWF9J
+MkNfSTJTUgkweDAzCS8qIGkyYyBzdGF0dXMgKi8NCj4gPiAgI2RlZmluZSBJTVhfSTJDX0kyRFIJ
+MHgwNAkvKiBpMmMgdHJhbnNmZXIgZGF0YSAqLw0KPiA+DQo+ID4gKy8qDQo+ID4gKyAqIEFsbCBv
+ZiB0aGUgbGF5ZXJzY2FwZSBzZXJpZXMgU29DcyBzdXBwb3J0IElCSUMgcmVnaXN0ZXIuDQo+ID4g
+KyAqLw0KPiA+ICsjZGVmaW5lIElNWF9JMkNfSUJJQwkweDA1ICAgIC8qIGkyYyBidXMgaW50ZXJy
+dXB0IGNvbmZpZyAqLw0KPiA+ICsNCj4gPiAgI2RlZmluZSBJTVhfSTJDX1JFR1NISUZUCTINCj4g
+PiAgI2RlZmluZSBWRjYxMF9JMkNfUkVHU0hJRlQJMA0KPiA+DQo+ID4gQEAgLTkxLDYgKzk3LDcg
+QEANCj4gPiAgI2RlZmluZSBJMkNSX01TVEEJMHgyMA0KPiA+ICAjZGVmaW5lIEkyQ1JfSUlFTgkw
+eDQwDQo+ID4gICNkZWZpbmUgSTJDUl9JRU4JMHg4MA0KPiA+ICsjZGVmaW5lIElCSUNfQklJRQkw
+eDgwIC8qIEJ1cyBpZGxlIGludGVycnVwdCBlbmFibGUgKi8NCj4gPg0KPiA+ICAvKiByZWdpc3Rl
+ciBiaXRzIGRpZmZlcmVudCBvcGVyYXRpbmcgY29kZXMgZGVmaW5pdGlvbjoNCj4gPiAgICogMSkg
+STJTUjogSW50ZXJydXB0IGZsYWdzIGNsZWFyIG9wZXJhdGlvbiBkaWZmZXIgYmV0d2VlbiBTb0Nz
+Og0KPiA+IEBAIC0yMDEsNiArMjA4LDcgQEAgc3RydWN0IGlteF9pMmNfc3RydWN0IHsNCj4gPiAg
+CXN0cnVjdCBwaW5jdHJsX3N0YXRlICpwaW5jdHJsX3BpbnNfZ3BpbzsNCj4gPg0KPiA+ICAJc3Ry
+dWN0IGlteF9pMmNfZG1hCSpkbWE7DQo+ID4gKwlzdHJ1Y3QgaTJjX2NsaWVudAkqc2xhdmU7DQo+
+ID4gIH07DQo+ID4NCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBpbXhfaTJjX2h3ZGF0YSBpbXgx
+X2kyY19od2RhdGEgPSB7IEBAIC0yNjUsNg0KPiA+ICsyNzMsMTEgQEAgc3RhdGljIGlubGluZSBp
+bnQgaXNfaW14MV9pMmMoc3RydWN0IGlteF9pMmNfc3RydWN0ICppMmNfaW14KQ0KPiA+ICAJcmV0
+dXJuIGkyY19pbXgtPmh3ZGF0YS0+ZGV2dHlwZSA9PSBJTVgxX0kyQzsgIH0NCj4gPg0KPiA+ICtz
+dGF0aWMgaW5saW5lIGludCBpc192ZjYxMF9pMmMoc3RydWN0IGlteF9pMmNfc3RydWN0ICppMmNf
+aW14KSB7DQo+ID4gKwlyZXR1cm4gaTJjX2lteC0+aHdkYXRhLT5kZXZ0eXBlID09IFZGNjEwX0ky
+QzsgfQ0KPiA+ICsNCj4gPiAgc3RhdGljIGlubGluZSB2b2lkIGlteF9pMmNfd3JpdGVfcmVnKHVu
+c2lnbmVkIGludCB2YWwsDQo+ID4gIAkJc3RydWN0IGlteF9pMmNfc3RydWN0ICppMmNfaW14LCB1
+bnNpZ25lZCBpbnQgcmVnKSAgeyBAQCAtMjc3LDYNCj4gPiArMjkwLDI3IEBAIHN0YXRpYyBpbmxp
+bmUgdW5zaWduZWQgY2hhciBpbXhfaTJjX3JlYWRfcmVnKHN0cnVjdA0KPiBpbXhfaTJjX3N0cnVj
+dCAqaTJjX2lteCwNCj4gPiAgCXJldHVybiByZWFkYihpMmNfaW14LT5iYXNlICsgKHJlZyA8PCBp
+MmNfaW14LT5od2RhdGEtPnJlZ3NoaWZ0KSk7ICB9DQo+ID4NCj4gPiArc3RhdGljIHZvaWQgaTJj
+X2lteF9jbGVhcl9pcnEoc3RydWN0IGlteF9pMmNfc3RydWN0ICppMmNfaW14LA0KPiA+ICt1bnNp
+Z25lZCBpbnQgYml0cykgew0KPiA+ICsJdW5zaWduZWQgaW50IHRlbXA7DQo+ID4gKw0KPiA+ICsJ
+LyoNCj4gPiArCSAqIGkyc3JfY2xyX29wY29kZSBpcyB0aGUgdmFsdWUgdG8gY2xlYXIgYWxsIGlu
+dGVycnVwdHMuIEhlcmUgd2Ugd2FudCB0bw0KPiA+ICsJICogY2xlYXIgb25seSA8Yml0cz4sIHNv
+IHdlIHdyaXRlIH5pMnNyX2Nscl9vcGNvZGUgd2l0aCBqdXN0IDxiaXRzPg0KPiA+ICsJICogdG9n
+Z2xlZC4gVGhpcyBpcyByZXF1aXJlZCBiZWNhdXNlIGkuTVggbmVlZHMgVzBDIGFuZCBWeWJyaWQg
+dXNlcyBXMUMuDQo+ID4gKwkgKi8NCj4gPiArCXRlbXAgPSB+aTJjX2lteC0+aHdkYXRhLT5pMnNy
+X2Nscl9vcGNvZGUgXiBiaXRzOw0KPiA+ICsJaW14X2kyY193cml0ZV9yZWcodGVtcCwgaTJjX2lt
+eCwgSU1YX0kyQ19JMlNSKTsgfQ0KPiA+ICsNCj4gPiArLyogU2V0IHVwIGkyYyBjb250cm9sbGVy
+IHJlZ2lzdGVyIGFuZCBpMmMgc3RhdHVzIHJlZ2lzdGVyIHRvIGRlZmF1bHQNCj4gPiArdmFsdWUu
+ICovIHN0YXRpYyB2b2lkIGkyY19pbXhfcmVzZXRfcmVncyhzdHJ1Y3QgaW14X2kyY19zdHJ1Y3QN
+Cj4gPiArKmkyY19pbXgpIHsNCj4gPiArCWlteF9pMmNfd3JpdGVfcmVnKGkyY19pbXgtPmh3ZGF0
+YS0+aTJjcl9pZW5fb3Bjb2RlIF4gSTJDUl9JRU4sDQo+ID4gKwkJCSAgaTJjX2lteCwgSU1YX0ky
+Q19JMkNSKTsNCj4gPiArCWkyY19pbXhfY2xlYXJfaXJxKGkyY19pbXgsIEkyU1JfSUlGIHwgSTJT
+Ul9JQUwpOyB9DQo+ID4gKw0KPiA+ICAvKiBGdW5jdGlvbnMgZm9yIERNQSBzdXBwb3J0ICovDQo+
+ID4gIHN0YXRpYyB2b2lkIGkyY19pbXhfZG1hX3JlcXVlc3Qoc3RydWN0IGlteF9pMmNfc3RydWN0
+ICppMmNfaW14LA0KPiA+ICAJCQkJCQlkbWFfYWRkcl90IHBoeV9hZGRyKQ0KPiA+IEBAIC00MTIs
+MTkgKzQ0Niw2IEBAIHN0YXRpYyB2b2lkIGkyY19pbXhfZG1hX2ZyZWUoc3RydWN0IGlteF9pMmNf
+c3RydWN0DQo+ICppMmNfaW14KQ0KPiA+ICAJZG1hLT5jaGFuX3VzaW5nID0gTlVMTDsNCj4gPiAg
+fQ0KPiA+DQo+ID4gLXN0YXRpYyB2b2lkIGkyY19pbXhfY2xlYXJfaXJxKHN0cnVjdCBpbXhfaTJj
+X3N0cnVjdCAqaTJjX2lteCwNCj4gPiB1bnNpZ25lZCBpbnQgYml0cykgLXsNCj4gPiAtCXVuc2ln
+bmVkIGludCB0ZW1wOw0KPiA+IC0NCj4gPiAtCS8qDQo+ID4gLQkgKiBpMnNyX2Nscl9vcGNvZGUg
+aXMgdGhlIHZhbHVlIHRvIGNsZWFyIGFsbCBpbnRlcnJ1cHRzLiBIZXJlIHdlIHdhbnQgdG8NCj4g
+PiAtCSAqIGNsZWFyIG9ubHkgPGJpdHM+LCBzbyB3ZSB3cml0ZSB+aTJzcl9jbHJfb3Bjb2RlIHdp
+dGgganVzdCA8Yml0cz4NCj4gPiAtCSAqIHRvZ2dsZWQuIFRoaXMgaXMgcmVxdWlyZWQgYmVjYXVz
+ZSBpLk1YIG5lZWRzIFcwQyBhbmQgVnlicmlkIHVzZXMgVzFDLg0KPiA+IC0JICovDQo+ID4gLQl0
+ZW1wID0gfmkyY19pbXgtPmh3ZGF0YS0+aTJzcl9jbHJfb3Bjb2RlIF4gYml0czsNCj4gPiAtCWlt
+eF9pMmNfd3JpdGVfcmVnKHRlbXAsIGkyY19pbXgsIElNWF9JMkNfSTJTUik7DQo+ID4gLX0NCj4g
+PiAtDQo+ID4gIHN0YXRpYyBpbnQgaTJjX2lteF9idXNfYnVzeShzdHJ1Y3QgaW14X2kyY19zdHJ1
+Y3QgKmkyY19pbXgsIGludA0KPiA+IGZvcl9idXN5LCBib29sIGF0b21pYykgIHsNCj4gPiAgCXVu
+c2lnbmVkIGxvbmcgb3JpZ19qaWZmaWVzID0gamlmZmllczsgQEAgLTYzOCwxOCArNjU5LDE2NSBA
+QCBzdGF0aWMNCj4gPiB2b2lkIGkyY19pbXhfc3RvcChzdHJ1Y3QgaW14X2kyY19zdHJ1Y3QgKmky
+Y19pbXgsIGJvb2wgYXRvbWljKQ0KPiA+ICAJaW14X2kyY193cml0ZV9yZWcodGVtcCwgaTJjX2lt
+eCwgSU1YX0kyQ19JMkNSKTsgIH0NCj4gPg0KPiA+ICsvKg0KPiA+ICsgKiBFbmFibGUgYnVzIGlk
+bGUgaW50ZXJydXB0cw0KPiA+ICsgKiBOb3RlOiBJQklDIHJlZ2lzdGVyIHdpbGwgYmUgY2xlYXJl
+ZCBhZnRlciBkaXNhYmxlZCBpMmMgbW9kdWxlLg0KPiA+ICsgKiBBbGwgb2YgbGF5ZXJzY2FwZSBz
+ZXJpZXMgU29DcyBzdXBwb3J0IElCSUMgcmVnaXN0ZXIuDQo+ID4gKyAqLw0KPiA+ICtzdGF0aWMg
+dm9pZCBpMmNfaW14X2VuYWJsZV9idXNfaWRsZShzdHJ1Y3QgaW14X2kyY19zdHJ1Y3QgKmkyY19p
+bXgpIHsNCj4gPiArCWlmIChpc192ZjYxMF9pMmMoaTJjX2lteCkpIHsNCj4gPiArCQl1bnNpZ25l
+ZCBpbnQgdGVtcDsNCj4gPiArDQo+ID4gKwkJdGVtcCA9IGlteF9pMmNfcmVhZF9yZWcoaTJjX2lt
+eCwgSU1YX0kyQ19JQklDKTsNCj4gPiArCQl0ZW1wIHw9IElCSUNfQklJRTsNCj4gPiArCQlpbXhf
+aTJjX3dyaXRlX3JlZyh0ZW1wLCBpMmNfaW14LCBJTVhfSTJDX0lCSUMpOw0KPiA+ICsJfQ0KPiA+
+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaXJxcmV0dXJuX3QgaTJjX2lteF9zbGF2ZV9pc3Ioc3Ry
+dWN0IGlteF9pMmNfc3RydWN0ICppMmNfaW14LA0KPiA+ICsJCQkJICAgICB1bnNpZ25lZCBpbnQg
+c3RhdHVzLCB1bnNpZ25lZCBpbnQgY3RsKSB7DQo+ID4gKwl1OCB2YWx1ZTsNCj4gPiArDQo+ID4g
+KwlpZiAoc3RhdHVzICYgSTJTUl9JQUwpIHsgLyogQXJiaXRyYXRpb24gbG9zdCAqLw0KPiA+ICsJ
+CWkyY19pbXhfY2xlYXJfaXJxKGkyY19pbXgsIEkyU1JfSUFMKTsNCj4gPiArCQlpZiAoIShzdGF0
+dXMgJiBJMlNSX0lBQVMpKQ0KPiA+ICsJCQlyZXR1cm4gSVJRX0hBTkRMRUQ7DQo+ID4gKwl9DQo+
+ID4gKw0KPiA+ICsJaWYgKHN0YXR1cyAmIEkyU1JfSUFBUykgeyAvKiBBZGRyZXNzZWQgYXMgYSBz
+bGF2ZSAqLw0KPiA+ICsJCWlmIChzdGF0dXMgJiBJMlNSX1NSVykgeyAvKiBNYXN0ZXIgd2FudHMg
+dG8gcmVhZCBmcm9tIHVzKi8NCj4gPiArCQkJZGV2X2RiZygmaTJjX2lteC0+YWRhcHRlci5kZXYs
+ICJyZWFkIHJlcXVlc3RlZCIpOw0KPiA+ICsJCQlpMmNfc2xhdmVfZXZlbnQoaTJjX2lteC0+c2xh
+dmUsIEkyQ19TTEFWRV9SRUFEX1JFUVVFU1RFRCwNCj4gJnZhbHVlKTsNCj4gPiArDQo+ID4gKwkJ
+CS8qIFNsYXZlIHRyYW5zbWl0ICovDQo+ID4gKwkJCWN0bCB8PSBJMkNSX01UWDsNCj4gPiArCQkJ
+aW14X2kyY193cml0ZV9yZWcoY3RsLCBpMmNfaW14LCBJTVhfSTJDX0kyQ1IpOw0KPiA+ICsNCj4g
+PiArCQkJLyogU2VuZCBkYXRhICovDQo+ID4gKwkJCWlteF9pMmNfd3JpdGVfcmVnKHZhbHVlLCBp
+MmNfaW14LCBJTVhfSTJDX0kyRFIpOw0KPiA+ICsJCX0gZWxzZSB7IC8qIE1hc3RlciB3YW50cyB0
+byB3cml0ZSB0byB1cyAqLw0KPiA+ICsJCQlkZXZfZGJnKCZpMmNfaW14LT5hZGFwdGVyLmRldiwg
+IndyaXRlIHJlcXVlc3RlZCIpOw0KPiA+ICsJCQlpMmNfc2xhdmVfZXZlbnQoaTJjX2lteC0+c2xh
+dmUsDQo+IAlJMkNfU0xBVkVfV1JJVEVfUkVRVUVTVEVELCAmdmFsdWUpOw0KPiA+ICsNCj4gPiAr
+CQkJLyogU2xhdmUgcmVjZWl2ZSAqLw0KPiA+ICsJCQljdGwgJj0gfkkyQ1JfTVRYOw0KPiA+ICsJ
+CQlpbXhfaTJjX3dyaXRlX3JlZyhjdGwsIGkyY19pbXgsIElNWF9JMkNfSTJDUik7DQo+ID4gKwkJ
+CS8qIER1bW15IHJlYWQgKi8NCj4gPiArCQkJaW14X2kyY19yZWFkX3JlZyhpMmNfaW14LCBJTVhf
+STJDX0kyRFIpOw0KPiA+ICsJCX0NCj4gPiArCX0gZWxzZSBpZiAoIShjdGwgJiBJMkNSX01UWCkp
+IHsgLyogUmVjZWl2ZSBtb2RlICovDQo+ID4gKwkJaWYgKHN0YXR1cyAmIEkyU1JfSUJCKSB7IC8q
+IE5vIFNUT1Agc2lnbmFsIGRldGVjdGVkICovDQo+ID4gKwkJCXZhbHVlID0gaW14X2kyY19yZWFk
+X3JlZyhpMmNfaW14LCBJTVhfSTJDX0kyRFIpOw0KPiA+ICsJCQlpMmNfc2xhdmVfZXZlbnQoaTJj
+X2lteC0+c2xhdmUsCUkyQ19TTEFWRV9XUklURV9SRUNFSVZFRCwNCj4gJnZhbHVlKTsNCj4gPiAr
+CQl9IGVsc2UgeyAvKiBTVE9QIHNpZ25hbCBpcyBkZXRlY3RlZCAqLw0KPiA+ICsJCQlkZXZfZGJn
+KCZpMmNfaW14LT5hZGFwdGVyLmRldiwNCj4gPiArCQkJCSJTVE9QIHNpZ25hbCBkZXRlY3RlZCIp
+Ow0KPiA+ICsJCQlpMmNfc2xhdmVfZXZlbnQoaTJjX2lteC0+c2xhdmUsIEkyQ19TTEFWRV9TVE9Q
+LCAmdmFsdWUpOw0KPiA+ICsJCX0NCj4gPiArCX0gZWxzZSBpZiAoIShzdGF0dXMgJiBJMlNSX1JY
+QUspKSB7IC8qIFRyYW5zbWl0IG1vZGUgcmVjZWl2ZWQgQUNLICovDQo+ID4gKwkJY3RsIHw9IEky
+Q1JfTVRYOw0KPiA+ICsJCWlteF9pMmNfd3JpdGVfcmVnKGN0bCwgaTJjX2lteCwgSU1YX0kyQ19J
+MkNSKTsNCj4gPiArDQo+ID4gKwkJaTJjX3NsYXZlX2V2ZW50KGkyY19pbXgtPnNsYXZlLAlJMkNf
+U0xBVkVfUkVBRF9QUk9DRVNTRUQsDQo+ICZ2YWx1ZSk7DQo+ID4gKw0KPiA+ICsJCWlteF9pMmNf
+d3JpdGVfcmVnKHZhbHVlLCBpMmNfaW14LCBJTVhfSTJDX0kyRFIpOw0KPiA+ICsJfSBlbHNlIHsg
+LyogVHJhbnNtaXQgbW9kZSByZWNlaXZlZCBOQUsgKi8NCj4gPiArCQljdGwgJj0gfkkyQ1JfTVRY
+Ow0KPiA+ICsJCWlteF9pMmNfd3JpdGVfcmVnKGN0bCwgaTJjX2lteCwgSU1YX0kyQ19JMkNSKTsN
+Cj4gPiArCQlpbXhfaTJjX3JlYWRfcmVnKGkyY19pbXgsIElNWF9JMkNfSTJEUik7DQo+ID4gKwl9
+DQo+ID4gKw0KPiA+ICsJcmV0dXJuIElSUV9IQU5ETEVEOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtz
+dGF0aWMgdm9pZCBpMmNfaW14X3NsYXZlX2luaXQoc3RydWN0IGlteF9pMmNfc3RydWN0ICppMmNf
+aW14KSB7DQo+ID4gKwlpbnQgdGVtcDsNCj4gPiArDQo+ID4gKwkvKiBTZXQgc2xhdmUgYWRkci4g
+Ki8NCj4gPiArCWlteF9pMmNfd3JpdGVfcmVnKChpMmNfaW14LT5zbGF2ZS0+YWRkciA8PCAxKSwg
+aTJjX2lteCwNCj4gPiArSU1YX0kyQ19JQURSKTsNCj4gPiArDQo+ID4gKwlpMmNfaW14X3Jlc2V0
+X3JlZ3MoaTJjX2lteCk7DQo+ID4gKw0KPiA+ICsJLyogRW5hYmxlIG1vZHVsZSAqLw0KPiA+ICsJ
+dGVtcCA9IGkyY19pbXgtPmh3ZGF0YS0+aTJjcl9pZW5fb3Bjb2RlOw0KPiA+ICsJaW14X2kyY193
+cml0ZV9yZWcodGVtcCwgaTJjX2lteCwgSU1YX0kyQ19JMkNSKTsNCj4gPiArDQo+ID4gKwkvKiBF
+bmFibGUgaW50ZXJydXB0IGZyb20gaTJjIG1vZHVsZSAqLw0KPiA+ICsJdGVtcCB8PSBJMkNSX0lJ
+RU47DQo+ID4gKwlpbXhfaTJjX3dyaXRlX3JlZyh0ZW1wLCBpMmNfaW14LCBJTVhfSTJDX0kyQ1Ip
+Ow0KPiA+ICsNCj4gPiArCWkyY19pbXhfZW5hYmxlX2J1c19pZGxlKGkyY19pbXgpOw0KPiA+ICt9
+DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IGkyY19pbXhfcmVnX3NsYXZlKHN0cnVjdCBpMmNfY2xp
+ZW50ICpjbGllbnQpIHsNCj4gPiArCXN0cnVjdCBpbXhfaTJjX3N0cnVjdCAqaTJjX2lteCA9IGky
+Y19nZXRfYWRhcGRhdGEoY2xpZW50LT5hZGFwdGVyKTsNCj4gPiArCWludCByZXQ7DQo+ID4gKw0K
+PiA+ICsJaWYgKGkyY19pbXgtPnNsYXZlKQ0KPiA+ICsJCXJldHVybiAtRUJVU1k7DQo+ID4gKw0K
+PiA+ICsJaTJjX2lteC0+c2xhdmUgPSBjbGllbnQ7DQo+ID4gKw0KPiA+ICsJLyogUmVzdW1lICov
+DQo+ID4gKwlyZXQgPSBwbV9ydW50aW1lX2dldF9zeW5jKGkyY19pbXgtPmFkYXB0ZXIuZGV2LnBh
+cmVudCk7DQo+ID4gKwlpZiAocmV0IDwgMCkgew0KPiA+ICsJCWRldl9lcnIoJmkyY19pbXgtPmFk
+YXB0ZXIuZGV2LCAiZmFpbGVkIHRvIHJlc3VtZSBpMmMgY29udHJvbGxlciIpOw0KPiA+ICsJCXJl
+dHVybiByZXQ7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJaTJjX2lteF9zbGF2ZV9pbml0KGkyY19p
+bXgpOw0KPiA+ICsNCj4gPiArCXJldHVybiAwOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMg
+aW50IGkyY19pbXhfdW5yZWdfc2xhdmUoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCkgew0KPiA+
+ICsJc3RydWN0IGlteF9pMmNfc3RydWN0ICppMmNfaW14ID0gaTJjX2dldF9hZGFwZGF0YShjbGll
+bnQtPmFkYXB0ZXIpOw0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+ID4gKwlpZiAoIWkyY19pbXgt
+PnNsYXZlKQ0KPiA+ICsJCXJldHVybiAtRUlOVkFMOw0KPiA+ICsNCj4gPiArCS8qIFJlc2V0IHNs
+YXZlIGFkZHJlc3MuICovDQo+ID4gKwlpbXhfaTJjX3dyaXRlX3JlZygwLCBpMmNfaW14LCBJTVhf
+STJDX0lBRFIpOw0KPiA+ICsNCj4gPiArCWkyY19pbXhfcmVzZXRfcmVncyhpMmNfaW14KTsNCj4g
+PiArDQo+ID4gKwlpMmNfaW14LT5zbGF2ZSA9IE5VTEw7DQo+ID4gKw0KPiA+ICsJLyogU3VzcGVu
+ZCAqLw0KPiA+ICsJcmV0ID0gcG1fcnVudGltZV9wdXRfc3luYyhpMmNfaW14LT5hZGFwdGVyLmRl
+di5wYXJlbnQpOw0KPiA+ICsJaWYgKHJldCA8IDApDQo+ID4gKwkJZGV2X2VycigmaTJjX2lteC0+
+YWRhcHRlci5kZXYsICJmYWlsZWQgdG8gc3VzcGVuZCBpMmMgY29udHJvbGxlciIpOw0KPiA+ICsN
+Cj4gPiArCXJldHVybiByZXQ7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpcnFyZXR1cm5f
+dCBpMmNfaW14X21hc3Rlcl9pc3Ioc3RydWN0IGlteF9pMmNfc3RydWN0ICppMmNfaW14LA0KPiA+
+ICt1bnNpZ25lZCBpbnQgc3RhdHVzKSB7DQo+ID4gKwkvKiBzYXZlIHN0YXR1cyByZWdpc3RlciAq
+Lw0KPiA+ICsJaTJjX2lteC0+aTJjc3IgPSBzdGF0dXM7DQo+ID4gKwl3YWtlX3VwKCZpMmNfaW14
+LT5xdWV1ZSk7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIElSUV9IQU5ETEVEOw0KPiA+ICt9DQo+ID4g
+Kw0KPiA+ICBzdGF0aWMgaXJxcmV0dXJuX3QgaTJjX2lteF9pc3IoaW50IGlycSwgdm9pZCAqZGV2
+X2lkKSAgew0KPiA+ICAJc3RydWN0IGlteF9pMmNfc3RydWN0ICppMmNfaW14ID0gZGV2X2lkOw0K
+PiA+IC0JdW5zaWduZWQgaW50IHRlbXA7DQo+ID4gKwl1bnNpZ25lZCBpbnQgY3RsLCBzdGF0dXM7
+DQo+ID4NCj4gPiAtCXRlbXAgPSBpbXhfaTJjX3JlYWRfcmVnKGkyY19pbXgsIElNWF9JMkNfSTJT
+Uik7DQo+ID4gLQlpZiAodGVtcCAmIEkyU1JfSUlGKSB7DQo+ID4gLQkJLyogc2F2ZSBzdGF0dXMg
+cmVnaXN0ZXIgKi8NCj4gPiAtCQlpMmNfaW14LT5pMmNzciA9IHRlbXA7DQo+ID4gKwlzdGF0dXMg
+PSBpbXhfaTJjX3JlYWRfcmVnKGkyY19pbXgsIElNWF9JMkNfSTJTUik7DQo+ID4gKwljdGwgPSBp
+bXhfaTJjX3JlYWRfcmVnKGkyY19pbXgsIElNWF9JMkNfSTJDUik7DQo+ID4gKwlpZiAoc3RhdHVz
+ICYgSTJTUl9JSUYpIHsNCj4gPiAgCQlpMmNfaW14X2NsZWFyX2lycShpMmNfaW14LCBJMlNSX0lJ
+Rik7DQo+ID4gLQkJd2FrZV91cCgmaTJjX2lteC0+cXVldWUpOw0KPiA+IC0JCXJldHVybiBJUlFf
+SEFORExFRDsNCj4gPiArCQlpZiAoaTJjX2lteC0+c2xhdmUgJiYgIShjdGwgJiBJMkNSX01TVEEp
+KQ0KPiA+ICsJCQlyZXR1cm4gaTJjX2lteF9zbGF2ZV9pc3IoaTJjX2lteCwgc3RhdHVzLCBjdGwp
+Ow0KPiA+ICsJCXJldHVybiBpMmNfaW14X21hc3Rlcl9pc3IoaTJjX2lteCwgc3RhdHVzKTsNCj4g
+PiAgCX0NCj4gPg0KPiA+ICAJcmV0dXJuIElSUV9OT05FOw0KPiA+IEBAIC0xMDI3LDYgKzExOTUs
+MTAgQEAgc3RhdGljIGludCBpMmNfaW14X3hmZXJfY29tbW9uKHN0cnVjdA0KPiBpMmNfYWRhcHRl
+ciAqYWRhcHRlciwNCj4gPiAgCWRldl9kYmcoJmkyY19pbXgtPmFkYXB0ZXIuZGV2LCAiPCVzPiBl
+eGl0IHdpdGg6ICVzOiAlZFxuIiwgX19mdW5jX18sDQo+ID4gIAkJKHJlc3VsdCA8IDApID8gImVy
+cm9yIiA6ICJzdWNjZXNzIG1zZyIsDQo+ID4gIAkJCShyZXN1bHQgPCAwKSA/IHJlc3VsdCA6IG51
+bSk7DQo+ID4gKwkvKiBBZnRlciBkYXRhIGlzIHRyYW5zZmVycmVkLCBzd2l0Y2ggdG8gc2xhdmUg
+bW9kZShhcyBhIHJlY2VpdmVyKSAqLw0KPiA+ICsJaWYgKGkyY19pbXgtPnNsYXZlKQ0KPiA+ICsJ
+CWkyY19pbXhfc2xhdmVfaW5pdChpMmNfaW14KTsNCj4gPiArDQo+ID4gIAlyZXR1cm4gKHJlc3Vs
+dCA8IDApID8gcmVzdWx0IDogbnVtOw0KPiA+ICB9DQo+ID4NCj4gPiBAQCAtMTE0MCw2ICsxMzEy
+LDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBpMmNfYWxnb3JpdGhtIGkyY19pbXhfYWxnbyA9IHsN
+Cj4gPiAgCS5tYXN0ZXJfeGZlciA9IGkyY19pbXhfeGZlciwNCj4gPiAgCS5tYXN0ZXJfeGZlcl9h
+dG9taWMgPSBpMmNfaW14X3hmZXJfYXRvbWljLA0KPiA+ICAJLmZ1bmN0aW9uYWxpdHkgPSBpMmNf
+aW14X2Z1bmMsDQo+ID4gKwkucmVnX3NsYXZlCT0gaTJjX2lteF9yZWdfc2xhdmUsDQo+ID4gKwku
+dW5yZWdfc2xhdmUJPSBpMmNfaW14X3VucmVnX3NsYXZlLA0KPiA+ICB9Ow0KPiA+DQo+ID4gIHN0
+YXRpYyBpbnQgaTJjX2lteF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KSBAQCAt
+MTIzMywxMA0KPiA+ICsxNDA3LDcgQEAgc3RhdGljIGludCBpMmNfaW14X3Byb2JlKHN0cnVjdCBw
+bGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gIAljbGtfbm90aWZpZXJfcmVnaXN0ZXIoaTJjX2lt
+eC0+Y2xrLCAmaTJjX2lteC0+Y2xrX2NoYW5nZV9uYik7DQo+ID4gIAlpMmNfaW14X3NldF9jbGso
+aTJjX2lteCwgY2xrX2dldF9yYXRlKGkyY19pbXgtPmNsaykpOw0KPiA+DQo+ID4gLQkvKiBTZXQg
+dXAgY2hpcCByZWdpc3RlcnMgdG8gZGVmYXVsdHMgKi8NCj4gPiAtCWlteF9pMmNfd3JpdGVfcmVn
+KGkyY19pbXgtPmh3ZGF0YS0+aTJjcl9pZW5fb3Bjb2RlIF4gSTJDUl9JRU4sDQo+ID4gLQkJCWky
+Y19pbXgsIElNWF9JMkNfSTJDUik7DQo+ID4gLQlpbXhfaTJjX3dyaXRlX3JlZyhpMmNfaW14LT5o
+d2RhdGEtPmkyc3JfY2xyX29wY29kZSwgaTJjX2lteCwNCj4gSU1YX0kyQ19JMlNSKTsNCj4gPiAr
+CWkyY19pbXhfcmVzZXRfcmVncyhpMmNfaW14KTsNCj4gPg0KPiA+ICAJLyogSW5pdCBvcHRpb25h
+bCBidXMgcmVjb3ZlcnkgZnVuY3Rpb24gKi8NCj4gPiAgCXJldCA9IGkyY19pbXhfaW5pdF9yZWNv
+dmVyeV9pbmZvKGkyY19pbXgsIHBkZXYpOw0KPiA+IC0tDQo+ID4gMi4xNy4xDQo+ID4NCj4gPg0K
+PiANCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgICAgICAgICAgIHwN
+Cj4gfA0KPiBTdGV1ZXJ3YWxkZXIgU3RyLiAyMSAgICAgICAgICAgICAgICAgICAgICAgfCBodHRw
+Oi8vd3d3LnBlbmd1dHJvbml4LmRlLw0KPiB8DQo+IDMxMTM3IEhpbGRlc2hlaW0sIEdlcm1hbnkg
+ICAgICAgICAgICAgICAgICB8IFBob25lOiArNDktNTEyMS0yMDY5MTctMA0KPiB8DQo+IEFtdHNn
+ZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2ICAgICAgICAgICB8IEZheDoNCj4gKzQ5LTUxMjEt
+MjA2OTE3LTU1NTUgfA0K
