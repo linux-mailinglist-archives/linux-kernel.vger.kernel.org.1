@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B71C2C89C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6AD2C89CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbgK3QkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:40:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        id S1728496AbgK3Qng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:43:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727924AbgK3QkN (ORCPT
+        with ESMTP id S1726770AbgK3Qng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:40:13 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AE8C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:39:27 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id qw4so12909479ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:39:27 -0800 (PST)
+        Mon, 30 Nov 2020 11:43:36 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBA9C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:42:55 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id lt17so23064320ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:42:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6tD9ZVZ6gEgHyopRLPxX9gjuGEYfwDbo2GR5pg3Ufw4=;
-        b=glbcz3v23KpKTyAKnx1I60vsVXUyi8fdbsPAkgkSO82ICb8g57m1qTTu7ZzCVZ9Ihc
-         FH5rZ8Ht8MBFuLyHSylml3QywhK9XbmEWYDbOuDsdABb8RFkUldZ1HCYLrPNDdNlxyTp
-         DQYHeaUIJz/6bgu/RYhL7KePVkD+5V03rg+b3NxI3uOc4hXeJ80fHWG9QameyeLyAr5Q
-         qXmCwF85bIyrjijUS9NSSilY3kjYs8ViX4Q9fH9appyTrlusTidi4l8tmBTPvrt932qZ
-         8P27uJXoiWSFSIXKvkt4+prrOLmDRHI73pPWHz5bshntvLIQbbIQ3XZRAPzCk3a61Cs4
-         m6qw==
+        bh=6Aj9qTViVOHCGvhmmXfPUv/vIUXbZzuXKzMiwCVk9dA=;
+        b=vAenNzbhnM5r2BYN76rB5ZO5qCzDR5XUkM+SwTBret68X09UIwXSokyZdy5TT/qU8a
+         nk15qM4d6gkNPcoDaaBEfMLXoN0PXLe4IzfL+q66F9gQCtbrWUdacULDr1SjgHCzY8Kk
+         ukeK69U8Z0kAEu/0EpOTgAY6f0yne+BC/C4rTjkzxEYN+OVjR8NjdSiaGqhbUeY60ghI
+         BY+QJmqrIdNJLpS+fye+x3FM6edHQJcxnM6YVy4IaGEAH19R55p0ZV4gj+B1jpDKkVuP
+         oWT5mojQBy3I3WUtW+tO+T2FfHC4yiF/0jkIJL71SpCpN+Y9uWR+Z6Npv3L8XiY/Yzfe
+         bhog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6tD9ZVZ6gEgHyopRLPxX9gjuGEYfwDbo2GR5pg3Ufw4=;
-        b=db3CzfX1AnEWL6fTug8M7gsrsoIUPK32a7C9FDFVt0qrvzYcTG+ftWramA4a9SyXEi
-         sSgOOTs1nzTsKrUGU0hkrk5s+j7x7Rw27cOOYJu84k4k7GmeWadUKVFG4R6eTze6oTYm
-         RkULViotv8R1/O50ZSSuC4inXmeG2jHp/oOn37PJAw+XSf3EudVqacFxq0FENQszAMhr
-         LU8+ldrN8HlDr1ZEh/n+D1PNJshTRK4jrLxxaqwj5sw9873PCpaAXpTIhUhbFzv7MYxf
-         bdcj+t2L5nXhmdZrS3c1q9xk7UWc4Sa7VaXrII77GGHEtscIox5OIEtAsR5GDs82AOmr
-         itHQ==
-X-Gm-Message-State: AOAM533ad1UsbjzYGM+4TXiOVf+vHABIGyo/3h1yFCWNG1JZRAFKNt7j
-        D2nq7J+ZELxwpTbfouIbn8XvnPpR6jFjmvhglyh1eQ==
-X-Google-Smtp-Source: ABdhPJzoCYimjzh4bEQ9MTo+GD5OKm/5MTWjv3mRz8F3tY/eucztztKkMgUZGD/9LslE8VvXK+DJg6C7YKs8OF0nQ58=
-X-Received: by 2002:a17:907:b09:: with SMTP id h9mr7163881ejl.155.1606754365951;
- Mon, 30 Nov 2020 08:39:25 -0800 (PST)
+        bh=6Aj9qTViVOHCGvhmmXfPUv/vIUXbZzuXKzMiwCVk9dA=;
+        b=Rw/3VauEX+C1fw5gpXTL7A2/52vIgNOrWDcA6K50MT7HN509gKwtlqnT/RO2pcsjO3
+         3MxxMB2o7XflqEnFq8J5mHp05SxCXwqvADJB4DpEhYvSjDV1Ltf6ksO35DoeV6Pemxp/
+         QtgBvmNR3kpOQI+7daPAHFup9wjJw+tr0KifChtQpX32aDXMfyd2zexoIsHWb0TVMwYU
+         ekinl7i6qz9xufNeWGwfDBFCSFREy2tydJ0FiMRHhfEuoQGxtJvJotaPl8hbV8PQA8h8
+         39/YFyEjGY+TQHu562+N9qVxRc2Sv7hqlMGVFSoLr5sVAjCBlxQFhus/WA1++CInY3U9
+         KPOw==
+X-Gm-Message-State: AOAM530lAsDc+RecI8ojPPTLxiU29lLrB1KplUUHfSJ4eX0UPUDj6uKT
+        HAOvqSRqIUlTAhFVKPVy40GfDeOcSu4HVZtNpe7LpQ==
+X-Google-Smtp-Source: ABdhPJwDumtW5xKzKhkng318LHjQls09wlu9rVlgAa9sbGVNCtYOKWz71P3Kn9y3bRhGXKpF6sOvRz3IVGSuUM5RmUA=
+X-Received: by 2002:a17:906:15cc:: with SMTP id l12mr20845359ejd.363.1606754574134;
+ Mon, 30 Nov 2020 08:42:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118143149.26067-1-grygorii.strashko@ti.com>
-In-Reply-To: <20201118143149.26067-1-grygorii.strashko@ti.com>
+References: <1606467002-62964-1-git-send-email-luojiaxing@huawei.com>
+In-Reply-To: <1606467002-62964-1-git-send-email-luojiaxing@huawei.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 30 Nov 2020 17:39:15 +0100
-Message-ID: <CAMpxmJVm7euifTBKx06mzUw6zD5s2KJHYniGviV=H8Yo6YJMdg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: omap: handle deferred probe with dev_err_probe()
- for gpiochip_add_data()
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Date:   Mon, 30 Nov 2020 17:42:43 +0100
+Message-ID: <CAMpxmJUnao=KXTRORF5z2X4BHojDW2UCosHjZi_K9jCtVVtGMQ@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: dwapb: fix NULL pointer dereference at dwapb_gpio_suspend()
+To:     Luo Jiaxing <luojiaxing@huawei.com>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Sergey.Semin@baikalelectronics.ru,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 3:31 PM Grygorii Strashko
-<grygorii.strashko@ti.com> wrote:
+On Fri, Nov 27, 2020 at 9:50 AM Luo Jiaxing <luojiaxing@huawei.com> wrote:
 >
-> The gpiochip_add_data() may return -EPROBE_DEFER which is not handled
-> properly by TI GPIO driver and causes unnecessary boot log messages.
+> Following Calltrace is found when running echo freeze > /sys/power/state.
 >
-> Hence, add proper deferred probe handling with new dev_err_probe() API.
+> [  272.755506] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
+> [  272.755585] Call trace:
+> [  272.755587]  dwapb_gpio_suspend+0x18/0x318
+> [  272.755588]  pm_generic_suspend+0x2c/0x48
+> [  272.755595]  acpi_subsys_suspend+0x60/0x70
+> [  272.755599]  dpm_run_callback.isra.18+0x40/0xe0
+> [  272.755601]  __device_suspend+0xf4/0x360
 >
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> The reason is platform_set_drvdata() is deleted, and dwapb_gpio_suspend()
+> get *gpio by dev_get_drvdata().
+>
+> Fixes: feeaefd378ca ("gpio: dwapb: Use resource managed GPIO-chip add data method")
+> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+> Acked-by: Serge Semin <fancer.lancer@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>
 > ---
->  drivers/gpio/gpio-omap.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+>    v1->v2:
+>           1. reduce calltrace log
+>           2. delete blank line in tag block
+> ---
+> ---
+>  drivers/gpio/gpio-dwapb.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
-> index f7ceb2b11afc..41952bb818ad 100644
-> --- a/drivers/gpio/gpio-omap.c
-> +++ b/drivers/gpio/gpio-omap.c
-> @@ -1049,11 +1049,8 @@ static int omap_gpio_chip_init(struct gpio_bank *bank, struct irq_chip *irqc)
->         irq->first = irq_base;
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index 2a9046c..4275c18 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -724,6 +724,8 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
+>                         return err;
+>         }
 >
->         ret = gpiochip_add_data(&bank->chip, bank);
-> -       if (ret) {
-> -               dev_err(bank->chip.parent,
-> -                       "Could not register gpio chip %d\n", ret);
-> -               return ret;
-> -       }
-> +       if (ret)
-> +               return dev_err_probe(bank->chip.parent, ret, "Could not register gpio chip\n");
+> +       platform_set_drvdata(pdev, gpio);
+> +
+>         return 0;
+>  }
 >
->         ret = devm_request_irq(bank->chip.parent, bank->irq,
->                                omap_gpio_irq_handler,
 > --
-> 2.17.1
+> 2.7.4
 >
 
-Now applied. Thanks!
+Applied, thanks!
 
 Bartosz
