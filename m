@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3F52C936A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B432C9370
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388898AbgK3Xzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:55:35 -0500
-Received: from mga07.intel.com ([134.134.136.100]:49414 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729078AbgK3Xze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:55:34 -0500
-IronPort-SDR: rsbKIkT3owHAMiYnf5ZVx3VzSdCz8e13V14K86D0tZocTmbmPMmeolZkOgdig5Bw31bZd/9bdl
- 52UuHKQRk8ow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="236859437"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="236859437"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 15:54:53 -0800
-IronPort-SDR: Qi+TkTOoMuATfeEMce6g+dzdiZ2QKiuFtlGgg7RLKcP4NUOeYAHOBAPPhBohpbHNRWKSn84SPI
- koNp1kg8sfoA==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="480858895"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.209.71.254])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 15:54:52 -0800
-Subject: Re: [PATCH v6 2/7] fpga: sec-mgr: enable secure updates
-To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-References: <20201106010905.11935-1-russell.h.weight@intel.com>
- <20201106010905.11935-3-russell.h.weight@intel.com>
- <9dd75daf-eb73-4008-ca65-6f7ea3923e35@silicom.dk>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <c6dc2edb-9639-9c4f-c065-18cade768fb6@intel.com>
-Date:   Mon, 30 Nov 2020 15:54:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2389097AbgK3X5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:57:19 -0500
+Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:43426 "EHLO
+        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388124AbgK3X5S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:57:18 -0500
+Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
+        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 9CCC6BE183613
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:56:36 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id jt24kX7tkeMJHjt24kdyYV; Mon, 30 Nov 2020 16:56:36 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=Ff8ZOq26 c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=LpQP-O61AAAA:8
+ a=_jlGtV7tAAAA:8 a=o6rA3mgfRGNJ6BWNUK4A:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=pioyyrs4ZptJ924tMmac:22 a=nlm17XC03S6CtCLSeiRr:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=7Cv2ADl5wlW0FzpIAWuvEi3KmaSqX25T5Zo5cTY82DY=; b=ohegBH8rAeAYMUwcTSAwXN/bM9
+        u1+TQGrXe/1WCrhxvgI5TSJkOMGzxEzUgU2WB2gMUs5Th+IeMsjb36equeL3JN2i/QIviBEYZJzCq
+        NXgLIsYYNIH6fBKqhzaU31SV4KvsgBtBPJA1fahpSqHvvrEfpjohl0BK2w3pIk/WaYeBLEuLcxjxL
+        sqO3xnMw8VydIslyoDtwn7jVth1S/liAR/lng/KSXmAQOtXkjNjY48/3NDU5p+2Umi2zUJhOErqfV
+        So74U/giXOYgZGhj1tQemhIr//fi0KN/hFIP1W3EnFP7vOLdWDUCVhJWB4gD7qD9677Un+/RuEkAA
+        1FPf85JA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:57056 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kjt23-002FmK-JI; Mon, 30 Nov 2020 23:56:35 +0000
+Date:   Mon, 30 Nov 2020 15:56:35 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Kathiravan T <kathirav@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        wim@linux-watchdog.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: Re: [PATCH v4] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when
+ appropriate
+Message-ID: <20201130235635.GA46844@roeck-us.net>
+References: <20201031121115.542752-1-robert.marko@sartura.hr>
+ <a71307f5-22b4-0d38-2880-96084bb07275@roeck-us.net>
+ <23aea80f-265b-8a23-e8ea-f46639dd4129@codeaurora.org>
+ <5b7def39-8c23-d30f-e2d3-bc38beee8919@roeck-us.net>
+ <dedebcc4-1c1f-bd56-07a6-ff7f44c06ed1@codeaurora.org>
+ <CA+HBbNFtfNcGKC0Tv7cfeBO-4p_momdQ9fr1=1hEd4O2ieskfw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9dd75daf-eb73-4008-ca65-6f7ea3923e35@silicom.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+HBbNFtfNcGKC0Tv7cfeBO-4p_momdQ9fr1=1hEd4O2ieskfw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kjt23-002FmK-JI
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:57056
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 3
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Martin. I'll work on a fix for this.
+On Mon, Nov 30, 2020 at 07:27:00PM +0100, Robert Marko wrote:
+> On Mon, Nov 2, 2020 at 6:19 AM Kathiravan T <kathirav@codeaurora.org> wrote:
+> >
+> >
+> > On 11/2/2020 10:33 AM, Guenter Roeck wrote:
+> > > On 11/1/20 7:58 PM, Kathiravan T wrote:
+> > >> On 10/31/2020 7:38 PM, Guenter Roeck wrote:
+> > >>> On 10/31/20 5:11 AM, Robert Marko wrote:
+> > >>>> If the watchdog hardware is enabled/running during boot, e.g.
+> > >>>> due to a boot loader configuring it, we must tell the
+> > >>>> watchdog framework about this fact so that it can ping the
+> > >>>> watchdog until userspace opens the device and takes over
+> > >>>> control.
+> > >>>>
+> > >>>> Do so using the WDOG_HW_RUNNING flag that exists for exactly
+> > >>>> that use-case.
+> > >>>>
+> > >>>> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > >>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> > >> Thanks for addressing the comments and now the patch looks good to me. One more suggestion, can we make the initcall level of the driver to subsys_initcall_sync so that the driver gets registered immediately after the watchdog_core is registered and watchdog_core starts pinging the WDT?
+> > >>
+> > > That would mean to replace module_platform_driver(), which would be a whole
+> > > different discussion, is not widely needed, and would potentially interfere
+> > > with the subsys_initcall_sync() in the watchdog core. This will require
+> > > specific evidence that a problem is seen in the field, and that it is truly
+> > > needed. Plus, it would have to be a different patch (which you could submit
+> > > yourself, with evidence). Let's stick with one logical change per patch,
+> > > please.
+> > >
+> > > Guenter
+> > Yeah, of course I don't want to squash the initcall level change with
+> > this one. Just made a suggestion to consider it. Anyway I will try to
+> > collect some data and post the patch by own on that suggestion. Thanks
+> > Guenter.
+> >
+> > --
+> > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+> >
+> 
+> Any chance this could be picked for 5.11?
+> I have some boards depending on it for normal boot.
+> 
+It is queued in my watchdog-next branch, so Wim will most likely pick it up.
 
-- Russ
-
-On 11/26/20 6:02 AM, Martin Hundebøll wrote:
-> Hi Russ,
->
-> I found another thing while testing this...
->
-> On 06/11/2020 02.09, Russ Weight wrote:
->
-> <snip>
->
->> +static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
->> +                  const char *buf, size_t count)
->> +{
->> +    struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
->> +    int ret = count;
->> +
->> +    if (count == 0 || count >= PATH_MAX)
->> +        return -EINVAL;
->> +
->> +    mutex_lock(&smgr->lock);
->> +    if (smgr->driver_unload || smgr->progress != FPGA_SEC_PROG_IDLE) {
->> +        ret = -EBUSY;
->> +        goto unlock_exit;
->> +    }
->> +
->> +    smgr->filename = kstrndup(buf, count - 1, GFP_KERNEL);
->
-> The `count - 1` is meant to remove a trailing newline, but opae-sdk writes the filename without newline, so better do it conditionally...
->
->> +    if (!smgr->filename) {
->> +        ret = -ENOMEM;
->> +        goto unlock_exit;
->> +    }
->> +
->> +    smgr->err_code = FPGA_SEC_ERR_NONE;
->> +    smgr->progress = FPGA_SEC_PROG_READING;
->> +    reinit_completion(&smgr->update_done);
->> +    schedule_work(&smgr->work);
->> +
->> +unlock_exit:
->> +    mutex_unlock(&smgr->lock);
->> +    return ret;
->> +}
->> +static DEVICE_ATTR_WO(filename);
->> +
->> +static struct attribute *sec_mgr_update_attrs[] = {
->> +    &dev_attr_filename.attr,
->> +    NULL,
->> +};
->
-> Thanks,
-> Martin
-
+Guenter
