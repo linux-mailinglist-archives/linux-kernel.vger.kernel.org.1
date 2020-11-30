@@ -2,177 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD6D2C867B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6492C867F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbgK3ORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:17:05 -0500
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:54960 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgK3ORD (ORCPT
+        id S1727499AbgK3OSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:18:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48638 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726623AbgK3OSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:17:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606745823; x=1638281823;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gXJa2GLoR+9cQw6bzdTpZp8O02BmQweuLBOY+wsJ/pQ=;
-  b=uZINWAlAZm1e7aHX5ClttmGABeZNnoJYuQNnruF0lFfg2A8apEFEBUK9
-   e7UPeZGou7zVOlV41Y3TE8MuUgq98wYMBYbN9jcJXEnYyQwsy5A5+Zmth
-   zD/I655lnEEKcBEZe3ZqCQLqhaRwbpqymaLUYU+puAgR+7W9/jjaW4nKk
-   2y/VGJ6Uqqet3qM7zCV9HW99O+fS8LpeHSjTVT+CXk6OnjadCOtYWafaI
-   1UbZ2rfBBttLWkwCr7TTcFp9StRUbId+sp715PLDvOGILwkDcmrpYB+d1
-   LZhYLjkEKC14uQOw6UNJeGdWsQmRQ1p9GaGSNIg5/iIEyWwcWaCeY1cRE
-   g==;
-IronPort-SDR: UBpIndPWD+sPiPr1xAWrBjFrAw0jyatfCbO5eBHO4lhfJD0yqIlRCUdOKtoQEKPcca+rauqNjP
- 5/b7fARWciTeOHhBPU1fc1Ln42oBCmAxrDFmXzXgPW6xhpmn5bqKjAXz0tJ05mu2kadvLOZ/eh
- uxPoTxKEGIY//1VIcnM0SS76IPFUroR5ZQ8OZ+CIkrlkd5btOYmW/nLboe7QfTJeqaAzoJcORS
- v6UxVFfVOk7CCG67IZy9YiarYs4CPKYXh0D66zGqMmg/+t1RbLA7130B4UMJXHxg6o7lwrkBPd
- JY4=
-X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
-   d="scan'208";a="105475172"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Nov 2020 07:15:57 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 30 Nov 2020 07:15:57 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Mon, 30 Nov 2020 07:15:57 -0700
-Date:   Mon, 30 Nov 2020 15:15:56 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
-Message-ID: <20201130141556.o4vg32lr4uykwxmu@mchp-dev-shegelun>
-References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
- <20201127133307.2969817-3-steen.hegelund@microchip.com>
- <20201128190616.GF2191767@lunn.ch>
- <20201128222828.GQ1551@shell.armlinux.org.uk>
- <20201129105245.GG1605@shell.armlinux.org.uk>
+        Mon, 30 Nov 2020 09:18:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606745795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nk3PwbgnWPBsA8dJTlZWHGE9bPoVI0JdWk0TDjCsPaU=;
+        b=OOiuG/jASpN1snBBoOXx78xN637caA6TPsGx6CBR6Wkwh5v3A8fzXfJ/5w0oAMDxhr/xcC
+        swvIUhFo+47RQ9Opf42dufr+1XgY7P6cqkWPmnuPXFbkQ9DqqcJZ2he/uF6rFjRTpdnaxq
+        LCa1DM/DB9no+vKDCdnID3PX2l482BM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-_-8pQPRnMHGw-Pt80VEaqQ-1; Mon, 30 Nov 2020 09:16:32 -0500
+X-MC-Unique: _-8pQPRnMHGw-Pt80VEaqQ-1
+Received: by mail-wr1-f72.google.com with SMTP id n1so8497162wro.22
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:16:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nk3PwbgnWPBsA8dJTlZWHGE9bPoVI0JdWk0TDjCsPaU=;
+        b=c9Eeu01RO+dG0s01xBkpmGmgXGLqZSpAbowDtfDAo5up7aifFUg7DgP5C7l9B03pmf
+         yNf/QvQKZ5M8J6ZN8Vz4RBWun81+zQNKe0Klw/NEh/p9jBv12DF4fiDu2mlQxl7hg+5n
+         rXgrAvoRePd6sN70AuIbHULiyuLSPKrbi1J3d3lDCAjh1y8C4YH/+uRTyxdeoWZ+8oIS
+         xSnmSozmxOzFI05HbqBWoNV5endVbe0znl8k3JbTQFcLQDpqnLUULFEUDSxlXk4Xs4Qm
+         7b+VBYiS/Q7//p1Rdw1mM68+/+sKwuOBnpow3S9SK6I/kK09+qtQLKcYTtwrRJ+02FNh
+         cuGQ==
+X-Gm-Message-State: AOAM53178yqOMqgORzXBBu0pauVhkSGfmThoBvDu+o1/IlM4URgYvg2C
+        4XlAU8pi/lCN7mhoQU/lAdu/eMA3na7t2hgGqZB14F/r6d2s/NqH64oEfjBkOoRN6p0nN877LtZ
+        tcC4HHhAUoipmLjLhiS8vT9pA
+X-Received: by 2002:a7b:cc12:: with SMTP id f18mr23625728wmh.110.1606745790540;
+        Mon, 30 Nov 2020 06:16:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzjRy9tynfMnBGRMaIbuZ6bUgN4vno7cZV4YkNrWOD0VSIz+J6N442hYHa81mtCWHg4WmBcew==
+X-Received: by 2002:a7b:cc12:: with SMTP id f18mr23625712wmh.110.1606745790353;
+        Mon, 30 Nov 2020 06:16:30 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id t136sm25228625wmt.18.2020.11.30.06.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 06:16:29 -0800 (PST)
+Date:   Mon, 30 Nov 2020 15:16:27 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
+Subject: Re: [PATCH v2 13/17] vdpa_sim: set vringh notify callback
+Message-ID: <20201130141627.4gjsoiwg5byt3ujx@steredhat>
+References: <20201126144950.92850-1-sgarzare@redhat.com>
+ <20201126144950.92850-14-sgarzare@redhat.com>
+ <5569e198-22be-514a-744a-1bef9a3b95ce@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201129105245.GG1605@shell.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5569e198-22be-514a-744a-1bef9a3b95ce@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.2020 10:52, Russell King - ARM Linux admin wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On Mon, Nov 30, 2020 at 11:27:51AM +0800, Jason Wang wrote:
 >
->On Sat, Nov 28, 2020 at 10:28:28PM +0000, Russell King - ARM Linux admin wrote:
->> On Sat, Nov 28, 2020 at 08:06:16PM +0100, Andrew Lunn wrote:
->> > > +static void sparx5_phylink_mac_config(struct phylink_config *config,
->> > > +                               unsigned int mode,
->> > > +                               const struct phylink_link_state *state)
->> > > +{
->> > > + struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
->> > > + struct sparx5_port_config conf;
->> > > + int err = 0;
->> > > +
->> > > + conf = port->conf;
->> > > + conf.autoneg = state->an_enabled;
->> > > + conf.pause = state->pause;
->> > > + conf.duplex = state->duplex;
->> > > + conf.power_down = false;
->> > > + conf.portmode = state->interface;
->> > > +
->> > > + if (state->speed == SPEED_UNKNOWN) {
->> > > +         /* When a SFP is plugged in we use capabilities to
->> > > +          * default to the highest supported speed
->> > > +          */
->> >
->> > This looks suspicious.
+>On 2020/11/26 下午10:49, Stefano Garzarella wrote:
+>>Instead of calling the vq callback directly, we can leverage the
+>>vringh_notify() function, adding vdpasim_vq_notify() and setting it
+>>in the vringh notify callback.
 >>
->> Yes, it looks highly suspicious. The fact that
->> sparx5_phylink_mac_link_up() is empty, and sparx5_phylink_mac_config()
->> does all the work suggests that this was developed before the phylink
->> re-organisation, and this code hasn't been updated for it.
+>>Suggested-by: Jason Wang <jasowang@redhat.com>
+>>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>>---
+>>  drivers/vdpa/vdpa_sim/vdpa_sim.c | 21 +++++++++++++++++----
+>>  1 file changed, 17 insertions(+), 4 deletions(-)
 >>
->> Any new code for the kernel really ought to be updated for the new
->> phylink methodology before it is accepted.
->>
->> Looking at sparx5_port_config(), it also seems to use
->> PHY_INTERFACE_MODE_1000BASEX for both 1000BASE-X and 2500BASE-X. All
->> very well for the driver to do that internally, but it's confusing
->> when it comes to reviewing this stuff, especially when people outside
->> of the driver (such as myself) reviewing it need to understand what's
->> going on with the configuration.
+>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>index 8b87ce0485b6..4327efd6d41e 100644
+>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>@@ -120,6 +120,17 @@ static struct vdpasim *dev_to_sim(struct device *dev)
+>>  	return vdpa_to_sim(vdpa);
+>>  }
+>>+static void vdpasim_vq_notify(struct vringh *vring)
+>>+{
+>>+	struct vdpasim_virtqueue *vq =
+>>+		container_of(vring, struct vdpasim_virtqueue, vring);
+>>+
+>>+	if (!vq->cb)
+>>+		return;
+>>+
+>>+	vq->cb(vq->private);
+>>+}
+>>+
+>>  static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
+>>  {
+>>  	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
+>>@@ -131,6 +142,8 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
+>>  			  (uintptr_t)vq->driver_addr,
+>>  			  (struct vring_used *)
+>>  			  (uintptr_t)vq->device_addr);
+>>+
+>>+	vq->vring.notify = vdpasim_vq_notify;
 >
+>
+>Do we need to clear notify during reset?
 
-Hi Russell,
-
->There are other issues too.
->
->Looking at sparx5_get_1000basex_status(), we have:
->
-> +       status->link = DEV2G5_PCS1G_LINK_STATUS_LINK_STATUS_GET(value) |
-> +                      DEV2G5_PCS1G_LINK_STATUS_SYNC_STATUS_GET(value);
->
-
->Why is the link status the logical OR of these?
-
-Oops: It should have been AND. Well spotted.
-
->
-> +                       if ((lp_abil >> 8) & 1) /* symmetric pause */
-> +                               status->pause = MLO_PAUSE_RX | MLO_PAUSE_TX;
-> +                       if (lp_abil & (1 << 7)) /* asymmetric pause */
-> +                               status->pause |= MLO_PAUSE_RX;
->
->is actually wrong, and I see I need to improve the documentation for
->mac_pcs_get_state(). The intention in the documentation was concerning
->hardware that indicated the _resolved_ status of pause modes. It was
->not intended that drivers resolve the pause modes themselves.
->
->Even so, the above is still wrong; it takes no account of what is being
->advertised at the local end. If one looks at the implementation in
->phylink_decode_c37_word(), one will notice there is code to deal with
->this.
->
->I think we ought to make phylink_decode_c37_word() and
->phylink_decode_sgmii_word() public functions, and then this driver can
->use these helpers to decode the link partner advertisement to the
->phylink state.
-
-Should I remove the current implementation and use something like what
-is in phylink_decode_c37_word() and phylink_decode_sgmii_word() in the
-meantime?
+Right, I'll clear it.
 
 >
->Does the driver need to provide an ethtool .get_link function? That
->seems to bypass phylink. Why can't ethtool_op_get_link() be used?
-
-I think that I tried that earlier, but ran into problems.  I better
-revisit this, and try out your suggestion.
-
+>Other looks good.
 >
->I think if ethtool_op_get_link() is used, we then have just one caller
->for sparx5_get_port_status(), which means "struct sparx5_port_status"
->can be eliminated and the code cleaned up to use the phylink decoding
->helpers.
->
->--
->RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
->FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
-Thanks for your comments.
+Thanks,
+Stefano
 
-BR
-Steen
-
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
