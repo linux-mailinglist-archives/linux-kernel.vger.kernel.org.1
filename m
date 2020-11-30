@@ -2,158 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582442C825D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237672C8269
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgK3KlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:41:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgK3KlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:41:14 -0500
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6C3B20708
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606732833;
-        bh=39vInkTGAE+LkQ+SzCA3sJF1Tx8QEsgRu2TPOQXivk8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KDWJW6fVU2McFKth3y88857GlJZ7ZrU0jb62vc4SeU5k7VPZlCVrO5fxhcdC2Y1qa
-         tIbX3iYwnb2IQaKKcYKOt3F6akJYewP5wmge3M0e3Td4RnuKy4fZ+uNKOqoyXvx9Tx
-         PUEiBMHfYGQ54gxSHGRJ/+wZ6ieeJYP5KeTo963c=
-Received: by mail-oo1-f43.google.com with SMTP id i13so2558670oou.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:40:32 -0800 (PST)
-X-Gm-Message-State: AOAM530kAB5tmAtZnhabk+85sFiI/wEMbN1wM/2gpDfzFBVbRuEx3XLi
-        oCgKSE/0Vg89ZPvlT0UsNH9irxGMdf83W0/yIaw=
-X-Google-Smtp-Source: ABdhPJyWBdAYDLcFa1CrlhJ1v0MNuli5TP5kCCX277R/RrjNVoKM9mIZWeye1kofjevJwGZ0ulkLBBBcGD18ay6+zOc=
-X-Received: by 2002:a4a:45c3:: with SMTP id y186mr14718768ooa.13.1606732832043;
- Mon, 30 Nov 2020 02:40:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20201123073634.6854-1-swpenim@gmail.com> <CAMj1kXGsQ9K57SvZ74pmD+_=338sGXjc_t+hCXMh-9BPanXnhA@mail.gmail.com>
- <CAMj1kXGs-woGGnM2QkhY5NbRRKP8_N4BY9ScBtga8mcyHoK2+A@mail.gmail.com> <20201130102122.GT1551@shell.armlinux.org.uk>
-In-Reply-To: <20201130102122.GT1551@shell.armlinux.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 30 Nov 2020 11:40:20 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHuERnB01sNrpY9w3C0ECOry7jCK=A2H0D4-_cBXbOmcw@mail.gmail.com>
-Message-ID: <CAMj1kXHuERnB01sNrpY9w3C0ECOry7jCK=A2H0D4-_cBXbOmcw@mail.gmail.com>
-Subject: Re: [RESEND,PATCH] ARM: fix __div64_32() error when compiling with clang
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Antony Yu <swpenim@gmail.com>, Nicolas Pitre <nico@fluxnic.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728758AbgK3Kmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:42:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727288AbgK3Kmd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 05:42:33 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E15C0613D3;
+        Mon, 30 Nov 2020 02:41:53 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id iq13so1077081pjb.3;
+        Mon, 30 Nov 2020 02:41:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JFWMskB7fcJ8bEDz+gDr8rZxF7QDCLZctuHRy5whdrg=;
+        b=MHVGH9zPED6+k3AogAFwV63kYP/y9uvLRSFeQyaK6BTcJIFZanejwC0JikQurFMpOh
+         Ciqq/ToXP0CGRlIuFq04zIugywQ+SSjFib+7eTcaWShAwdb+j+gMMT1XyDyNzRFBKLyT
+         KZ9IovdLyyvo4GVhos4yJ2slVTjrvMG+wRlPAprPUyppqdL27eNos5rn8k3qwTZ/JwXM
+         ypUP6fl+AxgNboVk32ogGz+jGjHNeYdW+xRujIBy6xwIg65KygkqxNMI8dz6cD5TNo35
+         YsvkxfpTgdb+B93xlzyUQLyW8Eb7w0c6Czj+ZpoFgO9tT8sCSAf0XlW2bkvFUNNbwDpT
+         Jt8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JFWMskB7fcJ8bEDz+gDr8rZxF7QDCLZctuHRy5whdrg=;
+        b=rUxM22XXvlp/1W0r2j07BLTKc743ht47rzvA4voLVKWBn+0C3XSPKEe+9CWSaeK7hI
+         LZqrWmd6m8xIbjW2VBHwOz3CgmPPlI5eTwkqTgtxzdgTAE7yKhI+6ndIUGnxvtXg/f0o
+         qslT4b7iO7OS6SKhND1Nht/ehOe3y8kyFfZwktT6HVk1U6wl2yCCgLpMqUaIa4vNfc8q
+         dTuy0n1e6zYyrmg1zWtNETiw4BJzF/FUBgdx6As7FOG2pzUGI8kk40eiI6Lgjkuv7EK8
+         yg2YpfC/0eDVyXU1Tidphd86hcRMmzhs71snKKjc6/DwISHepX9kelHLnLkBFl91WgvW
+         CScg==
+X-Gm-Message-State: AOAM532GqpLmykMhPn/wfGxfW01jxjDywOBGcatan0lsVr90YS+VoNXy
+        5iKPAQrum2h3r7wRKAKp7o9Hk15oV7w=
+X-Google-Smtp-Source: ABdhPJx+ksQYaKdPAj3Om+JZHRbC42lsZoRqbbP68lT4yiK4IbXR++0ACpEeaMPUiCfp8w/FcvRc4w==
+X-Received: by 2002:a17:90b:46d2:: with SMTP id jx18mr3257454pjb.106.1606732912588;
+        Mon, 30 Nov 2020 02:41:52 -0800 (PST)
+Received: from localhost.localdomain ([8.210.202.142])
+        by smtp.gmail.com with ESMTPSA id p6sm22165867pjt.13.2020.11.30.02.41.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 02:41:52 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] net: phy: marvell: replace phy_modify()
+Date:   Mon, 30 Nov 2020 18:41:35 +0800
+Message-Id: <1606732895-9136-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020 at 11:21, Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Mon, Nov 30, 2020 at 11:12:33AM +0100, Ard Biesheuvel wrote:
-> > (+ Nico)
-> >
-> > On Mon, 30 Nov 2020 at 11:11, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Mon, 23 Nov 2020 at 08:39, Antony Yu <swpenim@gmail.com> wrote:
-> > > >
-> > > > __do_div64 clobbers the input register r0 in little endian system.
-> > > > According to the inline assembly document, if an input operand is
-> > > > modified, it should be tied to a output operand. This patch can
-> > > > prevent compilers from reusing r0 register after asm statements.
-> > > >
-> > > > Signed-off-by: Antony Yu <swpenim@gmail.com>
-> > > > ---
-> > > >  arch/arm/include/asm/div64.h | 5 +++--
-> > > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/div64.h
-> > > > index 898e9c78a7e7..809efc51e90f 100644
-> > > > --- a/arch/arm/include/asm/div64.h
-> > > > +++ b/arch/arm/include/asm/div64.h
-> > > > @@ -39,9 +39,10 @@ static inline uint32_t __div64_32(uint64_t *n, uint32_t base)
-> > > >         asm(    __asmeq("%0", __xh)
-> > > >                 __asmeq("%1", "r2")
-> > > >                 __asmeq("%2", "r0")
-> > > > -               __asmeq("%3", "r4")
-> > > > +               __asmeq("%3", "r0")
-> > > > +               __asmeq("%4", "r4")
-> > > >                 "bl     __do_div64"
-> > > > -               : "=r" (__rem), "=r" (__res)
-> > > > +               : "=r" (__rem), "=r" (__res), "=r" (__n)
-> > > >                 : "r" (__n), "r" (__base)
-> > > >                 : "ip", "lr", "cc");
-> > > >         *n = __res;
-> > > > --
-> > > > 2.23.0
-> > > >
-> > >
-> > > Agree that using r0 as an input operand only is incorrect, and not
-> > > only on Clang. The compiler might assume that r0 will retain its value
-> > > across the asm() block, which is obviously not the case.
->
-> However, you can _not_ have an asm block that names two outputs using
-> the same physical register - that's why both the original patch and
-> the posted v2 will fail.
->
-> You also can't mark r0 as clobbered because it's used as an operand
-> and that is not allowed by gcc.
->
-> The fact is, we have two register variables occupying the same register,
-> which are __n and __rem. It doesn't matter which endian-ness __rem is,
-> r0 will be used for both __n (input) and __rem (output).
->
+a set of phy_set_bits() looks more neater
 
-__rem is a 32-bit variable, so in LE mode, only r1 is used for __rem,
-not r0. So r0/r1 are used as an input operand pair, and r1 is used as
-an output operand.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ drivers/net/phy/marvell.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-So I don't think the compiler has to be buggy in order for it to
-assume that r0 will still contain the low word of the dividend
-afterwards.
+diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
+index 587930a..620052c 100644
+--- a/drivers/net/phy/marvell.c
++++ b/drivers/net/phy/marvell.c
+@@ -1132,8 +1132,8 @@ static int m88e1510_config_init(struct phy_device *phydev)
+ 			return err;
+ 
+ 		/* PHY reset is necessary after changing MODE[2:0] */
+-		err = phy_modify(phydev, MII_88E1510_GEN_CTRL_REG_1, 0,
+-				 MII_88E1510_GEN_CTRL_REG_1_RESET);
++		err = phy_set_bits(phydev, MII_88E1510_GEN_CTRL_REG_1,
++				   MII_88E1510_GEN_CTRL_REG_1_RESET);
+ 		if (err < 0)
+ 			return err;
+ 
+@@ -1725,8 +1725,8 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+ 			__phy_read(phydev, MII_M1011_IEVENT);
+ 
+ 		/* Enable the WOL interrupt */
+-		err = __phy_modify(phydev, MII_88E1318S_PHY_CSIER, 0,
+-				   MII_88E1318S_PHY_CSIER_WOL_EIE);
++		err = __phy_set_bits(phydev, MII_88E1318S_PHY_CSIER,
++				     MII_88E1318S_PHY_CSIER_WOL_EIE);
+ 		if (err < 0)
+ 			goto error;
+ 
+@@ -1764,9 +1764,9 @@ static int m88e1318_set_wol(struct phy_device *phydev,
+ 			goto error;
+ 
+ 		/* Clear WOL status and enable magic packet matching */
+-		err = __phy_modify(phydev, MII_88E1318S_PHY_WOL_CTRL, 0,
+-				   MII_88E1318S_PHY_WOL_CTRL_CLEAR_WOL_STATUS |
+-				   MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE);
++		err = __phy_set_bits(phydev, MII_88E1318S_PHY_WOL_CTRL,
++				     MII_88E1318S_PHY_WOL_CTRL_CLEAR_WOL_STATUS |
++				     MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE);
+ 		if (err < 0)
+ 			goto error;
+ 	} else {
+@@ -1995,7 +1995,7 @@ static int marvell_cable_test_start_common(struct phy_device *phydev)
+ 		return bmsr;
+ 
+ 	if (bmcr & BMCR_ANENABLE) {
+-		ret =  phy_modify(phydev, MII_BMCR, BMCR_ANENABLE, 0);
++		ret =  phy_clear_bits(phydev, MII_BMCR, BMCR_ANENABLE);
+ 		if (ret < 0)
+ 			return ret;
+ 		ret = genphy_soft_reset(phydev);
+-- 
+1.9.1
 
-And actually, the same applies on BE, but the other way around. So we
-should mark __xl as an output register as well, as __xl will assume
-the right value depending on the endianness.
-
-I suggest something like the below,
-
-diff --git a/arch/arm/include/asm/div64.h b/arch/arm/include/asm/div64.h
-index 898e9c78a7e7..85ff9109595e 100644
---- a/arch/arm/include/asm/div64.h
-+++ b/arch/arm/include/asm/div64.h
-@@ -36,12 +36,14 @@ static inline uint32_t __div64_32(uint64_t *n,
-uint32_t base)
-        register unsigned long long __n   asm("r0") = *n;
-        register unsigned long long __res asm("r2");
-        register unsigned int __rem       asm(__xh);
-+       register unsigned int __dummy     asm(__xl);
-        asm(    __asmeq("%0", __xh)
-                __asmeq("%1", "r2")
--               __asmeq("%2", "r0")
--               __asmeq("%3", "r4")
-+               __asmeq("%2", __xl)
-+               __asmeq("%3", "r0")
-+               __asmeq("%4", "r4")
-                "bl     __do_div64"
--               : "=r" (__rem), "=r" (__res)
-+               : "=r" (__rem), "=r" (__res), "=r"(__dummy)
-                : "r" (__n), "r" (__base)
-                : "ip", "lr", "cc");
-        *n = __res;
-
-
-
-> If the compiler can't work out that if a physical register used as an
-> output operand will be written by the assembler, then the compiler is
-> quite simply buggy.
->
-> The code is correct as it stands; Clang is buggy.
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
