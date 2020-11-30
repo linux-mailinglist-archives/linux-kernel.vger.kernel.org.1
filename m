@@ -2,355 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072B02C83DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0722C83DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729042AbgK3MGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgK3MGT (ORCPT
+        id S1729242AbgK3MGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:06:55 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2470 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729181AbgK3MGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:06:19 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3D0C0613CF;
-        Mon, 30 Nov 2020 04:05:54 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id k11so9972768pgq.2;
-        Mon, 30 Nov 2020 04:05:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=v3o56DcFsCW9O7KVhbD4Qj5UbryI+gW1cbpULj0ks78=;
-        b=tWAx7+4JEREzREXD9bPc3BHO88DNdd2jCrEmh5w/bx0b/RfWZUfjDI4nMmn6Ll9S4a
-         Y8vlQzU4j9bzBuB6wjbOucv3L6aZMnGwH1jcXcGF+wtDzHxodjjzuOzA1bRp7V6ZKFMt
-         +p0/swzFfzAqkWRR+wMIp0xd+84UQvhMowF7cVMLYXUgp9o6+VMBkZ8MtdCvT8BJmgow
-         Hn/CrAQkCGijslsJWYNJiep03DMHrC6kp715kLuRR1Jtgb7dpytzRo0D14fPqF0trwH+
-         NTVrnBozLthSoEHmt4rR580HrTC7B0XxudpNZURF1u+kOcc296mnx1eekmVzIRiR7tij
-         qjhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=v3o56DcFsCW9O7KVhbD4Qj5UbryI+gW1cbpULj0ks78=;
-        b=YKb1ZcPRxhj/h5a4HOl3UHyoxw/3fZSkvY8xZA8AmqyVqtG7tSh1fV2AAgrjvh/Zp8
-         6wRNazipVQ3D/JegOC1ocLqvlz+VTOslUeM6xz4kvlWeJ0roBnK93ctytw0Qm2qicgpR
-         q7jgUR76JQ7srKnHyXzDo/oGn+wHGjIW4rizuzml/repln/9NNhH6Yl43FWDO5vNNii4
-         1/e25xo+/whNJWkacRfEUF6NHihncLtllNhGQilmX+ww/X3AWQABrOCHFIuzQKaYofZn
-         KyCX3IO0PQJvZ0PfbZ/AQO3xJQer0ZQZbS4wUfDxTuEhKvrVrr8kjKIAVx4EvM5NGm6u
-         9+SQ==
-X-Gm-Message-State: AOAM533wl+R7qwgHvFp8UiHLVIgmXFIB/UUp/ZXpXK4V9VnZrLIbddyL
-        VcCTlsITWjo46o/BYeaBmg4=
-X-Google-Smtp-Source: ABdhPJwvio3yV/N441QSrcirNKzw4JMG/w5WJMU/LzT2lCZcy5yv9u94TrxLbnaPAC4H6L0NAXXnIA==
-X-Received: by 2002:a62:7596:0:b029:197:de7a:b7a7 with SMTP id q144-20020a6275960000b0290197de7ab7a7mr18657170pfc.74.1606737954046;
-        Mon, 30 Nov 2020 04:05:54 -0800 (PST)
-Received: from localhost.localdomain ([182.226.226.37])
-        by smtp.googlemail.com with ESMTPSA id s65sm16268967pgb.78.2020.11.30.04.05.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Nov 2020 04:05:53 -0800 (PST)
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-X-Google-Original-From: Bongsu Jeon
-To:     krzk@kernel.org
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: [PATCH v2 net-next 4/4] net: nfc: s3fwrn5: Support a UART interface
-Date:   Mon, 30 Nov 2020 21:05:45 +0900
-Message-Id: <1606737945-29634-1-git-send-email-bongsu.jeon@samsung.com>
-X-Mailer: git-send-email 1.9.1
+        Mon, 30 Nov 2020 07:06:54 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Cl3pc3fQNz4wvn;
+        Mon, 30 Nov 2020 20:05:44 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 30 Nov 2020 20:06:09 +0800
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 30 Nov 2020 20:06:07 +0800
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.1913.007; Mon, 30 Nov 2020 12:06:05 +0000
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     yuzenghui <yuzenghui@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+CC:     "maz@kernel.org" <maz@kernel.org>, Linuxarm <linuxarm@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>
+Subject: RE: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
+Thread-Topic: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
+Thread-Index: AQHWxwOHViTg3pRnhkK4BwcYBC9AoqngkAwAgAAA12A=
+Date:   Mon, 30 Nov 2020 12:06:05 +0000
+Message-ID: <ae78e69ded9a45bf82832241560bcee0@huawei.com>
+References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
+ <f6e8ee71-f76b-428c-cd56-5bc93b1afafe@huawei.com>
+In-Reply-To: <f6e8ee71-f76b-428c-cd56-5bc93b1afafe@huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.52.130.129]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bongsu Jeon <bongsu.jeon@samsung.com>
-
-Since S3FWRN82 NFC Chip, The UART interface can be used.
-S3FWRN82 uses NCI protocol and supports I2C and UART interface.
-
-Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
----
-
- Changes in v2:
-   - remove the kfree(phy) because of duplicated free.
-   - use the phy_common blocks.
-   - wrap lines properly.
-
- drivers/nfc/s3fwrn5/Kconfig      |  12 +++
- drivers/nfc/s3fwrn5/Makefile     |   2 +
- drivers/nfc/s3fwrn5/phy_common.c |  12 +++
- drivers/nfc/s3fwrn5/phy_common.h |   1 +
- drivers/nfc/s3fwrn5/uart.c       | 197 +++++++++++++++++++++++++++++++++++++++
- 5 files changed, 224 insertions(+)
- create mode 100644 drivers/nfc/s3fwrn5/uart.c
-
-diff --git a/drivers/nfc/s3fwrn5/Kconfig b/drivers/nfc/s3fwrn5/Kconfig
-index 3f8b6da..8a6b1a7 100644
---- a/drivers/nfc/s3fwrn5/Kconfig
-+++ b/drivers/nfc/s3fwrn5/Kconfig
-@@ -20,3 +20,15 @@ config NFC_S3FWRN5_I2C
- 	  To compile this driver as a module, choose m here. The module will
- 	  be called s3fwrn5_i2c.ko.
- 	  Say N if unsure.
-+
-+config NFC_S3FWRN82_UART
-+        tristate "Samsung S3FWRN82 UART support"
-+        depends on NFC_NCI && SERIAL_DEV_BUS
-+        select NFC_S3FWRN5
-+        help
-+          This module adds support for a UART interface to the S3FWRN82 chip.
-+          Select this if your platform is using the UART bus.
-+
-+          To compile this driver as a module, choose m here. The module will
-+          be called s3fwrn82_uart.ko.
-+          Say N if unsure.
-diff --git a/drivers/nfc/s3fwrn5/Makefile b/drivers/nfc/s3fwrn5/Makefile
-index 6b6f52d..7da827a 100644
---- a/drivers/nfc/s3fwrn5/Makefile
-+++ b/drivers/nfc/s3fwrn5/Makefile
-@@ -5,6 +5,8 @@
- 
- s3fwrn5-objs = core.o firmware.o nci.o phy_common.o
- s3fwrn5_i2c-objs = i2c.o
-+s3fwrn82_uart-objs = uart.o
- 
- obj-$(CONFIG_NFC_S3FWRN5) += s3fwrn5.o
- obj-$(CONFIG_NFC_S3FWRN5_I2C) += s3fwrn5_i2c.o
-+obj-$(CONFIG_NFC_S3FWRN82_UART) += s3fwrn82_uart.o
-diff --git a/drivers/nfc/s3fwrn5/phy_common.c b/drivers/nfc/s3fwrn5/phy_common.c
-index 5cad1f4..497b02b 100644
---- a/drivers/nfc/s3fwrn5/phy_common.c
-+++ b/drivers/nfc/s3fwrn5/phy_common.c
-@@ -47,6 +47,18 @@ bool s3fwrn5_phy_power_ctrl(struct phy_common *phy, enum s3fwrn5_mode mode)
- }
- EXPORT_SYMBOL(s3fwrn5_phy_power_ctrl);
- 
-+void s3fwrn5_phy_set_mode(void *phy_id, enum s3fwrn5_mode mode)
-+{
-+	struct phy_common *phy = phy_id;
-+
-+	mutex_lock(&phy->mutex);
-+
-+	s3fwrn5_phy_power_ctrl(phy, mode);
-+
-+	mutex_unlock(&phy->mutex);
-+}
-+EXPORT_SYMBOL(s3fwrn5_phy_set_mode);
-+
- enum s3fwrn5_mode s3fwrn5_phy_get_mode(void *phy_id)
- {
- 	struct phy_common *phy = phy_id;
-diff --git a/drivers/nfc/s3fwrn5/phy_common.h b/drivers/nfc/s3fwrn5/phy_common.h
-index b98531d..99749c9 100644
---- a/drivers/nfc/s3fwrn5/phy_common.h
-+++ b/drivers/nfc/s3fwrn5/phy_common.h
-@@ -31,6 +31,7 @@ struct phy_common {
- 
- void s3fwrn5_phy_set_wake(void *phy_id, bool wake);
- bool s3fwrn5_phy_power_ctrl(struct phy_common *phy, enum s3fwrn5_mode mode);
-+void s3fwrn5_phy_set_mode(void *phy_id, enum s3fwrn5_mode mode);
- enum s3fwrn5_mode s3fwrn5_phy_get_mode(void *phy_id);
- 
- #endif /* __NFC_S3FWRN5_PHY_COMMON_H */
-diff --git a/drivers/nfc/s3fwrn5/uart.c b/drivers/nfc/s3fwrn5/uart.c
-new file mode 100644
-index 0000000..f5ac017
---- /dev/null
-+++ b/drivers/nfc/s3fwrn5/uart.c
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * UART Link Layer for S3FWRN82 NCI based Driver
-+ *
-+ * Copyright (C) 2015 Samsung Electronics
-+ * Robert Baldyga <r.baldyga@samsung.com>
-+ * Copyright (C) 2020 Samsung Electronics
-+ * Bongsu Jeon <bongsu.jeon@samsung.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/nfc.h>
-+#include <linux/netdevice.h>
-+#include <linux/of.h>
-+#include <linux/serdev.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+
-+#include "phy_common.h"
-+
-+#define S3FWRN82_NCI_HEADER 3
-+#define S3FWRN82_NCI_IDX 2
-+#define NCI_SKB_BUFF_LEN 258
-+
-+struct s3fwrn82_uart_phy {
-+	struct phy_common common;
-+	struct serdev_device *ser_dev;
-+	struct sk_buff *recv_skb;
-+};
-+
-+static int s3fwrn82_uart_write(void *phy_id, struct sk_buff *out)
-+{
-+	struct s3fwrn82_uart_phy *phy = phy_id;
-+	int err;
-+
-+	err = serdev_device_write(phy->ser_dev,
-+				  out->data, out->len,
-+				  MAX_SCHEDULE_TIMEOUT);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static const struct s3fwrn5_phy_ops uart_phy_ops = {
-+	.set_wake = s3fwrn5_phy_set_wake,
-+	.set_mode = s3fwrn5_phy_set_mode,
-+	.get_mode = s3fwrn5_phy_get_mode,
-+	.write = s3fwrn82_uart_write,
-+};
-+
-+static int s3fwrn82_uart_read(struct serdev_device *serdev,
-+			      const unsigned char *data,
-+			      size_t count)
-+{
-+	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-+	size_t i;
-+
-+	for (i = 0; i < count; i++) {
-+		skb_put_u8(phy->recv_skb, *data++);
-+
-+		if (phy->recv_skb->len < S3FWRN82_NCI_HEADER)
-+			continue;
-+
-+		if ((phy->recv_skb->len - S3FWRN82_NCI_HEADER)
-+				< phy->recv_skb->data[S3FWRN82_NCI_IDX])
-+			continue;
-+
-+		s3fwrn5_recv_frame(phy->common.ndev, phy->recv_skb,
-+				   phy->common.mode);
-+		phy->recv_skb = alloc_skb(NCI_SKB_BUFF_LEN, GFP_KERNEL);
-+		if (!phy->recv_skb)
-+			return 0;
-+	}
-+
-+	return i;
-+}
-+
-+static const struct serdev_device_ops s3fwrn82_serdev_ops = {
-+	.receive_buf = s3fwrn82_uart_read,
-+	.write_wakeup = serdev_device_write_wakeup,
-+};
-+
-+static const struct of_device_id s3fwrn82_uart_of_match[] = {
-+	{ .compatible = "samsung,s3fwrn82", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, s3fwrn82_uart_of_match);
-+
-+static int s3fwrn82_uart_parse_dt(struct serdev_device *serdev)
-+{
-+	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-+	struct device_node *np = serdev->dev.of_node;
-+
-+	if (!np)
-+		return -ENODEV;
-+
-+	phy->common.gpio_en = of_get_named_gpio(np, "en-gpios", 0);
-+	if (!gpio_is_valid(phy->common.gpio_en))
-+		return -ENODEV;
-+
-+	phy->common.gpio_fw_wake = of_get_named_gpio(np, "wake-gpios", 0);
-+	if (!gpio_is_valid(phy->common.gpio_fw_wake))
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static int s3fwrn82_uart_probe(struct serdev_device *serdev)
-+{
-+	struct s3fwrn82_uart_phy *phy;
-+	int ret = -ENOMEM;
-+
-+	phy = devm_kzalloc(&serdev->dev, sizeof(*phy), GFP_KERNEL);
-+	if (!phy)
-+		goto err_exit;
-+
-+	phy->recv_skb = alloc_skb(NCI_SKB_BUFF_LEN, GFP_KERNEL);
-+	if (!phy->recv_skb)
-+		goto err_free;
-+
-+	mutex_init(&phy->common.mutex);
-+	phy->common.mode = S3FWRN5_MODE_COLD;
-+
-+	phy->ser_dev = serdev;
-+	serdev_device_set_drvdata(serdev, phy);
-+	serdev_device_set_client_ops(serdev, &s3fwrn82_serdev_ops);
-+	ret = serdev_device_open(serdev);
-+	if (ret) {
-+		dev_err(&serdev->dev, "Unable to open device\n");
-+		goto err_skb;
-+	}
-+
-+	ret = serdev_device_set_baudrate(serdev, 115200);
-+	if (ret != 115200) {
-+		ret = -EINVAL;
-+		goto err_serdev;
-+	}
-+
-+	serdev_device_set_flow_control(serdev, false);
-+
-+	ret = s3fwrn82_uart_parse_dt(serdev);
-+	if (ret < 0)
-+		goto err_serdev;
-+
-+	ret = devm_gpio_request_one(&phy->ser_dev->dev, phy->common.gpio_en,
-+				    GPIOF_OUT_INIT_HIGH, "s3fwrn82_en");
-+	if (ret < 0)
-+		goto err_serdev;
-+
-+	ret = devm_gpio_request_one(&phy->ser_dev->dev,
-+				    phy->common.gpio_fw_wake,
-+				    GPIOF_OUT_INIT_LOW, "s3fwrn82_fw_wake");
-+	if (ret < 0)
-+		goto err_serdev;
-+
-+	ret = s3fwrn5_probe(&phy->common.ndev, phy, &phy->ser_dev->dev,
-+			    &uart_phy_ops);
-+	if (ret < 0)
-+		goto err_serdev;
-+
-+	return ret;
-+
-+err_serdev:
-+	serdev_device_close(serdev);
-+err_skb:
-+	kfree_skb(phy->recv_skb);
-+err_free:
-+err_exit:
-+	return ret;
-+}
-+
-+static void s3fwrn82_uart_remove(struct serdev_device *serdev)
-+{
-+	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
-+
-+	s3fwrn5_remove(phy->common.ndev);
-+	serdev_device_close(serdev);
-+	kfree_skb(phy->recv_skb);
-+}
-+
-+static struct serdev_device_driver s3fwrn82_uart_driver = {
-+	.probe = s3fwrn82_uart_probe,
-+	.remove = s3fwrn82_uart_remove,
-+	.driver = {
-+		.name = "s3fwrn82_uart",
-+		.of_match_table = of_match_ptr(s3fwrn82_uart_of_match),
-+	},
-+};
-+
-+module_serdev_device_driver(s3fwrn82_uart_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("UART driver for Samsung NFC");
-+MODULE_AUTHOR("Bongsu Jeon <bongsu.jeon@samsung.com>");
--- 
-1.9.1
-
+SGkgWmVuZ2h1aSwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiB5dXpl
+bmdodWkNCj4gU2VudDogMzAgTm92ZW1iZXIgMjAyMCAxMTo1MQ0KPiBUbzogU2hhbWVlcmFsaSBL
+b2xvdGh1bSBUaG9kaSA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tPjsNCj4g
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZy
+YWRlYWQub3JnDQo+IENjOiBtYXpAa2VybmVsLm9yZzsgTGludXhhcm0gPGxpbnV4YXJtQGh1YXdl
+aS5jb20+Ow0KPiBlcmljLmF1Z2VyQHJlZGhhdC5jb20NCj4gU3ViamVjdDogUmU6IFtQQVRDSF0g
+aXJxY2hpcC9naWMtdjM6IENoZWNrIFNSRSBiaXQgZm9yIEdJQ3YyIGxlZ2FjeSBzdXBwb3J0DQo+
+IA0KPiBIaSBTaGFtZWVyLA0KPiANCj4gT24gMjAyMC8xMS8zMCAxODoyNiwgU2hhbWVlciBLb2xv
+dGh1bSB3cm90ZToNCj4gPiBBdCBwcmVzZW50LCB0aGUgc3VwcG9ydCBmb3IgR0lDdjIgYmFja3dh
+cmQgY29tcGF0aWJpbGl0eSBvbiBHSUN2My92NA0KPiA+IGhhcmR3YXJlIGlzIGRldGVybWluZWQg
+YmFzZWQgb24gd2hldGhlciBEVC9BQ1BJIHByb3ZpZGVzIGEgbWVtb3J5DQo+ID4gbWFwcGVkIHBo
+eXMgYmFzZSBhZGRyZXNzIGZvciBHSUMgdmlydHVhbCBDUFUgaW50ZXJmYWNlIHJlZ2lzdGVyKEdJ
+Q1YpLg0KPiA+IFRoaXMgY3JlYXRlcyBhIHByb2JsZW0gdGhhdCBhIFFlbXUgZ3Vlc3QgYm9vdCB3
+aXRoIGRlZmF1bHQgR0lDKEdJQ3YyKQ0KPiA+IGhhbmdzIHdoZW4gZmlybXdhcmUgZmFsc2VseSBy
+ZXBvcnRzIHRoaXMgYWRkcmVzcyBvbiBzeXN0ZW1zIHRoYXQgZG9uJ3QNCj4gPiBoYXZlIHN1cHBv
+cnQgZm9yIGxlZ2FjeSBtb2RlLg0KPiANCj4gU28gdGhlIHByb2JsZW0gaXMgdGhhdCBCSU9TIGhh
+cyBwcm92aWRlZCB1cyBhIGJvZ3VzIEdJQ0MgU3RydWN0dXJlLg0KDQpZZXMuIEFuZCBrZXJuZWwg
+dXNlcyB0aGlzIGZpZWxkIHRvIGRldGVybWluZSB0aGUgbGVnYWN5IHN1cHBvcnQuDQoNCj4gDQo+
+ID4gQXMgcGVyIEdJQ3YzL3Y0IHNwZWMsIGluIGFuIGltcGxlbWVudGF0aW9uIHRoYXQgZG9lcyBu
+b3Qgc3VwcG9ydCBsZWdhY3kNCj4gPiBvcGVyYXRpb24sIGFmZmluaXR5IHJvdXRpbmcgYW5kIHN5
+c3RlbSByZWdpc3RlciBhY2Nlc3MgYXJlIHBlcm1hbmVudGx5DQo+ID4gZW5hYmxlZC4gVGhpcyBt
+ZWFucyB0aGF0IHRoZSBhc3NvY2lhdGVkIGNvbnRyb2wgYml0cyBhcmUgUkFPL1dJLiBIZW5jZQ0K
+PiA+IHVzZSB0aGUgSUNDX1NSRV9FTDEuU1JFIGJpdCB0byBkZWNpZGUgd2hldGhlciBoYXJkd2Fy
+ZSBzdXBwb3J0cyBHSUN2Mg0KPiA+IG1vZGUgaW4gYWRkaXRpb24gdG8gdGhlIGFib3ZlIGZpcm13
+YXJlIGJhc2VkIGNoZWNrLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2hhbWVlciBLb2xvdGh1
+bSA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+IE9u
+IEhpc2lsaWNvbiBEMDYsIFVFRkkgc2V0cyB0aGUgR0lDIE1BRFQgR0lDQyBnaWN2X2Jhc2VfYWRk
+cmVzcyBidXQgdGhlDQo+ID4gR0lDIGltcGxlbWVudGF0aW9uwqBvbiB0aGVzZSBib2FyZHMgZG9l
+c24ndCBoYXZlIHRoZSBHSUN2MiBsZWdhY3kgc3VwcG9ydC4NCj4gPiBUaGlzIHJlc3VsdHMgaW4s
+IEd1ZXN0IGJvb3QgaGFuZyB3aGVuIFFlbXUgdXNlcyB0aGUgZGVmYXVsdCBHSUMgb3B0aW9uLg0K
+PiA+DQo+ID4gV2l0aCB0aGlzIHBhdGNoLCB0aGUgUWVtdSBHdWVzdCB3aXRoIEdJQ3YyIG5vdyBn
+cmFjZWZ1bGx5IGV4aXRzLA0KPiA+ICAgInFlbXUtc3lzdGVtLWFhcmNoNjQ6IGhvc3QgZG9lcyBu
+b3Qgc3VwcG9ydCBpbi1rZXJuZWwgR0lDdjIgZW11bGF0aW9uIg0KPiA+DQo+ID4gTm90IHZlcnkg
+c3VyZSB0aGVyZSBpcyBhIGJldHRlciB3YXkgdG8gZGV0ZWN0IHRoaXMgb3RoZXIgdGhhbiBjaGVj
+a2luZw0KPiA+IHRoZSBTUkUgYml0IGFzIGRvbmUgaW4gdGhpcyBwYXRjaChPZiBjb3Vyc2UsIHdl
+IHdpbGwgYmUgZml4aW5nIHRoZSBVRUZJDQo+ID4gZ29pbmcgZm9yd2FyZCkuDQo+IA0KPiBZZXMs
+IEkgaGFkIHNlZW4gdGhlIHNhbWUgcHJvYmxlbSBvbiB0aGUgRDA2LiBCdXQgSSAqZG8qIHRoaW5r
+IGl0J3MgdGhlDQo+IGZpcm13YXJlIHRoYXQgYWN0dWFsbHkgbmVlZHMgdG8gYmUgZml4ZWQuDQoN
+CldlbGwsIEkgYW0gbm90IHN1cmUgSSBhZ3JlZSB3aXRoIHRoYXQuIFRoZSBBQ1BJIHNwZWMgNi4z
+LCBzZWN0aW9uIDUuMi4xMi4xNCwgc2F5cywNCiJJZiB0aGUgcGxhdGZvcm0gaXMgbm90IHByZXNl
+bnRpbmcgYSBHSUN2MiB3aXRoIHZpcnR1YWxpemF0aW9uIGV4dGVuc2lvbnMgdGhpcyANCmZpZWxk
+ICpjYW4qIGJlIDAiLiBTbyBkb27igJl0IHRoaW5rIGl0IG1hbmRhdGVzIHRoYXQuDQoNCj4gDQo+
+ID4gVGhhbmtzLA0KPiA+IFNoYW1lZXINCj4gPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9pcnFj
+aGlwL2lycS1naWMtdjMuYyB8IDMzICsrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLQ0K
+PiA+ICAgMSBmaWxlIGNoYW5nZWQsIDI4IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+
+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pcnFjaGlwL2lycS1naWMtdjMuYyBiL2RyaXZl
+cnMvaXJxY2hpcC9pcnEtZ2ljLXYzLmMNCj4gPiBpbmRleCAxNmZlY2MwZmViZTguLjE1ZmExZWVh
+NDVlNCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2lycWNoaXAvaXJxLWdpYy12My5jDQo+ID4g
+KysrIGIvZHJpdmVycy9pcnFjaGlwL2lycS1naWMtdjMuYw0KPiA+IEBAIC0xODM1LDYgKzE4MzUs
+MjcgQEAgc3RhdGljIHZvaWQgX19pbml0DQo+IGdpY19wb3B1bGF0ZV9wcGlfcGFydGl0aW9ucyhz
+dHJ1Y3QgZGV2aWNlX25vZGUgKmdpY19ub2RlKQ0KPiA+ICAgCW9mX25vZGVfcHV0KHBhcnRzX25v
+ZGUpOw0KPiA+ICAgfQ0KPiA+DQo+ID4gKy8qIFNSRSBiaXQgYmVpbmcgUkFPL1dJIGltcGxpZXMg
+bm8gR0lDdjIgbGVnYWN5IG1vZGUgc3VwcG9ydCAqLw0KPiANCj4gSSdtIHdvbmRlcmluZyBpZiB0
+aGlzIGlzIGEgbWFuZGF0ZSBvZiB0aGUgYXJjaGl0ZWN0dXJlLg0KDQpBcyBJIG1lbnRpb25lZCBh
+Ym92ZSwgSSBhbSBub3Qgc3VyZSB0aGlzIGlzIHRoZSBiZXN0IHdheSwgdGhvdWdoLA0Kc2VjdGlv
+biAxLjMuNSBvZiBHSUN2MyBzcGVjLCBzYXlzKGZvciBubyBsZWdhY3kgc3VwcG9ydCBjYXNlICJh
+ZmZpbml0eQ0Kcm91dGluZyBhbmQgc3lzdGVtIHJlZ2lzdGVyIGFjY2VzcyBhcmUgcGVybWFuZW50
+bHkgZW5hYmxlZC4gVGhpcyBtZWFucw0KdGhhdCB0aGUgYXNzb2NpYXRlZCBjb250cm9sIGJpdHMg
+YXJlIFJBTy9XSSINCg0KQnV0IGFnYWluIGxhdGVyIGluIHRoZSBzcGVjLCBpdCB1c2VzICJtaWdo
+dCBjaG9vc2UgdG8NCm1ha2UgdGhpcyBiaXQgUkFPL1dJIi4gU28gaXQgaXMgYXJndWFibGUgdGhh
+dCBpdCBtYW5kYXRlcyBpdCBvciBub3QuDQoNCkkgbGVhdmUgdGhhdCB0byBNYXJjIDopDQoNClRo
+YW5rcywNClNoYW1lZXIgDQoNCj4gPiBlbmFibGVkLg0KPiA+ICtzdGF0aWMgYm9vbCBfX2luaXQg
+Z2ljX2dpY3YyX2NvbXBhdGlibGUodm9pZCkNCj4gPiArew0KPiA+ICsJdTMyIG9yZywgdmFsOw0K
+PiA+ICsNCj4gPiArCW9yZyA9IGdpY19yZWFkX3NyZSgpOw0KPiA+ICsJaWYgKCEob3JnICYgSUND
+X1NSRV9FTDFfU1JFKSkNCj4gPiArCQlyZXR1cm4gdHJ1ZTsNCj4gPiArDQo+ID4gKwl2YWwgPSBv
+cmcgJiB+SUNDX1NSRV9FTDFfU1JFOw0KPiA+ICsJZ2ljX3dyaXRlX3NyZSh2YWwpOw0KPiA+ICsN
+Cj4gPiArCXZhbCA9IGdpY19yZWFkX3NyZSgpOw0KPiA+ICsJZ2ljX3dyaXRlX3NyZShvcmcpOw0K
+PiA+ICsNCj4gPiArCWlmICh2YWwgJiBJQ0NfU1JFX0VMMV9TUkUpDQo+ID4gKwkJcmV0dXJuIGZh
+bHNlOw0KPiA+ICsNCj4gPiArCXJldHVybiB0cnVlOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICAgc3Rh
+dGljIHZvaWQgX19pbml0IGdpY19vZl9zZXR1cF9rdm1faW5mbyhzdHJ1Y3QgZGV2aWNlX25vZGUg
+Km5vZGUpDQo+ID4gICB7DQo+ID4gICAJaW50IHJldDsNCj4gPiBAQCAtMTg1MSwxMCArMTg3Miwx
+MiBAQCBzdGF0aWMgdm9pZCBfX2luaXQgZ2ljX29mX3NldHVwX2t2bV9pbmZvKHN0cnVjdA0KPiBk
+ZXZpY2Vfbm9kZSAqbm9kZSkNCj4gPiAgIAkJCQkgJmdpY3ZfaWR4KSkNCj4gPiAgIAkJZ2ljdl9p
+ZHggPSAxOw0KPiA+DQo+ID4gLQlnaWN2X2lkeCArPSAzOwkvKiBBbHNvIHNraXAgR0lDRCwgR0lD
+QywgR0lDSCAqLw0KPiA+IC0JcmV0ID0gb2ZfYWRkcmVzc190b19yZXNvdXJjZShub2RlLCBnaWN2
+X2lkeCwgJnIpOw0KPiA+IC0JaWYgKCFyZXQpDQo+ID4gLQkJZ2ljX3YzX2t2bV9pbmZvLnZjcHUg
+PSByOw0KPiA+ICsJaWYgKGdpY19naWN2Ml9jb21wYXRpYmxlKCkpIHsNCj4gPiArCQlnaWN2X2lk
+eCArPSAzOwkvKiBBbHNvIHNraXAgR0lDRCwgR0lDQywgR0lDSCAqLw0KPiA+ICsJCXJldCA9IG9m
+X2FkZHJlc3NfdG9fcmVzb3VyY2Uobm9kZSwgZ2ljdl9pZHgsICZyKTsNCj4gPiArCQlpZiAoIXJl
+dCkNCj4gPiArCQkJZ2ljX3YzX2t2bV9pbmZvLnZjcHUgPSByOw0KPiA+ICsJfQ0KPiA+DQo+ID4g
+ICAJZ2ljX3YzX2t2bV9pbmZvLmhhc192NCA9IGdpY19kYXRhLnJkaXN0cy5oYXNfdmxwaXM7DQo+
+ID4gICAJZ2ljX3YzX2t2bV9pbmZvLmhhc192NF8xID0gZ2ljX2RhdGEucmRpc3RzLmhhc19ydnBl
+aWQ7DQo+ID4gQEAgLTIxNjQsNyArMjE4Nyw3IEBAIHN0YXRpYyB2b2lkIF9faW5pdCBnaWNfYWNw
+aV9zZXR1cF9rdm1faW5mbyh2b2lkKQ0KPiA+DQo+ID4gICAJZ2ljX3YzX2t2bV9pbmZvLm1haW50
+X2lycSA9IGlycTsNCj4gPg0KPiA+IC0JaWYgKGFjcGlfZGF0YS52Y3B1X2Jhc2UpIHsNCj4gPiAr
+CWlmIChnaWNfZ2ljdjJfY29tcGF0aWJsZSgpICYmIGFjcGlfZGF0YS52Y3B1X2Jhc2UpIHsNCj4g
+PiAgIAkJc3RydWN0IHJlc291cmNlICp2Y3B1ID0gJmdpY192M19rdm1faW5mby52Y3B1Ow0KPiA+
+DQo+ID4gICAJCXZjcHUtPmZsYWdzID0gSU9SRVNPVVJDRV9NRU07DQo+IA0KPiBUaGFua3MsDQo+
+IFplbmdodWkNCg==
