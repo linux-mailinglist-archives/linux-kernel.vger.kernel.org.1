@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FEC2C920A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 012B02C9200
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730931AbgK3XGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730281AbgK3XGw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:06:52 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E45AC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:06:12 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id l1so18584724wrb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:06:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=HwnFymWMQTV9oikYfEqk9Alj6I5f+hN6S3yVGaHyZC0=;
-        b=s0zassctoH8n02oQHks/DKQgmIxXJvp0+pGaAJ5Z7zstCbNvY1h+lryQqKeFU4ArEw
-         2vTRujPBkS8+7Fxxme6nYq1CJt3xeb4Bd+bUmED+2CAxS/hSZBYTD/0Yaakq9xhXfMgN
-         zvPPk0YfEXz0mLIExfdcvywGG8sbt9xXisC/p/Z7t3VexAuZBy5TTUL5yyxjiaEqRhfS
-         aL3eyWdd0otiJD2JfZCF/bpcn8nXfLm3dzhr5kbPObt1fESzVbdgHSikvb9h4d/XXnH/
-         MlhrW6KHA9pymEzxZeflRC9xhzc0vqKJhf9mZJ+AMkKLBx9Y2dgGL7oe64fEs8xogUow
-         IAlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=HwnFymWMQTV9oikYfEqk9Alj6I5f+hN6S3yVGaHyZC0=;
-        b=CCylqSGgkcJvD6YdgFKBZFFDjXd7ntKYuN4ymDQrbQOmK6AfEx/WQ9VoPScbBViM9b
-         MEHO9M4N8SN1T/u2njZ5emAvn4yYB515ZgSy3EWa9EBYNYYFKsAHyZlIZ5XPACZzloLV
-         60//ZF8x/ACkzHhPQp/zciCFkm1JYnSv+dwJvCbtxY3oBEXSIrG0ExHgGKhe0bfystyN
-         tgzQ4yCKntm2D1lMP+cCnH7xGQvQBRAgtDeyYfzRonTIW2wSNPIj+yGAV54SE1ebOFge
-         YRkjZkS//jDmD9QHB2FR/HoSET/hSDoNww/XIv1ID83LDyCB4KnGLCIAOdaKPicCNcKG
-         OMrQ==
-X-Gm-Message-State: AOAM530NYLNqyFZft4y40Tj3g+zy7SoJvtXBOJ+S76PLpGCeybI2rQwp
-        eWQNFaF2TuuCXvbmsHw0HdSaUsaHkIyXWQ==
-X-Google-Smtp-Source: ABdhPJwjJU070XxJynPiqttnwBLHDlKswKPyoUaRS3l5vHPhaQdcULTnfMTuiYnFTst9gDkx5n56rw==
-X-Received: by 2002:adf:f84b:: with SMTP id d11mr31419411wrq.216.1606777570513;
-        Mon, 30 Nov 2020 15:06:10 -0800 (PST)
-Received: from rum-mikhail-dt.world.mentorg.com (nat-rum.mentorg.com. [139.181.33.34])
-        by smtp.gmail.com with ESMTPSA id p4sm30427985wrm.51.2020.11.30.15.06.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Nov 2020 15:06:10 -0800 (PST)
-From:   mdurnev@gmail.com
-X-Google-Original-From: mikhail_durnev@mentor.com
-To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        noralf@tronnes.org
-Cc:     mikhail_durnev@mentor.com
-Subject: [PATCH v2 3/3] dt-bindings: panel: Add bindings for MRB2801
-Date:   Tue,  1 Dec 2020 09:05:36 +1000
-Message-Id: <1606777536-14783-4-git-send-email-mikhail_durnev@mentor.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606777536-14783-1-git-send-email-mikhail_durnev@mentor.com>
-References: <1606777536-14783-1-git-send-email-mikhail_durnev@mentor.com>
+        id S1730269AbgK3XGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:06:32 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33263 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725861AbgK3XGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:06:31 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ClLSD4Hn6z9sSf;
+        Tue,  1 Dec 2020 10:05:48 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606777548;
+        bh=j10y7Pia6yomnRBQd0edKArcsyQ5ywX/FomootgRMRg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lDdnXWaInkR7f2reF2WiYBuP5k20/DDjrLGXZSOrK+qznDGzldRo2m3GqWNWm8+iw
+         f1RBGyq0ohNkFVQ6h8Lk92XJt+aQOOQan5bnwxWeCCg6IFDH9C/hoqh+2+qHIAHeBe
+         gyODtqAC+XWA6a1G4FBAcOkUTNQeVJDkp5qsyZjQf2/bbaPJhJ4q3Gr15Lt/5m03vS
+         134SeAAs1Tt2PhdQFvxOffuzFx2Het/A7u49ZHvUQBFjiL4La4TQKrbvgr5i035yW9
+         akqBvymqwX90H/w3mbtibt+V2Q2QGv1qbbfIlrvdUWkMMMA9pEsGbLWN7RETy7KHIj
+         sBpJknsSmScIg==
+Date:   Tue, 1 Dec 2020 10:05:47 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>
+Subject: linux-next: manual merge of the arm64 tree with the arm64-fixes
+ tree
+Message-ID: <20201201100547.16b07093@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/cgelLJKHZ9l2WYmmiiAMwH5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikhail Durnev <mikhail_durnev@mentor.com>
+--Sig_/cgelLJKHZ9l2WYmmiiAMwH5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Add binding for Ronbo MRB2801 display module.
+Hi all,
 
-This binding is for display panels using an Ilitek ILI9341 controller in
-parallel mode.
+Today's linux-next merge of the arm64 tree got a conflict in:
 
-Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
----
- .../devicetree/bindings/display/ronbo,mrb2801.txt  | 42 ++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/ronbo,mrb2801.txt
+  arch/arm64/include/asm/exception.h
 
-diff --git a/Documentation/devicetree/bindings/display/ronbo,mrb2801.txt b/Documentation/devicetree/bindings/display/ronbo,mrb2801.txt
-new file mode 100644
-index 0000000..db1a861e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/ronbo,mrb2801.txt
-@@ -0,0 +1,42 @@
-+MRB2801 display panel
-+
-+This binding is for display panels using an Ilitek ILI9341 controller in
-+parallel mode.
-+
-+Required properties:
-+- compatible:		"ronbo,mrb2801"
-+- dc-gpios:		D/C pin
-+- wr-gpios:		W/R pin
-+- db-gpios:		8 or 16 DB pins
-+- reset-gpios:		Reset pin
-+- wr-up-down-delays:	Delays in ns for changing W/R from down to up and from up to down
-+
-+Optional properties:
-+- backlight:	phandle of the backlight device attached to the panel
-+- rotation:	panel rotation in degrees counter clockwise (0,90,180,270)
-+
-+Example:
-+	mrb2801{
-+		compatible = "ronbo,mrb2801";
-+		db-gpios = <&gpio 17 0>, /* DB0 */
-+			   <&gpio 18 0>, /* DB1 */
-+			   <&gpio 27 0>, /* DB2 */
-+			   <&gpio 22 0>, /* DB3 */
-+			   <&gpio 23 0>, /* DB4 */
-+			   <&gpio 24 0>, /* DB5 */
-+			   <&gpio 25 0>, /* DB6 */
-+			   <&gpio  4 0>, /* DB7 */
-+			   <&gpio 14 0>, /* DB8 */
-+			   <&gpio 15 0>, /* DB9 */
-+			   <&gpio  5 0>, /* DB10 */
-+			   <&gpio  6 0>, /* DB11 */
-+			   <&gpio 13 0>, /* DB12 */
-+			   <&gpio 19 0>, /* DB13 */
-+			   <&gpio 26 0>, /* DB14 */
-+			   <&gpio 12 0>; /* DB15 */
-+		dc-gpios = <&gpio 16 0>; /* D/C */
-+		wr-gpios = <&gpio 20 0>; /* W/R */
-+		wr-up-down-delays = <10 51>;
-+		reset-gpios = <&gpio 21 0>; /* RST */
-+		backlight = <&backlight>;
-+	};
--- 
-2.7.4
+between commits:
 
+  23529049c684 ("arm64: entry: fix non-NMI user<->kernel transitions")
+  f0cd5ac1e4c5 ("arm64: entry: fix NMI {user, kernel}->kernel transitions")
+
+from the arm64-fixes tree and commit:
+
+  dceec3ff7807 ("arm64: expose FAR_EL1 tag bits in siginfo")
+
+from the arm64 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/include/asm/exception.h
+index 0756191f44f6,2a8aa1884d8a..000000000000
+--- a/arch/arm64/include/asm/exception.h
++++ b/arch/arm64/include/asm/exception.h
+@@@ -31,13 -31,8 +31,13 @@@ static inline u32 disr_to_esr(u64 disr
+  	return esr;
+  }
+ =20
+ +asmlinkage void noinstr enter_el1_irq_or_nmi(struct pt_regs *regs);
+ +asmlinkage void noinstr exit_el1_irq_or_nmi(struct pt_regs *regs);
+  asmlinkage void enter_from_user_mode(void);
+ +asmlinkage void exit_to_user_mode(void);
+ +void arm64_enter_nmi(struct pt_regs *regs);
+ +void arm64_exit_nmi(struct pt_regs *regs);
+- void do_mem_abort(unsigned long addr, unsigned int esr, struct pt_regs *r=
+egs);
++ void do_mem_abort(unsigned long far, unsigned int esr, struct pt_regs *re=
+gs);
+  void do_undefinstr(struct pt_regs *regs);
+  void do_bti(struct pt_regs *regs);
+  asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int e=
+sr);
+
+--Sig_/cgelLJKHZ9l2WYmmiiAMwH5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/FessACgkQAVBC80lX
+0GwIbwf/ajXfI7wh01FSX0MpaI4707DMIiT/9GiT1UnA3nWQKOZ8g5OLPVVDuXuv
+GFHCUpQ7z5tOcAfReKjl62fgMHveUGvP7Ee4eYynq9ufrcwcMLBPaRxpmQFHWQVV
+RPsq433K+cVo0s1EaZbaiNZuZnt35GKSd3AKktGamENz4He6PiAaCvTRxfXPK1WE
+81ognDt5ZdFcSN+XMZfPX6HbtphtaIzlPkCIJfulGC04WMLd2z7r9DGNo5c6HYmr
+WlZ5Ec0WC8aDCMmnayxUVyN+LGMB8xtAwy5JU7tCWvCRze3m0LJoG4eG+XyYKgia
+rZMQDAOvZfkpw5/I4yRqwOzlt/BG8g==
+=rvbK
+-----END PGP SIGNATURE-----
+
+--Sig_/cgelLJKHZ9l2WYmmiiAMwH5--
