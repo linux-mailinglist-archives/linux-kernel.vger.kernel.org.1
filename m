@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF05F2C8CB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58542C8CBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388141AbgK3SYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:24:43 -0500
-Received: from mga04.intel.com ([192.55.52.120]:49189 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388042AbgK3SYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:24:42 -0500
-IronPort-SDR: cO21u1Gs+DIDkXtOZoOyHp0t7zlXfN0XdDOytcT6fIGuDmCF48YE4QNq2aISQ9Qkd89HvTOXit
- ugI1mHvlY/Uw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="170121653"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="170121653"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 10:23:01 -0800
-IronPort-SDR: LAL3B3M6tmBMESxAftDHo+ddvK6h6BnOG2TFM/LinWKrkXwNlECJjHz7mgl8VAqV6rcS2o9R6t
- /VlLQBNZwEtw==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="345161635"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 10:22:54 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjnq6-00B6WE-RI; Mon, 30 Nov 2020 20:23:54 +0200
-Date:   Mon, 30 Nov 2020 20:23:54 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 14/18] acpi: utils: Add function to fetch dependent
- acpi_devices
-Message-ID: <20201130182354.GW4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-15-djrscally@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-15-djrscally@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1729282AbgK3S1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:27:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726860AbgK3S1Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:27:24 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4F5C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:26:44 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id t17so8978131qtp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:26:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=6SFHLyZ3sYbDiiVwNR+ATp4H+5haS+q2T/30J+JE944=;
+        b=HXnKmZeegOvioqXFTHGTnMqqFxXIIS2G5aSFawvr65GXD6hsY1at652t2aakKQq3wY
+         mR3ivCMZRjLWyhxqBFZm3XMSY3kDaAqZtHFO5tMSHytAn9aVyuIZE6M29hFeuay85mGt
+         j608Ulf40muXTaisF0CLSR3KqERAP1A2iQ0+gY7iSb6zOIxch8wxH/aSU9KtGku/+7Mw
+         7aFwq/I/5tGqO+VV2V7cs4G7GIHl1uHiLnoCSU2sNVYZfkt4ktoi9+5iA5HaD5+6oPOO
+         tt6JMECHyQek1Yb+OJyax1gmOAS8N5b9PLsR+XKDuMOY+R3ZKcbCRVSu1CY+lUcFrrOs
+         w8YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=6SFHLyZ3sYbDiiVwNR+ATp4H+5haS+q2T/30J+JE944=;
+        b=GOP5IzJIqEKFmiCFHHPbEWUnbZPCibs7hFwqr0vgTSo5oEC4yCqqIDbk8+QWre0bRH
+         Wu6xOYK8usMpEZ+b2PkG0z0YO/gkE3K9OMpjD84FYwHVNpL+Laa4BYJONOr5EMN0KLho
+         r+asy1Pk3/Juuxz8SSK8sUXdNg9hUZd3QzV7Arq/8oc2XZpZptgFwTyVtX5cqdbTSr9V
+         XoYi4VpqxHEPewZgbZV67fPpRN+XU8IROUvCv+a3yk4VigpqsAJ/VMkOXDttLZd3SXfM
+         McoWE6Dm9vvIYA2RLTXXMJ0MFCbBFyOiZHsj5XPPYG/hcFgF11hoNQ+U3bg/5qfWyUq4
+         2cNw==
+X-Gm-Message-State: AOAM530HczHUk+a6lo45Gcwqv84b03o8Y/IbeYFnwvhlOAWhCczalgnh
+        hLfAgrfQ/EaUINhwup9ckRmlHHuacBIyx3/mYpM=
+X-Google-Smtp-Source: ABdhPJwEFYmPhF4lZX+VLouAsYcNBU1HIibgMDwU7Z53jyjWOKipNANeGUcQch3Yt7aZHBRiC/6Px6iAWQk0t07O8CY=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:9e43:: with SMTP id
+ z3mr24290731qve.2.1606760803272; Mon, 30 Nov 2020 10:26:43 -0800 (PST)
+Date:   Mon, 30 Nov 2020 10:26:41 -0800
+In-Reply-To: <20201110162211.9207-2-yu-cheng.yu@intel.com>
+Message-Id: <20201130182641.29812-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20201110162211.9207-2-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: RE: [PATCH v15 01/26] Documentation/x86: Add CET description
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     yu-cheng.yu@intel.com
+Cc:     Dave.Martin@arm.com, arnd@arndb.de, bp@alien8.de,
+        bsingharora@gmail.com, corbet@lwn.net, dave.hansen@linux.intel.com,
+        esyr@redhat.com, fweimer@redhat.com, gorcunov@gmail.com,
+        hjl.tools@gmail.com, hpa@zytor.com, jannh@google.com,
+        keescook@chromium.org, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
+        mike.kravetz@oracle.com, mingo@redhat.com, nadav.amit@gmail.com,
+        oleg@redhat.com, pavel@ucw.cz, pengfei.xu@intel.com,
+        peterz@infradead.org, ravi.v.shankar@intel.com,
+        rdunlap@infradead.org, tglx@linutronix.de,
+        vedvyas.shanbhogue@intel.com, weijiang.yang@intel.com,
+        x86@kernel.org, maskray@google.com, llozano@google.com,
+        clang-built-linux@googlegroups.com, erich.keane@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:31:25PM +0000, Daniel Scally wrote:
-> ACPI devices declare themselves dependent on other devices via the _DEP
-> buffer. Fetching the dependee from dependent is a matter of parsing
-> _DEP, but currently there's no method to fetch dependent from dependee.
-> Add one, so we can parse sensors dependent on a PMIC from the PMIC's
-> acpi_driver.
+(In response to https://lore.kernel.org/lkml/20201110162211.9207-2-yu-cheng.yu@intel.com/)
 
-Do I understand correctly that it's an existing table provided by firmware that
-(ab)uses _DEP in such way? Note, the specification doesn't tell we may use it
-in this way, OTOH I don't remember if it strictly forbids such use.
+> These need to be enabled to build a CET-enabled kernel, and Binutils v2.31
+> and GCC v8.1 or later are required to build a CET kernel.
 
-So, please elaborate in the commit message why you need this and pint out to
-the 6.5.8 "_DEP (Operation Region Dependencies)" which clearly says about
-OpRegions and that part already supported by ACPI in the Linux, if I'm not
-mistaken, need to refresh my memory.
+What about LLVM? Surely CrOS might be of interest to ship this on (we ship the
+equivalent for aarch64 on Android).
 
-...
+> An application's CET capability is marked in its ELF header and can be
+> verified from the following command output, in the NT_GNU_PROPERTY_TYPE_0
+> field:
+>
+>     readelf -n <application> | grep SHSTK
+>         properties: x86 feature: IBT, SHSTK
 
-> +	handle = adev->handle;
-> +
-> +	if (!acpi_has_method(handle, "_DEP"))
-> +		return 0;
-> +
-> +	status = acpi_evaluate_reference(handle, "_DEP", NULL, &dep_handles);
-> +	if (ACPI_FAILURE(status))
-> +		return 0;
-> +
-> +	for (i = 0; i < dep_handles.count; i++) {
-> +		struct acpi_device_info *info;
-> +
-> +		status = acpi_get_object_info(dep_handles.handles[i], &info);
-> +		if (ACPI_FAILURE(status))
-> +			continue;
-> +
-> +		if (info->valid & ACPI_VALID_HID) {
-> +			ret = acpi_bus_get_device(dep_handles.handles[i], &candidate);
-> +			if (ret || !candidate) {
-> +				kfree(info);
-> +				continue;
-> +			}
-> +
-> +			if (candidate == dependee) {
-> +				acpi_dev_put(candidate);
-> +				kfree(info);
-> +				return 1;
-> +			}
-> +
-> +			kfree(info);
-> +		}
-> +	}
-
-Can you utilize (by moving to here and export for ACPI layer the
-acpi_lpss_dep()?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Same for llvm-readelf.
