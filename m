@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6862C7E37
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED36C2C7E3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgK3G2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 01:28:32 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11717 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgK3G2c (ORCPT
+        id S1727084AbgK3Ga7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 01:30:59 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:37163 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgK3Ga6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 01:28:32 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc490e50000>; Sun, 29 Nov 2020 22:27:49 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 30 Nov
- 2020 06:27:50 +0000
-Date:   Mon, 30 Nov 2020 08:27:46 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     <jasowang@redhat.com>, <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <lulu@redhat.com>
-Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
-Message-ID: <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx>
-References: <20201129064351.63618-1-elic@nvidia.com>
- <20201129150505-mutt-send-email-mst@kernel.org>
+        Mon, 30 Nov 2020 01:30:58 -0500
+Received: by mail-il1-f200.google.com with SMTP id u17so9324947ilb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:30:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SsdBbZBVHy6xJ9WVayx5nina7iNWnHndy2OV1R2nZ5U=;
+        b=uG6ApPYnMTEY49KfzB/puPu+FjnjqHMXLAuuYUpQ2ksRKtQLRKzSGa9Q4boRSfyUhG
+         1oYMRr5nB0lnjIhYEmipzkORJtOwutod9FhyWwaKogMjQH7nHcChpzSTW5vmifnNJk1C
+         oVe3D+OK3EZoAlkyuPMkJmlJesy9VlJ3vIehUvobfQT5RyNQtVOeu+gkVPaohnWzGVUV
+         pxC9QZ6+bLnasDJmIGimKv6Oou5MpWITWK6zBrt4DyrbPDIRvarrzm1FxnNkUq7B1ngn
+         t5D6xWhcV7qKuojBZfznKm5f/9fw0U/MVXo1JazVC5BslXLgxZ35CMc/9LfpVt+rekSF
+         d+6w==
+X-Gm-Message-State: AOAM533f50nyezB+L8dRL1e48YfsRZ03mUjd7iIo7sMIdKyTHHl7BH4u
+        8iV4FlAVtnnf+c4hwqetjDdhBwIuXRhjNycWcQ0ixkd21BvY
+X-Google-Smtp-Source: ABdhPJwcn4tsvmDvq8LHtAHc1nbF04dn839mNQU6ZCzx3edV8QoxeguzHEyKM5IGA6WpXY+LQj4Eh0jzxhovR9FMTVIq+VYFnsq8
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201129150505-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606717669; bh=ep9xTG9sNfYfcrW8BqNPTsulOQslIrId4k0wujUhtZc=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=oy2DY1XEi3jJ/CrspVcFyjYYePbBTPpX94JbePeIm2YqNzfVKnmk/u1hJKDOFc3LF
-         Qp5gN75HaR2mvIoG7TCm94ATfcCA/yOSwaSa2nYc1i0sV1Zj6Pk2PEYsDnyEvVzhZ1
-         UjKsmz/zScxxyb9YbDE9cP8hVz/zZLylZO1f7weMmcyw2g8EOtbEiKjvBaBa53F2bY
-         44smooH0EzWebhxskwDvTSyEIJm/UUp36l4s9mGtQ0IJncwaLzo+9qeKvTuucc8clM
-         7vrousy9j5cUNSmLmj6CzvYUoYi0JyBZEx6SHqN5kyKSKHz9xj6baqrXvkpC4TzJL8
-         WxaR1QBMMj9iw==
+X-Received: by 2002:a05:6e02:1207:: with SMTP id a7mr17560369ilq.29.1606717817336;
+ Sun, 29 Nov 2020 22:30:17 -0800 (PST)
+Date:   Sun, 29 Nov 2020 22:30:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c1b9d105b54d2429@google.com>
+Subject: general protection fault in l2cap_chan_timeout
+From:   syzbot <syzbot+e7edf1d784c283324076@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wrote:
-> On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
-> > We should not try to use the VF MAC address as that is used by the
-> > regular (e.g. mlx5_core) NIC implementation. Instead, use a random
-> > generated MAC address.
-> > 
-> > Suggested by: Cindy Lu <lulu@redhat.com>
-> > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> 
-> I didn't realise it's possible to use VF in two ways
-> with and without vdpa.
+Hello,
 
-Using a VF you can create quite a few resources, e.g. send queues
-recieve queues, virtio_net queues etc. So you can possibly create
-several instances of vdpa net devices and nic net devices.
+syzbot found the following issue on:
 
-> Could you include a bit more description on the failure
-> mode?
+HEAD commit:    fa02fcd9 Merge tag 'media/v5.10-2' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a36fa5500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
+dashboard link: https://syzkaller.appspot.com/bug?extid=e7edf1d784c283324076
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
 
-Well, using the MAC address of the nic vport is wrong since that is the
-MAC of the regular NIC implementation of mlx5_core.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> Is switching to a random mac for such an unusual
-> configuration really justified?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e7edf1d784c283324076@syzkaller.appspotmail.com
 
-Since I can't use the NIC's MAC address, I have two options:
-1. To get the MAC address as was chosen by the user administering the
-   NIC. This should invoke the set_config callback. Unfortunately this
-   is not implemented yet.
+general protection fault, probably for non-canonical address 0xdffffc000000005a: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000002d0-0x00000000000002d7]
+CPU: 1 PID: 16756 Comm: kworker/1:8 Not tainted 5.10.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events l2cap_chan_timeout
+RIP: 0010:__mutex_lock_common+0x9b/0x2f20 kernel/locking/mutex.c:938
+Code: 8a bc 24 28 01 00 00 83 3d 01 69 0f 06 00 75 34 48 8b 44 24 08 48 8d 78 60 48 89 f8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 05 e8 ba 7f 77 f8 48 8b 44 24 08 48 39 40 60 0f 85
+RSP: 0018:ffffc9000245fb78 EFLAGS: 00010206
+RAX: 000000000000005a RBX: ffff8880708d8110 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000002d0
+RBP: 0000000000000000 R08: ffffffff8876a063 R09: 0000000000000000
+R10: fffffbfff1a1c3ee R11: 0000000000000000 R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffff8880b9d33c00
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffde459fd3c CR3: 00000000186a5000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __mutex_lock kernel/locking/mutex.c:1103 [inline]
+ mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1118
+ l2cap_chan_timeout+0x53/0x280 net/bluetooth/l2cap_core.c:422
+ process_one_work+0x789/0xfc0 kernel/workqueue.c:2272
+ worker_thread+0xaa4/0x1460 kernel/workqueue.c:2418
+ kthread+0x39a/0x3c0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace c01f537d4b85904a ]---
+RIP: 0010:__mutex_lock_common+0x9b/0x2f20 kernel/locking/mutex.c:938
+Code: 8a bc 24 28 01 00 00 83 3d 01 69 0f 06 00 75 34 48 8b 44 24 08 48 8d 78 60 48 89 f8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 05 e8 ba 7f 77 f8 48 8b 44 24 08 48 39 40 60 0f 85
+RSP: 0018:ffffc9000245fb78 EFLAGS: 00010206
+RAX: 000000000000005a RBX: ffff8880708d8110 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000002d0
+RBP: 0000000000000000 R08: ffffffff8876a063 R09: 0000000000000000
+R10: fffffbfff1a1c3ee R11: 0000000000000000 R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffff8880b9d33c00
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbbcfa32740 CR3: 000000006d47f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-2. Use a random MAC address. This is OK since if (1) is implemented it
-   can always override this random configuration.
 
-> It looks like changing a MAC could break some guests,
-> can it not?
->
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-No, it will not. The current version of mlx5 VDPA does not allow regular
-NIC driver and VDPA to co-exist. I have patches ready that enable that
-from steering point of view. I will post them here once other patches on
-which they depend will be merged.
-
-https://patchwork.ozlabs.org/project/netdev/patch/20201120230339.651609-12-saeedm@nvidia.com/
- 
-> > ---
-> >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > index 1fa6fcac8299..80d06d958b8b 100644
-> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > @@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
-> >  	if (err)
-> >  		goto err_mtu;
-> >  
-> > -	err = mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
-> > -	if (err)
-> > -		goto err_mtu;
-> > -
-> > +	eth_random_addr(config->mac);
-> >  	mvdev->vdev.dma_dev = mdev->device;
-> >  	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
-> >  	if (err)
-> > -- 
-> > 2.26.2
-> 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
