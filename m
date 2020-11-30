@@ -2,185 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C382C8B92
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0D52C8B90
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387834AbgK3Rop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:44:45 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47036 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgK3Roo (ORCPT
+        id S2387830AbgK3Rof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:44:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387624AbgK3Roe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:44:44 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AUHgwKd087139;
-        Mon, 30 Nov 2020 11:42:58 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1606758178;
-        bh=ebyvGHgxYnsMErdJ7gl06ypcszQPPlEmdBFZ0QPGf0U=;
-        h=Date:From:To:CC:Subject;
-        b=EiABBD0jP87tzD9BLjSF7xJCPEH8/OQhsIvpGRcGijW0P53GLquyehIXvuRdeUEZl
-         SGrDBPNixvZFUew7UJWoMLX14BLmsQhx3V4kP2hSd4+iig7jHTYcAtOka/LHIUnOhH
-         wSUVkgnjudvmRn2H9BMEFDB93OlCQEXHdVA+UHMA=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AUHgwmu084893
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 11:42:58 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 30
- Nov 2020 11:42:58 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 30 Nov 2020 11:42:58 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AUHgwIn011091;
-        Mon, 30 Nov 2020 11:42:58 -0600
-Date:   Mon, 30 Nov 2020 11:42:58 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     <t-kristo@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] arm64: TI K3 DT updates for v5.11
-Message-ID: <20201130174258.ljsiokkyr7x7tsbd@covenant>
+        Mon, 30 Nov 2020 12:44:34 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD60C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:43:48 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id t18so6899175plo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:43:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cfvABh5YtxZzQmbDgFIM5w7aNHd2XpaihkN8Q1Q54fY=;
+        b=eBpofPo6jUPwdd7vhwDA4D0nGZnCcbEyGiw1pp0EPAIQZo0Ux5LUT3JvFqGSKIS8SW
+         zYbpeLI21jpJ9nzpqXVAuyVGRHCIVP5AA32GIJu8Vo0r6Ve9DJgFQwgjOvcHZCkY2ehT
+         wRXqtRtASuBo/PVZm3KYlZmWzzCsjuEF0WGeGDi2A+Q3WxD4OIqZ0BlR89xRZIa3LJGj
+         2OMS43lDhGBCyGLj1M6mu0R+E3Tk1yPpZS0ExvT49kPgxeVqxkNOzse664cwJUrRbppV
+         Lgp7OCMBs0dXOAHRHDBD3ADuA6ok8XcAeeaQE1gA95dXV+TOJ4HuIU/wcBSChNz2d0/C
+         4Nvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cfvABh5YtxZzQmbDgFIM5w7aNHd2XpaihkN8Q1Q54fY=;
+        b=EWgp1EVqVGLw2EwVPwRoRVbc2Hkgwm3GNi3pqjfl3Nbk1t4T70EX3EGIKVYuFUUT8g
+         lW0Kh3Dr/d2ywitkFo1sPOkHlkxFfqz52kNXodN5VpDgJKlOfxiUA4o/uLw5K/o9DMgs
+         WFRuZjBXjcMAzQigMt9JDJ5L7Z1zA+cUu3EPxyfiLacz14P8zHHNfaTaPnhUX8WOhApz
+         wy4b6qx/ccr6DT2OKZAobeJfjOnaZPFy4FBAz8+hx7668gDcsZyl40n/bYkfmPwde0wo
+         PJD9oBEpAJVJFsjrIYMvZHXerx+6domsKwrnuTNQSb9xB9bSAkj/Azkrkj8QlPMWGyZI
+         vyog==
+X-Gm-Message-State: AOAM530niEH4noCSoZkTXk0jUi1+0kMgGS/2UU686j/J5wEtx++H+G6P
+        2yjRSrse1+IQ3PPFcMvzNpA7gQ==
+X-Google-Smtp-Source: ABdhPJzehmwislTaveO+CTBpzGV99y1f6VKoCdcIA7lhlKYNzzPb1uiCyvJVt72jObzPhR74JiHDgQ==
+X-Received: by 2002:a17:902:a5c1:b029:da:1140:df85 with SMTP id t1-20020a170902a5c1b02900da1140df85mr19898472plq.46.1606758228271;
+        Mon, 30 Nov 2020 09:43:48 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id n20sm16480570pgb.77.2020.11.30.09.43.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 09:43:47 -0800 (PST)
+Subject: Re: KASAN: use-after-free Read in idr_for_each (2)
+To:     Matthew Wilcox <willy@infradead.org>,
+        Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+12056a09a0311d758e60@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000ca835605b0e8a723@google.com>
+ <20201129113429.13660-1-hdanton@sina.com>
+ <20201129122600.GA4327@casper.infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <851bd25a-ff64-3d3a-f1f5-f9e4f83c2dab@kernel.dk>
+Date:   Mon, 30 Nov 2020 10:43:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lc77dsi6dcg2y3ab"
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201129122600.GA4327@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---lc77dsi6dcg2y3ab
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 11/29/20 5:26 AM, Matthew Wilcox wrote:
+> On Sun, Nov 29, 2020 at 07:34:29PM +0800, Hillf Danton wrote:
+>>>  radix_tree_next_slot include/linux/radix-tree.h:422 [inline]
+>>>  idr_for_each+0x206/0x220 lib/idr.c:202
+>>>  io_destroy_buffers fs/io_uring.c:8275 [inline]
+>>
+>> Matthew, can you shed any light on the link between the use of idr
+>> routines and the UAF reported?
+> 
+> I presume it's some misuse of IDR by io_uring.  I'd rather io_uring
+> didn't use the IDR at all.  This compiles; I promise no more than that.
 
-Hi,
+Looks reasonable to me. Care to send as an actual patch?
 
-Please pull the following for TI K3 dts changes for v5.11 window.
+This would just leave the personality idr as the last idr use case in
+io_uring, hint hint :-)
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Would be nice to fully understand why this issue exists with idr, I
+don't immediately see anything wrong. But as I cannot even reproduce, I
+can't verify that the xa version is sane wrt fixing it either...
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+-- 
+Jens Axboe
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git tags/ti-k3=
--dt-for-v5.11
-
-for you to fetch changes up to cd48ce86a4d0c1ffec86aa46a26da993c9af5f53:
-
-  arm64: dts: ti: k3-j721e-common-proc-board: Add support for SD card UHS m=
-odes (2020-11-30 07:12:54 -0600)
-
-----------------------------------------------------------------
-Devicetree changes for TI K3 platforms for v5.11 merge window:
-
-- Standardized usage of "disabled" only in board.dts files, #interrupt-cell=
-s warning fixups, node format error fixes
-
-- J721E: R5F support, MMC/SD UHS mode added
-
-- AM654: R5F support, dss marked coherent, drop unused dma-ring-reset-quirk=
- property
-
-- J7200: ADC support, Mailbox, hwspinlock
-
-----------------------------------------------------------------
-Faiz Abbas (2):
-      arm64: dts: ti: k3-j721e-main: Add output tap delay values
-      arm64: dts: ti: k3-j721e-common-proc-board: Add support for SD card U=
-HS modes
-
-Grygorii Strashko (1):
-      arm64: dts: ti: k3-am65: ringacc: drop ti, dma-ring-reset-quirk
-
-Nishanth Menon (6):
-      arm64: dts: ti: k3-am65*/j721e*: Fix unit address format error for ds=
-s node
-      arm64: dts: ti: k3-am65*: Cleanup disabled nodes at SoC dtsi level
-      arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at SoC dtsi level
-      arm64: dts: ti: am65/j721e: Fix up un-necessary status set to "okay" =
-for crypto
-      arm64: dts: ti: k3-am654-base-board: Fix up un-necessary status set t=
-o "okay" for USB
-      arm64: dts: ti: am65/j721e/j7200: Mark firmware used uart as "reserve=
-d"
-
-Peter Ujfalusi (2):
-      arm64: dts: ti: k3-j7200-som-p0: main_i2c0 have an ioexpander on the =
-SOM
-      arm64: dts: ti: k3-j7200-common-proc-board: Correct the name of io ex=
-pander on main_i2c1
-
-Sekhar Nori (1):
-      arm64: dts: ti: k3: squelch warning about lack of #interrupt-cells
-
-Suman Anna (11):
-      arm64: dts: ti: k3-am65-mcu: Add MCU domain R5F cluster node
-      arm64: dts: ti: k3-am654-base-board: Add mailboxes to R5Fs
-      arm64: dts: ti: k3-am654-base-board: Add DDR carveout memory nodes fo=
-r R5Fs
-      arm64: dts: ti: k3-am654-base-board: Reserve memory for IPC between R=
-5F cores
-      arm64: dts: ti: k3-j721e-mcu: Add MCU domain R5F cluster node
-      arm64: dts: ti: k3-j721e-main: Add MAIN domain R5F cluster nodes
-      arm64: dts: ti: k3-j721e-som-p0: Add mailboxes to R5Fs
-      arm64: dts: ti: k3-j721e-som-p0: Add DDR carveout memory nodes for R5=
-Fs
-      arm64: dts: ti: k3-j7200-main: Add hwspinlock node
-      arm64: dts: ti: k3-j7200-main: Add mailbox cluster nodes
-      arm64: dts: ti: k3-j7200-som-p0: Add IPC sub-mailbox nodes
-
-Tomi Valkeinen (1):
-      arm64: dts: ti: k3-am65: mark dss as dma-coherent
-
-Vignesh Raghavendra (1):
-      arm64: dts: ti: k3-j7200-mcu-wakeup: Enable ADC support
-
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi           |  13 +-
- arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi            |  43 ++++++-
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts     |  71 +++++++++--
- .../boot/dts/ti/k3-j7200-common-proc-board.dts     |  33 ++---
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi          | 114 +++++++++++++++++
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi    |  19 +++
- arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi        |  94 ++++++++++++++
- .../boot/dts/ti/k3-j721e-common-proc-board.dts     |  83 ++++++++++++-
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi          | 135 +++++++++++++++--=
-----
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi    |  42 ++++++-
- arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi        | 110 ++++++++++++++++-
- 11 files changed, 682 insertions(+), 75 deletions(-)
-
---=20
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5=
- 849D 1736 249D
-
---lc77dsi6dcg2y3ab
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE+KKGk1TrgjIXoxo03bWEnRc2JJ0FAl/FLxoACgkQ3bWEnRc2
-JJ0dwQ/9E6A8kNv/FLxk0bcnYo56UgXVIdmiJu2H2jz0XnbfBMPUoZAYRsCTwqpQ
-6qRAzv3lePH0hm0741TnocgPliPm9tAKcuJaw3y3poc7LKR77B8vL1H6tKnHXqxh
-6/ZB6Pk+IN390PukCvoE1yfpevTmPRxn5FqKYKgVWPTSHdkEKSeRj1Ea2YVDRzL1
-jH4UOVLaJ7OtQyTjWbRP1u/FxhZhKZ5eSb/pW36zx5dJXkybhJlzyb+yCDWylwrN
-p8iRaZTnKswqVhu1b8VO/tknzNnUFGfM0n1ShMnKASpkIIpgKTfLEPIVz/VMvYLA
-wXW+XrMUGLq/vj3fvl9uUV5yWA2tMeEUDSbxHsH1s3ArZt0HdCr6f2s9cTaPGv4M
-QAN38Geh5xfzjWJupEeg9kGeB1ZG2y/spkx0Za/ZE2BnIAuKyEZpyNd24OiE86mc
-Td414CUSdPOFpL/HcZ4udneo1qYT50Xx+5wxH4TOFyiJwsmWgZsa3mjhxgyDxB3D
-p1DDymBJy1qT9+/jtH49ko0gw3ype7GivYUm8o8tk2F/qCgQAqMxY1/uoMrL69BE
-qp9lOzhYXJK4A+tr2yDWb5L6usU3DVyQiw+8hfH84ljjxoPqvXuejNrpNKvZg/SW
-zoeaStQs+10EUsk4A3IJVenS/u12oDQrs16QOOmJfiFZ1qN4xiE=
-=hR4o
------END PGP SIGNATURE-----
-
---lc77dsi6dcg2y3ab--
