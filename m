@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02732C862B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 836402C8640
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgK3OGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:06:07 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:57300 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgK3OGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:06:07 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kjjno-009Vq6-RZ; Mon, 30 Nov 2020 15:05:16 +0100
-Date:   Mon, 30 Nov 2020 15:05:16 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1726701AbgK3OL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:11:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726158AbgK3OL5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 09:11:57 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC014C061A04
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:10:52 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kjjsr-0006VT-P3; Mon, 30 Nov 2020 15:10:29 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kjjsq-0003RP-P8; Mon, 30 Nov 2020 15:10:28 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH 1/3] dt-bindings: net: sparx5: Add sparx5-switch
- bindings
-Message-ID: <20201130140516.GC2073444@lunn.ch>
-References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
- <20201127133307.2969817-2-steen.hegelund@microchip.com>
- <20201127170052.GV2073444@lunn.ch>
- <20201130130934.o47mdjiqidtznm2t@mchp-dev-shegelun>
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: [PATCH v3 0/5] mainline Kverneland boards 
+Date:   Mon, 30 Nov 2020 15:10:22 +0100
+Message-Id: <20201130141027.12669-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130130934.o47mdjiqidtznm2t@mchp-dev-shegelun>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 02:09:34PM +0100, Steen Hegelund wrote:
-> On 27.11.2020 18:00, Andrew Lunn wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > > +  reg-names:
-> > > +    minItems: 153
-> > > +    items:
-> > > +      - const: dev2g5_0
-> > > +      - const: dev5g_0
-> > > +      - const: pcs5g_br_0
-> > > +      - const: dev2g5_1
-> > > +      - const: dev5g_1
-> > ...
-> > > +      - const: ana_ac
-> > > +      - const: vop
-> > 
-> > > +    switch: switch@600000000 {
-> > > +      compatible = "microchip,sparx5-switch";
-> > > +      reg = <0x10004000 0x4000>, /* dev2g5_0 */
-> > > +        <0x10008000 0x4000>, /* dev5g_0 */
-> > > +        <0x1000c000 0x4000>, /* pcs5g_br_0 */
-> > > +        <0x10010000 0x4000>, /* dev2g5_1 */
-> > > +        <0x10014000 0x4000>, /* dev5g_1 */
-> > 
-> > ...
-> > 
-> > > +        <0x11800000 0x100000>, /* ana_l2 */
-> > > +        <0x11900000 0x100000>, /* ana_ac */
-> > > +        <0x11a00000 0x100000>; /* vop */
-> > 
-> > This is a pretty unusual binding.
-> > 
-> > Why is it not
-> > 
-> > reg = <0x10004000 0x1af8000>
-> > 
-> > and the driver can then break up the memory into its sub ranges?
-> > 
-> >    Andrew
-> Hi Andrew,
-> 
-> Since the targets used by the driver is not always in the natural
-> address order (e.g. the dev2g5_x targets), I thought it best to let the DT
-> take care of this since this cannot be probed.  I am aware that this causes
-> extra mappings compared to the one-range strategy, but this layout seems more
-> transparent to me, also when mapped over PCIe.
+changes v3:
+- add vicutp board
+- change tvnorm to sdtv-standards
+- change linux,default-trigger "mmc" to  "disk-activity";
+- add power-supply property to the panel node
 
-The question is, do you have a device tree usage for this? Are there
-devices in the family which have the regions in a different order?
+changes v2:
+- add victgo board
+- diff fixes for vicut1.dtsi 
 
-You can easily move this table into the driver, and let the driver
-break the region up. That would be normal.
+Oleksij Rempel (5):
+  dt-bindings: vendor-prefixes: Add an entry for Kverneland Group
+  dt-bindings: arm: fsl: add Kverneland UT1, UT1Q and UI1P boards
+  ARM: dts: add Kverneland UT1, UT1Q and UT1P
+  dt-bindings: arm: fsl: add Kverneland TGO board
+  ARM: dts: add Kverneland TGO board
 
-      Andrew
+ .../devicetree/bindings/arm/fsl.yaml          |   4 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/Makefile                    |   4 +
+ arch/arm/boot/dts/imx6dl-victgo.dts           | 850 ++++++++++++++++++
+ arch/arm/boot/dts/imx6dl-vicut1.dts           |  13 +
+ arch/arm/boot/dts/imx6q-vicut1.dts            |  17 +
+ arch/arm/boot/dts/imx6qdl-vicut1.dtsi         | 802 +++++++++++++++++
+ arch/arm/boot/dts/imx6qp-vicutp.dts           |  13 +
+ 8 files changed, 1705 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6dl-victgo.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-vicut1.dts
+ create mode 100644 arch/arm/boot/dts/imx6q-vicut1.dts
+ create mode 100644 arch/arm/boot/dts/imx6qdl-vicut1.dtsi
+ create mode 100644 arch/arm/boot/dts/imx6qp-vicutp.dts
+
+-- 
+2.29.2
+
