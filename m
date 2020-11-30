@@ -2,194 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F812C82E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9072C82E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727663AbgK3LJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:09:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44548 "EHLO
+        id S1728751AbgK3LKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:10:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727571AbgK3LJX (ORCPT
+        with ESMTP id S1728229AbgK3LKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:09:23 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A83C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:08:42 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id 64so15589176wra.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:08:42 -0800 (PST)
+        Mon, 30 Nov 2020 06:10:35 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19229C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:09:55 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id e25so5536335wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:09:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g+4njBXcirHJCL3DQ1RFf48zRCHizeggk1XBMK3pkS8=;
-        b=TyPUISpItLAjJvF4hDb3xsrJ8mSrb+Sj3mga2hq5CcAUvvLxir1/oOAy6C8BGWqvM5
-         gxUcNtLaZjKyBeAwJ5nCj3ESdfdcw9ZDHeT0ZTl9a1xp4adLRDinGVAQqcS12nmJ6eLL
-         y0HOFmO9bd2GopLWU+BihcpjTiJznXAIBYKbe09Wbx9ua7WKLRIOxyJ5fht2DC3YhZFH
-         oXbRH5KHclfGczRK7ir+nw23Aa+3gnFeJ8Gh8S2p+aZnosEew6N2g3ubYZ6Jiqa1qQvc
-         RhXPXrmpQzvhLQ6Wh+2fAzGOt16H9Ti7yFc//MMm1Kg5Vq8R0bM4fqWB/aHE9PyEBHya
-         k8hA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=og3JaCFKA1hxe7Er/aULg3U2LUsICgsDGCZfViXEnss=;
+        b=aFUJMrQqeG5iB9VwHdntb4vtkcGLRzJBFixJyb8WAuQ/TlJ2e2cypFJkIBARBnQw4j
+         ekg3X58hskXvhpwXY7gvmm7Ss21BowKL4WAxZ+gxShspWpZ5v6kk+AGF4OOL7vx+vpiv
+         Wd3frz3wCKf+GnU6JSWTxrl/vsckKrH4l7Jb6t2E70VF2G1KL658EwfVcaRLusuUyvJU
+         wOBo6l00x0Mk2EHjFl5AnNO9DtWV2L62fQ33vlhiWVvsZ7W7cxgxhjwR9pm4vWkuursA
+         WYDvxx/xfK9GsyMy3uX5SbUIdrCUkVJepUhRzR/4Y+Stz/W5rox9xDSMIuFjb8bS0Zk9
+         QGYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g+4njBXcirHJCL3DQ1RFf48zRCHizeggk1XBMK3pkS8=;
-        b=LIiL2Z0iT7tC5Ntqmuy2CO8qci1qdRvbiZzQEoJKfDeHE0TipPzo+bx0QQVUxtIaAi
-         EPf6g2nWRNTzJ/IltNkOf7Ar3wFpSocBczt6bcFiETcOv6Lg/3EI4pmteavlPeRDvP3e
-         QyCsdQccPyE3e5KCbS/oZnS+tHopqo8cKf+8mrlA002FQ9FHUOQJQnCI+zh4RI/qG8i7
-         xFdXSuCW8X8Mw4MRPOW5GnC6qsNI9UJ6S6W9Drwvi/88IhAmsnuSIazSkn5ABIV9CxPt
-         L47UBC7IMtnnCpPeX9DzY0OiMhIMIYQm5/YhyvACXFYYKEd93HKrMSGH+7+OrRdHpLXA
-         S0ww==
-X-Gm-Message-State: AOAM530TNSAqAN4BT1M8PWeDBiUicIsBkJ4/T8VXbI0N4KL/HOiFTT06
-        v3nTYZ6kc5OGcbDD+fgY8lpgEg==
-X-Google-Smtp-Source: ABdhPJz2YTkLjLzzlKHQpVJhkrmkflLI0peqopogShKZB+g+T1ZFnYUgX2B5fapJzhBhWzarPGepFg==
-X-Received: by 2002:a5d:49ce:: with SMTP id t14mr27651862wrs.75.1606734521373;
-        Mon, 30 Nov 2020 03:08:41 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
-        by smtp.gmail.com with ESMTPSA id s4sm6270738wra.91.2020.11.30.03.08.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 03:08:40 -0800 (PST)
-Date:   Mon, 30 Nov 2020 11:08:39 +0000
-From:   Alessio Balsini <balsini@android.com>
-To:     Peng Tao <bergwolf@gmail.com>
-Cc:     Alessio Balsini <balsini@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V10 0/5] fuse: Add support for passthrough read/write
-Message-ID: <20201130110839.GA1980518@google.com>
-References: <20201026125016.1905945-1-balsini@android.com>
- <CA+a=Yy76W4Xob6UVXsPLA_FKF_8+QFQSEF98yALjRmuOhnVOdw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=og3JaCFKA1hxe7Er/aULg3U2LUsICgsDGCZfViXEnss=;
+        b=nHwCE91fkx0iNmXk4ON4XMnoCfHCwlsHs6E45sxn5nGxg+DOZ3YHL6o7ctA3zd3yKG
+         HESnwvHOZAktvXejt6JtextZwpNaOW5Lxt+Fj9/w4z6LnHboMW3SOEh99zl+Tmz0iNYL
+         koiT+srCFoLr5L1USnvTQqE86/nX6fGWwemanjfTOvaNdkwATYbpUQN3g+6dCMsL6NVC
+         /3Lfa96FOczBSXGXcwsXeBeU55qTIbAMipnRGxdDEDlbf71EWBDegDQvrbwRs81ifUi2
+         2PFfSfNu7Ig+wXCBKRoMtn0uSlkXDcRJZQm3X5aqC0Prg6kObB5A5NSXRK0/fynSllSd
+         5nMg==
+X-Gm-Message-State: AOAM532FsJ3yvOEjDYo9sUZxjU5mwsff4mSpEKnUQC90QQIs6yiJ1+HC
+        NrRzHolY/oWgGO0lFv1bZZXKZg==
+X-Google-Smtp-Source: ABdhPJx6vvpCbL6tab1OUGiXTI002xSMilMhovTRPRdlcjtCL4zc3yZHcjJTAqw26ffLwV9N4Mz3yg==
+X-Received: by 2002:a05:600c:4101:: with SMTP id j1mr23115058wmi.35.1606734593807;
+        Mon, 30 Nov 2020 03:09:53 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id e3sm28205394wro.90.2020.11.30.03.09.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 03:09:53 -0800 (PST)
+Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK and
+ LRCLK in LPAIF invalid state
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
+ <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4b680d9a-23eb-9746-e11e-1506d35e72c4@linaro.org>
+Date:   Mon, 30 Nov 2020 11:09:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+a=Yy76W4Xob6UVXsPLA_FKF_8+QFQSEF98yALjRmuOhnVOdw@mail.gmail.com>
+In-Reply-To: <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 10:10:37AM +0800, Peng Tao wrote:
-> On Tue, Oct 27, 2020 at 1:00 AM Alessio Balsini <balsini@android.com> wrote:
-> >
-> > This is the 10th version of the series. Please find the changelog at the
-> > bottom of this cover letter.
-> >
-> > Add support for file system passthrough read/write of files when enabled in
-> > userspace through the option FUSE_PASSTHROUGH.
-> >
-> > There are file systems based on FUSE that are intended to enforce special
-> > policies or trigger complicated decision makings at the file operations
-> > level. Android, for example, uses FUSE to enforce fine-grained access
-> > policies that also depend on the file contents.
-> > Sometimes it happens that at open or create time a file is identified as
-> > not requiring additional checks for consequent reads/writes, thus FUSE
-> > would simply act as a passive bridge between the process accessing the FUSE
-> > file system and the lower file system. Splicing and caching help reduce the
-> > FUSE overhead, but there are still read/write operations forwarded to the
-> > userspace FUSE daemon that could be avoided.
-> >
-> > This series has been inspired by the original patches from Nikhilesh Reddy,
-> > the idea and code of which has been elaborated and improved thanks to the
-> > community support.
-> >
-> > When the FUSE_PASSTHROUGH capability is enabled, the FUSE daemon may decide
-> > while handling the open/create operations, if the given file can be
-> > accessed in passthrough mode. This means that all the further read and
-> > write operations would be forwarded by the kernel directly to the lower
-> > file system using the VFS layer rather than to the FUSE daemon.
-> > All the requests other than reads or writes are still handled by the
-> > userspace FUSE daemon.
-> > This allows for improved performance on reads and writes, especially in the
-> > case of reads at random offsets, for which no (readahead) caching mechanism
-> > would help.
-> > Benchmarks show improved performance that is close to native file system
-> > access when doing massive manipulations on a single opened file, especially
-> > in the case of random reads, for which the bandwidth increased by almost 2X
-> > or sequential writes for which the improvement is close to 3X.
-> >
-> > The creation of this direct connection (passthrough) between FUSE file
-> > objects and file objects in the lower file system happens in a way that
-> > reminds of passing file descriptors via sockets:
-> > - a process requests the opening of a file handled by FUSE, so the kernel
-> >   forwards the request to the FUSE daemon;
-> > - the FUSE daemon opens the target file in the lower file system, getting
-> >   its file descriptor;
-> > - the FUSE daemon also decides according to its internal policies if
-> >   passthrough can be enabled for that file, and, if so, can perform a
-> >   FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl() on /dev/fuse, passing the file
-> >   descriptor obtained at the previous step and the fuse_req unique
-> >   identifier;
-> > - the kernel translates the file descriptor to the file pointer navigating
-> >   through the opened files of the "current" process and temporarily stores
-> >   it in the associated open/create fuse_req's passthrough_filp;
-> > - when the FUSE daemon has done with the request and it's time for the
-> >   kernel to close it, it checks if the passthrough_filp is available and in
-> >   case updates the additional field in the fuse_file owned by the process
-> >   accessing the FUSE file system.
-> > From now on, all the read/write operations performed by that process will
-> > be redirected to the corresponding lower file system file by creating new
-> > VFS requests.
-> > Since the read/write operation to the lower file system is executed with
-> > the current process's credentials, it might happen that it does not have
-> > enough privileges to succeed. For this reason, the process temporarily
-> > receives the same credentials as the FUSE daemon, that are reverted as soon
-> > as the read/write operation completes, emulating the behavior of the
-> > request to be performed by the FUSE daemon itself. This solution has been
-> > inspired by the way overlayfs handles read/write operations.
-> > Asynchronous IO is supported as well, handled by creating separate AIO
-> > requests for the lower file system that will be internally tracked by FUSE,
-> > that intercepts and propagates their completion through an internal
-> > ki_completed callback similar to the current implementation of overlayfs.
-> > The ioctl() has been designed taking as a reference and trying to converge
-> > to the fuse2 implementation. For example, the fuse_passthrough_out data
-> > structure has extra fields that will allow for further extensions of the
-> > feature.
-> >
-> >
-> >     Performance on SSD
-> >
-> > What follows has been performed with this change [V6] rebased on top of
-> > vanilla v5.8 Linux kernel, using a custom passthrough_hp FUSE daemon that
-> > enables pass-through for each file that is opened during both "open" and
-> > "create". Tests were run on an Intel Xeon E5-2678V3, 32GiB of RAM, with an
-> > ext4-formatted SSD as the lower file system, with no special tuning, e.g.,
-> > all the involved processes are SCHED_OTHER, ondemand is the frequency
-> > governor with no frequency restrictions, and turbo-boost, as well as
-> > p-state, are active. This is because I noticed that, for such high-level
-> > benchmarks, results consistency was minimally affected by these features.
-> > The source code of the updated libfuse library and passthrough_hp is shared
-> > at the following repository:
-> >
-> >     https://github.com/balsini/libfuse/tree/fuse-passthrough-stable-v.3.9.4
-> The libfuse changes are not updated with the latest ioctl UAPI change yet.
+
+
+On 28/11/2020 04:59, Srinivasa Rao Mandadapu wrote:
+> This reverts part of commit b1824968221c
+> ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state")
+
+This should probably go to Fixes tag!
+
 > 
-> > * UAPI updated: ioctl() now returns an ID that will be used at
-> >   open/create response time to reference the passthrough file
+
+> To identify LPAIF invalid state after device suspend and resume,
+> made I2S and DMA control registers not volatile, which is not necessary.
+This comment is bit confusing!
+
+Basically it should be something like
+"DMA control registers are not volatile, so remove these from volatile 
+registers list"
+
+--srini
+
+
+> Instead invalid reg state can be handled with regcache APIs.
+> The BCLK ref count is necessary to enable clock only it's in disable state.
 > 
-> Cheers,
-> Tao
-> -- 
-> Into Sth. Rich & Strange
-
-Hi Tao,
-
-You are right, sorry, this is the correct branch that uses the
-FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl with the current patch set:
-
-  https://github.com/balsini/libfuse/tree/fuse-passthrough-v10-linux-5.8-v.3.9.4
-
-I think I'll stick to this libfuse branch naming pattern from now on. :)
-
-Thanks,
-Alessio
+> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>   sound/soc/qcom/lpass-cpu.c      | 20 ++------------------
+>   sound/soc/qcom/lpass-platform.c | 11 -----------
+>   2 files changed, 2 insertions(+), 29 deletions(-)
+> 
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index af684fd..c5e99c2 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -270,18 +270,6 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
+>   	unsigned int id = dai->driver->id;
+>   	int ret = -EINVAL;
+> -	unsigned int val = 0;
+> -
+> -	ret = regmap_read(drvdata->lpaif_map,
+> -				LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id), &val);
+> -	if (ret) {
+> -		dev_err(dai->dev, "error reading from i2sctl reg: %d\n", ret);
+> -		return ret;
+> -	}
+> -	if (val == LPAIF_I2SCTL_RESET_STATE) {
+> -		dev_err(dai->dev, "error in i2sctl register state\n");
+> -		return -ENOTRECOVERABLE;
+> -	}
+>   
+>   	switch (cmd) {
+>   	case SNDRV_PCM_TRIGGER_START:
+> @@ -454,20 +442,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
+>   	struct lpass_variant *v = drvdata->variant;
+>   	int i;
+>   
+> -	for (i = 0; i < v->i2s_ports; ++i)
+> -		if (reg == LPAIF_I2SCTL_REG(v, i))
+> -			return true;
+>   	for (i = 0; i < v->irq_ports; ++i)
+>   		if (reg == LPAIF_IRQSTAT_REG(v, i))
+>   			return true;
+>   
+>   	for (i = 0; i < v->rdma_channels; ++i)
+> -		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
+> +		if (reg == LPAIF_RDMACURR_REG(v, i))
+>   			return true;
+>   
+>   	for (i = 0; i < v->wrdma_channels; ++i)
+> -		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
+> -			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
+> +		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
+>   			return true;
+>   
+>   	return false;
+> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+> index 80b09de..0e71899 100644
+> --- a/sound/soc/qcom/lpass-platform.c
+> +++ b/sound/soc/qcom/lpass-platform.c
+> @@ -452,7 +452,6 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+>   	unsigned int reg_irqclr = 0, val_irqclr = 0;
+>   	unsigned int  reg_irqen = 0, val_irqen = 0, val_mask = 0;
+>   	unsigned int dai_id = cpu_dai->driver->id;
+> -	unsigned int dma_ctrl_reg = 0;
+>   
+>   	ch = pcm_data->dma_ch;
+>   	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
+> @@ -469,17 +468,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+>   		id = pcm_data->dma_ch - v->wrdma_channel_start;
+>   		map = drvdata->lpaif_map;
+>   	}
+> -	ret = regmap_read(map, LPAIF_DMACTL_REG(v, ch, dir, dai_id), &dma_ctrl_reg);
+> -	if (ret) {
+> -		dev_err(soc_runtime->dev, "error reading from rdmactl reg: %d\n", ret);
+> -		return ret;
+> -	}
+>   
+> -	if (dma_ctrl_reg == LPAIF_DMACTL_RESET_STATE ||
+> -		dma_ctrl_reg == LPAIF_DMACTL_RESET_STATE + 1) {
+> -		dev_err(soc_runtime->dev, "error in rdmactl register state\n");
+> -		return -ENOTRECOVERABLE;
+> -	}
+>   	switch (cmd) {
+>   	case SNDRV_PCM_TRIGGER_START:
+>   	case SNDRV_PCM_TRIGGER_RESUME:
+> 
