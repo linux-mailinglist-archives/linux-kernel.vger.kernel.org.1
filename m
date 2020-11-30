@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D272C7EB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739FB2C7ED2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgK3HbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:31:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgK3HbN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:31:13 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19754C0613CF;
-        Sun, 29 Nov 2020 23:30:33 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id iq13so798275pjb.3;
-        Sun, 29 Nov 2020 23:30:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=EsNXvlnoUKD2pZSzgAC0fLx5VDJnXOdVhqeYF4VM7gs=;
-        b=JOEzDc6okElYcSppns7/WVjH1la6U1Bw5p7qhSK0IJqmEaHqwuh9tFG2B5MMVggN0H
-         AmTQrBI2OitGu8CMagBVTdT2EPudPSyFSGN+VrG0gJUCJnUk9vmEIDwEAyMuFFCzGbAa
-         hhC/Y0udAf5zmNB+72YR2M6Ul+0mq9nvGjd/kRL0aV8fMaLGkH6j1s+lEKYnASjexezc
-         mP8PAoia/TsrQ6EU45f/rLpdoQehPJCTbfIXrqH1qG49XXlpKUa55ya/my27DwkVwcSi
-         0hRhl8ZOkziZrkaYb9DGb/2/oGVvWD9I7tgvY9cY7ucO3d03TOhOpqc0A2zdPdZlcfCr
-         iweg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=EsNXvlnoUKD2pZSzgAC0fLx5VDJnXOdVhqeYF4VM7gs=;
-        b=oROou3c4jPd3r80MAZrj71YA+3bj1Ea4SC2Xp7jeZK6mwwt5iFtRCbeAICjk/3lwSu
-         iELH9pDcyg8dYeiNdvvlSGfOtrU6lJHV7nhadJu/wGx9ehVZiEBfAafsVh/Xwug/0g5L
-         o7JxlPpJuabhB+DYtnp8pRWKqD0rbv5JkiBqjQ7Ozx9ThN+zZ5NIYihUIKNr0FTFbqgP
-         kq2VdQrFoxuLDkKALMVo45R6tq3/LlNc6JqkMQQTdqm4VovpouhrRdER6XQJaRONtG8N
-         epH249n66WOj5uS7u9RzklnyzQp0/27m0yCcg4bEectYql2EgQ8TCQ8d3IvM4BUJNDfc
-         8k0Q==
-X-Gm-Message-State: AOAM530kzZIq0gzMwA+VO9F6aJfYesR1fofOtHVxx404rKL2LpJXXOnC
-        ft4MKIFfNT/+wIh8/TqRCH4=
-X-Google-Smtp-Source: ABdhPJzmeWSfnybsAR3n/WvwFdQBAK5VqwyTCok3n0nJ50h0iqqlR5YIDKGqPhzhritbLkwzXAAP4Q==
-X-Received: by 2002:a17:90a:7f93:: with SMTP id m19mr45747pjl.61.1606721432729;
-        Sun, 29 Nov 2020 23:30:32 -0800 (PST)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id l76sm16006710pfd.82.2020.11.29.23.30.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 29 Nov 2020 23:30:32 -0800 (PST)
-From:   chenlei0x@gmail.com
-X-Google-Original-From: lennychen@tencent.com
-To:     hch@infradead.org, darrick.wong@oracle.com
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lei Chen <lennychen@tencent.com>
-Subject: [PATCH] fs: iomap: Replace bio_add_page with __bio_add_page in iomap_add_to_ioend
-Date:   Mon, 30 Nov 2020 15:28:51 +0800
-Message-Id: <1606721331-4211-1-git-send-email-lennychen@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726950AbgK3Hie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:38:34 -0500
+Received: from mga07.intel.com ([134.134.136.100]:22249 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726628AbgK3Hid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 02:38:33 -0500
+IronPort-SDR: t9KOsXKynBOkTvPxLmsMrfKI9PKIELAU2rq6eSxAr/EtioAgbD8DZnxCir4e5oWC6VPiWaPFsA
+ xrpaN1QdF6qg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9820"; a="236720095"
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="236720095"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2020 23:37:50 -0800
+IronPort-SDR: Y7AQECkXbJHbbM3cZvKpb2N7C+ifUkwH3siFUpbYjl478HQJC8Xopmgs7JimNCc9hbtsde/4KK
+ 01ozh9YOeNWQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="329483080"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga003.jf.intel.com with ESMTP; 29 Nov 2020 23:37:47 -0800
+Subject: Re: [RFC PATCH v3.1 12/27] mmc: sdhci-uhs2: add reset function
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+ <20201106022726.19831-13-takahiro.akashi@linaro.org>
+ <ed1e3497-4deb-49ad-22b0-ed74fb0ef7ec@intel.com>
+ <20201130062016.GC48535@laputa>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <073c9cc8-24bb-5efc-48bc-cc66f5024923@intel.com>
+Date:   Mon, 30 Nov 2020 09:37:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201130062016.GC48535@laputa>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lei Chen <lennychen@tencent.com>
+On 30/11/20 8:20 am, AKASHI Takahiro wrote:
+> On Thu, Nov 26, 2020 at 10:16:11AM +0200, Adrian Hunter wrote:
+>> On 6/11/20 4:27 am, AKASHI Takahiro wrote:
+>>> Sdhci_uhs2_reset() does a UHS-II specific reset operation.
+>>>
+>>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+>>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+>>> ---
+>>>  drivers/mmc/host/sdhci-uhs2.c | 49 +++++++++++++++++++++++++++++++++++
+>>>  drivers/mmc/host/sdhci-uhs2.h |  1 +
+>>>  drivers/mmc/host/sdhci.c      |  3 ++-
+>>>  drivers/mmc/host/sdhci.h      |  1 +
+>>>  4 files changed, 53 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
+>>> index 08905ed081fb..e2b9743fe17d 100644
+>>> --- a/drivers/mmc/host/sdhci-uhs2.c
+>>> +++ b/drivers/mmc/host/sdhci-uhs2.c
+>>> @@ -10,6 +10,7 @@
+>>>   *  Author: AKASHI Takahiro <takahiro.akashi@linaro.org>
+>>>   */
+>>>  
+>>> +#include <linux/delay.h>
+>>>  #include <linux/module.h>
+>>>  
+>>>  #include "sdhci.h"
+>>> @@ -49,6 +50,54 @@ void sdhci_uhs2_dump_regs(struct sdhci_host *host)
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
+>>>  
+>>> +/*****************************************************************************\
+>>> + *                                                                           *
+>>> + * Low level functions                                                       *
+>>> + *                                                                           *
+>>> +\*****************************************************************************/
+>>> +
+>>> +/**
+>>> + * sdhci_uhs2_reset - invoke SW reset
+>>> + * @host: SDHCI host
+>>> + * @mask: Control mask
+>>> + *
+>>> + * Invoke SW reset, depending on a bit in @mask and wait for completion.
+>>> + */
+>>> +void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask)
+>>> +{
+>>> +	unsigned long timeout;
+>>> +
+>>> +	if (!(host->mmc->caps & MMC_CAP_UHS2))
+>>
+>> Please make a helper so this can be like:
+>>
+>> 	if (!sdhci_uhs2_mode(host))
+>>
+>> The capability will be always present for hosts that support UHS2, but not
+>> all cards support UHS2 mode.  I suggest just adding a bool to struct
+>> sdhci_host to keep track of when the host is in UHS2 mode.
+> 
+> Given the fact that UHS-2 host may (potentially) support a topology like
+> a ring, this kind of status should be attributed to a card (structure)
+> rather than a host.
 
-iomap_add_to_ioend append page on wpc->ioend->io_bio. If io_bio is full,
-iomap_chain_bio will allocate a new bio. So when bio_add_page is called,
-pages is guaranteed to be appended into wpc->ioend->io_bio. So we do not
-need to check if page can be merged. Thus it's a faster way to directly
-call __bio_add_page.
-
-Signed-off-by: Lei Chen <lennychen@tencent.com>
----
- fs/iomap/buffered-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 10cc797..7a0631a 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1310,7 +1310,7 @@ static void iomap_writepage_end_bio(struct bio *bio)
- 			wpc->ioend->io_bio =
- 				iomap_chain_bio(wpc->ioend->io_bio);
- 		}
--		bio_add_page(wpc->ioend->io_bio, page, len, poff);
-+		__bio_add_page(wpc->ioend->io_bio, page, len, poff);
- 	}
- 
- 	wpc->ioend->io_size += len;
--- 
-1.8.3.1
-
+It is very unlikely we would ever need to support that, so don't let it make
+things more complicated.
