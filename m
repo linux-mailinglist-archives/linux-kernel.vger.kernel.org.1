@@ -2,108 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E339F2C88D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A392C88D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728615AbgK3P7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:59:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgK3P7B (ORCPT
+        id S1727670AbgK3QAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:00:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45569 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726860AbgK3QAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:59:01 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4338FC0613CF;
-        Mon, 30 Nov 2020 07:58:21 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id a9so22576069lfh.2;
-        Mon, 30 Nov 2020 07:58:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qWxk5dtTp+nTC+lSo2kuBbV3C2me5xoWBB3XCapIF4s=;
-        b=gn70FcNsKkpj/l0CcYo7kP1OlWnXfEwMR3ocBrM97DLhTY/o0ePDS99zZ+12tjMdq7
-         H7rbUH392Q12b6i3rXZM7Z9y8jUzK75xvwOw1YpFtPp7yWFX74D65qurnk0LJYCDYjqj
-         AYd71QUgm05FrXV3yfvbx1baSapN+98ADloHR2DBPqMm+JgQVJMz9m3STdA351iUmZID
-         RvUjwGL0V0uhc0ffinBik4qwp++rZ7uyYfph4hf7B2IRH2TECEd+jifbz/ase92NEr9j
-         Gg+dkQCUANwQeiEHZekbAYlDbkisVY+K45L5LttDHmCSHdJ0CHr30EzwUbQAlaqCS7PA
-         k9yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qWxk5dtTp+nTC+lSo2kuBbV3C2me5xoWBB3XCapIF4s=;
-        b=A/Qoji7roREQw0VkKr63QNt6ILDpkmmWAQDfBR6q5HFWpwMWmQgMYZmT3Z7LMAMCDa
-         7U57NMs/zeR4WzNAawf9ug+wsJieddo1aP5Re+0/q4ajTe38lCZv6ht0YJ1oql3ioqVI
-         n6sdxwg/ekm/3vC5V3MfmBdBsKJDikwFmzSFg8I3j1yT+gsUj5cpT0TWbnYglkCjWDp8
-         yTO6nxC82UCqqdCRG93CnG+8134pBWSDmKYKWY2E/m7Cz500oQgL+t6hjHJndOLyQ4ns
-         cPeBvnlwRa4dpIszeg2JvacWZbHKIg1gIBDeG+n6g5uv815htw3bYv3VGXKS9PX2qRfl
-         9c+Q==
-X-Gm-Message-State: AOAM531sLTBPEa/I7ppXTz7W6Dk3ICvlASXy1HRQLTPPiMHWc1QrXknN
-        kF6MJX9S0PNK1YSRYxOD3GA=
-X-Google-Smtp-Source: ABdhPJy2RY+JlCJr6gAc1/5zU7gi1gI4T0+MLwcFLZj/8DHxZpvsUUweObiM1BMoFmMVf/86oLVgEQ==
-X-Received: by 2002:a05:6512:3587:: with SMTP id m7mr9811415lfr.149.1606751899768;
-        Mon, 30 Nov 2020 07:58:19 -0800 (PST)
-Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id u18sm2492404ljd.107.2020.11.30.07.58.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 07:58:19 -0800 (PST)
-Subject: Re: [PATCH] dt-bindings: phy: bcm-ns-usb3-phy: convert to yaml
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201116074650.16070-1-zajec5@gmail.com>
- <20201130154307.GW8403@vkoul-mobl>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <cd28f304-cb55-8377-c5eb-2adf3ab48f79@gmail.com>
-Date:   Mon, 30 Nov 2020 16:58:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Mon, 30 Nov 2020 11:00:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606751947;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WYyaNMWXIzphPUXACrUhTp271jhjXQRzrhohRKC0mcw=;
+        b=ZnGlVYlKXrvHMy/0o2lzr55LfGCu3NWWmnjtF45eFF9aV+X5t4tD3VUnAePVy6vZPowhyH
+        kZ8pIkfC7BEQUxDutfCUpn9aLvb1PljUBmqTF8Xxcvbispq7mhMiQnKWB0w2w6kylZWn+c
+        OXFasvHOFUzopG++XuhfFBdW2YRfLcI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-PEEJD8uZNkCkGJpbLxvTaw-1; Mon, 30 Nov 2020 10:59:03 -0500
+X-MC-Unique: PEEJD8uZNkCkGJpbLxvTaw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B30025708B;
+        Mon, 30 Nov 2020 15:59:01 +0000 (UTC)
+Received: from starship (unknown [10.35.206.90])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F15B05D9C0;
+        Mon, 30 Nov 2020 15:58:55 +0000 (UTC)
+Message-ID: <ee06976738dff35e387077ba73e6ab375963abbf.camel@redhat.com>
+Subject: Re: [PATCH 1/2] KVM: x86: implement
+ KVM_SET_TSC_PRECISE/KVM_GET_TSC_PRECISE
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Oliver Upton <oupton@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Date:   Mon, 30 Nov 2020 17:58:54 +0200
+In-Reply-To: <38602ef4-7ecf-a5fd-6db9-db86e8e974e4@redhat.com>
+References: <20201130133559.233242-1-mlevitsk@redhat.com>
+         <20201130133559.233242-2-mlevitsk@redhat.com>
+         <38602ef4-7ecf-a5fd-6db9-db86e8e974e4@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20201130154307.GW8403@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.2020 16:43, Vinod Koul wrote:
-> On 16-11-20, 08:46, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> 1. Change syntax from txt to yaml
->> 2. Drop "Driver for" from the title
->> 3. Drop "reg = <0x0>;" from example (noticed by dt_binding_check)
->> 4. Specify license
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
->> I think this should go through linux-phy tree. Kishon, Vinod, can you
->> take this patch?
->>
->> This patch generates a false positive checkpatch.pl warning [0].
->> Please ignore:
->> WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
+On Mon, 2020-11-30 at 15:33 +0100, Paolo Bonzini wrote:
+> On 30/11/20 14:35, Maxim Levitsky wrote:
+> > +		if (guest_cpuid_has(vcpu, X86_FEATURE_TSC_ADJUST)) {
+> > +			tsc_state.tsc_adjust = vcpu->arch.ia32_tsc_adjust_msr;
+> > +			tsc_state.flags |= KVM_TSC_STATE_TSC_ADJUST_VALID;
+> > +		}
 > 
-> I am seeing warnings for indentation:
-> 
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:19:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:20:12: [warning] wrong indentation: expected 12 but found 11 (indentation)
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:26:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:28:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:30:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:51:6: [warning] wrong indentation: expected 4 but found 5 (indentation)
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:71:11: [warning] wrong indentation: expected 9 but found 10 (indentation)
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:80:11: [warning] wrong indentation: expected 9 but found 10 (indentation)
-> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:88:11: [warning] wrong indentation: expected 9 but found 10 (indentation)
-> 
-> Can you pls fix those as well
+> This is mostly useful for userspace that doesn't disable the quirk, right?
 
-Sure, just note, it's a different YAML file (I missed that initially and was
-triple checking my bcm-ns-usb3-phy.yaml ;) ). So I'll handle it using a
-different patch.
+Isn't this the opposite? If I understand the original proposal correctly,
+the reason that we include the TSC_ADJUST in the new ioctl, is that
+we would like to disable the special kvm behavior (that is disable the quirk),
+which would mean that tsc will jump on regular host initiated TSC_ADJUST write.
+
+To avoid this, userspace would set TSC_ADJUST through this new interface.
+
+Note that I haven't yet disabled the quirk in the patches I posted to the qemu,
+because we need some infrastructure to manage which quirks we want to disable
+in qemu
+(That is, KVM_ENABLE_CAP is as I understand write only, so I can't just disable
+KVM_X86_QUIRK_TSC_HOST_ACCESS, in the code that enables x-precise-tsc in qemu).
+
+> 
+> > +		kvm_get_walltime(&wall_nsec, &host_tsc);
+> > +		diff = wall_nsec - tsc_state.nsec;
+> > +
+> > +		if (diff < 0 || tsc_state.nsec == 0)
+> > +			diff = 0;
+> > +
+> 
+> diff < 0 should be okay.  Also why the nsec==0 special case?  What about 
+> using a flag instead?
+
+In theory diff < 0 should indeed be okay (though this would mean that target,
+has unsynchronized clock or time travel happened).
+
+However for example nsec_to_cycles takes unsigned number, and then
+pvclock_scale_delta also takes unsigned number, and so on,
+so I was thinking why bother with this case.
+
+There is still (mostly?) theoretical issue, if on some vcpus 'diff' is positive 
+and on some is negative
+(this can happen if the migration was really fast, and target has the clock
+   A. that is only slightly ahead of the source).
+Do you think that this is an issue? If so I can make the code work with
+signed numbers.
+
+About nsec == 0, this is to allow to use this API for VM initialization.
+(That is to call KVM_SET_TSC_PRECISE prior to doing KVM_GET_TSC_PRECISE)
+
+This simplifies qemu code, and I don't think 
+that this makes the API much worse.
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> Paolo
+> 
+
+
