@@ -2,116 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FF62C92EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA6E2C92F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbgK3Xog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:44:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        id S2388690AbgK3Xpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:45:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729627AbgK3Xog (ORCPT
+        with ESMTP id S2388050AbgK3Xpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:44:36 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4150C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:43:55 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id k26so16238135oiw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:43:55 -0800 (PST)
+        Mon, 30 Nov 2020 18:45:30 -0500
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9938C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:44:44 -0800 (PST)
+Received: by mail-ua1-x944.google.com with SMTP id q4so4350074ual.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:44:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LXttFR72uW7whiX6VrfKE+K9RR9Zk3Wvbi+Z+4eAetM=;
-        b=D9R/CGP4Px1Xn7cMko+I3qT6mRaKmAMgRKWxsj2zLmKb3B/28Q+TspnkNw/YwgDC6k
-         toleJ0+nSYCF5oam61Q49JLJY7Rv3WDJ664+AC6dMEwZsuDLZ+qTAW12K+Y7g3FgMr4G
-         OwAt1/ymJ6IH2bB991JtQAncr/X+5ZtAkIs95ZkEcqc8FZeAcFmtxxzGhx244nVDk3VW
-         OM4ST7qeOVijmgU5V1is89vLlsatdkWwTYWAtsXZxVgUnj+Ws8qy6qmLJ52iZRrTQX2G
-         Kc9zC6yub/djuUBy4VZqY62G9cYV5ThGF5PVuQmW8gEqmMLAyH3VlWFznRr08WVJ4GaJ
-         m5VQ==
+         :cc;
+        bh=ja5iGBqziMZwVeGBVGC3tNT2ITsfFSrpoAOQrYPIRMQ=;
+        b=eIXhFNYrQLrGwHzLPxYGVzWJa/DjXZ3+RK17U4inbSIH8/cLDO1KD8N72OM/zUzB53
+         8yZIeDx97sYjz1uuAvgXJWY765o7D+jPAp3RstXWhEiYWpp6ZfWnqW3rRJRO93eLdG7N
+         2D9TsLZvw7lNns1x8kWHXquH6wydBNpMO2aUV+NR7F+6FAuRbZwFPyrw1V0DxEKSqnp1
+         vdA7qZ099dTy0qixQPzpa9880t8pAmy3P49uy+98kt3oenJTnRXEAx2MWqQdTsTmzPcS
+         FKM8rzdiYWV3COU/X3eovPeyZKHokoQStzQObR4NRJfYg5/2ZfrRz9fPrSbgCSdilzFy
+         91tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LXttFR72uW7whiX6VrfKE+K9RR9Zk3Wvbi+Z+4eAetM=;
-        b=A0Ebxa+ksPRIPpToGHk/hePllrFFExnTLLRh6gGAVUCZzAMlXfVU9BY2nNJVQ5vpsv
-         094pIAmvtaT+8eRpp/hcvEQ2/iwIbwMcMKWSEeDZ+vgriOcrgeJkEWfEpIr1R6e65IdF
-         gQf43wQM++quy8Z2LNj9GsFfgL+yEwr7B0Z0Q9w//nCoKDf9bjwYkYQzOy+pXGyFAFtn
-         ewdiyPcTCYkkCc4s8L+E3K7kd5VYZ2NcAeNRpM9TM/bK8VixFefOnylh363Xb3pJ6VQj
-         A8ZNsSsYXrbL+i1La8+hE3w5/kEEX3ZYVaKyhhL6pcwbPA5kpotkyWGTbv+w89oZof+a
-         K6KQ==
-X-Gm-Message-State: AOAM531N16ZgyxqrAo5nJlDqg7RG+vX+K6QNLVWwYcWQb04kKZhZ3fvg
-        kRJctezStA/Y3GjOm0iloAWr7s//UB8eVV7XLgU=
-X-Google-Smtp-Source: ABdhPJyaOIUx4tWcs6D/2KE4+hR0XI6fT/rG4XVdfQIE2xAxgyK7JHwIcN+SBDXvHDQSfFuWtyFgFkDoaiSuNqxPwX8=
-X-Received: by 2002:aca:f50e:: with SMTP id t14mr171348oih.123.1606779835345;
- Mon, 30 Nov 2020 15:43:55 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=ja5iGBqziMZwVeGBVGC3tNT2ITsfFSrpoAOQrYPIRMQ=;
+        b=gY1D1XiZZTd2CjhKnLKHBrCIP08t0inM71agGsAAQbe1AIp2Vju2XDuapRJpkEgv47
+         DTROzf7empdv345Zn55ZG8eWXb/JNDBFt2hZk7ZnHtug/DUq6gem+FQHiD0chhOpZ3OU
+         chUlzEWyjdzojHwFTwPrQXDIR4CovC9DY25QKK2qFlCCuCYWzJmxc8XemJQ34tFpZRr2
+         yTlTPkZE58hpMeWcSCdUbKrRfeMMnNQ0nLZ45jXE4xFB3V3ASBTGCyEkuNBlULB901ta
+         5JGd3bMVqvTjZKVuv6riLCXiDlIsa3C8cYY/22GooOgyBRUuLElelzYacBX9uixrWl8A
+         fcxg==
+X-Gm-Message-State: AOAM53110SaLXDqCWqtsyf6jvV9iuySuDJkLNpuImK+un2JuL5HLZd7A
+        ovMNsCLhsWu6fIGtEj8d4lqYaxXVltbkW+Wc4zeQ/Q==
+X-Google-Smtp-Source: ABdhPJwCzKcJqz39IP46Bo7yz6o/13jgHbjOX0vtta6vuRLC/rbSBznCfSrqxtOCA/emfEwjuB/DVNaoOwhY3XJ9gtU=
+X-Received: by 2002:a9f:2595:: with SMTP id 21mr286471uaf.33.1606779883895;
+ Mon, 30 Nov 2020 15:44:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-21-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-21-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 18:43:44 -0500
-Message-ID: <CADnq5_M0N1OfM73AHZpOLRBAaSw66XYu_Kx5M=8oi+vH-7BAYw@mail.gmail.com>
-Subject: Re: [PATCH 20/40] drm/amd/pm/powerplay/hwmgr/vega10_processpptables:
- Make function invoked by reference static
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <20201118220731.925424-15-samitolvanen@google.com> <20201130115222.GC24563@willie-the-truck>
+In-Reply-To: <20201130115222.GC24563@willie-the-truck>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 30 Nov 2020 15:44:32 -0800
+Message-ID: <CABCJKueSjSdpztOsDExCaLyQ+Pip+r6bY=Y1hR=VTOODmoSZMQ@mail.gmail.com>
+Subject: Re: [PATCH v7 14/17] arm64: vdso: disable LTO
+To:     Will Deacon <will@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
+On Mon, Nov 30, 2020 at 3:52 AM Will Deacon <will@kernel.org> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> On Wed, Nov 18, 2020 at 02:07:28PM -0800, Sami Tolvanen wrote:
+> > Disable LTO for the vDSO by filtering out CC_FLAGS_LTO, as there's no
+> > point in using link-time optimization for the small about of C code.
 >
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_processpptables.=
-c:1148:5: warning: no previous prototype for =E2=80=98vega10_pp_tables_init=
-ialize=E2=80=99 [-Wmissing-prototypes]
->
-> Cc: Evan Quan <evan.quan@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> "about" => "amount" ?
 
-Applied.  Thanks!
+Oops, I'll fix that in v8. Thanks!
 
-Alex
-
-> ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptable=
-s.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-> index 535404de78a20..95b988823f50f 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-> @@ -1145,7 +1145,7 @@ static int init_dpm_2_parameters(
->         return result;
->  }
->
-> -int vega10_pp_tables_initialize(struct pp_hwmgr *hwmgr)
-> +static int vega10_pp_tables_initialize(struct pp_hwmgr *hwmgr)
->  {
->         int result =3D 0;
->         const ATOM_Vega10_POWERPLAYTABLE *powerplay_table;
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Sami
