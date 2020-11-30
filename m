@@ -2,124 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1142C84E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3282D2C84EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgK3NR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgK3NR2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:17:28 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D38CC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:16:42 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id e23so5206633pgk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:16:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=226PRqqx4Z2LZBrOf7jo3xFAshxZxY1K5Av0IyZmLV8=;
-        b=w5OaFM++CbyizHmFtWxrqNE2GwBOC3K+1Qs+6z5tw4698a+6zKHG9CLWmyRpu+gclB
-         SvRVASmaAfdvhUhf24PPU/z7L6MKxePJ2lfb9b26TzzMmUymucWDyEIj+V8mFVWdqhL4
-         f8WBeedivcYkuo/5oWBIId4CPG/YrpNwqOQwARStdktbDAZ9HHY1c5lJsi+hEH9wzJNK
-         AmPoL1JyBMdzNrA3mpA2o2ioM6tybucVmd6R7XdwvBPD+J7uTCWmCBx/v63ASnQecu7r
-         hsa9pkb0/dFdC9KXO7/FvZz0CRsVy9rHEsZ7r/Qi/F+TprzlhG+1ukYSoupzsqu7s55h
-         tqdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=226PRqqx4Z2LZBrOf7jo3xFAshxZxY1K5Av0IyZmLV8=;
-        b=TeKFOXkJTewWHfEmfOnYCh1aDRfIys/A3PK9YB1ZBGbWGPc0NDa3K+yRJhyMUZcxf4
-         z+UVlj+7kwbebTS3UHOvac4CB9fBnVn5zK6LADeOnpA2l1K73p/QrfHZuAKyNyxpnBPN
-         4L9QvDC8e7zxygpHYq7IhsvaNIEW+GfcHmTKx7bJbN4fPLj6u02rEiwcGb07rEMWJ9vW
-         eIiCxtpv5f5XE/TFofR3IrajTeS8Z3dQtPKZgRIs0wnRqXPpdGOPshnzkAJSCE8UyWIG
-         entV+UNoCnHTbnw8qM1oOGbIA6oGwIVehjn2TGWHaqNfFZYWZ9ClAMmQE4uY+oKJOeSy
-         VoQA==
-X-Gm-Message-State: AOAM530AcOvDyXvDp+jXuIhun+s7wyscK70Xo0Ftjgqo84iOXPS+r2/t
-        5e3Lme0jOkZUVhP2xBer9PcVxQ==
-X-Google-Smtp-Source: ABdhPJwhbJ9stRuaGwCkRVStLBXXGgX9xkRJz4yAVBzafCl5rScsuBdxryMiEvgAb8af5habdGPybQ==
-X-Received: by 2002:a65:4548:: with SMTP id x8mr9094151pgr.163.1606742201853;
-        Mon, 30 Nov 2020 05:16:41 -0800 (PST)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id j16sm16943134pgl.50.2020.11.30.05.16.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Nov 2020 05:16:41 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org, hannes@cmpxchg.org, shakeelb@google.com,
-        guro@fb.com, sfr@canb.auug.org.au, alex.shi@linux.alibaba.com,
-        alexander.h.duyck@linux.intel.com, laoar.shao@gmail.com,
-        richard.weiyang@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm/memcg: fix NULL pointer dereference at workingset_eviction
-Date:   Mon, 30 Nov 2020 21:15:12 +0800
-Message-Id: <20201130131512.6043-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1726691AbgK3NRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:17:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726289AbgK3NRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:17:32 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EE9F206F9;
+        Mon, 30 Nov 2020 13:16:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606742211;
+        bh=1zr1UMCcOfl2mGxHxT7EB+EAZA8oBQSjYHyotMbE2Rw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OX+Oqc/QaNqdyRhkmycg1jXs0/AB9qaBnvGnyYOBRvuSyg+YPI9em3wURWewdMImM
+         q11Oi/wQSfCPJE8n4OwmfxHbwSg4a7s2LKXWGqf+HxbeOs5aK9wmOCGZbA496jUILq
+         yl0R3TAM1lRLgWI296MmDo3RLhxNlvp7zGQ9hSWo=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kjj2v-00EhLk-67; Mon, 30 Nov 2020 13:16:49 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Mon, 30 Nov 2020 13:16:49 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     yuzenghui <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linuxarm <linuxarm@huawei.com>, eric.auger@redhat.com
+Subject: Re: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
+In-Reply-To: <ae78e69ded9a45bf82832241560bcee0@huawei.com>
+References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
+ <f6e8ee71-f76b-428c-cd56-5bc93b1afafe@huawei.com>
+ <ae78e69ded9a45bf82832241560bcee0@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <7422841eba7a0243c8aaefb6c0f044bf@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: shameerali.kolothum.thodi@huawei.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com, eric.auger@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We found a case of kernel panic. The stack trace is as follows
-(omit some irrelevant information):
+On 2020-11-30 12:06, Shameerali Kolothum Thodi wrote:
+> Hi Zenghui,
+> 
+>> -----Original Message-----
+>> From: yuzenghui
+>> Sent: 30 November 2020 11:51
+>> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>;
+>> linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+>> Cc: maz@kernel.org; Linuxarm <linuxarm@huawei.com>;
+>> eric.auger@redhat.com
+>> Subject: Re: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy 
+>> support
+>> 
+>> Hi Shameer,
+>> 
+>> On 2020/11/30 18:26, Shameer Kolothum wrote:
+>> > At present, the support for GICv2 backward compatibility on GICv3/v4
+>> > hardware is determined based on whether DT/ACPI provides a memory
+>> > mapped phys base address for GIC virtual CPU interface register(GICV).
+>> > This creates a problem that a Qemu guest boot with default GIC(GICv2)
+>> > hangs when firmware falsely reports this address on systems that don't
+>> > have support for legacy mode.
+>> 
+>> So the problem is that BIOS has provided us a bogus GICC Structure.
+> 
+> Yes. And kernel uses this field to determine the legacy support.
+> 
+>> 
+>> > As per GICv3/v4 spec, in an implementation that does not support legacy
+>> > operation, affinity routing and system register access are permanently
+>> > enabled. This means that the associated control bits are RAO/WI. Hence
+>> > use the ICC_SRE_EL1.SRE bit to decide whether hardware supports GICv2
+>> > mode in addition to the above firmware based check.
+>> >
+>> > Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+>> > ---
+>> > On Hisilicon D06, UEFI sets the GIC MADT GICC gicv_base_address but the
+>> > GIC implementation on these boards doesn't have the GICv2 legacy support.
+>> > This results in, Guest boot hang when Qemu uses the default GIC option.
+>> >
+>> > With this patch, the Qemu Guest with GICv2 now gracefully exits,
+>> >   "qemu-system-aarch64: host does not support in-kernel GICv2 emulation"
+>> >
+>> > Not very sure there is a better way to detect this other than checking
+>> > the SRE bit as done in this patch(Of course, we will be fixing the UEFI
+>> > going forward).
+>> 
+>> Yes, I had seen the same problem on the D06. But I *do* think it's the
+>> firmware that actually needs to be fixed.
+> 
+> Well, I am not sure I agree with that. The ACPI spec 6.3, section
+> 5.2.12.14, says,
+> "If the platform is not presenting a GICv2 with virtualization 
+> extensions this
+> field *can* be 0". So don’t think it mandates that.
 
-    BUG: kernel NULL pointer dereference, address: 00000000000000c8
-    RIP: 0010:workingset_eviction+0x26b/0x450
-    Call Trace:
-     __remove_mapping+0x224/0x2b0
-     shrink_page_list+0x8c2/0x14e0
-     shrink_inactive_list+0x1bf/0x3f0
-     ? do_raw_spin_unlock+0x49/0xc0
-     ? _raw_spin_unlock+0xa/0x20
-     shrink_lruvec+0x401/0x640
+Note: *GICv2*, not GICv3 with v2 compatibility. I still think the 
+firmware
+should be fixed. But that also relies on finding out whether the broken
+FW is in the wild or not. If it is already, we need something in the 
+kernel.
 
-This was caused by commit 76761ffa9ea1 ("mm/memcg: bail out early when
-!memcg in mem_cgroup_lruvec"). When the parameter of memcg is NULL, we
-should not use the &pgdat->__lruvec. So this just reverts commit
-76761ffa9ea1 to fix it.
+>> 
+>> > Thanks,
+>> > Shameer
+>> >
+>> > ---
+>> >   drivers/irqchip/irq-gic-v3.c | 33 ++++++++++++++++++++++++++++-----
+>> >   1 file changed, 28 insertions(+), 5 deletions(-)
+>> >
+>> > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+>> > index 16fecc0febe8..15fa1eea45e4 100644
+>> > --- a/drivers/irqchip/irq-gic-v3.c
+>> > +++ b/drivers/irqchip/irq-gic-v3.c
+>> > @@ -1835,6 +1835,27 @@ static void __init
+>> gic_populate_ppi_partitions(struct device_node *gic_node)
+>> >   	of_node_put(parts_node);
+>> >   }
+>> >
+>> > +/* SRE bit being RAO/WI implies no GICv2 legacy mode support */
+>> 
+>> I'm wondering if this is a mandate of the architecture.
+> 
+> As I mentioned above, I am not sure this is the best way, though,
+> section 1.3.5 of GICv3 spec, says(for no legacy support case "affinity
+> routing and system register access are permanently enabled. This means
+> that the associated control bits are RAO/WI"
+> 
+> But again later in the spec, it uses "might choose to
+> make this bit RAO/WI". So it is arguable that it mandates it or not.
+> 
+> I leave that to Marc :)
 
-Fixes: 76761ffa9ea1 ("mm/memcg: bail out early when !memcg in mem_cgroup_lruvec")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/memcontrol.h | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+- If we cannot clear SRE, then we cannot use v2 compat, and we're good.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index f9a496c4eac7..a1416205507c 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -610,17 +610,20 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
- static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- 					       struct pglist_data *pgdat)
- {
-+	struct mem_cgroup_per_node *mz;
- 	struct lruvec *lruvec;
- 
--	if (mem_cgroup_disabled() || !memcg) {
-+	if (mem_cgroup_disabled()) {
- 		lruvec = &pgdat->__lruvec;
--	} else {
--		struct mem_cgroup_per_node *mz;
--
--		mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
--		lruvec = &mz->lruvec;
-+		goto out;
- 	}
- 
-+	if (!memcg)
-+		memcg = root_mem_cgroup;
-+
-+	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-+	lruvec = &mz->lruvec;
-+out:
- 	/*
- 	 * Since a node can be onlined after the mem_cgroup was created,
- 	 * we have to be prepared to initialize lruvec->pgdat here;
+- If we can clear SRE and that there is no GICV region, we're goo too.
+
+- If we can clear SRE and that there is a *bogus* GICV region, there
+   is nothing we can do and the machine will explode when the guest
+   pokes at it.
+
+Using ARE would be tempting, but AFAIKT it is only relevant to the
+physical side of the GIC, and has no bearing on the virtual side
+(since the distributor is itself virtual).
+
+Thanks,
+
+         M.
 -- 
-2.11.0
-
+Jazz is not dead. It just smells funny...
