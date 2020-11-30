@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023A32C7CBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 03:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 116F92C7CB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 03:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgK3CWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 21:22:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38694 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726376AbgK3CWQ (ORCPT
+        id S1726359AbgK3CVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 21:21:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbgK3CVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 21:22:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606702850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l+xbRADCNKOvYBKYT87lWC6tQYrlTC4el3mQzUGbbMk=;
-        b=MS61W6n32NwMf2OnkwhoLPn+4u8seCqHxe4gvtRXLZfUPyrKijWQyNurkr2kKQgCywJBc1
-        ocM40dcyAlxEe5of7ttt5WVbVMdSvD8cMX3Ia9Dl6F9KPBN6wT0bXZvfZ9yPD40clK2zIe
-        TPKJl0RyDTMrbU+K0DtalPnpKkHHzdw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-SwTHeKNcM1CxPpFYeZtw7A-1; Sun, 29 Nov 2020 21:20:46 -0500
-X-MC-Unique: SwTHeKNcM1CxPpFYeZtw7A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1C1D107AD50;
-        Mon, 30 Nov 2020 02:20:44 +0000 (UTC)
-Received: from [10.72.13.173] (ovpn-13-173.pek2.redhat.com [10.72.13.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F3F560657;
-        Mon, 30 Nov 2020 02:20:35 +0000 (UTC)
-Subject: Re: [PATCH] vdpa: ifcvf: Use dma_set_mask_and_coherent to simplify
- code
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>, mst@redhat.com,
-        lingshan.zhu@intel.com, eli@mellanox.com, parav@mellanox.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20201129125434.1462638-1-christophe.jaillet@wanadoo.fr>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <4576b2bb-d4d3-6413-c2cb-54e7d781eebf@redhat.com>
-Date:   Mon, 30 Nov 2020 10:20:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201129125434.1462638-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Sun, 29 Nov 2020 21:21:54 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E113C0613CF;
+        Sun, 29 Nov 2020 18:21:08 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id u2so5615709pls.10;
+        Sun, 29 Nov 2020 18:21:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=1a1lBoMKaF9SveclJWs+RsYOR0BXSQKnr2c/16CY6gk=;
+        b=TWDxtiEMYFHnKpW0h5v5GZwqVM2EwDCvhwThPFmkeYIh79uozU6ye0g+l6UHG5cK6f
+         Jc63XciBGmTg9AM1fTPGOeK2disxmOjK4KZtAhKAVBXikrXJFTgWL44kvwSDqJko8Ert
+         +8E4sze8vVJjHkJzs5YmUrNmgQ2Snlect71WtQZie7ddgc1tRytA4u/nZZYWDQZEB0yH
+         qPAqHx+NZ3ULrWrbgCZ165jsI5hKi9+WEsIK+4CBfsEtzq8nqOJI56BrRa5GvZigtO8R
+         LXC1/kAGqZ7x94AQTTrQhzUftFICwoFV2I7eIOBe529awCokqok6CkuPu6hxLsQF+UaZ
+         F1Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1a1lBoMKaF9SveclJWs+RsYOR0BXSQKnr2c/16CY6gk=;
+        b=dDxF7I62iSWPtqFxSIoIALTE6FKj6m0/rMXxS4uF1APWi3Cx8mfPhPQ9E4jt9PUCdO
+         PAx8+fmBy0dy2ekAE7gQNzD1ztVevn/SsQLFL7Z/Vtbv8D1eRnr3sh3DBsIOlNjk35U4
+         gFq4gqOmVyE0BUO4TaRpsE+ZgCJqBgGXwHSGT2YjZBPK8X1IhNaZEfG3k9hMIikgIfH1
+         0D/4nWK/TR0z+UkP5RXIqgi0pAg4yVlG7osjoZmjEdsq3glSJBHJGfEAXE/EwyiGnBZK
+         RCbc+w1Id42isE81EyS7qnCuQF2tzG9n6E3Z1lp4j1tj+ArnD0ts9vXGJtuUHIppkZYj
+         bm1Q==
+X-Gm-Message-State: AOAM530RMAO0yY4rPn+pPYlag3GizzA2tGsojCZIL/CGt6EbIdjxgA2S
+        C3KyWL84lSoSI11OzVhs8pU=
+X-Google-Smtp-Source: ABdhPJz+MJ5DxZ2afDAeQPJFOqdW7X+TiYNy0hbbeK6GIOZVtX+MdhBXrKjf7VL1EsjPRt03sY4L3A==
+X-Received: by 2002:a17:902:8e87:b029:d8:e26a:77ea with SMTP id bg7-20020a1709028e87b02900d8e26a77eamr16315215plb.18.1606702867900;
+        Sun, 29 Nov 2020 18:21:07 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id p15sm20447771pjg.21.2020.11.29.18.21.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 29 Nov 2020 18:21:07 -0800 (PST)
+From:   chenlei0x@gmail.com
+X-Google-Original-From: lennychen@tencent.com
+To:     chenlei0x@gmail.com, axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Lei Chen <lennychen@tencent.com>
+Subject: [PATCH] block: wbt: Remove unnecessary invoking of wbt_update_limits in wbt_init
+Date:   Mon, 30 Nov 2020 10:20:52 +0800
+Message-Id: <1606702852-14157-1-git-send-email-lennychen@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Lei Chen <lennychen@tencent.com>
 
-On 2020/11/29 下午8:54, Christophe JAILLET wrote:
-> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
->
-> While at it, fix a typo (s/confiugration/configuration)
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
+It's unnecessary to call wbt_update_limits explicitly within wbt_init,
+because it will be called in the following function wbt_queue_depth_changed.
 
+Signed-off-by: Lei Chen <lennychen@tencent.com>
+---
+ block/blk-wbt.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
->   drivers/vdpa/ifcvf/ifcvf_main.c | 11 ++---------
->   1 file changed, 2 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index 8b4028556cb6..fa1af301cf55 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -417,16 +417,9 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->   		return ret;
->   	}
->   
-> -	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
->   	if (ret) {
-> -		IFCVF_ERR(pdev, "No usable DMA confiugration\n");
-> -		return ret;
-> -	}
-> -
-> -	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
-> -	if (ret) {
-> -		IFCVF_ERR(pdev,
-> -			  "No usable coherent DMA confiugration\n");
-> +		IFCVF_ERR(pdev, "No usable DMA configuration\n");
->   		return ret;
->   	}
->   
+diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+index fd41008..0321ca8 100644
+--- a/block/blk-wbt.c
++++ b/block/blk-wbt.c
+@@ -835,7 +835,6 @@ int wbt_init(struct request_queue *q)
+ 	rwb->enable_state = WBT_STATE_ON_DEFAULT;
+ 	rwb->wc = 1;
+ 	rwb->rq_depth.default_depth = RWB_DEF_DEPTH;
+-	wbt_update_limits(rwb);
+ 
+ 	/*
+ 	 * Assign rwb and add the stats callback.
+-- 
+1.8.3.1
 
