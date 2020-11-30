@@ -2,89 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4892C86A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874E12C86AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727451AbgK3OZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgK3OZg (ORCPT
+        id S1726839AbgK3O2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:28:33 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:33757 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgK3O2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:25:36 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682E7C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:24:56 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id t5so8217412qtp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:24:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HtTypiwsf0b9h5jTKeoPZdzRf383vhVBjq0t5nKnT9o=;
-        b=gkPAxAaZEIQNxwC3qfhkhbZu51bLASRjL6EV64Ve6HKXFAM/eAKZxG/IFuwsOvArZi
-         Jvv7h1FEFBNo5DNVGRshX89NtVXrKWJUgzv31aQgs3k0Yncl+FGjyfU2iz4A6xSIA+59
-         w4t36i7gRBO/9UYFiXCENuEaZghaE+qa64fGY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HtTypiwsf0b9h5jTKeoPZdzRf383vhVBjq0t5nKnT9o=;
-        b=RWxl/YPfVFpgW8nHyruBAb/VQRHgt3nEgVbH7SbPRCJ1lFHTmcilSBkV8iTon4rU+9
-         dBjQ1gVrpp7MQLN+Ek6lsho7ygiDkYAWZiMDo/p3vi9OquefSN1dKAp1EFOUWA4uLAXR
-         EJciSLEBdUQjKbY/B0pI75beDysLMNuRQsreHqa3+RC637KrN9yNWyVPqochYK+fRHR1
-         ChRHbbe16BogTqEk2MJnIiqo7UMFr77t9TbPMmBOk6RzoE3gj4SETyuYMQAydFCQCkym
-         a/ThHALGStW9Opz61cGcIr+Z9wXvXJvIsBqJUpJZeXfkVhkIEBjiKUub/wksj6XcPn4H
-         Xq/g==
-X-Gm-Message-State: AOAM532t4HK1FhU/28AYzF/1uzMBQkDyNgxRFerjJtLKle+ZVLHJGIhu
-        cIQmwIqLZEND3JdusC34ck0r0Tu1RyAzItu3Wn37zQ==
-X-Google-Smtp-Source: ABdhPJweAxZBEyKvSQYjSEhxJN5I6EcODhRQ9HZcX2u3vWR5NSG1RO4581rg3zI/UnOnlenPlgNaJESBlWwVZlnGY+s=
-X-Received: by 2002:ac8:5450:: with SMTP id d16mr21799317qtq.33.1606746295526;
- Mon, 30 Nov 2020 06:24:55 -0800 (PST)
+        Mon, 30 Nov 2020 09:28:32 -0500
+X-Originating-IP: 91.175.115.186
+Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id A73B3E001D;
+        Mon, 30 Nov 2020 14:27:42 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
+        robh+dt@kernel.org, jason@lakedaemon.net, andrew@lunn.ch,
+        sebastian.hesselbarth@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v2] ARM: dts: mvebu: Add device tree for
+ RD-AC3X-48G4X2XL board
+In-Reply-To: <20201126044544.17829-1-aryan.srivastava@alliedtelesis.co.nz>
+References: <20201126044544.17829-1-aryan.srivastava@alliedtelesis.co.nz>
+Date:   Mon, 30 Nov 2020 15:27:41 +0100
+Message-ID: <87zh2yj4wy.fsf@BL-laptop>
 MIME-Version: 1.0
-References: <20201130131047.2648960-1-daniel@0x0f.com> <20201130131047.2648960-10-daniel@0x0f.com>
- <CAK8P3a15Q=97iWyGu6=2aKfVtrYNL2BgmszHqoqYxFT_uHoP4A@mail.gmail.com>
-In-Reply-To: <CAK8P3a15Q=97iWyGu6=2aKfVtrYNL2BgmszHqoqYxFT_uHoP4A@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 30 Nov 2020 23:25:34 +0900
-Message-ID: <CAFr9PXksWa_u9TSz6FpTvB0fFMQvpTua7EVKKnfUutmZVtWq6A@mail.gmail.com>
-Subject: Re: [PATCH 9/9] ARM: mstar: SMP support
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Hi Aryan,
 
-On Mon, 30 Nov 2020 at 22:42, Arnd Bergmann <arnd@kernel.org> wrote:
-> > +struct smp_operations __initdata mstarv7_smp_ops  = {
-> > +       .smp_boot_secondary = mstarv7_boot_secondary,
-> > +};
-> > +#endif
+> Add device tree for RD-AC3X-48G4X2XL board. This has a Armada 382 SoC on
+> a interposer board connected to a baseboard with a Prestera AC3X ASIC
+> connected via PCI.
 >
-> So no hotplug operations?
+> Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+> Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-Not yet. There are controls to power down different bits of the chip,
-assert internal resets and so on so it might be possible to add that
-later but I haven't worked out where those bits are yet for the second
-cpu.
-
-> Or better, use CPU_METHOD_OF_DECLARE() instead of smp_ops.
-
-I'll do that for the v2.
-
-Was there anything else that looked fishy? Every other platform seems
-to have a lot of code for moving secondary CPUs from the boot ROM into
-somewhere the kernel can control the order in which they come online
-(vendor code has a copy/paste of the vexpress code) so I was worried I
-missed something.
+Applied on mvebu/dt
 
 Thanks,
 
-Daniel
+Gregory
+
+> ---
+>
+> Notes:
+>     Changes in v2:
+>     -Added comment for CPLD
+>
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../boot/dts/armada-382-rd-ac3x-48g4x2xl.dts  | 112 ++++++++++++++++++
+>  2 files changed, 113 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
+>
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index ce66ffd5a1bb..a60407ad7347 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1319,6 +1319,7 @@ dtb-$(CONFIG_MACH_ARMADA_370) += \
+>  dtb-$(CONFIG_MACH_ARMADA_375) += \
+>  	armada-375-db.dtb
+>  dtb-$(CONFIG_MACH_ARMADA_38X) += \
+> +	armada-382-rd-ac3x-48g4x2xl.dtb \
+>  	armada-385-clearfog-gtr-s4.dtb \
+>  	armada-385-clearfog-gtr-l8.dtb \
+>  	armada-385-db-88f6820-amc.dtb \
+> diff --git a/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts b/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
+> new file mode 100644
+> index 000000000000..584f0d0398a5
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/armada-382-rd-ac3x-48g4x2xl.dts
+> @@ -0,0 +1,112 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Device Tree file for Marvell Armada 382 reference board
+> + * (RD-AC3X-48G4X2XL)
+> + *
+> + * Copyright (C) 2020 Allied Telesis Labs
+> + */
+> +
+> +/dts-v1/;
+> +#include "armada-385.dtsi"
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/ {
+> +	model = "Marvell Armada 382 RD-AC3X";
+> +	compatible = "marvell,rd-ac3x-48g4x2xl", "marvell,rd-ac3x",
+> +			 "marvell,armada385", "marvell,armada380";
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	aliases {
+> +		ethernet0 = &eth1;
+> +	};
+> +
+> +	memory {
+> +		device_type = "memory";
+> +		reg = <0x00000000 0x20000000>; /* 512MB */
+> +	};
+> +
+> +	soc {
+> +		ranges = <MBUS_ID(0xf0, 0x01) 0 0xf1000000 0x100000
+> +			  MBUS_ID(0x01, 0x1d) 0 0xfff00000 0x100000>;
+> +	};
+> +};
+> +
+> +&i2c0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c0_pins>;
+> +	status = "okay";
+> +
+> +	eeprom@53{
+> +		compatible = "atmel,24c64";
+> +		reg = <0x53>;
+> +	};
+> +
+> +	/* CPLD device present at 0x3c. Function unknown */
+> +};
+> +
+> +&uart0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart0_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&eth1 {
+> +	status = "okay";
+> +	phy = <&phy0>;
+> +	phy-mode = "rgmii-id";
+> +};
+> +
+> +&mdio {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mdio_pins>;
+> +
+> +	phy0: ethernet-phy@0 {
+> +		reg = <0>;
+> +	};
+> +};
+> +
+> +&pciec {
+> +	status = "okay";
+> +};
+> +
+> +&pcie1 {
+> +	/* Port 0, Lane 0 */
+> +	status = "okay";
+> +};
+> +
+> +&nand_controller {
+> +	status = "okay";
+> +
+> +	nand@0 {
+> +		reg = <0>;
+> +		label = "pxa3xx_nand-0";
+> +		nand-rb = <0>;
+> +		nand-on-flash-bbt;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			partition@0 {
+> +				reg = <0x00000000 0x00500000>;
+> +				label = "u-boot";
+> +			};
+> +			partition@500000{
+> +				reg = <0x00500000 0x00400000>;
+> +				label = "u-boot env";
+> +			};
+> +			partition@900000{
+> +				reg = <0x00900000 0x3F700000>;
+> +				label = "user";
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&refclk {
+> +	clock-frequency = <200000000>;
+> +};
+> -- 
+> 2.29.2
+>
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
