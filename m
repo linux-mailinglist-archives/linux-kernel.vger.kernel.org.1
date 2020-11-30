@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB1A2C7EFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49702C7F02
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbgK3Hox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:44:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22331 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726930AbgK3Hox (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:44:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606722206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xCxrKQgKWaomcz1R6EnYBYk4nw48KMWwjloNms5mrbw=;
-        b=BhHCO2ucQG4E/c9dQ3lHayvwvmDmPomJTHsA18yAZL8bPX5JaF4PMQwAnbbrOU/gxlR0Vt
-        AUjAJjJ8/46YeONFMfbZpaCJKobNCgTJTtPkXqnim9zVhftwsWDqs58LhdHgJoYHqPzO9S
-        ZfrGELWGq+ng3cFr4EIYHlWGeKV2d1M=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-pANJJMDjP-iLTIIZl_SOwQ-1; Mon, 30 Nov 2020 02:43:24 -0500
-X-MC-Unique: pANJJMDjP-iLTIIZl_SOwQ-1
-Received: by mail-ej1-f71.google.com with SMTP id y10so5361245ejg.3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:43:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xCxrKQgKWaomcz1R6EnYBYk4nw48KMWwjloNms5mrbw=;
-        b=Pr+ExT/KTJCbe5zuQ7PpnFvq62GaljZFiuWimcoEiK2Cocy9jp9Z5PELT6Iw5W6UWJ
-         lqHdxyS8uPU5ljXsfN7J5kbfxCzyTzrBybaWPLyIdYEnufZdmK7oW1NOPQypevRBpni5
-         Yn5zGdK2dpkbMvbxAgmQ1Z8qhzkDYRcpPPQNZ9UPM9/T8aFNgVNTHhnxf8aOPhdjiU+M
-         ARlutDY4XHhE6PyBRldGkPEpvV1uwFzZFjekdC6dA7nu56Yjts7hQX6VgvxLOYiYebQK
-         jqEKo0YyO+SoW2KfaqgELrJB/iRZbk/4KSpPex6Qb/8SxQ23522lu4As4BW0MMSIbhAc
-         C3YQ==
-X-Gm-Message-State: AOAM530HOo8ouL+Xw+aDD935R+vIayAwv7MCs8IV468idzyfeCKzc1V7
-        lNfTXWEF4ucbSmhbRTbZ3C8fkpGZg1f9gl97Ur1kx5qPKhxLCC1ZL61sAVCioG6W4rtJM/GxTM2
-        BbYceZU5/zKrm+6dJwgs0TQ+Q
-X-Received: by 2002:a50:e715:: with SMTP id a21mr20384608edn.285.1606722203149;
-        Sun, 29 Nov 2020 23:43:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwdLbND8D4t/lHAwTW2/Hfo6cgLDGhelhwR/5DnlD4aaxnvHJOCvXp/vDjEV6qQQxUOJLkYXA==
-X-Received: by 2002:a50:e715:: with SMTP id a21mr20384596edn.285.1606722203000;
-        Sun, 29 Nov 2020 23:43:23 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id p4sm6203746ejx.64.2020.11.29.23.43.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Nov 2020 23:43:22 -0800 (PST)
-Subject: Re: linux-next: Fixes tag needs some work in the drivers-x86 tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Vadim Pasternak <vadimp@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201130044331.4abf7b91@canb.auug.org.au>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <ae231b40-e1c8-6995-d45b-ddab6a04810e@redhat.com>
-Date:   Mon, 30 Nov 2020 08:43:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727075AbgK3Hpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:45:46 -0500
+Received: from mga12.intel.com ([192.55.52.136]:13438 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725965AbgK3Hpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 02:45:46 -0500
+IronPort-SDR: 0fPUOa1EkWo+xVwXLQm2kUzWS3dasgwe7g58gQJffV4hE5D2ZP8mOINi9+51bS2nDKLYfk5aVL
+ GStoozAGvpRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9820"; a="151847525"
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="151847525"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2020 23:45:00 -0800
+IronPort-SDR: liIA8ZbwuNPRDI6KRgu+xm5FfHO1g6QnyEslL3jY2j5QosOCRi+0tMdlnATcgpT3QPVbg1HOfo
+ fOti1ZambgVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="329485094"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga003.jf.intel.com with ESMTP; 29 Nov 2020 23:44:54 -0800
+Subject: Re: [RFC PATCH v3.1 13/27] mmc: sdhci-uhs2: add set_power() to
+ support vdd2
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+ <20201106022726.19831-14-takahiro.akashi@linaro.org>
+ <3b47a2d4-a281-3fac-29c4-82dd769459a1@intel.com>
+ <20201130071550.GD48535@laputa>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <e15f5acb-77f9-ce30-e6d0-67f53bc07421@intel.com>
+Date:   Mon, 30 Nov 2020 09:44:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201130044331.4abf7b91@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20201130071550.GD48535@laputa>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On 30/11/20 9:15 am, AKASHI Takahiro wrote:
+> On Thu, Nov 26, 2020 at 10:16:27AM +0200, Adrian Hunter wrote:
+>> On 6/11/20 4:27 am, AKASHI Takahiro wrote:
+>>> This is a UHS-II version of sdhci's set_power operation.
+>>> VDD2, as well as VDD, is handled here.
+>>>
+>>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+>>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+>>> ---
+>>>  drivers/mmc/host/sdhci-uhs2.c | 80 +++++++++++++++++++++++++++++++++++
+>>>  drivers/mmc/host/sdhci-uhs2.h |  2 +
+>>>  drivers/mmc/host/sdhci.c      | 58 +++++++++++++++----------
+>>>  drivers/mmc/host/sdhci.h      |  2 +
+>>>  4 files changed, 119 insertions(+), 23 deletions(-)
+>>>
+>>> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
+>>> index e2b9743fe17d..2bf78cc4e9ed 100644
+>>> --- a/drivers/mmc/host/sdhci-uhs2.c
+>>> +++ b/drivers/mmc/host/sdhci-uhs2.c
+>>> @@ -98,6 +98,86 @@ void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask)
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(sdhci_uhs2_reset);
+>>>  
+>>> +void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode,
+>>> +			  unsigned short vdd)
+>>
+>> This function isn't used, so let's rename it sdhci_uhs2_set_power_noreg and
+>> drop regulator support.
+> 
+> I have no strong opinion, but here Ben might want to further rework
+> the new sdhci_uhs2_set_power_noreg() now that it is almost the same as
+> GLI's gl9755_set_power()(, adding a new quirk?).
+> 
+>>> +{
+>>> +	struct mmc_host *mmc = host->mmc;
+>>> +	u8 pwr;
+>>> +
+>>> +	/* FIXME: check if flags & MMC_UHS2_SUPPORT? */
+>>> +	if (!(host->mmc->caps & MMC_CAP_UHS2)) {
+>>
+>> As commented in another patch, please use a helper fn
+> 
+> As said, I would defer this.
+> 
+>>> +		sdhci_set_power(host, mode, vdd);
+>>> +		return;
+>>> +	}
+>>> +
+>>> +	if (mode != MMC_POWER_OFF) {
+>>> +		pwr = sdhci_get_vdd_value(vdd);
+>>
+>> Simpler to open code this esp. as there are only 2 valid values:
+>>
+>> 		switch (1 << vdd) {
+> 
+> Can you ignore MMC_VDD_165_195 and MMC_VDD_20_21 here?
 
-On 11/29/20 6:43 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   912b341585e3 ("platform/x86: mlx-platform: Remove PSU EEPROM from MSN274x platform configuration")
-> 
-> Fixes tag
-> 
->   Fixes: ef08e14a3 ("platform/x86: mlx-platform: Add support for new msn274x system type")
-> 
-> has these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
-> 
-> In commit
-> 
->   2bf5046bdb64 ("platform/x86: mlx-platform: Remove PSU EEPROM from default platform configuration")
-> 
-> Fixes tags
-> 
->   Fixes: c6acad68e ("platform/mellanox: mlxreg-hotplug: Modify to use a regmap interface")
->   Fixes: ba814fdd0 ("platform/x86: mlx-platform: Use defines for bus assignment")
-> 
-> have these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
-
-Hmm, for some reason checkpatch did not catch these, while AFAIK it will complain
-about short hashes in the normal part of the commit msg.
-
-Question, how important is it to fix these ? I normally never do forced pushes
-to the for-next branch. But if this is considered important to fix I guess I
-can make an exception.
-
-> These can be fixed in the future by setting core.abbrev to 12 (or more)
-> or (for git v2.11 or later) just making sure it is not set (or set to
-> "auto").
-
-Will git rewrite the commit msg when this is set ?  I'm at 2.28 and don't
-have core.abbrev set. But I guess this needs to be set in the gitconfig
-of the creator of the patch; and this has no impact on "git am" ?
-
-Regards,
-
-Hans
-
+They are outside UHS-II spec, but you decide.
