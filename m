@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4132C7CBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 03:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2DC2C7CBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 03:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgK3CWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 21:22:51 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50428 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725930AbgK3CWv (ORCPT
+        id S1727055AbgK3CYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 21:24:11 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54438 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725930AbgK3CYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 21:22:51 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UGusXv9_1606702916;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UGusXv9_1606702916)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 30 Nov 2020 10:21:57 +0800
-Subject: Re: [PATCH] crypto: ecrdsa - use subsys_initcall instead of
- module_init
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Vitaly Chikunov <vt@altlinux.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201015110241.89676-1-tianjia.zhang@linux.alibaba.com>
- <20201015120504.GA12976@gondor.apana.org.au>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <f6d98764-dde8-6f40-c0e7-9eb5b087d713@linux.alibaba.com>
-Date:   Mon, 30 Nov 2020 10:21:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        Sun, 29 Nov 2020 21:24:11 -0500
+X-UUID: 1c3294f61bce408d98a842f630cf1821-20201130
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=rLpqHqCCCAQr25WgYvxu2aqjED7IxJn7APNLGPsEyJ0=;
+        b=s2BfSBZ2IW5sIWPFhPVQispBebrofHSDUeNwUzZyNmKp6mZ5mM+JlhkM6feDt096lDT76qNgAaK+mj6ijY+e29MYiM2IvmAASpmGStfRzN8Hwb1eOMhivSM/cpzO5+WT64Aw0HpIx7oIi/mjo9BPMQMq4Kr6M4vTJZIXPrfe41M=;
+X-UUID: 1c3294f61bce408d98a842f630cf1821-20201130
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1878706904; Mon, 30 Nov 2020 10:23:24 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 30 Nov 2020 10:23:16 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 30 Nov 2020 10:23:19 +0800
+Message-ID: <1606703001.23925.4.camel@mtkswgap22>
+Subject: Re: [PATCH 1/1] scsi: ufs: Remove scale down gear hard code
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
+        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
+        <saravanak@google.com>, <salyzyn@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Mon, 30 Nov 2020 10:23:21 +0800
+In-Reply-To: <1606442334-22641-1-git-send-email-cang@codeaurora.org>
+References: <1606442334-22641-1-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20201015120504.GA12976@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
+T24gVGh1LCAyMDIwLTExLTI2IGF0IDE3OjU4IC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiBJbnN0
+ZWFkIG9mIG1ha2luZyB0aGUgc2NhbGUgZG93biBnZWFyIGEgaGFyZCBjb2RlLCBtYWtlIGl0IGEg
+bWVtYmVyIG9mDQo+IHVmc19jbGtfc2NhbGluZyBzdHJ1Y3QuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5
+OiBDYW4gR3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KDQpSZXZpZXdlZC1ieTogU3RhbmxleSBD
+aHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCg0KDQo=
 
-On 10/15/20 8:05 PM, Herbert Xu wrote:
-> On Thu, Oct 15, 2020 at 07:02:41PM +0800, Tianjia Zhang wrote:
->> All templates and generic algorithms have been registered in
->> subsys_initcall instead of module_init. The ecrdsa algorithm
->> happened to be missed. Here is a fix for it.
-> 
-> That is true only if there are non-generic implementations of
-> the algorithms, which is not the case here.  Please explain the
-> real reason why this is needed.
-> 
-> Cheers,
-> 
-
-This is a generic algorithm, the author Vitaly Chikunov has also 
-confirmed it, please consider this patch again.
-
-Thanks.
