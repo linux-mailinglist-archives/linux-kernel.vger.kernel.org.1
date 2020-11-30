@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957582C88A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABB82C88AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbgK3PzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:55:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgK3PzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:55:06 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F38C0613CF;
-        Mon, 30 Nov 2020 07:54:26 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id hk16so1621124pjb.4;
-        Mon, 30 Nov 2020 07:54:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zesD9faGXKfbEuXEqSCTj0ccUc65wmLW/4/yHQTzcz8=;
-        b=gwYbeeA/XiuwxzFx62fUnO9bSA3njd22Bk5f9nyDO0zFjG/1lX6PErcP1PbdLqERs5
-         EwycBG4MhmVMVJ1pkUwfgfDyiW2ObtOKz0UK2P2yKnu0WXJq+SrR+VH+6hHe9bo1gaXv
-         PTYHbtuCmLx67iyaBJBYv+Hgnc6KoPyPUrx/RllA5pZEsKHaoguDtR8vl2T7b4nuzIJ8
-         j57dmNdquJ2l9RFQhN8EiQQThACmStIGPefWhR/3unU94ojTuAE9O9zISvWVrSgp7gvu
-         WxgxPfwJFWhOIw6sL8i+CqfiHixuMKuV3W/sdGguLzgUACWFZaJVAI1KYPNGApjAJ9ey
-         05YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zesD9faGXKfbEuXEqSCTj0ccUc65wmLW/4/yHQTzcz8=;
-        b=hZnD4aoWCdYu3e8eRKipJFLdkjdI6D69HlxxdFg8N906so7hEdE8rxQL2ZibyvZA8L
-         mEnVtMjOJUGzQsncRICLnRuIbJVCZaLzWW99BRviypoqr/SNR8HZX9Ya+mrGyq0/01Wi
-         jr15ggGM3MxBlgbSykYi8U2Wo9cuE29zziOJkgqQA9hgs9mH7enPkAeIBpO+hsizoK+q
-         Nm0XXz1zRQlnzPNrWewD7+DkhelhlpGrGFVUdmV7/OGhtupL6VdGpYRuUfA+2IAa3iMu
-         /CxWHqJ+h3mUJJg39yLOMvdbEdqehhgO05NJS66xrHBWpzs3N7gmNaSjXXGbWt05nm92
-         RsiQ==
-X-Gm-Message-State: AOAM531FKvZy53KB5uppNZAPDuuQF//FjsAJv5iGdHFKsJNAhx4fcy3C
-        pCmrFoRqnvSvFOnwF95Wd7A=
-X-Google-Smtp-Source: ABdhPJw9nK9xTTC0/xCOmca/W25LMh0JxHZQy60vyo5NUBN4yAzs3Zy2VHby6qJ9oEAy2hb8rSavcg==
-X-Received: by 2002:a17:90a:6346:: with SMTP id v6mr27184285pjs.162.1606751665709;
-        Mon, 30 Nov 2020 07:54:25 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id 204sm17331660pfy.59.2020.11.30.07.54.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 07:54:24 -0800 (PST)
-Date:   Tue, 1 Dec 2020 00:54:22 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 08/18] lib/test_printf.c: Use helper function to unwind
- array of software_nodes
-Message-ID: <X8UVroTsTYqp2R1M@jagdpanzerIV.localdomain>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-9-djrscally@gmail.com>
+        id S1727719AbgK3Pzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:55:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:57016 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725870AbgK3Pzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:55:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1540BD6E;
+        Mon, 30 Nov 2020 07:55:00 -0800 (PST)
+Received: from [10.57.27.168] (unknown [10.57.27.168])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECE973F718;
+        Mon, 30 Nov 2020 07:54:58 -0800 (PST)
+Subject: Re: [PATCH] perf tools: add aarch64 registers to --user-regs
+To:     Alexandre Truong <alexandre.truong@arm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     John Garry <john.garry@huawei.com>, Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+References: <20201127153923.26717-1-alexandre.truong@arm.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <cd0592be-68d2-c88d-ff18-05f7d3ba8cc2@arm.com>
+Date:   Mon, 30 Nov 2020 17:54:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-9-djrscally@gmail.com>
+In-Reply-To: <20201127153923.26717-1-alexandre.truong@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/11/30 13:31), Daniel Scally wrote:
-> 
-> Use the software_node_unregister_nodes() helper function to unwind this
-> array in a cleaner way.
-> 
-> Acked-by: Petr Mladek <pmladek@suse.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
 
-Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+On 27/11/2020 17:39, Alexandre Truong wrote:
+> Previously, this command returns no help message on aarch64:
+> 
+>   -> ./perf record --user-regs=?
+> 
+>   available registers:
+>   Usage: perf record [<options>] [<command>]
+>       or: perf record [<options>] -- <command> [<options>]
+> 
+> With this change, the registers are listed.
+> 
+>   -> ./perf record --user-regs=?
+> 
+>   available registers: x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 lr sp pc
+> 
+> It's also now possible to record subsets of registers on aarch64:
+> 
+>   -> ./perf record --user-regs=x4,x5 ls
+>   -> ./perf report --dump-raw-trace
+> 
+>   12801163749305260 0xc70 [0x40]: PERF_RECORD_SAMPLE(IP, 0x2): 51956/51956: 0xffffaa6571f0 period: 145785 addr: 0
+>   ... user regs: mask 0x30 ABI 64-bit
+>   .... x4    0x000000000000006c
+>   .... x5    0x0000001001000001
+>    ... thread: ls:51956
+>     ...... dso: /usr/lib64/ld-2.17.so
+> 
 
-	-ss
+Checked that the registers can be listed with =? and that recording different combinations of registers works as expected.
+
+Tested-by: James Clark <james.clark@arm.com>
