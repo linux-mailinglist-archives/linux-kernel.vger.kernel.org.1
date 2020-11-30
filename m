@@ -2,348 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA742C91E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCDA2C91EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729186AbgK3XCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:02:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgK3XCa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:02:30 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF24BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:01:43 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id 11so12996233oty.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:01:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0yESZ9nKaytue6yJwKTB2Qr8baSyeMkEq6znRRPjhkA=;
-        b=DekO9/naQQb895LZ4/BdYR1Ej0E+EL563P8tgr7ejyA5u+vtpYiLb8igDF7OZK5oTI
-         ptXLdxvhVT15qH8c/xgFFgw2BACOxMT9qcqbSt/EEy5HjPpp8PfhFyrDC6x38jl6y/ja
-         r447hjgnn/axo/ml/aLvX+osft5jkWIrbN8za/+CjVYR/non7gzVHimt2jFzil6kZsFm
-         qlDkTGL5VEKdV/i9lsasKGSkZtfkotmggl7uuryXjuvT32YKVoGrLXFxVdrIihAD+tQF
-         YWy6Wbng/rdVWQItzOaLSlxCbT2ptWC/7/nGbft96SZNqQm+afNhCtcVR+a49IPLQ6i7
-         55Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0yESZ9nKaytue6yJwKTB2Qr8baSyeMkEq6znRRPjhkA=;
-        b=s/7JFWVfZc/Zs6q56r5mUSdb6Un9s8r9PZSqz5vLdcXGGKz5rQvbBecF/RDRBRh/py
-         pbe8Rf0VcOxu0utKE3H+KOI7J0/i3ixHQ5ubyKrDvVdLKj7xmocO9lHBpyYe2/8QDXwd
-         VtKMtcCYzE6NryaYlJo6fQ3SCRXaCsniXJrM0FzuphaVOTzk/DKut19hCPCLcp3okXXd
-         9FGbCVc9lqDE/ehWihQmfUZeL9BGqHkTvlqy/IPp3Wo+Oc6I16wWD8zGoGJZVkxGG8hG
-         6/RrzrItdBkLZ8iNvDQXrBQBa/B4dRzQef1BZj/NSMMfKtnQGtNCmmAiavfUVJRfH+yW
-         65+g==
-X-Gm-Message-State: AOAM532DdyKfzhV38iT8KJ0zwwIZNVfinzOEhcWTJZsp5l2/X8awUWtl
-        ptQlGiauL5mhuzLrpDHKCpfyHK4y/4cr5bBxSC8=
-X-Google-Smtp-Source: ABdhPJxtfNATm0iM/HqcvRpbzptwDOMTGglNgMSGQZZx8DFRnwDXZKyR/+a1AgLCgHDSII3yRE68WZcFvr8hxtwmJiA=
-X-Received: by 2002:a9d:5388:: with SMTP id w8mr18854229otg.311.1606777301801;
- Mon, 30 Nov 2020 15:01:41 -0800 (PST)
+        id S2388483AbgK3XDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:03:40 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:18687 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725980AbgK3XDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:03:40 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606777394; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=EISVAw61BH5Re+I7UyxCOWU0E6/dUFfyNJ18uYJF/MU=; b=IPDoxeejnSJfjdT/MgPSLGJ0u46WFJKfWoPAs2j2Q2yOt6S4THwZIwxBAgtaul5GoVp57A5u
+ MAXkPFBVkIhwTbpm9MtSrWj9CY+QihgBrGd6wPypKPKTJ7OTaKrfsT6ji+QOuMGKY83GOeLx
+ N3rFtOCeYav/OnZr/t2Tq9TjYdU=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fc579eaf653ea0cd82ac182 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 23:02:02
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5C570C43469; Mon, 30 Nov 2020 23:02:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 542FCC433ED;
+        Mon, 30 Nov 2020 23:01:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 542FCC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v3 1/2] scsi: ufs: Refactor ufshcd_setup_clocks() to
+ remove skip_ref_clk
+To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+References: <1606356063-38380-1-git-send-email-cang@codeaurora.org>
+ <1606356063-38380-2-git-send-email-cang@codeaurora.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <f99ee6cd-6e09-4160-f9e8-2d8b04cbfa1e@codeaurora.org>
+Date:   Mon, 30 Nov 2020 15:01:58 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-39-lee.jones@linaro.org>
-In-Reply-To: <20201124193824.1118741-39-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 18:01:30 -0500
-Message-ID: <CADnq5_Ns3Ls=94FyM2LAm__S5iDHvrLNZs6zcN1ySB54mbvc1Q@mail.gmail.com>
-Subject: Re: [PATCH 38/40] drm/amd/pm/swsmu/smu11/navi10_ppt: Remove unused
- 'struct i2c_algorithm navi10_i2c_algo'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1606356063-38380-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 2:45 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Evan Quan <evan.quan@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Applied.  Thanks!
-
-Alex
-
+On 11/25/2020 6:01 PM, Can Guo wrote:
+> Remove the param skip_ref_clk from __ufshcd_setup_clocks(), but keep a flag
+> in struct ufs_clk_info to tell whether a clock can be disabled or not while
+> the link is active.
+> 
+> Reviewed-by: Hongwu Su<hongwus@codeaurora.org>
+> Reviewed-by: Bean Huo <beanhuo@micron.com>
+> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
 > ---
->  .../gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c   | 204 ------------------
->  1 file changed, 204 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c b/drivers/gp=
-u/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-> index ef1a62e86a0ee..59bd7cd3ca8df 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-> @@ -2325,210 +2325,6 @@ static int navi10_run_umc_cdr_workaround(struct s=
-mu_context *smu)
->         return 0;
->  }
->
-> -static void navi10_fill_i2c_req(SwI2cRequest_t  *req, bool write,
-> -                                 uint8_t address, uint32_t numbytes,
-> -                                 uint8_t *data)
+>   drivers/scsi/ufs/ufshcd-pltfrm.c |  2 ++
+>   drivers/scsi/ufs/ufshcd.c        | 29 +++++++++--------------------
+>   drivers/scsi/ufs/ufshcd.h        |  3 +++
+>   3 files changed, 14 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> index 3db0af6..873ef14 100644
+> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> @@ -92,6 +92,8 @@ static int ufshcd_parse_clock_info(struct ufs_hba *hba)
+>   		clki->min_freq = clkfreq[i];
+>   		clki->max_freq = clkfreq[i+1];
+>   		clki->name = kstrdup(name, GFP_KERNEL);
+> +		if (!strcmp(name, "ref_clk"))
+> +			clki->keep_link_active = true;
+>   		dev_dbg(dev, "%s: min %u max %u name %s\n", "freq-table-hz",
+>   				clki->min_freq, clki->max_freq, clki->name);
+>   		list_add_tail(&clki->list, &hba->clk_list_head);
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index a7857f6..44254c9 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -221,8 +221,6 @@ static int ufshcd_eh_host_reset_handler(struct scsi_cmnd *cmd);
+>   static int ufshcd_clear_tm_cmd(struct ufs_hba *hba, int tag);
+>   static void ufshcd_hba_exit(struct ufs_hba *hba);
+>   static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
+> -static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+> -				 bool skip_ref_clk);
+>   static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
+>   static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
+>   static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba);
+> @@ -1707,11 +1705,7 @@ static void ufshcd_gate_work(struct work_struct *work)
+>   
+>   	ufshcd_disable_irq(hba);
+>   
+> -	if (!ufshcd_is_link_active(hba))
+> -		ufshcd_setup_clocks(hba, false);
+> -	else
+> -		/* If link is active, device ref_clk can't be switched off */
+> -		__ufshcd_setup_clocks(hba, false, true);
+> +	ufshcd_setup_clocks(hba, false);
+>   
+>   	/*
+>   	 * In case you are here to cancel this work the gating state
+> @@ -7990,8 +7984,7 @@ static int ufshcd_init_hba_vreg(struct ufs_hba *hba)
+>   	return 0;
+>   }
+>   
+> -static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+> -					bool skip_ref_clk)
+> +static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on)
+>   {
+>   	int ret = 0;
+>   	struct ufs_clk_info *clki;
+> @@ -8009,7 +8002,12 @@ static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+>   
+>   	list_for_each_entry(clki, head, list) {
+>   		if (!IS_ERR_OR_NULL(clki->clk)) {
+> -			if (skip_ref_clk && !strcmp(clki->name, "ref_clk"))
+> +			/*
+> +			 * Don't disable clocks which are needed
+> +			 * to keep the link active.
+> +			 */
+> +			if (ufshcd_is_link_active(hba) &&
+> +			    clki->keep_link_active)
+>   				continue;
+>   
+>   			clk_state_changed = on ^ clki->enabled;
+> @@ -8054,11 +8052,6 @@ static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+>   	return ret;
+>   }
+>   
+> -static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on)
 > -{
-> -       int i;
-> -
-> -       req->I2CcontrollerPort =3D 0;
-> -       req->I2CSpeed =3D 2;
-> -       req->SlaveAddress =3D address;
-> -       req->NumCmds =3D numbytes;
-> -
-> -       for (i =3D 0; i < numbytes; i++) {
-> -               SwI2cCmd_t *cmd =3D  &req->SwI2cCmds[i];
-> -
-> -               /* First 2 bytes are always write for lower 2b EEPROM add=
-ress */
-> -               if (i < 2)
-> -                       cmd->Cmd =3D 1;
-> -               else
-> -                       cmd->Cmd =3D write;
-> -
-> -
-> -               /* Add RESTART for read  after address filled */
-> -               cmd->CmdConfig |=3D (i =3D=3D 2 && !write) ? CMDCONFIG_RE=
-START_MASK : 0;
-> -
-> -               /* Add STOP in the end */
-> -               cmd->CmdConfig |=3D (i =3D=3D (numbytes - 1)) ? CMDCONFIG=
-_STOP_MASK : 0;
-> -
-> -               /* Fill with data regardless if read or write to simplify=
- code */
-> -               cmd->RegisterAddr =3D data[i];
-> -       }
+> -	return  __ufshcd_setup_clocks(hba, on, false);
 > -}
 > -
-> -static int navi10_i2c_read_data(struct i2c_adapter *control,
-> -                                              uint8_t address,
-> -                                              uint8_t *data,
-> -                                              uint32_t numbytes)
-> -{
-> -       uint32_t  i, ret =3D 0;
-> -       SwI2cRequest_t req;
-> -       struct amdgpu_device *adev =3D to_amdgpu_device(control);
-> -       struct smu_table_context *smu_table =3D &adev->smu.smu_table;
-> -       struct smu_table *table =3D &smu_table->driver_table;
-> -
-> -       if (numbytes > MAX_SW_I2C_COMMANDS) {
-> -               dev_err(adev->dev, "numbytes requested %d is over max all=
-owed %d\n",
-> -                       numbytes, MAX_SW_I2C_COMMANDS);
-> -               return -EINVAL;
-> -       }
-> -
-> -       memset(&req, 0, sizeof(req));
-> -       navi10_fill_i2c_req(&req, false, address, numbytes, data);
-> -
-> -       mutex_lock(&adev->smu.mutex);
-> -       /* Now read data starting with that address */
-> -       ret =3D smu_cmn_update_table(&adev->smu, SMU_TABLE_I2C_COMMANDS, =
-0, &req,
-> -                                  true);
-> -       mutex_unlock(&adev->smu.mutex);
-> -
-> -       if (!ret) {
-> -               SwI2cRequest_t *res =3D (SwI2cRequest_t *)table->cpu_addr=
-;
-> -
-> -               /* Assume SMU  fills res.SwI2cCmds[i].Data with read byte=
-s */
-> -               for (i =3D 0; i < numbytes; i++)
-> -                       data[i] =3D res->SwI2cCmds[i].Data;
-> -
-> -               dev_dbg(adev->dev, "navi10_i2c_read_data, address =3D %x,=
- bytes =3D %d, data :",
-> -                                 (uint16_t)address, numbytes);
-> -
-> -               print_hex_dump(KERN_DEBUG, "data: ", DUMP_PREFIX_NONE,
-> -                              8, 1, data, numbytes, false);
-> -       } else
-> -               dev_err(adev->dev, "navi10_i2c_read_data - error occurred=
- :%x", ret);
-> -
-> -       return ret;
-> -}
-> -
-> -static int navi10_i2c_write_data(struct i2c_adapter *control,
-> -                                               uint8_t address,
-> -                                               uint8_t *data,
-> -                                               uint32_t numbytes)
-> -{
-> -       uint32_t ret;
-> -       SwI2cRequest_t req;
-> -       struct amdgpu_device *adev =3D to_amdgpu_device(control);
-> -
-> -       if (numbytes > MAX_SW_I2C_COMMANDS) {
-> -               dev_err(adev->dev, "numbytes requested %d is over max all=
-owed %d\n",
-> -                       numbytes, MAX_SW_I2C_COMMANDS);
-> -               return -EINVAL;
-> -       }
-> -
-> -       memset(&req, 0, sizeof(req));
-> -       navi10_fill_i2c_req(&req, true, address, numbytes, data);
-> -
-> -       mutex_lock(&adev->smu.mutex);
-> -       ret =3D smu_cmn_update_table(&adev->smu, SMU_TABLE_I2C_COMMANDS, =
-0, &req, true);
-> -       mutex_unlock(&adev->smu.mutex);
-> -
-> -       if (!ret) {
-> -               dev_dbg(adev->dev, "navi10_i2c_write(), address =3D %x, b=
-ytes =3D %d , data: ",
-> -                                        (uint16_t)address, numbytes);
-> -
-> -               print_hex_dump(KERN_DEBUG, "data: ", DUMP_PREFIX_NONE,
-> -                              8, 1, data, numbytes, false);
-> -               /*
-> -                * According to EEPROM spec there is a MAX of 10 ms requi=
-red for
-> -                * EEPROM to flush internal RX buffer after STOP was issu=
-ed at the
-> -                * end of write transaction. During this time the EEPROM =
-will not be
-> -                * responsive to any more commands - so wait a bit more.
-> -                */
-> -               msleep(10);
-> -
-> -       } else
-> -               dev_err(adev->dev, "navi10_i2c_write- error occurred :%x"=
-, ret);
-> -
-> -       return ret;
-> -}
-> -
-> -static int navi10_i2c_xfer(struct i2c_adapter *i2c_adap,
-> -                             struct i2c_msg *msgs, int num)
-> -{
-> -       uint32_t  i, j, ret, data_size, data_chunk_size, next_eeprom_addr=
- =3D 0;
-> -       uint8_t *data_ptr, data_chunk[MAX_SW_I2C_COMMANDS] =3D { 0 };
-> -
-> -       for (i =3D 0; i < num; i++) {
-> -               /*
-> -                * SMU interface allows at most MAX_SW_I2C_COMMANDS bytes=
- of data at
-> -                * once and hence the data needs to be spliced into chunk=
-s and sent each
-> -                * chunk separately
-> -                */
-> -               data_size =3D msgs[i].len - 2;
-> -               data_chunk_size =3D MAX_SW_I2C_COMMANDS - 2;
-> -               next_eeprom_addr =3D (msgs[i].buf[0] << 8 & 0xff00) | (ms=
-gs[i].buf[1] & 0xff);
-> -               data_ptr =3D msgs[i].buf + 2;
-> -
-> -               for (j =3D 0; j < data_size / data_chunk_size; j++) {
-> -                       /* Insert the EEPROM dest addess, bits 0-15 */
-> -                       data_chunk[0] =3D ((next_eeprom_addr >> 8) & 0xff=
-);
-> -                       data_chunk[1] =3D (next_eeprom_addr & 0xff);
-> -
-> -                       if (msgs[i].flags & I2C_M_RD) {
-> -                               ret =3D navi10_i2c_read_data(i2c_adap,
-> -                                                            (uint8_t)msg=
-s[i].addr,
-> -                                                            data_chunk, =
-MAX_SW_I2C_COMMANDS);
-> -
-> -                               memcpy(data_ptr, data_chunk + 2, data_chu=
-nk_size);
-> -                       } else {
-> -
-> -                               memcpy(data_chunk + 2, data_ptr, data_chu=
-nk_size);
-> -
-> -                               ret =3D navi10_i2c_write_data(i2c_adap,
-> -                                                             (uint8_t)ms=
-gs[i].addr,
-> -                                                             data_chunk,=
- MAX_SW_I2C_COMMANDS);
-> -                       }
-> -
-> -                       if (ret) {
-> -                               num =3D -EIO;
-> -                               goto fail;
-> -                       }
-> -
-> -                       next_eeprom_addr +=3D data_chunk_size;
-> -                       data_ptr +=3D data_chunk_size;
-> -               }
-> -
-> -               if (data_size % data_chunk_size) {
-> -                       data_chunk[0] =3D ((next_eeprom_addr >> 8) & 0xff=
-);
-> -                       data_chunk[1] =3D (next_eeprom_addr & 0xff);
-> -
-> -                       if (msgs[i].flags & I2C_M_RD) {
-> -                               ret =3D navi10_i2c_read_data(i2c_adap,
-> -                                                            (uint8_t)msg=
-s[i].addr,
-> -                                                            data_chunk, =
-(data_size % data_chunk_size) + 2);
-> -
-> -                               memcpy(data_ptr, data_chunk + 2, data_siz=
-e % data_chunk_size);
-> -                       } else {
-> -                               memcpy(data_chunk + 2, data_ptr, data_siz=
-e % data_chunk_size);
-> -
-> -                               ret =3D navi10_i2c_write_data(i2c_adap,
-> -                                                             (uint8_t)ms=
-gs[i].addr,
-> -                                                             data_chunk,=
- (data_size % data_chunk_size) + 2);
-> -                       }
-> -
-> -                       if (ret) {
-> -                               num =3D -EIO;
-> -                               goto fail;
-> -                       }
-> -               }
-> -       }
-> -
-> -fail:
-> -       return num;
-> -}
-> -
-> -static u32 navi10_i2c_func(struct i2c_adapter *adap)
-> -{
-> -       return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
-> -}
-> -
-> -
-> -static const struct i2c_algorithm navi10_i2c_algo =3D {
-> -       .master_xfer =3D navi10_i2c_xfer,
-> -       .functionality =3D navi10_i2c_func,
-> -};
-> -
->  static ssize_t navi10_get_gpu_metrics(struct smu_context *smu,
->                                       void **table)
->  {
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>   static int ufshcd_init_clocks(struct ufs_hba *hba)
+>   {
+>   	int ret = 0;
+> @@ -8577,11 +8570,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>   	 */
+>   	ufshcd_disable_irq(hba);
+>   
+> -	if (!ufshcd_is_link_active(hba))
+> -		ufshcd_setup_clocks(hba, false);
+> -	else
+> -		/* If link is active, device ref_clk can't be switched off */
+> -		__ufshcd_setup_clocks(hba, false, true);
+> +	ufshcd_setup_clocks(hba, false);
+>   
+>   	if (ufshcd_is_clkgating_allowed(hba)) {
+>   		hba->clk_gating.state = CLKS_OFF;
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 66e5338..6f0f2d4 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -229,6 +229,8 @@ struct ufs_dev_cmd {
+>    * @max_freq: maximum frequency supported by the clock
+>    * @min_freq: min frequency that can be used for clock scaling
+>    * @curr_freq: indicates the current frequency that it is set to
+> + * @keep_link_active: indicates that the clk should not be disabled if
+> +		      link is active
+>    * @enabled: variable to check against multiple enable/disable
+>    */
+>   struct ufs_clk_info {
+> @@ -238,6 +240,7 @@ struct ufs_clk_info {
+>   	u32 max_freq;
+>   	u32 min_freq;
+>   	u32 curr_freq;
+> +	bool keep_link_active;
+
+Nitpick - How about 'always-on' instead of 'keep_link_active'?
+>   	bool enabled;
+>   };
+>   
+> 
+
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
