@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E99F2C8EF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B055A2C8EFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730114AbgK3UVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:21:15 -0500
-Received: from mga04.intel.com ([192.55.52.120]:60098 "EHLO mga04.intel.com"
+        id S1730142AbgK3UV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:21:29 -0500
+Received: from mga04.intel.com ([192.55.52.120]:60096 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730094AbgK3UVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:21:14 -0500
-IronPort-SDR: W0X04hQhqMFzuWuF+Ek3KXjwDV9wzRO5sEv/HGcMM8XDWRiuKJ508DvLipWPxwBtpP9w96qleV
- ds2/UosxG3vw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="170140726"
+        id S1730117AbgK3UV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 15:21:28 -0500
+IronPort-SDR: akDwRQFRixtoXV0EKZ5A5Z7HpTpQDRR6Z9bb5ER2goZkCeoDv4wjqYdy4xyWt5CxTSTEi/rem9
+ XknnyP9i0JPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="170140727"
 X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="170140726"
+   d="scan'208";a="170140727"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 12:20:31 -0800
-IronPort-SDR: V1uhTitOTNcxUCpJkASRU4Ff+DrGnAYPVluoLUd/5pmenugj5ZMK//7q3urw4unQbk4oud6Hq5
- juBlING17ZvA==
+IronPort-SDR: XnZF63SxPo964g5MdcwEfHQzIsbIjxLi1Rfqy3HTNVazVK+HQsPnA4SCW1uSS05uyz6KOiyHiC
+ uB/WEAUsRg8Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="480793748"
+   d="scan'208";a="480793752"
 Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
   by orsmga004.jf.intel.com with ESMTP; 30 Nov 2020 12:20:30 -0800
 From:   Fenghua Yu <fenghua.yu@intel.com>
@@ -36,9 +36,9 @@ To:     "Shuah Khan" <shuah@kernel.org>, "Tony Luck" <tony.luck@intel.com>,
         "Ravi V Shankar" <ravi.v.shankar@intel.com>
 Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
         Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v4 01/17] selftests/resctrl: Fix compilation issues for global variables
-Date:   Mon, 30 Nov 2020 20:19:54 +0000
-Message-Id: <20201130202010.178373-2-fenghua.yu@intel.com>
+Subject: [PATCH v4 02/17] selftests/resctrl: Clean up resctrl features check
+Date:   Mon, 30 Nov 2020 20:19:55 +0000
+Message-Id: <20201130202010.178373-3-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201130202010.178373-1-fenghua.yu@intel.com>
 References: <20201130202010.178373-1-fenghua.yu@intel.com>
@@ -48,174 +48,336 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reinette reported following compilation issue on Fedora 32, gcc version
-10.1.1
+Checking resctrl features call strcmp() to compare feature strings
+(e.g. "mba", "cat" etc). The checkings are error prone and don't have
+good coding style. Define the constant strings in macros and call
+strncmp() to solve the potential issues.
 
-/usr/bin/ld: cqm_test.o:<src_dir>/cqm_test.c:22: multiple definition of
-`cache_size'; cat_test.o:<src_dir>/cat_test.c:23: first defined here
-
-The same issue is reported for long_mask, cbm_mask, count_of_bits etc
-variables as well. Compiler isn't happy because these variables are
-defined globally in two .c files namely cqm_test.c and cat_test.c and
-the compiler during compilation finds that the variable is already
-defined (multiple definition error).
-
-Taking a closer look at the usage of these variables reveals that these
-variables are used only locally to functions such as cqm_resctrl_val()
-(defined in cqm_test.c) and cat_perf_miss_val() (defined in cat_test.c).
-These variables are not shared between those functions. So, there is no
-need for these variables to be global. Hence, fix this issue by making
-them local variables to the functions where they are used.
-
-To fix issues for other global variables (e.g: bm_pid, ppid, llc_occup_path
-and is_amd) that are used across .c files, declare them as extern.
-
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Suggested-by: Shuah Khan <shuah@kernel.org>
 Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 ---
- tools/testing/selftests/resctrl/cat_test.c  | 12 ++++--------
- tools/testing/selftests/resctrl/cqm_test.c  | 11 ++++-------
- tools/testing/selftests/resctrl/resctrl.h   | 10 +++++-----
- tools/testing/selftests/resctrl/resctrlfs.c | 10 +++++-----
- 4 files changed, 18 insertions(+), 25 deletions(-)
+ tools/testing/selftests/resctrl/cache.c       |  8 +++---
+ tools/testing/selftests/resctrl/cat_test.c    |  2 +-
+ tools/testing/selftests/resctrl/cqm_test.c    |  2 +-
+ tools/testing/selftests/resctrl/fill_buf.c    |  4 +--
+ tools/testing/selftests/resctrl/mba_test.c    |  2 +-
+ tools/testing/selftests/resctrl/mbm_test.c    |  2 +-
+ tools/testing/selftests/resctrl/resctrl.h     | 25 +++++++++++++++++++
+ .../testing/selftests/resctrl/resctrl_tests.c | 12 ++++-----
+ tools/testing/selftests/resctrl/resctrl_val.c | 19 ++++++--------
+ tools/testing/selftests/resctrl/resctrlfs.c   | 14 +++++------
+ 10 files changed, 55 insertions(+), 35 deletions(-)
 
+diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
+index 38dbf4962e33..248bf000c978 100644
+--- a/tools/testing/selftests/resctrl/cache.c
++++ b/tools/testing/selftests/resctrl/cache.c
+@@ -182,7 +182,7 @@ int measure_cache_vals(struct resctrl_val_param *param, int bm_pid)
+ 	/*
+ 	 * Measure cache miss from perf.
+ 	 */
+-	if (!strcmp(param->resctrl_val, "cat")) {
++	if (is_cat(param->resctrl_val)) {
+ 		ret = get_llc_perf(&llc_perf_miss);
+ 		if (ret < 0)
+ 			return ret;
+@@ -192,7 +192,7 @@ int measure_cache_vals(struct resctrl_val_param *param, int bm_pid)
+ 	/*
+ 	 * Measure llc occupancy from resctrl.
+ 	 */
+-	if (!strcmp(param->resctrl_val, "cqm")) {
++	if (is_cqm(param->resctrl_val)) {
+ 		ret = get_llc_occu_resctrl(&llc_occu_resc);
+ 		if (ret < 0)
+ 			return ret;
+@@ -234,7 +234,7 @@ int cat_val(struct resctrl_val_param *param)
+ 	if (ret)
+ 		return ret;
+ 
+-	if ((strcmp(resctrl_val, "cat") == 0)) {
++	if (is_cat(resctrl_val)) {
+ 		ret = initialize_llc_perf();
+ 		if (ret)
+ 			return ret;
+@@ -242,7 +242,7 @@ int cat_val(struct resctrl_val_param *param)
+ 
+ 	/* Test runs until the callback setup() tells the test to stop. */
+ 	while (1) {
+-		if (strcmp(resctrl_val, "cat") == 0) {
++		if (is_cat(resctrl_val)) {
+ 			ret = param->setup(1, param);
+ 			if (ret) {
+ 				ret = 0;
 diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 5da43767b973..7f723bd8f328 100644
+index 7f723bd8f328..6d9a41f3939a 100644
 --- a/tools/testing/selftests/resctrl/cat_test.c
 +++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -17,11 +17,6 @@
- #define MAX_DIFF_PERCENT	4
- #define MAX_DIFF		1000000
- 
--int count_of_bits;
--char cbm_mask[256];
--unsigned long long_mask;
--unsigned long cache_size;
--
- /*
-  * Change schemata. Write schemata to specified
-  * con_mon grp, mon_grp in resctrl FS.
-@@ -121,8 +116,9 @@ void cat_test_cleanup(void)
- 
- int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
- {
--	unsigned long l_mask, l_mask_1;
--	int ret, pipefd[2], sibling_cpu_no;
-+	unsigned long l_mask, l_mask_1, long_mask, cache_size;
-+	int ret, pipefd[2], sibling_cpu_no, count_of_bits;
-+	char cbm_mask[256];
- 	char pipe_message;
- 	pid_t bm_pid;
- 
-@@ -136,7 +132,7 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+@@ -160,7 +160,7 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
  		return -1;
  
- 	/* Get default cbm mask for L3/L2 cache */
--	ret = get_cbm_mask(cache_type);
-+	ret = get_cbm_mask(cache_type, cbm_mask);
- 	if (ret)
- 		return ret;
- 
+ 	struct resctrl_val_param param = {
+-		.resctrl_val	= "cat",
++		.resctrl_val	= CAT_STR,
+ 		.cpu_no		= cpu_no,
+ 		.mum_resctrlfs	= 0,
+ 		.setup		= cat_setup,
 diff --git a/tools/testing/selftests/resctrl/cqm_test.c b/tools/testing/selftests/resctrl/cqm_test.c
-index c8756152bd61..b6af940ccfc2 100644
+index b6af940ccfc2..6635b24a74cc 100644
 --- a/tools/testing/selftests/resctrl/cqm_test.c
 +++ b/tools/testing/selftests/resctrl/cqm_test.c
-@@ -16,11 +16,6 @@
- #define MAX_DIFF		2000000
- #define MAX_DIFF_PERCENT	15
+@@ -142,7 +142,7 @@ int cqm_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
+ 	}
  
--int count_of_bits;
--char cbm_mask[256];
--unsigned long long_mask;
--unsigned long cache_size;
--
- static int cqm_setup(int num, ...)
+ 	struct resctrl_val_param param = {
+-		.resctrl_val	= "cqm",
++		.resctrl_val	= CQM_STR,
+ 		.ctrlgrp	= "c1",
+ 		.mongrp		= "m1",
+ 		.cpu_no		= cpu_no,
+diff --git a/tools/testing/selftests/resctrl/fill_buf.c b/tools/testing/selftests/resctrl/fill_buf.c
+index 79c611c99a3d..bece8bb4b575 100644
+--- a/tools/testing/selftests/resctrl/fill_buf.c
++++ b/tools/testing/selftests/resctrl/fill_buf.c
+@@ -115,7 +115,7 @@ static int fill_cache_read(unsigned char *start_ptr, unsigned char *end_ptr,
+ 
+ 	while (1) {
+ 		ret = fill_one_span_read(start_ptr, end_ptr);
+-		if (!strcmp(resctrl_val, "cat"))
++		if (is_cat(resctrl_val))
+ 			break;
+ 	}
+ 
+@@ -134,7 +134,7 @@ static int fill_cache_write(unsigned char *start_ptr, unsigned char *end_ptr,
  {
- 	struct resctrl_val_param *p;
-@@ -113,7 +108,9 @@ void cqm_test_cleanup(void)
+ 	while (1) {
+ 		fill_one_span_write(start_ptr, end_ptr);
+-		if (!strcmp(resctrl_val, "cat"))
++		if (is_cat(resctrl_val))
+ 			break;
+ 	}
  
- int cqm_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
+diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
+index 7bf8eaa6204b..6449fbd96096 100644
+--- a/tools/testing/selftests/resctrl/mba_test.c
++++ b/tools/testing/selftests/resctrl/mba_test.c
+@@ -141,7 +141,7 @@ void mba_test_cleanup(void)
+ int mba_schemata_change(int cpu_no, char *bw_report, char **benchmark_cmd)
  {
--	int ret, mum_resctrlfs;
-+	int ret, mum_resctrlfs, count_of_bits;
-+	unsigned long long_mask, cache_size;
-+	char cbm_mask[256];
- 
- 	cache_size = 0;
- 	mum_resctrlfs = 1;
-@@ -125,7 +122,7 @@ int cqm_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
- 	if (!validate_resctrl_feature_request("cqm"))
- 		return -1;
- 
--	ret = get_cbm_mask("L3");
-+	ret = get_cbm_mask("L3", cbm_mask);
- 	if (ret)
- 		return ret;
- 
+ 	struct resctrl_val_param param = {
+-		.resctrl_val	= "mba",
++		.resctrl_val	= MBA_STR,
+ 		.ctrlgrp	= "c1",
+ 		.mongrp		= "m1",
+ 		.cpu_no		= cpu_no,
+diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
+index 4700f7453f81..ec6cfe01c9c2 100644
+--- a/tools/testing/selftests/resctrl/mbm_test.c
++++ b/tools/testing/selftests/resctrl/mbm_test.c
+@@ -114,7 +114,7 @@ void mbm_test_cleanup(void)
+ int mbm_bw_change(int span, int cpu_no, char *bw_report, char **benchmark_cmd)
+ {
+ 	struct resctrl_val_param param = {
+-		.resctrl_val	= "mbm",
++		.resctrl_val	= MBM_STR,
+ 		.ctrlgrp	= "c1",
+ 		.mongrp		= "m1",
+ 		.span		= span,
 diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 39bf59c6b9c5..12b77182cb44 100644
+index 12b77182cb44..bfbc16b39a9e 100644
 --- a/tools/testing/selftests/resctrl/resctrl.h
 +++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -62,11 +62,11 @@ struct resctrl_val_param {
+@@ -62,6 +62,31 @@ struct resctrl_val_param {
  	int		(*setup)(int num, ...);
  };
  
--pid_t bm_pid, ppid;
--int tests_run;
-+extern pid_t bm_pid, ppid;
-+extern int tests_run;
++#define MBM_STR			"mbm"
++#define MBA_STR			"mba"
++#define CQM_STR			"cqm"
++#define CAT_STR			"cat"
++
++static inline bool is_mbm(const char *str)
++{
++	return !strncmp(str, MBM_STR, 3);
++}
++
++static inline bool is_mba(const char *str)
++{
++	return !strncmp(str, MBA_STR, 3);
++}
++
++static inline bool is_cqm(const char *str)
++{
++	return !strncmp(str, CQM_STR, 3);
++}
++
++static inline bool is_cat(const char *str)
++{
++	return !strncmp(str, CAT_STR, 3);
++}
++
+ extern pid_t bm_pid, ppid;
+ extern int tests_run;
  
--char llc_occup_path[1024];
--bool is_amd;
-+extern char llc_occup_path[1024];
-+extern bool is_amd;
+diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+index 425cc85ac883..f425eaf8c331 100644
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -85,13 +85,13 @@ int main(int argc, char **argv)
+ 			cqm_test = false;
+ 			cat_test = false;
+ 			while (token) {
+-				if (!strcmp(token, "mbm")) {
++				if (is_mbm(token)) {
+ 					mbm_test = true;
+-				} else if (!strcmp(token, "mba")) {
++				} else if (is_mba(token)) {
+ 					mba_test = true;
+-				} else if (!strcmp(token, "cqm")) {
++				} else if (is_cqm(token)) {
+ 					cqm_test = true;
+-				} else if (!strcmp(token, "cat")) {
++				} else if (is_cat(token)) {
+ 					cat_test = true;
+ 				} else {
+ 					printf("invalid argument\n");
+@@ -161,7 +161,7 @@ int main(int argc, char **argv)
+ 	if (!is_amd && mbm_test) {
+ 		printf("# Starting MBM BW change ...\n");
+ 		if (!has_ben)
+-			sprintf(benchmark_cmd[5], "%s", "mba");
++			sprintf(benchmark_cmd[5], "%s", MBA_STR);
+ 		res = mbm_bw_change(span, cpu_no, bw_report, benchmark_cmd);
+ 		printf("%sok MBM: bw change\n", res ? "not " : "");
+ 		mbm_test_cleanup();
+@@ -181,7 +181,7 @@ int main(int argc, char **argv)
+ 	if (cqm_test) {
+ 		printf("# Starting CQM test ...\n");
+ 		if (!has_ben)
+-			sprintf(benchmark_cmd[5], "%s", "cqm");
++			sprintf(benchmark_cmd[5], "%s", CQM_STR);
+ 		res = cqm_resctrl_val(cpu_no, no_of_bits, benchmark_cmd);
+ 		printf("%sok CQM: test\n", res ? "not " : "");
+ 		cqm_test_cleanup();
+diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+index 520fea3606d1..f55e04a30a77 100644
+--- a/tools/testing/selftests/resctrl/resctrl_val.c
++++ b/tools/testing/selftests/resctrl/resctrl_val.c
+@@ -397,10 +397,10 @@ static void initialize_mem_bw_resctrl(const char *ctrlgrp, const char *mongrp,
+ 		return;
+ 	}
  
- bool check_resctrlfs_support(void);
- int filter_dmesg(void);
-@@ -92,7 +92,7 @@ void tests_cleanup(void);
- void mbm_test_cleanup(void);
- int mba_schemata_change(int cpu_no, char *bw_report, char **benchmark_cmd);
- void mba_test_cleanup(void);
--int get_cbm_mask(char *cache_type);
-+int get_cbm_mask(char *cache_type, char *cbm_mask);
- int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size);
- void ctrlc_handler(int signum, siginfo_t *info, void *ptr);
- int cat_val(struct resctrl_val_param *param);
-diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-index 19c0ec4045a4..2a16100c9c3f 100644
---- a/tools/testing/selftests/resctrl/resctrlfs.c
-+++ b/tools/testing/selftests/resctrl/resctrlfs.c
-@@ -49,8 +49,6 @@ static int find_resctrl_mount(char *buffer)
- 	return -ENOENT;
+-	if (strcmp(resctrl_val, "mbm") == 0)
++	if (is_mbm(resctrl_val))
+ 		set_mbm_path(ctrlgrp, mongrp, resource_id);
+ 
+-	if ((strcmp(resctrl_val, "mba") == 0)) {
++	if (is_mba(resctrl_val)) {
+ 		if (ctrlgrp)
+ 			sprintf(mbm_total_path, CON_MBM_LOCAL_BYTES_PATH,
+ 				RESCTRL_PATH, ctrlgrp, resource_id);
+@@ -524,7 +524,7 @@ static void initialize_llc_occu_resctrl(const char *ctrlgrp, const char *mongrp,
+ 		return;
+ 	}
+ 
+-	if (strcmp(resctrl_val, "cqm") == 0)
++	if (is_cqm(resctrl_val))
+ 		set_cqm_path(ctrlgrp, mongrp, resource_id);
  }
  
--char cbm_mask[256];
--
- /*
-  * remount_resctrlfs - Remount resctrl FS at /sys/fs/resctrl
-  * @mum_resctrlfs:	Should the resctrl FS be remounted?
-@@ -205,16 +203,18 @@ int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size)
- /*
-  * get_cbm_mask - Get cbm mask for given cache
-  * @cache_type:	Cache level L2/L3
-- *
-- * Mask is stored in cbm_mask which is global variable.
-+ * @cbm_mask:	cbm_mask returned as a string
-  *
-  * Return: = 0 on success, < 0 on failure.
-  */
--int get_cbm_mask(char *cache_type)
-+int get_cbm_mask(char *cache_type, char *cbm_mask)
- {
- 	char cbm_mask_path[1024];
+@@ -579,8 +579,7 @@ int resctrl_val(char **benchmark_cmd, struct resctrl_val_param *param)
+ 	if (strcmp(param->filename, "") == 0)
+ 		sprintf(param->filename, "stdio");
+ 
+-	if ((strcmp(resctrl_val, "mba")) == 0 ||
+-	    (strcmp(resctrl_val, "mbm")) == 0) {
++	if (is_mba(resctrl_val) || is_mbm(resctrl_val)) {
+ 		ret = validate_bw_report_request(param->bw_report);
+ 		if (ret)
+ 			return ret;
+@@ -674,15 +673,14 @@ int resctrl_val(char **benchmark_cmd, struct resctrl_val_param *param)
+ 	if (ret)
+ 		goto out;
+ 
+-	if ((strcmp(resctrl_val, "mbm") == 0) ||
+-	    (strcmp(resctrl_val, "mba") == 0)) {
++	if (is_mbm(resctrl_val) || is_mba(resctrl_val)) {
+ 		ret = initialize_mem_bw_imc();
+ 		if (ret)
+ 			goto out;
+ 
+ 		initialize_mem_bw_resctrl(param->ctrlgrp, param->mongrp,
+ 					  param->cpu_no, resctrl_val);
+-	} else if (strcmp(resctrl_val, "cqm") == 0)
++	} else if (is_cqm(resctrl_val))
+ 		initialize_llc_occu_resctrl(param->ctrlgrp, param->mongrp,
+ 					    param->cpu_no, resctrl_val);
+ 
+@@ -710,8 +708,7 @@ int resctrl_val(char **benchmark_cmd, struct resctrl_val_param *param)
+ 
+ 	/* Test runs until the callback setup() tells the test to stop. */
+ 	while (1) {
+-		if ((strcmp(resctrl_val, "mbm") == 0) ||
+-		    (strcmp(resctrl_val, "mba") == 0)) {
++		if (is_mbm(resctrl_val) || is_mba(resctrl_val)) {
+ 			ret = param->setup(1, param);
+ 			if (ret) {
+ 				ret = 0;
+@@ -721,7 +718,7 @@ int resctrl_val(char **benchmark_cmd, struct resctrl_val_param *param)
+ 			ret = measure_vals(param, &bw_resc_start);
+ 			if (ret)
+ 				break;
+-		} else if (strcmp(resctrl_val, "cqm") == 0) {
++		} else if (is_cqm(resctrl_val)) {
+ 			ret = param->setup(1, param);
+ 			if (ret) {
+ 				ret = 0;
+diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+index 2a16100c9c3f..dc4f1286aefa 100644
+--- a/tools/testing/selftests/resctrl/resctrlfs.c
++++ b/tools/testing/selftests/resctrl/resctrlfs.c
+@@ -334,7 +334,7 @@ void run_benchmark(int signum, siginfo_t *info, void *ucontext)
+ 		operation = atoi(benchmark_cmd[4]);
+ 		sprintf(resctrl_val, "%s", benchmark_cmd[5]);
+ 
+-		if (strcmp(resctrl_val, "cqm") != 0)
++		if (!is_cqm(resctrl_val))
+ 			buffer_span = span * MB;
+ 		else
+ 			buffer_span = span;
+@@ -459,8 +459,7 @@ int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
+ 		goto out;
+ 
+ 	/* Create mon grp and write pid into it for "mbm" and "cqm" test */
+-	if ((strcmp(resctrl_val, "cqm") == 0) ||
+-	    (strcmp(resctrl_val, "mbm") == 0)) {
++	if (is_cqm(resctrl_val) || is_mbm(resctrl_val)) {
+ 		if (strlen(mongrp)) {
+ 			sprintf(monitorgroup_p, "%s/mon_groups", controlgroup);
+ 			sprintf(monitorgroup, "%s/%s", monitorgroup_p, mongrp);
+@@ -505,9 +504,8 @@ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+ 	int resource_id, ret = 0;
  	FILE *fp;
  
-+	if (!cbm_mask)
-+		return -1;
-+
- 	sprintf(cbm_mask_path, "%s/%s/cbm_mask", CBM_MASK_PATH, cache_type);
+-	if ((strcmp(resctrl_val, "mba") != 0) &&
+-	    (strcmp(resctrl_val, "cat") != 0) &&
+-	    (strcmp(resctrl_val, "cqm") != 0))
++	if (!is_mba(resctrl_val) && !is_cat(resctrl_val) &&
++	    !is_cqm(resctrl_val))
+ 		return -ENOENT;
  
- 	fp = fopen(cbm_mask_path, "r");
+ 	if (!schemata) {
+@@ -528,9 +526,9 @@ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+ 	else
+ 		sprintf(controlgroup, "%s/schemata", RESCTRL_PATH);
+ 
+-	if (!strcmp(resctrl_val, "cat") || !strcmp(resctrl_val, "cqm"))
++	if (is_cat(resctrl_val) || is_cqm(resctrl_val))
+ 		sprintf(schema, "%s%d%c%s", "L3:", resource_id, '=', schemata);
+-	if (strcmp(resctrl_val, "mba") == 0)
++	if (is_mba(resctrl_val))
+ 		sprintf(schema, "%s%d%c%s", "MB:", resource_id, '=', schemata);
+ 
+ 	fp = fopen(controlgroup, "w");
 -- 
 2.29.2
 
