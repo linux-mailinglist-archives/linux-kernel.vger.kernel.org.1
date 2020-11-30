@@ -2,125 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5807C2C8075
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6322C808E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727721AbgK3JAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727722AbgK3JAN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:00:13 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EF3C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:59:30 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a6so3915884wmc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:59:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3hM+phFbSccuPNXURtLkQPcsGT4rPyJ0on20dI+C1Qw=;
-        b=rJvWgeMPDJjEKJNRCC8yQz0N0Ut2wK5L+xQwBVUvMytQP/WgEdBTMzV4rvh9KIaYjP
-         E2NAJTqgwzKngo5FnKjNOv2x+y1F4WtHr0xEotVzgN2DGYPvprnM0xbdpJQ5PvzbY6R8
-         ejRORUmiHFPPrUWZgGXjPpwaS4rICehg3rp+YmaTEB7s4pchLKW91b3TgQK6CRHakjQb
-         XT+qkq4ijcGBvUbnNbgOcEHGvybYPYr0wmR1GdFoRWOmqKSTP3yxqRJ+cQ6wB5+PwDy9
-         CpfGwHnt8SQYDTyxk74Xsu6o4gjZcZFhUYSdBE1ZwkHZAl9PxnOG3edaGJct/cHpNXUT
-         BilA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3hM+phFbSccuPNXURtLkQPcsGT4rPyJ0on20dI+C1Qw=;
-        b=AajWepgwrDcCO8gE1bcM/U6FY3E2Q9AR+dUjbNMZmAoLmDOjzjBQgNNhx3utYwILEk
-         6RkSLiDfDnhXVzvfN0dei+jeP8yqD8w6cW0z06OPgN6jJqarRI0v80x45KixyIptXM8c
-         okbyXrO7OgOfxdnx5e+gghLvCNPz14/GHu0tIkDnqcGZKvOvM+Al6MMj/j0g4nQn0ARY
-         I01o8amhqtkBPiuQfCUmzDZ6FoV+gMmKDdEDN2VjnpdchhabQBsb7jdrJC6Cp8NI5ueG
-         V5eoEA65N+HJ75Qr0LHipB1XCj6lhgzsRNF6tl4NLj8vXAk6e6Isc3+KaH7ydF4SC9iQ
-         dU6Q==
-X-Gm-Message-State: AOAM53193Pw7Wy8pede96yZ/LZLNRCwm6sDHulbvLmSuW1g8r7DnrJdU
-        VcgT1pKkGVA1skZSY9DEcSEPAw==
-X-Google-Smtp-Source: ABdhPJw+Kc4lxyw2Sqwg6q/29/xhcLtgRtfpGiTtJszcuqv4nSBWi2fAXTXpo7wCEQsrS26cNR02Xw==
-X-Received: by 2002:a1c:f617:: with SMTP id w23mr22239554wmc.52.1606726769505;
-        Mon, 30 Nov 2020 00:59:29 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id f18sm26960482wru.42.2020.11.30.00.59.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 00:59:28 -0800 (PST)
-Date:   Mon, 30 Nov 2020 08:59:27 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     linux-kernel@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Erik Stahlman <erik@vt.edu>,
-        Peter Cammaert <pc@denkart.be>,
-        Daris A Nevil <dnevil@snmc.com>,
-        Russell King <rmk@arm.linux.org.uk>, netdev@vger.kernel.org
-Subject: Re: [PATCH 1/8] net: ethernet: smsc: smc91x: Demote non-conformant
- kernel function header
-Message-ID: <20201130085927.GB4801@dell>
-References: <20201126133853.3213268-1-lee.jones@linaro.org>
- <20201126133853.3213268-2-lee.jones@linaro.org>
- <20201129183309.GH2234159@lunn.ch>
+        id S1726828AbgK3JGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:06:38 -0500
+Received: from mail.udec.cl ([152.74.16.12]:43720 "EHLO mail.udec.cl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725976AbgK3JGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 04:06:38 -0500
+Received: (qmail 238849 invoked from network); 30 Nov 2020 08:59:12 -0000
+Received: from unknown (HELO webmail.udec.cl) ([152.74.16.40])
+          (envelope-sender <jfreer@udec.cl>)
+          by mail.udec.cl (qmail-ldap-1.03) with SMTP
+          for <tfinnegan@veridianhealthcare.com>; 30 Nov 2020 08:59:12 -0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201129183309.GH2234159@lunn.ch>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 30 Nov 2020 05:59:12 -0300
+From:   =?UTF-8?Q?Juanita_Freer_Calder=C3=B3n?= <jfreer@udec.cl>
+To:     undisclosed-recipients:;
+Subject: Loan
+Message-ID: <1805ceaaa21fbb83f68e70ac99ddbef1@udec.cl>
+X-Sender: jfreer@udec.cl
+User-Agent: UdeC Webmail/1.2.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Nov 2020, Andrew Lunn wrote:
 
-> On Thu, Nov 26, 2020 at 01:38:46PM +0000, Lee Jones wrote:
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'dev' not described in 'try_toggle_control_gpio'
-> >  drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'desc' not described in 'try_toggle_control_gpio'
-> >  drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'name' not described in 'try_toggle_control_gpio'
-> >  drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'index' not described in 'try_toggle_control_gpio'
-> >  drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'value' not described in 'try_toggle_control_gpio'
-> >  drivers/net/ethernet/smsc/smc91x.c:2200: warning: Function parameter or member 'nsdelay' not described in 'try_toggle_control_gpio'
-> > 
-> > Cc: Nicolas Pitre <nico@fluxnic.net>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: Erik Stahlman <erik@vt.edu>
-> > Cc: Peter Cammaert <pc@denkart.be>
-> > Cc: Daris A Nevil <dnevil@snmc.com>
-> > Cc: Russell King <rmk@arm.linux.org.uk>
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/net/ethernet/smsc/smc91x.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
-> > index 56c36798cb111..3b90dc065ff2d 100644
-> > --- a/drivers/net/ethernet/smsc/smc91x.c
-> > +++ b/drivers/net/ethernet/smsc/smc91x.c
-> > @@ -2191,7 +2191,7 @@ static const struct of_device_id smc91x_match[] = {
-> >  MODULE_DEVICE_TABLE(of, smc91x_match);
-> >  
-> >  #if defined(CONFIG_GPIOLIB)
-> > -/**
-> > +/*
-> >   * of_try_set_control_gpio - configure a gpio if it exists
-> >   * @dev: net device
-> >   * @desc: where to store the GPIO descriptor, if it exists
-> 
-> Hi Lee
-> 
-> This is the wrong fix. The name of the function in the documentation
-> should be corrected. The rest looks correct.
-
-Yes, you're right.  Will fix.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Are YOU in need of finance this COVID-19 times?
+
+You have been pre-approved for a loan.
+
+Email info@acetrakit.com
+
+You can also visit our website
+
+GoodLuck
+
+
+Please do not repond to this message contact the email above for further
+assistance
+
+Thank you
