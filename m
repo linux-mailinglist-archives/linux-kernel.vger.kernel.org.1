@@ -2,142 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF982C8192
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC2D2C819D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgK3KBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:01:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgK3KBi (ORCPT
+        id S1728538AbgK3KDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:03:10 -0500
+Received: from lucky1.263xmail.com ([211.157.147.131]:41950 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726158AbgK3KDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:01:38 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A873DC0613CF;
-        Mon, 30 Nov 2020 02:00:52 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id k65so10837645ybk.5;
-        Mon, 30 Nov 2020 02:00:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QrQ+mZLjBbK5DfqffZ8lKAuOuSmxsWOhRa4QsJYuQNQ=;
-        b=KOmbDFxv6rRfxOSmRwVz8ObJsjew+jHH+QNOlpQ1EcRNTsU3er994tuWTiKuxWOovG
-         OvMc35By63krOaFSQ03CG/UgbL4TrRHnuK/5+3ylFKnj+HSHKA31aVt6B2Ri3uMxiYj3
-         ofe46GQS80MDXiZvNuOzlbcChBMqPX40yMCZydEN6Mmb5wX7a/TFO0y6UJ4wNWPenjaE
-         LNvDMM708mc1xbcVmLTh1QHu+XUI34WF4R8LmkqwpJiL5uLnkjtKB5CYIv1hgOI/GoII
-         Z2b+92YNNvJ29u67E69/232EwU5IG6LsyLZtqa8IIcXJdWa4L+pSqKyTpEP9UUbYZQB+
-         +lzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QrQ+mZLjBbK5DfqffZ8lKAuOuSmxsWOhRa4QsJYuQNQ=;
-        b=UAk7h7UaRtAI1jcHPn10z33pqx4L/AgCuC8p0ohCcBdh2PJAUubT3MFudkBV7La7GS
-         0zdchPCMg5+PVZnOe9Mg1IYKL+y8xQYfN6/s/YGCP3jmHeGvb/SG9d4DF+9xnbn3qqP1
-         H5TU4hpjcikP5STyvcaZxtTJFMKtqaLPI92UjRqMlcqIjOe51UKsHr4V2NqwmpGrl8CH
-         OOvo6JKEfZTFZrxRKYfUT39pFKeeXcGG01jBcWnHipQU78bLDqPX7RJKnpvjJxfU3Tv7
-         7nLVcnPJBPZw08NihqvxCllKXwC0APItn4hrAX1kYvhU/XZGsTlu4CruXFVn+sQdDhex
-         8gig==
-X-Gm-Message-State: AOAM5317btFsr/T4ULzDrvMal6SBt6FdQ6FmWgbqv6dYK87BADCxH3A2
-        JWmE7u/KnKb/X9zu2euJ2qZNZb91I5baR6uDaKw=
-X-Google-Smtp-Source: ABdhPJzj3MnM0GKPLy4q4iqWz5vK7pyJFNmvkJLesQMwqvRlzzUtCsTe+MOQ66HUn776TgiZ/mMEeQsco9q5POQL5PI=
-X-Received: by 2002:a25:e00b:: with SMTP id x11mr26929848ybg.518.1606730451965;
- Mon, 30 Nov 2020 02:00:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20201126115927.4089838-1-geert@linux-m68k.org>
-In-Reply-To: <20201126115927.4089838-1-geert@linux-m68k.org>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 30 Nov 2020 10:00:26 +0000
-Message-ID: <CA+V-a8tAdsQG+RRUT6S4k_BzpLp6fvo2HX93-98KbAz4HpMDuw@mail.gmail.com>
-Subject: Re: [PATCH/RFC] dt-bindings: pci: rcar-pci-ep: Document missing
- interrupts property
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 30 Nov 2020 05:03:09 -0500
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 6A886B693C;
+        Mon, 30 Nov 2020 18:00:46 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P26666T140451562632960S1606730439337010_;
+        Mon, 30 Nov 2020 18:00:45 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <814f726f99261274f19fd6e8cbb2dfb3>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        heiko@sntech.de, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Subject: [PATCH v15 0/8] Add Rockchip NFC drivers for RK3308 and others
+Date:   Mon, 30 Nov 2020 18:00:27 +0800
+Message-Id: <20201130100031.22083-1-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
 
-Thank you for the patch.
+Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and
+V900.This series patch can support all four versions.
 
-On Thu, Nov 26, 2020 at 2:21 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> The R-Car PCIe controller does not use interrupts when configured
-> for endpoint mode, hence the bindings do not document the interrupt
-> property.  However, all DTS files provide interrupts properties, and
-> thus fail to validate.
->
-> Fix this by documenting the interrupts property.
->
-> Fixes: 5be478f9c24fbdf8 ("dt-bindings: Another round of adding missing 'additionalProperties'")
-> Fixes: 4c0f80920923f103 ("dt-bindings: PCI: rcar: Add bindings for R-Car PCIe endpoint controller")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> Alternatively, the interrupts properties should be removed from the
-> corresponding device nodes in the DTS files.  Obviously they should be
-> retained in the device nodes representing PCIe controllers configured in
-> host mode, which describe the same hardware...
-> ---
->  Documentation/devicetree/bindings/pci/rcar-pci-ep.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Cheers,
-Prabhakar
+Changes in v15:
+- Use a buffer pointer nfc->page_buf instead of the original two pointers.
+- Fix coding style.
+- Fix some comments.
 
-> diff --git a/Documentation/devicetree/bindings/pci/rcar-pci-ep.yaml b/Documentation/devicetree/bindings/pci/rcar-pci-ep.yaml
-> index fb97f4ea0e63682b..32a3b7665ff5473c 100644
-> --- a/Documentation/devicetree/bindings/pci/rcar-pci-ep.yaml
-> +++ b/Documentation/devicetree/bindings/pci/rcar-pci-ep.yaml
-> @@ -33,6 +33,10 @@ properties:
->        - const: memory2
->        - const: memory3
->
-> +  interrupts:
-> +    minItems: 3
-> +    maxItems: 3
-> +
->    power-domains:
->      maxItems: 1
->
-> @@ -54,6 +58,7 @@ required:
->    - compatible
->    - reg
->    - reg-names
-> +  - interrupts
->    - resets
->    - power-domains
->    - clocks
-> @@ -65,6 +70,7 @@ additionalProperties: false
->  examples:
->    - |
->      #include <dt-bindings/clock/r8a774c0-cpg-mssr.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->      #include <dt-bindings/power/r8a774c0-sysc.h>
->
->       pcie0_ep: pcie-ep@fe000000 {
-> @@ -76,6 +82,9 @@ examples:
->                    <0x30000000 0x8000000>,
->                    <0x38000000 0x8000000>;
->              reg-names = "apb-base", "memory0", "memory1", "memory2", "memory3";
-> +            interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
-> +                         <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
-> +                         <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
->              resets = <&cpg 319>;
->              power-domains = <&sysc R8A774C0_PD_ALWAYS_ON>;
->              clocks = <&cpg CPG_MOD 319>;
-> --
-> 2.25.1
->
+Changes in v14:
+- Add oob_read and oob_write hook api.
+- Support timing config and ecc config for each chips.
+- Fix some comments.
+
+Changes in v13:
+- The nfc->buffer will realloc while the page size of the second mtd
+  is large than the first one.
+- Fix coding style.
+- Fix some comments.
+
+Changes in v12:
+- Fix some warnings while make dt_binding_check
+- Drop a allOf defined
+
+Changes in v11:
+- Fix compile error.
+
+Changes in v10:
+- Fix compile error on master v5.9-rc7.
+
+Changes in v9:
+- The nfc->buffer will realloc while the page size of the second mtd
+  is large than the first one
+- Fix coding style.
+- Remove struct rk_nfc_clk.
+- Prepend some function with rk_nfc_.
+- Replace function readl_poll_timeout_atomic with readl_relaxed_poll_timeout.
+- Remove function rk_nfc_read_byte and rk_nfc_write_byte.
+- Don't select the die if 'check_only == true' in function rk_nfc_exec_op.
+- Modify function rk_nfc_write_page and rk_nfc_write_page_raw.
+
+Changes in v8:
+- Fix a error while make dt_binding_check
+
+Changes in v7:
+- Fix some wrong define
+- Rebase to linux-next.
+- Fix coding style.
+- Reserved 4 bytes at the beginning of the oob area.
+- Page raw read and write included ecc data.
+
+Changes in v6:
+- Fix some wrong define
+- Modified the definition of compatible
+- The mtd->name set by NAND label property.
+- Add some comments.
+- Fix compile error.
+
+Changes in v5:
+- Fix some wrong define.
+- Add boot-medium define.
+- Remove some compatible define.
+- Add boot blocks support  with different ECC for bootROM.
+- Rename rockchip-nand.c to rockchip-nand-controller.c.
+- Unification of other variable names.
+- Remove some compatible define.
+
+Changes in v4:
+- The compatible define with rkxx_nfc.
+- Add assigned-clocks.
+- Fix some wrong defineChanges in.
+- Define platform data structure for the register offsets.
+- The compatible define with rkxx_nfc.
+- Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
+- Use exec_op instead of legacy hooks.
+
+Changes in v3:
+- Change the title for the dt-bindings.
+
+Changes in v2:
+- Fix compile error.
+- Include header files sorted by file name.
+
+Yifeng Zhao (8):
+  dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
+  mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
+  MAINTAINERS: add maintainers to ROCKCHIP NFC
+  arm64: dts: rockchip: Add NFC node for RK3308 SoC
+  arm64: dts: rockchip: Add NFC node for PX30 SoC
+  arm: dts: rockchip: Add NFC node for RV1108 SoC
+  arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
+  arm: dts: rockchip: Add NFC node for RK3036 SoC
+
+ .../mtd/rockchip,nand-controller.yaml         |  161 ++
+ MAINTAINERS                                   |    4 +-
+ arch/arm/boot/dts/rk3036.dtsi                 |   52 +
+ arch/arm/boot/dts/rk3xxx.dtsi                 |    9 +
+ arch/arm/boot/dts/rv1108.dtsi                 |   11 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   15 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |   15 +
+ drivers/mtd/nand/raw/Kconfig                  |   12 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ .../mtd/nand/raw/rockchip-nand-controller.c   | 1500 +++++++++++++++++
+ 10 files changed, 1778 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+ create mode 100644 drivers/mtd/nand/raw/rockchip-nand-controller.c
+
+-- 
+2.17.1
+
+
+
