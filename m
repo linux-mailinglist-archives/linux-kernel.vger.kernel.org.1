@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB482C8AB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38872C8ABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729076AbgK3RUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:20:46 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:34807 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728794AbgK3RUq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:20:46 -0500
-Received: (qmail 967969 invoked by uid 1000); 30 Nov 2020 12:20:04 -0500
-Date:   Mon, 30 Nov 2020 12:20:04 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, Tom Yan <tom.ty89@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
- scsi_add_host()
-Message-ID: <20201130172004.GA966032@rowland.harvard.edu>
-References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
- <20201128154849.3193-1-tom.ty89@gmail.com>
- <20201128154849.3193-2-tom.ty89@gmail.com>
- <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
- <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
- <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
- <X8T0E2qvF2cgADl+@kroah.com>
- <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
+        id S1729090AbgK3RVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:21:12 -0500
+Received: from ms9.eaxlabs.cz ([147.135.177.209]:35710 "EHLO ms9.eaxlabs.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728178AbgK3RVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:21:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=6FKTlB6TqmdpxuLkKOUo1N+s1AlhVtz2/lsEveWVg5Y=;
+        b=Z07XJIeQkODCNo2kBxdpJSP+hvfc7VgnY6CaE6pfCNKa6QhOQDcb9hOiPn3lWNsY0j0ZGLDhkwXGrNmEWht0EvB4zAkacggkLaWgTsR5zP6m0SfwUzvwPXzSt8HLq1nLtkzHdzZLZ/rrixitDZrFHxVbOZU/qHxMuv41eVovEmc=;
+Received: from [82.99.129.6] (helo=[10.76.6.116])
+        by ms9.eaxlabs.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <devik@eaxlabs.cz>)
+        id 1kjmqh-00017I-Cc; Mon, 30 Nov 2020 18:20:29 +0100
+Subject: Re: armmmci rmmod causes hung tasks
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+References: <c5252887-e4f9-953d-88df-d8cc62ecd136@eaxlabs.cz>
+ <CAPDyKFr8t-u_4YkuCzQ3Xd3VgxkTq_Anu+NzBo4Pfj8SLBnsvg@mail.gmail.com>
+From:   Martin DEVERA <devik@eaxlabs.cz>
+Message-ID: <3ce48390-a4fd-f833-1cb5-9f9e140065b8@eaxlabs.cz>
+Date:   Mon, 30 Nov 2020 18:20:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAPDyKFr8t-u_4YkuCzQ3Xd3VgxkTq_Anu+NzBo4Pfj8SLBnsvg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 02:36:38PM +0100, Hans de Goede wrote:
-> Hi,
-> 
-> On 11/30/20 2:30 PM, Greg KH wrote:
-> > On Mon, Nov 30, 2020 at 02:23:48PM +0100, Hans de Goede wrote:
-> >> Hi,
-> >>
-> >> On 11/30/20 1:58 PM, Tom Yan wrote:
-> >>> It's merely a moving of comment moving for/and a no-behavioral-change
-> >>> adaptation for the reversion.>
-> >>
-> >> IMHO the revert of the troublesome commit and the other/new changes really
-> >> should be 2 separate commits. But I will let Alan and Greg have the final
-> >> verdict on this.
-> > 
-> > I would prefer to just revert the commits and not do anything
-> > different/special here so late in the release cycle.
-> > 
-> > So, if Alan agrees, I'll be glad to do them on my end, I just need the
-> > commit ids for them.
-> 
-> The troublesome commit are (in reverse, so revert, order):
-> 
-> 5df7ef7d32fe ("uas: bump hw_max_sectors to 2048 blocks for SS or faster drives")
-> 558033c2828f ("uas: fix sdev->host->dma_dev")
-> 0154012f8018 ("usb-storage: fix sdev->host->dma_dev")
-> 
-> Alan, the reason for reverting these is that using scsi_add_host_with_dma() as the
-> last 2 patches do, with the dmadev argument of that call pointing to the device
-> for the XHCI controller is causing changes to the DMA settings of the XHCI controller
-> itself which is causing regressions in 5.10, see this email thread:
-> 
-> https://lore.kernel.org/linux-usb/fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com/T/#t
+On 11/30/20 4:08 PM, Ulf Hansson wrote:
+> On Sun, 29 Nov 2020 at 19:20, Martin DEVERA <devik@eaxlabs.cz> wrote:
+>> Hello,
+>>
+>> on STM32MP1 with almost vanilla 5.7.7 in single CPU mode. Pair of
+>> modprobe armmmci ; rmmod armmmci
+>>
+>> causes rmmod and kworker to hang. I should note that no MMC is detected
+>> on the board (SDIO device on MMC bus is not responding).
+>> On another board (where SDIO is responding) rmmod works.
+>>
+>> It seems as another manifestation of https://lkml.org/lkml/2019/8/27/945
+>>
+>> Thanks.
+>>
+>> INFO: task kworker/0:1:12 blocked for more than 368 seconds.
+>>         Not tainted 5.7.7kdb-00003-g10397828596c-dirty #224
+>> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>> kworker/0:1     D    0    12      2 0x00000000
+>> Workqueue: events_freezable mmc_rescan
+>> (__schedule) from (schedule+0x5b/0x90)
+>> (schedule) from (schedule_timeout+0x1b/0xa0)
+>> (schedule_timeout) from (__wait_for_common+0x7d/0xdc)
+>> (__wait_for_common) from (mmc_wait_for_req_done+0x1b/0x8c)
+>> (mmc_wait_for_req_done) from (mmc_wait_for_cmd+0x4d/0x68)
+>> (mmc_wait_for_cmd) from (mmc_io_rw_direct_host+0x87/0xc8)
+>> (mmc_io_rw_direct_host) from (sdio_reset+0x3b/0x58)
+>> (sdio_reset) from (mmc_rescan+0x15d/0x1d4)
+>> (mmc_rescan) from (process_one_work+0xdd/0x168)
+>> (process_one_work) from (worker_thread+0x17d/0x1ec)
+>> (worker_thread) from (kthread+0x9b/0xa4)
+>> (kthread) from (ret_from_fork+0x11/0x28)
+> It looks like the worker thread, which runs mmc_rescan() to try to
+> detect the SDIO card is hanging. Exactly why, I don't know.
+>
+> Could be a misconfigured clock, pinctrl or a power domain being
+> suddenly gated...
 
-It's hard to go wrong with reverting, so it's okay with me.
+I turned some logging on (see below), IIUC pl18x is starting CMD52 with arg
+SDIO_CCCR_ABORT read and it got IRQ later along with response. Then sending
+again SDIO_CCCR_ABORT write but no IRQ comes back.
 
-Still, Hans, have you checked out the difference between the 
-scsi_add_host() and scsi_add_host_with_dma() calls?  It's just a matter 
-of using dev vs. sysdev.  In particular, have you checked to see what 
-those two devices are on your system?
+[  135.810802] mmc0: mmc_rescan_try_freq: trying to init card at 400000 Hz
+[  135.810832] mmc0: starting CMD52 arg 00000c00 flags 00000195
+[  135.810862] mmci-pl18x 48004000.sdmmc: op 34 arg 00000c00 flags 00000195
+[  135.811155] mmci-pl18x 48004000.sdmmc: irq0 (data+cmd) 00000040
+[  135.811178] mmc0: req done (CMD52): 0: 00000000 00000000 00000000 
+00000000
+[  135.811202] mmci-pl18x 48004000.sdmmc: irq0 (data+cmd) 00000000
+[  135.816487] mmc0: starting CMD52 arg 80000c08 flags 00000195
+[  135.816506] mmci-pl18x 48004000.sdmmc: op 34 arg 80000c08 flags 00000195
+[  172.150614] random: crng init done
+[  172.150642] random: 6 urandom warning(s) missed due to ratelimiting
+[  173.290565] INFO: task kworker/0:0:5 blocked for more than 20 seconds.
 
-It seems likely that if one of those calls messes up some DMA settings, 
-the other one does too -- just maybe not settings that matter much.
+Here is the same system, only with different (working) SDIO device on 
+the same bus:
 
-Alan Stern
+[  495.654596] mmc0: mmc_rescan_try_freq: trying to init card at 400000 Hz
+[  495.654628] mmc0: starting CMD52 arg 00000c00 flags 00000195
+[  495.654658] mmci-pl18x 48004000.sdmmc: op 34 arg 00000c00 flags 00000195
+[  495.654996] mmci-pl18x 48004000.sdmmc: irq0 (data+cmd) 00000004
+[  495.655017] mmc0: req done (CMD52): -110: 00000000 00000000 00000000 
+00000000
+[  495.655042] mmci-pl18x 48004000.sdmmc: irq0 (data+cmd) 00000000
+[  495.660201] mmc0: starting CMD52 arg 80000c08 flags 00000195
+[  495.660222] mmci-pl18x 48004000.sdmmc: op 34 arg 80000c08 flags 00000195
+[  495.660549] mmci-pl18x 48004000.sdmmc: irq0 (data+cmd) 00000004
+[  495.660567] mmc0: req done (CMD52): -110: 00000000 00000000 00000000 
+00000000
+[  495.660591] mmci-pl18x 48004000.sdmmc: irq0 (data+cmd) 00000000
+
+Should it be expected, that invalid (probably non-responding) device on 
+the SDIO bus
+causes it to be locked up forever ?
+Or is it bug in pl18x driver not handling the error correctly ?
+
+best regards,
+Martin
+
