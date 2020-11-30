@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9501C2C7C2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 01:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 232512C7C2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 01:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727158AbgK3A4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 19:56:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbgK3A4t (ORCPT
+        id S1727620AbgK3A72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 19:59:28 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8471 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgK3A71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 19:56:49 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD280C0613CF;
-        Sun, 29 Nov 2020 16:56:08 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ckmxx258Wz9s0b;
-        Mon, 30 Nov 2020 11:56:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606697765;
-        bh=36ET3LSHNwDNcj7GEXWe+H5SbuHJV6aJ/T7X7PISdg8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jok88u3nl97PK1qaTom9+Tr7uuexfA06qJrGKleZzj8IdiO00pyjGBb2vyc3n8Yci
-         /FOSrtL6IlQe4D0OFoPEf102yyqh9s6Y4EXIJMI2bxltsxVt7/XuYfzC0e6YHfgZSn
-         irHNO7r3bs1T0/cOnXc9ZmiRdPC7XNYbXUm8Njt2NzDECCAPDkfXMZ0z+yVZqlxOm/
-         7y0mDt3HYcXdBXioc7sPlCBWpOEF2ufW898HGYYS34BebsNggKyt+FcF/nJnbuY5FU
-         BleEmELthuAXpkytNHC59/dEXFi9a4KvftXfOZExJ/UNHbLNS40/4EWXzQpyE/jy+d
-         36PYvIPqd4y7Q==
-Date:   Mon, 30 Nov 2020 11:56:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Paul Barker <pbarker@konsulko.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the hwmon-staging tree
-Message-ID: <20201130115603.48e91a19@canb.auug.org.au>
+        Sun, 29 Nov 2020 19:59:27 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Ckn0f6CFTzhkT4;
+        Mon, 30 Nov 2020 08:58:26 +0800 (CST)
+Received: from [10.74.191.121] (10.74.191.121) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 30 Nov 2020 08:58:38 +0800
+Subject: Re: [PATCH] powerpc: fix the allyesconfig build
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Daniel Axtens" <dja@axtens.net>, Joel Stanley <joel@jms.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+References: <20201128122819.32187696@canb.auug.org.au>
+ <20201127175642.45502b20@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <20201128162054.575aea29@canb.auug.org.au>
+ <20201128113654.4f2dcabe@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <cfdea690-9866-7eda-904c-c097ea89a0ed@huawei.com>
+Date:   Mon, 30 Nov 2020 08:58:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ASlRxEQNmSMbvpUsBEAbTvS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201128113654.4f2dcabe@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ASlRxEQNmSMbvpUsBEAbTvS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020/11/29 3:36, Jakub Kicinski wrote:
+> On Sat, 28 Nov 2020 16:20:54 +1100 Stephen Rothwell wrote:
+>> On Fri, 27 Nov 2020 17:56:42 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+>>>
+>>> What's the offending structure in hisilicon? I'd rather have a look
+>>> packing structs with pointers in 'em sounds questionable.
+>>>
+>>> I only see these two:
+>>>
+>>> $ git grep packed drivers/net/ethernet/hisilicon/
+>>> drivers/net/ethernet/hisilicon/hns/hnae.h:struct __packed hnae_desc {
+>>> drivers/net/ethernet/hisilicon/hns3/hns3_enet.h:struct __packed hns3_desc {  
+>>
+>> struct hclge_dbg_reg_type_info which is 28 bytes long due to the
+>> included struct struct hclge_dbg_reg_common_msg (which is 12 bytes
+>> long).  They are surrounded by #pragma pack(1)/pack().
+>>
+>> This forces the 2 pointers in each second array element of
+>> hclge_dbg_reg_info[] to be 4 byte aligned (where pointers are 8 bytes
+>> long on PPC64).
+> 
+> Ah! Thanks, I don't see a reason for these to be packed. 
+> Looks  like an accident, there is no reason to pack anything 
+> past struct hclge_dbg_reg_common_msg AFAICT.
+> 
+> Huawei folks, would you mind sending a fix if the analysis is correct?
 
-Hi all,
+Yes, will send a patch to fix that. Thanks for the analysis.
 
-After merging the hwmon-staging tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
-
-drivers/hwmon/pwm-fan.c: In function 'pwm_fan_is_visible':
-drivers/hwmon/pwm-fan.c:167:22: warning: unused variable 'ctx' [-Wunused-va=
-riable]
-  167 |  struct pwm_fan_ctx *ctx =3D (struct pwm_fan_ctx *)data;
-      |                      ^~~
-
-Introduced by commit
-
-  439ed83acc19 ("hwmon: (pwm-fan) Convert to hwmon_device_register_with_inf=
-o API")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ASlRxEQNmSMbvpUsBEAbTvS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/EQyMACgkQAVBC80lX
-0GyzTwf/dizWLUoSMPAOiU1rousOP2XzIQzybegIrFncWJk+DLZ+evvokYf/F/dB
-DeBLtfcazNS4Fd1IOT32QMMjT6wAVPtFdvBcLNRIX22NF8Kqh7DuTos8XhWh6Vho
-NH0pxWJMCMpI1NxM8F5X8mHvJabPOAnWtx6nygsy/5h/XvfjhbxXatExQqiNpEFb
-stCGRJogaejetcoeOBk9vX/fApRihC8rHL2vVrP4frvUtyfpBH6plDChUno0//ll
-1HCmOEW1wPyjnHQI242k0lMSpZezVPG89hR+KAuQ8tLsnXJXSnLdhPZ4a9hVOfK+
-5dcmtT63GiyPonyLSYnXEjZqlQtrug==
-=FyTa
------END PGP SIGNATURE-----
-
---Sig_/ASlRxEQNmSMbvpUsBEAbTvS--
+> .
+> 
