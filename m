@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BFA2C800B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABB32C801A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgK3Iey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:34:54 -0500
-Received: from verein.lst.de ([213.95.11.211]:43398 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726045AbgK3Iey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:34:54 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8685868AFE; Mon, 30 Nov 2020 09:34:10 +0100 (CET)
-Date:   Mon, 30 Nov 2020 09:34:10 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-Message-ID: <20201130083410.GD32234@lst.de>
-References: <20201125221917.150463-1-ribalda@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125221917.150463-1-ribalda@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1728039AbgK3Igs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:36:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728004AbgK3Igs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 03:36:48 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E70DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:36:02 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id l23so3984pjg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:36:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=E6KDQhU/zBnr5DKp/uo9Fp1w3M7TMAhCF7S8/nwJn60=;
+        b=JPcBIhkNtqGJXqXaNsU+uajwIcfuKJVagu7XEbYyXuwerma5V5AwbB9v/2wjiZu8FN
+         AVajotIvA+sGkMAE9iwSV4/Du7oLp93yH+9+xdRsYhKc4jzj34tBcjwIyqgc/3/2xXa7
+         7DzlUrKdCTZ0bGyvR4BFSPOw/CFx0nd6v9rHi90AsY7aZ+NhofvCC7IlRAlE7FDujQ5r
+         pRirguRMLgWepOmONcAgQYk5VvEh16MEcutaTr2cwYLwDPYbPzjvoIU8GPFKq8lMBSKg
+         gWo4MZETah99yB1dLX1v+WBQC6HZRML6wuXD0GdKCiTrgUZCqtUQjXvy2w6O/ay4Lhzx
+         +dMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=E6KDQhU/zBnr5DKp/uo9Fp1w3M7TMAhCF7S8/nwJn60=;
+        b=BxyFuHP0OTmohXmruTaCxFYyAAitLc1gTjjdlLrNpU9zHNBiN1euBjm0J5SNiyUhCo
+         EJV9x2Z8NmU3ijt6q3FDzem+LvuJm6lRbbBZxzrkL/te0NagNwjCducBOhxC50Wta4zj
+         nuAkBtW6MdYGDS6wmEvhqNCdMR8cpq1x8INLv6A6QTGeKU/S/AruuHiVeJzzxnQHuLOC
+         ucZBaOPxVZgMPdK8UyIZ0yICcuajasp0ITLoGzhHZwf7jvq0IbUF+obryLc3TJ2R/ivS
+         k6ntZt6s9VO+KozWnqRSVhOESEzlVmDyVZfTo4mTriYEOwzcF9BIskx1CdAbcFOjKQbX
+         40Ug==
+X-Gm-Message-State: AOAM532GgQyrnxjfI2IbBKxr90Qe92z2riubRpSkGY4kVglMB/J8X1Ch
+        GB/vRBeolNmhkDQrb7is1O8=
+X-Google-Smtp-Source: ABdhPJxNmosQxaKOI4OlQed91O513K4sb8JCpFPbSGSCjUxBY2zNlUNI0Yb9ZhZtjldqsFZBmsrI7w==
+X-Received: by 2002:a17:90a:67c8:: with SMTP id g8mr24397083pjm.114.1606725361880;
+        Mon, 30 Nov 2020 00:36:01 -0800 (PST)
+Received: from localhost.localdomain ([8.210.202.142])
+        by smtp.gmail.com with ESMTPSA id gj24sm8896637pjb.6.2020.11.30.00.35.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 00:36:01 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     paul@paul-moore.com, eparis@redhat.com
+Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] audit: replace atomic_add_return()
+Date:   Mon, 30 Nov 2020 16:35:45 +0800
+Message-Id: <1606725345-7442-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +#ifndef CONFIG_DMA_NONCOHERENT
+atomic_inc_return() is a little neater
 
-I think you need to drop this ifdef.  This code should work just fine
-on noncoherent mips and sh platforms.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ kernel/audit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +	uvc_urb->pages = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-> +						 &uvc_urb->dma,
-> +						 gfp_flags | __GFP_NOWARN, 0);
-> +	if (!uvc_urb->pages)
-> +		return false;
-> +
-> +	uvc_urb->buffer = vmap(uvc_urb->pages,
-> +			       PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT,
-> +			       VM_DMA_COHERENT, PAGE_KERNEL);
-> +	if (!uvc_urb->buffer) {
-> +		dma_free_noncontiguous(dma_dev, stream->urb_size,
-> +				       uvc_urb->pages, uvc_urb->dma);
-> +		return false;
-> +	}
-> +
-> +	if (sg_alloc_table_from_pages(&uvc_urb->sgt, uvc_urb->pages,
-> +				PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT, 0,
-> +				stream->urb_size, GFP_KERNEL)) {
-> +		vunmap(uvc_urb->buffer);
-> +		dma_free_noncontiguous(dma_dev, stream->urb_size,
-> +				       uvc_urb->pages, uvc_urb->dma);
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
+diff --git a/kernel/audit.c b/kernel/audit.c
+index e22f22b..1ffc2e0 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -1779,7 +1779,7 @@ unsigned int audit_serial(void)
+ {
+ 	static atomic_t serial = ATOMIC_INIT(0);
+ 
+-	return atomic_add_return(1, &serial);
++	return atomic_inc_return(&serial);
+ }
+ 
+ static inline void audit_get_stamp(struct audit_context *ctx,
+-- 
+1.9.1
 
-I wonder if we should lift this into a helper.  On the one hand I had
-proliferating struct scatterlist usage, on the other hand it is all over
-the media and drm code anyway, and duplicating this doesn't help anyone.
-
-Possibly including the fallback to the coherent allocating.
