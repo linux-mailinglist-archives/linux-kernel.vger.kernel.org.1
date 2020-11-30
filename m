@@ -2,169 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A272C8C23
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF142C8C1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729545AbgK3SGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:06:35 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:28492 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728359AbgK3SGe (ORCPT
+        id S2387945AbgK3SGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:06:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387868AbgK3SGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:06:34 -0500
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 0AUI5Udq000564;
-        Tue, 1 Dec 2020 03:05:30 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 0AUI5Udq000564
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606759531;
-        bh=Uh4bIgW4sNgrSBi12OkKecL/ZclO6A0g1hh7lFN2Jko=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=M/a6eVu8pHfFZeJlahUIEmCpqOBR2YwmkiKpa56CXrbjGlXbIVh/q/cGzHEl3y3JZ
-         b95udOb7WzeBSgoG8f7b76dQbQl4Lm0zZYH5+ogoUgxgQ3LOjeZumQakqWqE6m+e0E
-         mkItlKcl60ANX+oZNbtbOlsFQ4rACo78+89E6QoJ21IgsYIwkVucRJPA8yYHX6D73j
-         jTwa4KrSiojCFHzW/teMheezkj3C9Ffy75427zvfI15YkhCbfF58tLJJ8tyGigjsgF
-         /9obuBZrJZBa4GldoK8tlPDhg597z8MJ5HmRCSF9btfUkULRqVo7W6Ru8OapEbj6NI
-         BB8D1wBQY03DQ==
-X-Nifty-SrcIP: [209.85.216.44]
-Received: by mail-pj1-f44.google.com with SMTP id r9so48722pjl.5;
-        Mon, 30 Nov 2020 10:05:30 -0800 (PST)
-X-Gm-Message-State: AOAM531cD/b1W4+wxeZofTX0pUDqlrNead1peZYYsWUyhW15xz4mP7A5
-        t79Fsl4/uSHaSAxyl9lizWhtd89fCD2SbejoZk0=
-X-Google-Smtp-Source: ABdhPJw1yBQ+OjoG4aqEDV/okFiCVTmc526vsm2/CdKpMW7Nxrp9CZ6Z2BiW9LeBm1Bo+suMp+4xSEhr/ZXxP5MUjHg=
-X-Received: by 2002:a17:90a:c209:: with SMTP id e9mr27829261pjt.87.1606759529929;
- Mon, 30 Nov 2020 10:05:29 -0800 (PST)
-MIME-Version: 1.0
-References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
- <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-4-ndesaulniers@google.com>
-In-Reply-To: <20201104005343.4192504-4-ndesaulniers@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 1 Dec 2020 03:04:50 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT5MQqUddv+QbFu5ToLBK3eUPArHSBR=5AOS3ONtMqKaw@mail.gmail.com>
-Message-ID: <CAK7LNAT5MQqUddv+QbFu5ToLBK3eUPArHSBR=5AOS3ONtMqKaw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] Kbuild: make DWARF version a choice
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jakub Jelinek <jakub@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Mon, 30 Nov 2020 13:06:10 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7069AC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:05:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=U/dq4XBKLjIj8o+Y1ijdonAPuVA02wsCQ9Xrid3YVv8=; b=JsQVEEQ7J0mZEkLPjCIxwK5WW
+        wc9G9f4ifbWp8TKDAgLPZOOe3Fb2OsOhiyfEYgZ7fO1TnaSagY37SkpCMGxKDyrLHjIkPHHn3SG6s
+        0teQKL/DneiDNSVZZaWQ1o2hWrJ17+u1s1DDaP/OTOg0ud8a1NZaqy7i6al7ORzC3YikovIimbbyg
+        D6tRbmWabLpSKuPC89FzKRThltwZm69SGfjXmuwZRwI8N3vfypSjcMCTI/qVlSpf5uOqCDs92oqzW
+        0UWuvjUF4fGBKiUuXC0BsEFdHj7/GnIEURUWr9dQnDCYPkaWC+s+KQIIrGUnWavbNQeAiFGQJBLHB
+        7k8mkew0Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38084)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kjnYD-0007Lg-SN; Mon, 30 Nov 2020 18:05:25 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kjnYC-0005Cs-RS; Mon, 30 Nov 2020 18:05:25 +0000
+Date:   Mon, 30 Nov 2020 18:05:24 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Arnd Bergmann <arnd@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [GIT PULL] ARM: SoC fixes for v5.10, part 3
+Message-ID: <20201130180523.GZ1551@shell.armlinux.org.uk>
+References: <CAK8P3a2Habmz95y+J+-4NiT5SGYhO_Fia-SHhapX-3NYRbEMmw@mail.gmail.com>
+ <CAHk-=wjA2Der39e_SWZ6S-DoVCJTu-Zwf6jn2wxmGTKzNPV1Dw@mail.gmail.com>
+ <CAD=FV=Vow5_jv=-O=f2v4_5Nb4DiOUB1sQUx6r=-y5A-6rP4hw@mail.gmail.com>
+ <CAHk-=whtySEgkH+VFy9oW8Q-+iuivGBo0hOUcee3DvrsBAQUrA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whtySEgkH+VFy9oW8Q-+iuivGBo0hOUcee3DvrsBAQUrA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 9:53 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
-> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
-> way that's forward compatible with existing configs, and makes adding
-> future versions more straightforward.
->
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  Makefile          | 14 ++++++++------
->  lib/Kconfig.debug | 19 +++++++++++++++----
->  2 files changed, 23 insertions(+), 10 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 75b1a3dcbf30..e23786a4c1c7 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -826,12 +826,14 @@ else
->  DEBUG_CFLAGS   += -g
->  endif
->
-> -ifndef LLVM_IAS
-> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
-> -endif
-> -
-> -ifdef CONFIG_DEBUG_INFO_DWARF4
-> -DEBUG_CFLAGS   += -gdwarf-4
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
-> +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
-> +# Binutils 2.35+ required for -gdwarf-4+ support.
-> +dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
-> +DEBUG_CFLAGS   += $(dwarf-aflag)
+On Mon, Nov 30, 2020 at 09:44:03AM -0800, Linus Torvalds wrote:
+> On Mon, Nov 30, 2020 at 9:04 AM Doug Anderson <dianders@chromium.org> wrote:
+> >
+> > Without static assignment, maybe we could do numbering of MMC devices
+> > in some type of a pre-probe routine?  Is that what you're suggesting?
+> 
+> Yes.
+> 
+> So basically, the way the async probing works for say SCSI is that we
+> have multiple "layers of asynchroniety". We have the usual "init calls
+> done asynchronously", but then within the init calls themselves you
+> can start sub-scans asynchronously.
+> 
+> In order to get reliable ordering between multiple controllers, the
+> PCI bus is probed in order in pci_init() (or whatever), so each SCSI
+> controller gets called in a fixed order.
+> 
+> That then gets to scsi_scan_host() does that async_schedule() thing to
+> actually scan the SCSI buses on that host.
 
-This changes the behavior.
+I'm afraid that you don't get stable device numbering on x86. You get
+something that _looks_ like stable device numbering, but it really
+isn't.
 
-For the Dwarf-2 case,
+If you think that /dev/sda for example is always the machine's internal
+HDD, that is wrong.
 
-Previously, -gdwarf-2 was passed to $(CC),
-so the debug info was generated by gcc.
+I have a HP Pavilion laptop with its internal HDD with a Windows
+installation. Because I didn't want to destroy that in any way, I
+bought an external USB3 SATA enclosure and SSD, and installed Debian
+Stable on there.
 
-Now, -Wa,-gdwarf-2 is passed to $(CC).
--gdwarf-2 is handled by GNU as.
-So, the source info points to /tmp/<hash>.s
-instead of the original .c file.
+When I installed Debian stable, the HDD was /dev/sda and the SSD was
+/dev/sdb. When I boot Debian, the SSD is /dev/sda and the internal
+HDD is /dev/sdb.
 
-
-
-Handling the Dwarf capability is very complicated.
-
-Are you still working for v3?
-
-
-
-> +KBUILD_AFLAGS  += $(dwarf-aflag)
->  endif
->
->  ifdef CONFIG_DEBUG_INFO_REDUCED
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 83a860126897..03c494eefabd 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -256,14 +256,25 @@ config DEBUG_INFO_SPLIT
->           to know about the .dwo files and include them.
->           Incompatible with older versions of ccache.
->
-> +choice
-> +       prompt "DWARF version"
-> +       help
-> +         Which version of DWARF debug info to emit.
-> +
-> +config DEBUG_INFO_DWARF2
-> +       bool "Generate DWARF v2 debuginfo"
-> +       help
-> +         Generate DWARF v2 debug info.
-> +
->  config DEBUG_INFO_DWARF4
->         bool "Generate dwarf4 debuginfo"
->         depends on $(cc-option,-gdwarf-4)
->         help
-> -         Generate dwarf4 debug info. This requires recent versions
-> -         of gcc and gdb. It makes the debug information larger.
-> -         But it significantly improves the success of resolving
-> -         variables in gdb on optimized code.
-> +         Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
-> +         It makes the debug information larger, but it significantly
-> +         improves the success of resolving variables in gdb on optimized code.
-> +
-> +endchoice # "DWARF version"
->
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
-> --
-> 2.29.1.341.ge80a0c044ae-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201104005343.4192504-4-ndesaulniers%40google.com.
-
-
+Maybe /dev/sda through /dev/sdd should be reserved for internal
+motherboard drives?
 
 -- 
-Best Regards
-Masahiro Yamada
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
