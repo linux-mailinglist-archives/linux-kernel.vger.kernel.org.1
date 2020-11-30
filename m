@@ -2,149 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E0D2C923E
+	by mail.lfdr.de (Postfix) with ESMTP id DC0EA2C923F
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731237AbgK3XKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        id S1731246AbgK3XLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:11:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbgK3XKs (ORCPT
+        with ESMTP id S1731239AbgK3XLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:10:48 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315F1C0613D4;
-        Mon, 30 Nov 2020 15:10:08 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id v14so158270wml.1;
-        Mon, 30 Nov 2020 15:10:08 -0800 (PST)
+        Mon, 30 Nov 2020 18:11:05 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71293C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:10:25 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id x16so322988oic.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:10:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=KAwd+sagU7ZwoHzkY8WFvDixnRdQKdnq8c4J8ZOSLe8=;
-        b=s0YVQetgcXUCZUuePccdDHOm/lYkq9PddmbCKUbzrdcBaI/Z6OQs5HsDCFB1CdHelx
-         PtiqeHUn5ICOwCvxhcCs5/lbeJSEvmDgcRPd+oBbdagJpsECxC3qkU38xrF6I0eqn2Gf
-         9Pscx8gPUzh89FX0lg/09asSb+eYpqdx1lxqKEe6SzIZpdYdN75HITkgYNdBm2DSeuR8
-         2Y1QmiiZnKER7NHr9unT1kgK/vrpRLJPVtjp6ppUzyBAIKABYKE2HbZgI8Z8hReAVSkn
-         vwaaVBI/aaGEtJZq+NIpwHyUwRvO2qyXKE5tulNdYVk/R7vR+n93ve8WUXt9E1R3oQ0M
-         Rtxw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MqB4uxSS+iPnXKAcDpnlQHbGQ3lVIUy31ucDNBjIS5Q=;
+        b=G7UcTmqfY6UjddXaZ0hntPYD8upw1vIMeqdjsItMhcP/O5i13V3TNuBr6R9uHWy8XV
+         FHmmiPPUBSXO83tALNmEzUe4OHR7wT5Kre/+zOwGBwP1XrsKUEbWKgWXPCJONZ/+738b
+         CZWoa/Iumw7I110YQLpm0oOhih6QLG3Ad7YqFtn4+hxuMq1h6SyvDTn0VVBPPNciAt8T
+         9BtOmzuD0wfVnq8bTjkIxw+oD4lrL9nKrcEMCBISKEkrNvTn9j4DMW93FXdHSuTirMEv
+         5I2Mh8x0cQPP+NAv1j20kDHR7WdwkhxSGBX+GZxYqBBrBKY/6v7nUH9Wvuwvo0p3mqAs
+         j1QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KAwd+sagU7ZwoHzkY8WFvDixnRdQKdnq8c4J8ZOSLe8=;
-        b=eURoDpNIoHXvY0xxufgty5FbBxuRw2IH0Tjhet3yQzoETujZyQBNLGgRV6hH5JeKJ+
-         S9u5+lJzoMeFO/7j7WydkTgQ92XNdFMCNbDIGLmeLlOWIoI24lWI5/uPqFpBZoIYoVUa
-         RhmU8CB0a1I6qvYz/GTc15HuOmLUblHEv6aVk/Jf491nQtDB+gSWDnN8+byV3vhXNeuY
-         NMCE6VFL+itxxY0CRMBHVzutGmOi2pvaxJZGrd7/q2BXphDj0tst1wkP5cT5yZm6j81i
-         G7BiK5koC66vu8HtlwdL0njMMLMFQvEjn75zguEskYe6OnTRgz4e9nVVeakn/uu6g598
-         Em+w==
-X-Gm-Message-State: AOAM531KjmZf7caYfhd8cWDn4xRX8BOORr8AqrQWR2NDol/mbsTbwLSq
-        LVncT0yvxWX9SD3X71JXm4s=
-X-Google-Smtp-Source: ABdhPJwmQ04ElguRaJT90Eh2XmbsVVZmHnFpw23lDOZ42hGc2n73VlqBQK/73YNP+1VHvbCbX8Fspw==
-X-Received: by 2002:a1c:234d:: with SMTP id j74mr148325wmj.18.1606777807007;
-        Mon, 30 Nov 2020 15:10:07 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.80])
-        by smtp.gmail.com with ESMTPSA id a191sm62141wme.25.2020.11.30.15.10.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 15:10:06 -0800 (PST)
-Subject: Re: [PATCH 04/18] software_node: Enforce parent before child ordering
- of nodes array for software_node_register_nodes()
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-5-djrscally@gmail.com>
- <20201130161152.GG14465@pendragon.ideasonboard.com>
- <20201130161239.GH14465@pendragon.ideasonboard.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <3f2edde6-e2e3-b379-3c1b-2a5461034b8a@gmail.com>
-Date:   Mon, 30 Nov 2020 23:10:05 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MqB4uxSS+iPnXKAcDpnlQHbGQ3lVIUy31ucDNBjIS5Q=;
+        b=QUykUEOTfmcjLS9T7I07O5p2YeuBVGL1wm8RxVp1X2usjR//n5/kXmV9JczxpYTVd1
+         78mYAFTUX52bT06pcM4XTM25n0LZeKRhK72GNCCFqLMV8eXnLdQyjx3fwzYiEZ4d3FH6
+         2TWEujCKDPFx4RTudlWilTGO6QdewbD4fUgHBcs/KR1HB5MMQqNSOfi9VTVX64vbjqtJ
+         ZoxjmFEh8nFMkFXesoxSm9zLaBArYb6Cr3w1wgz/blDTf8BoLugSkAH1uajIvirQhsHV
+         B8fdAzRXsd2EZrV8LeQgEg6yCAOvbBAjKNr27TfGovysCIaSeSHKflNLbbZQMvNMEegr
+         t1mQ==
+X-Gm-Message-State: AOAM530vMXw4s8W0r3jigZR9RVL0Q78+vuUUJ6cc57dcvwx62EyDxTAc
+        UgXY01zIc9CqRhKnT0VQKbWRmR9SkieLv/N5H+o=
+X-Google-Smtp-Source: ABdhPJzQxjaycZ7pd5ksW0geDAvANUHHs/8Sm3OJPUfBBMN3TgvDSJ461DMyJjPYQrSKK324GWYNwB166U2buuMp94c=
+X-Received: by 2002:aca:f50e:: with SMTP id t14mr72250oih.123.1606777824964;
+ Mon, 30 Nov 2020 15:10:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201130161239.GH14465@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-3-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-3-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Nov 2020 18:10:13 -0500
+Message-ID: <CADnq5_Njrr_3LAzk9R8+yaF0V4gfXGTrc31z7kKT1XR4FZEJGQ@mail.gmail.com>
+Subject: Re: [PATCH 02/40] drm/amd/pm/powerplay/smumgr/polaris10_smumgr: Make
+ function called by reference static
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+On Thu, Nov 26, 2020 at 8:42 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/polaris10_smumgr.c:214=
+5:5: warning: no previous prototype for =E2=80=98polaris10_thermal_avfs_ena=
+ble=E2=80=99 [-Wmissing-prototypes]
+>
+> Cc: Evan Quan <evan.quan@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-On 30/11/2020 16:12, Laurent Pinchart wrote:
-> On Mon, Nov 30, 2020 at 06:11:52PM +0200, Laurent Pinchart wrote:
->> Hi Daniel,
->>
->> Thank you for the patch.
->>
->> On Mon, Nov 30, 2020 at 01:31:15PM +0000, Daniel Scally wrote:
->>> Registering software_nodes with the .parent member set to point to a
->>> currently unregistered software_node has the potential for problems,
->>> so enforce parent -> child ordering in arrays passed to this function.
->>>
->>> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->>> ---
->>> Changes since RFC v3:
->>>
->>> 	Patch introduced
->>>
->>>  drivers/base/swnode.c | 15 +++++++++++----
->>>  1 file changed, 11 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
->>> index 615a0c93e116..af7930b3679e 100644
->>> --- a/drivers/base/swnode.c
->>> +++ b/drivers/base/swnode.c
->>> @@ -700,14 +700,21 @@ int software_node_register_nodes(const struct software_node *nodes)
->>>  	int i;
->>>  
->>>  	for (i = 0; nodes[i].name; i++) {
->>> +		if (nodes[i].parent)
->>> +			if (!software_node_to_swnode(nodes[i].parent)) {
->>> +				ret = -EINVAL;
->>> +				goto err_unregister_nodes;
->>> +			}
->>> +
->>>  		ret = software_node_register(&nodes[i]);
->>> -		if (ret) {
->>> -			software_node_unregister_nodes(nodes);
->>> -			return ret;
->>> -		}
->>> +		if (ret)
->>> +			goto err_unregister_nodes;
->>>  	}
->>>  
->>>  	return 0;
->> I'd add a blank line here.
->>
->> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> I spoke a bit too soon. Could you update the documentation of the
-> function to explain this new requirement ?
-Oops - of course, will do
->>> +err_unregister_nodes:
->>> +	software_node_unregister_nodes(nodes);
->>> +	return ret;
->>>  }
->>>  EXPORT_SYMBOL_GPL(software_node_register_nodes);
->>>  
->> -- 
->> Regards,
->>
->> Laurent Pinchart
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c b=
+/drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c
+> index 052bc88cf33c9..45214a364baa9 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/polaris10_smumgr.c
+> @@ -2142,7 +2142,7 @@ static int polaris10_program_mem_timing_parameters(=
+struct pp_hwmgr *hwmgr)
+>         return 0;
+>  }
+>
+> -int polaris10_thermal_avfs_enable(struct pp_hwmgr *hwmgr)
+> +static int polaris10_thermal_avfs_enable(struct pp_hwmgr *hwmgr)
+>  {
+>         struct smu7_hwmgr *data =3D (struct smu7_hwmgr *)(hwmgr->backend)=
+;
+>
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
