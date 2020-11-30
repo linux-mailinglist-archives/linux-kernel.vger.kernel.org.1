@@ -2,144 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2F92C808C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C6D2C8099
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgK3JFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
+        id S1727352AbgK3JKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:10:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgK3JFU (ORCPT
+        with ESMTP id S1726345AbgK3JKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:05:20 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02124C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:04:34 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id e7so15015908wrv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:04:33 -0800 (PST)
+        Mon, 30 Nov 2020 04:10:07 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14134C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:09:27 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id pg6so9893277ejb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:09:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=l+bcBJwqAfWV/8VZ0H6sJqPXokbgLaSpuC3C5NWipKo=;
-        b=nEjd4oBpWdWxFJ8NDaehVg6qFVZA+o6g9xHYlwiea+VpvwXnNUYAOb8q4cMjPzswbi
-         2ltvcewj6zjeg4Yx88T6N+RqKuy+SefVLESvpcxML3HD3TGkNDc7jKU7Wd85rOaViVmG
-         vTQm91OSrmTyBwIPv1A+NfW3EHY8ZQJfKiTldrjfxnSGm4iFi6P/scfQDDFRqauvcY8Y
-         hbGb5B8yLalINEbZiQ3FdsI/gcztTKO+JjxuVmX5sTrEZfhHBZbMx8qNcGkYMwogIF9a
-         6eMKy3RjG5XbQu9zsEo4reY0fLYZFf77Jk/iqCq8A0Hh4QYeLlbEekzSrr6Hh8QE0/Cd
-         Nkkw==
+        h=from:to:cc:subject:date:message-id;
+        bh=rc35Q1VlEBz4DZkEUhnETxh4yN2ILIjRb8LpyvVldHA=;
+        b=zVmRhdZ9DAHfRencSfuk8bOn0/LL/W9E05KpXxESrjcZhAaaojgquk/wI0J+LgexGM
+         nnzsuXir44wiShKdAYzSHHXKvb5uLftkj0YD1KLJqVZKNSjxi16DE1PCoSVgxESz1tSd
+         N3pk5k7qKkm08QCBZXbjsJ8zaYbo6A9puwM2siZTO4Uvd2R3FE4qS9O72lx63rJGs9Ql
+         GI43lbfVQp2yn0ut3wbeCAzVa2+5vs5mgefmFAEy0jX6hMpmSdsHb6FQNl56+043ayb+
+         0IfbYEIHEmbhl5wJOMfi8T8x+GSp89AQtw1VZ7hyQR/fJGuNyYkq3kTjvbJralPhqAds
+         FrvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=l+bcBJwqAfWV/8VZ0H6sJqPXokbgLaSpuC3C5NWipKo=;
-        b=BeONjBvlY8IVYPwfkYDjYrFxdav+glbcagruSjC5V4D8Kf7j95CB0+ilaak0vauuzQ
-         63KO7sH/N3cTNlQrdZnbO1FbfXmTnsgQj68dKbR5WGMzIVAhsZ9ILUdnsBU5Bm9iQ6O6
-         Y+SF00/REtfjxLQ+HXpMLM+PCnC3l3GU/BV4XZKbL1aqu/mEM2iNgutTRNYBSdDdQ50z
-         RGnWTjpYINpM4Q/NnuDWZmFyxuaG5isieIG5Fnrfk5R4CDmrZ2EZZMvKbKcMofcfiDjR
-         o7p9BOlGqg9NjaizTIlhr2za1qflaAT3ikPDZRpFNGpB3CMV0iA2oGV7wIPBwQf8NSxl
-         X8aQ==
-X-Gm-Message-State: AOAM5302SUmrcbwHlie7df76Rzv8q4vVfRviWWi612Rc3NKYQF/NHA+h
-        h2vtb07SilkUT2ZJ07QgjHGIAw==
-X-Google-Smtp-Source: ABdhPJyNLbSZ/YPgf6JxTiBlfUJEqoJbkFK9dDmE50aedq7C+CHGYGIGWy7ii1w8s0OZnG5vokR3HQ==
-X-Received: by 2002:a5d:538a:: with SMTP id d10mr27606899wrv.368.1606727072707;
-        Mon, 30 Nov 2020 01:04:32 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id h83sm24486637wmf.9.2020.11.30.01.04.31
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rc35Q1VlEBz4DZkEUhnETxh4yN2ILIjRb8LpyvVldHA=;
+        b=GyV0qG/BiY57lwwgXP4IvoED638FsU9Gb+LT8V+zl0jy8A7IcQU0kBoiF7EhPmRIiy
+         CY/JRHG9SEC3h4R6LM3a0vpMEK5dacCTuG0REq7LFd7U2kwQGqP7bpVUbKCw4FtK9OTV
+         KYVoMizc8qtquDyeMwVgwlAJXnOUtrxSxCPijFQ+0ncjCLfKJxdHnKXGygAzExjGWaBj
+         +FjzjRy/6A+OKRyegiR7jg5moPnWdahXoMnZUIc6jX9wR15gPCFPmmgrXaomo4Z35l5m
+         lUiiX9vcwuCMYkwcedrsnHIxAgV63E3lWVo+q8Ppwik5WdRdqsPnlSf6bKi1TN+RdZn1
+         IEZg==
+X-Gm-Message-State: AOAM530fmlxhtt1Z3H/Wv6M2HL/EH3HHolRT4+/5IVyBhNN6F2pDGTWp
+        xbJKfO5FuDhlSfVYWUsP05NWCg==
+X-Google-Smtp-Source: ABdhPJwh7uqsomhMMnphV+iHF1nwrU/n6KDNVu4tpc256pnwRQZF9gu3pvy/Z3LbR46acyepDo6xlQ==
+X-Received: by 2002:a17:906:dbd8:: with SMTP id yc24mr9159869ejb.313.1606727365646;
+        Mon, 30 Nov 2020 01:09:25 -0800 (PST)
+Received: from localhost.localdomain (hst-221-92.medicom.bg. [84.238.221.92])
+        by smtp.gmail.com with ESMTPSA id t19sm8239101eje.86.2020.11.30.01.09.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 01:04:32 -0800 (PST)
-Date:   Mon, 30 Nov 2020 09:04:30 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     linux-kernel@vger.kernel.org, Dany Madden <drt@linux.ibm.com>,
-        Lijun Pan <ljp@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Santiago Leon <santi_leon@yahoo.com>,
-        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        John Allen <jallen@linux.vnet.ibm.com>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 5/8] net: ethernet: ibm: ibmvnic: Fix some kernel-doc
- misdemeanours
-Message-ID: <20201130090430.GD4801@dell>
-References: <20201126133853.3213268-1-lee.jones@linaro.org>
- <20201126133853.3213268-6-lee.jones@linaro.org>
- <20201129184354.GL2234159@lunn.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201129184354.GL2234159@lunn.ch>
+        Mon, 30 Nov 2020 01:09:24 -0800 (PST)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Maheshwar Ajja <majja@codeaurora.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH 0/4] Add random IR and AUD encoder controls
+Date:   Mon, 30 Nov 2020 11:08:55 +0200
+Message-Id: <20201130090859.25272-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Nov 2020, Andrew Lunn wrote:
+Hi,
 
-> Hi Lee
-> 
-> >  /**
-> >   * build_hdr_data - creates L2/L3/L4 header data buffer
-> > - * @hdr_field - bitfield determining needed headers
-> > - * @skb - socket buffer
-> > - * @hdr_len - array of header lengths
-> > - * @tot_len - total length of data
-> > + * @hdr_field: bitfield determining needed headers
-> > + * @skb: socket buffer
-> > + * @hdr_len: array of header lengths
-> > + * @tot_len: total length of data
-> >   *
-> >   * Reads hdr_field to determine which headers are needed by firmware.
-> >   * Builds a buffer containing these headers.  Saves individual header
-> 
-> The code is:
-> 
-> static int build_hdr_data(u8 hdr_field, struct sk_buff *skb,
->                           int *hdr_len, u8 *hdr_data)
-> {
-> 
-> What about hdr_data? 
-> 
-> >  /**
-> >   * create_hdr_descs - create header and header extension descriptors
-> > - * @hdr_field - bitfield determining needed headers
-> > - * @data - buffer containing header data
-> > - * @len - length of data buffer
-> > - * @hdr_len - array of individual header lengths
-> > - * @scrq_arr - descriptor array
-> > + * @hdr_field: bitfield determining needed headers
-> > + * @data: buffer containing header data
-> > + * @len: length of data buffer
-> > + * @hdr_len: array of individual header lengths
-> > + * @scrq_arr: descriptor array
-> 
-> static int create_hdr_descs(u8 hdr_field, u8 *hdr_data, int len, int *hdr_len,
->                             union sub_crq *scrq_arr)
-> 
-> There is no data parameter.
-> 
-> It looks like you just changes - to :, but did not validate the
-> parameters are actually correct.
+Here we introduce two new v4l2 controls for encoders:
+ * V4L2_CID_MPEG_VIDEO_RANDOM_INTRA_REFRESH_MB
+ * V4L2_CID_MPEG_VIDEO_AU_DELIMITER
 
-Right.  This is a 'quirk' of my current process.
+The patchset also includes implementation in Venus driver.
 
-I build once, then use a script to parse the output, fixing each
-issue in the order the compiler presents them.  Then, either after
-fixing a reasonable collection, or all issues, I re-run the compile
-and fix the next batch (if any).
+Comments are welcome!
 
-This patch is only fixing the formatting issue(s).  As you've seen,
-there is a subsequent patch in the series which fixes the disparity.
+regards,
+Stan
 
-I can squash them though.  No problem.
+Stanimir Varbanov (4):
+  media: v4l2-ctrls: Add random intra-refresh control
+  venus: venc: Add support for intra-refresh modes
+  media: v4l2-ctrls: Add control for AUD generation
+  venus: venc: Add support for AUD NALU control
+
+ .../media/v4l/ext-ctrls-codec.rst             | 11 ++++++++
+ drivers/media/platform/qcom/venus/core.h      |  3 +++
+ drivers/media/platform/qcom/venus/venc.c      | 26 +++++++++++++++++++
+ .../media/platform/qcom/venus/venc_ctrls.c    | 16 +++++++++++-
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  3 +++
+ include/uapi/linux/v4l2-controls.h            |  2 ++
+ 6 files changed, 60 insertions(+), 1 deletion(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.17.1
+
