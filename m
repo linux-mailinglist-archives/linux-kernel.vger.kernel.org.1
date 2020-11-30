@@ -2,53 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745182C7E79
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4022C7E8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgK3HJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:09:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgK3HJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:09:20 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8246206CB;
-        Mon, 30 Nov 2020 07:08:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606720119;
-        bh=mFUuIntHAhQo2P1S4HmxmSxg0t9IOqSG4xwPV9Odzlg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wM0eGD2isWWBn/ZSVcRZfH/LccAWlRX2WQrmZHiWTu1qCDtsbanBJURnMTwxo3ixB
-         4dpkDLWCaNTQKY16jrK+D8E4E/UQqq2/XV1ejl8jTsFxwFvCj8+UtFQJeRXBXEUmFF
-         tvXYsl8KTyI+YVSSvOzm4rxdMDjWFxSAn5Bz+4uI=
-Date:   Mon, 30 Nov 2020 15:08:31 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Ran Wang <ran.wang_1@nxp.com>
-Cc:     Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] arm: dts: ls1021a: fix rcpm failed to claim
- resource
-Message-ID: <20201130070830.GB28406@dragon>
-References: <20201102072652.34893-1-ran.wang_1@nxp.com>
- <20201102072652.34893-3-ran.wang_1@nxp.com>
+        id S1726452AbgK3HQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:16:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbgK3HQg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 02:16:36 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6546BC0613D2
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:15:56 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id x15so5991418pll.2
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 23:15:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xuyBG48IthI9ndBw0EiO6S8MOVBTdpZxMmZYocloFLI=;
+        b=HHiyj14LzDQWuofBPekUZ9/7MLBCdLcsRqwknmARsC824bHr8zUxuqxKwbB0mjr/tQ
+         wUIOFLaZ2w3zSeSErwVufJHkBKMBftNZ63FC1tbPzKOORCJyRyAbMYJd2/vG47XCODaw
+         9T111Wa5Gn8ZW4k5ou6UXOzgLjevrzt3PtCWEj9XybuQNCtpgiWT+C4SCP67IFdJ/9Vm
+         zDmbQ7svP9tGFZ2Dc3wdb1sYdeEc0ixFuRsin664ovGqhPHf4imsr7r0ZYmsLDwJ5sNG
+         kDm0T7mCsUZzoTyN4np2zvrRIgoDftDcXOzHz5EvCVTgEYC6o0xb7n4i/yE+hWar2tKg
+         5X2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=xuyBG48IthI9ndBw0EiO6S8MOVBTdpZxMmZYocloFLI=;
+        b=szhdaDy/50pm18Db9+41S/w3LtROa1NUk0J+UHUcuRtrs8aaCclZtsOuBwmjuCDw0Y
+         4QU6FwDQN277skWjU4dQazkJiCPEE2e9R5xLJ98ZzJ61JqaEqa8SVeProPTEd7ZqI2JZ
+         w64Sv53KmWLbubOi+wUXOuKsE9uSQSi4bdBd92BaWuWNzO6t3YMB3Yg0cmw+3UaGzqR5
+         zYvNwCEus5b1aqV7Z9Zi693IEkJ5ap5VpJMf+mYSZyytECeVmtPWFpRu/AsJ2mDC85/H
+         k5wvmz9JX6Hy/svfux3T9U4eiSlOpAhx2pPXul4gc17QiY3Kk2kzPcqGMnU/xUvQBAL/
+         RtXQ==
+X-Gm-Message-State: AOAM530IJZPbWb0S8ivhI7U71onrapF4ZPQKNuUgxYVbP4qB2J4piiWU
+        AZ2jlXJUDnF2Nis9RQBt077cUg==
+X-Google-Smtp-Source: ABdhPJzRcKzVUEb/dxvTnsFVwzp8LZtlw8HsQaRD64elvLN931ZDoiuS+MF+2lfwwJ0GZ3QJSN9uqQ==
+X-Received: by 2002:a17:902:8a91:b029:d9:da43:43ba with SMTP id p17-20020a1709028a91b02900d9da4343bamr17309593plo.14.1606720555624;
+        Sun, 29 Nov 2020 23:15:55 -0800 (PST)
+Received: from laputa (p784a5642.tkyea130.ap.so-net.ne.jp. [120.74.86.66])
+        by smtp.gmail.com with ESMTPSA id t19sm3006519pgk.86.2020.11.29.23.15.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Nov 2020 23:15:54 -0800 (PST)
+Date:   Mon, 30 Nov 2020 16:15:50 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw
+Subject: Re: [RFC PATCH v3.1 13/27] mmc: sdhci-uhs2: add set_power() to
+ support vdd2
+Message-ID: <20201130071550.GD48535@laputa>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+ <20201106022726.19831-14-takahiro.akashi@linaro.org>
+ <3b47a2d4-a281-3fac-29c4-82dd769459a1@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102072652.34893-3-ran.wang_1@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <3b47a2d4-a281-3fac-29c4-82dd769459a1@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 03:26:52PM +0800, Ran Wang wrote:
-> The range of dcfg reg is wrong, which overlap with other device,
-> such as rcpm. This issue causing rcpm driver failed to claim
-> reg resource when calling devm_ioremap_resource().
+On Thu, Nov 26, 2020 at 10:16:27AM +0200, Adrian Hunter wrote:
+> On 6/11/20 4:27 am, AKASHI Takahiro wrote:
+> > This is a UHS-II version of sdhci's set_power operation.
+> > VDD2, as well as VDD, is handled here.
+> > 
+> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > ---
+> >  drivers/mmc/host/sdhci-uhs2.c | 80 +++++++++++++++++++++++++++++++++++
+> >  drivers/mmc/host/sdhci-uhs2.h |  2 +
+> >  drivers/mmc/host/sdhci.c      | 58 +++++++++++++++----------
+> >  drivers/mmc/host/sdhci.h      |  2 +
+> >  4 files changed, 119 insertions(+), 23 deletions(-)
+> > 
+> > diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
+> > index e2b9743fe17d..2bf78cc4e9ed 100644
+> > --- a/drivers/mmc/host/sdhci-uhs2.c
+> > +++ b/drivers/mmc/host/sdhci-uhs2.c
+> > @@ -98,6 +98,86 @@ void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask)
+> >  }
+> >  EXPORT_SYMBOL_GPL(sdhci_uhs2_reset);
+> >  
+> > +void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode,
+> > +			  unsigned short vdd)
 > 
-> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> Acked-by: Li Yang <leoyang.li@nxp.com>
+> This function isn't used, so let's rename it sdhci_uhs2_set_power_noreg and
+> drop regulator support.
 
-Applied, thanks.
+I have no strong opinion, but here Ben might want to further rework
+the new sdhci_uhs2_set_power_noreg() now that it is almost the same as
+GLI's gl9755_set_power()(, adding a new quirk?).
+
+> > +{
+> > +	struct mmc_host *mmc = host->mmc;
+> > +	u8 pwr;
+> > +
+> > +	/* FIXME: check if flags & MMC_UHS2_SUPPORT? */
+> > +	if (!(host->mmc->caps & MMC_CAP_UHS2)) {
+> 
+> As commented in another patch, please use a helper fn
+
+As said, I would defer this.
+
+> > +		sdhci_set_power(host, mode, vdd);
+> > +		return;
+> > +	}
+> > +
+> > +	if (mode != MMC_POWER_OFF) {
+> > +		pwr = sdhci_get_vdd_value(vdd);
+> 
+> Simpler to open code this esp. as there are only 2 valid values:
+> 
+> 		switch (1 << vdd) {
+
+Can you ignore MMC_VDD_165_195 and MMC_VDD_20_21 here?
+
+> 		case MMC_VDD_29_30..MMC_VDD_30_31:
+> 			pwr = SDHCI_POWER_300;
+> 			break;
+> 		case MMC_VDD_32_33..MMC_VDD_33_34:
+> 			pwr = SDHCI_POWER_330;
+> 			break;
+> 		default:
+> 			WARN(1, "%s: Invalid vdd %#x\n",
+> 			     mmc_hostname(host->mmc), vdd);
+> 			break;
+> 		}
+> 
+> 
+> > +		if (!pwr)
+> > +			WARN(1, "%s: Invalid vdd %#x\n",
+> > +			     mmc_hostname(host->mmc), vdd);
+> > +
+> > +		pwr |= SDHCI_VDD2_POWER_180;
+> > +	}
+> > +
+> > +	if (host->pwr == pwr)
+> > +		return;
+> > +	host ->pwr = pwr;
+> > +
+> > +	if (pwr == 0) {
+> > +		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+> > +
+> > +		if (!IS_ERR(host->mmc->supply.vmmc))
+> > +			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
+> > +		if (!IS_ERR_OR_NULL(host->mmc->supply.vmmc2))
+> > +			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc2, 0);
+> > +
+> > +		if (host->quirks2 & SDHCI_QUIRK2_CARD_ON_NEEDS_BUS_ON)
+> 
+> Please drop support for legacy quirk SDHCI_QUIRK2_CARD_ON_NEEDS_BUS_ON
+
+Okay.
+
+> 
+> > +			sdhci_runtime_pm_bus_off(host);
+> > +	} else {
+> > +		if (!IS_ERR(host->mmc->supply.vmmc))
+> > +			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
+> > +		if (!IS_ERR_OR_NULL(host->mmc->supply.vmmc2))
+> > +			/* support 1.8v only for now */
+> > +			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc2,
+> > +					      fls(MMC_VDD2_165_195) - 1);
+> > +
+> > +		/*
+> > +		 * Spec says that we should clear the power reg before setting
+> > +		 * a new value. Some controllers don't seem to like this though.
+> > +		 */
+> > +		if (!(host->quirks & SDHCI_QUIRK_SINGLE_POWER_WRITE))
+> 
+> Please drop support for legacy quirk here and several cases below.  As I
+> mentioned in another patch, just put a comment somewhere listing what is
+> not supported for UHS2 host controllers.
+
+Okay.
+
+-Takahiro Akashi
+
+> 
+> > +			sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+> > +
+> > +		/*
+> > +		 * At least the Marvell CaFe chip gets confused if we set the
+> > +		 * voltage and set turn on power at the same time, so set the
+> > +		 * voltage first.
+> > +		 */
+> > +		if (host->quirks & SDHCI_QUIRK_NO_SIMULT_VDD_AND_POWER)
+> > +			sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
+> > +
+> > +		/* vdd first */
+> > +		pwr |= SDHCI_POWER_ON;
+> > +		sdhci_writeb(host, pwr & 0xf, SDHCI_POWER_CONTROL);
+> > +		mdelay(5);
+> > +
+> > +		pwr |= SDHCI_VDD2_POWER_ON;
+> > +		sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
+> > +		mdelay(5);
+> > +
+> > +		if (host->quirks2 & SDHCI_QUIRK2_CARD_ON_NEEDS_BUS_ON)
+> > +			sdhci_runtime_pm_bus_on(host);
+> > +
+> > +		/*
+> > +		 * Some controllers need an extra 10ms delay of 10ms before
+> > +		 * they can apply clock after applying power
+> > +		 */
+> > +		if (host->quirks & SDHCI_QUIRK_DELAY_AFTER_POWER)
+> > +			mdelay(10);
+> > +	}
+> > +}
+> > +EXPORT_SYMBOL_GPL(sdhci_uhs2_set_power);
+> > +
+> >  /*****************************************************************************\
+> >   *                                                                           *
+> >   * Driver init/exit                                                          *
+> > diff --git a/drivers/mmc/host/sdhci-uhs2.h b/drivers/mmc/host/sdhci-uhs2.h
+> > index 7bb7a0d67109..3c19d8e44c36 100644
+> > --- a/drivers/mmc/host/sdhci-uhs2.h
+> > +++ b/drivers/mmc/host/sdhci-uhs2.h
+> > @@ -211,5 +211,7 @@ struct sdhci_host;
+> >  
+> >  void sdhci_uhs2_dump_regs(struct sdhci_host *host);
+> >  void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask);
+> > +void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode,
+> > +			  unsigned short vdd);
+> >  
+> >  #endif /* __SDHCI_UHS2_H */
+> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> > index af336bdb4305..0b741eb546cb 100644
+> > --- a/drivers/mmc/host/sdhci.c
+> > +++ b/drivers/mmc/host/sdhci.c
+> > @@ -187,13 +187,14 @@ static void sdhci_disable_card_detection(struct sdhci_host *host)
+> >  	sdhci_set_card_detection(host, false);
+> >  }
+> >  
+> > -static void sdhci_runtime_pm_bus_on(struct sdhci_host *host)
+> > +void sdhci_runtime_pm_bus_on(struct sdhci_host *host)
+> >  {
+> >  	if (host->bus_on)
+> >  		return;
+> >  	host->bus_on = true;
+> >  	pm_runtime_get_noresume(host->mmc->parent);
+> >  }
+> > +EXPORT_SYMBOL_GPL(sdhci_runtime_pm_bus_on);
+> >  
+> >  void sdhci_runtime_pm_bus_off(struct sdhci_host *host)
+> >  {
+> > @@ -2017,36 +2018,47 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
+> >  		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+> >  }
+> >  
+> > +unsigned short sdhci_get_vdd_value(unsigned short vdd)
+> > +{
+> > +	u8 pwr;
+> > +
+> > +	switch (1 << vdd) {
+> > +	case MMC_VDD_165_195:
+> > +	/*
+> > +	 * Without a regulator, SDHCI does not support 2.0v
+> > +	 * so we only get here if the driver deliberately
+> > +	 * added the 2.0v range to ocr_avail. Map it to 1.8v
+> > +	 * for the purpose of turning on the power.
+> > +	 */
+> > +	case MMC_VDD_20_21:
+> > +		pwr = SDHCI_POWER_180;
+> > +		break;
+> > +	case MMC_VDD_29_30:
+> > +	case MMC_VDD_30_31:
+> > +		pwr = SDHCI_POWER_300;
+> > +		break;
+> > +	case MMC_VDD_32_33:
+> > +	case MMC_VDD_33_34:
+> > +		pwr = SDHCI_POWER_330;
+> > +		break;
+> > +	default:
+> > +		pwr = 0;
+> > +	}
+> > +
+> > +	return pwr;
+> > +}
+> > +EXPORT_SYMBOL_GPL(sdhci_get_vdd_value);
+> > +
+> >  void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+> >  			   unsigned short vdd)
+> >  {
+> >  	u8 pwr = 0;
+> >  
+> >  	if (mode != MMC_POWER_OFF) {
+> > -		switch (1 << vdd) {
+> > -		case MMC_VDD_165_195:
+> > -		/*
+> > -		 * Without a regulator, SDHCI does not support 2.0v
+> > -		 * so we only get here if the driver deliberately
+> > -		 * added the 2.0v range to ocr_avail. Map it to 1.8v
+> > -		 * for the purpose of turning on the power.
+> > -		 */
+> > -		case MMC_VDD_20_21:
+> > -			pwr = SDHCI_POWER_180;
+> > -			break;
+> > -		case MMC_VDD_29_30:
+> > -		case MMC_VDD_30_31:
+> > -			pwr = SDHCI_POWER_300;
+> > -			break;
+> > -		case MMC_VDD_32_33:
+> > -		case MMC_VDD_33_34:
+> > -			pwr = SDHCI_POWER_330;
+> > -			break;
+> > -		default:
+> > +		pwr = sdhci_get_vdd_value(vdd);
+> > +		if (!pwr)
+> >  			WARN(1, "%s: Invalid vdd %#x\n",
+> >  			     mmc_hostname(host->mmc), vdd);
+> > -			break;
+> > -		}
+> >  	}
+> >  
+> >  	if (host->pwr == pwr)
+> > diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> > index b9932423db08..2b5b8295cf92 100644
+> > --- a/drivers/mmc/host/sdhci.h
+> > +++ b/drivers/mmc/host/sdhci.h
+> > @@ -831,6 +831,7 @@ static inline void sdhci_read_caps(struct sdhci_host *host)
+> >  	__sdhci_read_caps(host, NULL, NULL, NULL);
+> >  }
+> >  
+> > +void sdhci_runtime_pm_bus_on(struct sdhci_host *host);
+> >  void sdhci_runtime_pm_bus_off(struct sdhci_host *host);
+> >  u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+> >  		   unsigned int *actual_clock);
+> > @@ -841,6 +842,7 @@ void sdhci_set_power(struct sdhci_host *host, unsigned char mode,
+> >  void sdhci_set_power_and_bus_voltage(struct sdhci_host *host,
+> >  				     unsigned char mode,
+> >  				     unsigned short vdd);
+> > +unsigned short sdhci_get_vdd_value(unsigned short vdd);
+> >  void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+> >  			   unsigned short vdd);
+> >  void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq);
+> > 
+> 
