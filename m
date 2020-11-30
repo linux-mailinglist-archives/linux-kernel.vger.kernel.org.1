@@ -2,140 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51BF2C80B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCEB2C80B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727319AbgK3JNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:13:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40666 "EHLO mx2.suse.de"
+        id S1728019AbgK3JOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:14:03 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:57656 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726270AbgK3JNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:13:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 35F69AC95;
-        Mon, 30 Nov 2020 09:12:39 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 10:12:37 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        vbabka@suse.cz, pasha.tatashin@soleen.com
-Subject: Re: [RFC PATCH v2 2/4] mm,memory_hotplug: Allocate memmap from the
- added memory range
-Message-ID: <20201130091236.GB3825@linux>
-References: <20201125112048.8211-1-osalvador@suse.de>
- <20201125112048.8211-3-osalvador@suse.de>
- <20201127151536.GV31550@dhcp22.suse.cz>
+        id S1727809AbgK3JOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 04:14:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606727625; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=SdkfUaGEnsQaKGcSRPesjSEXe34DQXrgiTsCu4nbNRc=; b=fmsIyXHiFXi+t050kf/q1hNjidGbmLqubKt1TdW8TEqcuxJphO/ZMKaBJuvi9Bw9RMS9mRcb
+ c4AwNg+AI7MAkoQy26uAfWfnnay2VioS3DJyabghHVXIqWNIbbcxJBWwBWMMS2hzRa4HTlKt
+ 5fYOyl7JKHSGAH5sTJre4UkQY0o=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5fc4b7a222377520ee49e426 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 09:13:06
+ GMT
+Sender: jackp=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2ADE1C43462; Mon, 30 Nov 2020 09:13:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jackp)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C6D5C433ED;
+        Mon, 30 Nov 2020 09:13:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C6D5C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
+Date:   Mon, 30 Nov 2020 01:13:00 -0800
+From:   Jack Pham <jackp@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     balbi@kernel.org, peter.chen@nxp.com, willmcvicker@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "taehyun.cho" <taehyun.cho@samsung.com>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] USB: gadget: f_fs: add SuperSpeed Plus support
+Message-ID: <20201130091259.GB31406@jackp-linux.qualcomm.com>
+References: <20201127140559.381351-1-gregkh@linuxfoundation.org>
+ <20201127140559.381351-5-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201127151536.GV31550@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201127140559.381351-5-gregkh@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 04:15:36PM +0100, Michal Hocko wrote:
-> > Vmemap page tables can map arbitrary memory.
-> > That means that we can simply use the beginning of each memory section and
-> > map struct pages there.
+On Fri, Nov 27, 2020 at 03:05:58PM +0100, Greg Kroah-Hartman wrote:
+> From: "taehyun.cho" <taehyun.cho@samsung.com>
 > 
-> Did you mean each memory block rather than section?
-
-Yes, sorry, I did not update that part.
-
-> > struct pages which back the allocated space then just need to be treated
-> > carefully.
-> > 
-> > Implementation wise we will reuse vmem_altmap infrastructure to override
-> > the default allocator used by __populate_section_memmap. Once the memmap is
-> > allocated, we are going to need a way to mark altmap pfns used for the allocation.
-> > If MHP_MEMMAP_ON_MEMORY flag was passed, we will set up the layout of the
-> > altmap structure in add_memory_resouce(), and then we will call
-> > mhp_mark_vmemmap_pages() to properly mark those pages.
-> > 
-> > Online/Offline:
-> > 
-> >  In the memory_block structure, a new field is created in order to
-> >  store the number of vmemmap_pages.
+> Setup the descriptors for SuperSpeed Plus for f_fs. This allows the
+> gadget to work properly without crashing at SuperSpeed rates.
 > 
-> Is this really needed? We know how many pfns are required for a block of
-> a specific size, right?
+> Cc: Felipe Balbi <balbi@kernel.org>
+> Cc: stable <stable@vger.kernel.org>
+> Signed-off-by: taehyun.cho <taehyun.cho@samsung.com>
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
+> Reviewed-by: Peter Chen <peter.chen@nxp.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/usb/gadget/function/f_fs.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> I have only glanced through the patch so I might be missing something
-> but I am really wondering why you haven't chosen to use altmap directly
-> here.
+> diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+> index 046f770a76da..a34a7c96a1ab 100644
+> --- a/drivers/usb/gadget/function/f_fs.c
+> +++ b/drivers/usb/gadget/function/f_fs.c
+> @@ -1327,6 +1327,7 @@ static long ffs_epfile_ioctl(struct file *file, unsigned code,
+>  		struct usb_endpoint_descriptor *desc;
+>  
+>  		switch (epfile->ffs->gadget->speed) {
+> +		case USB_SPEED_SUPER_PLUS:
+>  		case USB_SPEED_SUPER:
+>  			desc_idx = 2;
+>  			break;
+> @@ -3222,6 +3223,10 @@ static int _ffs_func_bind(struct usb_configuration *c,
+>  	func->function.os_desc_n =
+>  		c->cdev->use_os_string ? ffs->interfaces_count : 0;
+>  
+> +	if (likely(super)) {
+> +		func->function.ssp_descriptors =
+> +			usb_copy_descriptors(func->function.ss_descriptors);
+> +	}
+>  	/* And we're done */
+>  	ffs_event_add(ffs, FUNCTIONFS_BIND);
+>  	return 0;
+> -- 
 
-Well, this is my bad, I did not update the changelog wrt. to the previous version
-so it might be confusing.
-I will make sure to update it for the next submission, but let me explain it
-here to shed some light.
+Hi Greg,
 
-We no longer need to use mhp_mark_vmemap_pages to mark vmemmap pages pages.
-Prior to online_pages(), the whole range is offline, so no one should be
-messing with any pages within that range.
-The initialization of the pages takes places in online_pages():
+FWIW I had sent a very similar patch[1] a while back (twice in fact)
+but got no response about it. Looks like Taehyun's patch already went
+through Google for this, I assume it must be working on their Android
+kernels so I've no problem with you or Felipe taking this instead.
 
-We have:
+Only one difference with my patch though is mine additionally clears the
+func->function.ssp_descriptors member to NULL upon ffs_func_unbind() as
+otherwise it could lead to a dangling reference in case the function is
+re-bound and userspace does not issue SS descriptors the next time.
+Realistically I don't think that's possible, except maybe when fuzzing?
 
-start_pfn = first_pfn_of_the_range
-buddy_start_pfn = first_pfn_of_the_range + nr_vmemmap_pages
+[1] https://patchwork.kernel.org/project/linux-usb/patch/20201027230731.9073-1-jackp@codeaurora.org/
 
-
-We do have:
-
-+	if (nr_vmemmap_pages)
-+		move_pfn_range_to_zone(zone, pfn, nr_vmemmap_pages, NULL,
-+				       MIGRATE_UNMOVABLE);
-+	move_pfn_range_to_zone(zone, buddy_start_pfn, buddy_nr_pages, NULL,
-+			       MIGRATE_ISOLATE);
-
-Now, all the range is initialized and marked PageReserved, but we only send
-to buddy (buddy_start_pfn, end_pfn].
-
-And so, (start_pfn, buddy_start_pfn - 1] reamins PageReserved.
-And we know that pfn walkers to skip Reserved pages.
-
-About the altmap part.
-Altmap is used in the hot-add phase in add_memory_resource.
-
-The thing is, we could avoid adding the memory_block's nr_vmemmap_pages field
-, but we would have to mark the vmemmap pages as we used to do in previous
-implementations (see [1]), but I find this way cleaner, and it adds much less
-code (previous implementions can be see in [2]), and as a starter I find it
-much better.
-
-> It would be also good to describe how does a pfn walker recognize such a
-> page? Most of them will simply ignore it but e.g. hotplug walker will
-> need to skip over those because they are not preventing offlining as
-> they will go away with the memory block together.
-
-Wrt. hotplug walker, same as above, we only care to migrate the
-(buddy_start_pfn, end_pfn], so the first pfn to migrate and isolate is set to
-buddy_start_pfn.
-
-Other pfns walkers should merely skip vmemmap pages because they are Reserved.
-
-> Some basic description of testing done would be suitable as well.
-
-Well, that is:
-
- - Hot-add memory to a specific numa node
- - Online memory
- - numactl -H and /proc/zoneinfo reflects the truth and nr_vmemmap_pages are
-   extracted where they have to be
- - Start a memory stress program and bind it to the numa node we added memory
-   so we make sure it gets exercised
- - Wait for a while and when node's free pages have decreased considerably,
-   offline memory
- - Check that memory went offline and check /proc/zoneinfo and numactl -H
-   again
- - Hot-remove range
-
-
-[1] https://patchwork.kernel.org/project/linux-mm/patch/20201022125835.26396-3-osalvador@suse.de/
-[2] https://patchwork.kernel.org/project/linux-mm/cover/20201022125835.26396-1-osalvador@suse.de/
- 
+Jack
 -- 
-Oscar Salvador
-SUSE L3
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
