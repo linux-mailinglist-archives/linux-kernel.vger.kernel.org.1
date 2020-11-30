@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA762C81CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A22692C81C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387432AbgK3KIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:08:51 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:52904 "EHLO inva021.nxp.com"
+        id S1729022AbgK3KIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:08:18 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:32930 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727998AbgK3KIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:08:50 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B97C320144F;
-        Mon, 30 Nov 2020 11:07:29 +0100 (CET)
+        id S2387424AbgK3KIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 05:08:17 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 328741A0515;
+        Mon, 30 Nov 2020 11:07:30 +0100 (CET)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E96F020143D;
-        Mon, 30 Nov 2020 11:07:23 +0100 (CET)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4FD3B1A15EE;
+        Mon, 30 Nov 2020 11:07:24 +0100 (CET)
 Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E4A314032A;
-        Mon, 30 Nov 2020 11:07:11 +0100 (CET)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 636374032D;
+        Mon, 30 Nov 2020 11:07:13 +0100 (CET)
 From:   Biwen Li <biwen.li@oss.nxp.com>
 To:     linux@rasmusvillemoes.dk, shawnguo@kernel.org, robh+dt@kernel.org,
         mark.rutland@arm.com, leoyang.li@nxp.com, zhiqiang.hou@nxp.com,
@@ -27,9 +27,9 @@ To:     linux@rasmusvillemoes.dk, shawnguo@kernel.org, robh+dt@kernel.org,
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
         linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
-Subject: [v4 08/11] arm64: dts: ls208xa-rdb: add interrupt line for RTC node
-Date:   Mon, 30 Nov 2020 18:15:12 +0800
-Message-Id: <20201130101515.27431-8-biwen.li@oss.nxp.com>
+Subject: [v4 09/11] arm64: dts: lx2160a: add DT node for external interrupt lines
+Date:   Mon, 30 Nov 2020 18:15:13 +0800
+Message-Id: <20201130101515.27431-9-biwen.li@oss.nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201130101515.27431-1-biwen.li@oss.nxp.com>
 References: <20201130101515.27431-1-biwen.li@oss.nxp.com>
@@ -40,12 +40,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Biwen Li <biwen.li@nxp.com>
 
-Add interrupt line for RTC node on ls208xa-rdb
+Add device-tree node for external interrupt lines IRQ0-IRQ11.
 
 Signed-off-by: Biwen Li <biwen.li@nxp.com>
 ---
 Change in v4:
-	- none
+	- remove copyright to fix corrupt
 
 Change in v3:
 	- none
@@ -53,31 +53,51 @@ Change in v3:
 Change in v2:
 	- none
 
- arch/arm64/boot/dts/freescale/fsl-ls208xa-rdb.dtsi | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa-rdb.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa-rdb.dtsi
-index d0d670227ae2..4b71c4fcb35f 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa-rdb.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa-rdb.dtsi
-@@ -3,7 +3,7 @@
-  * Device Tree file for Freescale LS2080A RDB Board.
-  *
-  * Copyright 2016 Freescale Semiconductor, Inc.
-- * Copyright 2017 NXP
-+ * Copyright 2017-2020 NXP
-  *
-  * Abhimanyu Saini <abhimanyu.saini@nxp.com>
-  *
-@@ -56,6 +56,8 @@
- 			rtc@68 {
- 				compatible = "dallas,ds3232";
- 				reg = <0x68>;
-+				/* IRQ_RTC_B -> IRQ06, active low */
-+				interrupts-extended = <&extirq 6 IRQ_TYPE_LEVEL_LOW>;
- 			};
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+index 83072da6f6c6..36f3c069529c 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+@@ -664,6 +664,37 @@
+ 			little-endian;
  		};
  
++		isc: syscon@1f70000 {
++			compatible = "fsl,lx2160a-isc", "syscon";
++			reg = <0x0 0x1f70000 0x0 0x10000>;
++			little-endian;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0x0 0x0 0x1f70000 0x10000>;
++
++			extirq: interrupt-controller@14 {
++				compatible = "fsl,lx2160a-extirq", "fsl,ls1088a-extirq";
++				#interrupt-cells = <2>;
++				#address-cells = <0>;
++				interrupt-controller;
++				reg = <0x14 4>;
++				interrupt-map =
++					<0 0 &gic GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
++					<1 0 &gic GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
++					<2 0 &gic GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
++					<3 0 &gic GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
++					<4 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
++					<5 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
++					<6 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
++					<7 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
++					<8 0 &gic GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
++					<9 0 &gic GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
++					<10 0 &gic GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
++					<11 0 &gic GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
++				interrupt-map-mask = <0xffffffff 0x0>;
++			};
++		};
++
+ 		tmu: tmu@1f80000 {
+ 			compatible = "fsl,qoriq-tmu";
+ 			reg = <0x0 0x1f80000 0x0 0x10000>;
 -- 
 2.17.1
 
