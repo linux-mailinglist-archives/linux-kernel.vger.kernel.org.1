@@ -2,100 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32142C86CD
+	by mail.lfdr.de (Postfix) with ESMTP id 86DAB2C86CC
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbgK3Obb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:31:31 -0500
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:54095 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726953AbgK3Oba (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:31:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606746690; x=1638282690;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xCCce2MsvHOXRDAX3rYlHsIDzQTw2AvoabSKgeQ4ZWo=;
-  b=ITOa3aoulNA6N3LWyjBdaP0y4n91OK7NMAvCNMnhZ7+Dl5quOYipqj6E
-   2axB8MTr1RZM2ZB6jtnkuhjRiFdGDUndq4mfKBC3/suofor1NK0LEXtik
-   1Ulg9R5B8AluvNEdukqg4ISleVUJ33Q6NcumGhOL6+2CkIXn8lssMVFEc
-   zLCaLhOpdtiCpxSJfkkNKSl1JCUeruDsvsDupNfMwzi4qvFIbawZW81Xn
-   aqsezrNXTsvJjSrQL+43ICYyfqXt7o2LDaINOkx/VieBtCywwSwPHwADY
-   abpDyuyCYi4dcA0DCTrfO3Sw+Ox0T90s757zdJtDtlxSY+GEHW8w0MQRk
-   w==;
-IronPort-SDR: Et6cmmbHAj54TAIK8UskcUEkToRY84K25xlyJEQ3SKRiYjzB+rgfnIz3pJM08FAGMYxS5xhvEO
- 3U/2ow7jrZA1ATyvHDZ8AjvrNAiOYU58gZR9kYHthHdApjNoQCBYZPq9iB9KNWwb5pXlJSBdbN
- Zzi1+9KWEZFswSX+t3VkX3Os192QzIzML/gjIwuM5IMLfH2XL6KWgf6zNjeU3Mk6pT11rJnyg9
- t4bxcu5mt75oFt74HD7tkeL1xSJ4PbaHmxAHJZGyILRzJ9noo5d5AKnOxBmKP3x4+7k/RLTrBc
- RII=
-X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
-   d="scan'208";a="97986070"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Nov 2020 07:30:24 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 30 Nov 2020 07:30:24 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Mon, 30 Nov 2020 07:30:23 -0700
-Date:   Mon, 30 Nov 2020 15:30:23 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
-Message-ID: <20201130143023.csjyuhs6uke7dtu6@mchp-dev-shegelun>
-References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
- <20201127133307.2969817-3-steen.hegelund@microchip.com>
- <20201128190616.GF2191767@lunn.ch>
- <20201128222828.GQ1551@shell.armlinux.org.uk>
- <20201129105245.GG1605@shell.armlinux.org.uk>
- <20201129113018.GI1605@shell.armlinux.org.uk>
+        id S1727737AbgK3ObT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:31:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727128AbgK3ObS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 09:31:18 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8B6120684;
+        Mon, 30 Nov 2020 14:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606746632;
+        bh=D27Gu95pKAGcM93pByJ39JqV0fJdydejjyTqygfl11A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2FaF+pnCkjJB4QT86z2bm8s/5F9NCIlIoZf9fRQs9F4flFaQR58ONy+wIel1o+kT/
+         P7D8cMoTRwBHEiawHQ9jlnqXfbac0yA0jyKkqQ14hUHCc2zEJgFfAKkJO/TiUV+Ntj
+         0zf2LgZxe0Y5zBuB8q6flDkQX4fZqKP5SFMsQO9M=
+Date:   Mon, 30 Nov 2020 15:31:46 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [git pull] habanalabs fixes for 5.10-rc7
+Message-ID: <X8UCUn5MrsUYvdZm@kroah.com>
+References: <20201130083830.GA9154@ogabbay-VM.habana-labs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201129113018.GI1605@shell.armlinux.org.uk>
+In-Reply-To: <20201130083830.GA9154@ogabbay-VM.habana-labs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.2020 11:30, Russell King - ARM Linux admin wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->
->On Sun, Nov 29, 2020 at 10:52:45AM +0000, Russell King - ARM Linux admin wrote:
->> There are other issues too.
->
->This is also wrong:
->
->+               if (port->ndev && port->ndev->phydev)
->+                       status->link = port->ndev->phydev->link;
->
->phylink already deals with that situation.
+On Mon, Nov 30, 2020 at 10:38:30AM +0200, Oded Gabbay wrote:
+> Hello Greg,
+> 
+> This pull request contains two memory leak bug fixes for 5.10-rc7.
+> Details are in the tag.
+> 
+> Thanks,
+> Oded
+> 
+> The following changes since commit f0992098cadb4c9c6a00703b66cafe604e178fea:
+> 
+>   speakup: Reject setting the speakup line discipline outside of speakup (2020-11-30 09:20:32 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2020-11-30
 
-So if I need the link state, what interface should I then use to get it?
+Pulled and pushed out, thanks.
 
->
->--
->RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
->FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
-
-Thanks for your comments
-
-
-BR
-Steen
-
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+greg k-h
