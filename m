@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2548A2C81B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1889D2C8196
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbgK3KHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:07:25 -0500
-Received: from lucky1.263xmail.com ([211.157.147.134]:39406 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727374AbgK3KHY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:07:24 -0500
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 538F1C5779;
-        Mon, 30 Nov 2020 18:00:49 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P26666T140451562632960S1606730439337010_;
-        Mon, 30 Nov 2020 18:00:48 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <16689620369baf5ad60352da077d9e2c>
-X-RL-SENDER: yifeng.zhao@rock-chips.com
-X-SENDER: zyf@rock-chips.com
-X-LOGIN-NAME: yifeng.zhao@rock-chips.com
-X-FST-TO: miquel.raynal@bootlin.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        heiko@sntech.de, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Subject: [PATCH v15 4/8] arm64: dts: rockchip: Add NFC node for RK3308 SoC
-Date:   Mon, 30 Nov 2020 18:00:31 +0800
-Message-Id: <20201130100031.22083-5-yifeng.zhao@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201130100031.22083-1-yifeng.zhao@rock-chips.com>
-References: <20201130100031.22083-1-yifeng.zhao@rock-chips.com>
+        id S1728076AbgK3KBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:01:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60462 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727105AbgK3KBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 05:01:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606730454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K9QLAqcKegNHZ4enxhyxhkwws9hmf//rDueloPUrspE=;
+        b=Qn7UPyCgUNImi1+ilkAUxok8xel0jXaNJWqPi7lVT1fidlp00do2xwiZ3xUt75SXL71fnH
+        VJtyoGDZvZ8PlDU3nCk8pvfZjhZ/uXUe8NHLFTsZ/gBIabJ2VNr9j5+VCdSI4C/skirh9l
+        wsfC/ewhUMXTtl8mj4Owsdvss+Yi/YM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B3DD4ABD2;
+        Mon, 30 Nov 2020 10:00:54 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 11:00:53 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz
+Subject: Re: [PATCH 2/3] mm,thp,shm: limit gfp mask to no more than specified
+Message-ID: <20201130100053.GD17338@dhcp22.suse.cz>
+References: <20201124194925.623931-1-riel@surriel.com>
+ <20201124194925.623931-3-riel@surriel.com>
+ <20201126134034.GI31550@dhcp22.suse.cz>
+ <920c627330f3c7d295ab58edd1b62f28fdbd14bc.camel@surriel.com>
+ <20201127075214.GK31550@dhcp22.suse.cz>
+ <1f089a155d7501fb156da34744d282ae1f3d02f7.camel@surriel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f089a155d7501fb156da34744d282ae1f3d02f7.camel@surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add NAND FLASH Controller(NFC) node for RK3308 SoC.
+On Fri 27-11-20 14:03:39, Rik van Riel wrote:
+> On Fri, 2020-11-27 at 08:52 +0100, Michal Hocko wrote:
+> > On Thu 26-11-20 13:04:14, Rik van Riel wrote:
+> > > 
+> > > I would be more than happy to implement things differently,
+> > > but I am not sure what alternative you are suggesting.
+> > 
+> > Simply do not alter gfp flags? Or warn in some cases of a serious
+> > mismatch.
+> > E.g. GFP_ZONEMASK mismatch because there are already GFP_KERNEL users
+> > of
+> > shmem.
+> 
+> Not altering the gfp flags is not really an option,
+> because that would leads to attempting to allocate THPs
+> with GFP_HIGHUSER, which is what is used to allocate
+> regular tmpfs pages.
 
-Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
----
-
-Changes in v15: None
-Changes in v14: None
-Changes in v13: None
-Changes in v12: None
-Changes in v11: None
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index b3118cabd0f6..f6b4d47089b5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -629,6 +629,21 @@
- 		status = "disabled";
- 	};
+Right but that is a completely different reason to alter the mask and it
+would be really great to know whether this is a theoretical concern or
+those users simply do not ever use THPs. Btw. should they be using THPs
+even if they opt themselves into GFP_KERNEL restriction?
  
-+	nfc: nand-controller@ff4b0000 {
-+		compatible = "rockchip,rk3308-nfc",
-+			     "rockchip,rv1108-nfc";
-+		reg = <0x0 0xff4b0000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
-+		clock-names = "ahb", "nfc";
-+		assigned-clocks = <&cru SCLK_NANDC>;
-+		assigned-clock-rates = <150000000>;
-+		pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
-+			     &flash_rdn &flash_rdy &flash_wrn>;
-+		pinctrl-names = "default";
-+		status = "disabled";
-+	};
-+
- 	cru: clock-controller@ff500000 {
- 		compatible = "rockchip,rk3308-cru";
- 		reg = <0x0 0xff500000 0x0 0x1000>;
+> If the THP configuration in sysfs says we should
+> not
+> be doing compaction/reclaim from THP allocations, we
+> should obey that configuration setting, and use a 
+> gfp_flags that results in no compaction/reclaim being done.
+
+Yes, I agree with that. The thing I disagree with is that you try to mix
+how hard to try also from the shmem users which are not really THP aware
+and they merely want to control how hard to try to order-0 pages. Or
+more precisely whether to invoke OOM killer before doing their fallback.
+
+So your patch adds a very subtle behavior that would be really hard to
+maintain long term because the way how hart to compact is completely
+detached from users who use the gfp mask.
 -- 
-2.17.1
-
-
-
+Michal Hocko
+SUSE Labs
