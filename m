@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D8A2C8405
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440D72C8407
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgK3MT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:19:57 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9074 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgK3MT4 (ORCPT
+        id S1727033AbgK3MUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:20:08 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8165 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgK3MUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:19:56 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cl45T31PPzLxpp;
-        Mon, 30 Nov 2020 20:18:37 +0800 (CST)
+        Mon, 30 Nov 2020 07:20:07 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cl45j6WPjz15K9J;
+        Mon, 30 Nov 2020 20:18:49 +0800 (CST)
 Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.186.123) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 30 Nov 2020 20:19:02 +0800
+ 14.3.487.0; Mon, 30 Nov 2020 20:19:08 +0800
 From:   Yanan Wang <wangyanan55@huawei.com>
 To:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
@@ -33,9 +33,9 @@ CC:     <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
         <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
         <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
         <lushenming@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
-Subject: [RFC PATCH 1/3] KVM: arm64: Fix possible memory leak in kvm stage2
-Date:   Mon, 30 Nov 2020 20:18:45 +0800
-Message-ID: <20201130121847.91808-2-wangyanan55@huawei.com>
+Subject: [RFC PATCH 2/3] KVM: arm64: Fix handling of merging tables into a block entry
+Date:   Mon, 30 Nov 2020 20:18:46 +0800
+Message-ID: <20201130121847.91808-3-wangyanan55@huawei.com>
 X-Mailer: git-send-email 2.8.4.windows.1
 In-Reply-To: <20201130121847.91808-1-wangyanan55@huawei.com>
 References: <20201130121847.91808-1-wangyanan55@huawei.com>
@@ -47,56 +47,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When installing a new leaf pte onto an invalid ptep, we need to get_page(ptep).
-When just updating a valid leaf ptep, we shouldn't get_page(ptep).
-Incorrect page_count of translation tables might lead to memory leak,
-when unmapping a stage 2 memory range.
+In dirty logging case(logging_active == True), we need to collapse a block
+entry into a table if necessary. After dirty logging is canceled, when merging
+tables back into a block entry, we should not only free the non-huge page
+tables but also unmap the non-huge mapping for the block. Without the unmap,
+inconsistent TLB entries for the pages in the the block will be created.
+
+We could also use unmap_stage2_range API to unmap the non-huge mapping,
+but this could potentially free the upper level page-table page which
+will be useful later.
 
 Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
 ---
- arch/arm64/kvm/hyp/pgtable.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/arm64/kvm/hyp/pgtable.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index 0271b4a3b9fe..696b6aa83faf 100644
+index 696b6aa83faf..fec8dc9f2baa 100644
 --- a/arch/arm64/kvm/hyp/pgtable.c
 +++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -186,6 +186,7 @@ static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
- 		return old == pte;
- 
- 	smp_store_release(ptep, pte);
-+	get_page(virt_to_page(ptep));
- 	return true;
- }
- 
-@@ -476,6 +477,7 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
- 	/* There's an existing valid leaf entry, so perform break-before-make */
- 	kvm_set_invalid_pte(ptep);
- 	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
-+	put_page(virt_to_page(ptep));
- 	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
- out:
- 	data->phys += granule;
-@@ -512,7 +514,7 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 	}
- 
- 	if (stage2_map_walker_try_leaf(addr, end, level, ptep, data))
--		goto out_get_page;
-+		return 0;
- 
- 	if (WARN_ON(level == KVM_PGTABLE_MAX_LEVELS - 1))
- 		return -EINVAL;
-@@ -536,9 +538,8 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
- 	}
- 
- 	kvm_set_table_pte(ptep, childp);
--
--out_get_page:
- 	get_page(page);
-+
+@@ -500,6 +500,9 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
  	return 0;
  }
  
++static void stage2_flush_dcache(void *addr, u64 size);
++static bool stage2_pte_cacheable(kvm_pte_t pte);
++
+ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+ 				struct stage2_map_data *data)
+ {
+@@ -507,9 +510,17 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+ 	struct page *page = virt_to_page(ptep);
+ 
+ 	if (data->anchor) {
+-		if (kvm_pte_valid(pte))
++		if (kvm_pte_valid(pte)) {
++			kvm_set_invalid_pte(ptep);
++			kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu,
++				     addr, level);
+ 			put_page(page);
+ 
++			if (stage2_pte_cacheable(pte))
++				stage2_flush_dcache(kvm_pte_follow(pte),
++						    kvm_granule_size(level));
++		}
++
+ 		return 0;
+ 	}
+ 
+@@ -574,7 +585,7 @@ static int stage2_map_walk_table_post(u64 addr, u64 end, u32 level,
+  * The behaviour of the LEAF callback then depends on whether or not the
+  * anchor has been set. If not, then we're not using a block mapping higher
+  * up the table and we perform the mapping at the existing leaves instead.
+- * If, on the other hand, the anchor _is_ set, then we drop references to
++ * If, on the other hand, the anchor _is_ set, then we unmap the mapping of
+  * all valid leaves so that the pages beneath the anchor can be freed.
+  *
+  * Finally, the TABLE_POST callback does nothing if the anchor has not
 -- 
 2.19.1
 
