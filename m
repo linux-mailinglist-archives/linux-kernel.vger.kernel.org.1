@@ -2,150 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E2F2C827E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E715B2C8289
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:48:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728826AbgK3KpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:45:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
+        id S1728751AbgK3KsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:48:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725842AbgK3KpW (ORCPT
+        with ESMTP id S1727663AbgK3KsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:45:22 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7645C0613CF;
-        Mon, 30 Nov 2020 02:44:42 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id hk16so1115487pjb.4;
-        Mon, 30 Nov 2020 02:44:42 -0800 (PST)
+        Mon, 30 Nov 2020 05:48:18 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1318FC0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:47:38 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id f190so21320175wme.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 02:47:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GrM70gkp9e4fwI5HQ6WdFTrPmrFyIWmRIyF76LjdktE=;
-        b=uPgNlyPALK1R7u3+hjkx0V8MZBIeF8aIaXzTTL+50oM928MI8S4cllx9FccPO3Bn4x
-         zqFcJx8BLRj4SJP0a+WS/ZBuYhivJWAooJS1lg5VKI4Uq3CKLucdtzcbvujEMiNJlNDG
-         q048Xi4w5J4bBz/i4T3dPz2WhySju/sBJ/H1xjkdHDLNTZ2zfGsyK5p0QXvQO0SAjr32
-         qJ06T3L+ybHtp/nlRg6PqflWsTVyW8cPBkdTbKnM/wnbplOOy/CWp7Cf3WvB/fTlp+8D
-         Zd3I2SQyiJ0BuKGqZ0NckdZjuTsMJniE/EJWmAeIhSFv6ibYk/oK1KgXDBlUslnQz7Vl
-         FwPg==
+        d=chromium.org; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kEyLf8LFch+KdsSp/Rnz95CvSLqxxYSUroQ+WOd06N4=;
+        b=mxZ+YVshPN8IDgC+Xd8VJSuhvuW+B1Vq1vEOVvhr69IYB6IWocC1WMBCPpZXbtWMu+
+         c7toL4IxZDaEPMYXB6KuB1ZZHDPxgCxu/yMOhnV0L+cWMh1gK4hhLBZ3/rGsqxxIrR6y
+         qFEqeGNKNm1kApxx2viLIZDmnm5XkEF2f7jxk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GrM70gkp9e4fwI5HQ6WdFTrPmrFyIWmRIyF76LjdktE=;
-        b=VNpdVVTGbEubml1DaxHldTMiCQ0JDyNQyGRTK4GaYWAhFHtFeyqlABxmZPIGLnuKAm
-         godTvsL4YxH8SrLxlXIsOmlSOGyuuLroS2P7+JnKymy5omkoCat4sz0wi4WL0I/xkAL3
-         m6u9tp6m7X966ZziVYSkAwk9VmGaq6jvFjNVCL0KnhHNWkCP5JWfVzFAA+U2+iJ8poH5
-         Tv1aPeV37DL1qgO94WqRe+lyTEX5zoHp0EfMi08oKT8Zrre/ZLzNfSqqlYkzy7XCkh2u
-         No4Oemm4IjLBvcOo9pog08ckeVp6BdIvI9p4zwMns9U4aisng3Hg0Smu0oEjPSuSKfaW
-         1lrg==
-X-Gm-Message-State: AOAM533idNur5ZAi/A83fSg0mGlaY9ViVwg6TZ1L4y5w7PXPaSAk+UyG
-        mL45R7Jug6YQeEBRb1SbDOk=
-X-Google-Smtp-Source: ABdhPJzieyL19+RD/XDOgUBwEMEjeOuPoQakYO6urym2MP0tf5UorfepPVyJsT3OxLBRnovwQLmwNg==
-X-Received: by 2002:a17:90a:cce:: with SMTP id 14mr15322280pjt.163.1606733082212;
-        Mon, 30 Nov 2020 02:44:42 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id h13sm10176158pfq.175.2020.11.30.02.44.40
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kEyLf8LFch+KdsSp/Rnz95CvSLqxxYSUroQ+WOd06N4=;
+        b=iHrFdSqo+bWJx9dASHh/e8PeAeObQPhPW9WrNeEm3HpdTmLI84Rn/UwYLnSl1lY5Cr
+         9l+RH3oDsk19eJk47nkV07i9tJKZm0tPfO0Bp4CbCszvKzuasd0R9gExAys/11EYrPcb
+         vxyVwv3l48Ehm+ChlTM5rq3wZsKsRXu12X6zkxlIkrcMQOhQGomFA04PR9vBcVLPxZR0
+         8+pZPQVoBvWGWAtQRaCdksVVJMSDNNBr7C57XbdVa2uw8z2Wr8dMzENnQgnWqgmAkk4s
+         szyxk8spUWA3A8kMeVmkO1qaZd8SFWCMqHbiFeF1ZHWmZmMJqyd5apvh75R6cH3i6IIK
+         aYKw==
+X-Gm-Message-State: AOAM530BipxfOVZQ7PlQs1noFUgTgSRHJTSFhKd9VIKiBKEwTZTC1daX
+        I+F9gpjBdZxCKmK/GUpcLAvc7vdtMwBbzA==
+X-Google-Smtp-Source: ABdhPJyNfDQBtBUjLYivTubWHNNG5AjYFEAOzzMzgG9ljqqSdjJuJrr5gIZKubHTvUAbSLegBzpGUA==
+X-Received: by 2002:a1c:2d84:: with SMTP id t126mr22263460wmt.132.1606733256754;
+        Mon, 30 Nov 2020 02:47:36 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id x9sm19719853wru.55.2020.11.30.02.47.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 02:44:41 -0800 (PST)
-Date:   Mon, 30 Nov 2020 19:44:39 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mon, 30 Nov 2020 02:47:36 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCHv3] media: vb2: always set buffer cache sync hints
-Message-ID: <X8TNFwqthPkph/+p@jagdpanzerIV.localdomain>
-References: <20201129031545.557586-1-sergey.senozhatsky@gmail.com>
- <6cf9bf76-3875-5c89-cebe-a4e44ee1f326@xs4all.nl>
+        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>
+Subject: [PATCH v4 1/4] dma-mapping: remove the {alloc,free}_noncoherent methods
+Date:   Mon, 30 Nov 2020 11:47:27 +0100
+Message-Id: <20201130104730.27655-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6cf9bf76-3875-5c89-cebe-a4e44ee1f326@xs4all.nl>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/11/30 11:02), Hans Verkuil wrote:
-> > @@ -414,6 +414,20 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
-> >  		vb->index = q->num_buffers + buffer;
-> >  		vb->type = q->type;
-> >  		vb->memory = memory;
-> > +		/*
-> > +		 * A workaround fix. We need to set these flags here so that
-> > +		 * videobuf2 core will call ->prepare()/->finish() cache
-> > +		 * sync/flush on vb2 buffers when appropriate. Otherwise, for
-> > +		 * backends that don't rely on V4L2 (perhaps dvb) these flags
-> > +		 * will always be false and, hence, videobuf2 core will skip
-> > +		 * cache sync/flush operations. However, we can avoid explicit
-> > +		 * ->prepare() and ->finish() cache sync for DMABUF buffers,
-> > +		 * because DMA exporter takes care of it.
-> > +		 */
-> > +		if (q->memory != VB2_MEMORY_DMABUF) {
-> > +			vb->need_cache_sync_on_prepare = 1;
-> > +			vb->need_cache_sync_on_finish = 1;
-> > +		}
-> 
-> Is this a work-around fix? Isn't this just a bug fix? It seems reasonable
-> to always set this when allocating buffers for a queue. And for v4l2 these
-> values can be changed if supported by the driver (allow_cache_hints is set).
+From: Christoph Hellwig <hch@lst.de>
 
-Yes, it's a bug fix. It's a workaround bug fix in a sense that a proper
-bug fix is to rename these flags and invert them (and patch all the
-functions that set and test them). A sneak preview of what's in my tree:
+It turns out allowing non-contigous allocations here was a rather bad
+idea, as we'll now need to define ways to get the pages for mmaping
+or dma_buf sharing.  Revert this change and stick to the original
+concept.  A different API for the use case of non-contigous allocations
+will be added back later.
 
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
+ drivers/iommu/dma-iommu.c   | 30 ------------------------------
+ include/linux/dma-map-ops.h |  5 -----
+ kernel/dma/mapping.c        | 33 ++++++---------------------------
+ 3 files changed, 6 insertions(+), 62 deletions(-)
 
-diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-index bd78f6c7f342..3b79042d9d5c 100644
---- a/include/media/videobuf2-core.h
-+++ b/include/media/videobuf2-core.h
-@@ -264,10 +264,10 @@ struct vb2_buffer {
-         *                      after the 'buf_finish' op is called.
-         * copied_timestamp:    the timestamp of this capture buffer was copied
-         *                      from an output buffer.
--        * need_cache_sync_on_prepare: when set buffer's ->prepare() function
--        *                      performs cache sync/invalidation.
--        * need_cache_sync_on_finish: when set buffer's ->finish() function
--        *                      performs cache sync/invalidation.
-+        * no_cache_sync_on_prepare: when set buffer's ->prepare() function
-+        *                      skips cache sync/invalidation.
-+        * no_cache_sync_on_finish: when set buffer's ->finish() function
-+        *                      skips cache sync/invalidation.
-         * queued_entry:        entry on the queued buffers list, which holds
-         *                      all buffers queued from userspace
-         * done_entry:          entry on the list that stores all buffers ready
-@@ -278,8 +278,8 @@ struct vb2_buffer {
-        unsigned int            synced:1;
-        unsigned int            prepared:1;
-        unsigned int            copied_timestamp:1;
--       unsigned int            need_cache_sync_on_prepare:1;
--       unsigned int            need_cache_sync_on_finish:1;
-+       unsigned int            no_cache_sync_on_prepare:1;
-+       unsigned int            no_cache_sync_on_finish:1;
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 0cbcd3fc3e7e..73249732afd3 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -1054,34 +1054,6 @@ static void *iommu_dma_alloc(struct device *dev, size_t size,
+ 	return cpu_addr;
+ }
  
-        struct vb2_plane        planes[VB2_MAX_PLANES];
-        struct list_head        queued_entry;
+-#ifdef CONFIG_DMA_REMAP
+-static void *iommu_dma_alloc_noncoherent(struct device *dev, size_t size,
+-		dma_addr_t *handle, enum dma_data_direction dir, gfp_t gfp)
+-{
+-	if (!gfpflags_allow_blocking(gfp)) {
+-		struct page *page;
+-
+-		page = dma_common_alloc_pages(dev, size, handle, dir, gfp);
+-		if (!page)
+-			return NULL;
+-		return page_address(page);
+-	}
+-
+-	return iommu_dma_alloc_remap(dev, size, handle, gfp | __GFP_ZERO,
+-				     PAGE_KERNEL, 0);
+-}
+-
+-static void iommu_dma_free_noncoherent(struct device *dev, size_t size,
+-		void *cpu_addr, dma_addr_t handle, enum dma_data_direction dir)
+-{
+-	__iommu_dma_unmap(dev, handle, size);
+-	__iommu_dma_free(dev, size, cpu_addr);
+-}
+-#else
+-#define iommu_dma_alloc_noncoherent		NULL
+-#define iommu_dma_free_noncoherent		NULL
+-#endif /* CONFIG_DMA_REMAP */
+-
+ static int iommu_dma_mmap(struct device *dev, struct vm_area_struct *vma,
+ 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+ 		unsigned long attrs)
+@@ -1152,8 +1124,6 @@ static const struct dma_map_ops iommu_dma_ops = {
+ 	.free			= iommu_dma_free,
+ 	.alloc_pages		= dma_common_alloc_pages,
+ 	.free_pages		= dma_common_free_pages,
+-	.alloc_noncoherent	= iommu_dma_alloc_noncoherent,
+-	.free_noncoherent	= iommu_dma_free_noncoherent,
+ 	.mmap			= iommu_dma_mmap,
+ 	.get_sgtable		= iommu_dma_get_sgtable,
+ 	.map_page		= iommu_dma_map_page,
+diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+index a5f89fc4d6df..3d1f91464bcf 100644
+--- a/include/linux/dma-map-ops.h
++++ b/include/linux/dma-map-ops.h
+@@ -22,11 +22,6 @@ struct dma_map_ops {
+ 			gfp_t gfp);
+ 	void (*free_pages)(struct device *dev, size_t size, struct page *vaddr,
+ 			dma_addr_t dma_handle, enum dma_data_direction dir);
+-	void *(*alloc_noncoherent)(struct device *dev, size_t size,
+-			dma_addr_t *dma_handle, enum dma_data_direction dir,
+-			gfp_t gfp);
+-	void (*free_noncoherent)(struct device *dev, size_t size, void *vaddr,
+-			dma_addr_t dma_handle, enum dma_data_direction dir);
+ 	int (*mmap)(struct device *, struct vm_area_struct *,
+ 			void *, dma_addr_t, size_t, unsigned long attrs);
+ 
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 51bb8fa8eb89..d3032513c54b 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -514,40 +514,19 @@ EXPORT_SYMBOL_GPL(dma_free_pages);
+ void *dma_alloc_noncoherent(struct device *dev, size_t size,
+ 		dma_addr_t *dma_handle, enum dma_data_direction dir, gfp_t gfp)
+ {
+-	const struct dma_map_ops *ops = get_dma_ops(dev);
+-	void *vaddr;
+-
+-	if (!ops || !ops->alloc_noncoherent) {
+-		struct page *page;
+-
+-		page = dma_alloc_pages(dev, size, dma_handle, dir, gfp);
+-		if (!page)
+-			return NULL;
+-		return page_address(page);
+-	}
++	struct page *page;
+ 
+-	size = PAGE_ALIGN(size);
+-	vaddr = ops->alloc_noncoherent(dev, size, dma_handle, dir, gfp);
+-	if (vaddr)
+-		debug_dma_map_page(dev, virt_to_page(vaddr), 0, size, dir,
+-				   *dma_handle);
+-	return vaddr;
++	page = dma_alloc_pages(dev, size, dma_handle, dir, gfp);
++	if (!page)
++		return NULL;
++	return page_address(page);
+ }
+ EXPORT_SYMBOL_GPL(dma_alloc_noncoherent);
+ 
+ void dma_free_noncoherent(struct device *dev, size_t size, void *vaddr,
+ 		dma_addr_t dma_handle, enum dma_data_direction dir)
+ {
+-	const struct dma_map_ops *ops = get_dma_ops(dev);
+-
+-	if (!ops || !ops->free_noncoherent) {
+-		dma_free_pages(dev, size, virt_to_page(vaddr), dma_handle, dir);
+-		return;
+-	}
+-
+-	size = PAGE_ALIGN(size);
+-	debug_dma_unmap_page(dev, dma_handle, size, dir);
+-	ops->free_noncoherent(dev, size, vaddr, dma_handle, dir);
++	dma_free_pages(dev, size, virt_to_page(vaddr), dma_handle, dir);
+ }
+ EXPORT_SYMBOL_GPL(dma_free_noncoherent);
+ 
+-- 
+2.29.2.454.gaff20da3a2-goog
 
----
-
-and it's much bigger than a 3-liner ("workaround") fix.
-
-> So the comment would be:
-> 
-> 	/*
-> 	 * We need to set these flags here so that the videobuf2 core
-> 	 * will call ->prepare()/->finish() cache sync/flush on vb2
-> 	 * buffers when appropriate. However, we can avoid explicit
-> 	 * ->prepare() and ->finish() cache sync for DMABUF buffers,
-> 	 * because DMA exporter takes care of it.
-> 	 */
-> 
-> The commit message would need to be modified as well.
-
-OK.
-
-	-ss
