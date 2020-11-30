@@ -2,127 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F582C8AEE
+	by mail.lfdr.de (Postfix) with ESMTP id 805DA2C8AEF
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgK3R0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbgK3R0o (ORCPT
+        id S1728854AbgK3R06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:26:58 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64518 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726897AbgK3R05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:26:44 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B114AC0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:26:00 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id c80so15006768oib.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:26:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Ru7NLccMoPibYPRiKwpFm+Vj44WvO34VSPqaKP+92ak=;
-        b=Kh3Kt8oEDlhs3pKFJGJqSbxdh3/n7jwMaX8Vdoy2d4Kkq7FjR4PhSmV/g00+P8RNm7
-         +VfgHkuYFsgjU1Gsq/WdWVSio15EzpL+3GQQ/tGGwtXKeVYa260+DildkHcYl6Gwtcci
-         g1H9BSZZCS2wB0Ssi3onqx/C1kZwl1YVg63KzhEGhfCZ753gZMtfq+RMIVGw/lmUkuAw
-         P6P8Aa3nBiyihnX/eRNo0JUwRh4PA53r5OHzmjc5Wnvm6IwDVLSAGCW3tWE7KLf5kSVf
-         FbB+eQdU7R8Rcev7NrSaftTkvRiec89HJrUkhGDHM2jdDE+FPFJf5d1PpkbqHiEQ3LIH
-         hBpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Ru7NLccMoPibYPRiKwpFm+Vj44WvO34VSPqaKP+92ak=;
-        b=USUD8zYZ0cpz7uDi/uNCBH5+4wyI6GFrn/3dV7EudN01Liow4zLLFTKOChUAyTk3eF
-         wvNgjO8PPSn6G9RdehTbFnhDRf+m2HzKJOuqkBC+llqP7Ml7lqK6Rv28NQpncQ0k9cJC
-         FHHrOa5JAKqQf7jizBWdchqiSQNrLAAJ56FrxS68hIMP2pVIQpFyF/qITpjQ41ElatXp
-         WQ6zQ/FAxjrISYNSO+I7QnKcJpd72nbz6ksAFpbtHlY/XsGZohXE0Gq+YU9OQ89JYkIi
-         0SQHiOM5RiNXv0wV1zuzjA4CvEa/xBvZut1wi3BtbYl9T+h50OSZJwBTr3RPOiD8uF65
-         MFWg==
-X-Gm-Message-State: AOAM533US1YP03CONzuDsiI5/UHQA6NYZBIbSkvUhnnw/MtZBrfEUQV5
-        W+gG64NSrEK4xNpNeY0kjkQup2QYg3TvIMFlSms=
-X-Google-Smtp-Source: ABdhPJyAMv3FHovUbayRLahomb+9JxRUxoLtpBroVudFxPP9U7QGw1edXqxkdwuZCCAsJ/En4ZHrdA==
-X-Received: by 2002:a05:6808:8c8:: with SMTP id k8mr15419478oij.84.1606757159932;
-        Mon, 30 Nov 2020 09:25:59 -0800 (PST)
-Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
-        by smtp.gmail.com with ESMTPSA id e15sm9319333otj.43.2020.11.30.09.25.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 09:25:59 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: qcom: c630: Fix pinctrl pins properties
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201130170028.319798-1-bjorn.andersson@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-Message-ID: <58cf6829-4121-db46-04f7-0dc6c59b2053@kali.org>
-Date:   Mon, 30 Nov 2020 11:25:58 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        Mon, 30 Nov 2020 12:26:57 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHDWxM091139;
+        Mon, 30 Nov 2020 12:26:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=g6iMkPFw8NFXQFPi6jTuMBsBCW+yakWb4p7XimClNwc=;
+ b=JxsVuMeN6lfQOk2wcnW/ZaDk9fPYuViNRQHoTCrSfZUNUlw4Y0VaLzxNZE6eH8yvCc8V
+ clqPivzaIA2AUErUlEYysw5+ZVDae1jACKJaO5HxsEf+N6a/QzsFwt9muUt8+HKrDgRe
+ ZERDrVjJfNb6oPvdAnXIAzqVLF6/X9p81z/ZC/GzkvzuiBQIPo4HwUwvFESHcctlUTmx
+ Em/s1p41yrHiFLO/1b9thP3RfYQHOKD0pnTCJGyFAFjm+FNu6RKYSBbS9YCtmyUnLZlM
+ zzUcxRQV0LDCIaFXKgbKHAHSRxgj/6UV1DqhmgWAJ49kbKec9P/s0LKWxODQUqc7maeY Ow== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3554xq0e0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 12:26:10 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHNLat005907;
+        Mon, 30 Nov 2020 17:26:09 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma02dal.us.ibm.com with ESMTP id 353e69dmgh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 17:26:09 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AUHQ9P05964452
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 17:26:09 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EEE89112066;
+        Mon, 30 Nov 2020 17:26:08 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7700111207C;
+        Mon, 30 Nov 2020 17:26:06 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 30 Nov 2020 17:26:06 +0000 (GMT)
+Subject: Re: [PATCH 04/13] ibmvfc: add alloc/dealloc routines for SCSI Sub-CRQ
+ Channels
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201126014824.123831-1-tyreld@linux.ibm.com>
+ <20201126014824.123831-5-tyreld@linux.ibm.com>
+ <0c308b76-c744-0257-d5ba-3ffd0e6073a3@linux.vnet.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <0eeac30f-07bd-d4c5-fe21-d5092ca3fd62@linux.ibm.com>
+Date:   Mon, 30 Nov 2020 09:26:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201130170028.319798-1-bjorn.andersson@linaro.org>
+In-Reply-To: <0c308b76-c744-0257-d5ba-3ffd0e6073a3@linux.vnet.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_06:2020-11-30,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 lowpriorityscore=0 phishscore=0 impostorscore=0
+ suspectscore=2 priorityscore=1501 clxscore=1015 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011300106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/27/20 9:46 AM, Brian King wrote:
+> On 11/25/20 7:48 PM, Tyrel Datwyler wrote:
+>> Allocate a set of Sub-CRQs in advance. During channel setup the client
+>> and VIOS negotiate the number of queues the VIOS supports and the number
+>> that the client desires to request. Its possible that the final channel
+>> resources allocated is less than requested, but the client is still
+>> responsible for sending handles for every queue it is hoping for.
+>>
+>> Also, provide deallocation cleanup routines.
+>>
+>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>> ---
+>>  drivers/scsi/ibmvscsi/ibmvfc.c | 115 +++++++++++++++++++++++++++++++++
+>>  drivers/scsi/ibmvscsi/ibmvfc.h |   1 +
+>>  2 files changed, 116 insertions(+)
+>>
+>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> index 260b82e3cc01..571abdb48384 100644
+>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> @@ -4983,6 +4983,114 @@ static int ibmvfc_init_crq(struct ibmvfc_host *vhost)
+>>  	return retrc;
+>>  }
+>>  
+>> +static int ibmvfc_register_scsi_channel(struct ibmvfc_host *vhost,
+>> +				  int index)
+>> +{
+>> +	struct device *dev = vhost->dev;
+>> +	struct vio_dev *vdev = to_vio_dev(dev);
+>> +	struct ibmvfc_sub_queue *scrq = &vhost->scsi_scrqs.scrqs[index];
+>> +	int rc = -ENOMEM;
+>> +
+>> +	ENTER;
+>> +
+>> +	scrq->msgs = (struct ibmvfc_sub_crq *)get_zeroed_page(GFP_KERNEL);
+>> +	if (!scrq->msgs)
+>> +		return rc;
+>> +
+>> +	scrq->size = PAGE_SIZE / sizeof(*scrq->msgs);
+>> +	scrq->msg_token = dma_map_single(dev, scrq->msgs, PAGE_SIZE,
+>> +					 DMA_BIDIRECTIONAL);
+>> +
+>> +	if (dma_mapping_error(dev, scrq->msg_token))
+>> +		goto dma_map_failed;
+>> +
+>> +	rc = h_reg_sub_crq(vdev->unit_address, scrq->msg_token, PAGE_SIZE,
+>> +			   &scrq->cookie, &scrq->hw_irq);
+>> +
+>> +	if (rc) {
+>> +		dev_warn(dev, "Error registering sub-crq: %d\n", rc);
+>> +		dev_warn(dev, "Firmware may not support MQ\n");
+>> +		goto reg_failed;
+>> +	}
+>> +
+>> +	scrq->hwq_id = index;
+>> +	scrq->vhost = vhost;
+>> +
+>> +	LEAVE;
+>> +	return 0;
+>> +
+>> +reg_failed:
+>> +	dma_unmap_single(dev, scrq->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+>> +dma_map_failed:
+>> +	free_page((unsigned long)scrq->msgs);
+>> +	LEAVE;
+>> +	return rc;
+>> +}
+>> +
+>> +static void ibmvfc_deregister_scsi_channel(struct ibmvfc_host *vhost, int index)
+>> +{
+>> +	struct device *dev = vhost->dev;
+>> +	struct vio_dev *vdev = to_vio_dev(dev);
+>> +	struct ibmvfc_sub_queue *scrq = &vhost->scsi_scrqs.scrqs[index];
+>> +	long rc;
+>> +
+>> +	ENTER;
+>> +
+>> +	do {
+>> +		rc = plpar_hcall_norets(H_FREE_SUB_CRQ, vdev->unit_address,
+>> +					scrq->cookie);
+>> +	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
+>> +
+>> +	if (rc)
+>> +		dev_err(dev, "Failed to free sub-crq[%d]: rc=%ld\n", index, rc);
+>> +
+>> +	dma_unmap_single(dev, scrq->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+>> +	free_page((unsigned long)scrq->msgs);
+>> +	LEAVE;
+>> +}
+>> +
+>> +static int ibmvfc_init_sub_crqs(struct ibmvfc_host *vhost)
+>> +{
+>> +	int i, j;
+>> +
+>> +	ENTER;
+>> +
+>> +	vhost->scsi_scrqs.scrqs = kcalloc(vhost->client_scsi_channels,
+>> +					  sizeof(*vhost->scsi_scrqs.scrqs),
+>> +					  GFP_KERNEL);
+>> +	if (!vhost->scsi_scrqs.scrqs)
+>> +		return -1;
+>> +
+>> +	for (i = 0; i < vhost->client_scsi_channels; i++) {
+>> +		if (ibmvfc_register_scsi_channel(vhost, i)) {
+>> +			for (j = i; j > 0; j--)
+>> +				ibmvfc_deregister_scsi_channel(vhost, j - 1);
+>> +			kfree(vhost->scsi_scrqs.scrqs);
+>> +			LEAVE;
+>> +			return -1;
+>> +		}
+>> +	}
+>> +
+>> +	LEAVE;
+>> +	return 0;
+>> +}
+>> +
+>> +static void ibmvfc_release_sub_crqs(struct ibmvfc_host *vhost)
+>> +{
+>> +	int i;
+>> +
+>> +	ENTER;
+>> +	if (!vhost->scsi_scrqs.scrqs)
+>> +		return;
+>> +
+>> +	for (i = 0; i < vhost->client_scsi_channels; i++)
+>> +		ibmvfc_deregister_scsi_channel(vhost, i);
+>> +
+>> +	vhost->scsi_scrqs.active_queues = 0;
+>> +	kfree(vhost->scsi_scrqs.scrqs);
+> 
+> Do you want to NULL this out after you free it do you don't keep
+> a reference to a freed page around?
 
-On 11/30/20 11:00 AM, Bjorn Andersson wrote:
-> The "pins" property takes an array of pin _names_, not pin numbers. Fix
-> this.
->
-> Fixes: 44acee207844 ("arm64: dts: qcom: Add Lenovo Yoga C630")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> index 399aef2a0951..bb314973eb0c 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> @@ -432,7 +432,7 @@ &tlmm {
->  	gpio-reserved-ranges = <0 4>, <81 4>;
->  
->  	i2c3_hid_active: i2c2-hid-active {
-> -		pins = <37>;
-> +		pins = "gpio37";
->  		function = "gpio";
->  
->  		input-enable;
-> @@ -441,7 +441,7 @@ i2c3_hid_active: i2c2-hid-active {
->  	};
->  
->  	i2c5_hid_active: i2c5-hid-active {
-> -		pins = <125>;
-> +		pins = "gpio125";
->  		function = "gpio";
->  
->  		input-enable;
-> @@ -450,7 +450,7 @@ i2c5_hid_active: i2c5-hid-active {
->  	};
->  
->  	i2c11_hid_active: i2c11-hid-active {
-> -		pins = <92>;
-> +		pins = "gpio92";
->  		function = "gpio";
->  
->  		input-enable;
-> @@ -459,7 +459,7 @@ i2c11_hid_active: i2c11-hid-active {
->  	};
->  
->  	wcd_intr_default: wcd_intr_default {
-> -		pins = <54>;
-> +		pins = "gpio54";
->  		function = "gpio";
->  
->  		input-enable;
+This isn't actually a page, but a dynamically allocated array of
+ibmvfc_sub_queues, but it should be NULL'ed regardless.
 
-Tested-by: Steev Klimaszewski <steev@kali.org>
+-Tyrel
 
+> 
+>> +	LEAVE;
+>> +}
+>> +
+>>  /**
+>>   * ibmvfc_free_mem - Free memory for vhost
+>>   * @vhost:	ibmvfc host struct
+> 
+> 
+> 
 
