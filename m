@@ -2,129 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6179B2C87F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1A52C880F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgK3PZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:25:20 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2514 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726663AbgK3PZU (ORCPT
+        id S1726964AbgK3PcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:32:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32447 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726670AbgK3PcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:25:20 -0500
-Received: from dggeme714-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Cl8Cc3cd9zQmCs;
-        Mon, 30 Nov 2020 23:24:12 +0800 (CST)
-Received: from [10.174.186.123] (10.174.186.123) by
- dggeme714-chm.china.huawei.com (10.1.199.110) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 30 Nov 2020 23:24:33 +0800
-Subject: Re: [RFC PATCH 2/3] KVM: arm64: Fix handling of merging tables into a
- block entry
-To:     Will Deacon <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
-        <lushenming@huawei.com>
-References: <20201130121847.91808-1-wangyanan55@huawei.com>
- <20201130121847.91808-3-wangyanan55@huawei.com>
- <20201130133421.GB24837@willie-the-truck>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <67e9e393-1836-eca7-4235-6f4a19fed652@huawei.com>
-Date:   Mon, 30 Nov 2020 23:24:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 30 Nov 2020 10:32:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606750256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mSq1E62E7wz6JRt2Y3RxWKfynONuZ8BYJwR+me11tnw=;
+        b=eJreeo7e2n0X+dYZjlXyviz9k7m0obN44m+719CZAzSQMqAGZSOJ4qS3zqko+9/LFxtIHY
+        1OeGEMtGaPv3gZFR9HP2ZCyrGQ9J++w+BOoNXTIN/O/x7+XRcqyMi3QAJ7JYrb7MZgUkmj
+        I9Yia9EfBo8BRNKPHAy8pToBmnZNVWc=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-195-2G-2Xp0kOLaVKKmJ2BDD1Q-1; Mon, 30 Nov 2020 10:30:47 -0500
+X-MC-Unique: 2G-2Xp0kOLaVKKmJ2BDD1Q-1
+Received: by mail-wm1-f72.google.com with SMTP id y187so7568212wmy.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 07:30:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mSq1E62E7wz6JRt2Y3RxWKfynONuZ8BYJwR+me11tnw=;
+        b=IgIjZGLsXsNP44Vp1kUd3vWjVvqdGMEDpeebWwvwpcm76+x2VAsZq5KL4YEN2jjNJY
+         IZ0+kdUXLSgSTxTCgoDwKZxZqYIR+C7Q8xD26N873sVARFY2HCm6PO+RdQ15cOV5aHBV
+         YZnlJJnsCOZHKbr8PsczZTmbKbnh5tzJGmi5DywCQ0QM1OI6uSpCu+xCK5e16XoAuPtO
+         UzQfFwhSV19kWVUqMZLRrLVOgJ3y+m6iWpABgSNSZPqLbcrWp2tgo7nxCfm4FFgLLant
+         9ypEIDbkzyRdPxwB3tGo1V1WMwK0Gf32j5kOdp0MwgCbH5DVgJDxa8WHLKBtiMHRYJr3
+         yJHg==
+X-Gm-Message-State: AOAM530IckeC80YPqop6BsMccnhG3QSbCShKbFfttp/rCxXx2EF9gdrK
+        qG2DNYYPibWfaxptglqUzwH/vTDMr6Vtn+w9Tcw+5IO1OLLnwWIDU7K3iE1BJoe2ddWZoNZOYMF
+        nnyx5q21EAtVGGO94Ew/1YLHd
+X-Received: by 2002:a5d:5222:: with SMTP id i2mr30380243wra.247.1606750246464;
+        Mon, 30 Nov 2020 07:30:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwLfsWdwn+ngcuaGhodnrBSo95VO8/Fqkp8mEji2+ltAV+F81gZF2wnOT7/jRgqO+l3faOIEw==
+X-Received: by 2002:a5d:5222:: with SMTP id i2mr30380223wra.247.1606750246129;
+        Mon, 30 Nov 2020 07:30:46 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id q4sm3852657wmc.2.2020.11.30.07.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 07:30:45 -0800 (PST)
+Date:   Mon, 30 Nov 2020 10:30:42 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, lulu@redhat.com
+Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
+Message-ID: <20201130102633-mutt-send-email-mst@kernel.org>
+References: <20201129064351.63618-1-elic@nvidia.com>
+ <20201129150505-mutt-send-email-mst@kernel.org>
+ <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130035147-mutt-send-email-mst@kernel.org>
+ <20201130092759.GB99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130043050-mutt-send-email-mst@kernel.org>
+ <20201130115106.GC99449@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-In-Reply-To: <20201130133421.GB24837@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.186.123]
-X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
- dggeme714-chm.china.huawei.com (10.1.199.110)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130115106.GC99449@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 30, 2020 at 01:51:06PM +0200, Eli Cohen wrote:
+> On Mon, Nov 30, 2020 at 04:33:09AM -0500, Michael S. Tsirkin wrote:
+> > On Mon, Nov 30, 2020 at 11:27:59AM +0200, Eli Cohen wrote:
+> > > On Mon, Nov 30, 2020 at 04:00:51AM -0500, Michael S. Tsirkin wrote:
+> > > > On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen wrote:
+> > > > > On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wrote:
+> > > > > > On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
+> > > > > > > We should not try to use the VF MAC address as that is used by the
+> > > > > > > regular (e.g. mlx5_core) NIC implementation. Instead, use a random
+> > > > > > > generated MAC address.
+> > > > > > > 
+> > > > > > > Suggested by: Cindy Lu <lulu@redhat.com>
+> > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > > 
+> > > > > > I didn't realise it's possible to use VF in two ways
+> > > > > > with and without vdpa.
+> > > > > 
+> > > > > Using a VF you can create quite a few resources, e.g. send queues
+> > > > > recieve queues, virtio_net queues etc. So you can possibly create
+> > > > > several instances of vdpa net devices and nic net devices.
+> > > > > 
+> > > > > > Could you include a bit more description on the failure
+> > > > > > mode?
+> > > > > 
+> > > > > Well, using the MAC address of the nic vport is wrong since that is the
+> > > > > MAC of the regular NIC implementation of mlx5_core.
+> > > > 
+> > > > Right but ATM it doesn't coexist with vdpa so what's the problem?
+> > > > 
+> > > 
+> > > This call is wrong:  mlx5_query_nic_vport_mac_address()
+> > > 
+> > > > > > Is switching to a random mac for such an unusual
+> > > > > > configuration really justified?
+> > > > > 
+> > > > > Since I can't use the NIC's MAC address, I have two options:
+> > > > > 1. To get the MAC address as was chosen by the user administering the
+> > > > >    NIC. This should invoke the set_config callback. Unfortunately this
+> > > > >    is not implemented yet.
+> > > > > 
+> > > > > 2. Use a random MAC address. This is OK since if (1) is implemented it
+> > > > >    can always override this random configuration.
+> > > > > 
+> > > > > > It looks like changing a MAC could break some guests,
+> > > > > > can it not?
+> > > > > >
+> > > > > 
+> > > > > No, it will not. The current version of mlx5 VDPA does not allow regular
+> > > > > NIC driver and VDPA to co-exist. I have patches ready that enable that
+> > > > > from steering point of view. I will post them here once other patches on
+> > > > > which they depend will be merged.
+> > > > > 
+> > > > > https://patchwork.ozlabs.org/project/netdev/patch/20201120230339.651609-12-saeedm@nvidia.com/
+> > > > 
+> > > > Could you be more explicit on the following points:
+> > > > - which configuration is broken ATM (as in, two device have identical
+> > > >   macs? any other issues)?
+> > > 
+> > > The only wrong thing is the call to  mlx5_query_nic_vport_mac_address().
+> > > It's not breaking anything yet is wrong. The random MAC address setting
+> > > is required for the steering patches.
+> > 
+> > Okay so I'm not sure the Fixes tag at least is appropriate if it's a
+> > dependency of a new feature.
+> > 
+> 
+> OK, let's leave it for now. I will push along with the steering patches.
+> The meaning is the the VDPA net device instance is create with a MAC of
+> all zeros which also mean the link is down. You can set a MAC which will
+> let the link come up.
+> The vdpa driver will not get a callback as I
+> stated but since current mode of steering directs all traffic to the
+> vdpa instance it will work. In the future this must be fixed.
 
-On 2020/11/30 21:34, Will Deacon wrote:
-> On Mon, Nov 30, 2020 at 08:18:46PM +0800, Yanan Wang wrote:
->> In dirty logging case(logging_active == True), we need to collapse a block
->> entry into a table if necessary. After dirty logging is canceled, when merging
->> tables back into a block entry, we should not only free the non-huge page
->> tables but also unmap the non-huge mapping for the block. Without the unmap,
->> inconsistent TLB entries for the pages in the the block will be created.
->>
->> We could also use unmap_stage2_range API to unmap the non-huge mapping,
->> but this could potentially free the upper level page-table page which
->> will be useful later.
->>
->> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->> ---
->>   arch/arm64/kvm/hyp/pgtable.c | 15 +++++++++++++--
->>   1 file changed, 13 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->> index 696b6aa83faf..fec8dc9f2baa 100644
->> --- a/arch/arm64/kvm/hyp/pgtable.c
->> +++ b/arch/arm64/kvm/hyp/pgtable.c
->> @@ -500,6 +500,9 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
->>   	return 0;
->>   }
->>   
->> +static void stage2_flush_dcache(void *addr, u64 size);
->> +static bool stage2_pte_cacheable(kvm_pte_t pte);
->> +
->>   static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
->>   				struct stage2_map_data *data)
->>   {
->> @@ -507,9 +510,17 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
->>   	struct page *page = virt_to_page(ptep);
->>   
->>   	if (data->anchor) {
->> -		if (kvm_pte_valid(pte))
->> +		if (kvm_pte_valid(pte)) {
->> +			kvm_set_invalid_pte(ptep);
->> +			kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu,
->> +				     addr, level);
->>   			put_page(page);
-> This doesn't make sense to me: the page-table pages we're walking when the
-> anchor is set are not accessible to the hardware walker because we unhooked
-> the entire sub-table in stage2_map_walk_table_pre(), which has the necessary
-> TLB invalidation.
->
-> Are you seeing a problem in practice here?
+So at the moment the MAC is in the config space and that is read during
+probe.  So I guess userspace will do that before passing device to
+guest.
 
-Yes, I indeed find a problem in practice.
+> 
+> > > > - why won't device MAC change from guest point of view?
+> > > > 
+> > > 
+> > > It's lack of implementation in qemu as far as I know.
+> > 
+> > Sorry not sure I understand. What's not implemented in QEMU?
+> > 
+> 
+> vdpa config operation set_config() should be called whenever the MAC is
+> changed, e.g. when administrator of the vdpa net device changes the mac.
+> This does not happen which is a bug.
 
-When the migration was cancelled, a TLB conflic abort  was found in guest.
+I am not sure that's a good interface for that, I think set_config
+is for guest writes into config space.
+Will let Jason comment once patches are posted.
 
-This problem is fixed before rework of the page table code, you can have 
-a look in the following two links:
+> > > > 
+> > > > > > > ---
+> > > > > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
+> > > > > > >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > > > > > > 
+> > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > index 1fa6fcac8299..80d06d958b8b 100644
+> > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > @@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
+> > > > > > >  	if (err)
+> > > > > > >  		goto err_mtu;
+> > > > > > >  
+> > > > > > > -	err = mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
+> > > > > > > -	if (err)
+> > > > > > > -		goto err_mtu;
+> > > > > > > -
+> > > > > > > +	eth_random_addr(config->mac);
+> > > > > > >  	mvdev->vdev.dma_dev = mdev->device;
+> > > > > > >  	err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
+> > > > > > >  	if (err)
+> > > > > > > -- 
+> > > > > > > 2.26.2
+> > > > > > 
+> > > > 
+> > 
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c3736cd32bf5197aed1410ae826d2d254a5b277
-
-https://lists.cs.columbia.edu/pipermail/kvmarm/2019-March/035031.html
-
->> +			if (stage2_pte_cacheable(pte))
->> +				stage2_flush_dcache(kvm_pte_follow(pte),
->> +						    kvm_granule_size(level));
-> I don't understand the need for the flush either, as we're just coalescing
-> existing entries into a larger block mapping.
-
-In my opinion, after unmapping, it is necessary to ensure the cache 
-coherency, because it is unknown whether the future mapping memory 
-attribute is changed or not (cacheable -> non_cacheable) theoretically.
-
-> Will
-> .
