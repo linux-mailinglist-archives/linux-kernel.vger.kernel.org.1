@@ -2,142 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C902C7C53
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 02:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB0D2C7C52
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 02:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727144AbgK3BVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 20:21:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726470AbgK3BVM (ORCPT
+        id S1727733AbgK3BUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 20:20:15 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8529 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbgK3BUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 20:21:12 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23761C0613CF;
-        Sun, 29 Nov 2020 17:20:27 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id bj5so5560667plb.4;
-        Sun, 29 Nov 2020 17:20:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p9neIC2nP4AkQG8eY+IlQyOgSSMBX6Quf44ZMyRQcc0=;
-        b=sP8kFzR69H9wb2BgjF9BVHIprW940obj2C3GgnE5KiSsX26HBnzEte+yBu2/xs7nF7
-         NxupZizj41Df2KVAP5epghac0sLnIf7LavS+NbHqe+FL+QFaBn7Vju807Efy/ok7gVUX
-         nuF1iWP1zWKzNdiOEID78J8vIvzwl+P3+puPkRITotCQf2iDU60datuh+gjF4GA52+Pg
-         zt3zEcrhy4VuB/y6cuXINykKyw7eNvlSqQ7fJoYpvW6UBAeRn7z5nlWHsye2gYlmQL6J
-         MvxkDVnS1o8zMn+vNK+DLn/8udePoShPcOGn6ZHQAJG8o9rM0tiNggs4FafYaCYmEbRf
-         JDzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p9neIC2nP4AkQG8eY+IlQyOgSSMBX6Quf44ZMyRQcc0=;
-        b=X6+RUEhQiPqbmWtka0uQsuCAcAc1EONLS75ec5mqKFTWFeMjgnSLSmApiJAIxcISZx
-         sizEz5d6+qm3qSu1UPNFqTYuGvIxzHUNKsjYel/eqy4QAQ1hmCPaeMZ5DGAPGN9rn0Cj
-         2hAzU70kg8P3+zDH9DzGs8FQIcWf/FvH1WghD2DvH7md9oYJYQPtMGpG1XPFGLkhaePE
-         kEeRbx1aimNcEfjIjJVQ6RGykXxQj0GTrB8fTL/8Qnwr7Flgq2vp+xyl9uFZAv9eLEVz
-         92vEu7sb4zPH3Q1FwfaQtG7Blzt7XLwcwLd+C4KTiFpyJcDOtSenpUYRCH2IlazZo8FF
-         1alg==
-X-Gm-Message-State: AOAM530+cJQ+r7tQt5gTBuyyh7FAq4Dw4RBpmE3eLHbsigC7WSSGquzt
-        8Pyw8LhrVH70XbQTUklmdf0dR4pGSAwV3S6ogaE=
-X-Google-Smtp-Source: ABdhPJywNIp8bBDK+nxoBIkEXPB7hi3yXNEqpvBhNXKu3OFZe7JfHWZbeDitlY1UswE1xADVZpOxVA==
-X-Received: by 2002:a17:90a:b782:: with SMTP id m2mr10256163pjr.185.1606699226333;
-        Sun, 29 Nov 2020 17:20:26 -0800 (PST)
-Received: from localhost.localdomain ([49.207.196.188])
-        by smtp.gmail.com with ESMTPSA id l10sm20002567pjg.3.2020.11.29.17.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Nov 2020 17:20:25 -0800 (PST)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 00/15] drivers: usb: misc: update to use usb_control_msg_{send|recv}()
-Date:   Mon, 30 Nov 2020 06:48:04 +0530
-Message-Id: <20201130011819.2576481-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 29 Nov 2020 20:20:14 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CknSW5LHTzhk9G;
+        Mon, 30 Nov 2020 09:19:07 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 30 Nov
+ 2020 09:19:26 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: Fix deadlock between f2fs_quota_sync and
+ block_operation
+To:     Shachar Raindel <shacharr@gmail.com>, <jaegeuk@kernel.org>,
+        <chao@kernel.org>, <ebiggers@google.com>, <daehojeong@google.com>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20201128174124.22397-1-shacharr@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <fcd8b499-239f-c776-dad7-b4a0e19ca1fd@huawei.com>
+Date:   Mon, 30 Nov 2020 09:19:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20201128174124.22397-1-shacharr@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new usb_control_msg_{send|recv}() API provides an improved way of 
-using usb_control_msg(). Using this, short reads/writes are considered
-as errors, data can be used off the stack, and the need for the calling
-function to create a raw usb pipe is eliminated.
-This patch series aims to update existing instances of usb_control_msg() 
-in drivers/usb/misc to usb_control_msg_{send|recv}() appropriately, and
-also update the return value checking mechanisms in place (if any), as
-necessary so nothing breaks.
+On 2020/11/29 1:41, Shachar Raindel wrote:
+> This deadlock is hitting Android users (Pixel 3/3a/4) with Magisk, due
+> to frequent umount/mount operations that trigger quota_sync, hitting
+> the race. See https://github.com/topjohnwu/Magisk/issues/3171 for
+> additional impact discussion.
+> 
+> In commit db6ec53b7e03, we added a semaphore to protect quota flags.
+> As part of this commit, we changed f2fs_quota_sync to call
+> f2fs_lock_op, in an attempt to prevent an AB/BA type deadlock with
+> quota_sem locking in block_operation.  However, rwsem in Linux is not
+> recursive. Therefore, the following deadlock can occur:
+> 
+> f2fs_quota_sync
+> down_read(cp_rwsem) // f2fs_lock_op
+> filemap_fdatawrite
+> f2fs_write_data_pages
+> ...
+>                                     block_opertaion
+> 				   down_write(cp_rwsem) - marks rwsem as
+> 				                          "writer pending"
+> down_read_trylock(cp_rwsem) - fails as there is
+>                                a writer pending.
+> 			      Code keeps on trying,
+> 			      live-locking the filesystem.
 
-I was however unable to update one instance of usb_control_msg() in 
-drivers/usb/misc/apple-mfi-fastcharge.c.
+f2fs_write_single_data_page() will not grab read lock of cp_rwsem now, could you
+please check f2fs code in mainline?
 
-The return value checking mechanism present here, is as follows.
-	if (retval) {
-		dev_dbg(&mfi->udev->dev, "retval = %d\n", retval);
-		return retval;
+	/* Dentry/quota blocks are controlled by checkpoint */
+	if (S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) {
+		/*
+		 * We need to wait for node_write to avoid block allocation during
+		 * checkpoint. This can only happen to quota writes which can cause
+		 * the below discard race condition.
+		 */
+		if (IS_NOQUOTA(inode))
+			down_read(&sbi->node_write);
+
+		fio.need_lock = LOCK_DONE;
+		err = f2fs_do_write_data_page(&fio);
+
+		if (IS_NOQUOTA(inode))
+			up_read(&sbi->node_write);
+
+		goto done;
 	}
 
-	mfi->charge_type = val->intval;
+Thanks,
 
-	return 0;
-
-This implies that mfi->charge_type = val->intval only when number of
-bytes transferred = 0, and the return value is directly returned 
-otherwise. Since the new API doesn't return the number of bytes 
-transferred, I wasn't quite sure how this instance could be updated.
-In case this check is logically incorrect, a patch with a fix 
-can be sent in as well.
-
-Changes in v2:
-
-  * Buffer variables that were previously dynamically allocated are no
-    longer dynamically allocated unless they have a variable length
-    (since that threw a warning).
-    
-
-Anant Thazhemadam (15):
-  usb: misc: appledisplay: update to use the
-    usb_control_msg_{send|recv}() API
-  usb: misc: cypress_cy7c63: update to use usb_control_msg_recv()
-  usb: misc: cytherm: update to use usb_control_msg_recv()
-  usb: misc: ehset: update to use the usb_control_msg_{send|recv}() API
-  usb: misc: emi26: update to use usb_control_msg_send()
-  usb: misc: emi62: update to use usb_control_msg_send()
-  usb: misc: ezusb: update to use usb_control_msg_send()
-  usb: misc: idmouse: update to use usb_control_msg_send()
-  usb: misc: iowarrior: update to use the usb_control_msg_{send|recv}()
-    API
-  usb: misc: isight_firmware: update to use usb_control_msg_send()
-  usb: misc: ldusb: update to use usb_control_msg_send()
-  usb: misc: lvstest: update to use the usb_control_msg_{send|recv}()
-    API
-  usb: misc: trancevibrator: update to use usb_control_msg_send()
-  usb: misc: usbsevseg: update to use usb_control_msg_send()
-  usb: misc: usbtest: update to use the usb_control_msg_{send|recv}()
-    API
-
- drivers/usb/misc/appledisplay.c    |  46 +++++------
- drivers/usb/misc/cypress_cy7c63.c  |  21 ++---
- drivers/usb/misc/cytherm.c         | 128 ++++++++++-------------------
- drivers/usb/misc/ehset.c           |  76 ++++++++---------
- drivers/usb/misc/emi26.c           |  31 ++-----
- drivers/usb/misc/emi62.c           |  30 ++-----
- drivers/usb/misc/ezusb.c           |  16 +---
- drivers/usb/misc/idmouse.c         |   5 +-
- drivers/usb/misc/iowarrior.c       |  34 ++++----
- drivers/usb/misc/isight_firmware.c |  30 +++----
- drivers/usb/misc/ldusb.c           |   8 +-
- drivers/usb/misc/lvstest.c         |  38 ++++-----
- drivers/usb/misc/trancevibrator.c  |   4 +-
- drivers/usb/misc/usbsevseg.c       |  60 ++++----------
- drivers/usb/misc/usbtest.c         |  69 +++++++---------
- 15 files changed, 216 insertions(+), 380 deletions(-)
-
--- 
-2.25.1
-
+> 
+> We solve this by creating a new rwsem, used specifically to
+> synchronize this case, instead of attempting to reuse an existing
+> lock.
+> 
+> Signed-off-by: Shachar Raindel <shacharr@gmail.com>
+> 
+> Fixes: db6ec53b7e03 f2fs: add a rw_sem to cover quota flag changes
+> ---
+>   fs/f2fs/f2fs.h  |  3 +++
+>   fs/f2fs/super.c | 13 +++++++++++--
+>   2 files changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index cb700d797296..b3e55137be7f 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -1448,6 +1448,7 @@ struct f2fs_sb_info {
+>   	struct inode *meta_inode;		/* cache meta blocks */
+>   	struct mutex cp_mutex;			/* checkpoint procedure lock */
+>   	struct rw_semaphore cp_rwsem;		/* blocking FS operations */
+> +	struct rw_semaphore cp_quota_rwsem;    	/* blocking quota sync operations */
+>   	struct rw_semaphore node_write;		/* locking node writes */
+>   	struct rw_semaphore node_change;	/* locking node change */
+>   	wait_queue_head_t cp_wait;
+> @@ -1961,12 +1962,14 @@ static inline void f2fs_unlock_op(struct f2fs_sb_info *sbi)
+>   
+>   static inline void f2fs_lock_all(struct f2fs_sb_info *sbi)
+>   {
+> +	down_write(&sbi->cp_quota_rwsem);
+>   	down_write(&sbi->cp_rwsem);
+>   }
+>   
+>   static inline void f2fs_unlock_all(struct f2fs_sb_info *sbi)
+>   {
+>   	up_write(&sbi->cp_rwsem);
+> +	up_write(&sbi->cp_quota_rwsem);
+>   }
+>   
+>   static inline int __get_cp_reason(struct f2fs_sb_info *sbi)
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 00eff2f51807..5ce61147d7e5 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -2209,8 +2209,16 @@ int f2fs_quota_sync(struct super_block *sb, int type)
+>   	 *  f2fs_dquot_commit
+>   	 *                            block_operation
+>   	 *                            down_read(quota_sem)
+> +	 *
+> +	 * However, we cannot use the cp_rwsem to prevent this
+> +	 * deadlock, as the cp_rwsem is taken for read inside the
+> +	 * f2fs_dquot_commit code, and rwsem is not recursive.
+> +	 *
+> +	 * We therefore use a special lock to synchronize
+> +	 * f2fs_quota_sync with block_operations, as this is the only
+> +	 * place where such recursion occurs.
+>   	 */
+> -	f2fs_lock_op(sbi);
+> +	down_read(&sbi->cp_quota_rwsem);
+>   
+>   	down_read(&sbi->quota_sem);
+>   	ret = dquot_writeback_dquots(sb, type);
+> @@ -2251,7 +2259,7 @@ int f2fs_quota_sync(struct super_block *sb, int type)
+>   	if (ret)
+>   		set_sbi_flag(F2FS_SB(sb), SBI_QUOTA_NEED_REPAIR);
+>   	up_read(&sbi->quota_sem);
+> -	f2fs_unlock_op(sbi);
+> +	up_read(&sbi->cp_quota_rwsem);
+>   	return ret;
+>   }
+>   
+> @@ -3599,6 +3607,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>   
+>   	init_rwsem(&sbi->cp_rwsem);
+>   	init_rwsem(&sbi->quota_sem);
+> +	init_rwsem(&sbi->cp_quota_rwsem);
+>   	init_waitqueue_head(&sbi->cp_wait);
+>   	init_sb_info(sbi);
+>   
+> 
