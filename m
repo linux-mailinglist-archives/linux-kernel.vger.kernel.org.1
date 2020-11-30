@@ -2,294 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3752C9035
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7412C903A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730269AbgK3Vp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 16:45:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59218 "EHLO
+        id S1730283AbgK3Vr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 16:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgK3Vp5 (ORCPT
+        with ESMTP id S1730086AbgK3Vr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 16:45:57 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B8BC0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:45:16 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id l11so7263206plt.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:45:16 -0800 (PST)
+        Mon, 30 Nov 2020 16:47:57 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83824C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:47:17 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id z10so4395166ilu.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:47:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NAVMPedoahzloxAZTi83Cxu7v2k6QSYFs0PxufRbo/0=;
-        b=infVFnDkWkudue/dGrT6KXVZILVSAmrWrovq9sm36BlRi2i4woy2DnzbmsZcxWQSUc
-         kfmRGz0Db81NOsUKC0M0FBAbtQcvqEQ/KZ24cFdLSaZftC272RQZUKXb8PC94Q+Wggqv
-         e+jlxUDoM/b557s6qbBNk6JMxmXWBpSz57ZLUGrEmveGEeMaY+XLC424C8o/dH4bBiPf
-         BWT2qlTPwC+O2VPOjN0cDrf5t2jFGy62iiu68CkyXAo+ZjSxvvLk8GjS1rZLnBvpsQWJ
-         wJdgTXP/keomun1R1nx2HPpW67SI/Y4pxGt8PSntb/e5QTB2cmi582pu4JbHTjjUJU9s
-         2bAw==
+        d=linuxfoundation.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language;
+        bh=uHRoGKduNYCTLt7Vm4EAKOpPL4O7JjlLpBK56fqQN0Q=;
+        b=TLq0Uz0hvBOy5MVW4qn1la3qCiMJ0YiY2P2Ggtj5mq4PHCaEHStJ8H2aZcazb507Zk
+         E7npXccwPvM13WNbUOAWKQp9ovKoxYdjlBpStSNleGUIo4JqB79xASY1p5sd+WxReynN
+         W0FoWbk4ZkH2kpZrCHlN4vAEkUxary+iumVmc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NAVMPedoahzloxAZTi83Cxu7v2k6QSYFs0PxufRbo/0=;
-        b=LNIyeYu3sODQRa9ZvfzgJDUfb02K0YvmXSLkqwWkas3K/Q1PMC2rJQXYW3wc3Jmtwh
-         ealbsJap3+/oIO+a4z6TcPYmJz8YU5JHAh1dZRTLxgNbC/5iZwenQIvBuVbUB5OJafTO
-         z5sUHu2gzBtQtQ8yZOMN41TpWssSVT3zqyZ9YCr1TVp5EhcmXb9WUxv7pn132ooChzq1
-         ZJ7vC1k50AN4vJzJAKY+RC5rKyZ0Ya4GlbSUsr3t9J0p2O+fagQs12autRdgRUu7dh1L
-         a8kb9Kx3cbNlJHIGeGY+4apMNZmtXh2NsrsF9S4xA9/bzChIDF++Lnymrqxxf36Ux6kL
-         daSw==
-X-Gm-Message-State: AOAM531Yv/an0jM4R6oohn5mC5kGCIYqdZuLypqyufT5rAtx6VvOW86Z
-        Pfrg3gTV99zCFTj/KEY3ovs5Ww==
-X-Google-Smtp-Source: ABdhPJx3yhDB6QtzKZvnmhL4TtFE8tQWLe/8PxX2FnjSJ1R2cuAl+X6xnQ+DerIG7dOyCaQY4tW6/Q==
-X-Received: by 2002:a17:902:ff0f:b029:da:6dbb:65ff with SMTP id f15-20020a170902ff0fb02900da6dbb65ffmr9641214plj.21.1606772716286;
-        Mon, 30 Nov 2020 13:45:16 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id h16sm17327979pgd.62.2020.11.30.13.45.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 13:45:15 -0800 (PST)
-Date:   Mon, 30 Nov 2020 14:45:13 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        jonathan.zhouwen@huawei.com, coresight@lists.linaro.org
-Subject: Re: [PATCH v4 14/25] coresight: etm4x: Clean up exception level masks
-Message-ID: <20201130214513.GI1092947@xps15>
-References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
- <20201119164547.2982871-15-suzuki.poulose@arm.com>
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language;
+        bh=uHRoGKduNYCTLt7Vm4EAKOpPL4O7JjlLpBK56fqQN0Q=;
+        b=R4WcYs6M948EhsslxAtMo9n2NUqr5TIhq4iPhjFuEsmJUI4jSyiBev5Y+YgrHNU++i
+         2EI4aieRAutLu6ES/9ls6imkPXY/DBLDb/PyLTReIvABt6BjceVDfdAotI55mPFWhSen
+         eWUsLdimx31t/lcz/cL8J3HVWjSNRwCpk7UR/gr8iMAL2L0w5ESZ2qH+IQVAYXttVmRk
+         QyUVO1GCKCX8H5R/nGT28ZeVpyQdi5tJ9gbjKpenAKXxS8X9KZKAcXXzzLVIU1FWb+jh
+         H8U0zQ93xS2DaYuVhbkS3cfeh5r2CfQcJ46C3aTzo/vuMaD+8aBPHymUcpUuWNmy0OD5
+         88ZQ==
+X-Gm-Message-State: AOAM533jjd5d7GFiM8Ow0+XUnUiDk4qUQvOu6AW3quBsiTddT8HJmNP1
+        6+EZjgE1Ftff9qVHfSD34lw7Kg==
+X-Google-Smtp-Source: ABdhPJx8yd5rux/e9hDpT9d54zZ0nKJZa5TbSt6OG5JCokrW8T7dUYmL+ORuGC6Gqb57ZeSKgN1WZw==
+X-Received: by 2002:a92:b008:: with SMTP id x8mr14468700ilh.297.1606772836854;
+        Mon, 30 Nov 2020 13:47:16 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id r4sm5175822iop.24.2020.11.30.13.47.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 13:47:16 -0800 (PST)
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Borislav Petkov <bp@alien8.de>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] cpupower update for Linux 5.11-rc1
+Message-ID: <a3689b5f-2835-066c-dcb5-6103a0e09f89@linuxfoundation.org>
+Date:   Mon, 30 Nov 2020 14:47:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119164547.2982871-15-suzuki.poulose@arm.com>
+Content-Type: multipart/mixed;
+ boundary="------------2CC919BA1B70204064BE1A20"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 04:45:36PM +0000, Suzuki K Poulose wrote:
-> etm4_get_access_type() calculates the exception level bits
-> for use in address comparator registers. This is also used
-> by the TRCVICTLR register by shifting to the required position.
-> 
-> This patch cleans up the logic to make etm4_get_access_type()
-> calcualte a generic mask which can be used by all users by
-> shifting to their field.
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes since v3:
->   - Fix errors in victlr ns_mask setting.
-> Changes since v2:
->   - Fix the duplicate shift. More commentary
-> ---
->  .../coresight/coresight-etm4x-core.c          | 47 +++++++++----------
->  .../coresight/coresight-etm4x-sysfs.c         | 12 ++---
->  drivers/hwtracing/coresight/coresight-etm4x.h | 47 ++++++++++++-------
->  3 files changed, 60 insertions(+), 46 deletions(-)
-> 
+This is a multi-part message in MIME format.
+--------------2CC919BA1B70204064BE1A20
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Hi Rafael,
 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index a1f294703c43..2342e72c5016 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -861,20 +861,16 @@ static void etm4_init_arch_data(void *info)
->  	etm4_cs_lock(drvdata, csa);
->  }
->  
-> +static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
-> +{
-> +	return etm4_get_access_type(config) << TRCVICTLR_EXLEVEL_SHIFT;
-> +}
-> +
->  /* Set ELx trace filter access in the TRCVICTLR register */
->  static void etm4_set_victlr_access(struct etmv4_config *config)
->  {
-> -	u64 access_type;
-> -
-> -	config->vinst_ctrl &= ~(ETM_EXLEVEL_S_VICTLR_MASK | ETM_EXLEVEL_NS_VICTLR_MASK);
-> -
-> -	/*
-> -	 * TRCVICTLR::EXLEVEL_NS:EXLEVELS: Set kernel / user filtering
-> -	 * bits in vinst_ctrl, same bit pattern as TRCACATRn values returned by
-> -	 * etm4_get_access_type() but with a relative shift in this register.
-> -	 */
-> -	access_type = etm4_get_access_type(config) << ETM_EXLEVEL_LSHIFT_TRCVICTLR;
-> -	config->vinst_ctrl |= (u32)access_type;
-> +	config->vinst_ctrl &= ~TRCVICTLR_EXLEVEL_MASK;
-> +	config->vinst_ctrl |= etm4_get_victlr_access_type(config);
->  }
->  
->  static void etm4_set_default_config(struct etmv4_config *config)
-> @@ -904,12 +900,9 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
->  	u64 access_type = 0;
->  
->  	/*
-> -	 * EXLEVEL_NS, bits[15:12]
-> -	 * The Exception levels are:
-> -	 *   Bit[12] Exception level 0 - Application
-> -	 *   Bit[13] Exception level 1 - OS
-> -	 *   Bit[14] Exception level 2 - Hypervisor
-> -	 *   Bit[15] Never implemented
-> +	 * EXLEVEL_NS, for NonSecure Exception levels.
-> +	 * The mask here is a generic value and must be
-> +	 * shifted to the corresponding field for the registers
->  	 */
->  	if (!is_kernel_in_hyp_mode()) {
->  		/* Stay away from hypervisor mode for non-VHE */
-> @@ -926,20 +919,26 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
->  	return access_type;
->  }
->  
-> +/*
-> + * Construct the exception level masks for a given config.
-> + * This must be shifted to the corresponding register field
-> + * for usage.
-> + */
->  static u64 etm4_get_access_type(struct etmv4_config *config)
->  {
-> -	u64 access_type = etm4_get_ns_access_type(config);
-> -
-> -	/* All supported secure ELs are excluded */
-> -	access_type |= (u64)config->s_ex_level << TRCACATR_EXLEVEL_SHIFT;
-> +	/* All Secure exception levels are excluded from the trace */
-> +	return etm4_get_ns_access_type(config) | (u64)config->s_ex_level;
-> +}
->  
-> -	return access_type;
-> +static u64 etm4_get_comparator_access_type(struct etmv4_config *config)
-> +{
-> +	return etm4_get_access_type(config) << TRCACATR_EXLEVEL_SHIFT;
->  }
->  
->  static void etm4_set_comparator_filter(struct etmv4_config *config,
->  				       u64 start, u64 stop, int comparator)
->  {
-> -	u64 access_type = etm4_get_access_type(config);
-> +	u64 access_type = etm4_get_comparator_access_type(config);
->  
->  	/* First half of default address comparator */
->  	config->addr_val[comparator] = start;
-> @@ -974,7 +973,7 @@ static void etm4_set_start_stop_filter(struct etmv4_config *config,
->  				       enum etm_addr_type type)
->  {
->  	int shift;
-> -	u64 access_type = etm4_get_access_type(config);
-> +	u64 access_type = etm4_get_comparator_access_type(config);
->  
->  	/* Configure the comparator */
->  	config->addr_val[comparator] = address;
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> index fce9df16bfb5..009818675928 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> @@ -743,7 +743,7 @@ static ssize_t s_exlevel_vinst_show(struct device *dev,
->  	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev->parent);
->  	struct etmv4_config *config = &drvdata->config;
->  
-> -	val = (config->vinst_ctrl & ETM_EXLEVEL_S_VICTLR_MASK) >> 16;
-> +	val = (config->vinst_ctrl & TRCVICTLR_EXLEVEL_S_MASK) >> TRCVICTLR_EXLEVEL_S_SHIFT;
->  	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
->  }
->  
-> @@ -760,10 +760,10 @@ static ssize_t s_exlevel_vinst_store(struct device *dev,
->  
->  	spin_lock(&drvdata->spinlock);
->  	/* clear all EXLEVEL_S bits  */
-> -	config->vinst_ctrl &= ~(ETM_EXLEVEL_S_VICTLR_MASK);
-> +	config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_S_MASK);
->  	/* enable instruction tracing for corresponding exception level */
->  	val &= drvdata->s_ex_level;
-> -	config->vinst_ctrl |= (val << 16);
-> +	config->vinst_ctrl |= (val << TRCVICTLR_EXLEVEL_S_SHIFT);
->  	spin_unlock(&drvdata->spinlock);
->  	return size;
->  }
-> @@ -778,7 +778,7 @@ static ssize_t ns_exlevel_vinst_show(struct device *dev,
->  	struct etmv4_config *config = &drvdata->config;
->  
->  	/* EXLEVEL_NS, bits[23:20] */
-> -	val = (config->vinst_ctrl & ETM_EXLEVEL_NS_VICTLR_MASK) >> 20;
-> +	val = (config->vinst_ctrl & TRCVICTLR_EXLEVEL_NS_MASK) >> TRCVICTLR_EXLEVEL_NS_SHIFT;
->  	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
->  }
->  
-> @@ -795,10 +795,10 @@ static ssize_t ns_exlevel_vinst_store(struct device *dev,
->  
->  	spin_lock(&drvdata->spinlock);
->  	/* clear EXLEVEL_NS bits  */
-> -	config->vinst_ctrl &= ~(ETM_EXLEVEL_NS_VICTLR_MASK);
-> +	config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_NS_MASK);
->  	/* enable instruction tracing for corresponding exception level */
->  	val &= drvdata->ns_ex_level;
-> -	config->vinst_ctrl |= (val << 20);
-> +	config->vinst_ctrl |= (val << TRCVICTLR_EXLEVEL_NS_SHIFT);
->  	spin_unlock(&drvdata->spinlock);
->  	return size;
->  }
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-> index 94ead0cd98df..173ea7445c29 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-> @@ -551,24 +551,39 @@
->  
->  #define TRCACATR_EXLEVEL_SHIFT		8
->  
-> -/* secure state access levels - TRCACATRn */
-> -#define ETM_EXLEVEL_S_APP		BIT(8)
-> -#define ETM_EXLEVEL_S_OS		BIT(9)
-> -#define ETM_EXLEVEL_S_HYP		BIT(10)
-> -#define ETM_EXLEVEL_S_MON		BIT(11)
-> -/* non-secure state access levels - TRCACATRn */
-> -#define ETM_EXLEVEL_NS_APP		BIT(12)
-> -#define ETM_EXLEVEL_NS_OS		BIT(13)
-> -#define ETM_EXLEVEL_NS_HYP		BIT(14)
-> -#define ETM_EXLEVEL_NS_NA		BIT(15)
-> -
-> -/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
-> -#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
-> +/*
-> + * Exception level mask for Secure and Non-Secure ELs.
-> + * ETM defines the bits for EL control (e.g, TRVICTLR, TRCACTRn).
-> + * The Secure and Non-Secure ELs are always to gether.
-> + * Non-secure EL3 is never implemented.
-> + * We use the following generic mask as they appear in different
-> + * registers and this can be shifted for the appropriate
-> + * fields.
-> + */
-> +#define ETM_EXLEVEL_S_APP		BIT(0)	/* Secure EL0		*/
-> +#define ETM_EXLEVEL_S_OS		BIT(1)	/* Secure EL1		*/
-> +#define ETM_EXLEVEL_S_HYP		BIT(2)	/* Secure EL2		*/
-> +#define ETM_EXLEVEL_S_MON		BIT(3)	/* Secure EL3/Monitor	*/
-> +#define ETM_EXLEVEL_NS_APP		BIT(4)	/* NonSecure EL0	*/
-> +#define ETM_EXLEVEL_NS_OS		BIT(5)	/* NonSecure EL1	*/
-> +#define ETM_EXLEVEL_NS_HYP		BIT(6)	/* NonSecure EL2	*/
-> +
-> +#define ETM_EXLEVEL_MASK		(GENMASK(6, 0))
-> +#define ETM_EXLEVEL_S_MASK		(GENMASK(3, 0))
-> +#define ETM_EXLEVEL_NS_MASK		(GENMASK(6, 4))
-> +
-> +/* access level controls in TRCACATRn */
-> +#define TRCACATR_EXLEVEL_SHIFT		8
-> +
-> +/* access level control in TRCVICTLR */
-> +#define TRCVICTLR_EXLEVEL_SHIFT		16
-> +#define TRCVICTLR_EXLEVEL_S_SHIFT	16
-> +#define TRCVICTLR_EXLEVEL_NS_SHIFT	20
->  
->  /* secure / non secure masks - TRCVICTLR, IDR3 */
-> -#define ETM_EXLEVEL_S_VICTLR_MASK	GENMASK(19, 16)
-> -/* NS MON (EL3) mode never implemented */
-> -#define ETM_EXLEVEL_NS_VICTLR_MASK	GENMASK(22, 20)
-> +#define TRCVICTLR_EXLEVEL_MASK		(ETM_EXLEVEL_MASK << TRCVICTLR_EXLEVEL_SHIFT)
-> +#define TRCVICTLR_EXLEVEL_S_MASK	(ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_SHIFT)
-> +#define TRCVICTLR_EXLEVEL_NS_MASK	(ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_SHIFT)
->  
->  /* Interpretation of resource numbers change at ETM v4.3 architecture */
->  #define ETM4X_ARCH_4V3	0x43
-> -- 
-> 2.24.1
-> 
+Please pull the following cpupower update for Linux 5.11-rc1.
+
+This cpupower update for Linux 5.11-rc1 consists of a change to provide
+online and offline CPU information. This change makes it easier to keep
+track of offline cpus whose cpuidle or cpufreq property aren't changed
+when updates are made to online cpus.
+
+Please note that there is a conflict in
+
+tools/power/cpupower/utils/helpers/misc.c
+
+between commit:
+
+   748f0d70087c ("cpupower: Provide online and offline CPU information")
+
+from the cpupower tree and commit:
+
+   8113ab20e850 ("tools/power/cpupower: Read energy_perf_bias from sysfs")
+
+from the tip tree.
+
+Stephen fixed it up and can carry the fix. Hope this works.
+
+diff is attached.
+
+thanks,
+-- Shuah
+
+----------------------------------------------------------------
+
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+   Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux 
+tags/linux-cpupower-5.11-rc1
+
+for you to fetch changes up to 748f0d70087c56226bf1df1f91a00b7ab4c8f883:
+
+   cpupower: Provide online and offline CPU information (2020-10-26 
+13:36:24 -0600)
+
+----------------------------------------------------------------
+linux-cpupower-5.11-rc1
+
+This cpupower update for Linux 5.11-rc1 consists of a change to provide
+online and offline CPU information. This change makes it easier to keep
+track of offline cpus whose cpuidle or cpufreq property aren't changed
+when updates are made to online cpus.
+
+----------------------------------------------------------------
+Brahadambal Srinivasan (1):
+       cpupower: Provide online and offline CPU information
+
+  tools/power/cpupower/utils/cpufreq-set.c     |  3 ++
+  tools/power/cpupower/utils/cpuidle-set.c     |  4 ++
+  tools/power/cpupower/utils/cpupower.c        |  8 ++++
+  tools/power/cpupower/utils/helpers/helpers.h | 12 +++++
+  tools/power/cpupower/utils/helpers/misc.c    | 66 
++++++++++++++++++++++++++++-
+  5 files changed, 92 insertions(+), 1 deletion(-)
+----------------------------------------------------------------
+
+--------------2CC919BA1B70204064BE1A20
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-cpupower-5.11-rc1.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="linux-cpupower-5.11-rc1.diff"
+
+diff --git a/tools/power/cpupower/utils/cpufreq-set.c b/tools/power/cpupower/utils/cpufreq-set.c
+index 7b2164e07057..c5e60a39cfa6 100644
+--- a/tools/power/cpupower/utils/cpufreq-set.c
++++ b/tools/power/cpupower/utils/cpufreq-set.c
+@@ -315,6 +315,7 @@ int cmd_freq_set(int argc, char **argv)
+ 		}
+ 	}
+ 
++	get_cpustate();
+ 
+ 	/* loop over CPUs */
+ 	for (cpu = bitmask_first(cpus_chosen);
+@@ -332,5 +333,7 @@ int cmd_freq_set(int argc, char **argv)
+ 		}
+ 	}
+ 
++	print_offline_cpus();
++
+ 	return 0;
+ }
+diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
+index 569f268f4c7f..46158928f9ad 100644
+--- a/tools/power/cpupower/utils/cpuidle-set.c
++++ b/tools/power/cpupower/utils/cpuidle-set.c
+@@ -95,6 +95,8 @@ int cmd_idle_set(int argc, char **argv)
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
++	get_cpustate();
++
+ 	/* Default is: set all CPUs */
+ 	if (bitmask_isallclear(cpus_chosen))
+ 		bitmask_setall(cpus_chosen);
+@@ -181,5 +183,7 @@ int cmd_idle_set(int argc, char **argv)
+ 			break;
+ 		}
+ 	}
++
++	print_offline_cpus();
+ 	return EXIT_SUCCESS;
+ }
+diff --git a/tools/power/cpupower/utils/cpupower.c b/tools/power/cpupower/utils/cpupower.c
+index 8e3d08042825..8ac3304a9957 100644
+--- a/tools/power/cpupower/utils/cpupower.c
++++ b/tools/power/cpupower/utils/cpupower.c
+@@ -34,6 +34,8 @@ int run_as_root;
+ int base_cpu;
+ /* Affected cpus chosen by -c/--cpu param */
+ struct bitmask *cpus_chosen;
++struct bitmask *online_cpus;
++struct bitmask *offline_cpus;
+ 
+ #ifdef DEBUG
+ int be_verbose;
+@@ -178,6 +180,8 @@ int main(int argc, const char *argv[])
+ 	char pathname[32];
+ 
+ 	cpus_chosen = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
++	online_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
++	offline_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
+ 
+ 	argc--;
+ 	argv += 1;
+@@ -230,6 +234,10 @@ int main(int argc, const char *argv[])
+ 		ret = p->main(argc, argv);
+ 		if (cpus_chosen)
+ 			bitmask_free(cpus_chosen);
++		if (online_cpus)
++			bitmask_free(online_cpus);
++		if (offline_cpus)
++			bitmask_free(offline_cpus);
+ 		return ret;
+ 	}
+ 	print_help();
+diff --git a/tools/power/cpupower/utils/helpers/helpers.h b/tools/power/cpupower/utils/helpers/helpers.h
+index c258eeccd05f..d5799aa71e1f 100644
+--- a/tools/power/cpupower/utils/helpers/helpers.h
++++ b/tools/power/cpupower/utils/helpers/helpers.h
+@@ -94,6 +94,8 @@ struct cpupower_cpu_info {
+  */
+ extern int get_cpu_info(struct cpupower_cpu_info *cpu_info);
+ extern struct cpupower_cpu_info cpupower_cpu_info;
++
++
+ /* cpuid and cpuinfo helpers  **************************/
+ 
+ /* X86 ONLY ****************************************/
+@@ -171,4 +173,14 @@ static inline unsigned int cpuid_ecx(unsigned int op) { return 0; };
+ static inline unsigned int cpuid_edx(unsigned int op) { return 0; };
+ #endif /* defined(__i386__) || defined(__x86_64__) */
+ 
++/*
++ * CPU State related functions
++ */
++extern struct bitmask *online_cpus;
++extern struct bitmask *offline_cpus;
++
++void get_cpustate(void);
++void print_online_cpus(void);
++void print_offline_cpus(void);
++
+ #endif /* __CPUPOWERUTILS_HELPERS__ */
+diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
+index f406adc40bad..2ead98169cf5 100644
+--- a/tools/power/cpupower/utils/helpers/misc.c
++++ b/tools/power/cpupower/utils/helpers/misc.c
+@@ -1,8 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#if defined(__i386__) || defined(__x86_64__)
++
++#include <stdio.h>
++#include <stdlib.h>
+ 
+ #include "helpers/helpers.h"
+ 
++#if defined(__i386__) || defined(__x86_64__)
++
+ #define MSR_AMD_HWCR	0xc0010015
+ 
+ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
+@@ -41,3 +45,63 @@ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
+ 	return 0;
+ }
+ #endif /* #if defined(__i386__) || defined(__x86_64__) */
++
++/* get_cpustate
++ *
++ * Gather the information of all online CPUs into bitmask struct
++ */
++void get_cpustate(void)
++{
++	unsigned int cpu = 0;
++
++	bitmask_clearall(online_cpus);
++	bitmask_clearall(offline_cpus);
++
++	for (cpu = bitmask_first(cpus_chosen);
++		cpu <= bitmask_last(cpus_chosen); cpu++) {
++
++		if (cpupower_is_cpu_online(cpu) == 1)
++			bitmask_setbit(online_cpus, cpu);
++		else
++			bitmask_setbit(offline_cpus, cpu);
++
++		continue;
++	}
++}
++
++/* print_online_cpus
++ *
++ * Print the CPU numbers of all CPUs that are online currently
++ */
++void print_online_cpus(void)
++{
++	int str_len = 0;
++	char *online_cpus_str = NULL;
++
++	str_len = online_cpus->size * 5;
++	online_cpus_str = (void *)malloc(sizeof(char) * str_len);
++
++	if (!bitmask_isallclear(online_cpus)) {
++		bitmask_displaylist(online_cpus_str, str_len, online_cpus);
++		printf(_("Following CPUs are online:\n%s\n"), online_cpus_str);
++	}
++}
++
++/* print_offline_cpus
++ *
++ * Print the CPU numbers of all CPUs that are offline currently
++ */
++void print_offline_cpus(void)
++{
++	int str_len = 0;
++	char *offline_cpus_str = NULL;
++
++	str_len = offline_cpus->size * 5;
++	offline_cpus_str = (void *)malloc(sizeof(char) * str_len);
++
++	if (!bitmask_isallclear(offline_cpus)) {
++		bitmask_displaylist(offline_cpus_str, str_len, offline_cpus);
++		printf(_("Following CPUs are offline:\n%s\n"), offline_cpus_str);
++		printf(_("cpupower set operation was not performed on them\n"));
++	}
++}
+
+--------------2CC919BA1B70204064BE1A20--
