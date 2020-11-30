@@ -2,144 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6B72C9235
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E0D2C923E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730485AbgK3XKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        id S1731237AbgK3XKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:10:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731198AbgK3XKV (ORCPT
+        with ESMTP id S1727114AbgK3XKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:10:21 -0500
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4CDC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:09:35 -0800 (PST)
-Received: by mail-oo1-xc43.google.com with SMTP id p15so1434386oop.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:09:35 -0800 (PST)
+        Mon, 30 Nov 2020 18:10:48 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315F1C0613D4;
+        Mon, 30 Nov 2020 15:10:08 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id v14so158270wml.1;
+        Mon, 30 Nov 2020 15:10:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ElQq1bkIiUYhrFnOCJXzaDWlbvoQCXiavddjZw8fCCM=;
-        b=FMuoHiP05HX4Iz0WlIi5VX49F90NYlSP+7bikhMJh2BsC+xXuTlcK9Z1kZf3N5vC+w
-         iY7nofNxeSeb0INIGsnvNaEMT/Jnk/cccAvTNLBvGVrltFDk65xHRGuA5rsl7QmxOhLG
-         2x39e51e5VzrLbsvHMi7oIW/mOKEspqgfb3cQ5jJSbXkmSXRHDHeHpx0Z0pAj8YbcdSJ
-         COvnLQpn3IcUdhEejlQQsBZiEL779czeYspfppjy3ZhsEvGP7IMmQIAx8ABlytPME2Mz
-         iHZESCTK/CK33qNW2BrWgDI4EvztYXJx4wcDs+tQKF7em1iNZORrDeSB+rTEf2/U7m4N
-         uAnw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=KAwd+sagU7ZwoHzkY8WFvDixnRdQKdnq8c4J8ZOSLe8=;
+        b=s0YVQetgcXUCZUuePccdDHOm/lYkq9PddmbCKUbzrdcBaI/Z6OQs5HsDCFB1CdHelx
+         PtiqeHUn5ICOwCvxhcCs5/lbeJSEvmDgcRPd+oBbdagJpsECxC3qkU38xrF6I0eqn2Gf
+         9Pscx8gPUzh89FX0lg/09asSb+eYpqdx1lxqKEe6SzIZpdYdN75HITkgYNdBm2DSeuR8
+         2Y1QmiiZnKER7NHr9unT1kgK/vrpRLJPVtjp6ppUzyBAIKABYKE2HbZgI8Z8hReAVSkn
+         vwaaVBI/aaGEtJZq+NIpwHyUwRvO2qyXKE5tulNdYVk/R7vR+n93ve8WUXt9E1R3oQ0M
+         Rtxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ElQq1bkIiUYhrFnOCJXzaDWlbvoQCXiavddjZw8fCCM=;
-        b=flVlEbVf65B/QeAJU5wMZ9C6WiLs089ndloyc278QgOoSvB2dgEGiLs+3TI1LaZOww
-         kQRLKob4LW7Ow3RMDt9P0KP925bG1g1hPbbmwbqhbGRjeWWretBLqMn/GiHS7zwF8bR4
-         brm5AK0OFCYKjsoQJCOM36nrFR6Lvnha0RFFJ/wGMW86320jyW9cR0KPE2Y9DPXVW4zY
-         tY/Y/OiUP3C3iygSOxNOqAVawS2a+ZgZMsiq0/VDkzPqkADjkMmB0efO3TUPOyacHUxl
-         Bzi2H4EYZlsSTZkppCAZK9meOukvoG+nNmYRalfqG4V4ghHcP6fAYsWhwLbpfC6WrQ+P
-         GSKg==
-X-Gm-Message-State: AOAM530djZXGlI0eltNMZLXdvqec96eeXPZMYBMkkCDyfqJ+zZnltTYc
-        LNwtOotjJIV7kCBae/hze019Kg==
-X-Google-Smtp-Source: ABdhPJxGYQ4JvywSH3rS4u9MQVQ1PyCUIezE6Kx9aV63JKBzcvEBclFVAIjJGy8bzkoxOT8vS5Yi7g==
-X-Received: by 2002:a4a:91de:: with SMTP id e30mr17437722ooh.58.1606777775002;
-        Mon, 30 Nov 2020 15:09:35 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m8sm5603517otm.71.2020.11.30.15.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 15:09:34 -0800 (PST)
-Date:   Mon, 30 Nov 2020 17:09:32 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
-        matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
-        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
-        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
-        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
-        alice.chao@mediatek.com
-Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
- values
-Message-ID: <X8V7rM6GJd2IOo1f@builder.lan>
-References: <20201130091610.2752-1-stanley.chu@mediatek.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=KAwd+sagU7ZwoHzkY8WFvDixnRdQKdnq8c4J8ZOSLe8=;
+        b=eURoDpNIoHXvY0xxufgty5FbBxuRw2IH0Tjhet3yQzoETujZyQBNLGgRV6hH5JeKJ+
+         S9u5+lJzoMeFO/7j7WydkTgQ92XNdFMCNbDIGLmeLlOWIoI24lWI5/uPqFpBZoIYoVUa
+         RhmU8CB0a1I6qvYz/GTc15HuOmLUblHEv6aVk/Jf491nQtDB+gSWDnN8+byV3vhXNeuY
+         NMCE6VFL+itxxY0CRMBHVzutGmOi2pvaxJZGrd7/q2BXphDj0tst1wkP5cT5yZm6j81i
+         G7BiK5koC66vu8HtlwdL0njMMLMFQvEjn75zguEskYe6OnTRgz4e9nVVeakn/uu6g598
+         Em+w==
+X-Gm-Message-State: AOAM531KjmZf7caYfhd8cWDn4xRX8BOORr8AqrQWR2NDol/mbsTbwLSq
+        LVncT0yvxWX9SD3X71JXm4s=
+X-Google-Smtp-Source: ABdhPJwmQ04ElguRaJT90Eh2XmbsVVZmHnFpw23lDOZ42hGc2n73VlqBQK/73YNP+1VHvbCbX8Fspw==
+X-Received: by 2002:a1c:234d:: with SMTP id j74mr148325wmj.18.1606777807007;
+        Mon, 30 Nov 2020 15:10:07 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.80])
+        by smtp.gmail.com with ESMTPSA id a191sm62141wme.25.2020.11.30.15.10.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 15:10:06 -0800 (PST)
+Subject: Re: [PATCH 04/18] software_node: Enforce parent before child ordering
+ of nodes array for software_node_register_nodes()
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-5-djrscally@gmail.com>
+ <20201130161152.GG14465@pendragon.ideasonboard.com>
+ <20201130161239.GH14465@pendragon.ideasonboard.com>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <3f2edde6-e2e3-b379-3c1b-2a5461034b8a@gmail.com>
+Date:   Mon, 30 Nov 2020 23:10:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130091610.2752-1-stanley.chu@mediatek.com>
+In-Reply-To: <20201130161239.GH14465@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 30 Nov 03:16 CST 2020, Stanley Chu wrote:
+Hi Laurent
 
-> UFS specficication allows different VCC configurations for UFS devices,
-> for example,
-> 	(1). 2.70V - 3.60V (By default)
-> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
->                           device tree)
-> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
-> 
-> With the introduction of UFS 3.x products, an issue is happening that
-> UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
-> regulator on UFU 3.x products with VCC configuration (3) used.
-> 
-> To solve this issue, we simply remove pre-defined initial VCC voltage
-> values in UFS driver with below reasons,
-> 
-> 1. UFS specifications do not define how to detect the VCC configuration
->    supported by attached device.
-> 
-> 2. Device tree already supports standard regulator properties.
-> 
-> Therefore VCC voltage shall be defined correctly in device tree, and
-> shall not be changed by UFS driver. What UFS driver needs to do is simply
-> enabling or disabling the VCC regulator only.
-> 
-> This is a RFC conceptional patch. Please help review this and feel
-> free to feedback any ideas. Once this concept is accepted, and then
-> I would post a more completed patch series to fix this issue.
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-
-This is the correct thing to do and I would prefer that we did the same
-for vccq and vccq2 as well - and thereby remove the min_uV and max_uV
-from ufs_vreg.
-
-Regards,
-Bjorn
-
-> ---
->  drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> index a6f76399b3ae..3965be03c136 100644
-> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
->  		vreg->max_uA = 0;
->  	}
->  
-> -	if (!strcmp(name, "vcc")) {
-> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
-> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
-> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
-> -		} else {
-> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
-> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-> -		}
-> -	} else if (!strcmp(name, "vccq")) {
-> +	if (!strcmp(name, "vccq")) {
->  		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
->  		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
->  	} else if (!strcmp(name, "vccq2")) {
-> -- 
-> 2.18.0
-> 
+On 30/11/2020 16:12, Laurent Pinchart wrote:
+> On Mon, Nov 30, 2020 at 06:11:52PM +0200, Laurent Pinchart wrote:
+>> Hi Daniel,
+>>
+>> Thank you for the patch.
+>>
+>> On Mon, Nov 30, 2020 at 01:31:15PM +0000, Daniel Scally wrote:
+>>> Registering software_nodes with the .parent member set to point to a
+>>> currently unregistered software_node has the potential for problems,
+>>> so enforce parent -> child ordering in arrays passed to this function.
+>>>
+>>> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+>>> ---
+>>> Changes since RFC v3:
+>>>
+>>> 	Patch introduced
+>>>
+>>>  drivers/base/swnode.c | 15 +++++++++++----
+>>>  1 file changed, 11 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+>>> index 615a0c93e116..af7930b3679e 100644
+>>> --- a/drivers/base/swnode.c
+>>> +++ b/drivers/base/swnode.c
+>>> @@ -700,14 +700,21 @@ int software_node_register_nodes(const struct software_node *nodes)
+>>>  	int i;
+>>>  
+>>>  	for (i = 0; nodes[i].name; i++) {
+>>> +		if (nodes[i].parent)
+>>> +			if (!software_node_to_swnode(nodes[i].parent)) {
+>>> +				ret = -EINVAL;
+>>> +				goto err_unregister_nodes;
+>>> +			}
+>>> +
+>>>  		ret = software_node_register(&nodes[i]);
+>>> -		if (ret) {
+>>> -			software_node_unregister_nodes(nodes);
+>>> -			return ret;
+>>> -		}
+>>> +		if (ret)
+>>> +			goto err_unregister_nodes;
+>>>  	}
+>>>  
+>>>  	return 0;
+>> I'd add a blank line here.
+>>
+>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> I spoke a bit too soon. Could you update the documentation of the
+> function to explain this new requirement ?
+Oops - of course, will do
+>>> +err_unregister_nodes:
+>>> +	software_node_unregister_nodes(nodes);
+>>> +	return ret;
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(software_node_register_nodes);
+>>>  
+>> -- 
+>> Regards,
+>>
+>> Laurent Pinchart
