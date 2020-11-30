@@ -2,135 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2652C840A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6352C840C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbgK3MU3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Nov 2020 07:20:29 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:41032 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726202AbgK3MU2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:20:28 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-376-Mmcox3aAPuqo9iwFaxczOA-1; Mon, 30 Nov 2020 07:19:32 -0500
-X-MC-Unique: Mmcox3aAPuqo9iwFaxczOA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C607107ACFA;
-        Mon, 30 Nov 2020 12:19:30 +0000 (UTC)
-Received: from bahia.lan (ovpn-112-87.ams2.redhat.com [10.36.112.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 881625D9D2;
-        Mon, 30 Nov 2020 12:19:28 +0000 (UTC)
-Subject: [PATCH] KVM: PPC: Book3S HV: XIVE: Fix vCPU id sanity check
-From:   Greg Kurz <groug@kaod.org>
-To:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     =?utf-8?q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 30 Nov 2020 13:19:27 +0100
-Message-ID: <160673876747.695514.1809676603724514920.stgit@bahia.lan>
-User-Agent: StGit/0.21
+        id S1727397AbgK3MUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:20:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:53684 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726114AbgK3MUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 07:20:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E79630E;
+        Mon, 30 Nov 2020 04:19:51 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 213963F66B;
+        Mon, 30 Nov 2020 04:19:50 -0800 (PST)
+Date:   Mon, 30 Nov 2020 12:19:47 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Srinath Mannam <srinath.mannam@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] PCI: iproc: Add fixes to pcie iproc
+Message-ID: <20201130121947.GD16758@e121166-lin.cambridge.arm.com>
+References: <20201001060054.6616-1-srinath.mannam@broadcom.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001060054.6616-1-srinath.mannam@broadcom.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 062cfab7069f ("KVM: PPC: Book3S HV: XIVE: Make VP block size
-configurable") updated kvmppc_xive_vcpu_id_valid() in a way that
-allows userspace to trigger an assertion in skiboot and crash the host:
+On Thu, Oct 01, 2020 at 11:30:51AM +0530, Srinath Mannam wrote:
+> This patch series contains fixes and improvements to pcie iproc driver.
+> 
+> This patch set is based on Linux-5.9.0-rc2.
+> 
+> Changes from v2:
+>   - Addressed Bjorn's review comments
+>      - Corrected subject line and commit message of Patches 1 and 2.
+>      
+> Changes from v1:
+>   - Addressed Bjorn's review comments
+>      - pcie_print_link_status is used to print Link information.
+>      - Added IARR1/IMAP1 window map definition.
+> 
+> Bharat Gooty (1):
+>   PCI: iproc: Fix out-of-bound array accesses
+> 
+> Roman Bacik (1):
+>   PCI: iproc: Invalidate correct PAXB inbound windows
+> 
+> Srinath Mannam (1):
+>   PCI: iproc: Display PCIe Link information
+> 
+>  drivers/pci/controller/pcie-iproc.c | 29 ++++++++++++++++++++++-------
+>  1 file changed, 22 insertions(+), 7 deletions(-)
 
-[  696.186248988,3] XIVE[ IC 08  ] eq_blk != vp_blk (0 vs. 1) for target 0x4300008c/0
-[  696.186314757,0] Assert fail: hw/xive.c:2370:0
-[  696.186342458,0] Aborting!
-xive-kvCPU 0043 Backtrace:
- S: 0000000031e2b8f0 R: 0000000030013840   .backtrace+0x48
- S: 0000000031e2b990 R: 000000003001b2d0   ._abort+0x4c
- S: 0000000031e2ba10 R: 000000003001b34c   .assert_fail+0x34
- S: 0000000031e2ba90 R: 0000000030058984   .xive_eq_for_target.part.20+0xb0
- S: 0000000031e2bb40 R: 0000000030059fdc   .xive_setup_silent_gather+0x2c
- S: 0000000031e2bc20 R: 000000003005a334   .opal_xive_set_vp_info+0x124
- S: 0000000031e2bd20 R: 00000000300051a4   opal_entry+0x134
- --- OPAL call token: 0x8a caller R1: 0xc000001f28563850 ---
+I need Ray a/o Scott ACK to proceed.
 
-XIVE maintains the interrupt context state of non-dispatched vCPUs in
-an internal VP structure. We allocate a bunch of those on startup to
-accommodate all possible vCPUs. Each VP has an id, that we derive from
-the vCPU id for efficiency:
-
-static inline u32 kvmppc_xive_vp(struct kvmppc_xive *xive, u32 server)
-{
-	return xive->vp_base + kvmppc_pack_vcpu_id(xive->kvm, server);
-}
-
-The KVM XIVE device used to allocate KVM_MAX_VCPUS VPs. This was
-limitting the number of concurrent VMs because the VP space is
-limited on the HW. Since most of the time, VMs run with a lot less
-vCPUs, commit 062cfab7069f ("KVM: PPC: Book3S HV: XIVE: Make VP
-block size configurable") gave the possibility for userspace to
-tune the size of the VP block through the KVM_DEV_XIVE_NR_SERVERS
-attribute.
-
-The check in kvmppc_pack_vcpu_id() was changed from
-
-	cpu < KVM_MAX_VCPUS * xive->kvm->arch.emul_smt_mode
-
-to
-
-	cpu < xive->nr_servers * xive->kvm->arch.emul_smt_mode
-
-The previous check was based on the fact that the VP block had
-KVM_MAX_VCPUS entries and that kvmppc_pack_vcpu_id() guarantees
-that packed vCPU ids are below KVM_MAX_VCPUS. We've changed the
-size of the VP block, but kvmppc_pack_vcpu_id() has nothing to
-do with it and it certainly doesn't ensure that the packed vCPU
-ids are below xive->nr_servers. kvmppc_xive_vcpu_id_valid() might
-thus return true when the VM was configured with a non-standard
-VSMT mode, even if the packed vCPU id is higher than what we
-expect. We end up using an unallocated VP id, which confuses
-OPAL. The assert in OPAL is probably abusive and should be
-converted to a regular error that the kernel can handle, but
-we shouldn't really use broken VP ids in the first place.
-
-Fix kvmppc_xive_vcpu_id_valid() so that it checks the packed
-vCPU id is below xive->nr_servers, which is explicitly what we
-want.
-
-Fixes: 062cfab7069f ("KVM: PPC: Book3S HV: XIVE: Make VP block size configurable")
-Cc: stable@vger.kernel.org # v5.5+
-Signed-off-by: Greg Kurz <groug@kaod.org>
----
- arch/powerpc/kvm/book3s_xive.c |    7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/arch/powerpc/kvm/book3s_xive.c b/arch/powerpc/kvm/book3s_xive.c
-index 85215e79db42..a0ebc29f30b2 100644
---- a/arch/powerpc/kvm/book3s_xive.c
-+++ b/arch/powerpc/kvm/book3s_xive.c
-@@ -1214,12 +1214,9 @@ void kvmppc_xive_cleanup_vcpu(struct kvm_vcpu *vcpu)
- static bool kvmppc_xive_vcpu_id_valid(struct kvmppc_xive *xive, u32 cpu)
- {
- 	/* We have a block of xive->nr_servers VPs. We just need to check
--	 * raw vCPU ids are below the expected limit for this guest's
--	 * core stride ; kvmppc_pack_vcpu_id() will pack them down to an
--	 * index that can be safely used to compute a VP id that belongs
--	 * to the VP block.
-+	 * packed vCPU ids are below that.
- 	 */
--	return cpu < xive->nr_servers * xive->kvm->arch.emul_smt_mode;
-+	return kvmppc_pack_vcpu_id(xive->kvm, cpu) < xive->nr_servers;
- }
- 
- int kvmppc_xive_compute_vp_id(struct kvmppc_xive *xive, u32 cpu, u32 *vp)
-
-
+Thanks,
+Lorenzo
