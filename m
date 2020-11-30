@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294F52C8DFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943392C8DFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729852AbgK3TWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729921AbgK3TVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:21:47 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF91C0617A7;
-        Mon, 30 Nov 2020 11:21:05 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606764063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sgxfE2qR/kOL08XhMsKwlLXx45lwxwxlrvVIxPlKFnE=;
-        b=Lq8je92wLPMiaatqTgkuheZ/cTMHUonwEd3DTDpcP1pOCITytuAhp4mzYCjs3fKDEuQkLJ
-        ltUXYuc67piQCmn1RUU/3+1M0nRPFbByycb6vlNEQxRVQ+t7cTrQ/H/G9/r7bRzInZAaKB
-        /bnISXW9Y9KXjMbCvFTQzrepTaUjo68/jdy9G7acWhMT2SO8+Yf+PQ/lOa07TJfazQcrX0
-        Vlgm8cVVNmzlwpuiLGqwlm9x5vQxRt31Q6B0FBZrvmQ8+5v9VlTtrYh6//vntLeNH7mjp9
-        GgXjaM8fOiOs8bOpP1TxT1j5q8NaUlIQial/s/87lfIX6xkfN6kFJRw9K8F/bQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606764063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sgxfE2qR/kOL08XhMsKwlLXx45lwxwxlrvVIxPlKFnE=;
-        b=rIOd37H98PtLMva+Z1+DG7tYeSCn1N/ikON1u1N8d7D79T+hTwush6qGR0ZFj5lj9sjUCV
-        iYv9AQhGUYbqwwCQ==
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        rui.zhang@intel.com, len.brown@intel.com
-Subject: Re: [PATCH] x86/PCI: Convert force_disable_hpet() to standard quirk
-In-Reply-To: <20201127061131.GB105524@shbuild999.sh.intel.com>
-References: <20201119181904.149129-1-helgaas@kernel.org> <87v9dtk3j4.fsf@nanos.tec.linutronix.de> <20201126012421.GA92582@shbuild999.sh.intel.com> <87eekfk8bd.fsf@nanos.tec.linutronix.de> <20201127061131.GB105524@shbuild999.sh.intel.com>
-Date:   Mon, 30 Nov 2020 20:21:03 +0100
-Message-ID: <87eekairc0.fsf@nanos.tec.linutronix.de>
+        id S2388020AbgK3TWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:22:14 -0500
+Received: from mga04.intel.com ([192.55.52.120]:54688 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729923AbgK3TVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 14:21:51 -0500
+IronPort-SDR: YVHvXH8I7oDMU4xxRVOv6ayPsDMoeBVHK+oHhtlP2BMt9bikvbOe3Aq302M13Ln8Kebl72ff8j
+ VCXVo8pERK3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="170131209"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="170131209"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 11:20:22 -0800
+IronPort-SDR: mqiKdYwMMfoR340DKxtCrVCzYi5Kab7J2Rxf3iDZByrcGhePtymLSQEZYeYk3bW4qSNCPpuBYh
+ 0uZN7BmBXEMQ==
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="314682847"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 11:20:16 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kjojc-00B76i-KG; Mon, 30 Nov 2020 21:21:16 +0200
+Date:   Mon, 30 Nov 2020 21:21:16 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 02/18] property: Add support for calling
+ fwnode_graph_get_endpoint_by_id() for fwnode->secondary
+Message-ID: <20201130192116.GZ4077@smile.fi.intel.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-3-djrscally@gmail.com>
+ <20201130172900.GM4077@smile.fi.intel.com>
+ <20201130172857.GS14465@pendragon.ideasonboard.com>
+ <20201130175319.GS4077@smile.fi.intel.com>
+ <20201130184141.GX4141@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130184141.GX4141@pendragon.ideasonboard.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Feng,
+On Mon, Nov 30, 2020 at 08:41:41PM +0200, Laurent Pinchart wrote:
+> On Mon, Nov 30, 2020 at 07:53:19PM +0200, Andy Shevchenko wrote:
+> > On Mon, Nov 30, 2020 at 07:28:57PM +0200, Laurent Pinchart wrote:
+> > > On Mon, Nov 30, 2020 at 07:29:00PM +0200, Andy Shevchenko wrote:
 
-On Fri, Nov 27 2020 at 14:11, Feng Tang wrote:
-> On Fri, Nov 27, 2020 at 12:27:34AM +0100, Thomas Gleixner wrote:
->> On Thu, Nov 26 2020 at 09:24, Feng Tang wrote:
->> Yes, that can happen. But OTOH, we should start to think about the
->> requirements for using the TSC watchdog.
->> 
->> I'm inclined to lift that requirement when the CPU has:
->> 
->>     1) X86_FEATURE_CONSTANT_TSC
->>     2) X86_FEATURE_NONSTOP_TSC
->
->>     3) X86_FEATURE_NONSTOP_TSC_S3
-> IIUC, this feature exists for several generations of Atom platforms,
-> and it is always coupled with 1) and 2), so it could be skipped for
-> the checking.
+...
 
-Yes, we can ignore that bit as it's not widely available and not
-required to solve the problem.
+> > > We could also move the !fwnode check to the beginning of the function.
+> > 
+> > It's already there (1). What did I miss?
+> 
+> It is, but as we need an explicitly check at the end, it feels cleaner
+> to move it to the beginning. No big deal though.
 
->>     4) X86_FEATURE_TSC_ADJUST
->>     
->>     5) At max. 4 sockets
->> 
->> The only reason I hate to disable HPET upfront at least during boot is
->> that HPET is the best mechanism for the refined TSC calibration. PMTIMER
->> sucks because it's slow and wraps around pretty quick.
->> 
->> So we could do the following even on platforms where HPET stops in some
->> magic PC? state:
->> 
->>   - Register it during early boot as clocksource
->> 
->>   - Prevent the enablement as clockevent and the chardev hpet timer muck
->> 
->>   - Prevent the magic PC? state up to the point where the refined
->>     TSC calibration is finished.
->> 
->>   - Unregister it once the TSC has taken over as system clocksource and
->>     enable the magic PC? state in which HPET gets disfunctional.
->
-> This looks reasonable to me. 
->
-> I have thought about lowering the hpet rating to lower than PMTIMER, so it
-> still contributes in early boot phase, and fades out after PMTIMER is
-> initialised.
+I prefer to stick with a pattern I mentioned because we may easily to find and
+unify these ones somehow.
 
-Not a good idea. pm_timer is initialized before the refined calibration
-finishes.
+> > 1) via fwnode_graph_get_next_endpoint() -> fwnode_call_ptr_op()
 
-Thanks,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-        tglx
+
