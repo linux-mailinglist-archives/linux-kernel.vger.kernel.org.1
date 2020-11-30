@@ -2,194 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC502C8F4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A852C8F56
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387462AbgK3UhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:37:00 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:60489 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726716AbgK3Ug7 (ORCPT
+        id S1728955AbgK3Uk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727309AbgK3Uk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:36:59 -0500
-Received: (qmail 977332 invoked by uid 1000); 30 Nov 2020 15:36:18 -0500
-Date:   Mon, 30 Nov 2020 15:36:18 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Tom Yan <tom.ty89@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        SCSI development list <linux-scsi@vger.kernel.org>
-Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
- scsi_add_host()
-Message-ID: <20201130203618.GB975529@rowland.harvard.edu>
-References: <20201128154849.3193-2-tom.ty89@gmail.com>
- <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
- <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
- <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
- <X8T0E2qvF2cgADl+@kroah.com>
- <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
- <20201130172004.GA966032@rowland.harvard.edu>
- <abb0a79d-63a0-6f3d-4812-f828283cd47c@redhat.com>
- <CAGnHSEk1GixNK71CJMymwLE=MyedjCkiG5Ubq1=O_wFxBBM0GQ@mail.gmail.com>
- <CAGnHSEmPpbDokAfGkeCkvo3JuYfnosVt8H+TK7ZWFNsdyWAfYQ@mail.gmail.com>
+        Mon, 30 Nov 2020 15:40:57 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61ECAC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:40:17 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id x4so5419315pln.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:40:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I8qDHQ/jUJK0YpI0GEkFGscMHRpymFfegAxsOzmAN4o=;
+        b=vKKvL0gSMSqXwlr7CWPakDN7FowAyRokdIheSsMlemhQVl6ts18545CislkpLSWysc
+         sgYS2dBCHjC8OSmrGZd2P8cebt4X0r/HVzXh83fIgWpTjAGz2Zj79S4kQxGuKjkwv26d
+         WtzZrOGUdUBGz/hAtog8jfPxxx4b63nZAY7RrL7gJ9KFqCZ/eDf16taoI7YaT3CR3FZ5
+         W8fqG5uo28c1P3UfqbMsKlXfazJJrHo76qowhMJ4ctW5xb6Csp4wZ9AeP0ApKOlkJqaV
+         tRRdJkGrdYui/pFCpMKiWhHOfG8rfZ1SQ0k08+2AVKZxQ/dsO4Aa7RGc2I65Hp5snHsS
+         itNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I8qDHQ/jUJK0YpI0GEkFGscMHRpymFfegAxsOzmAN4o=;
+        b=sV6PZz8Ff3Nam3GVALAkoyrhwz+zoVPzRkcszbDUXQzYZSw8tu9Jy59CK5ahfAItPi
+         +O4UFYB7rdPtCnATsSyBBl0JP5RcnDAYd9WG4z+noK1hY0qLXUXDuwS8jRxdFO8qUaBT
+         OXhVJSPCdlkElI6XisTJTnNFuqk7ImJcK7jcFa46ez4PDC/nx5bBFiwQnqViM8QfYtDh
+         HXwe4C0axOe4fd5nljNKQ6OIGe6gR0PhyCF5FPKDzXcnc7lpanheuDWSMAGkK48lPMGm
+         NHDhQN7NlKHWfog2Skbb/BlH3ZzRUF+kHbHZQn+WzF11cqDhuGUQmMgfXVdqc3wMJQ13
+         5j+A==
+X-Gm-Message-State: AOAM532FkwKWVDAiyxfuNYCR5f6E3YY7lOe4MmAO7IkmOLKoeg4Xpb0z
+        9yYlVRHA5Ajt/5+ykf3flhWdo+8GSg2uTHVC9OV8eg==
+X-Google-Smtp-Source: ABdhPJxzHv3eSeulfLq4rj3g9oM3CQYlz4W3qtyz9ucpsFnsNiqD2Qg0/yPaLGZ7mbFt7YwEGQjlxLUGGJQ2dC90IHs=
+X-Received: by 2002:a17:902:221:b029:d8:f938:b112 with SMTP id
+ 30-20020a1709020221b02900d8f938b112mr20664724plc.10.1606768816582; Mon, 30
+ Nov 2020 12:40:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGnHSEmPpbDokAfGkeCkvo3JuYfnosVt8H+TK7ZWFNsdyWAfYQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201127083943.2666864-1-anders.roxell@linaro.org>
+In-Reply-To: <20201127083943.2666864-1-anders.roxell@linaro.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 30 Nov 2020 12:40:05 -0800
+Message-ID: <CAKwvOdmtT+DtK6Fs0TdGaObuSHY5C7Ssrx9-5nv+ZUB6uuz3+A@mail.gmail.com>
+Subject: Re: [PATCH] mips: fix Section mismatch in reference
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        chenhc@lemote.com, taohl@lemote.com, yanh@lemote.com,
+        alex.smith@imgtec.com, zhangfx@lemote.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Added linux-scsi to CC: list.  When discussing code in a particular 
-subsystem, it's a good idea to include that subsystem's mailing list in 
-the CC:.]
+On Fri, Nov 27, 2020 at 12:39 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> When building mips tinyconfig with clang the following error show up:
+>
+> WARNING: modpost: vmlinux.o(.text+0x1940c): Section mismatch in reference from the function r4k_cache_init() to the function .init.text:loongson3_sc_init()
+> The function r4k_cache_init() references
+> the function __init loongson3_sc_init().
 
-On Tue, Dec 01, 2020 at 03:01:56AM +0800, Tom Yan wrote:
-> For the record,
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/scsi/scsi_host.h?h=v5.10-rc6#n753
-> 
-> On Tue, 1 Dec 2020 at 02:57, Tom Yan <tom.ty89@gmail.com> wrote:
-> >
-> > This maybe? https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/scsi/scsi_lib.c?h=v5.10-rc6#n1816
-> >
-> > UAS:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/storage/uas.c?h=v5.10-rc6#n918
-> > BOT (AFAICT):
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/scsi/hosts.c?h=v5.10-rc6#n466
-> >
-> > It would explain why the issue is only triggered with UAS drives.
+Looks like loongson2_sc_init() might also have the same problem? (Both
+loongson2_sc_init  and loongson3_sc_init are called from non-__init
+setup_scache).  Trying to pinpoint a Fixes tag is tricky, it looks
+like setup_scache used to be marked __init, then __cpuinit?
 
-In brief, a recent change -- calling scsi_add_host_with_dma rather than 
-scsi_add_host -- in the USB uas driver has caused a regression in 
-performance.  (Note that the shost->dma_dev value is set differently as 
-a result of this change.)  Hans has determined that the problem seems 
-to be related to permanent changes in the dma_dev's settings caused by 
-scsi_add_host_with_dma.
+> This is often because r4k_cache_init lacks a __init
+> annotation or the annotation of loongson3_sc_init is wrong.
+>
+> Remove marked __init from function loongson3_sc_init(),
+> mips_sc_probe_cm3(), and mips_sc_probe().
 
-Tom pointed out that __scsi_init_queue contains a couple of questionable 
-assignments:
+mips_sc_probe_cm3() is only called from mips_sc_probe() which is
+marked as __init.  mips_sc_probe is only called from mips_sc_init,
+which is not marked __init.
 
-	dma_set_seg_boundary(dev, shost->dma_boundary);
+So the patch is fine (and thanks for sending it):
 
-and
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-	dma_set_max_seg_size(dev, queue_max_segment_size(q));
+though it looks like it might be worthwhile for the MIPS maintainer or
+Loongson folks to see if they can lower the kernel image size in
+memory post init by possibly re-adding __init to
+setup_scache()/r4k_cache_init()/cpu_cache_init() and friends.
 
-where dev = shost->dma_dev -- in this case, a USB host controller.
+>
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> ---
+>  arch/mips/mm/c-r4k.c   | 2 +-
+>  arch/mips/mm/sc-mips.c | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+> index 99521764c75b..4f976d687ab0 100644
+> --- a/arch/mips/mm/c-r4k.c
+> +++ b/arch/mips/mm/c-r4k.c
+> @@ -1609,7 +1609,7 @@ static void __init loongson2_sc_init(void)
+>         c->options |= MIPS_CPU_INCLUSIVE_CACHES;
+>  }
+>
+> -static void __init loongson3_sc_init(void)
+> +static void loongson3_sc_init(void)
+>  {
+>         struct cpuinfo_mips *c = &current_cpu_data;
+>         unsigned int config2, lsize;
+> diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+> index dd0a5becaabd..06ec304ad4d1 100644
+> --- a/arch/mips/mm/sc-mips.c
+> +++ b/arch/mips/mm/sc-mips.c
+> @@ -146,7 +146,7 @@ static inline int mips_sc_is_activated(struct cpuinfo_mips *c)
+>         return 1;
+>  }
+>
+> -static int __init mips_sc_probe_cm3(void)
+> +static int mips_sc_probe_cm3(void)
+>  {
+>         struct cpuinfo_mips *c = &current_cpu_data;
+>         unsigned long cfg = read_gcr_l2_config();
+> @@ -180,7 +180,7 @@ static int __init mips_sc_probe_cm3(void)
+>         return 0;
+>  }
+>
+> -static inline int __init mips_sc_probe(void)
+> +static inline int mips_sc_probe(void)
+>  {
+>         struct cpuinfo_mips *c = &current_cpu_data;
+>         unsigned int config1, config2;
+> --
+> 2.29.2
+>
 
-So an important question is why decisions related to a particular SCSI 
-host should affect the DMA settings of a device somewhere else in the 
-heirarchy?  Sure, the properties of the USB controller should constrain 
-the settings available to the SCSI host, but there doesn't seem to be 
-any good reason for restrictions to go in the other direction.
 
-Doesn't the way we handle DMA permit a child device to impose additional 
-restrictions (such as a smaller max segment size) beyond those of the 
-parent device which actually performs the DMA transfer?
-
-> > The questions (from me) are:
-> > 1. From the scsi layer POV (as per what __scsi_init_queue() does),
-> > what/which should we use as dma_dev?
-
-We should be using the USB host controller, because it is the device 
-which actually performs the DMA transfers.
-
-> > 2. Do we really need to set dma_boundary in the UAS host template (to
-> > PAGE_SIZE - 1)?
-
-I don't know.  But in theory it should be possible to have settings 
-(like this one) which affect only the transfers carried out by the SCSI 
-host, not the transfers carred out by other drivers which might use the 
-same USB controller.
-
-> > 3. Kind of the same question as #1: when we clamp hw_max_sectors to
-> > dma max mapping size, should the size actually be "the smaller one
-> > among dev and sysdev"? Or is one of the two sizes *always* the smaller
-> > one?
-
-I assume you're referring to code in the uas driver.  There the value of 
-dev is meaningless as far as DMA is concerned.  Only sysdev matters.
-
-Alan Stern
-
-> > On Tue, 1 Dec 2020 at 02:19, Hans de Goede <hdegoede@redhat.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On 11/30/20 6:20 PM, Alan Stern wrote:
-> > > > On Mon, Nov 30, 2020 at 02:36:38PM +0100, Hans de Goede wrote:
-> > > >> Hi,
-> > > >>
-> > > >> On 11/30/20 2:30 PM, Greg KH wrote:
-> > > >>> On Mon, Nov 30, 2020 at 02:23:48PM +0100, Hans de Goede wrote:
-> > > >>>> Hi,
-> > > >>>>
-> > > >>>> On 11/30/20 1:58 PM, Tom Yan wrote:
-> > > >>>>> It's merely a moving of comment moving for/and a no-behavioral-change
-> > > >>>>> adaptation for the reversion.>
-> > > >>>>
-> > > >>>> IMHO the revert of the troublesome commit and the other/new changes really
-> > > >>>> should be 2 separate commits. But I will let Alan and Greg have the final
-> > > >>>> verdict on this.
-> > > >>>
-> > > >>> I would prefer to just revert the commits and not do anything
-> > > >>> different/special here so late in the release cycle.
-> > > >>>
-> > > >>> So, if Alan agrees, I'll be glad to do them on my end, I just need the
-> > > >>> commit ids for them.
-> > > >>
-> > > >> The troublesome commit are (in reverse, so revert, order):
-> > > >>
-> > > >> 5df7ef7d32fe ("uas: bump hw_max_sectors to 2048 blocks for SS or faster drives")
-> > > >> 558033c2828f ("uas: fix sdev->host->dma_dev")
-> > > >> 0154012f8018 ("usb-storage: fix sdev->host->dma_dev")
-> > > >>
-> > > >> Alan, the reason for reverting these is that using scsi_add_host_with_dma() as the
-> > > >> last 2 patches do, with the dmadev argument of that call pointing to the device
-> > > >> for the XHCI controller is causing changes to the DMA settings of the XHCI controller
-> > > >> itself which is causing regressions in 5.10, see this email thread:
-> > > >>
-> > > >> https://lore.kernel.org/linux-usb/fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com/T/#t
-> > > >
-> > > > It's hard to go wrong with reverting, so it's okay with me.
-> > > >
-> > > > Still, Hans, have you checked out the difference between the
-> > > > scsi_add_host() and scsi_add_host_with_dma() calls?  It's just a matter
-> > > > of using dev vs. sysdev.  In particular, have you checked to see what
-> > > > those two devices are on your system?
-> > >
-> > > Its not just dev vs sysdev, its iface->dev vs bus->sysdev, and I assume
-> > > that the latter is actually the XHCI controller.
-> > >
-> > > my vote goes to reverting to avoid the regression for 5.10, esp. since
-> > > this is a clean revert of 3 patches with nothing depending / building
-> > > on top of the reverted commits.
-> > >
-> > > Then for 5.11 we can retry to introduce similar changes. I would be happy
-> > > to try a new patch-set for 5.11.
-> > >
-> > > > It seems likely that if one of those calls messes up some DMA settings,
-> > > > the other one does too -- just maybe not settings that matter much.
-> > >
-> > > I'm not very familiar with all the DMA mapping / mask code, but AFAIK making
-> > > changes to the DMA settings of a child will not influence the parent.
-> > >
-> > > Where as when passing bus->sysdev, then changes are made to a device
-> > > which is shared with other devices on the bus, which is why we see
-> > > a regression in an USB NIC driver being triggered by the UAS driver
-> > > binding to a device (on the same bus).
-> > >
-> > > At least that is my interpretation of this. I bisected the regression
-> > > and that pointed at the UAS DMA change and reverting it fixes things,
-> > > confirming that I did not make any mistakes during the bisect.
-> > >
-> > > Regards,
-> > >
-> > > Hans
-> > >
+-- 
+Thanks,
+~Nick Desaulniers
