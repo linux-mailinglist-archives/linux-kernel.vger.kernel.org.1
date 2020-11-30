@@ -2,78 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD312C8509
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0BA2C850E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgK3NXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbgK3NXb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:23:31 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC86C0613D2;
-        Mon, 30 Nov 2020 05:22:51 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id v14so21609753lfo.3;
-        Mon, 30 Nov 2020 05:22:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Udf4EL7k79IQTzHQv/izcaa4PNNrQbAoqpJGLzAXG/M=;
-        b=icinteIM4YPB7xRZSAsL/hXHkGgZYEblrhSh/Z6HY6dbMFdYiM4qAjmt+M/WPghk5F
-         KGhoe1vaxwuT5GMzMr5j0CoUHhcx++IzkIcB/hCjWldXRJkvBmecCuLqPiFUMSaxF6g2
-         D9hj9fA9PlM4ug7pUSZeCHISKFvq2Ei4w0TEdPUOcPeCn9v09T6Gw1n0C018o5ww8OHY
-         /h3KYyZhzQIyHVwAHk8ZDfsmjMZ23FJn3aEVhM55raxjFQSpcHdYi3kXy+1BZg+uE3GN
-         Uc/WmDwUhQFPP5B1Ur2LjTcNC634cmBrk/Eyrc/sFpcLCPqcVH+sFrZzCwgRLRtM6xMe
-         l+0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Udf4EL7k79IQTzHQv/izcaa4PNNrQbAoqpJGLzAXG/M=;
-        b=RPDhl6XL+IQPsp8GC/IdMGqACyPaO47h9h+U7LpqZv6lVjOLOkV6Nzz+mf0vCqHoxY
-         HiLy/LTer8weQ63/08UWefIig1ZymhpJ+SXCGJGKH9q07StTPR8zRJYVsfJGSCwDEq33
-         nk+HtknwqYPOzvkLFU+lVSF8gCkWb96PwoKC+Ld4mxLLKaj8Q3MAa4OPCSbe+d5/6gVd
-         rQZ3J1hHl4hJUE5c6pYdcqtM7bN+9gLiuGjwyIzXIoiYVflb91lzuTtwaRWmbTXuXsr6
-         ZFu9C9R7L11121lhvW8WDP+ka63lFzRkuCdDQ3JRNKzv2EMP02DPYOv7VkaAXXG+/j/D
-         UV+A==
-X-Gm-Message-State: AOAM530s4GAZYuuRTu8ilMbwTLIJpEG1yxBhDVVhDc4bRimaQe9EbUDl
-        GM6L0jGg67SPiymMjnyTlmXUvMoF7O12mJ6SjY4=
-X-Google-Smtp-Source: ABdhPJxSJNmEg+DsZXDfJdG9Djvx2jKaHfDAVxIsDTzWbOF0I9lFsVrpiy8SwFysszJkMOQZa5dGNMHhZEDyeddnodQ=
-X-Received: by 2002:a19:8686:: with SMTP id i128mr9292847lfd.333.1606742569638;
- Mon, 30 Nov 2020 05:22:49 -0800 (PST)
+        id S1726661AbgK3NYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:24:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60050 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726539AbgK3NYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:24:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606742627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TN6v/OxH2OCtpqDqCR+fNEKl5rFIXLW24KeSiZIJqiY=;
+        b=RW6digj3PddxPw8W2vUmwPfX8SzTgA6ZQWwm9a1rvExLhiwTyCWILAl7bYZK2AX7y2pt6m
+        IQWh8cOAapkpMr3xBVHD4QDFBzygXraCpsg+nrxzGr3kPVNV1f4OSH04kZHBLxGUC1zRoN
+        2n2yYDl6nW0HwaVcneleQRL3f0Sa1SY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 62D52AD19;
+        Mon, 30 Nov 2020 13:23:47 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 14:23:45 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, shakeelb@google.com,
+        guro@fb.com, sfr@canb.auug.org.au, alex.shi@linux.alibaba.com,
+        alexander.h.duyck@linux.intel.com, laoar.shao@gmail.com,
+        richard.weiyang@gmail.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mm/memcg: fix NULL pointer dereference at
+ workingset_eviction
+Message-ID: <20201130132345.GJ17338@dhcp22.suse.cz>
+References: <20201130131512.6043-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <20201130131406.10925-1-o.rempel@pengutronix.de> <20201130131406.10925-2-o.rempel@pengutronix.de>
-In-Reply-To: <20201130131406.10925-2-o.rempel@pengutronix.de>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 30 Nov 2020 10:22:38 -0300
-Message-ID: <CAOMZO5DM8aToy_PRrY2cW5zbZf0xjfN9H4PrYTy+9Mq0NRii7w@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] ARM: dts: add Protonic MVT board
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130131512.6043-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+On Mon 30-11-20 21:15:12, Muchun Song wrote:
+> We found a case of kernel panic. The stack trace is as follows
+> (omit some irrelevant information):
+> 
+>     BUG: kernel NULL pointer dereference, address: 00000000000000c8
+>     RIP: 0010:workingset_eviction+0x26b/0x450
+>     Call Trace:
+>      __remove_mapping+0x224/0x2b0
+>      shrink_page_list+0x8c2/0x14e0
+>      shrink_inactive_list+0x1bf/0x3f0
+>      ? do_raw_spin_unlock+0x49/0xc0
+>      ? _raw_spin_unlock+0xa/0x20
+>      shrink_lruvec+0x401/0x640
+> 
+> This was caused by commit 76761ffa9ea1 ("mm/memcg: bail out early when
+> !memcg in mem_cgroup_lruvec"). When the parameter of memcg is NULL, we
+> should not use the &pgdat->__lruvec. So this just reverts commit
+> 76761ffa9ea1 to fix it.
+> 
+> Fixes: 76761ffa9ea1 ("mm/memcg: bail out early when !memcg in mem_cgroup_lruvec")
 
-On Mon, Nov 30, 2020 at 10:14 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+I do not see any commits like that in the current Linus tree. Is this a
+commit id from the linux-next? If yes, can we just fold it into the
+respective patch in mmotm tree please?
 
-> +&ecspi1 {
-> +       cs-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/memcontrol.h | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index f9a496c4eac7..a1416205507c 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -610,17 +610,20 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+>  static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>  					       struct pglist_data *pgdat)
+>  {
+> +	struct mem_cgroup_per_node *mz;
+>  	struct lruvec *lruvec;
+>  
+> -	if (mem_cgroup_disabled() || !memcg) {
+> +	if (mem_cgroup_disabled()) {
+>  		lruvec = &pgdat->__lruvec;
+> -	} else {
+> -		struct mem_cgroup_per_node *mz;
+> -
+> -		mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
+> -		lruvec = &mz->lruvec;
+> +		goto out;
+>  	}
+>  
+> +	if (!memcg)
+> +		memcg = root_mem_cgroup;
+> +
+> +	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
+> +	lruvec = &mz->lruvec;
+> +out:
+>  	/*
+>  	 * Since a node can be onlined after the mem_cgroup was created,
+>  	 * we have to be prepared to initialize lruvec->pgdat here;
+> -- 
+> 2.11.0
+> 
 
-Shouldn't this be GPIO_ACTIVE_LOW instead?
+-- 
+Michal Hocko
+SUSE Labs
