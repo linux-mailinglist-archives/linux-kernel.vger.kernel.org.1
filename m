@@ -2,168 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938F72C7EA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F17D2C7EA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgK3HYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:24:16 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9070 "EHLO
+        id S1726671AbgK3H30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 02:29:26 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8530 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgK3HYP (ORCPT
+        with ESMTP id S1725920AbgK3H3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:24:15 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CkxXN6vK8zLxYq;
-        Mon, 30 Nov 2020 15:23:00 +0800 (CST)
-Received: from [10.174.184.228] (10.174.184.228) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 30 Nov 2020 15:23:18 +0800
-Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
- state to physical side
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-4-lushenming@huawei.com>
- <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
- <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
- <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
- <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
-Message-ID: <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
-Date:   Mon, 30 Nov 2020 15:23:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Mon, 30 Nov 2020 02:29:25 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CkxfW4GWzzhkS2;
+        Mon, 30 Nov 2020 15:28:19 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 30 Nov 2020 15:28:39 +0800
+Subject: Re: [PATCH 2/3] powerpc/pseries/hotplug-cpu: fix memleak in
+ dlpar_cpu_add_by_count
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+References: <20201128102001.95323-1-miaoqinglang@huawei.com>
+ <871rgby5lb.fsf@mpe.ellerman.id.au>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <b74f479e-e68b-d8e6-d11c-2611bd4e8a20@huawei.com>
+Date:   Mon, 30 Nov 2020 15:28:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <871rgby5lb.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.228]
+X-Originating-IP: [10.174.177.149]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/24 21:12, Shenming Lu wrote:
-> On 2020/11/24 16:44, Marc Zyngier wrote:
->> On 2020-11-24 08:10, Shenming Lu wrote:
->>> On 2020/11/23 17:27, Marc Zyngier wrote:
->>>> On 2020-11-23 06:54, Shenming Lu wrote:
->>>>> From: Zenghui Yu <yuzenghui@huawei.com>
->>>>>
->>>>> When setting the forwarding path of a VLPI, it is more consistent to
->>>>
->>>> I'm not sure it is more consistent. It is a *new* behaviour, because it only
->>>> matters for migration, which has been so far unsupported.
->>>
->>> Alright, consistent may not be accurate...
->>> But I have doubt that whether there is really no need to transfer the
->>> pending states
->>> from kvm'vgic to VPT in set_forwarding regardless of migration, and the similar
->>> for unset_forwarding.
+
+
+�� 2020/11/30 9:51, Michael Ellerman д��:
+> Qinglang Miao <miaoqinglang@huawei.com> writes:
+>> kfree(cpu_drcs) should be called when it fails to perform
+>> of_find_node_by_path("/cpus") in dlpar_cpu_add_by_count,
+>> otherwise there would be a memleak.
 >>
->> If you have to transfer that state outside of the a save/restore, it means that
->> you have missed the programming of the PCI endpoint. This is an established
->> restriction that the MSI programming must occur *after* the translation has
->> been established using MAPI/MAPTI (see the large comment at the beginning of
->> vgic-v4.c).
+>> In fact, the patch a0ff72f9f5a7 ought to remove kfree in
+>> find_dlpar_cpus_to_add rather than dlpar_cpu_add_by_count.
+>> I guess there might be a mistake when apply that one.
 >>
->> If you want to revisit this, fair enough. But you will need a lot more than
->> just opportunistically transfer the pending state.
+>> Fixes: a0ff72f9f5a7 ("powerpc/pseries/hotplug-cpu: Remove double free in error path")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+>> ---
+>>   arch/powerpc/platforms/pseries/hotplug-cpu.c | 1 +
+>>   1 file changed, 1 insertion(+)
 > 
-> Thanks, I will look at what you mentioned.
+> This is already fixed in my next by:
 > 
->>
->>>
->>>>
->>>>> also transfer the pending state from irq->pending_latch to VPT (especially
->>>>> in migration, the pending states of VLPIs are restored into kvm’s vgic
->>>>> first). And we currently send "INT+VSYNC" to trigger a VLPI to pending.
->>>>>
->>>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->>>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->>>>> ---
->>>>>  arch/arm64/kvm/vgic/vgic-v4.c | 12 ++++++++++++
->>>>>  1 file changed, 12 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
->>>>> index b5fa73c9fd35..cc3ab9cea182 100644
->>>>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
->>>>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
->>>>> @@ -418,6 +418,18 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
->>>>>      irq->host_irq    = virq;
->>>>>      atomic_inc(&map.vpe->vlpi_count);
->>>>>
->>>>> +    /* Transfer pending state */
->>>>> +    ret = irq_set_irqchip_state(irq->host_irq,
->>>>> +                    IRQCHIP_STATE_PENDING,
->>>>> +                    irq->pending_latch);
->>>>> +    WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
->>>>> +
->>>>> +    /*
->>>>> +     * Let it be pruned from ap_list later and don't bother
->>>>> +     * the List Register.
->>>>> +     */
->>>>> +    irq->pending_latch = false;
->>>>
->>>> It occurs to me that calling into irq_set_irqchip_state() for a large
->>>> number of interrupts can take a significant amount of time. It is also
->>>> odd that you dump the VPT with the VPE unmapped, but rely on the VPE
->>>> being mapped for the opposite operation.
->>>>
->>>> Shouldn't these be symmetric, all performed while the VPE is unmapped?
->>>> It would also save a lot of ITS traffic.
->>>>
->>>
->>> My thought was to use the existing interface directly without unmapping...
->>>
->>> If you want to unmap the vPE and poke the VPT here, as I said in the cover
->>> letter, set/unset_forwarding might also be called when all devices are running
->>> at normal run time, in which case the unmapping of the vPE is not allowed...
->>
->> No, I'm suggesting that you don't do anything here, but instead as a by-product
->> of restoring the ITS tables. What goes wrong if you use the
->> KVM_DEV_ARM_ITS_RESTORE_TABLE backend instead?
+>    a40fdaf1420d ("Revert "powerpc/pseries/hotplug-cpu: Remove double free in error path"")
 > 
-> There is an issue if we do it in the restoring of the ITS tables: the transferring
-> of the pending state needs the irq to be marked as hw before, which is done by the
-> pass-through device, but the configuring of the forwarding path of the VLPI depends
-> on the restoring of the vgic first... It is a circular dependency.
+> cheers'Revert' sounds resonable to this one, glad to know that.
 > 
-
-Hi Marc,
-
-We are pondering over this problem these days, but still don't get a good solution...
-Could you give us some advice on this?
-
-Or could we move the restoring of the pending states (include the sync from guest
-RAM and the transfer to HW) to the GIC VM state change handler, which is completely
-corresponding to save_pending_tables (more symmetric?) and don't expose GICv4...
-
-Thanks,
-Shenming
-
->>
->>> Another possible solution is to add a new dedicated interface to QEMU
->>> to transfer
->>> these pending states to HW in GIC VM state change handler corresponding to
->>> save_pending_tables?
->>
->> Userspace has no way to know we use GICv4, and I intend to keep it
->> completely out of the loop. The API is already pretty tortuous, and
->> I really don't want to add any extra complexity to it.
->>
->> Thanks,
->>
->>         M.
+>> diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+>> index f2837e33b..4bb1c9f2b 100644
+>> --- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
+>> +++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+>> @@ -743,6 +743,7 @@ static int dlpar_cpu_add_by_count(u32 cpus_to_add)
+>>   	parent = of_find_node_by_path("/cpus");
+>>   	if (!parent) {
+>>   		pr_warn("Could not find CPU root node in device tree\n");
+>> +		kfree(cpu_drcs);
+>>   		return -1;
+>>   	}
+>>   
+>> -- 
+>> 2.23.0
+> .
+> 
