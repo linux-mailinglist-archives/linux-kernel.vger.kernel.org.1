@@ -2,305 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B448B2C8C05
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9562C8C18
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729497AbgK3SEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:04:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729396AbgK3SEb (ORCPT
+        id S2387930AbgK3SFF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Nov 2020 13:05:05 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:55667 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728359AbgK3SFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:04:31 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C97C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:03:51 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id iq13so52367pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:03:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q4aiUo+R2FBXYOJi5Lz6koIizaWvK7CXEvnPP0gtkHY=;
-        b=WJN/cBIIUk6MohKQRQk8JObz3Y9LIRoDzY/g4r9a3kx9ncZpcSl9Ijsv5SCGIzibSh
-         0TlyUwNA6WUTeVaDji0unOXv2cdZvhXuvxjCnwjIn3x+0V8XE3TAIDrJzsrpNG+3aDf4
-         O64vuJ+VwNbyqtWnGvDLZtyNBklkHcD86NkM+4KIgWOyxWehIcHAbicMIjz8UVVfaNdu
-         3KCfphu4L9CefgQu1LAF6kGWwy5dKyguiC1tYJR9q8cvgpGxIPIYuSAgf5my0+GwTpWT
-         jRZr3rRQ0PbEFDMRsQGjs3CEbCzRbcnlGqc5b5xAzkV8ryWyPL0pCFk54q9NH+Gmr1KI
-         NhYw==
+        Mon, 30 Nov 2020 13:05:04 -0500
+Received: from mail-pf1-f200.google.com ([209.85.210.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kjnX7-00088S-O2
+        for linux-kernel@vger.kernel.org; Mon, 30 Nov 2020 18:04:17 +0000
+Received: by mail-pf1-f200.google.com with SMTP id e68so9595869pfe.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:04:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q4aiUo+R2FBXYOJi5Lz6koIizaWvK7CXEvnPP0gtkHY=;
-        b=RMcVLmcAphTa945bWsE8YGpz0bY2bSmNjlwbx4FvQKs1QeeWUVbKGaF/1LNHXgLn4H
-         +sP/510QiPFt+B8zo0so+GGpPr2RZ8JQfZUs4LZCYZ67Od1mTK5VEDQ0OQVSwRt36T96
-         CdWER/GN4Ohv/b3wGf1UwlpDbeHNJtKzYOscs+EZ3IPuhUPKUzKpla6UTgLKRnyk0nHP
-         5ZW8MRbo0xWyP6jAFS5IFaEu76YJnU4UlVVr405lrSZJr79aQo/Ga8/qZv/O2nopcGUS
-         7C8KLqjXBIltWGZ4R6xta/+FxEuv1Hgl4nHCILF7TqpalWJ69Dj13OH/2iBDzo8MbOv4
-         O4ww==
-X-Gm-Message-State: AOAM53368kqyHIegFK2h/SapRGs/nD1dbNroGhujXc++O8xMNcTeb5aL
-        8ImnQjRFBafjHEjDmynMfBjyCtvmrcpRLOuNzzSKzw==
-X-Google-Smtp-Source: ABdhPJxHm++0XMttvWDRWWKqxHdfZjFoymYvLuXf+7L3uOgrG9s2Gg6KNpvokgO5TP6MqRad6jHADnjuLxLnCan07K8=
-X-Received: by 2002:a17:90a:2e8c:: with SMTP id r12mr27529821pjd.101.1606759430885;
- Mon, 30 Nov 2020 10:03:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20201127164131.2244124-18-daniel.vetter@ffwll.ch>
- <202011280356.rPWHFNW4-lkp@intel.com> <20201130142820.GN401619@phenom.ffwll.local>
-In-Reply-To: <20201130142820.GN401619@phenom.ffwll.local>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 30 Nov 2020 10:03:40 -0800
-Message-ID: <CAKwvOdnSrsnTgPEuQJyaOTSkTP2dR9208Y66HQG_h1e2LKfqtw@mail.gmail.com>
-Subject: Re: [PATCH v7 17/17] mm: add mmu_notifier argument to follow_pfn
-To:     Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kvm <kvm@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=lbLV76SSgjb5FPdOwfrJn+TCFMIEr3RFqzneb1IyIIQ=;
+        b=ghUncxcu4islDi8LcXrjSSZYbWiOz0B5ZqOFzZn2lqFbDPS1DLn9yQ2ppW5jWIkOea
+         vbDL1oKfRIhYgqNjMDpO7JoN9Icxr1zrgDMo6djF/lMUtK1YHO2vINMhHRBFYouG2QcY
+         11ecylC0AfxHxx3OxJhvEpL5JaEpucmhFUCT90VnfwNJFrk5Re2NQDx/EBOMpwoEpmhh
+         0+NYQZM5gf6va/zCgJe50W37fyH+QpGR8jwtHbgdMA4oXHOyymWvkTyNzvz9cdjI6Y5G
+         vyIh9IcvfkKtLZaZoRczVrUya7uAr6tZN1+2k3PcSnulu+Gn/vEWtw41i2bs6gFW64EB
+         tAXA==
+X-Gm-Message-State: AOAM530CjZQMQ65aF+3PCZ0O37elmskWRd/55CHmJPl1W2/aTqOc+mWG
+        fIuh0pwiln4G78QLzzqO7gxjB7iVoNiHOw7iXxFkQomG/NmFrLPgqj8CL8HRTDeq4AGV5vaKfw4
+        FeTnPYPF6QWZO1+jG/sK3Ulbjy4lETHH/04tNk6qEYQ==
+X-Received: by 2002:a17:90a:4093:: with SMTP id l19mr11474pjg.218.1606759456095;
+        Mon, 30 Nov 2020 10:04:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz6uluUsfX5kvn92f76WVxdgYxrS0rBDPQ1vKm6bk5auzL4eTSk/2BJu4nHZ+zigodiFh1BlA==
+X-Received: by 2002:a17:90a:4093:: with SMTP id l19mr11411pjg.218.1606759455681;
+        Mon, 30 Nov 2020 10:04:15 -0800 (PST)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id a2sm17807800pfo.117.2020.11.30.10.04.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 10:04:13 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <fc67ad02826fb3adfd8457e1a0baf234a8fa3fce.camel@linux.intel.com>
+Date:   Tue, 1 Dec 2020 02:04:10 +0800
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, amitk@kernel.org,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <34348B03-5E27-49A0-A704-6332BAC00758@canonical.com>
+References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
+ <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
+ <860126B8-1152-4EE3-B15E-B4E45EFE879F@canonical.com>
+ <fc67ad02826fb3adfd8457e1a0baf234a8fa3fce.camel@linux.intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 6:28 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> So I guess kvm platforms that don't set KVM_ARCH_WANT_MMU_NOTIFIER exist,
-> and at least on powerpc they're consistent with KVM_CAP_SYNC_MMU
-> signalling that the guest pagetables stays in sync automatically with any
-> updates. So for that case I guess we could use unsafe_follow_pfn.
->
-> But on s390 this seems different: No mmu notifier, but KVM_CAP_SYNC_MMU is
-> set. So I guess there's some hardware magic on s390 that I don't know
-> about.
-
-+ Vasily + Heiko +s390
-
->
-> Not sure what to do with this now here ...
-> -Daniel
->
->
-> On Sat, Nov 28, 2020 at 03:10:40AM +0800, kernel test robot wrote:
-> > Hi Daniel,
-> >
-> > I love your patch! Yet something to improve:
-> >
-> > [auto build test ERROR on linuxtv-media/master]
-> > [also build test ERROR on char-misc/char-misc-testing v5.10-rc5]
-> > [cannot apply to hnaz-linux-mm/master next-20201127]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> >
-> > url:    https://github.com/0day-ci/linux/commits/Daniel-Vetter/follow_pfn-and-other-iomap-races/20201128-004421
-> > base:   git://linuxtv.org/media_tree.git master
-> > config: s390-randconfig-r032-20201127 (attached as .config)
-> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project f095ac11a9550530a4a54298debb8b04b36422be)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # install s390 cross compiling tool for clang build
-> >         # apt-get install binutils-s390x-linux-gnu
-> >         # https://github.com/0day-ci/linux/commit/d76a3489433ce67d45da86aa12953385427f0ac9
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review Daniel-Vetter/follow_pfn-and-other-iomap-races/20201128-004421
-> >         git checkout d76a3489433ce67d45da86aa12953385427f0ac9
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=s390
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    In file included from arch/s390/include/asm/kvm_para.h:25:
-> >    In file included from arch/s390/include/asm/diag.h:12:
-> >    In file included from include/linux/if_ether.h:19:
-> >    In file included from include/linux/skbuff.h:31:
-> >    In file included from include/linux/dma-mapping.h:10:
-> >    In file included from include/linux/scatterlist.h:9:
-> >    In file included from arch/s390/include/asm/io.h:80:
-> >    include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-> >                                                            ~~~~~~~~~~ ^
-> >    include/uapi/linux/byteorder/big_endian.h:34:59: note: expanded from macro '__le32_to_cpu'
-> >    #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-> >                                                              ^
-> >    include/uapi/linux/swab.h:119:21: note: expanded from macro '__swab32'
-> >            ___constant_swab32(x) :                 \
-> >                               ^
-> >    include/uapi/linux/swab.h:21:12: note: expanded from macro '___constant_swab32'
-> >            (((__u32)(x) & (__u32)0x00ff0000UL) >>  8) |            \
-> >                      ^
-> >    In file included from arch/s390/kvm/../../../virt/kvm/kvm_main.c:18:
-> >    In file included from include/linux/kvm_host.h:32:
-> >    In file included from include/linux/kvm_para.h:5:
-> >    In file included from include/uapi/linux/kvm_para.h:36:
-> >    In file included from arch/s390/include/asm/kvm_para.h:25:
-> >    In file included from arch/s390/include/asm/diag.h:12:
-> >    In file included from include/linux/if_ether.h:19:
-> >    In file included from include/linux/skbuff.h:31:
-> >    In file included from include/linux/dma-mapping.h:10:
-> >    In file included from include/linux/scatterlist.h:9:
-> >    In file included from arch/s390/include/asm/io.h:80:
-> >    include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-> >                                                            ~~~~~~~~~~ ^
-> >    include/uapi/linux/byteorder/big_endian.h:34:59: note: expanded from macro '__le32_to_cpu'
-> >    #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-> >                                                              ^
-> >    include/uapi/linux/swab.h:119:21: note: expanded from macro '__swab32'
-> >            ___constant_swab32(x) :                 \
-> >                               ^
-> >    include/uapi/linux/swab.h:22:12: note: expanded from macro '___constant_swab32'
-> >            (((__u32)(x) & (__u32)0xff000000UL) >> 24)))
-> >                      ^
-> >    In file included from arch/s390/kvm/../../../virt/kvm/kvm_main.c:18:
-> >    In file included from include/linux/kvm_host.h:32:
-> >    In file included from include/linux/kvm_para.h:5:
-> >    In file included from include/uapi/linux/kvm_para.h:36:
-> >    In file included from arch/s390/include/asm/kvm_para.h:25:
-> >    In file included from arch/s390/include/asm/diag.h:12:
-> >    In file included from include/linux/if_ether.h:19:
-> >    In file included from include/linux/skbuff.h:31:
-> >    In file included from include/linux/dma-mapping.h:10:
-> >    In file included from include/linux/scatterlist.h:9:
-> >    In file included from arch/s390/include/asm/io.h:80:
-> >    include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-> >                                                            ~~~~~~~~~~ ^
-> >    include/uapi/linux/byteorder/big_endian.h:34:59: note: expanded from macro '__le32_to_cpu'
-> >    #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-> >                                                              ^
-> >    include/uapi/linux/swab.h:120:12: note: expanded from macro '__swab32'
-> >            __fswab32(x))
-> >                      ^
-> >    In file included from arch/s390/kvm/../../../virt/kvm/kvm_main.c:18:
-> >    In file included from include/linux/kvm_host.h:32:
-> >    In file included from include/linux/kvm_para.h:5:
-> >    In file included from include/uapi/linux/kvm_para.h:36:
-> >    In file included from arch/s390/include/asm/kvm_para.h:25:
-> >    In file included from arch/s390/include/asm/diag.h:12:
-> >    In file included from include/linux/if_ether.h:19:
-> >    In file included from include/linux/skbuff.h:31:
-> >    In file included from include/linux/dma-mapping.h:10:
-> >    In file included from include/linux/scatterlist.h:9:
-> >    In file included from arch/s390/include/asm/io.h:80:
-> >    include/asm-generic/io.h:501:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            __raw_writeb(value, PCI_IOBASE + addr);
-> >                                ~~~~~~~~~~ ^
-> >    include/asm-generic/io.h:511:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-> >                                                          ~~~~~~~~~~ ^
-> >    include/asm-generic/io.h:521:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-> >                                                          ~~~~~~~~~~ ^
-> >    include/asm-generic/io.h:609:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            readsb(PCI_IOBASE + addr, buffer, count);
-> >                   ~~~~~~~~~~ ^
-> >    include/asm-generic/io.h:617:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            readsw(PCI_IOBASE + addr, buffer, count);
-> >                   ~~~~~~~~~~ ^
-> >    include/asm-generic/io.h:625:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            readsl(PCI_IOBASE + addr, buffer, count);
-> >                   ~~~~~~~~~~ ^
-> >    include/asm-generic/io.h:634:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            writesb(PCI_IOBASE + addr, buffer, count);
-> >                    ~~~~~~~~~~ ^
-> >    include/asm-generic/io.h:643:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            writesw(PCI_IOBASE + addr, buffer, count);
-> >                    ~~~~~~~~~~ ^
-> >    include/asm-generic/io.h:652:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-> >            writesl(PCI_IOBASE + addr, buffer, count);
-> >                    ~~~~~~~~~~ ^
-> > >> arch/s390/kvm/../../../virt/kvm/kvm_main.c:1894:40: error: no member named 'mmu_notifier' in 'struct kvm'
-> >            r = follow_pfn(vma, addr, &pfn, &kvm->mmu_notifier);
-> >                                             ~~~  ^
-> >    arch/s390/kvm/../../../virt/kvm/kvm_main.c:1909:41: error: no member named 'mmu_notifier' in 'struct kvm'
-> >                    r = follow_pfn(vma, addr, &pfn, &kvm->mmu_notifier);
-> >                                                     ~~~  ^
-> >    20 warnings and 2 errors generated.
-> >
-> > vim +1894 arch/s390/kvm/../../../virt/kvm/kvm_main.c
-> >
-> >   1885
-> >   1886        static int hva_to_pfn_remapped(struct kvm *kvm, struct vm_area_struct *vma,
-> >   1887                                       unsigned long addr, bool *async,
-> >   1888                                       bool write_fault, bool *writable,
-> >   1889                                       kvm_pfn_t *p_pfn)
-> >   1890        {
-> >   1891                unsigned long pfn;
-> >   1892                int r;
-> >   1893
-> > > 1894                r = follow_pfn(vma, addr, &pfn, &kvm->mmu_notifier);
-> >   1895                if (r) {
-> >   1896                        /*
-> >   1897                         * get_user_pages fails for VM_IO and VM_PFNMAP vmas and does
-> >   1898                         * not call the fault handler, so do it here.
-> >   1899                         */
-> >   1900                        bool unlocked = false;
-> >   1901                        r = fixup_user_fault(current->mm, addr,
-> >   1902                                             (write_fault ? FAULT_FLAG_WRITE : 0),
-> >   1903                                             &unlocked);
-> >   1904                        if (unlocked)
-> >   1905                                return -EAGAIN;
-> >   1906                        if (r)
-> >   1907                                return r;
-> >   1908
-> >   1909                        r = follow_pfn(vma, addr, &pfn, &kvm->mmu_notifier);
-> >   1910                        if (r)
-> >   1911                                return r;
-> >   1912
-> >   1913                }
-> >   1914
-> >   1915                if (writable)
-> >   1916                        *writable = true;
-> >   1917
-> >   1918                /*
-> >   1919                 * Get a reference here because callers of *hva_to_pfn* and
-> >   1920                 * *gfn_to_pfn* ultimately call kvm_release_pfn_clean on the
-> >   1921                 * returned pfn.  This is only needed if the VMA has VM_MIXEDMAP
-> >   1922                 * set, but the kvm_get_pfn/kvm_release_pfn_clean pair will
-> >   1923                 * simply do nothing for reserved pfns.
-> >   1924                 *
-> >   1925                 * Whoever called remap_pfn_range is also going to call e.g.
-> >   1926                 * unmap_mapping_range before the underlying pages are freed,
-> >   1927                 * causing a call to our MMU notifier.
-> >   1928                 */
-> >   1929                kvm_get_pfn(pfn);
-> >   1930
-> >   1931                *p_pfn = pfn;
-> >   1932                return 0;
-> >   1933        }
-> >   1934
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201130142820.GN401619%40phenom.ffwll.local.
 
 
+> On Dec 1, 2020, at 00:19, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+> 
+> On Mon, 2020-11-30 at 16:23 +0800, Kai-Heng Feng wrote:
+>>> On Nov 30, 2020, at 15:57, Daniel Lezcano <
+>>> daniel.lezcano@linaro.org> wrote:
+>>> 
+>>> 
+>>> [Added Srinivas]
+>>> 
+>>> On 28/11/2020 18:54, Kai-Heng Feng wrote:
+>>>> We are seeing thermal shutdown on Intel based mobile
+>>>> workstations, the
+>>>> shutdown happens during the first trip handle in
+>>>> thermal_zone_device_register():
+>>>> kernel: thermal thermal_zone15: critical temperature reached (101
+>>>> C), shutting down
+>>>> 
+>>>> However, we shouldn't do a thermal shutdown here, since
+>>>> 1) We may want to use a dedicated daemon, Intel's thermald in
+>>>> this case,
+>>>> to handle thermal shutdown.
+>>>> 
+>>>> 2) For ACPI based system, _CRT doesn't mean shutdown unless it's
+>>>> inside
+>>>> ThermalZone. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
+>>>> "... If this object it present under a device, the device’s
+>>>> driver
+>>>> evaluates this object to determine the device’s critical cooling
+>>>> temperature trip point. This value may then be used by the
+>>>> device’s
+>>>> driver to program an internal device temperature sensor trip
+>>>> point."
+>>>> 
+>>>> So a "critical trip" here merely means we should take a more
+>>>> aggressive
+>>>> cooling method.
+>>> 
+>>> Well, actually it is stated before:
+>>> 
+>>> "This object, when defined under a thermal zone, returns the
+>>> critical
+>>> temperature at which OSPM must shutdown the system".
+>> 
+>> This means specifically for the ACPI ThermalZone in AML, e.g.:
+>> 
+>> ThermalZone (TZ0) {
+>> ....
+>>    Method(_CRT) { ... }
+>> } // end of TZ0
+>> 
+>> However the device is not under any ACPI ThermalZone.
+>> 
+>>> That is what does the thermal subsystem, no ?
+>>> 
+>>>> So add an indication to let thermal core know it should leave
+>>>> thermal
+>>>> device to userspace to handle.
+>>> 
+>>> You may want to check the 'HOT' trip point and then use the
+>>> notification
+>>> mechanism to get notified in userspace and take action from there
+>>> (eg.
+>>> offline some CPUs).
+>> 
+>> For this particular issue we are facing, the thermal shutdown happens
+>> in thermal_zone_device_register() and userspace isn't up yet.
+> 
+> What about creating an new callback
+> 
+> enum thermal_trip_status {
+> 	THERMAL_TRIP_DISABLED = 0,
+> 	THERMAL_TRIP_ENABLED,
+> };
+> 
+> int get_trip_status(struct thermal_zone_device *, int trip, enum
+> thermal_trip_status *state);
+> 
+> Then in 
+> static void handle_thermal_trip(struct thermal_zone_device *tz, int
+> trip)
+> {
+> 
+> /* before tz->ops->get_trip_temp(tz, trip, &trip_temp); */
+> if (tz->ops->get_trip_status) {
+> 	enum thermal_trip_status *status;
+> 
+> 	if (!tz->ops->get_trip_status(tz, trip, &status)) {
+> 		if (status == THERMAL_TRIP_DISABLED)
+> 			return;	
+> 	}
+> }
+> ...
+> ...
+> 
+> }
+> 
+> 
+> This callback will help the cases:
+> - Allows drivers to selectively disable certain trips during init state
+> or system resume where there can be spikes or always. int340x drivers
+> can disable always.
 
--- 
-Thanks,
-~Nick Desaulniers
+This sounds really great. This is indeed can happen on system resume, before userspace process thaw.
+
+> - Still give options for drivers to handle critical trip even if they
+> are bound to user space governors. User space process may be dead, so
+> still allow kernel to process graceful shutdown
+
+To make the scenario happen, do we need a new sysfs to let usespace enable it with THERMAL_TRIP_ENABLED?
+
+Kai-Heng
+
+> 
+> Thanks,
+> Srinivas
+> 
+>> 
+>> Kai-Heng
+>> 
+>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>>> ---
+>>>> drivers/thermal/thermal_core.c | 3 +++
+>>>> include/linux/thermal.h        | 2 ++
+>>>> 2 files changed, 5 insertions(+)
+>>>> 
+>>>> diff --git a/drivers/thermal/thermal_core.c
+>>>> b/drivers/thermal/thermal_core.c
+>>>> index c6d74bc1c90b..6561e3767529 100644
+>>>> --- a/drivers/thermal/thermal_core.c
+>>>> +++ b/drivers/thermal/thermal_core.c
+>>>> @@ -1477,6 +1477,9 @@ thermal_zone_device_register(const char
+>>>> *type, int trips, int mask,
+>>>> 			goto unregister;
+>>>> 	}
+>>>> 
+>>>> +	if (tz->tzp && tz->tzp->userspace)
+>>>> +		thermal_zone_device_disable(tz);
+>>>> +
+>>>> 	mutex_lock(&thermal_list_lock);
+>>>> 	list_add_tail(&tz->node, &thermal_tz_list);
+>>>> 	mutex_unlock(&thermal_list_lock);
+>>>> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+>>>> index d07ea27e72a9..e8e8fac78fc8 100644
+>>>> --- a/include/linux/thermal.h
+>>>> +++ b/include/linux/thermal.h
+>>>> @@ -247,6 +247,8 @@ struct thermal_zone_params {
+>>>> 	 */
+>>>> 	bool no_hwmon;
+>>>> 
+>>>> +	bool userspace;
+>>>> +
+>>>> 	int num_tbps;	/* Number of tbp entries */
+>>>> 	struct thermal_bind_params *tbp;
+>>>> 
+>>>> 
+>>> 
+>>> -- 
+>>> <http://www.linaro.org/> Linaro.org │ Open source software for ARM
+>>> SoCs
+>>> 
+>>> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+>>> <http://twitter.com/#!/linaroorg> Twitter |
+>>> <http://www.linaro.org/linaro-blog/> Blog
+
