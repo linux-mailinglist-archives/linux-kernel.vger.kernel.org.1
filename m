@@ -2,57 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFC82C80DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B20E2C80E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbgK3JVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:21:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgK3JVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:21:52 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727656AbgK3JXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:23:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20816 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725902AbgK3JXJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 04:23:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606728103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=px5S5/2ACTb7LrXOQlU1HB+xECEC+xUcw2a+QHxz+2k=;
+        b=ddTxy7Y9xl4iOviKzYpBtGvdTEa/pH9+7wTRh/i9ePe1jHVyKg/SgVIgNyDv95llcMvNL3
+        Lj5hlddBPJ0gXn9gx2h2PHPjl8onaR+tVyjW9SvzLDqBXhSnGFArKGaans8fzmDzqSMJ3t
+        pXGmWEwkTQpJt+iT91GeNAK1rqimJ+Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-lg6gJ8jBN6KqDllTvU0sYw-1; Mon, 30 Nov 2020 04:21:39 -0500
+X-MC-Unique: lg6gJ8jBN6KqDllTvU0sYw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 297FB20825;
-        Mon, 30 Nov 2020 09:21:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606728071;
-        bh=JEwKhnYVOwUJKAXmLq5UT6BRurrdFLXxVfE3qdhqAeo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HOxgezE//B6a4Mgz/FlnTA2SAol1gpGVOrRNB4sQ2hX2+w0Y9o2V1f4NzefTpz5dM
-         U7+SuDvpLYfW5CxzjtB4FLEI4ymvm8+AT21/055bw9TRzi4k3Ys69obag3Ss3+40RY
-         n3hwXNt8eLzUzx2SDxJ2aNF77y5uBAbPxkrOj0Zs=
-Date:   Mon, 30 Nov 2020 17:21:05 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        "Y . b . Lu" <yangbo.lu@nxp.com>,
-        Xiaowei Bao <xiaowei.bao@nxp.com>,
-        Ashish Kumar <Ashish.Kumar@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH v3 2/9] arm64: dts: ls1028a: fix FlexSPI clock input
-Message-ID: <20201130092104.GB4072@dragon>
-References: <20201108185113.31377-1-michael@walle.cc>
- <20201108185113.31377-3-michael@walle.cc>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D538C80B70A;
+        Mon, 30 Nov 2020 09:21:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0011360C4D;
+        Mon, 30 Nov 2020 09:21:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201129033859.GG39488@kernel.org>
+References: <20201129033859.GG39488@kernel.org> <160649552401.2744658.15096366594785577090.stgit@warthog.procyon.org.uk>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     dhowells@redhat.com,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@iki.fi>,
+        Jann Horn <jannh@google.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Ben Boeckel <mathstuf@gmail.com>,
+        linux-security-module@vger.kernel.org,
+        Denis Efremov <efremov@linux.com>, keyrings@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tom Rix <trix@redhat.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/9] keys: Miscellaneous fixes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201108185113.31377-3-michael@walle.cc>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3093310.1606728092.1@warthog.procyon.org.uk>
+Date:   Mon, 30 Nov 2020 09:21:32 +0000
+Message-ID: <3093311.1606728092@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 07:51:06PM +0100, Michael Walle wrote:
-> On the LS1028A the FlexSPI clock is connected to the first HWA output,
-> see Figure 7 "Clock subsystem block diagram".
-> 
-> Fixes: c77fae5ba09a ("arm64: dts: ls1028a: Add FlexSPI support")
-> Signed-off-by: Michael Walle <michael@walle.cc>
+Jarkko Sakkinen <jarkko@kernel.org> wrote:
 
-Applied, thanks.
+> I think that looks good, thank you. I'm sending PR next week. Should I
+> bundle those to that?
+
+I've updated the branch to include an ack from you, plus added the
+semicolon-removal patch and a #include-removal patch.
+
+You can try sending them on, though I don't think any of them are really
+critical patches (and we are in -rc6).
+
+David
+
