@@ -2,120 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBDC2C8013
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BFA2C800B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727809AbgK3IfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:35:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58141 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727423AbgK3IfT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:35:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606725233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vOBw30VGGpYGUqtKjgp1D/xXFSKdq88sDVSnLLemHDo=;
-        b=FRb3fGdf6aLMG6xJeHSgATNF+5MeF8CsLcrSLmJgvy3tWcQKhs+x8n1PKDN30xWSabPxpt
-        CmxrZOqc6VAUEJDKbjpyg21zhrtTEb7PFhx3PYGLoFe7XuFsqRTEVI2FRF2E61wmZzUEUy
-        rRgZU3+c/Qu5Znvqo9UfzMIzUGxDz8c=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-9-0lqBc3ukMO2s0Dywhc0-LQ-1; Mon, 30 Nov 2020 03:33:50 -0500
-X-MC-Unique: 0lqBc3ukMO2s0Dywhc0-LQ-1
-Received: by mail-wr1-f69.google.com with SMTP id e6so7981712wrx.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:33:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vOBw30VGGpYGUqtKjgp1D/xXFSKdq88sDVSnLLemHDo=;
-        b=E9kvw00Hn5RBZfQklF/SiDl4qmFzskek3uMuH/uS4NSi14r4ACMB7P9YMLvD20cnVN
-         TLxTHhr6ZlYdF8hNRZNC4lDI3XO8cUzX/NXtbsizgQsJlpqNFIXljMgoqbopcYUrSrYC
-         Iv/GP5f4ScSWFEo/Vl1ZxrXCo8Lw7VTetrHRcpAE3nQxZD8llKk9wx2C26ViZjgKhgE/
-         owWCK83JqXNSrn8LSHvM4BgwZfB+NCXnz2PHDQzqDQRgrdv8Sqt2bkj4Bbx4vQNN72Gw
-         ZO6gwhaLUE2NgnuB12vKpWgjbZSqS5VrwbkYvHmCeO4UghrbrvP2TLDZQt395GuiXPT5
-         34zQ==
-X-Gm-Message-State: AOAM531n9niLSF+tynJy5HnYVgIwfpwv8ySXgMFoIbIZhzCOfJL7CN5g
-        JL8qP9F5EUaHMiDV17oUeYAu7l40b4hcWf+6BvhqdL+QpPgS+MGKZjvm6Ucj50GAOPVTgf3DxUB
-        G7mwIbQQyg2F7DKNA6809d9Eo
-X-Received: by 2002:adf:dd0e:: with SMTP id a14mr26727967wrm.36.1606725228952;
-        Mon, 30 Nov 2020 00:33:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxx/iQZGql5wZU5MomW2tQpacaKJDVUoRlyVnQsj6AxXWR1H+6D7EHUWZYX9I0NcbeUr12Ulw==
-X-Received: by 2002:adf:dd0e:: with SMTP id a14mr26727949wrm.36.1606725228783;
-        Mon, 30 Nov 2020 00:33:48 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id a184sm24043265wmf.8.2020.11.30.00.33.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 00:33:47 -0800 (PST)
-Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20201125153550.810101-1-sashal@kernel.org>
- <20201125153550.810101-22-sashal@kernel.org>
- <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
- <20201125180102.GL643756@sasha-vm>
- <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
- <20201129041314.GO643756@sasha-vm>
- <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
- <20201129210650.GP643756@sasha-vm>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
-Date:   Mon, 30 Nov 2020 09:33:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726950AbgK3Iey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:34:54 -0500
+Received: from verein.lst.de ([213.95.11.211]:43398 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726045AbgK3Iey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 03:34:54 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 8685868AFE; Mon, 30 Nov 2020 09:34:10 +0100 (CET)
+Date:   Mon, 30 Nov 2020 09:34:10 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>
+Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
+Message-ID: <20201130083410.GD32234@lst.de>
+References: <20201125221917.150463-1-ribalda@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20201129210650.GP643756@sasha-vm>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125221917.150463-1-ribalda@chromium.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/20 22:06, Sasha Levin wrote:
-> On Sun, Nov 29, 2020 at 06:34:01PM +0100, Paolo Bonzini wrote:
->> On 29/11/20 05:13, Sasha Levin wrote:
->>>> Which doesn't seem to be suitable for stable either...  Patch 3/5 in
->>>
->>> Why not? It was sent as a fix to Linus.
->>
->> Dunno, 120 lines of new code?  Even if it's okay for an rc, I don't 
->> see why it is would be backported to stable releases and release it 
->> without any kind of testing.  Maybe for 5.9 the chances of breaking 
-> 
-> Lines of code is not everything. If you think that this needs additional
-> testing then that's fine and we can drop it, but not picking up a fix
-> just because it's 120 lines is not something we'd do.
+> +#ifndef CONFIG_DMA_NONCOHERENT
 
-Starting with the first two steps in stable-kernel-rules.rst:
+I think you need to drop this ifdef.  This code should work just fine
+on noncoherent mips and sh platforms.
 
-Rules on what kind of patches are accepted, and which ones are not, into 
-the "-stable" tree:
+> +	uvc_urb->pages = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
+> +						 &uvc_urb->dma,
+> +						 gfp_flags | __GFP_NOWARN, 0);
+> +	if (!uvc_urb->pages)
+> +		return false;
+> +
+> +	uvc_urb->buffer = vmap(uvc_urb->pages,
+> +			       PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT,
+> +			       VM_DMA_COHERENT, PAGE_KERNEL);
+> +	if (!uvc_urb->buffer) {
+> +		dma_free_noncontiguous(dma_dev, stream->urb_size,
+> +				       uvc_urb->pages, uvc_urb->dma);
+> +		return false;
+> +	}
+> +
+> +	if (sg_alloc_table_from_pages(&uvc_urb->sgt, uvc_urb->pages,
+> +				PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT, 0,
+> +				stream->urb_size, GFP_KERNEL)) {
+> +		vunmap(uvc_urb->buffer);
+> +		dma_free_noncontiguous(dma_dev, stream->urb_size,
+> +				       uvc_urb->pages, uvc_urb->dma);
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
 
-  - It must be obviously correct and tested.
-  - It cannot be bigger than 100 lines, with context.
+I wonder if we should lift this into a helper.  On the one hand I had
+proliferating struct scatterlist usage, on the other hand it is all over
+the media and drm code anyway, and duplicating this doesn't help anyone.
 
-> Plus all the testing we have for the stable trees, yes. It goes beyond
-> just compiling at this point.
-> 
-> Your very own co-workers (https://cki-project.org/) are pushing hard on
-> this effort around stable kernel testing, and statements like these
-> aren't helping anyone.
-
-I am not aware of any public CI being done _at all_ done on vhost-scsi, 
-by CKI or everyone else.  So autoselection should be done only on 
-subsystems that have very high coverage in CI.
-
-Paolo
-
+Possibly including the fallback to the coherent allocating.
