@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFB82C8852
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FE22C885B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgK3Pih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:38:37 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:44194 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726928AbgK3Pig (ORCPT
+        id S1728429AbgK3Pio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:38:44 -0500
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:41724 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728321AbgK3Pih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:38:36 -0500
-Received: by mail-lf1-f67.google.com with SMTP id d20so22404584lfe.11;
-        Mon, 30 Nov 2020 07:38:19 -0800 (PST)
+        Mon, 30 Nov 2020 10:38:37 -0500
+Received: by mail-lf1-f45.google.com with SMTP id r24so22430174lfm.8;
+        Mon, 30 Nov 2020 07:38:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+aLtio6V1+D5pI+gfBa6W9Kw54KOG0u5ylBdBluGMXY=;
-        b=NVsWMmwKOMOtHCSGfbUU6ETtlwnj0vE0ZtyqNkZoPF6SKylswybsq390UbD5eqKZh+
-         fprl7nCh14ZKchOUnQhPubJJ7ZEBc2CS4S4E+UwP0G3D3jRBTZTmB2+amsx4z/Cz8Wd6
-         aTK3Aib5Jca6f2aUWm6FLYA9Zklevqh5JQ7s4OT9FyVG3igScEbEf8hFWdhEBmrkKN8U
-         kC+lrtrE2LqdfJ4q97CduVymDvMZeMnEaHUQ/FvfUkLq62C/lSxpCwmbFQEzNkG3Z8N0
-         U/3wHY2suki9K/uKd1kSZhsS78Pq82SZLPPkGJUQr8EEr/3CnJVcKm4+JnIuObfrCXBq
-         m8Pw==
-X-Gm-Message-State: AOAM532b8Vi1bmGKt2aIbcYBlMq+wB33w/Nn6Xatqn3GDLBf5C9lqule
-        bh/3odCkzBLL8nI+3/6BFpd0uodSU9afBA==
-X-Google-Smtp-Source: ABdhPJyK//aBOsqAM2W2TFUh6Gj+kw5QM+xj4FI9UtZblb9pLbYEAsTUAl2xtclS10ebD23bLMN34A==
-X-Received: by 2002:a19:711:: with SMTP id 17mr9667668lfh.131.1606750674171;
+        bh=vS6wFzkkLhX1TVsecDayO/AB9FKfg+OLWHQOURPFz3E=;
+        b=KzT3A2a0J/CwmqpJisiZQ0+SYcqGDb/Vg3v8pIancuxMUMCL/DfRNTy3MXNALt03+9
+         8jZ9TfJM6NwlBfCHUfEy+4e3bMuzamDxLqNsXV+TMNl8FLMuiLKwl/s8AFGNI74cyuIJ
+         kk36c65X4jK/jUw7/GAEGhBW5LtuxVtqiCjE6x2DSuSL2f1v9egPgqvVuxB+MqQ6aUnX
+         pYFMcY0bDIHgDFpGGKya9FhITlhqL2U0FCrghieC+OPytoq4mBx0t87g5bgJYHeKoFML
+         +O85nuEojoH6CdW6KGXhxuWr0WLoYZZ/5LhB37zIgUBDM+R7KqXEqHERc3o0ymHpHaOA
+         LTmw==
+X-Gm-Message-State: AOAM532tYPCAdecwGvYhA86G+tVoZxd0EtY6TgcPri9ZS4fFCRGT5S0X
+        qRxuOe6bzLP1o/bMzKJHejs=
+X-Google-Smtp-Source: ABdhPJyepEmOBOqOlRQr+/nG28rnh9kHVvQL/4zx7facwSuG+BUHciKJV+0kqUzfLRBaOMx0PDdEKQ==
+X-Received: by 2002:a19:fc0f:: with SMTP id a15mr9469592lfi.248.1606750674784;
         Mon, 30 Nov 2020 07:37:54 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id t6sm2498672lfk.207.2020.11.30.07.37.52
+        by smtp.gmail.com with ESMTPSA id q16sm2950131ljj.32.2020.11.30.07.37.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 30 Nov 2020 07:37:52 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kjlFu-0002Oh-Lm; Mon, 30 Nov 2020 16:38:22 +0100
+        id 1kjlFu-0002Ol-Ob; Mon, 30 Nov 2020 16:38:22 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>,
         "Mychaela N . Falconia" <falcon@freecalypso.org>,
         linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 1/5] tty: add port flag to suppress ready signalling on open
-Date:   Mon, 30 Nov 2020 16:37:38 +0100
-Message-Id: <20201130153742.9163-2-johan@kernel.org>
+Subject: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready signalling on open
+Date:   Mon, 30 Nov 2020 16:37:39 +0100
+Message-Id: <20201130153742.9163-3-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201130153742.9163-1-johan@kernel.org>
 References: <20201130153742.9163-1-johan@kernel.org>
@@ -55,15 +55,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a NORDY port flag to suppress raising the modem-control lines on
-open to signal DTE readiness.
-
-This can be used to implement a NORDY termios control flag to complement
-HUPCL, which controls lowering of the modem-control lines on final
-close.
-
-Initially drivers can export the flag through sysfs, which also allows
-control over the lines on first open.
+Add a nordy sysfs attribute to suppress raising the modem-control lines
+on open to signal DTE readiness.
 
 This can be use to prevent undesirable side-effects on open for
 applications where the DTR and RTS lines are used for non-standard
@@ -71,55 +64,79 @@ purposes such as generating power-on and reset pulses.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/tty_port.c |  2 +-
- include/linux/tty.h    | 14 ++++++++++++++
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ Documentation/ABI/testing/sysfs-tty |  7 +++++++
+ drivers/tty/serial/serial_core.c    | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
-index ea80bf872f54..2613debc1d06 100644
---- a/drivers/tty/tty_port.c
-+++ b/drivers/tty/tty_port.c
-@@ -415,7 +415,7 @@ EXPORT_SYMBOL(tty_port_carrier_raised);
-  */
- void tty_port_raise_dtr_rts(struct tty_port *port)
- {
--	if (port->ops->dtr_rts)
-+	if (port->ops->dtr_rts && !tty_port_nordy(port))
- 		port->ops->dtr_rts(port, 1);
- }
- EXPORT_SYMBOL(tty_port_raise_dtr_rts);
-diff --git a/include/linux/tty.h b/include/linux/tty.h
-index a99e9b8e4e31..31414efd8661 100644
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -267,6 +267,7 @@ struct tty_port {
- #define TTY_PORT_CHECK_CD	4	/* carrier detect enabled */
- #define TTY_PORT_KOPENED	5	/* device exclusively opened by
- 					   kernel */
-+#define TTY_PORT_NORDY		6	/* do not raise DTR/RTS on open */
- 
- /*
-  * Where all of the state associated with a tty is kept while the tty
-@@ -683,6 +684,19 @@ static inline void tty_port_set_kopened(struct tty_port *port, bool val)
- 		clear_bit(TTY_PORT_KOPENED, &port->iflags);
+diff --git a/Documentation/ABI/testing/sysfs-tty b/Documentation/ABI/testing/sysfs-tty
+index e157130a6792..2634b4bf9c7f 100644
+--- a/Documentation/ABI/testing/sysfs-tty
++++ b/Documentation/ABI/testing/sysfs-tty
+@@ -161,3 +161,10 @@ Contact:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ Description:
+ 		 Allows user to detach or attach back the given device as
+ 		 kernel console. It shows and accepts a boolean variable.
++
++What:		/sys/class/tty/ttyS0/nordy
++Date:		November 2020
++Contact:	Johan Hovold <johan@kernel.org>
++Description:
++		 Show and store the port NORDY flag which suppresses raising
++		 the modem-control lines on open to signal DTE readiness.
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index f41cba10b86b..063a617182ce 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -2805,6 +2805,33 @@ static ssize_t console_store(struct device *dev,
+ 	return ret < 0 ? ret : count;
  }
  
-+static inline bool tty_port_nordy(struct tty_port *port)
++static ssize_t nordy_show(struct device *dev, struct device_attribute *attr,
++				char *buf)
 +{
-+	return test_bit(TTY_PORT_NORDY, &port->iflags);
++	struct tty_port *port = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%d\n", tty_port_nordy(port));
 +}
 +
-+static inline void tty_port_set_nordy(struct tty_port *port, bool val)
++static ssize_t nordy_store(struct device *dev, struct device_attribute *attr,
++				const char *buf, size_t count)
 +{
-+	if (val)
-+		set_bit(TTY_PORT_NORDY, &port->iflags);
-+	else
-+		clear_bit(TTY_PORT_NORDY, &port->iflags);
++	struct tty_port *port = dev_get_drvdata(dev);
++	unsigned int val;
++	int ret;
++
++	ret = kstrtouint(buf, 0, &val);
++	if (ret)
++		return ret;
++
++	if (val > 1)
++		return -EINVAL;
++
++	tty_port_set_nordy(port, val);
++
++	return count;
 +}
 +
- extern struct tty_struct *tty_port_tty_get(struct tty_port *port);
- extern void tty_port_tty_set(struct tty_port *port, struct tty_struct *tty);
- extern int tty_port_carrier_raised(struct tty_port *port);
+ static DEVICE_ATTR_RO(uartclk);
+ static DEVICE_ATTR_RO(type);
+ static DEVICE_ATTR_RO(line);
+@@ -2819,6 +2846,7 @@ static DEVICE_ATTR_RO(io_type);
+ static DEVICE_ATTR_RO(iomem_base);
+ static DEVICE_ATTR_RO(iomem_reg_shift);
+ static DEVICE_ATTR_RW(console);
++static DEVICE_ATTR_RW(nordy);
+ 
+ static struct attribute *tty_dev_attrs[] = {
+ 	&dev_attr_uartclk.attr,
+@@ -2835,6 +2863,7 @@ static struct attribute *tty_dev_attrs[] = {
+ 	&dev_attr_iomem_base.attr,
+ 	&dev_attr_iomem_reg_shift.attr,
+ 	&dev_attr_console.attr,
++	&dev_attr_nordy.attr,
+ 	NULL
+ };
+ 
 -- 
 2.26.2
 
