@@ -2,109 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76232C8E51
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218C92C8E56
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729918AbgK3TpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:45:20 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:36446 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729127AbgK3TpT (ORCPT
+        id S2387730AbgK3Tqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:46:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726769AbgK3Tqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:45:19 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJcsUq036566;
-        Mon, 30 Nov 2020 19:44:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=2cU8DZaDzE1cr1VPUQiF6BAqDQGKq3YIRt7Xa+jowHo=;
- b=EQvSKitQTQ0nbmDJjqDklnoSINMHjmuJph87unCNA6Hos94Y89gSOVO4q9PwaQngrY/T
- 0HHqP+ulzzdwVlo56zylpp3gt2xzkuHhimOCZZ+I5c/sBBGrVjrbPWoivNQwS72dm3HF
- xsEx6yOVu0E0gluiMIf/U9Il/3uSP6vV4ydbOrraHkeAulL1vULbN4pY06AGjir6QuL4
- MptfslZAcDNmABZ9iIQdzFxVf36+vEtROJkLm3hIHcVS3+Cnb97WmmfSlPzLBiiCxa3+
- 6YJ3NE2zxT5xGlAhsgIP2yp9AxmKeUv/xsCK6VK+nQbGNips3Pq1IhMpLIhw/tm1v/fQ BA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 353c2aq4jk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 19:44:33 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJe2ep149266;
-        Mon, 30 Nov 2020 19:44:32 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 3540ewywdf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 19:44:32 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AUJiUxD013922;
-        Mon, 30 Nov 2020 19:44:31 GMT
-Received: from [20.15.0.202] (/73.88.28.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 11:44:30 -0800
-Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20201125153550.810101-1-sashal@kernel.org>
- <20201125153550.810101-22-sashal@kernel.org>
- <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
- <20201125180102.GL643756@sasha-vm>
- <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
- <20201129041314.GO643756@sasha-vm>
- <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
- <20201129210650.GP643756@sasha-vm>
- <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
- <20201130173832.GR643756@sasha-vm>
- <238cbdd1-dabc-d1c1-cff8-c9604a0c9b95@redhat.com>
-From:   Mike Christie <michael.christie@oracle.com>
-Message-ID: <9ec7dff6-d679-ce19-5e77-f7bcb5a63442@oracle.com>
-Date:   Mon, 30 Nov 2020 13:44:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 30 Nov 2020 14:46:46 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E6BC0613D4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:46:05 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id k26so15521359oiw.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:46:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=lzfoUfWajb4p4eNOmNvuQscrN072WhSa9bylfU2yzX0=;
+        b=hTSPjl64XJLko7MKmjQjMrFqQD4dLlsqADqMsqR+j3i/O/jTAASbFKHNMbwdnvdsxG
+         UJZzukjaYm4Ayg5ODgCXo7kBIzIPle5y9CI+Kg0QDNPFnkM+gvFH6a3kk3YxqcjE4PK+
+         5Ug7f208kwZgD9lrNpKuOhc3h5tIhD2YRYHrxrNcd5iGfogG4HJ3wUxs7dn6SybwpDDI
+         QoCDuivGuqPcKB0Rpts8le3YCMv1xr3gwRxTqgomXagAehDHvGJaMA2BgjzI29OMV144
+         Wt2U7BFKpldDf9PtgttIyJVQoDmqVwizngX7QNriPx1R7PxMM84LS0ElqDUgaQD5PwV3
+         wPtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=lzfoUfWajb4p4eNOmNvuQscrN072WhSa9bylfU2yzX0=;
+        b=W3Fyd4lbfMMappEmIB+DQmkcOa5ophty9IM76P9/scHFY7wW33h3k82PzlSi1BZ0Z5
+         sUhji5EiTpYJijyvNqvP2qOzqmO2LPP1OvEcAPgpzFDCuljzIcvQjQ4neauNfx+CTBVH
+         9+IGaGaApdHqxGFOn0PwUEVwUp7CdAKewvEe4erl7eHSEnbFcCvvAxOprFC7a0tEKlcV
+         DzlHQezZAQHeALiI4GsWcehqRRPDJrzGx53HNbiHRFCUSPhU/XonbYUEaCM3SLm1Aq8c
+         Aj6s9Ue4YMc/OBLSzi/48Fkz3WYBHwU5/xmqQehouYGTCWjP2cCQegkdxDh62qzUUQzD
+         Gb4g==
+X-Gm-Message-State: AOAM531ong4AyK6X9CZ5S+IWbntFirY6pl6DTLU2/tat/XKp9bWP/nlu
+        BJweNxmKIg+TL7I6Bh9zsIuuyQ==
+X-Google-Smtp-Source: ABdhPJzFDs2BTB3DjlhZABlkie1tpUYCKaVrsycFta9dfeVORIayucoUUj+UR4lDvvzwar+7y7I3iQ==
+X-Received: by 2002:a05:6808:7cd:: with SMTP id f13mr432496oij.38.1606765564711;
+        Mon, 30 Nov 2020 11:46:04 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id i4sm9994210oos.31.2020.11.30.11.46.03
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 30 Nov 2020 11:46:04 -0800 (PST)
+Date:   Mon, 30 Nov 2020 11:45:46 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Linux-FSDevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Christoph Hellwig <hch@lst.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>, dchinner@redhat.com,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+In-Reply-To: <20201126200703.GW4327@casper.infradead.org>
+Message-ID: <alpine.LSU.2.11.2011301109230.17996@eggly.anvils>
+References: <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org> <alpine.LSU.2.11.2011170820030.1014@eggly.anvils> <20201117191513.GV29991@casper.infradead.org> <20201117234302.GC29991@casper.infradead.org>
+ <20201125023234.GH4327@casper.infradead.org> <20201125150859.25adad8ff64db312681184bd@linux-foundation.org> <CANsGZ6a95WK7+2H4Zyg5FwDxhdJQqR8nKND1Cn6r6e3QxWeW4Q@mail.gmail.com> <20201126121546.GN4327@casper.infradead.org> <alpine.LSU.2.11.2011261101230.2851@eggly.anvils>
+ <20201126200703.GW4327@casper.infradead.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <238cbdd1-dabc-d1c1-cff8-c9604a0c9b95@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300127
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1031 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300127
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 11:52 AM, Paolo Bonzini wrote:
-> On 30/11/20 18:38, Sasha Levin wrote:
->>> I am not aware of any public CI being done _at all_ done on vhost-scsi, by CKI or everyone else.  So autoselection should be done only on subsystems that have very high coverage in CI.
->>
->> Where can I find a testsuite for virtio/vhost? I see one for KVM, but
->> where is the one that the maintainers of virtio/vhost run on patches
->> that come in?
+On Thu, 26 Nov 2020, Matthew Wilcox wrote:
+> On Thu, Nov 26, 2020 at 11:24:59AM -0800, Hugh Dickins wrote:
 > 
-> I don't know of any, especially for vhost-scsi.  MikeC?
+> > But right now it's the right fix that's important: ack to yours below.
+> > 
+> > I've not yet worked out the other issues I saw: will report when I have.
+> > Rebooted this laptop, pretty sure it missed freeing a shmem swap entry,
+> > not yet reproduced, will study the change there later, but the non-swap 
+> > hang in generic/476 (later seen also in generic/112) more important.
+
+It's been a struggle, but I do now have a version of shmem_undo_range()
+that works reliably, no known bugs, with no changes to your last version
+outside of shmem_undo_range().
+
+But my testing so far has been with the initial optimization loop (of
+trylocks in find_lock_entries()) "#if 0"ed out, to give the final loop
+a harder time. Now I'll bring back that initial loop (maybe cleaning up
+some start/end variables) and retest - hoping not to regress as I do so.
+
+I'll send it late today: I expect I'll just send the body of
+shmem_undo_range() itself, rather than a diff, since it's too confusing
+to know what to diff against.  Or, maybe you now have your own improved
+version, and will want me to look at yours rather than sending mine.
+
+Andrew, if you're planning another mmotm soon, please remove/comment
+mm-truncateshmem-handle-truncates-that-split-thps.patch
+and any of its "fixes" as to-be-updated: all versions to date
+have been too buggy to keep, and a new version will require its own
+review, as you noted. I think that means you also have to remove
+mm-filemap-return-only-head-pages-from-find_get_entries.patch
+which I think is blameless, but may depend on it logically.
+
 > 
+> The good news is that I've sorted out the SCRATCH_DEV issue with
+> running xfstests.  The bad news is that (even on an unmodified kernel),
+> generic/027 takes 19 hours to run.  On xfs, it's 4 minutes.  Any idea
+> why it's so slow on tmpfs?
 
-Sorry for the late reply on the thread. I was out of the office.
+I sent a tarball of four xfstests patches on Thursday, they're valid:
+but generic/075 and generic/112, very useful for this testing, suffer
+from an fsx build bug which might or might not affect you: so I'll now
+reply to that mail with latest tarball.
 
-I have never seen a public/open-source vhost-scsi testsuite.
-
-For patch 23 (the one that adds the lun reset support which is built on
-patch 22), we can't add it to stable right now if you wanted to, because
-it has a bug in it. Michael T, sent the fix:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/commit/?h=linux-next&id=b4fffc177fad3c99ee049611a508ca9561bb6871
-
-to Linus today.
+Hugh
