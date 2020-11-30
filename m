@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2552C8BD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CDD2C8BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387879AbgK3R4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:56:22 -0500
-Received: from mga18.intel.com ([134.134.136.126]:4068 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387731AbgK3R4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:56:21 -0500
-IronPort-SDR: N7+Dm7JSmuyVeX0zRzFCSFe3J1JdrNn8FZEXycPig+pASsFR0/1dciSfDTY63k+xBGwIbkdTGp
- aRQemdKbLybA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="160451431"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="160451431"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:54:40 -0800
-IronPort-SDR: jhPTcdou80j2byhwDbFMIgXZ/vrILyt4BNmwBxBjF7vB4h1l3IIcsAMmv9BHlfOUYJOGaFD1sn
- VZdqup0WTk5g==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="372581191"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:54:34 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjnOg-00B6F3-Uy; Mon, 30 Nov 2020 19:55:34 +0200
-Date:   Mon, 30 Nov 2020 19:55:34 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 11/18] media: v4l2-core: v4l2-async: Check possible match
- in match_fwnode based on sd->fwnode->secondary
-Message-ID: <20201130175534.GT4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-12-djrscally@gmail.com>
+        id S2387889AbgK3R4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:56:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387518AbgK3R4p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:56:45 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE384C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:56:04 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d8so23346041lfa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:56:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fbq0m7bxZzQitlIErT/PTR+nZa+c3i98rlqgqI7f0x4=;
+        b=TvkNI90tjx42gNC+T62tFenXRkYkTlaBYXMQ6gJ39q3HuhLN01tX9LwKCNYfM0B4mA
+         0r1yUwYeWhqJWMntToK7/SvjFBwASe+5JMvINPU1hmNV0cUo/kkuHbiTk4D9iDr76Vep
+         +9KiJnHRNgKjbt8aagc6sCfPJGGoxTabCpm0k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fbq0m7bxZzQitlIErT/PTR+nZa+c3i98rlqgqI7f0x4=;
+        b=NPt3WDTwT+LTu/ZnJHC9d+C+Vm3iogA8qyYqy907TMBqcPvpR2IT4AHObRq5/cMUH9
+         J4XNeKt7SYwrE6kQ5y6Frth/+2VmeJXUId5IqGGNghvgqjWX7oyjOCPZwSEEyB0GUrLq
+         onxBBny1Wyxbtw5kY6fIhPaBZ4SQSEaArpnVCSnTsoDG/131IfYgDaI5fBrbSbw8lgIZ
+         HDnc4zHM7/IjUnnAFZmPO6THiDnVHPShbMZ+/wdKHC42F4qHakoq5mzEVbonCzUbQh0P
+         SccQCnQED8kw0Zbyt4VkZDJuBUDTMAkc/nlpArx+fp1dcda43fZFD5TNeMDYohH5X3jR
+         MNsg==
+X-Gm-Message-State: AOAM532EnRxQQGmdFy90ULfJ9fDYHLXAn6xZZEbQql4swFRyqEh1vvdr
+        fYllkRgis2JFtdXGvIyB2+UfTYLEEe8hxg==
+X-Google-Smtp-Source: ABdhPJwsjTK69w2oX9/Kcj+JBN7fARbo1XjjLhnJTTaTGrddtxW/rurpVlQCa1bxBRNGRNKSu0wNyQ==
+X-Received: by 2002:ac2:42cf:: with SMTP id n15mr9955869lfl.461.1606758963015;
+        Mon, 30 Nov 2020 09:56:03 -0800 (PST)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id x20sm2538302lfq.86.2020.11.30.09.56.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 09:56:01 -0800 (PST)
+Received: by mail-lj1-f182.google.com with SMTP id q8so10272204ljc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:56:01 -0800 (PST)
+X-Received: by 2002:a2e:50c:: with SMTP id 12mr10009271ljf.371.1606758960857;
+ Mon, 30 Nov 2020 09:56:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-12-djrscally@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <160665707945.2808.5384034634184489471.tglx@nanos>
+ <160665708065.2808.15317906761841446715.tglx@nanos> <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
+ <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 30 Nov 2020 09:55:44 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whPM9Ng6OsNGy==6F6WqEqLFo3kVwS1Hs063woxah5Z5g@mail.gmail.com>
+Message-ID: <CAHk-=whPM9Ng6OsNGy==6F6WqEqLFo3kVwS1Hs063woxah5Z5g@mail.gmail.com>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:31:22PM +0000, Daniel Scally wrote:
-> Where the fwnode graph is comprised of software_nodes, these will be
-> assigned as the secondary to dev->fwnode. Check the v4l2_subdev's fwnode
-> for a secondary and attempt to match against it during match_fwnode() to
-> accommodate that possibility.
+On Sun, Nov 29, 2020 at 11:57 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> The idea was to flip all of arch_cpu_idle() to not enable interrupts.
 
-One nit below.
+I don't think that's realistic.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> This is suboptimal for things like x86 where arch_cpu_idle() is
+> basically STI;HLT, but x86 isn't likely to actually use this code path
+> anyway, given all the various cpuidle drivers it has.
 
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes since RFC v3:
-> 
-> 	- None
-> 
->  drivers/media/v4l2-core/v4l2-async.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-> index e3ab003a6c85..6486dbde784f 100644
-> --- a/drivers/media/v4l2-core/v4l2-async.c
-> +++ b/drivers/media/v4l2-core/v4l2-async.c
-> @@ -87,6 +87,14 @@ static bool match_fwnode(struct v4l2_async_notifier *notifier,
->  	if (sd->fwnode == asd->match.fwnode)
->  		return true;
->  
-> +	/*
-> +	 * Check the same situation for any possible secondary assigned to the
-> +	 * subdev's fwnode
-> +	 */
+Well, but the thing is, "enable interrupts" is pretty much fundamental
+to any idle routine.
 
-> +	if ((!IS_ERR_OR_NULL(sd->fwnode->secondary)) &&
+Idling with interrupts disabled is not a sensible operation. The fact
+that on x86 the sequence is "sti;hlt" is not just some x86 oddity,
+it's basically fundamental to the whole notion of idle.
 
-Too many parentheses.
+Yes, yes, I can very well imagine some hardware doing a "idle until
+you sense an interrupt, but don't actually take it". It's not
+_impossible_. But it's certainly not normal.
 
-> +	    sd->fwnode->secondary == asd->match.fwnode)
-> +		return true;
-> +
->  	/*
->  	 * Otherwise, check if the sd fwnode and the asd fwnode refer to an
->  	 * endpoint or a device. If they're of the same type, there's no match.
-> -- 
-> 2.25.1
-> 
+So I think it's completely misguided to think that the default idle
+routine should assume that arch_cpu_idle() wouldn't enable interrupts.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+             Linus
