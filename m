@@ -2,449 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61432C91FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316542C9208
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728499AbgK3XGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:06:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
+        id S1730379AbgK3XGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgK3XGS (ORCPT
+        with ESMTP id S1725861AbgK3XGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:06:18 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962E1C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:05:32 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id e23so3439pgk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:05:32 -0800 (PST)
+        Mon, 30 Nov 2020 18:06:46 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDB6C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:06:06 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 64so18591411wra.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:06:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rpRp72Cd+BjOQIE+2S1fX880ZRKaJuZN5zlTj/95IQ4=;
-        b=iV46j/5p4mZN18vAZR855k8jb3GkIjrtLpWP2EX9yGogh1rOWeoVD5VyeD8hLKXI1f
-         y5OsK5NisANj0/msIsd6h1clhZTgYKmVxn6VuOw710hILdE4Od7KourtqQvqEnpLiSpO
-         KXuLpm/R5kRGw8dXPD8JTNIMxvuCEKBlx4FSIuY0v5UphPXYI/1q9NNMaDSj9MgYh5bC
-         8li079B0BCBM0aRWcVwlJnWuQDkXItJE120YozBDlP1zix3Bn3WoLwAzeTHAC+6orerY
-         eaiPv0n7i/ofuyqO8hN6w3bTpWy4u92uxNRkA+RjcyN194eRByrC+XYib4Qa3UGsDsQT
-         d78Q==
+        h=from:to:cc:subject:date:message-id;
+        bh=kQXnB1X19UeBITbciJ7mvtj+74IYaiZ+Jn+cqruHHuk=;
+        b=LCMThEDvu5tOOImUt1qTvDRzbSFoV1ytPweqan7G2TAver5sFM0wxdKmQswXwqOgi1
+         1kxyHgfaILs5ogIR4gCYCVTrHoSnNT8elnmZRUr/Vg2p2xiHePhRVUgvgBtahfsRZB1X
+         mJQO8SJwaqhPZnyUBVnOQ/UW1l+SLOmFj/2bDXMtpCPu4JXxIQy+dOcbNARpbosuY8fo
+         RAEHs1FFLfAFMhkEpvvKK08OE/HOAjbYuD0Jce3OhlmmRU3Pxne5vLPAqJpA0FE2FpmV
+         QIkB3usO7IYZoUBRe40FHm9lyi7o7DAkAhZVNmNskIXzYd18nnJowvEudud4sCcBOB6e
+         d4PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rpRp72Cd+BjOQIE+2S1fX880ZRKaJuZN5zlTj/95IQ4=;
-        b=m2Slt/ZLjsKM05Pf4pqkzxPz7pB8nJcWUfnS2ZA0mufJZqTaf9mtuAaBrbzZ7GVtBJ
-         bpX8slZQjdKPY23uKcqUMadE7xpClcGUUy/G9qs/GcaKW2DhoQAbWHEFDfdpiCKK9E16
-         0TqmUti+vJXJupINq0p9ed7QEGrYng1srrpPFmoD/xQRjV7WNHKZX3jJryrh1XmR3SJO
-         uuEvykhXx7RAGnsgNuwdZj5nUUEyzLhPO+kiE5LunNngRX9P1Ly/6/mbMKouWzd9Sl49
-         pn1CSNKdS+ZoXIMuEv2TUpOXNwBAmsn3ir8kne11kyt4g2hw+4E0/BVQixC2nbAnL2zT
-         cp0w==
-X-Gm-Message-State: AOAM530wCwv6XsfcE1+jlyLpfxt3wzAOUOKeA7+sR9dpbWZTNirrHLCN
-        +tRgkCoiJOjSRz8sGHdOYKw=
-X-Google-Smtp-Source: ABdhPJxEYA1OekeVw9lO8mYPLWVseBMQEh7EWevHWWfJXRfcn5QNe1CsHJvNxuVxvGvYXxzZmUI+6Q==
-X-Received: by 2002:a62:8705:0:b029:198:22e5:adcd with SMTP id i5-20020a6287050000b029019822e5adcdmr21271782pfe.74.1606777531847;
-        Mon, 30 Nov 2020 15:05:31 -0800 (PST)
-Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id d4sm43032pjz.28.2020.11.30.15.05.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 15:05:30 -0800 (PST)
-Date:   Tue, 1 Dec 2020 10:05:27 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
- cookie on fork
-Message-ID: <20201130230527.GE473773@balbir-desktop>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-23-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-23-joel@joelfernandes.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kQXnB1X19UeBITbciJ7mvtj+74IYaiZ+Jn+cqruHHuk=;
+        b=gtb7qIMsQ5MhcKU9/6PnWWyc4DZ8A2aOvxnFaD7iJxZeTyoW8k6jjsZqDCOvb10TIA
+         4Xk5f97+NhDpdXdYPH2x/5UJyzHxdmMrkL8hRKpBqRMHUUYd9oeeKiryul6+t8V8k+1h
+         ZSQhH41ZNPL93PWbO0c2oq39+6rpaqpCt87/AzPpd+ZAV8mMKGRjwnsCKgz0qbiGQzdY
+         kpcfSiFjnst5vbxEbFMIWP7KzmQJpZmElBLw+P4jLH6T8QDJ2yXpOIx9yFj6Z4GXuTZT
+         i/IP0ZRJG5/uvHqobFecqR5496D2nBAzQJj90J/yUXJaaUfno+OfkPR3yILKzGm5g8Vh
+         rOTw==
+X-Gm-Message-State: AOAM531mMD4355QEWUSAVsGA0snZfpkHP/kvKxBhL1vuNgeyR/cFxyaf
+        +Z4ohTUualNDTZbS45sIM1Xk1A5/CO8m8A==
+X-Google-Smtp-Source: ABdhPJxogWIeS5K+Kyg7YwmOZbfVwi3gZv+XxvAAulYn9B9YxZTJVU0NtcryfTpz4BaRVmXiQSXPDA==
+X-Received: by 2002:adf:f3cf:: with SMTP id g15mr30941507wrp.71.1606777564616;
+        Mon, 30 Nov 2020 15:06:04 -0800 (PST)
+Received: from rum-mikhail-dt.world.mentorg.com (nat-rum.mentorg.com. [139.181.33.34])
+        by smtp.gmail.com with ESMTPSA id p4sm30427985wrm.51.2020.11.30.15.06.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 15:06:04 -0800 (PST)
+From:   mdurnev@gmail.com
+X-Google-Original-From: mikhail_durnev@mentor.com
+To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        noralf@tronnes.org
+Cc:     mikhail_durnev@mentor.com
+Subject: [PATCH v2 0/3] drm/mipi-dbi: Type B bus support, drm/tiny: MRB2801
+Date:   Tue,  1 Dec 2020 09:05:33 +1000
+Message-Id: <1606777536-14783-1-git-send-email-mikhail_durnev@mentor.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
-> In order to prevent interference and clearly support both per-task and CGroup
-> APIs, split the cookie into 2 and allow it to be set from either per-task, or
-> CGroup API. The final cookie is the combined value of both and is computed when
-> the stop-machine executes during a change of cookie.
-> 
-> Also, for the per-task cookie, it will get weird if we use pointers of any
-> emphemeral objects. For this reason, introduce a refcounted object who's sole
-> purpose is to assign unique cookie value by way of the object's pointer.
-> 
-> While at it, refactor the CGroup code a bit. Future patches will introduce more
-> APIs and support.
-> 
-> Reviewed-by: Josh Don <joshdon@google.com>
-> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  include/linux/sched.h |   2 +
->  kernel/sched/core.c   | 241 ++++++++++++++++++++++++++++++++++++++++--
->  kernel/sched/debug.c  |   4 +
->  3 files changed, 236 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index a60868165590..c6a3b0fa952b 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -688,6 +688,8 @@ struct task_struct {
->  #ifdef CONFIG_SCHED_CORE
->  	struct rb_node			core_node;
->  	unsigned long			core_cookie;
-> +	unsigned long			core_task_cookie;
-> +	unsigned long			core_group_cookie;
->  	unsigned int			core_occupation;
->  #endif
->  
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index b99a7493d590..7ccca355623a 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -346,11 +346,14 @@ void sched_core_put(void)
->  	mutex_unlock(&sched_core_mutex);
->  }
->  
-> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
-> +
->  #else /* !CONFIG_SCHED_CORE */
->  
->  static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
->  static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
->  static bool sched_core_enqueued(struct task_struct *task) { return false; }
-> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2) { }
->  
->  #endif /* CONFIG_SCHED_CORE */
->  
-> @@ -4032,6 +4035,20 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
->  #endif
->  #ifdef CONFIG_SCHED_CORE
->  	RB_CLEAR_NODE(&p->core_node);
-> +
-> +	/*
-> +	 * Tag child via per-task cookie only if parent is tagged via per-task
-> +	 * cookie. This is independent of, but can be additive to the CGroup tagging.
-> +	 */
-> +	if (current->core_task_cookie) {
-> +
-> +		/* If it is not CLONE_THREAD fork, assign a unique per-task tag. */
-> +		if (!(clone_flags & CLONE_THREAD)) {
-> +			return sched_core_share_tasks(p, p);
-> +               }
-> +		/* Otherwise share the parent's per-task tag. */
-> +		return sched_core_share_tasks(p, current);
-> +	}
->  #endif
->  	return 0;
->  }
-> @@ -9731,6 +9748,217 @@ static u64 cpu_rt_period_read_uint(struct cgroup_subsys_state *css,
->  #endif /* CONFIG_RT_GROUP_SCHED */
->  
->  #ifdef CONFIG_SCHED_CORE
-> +/*
-> + * A simple wrapper around refcount. An allocated sched_core_cookie's
-> + * address is used to compute the cookie of the task.
-> + */
-> +struct sched_core_cookie {
-> +	refcount_t refcnt;
-> +};
-> +
-> +/*
-> + * sched_core_tag_requeue - Common helper for all interfaces to set a cookie.
-> + * @p: The task to assign a cookie to.
-> + * @cookie: The cookie to assign.
-> + * @group: is it a group interface or a per-task interface.
-> + *
-> + * This function is typically called from a stop-machine handler.
+From: Mikhail Durnev <mikhail_durnev@mentor.com>
 
-Can you clarify if it is typically or always, what are the implications for
-locking?
+Hi All,
 
-> + */
-> +void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie, bool group)
-> +{
-> +	if (!p)
-> +		return;
-> +
-> +	if (group)
-> +		p->core_group_cookie = cookie;
-> +	else
-> +		p->core_task_cookie = cookie;
-> +
-> +	/* Use up half of the cookie's bits for task cookie and remaining for group cookie. */
-> +	p->core_cookie = (p->core_task_cookie <<
-> +				(sizeof(unsigned long) * 4)) + p->core_group_cookie;
-> +
+This patch series is aiming at extending the mipi-dbi bus driver
+to support Intel 8080 type parallel bus (Type B) over GPIO and
+adding a new driver for ILI9341 display panels with 8- or 16-bit
+parallel interface.
 
-Always use masks to ensure this fits in the space we have, should we be concerned about
-overflows and the potential for collision of cookie values?
+It was tested with the MRB2801 display module [1] that had
+a connector compatible with the ALIENTEK STM32 development board.
+The module was connected to Raspberry Pi 3 via GPIO pins.
 
-> +	if (sched_core_enqueued(p)) {
-> +		sched_core_dequeue(task_rq(p), p);
-> +		if (!p->core_task_cookie)
-> +			return;
-> +	}
-> +
-> +	if (sched_core_enabled(task_rq(p)) &&
-> +			p->core_cookie && task_on_rq_queued(p))
-> +		sched_core_enqueue(task_rq(p), p);
-> +}
-> +
-> +/* Per-task interface */
-> +static unsigned long sched_core_alloc_task_cookie(void)
-> +{
-> +	struct sched_core_cookie *ptr =
-> +		kmalloc(sizeof(struct sched_core_cookie), GFP_KERNEL);
-> +
-> +	if (!ptr)
-> +		return 0;
-> +	refcount_set(&ptr->refcnt, 1);
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return (unsigned long)ptr;
-> +}
-> +
-> +static bool sched_core_get_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return refcount_inc_not_zero(&ptr->refcnt);
-> +}
-> +
-> +static void sched_core_put_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	if (refcount_dec_and_test(&ptr->refcnt))
-> +		kfree(ptr);
-> +}
-> +
-> +struct sched_core_task_write_tag {
-> +	struct task_struct *tasks[2];
-> +	unsigned long cookies[2];
-> +};
+The parallel bus is implemented partially. It supports only write
+operations from the host to the display. Read operations would
+require switching GPIO mode between input and output back and
+forth. But this implementation is very simple, and GPIO mode can
+be set for all used pins to output once at initialization.
+The RD pin of the display has to always receive the logic high
+signal to make sure the data bus pins from the dislay side are
+always in the high impedance state. Otherwise the display module
+as well as the GPIO controller of the host can be damaged.
+To be on the safe side I recommend using protective resistors
+for all GPIO pins conneced to DB pins of the display. Resistors
+of 10 kOhms are just fine for RPi 3. The WR and DC pins may not
+work well with 10K resistors. Although there is no need to protect
+them, you can try using 1K resistors if you want.
 
-Use a better name instead of 2?
+Bit banging is used to transmit data over the parallel bus from
+host to display. There are two numbers that contol timings. They
+should be defined in the device tree via the wr-up-down-delays
+property. The first number is related to the write control pulse
+duration, and the second number is related to the write cycle
+duration. For ILI9341, the write pulse cannot be shorter than 15 ns,
+and the write duration cannot be shorter than 66 ns. Delays of
+10 and 51 ns respectively allow to meet the specifications on
+RPi 3. Faster machines may need values closer to 15 and 66.
 
-> +
-> +/*
-> + * Ensure that the task has been requeued. The stopper ensures that the task cannot
-> + * be migrated to a different CPU while its core scheduler queue state is being updated.
-> + * It also makes sure to requeue a task if it was running actively on another CPU.
-> + */
-> +static int sched_core_task_join_stopper(void *data)
-> +{
-> +	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
-> +	int i;
-> +
-> +	for (i = 0; i < 2; i++)
+[1] http://www.lcdwiki.com/2.8inch_16BIT_Module_ILI9341_SKU:MRB2801
 
-Use ARRAY_SIZE(cookies) if you have to or ARRAY_SIZE(tasks)
+Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
 
-> +		sched_core_tag_requeue(tag->tasks[i], tag->cookies[i], false /* !group */);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
-> +{
+v1 -> v2:
+	- Moved the definition of mipi_dbi_machine_little_endian()
+	  out of the "#if IS_ENABLED(CONFIG_SPI)" clause. That static
+	  function is used in mipi_dbi_gpio_init which does not need
+	  CONFIG_SPI enabled
 
-Can you please explain how t1 and t2 are related, there is a table below, but
-I don't understand case#2, where the cookies get reset, is t2 the core leader
-and t2 leads what t1 and t2 collectively get?
+v0 -> v1:
+	- Rebased on v5.10-rc6
+	- Replaced "dbi->spi = 0;" with "dbi->spi = NULL;" in
+	  mipi_dbi_gpio_init
 
-May be just called t2 as parent?
+v0:
+	- Based on branch rpi-5.10.y
+	- Tested on Raspberry Pi 3 Model B V 1.2
 
-> +	struct sched_core_task_write_tag wr = {}; /* for stop machine. */
-> +	bool sched_core_put_after_stopper = false;
-> +	unsigned long cookie;
-> +	int ret = -ENOMEM;
-> +
-> +	mutex_lock(&sched_core_mutex);
-> +
-> +	/*
-> +	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
-> +	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
-> +	 *       by this function *after* the stopper removes the tasks from the
-> +	 *       core queue, and not before. This is just to play it safe.
-> +	 */
-> +	if (t2 == NULL) {
-> +		if (t1->core_task_cookie) {
-> +			sched_core_put_task_cookie(t1->core_task_cookie);
-> +			sched_core_put_after_stopper = true;
-> +			wr.tasks[0] = t1; /* Keep wr.cookies[0] reset for t1. */
-> +		}
-> +	} else if (t1 == t2) {
-> +		/* Assign a unique per-task cookie solely for t1. */
-> +
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +
-> +		if (t1->core_task_cookie) {
-> +			sched_core_put_task_cookie(t1->core_task_cookie);
-> +			sched_core_put_after_stopper = true;
-> +		}
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = cookie;
-> +	} else
-> +	/*
-> +	 * 		t1		joining		t2
-> +	 * CASE 1:
-> +	 * before	0				0
-> +	 * after	new cookie			new cookie
-> +	 *
-> +	 * CASE 2:
-> +	 * before	X (non-zero)			0
-> +	 * after	0				0
-> +	 *
-> +	 * CASE 3:
-> +	 * before	0				X (non-zero)
-> +	 * after	X				X
-> +	 *
-> +	 * CASE 4:
-> +	 * before	Y (non-zero)			X (non-zero)
-> +	 * after	X				X
-> +	 */
-> +	if (!t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 1. */
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +
-> +		/* Add another reference for the other task. */
-> +		if (!sched_core_get_task_cookie(cookie)) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.tasks[1] = t2;
-> +		wr.cookies[0] = wr.cookies[1] = cookie;
-> +
-> +	} else if (t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 2. */
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1; /* Reset cookie for t1. */
-> +
-> +	} else if (!t1->core_task_cookie && t2->core_task_cookie) {
-> +		/* CASE 3. */
-> +		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +
-> +	} else {
-> +		/* CASE 4. */
-> +		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +	}
-> +
-> +	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
-> +
-> +	if (sched_core_put_after_stopper)
-> +		sched_core_put();
-> +
-> +	ret = 0;
-> +out_unlock:
-> +	mutex_unlock(&sched_core_mutex);
-> +	return ret;
-> +}
-> +
-> +/* CGroup interface */
->  static u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
->  {
->  	struct task_group *tg = css_tg(css);
-> @@ -9761,18 +9989,9 @@ static int __sched_write_tag(void *data)
->  	 * when we set cgroup tag to 0 when the loop is done below.
->  	 */
->  	while ((p = css_task_iter_next(&it))) {
-> -		p->core_cookie = !!val ? (unsigned long)tg : 0UL;
-> -
-> -		if (sched_core_enqueued(p)) {
-> -			sched_core_dequeue(task_rq(p), p);
-> -			if (!p->core_cookie)
-> -				continue;
-> -		}
-> -
-> -		if (sched_core_enabled(task_rq(p)) &&
-> -		    p->core_cookie && task_on_rq_queued(p))
-> -			sched_core_enqueue(task_rq(p), p);
-> +		unsigned long cookie = !!val ? (unsigned long)tg : 0UL;
->  
-> +		sched_core_tag_requeue(p, cookie, true /* group */);
->  	}
->  	css_task_iter_end(&it);
->  
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 60a922d3f46f..8c452b8010ad 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -1024,6 +1024,10 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
->  		__PS("clock-delta", t1-t0);
->  	}
->  
-> +#ifdef CONFIG_SCHED_CORE
-> +	__PS("core_cookie", p->core_cookie);
-> +#endif
-> +
->  	sched_show_numa(p, m);
->  }
->
+Mikhail Durnev (3):
+  drm/mipi-dbi: Add support for Type B
+  drm/tiny: Add driver for ili9341 with parallel bus
+  dt-bindings: panel: Add bindings for MRB2801
 
-Balbir Singh.  
+ .../devicetree/bindings/display/ronbo,mrb2801.txt  |  42 +++
+ drivers/gpu/drm/drm_mipi_dbi.c                     | 134 +++++++++-
+ drivers/gpu/drm/tiny/Kconfig                       |  13 +
+ drivers/gpu/drm/tiny/Makefile                      |   1 +
+ drivers/gpu/drm/tiny/ili9341_gpio.c                | 290 +++++++++++++++++++++
+ include/drm/drm_mipi_dbi.h                         |  30 ++-
+ 6 files changed, 499 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/ronbo,mrb2801.txt
+ create mode 100644 drivers/gpu/drm/tiny/ili9341_gpio.c
+
+-- 
+2.7.4
+
