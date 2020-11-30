@@ -2,296 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FDF2C801F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBDC2C8013
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgK3IhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:37:07 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:45469 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728090AbgK3IhG (ORCPT
+        id S1727809AbgK3IfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:35:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58141 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727423AbgK3IfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:37:06 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 0AU8Vqmw067868;
-        Mon, 30 Nov 2020 16:31:52 +0800 (GMT-8)
-        (envelope-from troy_lee@aspeedtech.com)
-Received: from TroyLee-PC.localdomain (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 30 Nov
- 2020 16:34:13 +0800
-From:   Troy Lee <troy_lee@aspeedtech.com>
-To:     Stefan Schaeckeler <sschaeck@cisco.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "Borislav Petkov" <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rrichter@marvell.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>
-CC:     <leetroy@gmail.com>, <troy_lee@aspeedtech.com>,
-        <ryan_chen@aspeedtech.com>
-Subject: [PATCH 3/3] edac: Supporting AST2400 and AST2600 edac driver
-Date:   Mon, 30 Nov 2020 16:33:45 +0800
-Message-ID: <20201130083345.4814-3-troy_lee@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201130083345.4814-1-troy_lee@aspeedtech.com>
-References: <20201130083345.4814-1-troy_lee@aspeedtech.com>
+        Mon, 30 Nov 2020 03:35:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606725233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vOBw30VGGpYGUqtKjgp1D/xXFSKdq88sDVSnLLemHDo=;
+        b=FRb3fGdf6aLMG6xJeHSgATNF+5MeF8CsLcrSLmJgvy3tWcQKhs+x8n1PKDN30xWSabPxpt
+        CmxrZOqc6VAUEJDKbjpyg21zhrtTEb7PFhx3PYGLoFe7XuFsqRTEVI2FRF2E61wmZzUEUy
+        rRgZU3+c/Qu5Znvqo9UfzMIzUGxDz8c=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-0lqBc3ukMO2s0Dywhc0-LQ-1; Mon, 30 Nov 2020 03:33:50 -0500
+X-MC-Unique: 0lqBc3ukMO2s0Dywhc0-LQ-1
+Received: by mail-wr1-f69.google.com with SMTP id e6so7981712wrx.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:33:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vOBw30VGGpYGUqtKjgp1D/xXFSKdq88sDVSnLLemHDo=;
+        b=E9kvw00Hn5RBZfQklF/SiDl4qmFzskek3uMuH/uS4NSi14r4ACMB7P9YMLvD20cnVN
+         TLxTHhr6ZlYdF8hNRZNC4lDI3XO8cUzX/NXtbsizgQsJlpqNFIXljMgoqbopcYUrSrYC
+         Iv/GP5f4ScSWFEo/Vl1ZxrXCo8Lw7VTetrHRcpAE3nQxZD8llKk9wx2C26ViZjgKhgE/
+         owWCK83JqXNSrn8LSHvM4BgwZfB+NCXnz2PHDQzqDQRgrdv8Sqt2bkj4Bbx4vQNN72Gw
+         ZO6gwhaLUE2NgnuB12vKpWgjbZSqS5VrwbkYvHmCeO4UghrbrvP2TLDZQt395GuiXPT5
+         34zQ==
+X-Gm-Message-State: AOAM531n9niLSF+tynJy5HnYVgIwfpwv8ySXgMFoIbIZhzCOfJL7CN5g
+        JL8qP9F5EUaHMiDV17oUeYAu7l40b4hcWf+6BvhqdL+QpPgS+MGKZjvm6Ucj50GAOPVTgf3DxUB
+        G7mwIbQQyg2F7DKNA6809d9Eo
+X-Received: by 2002:adf:dd0e:: with SMTP id a14mr26727967wrm.36.1606725228952;
+        Mon, 30 Nov 2020 00:33:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxx/iQZGql5wZU5MomW2tQpacaKJDVUoRlyVnQsj6AxXWR1H+6D7EHUWZYX9I0NcbeUr12Ulw==
+X-Received: by 2002:adf:dd0e:: with SMTP id a14mr26727949wrm.36.1606725228783;
+        Mon, 30 Nov 2020 00:33:48 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id a184sm24043265wmf.8.2020.11.30.00.33.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 00:33:47 -0800 (PST)
+Subject: Re: [PATCH AUTOSEL 5.9 22/33] vhost scsi: add lun parser helper
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20201125153550.810101-1-sashal@kernel.org>
+ <20201125153550.810101-22-sashal@kernel.org>
+ <25cd0d64-bffc-9506-c148-11583fed897c@redhat.com>
+ <20201125180102.GL643756@sasha-vm>
+ <9670064e-793f-561e-b032-75b1ab5c9096@redhat.com>
+ <20201129041314.GO643756@sasha-vm>
+ <7a4c3d84-8ff7-abd9-7340-3a6d7c65cfa7@redhat.com>
+ <20201129210650.GP643756@sasha-vm>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e499986d-ade5-23bd-7a04-fa5eb3f15a56@redhat.com>
+Date:   Mon, 30 Nov 2020 09:33:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 0AU8Vqmw067868
+In-Reply-To: <20201129210650.GP643756@sasha-vm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding AST2400 and AST2600 edac driver support.
+On 29/11/20 22:06, Sasha Levin wrote:
+> On Sun, Nov 29, 2020 at 06:34:01PM +0100, Paolo Bonzini wrote:
+>> On 29/11/20 05:13, Sasha Levin wrote:
+>>>> Which doesn't seem to be suitable for stable either...  Patch 3/5 in
+>>>
+>>> Why not? It was sent as a fix to Linus.
+>>
+>> Dunno, 120 lines of new code?  Even if it's okay for an rc, I don't 
+>> see why it is would be backported to stable releases and release it 
+>> without any kind of testing.  Maybe for 5.9 the chances of breaking 
+> 
+> Lines of code is not everything. If you think that this needs additional
+> testing then that's fine and we can drop it, but not picking up a fix
+> just because it's 120 lines is not something we'd do.
 
-Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
----
- drivers/edac/Kconfig       |   6 +-
- drivers/edac/aspeed_edac.c | 114 +++++++++++++++++++++++++++++--------
- 2 files changed, 94 insertions(+), 26 deletions(-)
+Starting with the first two steps in stable-kernel-rules.rst:
 
-diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
-index fc30f2ef9782..8ea70746d0bf 100644
---- a/drivers/edac/Kconfig
-+++ b/drivers/edac/Kconfig
-@@ -508,10 +508,10 @@ config EDAC_QCOM
- 	  health, you should probably say 'Y' here.
- 
- config EDAC_ASPEED
--	tristate "Aspeed AST 2500 SoC"
--	depends on MACH_ASPEED_G5
-+	tristate "Aspeed AST BMC SoC"
-+	depends on (MACH_ASPEED_G4 || MACH_ASPEED_G5 || MACH_ASPEED_G6)
- 	help
--	  Support for error detection and correction on the Aspeed AST 2500 SoC.
-+	  Support for error detection and correction on the Aspeed AST BMC SoC.
- 
- 	  First, ECC must be configured in the bootloader. Then, this driver
- 	  will expose error counters via the EDAC kernel framework.
-diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
-index fbec28dc661d..03a3c12f6bf6 100644
---- a/drivers/edac/aspeed_edac.c
-+++ b/drivers/edac/aspeed_edac.c
-@@ -14,12 +14,11 @@
- #include <linux/regmap.h>
- #include "edac_module.h"
- 
--
- #define DRV_NAME "aspeed-edac"
- 
--
- #define ASPEED_MCR_PROT        0x00 /* protection key register */
- #define ASPEED_MCR_CONF        0x04 /* configuration register */
-+#define ASPEED_MCR_REQ         0x08 /* Graphics Memory Protection register */
- #define ASPEED_MCR_INTR_CTRL   0x50 /* interrupt control/status register */
- #define ASPEED_MCR_ADDR_UNREC  0x58 /* address of first un-recoverable error */
- #define ASPEED_MCR_ADDR_REC    0x5c /* address of last recoverable error */
-@@ -34,10 +33,8 @@
- #define ASPEED_MCR_INTR_CTRL_CNT_UNREC GENMASK(15, 12)
- #define ASPEED_MCR_INTR_CTRL_ENABLE  (BIT(0) | BIT(1))
- 
--
- static struct regmap *aspeed_regmap;
- 
--
- static int regmap_reg_write(void *context, unsigned int reg, unsigned int val)
- {
- 	void __iomem *regs = (void __iomem *)context;
-@@ -53,7 +50,6 @@ static int regmap_reg_write(void *context, unsigned int reg, unsigned int val)
- 	return 0;
- }
- 
--
- static int regmap_reg_read(void *context, unsigned int reg, unsigned int *val)
- {
- 	void __iomem *regs = (void __iomem *)context;
-@@ -63,6 +59,76 @@ static int regmap_reg_read(void *context, unsigned int reg, unsigned int *val)
- 	return 0;
- }
- 
-+extern void aspeed_sdmc_disable_mem_protection(u8 req)
-+{
-+	u32 req_val = 0;
-+
-+	regmap_read(aspeed_regmap, ASPEED_MCR_REQ, &req_val);
-+
-+	req_val &= ~BIT(req);
-+
-+	regmap_write(aspeed_regmap, ASPEED_MCR_REQ, req_val);
-+}
-+EXPORT_SYMBOL(aspeed_sdmc_disable_mem_protection);
-+
-+static const u32 ast2400_dram_table[] = {
-+	0x04000000,	//64MB
-+	0x08000000,	//128MB
-+	0x10000000,	//256MB
-+	0x20000000,	//512MB
-+};
-+
-+static const u32 ast2500_dram_table[] = {
-+	0x08000000,	//128MB
-+	0x10000000,	//256MB
-+	0x20000000,	//512MB
-+	0x40000000,	//1024MB
-+};
-+
-+static const u32 ast2600_dram_table[] = {
-+	0x10000000,	//256MB
-+	0x20000000,	//512MB
-+	0x40000000,	//1024MB
-+	0x80000000,	//2048MB
-+};
-+
-+extern u32 aspeed_get_dram_size(void)
-+{
-+	u32 reg04;
-+	u32 size;
-+
-+	regmap_read(aspeed_regmap, ASPEED_MCR_CONF, &reg04);
-+
-+#if defined(CONFIG_MACH_ASPEED_G6)
-+	size = ast2600_dram_table[reg04 & 0x3];
-+#elif defined(CONFIG_MACH_ASPEED_G5)
-+	size = ast2500_dram_table[reg04 & 0x3];
-+#else
-+	size = ast2400_dram_table[reg04 & 0x3];
-+#endif
-+	return size;
-+}
-+EXPORT_SYMBOL(aspeed_get_dram_size);
-+
-+static const u32 aspeed_vga_table[] = {
-+	0x800000,	//8MB
-+	0x1000000,	//16MB
-+	0x2000000,	//32MB
-+	0x4000000,	//64MB
-+};
-+
-+extern u32 aspeed_get_vga_size(void)
-+{
-+	u32 reg04;
-+	u32 size;
-+
-+	regmap_read(aspeed_regmap, ASPEED_MCR_CONF, &reg04);
-+
-+	size = aspeed_vga_table[((reg04 & 0xC) >> 2)];
-+	return size;
-+}
-+EXPORT_SYMBOL(aspeed_get_vga_size);
-+
- static bool regmap_is_volatile(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -209,8 +275,8 @@ static int config_irq(void *ctx, struct platform_device *pdev)
- 	/* register interrupt handler */
- 	irq = platform_get_irq(pdev, 0);
- 	dev_dbg(&pdev->dev, "got irq %d\n", irq);
--	if (irq < 0)
--		return irq;
-+	if (!irq)
-+		return -ENODEV;
- 
- 	rc = devm_request_irq(&pdev->dev, irq, mcr_isr, IRQF_TRIGGER_HIGH,
- 			      DRV_NAME, ctx);
-@@ -239,7 +305,11 @@ static int init_csrows(struct mem_ctl_info *mci)
- 	int rc;
- 
- 	/* retrieve info about physical memory from device tree */
--	np = of_find_node_by_path("/memory");
-+#ifdef CONFIG_MACH_ASPEED_G4
-+	np = of_find_node_by_path("/memory@40000000");
-+#else
-+	np = of_find_node_by_path("/memory@80000000");
-+#endif
- 	if (!np) {
- 		dev_err(mci->pdev, "dt: missing /memory node\n");
- 		return -ENODEV;
-@@ -281,11 +351,19 @@ static int aspeed_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct edac_mc_layer layers[2];
- 	struct mem_ctl_info *mci;
-+	struct device_node *np;
-+	struct resource *res;
- 	void __iomem *regs;
--	u32 reg04;
- 	int rc;
- 
--	regs = devm_platform_ioremap_resource(pdev, 0);
-+	/* setup regmap */
-+	np = dev->of_node;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -ENOENT;
-+
-+	regs = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
- 
-@@ -294,13 +372,6 @@ static int aspeed_probe(struct platform_device *pdev)
- 	if (IS_ERR(aspeed_regmap))
- 		return PTR_ERR(aspeed_regmap);
- 
--	/* bail out if ECC mode is not configured */
--	regmap_read(aspeed_regmap, ASPEED_MCR_CONF, &reg04);
--	if (!(reg04 & ASPEED_MCR_CONF_ECC)) {
--		dev_err(&pdev->dev, "ECC mode is not configured in u-boot\n");
--		return -EPERM;
--	}
--
- 	edac_op_state = EDAC_OPSTATE_INT;
- 
- 	/* allocate & init EDAC MC data structure */
-@@ -373,13 +444,13 @@ static int aspeed_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--
- static const struct of_device_id aspeed_of_match[] = {
-+	{ .compatible = "aspeed,ast2400-sdram-edac" },
- 	{ .compatible = "aspeed,ast2500-sdram-edac" },
-+	{ .compatible = "aspeed,ast2600-sdram-edac" },
- 	{},
- };
- 
--
- static struct platform_driver aspeed_driver = {
- 	.driver		= {
- 		.name	= DRV_NAME,
-@@ -395,18 +466,15 @@ static int __init aspeed_init(void)
- 	return platform_driver_register(&aspeed_driver);
- }
- 
--
- static void __exit aspeed_exit(void)
- {
- 	platform_driver_unregister(&aspeed_driver);
- }
- 
--
- module_init(aspeed_init);
- module_exit(aspeed_exit);
- 
--
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Stefan Schaeckeler <sschaeck@cisco.com>");
--MODULE_DESCRIPTION("Aspeed AST2500 EDAC driver");
-+MODULE_DESCRIPTION("Aspeed EDAC driver");
- MODULE_VERSION("1.0");
--- 
-2.17.1
+Rules on what kind of patches are accepted, and which ones are not, into 
+the "-stable" tree:
+
+  - It must be obviously correct and tested.
+  - It cannot be bigger than 100 lines, with context.
+
+> Plus all the testing we have for the stable trees, yes. It goes beyond
+> just compiling at this point.
+> 
+> Your very own co-workers (https://cki-project.org/) are pushing hard on
+> this effort around stable kernel testing, and statements like these
+> aren't helping anyone.
+
+I am not aware of any public CI being done _at all_ done on vhost-scsi, 
+by CKI or everyone else.  So autoselection should be done only on 
+subsystems that have very high coverage in CI.
+
+Paolo
 
