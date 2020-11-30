@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392B62C9076
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 903872C9078
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388232AbgK3WCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729456AbgK3WCf (ORCPT
+        id S1730357AbgK3WDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:03:34 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:32899 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730349AbgK3WDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:02:35 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B885C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:01:46 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id y7so11290906pfq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:01:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OjB582WxI6/wJAaTwVSd/LBGicJY2Z97GbRpBZXLi6E=;
-        b=qjhRHIc2Q2c59qrtjaOO0xaBOf0HWT5ja8LeUMZ/pgVJl+M8mSUyqR6vezP+Ndp8k9
-         1kODoO5ILq5qEzXRJPhp91+F/VCIuiR+wW/S6j2hBPZ0itZOhyl6oE6aD3r2d3GLjEUn
-         nB2okAYbnl571e5kG8Ja1LM6+gcghzkhC7r6P9uTnHxSJAlg8cPiZyKU2NkUoNsTbaDX
-         lF3fP23FhXdZ9ahkNphIfwrcH+hXrSNLfyWzmyxxsIenqIbMfbHc+id+n07PLyFQBpFz
-         AvaBxUDN/zzYOqohh4+e+IYwofH1zvNmdiq8pjYoxr5vbUJr8G9YP+lVYpj4wVSALQg0
-         WebA==
+        Mon, 30 Nov 2020 17:03:33 -0500
+Received: by mail-io1-f67.google.com with SMTP id o8so13510648ioh.0;
+        Mon, 30 Nov 2020 14:03:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OjB582WxI6/wJAaTwVSd/LBGicJY2Z97GbRpBZXLi6E=;
-        b=HotHO7hGJwRTkrtJbjnyBycIKUkna2/1plgTOChadEJPEex9mzTGffpsyIcvZsEai7
-         IXWJAURSkUKsWE8Mh+Jroc3i0itj38R9JjQWWacjYpgrS6riX/xyKFfGC+UoqXQQ2+nB
-         KkOitpkY+BbvRHu3XIcyvouH/YlQnctSlE1qnaUhH4qxOzjWA+AxwBaZjJl7ydaU2cWW
-         qJlHQTK5YaplCvos+IG8hK+OGdb+i2tsan2Jp7/Gxcvhh5IR0uYeMq8fKSpGUwDUv/sb
-         pQygtXWasAtvQ6Hh8qm+ieLKWv/Y/mHVOb/z7rTH6WYZ2IGS6knW0LKjGMDahpcFFQCe
-         19wQ==
-X-Gm-Message-State: AOAM532SLzSrpowmNuefyvfQYAW1UoT4yeDqrx/+yU0L0IlvgUD2855T
-        HA0h3l5Sn0MvJzMM4k+7XrWBBB7p/vyFvYfXET9s7g==
-X-Google-Smtp-Source: ABdhPJwTqsmR9/VAzC66+aTccouqJa1CkIfZylvRSLe1ExSH5ZMoXzGvmhZcRIkqLfSWSOZfcvRwmRb3vP4giGwr3js=
-X-Received: by 2002:a63:f317:: with SMTP id l23mr19508824pgh.384.1606773705383;
- Mon, 30 Nov 2020 14:01:45 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T7vPmxvgVqpuMC6ELOtW8OJRBhPCz8EP8sy+CmiOKmI=;
+        b=Cx4LzhnPT9NONef1jVIbxr/xDzOkzCTAAygx+E+Loz2emm/S87KLwDSD6jVsE11QOD
+         cuzAyq98CmhfuESfF5E0RLnHAemDGXEq4aNEXUdbLyMDB2di6y9TL4flNW1X/PhAVsn/
+         7F6tlukNtFh2JjtOUUr1hEa0ZwAGZSs/wfeQdzsWghTn8z0QjejaF7st3VWw/4pwCPRx
+         ycb6IC/SWc6vtiGti5iVcoHczAmEBu6guzEfPfdzsC38lz/DsjTCjubKLn+jG5jJEnho
+         Qh1hSXsjdwPHO0HnbzEGeR+PlsjSxfjUNpaWVx0zVy/3/a6to27oeZjc48CWL6h5teTN
+         6FaQ==
+X-Gm-Message-State: AOAM533AlYAKIr+sO0T+6UMeTYDxZstgq1QFC3FhBIrlLzNNjpr742eN
+        C8PTYcaMrOob0RksKggapIPJYkAwWw==
+X-Google-Smtp-Source: ABdhPJzrgTU+avSScMCSBGUCOPmSFgCefy2xIwUGvipSDuvUQFKtAcT6C+2RNCx8fBDZTAbSsTZf0w==
+X-Received: by 2002:a02:3716:: with SMTP id r22mr21582954jar.104.1606773772810;
+        Mon, 30 Nov 2020 14:02:52 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z13sm831338iof.19.2020.11.30.14.02.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 14:02:51 -0800 (PST)
+Received: (nullmailer pid 3110253 invoked by uid 1000);
+        Mon, 30 Nov 2020 22:02:49 -0000
+Date:   Mon, 30 Nov 2020 15:02:49 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        aford@beaconembedded.com
+Subject: Re: [PATCH V5] dt-bindings: soc: imx: Add binding doc for spba bus
+Message-ID: <20201130220249.GA3109751@robh.at.kernel.org>
+References: <20201118230414.121316-1-aford173@gmail.com>
 MIME-Version: 1.0
-References: <20201110072936.1380718-1-davidgow@google.com>
-In-Reply-To: <20201110072936.1380718-1-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Mon, 30 Nov 2020 14:01:34 -0800
-Message-ID: <CAFd5g47w3eqqZD6iC-HtpbLtYEgmN_oYwD5W37b2h59NEz3kkw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: kunit_tool: Correctly parse diagnostic messages
-To:     David Gow <davidgow@google.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Arpitha Raghunandan <98.arpi@gmail.com>,
-        Marco Elver <elver@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118230414.121316-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 11:29 PM David Gow <davidgow@google.com> wrote:
->
-> Currently, kunit_tool expects all diagnostic lines in test results to
-> contain ": " somewhere, as both the subtest header and the crash report
-> do. Fix this to accept any line starting with (minus indent) "# " as
-> being a valid diagnostic line.
->
-> This matches what the TAP spec[1] and the draft KTAP spec[2] are
-> expecting.
->
-> [1]: http://testanything.org/tap-specification.html
-> [2]: https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/
->
-> Signed-off-by: David Gow <davidgow@google.com>
+On Wed, 18 Nov 2020 17:04:14 -0600, Adam Ford wrote:
+> Add binding doc for fsl,spba-bus.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> make dt_binding_check -j8 |grep spba
+>   DTEX    Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dts
+>   DTC     Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml
+>   CHECK   Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml
+> 
+> V5:  Rebase on 5.10-rc2 to be able to check yaml
+>      Add Reg entry
+> 
+> V4:  Remove an accidental makefile change
+>      Move type:object under additional properties
+> 
+> V3:  Rebase sample from aips-bus example
+>      Split off from series adding i.MX8M Nano functions to reduce noise
+> 
+> V2:  Attempted to update yaml from feedback
+> 
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Applied, thanks!
