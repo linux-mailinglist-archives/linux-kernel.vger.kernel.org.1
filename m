@@ -2,147 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032C82C80AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B51BF2C80B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgK3JLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:11:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgK3JLc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:11:32 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8202EC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:10:52 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id b6so9992215pfp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:10:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=vp1UjA5b9iBMvCva/GTPQT8GBuBUjUwESyb+0XNUQHk=;
-        b=vUsFZJkjljQRsf9VNi2Ik/OOCnpFaA9u+T+dZ3uLQxbig+bKcH8QHlpPjMdRkRsfxd
-         uY+XECfpydm0V5nzLb3LPKqPejeCdi3SqQ1eMxhyTbDVp12O8my2yaI6S1xk/F62gG+z
-         cLnKUmG/GIa6sE6PiraFvPdBIOn94olLZESrADS5XL20qKNMnB8ptlq8xGjAHU9B7XF9
-         fq+4TZgC1hY89HS46clIWjLZKAXMBJMc2VyNV0i1pi0KRmou0MHdeaYJ/qNVrKgeCU4K
-         u9xMoWxwjAtOcsBnxXikWChGpGJP7wHXhYsc/9tdDV+VwHYDmQdoLYB3/yk9en/sENx1
-         HBRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=vp1UjA5b9iBMvCva/GTPQT8GBuBUjUwESyb+0XNUQHk=;
-        b=fn+HjE7tVMuZB+K7qUaxT2I/OAMxKMZLZNdRoPl0EdUOa5R5KcgT/oTTbhVs7j1uws
-         x9pvoi//b03dpAcTvcJ0RCQpBui64wRI7Yn3eVNGT4gpneijz9x0xz8qZ1DT3ZhQNIuh
-         qO7FOcnocBsXKl8/C2sHi3e4W4UBebqHVXgGvWaS7sovaIqJT6WnA6M0qCzr3KkWFzB2
-         TGAueDJLtlresxtkE7l9JcGUH79TQp4f+rgpc/Mc2L8468e1+h+3VfuALCvNbnUDd7pg
-         C2Z/MBCtFc8SYa+w/ZVARfzsFNLWLdxwLkjeVxpqYp2MJPzov6ck2G8xNp6Y2mpQ15k4
-         jQtw==
-X-Gm-Message-State: AOAM532telXfDcRZ0f2yoJyd7nI+rBJ7MIdrzJsvckg+1US42fMcu5ra
-        6V7p1brbNGVJBa/tj7Nbeb4=
-X-Google-Smtp-Source: ABdhPJzQl1jY6Z9l133uc1HNol3T7kcSrpSQR4y0UOJo2FSrlKImdeFFgyjdXofTzMKR/N+dirFEsw==
-X-Received: by 2002:aa7:8dc1:0:b029:197:5d15:279d with SMTP id j1-20020aa78dc10000b02901975d15279dmr17245610pfr.71.1606727451760;
-        Mon, 30 Nov 2020 01:10:51 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:419:6b90:c59c:7043:caf9:832d])
-        by smtp.googlemail.com with ESMTPSA id y188sm15852589pfy.98.2020.11.30.01.10.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 01:10:51 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH v3] Currently checkpatch warns us if there is no 'Signed-off-by' line for the patch.
-Date:   Mon, 30 Nov 2020 14:40:42 +0530
-Message-Id: <20201130091042.14987-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <21acc492ab37acc42390abffb61aed370a22118.camel@perches.com>
-References: <21acc492ab37acc42390abffb61aed370a22118.camel@perches.com>
+        id S1727319AbgK3JNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:13:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40666 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726270AbgK3JNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 04:13:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35F69AC95;
+        Mon, 30 Nov 2020 09:12:39 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 10:12:37 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        vbabka@suse.cz, pasha.tatashin@soleen.com
+Subject: Re: [RFC PATCH v2 2/4] mm,memory_hotplug: Allocate memmap from the
+ added memory range
+Message-ID: <20201130091236.GB3825@linux>
+References: <20201125112048.8211-1-osalvador@suse.de>
+ <20201125112048.8211-3-osalvador@suse.de>
+ <20201127151536.GV31550@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127151536.GV31550@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-E.g., running checkpatch on commit 9ac060a708e0 ("leaking_addresses:
-Completely remove --version flag") reports this error:
+On Fri, Nov 27, 2020 at 04:15:36PM +0100, Michal Hocko wrote:
+> > Vmemap page tables can map arbitrary memory.
+> > That means that we can simply use the beginning of each memory section and
+> > map struct pages there.
+> 
+> Did you mean each memory block rather than section?
 
-ERROR: Missing Signed-off-by: line(s)
+Yes, sorry, I did not update that part.
 
-Provide a fix by adding a Signed-off-by line corresponding to the author
-of the patch before the patch separator line.
+> > struct pages which back the allocated space then just need to be treated
+> > carefully.
+> > 
+> > Implementation wise we will reuse vmem_altmap infrastructure to override
+> > the default allocator used by __populate_section_memmap. Once the memmap is
+> > allocated, we are going to need a way to mark altmap pfns used for the allocation.
+> > If MHP_MEMMAP_ON_MEMORY flag was passed, we will set up the layout of the
+> > altmap structure in add_memory_resouce(), and then we will call
+> > mhp_mark_vmemmap_pages() to properly mark those pages.
+> > 
+> > Online/Offline:
+> > 
+> >  In the memory_block structure, a new field is created in order to
+> >  store the number of vmemmap_pages.
+> 
+> Is this really needed? We know how many pfns are required for a block of
+> a specific size, right?
+> 
+> I have only glanced through the patch so I might be missing something
+> but I am really wondering why you haven't chosen to use altmap directly
+> here.
 
-Also, avoid this fix with the Non-standard signature warning, as the
-missing sign off is most likely because of typo.
+Well, this is my bad, I did not update the changelog wrt. to the previous version
+so it might be confusing.
+I will make sure to update it for the next submission, but let me explain it
+here to shed some light.
 
-E.g. for commit 8cde5d5f7361 ("bus: ti-sysc: Detect omap4 type timers
-for quirk") we get missing sign off as well as bad sign off warnings for:
+We no longer need to use mhp_mark_vmemap_pages to mark vmemmap pages pages.
+Prior to online_pages(), the whole range is offline, so no one should be
+messing with any pages within that range.
+The initialization of the pages takes places in online_pages():
 
-Siganed-off-by: Tony Lindgren <tony@atomide.com>
+We have:
 
-Here it is probably best to fix the typo with BAD_SIGN_OFF warning and
-avoid adding an additional signoff.
+start_pfn = first_pfn_of_the_range
+buddy_start_pfn = first_pfn_of_the_range + nr_vmemmap_pages
 
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-applies over next-20201120 and my last changes at:https://lore.kernel.org/linux-kernel-mentees/db1195235752685fc85fb52ecb1b1af3f35b5394.camel@perches.com/T/#u
 
-Changes in v2:
-  Add space after 'if'
-  Add check for $patch_separator_linenr to be greater than 0
+We do have:
 
-Changes in v3:
-  Give MISSING_SIGN_OFF warning irrespective of the value of $non_standard_signature, add check with fix option instead
-  Modify commit message accordingly
++	if (nr_vmemmap_pages)
++		move_pfn_range_to_zone(zone, pfn, nr_vmemmap_pages, NULL,
++				       MIGRATE_UNMOVABLE);
++	move_pfn_range_to_zone(zone, buddy_start_pfn, buddy_nr_pages, NULL,
++			       MIGRATE_ISOLATE);
 
- scripts/checkpatch.pl | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+Now, all the range is initialized and marked PageReserved, but we only send
+to buddy (buddy_start_pfn, end_pfn].
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 4a026926139f..3abf34bb9b00 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2462,6 +2462,8 @@ sub process {
+And so, (start_pfn, buddy_start_pfn - 1] reamins PageReserved.
+And we know that pfn walkers to skip Reserved pages.
+
+About the altmap part.
+Altmap is used in the hot-add phase in add_memory_resource.
+
+The thing is, we could avoid adding the memory_block's nr_vmemmap_pages field
+, but we would have to mark the vmemmap pages as we used to do in previous
+implementations (see [1]), but I find this way cleaner, and it adds much less
+code (previous implementions can be see in [2]), and as a starter I find it
+much better.
+
+> It would be also good to describe how does a pfn walker recognize such a
+> page? Most of them will simply ignore it but e.g. hotplug walker will
+> need to skip over those because they are not preventing offlining as
+> they will go away with the memory block together.
+
+Wrt. hotplug walker, same as above, we only care to migrate the
+(buddy_start_pfn, end_pfn], so the first pfn to migrate and isolate is set to
+buddy_start_pfn.
+
+Other pfns walkers should merely skip vmemmap pages because they are Reserved.
+
+> Some basic description of testing done would be suitable as well.
+
+Well, that is:
+
+ - Hot-add memory to a specific numa node
+ - Online memory
+ - numactl -H and /proc/zoneinfo reflects the truth and nr_vmemmap_pages are
+   extracted where they have to be
+ - Start a memory stress program and bind it to the numa node we added memory
+   so we make sure it gets exercised
+ - Wait for a while and when node's free pages have decreased considerably,
+   offline memory
+ - Check that memory went offline and check /proc/zoneinfo and numactl -H
+   again
+ - Hot-remove range
+
+
+[1] https://patchwork.kernel.org/project/linux-mm/patch/20201022125835.26396-3-osalvador@suse.de/
+[2] https://patchwork.kernel.org/project/linux-mm/cover/20201022125835.26396-1-osalvador@suse.de/
  
- 	my $last_blank_line = 0;
- 	my $last_coalesced_string_linenr = -1;
-+	my $patch_separator_linenr = 0;
-+	my $non_standard_signature = 0;
- 
- 	our @report = ();
- 	our $cnt_lines = 0;
-@@ -2813,6 +2815,10 @@ sub process {
- 		if ($line =~ /^---$/) {
- 			$has_patch_separator = 1;
- 			$in_commit_log = 0;
-+			# to add missing signed-off-by line before diff(s)
-+			if ($patch_separator_linenr == 0) {
-+				$patch_separator_linenr = $linenr;
-+			}
- 		}
- 
- # Check if MAINTAINERS is being updated.  If so, there's probably no need to
-@@ -2842,6 +2848,7 @@ sub process {
- 						$fixed[$fixlinenr] =~ s/$sign_off/$suggested_signature/;
- 					}
- 				}
-+				$non_standard_signature = 1;
- 			}
- 			if (defined $space_before && $space_before ne "") {
- 				if (WARN("BAD_SIGN_OFF",
-@@ -7188,8 +7195,11 @@ sub process {
- 	}
- 	if ($is_patch && $has_commit_log && $chk_signoff) {
- 		if ($signoff == 0) {
--			ERROR("MISSING_SIGN_OFF",
--			      "Missing Signed-off-by: line(s)\n");
-+			if (ERROR("MISSING_SIGN_OFF",
-+				  "Missing Signed-off-by: line(s)\n") &&
-+			    $fix && !$non_standard_signature && $patch_separator_linenr > 0) {
-+				fix_insert_line($patch_separator_linenr - 1, "Signed-off-by: $author");
-+			}
- 		} elsif ($authorsignoff != 1) {
- 			# authorsignoff values:
- 			# 0 -> missing sign off
 -- 
-2.17.1
-
+Oscar Salvador
+SUSE L3
