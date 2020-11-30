@@ -2,125 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781BD2C803D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0BC2C7FF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727238AbgK3Ipa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:45:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27307 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726298AbgK3Ipa (ORCPT
+        id S1727925AbgK3Iaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:30:52 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:64368 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbgK3Iav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:45:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606725843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ey1C0d9PZ+jC1SeRokoRwtQYfI7PDl+5m30mISh+nx8=;
-        b=N5ElSh6l3ue4g9AV/+pJ2f21bcxjeWXkMvMb7HleWN/CpBVHo+iO+LzcruagBRkIpQuMH/
-        aI3H4YwulFfYiNdCGcZ/f30lNfHyRQNm85SKWUh35z0UPXWplGWwwJVLQHsGR3n9BY9qKE
-        DAEBuuSF4QbOsuVb//CSfxtCGqZtBoY=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-0aEoM6iuO5yMiWc7A36dFQ-1; Mon, 30 Nov 2020 03:44:01 -0500
-X-MC-Unique: 0aEoM6iuO5yMiWc7A36dFQ-1
-Received: by mail-ej1-f70.google.com with SMTP id e7so5426019eja.15
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:44:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ey1C0d9PZ+jC1SeRokoRwtQYfI7PDl+5m30mISh+nx8=;
-        b=HQ3PilWVxEHamLNyLnLF5QuS4c0ED2NZRZay1uZ3PVarxQmGQYVSqdEogmaVSH2rbx
-         j+x8ldhb1n96ooFHOOQh1Jt5AaWLbNtuyMLZfHUYo07jbrJ73hXec5ny5cf/Bz+A8qyx
-         zVXoPUs5qoagsbZUKoxIoe06e3LQZ9fOaOcICQXkWN6vjx7WOkFJz+UTeAe8TpAd7NaT
-         9dvZ0MXBG5Hs4aGuh6PgB7qbQoo0qLbXTu7XtNRfMa4ttOSXCQ+jpuM/eESJzsUZChx4
-         kNPaCNJ1IWVUO9uTxHkN1zdPWyrx7p6FXV5IW7PT4uDCA18NYp5TcAwcOt0gBnRelXgC
-         EnbA==
-X-Gm-Message-State: AOAM532587VbiBKboyhVYU4JOjvPqajnVoZ/gO3aDFrvfS195BebZMcw
-        mnfstzvwLxM+dmtvbF8OzlxvDuF570Ghn/B3E4X6aLKcOvHFV4c5eAbQTRJ+WbE9QckuEJIhORt
-        UTadtfp2YTt9mIRhajTOjGtO4
-X-Received: by 2002:a17:906:aac1:: with SMTP id kt1mr567768ejb.329.1606725840170;
-        Mon, 30 Nov 2020 00:44:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxs3ln5Efn41CjmIOtYUTR38V2LHcxx3XUgPY7qefkj2/Jh8zpB5MhDtTGr1Nse7RBqGNLFPA==
-X-Received: by 2002:a17:906:aac1:: with SMTP id kt1mr567760ejb.329.1606725840030;
-        Mon, 30 Nov 2020 00:44:00 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id d10sm7897462ejc.39.2020.11.30.00.43.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 00:43:59 -0800 (PST)
-Subject: Re: 5.10 regression caused by: "uas: fix sdev->host->dma_dev": many
- XHCI swiotlb buffer is full / DMAR: Device bounce map failed errors on
- thunderbolt connected XHCI controller
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Tom Yan <tom.ty89@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-References: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com>
- <be031d15-201f-0e5c-8b0f-be030077141f@redhat.com>
- <20201124102715.GA16983@lst.de>
- <fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com>
- <8a52e868-0ca1-55b7-5ad2-ddb0cbb5e45d@redhat.com>
- <20201127161900.GA10986@lst.de>
- <fded04e2-f2e9-de92-ab1f-5aa088904e90@redhat.com>
- <20201128171500.GA3550@lst.de>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a84974a8-514b-690b-480b-c82c0617fec0@redhat.com>
-Date:   Mon, 30 Nov 2020 09:43:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 30 Nov 2020 03:30:51 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201130083006epoutp034f79f1f868a8b88207835f044b5ea814~MO_F0bzIz1442714427epoutp03Y
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:30:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201130083006epoutp034f79f1f868a8b88207835f044b5ea814~MO_F0bzIz1442714427epoutp03Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1606725006;
+        bh=Mt/gdIsFl1M12MFRytnwm1abg7voXmSQOUlTijrF/j0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=c0tNLxwRL6vnJ4bVraRUOGFIW9tS1CI4ZkPOkDqhPU0HyxViSVDAN0V5iteGeupAa
+         kdYvZdlaaUlnCIrY4ye0HFg38Np30JFL62smFYrzL3orB+aEsCZ5dIaLYJAEIxhykH
+         pv5LR0yBMkvPcPpk1+ePrDoQyHUHYOtegcJ7lG7g=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20201130083005epcas1p480f9d22c867543847495688f7331db92~MO_E2dxFa0894908949epcas1p4p;
+        Mon, 30 Nov 2020 08:30:05 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.156]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Ckz1l1yvtz4x9QC; Mon, 30 Nov
+        2020 08:30:03 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BF.F7.63458.B8DA4CF5; Mon, 30 Nov 2020 17:30:03 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201130083001epcas1p22f14f300f10546db02dc53183e8c196c~MO_BcgFtV1026010260epcas1p2r;
+        Mon, 30 Nov 2020 08:30:01 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201130083001epsmtrp12bba35f31748f0e58ac47cddc8699ce0~MO_BaMzuj3161831618epsmtrp1Y;
+        Mon, 30 Nov 2020 08:30:01 +0000 (GMT)
+X-AuditID: b6c32a36-6dfff7000000f7e2-a0-5fc4ad8b140e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B8.54.13470.98DA4CF5; Mon, 30 Nov 2020 17:30:01 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201130083001epsmtip1b15540c60c5e93579b52f1ed5fe124d5~MO_Ay9IdD3262532625epsmtip1X;
+        Mon, 30 Nov 2020 08:30:01 +0000 (GMT)
+Subject: Re: [PATCH v10 00/19] Introduce memory interconnect for NVIDIA
+ Tegra SoCs
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <d12880ba-6780-cfee-7667-3723fcad9f3a@samsung.com>
+Date:   Mon, 30 Nov 2020 17:44:39 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <20201128171500.GA3550@lst.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201123002723.28463-1-digetx@gmail.com>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOJsWRmVeSWpSXmKPExsWy7bCmvm732iPxBu9WcFq8+/SU1WL1x8eM
+        Fle+vmezmL53E5tFy6xFLBbnz29gt9j6dA2TxdmmN+wWl3fNYbP43HuE0aLzyyw2i4unXC1u
+        N65gs5i0diqjxdln3hate4+wW/y7tpHF4ueueSwWmx8cY3MQ9nh/o5XdY+esu+wel879YfbY
+        tKqTzePOtT1sHve7jzN59Da/Y/Po27KK0ePzJrkAzqhsm4zUxJTUIoXUvOT8lMy8dFsl7+B4
+        53hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygp5QUyhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUl
+        tkqpBSk5BZYFesWJucWleel6yfm5VoYGBkamQIUJ2Rl/W66zFuwxrzh7YRNLA+NyzS5GTg4J
+        AROJb3NXsnUxcnEICexglHjxaB4LhPOJUeLJtm4o5xujxOydF9lgWtZvXMUKkdjLKPFtRxMj
+        hPOeUWLJ7DUsIFXCAiESd/+8BqsSEbjJIrF8xT+gdg4OZoEqiU1/vEFq2AS0JPa/uAE2lV9A
+        UeLqj8eMIDavgJ1E45QTTCA2i4CqxK8ri8FsUYEwiZPbWqBqBCVOznwCtotTwEzi5+GjYDaz
+        gLjErSfzmSBseYntb+cwg9wgIdDPKXFpyj9miBdcJFbNmghlC0u8Or6FHcKWknjZ3wZlV0us
+        PHmEDaK5g1Fiy/4LrBAJY4n9SyczQTyjKbF+lz5EWFFi5++5jBCL+STefe1hBSmREOCV6GgT
+        gihRlrj84C4ThC0psbi9k20Co9IsJO/MQvLCLCQvzEJYtoCRZRWjWGpBcW56arFhgRFydG9i
+        BKd4LbMdjJPeftA7xMjEwXiIUYKDWUmEN4PjYLwQb0piZVVqUX58UWlOavEhRlNgAE9klhJN
+        zgdmmbySeENTI2NjYwsTQzNTQ0Mlcd4/2h3xQgLpiSWp2ampBalFMH1MHJxSDUxy7tfXVRZO
+        WnV33a2YCY8PpxXIeaUHpHDlf0t8sPNSeM2JlYltSoX/7OpOFv588HK1x8PJ3w/t6Z2p+LVv
+        RV3kR6sj08MPCD+rMDgZ5/84QXi3YoWLbv724vh9W7TfxKiFla75tm/JvG92qUs/3ZV+n7h+
+        tWD8tdQK5aMBWxdaC9xfU7H9bc2DLoaIhmvbg06yrNZ48Nq0aPKFAnvvu4wRix5n7zyuNtvn
+        v2bB+bu257+yxYkzCr6J1vM8Zbq479OKyyUNtbF2D1p/3DGSm9xtzr9lxezgtZ8yVmz4lvjh
+        07En2xiilibbTbiX9Izv0yNzGT22nq9mNUEC6aF7pXqeyc+Rt3XSF9lRK/a6572KEktxRqKh
+        FnNRcSIAjXo+K3oEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsWy7bCSnG7n2iPxBque6Vi8+/SU1WL1x8eM
+        Fle+vmezmL53E5tFy6xFLBbnz29gt9j6dA2TxdmmN+wWl3fNYbP43HuE0aLzyyw2i4unXC1u
+        N65gs5i0diqjxdln3hate4+wW/y7tpHF4ueueSwWmx8cY3MQ9nh/o5XdY+esu+wel879YfbY
+        tKqTzePOtT1sHve7jzN59Da/Y/Po27KK0ePzJrkAzigum5TUnMyy1CJ9uwSujL8t11kL9phX
+        nL2wiaWBcblmFyMnh4SAicT6jatYQWwhgd2MEhPfWEPEJSWmXTzK3MXIAWQLSxw+XNzFyAVU
+        8pZRYun5JrB6YYEQiWk3PjGDJEQE7rJITPpxiw0kwSxQJbFw7WI2iI5ORon2hqOMIAk2AS2J
+        /S9ugBXxCyhKXP3xGCzOK2An0TjlBBOIzSKgKvHrymIwW1QgTGLnksdMEDWCEidnPmEBsTkF
+        zCR+Hj7KArFMXeLPvEvMELa4xK0n85kgbHmJ7W/nME9gFJ6FpH0WkpZZSFpmIWlZwMiyilEy
+        taA4Nz232LDAMC+1XK84Mbe4NC9dLzk/dxMjONa1NHcwbl/1Qe8QIxMH4yFGCQ5mJRHeDI6D
+        8UK8KYmVValF+fFFpTmpxYcYpTlYlMR5bxQujBMSSE8sSc1OTS1ILYLJMnFwSjUwJQrLxCjf
+        2mfh4JjsG2A2IfRLBpu+XduNphWrtW45y59/nTsnVGKOsKWPa6NY2Z/k+Gb2sy0iXzbHPLg9
+        5ew9i4sn3f6pG7xp2iL31iIy3eSe1OcXhb8+HvmywSx3o+Hq/cz5ZbG/LYWTNHT+v1jecXnn
+        j1krpIMr56lauH/xNbxq0Fl7+tg9Zseij6fSn/AWLQ9alFfTsOuHhrGkrPTT3ubFTrKzjRKe
+        yJ/LSL/hGcd/Sm2h6c0vvB2lGd9WbxVk22xxuGHNJq8Qf446Q1n1rHfMYuuf//W5bzn9S9cZ
+        +Qh+2cyUOfN4NWI0mOJ9L5RUHfmxJDE12mDT0anl/5T3t9yXPDttsY7d/DMGPySVWIozEg21
+        mIuKEwGzxjm4ZAMAAA==
+X-CMS-MailID: 20201130083001epcas1p22f14f300f10546db02dc53183e8c196c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201123003254epcas1p1763e1ce693d7cb8e2f20d521e701ad5f
+References: <CGME20201123003254epcas1p1763e1ce693d7cb8e2f20d521e701ad5f@epcas1p1.samsung.com>
+        <20201123002723.28463-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Dmitry,
 
-On 11/28/20 6:15 PM, Christoph Hellwig wrote:
-> Can you give this one-liner a spin?
+The v5.10-rc6 was released from linus git tree.
+Generally, I will send the pull-quest about devfreq to linux-pm.git maintainer
+after releasing the v5.1-rc7 for the integration test on linux-pm.git.
+
+The icc patches in this patch have not yet merged. If these patches
+are not merged before v5.10-rc7, Maybe, I'll apply the devfreq patches
+for v5.12-rc1.
+
+Best Regards,
+Chanwoo Choi
+
+
+On 11/23/20 9:27 AM, Dmitry Osipenko wrote:
+> This series brings initial support for memory interconnect to Tegra20,
+> Tegra30 and Tegra124 SoCs.
 > 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index c6622011d4938c..e889111b55c71d 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -4007,6 +4007,7 @@ static const struct dma_map_ops bounce_dma_ops = {
->  	.alloc_pages		= dma_common_alloc_pages,
->  	.free_pages		= dma_common_free_pages,
->  	.dma_supported		= dma_direct_supported,
-> +	.max_mapping_size	= swiotlb_max_mapping_size,
->  };
->  
->  static inline int iommu_domain_cache_init(void)
+> For the starter only display controllers and devfreq devices are getting
+> interconnect API support, others could be supported later on. The display
+> controllers have the biggest demand for interconnect API right now because
+> dynamic memory frequency scaling can't be done safely without taking into
+> account bandwidth requirement from the displays. In particular this series
+> fixes distorted display output on T30 Ouya and T124 TK1 devices.
 > 
-
-I'm afraid that this does not help.
-
-Also I still find it somewhat wrong that the use of scsi_add_host_with_dma()
-in uas.c, which then passed the XHCI controller as dma-dev is causing changes
-to the DMA settings of the XHCI controller, impacting *other* USB devices
-and these changes also are permanent, they stay around even after unbinding
-the uas driver.
-
-This just feels wrong on many levels. If some changes to the XHCI controllers
-DMA settings are necessary for better uas performance then these changes
-really should be made inside the XHCI driver, so that they always apply and
-not have this weirdness going on where binding one USB driver permanently
-changes the behavior of the entire USB bus (until rebooted).
-
-Querying the DMA settings of the XHCI controller in the uas driver is fine,
-but changing them seems like a big nono to me.
-
-Regards,
-
-Hans
-
+> Changelog:
+> 
+> v10 - In a longer run it will be much nicer if we could support EMC
+>       hardware versioning on Tegra20 and it's not late to support it now.
+>       Hence I added these new patches:
+> 
+>         dt-bindings: memory: tegra20: emc: Document opp-supported-hw property
+>         memory: tegra20: Support hardware versioning and clean up OPP table initialization
+> 
+>     - Removed error message from tegra30-devfreq driver about missing OPP
+>       properties in a device-tree because EMC driver already prints that
+>       message and it uses OPP API error code instead of checking DT directly,
+>       which is a more correct way of doing that.
+> 
+> v9: - Squashed "memory: tegra30-emc: Factor out clk initialization" into
+>       patch "tegra30: Support interconnect framework".
+>       Suggested by Krzysztof Kozlowski.
+> 
+>     - Improved Kconfig in the patch "memory: tegra124-emc: Make driver modular"
+>       by adding CONFIG_TEGRA124_CLK_EMC entry, which makes clk-driver changes
+>       to look a bit more cleaner. Suggested by Krzysztof Kozlowski.
+> 
+>     - Dropped voltage regulator support from ICC and DT patches for now
+>       because there is a new discussion about using a power domain abstraction
+>       for controlling the regulator, which is likely to happen.
+> 
+>     - Replaced direct "operating-points-v2" property checking in EMC drivers
+>       with checking of a returned error code from dev_pm_opp_of_add_table().
+>       Note that I haven't touched T20 EMC driver because it's very likely
+>       that we'll replace that code with a common helper soon anyways.
+>       Suggested by Viresh Kumar.
+> 
+>     - The T30 DT patches now include EMC OPP changes for Ouya board, which
+>       is available now in linux-next.
+> 
+> Dmitry Osipenko (19):
+>   dt-bindings: memory: tegra20: emc: Document opp-supported-hw property
+>   memory: tegra20: Support hardware versioning and clean up OPP table
+>     initialization
+>   memory: tegra30: Support interconnect framework
+>   memory: tegra124-emc: Make driver modular
+>   memory: tegra124-emc: Continue probing if timings are missing in
+>     device-tree
+>   memory: tegra124: Support interconnect framework
+>   drm/tegra: dc: Support memory bandwidth management
+>   drm/tegra: dc: Extend debug stats with total number of events
+>   PM / devfreq: tegra30: Support interconnect and OPPs from device-tree
+>   PM / devfreq: tegra30: Separate configurations per-SoC generation
+>   PM / devfreq: tegra20: Deprecate in a favor of emc-stat based driver
+>   ARM: tegra: Correct EMC registers size in Tegra20 device-tree
+>   ARM: tegra: Add interconnect properties to Tegra20 device-tree
+>   ARM: tegra: Add interconnect properties to Tegra30 device-tree
+>   ARM: tegra: Add interconnect properties to Tegra124 device-tree
+>   ARM: tegra: Add nvidia,memory-controller phandle to Tegra20 EMC
+>     device-tree
+>   ARM: tegra: Add EMC OPP properties to Tegra20 device-trees
+>   ARM: tegra: Add EMC OPP and ICC properties to Tegra30 EMC and ACTMON
+>     device-tree nodes
+>   ARM: tegra: Add EMC OPP and ICC properties to Tegra124 EMC and ACTMON
+>     device-tree nodes
+> 
+>  .../memory-controllers/nvidia,tegra20-emc.txt |   6 +
+>  MAINTAINERS                                   |   1 -
+>  arch/arm/boot/dts/tegra124-apalis-emc.dtsi    |   8 +
+>  .../arm/boot/dts/tegra124-jetson-tk1-emc.dtsi |   8 +
+>  arch/arm/boot/dts/tegra124-nyan-big-emc.dtsi  |  10 +
+>  .../arm/boot/dts/tegra124-nyan-blaze-emc.dtsi |  10 +
+>  .../boot/dts/tegra124-peripherals-opp.dtsi    | 419 ++++++++++++++++++
+>  arch/arm/boot/dts/tegra124.dtsi               |  31 ++
+>  .../boot/dts/tegra20-acer-a500-picasso.dts    |   5 +
+>  arch/arm/boot/dts/tegra20-colibri.dtsi        |   4 +
+>  arch/arm/boot/dts/tegra20-paz00.dts           |   4 +
+>  .../arm/boot/dts/tegra20-peripherals-opp.dtsi | 109 +++++
+>  arch/arm/boot/dts/tegra20.dtsi                |  33 +-
+>  ...30-asus-nexus7-grouper-memory-timings.dtsi |  12 +
+>  arch/arm/boot/dts/tegra30-ouya.dts            |   8 +
+>  .../arm/boot/dts/tegra30-peripherals-opp.dtsi | 383 ++++++++++++++++
+>  arch/arm/boot/dts/tegra30.dtsi                |  33 +-
+>  drivers/clk/tegra/Kconfig                     |   3 +
+>  drivers/clk/tegra/Makefile                    |   2 +-
+>  drivers/clk/tegra/clk-tegra124-emc.c          |  41 +-
+>  drivers/clk/tegra/clk-tegra124.c              |  26 +-
+>  drivers/clk/tegra/clk.h                       |  18 +-
+>  drivers/devfreq/Kconfig                       |  10 -
+>  drivers/devfreq/Makefile                      |   1 -
+>  drivers/devfreq/tegra20-devfreq.c             | 210 ---------
+>  drivers/devfreq/tegra30-devfreq.c             | 147 +++---
+>  drivers/gpu/drm/tegra/Kconfig                 |   1 +
+>  drivers/gpu/drm/tegra/dc.c                    | 359 +++++++++++++++
+>  drivers/gpu/drm/tegra/dc.h                    |  19 +
+>  drivers/gpu/drm/tegra/drm.c                   |  14 +
+>  drivers/gpu/drm/tegra/hub.c                   |   3 +
+>  drivers/gpu/drm/tegra/plane.c                 | 121 +++++
+>  drivers/gpu/drm/tegra/plane.h                 |  15 +
+>  drivers/memory/tegra/Kconfig                  |   5 +-
+>  drivers/memory/tegra/tegra124-emc.c           | 377 ++++++++++++++--
+>  drivers/memory/tegra/tegra124.c               |  82 +++-
+>  drivers/memory/tegra/tegra20-emc.c            |  48 +-
+>  drivers/memory/tegra/tegra30-emc.c            | 344 +++++++++++++-
+>  drivers/memory/tegra/tegra30.c                | 173 +++++++-
+>  include/linux/clk/tegra.h                     |   8 +
+>  include/soc/tegra/emc.h                       |  16 -
+>  41 files changed, 2725 insertions(+), 402 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
+>  create mode 100644 arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
+>  create mode 100644 arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
+>  delete mode 100644 drivers/devfreq/tegra20-devfreq.c
+>  delete mode 100644 include/soc/tegra/emc.h
+> 
