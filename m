@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDD02C8C67
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2332C8C6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388007AbgK3SOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:14:54 -0500
-Received: from mga06.intel.com ([134.134.136.31]:15914 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726258AbgK3SOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:14:51 -0500
-IronPort-SDR: t8+AuJ3qQ0PPsKOAFXSEN1kua9YzS9fWUJX1lpKLlswj5AZnV0c7Q+8FWcMP4thHQNJsWYGRm1
- 3q+XXsqrZUnA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="234288837"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="234288837"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 10:13:13 -0800
-IronPort-SDR: 0Ewksw0H9/WDhu0uxD54ptK+TqChK/cqDELjzzWqAAHt2Kgac+AYDSJSDr7WP9eBlRYOJz/Wc0
- nn6tZLav9HZg==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="345155875"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 10:13:06 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjngd-00B6Q6-3y; Mon, 30 Nov 2020 20:14:07 +0200
-Date:   Mon, 30 Nov 2020 20:14:07 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 13/18] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-Message-ID: <20201130181407.GV4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-14-djrscally@gmail.com>
- <20201130170955.GN14465@pendragon.ideasonboard.com>
+        id S2388020AbgK3SPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388014AbgK3SPS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:15:18 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281A4C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:14:32 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id e5so81878pjt.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:14:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Qxg9fj+0XCIGonLy291dTMO3lLUWRmtT3yL5N2eRulk=;
+        b=pxwOMjeOK6XW/T0vsBXN9b4un8VB0QjBPH+3KbpEs7wEDpetbEvfGEBtN+T8eTjB78
+         jABD75yAkF33MXZVRACJUvelYVjEbwB5rHV4+ik0GMOlFGO1Yn/Dn1cNoprvwrUjnlKD
+         RQ35XzWl96elMe70F0KpoZ4PweCTg9UNfI8Wixfuc7dQvMaikI5qXCE1uLFIomcaUrQ2
+         r5lhPZdLjJ8g38g2ScLXWr5KHEpk4ub8yAGlWQ+h7g6X7TNxC3kzsub602ei+2ejxpSA
+         OSF3hvLFxE1au2XKip/+jWaiUQeHsRs/FwEkDgp2sVOFXGSoZT1HbcwyX7lUhS9BenYk
+         UD2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qxg9fj+0XCIGonLy291dTMO3lLUWRmtT3yL5N2eRulk=;
+        b=fsuxyk72MJFuKLdbLAlzGdAOayCM6lrtuin3M5cHMB+kXI2NDeT0TiBjCrIxrsAwV3
+         fIxuOFESiIeHGbGf5sMu2EWsLEEPQckkfvtnAt+l9/HVTGBqeOCUQnxzxz7kCsWJVAZs
+         ztYuYNpBErAbUFmuUfnGKYzJZx5P/T6t3rEx8tqbuMDoUvO2k5O1f31sg0HhEiWhQUX6
+         HhGE20VFcYOPRxj6t808sYDYUCQQDMWxM0rYgCRLNBXnvLY7ffBCKt5B8VgNLj7X7WyT
+         7vPbQP+H5g7i0H8rrDpeQsOOPL9FwDQ3AyXDLVxO4iIkbxi0mYNWu2gVPdiM3z1H001L
+         63fQ==
+X-Gm-Message-State: AOAM531waXx6kECKmMh5ZdA3LGxI1Dv2DeEb0oaeAnsNJk9DdR+xotT+
+        ouBIr9zKwnuJCl3lR5puQmBMxA==
+X-Google-Smtp-Source: ABdhPJxsiGez54cXtvJTSfM4mSqrojbwclgxTWEK85ewxR6VjTuZCPGNGA2WawCselj+Ut48pFI8sA==
+X-Received: by 2002:a17:90b:19cf:: with SMTP id nm15mr35878pjb.63.1606760071602;
+        Mon, 30 Nov 2020 10:14:31 -0800 (PST)
+Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
+        by smtp.gmail.com with ESMTPSA id e1sm17255827pfi.158.2020.11.30.10.14.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 10:14:30 -0800 (PST)
+Date:   Mon, 30 Nov 2020 18:14:27 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 00/35] SEV-ES hypervisor support
+Message-ID: <X8U2gyj7F2wFU3JI@google.com>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <20200914225951.GM7192@sjchrist-ice>
+ <bee6fdda-d548-8af5-f029-25c22165bf84@amd.com>
+ <20200916001925.GL8420@sjchrist-ice>
+ <60cbddaf-50f3-72ca-f673-ff0b421db3ad@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201130170955.GN14465@pendragon.ideasonboard.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <60cbddaf-50f3-72ca-f673-ff0b421db3ad@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 07:09:55PM +0200, Laurent Pinchart wrote:
-> On Mon, Nov 30, 2020 at 01:31:24PM +0000, Daniel Scally wrote:
-
-I agree with most of Laurent's comments. S
-
-...
-
-> > +	  Say Y here if your device is a detachable / hybrid laptop that comes
-> > +	  with Windows installed by the OEM, for example:
-> > +
-
-> > +	  	- Microsoft Surface models (except Surface Pro 3)
-
-In this line mixed TABs and spaces. Not sure if it's only in Laurent's reply.
-
-> > +		- The Lenovo Miix line (for example the 510, 520, 710 and 720)
-> > +		- Dell 7285
-
-...
-
-> > +	for (i = 0; i < ARRAY_SIZE(cio2_supported_devices); i++) {
-> > +		const char *this_device = cio2_supported_devices[i];
+On Mon, Nov 30, 2020, Paolo Bonzini wrote:
+> On 16/09/20 02:19, Sean Christopherson wrote:
+> > 
+> > TDX also selectively blocks/skips portions of other ioctl()s so that the
+> > TDX code itself can yell loudly if e.g. .get_cpl() is invoked.  The event
+> > injection restrictions are due to direct injection not being allowed (except
+> > for NMIs); all IRQs have to be routed through APICv (posted interrupts) and
+> > exception injection is completely disallowed.
+> > 
+> >    kvm_vcpu_ioctl_x86_get_vcpu_events:
+> > 	if (!vcpu->kvm->arch.guest_state_protected)
+> >          	events->interrupt.shadow = kvm_x86_ops.get_interrupt_shadow(vcpu);
 > 
-> s/this_device/name/ (or sensor_name, ...) ?
+> Perhaps an alternative implementation can enter the vCPU with immediate exit
+> until no events are pending, and then return all zeroes?
 
-I would go with hid.
+This can't work.  If the guest has STI blocking, e.g. it did STI->TDVMCALL with
+a valid vIRQ in GUEST_RVI, then events->interrupt.shadow should technically be
+non-zero to reflect the STI blocking.  But, the immediate exit (a hardware IRQ
+for TDX guests) will cause VM-Exit before the guest can execute any instructions
+and thus the guest will never clear STI blocking and never consume the pending
+event.  Or there could be a valid vIRQ, but GUEST_RFLAGS.IF=0, in which case KVM
+would need to run the guest for an indeterminate amount of time to wait for the
+vIRQ to be consumed.
 
-...
-
-> > +		for_each_acpi_dev_match(adev, this_device, NULL, -1) {
-> > +			if (!adev || !(adev->status.present && adev->status.enabled))
-> 
-> 			if (!adev || !adev->status.present || !adev->status.enabled))
-> 
-> may be a bit more readable. Does for_each_acpi_dev_match() return NULL
-> devices though ? If no, you could drop the !adev check. You may also be
-> able to drop the !present check, as I don't think ACPI allows !present
-> && enabled.
-
-I think this should be rather
-
-        if (acpi_bus_get_status(adev) || !adev->status.present)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Tangentially related, I haven't looked through the official external TDX docs,
+but I suspect that vmcs.GUEST_RVI is listed as inaccessible for production TDs.
+This will be changed as the VMM needs access to GUEST_RVI to handle
+STI->TDVMCALL(HLT), otherwise the VMM may incorrectly put the vCPU into a
+blocked (not runnable) state even though it has a pending wake event.
