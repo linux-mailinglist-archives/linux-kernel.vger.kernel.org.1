@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BCB2C86CB
+	by mail.lfdr.de (Postfix) with ESMTP id F32142C86CD
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgK3ObP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgK3ObN (ORCPT
+        id S1727741AbgK3Obb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:31:31 -0500
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:54095 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726953AbgK3Oba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:31:13 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7934C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:30:33 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id z14so11427532ilm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:30:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UFj5hEo3uguu+PFu88I1aR5fk0AAELT3WI/h/MW8bA8=;
-        b=KZe3D3zmWym8lwghcNXEBHILxdmvBpCLGkMnuXfpDRiOpXotYj5k7sIonMk3BPjhuP
-         OGSyNW/MN68Y1ss/r3v+7lkuJzUpQuX0imwUTWzhO1iV/gi9nLxN4LLcKvKNRboqMQHd
-         1h9lESRaDdfXniNncrk+ityEgDW1XTK68kcA38ABIlMW/IE9f3hBsoS3w4VKkFFyydnG
-         oqtsCnHOpJWtU482QmQb3Wa449+TsJF1r5ka3fE7GsMclO19SfBo1zVkuflBN3M8VthY
-         iUMYgEEGhRv5GCsYfmot5LCLbATRxahXXWdeB59JhHJ8CMmbGMwkubqetzsZ3s4oNdIv
-         ZoSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UFj5hEo3uguu+PFu88I1aR5fk0AAELT3WI/h/MW8bA8=;
-        b=twGj1E9R7+/2y3bss6ll8aJtabHS29i8LNtjjJOXf/evmUSSG7iLS/gvX/pvExVb+Q
-         0fhEpuDqzBNjsk2bqUk24ophnzAbTHbs06cDF3HmBNeP/jrd+R9+2MB5mrlmudqVRmae
-         x5z9eembFDPRlI+ka5b2OJ4xt66eWNUS38vUJEEme0hjLENeYObVVLOsG0MBfNe/XQLv
-         tNG1OcBwyin3XBQ6HyrRwmke9oHYmVlAfgJthCfuT/ahy1yuJ6c1hSe4HO9vGblMnoP6
-         LPjraw4RjxhQ98m1j5VaWkkFojT2XEkNz8gTNxHpPr917VN4fZQoqiE6GhYDusT+6OMj
-         0yzw==
-X-Gm-Message-State: AOAM5310+Gf/dfk/29pgqVZMWEqoq4DgWBMDoxYvwOTjpjG2SpyarqlS
-        eH5zkp5ytJRs0Hf6Lrl0gJm70IO6TMze8nDsQtDmXQ==
-X-Google-Smtp-Source: ABdhPJy5qhwenvaj2uhWf6lfxNvD6HfnkcG0xYVSqpFWzjRhrZj11S/tvSsGkTW8oTnBVl3cEQ78Bmtoec5qtjf+Nlc=
-X-Received: by 2002:a05:6e02:ca5:: with SMTP id 5mr19158887ilg.40.1606746633157;
- Mon, 30 Nov 2020 06:30:33 -0800 (PST)
+        Mon, 30 Nov 2020 09:31:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606746690; x=1638282690;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xCCce2MsvHOXRDAX3rYlHsIDzQTw2AvoabSKgeQ4ZWo=;
+  b=ITOa3aoulNA6N3LWyjBdaP0y4n91OK7NMAvCNMnhZ7+Dl5quOYipqj6E
+   2axB8MTr1RZM2ZB6jtnkuhjRiFdGDUndq4mfKBC3/suofor1NK0LEXtik
+   1Ulg9R5B8AluvNEdukqg4ISleVUJ33Q6NcumGhOL6+2CkIXn8lssMVFEc
+   zLCaLhOpdtiCpxSJfkkNKSl1JCUeruDsvsDupNfMwzi4qvFIbawZW81Xn
+   aqsezrNXTsvJjSrQL+43ICYyfqXt7o2LDaINOkx/VieBtCywwSwPHwADY
+   abpDyuyCYi4dcA0DCTrfO3Sw+Ox0T90s757zdJtDtlxSY+GEHW8w0MQRk
+   w==;
+IronPort-SDR: Et6cmmbHAj54TAIK8UskcUEkToRY84K25xlyJEQ3SKRiYjzB+rgfnIz3pJM08FAGMYxS5xhvEO
+ 3U/2ow7jrZA1ATyvHDZ8AjvrNAiOYU58gZR9kYHthHdApjNoQCBYZPq9iB9KNWwb5pXlJSBdbN
+ Zzi1+9KWEZFswSX+t3VkX3Os192QzIzML/gjIwuM5IMLfH2XL6KWgf6zNjeU3Mk6pT11rJnyg9
+ t4bxcu5mt75oFt74HD7tkeL1xSJ4PbaHmxAHJZGyILRzJ9noo5d5AKnOxBmKP3x4+7k/RLTrBc
+ RII=
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="97986070"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Nov 2020 07:30:24 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 07:30:24 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 30 Nov 2020 07:30:23 -0700
+Date:   Mon, 30 Nov 2020 15:30:23 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201130143023.csjyuhs6uke7dtu6@mchp-dev-shegelun>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
+ <20201128190616.GF2191767@lunn.ch>
+ <20201128222828.GQ1551@shell.armlinux.org.uk>
+ <20201129105245.GG1605@shell.armlinux.org.uk>
+ <20201129113018.GI1605@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20201130142759.28216-1-brgl@bgdev.pl> <20201130142759.28216-4-brgl@bgdev.pl>
-In-Reply-To: <20201130142759.28216-4-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 30 Nov 2020 15:30:22 +0100
-Message-ID: <CAMRc=Mcbzpw4o28NA-19dtWzwQz-DUYocNrD+0_RqRkCVq=PiQ@mail.gmail.com>
-Subject: Re: [PATH v3 3/3] iio: adc: xilinx: use more devres helpers and
- remove remove()
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201129113018.GI1605@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 3:28 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+On 29.11.2020 11:30, Russell King - ARM Linux admin wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>On Sun, Nov 29, 2020 at 10:52:45AM +0000, Russell King - ARM Linux admin wrote:
+>> There are other issues too.
 >
-> In order to simplify resource management and error paths in probe() and
-> entirely drop the remove() callback - use devres helpers wherever
-> possible. Define devm actions for cancelling the delayed work and
-> disabling the clock.
+>This is also wrong:
 >
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
+>+               if (port->ndev && port->ndev->phydev)
+>+                       status->link = port->ndev->phydev->link;
+>
+>phylink already deals with that situation.
 
-[snip]
+So if I need the link state, what interface should I then use to get it?
 
 >
->         /* Set thresholds to min/max */
->         for (i = 0; i < 16; i++) {
-> @@ -1334,59 +1353,23 @@ static int xadc_probe(struct platform_device *pdev)
->                 ret = xadc_write_adc_reg(xadc, XADC_REG_THRESHOLD(i),
->                         xadc->threshold[i]);
->                 if (ret)
-> -                       goto err_free_irq;
-> +                       return ret;
->         }
->
->         /* Go to non-buffered mode */
->         xadc_postdisable(indio_dev);
->
-> -       ret = iio_device_register(indio_dev);
-> +       ret = devm_iio_device_register(dev, indio_dev);
->         if (ret)
-> -               goto err_free_irq;
-> +               return ret;
->
->         platform_set_drvdata(pdev, indio_dev);
->
+>--
+>RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+>FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
-Cr*p I was supposed to drop this line...
+Thanks for your comments
 
-Jonathan: can you drop it when applying?
 
-Bartosz
+BR
+Steen
 
-[snip]
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
