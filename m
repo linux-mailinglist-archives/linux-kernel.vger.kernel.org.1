@@ -2,307 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B012C92C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506AD2C92C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389037AbgK3Xfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
+        id S2389060AbgK3Xfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388692AbgK3Xfa (ORCPT
+        with ESMTP id S2389039AbgK3Xfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:35:30 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95382C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:34:50 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id t14so8691643qvc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:34:50 -0800 (PST)
+        Mon, 30 Nov 2020 18:35:33 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA4BC0613D4;
+        Mon, 30 Nov 2020 15:34:53 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h21so427214wmb.2;
+        Mon, 30 Nov 2020 15:34:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=/2hpXChav6Wt/RpcbVyRVD6Lx6UtoR7/piGzUBFcDPA=;
-        b=OP+NuPPVKjRdl73IZILK5SqdKD4Ht7FixlV8PA26OKMxjg6NUNaSCQQQNc2lbAac3K
-         h1tLLOXfkP/uccCUDN2SRKeBbQpAO+m37Klbfs/YBX/ltEAXIEW77i0UKV8LrGlsqf2P
-         /+/faMrqoARnijNtjnwAmwoQZrRUIUzPQgd9vtZuj1FUXhFPNYgyDCtZsZWCaGVGtJ+r
-         FcenFt6d6RLzZSF1mSI2tM1UcswgM+eAdr/lLCacaYgd2GRf49kp5rjwcBwr6xmdqBoX
-         5xL/srF1pLiVrDoS78yuk0GSdP8R+Sx7/7/VmEU+GUgdKsbDDb+hLlU1rii1VPQtX71/
-         xaZQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=cDrxtunMJFq8xOo3v3iOxtWN4Qb0df5wwbPG2PKfOvQ=;
+        b=qdKfTI+dI9rbpa8Xb5wAT9uc7rxdo9LAOTrAGedsz0pK6M2Awfs7CznWtkGOmqD5r1
+         7WHmeGPPzQkRrivE6w6FkAelyuEkLPfmDIF+whvSq5cnM9l/Dh81y2tQk7TzU3rdWDnr
+         10+CfmhFd+c1Js56W4t3Igms3RhlFHPtcopNN+nmLJo4975YwnHGCCxnLBaZHqNIjcCV
+         L3YxPoLQ13zOBBIU2VNv2x0x64hPmdYfMAxWoqoZfkyi27ZFdeFKLrh9hLdbNtoROD4B
+         6Hod51nmsOxazpAkf9dgQeOrUYADtzmJQ7FfC+c/AhLCk3FLtOXrZZ5UYjNsKq4AbRh8
+         H1xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/2hpXChav6Wt/RpcbVyRVD6Lx6UtoR7/piGzUBFcDPA=;
-        b=BAuPFUUUc8dnPAAilMM95XgEkWLrzItsovLWyNvZke7Ef98mRmcwzyKP0BMZGgeSkJ
-         vYjqwaZB1lkPUtSW3vlWABTQm8wHS5Th7kl2jV92Lf5oOzOtA/kMNxjH1jhH4shBmL/+
-         MQ2EaZq/0vhfzJTqiY23gwUQ5FGuYYqx04L7KrraDbL7UMeuVtURLhTzwKH9q84BKKSD
-         1JHCtszrtWtvZ4wYnMBJzGXNwAxgoPn31Fmf8mX88tWOn9FTGl+CJHsT99w7nTVY1DX6
-         IQGE+OrxcYkFlNHgeI0raetuqdTlUz3ZP1Jx9HRmcOk/Ubsq46rJzw+XXd637rMmp2sO
-         NwLw==
-X-Gm-Message-State: AOAM532VdqcN7Xe+6OpqJCdFBMD3kjgkB8RZ9m96SPM+h2lUBqvT6/kc
-        CYI6k1frvzEmk5n7FpIPVke1vAufXJikLnYk7Ew=
-X-Google-Smtp-Source: ABdhPJwHdvyygNPpCKDDdCrsa4Ck+vRg8Gp4MXUT40WxgVL9b6BDd+oHfOski3MhrYW0e3f5GXiTcQzqE8SrmlXMELQ=
-Sender: "samitolvanen via sendgmr" 
-        <samitolvanen@samitolvanen1.mtv.corp.google.com>
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:a0c:e6e7:: with SMTP id
- m7mr233889qvn.11.1606779289826; Mon, 30 Nov 2020 15:34:49 -0800 (PST)
-Date:   Mon, 30 Nov 2020 15:34:42 -0800
-In-Reply-To: <20201130233442.2562064-1-samitolvanen@google.com>
-Message-Id: <20201130233442.2562064-3-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20201130233442.2562064-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v3 2/2] arm64: scs: use vmapped IRQ and SDEI shadow stacks
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=cDrxtunMJFq8xOo3v3iOxtWN4Qb0df5wwbPG2PKfOvQ=;
+        b=BW4kOmqF0qoPy3uIe+5HfNobySR2Nrh5S6UKqM6HbYzwwpH/wzlAx5cVdjf8678dwi
+         c0fnHwPonGL/gCDfch1ag1X52O1Qr8rcRBlx7vF/uBLxVxPPldfWT4ACIr5luuAUnmxa
+         CMfaKqHzGTzb7f/JNF+S3nQVC5gSm8xbtjVNGdYY3jLtpsToQk+p1CnUky3HQ6xFX8q2
+         HLDNiky6Uqy8IGtX5XOQw7gqnBh7KQpytfz7fTy2GlUKZqhYFA1qEZCO4lPp5A06y6JR
+         zptVuQz5tKGDWZv6AT9pfk+P2U0s6c+2o7Nv5NZBngbNlPpK0kAh+Ve38Wfycu5g0NmZ
+         ypmA==
+X-Gm-Message-State: AOAM53254us6FVUFBGLP9nkMABgCkSbN3O6e1xdcsxrmMnSonEu0M/xe
+        PfAJo4nd8WTg3ANZ04okEwI=
+X-Google-Smtp-Source: ABdhPJxHj2LSJjhlluZ6m4v35YpmQyymKHHORQD8CRM55/d+cnmFsg5VT9LdJAQeJcH+1I6Q1lCT3Q==
+X-Received: by 2002:a1c:96c2:: with SMTP id y185mr237883wmd.84.1606779292102;
+        Mon, 30 Nov 2020 15:34:52 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.80])
+        by smtp.gmail.com with ESMTPSA id d8sm30750973wrp.44.2020.11.30.15.34.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 15:34:51 -0800 (PST)
+Subject: Re: [PATCH 07/18] software_node: Add support for fwnode_graph*()
+ family of functions
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-8-djrscally@gmail.com>
+ <20201130162538.GK14465@pendragon.ideasonboard.com>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <048110de-ebc0-96b2-3cae-58114a272ba2@gmail.com>
+Date:   Mon, 30 Nov 2020 23:34:50 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201130162538.GK14465@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use scs_alloc() to allocate also IRQ and SDEI shadow stacks instead of
-using statically allocated stacks.
+Hi Laurent
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Acked-by: Will Deacon <will@kernel.org>
----
- arch/arm64/kernel/Makefile |  1 -
- arch/arm64/kernel/entry.S  |  6 ++--
- arch/arm64/kernel/irq.c    | 19 +++++++++++
- arch/arm64/kernel/scs.c    | 16 ---------
- arch/arm64/kernel/sdei.c   | 70 ++++++++++++++++++++++++++++++++++++++
- include/linux/scs.h        |  4 ---
- 6 files changed, 92 insertions(+), 24 deletions(-)
- delete mode 100644 arch/arm64/kernel/scs.c
-
-diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index bbaf0bc4ad60..86364ab6f13f 100644
---- a/arch/arm64/kernel/Makefile
-+++ b/arch/arm64/kernel/Makefile
-@@ -58,7 +58,6 @@ obj-$(CONFIG_CRASH_DUMP)		+= crash_dump.o
- obj-$(CONFIG_CRASH_CORE)		+= crash_core.o
- obj-$(CONFIG_ARM_SDE_INTERFACE)		+= sdei.o
- obj-$(CONFIG_ARM64_PTR_AUTH)		+= pointer_auth.o
--obj-$(CONFIG_SHADOW_CALL_STACK)		+= scs.o
- obj-$(CONFIG_ARM64_MTE)			+= mte.o
- 
- obj-y					+= vdso/ probes/
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index b295fb912b12..5c2ac4b5b2da 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -441,7 +441,7 @@ SYM_CODE_END(__swpan_exit_el0)
- 
- #ifdef CONFIG_SHADOW_CALL_STACK
- 	/* also switch to the irq shadow stack */
--	adr_this_cpu scs_sp, irq_shadow_call_stack, x26
-+	ldr_this_cpu scs_sp, irq_shadow_call_stack_ptr, x26
- #endif
- 
- 9998:
-@@ -1097,9 +1097,9 @@ SYM_CODE_START(__sdei_asm_handler)
- #ifdef CONFIG_SHADOW_CALL_STACK
- 	/* Use a separate shadow call stack for normal and critical events */
- 	cbnz	w4, 3f
--	adr_this_cpu dst=scs_sp, sym=sdei_shadow_call_stack_normal, tmp=x6
-+	ldr_this_cpu dst=scs_sp, sym=sdei_shadow_call_stack_normal_ptr, tmp=x6
- 	b	4f
--3:	adr_this_cpu dst=scs_sp, sym=sdei_shadow_call_stack_critical, tmp=x6
-+3:	ldr_this_cpu dst=scs_sp, sym=sdei_shadow_call_stack_critical_ptr, tmp=x6
- 4:
- #endif
- 
-diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
-index 9cf2fb87584a..5b7ada9d9559 100644
---- a/arch/arm64/kernel/irq.c
-+++ b/arch/arm64/kernel/irq.c
-@@ -17,6 +17,7 @@
- #include <linux/init.h>
- #include <linux/irqchip.h>
- #include <linux/kprobes.h>
-+#include <linux/scs.h>
- #include <linux/seq_file.h>
- #include <linux/vmalloc.h>
- #include <asm/daifflags.h>
-@@ -27,6 +28,22 @@ DEFINE_PER_CPU(struct nmi_ctx, nmi_contexts);
- 
- DEFINE_PER_CPU(unsigned long *, irq_stack_ptr);
- 
-+
-+DECLARE_PER_CPU(unsigned long *, irq_shadow_call_stack_ptr);
-+
-+#ifdef CONFIG_SHADOW_CALL_STACK
-+DEFINE_PER_CPU(unsigned long *, irq_shadow_call_stack_ptr);
-+#endif
-+
-+static void init_irq_scs(void)
-+{
-+	int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		per_cpu(irq_shadow_call_stack_ptr, cpu) =
-+			scs_alloc(cpu_to_node(cpu));
-+}
-+
- #ifdef CONFIG_VMAP_STACK
- static void init_irq_stacks(void)
- {
-@@ -54,6 +71,8 @@ static void init_irq_stacks(void)
- void __init init_IRQ(void)
- {
- 	init_irq_stacks();
-+	if (IS_ENABLED(CONFIG_SHADOW_CALL_STACK))
-+		init_irq_scs();
- 	irqchip_init();
- 	if (!handle_arch_irq)
- 		panic("No interrupt controller found.");
-diff --git a/arch/arm64/kernel/scs.c b/arch/arm64/kernel/scs.c
-deleted file mode 100644
-index e8f7ff45dd8f..000000000000
---- a/arch/arm64/kernel/scs.c
-+++ /dev/null
-@@ -1,16 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Shadow Call Stack support.
-- *
-- * Copyright (C) 2019 Google LLC
-- */
--
--#include <linux/percpu.h>
--#include <linux/scs.h>
--
--DEFINE_SCS(irq_shadow_call_stack);
--
--#ifdef CONFIG_ARM_SDE_INTERFACE
--DEFINE_SCS(sdei_shadow_call_stack_normal);
--DEFINE_SCS(sdei_shadow_call_stack_critical);
--#endif
-diff --git a/arch/arm64/kernel/sdei.c b/arch/arm64/kernel/sdei.c
-index 7689f2031c0c..d12fd786b267 100644
---- a/arch/arm64/kernel/sdei.c
-+++ b/arch/arm64/kernel/sdei.c
-@@ -7,6 +7,7 @@
- #include <linux/hardirq.h>
- #include <linux/irqflags.h>
- #include <linux/sched/task_stack.h>
-+#include <linux/scs.h>
- #include <linux/uaccess.h>
- 
- #include <asm/alternative.h>
-@@ -37,6 +38,14 @@ DEFINE_PER_CPU(unsigned long *, sdei_stack_normal_ptr);
- DEFINE_PER_CPU(unsigned long *, sdei_stack_critical_ptr);
- #endif
- 
-+DECLARE_PER_CPU(unsigned long *, sdei_shadow_call_stack_normal_ptr);
-+DECLARE_PER_CPU(unsigned long *, sdei_shadow_call_stack_critical_ptr);
-+
-+#ifdef CONFIG_SHADOW_CALL_STACK
-+DEFINE_PER_CPU(unsigned long *, sdei_shadow_call_stack_normal_ptr);
-+DEFINE_PER_CPU(unsigned long *, sdei_shadow_call_stack_critical_ptr);
-+#endif
-+
- static void _free_sdei_stack(unsigned long * __percpu *ptr, int cpu)
- {
- 	unsigned long *p;
-@@ -90,6 +99,59 @@ static int init_sdei_stacks(void)
- 	return err;
- }
- 
-+static void _free_sdei_scs(unsigned long * __percpu *ptr, int cpu)
-+{
-+	void *s;
-+
-+	s = per_cpu(*ptr, cpu);
-+	if (s) {
-+		per_cpu(*ptr, cpu) = NULL;
-+		scs_free(s);
-+	}
-+}
-+
-+static void free_sdei_scs(void)
-+{
-+	int cpu;
-+
-+	for_each_possible_cpu(cpu) {
-+		_free_sdei_scs(&sdei_shadow_call_stack_normal_ptr, cpu);
-+		_free_sdei_scs(&sdei_shadow_call_stack_critical_ptr, cpu);
-+	}
-+}
-+
-+static int _init_sdei_scs(unsigned long * __percpu *ptr, int cpu)
-+{
-+	void *s;
-+
-+	s = scs_alloc(cpu_to_node(cpu));
-+	if (!s)
-+		return -ENOMEM;
-+	per_cpu(*ptr, cpu) = s;
-+
-+	return 0;
-+}
-+
-+static int init_sdei_scs(void)
-+{
-+	int cpu;
-+	int err = 0;
-+
-+	for_each_possible_cpu(cpu) {
-+		err = _init_sdei_scs(&sdei_shadow_call_stack_normal_ptr, cpu);
-+		if (err)
-+			break;
-+		err = _init_sdei_scs(&sdei_shadow_call_stack_critical_ptr, cpu);
-+		if (err)
-+			break;
-+	}
-+
-+	if (err)
-+		free_sdei_scs();
-+
-+	return err;
-+}
-+
- static bool on_sdei_normal_stack(unsigned long sp, struct stack_info *info)
- {
- 	unsigned long low = (unsigned long)raw_cpu_read(sdei_stack_normal_ptr);
-@@ -138,6 +200,14 @@ unsigned long sdei_arch_get_entry_point(int conduit)
- 			return 0;
- 	}
- 
-+	if (IS_ENABLED(CONFIG_SHADOW_CALL_STACK)) {
-+		if (init_sdei_scs()) {
-+			if (IS_ENABLED(CONFIG_VMAP_STACK))
-+				free_sdei_stacks();
-+			return 0;
-+		}
-+	}
-+
- 	sdei_exit_mode = (conduit == SMCCC_CONDUIT_HVC) ? SDEI_EXIT_HVC : SDEI_EXIT_SMC;
- 
- #ifdef CONFIG_UNMAP_KERNEL_AT_EL0
-diff --git a/include/linux/scs.h b/include/linux/scs.h
-index 2a506c2a16f4..18122d9e17ff 100644
---- a/include/linux/scs.h
-+++ b/include/linux/scs.h
-@@ -22,10 +22,6 @@
- /* An illegal pointer value to mark the end of the shadow stack. */
- #define SCS_END_MAGIC		(0x5f6UL + POISON_POINTER_DELTA)
- 
--/* Allocate a static per-CPU shadow stack */
--#define DEFINE_SCS(name)						\
--	DEFINE_PER_CPU(unsigned long [SCS_SIZE/sizeof(long)], name)	\
--
- #define task_scs(tsk)		(task_thread_info(tsk)->scs_base)
- #define task_scs_sp(tsk)	(task_thread_info(tsk)->scs_sp)
- 
--- 
-2.29.2.454.gaff20da3a2-goog
-
+On 30/11/2020 16:25, Laurent Pinchart wrote:
+> Hi Daniel and Heikki,
+>
+> Thank you for the patch.
+>
+> On Mon, Nov 30, 2020 at 01:31:18PM +0000, Daniel Scally wrote:
+>> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>>
+>> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>>
+> There seems to be one From: line too many. You can drop the one in the
+> commit message, git-format-patch will add it automatically.
+Ah! Thanks, sorry about that
+>> This implements the remaining .graph_* callbacks in the
+>> fwnode operations vector for the software nodes. That makes
+> s/vector/structure/ ?
+Yeah, sure.
+>> the fwnode_graph*() functions available in the drivers also
+>> when software nodes are used.
+>>
+>> The implementation tries to mimic the "OF graph" as much as
+>> possible, but there is no support for the "reg" device
+>> property. The ports will need to have the index in their
+>> name which starts with "port" (for example "port0", "port1",
+>> ...) and endpoints will use the index of the software node
+>> that is given to them during creation. The port nodes can
+>> also be grouped under a specially named "ports" subnode,
+>> just like in DT, if necessary.
+> I'm not very familiar with swnodes, but could we name ports port@n
+> instead of portn to mimic OF nodes ?
+Yes, I don't see any reason why not.
+>
+>> The remote-endpoints are reference properties under the
+>> endpoint nodes that are named "remote-endpoint".
+>>
+>> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>> Co-developed-by: Daniel Scally <djrscally@gmail.com>
+>> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+>> ---
+>> changes since RFC v3:
+>> 	- Simplified software_node_get_next_endpoint() a little
+>> 	- Squared away references in software_node_get_next_endpoint()
+>> 	and swnode_graph_find_next_port(), since they were affected by
+>> 	the change to the earlier patch that had *get_next_child() also
+>> 	put the previous reference.
+>> 	- Dropped Andy's R-b, since the code changed.
+>> changes in RFC v3:
+>> 	- removed software_node_device_is_available
+>> 	- moved the change to software_node_get_next_child to a separate
+>> 	patch
+>> 	- switched to use fwnode_handle_put() in graph_get_next_endpoint()
+>> 	instead of software_node_put()
+>>
+>> changes in RFC v2:
+>> 	- added software_node_device_is_available
+>> 	- altered software_node_get_next_child to get references
+>> 	- altered software_node_get_next_endpoint to release references
+>> 	to ports and avoid passing invalid combinations of swnodes to
+>> 	software_node_get_next_child
+>> 	- altered swnode_graph_find_next_port to release port rather than
+>> 	old
+>>
+>>  drivers/base/swnode.c | 110 +++++++++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 109 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+>> index 9bd0bb77ad5b..0c7a8d6b9ea8 100644
+>> --- a/drivers/base/swnode.c
+>> +++ b/drivers/base/swnode.c
+>> @@ -540,6 +540,110 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
+>>  	return 0;
+>>  }
+>>  
+>> +static struct fwnode_handle *
+>> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
+>> +			    struct fwnode_handle *port)
+>> +{
+>> +	struct fwnode_handle *old = port;
+>> +
+>> +	while ((port = software_node_get_next_child(parent, old))) {
+>> +		if (!strncmp(to_swnode(port)->node->name, "port", 4))
+>> +			return port;
+>> +		old = port;
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>> +static struct fwnode_handle *
+>> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
+>> +				      struct fwnode_handle *endpoint)
+>> +{
+>> +	struct swnode *swnode = to_swnode(fwnode);
+>> +	struct fwnode_handle *old = endpoint;
+>> +	struct fwnode_handle *parent;
+>> +	struct fwnode_handle *port;
+>> +
+>> +	if (!swnode)
+>> +		return NULL;
+>> +
+>> +	if (endpoint) {
+>> +		port = software_node_get_parent(endpoint);
+>> +		parent = software_node_get_parent(port);
+>> +	} else {
+>> +		parent = software_node_get_named_child_node(fwnode, "ports");
+>> +		if (!parent)
+>> +			parent = software_node_get(&swnode->fwnode);
+>> +
+>> +		port = swnode_graph_find_next_port(parent, NULL);
+>> +	}
+>> +
+>> +	for (; port; port = swnode_graph_find_next_port(parent, port)) {
+>> +		endpoint = software_node_get_next_child(port, old);
+>> +		if (endpoint) {
+>> +			fwnode_handle_put(port);
+>> +			break;
+>> +		}
+>> +
+>> +		/* No more endpoints for that port, so stop passing old */
+>> +		old = NULL;
+>> +	}
+>> +
+>> +	fwnode_handle_put(parent);
+>> +
+>> +	return endpoint;
+>> +}
+>> +
+>> +static struct fwnode_handle *
+>> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
+>> +{
+>> +	struct swnode *swnode = to_swnode(fwnode);
+>> +	const struct software_node_ref_args *ref;
+>> +	const struct property_entry *prop;
+>> +
+>> +	if (!swnode)
+>> +		return NULL;
+>> +
+>> +	prop = property_entry_get(swnode->node->properties, "remote-endpoint");
+>> +	if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
+>> +		return NULL;
+>> +
+>> +	ref = prop->pointer;
+>> +
+>> +	return software_node_get(software_node_fwnode(ref[0].node));
+>> +}
+>> +
+>> +static struct fwnode_handle *
+>> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
+>> +{
+>> +	struct swnode *swnode = to_swnode(fwnode);
+>> +	struct fwnode_handle *parent;
+>> +
+>> +	if (!strcmp(swnode->parent->node->name, "ports"))
+>> +		parent = &swnode->parent->parent->fwnode;
+>> +	else
+>> +		parent = &swnode->parent->fwnode;
+>> +
+>> +	return software_node_get(parent);
+>> +}
+>> +
+>> +static int
+>> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
+>> +				   struct fwnode_endpoint *endpoint)
+>> +{
+>> +	struct swnode *swnode = to_swnode(fwnode);
+>> +	int ret;
+>> +
+>> +	ret = kstrtou32(swnode->parent->node->name + 4, 10, &endpoint->port);
+> If we use port@, s/4/5/. But I suppose we also want to support the case
+> where a single port is used, with its name set to "port" ? The logic
+> would then need to be a tad more complex. Not sure if the consistency is
+> worth the additional complexity, up to you.
+I'm conflicted; consistency is good but in my mind keeping the name as
+"port@0" for a single port rather than dropping the suffix is the better
+approach anyway.
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	endpoint->id = swnode->id;
+>> +	endpoint->local_fwnode = fwnode;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static const struct fwnode_operations software_node_ops = {
+>>  	.get = software_node_get,
+>>  	.put = software_node_put,
+>> @@ -551,7 +655,11 @@ static const struct fwnode_operations software_node_ops = {
+>>  	.get_parent = software_node_get_parent,
+>>  	.get_next_child_node = software_node_get_next_child,
+>>  	.get_named_child_node = software_node_get_named_child_node,
+>> -	.get_reference_args = software_node_get_reference_args
+>> +	.get_reference_args = software_node_get_reference_args,
+>> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
+>> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
+>> +	.graph_get_port_parent = software_node_graph_get_port_parent,
+>> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
+>>  };
+>>  
+>>  /* -------------------------------------------------------------------------- */
