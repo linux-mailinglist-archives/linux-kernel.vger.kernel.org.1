@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ADE2C8E8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F622C8E92
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388345AbgK3T6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:58:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
+        id S2388351AbgK3T7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:59:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388227AbgK3T6j (ORCPT
+        with ESMTP id S1726827AbgK3T7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:58:39 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF42C0613D2;
-        Mon, 30 Nov 2020 11:57:59 -0800 (PST)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B56156E6;
-        Mon, 30 Nov 2020 19:57:58 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 12:57:57 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Subject: Re: [PATCH v2] docs: automarkup.py: Allow automatic cross-reference
- inside C namespace
-Message-ID: <20201130125757.1eccdaa2@lwn.net>
-In-Reply-To: <20201117021107.214704-1-nfraprado@protonmail.com>
-References: <20201117021107.214704-1-nfraprado@protonmail.com>
-Organization: LWN.net
+        Mon, 30 Nov 2020 14:59:37 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3808C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:58:56 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id b63so11104525pfg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:58:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JOx+dix68GBdJvNP9ttj7+w4PMBc+DbmStt47v8N/pU=;
+        b=JEoJRJ0PFt+1b2KEhLB1LQyQPDz/V3W2jRZ3177OpgpM5FIpAN27dyhYoWapjm/59j
+         ob5KZwS25okZKtemKiGyG/xqDjWV4HXxVWyW3TDhIWrkY6VFoL0NaooEfHMMRz4nVP5C
+         4jOiVYySfvok5DLnH5t2Zel9q217GqJJm3KpFWxWWJCmDWjSxNqJsM6nqFEV7LUz/r23
+         4eaPjW8uahr0k8L67IQyroWML33QHYL6KV64llTCuLKONAtUj9lUpkIG4MtI0GE2hqKg
+         UcPF7xodct6kdODMUPTq51qUsYdEZbLRIuaCsPUTArqD4zXhyNwshzqSXSlxygoAiuwI
+         L8cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JOx+dix68GBdJvNP9ttj7+w4PMBc+DbmStt47v8N/pU=;
+        b=Y22K/k1wPeZooP4ofete8NOOETfair0PYwtOBoZIAJkvI1UsqAX2Ae0AmIBctVPTOL
+         DadTdFsYzKy752iH9+oJVmgWyjv2hhVf3OaRrPvIuyZIRK9UiLYmBZ4P3k6rfy0ffEoy
+         LxkY49vFHewtFEYHAeNguTsA+P6J2QCxleAyUkzpzq5zRQe1XN0bGmY9WfwdMR30dvry
+         N7BUO9YK/fAV+RBncAwkj7ZgRg8HE30rutEaAARxuSLj7Fyqjqe6JbQ5fyqprFbt1WYg
+         9eJq8teu/w7dVgUr0gz4fWLQd2xC3z64If0vRBJqImFkAU7MLmoIhdxLDaOvpFgoQ8F0
+         YkQQ==
+X-Gm-Message-State: AOAM53363SOnx78sY/nBl+RZcm10swp6Pi62UUvQ7u3KT+4wI2VLbVCN
+        X2SKMV7/cDYMVg5n6cMZ8sHfxA==
+X-Google-Smtp-Source: ABdhPJz6uqyOABPokPOn4StdYCj4ng5yodK9AjOFKgjG065uT5nJpm0FyVgR5ITaW6ZmDkma3pM6kA==
+X-Received: by 2002:a62:1443:0:b029:197:e734:a289 with SMTP id 64-20020a6214430000b0290197e734a289mr20421412pfu.66.1606766336221;
+        Mon, 30 Nov 2020 11:58:56 -0800 (PST)
+Received: from google.com (242.67.247.35.bc.googleusercontent.com. [35.247.67.242])
+        by smtp.gmail.com with ESMTPSA id w18sm17896847pfi.216.2020.11.30.11.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 11:58:55 -0800 (PST)
+Date:   Mon, 30 Nov 2020 19:58:51 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     =?utf-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Suravee.Suthikulpanit@amd.com" <Suravee.Suthikulpanit@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH] kvm:svm: Return the correct error code
+Message-ID: <X8VO+4/r+LltG7AF@google.com>
+References: <HKAPR02MB42915D77D43D4ED125BD2121E0F90@HKAPR02MB4291.apcprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <HKAPR02MB42915D77D43D4ED125BD2121E0F90@HKAPR02MB4291.apcprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 02:12:01 +0000
-Nícolas F. R. A. Prado <nfraprado@protonmail.com> wrote:
+On Thu, Nov 26, 2020, 彭浩(Richard) wrote:
+> The return value of sev_asid_new is assigned to the variable asid, which
+> should be returned directly if the asid is an error code.
+> 
+> Fixes: 1654efcbc431 ("KVM: SVM: Add KVM_SEV_INIT command")
+> Signed-off-by: Peng Hao <richard.peng@oppo.com>
 
-> Sphinx 3.1 introduced namespaces for C cross-references. With this,
-> each C domain type/function declaration is put inside the namespace that
-> was active at the time of its declaration.
-> 
-> Add support for automatic cross-referencing inside C namespaces by
-> checking whether the corresponding source file had a C namespace Sphinx
-> directive, and if so, try cross-referencing inside of it before going to
-> the global scope.
-> 
-> This assumes there's only one namespace (if any) per rst file.
-> 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+It's probably worth noting in the changelog that this is a nop.  sev_asid_new()
+can only fail with -EBUSY, and ret is guaranteed to be -EBUSY as well.  I agree
+it's probably better to return the result of sev_asid_new() instead of assuuming
+it will always return -EBUSY.
+
 > ---
+>  arch/x86/kvm/svm/sev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> To those following from v1:
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 566f4d18185b..41cea6b69860 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -174,7 +174,7 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
 > 
-> I ended up doing the simplest solution possible, which is to just directly read
-> the rst source corresponding to the doc page right before doing the automarkup.
-> It's not very efficient in the sense that the source is being read
-> twice (first by Sphinx, then by this), but it sidesteps the "data sharing
-> between processes" issue, so parallel_read_safe can be reenabled, and I didn't
-> notice any performance hit from this patch (as opposed to the big hit from v1).
-> Works with both Sphinx 2 and 3.
-
-OK, I've (finally) applied this, thanks.  It does indeed seem to work.
-Still hoping for something more elegant someday...:)
-
-Thanks,
-
-jon
+>         asid = sev_asid_new();
+>         if (asid < 0)
+> -               return ret;
+> +               return asid;
+> 
+>         ret = sev_platform_init(&argp->error);
+>         if (ret)
+> --
+> 2.18.4
