@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A15D2C88C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F782C88D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgK3P6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:58:14 -0500
-Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:10688
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S1728611AbgK3P6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:58:34 -0500
+Received: from mail-dm6nam11on2074.outbound.protection.outlook.com ([40.107.223.74]:50656
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728457AbgK3P6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:58:12 -0500
+        id S1728504AbgK3P6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:58:13 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MXcaEty8PTCTAzoSJ8NztQDqJcWF6KDQmfZfghy2pHNImZKG818BcShNmhYr53VqU9wqsXWdNbA/KQIpke6w1FN/2st16QJLAcHpb6JgfBxVn2tH637Hp6GuWpLD2aReNdTTR/GQoPkSZw1SLneo9tqf88t5x6tpAdLRUP/0KwTVnos9w3WkxxTSAy04Uy7wkhMEVD3OkgtxUdpPv7JIkIIOPWCUJQV7N/KWxZ3hXG4niVOYGvTwtdDc4mWeW6ynBlyu8Geyrxg3J3AH8NQQ/4w7Swk5INED7OHlj1z6EV2co8Ut93M+HeVTzbvXkObzkAx5JR8WIS22mPGcwrwfDQ==
+ b=Phr1osq4WFQQfnMcNqE6ccCqthafCkEmTJcBQKoT+Z9nW+qfUygWFFssf8V/0X7F1rDwAFQQTiyoovlCSuJabehzxi2aJHIvxQkTjb6nm4V+jhTLjSdfZdAOb4LmF7A1YJqxMTLlmRBxN7OkLbv4EdvNJNXiUmn2kIR4b1pRahV6NAtc+d42v6CLOUuO53wcc2GVK7yLT/HSjQE4YXhWgSn/AOYXIF/YVPIEutNKJoqsqzy5C5k0hA6G6SteA+ushtLZexfFxuOc31vihCw9CCnFpG3vprtQlgHLZbXDGgr4Si+rA+xNdZPoYl77aibkf9rhXshsawkcub1t28oglg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bNHg6kZpmdHVEpaD1m9q2PUUB2Bn0L0H+Uu1ZctiVtk=;
- b=oHjDzVVEq2LX/tlbm4wJ/jbjETNal/7ekmJCRmnILgnDZ6sxJWA+FKg8xWEqvf709+Z+0JRdQh+khW7BUhRr0QicbxC9fDfGgfMlZvjSxmifoq8WU7MoGWBQjsS7uCFJT4OwIO00HHIMX8dFbiA9jDiD1fv3rnT7CrMFGCex2nhLxCq2ql1M6iB6wnxbhTigeh6mCGdFIpw3yUoxM58aP6/PdjIpduUnwKOgbUAFu5A2DPy1MSQRymEKEMM2+BQGcRXpi7MuZ81v7FTGtRfgYTaDAL0ESOmZ3is238cmWKSqJhiLMFr8d8/8l1YScKsfGmwjGQHOAbCKo3zEhdDSQw==
+ bh=VJ+f26VHd7qTVop0EtmJHM9Dm0melO76w6gQnDIAoCo=;
+ b=cz/MW8mEBu0Hns4yuQwW0ay2bSsLYZcUbH2YfqJjuEsNreS6zoAeR/I3nTUw3hZBLs2oYFZa8UqfmaTguOUNGLNNjqoO0uD3rZ/adpRA3NnktIHuL7/K3cQ/koFYtnpIW+hBPJldUi5PqLg/nlTCcTi5ygYIW9CjTU9N6kg7Ii1EfftjklpHw7/eoRuB8g9nGPwChAn2dJMpdpagIuRcC4ggsnG6/iATgDxi53Apl8I+dVa9aYqoIgH1CaFGxw7bdwiyBM0ua9rVJ5rvC2TZQeMqVtWOuXAfOCw4qx7e1t4HjkUPVYai3x8oR4JhEiA7sWEUaz9HE65E5NnQcKD4pw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.62.198) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
  dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
@@ -26,16 +26,16 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bNHg6kZpmdHVEpaD1m9q2PUUB2Bn0L0H+Uu1ZctiVtk=;
- b=ntBAhO1Irj6Jy7GgC50bUW7/gG9K8jmHo8VvSBkoVRnmu99Tizll/Uw7zqSzgSIY4zQID6Nx6EL0C4gGaXWNOaW9fMYM8hJzjEAamUNStC8bE9ymyf2FoFRYSFjAD9eEuPoHfw9XaLH1emUOtWzPKtDtH/UVEu+6Kli3VeIyk9o=
-Received: from BL0PR03CA0014.namprd03.prod.outlook.com (2603:10b6:208:2d::27)
- by MW2PR02MB3737.namprd02.prod.outlook.com (2603:10b6:907:3::10) with
+ bh=VJ+f26VHd7qTVop0EtmJHM9Dm0melO76w6gQnDIAoCo=;
+ b=OgguQIpz4ZQD6XziHFJmKeJjwOeJjQy/yh1m6D+vzpVpRMyxQAnjJK80xvbdUbn9pqlAI38zDD5mGtCYFygXqmqxJ1/73MC8Fcs7wiZbd9S4CuzE38XzEcpzD2B5THcHwCivy+N3dskiL+mnxfz5Ri0Xbtf+Sr9b6YWRiMz5L/s=
+Received: from MN2PR22CA0003.namprd22.prod.outlook.com (2603:10b6:208:238::8)
+ by SN6PR02MB4541.namprd02.prod.outlook.com (2603:10b6:805:a3::33) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Mon, 30 Nov
- 2020 15:57:18 +0000
-Received: from BL2NAM02FT004.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:2d:cafe::e7) by BL0PR03CA0014.outlook.office365.com
- (2603:10b6:208:2d::27) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 15:57:19 +0000
+Received: from BL2NAM02FT052.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:238:cafe::60) by MN2PR22CA0003.outlook.office365.com
+ (2603:10b6:208:238::8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend
  Transport; Mon, 30 Nov 2020 15:57:17 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
@@ -46,15 +46,15 @@ Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.62.198 as permitted sender) receiver=protection.outlook.com;
  client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
 Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BL2NAM02FT004.mail.protection.outlook.com (10.152.76.168) with Microsoft SMTP
+ BL2NAM02FT052.mail.protection.outlook.com (10.152.77.0) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.20.3611.27 via Frontend Transport; Mon, 30 Nov 2020 15:57:17 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
  xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.1913.5; Mon, 30 Nov 2020 07:57:17 -0800
 Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
  15.1.1913.5 via Frontend Transport; Mon, 30 Nov 2020 07:57:17 -0800
 Envelope-to: mathieu.poirier@linaro.org,
  devicetree@vger.kernel.org,
@@ -64,15 +64,15 @@ Envelope-to: mathieu.poirier@linaro.org,
 Received: from [172.19.2.206] (port=47338 helo=xsjblevinsk50.xilinx.com)
         by smtp.xilinx.com with esmtp (Exim 4.90)
         (envelope-from <ben.levinsky@xilinx.com>)
-        id 1kjlYD-000342-7t; Mon, 30 Nov 2020 07:57:17 -0800
+        id 1kjlYD-000342-8N; Mon, 30 Nov 2020 07:57:17 -0800
 From:   Ben Levinsky <ben.levinsky@xilinx.com>
 To:     <mathieu.poirier@linaro.org>
 CC:     <devicetree@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v24 1/5] firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU configuration.
-Date:   Mon, 30 Nov 2020 07:57:13 -0800
-Message-ID: <20201130155717.26008-2-ben.levinsky@xilinx.com>
+Subject: [PATCH v24 2/5] firmware: xilinx: Add shutdown/wakeup APIs
+Date:   Mon, 30 Nov 2020 07:57:14 -0800
+Message-ID: <20201130155717.26008-3-ben.levinsky@xilinx.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201130155717.26008-1-ben.levinsky@xilinx.com>
 References: <20201130155717.26008-1-ben.levinsky@xilinx.com>
@@ -81,85 +81,143 @@ Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 36e0c388-7d38-4491-9853-08d895489d01
-X-MS-TrafficTypeDiagnostic: MW2PR02MB3737:
-X-Microsoft-Antispam-PRVS: <MW2PR02MB3737BD83C372605FA1F0C9E6B5F50@MW2PR02MB3737.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 1b17dbfc-006c-4789-c06e-08d895489d13
+X-MS-TrafficTypeDiagnostic: SN6PR02MB4541:
+X-Microsoft-Antispam-PRVS: <SN6PR02MB454112F4E85AAFB3CC2B8F83B5F50@SN6PR02MB4541.namprd02.prod.outlook.com>
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:254;
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KXzCIy3YE8ZYQk7NQwbeTlBell1TeePnwUNyt57QciOcXF57K/oYhuF9WSnoZrMESGz/WqE4Xe4YcI8tWJa+R3QOq5jZSWF3dRYmTmjHdqrG5qQDd4NKzQ+aQXXCn7I9wxQdskAIo0FIY+HJETN4trNxBlSM6etpInru91SGNyj6qP+ZDnux8y7hHfvke6zFOwl019S4JYJG60OmvcJPCgEyof2zHMYXizeLBrvLtGBHHWeJCeCKgtC5h2/ohHlUvFBscs6yRp5gtoZLIE7l7yt1Ncs7HxPOtzKmjHNWMfjR/8QvTaRHwHnnFfLZYC8bbTj8GDw+PiPUwqKHIMEhiSwDpZCHJKdQKyne5hhrPHTGpIPGD5GvmrveEM7WJYwVlMVzwc7MQy4FiBLjmvc7FrXMDUNypYjOVzlxbj2xRYs=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(376002)(136003)(46966005)(2616005)(316002)(36906005)(9786002)(70206006)(54906003)(478600001)(44832011)(336012)(4326008)(70586007)(5660300002)(7636003)(356005)(186003)(8936002)(7696005)(47076004)(36756003)(82310400003)(26005)(2906002)(8676002)(6666004)(82740400003)(426003)(1076003)(83380400001)(6916009)(102446001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: oZL0ixPu/N81H1KikygvlA6+jKfa8yghfUX5xAG2pb/vEsP6ImiK92R4jJ2zzWM0nTcCEFLUJfLFXLuqGmtkhVSpsVvn16WUFOd8cYWGLlak804/hGCKOcp0MlyU3YOKlQi4oEff9yEEt+FgwF9EBneIyrK6CCu9N1HsIEu4iubQ4cr+ZC2r2mKZD0cwsgEj75Kw73Apr/yjPy/41W9hXTNpvN3QS4qCBGtYsG1ny7OKo6V5jiOy9EgTDafC/ymiJsnlFYhufY9VECSuujC7DZev+HVLsgy7/lYooIJww5wcJFSkgqIesREY6TEeloRUlsgtn66ye+NLc9v6YH0NP2YtZQgfXnjoU/qlUzoKIctIVSqvS4QtbUCg2GrHWeHdBz/UgrnyUJTHvGdkodC/dlcWMhoXmJ8atStHeZpFyIY=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(136003)(396003)(46966005)(2616005)(478600001)(336012)(70206006)(426003)(5660300002)(70586007)(83380400001)(6666004)(44832011)(1076003)(26005)(54906003)(316002)(2906002)(7696005)(356005)(82740400003)(8676002)(6916009)(47076004)(9786002)(8936002)(7636003)(186003)(4326008)(36756003)(36906005)(82310400003)(102446001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 15:57:17.5777
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 15:57:17.7017
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36e0c388-7d38-4491-9853-08d895489d01
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b17dbfc-006c-4789-c06e-08d895489d13
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT004.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT052.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR02MB3737
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB4541
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ZynqMP firmware ioctl enums for RPU configuration and TCM Nodes for
-later use via request_node and release_node
+Add shutdown/wakeup a resource eemi operations to shutdown
+or bringup a resource.
+
+Note alignment of args matches convention of other fn's in this file.
+The reason being that the long fn name results in aligned args that
+otherwise go over 80 chars so shift right to avoid this
 
 Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
 ---
- include/linux/firmware/xlnx-zynqmp.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/firmware/xilinx/zynqmp.c     | 35 ++++++++++++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h | 23 ++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
+diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+index 8d1ff2454e2e..a966ee956573 100644
+--- a/drivers/firmware/xilinx/zynqmp.c
++++ b/drivers/firmware/xilinx/zynqmp.c
+@@ -846,6 +846,41 @@ int zynqmp_pm_release_node(const u32 node)
+ }
+ EXPORT_SYMBOL_GPL(zynqmp_pm_release_node);
+ 
++/**
++ * zynqmp_pm_force_pwrdwn - PM call to request for another PU or subsystem to
++ *             be powered down forcefully
++ * @node:  Node ID of the targeted PU or subsystem
++ * @ack:   Flag to specify whether acknowledge is requested
++ *
++ * Return: status, either success or error+reason
++ */
++int zynqmp_pm_force_pwrdwn(const u32 node,
++			   const enum zynqmp_pm_request_ack ack)
++{
++	return zynqmp_pm_invoke_fn(PM_FORCE_POWERDOWN, node, ack, 0, 0, NULL);
++}
++EXPORT_SYMBOL_GPL(zynqmp_pm_force_pwrdwn);
++
++/**
++ * zynqmp_pm_request_wake - PM call to wake up selected master or subsystem
++ * @node:  Node ID of the master or subsystem
++ * @set_addr:  Specifies whether the address argument is relevant
++ * @address:   Address from which to resume when woken up
++ * @ack:   Flag to specify whether acknowledge requested
++ *
++ * Return: status, either success or error+reason
++ */
++int zynqmp_pm_request_wake(const u32 node,
++			   const bool set_addr,
++			   const u64 address,
++			   const enum zynqmp_pm_request_ack ack)
++{
++	/* set_addr flag is encoded into 1st bit of address */
++	return zynqmp_pm_invoke_fn(PM_REQUEST_WAKEUP, node, address | set_addr,
++				   address >> 32, ack, NULL);
++}
++EXPORT_SYMBOL_GPL(zynqmp_pm_request_wake);
++
+ /**
+  * zynqmp_pm_set_requirement() - PM call to set requirement for PM slaves
+  * @node:		Node ID of the slave
 diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 5968df82b991..0dd2d188f8aa 100644
+index 0dd2d188f8aa..0cc862b26263 100644
 --- a/include/linux/firmware/xlnx-zynqmp.h
 +++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -104,6 +104,10 @@ enum pm_ret_status {
- };
+@@ -12,6 +12,7 @@
  
- enum pm_ioctl_id {
-+	IOCTL_GET_RPU_OPER_MODE = 0,
-+	IOCTL_SET_RPU_OPER_MODE = 1,
-+	IOCTL_RPU_BOOT_ADDR_CONFIG = 2,
-+	IOCTL_TCM_COMB_CONFIG = 3,
- 	IOCTL_SD_DLL_RESET = 6,
- 	IOCTL_SET_SD_TAPDELAY,
- 	IOCTL_SET_PLL_FRAC_MODE,
-@@ -129,6 +133,21 @@ enum pm_query_id {
- 	PM_QID_CLOCK_GET_MAX_DIVISOR,
- };
+ #ifndef __FIRMWARE_ZYNQMP_H__
+ #define __FIRMWARE_ZYNQMP_H__
++#include <linux/types.h>
  
-+enum rpu_oper_mode {
-+	PM_RPU_MODE_LOCKSTEP = 0,
-+	PM_RPU_MODE_SPLIT = 1,
-+};
-+
-+enum rpu_boot_mem {
-+	PM_RPU_BOOTMEM_LOVEC = 0,
-+	PM_RPU_BOOTMEM_HIVEC = 1,
-+};
-+
-+enum rpu_tcm_comb {
-+	PM_RPU_TCM_SPLIT = 0,
-+	PM_RPU_TCM_COMB = 1,
-+};
-+
- enum zynqmp_pm_reset_action {
- 	PM_RESET_ACTION_RELEASE,
- 	PM_RESET_ACTION_ASSERT,
-@@ -273,6 +292,10 @@ enum zynqmp_pm_request_ack {
- };
+ #define ZYNQMP_PM_VERSION_MAJOR	1
+ #define ZYNQMP_PM_VERSION_MINOR	0
+@@ -64,6 +65,8 @@
  
- enum pm_node_id {
-+	NODE_TCM_0_A = 0xf,
-+	NODE_TCM_0_B = 0x10,
-+	NODE_TCM_1_A = 0x11,
-+	NODE_TCM_1_B = 0x12,
- 	NODE_SD_0 = 39,
- 	NODE_SD_1,
- };
+ enum pm_api_id {
+ 	PM_GET_API_VERSION = 1,
++	PM_FORCE_POWERDOWN = 8,
++	PM_REQUEST_WAKEUP = 10,
+ 	PM_SYSTEM_SHUTDOWN = 12,
+ 	PM_REQUEST_NODE = 13,
+ 	PM_RELEASE_NODE,
+@@ -380,6 +383,12 @@ int zynqmp_pm_write_pggs(u32 index, u32 value);
+ int zynqmp_pm_read_pggs(u32 index, u32 *value);
+ int zynqmp_pm_system_shutdown(const u32 type, const u32 subtype);
+ int zynqmp_pm_set_boot_health_status(u32 value);
++int zynqmp_pm_force_pwrdwn(const u32 target,
++			   const enum zynqmp_pm_request_ack ack);
++int zynqmp_pm_request_wake(const u32 node,
++			   const bool set_addr,
++			   const u64 address,
++			   const enum zynqmp_pm_request_ack ack);
+ #else
+ static inline struct zynqmp_eemi_ops *zynqmp_pm_get_eemi_ops(void)
+ {
+@@ -530,6 +539,20 @@ static inline int zynqmp_pm_set_boot_health_status(u32 value)
+ {
+ 	return -ENODEV;
+ }
++
++static inline int zynqmp_pm_force_pwrdwn(const u32 target,
++					 const enum zynqmp_pm_request_ack ack)
++{
++	return -ENODEV;
++}
++
++static inline int zynqmp_pm_request_wake(const u32 node,
++					 const bool set_addr,
++					 const u64 address,
++					 const enum zynqmp_pm_request_ack ack)
++{
++	return -ENODEV;
++}
+ #endif
+ 
+ #endif /* __FIRMWARE_ZYNQMP_H__ */
 -- 
 2.17.1
 
