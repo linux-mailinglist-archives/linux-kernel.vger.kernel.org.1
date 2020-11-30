@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEE12C8465
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB222C8477
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726213AbgK3MxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:53:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgK3MxA (ORCPT
+        id S1726400AbgK3Myj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:54:39 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:47348 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgK3Myg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:53:00 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F7DC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 04:52:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CkXlhOTNArvcEwtoY+j2D/m8Y1fwdw5YN4LoyJdUbDU=; b=fC1TBShLSCirHrbvO/E5xG+lnH
-        eiieQOLE4O9xCytNE4vUpau7P3Q7fpCqfNLw1q8CNaohg3K88gfxhGg+mnxucF00ZRGWUuo9XbinO
-        rJSpvx3VBZaJbNRBlnZSWfFjbCK2xmVdLW0gQsg35M6rtsdXhTSPsQuwvMZkiK7DgEqHb72ZmsAk7
-        xtSOo9hki32f+8awTmELDAmYCvIqDnBfzHPrV1wW3p87QoicouQCutFW5vlKITYxsFjFPFcJu6XAK
-        TGQCdGCcZt8A3XwcYl68ImkqVae6pl5BSQU+E/IQ/iulXHH4eKegoj7Elh7a9f/ndJbqZwfhrdRK2
-        f6p6iGJQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kjif9-0002AK-25; Mon, 30 Nov 2020 12:52:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2B8D301179;
-        Mon, 30 Nov 2020 13:52:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8EA162018E5AC; Mon, 30 Nov 2020 13:52:11 +0100 (CET)
-Date:   Mon, 30 Nov 2020 13:52:11 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201130125211.GN2414@hirez.programming.kicks-ass.net>
-References: <160665707945.2808.5384034634184489471.tglx@nanos>
- <160665708065.2808.15317906761841446715.tglx@nanos>
- <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
- <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
- <yt9dh7p78d8l.fsf@linux.ibm.com>
- <yt9dpn3v3u1m.fsf@linux.ibm.com>
+        Mon, 30 Nov 2020 07:54:36 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUCT3mC013966;
+        Mon, 30 Nov 2020 12:53:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=T4e4SA0nsSEz5R/oPuOynUVhSHa8l4YzlQu9nbAV6w0=;
+ b=Q37V5W8BrV9ozjYfQYey5wQMtLuLQ4dmuxgiTZBdTxDJp0/FHLpDNWXFDvMVmNBdLR+v
+ XssuGqWJVxMTnYzAgT/wMDDY0XqipupHDTedLvuArKTytQ5SWxLNtHRaJ9oSF3+GZCbk
+ +S0h2Zf92kCHJH2lKo0ODJT4OV5FablRJU5o7psx3W5ufD4Dqge78TjQ1Cshr/xe2CJA
+ +eDi8+n/7dlCQLCCw4KjCMhm+2W4Rn8gSLB0CvFBQOsfdE6OJAj/fkM+DQZK1kr6UU8Y
+ /ubilApDr6oJZUlFcgpmIl3DK65hBlIJKn01E8NoVSyfHWhQm0iOx5RWW9orbSgwiFYx cw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 353egkctw6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 12:53:43 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUCpG43118219;
+        Mon, 30 Nov 2020 12:53:42 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3540fv1u59-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 12:53:42 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AUCreQG015374;
+        Mon, 30 Nov 2020 12:53:40 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 04:53:39 -0800
+Date:   Mon, 30 Nov 2020 15:53:30 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] media: rockchip: rkisp1: remove some dead code
+Message-ID: <X8TrSj3PbqVtN5XQ@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yt9dpn3v3u1m.fsf@linux.ibm.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300082
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011300081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:31:33PM +0100, Sven Schnelle wrote:
-> [    0.670280] ------------[ cut here ]------------ 
-> [    0.670288] WARNING: CPU: 1 PID: 0 at kernel/rcu/tree.c:1054 rcu_irq_enter+0x7e/0xa8 
-> [    0.670293] Modules linked in: 
-> [    0.670299] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W         5.10.0-rc6 #2263 
-> [    0.670304] Hardware name: IBM 2964 NC9 702 (z/VM 6.4.0) 
-> [    0.670309] Krnl PSW : 0404d00180000000 0000000000d8a8da (rcu_irq_enter+0x82/0xa8) 
-> [    0.670318]            R:0 T:1 IO:0 EX:0 Key:0 M:1 W:0 P:0 AS:3 CC:1 PM:0 RI:0 EA:3 
-> [    0.670325] Krnl GPRS: 0000000000000000 0000000080000002 0000000000000001 000000000101fcee 
-> [    0.670331]            0000000000000000 0000000000000000 0000000000000000 0000000000000000 
-> [    0.670337]            000003e00029ff48 0000000000000000 00000000017212d8 0000000000000001 
-> [    0.670343]            0000000005ba0100 00000000000324bb 000003e00029fe40 000003e00029fe10
->  
-> [    0.670358] Krnl Code: 0000000000d8a8ca: ec180013017e        cij     %r1,1,8,0000000000d8a8f0 
-> [    0.670358]            0000000000d8a8d0: ecb80005007e        cij     %r11,0,8,0000000000d8a8da 
-> [    0.670358]           #0000000000d8a8d6: af000000            mc      0,0 
-> [    0.670358]           >0000000000d8a8da: ebbff0a00004        lmg     %r11,%r15,160(%r15) 
-> [    0.670358]            0000000000d8a8e0: c0f4ffffff68        brcl    15,0000000000d8a7b0 
-> [    0.670358]            0000000000d8a8e6: c0e5000038c1        brasl   %r14,0000000000d91a68 
-> [    0.670358]            0000000000d8a8ec: a7f4ffdc            brc     15,0000000000d8a8a4 
-> [    0.670358]            0000000000d8a8f0: c0e5000038bc        brasl   %r14,0000000000d91a68 
-> [    0.670392] Call Trace: 
-> [    0.670396]  [<0000000000d8a8da>] rcu_irq_enter+0x82/0xa8  
-> [    0.670401]  [<0000000000157f9a>] irq_enter+0x22/0x30  
-> [    0.670404]  [<000000000010e51c>] do_IRQ+0x64/0xd0  
-> [    0.670408]  [<0000000000d9a65a>] ext_int_handler+0x18e/0x194  
-> [    0.670412]  [<0000000000d9a6a0>] psw_idle+0x40/0x48  
-> [    0.670416] ([<0000000000104202>] enabled_wait+0x22/0xf0) 
-> [    0.670419]  [<00000000001046e2>] arch_cpu_idle+0x22/0x38  
-> [    0.670423]  [<0000000000d986cc>] default_idle_call+0x74/0xd8  
-> [    0.670427]  [<000000000019a94a>] do_idle+0xf2/0x1b0  
-> [    0.670431]  [<000000000019ac7e>] cpu_startup_entry+0x36/0x40  
-> [    0.670435]  [<0000000000118b9a>] smp_start_secondary+0x82/0x88  
+The debugfs_create_dir() function never returns NULLs.  It's not supposed
+to checked for errors in the normal case and there is no need to check
+in this function so let's just delete this dead code.
 
-But but but...
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-  do_idle()			# IRQs on
-    local_irq_disable();	# IRQs off
-    defaul_idle_call()		# IRQs off
-      arch_cpu_idle()		# IRQs off
-        enabled_wait()		# IRQs off
-	  raw_local_save()	# still off
-	  psw_idle()		# very much off
-	    ext_int_handler	# get an interrupt ?!?!
-
-Help?
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+index 9af137e4967f..68da1eed753d 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+@@ -430,10 +430,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+ 	struct rkisp1_debug *debug = &rkisp1->debug;
+ 
+ 	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
+-	if (!debug->debugfs_dir) {
+-		dev_dbg(rkisp1->dev, "failed to create debugfs directory\n");
+-		return;
+-	}
+ 	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
+ 			     &debug->data_loss);
+ 	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
+-- 
+2.29.2
