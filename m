@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E6B2C8682
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6014F2C8685
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgK3OTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgK3OTL (ORCPT
+        id S1726868AbgK3OU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:20:56 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55706 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgK3OU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:19:11 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A66CC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:18:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=sJ+ka9ehbBMVNS8y8pzP5FQoENz2n/b9KCNAkBAxDhQ=; b=xnZMQ0V1YxZf479NQX/Hty0e1
-        RdUvqa8xWEV6UBmNosrUYJA4/H6Xb2XfD9/R7AaTCQZBVDVCpSrjN74OOctIeJcslawGoilxKGvIu
-        r+fd5n5zixNmPKE8JHmCy4ijHZ+THoaoVAdFhIqAVJpaKh5BDl++2QC+6zZoITQa5g7SssnZI/KJK
-        zDxvdShtAfbk8z5b66de1R7L/PyOURyMavqgnLOg0k1awvKYJH5VzW/La/meN3dUujalORgdOdxR2
-        LsPlpXGUAeQ7GEc/8hLh2AiE6omz7nJ7DG3u3f6TxWtOvUher2QTDzzjn17iZKdXf7WICiZkpnZ9v
-        ToayO/mxA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38012)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kjk0G-0006sS-IF; Mon, 30 Nov 2020 14:18:08 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kjk0C-00054X-SR; Mon, 30 Nov 2020 14:18:04 +0000
-Date:   Mon, 30 Nov 2020 14:18:04 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Ard Biesheuvel' <ardb@kernel.org>, Antony Yu <swpenim@gmail.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RESEND,PATCH] ARM: fix __div64_32() error when compiling with
- clang
-Message-ID: <20201130141804.GV1551@shell.armlinux.org.uk>
-References: <20201123073634.6854-1-swpenim@gmail.com>
- <CAMj1kXGsQ9K57SvZ74pmD+_=338sGXjc_t+hCXMh-9BPanXnhA@mail.gmail.com>
- <CAMj1kXGs-woGGnM2QkhY5NbRRKP8_N4BY9ScBtga8mcyHoK2+A@mail.gmail.com>
- <20201130102122.GT1551@shell.armlinux.org.uk>
- <CAMj1kXHuERnB01sNrpY9w3C0ECOry7jCK=A2H0D4-_cBXbOmcw@mail.gmail.com>
- <ca83a5acdf514169b2fde3ec12ea59fd@AcuMS.aculab.com>
+        Mon, 30 Nov 2020 09:20:56 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id D7FDC1F45036
+Subject: Re: [PATCH] media: rockchip: rkisp1: remove some dead code
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <X8TrSj3PbqVtN5XQ@mwanda>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <a6d9660f-84ec-317d-c3aa-9b3bda595d49@collabora.com>
+Date:   Mon, 30 Nov 2020 11:20:05 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca83a5acdf514169b2fde3ec12ea59fd@AcuMS.aculab.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <X8TrSj3PbqVtN5XQ@mwanda>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:58:27PM +0000, David Laight wrote:
-> > And actually, the same applies on BE, but the other way around. So we
-> > should mark __xl as an output register as well, as __xl will assume
-> > the right value depending on the endianness.
+Hi Dan,
+
+Thank you for your patch.
+
+On 11/30/20 9:53 AM, Dan Carpenter wrote:
+> The debugfs_create_dir() function never returns NULLs.  It's not supposed
+> to checked for errors in the normal case and there is no need to check
+> in this function so let's just delete this dead code.
 > 
-> Why not use "+r" to indicate than an 'output' parameter is also
-> used as an input.
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
-> Rather cleaner than specifying the same C variable as both
-> input and output.
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> index 9af137e4967f..68da1eed753d 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> @@ -430,10 +430,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+>  	struct rkisp1_debug *debug = &rkisp1->debug;
+>  
+>  	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
+> -	if (!debug->debugfs_dir) {
+> -		dev_dbg(rkisp1->dev, "failed to create debugfs directory\n");
+> -		return;
+> -	}
 
-You have an incorrect understanding. "__n" is the input operand in r0.
-"__rem" is the output operand in r0/r1.
+I was taking a look at the debugfs_create_dir() code, and I saw it can
+return ERR_PTR(), so ideally we should check for errors with IS_ERR() / PTR_ERR().
 
-No single C variable is used as both an input and an output.
+Also from the docs:
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+ * <snip>  If an error occurs, ERR_PTR(-ERROR) will be
+ * returned.
+ *
+ * If debugfs is not enabled in the kernel, the value -%ENODEV will be
+ * returned.
+
+
+
+>  	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
+>  			     &debug->data_loss);
+>  	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
+> 
+
+
+nit: I would change the name of the commit just to make it clear what it
+does.
+Example: Remove useless error check from debugfs_create_dir()
+
+Thanks,
+Helen
