@@ -2,147 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6772C8B8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C382C8B92
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgK3Rme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:42:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727874AbgK3Rmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:42:33 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90E13206E3;
-        Mon, 30 Nov 2020 17:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606758112;
-        bh=9oc09UhZQ+9WG+FlwKiW0WDOYaBxkPTKMA/1Xn5sjh0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CXUyAX68aWV4Ug2I2fNCAwn2NWdwXHawizNENhyFI27GCX9wS4eMX+bCBardiZBmt
-         l59EzfuUWNm185ji2QfiYCSKC7YyfbLMzxgIbFy5I06J6rdKko+0aZ7KFopwGNKJ0E
-         eZQEgisJ9+rWDpfAZ686mIKtux4EAdmG+JeYDY6Q=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2F3C84079D; Mon, 30 Nov 2020 14:41:55 -0300 (-03)
-Date:   Mon, 30 Nov 2020 14:41:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Alexandre Truong <alexandre.truong@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        james.clark@arm.com, Leo Yan <leo.yan@linaro.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: Re: [PATCH] perf tools: add aarch64 registers to --user-regs
-Message-ID: <20201130174155.GA49333@kernel.org>
-References: <20201127153923.26717-1-alexandre.truong@arm.com>
- <9022edaa-78c5-2397-320a-4ca3d884fced@huawei.com>
+        id S2387834AbgK3Rop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:44:45 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47036 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgK3Roo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:44:44 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AUHgwKd087139;
+        Mon, 30 Nov 2020 11:42:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606758178;
+        bh=ebyvGHgxYnsMErdJ7gl06ypcszQPPlEmdBFZ0QPGf0U=;
+        h=Date:From:To:CC:Subject;
+        b=EiABBD0jP87tzD9BLjSF7xJCPEH8/OQhsIvpGRcGijW0P53GLquyehIXvuRdeUEZl
+         SGrDBPNixvZFUew7UJWoMLX14BLmsQhx3V4kP2hSd4+iig7jHTYcAtOka/LHIUnOhH
+         wSUVkgnjudvmRn2H9BMEFDB93OlCQEXHdVA+UHMA=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AUHgwmu084893
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 11:42:58 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 30
+ Nov 2020 11:42:58 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 30 Nov 2020 11:42:58 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AUHgwIn011091;
+        Mon, 30 Nov 2020 11:42:58 -0600
+Date:   Mon, 30 Nov 2020 11:42:58 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        <arm@kernel.org>, <soc@kernel.org>
+CC:     <t-kristo@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] arm64: TI K3 DT updates for v5.11
+Message-ID: <20201130174258.ljsiokkyr7x7tsbd@covenant>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lc77dsi6dcg2y3ab"
 Content-Disposition: inline
-In-Reply-To: <9022edaa-78c5-2397-320a-4ca3d884fced@huawei.com>
-X-Url:  http://acmel.wordpress.com
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Nov 30, 2020 at 05:30:12PM +0000, John Garry escreveu:
-> On 27/11/2020 15:39, Alexandre Truong wrote:
-> > Previously, this command returns no help message on aarch64:
-> > 
-> >    -> ./perf record --user-regs=?
-> > 
-> >    available registers:
-> >    Usage: perf record [<options>] [<command>]
-> >        or: perf record [<options>] -- <command> [<options>]
-> > 
-> > With this change, the registers are listed.
-> > 
-> >    -> ./perf record --user-regs=?
-> > 
-> >    available registers: x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 lr sp pc
-> > 
-> > It's also now possible to record subsets of registers on aarch64:
-> > 
-> >    -> ./perf record --user-regs=x4,x5 ls
-> >    -> ./perf report --dump-raw-trace
-> > 
-> >    12801163749305260 0xc70 [0x40]: PERF_RECORD_SAMPLE(IP, 0x2): 51956/51956: 0xffffaa6571f0 period: 145785 addr: 0
-> >    ... user regs: mask 0x30 ABI 64-bit
-> >    .... x4    0x000000000000006c
-> >    .... x5    0x0000001001000001
-> >     ... thread: ls:51956
-> >      ...... dso: /usr/lib64/ld-2.17.so
-> > 
-> > Cc: John Garry <john.garry@huawei.com>
-> > Cc: Leo Yan <leo.yan@linaro.org>
-> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> > Cc: Jiri Olsa <jolsa@redhat.com>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
-> 
-> This looks ok, just adding in more guys recorded as reviewers in
-> MAINTAINERS.
+--lc77dsi6dcg2y3ab
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Taking that "this looks ok" as an Acked-by as per
-Documentation/process/submitting-patches.rst/
- 
-> John
-> 
-> > ---
-> >   tools/perf/arch/arm64/util/perf_regs.c | 33 ++++++++++++++++++++++++++
-> >   1 file changed, 33 insertions(+)
-> > 
-> > diff --git a/tools/perf/arch/arm64/util/perf_regs.c b/tools/perf/arch/arm64/util/perf_regs.c
-> > index 2833e101a..54efa12fd 100644
-> > --- a/tools/perf/arch/arm64/util/perf_regs.c
-> > +++ b/tools/perf/arch/arm64/util/perf_regs.c
-> > @@ -2,5 +2,38 @@
-> >   #include "../../../util/perf_regs.h"
-> >   const struct sample_reg sample_reg_masks[] = {
-> > +	SMPL_REG(x0, PERF_REG_ARM64_X0),
-> > +	SMPL_REG(x1, PERF_REG_ARM64_X1),
-> > +	SMPL_REG(x2, PERF_REG_ARM64_X2),
-> > +	SMPL_REG(x3, PERF_REG_ARM64_X3),
-> > +	SMPL_REG(x4, PERF_REG_ARM64_X4),
-> > +	SMPL_REG(x5, PERF_REG_ARM64_X5),
-> > +	SMPL_REG(x6, PERF_REG_ARM64_X6),
-> > +	SMPL_REG(x7, PERF_REG_ARM64_X7),
-> > +	SMPL_REG(x8, PERF_REG_ARM64_X8),
-> > +	SMPL_REG(x9, PERF_REG_ARM64_X9),
-> > +	SMPL_REG(x10, PERF_REG_ARM64_X10),
-> > +	SMPL_REG(x11, PERF_REG_ARM64_X11),
-> > +	SMPL_REG(x12, PERF_REG_ARM64_X12),
-> > +	SMPL_REG(x13, PERF_REG_ARM64_X13),
-> > +	SMPL_REG(x14, PERF_REG_ARM64_X14),
-> > +	SMPL_REG(x15, PERF_REG_ARM64_X15),
-> > +	SMPL_REG(x16, PERF_REG_ARM64_X16),
-> > +	SMPL_REG(x17, PERF_REG_ARM64_X17),
-> > +	SMPL_REG(x18, PERF_REG_ARM64_X18),
-> > +	SMPL_REG(x19, PERF_REG_ARM64_X19),
-> > +	SMPL_REG(x20, PERF_REG_ARM64_X20),
-> > +	SMPL_REG(x21, PERF_REG_ARM64_X21),
-> > +	SMPL_REG(x22, PERF_REG_ARM64_X22),
-> > +	SMPL_REG(x23, PERF_REG_ARM64_X23),
-> > +	SMPL_REG(x24, PERF_REG_ARM64_X24),
-> > +	SMPL_REG(x25, PERF_REG_ARM64_X25),
-> > +	SMPL_REG(x26, PERF_REG_ARM64_X26),
-> > +	SMPL_REG(x27, PERF_REG_ARM64_X27),
-> > +	SMPL_REG(x28, PERF_REG_ARM64_X28),
-> > +	SMPL_REG(x29, PERF_REG_ARM64_X29),
-> > +	SMPL_REG(lr, PERF_REG_ARM64_LR),
-> > +	SMPL_REG(sp, PERF_REG_ARM64_SP),
-> > +	SMPL_REG(pc, PERF_REG_ARM64_PC),
-> >   	SMPL_REG_END
-> >   };
-> > 
-> 
+Hi,
 
--- 
+Please pull the following for TI K3 dts changes for v5.11 window.
 
-- Arnaldo
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git tags/ti-k3=
+-dt-for-v5.11
+
+for you to fetch changes up to cd48ce86a4d0c1ffec86aa46a26da993c9af5f53:
+
+  arm64: dts: ti: k3-j721e-common-proc-board: Add support for SD card UHS m=
+odes (2020-11-30 07:12:54 -0600)
+
+----------------------------------------------------------------
+Devicetree changes for TI K3 platforms for v5.11 merge window:
+
+- Standardized usage of "disabled" only in board.dts files, #interrupt-cell=
+s warning fixups, node format error fixes
+
+- J721E: R5F support, MMC/SD UHS mode added
+
+- AM654: R5F support, dss marked coherent, drop unused dma-ring-reset-quirk=
+ property
+
+- J7200: ADC support, Mailbox, hwspinlock
+
+----------------------------------------------------------------
+Faiz Abbas (2):
+      arm64: dts: ti: k3-j721e-main: Add output tap delay values
+      arm64: dts: ti: k3-j721e-common-proc-board: Add support for SD card U=
+HS modes
+
+Grygorii Strashko (1):
+      arm64: dts: ti: k3-am65: ringacc: drop ti, dma-ring-reset-quirk
+
+Nishanth Menon (6):
+      arm64: dts: ti: k3-am65*/j721e*: Fix unit address format error for ds=
+s node
+      arm64: dts: ti: k3-am65*: Cleanup disabled nodes at SoC dtsi level
+      arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at SoC dtsi level
+      arm64: dts: ti: am65/j721e: Fix up un-necessary status set to "okay" =
+for crypto
+      arm64: dts: ti: k3-am654-base-board: Fix up un-necessary status set t=
+o "okay" for USB
+      arm64: dts: ti: am65/j721e/j7200: Mark firmware used uart as "reserve=
+d"
+
+Peter Ujfalusi (2):
+      arm64: dts: ti: k3-j7200-som-p0: main_i2c0 have an ioexpander on the =
+SOM
+      arm64: dts: ti: k3-j7200-common-proc-board: Correct the name of io ex=
+pander on main_i2c1
+
+Sekhar Nori (1):
+      arm64: dts: ti: k3: squelch warning about lack of #interrupt-cells
+
+Suman Anna (11):
+      arm64: dts: ti: k3-am65-mcu: Add MCU domain R5F cluster node
+      arm64: dts: ti: k3-am654-base-board: Add mailboxes to R5Fs
+      arm64: dts: ti: k3-am654-base-board: Add DDR carveout memory nodes fo=
+r R5Fs
+      arm64: dts: ti: k3-am654-base-board: Reserve memory for IPC between R=
+5F cores
+      arm64: dts: ti: k3-j721e-mcu: Add MCU domain R5F cluster node
+      arm64: dts: ti: k3-j721e-main: Add MAIN domain R5F cluster nodes
+      arm64: dts: ti: k3-j721e-som-p0: Add mailboxes to R5Fs
+      arm64: dts: ti: k3-j721e-som-p0: Add DDR carveout memory nodes for R5=
+Fs
+      arm64: dts: ti: k3-j7200-main: Add hwspinlock node
+      arm64: dts: ti: k3-j7200-main: Add mailbox cluster nodes
+      arm64: dts: ti: k3-j7200-som-p0: Add IPC sub-mailbox nodes
+
+Tomi Valkeinen (1):
+      arm64: dts: ti: k3-am65: mark dss as dma-coherent
+
+Vignesh Raghavendra (1):
+      arm64: dts: ti: k3-j7200-mcu-wakeup: Enable ADC support
+
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi           |  13 +-
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi            |  43 ++++++-
+ arch/arm64/boot/dts/ti/k3-am654-base-board.dts     |  71 +++++++++--
+ .../boot/dts/ti/k3-j7200-common-proc-board.dts     |  33 ++---
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi          | 114 +++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi    |  19 +++
+ arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi        |  94 ++++++++++++++
+ .../boot/dts/ti/k3-j721e-common-proc-board.dts     |  83 ++++++++++++-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi          | 135 +++++++++++++++--=
+----
+ arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi    |  42 ++++++-
+ arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi        | 110 ++++++++++++++++-
+ 11 files changed, 682 insertions(+), 75 deletions(-)
+
+--=20
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5=
+ 849D 1736 249D
+
+--lc77dsi6dcg2y3ab
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE+KKGk1TrgjIXoxo03bWEnRc2JJ0FAl/FLxoACgkQ3bWEnRc2
+JJ0dwQ/9E6A8kNv/FLxk0bcnYo56UgXVIdmiJu2H2jz0XnbfBMPUoZAYRsCTwqpQ
+6qRAzv3lePH0hm0741TnocgPliPm9tAKcuJaw3y3poc7LKR77B8vL1H6tKnHXqxh
+6/ZB6Pk+IN390PukCvoE1yfpevTmPRxn5FqKYKgVWPTSHdkEKSeRj1Ea2YVDRzL1
+jH4UOVLaJ7OtQyTjWbRP1u/FxhZhKZ5eSb/pW36zx5dJXkybhJlzyb+yCDWylwrN
+p8iRaZTnKswqVhu1b8VO/tknzNnUFGfM0n1ShMnKASpkIIpgKTfLEPIVz/VMvYLA
+wXW+XrMUGLq/vj3fvl9uUV5yWA2tMeEUDSbxHsH1s3ArZt0HdCr6f2s9cTaPGv4M
+QAN38Geh5xfzjWJupEeg9kGeB1ZG2y/spkx0Za/ZE2BnIAuKyEZpyNd24OiE86mc
+Td414CUSdPOFpL/HcZ4udneo1qYT50Xx+5wxH4TOFyiJwsmWgZsa3mjhxgyDxB3D
+p1DDymBJy1qT9+/jtH49ko0gw3ype7GivYUm8o8tk2F/qCgQAqMxY1/uoMrL69BE
+qp9lOzhYXJK4A+tr2yDWb5L6usU3DVyQiw+8hfH84ljjxoPqvXuejNrpNKvZg/SW
+zoeaStQs+10EUsk4A3IJVenS/u12oDQrs16QOOmJfiFZ1qN4xiE=
+=hR4o
+-----END PGP SIGNATURE-----
+
+--lc77dsi6dcg2y3ab--
