@@ -2,122 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C632C815F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F01852C8162
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgK3JtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:49:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727272AbgK3JtD (ORCPT
+        id S1728645AbgK3JuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:50:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43275 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725972AbgK3JuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:49:03 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0387C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:48:22 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id d3so14549795wmb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:48:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=UUC9TeaDt9H+HkNFYhBbM/UEMd5LTexKU46ek/gKx0k=;
-        b=wIoujYJEt5nZ0wsrvBh+wUJgyeXGVojtiXDhiHQCR0m2n4rALbTqmBtA4zr922Kww2
-         Th+Sn76q0ClBBBC4rnRvIh1bXxaASAf6qEkP1OH3ORCMT/iHmP/Z2pxfx66AYpDRq7lJ
-         vyYQI1+8wigLwmXb13FiUbYMWhvoxT6IHnVes8K1wI9h5apsga8cTaqMr9zghwcuhGbk
-         D+M7gcRJ1Cs39p4tKHCHRbgnRjKdT9Eedsk3Iu3pRQMPTwjfAFISZJ3XX6jYtbiQTGmJ
-         Vq4k6yArWHzjhX34r7FYauHJa4iG1HSHREoZJlePp9oHDse75uovr7i6gKS992Mkz5q2
-         9TsA==
+        Mon, 30 Nov 2020 04:50:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606729725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tPvt5Fze9oePySh23BCqzPG4KjGI8dK/uioZmRf36R0=;
+        b=C+wJ0kQvjtVCvjR20IEZGBKE10DAE4HaAqieHw9sX4bTkJ/CxPCdTWCIT9e8TbIq3sPZjf
+        nbMPWIch7mTmZzSHcqYoX9rNek9Mjxzxur/SGDwyRVte4xf22vIeDCcKR1dLpgn5FvCygz
+        HKYeRgsl9ckQIoJKk91tpv20bYQfZ9s=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-kidLLTOrOjW7jhvrzqc-wg-1; Mon, 30 Nov 2020 04:48:44 -0500
+X-MC-Unique: kidLLTOrOjW7jhvrzqc-wg-1
+Received: by mail-ed1-f72.google.com with SMTP id dc6so4282069edb.14
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:48:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UUC9TeaDt9H+HkNFYhBbM/UEMd5LTexKU46ek/gKx0k=;
-        b=e3lZbdAvp9aIg0H/FpSMVGHjgFyHmi0m0tb3A+SJr6/xNu6xyKhLheNAPrcexnFCYr
-         sILFLb1RRslQmzLhyfgVpf11D7FXD6cqA9ipaubRaZ0jrXk1lowc67CwmKHgtu3SoXft
-         FksO4/gMSRfKEvgySFawfRgk1NI7V23UIV1VrDwEm288BLr3bQ5LfVg+LcYJnCl5Acg7
-         7d8Hk1H0+0pbASlANewfbJqkNgBKYmShceu/54LYPIp1u1YtHsoiHiKdGnYd52o//VHd
-         hAHhW7/ANE5jchsuPjM3snEbAGtgXZ7YBnL/630Zr+JabwOblaFe4GsCk4v0t2v5Qk6S
-         QF2g==
-X-Gm-Message-State: AOAM532Pcluag8j3SMZSqT7Caaxb8PJq0b6IywcWYo2Y0U8PJNMoKBw9
-        hn2S3auGsZ+RvbqTpVNBrtjAxw==
-X-Google-Smtp-Source: ABdhPJzpbS2D5PSEImmJ9SGWzBH48Cl4LQCF8ul7eaXWpe+pFOLqtlp/EKVVXKRrSnCPVR8kmE4f2w==
-X-Received: by 2002:a7b:c308:: with SMTP id k8mr22293158wmj.76.1606729701414;
-        Mon, 30 Nov 2020 01:48:21 -0800 (PST)
-Received: from MacBook-Pro.local ([212.45.64.13])
-        by smtp.googlemail.com with ESMTPSA id s13sm6274987wmj.28.2020.11.30.01.48.19
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tPvt5Fze9oePySh23BCqzPG4KjGI8dK/uioZmRf36R0=;
+        b=kWzwoxfy4oMWYfFrpZvly1+LPPIS8vc08d7DKZMRAAhyyDuT7fVoMIrZJ3yPrAXgvW
+         8+y/K7VOcbrhbZvViVRRqLDwFZ5RgngHg675+64uXgKegMcFknKyLlhuFSfVfOVnC18k
+         QOHObUuGfAOqBPZl8jNMH8pdpi8RSuGwv2vMRZZWkwfRVn7UM2IZ6Ws4/6c+Cj5O+Mtm
+         zh8fcivMILGpkRQahjj2fvCP/Z0WWPL8YhlqbIAUskoIMfSQSU+LWPaYGqNOrZHllCZk
+         m8XTmdjQFgmpAH7c6uJ/R9Q153ud8F+0iYhrKIl7GdBfStZGo+PF04Falb/ErOU/U+lP
+         MBww==
+X-Gm-Message-State: AOAM533eITOrgEe520I/EKZ6kCHNFZMfua2pkJC1qIkXcBtw350J2uce
+        ZWFt0gk9gN4+InvlOmUMF135ymdxhpbt8wwhvJ7jcPYecE/B3OY2iGgIhntNWYlu9qfKw+G1Yxc
+        HGUTQj0zZnrnRHZgctcZ5EuGX
+X-Received: by 2002:a17:906:470a:: with SMTP id y10mr17599175ejq.180.1606729722710;
+        Mon, 30 Nov 2020 01:48:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwdlAzbk5hlkROC5+9ochugF0OWYYO091mqBJkAEk4CCgyNyUe0/uBeXhDUaExIqPmKu1O1ZQ==
+X-Received: by 2002:a17:906:470a:: with SMTP id y10mr17599165ejq.180.1606729722558;
+        Mon, 30 Nov 2020 01:48:42 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id k11sm8850492edh.72.2020.11.30.01.48.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 01:48:20 -0800 (PST)
-Subject: Re: [PATCH v10 01/19] dt-bindings: memory: tegra20: emc: Document
- opp-supported-hw property
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201123002723.28463-1-digetx@gmail.com>
- <20201123002723.28463-2-digetx@gmail.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <46b3bab7-1c2c-2f50-6e41-f411e532357b@linaro.org>
-Date:   Mon, 30 Nov 2020 11:48:18 +0200
+        Mon, 30 Nov 2020 01:48:41 -0800 (PST)
+Subject: Re: [PATCH 1/2] uas: revert from scsi_add_host_with_dma() to
+ scsi_add_host()
+To:     Tom Yan <tom.ty89@gmail.com>, hch@lst.de,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
+Cc:     mathias.nyman@intel.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, baolu.lu@linux.intel.com
+References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
+ <20201128154849.3193-1-tom.ty89@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <62e0d5ea-e665-b913-5482-a75db0ac1368@redhat.com>
+Date:   Mon, 30 Nov 2020 10:48:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201123002723.28463-2-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201128154849.3193-1-tom.ty89@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.20 2:27, Dmitry Osipenko wrote:
-> Document opp-supported-hw property, which is not strictly necessary to
-> have on Tegra20, but it's very convenient to have because all other SoC
-> core devices will use hardware versioning, and thus, it's good to maintain
-> the consistency.
+Hi,
 
-Hi Dmitry,
-
-I believe Krzysztof is waiting for Ack on the binding before merging
-this patch (and the rest), but unfortunately it was not sent to the
-DT mailing list for review.
-
-Thanks,
-Georgi
-
+On 11/28/20 4:48 PM, Tom Yan wrote:
+> Apparently the former (with the chosen dma_dev) may cause problem in certain
+> case (e.g. where thunderbolt dock and intel iommu are involved). The error
+> observed was:
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> XHCI swiotlb buffer is full / DMAR: Device bounce map failed
+> 
+> For now we retain the clamp for hw_max_sectors against the dma_max_mapping_size.
+> Since the device/size for the clamp that is applied when the scsi request queue
+> is initialized/allocated is different than the one used here, we invalidate the
+> early clamping by making a fallback blk_queue_max_hw_sectors() call.
+> 
+> Signed-off-by: Tom Yan <tom.ty89@gmail.com>
+
+I can confirm that this fixes the network performance on a Lenovo Thunderbolt
+dock generation 2, which uses an USB attach NIC.
+
+With this patch added on top of 5.10-rc5 scp performance to another machine
+on the local gbit LAN goes back from the regressed 1 MB/s to its original 100MB/s
+as it should be:
+
+Tested-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
 > ---
->   .../bindings/memory-controllers/nvidia,tegra20-emc.txt      | 6 ++++++
->   1 file changed, 6 insertions(+)
+>  drivers/usb/storage/uas.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> index 67ac8d1297da..fe99ce1013bd 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> @@ -16,6 +16,12 @@ Properties:
->   - #interconnect-cells : Should be 0.
->   - operating-points-v2: See ../bindings/opp/opp.txt for details.
->   
-> +For each opp entry in 'operating-points-v2' table:
-> +- opp-supported-hw: One bitfield indicating SoC process ID mask
-> +
-> +	A bitwise AND is performed against this value and if any bit
-> +	matches, the OPP gets enabled.
-> +
->   Optional properties:
->   - core-supply: Phandle of voltage regulator of the SoC "core" power domain.
->   
+> diff --git a/drivers/usb/storage/uas.c b/drivers/usb/storage/uas.c
+> index c8a577309e8f..5db1325cea20 100644
+> --- a/drivers/usb/storage/uas.c
+> +++ b/drivers/usb/storage/uas.c
+> @@ -843,18 +843,21 @@ static int uas_slave_alloc(struct scsi_device *sdev)
+>  static int uas_slave_configure(struct scsi_device *sdev)
+>  {
+>  	struct uas_dev_info *devinfo = sdev->hostdata;
+> -	struct device *dev = sdev->host->dma_dev;
+> +	struct usb_device *udev = devinfo->udev;
+>  
+>  	if (devinfo->flags & US_FL_MAX_SECTORS_64)
+>  		blk_queue_max_hw_sectors(sdev->request_queue, 64);
+>  	else if (devinfo->flags & US_FL_MAX_SECTORS_240)
+>  		blk_queue_max_hw_sectors(sdev->request_queue, 240);
+> -	else if (devinfo->udev->speed >= USB_SPEED_SUPER)
+> +	else if (udev->speed >= USB_SPEED_SUPER)
+>  		blk_queue_max_hw_sectors(sdev->request_queue, 2048);
+> +	else
+> +		blk_queue_max_hw_sectors(sdev->request_queue,
+> +					 SCSI_DEFAULT_MAX_SECTORS);
+>  
+>  	blk_queue_max_hw_sectors(sdev->request_queue,
+>  		min_t(size_t, queue_max_hw_sectors(sdev->request_queue),
+> -		      dma_max_mapping_size(dev) >> SECTOR_SHIFT));
+> +		      dma_max_mapping_size(udev->bus->sysdev) >> SECTOR_SHIFT));
+>  
+>  	if (devinfo->flags & US_FL_NO_REPORT_OPCODES)
+>  		sdev->no_report_opcodes = 1;
+> @@ -1040,7 +1043,7 @@ static int uas_probe(struct usb_interface *intf, const struct usb_device_id *id)
+>  	shost->can_queue = devinfo->qdepth - 2;
+>  
+>  	usb_set_intfdata(intf, shost);
+> -	result = scsi_add_host_with_dma(shost, &intf->dev, udev->bus->sysdev);
+> +	result = scsi_add_host(shost, &intf->dev);
+>  	if (result)
+>  		goto free_streams;
+>  
 > 
 
