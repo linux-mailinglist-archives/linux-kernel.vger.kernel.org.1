@@ -2,287 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506AD2C92C8
+	by mail.lfdr.de (Postfix) with ESMTP id BE40B2C92C9
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389060AbgK3Xfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:35:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
+        id S2389073AbgK3Xfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:35:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389039AbgK3Xfd (ORCPT
+        with ESMTP id S2389063AbgK3Xft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:35:33 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA4BC0613D4;
-        Mon, 30 Nov 2020 15:34:53 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h21so427214wmb.2;
-        Mon, 30 Nov 2020 15:34:53 -0800 (PST)
+        Mon, 30 Nov 2020 18:35:49 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A7FC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:35:09 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id x16so388775oic.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:35:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=cDrxtunMJFq8xOo3v3iOxtWN4Qb0df5wwbPG2PKfOvQ=;
-        b=qdKfTI+dI9rbpa8Xb5wAT9uc7rxdo9LAOTrAGedsz0pK6M2Awfs7CznWtkGOmqD5r1
-         7WHmeGPPzQkRrivE6w6FkAelyuEkLPfmDIF+whvSq5cnM9l/Dh81y2tQk7TzU3rdWDnr
-         10+CfmhFd+c1Js56W4t3Igms3RhlFHPtcopNN+nmLJo4975YwnHGCCxnLBaZHqNIjcCV
-         L3YxPoLQ13zOBBIU2VNv2x0x64hPmdYfMAxWoqoZfkyi27ZFdeFKLrh9hLdbNtoROD4B
-         6Hod51nmsOxazpAkf9dgQeOrUYADtzmJQ7FfC+c/AhLCk3FLtOXrZZ5UYjNsKq4AbRh8
-         H1xg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SwJKAP9OtM5KbJNlEw3zjPIkLv4Kktv+7inoscp0z7U=;
+        b=k4Wd78hT8inLJOYSLeOOPi34S0koKhrVKM3UpIBLhmfHbpfTr6Ah/if6wiLPmHFk1s
+         B0vZW5YKwgAjhS8zsKfaWdMILFup/SuJfoZs36YLvo5xD3cOTbDzy0+pW133mCekJpcB
+         7XEKeT6Z59EtNJ831McaGE/L3e4tpXTj2qEim1UrvMOXC/D6Cvj/U5S8Tb1ubL4LrKEi
+         eVEeF0aGYqU/ntGqXr2Pm8iKBaYjBd5PUeu6ds8Q6wjqCRCKmXGj0ASaW/U9KOqgpb2a
+         hhzD5KiojB70IV6OGEFddXVa/u01QHH5k9Ai5kg2E/OB+mgLkqaAqApOsIc7tJ/HJRNI
+         68cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=cDrxtunMJFq8xOo3v3iOxtWN4Qb0df5wwbPG2PKfOvQ=;
-        b=BW4kOmqF0qoPy3uIe+5HfNobySR2Nrh5S6UKqM6HbYzwwpH/wzlAx5cVdjf8678dwi
-         c0fnHwPonGL/gCDfch1ag1X52O1Qr8rcRBlx7vF/uBLxVxPPldfWT4ACIr5luuAUnmxa
-         CMfaKqHzGTzb7f/JNF+S3nQVC5gSm8xbtjVNGdYY3jLtpsToQk+p1CnUky3HQ6xFX8q2
-         HLDNiky6Uqy8IGtX5XOQw7gqnBh7KQpytfz7fTy2GlUKZqhYFA1qEZCO4lPp5A06y6JR
-         zptVuQz5tKGDWZv6AT9pfk+P2U0s6c+2o7Nv5NZBngbNlPpK0kAh+Ve38Wfycu5g0NmZ
-         ypmA==
-X-Gm-Message-State: AOAM53254us6FVUFBGLP9nkMABgCkSbN3O6e1xdcsxrmMnSonEu0M/xe
-        PfAJo4nd8WTg3ANZ04okEwI=
-X-Google-Smtp-Source: ABdhPJxHj2LSJjhlluZ6m4v35YpmQyymKHHORQD8CRM55/d+cnmFsg5VT9LdJAQeJcH+1I6Q1lCT3Q==
-X-Received: by 2002:a1c:96c2:: with SMTP id y185mr237883wmd.84.1606779292102;
-        Mon, 30 Nov 2020 15:34:52 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.80])
-        by smtp.gmail.com with ESMTPSA id d8sm30750973wrp.44.2020.11.30.15.34.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 15:34:51 -0800 (PST)
-Subject: Re: [PATCH 07/18] software_node: Add support for fwnode_graph*()
- family of functions
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-8-djrscally@gmail.com>
- <20201130162538.GK14465@pendragon.ideasonboard.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <048110de-ebc0-96b2-3cae-58114a272ba2@gmail.com>
-Date:   Mon, 30 Nov 2020 23:34:50 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SwJKAP9OtM5KbJNlEw3zjPIkLv4Kktv+7inoscp0z7U=;
+        b=PDdSUQv2VCHXZuci6+IoEKSxVMd9Zq1duCvVEEZaGM0qtB0zgr90+c+kXWkzrh9yxG
+         aGvOumvveiSVN8Fsz6lDnXaYjdBKuA3S0W+qLF9AzsrspQtv/6EhxlJWExlZHbgRKo7S
+         OL/Vy/SP6Yw6QzklwbFGd/Bet9I0loe2tRJiU3+yXEHfPN4f/UIbXj/u5TQyOiC7mFJx
+         ylSa3iexrelBraJN22JNzxcYiDQIBWU1hCP3YUKQh3KERjvOCQ0RSvL9xH0k3WmncDLE
+         D2MKm3+E39bQZM8Ev26jYdxYFDXt2dEaF26E2Amnm6S2YpCQyFhg7hemiOJi+Qk0V9rq
+         bydQ==
+X-Gm-Message-State: AOAM533X7CSN20xMVzUgDXLtcwuOPo3rJBJ6ssidkcZ4m3Wgpw1QRpOT
+        F3vmXCROsRaJMDYPzEdSIUDiukB07/DFVc/Phac=
+X-Google-Smtp-Source: ABdhPJyPtCgAjFf+HLll81ZRLEVbukcLKb7sy29t/zXUKK54Nn4INoceJ/2jc6YQJmbuW3xmmKc5PACrEOL9aJfv0tQ=
+X-Received: by 2002:a54:4608:: with SMTP id p8mr165809oip.5.1606779309113;
+ Mon, 30 Nov 2020 15:35:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201130162538.GK14465@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-15-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-15-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Nov 2020 18:34:57 -0500
+Message-ID: <CADnq5_OygrSpan8jzEazeETDpp1PryjS+pFjw+tUpXTnj-Z=Hw@mail.gmail.com>
+Subject: Re: [PATCH 14/40] drm/amd/pm/powerplay/hwmgr/ppatomfwctrl: Demote
+ kernel-doc formatting abuses
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent
+On Thu, Nov 26, 2020 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomfwctrl.c:78: warn=
+ing: Function parameter or member 'hwmgr' not described in 'pp_atomfwctrl_i=
+s_voltage_controlled_by_gpio_v4'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomfwctrl.c:78: warn=
+ing: Function parameter or member 'voltage_type' not described in 'pp_atomf=
+wctrl_is_voltage_controlled_by_gpio_v4'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomfwctrl.c:78: warn=
+ing: Function parameter or member 'voltage_mode' not described in 'pp_atomf=
+wctrl_is_voltage_controlled_by_gpio_v4'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomfwctrl.c:211: war=
+ning: Function parameter or member 'hwmgr' not described in 'pp_atomfwctrl_=
+get_pp_assign_pin'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomfwctrl.c:211: war=
+ning: Function parameter or member 'pin_id' not described in 'pp_atomfwctrl=
+_get_pp_assign_pin'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomfwctrl.c:211: war=
+ning: Function parameter or member 'gpio_pin_assignment' not described in '=
+pp_atomfwctrl_get_pp_assign_pin'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/ppatomfwctrl.c:232: war=
+ning: Function parameter or member 'hwmgr' not described in 'pp_atomfwctrl_=
+enter_self_refresh'
+>
+> Cc: Evan Quan <evan.quan@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-On 30/11/2020 16:25, Laurent Pinchart wrote:
-> Hi Daniel and Heikki,
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  .../drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.c | 24 +++++++++----------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
 >
-> Thank you for the patch.
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.c b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.c
+> index 615cf2c09e54e..a47a47238e2b9 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppatomfwctrl.c
+> @@ -68,11 +68,11 @@ static struct atom_voltage_objects_info_v4_1 *pp_atom=
+fwctrl_get_voltage_info_tab
+>         return (struct atom_voltage_objects_info_v4_1 *)table_address;
+>  }
 >
-> On Mon, Nov 30, 2020 at 01:31:18PM +0000, Daniel Scally wrote:
->> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->>
->> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->>
-> There seems to be one From: line too many. You can drop the one in the
-> commit message, git-format-patch will add it automatically.
-Ah! Thanks, sorry about that
->> This implements the remaining .graph_* callbacks in the
->> fwnode operations vector for the software nodes. That makes
-> s/vector/structure/ ?
-Yeah, sure.
->> the fwnode_graph*() functions available in the drivers also
->> when software nodes are used.
->>
->> The implementation tries to mimic the "OF graph" as much as
->> possible, but there is no support for the "reg" device
->> property. The ports will need to have the index in their
->> name which starts with "port" (for example "port0", "port1",
->> ...) and endpoints will use the index of the software node
->> that is given to them during creation. The port nodes can
->> also be grouped under a specially named "ports" subnode,
->> just like in DT, if necessary.
-> I'm not very familiar with swnodes, but could we name ports port@n
-> instead of portn to mimic OF nodes ?
-Yes, I don't see any reason why not.
+> -/**
+> -* Returns TRUE if the given voltage type is controlled by GPIO pins.
+> -* voltage_type is one of SET_VOLTAGE_TYPE_ASIC_VDDC, SET_VOLTAGE_TYPE_AS=
+IC_MVDDC, SET_VOLTAGE_TYPE_ASIC_MVDDQ.
+> -* voltage_mode is one of ATOM_SET_VOLTAGE, ATOM_SET_VOLTAGE_PHASE
+> -*/
+> +/*
+> + * Returns TRUE if the given voltage type is controlled by GPIO pins.
+> + * voltage_type is one of SET_VOLTAGE_TYPE_ASIC_VDDC, SET_VOLTAGE_TYPE_A=
+SIC_MVDDC, SET_VOLTAGE_TYPE_ASIC_MVDDQ.
+> + * voltage_mode is one of ATOM_SET_VOLTAGE, ATOM_SET_VOLTAGE_PHASE
+> + */
+>  bool pp_atomfwctrl_is_voltage_controlled_by_gpio_v4(struct pp_hwmgr *hwm=
+gr,
+>                 uint8_t voltage_type, uint8_t voltage_mode)
+>  {
+> @@ -202,9 +202,9 @@ static bool pp_atomfwctrl_lookup_gpio_pin(
+>         return false;
+>  }
 >
->> The remote-endpoints are reference properties under the
->> endpoint nodes that are named "remote-endpoint".
->>
->> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->> Co-developed-by: Daniel Scally <djrscally@gmail.com>
->> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->> ---
->> changes since RFC v3:
->> 	- Simplified software_node_get_next_endpoint() a little
->> 	- Squared away references in software_node_get_next_endpoint()
->> 	and swnode_graph_find_next_port(), since they were affected by
->> 	the change to the earlier patch that had *get_next_child() also
->> 	put the previous reference.
->> 	- Dropped Andy's R-b, since the code changed.
->> changes in RFC v3:
->> 	- removed software_node_device_is_available
->> 	- moved the change to software_node_get_next_child to a separate
->> 	patch
->> 	- switched to use fwnode_handle_put() in graph_get_next_endpoint()
->> 	instead of software_node_put()
->>
->> changes in RFC v2:
->> 	- added software_node_device_is_available
->> 	- altered software_node_get_next_child to get references
->> 	- altered software_node_get_next_endpoint to release references
->> 	to ports and avoid passing invalid combinations of swnodes to
->> 	software_node_get_next_child
->> 	- altered swnode_graph_find_next_port to release port rather than
->> 	old
->>
->>  drivers/base/swnode.c | 110 +++++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 109 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
->> index 9bd0bb77ad5b..0c7a8d6b9ea8 100644
->> --- a/drivers/base/swnode.c
->> +++ b/drivers/base/swnode.c
->> @@ -540,6 +540,110 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
->>  	return 0;
->>  }
->>  
->> +static struct fwnode_handle *
->> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
->> +			    struct fwnode_handle *port)
->> +{
->> +	struct fwnode_handle *old = port;
->> +
->> +	while ((port = software_node_get_next_child(parent, old))) {
->> +		if (!strncmp(to_swnode(port)->node->name, "port", 4))
->> +			return port;
->> +		old = port;
->> +	}
->> +
->> +	return NULL;
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
->> +				      struct fwnode_handle *endpoint)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	struct fwnode_handle *old = endpoint;
->> +	struct fwnode_handle *parent;
->> +	struct fwnode_handle *port;
->> +
->> +	if (!swnode)
->> +		return NULL;
->> +
->> +	if (endpoint) {
->> +		port = software_node_get_parent(endpoint);
->> +		parent = software_node_get_parent(port);
->> +	} else {
->> +		parent = software_node_get_named_child_node(fwnode, "ports");
->> +		if (!parent)
->> +			parent = software_node_get(&swnode->fwnode);
->> +
->> +		port = swnode_graph_find_next_port(parent, NULL);
->> +	}
->> +
->> +	for (; port; port = swnode_graph_find_next_port(parent, port)) {
->> +		endpoint = software_node_get_next_child(port, old);
->> +		if (endpoint) {
->> +			fwnode_handle_put(port);
->> +			break;
->> +		}
->> +
->> +		/* No more endpoints for that port, so stop passing old */
->> +		old = NULL;
->> +	}
->> +
->> +	fwnode_handle_put(parent);
->> +
->> +	return endpoint;
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	const struct software_node_ref_args *ref;
->> +	const struct property_entry *prop;
->> +
->> +	if (!swnode)
->> +		return NULL;
->> +
->> +	prop = property_entry_get(swnode->node->properties, "remote-endpoint");
->> +	if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
->> +		return NULL;
->> +
->> +	ref = prop->pointer;
->> +
->> +	return software_node_get(software_node_fwnode(ref[0].node));
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	struct fwnode_handle *parent;
->> +
->> +	if (!strcmp(swnode->parent->node->name, "ports"))
->> +		parent = &swnode->parent->parent->fwnode;
->> +	else
->> +		parent = &swnode->parent->fwnode;
->> +
->> +	return software_node_get(parent);
->> +}
->> +
->> +static int
->> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
->> +				   struct fwnode_endpoint *endpoint)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	int ret;
->> +
->> +	ret = kstrtou32(swnode->parent->node->name + 4, 10, &endpoint->port);
-> If we use port@, s/4/5/. But I suppose we also want to support the case
-> where a single port is used, with its name set to "port" ? The logic
-> would then need to be a tad more complex. Not sure if the consistency is
-> worth the additional complexity, up to you.
-I'm conflicted; consistency is good but in my mind keeping the name as
-"port@0" for a single port rather than dropping the suffix is the better
-approach anyway.
->> +	if (ret)
->> +		return ret;
->> +
->> +	endpoint->id = swnode->id;
->> +	endpoint->local_fwnode = fwnode;
->> +
->> +	return 0;
->> +}
->> +
->>  static const struct fwnode_operations software_node_ops = {
->>  	.get = software_node_get,
->>  	.put = software_node_put,
->> @@ -551,7 +655,11 @@ static const struct fwnode_operations software_node_ops = {
->>  	.get_parent = software_node_get_parent,
->>  	.get_next_child_node = software_node_get_next_child,
->>  	.get_named_child_node = software_node_get_named_child_node,
->> -	.get_reference_args = software_node_get_reference_args
->> +	.get_reference_args = software_node_get_reference_args,
->> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
->> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
->> +	.graph_get_port_parent = software_node_graph_get_port_parent,
->> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
->>  };
->>  
->>  /* -------------------------------------------------------------------------- */
+> -/**
+> -* Returns TRUE if the given pin id find in lookup table.
+> -*/
+> +/*
+> + * Returns TRUE if the given pin id find in lookup table.
+> + */
+>  bool pp_atomfwctrl_get_pp_assign_pin(struct pp_hwmgr *hwmgr,
+>                 const uint32_t pin_id,
+>                 struct pp_atomfwctrl_gpio_pin_assignment *gpio_pin_assign=
+ment)
+> @@ -224,10 +224,10 @@ bool pp_atomfwctrl_get_pp_assign_pin(struct pp_hwmg=
+r *hwmgr,
+>         return ret;
+>  }
+>
+> -/**
+> -* Enter to SelfRefresh mode.
+> -* @param hwmgr
+> -*/
+> +/*
+> + * Enter to SelfRefresh mode.
+> + * @param hwmgr
+> + */
+>  int pp_atomfwctrl_enter_self_refresh(struct pp_hwmgr *hwmgr)
+>  {
+>         /* 0 - no action
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
