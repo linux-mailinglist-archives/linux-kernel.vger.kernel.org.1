@@ -2,152 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC25A2C84D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2342C84DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbgK3NMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbgK3NMo (ORCPT
+        id S1726708AbgK3NO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:14:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36191 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725900AbgK3NO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:12:44 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A19C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:11:20 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id r20so1303545pjp.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:11:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=F4b6Mz+meeIOWiwdpvVizNGtENxtsbORSHHjjSCrlas=;
-        b=NOERfF7egowMV6omqbGCYcnTmO++yhypJfIN0zzFCBLOwPjW5dSmvG0jSgPxeAESWL
-         9acj1SCmIXtpuCB2Z1uvcFa6v6k8VO8nec0r6OsyQX4L1rUrsewKlJ9uuqivdPfvvo5v
-         MCSexCFH5DnPtbgd0TfpUvYMix7Q0BxgQoAjg=
+        Mon, 30 Nov 2020 08:14:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606742010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l3QMImLUzsUxdD3lrxokZ6OLsGo9+qiElCnfZdbpvzA=;
+        b=UECHBboa2pJ07GYWLO2EQfvVgESjKBetXPTXMhUNV1i9qB4Ss6da9ZfrBpcta1bxcR6BMH
+        ShUcrJf77c6T237uFzYKqsndydiFpwW1i/KSbBn367tuMoruiDZ4+HHAei0V4CZDlDtiy7
+        86zygyDa/LWtJRh7unfMCCdEb4j0LWQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-193-DQxZP_vYMRilDJNHNa_ZRg-1; Mon, 30 Nov 2020 08:13:28 -0500
+X-MC-Unique: DQxZP_vYMRilDJNHNa_ZRg-1
+Received: by mail-wm1-f72.google.com with SMTP id k128so7415437wme.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:13:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=F4b6Mz+meeIOWiwdpvVizNGtENxtsbORSHHjjSCrlas=;
-        b=MMBBYJkboq0rIpIlhUKWsPKJ+XYYqn9dfoIesxT4Y6kQdvJ7D+IjNA5gaTk4UIZgh7
-         QOg/uU/G4/dR3RbGs4mpFiQTfTEc1NelaHAMiTYWPooRi0utzYDA0ShsGyKGl30YgMFn
-         Ujle0zvK/s8uIuCoMXFIC9tmNzX8uEcSm9XxsAFADNgOI8LURz/NdNZoSZv4QJfjGn62
-         xR26CyTa6cLwxEn3VXWXmyjQUS+A5dNHMoX3EMwnqD4a25cjq/bVha+bd7eW2asGLGAI
-         ODGi69ivDLg2gO2UT3ZyVVznYrzXHEQuc2krz4gMffPslDirbDxdMI2lVlbOqWkDAH4c
-         Vu9w==
-X-Gm-Message-State: AOAM533xlXKMAVQ6LVAP/UUYahb8ZcsqCWuuzOJ2hDKL0DXPkNaFSEQa
-        Y66j1pWUcvcptJ+dOJmw7ClMBA==
-X-Google-Smtp-Source: ABdhPJytNtiSFjUBa/8hP6fMqYnvCTlKseq0Z9MVhm7I5h2NQTR5XgRtzFuTCSl6si+IwlkEQh6IOw==
-X-Received: by 2002:a17:90a:940c:: with SMTP id r12mr25793348pjo.201.1606741879985;
-        Mon, 30 Nov 2020 05:11:19 -0800 (PST)
-Received: from shiro.work (p1268123-ipngn200803sizuokaden.shizuoka.ocn.ne.jp. [118.13.124.123])
-        by smtp.googlemail.com with ESMTPSA id a4sm41757578pjq.0.2020.11.30.05.11.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 05:11:19 -0800 (PST)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de, robh@kernel.org,
-        w@1wt.eu, daniel@0x0f.com
-Subject: [PATCH 9/9] ARM: mstar: SMP support
-Date:   Mon, 30 Nov 2020 22:10:47 +0900
-Message-Id: <20201130131047.2648960-10-daniel@0x0f.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201130131047.2648960-1-daniel@0x0f.com>
-References: <20201130131047.2648960-1-daniel@0x0f.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l3QMImLUzsUxdD3lrxokZ6OLsGo9+qiElCnfZdbpvzA=;
+        b=B0h9jnzCR63hfrUa9rfz2FqVI0w2XeNZVR8ALFNxfxkOCANl46iEm2kzBGU5YO+kYq
+         xkxE4JGmEK7JXJcXcKPX+4kOTmjljWPCxRMoj3OO/uLLZyl4sFuZaoFKuQTXPvBP64eR
+         ikosa4o6XooOg+JcgUdrfM+ZLQYrCBGafXWlDkaBxc1S1s1AKbWcaTWl5cLSXJi5wRhr
+         5Bnxwng1Dq1xy6U/kBb3BGCWXkrlw6qi8Ty/iB/Up5tMipJ+ZtebsASiMVWrw/H5+0Iu
+         cuRXfebyZicwI293kI1YQ7Up4tAma0JCNf+yXIUKQnG1lmFys7vZOYnnJ7cVZ5cQywpC
+         MQTw==
+X-Gm-Message-State: AOAM532jkW6Ao6kxk1sW1BFYOCyzIl6KdQ7tiAUwn3tJ8l0j+0XuCl4A
+        EG1pv0gm4rGDidZmsDzOgkGB3j9HmX0xJCa256s23/CJN3hpPBMyLNnOGncdueXquOlOotYpgk7
+        rQFSzimwKvrxrLvzNQaVM1pxO0scOjSBSjGx//Yic
+X-Received: by 2002:a5d:6250:: with SMTP id m16mr29212889wrv.400.1606742006900;
+        Mon, 30 Nov 2020 05:13:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw+aZi6ISnIXF20bS+IivTvzdVJ4geNjK6nyaq0wAVc1EAbO9JFv+Lh1s3TZuUclVgKh0naMbZF5Jvbjm89YIY=
+X-Received: by 2002:a5d:6250:: with SMTP id m16mr29212862wrv.400.1606742006654;
+ Mon, 30 Nov 2020 05:13:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
+ <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org> <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
+ <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain> <X8RpFo+5m1i4L5Gn@jagdpanzerIV.localdomain>
+ <c96f60f4-f525-2957-6a8a-ae9e3288b04a@infradead.org> <CAHc6FU59uNEq4Xz8W7boG6y3+u3F1tz93RKSW+odM38rx37_9A@mail.gmail.com>
+In-Reply-To: <CAHc6FU59uNEq4Xz8W7boG6y3+u3F1tz93RKSW+odM38rx37_9A@mail.gmail.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 30 Nov 2020 14:13:15 +0100
+Message-ID: <CAHc6FU6Tt6HXLv39PzdrUgh8=tS4=OLSh6dSUnbbkGgR7yMX_Q@mail.gmail.com>
+Subject: Re: [PATCH] posix_acl.h: define missing ACL functions on
+ non-posix-acl build
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds SMP support for MStar/Sigmastar chips that have a second core
-like those in the infinity2m family.
+On Mon, Nov 30, 2020 at 2:09 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+> Note that ext2 / ext4 could be built without POSIX ACL support in the
+> past. That's at least broken since the following two commits though:
+>
+>   commit 59fed3bf8a461 ("ext2: cache NULL when both default_acl and
+> acl are NULL")
+>   commit 6fd941784b8ac ("ext4: cache NULL when both default_acl and
+> acl are NULL")
 
-So far only single and dual core chips have been found so this does
-the bare minimum to boot the second core. From what I can tell not having
-the "holding pen" code to handle multiple cores is fine if there is only
-one core the will get booted. This might need to be reconsidered if chips
-with more cores turn up.
+Scratch that, this is in fs/ext[24]/acl.c which is only included when
+CONFIG_FS_POSIX_ACL is defined.
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- arch/arm/mach-mstar/mstarv7.c | 50 +++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
-
-diff --git a/arch/arm/mach-mstar/mstarv7.c b/arch/arm/mach-mstar/mstarv7.c
-index 1aa748fa006e..23fe47a8f1a5 100644
---- a/arch/arm/mach-mstar/mstarv7.c
-+++ b/arch/arm/mach-mstar/mstarv7.c
-@@ -31,6 +31,13 @@
- #define MSTARV7_L3BRIDGE_FLUSH_TRIGGER	BIT(0)
- #define MSTARV7_L3BRIDGE_STATUS_DONE	BIT(12)
- 
-+#ifdef CONFIG_SMP
-+#define MSTARV7_CPU1_BOOT_ADDR_HIGH	0x4c
-+#define MSTARV7_CPU1_BOOT_ADDR_LOW	0x50
-+#define MSTARV7_CPU1_UNLOCK		0x58
-+#define MSTARV7_CPU1_UNLOCK_MAGIC	0xbabe
-+#endif
-+
- static void __iomem *l3bridge;
- 
- static const char * const mstarv7_board_dt_compat[] __initconst = {
-@@ -63,6 +70,46 @@ static void mstarv7_mb(void)
- 	}
- }
- 
-+#ifdef CONFIG_SMP
-+static int mstarv7_boot_secondary(unsigned int cpu, struct task_struct *idle)
-+{
-+	struct device_node *np;
-+	u32 bootaddr = (u32) __pa_symbol(secondary_startup_arm);
-+	void __iomem *smpctrl = 0;
-+
-+	/*
-+	 * right now we don't know how to boot anything except
-+	 * cpu 1.
-+	 */
-+	if (cpu != 1)
-+		return -EINVAL;
-+
-+	np = of_find_compatible_node(NULL, NULL, "mstar,smpctrl");
-+	smpctrl = of_iomap(np, 0);
-+
-+	if (!smpctrl)
-+		return -ENODEV;
-+
-+	/* set the boot address for the second cpu */
-+	writew(bootaddr & 0xffff, smpctrl + MSTARV7_CPU1_BOOT_ADDR_LOW);
-+	writew((bootaddr >> 16) & 0xffff, smpctrl + MSTARV7_CPU1_BOOT_ADDR_HIGH);
-+
-+	/* unlock the second cpu */
-+	writew(MSTARV7_CPU1_UNLOCK_MAGIC, smpctrl + MSTARV7_CPU1_UNLOCK);
-+
-+	/* and away we go...*/
-+	arch_send_wakeup_ipi_mask(cpumask_of(cpu));
-+
-+	iounmap(smpctrl);
-+
-+	return 0;
-+}
-+
-+struct smp_operations __initdata mstarv7_smp_ops  = {
-+	.smp_boot_secondary = mstarv7_boot_secondary,
-+};
-+#endif
-+
- static void __init mstarv7_init(void)
- {
- 	struct device_node *np;
-@@ -78,4 +125,7 @@ static void __init mstarv7_init(void)
- DT_MACHINE_START(MSTARV7_DT, "MStar/Sigmastar Armv7 (Device Tree)")
- 	.dt_compat	= mstarv7_board_dt_compat,
- 	.init_machine	= mstarv7_init,
-+#ifdef CONFIG_SMP
-+	.smp		= smp_ops(mstarv7_smp_ops),
-+#endif
- MACHINE_END
--- 
-2.29.2
+Thanks,
+Andreas
 
