@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30552C7F92
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EE92C7F96
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgK3IQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 03:16:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbgK3IQm (ORCPT
+        id S1726861AbgK3IQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:16:55 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35661 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725880AbgK3IQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:16:42 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46115C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:16:02 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id a9so19810416lfh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 00:16:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1WW7NdGi1sFdQkUxxy6Ct166Jaa/cUFKVp9VOVJXhJY=;
-        b=k498odRkC4CWp5FzcznjTxr/pCBlxIwv/+Y/qvje5oKOjju0LdiGuUZ1lgnB94z0oy
-         FWdK3JzZa5UHdKC63RBkuset2nF2DbNxmPfiyLMlqfjLE02AjSU7aLPPFDutBU1lyOKb
-         BUNlxoa2kVxrLFqvmCALsrTKR3Jl2X8/2EieNgI9128E0mCuXmVL02S+wSLUJgIXPGvW
-         y+FmnaOfNvvVveg6vytmTjZXJdzmeGnsrSvsziSsmhqcP48pE6farYihYXkVtSad14DD
-         n3DogRhll2CSweTE94qOIrzRj58brTwTba+B3/GwxOEaOnqpEGhrbsh+8iRjFmrEhesw
-         hiOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1WW7NdGi1sFdQkUxxy6Ct166Jaa/cUFKVp9VOVJXhJY=;
-        b=URgGexu2OJYLwhCCypoV/1FNDkdMimVARKJaTJOGwkd3ebC/0Ax2Trs5DdlxbVFY4w
-         +uDkdSUxt0s9FsSTd9/Zv9nj3+Thog7c0g+TKteVLC3+5tIC5PbXLSLwOzGIjiMhOC2W
-         cZBkoS0m3h6Ch06waNBcEzVZ1Ds69H+2MGpA2uy6tTzitaq0wDrJhq0Z4D1tSzFAQoiQ
-         W/h4jtRdZt2ph+8pMD+62IC5skCFjWPAxOyJ2Jo1eXqIVTEQ8cidaFqs/WtIvfjH1GK+
-         quFSJI/q/F95m5FxcF/EcaRQSHU9N/k3kwMZoZvpBffhcjgwYor/OPSDzxiMByHPhl+P
-         xx4g==
-X-Gm-Message-State: AOAM532V7jm2WEKrtZzjKV+GWCz3t57u88UvuT0o9R80dRBCOwvP6gwB
-        ybYQrYTUsIiNJwTGtDzxMkefeRS53K7K+aIHhzV+kN8dC1p8g/kt
-X-Google-Smtp-Source: ABdhPJwjUDapYSqhwuiyUqMZirMI2fiMMQRIx6Wm/py1dcEIOroSVXyUH1hK62LNIiM7QVZNWhF8/sT6/Qg0Qsrmjyk=
-X-Received: by 2002:ac2:4578:: with SMTP id k24mr8355336lfm.502.1606724160610;
- Mon, 30 Nov 2020 00:16:00 -0800 (PST)
+        Mon, 30 Nov 2020 03:16:55 -0500
+Received: from [106.104.74.151] (helo=[192.168.31.192])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <ivan.hu@canonical.com>)
+        id 1kjeM0-00060T-PG; Mon, 30 Nov 2020 08:16:13 +0000
+Subject: Re: [PATCH 1/1] efi/efi_test: read RuntimeServicesSupported
+To:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Colin King <colin.king@canonical.com>,
+        fwts-devel@lists.ubuntu.com
+References: <20201127192051.1430-1-xypron.glpk@gmx.de>
+From:   ivanhu <ivan.hu@canonical.com>
+Message-ID: <1fbab8b3-3a37-f3f5-39b4-0c8123d27b29@canonical.com>
+Date:   Mon, 30 Nov 2020 16:16:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201128235154.GF551434@darkstar.musicnaut.iki.fi> <20201129115748.GG551434@darkstar.musicnaut.iki.fi>
-In-Reply-To: <20201129115748.GG551434@darkstar.musicnaut.iki.fi>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 30 Nov 2020 09:15:49 +0100
-Message-ID: <CACRpkdb0+uaRpC7GwWGjPoQMd=re2-BNPY5ritq3HNMJWKOKpg@mail.gmail.com>
-Subject: Re: [BISECTED REGRESSION] Broken USB/GPIO on OMAP1 OSK
-To:     Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201127192051.1430-1-xypron.glpk@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 12:57 PM Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
-> On Sun, Nov 29, 2020 at 01:51:54AM +0200, Aaro Koskinen wrote:
+Hi Heinrich,
 
-> > I tried to upgrade my OMAP1 OSK board to v5.9, but the rootfs cannot
-> > be accessed anymore due to broken USB. It fails to probe with the
-> > following logs:
-> >
-> > [    9.219940] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
-> > [    9.250366] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
-> > [    9.731445] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
-> > [   10.342102] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
-> > [   10.966430] ohci ohci: cannot find GPIO chip i2c-tps65010, deferring
-> >
-> > Bisected to:
-> >
-> > commit 15d157e874437e381643c37a10922388d6e55b29
-> > Author: Linus Walleij <linus.walleij@linaro.org>
-> > Date:   Mon Jul 20 15:55:24 2020 +0200
-> >
-> >     usb: ohci-omap: Convert to use GPIO descriptors
-> >
-> > I suspect one of the issues is the name "i2c-tps65010" vs "tps65010":
-> >
-> > # cat /sys/devices/platform/omap_i2c.1/i2c-1/i2c-tps65010/gpio/gpiochip208/label
-> > tps65010
-> >
-> > However changing that in the lookup table still doesn't help much; I got rid
-> > of the "deferring" message but the USB still doesn't work. So far the only
-> > workaround I have is to revert the whole commit.
->
-> GPIO numbering goes wrong... It's now trying to poke GPIO2.
+Thanks for the patch.
+It looks good to me, but I noticed that the runtime_supported_mask was
+introduced after 5.7-rc1.
+Maybe we should add the kernel version checking for the old kernels.
 
-Hm the old code looked like this:
+Cheers,
+Ivan
 
-#define GPIO1  1
-
-tps65010_set_gpio_out_value(GPIO1, LOW);
-
-And I missed that the code inside the tps65010 driver subtracts 1 from
-the passed parameter and the standard gpiolib accessors add 1 before
-calling the same function. I missed this.
-
-> Also gpiod_set_value_cansleep() probably should be used as tps65010
-> can sleep.
-
-OK I'll send a combined patch fixing all issues (I hope).
-
-Yours,
-Linus Walleij
+On 11/28/20 3:20 AM, Heinrich Schuchardt wrote:
+> Since the UEFI 2.8A specification the UEFI enabled firmware provides a
+> configuration table EFI_RT_PROPERTIES_TABLE which indicates which runtime
+> services are enabled. The EFI stub reads this table and saves the value of
+> the field RuntimeServicesSupported internally.
+> 
+> The Firmware Test Suite requires the value to determine if UEFI runtime
+> services are correctly implemented.
+> 
+> With this patch an IOCTL call is provided to read the value of the field
+> RuntimeServicesSupported, e.g.
+> 
+>     #define EFI_RUNTIME_GET_SUPPORTED_MASK \
+>             _IOR('p', 0x0C, unsigned int)
+>     unsigned int mask;
+>     fd = open("/dev/efi_test", O_RDWR);
+>     ret = ioctl(fd, EFI_RUNTIME_GET_SUPPORTED_MASK, &mask);
+> 
+> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> ---
+>  drivers/firmware/efi/test/efi_test.c | 16 ++++++++++++++++
+>  drivers/firmware/efi/test/efi_test.h |  3 +++
+>  2 files changed, 19 insertions(+)
+> 
+> diff --git a/drivers/firmware/efi/test/efi_test.c b/drivers/firmware/efi/test/efi_test.c
+> index ddf9eae396fe..47d67bb0a516 100644
+> --- a/drivers/firmware/efi/test/efi_test.c
+> +++ b/drivers/firmware/efi/test/efi_test.c
+> @@ -663,6 +663,19 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
+>  	return rv;
+>  }
+> 
+> +static long efi_runtime_get_supported_mask(unsigned long arg)
+> +{
+> +	unsigned int __user *supported_mask;
+> +	int rv = 0;
+> +
+> +	supported_mask = (unsigned int *)arg;
+> +
+> +	if (put_user(efi.runtime_supported_mask, supported_mask))
+> +		rv = -EFAULT;
+> +
+> +	return rv;
+> +}
+> +
+>  static long efi_test_ioctl(struct file *file, unsigned int cmd,
+>  							unsigned long arg)
+>  {
+> @@ -699,6 +712,9 @@ static long efi_test_ioctl(struct file *file, unsigned int cmd,
+> 
+>  	case EFI_RUNTIME_RESET_SYSTEM:
+>  		return efi_runtime_reset_system(arg);
+> +
+> +	case EFI_RUNTIME_GET_SUPPORTED_MASK:
+> +		return efi_runtime_get_supported_mask(arg);
+>  	}
+> 
+>  	return -ENOTTY;
+> diff --git a/drivers/firmware/efi/test/efi_test.h b/drivers/firmware/efi/test/efi_test.h
+> index f2446aa1c2e3..117349e57993 100644
+> --- a/drivers/firmware/efi/test/efi_test.h
+> +++ b/drivers/firmware/efi/test/efi_test.h
+> @@ -118,4 +118,7 @@ struct efi_resetsystem {
+>  #define EFI_RUNTIME_RESET_SYSTEM \
+>  	_IOW('p', 0x0B, struct efi_resetsystem)
+> 
+> +#define EFI_RUNTIME_GET_SUPPORTED_MASK \
+> +	_IOR('p', 0x0C, unsigned int)
+> +
+>  #endif /* _DRIVERS_FIRMWARE_EFI_TEST_H_ */
+> --
+> 2.29.2
+> 
