@@ -2,161 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC892C8E5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440372C8E63
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729756AbgK3Trt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:47:49 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:58954 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726769AbgK3Trs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:47:48 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kjp8a-004x2k-Rs; Mon, 30 Nov 2020 12:47:04 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kjp8W-0003R8-An; Mon, 30 Nov 2020 12:47:04 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20201127200457.1ffb6aaf@canb.auug.org.au>
-        <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
-        <20201128084414.3daa87d2@canb.auug.org.au>
-        <87pn3unbtv.fsf@x220.int.ebiederm.org>
-        <87blfen46a.fsf_-_@x220.int.ebiederm.org>
-        <5117dfaf-637d-34c2-048c-dd8dbbd15625@infradead.org>
-Date:   Mon, 30 Nov 2020 13:46:31 -0600
-In-Reply-To: <5117dfaf-637d-34c2-048c-dd8dbbd15625@infradead.org> (Randy
-        Dunlap's message of "Mon, 30 Nov 2020 11:15:14 -0800")
-Message-ID: <87im9miq5k.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S2387959AbgK3TsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:48:15 -0500
+Received: from mga03.intel.com ([134.134.136.65]:60307 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729194AbgK3TsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 14:48:14 -0500
+IronPort-SDR: Fa5ywpL0Q9iyDBlloG20yGVYGU8RVzRYsw5qJTFkETcY+uHZ7BgIkdfnrtGmlZ+1VL+8R+UBc2
+ /RP1vwkxAFEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172800330"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="172800330"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 11:47:33 -0800
+IronPort-SDR: orzMZuJ32woFCZ7q36QfA9/NJY3Ac/tcD/xJWvuX5MZfyK9drPO8O/V1TgLerY62KI4YLy9zco
+ QzvT6RXgKkIA==
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="372623976"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.122.22]) ([10.212.122.22])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 11:47:32 -0800
+Subject: Re: [PATCH v15 01/26] Documentation/x86: Add CET description
+To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Dave P Martin <Dave.Martin@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        bsingharora@gmail.com, Jonathan Corbet <corbet@lwn.net>,
+        dave.hansen@linux.intel.com, esyr@redhat.com,
+        Florian Weimer <fweimer@redhat.com>, gorcunov@gmail.com,
+        "H.J. Lu" <hjl.tools@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>,
+        jannh@google.com, Kees Cook <keescook@chromium.org>,
+        linux-api@vger.kernel.org, linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        luto@kernel.org, mike.kravetz@oracle.com,
+        Ingo Molnar <mingo@redhat.com>, nadav.amit@gmail.com,
+        oleg@redhat.com, pavel@ucw.cz, pengfei.xu@intel.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        ravi.v.shankar@intel.com, Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        vedvyas.shanbhogue@intel.com, weijiang.yang@intel.com,
+        X86 ML <x86@kernel.org>, Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        erich.keane@intel.com
+References: <20201110162211.9207-2-yu-cheng.yu@intel.com>
+ <20201130182641.29812-1-ndesaulniers@google.com>
+ <4fad528b-e467-f96d-b7fb-9484fd975886@intel.com>
+ <CAFP8O3LjdP69_T1Ve-zZjvg7+v8xV1mh9Wk8zm4LpAsE2PG58Q@mail.gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <a675b406-dcb9-ac38-3ecb-c98378d333cf@intel.com>
+Date:   Mon, 30 Nov 2020 11:47:31 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kjp8W-0003R8-An;;;mid=<87im9miq5k.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18Eseo5lOU4qoZhbdcbNJPIFA/SGzsDf18=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4976]
-        *  0.7 XMSubLong Long Subject
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Randy Dunlap <rdunlap@infradead.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 4132 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 8 (0.2%), b_tie_ro: 7 (0.2%), parse: 0.85 (0.0%),
-        extract_message_metadata: 15 (0.4%), get_uri_detail_list: 1.77 (0.0%),
-        tests_pri_-1000: 14 (0.3%), tests_pri_-950: 1.24 (0.0%),
-        tests_pri_-900: 1.04 (0.0%), tests_pri_-90: 145 (3.5%), check_bayes:
-        143 (3.5%), b_tokenize: 8 (0.2%), b_tok_get_all: 8 (0.2%),
-        b_comp_prob: 3.1 (0.1%), b_tok_touch_all: 121 (2.9%), b_finish: 0.76
-        (0.0%), tests_pri_0: 223 (5.4%), check_dkim_signature: 0.53 (0.0%),
-        check_dkim_adsp: 2.6 (0.1%), poll_dns_idle: 3691 (89.3%),
-        tests_pri_10: 2.0 (0.0%), tests_pri_500: 3718 (90.0%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [PATCH] signal/parics: Remove parsic specific definition of __ARCH_UAPI_SA_FLAGS
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <CAFP8O3LjdP69_T1Ve-zZjvg7+v8xV1mh9Wk8zm4LpAsE2PG58Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+On 11/30/2020 11:38 AM, Fāng-ruì Sòng wrote:
+> On Mon, Nov 30, 2020 at 10:34 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+>>
+>> On 11/30/2020 10:26 AM, Nick Desaulniers wrote:
+>>> (In response to https://lore.kernel.org/lkml/20201110162211.9207-2-yu-cheng.yu@intel.com/)
+>>>
+>>>> These need to be enabled to build a CET-enabled kernel, and Binutils v2.31
+>>>> and GCC v8.1 or later are required to build a CET kernel.
+>>>
+>>> What about LLVM? Surely CrOS might be of interest to ship this on (we ship the
+>>> equivalent for aarch64 on Android).
+>>>
+>>
+>> I have not built with LLVM, but think it probably will work as well.  I
+>> will test it.
+>>
+>>>> An application's CET capability is marked in its ELF header and can be
+>>>> verified from the following command output, in the NT_GNU_PROPERTY_TYPE_0
+>>>> field:
+>>>>
+>>>>       readelf -n <application> | grep SHSTK
+>>>>           properties: x86 feature: IBT, SHSTK
+>>>
+>>> Same for llvm-readelf.
+>>>
+>>
+>> I will add that to the document.
+>>
+>> Thanks,
+>> Yu-cheng
+> 
+> The baseline LLVM version is 10.0.1, which is good enough for  clang
+> -fcf-protection=full, llvm-readelf -n, LLD's .note.gnu.property
+> handling (the LLD option is `-z force-ibt`, though)
+> 
+> 
 
-> On 11/30/20 9:30 AM, Eric W. Biederman wrote:
->> 
->> Randy Dunlap wrote:
->>> On 11/27/20 10:43 AM, Randy Dunlap wrote:
->>>
->>>> on parisc, _SA_SIGGFAULT is undefined and causing build errors.
->>>>
->>>> commit 23acdc76f1798b090bb9dcc90671cd29d929834e
->>>> Author: Peter Collingbourne <pcc@google.com>
->>>> Date:   Thu Nov 12 18:53:34 2020 -0800
->>>>
->>>>     signal: clear non-uapi flag bits when passing/returning sa_flags
->>>>
->>>>
->>>>
->>>> _SA_SIGGFAULT is not used or defined anywhere else in the
->>>> kernel source tree.
->>>
->>>
->>> Here is the build error (although it should be obvious):
->>>
->>> ../kernel/signal.c: In function 'do_sigaction':
->>> ../arch/parisc/include/asm/signal.h:24:30: error: '_SA_SIGGFAULT' undeclared (first use in this function)
->>>    24 | #define __ARCH_UAPI_SA_FLAGS _SA_SIGGFAULT
->>>       |                              ^~~~~~~~~~~~~
->> 
->> Stephen Rothwell pointed out:
->>> _SA_SIGGFAULT was removed by commit
->>>
->>>   41f5a81c07cd ("parisc: Drop HP-UX specific fcntl and signal flags")
->>>
->>> which was added to Linus' tree in v5.10-rc1.
->> 
->> Solve this by removing the the parisc specific definition of
->> __ARCH_UAPI_SA_FLAGS that was just added.
->> 
->> Reported-by: Randy Dunlap <rdunlap@infradead.org>
->> Fixes: 23acdc76f179 ("signal: clear non-uapi flag bits when passing/returning sa_flags")
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->
-> Thanks, Eric.
->
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
->
->
-> BTW, there are 2 typos for "parisc" in the Subject: line...
+Thanks!
 
-Oops.  Fixed now.  Thank you for testing.
-
-Eric
-
->
->
->> ---
->>  arch/parisc/include/asm/signal.h | 2 --
->>  1 file changed, 2 deletions(-)
->> 
->> I am applying this trivial fix to my signal-for-v5.11 branch.  Catalin
->> you shouldn't need to do anything unless someone tests your tree on
->> parisc.
->> 
->> diff --git a/arch/parisc/include/asm/signal.h b/arch/parisc/include/asm/signal.h
->> index 30dd1e43ef88..715c96ba2ec8 100644
->> --- a/arch/parisc/include/asm/signal.h
->> +++ b/arch/parisc/include/asm/signal.h
->> @@ -21,8 +21,6 @@ typedef struct {
->>  	unsigned long sig[_NSIG_WORDS];
->>  } sigset_t;
->>  
->> -#define __ARCH_UAPI_SA_FLAGS	_SA_SIGGFAULT
->> -
->>  #include <asm/sigcontext.h>
->>  
->>  #endif /* !__ASSEMBLY */
->> 
+Yu-cheng
