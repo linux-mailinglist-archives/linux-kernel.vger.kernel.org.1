@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7542C80F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 497182C80F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728095AbgK3J0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:26:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
+        id S1728186AbgK3J0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:26:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgK3J0b (ORCPT
+        with ESMTP id S1726158AbgK3J0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:26:31 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A3BC0613D2;
-        Mon, 30 Nov 2020 01:25:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4dY4EOkG53RHP6M1jV6qxthiECmU22437CkB/VPnVPw=; b=kbQGkp1u8lv60ej2mi34V4mTz0
-        N8a3Ez89RDu9lKYw76gAQyyX4evCA66FdyQJveREpKWf3AV58pF4mJjBEPUd7MQos+KYNuk8RDGEN
-        sh+Zc+1F45nsR3AapUUzVrd1wQkIKgS99MhYVVkhjfPOHphpcbIBCgYFiPh557zukzfsSuu5fuBGP
-        tVD5hdB91z5EfXbvmHYzNrB/zkTO/Rj+qGDA7wEC3F3Mynk1troqL16mzp01WYZxOPKo/f2GikU41
-        jAHYbokoPtpCzotPYSODIsX08cc+6ZQQ/LUA7JxAacs4u8VFci8A+OqeitAohkQmbvqFrxeY466Bn
-        tiJGqL4Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kjfQy-0007TZ-F6; Mon, 30 Nov 2020 09:25:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3C56F301179;
-        Mon, 30 Nov 2020 10:25:23 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1B33020107BE2; Mon, 30 Nov 2020 10:25:23 +0100 (CET)
-Date:   Mon, 30 Nov 2020 10:25:23 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
-Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb
- option
-Message-ID: <20201130092523.GK2414@hirez.programming.kicks-ass.net>
-References: <20201128160141.1003903-1-npiggin@gmail.com>
- <20201128160141.1003903-7-npiggin@gmail.com>
- <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
- <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
+        Mon, 30 Nov 2020 04:26:47 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718BAC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:26:06 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id u4so10158790qkk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 01:26:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fpk-unair-ac-id.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=24sPJGQv2vfdEqP4dNafdT8x0+W9Y5frSbcrKEIPXtw=;
+        b=bW2X8Ku8+ditAVAyexVNnHdHXLmyME8tILERJYfOh0EgN2pBu0QAYGh0qls9VjbDBZ
+         zH3UDwjB6wjg7oOl0hm4agpvowSngNtywpBcXf2nHliciWVTZmSmLk5Ig8JSjnqy9hHM
+         48FbPJcO36p4XJ6n5mYbfAV0E5ZPjJP8wbcVjBX/0vVfvEk1HEADLwfU3SyNMiFLSr32
+         No8vkEJdHsI6HGcCzvIDAQxcpoP6csIuyoNK8YqvEczR9XbHggskQ09RgjjlwkcUfvY5
+         T07xW4H2YRjsIShTVNjZy4AKXoz0I1JSjltaIJMFKSGe3KnK3abRx2COtw0V8PmLfT9v
+         tU1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=24sPJGQv2vfdEqP4dNafdT8x0+W9Y5frSbcrKEIPXtw=;
+        b=qYg/Py01VTPUvtHQ/rpU7fu9/kkwLxxTq9VReX/2uy6kGZ/1pfP4HIR741MSTN/GZR
+         u8rl+l3SZWpWj7Kx28NcbG96fGJY1Es1nzbbjRTakOmWRhidTf4HTs7sz1mIDnIbCUfB
+         jj2Zb7NP3xd3hehUPEloNXuXWbIhyWB4N+beFs1KVKUkyYjeZoMoKnzQoT4aA9cSD266
+         biiddX5buGqMNdpHmSXvP7/MDnFVQwPt4E+0CmeNPeRGBUD9GtWrAduEJWnvA5hyYDvt
+         Y1pvXohK17DAdY6VQlN9Sg4/ajICOUc/KZ7sTmyIRUMFtRAS7BPF43CcimnDzVctqk40
+         EgiQ==
+X-Gm-Message-State: AOAM533tRIclbA+8tQuBUAfTiMXEcLvVSc3tOr9yxgzFkX6u2fTFll/u
+        Nf373c4qHYHdyP50vL0whP79PLRxbw/IXRxSMOb2Vw==
+X-Google-Smtp-Source: ABdhPJzTJ8D5x/PYhgd7rzudDianOhmwtxoJK6+V/nR/1TdCsCnwttoKkTDk3cP3gBCLoYIE8hbUdi/ozTLC9LF2Dso=
+X-Received: by 2002:a37:a390:: with SMTP id m138mr21839507qke.18.1606728365658;
+ Mon, 30 Nov 2020 01:26:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
+Received: by 2002:ac8:7357:0:0:0:0:0 with HTTP; Mon, 30 Nov 2020 01:26:05
+ -0800 (PST)
+Reply-To: mrs.suniewendy1@gmail.com
+From:   Sunie Wendy <agustono@fpk.unair.ac.id>
+Date:   Mon, 30 Nov 2020 10:26:05 +0100
+Message-ID: <CAL5_z9tVNtvXHF3js3ktox_T6wsU19s-ofeSQiiaGj9JVW9DPw@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 12:16:26PM -0800, Andy Lutomirski wrote:
-> On Sat, Nov 28, 2020 at 7:54 PM Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
-> > >
-> > > On big systems, the mm refcount can become highly contented when doing
-> > > a lot of context switching with threaded applications (particularly
-> > > switching between the idle thread and an application thread).
-> > >
-> > > Abandoning lazy tlb slows switching down quite a bit in the important
-> > > user->idle->user cases, so so instead implement a non-refcounted scheme
-> > > that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
-> > > any remaining lazy ones.
-> > >
-> > > Shootdown IPIs are some concern, but they have not been observed to be
-> > > a big problem with this scheme (the powerpc implementation generated
-> > > 314 additional interrupts on a 144 CPU system during a kernel compile).
-> > > There are a number of strategies that could be employed to reduce IPIs
-> > > if they turn out to be a problem for some workload.
-> >
-> > I'm still wondering whether we can do even better.
-> >
-> 
-> Hold on a sec.. __mmput() unmaps VMAs, frees pagetables, and flushes
-> the TLB.  On x86, this will shoot down all lazies as long as even a
-> single pagetable was freed.  (Or at least it will if we don't have a
-> serious bug, but the code seems okay.  We'll hit pmd_free_tlb, which
-> sets tlb->freed_tables, which will trigger the IPI.)  So, on
-> architectures like x86, the shootdown approach should be free.  The
-> only way it ought to have any excess IPIs is if we have CPUs in
-> mm_cpumask() that don't need IPI to free pagetables, which could
-> happen on paravirt.
-> 
-> Can you try to figure out why you saw any increase in IPIs?  It would
-> be nice if we can make the new code unconditional.
-
-Power doesn't do IPI based TLBI.
+Hello
+I sent a letter to your mail but got no reply  from you. Did you
+receive my previous mail please i wait to read your mail soon on my
+email address at ( mrs.suniewendy1@gmail.com ) respond to me
