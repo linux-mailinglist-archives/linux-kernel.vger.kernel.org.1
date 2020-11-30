@@ -2,152 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C232C8233
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1062C8246
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 11:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728610AbgK3KbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 05:31:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727288AbgK3KbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 05:31:20 -0500
-Received: from localhost (unknown [122.171.214.243])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F253320708;
-        Mon, 30 Nov 2020 10:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606732236;
-        bh=+mNAuwEK4cx729Qu4tU7yoERlzupdG5c5Y5WYvAGTC4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r0A7GnviLclz96J05ChsOdA0314ig1iDpH0YN/t2pYQZzTXe7rkH8g1nAxXipxqWz
-         0jiWl5zkry+mjAgEVXHx/2QlK7icSPJCHJO+FTSiyJ2vtnRr7Cpv05/wLllFumUf0a
-         4BhrBYDcBRiSWAsOF8Llo7foJOpq7eZx6bJMFCLc=
-Date:   Mon, 30 Nov 2020 16:00:23 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/8] phy: phy-hi3670-usb3: move driver from staging into
- phy
-Message-ID: <20201130103023.GM8403@vkoul-mobl>
-References: <cover.1605530560.git.mchehab+huawei@kernel.org>
- <420faf39bb03d07f8823b03bc55a429e975e23a0.1605530560.git.mchehab+huawei@kernel.org>
+        id S1728674AbgK3Ker (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 05:34:47 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33010 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728528AbgK3Ker (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 05:34:47 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AUAX6PD033011;
+        Mon, 30 Nov 2020 04:33:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1606732386;
+        bh=yMgfSKwhsApyTXmZzBfg0ZsUT/F0myEgiyp5/ylYxt8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=KMBVkjQSHs4tRl15XDSWtkAkjvl/aP5msjciPvs0AaGbM3Vc38Kndrr04kecGPVMF
+         IfomIXvg4j6g5IpKXLPk6HeGqNlcebuKCFgdbpZJ94WPhJ6hYO53TAqABni7W8tLCE
+         k3r896q+qXGY2rc/HGqwjPjWoYprMXQORc80kUjo=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AUAX6sT086703
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 04:33:06 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 30
+ Nov 2020 04:33:06 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 30 Nov 2020 04:33:06 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AUAX2OS015683;
+        Mon, 30 Nov 2020 04:33:04 -0600
+Subject: Re: [PATCH] gpio: omap: handle deferred probe with dev_err_probe()
+ for gpiochip_add_data()
+To:     Tony Lindgren <tony@atomide.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+References: <20201118143149.26067-1-grygorii.strashko@ti.com>
+ <20201119091907.GH26857@atomide.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <a3c0e105-36a5-f100-ae42-d6b43a1461a9@ti.com>
+Date:   Mon, 30 Nov 2020 12:33:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <420faf39bb03d07f8823b03bc55a429e975e23a0.1605530560.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20201119091907.GH26857@atomide.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-11-20, 13:59, Mauro Carvalho Chehab wrote:
+Hi All,
 
-> +#define CTRL7_USB2_REFCLKSEL_MASK	(3 << 3)
-> +#define CTRL7_USB2_REFCLKSEL_ABB	(3 << 3)
-> +#define CTRL7_USB2_REFCLKSEL_PAD	(2 << 3)
+On 19/11/2020 11:19, Tony Lindgren wrote:
+> * Grygorii Strashko <grygorii.strashko@ti.com> [201118 14:33]:
+>> The gpiochip_add_data() may return -EPROBE_DEFER which is not handled
+>> properly by TI GPIO driver and causes unnecessary boot log messages.
+>>
+>> Hence, add proper deferred probe handling with new dev_err_probe() API.
+>>
+>> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> 
+> Acked-by: Tony Lindgren <tony@atomide.com>
+> 
 
-This should use GENMASK()
-> +
-> +#define CFG50_USB3_PHY_TEST_POWERDOWN	BIT(23)
-> +
-> +#define CFG54_USB31PHY_CR_ADDR_MASK	(0xFFFF)
-> +#define CFG54_USB31PHY_CR_ADDR_SHIFT	(16)
+Are there any comments? Could it be merged?
+On am335 we no do see ~10 annoying error  messages during boot as there now is
+dependency from pinctrl on this platform.
 
-We can skip this by using FIELD_GET/FIELD_SET macros and only define
-register fields.
-
-> +static int hi3670_phy_cr_start(struct regmap *usb31misc, int direction)
-> +{
-> +	int ret;
-> +
-> +	if (direction)
-> +		ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +					 CFG54_USB31PHY_CR_WR_EN,
-> +					 CFG54_USB31PHY_CR_WR_EN);
-> +	else
-> +		ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +					 CFG54_USB31PHY_CR_RD_EN,
-> +					 CFG54_USB31PHY_CR_RD_EN);
-
-how about:
-        if direction
-                reg = CFG54_USB31PHY_CR_WR_EN;
-        else
-                reg = CFG54_USB31PHY_CR_RD_EN;
-
-        regmap_update_bits(usb31misc, USB_MISC_CFG54, reg, reg);
- 
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = hi3670_phy_cr_clk(usb31misc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
-> +				 CFG54_USB31PHY_CR_RD_EN | CFG54_USB31PHY_CR_WR_EN, 0);
-> +
-> +	return ret;
-
-        return regmap_update_bits()
-
-> +static int hi3670_phy_cr_wait_ack(struct regmap *usb31misc)
-> +{
-> +	u32 reg;
-> +	int retry = 100000;
-> +	int ret;
-> +
-> +	while (retry-- > 0) {
-> +		ret = regmap_read(usb31misc, USB_MISC_CFG54, &reg);
-> +		if (ret)
-> +			return ret;
-> +		if ((reg & CFG54_USB31PHY_CR_ACK) == CFG54_USB31PHY_CR_ACK)
-> +			return 0;
-> +
-> +		ret = hi3670_phy_cr_clk(usb31misc);
-> +		if (ret)
-> +			return ret;
-
-No delay in between reads..? maybe add a small delay and reduce the
-retries?
-
-> +static int hi3670_phy_cr_set_addr(struct regmap *usb31misc, u32 addr)
-> +{
-> +	u32 reg;
-> +	int ret;
-> +
-> +	ret = regmap_read(usb31misc, USB_MISC_CFG54, &reg);
-> +	if (ret)
-> +		return ret;
-> +
-> +	reg &= ~(CFG54_USB31PHY_CR_ADDR_MASK << CFG54_USB31PHY_CR_ADDR_SHIFT);
-> +	reg |= ((addr & CFG54_USB31PHY_CR_ADDR_MASK) << CFG54_USB31PHY_CR_ADDR_SHIFT);
-> +	ret = regmap_write(usb31misc, USB_MISC_CFG54, reg);
-
-regmap_update_bits() ?
-
-> +static int hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
-> +{
-> +	u32 reg;
-> +
-> +	if (!priv->sctrl) {
-> +		dev_err(priv->dev, "priv->sctrl is null!\n");
-> +		return 1;
-> +	}
-> +
-> +	if (regmap_read(priv->sctrl, SCTRL_SCDEEPSLEEPED, &reg)) {
-> +		dev_err(priv->dev, "SCTRL_SCDEEPSLEEPED read failed!\n");
-> +		return 1;
-
-Not a -ve error code?
 -- 
-~Vinod
+Best regards,
+grygorii
