@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C872C86C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BCB2C86CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727715AbgK3OaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:30:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgK3OaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:30:06 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AAFE20684;
-        Mon, 30 Nov 2020 14:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606746566;
-        bh=4Bkq+wkg1FT3dpd82K8c4Joe5aGfJRX9UwPUxafFRUQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y/UtU5s9oMuYQepwAHqZI7eQwB3OlRW3OxVd/FwIrdPOh5fUgkJrSZLxkiGxdBJiP
-         zIZkOVLoHLivWXXq/0T+z0uu8EJyCHBlrVKC/sMgZ0p9lzDAt387YtviGCAuuf5OLJ
-         6EghO+4+YCWIM+IP6R/beqjDNOUwIWOE8Vyc+CSQ=
-Date:   Mon, 30 Nov 2020 22:29:19 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     "Y.b. Lu" <yangbo.lu@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashish Kumar <ashish.kumar@nxp.com>
-Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-Message-ID: <20201130142918.GJ4072@dragon>
-References: <VI1PR04MB6896C22F6B304F365C3BA626F8FB0@VI1PR04MB6896.eurprd04.prod.outlook.com>
- <71a86b0fbc95892f8fd240e0919e7e23@walle.cc>
- <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <3293d698bf26ecf08f22e7e2ffe55e74@walle.cc>
- <AM7PR04MB688518B8AE836C2CC37FED6AF8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <20201124103128.zucizod344dgme4o@skbuf>
- <AM7PR04MB688567CA698191E2DB73DEF5F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <20201124112822.2ui57jmoc73top35@skbuf>
- <AM7PR04MB688524B26F99EB2C5B86ED48F8FA0@AM7PR04MB6885.eurprd04.prod.outlook.com>
- <31db48954bdf02fc0af73871043fc76b@walle.cc>
+        id S1726860AbgK3ObP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:31:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgK3ObN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 09:31:13 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7934C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:30:33 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id z14so11427532ilm.10
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:30:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UFj5hEo3uguu+PFu88I1aR5fk0AAELT3WI/h/MW8bA8=;
+        b=KZe3D3zmWym8lwghcNXEBHILxdmvBpCLGkMnuXfpDRiOpXotYj5k7sIonMk3BPjhuP
+         OGSyNW/MN68Y1ss/r3v+7lkuJzUpQuX0imwUTWzhO1iV/gi9nLxN4LLcKvKNRboqMQHd
+         1h9lESRaDdfXniNncrk+ityEgDW1XTK68kcA38ABIlMW/IE9f3hBsoS3w4VKkFFyydnG
+         oqtsCnHOpJWtU482QmQb3Wa449+TsJF1r5ka3fE7GsMclO19SfBo1zVkuflBN3M8VthY
+         iUMYgEEGhRv5GCsYfmot5LCLbATRxahXXWdeB59JhHJ8CMmbGMwkubqetzsZ3s4oNdIv
+         ZoSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UFj5hEo3uguu+PFu88I1aR5fk0AAELT3WI/h/MW8bA8=;
+        b=twGj1E9R7+/2y3bss6ll8aJtabHS29i8LNtjjJOXf/evmUSSG7iLS/gvX/pvExVb+Q
+         0fhEpuDqzBNjsk2bqUk24ophnzAbTHbs06cDF3HmBNeP/jrd+R9+2MB5mrlmudqVRmae
+         x5z9eembFDPRlI+ka5b2OJ4xt66eWNUS38vUJEEme0hjLENeYObVVLOsG0MBfNe/XQLv
+         tNG1OcBwyin3XBQ6HyrRwmke9oHYmVlAfgJthCfuT/ahy1yuJ6c1hSe4HO9vGblMnoP6
+         LPjraw4RjxhQ98m1j5VaWkkFojT2XEkNz8gTNxHpPr917VN4fZQoqiE6GhYDusT+6OMj
+         0yzw==
+X-Gm-Message-State: AOAM5310+Gf/dfk/29pgqVZMWEqoq4DgWBMDoxYvwOTjpjG2SpyarqlS
+        eH5zkp5ytJRs0Hf6Lrl0gJm70IO6TMze8nDsQtDmXQ==
+X-Google-Smtp-Source: ABdhPJy5qhwenvaj2uhWf6lfxNvD6HfnkcG0xYVSqpFWzjRhrZj11S/tvSsGkTW8oTnBVl3cEQ78Bmtoec5qtjf+Nlc=
+X-Received: by 2002:a05:6e02:ca5:: with SMTP id 5mr19158887ilg.40.1606746633157;
+ Mon, 30 Nov 2020 06:30:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31db48954bdf02fc0af73871043fc76b@walle.cc>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201130142759.28216-1-brgl@bgdev.pl> <20201130142759.28216-4-brgl@bgdev.pl>
+In-Reply-To: <20201130142759.28216-4-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 30 Nov 2020 15:30:22 +0100
+Message-ID: <CAMRc=Mcbzpw4o28NA-19dtWzwQz-DUYocNrD+0_RqRkCVq=PiQ@mail.gmail.com>
+Subject: Re: [PATH v3 3/3] iio: adc: xilinx: use more devres helpers and
+ remove remove()
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 09:25:23AM +0100, Michael Walle wrote:
-> We are going cirlces here. I guess Shawn (as the soc maintainer) has to
-> step in and decide if a common soc include should contain aliases for
-> nodes which are disabled. That is what it boils down to.
-> 
-> All other arguments against having aliases in the common include can be
-> found in this thread.
-> 
-> > Distros, bootloaders, and users' cases using fixed index before could
-> > avoid issues, and been used as they were.
-> 
-> Nobody argue against having these alias. We are arguing against having
-> them in the common soc include.
+On Mon, Nov 30, 2020 at 3:28 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> In order to simplify resource management and error paths in probe() and
+> entirely drop the remove() callback - use devres helpers wherever
+> possible. Define devm actions for cancelling the delayed work and
+> disabling the clock.
+>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
 
-342ab37ecaf8 ("arm64: dts: freescale: use fixed index mmcN for
-layerscape") is dropped from my tree.
+[snip]
 
-Shawn
+>
+>         /* Set thresholds to min/max */
+>         for (i = 0; i < 16; i++) {
+> @@ -1334,59 +1353,23 @@ static int xadc_probe(struct platform_device *pdev)
+>                 ret = xadc_write_adc_reg(xadc, XADC_REG_THRESHOLD(i),
+>                         xadc->threshold[i]);
+>                 if (ret)
+> -                       goto err_free_irq;
+> +                       return ret;
+>         }
+>
+>         /* Go to non-buffered mode */
+>         xadc_postdisable(indio_dev);
+>
+> -       ret = iio_device_register(indio_dev);
+> +       ret = devm_iio_device_register(dev, indio_dev);
+>         if (ret)
+> -               goto err_free_irq;
+> +               return ret;
+>
+>         platform_set_drvdata(pdev, indio_dev);
+>
+
+Cr*p I was supposed to drop this line...
+
+Jonathan: can you drop it when applying?
+
+Bartosz
+
+[snip]
