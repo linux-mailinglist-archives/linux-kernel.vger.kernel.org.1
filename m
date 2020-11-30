@@ -2,92 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E212C7F73
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 08:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7C32C7F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 09:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgK3H7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 02:59:34 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57997 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727803AbgK3H7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 02:59:34 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CkyKm1T6Bz9sTc;
-        Mon, 30 Nov 2020 18:58:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606723132;
-        bh=n9SzWS71AWCel52eHVFJAmlub4wFDrpbx/ATuVM+pc4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=l0fUyLjuk0haBCPmnfcLOlogoNxc1n+ptkyw0ZugeAoCYBfWqcWHyQr2d75W120tC
-         B4eORP51UVmb9X4hOSOIa/52TIedgCfncGCcCcS4m6EYirqYgftuyR3xk7OrFmGlk8
-         6A50TSKeuaOqQ3HvKm0qKkg1eAJAnUiigqyprEVpakYmFHZmazyx1rS+LHOhN641+X
-         iDFW59w0JUty1I+H3VDraPEFoGAMBirltDkkmbtPfGJEMgddvuWJRu6eYBvIzXkmyz
-         jd7ajuwR+Ao9AFsDFCUsMoSYQJJA/aDvwMI3hDiIwjjul5wjxGm+2FG/YSLrxcnF5M
-         VU6wdqA7KFDGQ==
-Date:   Mon, 30 Nov 2020 18:58:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <mark.gross@intel.com>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the drivers-x86 tree
-Message-ID: <20201130185851.0884bd9f@canb.auug.org.au>
-In-Reply-To: <ae231b40-e1c8-6995-d45b-ddab6a04810e@redhat.com>
-References: <20201130044331.4abf7b91@canb.auug.org.au>
-        <ae231b40-e1c8-6995-d45b-ddab6a04810e@redhat.com>
+        id S1726390AbgK3IBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 03:01:49 -0500
+Received: from mail-dm6nam12on2079.outbound.protection.outlook.com ([40.107.243.79]:24576
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725965AbgK3IBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 03:01:49 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B7uxUGi9LXG9dzEOBd6HocWdI/TGlF5faNOctynci1QlbRRKiW9YyrsbBMk5CVBOPlgZCelHtD6gImwdew/PEH8BgqXoGZis+8FdxtjP+UNwkSYJLaM3ZMijLbMTR8cIkN/MGBs0DiO96/sgffvFZHw2Nlizb/f+BO7TkC1/StA/co0lE8HRCxidxCPqIpBty9BNB3iLdiYcokfsEHIfowQwLLQW/cjIhVcedgazGoWaMMQ39HddDj31oJpvLJMd4SgPsdH+7y+JqG30EDQLa0ZW1oD7Do1n50u9fu8UyyQoNw8PK34+CFzDEJFTHK58QT/7Ad2yAyDG/J8rgtFlAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dfT098x6O37EqXhhFT76Up+MyHdvzkyDgWcTTtSfE60=;
+ b=FbWOHpRk7fNahIQOBrBkb0G3eV8y7JHNXjFoGoAmzZp5a+xz1fpyP5KBd/X+Vz6Yaq1Yjctsm2qAT09jl7K5hGtU5c1GnE6ib/NrBvpwVOeA8tPbsbShVUm4zYgOZEvMHWw04Rfn6mcDuFQoZlnev2ALMxZVAwB4+rqVdjaeN2weNGJNGkYKbgMSbzlbezpJWwh5BN8mC6vo68j5k+4FiFdCZGrHJCJlBiczVQOyvru3dBlAMZgkMpO5AF0bKiSD0IA9rJqY/eic68+tW2bPPnBX2suErGnK7OhztImP8T31JoDOFXe0VJMFCIh0Ie8UW57Pd9vvWko7qgI0IG9q7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dfT098x6O37EqXhhFT76Up+MyHdvzkyDgWcTTtSfE60=;
+ b=V5UzsppR/V1fWiL6/tFkX1gpG92WQkq5MCbJIyyQRbwJHxaedV8bJ4MGemSEL4TTXeqZ6MafZoBPpwu9hs/sM8/a3shuA9NxDGLdnQu9vwqD+RT5Ljey7rLWvrnqzqTcZ/hsNdDZ+whPTirptql6XbFti/83NehZYkpgdrzWTi8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB4755.namprd12.prod.outlook.com (2603:10b6:208:82::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Mon, 30 Nov
+ 2020 08:00:56 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::1ccc:8a9a:45d3:dd31]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::1ccc:8a9a:45d3:dd31%7]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
+ 08:00:56 +0000
+Subject: Re: [PATCH] drm/amdgpu/display: remove trailing semicolon in macro
+ definition
+To:     trix@redhat.com, alexander.deucher@amd.com, airlied@linux.ie,
+        daniel@ffwll.ch, Hawking.Zhang@amd.com, evan.quan@amd.com,
+        Felix.Kuehling@amd.com, luben.tuikov@amd.com, Dennis.Li@amd.com,
+        andrey.grodzovsky@amd.com, Joseph.Greathouse@amd.com,
+        jonathan.kim@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20201127162607.2656353-1-trix@redhat.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <01583ef8-4d70-82b2-a643-754d95d47a0a@amd.com>
+Date:   Mon, 30 Nov 2020 09:00:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201127162607.2656353-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR04CA0062.eurprd04.prod.outlook.com
+ (2603:10a6:208:1::39) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FkNt36fslEzBP.Nr_GkVXAH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR04CA0062.eurprd04.prod.outlook.com (2603:10a6:208:1::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Mon, 30 Nov 2020 08:00:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ca18d484-b665-48e2-d41b-08d8950610d7
+X-MS-TrafficTypeDiagnostic: BL0PR12MB4755:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB4755650B209323F158BB7D8683F50@BL0PR12MB4755.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:363;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Xcd7qts3TEJ44tPQD1rQXLTfHykQ7E6k0Pz52K6e5xHmcTHZOQUmbJkx+AeZ4xZOc23/672pOlUmUHQyWY3JDIotQwbU7Ox5RuvjfOR7ZVHHUPCvm0cY/jrdwjasA/SOpDG4rOuLG3Y3SEPOP/kCgJJpg5OLkfwMbPdn5jcmtV9VyAVj47aCIptscbRdZ/qS3PaQ5wfMq+c4gATj+44jfCba5G6MRnyWTVBLRxlHsYkGgHncvkJftCdP4BJgPkqOeDuXMxTy2AGbhSkCLUvaIFjMVylVZFote8Fda0vXrnY5y9FvaEh5Q9Scqm2APztmGrZ2s0oXJvnsquFaaaTJH81ABNUR4QEBTxAwGxrFi91svv3X5qp7l67Hh+JkvJlw6F0p0aAWh6MxHb118gpHOw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(366004)(39860400002)(136003)(8676002)(2616005)(316002)(66574015)(66556008)(6666004)(478600001)(6636002)(66946007)(36756003)(83380400001)(31696002)(186003)(2906002)(8936002)(66476007)(921005)(5660300002)(52116002)(16526019)(31686004)(4326008)(6486002)(86362001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?K05kWmx5WlBHa01OZU5xRU9VRHQyc0JvZWFJb0l6TnJ6Y1l6a09MNkdIZXRS?=
+ =?utf-8?B?YzhiRUo5WGVMQ1J2OHc4VGx5NjRTQzlZTG0yQnFrbUd4SkRKVVlIWDlJOWpz?=
+ =?utf-8?B?R1B5eHlqM1JVVUFhQXVnRlJob2FEb0xpRTc5Y0VqeEZUVE0xV1pKRVJ6eTM1?=
+ =?utf-8?B?d0xONEN5YXRkK2FtVVVqa2xHaTVmVno1KzR5QzBRaUhVYkc0UFJaYU5WSlJ6?=
+ =?utf-8?B?WFN4aGpoVzJuY3Y4cjVNWk5Lb0psc2Fnc3Jtcm1GUHRFUS9DeFNhekwyQ3Y2?=
+ =?utf-8?B?OXErMHcrb21NMTFRUURWeUxpVEx1dmQ4d3Vaak1zVXFkc3hRM3lmUGJVRS8r?=
+ =?utf-8?B?c1JyT25SZFZxeElYV3I3b2N3SmJBTWlTUnBhcFJVRm5SYk45anRRZCtxeUg2?=
+ =?utf-8?B?cERMbUhmR21hRnJrNkg3K1BJZ0lFbHYwSTMvc0JLNUJZQ3pEN25qMWh1NDY1?=
+ =?utf-8?B?akhzcUdNK3BkT1YzRjlxRTQzaktlWnE2YzlmRStqNlpPNXkzSjFFTng3WjFD?=
+ =?utf-8?B?YUhHVmI5bWoxZ3RTNHU0eHJ4ZlprbG9HVnd3RDZkdGhMRCt5cGEzNmRFcWhl?=
+ =?utf-8?B?eERIL04yenZiaVZuWFNubDl4YlU4dWxIZzI3UzJmNE9neEJvWWFUM3pieEda?=
+ =?utf-8?B?enE3M2lPNHlXNUlBb1l3RVNXckxIYy9uQTFvNFRjU0NndHEydHRBcUtyODlw?=
+ =?utf-8?B?VHkxSXdtS3VqOTAzcUVUVGlMbHJ2cVVnZ29ucmZENnhBRkpVN0ZiYnN0dnRM?=
+ =?utf-8?B?Zlg1U2NXaXhXcXkvTTVoODI1enBhdFkvSzRQR09VbmtMdzQwNzdSandVZTFj?=
+ =?utf-8?B?WUJSWm1Tamt4R3ZSRjlyeVhvV3hxd2FIVXdBZC9oZE15OWNCbkdzL2laTEQv?=
+ =?utf-8?B?NVdua3ZzU2xQTTBtejBlUTQzbUoxTW9YajB1Rnlxa2dMSmdCTndaa0t4RWRi?=
+ =?utf-8?B?N0pjVzR5UURxZlBpYWszTi9NUFVNNjFRNTlaSlBjdXFLdWRHWWFVZWFidjd1?=
+ =?utf-8?B?MFpiT0lsVEpydWVZd3pod2phVUdwK2NEcDlQZGxUREh5K1RlTzNvL2FlTDM3?=
+ =?utf-8?B?Rzg4a2lUaEN6ZUN1NTY3ZjQ5blpUd2pIcE01THgrcTJPcE9rekN0SzFnQklY?=
+ =?utf-8?B?L3puQ2FOODhMRi83WCtTSW1BbHJrWUlsRW1JL3V5L1lBa0JmeWNINWpEWHB5?=
+ =?utf-8?B?Ulh3M3JVZlV1M1ZFemZjMklDL2JjdjA5eS9JSnZ0UVVaeVY0L2c0dytLYkU2?=
+ =?utf-8?B?dEpuaVNPdEpXb1hnYTRCMk5qZ1pXTSsxNkViUW1tZlVjVTk4V2c0djlrZHlG?=
+ =?utf-8?B?Q0VpTHZOSGUzQTBML0JYam9ZMTBIM0hLTUF3RVB1OS9GNWNhQ0NQdTJjeVVF?=
+ =?utf-8?B?ZEpiMWJMNUJrQUdYcFdhZWZCQ0k3QU50cFRjaHhWSDR4STR2c0k1L2U5UXhX?=
+ =?utf-8?Q?sD1MxzJB?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca18d484-b665-48e2-d41b-08d8950610d7
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 08:00:56.3804
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TguXV0qTTwX7Hs1+JPWK0ZATnH7k7Tp0SXp5B9RtnDEy5qHWWf+fbJqwkB+bAu9f
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4755
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/FkNt36fslEzBP.Nr_GkVXAH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Hans,
-
-On Mon, 30 Nov 2020 08:43:21 +0100 Hans de Goede <hdegoede@redhat.com> wrot=
-e:
+Am 27.11.20 um 17:26 schrieb trix@redhat.com:
+> From: Tom Rix <trix@redhat.com>
 >
-> Question, how important is it to fix these ? I normally never do forced p=
-ushes
-> to the for-next branch. But if this is considered important to fix I gues=
-s I
-> can make an exception.
+> The macro use will already have a semicolon.
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-I think it is fine to leave these, but to try to not have more in the futur=
-e.
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-> Will git rewrite the commit msg when this is set ?  I'm at 2.28 and don't
-> have core.abbrev set. But I guess this needs to be set in the gitconfig
-> of the creator of the patch; and this has no impact on "git am" ?
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> index f9c81bc21ba4..301e93c9e72a 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> @@ -1213,7 +1213,7 @@ int emu_soc_asic_init(struct amdgpu_device *adev);
+>   #define amdgpu_asic_update_umd_stable_pstate(adev, enter) \
+>   	((adev)->asic_funcs->update_umd_stable_pstate ? (adev)->asic_funcs->update_umd_stable_pstate((adev), (enter)) : 0)
+>   
+> -#define amdgpu_inc_vram_lost(adev) atomic_inc(&((adev)->vram_lost_counter));
+> +#define amdgpu_inc_vram_lost(adev) atomic_inc(&((adev)->vram_lost_counter))
+>   
+>   /* Common functions */
+>   bool amdgpu_device_has_job_running(struct amdgpu_device *adev);
 
-It will not rewrite the commit message.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/FkNt36fslEzBP.Nr_GkVXAH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/EpjsACgkQAVBC80lX
-0GzG4Qf/Y6deDl6OJZ6SW/trKbrYKWbq2PEZy1IvUxPJPPFcCNiXCAX1ut05GspM
-azjHY3Qtv5Aok+F4ARQLNCeE6AjO+eCF/6FDFkfgYJZgT1N7c/lDyJd0sdPKw8dN
-NrUfJj5pA7DeHKvLah8hnJiu+f+RbctIitMQv+IRoNbOetyb9Z7s1Ga/PDb+1FN+
-DvryKIoHA153wxVDNffQn96cGxn+gmCo+8bTT3yw5JfGppxLniu4AcVMs+Zwezia
-qPLFg6emVyPM0EHECfGpeKHUzT/06sbxaDaeRSB+M4/TS/aJJM3gmDlL1GkgorOn
-BV3ICE2UUbPII7rp/i0ZJTjt8WKluA==
-=Pzc2
------END PGP SIGNATURE-----
-
---Sig_/FkNt36fslEzBP.Nr_GkVXAH--
