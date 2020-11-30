@@ -2,90 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9817E2C7D93
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 05:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04CD2C7D9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 05:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgK3EaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 23:30:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgK3EaF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 23:30:05 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515D8C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 20:29:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=t7UI7IhOx2zO3Z+vGhB6i8wzUOp2VWKQYOjt94TTXtY=; b=2RROkiAgIvSH4a6MW/74pPw0ga
-        MIiKWgSdQ+P/J8TJW8bnpkJbAAqhMM4kg4siFF1CXXLAiabY6cLjOxxjReCR9EN5iXKZTdbu1A4/D
-        E4vza6oJzU2qrY22NNCBFIykzh3Sz2zkaN9JwH4uTNaJTSChFE7bMvEPWUD9s5FZtNBSLL/VW2BB5
-        W/TXKVvU+P4gAWGF+W4UIjRzbQc9DyY48qXaR+ek8QCioaOshXEOoJsgsACr13lv+glOcUzTti0in
-        YN1Pbb1LHzZSjD6gNS7h3yrpWhgYwZdwH/U9DcwX1gNrwvt3uzxjE5BtOMrT1YrrmKx6O6trTzYqd
-        C36jKHmQ==;
-Received: from [2601:1c0:6280:3f0::cc1f]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kjaoU-00057e-7Q; Mon, 30 Nov 2020 04:29:22 +0000
-Subject: Re: WARNING: filesystem loop5 was created with 512 inodes, the real
- maximum is 511, mounting anyway
-To:     syzbot <syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzkaller <syzkaller@googlegroups.com>
-References: <00000000000019cd7c05b515da9a@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7e108ab1-0b07-50dd-5862-a5121eab6094@infradead.org>
-Date:   Sun, 29 Nov 2020 20:29:18 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726762AbgK3Ez6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 23:55:58 -0500
+Received: from guitar.tcltek.co.il ([192.115.133.116]:46109 "EHLO
+        mx.tkos.co.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726188AbgK3Ez5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 23:55:57 -0500
+Received: from tarshish (unknown [10.0.8.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.tkos.co.il (Postfix) with ESMTPS id 53F52440281;
+        Mon, 30 Nov 2020 06:55:13 +0200 (IST)
+References: <20201130025410.6669-1-aryan.srivastava@alliedtelesis.co.nz>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Baruch Siach <baruch@tkos.co.il>
+To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+Cc:     andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, chris.packham@alliedtelesis.co.nz,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: dts: mvebu: Add device tree for ATL-x530 Board
+In-reply-to: <20201130025410.6669-1-aryan.srivastava@alliedtelesis.co.nz>
+Date:   Mon, 30 Nov 2020 06:55:13 +0200
+Message-ID: <87h7p7e95a.fsf@tarshish>
 MIME-Version: 1.0
-In-Reply-To: <00000000000019cd7c05b515da9a@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/20 4:32 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    418baf2c Linux 5.10-rc5
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=171555b9500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b81aff78c272da44
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3fd34060f26e766536ff
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com
-> 
-> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
-> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
-> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
-> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
-> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
-> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+Hi Aryan,
 
-Hi,
-Can you provide the BFS image file that is being mounted?
-(./file0 I think.)
+[ Dropped Jason's bouncing address from Cc ]
+
+On Mon, Nov 30 2020, Aryan Srivastava wrote:
+> Add device tree file for x530 board. This has an Armada 385 SoC. Has
+> NAND-flash for user storage and SPI for booting. Covers majority of x530
+> and GS980MX variants.
+>
+> Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+> Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+>  arch/arm/boot/dts/armada-385-atl-x530.dts | 235 ++++++++++++++++++++++
+
+You need to add this .dts to Makefile for it to build with the rest.
+
+baruch
 
 -- 
-~Randy
-
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
