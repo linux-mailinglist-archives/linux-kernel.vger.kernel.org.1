@@ -2,146 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934BA2C8976
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E98632C8985
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbgK3Q1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgK3Q1O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:27:14 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8885FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:26:34 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id y74so14735390oia.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=F3m5K07V7x+E6f1xv0bjhonSW/caxdpgnGkGkW9b17E=;
-        b=HEpCq6mSJ3mx75Dyowg0APr/0vUer2HMBlpDXN++WEFjEUdN3Lz93+Usi89fYoxZYh
-         Lqbz3I6a+3be8GjWwmfBEPApIts95KtG+mGEz9VfibdGxVl+SWfW0xkMCCvJKr/W83mo
-         VYHuuwOX7pqEXHu0Mk27luH7nae8RBYwvnSmISW46O7toWLTPL/uclo5ntdlyLNRV48P
-         8a3EFNaLEYCMokVrBnEUQ9xmweYWad9LfXJizo/vZFGNQGbac36WPF40vLozwD5bRKsh
-         FdZRKHOEfKFjUrRr8Z7haphQLpyC9KProEMvthcMLxGy7mrcdb5lKEnzgaRD6v6AwXUy
-         wkhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=F3m5K07V7x+E6f1xv0bjhonSW/caxdpgnGkGkW9b17E=;
-        b=OukAW0I5p2573VJxkdmteItv5F5LWvmLfS6vpq86b5FSD2oGjqZKVeZ3sNarxIdRN3
-         mSnScJrIf4ceLMn4NduE3+2t3V8tJVBIyEvPo30Uk9aomJWR+9So87RDySIcJqoPmUxm
-         FfpAdsPDtBOV47M+9mMPYLZ/U8KET4FGIsS7Kv5w+DhaOdYaMfj6itIKa8MySBlvW3ES
-         tivQ+Tvkt/rdhDOhyQrFhD73v5gsTLfVcRvnpN7YWm7Kuqn0fdD6LoBoc6pSTC+okgoB
-         qFEHIDUW78Dv/iY1hA+jt5eRwApF6n5dtPr+ggfY9WQBle2GDzqekobqVYb2fBpdbQk+
-         nVOw==
-X-Gm-Message-State: AOAM530HTS2+dB15R45SAH1tFPanNE8BdhOh9x658i+Z3NphIahtPUbF
-        8FrbLoq+pxb5y1qEhLA2fUbJdg==
-X-Google-Smtp-Source: ABdhPJxPSZTF380ca194SwOsiCnSZzNZOgv1w0h1Evaq9a8BGsa3rk5/2aEqNLzVG1e3ZvHprG+kjA==
-X-Received: by 2002:aca:d706:: with SMTP id o6mr15162748oig.28.1606753593951;
-        Mon, 30 Nov 2020 08:26:33 -0800 (PST)
-Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
-        by smtp.gmail.com with ESMTPSA id i1sm9854541ool.43.2020.11.30.08.26.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 08:26:33 -0800 (PST)
-Subject: Re: [PATCH v4 2/2] ASoC: qcom: Add support for playback recover after
- resume
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
- <1606539559-4277-3-git-send-email-srivasam@codeaurora.org>
-From:   Steev Klimaszewski <steev@kali.org>
-Message-ID: <938cb2c1-daed-e322-ca8a-06b54ebb35ff@kali.org>
-Date:   Mon, 30 Nov 2020 10:26:31 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        id S1728884AbgK3Q3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:29:24 -0500
+Received: from mout.gmx.net ([212.227.15.19]:43335 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728863AbgK3Q3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:29:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606753639;
+        bh=g7gIuzXdJkNWVgDL+psau+dbSeSo+v1g6CMrN/YRsHc=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=cb8lgFKsWvlHg9BxwLAsvwUNmGGb7b/UPHsZB9g3WOSf7FL7epADsDhM6gv8/BayY
+         /mk/w09tpYqvjbdsHVQRr7lCCy60MduiNGyC5nstJGRHX9zYBX0CPjeByB0rscfx0R
+         XSCzGn/eiRuvMJh8fYTd4Ws7o07NRkLfc9y5+S7Q=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.151.20]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M3lY1-1kk38O0J2x-000tvU; Mon, 30
+ Nov 2020 17:27:19 +0100
+Message-ID: <2658a2a26e53826687cd7b22f424e2d3319423dd.camel@gmx.de>
+Subject: Re: scheduling while atomic in z3fold
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Date:   Mon, 30 Nov 2020 17:27:17 +0100
+In-Reply-To: <20201130160327.ov32m4rapk4h432a@linutronix.de>
+References: <15171df044b167351e7f6a688aabd71bade9ae2a.camel@gmx.de>
+         <79ee43026efe5aaa560953ea8fe29a826ac4e855.camel@gmx.de>
+         <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
+         <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
+         <20201129112922.db53kmtpu76xxukj@spock.localdomain>
+         <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+         <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
+         <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
+         <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
+         <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
+         <20201130160327.ov32m4rapk4h432a@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <1606539559-4277-3-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WHhCmV7H4GPew09tvTHmBnfaIWrnHFSbzOsPB0lILlwf3Jfpx1r
+ ocXOPwkliheZ8aw5NcPkvOMVbLmTkuY76gQ+V/yObwxT6eCCPSY3CZ8cOcZZ+eL3yGvKu0g
+ 1emKxA3izcLeeu/+18kCgu8MqQzhejmonMOOO/PkYYXjjR5gfe83hfFN/+XiaHrTBjqHrEp
+ DWj/nzVhwS1sfRq8G7HCQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vDsTuF1V16c=:qw+O0BalqIzFaPuITU06gb
+ yjDxB+Ac2G7zYpuqm46uBDQwtN2glSWtQWeUBG2FU3nDHxLBRyQPM5kGSGHU+/IDeSd4BYTvH
+ ufmQcUu7Sl2hDA5102IPAnzb5hNRY7dut6L/oUTdpaBsdf0WPth04XDuOb7aygIMbZRk0kbBx
+ K9c7KWt8ksFLwq4PGUbSZCqNC/EnHndOtpLoQ7SQbRKwd76MdqevaUaMwOcgtFRPY5lLeItZt
+ 6UxYujwOjOEajJU7ngMeA8dgXxc/sw+09m5Zfpru9jz7hr7L7PkXeLu6wWHUpId2GSvwwKUYc
+ EKsSDPEsH80myjkStNA75h+TFM84vFXs27c5y5AOh7uWIIPoNSgkNscTnYCe3QjvgeN/0GAUG
+ 1WqtJ+EmelcRTmvRkwVo17bTEgKBHk40j+0OL2vXnAXYlMWO06T3sTE54oVp7OE4ayWj6cdAO
+ urmcxHiUK6RCw3Ia5Z1dG6EfCLgN7v1X9rqZqN13nBRDomRtyEIBh14dfLIJ8yWD0pBm9gCbk
+ J7j7SowppVAFD9CUaPCVHax9B+S8OHfTs+A6fYlPC8dGkxeD9mgjyVE35dXUylrvTdJfoHj7K
+ H8kJqOvOUDC7wjX+yYf5f8T0R1eUG9DoSyna4gEYd/fPW/LCqvrS5EI+th8A4Fk3PB7420i8Q
+ 56eZ6TxmRp8wTweKgMJwXNV7xzocHp2HDqFWZSC5Zz8b1CJGVR1ml+AoDd/i+/nF/o+yhYAe0
+ 2DHXrlFXXVnZOnn72CmJD0w4vIIu2zGpcG/QHHi1Ho+a33F+0XTzk7De2XvyZ71hAV6oSruBw
+ XwwvkADrkMOtKM3nhhmm38UCIGnahySGXKB9VZrpUqdubWOveNAlT/h2ojLkUpedyl9gGelHZ
+ 2vMjAMS4aJFvOQHi4VnQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/27/20 10:59 PM, Srinivasa Rao Mandadapu wrote:
-> To support playback continuation after hard suspend(bypass powerd)
-> and resume add component driver ops and do regcache sync.
+On Mon, 2020-11-30 at 17:03 +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-11-30 16:01:11 [+0100], Mike Galbraith wrote:
+> > On Mon, 2020-11-30 at 15:52 +0100, Sebastian Andrzej Siewior wrote:
+> > > How do you test this? I triggered a few oom-killer and I have here g=
+it
+> > > gc running for a few hours now=E2=80=A6 Everything is fine.
+> >
+> > In an LTP install, ./runltp -f mm.  Shortly after box starts swapping
+> > insanely, it explodes quite reliably here with either z3fold or
+> > zsmalloc.. but not with zbud.
 >
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  sound/soc/qcom/lpass-platform.c | 35 +++++++++++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
->
-> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-> index 0e71899..12764a8 100644
-> --- a/sound/soc/qcom/lpass-platform.c
-> +++ b/sound/soc/qcom/lpass-platform.c
-> @@ -827,6 +827,39 @@ static void lpass_platform_pcm_free(struct snd_soc_component *component,
->  	}
->  }
->  
-> +static int lpass_platform_pcmops_suspend(struct snd_soc_component *component)
-> +{
-> +	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
-> +	struct regmap *map;
-> +	unsigned int dai_id = component->id;
-> +
-> +	if (dai_id == LPASS_DP_RX)
-> +		map = drvdata->hdmiif_map;
-> +	else
-> +		map = drvdata->lpaif_map;
-> +
-> +	regcache_cache_only(map, true);
-> +	regcache_mark_dirty(map);
-> +
-> +	return 0;
-> +}
-> +
-> +static int lpass_platform_pcmops_resume(struct snd_soc_component *component)
-> +{
-> +	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
-> +	struct regmap *map;
-> +	unsigned int dai_id = component->id;
-> +
-> +	if (dai_id == LPASS_DP_RX)
-> +		map = drvdata->hdmiif_map;
-> +	else
-> +		map = drvdata->lpaif_map;
-> +
-> +	regcache_cache_only(map, false);
-> +	return regcache_sync(map);
-> +}
-> +
-> +
->  static const struct snd_soc_component_driver lpass_component_driver = {
->  	.name		= DRV_NAME,
->  	.open		= lpass_platform_pcmops_open,
-> @@ -839,6 +872,8 @@ static const struct snd_soc_component_driver lpass_component_driver = {
->  	.mmap		= lpass_platform_pcmops_mmap,
->  	.pcm_construct	= lpass_platform_pcm_new,
->  	.pcm_destruct	= lpass_platform_pcm_free,
-> +	.suspend		= lpass_platform_pcmops_suspend,
-> +	.resume			= lpass_platform_pcmops_resume,
->  
->  };
->  
+> This just passed. It however killed my git-gc task which wasn't done.
+> Let me try tomorrow with your config.
 
-Tested this series on a Lenovo Yoga C630
+FYI, I tried 5.9-rt (after fixing 5.9.11), it exploded in the same way,
+so (as expected) it's not some devel tree oopsie.
 
-Tested-by: Steev Klimaszewski <steev@kali.org>
-
+	-Mike
 
