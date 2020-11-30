@@ -2,29 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF752C7D62
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB2D2C7D65
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 04:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgK3Dav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Nov 2020 22:30:51 -0500
-Received: from foss.arm.com ([217.140.110.172]:48682 "EHLO foss.arm.com"
+        id S1728454AbgK3Daz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Nov 2020 22:30:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:48696 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726304AbgK3Dau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Nov 2020 22:30:50 -0500
+        id S1728316AbgK3Day (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Nov 2020 22:30:54 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA9BF113E;
-        Sun, 29 Nov 2020 19:30:04 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C96F211FB;
+        Sun, 29 Nov 2020 19:30:08 -0800 (PST)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.84.86])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 945D23F23F;
-        Sun, 29 Nov 2020 19:30:02 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6EE8C3F23F;
+        Sun, 29 Nov 2020 19:30:05 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [RFC V2 1/3] mm/hotplug: Prevalidate the address range being added with platform
-Date:   Mon, 30 Nov 2020 08:59:50 +0530
-Message-Id: <1606706992-26656-2-git-send-email-anshuman.khandual@arm.com>
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [RFC V2 2/3] arm64/mm: Define arch_get_mappable_range()
+Date:   Mon, 30 Nov 2020 08:59:51 +0530
+Message-Id: <1606706992-26656-3-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
 References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
@@ -32,181 +36,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This introduces memhp_range_allowed() which can be called in various memory
-hotplug paths to prevalidate the address range which is being added, with
-the platform. Then memhp_range_allowed() calls memhp_get_pluggable_range()
-which provides applicable address range depending on whether linear mapping
-is required or not. For ranges that require linear mapping, it calls a new
-arch callback arch_get_mappable_range() which the platform can override. So
-the new callback, in turn provides the platform an opportunity to configure
-acceptable memory hotplug address ranges in case there are constraints.
+This overrides arch_get_mappable_range() on arm64 platform which will be
+used with recently added generic framework. It drops inside_linear_region()
+and subsequent check in arch_add_memory() which are no longer required.
 
-This mechanism will help prevent platform specific errors deep down during
-hotplug calls. This drops now redundant check_hotplug_memory_addressable()
-check in __add_pages().
-
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
+Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- include/linux/memory_hotplug.h |  2 +
- mm/memory_hotplug.c            | 77 +++++++++++++++++++++++++---------
- mm/memremap.c                  |  6 ++-
- 3 files changed, 64 insertions(+), 21 deletions(-)
+ arch/arm64/mm/mmu.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 551093b74596..047a711ab76a 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -70,6 +70,8 @@ typedef int __bitwise mhp_t;
-  */
- #define MEMHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
- 
-+bool memhp_range_allowed(u64 start, u64 size, bool need_mapping);
-+
- /*
-  * Extended parameters for memory hotplug:
-  * altmap: alternative allocator for memmap array (optional)
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 63b2e46b6555..9dd9db01985d 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -107,6 +107,9 @@ static struct resource *register_memory_resource(u64 start, u64 size,
- 	if (strcmp(resource_name, "System RAM"))
- 		flags |= IORESOURCE_SYSRAM_DRIVER_MANAGED;
- 
-+	if (!memhp_range_allowed(start, size, 1))
-+		return ERR_PTR(-E2BIG);
-+
- 	/*
- 	 * Make sure value parsed from 'mem=' only restricts memory adding
- 	 * while booting, so that memory hotplug won't be impacted. Please
-@@ -284,22 +287,6 @@ static int check_pfn_span(unsigned long pfn, unsigned long nr_pages,
- 	return 0;
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index ca692a815731..49ec8f2838f2 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -1444,16 +1444,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+ 	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
  }
  
--static int check_hotplug_memory_addressable(unsigned long pfn,
--					    unsigned long nr_pages)
--{
--	const u64 max_addr = PFN_PHYS(pfn + nr_pages) - 1;
--
--	if (max_addr >> MAX_PHYSMEM_BITS) {
--		const u64 max_allowed = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1;
--		WARN(1,
--		     "Hotplugged memory exceeds maximum addressable address, range=%#llx-%#llx, maximum=%#llx\n",
--		     (u64)PFN_PHYS(pfn), max_addr, max_allowed);
--		return -E2BIG;
--	}
--
--	return 0;
--}
--
- /*
-  * Reasonably generic function for adding memory.  It is
-  * expected that archs that support memory hotplug will
-@@ -317,10 +304,6 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
- 	if (WARN_ON_ONCE(!params->pgprot.pgprot))
- 		return -EINVAL;
- 
--	err = check_hotplug_memory_addressable(pfn, nr_pages);
--	if (err)
--		return err;
--
- 	if (altmap) {
- 		/*
- 		 * Validate altmap is within bounds of the total request
-@@ -1824,4 +1807,58 @@ int offline_and_remove_memory(int nid, u64 start, u64 size)
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(offline_and_remove_memory);
-+
-+/*
-+ * Platforms should define arch_get_mappable_range() that provides
-+ * maximum possible addressable physical memory range for which the
-+ * linear mapping could be created. The platform returned address
-+ * range must adhere to these following semantics.
-+ *
-+ * - range.start <= range.end
-+ * - Range includes both end points [range.start..range.end]
-+ *
-+ * There is also a fallback definition provided here, allowing the
-+ * entire possible physical address range in case any platform does
-+ * not define arch_get_mappable_range().
-+ */
-+struct range __weak arch_get_mappable_range(void)
-+{
-+	struct range memhp_range = {
-+		.start = 0UL,
-+		.end = -1ULL,
-+	};
-+	return memhp_range;
-+}
-+
-+static inline struct range memhp_get_pluggable_range(bool need_mapping)
-+{
-+	const u64 max_phys = (1ULL << (MAX_PHYSMEM_BITS + 1)) - 1;
+-static bool inside_linear_region(u64 start, u64 size)
++struct range arch_get_mappable_range(void)
+ {
 +	struct range memhp_range;
 +
-+	if (need_mapping) {
-+		memhp_range = arch_get_mappable_range();
-+		if (memhp_range.start > max_phys) {
-+			memhp_range.start = 0;
-+			memhp_range.end = 0;
-+		}
-+		memhp_range.end = min_t(u64, memhp_range.end, max_phys);
-+	} else {
-+		memhp_range.start = 0;
-+		memhp_range.end = max_phys;
-+	}
-+	return memhp_range;
-+}
-+
-+bool memhp_range_allowed(u64 start, u64 size, bool need_mapping)
-+{
-+	struct range memhp_range = memhp_get_pluggable_range(need_mapping);
-+	u64 end = start + size;
-+
-+	if (start < end && start >= memhp_range.start && (end - 1) <= memhp_range.end)
-+		return true;
-+
-+	pr_warn("Hotplug memory [%#llx-%#llx] exceeds maximum addressable range [%#llx-%#llx]\n",
-+		start, end, memhp_range.start, memhp_range.end);
-+	return false;
-+}
- #endif /* CONFIG_MEMORY_HOTREMOVE */
-diff --git a/mm/memremap.c b/mm/memremap.c
-index 16b2fb482da1..26c1825756cc 100644
---- a/mm/memremap.c
-+++ b/mm/memremap.c
-@@ -185,6 +185,7 @@ static void dev_pagemap_percpu_release(struct percpu_ref *ref)
- static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
- 		int range_id, int nid)
- {
-+	const bool is_private = pgmap->type == MEMORY_DEVICE_PRIVATE;
- 	struct range *range = &pgmap->ranges[range_id];
- 	struct dev_pagemap *conflict_pgmap;
- 	int error, is_ram;
-@@ -230,6 +231,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
- 	if (error)
- 		goto err_pfn_remap;
- 
-+	if (!memhp_range_allowed(range->start, range_len(range), !is_private))
-+		goto err_pfn_remap;
-+
- 	mem_hotplug_begin();
- 
  	/*
-@@ -243,7 +247,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
- 	 * the CPU, we do want the linear mapping and thus use
- 	 * arch_add_memory().
+ 	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+ 	 * accommodating both its ends but excluding PAGE_END. Max physical
+ 	 * range which can be mapped inside this linear mapping range, must
+ 	 * also be derived from its end points.
  	 */
--	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
-+	if (is_private) {
- 		error = add_pages(nid, PHYS_PFN(range->start),
- 				PHYS_PFN(range_len(range)), params);
- 	} else {
+-	return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
+-	       (start + size - 1) <= __pa(PAGE_END - 1);
++	memhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
++	memhp_range.end =  __pa(PAGE_END - 1);
++	return memhp_range;
+ }
+ 
+ int arch_add_memory(int nid, u64 start, u64 size,
+@@ -1461,11 +1464,6 @@ int arch_add_memory(int nid, u64 start, u64 size,
+ {
+ 	int ret, flags = 0;
+ 
+-	if (!inside_linear_region(start, size)) {
+-		pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
+-		return -EINVAL;
+-	}
+-
+ 	if (rodata_full || debug_pagealloc_enabled())
+ 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ 
 -- 
 2.20.1
 
