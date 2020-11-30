@@ -2,234 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0A02C8C64
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 245862C8C61
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387978AbgK3SOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:14:50 -0500
-Received: from mga01.intel.com ([192.55.52.88]:60089 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726258AbgK3SOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:14:50 -0500
-IronPort-SDR: osdEmwzXyQzZaBuJzVmxjE+khpK8NIFY+PojoBjVw9QZrQL6k1WmKB4xDKGE+rlQqtvdaX1vPq
- qTUesuJ98p9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="190872383"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="190872383"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 10:13:09 -0800
-IronPort-SDR: 03fw8DZrdqUk3uDr+DuPX4Ib4r/WLzh+95yEBSOKde1L9eWoE4kULX2ZtG2yjMGoFpBvE9CG7S
- L6jrBo/VL9eA==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="364347685"
-Received: from nathanhs-mobl1.amr.corp.intel.com ([10.209.72.72])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 10:13:08 -0800
-Message-ID: <585bb5d3ee5bea063795682108576c3464ba72b6.camel@linux.intel.com>
-Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>, amitk@kernel.org,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Mon, 30 Nov 2020 10:13:08 -0800
-In-Reply-To: <34348B03-5E27-49A0-A704-6332BAC00758@canonical.com>
-References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
-         <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
-         <860126B8-1152-4EE3-B15E-B4E45EFE879F@canonical.com>
-         <fc67ad02826fb3adfd8457e1a0baf234a8fa3fce.camel@linux.intel.com>
-         <34348B03-5E27-49A0-A704-6332BAC00758@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1728122AbgK3SOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:14:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726258AbgK3SOe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:14:34 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159C8C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:13:54 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id h7so266394pjk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:13:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BlVeiNa/yTJoKE7RHYhXMT0gAubYFxdxrpInP7YeRnI=;
+        b=Yo34sV490HVWzsN0G7UHQT9eRIBWQTPG4p/3D3xU8G81YbQ55EWA6OcMXdLmM/HpEc
+         O6ZR0AHSp9aDCgOZPnOtvgHHjd3C1UjBaaL8Yc8mb4vljvVekAhdu+Z0WZfzISix9+SC
+         4F0sP4HYVX9NfmZLMRBR4dKta68cchumA/seEBAZargbyrCEvdgNLkcZX6PGPtah3upi
+         0b62PyRbDPqpFwriS9as0q5PhmxqGBYi48Xn2uK8XaIMKG4muc1aCwo4YCYcVo5EyGig
+         PtEPiAWgFPWryi7qAag4B0+z0/WIs1mczyt3R6N13MLlmotR/vEU9nWrGM/a90rwoVq1
+         1q9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BlVeiNa/yTJoKE7RHYhXMT0gAubYFxdxrpInP7YeRnI=;
+        b=Qn+5ZZaIKmsDNaD1szY3YJ+54eOZqocZaTH6QaSbuA4QHHTJieZMmRiMmboI309NTg
+         Z0cyRajdVUERXpAYrAmxagoZFAxtiphcIXoUbgKwn58nimf0CSGW1oMnlg4eXa8BVYda
+         KDZtN7dwAJ6BaqDbB3+2DHa60fyb3ZPowLiGtgknoMQBR/mB2ewVqKS1MRbchBOL29Ja
+         82lbxkuByLEEGQwKSGNRJUWYW4rGbP4Ne0uOFgc6oA88V47bG59sZqHyesZO0ylFLWmS
+         dMw05he7xSiq7dkTrMCM++fpWik5gmkOWg6Gblnc9uffnmLJO6+cgObXQJugfcahoNwB
+         1wPA==
+X-Gm-Message-State: AOAM533HMx1J0M75pU14lcFfelj60DHRiUuWNxGHbxQRapgbIAOIwCBV
+        SFagT1VS7aWnYHER3OS1RY2FZg==
+X-Google-Smtp-Source: ABdhPJysm1IilmpgXIdB4OQLJCeb9JCWhGHEdo/bWZz7xfh1vuqBfMFN65WV1PePC3XQ/LY9CxNVtw==
+X-Received: by 2002:a17:90a:af88:: with SMTP id w8mr66105pjq.152.1606760033430;
+        Mon, 30 Nov 2020 10:13:53 -0800 (PST)
+Received: from google.com (h208-100-161-3.bendor.broadband.dynamic.tds.net. [208.100.161.3])
+        by smtp.gmail.com with ESMTPSA id x23sm16507894pfo.209.2020.11.30.10.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 10:13:52 -0800 (PST)
+Date:   Mon, 30 Nov 2020 10:13:50 -0800
+From:   William Mcvicker <willmcvicker@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "J. Avila" <elavila@google.com>, mingo@redhat.com,
+        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Daniel Mentz <danielmentz@google.com>
+Subject: Re: Potential Issue in Tracing Ring Buffer
+Message-ID: <20201130181350.GA1116146@google.com>
+References: <20201124223917.795844-1-elavila@google.com>
+ <X79CrSX1rnpnbqPd@kroah.com>
+ <20201126132613.7f737afe@oasis.local.home>
+ <20201130094846.6b8bc60b@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130094846.6b8bc60b@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-01 at 02:04 +0800, Kai-Heng Feng wrote:
-> > On Dec 1, 2020, at 00:19, Srinivas Pandruvada <
-> > srinivas.pandruvada@linux.intel.com> wrote:
-> > 
-> > On Mon, 2020-11-30 at 16:23 +0800, Kai-Heng Feng wrote:
-> > > > On Nov 30, 2020, at 15:57, Daniel Lezcano <
-> > > > daniel.lezcano@linaro.org> wrote:
-> > > > 
-> > > > 
-> > > > [Added Srinivas]
-> > > > 
-> > > > On 28/11/2020 18:54, Kai-Heng Feng wrote:
-> > > > > We are seeing thermal shutdown on Intel based mobile
-> > > > > workstations, the
-> > > > > shutdown happens during the first trip handle in
-> > > > > thermal_zone_device_register():
-> > > > > kernel: thermal thermal_zone15: critical temperature reached
-> > > > > (101
-> > > > > C), shutting down
-> > > > > 
-> > > > > However, we shouldn't do a thermal shutdown here, since
-> > > > > 1) We may want to use a dedicated daemon, Intel's thermald in
-> > > > > this case,
-> > > > > to handle thermal shutdown.
-> > > > > 
-> > > > > 2) For ACPI based system, _CRT doesn't mean shutdown unless
-> > > > > it's
-> > > > > inside
-> > > > > ThermalZone. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
-> > > > > "... If this object it present under a device, the device’s
-> > > > > driver
-> > > > > evaluates this object to determine the device’s critical
-> > > > > cooling
-> > > > > temperature trip point. This value may then be used by the
-> > > > > device’s
-> > > > > driver to program an internal device temperature sensor trip
-> > > > > point."
-> > > > > 
-> > > > > So a "critical trip" here merely means we should take a more
-> > > > > aggressive
-> > > > > cooling method.
-> > > > 
-> > > > Well, actually it is stated before:
-> > > > 
-> > > > "This object, when defined under a thermal zone, returns the
-> > > > critical
-> > > > temperature at which OSPM must shutdown the system".
-> > > 
-> > > This means specifically for the ACPI ThermalZone in AML, e.g.:
-> > > 
-> > > ThermalZone (TZ0) {
-> > > ....
-> > >    Method(_CRT) { ... }
-> > > } // end of TZ0
-> > > 
-> > > However the device is not under any ACPI ThermalZone.
-> > > 
-> > > > That is what does the thermal subsystem, no ?
-> > > > 
-> > > > > So add an indication to let thermal core know it should leave
-> > > > > thermal
-> > > > > device to userspace to handle.
-> > > > 
-> > > > You may want to check the 'HOT' trip point and then use the
-> > > > notification
-> > > > mechanism to get notified in userspace and take action from
-> > > > there
-> > > > (eg.
-> > > > offline some CPUs).
-> > > 
-> > > For this particular issue we are facing, the thermal shutdown
-> > > happens
-> > > in thermal_zone_device_register() and userspace isn't up yet.
-> > 
-> > What about creating an new callback
-> > 
-> > enum thermal_trip_status {
-> > 	THERMAL_TRIP_DISABLED = 0,
-> > 	THERMAL_TRIP_ENABLED,
-> > };
-> > 
-> > int get_trip_status(struct thermal_zone_device *, int trip, enum
-> > thermal_trip_status *state);
-> > 
-> > Then in 
-> > static void handle_thermal_trip(struct thermal_zone_device *tz, int
-> > trip)
-> > {
-> > 
-> > /* before tz->ops->get_trip_temp(tz, trip, &trip_temp); */
-> > if (tz->ops->get_trip_status) {
-> > 	enum thermal_trip_status *status;
-> > 
-> > 	if (!tz->ops->get_trip_status(tz, trip, &status)) {
-> > 		if (status == THERMAL_TRIP_DISABLED)
-> > 			return;	
-> > 	}
-> > }
-> > ...
-> > ...
-> > 
-> > }
-> > 
-> > 
-> > This callback will help the cases:
-> > - Allows drivers to selectively disable certain trips during init
-> > state
-> > or system resume where there can be spikes or always. int340x
-> > drivers
-> > can disable always.
+On Mon, Nov 30, 2020 at 09:48:46AM -0500, Steven Rostedt wrote:
+> On Thu, 26 Nov 2020 13:26:13 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> This sounds really great. This is indeed can happen on system resume,
-> before userspace process thaw.
+> > On Thu, 26 Nov 2020 06:52:45 +0100
+> > Greg KH <gregkh@linuxfoundation.org> wrote:
+> > 
+> > > On Tue, Nov 24, 2020 at 10:39:17PM +0000, J. Avila wrote:  
+> > > > Hello,
+> > > > 
+> > > > In the ftrace logs we've collected internally, we have found that there are
+> > > > situations where time seems to go backwards; this breaks userspace tools which
+> > > > expect time to always go forward in these logs. For example, in this snippet
+> > > > from a db845c running a 5.10-rc4 kernel[1] (thanks for getting us the trace,
+> > > > John!), we see:    
+> > > 
+> > > Does the patch at:
+> > > 	https://lore.kernel.org/r/20201125225654.1618966-1-minchan@kernel.org
+> > > 
+> > > resolve this issue for you?
+> > >   
+> > 
+> > I think I found the bug. Can you apply this patch and let me know if it
+> > fixes the issue for you?
+> > 
+> > -- Steve
+> > 
+> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> > index dc83b3fa9fe7..bccaf88d3706 100644
+> > --- a/kernel/trace/ring_buffer.c
+> > +++ b/kernel/trace/ring_buffer.c
+> > @@ -3291,7 +3291,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+> >  			/* Nothing came after this event between C and E */
+> >  			info->delta = ts - info->after;
+> >  			(void)rb_time_cmpxchg(&cpu_buffer->write_stamp,
+> > -					      info->after, info->ts);
+> > +					      info->after, ts);
+> >  			info->ts = ts;
+> >  		} else {
+> >  			/*
+> > 
 > 
-> > - Still give options for drivers to handle critical trip even if
-> > they
-> > are bound to user space governors. User space process may be dead,
-> > so
-> > still allow kernel to process graceful shutdown
+> Can I get a Tested-by from someone on the Google team, so that I can send
+> this upstream? It already passed all my internal testing, but I want to
+> make sure this is the fix for the issue I reference in the change log.
 > 
-> To make the scenario happen, do we need a new sysfs to let usespace
-> enable it with THERMAL_TRIP_ENABLED?
-This should be drivers call not user space.
+> -- Steve
+> 
+> -- 
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> 
+Hi Steve,
 
-Thanks,
-Srinivas
+Thanks for the quick turnaround! Daniel and I have both tested your patch and
+verified it's working on our end. Feel free to include:
 
+Tested-by: Daniel Mentz <danielmentz@google.com>
+Tested-by: Will McVicker <willmcvicker@google.com>
 
-> 
-> Kai-Heng
-> 
-> > Thanks,
-> > Srinivas
-> > 
-> > > Kai-Heng
-> > > 
-> > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > > > ---
-> > > > > drivers/thermal/thermal_core.c | 3 +++
-> > > > > include/linux/thermal.h        | 2 ++
-> > > > > 2 files changed, 5 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/thermal/thermal_core.c
-> > > > > b/drivers/thermal/thermal_core.c
-> > > > > index c6d74bc1c90b..6561e3767529 100644
-> > > > > --- a/drivers/thermal/thermal_core.c
-> > > > > +++ b/drivers/thermal/thermal_core.c
-> > > > > @@ -1477,6 +1477,9 @@ thermal_zone_device_register(const char
-> > > > > *type, int trips, int mask,
-> > > > > 			goto unregister;
-> > > > > 	}
-> > > > > 
-> > > > > +	if (tz->tzp && tz->tzp->userspace)
-> > > > > +		thermal_zone_device_disable(tz);
-> > > > > +
-> > > > > 	mutex_lock(&thermal_list_lock);
-> > > > > 	list_add_tail(&tz->node, &thermal_tz_list);
-> > > > > 	mutex_unlock(&thermal_list_lock);
-> > > > > diff --git a/include/linux/thermal.h
-> > > > > b/include/linux/thermal.h
-> > > > > index d07ea27e72a9..e8e8fac78fc8 100644
-> > > > > --- a/include/linux/thermal.h
-> > > > > +++ b/include/linux/thermal.h
-> > > > > @@ -247,6 +247,8 @@ struct thermal_zone_params {
-> > > > > 	 */
-> > > > > 	bool no_hwmon;
-> > > > > 
-> > > > > +	bool userspace;
-> > > > > +
-> > > > > 	int num_tbps;	/* Number of tbp entries */
-> > > > > 	struct thermal_bind_params *tbp;
-> > > > > 
-> > > > > 
-> > > > 
-> > > > -- 
-> > > > <http://www.linaro.org/> Linaro.org │ Open source software for
-> > > > ARM
-> > > > SoCs
-> > > > 
-> > > > Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook
-> > > > |
-> > > > <http://twitter.com/#!/linaroorg> Twitter |
-> > > > <http://www.linaro.org/linaro-blog/> Blog
-
+--Will
