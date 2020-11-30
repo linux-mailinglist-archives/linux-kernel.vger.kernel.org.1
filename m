@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E0B2C82F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DC92C82F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgK3LNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:13:41 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3205 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgK3LNk (ORCPT
+        id S1728870AbgK3LO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:14:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728652AbgK3LOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:13:40 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc4d3be0000>; Mon, 30 Nov 2020 03:13:03 -0800
-Received: from [10.26.72.142] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 30 Nov
- 2020 11:12:48 +0000
-Subject: Re: [PATCH] dmaengine: tegra-apb: fix reference leak in
- tegra_dma_issue_pending and tegra_dma_synchronize
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201127094431.120771-1-miaoqinglang@huawei.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <b7871cf9-9f3e-1b8e-028b-73bd703411f7@nvidia.com>
-Date:   Mon, 30 Nov 2020 11:12:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 30 Nov 2020 06:14:25 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3B1C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:13:45 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w16so9874152pga.9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:13:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ylWqeCaojXahUBRs7tWWOFsUs6Y8SM8mpT1ztQJPZd0=;
+        b=nqhj9BT9+WCVKuCz8Q2lcCFUUmolsn0nXw9i4y3ckunvZuV1abLCXaTszeMWjQM0Bq
+         wzszHyudG7j/Ony1y37fPgtGPcI7tbTfZS80x1ktlFE/uuRI6uaIl7hyTv5g6iHCVonW
+         YXvaA6MX2yS5rPPM8FPphL7BJQz59I8vY5AKw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ylWqeCaojXahUBRs7tWWOFsUs6Y8SM8mpT1ztQJPZd0=;
+        b=I2B1x5tYfeSup9vda94aMGXr76yQj+o7ICvlwswJ1zmigG5D6Nsof805QSnhKhaIqG
+         40fjMHZ/MJdxdTHZPXI/UFFnkMEjzW3kDb/2TXsXE0AkG8sRZ1UMQJvEVo274QLVj4G4
+         753cJ5zGT1hCq4RT2ymnr0tndQLFXPcfB3jhIV8P1dwdN/ljLVaNeGCZQ0EqCIBj3/h2
+         x5BLcN2yHclbV9GesJJWwR5oWFiTI57q9DV4palTZqXKOknwm1HmBrNmJw14Lu46ZOLM
+         0NVW3dpLxqLQU/RKGUlc+6ybf1cvpUB6F7xyWB4GMkDDL4AF3ZkrEqSLpF2/jq8jbt9u
+         l9oA==
+X-Gm-Message-State: AOAM532nT7YvaaJwX6rasyxMZGGWlkF5EXX13j3C9GFQFRayRthQ/qjS
+        gyANqUJI0rLFaXEzPdJI7T0TCA==
+X-Google-Smtp-Source: ABdhPJxtxKJ3Ouuac5shSBMgyDJniyLHnpSM3fINGObBbJy49hgqBs8/pwklTMJIjQlKupFLUXTDiQ==
+X-Received: by 2002:a05:6a00:1389:b029:18b:2d21:2f1a with SMTP id t9-20020a056a001389b029018b2d212f1amr18263454pfg.1.1606734824573;
+        Mon, 30 Nov 2020 03:13:44 -0800 (PST)
+Received: from chromium.org ([2401:fa00:1:b:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id 10sm4147168pgq.93.2020.11.30.03.13.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 03:13:44 -0800 (PST)
+Date:   Mon, 30 Nov 2020 19:13:40 +0800
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     Crystal Guo <crystal.guo@mediatek.com>
+Cc:     p.zabel@pengutronix.de, robh+dt@kernel.org, matthias.bgg@gmail.com,
+        devicetree@vger.kernel.org, yong.liang@mediatek.com,
+        stanley.chu@mediatek.com, srv_heupstream@mediatek.com,
+        seiya.wang@mediatek.com, linux-kernel@vger.kernel.org,
+        fan.chen@mediatek.com, linux-mediatek@lists.infradead.org,
+        yingjoe.chen@mediatek.com, s-anna@ti.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [v6, 3/3] reset-controller: ti: force the write operation when
+ assert or deassert
+Message-ID: <20201130111340.GA3042402@chromium.org>
+References: <20200930022159.5559-1-crystal.guo@mediatek.com>
+ <20200930022159.5559-4-crystal.guo@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20201127094431.120771-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606734783; bh=lcK1YEl/L4MjUjqxhnW4k9aJmOIQTqHyqj06Q0RHP44=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=DEtXi/tG6kC58tw1ZuacwKWGo+iXVKxDmmpsOwQ3kvJAbRttpcvB67IWOjwY91L5r
-         I40RfErKGaO6ruhTvW5bQXrfK7rqIsFSF+dGVPnkPTxt5lSONG1zROIZySaeC3aBPz
-         cEGR6CVt2FqZd+rxmL8xNUjEyRL+41qMFNRNFFI3y58mW6Q8YW/T7wfQjSJCs3yEeB
-         Y+8s59VZECNFx/GymDRUrzTd66yK11CtJZzLeSV5+6i/1SI2e2VRgY3BXRHMDuvAgD
-         CzlAlVa0w+1eucmF8/6ustl1YzsQd7jgwA7CRrMcC0FNhOSe+VlSY0fPLO0ls+G7nU
-         dDcrQSjIDlsFA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930022159.5559-4-crystal.guo@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 27/11/2020 09:44, Qinglang Miao wrote:
-> pm_runtime_get_sync will increment pm usage counter even it
-> failed. Forgetting to putting operation will result in a
-> reference leak here.
+On Wed, Sep 30, 2020 at 10:21:59AM +0800, Crystal Guo wrote:
+> Force the write operation in case the read already happens
+> to return the correct value.
 > 
-> A new function pm_runtime_resume_and_get is introduced in
-> [0] to keep usage counter balanced. So We fix the reference
-> leak by replacing it with new funtion.
-> 
-> [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
-> 
-> Fixes: 84a3f375eea9 ("dmaengine: tegra-apb: Keep clock enabled only during of DMA transfer")
-> Fixes: 664475cffb8c ("dmaengine: tegra-apb: Ensure that clock is enabled during of DMA synchronization")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
 > ---
->  drivers/dma/tegra20-apb-dma.c | 4 ++--
+>  drivers/reset/reset-ti-syscon.c | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
-> index 71827d9b0..b7260749e 100644
-> --- a/drivers/dma/tegra20-apb-dma.c
-> +++ b/drivers/dma/tegra20-apb-dma.c
-> @@ -723,7 +723,7 @@ static void tegra_dma_issue_pending(struct dma_chan *dc)
->  		goto end;
->  	}
->  	if (!tdc->busy) {
-> -		err = pm_runtime_get_sync(tdc->tdma->dev);
-> +		err = pm_runtime_resume_and_get(tdc->tdma->dev);
->  		if (err < 0) {
->  			dev_err(tdc2dev(tdc), "Failed to enable DMA\n");
->  			goto end;
-> @@ -818,7 +818,7 @@ static void tegra_dma_synchronize(struct dma_chan *dc)
->  	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
->  	int err;
+> 
+> diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
+> index 5d1f8306cd4f..c34394f1e9e2 100644
+> --- a/drivers/reset/reset-ti-syscon.c
+> +++ b/drivers/reset/reset-ti-syscon.c
+> @@ -97,7 +97,7 @@ static int ti_syscon_reset_assert(struct reset_controller_dev *rcdev,
+>  	mask = BIT(control->assert_bit);
+>  	value = (control->flags & ASSERT_SET) ? mask : 0x0;
 >  
-> -	err = pm_runtime_get_sync(tdc->tdma->dev);
-> +	err = pm_runtime_resume_and_get(tdc->tdma->dev);
->  	if (err < 0) {
->  		dev_err(tdc2dev(tdc), "Failed to synchronize DMA: %d\n", err);
->  		return;
+> -	return regmap_update_bits(data->regmap, control->assert_offset, mask, value);
+> +	return regmap_write_bits(data->regmap, control->assert_offset, mask, value);
+>  }
 
+I don't think there are no reset controllers with cached regmap,
+thus I don't think this is needed.
+Are there any specific reasons behind this, what I've missed here?
 
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+We need to be sure that all other devices using this driver
+should have no side effects on write.
 
-Cheers
-Jon
+I can think of a weird controller doing unwanted things internally
+on every write disregarding the current state. (or is this overly
+paranoid?)
 
--- 
-nvpublic
+>  
+>  /**
+> @@ -128,7 +128,7 @@ static int ti_syscon_reset_deassert(struct reset_controller_dev *rcdev,
+>  	mask = BIT(control->deassert_bit);
+>  	value = (control->flags & DEASSERT_SET) ? mask : 0x0;
+>  
+> -	return regmap_update_bits(data->regmap, control->deassert_offset, mask, value);
+> +	return regmap_write_bits(data->regmap, control->deassert_offset, mask, value);
+>  }
+>  
+>  /**
