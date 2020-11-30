@@ -2,185 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314392C904B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 748982C904E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 22:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730338AbgK3Vvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 16:51:32 -0500
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:20438 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730334AbgK3Vva (ORCPT
+        id S1730190AbgK3Vxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 16:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgK3Vxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 16:51:30 -0500
-Received: from pps.filterd (m0170395.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AULkebo003293;
-        Mon, 30 Nov 2020 16:50:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=YjXui3QZ7FXQXCoi7AP0u9cmMT8R21YkkS08TNblNrU=;
- b=HwAkQfRzIrLK0uZAYZ6SKV5VfnNL0n9RURefnS2oBofRuijdzok81pH0vbSWGGbVkLrE
- hnJq71JX8tubQKgPs4ECVOCfcRBzcgaR4APYoW6qjJx6mwI/VcwIqCrBLjM768bDyBG2
- cwa9YHsaPZRq7Myxk/s6nJht8aOmm9WliivI9WA0evG11lqlM6DFdL8xxO/uAPjKqW7s
- yqKBv8rMzII4+y23h9b2Ak1IFbEPKVkNY5fJk2JmnB+FpFifppnwjnHEHJfZkJtmLHzh
- t7nF3UqtrUVtUGKUcBgAYFB3UVjtpOs8e+XNjtLvXI3qRkJqmjgV4/tX3zovfVu1LyDP 6g== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0b-00154904.pphosted.com with ESMTP id 353m3sygsc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Nov 2020 16:50:46 -0500
-Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AULjg6W039160;
-        Mon, 30 Nov 2020 16:50:45 -0500
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-00154901.pphosted.com with ESMTP id 3558698qaj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 30 Nov 2020 16:50:44 -0500
-Received: from m0142699.ppops.net (m0142699.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AULk5iO040347;
-        Mon, 30 Nov 2020 16:50:44 -0500
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
-        by mx0a-00154901.pphosted.com with ESMTP id 3558698qaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 16:50:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P2WfaLMHpiToldJpGschXCiytVO8Z1Wzo4+Vc2f7EB3r+IuB1nA5cnsFtaPpc/xWJHt4KS7m6lYwNhwtd2MNX+RZ7rKx2DebZbcBbHZwi4DUEng1UQAd6oz7pfB4mHeSf6ErUjCftXTGk84hFNVjZnaEyFhHOeEcCHvqc4e1wlt0cPEXaI4JUa+JJb2PLwYKCQxVFIQiPLMyTv5oQ0ACeUA5yuqbf85d+I7yQPVA6BXW7TwYesZPJLb8FY5rxz5lVS/L+gtfqRJv1OV9+EPKrdqehZdwdqGLUgPfHyIwKITUK72pKip5K6CM543iTP1FOVipKz4EQy5GOlJ2c18f/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YjXui3QZ7FXQXCoi7AP0u9cmMT8R21YkkS08TNblNrU=;
- b=L9bztdkOEaE8I0KMbLGxv/6yzr2XbXDE8wnKPt7CuwcJAl4m6xXpE7XIHolCBqg6NsPuRQDaki74nBmZp/98Jny1usCKFxCrbNRDtcOzmssHXmkwFxQZOVX267F9cX/DaHNFM5WUwmp4wM2qhimjIgvb+KV48JCLj/W9R/P3bq558hdzpejaG1WGZv3Hxp38q/u05VtfCY1uVaym8MORQFnnRbIqgCzZy1vnURsWXpJFlAU8Lowo0yBwDI6TyLdPTBw3oauj9On0PDsYily3fJV7j0tiq+MfOM3byD7/en2TtseYuDzWADpF8S5et+TqSOnxX/DnqEv0JzbaHsipNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
- s=selector1-Dell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YjXui3QZ7FXQXCoi7AP0u9cmMT8R21YkkS08TNblNrU=;
- b=PBj1iwyxkPb5pgk4YSwNqpQgZYHl0B2xOQ+cdIeYmUwz+hZVFjS3bIdRiKq1a+tc+lWia2EgiJ9Dq+068RtFg/R/6CdZtT+doxqdd6sqpx69FJTw6ODp7jXk0h3kVqmFVrXx0wQPj6hIRyCCmx9jW7tb8I+riqBw01wd/ie8+i4=
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
- by DS7PR19MB4392.namprd19.prod.outlook.com (2603:10b6:5:2c4::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Mon, 30 Nov
- 2020 21:50:12 +0000
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::8a8:3eb2:917f:3914]) by DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::8a8:3eb2:917f:3914%7]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
- 21:50:12 +0000
-From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Mark Gross <mgross@linux.intel.com>
-CC:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] platform/x86: dell-smbios-base: Fix error return code in
- dell_smbios_init
-Thread-Topic: [PATCH] platform/x86: dell-smbios-base: Fix error return code in
- dell_smbios_init
-Thread-Index: AQHWwvcHHUn53F5W5Ui4cW+Cm/z1uqnZFFGAgAgrMmA=
-Date:   Mon, 30 Nov 2020 21:50:12 +0000
-Message-ID: <DM6PR19MB26363C4F46BFBF973298F7E8FAF50@DM6PR19MB2636.namprd19.prod.outlook.com>
-References: <20201125065032.154125-1-miaoqinglang@huawei.com>
- <9f86ac03-1c90-e6b6-4f7d-e9584a19e46d@redhat.com>
-In-Reply-To: <9f86ac03-1c90-e6b6-4f7d-e9584a19e46d@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-11-30T21:50:11.3286833Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=e47e4f44-3383-4d34-b281-b8bb1a1a6020;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [76.251.167.31]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 32ef3857-b043-4d37-299e-08d89579ea6a
-x-ms-traffictypediagnostic: DS7PR19MB4392:
-x-microsoft-antispam-prvs: <DS7PR19MB43929DF2AEC9FCEAC3B53D9CFAF50@DS7PR19MB4392.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:1332;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AiyhrFoVA77gJhNgLZH0aPCwWTRYIbt1HhrV/DqS5hFsLxmdUsO47hlNysXwxu3FuKIuxwPTwSySdkMaR3vL2GuC5lYC7ZH6Bez7mdtg9xQxAjYH1WFCi+byDCL6lOK8+ncBErt4Smy4Ln6bSCg7qsOIghxcBpwkpvQ4HNXsImaEd7yXX+GwqpZ+KLn3hBz9x3X7l8dEpXRH10nTLn+7CIK9GLCzPuCcO5vYWp8mamwt4Ni9vOVqMzPXGI1xlz1OjcNgUaxPqjkKs/0mVaCJn5TE5lZT86OdMUn8j6bbpTjcXD9NKJvevpJ78z5CMvRw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(366004)(110136005)(786003)(8936002)(316002)(54906003)(2906002)(33656002)(4326008)(6506007)(66446008)(64756008)(66556008)(76116006)(71200400001)(8676002)(7696005)(26005)(9686003)(478600001)(86362001)(186003)(52536014)(53546011)(55016002)(66476007)(5660300002)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?UzJtbk41RCtVaUt2N05JaE5Sd1BrTkFFZy95VnJ2RnNvZW9IUnhjdCt5dUh1?=
- =?utf-8?B?Sk03dmZab2tVcGl3VFlJRmpFaDJRZURmd3IyU2pFakJ3SWMrbmoyL2NwMStH?=
- =?utf-8?B?eU5rQTVlcW5BRGJMUlBrWi9EamJSeENycEtXbnhxdzhBbWhMWlB1dWNPVUNS?=
- =?utf-8?B?Y21rdnZ6d3VKWnBNaGF3RTl0aGRsRFVQMjMwZWE3c2U2VFhzVlRXTW9VOXBm?=
- =?utf-8?B?TFVodkRXVTd2blhKUktIT1hWNm5IVnRIVmxjakE4TlNMcGVuNjljc3dCSm44?=
- =?utf-8?B?YlNNOUFMaFhsaUpSYWF4cWU0eENvbUtBb3J4S0k2UjlrM0xlOWIvQVhnT2dp?=
- =?utf-8?B?NU03RWdRakNuUnNhOWl1NkQ3aUJ1SDlFandyWEpWNDdmWkN2ODBEby9GYjA5?=
- =?utf-8?B?TVF4bXFzVmU4YTBxWEtCQlFOdlpMcGRSNkdPdklYSnNxd0dmcWt5RmNCYXVa?=
- =?utf-8?B?cHA4M1Q3cThwL2lyQ2xKOVFOTi96R0IyU0JXQnRpejRpVTdiQW1FbmdKZTU0?=
- =?utf-8?B?eU1jTCtYTjJhZk1BWUJub09xcm5LZC9tajBXWXZuQTltTUhUQSthVkhSSzly?=
- =?utf-8?B?V0VxQkFuSXJKVjRiMkNsclhBWmliekk0N2lTY2tYaENnQVJ4VVF6NkNjdFhF?=
- =?utf-8?B?WkhPNnlQLzFwNndmUkZxbWFIZzI5QUttZW1ndXRuNmxHZzJRMlRnZHRiZldv?=
- =?utf-8?B?a3B1c0R4NGtLQ0RwdHNPaUxIZ1FvZmg5ZjdQalo1QWpEZnNvTXJJTGpLOEdW?=
- =?utf-8?B?cFRPaDhYUVZpT0RvSDM1OUFQeFBzOG9EMGliTVRqMzJqZ1ltREN5QTlCZUZm?=
- =?utf-8?B?T0ZUL0FGMEtIeFJiblo1K0lWLzhxN1A3RTBrVEFqZ3pJYjZlK1ZzZ0pURjFz?=
- =?utf-8?B?YXQ4U0tWMWswUWJ0THlrbEpxWjFjMmw2Q0JHY2NmZ3o0WXhhZGlkdERNMGhB?=
- =?utf-8?B?SG9tRnpDYmQ4a2FPQ0c4NkthbGJ3dGIrMWZ6OVZXbTF0d1AvTWd5V1haUkR3?=
- =?utf-8?B?RGVqWElIWGsvcU5iUjZvN1lrTGJ1ckUveHl3blFYUUhuTERBQ1dGM3JwaW9M?=
- =?utf-8?B?MTNyUmxnWFIvTmhUL25BVkdrVlQ5aVJkOEhwRGljaDlScS9aOW92SkxyQTZU?=
- =?utf-8?B?SjhpY2hYWnNDcTlQU3k2N1NHTkZDZDVYa3BNRlpDQngzaU9vNlJqbU0vMjl5?=
- =?utf-8?B?Wm1TMkg1ZC90T0E3N2tGTWJXd2VOUGJqSTJPNWRmUjJQMWVubnJZOWNwSGQw?=
- =?utf-8?B?Zk9uclZBZ2t4V3BhUGVVYzFTOXZjaHpOeVJUb3pKcjZuME01anJpeFB5MlpV?=
- =?utf-8?Q?8F6RFfqpBNMa8=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 30 Nov 2020 16:53:54 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614A2C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:53:14 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id hk16so419575pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 13:53:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mNK/ZInb4X8QzeOfsYGlWtaquG9qKMwOrvA+mghxlSw=;
+        b=ZQSww9DblVEGxfZEmCwMlt/VyayH8dqjE5Zr0e9KnAUD5YG1lICPyN4BZNiWU5YFxL
+         k3foUTLUIled26tlB4Xmu3zpq30DHBWTv5M+rkIWIKhnJgPs/qjBrca5mO5DIwVgRzYK
+         cHmnZF88mDc/GnQ6RudH34D3jmk2dUDFCwAnXIXxOHO0GdRFCUCqieaHkD7atQzWXGAq
+         3YKUi8kbDOWJCNuEXuq4O09xDBiLiNYED8csW7szdK5N+TOT4ut4IZq2nvrDRM8ATlCk
+         qBPOArSUhBmIlcc78t/C4Qx3j/4LXZKWluhls7LkuhNPk/oGx9oWLhc2u8WdaufDGoyR
+         UZ7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mNK/ZInb4X8QzeOfsYGlWtaquG9qKMwOrvA+mghxlSw=;
+        b=DQdk7KqDJeoHTEp2j9/9Iq6Fz0o+KJL6NVfhO0TAGsS5JVYy4vTx2l7QhCkizz9/dK
+         Qwz4InkbVbCiXXOe2+kRXlTayXqo7KNnRjtWTYDpIZpS8uChwH50orSKmYLZYD7s/b0c
+         EfTZSirluiXvegIB5dcFwdJPh4dXdLdKldSqtqVkRk9wL37HXnwlYfvRQybTPqvDf2Nf
+         fsZ2tJuXL6FxHfBJcpvoIO6HAabTHgPBY8Vj4fca/L2YUeHkKzkXpZtL2OPlciWgYQVi
+         kZfQnD+8mStsKdpy0RJBAC75z7Ai/nwFWn47DgHjaE6VkH39Kr6RLMHdryCNvzbsBZvZ
+         9BbQ==
+X-Gm-Message-State: AOAM533D38oqk6O4mTrYHkYk5bU7KLIaFNPgZUPuSQwfac7Nnme3MXgg
+        LzQ3YP9r9l/jvC/RufgJqu/Smw==
+X-Google-Smtp-Source: ABdhPJzcEw6TmnB9b0M719t7Z+og3PX3RaYyZxMmAtpOAr85dJUW4MYXrQxtY9Et2dUMC/0wsQkPlg==
+X-Received: by 2002:a17:902:b116:b029:d8:f5d7:5fe5 with SMTP id q22-20020a170902b116b02900d8f5d75fe5mr20817834plr.48.1606773193898;
+        Mon, 30 Nov 2020 13:53:13 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id q126sm18561441pfc.168.2020.11.30.13.53.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 13:53:13 -0800 (PST)
+Date:   Mon, 30 Nov 2020 14:53:11 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        jonathan.zhouwen@huawei.com, coresight@lists.linaro.org
+Subject: Re: [PATCH v4 16/25] coresight: etm4x: Detect access early on the
+ target CPU
+Message-ID: <20201130215311.GK1092947@xps15>
+References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
+ <20201119164547.2982871-17-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32ef3857-b043-4d37-299e-08d89579ea6a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2020 21:50:12.8663
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: I4JScvNibMox/9TxQUXK2g7GEAO5EG4p2D3c9yAGI3yFfMOfHRhyvNebFpp1YG99RzKWKVLmFBx8uhx3EXBJHeMlXjoDLlVDHAC5EfXs6C4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR19MB4392
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-30_11:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- malwarescore=0 suspectscore=0 spamscore=0 priorityscore=1501 clxscore=1015
- phishscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300136
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300136
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119164547.2982871-17-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gSGksDQo+IA0KPiArQ2MgTWFyaW8NCj4gDQo+IE9uIDExLzI1LzIwIDc6NTAgQU0sIFFp
-bmdsYW5nIE1pYW8gd3JvdGU6DQo+ID4gRml4IHRvIHJldHVybiB0aGUgZXJyb3IgY29kZSAtRU5P
-REVWIHdoZW4gZmFpbHMgdG8gaW5pdCB3bWkgYW5kDQo+ID4gc21tLg0KPiA+DQo+ID4gRml4ZXM6
-IDQxZTM2ZjJmODVhZiAoInBsYXRmb3JtL3g4NjogZGVsbC1zbWJpb3M6IExpbmsgYWxsIGRlbGwt
-c21iaW9zLSoNCj4gbW9kdWxlcyB0b2dldGhlciIpDQo+ID4gUmVwb3J0ZWQtYnk6IEh1bGsgUm9i
-b3QgPGh1bGtjaUBodWF3ZWkuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFFpbmdsYW5nIE1pYW8g
-PG1pYW9xaW5nbGFuZ0BodWF3ZWkuY29tPg0KPiANCj4gTWFyaW8sIHRoaXMgc2VlbXMgbGlrZSBh
-IHRyaXZpYWwgZml4IHRvIG1lLCBidXQgSSdtIG5vdCAxMDAlIHN1cmUsIGFueQ0KPiBjb21tZW50
-cyBvbiB0aGlzPw0KPiANCj4gUmVnYXJkcywNCj4gDQo+IEhhbnMNCg0KWWVhaCwgaXQncyByZWFz
-b25hYmxlIHRvIG1lLg0KDQpSZXZpZXdlZC1ieTogTWFyaW8gTGltb25jaWVsbG8gPG1hcmlvLmxp
-bW9uY2llbGxvQGRlbGwuY29tPg0KDQo+IA0KPiANCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9wbGF0
-Zm9ybS94ODYvZGVsbC1zbWJpb3MtYmFzZS5jIHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAx
-IGluc2VydGlvbigrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGxhdGZvcm0veDg2
-L2RlbGwtc21iaW9zLWJhc2UuYw0KPiBiL2RyaXZlcnMvcGxhdGZvcm0veDg2L2RlbGwtc21iaW9z
-LWJhc2UuYw0KPiA+IGluZGV4IDJlMmNkNTY1OS4uM2ExZGJmMTk5IDEwMDY0NA0KPiA+IC0tLSBh
-L2RyaXZlcnMvcGxhdGZvcm0veDg2L2RlbGwtc21iaW9zLWJhc2UuYw0KPiA+ICsrKyBiL2RyaXZl
-cnMvcGxhdGZvcm0veDg2L2RlbGwtc21iaW9zLWJhc2UuYw0KPiA+IEBAIC01OTQsNiArNTk0LDcg
-QEAgc3RhdGljIGludCBfX2luaXQgZGVsbF9zbWJpb3NfaW5pdCh2b2lkKQ0KPiA+ICAJaWYgKHdt
-aSAmJiBzbW0pIHsNCj4gPiAgCQlwcl9lcnIoIk5vIFNNQklPUyBiYWNrZW5kcyBhdmFpbGFibGUg
-KHdtaTogJWQsIHNtbTogJWQpXG4iLA0KPiA+ICAJCQl3bWksIHNtbSk7DQo+ID4gKwkJcmV0ID0g
-LUVOT0RFVjsNCj4gPiAgCQlnb3RvIGZhaWxfY3JlYXRlX2dyb3VwOw0KPiA+ICAJfQ0KPiA+DQo+
-ID4NCg0K
+On Thu, Nov 19, 2020 at 04:45:38PM +0000, Suzuki K Poulose wrote:
+> In preparation to detect the support for system instruction
+> support, move the detection of the device access to the target
+> CPU.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> Changes since v3
+>  - Name constructs etm4_xx instead of etm_** (Mathieu)
+> ---
+>  .../coresight/coresight-etm4x-core.c          | 45 ++++++++++++++++---
+>  1 file changed, 40 insertions(+), 5 deletions(-)
+>
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index a91e7de77ab9..d3b009c3724e 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -56,6 +56,11 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
+>  
+>  static enum cpuhp_state hp_online;
+>  
+> +struct etm4_init_arg {
+> +	struct etmv4_drvdata	*drvdata;
+> +	struct csdev_access	*csa;
+> +};
+> +
+>  /*
+>   * Check if TRCSSPCICRn(i) is implemented for a given instance.
+>   *
+> @@ -678,6 +683,22 @@ static const struct coresight_ops etm4_cs_ops = {
+>  	.source_ops	= &etm4_source_ops,
+>  };
+>  
+> +static bool etm4_init_iomem_access(struct etmv4_drvdata *drvdata,
+> +				   struct csdev_access *csa)
+> +{
+> +	*csa = CSDEV_ACCESS_IOMEM(drvdata->base);
+> +	return true;
+> +}
+> +
+> +static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
+> +				   struct csdev_access *csa)
+> +{
+> +	if (drvdata->base)
+> +		return etm4_init_iomem_access(drvdata, csa);
+> +
+> +	return false;
+> +}
+> +
+>  static void etm4_init_arch_data(void *info)
+>  {
+>  	u32 etmidr0;
+> @@ -686,11 +707,22 @@ static void etm4_init_arch_data(void *info)
+>  	u32 etmidr3;
+>  	u32 etmidr4;
+>  	u32 etmidr5;
+> -	struct etmv4_drvdata *drvdata = info;
+> -	struct csdev_access tmp_csa = CSDEV_ACCESS_IOMEM(drvdata->base);
+> -	struct csdev_access *csa = &tmp_csa;
+> +	struct etm4_init_arg *init_arg = info;
+> +	struct etmv4_drvdata *drvdata;
+> +	struct csdev_access *csa;
+>  	int i;
+>  
+> +	drvdata = init_arg->drvdata;
+> +	csa = init_arg->csa;
+> +
+> +	/*
+> +	 * If we are unable to detect the access mechanism,
+> +	 * or unable to detect the trace unit type, fail
+> +	 * early.
+> +	 */
+> +	if (!etm4_init_csdev_access(drvdata, csa))
+> +		return;
+> +
+>  	/* Make sure all registers are accessible */
+>  	etm4_os_unlock_csa(drvdata, csa);
+>  	etm4_cs_unlock(drvdata, csa);
+> @@ -1536,6 +1568,7 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
+>  	struct etmv4_drvdata *drvdata;
+>  	struct resource *res = &adev->res;
+>  	struct coresight_desc desc = { 0 };
+> +	struct etm4_init_arg init_arg = { 0 };
+>  
+>  	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+>  	if (!drvdata)
+> @@ -1563,7 +1596,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
+>  		return PTR_ERR(base);
+>  
+>  	drvdata->base = base;
+> -	desc.access = CSDEV_ACCESS_IOMEM(base);
+>  
+>  	spin_lock_init(&drvdata->spinlock);
+>  
+> @@ -1575,8 +1607,11 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
+>  	if (!desc.name)
+>  		return -ENOMEM;
+>  
+> +	init_arg.drvdata = drvdata;
+> +	init_arg.csa = &desc.access;
+> +
+>  	if (smp_call_function_single(drvdata->cpu,
+> -				etm4_init_arch_data,  drvdata, 1))
+> +				etm4_init_arch_data,  &init_arg, 1))
+>  		dev_err(dev, "ETM arch init failed\n");
+>  
+>  	if (etm4_arch_supported(drvdata->arch) == false)
+> -- 
+> 2.24.1
+> 
