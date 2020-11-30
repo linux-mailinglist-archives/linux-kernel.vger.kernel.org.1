@@ -2,50 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F312C8C99
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C662C8C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729674AbgK3SVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:21:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
+        id S2388080AbgK3SVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729578AbgK3SVD (ORCPT
+        with ESMTP id S1729676AbgK3SVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:21:03 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D83C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:20:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=t2FL4Bb5lfATBQNA3zpdSm0Nejfrg07A2sqpuX0HhTg=; b=APOU/S6UY8bEafAg+warV9E4a/
-        XOa3Zn3wKp3VmneEu5ktNTHeJmDrGY6yVpXLqZF0dyUEFRwKz1TX4hsZCj+jODfhSo7tv1DR4jREX
-        vMeS36VMVkCUrEdc6DclARIPMgCkOv6z8D4fuv7tqnv72Ai5bdh/1XFPSuLHUR8D4a+BXfK48fIvM
-        6PtQdGgcAqpbxloTEkgJt5Dn2T0bMgLYmwlCRSlKuXXlUPF/kGvUPVd/JDrmF3vR+lEQR44xM0jSs
-        jbfegCRuhzK1sQrrAi28hhj5Y7f7L9VPqrO1PswJdYHcfxpdWxIsX3Oq4hBuAbFu/cIXkq2RAnaw3
-        8wiVacUA==;
-Received: from [2601:1c0:6280:3f0::cc1f]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kjnmU-0007nE-0e; Mon, 30 Nov 2020 18:20:11 +0000
-Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
-To:     Marc Zyngier <maz@kernel.org>,
-        Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        bjorn.andersson@linaro.org, shawnguo@kernel.org, gshan@redhat.com,
-        geert+renesas@glider.be, Anson.Huang@nxp.com, masahiroy@kernel.org,
-        michael@walle.cc, krzk@kernel.org, linux-kernel@vger.kernel.org,
-        vkoul@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
-        ardb@kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
- <5e7f7225982b2df63e62ea60ec632376@misterjones.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7c9999bc-1340-955d-d361-bb5cc3364ad2@infradead.org>
-Date:   Mon, 30 Nov 2020 10:20:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 30 Nov 2020 13:21:10 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078CEC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:20:30 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id b6so10952289pfp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:20:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W1NrjPFaGFEB9QOlsuahkMCoJvGNm1r5tLMGb5uM/tY=;
+        b=JSVCK1kkpb3XMVNYwDnLlRRXW1WX0e9sx3G0lBIFfmz5cor9lo5lfqrU2pk46ttHeg
+         V4DDn3Wixk200//QTmR9OnAM/L3ocNiO/M/kGj7DXKPjTT9O1YJfPQnmj23Q7XuyIh4Y
+         aeCv+ctYCDl+TdZ+1rJsbBN7a+fOkCU3Lt/NE/pehDKYh0GOTPWZO9rUisWBcbk1tFhm
+         O9mwG+9AALXvbxnAb7aKDWqGFHyIvScoWStdnmOIE2DXTJs7X8GYq8CVKMu6Re/YN/V1
+         CkBxHQRkHs06xKHQID5TPCVSWZBy9ep2bZ1kiDZz4Pw7Kgg4xviLbYc8vYxuZPgEOGld
+         02RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W1NrjPFaGFEB9QOlsuahkMCoJvGNm1r5tLMGb5uM/tY=;
+        b=UXOcmjD9wrG/ezrcUzfvH0iWZXctUYGAPfuduPhmPomJh6XahHAInE+5t5IfTd8X0X
+         Z9cQneCmBK14Q+/fr49aYRqBJ0QAkp1ZVkJxNIN+fbJyDksYSuk6mpfVZFnh0crVax0S
+         eBntF16a5saU9sZptIZHs4r+aWGkhF7/e3wTxOzWsOabzjtxhnZDNVGiqHBqcH5W6FBp
+         WZgbD4MORogCrb36BATk6u5g53kbctgK0j2UELVmRou00bPX5kMPqdchaI3MPFrg/wLk
+         r7D5uVx2LZp5ikCdgrD1aeeHfDSHtopL9rWg6h8Byz8A0GIvMlrgxhn0RXpbwH1BSUbq
+         6uwA==
+X-Gm-Message-State: AOAM533/kAbJwz2GG4ui/TKti+BD68ZRssT0NeNzqdHLM2X7O+gYk0lo
+        /X0+lVoBHQFfhLWahmO6UXS+qXoJhBJbtg==
+X-Google-Smtp-Source: ABdhPJyw/KmiB8O8DdPqPJhGR2d+CI1RIMY5qRiED/DN0E/ABDEt0l37qdAo2zFTmjB5KfwW6WnYBw==
+X-Received: by 2002:a63:c26:: with SMTP id b38mr19083311pgl.333.1606760429534;
+        Mon, 30 Nov 2020 10:20:29 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id g14sm83722pji.32.2020.11.30.10.20.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 10:20:28 -0800 (PST)
+Subject: Re: [RFC PATCH 07/13] fs/userfaultfd: support read_iter to use
+ io_uring
+To:     Nadav Amit <nadav.amit@gmail.com>, linux-fsdevel@vger.kernel.org
+Cc:     Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20201129004548.1619714-1-namit@vmware.com>
+ <20201129004548.1619714-8-namit@vmware.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <dcf0ca71-c3e3-a813-b04f-d3e86bcddd48@kernel.dk>
+Date:   Mon, 30 Nov 2020 11:20:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <5e7f7225982b2df63e62ea60ec632376@misterjones.org>
+In-Reply-To: <20201129004548.1619714-8-namit@vmware.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -53,35 +74,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 10:05 AM, Marc Zyngier wrote:
-> On 2020-11-30 17:48, Rongwei Wang wrote:
+On 11/28/20 5:45 PM, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
 > 
->> The interfaces of this module is same as MSR module in user space, and to solve
->> the problem that ARM platform has no similar MSR module. Using this interface,
->> we did some pressure tests to test the stability and security of MSR driver. The
->> test results show that the driver will not cause system panic if various
->> illegal values and multithreading concurrent access are passed through the
->> interface.
+> iouring with userfaultfd cannot currently be used fixed buffers since
+> userfaultfd does not provide read_iter(). This is required to allow
+> asynchronous (queued) reads from userfaultfd.
 > 
-> It would certainly help if you described what problem you are trying
-> to solve here. In general, giving userspace access to random system
-> registers is a pretty bad idea.
+> To support async-reads of userfaultfd provide read_iter() instead of
+> read().
 > 
-> Are you trying to validate a CPU? a hypervisor? Or is it just a fun way
-> to check how many things you can poke before something catches fire?
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: io-uring@vger.kernel.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> ---
+>  fs/userfaultfd.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+> index b6a04e526025..6333b4632742 100644
+> --- a/fs/userfaultfd.c
+> +++ b/fs/userfaultfd.c
+> @@ -1195,9 +1195,9 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
+>  	return ret;
+>  }
+>  
+> -static ssize_t userfaultfd_read(struct file *file, char __user *buf,
+> -				size_t count, loff_t *ppos)
+> +static ssize_t userfaultfd_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>  {
+> +	struct file *file = iocb->ki_filp;
+>  	struct userfaultfd_ctx *ctx = file->private_data;
+>  	ssize_t _ret, ret = 0;
+>  	struct uffd_msg msg;
+> @@ -1207,16 +1207,18 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
+>  		return -EINVAL;
+>  
+>  	for (;;) {
+> -		if (count < sizeof(msg))
+> +		if (iov_iter_count(to) < sizeof(msg))
+>  			return ret ? ret : -EINVAL;
+>  		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg);
 
-I agree with the requests for justification.
+'no_wait' should be changed to factor in iocb->ki_flags & IOCB_NOWAIT as well,
+not just f_flags & O_NONBLOCK.
 
-Rongwei mentions that this driver functions the same as the
-x86 platform MSR driver.  This one uses /dev.
-I thought that the x86 driver used /sys, but I could be wrong.
-
-Do we (or not) want cross-platform compatabilities?
-
-Regarding permissions, /dev or /sys files have permission settings.
-They don't have to be world-readable.
-
+I didn't check your write_iter, but if appropriate, that should do that
+too.
 
 -- 
-~Randy
+Jens Axboe
 
