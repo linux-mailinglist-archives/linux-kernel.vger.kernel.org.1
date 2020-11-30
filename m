@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0C52C90A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E322C90A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 23:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbgK3WIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 17:08:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
+        id S1730475AbgK3WJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 17:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729461AbgK3WIh (ORCPT
+        with ESMTP id S1730466AbgK3WJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:08:37 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5BAC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:07:51 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id z24so12896967oto.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:07:51 -0800 (PST)
+        Mon, 30 Nov 2020 17:09:19 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AD7C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:08:38 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id t143so15927638oif.10
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 14:08:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=rkYzGaKYtcgJzrd8rxQCICVltYGsIDYYTqDHFCgv/PE=;
-        b=YaA8VRtUK+iIl6cBZe9uOR0+me09g6RYGUllwhAzQDLkqqpl5KL08khZ4MAYXhU6/E
-         +kxdLVIEs0xGEw9yM8OKI+/11p22xgob+b7QPgLXcTvJYkoJo/SWwLBJRiT2zJgOqTTx
-         LW6sQ67+Rucxk24VUNDUco20LAoTu55NMLVotn1zwPgKNWNOQPdMqZFCWq/Aksv4noUn
-         KMBZfEWQDZx/Is2FljzzwadBdDJ+Xx5aehfTo9BRoRWH9bjsEHshzN1QJniFe3FMPfmL
-         UgY+5Rt6Xk5bnRlcVg+KTet+dGuUrz6OaMApwyEshI78h9oKUUPCjk8JvgnZcHtokCf7
-         fQlQ==
+        bh=ssyqQ2x40VAnf0UDyd8qZKVfCQ7SYisnmPz80Ctkr5M=;
+        b=lNQNT/G89FX7MORQv72Kihj8aB6o11cRXtumYVih0fD/zmR5D5VUabJ85F0lfwBmeT
+         Vck90Q0VuKPcNJr2T538Zxu3BKAhdmw8fwJ7sVS2zLocgCrtYUahL041bt0TJXTGCNDY
+         ZM7mGdlVfV7a83KmyUki3nx8UBjhp7CcNK2QIAsTNHXNpUWJjSCS5Se9EMZ4cZwMumet
+         gkFXDObYXUrJ0bLc9p/ncPbdLlwZ1fGV2HSEfMDJx9H8WezbKEjjHVpLq1eyu0RziQLX
+         xnPn2Cdee4OyHW6GOk7JKnKcqAgW96V52xmfq81OAmrWOMLErF3bBZMZ2kfzg/4B29dx
+         07ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rkYzGaKYtcgJzrd8rxQCICVltYGsIDYYTqDHFCgv/PE=;
-        b=GdDm5GeGJ8VUQsg4nzLuXOiNRNLPb0MIXUTPokC75AnUqbwnCaHf79EILMP0JPu/9G
-         d7BIEIqdFuwTzNv26wTJnHPR1mPHLrpfG7LqOBzQuntQV/s3xqiLSp6m8B8/+C+MOS1H
-         dCSh09HcmCHdOvV+EzvxBVgjXcjsSCDJr/kf7DsX6o6WtIUph4tG8kBU/q72EWKLnbqO
-         DYfHurHIQPgqLI4CWhh0/Oe4QAy/o6iW99Jl0b7sZnDcJHZKfELWBM/Xv0tJBAFuEJCo
-         N7YGr+d9XuZmUQbsRgEHQdl7dNiEBfgB5yoZdmUMNt5X6kx83gMeBn+4TbkCsPtWpoUA
-         5JEQ==
-X-Gm-Message-State: AOAM533oMquejm7wTnS2ffn0azY/zPtfJvMxpEvKXZL7HGvBsfdCy5Qe
-        PNXrhLPUNULcMAkpy75VnsU5hxGiWqytNsNOpal2ktru
-X-Google-Smtp-Source: ABdhPJz4qk7M7qbcN3RyX8GqU1TJ+GOMG5l8VivGV0OFD+K1aVBufZBR8oAnUQJ86amzXPJBV/ctHDCPMtf78AKwCIw=
-X-Received: by 2002:a9d:5388:: with SMTP id w8mr18699152otg.311.1606774070647;
- Mon, 30 Nov 2020 14:07:50 -0800 (PST)
+        bh=ssyqQ2x40VAnf0UDyd8qZKVfCQ7SYisnmPz80Ctkr5M=;
+        b=QfWbPLr5fd9WGmrcQTNKB4UWa+iMEruiiEq0sAc8e0mjB3ezss6I6/CTxwY4vIWC/a
+         kKGucjCEQVHWB4M2u8gpNUzXj/gfpci0jssqqMGd+fuRZJtKXIRx4b+QXjIBZ6FOno34
+         47rm972KWUjNu4CUQTOAw9X24DbGaxRh8GROiMpzQ21sJJ2DFiDlSIZv/n+P960e97i1
+         I41rH184bi85rP61c4GtNbncKrdc08Y9zUQCJ7f08zs7piwagWMpb6Sb/CJv9/g6ZvLS
+         CSiIMOvU24IGQsonIc7nqa8onvuSY+6PsZq6wqkrc29n+GjpzlgExdjsLbMT3dUmOCsE
+         Znyw==
+X-Gm-Message-State: AOAM533HJXTEFM317aoDxSMq/UScF0DxVMh1lDDr4eldj0EWHQKhQmbQ
+        jt/V78vmnmwKR0YXNHqSC0X9ib7O9RN0gLQKvQ4=
+X-Google-Smtp-Source: ABdhPJxkJQSRLE5/CDB9aem/VoismXvItysaV/3WGZBcRXw0L5l8NmMixzvvFAYQRBuERyV61DGKO227yDgI5UCbOis=
+X-Received: by 2002:a54:4608:: with SMTP id p8mr869110oip.5.1606774118366;
+ Mon, 30 Nov 2020 14:08:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-8-lee.jones@linaro.org>
-In-Reply-To: <20201124193824.1118741-8-lee.jones@linaro.org>
+References: <20201124193824.1118741-1-lee.jones@linaro.org> <20201124193824.1118741-7-lee.jones@linaro.org>
+In-Reply-To: <20201124193824.1118741-7-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 17:07:39 -0500
-Message-ID: <CADnq5_PVL12Jp_vjTvxUd0VF=NbLoDQ0dOcHCP5PM1ngSKjo8A@mail.gmail.com>
-Subject: Re: [PATCH 07/40] drm/amd/amdgpu/amdgpu_psp: Make local function
- 'parse_ta_bin_descriptor' static
+Date:   Mon, 30 Nov 2020 17:08:26 -0500
+Message-ID: <CADnq5_MY8=jZ2eSJdbSi27YT5-ZT4RAfzFaMA2HQQSPaNvJYvA@mail.gmail.com>
+Subject: Re: [PATCH 06/40] drm/amd/amdgpu/cz_ih: Add missing function param
+ descriptions for 'ih' and 'entry'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -70,8 +70,14 @@ On Tue, Nov 24, 2020 at 2:44 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c:2576:5: warning: no previous pro=
-totype for =E2=80=98parse_ta_bin_descriptor=E2=80=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/cz_ih.c:191: warning: Function parameter or m=
+ember 'ih' not described in 'cz_ih_get_wptr'
+>  drivers/gpu/drm/amd/amdgpu/cz_ih.c:223: warning: Function parameter or m=
+ember 'ih' not described in 'cz_ih_decode_iv'
+>  drivers/gpu/drm/amd/amdgpu/cz_ih.c:223: warning: Function parameter or m=
+ember 'entry' not described in 'cz_ih_decode_iv'
+>  drivers/gpu/drm/amd/amdgpu/cz_ih.c:253: warning: Function parameter or m=
+ember 'ih' not described in 'cz_ih_set_rptr'
 >
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
@@ -86,28 +92,41 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/gpu/drm/amd/amdgpu/cz_ih.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/am=
-d/amdgpu/amdgpu_psp.c
-> index 74cbaf2126982..910e89dc324b8 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-> @@ -2573,9 +2573,9 @@ int psp_init_sos_microcode(struct psp_context *psp,
->         return err;
->  }
->
-> -int parse_ta_bin_descriptor(struct psp_context *psp,
-> -                           const struct ta_fw_bin_desc *desc,
-> -                           const struct ta_firmware_header_v2_0 *ta_hdr)
-> +static int parse_ta_bin_descriptor(struct psp_context *psp,
-> +                                  const struct ta_fw_bin_desc *desc,
-> +                                  const struct ta_firmware_header_v2_0 *=
-ta_hdr)
->  {
->         uint8_t *ucode_start_addr  =3D NULL;
->
+> diff --git a/drivers/gpu/drm/amd/amdgpu/cz_ih.c b/drivers/gpu/drm/amd/amd=
+gpu/cz_ih.c
+> index 1dca0cabc326a..da37f8a900afb 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+> @@ -179,6 +179,7 @@ static void cz_ih_irq_disable(struct amdgpu_device *a=
+dev)
+>   * cz_ih_get_wptr - get the IH ring buffer wptr
+>   *
+>   * @adev: amdgpu_device pointer
+> + * @ih: IH ring buffer to fetch wptr
+>   *
+>   * Get the IH ring buffer wptr from either the register
+>   * or the writeback memory buffer (VI).  Also check for
+> @@ -213,6 +214,8 @@ static u32 cz_ih_get_wptr(struct amdgpu_device *adev,
+>   * cz_ih_decode_iv - decode an interrupt vector
+>   *
+>   * @adev: amdgpu_device pointer
+> + * @ih: IH ring buffer to decode
+> + * @entry: IV entry to place decoded information into
+>   *
+>   * Decodes the interrupt vector at the current rptr
+>   * position and also advance the position.
+> @@ -245,6 +248,7 @@ static void cz_ih_decode_iv(struct amdgpu_device *ade=
+v,
+>   * cz_ih_set_rptr - set the IH ring buffer rptr
+>   *
+>   * @adev: amdgpu_device pointer
+> + * @ih: IH ring buffer to set rptr
+>   *
+>   * Set the IH ring buffer rptr.
+>   */
 > --
 > 2.25.1
 >
