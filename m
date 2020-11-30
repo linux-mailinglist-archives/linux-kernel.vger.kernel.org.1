@@ -2,104 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2252C8AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9E82C8B09
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387516AbgK3R3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:29:51 -0500
-Received: from mga12.intel.com ([192.55.52.136]:3449 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727522AbgK3R3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:29:48 -0500
-IronPort-SDR: wCgEVGDSaN1G2V0oo8LQqx9gVMAVCQXQe+BmEuTHH8fkqsPuT1KcWDFEMYVzSwIPl3PGobmC5N
- WG1rM7q+mTMw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="151926347"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="151926347"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:28:07 -0800
-IronPort-SDR: bMiHDrGqoEELFLWE0SnE1SFrlaHerINAUOIukch1wRXikV1HFp8hZBtEXetLOgaI9XO+g2p0ou
- P0zwxpatR65g==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="372404058"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:28:00 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjmyy-00B5xb-Rs; Mon, 30 Nov 2020 19:29:00 +0200
-Date:   Mon, 30 Nov 2020 19:29:00 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 02/18] property: Add support for calling
- fwnode_graph_get_endpoint_by_id() for fwnode->secondary
-Message-ID: <20201130172900.GM4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-3-djrscally@gmail.com>
+        id S2387544AbgK3RaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:30:07 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59682 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387434AbgK3RaH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:30:07 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHLiCx018858;
+        Mon, 30 Nov 2020 12:29:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=54V+HF/VMBzJIB+aEFJ266gZXLCgafDnOFTkIjwYmO0=;
+ b=D/1a9I+2tao+4p50xFFlu2dYyPDSC20WWh9cHZkaCcDAYNf4LYAbFcB0c9mcTWcnApYq
+ LF/h0u2EL/NdSKFBMzRPYKh7ts5QrORur3m490I0vKe8Zyrqan0FWrI8DzH2EsOaCPDt
+ 5oKkBhT4C6d7DzwiV7ea/+4zDMIyZi+l+XTLbcmq8ntGsgsXOa0+OVgiK/wzM2U0Lj1Y
+ CreIUobyWRfiQqFIfZ6Z48wNKMy7/7CaW93WKAO4znG4e/4bi2wyPHqfWJj7oBqaXLPm
+ ec6wzHkntQGvz3g/ryO3u9fn7wr0x1UdEYksqFQRxvUF5bwG4FjtDpG7R47wkaQjYNsI 9g== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35552s854b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 12:29:20 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHMZ0f030756;
+        Mon, 30 Nov 2020 17:29:19 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma04dal.us.ibm.com with ESMTP id 353e68wpp8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 17:29:19 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AUHTI3G46072282
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 17:29:18 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3BCF411207E;
+        Mon, 30 Nov 2020 17:29:18 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E8E0112066;
+        Mon, 30 Nov 2020 17:29:16 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 30 Nov 2020 17:29:16 +0000 (GMT)
+Subject: Re: [PATCH 09/13] ibmvfc: implement channel enquiry and setup
+ commands
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201126014824.123831-1-tyreld@linux.ibm.com>
+ <20201126014824.123831-10-tyreld@linux.ibm.com>
+ <5f873855-fdc2-4da4-a516-4db7b5236a48@linux.vnet.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <c2f01390-8977-dee7-8f33-fe1ebb2b73b7@linux.ibm.com>
+Date:   Mon, 30 Nov 2020 09:29:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-3-djrscally@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <5f873855-fdc2-4da4-a516-4db7b5236a48@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_06:2020-11-30,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ mlxscore=0 phishscore=0 malwarescore=0 suspectscore=2 spamscore=0
+ mlxlogscore=999 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:31:13PM +0000, Daniel Scally wrote:
-> This function is used to find fwnode endpoints against a device. In
-> some instances those endpoints are software nodes which are children of
-> fwnode->secondary. Add support to fwnode_graph_get_endpoint_by_id() to
-> find those endpoints by recursively calling itself passing the ptr to
-> fwnode->secondary in the event no endpoint is found for the primary.
+On 11/27/20 9:49 AM, Brian King wrote:
+> On 11/25/20 7:48 PM, Tyrel Datwyler wrote:
+>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> 
+>> @@ -4462,6 +4464,118 @@ static void ibmvfc_discover_targets(struct ibmvfc_host *vhost)
+>>  		ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
+>>  }
+>>  
+>> +static void ibmvfc_channel_setup_done(struct ibmvfc_event *evt)
+>> +{
+>> +	struct ibmvfc_host *vhost = evt->vhost;
+>> +	u32 mad_status = be16_to_cpu(evt->xfer_iu->channel_setup.common.status);
+>> +	int level = IBMVFC_DEFAULT_LOG_LEVEL;
+>> +
+>> +	ibmvfc_free_event(evt);
+>> +
+>> +	switch (mad_status) {
+>> +	case IBMVFC_MAD_SUCCESS:
+>> +		ibmvfc_dbg(vhost, "Channel Setup succeded\n");
+>> +		vhost->do_enquiry = 0;
+>> +		break;
+>> +	case IBMVFC_MAD_FAILED:
+>> +		level += ibmvfc_retry_host_init(vhost);
+>> +		ibmvfc_log(vhost, level, "Channel Setup failed\n");
+>> +		fallthrough;
+>> +	case IBMVFC_MAD_DRIVER_FAILED:
+>> +		return;
+>> +	default:
+>> +		dev_err(vhost->dev, "Invalid Channel Setup response: 0x%x\n",
+>> +			mad_status);
+>> +		ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
+>> +		return;
+>> +	}
+>> +
+>> +	ibmvfc_set_host_action(vhost, IBMVFC_HOST_ACTION_QUERY);
+>> +	wake_up(&vhost->work_wait_q);
+>> +}
+>> +
+>> +static void ibmvfc_channel_setup(struct ibmvfc_host *vhost)
+>> +{
+>> +	struct ibmvfc_channel_setup_mad *mad;
+>> +	struct ibmvfc_channel_setup *setup_buf = vhost->channel_setup_buf;
+>> +	struct ibmvfc_event *evt = ibmvfc_get_event(vhost);
+>> +
+>> +	memset(setup_buf, 0, sizeof(*setup_buf));
+>> +	setup_buf->flags = cpu_to_be32(IBMVFC_CANCEL_CHANNELS);
+>> +
+>> +	ibmvfc_init_event(evt, ibmvfc_channel_setup_done, IBMVFC_MAD_FORMAT);
+>> +	mad = &evt->iu.channel_setup;
+>> +	memset(mad, 0, sizeof(*mad));
+>> +	mad->common.version = cpu_to_be32(1);
+>> +	mad->common.opcode = cpu_to_be32(IBMVFC_CHANNEL_SETUP);
+>> +	mad->common.length = cpu_to_be16(sizeof(*mad));
+>> +	mad->buffer.va = cpu_to_be64(vhost->channel_setup_dma);
+>> +	mad->buffer.len = cpu_to_be32(sizeof(*vhost->channel_setup_buf));
+>> +
+>> +	ibmvfc_set_host_action(vhost, IBMVFC_HOST_ACTION_INIT_WAIT);
+>> +
+>> +	if (!ibmvfc_send_event(evt, vhost, default_timeout))
+>> +		ibmvfc_dbg(vhost, "Sent channel setup\n");
+>> +	else
+>> +		ibmvfc_link_down(vhost, IBMVFC_LINK_DOWN);
+>> +}
+>> +
+>> +static void ibmvfc_channel_enquiry_done(struct ibmvfc_event *evt)
+>> +{
+>> +	struct ibmvfc_host *vhost = evt->vhost;
+>> +	struct ibmvfc_channel_enquiry *rsp = &evt->xfer_iu->channel_enquiry;
+>> +	u32 mad_status = be16_to_cpu(rsp->common.status);
+>> +	int level = IBMVFC_DEFAULT_LOG_LEVEL;
+>> +
+>> +	switch (mad_status) {
+>> +	case IBMVFC_MAD_SUCCESS:
+>> +		ibmvfc_dbg(vhost, "Channel Enquiry succeeded\n");
+>> +		vhost->max_vios_scsi_channels = be32_to_cpu(rsp->num_scsi_subq_channels);
+> 
+> You need a ibmvfc_free_event(evt) here so you don't leak events.
+> 
 
-One nit below, after addressing:
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Indeed
 
-...
+>> +		break;
+>> +	case IBMVFC_MAD_FAILED:
+>> +		level += ibmvfc_retry_host_init(vhost);
+>> +		ibmvfc_log(vhost, level, "Channel Enquiry failed\n");
+>> +		ibmvfc_free_event(evt);
+> 
+> Looks like you are freeing this event twice due to the fallthrough...
 
-> +	if (!best_ep && fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
-> +		return fwnode_graph_get_endpoint_by_id(fwnode->secondary, port,
-> +						       endpoint, flags);
+Good catch
 
->  	return best_ep;
-
-Can we, please, do
-
-	if (best_ep)
-		return best_ep;
-
-	if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
-		return fwnode_graph_get_endpoint_by_id(fwnode->secondary, port,
-						       endpoint, flags);
-
-	return NULL;
-
-?
-
-This 'if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary))' becomes kinda
-idiomatic to the cases when we need to proceed primary followed by the
-secondary in cases where it's not already done.
-
->  }
->  EXPORT_SYMBOL_GPL(fwnode_graph_get_endpoint_by_id);
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> 
+>> +		fallthrough;
+>> +	case IBMVFC_MAD_DRIVER_FAILED:
+>> +		ibmvfc_free_event(evt);
+>> +		return;
+>> +	default:
+>> +		dev_err(vhost->dev, "Invalid Channel Enquiry response: 0x%x\n",
+>> +			mad_status);
+>> +		ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
+>> +		ibmvfc_free_event(evt);
+>> +		return;
+>> +	}
+>> +
+>> +	ibmvfc_channel_setup(vhost);
+>> +}
+>> +
+> 
+> 
+> 
 
