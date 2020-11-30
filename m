@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCF32C8981
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A184F2C89C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbgK3Q3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbgK3Q3Q (ORCPT
+        id S1728924AbgK3Ql4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:41:56 -0500
+Received: from mx1.yrkesakademin.fi ([85.134.45.194]:58114 "EHLO
+        mx1.yrkesakademin.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727154AbgK3Qlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:29:16 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7B0C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:28:36 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id o25so14784139oie.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:28:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F0lbgp5okuFqa4v6AVBwCvjd204XDmam+ZlFn0h16Po=;
-        b=yCdb+pxB79NwwSGe3bqjrEfTaIMl+S7UFAYclT70TXMXj1tPmWJLnr2QgsOZl5sBPH
-         asZ38Yk50c6ZXYerptgEtyWFMFwh/e5qrIVnmlj4gL5X4SErYo8vjzT2QMziXku522Nl
-         7ipU6KpcRIfiI1UwZ8l4lg8mo8dPWQNMfQjm7ohJkHQCDlpF6jmwy1DPbhKqlR6tR0+Q
-         muWjYL30bWMu5IWmEAtEyWS5onvbiNSSeUiifU9qh91FKdnpzzwsZxnshlpp9G/TxQML
-         WgL7MWL7wmcjAZE8duTdI9Bdg+bVrMF2e7s657X82iHThGng81H1aAg4fVpS+bV20DhX
-         5X8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F0lbgp5okuFqa4v6AVBwCvjd204XDmam+ZlFn0h16Po=;
-        b=PM7sHf3V5NNscwjSgSfoxzCPgVCEcrQSAPdiR9OlR4oYWXUNMjVCwbbNS80YUNdWjj
-         DSiwKTHj4r+Il2VMGouwbs18MU7fSYjQnFLaAHuLTLI0naMnPftQ8HByu7xJJnSC8jbU
-         UYbsqRXIRX9TWHPSlgkkbdixqtraSNm5WYP9nCWs0Rilmjwfq5uzWNTOKHvUOfyfXDnq
-         3Vwb9vlftOgf9x/kjk3BuQAerdf05eeB557jLwN7gjKcJqjn7N2XabjVvuLIZIBRCMJq
-         i9r5bRQ1a0+dOR+suGb8FJ959r5BzhtNxjfSWv0ZJGNqYNBX86cHU+qedZX+DLirxgDx
-         m7kw==
-X-Gm-Message-State: AOAM5306buUNz73mG7+FhDUice5uF4zgn4DqWAxA+Y1eW9JF8F4h/bCZ
-        SazpS54bql0MoPVb8tOKlCRzyg==
-X-Google-Smtp-Source: ABdhPJxSw9sP92TsSBqYlqaxDA1j+iOHEwsVmi/Z0qzRx3/1e5RDG541GqwZ4nIZAPUoZF1j6Bkv0A==
-X-Received: by 2002:aca:72d3:: with SMTP id p202mr15194163oic.162.1606753716064;
-        Mon, 30 Nov 2020 08:28:36 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e19sm1135678oou.42.2020.11.30.08.28.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 08:28:35 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steev Klimaszewski <steev@kali.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH] arm64: defconfig: Enable HID multitouch
-Date:   Mon, 30 Nov 2020 10:28:34 -0600
-Message-Id: <20201130162834.310282-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Mon, 30 Nov 2020 11:41:55 -0500
+X-Greylist: delayed 943 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Nov 2020 11:41:54 EST
+Subject: Re: [PATCH] hwmon: corsair-psu: update supported devices
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        Thomas Backlund <tmb@iki.fi>
+CC:     Jonas Malaco <jonas@protocubo.io>, <linux-kernel@vger.kernel.org>,
+        "Jean Delvare" <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "Jonathan Corbet" <corbet@lwn.net>, <linux-hwmon@vger.kernel.org>
+References: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
+ <CANS_-EN8rgFEyE5rDw3=JLUYNwLQexafn7efvMC_=+4s2h1R6Q@mail.gmail.com>
+ <20201128113524.24f4f56f@monster.powergraphx.local>
+ <4917cc59-aa35-7fb1-d2d0-75039523816f@iki.fi>
+ <s7R3iA2S9eDO5XZ9rdqzYCvN9eu2DaNKUQCmSn_4XxsrxD-93-gtY9DFGxbthP9CVsquOXoocwbZfwNKo7XLaQ==@protonmail.internalid>
+ <20201130154915.760923fd@monster.powergraphx.local>
+From:   Backlund Thomas <tmb@iki.fi>
+Message-ID: <6185cc04-da71-5b68-0bc8-931af6fa2dc9@iki.fi>
+Date:   Mon, 30 Nov 2020 18:25:30 +0200
 MIME-Version: 1.0
+In-Reply-To: <20201130154915.760923fd@monster.powergraphx.local>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: sv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Lenovo Yoga C630 relies on HID multitouch support for proper
-touchpad operation, so enable this.
+Den 30.11.2020 kl. 16:49, skrev Wilken Gottwalt:
+> On Mon, 30 Nov 2020 14:43:44 +0200
+> Thomas Backlund <tmb@iki.fi> wrote:
+>
+>> Den 28.11.2020 kl. 12:35, skrev Wilken Gottwalt:
+>>> On Sat, 28 Nov 2020 02:37:38 -0300
+>>> Jonas Malaco <jonas@protocubo.io> wrote:
+>>>
+>>>> On Thu, Nov 26, 2020 at 8:43 AM Wilken Gottwalt
+>>>> <wilken.gottwalt@posteo.net> wrote:
+>>>>> Adds support for another Corsair PSUs series: AX760i, AX860i, AX1200i,
+>>>>> AX1500i and AX1600i. The first 3 power supplies are supported through
+>>>>> the Corsair Link USB Dongle which is some kind of USB/Serial/TTL
+>>>>> converter especially made for the COM ports of these power supplies.
+>>>>> There are 3 known revisions of these adapters. The AX1500i power supply
+>>>>> has revision 3 built into the case and AX1600i is the only one in that
+>>>>> series, which has an unique usb hid id like the RM/RX series.
+>>>> Can I ask what AXi power supplies were tested?
+>>>>
+>>>> I ask because, based on the user-space implementations I am aware of,
+>>>> the AXi dongle protocol appears to be different from the RMi/HXi series.
+>>> I was not able to test this against the AX power supplies, they are really
+>>> hard to find (and are far to expensive). But I went through all these tools
+>>> and stuck to the most common commands, which all 3 series support. Not every
+>>> series supports all commands (there also seem to be different firmwares in
+>>> the micro-conrollers). But this is fine, some sensors will show up as N/A.
+>>> Even my HX850i does not support all commands covered in this driver.
+>>>
+>> What kind of tests do you want / need ?
+>>
+>> I have an AX860i here.
+> Oh nice. Lets start with an usb info dump. Can you give me the full dump of
+> lsusb -vd <device> of the Corsair USB dongle?
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+$ lsusb  -vd  1b1c:1c00
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 8e3ed05b655a..f4d0b3a61e41 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -737,6 +737,7 @@ CONFIG_SND_SOC_WM8904=m
- CONFIG_SND_SOC_WSA881X=m
- CONFIG_SND_SIMPLE_CARD=m
- CONFIG_SND_AUDIO_GRAPH_CARD=m
-+CONFIG_HID_MULTITOUCH=m
- CONFIG_I2C_HID=m
- CONFIG_USB_CONN_GPIO=m
- CONFIG_USB=y
--- 
-2.29.2
+Bus 011 Device 005: ID 1b1c:1c00 Corsair Controller for Corsair Link
+Device Descriptor:
+   bLength                18
+   bDescriptorType         1
+   bcdUSB               1.10
+   bDeviceClass            0
+   bDeviceSubClass         0
+   bDeviceProtocol         0
+   bMaxPacketSize0        64
+   idVendor           0x1b1c Corsair
+   idProduct          0x1c00 Controller for Corsair Link
+   bcdDevice            1.00
+   iManufacturer           1 Silicon Labs
+   iProduct                2 Corsair Link TM USB Dongle
+   iSerial                 3 R7480347
+   bNumConfigurations      1
+   Configuration Descriptor:
+     bLength                 9
+     bDescriptorType         2
+     wTotalLength       0x0020
+     bNumInterfaces          1
+     bConfigurationValue     1
+     iConfiguration          0
+     bmAttributes         0x80
+       (Bus Powered)
+     MaxPower              100mA
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        0
+       bAlternateSetting       0
+       bNumEndpoints           2
+       bInterfaceClass       255 Vendor Specific Class
+       bInterfaceSubClass      0
+       bInterfaceProtocol      0
+       iInterface              2 Corsair Link TM USB Dongle
+       Endpoint Descriptor:
+         bLength                 7
+         bDescriptorType         5
+         bEndpointAddress     0x81  EP 1 IN
+         bmAttributes            2
+           Transfer Type            Bulk
+           Synch Type               None
+           Usage Type               Data
+         wMaxPacketSize     0x0040  1x 64 bytes
+         bInterval               0
+       Endpoint Descriptor:
+         bLength                 7
+         bDescriptorType         5
+         bEndpointAddress     0x01  EP 1 OUT
+         bmAttributes            2
+           Transfer Type            Bulk
+           Synch Type               None
+           Usage Type               Data
+         wMaxPacketSize     0x0040  1x 64 bytes
+         bInterval               0
+can't get debug descriptor: Resource temporarily unavailable
+Device Status:     0x0000
+   (Bus Powered)
+
+--
+
+Thomas
+
 
