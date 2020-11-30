@@ -2,143 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951BB2C82D4
+	by mail.lfdr.de (Postfix) with ESMTP id 272BB2C82D3
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbgK3LDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:03:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728978AbgK3LDs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:03:48 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C73AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:02:44 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 23so15577735wrc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:02:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8uQwF7bNbUvnTUbpsi6bUmw7b/9C+d+knKBrFDwWR54=;
-        b=aNsH/ks54Sn1PO+IHFwM8TTkfbEo8PnmZ+cqRSPByDtawAkF8K/9L/61+5z8MdZDCO
-         S2xTZXPOoyMZGeeuHQPcHCCyedoh5/FiiXsTQAw+FS/ZopYE6XYwfsRv4KlE8/Nxwumx
-         HZeB7HzOMNHtp+np0frgU40UGa1MsA6X4dbNCMn0sJxrZUpA5eepv4u0/1toeMl615nA
-         tkRcP0ic+4/Zi5v01bxzTePF/Wy28bJjUOFiY4hWahaEVyGZ59bxi86Zi488f7K8CKZr
-         eh3oc/L0wa95Gc4ZbBsayIV6AKs8Oa0hHTcnM0jwc5NuUKDVz/iPEouAGRxnAmREbhJQ
-         QLjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8uQwF7bNbUvnTUbpsi6bUmw7b/9C+d+knKBrFDwWR54=;
-        b=eXaoRKzhXlPfQJNHCa7pRZO3NmOCVZD7zTCUK0CFdTqIy8QVCnVlbn0g16o9CA3Wcn
-         GLuXesWnu2qUi9yGkPum8OXB6ihCCg4V9Uj6HXUDEjI/EN+uipcHvhTCjKnPntfuKTCg
-         8ga3oTXOqq8xmPQvlKKlMQgxPj4vEko3bK2fn8nqZWuXXQF+FhB7zmRCCLHUuYmyLHCm
-         Ec5hYI6292TvRpP6t7FS2jpb+ITjUdlyyqRiZMDJeJvwgLnxezM9KlrJfY2uTNFYcMAc
-         9yenYwnxyrX7ou8RUsvYDp4XeyUx2eNt14vFp4k9/sDc8S6RufJNRlIG9hdP3nzQgHBx
-         LgzA==
-X-Gm-Message-State: AOAM531anShP8heNnAwvu1+aJduNNLC/I7xW0k3KGuAJ313P+Y5oGzz5
-        ArRk5gIZ/eXiVaDNWsZX8P5HR6DArRZDu45M
-X-Google-Smtp-Source: ABdhPJxDwE0sPTaQTg1EIUlldlISZip+Srnq2ICjF3uN6UgGz2N24+63xoZEKNrPafL2Qq44CJkfIg==
-X-Received: by 2002:adf:f3d1:: with SMTP id g17mr27827306wrp.201.1606734163034;
-        Mon, 30 Nov 2020 03:02:43 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id b73sm41400042wmb.0.2020.11.30.03.02.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Nov 2020 03:02:42 -0800 (PST)
-Subject: Re: [PATCH v3 1/2] arm64: dts: qcom: sc7180: Update lpass cpu node
- for audio over dp
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1601448168-18396-1-git-send-email-srivasam@codeaurora.org>
- <1601448168-18396-2-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <019306c9-8fcf-77c4-5f61-56c92bb8e973@linaro.org>
-Date:   Mon, 30 Nov 2020 11:02:41 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728958AbgK3LDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:03:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726158AbgK3LDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 06:03:46 -0500
+Received: from localhost (unknown [122.171.214.243])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84683207F7;
+        Mon, 30 Nov 2020 11:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606734185;
+        bh=hjIcZHlqjoAO8SFOaLc53+G8xg4yeUu0vni/0Fqn0Bc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kmCxKGIwQI+T2Mo2rkjWWy4eQRdp4boF9WE2CHq6fg3sGfLZBof9qpQFMJJ1YqMi+
+         yYGfyTHmJT/Deiw0WdiTFmTCgpxH7s7H314Q1YT/7t0x8B2LSbEwe/Ix4ewBolpAbB
+         vTmnjqsmU1QuaWoTpBOpi9gnD0ChEfwZogdISwWE=
+Date:   Mon, 30 Nov 2020 16:32:51 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     kishon@ti.com, khilman@baylibre.com, narmstrong@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        p.zabel@pengutronix.de, lorenzo.pieralisi@arm.com,
+        repk@triplefau.lt, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH] phy: amlogic: replace devm_reset_control_array_get()
+Message-ID: <20201130110251.GS8403@vkoul-mobl>
+References: <1605666995-16462-1-git-send-email-yejune.deng@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1601448168-18396-2-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605666995-16462-1-git-send-email-yejune.deng@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18-11-20, 10:36, Yejune Deng wrote:
+> devm_reset_control_array_get_exclusive() looks more readable
 
+Applied, thanks
 
-On 30/09/2020 07:42, Srinivasa Rao Mandadapu wrote:
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> 
-> Updaate lpass dts node with HDMI reg, interrupt and iommu
-> for supporting audio over dp.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-> ---
->   arch/arm64/boot/dts/qcom/sc7180.dtsi | 17 ++++++++++-------
->   1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index 427a4bf..802ea0a 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -21,6 +21,7 @@
->   #include <dt-bindings/reset/qcom,sdm845-pdc.h>
->   #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->   #include <dt-bindings/thermal/thermal.h>
-> +#include <dt-bindings/sound/sc7180-lpass.h>
->   
->   / {
->   	interrupt-parent = <&intc>;
-> @@ -3428,16 +3429,18 @@
->   			#power-domain-cells = <1>;
->   		};
->   
-> -		lpass_cpu: lpass@62f00000 {
-> +		lpass_cpu: lpass@62d87000 {
->   			compatible = "qcom,sc7180-lpass-cpu";
->   
-> -			reg = <0 0x62f00000 0 0x29000>;
-> -			reg-names = "lpass-lpaif";
-> +			reg = <0 0x62d87000 0 0x68000>, <0 0x62f00000 0 0x29000>;
-> +			reg-names =  "lpass-hdmiif", "lpass-lpaif";
->   
-> -			iommus = <&apps_smmu 0x1020 0>;
-> +			iommus = <&apps_smmu 0x1020 0>, <&apps_smmu 0x1032 0>;
->   
->   			power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
->   
-> +			status = "disabled";
-> +
->   			clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>,
->   				 <&lpasscc LPASS_AUDIO_CORE_CORE_CLK>,
->   				 <&lpasscc LPASS_AUDIO_CORE_EXT_MCLK0_CLK>,
-> @@ -3449,13 +3452,13 @@
->   					"mclk0", "pcnoc-mport-clk",
->   					"mi2s-bit-clk0", "mi2s-bit-clk1";
->   
-> -
->   			#sound-dai-cells = <1>;
->   			#address-cells = <1>;
->   			#size-cells = <0>;
->   
-> -			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
-> -			interrupt-names = "lpass-irq-lpaif";
-> +			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>,
-> +					<GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "lpass-irq-lpaif", "lpass-irq-hdmi";
->   		};
->   
->   		lpass_hm: clock-controller@63000000 {
-> 
+-- 
+~Vinod
