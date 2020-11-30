@@ -2,115 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDD72C9262
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39B32C9269
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387499AbgK3XTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:19:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbgK3XTm (ORCPT
+        id S2387791AbgK3XUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:20:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55712 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727114AbgK3XUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:19:42 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F28C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:19:02 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id f16so13025128otl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:19:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sDj8+eA3XzCGTPEcZqsXANYYErSR6D60R/FMQNZhI8Q=;
-        b=GCokUG2Vos/8YIH2ozrpiXqKT+XifoavuGNKAo+UTzjldhW2+cYmsm2TG9ZM1P7l2o
-         QxXqNIXiOCGSbQuTf5oKrj4ZzTxJS+YZB+Litse2iIvPu5dEcSEapeBqAME4g625b06+
-         ZZZ9/BFxnoxHLK7ORHVQ6Q3MYfD//L2CnZfwsBdKidoAOeCX30FjH8Ki0uKylS2WNg2Y
-         08RVp8jYemiEDetAmdY6mR0j902aNAMcBLER82jDMM49TIBbq2A4gr5LVZYg0noQJ5yq
-         QD561xfTka1jFcN8QoP6SjZD9Ge/l4EnYu6xSU0wvk5KS6MTZSvMILQf0bgQMnQp1OTu
-         AX6Q==
+        Mon, 30 Nov 2020 18:20:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606778346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=li46zMc89mfoLeOz5v4yxiqqtOji3DIchTYZPR9M9IE=;
+        b=II68JylJJbH308P1ybizHzAF5Nsb1KegH4uEaQTvFCY6/1ZnO70HeN3Bp7/kjHnL+O2zGF
+        UqS0NeKUXfTVbzvq3t33Bs/2T1CJvadahJA5GF5BZvvwpEWS3//kk0Noyhdp7dh2/G3U0v
+        oWO0FcuUJ4uOtPKg1p3Jd+nus/okUmg=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-8wZ-jNM2NgaH6-ogAzlESw-1; Mon, 30 Nov 2020 18:19:04 -0500
+X-MC-Unique: 8wZ-jNM2NgaH6-ogAzlESw-1
+Received: by mail-qv1-f70.google.com with SMTP id bn4so8677792qvb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:19:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sDj8+eA3XzCGTPEcZqsXANYYErSR6D60R/FMQNZhI8Q=;
-        b=E+pNaKbDwJ5mT6wFAQS677coEx/lR4MxBFoGgXAmAkaJvFRDSTjG+ziEC22AYFJdfc
-         Ljsst5IFHqGyTcso8tt2lRfqkAHhmQ25suBDu4cLDsvzYsSbcIEhNftxineVyrqJNPcX
-         YW4fP9okNuWU70ek45yM1X/Eo+ogD5Utt4Km33THvMSH5tR0mbaC0EClouHg6vdMsry6
-         N3SRMo7N/0EfnWgut9vV1e3N17Rdwwpq3pD18V9FG2B//TO7+oLxWdFea6xHECC0Ee3G
-         wj7Vfl/PBGVpXw4uT70oLxxpmioYN+Pa5OHDJ5rE+p2GgX3na8D0Tk7CqP0fiNHhHyRZ
-         OtOw==
-X-Gm-Message-State: AOAM531oH13r/JwePCA6Tr+JYxxNVePLkitFJ5l3EDXbAh1Htd2wqc4e
-        eQ1Hk4kBFW88XdJFZrkm3mqF8g2hseN3a0Ee8kA=
-X-Google-Smtp-Source: ABdhPJyMRNKB10VZELvZJOkmhj/54W+6hIen4Tqd4lQGadPUj9bd/ahylxC2LJQz7vhb0rdxcrz1XRDeFqMIEvKcxN0=
-X-Received: by 2002:a9d:5388:: with SMTP id w8mr18918840otg.311.1606778340333;
- Mon, 30 Nov 2020 15:19:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-8-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-8-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 18:18:48 -0500
-Message-ID: <CADnq5_P4rYdFuK-_iaWmD+ZGk8ECs9PsOrVhRXMNWGWnXvuGZA@mail.gmail.com>
-Subject: Re: [PATCH 07/40] drm/amd/pm/powerplay/smumgr/fiji_smumgr: Demote
- kernel-doc format abuse
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=li46zMc89mfoLeOz5v4yxiqqtOji3DIchTYZPR9M9IE=;
+        b=mZZ7vUkQQu+KS/LBiH4MbWd8ObxK5XE59Wa3rbGGV0uzC0PqeQ4zrRyIY27VDg5B8t
+         HZkLi3JORbV0O5a8C9yFCrkiavZsffh868C8SPCmCkYjU7v6Z+PAcBY+japqONmiwpUY
+         NNrUHJONWYvhgOcPaqbW7NEfp2HNzOFEOVEwN2JE5mYZ0BfRam9AetCVauvdP/nswSmS
+         6Cyg1A3kC31XEvZUxPKSDv8vQQu/VpDl5Yu86ikjIFdBE4MnspTOMFj/BfHf6tMjNolm
+         OtC4XWdvxO4J0WIE9ok/7kJL0r3YllDMpDQwJwW+7SJt+V3N6SRu+vfqq8PDbUT8KwJV
+         wOAQ==
+X-Gm-Message-State: AOAM5338t+P83svtA8mO8Ferl1ocpFnTO+Pe6Pzc1u5ollSwPJupeTtw
+        VKcMya2ZKghJ1dn0MF//JA4QINqyYIg8oG+A09omgVsJmOfWKRh6YYlk+4TJiwf1ZzXv3Eejl97
+        c0u8K+95vmM4EaBzAK951Sk0H
+X-Received: by 2002:ac8:4884:: with SMTP id i4mr24968494qtq.300.1606778344218;
+        Mon, 30 Nov 2020 15:19:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzoxLBQzzYqP8Msgg1a4Q3kgPx/56xTZZXS8WWKqosF6BtSsQWM84rV1f8H29HjoMDjXH4Eeg==
+X-Received: by 2002:ac8:4884:: with SMTP id i4mr24968476qtq.300.1606778344011;
+        Mon, 30 Nov 2020 15:19:04 -0800 (PST)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id g11sm16404443qkk.72.2020.11.30.15.19.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 15:19:03 -0800 (PST)
+Message-ID: <cb55ab8e5eee5ccece8212fa0576de16cc12dcd5.camel@redhat.com>
+Subject: Re: [Intel-gfx] [RFC v2 3/8] drm/i915: Keep track of pwm-related
+ backlight hooks separately
+From:   Lyude Paul <lyude@redhat.com>
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>
+Date:   Mon, 30 Nov 2020 18:19:02 -0500
+In-Reply-To: <CAPM=9tzLK3caEW661tCeSPhn0G0NihuztCdgyABDgtvZRvV4xA@mail.gmail.com>
+References: <20200916171855.129511-1-lyude@redhat.com>
+         <20200916171855.129511-4-lyude@redhat.com>
+         <CAPM=9tzLK3caEW661tCeSPhn0G0NihuztCdgyABDgtvZRvV4xA@mail.gmail.com>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/smumgr/fiji_smumgr.c:1107: wa=
-rning: Function parameter or member 'mem_clock' not described in 'fiji_get_=
-mclk_frequency_ratio'
->
-> Cc: Evan Quan <evan.quan@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Thu, 2020-11-26 at 11:03 +1000, Dave Airlie wrote:
+> On Thu, 17 Sept 2020 at 03:19, Lyude Paul <lyude@redhat.com> wrote:
+> > 
+> > Currently, every different type of backlight hook that i915 supports is
+> > pretty straight forward - you have a backlight, probably through PWM
+> > (but maybe DPCD), with a single set of platform-specific hooks that are
+> > used for controlling it.
+> > 
+> > HDR backlights, in particular VESA and Intel's HDR backlight
+> > implementations, can end up being more complicated. With Intel's
+> > proprietary interface, HDR backlight controls always run through the
+> > DPCD. When the backlight is in SDR backlight mode however, the driver
+> > may need to bypass the TCON and control the backlight directly through
+> > PWM.
+> > 
+> > So, in order to support this we'll need to split our backlight callbacks
+> > into two groups: a set of high-level backlight control callbacks in
+> > intel_panel, and an additional set of pwm-specific backlight control
+> > callbacks. This also implies a functional changes for how these
+> > callbacks are used:
+> > 
+> > * We now keep track of two separate backlight level ranges, one for the
+> >   high-level backlight, and one for the pwm backlight range
+> > * We also keep track of backlight enablement and PWM backlight
+> >   enablement separately
+> > * Since the currently set backlight level might not be the same as the
+> >   currently programmed PWM backlight level, we stop setting
+> >   panel->backlight.level with the currently programmed PWM backlight
+> >   level in panel->backlight.pwm_funcs.setup(). Instead, we rely
+> >   on the higher level backlight control functions to retrieve the
+> >   current PWM backlight level (in this case, intel_pwm_get_backlight()).
+> >   Note that there are still a few PWM backlight setup callbacks that
+> >   do actually need to retrieve the current PWM backlight level, although
+> >   we no longer save this value in panel->backlight.level like before.
+> > * panel->backlight.pwm_funcs.enable()/disable() both accept a PWM
+> >   brightness level, unlike their siblings
+> >   panel->backlight.enable()/disable(). This is so we can calculate the
+> >   actual PWM brightness level we want to set on disable/enable in the
+> >   higher level backlight enable()/disable() functions, since this value
+> >   might be scaled from a brightness level that doesn't come from PWM.
+> 
+> Oh this patch is a handful, I can see why people stall out here.
+> 
+> I'm going to be annoying maintainer and see if you can clean this up a
+> bit in advance
+> of this patch.
+> 
 
-Applied.  Thanks!
+Not annoying at all :), I was hoping there'd be a good bit of criticism on
+this patch series since it's been hard to figure out if I'm even implementing
+things in the right way or not (especially because I really don't know what
+the HDR side of this is going to look like, although I assume it's probably
+going to be pretty hands-off in the kernel).
 
-Alex
+JFYI too for folks on the list, any suggestions about the HDR side of this are
+super appreciated. I'm barely familiar with such things.
 
-> ---
->  drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c b/driv=
-ers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
-> index fea008cc1f254..02c094a06605d 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/smumgr/fiji_smumgr.c
-> @@ -1090,7 +1090,7 @@ static int fiji_populate_all_graphic_levels(struct =
-pp_hwmgr *hwmgr)
->  }
->
->
-> -/**
-> +/*
->   * MCLK Frequency Ratio
->   * SEQ_CG_RESP  Bit[31:24] - 0x0
->   * Bit[27:24] \96 DDR3 Frequency ratio
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 1) move the callbacks out of struct intel_panel.backlight into a separate
+> struct
+> and use const static object tables, having fn ptrs and data co-located
+> in a struct
+> isn't great.
+> 
+> strcut intel_panel_backlight_funcs {
+> 
+> };
+> struct intel_panel {
+>     struct {
+>         struct intel_panel_backlight_funcs *funcs;
+>     };
+> };
+> 
+> type of thing.
+> 
+> I think you could reuse the backlight funcs struct for the pwm stuff
+> as well. (maybe with an assert on hz_to_pwm for the old hooks).
+> 
+> 2) change the apis to pass 0 down in a separate patch, this modifies a
+> bunch of apis to pass in an extra level parameter, do that
+> first in a separate patch that doesn't change anything but hands 0
+> down the chain. Then switch over in another patch.
+> 
+> 3) One comment in passing below.
+> > 
+> > 
+> > -       if (cpu_mode)
+> > -               val = pch_get_backlight(connector);
+> > -       else
+> > -               val = lpt_get_backlight(connector);
+> > -       val = intel_panel_compute_brightness(connector, val);
+> > -       panel->backlight.level = clamp(val, panel->backlight.min,
+> > -                                      panel->backlight.max);
+> > 
+> >         if (cpu_mode) {
+> > +               val = intel_panel_sanitize_pwm_level(connector,
+> > pch_get_backlight(connector));
+> > +
+> >                 drm_dbg_kms(&dev_priv->drm,
+> >                             "CPU backlight register was enabled, switching
+> > to PCH override\n");
+> > 
+> >                 /* Write converted CPU PWM value to PCH override register
+> > */
+> > -               lpt_set_backlight(connector->base.state, panel-
+> > >backlight.level);
+> > +               lpt_set_backlight(connector->base.state, val);
+> >                 intel_de_write(dev_priv, BLC_PWM_PCH_CTL1,
+> >                                pch_ctl1 | BLM_PCH_OVERRIDE_ENABLE);
+> > 
+> The change here confused me since it no longer calls lpt_get_backlight
+> in this path, the commit msg might explain this, but it didn't explain
+> is so I could figure out if that was a mistake or intentional.
+
+Will address these in the next respin, thanks for the review!
+
+> 
+> Dave.
+> 
+
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
