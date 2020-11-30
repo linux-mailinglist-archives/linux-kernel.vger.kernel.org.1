@@ -2,90 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8D02C8D0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A34FA2C8D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729762AbgK3Sl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:41:26 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46811 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729740AbgK3Sl0 (ORCPT
+        id S2388278AbgK3SoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:44:23 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:32914 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388264AbgK3SoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:41:26 -0500
-Received: by mail-wr1-f66.google.com with SMTP id g14so17502998wrm.13;
-        Mon, 30 Nov 2020 10:41:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2ZOrDa6ldlj99dU4NwWopQDDabM2YX1J/bSlPxihqSc=;
-        b=tb9dsEBbAlbq5zXLrNCEwwMKbGcvpGiHDGphRfkDFMrmuFVWskOwDkXu9YkYzcJ6nS
-         5ssFd/NeMaBtwBouoHHwCwMNH0vVhEXZlxfsm9gAu7GhXyWUm0n0AhJs0uIYz8zucLTk
-         +LcHgIJYfdnC9JsfSv5ZXyjQjDBMmQFOr3I32vCKq9SA3ldhiE+lp5bpP7A5p+Uoe1IV
-         Lbt9zEwvheQWH6wF2UHnORwhDfiNEfLSvfI1f7NZUg5o53SoF8Yxyci2rchC9s8CIQu8
-         jWmwdZ5MUUJ5fv2VlcMMI1vHmcPvI5+NKdLVKZgcNxkICLvpaghWLtUgw3AJ9Ex7sjuG
-         0daQ==
-X-Gm-Message-State: AOAM532HqTsElQnVePLMHVwpzRQgMA+AYMIp2RgL4Lp5wJ6sZnBGnEP0
-        nvi7FlptLWGNJ2Q8U9ZPsUM=
-X-Google-Smtp-Source: ABdhPJx/ocpaaLADvVke5dqXezlyxFV2p7C5qdqnWe5pkBjHsJXNrEB1rkx5N13R+yVHQMZj0yCuBg==
-X-Received: by 2002:adf:fd0d:: with SMTP id e13mr29118129wrr.85.1606761643575;
-        Mon, 30 Nov 2020 10:40:43 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id e27sm33508526wrc.9.2020.11.30.10.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 10:40:42 -0800 (PST)
-Date:   Mon, 30 Nov 2020 20:40:41 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: Re: [PATCH net-next 2/4] nfc: s3fwrn5: reduce the EN_WAIT_TIME
-Message-ID: <20201130184041.GB28735@kozik-lap>
-References: <1606737750-29537-1-git-send-email-bongsu.jeon@samsung.com>
+        Mon, 30 Nov 2020 13:44:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUISrfb136966;
+        Mon, 30 Nov 2020 18:43:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=VGptTinuknU9DbQlqyBrHws2SfA6tHCjwTpy5V1HH5E=;
+ b=Qbh+h95l030CzT3G17995r7xXySCzdhjs1aECHQ2aUN0ymUXmF2PZlxeg4PPg0dp6Pl7
+ j7DAlo+YNdPEKSEBdpqGGd+Z9DIVaXxgLYJN23q0xPtVekofMxXgdb1JeAFKcwNBEnRA
+ xdNTLD5Hltq9Civ3v62YA375d+cHHZ/dWpAyenj1ZEoTT80rYtd5j1nP9Z3Avf1YaULG
+ y8/00o+CavKsZjm+Pn83DLq5DPT+d3hLKA+ZLWAxjRRd4e2hHuXs9I76GiHstsel1mPj
+ crHtkub/nzoNbf+6hXBOkUYgDAoqxrFMLpwTQY9A1xBWclH6pTWZi6E4XdLKNLZo9a5o 9w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 353egkenkh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 18:43:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUIU2HU141810;
+        Mon, 30 Nov 2020 18:41:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 3540ewww14-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 18:41:25 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AUIfOST014950;
+        Mon, 30 Nov 2020 18:41:24 GMT
+Received: from [10.175.212.254] (/10.175.212.254)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 10:41:24 -0800
+Subject: Re: [PATCH RFC 11/39] KVM: x86/xen: evtchn signaling via eventfd
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-12-joao.m.martins@oracle.com>
+ <874d1fa922cb56238676b90bbeeba930d0706500.camel@infradead.org>
+ <e83f6438-7256-1dc8-3b13-5498fd5bbed1@oracle.com>
+ <18e854e2a84750c2de2d32384710132b83d84286.camel@infradead.org>
+ <0b9d3901-c10b-effd-6278-6afd1e95b09e@oracle.com>
+ <315ea414c2bf938978f7f2c0598e80fa05b4c07b.camel@infradead.org>
+ <05661003-64f0-a32a-5659-6463d4806ef9@oracle.com>
+ <13bc2ca60ca4e6d74c619e65502889961a08c3ff.camel@infradead.org>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <35e45689-8225-7e5d-44ef-23479b563444@oracle.com>
+Date:   Mon, 30 Nov 2020 18:41:20 +0000
 MIME-Version: 1.0
+In-Reply-To: <13bc2ca60ca4e6d74c619e65502889961a08c3ff.camel@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1606737750-29537-1-git-send-email-bongsu.jeon@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ suspectscore=1 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=885
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011300120
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=1
+ phishscore=0 mlxlogscore=872 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011300120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 09:02:30PM +0900, Bongsu Jeon wrote:
-> From: Bongsu Jeon <bongsu.jeon@samsung.com>
+On 11/30/20 6:01 PM, David Woodhouse wrote:
+> On Mon, 2020-11-30 at 17:15 +0000, Joao Martins wrote:
+>> On 11/30/20 4:48 PM, David Woodhouse wrote:
+>>> On Mon, 2020-11-30 at 15:08 +0000, Joao Martins wrote:
+>>>> On 11/30/20 12:55 PM, David Woodhouse wrote:
+>>>>> On Mon, 2020-11-30 at 12:17 +0000, Joao Martins wrote:
+>>>>>> On 11/30/20 9:41 AM, David Woodhouse wrote:
+>>>>>>> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
+
+[...]
+
+>>>> I should comment on your other patch but: if we're going to make it generic for
+>>>> the userspace hypercall handling, might as well move hyper-v there too. In this series,
+>>>> I added KVM_EXIT_XEN, much like it exists KVM_EXIT_HYPERV -- but with a generic version
+>>>> I wonder if a capability could gate KVM_EXIT_HYPERCALL to handle both guest types, while
+>>>> disabling KVM_EXIT_HYPERV. But this is probably subject of its own separate patch :)
+>>>
+>>> There's a limit to how much consolidation we can do because the ABI is
+>>> different; the args are in different registers.
+>>>
+>>
+>> Yes. It would be optionally enabled of course and VMM would have to adjust to the new ABI
+>> -- surely wouldn't want to break current users of KVM_EXIT_HYPERV.
 > 
-> The delay of 20ms is enough to enable and
-> wake up the Samsung's nfc chip.
+> True, but that means we'd have to keep KVM_EXIT_HYPERV around anyway,
+> and can't actually *remove* it. The "consolidation" gives us more
+> complexity, not less.
+>
+Fair point.
+
+>>> I do suspect Hyper-V should have marshalled its arguments into the
+>>> existing kvm_run->arch.hypercall and used KVM_EXIT_HYPERCALL but I
+>>> don't think it makes sense to change it now since it's a user-facing
+>>> ABI. I don't want to follow its lead by inventing *another* gratuitous
+>>> exit type for Xen though.
+>>>
+>>
+>> I definitely like the KVM_EXIT_HYPERCALL better than a KVM_EXIT_XEN userspace
+>> exit type ;)
+>>
+>> But I guess you still need to co-relate a type of hypercall (Xen guest cap enabled?) to
+>> tell it's Xen or KVM to specially enlighten certain opcodes (EVTCHNOP_send).
 > 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> ---
->  drivers/nfc/s3fwrn5/i2c.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Sure, but if the VMM doesn't know what kind of guest it's hosting, we
+> have bigger problems... :)
+> 
+Right :)
 
-It's really not easy to work with your way of sending the patches.
+I was referring to the kernel here.
 
-I am sorry but you have to adjust your style to the style of reviewers
-and the entire community.
+Eventually we need to special case things for a given guest type case e.g.
 
-1. Again, you ignored/dropped my Ack.
+int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+{
+...
+        if (kvm_hv_hypercall_enabled(vcpu->kvm))
+                return kvm_hv_hypercall(...);
 
-2. I asked you to send all patches referencing each other, which you can
-   achieve without any effort with git format-patch and send-email or
-   with in-reply-to.
-   Seriously, these tools work properly by default! You have to break
-   them on purpose - so stop.  Now, all your patches are scattered over
-   my mailbox. They are all over mailing list:
-   https://lore.kernel.org/lkml/?q=bongsu.jeon2%40gmail.com
-   Browsing this patchset is uncomfortable. It's a pain.
+        if (kvm_xen_hypercall_enabled(vcpu->kvm))
+                return kvm_xen_hypercall(...);
+...
+}
 
-Please, work on your workflow. Get help in that - there are plenty of
-open-source contributors in Samsung. Ask them how to do it. If you
-cannot, read the mailing lists and see how others do it.
+And on kvm_xen_hypercall() for the cases VMM offloads to demarshal what the registers mean
+e.g. for event channel send 64-bit guest: RAX for opcode and RDI/RSI for cmd and port.
 
-Recent example, one of thousands:
-https://lore.kernel.org/linux-arm-kernel/20201130131047.2648960-1-daniel@0x0f.com/T/#m4a9ed644869b8018b8286a6b229012278141cb66
-
-1. It comes with a cover letter,
-2. All emails are properly linked with each other (scroll to the bottom).
-
-Best regards,
-Krzysztof
+The kernel logic wouldn't be much different at the core, so thought of tihs consolidation.
+But the added complexity would have come from having to deal with two userspace exit types
+-- indeed probably not worth the trouble as you pointed out.
