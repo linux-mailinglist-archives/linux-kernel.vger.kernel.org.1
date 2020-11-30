@@ -2,119 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218C92C8E56
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC892C8E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 20:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387730AbgK3Tqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 14:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726769AbgK3Tqq (ORCPT
+        id S1729756AbgK3Trt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 14:47:49 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:58954 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726769AbgK3Trs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:46:46 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E6BC0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:46:05 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id k26so15521359oiw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 11:46:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=lzfoUfWajb4p4eNOmNvuQscrN072WhSa9bylfU2yzX0=;
-        b=hTSPjl64XJLko7MKmjQjMrFqQD4dLlsqADqMsqR+j3i/O/jTAASbFKHNMbwdnvdsxG
-         UJZzukjaYm4Ayg5ODgCXo7kBIzIPle5y9CI+Kg0QDNPFnkM+gvFH6a3kk3YxqcjE4PK+
-         5Ug7f208kwZgD9lrNpKuOhc3h5tIhD2YRYHrxrNcd5iGfogG4HJ3wUxs7dn6SybwpDDI
-         QoCDuivGuqPcKB0Rpts8le3YCMv1xr3gwRxTqgomXagAehDHvGJaMA2BgjzI29OMV144
-         Wt2U7BFKpldDf9PtgttIyJVQoDmqVwizngX7QNriPx1R7PxMM84LS0ElqDUgaQD5PwV3
-         wPtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=lzfoUfWajb4p4eNOmNvuQscrN072WhSa9bylfU2yzX0=;
-        b=W3Fyd4lbfMMappEmIB+DQmkcOa5ophty9IM76P9/scHFY7wW33h3k82PzlSi1BZ0Z5
-         sUhji5EiTpYJijyvNqvP2qOzqmO2LPP1OvEcAPgpzFDCuljzIcvQjQ4neauNfx+CTBVH
-         9+IGaGaApdHqxGFOn0PwUEVwUp7CdAKewvEe4erl7eHSEnbFcCvvAxOprFC7a0tEKlcV
-         DzlHQezZAQHeALiI4GsWcehqRRPDJrzGx53HNbiHRFCUSPhU/XonbYUEaCM3SLm1Aq8c
-         Aj6s9Ue4YMc/OBLSzi/48Fkz3WYBHwU5/xmqQehouYGTCWjP2cCQegkdxDh62qzUUQzD
-         Gb4g==
-X-Gm-Message-State: AOAM531ong4AyK6X9CZ5S+IWbntFirY6pl6DTLU2/tat/XKp9bWP/nlu
-        BJweNxmKIg+TL7I6Bh9zsIuuyQ==
-X-Google-Smtp-Source: ABdhPJzFDs2BTB3DjlhZABlkie1tpUYCKaVrsycFta9dfeVORIayucoUUj+UR4lDvvzwar+7y7I3iQ==
-X-Received: by 2002:a05:6808:7cd:: with SMTP id f13mr432496oij.38.1606765564711;
-        Mon, 30 Nov 2020 11:46:04 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i4sm9994210oos.31.2020.11.30.11.46.03
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 30 Nov 2020 11:46:04 -0800 (PST)
-Date:   Mon, 30 Nov 2020 11:45:46 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Linux-FSDevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Christoph Hellwig <hch@lst.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>, dchinner@redhat.com,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
-In-Reply-To: <20201126200703.GW4327@casper.infradead.org>
-Message-ID: <alpine.LSU.2.11.2011301109230.17996@eggly.anvils>
-References: <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org> <alpine.LSU.2.11.2011170820030.1014@eggly.anvils> <20201117191513.GV29991@casper.infradead.org> <20201117234302.GC29991@casper.infradead.org>
- <20201125023234.GH4327@casper.infradead.org> <20201125150859.25adad8ff64db312681184bd@linux-foundation.org> <CANsGZ6a95WK7+2H4Zyg5FwDxhdJQqR8nKND1Cn6r6e3QxWeW4Q@mail.gmail.com> <20201126121546.GN4327@casper.infradead.org> <alpine.LSU.2.11.2011261101230.2851@eggly.anvils>
- <20201126200703.GW4327@casper.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Mon, 30 Nov 2020 14:47:48 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjp8a-004x2k-Rs; Mon, 30 Nov 2020 12:47:04 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjp8W-0003R8-An; Mon, 30 Nov 2020 12:47:04 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+References: <20201127200457.1ffb6aaf@canb.auug.org.au>
+        <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
+        <20201128084414.3daa87d2@canb.auug.org.au>
+        <87pn3unbtv.fsf@x220.int.ebiederm.org>
+        <87blfen46a.fsf_-_@x220.int.ebiederm.org>
+        <5117dfaf-637d-34c2-048c-dd8dbbd15625@infradead.org>
+Date:   Mon, 30 Nov 2020 13:46:31 -0600
+In-Reply-To: <5117dfaf-637d-34c2-048c-dd8dbbd15625@infradead.org> (Randy
+        Dunlap's message of "Mon, 30 Nov 2020 11:15:14 -0800")
+Message-ID: <87im9miq5k.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+X-XM-SPF: eid=1kjp8W-0003R8-An;;;mid=<87im9miq5k.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18Eseo5lOU4qoZhbdcbNJPIFA/SGzsDf18=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XMGappySubj_01,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4976]
+        *  0.7 XMSubLong Long Subject
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Randy Dunlap <rdunlap@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 4132 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 8 (0.2%), b_tie_ro: 7 (0.2%), parse: 0.85 (0.0%),
+        extract_message_metadata: 15 (0.4%), get_uri_detail_list: 1.77 (0.0%),
+        tests_pri_-1000: 14 (0.3%), tests_pri_-950: 1.24 (0.0%),
+        tests_pri_-900: 1.04 (0.0%), tests_pri_-90: 145 (3.5%), check_bayes:
+        143 (3.5%), b_tokenize: 8 (0.2%), b_tok_get_all: 8 (0.2%),
+        b_comp_prob: 3.1 (0.1%), b_tok_touch_all: 121 (2.9%), b_finish: 0.76
+        (0.0%), tests_pri_0: 223 (5.4%), check_dkim_signature: 0.53 (0.0%),
+        check_dkim_adsp: 2.6 (0.1%), poll_dns_idle: 3691 (89.3%),
+        tests_pri_10: 2.0 (0.0%), tests_pri_500: 3718 (90.0%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: [PATCH] signal/parics: Remove parsic specific definition of __ARCH_UAPI_SA_FLAGS
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020, Matthew Wilcox wrote:
-> On Thu, Nov 26, 2020 at 11:24:59AM -0800, Hugh Dickins wrote:
-> 
-> > But right now it's the right fix that's important: ack to yours below.
-> > 
-> > I've not yet worked out the other issues I saw: will report when I have.
-> > Rebooted this laptop, pretty sure it missed freeing a shmem swap entry,
-> > not yet reproduced, will study the change there later, but the non-swap 
-> > hang in generic/476 (later seen also in generic/112) more important.
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-It's been a struggle, but I do now have a version of shmem_undo_range()
-that works reliably, no known bugs, with no changes to your last version
-outside of shmem_undo_range().
+> On 11/30/20 9:30 AM, Eric W. Biederman wrote:
+>> 
+>> Randy Dunlap wrote:
+>>> On 11/27/20 10:43 AM, Randy Dunlap wrote:
+>>>
+>>>> on parisc, _SA_SIGGFAULT is undefined and causing build errors.
+>>>>
+>>>> commit 23acdc76f1798b090bb9dcc90671cd29d929834e
+>>>> Author: Peter Collingbourne <pcc@google.com>
+>>>> Date:   Thu Nov 12 18:53:34 2020 -0800
+>>>>
+>>>>     signal: clear non-uapi flag bits when passing/returning sa_flags
+>>>>
+>>>>
+>>>>
+>>>> _SA_SIGGFAULT is not used or defined anywhere else in the
+>>>> kernel source tree.
+>>>
+>>>
+>>> Here is the build error (although it should be obvious):
+>>>
+>>> ../kernel/signal.c: In function 'do_sigaction':
+>>> ../arch/parisc/include/asm/signal.h:24:30: error: '_SA_SIGGFAULT' undeclared (first use in this function)
+>>>    24 | #define __ARCH_UAPI_SA_FLAGS _SA_SIGGFAULT
+>>>       |                              ^~~~~~~~~~~~~
+>> 
+>> Stephen Rothwell pointed out:
+>>> _SA_SIGGFAULT was removed by commit
+>>>
+>>>   41f5a81c07cd ("parisc: Drop HP-UX specific fcntl and signal flags")
+>>>
+>>> which was added to Linus' tree in v5.10-rc1.
+>> 
+>> Solve this by removing the the parisc specific definition of
+>> __ARCH_UAPI_SA_FLAGS that was just added.
+>> 
+>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>> Fixes: 23acdc76f179 ("signal: clear non-uapi flag bits when passing/returning sa_flags")
+>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>
+> Thanks, Eric.
+>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+>
+>
+> BTW, there are 2 typos for "parisc" in the Subject: line...
 
-But my testing so far has been with the initial optimization loop (of
-trylocks in find_lock_entries()) "#if 0"ed out, to give the final loop
-a harder time. Now I'll bring back that initial loop (maybe cleaning up
-some start/end variables) and retest - hoping not to regress as I do so.
+Oops.  Fixed now.  Thank you for testing.
 
-I'll send it late today: I expect I'll just send the body of
-shmem_undo_range() itself, rather than a diff, since it's too confusing
-to know what to diff against.  Or, maybe you now have your own improved
-version, and will want me to look at yours rather than sending mine.
+Eric
 
-Andrew, if you're planning another mmotm soon, please remove/comment
-mm-truncateshmem-handle-truncates-that-split-thps.patch
-and any of its "fixes" as to-be-updated: all versions to date
-have been too buggy to keep, and a new version will require its own
-review, as you noted. I think that means you also have to remove
-mm-filemap-return-only-head-pages-from-find_get_entries.patch
-which I think is blameless, but may depend on it logically.
-
-> 
-> The good news is that I've sorted out the SCRATCH_DEV issue with
-> running xfstests.  The bad news is that (even on an unmodified kernel),
-> generic/027 takes 19 hours to run.  On xfs, it's 4 minutes.  Any idea
-> why it's so slow on tmpfs?
-
-I sent a tarball of four xfstests patches on Thursday, they're valid:
-but generic/075 and generic/112, very useful for this testing, suffer
-from an fsx build bug which might or might not affect you: so I'll now
-reply to that mail with latest tarball.
-
-Hugh
+>
+>
+>> ---
+>>  arch/parisc/include/asm/signal.h | 2 --
+>>  1 file changed, 2 deletions(-)
+>> 
+>> I am applying this trivial fix to my signal-for-v5.11 branch.  Catalin
+>> you shouldn't need to do anything unless someone tests your tree on
+>> parisc.
+>> 
+>> diff --git a/arch/parisc/include/asm/signal.h b/arch/parisc/include/asm/signal.h
+>> index 30dd1e43ef88..715c96ba2ec8 100644
+>> --- a/arch/parisc/include/asm/signal.h
+>> +++ b/arch/parisc/include/asm/signal.h
+>> @@ -21,8 +21,6 @@ typedef struct {
+>>  	unsigned long sig[_NSIG_WORDS];
+>>  } sigset_t;
+>>  
+>> -#define __ARCH_UAPI_SA_FLAGS	_SA_SIGGFAULT
+>> -
+>>  #include <asm/sigcontext.h>
+>>  
+>>  #endif /* !__ASSEMBLY */
+>> 
