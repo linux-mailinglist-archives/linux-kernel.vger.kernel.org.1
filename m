@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F0F2C899B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507222C899D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728813AbgK3Qc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:32:57 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:49714 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgK3Qc5 (ORCPT
+        id S1728858AbgK3QeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:34:05 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:33553 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbgK3QeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:32:57 -0500
-Date:   Mon, 30 Nov 2020 17:32:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606753935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OaR3NAbZ9l+efCs0oIK/8D1qbTRqtOvlBevnYGdFB5g=;
-        b=GkHjY+KBzzixyASW5TGajK4EonHPffk/9wLcyhbDWNTj7i7DE1/rrFALkHbqDS59tjepzU
-        FJrEPV1cGTBPAWD5vqh5u9QJAjxO34FBWAcPiS5okbirXfHof5CByOjwcZvxUsdqjT3StD
-        BpamjloE1qRUuY357sbalYDEundVzZkNL3PCLMCMl9lmFTcB7CbnuwraNMDel/AsafyZnm
-        UXR2roRS9XtOXos1GSuL/2NNWZ4UewQlTmDU/Fn77duuqrQyC060cB7jOE1NYpd2Fz3o5z
-        oLHvWksIJ7QDXK/YS5aNbyc++NqG2BV9w3LJhxDidVSROzjeqz/LTscY6aVavA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606753935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OaR3NAbZ9l+efCs0oIK/8D1qbTRqtOvlBevnYGdFB5g=;
-        b=cytT6MDcE6UQPQdirmzwPZ9eRgFaOE7IM4m/06a4MTQRLF2By3gNCOqwAMSOR3kJqaF6x0
-        ZWp+rPuCQBd5K2DA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Subject: Re: scheduling while atomic in z3fold
-Message-ID: <20201130163214.3zdlppkkd7dnnpzp@linutronix.de>
-References: <f1c39a0504310a97e42b667fc4d458af4a86d97a.camel@gmx.de>
- <e38055ffe19751ba63f1c9beceae222438bcac59.camel@gmx.de>
- <20201129112922.db53kmtpu76xxukj@spock.localdomain>
- <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
- <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
- <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
- <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
- <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
- <20201130160327.ov32m4rapk4h432a@linutronix.de>
- <2658a2a26e53826687cd7b22f424e2d3319423dd.camel@gmx.de>
+        Mon, 30 Nov 2020 11:34:05 -0500
+Received: by mail-il1-f194.google.com with SMTP id y9so11879802ilb.0;
+        Mon, 30 Nov 2020 08:33:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZBBwW3NkUSuFPPRYNjLGyBC//UcL1yNtoBYCa8FcsK4=;
+        b=ZCnA5OhcK1zttpXixcGIBvgg7tB4wK3exzkRPip6aNgaTvcJ69ehPYbi/ZjzhVmOKA
+         nmoH9hE2tLi6DZJ0FzfIw+0u6nIb82U2BpuyPwWysostnHbmx6nPUOJ6+eQsDphnbOWx
+         ZzL866n3otTYuDSCKJPUXOXOSfu62cKaT2PY2xdp893TJawNOEd8FK7YsafBlSjTbfdS
+         AWgGlMGOtXqWA1raf+GukMQ4GBkjWKvesHGFV2iyd4c4n/VJIC84LqFb1zhr1Q4mhUmW
+         roucR7HJEzwxmKcfiuy8mPX9ll5J2b1D7ThiEITJW2au/AJoxa+k9xWTXKutq2KVihRm
+         TMYQ==
+X-Gm-Message-State: AOAM533XlfEi2HMk+ElEyQCR0Owz/Ey/ECeoP4BlM25uQNd82jm/sKWV
+        Q0Xh8nUJBxNZ8/KU1WysVg==
+X-Google-Smtp-Source: ABdhPJwo98x9fcLfGsa/fOEkRiiTPfg0HG5OZjgyT5/bJuvDcYPknYRrLNe/75450Ba2DHlYQ7En3w==
+X-Received: by 2002:a92:444e:: with SMTP id a14mr2066584ilm.129.1606753998497;
+        Mon, 30 Nov 2020 08:33:18 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id c8sm8427863ioq.40.2020.11.30.08.33.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 08:33:17 -0800 (PST)
+Received: (nullmailer pid 2583689 invoked by uid 1000);
+        Mon, 30 Nov 2020 16:33:14 -0000
+Date:   Mon, 30 Nov 2020 09:33:14 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 3/8] dt-bindings: regulator: Add document for MT6359
+ regulator
+Message-ID: <20201130163314.GA2583085@robh.at.kernel.org>
+References: <1606103290-15034-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1606103290-15034-4-git-send-email-hsin-hsiung.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2658a2a26e53826687cd7b22f424e2d3319423dd.camel@gmx.de>
+In-Reply-To: <1606103290-15034-4-git-send-email-hsin-hsiung.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-30 17:27:17 [+0100], Mike Galbraith wrote:
-> > This just passed. It however killed my git-gc task which wasn't done.
-> > Let me try tomorrow with your config.
+On Mon, 23 Nov 2020 11:48:05 +0800, Hsin-Hsiung Wang wrote:
+> add dt-binding document for MediaTek MT6359 PMIC
 > 
-> FYI, I tried 5.9-rt (after fixing 5.9.11), it exploded in the same way,
-> so (as expected) it's not some devel tree oopsie.
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> ---
+>  .../bindings/regulator/mt6359-regulator.yaml  | 145 ++++++++++++++++++
+>  1 file changed, 145 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+> 
 
-v5.9 has the same missing local-lock init due to merged local-lock
-upstream. I don't remember when this get_cpu_ptr() came it.
 
-> 	-Mike
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Sebastian
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1404625
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
