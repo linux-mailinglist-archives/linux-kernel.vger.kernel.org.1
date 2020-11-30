@@ -2,89 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B823D2C8CCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CF82C8CD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387941AbgK3S35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:29:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387764AbgK3S35 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:29:57 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479A0C0613CF;
-        Mon, 30 Nov 2020 10:29:11 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id j13so98294pjz.3;
-        Mon, 30 Nov 2020 10:29:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ljgiRzIjbtfqnKwQGVUF4QGCQ8KiYkemhgNQAWqg54U=;
-        b=pRuOpBoELbZhMkYnyZceTlEgFysZrq88uLHJchyQABvReZXCmeYfRVflaTqtMs0ITR
-         Ik8CE3AJHgIA3y2WdZL5rBTBMs+aMd1TbBOx3wo/pNTi05RoEEjw4dZlKo3VV6J1ZlOf
-         A1UwWUE8bxEfDK/FLMf/QMGjmPu29pFuEW/F67I+L4jPI+CgF6Hq4Hmvrf76yahDH1o3
-         9CuSEI2EFV7GYcaZZ1Of2S+tHrj3h26EwYzFFrX7+DrPqsBPavQliH+I+4msv9q7Vh8Z
-         ZcDoeXG/Pjg/EjZONVc9NlRBiLIpBq1VlaDqOJycUNnbmeyC4AgjLhpiSbSBTrFXU/wC
-         RCDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ljgiRzIjbtfqnKwQGVUF4QGCQ8KiYkemhgNQAWqg54U=;
-        b=CEwFHMlsLKy9/8UqZVhV8rL0fRiCedzH1nLX9nJH2EQQgdxefW3iR3FYv3LSvrHxqs
-         a7iHS5pvezDY0QMXXFNMdVK9AeUuxm5gLTGR7Zb0ZIVD/voqsq91Hblg1t/Mjl/iMdTa
-         qA7kH/b3J3xkkscNBbpFE1E3013V20MyekrqYzEHMU4emviMu7yamNmI19HZpD/W35o1
-         rgcd4HTZkQR4BqWqiTlZ7lU8vnTZmd+GX3Wq/EsOGVApV4rVifyYv1IVa8Ugsn7l1FFr
-         ZZQifY2p9RUNCriFZIu//Iq2XUb0xhiTFzul0WFi/vqlqo0MM8xwecMhd4Ez8o2XQIpF
-         QrNQ==
-X-Gm-Message-State: AOAM530LGDUDj0Qkn+yexj8SSevoB1PGaTIXvKSm4CsYpj1gcw8W/r4A
-        hC/E7KLpkFLnPOGByhG098BFydzxNWHPOyb1/e7F0oumj5k=
-X-Google-Smtp-Source: ABdhPJzxBUnmYUW9odezMnsFA9pn/Qok+oFoVEv4GGQQU4DskiAiK5jztOfhd3N+KuQbzZ+ySvLxZc/BGErscZ8AeHA=
-X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id
- v3-20020a170902b7c3b02900da76bc2aa9mr6607915plz.21.1606760950864; Mon, 30 Nov
- 2020 10:29:10 -0800 (PST)
+        id S1729693AbgK3Sa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:30:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:59498 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727055AbgK3Sa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:30:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F93E30E;
+        Mon, 30 Nov 2020 10:30:13 -0800 (PST)
+Received: from red-moon.arm.com (unknown [10.57.32.153])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12C9C3F66B;
+        Mon, 30 Nov 2020 10:30:10 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Ray Jui <rjui@broadcom.com>, Bjorn Helgaas <bhelgaas@google.com>,
+        Srinath Mannam <srinath.mannam@broadcom.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] PCI: iproc: Add fixes to pcie iproc
+Date:   Mon, 30 Nov 2020 18:30:04 +0000
+Message-Id: <160676096573.23754.4959991308771072098.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20201001060054.6616-1-srinath.mannam@broadcom.com>
+References: <20201001060054.6616-1-srinath.mannam@broadcom.com>
 MIME-Version: 1.0
-References: <20201130153742.9163-1-johan@kernel.org> <20201130153742.9163-4-johan@kernel.org>
-In-Reply-To: <20201130153742.9163-4-johan@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 30 Nov 2020 20:29:59 +0200
-Message-ID: <CAHp75VdSW890kHsFbHGmLeOX=oPNU2SJ4_iyvxEO-574u1S9Tw@mail.gmail.com>
-Subject: Re: [PATCH 3/5] USB: serial: add sysfs attribute to suppress ready
- signalling on open
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 5:42 PM Johan Hovold <johan@kernel.org> wrote:
->
-> Add a nordy sysfs attribute to suppress raising the modem-control lines
-> on open to signal DTE readiness.
->
-> This can be use to prevent undesirable side-effects on open for
-> applications where the DTR and RTS lines are used for non-standard
-> purposes such as generating power-on and reset pulses.
+On Thu, 1 Oct 2020 11:30:51 +0530, Srinath Mannam wrote:
+> This patch series contains fixes and improvements to pcie iproc driver.
+> 
+> This patch set is based on Linux-5.9.0-rc2.
+> 
+> Changes from v2:
+>   - Addressed Bjorn's review comments
+>      - Corrected subject line and commit message of Patches 1 and 2.
+> 
+> [...]
 
-...
+Applied to pci/iproc, thanks!
 
-> +       ret = kstrtouint(buf, 0, &val);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (val > 1)
-> +               return -EINVAL;
+[1/3] PCI: iproc: Fix out-of-bound array accesses
+      https://git.kernel.org/lpieralisi/pci/c/a3ff529f5d
+[2/3] PCI: iproc: Invalidate correct PAXB inbound windows
+      https://git.kernel.org/lpieralisi/pci/c/89bbcaac3d
+[3/3] PCI: iproc: Enhance PCIe Link information display
+      https://git.kernel.org/lpieralisi/pci/c/7698c0f155
 
-kstrtobool() ?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Lorenzo
