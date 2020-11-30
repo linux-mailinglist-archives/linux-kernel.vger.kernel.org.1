@@ -2,292 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BEE2C9362
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BA12C9364
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730668AbgK3XzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:55:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729600AbgK3XzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:55:02 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2779FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:54:22 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id n12so13160851otk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 15:54:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8TPXKJCWuw3SmK/LJVZlS1aNM+mO64u0DgLoqdZJPVQ=;
-        b=RfXZVWzBBAlCW8JM4E1AbBuOW+HyToiN1uMWZVM7O9FoKRLZSlpM84972cl/ZIChy9
-         XftvJBQCq6oiN30Xwe4L2NNLKSAqFGpiTNOpd4JZ5pj7QUC+H4BIL4RJlXNBNhGjitJP
-         Ok8BjW737tR9LhZIZhWD3zzkpzdM3Lgelc364BbcH6xJeftOJROzXttBHfi9EKCSmPMT
-         9J5dcBQFwyom7WWGnr46gzJpHeNU7GueV+gq/ai9Z23/uWK5dPbuJTrFGVtOt0wR5idx
-         L4ZaFUH1NxvpkGtr1Q6r29hdrHZoNuceMJzrSAJJ5uI6lIp2gp27WPtwUwrMftOsq0xc
-         e6Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8TPXKJCWuw3SmK/LJVZlS1aNM+mO64u0DgLoqdZJPVQ=;
-        b=O5wDmS1MJMkXBR5VdxjfhBcidSRmwaw27IT5VfvUhKlNqMHKRkfbfmN9Cx7inRIwnz
-         fCtMkRWR/975gN8kab4ICR6YdgJExh9ieSPpv5fg+O+quWZeRJklDA1hw+EtD4kT1daz
-         MYdYjYb2hueRT532Cv+AKmQYmdImnn5EV20fco6IJWcO0zjelYKf0nIwIU5yB/8PCV66
-         dvqbXx69mh01An1fFjnMKvw4cf+pzewNXpmY/9/O1ijRDicAi4xS2Ge+3otTFpntGT1t
-         QzcLJvQFH56G/YVFU8iG1obqU2uWRf+ou0Zj8RDAx98RrJUYbzEIplm9yBZ8da8j2vTo
-         Zt4g==
-X-Gm-Message-State: AOAM533grT/VbsLNN7QKXZTf7TMCnZnK4NpPzJv7rjNKN4/qvW4A/wP+
-        FfKiscPgBAQUAcT5rrk1+rCZiBb0qMhWJc3QmyQ=
-X-Google-Smtp-Source: ABdhPJzxxjRuC2GOXnyYGLtk6xQTYs/jtuO9BJcS++ZhHW+8kSVhXG9zUxIcNMO7rSKEQ4ZaaMnQa/7WHzyBRvfu4AE=
-X-Received: by 2002:a9d:5388:: with SMTP id w8mr19017264otg.311.1606780461610;
- Mon, 30 Nov 2020 15:54:21 -0800 (PST)
+        id S1730688AbgK3XzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:55:23 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:40523 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729078AbgK3XzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:55:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606780502; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Anjw9xAl+I8GM2JabR+FePP4NW00fcO2jMQF31wcAEE=; b=WcTh0j3InSWAItSEX/gAnUYAxegxtm/8yJU4x+BjmjrwIwqoKfz03xCjwwSNTODd7e/uIofW
+ jmvWbRBQO7h/94WDB9rx2I5wXIUjTxKYLmZfG4tE0SR5w1zgsSgtrnzAa8jMbm/AqWtot9vn
+ qU1EvH4Tyc/b+QFWe9RpuSbEbhQ=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fc5863007535c81bae3cd13 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Nov 2020 23:54:24
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AF7FEC43464; Mon, 30 Nov 2020 23:54:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 29D16C43460;
+        Mon, 30 Nov 2020 23:54:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 29D16C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
+ values
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, avri.altman@wdc.com,
+        alim.akhtar@samsung.com, jejb@linux.ibm.com, beanhuo@micron.com,
+        cang@codeaurora.org, matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
+        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
+        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
+        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
+        alice.chao@mediatek.com
+References: <20201130091610.2752-1-stanley.chu@mediatek.com>
+ <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
+ <X8V83T+Tx6teNLOR@builder.lan>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
+Date:   Mon, 30 Nov 2020 15:54:20 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-31-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-31-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 18:54:10 -0500
-Message-ID: <CADnq5_Nx-6-CpBEYS=vNtvABakARnQO4+0QP1EtcJCykLK+2nA@mail.gmail.com>
-Subject: Re: [PATCH 30/40] drm/amd/pm/powerplay/hwmgr/vega12_thermal: Fix some
- outdated function documentation
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <X8V83T+Tx6teNLOR@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:63: wa=
-rning: Cannot understand  * @fn vega12_enable_fan_control_feature
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:137: w=
-arning: Function parameter or member 'hwmgr' not described in 'vega12_fan_c=
-trl_reset_fan_speed_to_default'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:147: w=
-arning: Function parameter or member 'hwmgr' not described in 'vega12_therm=
-al_get_temperature'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:172: w=
-arning: Function parameter or member 'hwmgr' not described in 'vega12_therm=
-al_set_temperature_range'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:172: w=
-arning: Function parameter or member 'range' not described in 'vega12_therm=
-al_set_temperature_range'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:208: w=
-arning: Function parameter or member 'hwmgr' not described in 'vega12_therm=
-al_enable_alert'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:226: w=
-arning: Function parameter or member 'hwmgr' not described in 'vega12_therm=
-al_disable_alert'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:240: w=
-arning: Function parameter or member 'hwmgr' not described in 'vega12_therm=
-al_stop_thermal_controller'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:256: w=
-arning: Function parameter or member 'hwmgr' not described in 'vega12_therm=
-al_setup_fan_table'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:279: w=
-arning: Function parameter or member 'hwmgr' not described in 'vega12_therm=
-al_start_smc_fan_control'
->
-> Cc: Evan Quan <evan.quan@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On 11/30/2020 3:14 PM, Bjorn Andersson wrote:
+> On Mon 30 Nov 16:51 CST 2020, Asutosh Das (asd) wrote:
+> 
+>> On 11/30/2020 1:16 AM, Stanley Chu wrote:
+>>> UFS specficication allows different VCC configurations for UFS devices,
+>>> for example,
+>>> 	(1). 2.70V - 3.60V (By default)
+>>> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
+>>>                             device tree)
+>>> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+>>>
+>>> With the introduction of UFS 3.x products, an issue is happening that
+>>> UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
+>>> regulator on UFU 3.x products with VCC configuration (3) used.
+>>>
+>>> To solve this issue, we simply remove pre-defined initial VCC voltage
+>>> values in UFS driver with below reasons,
+>>>
+>>> 1. UFS specifications do not define how to detect the VCC configuration
+>>>      supported by attached device.
+>>>
+>>> 2. Device tree already supports standard regulator properties.
+>>>
+>>> Therefore VCC voltage shall be defined correctly in device tree, and
+>>> shall not be changed by UFS driver. What UFS driver needs to do is simply
+>>> enabling or disabling the VCC regulator only.
+>>>
+>>> This is a RFC conceptional patch. Please help review this and feel
+>>> free to feedback any ideas. Once this concept is accepted, and then
+>>> I would post a more completed patch series to fix this issue.
+>>>
+>>> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+>>> ---
+>>>    drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
+>>>    1 file changed, 1 insertion(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>> index a6f76399b3ae..3965be03c136 100644
+>>> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>> @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+>>>    		vreg->max_uA = 0;
+>>>    	}
+>>> -	if (!strcmp(name, "vcc")) {
+>>> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
+>>> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
+>>> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
+>>> -		} else {
+>>> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+>>> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+>>> -		}
+>>> -	} else if (!strcmp(name, "vccq")) {
+>>> +	if (!strcmp(name, "vccq")) {
+>>>    		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
+>>>    		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
+>>>    	} else if (!strcmp(name, "vccq2")) {
+>>>
+>>
+>> Hi Stanley
+>>
+>> Thanks for the patch. Bao (nguyenb) was also working towards something
+>> similar.
+>> Would it be possible for you to take into account the scenario in which the
+>> same platform supports both 2.x and 3.x UFS devices?
+>>
+>> These've different voltage requirements, 2.4v-3.6v.
+>> I'm not sure if standard dts regulator properties can support this.
+>>
+> 
+> What is the actual voltage requirement for these devices and how does
+> the software know what voltage to pick in this range?
+> 
+> Regards,
+> Bjorn
+> 
+>> -asd
+>>
+>>
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> Linux Foundation Collaborative Project
 
-Applied.  Thanks!
+For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v), the 
+voltage requirements (Vcc) are 2.4v-3.6v. The software initializes the 
+ufs device at 2.95v & reads the version and if the device is 3.x, it may 
+do the following:
+- Set the device power mode to SLEEP
+- Disable the Vcc
+- Enable the Vcc and set it to 2.5v
+- Set the device power mode to ACTIVE
 
-Alex
+All of the above may be done at HS-G1 & moved to max supported gear 
+based on the device version, perhaps?
 
-> ---
->  .../amd/pm/powerplay/hwmgr/vega12_thermal.c   | 82 ++++++++-----------
->  1 file changed, 36 insertions(+), 46 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c b/dr=
-ivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
-> index 7ace439dcde7a..0dc16f25a463b 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
-> @@ -60,11 +60,10 @@ int vega12_fan_ctrl_get_fan_speed_rpm(struct pp_hwmgr=
- *hwmgr, uint32_t *speed)
->  }
->
->  /**
-> - * @fn vega12_enable_fan_control_feature
-> - * @brief Enables the SMC Fan Control Feature.
-> + * vega12_enable_fan_control_feature -Enables the SMC Fan Control Featur=
-e.
->   *
-> - * @param    hwmgr - the address of the powerplay hardware manager.
-> - * @return   0 on success. -1 otherwise.
-> + * @hwmgr: the address of the powerplay hardware manager.
-> + * Return:   0 on success. -1 otherwise.
->   */
->  static int vega12_enable_fan_control_feature(struct pp_hwmgr *hwmgr)
->  {
-> @@ -129,20 +128,20 @@ int vega12_fan_ctrl_stop_smc_fan_control(struct pp_=
-hwmgr *hwmgr)
->  }
->
->  /**
-> -* Reset Fan Speed to default.
-> -* @param    hwmgr  the address of the powerplay hardware manager.
-> -* @exception Always succeeds.
-> -*/
-> + * vega12_fan_ctrl_reset_fan_speed_to_default - Reset Fan Speed to defau=
-lt.
-> + * @hwmgr:  the address of the powerplay hardware manager.
-> + * Exception Always succeeds.
-> + */
->  int vega12_fan_ctrl_reset_fan_speed_to_default(struct pp_hwmgr *hwmgr)
->  {
->         return vega12_fan_ctrl_start_smc_fan_control(hwmgr);
->  }
->
->  /**
-> -* Reads the remote temperature from the SIslands thermal controller.
-> -*
-> -* @param    hwmgr The address of the hardware manager.
-> -*/
-> + * vega12_thermal_get_temperature - Reads the remote temperature from th=
-e SIslands thermal controller.
-> + *
-> + * @hwmgr: The address of the hardware manager.
-> + */
->  int vega12_thermal_get_temperature(struct pp_hwmgr *hwmgr)
->  {
->         struct amdgpu_device *adev =3D hwmgr->adev;
-> @@ -160,13 +159,13 @@ int vega12_thermal_get_temperature(struct pp_hwmgr =
-*hwmgr)
->  }
->
->  /**
-> -* Set the requested temperature range for high and low alert signals
-> -*
-> -* @param    hwmgr The address of the hardware manager.
-> -* @param    range Temperature range to be programmed for
-> -*           high and low alert signals
-> -* @exception PP_Result_BadInput if the input data is not valid.
-> -*/
-> + * Set the requested temperature range for high and low alert signals
-> + *
-> + * @hwmgr: The address of the hardware manager.
-> + * @range: Temperature range to be programmed for
-> + *           high and low alert signals
-> + * Exception: PP_Result_BadInput if the input data is not valid.
-> + */
->  static int vega12_thermal_set_temperature_range(struct pp_hwmgr *hwmgr,
->                 struct PP_TemperatureRange *range)
->  {
-> @@ -200,10 +199,10 @@ static int vega12_thermal_set_temperature_range(str=
-uct pp_hwmgr *hwmgr,
->  }
->
->  /**
-> -* Enable thermal alerts on the RV770 thermal controller.
-> -*
-> -* @param    hwmgr The address of the hardware manager.
-> -*/
-> + * vega12_thermal_enable_alert - Enable thermal alerts on the RV770 ther=
-mal controller.
-> + *
-> + * @hwmgr: The address of the hardware manager.
-> + */
->  static int vega12_thermal_enable_alert(struct pp_hwmgr *hwmgr)
->  {
->         struct amdgpu_device *adev =3D hwmgr->adev;
-> @@ -219,9 +218,9 @@ static int vega12_thermal_enable_alert(struct pp_hwmg=
-r *hwmgr)
->  }
->
->  /**
-> -* Disable thermal alerts on the RV770 thermal controller.
-> -* @param    hwmgr The address of the hardware manager.
-> -*/
-> + * vega12_thermal_disable_alert - Disable thermal alerts on the RV770 th=
-ermal controller.
-> + * @hwmgr: The address of the hardware manager.
-> + */
->  int vega12_thermal_disable_alert(struct pp_hwmgr *hwmgr)
->  {
->         struct amdgpu_device *adev =3D hwmgr->adev;
-> @@ -232,10 +231,10 @@ int vega12_thermal_disable_alert(struct pp_hwmgr *h=
-wmgr)
->  }
->
->  /**
-> -* Uninitialize the thermal controller.
-> -* Currently just disables alerts.
-> -* @param    hwmgr The address of the hardware manager.
-> -*/
-> + * vega12_thermal_stop_thermal_controller - Uninitialize the thermal con=
-troller.
-> + * Currently just disables alerts.
-> + * @hwmgr: The address of the hardware manager.
-> + */
->  int vega12_thermal_stop_thermal_controller(struct pp_hwmgr *hwmgr)
->  {
->         int result =3D vega12_thermal_disable_alert(hwmgr);
-> @@ -244,14 +243,9 @@ int vega12_thermal_stop_thermal_controller(struct pp=
-_hwmgr *hwmgr)
->  }
->
->  /**
-> -* Set up the fan table to control the fan using the SMC.
-> -* @param    hwmgr  the address of the powerplay hardware manager.
-> -* @param    pInput the pointer to input data
-> -* @param    pOutput the pointer to output data
-> -* @param    pStorage the pointer to temporary storage
-> -* @param    Result the last failure code
-> -* @return   result from set temperature range routine
-> -*/
-> + * vega12_thermal_setup_fan_table - Set up the fan table to control the =
-fan using the SMC.
-> + * @hwmgr:  the address of the powerplay hardware manager.
-> + */
->  static int vega12_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
->  {
->         int ret;
-> @@ -267,14 +261,10 @@ static int vega12_thermal_setup_fan_table(struct pp=
-_hwmgr *hwmgr)
->  }
->
->  /**
-> -* Start the fan control on the SMC.
-> -* @param    hwmgr  the address of the powerplay hardware manager.
-> -* @param    pInput the pointer to input data
-> -* @param    pOutput the pointer to output data
-> -* @param    pStorage the pointer to temporary storage
-> -* @param    Result the last failure code
-> -* @return   result from set temperature range routine
-> -*/
-> + * vega12_thermal_start_smc_fan_control - Start the fan control on the S=
-MC.
-> + * @hwmgr:  the address of the powerplay hardware manager.
-> + * Return:  result from set temperature range routine
-> + */
->  static int vega12_thermal_start_smc_fan_control(struct pp_hwmgr *hwmgr)
->  {
->         /* If the fantable setup has failed we could have disabled
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Am open to other ideas though.
+
+-asd
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
