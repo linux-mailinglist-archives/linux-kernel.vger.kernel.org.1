@@ -2,136 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430AA2C8EEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACEFA2C8F0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 21:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730058AbgK3UTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 15:19:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
+        id S2388413AbgK3UWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 15:22:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729128AbgK3UTw (ORCPT
+        with ESMTP id S2388401AbgK3UWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 15:19:52 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3008DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:19:12 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w4so10748029pgg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:19:12 -0800 (PST)
+        Mon, 30 Nov 2020 15:22:03 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73F9C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:21:17 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id z188so12139510qke.9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 12:21:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VF8drDHlv00stVHsRpzs7BYn02Hde8RQ2jqQjTTCfSc=;
-        b=HZCavNRjexMelt8ao5frcCPxnO85Uz+rLGt5Hwi6Erznlat6xQHehizjoZj60LlMxh
-         pmWjeHiBruzMSekh4IVwfuyioENAGbLXHTSOKHNoFq/OZgeeAvpQ3EB0kE7hVp9bGs2l
-         2b0h32losiqA8DY49TGq0iVnAIb5UBb7Xe3WsAYjc1xjERSFG+YZaj8avqiMmmjp49Yy
-         jXNGcYOUhbGClkMF8lH4tHPYgoAhn3g6B9+ELb13B4Z5MnCwsg49rMOcKLOdeJjxa3NU
-         WXu4IuYlTAMvXjrFePary0KBeah2beM2Og2yWVrwRoVZ88n4mNc+hChvZKiFYimmZo74
-         AzXw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gQQl36bXbclaKmYcyW6UZ4zFh+yStxJW/hv74bT5Djw=;
+        b=VVHdgPlRXPjsdbqs5gCcCgE8hcY8metarP3X7+/uf9GM+Ko/Tc9SglDgnMNSBY2P3b
+         by6Na/JFIpSUAQDRrw3MJJCVxSpqDZbIKuVG2JTEnHrc6+cUJRpZCwjZQJki/FNFCNEQ
+         CMZWLaYGkfo+R/7a+DVidSUSU/wBAYqaF235YAMgogBmLHDx7g08hNTQqZ58l1wEz28O
+         W4bv+QXOtAKLhylZyN0zXfSU1xukXbYa+jHDK1QLF59cKDo9zc90zUPqk5+Dr/Bk61pN
+         d3+QkPBpShLjargpQP72wKy32/UcNOCjoiJb0fk7E1w021eRX0szWxPESlglmv3plU4l
+         EZkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=VF8drDHlv00stVHsRpzs7BYn02Hde8RQ2jqQjTTCfSc=;
-        b=Vxntwps+kbmfRGewXAMJ4rNX0oocf28awT0Ns1/WYJ/8Xe5dYi/zfBmWKovtjVufeE
-         p8fcw0y+xRaOD7ou68Sf2I6oZXsvLje9GnuhC/9C9c4eJkCgmubnxjX62zFELo2MAtwS
-         NEgDLqj9joA7vrXNE0EdLNw2fG+8Id3kghEYVXJvVdDHvRhJazuvWpEVmxOg6crHZYdX
-         lvN2YzwGB5uMnLgzJ4GAC6t2g+mr8iRJWohNTJeSAxzPAvvyTQqv0Pn4DOC4RblIGwbk
-         3N1hHY+0ZV5y5tfFL3VVFf1iniXULXH1m+zpQMous3MkUVmfRwidiZ/0E+H75SNGSZTk
-         R+FQ==
-X-Gm-Message-State: AOAM530Liro2JCa1bMbbgURd3FWkuegn0bz+h3mPZkJEWjcnTGsdEIil
-        z1J6SeIF2Pd+q+zwxVSghMpsBDspOzw=
-X-Google-Smtp-Source: ABdhPJy91RVVxb+HbhIrvFxypcJY9tBbfc1V54sg7SGT4S/UixMOdU5buDXJOijz73owGeSIm2Uvyg==
-X-Received: by 2002:a62:8244:0:b029:198:1f1:7384 with SMTP id w65-20020a6282440000b029019801f17384mr19906066pfd.27.1606767551709;
-        Mon, 30 Nov 2020 12:19:11 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id q188sm18121610pfc.204.2020.11.30.12.19.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gQQl36bXbclaKmYcyW6UZ4zFh+yStxJW/hv74bT5Djw=;
+        b=E5jyt3rCK5PLO5sOJoUFlKttAfQnppM/CqgDLxCpBVeFWuV+EPpYgFleIvA/amcf2C
+         QalHp1d8qOaG1/XsoKJtRURgOai5eJsX97DxIZ++/V5f42Lo3HKyslqWIFW9hqflPBhI
+         ya+Vv+H92qRHJgaR3VCeYlkzo2cgnlI7tUS4Ha4rq2R+d7f4XjvPpBnw24BJsL+KSpZB
+         tbnEkKFiRzeEp2v4rwVxa/TNHQtvb4CNyyUFzBKxuJdi/DUw3Yn4/bOU6Ugrfm5wbpPb
+         2lPWG51JKaz4h7+XD+Yk9YwdpYoxr+tLznJ8j3XKC4mENcJwZd7zSIDVt25R7MbYIw4P
+         F4iA==
+X-Gm-Message-State: AOAM530j4A2GOHtmM5dXbS1LjqCf1trUUPmJybaOaf4gHYcNvhMdU4MI
+        1lMGCxMyjA8U93B2pdSSqqUQTUmQGuUHXw==
+X-Google-Smtp-Source: ABdhPJx9wyf4xusg06LfP6yiei1fwWA0412KhJR+Nt4TedyjjjcVx3oaFOXwIXEnjmnLaG+qAWewFw==
+X-Received: by 2002:a37:e215:: with SMTP id g21mr7736404qki.91.1606767676845;
+        Mon, 30 Nov 2020 12:21:16 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:a2bc])
+        by smtp.gmail.com with ESMTPSA id 199sm16701507qkm.62.2020.11.30.12.21.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 12:19:10 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH] zram: add stat to gather incompressible pages since zram set up
-Date:   Mon, 30 Nov 2020 12:19:07 -0800
-Message-Id: <20201130201907.1284910-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        Mon, 30 Nov 2020 12:21:16 -0800 (PST)
+Date:   Mon, 30 Nov 2020 15:19:16 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm: memcontrol: account pagetables per node
+Message-ID: <20201130201916.GB23216@cmpxchg.org>
+References: <20201126005603.1293012-1-shakeelb@google.com>
+ <20201126005603.1293012-3-shakeelb@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126005603.1293012-3-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, zram supports the stat via /sys/block/zram/mm_stat to
-represent how many of incompressible pages are stored at the
-moment but it couldn't show how many times incompressible pages
-were wrote down since zram set up. It's also good indication to
-see how zram is effective in the system.
+On Wed, Nov 25, 2020 at 04:56:03PM -0800, Shakeel Butt wrote:
+> For many workloads, pagetable consumption is significant and it makes
+> sense to expose it in the memory.stat for the memory cgroups. However at
+> the moment, the pagetables are accounted per-zone. Converting them to
+> per-node and using the right interface will correctly account for the
+> memory cgroups as well.
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- Documentation/admin-guide/blockdev/zram.rst | 1 +
- drivers/block/zram/zram_drv.c               | 6 ++++--
- drivers/block/zram/zram_drv.h               | 1 +
- 3 files changed, 6 insertions(+), 2 deletions(-)
+Agreed, this is a useful stat item to have.
 
-diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
-index 8f3cfa42e443..03f1105b21b7 100644
---- a/Documentation/admin-guide/blockdev/zram.rst
-+++ b/Documentation/admin-guide/blockdev/zram.rst
-@@ -266,6 +266,7 @@ The mm_stat file represents the device's mm statistics. It consists of a single
-                   No memory is allocated for such pages.
-  pages_compacted  the number of pages freed during compaction
-  huge_pages	  the number of incompressible pages
-+ huge_pages_since the number of incompressible pages since zram set up
-  ================ =============================================================
- 
- File /sys/block/zram<id>/bd_stat
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 23350210a2a2..ac4d19f6571c 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1084,7 +1084,7 @@ static ssize_t mm_stat_show(struct device *dev,
- 	max_used = atomic_long_read(&zram->stats.max_used_pages);
- 
- 	ret = scnprintf(buf, PAGE_SIZE,
--			"%8llu %8llu %8llu %8lu %8ld %8llu %8lu %8llu\n",
-+			"%8llu %8llu %8llu %8lu %8ld %8llu %8lu %8llu %8llu\n",
- 			orig_size << PAGE_SHIFT,
- 			(u64)atomic64_read(&zram->stats.compr_data_size),
- 			mem_used << PAGE_SHIFT,
-@@ -1092,7 +1092,8 @@ static ssize_t mm_stat_show(struct device *dev,
- 			max_used << PAGE_SHIFT,
- 			(u64)atomic64_read(&zram->stats.same_pages),
- 			pool_stats.pages_compacted,
--			(u64)atomic64_read(&zram->stats.huge_pages));
-+			(u64)atomic64_read(&zram->stats.huge_pages),
-+			(u64)atomic64_read(&zram->stats.huge_pages_since));
- 	up_read(&zram->init_lock);
- 
- 	return ret;
-@@ -1424,6 +1425,7 @@ static int __zram_bvec_write(struct zram *zram, struct bio_vec *bvec,
- 	if (comp_len == PAGE_SIZE) {
- 		zram_set_flag(zram, index, ZRAM_HUGE);
- 		atomic64_inc(&zram->stats.huge_pages);
-+		atomic64_inc(&zram->stats.huge_pages_since);
- 	}
- 
- 	if (flags) {
-diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
-index f2fd46daa760..9cabcbb13fd9 100644
---- a/drivers/block/zram/zram_drv.h
-+++ b/drivers/block/zram/zram_drv.h
-@@ -78,6 +78,7 @@ struct zram_stats {
- 	atomic64_t notify_free;	/* no. of swap slot free notifications */
- 	atomic64_t same_pages;		/* no. of same element filled pages */
- 	atomic64_t huge_pages;		/* no. of huge pages */
-+	atomic64_t huge_pages_since;	/* no. of huge pages since zram set up */
- 	atomic64_t pages_stored;	/* no. of pages currently stored */
- 	atomic_long_t max_used_pages;	/* no. of maximum pages stored */
- 	atomic64_t writestall;		/* no. of write slow paths */
--- 
-2.29.2.454.gaff20da3a2-goog
+Just one trivial issue:
 
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -151,7 +151,6 @@ enum zone_stat_item {
+>  	NR_ZONE_UNEVICTABLE,
+>  	NR_ZONE_WRITE_PENDING,	/* Count of dirty, writeback and unstable pages */
+>  	NR_MLOCK,		/* mlock()ed pages found and moved off LRU */
+> -	NR_PAGETABLE,		/* used for pagetables */
+>  	/* Second 128 byte cacheline */
+>  	NR_BOUNCE,
+>  #if IS_ENABLED(CONFIG_ZSMALLOC)
+> @@ -206,6 +205,7 @@ enum node_stat_item {
+>  #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
+>  	NR_KERNEL_SCS_KB,	/* measured in KiB */
+>  #endif
+> +	NR_PAGETABLE,		/* used for pagetables */
+>  	NR_VM_NODE_STAT_ITEMS
+>  };
+
+You need to update mm/vmstat.c::vmstat_text accordingly or
+/proc/vmstat output will be bogus.
+
+With that fixed, please feel free to add:
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
