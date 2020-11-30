@@ -2,85 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2342C84DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F722C84D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbgK3NO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:14:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36191 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725900AbgK3NO4 (ORCPT
+        id S1726701AbgK3NOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:14:43 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:52844 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgK3NOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:14:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606742010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l3QMImLUzsUxdD3lrxokZ6OLsGo9+qiElCnfZdbpvzA=;
-        b=UECHBboa2pJ07GYWLO2EQfvVgESjKBetXPTXMhUNV1i9qB4Ss6da9ZfrBpcta1bxcR6BMH
-        ShUcrJf77c6T237uFzYKqsndydiFpwW1i/KSbBn367tuMoruiDZ4+HHAei0V4CZDlDtiy7
-        86zygyDa/LWtJRh7unfMCCdEb4j0LWQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-193-DQxZP_vYMRilDJNHNa_ZRg-1; Mon, 30 Nov 2020 08:13:28 -0500
-X-MC-Unique: DQxZP_vYMRilDJNHNa_ZRg-1
-Received: by mail-wm1-f72.google.com with SMTP id k128so7415437wme.7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:13:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l3QMImLUzsUxdD3lrxokZ6OLsGo9+qiElCnfZdbpvzA=;
-        b=B0h9jnzCR63hfrUa9rfz2FqVI0w2XeNZVR8ALFNxfxkOCANl46iEm2kzBGU5YO+kYq
-         xkxE4JGmEK7JXJcXcKPX+4kOTmjljWPCxRMoj3OO/uLLZyl4sFuZaoFKuQTXPvBP64eR
-         ikosa4o6XooOg+JcgUdrfM+ZLQYrCBGafXWlDkaBxc1S1s1AKbWcaTWl5cLSXJi5wRhr
-         5Bnxwng1Dq1xy6U/kBb3BGCWXkrlw6qi8Ty/iB/Up5tMipJ+ZtebsASiMVWrw/H5+0Iu
-         cuRXfebyZicwI293kI1YQ7Up4tAma0JCNf+yXIUKQnG1lmFys7vZOYnnJ7cVZ5cQywpC
-         MQTw==
-X-Gm-Message-State: AOAM532jkW6Ao6kxk1sW1BFYOCyzIl6KdQ7tiAUwn3tJ8l0j+0XuCl4A
-        EG1pv0gm4rGDidZmsDzOgkGB3j9HmX0xJCa256s23/CJN3hpPBMyLNnOGncdueXquOlOotYpgk7
-        rQFSzimwKvrxrLvzNQaVM1pxO0scOjSBSjGx//Yic
-X-Received: by 2002:a5d:6250:: with SMTP id m16mr29212889wrv.400.1606742006900;
-        Mon, 30 Nov 2020 05:13:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw+aZi6ISnIXF20bS+IivTvzdVJ4geNjK6nyaq0wAVc1EAbO9JFv+Lh1s3TZuUclVgKh0naMbZF5Jvbjm89YIY=
-X-Received: by 2002:a5d:6250:: with SMTP id m16mr29212862wrv.400.1606742006654;
- Mon, 30 Nov 2020 05:13:26 -0800 (PST)
+        Mon, 30 Nov 2020 08:14:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1606742081; x=1638278081;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gzPV8tS0jLOa1sC+OKcqQObrLxVyNiXi7+ZLpq11HXI=;
+  b=cPHYZXY0AvKHXwY5mUsSYQVt9nAdVjv4i4Odhkazbt9Dk9o25cqXBSKx
+   mlCoaB/Kc/PDCgsiPsYDhc0lms7qJXKgIQPtxuXlgL5SOndX92SXQqQrt
+   qi/7+vbaTl/cw5F+kZrXHVzgmpU5urJJFP4BMz33kpCxCFz7kEeBVvcrv
+   GNUNK4FcVoirJsJhjnS/zG6dyYf+7aJsAN+XH3c6RPY0cQYiNOUD3yBc9
+   VPxorEfvTDk52GLpNpyagmbNW6kpCRKD9Edy3ZgPQHFkJgo4qiSFqACQU
+   Ole0Ky2//ytdQFX/Upc+vHvvsn0k2II3575CRvZrpXqz39BvrV5V+SVxu
+   Q==;
+IronPort-SDR: azxthInd0R8YW/A5KcTWEf1PKuHklRAsbrzr1kd9ToN4aFc+AaRrJRrhDuzJ/7PhCcmmRhZSSd
+ yNrDWqErp7HyUATRMkVdxvQNgfACjttCeBknEOucbqJcfMrLnj5ax46NqlkXNNrBw97/Vvxi70
+ Rqeu5nf8+QCf4aFzRUJ9PKUdH7ldfisaY3BNh13OmNFspe1LDPvhXPWxrgoBCS9GbopCgAC+TE
+ rIrQmZqcsLumAdNDwCGO4uY/E+hs/YpaULYJLnE0sd+DKV42IqVcCdLZRvxkxRJv70nJMLgzcR
+ Ty4=
+X-IronPort-AV: E=Sophos;i="5.78,381,1599548400"; 
+   d="scan'208";a="35427842"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Nov 2020 06:13:36 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 06:13:36 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 30 Nov 2020 06:13:35 -0700
+Date:   Mon, 30 Nov 2020 14:13:35 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
+Message-ID: <20201130131335.afasdxbf5ilhsxue@mchp-dev-shegelun>
+References: <20201127133307.2969817-1-steen.hegelund@microchip.com>
+ <20201127133307.2969817-3-steen.hegelund@microchip.com>
+ <20201127171506.GW2073444@lunn.ch>
 MIME-Version: 1.0
-References: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
- <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org> <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
- <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain> <X8RpFo+5m1i4L5Gn@jagdpanzerIV.localdomain>
- <c96f60f4-f525-2957-6a8a-ae9e3288b04a@infradead.org> <CAHc6FU59uNEq4Xz8W7boG6y3+u3F1tz93RKSW+odM38rx37_9A@mail.gmail.com>
-In-Reply-To: <CAHc6FU59uNEq4Xz8W7boG6y3+u3F1tz93RKSW+odM38rx37_9A@mail.gmail.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 30 Nov 2020 14:13:15 +0100
-Message-ID: <CAHc6FU6Tt6HXLv39PzdrUgh8=tS4=OLSh6dSUnbbkGgR7yMX_Q@mail.gmail.com>
-Subject: Re: [PATCH] posix_acl.h: define missing ACL functions on
- non-posix-acl build
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201127171506.GW2073444@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 2:09 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> Note that ext2 / ext4 could be built without POSIX ACL support in the
-> past. That's at least broken since the following two commits though:
+On 27.11.2020 18:15, Andrew Lunn wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >
->   commit 59fed3bf8a461 ("ext2: cache NULL when both default_acl and
-> acl are NULL")
->   commit 6fd941784b8ac ("ext4: cache NULL when both default_acl and
-> acl are NULL")
+>This is a very large driver, which is going to make it slow to review.
+Hi Andrew,
 
-Scratch that, this is in fs/ext[24]/acl.c which is only included when
-CONFIG_FS_POSIX_ACL is defined.
+Yes I am aware of that, but I think that what is available with this
+series, makes for a nice package that can be tested by us, and used by
+our customers.
 
-Thanks,
-Andreas
+>
+>> +static int sparx5_probe_port(struct sparx5 *sparx5,
+>> +                          struct device_node *portnp,
+>> +                          struct phy *serdes,
+>> +                          u32 portno,
+>> +                          struct sparx5_port_config *conf)
+>> +{
+>> +     phy_interface_t phy_mode = conf->phy_mode;
+>> +     struct sparx5_port *spx5_port;
+>> +     struct net_device *ndev;
+>> +     struct phylink *phylink;
+>> +     int err;
+>> +
+>> +     err = sparx5_create_targets(sparx5);
+>> +     if (err)
+>> +             return err;
+>> +     ndev = sparx5_create_netdev(sparx5, portno);
+>> +     if (IS_ERR(ndev)) {
+>> +             dev_err(sparx5->dev, "Could not create net device: %02u\n", portno);
+>> +             return PTR_ERR(ndev);
+>> +     }
+>> +     spx5_port = netdev_priv(ndev);
+>> +     spx5_port->of_node = portnp;
+>> +     spx5_port->serdes = serdes;
+>> +     spx5_port->pvid = NULL_VID;
+>> +     spx5_port->signd_internal = true;
+>> +     spx5_port->signd_active_high = true;
+>> +     spx5_port->signd_enable = true;
+>> +     spx5_port->flow_control = false;
+>> +     spx5_port->max_vlan_tags = SPX5_PORT_MAX_TAGS_NONE;
+>> +     spx5_port->vlan_type = SPX5_VLAN_PORT_TYPE_UNAWARE;
+>> +     spx5_port->custom_etype = 0x8880; /* Vitesse */
+>> +     conf->portmode = conf->phy_mode;
+>> +     spx5_port->conf.speed = SPEED_UNKNOWN;
+>> +     spx5_port->conf.power_down = true;
+>> +     sparx5->ports[portno] = spx5_port;
+>
+>
+>> +struct net_device *sparx5_create_netdev(struct sparx5 *sparx5, u32 portno)
+>> +{
+>> +     struct net_device *ndev;
+>> +     struct sparx5_port *spx5_port;
+>> +     int err;
+>> +
+>> +     ndev = devm_alloc_etherdev(sparx5->dev, sizeof(struct sparx5_port));
+>> +     if (!ndev)
+>> +             return ERR_PTR(-ENOMEM);
+>> +
+>
+>...
+>
+>> +     err = register_netdev(ndev);
+>> +     if (err) {
+>> +             dev_err(sparx5->dev, "netdev registration failed\n");
+>> +             return ERR_PTR(err);
+>> +     }
+>
+>This is one of the classic bugs in network drivers. As soon as you
+>call register_netdev() the interface is live. The network stack can
+>start using it. But you have not finished initialzing spx5_port. So
+>bad things are going to happen.
 
+Oops.  I will fix that.
+
+Thanks for the comments.
+Steen
+>
+>    Andrew
+
+BR
+Steen
+
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
