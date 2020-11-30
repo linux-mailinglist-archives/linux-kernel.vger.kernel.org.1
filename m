@@ -2,76 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B892C7E2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B522C7E34
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 07:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727370AbgK3GVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 01:21:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
+        id S1727093AbgK3GZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 01:25:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbgK3GVw (ORCPT
+        with ESMTP id S1726011AbgK3GZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 01:21:52 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B75C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:21:06 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w6so9773501pfu.1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:21:06 -0800 (PST)
+        Mon, 30 Nov 2020 01:25:48 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02DE4C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:25:01 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id f190so19693232wme.1
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Nov 2020 22:25:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tJt3eN48isJilaS1ahARMF9GPFqfU0k4n50AceeXDAw=;
-        b=wW+2tGVErsweFt+fZEph8cmeFwpim2d4BByDlcLfO4dN+uPkH637cYHksoqfrgSleH
-         zW0tE/fQ/amRVA/xp52KCELkP0uXpyQOsUyufXYtFDGbCKcBH2q0lCU0GTBPgLXe0ZiP
-         e3LPiibpLcLMAMyjaJGbfqlc/pVFDJCtIpmpHOnW3eSd9zW3RYD9QWVe+Vscx4/+NkhQ
-         aTSpDfXGT3YGZZ1S2A3uoY2+RhI2seTPrLJt+7uII/YH2P7eI0HZaRQ+N8gqaF/NfMMw
-         BZJ1U1qxxC1aHYzT+a3IJQHQGFnwcifSxBS7MED07zS0hOO7UwejYgyOVgkOtfgDKJV3
-         /1ag==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=DOwVj8Qr1jJUzo42Jge6HKQMp0YWtvTLoJKMGFVjtXM=;
+        b=sGT3jHR1Lpg6J/cscTV6SprEJMQO/IQgZ6rgCJR2LbVrnH2XZA1hMJEecrj+JsOFoO
+         T4W8ZwSBJumN/XLD7ZZ7Bi7haUaM1ufCGLYiA4JkYsoG2kzbRxJ3t96e5rolDjy9NR3p
+         HD15p8aYXegZTKV6Nb9OOd93RDaRuuKCvFqR/CnqTUDTVLoUbvXh098ay17ra8i+KS05
+         ZNeoYCkduElKgFBAKDYzSpzRTl1judAXyVUfaP6TxuykryYh06W7bu/s4gnmlvI4/XFV
+         PpY+MnieDmpAwDIRQz2v1QpiztAouzIKA6N9Jc8n04PQpJlPe0PaOpAtogOA48tTZk3V
+         mDTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tJt3eN48isJilaS1ahARMF9GPFqfU0k4n50AceeXDAw=;
-        b=LHXoq9UP09niz5tuaDZUaFP301k2YwvqyYdUatk7eEqywNxGxm5Eyzcwe8o3iYUYV1
-         2Ijz7XySBCXGZrKQm8SjCXeMDOICoWy7Vvl1k8JpZA8emU/+K0ormoPXxVLY7/Hvhi5i
-         PupZqu+WaQTQanPn8GMjN4uULB3z8amis0s910ImRBjIl34gxJ1nQdRkIlnCXot2HhUT
-         h4575X+eWrwKxtvcehJMVkm5I7LwmZRmlRSJh78F49UWTcuFUlhmw9+vVbxCaKBgZr/a
-         7vOwliezYJg9nczVe4d1IzHckg/1jWQ8o0dYBYrFghEBYeXg33kZJ/d2VoXOW6dEGqW7
-         Kwzw==
-X-Gm-Message-State: AOAM532reHxddnuYyZUI5RwFpa/ZDvo0C6Ag0ilEvpm3AT6W0kSx8yAc
-        JbYY4N2P/LykB+gDegGY5H24cQ==
-X-Google-Smtp-Source: ABdhPJzJv3njLVM85xPP/sDPlG5OCeIEuWGjYboKMdtuxHH6YzpB0WEbgWXFIjxRONNYVQlOSl1kjw==
-X-Received: by 2002:a05:6a00:16c4:b029:198:a95:a2ef with SMTP id l4-20020a056a0016c4b02901980a95a2efmr17357326pfc.43.1606717265948;
-        Sun, 29 Nov 2020 22:21:05 -0800 (PST)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id o198sm14830393pfg.102.2020.11.29.22.21.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 29 Nov 2020 22:21:05 -0800 (PST)
-Date:   Mon, 30 Nov 2020 14:20:58 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: c630: Expose LID events
-Message-ID: <20201130062057.GC28578@dragon>
-References: <20201125060838.165576-1-bjorn.andersson@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125060838.165576-1-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DOwVj8Qr1jJUzo42Jge6HKQMp0YWtvTLoJKMGFVjtXM=;
+        b=C0/ItjE3J1WgxY/iwnnpwcvwJZk/vmulKJPTByndRhyFD17pZAr38LF+6SalKGx1fa
+         X56AqR4EA234T8kx34p7lhS9/b9mlR2ebsBPcXy0om0oPNAspa9MWsl3KAArsauJNwwf
+         0/JQ87IPD/LJGY7HbwZ3rd8UME/3kQUytukZca57XynnDGnX6VBe4VFmLhUt86JaHQiX
+         YFFQT9wr3k1pHIKy+zBkkvyVLqHUqp9iRF5G3JFKmZTS9XfQi7yPbnmm//vMBiicQVvr
+         kyP1837zQJiEaxazImVAsBQAs1XBsKn52GDhbGUIoqtq39iXp/9psNJqMgz0HqbS3hQD
+         /HDg==
+X-Gm-Message-State: AOAM532DCUac0AxllzqidbCwNXXEtoJ7W2XrObF2DVBQ89753y2qerdj
+        oCXNW8Jb4h7WPmGLQHY0t1JaCXBm4ZE9iQ==
+X-Google-Smtp-Source: ABdhPJyUTBklttSIadpw/0QiG8ulLfCer6rgpQXN891ZfFXsr+JmFBYLepRAb53ADNI+CTBgyQRySA==
+X-Received: by 2002:a05:600c:2:: with SMTP id g2mr21355073wmc.156.1606717500432;
+        Sun, 29 Nov 2020 22:25:00 -0800 (PST)
+Received: from rum-mikhail-dt.world.mentorg.com (nat-rum.mentorg.com. [139.181.33.34])
+        by smtp.gmail.com with ESMTPSA id u129sm22594649wme.9.2020.11.29.22.24.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 29 Nov 2020 22:24:59 -0800 (PST)
+From:   mdurnev@gmail.com
+X-Google-Original-From: mikhail_durnev@mentor.com
+To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        noralf@tronnes.org
+Cc:     mikhail_durnev@mentor.com
+Subject: [PATCH v1 0/3] drm/mipi-dbi: Type B bus support, drm/tiny: MRB2801
+Date:   Mon, 30 Nov 2020 16:23:56 +1000
+Message-Id: <1606717439-18383-1-git-send-email-mikhail_durnev@mentor.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:08:38AM -0600, Bjorn Andersson wrote:
-> The LID state can be read from GPIO 124 and the "tablet mode" from GPIO
-> 95, expose these to the system using gpio-keys and mark the falling edge
-> of the LID state as a wakeup-source - to wake the system from suspend.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Mikhail Durnev <mikhail_durnev@mentor.com>
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Hi All,
+
+This patch series is aiming at extending the mipi-dbi bus driver
+to support Intel 8080 type parallel bus (Type B) over GPIO and
+adding a new driver for ILI9341 display panels with 8- or 16-bit
+parallel interface.
+
+It was tested with the MRB2801 display module [1] that had
+a connector compatible with the ALIENTEK STM32 development board.
+The module was connected to Raspberry Pi 3 via GPIO pins.
+
+The parallel bus is implemented partially. It supports only write
+operations from the host to the display. Read operations would
+require switching GPIO mode between input and output back and
+forth. But this implementation is very simple, and GPIO mode can
+be set for all used pins to output once at initialization.
+The RD pin of the display has to always receive the logic high
+signal to make sure the data bus pins from the dislay side are
+always in the high impedance state. Otherwise the display module
+as well as the GPIO controller of the host can be damaged.
+To be on the safe side I recommend using protective resistors
+for all GPIO pins conneced to DB pins of the display. Resistors
+of 10 kOhms are just fine for RPi 3. The WR and DC pins may not
+work well with 10K resistors. Although there is no need to protect
+them, you can try using 1K resistors if you want.
+
+Bit banging is used to transmit data over the parallel bus from
+host to display. There are two numbers that contol timings. They
+should be defined in the device tree via the wr-up-down-delays
+property. The first number is related to the write control pulse
+duration, and the second number is related to the write cycle
+duration. For ILI9341, the write pulse cannot be shorter than 15 ns,
+and the write duration cannot be shorter than 66 ns. Delays of
+10 and 51 ns respectively allow to meet the specifications on
+RPi 3. Faster machines may need values closer to 15 and 66.
+
+[1] http://www.lcdwiki.com/2.8inch_16BIT_Module_ILI9341_SKU:MRB2801
+
+Mikhail Durnev (3):
+  drm/mipi-dbi: Add support for Type B
+  drm/tiny: Add driver for ili9341 with parallel bus
+  dt-bindings: panel: Add bindings for MRB2801
+
+ .../devicetree/bindings/display/ronbo,mrb2801.txt  |  42 +++
+ drivers/gpu/drm/drm_mipi_dbi.c                     | 116 ++++++++-
+ drivers/gpu/drm/tiny/Kconfig                       |  13 +
+ drivers/gpu/drm/tiny/Makefile                      |   1 +
+ drivers/gpu/drm/tiny/ili9341_gpio.c                | 290 +++++++++++++++++++++
+ include/drm/drm_mipi_dbi.h                         |  30 ++-
+ 6 files changed, 490 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/ronbo,mrb2801.txt
+ create mode 100644 drivers/gpu/drm/tiny/ili9341_gpio.c
+
+-- 
+2.7.4
+
