@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8492C86E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636502C86EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgK3Ogc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:36:32 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:55903 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725875AbgK3Ogb (ORCPT
+        id S1727195AbgK3Ohm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:37:42 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:55627 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgK3Ohm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:36:31 -0500
-X-Originating-IP: 91.175.115.186
+        Mon, 30 Nov 2020 09:37:42 -0500
 Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
         (Authenticated sender: gregory.clement@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 35A06C0007;
-        Mon, 30 Nov 2020 14:35:49 +0000 (UTC)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 55CA5240019;
+        Mon, 30 Nov 2020 14:36:58 +0000 (UTC)
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
-        Alexandra Alth <alexandra@alth.de>
-Subject: Re: [PATCH] arm64: dts: mcbin-singleshot: add heartbeat LED
-In-Reply-To: <20201110153831.5336-1-tmn505@gmail.com>
-References: <20201110153831.5336-1-tmn505@gmail.com>
-Date:   Mon, 30 Nov 2020 15:35:48 +0100
-Message-ID: <87wny2j4jf.fsf@BL-laptop>
+To:     Tomasz Nowicki <tn@semihalf.com>, will@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
+        hannah@marvell.com
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        devicetree@vger.kernel.org, catalin.marinas@arm.com,
+        nadavh@marvell.com, linux-arm-kernel@lists.infradead.org,
+        mw@semihalf.com, d.odintsov@traviangames.com,
+        stable@vger.kernel.org, Tomasz Nowicki <tn@semihalf.com>
+Subject: Re: [PATCH 1/1] arm64: dts: marvell: keep SMMU disabled by default
+ for Armada 7040 and 8040
+In-Reply-To: <20201105112602.164739-1-tn@semihalf.com>
+References: <20201105112602.164739-1-tn@semihalf.com>
+Date:   Mon, 30 Nov 2020 15:36:57 +0100
+Message-ID: <87tut6j4hi.fsf@BL-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
@@ -40,13 +39,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-> With board revision 1.3, SolidRun moved the power LED to the middle of
-> the board. In old place of power LED a GPIO controllable heartbeat LED
-> was added. This commit only touches Single Shot variant, since only this
-> variant is all revision 1.3.
+> FW has to configure devices' StreamIDs so that SMMU is able to lookup
+> context and do proper translation later on. For Armada 7040 & 8040 and
+> publicly available FW, most of the devices are configured properly,
+> but some like ap_sdhci0, PCIe, NIC still remain unassigned which
+> results in SMMU faults about unmatched StreamID (assuming
+> ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=y).
 >
-> Reported-by: Alexandra Alth <alexandra@alth.de>
-> Signed-off-by: Tomasz Maciej Nowak <tmn505@gmail.com>
+> Since there is dependency on custom FW let SMMU be disabled by default.
+> People who still willing to use SMMU need to enable manually and
+> use ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=n (or via kernel command line)
+> with extra caution.
+>
+> Fixes: 83a3545d9c37 ("arm64: dts: marvell: add SMMU support")
+> Cc: <stable@vger.kernel.org> # 5.9+
+> Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
+
 
 Applied on mvebu/dt64
 
@@ -55,55 +63,42 @@ Thanks,
 Gregory
 
 > ---
->  .../marvell/armada-8040-mcbin-singleshot.dts  | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
+>  arch/arm64/boot/dts/marvell/armada-7040.dtsi | 4 ----
+>  arch/arm64/boot/dts/marvell/armada-8040.dtsi | 4 ----
+>  2 files changed, 8 deletions(-)
 >
-> diff --git a/arch/arm64/boot/dts/marvell/armada-8040-mcbin-singleshot.dts b/arch/arm64/boot/dts/marvell/armada-8040-mcbin-singleshot.dts
-> index 2e6832d02a59..411d20064271 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-8040-mcbin-singleshot.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-8040-mcbin-singleshot.dts
-> @@ -5,6 +5,8 @@
->   * Device Tree file for MACCHIATOBin Armada 8040 community board platform
->   */
->  
-> +#include <dt-bindings/leds/common.h>
-> +
->  #include "armada-8040-mcbin.dtsi"
->  
->  / {
-> @@ -12,6 +14,19 @@ / {
->  	compatible = "marvell,armada8040-mcbin-singleshot",
->  			"marvell,armada8040-mcbin", "marvell,armada8040",
->  			"marvell,armada-ap806-quad", "marvell,armada-ap806";
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +		pinctrl-0 = <&cp0_led18_pins>;
-> +		pinctrl-names = "default";
-> +
-> +		led18 {
-> +			gpios = <&cp0_gpio2 1 GPIO_ACTIVE_LOW>;
-> +			function = LED_FUNCTION_HEARTBEAT;
-> +			color = <LED_COLOR_ID_GREEN>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +	};
+> diff --git a/arch/arm64/boot/dts/marvell/armada-7040.dtsi b/arch/arm64/boot/dts/marvell/armada-7040.dtsi
+> index 7a3198cd7a07..2f440711d21d 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-7040.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-7040.dtsi
+> @@ -15,10 +15,6 @@ / {
+>  		     "marvell,armada-ap806";
 >  };
 >  
->  &cp0_eth0 {
-> @@ -27,3 +42,10 @@ &cp1_eth0 {
->  	managed = "in-band-status";
->  	sfp = <&sfp_eth1>;
+> -&smmu {
+> -	status = "okay";
+> -};
+> -
+>  &cp0_pcie0 {
+>  	iommu-map =
+>  		<0x0   &smmu 0x480 0x20>,
+> diff --git a/arch/arm64/boot/dts/marvell/armada-8040.dtsi b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
+> index 79e8ce59baa8..22c2d6ebf381 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-8040.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
+> @@ -15,10 +15,6 @@ / {
+>  		     "marvell,armada-ap806";
 >  };
-> +
-> +&cp0_pinctrl {
-> +	cp0_led18_pins: led18-pins {
-> +		marvell,pins = "mpp33";
-> +		marvell,function = "gpio";
-> +	};
-> +};
+>  
+> -&smmu {
+> -	status = "okay";
+> -};
+> -
+>  &cp0_pcie0 {
+>  	iommu-map =
+>  		<0x0   &smmu 0x480 0x20>,
 > -- 
-> 2.29.2
+> 2.25.1
 >
 
 -- 
