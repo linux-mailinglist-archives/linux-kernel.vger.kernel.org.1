@@ -2,103 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA262C8903
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7252C8905
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgK3QJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:09:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726977AbgK3QJ0 (ORCPT
+        id S1728617AbgK3QKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:10:08 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:50915 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbgK3QKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:09:26 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF44C0613D2;
-        Mon, 30 Nov 2020 08:08:46 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 745ECB26;
-        Mon, 30 Nov 2020 17:08:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606752523;
-        bh=FvubFNRozegHWCNhGg55hAtFucfGflP9T603px4M0go=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T2K5et+9pga7sIvBaNehVwika0V4p2f+g2ovINHI7xQFwQDpebDpXKeCfTOgsnPD9
-         uKT5G1i1zv1hIHlNtHlFcuQO5NFiVDAWRplxFUPpZtG7nx4nM4rzyy4gzgFCVSZkQS
-         PFE2ZO2UhV4G5GOhds6NiH+uuYbMoeAUblqBsBas=
-Date:   Mon, 30 Nov 2020 18:08:35 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 02/18] property: Add support for calling
- fwnode_graph_get_endpoint_by_id() for fwnode->secondary
-Message-ID: <20201130160835.GE14465@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-3-djrscally@gmail.com>
+        Mon, 30 Nov 2020 11:10:07 -0500
+Received: by mail-io1-f70.google.com with SMTP id l14so7658154ioj.17
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 08:09:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=JEM1Q+fPylejK956r/1g6x98BapLMz2U230V1cVbRYo=;
+        b=HFM90VYJEHHkb7wS/mTbNnMxHsBSnOJOruZvF2aQW6y6k7sYIxnz1LGliZmvuwV7Cl
+         AMDLqRZvWzqRFAU3KuA3Bf7gIJOSi/xPOucNNrsOBkwucds+6Mca3EUtdY74fwRtLVJs
+         I8XVFuae1r+m5Qfjarcqf2P8M+kzS95M+r12KE+8a/Taii9OA618lL9DzQzcgSLEJG/w
+         WwnS353Y/bI/C65ZIwIFLlq9Y5zk2vpuXyGwqQIpe8ZF0r2SMxw9NGTa0XbstHF+Yr3L
+         TU/HKiN4lDWNdCLNtDwYnamnZdX7MOOVMAOc/EDKersbjhMSKh4hUN+dGAy8kCaLT+Zh
+         tlrw==
+X-Gm-Message-State: AOAM532aMIti4rpuzPm/32VEhNB9prZI0Aa3bR/BNyQkOaVmN0LbzSZa
+        MiH4336rHzDx6Do5/f4ihBMH+HNdwJgXNXlcnJJLAd5uGBAV
+X-Google-Smtp-Source: ABdhPJyacoQ0MsNytyApl+uu7UDTpCTIIGXVwWqLth17j6D2wgl55EQNneJR7M/E9S8OOriKx7hHzD24rweoMtsZkDmO4auYF4O2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-3-djrscally@gmail.com>
+X-Received: by 2002:a92:6512:: with SMTP id z18mr18870577ilb.220.1606752565812;
+ Mon, 30 Nov 2020 08:09:25 -0800 (PST)
+Date:   Mon, 30 Nov 2020 08:09:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ed639f05b5553b4a@google.com>
+Subject: KASAN: stack-out-of-bounds Write in bitmap_from_arr32
+From:   syzbot <syzbot+9d39fa49d4df294aab93@syzkaller.appspotmail.com>
+To:     andrew@lunn.ch, corbet@lwn.net, dan.carpenter@oracle.com,
+        davem@davemloft.net, f.fainelli@gmail.com, kuba@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mkubecek@suse.cz, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hello,
 
-Thank you for the patch.
+syzbot found the following issue on:
 
-On Mon, Nov 30, 2020 at 01:31:13PM +0000, Daniel Scally wrote:
-> This function is used to find fwnode endpoints against a device. In
-> some instances those endpoints are software nodes which are children of
-> fwnode->secondary. Add support to fwnode_graph_get_endpoint_by_id() to
-> find those endpoints by recursively calling itself passing the ptr to
-> fwnode->secondary in the event no endpoint is found for the primary.
-> 
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+HEAD commit:    594e31bc Merge branch '40GbE' of git://git.kernel.org/pub/..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=179b8349500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df65150a33f23d8c
+dashboard link: https://syzkaller.appspot.com/bug?extid=9d39fa49d4df294aab93
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11dc60c9500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e130a5500000
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+The issue was bisected to:
 
-> ---
-> Changes since RFC v3:
-> 
-> 	Patch introduced. In discussion in the last submission I noted
-> 	that the CIO2 device doesn't have an ACPI fwnode - that turns
-> 	out to be true for _some_ devices but not others, so we need
-> 	this function to check the secondary too.
-> 
->  drivers/base/property.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/base/property.c b/drivers/base/property.c
-> index a5ca2306796f..4ece6b086e36 100644
-> --- a/drivers/base/property.c
-> +++ b/drivers/base/property.c
-> @@ -1162,6 +1162,10 @@ fwnode_graph_get_endpoint_by_id(const struct fwnode_handle *fwnode,
->  		best_ep_id = fwnode_ep.id;
->  	}
->  
-> +	if (!best_ep && fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
-> +		return fwnode_graph_get_endpoint_by_id(fwnode->secondary, port,
-> +						       endpoint, flags);
-> +
->  	return best_ep;
->  }
->  EXPORT_SYMBOL_GPL(fwnode_graph_get_endpoint_by_id);
+commit 0980bfcd6954f124e40a000b85335c197764de14
+Author: Michal Kubecek <mkubecek@suse.cz>
+Date:   Thu Mar 12 20:07:58 2020 +0000
 
--- 
-Regards,
+    ethtool: set netdev features with FEATURES_SET request
 
-Laurent Pinchart
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116dec63500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=136dec63500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=156dec63500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9d39fa49d4df294aab93@syzkaller.appspotmail.com
+Fixes: 0980bfcd6954 ("ethtool: set netdev features with FEATURES_SET request")
+
+==================================================================
+BUG: KASAN: stack-out-of-bounds in bitmap_from_arr32+0x199/0x1f0 lib/bitmap.c:1278
+Write of size 8 at addr ffffc9000151f5b0 by task syz-executor624/8469
+
+CPU: 0 PID: 8469 Comm: syz-executor624 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ bitmap_from_arr32+0x199/0x1f0 lib/bitmap.c:1278
+ ethnl_parse_bitset+0x448/0x7a0 net/ethtool/bitset.c:631
+ ethnl_set_features+0x2ac/0xa70 net/ethtool/features.c:240
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2331
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2385
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2418
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440899
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b 11 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe5de83088 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440899
+RDX: 0000000000000000 RSI: 0000000020000440 RDI: 0000000000000003
+RBP: 00000000006cb018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401e80
+R13: 0000000000401f10 R14: 0000000000000000 R15: 0000000000000000
+
+
+addr ffffc9000151f5b0 is located in stack of task syz-executor624/8469 at offset 264 in frame:
+ ethnl_set_features+0x0/0xa70 net/ethtool/features.c:58
+
+this frame has 9 objects:
+ [32, 40) 'reply_payload'
+ [64, 80) 'req_info'
+ [96, 104) 'wanted_diff_mask'
+ [128, 136) 'active_diff_mask'
+ [160, 168) 'old_active'
+ [192, 200) 'old_wanted'
+ [224, 232) 'new_active'
+ [256, 264) 'req_wanted'
+ [288, 296) 'req_mask'
+
+Memory state around the buggy address:
+ ffffc9000151f480: 00 00 00 00 00 f1 f1 f1 f1 00 f2 f2 f2 00 00 f2
+ ffffc9000151f500: f2 00 f2 f2 f2 00 f2 f2 f2 00 f2 f2 f2 00 f2 f2
+>ffffc9000151f580: f2 00 f2 f2 f2 00 f2 f2 f2 00 f3 f3 f3 00 00 00
+                                     ^
+ ffffc9000151f600: 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1 f1 f1
+ ffffc9000151f680: 00 00 00 00 00 00 00 00 00 f3 f3 f3 f3 f3 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
