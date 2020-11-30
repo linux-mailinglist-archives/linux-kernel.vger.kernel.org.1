@@ -2,72 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1792C810C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A82F2C8109
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgK3Ja6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:30:58 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:48182 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728355AbgK3Jax (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:30:53 -0500
-Received: from relay8-d.mail.gandi.net (unknown [217.70.183.201])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id EB98E421109;
-        Mon, 30 Nov 2020 09:30:05 +0000 (UTC)
-X-Originating-IP: 84.44.14.226
-Received: from nexussix.ar.arcelik (unknown [84.44.14.226])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id B5BC51BF210;
-        Mon, 30 Nov 2020 09:28:57 +0000 (UTC)
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     "Daniel W . S . Almeida" <dwlsalmeida@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Cengiz Can <cengiz@kernel.wtf>
-Subject: [PATCH] media: vidtv: fix read after free
-Date:   Mon, 30 Nov 2020 12:28:26 +0300
-Message-Id: <20201130092825.28532-1-cengiz@kernel.wtf>
-X-Mailer: git-send-email 2.29.2
+        id S1728258AbgK3JaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:30:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726345AbgK3JaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 04:30:12 -0500
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F6372076E;
+        Mon, 30 Nov 2020 09:29:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606728571;
+        bh=M2Y4jh0/IE5UZ8mjVAOrbo0e+cGQS/EhFZC0WGmH/mg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pJylgqM37jfMqrMUc8NsaHoFfF5prVykUO3kbi/faQOA1uGoqBfe7eeDXQkLKa1JW
+         AtF+ewjG3aAZk2WnsI0FTlQZLTo7v4mnNDJ3dfhTe9hZrRL0W994A6ghpFSfRlvQVb
+         s5UmIx7jQwig1drhTyGJLpxrg7BB+6gbClshzE4o=
+Date:   Mon, 30 Nov 2020 17:29:18 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH] arm64: dts: ls1028a: add optee node
+Message-ID: <20201130092917.GC4072@dragon>
+References: <20201115225314.8114-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201115225314.8114-1-michael@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`vidtv_channel_si_destroy` function has a call to
-    `vidtv_psi_pat_table_destroy` that frees Program Association Table.
+On Sun, Nov 15, 2020 at 11:53:14PM +0100, Michael Walle wrote:
+> Add the optee node which can either be enabled by a specific board or by
+> the bootloader.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-However it is followed by a loop that iterates over the count of Program
-Map Tables. This obviously accesses an invalid memory.
-
-Eliminate this by making a copy of num_pmt before free'ing Program
-Association Table and loop on it instead.
-
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
----
- drivers/media/test-drivers/vidtv/vidtv_channel.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_channel.c b/drivers/media/test-drivers/vidtv/vidtv_channel.c
-index 8ad6c0744d36..4af39a8786a7 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_channel.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_channel.c
-@@ -503,10 +503,13 @@ int vidtv_channel_si_init(struct vidtv_mux *m)
- void vidtv_channel_si_destroy(struct vidtv_mux *m)
- {
- 	u32 i;
-+	u16 num_pmt;
-+
-+	num_pmt = m->si.pat->num_pmt;
- 
- 	vidtv_psi_pat_table_destroy(m->si.pat);
- 
--	for (i = 0; i < m->si.pat->num_pmt; ++i)
-+	for (i = 0; i < num_pmt; ++i)
- 		vidtv_psi_pmt_table_destroy(m->si.pmt_secs[i]);
- 
- 	kfree(m->si.pmt_secs);
--- 
-2.29.2
-
+Applied, thanks.
