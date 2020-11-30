@@ -2,121 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BAF2C85B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38802C85B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727362AbgK3NiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:38:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27993 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727328AbgK3NiJ (ORCPT
+        id S1727368AbgK3Nim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:38:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727328AbgK3Nil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:38:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606743402;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q9JbBB2A7RKXT6r+Tdc668k94iLZr4WU1zIyHLKBU0Y=;
-        b=iwbMzfMTwloyyGxi4Ch7V56/wM6z7uxXcEcUG8zXMlx3q1WEdBXtRXsbSC1YIT4tsFD/Lt
-        2w+Xu/oGadvJ49Gq9ozsFVZK475dZwlQoo58Na88AriiFPVVUDXdPu20JSVGjkcvqe9t+I
-        eQqfmMSV/7qUKNa5N/2tExdWAvjB5DI=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-474-r9pGH-zXPiOfy8RX0eAaNA-1; Mon, 30 Nov 2020 08:36:41 -0500
-X-MC-Unique: r9pGH-zXPiOfy8RX0eAaNA-1
-Received: by mail-ej1-f72.google.com with SMTP id f2so5800026ejx.22
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:36:41 -0800 (PST)
+        Mon, 30 Nov 2020 08:38:41 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA9AC061A04
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:37:26 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id l11so6504850plt.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:37:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qu207Z75WzQUJJHqszmaKTu1R6TkuOOJQys6M2fXiGI=;
+        b=QaLy8DKIRP24xFqCy3J7NDtZmBosZopR/eM0EPzGmgqiL6BrMap3ZWoMFxnbvPI0oZ
+         lyuue7gFrhq+HJbhK+PaVpJYcMjX2xjGdvwJWE4VUnhv5e1QuFp2A+HXu1/0Ozln17fv
+         v/nJ4urZRQDsaUDZytPGxOHVAPc1e+ESjRYfHi3z6zqNV8PVd6xAHJBZCx+3cnr6FY36
+         8KNV5aFXjivavZVXkj7wsBpCUODW3Leg/5JHMk4wAjW5tOImUTntas1ZIvt0ZCLwuuZQ
+         nWNutIM7vPeebfCo1CR4sUMIqP/EWMkQiYGNf8poGVXt/oFZGPiWIt410Td2tIZGJgr3
+         TPew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q9JbBB2A7RKXT6r+Tdc668k94iLZr4WU1zIyHLKBU0Y=;
-        b=YO9ETnZ8IpQX8UtWtTCKjtcCXcfyhd2/stkfNpL3lJxE2Ka947eGn+K839rmdBF+Nn
-         PZvBQR+U/MrMuX0x6sHS6C6v/3JNKQZQxu95N54kOI6ktndVtk2tIMgc6BryXsFnsccX
-         z14DpSamLF1DcTthuJKeA4ia+vni32WEi3SJDlb3IW2HWE40QtM/o5iHbyKA/ifwvve3
-         amYeNs8RBfdKwCaV+0ElUlPT04WX5fQ9G/fNPmZhHotgIDudDugGOTV5n4tndkYgduSB
-         e/mJUi82GA+Faer/fPg1B6RhxxxFUBhmZhyJTQq1W7hXMpixoW+FpxnHNAz/D3KuRYqD
-         Rydg==
-X-Gm-Message-State: AOAM530tInDARW7SaXE0buwNBT2QTVYr2PR6QLaQuSXIuSHUtjeHcjPs
-        1oxeW5bx4XYwAC7wPyOAdeD2LmAzIajy/9GTHYASjrHKrtNqM9sY51LZZK68kakjeJ4hTAAhDNV
-        rKJA2ZDXKRa0TLEkuwd4O0qNS
-X-Received: by 2002:a17:906:5609:: with SMTP id f9mr8831121ejq.535.1606743399840;
-        Mon, 30 Nov 2020 05:36:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx5mfLtnxz7qBhLC9okDROTxfIFdoHVpU+wO1LzztHlLZ97RDP+W+0qNE61l1UYE22GzJnORQ==
-X-Received: by 2002:a17:906:5609:: with SMTP id f9mr8831103ejq.535.1606743399647;
-        Mon, 30 Nov 2020 05:36:39 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id a12sm9009835edu.89.2020.11.30.05.36.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 05:36:38 -0800 (PST)
-Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
- scsi_add_host()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Tom Yan <tom.ty89@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-References: <09992cec-65e4-2757-aae6-8fb02a42f961@redhat.com>
- <20201128154849.3193-1-tom.ty89@gmail.com>
- <20201128154849.3193-2-tom.ty89@gmail.com>
- <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
- <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
- <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
- <X8T0E2qvF2cgADl+@kroah.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
-Date:   Mon, 30 Nov 2020 14:36:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qu207Z75WzQUJJHqszmaKTu1R6TkuOOJQys6M2fXiGI=;
+        b=MNd5U9SFT76imcBuup9Ydt6h3fFnZYQ/437cNnr4KYpCID65bx60Sjy8p8miW1pkzx
+         W7a45IJMhdjn4BOL4Gf+1keTxI/h65odV9+FAlBWqwRzRryhA/+fCvdP2/OvlaUsJ62j
+         tFCWKGZ0FTQU/xr2IIYSAQ5NVI+wqCN7hpQ/HJgygqnVzbEcFj+eAOUE8NlTMWPSmIO9
+         l48TwAdlgJ7AIBPyL7SNtal/EPZkLeaSu6QU15O5DgkH2dJRs/GFhE9ivIcJbe3HgWUq
+         gGfv36K7ynupVxQMaT5CdFkzvju9s1AphzU1DJWDgBuGrI37Y1JMpVp3eK9YIDySV9iZ
+         z/BQ==
+X-Gm-Message-State: AOAM530zrJEuy5Xgsp7OUsuLzr4MPjpx7lhfC5dDDWB7MWKzqxpfc8nm
+        r9d5qfnzLGwtfyjDPeM7r0YKxRelbUbs5w3b5VpHgw==
+X-Google-Smtp-Source: ABdhPJwVDB7YDEhOfM/bzPd9hd6ZDyyAWYZcOmV/hmtcR7dwZqYlZZQQ3yhdDZ/6Cn/n3EceqEJ1cqodHjf5k3zDGEs=
+X-Received: by 2002:a17:90a:c588:: with SMTP id l8mr10957073pjt.147.1606743446276;
+ Mon, 30 Nov 2020 05:37:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X8T0E2qvF2cgADl+@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201130131512.6043-1-songmuchun@bytedance.com> <20201130132345.GJ17338@dhcp22.suse.cz>
+In-Reply-To: <20201130132345.GJ17338@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 30 Nov 2020 21:36:49 +0800
+Message-ID: <CAMZfGtWSLeiNcPYaAnOyv_fy9_rxHn0kA2Vzn=i+B8ngc61_4Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/memcg: fix NULL pointer dereference at workingset_eviction
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        alex.shi@linux.alibaba.com, alexander.h.duyck@linux.intel.com,
+        Yafang Shao <laoar.shao@gmail.com>, richard.weiyang@gmail.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Nov 30, 2020 at 9:23 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 30-11-20 21:15:12, Muchun Song wrote:
+> > We found a case of kernel panic. The stack trace is as follows
+> > (omit some irrelevant information):
+> >
+> >     BUG: kernel NULL pointer dereference, address: 00000000000000c8
+> >     RIP: 0010:workingset_eviction+0x26b/0x450
+> >     Call Trace:
+> >      __remove_mapping+0x224/0x2b0
+> >      shrink_page_list+0x8c2/0x14e0
+> >      shrink_inactive_list+0x1bf/0x3f0
+> >      ? do_raw_spin_unlock+0x49/0xc0
+> >      ? _raw_spin_unlock+0xa/0x20
+> >      shrink_lruvec+0x401/0x640
+> >
+> > This was caused by commit 76761ffa9ea1 ("mm/memcg: bail out early when
+> > !memcg in mem_cgroup_lruvec"). When the parameter of memcg is NULL, we
+> > should not use the &pgdat->__lruvec. So this just reverts commit
+> > 76761ffa9ea1 to fix it.
+> >
+> > Fixes: 76761ffa9ea1 ("mm/memcg: bail out early when !memcg in mem_cgroup_lruvec")
+>
+> I do not see any commits like that in the current Linus tree. Is this a
+> commit id from the linux-next? If yes, can we just fold it into the
+> respective patch in mmotm tree please?
 
-On 11/30/20 2:30 PM, Greg KH wrote:
-> On Mon, Nov 30, 2020 at 02:23:48PM +0100, Hans de Goede wrote:
->> Hi,
->>
->> On 11/30/20 1:58 PM, Tom Yan wrote:
->>> It's merely a moving of comment moving for/and a no-behavioral-change
->>> adaptation for the reversion.>
->>
->> IMHO the revert of the troublesome commit and the other/new changes really
->> should be 2 separate commits. But I will let Alan and Greg have the final
->> verdict on this.
-> 
-> I would prefer to just revert the commits and not do anything
-> different/special here so late in the release cycle.
-> 
-> So, if Alan agrees, I'll be glad to do them on my end, I just need the
-> commit ids for them.
+Yes. This commit is on the linux-next tree. Of course can.
 
-The troublesome commit are (in reverse, so revert, order):
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  include/linux/memcontrol.h | 15 +++++++++------
+> >  1 file changed, 9 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index f9a496c4eac7..a1416205507c 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -610,17 +610,20 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+> >  static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+> >                                              struct pglist_data *pgdat)
+> >  {
+> > +     struct mem_cgroup_per_node *mz;
+> >       struct lruvec *lruvec;
+> >
+> > -     if (mem_cgroup_disabled() || !memcg) {
+> > +     if (mem_cgroup_disabled()) {
+> >               lruvec = &pgdat->__lruvec;
+> > -     } else {
+> > -             struct mem_cgroup_per_node *mz;
+> > -
+> > -             mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
+> > -             lruvec = &mz->lruvec;
+> > +             goto out;
+> >       }
+> >
+> > +     if (!memcg)
+> > +             memcg = root_mem_cgroup;
+> > +
+> > +     mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
+> > +     lruvec = &mz->lruvec;
+> > +out:
+> >       /*
+> >        * Since a node can be onlined after the mem_cgroup was created,
+> >        * we have to be prepared to initialize lruvec->pgdat here;
+> > --
+> > 2.11.0
+> >
+>
+> --
+> Michal Hocko
+> SUSE Labs
 
-5df7ef7d32fe ("uas: bump hw_max_sectors to 2048 blocks for SS or faster drives")
-558033c2828f ("uas: fix sdev->host->dma_dev")
-0154012f8018 ("usb-storage: fix sdev->host->dma_dev")
 
-Alan, the reason for reverting these is that using scsi_add_host_with_dma() as the
-last 2 patches do, with the dmadev argument of that call pointing to the device
-for the XHCI controller is causing changes to the DMA settings of the XHCI controller
-itself which is causing regressions in 5.10, see this email thread:
 
-https://lore.kernel.org/linux-usb/fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com/T/#t
-
-Regards,
-
-Hans
-
+-- 
+Yours,
+Muchun
