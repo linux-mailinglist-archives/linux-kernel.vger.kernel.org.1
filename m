@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810A62C8A8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A922C8A93
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgK3RNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:13:33 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:60518 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgK3RNb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:13:31 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A0430B26;
-        Mon, 30 Nov 2020 18:12:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606756369;
-        bh=6VQyvAaUE8HxXXzA9oVZtTfhgSUB6K7rr16cFaqVi64=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nlFn1S/mpFokHinyu4adMtkCO7Yf0yKGuEGeCxtJ3BeTVC/T9lvZITxKROoX4a3OR
-         Ep2BsQd4pKesYclfpf7Bxc3HyzAub7H8AiXTj3h08n3CdyImZsl7OnyAdm/wVXFGi7
-         aCUDb4wTuP5WjKWVlMBbu+kUCBF7jWGrtFeTMKyw=
-Date:   Mon, 30 Nov 2020 19:12:41 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 16/18] i2c: i2c-core-base: Use the new
- i2c_acpi_dev_name() in i2c_set_dev_name()
-Message-ID: <20201130171241.GP14465@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-17-djrscally@gmail.com>
+        id S1729325AbgK3RNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:13:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725955AbgK3RNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:13:53 -0500
+Received: from gaia (unknown [95.146.230.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 133102073C;
+        Mon, 30 Nov 2020 17:13:11 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 17:13:09 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v2] arm64: mte: Fix typo in macro definition
+Message-ID: <20201130171309.GG3902@gaia>
+References: <20201130170709.22309-1-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201130133129.1024662-17-djrscally@gmail.com>
+In-Reply-To: <20201130170709.22309-1-vincenzo.frascino@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-Thank you for the patch.
-
-On Mon, Nov 30, 2020 at 01:31:27PM +0000, Daniel Scally wrote:
-> From: Dan Scally <djrscally@gmail.com>
+On Mon, Nov 30, 2020 at 05:07:09PM +0000, Vincenzo Frascino wrote:
+> UL in the definition of SYS_TFSR_EL1_TF1 was misspelled causing
+> compilation issues when trying to implement in kernel MTE async
+> mode.
 > 
-> To make sure the new i2c_acpi_dev_name() always reflects the name of i2c
-> devices sourced from ACPI, use it in i2c_set_dev_name().
+> Fix the macro correcting the typo.
 > 
-> Signed-off-by: Dan Scally <djrscally@gmail.com>
-
-I'd squash this with 15/18, which would make it clear there's a memory
-leak :-)
-
+> Note: MTE async mode will be introduced with a future series.
+> 
+> Fixes: c058b1c4a5ea ("arm64: mte: system register definitions")
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 > ---
-> Changes since RFC v3:
-> 
-> 	- Patch introduced
-> 
->  drivers/i2c/i2c-core-base.c | 2 +-
+>  arch/arm64/include/asm/sysreg.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 573b5da145d1..a6d4ceb01077 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -814,7 +814,7 @@ static void i2c_dev_set_name(struct i2c_adapter *adap,
->  	}
->  
->  	if (adev) {
-> -		dev_set_name(&client->dev, "i2c-%s", acpi_dev_name(adev));
-> +		dev_set_name(&client->dev, i2c_acpi_dev_name(adev));
->  		return;
->  	}
->  
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index e2ef4c2edf06..801861d05426 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -987,7 +987,7 @@
+>  #define SYS_TFSR_EL1_TF0_SHIFT	0
+>  #define SYS_TFSR_EL1_TF1_SHIFT	1
+>  #define SYS_TFSR_EL1_TF0	(UL(1) << SYS_TFSR_EL1_TF0_SHIFT)
+> -#define SYS_TFSR_EL1_TF1	(UK(2) << SYS_TFSR_EL1_TF1_SHIFT)
+> +#define SYS_TFSR_EL1_TF1	(UL(1) << SYS_TFSR_EL1_TF1_SHIFT)
 
--- 
-Regards,
+I think we should first rename it to EU and then fix it properly ;).
 
-Laurent Pinchart
+While nothing breaks without this patch currently, we should merge it as
+a fix.
+
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+
+Thanks.
