@@ -2,181 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F0F2C8C78
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6276F2C8CA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 19:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388050AbgK3SRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 13:17:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55016 "EHLO
+        id S2387959AbgK3SYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 13:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728003AbgK3SRL (ORCPT
+        with ESMTP id S1727125AbgK3SYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:17:11 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA14C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:16:30 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id v22so17418856edt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:16:30 -0800 (PST)
+        Mon, 30 Nov 2020 13:24:04 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97833C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:23:18 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id u19so23507328lfr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:23:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2AKXanvK88R+UrndJ2+lfJo0jOvZRiWePigHL5MOrpQ=;
-        b=t+oYd2k8L4bXGdr4bOORSo2JgpR5uXWDVrx56F+4FY0EeuamLMDp1YW6JIH5sInuGT
-         rTtQHZ+qSZjUS9YTu5LGYXDH/CwUXJuHgVdcM1yCQto3Ahh9igxg3+ITRIiOgHGpDCJj
-         c59bFtLaWRLYYh2JDbgappg+NEZjyEZGr+/z2fboCh3SXTBDnK6syDMRhDLA8npvxTfS
-         V3oMTCVXoi9kMmsNTD82DGqL12LHuXk0zgHJYWHzPXC9vdYyBpb1Y95Bzz0QCC4YZax1
-         A98oOIB+j1krv9rUn5NtvQXBe9iCccCHcTRWMmQJ+ekRgUtEBsEgOqN+oz2dVRGzJb46
-         R34w==
+        bh=3wsPs7gnC3/t/rTahaWNN74dCjJuviyFHSHKHhvgoAY=;
+        b=T3JHFa6MTkq+VOk0GAbb3Hdo++K9Cf6gCbjyoUak9gPGSfjnbUXNChVlLfPmr6VD80
+         sx+p1+g3CNmEyeSgqaqqDxjcC3VE6QGe9DAfNtjRjGt8UgxptHZBv2aWCdpfx1MX9Bof
+         wglxUVF2HbnRMwq1on9b36hH9zdcb3fjSSpE4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2AKXanvK88R+UrndJ2+lfJo0jOvZRiWePigHL5MOrpQ=;
-        b=bvgK5DWL/Rmtcg8p+bgSvnov3OGn3pEjj8r8q88X9hd2ra0FnBhQgK6yig0+r6opl9
-         Qm4mTqKizLqS9e/s67ckb0t8+CHIcZcROqDckBNLDTppioLEVI15SnyJWXndEK7dtGhH
-         Q5Bu9LiJXdjxgdpTqBLH+y9dDuvhr051xrnD9HuIj2q1S49QCkyB67afxmVXj6ehEvhG
-         /Fkmg49LTtDHXpCOVvmJrAYF9EfjWVjQODprWSkENG5RhK2pCaJFe7xVuk+DVmxh2XcU
-         Vr981s1P+en2k4bOpJ/zr3Zt2v8KuP1liaugp7t5Uz4KTW6+Z1iZt1+IpnbeHkTjTsBP
-         jiDw==
-X-Gm-Message-State: AOAM5308puQTU3quuu8w9pT8s9jTJXOl2q3Q3gLNjX3gXvUmizvaGS9b
-        RRmuUhbHlMeVguSDtyRP42ujcfqmNon3068/kwuV+w==
-X-Google-Smtp-Source: ABdhPJyNpcC8uWln79NGtVmSKYKI6we/nKuaJntLarInFL3acHDquTAhyp/H0NYR0Mv1MEzHIFxCvl9ItBXpq6gBDKc=
-X-Received: by 2002:a05:6402:2373:: with SMTP id a19mr23118798eda.212.1606760189619;
- Mon, 30 Nov 2020 10:16:29 -0800 (PST)
+        bh=3wsPs7gnC3/t/rTahaWNN74dCjJuviyFHSHKHhvgoAY=;
+        b=UwS74kIgtmL73swKh4nwGQkHaRt0KPngTDtY7p+PDMtkj0pnjKCdx7e87ggSVH+9S2
+         AN//AGxRLRYSHE+vzcd/yPP43RA/gOZK/9b64090ovNMhDAr9+NNCfcGFBVXvgwWuk/1
+         Huk1ByvUrekJG+NSjY+19RSqgW4cGGUHw7GPl36lbhGxVlTD0P20l4v9tWMC1Ur4PWZW
+         pdUINAgC/i//OQ1jvSTmz74gJ4cxptaVFfuaOSffQe/l64FW3+Kg6ofo8gmtHedx8nyJ
+         RJOeqvexVaacq9VzZZZV+2oeEhZ0UCYVF3SpoLRjIOLDHnG6mQq2S5DiWaAIJOk0Uvji
+         Sykw==
+X-Gm-Message-State: AOAM531E4EJtMq7nVW/Z+0/+4qbLNv7vbVTb7Hkt2vcLUap9XCoRetA+
+        JSjgUMJNOP7r5SIbSGId+RDNc2llyW2osw==
+X-Google-Smtp-Source: ABdhPJxrTM2qbC0NHwmpg9XeUjY6z1nk1ToAa6Vvb1ur54CWdJy5WzHYfvpTZHPJFygSe/yFXv+Ugw==
+X-Received: by 2002:a19:857:: with SMTP id 84mr10935359lfi.235.1606760596601;
+        Mon, 30 Nov 2020 10:23:16 -0800 (PST)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id u21sm2611948lfq.90.2020.11.30.10.23.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 10:23:15 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id d8so23521663lfa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 10:23:15 -0800 (PST)
+X-Received: by 2002:a19:c301:: with SMTP id t1mr9587473lff.105.1606760594943;
+ Mon, 30 Nov 2020 10:23:14 -0800 (PST)
 MIME-Version: 1.0
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org> <1606533966-22821-5-git-send-email-hemantk@codeaurora.org>
-In-Reply-To: <1606533966-22821-5-git-send-email-hemantk@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Mon, 30 Nov 2020 19:22:44 +0100
-Message-ID: <CAMZdPi8z+-qFqgZ7AFJcNAUMbDQtNN5Hz-geMBcp4azrUGm9iA@mail.gmail.com>
-Subject: Re: [PATCH v13 4/4] bus: mhi: Add userspace client interface driver
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
+References: <CAK8P3a2Habmz95y+J+-4NiT5SGYhO_Fia-SHhapX-3NYRbEMmw@mail.gmail.com>
+ <CAHk-=wjA2Der39e_SWZ6S-DoVCJTu-Zwf6jn2wxmGTKzNPV1Dw@mail.gmail.com>
+ <CAD=FV=Vow5_jv=-O=f2v4_5Nb4DiOUB1sQUx6r=-y5A-6rP4hw@mail.gmail.com>
+ <CAHk-=whtySEgkH+VFy9oW8Q-+iuivGBo0hOUcee3DvrsBAQUrA@mail.gmail.com> <CAD=FV=Up-JW8RtMLQ_pAG3e0d8NnpT+rDiguxcz3DnVUz_7Jbw@mail.gmail.com>
+In-Reply-To: <CAD=FV=Up-JW8RtMLQ_pAG3e0d8NnpT+rDiguxcz3DnVUz_7Jbw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 30 Nov 2020 10:22:58 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi2CQwAnKucLwE8vNZgXxyRy6L+DcgjGqxKHwbacKgaMQ@mail.gmail.com>
+Message-ID: <CAHk-=wi2CQwAnKucLwE8vNZgXxyRy6L+DcgjGqxKHwbacKgaMQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC fixes for v5.10, part 3
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Nov 2020 at 04:26, Hemant Kumar <hemantk@codeaurora.org> wrote:
+On Mon, Nov 30, 2020 at 10:11 AM Doug Anderson <dianders@chromium.org> wrote:
 >
-> This MHI client driver allows userspace clients to transfer
-> raw data between MHI device and host using standard file operations.
-> Driver instantiates UCI device object which is associated to device
-> file node. UCI device object instantiates UCI channel object when device
-> file node is opened. UCI channel object is used to manage MHI channels
-> by calling MHI core APIs for read and write operations. MHI channels
-> are started as part of device open(). MHI channels remain in start
-> state until last release() is called on UCI device file node. Device
-> file node is created with format
+> So I guess the answer here is: strive very hard but you don't have to
+> guarantee that every corner case is covered?
 
-[...]
+Yes. Covering every possible theoretical case is basically impossible.
+I mean, it can be something like "the firmware glitched for whatever
+reason, and didn't set up a device, and it didn't show up at boot at
+all until you did something explicit".
 
-> +struct uci_chan {
-> +       struct uci_dev *udev;
-> +       wait_queue_head_t ul_wq;
-> +
-> +       /* ul channel lock to synchronize multiple writes */
-> +       struct mutex write_lock;
-> +
-> +       wait_queue_head_t dl_wq;
-> +
-> +       /* dl channel lock to synchronize multiple reads */
-> +       struct mutex read_lock;
-> +
-> +       /*
-> +        * protects pending list in bh context, channel release, read and
-> +        * poll
-> +        */
-> +       spinlock_t dl_pending_lock;
-> +
-> +       struct list_head dl_pending;
-> +       struct uci_buf *cur_buf;
-> +       size_t dl_size;
-> +       struct kref ref_count;
-> +};
+(Example: airplane mode wireless switches, but also possibly things
+like just slightly unreliable USB hubs etc - I bet we've all seen
+those).
 
-[...]
+So the rule should be that you strive very hard to make boots have
+reproducible behavior as far as practically necessary, and avoid
+obvious timing-induced ordering issues.
 
-> + * struct uci_dev - MHI UCI device
-> + * @minor: UCI device node minor number
-> + * @mhi_dev: associated mhi device object
-> + * @uchan: UCI uplink and downlink channel object
-> + * @mtu: max TRE buffer length
-> + * @enabled: Flag to track the state of the UCI device
-> + * @lock: mutex lock to manage uchan object
-> + * @ref_count: uci_dev reference count
-> + */
-> +struct uci_dev {
-> +       unsigned int minor;
-> +       struct mhi_device *mhi_dev;
-> +       struct uci_chan *uchan;
+> In a traditional PC I think there are fewer dependencies?
 
-Why a pointer to uci_chan and not just plainly integrating the
-structure here, AFAIU uci_chan describes the channels and is just a
-subpart of uci_dev. That would reduce the number of dynamic
-allocations you manage and the extra kref. do you even need a separate
-structure for this?
+I'd say that they were "different", not necessarily "fewer".
 
-[...]
+> I guess the question is: why is static assignment of numbers not an
+> acceptable solution to the problem?  It gives us the desired fixed
+> numbers and automatically avoids all weird probe ordering / dependency
+> problems.
 
-> +static int mhi_uci_dev_start_chan(struct uci_dev *udev)
-> +{
-> +       int ret = 0;
-> +       struct uci_chan *uchan;
-> +
-> +       mutex_lock(&udev->lock);
-> +       if (!udev->uchan || !kref_get_unless_zero(&udev->uchan->ref_count)) {
+I think that if this had been done originally, it would probably be fine.
 
-This test is suspicious,  kref_get_unless_zero should be enough to test, right?
+But I still have this - possibly unreasonable - expectation that the
+promise of DT was that it wouldn't be 1:1 tied to the kernel all the
+time. That was always the promise, after all.
 
-if (kref_get_unless_zero(&udev->ref))
-    goto skip_init;
+So the whole "add DT markers because the subsystem now screws up
+ordering" smells really bad to me.
 
-> +               uchan = kzalloc(sizeof(*uchan), GFP_KERNEL);
-> +               if (!uchan) {
-> +                       ret = -ENOMEM;
-> +                       goto error_chan_start;
-> +               }
-> +
-> +               udev->uchan = uchan;
-> +               uchan->udev = udev;
-> +               init_waitqueue_head(&uchan->ul_wq);
-> +               init_waitqueue_head(&uchan->dl_wq);
-> +               mutex_init(&uchan->write_lock);
-> +               mutex_init(&uchan->read_lock);
-> +               spin_lock_init(&uchan->dl_pending_lock);
-> +               INIT_LIST_HEAD(&uchan->dl_pending);
-> +
-> +               ret = mhi_prepare_for_transfer(udev->mhi_dev);
-> +               if (ret) {
-> +                       dev_err(&udev->mhi_dev->dev, "Error starting transfer channels\n");
-> +                       goto error_chan_cleanup;
-> +               }
-> +
-> +               ret = mhi_queue_inbound(udev);
-> +               if (ret)
-> +                       goto error_chan_cleanup;
-> +
-> +               kref_init(&uchan->ref_count);
-> +       }
-> +
-> +       mutex_unlock(&udev->lock);
-> +
-> +       return 0;
-> +
-> +error_chan_cleanup:
-> +       mhi_uci_dev_chan_release(&uchan->ref_count);
-> +error_chan_start:
-> +       mutex_unlock(&udev->lock);
-> +       return ret;
-> +}
-
-Regards,
-Loic
+             Linus
