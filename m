@@ -2,128 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6492C867F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A4A2C867C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 15:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbgK3OSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 09:18:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48638 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726623AbgK3OSC (ORCPT
+        id S1727440AbgK3ORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 09:17:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgK3ORY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 09:18:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606745795;
+        Mon, 30 Nov 2020 09:17:24 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A129C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:16:44 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 9501822EDE;
+        Mon, 30 Nov 2020 15:16:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1606745802;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nk3PwbgnWPBsA8dJTlZWHGE9bPoVI0JdWk0TDjCsPaU=;
-        b=OOiuG/jASpN1snBBoOXx78xN637caA6TPsGx6CBR6Wkwh5v3A8fzXfJ/5w0oAMDxhr/xcC
-        swvIUhFo+47RQ9Opf42dufr+1XgY7P6cqkWPmnuPXFbkQ9DqqcJZ2he/uF6rFjRTpdnaxq
-        LCa1DM/DB9no+vKDCdnID3PX2l482BM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-_-8pQPRnMHGw-Pt80VEaqQ-1; Mon, 30 Nov 2020 09:16:32 -0500
-X-MC-Unique: _-8pQPRnMHGw-Pt80VEaqQ-1
-Received: by mail-wr1-f72.google.com with SMTP id n1so8497162wro.22
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 06:16:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nk3PwbgnWPBsA8dJTlZWHGE9bPoVI0JdWk0TDjCsPaU=;
-        b=c9Eeu01RO+dG0s01xBkpmGmgXGLqZSpAbowDtfDAo5up7aifFUg7DgP5C7l9B03pmf
-         yNf/QvQKZ5M8J6ZN8Vz4RBWun81+zQNKe0Klw/NEh/p9jBv12DF4fiDu2mlQxl7hg+5n
-         rXgrAvoRePd6sN70AuIbHULiyuLSPKrbi1J3d3lDCAjh1y8C4YH/+uRTyxdeoWZ+8oIS
-         xSnmSozmxOzFI05HbqBWoNV5endVbe0znl8k3JbTQFcLQDpqnLUULFEUDSxlXk4Xs4Qm
-         7b+VBYiS/Q7//p1Rdw1mM68+/+sKwuOBnpow3S9SK6I/kK09+qtQLKcYTtwrRJ+02FNh
-         cuGQ==
-X-Gm-Message-State: AOAM53178yqOMqgORzXBBu0pauVhkSGfmThoBvDu+o1/IlM4URgYvg2C
-        4XlAU8pi/lCN7mhoQU/lAdu/eMA3na7t2hgGqZB14F/r6d2s/NqH64oEfjBkOoRN6p0nN877LtZ
-        tcC4HHhAUoipmLjLhiS8vT9pA
-X-Received: by 2002:a7b:cc12:: with SMTP id f18mr23625728wmh.110.1606745790540;
-        Mon, 30 Nov 2020 06:16:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzjRy9tynfMnBGRMaIbuZ6bUgN4vno7cZV4YkNrWOD0VSIz+J6N442hYHa81mtCWHg4WmBcew==
-X-Received: by 2002:a7b:cc12:: with SMTP id f18mr23625712wmh.110.1606745790353;
-        Mon, 30 Nov 2020 06:16:30 -0800 (PST)
-Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
-        by smtp.gmail.com with ESMTPSA id t136sm25228625wmt.18.2020.11.30.06.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 06:16:29 -0800 (PST)
-Date:   Mon, 30 Nov 2020 15:16:27 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
-Subject: Re: [PATCH v2 13/17] vdpa_sim: set vringh notify callback
-Message-ID: <20201130141627.4gjsoiwg5byt3ujx@steredhat>
-References: <20201126144950.92850-1-sgarzare@redhat.com>
- <20201126144950.92850-14-sgarzare@redhat.com>
- <5569e198-22be-514a-744a-1bef9a3b95ce@redhat.com>
+        bh=Mc9pLI7KaYmunkJKO/az4YUmYOWPtXleDysNMdmHYns=;
+        b=vf875Nc16yGE6Yw0Xl77YgoC6sIvkgvMSScvFPTwKepO/ZfzFHvlWePWWaF7mjWxRaZl1X
+        LivP6SyL7Ncx6iJH1uaBzAGoabgv+GxbQdRDtFV6h3n7e2VlmlmfGXWhHhHnuswF2obdRn
+        9Xv2Zt2JAxg2suGPDEsUH7Da6UD8jm4=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5569e198-22be-514a-744a-1bef9a3b95ce@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 30 Nov 2020 15:16:41 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com
+Subject: Re: [PATCH v6 4/5] mtd: spi-nor: atmel: Fix unlock_all() for
+ AT25FS010/040
+In-Reply-To: <ba9850c1-a684-6376-7331-2e09567dcb73@microchip.com>
+References: <20201126202614.5710-1-michael@walle.cc>
+ <20201126202614.5710-5-michael@walle.cc>
+ <ba9850c1-a684-6376-7331-2e09567dcb73@microchip.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <a8ce7d3a61d6f7bd988917291e938954@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 11:27:51AM +0800, Jason Wang wrote:
->
->On 2020/11/26 下午10:49, Stefano Garzarella wrote:
->>Instead of calling the vq callback directly, we can leverage the
->>vringh_notify() function, adding vdpasim_vq_notify() and setting it
->>in the vringh notify callback.
->>
->>Suggested-by: Jason Wang <jasowang@redhat.com>
->>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->>---
->>  drivers/vdpa/vdpa_sim/vdpa_sim.c | 21 +++++++++++++++++----
->>  1 file changed, 17 insertions(+), 4 deletions(-)
->>
->>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->>index 8b87ce0485b6..4327efd6d41e 100644
->>--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
->>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->>@@ -120,6 +120,17 @@ static struct vdpasim *dev_to_sim(struct device *dev)
->>  	return vdpa_to_sim(vdpa);
->>  }
->>+static void vdpasim_vq_notify(struct vringh *vring)
->>+{
->>+	struct vdpasim_virtqueue *vq =
->>+		container_of(vring, struct vdpasim_virtqueue, vring);
->>+
->>+	if (!vq->cb)
->>+		return;
->>+
->>+	vq->cb(vq->private);
->>+}
->>+
->>  static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
->>  {
->>  	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
->>@@ -131,6 +142,8 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
->>  			  (uintptr_t)vq->driver_addr,
->>  			  (struct vring_used *)
->>  			  (uintptr_t)vq->device_addr);
->>+
->>+	vq->vring.notify = vdpasim_vq_notify;
->
->
->Do we need to clear notify during reset?
+Am 2020-11-28 09:25, schrieb Tudor.Ambarus@microchip.com:
+> On 11/26/20 10:26 PM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> These flashes have some weird BP bits mapping which aren't supported 
+>> in
+>> the current locking code. Just add a simple unlock op to unprotect the
+>> entire flash array which is needed for legacy behavior.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>> changes since v5
+>>  - new patch
+>> 
+>>  drivers/mtd/spi-nor/atmel.c | 53 
+>> +++++++++++++++++++++++++++++++++++--
+>>  drivers/mtd/spi-nor/core.c  |  2 +-
+>>  drivers/mtd/spi-nor/core.h  |  1 +
+>>  3 files changed, 53 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+>> index 49d392c6c8bc..fe6a4653823d 100644
+>> --- a/drivers/mtd/spi-nor/atmel.c
+>> +++ b/drivers/mtd/spi-nor/atmel.c
+>> @@ -8,10 +8,59 @@
+>> 
+>>  #include "core.h"
+>> 
+>> +/*
+>> + * The Atmel AT25FS010/AT25FS040 parts have some weird configuration 
+>> for the
+>> + * block protection bits. We don't support them. But legacy behaviour 
+>> in linux
+>> + * is to unlock the whole flash array on startup. Therefore, we have 
+>> to support
+>> + * exactly this operation.
+>> + */
+>> +static int atmel_at25fs_lock(struct spi_nor *nor, loff_t ofs, 
+>> uint64_t len)
+>> +{
+>> +       return -EOPNOTSUPP;
+>> +}
+>> +
+>> +static int atmel_at25fs_unlock(struct spi_nor *nor, loff_t ofs, 
+>> uint64_t len)
+>> +{
+>> +       /* We only support unlocking the whole flash array */
+>> +       if (ofs || len != nor->params->size)
+>> +               return -EINVAL;
+>> +
+>> +       /*
+>> +        * Write 0x00 to the status register to try to disable the 
+>> write
+>> +        * protection. This will fail if SRWD (the datasheet calls it 
+>> WPEN) is
+>> +        * set. But there is nothing we can do.
+>> +        */
+> 
+> can't we do the same as you did in 5/5?
 
-Right, I'll clear it.
+Sure, but - assuming it is only used for the legacy unlock all operation 
+- the
+outcome will be the same. It will either keep being locked or all will 
+be
+unlocked.
 
->
->Other looks good.
->
+That being said, I can also change it to the same as the 
+global_unprotect().
+I don't have any option on that other than this is simpler.
 
-Thanks,
-Stefano
-
+-michael
