@@ -2,172 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB872C8340
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1818B2C8350
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 12:35:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729196AbgK3L3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 06:29:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726949AbgK3L3p (ORCPT
+        id S1729071AbgK3Ld5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 06:33:57 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44754 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728952AbgK3Ld5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 06:29:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6EAC0613D2;
-        Mon, 30 Nov 2020 03:29:05 -0800 (PST)
-Date:   Mon, 30 Nov 2020 11:29:02 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606735743;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yXzRBKLraE3KGoXGlx30JrxKc1I9+HPSiHX9rysF71o=;
-        b=v+6YIrEWBEU67lenTZBRrT/AJL0UUWO4STXKlVG5XsOpXhosgUpLWesiU4UM0VEr877A6p
-        Amvu70IceNGKECwMYuEsPPEjyVqj4t/tFlTMEOM1JSeO1MJx1Ct9aMHJQ9PVW2u3oMdO9U
-        H+UAUGgWZYWVCOguoXYFuA//nSG5Fb/UDbsY4DcLx9UoyB9NhTvnyZcOXZOHqjQRJBqw6n
-        1dHLSK/h7EnZ6EJ0FwZb/UZlRGSn+RZovt5ZdsgF3qFySjTwp8yq6oklSB72d1sAy8IYiH
-        fPABWo/xk2HG6q5T2wKzNDBKdlQlNLOReAW4QEmN99AowyoyU+YJly2PEuRJWw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606735743;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yXzRBKLraE3KGoXGlx30JrxKc1I9+HPSiHX9rysF71o=;
-        b=neakLje28TJ+b8cTBVC7Qhi1XwnpQoK/tUJiymMwjKALRMsgczYw0KFhylGf8CK2cbTOuY
-        6Ej8+KF6Lwg4VgCw==
-From:   "tip-bot2 for Laurent Vivier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] genirq/irqdomain: Add an
- irq_create_mapping_affinity() function
-Cc:     Laurent Vivier <lvivier@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kurz <groug@kaod.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201126082852.1178497-2-lvivier@redhat.com>
-References: <20201126082852.1178497-2-lvivier@redhat.com>
+        Mon, 30 Nov 2020 06:33:57 -0500
+Received: by mail-il1-f197.google.com with SMTP id j8so9839217ilr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 03:33:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ewN649bK8OrziTWH8kTOkc1EhxOOv+IAI2UMF8kYbW0=;
+        b=B85t6IuKHaQnxkD6ey4h48uc7IZjsM8XBXJ5nY1uvHK7EmPr9SgB0bfxVuvjEtbIwN
+         +xpOdfEM1Lo9liN+D2BmwYX7ZPpwbTKkfz2OltXd6V5z0yMj9zAZY8cliOsy4ZqeOoEE
+         q9TJuSa/m5pTgBDxUY3dtDPMbe6fN54FXrJCoZ25kbxXKZyzMv12s9mfGUQs9C4DjuR5
+         9bWAN8UMKADUe0nUi8BzrjxtaCxgh9GvjqeXMZPStW0SdzjFCVs8cFmG1q6BzDzkRxNx
+         n8ESpFrVY5H/1wFbSWwrBtDUUxkK6sM2lNtl5u0ORsCNuHJaXmNauy93Af5idtfHhhVj
+         6n0g==
+X-Gm-Message-State: AOAM531FP0ZDyVpBbFftunC4Eg/gd8fv+xEpoAJg7TZMbYiVQ9YGqv20
+        0EPKn77K4irxXqSJpRuoSb9+DKRtYc2HLYNWOirpRaXdXU2n
+X-Google-Smtp-Source: ABdhPJzlBar7xbXAYdHpLk0KaWOnxBcu+8XuTYiylC36Z6SJrHiRFhnYIbB1LlsuOeNUzI2pRR3h//FbSmVOeUaPa6/i2evnOqC0
 MIME-Version: 1.0
-Message-ID: <160673574273.3364.16488984497450700332.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:f112:: with SMTP id e18mr863380iog.195.1606735996277;
+ Mon, 30 Nov 2020 03:33:16 -0800 (PST)
+Date:   Mon, 30 Nov 2020 03:33:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004e5bdb05b5516009@google.com>
+Subject: BUG: rwlock bad magic on CPU, kworker/0:LINE/NUM, ADDR
+From:   syzbot <syzbot+cb987a9c796abc570b47@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+Hello,
 
-Commit-ID:     bb4c6910c8b41623104c2e64a30615682689a54d
-Gitweb:        https://git.kernel.org/tip/bb4c6910c8b41623104c2e64a30615682689a54d
-Author:        Laurent Vivier <lvivier@redhat.com>
-AuthorDate:    Thu, 26 Nov 2020 09:28:51 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 30 Nov 2020 12:21:31 +01:00
+syzbot found the following issue on:
 
-genirq/irqdomain: Add an irq_create_mapping_affinity() function
+HEAD commit:    90cf87d1 enetc: Let the hardware auto-advance the taprio b..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=135479b3500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5720c06118e6c4cc
+dashboard link: https://syzkaller.appspot.com/bug?extid=cb987a9c796abc570b47
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-There is currently no way to convey the affinity of an interrupt
-via irq_create_mapping(), which creates issues for devices that
-expect that affinity to be managed by the kernel.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-In order to sort this out, rename irq_create_mapping() to
-irq_create_mapping_affinity() with an additional affinity parameter that
-can be passed down to irq_domain_alloc_descs().
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cb987a9c796abc570b47@syzkaller.appspotmail.com
 
-irq_create_mapping() is re-implemented as a wrapper around
-irq_create_mapping_affinity().
+tipc: 32-bit node address hash set to aa1414ac
+BUG: rwlock bad magic on CPU#0, kworker/0:18/18158, 00000000859f2a8d
+CPU: 0 PID: 18158 Comm: kworker/0:18 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events tipc_net_finalize_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ rwlock_bug kernel/locking/spinlock_debug.c:144 [inline]
+ debug_write_lock_before kernel/locking/spinlock_debug.c:182 [inline]
+ do_raw_write_lock+0x1ef/0x280 kernel/locking/spinlock_debug.c:206
+ tipc_mon_reinit_self+0x1f7/0x630 net/tipc/monitor.c:685
+ tipc_net_finalize net/tipc/net.c:134 [inline]
+ tipc_net_finalize+0x1df/0x310 net/tipc/net.c:125
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-No functional change.
-
-Fixes: e75eafb9b039 ("genirq/msi: Switch to new irq spreading infrastructure")
-Signed-off-by: Laurent Vivier <lvivier@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Greg Kurz <groug@kaod.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201126082852.1178497-2-lvivier@redhat.com
 
 ---
- include/linux/irqdomain.h | 12 ++++++++++--
- kernel/irq/irqdomain.c    | 13 ++++++++-----
- 2 files changed, 18 insertions(+), 7 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 71535e8..ea5a337 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -384,11 +384,19 @@ extern void irq_domain_associate_many(struct irq_domain *domain,
- extern void irq_domain_disassociate(struct irq_domain *domain,
- 				    unsigned int irq);
- 
--extern unsigned int irq_create_mapping(struct irq_domain *host,
--				       irq_hw_number_t hwirq);
-+extern unsigned int irq_create_mapping_affinity(struct irq_domain *host,
-+				      irq_hw_number_t hwirq,
-+				      const struct irq_affinity_desc *affinity);
- extern unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec);
- extern void irq_dispose_mapping(unsigned int virq);
- 
-+static inline unsigned int irq_create_mapping(struct irq_domain *host,
-+					      irq_hw_number_t hwirq)
-+{
-+	return irq_create_mapping_affinity(host, hwirq, NULL);
-+}
-+
-+
- /**
-  * irq_linear_revmap() - Find a linux irq from a hw irq number.
-  * @domain: domain owning this hardware interrupt
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index cf8b374..e4ca696 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -624,17 +624,19 @@ unsigned int irq_create_direct_mapping(struct irq_domain *domain)
- EXPORT_SYMBOL_GPL(irq_create_direct_mapping);
- 
- /**
-- * irq_create_mapping() - Map a hardware interrupt into linux irq space
-+ * irq_create_mapping_affinity() - Map a hardware interrupt into linux irq space
-  * @domain: domain owning this hardware interrupt or NULL for default domain
-  * @hwirq: hardware irq number in that domain space
-+ * @affinity: irq affinity
-  *
-  * Only one mapping per hardware interrupt is permitted. Returns a linux
-  * irq number.
-  * If the sense/trigger is to be specified, set_irq_type() should be called
-  * on the number returned from that call.
-  */
--unsigned int irq_create_mapping(struct irq_domain *domain,
--				irq_hw_number_t hwirq)
-+unsigned int irq_create_mapping_affinity(struct irq_domain *domain,
-+				       irq_hw_number_t hwirq,
-+				       const struct irq_affinity_desc *affinity)
- {
- 	struct device_node *of_node;
- 	int virq;
-@@ -660,7 +662,8 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
- 	}
- 
- 	/* Allocate a virtual interrupt number */
--	virq = irq_domain_alloc_descs(-1, 1, hwirq, of_node_to_nid(of_node), NULL);
-+	virq = irq_domain_alloc_descs(-1, 1, hwirq, of_node_to_nid(of_node),
-+				      affinity);
- 	if (virq <= 0) {
- 		pr_debug("-> virq allocation failed\n");
- 		return 0;
-@@ -676,7 +679,7 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
- 
- 	return virq;
- }
--EXPORT_SYMBOL_GPL(irq_create_mapping);
-+EXPORT_SYMBOL_GPL(irq_create_mapping_affinity);
- 
- /**
-  * irq_create_strict_mappings() - Map a range of hw irqs to fixed linux irqs
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
