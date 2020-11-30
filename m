@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CF42C88DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A45E2C88DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 17:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgK3QB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 11:01:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbgK3QB7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:01:59 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B69DC0613CF;
-        Mon, 30 Nov 2020 08:01:18 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 142so18657747ljj.10;
-        Mon, 30 Nov 2020 08:01:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WlJ4oZpcN5HrVzYOryBdmloFZxZb8CgFJ5YvPXP8llo=;
-        b=PUz+lCYGDI07e5fuYnj/uLHFivTRwSKgqHPdQuogBVJayIxE4LxBdJ1YadgAJ+ylKO
-         wMF22xNHPcsDAX0cH5ua8iPuQbd+3ggqruR0OIYxRr9nV/9yHCmLt/MpCVwXPg1J5keX
-         ZkWLGjIZitBWwqbfwNaTQudbyjWvUExRq0EmXXDWE2FUiUMGhnwiV/wo4Ji7uZAq1cdg
-         i6FnvdBBBuf/mjCt2QjM8MFbBE4q2hJtY/qi6hzhtQbCah+/XRaA+x7chHa7IUznZdbB
-         LPi96X9A0MxO2gJJzcMGCQFW/Dq87QbqTZvId7limsXNEQnNmUoV5txTzhQUbdD5nKyE
-         5ucg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WlJ4oZpcN5HrVzYOryBdmloFZxZb8CgFJ5YvPXP8llo=;
-        b=I8938QOwxQPdm0Pezka42Q8VZOktZ97u68G6vEKGamYgoRpHV1BP7hD0fuZ0cyiQoR
-         RIyKAD2FDYlSn2eEz7s5mIrCR9K6ChQD2Y/HeZA2SyoXu0uwEPdwZ6LI8rGHdJ6LVGy1
-         gHaxXxzeG2eg20S4F/aTeEpzq9ea11s8i27DTmeIo4onIjLOVed+/6y7TUu5de+MWV3z
-         L2L2xvghcmGznU25uLvBCgsAbKnVptdhLmv8e28OUreXf/R7GnaMXI4TlMX8jANa4kE9
-         t5QQ9A1xWTa0WCGEFx8/vAPQIkuJNrp0JA98mSb9XspKEXwwY5K2+7Ek2IEzEc55U0bc
-         2pIQ==
-X-Gm-Message-State: AOAM530uxzbEOFkJLr58jSA89amsB9thLtRm32W1GM5EQxeHnaOq8ysU
-        eUs3Y4a7kb8c4eypNg4a6o0=
-X-Google-Smtp-Source: ABdhPJynbqVMw4rPgxPKlkrKm8H7NxzdaJGQnqGbRkdyzEDRlicAgxpO/k0vSOyUkBjBRWPEj9Plig==
-X-Received: by 2002:a2e:b164:: with SMTP id a4mr6173701ljm.271.1606752076739;
-        Mon, 30 Nov 2020 08:01:16 -0800 (PST)
-Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id y17sm2938318ljc.50.2020.11.30.08.01.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 08:01:15 -0800 (PST)
-Subject: Re: [PATCH] dt-bindings: phy: bcm-ns-usb3-phy: convert to yaml
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201116074650.16070-1-zajec5@gmail.com>
- <20201130154307.GW8403@vkoul-mobl>
- <cd28f304-cb55-8377-c5eb-2adf3ab48f79@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <dc9821fe-9490-ef08-512f-61ef8eae9e9a@gmail.com>
-Date:   Mon, 30 Nov 2020 17:01:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1728161AbgK3QCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 11:02:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727983AbgK3QCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:02:08 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 287A320659;
+        Mon, 30 Nov 2020 16:01:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606752087;
+        bh=AJw4vWeiUmjVdPrXFfXWymHhQkdX3rroVJei2MKvnPU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iW4rNUNTz5yBlbL4ymBzBDD3iYfBW4R4mXjd/R8Y6X9Hf951cjxFcYgX7RdhhgpEt
+         2U/O27yoIfW7rzDgCSZ1CgkkoCdoRU41ItBwMmUxcFN+Ff/C9EF4Pp2SHK+UyGhcMO
+         9z2Ric/1jW7ut1fIdE1dfr53JzGsZgK17FWm+M40=
+Date:   Mon, 30 Nov 2020 16:01:20 +0000
+From:   Will Deacon <will@kernel.org>
+To:     "wangyanan (Y)" <wangyanan55@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com,
+        jiangkunkun@huawei.com, wangjingyi11@huawei.com,
+        lushenming@huawei.com
+Subject: Re: [RFC PATCH 2/3] KVM: arm64: Fix handling of merging tables into
+ a block entry
+Message-ID: <20201130160119.GA25051@willie-the-truck>
+References: <20201130121847.91808-1-wangyanan55@huawei.com>
+ <20201130121847.91808-3-wangyanan55@huawei.com>
+ <20201130133421.GB24837@willie-the-truck>
+ <67e9e393-1836-eca7-4235-6f4a19fed652@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <cd28f304-cb55-8377-c5eb-2adf3ab48f79@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <67e9e393-1836-eca7-4235-6f4a19fed652@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.2020 16:58, Rafał Miłecki wrote:
-> On 30.11.2020 16:43, Vinod Koul wrote:
->> On 16-11-20, 08:46, Rafał Miłecki wrote:
->>> From: Rafał Miłecki <rafal@milecki.pl>
->>>
->>> 1. Change syntax from txt to yaml
->>> 2. Drop "Driver for" from the title
->>> 3. Drop "reg = <0x0>;" from example (noticed by dt_binding_check)
->>> 4. Specify license
->>>
->>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->>> ---
->>> I think this should go through linux-phy tree. Kishon, Vinod, can you
->>> take this patch?
->>>
->>> This patch generates a false positive checkpatch.pl warning [0].
->>> Please ignore:
->>> WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
->>
->> I am seeing warnings for indentation:
->>
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:19:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:20:12: [warning] wrong indentation: expected 12 but found 11 (indentation)
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:26:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:28:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:30:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:51:6: [warning] wrong indentation: expected 4 but found 5 (indentation)
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:71:11: [warning] wrong indentation: expected 9 but found 10 (indentation)
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:80:11: [warning] wrong indentation: expected 9 but found 10 (indentation)
->> Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml:88:11: [warning] wrong indentation: expected 9 but found 10 (indentation)
->>
->> Can you pls fix those as well
-> 
-> Sure, just note, it's a different YAML file (I missed that initially and was
-> triple checking my bcm-ns-usb3-phy.yaml ;) ). So I'll handle it using a
-> different patch.
+Hi,
 
-Oh, that file doesn't actualy exist in tree yet. I guess you meant to reply to Florian's patch
-[PATCH] dt-bindings: phy: Convert Broadcom SATA PHY to YAML
+Cheers for the quick reply. See below for more questions...
+
+On Mon, Nov 30, 2020 at 11:24:19PM +0800, wangyanan (Y) wrote:
+> On 2020/11/30 21:34, Will Deacon wrote:
+> > On Mon, Nov 30, 2020 at 08:18:46PM +0800, Yanan Wang wrote:
+> > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > > index 696b6aa83faf..fec8dc9f2baa 100644
+> > > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > > @@ -500,6 +500,9 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
+> > >   	return 0;
+> > >   }
+> > > +static void stage2_flush_dcache(void *addr, u64 size);
+> > > +static bool stage2_pte_cacheable(kvm_pte_t pte);
+> > > +
+> > >   static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+> > >   				struct stage2_map_data *data)
+> > >   {
+> > > @@ -507,9 +510,17 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+> > >   	struct page *page = virt_to_page(ptep);
+> > >   	if (data->anchor) {
+> > > -		if (kvm_pte_valid(pte))
+> > > +		if (kvm_pte_valid(pte)) {
+> > > +			kvm_set_invalid_pte(ptep);
+> > > +			kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu,
+> > > +				     addr, level);
+> > >   			put_page(page);
+> > This doesn't make sense to me: the page-table pages we're walking when the
+> > anchor is set are not accessible to the hardware walker because we unhooked
+> > the entire sub-table in stage2_map_walk_table_pre(), which has the necessary
+> > TLB invalidation.
+> > 
+> > Are you seeing a problem in practice here?
+> 
+> Yes, I indeed find a problem in practice.
+> 
+> When the migration was cancelled, a TLB conflic abort� was found in guest.
+> 
+> This problem is fixed before rework of the page table code, you can have a
+> look in the following two links:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c3736cd32bf5197aed1410ae826d2d254a5b277
+> 
+> https://lists.cs.columbia.edu/pipermail/kvmarm/2019-March/035031.html
+
+Ok, let's go through this, because I still don't see the bug. Please correct
+me if you spot any mistakes:
+
+  1. We have a block mapping for X => Y
+  2. Dirty logging is enabled, so the block mapping is write-protected and
+     ends up being split into page mappings
+  3. Dirty logging is disabled due to a failed migration.
+
+--- At this point, I think we agree that the state of the MMU is alright ---
+
+  4. We take a stage-2 fault and want to reinstall the block mapping:
+
+     a. kvm_pgtable_stage2_map() is invoked to install the block mapping
+     b. stage2_map_walk_table_pre() finds a table where we would like to
+        install the block:
+
+	i.   The anchor is set to point at this entry
+	ii.  The entry is made invalid
+	iii. We invalidate the TLB for the input address. This is
+	     TLBI IPAS2SE1IS without level hint and then TLBI VMALLE1IS.
+
+	*** At this point, the page-table pointed to by the old table entry
+	    is not reachable to the hardware walker ***
+
+     c. stage2_map_walk_leaf() is called for each leaf entry in the
+        now-unreachable subtree, dropping page-references for each valid
+	entry it finds.
+     d. stage2_map_walk_table_post() is eventually called for the entry
+        which we cleared back in b.ii, so we install the new block mapping.
+
+You are proposing to add additional TLB invalidation to (c), but I don't
+think that is necessary, thanks to the invalidation already performed in
+b.iii. What am I missing here?
+
+> > > +			if (stage2_pte_cacheable(pte))
+> > > +				stage2_flush_dcache(kvm_pte_follow(pte),
+> > > +						    kvm_granule_size(level));
+> > I don't understand the need for the flush either, as we're just coalescing
+> > existing entries into a larger block mapping.
+> 
+> In my opinion, after unmapping, it is necessary to ensure the cache
+> coherency, because it is unknown whether the future mapping memory attribute
+> is changed or not (cacheable -> non_cacheable) theoretically.
+
+But in this case we're just changing the structure of the page-tables,
+not the pages which are mapped, are we?
+
+Will
