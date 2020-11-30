@@ -2,1537 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186702C9231
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FD72C920F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 00:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731185AbgK3XKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 18:10:13 -0500
-Received: from mga03.intel.com ([134.134.136.65]:13823 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731165AbgK3XKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:10:11 -0500
-IronPort-SDR: 4mFmnmIXK3ihRDvuaZrzHqIkUZbT2Cb0MIrkWP173iR+MtPxUUQdJTdtcHI/gP2txStl4/Msd5
- q/jWCZNy8VTg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172826360"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="172826360"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 15:07:12 -0800
-IronPort-SDR: aZyJYyUcj+cOr0mD165aFVBoLiOcixv/pGj8Ps+OEj5XUrFlSklKxtY49NXG5pkUqYQZe2+2mg
- DWil62B0nOZA==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="538781115"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 15:07:12 -0800
-Received: from mtg-dev (mtg-dev.jf.intel.com [10.54.74.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.ostc.intel.com (Postfix) with ESMTPS id 8DA996363;
-        Mon, 30 Nov 2020 15:07:11 -0800 (PST)
-Received: from mgross by mtg-dev with local (Exim 4.90_1)
-        (envelope-from <mgross@linux.intel.com>)
-        id 1kjsGF-000C5l-Dn; Mon, 30 Nov 2020 15:07:11 -0800
-From:   mgross@linux.intel.com
-To:     linux-kernel@vger.kernel.org
-Cc:     markgross@kernel.org, mgross@linux.intel.com,
-        adam.r.gretzinger@intel.com, Seamus Kelly <seamus.kelly@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 22/22] xlink-core: factorize xlink_ioctl function by creating sub-functions for each ioctl command
-Date:   Mon, 30 Nov 2020 15:07:07 -0800
-Message-Id: <20201130230707.46351-23-mgross@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201130230707.46351-1-mgross@linux.intel.com>
-References: <20201130230707.46351-1-mgross@linux.intel.com>
+        id S1730431AbgK3XIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 18:08:07 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18784 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727590AbgK3XIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 18:08:06 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUN3YnB005132;
+        Mon, 30 Nov 2020 15:07:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=jCBPpLbSdD7em7DSUS9kWMuBtoqd8QcY79HnqbFZnNM=;
+ b=Qdu85b9Pj1ZeBFy/naVgI69d7MBFbffYZes3lDkk6glWd419qUczjXPUgxOLVdt4jU8e
+ vAkgFC22pRtpgyyjPpAOt3mNUz88T7B2tiNoMaSbzurG3h8aRUuZEh1jAC/Yo+8iv4Cp
+ 3rpzuCEAsgsbbsuPPHLZzRKukBuuNX6X2r4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35478pr1cv-12
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 30 Nov 2020 15:07:19 -0800
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 15:07:15 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aWWlfpqP8PSABplKwgLH30QDnlvw7sATeqTv+w1qHVQSWQnBCHSFcJjdemDEskiMljQFqDbwS5GHWovjxj6WzcnYlaCZCXV0z+NBqi8fp4LgFb6bH6qb0zPj/xT5PiDbr//auY0y1xOPPkYgG2QtM17HUUOU7VyqhGkAayNJ0S/9QICpdW28tDAUoSkl/CPyMBupx/9oQHM0NAgziqmxaArJVLqhnIwIqmnk3cjCMjDmIkwKAmQ44+uOL//41jR6UN4nXvbCtUO01K8HArxG4GzJ6Qmy324LCeB/L0gm1v/0i7HjNMnGe0h8UcpiTFV/X+eMkHskL9PAfueQTi/djA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jCBPpLbSdD7em7DSUS9kWMuBtoqd8QcY79HnqbFZnNM=;
+ b=Kk4SVaZIIceLyTu1VKYObyS6WlJypICh/E4qaBMM7DGCB1ViV0W3hsQ1925sDaiXFEdM81QK0FlIHYNLGep0sMhCQlbGT0n6HyEJ39RBylfo2Fiqv9SnFINNzp7dV8oVNNJNk1VBtpIzQTbDoEY/yct1R/8YixIz7Vx6YuV5o19MmGM4bRUOkPyLWAIClx6POM7zqkdVXIpALHRUXmbbvIm+jsLFUmbJ2Wi8Mn3MbxK6vCePrigUf5R2mRCJl3CuMnucbuFLJUxGIQZ7enpDYfzrVOJtYiJ4/jXp/X3bkzhQUQXsPUwtkseU3TXSXn1yg2AbLgg0rgv7NEUoYjQITA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jCBPpLbSdD7em7DSUS9kWMuBtoqd8QcY79HnqbFZnNM=;
+ b=bG/knFY+OSce0AGrvYKlJZavp6OElKXm71JGsN5axx3MXfA0UKNEa97xbLggSTh356m4BLI66UFdjiX6nh/wWJ/vWgAc1PTEdrFhpVWw1qHHmgLaccgUYl7iKowFOl3vy9eWaRYNMJMiARBq9eBtzUh++wxrVix309Pz0+jEPlI=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3285.namprd15.prod.outlook.com (2603:10b6:a03:103::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Mon, 30 Nov
+ 2020 23:07:14 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
+ 23:07:14 +0000
+Date:   Mon, 30 Nov 2020 15:07:09 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Yang Shi <shy828301@gmail.com>
+CC:     Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: list_lru: hold nlru lock to avoid reading transient
+ negative nr_items
+Message-ID: <20201130230709.GA1375014@carbon.DHCP.thefacebook.com>
+References: <20201130184514.551950-1-shy828301@gmail.com>
+ <20201130200936.GA1354703@carbon.DHCP.thefacebook.com>
+ <CAHbLzkoHqZ0=jFXBt8ByvU2-9wkYe+DfwxD_6ym0gfh4tefZPw@mail.gmail.com>
+ <20201130223347.GE840171@carbon.dhcp.thefacebook.com>
+ <CAHbLzkpLp+RQrzvBLXW9=xEw1z9hUodu0TqGdjeuhFO0vW=2TA@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkpLp+RQrzvBLXW9=xEw1z9hUodu0TqGdjeuhFO0vW=2TA@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::5:6c4e]
+X-ClientProxiedBy: CO1PR15CA0059.namprd15.prod.outlook.com
+ (2603:10b6:101:1f::27) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:6c4e) by CO1PR15CA0059.namprd15.prod.outlook.com (2603:10b6:101:1f::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Mon, 30 Nov 2020 23:07:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d5d221d5-9961-4986-e3bd-08d89584acc6
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3285:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3285B9AD92EC6B95C9055A0ABEF50@BYAPR15MB3285.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9Xxl7/zWhzr5ltz90Aj2Ub1ZiSp3PupdT8w9yvX34AJldBylPBWLAwDBOgdaEWDsJm6EqkraIEsYFyTmNnTjiFT3f3mzDIdqN5nAlRUMVWGv5JeG8HuoQP1YzepuF+US+NAK8uaTQsboruA75d7+qtKYCqQRAuj8cxdyBusyMc/iUvgfk2TkUuq/Qmvz6BYjhGNk+uUSvXkMC+vceGdbHgLC0wh7wEuIHDNe335lBoQkdVnbYREWMgVH321euxTyOZMchrDbPNSo8awoN1HKng8ZOujXdxTyItGXrBgyPMDJC/OH4Ej3tU8uphus0GIN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(366004)(136003)(376002)(346002)(66556008)(66476007)(33656002)(5660300002)(8676002)(8936002)(1076003)(4326008)(9686003)(55016002)(478600001)(6666004)(83380400001)(2906002)(7696005)(186003)(53546011)(66946007)(6506007)(316002)(86362001)(54906003)(52116002)(16526019)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hCEdN+6MQvlT2kFdz++86C0gWFcmPhlj9gA+FJRQ1RH9IQmNLzznN/iGxaeL?=
+ =?us-ascii?Q?UiK4tFnmtbElCHjbibuXQX7WG/HhneVrG7qzSm3z1ZyN+69q+M+S+3+uB4IH?=
+ =?us-ascii?Q?CN94I0/5VTHw18RX7dQxhhpRsAr+feHHnrspKBFCboRxCeQYY0Bb1Jer8mth?=
+ =?us-ascii?Q?7GGiVIj5C/roK9c3XKZyETIGOcuikiWeYrURvmmVAn9GLrxWx4vlXGnxyRuE?=
+ =?us-ascii?Q?Dj3qmymOog/8iAj+QkQeP7veFnTSbFMPoJ0KeWaC8sO0HQKEOkgTO8Ia7Ue1?=
+ =?us-ascii?Q?zjM4qyV4ba7ACTeRDu6Rc9pkSpx0q1qHfTs0pt//CFriCWm86NnvduGIz32p?=
+ =?us-ascii?Q?5Mldd2BQ+iTjLQUhwiyetiAFO1uW2cm5Dl4nW5mgYaFAByvGGB2IbGpERouN?=
+ =?us-ascii?Q?7kllY13zFcwJ4BT9SOjxrhBqAi8aj/AGo2nXoqc5HibxYbHxgIRTL9aOra6e?=
+ =?us-ascii?Q?/6BHaiQgE2MB8dZge5KyOjol77Tple+EFK+MvHFRFNsG5SjHkjevUcD40/BW?=
+ =?us-ascii?Q?8A7F44Gdq4IXp4lKZOLxROIoZ/IvMu8v1Nc2rRX32Sc4N3Ab/l5yR6Ij306G?=
+ =?us-ascii?Q?USibYolngq4v5+nzejuTsm0tGwSNga3MGIpeRPmGjwk3MieuyOubwICo9JkJ?=
+ =?us-ascii?Q?JkgKb+ueyW14QwXeRW2xdpbeR7BMXMRqE/fkZlgYkmrs2AOStJ7EKad1IHM3?=
+ =?us-ascii?Q?cev03h30W8NeimjKZKj7MmjUxDpXG1NPn8NXFZCLqrGDwSQ5KUvAWlnliVSy?=
+ =?us-ascii?Q?9d7qShNQBNUb03I+ivTOtJn6GK9DYCFVazpcSsCnZjNoKUfyPXx007DBbHtq?=
+ =?us-ascii?Q?Rav+78XkQyMRumjcGET3twuByVgnqwZthwyqOuFLfRVBAwBrKzJSXppZ2nrh?=
+ =?us-ascii?Q?C5+5hdip6w0vz+o3ZXiQPmAdhb/mvrY7LjreO3u3RlqTx6AhMkQIfs3EB/i9?=
+ =?us-ascii?Q?T3nozzXg1OU7ciCbH0m5HKKwCHxVc5nxeJ2ZypzUWp+LFQElqowc/vf5bypV?=
+ =?us-ascii?Q?36UhosxjiebaV2YKnsLvjTUnNw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5d221d5-9961-4986-e3bd-08d89584acc6
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 23:07:14.1371
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sR1I5u12bgRy4XPz6TeHL4m6Ba9GpchWfoiMrG0pvfS92l2sXSKxcx9qJ/zd1Vm+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3285
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_12:2020-11-30,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxlogscore=999 impostorscore=0 malwarescore=0 bulkscore=0 suspectscore=5
+ spamscore=0 adultscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300143
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seamus Kelly <seamus.kelly@intel.com>
+On Mon, Nov 30, 2020 at 02:54:02PM -0800, Yang Shi wrote:
+> On Mon, Nov 30, 2020 at 2:33 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > On Mon, Nov 30, 2020 at 12:57:47PM -0800, Yang Shi wrote:
+> > > On Mon, Nov 30, 2020 at 12:09 PM Roman Gushchin <guro@fb.com> wrote:
+> > > >
+> > > > On Mon, Nov 30, 2020 at 10:45:14AM -0800, Yang Shi wrote:
+> > > > > When investigating a slab cache bloat problem, significant amount of
+> > > > > negative dentry cache was seen, but confusingly they neither got shrunk
+> > > > > by reclaimer (the host has very tight memory) nor be shrunk by dropping
+> > > > > cache.  The vmcore shows there are over 14M negative dentry objects on lru,
+> > > > > but tracing result shows they were even not scanned at all.  The further
+> > > > > investigation shows the memcg's vfs shrinker_map bit is not set.  So the
+> > > > > reclaimer or dropping cache just skip calling vfs shrinker.  So we have
+> > > > > to reboot the hosts to get the memory back.
+> > > > >
+> > > > > I didn't manage to come up with a reproducer in test environment, and the
+> > > > > problem can't be reproduced after rebooting.  But it seems there is race
+> > > > > between shrinker map bit clear and reparenting by code inspection.  The
+> > > > > hypothesis is elaborated as below.
+> > > > >
+> > > > > The memcg hierarchy on our production environment looks like:
+> > > > >                 root
+> > > > >                /    \
+> > > > >           system   user
+> > > > >
+> > > > > The main workloads are running under user slice's children, and it creates
+> > > > > and removes memcg frequently.  So reparenting happens very often under user
+> > > > > slice, but no task is under user slice directly.
+> > > > >
+> > > > > So with the frequent reparenting and tight memory pressure, the below
+> > > > > hypothetical race condition may happen:
+> > > > >
+> > > > >     CPU A                            CPU B                         CPU C
+> > > > > reparent
+> > > > >     dst->nr_items == 0
+> > > > >                                  shrinker:
+> > > > >                                      total_objects == 0
+> > > > >     add src->nr_items to dst
+> > > > >     set_bit
+> > > > >                                      retrun SHRINK_EMPTY
+> > > > >                                      clear_bit
+> > > > >                                                                   list_lru_del()
+> > > > > reparent again
+> > > > >     dst->nr_items may go negative
+> > > > >     due to current list_lru_del()
+> > > > >     on CPU C
+> > > > >                                  The second run of shrinker:
+> > > > >                                      read nr_items without any
+> > > > >                                      synchronization, so it may
+> > > > >                                      see intermediate negative
+> > > > >                                      nr_items then total_objects
+> > > > >                                      may return 0 conincidently
+> > > > >
+> > > > >                                      keep the bit cleared
+> > > > >     dst->nr_items != 0
+> > > > >     skip set_bit
+> > > > >     add scr->nr_item to dst
+> > > > >
+> > > > > After this point dst->nr_item may never go zero, so reparenting will not
+> > > > > set shrinker_map bit anymore.  And since there is no task under user
+> > > > > slice directly, so no new object will be added to its lru to set the
+> > > > > shrinker map bit either.  That bit is kept cleared forever.
+> > > > >
+> > > > > How does list_lru_del() race with reparenting?  It is because
+> > > > > reparenting replaces childen's kmemcg_id to parent's without protecting
+> > > > > from nlru->lock, so list_lru_del() may see parent's kmemcg_id but
+> > > > > actually deleting items from child's lru, but dec'ing parent's nr_items,
+> > > > > so the parent's nr_items may go negative as commit
+> > > > > 2788cf0c401c268b4819c5407493a8769b7007aa ("memcg: reparent list_lrus and
+> > > > > free kmemcg_id on css offline") says.
+> >
+> > Also note that since the introduction of the slab reparenting, list_lru_from_kmem()
+> > can return the parent lru.
+> 
+> Do you mean slab charge reparenting or lru reparenting? I think
+> list_lru_from_kmem() can return the parent lru since lru reparenting.
 
-Refactor the too large IOCTL function to call helper functions.
+objcg reparenting to be precise. It's actually kinda weird now, because
+there are two slightly different reparenting mechanisms. We might to
+wanna merge them in the future.
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
----
- drivers/misc/xlink-core/Makefile      |   2 +-
- drivers/misc/xlink-core/xlink-core.c  | 625 ++++++--------------------
- drivers/misc/xlink-core/xlink-core.h  |  24 +
- drivers/misc/xlink-core/xlink-defs.h  |   2 +-
- drivers/misc/xlink-core/xlink-ioctl.c | 584 ++++++++++++++++++++++++
- drivers/misc/xlink-core/xlink-ioctl.h |  36 ++
- 6 files changed, 773 insertions(+), 500 deletions(-)
- create mode 100644 drivers/misc/xlink-core/xlink-core.h
- create mode 100644 drivers/misc/xlink-core/xlink-ioctl.c
- create mode 100644 drivers/misc/xlink-core/xlink-ioctl.h
+> 
+> >
+> > > > >
+> > > > > Can we move kmemcg_id replacement after reparenting?  No, because the
+> > > > > race with list_lru_del() may result in negative src->nr_items, but it
+> > > > > will never be fixed.  So the shrinker may never return SHRINK_EMPTY then
+> > > > > keep the shrinker map bit set always.  The shrinker will be always
+> > > > > called for nonsense.
+> > > > >
+> > > > > Can we synchronize list_lru_del() and reparenting?  Yes, it could be
+> > > > > done.  But it seems we need introduce a new lock or use nlru->lock.  But
+> > > > > it sounds complicated to move kmemcg_id replacement code under nlru->lock.
+> > > > > And list_lru_del() may be called quite often to exacerbate some hot
+> > > > > path, i.e. dentry kill.
+> > > > >
+> > > > > So, it sounds acceptable to synchronize reading nr_items to avoid seeing
+> > > > > intermediate negative nr_items given the simplicity and it is typically
+> > > > > just called by shrinkers when counting the freeable objects.
+> > > > >
+> > > > > The patch is tested with some shrinker intensive workloads, no
+> > > > > noticeable regression is soptted.
+> > > >
+> > > > Hi Yang!
+> > > >
+> > > > It's really tricky, thank you for digging in! It's a perfect analysis!
+> > > >
+> > > > I wonder though, if it's better to just always set the shrinker bit on reparenting
+> > > > if we do reparent some items? Then we'll avoid adding new synchronization
+> > > > to the hot path. What do you think?
+> > >
+> > > Thanks a lot for the suggestion. I was thinking about the same
+> > > approach too, but I thought src->nr_items may go zero due to
+> > > concurrent list_lru_del() at the first place. But I just rethought the
+> > > whole thing, it seems impossible that dst->nr_items goes negative and
+> > > src->nr_items goes zero at the same time.
+> >
+> > Even if it would be possible, it seems less scary: the next reparenting
+> > will likely set the bit. So we'll not get into the permanently bad state.
+> 
+> Unfortunately, no. Once the race happens, reparenting won't set the
+> bit anymore since dst->nr_items won't go zero because the shrinker
+> will not be called.
 
-diff --git a/drivers/misc/xlink-core/Makefile b/drivers/misc/xlink-core/Makefile
-index 6e604c0b8962..2f64703301d6 100644
---- a/drivers/misc/xlink-core/Makefile
-+++ b/drivers/misc/xlink-core/Makefile
-@@ -2,4 +2,4 @@
- # Makefile for KeemBay xlink Linux driver
- #
- obj-$(CONFIG_XLINK_CORE) += xlink.o
--xlink-objs += xlink-core.o xlink-multiplexer.o xlink-dispatcher.o xlink-platform.o
-+xlink-objs += xlink-core.o xlink-multiplexer.o xlink-dispatcher.o xlink-platform.o xlink-ioctl.o
-diff --git a/drivers/misc/xlink-core/xlink-core.c b/drivers/misc/xlink-core/xlink-core.c
-index 63f65def8aa9..ed2b37085851 100644
---- a/drivers/misc/xlink-core/xlink-core.c
-+++ b/drivers/misc/xlink-core/xlink-core.c
-@@ -20,9 +20,11 @@
- #endif
- 
- #include "xlink-defs.h"
-+#include "xlink-core.h"
- #include "xlink-dispatcher.h"
- #include "xlink-multiplexer.h"
- #include "xlink-platform.h"
-+#include "xlink-ioctl.h"
- 
- // xlink version number
- #define XLINK_VERSION_MAJOR		0
-@@ -52,25 +54,7 @@ static struct class *dev_class;
- static struct cdev xlink_cdev;
- 
- static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
--static enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
--					      u16 chan, u8 const *pmessage,
--					      u32 size);
- 
--static enum xlink_error xlink_write_volatile_user(struct xlink_handle *handle,
--						  u16 chan, u8 const *message,
--						  u32 size);
--static enum xlink_error do_xlink_write_volatile(struct xlink_handle *handle,
--						u16 chan, u8 const *message,
--						u32 size, u32 user_flag);
--static enum xlink_error xlink_register_device_event_user(struct xlink_handle *handle,
--							 u32 *event_list,
--							 u32 num_events,
--							 xlink_device_event_cb event_notif_fn);
--static enum xlink_error do_xlink_register_device_event(struct xlink_handle *handle,
--						       u32 *event_list,
--						       u32 num_events,
--						       xlink_device_event_cb event_notif_fn,
--						       u32 user_flag);
- static struct mutex dev_event_lock;
- 
- static const struct file_operations fops = {
-@@ -105,9 +89,6 @@ struct event_info {
- 	xlink_device_event_cb event_notif_fn;
- };
- 
--static u8 volbuf[XLINK_MAX_BUF_SIZE]; // buffer for volatile transactions
--#define NUM_REG_EVENTS 4
--
- // sysfs attribute functions
- 
- static ssize_t event0_show(struct device *dev, struct device_attribute *attr, char *buf)
-@@ -342,427 +323,84 @@ static int kmb_xlink_remove(struct platform_device *pdev)
-  * IOCTL function for User Space access to xlink kernel functions
-  *
-  */
-+int ioctl_connect(unsigned long arg);
- 
- static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
--	struct xlink_handle		devh	= {0};
--	struct xlinkopenchannel		op	= {0};
--	struct xlinkwritedata		wr	= {0};
--	struct xlinkreaddata		rd	= {0};
--	struct xlinkreadtobuffer	rdtobuf = {0};
--	struct xlinkconnect		con	= {0};
--	struct xlinkrelease		rel	= {0};
--	struct xlinkstartvpu		startvpu = {0};
--	struct xlinkcallback		cb	= {0};
--	struct xlinkgetdevicename	devn	= {0};
--	struct xlinkgetdevicelist	devl	= {0};
--	struct xlinkgetdevicestatus	devs	= {0};
--	struct xlinkbootdevice		boot	= {0};
--	struct xlinkresetdevice		res	= {0};
--	struct xlinkdevmode		devm	= {0};
--	struct xlinkregdevevent		regdevevent = {0};
--	u32 sw_device_id_list[XLINK_MAX_DEVICE_LIST_SIZE];
--	char name[XLINK_MAX_DEVICE_NAME_SIZE];
--	int interface = NULL_INTERFACE;
--	u32 device_status = 0;
--	u32 num_devices = 0;
--	u32 device_mode = 0;
--	u32 num_events = 0;
--	char filename[64];
--	u32 *ev_list;
--	u8 reladdr;
--	u8 *rdaddr;
--	u32 size;
- 	int rc;
- 
- 	switch (cmd) {
- 	case XL_CONNECT:
--		if (copy_from_user(&con, (void __user *)arg,
--				   sizeof(struct xlinkconnect)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)con.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_connect(&devh);
--		if (rc == X_LINK_SUCCESS) {
--			if (copy_to_user((void __user *)con.handle,
--					 &devh, sizeof(struct xlink_handle)))
--				return -EFAULT;
--		}
--		if (copy_to_user((void __user *)con.return_code, (void *)&rc,
--				 sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_connect(arg);
- 		break;
- 	case XL_OPEN_CHANNEL:
--		if (copy_from_user(&op, (void __user *)arg,
--				   sizeof(struct xlinkopenchannel)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)op.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_open_channel(&devh, op.chan, op.mode, op.data_size,
--					op.timeout);
--		if (copy_to_user((void __user *)op.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_open_channel(arg);
- 		break;
- 	case XL_DATA_READY_CALLBACK:
--		if (copy_from_user(&cb, (void __user *)arg,
--				   sizeof(struct xlinkcallback)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)cb.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		CHANNEL_SET_USER_BIT(cb.chan); // set MSbit for user space call
--		rc = xlink_data_available_event(&devh, cb.chan, cb.callback);
--		if (copy_to_user((void __user *)cb.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_data_ready_callback(arg);
- 		break;
- 	case XL_DATA_CONSUMED_CALLBACK:
--		if (copy_from_user(&cb, (void __user *)arg,
--				   sizeof(struct xlinkcallback)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)cb.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		CHANNEL_SET_USER_BIT(cb.chan); // set MSbit for user space call
--		rc = xlink_data_consumed_event(&devh, cb.chan, cb.callback);
--		if (copy_to_user((void __user *)cb.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_data_consumed_callback(arg);
- 		break;
- 	case XL_READ_DATA:
--		if (copy_from_user(&rd, (void __user *)arg,
--				   sizeof(struct xlinkreaddata)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)rd.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_read_data(&devh, rd.chan, &rdaddr, &size);
--		if (!rc) {
--			interface = get_interface_from_sw_device_id(devh.sw_device_id);
--			if (interface == IPC_INTERFACE) {
--				if (copy_to_user((void __user *)rd.pmessage, (void *)&rdaddr,
--						 sizeof(u32)))
--					return -EFAULT;
--			} else {
--				if (copy_to_user((void __user *)rd.pmessage, (void *)rdaddr,
--						 size))
--					return -EFAULT;
--			}
--			if (copy_to_user((void __user *)rd.size, (void *)&size, sizeof(size)))
--				return -EFAULT;
--		}
--		if (copy_to_user((void __user *)rd.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_read_data(arg);
- 		break;
- 	case XL_READ_TO_BUFFER:
--		if (copy_from_user(&rdtobuf, (void __user *)arg,
--				   sizeof(struct xlinkreadtobuffer)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)rdtobuf.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_read_data_to_buffer(&devh, rdtobuf.chan,
--					       (u8 *)volbuf, &size);
--		if (!rc) {
--			if (copy_to_user((void __user *)rdtobuf.pmessage, (void *)volbuf,
--					 size))
--				return -EFAULT;
--			if (copy_to_user((void __user *)rdtobuf.size, (void *)&size,
--					 sizeof(size)))
--				return -EFAULT;
--		}
--		if (copy_to_user((void __user *)rdtobuf.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_read_to_buffer(arg);
- 		break;
- 	case XL_WRITE_DATA:
--		if (copy_from_user(&wr, (void __user *)arg,
--				   sizeof(struct xlinkwritedata)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)wr.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		if (wr.size <= XLINK_MAX_DATA_SIZE) {
--			rc = xlink_write_data_user(&devh, wr.chan, wr.pmessage,
--						   wr.size);
--			if (copy_to_user((void __user *)wr.return_code, (void *)&rc,
--					 sizeof(rc)))
--				return -EFAULT;
--		} else {
--			return -EFAULT;
--		}
-+		rc = ioctl_write_data(arg);
- 		break;
- 	case XL_WRITE_VOLATILE:
--		if (copy_from_user(&wr, (void __user *)arg,
--				   sizeof(struct xlinkwritedata)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)wr.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		if (wr.size <= XLINK_MAX_BUF_SIZE) {
--			if (copy_from_user(volbuf, (void __user *)wr.pmessage,
--					   wr.size))
--				return -EFAULT;
--			rc = xlink_write_volatile_user(&devh, wr.chan, volbuf,
--						       wr.size);
--			if (copy_to_user((void __user *)wr.return_code, (void *)&rc,
--					 sizeof(rc)))
--				return -EFAULT;
--		} else {
--			return -EFAULT;
--		}
-+		rc = ioctl_write_volatile_data(arg);
- 		break;
- 	case XL_WRITE_CONTROL_DATA:
--		if (copy_from_user(&wr, (void __user *)arg,
--				   sizeof(struct xlinkwritedata)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)wr.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		if (wr.size <= XLINK_MAX_CONTROL_DATA_SIZE) {
--			if (copy_from_user(volbuf, (void __user *)wr.pmessage,
--					   wr.size))
--				return -EFAULT;
--			rc = xlink_write_control_data(&devh, wr.chan, volbuf,
--						      wr.size);
--			if (copy_to_user((void __user *)wr.return_code,
--					 (void *)&rc, sizeof(rc)))
--				return -EFAULT;
--		} else {
--			return -EFAULT;
--		}
-+		rc = ioctl_write_control_data(arg);
- 		break;
- 	case XL_RELEASE_DATA:
--		if (copy_from_user(&rel, (void __user *)arg,
--				   sizeof(struct xlinkrelease)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)rel.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		if (rel.addr) {
--			if (get_user(reladdr, (u32 __user *const)rel.addr))
--				return -EFAULT;
--			rc = xlink_release_data(&devh, rel.chan,
--						(u8 *)&reladdr);
--		} else {
--			rc = xlink_release_data(&devh, rel.chan, NULL);
--		}
--		if (copy_to_user((void __user *)rel.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_release_data(arg);
- 		break;
- 	case XL_CLOSE_CHANNEL:
--		if (copy_from_user(&op, (void __user *)arg,
--				   sizeof(struct xlinkopenchannel)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)op.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_close_channel(&devh, op.chan);
--		if (copy_to_user((void __user *)op.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_close_channel(arg);
- 		break;
- 	case XL_START_VPU:
--		if (copy_from_user(&startvpu, (void __user *)arg,
--				   sizeof(struct xlinkstartvpu)))
--			return -EFAULT;
--		if (startvpu.namesize > sizeof(filename))
--			return -EINVAL;
--		memset(filename, 0, sizeof(filename));
--		if (copy_from_user(filename, (void __user *)startvpu.filename,
--				   startvpu.namesize))
--			return -EFAULT;
--		rc = xlink_start_vpu(filename);
--		if (copy_to_user((void __user *)startvpu.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_start_vpu(arg);
- 		break;
- 	case XL_STOP_VPU:
--		rc = xlink_stop_vpu();
-+		rc = ioctl_stop_vpu();
- 		break;
- 	case XL_RESET_VPU:
--		rc = xlink_stop_vpu();
-+		rc = ioctl_stop_vpu();
- 		break;
- 	case XL_DISCONNECT:
--		if (copy_from_user(&con, (void __user *)arg,
--				   sizeof(struct xlinkconnect)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)con.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_disconnect(&devh);
--		if (copy_to_user((void __user *)con.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_disconnect(arg);
- 		break;
- 	case XL_GET_DEVICE_NAME:
--		if (copy_from_user(&devn, (void __user *)arg,
--				   sizeof(struct xlinkgetdevicename)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)devn.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		if (devn.name_size <= XLINK_MAX_DEVICE_NAME_SIZE) {
--			rc = xlink_get_device_name(&devh, name, devn.name_size);
--			if (!rc) {
--				if (copy_to_user((void __user *)devn.name, (void *)name,
--						 devn.name_size))
--					return -EFAULT;
--			}
--		} else {
--			rc = X_LINK_ERROR;
--		}
--		if (copy_to_user((void __user *)devn.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_get_device_name(arg);
- 		break;
- 	case XL_GET_DEVICE_LIST:
--		if (copy_from_user(&devl, (void __user *)arg,
--				   sizeof(struct xlinkgetdevicelist)))
--			return -EFAULT;
--		rc = xlink_get_device_list(sw_device_id_list, &num_devices);
--		if (!rc && num_devices <= XLINK_MAX_DEVICE_LIST_SIZE) {
--			/* TODO: this next copy is dangerous! we have no idea
--			 * how large the devl.sw_device_id_list buffer is
--			 * provided by the user. if num_devices is too large,
--			 * the copy will overflow the buffer.
--			 */
--			if (copy_to_user((void __user *)devl.sw_device_id_list,
--					 (void *)sw_device_id_list,
--					 (sizeof(*sw_device_id_list)
--					 * num_devices)))
--				return -EFAULT;
--			if (copy_to_user((void __user *)devl.num_devices, (void *)&num_devices,
--					 (sizeof(num_devices))))
--				return -EFAULT;
--		}
--		if (copy_to_user((void __user *)devl.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_get_device_list(arg);
- 		break;
- 	case XL_GET_DEVICE_STATUS:
--		if (copy_from_user(&devs, (void __user *)arg,
--				   sizeof(struct xlinkgetdevicestatus)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)devs.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_get_device_status(&devh, &device_status);
--		if (!rc) {
--			if (copy_to_user((void __user *)devs.device_status,
--					 (void *)&device_status,
--					 sizeof(device_status)))
--				return -EFAULT;
--		}
--		if (copy_to_user((void __user *)devs.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_get_device_status(arg);
- 		break;
- 	case XL_BOOT_DEVICE:
--		if (copy_from_user(&boot, (void __user *)arg,
--				   sizeof(struct xlinkbootdevice)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)boot.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		if (boot.binary_name_size > sizeof(filename))
--			return -EINVAL;
--		memset(filename, 0, sizeof(filename));
--		if (copy_from_user(filename, (void __user *)boot.binary_name,
--				   boot.binary_name_size))
--			return -EFAULT;
--		rc = xlink_boot_device(&devh, filename);
--		if (copy_to_user((void __user *)boot.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_boot_device(arg);
- 		break;
- 	case XL_RESET_DEVICE:
--		if (copy_from_user(&res, (void __user *)arg,
--				   sizeof(struct xlinkresetdevice)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)res.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_reset_device(&devh);
--		if (copy_to_user((void __user *)res.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_reset_device(arg);
- 		break;
- 	case XL_GET_DEVICE_MODE:
--		if (copy_from_user(&devm, (void __user *)arg,
--				   sizeof(struct xlinkdevmode)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)devm.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		rc = xlink_get_device_mode(&devh, &device_mode);
--		if (!rc) {
--			if (copy_to_user((void __user *)devm.device_mode, (void *)&device_mode,
--					 sizeof(device_mode)))
--				return -EFAULT;
--		}
--		if (copy_to_user((void __user *)devm.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_get_device_mode(arg);
- 		break;
- 	case XL_SET_DEVICE_MODE:
--		if (copy_from_user(&devm, (void __user *)arg,
--				   sizeof(struct xlinkdevmode)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)devm.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		if (copy_from_user(&device_mode, (void __user *)devm.device_mode,
--				   sizeof(device_mode)))
--			return -EFAULT;
--		rc = xlink_set_device_mode(&devh, device_mode);
--		if (copy_to_user((void __user *)devm.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_set_device_mode(arg);
- 		break;
- 	case XL_REGISTER_DEV_EVENT:
--		if (copy_from_user(&regdevevent, (void __user *)arg,
--				   sizeof(struct xlinkregdevevent)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)regdevevent.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		num_events = regdevevent.num_events;
--		if (num_events > 0 && num_events <= NUM_REG_EVENTS) {
--			ev_list = kzalloc((num_events * sizeof(u32)), GFP_KERNEL);
--			if (ev_list) {
--				if (copy_from_user(ev_list,
--						   (void __user *)regdevevent.event_list,
--						   (num_events * sizeof(u32)))) {
--					kfree(ev_list);
--					return -EFAULT;
--				}
--				rc = xlink_register_device_event_user(&devh,
--								      ev_list,
--								      num_events,
--								      NULL);
--				kfree(ev_list);
--			} else {
--				rc = X_LINK_ERROR;
--			}
--		} else {
--			rc = X_LINK_ERROR;
--		}
--		if (copy_to_user((void __user *)regdevevent.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_register_device_event(arg);
- 		break;
- 	case XL_UNREGISTER_DEV_EVENT:
--		if (copy_from_user(&regdevevent, (void __user *)arg,
--				   sizeof(struct xlinkregdevevent)))
--			return -EFAULT;
--		if (copy_from_user(&devh, (void __user *)regdevevent.handle,
--				   sizeof(struct xlink_handle)))
--			return -EFAULT;
--		num_events = regdevevent.num_events;
--		if (num_events <= NUM_REG_EVENTS) {
--			ev_list = kzalloc((num_events * sizeof(u32)), GFP_KERNEL);
--			if (copy_from_user(ev_list,
--					   (void __user *)regdevevent.event_list,
--					   (num_events * sizeof(u32)))) {
--				kfree(ev_list);
--				return -EFAULT;
--			}
--			rc = xlink_unregister_device_event(&devh, ev_list, num_events);
--			kfree(ev_list);
--		} else {
--			rc = X_LINK_ERROR;
--		}
--		if (copy_to_user((void __user *)regdevevent.return_code, (void *)&rc, sizeof(rc)))
--			return -EFAULT;
-+		rc = ioctl_unregister_device_event(arg);
- 		break;
- 	}
- 	if (rc)
-@@ -997,13 +635,16 @@ enum xlink_error xlink_close_channel(struct xlink_handle *handle,
- }
- EXPORT_SYMBOL(xlink_close_channel);
- 
--enum xlink_error xlink_write_data(struct xlink_handle *handle,
--				  u16 chan, u8 const *pmessage, u32 size)
-+static enum xlink_error do_xlink_write_data(struct xlink_handle *handle,
-+					    u16 chan, u8 const *pmessage,
-+					    u32 size, u32 user_flag)
- {
- 	struct xlink_event *event;
- 	struct xlink_link *link;
- 	enum xlink_error rc;
- 	int event_queued = 0;
-+	dma_addr_t paddr = 0;
-+	u32 addr;
- 
- 	if (!xlink || !handle)
- 		return X_LINK_ERROR;
-@@ -1019,88 +660,75 @@ enum xlink_error xlink_write_data(struct xlink_handle *handle,
- 				   chan, size, 0);
- 	if (!event)
- 		return X_LINK_ERROR;
-+	event->user_data = user_flag;
- 
- 	if (chan < XLINK_IPC_MAX_CHANNELS &&
- 	    event->interface == IPC_INTERFACE) {
- 		/* only passing message address across IPC interface */
--		event->data = &pmessage;
-+		if (user_flag) {
-+			if (get_user(addr, (u32 __user *)pmessage)) {
-+				xlink_destroy_event(event);
-+				return X_LINK_ERROR;
-+			}
-+			event->data = &addr;
-+		} else {
-+			event->data = &pmessage;
-+		}
- 		rc = xlink_multiplexer_tx(event, &event_queued);
- 		xlink_destroy_event(event);
- 	} else {
--		event->data = (u8 *)pmessage;
--		event->paddr = 0;
-+		if (user_flag) {
-+			event->data = xlink_platform_allocate(&xlink->pdev->dev, &paddr,
-+							      size,
-+							      XLINK_PACKET_ALIGNMENT,
-+							      XLINK_NORMAL_MEMORY);
-+			if (!event->data) {
-+				xlink_destroy_event(event);
-+				return X_LINK_ERROR;
-+			}
-+			if (copy_from_user(event->data, (void __user *)pmessage, size)) {
-+				xlink_platform_deallocate(&xlink->pdev->dev,
-+							  event->data, paddr, size,
-+							  XLINK_PACKET_ALIGNMENT,
-+							  XLINK_NORMAL_MEMORY);
-+				xlink_destroy_event(event);
-+				return X_LINK_ERROR;
-+			}
-+			event->paddr = paddr;
-+		} else {
-+			event->data = (u8 *)pmessage;
-+			event->paddr = 0;
-+		}
- 		rc = xlink_multiplexer_tx(event, &event_queued);
--		if (!event_queued)
-+		if (!event_queued) {
-+			if (user_flag) {
-+				xlink_platform_deallocate(&xlink->pdev->dev,
-+							  event->data, paddr, size,
-+							  XLINK_PACKET_ALIGNMENT,
-+							  XLINK_NORMAL_MEMORY);
-+			}
- 			xlink_destroy_event(event);
-+		}
- 	}
- 	return rc;
- }
--EXPORT_SYMBOL(xlink_write_data);
- 
--static enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
--					      u16 chan, u8 const *pmessage,
--					      u32 size)
-+enum xlink_error xlink_write_data(struct xlink_handle *handle,
-+				  u16 chan, u8 const *pmessage, u32 size)
- {
--	struct xlink_event *event;
--	struct xlink_link *link;
--	enum xlink_error rc;
--	int event_queued = 0;
--	dma_addr_t paddr = 0;
--	u32 addr;
--
--	if (!xlink || !handle)
--		return X_LINK_ERROR;
--
--	if (size > XLINK_MAX_DATA_SIZE)
--		return X_LINK_ERROR;
-+	enum xlink_error rc = 0;
- 
--	link = get_link_by_sw_device_id(handle->sw_device_id);
--	if (!link)
--		return X_LINK_ERROR;
-+	rc = do_xlink_write_data(handle, chan, pmessage, size, 0);
-+	return rc;
-+}
-+EXPORT_SYMBOL(xlink_write_data);
- 
--	event = xlink_create_event(link->id, XLINK_WRITE_REQ, &link->handle,
--				   chan, size, 0);
--	if (!event)
--		return X_LINK_ERROR;
--	event->user_data = 1;
-+enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
-+				       u16 chan, u8 const *pmessage, u32 size)
-+{
-+	enum xlink_error rc = 0;
- 
--	if (chan < XLINK_IPC_MAX_CHANNELS &&
--	    event->interface == IPC_INTERFACE) {
--		/* only passing message address across IPC interface */
--		if (get_user(addr, (u32 __user *)pmessage)) {
--			xlink_destroy_event(event);
--			return X_LINK_ERROR;
--		}
--		event->data = &addr;
--		rc = xlink_multiplexer_tx(event, &event_queued);
--		xlink_destroy_event(event);
--	} else {
--		event->data = xlink_platform_allocate(&xlink->pdev->dev, &paddr,
--						      size,
--						      XLINK_PACKET_ALIGNMENT,
--						      XLINK_NORMAL_MEMORY);
--		if (!event->data) {
--			xlink_destroy_event(event);
--			return X_LINK_ERROR;
--		}
--		if (copy_from_user(event->data, (void __user *)pmessage, size)) {
--			xlink_platform_deallocate(&xlink->pdev->dev,
--						  event->data, paddr, size,
--						  XLINK_PACKET_ALIGNMENT,
--						  XLINK_NORMAL_MEMORY);
--			xlink_destroy_event(event);
--			return X_LINK_ERROR;
--		}
--		event->paddr = paddr;
--		rc = xlink_multiplexer_tx(event, &event_queued);
--		if (!event_queued) {
--			xlink_platform_deallocate(&xlink->pdev->dev,
--						  event->data, paddr, size,
--						  XLINK_PACKET_ALIGNMENT,
--						  XLINK_NORMAL_MEMORY);
--			xlink_destroy_event(event);
--		}
--	}
-+	rc = do_xlink_write_data(handle, chan, pmessage, size, 1);
- 	return rc;
- }
- 
-@@ -1131,25 +759,6 @@ enum xlink_error xlink_write_control_data(struct xlink_handle *handle,
- 	return rc;
- }
- EXPORT_SYMBOL(xlink_write_control_data);
--static enum xlink_error xlink_write_volatile_user(struct xlink_handle *handle,
--						  u16 chan, u8 const *message,
--						  u32 size)
--{
--	enum xlink_error rc = 0;
--
--	rc = do_xlink_write_volatile(handle, chan, message, size, 1);
--	return rc;
--}
--
--enum xlink_error xlink_write_volatile(struct xlink_handle *handle,
--				      u16 chan, u8 const *message, u32 size)
--{
--	enum xlink_error rc = 0;
--
--	rc = do_xlink_write_volatile(handle, chan, message, size, 0);
--	return rc;
--}
--EXPORT_SYMBOL(xlink_write_volatile);
- 
- static enum xlink_error do_xlink_write_volatile(struct xlink_handle *handle,
- 						u16 chan, u8 const *message,
-@@ -1196,6 +805,26 @@ static enum xlink_error do_xlink_write_volatile(struct xlink_handle *handle,
- 	return rc;
- }
- 
-+enum xlink_error xlink_write_volatile_user(struct xlink_handle *handle,
-+					   u16 chan, u8 const *message,
-+					   u32 size)
-+{
-+	enum xlink_error rc = 0;
-+
-+	rc = do_xlink_write_volatile(handle, chan, message, size, 1);
-+	return rc;
-+}
-+
-+enum xlink_error xlink_write_volatile(struct xlink_handle *handle,
-+				      u16 chan, u8 const *message, u32 size)
-+{
-+	enum xlink_error rc = 0;
-+
-+	rc = do_xlink_write_volatile(handle, chan, message, size, 0);
-+	return rc;
-+}
-+EXPORT_SYMBOL(xlink_write_volatile);
-+
- enum xlink_error xlink_read_data(struct xlink_handle *handle,
- 				 u16 chan, u8 **pmessage, u32 *size)
- {
-@@ -1531,29 +1160,6 @@ static bool event_registered(u32 sw_dev_id, u32 event)
- return false;
- }
- 
--static enum xlink_error xlink_register_device_event_user(struct xlink_handle *handle,
--							 u32 *event_list, u32 num_events,
--							 xlink_device_event_cb event_notif_fn)
--{
--	enum xlink_error rc;
--
--	rc = do_xlink_register_device_event(handle, event_list, num_events,
--					    event_notif_fn, 1);
--	return rc;
--}
--
--enum xlink_error xlink_register_device_event(struct xlink_handle *handle,
--					     u32 *event_list, u32 num_events,
--					     xlink_device_event_cb event_notif_fn)
--{
--	enum xlink_error rc;
--
--	rc = do_xlink_register_device_event(handle, event_list, num_events,
--					    event_notif_fn, 0);
--	return rc;
--}
--EXPORT_SYMBOL(xlink_register_device_event);
--
- static enum xlink_error do_xlink_register_device_event(struct xlink_handle *handle,
- 						       u32 *event_list,
- 						       u32 num_events,
-@@ -1599,6 +1205,29 @@ static enum xlink_error do_xlink_register_device_event(struct xlink_handle *hand
- 	return X_LINK_SUCCESS;
- }
- 
-+enum xlink_error xlink_register_device_event_user(struct xlink_handle *handle,
-+						  u32 *event_list, u32 num_events,
-+						  xlink_device_event_cb event_notif_fn)
-+{
-+	enum xlink_error rc;
-+
-+	rc = do_xlink_register_device_event(handle, event_list, num_events,
-+					    event_notif_fn, 1);
-+	return rc;
-+}
-+
-+enum xlink_error xlink_register_device_event(struct xlink_handle *handle,
-+					     u32 *event_list, u32 num_events,
-+					     xlink_device_event_cb event_notif_fn)
-+{
-+	enum xlink_error rc;
-+
-+	rc = do_xlink_register_device_event(handle, event_list, num_events,
-+					    event_notif_fn, 0);
-+	return rc;
-+}
-+EXPORT_SYMBOL(xlink_register_device_event);
-+
- enum xlink_error xlink_unregister_device_event(struct xlink_handle *handle,
- 					       u32 *event_list,
- 					       u32 num_events)
-diff --git a/drivers/misc/xlink-core/xlink-core.h b/drivers/misc/xlink-core/xlink-core.h
-new file mode 100644
-index 000000000000..c3d100a75c44
---- /dev/null
-+++ b/drivers/misc/xlink-core/xlink-core.h
-@@ -0,0 +1,24 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * xlink core header file.
-+ *
-+ * Copyright (C) 2018-2019 Intel Corporation
-+ *
-+ */
-+
-+#ifndef XLINK_CORE_H_
-+#define XLINK_CORE_H_
-+#include "xlink-defs.h"
-+
-+#define NUM_REG_EVENTS 4
-+
-+enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
-+				       u16 chan, u8 const *pmessage,
-+				       u32 size);
-+enum xlink_error xlink_register_device_event_user(struct xlink_handle *handle,
-+						  u32 *event_list, u32 num_events,
-+						  xlink_device_event_cb event_notif_fn);
-+enum xlink_error xlink_write_volatile_user(struct xlink_handle *handle,
-+					   u16 chan, u8 const *message,
-+					   u32 size);
-+#endif /* XLINK_CORE_H_ */
-diff --git a/drivers/misc/xlink-core/xlink-defs.h b/drivers/misc/xlink-core/xlink-defs.h
-index df686e5185c5..81aa3bfffcd3 100644
---- a/drivers/misc/xlink-core/xlink-defs.h
-+++ b/drivers/misc/xlink-core/xlink-defs.h
-@@ -35,7 +35,7 @@
- #define CONTROL_CHANNEL_TIMEOUT_MS	0U	// wait indefinitely
- #define SIGXLNK				44	// signal XLink uses for callback signalling
- 
--#define UNUSED(x) (void)(x)
-+#define UNUSED(x) ((void)(x))
- 
- // the end of the IPC channel range (starting at zero)
- #define XLINK_IPC_MAX_CHANNELS	1024
-diff --git a/drivers/misc/xlink-core/xlink-ioctl.c b/drivers/misc/xlink-core/xlink-ioctl.c
-new file mode 100644
-index 000000000000..9c1a8c896945
---- /dev/null
-+++ b/drivers/misc/xlink-core/xlink-ioctl.c
-@@ -0,0 +1,584 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * xlink Core Driver.
-+ *
-+ * Copyright (C) 2018-2019 Intel Corporation
-+ *
-+ */
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/fs.h>
-+#include <linux/cdev.h>
-+#include <linux/platform_device.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/uaccess.h>
-+#include <linux/slab.h>
-+#include <linux/kref.h>
-+
-+#include "xlink-defs.h"
-+#include "xlink-core.h"
-+#include "xlink-ioctl.h"
-+
-+#define CHANNEL_SET_USER_BIT(chan) ((chan) |= (1 << 15))
-+
-+int ioctl_connect(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {0};
-+	struct xlinkconnect		con	= {0};
-+	int rc = 0;
-+
-+	if (copy_from_user(&con, (void __user *)arg,
-+			   sizeof(struct xlinkconnect)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)con.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_connect(&devh);
-+	if (rc == X_LINK_SUCCESS) {
-+		if (copy_to_user((void __user *)con.handle,
-+				 &devh, sizeof(struct xlink_handle)))
-+			return -EFAULT;
-+	}
-+	if (copy_to_user((void __user *)con.return_code, (void *)&rc,
-+			 sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_open_channel(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkopenchannel	op	= {0};
-+	int rc = 0;
-+
-+	if (copy_from_user(&op, (void __user *)arg,
-+			   sizeof(struct xlinkopenchannel)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)op.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_open_channel(&devh, op.chan, op.mode, op.data_size,
-+				op.timeout);
-+	if (copy_to_user((void __user *)op.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_read_data(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkreaddata	rd	= {0};
-+	int rc = 0;
-+	u8 *rdaddr;
-+	u32 size;
-+	int interface;
-+
-+	if (copy_from_user(&rd, (void __user *)arg,
-+			   sizeof(struct xlinkreaddata)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)rd.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_read_data(&devh, rd.chan, &rdaddr, &size);
-+	if (!rc) {
-+		interface = get_interface_from_sw_device_id(devh.sw_device_id);
-+		if (interface == IPC_INTERFACE) {
-+			if (copy_to_user((void __user *)rd.pmessage, (void *)&rdaddr,
-+					 sizeof(u32)))
-+				return -EFAULT;
-+		} else {
-+			if (copy_to_user((void __user *)rd.pmessage, (void *)rdaddr,
-+					 size))
-+				return -EFAULT;
-+		}
-+		if (copy_to_user((void __user *)rd.size, (void *)&size, sizeof(size)))
-+			return -EFAULT;
-+	}
-+	if (copy_to_user((void __user *)rd.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_read_to_buffer(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {0};
-+	struct xlinkreadtobuffer	rdtobuf = {0};
-+	int rc = 0;
-+	u32 size;
-+	u8 volbuf[XLINK_MAX_BUF_SIZE]; // buffer for volatile transactions
-+
-+	if (copy_from_user(&rdtobuf, (void __user *)arg,
-+			   sizeof(struct xlinkreadtobuffer)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)rdtobuf.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_read_data_to_buffer(&devh, rdtobuf.chan,
-+				       (u8 *)volbuf, &size);
-+	if (!rc) {
-+		if (copy_to_user((void __user *)rdtobuf.pmessage, (void *)volbuf,
-+				 size))
-+			return -EFAULT;
-+		if (copy_to_user((void __user *)rdtobuf.size, (void *)&size,
-+				 sizeof(size)))
-+			return -EFAULT;
-+	}
-+	if (copy_to_user((void __user *)rdtobuf.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_write_data(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkwritedata		wr	= {0};
-+	int rc = 0;
-+
-+	if (copy_from_user(&wr, (void __user *)arg,
-+			   sizeof(struct xlinkwritedata)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)wr.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (wr.size <= XLINK_MAX_DATA_SIZE) {
-+		rc = xlink_write_data_user(&devh, wr.chan, wr.pmessage,
-+					   wr.size);
-+		if (copy_to_user((void __user *)wr.return_code, (void *)&rc,
-+				 sizeof(rc)))
-+			return -EFAULT;
-+	} else {
-+		return -EFAULT;
-+	}
-+	return rc;
-+}
-+
-+int ioctl_write_control_data(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkwritedata		wr	= {0};
-+	u8 volbuf[XLINK_MAX_BUF_SIZE];
-+	int rc = 0;
-+
-+	if (copy_from_user(&wr, (void __user *)arg,
-+			   sizeof(struct xlinkwritedata)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)wr.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (wr.size <= XLINK_MAX_CONTROL_DATA_SIZE) {
-+		if (copy_from_user(volbuf, (void __user *)wr.pmessage,
-+				   wr.size))
-+			return -EFAULT;
-+		rc = xlink_write_control_data(&devh, wr.chan, volbuf,
-+					      wr.size);
-+		if (copy_to_user((void __user *)wr.return_code,
-+				 (void *)&rc, sizeof(rc)))
-+			return -EFAULT;
-+	} else {
-+		return -EFAULT;
-+	}
-+	return rc;
-+}
-+
-+int ioctl_write_volatile_data(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkwritedata	wr	= {0};
-+	int rc = 0;
-+	u8 volbuf[XLINK_MAX_BUF_SIZE]; // buffer for volatile transactions
-+
-+	if (copy_from_user(&wr, (void __user *)arg,
-+			   sizeof(struct xlinkwritedata)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)wr.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (wr.size <= XLINK_MAX_BUF_SIZE) {
-+		if (copy_from_user(volbuf, (void __user *)wr.pmessage,
-+				   wr.size))
-+			return -EFAULT;
-+		rc = xlink_write_volatile_user(&devh, wr.chan, volbuf,
-+					       wr.size);
-+		if (copy_to_user((void __user *)wr.return_code, (void *)&rc,
-+				 sizeof(rc)))
-+			return -EFAULT;
-+	} else {
-+		return -EFAULT;
-+	}
-+	return rc;
-+}
-+
-+int ioctl_release_data(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkrelease	rel	= {0};
-+	int rc = 0;
-+	u8 reladdr;
-+
-+	if (copy_from_user(&rel, (void __user *)arg,
-+			   sizeof(struct xlinkrelease)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)rel.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (rel.addr) {
-+		if (get_user(reladdr, (u32 __user *const)rel.addr))
-+			return -EFAULT;
-+		rc = xlink_release_data(&devh, rel.chan,
-+					(u8 *)&reladdr);
-+	} else {
-+		rc = xlink_release_data(&devh, rel.chan, NULL);
-+	}
-+	if (copy_to_user((void __user *)rel.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_close_channel(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkopenchannel		op	= {0};
-+	int rc = 0;
-+
-+	if (copy_from_user(&op, (void __user *)arg,
-+			   sizeof(struct xlinkopenchannel)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)op.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_close_channel(&devh, op.chan);
-+	if (copy_to_user((void __user *)op.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_start_vpu(unsigned long arg)
-+{
-+	struct xlinkstartvpu		startvpu = {0};
-+	char filename[64];
-+	int rc = 0;
-+
-+	if (copy_from_user(&startvpu, (void __user *)arg,
-+			   sizeof(struct xlinkstartvpu)))
-+		return -EFAULT;
-+	if (startvpu.namesize > sizeof(filename))
-+		return -EINVAL;
-+	memset(filename, 0, sizeof(filename));
-+	if (copy_from_user(filename, (void __user *)startvpu.filename,
-+			   startvpu.namesize))
-+		return -EFAULT;
-+	rc = xlink_start_vpu(filename);
-+	if (copy_to_user((void __user *)startvpu.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_stop_vpu(void)
-+{
-+	int rc = 0;
-+
-+	rc = xlink_stop_vpu();
-+	return rc;
-+}
-+
-+int ioctl_disconnect(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {0};
-+	struct xlinkconnect		con	= {0};
-+	int rc = 0;
-+
-+	if (copy_from_user(&con, (void __user *)arg,
-+			   sizeof(struct xlinkconnect)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)con.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_disconnect(&devh);
-+	if (copy_to_user((void __user *)con.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_get_device_name(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {0};
-+	struct xlinkgetdevicename	devn	= {0};
-+	char name[XLINK_MAX_DEVICE_NAME_SIZE];
-+	int rc = 0;
-+
-+	if (copy_from_user(&devn, (void __user *)arg,
-+			   sizeof(struct xlinkgetdevicename)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)devn.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (devn.name_size <= XLINK_MAX_DEVICE_NAME_SIZE) {
-+		rc = xlink_get_device_name(&devh, name, devn.name_size);
-+		if (!rc) {
-+			if (copy_to_user((void __user *)devn.name, (void *)name,
-+					 devn.name_size))
-+				return -EFAULT;
-+		}
-+	} else {
-+		rc = X_LINK_ERROR;
-+	}
-+	if (copy_to_user((void __user *)devn.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_get_device_list(unsigned long arg)
-+{
-+	struct xlinkgetdevicelist	devl	= {0};
-+	u32 sw_device_id_list[XLINK_MAX_DEVICE_LIST_SIZE];
-+	u32 num_devices = 0;
-+	int rc = 0;
-+
-+	if (copy_from_user(&devl, (void __user *)arg,
-+			   sizeof(struct xlinkgetdevicelist)))
-+		return -EFAULT;
-+	rc = xlink_get_device_list(sw_device_id_list, &num_devices);
-+	if (!rc && num_devices <= XLINK_MAX_DEVICE_LIST_SIZE) {
-+		/* TODO: this next copy is dangerous! we have no idea
-+		 * how large the devl.sw_device_id_list buffer is
-+		 * provided by the user. if num_devices is too large,
-+		 * the copy will overflow the buffer.
-+		 */
-+		if (copy_to_user((void __user *)devl.sw_device_id_list,
-+				 (void *)sw_device_id_list,
-+				 (sizeof(*sw_device_id_list)
-+				 * num_devices)))
-+			return -EFAULT;
-+		if (copy_to_user((void __user *)devl.num_devices, (void *)&num_devices,
-+				 (sizeof(num_devices))))
-+			return -EFAULT;
-+	}
-+	if (copy_to_user((void __user *)devl.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_get_device_status(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {0};
-+	struct xlinkgetdevicestatus	devs	= {0};
-+	u32 device_status = 0;
-+	int rc = 0;
-+
-+	if (copy_from_user(&devs, (void __user *)arg,
-+			   sizeof(struct xlinkgetdevicestatus)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)devs.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_get_device_status(&devh, &device_status);
-+	if (!rc) {
-+		if (copy_to_user((void __user *)devs.device_status,
-+				 (void *)&device_status,
-+				 sizeof(device_status)))
-+			return -EFAULT;
-+	}
-+	if (copy_to_user((void __user *)devs.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_boot_device(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {0};
-+	struct xlinkbootdevice		boot	= {0};
-+	char filename[64];
-+	int rc = 0;
-+
-+	if (copy_from_user(&boot, (void __user *)arg,
-+			   sizeof(struct xlinkbootdevice)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)boot.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (boot.binary_name_size > sizeof(filename))
-+		return -EINVAL;
-+	memset(filename, 0, sizeof(filename));
-+	if (copy_from_user(filename, (void __user *)boot.binary_name,
-+			   boot.binary_name_size))
-+		return -EFAULT;
-+	rc = xlink_boot_device(&devh, filename);
-+	if (copy_to_user((void __user *)boot.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_reset_device(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {0};
-+	struct xlinkresetdevice		res	= {0};
-+	int rc = 0;
-+
-+	if (copy_from_user(&res, (void __user *)arg,
-+			   sizeof(struct xlinkresetdevice)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)res.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_reset_device(&devh);
-+	if (copy_to_user((void __user *)res.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_get_device_mode(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkdevmode	devm	= {0};
-+	u32 device_mode = 0;
-+	int rc = 0;
-+
-+	if (copy_from_user(&devm, (void __user *)arg,
-+			   sizeof(struct xlinkdevmode)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)devm.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_get_device_mode(&devh, &device_mode);
-+	if (!rc) {
-+		if (copy_to_user((void __user *)devm.device_mode, (void *)&device_mode,
-+				 sizeof(device_mode)))
-+			return -EFAULT;
-+	}
-+	if (copy_to_user((void __user *)devm.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_set_device_mode(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkdevmode	devm	= {0};
-+	u32 device_mode = 0;
-+	int rc = 0;
-+
-+	if (copy_from_user(&devm, (void __user *)arg,
-+			   sizeof(struct xlinkdevmode)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)devm.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (copy_from_user(&device_mode, (void __user *)devm.device_mode,
-+			   sizeof(device_mode)))
-+		return -EFAULT;
-+	rc = xlink_set_device_mode(&devh, device_mode);
-+	if (copy_to_user((void __user *)devm.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_register_device_event(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkregdevevent	regdevevent = {0};
-+	u32 num_events = 0;
-+	u32 *ev_list;
-+	int rc = 0;
-+
-+	if (copy_from_user(&regdevevent, (void __user *)arg,
-+			   sizeof(struct xlinkregdevevent)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)regdevevent.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	num_events = regdevevent.num_events;
-+	if (num_events > 0 && num_events <= NUM_REG_EVENTS) {
-+		ev_list = kzalloc((num_events * sizeof(u32)), GFP_KERNEL);
-+		if (ev_list) {
-+			if (copy_from_user(ev_list,
-+					   (void __user *)regdevevent.event_list,
-+					   (num_events * sizeof(u32)))) {
-+				kfree(ev_list);
-+				return -EFAULT;
-+			}
-+			rc = xlink_register_device_event_user(&devh,
-+							      ev_list,
-+							      num_events,
-+							      NULL);
-+			kfree(ev_list);
-+		} else {
-+			rc = X_LINK_ERROR;
-+		}
-+	} else {
-+		rc = X_LINK_ERROR;
-+	}
-+	if (copy_to_user((void __user *)regdevevent.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_unregister_device_event(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkregdevevent	regdevevent = {0};
-+	u32 num_events = 0;
-+	u32 *ev_list;
-+	int rc = 0;
-+
-+	if (copy_from_user(&regdevevent, (void __user *)arg,
-+			   sizeof(struct xlinkregdevevent)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)regdevevent.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	num_events = regdevevent.num_events;
-+	if (num_events <= NUM_REG_EVENTS) {
-+		ev_list = kzalloc((num_events * sizeof(u32)), GFP_KERNEL);
-+		if (copy_from_user(ev_list,
-+				   (void __user *)regdevevent.event_list,
-+				   (num_events * sizeof(u32)))) {
-+			kfree(ev_list);
-+			return -EFAULT;
-+		}
-+		rc = xlink_unregister_device_event(&devh, ev_list, num_events);
-+		kfree(ev_list);
-+	} else {
-+		rc = X_LINK_ERROR;
-+	}
-+	if (copy_to_user((void __user *)regdevevent.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_data_ready_callback(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkcallback	cb	= {0};
-+	int rc = 0;
-+
-+	if (copy_from_user(&cb, (void __user *)arg,
-+			   sizeof(struct xlinkcallback)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)cb.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	CHANNEL_SET_USER_BIT(cb.chan); // set MSbit for user space call
-+	rc = xlink_data_available_event(&devh, cb.chan, cb.callback);
-+	if (copy_to_user((void __user *)cb.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-+
-+int ioctl_data_consumed_callback(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {0};
-+	struct xlinkcallback	cb	= {0};
-+	int rc = 0;
-+
-+	if (copy_from_user(&cb, (void __user *)arg,
-+			   sizeof(struct xlinkcallback)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)cb.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	CHANNEL_SET_USER_BIT(cb.chan); // set MSbit for user space call
-+	rc = xlink_data_consumed_event(&devh, cb.chan, cb.callback);
-+	if (copy_to_user((void __user *)cb.return_code, (void *)&rc, sizeof(rc)))
-+		return -EFAULT;
-+	return rc;
-+}
-diff --git a/drivers/misc/xlink-core/xlink-ioctl.h b/drivers/misc/xlink-core/xlink-ioctl.h
-new file mode 100644
-index 000000000000..7818b676d488
---- /dev/null
-+++ b/drivers/misc/xlink-core/xlink-ioctl.h
-@@ -0,0 +1,36 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * xlink ioctl header files.
-+ *
-+ * Copyright (C) 2018-2019 Intel Corporation
-+ *
-+ */
-+
-+#ifndef XLINK_IOCTL_H_
-+#define XLINK_IOCTL_H_
-+
-+int ioctl_connect(unsigned long arg);
-+int ioctl_open_channel(unsigned long arg);
-+int ioctl_read_data(unsigned long arg);
-+int ioctl_read_to_buffer(unsigned long arg);
-+int ioctl_write_data(unsigned long arg);
-+int ioctl_write_control_data(unsigned long arg);
-+int ioctl_write_volatile_data(unsigned long arg);
-+int ioctl_release_data(unsigned long arg);
-+int ioctl_close_channel(unsigned long arg);
-+int ioctl_start_vpu(unsigned long arg);
-+int ioctl_stop_vpu(void);
-+int ioctl_disconnect(unsigned long arg);
-+int ioctl_get_device_name(unsigned long arg);
-+int ioctl_get_device_list(unsigned long arg);
-+int ioctl_get_device_status(unsigned long arg);
-+int ioctl_boot_device(unsigned long arg);
-+int ioctl_reset_device(unsigned long arg);
-+int ioctl_get_device_mode(unsigned long arg);
-+int ioctl_set_device_mode(unsigned long arg);
-+int ioctl_register_device_event(unsigned long arg);
-+int ioctl_unregister_device_event(unsigned long arg);
-+int ioctl_data_ready_callback(unsigned long arg);
-+int ioctl_data_consumed_callback(unsigned long arg);
-+
-+#endif /* XLINK_IOCTL_H_ */
--- 
-2.17.1
-
+I mean if we don't check dst->nr_items. Anyway, because it's an impossible case,
+no matter to discuss it :)
