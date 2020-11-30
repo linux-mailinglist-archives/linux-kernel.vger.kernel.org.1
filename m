@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CFA2C8BC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 455E42C8BD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 18:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387844AbgK3RyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 12:54:05 -0500
-Received: from mga14.intel.com ([192.55.52.115]:28816 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387401AbgK3RyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 12:54:05 -0500
-IronPort-SDR: CLW0M/cQsoOkaGVfL/iHTHLW0mbHEPLMJJtzkbMUME0o1VXxLhPVoLRRI4hp7jd08EfhBj+hci
- XZkb3QaVXpMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="171894430"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="171894430"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:52:24 -0800
-IronPort-SDR: V0bNb5yO6AkYF+Cez/uXxoQER/JpakSYM0Ftqb1TH/QIgvau+UHpDGd79ZqrP3kCTOkR7evfJe
- 1/rfTSeuhHCQ==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="315352526"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 09:52:18 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kjnMV-00B6Dj-7j; Mon, 30 Nov 2020 19:53:19 +0200
-Date:   Mon, 30 Nov 2020 19:53:19 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 02/18] property: Add support for calling
- fwnode_graph_get_endpoint_by_id() for fwnode->secondary
-Message-ID: <20201130175319.GS4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-3-djrscally@gmail.com>
- <20201130172900.GM4077@smile.fi.intel.com>
- <20201130172857.GS14465@pendragon.ideasonboard.com>
+        id S2387866AbgK3RzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 12:55:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729391AbgK3RzO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 12:55:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606758828;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gi4Rht/ELTnFAZIunHo+toOTUWTBXEGXm5AWopX3S1M=;
+        b=W62WWk1nFL06H8WfpvwDAkAaE61mXJcvFTHqHY/Cm9mvhQvNHNvm0QGmL4EvxFQiN84BPV
+        G3L37cTJFHDtlHZWyHJoHnOgD0VkQ85F/eY1ieNRYzMPtdoDl5Ve6ne3gP9+bCdU8TZRLO
+        fA+DOI9MvlVFevBbERTSBB9UxnH6McY=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-wIcdu_7GPKO7iJ5UrCz9Uw-1; Mon, 30 Nov 2020 12:53:45 -0500
+X-MC-Unique: wIcdu_7GPKO7iJ5UrCz9Uw-1
+Received: by mail-ed1-f71.google.com with SMTP id i1so7100171edt.19
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:53:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Gi4Rht/ELTnFAZIunHo+toOTUWTBXEGXm5AWopX3S1M=;
+        b=VMgiqteCOfXJIPteHlzP48GE1S4zwVtIrhUJiVbj9Shu0F0s3+9c4aalejAISAn41D
+         0yV9IiDf8iBK2kCZX9B0NhnS25BtShW89LvLLkOyhDZnbWuC/SA3HKhQpBLfbrbluL8X
+         eu46sXS/fapj/gz2JzQQuDeLNOwBCZarcxEdF/H8X63kGA2xZsXTLpnkwJkExfgwJypE
+         TpAnrCt9T6M3j5ftmuERPGZZCtpq5KU9HK61qhLXrx3XLKMuBLj3s/QuoDGM6HPZNzgS
+         XSfIVnT44vrTvpenndm35L/nPK+Ow5LQksQt+ScEAMdYBiont6kVf/UeWI26KZw0lDdR
+         Edfw==
+X-Gm-Message-State: AOAM5321HQNsIkc3NKlcffxg7dCPrsBthk23EAZF78+uxA1tj9Vkiowd
+        jX6W+b/0P+gmLubYOfoqEpBdgqKc3K5U72XbKXTs7r7fk+fG1/ihh4Ar93IESIoAjpcIzshnc3g
+        B6RfgEA1RjNwv7e2FY8PxHwcv
+X-Received: by 2002:a17:907:d01:: with SMTP id gn1mr22075303ejc.357.1606758823763;
+        Mon, 30 Nov 2020 09:53:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwPXCLLq0F7NsxdGneoiL0swBKFgNHMjS0gZzWEdxb5xTK81UZfS/uvqb99Yq+sqLin3REwrQ==
+X-Received: by 2002:a17:907:d01:: with SMTP id gn1mr22075268ejc.357.1606758823492;
+        Mon, 30 Nov 2020 09:53:43 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id m2sm6847080edf.27.2020.11.30.09.53.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 09:53:42 -0800 (PST)
+Subject: Re: [PATCH] kvm/x86/mmu: use the correct inherited permissions to get
+ shadow page
+To:     Sean Christopherson <seanjc@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Avi Kivity <avi@qumranet.com>, linux-doc@vger.kernel.org
+References: <20201120095517.19211-1-jiangshanlai@gmail.com>
+ <20201126000549.GC450871@google.com>
+ <0724aeb9-3466-5505-8f12-a5899144e68f@redhat.com>
+ <CAJhGHyApvmQk4bxxK2rJKzyAShFSXyEb2W0qyFcVoUEcsMKs_w@mail.gmail.com>
+ <X8Uux62rJdf2feJ2@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7a9d3517-7bcc-723a-5ec5-80018d0850d7@redhat.com>
+Date:   Mon, 30 Nov 2020 18:53:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130172857.GS14465@pendragon.ideasonboard.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <X8Uux62rJdf2feJ2@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 07:28:57PM +0200, Laurent Pinchart wrote:
-> On Mon, Nov 30, 2020 at 07:29:00PM +0200, Andy Shevchenko wrote:
-> > On Mon, Nov 30, 2020 at 01:31:13PM +0000, Daniel Scally wrote:
+On 30/11/20 18:41, Sean Christopherson wrote:
+>>
+>> pmd1 and pmd2 point to the same pte table, so:
+>> ptr1 and ptr3 points to the same page.
+>> ptr2 and ptr4 points to the same page.
+>>
+>>    The guess read-accesses to ptr1 first. So the hypervisor gets the
+>> shadow pte page table with role.access=u-- among other things.
+>>     (Note the shadowed pmd1's access is uwx)
+>>
+>>    And then the guest write-accesses to ptr2, and the hypervisor
+>> set up shadow page for ptr2.
+>>     (Note the hypervisor silencely accepts the role.access=u--
+>>      shadow pte page table in FNAME(fetch))
+>>
+>>    After that, the guess read-accesses to ptr3, the hypervisor
+>> reused the same shadow pte page table as above.
+>>
+>>    At last, the guest writes to ptr4 without vmexit nor pagefault,
+>> Which should cause vmexit as the guest expects.
+>
+> Hmm, yes, KVM would incorrectly handle this scenario.  But, the proposed patch
+> would not address the issue as KVM always maps non-leaf shadow pages with full
+> access permissions.
 
-...
+Can we have a testcase in kvm-unit-tests?  It's okay of course if it 
+only fails with ept=0.
 
-> > > +	if (!best_ep && fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
-> > > +		return fwnode_graph_get_endpoint_by_id(fwnode->secondary, port,
-> > > +						       endpoint, flags);
-> > 
-> > >  	return best_ep;
-> > 
-> > Can we, please, do
-> > 
-> > 	if (best_ep)
-> > 		return best_ep;
-> > 
-> > 	if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
-> > 		return fwnode_graph_get_endpoint_by_id(fwnode->secondary, port,
-> > 						       endpoint, flags);
-> > 
-> > 	return NULL;
-> > 
-> > ?
-> > 
-> > This 'if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary))' becomes kinda
-> > idiomatic to the cases when we need to proceed primary followed by the
-> > secondary in cases where it's not already done.
-> 
-> We could also move the !fwnode check to the beginning of the function.
-
-It's already there (1). What did I miss?
-
-1) via fwnode_graph_get_next_endpoint() -> fwnode_call_ptr_op()
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Paolo
 
