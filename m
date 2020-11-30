@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1080F2C953F
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6FA2C9540
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgLACef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:34:35 -0500
-Received: from mga11.intel.com ([192.55.52.93]:26596 "EHLO mga11.intel.com"
+        id S1727871AbgLACej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:34:39 -0500
+Received: from mga11.intel.com ([192.55.52.93]:26603 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727832AbgLACef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:34:35 -0500
-IronPort-SDR: N1Aq1FbbXgif4sihdayesg4v5iyPfHwQJRRveFx2C5idNWTRTHcFvkgiLd+tiHYWTlf7yxJgXm
- hHGc+Gcc19pw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169250287"
+        id S1727832AbgLACei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 21:34:38 -0500
+IronPort-SDR: 8IvrEE2LtQhLeIJPq4Y8K0JaGjOAHyCjqzlopnSD6YYzA4wDI+85N0AaUxHl+g+2L4drP1ecBL
+ X3+h5S+dPynw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169250292"
 X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="169250287"
+   d="scan'208";a="169250292"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:32:54 -0800
-IronPort-SDR: zjycBvJ7amChalpwbgn5ejVA6Qhg39YGx/7EKkksRLe1TxIGHUNQYnflNBzeJNh8tb8jDzJwZ/
- 7Guk3wTf8hlQ==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:32:58 -0800
+IronPort-SDR: j0B1RUSAEBkCbip2cFPb8qNg6VS4l2ulleh195CRS73FaOPfpWTiNj4eGMJoQkBPmR9aDe52Hn
+ BBidhJNssYVw==
 X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="549360073"
+   d="scan'208";a="549360086"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:32:50 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:32:54 -0800
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,86 +34,123 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         bard.liao@intel.com
-Subject: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
-Date:   Mon, 30 Nov 2020 22:40:15 +0800
-Message-Id: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 1/5] soundwire: SDCA: add helper macro to access controls
+Date:   Mon, 30 Nov 2020 22:40:16 +0800
+Message-Id: <20201130144020.19757-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
+References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MIPI SoundWire Device Class standard will define audio functionality
-beyond the scope of the existing SoundWire 1.2 standard, which is limited
-to the bus and interface.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The description is inspired by the USB Audio Class, with "functions",
-"entities", "control selectors", "audio clusters". The main difference
-with the USB Audio class is that the devices are typically on a motherboard
-and descriptors stored in platform firmware instead of being retrieved
-from the device.
+The upcoming SDCA (SoundWire Device Class Audio) specification defines
+a hierarchical encoding to interface with Class-defined capabilities.
 
-The current set of devices managed in this patchset are conformant with the
-SDCA 0.6 specification and require dedicated drivers since the descriptors
-and platform firmware specification is not complete at this time. They do
-however rely on the hierarchical addressing required by the SDCA standard.
-Future devices conformant with SDCA 1.0 should rely on a class driver.
+The specification is not yet accessible to the general public but this
+information is released with explicit permission from the MIPI Board
+to avoid delays with SDCA support on Linux platforms.
 
-This series adds support for the hierarchical SDCA addressing and extends
-regmap. It then provides 3 codecs for RT711-sdca headset codec, RT1316
-amplifier and RT715-scda microphone codec.
+A block of 64 MBytes of register addresses are allocated to SDCA
+controls, starting at address 0x40000000. The 26 LSBs which identify
+individual controls are set based on the following variables:
 
-Note that the release of this code before the formal adoption of the
-SDCA 1.0 specification was formally endorsed by the MIPI Board to make
-sure there is no delay for Linux-based support of this specification.
+- Function Number. An SCDA device can be split in up to 8 independent
+  Functions. Each of these Functions is described in the SDCA
+  specification, e.g. Smart Amplifier, Smart Microphone, Simple
+  Microphone, Jack codec, HID, etc.
 
-v2:
-- rt715-sdca: Use rt715_sdca prefix to avoid compiling issue.
-- rt715-sdca: Merge multiple mute/volume operation into single mute/volume
-  operation
-- rt711-sdca: Initial ret = 0 as it could be used uninitialized.
+- Entity Number.  Within each Function,  an Entity is  an identifiable
+  block.  Up   to  127  Entities   are  connected  in   a  pre-defined
+  graph  (similar to  USB), with  Entity0 reserved  for Function-level
+  configurations.  In  contrast  to  USB, the  SDCA  spec  pre-defines
+  Function Types, topologies, and allowed  options, i.e. the degree of
+  freedom  is not  unlimited to  limit  the possibility  of errors  in
+  descriptors leading to software quirks.
 
-Jack Yu (1):
-  ASoC/SoundWire: rt715-sdca: First version of rt715 sdw sdca codec
-    driver
+- Control Selector. Within each Entity, the SDCA specification defines
+  48 controls such as Mute, Gain, AGC, etc, and 16 implementation
+  defined ones. Some Control Selectors might be used for low-level
+  platform setup, and other exposed to applications and users. Note
+  that the same Control Selector capability, e.g. Latency control,
+  might be located at different offsets in different entities, the
+  Control Selector mapping is Entity-specific.
 
-Pierre-Louis Bossart (2):
-  soundwire: SDCA: add helper macro to access controls
-  regmap/SoundWire: sdw: add support for SoundWire 1.2 MBQ
+- Control Number. Some Control Selectors allow channel-specific values
+  to be set, with up to 64 channels allowed. This is mostly used for
+  volume control.
 
-Shuming Fan (2):
-  ASoC/SoundWire: rt1316: Add RT1316 SDCA vendor-specific driver
-  ASoC/SoundWire: rt711-sdca: Add RT711 SDCA vendor-specific driver
+- Current/Next values. Some Control Selectors are
+  'Dual-Ranked'. Software may either update the Current value directly
+  for immediate effect. Alternatively, software may write into the
+  'Next' values and update the SoundWire 1.2 'Commit Groups' register
+  to copy 'Next' values into 'Current' ones in a synchronized
+  manner. This is different from bank switching which is typically
+  used to change the bus configuration only.
 
- drivers/base/regmap/Kconfig             |    6 +-
- drivers/base/regmap/Makefile            |    1 +
- drivers/base/regmap/regmap-sdw-mbq.c    |  101 ++
- include/linux/regmap.h                  |   35 +
- include/linux/soundwire/sdw_registers.h |   32 +
- sound/soc/codecs/Kconfig                |   20 +
- sound/soc/codecs/Makefile               |    6 +
- sound/soc/codecs/rt1316-sdw.c           |  756 ++++++++++++
- sound/soc/codecs/rt1316-sdw.h           |  115 ++
- sound/soc/codecs/rt711-sdca-sdw.c       |  424 +++++++
- sound/soc/codecs/rt711-sdca-sdw.h       |  101 ++
- sound/soc/codecs/rt711-sdca.c           | 1482 +++++++++++++++++++++++
- sound/soc/codecs/rt711-sdca.h           |  246 ++++
- sound/soc/codecs/rt715-sdca-sdw.c       |  278 +++++
- sound/soc/codecs/rt715-sdca-sdw.h       |  170 +++
- sound/soc/codecs/rt715-sdca.c           |  947 +++++++++++++++
- sound/soc/codecs/rt715-sdca.h           |  124 ++
- 17 files changed, 4843 insertions(+), 1 deletion(-)
- create mode 100644 drivers/base/regmap/regmap-sdw-mbq.c
- create mode 100644 sound/soc/codecs/rt1316-sdw.c
- create mode 100644 sound/soc/codecs/rt1316-sdw.h
- create mode 100644 sound/soc/codecs/rt711-sdca-sdw.c
- create mode 100644 sound/soc/codecs/rt711-sdca-sdw.h
- create mode 100644 sound/soc/codecs/rt711-sdca.c
- create mode 100644 sound/soc/codecs/rt711-sdca.h
- create mode 100644 sound/soc/codecs/rt715-sdca-sdw.c
- create mode 100644 sound/soc/codecs/rt715-sdca-sdw.h
- create mode 100644 sound/soc/codecs/rt715-sdca.c
- create mode 100644 sound/soc/codecs/rt715-sdca.h
+- MBQ. the Multi-Byte Quantity bit is used to provide atomic updates
+  when accessing more that one byte, for example a 16-bit volume
+  control would be updated consistently, the intermediate values
+  mixing old MSB with new LSB are not applied.
 
+These 6 parameters are used to build a 32-bit address to access the
+desired Controls. Because of address range, paging is required, but
+the most often used parameter values are placed in the lower 16 bits
+of the address. This helps to keep the paging registers constant while
+updating Controls for a specific Device/Function.
+
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ include/linux/soundwire/sdw_registers.h | 32 +++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
+index 0cb1a22685b8..138bec908c40 100644
+--- a/include/linux/soundwire/sdw_registers.h
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -309,4 +309,36 @@
+ #define SDW_CASC_PORT_MASK_INTSTAT3		1
+ #define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
+ 
++/*
++ * v1.2 device - SDCA address mapping
++ *
++ * Spec definition
++ *	Bits		Contents
++ *	31		0 (required by addressing range)
++ *	30:26		0b10000 (Control Prefix)
++ *	25		0 (Reserved)
++ *	24:22		Function Number [2:0]
++ *	21		Entity[6]
++ *	20:19		Control Selector[5:4]
++ *	18		0 (Reserved)
++ *	17:15		Control Number[5:3]
++ *	14		Next
++ *	13		MBQ
++ *	12:7		Entity[5:0]
++ *	6:3		Control Selector[3:0]
++ *	2:0		Control Number[2:0]
++ */
++
++#define SDW_SDCA_CTL(fun, ent, ctl, ch)		(BIT(30) |			\
++						 (((fun) & 0x7) << 22) |	\
++						 (((ent) & 0x40) << 15) |	\
++						 (((ent) & 0x3f) << 7) |	\
++						 (((ctl) & 0x30) << 15) |	\
++						 (((ctl) & 0x0f) << 3) |	\
++						 (((ch) & 0x38) << 12) |	\
++						 ((ch) & 0x07))
++
++#define SDW_SDCA_MBQ_CTL(reg)			((reg) | BIT(13))
++#define SDW_SDCA_NEXT_CTL(reg)			((reg) | BIT(14))
++
+ #endif /* __SDW_REGISTERS_H */
 -- 
 2.17.1
 
