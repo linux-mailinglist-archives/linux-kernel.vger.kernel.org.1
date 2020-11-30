@@ -2,81 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B20E2C80E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653DA2C80E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 10:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727656AbgK3JXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 04:23:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20816 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbgK3JXJ (ORCPT
+        id S1727849AbgK3JXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 04:23:36 -0500
+Received: from outbound-smtp16.blacknight.com ([46.22.139.233]:59379 "EHLO
+        outbound-smtp16.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726596AbgK3JXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 04:23:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606728103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=px5S5/2ACTb7LrXOQlU1HB+xECEC+xUcw2a+QHxz+2k=;
-        b=ddTxy7Y9xl4iOviKzYpBtGvdTEa/pH9+7wTRh/i9ePe1jHVyKg/SgVIgNyDv95llcMvNL3
-        Lj5hlddBPJ0gXn9gx2h2PHPjl8onaR+tVyjW9SvzLDqBXhSnGFArKGaans8fzmDzqSMJ3t
-        pXGmWEwkTQpJt+iT91GeNAK1rqimJ+Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-lg6gJ8jBN6KqDllTvU0sYw-1; Mon, 30 Nov 2020 04:21:39 -0500
-X-MC-Unique: lg6gJ8jBN6KqDllTvU0sYw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D538C80B70A;
-        Mon, 30 Nov 2020 09:21:36 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0011360C4D;
-        Mon, 30 Nov 2020 09:21:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201129033859.GG39488@kernel.org>
-References: <20201129033859.GG39488@kernel.org> <160649552401.2744658.15096366594785577090.stgit@warthog.procyon.org.uk>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     dhowells@redhat.com,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@iki.fi>,
-        Jann Horn <jannh@google.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Ben Boeckel <mathstuf@gmail.com>,
-        linux-security-module@vger.kernel.org,
-        Denis Efremov <efremov@linux.com>, keyrings@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tom Rix <trix@redhat.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/9] keys: Miscellaneous fixes
+        Mon, 30 Nov 2020 04:23:35 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp16.blacknight.com (Postfix) with ESMTPS id EAF881C478C
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 09:22:42 +0000 (GMT)
+Received: (qmail 28195 invoked from network); 30 Nov 2020 09:22:42 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 30 Nov 2020 09:22:42 -0000
+Date:   Mon, 30 Nov 2020 09:22:41 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: [PATCH] cpuidle: Select polling interval based on a c-state with a
+ longer target residency
+Message-ID: <20201130092241.GR3371@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3093310.1606728092.1@warthog.procyon.org.uk>
-Date:   Mon, 30 Nov 2020 09:21:32 +0000
-Message-ID: <3093311.1606728092@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jarkko Sakkinen <jarkko@kernel.org> wrote:
+It was noted that a few workloads that idle rapidly regressed when commit
+36fcb4292473 ("cpuidle: use first valid target residency as poll time")
+was merged. The workloads in question were heavy communicators that idle
+rapidly and were impacted by the c-state exit latency as the active CPUs
+were not polling at the time of wakeup. As they were not particularly
+realistic workloads, it was not considered to be a major problem.
 
-> I think that looks good, thank you. I'm sending PR next week. Should I
-> bundle those to that?
+Unfortunately, a bug was reported for a real workload in a production
+environment that relied on large numbers of threads operating in a worker
+pool pattern. These threads would idle for periods of time longer than the
+C1 target residency and so incurred the c-state exit latency penalty. The
+application is very sensitive to wakeup latency and indirectly relying
+on behaviour prior to commit on a37b969a61c1 ("cpuidle: poll_state: Add
+time limit to poll_idle()") to poll for long enough to avoid the exit
+latency cost.
 
-I've updated the branch to include an ack from you, plus added the
-semicolon-removal patch and a #include-removal patch.
+The target residency of C1 is typically very short. On some x86 machines,
+it can be as low as 2 microseconds. In poll_idle(), the clock is checked
+every POLL_IDLE_RELAX_COUNT interations of cpu_relax() and even one
+iteration of that loop can be over 1 microsecond so the polling interval is
+very close to the granularity of what poll_idle() can detect. Furthermore,
+a basic ping pong workload like perf bench pipe has a longer round-trip
+time than the 2 microseconds meaning that the CPU will almost certainly
+not be polling when the ping-pong completes.
 
-You can try sending them on, though I don't think any of them are really
-critical patches (and we are in -rc6).
+This patch selects a polling interval based on an enabled c-state that
+has an target residency longer than 10usec. If there is no enabled-cstate
+then polling will be up to a TICK_NSEC/16 similar to what it was up until
+kernel 4.20.
 
-David
+As an example, consider a CPU with the following c-state information from
+an Intel CPU;
 
+	residency	exit_latency
+C1	2		2
+C1E	20		10
+C3	100		33
+C6	400		133
+
+The polling interval selected is 20usec. If booted with
+intel_idle.max_cstate=1 then the polling interval is 250usec as the deeper
+c-states were not available.
+
+On an AMD EPYC machine, the c-state information is more limited and looks
+like
+
+	residency	exit_latency
+C1	2		1
+C2	800		400
+
+The polling interval selected is 250usec. While C2 was considered, the
+polling interval was clamped by CPUIDLE_POLL_MAX.
+
+Note that it is not expected that polling will be a universal win. As
+well as potentially trading power for performance, the performance is not
+guaranteed if the extra polling prevented a turbo state being reached. The
+patch allows the polling interval to be tuned in case a corner-case is
+found and if a bug is filed, the tuning may advise how CPUIDLE_POLL_MIN
+should be adjusted (e.g. optional overrides per architecture) or if a
+different balance point than residency-exit_latency should be used.
+
+tbench4
+			     vanilla		    polling
+Hmean     1        497.89 (   0.00%)      543.15 *   9.09%*
+Hmean     2        975.88 (   0.00%)     1059.73 *   8.59%*
+Hmean     4       1953.97 (   0.00%)     2081.37 *   6.52%*
+Hmean     8       3645.76 (   0.00%)     4052.95 *  11.17%*
+Hmean     16      6882.21 (   0.00%)     6995.93 *   1.65%*
+Hmean     32     10752.20 (   0.00%)    10731.53 *  -0.19%*
+Hmean     64     12875.08 (   0.00%)    12478.13 *  -3.08%*
+Hmean     128    21500.54 (   0.00%)    21098.60 *  -1.87%*
+Hmean     256    21253.70 (   0.00%)    21027.18 *  -1.07%*
+Hmean     320    20813.50 (   0.00%)    20580.64 *  -1.12%*
+
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 18 +++++++++
+ drivers/cpuidle/cpuidle.c                       | 49 ++++++++++++++++++++++++-
+ 2 files changed, 65 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 526d65d8573a..5b8545022564 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -719,6 +719,24 @@
+ 			policy to use. This governor must be registered in the
+ 			kernel before the cpufreq driver probes.
+ 
++	cpuidle.poll=
++			[CPU_IDLE]
++			Format: <int>
++			Set the time in microseconds a CPU should poll in
++			cpuidle for a new task before entering a sleep
++			state. The default is determined by either the
++			tick or the enabled c-state latencies. Tuning is
++			not generally recommended but it may be needed
++			for workloads that are both latency-sensitive
++			and idling rapidly for short durations. Limiting
++			c-states can be insufficient if the polling
++			time is still too short, the application has no
++			knowledge of /dev/cpu_dma_latency, there are
++			multiple applications or the environment does
++			not allow the installation of a userspace tool
++			that controls cpu_dma_latency. This value may
++			be ignored by the idle governor (e.g. haltpoll).
++
+ 	cpu_init_udelay=N
+ 			[X86] Delay for N microsec between assert and de-assert
+ 			of APIC INIT to start processors.  This delay occurs
+diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+index 83af15f77f66..3be208e9043a 100644
+--- a/drivers/cpuidle/cpuidle.c
++++ b/drivers/cpuidle/cpuidle.c
+@@ -368,6 +368,26 @@ void cpuidle_reflect(struct cpuidle_device *dev, int index)
+ 		cpuidle_curr_governor->reflect(dev, index);
+ }
+ 
++static struct kernel_param_ops poll_param_ops = {
++	.set =          param_set_ulong,
++	.get =          param_get_ulong,
++};
++
++/*
++ * Min polling interval of 10usec is a guess. It is assuming that
++ * for most users, the time for a single ping-pong workload like
++ * perf bench pipe would generally complete within 10usec but
++ * this is hardware dependant. Actual time can be estimated with
++ *
++ * perf bench sched pipe -l 10000
++ *
++ * Run multiple times to avoid cpufreq effects.
++ */
++#define CPUIDLE_POLL_MIN 10000
++#define CPUIDLE_POLL_MAX (TICK_NSEC / 16)
++
++static unsigned long __read_mostly param_poll;
++
+ /**
+  * cpuidle_poll_time - return amount of time to poll for,
+  * governors can override dev->poll_limit_ns if necessary
+@@ -382,20 +402,44 @@ u64 cpuidle_poll_time(struct cpuidle_driver *drv,
+ 	int i;
+ 	u64 limit_ns;
+ 
++	BUILD_BUG_ON(CPUIDLE_POLL_MIN > CPUIDLE_POLL_MAX);
++
+ 	if (dev->poll_limit_ns)
+ 		return dev->poll_limit_ns;
+ 
+-	limit_ns = TICK_NSEC;
++	/* Use module parameter if specified */
++	if (param_poll) {
++		param_poll *= NSEC_PER_USEC;
++		param_poll = clamp_t(unsigned long, param_poll * NSEC_PER_USEC,
++					CPUIDLE_POLL_MIN, CPUIDLE_POLL_MAX);
++		limit_ns = param_poll;
++		goto out;
++	}
++
++	limit_ns = CPUIDLE_POLL_MAX;
+ 	for (i = 1; i < drv->state_count; i++) {
++		u64 state_limit;
++
+ 		if (dev->states_usage[i].disable)
+ 			continue;
+ 
+-		limit_ns = drv->states[i].target_residency_ns;
++		state_limit = drv->states[i].target_residency_ns;
++		if (state_limit < CPUIDLE_POLL_MIN)
++			continue;
++
++		limit_ns = min_t(u64, state_limit, CPUIDLE_POLL_MAX);
+ 		break;
+ 	}
+ 
++out:
+ 	dev->poll_limit_ns = limit_ns;
+ 
++	/*
++	 * Polling parameter reported as usec to match the values reported
++	 * for c-cstate exit latencies in sysfs.
++	 */
++	param_poll = div64_ul(dev->poll_limit_ns, NSEC_PER_USEC);
++
+ 	return dev->poll_limit_ns;
+ }
+ 
+@@ -755,4 +799,5 @@ static int __init cpuidle_init(void)
+ 
+ module_param(off, int, 0444);
+ module_param_string(governor, param_governor, CPUIDLE_NAME_LEN, 0444);
++module_param_cb(poll, &poll_param_ops, &param_poll, 0444);
+ core_initcall(cpuidle_init);
