@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB222C8477
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97762C848B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgK3Myj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:54:39 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:47348 "EHLO
+        id S1726423AbgK3M6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:58:11 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:51294 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgK3Myg (ORCPT
+        with ESMTP id S1725955AbgK3M6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:54:36 -0500
+        Mon, 30 Nov 2020 07:58:09 -0500
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUCT3mC013966;
-        Mon, 30 Nov 2020 12:53:43 GMT
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUCsqrj065582;
+        Mon, 30 Nov 2020 12:57:22 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=T4e4SA0nsSEz5R/oPuOynUVhSHa8l4YzlQu9nbAV6w0=;
- b=Q37V5W8BrV9ozjYfQYey5wQMtLuLQ4dmuxgiTZBdTxDJp0/FHLpDNWXFDvMVmNBdLR+v
- XssuGqWJVxMTnYzAgT/wMDDY0XqipupHDTedLvuArKTytQ5SWxLNtHRaJ9oSF3+GZCbk
- +S0h2Zf92kCHJH2lKo0ODJT4OV5FablRJU5o7psx3W5ufD4Dqge78TjQ1Cshr/xe2CJA
- +eDi8+n/7dlCQLCCw4KjCMhm+2W4Rn8gSLB0CvFBQOsfdE6OJAj/fkM+DQZK1kr6UU8Y
- /ubilApDr6oJZUlFcgpmIl3DK65hBlIJKn01E8NoVSyfHWhQm0iOx5RWW9orbSgwiFYx cw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 353egkctw6-1
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Z32HeZTxYmA2bg5YFp3JSD0ies4QNEPkMbhbYtB8dhg=;
+ b=A6zuZjx50193pqYusUq0vapLI3Rmgn/N5eJtrgSZoUgnCv2ZikcLLnglaCj+DvZgNkBS
+ buCLJDSxSkhiG6rDOn8OauFi83J9q0gYyQSc8ENMbrAinvh5Ym2Wc2BDd4yhpclLRDtc
+ iowN8I3vBGjquBk8JPxN3qaLvZqaWdGFMKS+ypgyRSFBZNZJJJ48Sz76SzCF0DVbAMoS
+ QK20bB5NCpYFy3pMIbipWFIjE/A2V01In6R0ZHeMubsbz37HDuMP+DI7WaM1Myp/WeVi
+ enYDU65QqDFyPhFiGdTP1MuCl6QHkzWeGCvVt/tPwQas0OdSax1yO5HbQ4P/msgwvZhz kg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 353egkcuwf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 12:53:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUCpG43118219;
-        Mon, 30 Nov 2020 12:53:42 GMT
+        Mon, 30 Nov 2020 12:57:22 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUCoKt9083188;
+        Mon, 30 Nov 2020 12:55:22 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3540fv1u59-1
+        by aserp3030.oracle.com with ESMTP id 35404kj7sf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 12:53:42 +0000
+        Mon, 30 Nov 2020 12:55:22 +0000
 Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AUCreQG015374;
-        Mon, 30 Nov 2020 12:53:40 GMT
-Received: from mwanda (/102.36.221.92)
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AUCtKqI016127;
+        Mon, 30 Nov 2020 12:55:20 GMT
+Received: from kadam (/102.36.221.92)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 04:53:39 -0800
-Date:   Mon, 30 Nov 2020 15:53:30 +0300
+        with ESMTP ; Mon, 30 Nov 2020 04:55:19 -0800
+Date:   Mon, 30 Nov 2020 15:55:10 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] media: rockchip: rkisp1: remove some dead code
-Message-ID: <X8TrSj3PbqVtN5XQ@mwanda>
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        devel@driverdev.osuosl.org, GR-Linux-NIC-Dev@marvell.com,
+        Manish Chopra <manishc@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 127/141] staging: qlge: Fix fall-through warnings for
+ Clang
+Message-ID: <20201130125510.GF2767@kadam>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <673bd9f27bcc2df8c9d12be94f54001d8066d4ab.1605896060.git.gustavoars@kernel.org>
+ <20201125044257.GA142382@f3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+In-Reply-To: <20201125044257.GA142382@f3>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2011300082
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
  phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
  priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300081
+ definitions=main-2011300082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The debugfs_create_dir() function never returns NULLs.  It's not supposed
-to checked for errors in the normal case and there is no need to check
-in this function so let's just delete this dead code.
+On Wed, Nov 25, 2020 at 01:42:57PM +0900, Benjamin Poirier wrote:
+> On 2020-11-20 12:39 -0600, Gustavo A. R. Silva wrote:
+> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> > by explicitly adding a break statement instead of letting the code fall
+> > through to the next case.
+> > 
+> > Link: https://github.com/KSPP/linux/issues/115
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> >  drivers/staging/qlge/qlge_main.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+> > index 27da386f9d87..c41b1373dcf8 100644
+> > --- a/drivers/staging/qlge/qlge_main.c
+> > +++ b/drivers/staging/qlge/qlge_main.c
+> > @@ -1385,6 +1385,7 @@ static void ql_categorize_rx_err(struct ql_adapter *qdev, u8 rx_err,
+> >  		break;
+> >  	case IB_MAC_IOCB_RSP_ERR_CRC:
+> >  		stats->rx_crc_err++;
+> > +		break;
+> >  	default:
+> >  		break;
+> >  	}
+> 
+> In this instance, it think it would be more appropriate to remove the
+> "default" case.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 4 ----
- 1 file changed, 4 deletions(-)
+There are checkers which complain about that.  (As a static checker
+developer myself, I think complaining about missing default cases is a
+waste of everyone's time).
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-index 9af137e4967f..68da1eed753d 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-@@ -430,10 +430,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
- 	struct rkisp1_debug *debug = &rkisp1->debug;
- 
- 	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
--	if (!debug->debugfs_dir) {
--		dev_dbg(rkisp1->dev, "failed to create debugfs directory\n");
--		return;
--	}
- 	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
- 			     &debug->data_loss);
- 	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
--- 
-2.29.2
+regards,
+dan carpenter
