@@ -2,143 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0722C83DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC502C83DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 13:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729242AbgK3MGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 07:06:55 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2470 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729181AbgK3MGy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:06:54 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Cl3pc3fQNz4wvn;
-        Mon, 30 Nov 2020 20:05:44 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 30 Nov 2020 20:06:09 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 30 Nov 2020 20:06:07 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.1913.007; Mon, 30 Nov 2020 12:06:05 +0000
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     yuzenghui <yuzenghui@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-CC:     "maz@kernel.org" <maz@kernel.org>, Linuxarm <linuxarm@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>
-Subject: RE: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
-Thread-Topic: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
-Thread-Index: AQHWxwOHViTg3pRnhkK4BwcYBC9AoqngkAwAgAAA12A=
-Date:   Mon, 30 Nov 2020 12:06:05 +0000
-Message-ID: <ae78e69ded9a45bf82832241560bcee0@huawei.com>
-References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
- <f6e8ee71-f76b-428c-cd56-5bc93b1afafe@huawei.com>
-In-Reply-To: <f6e8ee71-f76b-428c-cd56-5bc93b1afafe@huawei.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.52.130.129]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729362AbgK3MHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 07:07:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729033AbgK3MHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 07:07:16 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73896206D8;
+        Mon, 30 Nov 2020 12:06:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606737995;
+        bh=uzsewMbuRPvdcwhky3sUJyq7j9PBe57NmyVkNT2cuvY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wNDSXLoyY4LX33S/nf+hOeZePD9IsiUHgAiN971WF4LlQojCK5r4D0OUv9vOoA/e7
+         e8Ot9tl8Ka9G+TcRJJXUAGhbwylCwTYuF8VSlGNaG9dJRT0AjIMKGBXvj5lz3lQtdO
+         ELzIBYTdJkyMaXkHtTaRdNAUEsqlD1shmed+ptsY=
+Date:   Mon, 30 Nov 2020 12:06:06 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/6] PCI: brcmstb: Add control of EP voltage
+ regulator(s)
+Message-ID: <20201130120606.GA4756@sirena.org.uk>
+References: <20201125192424.14440-1-james.quinlan@broadcom.com>
+ <20201125192424.14440-3-james.quinlan@broadcom.com>
+ <20201126114912.GA8506@sirena.org.uk>
+ <CA+-6iNzJAf_bKVjbw8bkh3qmSU++m6-DoFKQvBTTZGonYJGXfg@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNzJAf_bKVjbw8bkh3qmSU++m6-DoFKQvBTTZGonYJGXfg@mail.gmail.com>
+X-Cookie: Space is limited.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgWmVuZ2h1aSwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiB5dXpl
-bmdodWkNCj4gU2VudDogMzAgTm92ZW1iZXIgMjAyMCAxMTo1MQ0KPiBUbzogU2hhbWVlcmFsaSBL
-b2xvdGh1bSBUaG9kaSA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tPjsNCj4g
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZy
-YWRlYWQub3JnDQo+IENjOiBtYXpAa2VybmVsLm9yZzsgTGludXhhcm0gPGxpbnV4YXJtQGh1YXdl
-aS5jb20+Ow0KPiBlcmljLmF1Z2VyQHJlZGhhdC5jb20NCj4gU3ViamVjdDogUmU6IFtQQVRDSF0g
-aXJxY2hpcC9naWMtdjM6IENoZWNrIFNSRSBiaXQgZm9yIEdJQ3YyIGxlZ2FjeSBzdXBwb3J0DQo+
-IA0KPiBIaSBTaGFtZWVyLA0KPiANCj4gT24gMjAyMC8xMS8zMCAxODoyNiwgU2hhbWVlciBLb2xv
-dGh1bSB3cm90ZToNCj4gPiBBdCBwcmVzZW50LCB0aGUgc3VwcG9ydCBmb3IgR0lDdjIgYmFja3dh
-cmQgY29tcGF0aWJpbGl0eSBvbiBHSUN2My92NA0KPiA+IGhhcmR3YXJlIGlzIGRldGVybWluZWQg
-YmFzZWQgb24gd2hldGhlciBEVC9BQ1BJIHByb3ZpZGVzIGEgbWVtb3J5DQo+ID4gbWFwcGVkIHBo
-eXMgYmFzZSBhZGRyZXNzIGZvciBHSUMgdmlydHVhbCBDUFUgaW50ZXJmYWNlIHJlZ2lzdGVyKEdJ
-Q1YpLg0KPiA+IFRoaXMgY3JlYXRlcyBhIHByb2JsZW0gdGhhdCBhIFFlbXUgZ3Vlc3QgYm9vdCB3
-aXRoIGRlZmF1bHQgR0lDKEdJQ3YyKQ0KPiA+IGhhbmdzIHdoZW4gZmlybXdhcmUgZmFsc2VseSBy
-ZXBvcnRzIHRoaXMgYWRkcmVzcyBvbiBzeXN0ZW1zIHRoYXQgZG9uJ3QNCj4gPiBoYXZlIHN1cHBv
-cnQgZm9yIGxlZ2FjeSBtb2RlLg0KPiANCj4gU28gdGhlIHByb2JsZW0gaXMgdGhhdCBCSU9TIGhh
-cyBwcm92aWRlZCB1cyBhIGJvZ3VzIEdJQ0MgU3RydWN0dXJlLg0KDQpZZXMuIEFuZCBrZXJuZWwg
-dXNlcyB0aGlzIGZpZWxkIHRvIGRldGVybWluZSB0aGUgbGVnYWN5IHN1cHBvcnQuDQoNCj4gDQo+
-ID4gQXMgcGVyIEdJQ3YzL3Y0IHNwZWMsIGluIGFuIGltcGxlbWVudGF0aW9uIHRoYXQgZG9lcyBu
-b3Qgc3VwcG9ydCBsZWdhY3kNCj4gPiBvcGVyYXRpb24sIGFmZmluaXR5IHJvdXRpbmcgYW5kIHN5
-c3RlbSByZWdpc3RlciBhY2Nlc3MgYXJlIHBlcm1hbmVudGx5DQo+ID4gZW5hYmxlZC4gVGhpcyBt
-ZWFucyB0aGF0IHRoZSBhc3NvY2lhdGVkIGNvbnRyb2wgYml0cyBhcmUgUkFPL1dJLiBIZW5jZQ0K
-PiA+IHVzZSB0aGUgSUNDX1NSRV9FTDEuU1JFIGJpdCB0byBkZWNpZGUgd2hldGhlciBoYXJkd2Fy
-ZSBzdXBwb3J0cyBHSUN2Mg0KPiA+IG1vZGUgaW4gYWRkaXRpb24gdG8gdGhlIGFib3ZlIGZpcm13
-YXJlIGJhc2VkIGNoZWNrLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2hhbWVlciBLb2xvdGh1
-bSA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+IE9u
-IEhpc2lsaWNvbiBEMDYsIFVFRkkgc2V0cyB0aGUgR0lDIE1BRFQgR0lDQyBnaWN2X2Jhc2VfYWRk
-cmVzcyBidXQgdGhlDQo+ID4gR0lDIGltcGxlbWVudGF0aW9uwqBvbiB0aGVzZSBib2FyZHMgZG9l
-c24ndCBoYXZlIHRoZSBHSUN2MiBsZWdhY3kgc3VwcG9ydC4NCj4gPiBUaGlzIHJlc3VsdHMgaW4s
-IEd1ZXN0IGJvb3QgaGFuZyB3aGVuIFFlbXUgdXNlcyB0aGUgZGVmYXVsdCBHSUMgb3B0aW9uLg0K
-PiA+DQo+ID4gV2l0aCB0aGlzIHBhdGNoLCB0aGUgUWVtdSBHdWVzdCB3aXRoIEdJQ3YyIG5vdyBn
-cmFjZWZ1bGx5IGV4aXRzLA0KPiA+ICAgInFlbXUtc3lzdGVtLWFhcmNoNjQ6IGhvc3QgZG9lcyBu
-b3Qgc3VwcG9ydCBpbi1rZXJuZWwgR0lDdjIgZW11bGF0aW9uIg0KPiA+DQo+ID4gTm90IHZlcnkg
-c3VyZSB0aGVyZSBpcyBhIGJldHRlciB3YXkgdG8gZGV0ZWN0IHRoaXMgb3RoZXIgdGhhbiBjaGVj
-a2luZw0KPiA+IHRoZSBTUkUgYml0IGFzIGRvbmUgaW4gdGhpcyBwYXRjaChPZiBjb3Vyc2UsIHdl
-IHdpbGwgYmUgZml4aW5nIHRoZSBVRUZJDQo+ID4gZ29pbmcgZm9yd2FyZCkuDQo+IA0KPiBZZXMs
-IEkgaGFkIHNlZW4gdGhlIHNhbWUgcHJvYmxlbSBvbiB0aGUgRDA2LiBCdXQgSSAqZG8qIHRoaW5r
-IGl0J3MgdGhlDQo+IGZpcm13YXJlIHRoYXQgYWN0dWFsbHkgbmVlZHMgdG8gYmUgZml4ZWQuDQoN
-CldlbGwsIEkgYW0gbm90IHN1cmUgSSBhZ3JlZSB3aXRoIHRoYXQuIFRoZSBBQ1BJIHNwZWMgNi4z
-LCBzZWN0aW9uIDUuMi4xMi4xNCwgc2F5cywNCiJJZiB0aGUgcGxhdGZvcm0gaXMgbm90IHByZXNl
-bnRpbmcgYSBHSUN2MiB3aXRoIHZpcnR1YWxpemF0aW9uIGV4dGVuc2lvbnMgdGhpcyANCmZpZWxk
-ICpjYW4qIGJlIDAiLiBTbyBkb27igJl0IHRoaW5rIGl0IG1hbmRhdGVzIHRoYXQuDQoNCj4gDQo+
-ID4gVGhhbmtzLA0KPiA+IFNoYW1lZXINCj4gPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9pcnFj
-aGlwL2lycS1naWMtdjMuYyB8IDMzICsrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLQ0K
-PiA+ICAgMSBmaWxlIGNoYW5nZWQsIDI4IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+
-ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pcnFjaGlwL2lycS1naWMtdjMuYyBiL2RyaXZl
-cnMvaXJxY2hpcC9pcnEtZ2ljLXYzLmMNCj4gPiBpbmRleCAxNmZlY2MwZmViZTguLjE1ZmExZWVh
-NDVlNCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2lycWNoaXAvaXJxLWdpYy12My5jDQo+ID4g
-KysrIGIvZHJpdmVycy9pcnFjaGlwL2lycS1naWMtdjMuYw0KPiA+IEBAIC0xODM1LDYgKzE4MzUs
-MjcgQEAgc3RhdGljIHZvaWQgX19pbml0DQo+IGdpY19wb3B1bGF0ZV9wcGlfcGFydGl0aW9ucyhz
-dHJ1Y3QgZGV2aWNlX25vZGUgKmdpY19ub2RlKQ0KPiA+ICAgCW9mX25vZGVfcHV0KHBhcnRzX25v
-ZGUpOw0KPiA+ICAgfQ0KPiA+DQo+ID4gKy8qIFNSRSBiaXQgYmVpbmcgUkFPL1dJIGltcGxpZXMg
-bm8gR0lDdjIgbGVnYWN5IG1vZGUgc3VwcG9ydCAqLw0KPiANCj4gSSdtIHdvbmRlcmluZyBpZiB0
-aGlzIGlzIGEgbWFuZGF0ZSBvZiB0aGUgYXJjaGl0ZWN0dXJlLg0KDQpBcyBJIG1lbnRpb25lZCBh
-Ym92ZSwgSSBhbSBub3Qgc3VyZSB0aGlzIGlzIHRoZSBiZXN0IHdheSwgdGhvdWdoLA0Kc2VjdGlv
-biAxLjMuNSBvZiBHSUN2MyBzcGVjLCBzYXlzKGZvciBubyBsZWdhY3kgc3VwcG9ydCBjYXNlICJh
-ZmZpbml0eQ0Kcm91dGluZyBhbmQgc3lzdGVtIHJlZ2lzdGVyIGFjY2VzcyBhcmUgcGVybWFuZW50
-bHkgZW5hYmxlZC4gVGhpcyBtZWFucw0KdGhhdCB0aGUgYXNzb2NpYXRlZCBjb250cm9sIGJpdHMg
-YXJlIFJBTy9XSSINCg0KQnV0IGFnYWluIGxhdGVyIGluIHRoZSBzcGVjLCBpdCB1c2VzICJtaWdo
-dCBjaG9vc2UgdG8NCm1ha2UgdGhpcyBiaXQgUkFPL1dJIi4gU28gaXQgaXMgYXJndWFibGUgdGhh
-dCBpdCBtYW5kYXRlcyBpdCBvciBub3QuDQoNCkkgbGVhdmUgdGhhdCB0byBNYXJjIDopDQoNClRo
-YW5rcywNClNoYW1lZXIgDQoNCj4gPiBlbmFibGVkLg0KPiA+ICtzdGF0aWMgYm9vbCBfX2luaXQg
-Z2ljX2dpY3YyX2NvbXBhdGlibGUodm9pZCkNCj4gPiArew0KPiA+ICsJdTMyIG9yZywgdmFsOw0K
-PiA+ICsNCj4gPiArCW9yZyA9IGdpY19yZWFkX3NyZSgpOw0KPiA+ICsJaWYgKCEob3JnICYgSUND
-X1NSRV9FTDFfU1JFKSkNCj4gPiArCQlyZXR1cm4gdHJ1ZTsNCj4gPiArDQo+ID4gKwl2YWwgPSBv
-cmcgJiB+SUNDX1NSRV9FTDFfU1JFOw0KPiA+ICsJZ2ljX3dyaXRlX3NyZSh2YWwpOw0KPiA+ICsN
-Cj4gPiArCXZhbCA9IGdpY19yZWFkX3NyZSgpOw0KPiA+ICsJZ2ljX3dyaXRlX3NyZShvcmcpOw0K
-PiA+ICsNCj4gPiArCWlmICh2YWwgJiBJQ0NfU1JFX0VMMV9TUkUpDQo+ID4gKwkJcmV0dXJuIGZh
-bHNlOw0KPiA+ICsNCj4gPiArCXJldHVybiB0cnVlOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICAgc3Rh
-dGljIHZvaWQgX19pbml0IGdpY19vZl9zZXR1cF9rdm1faW5mbyhzdHJ1Y3QgZGV2aWNlX25vZGUg
-Km5vZGUpDQo+ID4gICB7DQo+ID4gICAJaW50IHJldDsNCj4gPiBAQCAtMTg1MSwxMCArMTg3Miwx
-MiBAQCBzdGF0aWMgdm9pZCBfX2luaXQgZ2ljX29mX3NldHVwX2t2bV9pbmZvKHN0cnVjdA0KPiBk
-ZXZpY2Vfbm9kZSAqbm9kZSkNCj4gPiAgIAkJCQkgJmdpY3ZfaWR4KSkNCj4gPiAgIAkJZ2ljdl9p
-ZHggPSAxOw0KPiA+DQo+ID4gLQlnaWN2X2lkeCArPSAzOwkvKiBBbHNvIHNraXAgR0lDRCwgR0lD
-QywgR0lDSCAqLw0KPiA+IC0JcmV0ID0gb2ZfYWRkcmVzc190b19yZXNvdXJjZShub2RlLCBnaWN2
-X2lkeCwgJnIpOw0KPiA+IC0JaWYgKCFyZXQpDQo+ID4gLQkJZ2ljX3YzX2t2bV9pbmZvLnZjcHUg
-PSByOw0KPiA+ICsJaWYgKGdpY19naWN2Ml9jb21wYXRpYmxlKCkpIHsNCj4gPiArCQlnaWN2X2lk
-eCArPSAzOwkvKiBBbHNvIHNraXAgR0lDRCwgR0lDQywgR0lDSCAqLw0KPiA+ICsJCXJldCA9IG9m
-X2FkZHJlc3NfdG9fcmVzb3VyY2Uobm9kZSwgZ2ljdl9pZHgsICZyKTsNCj4gPiArCQlpZiAoIXJl
-dCkNCj4gPiArCQkJZ2ljX3YzX2t2bV9pbmZvLnZjcHUgPSByOw0KPiA+ICsJfQ0KPiA+DQo+ID4g
-ICAJZ2ljX3YzX2t2bV9pbmZvLmhhc192NCA9IGdpY19kYXRhLnJkaXN0cy5oYXNfdmxwaXM7DQo+
-ID4gICAJZ2ljX3YzX2t2bV9pbmZvLmhhc192NF8xID0gZ2ljX2RhdGEucmRpc3RzLmhhc19ydnBl
-aWQ7DQo+ID4gQEAgLTIxNjQsNyArMjE4Nyw3IEBAIHN0YXRpYyB2b2lkIF9faW5pdCBnaWNfYWNw
-aV9zZXR1cF9rdm1faW5mbyh2b2lkKQ0KPiA+DQo+ID4gICAJZ2ljX3YzX2t2bV9pbmZvLm1haW50
-X2lycSA9IGlycTsNCj4gPg0KPiA+IC0JaWYgKGFjcGlfZGF0YS52Y3B1X2Jhc2UpIHsNCj4gPiAr
-CWlmIChnaWNfZ2ljdjJfY29tcGF0aWJsZSgpICYmIGFjcGlfZGF0YS52Y3B1X2Jhc2UpIHsNCj4g
-PiAgIAkJc3RydWN0IHJlc291cmNlICp2Y3B1ID0gJmdpY192M19rdm1faW5mby52Y3B1Ow0KPiA+
-DQo+ID4gICAJCXZjcHUtPmZsYWdzID0gSU9SRVNPVVJDRV9NRU07DQo+IA0KPiBUaGFua3MsDQo+
-IFplbmdodWkNCg==
+
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Nov 27, 2020 at 03:26:53PM -0500, Jim Quinlan wrote:
+> On Thu, Nov 26, 2020 at 6:49 AM Mark Brown <broonie@kernel.org> wrote:
+
+> > Does PCI allow supplies to be physically absent?  If not then the driver
+> > shouldn't be using regulator_get_optional() and much of the code here
+> > can be deleted.
+
+> First, as an aside, I'm  a little confused about the purpose of
+> devm_regulator_get_optional(...);  the other  xxx_get_optional() calls
+> I am familiar with (eg clock, reset, gpio) return NULL if the desired
+> item does not exist, and then NULL can be used as a valid pointer for
+> the rest of the API.  Not so here.
+
+The other APIs that cloned the regulator API don't have the dummy
+support that the regulator has and unfortunately changed the sense a bit
+there.
+
+> > > +static void brcm_set_regulators(struct brcm_pcie *pcie, bool on)
+> > > +{
+
+> > This is open coding the regulator bulk APIs.
+
+> Except that a bulk regulator "get"  requires that all supplies are
+> present.  I would have to first scan the node's properties for the
+> "-supply" properties and fill in the bulk regulator structure.  I'm
+> fine with doing that.
+
+No, you should never do that.  If the supplies can be physically absent
+then you should use regulator_get_optional() which allows you to do
+whatever needs doing to configure the hardware for the missing supply.
+If it's just that the supply may not be described in the DT but has to
+be there for the device to operate then the code should use the normal
+regualtor APIs - a dummy regulator will be provided if there's no supply
+described.
+
+> However, a previous incarnation of this  commit was reviewed by RobH,
+> and if I understood him correctly he wanted the actual names of the
+> possible regulators to be used and specified in the bindings doc.   I
+> just followed the example of "pcie-rockchip-host.c" whose bindings doc
+> was reviewed by RobH.
+
+That is just plain bad code, the binding may well be fine but I can't
+see any excuse for that driver to be using _optional() there.
+
+Another subsystem I'm going to have to keep an eye on :(
+
+--0OAP2g/MAC+5xKAE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/E4C0ACgkQJNaLcl1U
+h9ASVAf/dAzCzBS05ZDDJT3IWk8wIMrO9CCPEMAfYPfqF2cDecsYmWGeMci5N1BK
+Psu0U9QMod0gBFody7uur6MDmWtta/yTvsXnxyoPOCxy2uyW+kOSXkv5czAevU5C
+ojaUWaKRi+jv1z4pnMnC3ujHjv3rz+j+PDRUSx5tFcYEk4l41jt9ROrroybhEdjT
+oWNz3aRq0ho06udUBLutr2rUChL4rVYx4menujiC93X9BPd/tDBqtdJgy/G56eBE
+lO1kno/55Epva9bnji0snGJCCGIh8n640TDHiDmWJjY649CwgoiaUw15fgMs2iV0
+UHhac7bZs7vk8VTGMuwDfHg577bmJQ==
+=vrSY
+-----END PGP SIGNATURE-----
+
+--0OAP2g/MAC+5xKAE--
