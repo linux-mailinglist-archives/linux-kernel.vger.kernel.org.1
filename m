@@ -2,205 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CA82C8606
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4826F2C8609
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727359AbgK3N4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:56:33 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2177 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgK3N4c (ORCPT
+        id S1727394AbgK3N47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:56:59 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48874 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgK3N47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:56:32 -0500
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cl6BK6x7Pz67Kb3;
-        Mon, 30 Nov 2020 21:52:57 +0800 (CST)
-Received: from lhreml713-chm.china.huawei.com (10.201.108.64) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Mon, 30 Nov 2020 14:55:49 +0100
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- lhreml713-chm.china.huawei.com (10.201.108.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 30 Nov 2020 13:55:49 +0000
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.1913.007; Mon, 30 Nov 2020 13:55:49 +0000
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
-Thread-Topic: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
-Thread-Index: AQHWxwOHViTg3pRnhkK4BwcYBC9AoqngmnQAgAABpXA=
-Date:   Mon, 30 Nov 2020 13:55:49 +0000
-Message-ID: <85bb389a75f347d29ab3f75e4cfae060@huawei.com>
-References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
- <f8a97f360073fa495cae75acc11ecf4f@kernel.org>
-In-Reply-To: <f8a97f360073fa495cae75acc11ecf4f@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.52.130.129]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 30 Nov 2020 08:56:59 -0500
+Date:   Mon, 30 Nov 2020 13:56:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606744577;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wOc56v3Po34nSJCF8myJonWEzsvj5LWUJzUmKQLEWls=;
+        b=cjHhI9u45ddxYWLUKYui0ZZmMco8cPeBG2+FtU+CrzG/l5LUV79JsY3c33PNTU7MvKeD4R
+        wW/ZS5eMfgHkqX4MONYzV1HrJbDDSnGitAh9FRDTFI2bXaIzTxJAqOnad3CF6xKVP9HIaN
+        ssR+x7EHeVskI4Jp1JRQ+ATKpj6QYs2k5roNJSWGR9JvQnLuxxUu5qodXEKpXvIfLn5ifu
+        m3HSy8l4vlTDQfO3607Hz5qdZsr9QSLHy0Mos7e1WByoDIgB9BaD7phM4k27buCwvFv/JG
+        kfhCyOL8dsnofthGxAtUboxJDM8EMik58rDJ02WLsTvcnm3pNsPhFMdxmeyu6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606744577;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wOc56v3Po34nSJCF8myJonWEzsvj5LWUJzUmKQLEWls=;
+        b=t2nWVJ6k7qsrqrKkb9DwM2lFOuEtSyvAPURVtPLFbGDwRhVbSbFph9AznRiux445ZKML1i
+        TXuDNfM8Y7CyXnCg==
+From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] genirq/irqdomain: Don't try to free an interrupt that
+ has no mapping
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201129135551.396777-1-maz@kernel.org>
+References: <20201129135551.396777-1-maz@kernel.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Message-ID: <160674457627.3364.6530359983188105313.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFyYywNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJjIFp5
-bmdpZXIgW21haWx0bzptYXpAa2VybmVsLm9yZ10NCj4gU2VudDogMzAgTm92ZW1iZXIgMjAyMCAx
-MjoyOA0KPiBUbzogU2hhbWVlcmFsaSBLb2xvdGh1bSBUaG9kaSA8c2hhbWVlcmFsaS5rb2xvdGh1
-bS50aG9kaUBodWF3ZWkuY29tPg0KPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsg
-bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiBlcmljLmF1Z2VyQHJlZGhh
-dC5jb207IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BB
-VENIXSBpcnFjaGlwL2dpYy12MzogQ2hlY2sgU1JFIGJpdCBmb3IgR0lDdjIgbGVnYWN5IHN1cHBv
-cnQNCj4gDQo+IEhpIFNoYW1lZXIsDQo+IA0KPiBPbiAyMDIwLTExLTMwIDEwOjI2LCBTaGFtZWVy
-IEtvbG90aHVtIHdyb3RlOg0KPiA+IEF0IHByZXNlbnQsIHRoZSBzdXBwb3J0IGZvciBHSUN2MiBi
-YWNrd2FyZCBjb21wYXRpYmlsaXR5IG9uIEdJQ3YzL3Y0DQo+ID4gaGFyZHdhcmUgaXMgZGV0ZXJt
-aW5lZCBiYXNlZCBvbiB3aGV0aGVyIERUL0FDUEkgcHJvdmlkZXMgYSBtZW1vcnkNCj4gPiBtYXBw
-ZWQgcGh5cyBiYXNlIGFkZHJlc3MgZm9yIEdJQyB2aXJ0dWFsIENQVSBpbnRlcmZhY2UgcmVnaXN0
-ZXIoR0lDVikuDQo+ID4gVGhpcyBjcmVhdGVzIGEgcHJvYmxlbSB0aGF0wqBhIFFlbXUgZ3Vlc3Qg
-Ym9vdCB3aXRoIGRlZmF1bHQgR0lDKEdJQ3YyKQ0KPiANCj4gVGhhdCdkIGJlIHRydWUgb2YgKmFu
-eSogZ3Vlc3QgdXNpbmcgR0lDdjIsIG5vdCBqdXN0IHdoZW4gdXNpbmcgUUVNVSBhcw0KPiB0aGUg
-Vk1NLCByaWdodD8NCg0KWWVzLCBJIHdvdWxkIHRoaW5rIHNvLg0KDQo+ID4gaGFuZ3Mgd2hlbiBm
-aXJtd2FyZSBmYWxzZWx5IHJlcG9ydHMgdGhpcyBhZGRyZXNzIG9uIHN5c3RlbXMgdGhhdCBkb24n
-dA0KPiA+IGhhdmXCoHN1cHBvcnQgZm9yIGxlZ2FjecKgbW9kZS4NCj4gDQo+IEFuZCBJIGd1ZXNz
-IGl0IGlzbid0IGp1c3QgdGhlIGd1ZXN0IHRoYXQgaGFuZ3MsIGJ1dCB0aGUgd2hvbGUgc3lzdGVt
-IGNhbg0KPiBnbyBzb3V0aCAoaXQgd291bGQgYmUgdG90YWxseSBsZWdpdGltYXRlIGZvciB0aGUg
-SFcgdG8gZGVsaXZlciBhDQo+IFNFcnJvcikuDQoNClNvIGZhciBJIGhhdmVu4oCZdCBzZWVuIHRo
-YXQgaGFwcGVuaW5nLiBJIHdhcyBhYmxlIHRvIGtpbGwgdGhlIEd1ZXN0IGFuZCByZWNvdmVyLg0K
-QnV0IHRoZSBhbm5veWluZyB0aGluZyBpcyBHdWVzdCBib290IGhhbmdzIGF0IHJhbmRvbSBwbGFj
-ZXMgd2l0aG91dCBhbnkNCmVycm9yIHJlcG9ydGVkIGFuZCBwZW9wbGUgZW5kIHVwIHNwZW5kaW5n
-IGxvdCBvZiB0aW1lIG9ubHkgdG8gYmUgdG9sZCBsYXRlcg0KdGhhdCBnaWMtdmVyc2lvbj0zIGlz
-IG1pc3NpbmcgZnJvbSB0aGVpciBzY3JpcHRzLiAgDQogDQo+ID4gQXMgcGVyIEdJQ3YzL3Y0IHNw
-ZWMsIGluIGFuIGltcGxlbWVudGF0aW9uIHRoYXQgZG9lcyBub3Qgc3VwcG9ydCBsZWdhY3kNCj4g
-PiBvcGVyYXRpb24sIGFmZmluaXR5IHJvdXRpbmcgYW5kIHN5c3RlbSByZWdpc3RlciBhY2Nlc3Mg
-YXJlIHBlcm1hbmVudGx5DQo+ID4gZW5hYmxlZC4gVGhpcyBtZWFucyB0aGF0IHRoZSBhc3NvY2lh
-dGVkIGNvbnRyb2wgYml0cyBhcmUgUkFPL1dJLiBIZW5jZQ0KPiA+IHVzZSB0aGXCoElDQ19TUkVf
-RUwxLlNSRSBiaXQgdG8gZGVjaWRlIHdoZXRoZXIgaGFyZHdhcmXCoHN1cHBvcnRzIEdJQ3YyDQo+
-ID4gbW9kZSBpbiBhZGRpdGlvbiB0byB0aGUgYWJvdmUgZmlybXdhcmXCoGJhc2VkIGNoZWNrLg0K
-PiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2hhbWVlciBLb2xvdGh1bSA8c2hhbWVlcmFsaS5rb2xv
-dGh1bS50aG9kaUBodWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+IE9uIEhpc2lsaWNvbiBEMDYsIFVF
-Rkkgc2V0cyB0aGUgR0lDIE1BRFQgR0lDQyBnaWN2X2Jhc2VfYWRkcmVzcyBidXQgdGhlDQo+ID4g
-R0lDIGltcGxlbWVudGF0aW9uwqBvbiB0aGVzZSBib2FyZHMgZG9lc24ndCBoYXZlIHRoZSBHSUN2
-MiBsZWdhY3kNCj4gPiBzdXBwb3J0Lg0KPiA+IFRoaXMgcmVzdWx0cyBpbiwgR3Vlc3QgYm9vdCBo
-YW5nIHdoZW4gUWVtdSB1c2VzIHRoZSBkZWZhdWx0IEdJQyBvcHRpb24uDQo+IA0KPiBXaGF0IGEg
-Ym9yZS4gSXMgdGhpcyBnbG9yaW91cyBmaXJtd2FyZSByZWFsbHkgb3V0IGluIHRoZSB3aWxkPw0K
-IA0KOiguIEkgYW0gYWZyYWlkIGl0IGlzLiANCg0KPiA+IFdpdGggdGhpcyBwYXRjaCwgdGhlIFFl
-bXUgR3Vlc3Qgd2l0aCBHSUN2MiBub3cgZ3JhY2VmdWxseSBleGl0cywNCj4gPiDCoCJxZW11LXN5
-c3RlbS1hYXJjaDY0OiBob3N0IGRvZXMgbm90IHN1cHBvcnQgaW4ta2VybmVsIEdJQ3YyIGVtdWxh
-dGlvbiINCj4gPg0KPiA+IE5vdCB2ZXJ5wqBzdXJlIHRoZXJlIGlzIGEgYmV0dGVyIHdheSB0byBk
-ZXRlY3QgdGhpcyBvdGhlciB0aGFuIGNoZWNraW5nDQo+ID4gdGhlIFNSRSBiaXQgYXMgZG9uZSBp
-biB0aGlzIHBhdGNoKE9mIGNvdXJzZSzCoHdlIHdpbGwgYmUgZml4aW5nIHRoZSBVRUZJDQo+ID4g
-Z29pbmcgZm9yd2FyZCkuDQo+IA0KPiBJIGRvbid0IHRoaW5rIHRoZXJlIGlzIGFueSBvdGhlciBy
-ZWxpYWJsZSB3YXksIGJ1dCBzZWUgYmVsb3cuDQo+IA0KPiA+DQo+ID4gVGhhbmtzLA0KPiA+IFNo
-YW1lZXINCj4gPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2lycWNoaXAvaXJxLWdpYy12My5jIHwg
-MzMgKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
-LCAyOCBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvaXJxY2hpcC9pcnEtZ2ljLXYzLmMNCj4gPiBiL2RyaXZlcnMvaXJxY2hpcC9pcnEt
-Z2ljLXYzLmMNCj4gPiBpbmRleCAxNmZlY2MwZmViZTguLjE1ZmExZWVhNDVlNCAxMDA2NDQNCj4g
-PiAtLS0gYS9kcml2ZXJzL2lycWNoaXAvaXJxLWdpYy12My5jDQo+ID4gKysrIGIvZHJpdmVycy9p
-cnFjaGlwL2lycS1naWMtdjMuYw0KPiA+IEBAIC0xODM1LDYgKzE4MzUsMjcgQEAgc3RhdGljIHZv
-aWQgX19pbml0DQo+ID4gZ2ljX3BvcHVsYXRlX3BwaV9wYXJ0aXRpb25zKHN0cnVjdCBkZXZpY2Vf
-bm9kZSAqZ2ljX25vZGUpDQo+ID4gIAlvZl9ub2RlX3B1dChwYXJ0c19ub2RlKTsNCj4gPiAgfQ0K
-PiA+DQo+ID4gKy8qIFNSRSBiaXQgYmVpbmcgUkFPL1dJIGltcGxpZXMgbm8gR0lDdjIgbGVnYWN5
-IG1vZGUgc3VwcG9ydCAqLw0KPiA+ICtzdGF0aWMgYm9vbCBfX2luaXQgZ2ljX2dpY3YyX2NvbXBh
-dGlibGUodm9pZCkNCj4gPiArew0KPiA+ICsJdTMyIG9yZywgdmFsOw0KPiA+ICsNCj4gPiArCW9y
-ZyA9IGdpY19yZWFkX3NyZSgpOw0KPiA+ICsJaWYgKCEob3JnICYgSUNDX1NSRV9FTDFfU1JFKSkN
-Cj4gPiArCQlyZXR1cm4gdHJ1ZTsNCj4gPiArDQo+ID4gKwl2YWwgPSBvcmcgJiB+SUNDX1NSRV9F
-TDFfU1JFOw0KPiA+ICsJZ2ljX3dyaXRlX3NyZSh2YWwpOw0KPiA+ICsNCj4gPiArCXZhbCA9IGdp
-Y19yZWFkX3NyZSgpOw0KPiA+ICsJZ2ljX3dyaXRlX3NyZShvcmcpOw0KPiA+ICsNCj4gPiArCWlm
-ICh2YWwgJiBJQ0NfU1JFX0VMMV9TUkUpDQo+ID4gKwkJcmV0dXJuIGZhbHNlOw0KPiA+ICsNCj4g
-PiArCXJldHVybiB0cnVlOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgdm9pZCBfX2luaXQg
-Z2ljX29mX3NldHVwX2t2bV9pbmZvKHN0cnVjdCBkZXZpY2Vfbm9kZSAqbm9kZSkNCj4gPiAgew0K
-PiA+ICAJaW50IHJldDsNCj4gPiBAQCAtMTg1MSwxMCArMTg3MiwxMiBAQCBzdGF0aWMgdm9pZCBf
-X2luaXQNCj4gPiBnaWNfb2Zfc2V0dXBfa3ZtX2luZm8oc3RydWN0IGRldmljZV9ub2RlICpub2Rl
-KQ0KPiA+ICAJCQkJICZnaWN2X2lkeCkpDQo+ID4gIAkJZ2ljdl9pZHggPSAxOw0KPiA+DQo+ID4g
-LQlnaWN2X2lkeCArPSAzOwkvKiBBbHNvIHNraXAgR0lDRCwgR0lDQywgR0lDSCAqLw0KPiA+IC0J
-cmV0ID0gb2ZfYWRkcmVzc190b19yZXNvdXJjZShub2RlLCBnaWN2X2lkeCwgJnIpOw0KPiA+IC0J
-aWYgKCFyZXQpDQo+ID4gLQkJZ2ljX3YzX2t2bV9pbmZvLnZjcHUgPSByOw0KPiA+ICsJaWYgKGdp
-Y19naWN2Ml9jb21wYXRpYmxlKCkpIHsNCj4gPiArCQlnaWN2X2lkeCArPSAzOwkvKiBBbHNvIHNr
-aXAgR0lDRCwgR0lDQywgR0lDSCAqLw0KPiA+ICsJCXJldCA9IG9mX2FkZHJlc3NfdG9fcmVzb3Vy
-Y2Uobm9kZSwgZ2ljdl9pZHgsICZyKTsNCj4gPiArCQlpZiAoIXJldCkNCj4gPiArCQkJZ2ljX3Yz
-X2t2bV9pbmZvLnZjcHUgPSByOw0KPiA+ICsJfQ0KPiA+DQo+ID4gIAlnaWNfdjNfa3ZtX2luZm8u
-aGFzX3Y0ID0gZ2ljX2RhdGEucmRpc3RzLmhhc192bHBpczsNCj4gPiAgCWdpY192M19rdm1faW5m
-by5oYXNfdjRfMSA9IGdpY19kYXRhLnJkaXN0cy5oYXNfcnZwZWlkOw0KPiA+IEBAIC0yMTY0LDcg
-KzIxODcsNyBAQCBzdGF0aWMgdm9pZCBfX2luaXQgZ2ljX2FjcGlfc2V0dXBfa3ZtX2luZm8odm9p
-ZCkNCj4gPg0KPiA+ICAJZ2ljX3YzX2t2bV9pbmZvLm1haW50X2lycSA9IGlycTsNCj4gPg0KPiA+
-IC0JaWYgKGFjcGlfZGF0YS52Y3B1X2Jhc2UpIHsNCj4gPiArCWlmIChnaWNfZ2ljdjJfY29tcGF0
-aWJsZSgpICYmIGFjcGlfZGF0YS52Y3B1X2Jhc2UpIHsNCj4gPiAgCQlzdHJ1Y3QgcmVzb3VyY2Ug
-KnZjcHUgPSAmZ2ljX3YzX2t2bV9pbmZvLnZjcHU7DQo+ID4NCj4gPiAgCQl2Y3B1LT5mbGFncyA9
-IElPUkVTT1VSQ0VfTUVNOw0KPiANCj4gVGhlIHByb2JsZW0gaXMgdGhhdCB0aGlzIGdpY19naWN2
-Ml9jb21wYXRpYmxlKCkgY29tZXMgaW4gd2F5IHRvbyBsYXRlLA0KPiBhbmQgeW91IGFyZSBkaXNh
-YmxpbmcgU1JFIHdoaWxlIHdlIGFscmVhZHkgaGF2ZSBjb25maWd1cmVkIHRvbnMgb2YNCj4gc3R1
-ZmYuDQo+IFRoaXMgaGFzIHRoZSBwb3RlbnRpYWwgZm9yIGJyZWFraW5nIHRoaW5ncyB1bmV4cGVj
-dGVkbHkuDQoNCk9rLiBNYWtlcyBzZW5zZS4gDQoNCj4gSG93IGFib3V0IHRoaXMgaW5zdGVhZD8g
-Q29tcGxldGVseSB1bnRlc3RlZCwgb2YgY291cnNlLg0KDQpUaGFua3MgZm9yIHRoYXQuIEkganVz
-dCB0ZXN0ZWQgYW5kIGl0IHdvcmtzLg0KDQpTaGFtZWVyDQoNCj4gVGhhbmtzLA0KPiANCj4gICAg
-ICAgICAgTS4NCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2tlcm5lbC9jcHVmZWF0dXJl
-LmMNCj4gYi9hcmNoL2FybTY0L2tlcm5lbC9jcHVmZWF0dXJlLmMNCj4gaW5kZXggZGNjMTY1YjNm
-YzA0Li5jNDJmMzkxNTRhZjkgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtNjQva2VybmVsL2NwdWZl
-YXR1cmUuYw0KPiArKysgYi9hcmNoL2FybTY0L2tlcm5lbC9jcHVmZWF0dXJlLmMNCj4gQEAgLTEy
-MDAsNyArMTIwMCw3IEBAIHN0YXRpYyBib29sIGhhc191c2VhYmxlX2dpY3YzX2NwdWlmKGNvbnN0
-IHN0cnVjdA0KPiBhcm02NF9jcHVfY2FwYWJpbGl0aWVzICplbnRyeSwNCj4gICAJaWYgKCFoYXNf
-Y3B1aWRfZmVhdHVyZShlbnRyeSwgc2NvcGUpKQ0KPiAgIAkJcmV0dXJuIGZhbHNlOw0KPiANCj4g
-LQloYXNfc3JlID0gZ2ljX2VuYWJsZV9zcmUoKTsNCj4gKwloYXNfc3JlID0gZ2ljX2VuYWJsZV9z
-cmUoTlVMTCk7DQo+ICAgCWlmICghaGFzX3NyZSkNCj4gICAJCXByX3dhcm5fb25jZSgiJXMgcHJl
-c2VudCBidXQgZGlzYWJsZWQgYnkgaGlnaGVyIGV4Y2VwdGlvbiBsZXZlbFxuIiwNCj4gICAJCQkg
-ICAgIGVudHJ5LT5kZXNjKTsNCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQva2VybmVsL3NtcC5j
-IGIvYXJjaC9hcm02NC9rZXJuZWwvc21wLmMNCj4gaW5kZXggMDljOTZmNTc4MThjLi4yMGE3MTAy
-NjEyZGEgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtNjQva2VybmVsL3NtcC5jDQo+ICsrKyBiL2Fy
-Y2gvYXJtNjQva2VybmVsL3NtcC5jDQo+IEBAIC0xODIsNyArMTgyLDcgQEAgc3RhdGljIHZvaWQg
-aW5pdF9naWNfcHJpb3JpdHlfbWFza2luZyh2b2lkKQ0KPiAgIHsNCj4gICAJdTMyIGNwdWZsYWdz
-Ow0KPiANCj4gLQlpZiAoV0FSTl9PTighZ2ljX2VuYWJsZV9zcmUoKSkpDQo+ICsJaWYgKFdBUk5f
-T04oIWdpY19lbmFibGVfc3JlKE5VTEwpKSkNCj4gICAJCXJldHVybjsNCj4gDQo+ICAgCWNwdWZs
-YWdzID0gcmVhZF9zeXNyZWcoZGFpZik7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lycWNoaXAv
-aXJxLWdpYy12My5jIGIvZHJpdmVycy9pcnFjaGlwL2lycS1naWMtdjMuYw0KPiBpbmRleCAxNmZl
-Y2MwZmViZTguLmRiNWNlM2RkMDFjNyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pcnFjaGlwL2ly
-cS1naWMtdjMuYw0KPiArKysgYi9kcml2ZXJzL2lycWNoaXAvaXJxLWdpYy12My5jDQo+IEBAIC0x
-MDMsNiArMTAzLDggQEAgRVhQT1JUX1NZTUJPTChnaWNfbm9uc2VjdXJlX3ByaW9yaXRpZXMpOw0K
-PiAgIC8qIHBwaV9ubWlfcmVmc1tuXSA9PSBudW1iZXIgb2YgY3B1cyBoYXZpbmcgcHBpW24gKyAx
-Nl0gc2V0IGFzIE5NSSAqLw0KPiAgIHN0YXRpYyByZWZjb3VudF90ICpwcGlfbm1pX3JlZnM7DQo+
-IA0KPiArc3RhdGljIGJvb2wgaGFzX3YyX2NvbXBhdDsNCj4gKw0KPiAgIHN0YXRpYyBzdHJ1Y3Qg
-Z2ljX2t2bV9pbmZvIGdpY192M19rdm1faW5mbzsNCj4gICBzdGF0aWMgREVGSU5FX1BFUl9DUFUo
-Ym9vbCwgaGFzX3Jzcyk7DQo+IA0KPiBAQCAtOTE1LDcgKzkxNyw3IEBAIHN0YXRpYyB2b2lkIGdp
-Y19jcHVfc3lzX3JlZ19pbml0KHZvaWQpDQo+ICAgCSAqDQo+ICAgCSAqIEtpbmRseSBpbmZvcm0g
-dGhlIGx1c2VyLg0KPiAgIAkgKi8NCj4gLQlpZiAoIWdpY19lbmFibGVfc3JlKCkpDQo+ICsJaWYg
-KCFnaWNfZW5hYmxlX3NyZSgmaGFzX3YyX2NvbXBhdCkpDQo+ICAgCQlwcl9lcnIoIkdJQzogdW5h
-YmxlIHRvIHNldCBTUkUgKGRpc2FibGVkIGF0IEVMMiksIHBhbmljIGFoZWFkXG4iKTsNCj4gDQo+
-ICAgCXByaWJpdHMgPSBnaWNfZ2V0X3ByaWJpdHMoKTsNCj4gQEAgLTE4NTMsNyArMTg1NSw3IEBA
-IHN0YXRpYyB2b2lkIF9faW5pdCBnaWNfb2Zfc2V0dXBfa3ZtX2luZm8oc3RydWN0DQo+IGRldmlj
-ZV9ub2RlICpub2RlKQ0KPiANCj4gICAJZ2ljdl9pZHggKz0gMzsJLyogQWxzbyBza2lwIEdJQ0Qs
-IEdJQ0MsIEdJQ0ggKi8NCj4gICAJcmV0ID0gb2ZfYWRkcmVzc190b19yZXNvdXJjZShub2RlLCBn
-aWN2X2lkeCwgJnIpOw0KPiAtCWlmICghcmV0KQ0KPiArCWlmIChoYXNfdjJfY29tcGF0ICYmICFy
-ZXQpDQo+ICAgCQlnaWNfdjNfa3ZtX2luZm8udmNwdSA9IHI7DQo+IA0KPiAgIAlnaWNfdjNfa3Zt
-X2luZm8uaGFzX3Y0ID0gZ2ljX2RhdGEucmRpc3RzLmhhc192bHBpczsNCj4gQEAgLTIxNjQsNyAr
-MjE2Niw3IEBAIHN0YXRpYyB2b2lkIF9faW5pdCBnaWNfYWNwaV9zZXR1cF9rdm1faW5mbyh2b2lk
-KQ0KPiANCj4gICAJZ2ljX3YzX2t2bV9pbmZvLm1haW50X2lycSA9IGlycTsNCj4gDQo+IC0JaWYg
-KGFjcGlfZGF0YS52Y3B1X2Jhc2UpIHsNCj4gKwlpZiAoaGFzX3YyX2NvbXBhdCAmJiBhY3BpX2Rh
-dGEudmNwdV9iYXNlKSB7DQo+ICAgCQlzdHJ1Y3QgcmVzb3VyY2UgKnZjcHUgPSAmZ2ljX3YzX2t2
-bV9pbmZvLnZjcHU7DQo+IA0KPiAgIAkJdmNwdS0+ZmxhZ3MgPSBJT1JFU09VUkNFX01FTTsNCj4g
-ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvaXJxY2hpcC9hcm0tZ2ljLXYzLmgNCj4gYi9pbmNs
-dWRlL2xpbnV4L2lycWNoaXAvYXJtLWdpYy12My5oDQo+IGluZGV4IGY2ZDA5MmZkYjkzZC4uYmRj
-MzkwNTI5MzY3IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2lycWNoaXAvYXJtLWdpYy12
-My5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvaXJxY2hpcC9hcm0tZ2ljLXYzLmgNCj4gQEAgLTY5
-MywxMSArNjkzLDIyIEBAIGludCBpdHNfaW5pdChzdHJ1Y3QgZndub2RlX2hhbmRsZSAqaGFuZGxl
-LCBzdHJ1Y3QNCj4gcmRpc3RzICpyZGlzdHMsDQo+ICAgCSAgICAgc3RydWN0IGlycV9kb21haW4g
-KmRvbWFpbik7DQo+ICAgaW50IG1iaV9pbml0KHN0cnVjdCBmd25vZGVfaGFuZGxlICpmd25vZGUs
-IHN0cnVjdCBpcnFfZG9tYWluICpwYXJlbnQpOw0KPiANCj4gLXN0YXRpYyBpbmxpbmUgYm9vbCBn
-aWNfZW5hYmxlX3NyZSh2b2lkKQ0KPiArc3RhdGljIGlubGluZSBib29sIGdpY19lbmFibGVfc3Jl
-KGJvb2wgKmhhc192MikNCj4gICB7DQo+ICAgCXUzMiB2YWw7DQo+IA0KPiAgIAl2YWwgPSBnaWNf
-cmVhZF9zcmUoKTsNCj4gKwlpZiAoaGFzX3YyKSB7DQo+ICsJCWlmICghKHZhbCAmIElDQ19TUkVf
-RUwxX1NSRSkpIHsNCj4gKwkJCSpoYXNfdjIgPSB0cnVlOw0KPiArCQl9IGVsc2Ugew0KPiArCQkJ
-dmFsICY9IH5JQ0NfU1JFX0VMMV9TUkU7DQo+ICsJCQlnaWNfd3JpdGVfc3JlKHZhbCk7DQo+ICsJ
-CQl2YWwgPSBnaWNfcmVhZF9zcmUoKTsNCj4gKwkJCSpoYXNfdjIgPSAhKHZhbCAmIElDQ19TUkVf
-RUwxX1NSRSk7DQo+ICsJCX0NCj4gKwl9DQo+ICsNCj4gICAJaWYgKHZhbCAmIElDQ19TUkVfRUwx
-X1NSRSkNCj4gICAJCXJldHVybiB0cnVlOw0KPiANCj4gLS0NCj4gSmF6eiBpcyBub3QgZGVhZC4g
-SXQganVzdCBzbWVsbHMgZnVubnkuLi4NCg==
+The following commit has been merged into the irq/core branch of tip:
+
+Commit-ID:     4615fbc3788ddc8e7c6d697714ad35a53729aa2c
+Gitweb:        https://git.kernel.org/tip/4615fbc3788ddc8e7c6d697714ad35a53729aa2c
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Sun, 29 Nov 2020 13:55:51 
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 30 Nov 2020 14:50:21 +01:00
+
+genirq/irqdomain: Don't try to free an interrupt that has no mapping
+
+When an interrupt allocation fails for N interrupts, it is pretty
+common for the error handling code to free the same number of interrupts,
+no matter how many interrupts have actually been allocated.
+
+This may result in the domain freeing code to be unexpectedly called
+for interrupts that have no mapping in that domain. Things end pretty
+badly.
+
+Instead, add some checks to irq_domain_free_irqs_hierarchy() to make sure
+that thiss does not follow the hierarchy if no mapping exists for a given
+interrupt.
+
+Fixes: 6a6544e520abe ("genirq/irqdomain: Remove auto-recursive hierarchy support")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201129135551.396777-1-maz@kernel.org
+
+---
+ kernel/irq/irqdomain.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 3d7463f..30a7887 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -1381,8 +1381,15 @@ static void irq_domain_free_irqs_hierarchy(struct irq_domain *domain,
+ 					   unsigned int irq_base,
+ 					   unsigned int nr_irqs)
+ {
+-	if (domain->ops->free)
+-		domain->ops->free(domain, irq_base, nr_irqs);
++	unsigned int i;
++
++	if (!domain->ops->free)
++		return;
++
++	for (i = 0; i < nr_irqs; i++) {
++		if (irq_domain_get_irq_data(domain, irq_base + i))
++			domain->ops->free(domain, irq_base + i, 1);
++	}
+ }
+ 
+ int irq_domain_alloc_irqs_hierarchy(struct irq_domain *domain,
