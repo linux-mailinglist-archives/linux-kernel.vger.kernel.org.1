@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D5D2C882C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E06D12C8831
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 16:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgK3Ph1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 10:37:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43044 "EHLO mail.kernel.org"
+        id S1728142AbgK3Phf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 10:37:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727932AbgK3Ph0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726992AbgK3Ph0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Nov 2020 10:37:26 -0500
 Received: from mail.kernel.org (ip5f5ad5b3.dynamic.kabel-deutschland.de [95.90.213.179])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3286206C0;
+        by mail.kernel.org (Postfix) with ESMTPSA id A62F42076C;
         Mon, 30 Nov 2020 15:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1606750604;
-        bh=szZdBReHZFuuPt1J0RMvjSeZ7MAO+/sUjrP3Eq+bLyg=;
+        bh=6EfeXORA2gickC2Vboo8pg7pzpx5jVNyZ79u/YhJwSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hwuI2yqw2erUcJukVsHl08zq+63OQOWaOEMa7EX9QuBT1crCYRhgBWzYiJJ3UkBTP
-         w08gTdyV574i/Mze04lFTFzDL6+C6/cflwwS6mM6VS/fFfgl1FaIaAx7nLoTiD1xWS
-         O3bVrkWzyPn0H+aMB9ytcHkh71VrCz4V8+9/O7HE=
+        b=WzCxg2Y9uMHPNPUeYaGGW1a6ctYLFAXCC9yU96DIPLIjx0WGdPhpKMvWEfkfNJprB
+         Na5Sz5TYOjvWC25q6+ooe+UEfZAgy7GCr5JqIbG2uIcQ+Ihnlq5O63PcdnAnwQsBoI
+         qwy/3FepXS96u/NXEwgBUvA6sTyLgTFBV9mxhft8=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kjlEI-00CjvJ-CJ; Mon, 30 Nov 2020 16:36:42 +0100
+        id 1kjlEI-00CjvL-DX; Mon, 30 Nov 2020 16:36:42 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] scripts: get_feat.pl: add a script to handle Documentation/features
-Date:   Mon, 30 Nov 2020 16:36:30 +0100
-Message-Id: <8b0c1ad06d689283a6d78c4ccd188a02c3acc0de.1606748711.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 2/6] scripts: get_feat.pl: improve matrix output
+Date:   Mon, 30 Nov 2020 16:36:31 +0100
+Message-Id: <9c3e8c813e8146c5c30e10fa75974f8fbfe6016a.1606748711.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1606748711.git.mchehab+huawei@kernel.org>
 References: <cover.1606748711.git.mchehab+huawei@kernel.org>
@@ -43,503 +43,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Documentation/features contains a set of parseable files.
-It is not worth converting them to ReST format, as they're
-useful the way it is. It is, however, interesting to parse
-them and produce output on different formats:
-
-1) Output the contents of a feature in ReST format;
-
-2) Output what features a given architecture supports;
-
-3) Output a matrix with features x architectures.
+Instead of producing a too wide table, let's split it per
+subsystem, and use a better notation in order to make easier
+for the reader to identify how a feature is supported on
+multiple architectures.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/get_feat.pl | 474 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 474 insertions(+)
- create mode 100755 scripts/get_feat.pl
+ scripts/get_feat.pl | 113 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 70 insertions(+), 43 deletions(-)
 
 diff --git a/scripts/get_feat.pl b/scripts/get_feat.pl
-new file mode 100755
-index 000000000000..79d83595addd
---- /dev/null
+index 79d83595addd..7b92ebab7ddd 100755
+--- a/scripts/get_feat.pl
 +++ b/scripts/get_feat.pl
-@@ -0,0 +1,474 @@
-+#!/usr/bin/perl
-+# SPDX-License-Identifier: GPL-2.0
-+
-+use strict;
-+use Pod::Usage;
-+use Getopt::Long;
-+use File::Find;
-+use Fcntl ':mode';
-+
-+my $help;
-+my $man;
-+my $debug;
-+my $arch;
-+my $feat;
-+my $prefix="Documentation/features";
-+
-+GetOptions(
-+	"debug|d+" => \$debug,
-+	"dir=s" => \$prefix,
-+	'help|?' => \$help,
-+	'arch=s' => \$arch,
-+	'feat=s' => \$feat,
-+	man => \$man
-+) or pod2usage(2);
-+
-+pod2usage(1) if $help;
-+pod2usage(-exitstatus => 0, -verbose => 2) if $man;
-+
-+pod2usage(2) if (scalar @ARGV < 1 || @ARGV > 2);
-+
-+my ($cmd, $arg) = @ARGV;
-+
-+pod2usage(2) if ($cmd ne "current" && $cmd ne "rest" && $cmd ne "validate");
-+
-+require Data::Dumper if ($debug);
-+
-+my %data;
-+my %archs;
-+
-+#
-+# Displays an error message, printing file name and line
-+#
-+sub parse_error($$$$) {
-+	my ($file, $ln, $msg, $data) = @_;
-+
-+	$data =~ s/\s+$/\n/;
-+
-+	print STDERR "Warning: file $file#$ln:\n\t$msg";
-+
-+	if ($data ne "") {
-+		print STDERR ". Line\n\t\t$data";
+@@ -293,68 +293,95 @@ sub output_feature {
+ # Output all features for all architectures
+ #
+ 
+-sub matrix_lines {
+-	print "=" x $max_size_subsys;
+-	print "  ";
+-	print "=" x $max_size_name;
+-	print "  ";
++sub matrix_lines($$) {
++	my $partial = shift;
++	my $header = shift;
++	my $split;
++	my $fill;
++	my $ln_marker;
+ 
+-	foreach my $arch (sort keys %archs) {
+-		my $len = $max_size_status;
+-
+-		$len = length($arch) if ($len < length($arch));
++	if ($header) {
++		$ln_marker = "=";
 +	} else {
-+	    print STDERR "\n";
++		$ln_marker = "-";
 +	}
-+}
-+
-+#
-+# Parse a features file, storing its contents at %data
-+#
-+
-+my $h_name = "Feature";
-+my $h_kconfig = "Kconfig";
-+my $h_description = "Description";
-+my $h_subsys = "Subsystem";
-+my $h_status = "Status";
-+my $h_arch = "Architecture";
-+
-+my $max_size_name = length($h_name);
-+my $max_size_kconfig = length($h_kconfig);
-+my $max_size_description = length($h_description);
-+my $max_size_subsys = length($h_subsys);
-+my $max_size_status = length($h_status);
-+my $max_size_arch = length($h_arch);
-+
-+sub parse_feat {
-+	my $file = $File::Find::name;
-+
-+	my $mode = (stat($file))[2];
-+	return if ($mode & S_IFDIR);
-+	return if ($file =~ m,($prefix)/arch-support.txt,);
-+	return if (!($file =~ m,arch-support.txt$,));
-+
-+	my $subsys = "";
-+	$subsys = $2 if ( m,.*($prefix)/([^/]+).*,);
-+
-+	if (length($subsys) > $max_size_subsys) {
-+		$max_size_subsys = length($subsys);
-+	}
-+
-+	my $name;
-+	my $kconfig;
-+	my $description;
-+	my $comments = "";
-+	my $last_status;
-+	my $ln;
-+	my %arch_table;
-+
-+	print STDERR "Opening $file\n" if ($debug > 1);
-+	open IN, $file;
-+
-+	while(<IN>) {
-+		$ln++;
-+
-+		if (m/^\#\s+Feature\s+name:\s*(.*\S)/) {
-+			$name = $1;
-+			if (length($name) > $max_size_name) {
-+				$max_size_name = length($name);
-+			}
-+			next;
-+		}
-+		if (m/^\#\s+Kconfig:\s*(.*\S)/) {
-+			$kconfig = $1;
-+			if (length($kconfig) > $max_size_kconfig) {
-+				$max_size_kconfig = length($kconfig);
-+			}
-+			next;
-+		}
-+		if (m/^\#\s+description:\s*(.*\S)/) {
-+			$description = $1;
-+			if (length($description) > $max_size_description) {
-+				$max_size_description = length($description);
-+			}
-+			next;
-+		}
-+		next if (m/^\\s*$/);
-+		next if (m/^\s*\-+\s*$/);
-+		next if (m/^\s*\|\s*arch\s*\|\s*status\s*\|\s*$/);
-+
-+		if (m/^\#\s*(.*)/) {
-+			$comments .= "$1\n";
-+			next;
-+		}
-+		if (m/^\s*\|\s*(\S+):\s*\|\s*(\S+)\s*\|\s*$/) {
-+			my $a = $1;
-+			my $status = $2;
-+
-+			if (length($status) > $max_size_status) {
-+				$max_size_status = length($status);
-+			}
-+			if (length($a) > $max_size_arch) {
-+				$max_size_arch = length($a);
-+			}
-+
-+			$status = "---" if ($status =~ m/^\.\.$/);
-+
-+			$archs{$a} = 1;
-+			$arch_table{$a} = $status;
-+			next;
-+		}
-+
-+		#Everything else is an error
-+		parse_error($file, $ln, "line is invalid", $_);
-+	}
-+	close IN;
-+
-+	if (!$name) {
-+		parse_error($file, $ln, "Feature name not found", "");
-+		return;
-+	}
-+
-+	parse_error($file, $ln, "Subsystem not found", "") if (!$subsys);
-+	parse_error($file, $ln, "Kconfig not found", "") if (!$kconfig);
-+	parse_error($file, $ln, "Description not found", "") if (!$description);
-+
-+	if (!%arch_table) {
-+		parse_error($file, $ln, "Architecture table not found", "");
-+		return;
-+	}
-+
-+	$data{$name}->{where} = $file;
-+	$data{$name}->{subsys} = $subsys;
-+	$data{$name}->{kconfig} = $kconfig;
-+	$data{$name}->{description} = $description;
-+	$data{$name}->{comments} = $comments;
-+	$data{$name}->{table} = \%arch_table;
-+}
-+
-+#
-+# Output feature(s) for a given architecture
-+#
-+sub output_arch_table {
-+	my $title = "Feature status on $arch architecture";
-+
-+	print "=" x length($title) . "\n";
-+	print "$title\n";
-+	print "=" x length($title) . "\n\n";
-+
-+	print "=" x $max_size_subsys;
-+	print "  ";
-+	print "=" x $max_size_name;
-+	print "  ";
-+	print "=" x $max_size_kconfig;
-+	print "  ";
-+	print "=" x $max_size_status;
-+	print "  ";
-+	print "=" x $max_size_description;
-+	print "\n";
-+	printf "%-${max_size_subsys}s  ", $h_subsys;
-+	printf "%-${max_size_name}s  ", $h_name;
-+	printf "%-${max_size_kconfig}s  ", $h_kconfig;
-+	printf "%-${max_size_status}s  ", $h_status;
-+	printf "%-${max_size_description}s\n", $h_description;
-+	print "=" x $max_size_subsys;
-+	print "  ";
-+	print "=" x $max_size_name;
-+	print "  ";
-+	print "=" x $max_size_kconfig;
-+	print "  ";
-+	print "=" x $max_size_status;
-+	print "  ";
-+	print "=" x $max_size_description;
-+	print "\n";
-+
-+	foreach my $name (sort {
-+				($data{$a}->{subsys} cmp $data{$b}->{subsys}) ||
-+				($data{$a}->{name} cmp $data{$b}->{name})
-+			       } keys %data) {
-+		next if ($feat && $name ne $feat);
-+
-+		my %arch_table = %{$data{$name}->{table}};
-+		printf "%-${max_size_subsys}s  ", $data{$name}->{subsys};
-+		printf "%-${max_size_name}s  ", $name;
-+		printf "%-${max_size_kconfig}s  ", $data{$name}->{kconfig};
-+		printf "%-${max_size_status}s  ", $arch_table{$arch};
-+		printf "%-${max_size_description}s\n", $data{$name}->{description};
-+	}
-+
-+	print "=" x $max_size_subsys;
-+	print "  ";
-+	print "=" x $max_size_name;
-+	print "  ";
-+	print "=" x $max_size_kconfig;
-+	print "  ";
-+	print "=" x $max_size_status;
-+	print "  ";
-+	print "=" x $max_size_description;
-+	print "\n";
-+}
-+
-+#
-+# Output a feature on all architectures
-+#
-+sub output_feature {
-+	my $title = "Feature $feat";
-+
-+	print "=" x length($title) . "\n";
-+	print "$title\n";
-+	print "=" x length($title) . "\n\n";
-+
-+	print ":Subsystem: $data{$feat}->{subsys} \n" if ($data{$feat}->{subsys});
-+	print ":Kconfig: $data{$feat}->{kconfig} \n" if ($data{$feat}->{kconfig});
-+
-+	my $desc = $data{$feat}->{description};
-+	$desc =~ s/^([a-z])/\U$1/;
-+	$desc =~ s/\.?\s*//;
-+	print "\n$desc.\n\n";
-+
-+	my $com = $data{$feat}->{comments};
-+	$com =~ s/^\s+//;
-+	$com =~ s/\s+$//;
-+	if ($com) {
-+		print "Comments\n";
-+		print "--------\n\n";
-+		print "$com\n\n";
-+	}
-+
-+	print "=" x $max_size_arch;
-+	print "  ";
-+	print "=" x $max_size_status;
-+	print "\n";
-+
-+	printf "%-${max_size_arch}s  ", $h_arch;
-+	printf "%-${max_size_status}s", $h_status . "\n";
-+
-+	print "=" x $max_size_arch;
-+	print "  ";
-+	print "=" x $max_size_status;
-+	print "\n";
-+
-+	my %arch_table = %{$data{$feat}->{table}};
-+	foreach my $arch (sort keys %arch_table) {
-+		printf "%-${max_size_arch}s  ", $arch;
-+		printf "%-${max_size_status}s\n", $arch_table{$arch};
-+	}
-+
-+	print "=" x $max_size_arch;
-+	print "  ";
-+	print "=" x $max_size_status;
-+	print "\n";
-+}
-+
-+#
-+# Output all features for all architectures
-+#
-+
-+sub matrix_lines {
-+	print "=" x $max_size_subsys;
-+	print "  ";
-+	print "=" x $max_size_name;
-+	print "  ";
-+
-+	foreach my $arch (sort keys %archs) {
-+		my $len = $max_size_status;
-+
-+		$len = length($arch) if ($len < length($arch));
-+
-+		print "=" x $len;
-+		print "  ";
-+	}
-+	print "=" x $max_size_kconfig;
-+	print "  ";
-+	print "=" x $max_size_description;
-+	print "\n";
-+}
-+
-+sub output_matrix {
-+
-+	my $title = "Feature List (feature x architecture)";
-+
-+	print "=" x length($title) . "\n";
-+	print "$title\n";
-+	print "=" x length($title) . "\n\n";
-+
-+	matrix_lines;
-+
-+	printf "%-${max_size_subsys}s  ", $h_subsys;
-+	printf "%-${max_size_name}s  ", $h_name;
-+
-+	foreach my $arch (sort keys %archs) {
-+		printf "%-${max_size_status}s  ", $arch;
-+	}
-+	printf "%-${max_size_kconfig}s  ", $h_kconfig;
-+	printf "%-${max_size_description}s\n", $h_description;
-+
-+	matrix_lines;
-+
-+	foreach my $name (sort {
-+				($data{$a}->{subsys} cmp $data{$b}->{subsys}) ||
-+				($data{$a}->{name} cmp $data{$b}->{name})
-+			       } keys %data) {
-+		printf "%-${max_size_subsys}s  ", $data{$name}->{subsys};
-+		printf "%-${max_size_name}s  ", $name;
-+
-+		my %arch_table = %{$data{$name}->{table}};
-+
-+		foreach my $arch (sort keys %arch_table) {
-+			my $len = $max_size_status;
-+
-+			$len = length($arch) if ($len < length($arch));
-+
-+			printf "%-${len}s  ", $arch_table{$arch};
-+		}
-+		printf "%-${max_size_kconfig}s  ", $data{$name}->{kconfig};
-+		printf "%-${max_size_description}s\n", $data{$name}->{description};
-+	}
-+
-+	matrix_lines;
-+}
-+
-+
-+#
-+# Parses all feature files located at $prefix dir
-+#
-+find({wanted =>\&parse_feat, no_chdir => 1}, $prefix);
-+
-+print STDERR Data::Dumper->Dump([\%data], [qw(*data)]) if ($debug);
-+
-+#
-+# Handles the command
-+#
-+if ($cmd eq "current") {
-+	$arch = qx(uname -m | sed 's/x86_64/x86/' | sed 's/i386/x86/');
-+	$arch =~s/\s+$//;
-+}
-+
-+if ($cmd ne "validate") {
-+	if ($arch) {
-+		output_arch_table;
-+	} elsif ($feat) {
-+		output_feature;
+ 
+-		print "=" x $len;
+-		print "  ";
++	if ($partial) {
++		$split = "|";
++		$fill = " ";
 +	} else {
-+		output_matrix;
-+	}
-+}
++		$split = "+";
++		$fill = $ln_marker;
+ 	}
+-	print "=" x $max_size_kconfig;
+-	print "  ";
+-	print "=" x $max_size_description;
+-	print "\n";
 +
-+__END__
++	print $split;
++	print $fill x $max_size_name;
++	print $split;
++	print $fill x $max_size_kconfig;
++	print $split;
++	print $fill x $max_size_description;
++	print "+";
++	print $ln_marker x $max_size_arch;
++	print "+";
++	print $ln_marker x $max_size_status;
++	print "+\n";
+ }
+ 
+ sub output_matrix {
+-
+-	my $title = "Feature List (feature x architecture)";
++	my $title = "Feature status on all architectures";
+ 
+ 	print "=" x length($title) . "\n";
+ 	print "$title\n";
+ 	print "=" x length($title) . "\n\n";
+ 
+-	matrix_lines;
+-
+-	printf "%-${max_size_subsys}s  ", $h_subsys;
+-	printf "%-${max_size_name}s  ", $h_name;
+-
+-	foreach my $arch (sort keys %archs) {
+-		printf "%-${max_size_status}s  ", $arch;
+-	}
+-	printf "%-${max_size_kconfig}s  ", $h_kconfig;
+-	printf "%-${max_size_description}s\n", $h_description;
+-
+-	matrix_lines;
+-
++	my $cur_subsys = "";
+ 	foreach my $name (sort {
+-				($data{$a}->{subsys} cmp $data{$b}->{subsys}) ||
+-				($data{$a}->{name} cmp $data{$b}->{name})
++				($data{$a}->{subsys} cmp $data{$b}->{subsys}) or
++				($a cmp $b)
+ 			       } keys %data) {
+-		printf "%-${max_size_subsys}s  ", $data{$name}->{subsys};
+-		printf "%-${max_size_name}s  ", $name;
 +
-+=head1 NAME
++		if ($cur_subsys ne $data{$name}->{subsys}) {
++			if ($cur_subsys ne "") {
++				printf "\n";
++			}
 +
-+get_feat.pl - parse the Linux Feature files and produce a ReST book.
++			$cur_subsys = $data{$name}->{subsys};
 +
-+=head1 SYNOPSIS
++			my $title = "Subsystem: $cur_subsys";
++			print "$title\n";
++			print "=" x length($title) . "\n\n";
 +
-+B<get_feat.pl> [--debug] [--man] [--help] [--dir=<dir>]
-+	       [--arch=<arch>] [--feat=<feature>] <COMAND> [<ARGUMENT>]
++			matrix_lines(0, 0);
++			printf "|%-${max_size_name}s", $h_name;
++			printf "|%-${max_size_kconfig}s", $h_kconfig;
++			printf "|%-${max_size_description}s", $h_description;
 +
-+Where <COMMAND> can be:
++			printf "|%-${max_size_arch}s", $h_arch;
++			printf "|%-${max_size_status}s|\n", $h_status;
 +
-+=over 8
-+
-+B<current>               - output features for this machine's architecture
-+
-+B<rest>                  - output features in ReST markup language
-+
-+B<validate>              - validate the feature contents
-+
-+=back
-+
-+=head1 OPTIONS
-+
-+=over 8
-+
-+=item B<--arch>
-+
-+Output features for an specific architecture, optionally filtering for
-+a single specific feature.
-+
-+=item B<--feat>
-+
-+Output features for a single specific architecture.
-+
-+=item B<--dir>
-+
-+Changes the location of the Feature files. By default, it uses
-+the Documentation/features directory.
-+
-+=item B<--debug>
-+
-+Put the script in verbose mode, useful for debugging. Can be called multiple
-+times, to increase verbosity.
-+
-+=item B<--help>
-+
-+Prints a brief help message and exits.
-+
-+=item B<--man>
-+
-+Prints the manual page and exits.
-+
-+=back
-+
-+=head1 DESCRIPTION
-+
-+Parse the Linux feature files from Documentation/features (by default),
-+optionally producing results at ReST format.
-+
-+It supports output data per architecture, per feature or a
-+feature x arch matrix.
-+
-+When used with B<rest> command, it will use either one of the tree formats:
-+
-+If neither B<--arch> or B<--feature> arguments are used, it will output a
-+matrix with features per architecture.
-+
-+If B<--arch> argument is used, it will output the features availability for
-+a given architecture.
-+
-+If B<--feat> argument is used, it will output the content of the feature
-+file using ReStructured Text markup.
-+
-+=head1 BUGS
-+
-+Report bugs to Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-+
-+=head1 COPYRIGHT
-+
-+Copyright (c) 2019 by Mauro Carvalho Chehab <mchehab+samsung@kernel.org>.
-+
-+License GPLv2: GNU GPL version 2 <http://gnu.org/licenses/gpl.html>.
-+
-+This is free software: you are free to change and redistribute it.
-+There is NO WARRANTY, to the extent permitted by law.
-+
-+=cut
++			matrix_lines(0, 1);
++		}
+ 
+ 		my %arch_table = %{$data{$name}->{table}};
+-
++		my $first = 1;
+ 		foreach my $arch (sort keys %arch_table) {
+-			my $len = $max_size_status;
++			if ($first) {
++				printf "|%-${max_size_name}s", $name;
++				printf "|%-${max_size_kconfig}s", $data{$name}->{kconfig};
++				printf "|%-${max_size_description}s", $data{$name}->{description};
++				$first = 0;
++			} else {
++				matrix_lines(1, 0);
+ 
+-			$len = length($arch) if ($len < length($arch));
+-
+-			printf "%-${len}s  ", $arch_table{$arch};
++				printf "|%-${max_size_name}s", "";
++				printf "|%-${max_size_kconfig}s", "";
++				printf "|%-${max_size_description}s", "";
++			}
++			printf "|%-${max_size_arch}s", $arch;
++			printf "|%-${max_size_status}s|\n", $arch_table{$arch};
+ 		}
+-		printf "%-${max_size_kconfig}s  ", $data{$name}->{kconfig};
+-		printf "%-${max_size_description}s\n", $data{$name}->{description};
++		matrix_lines(0, 0);
+ 	}
+-
+-	matrix_lines;
+ }
+ 
+ 
 -- 
 2.28.0
 
