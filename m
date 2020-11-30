@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF8A2C84B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E0E2C84B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Nov 2020 14:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgK3NJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 08:09:25 -0500
-Received: from mail-eopbgr80098.outbound.protection.outlook.com ([40.107.8.98]:22948
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726206AbgK3NJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 08:09:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sfuzbl8RsycQ1lmQwShesYSL9nZpkMrR6bCvMt6YxwabG1168Z8jY8n4cTIpxJRwdONioWGEWk81BkO8tMYdV/ky39LQin5V50YZbGyeRaKuzlxTI8JJq1Ztp95zPkudFita6SLupZl/hklfao9tiIKYPS2zkwyNpU6bMpC84vhCqzOmFfHQ9SF6ynAtQV1gsUKBF0g1mAv6O5jxanP5CgGuMRbhiVU16tn74BeC6C4T6krhPaNHt2oVaMAZ5WYgX+NvaBOLMBeG6sh7QEYsTxfAOXorXxFUdSCn+vYaw9VNGx38VtsueBwWXQJj1E7jkoIbW3yJ7OZEiTjVBfF47g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BnaEcD49T30Qd0YLShxcfIhqdo0Ea1MuEwc/QvCUV4g=;
- b=Pn+6ZDhMs0ZYa4A5RiPn36RCxXC7Pe2YXpqNBcZtP0MeMoOq76bcXB+HKYKAz/VYgBxa9xE38I4ZOe9W7LOAYzIuQdsYPXpcVEpbuTZqBgorcWKll5KcmmfHGl2uT98TRsoSVdks6ZGm8yVyOLLn9RAfwNy7X5MVLQ9L1jkKZjcg81mLGhSUmJg3Bwtp7m+gIYfh6D/gVSfeeZOmbn6qdtroZjgGh8PMPXM5lW7Pdr9UyEnLANCABZLjABOZbm1BdxQe50KxJCfKbg5bgQ11fBXZMchznRURhQIGjgzJjkoC/dPLcw2FKF9EhdN7moYeqcGKvpmFl2Ze76f6QbKAhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.com; dmarc=pass action=none header.from=kontron.com;
- dkim=pass header.d=kontron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BnaEcD49T30Qd0YLShxcfIhqdo0Ea1MuEwc/QvCUV4g=;
- b=dTInXQ0kSls9H4rAwzcjpdAyI4w7APMPEwmHhQO8gmY0Re7xHt5VWqooqnTrxYYWYZqaSuMXvTM2WH5NzxmyWIuIDruBgMg60VHiHnyTsnBSv0xGuB8NyoGSHKt7wd3Qs/mM4YzFiobr90fdIf+yIlpMCCkUOqUhiyRj+/xoIso=
-Received: from AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:4a::29)
- by AM0PR10MB3362.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:160::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Mon, 30 Nov
- 2020 13:08:36 +0000
-Received: from AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::593f:e14c:7db4:1887]) by AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::593f:e14c:7db4:1887%6]) with mapi id 15.20.3611.031; Mon, 30 Nov 2020
- 13:08:36 +0000
-From:   Michael Brunner <Michael.Brunner@kontron.com>
-To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
-CC:     "linux@roeck-us.net" <linux@roeck-us.net>,
-        "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "mibru@gmx.de" <mibru@gmx.de>,
-        "vkrasnov@dev.rtsoft.ru" <vkrasnov@dev.rtsoft.ru>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mvanyulin@dev.rtsoft.ru" <mvanyulin@dev.rtsoft.ru>
-Subject: Re: [PATCH v3] mfd: kempld-core: Check for DMI definition before ACPI
-Thread-Topic: [PATCH v3] mfd: kempld-core: Check for DMI definition before
- ACPI
-Thread-Index: AQHWu+OkIu811TJCPUavMPQe+vS/XqnbrQMAgAUPBgA=
-Date:   Mon, 30 Nov 2020 13:08:36 +0000
-Message-ID: <a3da927c29198afcffd16f5cb50014b1c1d8a922.camel@kontron.com>
-References: <981276386ec1b496b423b7605b7ac912884b7172.camel@kontron.com>
-         <bf70506e5aeb87889b298e342f96bae0e2187102.camel@kontron.com>
-         <ca31b0f1638d07f5c597c652ed887a3ce0f595aa.camel@kontron.com>
-         <20201127075330.GI2455276@dell>
-In-Reply-To: <20201127075330.GI2455276@dell>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.4-0ubuntu1 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=kontron.com;
-x-originating-ip: [195.243.149.94]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5a4c2623-470c-4572-5e03-08d895310c11
-x-ms-traffictypediagnostic: AM0PR10MB3362:
-x-microsoft-antispam-prvs: <AM0PR10MB3362CFBB1CAB9DC9756D5A4CE3F50@AM0PR10MB3362.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FplEyrmH16UTaj6iMU/y+R08t/27dyXyKDu2dyhjpLAXlRY1A+QuvBxGNyX2cRZqIuRHpwBzV/PAsh8VXhhZP17e597LsnDuShgmvIb498e7HqMqwAG/ImUG0XXedPJnEKU1jT2KrJSwwH1cQV9t33XYo5DUMyJvmy4qQtNGkk9bAsabRvx+h4O0iLtBOgDu5kLzA2dkt65ItzqwpJQ25n0PWis2nPMEq+u0u4UGVxvlS8/bwR6u3zD7nsK9NIGcLYbSmNf5aN7S64vCVZem2p9P+tv8PPiyfE6AvRr/uom+H+ylQPOkPRbcED+1r7I0Cs6n/hazZgwc0zC7csSnGA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(346002)(366004)(26005)(6506007)(6916009)(36756003)(8936002)(186003)(86362001)(54906003)(4326008)(6486002)(478600001)(71200400001)(2616005)(316002)(2906002)(91956017)(66476007)(66556008)(66946007)(64756008)(66446008)(76116006)(8676002)(83380400001)(4001150100001)(5660300002)(6512007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?iso-8859-15?Q?yx0w0t4ixoAI0Pjo5/O7LuVFW1NzMGoNJ4nc6gI/re8XVdqUHzvpvWyC3?=
- =?iso-8859-15?Q?Yp1eAtJ0EExpWkYI0WN80QhdV5dnmg4Wsp5JzB6ymcsRIiUrlryhziv4b?=
- =?iso-8859-15?Q?fvotqnqFjh2W7pgaGnwSe7wo0iG8eL4ISdGMO+jjBIj2tYN5nbW59JVaQ?=
- =?iso-8859-15?Q?wR+6ZD1lzn/BpvDRDfQNYwo3s6SwHDmgyZ/Qkhfe3HC2Ox+20t6IDfDxl?=
- =?iso-8859-15?Q?vVu1S216KxDbzCXYhxDNsSt20DKH3Z0RHXF3LFrZziV/rudtB1MxpFvSf?=
- =?iso-8859-15?Q?ocS6YNh+WK3EUzoZ4YAkyKqa+sFMRyR1Naa1mcoWHHvJbgcWISYIUc6rg?=
- =?iso-8859-15?Q?XNczeKEUl64D5Rxcd3666Onzna2/HMTSYhyFs1ctjWdKTogCpQHo2CR50?=
- =?iso-8859-15?Q?AoJSC2S2CdW1gLc/xAZCTi18F6nWJ9UrbPd58I4owmUT3VspEMMO1A18L?=
- =?iso-8859-15?Q?uRataBUfzm7KFyptjbIBaIDEoaFbaNjI/Jw36dQb2PmARSx47h+Zg7J0h?=
- =?iso-8859-15?Q?4XUp4nMHT2hQGweRREn2cg2cxC49/hEBqy0m2Q8f8m3JBAH9tjxEvratX?=
- =?iso-8859-15?Q?8fZviO3g6vX7bProbEpqvVZjcN/ixO2UwlOU8KGcMqjzsni8YHdSwXKZ1?=
- =?iso-8859-15?Q?kNBlFtY5MOhFj3Hi1iw1FNLrvDT1D1XDfpMgKnNIIgIbHxxfdfMVimd8r?=
- =?iso-8859-15?Q?XU0PbtpAUKxdYPp9uFG3YVSp6jNpuFR6XhCy+LwnoL4hQ+PI/Tm2fLy7S?=
- =?iso-8859-15?Q?FfUqvK8vPM69H5QK2xyriRkTGD0x3ERjjXTObMEo33F8zeqQnW7ZUE75D?=
- =?iso-8859-15?Q?er5HZar1kuvMbDJ/A7UYj1Rt+I86PA2Mq/EvBppLX0RZdV9+HzrKeENRr?=
- =?iso-8859-15?Q?MLVomeOQxQtnjPRMUICqmtAQCzQHDWB+Kuo+8h9UdgkmAoSgi+nDlBGeA?=
- =?iso-8859-15?Q?Wl3tIZIMOfWPk1xO4G4zH4567oXp2vHQlI1BzNKTFpUYiQ1T/qwq4e8QS?=
- =?iso-8859-15?Q?us5aJV9TYpX3GTtVXIBVkh7nn/RC2FnFvkJ6sIQ7dBm54jHfxfXeMKD?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <77BAAE2FCF19914796D1848806F05C99@EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: quoted-printable
+        id S1726343AbgK3NLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 08:11:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726213AbgK3NLG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 08:11:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606741779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9d9XdU5Titt5/Nod7XiGF/HEU0E6wP9nIDkj+IZ3V4k=;
+        b=XI8j8x9VOz4nlCFBMCooXijzzyIqtMuO79z9AzLccMa9JvRPNWJ8yZQV1CWkoYbykpGgUq
+        7uC6ruIRgqbAohRLdde10iZfUHhrqhkv8jihXuMJDzK9cqfLnD96e4JfguFNViEFB/woAQ
+        mvP7RDxLjpockhEWsfAGmU3jri/41o8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-U09mH5x6OH2CfQOItCJbPQ-1; Mon, 30 Nov 2020 08:09:36 -0500
+X-MC-Unique: U09mH5x6OH2CfQOItCJbPQ-1
+Received: by mail-wm1-f70.google.com with SMTP id y187so7411490wmy.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 05:09:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9d9XdU5Titt5/Nod7XiGF/HEU0E6wP9nIDkj+IZ3V4k=;
+        b=FDw8nl0tSUdRVpha1DzPnh2xpvnUGGXNCPexHwM4aSA0PMu0NoF+/usIgiu+Kok2Yf
+         ScLHzEdwO95+uOSwF2ndE82JY3PjeLjq0FyDmThxqKWFCVbPJEbqcpSDoEWfQDTn1I3g
+         znQigEwfqKQALI9YBTRqQWnnD9e2RZPW0VW/NNA22JwFkNFqp4Lv7AiZBcK0lGwdGAzb
+         4e+Y34Pt+cLvQbZpU6ptZLK6MfNvbjjcPs6rs6px4OGRG0zGZRGJrU2/hW3kzXqrhucB
+         oZsmu+dnB9qTGilV+tF+vl7Iorp07gPDgfAipa9e9r3LLG0cdtcbKwz0XZR6Gn0qjkMZ
+         RXIw==
+X-Gm-Message-State: AOAM533spWr/RN6tN701vfEmXmXnd5nC6JCcQJ48A6iU27rBhhL/iegb
+        abKwfkeXA9CNZriy1FZIsrpHKIAm1RGI5cIVCZYjzSGcAOLsuMlKvDmVLO+uBPElyfbYsTY1exz
+        sK2aiKX1q++p5j8eTFhC78hX2wnftm6/+cfIA4D7g
+X-Received: by 2002:adf:9124:: with SMTP id j33mr27161814wrj.376.1606741775223;
+        Mon, 30 Nov 2020 05:09:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwI5bHVV9iUpM10lkXbReXUEb+/HeidvTe40Hr9iIEnn2AgthhzSBOfuxosSg2N7fV2kPKd5d7lseA/lN4L7po=
+X-Received: by 2002:adf:9124:: with SMTP id j33mr27161795wrj.376.1606741775025;
+ Mon, 30 Nov 2020 05:09:35 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: kontron.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a4c2623-470c-4572-5e03-08d895310c11
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2020 13:08:36.0516
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Kd7aEeAJcPU5XaFOYekqXlbcXz8S5He9WTLIOtXl6sxFY9a8PkBtaTH20GQnh/BQSSgpbCTxfyvjQEDgvcAk+NT8yXX/IHBKo4GC/viWcH0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3362
+References: <20201130014404.36904-1-sergey.senozhatsky@gmail.com>
+ <5b015b83-f183-526a-94e7-029f4c98b30b@infradead.org> <X8Rj0s/Emv9Qmv3d@jagdpanzerIV.localdomain>
+ <X8RkVIxou1D1YfEb@jagdpanzerIV.localdomain> <X8RpFo+5m1i4L5Gn@jagdpanzerIV.localdomain>
+ <c96f60f4-f525-2957-6a8a-ae9e3288b04a@infradead.org>
+In-Reply-To: <c96f60f4-f525-2957-6a8a-ae9e3288b04a@infradead.org>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 30 Nov 2020 14:09:23 +0100
+Message-ID: <CAHc6FU59uNEq4Xz8W7boG6y3+u3F1tz93RKSW+odM38rx37_9A@mail.gmail.com>
+Subject: Re: [PATCH] posix_acl.h: define missing ACL functions on
+ non-posix-acl build
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-27 at 07:53 +0000, Lee Jones wrote:
-> On Mon, 16 Nov 2020, Michael Brunner wrote:
->=20
-> > Change the detection order to priorize DMI table entries over
-> > available
-> > ACPI entries.
-> >=20
-> > This makes it more easy for product developers to patch product
-> > specific
-> > handling into the driver.
-> > Furthermore it allows to simplify the implementation a bit and
-> > especially to remove the need to force synchronous probing.
-> >=20
-> > Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
-> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> >=20
-> > v3: Cleaned up comment, added Reviewed-by
-> >=20
-> >  drivers/mfd/kempld-core.c | 24 +++---------------------
-> >  1 file changed, 3 insertions(+), 21 deletions(-)
->=20
-> Nit: Just letting you know that checkpatch.pl complains about your
-> patches, since your From: address does not match your SoB one.
->=20
-> Patch applied though, thanks.
+On Mon, Nov 30, 2020 at 5:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 11/29/20 7:37 PM, Sergey Senozhatsky wrote:
+> > A quick question, shouldn't there be dummy definitions for
+> > the EXPORT_SYMBOL-s? So that external modules can be modprobed
+> > and used.
+> >
+> > Some of posix_acl exported symbols have dummy definitions,
+> > others don't.
+> >
+> > E.g. posix_acl_create() is exported symbol and it's defined for
+> > both FS_POSIX_ACL and !FS_POSIX_ACL. While exported set_posix_acl()
+> > is defined only for FS_POSIX_ACL config.
 
-Thanks!
+This is to keep the amount of ifdefs in the code reasonably low: by
+defining posix_acl_create as a dummy inline function like that, inode
+creation in filesystems can be implemented without any ifdefs as in
+jffs2_init_acl_pre whether or not CONFIG_FS_POSIX_ACL is enabled, for
+example. Have a look at different filesystems to see how they avoid
+using POSIX ACL code when that feature is disabled.
 
-Regarding the From - I guess it is because the upper-case letters. I
-will check how to fix this for the next time. In the worst case I guess
-I have to adapt the SoB.
+Note that ext2 / ext4 could be built without POSIX ACL support in the
+past. That's at least broken since the following two commits though:
+
+  commit 59fed3bf8a461 ("ext2: cache NULL when both default_acl and
+acl are NULL")
+  commit 6fd941784b8ac ("ext4: cache NULL when both default_acl and
+acl are NULL")
+
+> Hi,
+>
+> Currently CONFIG_FS_POSIX_ACL differences seem to be handled in
+> each source file as needed:
+>
+> fs/inode.c:#ifdef CONFIG_FS_POSIX_ACL
+> fs/inode.c:#ifdef CONFIG_FS_POSIX_ACL
+> fs/namei.c:#ifdef CONFIG_FS_POSIX_ACL
+> fs/overlayfs/dir.c:     if (!IS_ENABLED(CONFIG_FS_POSIX_ACL) || !acl)
+> fs/overlayfs/inode.c:   if (!IS_ENABLED(CONFIG_FS_POSIX_ACL) || !IS_POSIXACL(realinode))
+> fs/overlayfs/inode.c:#ifdef CONFIG_FS_POSIX_ACL
+> fs/overlayfs/super.c:#ifdef CONFIG_FS_POSIX_ACL
+> fs/xattr.c:#ifdef CONFIG_FS_POSIX_ACL
+> include/linux/evm.h:#ifdef CONFIG_FS_POSIX_ACL
+> include/linux/fs.h:#ifdef CONFIG_FS_POSIX_ACL
+> include/linux/posix_acl.h:#ifdef CONFIG_FS_POSIX_ACL
+> include/linux/posix_acl.h:#endif /* CONFIG_FS_POSIX_ACL */
+> include/linux/posix_acl_xattr.h:#ifdef CONFIG_FS_POSIX_ACL
+>
+> However, I have no objection to your patch.
+>
+> I am adding Andreas & Al for their viewpoints.
+
+Sergey, what actual problem is your patch trying to solve? It sounds
+like this is either theoretical and pointless, or you're trying to
+build an external module that uses POSIX ACL functions that shouldn't
+be needed when CONFIG_FS_POSIX_ACL is disabled. In the latter case,
+the external module will just end up including dead code, so the
+module should be fixed instead.
+
+Thanks,
+Andreas
+
