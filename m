@@ -2,121 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085EB2C9E62
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9716E2C9E70
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbgLAJxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:53:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
+        id S2390687AbgLAJ5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:57:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726099AbgLAJxV (ORCPT
+        with ESMTP id S2388250AbgLAJ47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:53:21 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423E1C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 01:52:35 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id s63so887332pgc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 01:52:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=LU3g5vLQzyZTf7HTUB9fYI1m4LLPCMslXZ4eYrSd/Gs=;
-        b=QpxOp8O9D09OZheOETrWj8vosanB4xtAj4Dgf5Qf5TzGz8C5zdIlT3bJKlDln6uohR
-         No+zAjeGfAbI0osNbNwcdzBYJm+8iUfKYfbpmh+SDkinlEOwygRVoBq/kb/w/VEbm3AB
-         k3J90iIeJF6bjvH0JAxPlQWRBYLW3pxy3Z49Z+b/UbI09HSwE3flTwt/jollrhqpg2yv
-         qEcAKIPdhDSg+1t5nNoIMIfdKrADOegAzkTkfl+m3Vx+6ftOCQahOOpchCT+LikpgBp9
-         MkKx9YqCvveCXMxFOMxyH7WPX46TuctjQpy6Vj/ZjrfeHJh0y63Zl+71I/pbrJkUl893
-         JuLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LU3g5vLQzyZTf7HTUB9fYI1m4LLPCMslXZ4eYrSd/Gs=;
-        b=X6WAkv0gdyyhwzEvoReqGhf3K+bLE9C3C5TdoQaTehyQZWSYAuTOW/JLKmIftN0J6J
-         fXebwpIzGQkOWQ6kNt4BGYIzlPZ/4NnnHKsl/f1gEFFKuAZ4e6FGL2Cl3GYtzvzfz90/
-         DjnpKI0JiJjVECKkAWAxwWB+Y1lfmSX1pe2xjO/dQn/HgRXNEv+Mxt19EEUeSbdEStl2
-         +0l6ZDol1eRfOq0DfVt0wD7Foad6pRf60AcKn5n5+Blw3ibMszTnsjfzC26DH5M7zfFu
-         tl3hi2Z3EfAbpFQ2lucon/E4PtbP1Z0yFOx2tVeF5tVvfKrOp6UkVIYbkUp8wfVjf7kr
-         enmg==
-X-Gm-Message-State: AOAM533DFcb17StgPlNekdZCnPLOduwCpXwb8UD0CmofX0PiXFNFvMvb
-        UEjSkR3S41CVqXEn6sVFl8pK7XRceko=
-X-Google-Smtp-Source: ABdhPJxa57Fj8KJTrmvAkbEo2xOnWpDqcbJ/4QTO/PNl5oG+6ogXHk+2a/HE81F8QgbxEexVH+aKeQ==
-X-Received: by 2002:a63:484d:: with SMTP id x13mr1523893pgk.301.1606816354819;
-        Tue, 01 Dec 2020 01:52:34 -0800 (PST)
-Received: from VM-0-6-centos.localdomain ([119.28.90.140])
-        by smtp.gmail.com with ESMTPSA id g8sm2013199pgn.47.2020.12.01.01.52.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Dec 2020 01:52:34 -0800 (PST)
-From:   Chunguang Xu <brookxu.cn@gmail.com>
-X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
-To:     sboyd@kernel.org
-Cc:     tglx@linutronix.de, john.stultz@linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] timekeeping: remove unused get_seconds()
-Date:   Tue,  1 Dec 2020 17:52:31 +0800
-Message-Id: <1606816351-26900-1-git-send-email-brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 1 Dec 2020 04:56:59 -0500
+Received: from forward103j.mail.yandex.net (forward103j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641A8C0613D2;
+        Tue,  1 Dec 2020 01:56:19 -0800 (PST)
+Received: from mxback15o.mail.yandex.net (mxback15o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::66])
+        by forward103j.mail.yandex.net (Yandex) with ESMTP id A596A674013C;
+        Tue,  1 Dec 2020 12:55:34 +0300 (MSK)
+Received: from sas8-b61c542d7279.qloud-c.yandex.net (sas8-b61c542d7279.qloud-c.yandex.net [2a02:6b8:c1b:2912:0:640:b61c:542d])
+        by mxback15o.mail.yandex.net (mxback/Yandex) with ESMTP id T9Wo4OhVvj-tYTSOAlx;
+        Tue, 01 Dec 2020 12:55:34 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1606816534;
+        bh=tEhC3oKRu4H9sqpI3sbXmPgybLoWfA7LrGXLD1oxjwY=;
+        h=In-Reply-To:Subject:To:From:Cc:References:Date:Message-Id;
+        b=T32VYo1Ol8zYqZByVsJSSma3v8Sv1WG0CR99AxcPAuZVIllb9j89+TWmwAmD+HWHQ
+         mUQ+URFOpDa0mSCLWQQBAu8ynE6duRmUcmZVz16q2SAlaLR3KZRMEm3e582r4oelCH
+         YSoMRV6hjr8Iloh3n7fwFcoyevrK93WmKzLR7pKY=
+Authentication-Results: mxback15o.mail.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by sas8-b61c542d7279.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id HpRbpndKo3-tXIuVpHm;
+        Tue, 01 Dec 2020 12:55:33 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>, stable@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rtc: ep93xx: Fix NULL pointer dereference in ep93xx_rtc_read_time
+Date:   Tue,  1 Dec 2020 12:55:07 +0300
+Message-Id: <20201201095507.10317-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201201095131.9772-1-nikita.shubin@maquefel.me>
+References: <20201201095131.9772-1-nikita.shubin@maquefel.me>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+Mismatch in probe platform_set_drvdata set's and method's that call
+dev_get_platdata will result in "Unable to handle kernel NULL pointer 
+dereference", let's use according method for getting driver data after
+platform_set_drvdata.
 
-The get_seconds() cleanup seems to have been completed, now it is
-time to delete the legacy interface to avoid misuse later.
+8<--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+pgd = (ptrval)
+[00000000] *pgd=00000000
+Internal error: Oops: 5 [#1] ARM
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.10-00003-g723e101e0037-dirty #4
+Hardware name: Technologic Systems TS-72xx SBC
+PC is at ep93xx_rtc_read_time+0xc/0x2c
+LR is at __rtc_read_time+0x4c/0x8c
+pc : [<c02b01c8>]    lr : [<c02ac38c>]    psr: 40000053
+sp : c441dcf0  ip : c441dd50  fp : 00000000
+r10: fffffdfb  r9 : 00000000  r8 : c0520ca8
+r7 : c149b53c  r6 : c149b400  r5 : c441dd2c  r4 : c149b400
+r3 : 00000000  r2 : c441dd2c  r1 : c441dd2c  r0 : c04ea2a0
+Flags: nZcv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment none
+Control: 0000717f  Table: 00004000  DAC: 00000053
+Process swapper (pid: 1, stack limit = 0x(ptrval))
+Stack: (0xc441dcf0 to 0xc441e000)
+dce0:                                     c149b400 c02ac38c 00000000 c441dd2c
+dd00: c149b400 c02ac3f8 c441dde4 c04ea290 c149b400 c149b400 c0520ca8 c02acc54
+dd20: c400ce60 c04e5230 ffffffff 00000000 00000000 00000000 00000000 00000000
+dd40: 00000000 00000000 00000000 00000000 c144f745 c144f740 00000005 c441dd7c
+dd60: c045c56e c0231240 00000000 c045c56f 00000004 c04e5228 c04ea290 c1496120
+dd80: c04ea290 c149b400 00000000 c0520ca8 00000000 fffffdfb 00000000 c02abd80
+dda0: c14967c0 c00ab884 c4400160 00000dc0 c14967c0 c4400160 00000dc0 c02ae70c
+ddc0: 40000053 c03b6f10 c149b400 c0265700 c14967e0 c149b400 00000000 c14967e0
+dde0: c0503d44 c14967e4 00000004 c02ae754 00000000 c1496120 c04ea290 ffffffff
+de00: 00000000 c0520ca8 00000000 c04e5228 c1496120 c04ea290 ffffffff c0520ca8
+de20: 00000000 fffffdfb 00000000 c02b028c c04ea2a0 c0503e90 00000000 c0503e90
+de40: c0520ca8 c026424c c04ea2a0 00000000 00000000 c0262918 00000000 c04ea2a0
+de60: c0503e90 c0502240 c050e000 c0498504 c04d5840 c0262da0 00000000 c04ea2a0
+de80: c0503e90 c0262e70 c04ea2a0 c0503e90 c0262dbc c0260d44 c0502240 c4408c70
+dea0: c4478440 c04e5228 c0503e90 c45b6900 00000000 c026223c c0503e90 c0261dd8
+dec0: c04347ed c04347f5 c441ba60 c0503e90 c04cb99c ffffe000 00000000 c026342c
+dee0: c050e000 c04cb99c ffffe000 c0264210 c050e000 c04cb9ac c050e000 c000973c
+df00: c04466a2 c002d734 c440a480 c04b9300 c0498504 0000005c 00000006 00000006
+df20: 00000000 c0498c34 0000005b c0498c34 c4400200 c440a4ef 00000000 c04e5228
+df40: 00000dc0 00000006 0000005c c04e5228 c04d585c 00000007 0000005c c440a480
+df60: c04d5860 c04b9ecc 00000006 00000006 00000000 c04b93e4 00000000 c04dfb50
+df80: c441c000 00000000 c03b2220 00000000 00000000 00000000 00000000 00000000
+dfa0: 00000000 c03b2228 00000000 c00082c0 00000000 00000000 00000000 00000000
+dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+dfe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[<c02b01c8>] (ep93xx_rtc_read_time) from [<c02ac38c>] (__rtc_read_time+0x4c/0x8c)
+[<c02ac38c>] (__rtc_read_time) from [<c02ac3f8>] (rtc_read_time+0x2c/0x4c)
+[<c02ac3f8>] (rtc_read_time) from [<c02acc54>] (__rtc_read_alarm+0x28/0x358)
+[<c02acc54>] (__rtc_read_alarm) from [<c02abd80>] (__rtc_register_device+0x124/0x2ec)
+[<c02abd80>] (__rtc_register_device) from [<c02b028c>] (ep93xx_rtc_probe+0xa4/0xac)
+[<c02b028c>] (ep93xx_rtc_probe) from [<c026424c>] (platform_drv_probe+0x24/0x5c)
+[<c026424c>] (platform_drv_probe) from [<c0262918>] (really_probe+0x218/0x374)
+[<c0262918>] (really_probe) from [<c0262da0>] (device_driver_attach+0x44/0x60)
+[<c0262da0>] (device_driver_attach) from [<c0262e70>] (__driver_attach+0xb4/0xc0)
+[<c0262e70>] (__driver_attach) from [<c0260d44>] (bus_for_each_dev+0x68/0xac)
+[<c0260d44>] (bus_for_each_dev) from [<c026223c>] (driver_attach+0x18/0x24)
+[<c026223c>] (driver_attach) from [<c0261dd8>] (bus_add_driver+0x150/0x1b4)
+[<c0261dd8>] (bus_add_driver) from [<c026342c>] (driver_register+0xb0/0xf4)
+[<c026342c>] (driver_register) from [<c0264210>] (__platform_driver_register+0x30/0x48)
+[<c0264210>] (__platform_driver_register) from [<c04cb9ac>] (ep93xx_rtc_driver_init+0x10/0x1c)
+[<c04cb9ac>] (ep93xx_rtc_driver_init) from [<c000973c>] (do_one_initcall+0x7c/0x1c0)
+[<c000973c>] (do_one_initcall) from [<c04b9ecc>] (kernel_init_freeable+0x168/0x1ac)
+[<c04b9ecc>] (kernel_init_freeable) from [<c03b2228>] (kernel_init+0x8/0xf4)
+[<c03b2228>] (kernel_init) from [<c00082c0>] (ret_from_fork+0x14/0x34)
+Exception stack(0xc441dfb0 to 0xc441dff8)
+dfa0:                                     00000000 00000000 00000000 00000000
+dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+Code: e12fff1e e92d4010 e590303c e1a02001 (e5933000)
+---[ end trace c914d6030eaa95c8 ]---
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Cc: stable@vger.kernel.org
 ---
- include/linux/ktime.h         |  1 -
- include/linux/timekeeping32.h | 14 --------------
- kernel/time/timekeeping.c     |  3 +--
- 3 files changed, 1 insertion(+), 17 deletions(-)
- delete mode 100644 include/linux/timekeeping32.h
+ drivers/rtc/rtc-ep93xx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/ktime.h b/include/linux/ktime.h
-index a12b552..73f20de 100644
---- a/include/linux/ktime.h
-+++ b/include/linux/ktime.h
-@@ -230,6 +230,5 @@ static inline ktime_t ms_to_ktime(u64 ms)
- }
+diff --git a/drivers/rtc/rtc-ep93xx.c b/drivers/rtc/rtc-ep93xx.c
+index 8ec9ea1ca72e..6f90b85a5814 100644
+--- a/drivers/rtc/rtc-ep93xx.c
++++ b/drivers/rtc/rtc-ep93xx.c
+@@ -33,7 +33,7 @@ struct ep93xx_rtc {
+ static int ep93xx_rtc_get_swcomp(struct device *dev, unsigned short *preload,
+ 				 unsigned short *delete)
+ {
+-	struct ep93xx_rtc *ep93xx_rtc = dev_get_platdata(dev);
++	struct ep93xx_rtc *ep93xx_rtc = dev_get_drvdata(dev);
+ 	unsigned long comp;
  
- # include <linux/timekeeping.h>
--# include <linux/timekeeping32.h>
+ 	comp = readl(ep93xx_rtc->mmio_base + EP93XX_RTC_SWCOMP);
+@@ -51,7 +51,7 @@ static int ep93xx_rtc_get_swcomp(struct device *dev, unsigned short *preload,
  
- #endif
-diff --git a/include/linux/timekeeping32.h b/include/linux/timekeeping32.h
-deleted file mode 100644
-index 266017f..0000000
---- a/include/linux/timekeeping32.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--#ifndef _LINUX_TIMEKEEPING32_H
--#define _LINUX_TIMEKEEPING32_H
--/*
-- * These interfaces are all based on the old timespec type
-- * and should get replaced with the timespec64 based versions
-- * over time so we can remove the file here.
-- */
--
--static inline unsigned long get_seconds(void)
--{
--	return ktime_get_real_seconds();
--}
--
--#endif
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 6858a31..0a95bb2 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -995,8 +995,7 @@ time64_t ktime_get_seconds(void)
- /**
-  * ktime_get_real_seconds - Get the seconds portion of CLOCK_REALTIME
-  *
-- * Returns the wall clock seconds since 1970. This replaces the
-- * get_seconds() interface which is not y2038 safe on 32bit systems.
-+ * Returns the wall clock seconds since 1970.
-  *
-  * For 64bit systems the fast access to tk->xtime_sec is preserved. On
-  * 32bit systems the access must be protected with the sequence
+ static int ep93xx_rtc_read_time(struct device *dev, struct rtc_time *tm)
+ {
+-	struct ep93xx_rtc *ep93xx_rtc = dev_get_platdata(dev);
++	struct ep93xx_rtc *ep93xx_rtc = dev_get_drvdata(dev);
+ 	unsigned long time;
+ 
+ 	time = readl(ep93xx_rtc->mmio_base + EP93XX_RTC_DATA);
+@@ -62,7 +62,7 @@ static int ep93xx_rtc_read_time(struct device *dev, struct rtc_time *tm)
+ 
+ static int ep93xx_rtc_set_time(struct device *dev, struct rtc_time *tm)
+ {
+-	struct ep93xx_rtc *ep93xx_rtc = dev_get_platdata(dev);
++	struct ep93xx_rtc *ep93xx_rtc = dev_get_drvdata(dev);
+ 	unsigned long secs = rtc_tm_to_time64(tm);
+ 
+ 	writel(secs + 1, ep93xx_rtc->mmio_base + EP93XX_RTC_LOAD);
 -- 
-1.8.3.1
+2.26.2
 
