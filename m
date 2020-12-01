@@ -2,151 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C866A2CA9D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABD42CA9DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392175AbgLARht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:37:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50888 "EHLO mail.kernel.org"
+        id S2392198AbgLARh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:37:57 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:11695 "EHLO m42-5.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391945AbgLARht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:37:49 -0500
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+        id S2391945AbgLARh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:37:57 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606844250; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=lExQYH3Hcu6IMfr6Uk4+ulaceeEs8V2qygtLsani6Fo=; b=O/zwp3m0bLOFgDmnynqyhIh41dQ5frF8nYxJJ0A2oXS1lAXeAUASHb3TxY2v4hJ7jYuALLv1
+ vF/i0Qyamt5EpL66e7PL77hPi2TaNGMz1M6U9yV66W7mxx+C8I5/D+zp5SmZrtC3UczptC/1
+ LU6ey/8X+TIpsdQpttopSPd0n2g=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fc67f3f875646f1e977970d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 17:37:03
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CA943C43461; Tue,  1 Dec 2020 17:37:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F10C21D42
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 17:37:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606844227;
-        bh=KNAM6f9lqa9mSdVyTIG/dKQEu1sW8SSDpknGMUKbCiU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q7gvXsO8ykqAn2xVepDAm7HMlbTj1GN5iniIENiosDRNoP34C9CXV2n19OssOrOSf
-         zrHyfvybHLN4CfnLGsVrl2JcsaJ+CdjwlOBwLTkB41lyPHgC9pllif5zp7zhSV4eOu
-         N50+hBxxWoZ6tlmxD6bJrD1Hh6WkQ4KIF5fOnMpg=
-Received: by mail-ej1-f54.google.com with SMTP id x16so5814239ejj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:37:07 -0800 (PST)
-X-Gm-Message-State: AOAM5321luAWYhACxtM2aY33PdtL1di+ynP5N5Kv1QJbN17KDBGGZlZo
-        RqfO2RBV4ANoebQk+iu6hAmZbiBIwJs7ZPahPQ==
-X-Google-Smtp-Source: ABdhPJxR2ypWVHPbsoaZHQu3SRgRb3mnZE4SCBgSJTl1wFd4t4AYEIvkGKfVCSCuJyrRSxZoQsFWoEqw9dgY/cytRY4=
-X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr4059120ejz.341.1606844225944;
- Tue, 01 Dec 2020 09:37:05 -0800 (PST)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 87A5CC43460;
+        Tue,  1 Dec 2020 17:37:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 87A5CC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v13 4/4] bus: mhi: Add userspace client interface driver
+To:     Loic Poulain <loic.poulain@linaro.org>,
+        Hemant Kumar <hemantk@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+ <1606533966-22821-5-git-send-email-hemantk@codeaurora.org>
+ <CAMZdPi8z+-qFqgZ7AFJcNAUMbDQtNN5Hz-geMBcp4azrUGm9iA@mail.gmail.com>
+ <c47dcd57-7576-e03e-f70b-0c4d25f724b5@codeaurora.org>
+ <CAMZdPi8mUV5cFs-76K3kg=hN8ht2SKjJwzbJH-+VH4Y8QabcHQ@mail.gmail.com>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <1247e32e-ed67-de6b-81ec-3bde9ad93250@codeaurora.org>
+Date:   Tue, 1 Dec 2020 10:37:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <1606746513-30909-1-git-send-email-kevin3.tang@gmail.com>
- <1606746513-30909-2-git-send-email-kevin3.tang@gmail.com> <CAL_Jsq+fC1TzygUopiwVtwBN8JtwmnGy=VMTEvkudSQUdXiMqg@mail.gmail.com>
- <CAFPSGXZLXh__GuXT2NPqF0jpO2DnMAhz+NtE721EZfMCSKLBjQ@mail.gmail.com>
-In-Reply-To: <CAFPSGXZLXh__GuXT2NPqF0jpO2DnMAhz+NtE721EZfMCSKLBjQ@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 1 Dec 2020 10:36:54 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqJQE0-ScESutDd950GEac+w0KhzGcLv+_jb1xuVs6DQXw@mail.gmail.com>
-Message-ID: <CAL_JsqJQE0-ScESutDd950GEac+w0KhzGcLv+_jb1xuVs6DQXw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] dt-bindings: display: add Unisoc's drm master bindings
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Lyra Zhang <zhang.lyra@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMZdPi8mUV5cFs-76K3kg=hN8ht2SKjJwzbJH-+VH4Y8QabcHQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 12:36 AM Kevin Tang <kevin3.tang@gmail.com> wrote:
->
-> Hi Rob
->
-> Rob Herring <robh+dt@kernel.org> =E4=BA=8E2020=E5=B9=B412=E6=9C=881=E6=97=
-=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=884:29=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > On Mon, Nov 30, 2020 at 7:28 AM Kevin Tang <kevin3.tang@gmail.com> wrot=
-e:
-> > >
-> > > From: Kevin Tang <kevin.tang@unisoc.com>
-> >
-> > Once again, DT patches must Cc the DT list if you want them reviewed.
-> Ok, i will add DT list to my Cc list.
-> >
-> > >
-> > > The Unisoc DRM master device is a virtual device needed to list all
-> > > DPU devices or other display interface nodes that comprise the
-> > > graphics subsystem
-> > >
-> > > Cc: Orson Zhai <orsonzhai@gmail.com>
-> > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
-> > > ---
-> > >  .../display/sprd/sprd,display-subsystem.yaml       | 39 ++++++++++++=
-++++++++++
-> > >  1 file changed, 39 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/display/sprd/sp=
-rd,display-subsystem.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/display/sprd/sprd,disp=
-lay-subsystem.yaml b/Documentation/devicetree/bindings/display/sprd/sprd,di=
-splay-subsystem.yaml
-> > > new file mode 100644
-> > > index 0000000..9487a39
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/display/sprd/sprd,display-sub=
-system.yaml
-> > > @@ -0,0 +1,39 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/display/sprd/sprd,display-subsyst=
-em.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Unisoc DRM master device
-> > > +
-> > > +maintainers:
-> > > +  - Kevin Tang <kevin.tang@unisoc.com>
-> > > +
-> > > +description: |
-> > > +  The Unisoc DRM master device is a virtual device needed to list al=
-l
-> > > +  DPU devices or other display interface nodes that comprise the
-> > > +  graphics subsystem.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: sprd,display-subsystem
-> >
-> > As I said before, we try to avoid these virtual nodes. Make the DRM
-> > driver bind to the DPU node.
-> >
-> > The case where this might be needed is if you have h/w that's a
-> > mixture of shared and discrete blocks. I don't see anything here
-> > matching that.
->
-> This is how I understand this sentence: "h/w that's a mixture of shared a=
-nd discrete blocks"
-> We have multiple display controllers and corresponding physical interface=
-s, typical dual-screen display scenario
-> E.g:
-> 1. dpu0 and dpu1 both binding to DSI for dual mipi-dsi display;
-> 2. dpu0 binding to DSI for primary display, and dpu1 binding to DP for ex=
-ternal display;
->
-> It looks like this:
-> dpu0------>MIPI-DSI------>DPHY/CPHY Combo------>Panel0
->                         ^
->     ----------------|
->     |
-> dpu1------>DisplayPort------>PHY------>Panel1
->
-> For DTS like this:
-> display-subsystem {
-> compatible =3D "sprd,display-subsystem";
-> ports =3D <&dpu0_out>, <&dpu1_out>;
-> };
+On 12/1/2020 10:36 AM, Loic Poulain wrote:
+> On Tue, 1 Dec 2020 at 02:16, Hemant Kumar <hemantk@codeaurora.org> wrote:
+>>
+>> Hi Loic,
+>>
+>> On 11/30/20 10:22 AM, Loic Poulain wrote:
+>>> On Sat, 28 Nov 2020 at 04:26, Hemant Kumar <hemantk@codeaurora.org> wrote:
+>>>>
+>>>> This MHI client driver allows userspace clients to transfer
+>>>> raw data between MHI device and host using standard file operations.
+>>>> Driver instantiates UCI device object which is associated to device
+>>>> file node. UCI device object instantiates UCI channel object when device
+>>>> file node is opened. UCI channel object is used to manage MHI channels
+>>>> by calling MHI core APIs for read and write operations. MHI channels
+>>>> are started as part of device open(). MHI channels remain in start
+>>>> state until last release() is called on UCI device file node. Device
+>>>> file node is created with format
+>>>
+>>> [...]
+>>>
+>>>> +struct uci_chan {
+>>>> +       struct uci_dev *udev;
+>>>> +       wait_queue_head_t ul_wq;
+>>>> +
+>>>> +       /* ul channel lock to synchronize multiple writes */
+>>>> +       struct mutex write_lock;
+>>>> +
+>>>> +       wait_queue_head_t dl_wq;
+>>>> +
+>>>> +       /* dl channel lock to synchronize multiple reads */
+>>>> +       struct mutex read_lock;
+>>>> +
+>>>> +       /*
+>>>> +        * protects pending list in bh context, channel release, read and
+>>>> +        * poll
+>>>> +        */
+>>>> +       spinlock_t dl_pending_lock;
+>>>> +
+>>>> +       struct list_head dl_pending;
+>>>> +       struct uci_buf *cur_buf;
+>>>> +       size_t dl_size;
+>>>> +       struct kref ref_count;
+>>>> +};
+>>>
+>>> [...]
+>>>
+>>>> + * struct uci_dev - MHI UCI device
+>>>> + * @minor: UCI device node minor number
+>>>> + * @mhi_dev: associated mhi device object
+>>>> + * @uchan: UCI uplink and downlink channel object
+>>>> + * @mtu: max TRE buffer length
+>>>> + * @enabled: Flag to track the state of the UCI device
+>>>> + * @lock: mutex lock to manage uchan object
+>>>> + * @ref_count: uci_dev reference count
+>>>> + */
+>>>> +struct uci_dev {
+>>>> +       unsigned int minor;
+>>>> +       struct mhi_device *mhi_dev;
+>>>> +       struct uci_chan *uchan;
+>>>
+>>> Why a pointer to uci_chan and not just plainly integrating the
+>>> structure here, AFAIU uci_chan describes the channels and is just a
+>>> subpart of uci_dev. That would reduce the number of dynamic
+>>> allocations you manage and the extra kref. do you even need a separate
+>>> structure for this?
+>>
+>> This goes back to one of my patch versions i tried to address concern
+>> from Greg. Since we need to ref count the channel as well as the uci
+>> device i decoupled the two objects and used two reference counts for two
+>> different objects.
+> 
+> What Greg complained about is the two kref in the same structure and
+> that you were using kref as an open() counter. But splitting your
+> struct in two in order to keep the two kref does not make the much
+> code better (and simpler). I'm still a bit puzzled about the driver
+> complexity, it's supposed to be just a passthrough interface to MHI
+> after all.
+> 
+> I would suggest several changes, that IMHO would simplify reviewing:
+> - Use only one structure representing the 'uci' context (uci_dev)
+> - Keep the read path simple (mhi_uci_read), do no use an intermediate
+> cur_buf pointer, only dequeue the buffer when it is fully consumed.
+> - As I commented before, take care of the dl_pending list access
+> concurrency, even in wait_event.
+> - You don't need to count the number of open() calls, AFAIK,
+> mhi_prepare_for_transfer() simply fails if channels are already
+> started...
 
-Yeah, this would be one such case. Just make this scenario clear in
-commit message.
+Unless I missed something, you seem to have ignored the root issue that 
+Hemant needs to solve, which is when to call 
+mhi_unprepare_for_transfer().  You can't just call that when close() is 
+called because there might be multiple users, and each one is going to 
+trigger a close(), so you need to know how many close() instances to 
+expect, and only call mhi_unprepare_for_transfer() for the last one.
 
-Rob
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
