@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1D62CA651
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B611E2CA655
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403938AbgLAOvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:51:35 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:33877 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2389627AbgLAOve (ORCPT
+        id S2389833AbgLAOwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388491AbgLAOwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:51:34 -0500
-Received: (qmail 1007173 invoked by uid 1000); 1 Dec 2020 09:50:53 -0500
-Date:   Tue, 1 Dec 2020 09:50:53 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com>,
-        eli.billauer@gmail.com, gustavoars@kernel.org,
-        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tiwai@suse.de
-Subject: Re: WARNING in port100_send_frame_async/usb_submit_urb
-Message-ID: <20201201145053.GA1005384@rowland.harvard.edu>
-References: <000000000000bab70f05b563a6cc@google.com>
- <20201201094702.1762-1-hdanton@sina.com>
- <X8YT6sbhhGwQ06nw@kroah.com>
+        Tue, 1 Dec 2020 09:52:07 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087F5C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:51:27 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id 1so1472502qka.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:51:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=55sCzQdwTnWWY4frFoH/T/BSKgGKnPew/6aq6eljiTo=;
+        b=Od7Oq8i5EKOt7lyAPLohe/T+qZWO41dmeqZhqZpqtDgfvunVjdg9tf32XLjJenj8L+
+         JGidx639XPF8hqU42hKavQY/o0ww8LWaxLXeStBRoE5igoG8X9kxoORory35BiCYr0E9
+         HzsGUGiqSTL1ts87Bl3ZH1DxxvuqoMl1tWsJ7EuEzbUtwafzKk0fS+JCI3C9x5JMkgFl
+         LcOoRC5QQT2Vi2QFULdi/0FU32TizK504jXS8wi2Dtd7rZI3SGHSEPXMul3KJgenD9SV
+         q8gQnWlGGaRf4lazzxswYs7WeQYK50tXi0qt5aobSwa6iH5VsOgJtcHrVMLessAf+PNy
+         wf6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=55sCzQdwTnWWY4frFoH/T/BSKgGKnPew/6aq6eljiTo=;
+        b=AEDfugba93tFltDLGRdKsuAJFB//+WpLDuT1XvHVgz/TdzMKMeH91w+r3VZ5h2TGSy
+         f3xd6LQ3lbyw1Kk+JiK+z1qx7kQxFeJIazSDljmyJRnXIxrJin0HudzSd91BfsdqIgFP
+         wahII0wSiq82uUizGDZ77Pkf5g7rG3aeAt+15/arFxq/I+6g6Opn0nto5yiJRRNoETWz
+         wV6bxaw3PT1sfQlNm/dxbBWQTpA6Wy2eUHDxTXTWheFZFa+EeP+5HDNA7xUbrbpm4pCD
+         PiBSHwM6xHcM/gdeVI2yXUjslZRKMunTUeW85YZop5axp7iCoGlVKNXo3Um3WfOx70Cw
+         kaSw==
+X-Gm-Message-State: AOAM530QorSdWORfDkUEuMmxZXNR1FbRapFrlMwBQDi2A0z0ptxaw9R7
+        M1gMgsPPOl9yTryE1Z7vPi7kSc+6DBCBEakfymy4sA==
+X-Google-Smtp-Source: ABdhPJzpKx5kjzDF60IrrSHfJjD1sCFpkAQsI2Hw2vF4+LKJGRJnyv7Y0PWJYKsCVbdIIj/02E5TWg3mKpDOj/VXPo4=
+X-Received: by 2002:a37:7b44:: with SMTP id w65mr3270634qkc.350.1606834285972;
+ Tue, 01 Dec 2020 06:51:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8YT6sbhhGwQ06nw@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200924040152.30851-1-walter-zh.wu@mediatek.com>
+ <87h7rfi8pn.fsf@nanos.tec.linutronix.de> <CACT4Y+a=GmYVZwwjyXwO=_AeGy4QB9X=5x7cL76erwjPvRW6Zw@mail.gmail.com>
+ <871rg9hawf.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <871rg9hawf.fsf@nanos.tec.linutronix.de>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 1 Dec 2020 15:51:14 +0100
+Message-ID: <CACT4Y+bWm_bPdbes60u=3d_u34yxBBC7rGQz1yAt1FQXXqP4-A@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] kasan: add workqueue and timer stack for generic KASAN
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:59:06AM +0100, Greg KH wrote:
-> On Tue, Dec 01, 2020 at 05:47:02PM +0800, Hillf Danton wrote:
-> > On Tue, 01 Dec 2020 01:21:27 -0800
-> > > syzbot found the following issue on:
-> > > 
-> > > HEAD commit:    c84e1efa Merge tag 'asm-generic-fixes-5.10-2' of git://git..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=14a98565500000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=dbec6695a6565a9c6bc0
-> > > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c607f1500000
-> > > 
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com
-> > > 
-> > > usb 1-1: string descriptor 0 read error: -32
-> > > ------------[ cut here ]------------
-> > > URB 000000005c26bc1e submitted while active
+On Tue, Dec 1, 2020 at 3:13 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >> > Syzbot reports many UAF issues for workqueue or timer, see [1] and [2].
+> >> > In some of these access/allocation happened in process_one_work(),
+> >> > we see the free stack is useless in KASAN report, it doesn't help
+> >> > programmers to solve UAF on workqueue. The same may stand for times.
+> >> >
+> >> > This patchset improves KASAN reports by making them to have workqueue
+> >> > queueing stack and timer stack information. It is useful for programmers
+> >> > to solve use-after-free or double-free memory issue.
+> >> >
+> >> > Generic KASAN also records the last two workqueue and timer stacks and
+> >> > prints them in KASAN report. It is only suitable for generic KASAN.
+> >
+> > Walter, did you mail v5?
+> > Checking statuses of KASAN issues and this seems to be not in linux-next.
+> >
+> >> > [1]https://groups.google.com/g/syzkaller-bugs/search?q=%22use-after-free%22+process_one_work
+> >> > [2]https://groups.google.com/g/syzkaller-bugs/search?q=%22use-after-free%22%20expire_timers
+> >>
+> >> How are these links useful for people who do not have a gurgle account?
+> >
+> > This is a public mailing list archive, so effectively the same way as
+> > lore links ;)
+>
+> Just that it asked me to log in last time. That's why I wrote the
+> above. Today it does not, odd.
 
-> > Clear urb before putting it in use.
-> > 
-> > --- a/drivers/nfc/port100.c
-> > +++ b/drivers/nfc/port100.c
-> > @@ -1525,7 +1525,7 @@ static int port100_probe(struct usb_inte
-> >  	}
-> >  
-> >  	dev->in_urb = usb_alloc_urb(0, GFP_KERNEL);
-> > -	dev->out_urb = usb_alloc_urb(0, GFP_KERNEL);
-> > +	dev->out_urb = usb_alloc_urb(0, GFP_KERNEL | __GFP_ZERO);
-> >  
-> >  	if (!dev->in_urb || !dev->out_urb) {
-> >  		nfc_err(&interface->dev, "Could not allocate USB URBs\n");
-> 
-> How does this solve a warning in the USB core about a string descriptor
-> error?
-
-Greg, you misread the bug report.  The problem wasn't the string 
-descriptor read error; it was URB submitted while active.
-
-More to the point, adding __GFP_ZERO to the usb_alloc_urb call won't fix 
-anything, because usb_alloc_urb calls usb_init_urb, which already does a 
-memset.
-
-Alan Stern
+Some random permissions settings changes were observed before, so I
+can believe that.
