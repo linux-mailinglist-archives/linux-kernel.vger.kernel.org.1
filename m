@@ -2,154 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C672E2C9F3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D0C2C9FD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729823AbgLAKbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:31:01 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:44813 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729859AbgLAKa7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:30:59 -0500
-Received: by mail-il1-f200.google.com with SMTP id j8so1042688ilr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 02:30:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=d7M+NKlCF9pjVVnPz94y4zGxYLT2FaaBIfAbvboyFIc=;
-        b=kAIhsR8atZFQazhtChJCh1aeXlmkiDNNCudQxY9Bb1rWJuw2KLfJ6QT3/dT9CiJPys
-         k9zJXVVmxE7TweH/lHGYqSe/D+KCaAE9s/4JRSp3y76fWgV7iCydZ18eX304BuwHW9oE
-         eOJceSdY0X5jPRNOxDdUOPy0HyrQtZ7sG+KP+6tTisv1gQxz7va74LAnmUgh1xwRque1
-         cnRYCZB1s7TVEJPVOg2p1WGJX4JB2Y0bswNPHIUq9Z+/srO9vdeZ84R+/muuD4AM9mN6
-         53vckZiuD9xcfs0WcMgheAvhdAbfbWms59TFErc1b0p+BaaGcYfxjWOA2o4nGRtby5nM
-         zbPQ==
-X-Gm-Message-State: AOAM532qGm9OpR+0gPcCMIAYZawUbwUNgSq0dwSzJ2o1OiMhbUzxaE0J
-        oCNyDxX0Psitfee7BEYdRg/XYZUt2Wlkzx3Fm+Gj++rRi1VN
-X-Google-Smtp-Source: ABdhPJwZTAyP00p2Op4WegyA8Tipw+xnSzukaJVz/NM4Lbdv4XET1Vlhx/hRAmqvRRfs1mPIQJOruL60VUaL/GCu942CmdVZjT88
+        id S1729936AbgLAKdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:33:47 -0500
+Received: from mga09.intel.com ([134.134.136.24]:40453 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726134AbgLAKdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:33:47 -0500
+IronPort-SDR: svWi1n0YeJw8g9xW6g561C0tDdaYtVMR2ygNYjD547UnwkbYX2YXMQ/kBQ1iAnr02rUEXZLKSS
+ nSbQcHHYn4kg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172963547"
+X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
+   d="scan'208";a="172963547"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 02:32:01 -0800
+IronPort-SDR: T/rXxtx3qMZyzxQo9aQcTNzrrtAyXDYW+T1LjXV+lwq9+eLxagowcqUzXTMazJ5AIVVtOCOI9R
+ +0gBCU4Zreqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
+   d="scan'208";a="434617560"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 01 Dec 2020 02:31:58 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 01 Dec 2020 12:31:57 +0200
+Date:   Tue, 1 Dec 2020 12:31:57 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/4] usb: typec: tcpm: Pass down negotiated rev to
+ update retry count
+Message-ID: <20201201103157.GA3191259@kuha.fi.intel.com>
+References: <20201201042237.414235-1-badhri@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9942:: with SMTP id v2mr1782431ios.78.1606818618093;
- Tue, 01 Dec 2020 02:30:18 -0800 (PST)
-Date:   Tue, 01 Dec 2020 02:30:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f335f205b5649c70@google.com>
-Subject: KASAN: out-of-bounds Read in lock_sock_nested
-From:   syzbot <syzbot+664818c59309176d03ee@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201042237.414235-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Nov 30, 2020 at 08:22:34PM -0800, Badhri Jagan Sridharan wrote:
+> nRetryCount was updated from 3 to 2 between PD2.0 and PD3.0 spec.
+> nRetryCount in "Table 6-34 Counter parameters" of the PD 2.0
+> spec is set to 3, whereas, nRetryCount in "Table 6-59 Counter
+> parameters" is set to 2.
+> 
+> Pass down negotiated rev in pd_transmit so that low level chip
+> drivers can update the retry count accordingly before attempting
+> packet transmission.
+> 
+> This helps in passing "TEST.PD.PORT.ALL.02" of the
+> "Power Delivery Merged" test suite which was initially failing
+> with "The UUT did not retransmit the message nReryCount times"
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
+>  include/linux/usb/tcpm.h      | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 3bbc1f10af49..c73bc3a8356a 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -667,7 +667,7 @@ static int tcpm_pd_transmit(struct tcpm_port *port,
+>  		tcpm_log(port, "PD TX, type: %#x", type);
+>  
+>  	reinit_completion(&port->tx_complete);
+> -	ret = port->tcpc->pd_transmit(port->tcpc, type, msg);
+> +	ret = port->tcpc->pd_transmit(port->tcpc, type, msg, port->negotiated_rev);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
+> index e68aaa12886f..efaedd7e8a18 100644
+> --- a/include/linux/usb/tcpm.h
+> +++ b/include/linux/usb/tcpm.h
+> @@ -121,7 +121,7 @@ struct tcpc_dev {
+>  			      enum typec_cc_status cc);
+>  	int (*try_role)(struct tcpc_dev *dev, int role);
+>  	int (*pd_transmit)(struct tcpc_dev *dev, enum tcpm_transmit_type type,
+> -			   const struct pd_message *msg);
+> +			   const struct pd_message *msg, unsigned int negotiated_rev);
+>  	int (*set_bist_data)(struct tcpc_dev *dev, bool on);
+>  	int (*enable_frs)(struct tcpc_dev *dev, bool enable);
+>  	void (*frs_sourcing_vbus)(struct tcpc_dev *dev);
 
-syzbot found the following issue on:
+I think this will break bisectability. You need to change the users of
+that at in the same commit.
 
-HEAD commit:    fb3158ea Merge branch 'add-chacha20-poly1305-cipher-to-ker..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=159594e9500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df65150a33f23d8c
-dashboard link: https://syzkaller.appspot.com/bug?extid=664818c59309176d03ee
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+thanks,
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+664818c59309176d03ee@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: out-of-bounds in __lock_acquire+0x400f/0x5c00 kernel/locking/lockdep.c:4700
-Read of size 8 at addr ffff8880687ab0a0 by task kworker/1:4/9766
-
-CPU: 1 PID: 9766 Comm: kworker/1:4 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- __lock_acquire+0x400f/0x5c00 kernel/locking/lockdep.c:4700
- lock_acquire kernel/locking/lockdep.c:5435 [inline]
- lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:359 [inline]
- lock_sock_nested+0x3b/0x110 net/core/sock.c:3036
- l2cap_sock_teardown_cb+0xa1/0x660 net/bluetooth/l2cap_sock.c:1520
- l2cap_chan_del+0xbc/0xa80 net/bluetooth/l2cap_core.c:618
- l2cap_chan_close+0x1bc/0xaf0 net/bluetooth/l2cap_core.c:823
- l2cap_chan_timeout+0x17e/0x2f0 net/bluetooth/l2cap_core.c:436
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-Allocated by task 21553:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- kmalloc include/linux/slab.h:557 [inline]
- sk_prot_alloc+0x17a/0x300 net/core/sock.c:1666
- sk_alloc+0x32/0xbd0 net/core/sock.c:1720
- __netlink_create+0x63/0x340 net/netlink/af_netlink.c:630
- netlink_create+0x3a1/0x5d0 net/netlink/af_netlink.c:693
- __sock_create+0x3de/0x780 net/socket.c:1405
- sock_create net/socket.c:1456 [inline]
- __sys_socket+0xef/0x200 net/socket.c:1498
- __do_sys_socket net/socket.c:1507 [inline]
- __se_sys_socket net/socket.c:1505 [inline]
- __x64_sys_socket+0x6f/0xb0 net/socket.c:1505
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Last call_rcu():
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0xc0/0xf0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2953 [inline]
- call_rcu+0xbb/0x700 kernel/rcu/tree.c:3027
- netlink_release+0xd43/0x1cf0 net/netlink/af_netlink.c:802
- __sock_release+0xcd/0x280 net/socket.c:596
- sock_close+0x18/0x20 net/socket.c:1255
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:151
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
- exit_to_user_mode_prepare+0x17e/0x1a0 kernel/entry/common.c:191
- syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8880687ab000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 160 bytes inside of
- 2048-byte region [ffff8880687ab000, ffff8880687ab800)
-The buggy address belongs to the page:
-page:00000000f09df1cc refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x687a8
-head:00000000f09df1cc order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010042000
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880687aaf80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8880687ab000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff8880687ab080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                               ^
- ffff8880687ab100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff8880687ab180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+heikki
