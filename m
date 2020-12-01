@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C36F2CA400
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE72F2CA41A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391071AbgLANje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:39:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40008 "EHLO mail.kernel.org"
+        id S1729213AbgLANnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:43:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387833AbgLANje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:39:34 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1727702AbgLANnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:43:46 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D1B420770;
-        Tue,  1 Dec 2020 13:38:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EEF720770;
+        Tue,  1 Dec 2020 13:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606829933;
-        bh=8gXTmmt3DC0RXbInO+Zci/DBi8m+p2naqAk0DIDMcaY=;
+        s=default; t=1606830185;
+        bh=X03VPdnlWDzsweoKGnP8h3wm/PD1j8u3e1jFKva3PtA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MflhGLRXgGztHCmreYipYZgom3arJ1Ub0aepQzQ9zY+Kk9zZlg+xvj6QWHJnRvBqA
-         DP4dbJ+JWGJQcWBIthmndF+I1IGGH+/JSCC+bsJbxhW1EyBEeHRjf9PQH4Jpt9cPMi
-         BHVojB8FFaUi2ur1lt1OmyhSoubGr9oU2XOirSww=
-Date:   Tue, 1 Dec 2020 13:38:47 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Guenter Roeck <linux@roeck-us.net>, rafael@kernel.org,
-        viresh.kumar@linaro.org, mingo@kernel.org, x86@kernel.org,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] sched/idle: Fix arch_cpu_idle() vs tracing
-Message-ID: <20201201133846.GA26973@willie-the-truck>
-References: <20201120114145.197714127@infradead.org>
- <20201120114925.594122626@infradead.org>
- <20201130210003.GA40619@roeck-us.net>
- <20201201110209.GQ3040@hirez.programming.kicks-ass.net>
- <yt9dh7p54u50.fsf@linux.ibm.com>
- <20201201125246.GV2414@hirez.programming.kicks-ass.net>
+        b=NMDlY+v6ZPrbqHhFkpMP94sMx5RrWTwMV2udlF65lMT3cNMbPVEDjaqVlupPGSuSs
+         tgsM48ieIF5melz3xROdCOhGzwCMczURTJMOBW0cZApxqLjTQEoaF8vSVb2BxzhAP+
+         5qX4D5Vi+bAxDpNX/YYfNv4r5bfwzQjyNiwiWUXQ=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3513C4079D; Tue,  1 Dec 2020 10:43:09 -0300 (-03)
+Date:   Tue, 1 Dec 2020 10:43:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: perf probe can't remove probes
+Message-ID: <20201201134309.GD49333@kernel.org>
+References: <20201125172755.GA53351@kernel.org>
+ <20201126092125.402257a8776637d6bd2e090c@kernel.org>
+ <20201201132517.GC49333@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201125246.GV2414@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201201132517.GC49333@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:52:46PM +0100, Peter Zijlstra wrote:
-> On Tue, Dec 01, 2020 at 12:56:27PM +0100, Sven Schnelle wrote:
-> > Peter Zijlstra <peterz@infradead.org> writes:
-> > > On Mon, Nov 30, 2020 at 01:00:03PM -0800, Guenter Roeck wrote:
-> > >> On Fri, Nov 20, 2020 at 12:41:46PM +0100, Peter Zijlstra wrote:
-> > >> > We call arch_cpu_idle() with RCU disabled, but then use
-> > >> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
-> > >> > 
-> > >> > Switch all arch_cpu_idle() implementations to use
-> > >> > raw_local_irq_{en,dis}able() and carefully manage the
-> > >> > lockdep,rcu,tracing state like we do in entry.
-> > >> > 
-> > >> > (XXX: we really should change arch_cpu_idle() to not return with
-> > >> > interrupts enabled)
-> > >> > 
-> > >> 
-> > >> Has this patch been tested on s390 ? Reason for asking is that it causes
-> > >> all my s390 emulations to crash. Reverting it fixes the problem.
-> > >
-> > > My understanding is that it changes the error on s390. Previously it
-> > > would complain about the local_irq_enable() in arch_cpu_idle(), now it
-> > > complains when taking an interrupt during idle.
-> > 
-> > I looked into adding the required functionality for s390, but the code
-> > we would need to add to entry.S is rather large - as you noted we would
-> > have to duplicate large portions of irqentry_enter() into our code.
-> > Given that s390 was fine before that patch, can you revert it and submit
-> > it again during the next merge window?
-> 
-> I'm not sure I understand how s390 was fine without it, let me consdier.
-> Also, what's the status of ARM64, they do need this too.
+Em Tue, Dec 01, 2020 at 10:25:17AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Hi Masami,
+ 
+> 	Any idea why listing the source code doesn't work while simply
+> adding the probe works?
 
-We've got the batch of fixes from Mark queued for -rc7:
+<SNIP>
+ 
+> [root@seventh ~]# perf probe -L verify_pkcs7_signature
+> Specified source line is not found.
+>   Error: Failed to show lines.
 
-https://fixes.arm64.dev/
+Yeah, those fixes you sent, when cherry-picked into this bpf-next/master
+based branch, do the trick, so nevermind, you fixed this already, these
+fixes were already merged by Linus, bpf-next will rebase at some point,
+etc. :-)
 
-which rely on Peter's patch:
+- Arnaldo
 
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/fixes&id=114e0a684753516ef4b71ccb55a8ebcfa8735edb
+[acme@five bpf]$ git log --oneline -4
+0f3147557ea8143d (HEAD -> bpfsign) perf probe: Change function definition check due to broken DWARF
+0e104f490d8f86b4 perf probe: Fix to die_entrypc() returns error correctly
+9423e1f089643738 libbpf: Check if the kernel supports signatures before associating them
+580616996c498b70 libbpf: Attach signature ELF sections to signed ELF program sections
+[acme@five bpf]$
 
-There's room for consolidation and cleanup in future, but right now we've
-focussed purely on fixing things.
+[root@seventh ~]# perf probe -L verify_pkcs7_signature
+<verify_pkcs7_signature@/home/acme/git/bpf/certs/system_keyring.c:0>
+      0  int verify_pkcs7_signature(const void *data, size_t len,
+                                   const void *raw_pkcs7, size_t pkcs7_len,
+                                   struct key *trusted_keys,
+                                   enum key_being_used_for usage,
+                                   int (*view_content)(void *ctx,
+                                                       const void *data, size_t len,
+                                                       size_t asn1hdrlen),
+                                   void *ctx)
+         {
+      9         struct pkcs7_message *pkcs7;
+                int ret;
 
-Will
+                pkcs7 = pkcs7_parse_message(raw_pkcs7, pkcs7_len);
+     13         if (IS_ERR(pkcs7))
+     14                 return PTR_ERR(pkcs7);
+
+     16         ret = verify_pkcs7_message_sig(data, len, pkcs7, trusted_keys, usage,
+                                               view_content, ctx);
+
+     19         pkcs7_free_message(pkcs7);
+     20         pr_devel("<==%s() = %d\n", __func__, ret);
+                return ret;
+         }
+         EXPORT_SYMBOL_GPL(verify_pkcs7_signature);
+
+[root@seventh ~]#
