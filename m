@@ -2,204 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88CD2CA347
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33352CA350
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728826AbgLAM5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S2388743AbgLANAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:00:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgLAM5m (ORCPT
+        with ESMTP id S1726589AbgLANAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:57:42 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBE3C061A49
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:56:49 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id e7so2478941wrv.6
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:56:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=fhSdydiNHIuE7kH/VZv5LNrrxvRIALi9bCyYo0cAOQ0=;
-        b=GBU61fFcIfgXME5qVa36xFJVFJmb5+EHsvpQuu7GUNrca+sC99MVJa5L3eXYGY/ue6
-         vdeiDP5CstZt8slf4x3ydVOXINeGZElSS0q8mbuRJvo6Oqwe3F/cohI9+8Dctlke5zAs
-         iBJHA+WM/dzYl8ENXWS1nAFYIlYtk9O8bO7h/hv1Gg8OJbrpYerXmC11DJn2tcMn60JM
-         R0LUj26CsIy4MI6mFnbb5TJS7rlRV/CJ0eE8mqt7lXv9PQKD+LghHjpWccgBryN6KDJ1
-         QqgwV6HnY3qwDzziY9sCwy8lwtq8pK7Xz55e2dVFbR/or3HpVdiqom+tOB5TDbf1QNKB
-         GMTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fhSdydiNHIuE7kH/VZv5LNrrxvRIALi9bCyYo0cAOQ0=;
-        b=D/Rh6VuAwqwNZMtgQlTu6/yJcj5iVD8KOWrmdc4R5MaQg7h9rfvh3fwYEz15+uK5z4
-         rnZbCCi+Ce67UJozH9OE/YRcdMT1KfsUl5v4YViqoIi1A8l+VgQgOm3gEkzbBCah7YrF
-         jxhSpxdR7n99pxT8R4NQLeYF2AoFYiCTwzrTSyLBzTP3QT8weLP1K63HWTo3qq04p3l4
-         B08oMdK8udiT8nWbqJcKOLPIJyS+07stW99inIaP/fqDegcxP+ieQqNfAOTllf/gGLxD
-         FA25pWXdxTUEtaJVhnCXHnw7iZqsgtWI9vF8/jxiyDjDlnv3Sj89fNS1/eSlgtTbFJas
-         TRkQ==
-X-Gm-Message-State: AOAM533cs0wW4KI2FYFto02moK13pxtfdYJvKxhU/6OU84JJsPT4PYfB
-        uhktO83wFONSfupLG3aMkuaZzQ==
-X-Google-Smtp-Source: ABdhPJzQ1k3k98QkgMHXg5Y+DER3dcc331ppnIuJxF97i7TDGLT/iMqZRO5mfpwO6uJSzeSvhQu5ow==
-X-Received: by 2002:a5d:4e87:: with SMTP id e7mr3887518wru.70.1606827408027;
-        Tue, 01 Dec 2020 04:56:48 -0800 (PST)
-Received: from MacBook-Pro.local ([212.45.64.13])
-        by smtp.googlemail.com with ESMTPSA id t136sm2859898wmt.18.2020.12.01.04.56.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 04:56:47 -0800 (PST)
-Subject: Re: [PATCH v2 1/7] arm64: dts: imx8m: Add NOC nodes
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>, robh@kernel.org,
-        shawnguo@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
-        will@kernel.org, cdleonard@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Leonard Crestez <leonard.crestez@nxp.com>
-References: <20201201123932.12312-1-martin.kepplinger@puri.sm>
- <20201201123932.12312-2-martin.kepplinger@puri.sm>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <4d089936-65fe-8601-73e7-0424d363b6f2@linaro.org>
-Date:   Tue, 1 Dec 2020 14:56:46 +0200
+        Tue, 1 Dec 2020 08:00:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FA3C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:59:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=A/weu5pnukRhVU7q8jWcuRe0AHdNtgBdrJmzM8pOUaI=; b=cKgT78pHn6uvtONlR4vcFaVwdR
+        Hf39+E3MvAJ68bTfkwNKPj3aL1fG7L3wFOviVqulK4jg0FKvT17Uch3XUoFhVRcZZ1eDUU3fPIEic
+        2biLL0Vs9O5/F1JK2YF9LSHK8LcTYSIjt69OIqKZiFhAAZA3OUO4eNi0aV0Zb/6Lu1x5Yn4PDj4kG
+        aSu5ZMfXdBKD0boQp5dNkB8g0Iz36cmdUjPKC3EbqiN4Sl8V5if5msDtm5J0rGPEk6HDOQE2iVhvm
+        OoJoxQaiCsHlnfH/57jilzyS4AWy6xxstVL1WBIpr5UzOOKBO/75/LJN2Qt9ZE496Sr2Z60LaLUfZ
+        hiwv88og==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk5Ff-0006aN-P1; Tue, 01 Dec 2020 12:59:27 +0000
+Date:   Tue, 1 Dec 2020 12:59:27 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
+ on reads
+Message-ID: <20201201125927.GB11935@casper.infradead.org>
+References: <20201130230603.46187-1-peterx@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201201123932.12312-2-martin.kepplinger@puri.sm>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130230603.46187-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-
-Thank you for sending the patches.
-
-On 1.12.20 14:39, Martin Kepplinger wrote:
-> From: Leonard Crestez <leonard.crestez@nxp.com>
+On Mon, Nov 30, 2020 at 06:06:03PM -0500, Peter Xu wrote:
+> Faulting around for reads are in most cases helpful for the performance so that
+> continuous memory accesses may avoid another trip of page fault.  However it
+> may not always work as expected.
 > 
-> Add initial support for dynamic frequency scaling of main NOC.
+> For example, userfaultfd registered regions may not be the best candidate for
+> pre-faults around the reads.
 > 
-> Make DDRC the parent of the NOC (using passive governor) so that the
-> main NOC is automatically scaled together with DDRC by default.
-> 
-> Support for proactive scaling via interconnect will come on top.
-> 
-> Signed-off-by: Leonard Crestez <leonard.crestez@nxp.com>
-> Tested-by: Martin Kepplinger <martin.kepplinger@puri.sm> (imx8mq)
+> For missing mode uffds, fault around does not help because if the page cache
+> existed, then the page should be there already.  If the page cache is not
+> there, nothing else we can do, either.  If the fault-around code is destined to
+> be helpless for userfault-missing vmas, then ideally we can skip it.
 
-As you are sending this, i believe that it should have your signed-off 
-line (please check Documentation/process/submitting-patches.rst).
+This sounds like you're thinking of a file which has exactly one user.
+If there are multiple processes mapping the same file, then no, there's
+no reason to expect a page to be already present in the page table,
+just because it's present in the page cache.
 
-Also please give people some time to look into this (at least 1-2 weeks) 
-before submitting a new version.
+> For wr-protected mode uffds, errornously fault in those pages around could lead
+> to threads accessing the pages without uffd server's awareness.  For example,
+> when punching holes on uffd-wp registered shmem regions, we'll first try to
+> unmap all the pages before evicting the page cache but without locking the
+> page (please refer to shmem_fallocate(), where unmap_mapping_range() is called
+> before shmem_truncate_range()).  When fault-around happens near a hole being
+> punched, we might errornously fault in the "holes" right before it will be
+> punched.  Then there's a small window before the page cache was finally
+> dropped, and after the page will be writable again (NOTE: the uffd-wp protect
+> information is totally lost due to the pre-unmap in shmem_fallocate(), so the
+> page can be writable within the small window).  That's severe data loss.
 
-Thanks,
-Georgi
-
-> ---
->   arch/arm64/boot/dts/freescale/imx8mm.dtsi | 22 ++++++++++++++++++++++
->   arch/arm64/boot/dts/freescale/imx8mn.dtsi | 22 ++++++++++++++++++++++
->   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 22 ++++++++++++++++++++++
->   3 files changed, 66 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> index c824f2615fe8..835b19f0ea42 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> @@ -921,6 +921,28 @@
->   
->   		};
->   
-> +		noc: interconnect@32700000 {
-> +			compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
-> +			reg = <0x32700000 0x100000>;
-> +			clocks = <&clk IMX8MM_CLK_NOC>;
-> +			devfreq = <&ddrc>;
-> +			operating-points-v2 = <&noc_opp_table>;
-> +
-> +			noc_opp_table: opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-150M {
-> +					opp-hz = /bits/ 64 <150000000>;
-> +				};
-> +				opp-375M {
-> +					opp-hz = /bits/ 64 <375000000>;
-> +				};
-> +				opp-750M {
-> +					opp-hz = /bits/ 64 <750000000>;
-> +				};
-> +			};
-> +		};
-> +
->   		aips4: bus@32c00000 {
->   			compatible = "fsl,aips-bus", "simple-bus";
->   			reg = <0x32c00000 0x400000>;
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> index a06d2a6268e6..8e2d413f97d4 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> @@ -772,6 +772,28 @@
->   
->   		};
->   
-> +		noc: interconnect@32700000 {
-> +			compatible = "fsl,imx8mn-noc", "fsl,imx8m-noc";
-> +			reg = <0x32700000 0x100000>;
-> +			clocks = <&clk IMX8MN_CLK_NOC>;
-> +			devfreq = <&ddrc>;
-> +			operating-points-v2 = <&noc_opp_table>;
-> +
-> +			noc_opp_table: opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-100M {
-> +					opp-hz = /bits/ 64 <100000000>;
-> +				};
-> +				opp-600M {
-> +					opp-hz = /bits/ 64 <600000000>;
-> +				};
-> +				opp-800M {
-> +					opp-hz = /bits/ 64 <800000000>;
-> +				};
-> +			};
-> +		};
-> +
->   		aips4: bus@32c00000 {
->   			compatible = "fsl,aips-bus", "simple-bus";
->   			reg = <0x32c00000 0x400000>;
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> index a841a023e8e0..d139a46ee8ce 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> @@ -1158,6 +1158,28 @@
->   			};
->   		};
->   
-> +		noc: interconnect@32700000 {
-> +			compatible = "fsl,imx8mq-noc", "fsl,imx8m-noc";
-> +			reg = <0x32700000 0x100000>;
-> +			clocks = <&clk IMX8MQ_CLK_NOC>;
-> +			devfreq = <&ddrc>;
-> +			operating-points-v2 = <&noc_opp_table>;
-> +
-> +			noc_opp_table: opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-133M {
-> +					opp-hz = /bits/ 64 <133333333>;
-> +				};
-> +				opp-400M {
-> +					opp-hz = /bits/ 64 <400000000>;
-> +				};
-> +				opp-800M {
-> +					opp-hz = /bits/ 64 <800000000>;
-> +				};
-> +			};
-> +		};
-> +
->   		bus@32c00000 { /* AIPS4 */
->   			compatible = "fsl,aips-bus", "simple-bus";
->   			reg = <0x32c00000 0x400000>;
-> 
+This still doesn't make sense.  If the page is Uptodate in the page
+cache, then userspace gets to access it.  If you don't want the page to
+be accessible, ClearPageUptodate().  read() can also access it if it's
+marked Uptodate.  A write fault on a page will call the filesystem's
+page_mkwrite() and you can block it there.
 
