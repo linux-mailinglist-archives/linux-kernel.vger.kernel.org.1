@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EE12C9467
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C272C9468
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729225AbgLABDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727940AbgLABDz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:03:55 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB539C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 17:03:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Ff7vIpW4nXR5vwfXcGsWU6Ty1w9G2DmQ1alsYfXy86A=; b=rh/0q0l6mmyrn+XWpyq0CD6hJ8
-        4xBNf2w5pvP3qFboLCmKYtTnfowncQ7Q8IieLHKqRljahInN6FULSH2NaEka6z2KK48m7oMKF3W4D
-        +xN/sBZYR0Bkxv3jQ6Fn4YOEdg2iTS0Bz/cLNX8/r/ijHNngTreYzw+FsfzBnMjFC46iLU8zL+sfT
-        QmBNo6slLle/ua0yxJ+vyxxyFs4addLBeki8t8JbIirdH1XLFjFgHpzn9r0uKIIvRZ96Hx4KXvnfm
-        vQv/UHGeMGQNtt8JtozU/cZ9yBiysZlNQJK4DsHq1wyiYlUBU4aiwC8cck3DvPvirZP/3VjFERQ+2
-        8t7QzzbQ==;
-Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kju4U-0006i4-CR; Tue, 01 Dec 2020 01:03:11 +0000
-Subject: Re: WARNING: filesystem loop5 was created with 512 inodes, the real
- maximum is 511, mounting anyway
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-References: <00000000000019cd7c05b515da9a@google.com>
- <7e108ab1-0b07-50dd-5862-a5121eab6094@infradead.org>
- <CACT4Y+YkH042G=+ErWY+dRLs5H0i1ao1xnSeHvGx8x=dn5KH1A@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8d5ec04c-4646-3b70-6f6c-ea989e6c2c59@infradead.org>
-Date:   Mon, 30 Nov 2020 17:03:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729855AbgLABFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:05:50 -0500
+Received: from mga11.intel.com ([192.55.52.93]:18941 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726684AbgLABFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:05:50 -0500
+IronPort-SDR: tPvpeZSgCe+NVvNxdXjRROenaHNdhlNMLckC90/aLPKtL7c98dxv85ySzmvwWRmIN1mPj428cg
+ pZfCxBukzooA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169241197"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="169241197"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 17:04:08 -0800
+IronPort-SDR: /mW1ORI8gJYO/d4eXbn0W7cBdywJ1g3/aMylkXFWWOT8rwUY/M67xXZW7gYpcQXTYKk5LkZWrn
+ H7L87bh90mqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="372715290"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 30 Nov 2020 17:04:07 -0800
+Subject: Re: [PATCH] sched/fair: Clear SMT siblings after determining the core
+ is not idle
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201130144020.GS3371@techsingularity.net>
+ <CAKfTPtBcZnxR073=eRsWNAGOnA8K4emL0BYEUzbkzZx6qJWmSg@mail.gmail.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <f31178dd-34e4-0e9d-e8e3-fda396641daf@linux.intel.com>
+Date:   Tue, 1 Dec 2020 09:04:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+YkH042G=+ErWY+dRLs5H0i1ao1xnSeHvGx8x=dn5KH1A@mail.gmail.com>
+In-Reply-To: <CAKfTPtBcZnxR073=eRsWNAGOnA8K4emL0BYEUzbkzZx6qJWmSg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -52,69 +51,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 12:43 AM, Dmitry Vyukov wrote:
-> On Mon, Nov 30, 2020 at 5:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+On 2020/11/30 22:47, Vincent Guittot wrote:
+> On Mon, 30 Nov 2020 at 15:40, Mel Gorman <mgorman@techsingularity.net> wrote:
 >>
->> On 11/27/20 4:32 AM, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    418baf2c Linux 5.10-rc5
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=171555b9500000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b81aff78c272da44
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=3fd34060f26e766536ff
->>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>>
->>> Unfortunately, I don't have any reproducer for this issue yet.
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com
->>>
->>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
->>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
->>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
->>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
->>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
->>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
->>>
->>>
->>> ---
->>> This report is generated by a bot. It may contain errors.
->>> See https://goo.gl/tpsmEJ for more information about syzbot.
->>> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>>
->>> syzbot will keep track of this issue. See:
->>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>>
+>> The clearing of SMT siblings from the SIS mask before checking for an idle
+>> core is a small but unnecessary cost. Defer the clearing of the siblings
+>> until the scan moves to the next potential target. The cost of this was
+>> not measured as it is borderline noise but it should be self-evident.
+> 
+> Good point
+
+This is more reasonable, thanks Mel.
+
+> 
 >>
->> Hi,
->> Can you provide the BFS image file that is being mounted?
->> (./file0 I think.)
+>> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> 
+>> ---
+>>  kernel/sched/fair.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
 >>
->> --
->> ~Randy
-> 
-> 
-> Hi Randy,
-> 
-> I see this bug was reported with a reproducer:
-> https://syzkaller.appspot.com/bug?id=a32ebd5db2f7c957b82cf54b97bdecf367bf0421
-> I assume it's a dup of this one.
-
-Sure, looks the same.
-
-> If you need the image itself, you can dump it to a file in the C
-> reproducer inside of syz_mount_image before mount call.
-
-Yes, got that.
-
-What outcome or result are you looking for here?
-Or what do you see as the problem?
-
-
-thanks.
--- 
-~Randy
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 0d54d69ba1a5..d9acd55d309b 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -6087,10 +6087,11 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+>>                                 break;
+>>                         }
+>>                 }
+>> -               cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
+>>
+>>                 if (idle)
+>>                         return core;
+>> +
+>> +               cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
+>>         }
+>>
+>>         /*
 
