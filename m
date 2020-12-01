@@ -2,258 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043492CAAE9
+	by mail.lfdr.de (Postfix) with ESMTP id 72A992CAAEA
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404213AbgLASiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:38:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
+        id S2392307AbgLASjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:39:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392245AbgLASit (ORCPT
+        with ESMTP id S2388802AbgLASjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:38:49 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF635C0613D4;
-        Tue,  1 Dec 2020 10:38:08 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 33E5CDBD;
-        Tue,  1 Dec 2020 19:38:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606847886;
-        bh=1elCsQLDX9tYCwFdmpBMRtRH2CZcjkKB5ayUjNYFsgs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cIthfgFn7bj3YR+r+MxsbQ4V7c8cpRRaIwKt/rV2QQmw75EhFNqWaljTi3YRRN9vi
-         RzmLyZ9fdhPMGsLzuM1r943YJKzOi1dpEOFsdhJzLyCVuu7BjjdbCZwmdHCu8m7knm
-         8AaXo/w6cKEjx+/NFQg94fr32lz3+rovxCuFSmIg=
-Date:   Tue, 1 Dec 2020 20:37:58 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201201183758.GE3085@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com>
- <20201130233232.GD25713@pendragon.ideasonboard.com>
- <20201201155513.GB852@paasikivi.fi.intel.com>
+        Tue, 1 Dec 2020 13:39:15 -0500
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D064C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:38:35 -0800 (PST)
+Received: by mail-qv1-xf35.google.com with SMTP id n9so1326822qvp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:38:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=spbeJrYokZ4Y9gd+VUqvGSeszDzVDW8TLup0VduoFa4=;
+        b=wG+rshCludoC3+pPQIORQBUsVYLwBiM92Y9aSc80oBzfU6xLHThKui6WG29QRZeLpy
+         6tpTg+wdqPt8fTAosTT1Gyyj1eYP77PeKLDnok2qsjatn2wMx4KbBsX5Qincrj12H6Eb
+         EerjombU1XJ5VHX9TP2pYSs/GepdTOAwCg1G8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=spbeJrYokZ4Y9gd+VUqvGSeszDzVDW8TLup0VduoFa4=;
+        b=YkUK3yoexji9DxZhl2TZ44mLOy//TB7PAUBb1Ye2fNPz2TE9STjA+POLdJu3k0Vlkr
+         +tSlvBnJF4+x+93MQ5zq1EDTKP8dKwYNJWCIqkQbPifOHWv8TvB4I7b6J+CrbW8ds7vU
+         Uw1tfYhs75+n0Vrr//Ewa9mMjv2fNanZXmUl55l/tfk2YXh5RHW8mlD9IK0UJb2InwS+
+         B3tjnKriNbe0zM4z+YfOoA1zpMnCb/eCzUA4LeAJwze4teqru4s8rLUBUiX0+XU2/Hk/
+         IqT0ylbeDQYFEHP9XBRgVKwRvAmN2y9v92/AmCYtNtBX5sjphvxE0i9Zs/fRgHkE+Xs0
+         euBg==
+X-Gm-Message-State: AOAM532umHvXxNa4L6t/z9ucwXoTw8UJvF9ibwCca3cUtpval3TJI/Oc
+        GHjrZ+NTN7wkD2ms0PQTDOt/pg==
+X-Google-Smtp-Source: ABdhPJwo3rOwNH9qnKp5Re475p+Gdst1fA4g6+X7rFdG4OqklCLSX4jt9nKcnE3h6uarTioeEcTazA==
+X-Received: by 2002:a05:6214:20a2:: with SMTP id 2mr4495835qvd.27.1606847902210;
+        Tue, 01 Dec 2020 10:38:22 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id 8sm394322qkd.131.2020.12.01.10.38.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 10:38:21 -0800 (PST)
+Date:   Tue, 1 Dec 2020 13:38:21 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
+ cookie on fork
+Message-ID: <20201201183821.GA211031@google.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-23-joel@joelfernandes.org>
+ <20201125125447.GV2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201155513.GB852@paasikivi.fi.intel.com>
+In-Reply-To: <20201125125447.GV2414@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
-
-On Tue, Dec 01, 2020 at 05:55:13PM +0200, Sakari Ailus wrote:
-> On Tue, Dec 01, 2020 at 01:32:32AM +0200, Laurent Pinchart wrote:
-> > On Mon, Nov 30, 2020 at 10:07:19PM +0200, Andy Shevchenko wrote:
-> > > On Mon, Nov 30, 2020 at 01:31:29PM +0000, Daniel Scally wrote:
-> > > > On platforms where ACPI is designed for use with Windows, resources
-> > > > that are intended to be consumed by sensor devices are sometimes in
-> > > > the _CRS of a dummy INT3472 device upon which the sensor depends. This
-> > > > driver binds to the dummy acpi device (which does not represent a
-> > > 
-> > > acpi device -> acpi_device
-> > > 
-> > > > physical PMIC) and maps them into GPIO lines and regulators for use by
-> > > > the sensor device instead.
-> > > 
-> > > ...
-> > > 
-> > > > This patch contains the bits of this process that we're least sure about.
-> > > > The sensors in scope for this work are called out as dependent (in their
-> > > > DSDT entry's _DEP) on a device with _HID INT3472. These come in at least
-> > > > 2 kinds; those with an I2cSerialBusV2 entry (which we presume therefore
-> > > > are legitimate tps68470 PMICs that need handling by those drivers - work
-> > > > on that in the future). And those without an I2C device. For those without
-> > > > an I2C device they instead have an array of GPIO pins defined in _CRS. So
-> > > > for example, my Lenovo Miix 510's OVTI2680 sensor is dependent on one of
-> > > > the _latter_ kind of INT3472 devices, with this _CRS:
-> > > > 
-> > > > Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-> > > > {
-> > > >     Name (SBUF, ResourceTemplate ()
-> > > >     {
-> > > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > > 	    0x00, ResourceConsumer, ,
-> > > >             )
-> > > >             {   // Pin list
-> > > >                 0x0079
-> > > >             }
-> > > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > > 	    0x00, ResourceConsumer, ,
-> > > >             )
-> > > >             {   // Pin list
-> > > >                 0x007A
-> > > >             }
-> > > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > > 	    0x00, ResourceConsumer, ,
-> > > >             )
-> > > >             {   // Pin list
-> > > >                 0x008F
-> > > >             }
-> > > >     })
-> > > >     Return (SBUF) /* \_SB_.PCI0.PMI1._CRS.SBUF */
-> > > > }
-> > > > 
-> > > > and the same device has a _DSM Method, which returns 32-bit ints where
-> > > > the second lowest byte we noticed to match the pin numbers of the GPIO
-> > > > lines:
-> > > > 
-> > > > Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
-> > > > {
-> > > >     If ((Arg0 == ToUUID ("79234640-9e10-4fea-a5c1-b5aa8b19756f")))
-> > > >     {
-> > > >         If ((Arg2 == One))
-> > > >         {
-> > > >             Return (0x03)
-> > > >         }
-> > > > 
-> > > >         If ((Arg2 == 0x02))
-> > > >         {
-> > > >             Return (0x01007900)
-> > > >         }
-> > > > 
-> > > >         If ((Arg2 == 0x03))
-> > > >         {
-> > > >             Return (0x01007A0C)
-> > > >         }
-> > > > 
-> > > >         If ((Arg2 == 0x04))
-> > > >         {
-> > > >             Return (0x01008F01)
-> > > >         }
-> > > >     }
-> > > > 
-> > > >     Return (Zero)
-> > > > }
-> > > > 
-> > > > We know that at least some of those pins have to be toggled active for the
-> > > > sensor devices to be available in i2c, so the conclusion we came to was
-> > > > that those GPIO entries assigned to the INT3472 device actually represent
-> > > > GPIOs and regulators to be consumed by the sensors themselves. Tsuchiya
-> > > > noticed that the lowest byte in the return values of the _DSM method
-> > > > seemed to represent the type or function of the GPIO line, and we
-> > > > confirmed that by testing on each surface device that GPIO lines where the
-> > > > low byte in the _DSM entry for that pin was 0x0d controlled the privacy
-> > > > LED of the cameras.
-> > > > 
-> > > > We're guessing as to the exact meaning of the function byte, but I
-> > > > conclude they're something like this:
-> > > > 
-> > > > 0x00 - probably a reset GPIO
-> > > > 0x01 - regulator for the sensor
-> > > > 0x0c - regulator for the sensor
-> > > > 0x0b - regulator again, but for a VCM or EEPROM
-> > > > 0x0d - privacy led (only one we're totally confident of since we can see
-> > > >        it happen!)
-> > > 
-> > > It's solely Windows driver design...
-> > > Luckily I found some information and can clarify above table:
-> > > 
-> > > 0x00 Reset
-> > > 0x01 Power down
-> > > 0x0b Power enable
-> > > 0x0c Clock enable
-> > > 0x0d LED (active high)
-> > 
-> > That's very useful information ! Thank you.
-> > 
-> > > The above text perhaps should go somewhere under Documentation.
-> > 
-> > Or in the driver source code, but definitely somewhere else than in the
-> > commit message.
-> > 
-> > > > After much internal debate I decided to write this as a standalone
-> > > > acpi_driver. Alternative options we considered:
-> > > > 
-> > > > 1. Squash all this into the cio2-bridge code, which I did originally write
-> > > > but decided I didn't like.
-> > > > 2. Extend the existing tps68470 mfd driver...they share an ACPI ID so this
-> > > > kinda makes sense, but ultimately given there is no actual physical
-> > > > tps68470 in the scenario this patch handles I decided I didn't like this
-> > > > either.
-> > > 
-> > > Looking to this I think the best is to create a module that can be consumed by tps68470 and separately.
-> > > So, something near to it rather than under ipu3 hood.
-> > > 
-> > > You may use same ID's in both drivers (in PMIC less case it can be simple
-> > > platform and thus they won't conflict), but both of them should provide GPIO
-> > > resources for consumption.
-> > > 
-> > > So, something like
-> > > 
-> > >  tps68470.h with API to consume
-> > >  split tps68470 to -core, -i2c parts
-> > >  add int3472, which will serve for above and be standalone platform driver
-> > >  update cio2-bridge accordingly
-> > > 
-> > > Would it be feasible?
-> > 
-> > Given that INT3472 means Intel camera power management device (that's
-> > more or less the wording in Windows, I can double-check), would the
-> > following make sense ?
-> > 
-> > A top-level module named intel-camera-pmic (or int3472, or ...) would
-> > register two drivers, a platform driver and an I2C driver, to
-> > accommodate for both cases ("discrete PMIC" that doesn't have an
-> > I2cSerialBusV2, and TPS64870 or uP6641Q that are I2C devices). The probe
-> > function would perform the following:
-> > 
-> > - If there's no CLDB, then the device uses the Chrome OS "ACPI
-> >   bindings", and refers to a TPS64870. The code that exists in the
-> >   kernel today (registering GPIOs, and registering an OpRegion to
-> >   communicate with the power management code in the DSDT) would be
-> >   activated.
-> > 
-> > - If there's a CLDB, then the device type would be retrieved from it:
-> > 
-> >   - If the device is a "discrete PMIC", the driver would register clocks
-> >     and regulators controlled by GPIOs, and create clock, regulator and
-> >     GPIO lookup entries for the sensor device that references the PMIC.
-> > 
-> >   - If the device is a TPS64870, the code that exists in the kernel
-> >     today to register GPIOs would be activated, and new code would need
-> >     to be written to register regulators and clocks.
-> > 
-> >   - If the device is a uP6641Q, a new driver will need to be written (I
-> >     don't know on which devices this PMIC is used, so this can probably
-> >     be deferred).
-> > 
-> > We can split this in multiple files and/or modules.
+On Wed, Nov 25, 2020 at 01:54:47PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
+> > +/* Per-task interface */
+> > +static unsigned long sched_core_alloc_task_cookie(void)
+> > +{
+> > +	struct sched_core_cookie *ptr =
+> > +		kmalloc(sizeof(struct sched_core_cookie), GFP_KERNEL);
+> > +
+> > +	if (!ptr)
+> > +		return 0;
+> > +	refcount_set(&ptr->refcnt, 1);
+> > +
+> > +	/*
+> > +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
+> > +	 * is done after the stopper runs.
+> > +	 */
+> > +	sched_core_get();
+> > +	return (unsigned long)ptr;
+> > +}
+> > +
+> > +static bool sched_core_get_task_cookie(unsigned long cookie)
+> > +{
+> > +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
+> > +
+> > +	/*
+> > +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
+> > +	 * is done after the stopper runs.
+> > +	 */
+> > +	sched_core_get();
+> > +	return refcount_inc_not_zero(&ptr->refcnt);
+> > +}
+> > +
+> > +static void sched_core_put_task_cookie(unsigned long cookie)
+> > +{
+> > +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
+> > +
+> > +	if (refcount_dec_and_test(&ptr->refcnt))
+> > +		kfree(ptr);
+> > +}
 > 
-> That's what I thought of, too, as one option, but with some more detail.
-> This would be indeed the cleanest option.
+> > +	/*
+> > +	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
+> > +	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
+> > +	 *       by this function *after* the stopper removes the tasks from the
+> > +	 *       core queue, and not before. This is just to play it safe.
+> > +	 */
 > 
-> I think it'd be nice if the CLDB stuff (apart from checking whether it's
-> there) would be in a different module to avoid cluttering up the real
-> tps68470 driver.
+> So for no reason what so ever you've made the code more difficult?
 
-Given the amount of code, and the fact that the driver should be
-compiled as a module, I don't think it will make a huge difference in
-the memory footprint.
+You're right, I could just do sched_core_get() in the caller. I changed it as in
+the diff below:
 
--- 
-Regards,
+---8<-----------------------
 
-Laurent Pinchart
+diff --git a/kernel/sched/coretag.c b/kernel/sched/coretag.c
+index 800c0f8bacfc..75e2edb53a48 100644
+--- a/kernel/sched/coretag.c
++++ b/kernel/sched/coretag.c
+@@ -274,6 +274,7 @@ void sched_core_change_group(struct task_struct *p, struct task_group *new_tg)
+ /* Per-task interface: Used by fork(2) and prctl(2). */
+ static void sched_core_put_cookie_work(struct work_struct *ws);
+ 
++/* Caller has to call sched_core_get() if non-zero value is returned. */
+ static unsigned long sched_core_alloc_task_cookie(void)
+ {
+ 	struct sched_core_task_cookie *ck =
+@@ -284,11 +285,6 @@ static unsigned long sched_core_alloc_task_cookie(void)
+ 	refcount_set(&ck->refcnt, 1);
+ 	INIT_WORK(&ck->work, sched_core_put_cookie_work);
+ 
+-	/*
+-	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
+-	 * is done after the stopper runs.
+-	 */
+-	sched_core_get();
+ 	return (unsigned long)ck;
+ }
+ 
+@@ -354,12 +350,6 @@ int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
+ 
+ 	mutex_lock(&sched_core_tasks_mutex);
+ 
+-	/*
+-	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
+-	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
+-	 *       by this function *after* the stopper removes the tasks from the
+-	 *       core queue, and not before. This is just to play it safe.
+-	 */
+ 	if (!t2) {
+ 		if (t1->core_task_cookie) {
+ 			sched_core_put_task_cookie(t1->core_task_cookie);
+@@ -370,7 +360,9 @@ int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
+ 		/* Assign a unique per-task cookie solely for t1. */
+ 
+ 		cookie = sched_core_alloc_task_cookie();
+-		if (!cookie)
++		if (cookie)
++			sched_core_get();
++		else
+ 			goto out_unlock;
+ 
+ 		if (t1->core_task_cookie) {
+@@ -401,7 +393,9 @@ int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
+ 
+ 		/* CASE 1. */
+ 		cookie = sched_core_alloc_task_cookie();
+-		if (!cookie)
++		if (cookie)
++			sched_core_get();
++		else
+ 			goto out_unlock;
+ 
+ 		/* Add another reference for the other task. */
