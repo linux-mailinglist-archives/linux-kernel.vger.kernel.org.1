@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664732C9E2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C7D2C9E32
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388132AbgLAJlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:41:06 -0500
-Received: from mga14.intel.com ([192.55.52.115]:47939 "EHLO mga14.intel.com"
+        id S2388508AbgLAJlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:41:31 -0500
+Received: from mga02.intel.com ([134.134.136.20]:41916 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387928AbgLAJlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:41:05 -0500
-IronPort-SDR: ejG5zfKVhT+rSdt1C4PzbyoIfProQPVBADEyQJ3+nB8DL4sVt1p0a3XIVz6VJdqK9QKsMoOCyI
- G2jdNOfxKcMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172012402"
+        id S2388433AbgLAJla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:41:30 -0500
+IronPort-SDR: XZG69xX+YeEbX/NFByHq+KwdeYioQL3cwAynUh4TPFimXw4JYu2JdKtG/fXm5XIcGTeC3KNjYH
+ uD8hKnA8xQEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="159852369"
 X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="172012402"
+   d="scan'208";a="159852369"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 01:40:38 -0800
-IronPort-SDR: iYOyfu3GB7ctxOhIivNk2xa1p0qCW7ZyE48oCvJBe4aBut62jEHHyjDS/kdQZfSd/NYOPb/DwD
- BJnUyrsB0ZBQ==
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 01:40:48 -0800
+IronPort-SDR: 4JYxYu3YZTjQonD7mYoup6eHcFUEuR02QyZh0i4d2h2qSPHU8bSDk/Xqru2FmH+05yndAzMa2X
+ 8KktZNf3N7fg==
 X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="372693019"
+   d="scan'208";a="345410698"
 Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 01:40:32 -0800
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 01:40:39 -0800
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -38,9 +38,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Shuo Liu <shuo.a.liu@intel.com>,
         Zhi Wang <zhi.a.wang@intel.com>,
         Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v6 08/18] virt: acrn: Introduce EPT mapping management
-Date:   Tue,  1 Dec 2020 17:38:43 +0800
-Message-Id: <20201201093853.12070-9-shuo.a.liu@intel.com>
+Subject: [PATCH v6 09/18] virt: acrn: Introduce I/O request management
+Date:   Tue,  1 Dec 2020 17:38:44 +0800
+Message-Id: <20201201093853.12070-10-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201201093853.12070-1-shuo.a.liu@intel.com>
 References: <20201201093853.12070-1-shuo.a.liu@intel.com>
@@ -52,25 +52,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuo Liu <shuo.a.liu@intel.com>
 
-The HSM provides hypervisor services to the ACRN userspace. While
-launching a User VM, ACRN userspace needs to allocate memory and request
-the ACRN Hypervisor to set up the EPT mapping for the VM.
+An I/O request of a User VM, which is constructed by the hypervisor, is
+distributed by the ACRN Hypervisor Service Module to an I/O client
+corresponding to the address range of the I/O request.
 
-A mapping cache is introduced for accelerating the translation between
-the Service VM kernel virtual address and User VM physical address.
+For each User VM, there is a shared 4-KByte memory region used for I/O
+requests communication between the hypervisor and Service VM. An I/O
+request is a 256-byte structure buffer, which is 'struct
+acrn_io_request', that is filled by an I/O handler of the hypervisor
+when a trapped I/O access happens in a User VM. ACRN userspace in the
+Service VM first allocates a 4-KByte page and passes the GPA (Guest
+Physical Address) of the buffer to the hypervisor. The buffer is used as
+an array of 16 I/O request slots with each I/O request slot being 256
+bytes. This array is indexed by vCPU ID.
 
-From the perspective of the hypervisor, the types of GPA of User VM can be
-listed as following:
-   1) RAM region, which is used by User VM as system ram.
-   2) MMIO region, which is recognized by User VM as MMIO. MMIO region is
-      used to be utilized for devices emulation.
+An I/O client, which is 'struct acrn_ioreq_client', is responsible for
+handling User VM I/O requests whose accessed GPA falls in a certain
+range. Multiple I/O clients can be associated with each User VM. There
+is a special client associated with each User VM, called the default
+client, that handles all I/O requests that do not fit into the range of
+any other I/O clients. The ACRN userspace acts as the default client for
+each User VM.
 
-Generally, User VM RAM regions mapping is set up before VM started and
-is released in the User VM destruction. MMIO regions mapping may be set
-and unset dynamically during User VM running.
+The state transitions of a ACRN I/O request are as follows.
 
-To achieve this, ioctls ACRN_IOCTL_SET_MEMSEG and ACRN_IOCTL_UNSET_MEMSEG
-are introduced in HSM.
+   FREE -> PENDING -> PROCESSING -> COMPLETE -> FREE -> ...
+
+FREE: this I/O request slot is empty
+PENDING: a valid I/O request is pending in this slot
+PROCESSING: the I/O request is being processed
+COMPLETE: the I/O request has been processed
+
+An I/O request in COMPLETE or FREE state is owned by the hypervisor. HSM
+and ACRN userspace are in charge of processing the others.
+
+The processing flow of I/O requests are listed as following:
+
+a) The I/O handler of the hypervisor will fill an I/O request with
+   PENDING state when a trapped I/O access happens in a User VM.
+b) The hypervisor makes an upcall, which is a notification interrupt, to
+   the Service VM.
+c) The upcall handler schedules a tasklet to dispatch I/O requests.
+d) The tasklet looks for the PENDING I/O requests, assigns them to
+   different registered clients based on the address of the I/O accesses,
+   updates their state to PROCESSING, and notifies the corresponding
+   client to handle.
+e) The notified client handles the assigned I/O requests.
+f) The HSM updates I/O requests states to COMPLETE and notifies the
+   hypervisor of the completion via hypercalls.
 
 Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
 Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
@@ -82,604 +111,985 @@ Cc: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
  drivers/virt/acrn/Makefile    |   2 +-
- drivers/virt/acrn/acrn_drv.h  |  96 ++++++++++-
- drivers/virt/acrn/hsm.c       |  15 ++
- drivers/virt/acrn/hypercall.h |  14 ++
- drivers/virt/acrn/mm.c        | 306 ++++++++++++++++++++++++++++++++++
- drivers/virt/acrn/vm.c        |   4 +
- include/uapi/linux/acrn.h     |  49 ++++++
- 7 files changed, 476 insertions(+), 10 deletions(-)
- create mode 100644 drivers/virt/acrn/mm.c
+ drivers/virt/acrn/acrn_drv.h  |  82 ++++++
+ drivers/virt/acrn/hsm.c       |  34 ++-
+ drivers/virt/acrn/hypercall.h |  28 ++
+ drivers/virt/acrn/ioreq.c     | 509 ++++++++++++++++++++++++++++++++++
+ drivers/virt/acrn/vm.c        |  27 +-
+ include/uapi/linux/acrn.h     | 134 +++++++++
+ 7 files changed, 806 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/virt/acrn/ioreq.c
 
 diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
-index cf8b4ed5e74e..38bc44b6edcd 100644
+index 38bc44b6edcd..21721cbf6a80 100644
 --- a/drivers/virt/acrn/Makefile
 +++ b/drivers/virt/acrn/Makefile
 @@ -1,3 +1,3 @@
  # SPDX-License-Identifier: GPL-2.0
  obj-$(CONFIG_ACRN_HSM)	:= acrn.o
--acrn-y := hsm.o vm.o
-+acrn-y := hsm.o vm.o mm.o
+-acrn-y := hsm.o vm.o mm.o
++acrn-y := hsm.o vm.o mm.o ioreq.o
 diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-index e5aba86cad8c..e47a45280eea 100644
+index e47a45280eea..7e89e4944d0f 100644
 --- a/drivers/virt/acrn/acrn_drv.h
 +++ b/drivers/virt/acrn/acrn_drv.h
-@@ -12,26 +12,104 @@
+@@ -12,10 +12,15 @@
  
  extern struct miscdevice acrn_dev;
  
-+#define ACRN_MEM_MAPPING_MAX	256
++#define ACRN_NAME_LEN		16
+ #define ACRN_MEM_MAPPING_MAX	256
+ 
+ #define ACRN_MEM_REGION_ADD	0
+ #define ACRN_MEM_REGION_DEL	2
 +
-+#define ACRN_MEM_REGION_ADD	0
-+#define ACRN_MEM_REGION_DEL	2
++struct acrn_vm;
++struct acrn_ioreq_client;
++
+ /**
+  * struct vm_memory_region_op - Hypervisor memory operation
+  * @type:		Operation type (ACRN_MEM_REGION_*)
+@@ -75,9 +80,63 @@ struct vm_memory_mapping {
+ 	size_t		size;
+ };
+ 
 +/**
-+ * struct vm_memory_region_op - Hypervisor memory operation
-+ * @type:		Operation type (ACRN_MEM_REGION_*)
-+ * @attr:		Memory attribute (ACRN_MEM_TYPE_* | ACRN_MEM_ACCESS_*)
-+ * @user_vm_pa:		Physical address of User VM to be mapped.
-+ * @service_vm_pa:	Physical address of Service VM to be mapped.
-+ * @size:		Size of this region.
++ * struct acrn_ioreq_buffer - Data for setting the ioreq buffer of User VM
++ * @ioreq_buf:	The GPA of the IO request shared buffer of a VM
 + *
-+ * Structure containing needed information that is provided to ACRN Hypervisor
-+ * to manage the EPT mappings of a single memory region of the User VM. Several
-+ * &struct vm_memory_region_op can be batched to ACRN Hypervisor, see &struct
-+ * vm_memory_region_batch.
++ * The parameter for the HC_SET_IOREQ_BUFFER hypercall used to set up
++ * the shared I/O request buffer between Service VM and ACRN hypervisor.
 + */
-+struct vm_memory_region_op {
-+	u32	type;
-+	u32	attr;
-+	u64	user_vm_pa;
-+	u64	service_vm_pa;
-+	u64	size;
++struct acrn_ioreq_buffer {
++	u64	ioreq_buf;
 +};
 +
-+/**
-+ * struct vm_memory_region_batch - A batch of vm_memory_region_op.
-+ * @vmid:		A User VM ID.
-+ * @reserved:		Reserved.
-+ * @regions_num:	The number of vm_memory_region_op.
-+ * @regions_gpa:	Physical address of a vm_memory_region_op array.
-+ *
-+ * HC_VM_SET_MEMORY_REGIONS uses this structure to manage EPT mappings of
-+ * multiple memory regions of a User VM. A &struct vm_memory_region_batch
-+ * contains multiple &struct vm_memory_region_op for batch processing in the
-+ * ACRN Hypervisor.
-+ */
-+struct vm_memory_region_batch {
-+	u16	vmid;
-+	u16	reserved[3];
-+	u32	regions_num;
-+	u64	regions_gpa;
++struct acrn_ioreq_range {
++	struct list_head	list;
++	u32			type;
++	u64			start;
++	u64			end;
 +};
 +
++#define ACRN_IOREQ_CLIENT_DESTROYING	0U
++typedef	int (*ioreq_handler_t)(struct acrn_ioreq_client *client,
++			       struct acrn_io_request *req);
 +/**
-+ * struct vm_memory_mapping - Memory map between a User VM and the Service VM
-+ * @pages:		Pages in Service VM kernel.
-+ * @npages:		Number of pages.
-+ * @service_vm_va:	Virtual address in Service VM kernel.
-+ * @user_vm_pa:		Physical address in User VM.
-+ * @size:		Size of this memory region.
-+ *
-+ * HSM maintains memory mappings between a User VM GPA and the Service VM
-+ * kernel VA for accelerating the User VM GPA translation.
++ * struct acrn_ioreq_client - Structure of I/O client.
++ * @name:	Client name
++ * @vm:		The VM that the client belongs to
++ * @list:	List node for this acrn_ioreq_client
++ * @is_default:	If this client is the default one
++ * @flags:	Flags (ACRN_IOREQ_CLIENT_*)
++ * @range_list:	I/O ranges
++ * @range_lock:	Lock to protect range_list
++ * @ioreqs_map:	The pending I/O requests bitmap.
++ * @handler:	I/O requests handler of this client
++ * @thread:	The thread which executes the handler
++ * @wq:		The wait queue for the handler thread parking
++ * @priv:	Data for the thread
 + */
-+struct vm_memory_mapping {
-+	struct page	**pages;
-+	int		npages;
-+	void		*service_vm_va;
-+	u64		user_vm_pa;
-+	size_t		size;
++struct acrn_ioreq_client {
++	char			name[ACRN_NAME_LEN];
++	struct acrn_vm		*vm;
++	struct list_head	list;
++	bool			is_default;
++	unsigned long		flags;
++	struct list_head	range_list;
++	rwlock_t		range_lock;
++	DECLARE_BITMAP(ioreqs_map, ACRN_IO_REQUEST_MAX);
++	ioreq_handler_t		handler;
++	struct task_struct	*thread;
++	wait_queue_head_t	wq;
++	void			*priv;
 +};
 +
  #define ACRN_INVALID_VMID (0xffffU)
  
  #define ACRN_VM_FLAG_DESTROYED		0U
++#define ACRN_VM_FLAG_CLEARING_IOREQ	1U
++extern struct list_head acrn_vm_list;
++extern rwlock_t acrn_vm_list_lock;
  /**
   * struct acrn_vm - Properties of ACRN User VM.
-- * @list:	Entry within global list of all VMs
-- * @vmid:	User VM ID
-- * @vcpu_num:	Number of virtual CPUs in the VM
-- * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
-- *		in HSM which is different from the &acrn_vm_creation.vm_flag.
-+ * @list:			Entry within global list of all VMs.
-+ * @vmid:			User VM ID.
-+ * @vcpu_num:			Number of virtual CPUs in the VM.
-+ * @flags:			Flags (ACRN_VM_FLAG_*) of the VM. This is VM
-+ *				flag management in HSM which is different
-+ *				from the &acrn_vm_creation.vm_flag.
-+ * @regions_mapping_lock:	Lock to protect &acrn_vm.regions_mapping and
-+ *				&acrn_vm.regions_mapping_count.
-+ * @regions_mapping:		Memory mappings of this VM.
-+ * @regions_mapping_count:	Number of memory mapping of this VM.
+  * @list:			Entry within global list of all VMs.
+@@ -90,6 +149,11 @@ struct vm_memory_mapping {
+  *				&acrn_vm.regions_mapping_count.
+  * @regions_mapping:		Memory mappings of this VM.
+  * @regions_mapping_count:	Number of memory mapping of this VM.
++ * @ioreq_clients_lock:		Lock to protect ioreq_clients and default_client
++ * @ioreq_clients:		The I/O request clients list of this VM
++ * @default_client:		The default I/O request client
++ * @ioreq_buf:			I/O request shared buffer
++ * @ioreq_page:			The page of the I/O request shared buffer
   */
  struct acrn_vm {
--	struct list_head	list;
--	u16			vmid;
--	int			vcpu_num;
--	unsigned long		flags;
-+	struct list_head		list;
-+	u16				vmid;
-+	int				vcpu_num;
-+	unsigned long			flags;
-+	struct mutex			regions_mapping_lock;
-+	struct vm_memory_mapping	regions_mapping[ACRN_MEM_MAPPING_MAX];
-+	int				regions_mapping_count;
+ 	struct list_head		list;
+@@ -99,6 +163,11 @@ struct acrn_vm {
+ 	struct mutex			regions_mapping_lock;
+ 	struct vm_memory_mapping	regions_mapping[ACRN_MEM_MAPPING_MAX];
+ 	int				regions_mapping_count;
++	spinlock_t			ioreq_clients_lock;
++	struct list_head		ioreq_clients;
++	struct acrn_ioreq_client	*default_client;
++	struct acrn_io_request_buffer	*ioreq_buf;
++	struct page			*ioreq_page;
  };
  
  struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
- 			       struct acrn_vm_creation *vm_param);
- int acrn_vm_destroy(struct acrn_vm *vm);
-+int acrn_mm_region_add(struct acrn_vm *vm, u64 user_gpa, u64 service_gpa,
-+		       u64 size, u32 mem_type, u32 mem_access_right);
-+int acrn_mm_region_del(struct acrn_vm *vm, u64 user_gpa, u64 size);
-+int acrn_vm_memseg_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap);
-+int acrn_vm_memseg_unmap(struct acrn_vm *vm, struct acrn_vm_memmap *memmap);
-+int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap);
-+void acrn_vm_all_ram_unmap(struct acrn_vm *vm);
+@@ -112,4 +181,17 @@ int acrn_vm_memseg_unmap(struct acrn_vm *vm, struct acrn_vm_memmap *memmap);
+ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap);
+ void acrn_vm_all_ram_unmap(struct acrn_vm *vm);
  
++int acrn_ioreq_init(struct acrn_vm *vm, u64 buf_vma);
++void acrn_ioreq_deinit(struct acrn_vm *vm);
++void acrn_ioreq_intr_setup(void);
++void acrn_ioreq_intr_remove(void);
++void acrn_ioreq_request_clear(struct acrn_vm *vm);
++int acrn_ioreq_client_wait(struct acrn_ioreq_client *client);
++int acrn_ioreq_request_default_complete(struct acrn_vm *vm, u16 vcpu);
++struct acrn_ioreq_client *acrn_ioreq_client_create(struct acrn_vm *vm,
++						   ioreq_handler_t handler,
++						   void *data, bool is_default,
++						   const char *name);
++void acrn_ioreq_client_destroy(struct acrn_ioreq_client *client);
++
  #endif /* __ACRN_HSM_DRV_H */
 diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index 77c749fe1fc2..3d76ab27cf89 100644
+index 3d76ab27cf89..ea86be0ab5e4 100644
 --- a/drivers/virt/acrn/hsm.c
 +++ b/drivers/virt/acrn/hsm.c
 @@ -48,6 +48,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
  	struct acrn_vm *vm = filp->private_data;
  	struct acrn_vm_creation *vm_param;
  	struct acrn_vcpu_regs *cpu_regs;
-+	struct acrn_vm_memmap memmap;
++	struct acrn_ioreq_notify notify;
+ 	struct acrn_vm_memmap memmap;
  	int ret = 0;
  
- 	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
-@@ -115,6 +116,20 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 				vm->vmid);
- 		kfree(cpu_regs);
+@@ -130,6 +131,31 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+ 
+ 		ret = acrn_vm_memseg_unmap(vm, &memmap);
  		break;
-+	case ACRN_IOCTL_SET_MEMSEG:
-+		if (copy_from_user(&memmap, (void __user *)ioctl_param,
-+				   sizeof(memmap)))
-+			return -EFAULT;
-+
-+		ret = acrn_vm_memseg_map(vm, &memmap);
++	case ACRN_IOCTL_CREATE_IOREQ_CLIENT:
++		if (vm->default_client)
++			return -EEXIST;
++		if (!acrn_ioreq_client_create(vm, NULL, NULL, true, "acrndm"))
++			ret = -EINVAL;
 +		break;
-+	case ACRN_IOCTL_UNSET_MEMSEG:
-+		if (copy_from_user(&memmap, (void __user *)ioctl_param,
-+				   sizeof(memmap)))
++	case ACRN_IOCTL_DESTROY_IOREQ_CLIENT:
++		if (vm->default_client)
++			acrn_ioreq_client_destroy(vm->default_client);
++		break;
++	case ACRN_IOCTL_ATTACH_IOREQ_CLIENT:
++		if (vm->default_client)
++			ret = acrn_ioreq_client_wait(vm->default_client);
++		else
++			ret = -ENODEV;
++		break;
++	case ACRN_IOCTL_NOTIFY_REQUEST_FINISH:
++		if (copy_from_user(&notify, (void __user *)ioctl_param,
++				   sizeof(struct acrn_ioreq_notify)))
 +			return -EFAULT;
-+
-+		ret = acrn_vm_memseg_unmap(vm, &memmap);
++		ret = acrn_ioreq_request_default_complete(vm, notify.vcpu);
++		break;
++	case ACRN_IOCTL_CLEAR_VM_IOREQ:
++		acrn_ioreq_request_clear(vm);
 +		break;
  	default:
  		dev_dbg(acrn_dev.this_device, "Unknown IOCTL 0x%x!\n", cmd);
  		ret = -ENOTTY;
+@@ -171,14 +197,18 @@ static int __init hsm_init(void)
+ 		return -EPERM;
+ 
+ 	ret = misc_register(&acrn_dev);
+-	if (ret)
++	if (ret) {
+ 		pr_err("Create misc dev failed!\n");
++		return ret;
++	}
+ 
+-	return ret;
++	acrn_ioreq_intr_setup();
++	return 0;
+ }
+ 
+ static void __exit hsm_exit(void)
+ {
++	acrn_ioreq_intr_remove();
+ 	misc_deregister(&acrn_dev);
+ }
+ module_init(hsm_init);
 diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-index f29cfae08862..a1a70a071713 100644
+index a1a70a071713..5eba29e3ed38 100644
 --- a/drivers/virt/acrn/hypercall.h
 +++ b/drivers/virt/acrn/hypercall.h
-@@ -21,6 +21,9 @@
+@@ -21,6 +21,10 @@
  #define HC_RESET_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x05)
  #define HC_SET_VCPU_REGS		_HC_ID(HC_ID, HC_ID_VM_BASE + 0x06)
  
-+#define HC_ID_MEM_BASE			0x40UL
-+#define HC_VM_SET_MEMORY_REGIONS	_HC_ID(HC_ID, HC_ID_MEM_BASE + 0x02)
++#define HC_ID_IOREQ_BASE		0x30UL
++#define HC_SET_IOREQ_BUFFER		_HC_ID(HC_ID, HC_ID_IOREQ_BASE + 0x00)
++#define HC_NOTIFY_REQUEST_FINISH	_HC_ID(HC_ID, HC_ID_IOREQ_BASE + 0x01)
 +
- /**
-  * hcall_create_vm() - Create a User VM
-  * @vminfo:	Service VM GPA of info of User VM creation
-@@ -88,4 +91,15 @@ static inline long hcall_set_vcpu_regs(u64 vmid, u64 regs_state)
+ #define HC_ID_MEM_BASE			0x40UL
+ #define HC_VM_SET_MEMORY_REGIONS	_HC_ID(HC_ID, HC_ID_MEM_BASE + 0x02)
+ 
+@@ -91,6 +95,30 @@ static inline long hcall_set_vcpu_regs(u64 vmid, u64 regs_state)
  	return acrn_hypercall2(HC_SET_VCPU_REGS, vmid, regs_state);
  }
  
 +/**
-+ * hcall_set_memory_regions() - Inform the hypervisor to set up EPT mappings
-+ * @regions_pa:	Service VM GPA of &struct vm_memory_region_batch
++ * hcall_set_ioreq_buffer() - Set up the shared buffer for I/O Requests.
++ * @vmid:	User VM ID
++ * @buffer:	Service VM GPA of the shared buffer
 + *
 + * Return: 0 on success, <0 on failure
 + */
-+static inline long hcall_set_memory_regions(u64 regions_pa)
++static inline long hcall_set_ioreq_buffer(u64 vmid, u64 buffer)
 +{
-+	return acrn_hypercall1(HC_VM_SET_MEMORY_REGIONS, regions_pa);
++	return acrn_hypercall2(HC_SET_IOREQ_BUFFER, vmid, buffer);
 +}
 +
- #endif /* __ACRN_HSM_HYPERCALL_H */
-diff --git a/drivers/virt/acrn/mm.c b/drivers/virt/acrn/mm.c
++/**
++ * hcall_notify_req_finish() - Notify ACRN Hypervisor of I/O request completion.
++ * @vmid:	User VM ID
++ * @vcpu:	The vCPU which initiated the I/O request
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_notify_req_finish(u64 vmid, u64 vcpu)
++{
++	return acrn_hypercall2(HC_NOTIFY_REQUEST_FINISH, vmid, vcpu);
++}
++
+ /**
+  * hcall_set_memory_regions() - Inform the hypervisor to set up EPT mappings
+  * @regions_pa:	Service VM GPA of &struct vm_memory_region_batch
+diff --git a/drivers/virt/acrn/ioreq.c b/drivers/virt/acrn/ioreq.c
 new file mode 100644
-index 000000000000..c4f2e15c8a2b
+index 000000000000..ed22b1c4775d
 --- /dev/null
-+++ b/drivers/virt/acrn/mm.c
-@@ -0,0 +1,306 @@
++++ b/drivers/virt/acrn/ioreq.c
+@@ -0,0 +1,509 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * ACRN: Memory mapping management
++ * ACRN_HSM: Handle I/O requests
 + *
 + * Copyright (C) 2020 Intel Corporation. All rights reserved.
 + *
 + * Authors:
-+ *	Fei Li <lei1.li@intel.com>
-+ *	Shuo Liu <shuo.a.liu@intel.com>
++ *	Jason Chen CJ <jason.cj.chen@intel.com>
++ *	Fengwei Yin <fengwei.yin@intel.com>
 + */
 +
++#include <linux/interrupt.h>
 +#include <linux/io.h>
++#include <linux/kthread.h>
 +#include <linux/mm.h>
 +#include <linux/slab.h>
 +
++#include <asm/acrn.h>
++
 +#include "acrn_drv.h"
 +
-+static int modify_region(struct acrn_vm *vm, struct vm_memory_region_op *region)
++static void ioreq_pause(void);
++static void ioreq_resume(void);
++
++static struct tasklet_struct ioreq_tasklet;
++
++static inline bool has_pending_request(struct acrn_ioreq_client *client)
 +{
-+	struct vm_memory_region_batch *regions;
-+	int ret;
-+
-+	regions = kzalloc(sizeof(*regions), GFP_KERNEL);
-+	if (!regions)
-+		return -ENOMEM;
-+
-+	regions->vmid = vm->vmid;
-+	regions->regions_num = 1;
-+	regions->regions_gpa = virt_to_phys(region);
-+
-+	ret = hcall_set_memory_regions(virt_to_phys(regions));
-+	if (ret < 0)
-+		dev_dbg(acrn_dev.this_device,
-+			"Failed to set memory region for VM[%u]!\n", vm->vmid);
-+
-+	kfree(regions);
-+	return ret;
++	return !bitmap_empty(client->ioreqs_map, ACRN_IO_REQUEST_MAX);
 +}
 +
-+/**
-+ * acrn_mm_region_add() - Set up the EPT mapping of a memory region.
-+ * @vm:			User VM.
-+ * @user_gpa:		A GPA of User VM.
-+ * @service_gpa:	A GPA of Service VM.
-+ * @size:		Size of the region.
-+ * @mem_type:		Combination of ACRN_MEM_TYPE_*.
-+ * @mem_access_right:	Combination of ACRN_MEM_ACCESS_*.
-+ *
-+ * Return: 0 on success, <0 on error.
-+ */
-+int acrn_mm_region_add(struct acrn_vm *vm, u64 user_gpa, u64 service_gpa,
-+		       u64 size, u32 mem_type, u32 mem_access_right)
++static inline bool is_destroying(struct acrn_ioreq_client *client)
 +{
-+	struct vm_memory_region_op *region;
++	return test_bit(ACRN_IOREQ_CLIENT_DESTROYING, &client->flags);
++}
++
++static int ioreq_complete_request(struct acrn_vm *vm, u16 vcpu,
++				  struct acrn_io_request *acrn_req)
++{
++	bool polling_mode;
 +	int ret = 0;
 +
-+	region = kzalloc(sizeof(*region), GFP_KERNEL);
-+	if (!region)
-+		return -ENOMEM;
++	polling_mode = acrn_req->completion_polling;
++	/* Add barrier() to make sure the writes are done before completion */
++	smp_store_release(&acrn_req->processed, ACRN_IOREQ_STATE_COMPLETE);
 +
-+	region->type = ACRN_MEM_REGION_ADD;
-+	region->user_vm_pa = user_gpa;
-+	region->service_vm_pa = service_gpa;
-+	region->size = size;
-+	region->attr = ((mem_type & ACRN_MEM_TYPE_MASK) |
-+			(mem_access_right & ACRN_MEM_ACCESS_RIGHT_MASK));
-+	ret = modify_region(vm, region);
++	/*
++	 * To fulfill the requirement of real-time in several industry
++	 * scenarios, like automotive, ACRN can run under the partition mode,
++	 * in which User VMs and Service VM are bound to dedicated CPU cores.
++	 * Polling mode of handling the I/O request is introduced to achieve a
++	 * faster I/O request handling. In polling mode, the hypervisor polls
++	 * I/O request's completion. Once an I/O request is marked as
++	 * ACRN_IOREQ_STATE_COMPLETE, hypervisor resumes from the polling point
++	 * to continue the I/O request flow. Thus, the completion notification
++	 * from HSM of I/O request is not needed.  Please note,
++	 * completion_polling needs to be read before the I/O request being
++	 * marked as ACRN_IOREQ_STATE_COMPLETE to avoid racing with the
++	 * hypervisor.
++	 */
++	if (!polling_mode) {
++		ret = hcall_notify_req_finish(vm->vmid, vcpu);
++		if (ret < 0)
++			dev_err(acrn_dev.this_device,
++				"Notify I/O request finished failed!\n");
++	}
 +
-+	dev_dbg(acrn_dev.this_device,
-+		"%s: user-GPA[%pK] service-GPA[%pK] size[0x%llx].\n",
-+		__func__, (void *)user_gpa, (void *)service_gpa, size);
-+	kfree(region);
 +	return ret;
 +}
 +
-+/**
-+ * acrn_mm_region_del() - Del the EPT mapping of a memory region.
-+ * @vm:		User VM.
-+ * @user_gpa:	A GPA of the User VM.
-+ * @size:	Size of the region.
-+ *
-+ * Return: 0 on success, <0 for error.
-+ */
-+int acrn_mm_region_del(struct acrn_vm *vm, u64 user_gpa, u64 size)
++static int acrn_ioreq_complete_request(struct acrn_ioreq_client *client,
++				       u16 vcpu,
++				       struct acrn_io_request *acrn_req)
 +{
-+	struct vm_memory_region_op *region;
++	int ret;
++
++	if (vcpu >= client->vm->vcpu_num)
++		return -EINVAL;
++
++	clear_bit(vcpu, client->ioreqs_map);
++	if (!acrn_req) {
++		acrn_req = (struct acrn_io_request *)client->vm->ioreq_buf;
++		acrn_req += vcpu;
++	}
++
++	ret = ioreq_complete_request(client->vm, vcpu, acrn_req);
++
++	return ret;
++}
++
++int acrn_ioreq_request_default_complete(struct acrn_vm *vm, u16 vcpu)
++{
 +	int ret = 0;
 +
-+	region = kzalloc(sizeof(*region), GFP_KERNEL);
-+	if (!region)
-+		return -ENOMEM;
-+
-+	region->type = ACRN_MEM_REGION_DEL;
-+	region->user_vm_pa = user_gpa;
-+	region->service_vm_pa = 0UL;
-+	region->size = size;
-+	region->attr = 0U;
-+
-+	ret = modify_region(vm, region);
-+
-+	dev_dbg(acrn_dev.this_device, "%s: user-GPA[%pK] size[0x%llx].\n",
-+		__func__, (void *)user_gpa, size);
-+	kfree(region);
-+	return ret;
-+}
-+
-+int acrn_vm_memseg_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
-+{
-+	int ret;
-+
-+	if (memmap->type == ACRN_MEMMAP_RAM)
-+		return acrn_vm_ram_map(vm, memmap);
-+
-+	if (memmap->type != ACRN_MEMMAP_MMIO) {
-+		dev_dbg(acrn_dev.this_device,
-+			"Invalid memmap type: %u\n", memmap->type);
-+		return -EINVAL;
-+	}
-+
-+	ret = acrn_mm_region_add(vm, memmap->user_vm_pa,
-+				 memmap->service_vm_pa, memmap->len,
-+				 ACRN_MEM_TYPE_UC, memmap->attr);
-+	if (ret < 0)
-+		dev_dbg(acrn_dev.this_device,
-+			"Add memory region failed, VM[%u]!\n", vm->vmid);
++	spin_lock_bh(&vm->ioreq_clients_lock);
++	if (vm->default_client)
++		ret = acrn_ioreq_complete_request(vm->default_client,
++						  vcpu, NULL);
++	spin_unlock_bh(&vm->ioreq_clients_lock);
 +
 +	return ret;
 +}
 +
-+int acrn_vm_memseg_unmap(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
-+{
-+	int ret;
-+
-+	if (memmap->type != ACRN_MEMMAP_MMIO) {
-+		dev_dbg(acrn_dev.this_device,
-+			"Invalid memmap type: %u\n", memmap->type);
-+		return -EINVAL;
-+	}
-+
-+	ret = acrn_mm_region_del(vm, memmap->user_vm_pa, memmap->len);
-+	if (ret < 0)
-+		dev_dbg(acrn_dev.this_device,
-+			"Del memory region failed, VM[%u]!\n", vm->vmid);
-+
-+	return ret;
-+}
-+
-+/**
-+ * acrn_vm_ram_map() - Create a RAM EPT mapping of User VM.
-+ * @vm:		The User VM pointer
-+ * @memmap:	Info of the EPT mapping
-+ *
-+ * Return: 0 on success, <0 for error.
++/*
++ * ioreq_task() is the execution entity of handler thread of an I/O client.
++ * The handler callback of the I/O client is called within the handler thread.
 + */
-+int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
++static int ioreq_task(void *data)
 +{
-+	struct vm_memory_region_batch *regions_info;
-+	int nr_pages, i = 0, order, nr_regions = 0;
-+	struct vm_memory_mapping *region_mapping;
-+	struct vm_memory_region_op *vm_region;
-+	struct page **pages = NULL, *page;
-+	void *remap_vaddr;
-+	int ret, pinned;
-+	u64 user_vm_pa;
++	struct acrn_ioreq_client *client = data;
++	struct acrn_io_request *req;
++	unsigned long *ioreqs_map;
++	int vcpu, ret;
 +
-+	if (!vm || !memmap)
-+		return -EINVAL;
-+
-+	/* Get the page number of the map region */
-+	nr_pages = memmap->len >> PAGE_SHIFT;
-+	pages = vzalloc(nr_pages * sizeof(struct page *));
-+	if (!pages)
-+		return -ENOMEM;
-+
-+	/* Lock the pages of user memory map region */
-+	pinned = pin_user_pages_fast(memmap->vma_base,
-+				     nr_pages, FOLL_WRITE | FOLL_LONGTERM,
-+				     pages);
-+	if (pinned < 0) {
-+		ret = pinned;
-+		goto free_pages;
-+	} else if (pinned != nr_pages) {
-+		ret = -EFAULT;
-+		goto put_pages;
++	/*
++	 * Lockless access to ioreqs_map is safe, because
++	 * 1) set_bit() and clear_bit() are atomic operations.
++	 * 2) I/O requests arrives serialized. The access flow of ioreqs_map is:
++	 *	set_bit() - in tasklet
++	 *	Handler callback handles corresponding I/O request
++	 *	clear_bit() - in handler thread (include ACRN userspace)
++	 *	Mark corresponding I/O request completed
++	 *	Loop again if a new I/O request occurs
++	 */
++	ioreqs_map = client->ioreqs_map;
++	while (!kthread_should_stop()) {
++		acrn_ioreq_client_wait(client);
++		while (has_pending_request(client)) {
++			vcpu = find_first_bit(ioreqs_map, client->vm->vcpu_num);
++			req = client->vm->ioreq_buf->req_slot + vcpu;
++			ret = client->handler(client, req);
++			if (ret < 0) {
++				dev_err(acrn_dev.this_device,
++					"IO handle failure: %d\n", ret);
++				break;
++			}
++			acrn_ioreq_complete_request(client, vcpu, req);
++		}
 +	}
 +
-+	/* Create a kernel map for the map region */
-+	remap_vaddr = vmap(pages, nr_pages, VM_MAP, PAGE_KERNEL);
-+	if (!remap_vaddr) {
-+		ret = -ENOMEM;
-+		goto put_pages;
-+	}
++	return 0;
++}
 +
-+	/* Record Service VM va <-> User VM pa mapping */
-+	mutex_lock(&vm->regions_mapping_lock);
-+	region_mapping = &vm->regions_mapping[vm->regions_mapping_count];
-+	if (vm->regions_mapping_count < ACRN_MEM_MAPPING_MAX) {
-+		region_mapping->pages = pages;
-+		region_mapping->npages = nr_pages;
-+		region_mapping->size = memmap->len;
-+		region_mapping->service_vm_va = remap_vaddr;
-+		region_mapping->user_vm_pa = memmap->user_vm_pa;
-+		vm->regions_mapping_count++;
-+	} else {
++/*
++ * For the non-default I/O clients, give them chance to complete the current
++ * I/O requests if there are any. For the default I/O client, it is safe to
++ * clear all pending I/O requests because the clearing request is from ACRN
++ * userspace.
++ */
++void acrn_ioreq_request_clear(struct acrn_vm *vm)
++{
++	struct acrn_ioreq_client *client;
++	bool has_pending = false;
++	unsigned long vcpu;
++	int retry = 10;
++
++	/*
++	 * IO requests of this VM will be completed directly in
++	 * acrn_ioreq_dispatch if ACRN_VM_FLAG_CLEARING_IOREQ flag is set.
++	 */
++	set_bit(ACRN_VM_FLAG_CLEARING_IOREQ, &vm->flags);
++
++	/*
++	 * acrn_ioreq_request_clear is only called in VM reset case. Simply
++	 * wait 100ms in total for the IO requests' completion.
++	 */
++	do {
++		spin_lock_bh(&vm->ioreq_clients_lock);
++		list_for_each_entry(client, &vm->ioreq_clients, list) {
++			has_pending = has_pending_request(client);
++			if (has_pending)
++				break;
++		}
++		spin_unlock_bh(&vm->ioreq_clients_lock);
++
++		if (has_pending)
++			schedule_timeout_interruptible(HZ / 100);
++	} while (has_pending && --retry > 0);
++	if (retry == 0)
 +		dev_warn(acrn_dev.this_device,
-+			"Run out of memory mapping slots!\n");
-+		ret = -ENOMEM;
-+		mutex_unlock(&vm->regions_mapping_lock);
-+		goto unmap_no_count;
++			 "%s cannot flush pending request!\n", client->name);
++
++	/* Clear all ioreqs belonging to the default client */
++	spin_lock_bh(&vm->ioreq_clients_lock);
++	client = vm->default_client;
++	if (client) {
++		vcpu = find_next_bit(client->ioreqs_map,
++				     ACRN_IO_REQUEST_MAX, 0);
++		while (vcpu < ACRN_IO_REQUEST_MAX) {
++			acrn_ioreq_complete_request(client, vcpu, NULL);
++			vcpu = find_next_bit(client->ioreqs_map,
++					     ACRN_IO_REQUEST_MAX, vcpu + 1);
++		}
 +	}
-+	mutex_unlock(&vm->regions_mapping_lock);
++	spin_unlock_bh(&vm->ioreq_clients_lock);
 +
-+	/* Calculate count of vm_memory_region_op */
-+	while (i < nr_pages) {
-+		page = pages[i];
-+		VM_BUG_ON_PAGE(PageTail(page), page);
-+		order = compound_order(page);
-+		nr_regions++;
-+		i += 1 << order;
-+	}
++	/* Clear ACRN_VM_FLAG_CLEARING_IOREQ flag after the clearing */
++	clear_bit(ACRN_VM_FLAG_CLEARING_IOREQ, &vm->flags);
++}
 +
-+	/* Prepare the vm_memory_region_batch */
-+	regions_info = kzalloc(sizeof(*regions_info) +
-+			       sizeof(*vm_region) * nr_regions,
-+			       GFP_KERNEL);
-+	if (!regions_info) {
-+		ret = -ENOMEM;
-+		goto unmap_kernel_map;
-+	}
-+
-+	/* Fill each vm_memory_region_op */
-+	vm_region = (struct vm_memory_region_op *)(regions_info + 1);
-+	regions_info->vmid = vm->vmid;
-+	regions_info->regions_num = nr_regions;
-+	regions_info->regions_gpa = virt_to_phys(vm_region);
-+	user_vm_pa = memmap->user_vm_pa;
-+	i = 0;
-+	while (i < nr_pages) {
-+		u32 region_size;
-+
-+		page = pages[i];
-+		VM_BUG_ON_PAGE(PageTail(page), page);
-+		order = compound_order(page);
-+		region_size = PAGE_SIZE << order;
-+		vm_region->type = ACRN_MEM_REGION_ADD;
-+		vm_region->user_vm_pa = user_vm_pa;
-+		vm_region->service_vm_pa = page_to_phys(page);
-+		vm_region->size = region_size;
-+		vm_region->attr = (ACRN_MEM_TYPE_WB & ACRN_MEM_TYPE_MASK) |
-+				  (memmap->attr & ACRN_MEM_ACCESS_RIGHT_MASK);
-+
-+		vm_region++;
-+		user_vm_pa += region_size;
-+		i += 1 << order;
++int acrn_ioreq_client_wait(struct acrn_ioreq_client *client)
++{
++	if (client->is_default) {
++		/*
++		 * In the default client, a user space thread waits on the
++		 * waitqueue. The is_destroying() check is used to notify user
++		 * space the client is going to be destroyed.
++		 */
++		wait_event_interruptible(client->wq,
++					 has_pending_request(client) ||
++					 is_destroying(client));
++		if (is_destroying(client))
++			return -ENODEV;
++	} else {
++		wait_event_interruptible(client->wq,
++					 has_pending_request(client) ||
++					 kthread_should_stop());
 +	}
 +
-+	/* Inform the ACRN Hypervisor to set up EPT mappings */
-+	ret = hcall_set_memory_regions(virt_to_phys(regions_info));
-+	if (ret < 0) {
-+		dev_dbg(acrn_dev.this_device,
-+			"Failed to set regions, VM[%u]!\n", vm->vmid);
-+		goto unset_region;
++	return 0;
++}
++
++static bool in_range(struct acrn_ioreq_range *range,
++		     struct acrn_io_request *req)
++{
++	bool ret = false;
++
++	if (range->type == req->type) {
++		switch (req->type) {
++		case ACRN_IOREQ_TYPE_MMIO:
++			if (req->reqs.mmio_request.address >= range->start &&
++			    (req->reqs.mmio_request.address +
++			     req->reqs.mmio_request.size - 1) <= range->end)
++				ret = true;
++			break;
++		case ACRN_IOREQ_TYPE_PORTIO:
++			if (req->reqs.pio_request.address >= range->start &&
++			    (req->reqs.pio_request.address +
++			     req->reqs.pio_request.size - 1) <= range->end)
++				ret = true;
++			break;
++		default:
++			break;
++		}
 +	}
-+	kfree(regions_info);
 +
-+	dev_dbg(acrn_dev.this_device,
-+		"%s: VM[%u] service-GVA[%pK] user-GPA[%pK] size[0x%llx]\n",
-+		__func__, vm->vmid,
-+		remap_vaddr, (void *)memmap->user_vm_pa, memmap->len);
-+	return ret;
-+
-+unset_region:
-+	kfree(regions_info);
-+unmap_kernel_map:
-+	mutex_lock(&vm->regions_mapping_lock);
-+	vm->regions_mapping_count--;
-+	mutex_unlock(&vm->regions_mapping_lock);
-+unmap_no_count:
-+	vunmap(remap_vaddr);
-+put_pages:
-+	for (i = 0; i < pinned; i++)
-+		unpin_user_page(pages[i]);
-+free_pages:
-+	vfree(pages);
 +	return ret;
 +}
 +
-+/**
-+ * acrn_vm_all_ram_unmap() - Destroy a RAM EPT mapping of User VM.
-+ * @vm:	The User VM
-+ */
-+void acrn_vm_all_ram_unmap(struct acrn_vm *vm)
++static struct acrn_ioreq_client *find_ioreq_client(struct acrn_vm *vm,
++						   struct acrn_io_request *req)
 +{
-+	struct vm_memory_mapping *region_mapping;
-+	int i, j;
++	struct acrn_ioreq_client *client, *found = NULL;
++	struct acrn_ioreq_range *range;
 +
-+	mutex_lock(&vm->regions_mapping_lock);
-+	for (i = 0; i < vm->regions_mapping_count; i++) {
-+		region_mapping = &vm->regions_mapping[i];
-+		vunmap(region_mapping->service_vm_va);
-+		for (j = 0; j < region_mapping->npages; j++)
-+			unpin_user_page(region_mapping->pages[j]);
-+		vfree(region_mapping->pages);
++	lockdep_assert_held(&vm->ioreq_clients_lock);
++
++	list_for_each_entry(client, &vm->ioreq_clients, list) {
++		read_lock_bh(&client->range_lock);
++		list_for_each_entry(range, &client->range_list, list) {
++			if (in_range(range, req)) {
++				found = client;
++				break;
++			}
++		}
++		read_unlock_bh(&client->range_lock);
++		if (found)
++			break;
 +	}
-+	mutex_unlock(&vm->regions_mapping_lock);
++	return found ? found : vm->default_client;
++}
++
++/**
++ * acrn_ioreq_client_create() - Create an ioreq client
++ * @vm:		The VM that this client belongs to
++ * @handler:	The ioreq_handler of ioreq client acrn_hsm will create a kernel
++ *		thread and call the handler to handle I/O requests.
++ * @priv:	Private data for the handler
++ * @is_default:	If it is the default client
++ * @name:	The name of ioreq client
++ *
++ * Return: acrn_ioreq_client pointer on success, NULL on error
++ */
++struct acrn_ioreq_client *acrn_ioreq_client_create(struct acrn_vm *vm,
++						   ioreq_handler_t handler,
++						   void *priv, bool is_default,
++						   const char *name)
++{
++	struct acrn_ioreq_client *client;
++
++	if (!handler && !is_default) {
++		dev_dbg(acrn_dev.this_device,
++			"Cannot create non-default client w/o handler!\n");
++		return NULL;
++	}
++	client = kzalloc(sizeof(*client), GFP_KERNEL);
++	if (!client)
++		return NULL;
++
++	client->handler = handler;
++	client->vm = vm;
++	client->priv = priv;
++	client->is_default = is_default;
++	if (name)
++		strncpy(client->name, name, sizeof(client->name) - 1);
++	rwlock_init(&client->range_lock);
++	INIT_LIST_HEAD(&client->range_list);
++	init_waitqueue_head(&client->wq);
++
++	if (client->handler) {
++		client->thread = kthread_run(ioreq_task, client, "VM%u-%s",
++					     client->vm->vmid, client->name);
++		if (IS_ERR(client->thread)) {
++			kfree(client);
++			return NULL;
++		}
++	}
++
++	spin_lock_bh(&vm->ioreq_clients_lock);
++	if (is_default)
++		vm->default_client = client;
++	else
++		list_add(&client->list, &vm->ioreq_clients);
++	spin_unlock_bh(&vm->ioreq_clients_lock);
++
++	dev_dbg(acrn_dev.this_device, "Created ioreq client %s.\n", name);
++	return client;
++}
++
++/**
++ * acrn_ioreq_client_destroy() - Destroy an ioreq client
++ * @client:	The ioreq client
++ */
++void acrn_ioreq_client_destroy(struct acrn_ioreq_client *client)
++{
++	struct acrn_ioreq_range *range, *next;
++	struct acrn_vm *vm = client->vm;
++
++	dev_dbg(acrn_dev.this_device,
++		"Destroy ioreq client %s.\n", client->name);
++	ioreq_pause();
++	set_bit(ACRN_IOREQ_CLIENT_DESTROYING, &client->flags);
++	if (client->is_default)
++		wake_up_interruptible(&client->wq);
++	else
++		kthread_stop(client->thread);
++
++	spin_lock_bh(&vm->ioreq_clients_lock);
++	if (client->is_default)
++		vm->default_client = NULL;
++	else
++		list_del(&client->list);
++	spin_unlock_bh(&vm->ioreq_clients_lock);
++
++	write_lock_bh(&client->range_lock);
++	list_for_each_entry_safe(range, next, &client->range_list, list) {
++		list_del(&range->list);
++		kfree(range);
++	}
++	write_unlock_bh(&client->range_lock);
++	kfree(client);
++
++	ioreq_resume();
++}
++
++static int acrn_ioreq_dispatch(struct acrn_vm *vm)
++{
++	struct acrn_ioreq_client *client;
++	struct acrn_io_request *req;
++	int i;
++
++	for (i = 0; i < vm->vcpu_num; i++) {
++		req = vm->ioreq_buf->req_slot + i;
++
++		/* barrier the read of processed of acrn_io_request */
++		if (smp_load_acquire(&req->processed) ==
++				     ACRN_IOREQ_STATE_PENDING) {
++			/* Complete the IO request directly in clearing stage */
++			if (test_bit(ACRN_VM_FLAG_CLEARING_IOREQ, &vm->flags)) {
++				ioreq_complete_request(vm, i, req);
++				continue;
++			}
++
++			spin_lock_bh(&vm->ioreq_clients_lock);
++			client = find_ioreq_client(vm, req);
++			if (!client) {
++				dev_err(acrn_dev.this_device,
++					"Failed to find ioreq client!\n");
++				spin_unlock_bh(&vm->ioreq_clients_lock);
++				return -EINVAL;
++			}
++			if (!client->is_default)
++				req->kernel_handled = 1;
++			else
++				req->kernel_handled = 0;
++			/*
++			 * Add barrier() to make sure the writes are done
++			 * before setting ACRN_IOREQ_STATE_PROCESSING
++			 */
++			smp_store_release(&req->processed,
++					  ACRN_IOREQ_STATE_PROCESSING);
++			set_bit(i, client->ioreqs_map);
++			wake_up_interruptible(&client->wq);
++			spin_unlock_bh(&vm->ioreq_clients_lock);
++		}
++	}
++
++	return 0;
++}
++
++static void ioreq_tasklet_handler(unsigned long data)
++{
++	struct acrn_vm *vm;
++
++	read_lock(&acrn_vm_list_lock);
++	list_for_each_entry(vm, &acrn_vm_list, list) {
++		if (!vm->ioreq_buf)
++			break;
++		acrn_ioreq_dispatch(vm);
++	}
++	read_unlock(&acrn_vm_list_lock);
++}
++
++static void ioreq_pause(void)
++{
++	/* Flush and disable the tasklet to ensure no I/O requests pending */
++	tasklet_disable(&ioreq_tasklet);
++}
++
++static void ioreq_resume(void)
++{
++	/* Schedule once after enabling in case other clients miss a tasklet */
++	tasklet_enable(&ioreq_tasklet);
++	tasklet_schedule(&ioreq_tasklet);
++}
++
++static void ioreq_intr_handler(void)
++{
++	tasklet_schedule(&ioreq_tasklet);
++}
++
++void acrn_ioreq_intr_setup(void)
++{
++	acrn_setup_intr_handler(ioreq_intr_handler);
++	tasklet_init(&ioreq_tasklet, ioreq_tasklet_handler, 0);
++}
++
++void acrn_ioreq_intr_remove(void)
++{
++	acrn_remove_intr_handler();
++}
++
++int acrn_ioreq_init(struct acrn_vm *vm, u64 buf_vma)
++{
++	struct acrn_ioreq_buffer *set_buffer;
++	struct page *page;
++	int ret;
++
++	if (vm->ioreq_buf)
++		return -EEXIST;
++
++	set_buffer = kzalloc(sizeof(*set_buffer), GFP_KERNEL);
++	if (!set_buffer)
++		return -ENOMEM;
++
++	ret = pin_user_pages_fast(buf_vma, 1,
++				  FOLL_WRITE | FOLL_LONGTERM, &page);
++	if (unlikely(ret != 1) || !page) {
++		dev_err(acrn_dev.this_device, "Failed to pin ioreq page!\n");
++		ret = -EFAULT;
++		goto free_buf;
++	}
++
++	vm->ioreq_buf = page_address(page);
++	vm->ioreq_page = page;
++	set_buffer->ioreq_buf = page_to_phys(page);
++	ret = hcall_set_ioreq_buffer(vm->vmid, virt_to_phys(set_buffer));
++	if (ret < 0) {
++		dev_err(acrn_dev.this_device, "Failed to init ioreq buffer!\n");
++		unpin_user_page(page);
++		vm->ioreq_buf = NULL;
++		goto free_buf;
++	}
++
++	dev_dbg(acrn_dev.this_device,
++		"Init ioreq buffer %pK!\n", vm->ioreq_buf);
++	ret = 0;
++free_buf:
++	kfree(set_buffer);
++	return ret;
++}
++
++void acrn_ioreq_deinit(struct acrn_vm *vm)
++{
++	struct acrn_ioreq_client *client, *next;
++
++	dev_dbg(acrn_dev.this_device,
++		"Deinit ioreq buffer %pK!\n", vm->ioreq_buf);
++	/* Destroy all clients belonging to this VM */
++	list_for_each_entry_safe(client, next, &vm->ioreq_clients, list)
++		acrn_ioreq_client_destroy(client);
++	if (vm->default_client)
++		acrn_ioreq_client_destroy(vm->default_client);
++
++	if (vm->ioreq_buf && vm->ioreq_page) {
++		unpin_user_page(vm->ioreq_page);
++		vm->ioreq_buf = NULL;
++	}
 +}
 diff --git a/drivers/virt/acrn/vm.c b/drivers/virt/acrn/vm.c
-index 3f667ac8ac1e..ff5df7acb551 100644
+index ff5df7acb551..4ee1a99df4b7 100644
 --- a/drivers/virt/acrn/vm.c
 +++ b/drivers/virt/acrn/vm.c
-@@ -31,6 +31,7 @@ struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
- 		return NULL;
+@@ -15,9 +15,12 @@
+ #include "acrn_drv.h"
+ 
+ /* List of VMs */
+-static LIST_HEAD(acrn_vm_list);
+-/* To protect acrn_vm_list */
+-static DEFINE_MUTEX(acrn_vm_list_lock);
++LIST_HEAD(acrn_vm_list);
++/*
++ * acrn_vm_list is read in a tasklet which dispatch I/O requests and is wrote
++ * in VM creation ioctl. Use the rwlock mechanism to protect it.
++ */
++DEFINE_RWLOCK(acrn_vm_list_lock);
+ 
+ struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
+ 			       struct acrn_vm_creation *vm_param)
+@@ -32,12 +35,20 @@ struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
  	}
  
-+	mutex_init(&vm->regions_mapping_lock);
+ 	mutex_init(&vm->regions_mapping_lock);
++	INIT_LIST_HEAD(&vm->ioreq_clients);
++	spin_lock_init(&vm->ioreq_clients_lock);
  	vm->vmid = vm_param->vmid;
  	vm->vcpu_num = vm_param->vcpu_num;
  
-@@ -62,6 +63,9 @@ int acrn_vm_destroy(struct acrn_vm *vm)
- 		clear_bit(ACRN_VM_FLAG_DESTROYED, &vm->flags);
- 		return ret;
- 	}
+-	mutex_lock(&acrn_vm_list_lock);
++	if (acrn_ioreq_init(vm, vm_param->ioreq_buf) < 0) {
++		hcall_destroy_vm(vm_param->vmid);
++		vm->vmid = ACRN_INVALID_VMID;
++		return NULL;
++	}
 +
-+	acrn_vm_all_ram_unmap(vm);
++	write_lock_bh(&acrn_vm_list_lock);
+ 	list_add(&vm->list, &acrn_vm_list);
+-	mutex_unlock(&acrn_vm_list_lock);
++	write_unlock_bh(&acrn_vm_list_lock);
+ 
+ 	dev_dbg(acrn_dev.this_device, "VM %u created.\n", vm->vmid);
+ 	return vm;
+@@ -52,9 +63,11 @@ int acrn_vm_destroy(struct acrn_vm *vm)
+ 		return 0;
+ 
+ 	/* Remove from global VM list */
+-	mutex_lock(&acrn_vm_list_lock);
++	write_lock_bh(&acrn_vm_list_lock);
+ 	list_del_init(&vm->list);
+-	mutex_unlock(&acrn_vm_list_lock);
++	write_unlock_bh(&acrn_vm_list_lock);
 +
- 	dev_dbg(acrn_dev.this_device, "VM %u destroyed.\n", vm->vmid);
- 	vm->vmid = ACRN_INVALID_VMID;
- 	return 0;
++	acrn_ioreq_deinit(vm);
+ 
+ 	ret = hcall_destroy_vm(vm->vmid);
+ 	if (ret < 0) {
 diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-index d5d66b93586e..c260d0e9caea 100644
+index c260d0e9caea..96ebc879b8d0 100644
 --- a/include/uapi/linux/acrn.h
 +++ b/include/uapi/linux/acrn.h
-@@ -102,6 +102,50 @@ struct acrn_vcpu_regs {
- 	struct acrn_regs	vcpu_regs;
- };
+@@ -12,6 +12,129 @@
+ #include <linux/types.h>
+ #include <linux/uuid.h>
  
-+#define	ACRN_MEM_ACCESS_RIGHT_MASK	0x00000007U
-+#define	ACRN_MEM_ACCESS_READ		0x00000001U
-+#define	ACRN_MEM_ACCESS_WRITE		0x00000002U
-+#define	ACRN_MEM_ACCESS_EXEC		0x00000004U
-+#define	ACRN_MEM_ACCESS_RWX		(ACRN_MEM_ACCESS_READ  | \
-+					 ACRN_MEM_ACCESS_WRITE | \
-+					 ACRN_MEM_ACCESS_EXEC)
++#define ACRN_IO_REQUEST_MAX		16
 +
-+#define	ACRN_MEM_TYPE_MASK		0x000007C0U
-+#define	ACRN_MEM_TYPE_WB		0x00000040U
-+#define	ACRN_MEM_TYPE_WT		0x00000080U
-+#define	ACRN_MEM_TYPE_UC		0x00000100U
-+#define	ACRN_MEM_TYPE_WC		0x00000200U
-+#define	ACRN_MEM_TYPE_WP		0x00000400U
++#define ACRN_IOREQ_STATE_PENDING	0
++#define ACRN_IOREQ_STATE_COMPLETE	1
++#define ACRN_IOREQ_STATE_PROCESSING	2
++#define ACRN_IOREQ_STATE_FREE		3
 +
-+/* Memory mapping types */
-+#define	ACRN_MEMMAP_RAM			0
-+#define	ACRN_MEMMAP_MMIO		1
++#define ACRN_IOREQ_TYPE_PORTIO		0
++#define ACRN_IOREQ_TYPE_MMIO		1
 +
-+/**
-+ * struct acrn_vm_memmap - A EPT memory mapping info for a User VM.
-+ * @type:		Type of the memory mapping (ACRM_MEMMAP_*).
-+ *			Pass to hypervisor directly.
-+ * @attr:		Attribute of the memory mapping.
-+ *			Pass to hypervisor directly.
-+ * @user_vm_pa:		Physical address of User VM.
-+ *			Pass to hypervisor directly.
-+ * @service_vm_pa:	Physical address of Service VM.
-+ *			Pass to hypervisor directly.
-+ * @vma_base:		VMA address of Service VM. Pass to hypervisor directly.
-+ * @len:		Length of the memory mapping.
-+ *			Pass to hypervisor directly.
-+ */
-+struct acrn_vm_memmap {
-+	__u32	type;
-+	__u32	attr;
-+	__u64	user_vm_pa;
-+	union {
-+		__u64	service_vm_pa;
-+		__u64	vma_base;
-+	};
-+	__u64	len;
++#define ACRN_IOREQ_DIR_READ		0
++#define ACRN_IOREQ_DIR_WRITE		1
++
++struct acrn_mmio_request {
++	__u32	direction;
++	__u32	reserved;
++	__u64	address;
++	__u64	size;
++	__u64	value;
 +};
 +
- /* The ioctl type, documented in ioctl-number.rst */
- #define ACRN_IOCTL_TYPE			0xA2
- 
-@@ -121,4 +165,9 @@ struct acrn_vcpu_regs {
++struct acrn_pio_request {
++	__u32	direction;
++	__u32	reserved;
++	__u64	address;
++	__u64	size;
++	__u32	value;
++};
++
++/**
++ * struct acrn_io_request - 256-byte ACRN I/O request
++ * @type:		Type of this request (ACRN_IOREQ_TYPE_*).
++ * @completion_polling:	Polling flag. Hypervisor will poll completion of the
++ *			I/O request if this flag set.
++ * @reserved0:		Reserved fields.
++ * @reqs:		Union of different types of request. Byte offset: 64.
++ * @reqs.pio_request:	PIO request data of the I/O request.
++ * @reqs.mmio_request:	MMIO request data of the I/O request.
++ * @reqs.data:		Raw data of the I/O request.
++ * @reserved1:		Reserved fields.
++ * @kernel_handled:	Flag indicates this request need be handled in kernel.
++ * @processed:		The status of this request (ACRN_IOREQ_STATE_*).
++ *
++ * The state transitions of ACRN I/O request:
++ *
++ *    FREE -> PENDING -> PROCESSING -> COMPLETE -> FREE -> ...
++ *
++ * An I/O request in COMPLETE or FREE state is owned by the hypervisor. HSM and
++ * ACRN userspace are in charge of processing the others.
++ *
++ * On basis of the states illustrated above, a typical lifecycle of ACRN IO
++ * request would look like:
++ *
++ * Flow                 (assume the initial state is FREE)
++ * |
++ * |   Service VM vCPU 0     Service VM vCPU x      User vCPU y
++ * |
++ * |                                             hypervisor:
++ * |                                               fills in type, addr, etc.
++ * |                                               pauses the User VM vCPU y
++ * |                                               sets the state to PENDING (a)
++ * |                                               fires an upcall to Service VM
++ * |
++ * | HSM:
++ * |  scans for PENDING requests
++ * |  sets the states to PROCESSING (b)
++ * |  assigns the requests to clients (c)
++ * V
++ * |                     client:
++ * |                       scans for the assigned requests
++ * |                       handles the requests (d)
++ * |                     HSM:
++ * |                       sets states to COMPLETE
++ * |                       notifies the hypervisor
++ * |
++ * |                     hypervisor:
++ * |                       resumes User VM vCPU y (e)
++ * |
++ * |                                             hypervisor:
++ * |                                               post handling (f)
++ * V                                               sets states to FREE
++ *
++ * Note that the procedures (a) to (f) in the illustration above require to be
++ * strictly processed in the order.  One vCPU cannot trigger another request of
++ * I/O emulation before completing the previous one.
++ *
++ * Atomic and barriers are required when HSM and hypervisor accessing the state
++ * of &struct acrn_io_request.
++ *
++ */
++struct acrn_io_request {
++	__u32	type;
++	__u32	completion_polling;
++	__u32	reserved0[14];
++	union {
++		struct acrn_pio_request		pio_request;
++		struct acrn_mmio_request	mmio_request;
++		__u64				data[8];
++	} reqs;
++	__u32	reserved1;
++	__u32	kernel_handled;
++	__u32	processed;
++} __attribute__((aligned(256)));
++
++struct acrn_io_request_buffer {
++	union {
++		struct acrn_io_request	req_slot[ACRN_IO_REQUEST_MAX];
++		__u8			reserved[4096];
++	};
++};
++
++/**
++ * struct acrn_ioreq_notify - The structure of ioreq completion notification
++ * @vmid:	User VM ID
++ * @reserved:	Reserved
++ * @vcpu:	vCPU ID
++ */
++struct acrn_ioreq_notify {
++	__u16	vmid;
++	__u16	reserved;
++	__u32	vcpu;
++};
++
+ /**
+  * struct acrn_vm_creation - Info to create a User VM
+  * @vmid:		User VM ID returned from the hypervisor
+@@ -165,6 +288,17 @@ struct acrn_vm_memmap {
  #define ACRN_IOCTL_SET_VCPU_REGS	\
  	_IOW(ACRN_IOCTL_TYPE, 0x16, struct acrn_vcpu_regs)
  
-+#define ACRN_IOCTL_SET_MEMSEG		\
-+	_IOW(ACRN_IOCTL_TYPE, 0x41, struct acrn_vm_memmap)
-+#define ACRN_IOCTL_UNSET_MEMSEG		\
-+	_IOW(ACRN_IOCTL_TYPE, 0x42, struct acrn_vm_memmap)
++#define ACRN_IOCTL_NOTIFY_REQUEST_FINISH \
++	_IOW(ACRN_IOCTL_TYPE, 0x31, struct acrn_ioreq_notify)
++#define ACRN_IOCTL_CREATE_IOREQ_CLIENT	\
++	_IO(ACRN_IOCTL_TYPE, 0x32)
++#define ACRN_IOCTL_ATTACH_IOREQ_CLIENT	\
++	_IO(ACRN_IOCTL_TYPE, 0x33)
++#define ACRN_IOCTL_DESTROY_IOREQ_CLIENT	\
++	_IO(ACRN_IOCTL_TYPE, 0x34)
++#define ACRN_IOCTL_CLEAR_VM_IOREQ	\
++	_IO(ACRN_IOCTL_TYPE, 0x35)
 +
- #endif /* _UAPI_ACRN_H */
+ #define ACRN_IOCTL_SET_MEMSEG		\
+ 	_IOW(ACRN_IOCTL_TYPE, 0x41, struct acrn_vm_memmap)
+ #define ACRN_IOCTL_UNSET_MEMSEG		\
 -- 
 2.28.0
 
