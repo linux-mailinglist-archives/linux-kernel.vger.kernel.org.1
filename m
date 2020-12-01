@@ -2,127 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8D92CA4AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E91E02CA4B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403822AbgLAN54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:57:56 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:45890 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388303AbgLAN5z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:57:55 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UHDREtM_1606831020;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UHDREtM_1606831020)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 01 Dec 2020 21:57:00 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     magnus.karlsson@intel.com, daniel@iogearbox.net
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
-        bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf V3 2/2] xsk: change the tx writeable condition
-Date:   Tue,  1 Dec 2020 21:56:58 +0800
-Message-Id: <508fef55188d4e1160747ead64c6dcda36735880.1606555939.git.xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1606555939.git.xuanzhuo@linux.alibaba.com>
-References: <MW3PR11MB46023BE924A19FB198604C0DF7F40@MW3PR11MB4602.namprd11.prod.outlook.com>
- <cover.1606555939.git.xuanzhuo@linux.alibaba.com>
-In-Reply-To: <cover.1606555939.git.xuanzhuo@linux.alibaba.com>
-References: <cover.1606555939.git.xuanzhuo@linux.alibaba.com>
+        id S2403840AbgLAN7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:59:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403830AbgLAN7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:59:12 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2C5320857;
+        Tue,  1 Dec 2020 13:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606831111;
+        bh=uuLVuAwWndIPh1yXRRgrK75QT+gkgwVLBePw+1DkCQo=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=nzwkBVpdKqE0P13BWmVS32itD/hRfeMf1oaufpACZnq5EJYeeIZ41SL//Li5UVDgq
+         DkGjSZfSZbDcHdNvGobGsUmOMfqoOPsvXQn7kHjdXjHQF1hQ/ejF9zKI4Z4fLldMgw
+         a0yFWJIMnFLdSEe9pQudveJKJPQ/uX4QwnJIn8X0=
+From:   Mark Brown <broonie@kernel.org>
+To:     bbrezillon@kernel.org,
+        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
+        robh+dt@kernel.org, joel@jms.id.au, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, clg@kaod.org, andrew@aj.id.au,
+        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org
+Cc:     BMC-SW@aspeedtech.com
+In-Reply-To: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
+References: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com>
+Subject: Re: [v2 0/4] Porting ASPEED FMC/SPI memory controller driver
+Message-Id: <160683107674.35139.14509237313835347013.b4-ty@kernel.org>
+Date:   Tue, 01 Dec 2020 13:57:56 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the tx writeable condition from the queue is not full to the
-number of present tx queues is less than the half of the total number
-of queues. Because the tx queue not full is a very short time, this will
-cause a large number of EPOLLOUT events, and cause a large number of
-process wake up.
+On Tue, 3 Nov 2020 15:21:58 +0800, Chin-Ting Kuo wrote:
+> This patch series aims to porting ASPEED FMC/SPI memory controller
+> driver with spi-mem interface. Adjust device tree setting of SPI NOR
+> flash in order to fit real AST2600 EVB and new SPI memory controller
+> driver. Also, this patch has been verified on AST2600-A1 EVB.
+> 
+> v2: Fix sparse warnings reported by kernel test robot <lkp@intel.com>.
+> 
+> [...]
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk.c       | 16 +++++++++++++---
- net/xdp/xsk_queue.h |  6 ++++++
- 2 files changed, 19 insertions(+), 3 deletions(-)
+Applied to
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 9bbfd8a..6250447 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -211,6 +211,14 @@ static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len,
- 	return 0;
- }
- 
-+static bool xsk_tx_writeable(struct xdp_sock *xs)
-+{
-+	if (xskq_cons_present_entries(xs->tx) > xs->tx->nentries / 2)
-+		return false;
-+
-+	return true;
-+}
-+
- static bool xsk_is_bound(struct xdp_sock *xs)
- {
- 	if (READ_ONCE(xs->state) == XSK_BOUND) {
-@@ -296,7 +304,8 @@ void xsk_tx_release(struct xsk_buff_pool *pool)
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
- 		__xskq_cons_release(xs->tx);
--		xs->sk.sk_write_space(&xs->sk);
-+		if (xsk_tx_writeable(xs))
-+			xs->sk.sk_write_space(&xs->sk);
- 	}
- 	rcu_read_unlock();
- }
-@@ -436,7 +445,8 @@ static int xsk_generic_xmit(struct sock *sk)
- 
- out:
- 	if (sent_frame)
--		sk->sk_write_space(sk);
-+		if (xsk_tx_writeable(xs))
-+			sk->sk_write_space(sk);
- 
- 	mutex_unlock(&xs->mutex);
- 	return err;
-@@ -493,7 +503,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 
- 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
- 		mask |= EPOLLIN | EPOLLRDNORM;
--	if (xs->tx && !xskq_cons_is_full(xs->tx))
-+	if (xs->tx && xsk_tx_writeable(xs))
- 		mask |= EPOLLOUT | EPOLLWRNORM;
- 
- 	return mask;
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index cdb9cf3..9e71b9f 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -264,6 +264,12 @@ static inline bool xskq_cons_is_full(struct xsk_queue *q)
- 		q->nentries;
- }
- 
-+static inline u32 xskq_cons_present_entries(struct xsk_queue *q)
-+{
-+	/* No barriers needed since data is not accessed */
-+	return READ_ONCE(q->ring->producer) - READ_ONCE(q->ring->consumer);
-+}
-+
- /* Functions for producers */
- 
- static inline bool xskq_prod_is_full(struct xsk_queue *q)
--- 
-1.8.3.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/2] dt-bindings: spi: Add binding file for ASPEED FMC/SPI memory controller
+      (no commit info)
+[2/2] spi: aspeed: Add ASPEED FMC/SPI memory controller driver
+      (no commit info)
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
