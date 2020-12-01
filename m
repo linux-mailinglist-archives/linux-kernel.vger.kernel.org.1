@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE432CA7FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B1E2CA801
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404096AbgLAQR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:17:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
+        id S2404112AbgLAQRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:17:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388364AbgLAQR0 (ORCPT
+        with ESMTP id S2404098AbgLAQRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:17:26 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE129C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:16:46 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id g18so1472562pgk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:16:46 -0800 (PST)
+        Tue, 1 Dec 2020 11:17:30 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C96BC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:16:50 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id r2so1416571pls.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:16:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=axtens.net; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ktiBTqbjFAD6ffRKByOoWmP2o55vmJOJ49Xz+HTLOBA=;
-        b=nMVol2MbqeRm1ME8ZCx4q5FQy/6FnTLRoo0uT3QwUXVdnICzf95JYxDl0Ku/Qfm8KB
-         m7ud9zijGlPMWe4ffBlX6sLOdDZv6+jzTqcJlKX7lDk2SfpA8M+f8bXeZn6PAWFk3oe4
-         f5g1svqNrW2w5c/+vabfoLINQtbdLDQ0Z4msI=
+        bh=TxkOT8OtKTLEt+0Y1UXvfZzv0Ces9ugsvAtyOyjKCDs=;
+        b=o7pY89EhGS4FuHeYUc4jpx36B7f2KYBxNKbOq/4jgMoCFfguMxOvBMBLcu6H5mLAWc
+         x/anTEED9T+2uj+ZTydclqxODCV7E9yeLDG2+pAKs4HNDtsloEY9VrXDuHVr1c+k3B1w
+         O37oyMdq1VuQiHgJUZWxM8S6fHprDAIBMtAbQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ktiBTqbjFAD6ffRKByOoWmP2o55vmJOJ49Xz+HTLOBA=;
-        b=NuupYAnFjQ+KmVmXHvfvz8LAQOVQbXF0INZJOYtFdMRIwnm2WhBZXThAZ2Z6PYINq6
-         hEJjfRhFemftfl87gZDInBoDHlHv0+LXfI2zLEOkSSVSmhAbybFDYYPG7AEI2q3VOrSL
-         HSVWd6UAC6zjaXKzDFXHh1OJmOA+31l9YCTLlJ5YJmeXaTD8WCe3JDmeckjsZF8pyVsq
-         WdXVw7MBHHQxnEKkAtn7MDWKUpxwDtgZ0LgvdNHt0i+Lza7ylbcAeshCaWWaxNAyanJC
-         jabH1QfRv0PsZ2gAOsGOLvJ3Jc5Vg0ZCAOjNsgmcVDJA6a8ql26mwr2OIh3mA+DB/XEG
-         0F6Q==
-X-Gm-Message-State: AOAM530zVEedoyscmYRNh/5v7AEaIfKljAXtsH4PHDW0x0R5+U+rR9pc
-        d60C4aCT2eHAxD4rxMpwF6M9kQZH1PfRLg==
-X-Google-Smtp-Source: ABdhPJxe/iHg9AKjvKSBXr2X/NJHI4J9BcoDNkvJXtHFX2PKH0KNKCgpa3c2HYXTBvQEAO5qretNPg==
-X-Received: by 2002:a62:7f56:0:b029:18b:a70:4f76 with SMTP id a83-20020a627f560000b029018b0a704f76mr3167081pfd.8.1606839406112;
-        Tue, 01 Dec 2020 08:16:46 -0800 (PST)
+        bh=TxkOT8OtKTLEt+0Y1UXvfZzv0Ces9ugsvAtyOyjKCDs=;
+        b=D/86qF7G5rDo10anNilA5RA+hNOd9tIaPGW20TVLhieCLzff7a8eAcjvltcZF1O1if
+         hH4daN1Y9pNQWMU50zBwu6aYucyH2FOwR6SQcBaYExk/DnbD6l74ZAxnqT6zrEqL8CuV
+         b4m4T5pyYEhN57BkXn1j62Nwin1xizKlMDlqkMYw/6wEsWUmG2kakuJe67RsDT4y06kz
+         2a2d/cc67uNvo4DaEtGjppCP5pnbN0+YhV+kG94Df604aGy8y4VXOKmfNgifmIiCOwOT
+         suq9voJYGs7pogD/0aRwsK8H5dCk1COeDH3Htbl5U4yt9CG8TsyBG1O5o0bNMOAq67uT
+         vXnA==
+X-Gm-Message-State: AOAM532NkyzDdoVRIIB0KFMPEEWmqdgm1rW2+7DzGj6pJrkKgoimITkX
+        8lF/mvYeNW4G4p/bkCfxmbXxRbVdxyqPYw==
+X-Google-Smtp-Source: ABdhPJwhzQX7zADMRMNSTYZAKqZekQIG4Kyq174zWXX5op48Wg8X7+oaufGwfWHly3PUfJa91txMjw==
+X-Received: by 2002:a17:90a:d3cf:: with SMTP id d15mr3291039pjw.132.1606839409910;
+        Tue, 01 Dec 2020 08:16:49 -0800 (PST)
 Received: from localhost (2001-44b8-111e-5c00-f932-2db6-916f-25e2.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:f932:2db6:916f:25e2])
-        by smtp.gmail.com with ESMTPSA id jz7sm160129pjb.14.2020.12.01.08.16.44
+        by smtp.gmail.com with ESMTPSA id s5sm194359pfh.164.2020.12.01.08.16.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 08:16:45 -0800 (PST)
+        Tue, 01 Dec 2020 08:16:49 -0800 (PST)
 From:   Daniel Axtens <dja@axtens.net>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linuxppc-dev@lists.ozlabs.org, kasan-dev@googlegroups.com,
         christophe.leroy@c-s.fr, aneesh.kumar@linux.ibm.com,
         bsingharora@gmail.com
-Cc:     Daniel Axtens <dja@axtens.net>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>
-Subject: [PATCH v9 2/6] kasan: allow architectures to provide an outline readiness check
-Date:   Wed,  2 Dec 2020 03:16:28 +1100
-Message-Id: <20201201161632.1234753-3-dja@axtens.net>
+Cc:     Daniel Axtens <dja@axtens.net>
+Subject: [PATCH v9 3/6] kasan: define and use MAX_PTRS_PER_* for early shadow tables
+Date:   Wed,  2 Dec 2020 03:16:29 +1100
+Message-Id: <20201201161632.1234753-4-dja@axtens.net>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201201161632.1234753-1-dja@axtens.net>
 References: <20201201161632.1234753-1-dja@axtens.net>
@@ -64,96 +63,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow architectures to define a kasan_arch_is_ready() hook that bails
-out of any function that's about to touch the shadow unless the arch
-says that it is ready for the memory to be accessed. This is fairly
-uninvasive and should have a negligible performance penalty.
+powerpc has a variable number of PTRS_PER_*, set at runtime based
+on the MMU that the kernel is booted under.
 
-This will only work in outline mode, so an arch must specify
-HAVE_ARCH_NO_KASAN_INLINE if it requires this.
+This means the PTRS_PER_* are no longer constants, and therefore
+breaks the build.
 
-Cc: Balbir Singh <bsingharora@gmail.com>
-Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Define default MAX_PTRS_PER_*s in the same style as MAX_PTRS_PER_P4D.
+As KASAN is the only user at the moment, just define them in the kasan
+header, and have them default to PTRS_PER_* unless overridden in arch
+code.
+
+Suggested-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Suggested-by: Balbir Singh <bsingharora@gmail.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Reviewed-by: Balbir Singh <bsingharora@gmail.com>
 Signed-off-by: Daniel Axtens <dja@axtens.net>
-
---
-
-I discuss the justfication for this later in the series. Also,
-both previous RFCs for ppc64 - by 2 different people - have
-needed this trick! See:
- - https://lore.kernel.org/patchwork/patch/592820/ # ppc64 hash series
- - https://patchwork.ozlabs.org/patch/795211/      # ppc radix series
 ---
- include/linux/kasan.h |  4 ++++
- mm/kasan/common.c     | 10 ++++++++++
- mm/kasan/generic.c    |  3 +++
- 3 files changed, 17 insertions(+)
+ include/linux/kasan.h | 18 +++++++++++++++---
+ mm/kasan/init.c       |  6 +++---
+ 2 files changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 30d343b4a40a..3df66fdf6662 100644
+index 3df66fdf6662..893d054aad6f 100644
 --- a/include/linux/kasan.h
 +++ b/include/linux/kasan.h
-@@ -20,6 +20,10 @@ struct kunit_kasan_expectation {
- 	bool report_found;
- };
+@@ -24,10 +24,22 @@ struct kunit_kasan_expectation {
+ static inline bool kasan_arch_is_ready(void)	{ return true; }
+ #endif
  
-+#ifndef kasan_arch_is_ready
-+static inline bool kasan_arch_is_ready(void)	{ return true; }
++#ifndef MAX_PTRS_PER_PTE
++#define MAX_PTRS_PER_PTE PTRS_PER_PTE
++#endif
++
++#ifndef MAX_PTRS_PER_PMD
++#define MAX_PTRS_PER_PMD PTRS_PER_PMD
++#endif
++
++#ifndef MAX_PTRS_PER_PUD
++#define MAX_PTRS_PER_PUD PTRS_PER_PUD
 +#endif
 +
  extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
- extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
- extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 950fd372a07e..ba7744d3e319 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -117,6 +117,9 @@ void kasan_poison_shadow(const void *address, size_t size, u8 value)
+-extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
+-extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
+-extern pud_t kasan_early_shadow_pud[PTRS_PER_PUD];
++extern pte_t kasan_early_shadow_pte[MAX_PTRS_PER_PTE];
++extern pmd_t kasan_early_shadow_pmd[MAX_PTRS_PER_PMD];
++extern pud_t kasan_early_shadow_pud[MAX_PTRS_PER_PUD];
+ extern p4d_t kasan_early_shadow_p4d[MAX_PTRS_PER_P4D];
+ 
+ int kasan_populate_early_shadow(const void *shadow_start,
+diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+index fe6be0be1f76..42bca3d27db8 100644
+--- a/mm/kasan/init.c
++++ b/mm/kasan/init.c
+@@ -46,7 +46,7 @@ static inline bool kasan_p4d_table(pgd_t pgd)
+ }
+ #endif
+ #if CONFIG_PGTABLE_LEVELS > 3
+-pud_t kasan_early_shadow_pud[PTRS_PER_PUD] __page_aligned_bss;
++pud_t kasan_early_shadow_pud[MAX_PTRS_PER_PUD] __page_aligned_bss;
+ static inline bool kasan_pud_table(p4d_t p4d)
  {
- 	void *shadow_start, *shadow_end;
- 
-+	if (!kasan_arch_is_ready())
-+		return;
-+
- 	/*
- 	 * Perform shadow offset calculation based on untagged address, as
- 	 * some of the callers (e.g. kasan_poison_object_data) pass tagged
-@@ -134,6 +137,9 @@ void kasan_unpoison_shadow(const void *address, size_t size)
+ 	return p4d_page(p4d) == virt_to_page(lm_alias(kasan_early_shadow_pud));
+@@ -58,7 +58,7 @@ static inline bool kasan_pud_table(p4d_t p4d)
+ }
+ #endif
+ #if CONFIG_PGTABLE_LEVELS > 2
+-pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD] __page_aligned_bss;
++pmd_t kasan_early_shadow_pmd[MAX_PTRS_PER_PMD] __page_aligned_bss;
+ static inline bool kasan_pmd_table(pud_t pud)
  {
- 	u8 tag = get_tag(address);
+ 	return pud_page(pud) == virt_to_page(lm_alias(kasan_early_shadow_pmd));
+@@ -69,7 +69,7 @@ static inline bool kasan_pmd_table(pud_t pud)
+ 	return false;
+ }
+ #endif
+-pte_t kasan_early_shadow_pte[PTRS_PER_PTE] __page_aligned_bss;
++pte_t kasan_early_shadow_pte[MAX_PTRS_PER_PTE] __page_aligned_bss;
  
-+	if (!kasan_arch_is_ready())
-+		return;
-+
- 	/*
- 	 * Perform shadow offset calculation based on untagged address, as
- 	 * some of the callers (e.g. kasan_unpoison_object_data) pass tagged
-@@ -406,6 +412,10 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
- 	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
- 		return false;
- 
-+	/* We can't read the shadow byte if the arch isn't ready */
-+	if (!kasan_arch_is_ready())
-+		return false;
-+
- 	shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(object));
- 	if (shadow_invalid(tag, shadow_byte)) {
- 		kasan_report_invalid_free(tagged_object, ip);
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 248264b9cb76..e87404026b2b 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -169,6 +169,9 @@ static __always_inline bool check_memory_region_inline(unsigned long addr,
- 						size_t size, bool write,
- 						unsigned long ret_ip)
+ static inline bool kasan_pte_table(pmd_t pmd)
  {
-+	if (!kasan_arch_is_ready())
-+		return true;
-+
- 	if (unlikely(size == 0))
- 		return true;
- 
 -- 
 2.25.1
 
