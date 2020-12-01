@@ -2,121 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC8A2C93B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9927D2C93BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729716AbgLAAOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgLAAOd (ORCPT
+        id S1730645AbgLAAOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:14:36 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:43000 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgLAAOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:14:33 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E09C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:13:53 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id t5so9717357qtp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:13:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=UokAx8Qcgdmksk1B8p7M/csPSVmo3e9eQL5LBGqG1VA=;
-        b=UP9700JIGSpmFQ5NaV+zZSbibVU5oVa3DyNJiNoaogSOYjnAu+UdGKqmj85jc2phqa
-         1f03zgS0FSePbHTdn3J319gv5Jt2zgBzISlLAoGVcea+h0JkzVNsdddj8qWPVsNv2tQp
-         PAtlyTShbbhuw5WJF7/6ZxztQKAGV6on5o2KDAFmd0UEwOaY8Lkl01GqSWOV0MGr2S9w
-         ZOJ6E3Iuxr2nK4uFxyMC4XEQfiQjh8gZgHzJPPpRGmrb0sSIArgvwKI18Ov3InRCB9UC
-         qUKkP35EJd/TMmHygIWmMe+WMx1ZWO4b0XX+vbNYaVG6wQSVRvOJCcQNIcYqyT4JN6Io
-         pNyw==
+        Mon, 30 Nov 2020 19:14:35 -0500
+Received: by mail-io1-f68.google.com with SMTP id q137so10151085iod.9;
+        Mon, 30 Nov 2020 16:14:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=UokAx8Qcgdmksk1B8p7M/csPSVmo3e9eQL5LBGqG1VA=;
-        b=BOC7vLRA6VkOG4iyeuUp2p5E9Ql9yiAdcVm4tTd4AzerWaD+AHhOQ2/ube2w8+PCxb
-         m0lNeD2Fhmu9d+2UmEi5zaIWX01HlEGSsPf/yJou7s87q38kt+FEvVjUxgTD9xTGQhrJ
-         GNy1dPxPgtXpyK0EhURJOR7EM8EgPfmeQ9LQr8CZGfFOese0AcIsgMIqpJ3RuPX+84st
-         GxK0KsU0av5RNcR/j1LFy4bfzohxPv2Fr2pmRmfIwymtrDbEokUbLvYh6b58jN35O44x
-         8kIh8PVTzhVEbMaXyL0XH80t4UcTnwejGniavFOFbxmJD9my8mbd/0dGmnMgDCe+WSjG
-         xlQQ==
-X-Gm-Message-State: AOAM53215Vu8bDHJzslSNevZFbG9ISM3BQwFIVh6bUvNY9It3Q4XuI09
-        /YvSuV6oRRq7CEUfgibS39qZRWJitNbP7HDHRXGWhyAd8dPsBQ==
-X-Google-Smtp-Source: ABdhPJy/tmsmNteWz5kJmjbK1OJZmubSm4ldgoACMeoHnWv54mPgalTWaxzYS7iq32ZgrAWyqpUokEhh5fN89wD0/pw=
-X-Received: by 2002:aed:3c42:: with SMTP id u2mr24495379qte.159.1606781631751;
- Mon, 30 Nov 2020 16:13:51 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J2Bb/DGEU59ID0I1yu+Ty12fNud+2TMEJ9OnlDR+Pyk=;
+        b=my9z4rYOJF26IoCKKb76dA0VlQeLFcuyaH/HL9t/h06/yH3Na8ruWjvhx7tYSFAsko
+         MoLFLRsgk/omKHTerqweI8iS+E7AKnW7982w90Ka1RolzdjVBAh7Q6JQHhGES6h/Fnq0
+         4unD7W61cgJ+MlRXot6l1Bd7+R31B2oZ1f3N6rIJiEUXDkGS+0l/uHAKsNKLKYk4sFjG
+         4ZPOjknlZaItPZCDr/3ju0RirF82O67OHf8hegZuq4aEIHIpj2qwhhkOwF0U71qlmlru
+         CgS4q1oKC5Ah3xWY/t78w64+z8tVLZi7DRIuVivZgqC5QVfynIWpUfUqT36xIAS20leW
+         wOPQ==
+X-Gm-Message-State: AOAM532e/+xDXH0nOhQTnuYMxvRfoJlezESXUniKjLIp8trqSoqw3AoX
+        6T7e0P5iJxXeF2PCTXFq1A==
+X-Google-Smtp-Source: ABdhPJwaK7q88mv2geaFyacMh+hTtMxdNocxVnhcxhWh7u79E8m8YJseXiGOimQ1zC8gLTT6FTGPSg==
+X-Received: by 2002:a02:2e52:: with SMTP id u18mr306280jae.29.1606781634329;
+        Mon, 30 Nov 2020 16:13:54 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id o12sm103316ilj.55.2020.11.30.16.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 16:13:53 -0800 (PST)
+Received: (nullmailer pid 3315444 invoked by uid 1000);
+        Tue, 01 Dec 2020 00:13:51 -0000
+Date:   Mon, 30 Nov 2020 17:13:51 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, ciorneiioana@gmail.com,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4 3/4] dt-bindings: dp83td510: Add binding for
+ DP83TD510 Ethernet PHY
+Message-ID: <20201201001351.GA3297586@robh.at.kernel.org>
+References: <20201117201555.26723-1-dmurphy@ti.com>
+ <20201117201555.26723-4-dmurphy@ti.com>
 MIME-Version: 1.0
-From:   Krishna M <krishnamurthi.rusty@gmail.com>
-Date:   Mon, 30 Nov 2020 16:13:41 -0800
-Message-ID: <CAF7cDAc8DTG1drUGYMPPVkM5CjjFqZGFodzqVOk4hmM1Bc9nnA@mail.gmail.com>
-Subject: Spinlock debugging in the kernel
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117201555.26723-4-dmurphy@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please excuse me if this is a wrong group.
-Please find the log of a system that I am trying to debug.
+On Tue, Nov 17, 2020 at 02:15:54PM -0600, Dan Murphy wrote:
+> The DP83TD510 is a 10M single twisted pair Ethernet PHY
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  .../devicetree/bindings/net/ti,dp83td510.yaml | 64 +++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/ti,dp83td510.yaml b/Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+> new file mode 100644
+> index 000000000000..d3c97bb4d820
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2020 Texas Instruments Incorporated
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/net/ti,dp83td510.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: TI DP83TD510 ethernet PHY
+> +
+> +allOf:
+> +  - $ref: "ethernet-controller.yaml#"
+> +  - $ref: "ethernet-phy.yaml#"
+> +
+> +maintainers:
+> +  - Dan Murphy <dmurphy@ti.com>
+> +
+> +description: |
+> +  The PHY is an twisted pair 10Mbps Ethernet PHY that support MII, RMII and
+> +  RGMII interfaces.
+> +
+> +  Specifications about the Ethernet PHY can be found at:
+> +    http://www.ti.com/lit/ds/symlink/dp83td510e.pdf
+> +
+> +properties:
+> +  reg:
+> +    maxItems: 1
+> +
+> +  tx-fifo-depth:
+> +    description: |
+> +       Transmitt FIFO depth for RMII mode.  The PHY only exposes 4 nibble
+> +       depths. The valid nibble depths are 4, 5, 6 and 8.
+> +    enum: [ 4, 5, 6, 8 ]
+> +    default: 5
+> +
+> +  rx-internal-delay-ps:
+> +    description: |
+> +       Setting this property to a non-zero number sets the RX internal delay
+> +       for the PHY.  The internal delay for the PHY is fixed to 30ns relative
+> +       to receive data.
 
-It is a "soft lockup" issue and the root cause seems to be coming from
-the mm unit of the kernel.
-I am relatively new to kernel and arm64 platforms.
+I'm confused. The delay is 30ns +/- whatever is set here?
 
+> +
+> +  tx-internal-delay-ps:
+> +    description: |
+> +       Setting this property to a non-zero number sets the TX internal delay
+> +       for the PHY.  The internal delay for the PHY has a range of -4 to 4ns
+> +       relative to transmit data.
 
-How do you typically decipher a locking issue like this? Any ideas/
-pointers that I can run with will greatly help.
+Sounds like constraints?
 
-[  512.522056] Rehashing will be triggered for ipset fqdn:pol_5_to of
-elements 362 ahash_max 4 nsize 4
-[  907.867755] BUG: soft lockup - CPU#0 stuck for 22s! [kswapd0:395]
-[  919.861747] BUG: soft lockup - CPU#0 stuck for 33s! [kswapd0:395]
-[  919.861752] Modules linked in: nfsv3 nfs lockd grace sunrpc
-ath9k(O) ath9k_common(O) ath9k_hw(O) ath(O) mac80211(O) cfg80211(O)
-compat(O) gproxy(O) bwdriver(O)            rndis_host cdc_ether usbnet
-mii GobiSerial(O) cdc_acm option usb_wwan clstrio(O) clb(PO) kxp(PO)
-ip6t_rpfilter ip6t_REJECT        nf_log_ipv6 nf_reject_ipv6 ip6t_frag
-ip6table_mangle ip6table_filter ip6table_raw ip6t_ipv6header
-nf_conntrack_ipv6 nf_defrag_ipv6 ifb act_mirred em_meta cls_basic
-cls_flow cls_u32 sch_htb sch_prio sch_sfq arpt_ARPPROXY arpt_REPLY
-arpt_mangle arptable_filter arp_tables xt_REDIRECT xt_nat ipt_REJECT
-xt_recent xt_NETMAP ipt_MASQUERADE            nf_log_ipv4
-nf_log_common xt_LOG xt_iprange ipt_ah xt_addrtype xt_TRACE xt_TCPMSS
-xt_tcpmss xt_state xt_rateest xt_RATEEST xt_pkttype xt_physdev
-[  919.862293]  xt_multiport xt_mark xt_mac xt_limit(O) xt_length
-xt_ipv4options(O) xt_helper xt_hashlimit xt_esp xt_DSCP xt_dscp xt_CT
-xt_conntrack xt_connmark             xt_connbytes xt_comment
-xt_CLASSIFY nf_conntrack_netlink iptable_raw nf_nat_snmp_basic
-nf_conntrack_snmp nf_conntrack_broadcast nf_nat_tftp nf_conntrack_tftp
-nf_nat_pptp    nf_nat_proto_gre nf_conntrack_pptp
-nf_conntrack_proto_gre nf_nat_irc nf_conntrack_irc nf_nat_ftp
-nf_conntrack_ftp iptable_filter iptable_nat iptable_mangle
-nf_reject_ipv4   nf_nat_redirect nf_nat_masquerade_ipv4 nf_nat_ipv4
-nf_nat ip_tables nf_conntrack_ipv4 nf_defrag_ipv4 nf_conntrack
-compat_xtables(O) ip_set_hash_netportnet(O)
-ip_set_hash_netnet(O) ip_set_hash_netiface(O) ip_set_hash_mac(O)
-ip_set_hash_ipmark(O) ip_set_list_set(O) ip_set_hash_netport(O)
-ip_set_hash_net(O) ip_set_hash_ipportip(O)
-[  919.862508]  ip_set_hash_ipportnet(O) ip_set_hash_ipport(O)
-ip_set_hash_ip(O) ip_set_bitmap_port(O) ip_set_bitmap_ipmac(O)
-ip_set_bitmap_ip(O) xt_set(O) ip_set(O)        nfnetlink
-sha512_generic dummy bonding ip6_vti ip6_tunnel tunnel6 ebt_ip6
-ebt_arpreply 8021q garp ip_vti ip_gre ip_tunnel gre ebt_mark_m
-ebt_mark ebt_redirect ebt_dnat      ebt_ip ebt_arp ebt_snat ebt_vlan
-ebt_log ebt_fpath(O) ebtable_broute ebtable_filter ebtable_nat
-ebtables br_netfilter bridge stp llc alarm_panic(PO) alarm(PO)
-l2tp_ppp l2tp_netlink l2tp_core ip6_udp_tunnel udp_tunnel tun pppoe
-pppox ppp_deflate ppp_mppe ppp_async ppp_generic crc_ccitt slhc
-usb_storage caam_pkc caamalg caamhash caamalg_desc caamhash_desc
-caamrng caam_jr error(P) caam [last unloaded: nf_synproxy_core]
-[  919.862794] CPU: 0 PID: 395 Comm: kswapd0 Tainted: P           O
-4.14.83 #1
-[  919.862802] task: 5a1b0000 task.stack: 5a0ba000
-[  919.862808] NIP:  406f7f04 LR: 40163650 CTR: 40163d8c
-[  919.862815] REGS: 5a0bbad0 TRAP: 0901   Tainted: P           O     (4.14.83)
-[  919.862818] MSR:  00029000 <CE,EE,ME>  CR: 44002444  XER: 00000000
-[  919.862843]  GPR00: 40163e08 5a0bbb80 5a1b0000 5aa16698 55f80540
-1000f000 00000000 00000000  GPR08: 00000001 00000001 00000001 00000409
-24004442
-[  919.862915] NIP [406f7f04] _raw_spin_lock+0x30/0x5c
-[  919.862934] LR [40163650] page_vma_mapped_walk+0x144/0x1e8
+We do have a problem handling negative values though. Addressing in dtc 
+was rejected, so we'll need to fixup the schema with unsigned values. 
+But here it should just be negative values.
 
-Thanks,
-Krishna M
+> +
+> +unevaluatedProperties: false
+> +
+> +required:
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    mdio0 {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      ethphy0: ethernet-phy@0 {
+> +        reg = <0>;
+> +        tx-rx-output-high;
+> +        tx-fifo-depth = <5>;
+> +        rx-internal-delay-ps = <1>;
+> +        tx-internal-delay-ps = <1>;
+> +      };
+> +    };
+> -- 
+> 2.29.2
+> 
