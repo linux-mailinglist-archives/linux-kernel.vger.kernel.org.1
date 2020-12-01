@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654572CA6F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6102CA6FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391821AbgLAPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:25:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55439 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390265AbgLAPZU (ORCPT
+        id S2391843AbgLAP0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:26:09 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:26300 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391831AbgLAP0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:25:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606836233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I9sbNjqqnuhUn3pfDAQYhxdjMyqtp7UmixLKvXNQJKU=;
-        b=hAPubeRsTk5n93Sssj9mP1xJW1xW6Qj1sbf2pWNjpQKMiEcwx5AfihxoQjRc8mi3Udk8U8
-        IPsO2Rs8kqro0bqpQBe6F3wAnN89AGzPdMgXJuf5jYj1M8OAnH9gMMhH3pgIPVZGP/Wpw8
-        Q637BpxILNrdmYADUQsZWBuxjuoWG/4=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-yDBc2PHpOhCEY-jqgPWs8Q-1; Tue, 01 Dec 2020 10:23:51 -0500
-X-MC-Unique: yDBc2PHpOhCEY-jqgPWs8Q-1
-Received: by mail-qk1-f200.google.com with SMTP id l7so1609830qkl.16
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 07:23:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=I9sbNjqqnuhUn3pfDAQYhxdjMyqtp7UmixLKvXNQJKU=;
-        b=oFE6r1n3XNnSU1faMl6XU1cYmpfHTmPMbj7P3zRTUBrfAdO4XqaubdY1nk6LTJrWOY
-         iPvH4hNybdA2vpAB+lRZzOLlAhkO4UJ+sVLZbfYN9t5/IB0F4d4DA82LWXq6SMj6qopS
-         u/FRLGcnC88PfgHNHiUWu46upX8d9WD/nICFd4lLKkXr10zwZR78nJBGavKOwKzTAovi
-         kBVRuPGBCcwROl2cyTIb0VK068UbCjAi9uGCY36BjJ7ETvlKo/ToktMadEQcTXzup+z1
-         ECbJdkIdny4qBmJWBMpLHicGZMgMXH9iJWKIV7idOrSk2sUic0zgzUCp08PzVAswono/
-         ZYEA==
-X-Gm-Message-State: AOAM532rYzszKaNso+gDGvf1in8+Ta99d30pq5DqUr0y7MosJF9emuyJ
-        QDTiBZaNBRvVbf+Fp9tjngaT5809WYRu0cH35kZHrFMJG3AkOXw+ckOrIoiZ9nihLAohLQ1+zoD
-        PoLu6b4QlzylJ4tdGnyVGRVn9
-X-Received: by 2002:ac8:5649:: with SMTP id 9mr3271704qtt.379.1606836229742;
-        Tue, 01 Dec 2020 07:23:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx03KfRD1Zo4WhjgMz/x6FBH9v7n3Yqs1+bdU+xqGYVZ9+xh3PQY54TeuOSiqY4WeG4oYqJBQ==
-X-Received: by 2002:ac8:5649:: with SMTP id 9mr3271622qtt.379.1606836228896;
-        Tue, 01 Dec 2020 07:23:48 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id o8sm2375120qtm.9.2020.12.01.07.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 07:23:48 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 563CF182EF0; Tue,  1 Dec 2020 16:23:45 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
-Subject: Re: [V9fs-developer] [PATCH] fs: 9p: add generic splice_read file
- operations
-In-Reply-To: <20201201151658.GA13180@nautica>
-References: <20201201135409.55510-1-toke@redhat.com>
- <20201201145728.GA11144@nautica> <20201201151658.GA13180@nautica>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 01 Dec 2020 16:23:45 +0100
-Message-ID: <87mtyx1rem.fsf@toke.dk>
+        Tue, 1 Dec 2020 10:26:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1606836366; x=1638372366;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=sW2dIf+kChckESO1JXmWeXnHuxhK74xvLF+hUWco2Fk=;
+  b=nfqGJko4ONtClUq0/bWS/Qp85Ytn42gmvwHNa7QW4MPwxkoRnmI5oKVC
+   1NKdgKGlaOVqrCRqV+jqTTfWQDDgm9bPVDuQKCcgjMqMC1MH6oH2IFgMX
+   ti3MwZNnCzB7Zn/ER0wWDCZn+gfq8Yo9jFlL6FRlSydbbNBjZCgVrj6J9
+   I=;
+X-IronPort-AV: E=Sophos;i="5.78,384,1599523200"; 
+   d="scan'208";a="69767497"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 01 Dec 2020 15:25:19 +0000
+Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 95ABEA202B;
+        Tue,  1 Dec 2020 15:25:16 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com.com (10.43.162.176) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 1 Dec 2020 15:25:10 +0000
+From:   Andra Paraschiv <andraprs@amazon.com>
+To:     netdev <netdev@vger.kernel.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andra Paraschiv <andraprs@amazon.com>
+Subject: [PATCH net-next v1 0/3] vsock: Add flag field in the vsock address 
+Date:   Tue, 1 Dec 2020 17:25:02 +0200
+Message-ID: <20201201152505.19445-1-andraprs@amazon.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Originating-IP: [10.43.162.176]
+X-ClientProxiedBy: EX13D13UWA003.ant.amazon.com (10.43.160.181) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dominique Martinet <asmadeus@codewreck.org> writes:
+vsock enables communication between virtual machines and the host they are
+running on. Nested VMs can be setup to use vsock channels, as the multi
+transport support has been available in the mainline since the v5.5 Linux kernel
+has been released.
 
-> Dominique Martinet wrote on Tue, Dec 01, 2020:
->> > Since generic_file_splice_read() seems to just implement splice_read in
->> > terms of the read_iter operation, I simply added the generic implementation
->> > to the file operations, which fixed the error I was seeing. A quick grep
->> > indicates that this is what most other file systems do as well.
->> 
->> Good catch, might as well do that.
->> I'm surprised you didn't hit the same problem with splice_write?
->> 
->> I see iter_file_splice_write being used for it on many filesystems,
->> it's probably better to add both?
->
-> Yeah, I confirm both are needed (the second for the pipe -> fs side)
+Implicitly, if no host->guest vsock transport is loaded, all the vsock packets
+are forwarded to the host. This behavior can be used to setup communication
+channels between sibling VMs that are running on the same host. One example can
+be the vsock channels that can be established within AWS Nitro Enclaves
+(see Documentation/virt/ne_overview.rst).
 
-Yeah, makes sense; I was only testing with a very specific use case
-where a file is being passed to the kernel with sendfile().
+To be able to explicitly mark a connection as being used for a certain use case,
+add a flag field in the vsock address data structure. The "svm_reserved1" field
+has been repurposed to be the flag field. The value of the flag will then be
+taken into consideration when the vsock transport is assigned.
 
-> This made me test copy_file_range, and it works with both as well (used
-> not to)
->
-> interestingly on older kernels this came as default somehow? I have
-> splice working on 5.4.67 :/ so this broke somewhat recently...
+This way can distinguish between nested VMs / local communication and sibling
+VMs use cases. And can also setup one or more types of communication at the same
+time.
 
-Huh, no idea; this is my first time digging into filesystem code, I
-normally do networking and BPF :)
+Thank you.
 
-> I'll add an extra patch with the second and take your patch.
-> Thanks!
+Andra
 
-Awesome, thanks!
+---
 
--Toke
+Patch Series Changelog
+
+The patch series is built on top of v5.10-rc6.
+
+GitHub repo branch for the latest version of the patch series:
+
+* https://github.com/andraprs/linux/tree/vsock-flag-sibling-comm-v1
+
+---
+
+Andra Paraschiv (3):
+  vm_sockets: Include flag field in the vsock address data structure
+  virtio_transport_common: Set sibling VMs flag on the receive path
+  af_vsock: Assign the vsock transport considering the vsock address
+    flag
+
+ include/uapi/linux/vm_sockets.h         | 18 +++++++++++++++++-
+ net/vmw_vsock/af_vsock.c                | 15 +++++++++++----
+ net/vmw_vsock/virtio_transport_common.c |  8 ++++++++
+ 3 files changed, 36 insertions(+), 5 deletions(-)
+
+-- 
+2.20.1 (Apple Git-117)
+
+
+
+
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
 
