@@ -2,442 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E8A2CAC64
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA5E2CAC63
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404404AbgLATaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
+        id S2404393AbgLATaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:30:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404324AbgLATaG (ORCPT
+        with ESMTP id S2404351AbgLATaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 14:30:06 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14FBC061A4B
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:29:10 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id 64so4493638wra.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:29:10 -0800 (PST)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13B9C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:29:22 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id s21so1756329pfu.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:29:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VOd3JSDgGEf/sA/gneW99yzrnw1TXcmtGN43mHDRXQY=;
-        b=T09eoCIyyL0p97FRT3WIcvf3dvO1HjfeGP1LTk6iswcKA1VIKznSxtVnYUSVzXJGWs
-         wRgcBydqKmJESEMxQca3qn89xmbZXmilx6wPepjrzrBt+Q9FSs/yJeU5flGyDGAQiHqr
-         mRowDXJ+OLvS1TF/yWi2jWgkRB6rmpKilaoXuMmgd00ryW4WRmreOXQz3mHkn7kJVyph
-         yQtbLqsmsYkNYXbWf9sbG3IhmiQZpUeBS7eYSaZVcf6AFoUZHTJBsqEBUnL09VD2RIs9
-         lj33v+S1ukAs/vVaRHVYpsh7KSYN2lzx9fSqvq83hEioU+M9aXNzzdMZn5pzJ3BomJlI
-         5BRA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uHc3+DnHK9PLE5XljsP938ZieTXyfac5v2OAwUm2/s4=;
+        b=GOKIK33tiPHZO4211DGLpG7EwNj3KWK2pSnCu8JCq2zGxwOKPqup9Bbqf0L9TlH5/0
+         5xuHv1A/RewFOkJvUQVCT4ev/69Bupx58syQ1yQ3xC3bCqmh0vs+x/1CBio8AYkiqACs
+         3RBy+RUKhdaf/siED4BpuJA8o0bGWbEcQlsFk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VOd3JSDgGEf/sA/gneW99yzrnw1TXcmtGN43mHDRXQY=;
-        b=GUSJmsmhh1vsho0cSajr2tSZDurIpwY/0lLTnCjK2MOwTNeTZ50O/2+Bw5xE82JRHL
-         PXUFICvInXHomYUwsohQBhvxfxcZgDVKvP5/utGC/B1BhsEk4P04ooGZrwAAMm/+xU/+
-         ZuqVp41UDAHmGVC8BLYR2F59GPjI0D4aIM17plJX/OAQt18uq8OmSfYeaw8vh2UYKQrg
-         JycrpjgMTERd+K2/ZkJwZnf1UoRSvA7StuzrkNetITi4OH7n9u0ce2qjgAqg65Uckti5
-         96QtKZcLG+wARlocbYmbR8eubgUmMgUwCh3lHDlKEYOhwSpK1nHeSrCdBjSW6VmrC6uu
-         bWsQ==
-X-Gm-Message-State: AOAM533VxkfV6B5QHM5HFymsqm2YxuVSITwG4kyPN54px9cHnimOGlv4
-        ldfI4woT/8jwyW2VV8rv0vO6kgB07wAUEQ==
-X-Google-Smtp-Source: ABdhPJxquZkyO9JsBW4vJGPgahoZbAmqxDm4OKYyraAIIDQZUIJFE1wOB935o+StRfbXRxp+w9OyFQ==
-X-Received: by 2002:adf:e3cf:: with SMTP id k15mr5848029wrm.259.1606850949389;
-        Tue, 01 Dec 2020 11:29:09 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-140-184.adsl.proxad.net. [82.252.140.184])
-        by smtp.gmail.com with ESMTPSA id n123sm1317922wmn.7.2020.12.01.11.29.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uHc3+DnHK9PLE5XljsP938ZieTXyfac5v2OAwUm2/s4=;
+        b=uaYiZUKNfT5zeo04hjjQzoNy7ZNmyodZGKsgNlomC34UuuvWrEd3tsZqKuTaH9WQIQ
+         uoCakkkOR/5Wajr5Lu+CybuqPVD0/oLWJFtpJfog6/JqumqtTGzS/JdYqCEGL6P6wvoG
+         6wKrbSmtKnL5H3QKoTxTcdJyiD6HlruD8RQBZZXwkMW7NfVUaNcBNWWnM7Gmbno/OL4w
+         0wBh+vLti6q9poh5LpGz63QtUNa9rj+Wwwti7b6AlCtBkVzcu9ptovNcnhs4aGdZRbFp
+         1SENAbbBySOxXL+ewOjIkia2wHpWeb7roEX8CR/F4mdqaGQVUcPX8CFRCfNoVJXVTEVe
+         udjQ==
+X-Gm-Message-State: AOAM531STQ7hVakUm68K2UVCkx4zfh+7X86ZW5ygqWBOtkdo0ncXv4HU
+        BDkIS1Le9CMP4WEd0zrmP/nKww==
+X-Google-Smtp-Source: ABdhPJyr3YDxom7QSOfa+4VJ7zHhrXDxDhzEDzSN8T2kindZuUisgerVVrYnD4ja1rkt1ALtBGIo2A==
+X-Received: by 2002:a63:2155:: with SMTP id s21mr3557222pgm.3.1606850962370;
+        Tue, 01 Dec 2020 11:29:22 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v23sm537501pfn.141.2020.12.01.11.29.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 11:29:08 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     rjw@rjwysocki.net
-Cc:     ulf.hansson@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        lukasz.luba@arm.com, Thara Gopinath <thara.gopinath@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Zqiang <qiang.zhang@windriver.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v4 4/4] powercap/drivers/dtpm: Add CPU energy model based support
-Date:   Tue,  1 Dec 2020 20:28:01 +0100
-Message-Id: <20201201192801.27607-5-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201201192801.27607-1-daniel.lezcano@linaro.org>
-References: <20201201192801.27607-1-daniel.lezcano@linaro.org>
+        Tue, 01 Dec 2020 11:29:21 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:29:20 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/9] pstore/blk: remove {un,}register_pstore_blk
+Message-ID: <202012011128.CF6461B88@keescook>
+References: <20201016132047.3068029-1-hch@lst.de>
+ <20201016132047.3068029-4-hch@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016132047.3068029-4-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the powercap dtpm controller, we are able to plug devices with
-power limitation features in the tree.
+On Fri, Oct 16, 2020 at 03:20:41PM +0200, Christoph Hellwig wrote:
+> This interface is entirely unused, so remove them and various bits of
+> unreachable code.
 
-The following patch introduces the CPU power limitation based on the
-energy model and the performance states.
+Yeah, this is fair to remove -- there are no users. I'm not a fan of
+dropping it, but it can come back if anyone wants to provide a full
+generic block device implementation.
 
-The power limitation is done at the performance domain level. If some
-CPUs are unplugged, the corresponding power will be subtracted from
-the performance domain total power.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-It is up to the platform to initialize the dtpm tree and add the CPU.
 
-Here is an example to create a simple tree with one root node called
-"pkg" and the CPU's performance domains.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  Documentation/admin-guide/pstore-blk.rst |  8 +--
+>  fs/pstore/blk.c                          | 79 ++----------------------
+>  include/linux/pstore_blk.h               | 42 -------------
+>  3 files changed, 7 insertions(+), 122 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
+> index d9ec8b0572d3b2..84477621384d85 100644
+> --- a/Documentation/admin-guide/pstore-blk.rst
+> +++ b/Documentation/admin-guide/pstore-blk.rst
+> @@ -151,13 +151,7 @@ otherwise KMSG_DUMP_MAX.
+>  Configurations for driver
+>  -------------------------
+>  
+> -Only a block device driver cares about these configurations. A block device
+> -driver uses ``register_pstore_blk`` to register to pstore/blk.
+> -
+> -.. kernel-doc:: fs/pstore/blk.c
+> -   :identifiers: register_pstore_blk
+> -
+> -A non-block device driver uses ``register_pstore_device`` with
+> +A device driver uses ``register_pstore_device`` with
+>  ``struct pstore_device_info`` to register to pstore/blk.
+>  
+>  .. kernel-doc:: fs/pstore/blk.c
+> diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
+> index fcd5563dde063c..7f8368e94b3604 100644
+> --- a/fs/pstore/blk.c
+> +++ b/fs/pstore/blk.c
+> @@ -90,7 +90,6 @@ MODULE_PARM_DESC(blkdev, "block device for pstore storage");
+>  static DEFINE_MUTEX(pstore_blk_lock);
+>  static struct block_device *psblk_bdev;
+>  static struct pstore_zone_info *pstore_zone_info;
+> -static pstore_blk_panic_write_op blkdev_panic_write;
+>  
+>  struct bdev_info {
+>  	dev_t devt;
+> @@ -341,24 +340,7 @@ static ssize_t psblk_generic_blk_write(const char *buf, size_t bytes,
+>  	return ret;
+>  }
+>  
+> -static ssize_t psblk_blk_panic_write(const char *buf, size_t size,
+> -		loff_t off)
+> -{
+> -	int ret;
+> -
+> -	if (!blkdev_panic_write)
+> -		return -EOPNOTSUPP;
+> -
+> -	/* size and off must align to SECTOR_SIZE for block device */
+> -	ret = blkdev_panic_write(buf, off >> SECTOR_SHIFT,
+> -			size >> SECTOR_SHIFT);
+> -	/* try next zone */
+> -	if (ret == -ENOMSG)
+> -		return ret;
+> -	return ret ? -EIO : size;
+> -}
+> -
+> -static int __register_pstore_blk(struct pstore_blk_info *info)
+> +static int __register_pstore_blk(void)
+>  {
+>  	char bdev_name[BDEVNAME_SIZE];
+>  	struct block_device *bdev;
+> @@ -378,68 +360,34 @@ static int __register_pstore_blk(struct pstore_blk_info *info)
+>  	}
+>  
+>  	/* only allow driver matching the @blkdev */
+> -	if (!binfo.devt || (!best_effort &&
+> -			    MAJOR(binfo.devt) != info->major)) {
+> -		pr_debug("invalid major %u (expect %u)\n",
+> -				info->major, MAJOR(binfo.devt));
+> +	if (!binfo.devt) {
+> +		pr_debug("no major\n");
+>  		ret = -ENODEV;
+>  		goto err_put_bdev;
+>  	}
+>  
+>  	/* psblk_bdev must be assigned before register to pstore/blk */
+>  	psblk_bdev = bdev;
+> -	blkdev_panic_write = info->panic_write;
+> -
+> -	/* Copy back block device details. */
+> -	info->devt = binfo.devt;
+> -	info->nr_sects = binfo.nr_sects;
+> -	info->start_sect = binfo.start_sect;
+>  
+>  	memset(&dev, 0, sizeof(dev));
+> -	dev.total_size = info->nr_sects << SECTOR_SHIFT;
+> -	dev.flags = info->flags;
+> +	dev.total_size = binfo.nr_sects << SECTOR_SHIFT;
+>  	dev.read = psblk_generic_blk_read;
+>  	dev.write = psblk_generic_blk_write;
+> -	dev.erase = NULL;
+> -	dev.panic_write = info->panic_write ? psblk_blk_panic_write : NULL;
+>  
+>  	ret = __register_pstore_device(&dev);
+>  	if (ret)
+>  		goto err_put_bdev;
+>  
+>  	bdevname(bdev, bdev_name);
+> -	pr_info("attached %s%s\n", bdev_name,
+> -		info->panic_write ? "" : " (no dedicated panic_write!)");
+> +	pr_info("attached %s (no dedicated panic_write!)\n", bdev_name);
+>  	return 0;
+>  
+>  err_put_bdev:
+>  	psblk_bdev = NULL;
+> -	blkdev_panic_write = NULL;
+>  	psblk_put_bdev(bdev, holder);
+>  	return ret;
+>  }
+>  
+> -/**
+> - * register_pstore_blk() - register block device to pstore/blk
+> - *
+> - * @info: details on the desired block device interface
+> - *
+> - * Return:
+> - * * 0		- OK
+> - * * Others	- something error.
+> - */
+> -int register_pstore_blk(struct pstore_blk_info *info)
+> -{
+> -	int ret;
+> -
+> -	mutex_lock(&pstore_blk_lock);
+> -	ret = __register_pstore_blk(info);
+> -	mutex_unlock(&pstore_blk_lock);
+> -
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL_GPL(register_pstore_blk);
+> -
+>  static void __unregister_pstore_blk(unsigned int major)
+>  {
+>  	struct pstore_device_info dev = { .read = psblk_generic_blk_read };
+> @@ -449,24 +397,10 @@ static void __unregister_pstore_blk(unsigned int major)
+>  	if (psblk_bdev && MAJOR(psblk_bdev->bd_dev) == major) {
+>  		__unregister_pstore_device(&dev);
+>  		psblk_put_bdev(psblk_bdev, holder);
+> -		blkdev_panic_write = NULL;
+>  		psblk_bdev = NULL;
+>  	}
+>  }
+>  
+> -/**
+> - * unregister_pstore_blk() - unregister block device from pstore/blk
+> - *
+> - * @major: the major device number of device
+> - */
+> -void unregister_pstore_blk(unsigned int major)
+> -{
+> -	mutex_lock(&pstore_blk_lock);
+> -	__unregister_pstore_blk(major);
+> -	mutex_unlock(&pstore_blk_lock);
+> -}
+> -EXPORT_SYMBOL_GPL(unregister_pstore_blk);
+> -
+>  /* get information of pstore/blk */
+>  int pstore_blk_get_config(struct pstore_blk_config *info)
+>  {
+> @@ -483,12 +417,11 @@ EXPORT_SYMBOL_GPL(pstore_blk_get_config);
+>  
+>  static int __init pstore_blk_init(void)
+>  {
+> -	struct pstore_blk_info info = { };
+>  	int ret = 0;
+>  
+>  	mutex_lock(&pstore_blk_lock);
+>  	if (!pstore_zone_info && best_effort && blkdev[0])
+> -		ret = __register_pstore_blk(&info);
+> +		ret = __register_pstore_blk();
+>  	mutex_unlock(&pstore_blk_lock);
+>  
+>  	return ret;
+> diff --git a/include/linux/pstore_blk.h b/include/linux/pstore_blk.h
+> index 61e914522b0193..99564f93d77488 100644
+> --- a/include/linux/pstore_blk.h
+> +++ b/include/linux/pstore_blk.h
+> @@ -7,48 +7,6 @@
+>  #include <linux/pstore.h>
+>  #include <linux/pstore_zone.h>
+>  
+> -/**
+> - * typedef pstore_blk_panic_write_op - panic write operation to block device
+> - *
+> - * @buf: the data to write
+> - * @start_sect: start sector to block device
+> - * @sects: sectors count on buf
+> - *
+> - * Return: On success, zero should be returned. Others excluding -ENOMSG
+> - * mean error. -ENOMSG means to try next zone.
+> - *
+> - * Panic write to block device must be aligned to SECTOR_SIZE.
+> - */
+> -typedef int (*pstore_blk_panic_write_op)(const char *buf, sector_t start_sect,
+> -		sector_t sects);
+> -
+> -/**
+> - * struct pstore_blk_info - pstore/blk registration details
+> - *
+> - * @major:	Which major device number to support with pstore/blk
+> - * @flags:	The supported PSTORE_FLAGS_* from linux/pstore.h.
+> - * @panic_write:The write operation only used for the panic case.
+> - *		This can be NULL, but is recommended to avoid losing
+> - *		crash data if the kernel's IO path or work queues are
+> - *		broken during a panic.
+> - * @devt:	The dev_t that pstore/blk has attached to.
+> - * @nr_sects:	Number of sectors on @devt.
+> - * @start_sect:	Starting sector on @devt.
+> - */
+> -struct pstore_blk_info {
+> -	unsigned int major;
+> -	unsigned int flags;
+> -	pstore_blk_panic_write_op panic_write;
+> -
+> -	/* Filled in by pstore/blk after registration. */
+> -	dev_t devt;
+> -	sector_t nr_sects;
+> -	sector_t start_sect;
+> -};
+> -
+> -int  register_pstore_blk(struct pstore_blk_info *info);
+> -void unregister_pstore_blk(unsigned int major);
+> -
+>  /**
+>   * struct pstore_device_info - back-end pstore/blk driver structure.
+>   *
+> -- 
+> 2.28.0
+> 
 
-static int dtpm_register_pkg(struct dtpm_descr *descr)
-{
-	struct dtpm *pkg;
-	int ret;
-
-	pkg = dtpm_alloc(NULL);
-	if (!pkg)
-		return -ENOMEM;
-
-	ret = dtpm_register(descr->name, pkg, descr->parent);
-	if (ret)
-		return ret;
-
-	return dtpm_register_cpu(pkg);
-}
-
-static struct dtpm_descr descr = {
-	.name = "pkg",
-	.init = dtpm_register_pkg,
-};
-DTPM_DECLARE(descr);
-
-Cc: Thara Gopinath <thara.gopinath@linaro.org>
-Cc: Lina Iyer <ilina@codeaurora.org>
-Cc: Ram Chandrasekar <rkumbako@codeaurora.org>
-Cc: Zhang Rui <rui.zhang@intel.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/powercap/Kconfig    |   7 +
- drivers/powercap/Makefile   |   1 +
- drivers/powercap/dtpm_cpu.c | 257 ++++++++++++++++++++++++++++++++++++
- include/linux/cpuhotplug.h  |   1 +
- include/linux/dtpm.h        |   2 +
- 5 files changed, 268 insertions(+)
- create mode 100644 drivers/powercap/dtpm_cpu.c
-
-diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-index cc1953bd8bed..20b4325c6161 100644
---- a/drivers/powercap/Kconfig
-+++ b/drivers/powercap/Kconfig
-@@ -49,4 +49,11 @@ config DTPM
- 	help
- 	  This enables support for the power capping for the dynamic
- 	  thermal power management userspace engine.
-+
-+config DTPM_CPU
-+	bool "Add CPU power capping based on the energy model"
-+	depends on DTPM && ENERGY_MODEL
-+	help
-+	  This enables support for CPU power limitation based on
-+	  energy model.
- endif
-diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-index 6482ac52054d..fabcf388a8d3 100644
---- a/drivers/powercap/Makefile
-+++ b/drivers/powercap/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_DTPM) += dtpm.o
-+obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
- obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
- obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
- obj-$(CONFIG_INTEL_RAPL) += intel_rapl_msr.o
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-new file mode 100644
-index 000000000000..6933c783c6b4
---- /dev/null
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -0,0 +1,257 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2020 Linaro Limited
-+ *
-+ * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-+ *
-+ * The DTPM CPU is based on the energy model. It hooks the CPU in the
-+ * DTPM tree which in turns update the power number by propagating the
-+ * power number from the CPU energy model information to the parents.
-+ *
-+ * The association between the power and the performance state, allows
-+ * to set the power of the CPU at the OPP granularity.
-+ *
-+ * The CPU hotplug is supported and the power numbers will be updated
-+ * if a CPU is hot plugged / unplugged.
-+ */
-+#include <linux/cpumask.h>
-+#include <linux/cpufreq.h>
-+#include <linux/cpuhotplug.h>
-+#include <linux/dtpm.h>
-+#include <linux/energy_model.h>
-+#include <linux/pm_qos.h>
-+#include <linux/slab.h>
-+#include <linux/units.h>
-+
-+static struct dtpm *__parent;
-+
-+static DEFINE_PER_CPU(struct dtpm *, dtpm_per_cpu);
-+
-+struct dtpm_cpu {
-+	struct freq_qos_request qos_req;
-+	int cpu;
-+};
-+
-+/*
-+ * When a new CPU is inserted at hotplug or boot time, add the power
-+ * contribution and update the dtpm tree.
-+ */
-+static int power_add(struct dtpm *dtpm, struct em_perf_domain *em)
-+{
-+	u64 power_min, power_max;
-+
-+	power_min = em->table[0].power;
-+	power_min *= MICROWATT_PER_MILLIWATT;
-+	power_min += dtpm->power_min;
-+
-+	power_max = em->table[em->nr_perf_states - 1].power;
-+	power_max *= MICROWATT_PER_MILLIWATT;
-+	power_max += dtpm->power_max;
-+
-+	return dtpm_update_power(dtpm, power_min, power_max);
-+}
-+
-+/*
-+ * When a CPU is unplugged, remove its power contribution from the
-+ * dtpm tree.
-+ */
-+static int power_sub(struct dtpm *dtpm, struct em_perf_domain *em)
-+{
-+	u64 power_min, power_max;
-+
-+	power_min = em->table[0].power;
-+	power_min *= MICROWATT_PER_MILLIWATT;
-+	power_min = dtpm->power_min - power_min;
-+
-+	power_max = em->table[em->nr_perf_states - 1].power;
-+	power_max *= MICROWATT_PER_MILLIWATT;
-+	power_max = dtpm->power_max - power_max;
-+
-+	return dtpm_update_power(dtpm, power_min, power_max);
-+}
-+
-+static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
-+{
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+	struct em_perf_domain *pd;
-+	struct cpumask cpus;
-+	unsigned long freq;
-+	u64 power;
-+	int i, nr_cpus;
-+
-+	pd = em_cpu_get(dtpm_cpu->cpu);
-+
-+	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
-+
-+	nr_cpus = cpumask_weight(&cpus);
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+
-+		power = pd->table[i].power * MICROWATT_PER_MILLIWATT * nr_cpus;
-+
-+		if (power > power_limit)
-+			break;
-+	}
-+
-+	freq = pd->table[i - 1].frequency;
-+
-+	freq_qos_update_request(&dtpm_cpu->qos_req, freq);
-+
-+	power_limit = pd->table[i - 1].power *
-+		MICROWATT_PER_MILLIWATT * nr_cpus;
-+
-+	return power_limit;
-+}
-+
-+static u64 get_pd_power_uw(struct dtpm *dtpm)
-+{
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+	struct em_perf_domain *pd;
-+	struct cpumask cpus;
-+	unsigned long freq;
-+	int i, nr_cpus;
-+
-+	pd = em_cpu_get(dtpm_cpu->cpu);
-+	freq = cpufreq_quick_get(dtpm_cpu->cpu);
-+	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
-+	nr_cpus = cpumask_weight(&cpus);
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+
-+		if (pd->table[i].frequency < freq)
-+			continue;
-+
-+		return pd->table[i].power *
-+			MICROWATT_PER_MILLIWATT * nr_cpus;
-+	}
-+
-+	return 0;
-+}
-+
-+static void pd_release(struct dtpm *dtpm)
-+{
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+
-+	if (freq_qos_request_active(&dtpm_cpu->qos_req))
-+		freq_qos_remove_request(&dtpm_cpu->qos_req);
-+
-+	kfree(dtpm_cpu);
-+}
-+
-+static struct dtpm_ops dtpm_ops = {
-+	.set_power_uw = set_pd_power_limit,
-+	.get_power_uw = get_pd_power_uw,
-+	.release = pd_release,
-+};
-+
-+static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
-+{
-+	struct cpufreq_policy *policy;
-+	struct em_perf_domain *pd;
-+	struct dtpm *dtpm;
-+
-+	policy = cpufreq_cpu_get(cpu);
-+
-+	if (!policy)
-+		return 0;
-+
-+	pd = em_cpu_get(cpu);
-+	if (!pd)
-+		return -EINVAL;
-+
-+	dtpm = per_cpu(dtpm_per_cpu, cpu);
-+
-+	power_sub(dtpm, pd);
-+
-+	if (cpumask_weight(policy->cpus) != 1)
-+		return 0;
-+
-+	for_each_cpu(cpu, policy->related_cpus)
-+		per_cpu(dtpm_per_cpu, cpu) = NULL;
-+
-+	dtpm_unregister(dtpm);
-+
-+	return 0;
-+}
-+
-+static int cpuhp_dtpm_cpu_online(unsigned int cpu)
-+{
-+	struct dtpm *dtpm;
-+	struct dtpm_cpu *dtpm_cpu;
-+	struct cpufreq_policy *policy;
-+	struct em_perf_domain *pd;
-+	char name[CPUFREQ_NAME_LEN];
-+	int ret = -ENOMEM;
-+
-+	policy = cpufreq_cpu_get(cpu);
-+
-+	if (!policy)
-+		return 0;
-+
-+	pd = em_cpu_get(cpu);
-+	if (!pd)
-+		return -EINVAL;
-+
-+	dtpm = per_cpu(dtpm_per_cpu, cpu);
-+	if (dtpm)
-+		return power_add(dtpm, pd);
-+
-+	dtpm = dtpm_alloc(&dtpm_ops);
-+	if (!dtpm)
-+		return -EINVAL;
-+
-+	dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
-+	if (!dtpm_cpu)
-+		goto out_kfree_dtpm;
-+
-+	dtpm->private = dtpm_cpu;
-+	dtpm_cpu->cpu = cpu;
-+
-+	for_each_cpu(cpu, policy->related_cpus)
-+		per_cpu(dtpm_per_cpu, cpu) = dtpm;
-+
-+	sprintf(name, "cpu%d", dtpm_cpu->cpu);
-+
-+	ret = dtpm_register(name, dtpm, __parent);
-+	if (ret)
-+		goto out_kfree_dtpm_cpu;
-+
-+	ret = power_add(dtpm, pd);
-+	if (ret)
-+		goto out_dtpm_unregister;
-+
-+	ret = freq_qos_add_request(&policy->constraints,
-+				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
-+				   pd->table[pd->nr_perf_states - 1].frequency);
-+	if (ret)
-+		goto out_power_sub;
-+
-+	return 0;
-+
-+out_power_sub:
-+	power_sub(dtpm, pd);
-+
-+out_dtpm_unregister:
-+	dtpm_unregister(dtpm);
-+	dtpm_cpu = NULL;
-+	dtpm = NULL;
-+
-+out_kfree_dtpm_cpu:
-+	for_each_cpu(cpu, policy->related_cpus)
-+		per_cpu(dtpm_per_cpu, cpu) = NULL;
-+	kfree(dtpm_cpu);
-+
-+out_kfree_dtpm:
-+	kfree(dtpm);
-+	return ret;
-+}
-+
-+int dtpm_register_cpu(struct dtpm *parent)
-+{
-+	__parent = parent;
-+
-+	return cpuhp_setup_state(CPUHP_AP_DTPM_CPU_ONLINE,
-+				 "dtpm_cpu:online",
-+				 cpuhp_dtpm_cpu_online,
-+				 cpuhp_dtpm_cpu_offline);
-+}
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index bc56287a1ed1..72fd8db62342 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -192,6 +192,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
- 	CPUHP_AP_X86_HPET_ONLINE,
- 	CPUHP_AP_X86_KVM_CLK_ONLINE,
-+	CPUHP_AP_DTPM_CPU_ONLINE,
- 	CPUHP_AP_ACTIVE,
- 	CPUHP_ONLINE,
- };
-diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
-index 7a1d0b50e334..e80a332e3d8a 100644
---- a/include/linux/dtpm.h
-+++ b/include/linux/dtpm.h
-@@ -72,4 +72,6 @@ void dtpm_unregister(struct dtpm *dtpm);
- 
- int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent);
- 
-+int dtpm_register_cpu(struct dtpm *parent);
-+
- #endif
 -- 
-2.17.1
-
+Kees Cook
