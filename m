@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D232CAB24
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019882CAB27
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392275AbgLAS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:56:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        id S1731133AbgLAS4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:56:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgLAS4j (ORCPT
+        with ESMTP id S1726213AbgLAS4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:56:39 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4032C0613CF;
-        Tue,  1 Dec 2020 10:55:58 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0EA80DBD;
-        Tue,  1 Dec 2020 19:55:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606848957;
-        bh=Nlsmy7Oo5UKk1TOiJqdEqFpGI+m3S8hclyWwhqNRL6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f3rtzHEaMw1H6ldJJT8VkSSHu+KW9QlExGZlDRR9TuZIU9mr3OrSSG0MiSCoXsA14
-         NYJn8ukgiqmkiKtDJ3Pq6koSmS85VRthPrMXVm2gUc/sElK3P2dovIyxpK6ESRAf0V
-         5np4bMun098WBKjZd9jZxSNJdSGCpWQBlZYfeffQ=
-Date:   Tue, 1 Dec 2020 20:55:48 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201201185548.GV4569@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com>
- <8a1b0f5b-1289-256b-b25d-cf8af43bdc84@gmail.com>
- <20201201185417.GL4077@smile.fi.intel.com>
+        Tue, 1 Dec 2020 13:56:43 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F42C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:56:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dP2aCGWV/QSuw3IqWekjEcVu6Gni8QIpKfoVcyJye9g=; b=0KTLGIr+J0voSyZKVgGtj/P7CP
+        tTiyqemcQV5lMmwn/kvNMH97gkEv8jO2dxJyX3u1AHDXqkwuW0ksbtGmQkZvemfakBXQnEVMkEcJM
+        idKQeRsgEtkrfLbm5wa+qzVJ6JM436Rmwqkv06+XBm0PlHpHzgSHKFoOtOikyq2EMPcG6O0cjb4wA
+        fTxDzULqFRFKfFd/HWL1VarYB8jGTdqES09e213+o6zH83N7L2U5gtzANdPL64+97KYuL6XzFTDTz
+        mUnx8Bgbh5PlueuZVqq7+wTf49z0NrJlRuzPRymhoo53ncvN41LK4oFbQ61FmnPVo4maw+oae0n8g
+        ISzYb6hg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkAog-0000dn-I9; Tue, 01 Dec 2020 18:55:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F2E2D30018A;
+        Tue,  1 Dec 2020 19:55:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DDF3E2BF16C04; Tue,  1 Dec 2020 19:55:56 +0100 (CET)
+Date:   Tue, 1 Dec 2020 19:55:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     X86 ML <x86@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anton Blanchard <anton@ozlabs.org>
+Subject: Re: [PATCH 3/3] membarrier: Propagate SYNC_CORE and RSEQ actions
+ more carefully
+Message-ID: <20201201185556.GV3040@hirez.programming.kicks-ass.net>
+References: <cover.1606758530.git.luto@kernel.org>
+ <5495e4c344dc09011ff57756c7e0a1330830eafc.1606758530.git.luto@kernel.org>
+ <20201201101637.GU2414@hirez.programming.kicks-ass.net>
+ <CALCETrUZHWvjO8otEWat6SDwDFRdV0iSp=RZDaHnyytJ=4a6cg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201185417.GL4077@smile.fi.intel.com>
+In-Reply-To: <CALCETrUZHWvjO8otEWat6SDwDFRdV0iSp=RZDaHnyytJ=4a6cg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On Tue, Dec 01, 2020 at 08:54:17PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 01, 2020 at 08:30:03AM +0000, Dan Scally wrote:
-> > On 30/11/2020 20:07, Andy Shevchenko wrote:
+On Tue, Dec 01, 2020 at 10:09:22AM -0800, Andy Lutomirski wrote:
+> > smp_call_function_single(.wait=1) already orders against completion of
+> > the IPI. Do we really need more?
 > 
-> ...
-> 
-> > >> +static struct int3472_sensor_regulator_map int3472_sensor_regulator_maps[] = {
-> > >> +	{ "GNDF140809R", 2, miix_510_ov2680 },
-> > >> +	{ "YHCU", 2, surface_go2_ov5693 },
-> > >> +	{ "MSHW0070", 2, surface_book_ov5693 },
-> > >> +};
-> > >
-> > > Hmm... Usual way is to use DMI for that. I'm not sure above will not give us
-> > > false positive matches.
-> >
-> > I considered DMI too, no problem to switch to that if it's a better choice.
-> 
-> I prefer DMI as it's a standard way to describe platform quirks in x86 world.
+> What kind of order does it provide?  A quick skim of the code suggests
+> that it's an acquire barrier, but I think we need a full sequential
+> consistency barrier, at least on sufficiently weakly ordered
+> architectures.  On x86, loads are ordered and this is probably
+> irrelevant.  Also, this barrier was already there (it's the one I
+> deleted below), and I think that removing it should be its own patch
+> if we want to go that route.
 
-Do you think the Windows driver would use DMI ? That seems quite
-unlikely to me, given how they would have to release a new driver binary
-for every machine. I'm pretty sure that a different mechanism is used to
-identify camera integration, and I think it would make sense to follow
-the same approach. That would allow us to avoid large tables of DMI
-identifiers that would need to be constently updated, potentially making
-user experience better.
+	smp_mb()
+	raise-IPI ---->
+			<IPI>
+			  /* do crud */
+			  STORE-RELEASE csd->lock, 0;
+			</IPI/
 
--- 
-Regards,
+	LOAD-ACQUIRE csd->lock
 
-Laurent Pinchart
+
