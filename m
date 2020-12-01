@@ -2,124 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1052C95D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C88D2C95EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbgLADhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 22:37:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727719AbgLADhl (ORCPT
+        id S1727810AbgLADkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 22:40:00 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:64634 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbgLADkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 22:37:41 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD22C0613D2;
-        Mon, 30 Nov 2020 19:37:01 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id t21so383244pjw.2;
-        Mon, 30 Nov 2020 19:37:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NL582lgLVSi6KvAu9Utf9CebPYU3CkLIdkP46F4/+EA=;
-        b=Xhga9YlKz842XlE+bb+SVEwobT1WQdwHoo7D7fOlF20D0+a3pLa7mD7wAMBsoNZD92
-         uuQtPfpMZeW+IlOssf8/rWOw+QKg4PspN2T5/kdsgqzAFOZ/HTDb+IXKvmETtlQE+uV2
-         lXobZ7ntNQW3D5X2jcCxlPBk3A7ivPUpAfZpczlDxl01oriyRBobJvB++T+NdzzoDFX7
-         veXQz8MvK4l4UMZubI5hihJlJiCZ99c5RCXeBsHjgSAWU3w/C3tTOv0G4Nrm+05jAcQ5
-         apm/NsHGqk7+d0Nsg27zQ1AjqTIesG3qtSe40lJruY1ZgMRjOr4KyeRX3RaEahrQ9fce
-         rjmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NL582lgLVSi6KvAu9Utf9CebPYU3CkLIdkP46F4/+EA=;
-        b=jIjVGBf3PYgnL6Hg0bMlYUoZjhA8f2CuXIs0bw21VEJu7w1+evPnaD8xlXu+i09Jvn
-         gLSTlHBrmyyExNvAW6Z4SB82l/kQP5oCDD/N6onoIlRxqoPYbcSJO1MMsPKhjDYUyODD
-         FQ5wrEO4nPzT355inm/1rlJQ3ot+iHNH6solpppkBWSP82nsHkK7v14QYhIG5SEeUGao
-         QpxPjgQRP1sIfHZbV4PWQijLqEpjw6Wvx5H4pIbuEJt2SgQYY0NCPVM2Ciln7enSMBCk
-         8u6ALTiyuX5wFKru6xzSVOAvvKgytq8LVVU5MjBXkLfg0vXBb6UecGd6QWOYB0IzLoAl
-         pjcw==
-X-Gm-Message-State: AOAM533UJtQeOe8lev3DiApp2tmdygD2M1naXIzRDlwZQhdA8cKhDeEB
-        S0S/3HYxY4caN569L88+FSk=
-X-Google-Smtp-Source: ABdhPJzmYqh8DitkJm6pCCwff8gLw1CZT70pu7CE5gBkghmKUNChEaqVJDkSnRtWr2lmiD9MQutdvA==
-X-Received: by 2002:a17:90a:c003:: with SMTP id p3mr600818pjt.221.1606793820977;
-        Mon, 30 Nov 2020 19:37:00 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
-        by smtp.gmail.com with ESMTPSA id w131sm489881pfd.14.2020.11.30.19.36.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 19:37:00 -0800 (PST)
-Date:   Tue, 1 Dec 2020 12:36:58 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>
-Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
-Message-ID: <20201201033658.GE3723071@google.com>
-References: <20201125221917.150463-1-ribalda@chromium.org>
- <20201130083410.GD32234@lst.de>
+        Mon, 30 Nov 2020 22:40:00 -0500
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 0B13csUM026029;
+        Tue, 1 Dec 2020 12:38:55 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0B13csUM026029
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606793935;
+        bh=klnIxU/X1XewPCmJJ5YCEqINrZ5cJIhv7zjgLd01Ez0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HKzTzrV5a/XTqJDzhOj3TIUC+5Lk0koanda6mtUxMn2p06CLJ4IMbfcK0EKyFrTw3
+         jFx893o72qwbhqKy+9xECnlOk2yL6ReMOuNmMXgnLWGZbop+t/wnlBFPuixvxBV4Tz
+         FcXaytLnQ9QyPWtgW0FNCEXLULfLmzvPBmZhYiOJY+wo0oHkB+R+CJ2kOZbWyzr2vI
+         2zrv1xbXtnfva3fWpOBLO08K7gONfo3k/P6YA06KDBP2aL5YTbYrnG2X+yu5Blf2uf
+         zszjIwGwLWcHTP5OE0H+bo1oZg7O7jhq9ZsX8z2IibN04mzaTu8sY3m2oI16ccBYVq
+         JL4TVBuau9k7w==
+X-Nifty-SrcIP: [209.85.214.174]
+Received: by mail-pl1-f174.google.com with SMTP id v21so324185plo.12;
+        Mon, 30 Nov 2020 19:38:54 -0800 (PST)
+X-Gm-Message-State: AOAM533xa21XJ2j/QxsU9QJKr7iHjDQLIpEfUeu3cVFt3Y/epCMjhzsu
+        D3cliMcLsma0j4CYYRH7m7rtr43+JeTDPioZmP0=
+X-Google-Smtp-Source: ABdhPJy7FhhJ9yNK8Z5qJ3jcI1HUIh2OA3OIVnaSDzfapbtVbcYzBwKIDeRJROOFBmz9MsBA1+hwufB5Y8yt4cxT5do=
+X-Received: by 2002:a17:90a:5905:: with SMTP id k5mr651001pji.198.1606793934218;
+ Mon, 30 Nov 2020 19:38:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130083410.GD32234@lst.de>
+References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+ <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-4-ndesaulniers@google.com>
+ <CAK7LNAT5MQqUddv+QbFu5ToLBK3eUPArHSBR=5AOS3ONtMqKaw@mail.gmail.com> <CAFP8O3Ki9HoqcV450fn29fBOWAbmuGAdB6USLz8pGsW4Vzf7sg@mail.gmail.com>
+In-Reply-To: <CAFP8O3Ki9HoqcV450fn29fBOWAbmuGAdB6USLz8pGsW4Vzf7sg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 1 Dec 2020 12:38:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS_hxevOS7hKxepyCBVU-4j87Yf5Y8DB6mFq+4xuaz3AA@mail.gmail.com>
+Message-ID: <CAK7LNAS_hxevOS7hKxepyCBVU-4j87Yf5Y8DB6mFq+4xuaz3AA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] Kbuild: make DWARF version a choice
+To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/11/30 09:34), Christoph Hellwig wrote:
-> 
-> > +	uvc_urb->pages = dma_alloc_noncontiguous(dma_dev, stream->urb_size,
-> > +						 &uvc_urb->dma,
-> > +						 gfp_flags | __GFP_NOWARN, 0);
-> > +	if (!uvc_urb->pages)
-> > +		return false;
-> > +
-> > +	uvc_urb->buffer = vmap(uvc_urb->pages,
-> > +			       PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT,
-> > +			       VM_DMA_COHERENT, PAGE_KERNEL);
-> > +	if (!uvc_urb->buffer) {
-> > +		dma_free_noncontiguous(dma_dev, stream->urb_size,
-> > +				       uvc_urb->pages, uvc_urb->dma);
-> > +		return false;
-> > +	}
-> > +
-> > +	if (sg_alloc_table_from_pages(&uvc_urb->sgt, uvc_urb->pages,
-> > +				PAGE_ALIGN(stream->urb_size) >> PAGE_SHIFT, 0,
-> > +				stream->urb_size, GFP_KERNEL)) {
-> > +		vunmap(uvc_urb->buffer);
-> > +		dma_free_noncontiguous(dma_dev, stream->urb_size,
-> > +				       uvc_urb->pages, uvc_urb->dma);
-> > +		return false;
-> > +	}
-> 
-> I wonder if we should lift this into a helper.  On the one hand I had
-> proliferating struct scatterlist usage, on the other hand it is all over
-> the media and drm code anyway, and duplicating this doesn't help anyone.
+On Tue, Dec 1, 2020 at 5:27 AM 'F=C4=81ng-ru=C3=AC S=C3=B2ng' via Clang Bui=
+lt Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> On Mon, Nov 30, 2020 at 10:05 AM Masahiro Yamada <masahiroy@kernel.org> w=
+rote:
+> >
+> > On Wed, Nov 4, 2020 at 9:53 AM 'Nick Desaulniers' via Clang Built
+> > Linux <clang-built-linux@googlegroups.com> wrote:
+> > >
+> > > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
+> > > explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
+> > > way that's forward compatible with existing configs, and makes adding
+> > > future versions more straightforward.
+> > >
+> > > Suggested-by: Fangrui Song <maskray@google.com>
+> > > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > ---
+> > >  Makefile          | 14 ++++++++------
+> > >  lib/Kconfig.debug | 19 +++++++++++++++----
+> > >  2 files changed, 23 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index 75b1a3dcbf30..e23786a4c1c7 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -826,12 +826,14 @@ else
+> > >  DEBUG_CFLAGS   +=3D -g
+> > >  endif
+> > >
+> > > -ifndef LLVM_IAS
+> > > -KBUILD_AFLAGS  +=3D -Wa,-gdwarf-2
+> > > -endif
+> > > -
+> > > -ifdef CONFIG_DEBUG_INFO_DWARF4
+> > > -DEBUG_CFLAGS   +=3D -gdwarf-4
+> > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) :=3D 2
+> > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) :=3D 4
+> > > +DEBUG_CFLAGS   +=3D -gdwarf-$(dwarf-version-y)
+> > > +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
+> > > +# Binutils 2.35+ required for -gdwarf-4+ support.
+> > > +dwarf-aflag    :=3D $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-vers=
+ion-y))
+> > > +DEBUG_CFLAGS   +=3D $(dwarf-aflag)
+> >
+> > This changes the behavior.
+> >
+> > For the Dwarf-2 case,
+> >
+> > Previously, -gdwarf-2 was passed to $(CC),
+> > so the debug info was generated by gcc.
+> >
+> > Now, -Wa,-gdwarf-2 is passed to $(CC).
+> > -gdwarf-2 is handled by GNU as.
+> > So, the source info points to /tmp/<hash>.s
+> > instead of the original .c file.
+> >
+> >
+> >
+> > Handling the Dwarf capability is very complicated.
+> >
+> > Are you still working for v3?
+> >
+> >
+> >
+> > > +KBUILD_AFLAGS  +=3D $(dwarf-aflag)
+> > >  endif
+> > >
+> > >  ifdef CONFIG_DEBUG_INFO_REDUCED
+> > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > > index 83a860126897..03c494eefabd 100644
+> > > --- a/lib/Kconfig.debug
+> > > +++ b/lib/Kconfig.debug
+> > > @@ -256,14 +256,25 @@ config DEBUG_INFO_SPLIT
+> > >           to know about the .dwo files and include them.
+> > >           Incompatible with older versions of ccache.
+> > >
+> > > +choice
+> > > +       prompt "DWARF version"
+> > > +       help
+> > > +         Which version of DWARF debug info to emit.
+> > > +
+> > > +config DEBUG_INFO_DWARF2
+> > > +       bool "Generate DWARF v2 debuginfo"
+> > > +       help
+> > > +         Generate DWARF v2 debug info.
+> > > +
+> > >  config DEBUG_INFO_DWARF4
+> > >         bool "Generate dwarf4 debuginfo"
+> > >         depends on $(cc-option,-gdwarf-4)
+> > >         help
+> > > -         Generate dwarf4 debug info. This requires recent versions
+> > > -         of gcc and gdb. It makes the debug information larger.
+> > > -         But it significantly improves the success of resolving
+> > > -         variables in gdb on optimized code.
+> > > +         Generate DWARF v4 debug info. This requires gcc 4.5+ and gd=
+b 7.0+.
+> > > +         It makes the debug information larger, but it significantly
+> > > +         improves the success of resolving variables in gdb on optim=
+ized code.
+> > > +
+> > > +endchoice # "DWARF version"
+> > >
+> > >  config DEBUG_INFO_BTF
+> > >         bool "Generate BTF typeinfo"
+> > > --
+> > > 2.29.1.341.ge80a0c044ae-goog
+>
+>
+> We can bump -Wa,-gdwarf-2 to -Wa,-gdwarf-3 since GNU actually emits
+> DWARF v3 DW_AT_ranges (see
+> https://sourceware.org/bugzilla/show_bug.cgi?id=3D26850 )
+> This can avoid the `warning: DWARF2 only supports one section per
+> compilation unit` warning for Clang.
 
-Not that I have any sound experience in this area, but the helper
-probably won't hurt. Do you also plan to add vmap() to that helper
-or dma_alloc_noncontiguous()/sg_alloc_table_from_pages() only?
 
-	helper()
-	{
-		dma_alloc_noncontiguous();
-		sg_alloc_table_from_pages();
+I am not a DWARF spec expert.
 
-		if ((dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
-			vmap();
-	}
+Please teach me.
 
-videobuf2-dma-contig still has to carry around two versions: one that
-deals with the noncontig pages and sgt (new API); and the current one.
-But if the helper will include fallback to coherent allocations then
-this may change, depending on the helper implementation.
+In my understanding, "DWARF2 only supports one section ..."
+is warned only when building .S files with LLVM_IAS=3D1
 
-	-ss
+If this is due to the limitation of DWARF v2, why is it OK to
+build .c files with LLVM_IAS?
+
+
+
+>
+> Deleting -Wa,-gdwarf-2 also sounds good to me if people can verify
+> their debugging experience is not regressed (I believe it is useless).
+>
+>
+> --
+> =E5=AE=8B=E6=96=B9=E7=9D=BF
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/clang-built-linux/CAFP8O3Ki9HoqcV450fn29fBOWAbmuGAdB6USLz8pGsW4Vzf7sg%40m=
+ail.gmail.com.
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
