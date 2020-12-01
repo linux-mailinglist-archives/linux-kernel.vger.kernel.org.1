@@ -2,76 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23162CA447
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F6A2CA449
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391153AbgLANsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:48:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55624 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728848AbgLANsx (ORCPT
+        id S2403764AbgLANtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:49:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388093AbgLANtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:48:53 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606830491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X7vkYB0d4Lflu7QTfntzoP7JhOSDHcXUHS8Skey04w0=;
-        b=sCogktfuvGAYAqsR3wllup0MEisJleDTOz/veQFQ3+WxnJh5ZX4IqvTJZsfquxZa8UR+MM
-        eYR4msMoIhJ6BWlKArOBvYfKoEfwq6Dn8oIkTGUUD3jMoFSyDQjwpwbBQYK2ivTaO9DEKi
-        1eOZm66IhjN8Ln9B8go38cS/815fWJWhQoNlcTJkhadIxm5UYdD7vJUIRXMwtk5JMp4Q8r
-        q9bfjeYpEkyF3N0ptO56wG2lP0g3AP9jUEBkXqVRhvFK1LImRah4VnPO45m89qRBtL57zd
-        8pRIcB7DAkt5TrjS0YTLIeMX/6qL1RnWJMceKuxFBiFjvu/NOyND+afGhBLK2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606830491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X7vkYB0d4Lflu7QTfntzoP7JhOSDHcXUHS8Skey04w0=;
-        b=EQWFj7/bPK5TaeIVY8G/Qhg8oqXSWyRsTQvYSSfJXMQBySV1McRYlug/Ci1/nRoJkVIorr
-        3/1MwZ3VqoqmacBA==
-To:     Marcelo Tosatti <mtosatti@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
-In-Reply-To: <20201130191643.GA18861@fuller.cnet>
-References: <20201130133559.233242-1-mlevitsk@redhat.com> <20201130191643.GA18861@fuller.cnet>
-Date:   Tue, 01 Dec 2020 14:48:11 +0100
-Message-ID: <877dq1hc2s.fsf@nanos.tec.linutronix.de>
+        Tue, 1 Dec 2020 08:49:17 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A2CC0613CF;
+        Tue,  1 Dec 2020 05:48:31 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id l11so1186787plt.1;
+        Tue, 01 Dec 2020 05:48:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=plSlSB8BWAYE/ztLDhWMxwjFWQWCkUimRFhmgFEUAfQ=;
+        b=E3NyYGrdb0vHrL3gi/aN2z92fLeGyfn7i4T//KGcw+q76IES9ImWUlStjN4531WIqL
+         nk2e5Qr4i+8oxK9XkyrCmgZngdMglLw5IusO20TVFr3QtDEgKM0IjFBfCn1hPWt1SxiF
+         zlF2CtnlStwfHRKVjhmjT2Zo2F4Di2imgfApYSLPtpMb24nVjWv4mJ1rBORMFlqg0FrY
+         Y4ZMuOGWTbGBOFVJyuhgIJNNTRKnDzfzC2x1vLUx2e/vIopLaVasNqX/SXFPEuRghmjH
+         n3TBXbeQN7hBfDLXXTasaUvM731htT2YtWRIok/c6FPrYvYC0TDJkRAtdiH8PAUQvcda
+         YPkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=plSlSB8BWAYE/ztLDhWMxwjFWQWCkUimRFhmgFEUAfQ=;
+        b=m2UeyDZglD3fRjZGzdM2e3y6SDRxipRHJSwQAc7Xb3eR8oALETW8C1jMwHsip78gto
+         5NpBRtc/vA1ftZyl70URZf0WAsKjA6lp6jG7UxpUgZl2hu3+uQGPaAiXVBBBwGQj4Rfe
+         DcrJ+OLlrfjx9rxlYTfaSSTAwS2W+HvDIqYFlSOOiWDgTMjfGI7qbwbPXCMz4e/f9dPX
+         7NU10Krc3H0ccuHiQKdBQgYEx0L6NCnPqt0jjRabF5TQbp3P250dk+pLwmzI7nlZJrvx
+         xGUFqaFf5/4lOPhqj+myH9p+KntoHoATCj92Hsq9yr7LMUaqMpI1rFvlnTb2P3T0PRrA
+         ke+A==
+X-Gm-Message-State: AOAM530p2Qrgdi7MNYKwCcTfcbuLyR7Tczp+2QLOsWliqDTe+6H5VqCf
+        bEYJv1xhKPoQYC5FWiaIAd1ucjtaTRZ5mlBuPpI=
+X-Google-Smtp-Source: ABdhPJzkmW2Ov0TQgQn9vqGgt5zEseWGIXG1eQtc/CftuHj7IMouXix0R9fvXlc52UlTXSvDsI1NC0HJbKI8036ARAQ=
+X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr2729806pjf.181.1606830510564;
+ Tue, 01 Dec 2020 05:48:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201130153742.9163-1-johan@kernel.org> <20201130153742.9163-3-johan@kernel.org>
+ <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
+ <X8X9B1jYujUIWXaK@localhost> <CAHp75VfQud=QxwZyhYRU9mtNvrudj0tS6LOuutfJDVdv=-ptXw@mail.gmail.com>
+ <X8Yjc0+Q7fM0nZP+@localhost> <CAHp75VdMcYj0H-HZcmyWFU5ROLwSy=8Pan7JABZxGimqXE35WQ@mail.gmail.com>
+ <X8ZDfvuRbxqsKZMh@localhost>
+In-Reply-To: <X8ZDfvuRbxqsKZMh@localhost>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 1 Dec 2020 15:49:19 +0200
+Message-ID: <CAHp75Vct+J7=BaUdzBktQvKvThCuC-HmyRP2s4LRJvgsE2A2UA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
+ signalling on open
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30 2020 at 16:16, Marcelo Tosatti wrote:
->> Besides, Linux guests don't sync the TSC via IA32_TSC write,
->> but rather use IA32_TSC_ADJUST which currently doesn't participate
->> in the tsc sync heruistics.
+On Tue, Dec 1, 2020 at 3:21 PM Johan Hovold <johan@kernel.org> wrote:
+> On Tue, Dec 01, 2020 at 01:19:30PM +0200, Andy Shevchenko wrote:
+> > On Tue, Dec 1, 2020 at 1:04 PM Johan Hovold <johan@kernel.org> wrote:
+
+...
+
+> > > 0x01 is 1 and is generally treated as boolean true as you know.
+> >
+> > Depends how you interpret this. kstrtobool() uses one character (and
+> > in some cases two) of the input. Everything else is garbage.
+> > Should we interpret garbage?
 >
-> Linux should not try to sync the TSC with IA32_TSC_ADJUST. It expects
-> the BIOS to boot with synced TSCs.
+> No, ideally we should reject the input.
 
-That's wishful thinking.
+We can do it by the way in kstrtobool() and see if anybody complains
+(I believe the world is saner than relying on 0x01 for false and 123
+for true.
 
-Reality is that BIOS tinkerers fail to get it right. TSC_ADJUST allows
-us to undo the wreckage they create.
+...
 
-Thanks,
+> > > So why should a sysfs-interface accept it as valid input and treat it as
+> > > false? That's just bad design.
+> >
+> > I can agree with this.
+>
+> Looks like part of the problem are commits like 4cc7ecb7f2a6 ("param:
+> convert some "on"/"off" users to strtobool") which destroyed perfectly
+> well-defined interfaces.
 
-        tglx
+Oh, but the strtobool() in ABI was before that, for instance
+ % git grep -n -p -w strtobool v3.14
+shows a few dozens of users and some of them looks like ABI.
+
+...
+
+> > Somehow cifs uses kstrtobool() in conjunction with the wider ranges. Nobody
+> > complained so far. But maybe they had it from day 1.
+>
+> Wow, that's pretty nasty.
+
+I have checked, the wider range fits one character. So, basically they
+had this kind of interface from day 1.
+
+...
+
+> > So, we have two issues here: kstrtobool() doesn't report an error of
+> > input when it has garbage, the user may rely on garbage to be
+> > discarded.
+>
+> Right, parsing is too allowing and there are too many ways to say
+> true/false.
+>
+> The power-management attributes use 0 and 1 for boolean like I do here,
+> and I'd prefer to stick to that until we have deprecated the current
+> kstrtobool.
+
+Okay!
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
