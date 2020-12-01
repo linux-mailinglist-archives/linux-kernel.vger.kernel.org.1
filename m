@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEC62CAC86
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B022CAC83
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392461AbgLATjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:39:00 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49914 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392441AbgLATjA (ORCPT
+        id S2392431AbgLATiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:38:55 -0500
+Received: from mail-il1-f195.google.com ([209.85.166.195]:36504 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727534AbgLATiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:39:00 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1JStvW028745;
-        Tue, 1 Dec 2020 19:38:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=icGZiE7CqQVpgl3NSw36TWd7Ec78vKPFhrflFFzlv9Q=;
- b=bj/6bdaFO/G8aV3oZ4On3Vky0mdwM97THgM/P1+5Sk6e3N+egpnDzQboE6E8aiQXZSmH
- obt2EhPKtkjMe2Zfribabsz7pfc/mlZmlWT8xMuwl3co13s9nNarrnN801tSJrWmx4ff
- i+y8rszfHX+izjs5taianvi+NW2tK1OqtbJc4qgjltdOKFPGNmpoLxMSXvUC76m3JNk4
- qLxsG+oBthHEZ8ONOYw+O2gy3K6gkxrX/06pn0LdM3SgWGBYeZZalX98tBUqE5hWf//I
- 4Lle1lLF9jE/6GHebCeDLc00RWXwGUHhSm/TPHVCs/0yCTBC6WMtGamFsi6hFoKg3Yhd fw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 353egkmdeh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 19:38:05 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1JVLwD063814;
-        Tue, 1 Dec 2020 19:38:04 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3540fxfbhh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Dec 2020 19:38:04 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B1Jc38F019892;
-        Tue, 1 Dec 2020 19:38:03 GMT
-Received: from localhost.localdomain (/10.159.239.17)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Dec 2020 11:38:03 -0800
-From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
-To:     arm@kernel.org, arnd@arndb.de, olof@lixom.net
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        santosh.shilimkar@oracle.com, soc@kernel.org
-Subject: [GIT PULL 2/2] ARM: dts: Keystone DTS update for v5.11
-Date:   Tue,  1 Dec 2020 11:37:52 -0800
-Message-Id: <1606851472-26593-1-git-send-email-santosh.shilimkar@oracle.com>
-X-Mailer: git-send-email 1.9.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- phishscore=0 mlxlogscore=824 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
- phishscore=0 mlxlogscore=838 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012010118
+        Tue, 1 Dec 2020 14:38:54 -0500
+Received: by mail-il1-f195.google.com with SMTP id z10so2861817ilu.3;
+        Tue, 01 Dec 2020 11:38:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DYI9qxONvfFsX93NLUdjcCc5cniO135LSRFDHLJMHNc=;
+        b=Wh7K3trIKSFpJAQxplfh0P0wuCQFUKxfvTNValVQ5LhooiuwIwXDf5eDImVAZk86oc
+         FfQuDREbLWtCZcIXbK4Cedy8peJoGBz/5Qhkj5jmF9whXJSONFjl6A/k/Wy4GJA1zln7
+         FEiMj+rkmaaeEwdu2URuCCpMkiHF7ysHbb0EohjdnU+JWsBOTXrpYgIomxCBzdIfhRGe
+         +xd59A4rDLAfgP3uDld/yJs2IAspVj1gSBbnfXXV00CjSQwlPOmZJX6q/434LKExFTAZ
+         bTxgZuNXpSRc7GFVNEIpNXObCGYju44Ke8g4JcJr1exCb6XNmc9od3ZXVN8OltSEH57F
+         Mmyg==
+X-Gm-Message-State: AOAM530awpVkRsFgFUMJE0pEpLCqFHAfYDF5qPVycWqoipAtrz5pHKbZ
+        THzuLxvYACRMCuKDgoS8CA==
+X-Google-Smtp-Source: ABdhPJyvVD5SrSLhVY6E2GMjFTusn8xdbN/fL5/dU9/BGT2sTIfo6kFY4V/phZjd812h0KRt9YFXMA==
+X-Received: by 2002:a92:d3c6:: with SMTP id c6mr4237207ilh.7.1606851487685;
+        Tue, 01 Dec 2020 11:38:07 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id c89sm279355ilf.26.2020.12.01.11.38.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:38:06 -0800 (PST)
+Received: (nullmailer pid 928924 invoked by uid 1000);
+        Tue, 01 Dec 2020 19:38:03 -0000
+Date:   Tue, 1 Dec 2020 12:38:03 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Cerveny <m.cerveny@computer.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v3 2/6] dt-bindings: sram: allwinner,
+ sun4i-a10-system-control: Add V3s compatibles
+Message-ID: <20201201193803.GA928894@robh.at.kernel.org>
+References: <20201116125617.7597-1-m.cerveny@computer.org>
+ <20201116125617.7597-3-m.cerveny@computer.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116125617.7597-3-m.cerveny@computer.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+On Mon, 16 Nov 2020 13:56:13 +0100, Martin Cerveny wrote:
+> Allwinner V3s has system control similar to that in H3.
+> Add compatibles for system control with SRAM C1 region.
+> 
+> Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
+> ---
+>  .../bindings/sram/allwinner,sun4i-a10-system-control.yaml      | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git tags/keystone_dts_for_5.11
-
-for you to fetch changes up to ea270ef71db64715cb46d15b85f30e77775ff88a:
-
-  ARM: dts: keystone-k2g-evm: add HDMI and analog audio data (2020-11-21 19:26:32 -0800)
-
-----------------------------------------------------------------
-ARM: dts: Keystone DTS update for v5.11
-
-- HDMI Support
-- Analog Audio data support
-
-----------------------------------------------------------------
-Peter Ujfalusi (1):
-      ARM: dts: keystone-k2g-evm: add HDMI and analog audio data
-
- arch/arm/boot/dts/keystone-k2g-evm.dts | 112 +++++++++++++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
+Reviewed-by: Rob Herring <robh@kernel.org>
