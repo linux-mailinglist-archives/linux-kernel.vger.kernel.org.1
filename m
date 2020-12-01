@@ -2,172 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF3C2C9E60
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085EB2C9E62
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgLAJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
+        id S1728519AbgLAJxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:53:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgLAJun (ORCPT
+        with ESMTP id S1726099AbgLAJxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:50:43 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D82C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 01:50:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/zt1zxHGQKCphv/4lZVrlz0DlEtzDDr0dZ7+rYKgE+o=; b=spfppcC9JaeMt5TEP3z+CK84cC
-        6KyKVFxwf2OhnaFT4DEpPWjPC8vjcBqMSc9nyOfdYhAeVSYeT9tPFNM3iLEw2jfro6Yumo07Ft9rY
-        CSwgvXep1Vi6ik3FQeysZ/q/QDtja1Sdzk+lP7zg1wVjy/BHDvMcXf1419vYifgVUZSDn0xG8J7sb
-        6sTGiquo5F4Pu7MxfoW7pA1SoK8+Kbo17IDwolSvRCHTIgrdoll94hIjRsjIVTd4CrFamFehG4lNh
-        wr9RGvHljeASQ4qF9aZXMIxlWEnhl30itwsGvnPX6G5olGIwDtx1xQ6Uk9EdRxcQGlFk1Dq04x/MM
-        7ZyOsSVQ==;
-Received: from dyn-227.woodhou.se ([90.155.92.227])
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kk2IE-0000pU-Mk; Tue, 01 Dec 2020 09:49:54 +0000
-Message-ID: <400efca21b03186bde263f5c87c1f42d6955410e.camel@infradead.org>
-Subject: Re: [PATCH] x86, build: remove -m16 workaround for unsupported
- versions of GCC
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Date:   Tue, 01 Dec 2020 09:49:52 +0000
-In-Reply-To: <20201201011307.3676986-1-ndesaulniers@google.com>
-References: <20201201011307.3676986-1-ndesaulniers@google.com>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-zoyimHSB2W58F+/bImn6"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        Tue, 1 Dec 2020 04:53:21 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423E1C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 01:52:35 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id s63so887332pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 01:52:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=LU3g5vLQzyZTf7HTUB9fYI1m4LLPCMslXZ4eYrSd/Gs=;
+        b=QpxOp8O9D09OZheOETrWj8vosanB4xtAj4Dgf5Qf5TzGz8C5zdIlT3bJKlDln6uohR
+         No+zAjeGfAbI0osNbNwcdzBYJm+8iUfKYfbpmh+SDkinlEOwygRVoBq/kb/w/VEbm3AB
+         k3J90iIeJF6bjvH0JAxPlQWRBYLW3pxy3Z49Z+b/UbI09HSwE3flTwt/jollrhqpg2yv
+         qEcAKIPdhDSg+1t5nNoIMIfdKrADOegAzkTkfl+m3Vx+6ftOCQahOOpchCT+LikpgBp9
+         MkKx9YqCvveCXMxFOMxyH7WPX46TuctjQpy6Vj/ZjrfeHJh0y63Zl+71I/pbrJkUl893
+         JuLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LU3g5vLQzyZTf7HTUB9fYI1m4LLPCMslXZ4eYrSd/Gs=;
+        b=X6WAkv0gdyyhwzEvoReqGhf3K+bLE9C3C5TdoQaTehyQZWSYAuTOW/JLKmIftN0J6J
+         fXebwpIzGQkOWQ6kNt4BGYIzlPZ/4NnnHKsl/f1gEFFKuAZ4e6FGL2Cl3GYtzvzfz90/
+         DjnpKI0JiJjVECKkAWAxwWB+Y1lfmSX1pe2xjO/dQn/HgRXNEv+Mxt19EEUeSbdEStl2
+         +0l6ZDol1eRfOq0DfVt0wD7Foad6pRf60AcKn5n5+Blw3ibMszTnsjfzC26DH5M7zfFu
+         tl3hi2Z3EfAbpFQ2lucon/E4PtbP1Z0yFOx2tVeF5tVvfKrOp6UkVIYbkUp8wfVjf7kr
+         enmg==
+X-Gm-Message-State: AOAM533DFcb17StgPlNekdZCnPLOduwCpXwb8UD0CmofX0PiXFNFvMvb
+        UEjSkR3S41CVqXEn6sVFl8pK7XRceko=
+X-Google-Smtp-Source: ABdhPJxa57Fj8KJTrmvAkbEo2xOnWpDqcbJ/4QTO/PNl5oG+6ogXHk+2a/HE81F8QgbxEexVH+aKeQ==
+X-Received: by 2002:a63:484d:: with SMTP id x13mr1523893pgk.301.1606816354819;
+        Tue, 01 Dec 2020 01:52:34 -0800 (PST)
+Received: from VM-0-6-centos.localdomain ([119.28.90.140])
+        by smtp.gmail.com with ESMTPSA id g8sm2013199pgn.47.2020.12.01.01.52.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Dec 2020 01:52:34 -0800 (PST)
+From:   Chunguang Xu <brookxu.cn@gmail.com>
+X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
+To:     sboyd@kernel.org
+Cc:     tglx@linutronix.de, john.stultz@linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] timekeeping: remove unused get_seconds()
+Date:   Tue,  1 Dec 2020 17:52:31 +0800
+Message-Id: <1606816351-26900-1-git-send-email-brookxu@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Chunguang Xu <brookxu@tencent.com>
 
---=-zoyimHSB2W58F+/bImn6
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The get_seconds() cleanup seems to have been completed, now it is
+time to delete the legacy interface to avoid misuse later.
 
-On Mon, 2020-11-30 at 17:13 -0800, Nick Desaulniers wrote:
-> A revert of the following two commits.
-> commit de3accdaec88 ("x86, build: Build 16-bit code with -m16 where
-> possible")
-> commit a9cfccee6604 ("x86, build: Change code16gcc.h from a C header to
-> an assembly header")
->=20
-> Since commit 0bddd227f3dc ("Documentation: update for gcc 4.9
-> requirement") the minimum supported version of GCC is gcc-4.9.  It's now
-> safe to remove this code.
->=20
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ include/linux/ktime.h         |  1 -
+ include/linux/timekeeping32.h | 14 --------------
+ kernel/time/timekeeping.c     |  3 +--
+ 3 files changed, 1 insertion(+), 17 deletions(-)
+ delete mode 100644 include/linux/timekeeping32.h
 
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-
---=-zoyimHSB2W58F+/bImn6
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
-MjAxMDk0OTUzWjAvBgkqhkiG9w0BCQQxIgQgMtFkXPb1c0Lg8eqVCZHGzdhBDFBxXe7P6L1J5vDD
-sMUwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAJY4WgAf6oxoenVv4LThpcbslP2yJ05elmaDVdBRVWjzvvKlXUQ9LrNQC5M4fqIW
-+H1rDlapM3XXOG80uCt7kbAlZ8K7xNqDROaNzQuYdcMfsHjWDuUyEzyToBeSqhkqI5nwabBbxWMQ
-u46cs0NUNRgVwZHmwwrSnB98ltPUFxzjB0drlS4oVr+JKm8U9Ryq7Y4p9jrJzpWBiRwEKZx06UaD
-eS95ZK1svDANIdS5C0/bMQLmQ+kpwCINJV92oiCkL6kb6mHTIu0hcvhju2z2NYe0KKCY67x4N4xG
-emmFE2VOvEm3i5o4ByLl4YX5ARA/4Va9Ab9mpJQlWeSt3m5XhAsAAAAAAAA=
-
-
---=-zoyimHSB2W58F+/bImn6--
+diff --git a/include/linux/ktime.h b/include/linux/ktime.h
+index a12b552..73f20de 100644
+--- a/include/linux/ktime.h
++++ b/include/linux/ktime.h
+@@ -230,6 +230,5 @@ static inline ktime_t ms_to_ktime(u64 ms)
+ }
+ 
+ # include <linux/timekeeping.h>
+-# include <linux/timekeeping32.h>
+ 
+ #endif
+diff --git a/include/linux/timekeeping32.h b/include/linux/timekeeping32.h
+deleted file mode 100644
+index 266017f..0000000
+--- a/include/linux/timekeeping32.h
++++ /dev/null
+@@ -1,14 +0,0 @@
+-#ifndef _LINUX_TIMEKEEPING32_H
+-#define _LINUX_TIMEKEEPING32_H
+-/*
+- * These interfaces are all based on the old timespec type
+- * and should get replaced with the timespec64 based versions
+- * over time so we can remove the file here.
+- */
+-
+-static inline unsigned long get_seconds(void)
+-{
+-	return ktime_get_real_seconds();
+-}
+-
+-#endif
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 6858a31..0a95bb2 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -995,8 +995,7 @@ time64_t ktime_get_seconds(void)
+ /**
+  * ktime_get_real_seconds - Get the seconds portion of CLOCK_REALTIME
+  *
+- * Returns the wall clock seconds since 1970. This replaces the
+- * get_seconds() interface which is not y2038 safe on 32bit systems.
++ * Returns the wall clock seconds since 1970.
+  *
+  * For 64bit systems the fast access to tk->xtime_sec is preserved. On
+  * 32bit systems the access must be protected with the sequence
+-- 
+1.8.3.1
 
