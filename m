@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55042CA5C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 319C12CA5C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731069AbgLAOef convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Dec 2020 09:34:35 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:37284 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726402AbgLAOef (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:34:35 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UHDgYhH_1606833223;
-Received: from 192.168.74.104(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UHDgYhH_1606833223)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 01 Dec 2020 22:33:43 +0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
-From:   wangrongwei <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <20201201112647.GA22927@zn.tnic>
-Date:   Tue, 1 Dec 2020 22:33:42 +0800
-Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-        bjorn.andersson@linaro.org, shawnguo@kernel.org, vkoul@kernel.org,
-        geert+renesas@glider.be, Anson.Huang@nxp.com, michael@walle.cc,
-        krzk@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
-        ardb@kernel.org, masahiroy@kernel.org, gshan@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <FD133B32-6FC4-43FC-A6EE-A03FF3F7B1B1@linux.alibaba.com>
-References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
- <20201130190331.GI6019@zn.tnic>
- <8724DF91-5BF0-4265-8091-F9E0C7DC2F1A@linux.alibaba.com>
- <20201201112647.GA22927@zn.tnic>
-To:     Borislav Petkov <bp@alien8.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        id S2388632AbgLAOfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:35:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726402AbgLAOfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:35:30 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DDAA20757;
+        Tue,  1 Dec 2020 14:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606833289;
+        bh=MyXMx5yXcwhyHoSDPi4JqwtH6IbreqZ2dffpm2rMrnA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dk2mKbi0tMydQDEKwILrugaQ4+lDOei99EiGyEzw8miGGC/enajtGKrNxNAgOh19d
+         bUolBQkpIVH3Hui3nBJELnqmmCNUkGvsVFhpqQ5K0vNjOLXzgTLtjz0BPDjBiyCFTO
+         H6YlxqFYzbMW5dFfkwv/1U0YroBSdxaecQ6rhs4U=
+Date:   Tue, 1 Dec 2020 14:34:20 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-mmc@vger.kernel.org, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-usb@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
+ Tegra20/30 SoCs
+Message-ID: <20201201143420.GD5239@sirena.org.uk>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <160683107675.35139.13466076210885462180.b4-ty@kernel.org>
+ <858e4183-5064-084f-9b80-870e118c3edc@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SO98HVl1bnMOfKZd"
+Content-Disposition: inline
+In-Reply-To: <858e4183-5064-084f-9b80-870e118c3edc@gmail.com>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--SO98HVl1bnMOfKZd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 2020年12月1日 下午7:26，Borislav Petkov <bp@alien8.de> 写道：
-> 
-> On Tue, Dec 01, 2020 at 11:44:52AM +0800, wangrongwei wrote:
->> Indeed, I have read the commit message, and it seems that writes data
->> to a system register may cause many problems. Actually, we have taken
->> this into account. In the current version, we have separated the read
->> and write functions to the system registers into two commands,
-> 
-> There's rdmsr and wrmsr in msr-tools on x86 too.
-Yes, and x86 also provides two instructions with the same name in the instruction set, but not in ARM.
-> 
->> In providing the WRASR function, we consider that users should bear
->> the consequences of rewriting registers during the debugging phase. In
->> fact, most of the time we rarely use WRASR, and only use it when we
->> are very confident.
-> 
-> As I said, there should never never ever be a tool which allows writing
-> of registers from userspace. If I could go back in time, I'd stop this
-> on x86 but it is too late now. Not for ARM though.
-> 
-> Also, do you see how all the people who replied to your mail, put the
-> text under the quoted text. Do that too, pls, from now on, and refrain
-> from top-posting.
-Thank you for the reminder, it has been corrected!
-> 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->    Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-Thanks,
-Rongwei Wang.
+On Tue, Dec 01, 2020 at 05:17:20PM +0300, Dmitry Osipenko wrote:
+> 01.12.2020 16:57, Mark Brown =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
 
+> > [1/1] regulator: Allow skipping disabled regulators in regulator_check_=
+consumers()
+> >       (no commit info)
+
+> Could you please hold on this patch? It won't be needed in a v2, which
+> will use power domains.
+
+> Also, I'm not sure whether the "sound" tree is suitable for any of the
+> patches in this series.
+
+It didn't actually get applied (note the "no commit info") - it looks
+like b4's matching code got confused and decided to generate mails for
+anything that I've ever downloaded and not posted.
+
+--SO98HVl1bnMOfKZd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GVGsACgkQJNaLcl1U
+h9BikAf/buTRpKtsLDzFSoQBjj73gw+9m/quyO+03JWRrvv3U6Me8tZmCZHGcAhJ
+5+PFS79ESOLZrypMM4IE6HEK1cq0AFNjUDMqVKtWFP4GgZ8LBjcLvSF8OYkdHwo7
+TiUsxAOnhequj3OhP46T/AuusHAX53D4Fg4rLsJMCrJygo0e6kAaOB7F9ZlJqNQt
+A3pk4g+mC153uBGhCsZRWQmj93R9SxH6vUd3g6ePE0jIZAqa3LSJHdYX3xRSfQWd
+Iojrsh3QYMFNdrajfbhAcn9hyXU1O2Zy0NadudYbqOIYWBQ5TEbW8z55BJLr1a2O
+09Ob2CqfLC5c6oPrJJtjRMGm4w8iaw==
+=1gdB
+-----END PGP SIGNATURE-----
+
+--SO98HVl1bnMOfKZd--
