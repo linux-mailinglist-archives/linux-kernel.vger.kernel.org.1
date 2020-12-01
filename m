@@ -2,37 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5725A2CABE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CEC2CAC40
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392371AbgLATYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:24:09 -0500
-Received: from verein.lst.de ([213.95.11.211]:51046 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392275AbgLATYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:24:09 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 7104B67373; Tue,  1 Dec 2020 20:23:26 +0100 (CET)
-Date:   Tue, 1 Dec 2020 20:23:26 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        linux-nvme@lists.infradead.org, kernel-janitors@vger.kernel.org,
+        id S1730230AbgLATZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:25:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392351AbgLATZo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 14:25:44 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF56CC094242
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:23:53 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id w9so668315ooh.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:23:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ad33vtQ0/TKDejPCtaSYKTc3FPxQMGfg6cttssilrRQ=;
+        b=lXajYl2sMeDxv4EyeKesRHLK6WbXvBuzgYacl9brxjVk0/TsFYOwy9Z41ZqqXr7YT9
+         dhScLNNlwEWQ79sxIS0Osm4hvY3JUNJCzgFfuCUZYzaVaUFqhq7CwMEWqipYvKpqzd1Z
+         +agh8JHzLu470un6J0n/3rp1fUARjUzZ3lQfD0IFedM5avAaz+bEJ5lCpRB2XHs0QKhX
+         OrLGp8mB4k77V40DfPIHXJ6ADh2JVxPexSP3gxenouhDK3eVcqBlj94fga2tAL6IvAeY
+         SM60rlRc12dffVopqnRmPu71bFENgxJ/N/bkgWl7VuLLXYwkXxHLQmU4s6TSXIdp/ah0
+         96dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ad33vtQ0/TKDejPCtaSYKTc3FPxQMGfg6cttssilrRQ=;
+        b=XqEvJuqivnrVgdg8qD53TCb945pCBai7cH2QeZlGIgXipaPCIeyDMUr/Jq/0EBSlch
+         5Y2pbv/LqPalOiAY5BCUe/Noa5UGzTdGxcGUKGDZshqbgQYkkMq8J9R1ViLEJl2ewrz6
+         TQdbCPSYl0Uxvefz6dBN7YZiUNVck+xogHXrpCSGTOqdDetcxg3Yu2vLnV1f41xzo7aq
+         DXpr8TRBhyNYv7BlWIuYpXrvEyvNRpqWhW3g67EXBdTa9dYyty6P6Dt6Eueg6nmr87AX
+         MK4XahMqYlmuE40SP0wwTPSqlb3uDzUXjxy36H6rYVrQFgeG3P6Cynp4utNecIendFlI
+         3L+g==
+X-Gm-Message-State: AOAM533zuIh+RgLkPgb2R/mJCjPRvCFwWlK3brLEKBaj3Fb8roKG0iIj
+        9pMshufU0gYfN2vjgjFrb1P4ZQ==
+X-Google-Smtp-Source: ABdhPJxnT8A84RlLvUktW2HaV+avyxTksP8j1V3cOvkwF/yJPH6Ac/XQirZqAM0yyl3x8EB3h5B+Zw==
+X-Received: by 2002:a4a:88c4:: with SMTP id q4mr3006505ooh.20.1606850631862;
+        Tue, 01 Dec 2020 11:23:51 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m109sm161933otc.30.2020.12.01.11.23.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:23:51 -0800 (PST)
+Date:   Tue, 1 Dec 2020 13:23:49 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvmet: Kconfig: Fix spelling mistake "incuding" ->
- "including"
-Message-ID: <20201201192326.GA2149@lst.de>
-References: <20201126224029.13527-1-colin.king@canonical.com>
+Subject: Re: [PATCH 6/6] arm64: dts: qcom: qrb5165-rb5: Add Audio support
+Message-ID: <X8aYRWV390a0Kn6i@builder.lan>
+References: <20201201153706.13450-1-srinivas.kandagatla@linaro.org>
+ <20201201153706.13450-7-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126224029.13527-1-colin.king@canonical.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20201201153706.13450-7-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
+On Tue 01 Dec 09:37 CST 2020, Srinivas Kandagatla wrote:
 
-applied to nvme-5.11.
+> This patch add support for two WSA881X smart speakers attached via Soundwire
+> and a DMIC0 on the main board.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 125 +++++++++++++++++++++++
+>  1 file changed, 125 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> index ce22d4fa383e..03229d5cb9d3 100644
+> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> @@ -7,6 +7,8 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> +#include <dt-bindings/sound/qcom,q6afe.h>
+> +#include <dt-bindings/sound/qcom,q6asm.h>
+>  #include "sm8250.dtsi"
+>  #include "pm8150.dtsi"
+>  #include "pm8150b.dtsi"
+> @@ -120,6 +122,11 @@
+>  	};
+>  };
+>  
+> +&adsp {
+> +	status = "okay";
+> +	firmware-name = "qcom/sm8250/adsp.mdt";
+
+Rather than adding all the mdt + bXX files to linux-firmware (when that
+day comes) can we please make this qcom/sm8250/adsp.mbn from the start?
+
+The mbn can be generated from the existing files using
+https://github.com/andersson/pil-squasher, or for testing purposes the
+.mdt can simply be renamed .mbn and the mdt loader will find the
+remaining .bXX files.
+
+> +};
+> +
+>  &apps_rsc {
+>  	pm8009-rpmh-regulators {
+>  		compatible = "qcom,pm8009-rpmh-regulators";
+> @@ -483,6 +490,35 @@
+>  	status = "okay";
+>  };
+>  
+> +&q6afedai {
+> +	qi2s@16 {
+> +		reg = <16>;
+> +		qcom,sd-lines = <0 1 2 3>;
+> +	};
+> +};
+> +
+> +/* TERT I2S Uses 1 I2S SD Lines for audio on LT9611 HDMI Bridge */
+> +&q6afedai {
+> +	qi2s@20 {
+> +		reg = <20>;
+> +		qcom,sd-lines = <0>;
+> +	};
+> +};
+> +
+> +&q6asmdai {
+> +	dai@0 {
+> +		reg = <0>;
+> +	};
+> +
+> +	dai@1 {
+> +		reg = <1>;
+> +	};
+> +
+> +	dai@2 {
+> +		reg = <2>;
+> +	};
+> +};
+> +
+>  &sdhc_2 {
+>  	status = "okay";
+>  	pinctrl-names = "default";
+> @@ -497,6 +533,88 @@
+>  	no-emmc;
+>  };
+>  
+> +&swr0 {
+> +
+
+Unnecessary empty line.
+
+> +	left_spkr: wsa8810-left{
+> +		compatible = "sdw10217211000";
+> +		reg = <0 3>;
+> +		powerdown-gpios = <&tlmm 130 GPIO_ACTIVE_HIGH>;
+> +		#thermal-sensor-cells = <0>;
+> +		sound-name-prefix = "SpkrLeft";
+> +		#sound-dai-cells = <0>;
+> +	};
+> +
+
+Ditto.
+
+Regards,
+Bjorn
+
+> +
+> +	right_spkr: wsa8810-right{
+> +		compatible = "sdw10217211000";
+> +		reg = <0 4>;
+> +		powerdown-gpios = <&tlmm 130 GPIO_ACTIVE_HIGH>;
+> +		#thermal-sensor-cells = <0>;
+> +		sound-name-prefix = "SpkrRight";
+> +		#sound-dai-cells = <0>;
+> +	};
+> +};
+> +
+> +&sound {
+> +	compatible = "qcom,qrb5165-rb5";
+> +	pinctrl-0 = <&tert_mi2s_sck_active
+> +			 &tert_mi2s_sd0_active
+> +			 &tert_mi2s_ws_active>;
+> +	pinctrl-names = "default";
+> +	model = "Qualcomm-RB5-WSA8815-Speakers-DMIC0";
+> +	audio-routing =
+> +		"SpkrLeft IN", "WSA_SPK1 OUT",
+> +		"SpkrRight IN", "WSA_SPK2 OUT",
+> +		"VA DMIC0", "vdd-micb",
+> +                "VA DMIC1", "vdd-micb",
+> +		"MM_DL1",  "MultiMedia1 Playback",
+> +		"MultiMedia3 Capture", "MM_UL3";
+> +
+> +	mm1-dai-link {
+> +		link-name = "MultiMedia1";
+> +		cpu {
+> +			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
+> +		};
+> +	};
+> +
+> +	mm3-dai-link {
+> +		link-name = "MultiMedia3";
+> +		cpu {
+> +			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
+> +		};
+> +	};
+> +
+> +	dma-dai-link {
+> +		link-name = "WSA Playback";
+> +		cpu {
+> +			sound-dai = <&q6afedai WSA_CODEC_DMA_RX_0>;
+> +		};
+> +
+> +		platform {
+> +			sound-dai = <&q6routing>;
+> +		};
+> +
+> +		codec {
+> +			sound-dai = <&left_spkr>, <&right_spkr>, <&swr0 0>, <&wsamacro 0>;
+> +		};
+> +	};
+> +
+> +	va-dai-link {
+> +		link-name = "VA Capture";
+> +		cpu {
+> +			sound-dai = <&q6afedai VA_CODEC_DMA_TX_0>;
+> +		};
+> +
+> +		platform {
+> +			sound-dai = <&q6routing>;
+> +		};
+> +
+> +		codec {
+> +			sound-dai = <&vamacro 0>;
+> +		};
+> +	};
+> +};
+> +
+>  /* CAN */
+>  &spi0 {
+>  	status = "okay";
+> @@ -792,3 +910,10 @@
+>  	vdda-phy-supply = <&vreg_l9a_1p2>;
+>  	vdda-pll-supply = <&vreg_l18a_0p92>;
+>  };
+> +
+> +&vamacro {
+> +	pinctrl-0 = <&cdc_dmic01_clk_active &cdc_dmic01_data_active>;
+> +	pinctrl-names = "default";
+> +	vdd-micb-supply = <&vreg_s4a_1p8>;
+> +	qcom,dmic-sample-rate = <600000>;
+> +};
+> -- 
+> 2.21.0
+> 
