@@ -2,185 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CF62CADDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9716E2CADE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388775AbgLAUyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:54:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388525AbgLAUyp (ORCPT
+        id S1729508AbgLAU4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:56:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36483 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725899AbgLAU4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:54:45 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6120C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:53:59 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id d8so7314916lfa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:53:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t1JzIjD0bsSWEgEcAE5jhkMduDbmpmcUucP5XBr/Mq0=;
-        b=tA+Xt2teB8gpMUCa73X6SalNSV3SpSCKjmfbGP86PcqzAPvkGVZU06JVJqeJXKItdB
-         JWSJjByB8wuCsk+ZKm8l09A7Xr1QvPM6+rvWm9FfwrOwTJTq8siEGugHM/mMG9qOCoFk
-         fFz0qWgoQeEh/qbOvo52gsTfRQc0aSdc4o9N1ZVEcdZfjlmM7vBEwIav95/Kjaxei7zA
-         3mXAiQv102C0+UkDBX6XgfXrU56bBopj0Yes4BAPHBEx18hSPEWWMSSZJ/I1l66vouWC
-         3QtgIRhSDUbejCjvORTJbpIV2zaIOOuiC7yJf/uS/i1Bw+Y3y2aJfB4JaZooP4NJy82x
-         cwhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t1JzIjD0bsSWEgEcAE5jhkMduDbmpmcUucP5XBr/Mq0=;
-        b=pGhGoAw7992McwTrysFvR5fTVJemMhQ9/Uwv6I3zbyKnriSUivz2MzhcRwlVOqOpg3
-         3/VYK1CeyaFkjWaVzCvL8hViCBPCBAB6QxfxZmjuk9obtJh+1A+u1frDkDSGuRZWyW13
-         Dm+DXTBxPYrp5rkU6Gz5VZdq530PnTxpB61/U9pfobeQwxHxlGiVCvJwE/BBYdLV3Se+
-         uCy0KNctbWbKBiRFqnu/YDk4L/q5/KVLpdKppNblTYJa+ZrJjTtTk+ltNHdLhsgabzRK
-         lU/CI3TgojIC/T3/8DigBTNJC7psQn1mwhNKnE3F+h/TkaiKDRlBUCS3FxxFd307c48D
-         im/Q==
-X-Gm-Message-State: AOAM531mEZbpN4hXVn4ILlQw4zYAr6ehLQYsh6bB6J/fBFXyQ4glN4A2
-        mk+r3+LwUzrHEEhwFNX67gPp9g3lG17lfo81Vmtb6Q==
-X-Google-Smtp-Source: ABdhPJz1wism1bJwqN+nz7o45hCSeew8oodpu8lQt0ihJK7HjxGwusOhWEiVIiZA0YphO+jrb7L51aiKhFVYbQtCozM=
-X-Received: by 2002:ac2:5a4d:: with SMTP id r13mr1970603lfn.449.1606856037786;
- Tue, 01 Dec 2020 12:53:57 -0800 (PST)
+        Tue, 1 Dec 2020 15:56:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606856084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Ksj4wJtdkrbp/nHQqEiVJAVwNM4RHAPJbnuVSxJ2RA=;
+        b=Jf+KTuCGoBS3ZjHG5f3BqExJY/iHF1OsuZFXZP7IHS8XsZUD8xzsX7zi7CVH2eEKVyoPbw
+        1BpaIL1Zjb3PTsu4UBNARJLnDmnuMQmqCI+/V1JB9/fSQdDU5rMjzDGDmW2Tbx56YTaJYz
+        VMYr2k5WuJQ7Shm1XUCFrQCmV08J/WY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171-ARmqBLeoOb6JlVMTbCUpUQ-1; Tue, 01 Dec 2020 15:54:39 -0500
+X-MC-Unique: ARmqBLeoOb6JlVMTbCUpUQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C48843E747;
+        Tue,  1 Dec 2020 20:54:37 +0000 (UTC)
+Received: from krava (unknown [10.40.193.1])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 21F9460854;
+        Tue,  1 Dec 2020 20:54:33 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 21:54:33 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org
+Subject: Re: [RFC v2 1/2] perf: support build BPF skeletons with perf
+Message-ID: <20201201205433.GE3169083@krava>
+References: <20201201073647.753079-1-songliubraving@fb.com>
+ <20201201073647.753079-2-songliubraving@fb.com>
 MIME-Version: 1.0
-References: <20201130233504.3725241-1-axelrasmussen@google.com>
- <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com>
- <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
- <xr93lfehl8al.fsf@gthelen.svl.corp.google.com> <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
- <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
-In-Reply-To: <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 1 Dec 2020 12:53:46 -0800
-Message-ID: <CALvZod5CpPhvzB99VZTc33Sb5YCbJNHFe3k33k+HwNfJvJbpJQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
- in tracepoints
-To:     Axel Rasmussen <axelrasmussen@google.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201073647.753079-2-songliubraving@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Tejun Heo
+On Mon, Nov 30, 2020 at 11:36:46PM -0800, Song Liu wrote:
+> BPF programs are useful in perf to profile BPF programs. BPF skeleton is
+> by far the easiest way to write BPF tools. Enable building BPF skeletons
+> in util/bpf_skel. A dummy bpf skeleton is added. More bpf skeletons will
+> be added for different use cases.
+> 
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  tools/bpf/bpftool/Makefile           |  2 ++
+>  tools/build/Makefile.feature         |  3 +-
+>  tools/perf/Makefile.config           |  9 +++++
+>  tools/perf/Makefile.perf             | 52 ++++++++++++++++++++++++++--
+>  tools/perf/util/bpf_skel/.gitignore  |  3 ++
+>  tools/perf/util/bpf_skel/dummy.bpf.c | 19 ++++++++++
+>  tools/scripts/Makefile.include       |  1 +
+>  7 files changed, 86 insertions(+), 3 deletions(-)
+>  create mode 100644 tools/perf/util/bpf_skel/.gitignore
+>  create mode 100644 tools/perf/util/bpf_skel/dummy.bpf.c
+> 
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index f60e6ad3a1dff..a01407ec78dc5 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -120,6 +120,8 @@ endif
+>  
+>  BPFTOOL_BOOTSTRAP := $(if $(OUTPUT),$(OUTPUT)bpftool-bootstrap,./bpftool-bootstrap)
+>  
+> +bootstrap: $(BPFTOOL_BOOTSTRAP)
+> +
+>  BOOTSTRAP_OBJS = $(addprefix $(OUTPUT),main.o common.o json_writer.o gen.o btf.o)
+>  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+>  
+> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+> index 97cbfb31b7625..95a58b5564218 100644
+> --- a/tools/build/Makefile.feature
+> +++ b/tools/build/Makefile.feature
+> @@ -70,7 +70,8 @@ FEATURE_TESTS_BASIC :=                  \
+>          libaio				\
+>          libzstd				\
+>          disassembler-four-args		\
+> -        file-handle
+> +        file-handle			\
+> +        clang-bpf-co-re
 
-On Tue, Dec 1, 2020 at 11:14 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
->
-> On Tue, Dec 1, 2020 at 10:42 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Tue, Dec 1, 2020 at 9:56 AM Greg Thelen <gthelen@google.com> wrote:
-> > >
-> > > Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > >
-> > > > On Mon, Nov 30, 2020 at 5:34 PM Shakeel Butt <shakeelb@google.com> wrote:
-> > > >>
-> > > >> On Mon, Nov 30, 2020 at 3:43 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > > >> >
-> > > >> > syzbot reported[1] a use-after-free introduced in 0f818c4bc1f3. The bug
-> > > >> > is that an ongoing trace event might race with the tracepoint being
-> > > >> > disabled (and therefore the _unreg() callback being called). Consider
-> > > >> > this ordering:
-> > > >> >
-> > > >> > T1: trace event fires, get_mm_memcg_path() is called
-> > > >> > T1: get_memcg_path_buf() returns a buffer pointer
-> > > >> > T2: trace_mmap_lock_unreg() is called, buffers are freed
-> > > >> > T1: cgroup_path() is called with the now-freed buffer
-> > > >>
-> > > >> Any reason to use the cgroup_path instead of the cgroup_ino? There are
-> > > >> other examples of trace points using cgroup_ino and no need to
-> > > >> allocate buffers. Also cgroup namespace might complicate the path
-> > > >> usage.
-> > > >
-> > > > Hmm, so in general I would love to use a numeric identifier instead of a string.
-> > > >
-> > > > I did some reading, and it looks like the cgroup_ino() mainly has to
-> > > > do with writeback, instead of being just a general identifier?
-> > > > https://www.kernel.org/doc/Documentation/cgroup-v2.txt
-> >
-> > I think you are confusing cgroup inodes with real filesystem inodes in that doc.
-> >
-> > > >
-> > > > There is cgroup_id() which I think is almost what I'd want, but there
-> > > > are a couple problems with it:
-> > > >
-> > > > - I don't know of a way for userspace to translate IDs -> paths, to
-> > > > make them human readable?
-> > >
-> > > The id => name map can be built from user space with a tree walk.
-> > > Example:
-> > >
-> > > $ find /sys/fs/cgroup/memory -type d -printf '%i %P\n'                                                                          # ~ [main]
-> > > 20387 init.scope
-> > > 31 system.slice
-> > >
-> > > > - Also I think the ID implementation we use for this is "dense",
-> > > > meaning if a cgroup is removed, its ID is likely to be quickly reused.
-> > > >
-> >
-> > The ID for cgroup nodes (underlying it is kernfs) are allocated from
-> > idr_alloc_cyclic() which gives new ID after the last allocated ID and
-> > wrap after around INT_MAX IDs. So, likeliness of repetition is very
-> > low. Also the file_handle returned by name_to_handle_at() for cgroupfs
-> > returns the inode ID which gives confidence to the claim of low chance
-> > of ID reusing.
->
-> Ah, for some reason I remembered it using idr_alloc(), but you're
-> right, it does use cyclical IDs. Even so, tracepoints which expose
-> these IDs would still be difficult to use I think.
+this needs to go under FEATURE_TESTS_EXTRA and you need to call
+$(call feature_check,clang-bpf-co-re) before checking on $(feature-clang-bpf-co-re)
 
-The writeback tracepoint in include/trace/events/writeback.h is
-already using the cgroup IDs. Actually it used to use cgroup_path but
-converted to cgroup_ino.
+otherwise the test-all will mark it as detected even if it's not
 
-Tejun, how do you use these tracepoints?
+>  
+>  # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
+>  # of all feature tests
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index ce8516e4de34f..cb0cf06e0bb43 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -621,6 +621,15 @@ ifndef NO_LIBBPF
+>    endif
+>  endif
+>  
+> +ifeq ($(feature-clang-bpf-co-re), 0)
+> +  BUILD_BPF_SKEL := 0
+> +endif
+> +
+> +ifeq ($(BUILD_BPF_SKEL), 1)
+> +  $(call detected,CONFIG_PERF_BPF_SKEL)
+> +  CFLAGS += -DBUILD_BPF_SKEL
+> +endif
+> +
+>  dwarf-post-unwind := 1
+>  dwarf-post-unwind-text := BUG
+>  
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 7ce3f2e8b9c74..37b7ffe1db27c 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -126,6 +126,8 @@ include ../scripts/utilities.mak
+>  #
+>  # Define NO_LIBDEBUGINFOD if you do not want support debuginfod
+>  #
+> +# Define BUILD_BPF_SKEL to enable BPF skeletons
+> +#
+>  
+>  # As per kernel Makefile, avoid funny character set dependencies
+>  unexport LC_ALL
+> @@ -735,7 +737,8 @@ prepare: $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)common-cmds.h archheaders $(drm_ioc
+>  	$(x86_arch_prctl_code_array) \
+>  	$(rename_flags_array) \
+>  	$(arch_errno_name_array) \
+> -	$(sync_file_range_arrays)
+> +	$(sync_file_range_arrays) \
+> +	bpf-skel
 
-> Say we're trying to
-> collect a histogram of lock latencies over the course of some test
-> we're running. At the end, we want to produce some kind of
-> human-readable report.
->
+I think the 'prepare' target is misused already with other stuff,
+there's generated bpf_counter.c dependency on util/bpf_skel/bpf_prog_profiler.skel.h
+in util/.bpf_counter.o.cmd, that should triger the build no?
 
-I am assuming the test infra and the tracing infra are decoupled
-entities and test infra is orchestrating the cgroups as well.
+we have few other dependencies like that for flex/bison generation
+perhaps we could follow also that 
 
-> cgroups may come and go throughout the test. Even if we never re-use
-> IDs, in order to be able to map all of them to human-readable paths,
-> it seems like we'd need some background process to poll the
-> /sys/fs/cgroup/memory directory tree as Greg described, keeping track
-> of the ID<->path mapping. This seems expensive, and even if we poll
-> relatively frequently we might still miss short-lived cgroups.
->
-> Trying to aggregate such statistics across physical machines, or
-> reboots of the same machine, is further complicated. The machine(s)
-> may be running the same application, which runs in a container with
-> the same path, but it'll end up with different IDs. So we'd have to
-> collect the ID<->path mapping from each, and then try to match up the
-> names for aggregation.
+>  
+>  $(OUTPUT)%.o: %.c prepare FORCE
+>  	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=$(build-dir) $@
+> @@ -1008,7 +1011,52 @@ config-clean:
+>  python-clean:
+>  	$(python-clean)
+>  
+> -clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBPERF)-clean config-clean fixdep-clean python-clean
+> +SKEL_OUT := $(abspath util/bpf_skel)
+> +SKEL_TMP_OUT := $(abspath util/bpf_skel/.tmp)
+> +SKELETONS := $(SKEL_OUT)/dummy.skel.h
+> +
+> +ifdef BUILD_BPF_SKEL
+> +CLANG ?= clang
+> +LLVM_STRIP ?= llvm-strip
 
-How about adding another tracepoint in cgroup_create which will output
-the ID along with the name or path? With a little post processing you
-can get the same information. Also note that if the test is
-deleting/creating the cgroup with the same name, you will miss that
-information if filtering with just path.
+please move this up where we have similar setup like HOSTCC and others
 
-IMHO cgroup IDs will make the kernel code much simpler with the
-tradeoff of a bit more work in user space.
+> +BPFTOOL_CFLAGS := $(filter-out -D_GNU_SOURCE,$(CFLAGS))
+> +BPFTOOL := $(SKEL_TMP_OUT)/bpftool-bootstrap
+> +LIBBPF_SRC := $(abspath ../lib/bpf)
+> +BPFOBJ := $(SKEL_TMP_OUT)/libbpf.a
+
+we already build libbpf.a, chekc 'LIBBPF = $(BPF_PATH)libbpf.a' above
+
+> +BPF_INCLUDE := $(SKEL_TMP_OUT)
+> +submake_extras := feature_display=0
+> +
+> +$(SKEL_TMP_OUT):
+> +	$(Q)$(MKDIR) -p $@
+> +
+> +$(BPFTOOL): | $(SKEL_TMP_OUT)
+> +	CFLAGS= $(MAKE) $(submake_extras) -C ../bpf/bpftool \
+> +		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
+> +
+> +$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(BPFOBJ) | $(SKEL_TMP_OUT)
+> +	$(call QUIET_CLANG, $@)
+> +	$(Q)$(CLANG) -g -O2 -target bpf	-c $(filter util/bpf_skel/%.bpf.c,$^) -o $@ && \
+> +	$(LLVM_STRIP) -g $@
+> +
+> +$(SKEL_OUT)/%.skel.h: $(SKEL_TMP_OUT)/%.bpf.o | $(BPFTOOL)
+> +	$(call QUIET_GENSKEL, $@)
+
+is there a reason to use call in here? you could define QUIET_GENSKEL
+to use $@ and use it the same way as we use the rest of QUIET_* stuf
+in Makefile.perf
+
+> new file mode 100644
+> index 0000000000000..5263e9e6c5d83
+> --- /dev/null
+> +++ b/tools/perf/util/bpf_skel/.gitignore
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +.tmp
+> +*.skel.h
+> \ No newline at end of file
+> diff --git a/tools/perf/util/bpf_skel/dummy.bpf.c b/tools/perf/util/bpf_skel/dummy.bpf.c
+> new file mode 100644
+> index 0000000000000..492a43a851deb
+> --- /dev/null
+> +++ b/tools/perf/util/bpf_skel/dummy.bpf.c
+
+hum, what's the reason for dummy skeleton? it just adds
+time to compilation no?
+
+thanks,
+jirka
+
