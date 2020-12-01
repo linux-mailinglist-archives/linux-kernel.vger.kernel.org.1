@@ -2,147 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439132CA3DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F632CA3DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390896AbgLAN24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:28:56 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:41675 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgLAN2z (ORCPT
+        id S2391133AbgLAN3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391125AbgLAN3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:28:55 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201201132804euoutp021d2202dafc4263eaff6172d26024c102~MmriM29zS3135731357euoutp02a
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:28:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201201132804euoutp021d2202dafc4263eaff6172d26024c102~MmriM29zS3135731357euoutp02a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1606829284;
-        bh=VFkr+TeeXOlcI2Bu1gftl7UN2NGPdlJ7xgNDYKVJe3w=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=FJf8uGRq0oJd5TL+76fFH1FAt83I1X9l0tEPk80neQrArIcFgmAaKyDFfdeN/TtXb
-         hh7u+iV2thCzIAuTeRiILzCHktsBRxWlBUseGMwGG9R5aoGKeBV5kAxbOUNQBR2wkk
-         i7/OkaagxTQoNWlDvN7ZWUdSUMVRpD1fIYL8H6/Y=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201201132759eucas1p125949234c39f998adb50bc954b979fbd~MmrdL0_Nj0921209212eucas1p1v;
-        Tue,  1 Dec 2020 13:27:59 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 14.E9.45488.FD446CF5; Tue,  1
-        Dec 2020 13:27:59 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201201132758eucas1p2646dd84fcc2a91b6ac1d224842478eda~Mmrcx-qSz2851028510eucas1p2L;
-        Tue,  1 Dec 2020 13:27:58 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201201132758eusmtrp20c2063f121f75f22f0bb93c9eeefecc3~MmrcxVN-31364113641eusmtrp2v;
-        Tue,  1 Dec 2020 13:27:58 +0000 (GMT)
-X-AuditID: cbfec7f5-c5fff7000000b1b0-71-5fc644de08d8
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 13.71.16282.ED446CF5; Tue,  1
-        Dec 2020 13:27:58 +0000 (GMT)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201201132758eusmtip16ebdde7b562762fec494129d1b2d002b~MmrcQDuOL2490724907eusmtip1r;
-        Tue,  1 Dec 2020 13:27:58 +0000 (GMT)
-Subject: Re: linux-next: Tree for Nov 30
- (drivers/pci/controller/dwc/pcie-designware-host.c)
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <8b81ba16-7493-ddd2-65ac-b1ac46537deb@samsung.com>
-Date:   Tue, 1 Dec 2020 14:27:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.5.0
+        Tue, 1 Dec 2020 08:29:37 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58919C0613CF;
+        Tue,  1 Dec 2020 05:28:56 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606829334;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1YJRW59Yy59fUBwrYfLxtsF+fz7y5/bsfKwLhEMMwLw=;
+        b=QkkZneQ8xwGX3u1ADdvLDl+jTbrRiew2RoZhQfnP2RV/XPHCyLM8IJ5uHBUgtGBK9TnYx5
+        4FaQ5XFpkNhDyG5N0g9d6ydepGNxMm5LiCQN0i9wWLBBTlFZfjVDbVm2XiqLj4sbn7soPl
+        yWtKy92JfyaCsxW6ttUQChMf5IPEVOj4NMuiQw2CNMNtjLG9oeKbngCwB/ZMLuFRqqHsuc
+        hjhfXHSICJHvHEf+YVlJ7Cxi84xCcuDd9QfmAaOXHVTF3XOHEIHjGMJY3X4x1MJiYs7mpd
+        tk+8dB6WRxyJ2JG5DgAa03+cr3KVC5pIfGr0X+iZ6lUXOCImgYa7zC3aG8Ncag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606829334;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1YJRW59Yy59fUBwrYfLxtsF+fz7y5/bsfKwLhEMMwLw=;
+        b=gn3xJ3yiG4kyabDU1Ak6NGZPA+InzSnHjXocPnttQulDD8/gasYGRPjBl6VaUQtbSpZGkq
+        iSAPphxGbQTt/mAA==
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: crypto: sun4i-ss: error with kmap
+In-Reply-To: <20201201130102.GA23461@Red>
+References: <20201201130102.GA23461@Red>
+Date:   Tue, 01 Dec 2020 14:28:54 +0100
+Message-ID: <87ft4phcyx.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201201113412.GA2389@e121166-lin.cambridge.arm.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKKsWRmVeSWpSXmKPExsWy7djP87r3XY7FGyz4yWSxpCnD4savNlaL
-        y7vmsFkcXNjGaHF23nE2ize/X7BbvL0zncVi696r7A4cHmvmrWH0aLxxg81jwaZSj80rtDz6
-        tqxi9Pi8SS6ALYrLJiU1J7MstUjfLoEr4+aVz8wFBzgqrh+dwtrA+Jiti5GTQ0LARGLd/umM
-        XYxcHEICKxgl1nZuZIJwvjBK/Jp4gB3C+cwocfXfA2aYljfdzSwQieWMEu+fHWGDcN4zSkzb
-        9RCsSlggTuLSye9MILaIQKTEg7aZrCBFzAJTmSS2zexhBUmwCRhKdL3tAruEV8BOYsu/hewg
-        NouAisTXg6cYQWxRgSSJgx8fQNUISpyc+YQFxOYUcJLY9OIzWD2zgLzE9rdzmCFscYlbT+aD
-        PSEh8IJD4sKtb0CDOIAcF4mlH1UgXhCWeHV8CzuELSPxfydMfTOjxMNza9khnB5GictNMxgh
-        qqwl7pz7xQYyiFlAU2L9Ln2ImY4SZ97GQZh8EjfeCkKcwCcxadt0Zogwr0RHmxDEDDWJWcfX
-        wW09eOES8wRGpVlIHpuF5JlZSJ6ZhbB2ASPLKkbx1NLi3PTUYuO81HK94sTc4tK8dL3k/NxN
-        jMCUdPrf8a87GFe8+qh3iJGJg/EQowQHs5IIL8u/I/FCvCmJlVWpRfnxRaU5qcWHGKU5WJTE
-        eXdtXRMvJJCeWJKanZpakFoEk2Xi4JRqYFpyc51E28+jWx7v2i2V7rhDkmmxnJKz2H+n7xGa
-        3IvCHTVsb0Yc7V388sKWxm1GE+LvnGzjN9Squ/DjqvJU6WL56Z1HFLb35uxMrb9jODPV1Pd8
-        3ky/sOoVbvHr2/u6U2KnlNfPiWILe3mk3ffbzoOvNq3cVXPpTWPU9QuSRodi7rztWmVRr96g
-        K7PD+56lVdWVwrVz9Ct+Tdkp9N/NbF/0X6Uuq2OFUUnzwq4vspC2iNm3XF3UX2DNqXOGYqr3
-        fy2IXdrhuSUy7DXvJrXIBxs0ypn25r4yf7fmXMu5nIMnGp5mzXrrsc5V1sB493qNG/xcUQzH
-        MlWsD54VVNvYcc90S/D3qAIhyVcPOYSVWJRYijMSDbWYi4oTAUOfp+S4AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOIsWRmVeSWpSXmKPExsVy+t/xu7r3XI7FGyxpVLZY0pRhceNXG6vF
-        5V1z2CwOLmxjtDg77zibxZvfL9gt3t6ZzmKxde9VdgcOjzXz1jB6NN64weaxYFOpx+YVWh59
-        W1YxenzeJBfAFqVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mW
-        WqRvl6CXcfPKZ+aCAxwV149OYW1gfMzWxcjJISFgIvGmu5mli5GLQ0hgKaPEq5mvWCESMhIn
-        pzVA2cISf651gTUICbxllDg8D8wWFoiTuHTyO1MXIweHiECkRNuxCJA5zALTmST+Nx5ghxj6
-        k1Fiys5rzCANbAKGEl1vIQbxCthJbPm3kB3EZhFQkfh68BQjiC0qkCTxe+laqBpBiZMzn7CA
-        2JwCThKbXnwGq2cWMJOYt/khM4QtL7H97RwoW1zi1pP5TBMYhWYhaZ+FpGUWkpZZSFoWMLKs
-        YhRJLS3OTc8tNtIrTswtLs1L10vOz93ECIzBbcd+btnBuPLVR71DjEwcjIcYJTiYlUR4Wf4d
-        iRfiTUmsrEotyo8vKs1JLT7EaAr0z0RmKdHkfGASyCuJNzQzMDU0MbM0MLU0M1YS5zU5siZe
-        SCA9sSQ1OzW1ILUIpo+Jg1OqgWn6xoUKWjrsVRduPDhx//XutD1WsyKeaj14upNHSfXCZM4p
-        c05zzqotY5JeOW9/isGDxTrJl+f7J9f1ylzlVYm1U+dWKdhnnbTm1qO/pUuMVafpS/u3/wjZ
-        Zlrw/1HkRWWVFQed9ri6yXM9/vlC2HmRW3qJj82HbGWBWK5C/c+HS47H/NSecmbbvLVxUpyJ
-        RT9e70nky7s469OnsJl3n6ju3nVBrlYo73rBtUBXTT1RdoczEXGnp6UZX9zwW0z04s+3t049
-        WTLx8a7u9uQPc4C+nTVTZf+Cec7yVxxfyTuGi0r7WusssCjftJhVY9K3ouzns1l+NGYrfQ+7
-        J7o59uKbTawhOlM5WTrdrO9r/VJiKc5INNRiLipOBAAO5hpxSgMAAA==
-X-CMS-MailID: 20201201132758eucas1p2646dd84fcc2a91b6ac1d224842478eda
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201201113428eucas1p2114ad01341ad5cfb9683bc4a410c74b5
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201201113428eucas1p2114ad01341ad5cfb9683bc4a410c74b5
-References: <20201130193626.1c408e47@canb.auug.org.au>
-        <bc0f6da9-6dd4-c1ad-f2f3-dc1a5cd6a51b@infradead.org>
-        <CGME20201201113428eucas1p2114ad01341ad5cfb9683bc4a410c74b5@eucas1p2.samsung.com>
-        <20201201113412.GA2389@e121166-lin.cambridge.arm.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Tue, Dec 01 2020 at 14:01, Corentin Labbe wrote:
+> +[  213.050152] ------------[ cut here ]------------
+> +[  213.050207] WARNING: CPU: 0 PID: 18430 at mm/highmem.c:581 kunmap_local_indexed+0x194/0x1d4
+> +[  213.050214] Modules linked in: sm4_generic authenc vmac xcbc hmac streebog_generic sm3_generic sha3_generic crct10dif_generic crct10dif_common seed rmd320 rmd256 rmd160 rmd128 cts lzo lzo_compress salsa20_generic camellia_generic fcrypt pcbc tgr192 anubis wp512 khazad tea michael_mic arc4 cast6_generic cast5_generic cast_common deflate zlib_deflate sha512_generic cfb ofb serpent_generic lrw twofish_generic twofish_common blowfish_generic blowfish_common md4
+> +[  213.050410] CPU: 0 PID: 18430 Comm: cryptsetup Not tainted 5.10.0-rc5-next-20201130-00059-gf7ecf0611042-dirty #242
+> +[  213.050416] Hardware name: Allwinner sun7i (A20) Family
+> +[  213.050448] [<c010d730>] (unwind_backtrace) from [<c010a218>] (show_stack+0x10/0x14)
+> +[  213.050465] [<c010a218>] (show_stack) from [<c08bbdcc>] (dump_stack+0x98/0xac)
+> +[  213.050479] [<c08bbdcc>] (dump_stack) from [<c08b93ac>] (__warn+0xc0/0xd8)
+> +[  213.050491] [<c08b93ac>] (__warn) from [<c08b9428>] (warn_slowpath_fmt+0x64/0xc0)
+> +[  213.050505] [<c08b9428>] (warn_slowpath_fmt) from [<c02018b4>] (kunmap_local_indexed+0x194/0x1d4)
+> +[  213.050525] [<c02018b4>] (kunmap_local_indexed) from [<c03e0390>] (sg_miter_stop+0xb4/0x164)
+> +[  213.050541] [<c03e0390>] (sg_miter_stop) from [<c03e082c>] (sg_miter_next+0xc/0xe4)
+> +[  213.050560] [<c03e082c>] (sg_miter_next) from [<c06b2d04>] (sun4i_ss_opti_poll+0x278/0x40c)
+> +[  213.050575] [<c06b2d04>] (sun4i_ss_opti_poll) from [<c06b338c>] (sun4i_ss_cipher_poll+0x4f4/0x5e4)
+> +[  213.050590] [<c06b338c>] (sun4i_ss_cipher_poll) from [<c03991d4>] (crypto_skcipher_encrypt+0x38/0x5c)
+> +[  213.050604] [<c03991d4>] (crypto_skcipher_encrypt) from [<c03aa980>] (xts_encrypt+0x8c/0xd4)
+> +[  213.050617] [<c03aa980>] (xts_encrypt) from [<c03991d4>] (crypto_skcipher_encrypt+0x38/0x5c)
+> +[  213.050631] [<c03991d4>] (crypto_skcipher_encrypt) from [<c03b3d94>] (skcipher_recvmsg+0x364/0x43c)
+> +[  213.050646] [<c03b3d94>] (skcipher_recvmsg) from [<c0719650>] (sock_read_iter+0xa8/0xf8)
+> +[  213.050663] [<c0719650>] (sock_read_iter) from [<c0239e98>] (vfs_read+0x2b8/0x2d8)
+> +[  213.050676] [<c0239e98>] (vfs_read) from [<c023a398>] (ksys_read+0xb0/0xe4)
+> +[  213.050688] [<c023a398>] (ksys_read) from [<c0100060>] (ret_fast_syscall+0x0/0x58)
+> +[  213.050695] Exception stack(0xc4d13fa8 to 0xc4d13ff0)
+> +[  213.050707] 3fa0:                   00000006 b6f084d0 00000006 b47ff000 00010000 00000000
+> +[  213.050718] 3fc0: 00000006 b6f084d0 00010000 00000003 00000030 beb6e9bc 00000010 beb6e9fc
+> +[  213.050727] 3fe0: b6e3609c beb6e958 b6cc8504 b6cc851c
+> +[  213.050735] ---[ end trace 915906e6b0e8a55d ]---
 
-On 01.12.2020 12:34, Lorenzo Pieralisi wrote:
-> On Mon, Nov 30, 2020 at 08:44:55PM -0800, Randy Dunlap wrote:
->> On 11/30/20 12:36 AM, Stephen Rothwell wrote:
->>> Changes since 20201127:
->> on x86_64:
->>
->> WARNING: unmet direct dependencies detected for PCIE_DW_HOST
->>    Depends on [n]: PCI [=y] && PCI_MSI_IRQ_DOMAIN [=n]
->>    Selected by [y]:
->>    - PCI_EXYNOS [=y] && PCI [=y] && (ARCH_EXYNOS || COMPILE_TEST [=y])
->
-> [...]
->
->> caused by:
->> commit f0a6743028f938cdd34e0c3249d3f0e6bfa04073
->> Author: Jaehoon Chung <jh80.chung@samsung.com>
->> Date:   Fri Nov 13 18:01:39 2020 +0100
->>
->>      PCI: dwc: exynos: Rework the driver to support Exynos5433 varian
->>
->>
->> which removed "depends on PCI_MSI_IRQ_DOMAIN from config PCI_EXYNOS.
-> Fixed up and squashed in the original commit - we should probably rework
-> the DWC driver dependencies on PCI_MSI_IRQ_DOMAIN to really fix it, for
-> the time being this should do.
+Hmm. No registers there. Can you apply the patch below so we can see the
+address?
 
-Thanks! I wasn't aware of that hidden dependency.
+Thanks,
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+        tglx
+---
+diff --git a/mm/highmem.c b/mm/highmem.c
+index b49364a306b8..240fc6e5bfb4 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -571,8 +571,10 @@ void kunmap_local_indexed(void *vaddr)
+ 		 * PAGE_OFFSET. Warn for all other addresses which are in
+ 		 * the user space part of the virtual address space.
+ 		 */
+-		if (!kmap_high_unmap_local(addr))
++		if (!kmap_high_unmap_local(addr)) {
++			pr_err("kunmap_local: vaddr %lx\n", (unsigned long) vaddr);
+ 			WARN_ON_ONCE(addr < PAGE_OFFSET);
++		}
+ 		return;
+ 	}
+ 
