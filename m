@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C7E2CA371
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B164C2CA36D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729599AbgLANGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:06:52 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8546 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgLANGw (ORCPT
+        id S1728608AbgLANF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:05:59 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55368 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgLANF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:06:52 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Clj5L2nB4zhkCY;
-        Tue,  1 Dec 2020 21:05:42 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 1 Dec 2020 21:05:58 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ming.lei@redhat.com>, <hch@lst.de>, <hare@suse.de>,
-        <ppvk@codeaurora.org>, <bvanassche@acm.org>,
-        <kashyap.desai@broadcom.com>, John Garry <john.garry@huawei.com>
-Subject: [RFC PATCH] blk-mq: Clean up references when freeing rqs
-Date:   Tue, 1 Dec 2020 21:02:18 +0800
-Message-ID: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Tue, 1 Dec 2020 08:05:58 -0500
+Date:   Tue, 01 Dec 2020 13:05:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606827916;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mBTSX8F5sTD/fy4j9+ovxyDO3nS/1XWTuFsNr7NpoeA=;
+        b=MiKMdzSiuS2h6RR4ryTGvh0YG65nkuc0H28nC3kQavXH46/JDAovNz2rtyXtJ4BuGjFELp
+        InWwD/G5iWPNSwXEsVxHcxRAeCPlIXDNPAhHQbPTytElRf0dkTQHNF7xbB0c3/MKdi5ftG
+        X/rT8Ymtclq4AmUEp2KRK8EkewocJHiIBXY2hHBbLbNAfx66hB6TmulRMNUBgH0DRIAS7q
+        1sUXM54jSZOxME0MNNvxID5glFEiB0fFzRcdrafDCZzNxPHrh4KgyQgGvjiqjeIZdra+vD
+        5rkoUWYz2mdzxHN4Hy/jrsbMjQtHKEQXMb3+n4c+TxhWK/XM9nMnpEylyh5K2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606827916;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mBTSX8F5sTD/fy4j9+ovxyDO3nS/1XWTuFsNr7NpoeA=;
+        b=x2aOEpkSpRYWd5wugx34PPPw+D1u4b0+nAOtZrE9w5jzkVaM1JFyxiuU8wQt+A+RFaVBOs
+        4i8b9LXAd5Q9THCA==
+From:   "tip-bot2 for Justin Ernst" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
+Cc:     Justin Ernst <justin.ernst@hpe.com>, Borislav Petkov <bp@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201125175444.279074-6-justin.ernst@hpe.com>
+References: <20201125175444.279074-6-justin.ernst@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Message-ID: <160682791526.3364.11222389309836425268.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been reported many times that a use-after-free can be intermittently
-found when iterating busy requests:
+The following commit has been merged into the x86/platform branch of tip:
 
-- https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/
-- https://lore.kernel.org/linux-block/5c3ac5af-ed81-11e4-fee3-f92175f14daf@acm.org/T/#m6c1ac11540522716f645d004e2a5a13c9f218908
-- https://lore.kernel.org/linux-block/04e2f9e8-79fa-f1cb-ab23-4a15bf3f64cc@kernel.dk/
+Commit-ID:     6043082c96844fa3a047896212e2da0adc1dde81
+Gitweb:        https://git.kernel.org/tip/6043082c96844fa3a047896212e2da0adc1dde81
+Author:        Justin Ernst <justin.ernst@hpe.com>
+AuthorDate:    Wed, 25 Nov 2020 11:54:44 -06:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 01 Dec 2020 13:59:20 +01:00
 
-The issue is that when we switch scheduler or change queue nr_requests,
-the driver tagset may keep references to the stale requests.
+x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
 
-As a solution, clean up any references to those requests in the driver
-tagset when freeing. This is done with a cmpxchg to make safe any race
-with setting the driver tagset request from another queue.
+Add an entry and email address for the new uv_sysfs driver and
+its maintainer.
 
-Signed-off-by: John Garry <john.garry@huawei.com>
---
-Set as RFC as I need to test more. And not sure on solution method, as
-Bart had another idea.
+Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Steve Wahl <steve.wahl@hpe.com>
+Link: https://lkml.kernel.org/r/20201125175444.279074-6-justin.ernst@hpe.com
+---
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index d1eafe2c045c..9b042c7036b3 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -621,7 +621,7 @@ void blk_mq_sched_free_requests(struct request_queue *q)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a008b70..bcf83e1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18354,6 +18354,12 @@ F:	include/uapi/linux/uuid.h
+ F:	lib/test_uuid.c
+ F:	lib/uuid.c
  
- 	queue_for_each_hw_ctx(q, hctx, i) {
- 		if (hctx->sched_tags)
--			blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i);
-+			blk_mq_free_rqs_ext(q->tag_set, hctx->sched_tags, i, hctx->tags);
- 	}
- }
- 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 9c92053e704d..562db72e7d79 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -576,7 +576,7 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
- 			return -ENOMEM;
- 		}
- 
--		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num);
-+		blk_mq_free_rqs_ext(set, *tagsptr, hctx->queue_num, hctx->tags);
- 		blk_mq_free_rq_map(*tagsptr, flags);
- 		*tagsptr = new;
- 	} else {
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 55bcee5dc032..f3aad695cd25 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2271,8 +2271,8 @@ blk_qc_t blk_mq_submit_bio(struct bio *bio)
- 	return BLK_QC_T_NONE;
- }
- 
--void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
--		     unsigned int hctx_idx)
-+void blk_mq_free_rqs_ext(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
-+		     unsigned int hctx_idx, struct blk_mq_tags *references)
- {
- 	struct page *page;
- 
-@@ -2281,10 +2281,13 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
- 
- 		for (i = 0; i < tags->nr_tags; i++) {
- 			struct request *rq = tags->static_rqs[i];
-+			int j;
- 
- 			if (!rq)
- 				continue;
- 			set->ops->exit_request(set, rq, hctx_idx);
-+			for (j = 0; references && j < references->nr_tags; j++)
-+				cmpxchg(&references->rqs[j], rq, 0);
- 			tags->static_rqs[i] = NULL;
- 		}
- 	}
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index a52703c98b77..53074844e733 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -51,8 +51,10 @@ struct request *blk_mq_dequeue_from_ctx(struct blk_mq_hw_ctx *hctx,
- /*
-  * Internal helpers for allocating/freeing the request map
-  */
--void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
--		     unsigned int hctx_idx);
-+#define blk_mq_free_rqs(set, tags, hctx_idx) \
-+	blk_mq_free_rqs_ext(set, tags, hctx_idx, NULL)
-+void blk_mq_free_rqs_ext(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
-+		     unsigned int hctx_idx, struct blk_mq_tags *references);
- void blk_mq_free_rq_map(struct blk_mq_tags *tags, unsigned int flags);
- struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
- 					unsigned int hctx_idx,
--- 
-2.26.2
-
++UV SYSFS DRIVER
++M:	Justin Ernst <justin.ernst@hpe.com>
++L:	platform-driver-x86@vger.kernel.org
++S:	Maintained
++F:	drivers/platform/x86/uv_sysfs.c
++
+ UVESAFB DRIVER
+ M:	Michal Januszewski <spock@gentoo.org>
+ L:	linux-fbdev@vger.kernel.org
