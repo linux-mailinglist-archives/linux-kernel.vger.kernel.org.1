@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0CE2C9C47
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC832C9B44
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390264AbgLAJQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:16:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51476 "EHLO mail.kernel.org"
+        id S2389095AbgLAJGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:06:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388834AbgLAJNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:13:12 -0500
+        id S2388837AbgLAJEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:04:23 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58FBF2067D;
-        Tue,  1 Dec 2020 09:12:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6B0320809;
+        Tue,  1 Dec 2020 09:03:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813951;
-        bh=nBkX6aprXiLnsZZnO8p5F53hUQl92crM455RDrMnX54=;
+        s=korg; t=1606813422;
+        bh=wmm2grhwJ1Nu8cLPYREWXm5U/uquc+IX4MNyz3Ym0rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WuspRbRDojamifkIOPYsCs8qvvp5r67abF2OP0Fz0LJBGs/ZKKqHsjeOChBI0DnTD
-         F9QZt1ZYB2xUM5EVa2zK/7fYB6z+nZlorZcUaYqAdO/I3QlKtH29tJX9KQpCPVh8U+
-         i/Z0dpFoSw35qEih2GnFszkJS+jUQkelJCS8t//I=
+        b=QV/zrVC2i4f4IY0PcZD7RzSZS3V1fHp1e6smQVt+ehFbwnmS+mWH54unOThWvYozm
+         a4CJxay0VHDbCcAB6H+Y1QWM4z7kgGTP1oK99buJQu75kFP241rBMgTKmjUc1bm9zs
+         i/DuJ6NI1+TaBwAqG7ICq2+aBEVZT6YN/Q77Jzvk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 076/152] KVM: s390: pv: Mark mm as protected after the set secure parameters and improve cleanup
+        stable@vger.kernel.org, Minwoo Im <minwoo.im.dev@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 34/98] nvme: free sq/cq dbbuf pointers when dbbuf set fails
 Date:   Tue,  1 Dec 2020 09:53:11 +0100
-Message-Id: <20201201084721.858629644@linuxfoundation.org>
+Message-Id: <20201201084656.801663017@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,74 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Janosch Frank <frankja@linux.ibm.com>
+From: Minwoo Im <minwoo.im.dev@gmail.com>
 
-[ Upstream commit 1ed576a20cd5c93295f57d6b7400357bd8d01b21 ]
+[ Upstream commit 0f0d2c876c96d4908a9ef40959a44bec21bdd6cf ]
 
-We can only have protected guest pages after a successful set secure
-parameters call as only then the UV allows imports and unpacks.
+If Doorbell Buffer Config command fails even 'dev->dbbuf_dbs != NULL'
+which means OACS indicates that NVME_CTRL_OACS_DBBUF_SUPP is set,
+nvme_dbbuf_update_and_check_event() will check event even it's not been
+successfully set.
 
-By moving the test we can now also check for it in s390_reset_acc()
-and do an early return if it is 0.
+This patch fixes mismatch among dbbuf for sq/cqs in case that dbbuf
+command fails.
 
-Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
-Fixes: 29b40f105ec8 ("KVM: s390: protvirt: Add initial vm and cpu lifecycle handling")
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Minwoo Im <minwoo.im.dev@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kvm/kvm-s390.c | 2 +-
- arch/s390/kvm/pv.c       | 3 ++-
- arch/s390/mm/gmap.c      | 2 ++
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/nvme/host/pci.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 6b74b92c1a586..08ea6c4735cdc 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -2312,7 +2312,7 @@ static int kvm_s390_handle_pv(struct kvm *kvm, struct kvm_pv_cmd *cmd)
- 		struct kvm_s390_pv_unp unp = {};
- 
- 		r = -EINVAL;
--		if (!kvm_s390_pv_is_protected(kvm))
-+		if (!kvm_s390_pv_is_protected(kvm) || !mm_is_protected(kvm->mm))
- 			break;
- 
- 		r = -EFAULT;
-diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-index eb99e2f95ebed..f5847f9dec7c9 100644
---- a/arch/s390/kvm/pv.c
-+++ b/arch/s390/kvm/pv.c
-@@ -208,7 +208,6 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
- 		return -EIO;
- 	}
- 	kvm->arch.gmap->guest_handle = uvcb.guest_handle;
--	atomic_set(&kvm->mm->context.is_protected, 1);
- 	return 0;
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index f5d12bf109c78..9b1fc8633cfe1 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -271,9 +271,21 @@ static void nvme_dbbuf_init(struct nvme_dev *dev,
+ 	nvmeq->dbbuf_cq_ei = &dev->dbbuf_eis[cq_idx(qid, dev->db_stride)];
  }
  
-@@ -228,6 +227,8 @@ int kvm_s390_pv_set_sec_parms(struct kvm *kvm, void *hdr, u64 length, u16 *rc,
- 	*rrc = uvcb.header.rrc;
- 	KVM_UV_EVENT(kvm, 3, "PROTVIRT VM SET PARMS: rc %x rrc %x",
- 		     *rc, *rrc);
-+	if (!cc)
-+		atomic_set(&kvm->mm->context.is_protected, 1);
- 	return cc ? -EINVAL : 0;
- }
- 
-diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-index 373542ca1113e..78dbba6a4500c 100644
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -2690,6 +2690,8 @@ static const struct mm_walk_ops reset_acc_walk_ops = {
- #include <linux/sched/mm.h>
- void s390_reset_acc(struct mm_struct *mm)
- {
-+	if (!mm_is_protected(mm))
++static void nvme_dbbuf_free(struct nvme_queue *nvmeq)
++{
++	if (!nvmeq->qid)
 +		return;
- 	/*
- 	 * we might be called during
- 	 * reset:                             we walk the pages and clear
++
++	nvmeq->dbbuf_sq_db = NULL;
++	nvmeq->dbbuf_cq_db = NULL;
++	nvmeq->dbbuf_sq_ei = NULL;
++	nvmeq->dbbuf_cq_ei = NULL;
++}
++
+ static void nvme_dbbuf_set(struct nvme_dev *dev)
+ {
+ 	struct nvme_command c;
++	unsigned int i;
+ 
+ 	if (!dev->dbbuf_dbs)
+ 		return;
+@@ -287,6 +299,9 @@ static void nvme_dbbuf_set(struct nvme_dev *dev)
+ 		dev_warn(dev->ctrl.device, "unable to set dbbuf\n");
+ 		/* Free memory and continue on */
+ 		nvme_dbbuf_dma_free(dev);
++
++		for (i = 1; i <= dev->online_queues; i++)
++			nvme_dbbuf_free(&dev->queues[i]);
+ 	}
+ }
+ 
 -- 
 2.27.0
 
