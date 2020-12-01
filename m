@@ -2,173 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5349C2C9611
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49502C9613
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387458AbgLADsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 22:48:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727229AbgLADsx (ORCPT
+        id S1727958AbgLADtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 22:49:51 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47812 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727746AbgLADtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 22:48:53 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC0BC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 19:48:13 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id g18so416376pgk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 19:48:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+Wokl3NuLwiPSjcjDBebQ10YZQViNxd9/jLnYLLUJ4w=;
-        b=bmY6e5c6D0pEK/SJMeJjjoIGXBMsLtWz5HSLHfIwz70h+FuTx40QIWsTWllkNTSpKI
-         Ul1aWvkDqBgCcNiBQZa/QMqWpmVAseeFwHgSGxakmW+5WNf5Kj5AwwmWCjW9nhd7veSf
-         XiPK101JvU+pJspdxHQPhFoi87bY9srzYs1dCEMgc1ODewBWd4+H4wpTBuIbi1hDffd/
-         JIJtvSO6zhqYGH6u+uTq09drhC7TZvH9FG2WQcQzNGKJI/foAu/idYksAuFI8cc2NJXu
-         mmoxLspqh6UP7G8YCdc2ankNaoDjCq6cj9AWbmyAk97DUpc6bIC9S/aP3jV9O/8vurKT
-         xjsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+Wokl3NuLwiPSjcjDBebQ10YZQViNxd9/jLnYLLUJ4w=;
-        b=pXm62U8wrQSWcq8ZFzsD5Dyit4L0mbNr0x8WbJIuCHMvB1nL2ZJAdMWDnTtUERuJ37
-         AbAhQldTcTSG3gCW6WhvbFDBjhL6e5ifUBQ6OMV5V5NxMlcn0ETovgg3csAl3WwvPDoP
-         PBe1HPb3jD5NkbsKY67tD3EvT5ZS17/sISpluY/l5FIqwrFSg2UTi7y+ryywtZ4f7pbf
-         Yrkg87FxxaxAs/AII35buCoAyKj+hvq41PnFLQhmL02mNHGkyKF+LFf7QzoOsYanzHW3
-         74elF9VkMggM69UIWWid+eMCnITobrqt9a6AbotvaF4Dihy2YXzDCKiC1y3lc1jTvpWR
-         Q1YA==
-X-Gm-Message-State: AOAM530xUHZnTJjXS/1OAGlrX+KkyMhXMPWf3a6T3plHQXMJJ7BHPODj
-        FES5jIObecwcAaN3O1clVMCkIQ==
-X-Google-Smtp-Source: ABdhPJxSrMgRY0rvRLn2C3maAHsCO7hWoJE8yYcpGzeZA5VKxfhfOi/ePTUi28fcw+w0Ehf4c3jfPg==
-X-Received: by 2002:a63:6882:: with SMTP id d124mr544352pgc.197.1606794492799;
-        Mon, 30 Nov 2020 19:48:12 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([103.127.239.100])
-        by smtp.gmail.com with ESMTPSA id g26sm529243pfo.57.2020.11.30.19.48.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 30 Nov 2020 19:48:12 -0800 (PST)
-Date:   Tue, 1 Dec 2020 11:48:06 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Alexandre Truong <alexandre.truong@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        james.clark@arm.com, John Garry <john.garry@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: Re: [PATCH] perf tools: add aarch64 registers to --user-regs
-Message-ID: <20201201034806.GB28939@leoy-ThinkPad-X240s>
-References: <20201127153923.26717-1-alexandre.truong@arm.com>
- <20201201034627.GA28939@leoy-ThinkPad-X240s>
+        Mon, 30 Nov 2020 22:49:50 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B13kxCU015831;
+        Mon, 30 Nov 2020 19:48:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : from : to : cc
+ : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=wiD3XVqq94sNjfjdyArJ1ChfnOUBFYzK4Id2Uhy3Y3Y=;
+ b=bRERsoqP+zxlW90cIAVWoPZGIPINZNYkL++BPFiWReRIsnw9JN+iUcJiY7tKP4CcuWgQ
+ HfPaVZfmftiBRjIuIkiQ75BJkgF4iqEoyqJfspT2k71/2e/TDlPlZk4/UZDh/BlqpGBV
+ r7Yo/F10+EhI2p7IoYcKtcN5fZEgu/b+xJk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 354d4g8bx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 30 Nov 2020 19:48:52 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 19:48:51 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aYRKTDmp0+odZKv6ulaxVFSL0VxOWA7Mc3FA1KAz2QnozrEkPG4LpcyswXBkcpxQP5YbbWTthYYY7kU8tk6D9leAJgwrpphdWQlaE8dbbf0zBY1lylyJodPTSt1gVQWqmCXYQT6ocXcQH/6AvkeiN231KKQEBDIQ2xLwS66f74SP0aBJfBw4y4a2M37hAYFalc734LL1kb8hiW2HjjP2QvneuJyS33Ab141jFmK3X8axUgSg2wkCKh5yC5p0YMvu+1x3gJnZJ6E/R4d+kck+tkvX8Fn/C4P1RCWwjRI26w043BlqMnIJNHSQWjmYCSMtZAG6f/9XdkCySva/0GfHWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wazCbnJD91SSxaIffDfMQw3gx1MkpB4GhoYOKxgSAKg=;
+ b=TCxwRTZIpJzczY0Mmb1VBvMp8CQZlNw/GGQkJ2gdYwIIMNWCoFQvrVGLDnCRfs2NRUZtFV49UB5U9b3rdkULt/zlNdPUdTjRecaviOLo3Roz4vAHf2tX3tRmN8rl08qkDE+k/njEBe7UpLhJboINMoAUAm+6waX2+vOlo8joS9D+L0qGjHcF1VEn9aAo2rEi3YmplAK+D4Y+yKuxJMnsGr9DVRoKbKzwndrqWcLkNevl2adV2o5mtRS7Jq1SmunbTO1xWqITwEHjuZeVTmPmVz/KB2Se2OrCb8GHNlgsVOfD/HB4u996kXgd+lc8QjwH2Y/5lRwW+CGQr1X+Nlnoug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wazCbnJD91SSxaIffDfMQw3gx1MkpB4GhoYOKxgSAKg=;
+ b=Nm2KXrnbFInCEY90tj5U/f8EAqrOHGt74KnQ47sO2OJWzPcVSfQwVfELnCJt+P8hH3fBAaCVkgdc3URHomwRfQljYaQyGsyK3UEBBfDh4Z906MEaZrP8d2jehndbI1ohYbXiZ8xktx/KT1qYQeE1IPcf7rAiLBacDdrN9NxfEL4=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by SJ0PR15MB4236.namprd15.prod.outlook.com (2603:10b6:a03:2cb::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Tue, 1 Dec
+ 2020 03:48:50 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3611.025; Tue, 1 Dec 2020
+ 03:48:50 +0000
+Subject: Re: [PATCH v2 bpf-next 00/13] Atomics for eBPF
+From:   Yonghong Song <yhs@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+References: <20201127175738.1085417-1-jackmanb@google.com>
+ <829353e6-d90a-a91a-418b-3c2556061cda@fb.com>
+ <20201129014000.3z6eua5pcz3jxmtk@ast-mbp>
+ <b3903adc-59c6-816f-6512-2225c28f47f5@fb.com>
+Message-ID: <4fa9f8cf-aaf8-a63c-e0ca-7d4c83b01578@fb.com>
+Date:   Mon, 30 Nov 2020 19:48:40 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
+In-Reply-To: <b3903adc-59c6-816f-6512-2225c28f47f5@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:d184]
+X-ClientProxiedBy: CO2PR04CA0131.namprd04.prod.outlook.com
+ (2603:10b6:104:7::33) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e8::1841] (2620:10d:c090:400::5:d184) by CO2PR04CA0131.namprd04.prod.outlook.com (2603:10b6:104:7::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Tue, 1 Dec 2020 03:48:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 63f5862b-f207-4113-ac8e-08d895ac0381
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4236:
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB423672E2581B05C4F8AF46BED3F40@SJ0PR15MB4236.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xBSyNxXzQft5Za5KAm3Ga1OgwIP9H9EgCSe5XsTc8hd4IhqSqQWmzwSkjKh5R41nz4LOiQafwmkwEYmt+vnfdJloKRw3rU1FwByL0rLYS63CKPG76UkHBcPa5LsRto9Dqsc9WzKeNDep6FY2Ko8zJJt01L3/rYNVMFjD9/OqlPIRuKRF8pu9PpuCKHsCXcQ20s6Om/g2CoDRF9jjG/nWIdfzrjyi8WYfoorTpV8N//qcZ/Qr2KvdwtbzZ2c84SnCEMO/cdYrKm1xdmsWD99JleUn+Um3DlWHJL85NAj3gQQGfOAbpsUyLbKdd79MStZoBziEtQEi7R0Zjy74D4BHt5Af+SAffzw5C6sK+LKintGDdiJHGVa+gwsutC4cnWlE6BScYOejnki+VpJLqNN/T0E2I9j3CA+eZzkzTa3qS0LrTctOLuIhnbJV7iL09KCo6CD6pQ9BZEvU4BeMbC9bJQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(39860400002)(346002)(136003)(86362001)(53546011)(16526019)(316002)(8936002)(31686004)(8676002)(66946007)(54906003)(66476007)(66556008)(4326008)(6486002)(2906002)(6916009)(966005)(52116002)(2616005)(186003)(6666004)(36756003)(478600001)(5660300002)(31696002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V3Y4Q29Ka3lDYUJldWJqdVFyUWhvZVViYTU2eFlydzJsd2xoTGJ1ME5KRllo?=
+ =?utf-8?B?RmxUUTVmUUVEeFdOOThXOHovblMwazZWRHdqeXM4ak1raW8rbklOSzZBZ2Ns?=
+ =?utf-8?B?QXpZdGlkUGpPdWtHYW4wK0Z2MnhSNWRKV2tWSndtMGlzUmM4MWxENXRyUWxz?=
+ =?utf-8?B?NlpkNTB3WW9NS29uVG43L2UxbzhBd25kNDRZUVBsUmNOUWhGallKR3FUczRS?=
+ =?utf-8?B?UWxoVk55RUhETFJxc0hocDhyZnpBV1ppV1Vmc0dBR3FLNGtTOHo5Um56blFt?=
+ =?utf-8?B?eUJDbFpDYTYydjJad2xueC9oUFFTQng5c21xWnhGYnpPSWdKcHNablZheEhz?=
+ =?utf-8?B?Nkh2c3VZTUl0UzhQeENTc2kzNHRYTTBBZWlPay9pZFMwMm96U0tJdTFsdHE0?=
+ =?utf-8?B?SjBvb21UUkFxcWpzOWRNVnNHbkc1cjNMK25YaTBSTFpZMWtKMVFrNDYwM2VH?=
+ =?utf-8?B?c3J2VjhITDJjQytCb3hEN0lDWUlJQjI0WG85bHVFVFpkaUw5U3pxVkdLZ1ly?=
+ =?utf-8?B?SEFtdVNQRFdJYXNVMEZ3YTNlL3RVdFByOUYyc2k1QTB5TjFUVllYbm1mS0cy?=
+ =?utf-8?B?Z0NyREMrSTNyYVZsem55aGg5NzNEM1lFdHNwQ2huODEwODExSk5aTkp3WTI3?=
+ =?utf-8?B?NjdlUE9WSmlkWnNzUTN1Wko2dGFtTUZ4UW9PNGdTU1JFVzBjeWdKd0NVNUtk?=
+ =?utf-8?B?Z3AwVWdYQ1RYNWY4d2Zoa3lRYWxOYVFWSTdNM0pwSHN5ZU4rWWg1bXhlQVRu?=
+ =?utf-8?B?RTBBM3JSU1dvL0lrcDdtR2NhbnV3N2RPRWxpblZMeEd1SUJUNWwyK2Y5VkhJ?=
+ =?utf-8?B?ZHloL1o0U0piVitrcTVSMkZvOEtua3gyNHFWS3B3Y0Vnb2tRcDZReHBXTXpn?=
+ =?utf-8?B?WU5DNUhEZm8zTVl6TkttVDJVaXozYm1EdUIxaTVzMFZwUG9tN0tTRzdBQUpH?=
+ =?utf-8?B?WFVkd0JkRTg1c2dGYmFmMEEvblN6S1hyenEwb1RwQkVRYzR3YUNiYTB6dklj?=
+ =?utf-8?B?OTNPOUtzSVRIaFBXUVhDSzBpcU01dnhGQXRiclF0Q2lYemtTTzVDTTZzRkN2?=
+ =?utf-8?B?UXZhc3NXYjJ4MFBUTUZLVVA4Z1lla0RnRnFnOEY0QmViYmZiNUtaYVgzbEJZ?=
+ =?utf-8?B?WStNM0ZvemJtTW5UNTZLbHV6bkVJTVAyY0VwMWc3bnZ5dkwzelozYUh2bDZI?=
+ =?utf-8?B?OTI5cy9OZ0NJckZUR2gzUHhpeVZIZmxJcGIzN3RSd3BQK3laMituNWMzYjIx?=
+ =?utf-8?B?eEgweDJzR2JyYkwxdG1zSWVKZ0ZTVHJaVDZ1T2VXdHhvYmNvaW5HbVNjUG0w?=
+ =?utf-8?B?R0YxMWNOTnNWVFdUYjd6YkhJV2M4T0NDQlg1WkJWQ0V3OC9pclVEZ3JMNXBI?=
+ =?utf-8?B?dytZUXhPL1lPUVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63f5862b-f207-4113-ac8e-08d895ac0381
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2020 03:48:50.4835
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2jXOul2bca5s/SpE/EBebJR0SVfmryIzkd3UYE62SDvx1yufs2NCdPapz2yxeC7k
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4236
+X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201034627.GA28939@leoy-ThinkPad-X240s>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_12:2020-11-30,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010025
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Correct for Will's email address, sorry for spamming.
 
-On Tue, Dec 01, 2020 at 11:46:27AM +0800, Leo Yan wrote:
-> On Fri, Nov 27, 2020 at 03:39:23PM +0000, Alexandre Truong wrote:
-> > Previously, this command returns no help message on aarch64:
-> > 
-> >   -> ./perf record --user-regs=?
-> > 
-> >   available registers:
-> >   Usage: perf record [<options>] [<command>]
-> >       or: perf record [<options>] -- <command> [<options>]
-> > 
-> > With this change, the registers are listed.
-> > 
-> >   -> ./perf record --user-regs=?
-> > 
-> >   available registers: x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 lr sp pc
-> > 
-> > It's also now possible to record subsets of registers on aarch64:
-> > 
-> >   -> ./perf record --user-regs=x4,x5 ls
-> >   -> ./perf report --dump-raw-trace
-> > 
-> >   12801163749305260 0xc70 [0x40]: PERF_RECORD_SAMPLE(IP, 0x2): 51956/51956: 0xffffaa6571f0 period: 145785 addr: 0
-> >   ... user regs: mask 0x30 ABI 64-bit
-> >   .... x4    0x000000000000006c
-> >   .... x5    0x0000001001000001
-> >    ... thread: ls:51956
-> >     ...... dso: /usr/lib64/ld-2.17.so
+On 11/30/20 9:22 AM, Yonghong Song wrote:
 > 
-> Reviewed-by: Leo Yan <leo.yan@linaro.org>
 > 
-> Except this patch for enabling registers on aarch64, it's good to add
-> arm32's version in the file arch/arm/util/perf_regs.c.
+> On 11/28/20 5:40 PM, Alexei Starovoitov wrote:
+>> On Fri, Nov 27, 2020 at 09:53:05PM -0800, Yonghong Song wrote:
+>>>
+>>>
+>>> On 11/27/20 9:57 AM, Brendan Jackman wrote:
+>>>> Status of the patches
+>>>> =====================
+>>>>
+>>>> Thanks for the reviews! Differences from v1->v2 [1]:
+>>>>
+>>>> * Fixed mistakes in the netronome driver
+>>>>
+>>>> * Addd sub, add, or, xor operations
+>>>>
+>>>> * The above led to some refactors to keep things readable. (Maybe I
+>>>>     should have just waited until I'd implemented these before starting
+>>>>     the review...)
+>>>>
+>>>> * Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
+>>>>     include the BPF_FETCH flag
+>>>>
+>>>> * Added a bit of documentation. Suggestions welcome for more places
+>>>>     to dump this info...
+>>>>
+>>>> The prog_test that's added depends on Clang/LLVM features added by
+>>>> Yonghong in 
+>>>> https://reviews.llvm.org/D72184 
+>>>>
+>>>> This only includes a JIT implementation for x86_64 - I don't plan to
+>>>> implement JIT support myself for other architectures.
+>>>>
+>>>> Operations
+>>>> ==========
+>>>>
+>>>> This patchset adds atomic operations to the eBPF instruction set. The
+>>>> use-case that motivated this work was a trivial and efficient way to
+>>>> generate globally-unique cookies in BPF progs, but I think it's
+>>>> obvious that these features are pretty widely applicable.  The
+>>>> instructions that are added here can be summarised with this list of
+>>>> kernel operations:
+>>>>
+>>>> * atomic[64]_[fetch_]add
+>>>> * atomic[64]_[fetch_]sub
+>>>> * atomic[64]_[fetch_]and
+>>>> * atomic[64]_[fetch_]or
+>>>
+>>> * atomic[64]_[fetch_]xor
+>>>
+>>>> * atomic[64]_xchg
+>>>> * atomic[64]_cmpxchg
+>>>
+>>> Thanks. Overall looks good to me but I did not check carefully
+>>> on jit part as I am not an expert in x64 assembly...
+>>>
+>>> This patch also introduced atomic[64]_{sub,and,or,xor}, similar to
+>>> xadd. I am not sure whether it is necessary. For one thing,
+>>> users can just use atomic[64]_fetch_{sub,and,or,xor} to ignore
+>>> return value and they will achieve the same result, right?
+>>>  From llvm side, there is no ready-to-use gcc builtin matching
+>>> atomic[64]_{sub,and,or,xor} which does not have return values.
+>>> If we go this route, we will need to invent additional bpf
+>>> specific builtins.
+>>
+>> I think bpf specific builtins are overkill.
+>> As you said the users can use atomic_fetch_xor() and ignore
+>> return value. I think llvm backend should be smart enough to use
+>> BPF_ATOMIC | BPF_XOR insn without BPF_FETCH bit in such case.
+>> But if it's too cumbersome to do at the moment we skip this
+>> optimization for now.
 > 
-> Just note for a side topic, I checked a bit for the implementation for
-> x86/powerpc, you could consider to enable Statically Defined Tracing
-> in the perf_regs.c file as well.  This can be separate task for
-> arm/arm64.
-> 
-> Thanks,
-> Leo
-> 
-> > Cc: John Garry <john.garry@huawei.com>
-> > Cc: Leo Yan <leo.yan@linaro.org>
-> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> > Cc: Jiri Olsa <jolsa@redhat.com>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
-> > ---
-> >  tools/perf/arch/arm64/util/perf_regs.c | 33 ++++++++++++++++++++++++++
-> >  1 file changed, 33 insertions(+)
-> > 
-> > diff --git a/tools/perf/arch/arm64/util/perf_regs.c b/tools/perf/arch/arm64/util/perf_regs.c
-> > index 2833e101a..54efa12fd 100644
-> > --- a/tools/perf/arch/arm64/util/perf_regs.c
-> > +++ b/tools/perf/arch/arm64/util/perf_regs.c
-> > @@ -2,5 +2,38 @@
-> >  #include "../../../util/perf_regs.h"
-> >  
-> >  const struct sample_reg sample_reg_masks[] = {
-> > +	SMPL_REG(x0, PERF_REG_ARM64_X0),
-> > +	SMPL_REG(x1, PERF_REG_ARM64_X1),
-> > +	SMPL_REG(x2, PERF_REG_ARM64_X2),
-> > +	SMPL_REG(x3, PERF_REG_ARM64_X3),
-> > +	SMPL_REG(x4, PERF_REG_ARM64_X4),
-> > +	SMPL_REG(x5, PERF_REG_ARM64_X5),
-> > +	SMPL_REG(x6, PERF_REG_ARM64_X6),
-> > +	SMPL_REG(x7, PERF_REG_ARM64_X7),
-> > +	SMPL_REG(x8, PERF_REG_ARM64_X8),
-> > +	SMPL_REG(x9, PERF_REG_ARM64_X9),
-> > +	SMPL_REG(x10, PERF_REG_ARM64_X10),
-> > +	SMPL_REG(x11, PERF_REG_ARM64_X11),
-> > +	SMPL_REG(x12, PERF_REG_ARM64_X12),
-> > +	SMPL_REG(x13, PERF_REG_ARM64_X13),
-> > +	SMPL_REG(x14, PERF_REG_ARM64_X14),
-> > +	SMPL_REG(x15, PERF_REG_ARM64_X15),
-> > +	SMPL_REG(x16, PERF_REG_ARM64_X16),
-> > +	SMPL_REG(x17, PERF_REG_ARM64_X17),
-> > +	SMPL_REG(x18, PERF_REG_ARM64_X18),
-> > +	SMPL_REG(x19, PERF_REG_ARM64_X19),
-> > +	SMPL_REG(x20, PERF_REG_ARM64_X20),
-> > +	SMPL_REG(x21, PERF_REG_ARM64_X21),
-> > +	SMPL_REG(x22, PERF_REG_ARM64_X22),
-> > +	SMPL_REG(x23, PERF_REG_ARM64_X23),
-> > +	SMPL_REG(x24, PERF_REG_ARM64_X24),
-> > +	SMPL_REG(x25, PERF_REG_ARM64_X25),
-> > +	SMPL_REG(x26, PERF_REG_ARM64_X26),
-> > +	SMPL_REG(x27, PERF_REG_ARM64_X27),
-> > +	SMPL_REG(x28, PERF_REG_ARM64_X28),
-> > +	SMPL_REG(x29, PERF_REG_ARM64_X29),
-> > +	SMPL_REG(lr, PERF_REG_ARM64_LR),
-> > +	SMPL_REG(sp, PERF_REG_ARM64_SP),
-> > +	SMPL_REG(pc, PERF_REG_ARM64_PC),
-> >  	SMPL_REG_END
-> >  };
-> > -- 
-> > 2.23.0
-> > 
+> We can initially all have BPF_FETCH bit as at that point we do not
+> have def-use chain. Later on we can add a
+> machine ssa IR phase and check whether the result of, say 
+> atomic_fetch_or(), is used or not. If not, we can change the
+> instruction to atomic_or.
+
+Just implemented what we discussed above in llvm:
+   https://reviews.llvm.org/D72184
+main change:
+   1. atomic_fetch_sub (and later atomic_sub) is gone. llvm will
+      transparently transforms it to negation followed by
+      atomic_fetch_add or atomic_add (xadd). Kernel can remove
+      atomic_fetch_sub/atomic_sub insns.
+   2. added new instructions for atomic_{and, or, xor}.
+   3. for gcc builtin e.g., __sync_fetch_and_or(), if return
+      value is used, atomic_fetch_or will be generated. Otherwise,
+      atomic_or will be generated.
