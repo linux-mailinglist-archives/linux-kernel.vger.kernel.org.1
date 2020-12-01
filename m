@@ -2,284 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400CE2CA284
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CB62CA286
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730647AbgLAMR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:17:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36544 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728293AbgLAMR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:17:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C789EACC0;
-        Tue,  1 Dec 2020 12:17:17 +0000 (UTC)
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
- <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
- to drm_device
-Message-ID: <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
-Date:   Tue, 1 Dec 2020 13:17:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730732AbgLAMSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:18:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728293AbgLAMSN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:18:13 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7090C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:17:32 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id k10so2414465wmi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:17:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g0cu2xo3t8omk7h4Os6v19y0TCwy8mGGWLP5k1GCMgQ=;
+        b=KcwrvHs5/3AUPjLyRvtTzh5o6y3YII7uhGJzAOCAprPrbdySnDD+0Wvsq6g9I2XlbS
+         K080wgYe7nMSOCN+o1rDVdXFMu9JoNg5HJ4o/KZW2X/8EqORS2Dz6GyhSQd5r3LhOeE3
+         qLcPqbOzXXfQoKVQN7bDM7Jev2WOOCB5jgTEot0W9e3nv/5Yq5Gu/bZw92L9DdqmTKcy
+         GPyE1KaiTfsnr2wjJHqIfXOG/LgiOYJK7bUr0bTLRCyGnEbrxQzgqWUfcKCiH9kQA9zi
+         IFIr4573HxBCt4Y8/sMExGzo2cZ67Ui1KW9cjwXPVdTgG1RQGLm8o4IgOPHsRvgrLlfZ
+         QusQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g0cu2xo3t8omk7h4Os6v19y0TCwy8mGGWLP5k1GCMgQ=;
+        b=DZX3KQO//5uPPQMk7zRufhPSJKg6MejMKk0XGA3PP1J1FhBAiGcvAVclRdYeL/Xc/Y
+         JtXlWhMG9aj7BX6b319n3uHrOmbZFY1eChrXi0HKcuZwKvfW5ivZaraxydzGj911pxki
+         UAGsa1rj/jKO63Oyi1k1b/dqO5b5vxXBYIjAEYD7asEdiFOF4gu9YA3ln4QffRyapVBQ
+         5SmmUtT2yn3CYef8SYjRRepzKrrYeRZZy/XgpMo8kp9ZYmgK9QPCfUrA3tkjZfZ6AsFf
+         iymEQuSL7GyhAl2aQM44SEP+AW2ULOoAKqWIjFD0eVgcGLZNPWoAg0vWKOoF37yKYQte
+         t67w==
+X-Gm-Message-State: AOAM532xHQonFScklRD7W7ixQXdV44UQqXr2+FWNMDjDdrO1nZrgCMYG
+        d8sfQ0NnILfYOR5ST8rxnq2zNQ==
+X-Google-Smtp-Source: ABdhPJy9EIekG3TlvoW2O3Hz23f+5RM5bW0HXYn6PqrVA8kKOHAzWARThJOoKGZMiaC9bjJDaHHatQ==
+X-Received: by 2002:a7b:cf08:: with SMTP id l8mr2474685wmg.189.1606825051432;
+        Tue, 01 Dec 2020 04:17:31 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id d8sm3020167wrp.44.2020.12.01.04.17.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 04:17:30 -0800 (PST)
+Date:   Tue, 1 Dec 2020 12:17:26 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v2 bpf-next 05/13] bpf: Rename BPF_XADD and prepare to
+ encode other atomics in .imm
+Message-ID: <20201201121726.GC2114905@google.com>
+References: <20201127175738.1085417-1-jackmanb@google.com>
+ <20201127175738.1085417-6-jackmanb@google.com>
+ <bdc90ccd-e017-b7b1-7ba8-f5e261ad7296@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="yyW7XNR2JX32oZQNscThp0mmeJVnEMk5k"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bdc90ccd-e017-b7b1-7ba8-f5e261ad7296@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---yyW7XNR2JX32oZQNscThp0mmeJVnEMk5k
-Content-Type: multipart/mixed; boundary="XPeR6lTSIpmEyGMyo250NaIOTTDjUtHpk";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
-Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
- to drm_device
-References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
- <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
+On Fri, Nov 27, 2020 at 07:43:46PM -0800, Yonghong Song wrote:
+> 
+> 
+> On 11/27/20 9:57 AM, Brendan Jackman wrote:
+> > diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+> [...]
+> > diff --git a/drivers/net/ethernet/netronome/nfp/bpf/jit.c b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> > index 0a721f6e8676..1c9efc74edfc 100644
+> > --- a/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> > +++ b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> > @@ -3109,13 +3109,19 @@ mem_xadd(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta, bool is64)
+> >   	return 0;
+> >   }
+> > -static int mem_xadd4(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
+> > +static int mem_atomic4(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
+> >   {
+> > +	if (meta->insn.off != BPF_ADD)
+> > +		return -EOPNOTSUPP;
+> 
+> You probably missed this change. it should be meta->insn.imm != BPF_ADD.
+> 
+> > +
+> >   	return mem_xadd(nfp_prog, meta, false);
+> >   }
+> > -static int mem_xadd8(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
+> > +static int mem_atomic8(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
+> >   {
+> > +	if (meta->insn.off != BPF_ADD)
+> 
+> same as above.
 
---XPeR6lTSIpmEyGMyo250NaIOTTDjUtHpk
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 01.12.20 um 12:55 schrieb Tian Tao:
-> Assign local variable to struct drm_device *dev because they are
-> used multiple times within a function.
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 30 ++++++++++++---=
----------
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +-
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
->   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 ++++---
->   5 files changed, 23 insertions(+), 21 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/g=
-pu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> index ea962ac..096eea9 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs hibmc_crt=
-c_helper_funcs =3D {
->  =20
->   int hibmc_de_init(struct hibmc_drm_private *priv)
->   {
-> -	struct drm_device *dev =3D priv->dev;
-> +	struct drm_device *dev =3D &priv->dev;
->   	struct drm_crtc *crtc =3D &priv->crtc;
->   	struct drm_plane *plane =3D &priv->primary_plane;
->   	int ret;
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> index d845657..dd9fadc 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops =3D {
->  =20
->   static int hibmc_kms_init(struct hibmc_drm_private *priv)
->   {
-> +	struct drm_device *dev =3D &priv->dev;
->   	int ret;
->  =20
-> -	drm_mode_config_init(priv->dev);
-> +	drm_mode_config_init(dev);
->   	priv->mode_config_initialized =3D true;
->  =20
-> -	priv->dev->mode_config.min_width =3D 0;
-> -	priv->dev->mode_config.min_height =3D 0;
-> -	priv->dev->mode_config.max_width =3D 1920;
-> -	priv->dev->mode_config.max_height =3D 1200;
-> +	dev->mode_config.min_width =3D 0;
-> +	dev->mode_config.min_height =3D 0;
-> +	dev->mode_config.max_width =3D 1920;
-> +	dev->mode_config.max_height =3D 1200;
->  =20
-> -	priv->dev->mode_config.fb_base =3D priv->fb_base;
-> -	priv->dev->mode_config.preferred_depth =3D 32;
-> -	priv->dev->mode_config.prefer_shadow =3D 1;
-> +	dev->mode_config.fb_base =3D priv->fb_base;
-> +	dev->mode_config.preferred_depth =3D 32;
-> +	dev->mode_config.prefer_shadow =3D 1;
->  =20
-> -	priv->dev->mode_config.funcs =3D (void *)&hibmc_mode_funcs;
-> +	dev->mode_config.funcs =3D (void *)&hibmc_mode_funcs;
->  =20
->   	ret =3D hibmc_de_init(priv);
->   	if (ret) {
-> -		drm_err(priv->dev, "failed to init de: %d\n", ret);
-> +		drm_err(dev, "failed to init de: %d\n", ret);
->   		return ret;
->   	}
->  =20
->   	ret =3D hibmc_vdac_init(priv);
->   	if (ret) {
-> -		drm_err(priv->dev, "failed to init vdac: %d\n", ret);
-> +		drm_err(dev, "failed to init vdac: %d\n", ret);
->   		return ret;
->   	}
->  =20
-> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct hibmc_drm_private =
-*priv)
->   static void hibmc_kms_fini(struct hibmc_drm_private *priv)
->   {
->   	if (priv->mode_config_initialized) {
-> -		drm_mode_config_cleanup(priv->dev);
-> +		drm_mode_config_cleanup(&priv->dev);
->   		priv->mode_config_initialized =3D false;
->   	}
->   }
-> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct hibmc_drm_privat=
-e *priv)
->  =20
->   static int hibmc_hw_map(struct hibmc_drm_private *priv)
->   {
-> -	struct drm_device *dev =3D priv->dev;
-> +	struct drm_device *dev =3D &priv->dev;
->   	struct pci_dev *pdev =3D dev->pdev;
->   	resource_size_t addr, size, ioaddr, iosize;
->  =20
-> @@ -258,7 +259,7 @@ static int hibmc_unload(struct drm_device *dev)
->  =20
->   static int hibmc_load(struct drm_device *dev)
->   {
-> -	struct hibmc_drm_private *priv;
-> +	struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
->   	int ret;
->  =20
->   	priv =3D drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> @@ -267,7 +268,6 @@ static int hibmc_load(struct drm_device *dev)
->   		return -ENOMEM;
->   	}
->   	dev->dev_private =3D priv;
-> -	priv->dev =3D dev;
-
-I'm sure this either does not build or does not work. There's a call to=20
-drm_dev_alloc(), which initialized the DRM device. You need to assign=20
-the returned device here. The embedding of dev only work after you=20
-switched to devm_drm_dev_alloc() in the next patch.
-
-For the patch at hand, just keep struct hibmc_drm_private.dev as a=20
-pointer and you should be fine.
-
-Best regards
-Thomas
-
->  =20
->   	ret =3D hibmc_hw_init(priv);
->   	if (ret)
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> index f310a83..e35353a 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
->   	resource_size_t  fb_size;
->  =20
->   	/* drm */
-> -	struct drm_device  *dev;
-> +	struct drm_device dev;
->   	struct drm_plane primary_plane;
->   	struct drm_crtc crtc;
->   	struct drm_encoder encoder;
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
-/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> index 74e26c2..d35548d 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs hibmc_encoder_f=
-uncs =3D {
->  =20
->   int hibmc_vdac_init(struct hibmc_drm_private *priv)
->   {
-> -	struct drm_device *dev =3D priv->dev;
-> +	struct drm_device *dev =3D &priv->dev;
->   	struct hibmc_connector *hibmc_connector =3D &priv->connector;
->   	struct drm_encoder *encoder =3D &priv->encoder;
->   	struct drm_connector *connector =3D &hibmc_connector->base;
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/=
-drm/hisilicon/hibmc/hibmc_ttm.c
-> index 602ece1..e84fb81 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
->   {
->   	struct drm_vram_mm *vmm;
->   	int ret;
-> -	struct drm_device *dev =3D hibmc->dev;
-> +	struct drm_device *dev =3D &hibmc->dev;
->  =20
->   	vmm =3D drm_vram_helper_alloc_mm(dev,
->   				       pci_resource_start(dev->pdev, 0),
-> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
->  =20
->   void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
->   {
-> -	if (!hibmc->dev->vram_mm)
-> +	struct drm_device *dev =3D &hibmc->dev;
-> +
-> +	if (!dev->vram_mm)
->   		return;
->  =20
-> -	drm_vram_helper_release_mm(hibmc->dev);
-> +	drm_vram_helper_release_mm(dev);
->   }
->  =20
->   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---XPeR6lTSIpmEyGMyo250NaIOTTDjUtHpk--
-
---yyW7XNR2JX32oZQNscThp0mmeJVnEMk5k
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/GNEsFAwAAAAAACgkQlh/E3EQov+A+
-nRAAu2G955/ZM8WnVIRgFsof6pWGNA6TBCbRdRB8iMRBlAy32b8YUkF1mi0zFMiTiqwjw+GZdyO1
-46+pCCgMRYwys47LAG0KIeS6HU/4yE4Cf7hrpOLo/Dht+tzL8hkVsRdTUXQVtAo0+w28Kkgi+OVV
-vFnqmn+H7/ZSR48qSxLusHR1C5Q6/ydDd6nZ4e0aauLOFijRVLYYny8couuQ7v2ATx5DIrDl2ogj
-NQlGnV9pedsBSsxNbM6+iTuImEW/xK87ketFc4oLXTaHmSlZmkB6VO6IUGG4IuTIxfLAbIf0OLib
-j69XpDfqkndtXSH6/QBEJeXzqg0GayICbbK8ca+8PBHuknY0VTTNKH1CUmXkUEvZ+KiMLCLT/K9c
-1urEjnFoYTP7wKlDgPr1vynCL4ZHo2zuni707eCC5yhAXvJvb2fkRyehqAjCpWfUu/5kJkZr8abu
-Np0/yQHkkwTmYiVia7IzoWST4Tv+PbZnr/zoaUjOOzo0RHYqMblnT8LXKmAKVRO3siEYbs02j3re
-fY10bFZWF4EtcbTKK9Fx+FmwLl6kmllVNYnL0t6qI80U9IDqsDaoviZRN/gKQX8oqIrmI9s6deya
-XgViXas0nyperJdHezJn7SdfteNX0AkfME6qK7HQagA9TJ0pIs1WkD4TwOce+8wSboITv68hT6Vy
-Ccg=
-=NUpE
------END PGP SIGNATURE-----
-
---yyW7XNR2JX32oZQNscThp0mmeJVnEMk5k--
+Dang. Many thanks for the careful review!
