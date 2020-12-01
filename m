@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D325C2CA4B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCB92CA4AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391525AbgLAN7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:59:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45574 "EHLO mail.kernel.org"
+        id S2403828AbgLAN7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:59:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391492AbgLAN7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:59:22 -0500
+        id S2388324AbgLAN7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:59:06 -0500
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10D472086A;
-        Tue,  1 Dec 2020 13:58:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AB47206A5;
+        Tue,  1 Dec 2020 13:58:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606831121;
-        bh=CXjSiL5hvWtSjMiTwdtyZhoUE2ZQn85HkMUoJAFtBNQ=;
+        s=default; t=1606831105;
+        bh=ZciRQ0clP47O2viwbKF2X3XIXX0D+EsIIPHiUJWV+yQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=DxAIE96ZH2rpJ+5RpUudr4DFeAF3x6Bd2z0tHgsBAmyBfp69UDS3JgDJyCmxERtxq
-         iPZZOnCFi7teBd0k0uGwbGyx7gWCAzsL2l5NZUFL7o9awsajH7c+yAt52asSE/dQFl
-         mOC6drlxMHF86GXVbIQh6W8t6eLITb2Fpc5Vlu/w=
+        b=I6dIZxMUSZw5LJ3shd89RuTmtg360kVOOA2fGx4s5axpSNRlbHmBC5a3eKkZHYxmI
+         MPFffHppvt8NQevpinVzBgb+PspgvKNYeYwlacpuXQ7QjEfjUq2tdx12drh+qIzCJ7
+         QL6emIYViGizSLXptkGIqN/S81VItMlCGYboYyKU=
 From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Adam Ward <Adam.Ward.opensource@diasemi.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        devicetree@vger.kernel.org,
-        Support Opensource <support.opensource@diasemi.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <cover.1606755367.git.Adam.Ward.opensource@diasemi.com>
-References: <cover.1606755367.git.Adam.Ward.opensource@diasemi.com>
-Subject: Re: [PATCH V3 00/10] regulator: da9121: extend support to variants, add features
-Message-Id: <160683107677.35139.1688443189294014005.b4-ty@kernel.org>
+To:     robh@kernel.org, lgirdwood@gmail.com, grandmaster@al2klimov.de,
+        perex@perex.cz, dmurphy@ti.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        tiwai@suse.com
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20201002192801.639743-1-christophe.jaillet@wanadoo.fr>
+References: <20201002192801.639743-1-christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] ASoC: tlv320adcx140: Fix a typo in a comment
+Message-Id: <160683107674.35139.8370464905366539450.b4-ty@kernel.org>
 Date:   Tue, 01 Dec 2020 13:57:56 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -43,17 +42,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020 16:59:04 +0000, Adam Ward wrote:
-> This series extends the DA9121 driver to add support for related products:
-> 
->   DA9130, 10A, Dual-Phase (Automotive Grade)
->   DA9122, 5A + 5A
->   DA9131, 5A + 5A (Automotive Grade)
->   DA9220, 3A + 3A
->   DA9132, 3A + 3A (Automotive Grade)
->   DA9217, 6A, Dual-Phase
-> 
-> [...]
+On Fri, 2 Oct 2020 21:28:01 +0200, Christophe JAILLET wrote:
+> It is likely that this header file is about the TLV320ADCX140. (0 and 4
+> swapped)
+> While at it fix a missing "H" in a comment related to the include guard.
 
 Applied to
 
@@ -61,26 +53,8 @@ Applied to
 
 Thanks!
 
-[01/10] regulator: Update DA9121 dt-bindings
-        (no commit info)
-[02/10] regulator: da9121: Add header file
-        (no commit info)
-[03/10] regulator: da9121: Add device variants
-        (no commit info)
-[04/10] regulator: da9121: Add device variant regmaps
-        (no commit info)
-[05/10] regulator: da9121: Add device variant descriptors
-        (no commit info)
-[06/10] regulator: da9121: Add support for device variants via devicetree
-        (no commit info)
-[07/10] regulator: da9121: Update registration to support multiple buck variants
-        (no commit info)
-[08/10] regulator: da9121: add current support
-        (no commit info)
-[09/10] regulator: da9121: add mode support
-        (no commit info)
-[10/10] regulator: da9121: add interrupt support
-        (no commit info)
+[1/1] ASoC: tlv320adcx140: Fix a typo in a comment
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
