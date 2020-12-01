@@ -2,133 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C9C2C955C
+	by mail.lfdr.de (Postfix) with ESMTP id D5EAD2C955D
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727221AbgLAClu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:41:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgLAClt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:41:49 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914B9C0613D3;
-        Mon, 30 Nov 2020 18:41:09 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id x4so258888pln.8;
-        Mon, 30 Nov 2020 18:41:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BrVuWJwHE9C9HRZa3NRj0IDooipk8e5AvGemnz8mYRM=;
-        b=PIKbpzqAuWJPG0oIElTPcQ0eIgtZKO8Hh0sX3qC6sMiPGchjlwKZAa/f/VDVhb7ZGp
-         W5SJ8lFKSuuDv+AS0PzMw/R7gSi+y/Yg6jWvlUsdDWZRR+ej89qF14ISUhz6JgN6Rdr0
-         Gs5sf3s/YoPQLc7GlHAWzhKrbNI0yD8U0oBlrHuq1b2QO9cpgI46hyDDnJh6XbO52M1B
-         iwnx1JIzG2UOLLoD0qjDIvKuAebQuuCizQpKq76T2ElNNPz0OfMT4th1JqLUnWKafqyU
-         QAq9TvAw1VgbXw652YK9w3tFK8UzzehaJGgArpxP5jpdX2/JlzGsyZkGh0EAeHKtyOme
-         qVQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BrVuWJwHE9C9HRZa3NRj0IDooipk8e5AvGemnz8mYRM=;
-        b=YKSSBnL2BufVlS4pKIxqrTO8n9qoiOvEKaIri07VC0ot9kVLe1MogOeG/lG7CAUYuW
-         FI0jYT/EO1jDxC4OxMvvzLoK2eQEkWtcHCV2G+0szZ7BZsfilH0LN6XeM0GH8Dwpd1O4
-         O6OtelqYyamKe7Z7kow7KbCn7w9K1866+9lygygByh3GJTavblEySuAb7EdEzTePxgRZ
-         4eBDdhoNeK/aWnvO5lDCQD8iQVh91bTi7nv6Qtw4LGHKKo8XPpsRVTeP1P8Da5wlvhlN
-         RJu3y2BAky6kPfSGC4xFKM4n3WP8h9rLzokpgEDX6zLcC2JXzUwyV0trSUwjC0+PWXVP
-         5h+g==
-X-Gm-Message-State: AOAM532EaNWgZbUZD3My+CPoZ9gjChHo5sEG8fhA7qxInN+MAPNnDKmP
-        1gnBD0y6/go2uAb/Dl9nMXE=
-X-Google-Smtp-Source: ABdhPJzhlxAWE5ydiJHchmaDYjh6Xplry78PBfwdCMXS4T6uBv4MgWtkPeWir7WCsK+zT/HtpUpuyA==
-X-Received: by 2002:a17:902:c594:b029:da:8c9a:5d52 with SMTP id p20-20020a170902c594b02900da8c9a5d52mr689685plx.49.1606790469119;
-        Mon, 30 Nov 2020 18:41:09 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:42ca])
-        by smtp.gmail.com with ESMTPSA id j10sm292394pji.29.2020.11.30.18.41.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 18:41:08 -0800 (PST)
-Date:   Mon, 30 Nov 2020 18:41:06 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-Message-ID: <20201201024106.k2jd5nysmokbymn5@ast-mbp>
-References: <20201126165748.1748417-1-revest@google.com>
- <20201129010705.7djnqmztkjhqlrdt@ast-mbp>
- <7c75919c4b05cbe5952826d67b6e57a95b544a5a.camel@chromium.org>
+        id S1727242AbgLACmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:42:10 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:22908 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgLACmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 21:42:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606790509; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=zKeaAhcsyBuOUqPQR3JVlrILnSTaBDiXtP5Rw+G7pj8=; b=GxUiNQ8xYzwxISapAN43v3WnjCnI+7LsE11+BvzTUgiXv8+meis9TOHvuxKmsHYkFbBmk8An
+ qLB8WmJVrJWhAGUo5KF/dnGTOwSfFiNwIE/Z9L1yof3q16c05lyh87aPzFjJMD9WYKLFfuQO
+ VQnv5Vnb41EpLzA2ot3OtSTXF6k=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fc5ad4f2ef3e1355f407e6d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 02:41:19
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9DE2CC43465; Tue,  1 Dec 2020 02:41:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B4240C433C6;
+        Tue,  1 Dec 2020 02:41:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B4240C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v3 1/3] scsi: ufs: Serialize eh_work with system PM events
+ and async scan
+To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1605596660-2987-1-git-send-email-cang@codeaurora.org>
+ <1605596660-2987-2-git-send-email-cang@codeaurora.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <89c387c1-586a-3309-9dbb-f1903148df62@codeaurora.org>
+Date:   Mon, 30 Nov 2020 18:41:15 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c75919c4b05cbe5952826d67b6e57a95b544a5a.camel@chromium.org>
+In-Reply-To: <1605596660-2987-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 05:23:22PM +0100, Florent Revest wrote:
-> On Sat, 2020-11-28 at 17:07 -0800, Alexei Starovoitov wrote:
-> > On Thu, Nov 26, 2020 at 05:57:47PM +0100, Florent Revest wrote:
-> > > This helper exposes the kallsyms_lookup function to eBPF tracing
-> > > programs. This can be used to retrieve the name of the symbol at an
-> > > address. For example, when hooking into nf_register_net_hook, one
-> > > can
-> > > audit the name of the registered netfilter hook and potentially
-> > > also
-> > > the name of the module in which the symbol is located.
-> > > 
-> > > Signed-off-by: Florent Revest <revest@google.com>
-> > > ---
-> > >  include/uapi/linux/bpf.h       | 16 +++++++++++++
-> > >  kernel/trace/bpf_trace.c       | 41
-> > > ++++++++++++++++++++++++++++++++++
-> > >  tools/include/uapi/linux/bpf.h | 16 +++++++++++++
-> > >  3 files changed, 73 insertions(+)
-> > > 
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index c3458ec1f30a..670998635eac 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -3817,6 +3817,21 @@ union bpf_attr {
-> > >   *		The **hash_algo** is returned on success,
-> > >   *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
-> > >   *		invalid arguments are passed.
-> > > + *
-> > > + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32
-> > > symbol_size, char *module, u32 module_size)
-> > > + *	Description
-> > > + *		Uses kallsyms to write the name of the symbol at
-> > > *address*
-> > > + *		into *symbol* of size *symbol_sz*. This is guaranteed
-> > > to be
-> > > + *		zero terminated.
-> > > + *		If the symbol is in a module, up to *module_size* bytes
-> > > of
-> > > + *		the module name is written in *module*. This is also
-> > > + *		guaranteed to be zero-terminated. Note: a module name
-> > > + *		is always shorter than 64 bytes.
-> > > + *	Return
-> > > + *		On success, the strictly positive length of the full
-> > > symbol
-> > > + *		name, If this is greater than *symbol_size*, the
-> > > written
-> > > + *		symbol is truncated.
-> > > + *		On error, a negative value.
-> > 
-> > Looks like debug-only helper.
-> > I cannot think of a way to use in production code.
-> > What program suppose to do with that string?
-> > Do string compare? BPF side doesn't have a good way to do string
-> > manipulations.
-> > If you really need to print a symbolic name for a given address
-> > I'd rather extend bpf_trace_printk() to support %pS
+On 11/16/2020 11:04 PM, Can Guo wrote:
+> Serialize eh_work with system PM events and async scan to make sure eh_work
+> does not run in parallel with them.
 > 
-> We actually use this helper for auditing, not debugging.
-> We don't want to parse /proc/kallsyms from userspace because we have no
-> guarantee that the module will still be loaded by the time the event
-> reaches userspace (this is also faster in kernelspace).
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
 
-so what are you going to do with that string?
-print it? send to user space via ring buffer?
-Where are you getting that $pc ?
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+
+>   drivers/scsi/ufs/ufshcd.c | 64 +++++++++++++++++++++++++++++------------------
+>   drivers/scsi/ufs/ufshcd.h |  1 +
+>   2 files changed, 41 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 1d8134e..7e764e8 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -5597,7 +5597,9 @@ static inline void ufshcd_schedule_eh_work(struct ufs_hba *hba)
+>   static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>   {
+>   	pm_runtime_get_sync(hba->dev);
+> -	if (pm_runtime_suspended(hba->dev)) {
+> +	if (pm_runtime_status_suspended(hba->dev) || hba->is_sys_suspended) {
+> +		enum ufs_pm_op pm_op;
+> +
+>   		/*
+>   		 * Don't assume anything of pm_runtime_get_sync(), if
+>   		 * resume fails, irq and clocks can be OFF, and powers
+> @@ -5612,7 +5614,8 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>   		if (!ufshcd_is_clkgating_allowed(hba))
+>   			ufshcd_setup_clocks(hba, true);
+>   		ufshcd_release(hba);
+> -		ufshcd_vops_resume(hba, UFS_RUNTIME_PM);
+> +		pm_op = hba->is_sys_suspended ? UFS_RUNTIME_PM : UFS_SYSTEM_PM;
+> +		ufshcd_vops_resume(hba, pm_op);
+>   	} else {
+>   		ufshcd_hold(hba, false);
+>   		if (hba->clk_scaling.is_allowed) {
+> @@ -5633,7 +5636,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>   
+>   static inline bool ufshcd_err_handling_should_stop(struct ufs_hba *hba)
+>   {
+> -	return (hba->ufshcd_state == UFSHCD_STATE_ERROR ||
+> +	return (!hba->is_powered || hba->ufshcd_state == UFSHCD_STATE_ERROR ||
+>   		(!(hba->saved_err || hba->saved_uic_err || hba->force_reset ||
+>   			ufshcd_is_link_broken(hba))));
+>   }
+> @@ -5646,6 +5649,7 @@ static void ufshcd_recover_pm_error(struct ufs_hba *hba)
+>   	struct request_queue *q;
+>   	int ret;
+>   
+> +	hba->is_sys_suspended = false;
+>   	/*
+>   	 * Set RPM status of hba device to RPM_ACTIVE,
+>   	 * this also clears its runtime error.
+> @@ -5704,11 +5708,13 @@ static void ufshcd_err_handler(struct work_struct *work)
+>   
+>   	hba = container_of(work, struct ufs_hba, eh_work);
+>   
+> +	down(&hba->eh_sem);
+>   	spin_lock_irqsave(hba->host->host_lock, flags);
+>   	if (ufshcd_err_handling_should_stop(hba)) {
+>   		if (hba->ufshcd_state != UFSHCD_STATE_ERROR)
+>   			hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
+>   		spin_unlock_irqrestore(hba->host->host_lock, flags);
+> +		up(&hba->eh_sem);
+>   		return;
+>   	}
+>   	ufshcd_set_eh_in_progress(hba);
+> @@ -5716,20 +5722,18 @@ static void ufshcd_err_handler(struct work_struct *work)
+>   	ufshcd_err_handling_prepare(hba);
+>   	spin_lock_irqsave(hba->host->host_lock, flags);
+>   	ufshcd_scsi_block_requests(hba);
+> -	/*
+> -	 * A full reset and restore might have happened after preparation
+> -	 * is finished, double check whether we should stop.
+> -	 */
+> -	if (ufshcd_err_handling_should_stop(hba)) {
+> -		if (hba->ufshcd_state != UFSHCD_STATE_ERROR)
+> -			hba->ufshcd_state = UFSHCD_STATE_OPERATIONAL;
+> -		goto out;
+> -	}
+>   	hba->ufshcd_state = UFSHCD_STATE_RESET;
+>   
+>   	/* Complete requests that have door-bell cleared by h/w */
+>   	ufshcd_complete_requests(hba);
+>   
+> +	/*
+> +	 * A full reset and restore might have happened after preparation
+> +	 * is finished, double check whether we should stop.
+> +	 */
+> +	if (ufshcd_err_handling_should_stop(hba))
+> +		goto skip_err_handling;
+> +
+>   	if (hba->dev_quirks & UFS_DEVICE_QUIRK_RECOVERY_FROM_DL_NAC_ERRORS) {
+>   		bool ret;
+>   
+> @@ -5737,17 +5741,10 @@ static void ufshcd_err_handler(struct work_struct *work)
+>   		/* release the lock as ufshcd_quirk_dl_nac_errors() may sleep */
+>   		ret = ufshcd_quirk_dl_nac_errors(hba);
+>   		spin_lock_irqsave(hba->host->host_lock, flags);
+> -		if (!ret && !hba->force_reset && ufshcd_is_link_active(hba))
+> +		if (!ret && ufshcd_err_handling_should_stop(hba))
+>   			goto skip_err_handling;
+>   	}
+>   
+> -	if (hba->force_reset || ufshcd_is_link_broken(hba) ||
+> -	    ufshcd_is_saved_err_fatal(hba) ||
+> -	    ((hba->saved_err & UIC_ERROR) &&
+> -	     (hba->saved_uic_err & (UFSHCD_UIC_DL_NAC_RECEIVED_ERROR |
+> -				    UFSHCD_UIC_DL_TCx_REPLAY_ERROR))))
+> -		needs_reset = true;
+> -
+>   	if ((hba->saved_err & (INT_FATAL_ERRORS | UFSHCD_UIC_HIBERN8_MASK)) ||
+>   	    (hba->saved_uic_err &&
+>   	     (hba->saved_uic_err != UFSHCD_UIC_PA_GENERIC_ERROR))) {
+> @@ -5767,8 +5764,14 @@ static void ufshcd_err_handler(struct work_struct *work)
+>   	 * transfers forcefully because they will get cleared during
+>   	 * host reset and restore
+>   	 */
+> -	if (needs_reset)
+> +	if (hba->force_reset || ufshcd_is_link_broken(hba) ||
+> +	    ufshcd_is_saved_err_fatal(hba) ||
+> +	    ((hba->saved_err & UIC_ERROR) &&
+> +	     (hba->saved_uic_err & (UFSHCD_UIC_DL_NAC_RECEIVED_ERROR |
+> +				    UFSHCD_UIC_DL_TCx_REPLAY_ERROR)))) {
+> +		needs_reset = true;
+>   		goto do_reset;
+> +	}
+>   
+>   	/*
+>   	 * If LINERESET was caught, UFS might have been put to PWM mode,
+> @@ -5876,12 +5879,11 @@ static void ufshcd_err_handler(struct work_struct *work)
+>   			dev_err_ratelimited(hba->dev, "%s: exit: saved_err 0x%x saved_uic_err 0x%x",
+>   			    __func__, hba->saved_err, hba->saved_uic_err);
+>   	}
+> -
+> -out:
+>   	ufshcd_clear_eh_in_progress(hba);
+>   	spin_unlock_irqrestore(hba->host->host_lock, flags);
+>   	ufshcd_scsi_unblock_requests(hba);
+>   	ufshcd_err_handling_unprepare(hba);
+> +	up(&hba->eh_sem);
+>   }
+>   
+>   /**
+> @@ -6856,6 +6858,7 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba)
+>   	 */
+>   	scsi_report_bus_reset(hba->host, 0);
+>   	if (err) {
+> +		hba->ufshcd_state = UFSHCD_STATE_ERROR;
+>   		hba->saved_err |= saved_err;
+>   		hba->saved_uic_err |= saved_uic_err;
+>   	}
+> @@ -7704,8 +7707,10 @@ static void ufshcd_async_scan(void *data, async_cookie_t cookie)
+>   	struct ufs_hba *hba = (struct ufs_hba *)data;
+>   	int ret;
+>   
+> +	down(&hba->eh_sem);
+>   	/* Initialize hba, detect and initialize UFS device */
+>   	ret = ufshcd_probe_hba(hba, true);
+> +	up(&hba->eh_sem);
+>   	if (ret)
+>   		goto out;
+>   
+> @@ -8718,6 +8723,7 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+>   	int ret = 0;
+>   	ktime_t start = ktime_get();
+>   
+> +	down(&hba->eh_sem);
+>   	if (!hba || !hba->is_powered)
+>   		return 0;
+>   
+> @@ -8748,6 +8754,8 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+>   		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>   	if (!ret)
+>   		hba->is_sys_suspended = true;
+> +	else
+> +		up(&hba->eh_sem);
+>   	return ret;
+>   }
+>   EXPORT_SYMBOL(ufshcd_system_suspend);
+> @@ -8764,8 +8772,10 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+>   	int ret = 0;
+>   	ktime_t start = ktime_get();
+>   
+> -	if (!hba)
+> +	if (!hba) {
+> +		up(&hba->eh_sem);
+>   		return -EINVAL;
+> +	}
+>   
+>   	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
+>   		/*
+> @@ -8781,6 +8791,7 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+>   		hba->curr_dev_pwr_mode, hba->uic_link_state);
+>   	if (!ret)
+>   		hba->is_sys_suspended = false;
+> +	up(&hba->eh_sem);
+>   	return ret;
+>   }
+>   EXPORT_SYMBOL(ufshcd_system_resume);
+> @@ -8872,6 +8883,7 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+>   {
+>   	int ret = 0;
+>   
+> +	down(&hba->eh_sem);
+>   	if (!hba->is_powered)
+>   		goto out;
+>   
+> @@ -8888,6 +8900,8 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+>   out:
+>   	if (ret)
+>   		dev_err(hba->dev, "%s failed, err %d\n", __func__, ret);
+> +	hba->is_powered = false;
+> +	up(&hba->eh_sem);
+>   	/* allow force shutdown even in case of errors */
+>   	return 0;
+>   }
+> @@ -9082,6 +9096,8 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
+>   	INIT_WORK(&hba->eh_work, ufshcd_err_handler);
+>   	INIT_WORK(&hba->eeh_work, ufshcd_exception_event_handler);
+>   
+> +	sema_init(&hba->eh_sem, 1);
+> +
+>   	/* Initialize UIC command mutex */
+>   	mutex_init(&hba->uic_cmd_mutex);
+>   
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 47eb143..1e680bf 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -728,6 +728,7 @@ struct ufs_hba {
+>   	u32 intr_mask;
+>   	u16 ee_ctrl_mask;
+>   	bool is_powered;
+> +	struct semaphore eh_sem;
+>   
+>   	/* Work Queues */
+>   	struct workqueue_struct *eh_wq;
+> 
+
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
