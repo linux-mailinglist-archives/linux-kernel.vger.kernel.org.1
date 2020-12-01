@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AB42C9ABC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2500E2C9B3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388297AbgLAJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:20 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9079 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387613AbgLAJAP (ORCPT
+        id S2388549AbgLAJGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:06:16 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.23]:31414 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388732AbgLAJDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:00:15 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Clbcf2FrYzLvK7;
-        Tue,  1 Dec 2020 16:58:58 +0800 (CST)
-Received: from [127.0.0.1] (10.57.22.126) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Dec 2020
- 16:59:21 +0800
-Subject: Re: [PATCH v1] gpio: dwapb: mask/unmask IRQ when disable/enable it
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     <bgolaszewski@baylibre.com>, <linus.walleij@linaro.org>,
-        <Sergey.Semin@baikalelectronics.ru>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1606728979-44259-1-git-send-email-luojiaxing@huawei.com>
- <20201130112250.GK4077@smile.fi.intel.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <63f7dcc4-a924-515a-2fea-31ec80f3353e@huawei.com>
-Date:   Tue, 1 Dec 2020 16:59:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
-MIME-Version: 1.0
-In-Reply-To: <20201130112250.GK4077@smile.fi.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.57.22.126]
-X-CFilter-Loop: Reflected
+        Tue, 1 Dec 2020 04:03:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606813197;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=/wFU109K6enzxYP0SRDcYv2BvlfcVrn1By3HhQXXwLw=;
+        b=bV68+X7+i9/4M9YsEkirVCAWQntltSQBsJk/WbWe5tAcIlk1qR3Ui5mI1Wkjl1LkaB
+        mEH2w/oXMDcf4N8wxX+7dvGhx+u4NEo74HCsKjvzGmfpaS7bSlNyWxu2wpq2iGKvXShb
+        aeHfwWV4fG4XqPWldnoF3rvyNHPNRT4XFO09pcvl0xQnHaLez9cvmjovjNB6de222szm
+        Ucp9+D+wMd3OO12xSSmtwCC2maHNoaIe77j1RMEcFpww/9T9Y1/HbnGHjjs+MsDQAZXP
+        4EHbKXO8Gs3Ua8SwSNFQXaN8Ndh+evzd3+agoabapXSEjzbbo8u65Pk72dPBF+SgpX0c
+        ar1A==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/vrwDuo6A=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
+        with ESMTPSA id N02faawB18xhSXr
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Tue, 1 Dec 2020 09:59:43 +0100 (CET)
+Subject: Re: [BUG] SPI broken for SPI based panel drivers
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
+Date:   Tue, 1 Dec 2020 09:59:43 +0100
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com>
+References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com> <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sven,
 
-On 2020/11/30 19:22, Andy Shevchenko wrote:
-> On Mon, Nov 30, 2020 at 05:36:19PM +0800, Luo Jiaxing wrote:
->> The mask and unmask registers are not configured in dwapb_irq_enable() and
->> dwapb_irq_disable(). In the following situations, the IRQ will be masked by
->> default after the IRQ is enabled:
->>
->> mask IRQ -> disable IRQ -> enable IRQ
->>
->> In this case, the IRQ status of GPIO controller is inconsistent with it's
->> irq_data too. For example, in __irq_enable(), IRQD_IRQ_DISABLED and
->> IRQD_IRQ_MASKED are both clear, but GPIO controller do not perform unmask.
-> Sounds a bit like a papering over the issue which is slightly different.
-> Can you elaborate more, why ->irq_mask() / ->irq_unmask() are not being called?
+> Am 30.11.2020 um 21:13 schrieb Sven Van Asbroeck =
+<thesven73@gmail.com>:
+>=20
+> Hi Nikolaus, thank you for reaching out !
+>=20
+> On Mon, Nov 30, 2020 at 2:06 PM H. Nikolaus Schaller =
+<hns@goldelico.com> wrote:
+>>=20
+>> But reverting your patch brings back the display. So it appears as if =
+it does not
+>> fix a breakage, rather breaks a previously working setup.
+>=20
+> The patch in question fixes an important breakage: before the patch, =
+literally
+> hundreds of SPI drivers no longer worked - only if the SPI bus master
+> driver was using gpio descriptors.
+>=20
+> We knew that there was a chance that our fix would break something =
+else.
+> But hopefully "it fixes more than it breaks"
 
+Then it should not have been applied to mainline but fully worked out =
+and tested.
 
-Sure, The basic software invoking process is as follows:
+>=20
+>>=20
+>> What should we do?
+>>=20
+>=20
+> Can you try the following patch ?
 
-Release IRQ:
-free_irq() -> __free_irq() -> irq_shutdown() ->__irq_disable()
+Unfortunately it doesn't seem to fix it. And combined with the second =
+proposed fix also not.
 
-Disable IRQ:
-disable_irq() -> __disable_irq_nosync() -> __disable_irq -> irq_disable 
--> __irq_disable()
+BR and thanks,
+Nikolaus
 
-As shown before, both will call __irq_disable(). The code of it is as 
-follows:
+my combined change:
 
-if (irqd_irq_disabled(&desc->irq_data)) {
-     if (mask)
-         mask_irq(desc);
-
-} else {
-         irq_state_set_disabled(desc);
-             if (desc->irq_data.chip->irq_disable) {
-desc->irq_data.chip->irq_disable(&desc->irq_data);
-                 irq_state_set_masked(desc);
-             } else if (mask) {
-                 mask_irq(desc);
-     }
-}
-
-Because gpio-dwapb.c provides the hook function of irq_disable, 
-__irq_disable() will directly calls chip->irq_disable() instead of 
-mask_irq().
-
-For irq_enable(), it's similar and the code is as follows:
-
-if (!irqd_irq_disabled(&desc->irq_data)) {
-     unmask_irq(desc);
-} else {
-     irq_state_clr_disabled(desc);
-     if (desc->irq_data.chip->irq_enable) {
-desc->irq_data.chip->irq_enable(&desc->irq_data);
-         irq_state_clr_masked(desc);
-     } else {
-         unmask_irq(desc);
-     }
-}
-
-Similarly, because gpio-dwapb.c provides the hook function of 
-irq_enable, irq_enable() will directly calls chip->irq_enable() but does 
-not call unmask_irq().
-
-
-Therefore, the current handle is as follows:
-
-API of IRQ:        |   mask_irq()             | disable_irq()            
-|    enable_irq()
-
-gpio-dwapb.c:  |   chip->irq_mask()   | chip->irq_diable()   |    
-chip->irq_enable()
-
-I do not know why irq_enable() only calls chip->irq_enable(). However, 
-the code shows that irq_enable() clears the disable and masked flags in 
-the irq_data state.
-
-Therefore, for gpio-dwapb.c, I thinks ->irq_enable also needs to clear 
-the disable and masked flags in the hardware register.
-
-
-
+diff --git a/drivers/spi/spi-gpio.c b/drivers/spi/spi-gpio.c
+index 7ceb0ba27b755c..ec2da62716a279 100644
+--- a/drivers/spi/spi-gpio.c
++++ b/drivers/spi/spi-gpio.c
+@@ -208,8 +208,8 @@ static void spi_gpio_chipselect(struct spi_device =
+*spi, int is_active)
+        if (spi_gpio->cs_gpios) {
+                struct gpio_desc *cs =3D =
+spi_gpio->cs_gpios[spi->chip_select];
+=20
+-               /* SPI chip selects are normally active-low */
+-               gpiod_set_value_cansleep(cs, (spi->mode & SPI_CS_HIGH) ? =
+is_active : !is_active);
++               /* SPI chip select polarity handled by gpiolib*/
++               gpiod_set_value_cansleep(cs, is_active);
+        }
+ }
+=20
+@@ -226,8 +226,7 @@ static int spi_gpio_setup(struct spi_device *spi)
+        if (spi_gpio->cs_gpios) {
+                cs =3D spi_gpio->cs_gpios[spi->chip_select];
+                if (!spi->controller_state && cs)
+-                       status =3D gpiod_direction_output(cs,
+-                                                 !(spi->mode & =
+SPI_CS_HIGH));
++                       status =3D gpiod_direction_output(cs, false);
+        }
+=20
+        if (!status)
 
