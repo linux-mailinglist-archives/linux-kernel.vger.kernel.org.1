@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BAD2CB0BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 662882CB0BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgLAXSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgLAXSD (ORCPT
+        id S1727026AbgLAXXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:23:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55641 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726885AbgLAXXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:18:03 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96628C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 15:17:23 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606864641;
+        Tue, 1 Dec 2020 18:23:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606864908;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UE/rlHSP0G7s86tz7tjEzg2yq4EO+0YTSH4Q6g6NmcU=;
-        b=kCDSKkLOhprlm8gDzoLFWHfYXs7il5xKGZmOBVSqaLPnJmaHwykojcHdi/8YY4erFK4x+5
-        Hzk/CJecsziPY0313ELPOP3SidS4HHUuq40JWxLg8F1vX10DeuEjfTir64DZVIMJXctggU
-        FREnHqCdTkQUC5yxOdjjoWQbPM9s5KNZ55gmGOOA5dauXJ+jFIVO8zJgI6tcg+nNEBnMzu
-        9a3mlGFv+iM9jxwz8/s+r/GhpKXEwo65hdy3SdenByiQ9G8dotUnxnQxo7T6FOaSzyJCCS
-        VQlkMSm0wl11SV+7KnDIH/3zSqyv5sCNh/J5Y7t01IjbvyR+llbD5RlQpMeXng==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606864641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UE/rlHSP0G7s86tz7tjEzg2yq4EO+0YTSH4Q6g6NmcU=;
-        b=IZTBrTtftxzvTCDGtBxSKvStEbFFau7T7km8xENUWmccC3SSETFINT2XAdYsGMFmYkSn9I
-        fskpLsHQHV+wuODQ==
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] split up lockdep and syscall related functionality in generic entry code
-In-Reply-To: <20201201142755.31931-1-svens@linux.ibm.com>
-References: <20201201142755.31931-1-svens@linux.ibm.com>
-Date:   Wed, 02 Dec 2020 00:17:21 +0100
-Message-ID: <877dq1f75q.fsf@nanos.tec.linutronix.de>
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/VrWq4ROZEETaUG6m+Wv8n9gH98JhhhsUtPF4KnUL34=;
+        b=cG6Q6PYaC6038yM32uUs7dDDR9TpnovVQesCrVOmhKe/wVWslogRtjhcsgbisQU/a1dCta
+        P9Eh7rmI+yEbdRUdbeWQqFPVgMRRiIhy3dh1WhTOjXXY0tqzAR1qVkKMjon31OZIe8yMe/
+        fAybrrFN7s/6jHQ+hmxnuirFRdaXyK4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-26-T4dzLGELMqmpzahP1zvfXw-1; Tue, 01 Dec 2020 18:21:46 -0500
+X-MC-Unique: T4dzLGELMqmpzahP1zvfXw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49DF01076027;
+        Tue,  1 Dec 2020 23:21:45 +0000 (UTC)
+Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4189010013C1;
+        Tue,  1 Dec 2020 23:21:41 +0000 (UTC)
+From:   Eric Sandeen <sandeen@redhat.com>
+Subject: [PATCH V2] uapi: fix statx attribute value overlap for DAX &
+ MOUNT_ROOT
+To:     torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>,
+        Eric Sandeen <sandeen@redhat.com>
+Message-ID: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
+Date:   Tue, 1 Dec 2020 17:21:40 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01 2020 at 15:27, Sven Schnelle wrote:
-> __do_syscall is the function which gets called by low level entry.S code:
->
-> void noinstr __do_syscall(struct pt_regs *regs)
-> {
-> 	enter_from_user_mode(regs);	/* sets lockdep state, and other initial stuff */
->
-> 	/*
-> 	 * functions that need to run with irqs disabled,
-> 	 * but lockdep state and other stuff set up
-> 	 */
-> 	memcpy(&regs->gprs[8], S390_lowcore.save_area_sync, 8 * sizeof(unsigned long));
-> 	memcpy(&regs->int_code, &S390_lowcore.svc_ilc, sizeof(regs->int_code));
-> 	regs->psw = S390_lowcore.svc_old_psw;
+[*] Note: This needs to be merged as soon as possible as it's introducing an incompatible UAPI change...
 
-As __do_syscall() is marked noinstr you want to add
+STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same value,
+so one of them needs fixing. Move STATX_ATTR_DAX.
 
-        instrumentation_begin();
->
-> 	update_timer_sys();
->
-> 	local_irq_enable();
->
-> 	regs->orig_gpr2 = regs->gprs[2];
->
-> 	do {
-> 		regs->flags = _PIF_SYSCALL;
-> 		do_syscall(regs);
-> 	} while (test_pt_regs_flag(regs, PIF_SYSCALL_RESTART));
+While we're in here, clarify the value-matching scheme for some of the
+attributes, and explain why the value for DAX does not match.
 
-        instrumentation_end();
+Fixes: 80340fe3605c ("statx: add mount_root")
+Fixes: 712b2698e4c0 ("fs/stat: Define DAX statx attribute")
+Reported-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+Reviewed-by: David Howells <dhowells@redhat.com>
+---
+V2: Change flag value per Darrick Wong
+    Tweak comment per Darrick Wong
+    Add Fixes: tags & reported-by & RVB per dhowells
 
-for two reasons:
+ include/uapi/linux/stat.h | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-    - it clearly documents the boundaries in the code
+diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+index 82cc58fe9368..1500a0f58041 100644
+--- a/include/uapi/linux/stat.h
++++ b/include/uapi/linux/stat.h
+@@ -171,9 +171,12 @@ struct statx {
+  * be of use to ordinary userspace programs such as GUIs or ls rather than
+  * specialised tools.
+  *
+- * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
++ * Note that the flags marked [I] correspond to the FS_IOC_SETFLAGS flags
+  * semantically.  Where possible, the numerical value is picked to correspond
+- * also.
++ * also.  Note that the DAX attribute indicates that the file is in the CPU
++ * direct access state.  It does not correspond to the per-inode flag that
++ * some filesystems support.
++ *
+  */
+ #define STATX_ATTR_COMPRESSED		0x00000004 /* [I] File is compressed by the fs */
+ #define STATX_ATTR_IMMUTABLE		0x00000010 /* [I] File is marked immutable */
+@@ -183,7 +186,7 @@ struct statx {
+ #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
+ #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
+ #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
+-#define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
++#define STATX_ATTR_DAX			0x00200000 /* File is currently in DAX state */
+ 
+ 
+ #endif /* _UAPI_LINUX_STAT_H */
+-- 
+2.17.0
 
-    - it will make objtool happy.
-
-      I know it does not have s390 support yet, but I only can recommend
-      to add that. It's annoying to analyze all the spots it complains
-      about violating the noinstr rules, but it's way more reliable than
-      human inspection.
-      
-
-> 	exit_to_user_mode();
-> }
-
-Thanks,
-
-        tglx
