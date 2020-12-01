@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E48F2CAAAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B5D2CAAAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729799AbgLASWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:22:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        id S1729858AbgLASWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726733AbgLASWb (ORCPT
+        with ESMTP id S1729816AbgLASWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:22:31 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE66BC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:21:50 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id z136so2623249iof.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:21:50 -0800 (PST)
+        Tue, 1 Dec 2020 13:22:40 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18D2C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:21:59 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id r20so1733465pjp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:21:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ouobtBm8sSQb0vz2vqGGkrgo2OjHAJ9nHVRL58pUGE=;
-        b=uX0hz1qc271RdjaSAXcDDyqtvFg0GUk//wxyUkAsoxen3KpmlHi3IEYgsenDvk5C80
-         v4/0ljBXXPLRJnotPXKT9MRhl3nAX1NTudLW4h5x91eDfsC3vHaL9P2xj+hoMD5OoIxD
-         vOu22nw2eghmX+PK/io3Z3qq8xU2jQ6DrZWJbWXIJVfPigqXzYlq02nNIfaigGWmzlan
-         bYKfGEjAplaTTjwl10RX/HUvN/N3A+ItWennAFnc3Hy2TWtSKqLj/2BNXYqlPQDcnPi9
-         k/C3gOOSfhkXezcbjhASXWGhQuyTSdGrQ6fNxVM5EbaDxXVnN0EVe/OdvS5QjxCsSGKR
-         1dLA==
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=3wVl7AQw7YfGdQmKD3HVJT834y1hUCU2+m4Z3qdyyYo=;
+        b=Dls5fLnL0gLVcKVWjt6HnWDP6qgpeIsFHtHHJB3FoSUQWXIjug1jvZrarrE2U6pN/x
+         jhEqa7kqs9we4K3WfpOt9DzDeBk8vkBf90bSokJRBlSeykf73xFqxGFVkuPzE/6o3z30
+         /afHK3AGdClaCbpw5uA0i9M30fnzYL8Wo/zEVsZ3a4Hi97Izpceo4RhkFm64rrp5+7rx
+         9k5ensm2l7JpyO7JfUCt+doUCxNIMbql5ao/zs60fKFMhzmkPsYtD6g4Szw2k53X0Uq5
+         M3h/WsYUw8xgNK6zYitbH6prWAN9wz+DeS2QLQLgDCyrzNtQeslGYcRkf7NOrx7Y1z4P
+         i4Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ouobtBm8sSQb0vz2vqGGkrgo2OjHAJ9nHVRL58pUGE=;
-        b=ueoEug3+Abq5WH8mECqykYDd03Ix/MLRl4Je3DuGsK7T3kj/Gw6YVlRpMvuoO1d1Pt
-         ydMLww2SrD1/eDYtQJ3jLIWpfpHpZJ9xFWJXMJq8ov6rHwXVLV3hQVtZELbmkC6cTuVm
-         gMwr2+88VO+CT3rLxgy3aDFDRCXhh99g2tqgvSLYP5UbeNGhjr0JixV67Wtp+Yii3TuW
-         VIsypLCTpqZdeWWWk2P9MItkbue0RvdfN9B6zHh197SiKfIeLv9+DWnKZb6WegPzZA5n
-         lSx0Y5n0K/fMDTWg0xYclND8EDlT+m9yqsExQWtZOVGZ60LctX8FOTZGw97qGj1HITEW
-         COGQ==
-X-Gm-Message-State: AOAM5317qlKn/2GniwON1Y+9OxtFc6nwtgoObrlproF3oh0bZrjwPIGD
-        JtcmbcZyWUcvnR2HAkEuJwYSpD0t/JVtEttaVvrDFT7jYfAT8g==
-X-Google-Smtp-Source: ABdhPJwtX+nHYBolzK2l0oZRuVJ03EZTJvWOEnie/fZJWiF3VTwTR48gquIufwsVkdo+3j96NU3nHOCXX1vVhZTCD+g=
-X-Received: by 2002:a6b:c047:: with SMTP id q68mr3418312iof.189.1606846910267;
- Tue, 01 Dec 2020 10:21:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201112931.11192-1-yashsri421@gmail.com> <f4392362e682ce7a02eee8a2036e1035342a0b4f.camel@perches.com>
-In-Reply-To: <f4392362e682ce7a02eee8a2036e1035342a0b4f.camel@perches.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 1 Dec 2020 19:21:39 +0100
-Message-ID: <CAKXUXMx8RURmeyzp5Ak7_409oaVJo622ndpC5VceN-C_f-HPdg@mail.gmail.com>
-Subject: Re: [PATCH v5] checkpatch: add fix and improve warning msg for
- Non-standard signature
-To:     Joe Perches <joe@perches.com>
-Cc:     Aditya Srivastava <yashsri421@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=3wVl7AQw7YfGdQmKD3HVJT834y1hUCU2+m4Z3qdyyYo=;
+        b=qgrrx+NesBD0gWhUy/+nj8/BDnolLPMB5pJTHvsmobEyTz0/N1rc0ZgE6jnKLhncr/
+         pax6TRCPruUcXzBdAf5f/cjEenDZXoOSxMKm9cwNNu3MnjTwCGdJ6YXDnDwOCvgHqmle
+         XtfjVERg5Tfwn7p10Uif7WeNHGDySwQK5rGuuBZP6kf+oBHYVc1Q1H3pz2XNReNfAWqq
+         W8dgp9MkND00mcgMTflVZqmNtWB0kBXpdUdeF6WieJFW3vxlBrdh+/udB2hspgKe3R+P
+         +xfdGrzT2oWAYUrHFkDuns+F672F1p/O/zDaeiuqS37SQ+6fPJlrsyGFQiHtOq+/vG3n
+         Q60A==
+X-Gm-Message-State: AOAM5314T842t4xxZ1dheb0bUguvZxRAnsY98xPcnyYvpoGQPJDHC7/1
+        KcAQ5XYSprOuwZif7ZUpK6X9jw==
+X-Google-Smtp-Source: ABdhPJzNmqfQkYiWnjvw6ooAq9sxr3HtM5CN1pbMX5RPxx/fwdvj833jUU2F986IevaEnEuHOlSiYQ==
+X-Received: by 2002:a17:902:5581:b029:da:a547:b6a6 with SMTP id g1-20020a1709025581b02900daa547b6a6mr1906487pli.78.1606846919392;
+        Tue, 01 Dec 2020 10:21:59 -0800 (PST)
+Received: from [192.168.1.9] ([171.49.174.71])
+        by smtp.gmail.com with ESMTPSA id h188sm460205pfe.88.2020.12.01.10.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 10:21:58 -0800 (PST)
+Message-ID: <b46f5368d281ceaad1c27adf818b986ca68ce925.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.9 000/152] 5.9.12-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Date:   Tue, 01 Dec 2020 23:51:42 +0530
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 6:24 PM Joe Perches <joe@perches.com> wrote:
->
-> On Tue, 2020-12-01 at 16:59 +0530, Aditya Srivastava wrote:
-> > Currently, checkpatch.pl warns for BAD_SIGN_OFF on non-standard signature
-> > styles.
-> >
-> > This warning occurs because of incorrect use of signature tags,
-> > e.g. an evaluation on v4.13..v5.8 showed the use of following incorrect
-> > signature tags, which may seem correct, but are not standard:
->
-> I'm not a fan of this patch.
->
-> There is already a "non-standard" signature warning for
-> all of these cases since 2012, predating the range of this
-> retrospective evaluation by over 5 years and yet these
-> existing commits have been accepted.
->
-> The value in actual standardization and effectively
-> requiring specific signature style tags is quite low.
->
-> Anyone that signed a thing a particular way should be free
-> to sign the thing as they choose.
->
-> Most of these warnings would also still be in the tree in
-> the future in new patches as running checkpatch without
-> it emitting a message of any type isn't a requirement nor
-> should checkpatch use actually be required workflow.
->
+On Tue, 2020-12-01 at 09:51 +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.12 release.
+> There are 152 patches in this series, all will be posted as a
+> response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
+> 
+> Responses should be made by Thu, 03 Dec 2020 08:46:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.12-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Can we scale this fixing feature down to the very obvious synonyms
-that simply do not add anything but confusion?
+hello,
 
-Such as for those four here:
+Compiled and booted  5.9.12-rc1+. No typical dmesg regression 
+or regressions.
 
-Co-authored-by (count: 43) => Co-developed-by
-Reviewed-off-by (count: 5) => Reviewed-by
-Proposed-by (count: 5) => Suggested-by
-Suggestions-by (count: 3) => Suggested-by
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
 
-Then, we can probably also drop the rationale because it is pretty clear.
+-- 
+software engineer
+rajagiri school of engineering and technology - autonomous
 
-Of course, the impact might be really zero, given that it is unclear
-if those authors did actually ever run checkpatch in the first place.
 
-Joe, if you see no value in even such a minimal fix feature, let us
-drop that idea and move on. There are enough other things to work on.
-
-Lukas
