@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0DF2C9B24
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6552C9B9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388753AbgLAJEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:04:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40328 "EHLO mail.kernel.org"
+        id S2389672AbgLAJKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:10:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388643AbgLAJDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:03:24 -0500
+        id S2389662AbgLAJKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:10:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E76F2222A;
-        Tue,  1 Dec 2020 09:02:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89BEC2223F;
+        Tue,  1 Dec 2020 09:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813356;
-        bh=o+BCl8CG45fQcjxu735r8tsgwjd3G50WL7zLCzZHGbo=;
+        s=korg; t=1606813777;
+        bh=PF4DyltYMiXeqtX1ZkatjLYdcckflbeLZAslTMDY33M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v8mje+7m3cijpTJW3zQ/vVlHgbau7WHNu66JrdxgFD4CdIzyUPyT5uLhMShUejmSW
-         JgTihA0a8Xxzc/P9lURaEmrv8hRI6nq6UL1puiFslcF8UrZkIC4BhygaMhT/ErcR86
-         wsSBr4125rA7XjiYiqwlaT27rhEnoBwMggYrWezw=
+        b=EStAEcUrTF9cua+BALXgPzk6UHa63wPMnbUWlWs07BjgPeDuJ/05uTL4QmY3JXnhJ
+         d0PIt28EP5jxjs6A6eNN7YDca3o8NuzOZMVweSEOLJV1Xy9eDSdp6Q4OubZoGL50fW
+         eUxSqGISyBdT13eiYfLVtRPmFs+gqfEv4oX3uAgE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rohith Surabattula <rohiths@microsoft.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.4 12/98] smb3: Handle error case during offload read path
-Date:   Tue,  1 Dec 2020 09:52:49 +0100
-Message-Id: <20201201084654.267632268@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH 5.9 056/152] vdpasim: fix "mac_pton" undefined error
+Date:   Tue,  1 Dec 2020 09:52:51 +0100
+Message-Id: <20201201084719.287455147@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rohith Surabattula <rohiths@microsoft.com>
+From: Laurent Vivier <lvivier@redhat.com>
 
-commit 1254100030b3377e8302f9c75090ab191d73ee7c upstream.
+[ Upstream commit a312db697cb05dfa781848afe8585a1e1f2a5a99 ]
 
-Mid callback needs to be called only when valid data is
-read into pages.
+   ERROR: modpost: "mac_pton" [drivers/vdpa/vdpa_sim/vdpa_sim.ko] undefined!
 
-These patches address a problem found during decryption offload:
-      CIFS: VFS: trying to dequeue a deleted mid
-that could cause a refcount use after free:
-      Workqueue: smb3decryptd smb2_decrypt_offload [cifs]
+mac_pton() is defined in lib/net_utils.c and is not built if NET is not set.
 
-Signed-off-by: Rohith Surabattula <rohiths@microsoft.com>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-CC: Stable <stable@vger.kernel.org> #5.4+
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Select GENERIC_NET_UTILS as vdpasim doesn't depend on NET.
 
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+Link: https://lore.kernel.org/r/20201113155706.599434-1-lvivier@redhat.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2ops.c |   20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ drivers/vdpa/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -4183,7 +4183,25 @@ static void smb2_decrypt_offload(struct
- 				      dw->server->vals->read_rsp_size,
- 				      dw->ppages, dw->npages, dw->len,
- 				      true);
--		mid->callback(mid);
-+		if (rc >= 0) {
-+#ifdef CONFIG_CIFS_STATS2
-+			mid->when_received = jiffies;
-+#endif
-+			mid->callback(mid);
-+		} else {
-+			spin_lock(&GlobalMid_Lock);
-+			if (dw->server->tcpStatus == CifsNeedReconnect) {
-+				mid->mid_state = MID_RETRY_NEEDED;
-+				spin_unlock(&GlobalMid_Lock);
-+				mid->callback(mid);
-+			} else {
-+				mid->mid_state = MID_REQUEST_SUBMITTED;
-+				mid->mid_flags &= ~(MID_DELETED);
-+				list_add_tail(&mid->qhead,
-+					&dw->server->pending_mid_q);
-+				spin_unlock(&GlobalMid_Lock);
-+			}
-+		}
- 		cifs_mid_q_entry_release(mid);
- 	}
- 
+diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+index d7d32b6561021..358f6048dd3ce 100644
+--- a/drivers/vdpa/Kconfig
++++ b/drivers/vdpa/Kconfig
+@@ -13,6 +13,7 @@ config VDPA_SIM
+ 	depends on RUNTIME_TESTING_MENU && HAS_DMA
+ 	select DMA_OPS
+ 	select VHOST_RING
++	select GENERIC_NET_UTILS
+ 	default n
+ 	help
+ 	  vDPA networking device simulator which loop TX traffic back
+-- 
+2.27.0
+
 
 
