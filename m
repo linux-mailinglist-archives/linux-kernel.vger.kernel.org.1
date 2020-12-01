@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2372CA046
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1072CA049
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgLAKsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39184 "EHLO
+        id S1728056AbgLAKsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgLAKsY (ORCPT
+        with ESMTP id S1725899AbgLAKsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:48:24 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF44BC0613CF;
-        Tue,  1 Dec 2020 02:47:44 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id t143so1266309oif.10;
-        Tue, 01 Dec 2020 02:47:44 -0800 (PST)
+        Tue, 1 Dec 2020 05:48:41 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95F2C0613D2;
+        Tue,  1 Dec 2020 02:48:00 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id p21so618202pjv.0;
+        Tue, 01 Dec 2020 02:48:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rleltwVd7BEzYh3PMfrO+N8KvSpIGCnVZoy7Gdu5rn8=;
-        b=cZUlMu296+lcYnKEZrIkr/brpRAQJAEklQDc06vsXd3KTjRdOjQtZv5Uvbacf38lQg
-         UQrpQRdDg8rmqMSw33lmjNHVgFdvDw1pym54Rbb2znYPv7GP4jvXD5e5rGnlJa5EbDFv
-         jPElNesOrqVEoD3eq7stEEhGPK1rXk2yH4h0xHKTzavjK1Q6kbNxqw12XjdsxA+BIU2M
-         CM9EEIX7Ls3qUcPszjvhkASNPRifSNW9H8Gdyw1eiAgRfDhDOMSi2pQe5xU/UrzRMiww
-         kRI+eI6Bjcm4TJInkTMesTUt5AfQKlTBjj6R4PitMk/afz+xEwIefsBHPP64+0WNcmE3
-         N6Ng==
+        bh=dAFYxzGzkBEUMFK3NS6Q6bqv6vlixBH5vwa4XwPAREI=;
+        b=aMgWetRkgiQlzBcnjuqoBLvrtDiSxk3dd7BF7laNfqg0dVZq/Ys9//QA8Y2dR50eoK
+         BjtC/FyBS43nFPuT+zDcSKLy5ierhmZpnciYRZRN08GLpfHfLPfEXXi4pf8tZkV+IJFQ
+         /5DvIVZ+Q5uAqowvcNOlX/PRPd1tbDPGff87umjMa+CmPJMncouOKtfLEkLrqXE8ggfs
+         l5p/yEEyS1M+stze1lNgg9AHJrzHIJMAm5SCLtsn4DtGwWQdHV6lQ1rbosqi1Cuzna3r
+         d5vyK5u7kEFgHKcVYWCwEXB1TPWjIWiQnvCqumUKqC4klCtnYyif3SdGUaCoEsgwZt+w
+         GcOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rleltwVd7BEzYh3PMfrO+N8KvSpIGCnVZoy7Gdu5rn8=;
-        b=QUjoEFuwbuA5ypszyeNNV48gilk8PdCa/Wpui4nturTnGAXWfZ6rHJ/74ZzDWYPVDX
-         m21QIdqcAJ+MtMqn/ILJ4yLGmd8SD7SafLq44FkD3Nl9ZYg2Tu3DItUBtdSVHNHdwLZU
-         Hz/+xbdkZVDUWaLR4YkPU9la1D2PGPsHm2bZEUBe44hgB2oSy5iSeKDTsvJGt7/nLIMP
-         guP6VY3WYOgYhQsR3btoaPUNVLWRuTZKZWvC4jzpLKbG3wXlaFbXvu3W4vYhtSz0RdGs
-         wuf49DWx0widg4eomSoicYOyUhCuN7JrG+IEHFT0aPlteFyTZuvjqsgaYKFlNu8tGbox
-         jkrQ==
-X-Gm-Message-State: AOAM530h4ACL8nRz63FxnmvQcnA9YEEc/eCxw9sZRpC+qcGx0O7mNaqm
-        DXFPjr+KTqjiyJ71t2toMD23w5/WBKaI1Cuj9BY=
-X-Google-Smtp-Source: ABdhPJzS2yhdyeBA3Z85FwALl+6KhnAcmUSG0lFKIem/RTJZUOmTWgoDWhQRbDh/+6JvWhlG69clLH6yB2h4C+WKIwU=
-X-Received: by 2002:aca:3ed5:: with SMTP id l204mr1226427oia.149.1606819664253;
- Tue, 01 Dec 2020 02:47:44 -0800 (PST)
+        bh=dAFYxzGzkBEUMFK3NS6Q6bqv6vlixBH5vwa4XwPAREI=;
+        b=WGkiJf3xaMW6o0qKcnoPI83MyO0z7zQSOtOmKbi/53jhKzsmS1QqxH9VnBV1gci7Va
+         t8+3iKaOVHqvdn8NHh+SQOv999aBcPN99cXR59qSlF5nwBYzwV34XBNrRh8JUakO1vc9
+         9DMYXtSOosgSbQvl9A6CBd6BSmtcle0vKKARohku/HxTw6Tu7v4c4ac7o+a+7x6XR26g
+         nlBDb4PKfdEC/kYQ/OqqKyj0gv8ql4Ssf3MX+dOdzMHUZXH4vuagLtMICiFVme4GJCtc
+         L4KwmFfbKT1FBYjHitmRokmdBYzgEiz6GnBafOTADtdHEL7dVVYGxR57HsxxnS/5RgUa
+         Ma4g==
+X-Gm-Message-State: AOAM531WQe5+YbpK2w0AhaKDBzfkBsclOrMI9BMfCiqZtElpIB2Zcdh2
+        Q3YYnSFXqEX+ntb/adtFrfTg0KY7TcuRfczUlOC5kkcY6Lk=
+X-Google-Smtp-Source: ABdhPJybJttySzBcB8mUcCOhXY2iYo1MWFQ+O19jtlDiSo1oBka3wDfRWYJ98cDB/pPAriIxy6F+McyC4OGLXUQEyI4=
+X-Received: by 2002:a17:902:ac93:b029:d8:d2c5:e5b1 with SMTP id
+ h19-20020a170902ac93b02900d8d2c5e5b1mr2237976plr.17.1606819680128; Tue, 01
+ Dec 2020 02:48:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20201201101612.28458-1-sergio.paracuellos@gmail.com>
- <20201201101612.28458-2-sergio.paracuellos@gmail.com> <20201201104246.GA8403@vkoul-mobl>
-In-Reply-To: <20201201104246.GA8403@vkoul-mobl>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Tue, 1 Dec 2020 11:47:33 +0100
-Message-ID: <CAMhs-H_9MTZvC+NkFm28MuiRQ0tpNw7gd97sN9dBgsqYD7_1LA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] phy: ralink: phy-mt7621-pci: add include search path
- in Makefile
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20201130153742.9163-1-johan@kernel.org> <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+In-Reply-To: <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 1 Dec 2020 12:48:48 +0200
+Message-ID: <CAHp75Vczx=qjNed-8nwm6iSq5sxUKE2mXzPSd70zUxumZ5sANQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
+To:     Mychaela Falconia <mychaela.falconia@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Mon, Nov 30, 2020 at 11:25 PM Mychaela Falconia
+<mychaela.falconia@gmail.com> wrote:
 
-On Tue, Dec 1, 2020 at 11:42 AM Vinod Koul <vkoul@kernel.org> wrote:
+...
+
+> Johan's patch comments say that the new flag can also be brought out
+> to termios in the future, similarly to HUPCL, but I question the
+> usefulness of doing so, as it is a chicken and egg problem: one needs
+> to open the tty device in order to do termios ioctls on it, and if
+> that initial open triggers DTR/RTS hardware actions, then the end user
+> is still screwed.  If Johan or someone else can see a potential use
+> case for manipulating this new flag via termios (as opposed to sysfs
+> or USB-ID-based driver quirks), perhaps you could elaborate on it?
+
+Thanks for the very detailed description of what you are working on.
+Unfortunately I have no thoughts about alternative solutions.
+
+> Andy Shevchenko wrote:
 >
-> On 01-12-20, 11:16, Sergio Paracuellos wrote:
-> > This driver includes the following two files directly:
-> > - mt7621.h
-> > - ralink_regs.h
+> > > Add a nordy sysfs attribute to suppress raising the modem-control lines
+> > > on open to signal DTE readiness.
 > >
-> > Compilation for its related platform properly works because
-> > its real path is included in 'arch/mips/ralink/Platform' as
-> > cflags.
-> >
-> > This driver depends on RALINK but also is enabled for COMPILE_TEST
-> > where nothing about its platform is known and this directly
-> > included files are not found at all breaking compilation.
-> >
-> > Fix this problem adding include search path for ralink in
-> > ralink phy directory Makefile.
-> >
-> > Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
+> > Why not call it nomctrl ?
 >
-> Pls add reported-by sfr..
+> I have no opinion one way or another as to what the new sysfs attribute
+> should be called - my use case won't involve this sysfs mechanism at
+> all, instead I care much more about the path where the tty port flag
+> gets set via a driver quirk upon seeing my custom USB ID. :)
 
-Ok, Will change this and send v2.
+Then why do we bother with sysfs right now? It's an ABI and Johan is
+completely aware and knows that once it's in the kernel it is close to
+being carved in stone.
+I would vote to remove sysfs from now and see if we really need it in
+the future.
 
->
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> >  drivers/phy/ralink/Makefile | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/phy/ralink/Makefile b/drivers/phy/ralink/Makefile
-> > index cda2a4a7ca5e..c8f9adba0d82 100644
-> > --- a/drivers/phy/ralink/Makefile
-> > +++ b/drivers/phy/ralink/Makefile
-> > @@ -1,3 +1,6 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> > +
-> > +ccflags-y    += -I$(srctree)/arch/mips/include/asm/mach-ralink
->
-> Can we include <asm/mips/...> instead of using this?
-
-Doing that also fails because path for 'arch/mips/include' is not
-added also because we are compiling in x86_64.
-Looking into other drivers I see the way to avoid this kind of
-platform specific stuff is adding related paths in
-cflags. So I don't really know if there is another way.
-
->
-> > +
-> >  obj-$(CONFIG_PHY_MT7621_PCI) += phy-mt7621-pci.o
-> >  obj-$(CONFIG_PHY_RALINK_USB) += phy-ralink-usb.o
-> > --
-> > 2.25.1
->
-> --
-> ~Vinod
-
-Best regards,
-    Sergio Paracuellos
+-- 
+With Best Regards,
+Andy Shevchenko
