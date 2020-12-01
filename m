@@ -2,219 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44F22CAC95
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2472CAC97
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404251AbgLATkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:40:55 -0500
-Received: from mail-dm6nam12on2054.outbound.protection.outlook.com ([40.107.243.54]:45984
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727407AbgLATky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:40:54 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FuZxjWtdx4HQbVUmLwccS3L+VPv8DLfT2yrptWKDAVyuxwyQ6+j1/+hayjL0y/+Sb9byvMfyvJZjukFdSpMNzUFSe+C7VL2j94jMZ62bGlvPi92vXDTREDswWlu7rWKFU30sPKIWUkpnJSZmhxpPcSwFyTF2wNRa6Nunqzw+HSjYglVvW/av6JBkYQ0QYV6Ja/Oa1jaCC2onDxQ+lbjHQnDOG9CCiS6D4OEEHG6gpf7eUw14/mEFAhZwbfs7C0fTvc5aej5Hc+rbbD6FHUUUnRkbx58+SBTZSYa1j5NJ0EvQdsnOMjXZ+2bZaag6Oustv+/EN9UZmZBdhzYSlltekA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6pjgL8osoMkCAzY4E0dIqcHR03y7orfDQRenb9T5Y+o=;
- b=Zw/fg45Mfid+CRKnJrrNlym12ryiWUgFF5dQBpnfjUbNa/NHxmD1eZbldrxyAsrIO7xxkzqT7lhlA7ae9jak6VfqDqJZU9qmbXJ8TXUB9VswHPID1/49fzsHcTUIAcw1qWxBLn8vEVeplVbCQivb0tK6qELi80PGquJKd7s8S9bu0vZ8dyaCiyVUO2BrDvvgZULGhY1WAN2gqUlvSakxMgmNWBS3QEkISHqPzKAVBfp0wJoysX/H6GAaqTzqWBsdFX3aS0es5vQAv1Eoy55Bw1Wb2LVEKAS+Xh2qM5JF9H0rlUZxIW+zqvw1xWKQsg8t6+Nnnv21u+2P0Xz5BS2Yxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
+        id S2404327AbgLATlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:41:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404304AbgLATlQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 14:41:16 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED04EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:40:30 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id hk16so1929359pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:40:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6pjgL8osoMkCAzY4E0dIqcHR03y7orfDQRenb9T5Y+o=;
- b=s1NbSL7OsJsOYGJF5KF0EhEfLXqWH0QxZTJIY1ZtMKD+b1qF0/DQ16TeSqtD+tUscecR2aJNuftUmmjd60csQyUwW/523jIheVsLhRCXC9ZrLZ/Ts+phdHh9E0dUScVd/iuRzaOaZUrTC+3ZkAY6a3YdvWTTm5gKalvdhNVGbmk=
-Received: from BY5PR02MB6260.namprd02.prod.outlook.com (2603:10b6:a03:1b0::29)
- by SJ0PR02MB7615.namprd02.prod.outlook.com (2603:10b6:a03:31b::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Tue, 1 Dec
- 2020 19:39:57 +0000
-Received: from BY5PR02MB6260.namprd02.prod.outlook.com
- ([fe80::7183:fa14:bfcf:8ff5]) by BY5PR02MB6260.namprd02.prod.outlook.com
- ([fe80::7183:fa14:bfcf:8ff5%7]) with mapi id 15.20.3611.025; Tue, 1 Dec 2020
- 19:39:57 +0000
-From:   Sonal Santan <sonals@xilinx.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        Max Zhen <maxz@xilinx.com>, Lizhi Hou <lizhih@xilinx.com>,
-        Michal Simek <michals@xilinx.com>,
-        Stefano Stabellini <stefanos@xilinx.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH Xilinx Alveo 0/8] Xilinx Alveo/XRT patch overview
-Thread-Topic: [PATCH Xilinx Alveo 0/8] Xilinx Alveo/XRT patch overview
-Thread-Index: AQHWxeLU/QqdfVxGqkCi67mkKmZopKng+98AgABXB2A=
-Date:   Tue, 1 Dec 2020 19:39:57 +0000
-Message-ID: <BY5PR02MB62604B87C66A1AD139A6F153BBF40@BY5PR02MB6260.namprd02.prod.outlook.com>
-References: <20201129000040.24777-1-sonals@xilinx.com>
- <CAL_JsqLod6FBGFhu7WXtMrB_z7wj8-up0EetM1QS9M3gjm8d7Q@mail.gmail.com>
-In-Reply-To: <CAL_JsqLod6FBGFhu7WXtMrB_z7wj8-up0EetM1QS9M3gjm8d7Q@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [98.207.149.57]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 9fddc0a6-fd4f-42ae-f601-08d89630e288
-x-ms-traffictypediagnostic: SJ0PR02MB7615:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR02MB76159DD3CC92894488DA6155BBF40@SJ0PR02MB7615.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ntxjDo/0N08TvTckoeF1jsv9GTDUHyZEQREgMaWwWUbVj+u/N7Zw9ci+Yd4hJKoAG2hv6B7j4uC+cHNXSGKArQsWP5VnwdTeDIHf59LxQ8pgA6TCrlzgML/Qs45fPLbdQ+18n/iMjgnxpgXpSAk8aAXvFFtTcTH2OFffaUI+bDeZJznyYfiPa8AztChoQngWdAuFmpoF2iS3wdJif5I66SfroAyBKCChDoXf5uedfpYYiZO+qEtjiBClFXwvkLp04eS3slHY0AWaDRwU7CbcbbAZ6IAEcTYff5NgzSp0V7C526qQdAUX5R9KRXPbL7uwcUHDzGr8dpheSCfXz/h805RgWa7lPE0f0bfrM/IShmW5eREFS+EHaBVUVqrOJumT3CGfAtkqRggbPCBI0lvPHw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR02MB6260.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(376002)(136003)(366004)(346002)(8676002)(478600001)(26005)(186003)(52536014)(4326008)(33656002)(5660300002)(6506007)(66556008)(55016002)(83380400001)(2906002)(966005)(86362001)(54906003)(53546011)(71200400001)(66476007)(66446008)(8936002)(64756008)(76116006)(66946007)(6916009)(9686003)(7696005)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?ZVJrd1FLNFJ4L0hlTjBWMGhaWm1wVm9pTkN5N3ZmaEdTMWtERVVVN21nUDdW?=
- =?utf-8?B?NXhLeE9ITTFGY3kxU1RpZXU2WnFCSlBCMGIxaFR5ZGVUUDNVbE9tamJkU1BF?=
- =?utf-8?B?K1JxckhibjBCbk1NRTFEVTcvbmIveHN1NWtQTlZSclBEc1dmdERaQWZzZmhP?=
- =?utf-8?B?Vnk1TmloRFFSWkRBYnYwTG5qeDlaS3dqVGY2eVRPc0dUdy8vS3hhNGdrWnhM?=
- =?utf-8?B?SnV3TEJVVWgyajFOT1BoR3J3SmJCdTI0Y295Y0d2THJtUlZiZlUraWF2eHFB?=
- =?utf-8?B?bC9rbklqTSsveFVFQzZ4aWpiUUFLOE1NemIzQ2xtUDZpM25QWTE1eVVkRG85?=
- =?utf-8?B?NUZpOFpzdlZKZEtZRSs4U1dvd2lQemtRalpMTnFoUXpUcnBZeUxCWXI0SE1H?=
- =?utf-8?B?QUlFUFhkRW9zVzlXSUZyY3FOWlczK0t5RStXR3dHT2FweWg5VGpSVVlwK3ph?=
- =?utf-8?B?cEMzT3J3SWNxeFpHcysxUnFCT1hvVU1rMkRjbWRaTzZKTVpKVGJyL283QmVq?=
- =?utf-8?B?UGFHY2o2OWxjSWhrUGh5RVpJZ0d6R2FkK3NlVTh1TWVyZHhMVjJGTVBQazk1?=
- =?utf-8?B?amx6Z2RsU2pmQ3gvRGpUKzZ4Sng3MEcxRGVaUkY0L0c3Wnhwa2RaVzcrYUtH?=
- =?utf-8?B?QktrNDIrdmNEM1ZlQ0JoVDNvc1U5UjdnczZNVndUKzcrQVJ5Q0RXNlVld3BO?=
- =?utf-8?B?eUxCUm9HdDlSL1I4MG1YLzBDVkVaMEIrOEhXMzJwZ1c5UTI3WTJxWnFnbHJU?=
- =?utf-8?B?ZzlBNnhTd3dDY0VSTUhyZFJSVWIvKytzV3VKbnhLNFJEby9keFRFQSsxNlI0?=
- =?utf-8?B?RXVtNnRpZWYzTGJTclR6SG5zcXNlWWtLZVR3dG5vR2xPamxQVmw3SEVyNHE3?=
- =?utf-8?B?WHBvMTZMczJEYVEvTVpJWlVRQWZpUkhHYXFnQ2lsdWFlbjNDM3cweEVMaVpE?=
- =?utf-8?B?SGRBSEZQUjI1c0JVdUNHVmJmVVZjSzBGUzZlVFlSRGdXdmI0Wmpyb21YUEpu?=
- =?utf-8?B?Nm9qTWFLU2F6OUF2NG1aZnFZMDRqc3RNa3d6MGI4ZEhNY0NBQzFYQ21sNGZ0?=
- =?utf-8?B?KzlLbTZxSkNjVjZpMU81TSs0YnhEaEdUNXovSGpqRTB2amRYaFZOSG5XbTJY?=
- =?utf-8?B?TlRMd2tjUjZ5RVJFWkNSblVGUzBZT09nN3JDNDZNNk9Xd3hFL1dkZkRJYmJ0?=
- =?utf-8?B?UHZncE1ydElUSnNKdU1qS3BoRHpNVXYveldid2Jpc3M1OUwwSkRlcW9FZFN6?=
- =?utf-8?B?T0dWZUpUTWQ5YlFzeEFPdkJiZVdBaUdkeVhRL2Q3eVBNc1QvV2IwaHZ1WlhZ?=
- =?utf-8?Q?/k2J6EypqQEqo=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2BDD6CsjIvFrZbWANWLZeGCBU13Uq75odWBuX37T8kI=;
+        b=mRkRJ6Q6HwpjyKxMoRiMtZ3pS1uUIT/G5xuUFez4in34vsXCSysO+PdErJrlP8z1+j
+         rc5b8IAhbMC47zb1/v1a3L58migC78Yyjgc6TcuRnNA87TYGqSrDL37o8HDEGbROp0Jv
+         RfABQEm1ynHSXwGgA7egTZEn4UR3Uwsi1ty28=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2BDD6CsjIvFrZbWANWLZeGCBU13Uq75odWBuX37T8kI=;
+        b=N84Weqtm95GnET4gBaO2yHViK6ygpcrX048dfSM8p3surOItu614rqG2QgMwBwOTmg
+         KpI6X41vjQGBqVq6ppLRJZlc3b9mbzRgVEJrB07Mv0dodEXYrf+NV9GFMzj3Tw6+4IV2
+         UAFmlqLtT3xgb1CZQUVoN6YuIK1iStYtajSn8DIIZMorBpGq+LiqjEDAAh7telIkTiLf
+         G+Rmd9p2ZulvJTyZ4clLcmNqERTWyVTIDCfGC+vCyaxsGjjak5/KfC3L1UKswoY+q/wk
+         5CjdJmUZSY6lUbXXy4I2EctZgCii8dzQSH7WqjKR1PTV2nnoYyqZ9YqfKGEtHJs9PXGg
+         c9gQ==
+X-Gm-Message-State: AOAM533rAmc/uCYKd5BNcK7t0TIVK0q5XrS3n3ke1EBDyWg/Q39IgBJX
+        t86W4LZyq3xRSDVQONQOj9N7Zw==
+X-Google-Smtp-Source: ABdhPJxFQ+7SgypoxZ0m2CK5lpx5CBEA02jrkBDab7sOkAx2BY39vgwXHvfYN+IY2m6uUQIbUcXppQ==
+X-Received: by 2002:a17:902:eb54:b029:da:29d7:cffd with SMTP id i20-20020a170902eb54b02900da29d7cffdmr4400902pli.28.1606851630463;
+        Tue, 01 Dec 2020 11:40:30 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m4sm517209pfd.203.2020.12.01.11.40.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:40:29 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:40:28 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/9] pstore/blk: simplify the block device open / close
+ path
+Message-ID: <202012011138.5766F520D9@keescook>
+References: <20201016132047.3068029-1-hch@lst.de>
+ <20201016132047.3068029-6-hch@lst.de>
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR02MB6260.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9fddc0a6-fd4f-42ae-f601-08d89630e288
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 19:39:57.4849
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gukMM+9Dmk1PSZBZgxp2mhi1xMlfl1LIJYY1YhIJGPp8ZwyqoSvL76AY3vsCCrkIdBZmkPpM+9zjL/fAF8bD7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7615
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016132047.3068029-6-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUm9iIEhlcnJpbmcg
-PHJvYmhAa2VybmVsLm9yZz4NCj4gU2VudDogTW9uZGF5LCBOb3ZlbWJlciAzMCwgMjAyMCAxMDow
-OSBBTQ0KPiBUbzogU29uYWwgU2FudGFuIDxzb25hbHNAeGlsaW54LmNvbT4NCj4gQ2M6IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFNvbmFsIFNhbnRhbiA8c29uYWxzQHhpbGlueC5jb20+
-OyBsaW51eC0NCj4gZnBnYUB2Z2VyLmtlcm5lbC5vcmc7IE1heCBaaGVuIDxtYXh6QHhpbGlueC5j
-b20+OyBMaXpoaSBIb3UNCj4gPGxpemhpaEB4aWxpbnguY29tPjsgTWljaGFsIFNpbWVrIDxtaWNo
-YWxzQHhpbGlueC5jb20+OyBTdGVmYW5vIFN0YWJlbGxpbmkNCj4gPHN0ZWZhbm9zQHhpbGlueC5j
-b20+OyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFhp
-bGlueCBBbHZlbyAwLzhdIFhpbGlueCBBbHZlby9YUlQgcGF0Y2ggb3ZlcnZpZXcNCj4gDQo+IE9u
-IFNhdCwgTm92IDI4LCAyMDIwIGF0IDU6MDIgUE0gU29uYWwgU2FudGFuIDxzb25hbC5zYW50YW5A
-eGlsaW54LmNvbT4NCj4gd3JvdGU6DQo+ID4NCj4gPiBIZWxsbywNCj4gPg0KPiA+IFRoaXMgcGF0
-Y2ggc2VyaWVzIGFkZHMgbWFuYWdlbWVudCBwaHlzaWNhbCBmdW5jdGlvbiBkcml2ZXIgZm9yIFhp
-bGlueA0KPiA+IEFsdmVvIFBDSWUgYWNjZWxlcmF0b3IgY2FyZHMsDQo+ID4gaHR0cHM6Ly93d3cu
-eGlsaW54LmNvbS9wcm9kdWN0cy9ib2FyZHMtYW5kLWtpdHMvYWx2ZW8uaHRtbA0KPiA+IFRoaXMg
-ZHJpdmVyIGlzIHBhcnQgb2YgWGlsaW54IFJ1bnRpbWUgKFhSVCkgb3BlbiBzb3VyY2Ugc3RhY2su
-DQo+ID4NCj4gPiBUaGUgcGF0Y2ggZGVwZW5kcyBvbiB0aGUgIlBBVENIIFhpbGlueCBBbHZlbyBs
-aWJmZHQgcHJlcCIgd2hpY2ggd2FzDQo+ID4gcG9zdGVkIGJlZm9yZS4NCj4gPg0KPiA+IEFMVkVP
-IFBMQVRGT1JNIEFSQ0hJVEVDVFVSRQ0KPiA+DQo+ID4gQWx2ZW8gUENJZSBGUEdBIGJhc2VkIHBs
-YXRmb3JtcyBoYXZlIGEgc3RhdGljICpzaGVsbCogcGFydGl0aW9uIGFuZCBhDQo+ID4gcGFydGlh
-bCByZS1jb25maWd1cmFibGUgKnVzZXIqIHBhcnRpdGlvbi4gVGhlIHNoZWxsIHBhcnRpdGlvbiBp
-cw0KPiA+IGF1dG9tYXRpY2FsbHkgbG9hZGVkIGZyb20gZmxhc2ggd2hlbiBob3N0IGlzIGJvb3Rl
-ZCBhbmQgUENJZSBpcw0KPiA+IGVudW1lcmF0ZWQgYnkgQklPUy4gU2hlbGwgY2Fubm90IGJlIGNo
-YW5nZWQgdGlsbCB0aGUgbmV4dCBjb2xkIHJlYm9vdC4gVGhlDQo+IHNoZWxsIGV4cG9zZXMgdHdv
-IFBDSWUgcGh5c2ljYWwgZnVuY3Rpb25zOg0KPiA+DQo+ID4gMS4gbWFuYWdlbWVudCBwaHlzaWNh
-bCBmdW5jdGlvbg0KPiA+IDIuIHVzZXIgcGh5c2ljYWwgZnVuY3Rpb24NCj4gPg0KPiA+IFRoZSBw
-YXRjaCBzZXJpZXMgaW5jbHVkZXMgRG9jdW1lbnRhdGlvbi94cnQucnN0IHdoaWNoIGRlc2NyaWJl
-cyBBbHZlbw0KPiA+IHBsYXRmb3JtLCB4bWdtdCBkcml2ZXIgYXJjaGl0ZWN0dXJlIGFuZCBkZXBs
-b3ltZW50IG1vZGVsIGluIG1vcmUgbW9yZQ0KPiBkZXRhaWwuDQo+ID4NCj4gPiBVc2VycyBjb21w
-aWxlIHRoZWlyIGhpZ2ggbGV2ZWwgZGVzaWduIGluIEMvQysrL09wZW5DTCBvciBSVEwgaW50byBG
-UEdBDQo+ID4gaW1hZ2UgdXNpbmcgVml0aXMNCj4gPiBodHRwczovL3d3dy54aWxpbnguY29tL3By
-b2R1Y3RzL2Rlc2lnbi10b29scy92aXRpcy92aXRpcy1wbGF0Zm9ybS5odG1sDQo+ID4gdG9vbHMu
-IFRoZSBpbWFnZSBpcyBwYWNrYWdlZCBhcyB4Y2xiaW4gYW5kIGNvbnRhaW5zIHBhcnRpYWwgYml0
-c3RyZWFtDQo+ID4gZm9yIHRoZSB1c2VyIHBhcnRpdGlvbiBhbmQgbmVjZXNzYXJ5IG1ldGFkYXRh
-LiBVc2VycyBjYW4gZHluYW1pY2FsbHkNCj4gPiBzd2FwIHRoZSBpbWFnZSBydW5uaW5nIG9uIHRo
-ZSB1c2VyIHBhcnRpdGlvbiBpbiBvcmRlciB0byBzd2l0Y2ggYmV0d2Vlbg0KPiBkaWZmZXJlbnQg
-d29ya2xvYWRzLg0KPiA+DQo+ID4gQUxWRU8gRFJJVkVSUw0KPiA+DQo+ID4gQWx2ZW8gTGludXgg
-a2VybmVsIGRyaXZlciAqeG1nbXQqIGJpbmRzIHRvIG1hbmFnZW1lbnQgcGh5c2ljYWwNCj4gPiBm
-dW5jdGlvbiBvZiBBbHZlbyBwbGF0Zm9ybS4gVGhlIG1vZHVsYXIgZHJpdmVyIGZyYW1ld29yayBp
-cyBvcmdhbml6ZWQNCj4gPiBpbnRvIHNldmVyYWwgcGxhdGZvcm0gZHJpdmVycyB3aGljaCBwcmlt
-YXJpbHkgaGFuZGxlIHRoZSBmb2xsb3dpbmcNCj4gZnVuY3Rpb25hbGl0eToNCj4gPg0KPiA+IDEu
-ICBMb2FkaW5nIGZpcm13YXJlIGNvbnRhaW5lciBhbHNvIGNhbGxlZCB4c2FiaW4gYXQgZHJpdmVy
-IGF0dGFjaA0KPiA+IHRpbWUgMi4gIExvYWRpbmcgb2YgdXNlciBjb21waWxlZCB4Y2xiaW4gd2l0
-aCBGUEdBIE1hbmFnZXIgaW50ZWdyYXRpb24NCj4gPiAzLiAgQ2xvY2sgc2NhbGluZyBvZiBpbWFn
-ZSBydW5uaW5nIG9uIHVzZXIgcGFydGl0aW9uIDQuICBJbi1iYW5kDQo+ID4gc2Vuc29yczogdGVt
-cCwgdm9sdGFnZSwgcG93ZXIsIGV0Yy4NCj4gPiA1LiAgRGV2aWNlIHJlc2V0IGFuZCByZXNjYW4N
-Cj4gPiA2LiAgRmxhc2hpbmcgc3RhdGljICpzaGVsbCogcGFydGl0aW9uDQo+ID4NCj4gPiBUaGUg
-cGxhdGZvcm0gZHJpdmVycyBhcmUgcGFja2FnZWQgaW50byAqeHJ0LWxpYiogaGVscGVyIG1vZHVs
-ZSB3aXRoIGENCj4gPiB3ZWxsIGRlZmluZWQgaW50ZXJmYWNlcyB0aGUgZGV0YWlscyBvZiB3aGlj
-aCBjYW4gYmUgZm91bmQgaW4NCj4gRG9jdW1lbnRhdGlvbi94cnQucnN0Lg0KPiA+DQo+ID4geG1n
-bXQgZHJpdmVyIGlzIHNlY29uZCBnZW5lcmF0aW9uIEFsdmVvIG1hbmFnZW1lbnQgZHJpdmVyIGFu
-ZA0KPiA+IGV2b2x1dGlvbiBvZiB0aGUgZmlyc3QgZ2VuZXJhdGlvbiAob3V0IG9mIHRyZWUpIEFs
-dmVvIG1hbmFnZW1lbnQNCj4gPiBkcml2ZXIsIHhjbG1nbXQuIFRoZSBzb3VyY2VzIG9mIHRoZSBm
-aXJzdCBnZW5lcmF0aW9uIGRyaXZlcnMgd2VyZQ0KPiA+IHBvc3RlZCBvbiBMS01MIGxhc3QgeWVh
-ci0tDQo+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDE5MDMxOTIxNTQwMS42NTYy
-LTEtc29uYWwuc2FudGFuQHhpbGlueA0KPiA+IC5jb20vDQo+ID4NCj4gPiBDaGFuZ2VzIHNpbmNl
-IHRoZSBmaXJzdCBnZW5lcmF0aW9uIGRyaXZlciBpbmNsdWRlIHRoZSBmb2xsb3dpbmc6IHRoZQ0K
-PiA+IGRyaXZlciBoYXMgYmVlbiByZS1hcmNoaXRlY3RlZCBhcyBkYXRhIGRyaXZlbiBtb2R1bGFy
-IGRyaXZlcjsgdGhlDQo+ID4gZHJpdmVyIGhhcyBiZWVuIHNwbGl0IGludG8geG1nbXQgYW5kIHhy
-dC1saWI7IHVzZXIgcGh5c2ljYWwgZnVuY3Rpb24NCj4gPiBkcml2ZXIgaGFzIGJlZW4gcmVtb3Zl
-ZCBmcm9tIHRoZSBwYXRjaCBzZXJpZXMuDQo+ID4NCj4gPiBBbHZlby9YUlQgc2VjdXJpdHkgYW5k
-IHBsYXRmb3JtIGFyY2hpdGVjdHVyZSBpcyBkb2N1bWVudGVkIG9uIHRoZQ0KPiA+IGZvbGxvd2lu
-ZyBHaXRIdWIgcGFnZXM6DQo+ID4gaHR0cHM6Ly94aWxpbnguZ2l0aHViLmlvL1hSVC9tYXN0ZXIv
-aHRtbC9zZWN1cml0eS5odG1sDQo+ID4gaHR0cHM6Ly94aWxpbnguZ2l0aHViLmlvL1hSVC9tYXN0
-ZXIvaHRtbC9wbGF0Zm9ybXNfcGFydGl0aW9ucy5odG1sDQo+ID4NCj4gPiBVc2VyIHBoeXNpY2Fs
-IGZ1bmN0aW9uIGRyaXZlciBpcyBub3QgaW5jbHVkZWQgaW4gdGhpcyBwYXRjaCBzZXJpZXMuDQo+
-ID4NCj4gPiBURVNUSU5HIEFORCBWQUxJREFUSU9ODQo+ID4NCj4gPiB4bWdtdCBkcml2ZXIgY2Fu
-IGJlIHRlc3RlZCB3aXRoIGZ1bGwgWFJUIG9wZW4gc291cmNlIHN0YWNrIHdoaWNoDQo+ID4gaW5j
-bHVkZXMgdXNlciBzcGFjZSBsaWJyYXJpZXMsIGJvYXJkIHV0aWxpdGllcyBhbmQgKG91dCBvZiB0
-cmVlKSBmaXJzdA0KPiA+IGdlbmVyYXRpb24gdXNlciBwaHlzaWNhbCBmdW5jdGlvbiBkcml2ZXIg
-eG9jbC4gWFJUIG9wZW4gc291cmNlIHJ1bnRpbWUNCj4gPiBzdGFjayBpcyBhdmFpbGFibGUgYXQg
-aHR0cHM6Ly9naXRodWIuY29tL1hpbGlueC9YUlQuIFRoaXMgcGF0Y2ggc2VyaWVzDQo+ID4gaGFz
-IGJlZW4gdmFsaWRhdGVkIG9uIEFsdmVvIFU1MCBwbGF0Zm9ybS4NCj4gPg0KPiA+IENvbXBsZXRl
-IGRvY3VtZW50YXRpb24gZm9yIFhSVCBvcGVuIHNvdXJjZSBzdGFjayBjYW4gYmUgZm91bmQgaGVy
-ZS0tDQo+ID4gaHR0cHM6Ly94aWxpbnguZ2l0aHViLmlvL1hSVC9tYXN0ZXIvaHRtbC9pbmRleC5o
-dG1sDQo+IA0KPiBJJ3ZlIG5vdCBnb3R0ZW4gaW50byB0aGUgcGF0Y2ggZGV0YWlscywgYnV0IEkn
-bSBub3QgY2xlYXIgb24gd2hhdCB0aGUgbGlmZWN5Y2xlIG9mDQo+IHRoZSBEVCBsb29rcyBsaWtl
-IGhlcmUuIFdoYXQncyB0aGUgc3RhcnRpbmcgcG9pbnQgYW5kIHdoYXQgbWFuaXB1bGF0aW9ucyB0
-byB0aGUNCj4gRFQgYXJlIGJlaW5nIGRvbmU/IEknbSB0cnlpbmcgdG8gdW5kZXJzdGFuZCBpZiB1
-c2luZyBsaWJmZHQgaXMgdGhlIHJpZ2h0IHdheQ0KPiB2ZXJzdXMgb3BlcmF0aW5nIG9uIGFuIHVu
-ZmxhdHRlbmVkIHRyZWUuDQoNClRoZSBEVCBpcyBjcmVhdGVkIHdoZW4gKnhtZ210KiBkcml2ZXIg
-YXR0YWNoZXMgdG8gdGhlIGRldmljZSBhbmQgcmVhZHMgdGhlIA0KeHNhYmluLiBUaGUgeHNhYmlu
-IGRlZmluZXMgdGhlIHNoZWxsIGFuZCBIVyBzdWJzeXN0ZW1zIGNvbnRhaW5lZCBpbiB0aGUgc2hl
-bGwuIA0KU2luY2UgdGhlIHNoZWxsIGlzIGxpdmUgZm9yIHRoZSBsaWZldGltZSBvZiB0aGUgZHJp
-dmVyIHRoZSBEVCBpcyBjYXB0dXJlZCBpbiB0aGUgDQpwYXJ0aXRpb24gc3ViZGV2LiBUaGUgcGFy
-dGl0aW9uIHRoZW4gbG9va3MgZm9yICJhZGRyZXNzYWJsZV9lbmRwb2ludHMiIG5vZGUgYW5kIA0K
-d2Fsa3MgdGhlIGxpc3Qgb2YgY2hpbGQgZW5kIHBvaW50IG5vZGVzIGVhY2ggb2Ygd2hpY2ggaXMg
-dGhlbiBjb3BpZWQgaW50byBpdHMgb3duIA0KaW5zdGFuY2Ugb2Ygc3ViZGV2LiBUaGUgbGlmZSBj
-eWNsZSBvZiB0aGUgY29waWVkIG5vZGVzIGlzIHNhbWUgYXMgdGhlIG93bmluZyBzdWJkZXYuIA0K
-QWxsIHRoZSBEVCBub2RlcyBhcmUgcmVsZWFzZWQgd2hlbiB0aGUgcGFydGl0aW9uIHRvZ2V0aGVy
-IHdpdGggaXRzIGNoaWxkIHN1YmRldnMgDQpnb2VzIGF3YXkgd2hpY2ggaGFwcGVucyB3aGVuIHRo
-ZSBkcml2ZXIgaXMgdW5sb2FkZWQuDQoNCnhtZ210IGRyaXZlciBhbHNvIGNvbGxlY3RzIGFsbCBl
-bmQgcG9pbnRzIHdoaWNoIGFkdmVydGlzZSAicGNpZV9waHlzaWNhbF9mdW5jdGlvbiANCj0gPDB4
-MDE+IiBhbmQgdGhlbiBjb25zdHJ1Y3RzIGEgRFQgb24gdGhlIGZseSB3aGljaCBpcyB0aGVuIHNl
-bnQgdG8gdGhlIHVzZXIgDQpwaHlzaWNhbCBmdW5jdGlvbiBkcml2ZXIgdmlhIG1haWxib3guIFRo
-aXMgcmVxdWlyZXMgc3VwcG9ydCBmb3IgbWFuaXB1bGF0aW5nIGRldmljZSANCnRyZWUgbm9kZXMu
-DQoNCkluIHRoZSBuZXh0IHJldmlzaW9uIG9mIHRoZSBkcml2ZXIgd2Ugd291bGQgbGlrZSB0byBh
-ZGQgc3VwcG9ydCBmb3IgYSB2YXJpYXRpb24gb2YgDQpwbGF0Zm9ybSB3aGljaCBoYXMgdGhyZWUg
-cGFydGl0aW9uczogYmFzZSwgc2hlbGwgYW5kIHVzZXItLSANCmh0dHBzOi8veGlsaW54LmdpdGh1
-Yi5pby9YUlQvbWFzdGVyL2h0bWwvcGxhdGZvcm1zX3BhcnRpdGlvbnMuaHRtbCN0d28tc3RhZ2Ut
-cGxhdGZvcm1zDQoNCkluIHRoaXMgbW9kZWwsICpiYXNlKiBpcyBpbml0aWFsaXplZCBsaWtlIGRl
-c2NyaWJlZCBhYm92ZS4gSG93ZXZlciAqc2hlbGwqIGNhbiBiZSANCmNoYW5nZWQgZHluYW1pY2Fs
-bHkgYnkgc2VydmljZSBwcm92aWRlci4gVGhpcyBtZWFucyB4bWdtdCB3b3VsZCBsb2FkIERUIA0K
-Y29ycmVzcG9uZGluZyB0byBzaGVsbCBwYXJ0aXRpb24gd2hlbiBzaGVsbCBpcyBsb2FkZWQgYW5k
-IHRlYXIgaXQgZG93biB3aGVuIHNoZWxsIA0KaXMgdW5sb2FkZWQuIFRoZSBEVCBjb3JyZXNwb25k
-aW5nIHRvICpiYXNlKiByZW1haW5zIHVuYWZmZWN0ZWQuDQoNClRoYW5rcywNCi1Tb25hbA0KPiAN
-Cj4gUm9iDQo=
+On Fri, Oct 16, 2020 at 03:20:43PM +0200, Christoph Hellwig wrote:
+> Remove the pointless psblk_get_bdev and psblk_put_bdev helper,
+> and don't bother holding pstore_blk_lock over the block device
+> open / close interactions given that they only happen first thing
+> during module init and last thing during module exit.  Also don't
+> bother with unregistering a zone info that did not come from the
+> actually block backed code, as users like mtd have to unregister
+> it themselves already.
+
+I don't like this because it's changing too many things at once. Of the
+stuff I don't want is:
+
+- removal of checking for already-active zoneinfo (there can be only one)
+- collapsing register_blk into _init (it seems clearer to me to keep
+  them separate)
+
+-Kees
+
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/pstore/blk.c | 156 ++++++++++++------------------------------------
+>  1 file changed, 38 insertions(+), 118 deletions(-)
+> 
+> diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
+> index 3a2214ecf942ae..a8aa56cba96d59 100644
+> --- a/fs/pstore/blk.c
+> +++ b/fs/pstore/blk.c
+> @@ -91,12 +91,6 @@ static DEFINE_MUTEX(pstore_blk_lock);
+>  static struct block_device *psblk_bdev;
+>  static struct pstore_zone_info *pstore_zone_info;
+>  
+> -struct bdev_info {
+> -	dev_t devt;
+> -	sector_t nr_sects;
+> -	sector_t start_sect;
+> -};
+> -
+>  #define check_size(name, alignsize) ({				\
+>  	long _##name_ = (name);					\
+>  	_##name_ = _##name_ <= 0 ? 0 : (_##name_ * 1024);	\
+> @@ -205,75 +199,6 @@ void unregister_pstore_device(struct pstore_device_info *dev)
+>  }
+>  EXPORT_SYMBOL_GPL(unregister_pstore_device);
+>  
+> -/**
+> - * psblk_get_bdev() - open block device
+> - *
+> - * @holder:	Exclusive holder identifier
+> - * @info:	Information about bdev to fill in
+> - *
+> - * Return: pointer to block device on success and others on error.
+> - *
+> - * On success, the returned block_device has reference count of one.
+> - */
+> -static struct block_device *psblk_get_bdev(void *holder,
+> -					   struct bdev_info *info)
+> -{
+> -	struct block_device *bdev = ERR_PTR(-ENODEV);
+> -	fmode_t mode = FMODE_READ | FMODE_WRITE;
+> -	sector_t nr_sects;
+> -
+> -	lockdep_assert_held(&pstore_blk_lock);
+> -
+> -	if (pstore_zone_info)
+> -		return ERR_PTR(-EBUSY);
+> -
+> -	if (!blkdev[0])
+> -		return ERR_PTR(-ENODEV);
+> -
+> -	if (holder)
+> -		mode |= FMODE_EXCL;
+> -	bdev = blkdev_get_by_path(blkdev, mode, holder);
+> -	if (IS_ERR(bdev)) {
+> -		dev_t devt;
+> -
+> -		devt = name_to_dev_t(blkdev);
+> -		if (devt == 0)
+> -			return ERR_PTR(-ENODEV);
+> -		bdev = blkdev_get_by_dev(devt, mode, holder);
+> -		if (IS_ERR(bdev))
+> -			return bdev;
+> -	}
+> -
+> -	nr_sects = part_nr_sects_read(bdev->bd_part);
+> -	if (!nr_sects) {
+> -		pr_err("not enough space for '%s'\n", blkdev);
+> -		blkdev_put(bdev, mode);
+> -		return ERR_PTR(-ENOSPC);
+> -	}
+> -
+> -	if (info) {
+> -		info->devt = bdev->bd_dev;
+> -		info->nr_sects = nr_sects;
+> -		info->start_sect = get_start_sect(bdev);
+> -	}
+> -
+> -	return bdev;
+> -}
+> -
+> -static void psblk_put_bdev(struct block_device *bdev, void *holder)
+> -{
+> -	fmode_t mode = FMODE_READ | FMODE_WRITE;
+> -
+> -	lockdep_assert_held(&pstore_blk_lock);
+> -
+> -	if (!bdev)
+> -		return;
+> -
+> -	if (holder)
+> -		mode |= FMODE_EXCL;
+> -	blkdev_put(bdev, mode);
+> -}
+> -
+>  static ssize_t psblk_generic_blk_read(char *buf, size_t bytes, loff_t pos)
+>  {
+>  	struct block_device *bdev = psblk_bdev;
+> @@ -340,29 +265,39 @@ static ssize_t psblk_generic_blk_write(const char *buf, size_t bytes,
+>  	return ret;
+>  }
+>  
+> -static int __register_pstore_blk(void)
+> +static int __init pstore_blk_init(void)
+>  {
+>  	char bdev_name[BDEVNAME_SIZE];
+>  	struct block_device *bdev;
+>  	struct pstore_device_info dev;
+> -	struct bdev_info binfo;
+> -	void *holder = blkdev;
+>  	int ret = -ENODEV;
+> -
+> -	lockdep_assert_held(&pstore_blk_lock);
+> +	fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL;
+> +	sector_t nr_sects;
+> +	
+> +	if (!best_effort || !blkdev[0])
+> +		return 0;
+>  
+>  	/* hold bdev exclusively */
+> -	memset(&binfo, 0, sizeof(binfo));
+> -	bdev = psblk_get_bdev(holder, &binfo);
+> +	bdev = blkdev_get_by_path(blkdev, mode, blkdev);
+>  	if (IS_ERR(bdev)) {
+> -		pr_err("failed to open '%s'!\n", blkdev);
+> -		return PTR_ERR(bdev);
+> +		dev_t devt;
+> +
+> +		devt = name_to_dev_t(blkdev);
+> +		if (devt == 0) {
+> +			pr_err("failed to open '%s'!\n", blkdev);
+> +			return -ENODEV;
+> +		}
+> +		bdev = blkdev_get_by_dev(devt, mode, blkdev);
+> +		if (IS_ERR(bdev)) {
+> +			pr_err("failed to open '%s'!\n", blkdev);
+> +			return PTR_ERR(bdev);
+> +		}
+>  	}
+>  
+> -	/* only allow driver matching the @blkdev */
+> -	if (!binfo.devt) {
+> -		pr_debug("no major\n");
+> -		ret = -ENODEV;
+> +	nr_sects = part_nr_sects_read(bdev->bd_part);
+> +	if (!nr_sects) {
+> +		pr_err("not enough space for '%s'\n", blkdev);
+> +		ret = -ENOSPC;
+>  		goto err_put_bdev;
+>  	}
+>  
+> @@ -370,11 +305,11 @@ static int __register_pstore_blk(void)
+>  	psblk_bdev = bdev;
+>  
+>  	memset(&dev, 0, sizeof(dev));
+> -	dev.total_size = binfo.nr_sects << SECTOR_SHIFT;
+> +	dev.total_size = nr_sects << SECTOR_SHIFT;
+>  	dev.read = psblk_generic_blk_read;
+>  	dev.write = psblk_generic_blk_write;
+>  
+> -	ret = __register_pstore_device(&dev);
+> +	ret = register_pstore_device(&dev);
+>  	if (ret)
+>  		goto err_put_bdev;
+>  
+> @@ -383,10 +318,22 @@ static int __register_pstore_blk(void)
+>  	return 0;
+>  
+>  err_put_bdev:
+> +	blkdev_put(bdev, FMODE_READ | FMODE_WRITE | FMODE_EXCL);
+>  	psblk_bdev = NULL;
+> -	psblk_put_bdev(bdev, holder);
+>  	return ret;
+>  }
+> +late_initcall(pstore_blk_init);
+> +
+> +static void __exit pstore_blk_exit(void)
+> +{
+> +	struct pstore_device_info dev = { .read = psblk_generic_blk_read };
+> +
+> +	if (!psblk_bdev)
+> +		return;
+> +	unregister_pstore_device(&dev);
+> +	blkdev_put(psblk_bdev, FMODE_READ | FMODE_WRITE | FMODE_EXCL);
+> +}
+> +module_exit(pstore_blk_exit);
+>  
+>  /* get information of pstore/blk */
+>  int pstore_blk_get_config(struct pstore_blk_config *info)
+> @@ -402,33 +349,6 @@ int pstore_blk_get_config(struct pstore_blk_config *info)
+>  }
+>  EXPORT_SYMBOL_GPL(pstore_blk_get_config);
+>  
+> -static int __init pstore_blk_init(void)
+> -{
+> -	int ret = 0;
+> -
+> -	mutex_lock(&pstore_blk_lock);
+> -	if (!pstore_zone_info && best_effort && blkdev[0])
+> -		ret = __register_pstore_blk();
+> -	mutex_unlock(&pstore_blk_lock);
+> -
+> -	return ret;
+> -}
+> -late_initcall(pstore_blk_init);
+> -
+> -static void __exit pstore_blk_exit(void)
+> -{
+> -	struct pstore_device_info dev = { };
+> -
+> -	mutex_lock(&pstore_blk_lock);
+> -	if (pstore_zone_info)
+> -		dev.read = pstore_zone_info->read;
+> -	__unregister_pstore_device(&dev);
+> -	if (psblk_bdev)
+> -		psblk_put_bdev(psblk_bdev, blkdev);
+> -	mutex_unlock(&pstore_blk_lock);
+> -}
+> -module_exit(pstore_blk_exit);
+> -
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("WeiXiong Liao <liaoweixiong@allwinnertech.com>");
+>  MODULE_AUTHOR("Kees Cook <keescook@chromium.org>");
+> -- 
+> 2.28.0
+> 
+
+-- 
+Kees Cook
