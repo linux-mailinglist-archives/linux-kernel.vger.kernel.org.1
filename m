@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453062CAB79
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 353C72CAB7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730253AbgLATKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:10:54 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:55804 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727375AbgLATKx (ORCPT
+        id S1731243AbgLATLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:11:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgLATLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:10:53 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1043020B717B;
-        Tue,  1 Dec 2020 11:10:12 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1043020B717B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1606849812;
-        bh=WjVd2OcBg0bpvEBGZ0unm9ifWLhsoSk36pTM7pUj2rU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=CFGkdZPxBOSVV2vo/LyRSsg1tAmo49SlarUY7cYicmPq2OQqaVdBGzz8mB9+ddfZh
-         OE+u1AoXsI1lxdNZ5Dh36sUbWQzPrpFWTmUy/RP9+l0IHnz8PoPFvkoyyyr+RFVRPz
-         U4i2I11f/JYjw6GRc5XjKZnLZOS0VYU/1mTE8Xwc=
-Subject: Re: [PATCH v9 0/8] Carry forward IMA measurement log on kexec on
- ARM64
-To:     Mimi Zohar <zohar@linux.ibm.com>, Rob Herring <robh@kernel.org>
-Cc:     bauerman@linux.ibm.com, gregkh@linuxfoundation.org,
-        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
-        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-References: <20201113192243.1993-1-nramas@linux.microsoft.com>
- <20201121135719.GA2134870@robh.at.kernel.org>
- <415b4d0b-3d93-40ce-b74e-48fdce7fbf7f@linux.microsoft.com>
- <a73a47da53b795617758cc23991624dfca173eba.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <76a749ac-8465-1d82-0ff5-0a46e0a29f18@linux.microsoft.com>
-Date:   Tue, 1 Dec 2020 11:10:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Dec 2020 14:11:09 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3191C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:10:29 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id v3so1658697plz.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:10:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H90UyAJzvmoPRUfMh6apfAgsUXazwUJB3aNHvcWIGHI=;
+        b=I5YX0/C5nVbGAWieLr/8Ha6VtOsNkjWnnJ2Qd/Y9ewwbhhMcDtFL+5KhABvcX+In0o
+         x7Xu2ydSilrJRpv0QQ8N/m0XoiMV6C4Q53/6aaxK+lQ1S2YGq5YNRaKjjq7HGffu86TL
+         UhHkgFuFvIpcoYkdkwwdicoqg0Coi5RRsjjzE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H90UyAJzvmoPRUfMh6apfAgsUXazwUJB3aNHvcWIGHI=;
+        b=GZrW+1I7pGslz1FD/a1Dj+5tm7eBAkCvdbNv9V+GtO5Y+kuUmmUypwcemncNEls4OI
+         m1Y3aYXEBjabIsFQRndBsnICf9h6J2fUhPWUav4fpmgN/vAgG7mXr35V2gx4idG2xXqp
+         IZnfVHcDSbfApzdYLiXYaeZJEhiDpV8f05a6KSB1UxsINqIlCLE8NaUzFOzMCyNG4afb
+         wq4VVIWK8kueaVyC1X3O+PkRXx3LGvpnzjm43guPAvkQ2Zhih0vpa0xlCecjCPgt+shm
+         ZNBdUlrjsqoHk3dOkUwZBHjxADVWpsDt0RCytY0iHAY1aYWjtLn8u7rgwff/GQy53QtT
+         xJgg==
+X-Gm-Message-State: AOAM532AkrHtyomhXu7nC6B8Yuxhr+Tb8JwdgLBqYBQQ6kRZ4jTaOz5v
+        Vc0pUl2cTVu3Ifo6uiDJuYwv4A==
+X-Google-Smtp-Source: ABdhPJx7x0iRMtUz5Ywwp5v5n5BadeJy9m8KDj6Zo4n0WVF4edJ+2HmN3yI/8gKoFC66PFpZIwuaCA==
+X-Received: by 2002:a17:902:9a4c:b029:d6:1f21:8021 with SMTP id x12-20020a1709029a4cb02900d61f218021mr4154492plv.58.1606849829316;
+        Tue, 01 Dec 2020 11:10:29 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 184sm542646pfc.28.2020.12.01.11.10.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:10:28 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:10:27 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/9] pstore/blk: update the command line example
+Message-ID: <202012011109.6D417FB4@keescook>
+References: <20201016132047.3068029-1-hch@lst.de>
+ <20201016132047.3068029-3-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <a73a47da53b795617758cc23991624dfca173eba.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016132047.3068029-3-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 3:34 AM, Mimi Zohar wrote:
-> On Sat, 2020-11-21 at 06:38 -0800, Lakshmi Ramasubramanian wrote:
->> On 11/21/20 5:57 AM, Rob Herring wrote:
->>> On Fri, Nov 13, 2020 at 11:22:35AM -0800, Lakshmi Ramasubramanian wrote:
+On Fri, Oct 16, 2020 at 03:20:40PM +0200, Christoph Hellwig wrote:
+> Use the human readable device name instead of the device number, and
+> add the required best_effort parameter.
 > 
->>>>    arch/powerpc/include/asm/kexec.h       |   1 -
->>>>    arch/powerpc/kexec/Makefile            |   7 +-
->>>>    arch/powerpc/kexec/file_load.c         |  32 --------
->>>>    arch/powerpc/kexec/ima.c               | 106 ++-----------------------
->>>>    drivers/of/Makefile                    |   9 +++
->>>
->>>>    drivers/of/ima_kexec.c                 |  91 +++++++++++++++++++++
->>>>    drivers/of/kexec_fdt.c                 |  55 +++++++++++++
->>>
->>> Does this need to be 2 files? Just kexec.c?
->>
->> Since the functions defined in "ima_kexec.c" and "kexec_fdt.c" are
->> enabled on 2 different kernel CONFIGs, keeping them in 2 files enables
->> us to avoid using "#ifdef" in C files.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Yeah, best_effort is needed here. I think changing from major:minor to a
+path is also fine.
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+> ---
+>  Documentation/admin-guide/pstore-blk.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Normally that is true, but just as all of the kexec related functions
-> are co-located in ima/ima_kexec.c, co-locating all of the kexec related
-> functions in drivers/of makes sense.
+> diff --git a/Documentation/admin-guide/pstore-blk.rst b/Documentation/admin-guide/pstore-blk.rst
+> index 296d5027787ac2..d9ec8b0572d3b2 100644
+> --- a/Documentation/admin-guide/pstore-blk.rst
+> +++ b/Documentation/admin-guide/pstore-blk.rst
+> @@ -35,7 +35,7 @@ module parameters have priority over Kconfig.
+>  
+>  Here is an example for module parameters::
+>  
+> -        pstore_blk.blkdev=179:7 pstore_blk.kmsg_size=64
+> +        pstore_blk.blkdev=/dev/mmcblk0p7 pstore_blk.kmsg_size=64 best_effort=y
+>  
+>  The detail of each configurations may be of interest to you.
+>  
+> -- 
+> 2.28.0
 > 
 
-Sounds good - i'll make the change.
-Instead of "#ifdef" will use "IS_ENABLED" macro, and define the kexec 
-related functions in drivers/of/ima_kexec.c
-
-thanks,
-  -lakshmi
-
+-- 
+Kees Cook
