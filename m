@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5BF2CA577
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 284162CA57A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgLAOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44680 "EHLO
+        id S1729384AbgLAOWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730595AbgLAOVF (ORCPT
+        with ESMTP id S1727132AbgLAOWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:21:05 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561DAC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:20:25 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id f24so3114057ljk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Trz6+0KY4Qq/q4s101pZcFlPrXscSV5EXuw66cbAYr0=;
-        b=gXW21Gkj2scr1ID0OtMqYCfgwcmnAlVzaTnB582uTuycQVrMpA46fN8FYu2wJ4EqKV
-         r9NxMEv4kVIuEjW+LIbHxPvbsWqsw3VT3RYIL6NaDNRNOVngiTJ+3lxJs2clc8c3GmXW
-         ypsIFdtQvZ2rAi1BqP3d7dlrloYWNAlD8gpvUM8zTyP75RLvS6dgHluTsdVX0tC/mzx2
-         MN3DUuWtNxwXFgsccmIg+iiZWQGW9E5tusVVT6qxO69KLVsQ9tHgCFIH5OStjc3Op2l0
-         ADEYxaz7PERgCQvRK9SioTekX08Tl/MsAcAuV/CKaoP8XuGk4UKaflOuAzo9TtS/NhpO
-         NhfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Trz6+0KY4Qq/q4s101pZcFlPrXscSV5EXuw66cbAYr0=;
-        b=g8SVNcvHccmaO1uGmJw3u360ScSJ56MW3aW14d0izvmhnboD+ZD6eFoDWuinjLllcK
-         YNpCg3gVN556qbcCj/wGHl12qtVDI4VJoy8ID7qjUjzAkAR030Y22z3Raw0y4PzT0+Jj
-         oKlbSLHZj7Lnjofm58+r8KXoykgSbKCUTe4mcxzM7zP+k7FMXmnFlvCgpfZyHWr/y02Q
-         dQQRtDl31xOsizMcqlCjBfubjsPkTmXl53368RtPEMcqhVnm/AJXFforvatdip2apHm0
-         2yBm5EsKDAtUI/nNQiyccVzsAJov9tVFntspqx7GosicVGoKtNmQ3z1P07X/1ZCNSO7i
-         eOeg==
-X-Gm-Message-State: AOAM532I/tXFQorJ8X7KbeKl4us15Lq2CGlsiW1AyfnmscAxUmqlidkl
-        WhwKI9Py/4pEYbNEBnXWtXY5NCV7SDVGK75gbOSwqQ==
-X-Google-Smtp-Source: ABdhPJy5XB4+Hg/fkqqoNCaepkRjzfuahFStHPkFazfc0TKrZmDycdNyZXrrvdaIy8edVs5wk34Sq5LEOBwWGkdq4ww=
-X-Received: by 2002:a2e:998e:: with SMTP id w14mr1513703lji.100.1606832423853;
- Tue, 01 Dec 2020 06:20:23 -0800 (PST)
+        Tue, 1 Dec 2020 09:22:31 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3E6C0613CF;
+        Tue,  1 Dec 2020 06:21:51 -0800 (PST)
+Date:   Tue, 01 Dec 2020 14:21:49 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606832509;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jXR2UCXgzQJckdE1VjLynnNMuNCrAjZe3ReBI7ONfjM=;
+        b=0F54uI299Wn5CD+3YVkaqahRqI/LTDvbge7g1a3wHCc5LOuiYz+wIxKu+cIIN24vnENmV1
+        Ax7p2+WcsJ5/6HpF5c5TR0inqXgnf5saVFw1iMBNjOLAotq5kkfjyrUOvD1bL+PFC4epDA
+        TYIuMBKBtxaVAy4HcKXA8D/ggBbejfpDebNJSOCtYAyEUZLXlLRs/Lox2Q9yBV8VWoz769
+        NOez38zyNHVHvsSs4VQu3AVCN5g0hpsMMcioor389QyEJs4GIb9dk9SIcViCJpPSPP6ws7
+        2gXAfZSxx4Pe8E5PNChpLWUj4r4VRXU6lGibkAsoCHRw1T5cHU2mO8/Fd0D7OA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606832509;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jXR2UCXgzQJckdE1VjLynnNMuNCrAjZe3ReBI7ONfjM=;
+        b=QPXYU2B8zCK/T+eeU+rY+CgZRk4QgLcDI0DyzQpdIC6oA05zuUWdmfi13vteaTiSWOnvu6
+        X21Av8eN1aGpcmDQ==
+From:   "tip-bot2 for Sami Tolvanen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] x86/pci: Fix the function type for check_reserved_t
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201130193900.456726-1-samitolvanen@google.com>
+References: <20201130193900.456726-1-samitolvanen@google.com>
 MIME-Version: 1.0
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
- <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk>
- <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com>
-In-Reply-To: <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 1 Dec 2020 15:20:12 +0100
-Message-ID: <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160683250909.3364.11212976072626111571.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolaus, Sven,
+The following commit has been merged into the x86/misc branch of tip:
 
-the fault that the thing broke in the first place is all mine.
-Credit where credit is due!
+Commit-ID:     83321c335dccba262a57378361d63da96b8166d6
+Gitweb:        https://git.kernel.org/tip/83321c335dccba262a57378361d63da96b8166d6
+Author:        Sami Tolvanen <samitolvanen@google.com>
+AuthorDate:    Mon, 30 Nov 2020 11:39:00 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 01 Dec 2020 14:22:52 +01:00
 
-The reason why I shoot in the dark to convert all SPI
-drivers to use GPIO descriptors instead of the global
-GPIO numberspace is detailed in drivers/gpio/TODO
-so I will not repeat it here.
+x86/pci: Fix the function type for check_reserved_t
 
-I don't know if much can be done about it other than
-having better programmers than me at the task. Or
-less tired when they write the patch. etc.
+e820__mapped_all() is passed as a callback to is_mmconf_reserved(),
+which expects a function of type:
 
-What other operating systems do to get around the same
-type of refactoring problem is to aggressively
-deprecate and delete code that does not follow the
-latest ideas of the driver subsystem developer. This
-is not an option on Linux because we don't like to leave
-working hardware and users behind so I am painstakingly
-fixing it all over the place, with a little help from my
-friends. Sometimes it blows up in my face, sometimes
-in other people faces too, sorry about that.
+  typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned type);
 
-Yours,
-Linus Walleij
+However, e820__mapped_all() accepts enum e820_type as the last argument
+and this type mismatch trips indirect call checking with Clang's
+Control-Flow Integrity (CFI).
+
+As is_mmconf_reserved() only passes enum e820_type values for the
+type argument, change the typedef and the unused type argument in
+is_acpi_reserved() to enum e820_type to fix the type mismatch.
+
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201130193900.456726-1-samitolvanen@google.com
+---
+ arch/x86/pci/mmconfig-shared.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 6fa42e9..234998f 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -425,7 +425,7 @@ static acpi_status find_mboard_resource(acpi_handle handle, u32 lvl,
+ 	return AE_OK;
+ }
+ 
+-static bool is_acpi_reserved(u64 start, u64 end, unsigned not_used)
++static bool is_acpi_reserved(u64 start, u64 end, enum e820_type not_used)
+ {
+ 	struct resource mcfg_res;
+ 
+@@ -442,7 +442,7 @@ static bool is_acpi_reserved(u64 start, u64 end, unsigned not_used)
+ 	return mcfg_res.flags;
+ }
+ 
+-typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned type);
++typedef bool (*check_reserved_t)(u64 start, u64 end, enum e820_type type);
+ 
+ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
+ 				     struct pci_mmcfg_region *cfg,
