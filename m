@@ -2,52 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619042C9462
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EE12C9467
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389212AbgLAA64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:58:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387945AbgLAA64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:58:56 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D1272085B;
-        Tue,  1 Dec 2020 00:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606784295;
-        bh=XJqH1TMtP9xmOi3v0LL0YOX06RA7xOFQmJ5B2q80Cq8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ou7cats3Yo9Rn7R9ZlDllSDOXxyvTUh6VuvZdyh7lUQvrfr/qp2aVIRi4aAL52b/g
-         lbUqNJp5br86jdXTPTtsN2RadZoo8DLiFWt2tX1r/E2ClquSLRfpneOkDqwBaHktWI
-         uBwKPp1wd6xStKGqIavltCSD2iyeaplBHaVlc6HQ=
-Date:   Tue, 1 Dec 2020 08:58:11 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Vinod Koul <vkoul@kernel.org>, Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] arm64: defconfig: Enable HID multitouch
-Message-ID: <20201201005810.GN4072@dragon>
-References: <20201130162834.310282-1-bjorn.andersson@linaro.org>
+        id S1729225AbgLABDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:03:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727940AbgLABDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:03:55 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB539C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 17:03:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Ff7vIpW4nXR5vwfXcGsWU6Ty1w9G2DmQ1alsYfXy86A=; b=rh/0q0l6mmyrn+XWpyq0CD6hJ8
+        4xBNf2w5pvP3qFboLCmKYtTnfowncQ7Q8IieLHKqRljahInN6FULSH2NaEka6z2KK48m7oMKF3W4D
+        +xN/sBZYR0Bkxv3jQ6Fn4YOEdg2iTS0Bz/cLNX8/r/ijHNngTreYzw+FsfzBnMjFC46iLU8zL+sfT
+        QmBNo6slLle/ua0yxJ+vyxxyFs4addLBeki8t8JbIirdH1XLFjFgHpzn9r0uKIIvRZ96Hx4KXvnfm
+        vQv/UHGeMGQNtt8JtozU/cZ9yBiysZlNQJK4DsHq1wyiYlUBU4aiwC8cck3DvPvirZP/3VjFERQ+2
+        8t7QzzbQ==;
+Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kju4U-0006i4-CR; Tue, 01 Dec 2020 01:03:11 +0000
+Subject: Re: WARNING: filesystem loop5 was created with 512 inodes, the real
+ maximum is 511, mounting anyway
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+References: <00000000000019cd7c05b515da9a@google.com>
+ <7e108ab1-0b07-50dd-5862-a5121eab6094@infradead.org>
+ <CACT4Y+YkH042G=+ErWY+dRLs5H0i1ao1xnSeHvGx8x=dn5KH1A@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8d5ec04c-4646-3b70-6f6c-ea989e6c2c59@infradead.org>
+Date:   Mon, 30 Nov 2020 17:03:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130162834.310282-1-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CACT4Y+YkH042G=+ErWY+dRLs5H0i1ao1xnSeHvGx8x=dn5KH1A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:28:34AM -0600, Bjorn Andersson wrote:
-> The Lenovo Yoga C630 relies on HID multitouch support for proper
-> touchpad operation, so enable this.
+On 11/30/20 12:43 AM, Dmitry Vyukov wrote:
+> On Mon, Nov 30, 2020 at 5:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 11/27/20 4:32 AM, syzbot wrote:
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    418baf2c Linux 5.10-rc5
+>>> git tree:       upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=171555b9500000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b81aff78c272da44
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3fd34060f26e766536ff
+>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>>>
+>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>> Reported-by: syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com
+>>>
+>>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
+>>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
+>>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
+>>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
+>>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
+>>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
+>>>
+>>>
+>>> ---
+>>> This report is generated by a bot. It may contain errors.
+>>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>>
+>>> syzbot will keep track of this issue. See:
+>>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>>>
+>>
+>> Hi,
+>> Can you provide the BFS image file that is being mounted?
+>> (./file0 I think.)
+>>
+>> --
+>> ~Randy
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> Hi Randy,
+> 
+> I see this bug was reported with a reproducer:
+> https://syzkaller.appspot.com/bug?id=a32ebd5db2f7c957b82cf54b97bdecf367bf0421
+> I assume it's a dup of this one.
 
-Acked-by: Shawn Guo <shawnguo@kernel.org>
+Sure, looks the same.
+
+> If you need the image itself, you can dump it to a file in the C
+> reproducer inside of syz_mount_image before mount call.
+
+Yes, got that.
+
+What outcome or result are you looking for here?
+Or what do you see as the problem?
+
+
+thanks.
+-- 
+~Randy
+
