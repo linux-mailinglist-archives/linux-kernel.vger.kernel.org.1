@@ -2,112 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B202A2C957B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C10A2C95B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727205AbgLADAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 22:00:31 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:64355 "EHLO m42-4.mailgun.net"
+        id S1727629AbgLADSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 22:18:49 -0500
+Received: from mout.gmx.net ([212.227.17.20]:45867 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgLADAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 22:00:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606791611; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=790Kdzyv5i3G4jCUOcNUEbwKkeQUdy1vngu7YiCwIFw=; b=b99bLQcl2AkyZYMKCCib73hLbUEsnZU5sTV0ovDXRRoRNs6mGIgwPuMoniMN0rWivtzwkYdC
- t26DnzWr7qNvtvodrFq8Fo3s9Edy/rsnEpqp0K1R379fdaOB1FzRcXBy5vncG6n2xP9puq89
- 0eRqrPWIi86iMjYzXkwHD5ilqvk=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fc5b19aedac2724d8a5aca9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 02:59:38
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC7E2C43460; Tue,  1 Dec 2020 02:59:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 499EEC433C6;
-        Tue,  1 Dec 2020 02:59:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 499EEC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v1] Bluetooth: support download nvm with different board id for wcn6855
-Date:   Tue,  1 Dec 2020 10:59:24 +0800
-Message-Id: <1606791564-2443-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1725859AbgLADSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 22:18:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606792583;
+        bh=oMV1BsE+zyZdphaHIIA7I4yA5HiRt24ClTAmEH7qgi0=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=FSlC2zyl4E9+Oh6GYRbIopFfsFjQ04dd7R4VGLqCIeMzxder+iELESfFECrhgpBlo
+         hVxPYtJK1pFtnywtp7qbxaVyMMrp8DqrJ2D5shTdOrzwgHFvBxH3h6oseY45tvn6EY
+         EU1zhK06FhWuVl2Y2kEYv6Y4+BRZx7wjDpQ6j5Go=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MacOQ-1kDMUP2AYs-00c7ur; Tue, 01
+ Dec 2020 04:16:23 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 2/7] dt-bindings: mfd: Add binding for Netronix embedded controller
+Date:   Tue,  1 Dec 2020 02:15:08 +0100
+Message-Id: <20201201011513.1627028-3-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
+References: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Vz3vJigvuTH3GzmHI6h4VbmnOp32aE5QRt0GwXcvdVOzIzllyWS
+ i8BVZm0ZfXdpS+MZsTHTJIF8KmT59/cOCJpyhN8zJJp2BnJcDy6bls40rSuAlntjAyXQi8u
+ jUQ3RMxz2WtfSS9a/XLotrBYWsQp6Zv8uCEBMn1rGB7UyIecwwbeIGN5+Xp1EzinOPsO+GA
+ +W7oFQX9jiIxQyb2t+3mw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QQq6oDqUxps=:6T85xH+8S1ysT0AdqBKdwb
+ nXmG6NCoxCSbF1c1dIQDo3gGyPzoiAZXMTppcsdD8eFzmnJoOuSaUrn5hYLSm3O/nfglFO69Q
+ 6bXObsFyagScL01w/nbxYqf9gcto8myDVKxoMxaU6QAFchz746ubYR5PqsapaLQ2YRc/RpgiY
+ LurIj3IyNEBNG0IvB3fmJ1tOD8DBsun5CZrKSAmcAvt61a+1Ji1ktJVKcBR+3By9+a1pKeWAQ
+ UV/HX3GMDWrU1J9dJGd5wz0JVWOVx2ijOix9Bw8XJCUG538sheMEH82nX7DUT8Ul/zSdnV+8Q
+ D4ltVBtFE54LcKULOMYeFuF6XoVxxU6RRp6ONH3mCTpyZSrVq0CdGOIdtDrTgDC7NA+ub9hO/
+ CsGp6QVsbBqcutezZe8usyo/0p5+aoEVLAOTJzOGEKMvhurY3Bt7+fDxJF13CxV1DlhhhzJXt
+ n4+NWlG1XAZIejiH4VQlJ/NRsflU4YbHVIG6X6O6kAB4r8VdadrXl3GWGoHxjYbyOjJaJbEs1
+ gFP6PqL8KQPtAWpZCRaiXnWntjcTKCRNf26bQw7UsivGD8SLpGT9Vv2PSsJwT3XqAO5DRF4Ws
+ 2AA+qCnoAeV9n8/egeO29BO6NXjh+HJNq/drbb9WcVgHEz5g6PcFmNoEimH4c4CRZJS6mCsKK
+ fOUYPfa/9Py2ufiT23VxK474NWUZQgoiOU5l3/FmOBZnYVTGvWCIqU+2if2erW0dblh2yPOPT
+ OjfoUHoBh9cC2rU0oCIokRZgaTLkWZV3XnNhhgciOkFqTp7H8g60X8C+/LaGd1OvetML7DZyL
+ a+EKc7+e8+AMd9yLPLxLLu4Kfb9S44uEsopMVMFIGA1EQWYI/Zi8Eya0Y8r8oJRoLp+BnVKvZ
+ Z/wyAbEJUaBLju9+NJlw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+This EC is found in e-book readers of multiple brands (e.g. Kobo,
+Tolino), and is typically implemented as a TI MSP430 microcontroller.
 
-we define many nvm files for wcn6855 btsoc and host driver
-should find the correct nvm file based on board ID and then
-download it.
+It controls different functions of the system, such as power on/off,
+RTC, PWM for the backlight. The exact functionality provided can vary
+between boards.
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
- drivers/bluetooth/btusb.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+Reviewed-by: Rob Herring <robh@kernel.org>
+=2D--
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 3bbe8f43e7fa..66e19085e0fa 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3474,7 +3474,8 @@ struct qca_version {
- 	__le32	rom_version;
- 	__le32	patch_version;
- 	__le32	ram_version;
--	__le32	ref_clock;
-+	__u16	board_id;
-+	__u8	flag[2];
- 	__u8	reserved[4];
- } __packed;
- 
-@@ -3657,8 +3658,13 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
- 	char fwname[64];
- 	int err;
- 
--	snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--		 le32_to_cpu(ver->rom_version));
-+	if (ver->flag[1] == 0x80) { //check board id for wcn6855
-+		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-+			le32_to_cpu(ver->rom_version), le16_to_cpu(ver->board_id));
-+	} else {
-+		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-+			le32_to_cpu(ver->rom_version));
-+	}
- 
- 	err = request_firmware(&fw, fwname, &hdev->dev);
- 	if (err) {
-@@ -3725,6 +3731,11 @@ static int btusb_setup_qca(struct hci_dev *hdev)
- 			return err;
- 	}
- 
-+	err = btusb_qca_send_vendor_req(udev, QCA_GET_TARGET_VERSION, &ver,
-+					sizeof(ver));
-+	if (err < 0)
-+		return err;
+v5:
+- no changes
+
+v4:
+- Add R-b tag
+
+v3:
+- https://lore.kernel.org/lkml/20200924192455.2484005-3-j.neuschaefer@gmx.=
+net/
+- Remove binding in text form patch description again
+- Add additionalProperties: false
+- Remove interrupt-controller property from example
+- Merge pwm/rtc nodes into main node
+
+v2:
+- https://lore.kernel.org/lkml/20200905133230.1014581-3-j.neuschaefer@gmx.=
+net/
+- Add the plaintext DT binding for comparison
+=2D--
+ .../bindings/mfd/netronix,ntxec.yaml          | 76 +++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/netronix,ntxec.y=
+aml
+
+diff --git a/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml b/D=
+ocumentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+new file mode 100644
+index 0000000000000..59a630025f52f
+=2D-- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/netronix,ntxec.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	if (!(status & QCA_SYSCFG_UPDATED)) {
- 		err = btusb_setup_qca_load_nvm(hdev, &ver, info);
- 		if (err < 0)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
++title: Netronix Embedded Controller
++
++maintainers:
++  - Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
++
++description: |
++  This EC is found in e-book readers of multiple brands (e.g. Kobo, Tolin=
+o), and
++  is typically implemented as a TI MSP430 microcontroller.
++
++properties:
++  compatible:
++    const: netronix,ntxec
++
++  reg:
++    items:
++      - description: The I2C address of the EC
++
++  system-power-controller:
++    type: boolean
++    description: See Documentation/devicetree/bindings/power/power-contro=
+ller.txt
++
++  interrupts:
++    minItems: 1
++    description:
++      The EC can signal interrupts via a GPIO line
++
++  "#pwm-cells":
++    const: 2
++    description: |
++      Number of cells in a PWM specifier.
++
++      The following PWM channels are supported:
++        - 0: The PWM channel controlled by registers 0xa1-0xa7
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++            #address-cells =3D <1>;
++            #size-cells =3D <0>;
++
++            ec: embedded-controller@43 {
++                    pinctrl-names =3D "default";
++                    pinctrl-0 =3D <&pinctrl_ntxec>;
++
++                    compatible =3D "netronix,ntxec";
++                    reg =3D <0x43>;
++                    system-power-controller;
++                    interrupt-parent =3D <&gpio4>;
++                    interrupts =3D <11 IRQ_TYPE_EDGE_FALLING>;
++                    #pwm-cells =3D <2>;
++            };
++    };
++
++    backlight {
++            compatible =3D "pwm-backlight";
++            pwms =3D <&ec 0 50000>;
++            power-supply =3D <&backlight_regulator>;
++    };
++
++    backlight_regulator: regulator-dummy {
++            compatible =3D "regulator-fixed";
++            regulator-name =3D "backlight";
++    };
+=2D-
+2.29.2
 
