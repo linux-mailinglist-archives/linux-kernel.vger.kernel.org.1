@@ -2,142 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1246F2CAC6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA912CAC6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404305AbgLATd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:33:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgLATd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:33:29 -0500
-Received: from localhost (searspoint.nvidia.com [216.228.112.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F8E220679;
-        Tue,  1 Dec 2020 19:32:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606851168;
-        bh=a74wrcvSdNVouX66ceR1u93Jt6L/lg6Baa0mbtbwhN0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IrUm2r/Eami47ViRMKJ4EU634PV4FUp0Q1Lvu3vP1TXFiqxWFs0OcJ7SXMA5dzz+w
-         BwY7vio9ApsRvMQJBgkLxRHixU/wh5H5rz9srfZ99tI76frObamA2fuNgZQPNMfnBu
-         HxmXCzYVuNa2h5ph+EhTu8WIQM42tuCOCAJOu3qc=
-Date:   Tue, 1 Dec 2020 21:32:43 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Edward Srouji <edwards@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] kbuild: Restore ability to build out-of-tree
- modules
-Message-ID: <20201201193243.GG3286@unreal>
-References: <20201201143700.719828-1-leon@kernel.org>
- <CAEf4BzaSL+rmVYNipsfczsF2v684KOhZgFPtUG9opvk7d6zruA@mail.gmail.com>
+        id S2404332AbgLATdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:33:35 -0500
+Received: from smtprelay0237.hostedemail.com ([216.40.44.237]:45346 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726148AbgLATdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 14:33:35 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 4FF3D18028E7E;
+        Tue,  1 Dec 2020 19:32:54 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:4321:4362:5007:6119:7514:7875:7903:8531:9545:10004:10400:10848:11026:11232:11658:11914:12043:12295:12296:12297:12555:12740:12895:13095:13439:13894:14093:14097:14181:14659:14721:21080:21221:21433:21451:21611:21627:30025:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: joke83_280d582273ad
+X-Filterd-Recvd-Size: 3300
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  1 Dec 2020 19:32:53 +0000 (UTC)
+Message-ID: <7f29e46d73c0b12ce53e659f0bcd3ec194522f2e.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: fix TYPO_SPELLING check for words with
+ apostrophe
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Date:   Tue, 01 Dec 2020 11:32:51 -0800
+In-Reply-To: <20201201190729.169733-1-dwaipayanray1@gmail.com>
+References: <20201201190729.169733-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaSL+rmVYNipsfczsF2v684KOhZgFPtUG9opvk7d6zruA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:01:23AM -0800, Andrii Nakryiko wrote:
-> On Tue, Dec 1, 2020 at 6:37 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > The out-of-tree modules are built without vmlinux target and request
-> > to recompile that target unconditionally causes to the following
-> > compilation error.
-> >
-> > [root@server kernel]# make
-> > <..>
-> > make -f ./scripts/Makefile.modpost
-> > make -f ./scripts/Makefile.modfinal
-> > make[3]: *** No rule to make target 'vmlinux', needed by '/my_temp/out-of-tree-module/kernel/test.ko'.  Stop.
-> > make[2]: *** [scripts/Makefile.modpost:117: __modpost] Error 2
-> > make[1]: *** [Makefile:1703: modules] Error 2
-> > make[1]: Leaving directory '/usr/src/kernels/5.10.0-rc5_for_upstream_base_2020_11_29_11_34'
-> > make: *** [Makefile:80: modules] Error 2
-> >
-> > As a solution separate between build paths that has vmlinux target and paths without.
-> >
-> > Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
-> > Reported-by: Edward Srouji <edwards@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
->
-> e732b538f455 ("kbuild: Skip module BTF generation for out-of-tree
-> external modules") ([0]) was supposed to take care of this. Did you
-> try it?
+On Wed, 2020-12-02 at 00:37 +0530, Dwaipayan Ray wrote:
+> checkpatch reports a false TYPO_SPELLING warning for some words
+> containing an apostrophe when run with --codespell option.
 
-My tree doesn't have this patch yet, so my questions can be stupid:
-1. Will it print "Skipping BTF generation for ... due to unavailability
-of vmlinux" line if my .config doesn't have "CONFIG_DEBUG_INFO_BTF_MODULES"?
-I hope it is not.
-2. Reliance on existence of vmlinux can be problematic, no one promises
-us that "make clean" is called before and there are no other leftovers
-from previous builds.
+Thanks.
+Acked-by: Joe Perches <joe@perches.com>
 
-And in general, the idea that such invasive change in build infrastructure
-came without any Ack from relevant maintainers doesn't look right to me.
+> 
+> A false positive is "doesn't". Occurrence of the word causes
+> checkpatch to emit the following warning:
+> 
+> "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
+> 
+> Modify the regex pattern to be more in line with the codespell
+> default word matching regex. This fixes the word capture and
+> avoids the false warning.
+> 
+> In addition, highlight the misspelled word location by adding a
+> caret below the word.
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Reported-by: Peilin Ye <yepeilin.cs@gmail.com>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> ---
+> Changes in v3:
+> - Highlight misspelled word location using a caret
+> 
+> Changes in v2:
+> - Use the default codespell word regex.
+> - Modify commit message to specify --codespell usage
+> 
+>  scripts/checkpatch.pl | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 3c86ea737e9c..e8c1ed0b1fad 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3106,15 +3106,18 @@ sub process {
+>  # Check for various typo / spelling mistakes
+>  		if (defined($misspellings) &&
+>  		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+> -			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
+> +			while ($rawline =~ /(?:^|[^\w\-'`])($misspellings)(?:[^\w\-'`]|$)/gi) {
+>  				my $typo = $1;
+> +				my $blank = copy_spacing($rawline);
+> +				my $ptr = substr($blank, 0, $-[1]) . "^";
+> +				my $hereptr = "$hereline$ptr\n";
+>  				my $typo_fix = $spelling_fix{lc($typo)};
+>  				$typo_fix = ucfirst($typo_fix) if ($typo =~ /^[A-Z]/);
+>  				$typo_fix = uc($typo_fix) if ($typo =~ /^[A-Z]+$/);
+>  				my $msg_level = \&WARN;
+>  				$msg_level = \&CHK if ($file);
+>  				if (&{$msg_level}("TYPO_SPELLING",
+> -						  "'$typo' may be misspelled - perhaps '$typo_fix'?\n" . $herecurr) &&
+> +						  "'$typo' may be misspelled - perhaps '$typo_fix'?\n" . $hereptr) &&
+>  				    $fix) {
+>  					$fixed[$fixlinenr] =~ s/(^|[^A-Za-z@])($typo)($|[^A-Za-z@])/$1$typo_fix$3/;
+>  				}
 
-Thanks
 
->
->   [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201121070829.2612884-1-andrii@kernel.org/
->
->
-> > Not proficient enough in Makefile, but it fixes the issue.
-> > ---
-> >  scripts/Makefile.modfinal | 5 +++++
-> >  scripts/Makefile.modpost  | 4 ++++
-> >  2 files changed, 9 insertions(+)
-> >
-> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > index 02b892421f7a..8a7d0604e7d0 100644
-> > --- a/scripts/Makefile.modfinal
-> > +++ b/scripts/Makefile.modfinal
-> > @@ -48,9 +48,14 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
-> >         $(cmd);                                                              \
-> >         printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
-> >
-> > +ifdef MODPOST_VMLINUX
-> >  # Re-generate module BTFs if either module's .ko or vmlinux changed
-> >  $(modules): %.ko: %.o %.mod.o scripts/module.lds vmlinux FORCE
-> >         +$(call if_changed_except,ld_ko_o,vmlinux)
-> > +else
-> > +$(modules): %.ko: %.o %.mod.o scripts/module.lds FORCE
-> > +       +$(call if_changed_except,ld_ko_o)
-> > +endif
-> >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> >         +$(if $(newer-prereqs),$(call cmd,btf_ko))
-> >  endif
-> > diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-> > index f54b6ac37ac2..f5aa5b422ad7 100644
-> > --- a/scripts/Makefile.modpost
-> > +++ b/scripts/Makefile.modpost
-> > @@ -114,8 +114,12 @@ targets += $(output-symdump)
-> >
-> >  __modpost: $(output-symdump)
-> >  ifneq ($(KBUILD_MODPOST_NOFINAL),1)
-> > +ifdef MODPOST_VMLINUX
-> > +       $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal MODPOST_VMLINUX=1
-> > +else
-> >         $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal
-> >  endif
-> > +endif
-> >
-> >  PHONY += FORCE
-> >  FORCE:
-> > --
-> > 2.28.0
-> >
