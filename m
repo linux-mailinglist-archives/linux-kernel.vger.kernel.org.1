@@ -2,75 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9282C954C
+	by mail.lfdr.de (Postfix) with ESMTP id B53C52C954D
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgLAChO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:37:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40710 "EHLO mail.kernel.org"
+        id S1727126AbgLAChg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:37:36 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:55969 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgLAChN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:37:13 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727005AbgLAChg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 21:37:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606790232; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=LuLVx8v5T+nGwlZJeawR9A4EitazVOlcd9+XnWaPHcc=; b=nhbWs/PTHrMAbfG218dPQqOxfnKgkjH0/SNfPgO/E3pa0ScE0oNKs/I2M9Fu5Aj/lkKeXSb9
+ d7VdZ8wA9u9Ts460fU8r3rfOIuvw3STZNj4DmH+FAcDYXb13r8DuBz0T5b88z4eXuriqzlJ9
+ 6uqR+lRIgsfMpf4sJFFVSSTErRE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fc5ac3d07535c81ba453249 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 02:36:45
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F0EC4C43466; Tue,  1 Dec 2020 02:36:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A87120857;
-        Tue,  1 Dec 2020 02:36:32 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 21:36:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [RFC PATCH 03/14] ftrace: Fix cleanup in error path of
- register_ftrace_direct()
-Message-ID: <20201130213629.185216e8@oasis.local.home>
-In-Reply-To: <5a10d77b845633fbd13f1c3c71e7f9777bbbe601.1606412433.git.naveen.n.rao@linux.vnet.ibm.com>
-References: <cover.1606412433.git.naveen.n.rao@linux.vnet.ibm.com>
-        <5a10d77b845633fbd13f1c3c71e7f9777bbbe601.1606412433.git.naveen.n.rao@linux.vnet.ibm.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 01281C433ED;
+        Tue,  1 Dec 2020 02:36:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 01281C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v3 2/2] scsi: ufs-qcom: Keep core_clk_unipro ON while link
+ is active
+To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1606356063-38380-1-git-send-email-cang@codeaurora.org>
+ <1606356063-38380-3-git-send-email-cang@codeaurora.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <7ec66c17-2bb7-a472-6ebb-3151ba51df84@codeaurora.org>
+Date:   Mon, 30 Nov 2020 18:36:42 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1606356063-38380-3-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 23:38:40 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
-
-> We need to remove hash entry if register_ftrace_function() fails.
-> Consolidate the cleanup to be done after register_ftrace_function() at
-> the end.
-
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
-
+On 11/25/2020 6:01 PM, Can Guo wrote:
+> If we want to disable clocks to save power but still keep the link active,
+> core_clk_unipro, as same as ref_clk, should not be the one being disabled.
 > 
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> Reviewed-by: Hongwu Su<hongwus@codeaurora.org>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
 > ---
->  kernel/trace/ftrace.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 9c1bba8cc51b03..3844a4a1346a9c 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5136,8 +5136,6 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
->  	__add_hash_entry(direct_functions, entry);
->  
->  	ret = ftrace_set_filter_ip(&direct_ops, ip, 0, 0);
-> -	if (ret)
-> -		remove_hash_entry(direct_functions, entry);
->  
->  	if (!ret && !(direct_ops.flags & FTRACE_OPS_FL_ENABLED)) {
->  		ret = register_ftrace_function(&direct_ops);
-> @@ -5146,6 +5144,7 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
->  	}
->  
->  	if (ret) {
-> +		remove_hash_entry(direct_functions, entry);
->  		kfree(entry);
->  		if (!direct->count) {
->  			list_del_rcu(&direct->next);
 
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+
+>   drivers/scsi/ufs/ufs-qcom.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> index f9d6ef3..8a7fc62 100644
+> --- a/drivers/scsi/ufs/ufs-qcom.c
+> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> @@ -977,6 +977,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+>   	struct platform_device *pdev = to_platform_device(dev);
+>   	struct ufs_qcom_host *host;
+>   	struct resource *res;
+> +	struct ufs_clk_info *clki;
+>   
+>   	if (strlen(android_boot_dev) && strcmp(android_boot_dev, dev_name(dev)))
+>   		return -ENODEV;
+> @@ -1075,6 +1076,11 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+>   		}
+>   	}
+>   
+> +	list_for_each_entry(clki, &hba->clk_list_head, list) {
+> +		if (!strcmp(clki->name, "core_clk_unipro"))
+> +			clki->keep_link_active = true;
+> +	}
+> +
+>   	err = ufs_qcom_init_lane_clks(host);
+>   	if (err)
+>   		goto out_variant_clear;
+> 
+
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
