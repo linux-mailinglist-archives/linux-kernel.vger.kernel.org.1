@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CE92C9A77
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C172C9BE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729242AbgLAI5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60560 "EHLO mail.kernel.org"
+        id S2390052AbgLAJNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:13:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729010AbgLAI5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:57:45 -0500
+        id S2390031AbgLAJM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6440217A0;
-        Tue,  1 Dec 2020 08:57:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF27F21D7A;
+        Tue,  1 Dec 2020 09:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813050;
-        bh=MD7qjpm33Nehn5zcoqnTWe5lPG286RmzvYRMqO4sZhY=;
+        s=korg; t=1606813937;
+        bh=cIPVjtn4KT75hCzCf+nComspBooSr9eqyKayp4WK43I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wS1b+V/CB5bRWmxfn0Gb3F5I651F7U8RbUW6nE+XS0ZOiF+ecWEPbEUZWfW5ZxMLc
-         TX6DIHca4ERyJIghDc9VQSTevD37v9dLJ4/LltMLZTTe1DOPE8ZCMWsERBJzwmAL8m
-         1TULQDfHZdn5fVHh9WNE7Xa1dagP9VtOK5Sa2VNc=
+        b=f4OtfwiKLgVC1KuizSoj2dkamkcXxdKgmP9WJR6Xtd8SPgkYkZyIBR8RGXRBgbAnS
+         TY79KMZt1T+MdHruoXqBd5M8K2pa8BQs70G+9wQQul8XxwhN2d366Nqy4stfbOmTHm
+         mRBIY8DT+dAq89ynObpEMfK5a0/lfKEgOoymcnQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Ceballos <pceballos@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 16/50] HID: hid-sensor-hub: Fix issue with devices with no report ID
-Date:   Tue,  1 Dec 2020 09:53:15 +0100
-Message-Id: <20201201084647.174738010@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 081/152] usb: cdns3: gadget: calculate TD_SIZE based on TD
+Date:   Tue,  1 Dec 2020 09:53:16 +0100
+Message-Id: <20201201084722.520693959@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Ceballos <pceballos@google.com>
+From: Peter Chen <peter.chen@nxp.com>
 
-[ Upstream commit 34a9fa2025d9d3177c99351c7aaf256c5f50691f ]
+[ Upstream commit 40252dd7cf7cad81c784c695c36bc475b518f0ea ]
 
-Some HID devices don't use a report ID because they only have a single
-report. In those cases, the report ID in struct hid_report will be zero
-and the data for the report will start at the first byte, so don't skip
-over the first byte.
+The TRB entry TD_SIZE is the packet number for the TD (request) but not the
+each TRB, so it only needs to be assigned for the first TRB during the TD,
+and the value of it is for TD too.
 
-Signed-off-by: Pablo Ceballos <pceballos@google.com>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
+Signed-off-by: Peter Chen <peter.chen@nxp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-sensor-hub.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/cdns3/gadget.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-sensor-hub.c
-index b5bd5cb7d5324..aa078c1dad14f 100644
---- a/drivers/hid/hid-sensor-hub.c
-+++ b/drivers/hid/hid-sensor-hub.c
-@@ -496,7 +496,8 @@ static int sensor_hub_raw_event(struct hid_device *hdev,
- 		return 1;
+diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
+index dc5e6be3fd45a..6af6343c7c65a 100644
+--- a/drivers/usb/cdns3/gadget.c
++++ b/drivers/usb/cdns3/gadget.c
+@@ -1170,10 +1170,20 @@ static int cdns3_ep_run_transfer(struct cdns3_endpoint *priv_ep,
  
- 	ptr = raw_data;
--	ptr++; /* Skip report id */
-+	if (report->id)
-+		ptr++; /* Skip report id */
+ 	/* set incorrect Cycle Bit for first trb*/
+ 	control = priv_ep->pcs ? 0 : TRB_CYCLE;
++	trb->length = 0;
++	if (priv_dev->dev_ver >= DEV_VER_V2) {
++		u16 td_size;
++
++		td_size = DIV_ROUND_UP(request->length,
++				       priv_ep->endpoint.maxpacket);
++		if (priv_dev->gadget.speed == USB_SPEED_SUPER)
++			trb->length = TRB_TDL_SS_SIZE(td_size);
++		else
++			control |= TRB_TDL_HS_SIZE(td_size);
++	}
  
- 	spin_lock_irqsave(&pdata->lock, flags);
+ 	do {
+ 		u32 length;
+-		u16 td_size = 0;
  
+ 		/* fill TRB */
+ 		control |= TRB_TYPE(TRB_NORMAL);
+@@ -1185,20 +1195,12 @@ static int cdns3_ep_run_transfer(struct cdns3_endpoint *priv_ep,
+ 		else
+ 			length = request->sg[sg_iter].length;
+ 
+-		if (likely(priv_dev->dev_ver >= DEV_VER_V2))
+-			td_size = DIV_ROUND_UP(length,
+-					       priv_ep->endpoint.maxpacket);
+-		else if (priv_ep->flags & EP_TDLCHK_EN)
++		if (priv_ep->flags & EP_TDLCHK_EN)
+ 			total_tdl += DIV_ROUND_UP(length,
+ 					       priv_ep->endpoint.maxpacket);
+ 
+-		trb->length = cpu_to_le32(TRB_BURST_LEN(priv_ep->trb_burst_size) |
++		trb->length |= cpu_to_le32(TRB_BURST_LEN(priv_ep->trb_burst_size) |
+ 					TRB_LEN(length));
+-		if (priv_dev->gadget.speed == USB_SPEED_SUPER)
+-			trb->length |= cpu_to_le32(TRB_TDL_SS_SIZE(td_size));
+-		else
+-			control |= TRB_TDL_HS_SIZE(td_size);
+-
+ 		pcs = priv_ep->pcs ? TRB_CYCLE : 0;
+ 
+ 		/*
 -- 
 2.27.0
 
