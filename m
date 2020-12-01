@@ -2,151 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7CE2CAA90
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 528782CAA93
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404163AbgLASNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:13:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59274 "EHLO mail.kernel.org"
+        id S1728249AbgLASPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:15:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731221AbgLASNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:13:31 -0500
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+        id S1726360AbgLASPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 13:15:52 -0500
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E65021741
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 18:12:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DBFA20870;
+        Tue,  1 Dec 2020 18:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606846369;
-        bh=E2CKcTo1Blq+axp7WlL6UklE/acfYFuyZ7lpoupxS18=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SSF5/HFZte04ybpegAbK9BA3K0ZsiL+A5o5hs2TE2Bx1NkbtXW+JXpIdCFdHvzgyh
-         ccXOujAIzOZepWyLdSfI/B5S7zOO/AtNdNe7NKzCuEhglooI7eBYZIdp+PnUQPNuo5
-         oKhkhwqjyDXyxBcMQYBlGusUsRTuAJtgsub+pe4c=
-Received: by mail-wr1-f49.google.com with SMTP id u12so4152313wrt.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:12:49 -0800 (PST)
-X-Gm-Message-State: AOAM530WXsEovUBRSNIqz9m+pf0+TSEvnHvJfz18/abZ+SavYbXGpNu7
-        gqA87anDDxMLknJTqL0oZCuloNdoNzNJdFpr4DXDRA==
-X-Google-Smtp-Source: ABdhPJzfQSvMvtPeNRQUyXKET3QHJ0g1V4BgEp0hnU/pmlRvK9z7RRqmPxpodPPKtcP2EJhHsqLs6orujq/lgMrOJRk=
-X-Received: by 2002:a5d:4e87:: with SMTP id e7mr5723748wru.70.1606846367963;
- Tue, 01 Dec 2020 10:12:47 -0800 (PST)
+        s=default; t=1606846511;
+        bh=Ze155kRMQl2GwetuTWF4bBxznb5Q+M6GA7dHqsHY51s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vyQaPDqrpiWDmqeS37M5S7/HcBUzzDjRnaARXsooxtPfpwEZlNIzRbw6rbyHuWeJL
+         b/oHQeS2X/j44OX84ZhOE5mzCXKQonM1y7lqBr21qYVS53r+YcFciYnDEGCQSPY3qZ
+         6NEfBVJV8qj/f3qbX8ynSzDQGa/3c8/f+aUCCon4=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-mm@kvack.org
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: refactor initialization of stuct page for holes in memory layout
+Date:   Tue,  1 Dec 2020 20:15:02 +0200
+Message-Id: <20201201181502.2340-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <cover.1606758530.git.luto@kernel.org> <5495e4c344dc09011ff57756c7e0a1330830eafc.1606758530.git.luto@kernel.org>
- <20201201101637.GU2414@hirez.programming.kicks-ass.net> <1044280457.69297.1606832917168.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1044280457.69297.1606832917168.JavaMail.zimbra@efficios.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 1 Dec 2020 10:12:34 -0800
-X-Gmail-Original-Message-ID: <CALCETrVXG0A2NwiPY31G3uQYvVzbwFM80hFbVLWi8tb-_+k1dQ@mail.gmail.com>
-Message-ID: <CALCETrVXG0A2NwiPY31G3uQYvVzbwFM80hFbVLWi8tb-_+k1dQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] membarrier: Propagate SYNC_CORE and RSEQ actions more carefully
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anton Blanchard <anton@ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 6:28 AM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> ----- On Dec 1, 2020, at 5:16 AM, Peter Zijlstra peterz@infradead.org wro=
-te:
->
-> > On Mon, Nov 30, 2020 at 09:50:35AM -0800, Andy Lutomirski wrote:
-> >> membarrier() carefully propagates SYNC_CORE and RSEQ actions to all
-> >> other CPUs, but there are two issues.
-> >>
-> >>  - membarrier() does not sync_core() or rseq_preempt() the calling
-> >>    CPU.  Aside from the logic being mind-bending, this also means
-> >>    that it may not be safe to modify user code through an alias,
-> >>    call membarrier(), and then jump to a different executable alias
-> >>    of the same code.
-> >
-> > I always understood this to be on purpose. The calling CPU can fix up
-> > itself just fine. The pain point is fixing up the other CPUs, and that'=
-s
-> > where membarrier() helps.
->
-> Indeed, as documented in the man page:
->
->        MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE (since Linux 4.16)
->               In  addition  to  providing  the  memory ordering guarantee=
-s de=E2=80=90
->               scribed in MEMBARRIER_CMD_PRIVATE_EXPEDITED,  upon  return =
- from
->               system call the calling thread has a guarantee that all its=
- run=E2=80=90
->               ning thread siblings have executed a core  serializing  ins=
-truc=E2=80=90
->               tion.   This  guarantee is provided only for threads in the=
- same
->               process as the calling thread.
->
-> membarrier sync core guarantees a core serializing instruction on the sib=
-lings,
-> not on the caller thread. This has been done on purpose given that the ca=
-ller
-> thread can always issue its core serializing instruction from user-space =
-on
-> its own.
->
-> >
-> > That said, I don't mind including self, these aren't fast calls by any
-> > means.
->
-> I don't mind including self either, but this would require documentation
-> updates, including man pages, to state that starting from kernel Y this
-> is the guaranteed behavior. It's then tricky for user-space to query what
-> the behavior is unless we introduce a new membarrier command for it. So t=
-his
-> could introduce issues if software written for the newer kernels runs on =
-older
-> kernels.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-For rseq at least, if we do this now we don't have this issue -- I
-don't think any released kernel has the rseq mode.
+There could be struct pages that are not backed by actual physical memory.
+This can happen when the actual memory bank is not a multiple of
+SECTION_SIZE or when an architecture does not register memory holes
+reserved by the firmware as memblock.memory.
 
->
-> >
-> >>  - membarrier() does not explicitly sync_core() remote CPUs either;
-> >>    instead, it relies on the assumption that an IPI will result in a
-> >>    core sync.  On x86, I think this may be true in practice, but
-> >>    it's not architecturally reliable.  In particular, the SDM and
-> >>    APM do not appear to guarantee that interrupt delivery is
-> >>    serializing.
-> >
-> > Right, I don't think we rely on that, we do rely on interrupt delivery
-> > providing order though -- as per the previous email.
-> >
-> >>    On a preemptible kernel, IPI return can schedule,
-> >>    thereby switching to another task in the same mm that was
-> >>    sleeping in a syscall.  The new task could then SYSRET back to
-> >>    usermode without ever executing IRET.
-> >
-> > This; I think we all overlooked this scenario.
->
-> Indeed, this is an issue which needs to be fixed.
->
-> >
-> >> This patch simplifies the code to treat the calling CPU just like
-> >> all other CPUs, and explicitly sync_core() on all target CPUs.  This
-> >> eliminates the need for the smp_mb() at the end of the function
-> >> except in the special case of a targeted remote membarrier().  This
-> >> patch updates that code and the comments accordingly.
->
-> I am not confident that removing the smp_mb at the end of membarrier is
-> an appropriate change, nor that it simplifies the model.
+Such pages are currently initialized using init_unavailable_mem() function
+that iterated through PFNs in holes in memblock.memory and if there is a
+struct page corresponding to a PFN, the fields if this page are set to
+default values and it is marked as Reserved.
 
-Ah, but I didn't remove it.  I carefully made sure that every possible
-path through the function does an smp_mb() or stronger after all the
-cpu_rq reads.  ipi_func(), on_each_cpu(), and the explicit smp_mb()
-cover the three cases.
+init_unavailable_mem() does not take into account zone and node the page
+belongs to and sets both zone and node links in struct page to zero.
 
-That being said, if you prefer, I can make the change to skip the
-calling CPU, in which case I'll leave the smp_mb() at the end alone.
+On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+instance in a configuration below:
+
+	# grep -A1 E820 /proc/iomem
+	7a17b000-7a216fff : Unknown E820 type
+	7a217000-7bffffff : System RAM
+
+unset zone link in struct page will trigger
+
+	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+
+because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link in
+struct page) in the same pageblock.
+
+Interleave initialization of pages that correspond to holes with the
+initialization of memory map, so that zone and node information will be
+properly set on such pages.
+
+Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ mm/page_alloc.c | 151 ++++++++++++++++++++----------------------------
+ 1 file changed, 64 insertions(+), 87 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index eaa227a479e4..ce2bdaabdf96 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6185,24 +6185,84 @@ static void __meminit zone_init_free_lists(struct zone *zone)
+ 	}
+ }
+ 
+-void __meminit __weak memmap_init(unsigned long size, int nid,
+-				  unsigned long zone,
+-				  unsigned long range_start_pfn)
++#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
++/*
++ * Only struct pages that are backed by physical memory available to the
++ * kernel are zeroed and initialized by memmap_init_zone().
++ * But, there are some struct pages that are either reserved by firmware or
++ * do not correspond to physical page frames becuase the actual memory bank
++ * is not a multiple of SECTION_SIZE.
++ * Fields of those struct pages may be accessed (for example page_to_pfn()
++ * on some configuration accesses page flags) so we must explicitly
++ * initialize those struct pages.
++ */
++static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn,
++					 int zone, int node)
+ {
+-	unsigned long start_pfn, end_pfn;
++	unsigned long pfn;
++	u64 pgcnt = 0;
++
++	for (pfn = spfn; pfn < epfn; pfn++) {
++		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
++			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
++				+ pageblock_nr_pages - 1;
++			continue;
++		}
++		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
++		__SetPageReserved(pfn_to_page(pfn));
++		pgcnt++;
++	}
++
++	return pgcnt;
++}
++#else
++static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
++					 int zone, int node)
++{
++	return 0;
++}
++#endif
++
++void __init __weak memmap_init(unsigned long size, int nid,
++			       unsigned long zone,
++			       unsigned long range_start_pfn)
++{
++	unsigned long start_pfn, end_pfn, next_pfn = 0;
+ 	unsigned long range_end_pfn = range_start_pfn + size;
++	u64 pgcnt = 0;
+ 	int i;
+ 
+ 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
+ 		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
+ 		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
++		next_pfn = clamp(next_pfn, range_start_pfn, range_end_pfn);
+ 
+ 		if (end_pfn > start_pfn) {
+ 			size = end_pfn - start_pfn;
+ 			memmap_init_zone(size, nid, zone, start_pfn,
+ 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+ 		}
++
++		if (next_pfn < start_pfn)
++			pgcnt += init_unavailable_range(next_pfn, start_pfn,
++							zone, nid);
++		next_pfn = end_pfn;
+ 	}
++
++	/*
++	 * Early sections always have a fully populated memmap for the whole
++	 * section - see pfn_valid(). If the last section has holes at the
++	 * end and that section is marked "online", the memmap will be
++	 * considered initialized. Make sure that memmap has a well defined
++	 * state.
++	 */
++	if (next_pfn < range_end_pfn)
++		pgcnt += init_unavailable_range(next_pfn, range_end_pfn,
++						zone, nid);
++
++	if (pgcnt)
++		pr_info("%s: Zeroed struct page in unavailable ranges: %lld\n",
++			zone_names[zone], pgcnt);
+ }
+ 
+ static int zone_batchsize(struct zone *zone)
+@@ -6995,88 +7055,6 @@ void __init free_area_init_memoryless_node(int nid)
+ 	free_area_init_node(nid);
+ }
+ 
+-#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
+-/*
+- * Initialize all valid struct pages in the range [spfn, epfn) and mark them
+- * PageReserved(). Return the number of struct pages that were initialized.
+- */
+-static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
+-{
+-	unsigned long pfn;
+-	u64 pgcnt = 0;
+-
+-	for (pfn = spfn; pfn < epfn; pfn++) {
+-		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
+-			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
+-				+ pageblock_nr_pages - 1;
+-			continue;
+-		}
+-		/*
+-		 * Use a fake node/zone (0) for now. Some of these pages
+-		 * (in memblock.reserved but not in memblock.memory) will
+-		 * get re-initialized via reserve_bootmem_region() later.
+-		 */
+-		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
+-		__SetPageReserved(pfn_to_page(pfn));
+-		pgcnt++;
+-	}
+-
+-	return pgcnt;
+-}
+-
+-/*
+- * Only struct pages that are backed by physical memory are zeroed and
+- * initialized by going through __init_single_page(). But, there are some
+- * struct pages which are reserved in memblock allocator and their fields
+- * may be accessed (for example page_to_pfn() on some configuration accesses
+- * flags). We must explicitly initialize those struct pages.
+- *
+- * This function also addresses a similar issue where struct pages are left
+- * uninitialized because the physical address range is not covered by
+- * memblock.memory or memblock.reserved. That could happen when memblock
+- * layout is manually configured via memmap=, or when the highest physical
+- * address (max_pfn) does not end on a section boundary.
+- */
+-static void __init init_unavailable_mem(void)
+-{
+-	phys_addr_t start, end;
+-	u64 i, pgcnt;
+-	phys_addr_t next = 0;
+-
+-	/*
+-	 * Loop through unavailable ranges not covered by memblock.memory.
+-	 */
+-	pgcnt = 0;
+-	for_each_mem_range(i, &start, &end) {
+-		if (next < start)
+-			pgcnt += init_unavailable_range(PFN_DOWN(next),
+-							PFN_UP(start));
+-		next = end;
+-	}
+-
+-	/*
+-	 * Early sections always have a fully populated memmap for the whole
+-	 * section - see pfn_valid(). If the last section has holes at the
+-	 * end and that section is marked "online", the memmap will be
+-	 * considered initialized. Make sure that memmap has a well defined
+-	 * state.
+-	 */
+-	pgcnt += init_unavailable_range(PFN_DOWN(next),
+-					round_up(max_pfn, PAGES_PER_SECTION));
+-
+-	/*
+-	 * Struct pages that do not have backing memory. This could be because
+-	 * firmware is using some of this memory, or for some other reasons.
+-	 */
+-	if (pgcnt)
+-		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
+-}
+-#else
+-static inline void __init init_unavailable_mem(void)
+-{
+-}
+-#endif /* !CONFIG_FLAT_NODE_MEM_MAP */
+-
+ #if MAX_NUMNODES > 1
+ /*
+  * Figure out the number of possible node ids.
+@@ -7500,7 +7478,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+ 	/* Initialise every node */
+ 	mminit_verify_pageflags_layout();
+ 	setup_nr_node_ids();
+-	init_unavailable_mem();
+ 	for_each_online_node(nid) {
+ 		pg_data_t *pgdat = NODE_DATA(nid);
+ 		free_area_init_node(nid);
+-- 
+2.28.0
+
