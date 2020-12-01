@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356282CA316
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDB82CA320
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390151AbgLAMrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:47:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58920 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727852AbgLAMrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:47:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4B775ACC2;
-        Tue,  1 Dec 2020 12:46:18 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 12:46:14 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        qianjun.kernel@gmail.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH 4/6] sched: make schedstats helpers independent of fair
- sched class
-Message-ID: <20201201124614.GU3306@suse.de>
-References: <20201201115416.26515-1-laoar.shao@gmail.com>
- <20201201115416.26515-5-laoar.shao@gmail.com>
+        id S2390577AbgLAMtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:49:04 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:54714 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726202AbgLAMtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:49:03 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxqtF9O8ZfOc0YAA--.55233S2;
+        Tue, 01 Dec 2020 20:47:57 +0800 (CST)
+From:   Xingxing Su <suxingxing@loongson.cn>
+To:     Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftest/vm: Fix build error
+Date:   Tue,  1 Dec 2020 20:47:56 +0800
+Message-Id: <1606826876-30656-1-git-send-email-suxingxing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201201115416.26515-5-laoar.shao@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxqtF9O8ZfOc0YAA--.55233S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1fJr4kAr1UKw4rCr1ftFb_yoW8XrWDp3
+        Za9w1DZrZ8CFW7K3W8W34UXa10grs2yFW0q3Z0qry7uwn8Xan2gr4IkFZ7Wry3uwsIqrW3
+        Aw1Ig3s3uw1qy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xK
+        xwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
+        ZFpf9x07brNVkUUUUU=
+X-CM-SenderInfo: pvx0x0xj0l0wo6or00hjvr0hdfq/1tbiAQARC13QvMs0YgADs0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 07:54:14PM +0800, Yafang Shao wrote:
-> The original prototype of the schedstats helpers are
-> 
-> update_stats_wait_*(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> 
-> The cfs_rq in these helpers is used to get the rq_clock, and the se is
-> used to get the struct sched_statistics and the struct task_struct. In
-> order to make these helpers available by all sched classes, we can pass
-> the rq, sched_statistics and task_struct directly.
-> 
-> Then the new helpers are
-> 
-> update_stats_wait_*(struct rq *rq, struct task_struct *p,
-> 		    struct sched_statistics *stats)
-> 
-> which are independent of fair sched class.
-> 
-> To avoid vmlinux growing too large or introducing ovehead when
-> !schedstat_enabled(), some new helpers after schedstat_enabled() are also
-> introduced, Suggested by Mel. These helpers are in sched/stats.c,
-> 
-> __update_stats_wait_*(struct rq *rq, struct task_struct *p,
-> 		      struct sched_statistics *stats)
-> 
-> Cc: Mel Gorman <mgorman@suse.de>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Only x86 and PowerPC implement the pkey-xxx.h, 
+and an error was reported when compiling protection_keys.c.
 
-Think it's ok, it's mostly code shuffling. I'd have been happier if
-there was evidence showing a before/after comparison of the sched stats
-for something simple like "perf bench sched pipe" and a clear statement
-of no functional change as well as a comparison of the vmlinux files but
-I think it's ok so;
+Add a Arch judgment to compile "protection_keys" in the Makefile.
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+If other arch implement this, add the arch name to the Makefile.
+eg:
+    ifneq (,$(findstring $(ARCH),powerpc mips ... ))
 
-I didn't look at the rt.c parts
+Following build errors:
+    pkey-helpers.h:93:2: error: #error Architecture not supported
+     #error Architecture not supported
+    pkey-helpers.h:96:20: error: ‘PKEY_DISABLE_ACCESS’ undeclared
+     #define PKEY_MASK (PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE)
+                        ^
+    protection_keys.c:218:45: error: ‘PKEY_DISABLE_WRITE’ undeclared
+     pkey_assert(flags & (PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE));
+                                                ^
 
+Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
+---
+ tools/testing/selftests/vm/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
+index 30873b1..691893a 100644
+--- a/tools/testing/selftests/vm/Makefile
++++ b/tools/testing/selftests/vm/Makefile
+@@ -60,9 +60,13 @@ ifeq ($(CAN_BUILD_X86_64),1)
+ TEST_GEN_FILES += $(BINARIES_64)
+ endif
+ else
++
++ifneq (,$(findstring $(ARCH),powerpc))
+ TEST_GEN_FILES += protection_keys
+ endif
+ 
++endif
++
+ ifneq (,$(filter $(MACHINE),arm64 ia64 mips64 parisc64 ppc64 ppc64le riscv64 s390x sh64 sparc64 x86_64))
+ TEST_GEN_FILES += va_128TBswitch
+ TEST_GEN_FILES += virtual_address_range
 -- 
-Mel Gorman
-SUSE Labs
+1.8.3.1
+
