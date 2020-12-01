@@ -2,95 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D046F2CA6DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660E82CA6E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390479AbgLAPUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:20:50 -0500
-Received: from meesny.iki.fi ([195.140.195.201]:43216 "EHLO meesny.iki.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387678AbgLAPUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:20:50 -0500
-Received: from [10.32.112.20] (unknown [85.134.33.118])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: tmb)
-        by meesny.iki.fi (Postfix) with ESMTPSA id 35CDF205A6;
-        Tue,  1 Dec 2020 17:20:07 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1606836007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3q14FNmAeDp4Ro+7AHoPqgM/pFoG0Bl0GKr6ZP04YkI=;
-        b=wS+vgeOL8qjYiN/RryToKSzPyCaHi0o7Oj8LIlhIdf51Pn4amtJT2CSPQBGmLlaG5hRSIT
-        bCcxt1TwqKn6iNg7GQ7ESyzcBWmsKE7LEzkDiOLLOU0LY3ri+1Zk2UBPqxX7az4AqZuHPL
-        aTWdMysIGZoMSbPh0gnw12SjqbohHGQ=
-Subject: Re: [PATCH] hwmon: corsair-psu: update supported devices
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        Backlund Thomas <tmb@iki.fi>
-Cc:     Jonas Malaco <jonas@protocubo.io>, linux-kernel@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
-References: <X7+T4aZSUuzfsf7H@monster.powergraphx.local>
- <CANS_-EN8rgFEyE5rDw3=JLUYNwLQexafn7efvMC_=+4s2h1R6Q@mail.gmail.com>
- <20201128113524.24f4f56f@monster.powergraphx.local>
- <4917cc59-aa35-7fb1-d2d0-75039523816f@iki.fi>
- <s7R3iA2S9eDO5XZ9rdqzYCvN9eu2DaNKUQCmSn_4XxsrxD-93-gtY9DFGxbthP9CVsquOXoocwbZfwNKo7XLaQ==@protonmail.internalid>
- <20201130154915.760923fd@monster.powergraphx.local>
- <6185cc04-da71-5b68-0bc8-931af6fa2dc9@iki.fi>
- <-je9uwScwR9_PkQlpZgHYO98IHe2gIxkIcGfmhyqk72ZxZkU5E8T_G9YKmPPXTQXDOTnQD5Dah5cAwJnbkqWbA==@protonmail.internalid>
- <20201201082438.515bb23f@monster.powergraphx.local>
-From:   Thomas Backlund <tmb@iki.fi>
-Message-ID: <05ef2c7d-1deb-12a3-65d4-f5585a3a9670@iki.fi>
-Date:   Tue, 1 Dec 2020 17:20:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201201082438.515bb23f@monster.powergraphx.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: sv
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1606836007; a=rsa-sha256; cv=none;
-        b=xMbyXlSZh0bPLrt47w32jz+mQGkokyg2TIDGMIunjYcvJ8NYoazrCzBSsSWYDoxa9lA96h
-        whXRkOXZFZvCjzsxTYysa8Yu8gSXtVw940pjynrrWLToH4xwR6redqBSzsrmyVuJGtUDuW
-        gGZouwd29A4MVuZhq7L2mYgQRr+aAJc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1606836007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3q14FNmAeDp4Ro+7AHoPqgM/pFoG0Bl0GKr6ZP04YkI=;
-        b=ZmFDlPq2BlaHedqaWVv3Z7XRSw6adlSSYyueFXG9YsfQlfkmj15PSYQQS9gGg06Ma25HnN
-        cSbvzmmBKL6ePlE3a3+u8Zc4i1LLbpvQJEotQnRfI8dS5bc53zS7pZgZgPK4Uf25NWI+om
-        BOpWg9A9ANgzY35evi5/qNDK09r5iKY=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=tmb smtp.mailfrom=tmb@iki.fi
+        id S2391343AbgLAPWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387678AbgLAPWP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 10:22:15 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8DAC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 07:21:29 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id v1so1140011wri.16
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 07:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=gl38stHx97yG3pBLu7/ITLy+50rUPm1B17DaXfHgCU0=;
+        b=eghANDW2FL1PybZmM54BmaIrwglStAqovEy8ZjXMwkS9/+RJCaIIMRFF7ih4FiMjHT
+         Np1Bq4CB6QThrvsvhKEsUvsGxwUb1M/8e+DFKySVn7JBE2PYdK4NxMg6fx+5PzQmEsgX
+         Gb34vhEUMUcEbuthvPXy5S3mylYZj1t/px97yM9ssbw+n5vOPnzx0S4i0K/5AZ2iEW4N
+         tEVgn1auaxBXNXdwRdA8+RGRigPR03sM85r3hSYR+izrfCjo++DcHY6puqNmdkHmH6so
+         giK4qFka9xCjqX3Fq3cH6dFW8DmrHs7pWo4ACAksvcTDx+w7Z29Ij6hmkorA2fgwuWob
+         haHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=gl38stHx97yG3pBLu7/ITLy+50rUPm1B17DaXfHgCU0=;
+        b=nhCbNofZ1YmPuRowt06UWvD93PMTVV9hQY0XS4c7irNErbrpOJcxqEXaCMapQ6r15C
+         6cjtCgiAJsdEzQjL8kjagE/S69iEdBn2BNJj+zzhkwqYTHUo+xFzeck5FAX6ospMtw4l
+         K19pyhrytforgS1TnQftkEVH5fTbL/RFDNExDa6aIXMkpzUZjr11S7tHAW40fM5YdJUE
+         LNZpK580BWWr95R09SgBp9Y3CPHqG9Pxrjm4Uwrdupw1IaCxf/pY6TD0kDR5p1fVCaYD
+         wGijkPp8XCnD3/tjW+0ZzQOQFG64hiQta7TGk/LP1qkoJOEnAkzUR8rZ3PSStNWTnpLo
+         i5+Q==
+X-Gm-Message-State: AOAM530bECR3FpvhDq3qSqhPJZN08RSSyUAHmAcg699my/Dmys74T6HK
+        ItZblhP6A/VIz8Sa6WJOn/osUaNxyQ==
+X-Google-Smtp-Source: ABdhPJxOw+T74UpAJRTmrsR154jupGOFkS71t+dSppD/Nd/XUtyMB07b/gB8m+8YDA8p4WmScMcnQhKvvQ==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+ (user=elver job=sendgmr) by 2002:a1c:7217:: with SMTP id n23mr3064828wmc.167.1606836087168;
+ Tue, 01 Dec 2020 07:21:27 -0800 (PST)
+Date:   Tue,  1 Dec 2020 16:20:18 +0100
+Message-Id: <20201201152017.3576951-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH] genksyms: Ignore module scoped _Static_assert()
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com
+Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        masahiroy@kernel.org, ndesaulniers@google.com, joe@perches.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Den 01.12.2020 kl. 09:24, skrev Wilken Gottwalt:
+The C11 _Static_assert() keyword may be used at module scope, and we
+need to teach genksyms about it to not abort with an error. We currently
+have a growing number of static_assert() (but also direct usage of
+_Static_assert()) users at module scope:
 
-> Thank you. Hmm yeah, this dongle has no usb hid part. So this driver will not
-> work with this dongle for sure. I already have an idea how to support all 3
-> series, though it involves a lot of testing. I would provide a github repo
-> with tools and test kernel modules if you are interested. But I don't know
-> yet how long it will take, I work on other stuff which has a higher prio.
->
+	git grep -E '^_Static_assert\(|^static_assert\(' | grep -v '^tools' | wc -l
+	135
 
-Yes, I'm interested...
+More recently, when enabling CONFIG_MODVERSIONS with CONFIG_KCSAN, we
+observe a number of warnings:
 
-Just drop me a note when you have something to test.
+	WARNING: modpost: EXPORT symbol "<..all kcsan symbols..>" [vmlinux] [...]
 
+When running a preprocessed source through 'genksyms -w' a number of
+syntax errors point at usage of static_assert()s. In the case of
+kernel/kcsan/encoding.h, new static_assert()s had been introduced which
+used expressions that appear to cause genksyms to not even be able to
+recover from the syntax error gracefully (as it appears was the case
+previously).
 
---
+Therefore, make genksyms ignore all _Static_assert() and the contained
+expression. With the fix, usage of _Static_assert() no longer cause
+"syntax error" all over the kernel, and the above modpost warnings for
+KCSAN are gone, too.
 
-Thomas
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ scripts/genksyms/keywords.c |  3 +++
+ scripts/genksyms/lex.l      | 27 ++++++++++++++++++++++++++-
+ scripts/genksyms/parse.y    |  7 +++++++
+ 3 files changed, 36 insertions(+), 1 deletion(-)
 
+diff --git a/scripts/genksyms/keywords.c b/scripts/genksyms/keywords.c
+index 057c6cabad1d..b85e0979a00c 100644
+--- a/scripts/genksyms/keywords.c
++++ b/scripts/genksyms/keywords.c
+@@ -32,6 +32,9 @@ static struct resword {
+ 	{ "restrict", RESTRICT_KEYW },
+ 	{ "asm", ASM_KEYW },
+ 
++	// c11 keywords that can be used at module scope
++	{ "_Static_assert", STATIC_ASSERT_KEYW },
++
+ 	// attribute commented out in modutils 2.4.2.  People are using 'attribute' as a
+ 	// field name which breaks the genksyms parser.  It is not a gcc keyword anyway.
+ 	// KAO. },
+diff --git a/scripts/genksyms/lex.l b/scripts/genksyms/lex.l
+index e265c5d96861..ae76472efc43 100644
+--- a/scripts/genksyms/lex.l
++++ b/scripts/genksyms/lex.l
+@@ -118,7 +118,7 @@ yylex(void)
+ {
+   static enum {
+     ST_NOTSTARTED, ST_NORMAL, ST_ATTRIBUTE, ST_ASM, ST_TYPEOF, ST_TYPEOF_1,
+-    ST_BRACKET, ST_BRACE, ST_EXPRESSION,
++    ST_BRACKET, ST_BRACE, ST_EXPRESSION, ST_STATIC_ASSERT,
+     ST_TABLE_1, ST_TABLE_2, ST_TABLE_3, ST_TABLE_4,
+     ST_TABLE_5, ST_TABLE_6
+   } lexstate = ST_NOTSTARTED;
+@@ -201,6 +201,11 @@ repeat:
+ 
+ 		  case EXPORT_SYMBOL_KEYW:
+ 		      goto fini;
++
++		  case STATIC_ASSERT_KEYW:
++		    lexstate = ST_STATIC_ASSERT;
++		    count = 0;
++		    goto repeat;
+ 		  }
+ 	      }
+ 	    if (!suppress_type_lookup)
+@@ -401,6 +406,26 @@ repeat:
+ 	}
+       break;
+ 
++    case ST_STATIC_ASSERT:
++      APP;
++      switch (token)
++	{
++	case '(':
++	  ++count;
++	  goto repeat;
++	case ')':
++	  if (--count == 0)
++	    {
++	      lexstate = ST_NORMAL;
++	      token = STATIC_ASSERT_PHRASE;
++	      break;
++	    }
++	  goto repeat;
++	default:
++	  goto repeat;
++	}
++      break;
++
+     case ST_TABLE_1:
+       goto repeat;
+ 
+diff --git a/scripts/genksyms/parse.y b/scripts/genksyms/parse.y
+index e22b42245bcc..8e9b5e69e8f0 100644
+--- a/scripts/genksyms/parse.y
++++ b/scripts/genksyms/parse.y
+@@ -80,6 +80,7 @@ static void record_compound(struct string_list **keyw,
+ %token SHORT_KEYW
+ %token SIGNED_KEYW
+ %token STATIC_KEYW
++%token STATIC_ASSERT_KEYW
+ %token STRUCT_KEYW
+ %token TYPEDEF_KEYW
+ %token UNION_KEYW
+@@ -97,6 +98,7 @@ static void record_compound(struct string_list **keyw,
+ %token BRACE_PHRASE
+ %token BRACKET_PHRASE
+ %token EXPRESSION_PHRASE
++%token STATIC_ASSERT_PHRASE
+ 
+ %token CHAR
+ %token DOTS
+@@ -130,6 +132,7 @@ declaration1:
+ 	| function_definition
+ 	| asm_definition
+ 	| export_definition
++	| static_assert
+ 	| error ';'				{ $$ = $2; }
+ 	| error '}'				{ $$ = $2; }
+ 	;
+@@ -493,6 +496,10 @@ export_definition:
+ 		{ export_symbol((*$3)->string); $$ = $5; }
+ 	;
+ 
++/* Ignore any module scoped _Static_assert(...) */
++static_assert:
++	STATIC_ASSERT_PHRASE ';'			{ $$ = $2; }
++	;
+ 
+ %%
+ 
+-- 
+2.29.2.454.gaff20da3a2-goog
 
