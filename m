@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7C42CACD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8D12CACD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392417AbgLAT4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727866AbgLAT4S (ORCPT
+        id S2404323AbgLAT4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:56:31 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:39955 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388704AbgLAT42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:56:18 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3C9C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:55:37 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id t6so6767410lfl.13
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:55:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uleOdIY2dPVjuzMxg8MkWbINrRuRor9z1336VqiWwIs=;
-        b=rjKwiAtdM07kxDIHbmBNBCSxxv7ZgDnJckuzF/SL50Bq4jMru817AZa80ptEQnwd24
-         o06MPFT8lKB7zvRmqAnQi118Sds0KWLGdi8VKFs/HMa4hMSGCUXOYIQRedXwwWLpRzYi
-         YZ9aAgc1lXBu7Pd1dwjW1V1ux/6kyMW8iDVz0yIbUm3rxd2AKqaWwxELG3jX+ggKR1Zo
-         Pjg8OGf0discQPX3aIVa4YjJB2gFb7m5nUpTVoRC0MivRjSBaaiHS9D2xFIMdTGjSqTo
-         uuhqVoMk0BO+1i3zMDGnmKaugdyYI+s2VJ1dnySGcxawHHCxJVdXsLOVnZxyS5Bt5Tf7
-         hAIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uleOdIY2dPVjuzMxg8MkWbINrRuRor9z1336VqiWwIs=;
-        b=S8IUobv8yRNfMiqoaJOKjMMtIxvnTFLO9WTvvyzYoQueKAsNbcRYDzEhDlZHw2Dxku
-         FlaO3YdLi/9pa45mTX5i7xte6VWGzyr0Jil62eMycNPc3i1zXrC1njP9taumWVmFvjOp
-         cZNn79pTABhUb06PjB7pcATHEFBB2n9DEE3gTtN2dOTH00wq7BaCD2dXCzKwn0vtYTNI
-         784RnwEtDZGuEAUPpH+EiEoQwpL4g+enFkVIiwaloQWY1s+5aL33eyC+V609IDOM+Zjr
-         jDpXnRJQ5ygQBgl7gJGlxRVYMnn94ehsl0wppSMjh1/UnWoi7hpQWNBzjDMpi9uxp0sv
-         zR0g==
-X-Gm-Message-State: AOAM5329GmvYDYvO0ElepZGBTRXqtVUzCBuKVY4JPPRe/C1h9t8htJce
-        1T/IrHx8dQkv9pFeGSzMT/lYrhrplmsS4Q==
-X-Google-Smtp-Source: ABdhPJxDo0Wz6SOFwxRNSZRtexgV/f1rIrUpMXsrSwVcg3iJQSPz3oTl/zUiVMQvOvX+kz+RkHI6QQ==
-X-Received: by 2002:a05:6512:20c9:: with SMTP id u9mr2062802lfr.280.1606852535838;
-        Tue, 01 Dec 2020 11:55:35 -0800 (PST)
-Received: from [192.168.0.150] ([188.162.65.76])
-        by smtp.gmail.com with ESMTPSA id x8sm64685lfq.143.2020.12.01.11.55.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 11:55:35 -0800 (PST)
-Subject: Re: [PATCH 0/6] arm64: dts: qcom: qrb5165-rb5 audio support
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201201153706.13450-1-srinivas.kandagatla@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <3c880eaa-32bc-d3c4-d657-76c058601c49@linaro.org>
-Date:   Tue, 1 Dec 2020 22:55:33 +0300
+        Tue, 1 Dec 2020 14:56:28 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kkBkR-003edd-JW; Tue, 01 Dec 2020 20:55:39 +0100
+Received: from p57bd9091.dip0.t-ipconnect.de ([87.189.144.145] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kkBkQ-001scM-TR; Tue, 01 Dec 2020 20:55:39 +0100
+Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org,
+        Jens Axboe <axboe@kernel.dk>
+References: <20201101170454.9567-1-rppt@kernel.org>
+ <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
+ <20201117062316.GB370813@kernel.org>
+ <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
+ <20201201102901.GF557259@kernel.org>
+ <e3d5d791-8e4f-afcc-944c-24f66f329bd7@physik.fu-berlin.de>
+ <20201201121033.GG557259@kernel.org>
+ <49a2022c-f106-55ec-9390-41307a056517@physik.fu-berlin.de>
+ <20201201135623.GA751215@kernel.org>
+ <4c752ff0-27a6-b9d7-ab81-8aac1a3b7b65@physik.fu-berlin.de>
+Message-ID: <ea5bae0e-9f27-355f-d841-cf8b362b0b70@physik.fu-berlin.de>
+Date:   Tue, 1 Dec 2020 20:55:37 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201201153706.13450-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <4c752ff0-27a6-b9d7-ab81-8aac1a3b7b65@physik.fu-berlin.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.144.145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2020 18:37, Srinivas Kandagatla wrote:
-> This patchset adds support to Qualcomm Robotics RB5 Development Kit based on
-> QRB5165 Robotics SoC. This board has 2 WSA881X smart speakers with onboard
-> DMIC connected to internal LPASS codec via WSA and VA macros respectively.
-> 
-> All the audio related driver patches are merged via respective maintainer trees
-> along with bindings. Only LPI pinctrl driver is not merged yet, however the
-> bindings are acked by Rob, so am guessing that the dt changes should be okay to go!
-> 
-> Thanks,
-> srini
-> 
-> Srinivas Kandagatla (6):
->    arm64: dts: qcom: sm8250: add apr and its services
->    arm64: dts: qcom: sm8250: add audio clock controllers
->    arm64: dts: qcom: sm8250: add lpass lpi pin controller node
->    arm64: dts: qcom: sm8250: add wsa and va codec macros
->    arm64: dts: qcom: sm8250: add mi2s pinconfs
->    arm64: dts: qcom: qrb5165-rb5: Add Audio support
+Hi Mike!
 
-Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
+On 12/1/20 4:07 PM, John Paul Adrian Glaubitz wrote:
+> This fixes the issue for me.
 > 
->   arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 125 +++++++++
->   arch/arm64/boot/dts/qcom/sm8250.dtsi     | 327 +++++++++++++++++++++++
->   2 files changed, 452 insertions(+)
-> 
+> Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
+I just booted the kernel from the linux-mm branch and I can't get the hpsa driver
+to work anymore. Even if I compile it into the kernel, the driver is no longer
+loaded and hence I can't access the disks.
+
+Any idea what could be wrong?
+
+Adrian
 
 -- 
-With best wishes
-Dmitry
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
