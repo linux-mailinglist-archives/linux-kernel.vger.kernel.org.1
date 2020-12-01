@@ -2,52 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A78D2CABAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A8A2CABCD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390414AbgLATVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
+        id S1731316AbgLATWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:22:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgLATVL (ORCPT
+        with ESMTP id S1727431AbgLATWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:21:11 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0A9C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:20:30 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id y197so2432289qkb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:20:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gvcwZazLD0aWAKt5JLN1s2XKk3UfdMLUwfX82KGCpdc=;
-        b=bfmc4F3bJBRxByvRMIl9gd+rkjs6TtDwUM18GWNj438gxnj+hCHQ+kMwFsOAaXX4vG
-         2k0D81n3Wmr77oEQ7hEul3u2CB0fk5ojNhqSXKdDltBWLxtuDjhdQbjE6JTcYJ2colwr
-         b22aqiGhYZxUz6sCIax5poabt31HGpGLAh0Aw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gvcwZazLD0aWAKt5JLN1s2XKk3UfdMLUwfX82KGCpdc=;
-        b=oOwFsBcKRPUCYOpaBCTP4PMWW5EpRbgYghkvCmtQ8d2OWSKX4ajM+25niaPAiaR+Co
-         MMQoq99BqnQC3vFbKYdXw5Aw8qb+1L5yFI6f4XrBqKqIJA60K9HgjlOqU0tHTF93kKnh
-         4MX2vbAxldJAegbOrh7GU/D1UQF9NTVOl2hdIGEW6lb5KBmY1Juj++hRxCn1YKxt2oRa
-         Kg/TxC5q2NwYbteEHiNdh/UWrxxdgGyvsW5WbZtY42J0P+uZ3op5KkZFb4kfFjAbM1vf
-         EYO0D5MHXI9CMiqfIGhV60oXL7QMldXsGLaVv51XEGs8IkB4HRRpMTh8RLU6ajw5W8xc
-         88aQ==
-X-Gm-Message-State: AOAM531zJnEevZiCqkuvPzON+viNbV0hzwzZxbGjpdAgGx9uDg4Iy3ij
-        3IWMREE4KwN58wlPvR5BEmdKaA==
-X-Google-Smtp-Source: ABdhPJzwbOe8E+Uznc9xPQrSMQbb4FFttEb5t0m2JjTri9dELFAbozAPQBOAFaSknCrL/tuhEpiejw==
-X-Received: by 2002:a05:620a:7c9:: with SMTP id 9mr4523205qkb.329.1606850430139;
-        Tue, 01 Dec 2020 11:20:30 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id 72sm624596qkn.44.2020.12.01.11.20.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 11:20:29 -0800 (PST)
-Date:   Tue, 1 Dec 2020 14:20:28 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
+        Tue, 1 Dec 2020 14:22:34 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F983C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:21:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7JLyHZJtRdTTbCdr1AWpBIMP6N5KB46ClouAigDfKUM=; b=Zi0+mLPZRtmx6Nr/4ObCeXRnwl
+        y1bv6dKyo7ObW5HiWKUIfQpK2UtTP5vww1zNY9ah095pZZKchDqdjtYIM4HBu8NJL9qfTzORE+xDm
+        VKevGhyLJSwikXmpSornfpNjZ0RBKgxefODTrOK9TrnzV3vw9OeBeGojrCUIgTH+/xzfZ8n+2tlLX
+        t14IVJfgnR/9U9EQET1LknHKYts+BdgJGUfSDd6dNprynsEmcuGppBhYiyyd4xn1RPiZTe2RR7fGa
+        Z9RZanDBctLqnyBsXpqNarcEUYqXhsjf42lmDYBa2xWtl50U3/Fxoa74ZFSh+s6iXi5/tO87RDb34
+        T3Y2YGcA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkBCn-0003j8-V0; Tue, 01 Dec 2020 19:20:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4ED29305C22;
+        Tue,  1 Dec 2020 20:20:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 39A4C2BF19AAE; Tue,  1 Dec 2020 20:20:50 +0100 (CET)
+Date:   Tue, 1 Dec 2020 20:20:50 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
         Tim Chen <tim.c.chen@linux.intel.com>,
@@ -81,41 +71,62 @@ Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Tim Chen <tim.c.chen@intel.com>
 Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
  cookie on fork
-Message-ID: <20201201192028.GA222419@google.com>
+Message-ID: <20201201192050.GX3040@hirez.programming.kicks-ass.net>
 References: <20201117232003.3580179-1-joel@joelfernandes.org>
  <20201117232003.3580179-23-joel@joelfernandes.org>
- <20201125111014.GS2414@hirez.programming.kicks-ass.net>
+ <20201125111541.GU2414@hirez.programming.kicks-ass.net>
+ <20201201191133.GA221478@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201125111014.GS2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201201191133.GA221478@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:10:14PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
-> > +void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie, bool group)
-> > +{
-> > +	if (!p)
-> > +		return;
-> > +
-> > +	if (group)
-> > +		p->core_group_cookie = cookie;
-> > +	else
-> > +		p->core_task_cookie = cookie;
-> > +
-> > +	/* Use up half of the cookie's bits for task cookie and remaining for group cookie. */
-> > +	p->core_cookie = (p->core_task_cookie <<
-> > +				(sizeof(unsigned long) * 4)) + p->core_group_cookie;
+On Tue, Dec 01, 2020 at 02:11:33PM -0500, Joel Fernandes wrote:
+> On Wed, Nov 25, 2020 at 12:15:41PM +0100, Peter Zijlstra wrote:
+> > On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
+> > 
+> > > +/*
+> > > + * Ensure that the task has been requeued. The stopper ensures that the task cannot
+> > > + * be migrated to a different CPU while its core scheduler queue state is being updated.
+> > > + * It also makes sure to requeue a task if it was running actively on another CPU.
+> > > + */
+> > > +static int sched_core_task_join_stopper(void *data)
+> > > +{
+> > > +	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
+> > > +	int i;
+> > > +
+> > > +	for (i = 0; i < 2; i++)
+> > > +		sched_core_tag_requeue(tag->tasks[i], tag->cookies[i], false /* !group */);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
+> > > +{
+> > 
+> > > +	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
+> > 
+> > > +}
+> > 
+> > This is *REALLY* terrible...
 > 
-> This seems dangerous; afaict there is nothing that prevents cookie
-> collision.
+> I pulled this bit from your original patch. Are you concerned about the
+> stop_machine? Sharing a core is a slow path for our usecases (and as far as I
+> know, for everyone else's). We can probably do something different if that
+> requirement changes.
+> 
 
-This is fixed in a later patch by Josh "sched: Refactor core cookie into
-struct" where we are having independent fields for each type of cookie.
+Yeah.. so I can (and was planning on) remove stop_machine() from
+sched_core_{dis,en}able() before merging it.
 
-I'll squash it next time I post to prevent confusion. Thanks,
+(there's two options, one uses stop_cpus() with the SMT mask, the other
+RCU)
 
- - Joel
+This though is exposing stop_machine() to joe user. Everybody is allowed
+to prctl() it's own task and set a cookie on himself. This means you
+just made giant unpriv DoS vector.
 
+stop_machine is bad, really bad.
