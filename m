@@ -2,121 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9395C2CA999
+	by mail.lfdr.de (Postfix) with ESMTP id 265DB2CA998
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391059AbgLAR0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:26:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42073 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389280AbgLAR0r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:26:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606843521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k05XrRUyRgb4ANHasEbrn5SVTsL9xAA4UGlCC1/jfKA=;
-        b=JhvkkHUn2RLpjdez2a/TGMNfbSgYUpxnt64noYH69EGG8csOj0A0GB7kC0O70tVRZAPE1V
-        c5Q7x/6fL/iBkhVyhjxCU86vlVkOVgsLR0p3qWpRhM1DCyyuopBufJYFiPT2TCwLNsrBAe
-        lpXY8CQUMcBr7y+Iv0CN1SqGXC9ibcw=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-146-wm_f8QYWM-mGo00rTmYP9g-1; Tue, 01 Dec 2020 12:25:20 -0500
-X-MC-Unique: wm_f8QYWM-mGo00rTmYP9g-1
-Received: by mail-qk1-f197.google.com with SMTP id t141so1905947qke.22
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:25:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=k05XrRUyRgb4ANHasEbrn5SVTsL9xAA4UGlCC1/jfKA=;
-        b=nunR/6mXi6HnDc+OHMwnf1Q5ZfKDiVoIH9njMSwt3Sk9FfJtiu7jmNGfwca2TbIEZi
-         Nx+eNMnuM9uqu0CmYKuRgwsq324bn5AC5LN4+obK3MSRwwG3tq2vLUhYb/CI/WWQnkFO
-         vhIh/QciGDlIHhWMHbdTXFvZQSdbQvw+41yl7NlCUqiQ0PvHkiICQyDW74sKeLj0HMnF
-         5PE+ycSTaaYN067Smg8Mo3Xwgne1SUZcwb2p9FenG1qp+xvQeTsgoAVU4odo7Sg0D35C
-         CfwcHad3JDdBmUQiFv3Udq7nCQ0v/f6lcjaZxYt23b4kJDrk9ZEsTRFbvoWZlUf8NhYU
-         DlqQ==
-X-Gm-Message-State: AOAM531rf1SSAOiEXTUPwow3hze/2CPklFPeCRBxicjfj0E+rZYqfaRM
-        07a/IklBhSvt7GuWDO6b6Bn19w2gCtJ1Eq9qDMOmX/wrqGTqtg/f7DL6YKhGLvbnP0xZ10FSJoQ
-        KE9VCa+6QyCmiy2j8OizWS/dV7f9Qz8TUQjVkgGxPIWuwGAPaRcdidid2JulMUVbenrRRYfY=
-X-Received: by 2002:a37:4c05:: with SMTP id z5mr4012779qka.245.1606843519684;
-        Tue, 01 Dec 2020 09:25:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwhSPlsDgJZASP/hR2Tmsk8orlVlQkFvTTuYSt1IPTQ9TzZpIK78QmtdBF92VH6pJ2vFxmxVQ==
-X-Received: by 2002:a37:4c05:: with SMTP id z5mr4012743qka.245.1606843519374;
-        Tue, 01 Dec 2020 09:25:19 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l79sm282153qke.1.2020.12.01.09.25.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 09:25:18 -0800 (PST)
-Subject: Re: [PATCH] net: bna: remove trailing semicolon in macro definition
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     rmody@marvell.com, skalluru@marvell.com, davem@davemloft.net,
-        GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201127165550.2693417-1-trix@redhat.com>
- <20201130190102.3220d9eb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <eb49f169-ff60-7a23-a461-f9fa012c0a34@redhat.com>
-Date:   Tue, 1 Dec 2020 09:25:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2404080AbgLAR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:26:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:46826 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387494AbgLAR0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:26:35 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F30D8101E;
+        Tue,  1 Dec 2020 09:25:49 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51BAA3F575;
+        Tue,  1 Dec 2020 09:25:48 -0800 (PST)
+References: <cover.1605770951.git.viresh.kumar@linaro.org> <1fa9994395764ba19cfe6240d8b3c1ce390e8f82.1605770951.git.viresh.kumar@linaro.org>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
+        Quentin Perret <qperret@google.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V3 2/2] thermal: cpufreq_cooling: Reuse sched_cpu_util() for SMP platforms
+In-reply-to: <1fa9994395764ba19cfe6240d8b3c1ce390e8f82.1605770951.git.viresh.kumar@linaro.org>
+Date:   Tue, 01 Dec 2020 17:25:46 +0000
+Message-ID: <jhjzh2xtp45.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201130190102.3220d9eb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 11/30/20 7:01 PM, Jakub Kicinski wrote:
-> On Fri, 27 Nov 2020 08:55:50 -0800 trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> The macro use will already have a semicolon.
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  drivers/net/ethernet/brocade/bna/bna_hw_defs.h | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/brocade/bna/bna_hw_defs.h b/drivers/net/ethernet/brocade/bna/bna_hw_defs.h
->> index f335b7115c1b..4b19855017d7 100644
->> --- a/drivers/net/ethernet/brocade/bna/bna_hw_defs.h
->> +++ b/drivers/net/ethernet/brocade/bna/bna_hw_defs.h
->> @@ -218,7 +218,7 @@ do {									\
->>  
->>  /* Set the coalescing timer for the given ib */
->>  #define bna_ib_coalescing_timer_set(_i_dbell, _cls_timer)		\
->> -	((_i_dbell)->doorbell_ack = BNA_DOORBELL_IB_INT_ACK((_cls_timer), 0));
->> +	((_i_dbell)->doorbell_ack = BNA_DOORBELL_IB_INT_ACK((_cls_timer), 0))
->>  
->>  /* Acks 'events' # of events for a given ib while disabling interrupts */
->>  #define bna_ib_ack_disable_irq(_i_dbell, _events)			\
->> @@ -260,7 +260,7 @@ do {									\
->>  
->>  #define bna_txq_prod_indx_doorbell(_tcb)				\
->>  	(writel(BNA_DOORBELL_Q_PRD_IDX((_tcb)->producer_index), \
->> -		(_tcb)->q_dbell));
->> +		(_tcb)->q_dbell))
->>  
->>  #define bna_rxq_prod_indx_doorbell(_rcb)				\
->>  	(writel(BNA_DOORBELL_Q_PRD_IDX((_rcb)->producer_index), \
-> Same story here as Daniel pointed out for the BPF patch.
+Hi Viresh,
+
+On 19/11/20 07:38, Viresh Kumar wrote:
+> As can be clearly seen, the load and requested_power numbers are simply
+> incorrect in the idle time based approach and the numbers collected from
+> CPU's utilization are much closer to the reality.
 >
-> There are 2 macros right below here which also have a semicolon at the
-> end. And these ones are used. So the patch appears to be pretty arbitrary.
 
-I will add the other macros in the next revision.
+PELT time-scaling can make the util signals behave strangely from an
+external PoV. For instance, on a big.LITTLE system, the rq util of a LITTLE
+CPU may suddenly drop if it was stuck on a too-low OPP for some time and
+eventually reached the "right" OPP (i.e. got idle time). 
 
-Sorry,
+Also, as Peter pointed out in [1], task migrations can easily confuse an
+external observer that considers util to be "an image of the recent past".
 
-Tom
+This will need testing on asymmetric CPU capacity systems, IMO.
 
->
+[1]: https://lore.kernel.org/r/20201120075527.GB2414@hirez.programming.kicks-ass.net
 
