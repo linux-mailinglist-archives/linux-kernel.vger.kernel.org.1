@@ -2,142 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDD12C9D48
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BB82C9D43
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390615AbgLAJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390476AbgLAJVH (ORCPT
+        id S2390260AbgLAJVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:21:10 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:35626 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389319AbgLAJVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:21:07 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2C2C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 01:20:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dgq+4MNPkXY57/CtpOjPMqTwCmpe7EO+/vNzQu6O7nc=; b=lV1nj8mexXQXXzlqHSkn799Sd4
-        B4fTfLUBffYWbKq6/fnZQqg1Mxz+nYbKh5aJueXOU/rW+LOBBKUM2DMAKZ33EflBICpOERNDXJRy/
-        q9aM8PXTdSyCbyL7Zmm+D0uj73bnDr0c9b6mgGdPIEnyQdF9QmxPGeFL5bbceIMmNrOcS5bqDHKK2
-        sOUZFEhOeke9TOrnwT4iti0HFe6+MBcwgWph4oi8bjkqGneEZgFSt2cw2r678F9DssalGk9ArUxvl
-        xkD3fHJoqA16w6YRTzKleVkEvkp7jGAEneikltwij0mgOCNdowJVFSFteoVPcWutDZet8eR4WjxZS
-        yV5wf7Cw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kk1pV-0003Et-5I; Tue, 01 Dec 2020 09:20:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 49CB2307A5F;
-        Tue,  1 Dec 2020 10:20:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 34C0C200E0BD9; Tue,  1 Dec 2020 10:20:11 +0100 (CET)
-Date:   Tue, 1 Dec 2020 10:20:11 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: [PATCH 4/5] irqtime: Move irqtime entry accounting after irq
- offset incrementation
-Message-ID: <20201201092011.GS2414@hirez.programming.kicks-ass.net>
-References: <20201201001226.65107-1-frederic@kernel.org>
- <20201201001226.65107-5-frederic@kernel.org>
+        Tue, 1 Dec 2020 04:21:04 -0500
+Received: by mail-il1-f199.google.com with SMTP id l2so939062ilj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 01:20:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=CvrpfhVkHKuVC9Iwh6IlCX5MJUoOFtMuO60G4zzaPDo=;
+        b=GngFH4HocG1qAKhV7zHgB/dOwcQxGYY9nEoLZQG/zsMAQ3cgx1KDFB3UJ0HnvYRIdH
+         Y05GzkEDWEA9mxlsz5AcP79HBp867DNIt0ACLfRTmQc6F88NDt9TR9SSrhRtS+DU2uiD
+         YYS0wfEarozWmfdKdE1cy6s1A4w2z0Fu5/R7uMsbZLUjHu72OodhdeUQ7JKgHBREZGJt
+         X3SVdSekc4O3ryQmk+aGBbkEINUSUy4hMFwhCAsoS7h5yj5KV1U1JaM8bdA7R2l5aC1a
+         15hSrypFE3VgCOvCL362COe81as9xVkgCpaV15704Dwk4/KJ6+M8YmoAi0+K+dDw6Wpn
+         W7gw==
+X-Gm-Message-State: AOAM530wsAS5/p+hExilSaOF4Ku2eXvpbl5L2Iu3AhRI6Q2m1hm3Uglj
+        X/v8jXD8laykHD9A3tjeQm3wjDeYbcnsrOa4qFs1KnYVYYFO
+X-Google-Smtp-Source: ABdhPJw5WC9aVX5e6jJPwQTAq3prgI208vQqNeitL0Pd4Zy1ch4A07HtA1fM9GTFxeLTi9PPtL3x9KYAYS10hcz3vRwUkVaRKEIM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201001226.65107-5-frederic@kernel.org>
+X-Received: by 2002:a6b:5911:: with SMTP id n17mr1685480iob.34.1606814418659;
+ Tue, 01 Dec 2020 01:20:18 -0800 (PST)
+Date:   Tue, 01 Dec 2020 01:20:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a4ef2405b563a244@google.com>
+Subject: WARNING: suspicious RCU usage in remove_vma
+From:   syzbot <syzbot+a6beff5dda6d8ea00582@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:12:25AM +0100, Frederic Weisbecker wrote:
-> +static s64 irqtime_get_delta(struct irqtime *irqtime)
->  {
-> +	int cpu = smp_processor_id();
->  	s64 delta;
->  
->  	delta = sched_clock_cpu(cpu) - irqtime->irq_start_time;
->  	irqtime->irq_start_time += delta;
->  
-> +	return delta;
-> +}
-> +
-> +/* Called after incrementing preempt_count on {soft,}irq_enter */
-> +void irqtime_account_enter(struct task_struct *curr)
-> +{
-> +	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
-> +	u64 delta;
-> +
-> +	if (!sched_clock_irqtime)
-> +		return;
-> +
-> +	delta = irqtime_get_delta(irqtime);
-> +	/*
-> +	 * We do not account for softirq time from ksoftirqd here.
-> +	 * We want to continue accounting softirq time to ksoftirqd thread
-> +	 * in that case, so as not to confuse scheduler with a special task
-> +	 * that do not consume any time, but still wants to run.
-> +	 */
-> +	if ((irq_count() == (SOFTIRQ_OFFSET | HARDIRQ_OFFSET)) &&
-> +	    curr != this_cpu_ksoftirqd())
-> +		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
-> +}
-> +
-> +/* Called before decrementing preempt_count on {soft,}irq_exit */
-> +void irqtime_account_exit(struct task_struct *curr)
-> +{
-> +	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
-> +	u64 delta;
-> +
-> +	if (!sched_clock_irqtime)
-> +		return;
-> +
-> +	delta = irqtime_get_delta(irqtime);
->  	/*
->  	 * We do not account for softirq time from ksoftirqd here.
->  	 * We want to continue accounting softirq time to ksoftirqd thread
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    99c710c4 Merge tag 'platform-drivers-x86-v5.10-2' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15638bf1500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d1e98d0b97781e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=a6beff5dda6d8ea00582
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a6beff5dda6d8ea00582@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0-rc5-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
 
 
-Urgh...
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by blkid/11233.
+
+stack backtrace:
+CPU: 1 PID: 11233 Comm: blkid Not tainted 5.10.0-rc5-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x220/0x2b0 kernel/sched/core.c:7270
+ remove_vma+0x44/0x170 mm/mmap.c:178
+ exit_mmap+0x351/0x530 mm/mmap.c:3233
+ __mmput+0x122/0x470 kernel/fork.c:1079
+ mmput+0x53/0x60 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa72/0x29b0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f2b794631e8
+Code: Unable to access opcode bytes at RIP 0x7f2b794631be.
+RSP: 002b:00007ffcfbbb2458 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f2b794631e8
+RDX: 0000000000000002 RSI: 000000000000003c RDI: 0000000000000002
+RBP: 00007f2b79738840 R08: 00000000000000e7 R09: ffffffffffffffa8
+R10: 00007f2b7973e740 R11: 0000000000000246 R12: 00007f2b79738840
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
 
 
-Why not something like:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
-{
-	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
-	unsigned int pc = preempt_count() - offset;
-	s64 delta;
-	int cpu;
-
-	if (!sched_clock_irqtime)
-		return;
-
-	cpu = smp_processor_id();
-	delta = sched_clock_cpu(cpu) - irqtime->irq_start_time;
-	irqtime->irq_start_time += delta;
-
-	/*
-	 * We do not account for softirq time from ksoftirqd here.
-	 * We want to continue accounting softirq time to ksoftirqd thread
-	 * in that case, so as not to confuse scheduler with a special task
-	 * that do not consume any time, but still wants to run.
-	 */
-	if (pc & HARDIRQ_MASK)
-		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
-	else if ((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd())
-		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
-}
-
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
