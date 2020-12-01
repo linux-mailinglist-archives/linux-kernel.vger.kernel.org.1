@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069DB2CAA03
+	by mail.lfdr.de (Postfix) with ESMTP id 73BB52CAA04
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729494AbgLARnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:43:23 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:41434 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgLARnW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:43:22 -0500
-Received: by mail-lj1-f194.google.com with SMTP id y7so4330271lji.8;
-        Tue, 01 Dec 2020 09:43:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3OqCrRcXaOGImpl3brdE8L65SCR5lmtKJXYjgl2sOKo=;
-        b=WGDqXbOOvHZMUxWytfnleZdViam+5EcPuewU3BAI9t1pfm3vPf2ZdkbN690KcqUKsz
-         iMgO0IQa2JdZmelmox76KkaiAp2pER3KOtFhXJ+GgyK9LBJohbi0ZrLGrGN07js3FpEL
-         7hgFlGKDDhC42UtpXWWppnloejLbRV2H2dTA/kxHb2DDYz3YizQdSeXqqHbRCrrfSncL
-         xhbE4tmJN5uIoQn4JGO8YRWJDZT6JVTlpCyveaBJQ5uM2mmhAnda9SYyqaZGaQTZqhAV
-         xfrEmMsWUIpFgZFRpeKAJ3fsJpBr0bcBZbwFpaoDMvmq7yZ0/fnkRVEAiAttEOOWtvHK
-         HGNg==
-X-Gm-Message-State: AOAM530p/0U0I2whroKn/pIOUUqoObcY5KgjJYJvymYjHkvk0rsh+NPw
-        OfzhMhNxOmuWT674JnpNiXw=
-X-Google-Smtp-Source: ABdhPJwhlQaDwmDBpHEmz3WRv5ekXzO+n+XO2iJyREtQl4wg1I93I1kcjkZdb+GqL5vpeItA3siy1Q==
-X-Received: by 2002:a2e:9bd2:: with SMTP id w18mr1965743ljj.312.1606844559186;
-        Tue, 01 Dec 2020 09:42:39 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id x23sm15253lfa.219.2020.12.01.09.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 09:42:38 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kk9gC-0004r0-5v; Tue, 01 Dec 2020 18:43:08 +0100
-Date:   Tue, 1 Dec 2020 18:43:08 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
- signalling on open
-Message-ID: <X8aArEe49HKdW6GC@localhost>
-References: <20201130153742.9163-1-johan@kernel.org>
- <20201130153742.9163-3-johan@kernel.org>
- <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
- <X8X9B1jYujUIWXaK@localhost>
- <CAHp75VfQud=QxwZyhYRU9mtNvrudj0tS6LOuutfJDVdv=-ptXw@mail.gmail.com>
- <X8Yjc0+Q7fM0nZP+@localhost>
- <CAHp75VdMcYj0H-HZcmyWFU5ROLwSy=8Pan7JABZxGimqXE35WQ@mail.gmail.com>
- <X8ZDfvuRbxqsKZMh@localhost>
- <CAHp75Vct+J7=BaUdzBktQvKvThCuC-HmyRP2s4LRJvgsE2A2UA@mail.gmail.com>
+        id S1729632AbgLARnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:43:55 -0500
+Received: from mga03.intel.com ([134.134.136.65]:52258 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgLARny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:43:54 -0500
+IronPort-SDR: 1z75BDRdU+7ZhUF1FaDY9s95/W+Nt5u22woZZPj60vByYCVWb5j1am+PZgtEfQYjF9gFO+kRX9
+ UUOAE6FEbtrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="172970735"
+X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
+   d="scan'208";a="172970735"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:43:10 -0800
+IronPort-SDR: IvMacxZMHyHpE6ncjih8Q7rFYiQ2p5JTGyZI7goaou+/NiJX+kiBpApj1/Cz4nIG+QDAMXodun
+ Q48sJKR8dQFA==
+X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
+   d="scan'208";a="367635561"
+Received: from poyuchen-mobl1.amr.corp.intel.com (HELO [10.213.164.160]) ([10.213.164.160])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:43:09 -0800
+Subject: Re: [PATCH 1/2] x86/mm/pti: Check unaligned address for pmd clone in
+ pti_clone_pagetable()
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20201130152516.2387-1-jiangshanlai@gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0766416e-bab5-c8e7-9466-a72e965fdb8a@intel.com>
+Date:   Tue, 1 Dec 2020 09:43:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vct+J7=BaUdzBktQvKvThCuC-HmyRP2s4LRJvgsE2A2UA@mail.gmail.com>
+In-Reply-To: <20201130152516.2387-1-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 03:49:19PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 1, 2020 at 3:21 PM Johan Hovold <johan@kernel.org> wrote:
-> > On Tue, Dec 01, 2020 at 01:19:30PM +0200, Andy Shevchenko wrote:
-> > > On Tue, Dec 1, 2020 at 1:04 PM Johan Hovold <johan@kernel.org> wrote:
-> 
-> ...
-> 
-> > > > 0x01 is 1 and is generally treated as boolean true as you know.
-> > >
-> > > Depends how you interpret this. kstrtobool() uses one character (and
-> > > in some cases two) of the input. Everything else is garbage.
-> > > Should we interpret garbage?
-> >
-> > No, ideally we should reject the input.
-> 
-> We can do it by the way in kstrtobool() and see if anybody complains
-> (I believe the world is saner than relying on 0x01 for false and 123
-> for true.
+On 11/30/20 7:25 AM, Lai Jiangshan wrote:
+> The commit 825d0b73cd752("x86/mm/pti: Handle unaligned address gracefully
+> in pti_clone_pagetable()") handles unaligned address well for unmapped
+> PUD/PMD etc. But unaligned address for pmd_large() or PTI_CLONE_PMD is also
+> needed to be aware.
 
-I bet someone is using "YEAH!" just because they can. ;)
+That 825d0b73cd752 changelog says:
 
-> ...
-> 
-> > > > So why should a sysfs-interface accept it as valid input and treat it as
-> > > > false? That's just bad design.
-> > >
-> > > I can agree with this.
-> >
-> > Looks like part of the problem are commits like 4cc7ecb7f2a6 ("param:
-> > convert some "on"/"off" users to strtobool") which destroyed perfectly
-> > well-defined interfaces.
-> 
-> Oh, but the strtobool() in ABI was before that, for instance
->  % git grep -n -p -w strtobool v3.14
-> shows a few dozens of users and some of them looks like ABI.
+>     pti_clone_pmds() assumes that the supplied address is either:
+>     
+>      - properly PUD/PMD aligned
+>     or
+>      - the address is actually mapped which means that independently
+>        of the mapping level (PUD/PMD/PTE) the next higher mapping
+>        exists.
 
-Indeed, it apparently goes further back than strtobool(). The series
-introducing strtobool() explicitly mentions the lax parsing and for that
-reason wanted to keep it distinct from the other kstrto* function by
-dropping the k-prefix:
+... and that was the root of the bug.  If there was a large, unmapped
+area, it would skip a PUD_SIZE or PMD_SIZE *area* instead of skipping to
+the *next* pud/pmd.
 
-	The naming is still distinct enough from kstrtox to avoid any
-	implication that this function has the same tight parameter
-	passing that those functions have.
+The case being patched here is from a *present* PTE/PMD, so it's a
+mapped area, not a hole.
 
-	https://lore.kernel.org/lkml/1303213427-12798-1-git-send-email-jic23@cam.ac.uk/#t
+That said, I think the previous changelog was wrong.  An unaligned
+address to a mapped, large (2M) region followed by a smaller (4k) region
+would skip too far into the 4k region.
 
-And it was more recently renamed kstrtobool() anyway.
-
-Let's call it a feature then.
-
-Johan
+That said, I'm not sure I like this fix.  If someone is explicitly
+asking to clone a PMD (which pti_clone_pgtable() forces you to do), they
+better align the address.
