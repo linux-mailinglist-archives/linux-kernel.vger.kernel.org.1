@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9936B2C98EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0392C98FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728649AbgLAIPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:15:02 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:35165 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgLAIPC (ORCPT
+        id S1726988AbgLAITs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:19:48 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:49297 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726120AbgLAITs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:15:02 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 01 Dec 2020 00:14:20 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 01 Dec 2020 00:14:19 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 01 Dec 2020 13:44:02 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id D1A662130E; Tue,  1 Dec 2020 13:44:00 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        nicolas@ndufresne.ca, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v4] media: v4l2-ctrl: add control for long term reference.
-Date:   Tue,  1 Dec 2020 13:43:57 +0530
-Message-Id: <1606810437-2797-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 1 Dec 2020 03:19:48 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 036575C01E3;
+        Tue,  1 Dec 2020 03:18:42 -0500 (EST)
+Received: from imap10 ([10.202.2.60])
+  by compute2.internal (MEProxy); Tue, 01 Dec 2020 03:18:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dend.ro; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm1; bh=acxKL
+        i+JrFZJ97JaedtJGyTgNs1PsHCPhnTqcGZukNI=; b=hJCNqY7cSFVcUSfrdVgtO
+        cIV6TKW+AnZaSwGfNDR9/jhoMnGiERijvR7sMDuHIVQHfViJgTl61Kuk/IieQw2g
+        uXZe+yemckUhqVK4BwlBWy562MrMSjttrbrjDwj1as2e8obWscwh9CBW1+GowQ9V
+        oaCUP73Hlffnj0IDLIvI9/PoUoOQfkJxxWve5lpm/E7pyINTuGpuNAskwSAqM5sw
+        B8ebTByejozaWy5ojmXKq77L0fFmpq5crkjOXiPitoCt7DaIC/KTdt73oLIjQbon
+        tH1Fk/PgaNgFAq5ZDtF1x9xYCf6o8peY99yoxmuqP1DIb/zKfHeWYRReO+z6qDNQ
+        w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=acxKLi+JrFZJ97JaedtJGyTgNs1PsHCPhnTqcGZuk
+        NI=; b=N70Am1MAvOVUvjgAQ1v0K3+g+XQFxaX2L+Q3st35rIEMkECbcEBodaQIZ
+        2R4Np2ZBloKrwNjjKFxJOVlTfskpTehPpoaDDnpa+BdOP88ACUcKLRTkzeaA6gsM
+        rvH/Kor0yhHQgK9buMospvKhar5XWNTlipwouLcdr4ok8tj9IBYCmR9+1Fjr43Q3
+        5yvilX5Xa/86LWDAQQvlkr4xO6bv1LC65RhZ7c54VXw2zUsq/3+BXJdBX7x+PQ7W
+        5ZIgIQ+oS35lGa6F75czCsehCef9NoW/JTTDltOlL0WluzkNkoOMECZqkRLXlWrg
+        CnjFr6Dvj3mtSSIMudUvOWJ9vamiQ==
+X-ME-Sender: <xms:YfzFX4InKdbnDATx65np8GImrfo7lX2uRoUgjoVoJe-jdAnkYTdJJg>
+    <xme:YfzFX4K60pgqZqz23i2q6nS9L4iiksaBwNFuPCCqT-OImT3-CY73vOE7uL_OFrjw4
+    nZNDPVuDd1YatNQ7w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeiuddgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepnfgr
+    uhhrvghnthhiuhgppfhitgholhgruceolhhnihgtohhlrgesuggvnhgurdhroheqnecugg
+    ftrfgrthhtvghrnhepudegffeiffeiieeiieeigefhjedvudfgkefhieethfeglefhgfet
+    ueetgfeiieeknecuffhomhgrihhnpehlkhhmlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlnhhitgholhgrseguvghnugdrrhho
+X-ME-Proxy: <xmx:YfzFX4uNggjWlA1FWKRxK91iQVsb944qSGLKzgXfuSHeJ-nTa49RkA>
+    <xmx:YfzFX1aSyDVG7F_jzyF2DHdyHV8CwaelbY1uGW2Mfl5-MZ6Zmuk0dQ>
+    <xmx:YfzFX_ZWa9FGZHNpnfUlTUMrKjWzthXGi4mk17P-XQhRB5dUAvS8vA>
+    <xmx:YfzFX-V2aOrgdiRkkNciTYI-1gxdNIOgkZdXCFviuprnX0CxD3TuTQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3D163201BD; Tue,  1 Dec 2020 03:18:41 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
+Mime-Version: 1.0
+Message-Id: <69841ea6-5998-46ca-8e49-3e9ee65fc8b1@www.fastmail.com>
+In-Reply-To: <87tut6h10u.fsf@nanos.tec.linutronix.de>
+References: <20201126074734.12664-1-lnicola@dend.ro>
+ <875z5rk68z.fsf@nanos.tec.linutronix.de>
+ <ea40c3e8-0be1-4783-ba1e-86c96cf8e4af@www.fastmail.com>
+ <87lfeiiy10.fsf@nanos.tec.linutronix.de>
+ <96085c8a-b144-4fd3-b1fb-45763b5b64a4@www.fastmail.com>
+ <87tut6h10u.fsf@nanos.tec.linutronix.de>
+Date:   Tue, 01 Dec 2020 10:18:21 +0200
+From:   =?UTF-8?Q?Lauren=C8=9Biu_Nicola?= <lnicola@dend.ro>
+To:     "Thomas Gleixner" <tglx@linutronix.de>
+Cc:     mingo@kernel.org, bp@alien8.de, x86@kernel.org, trivial@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] x86/irq: Lower unhandled irq error severity
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Long Term Reference (LTR) frames are the frames that are encoded
-sometime in the past and stored in the DPB buffer list to be used
-as reference to encode future frames.
-This change adds controls to enable this feature.
+On Tue, Dec 1, 2020, at 01:34, Thomas Gleixner wrote:
+> The point is that for some cases this can result in a non working
+> machine which just hangs and if it's below the usual loglevel cutoff,
+> then it's not visible, which is more annoying than a non-quiet boot if=
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 18 ++++++++++++++++++
- drivers/media/v4l2-core/v4l2-ctrls.c                   | 14 ++++++++++++++
- include/uapi/linux/v4l2-controls.h                     |  3 +++
- 3 files changed, 35 insertions(+)
+> you're affected.
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index 3b86959..40634f8 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -4450,3 +4450,21 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-       - Selecting this value specifies that HEVC slices are expected
-         to be prefixed by Annex B start codes. According to :ref:`hevc`
-         valid start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001.
-+
-+``V4L2_CID_MPEG_VIDEO_LTR_COUNT (integer)``
-+       Specifies the number of Long Term Reference (LTR) frames encoder needs
-+       to generate or keep. This is applicable to H264 and HEVC encoder.
-+
-+``V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX (integer)``
-+       The current frame is marked as a Long Term Reference (LTR) frame
-+       and given this LTR index which ranges from 0 to LTR_COUNT-1.
-+       This is applicable to H264 and HEVC encoder and can be applied using
-+       Request Api.
-+       Source Rec. ITU-T H.264 (06/2019); Table 7.9
-+
-+``V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES (bitmask)``
-+       Specifies the Long Term Reference (LTR) frame(s) to be used for
-+       encoding the current frame.
-+       This provides a bitmask which consists of bits [0, LTR_COUNT-1].
-+       This is applicable to H264 and HEVC encoder and can be applied using
-+       Request Api.
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-index e5b726f..0b81b39 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-@@ -958,6 +958,9 @@ const char *v4l2_ctrl_get_name(u32 id)
- 	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
- 	case V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER:		return "Repeat Sequence Header";
- 	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:		return "Force Key Frame";
-+	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
-+	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "frame LTR index";
-+	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frame(s)";
- 	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice Parameters";
- 	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 Quantization Matrices";
- 	case V4L2_CID_MPEG_VIDEO_FWHT_PARAMS:			return "FWHT Stateless Parameters";
-@@ -1273,6 +1276,17 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
- 	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
- 		*type = V4L2_CTRL_TYPE_INTEGER;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-+		*type = V4L2_CTRL_TYPE_INTEGER;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
-+		*type = V4L2_CTRL_TYPE_INTEGER;
-+		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
-+		*type = V4L2_CTRL_TYPE_BITMASK;
-+		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-+		break;
- 	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
- 	case V4L2_CID_PAN_RESET:
- 	case V4L2_CID_TILT_RESET:
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index e37b85f..710bc53 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -421,6 +421,9 @@ enum v4l2_mpeg_video_multi_slice_mode {
- #define V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE		(V4L2_CID_MPEG_BASE+227)
- #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_MPEG_BASE+228)
- #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_MPEG_BASE+229)
-+#define V4L2_CID_MPEG_VIDEO_LTR_COUNT                  (V4L2_CID_MPEG_BASE + 230)
-+#define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX            (V4L2_CID_MPEG_BASE + 231)
-+#define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES             (V4L2_CID_MPEG_BASE + 232)
- 
- /* CIDs for the MPEG-2 Part 2 (H.262) codec */
- #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_MPEG_BASE+270)
--- 
-2.7.4
+For most (desktop) users "errors" will be shown by default, and if anyon=
+e is having trouble, they can temporarily remove "quiet" from the kernel=
+ command line while debugging it, so it's easy. On the other hand, I don=
+'t think it's possible to silence the emergency messages (and I'd still =
+like to see them for any "something is on fire").
 
+The only other use of `pr_emerg_ratelimited` seems to be an informationa=
+l message shown on non-AMD MCEs ("run mcelog --ascii"). `pr_emerg` is us=
+ed in more places, but they do sound like critical situations that will =
+bring the system down anyway.
+
+>=20
+> We are looking into a way to mitigate that AMD wreckage, but so far we=
+
+> don't even know where exactly this comes from. The reason why we are
+> pretty sure that it is a BIOS/Firmware issue is that some people
+> reported it to be gone after a BIOS update and quite some machines do
+> not have this issue at all.
+
+In my case, it's latest BIOS version available. Could be AGESA-related, =
+maybe we could install a no-op handler for that IRQ?
+
+>=20
+> Just for completeness sake. Can you provide the line in /proc/interrup=
+ts
+> for irq 7 on that machine?
+
+
+  55:          0          0          0          0          0          0 =
+         0          0          0          0          0          0       =
+   0          0          0          0          0          0          0  =
+        0          0          0          0          0          0        =
+  0          0          0          0          0          0          0  I=
+R-PCI-MSI 2625543-edge      xhci_hcd
+
+PS: I now see that this was reported a lot of times, including e.g. http=
+s://lkml.org/lkml/2019/3/6/97.
+
+Thanks,
+Lauren=C8=9Biu
