@@ -2,121 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3E32CA609
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE292CA618
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391704AbgLAOod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:44:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391653AbgLAOod (ORCPT
+        id S2391720AbgLAOpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:45:38 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:50785 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387462AbgLAOpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:44:33 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A34C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:43:52 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id e7so2998335wrv.6
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:43:52 -0800 (PST)
+        Tue, 1 Dec 2020 09:45:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JIA0Scl4OIMMkSS/5dfb1RixGjs/UhotRuHwz308dGA=;
-        b=ICa9ez6xKvXoVFd5a+nyt9V7db40a6UDXltW3gu+5eDTPPoS7Y+JHn0qhh505cto8f
-         GRLJkOPi8X4qfWqafWsQ6KrEg1FBVyXFnMuueku5Rvh2nAkHFVLVmB94DGc7SMapcND8
-         iCfVQkWismF7cf9Pxzp3Pi5NrsRfBnkClOAt3axQ3sGSRNPGhXQv7qFGz5pajfx4cjxn
-         5vFpF4gkJTjJGtnvbwVNxH5lm7Jc0cCZfd9IXPiS4SNeZVCufI98odvCCzyskxTIRMwx
-         S+gz72PQ6q5hfrC4mBZr8J/bOiuIbHPAIKUX5idfyO8GKJNpNm3oeMe1COzvBl6m/a3D
-         I85A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JIA0Scl4OIMMkSS/5dfb1RixGjs/UhotRuHwz308dGA=;
-        b=oGM/JjRJ+J5XvQM5lYtx//68xQj8hSx9vX9/3lXOwqUHUXFYhtUSALPlPVS10H8Hj6
-         CgcNpZ+zF1oX0UPgI5pcxx2c4Yb9kl1S9/ILlVX9wekJAqrViD8N810PgcdtZ6ZJ6bZD
-         iMHge0UjdkwkjBCbsOl5AevNyjTqq4agYrODv8zCdZZdFYWBiLh0hIJtERWqw25u0j47
-         6VLQd4ryfx0/FnwjP03dcLE5EyfFRjIBd/hQcfUyRWQV6Rn26r4jK+cZKfbZXF5cAdlz
-         +TzwQ9PsTriB0b9uLI5hwue9nJ/xVFo5XCG65UjoBbbwQKUFC8YHJ8lMl5/MQSGly7Bk
-         6kkA==
-X-Gm-Message-State: AOAM531KZSWDKgjxxTe1BN+f/RC9AC9vDttoe+1GKmbWwdMEdINv1VJz
-        HGMP0RIe3xSuhwA/mvYiuFmDuA==
-X-Google-Smtp-Source: ABdhPJxFvoIa6LKNTCZysKjYl0L3o6ekKKdzC32vTURn5ckCGb5MJxfK027unJvURm7vUyFNvUoRNg==
-X-Received: by 2002:a5d:4e87:: with SMTP id e7mr4467528wru.70.1606833831387;
-        Tue, 01 Dec 2020 06:43:51 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:7c5f:5ab5:ac1f:89ce])
-        by smtp.gmail.com with ESMTPSA id y130sm99756wmc.22.2020.12.01.06.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 06:43:50 -0800 (PST)
-Date:   Tue, 1 Dec 2020 14:43:49 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, kvmarm@lists.cs.columbia.edu,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH v3 06/23] kvm: arm64: Add kvm-arm.protected early kernel
- parameter
-Message-ID: <20201201144349.bglz7yicc3peixe6@google.com>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-7-dbrazdil@google.com>
- <20201127163254.zxdrszlveaxhluwn@bogus>
- <20201201131913.u7m2eifvtus74dra@google.com>
- <20201201140734.GA86881@C02TD0UTHF1T.local>
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1606833937; x=1638369937;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=ZNe33Ka7aH3VQjyzTKNc4gbH6nne2/ZozUBDYkDr+yU=;
+  b=JrZUlqcedSBEN0v17KAFjs4dJDfUUedI3dvAn7tiODJ4K3t3Q8AyRVdQ
+   nDLge5g/PMOzKDuVzIx+0jdzMN7RnAVIc2P0xAORDi58yPqg0fNwa+svm
+   5Ka4bc4FJba1X9yjRkQweowq4AEK/pw5VVrnun2EfUaXXGbSl0/qLVFNB
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.78,384,1599523200"; 
+   d="scan'208";a="92541785"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 01 Dec 2020 14:44:48 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com (Postfix) with ESMTPS id CD9ADA1D7A;
+        Tue,  1 Dec 2020 14:44:47 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 1 Dec 2020 14:44:47 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.162.146) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 1 Dec 2020 14:44:42 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        <osa-contribution-log@amazon.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Tue, 1 Dec 2020 23:44:07 +0900
+Message-ID: <20201201144418.35045-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201140734.GA86881@C02TD0UTHF1T.local>
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.146]
+X-ClientProxiedBy: EX13D36UWA004.ant.amazon.com (10.43.160.175) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > be just me, but if you agree please update so that it doesn't give remote
-> > > idea that it is not valid on VHE enabled hardware.
-> > > 
-> > > I was trying to run this on the hardware and was trying to understand the
-> > > details on how to do that.
-> > 
-> > I see what you're saying, but !CONFIG_ARM64_VHE isn't accurate either. The
-> > option makes sense if:
-> >   1) all cores booted in EL2
-> >      == is_hyp_mode_available()
-> >   2) ID_AA64MMFR1_EL1.VH=0 or !CONFIG_ARM64_VHE
-> >      == !is_kernel_in_hyp_mode()
-> > 
-> > The former feels implied for KVM, the latter could be 'Valid if the kernel
-> > is running in EL1'? WDYT?
-> 
-> I reckon we can avoid the restriction if we instead add an early stub
-> like with have for KASLR. That way we could parse the command line
-> early, and if necessary re-initialize EL2 and drop to EL1 before the
-> main kernel has to make any decisions about how to initialize things.
-> That would allow us to have a more general kvm-arm.mode option where a
-> single kernel Image could support:
-> 
-> * "protected" mode on nVHE or VHE HW
-> * "nvhe" mode on nVHE or VHE HW
-> * "vhe" mode on VHE HW
-> 
-> ... defaulting to VHE/nVHE modes depending on HW support.
-> 
-> That would also be somewhat future-proof if we have to add other
-> variants of protected mode in future, as we could extend the mode option
-> with parameters for each mode.
+The SO_REUSEPORT option allows sockets to listen on the same port and to
+accept connections evenly. However, there is a defect in the current
+implementation[1]. When a SYN packet is received, the connection is tied to
+a listening socket. Accordingly, when the listener is closed, in-flight
+requests during the three-way handshake and child sockets in the accept
+queue are dropped even if other listeners on the same port could accept
+such connections.
 
-Agreed that 'mode' is a more future-proof flag and I would very much love to
-have an option to force nVHE on VHE HW. I however expect that the early stub
-would not be a trivial addition and would not want to get into that in this
-series. Could we agree on 'protected' as the only supported value for the time
-being?
+This situation can happen when various server management tools restart
+server (such as nginx) processes. For instance, when we change nginx
+configurations and restart it, it spins up new workers that respect the new
+configuration and closes all listeners on the old workers, resulting in the
+in-flight ACK of 3WHS is responded by RST.
 
-David
+The SO_REUSEPORT option is excellent to improve scalability. On the other
+hand, as a trade-off, users have to know deeply how the kernel handles SYN
+packets and implement connection draining by eBPF[2]:
+
+  1. Stop routing SYN packets to the listener by eBPF.
+  2. Wait for all timers to expire to complete requests
+  3. Accept connections until EAGAIN, then close the listener.
+  
+or
+
+  1. Start counting SYN packets and accept syscalls using eBPF map.
+  2. Stop routing SYN packets.
+  3. Accept connections up to the count, then close the listener.
+
+In either way, we cannot close a listener immediately. However, ideally,
+the application need not drain the not yet accepted sockets because 3WHS
+and tying a connection to a listener are just the kernel behaviour. The
+root cause is within the kernel, so the issue should be addressed in kernel
+space and should not be visible to user space. This patchset fixes it so
+that users need not take care of kernel implementation and connection
+draining. With this patchset, the kernel redistributes requests and
+connections from a listener to others in the same reuseport group at/after
+close() or shutdown() syscalls.
+
+Although some software does connection draining, there are still merits in
+migration. For some security reasons such as replacing TLS certificates, we
+may want to apply new settings as soon as possible and/or we may not be
+able to wait for connection draining. The sockets in the accept queue have
+not started application sessions yet. So, if we do not drain such sockets,
+they can be handled by the newer listeners and could have a longer
+lifetime. It is difficult to drain all connections in every case, but we
+can decrease such aborted connections by migration. In that sense,
+migration is always better than draining. 
+
+Moreover, auto-migration simplifies userspace logic and also works well in
+a case where we cannot modify and build a server program to implement the
+workaround.
+
+Note that the source and destination listeners MUST have the same settings
+at the socket API level; otherwise, applications may face inconsistency and
+cause errors. In such a case, we have to use eBPF program to select a
+specific listener or to cancel migration.
+
+
+Link:
+
+ [1] The SO_REUSEPORT socket option
+ https://lwn.net/Articles/542629/
+
+ [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+ https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+
+
+Changelog:
+
+ v1:
+  * Remove the sysctl option
+  * Enable migration if eBPF progam is not attached
+  * Add expected_attach_type to check if eBPF program can migrate sockets
+  * Add a field to tell migration type to eBPF program
+  * Support BPF_FUNC_get_socket_cookie to get the cookie of sk
+  * Allocate an empty skb if skb is NULL
+  * Pass req_to_sk(req)->sk_hash because listener's hash is zero
+  * Update commit messages and coverletter
+
+ RFC v0:
+ https://lore.kernel.org/netdev/20201117094023.3685-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (11):
+  tcp: Keep TCP_CLOSE sockets in the reuseport group.
+  bpf: Define migration types for SO_REUSEPORT.
+  tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+  tcp: Migrate TFO requests causing RST during TCP_SYN_RECV.
+  tcp: Migrate TCP_NEW_SYN_RECV requests.
+  bpf: Introduce two attach types for BPF_PROG_TYPE_SK_REUSEPORT.
+  libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Add migration to sk_reuseport_(kern|md).
+  bpf: Support bpf_get_socket_cookie_sock() for
+    BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Call bpf_run_sk_reuseport() for socket migration.
+  bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+
+ include/linux/bpf.h                           |   1 +
+ include/linux/filter.h                        |   4 +-
+ include/net/inet_connection_sock.h            |  13 ++
+ include/net/request_sock.h                    |  13 ++
+ include/net/sock_reuseport.h                  |  15 +-
+ include/uapi/linux/bpf.h                      |  25 +++
+ kernel/bpf/syscall.c                          |   8 +
+ net/core/filter.c                             |  46 ++++-
+ net/core/sock_reuseport.c                     | 128 +++++++++++---
+ net/ipv4/inet_connection_sock.c               |  85 ++++++++-
+ net/ipv4/inet_hashtables.c                    |   9 +-
+ net/ipv4/tcp_ipv4.c                           |   9 +-
+ net/ipv6/tcp_ipv6.c                           |   9 +-
+ tools/include/uapi/linux/bpf.h                |  25 +++
+ tools/lib/bpf/libbpf.c                        |   5 +-
+ .../bpf/prog_tests/migrate_reuseport.c        | 164 ++++++++++++++++++
+ .../bpf/progs/test_migrate_reuseport_kern.c   |  54 ++++++
+ 17 files changed, 565 insertions(+), 48 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport_kern.c
+
+-- 
+2.17.2 (Apple Git-113)
 
