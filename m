@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB912C9830
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E80812C9834
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387398AbgLAHdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:33:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
+        id S2387415AbgLAHeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728062AbgLAHdw (ORCPT
+        with ESMTP id S1728057AbgLAHeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:33:52 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414D1C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:33:12 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id d20so2110842lfe.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:33:12 -0800 (PST)
+        Tue, 1 Dec 2020 02:34:08 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869D6C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:33:27 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id u19so2162357lfr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:33:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XLkue7K6jExHpwJWMRxV7/9D2xLrHZpnPA5DwXbXOm8=;
-        b=SnOzZjB9WThwROzsyO6iuvFKBuHPXAjc8RhSlY4OR7cCdEehDTk0YBUXg/Bth3znKs
-         /bJTxarNWBk2Fr82Arkcsg8FxU9UOp5NT76nLcM5IAer0tfS31/SXWIvaNlxnA9n8ZeU
-         +aJ82prly9Z/HSSTvvNjFW2W59BRpU10SXFaxBqOENRA1YYXkzX5b2bA2T3oe/NLibnx
-         6Vq1vQW3bO98qap3svw4zkOdtLSsKsN0GYRRcIZB4Nnf9yy+WTt/t1+4/4mAbVkYcGL4
-         DHPDP4wT4Xkbm/T7cyn4cJLHdsIapBYp8jZ8VctYoYgZceRiwwEAknwKGQCvvgniaZq8
-         /S6A==
+        bh=uB5Ijg4lsZ53TyQb8q6EyzIkeiWhB7LJL2nbLGLbbto=;
+        b=akz0P6W9TIvX78pdFt3x1U3pOjYlqQeMGEzmtvBMIB7TAf7CvTdet57qNnnk+fYXqk
+         n/bustEJOYl3nW96Q39N7Vj3BFZNrTCaldycgXwTGZfE8AnbP+znwmlmJu97uoVON+j2
+         cmsgPfJ1PvqMyrKpkC69OW2HWuQvr9YMvfjckOCVxsY16OFqckUFEwB3XFkFj3/9lZCi
+         m7SAGUHReP+zQCVCHaMmCWi68toEWHtTTjm1x6E5SwXFexDCyJTnCeS54k5zePf3D5ah
+         vSGQU2msLdAFtdco/MlcyD9KUECAhQyYmIDfZCcrh/E9jadPwJw0a9GFcpMuU6YMwvaV
+         5MgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XLkue7K6jExHpwJWMRxV7/9D2xLrHZpnPA5DwXbXOm8=;
-        b=I/yUcrjpVwHS1fxfkZ1Wzra+Lv7tqcjHQuywH4EALl9ZWzd7V2BCiNSpKm8HE9Y86R
-         gmrD9U0LdqsKsrjF18fBXg2F0ovmMxNKlr9vGtuneL05xHTiKIz2vjKA2R1eBpAFBzPi
-         BA/vFXGjd8/qFSIMGhTOKSU9dwRJI7/ayeH8T0YAjtwVu6CKQ2Ux7ANLlG/tyLNChCiQ
-         3qwzKqK/p1DOfxw6rh+uYrtFRMRYM/tM8JDgeUtk578XmpXFs4MhqR6NL4gmo4ia5OeM
-         cD9ZGO8tiOHkiXHV1u4tpyq0aKDO9r5jlNfxyFoIC6Z/P0yded5MgV1CCPuX8sMqD/aB
-         9B6A==
-X-Gm-Message-State: AOAM533Bnj4NVdgE6ISrJcbMcnT41WKWwgLBQgktCDhLSMi3YYIYufyF
-        245DQsmw5YOXBbRPm5/izGeVEhmIXloKOVYb+dPuZ8DgsIOksG1+
-X-Google-Smtp-Source: ABdhPJz0bGkdl6XPJXs6wZfwa6p45SnjZjgvjGf0AvFfjTbuQPD22QeUQkfjFNmLBBuAIxgbSqADkSH42abW2ptHFRk=
-X-Received: by 2002:a19:5e5e:: with SMTP id z30mr600885lfi.277.1606807990560;
- Mon, 30 Nov 2020 23:33:10 -0800 (PST)
+        bh=uB5Ijg4lsZ53TyQb8q6EyzIkeiWhB7LJL2nbLGLbbto=;
+        b=A6wSBD6NIU1nrJJMsft83/5rF1AedBa4z3EDfbkTYgnFq/I9+5m2nVlrSi/URZxpq3
+         ZvF2axHMOvquc1CSNbr03XOhfLYMBmZRdNsf1aCyQAsd/xzyjXKKTim1vt9GKsWh3vqC
+         l88s3MlfpnJ2SyZTpYbUwT+OryeCiKe4bE5tv7vvMDU/tQ+9YhIXJZjlDq1yvWeMM7ax
+         II7YbwMspiYL/vHKu1970E1O8SS566FXXH4Hv5Eyh9zQkH25Vn1XpqkttGnR03jFsbko
+         /mc42HIJWrelsJ32SX2kkvyivFuysRqqyGSFx6rRixS/8Z53ElKK/4ugc0k+nwc4fq7u
+         qDqw==
+X-Gm-Message-State: AOAM531GOCSBQngKfnqyIAeugsh7epgPPMqYepz0fk0JOokin7fCJ1XB
+        W9xZIwfj7qMwL/t9dQV4xuRuGf8Cp1YpGalQZJZdBA==
+X-Google-Smtp-Source: ABdhPJw+XQSv9wF8wBAXUMZzU8fnW1PAeTTRaqJ6mMpsxVkNfJgpjkifY9dpiOSjGroEUQc9aGDQJKIDRBP7fLA6khE=
+X-Received: by 2002:ac2:528e:: with SMTP id q14mr579418lfm.34.1606808005880;
+ Mon, 30 Nov 2020 23:33:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130233242.78413-1-dlatypov@google.com> <20201130233242.78413-2-dlatypov@google.com>
-In-Reply-To: <20201130233242.78413-2-dlatypov@google.com>
+References: <20201130233242.78413-1-dlatypov@google.com> <20201130233242.78413-3-dlatypov@google.com>
+In-Reply-To: <20201130233242.78413-3-dlatypov@google.com>
 From:   David Gow <davidgow@google.com>
-Date:   Tue, 1 Dec 2020 15:32:59 +0800
-Message-ID: <CABVgOSmX3foOr6XJhQ_goYabFEg8qNYoQ+5O7JPRW=gLmh=OQA@mail.gmail.com>
-Subject: Re: [PATCH 2/5] kunit: tool: fix unit test so it can run from
- non-root dir
+Date:   Tue, 1 Dec 2020 15:33:14 +0800
+Message-ID: <CABVgOS=91XtTv5j71MiE15pMBLj=VVqqK6XzCHX4LfndrsMYxw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] kunit: tool: stop using bare asserts in unit test
 To:     Daniel Latypov <dlatypov@google.com>
 Cc:     Brendan Higgins <brendanhiggins@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -65,88 +64,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Dec 1, 2020 at 7:33 AM Daniel Latypov <dlatypov@google.com> wrote:
 >
-> get_absolute_path() makes an attempt to allow for this.
-> But that doesn't work as soon as os.chdir() gets called.
-
-Can we explain why this doesn't work? It's because the test_data/
-files are accessed with relative paths, so chdir breaks access to
-them, right?
-
+> Use self.assertEqual/assertNotEqual() instead.
+> Besides being more appropriate in a unit test, it'll also give a better
+> error message by show the unexpected values.
 >
-> So make it so that os.chdir() does nothing to avoid this.
+> Also
+> * Delete redundant check of exception types. self.assertRaises does this.
+> * s/kall/call. There's no reason to name it this way.
+>   * This is probably a misunderstanding from the docs which uses it
+>   since `mock.call` is in scope as `call`.
 >
-> Note: mock.patch.object() doesn't seem to work in setUpModule(), hence
-> the introduction of a new base class instead.
->
-> Fixes: 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside kernel tree")
 > Signed-off-by: Daniel Latypov <dlatypov@google.com>
 > ---
 
-I don't like this: disabling a real system call seems like overkill to
-work around a path issue like this.
+This works for me, and seems pretty sensible from my rudimentary
+python knowledge.
 
-Wouldn't it be better to either:
-(a) stop kunit_tool from needing to chdir entirely; or
-(b) have get_absolute_path() / test_data_path() produce an absolute path.
-
-The latter really seems like the most sensible approach: have the
-script read its own path and read files relative to that.
+Reviewed-by: David Gow <davidgow@google.com>
 
 Cheers,
 -- David
-
-
->  tools/testing/kunit/kunit_tool_test.py | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index 3fbe1acd531a..9f1f1e1b772a 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -32,7 +32,13 @@ def tearDownModule():
->  def get_absolute_path(path):
->         return os.path.join(os.path.dirname(__file__), path)
->
-> -class KconfigTest(unittest.TestCase):
-> +class KUnitTest(unittest.TestCase):
-> +       """Contains common setup, like stopping main() from calling chdir."""
-> +       def setUp(self):
-> +               mock.patch.object(os, 'chdir').start()
-> +               self.addCleanup(mock.patch.stopall)
-> +
-> +class KconfigTest(KUnitTest):
->
->         def test_is_subset_of(self):
->                 kconfig0 = kunit_config.Kconfig()
-> @@ -88,7 +94,7 @@ class KconfigTest(unittest.TestCase):
->                 self.assertEqual(actual_kconfig.entries(),
->                                  expected_kconfig.entries())
->
-> -class KUnitParserTest(unittest.TestCase):
-> +class KUnitParserTest(KUnitTest):
->
->         def assertContains(self, needle, haystack):
->                 for line in haystack:
-> @@ -250,7 +256,7 @@ class KUnitParserTest(unittest.TestCase):
->                                 result.status)
->                         self.assertEqual('kunit-resource-test', result.suites[0].name)
->
-> -class KUnitJsonTest(unittest.TestCase):
-> +class KUnitJsonTest(KUnitTest):
->
->         def _json_for(self, log_file):
->                 with(open(get_absolute_path(log_file))) as file:
-> @@ -285,8 +291,9 @@ class StrContains(str):
->         def __eq__(self, other):
->                 return self in other
->
-> -class KUnitMainTest(unittest.TestCase):
-> +class KUnitMainTest(KUnitTest):
->         def setUp(self):
-> +               super().setUp()
->                 path = get_absolute_path('test_data/test_is_test_passed-all_passed.log')
->                 with open(path) as file:
->                         all_passed_log = file.readlines()
-> --
-> 2.29.2.454.gaff20da3a2-goog
->
