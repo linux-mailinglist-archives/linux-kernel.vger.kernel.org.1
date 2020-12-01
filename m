@@ -2,150 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2242CA976
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D342CA97D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731128AbgLARVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:21:20 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2325 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgLARVU (ORCPT
+        id S2388682AbgLARWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:22:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45798 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726303AbgLARWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:21:20 -0500
-Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4ClpkY6Q1lz13Nqq;
-        Wed,  2 Dec 2020 01:19:49 +0800 (CST)
-Received: from [10.174.186.123] (10.174.186.123) by
- dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 2 Dec 2020 01:20:33 +0800
-Subject: Re: [RFC PATCH 2/3] KVM: arm64: Fix handling of merging tables into a
- block entry
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Will Deacon <will@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
-        <lushenming@huawei.com>
-References: <20201130121847.91808-1-wangyanan55@huawei.com>
- <20201130121847.91808-3-wangyanan55@huawei.com>
- <20201130133421.GB24837@willie-the-truck>
- <67e9e393-1836-eca7-4235-6f4a19fed652@huawei.com>
- <20201130160119.GA25051@willie-the-truck>
- <868a4403-10d3-80f3-4ae1-a490813c55e2@huawei.com>
- <20201201134606.GB26973@willie-the-truck>
- <2e92a511-496c-d446-95f4-6211ec8b4bb6@huawei.com>
- <e9f00d1af54cf61c7469c7d905bff3e0@kernel.org>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <0a36f859-2666-e5e7-856d-47fa306a6f53@huawei.com>
-Date:   Wed, 2 Dec 2020 01:20:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 12:22:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606843265;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lMe49E1mnnmlHTInfsQf5rgPXjI/ES+UysXV6vFipss=;
+        b=KSzi+DkntUm7spw1oCvMkYvY1/zolC8uW4c5JGCE5k7Mez03xI0Te8JhgmQnJ/VphHGhg3
+        wbPwZqbEfMZH9izLHodjp0pbzS8lcQwmYuX7BN1BIoSkl3OO2VyEf2QPtkqurMc1EkgNtz
+        2SI4uFqHReuZUQfiEs0xD63nA4LYDGc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-16vq1k01M-unSC-WCvPP0Q-1; Tue, 01 Dec 2020 12:21:03 -0500
+X-MC-Unique: 16vq1k01M-unSC-WCvPP0Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06C959A232;
+        Tue,  1 Dec 2020 17:21:02 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C6D660C0F;
+        Tue,  1 Dec 2020 17:20:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
+References: <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com> <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+To:     Eric Sandeen <sandeen@redhat.com>
+Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-fsdevel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xfs <linux-xfs@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        Xiaoli Feng <xifeng@redhat.com>
+Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to filesystems
 MIME-Version: 1.0
-In-Reply-To: <e9f00d1af54cf61c7469c7d905bff3e0@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.186.123]
-X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
- dggeme759-chm.china.huawei.com (10.3.19.105)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <286507.1606843256.1@warthog.procyon.org.uk>
+Date:   Tue, 01 Dec 2020 17:20:56 +0000
+Message-ID: <286508.1606843256@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/1 22:35, Marc Zyngier wrote:
+Eric Sandeen <sandeen@redhat.com> wrote:
 
-> Hi Yanan,
->
-> On 2020-12-01 14:11, wangyanan (Y) wrote:
->> On 2020/12/1 21:46, Will Deacon wrote:
->>> On Tue, Dec 01, 2020 at 10:30:41AM +0800, wangyanan (Y) wrote:
->
-> [...]
->
->>>> The point is at b.iii where the TLBI is not enough. There are many 
->>>> page
->>>> mappings that we need to merge into a block mapping.
->>>>
->>>> We invalidate the TLB for the input address without level hint at 
->>>> b.iii, but
->>>> this operation just flush TLB for one page mapping, there
->>>>
->>>> are still some TLB entries for the other page mappings in the 
->>>> cache, the MMU
->>>> hardware walker can still hit these entries next time.
->>> Ah, yes, I see. Thanks. I hadn't considered the case where there are 
->>> table
->>> entries beneath the anchor. So how about the diff below?
->>>
->>> Will
->>>
->>> --->8
->>
->> Hi, I think it's inappropriate to put the TLBI of all the leaf entries
->> in function stage2_map_walk_table_post(),
->>
->> because the *ptep must be an upper table entry when we enter
->> stage2_map_walk_table_post().
->>
->> We should make the TLBI for every leaf entry not table entry in the
->> last lookup level,  just as I am proposing
->>
->> to add the additional TLBI in function stage2_map_walk_leaf().
->
-> Could you make your concerns explicit? As far as I can tell, this should
-> address the bug you found, at least from a correctness perspective.
->
-> Are you worried about the impact of the full S2 invalidation? Or do you
-> see another correctness issue?
+> -	if (IS_DAX(inode))
+> -		stat->attributes |= STATX_ATTR_DAX;
+> -
 
+This could probably be left in and not distributed amongst the filesytems
+provided that any filesystem that might turn it on sets the bit in the
+attributes_mask.
 
-Hi Will, Marc,
+I'm presuming that the core doesn't turn it on without the filesystem buying
+in.
 
-
-After recheck of the diff, the full S2 invalidation in 
-stage2_map_walk_table_post() should be well enough to solve this problem.
-
-But I was wondering if we can add the full S2 invalidation in 
-stage2_map_walk_table_pre(), where __kvm_tlb_flush_vmid() will be called 
-for only one time.
-
-If we add the full TLBI in stage2_map_walk_table_post(), 
-__kvm_tlb_flush_vmid() might be called for many times in the loop and 
-lots of (unnecessary) CPU instructions will be wasted.
-
-What I'm saying is something like below, please let me know what do you 
-think.
-
-If this is OK, I can update the diff in v2 and send it with your SOB (is 
-it appropriate?) after some tests.
-
-
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index b232bdd142a6..f11fb2996080 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -496,7 +496,7 @@ static int stage2_map_walk_table_pre(u64 addr, u64 
-end, u32 level,
-                 return 0;
-
-         kvm_set_invalid_pte(ptep);
--       kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, 0);
-+       kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
-         data->anchor = ptep;
-         return 0;
-  }
-
-
-Thanks,
-
-Yanan
+David
 
