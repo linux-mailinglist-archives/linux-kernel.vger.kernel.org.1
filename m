@@ -2,149 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291CE2CA4FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F472CA4FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391555AbgLAOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:06:09 -0500
-Received: from foss.arm.com ([217.140.110.172]:43554 "EHLO foss.arm.com"
+        id S2391563AbgLAOGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:06:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391306AbgLAOGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:06:09 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1998F30E;
-        Tue,  1 Dec 2020 06:05:23 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AEF763F718;
-        Tue,  1 Dec 2020 06:05:22 -0800 (PST)
-Date:   Tue, 1 Dec 2020 14:05:20 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amit.kucheria@verdurent.com,
-        airlied@linux.ie, daniel.lezcano@linaro.org, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, rui.zhang@intel.com,
-        orjan.eide@arm.com
-Subject: Re: [PATCH 3/5] thermal: devfreq_cooling: add new registration
- functions with Energy Model
-Message-ID: <20201201140520.GA7206@arm.com>
-References: <20200921122007.29610-1-lukasz.luba@arm.com>
- <20200921122007.29610-4-lukasz.luba@arm.com>
- <20201007120746.GA15063@arm.com>
- <71cfae58-8ea5-c591-455b-d84420d8412a@arm.com>
+        id S2388154AbgLAOGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:06:47 -0500
+Received: from coco.lan (ip5f5ad5d9.dynamic.kabel-deutschland.de [95.90.213.217])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3FC120857;
+        Tue,  1 Dec 2020 14:06:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606831566;
+        bh=Ialf7VVYOWrStFEyTWHR4a2cJFjkmNc87hIezbnabDc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=APzFqj/76ePP8ghi3a0lmmoXeTWBNutKM149XAk6TQDzUhc3699WdLaWrkXqWdISY
+         skDzLMXkCUCgdtHC7hOj0hCLtBjOVuwabWzs/ksRw3Z9HP2w4Y6zwvA5MqFcpXLOim
+         0E1jHbq+SeO5qHI29S3Sf7NjAtb2Ol1ZsGp4HaAs=
+Date:   Tue, 1 Dec 2020 15:06:01 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 05/16] fs: fix kernel-doc markups
+Message-ID: <20201201150601.7f92bfd6@coco.lan>
+In-Reply-To: <20201201124341.GA21541@infradead.org>
+References: <cover.1606823973.git.mchehab+huawei@kernel.org>
+        <46ccd8f26eb51b2eb092923d74eadf71fdca43d7.1606823973.git.mchehab+huawei@kernel.org>
+        <20201201124341.GA21541@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <71cfae58-8ea5-c591-455b-d84420d8412a@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Em Tue, 1 Dec 2020 12:43:41 +0000
+Christoph Hellwig <hch@infradead.org> escreveu:
 
-On Thursday 22 Oct 2020 at 12:17:31 (+0100), Lukasz Luba wrote:
-[..]
-
-> > > +/**
-> > > + * devfreq_cooling_em_register_power() - Register devfreq cooling device with
-> > > + *		power information and attempt to register Energy Model (EM)
+> On Tue, Dec 01, 2020 at 01:08:58PM +0100, Mauro Carvalho Chehab wrote:
+> > Two markups are at the wrong place. Kernel-doc only
+> > support having the comment just before the identifier.
 > > 
-> > It took me a while to understand the differences between devfreq
-> > register functions and it left me with a nagging feeling that we don't
-> > need all of them. Also, looking over the cpufreq cooling devices, they
-> > keep their registering interfaces quite simple.
+> > Also, some identifiers have different names between their
+> > prototypes and the kernel-doc markup.  
 > 
-> This was discussed in previous series, related to EM core changes.
-> It was requested to have a helper registration function which would
-> create EM automatically.
-> 
-> > 
-> > With the functions added by this patch, the devfreq cooling devices will have:
-> >   - old:
-> >         of_devfreq_cooling_register_power
-> >         of_devfreq_cooling_register
-> >         devfreq_cooling_register
-> >         devfreq_cooling_unregister
-> >   - new:
-> >         devfreq_cooling_em_register_power
-> >         devfreq_cooling_em_register
-> > 
-> > My question is whether we actually need the two new
-> > devfreq_cooling_em_register_power() and devfreq_cooling_em_register()?
-> 
-> It is just for consistency, with older scheme. It is only a wrapper, one
-> line, with default NULL. This scheme is common in thermal and some other
-> frameworks.
-> 
-> > 
-> > The power_ops and the em are dependent on one another, so could we
-> > extend the of_devfreq_cooling_register_power() to do the additional em
-> > registration. We only need a way to pass the em_cb and I think that
-> > could fit nicely in devfreq_cooling_power.
-> 
-> No, they aren't 'dependent on one another'. The EM usage doesn't depend
-> on presence of power_ops. Drivers might not support power_ops, but want
-> the framework still use EM and do power estimation.
-> 
+> This patch looks really weird, having 30-ish unchanged lines as the
+> unified diff context.
 
-Okay, wrong choice of words. There's only a one way dependency: you can't
-use power_ops without an em, according to
-of_devfreq_cooling_register_power().
+That was due to a past review request for this series.
 
-Correct me if I'm wrong, but I see this as being okay as you still need
-an em to give you the maximum power of a device in a certain state.
+With -U32, all kernel-doc markups and the corresponding function names
+can be seen at the patch.
 
-With this in mind, and taking in detail the possible calls of the
-devfreq cooling register functions:
+I'm enclosing the same patch with the usual -U3.
 
-1. Register devfreq cooling device with energy model.
-   (used in patch 5/5)
+Thanks,
+Mauro
 
- -> devfreq_cooling_em_register()
-    -> devfreq_cooling_em_register_power(dfc_power = NULL, em obtained
-                                      through various methods)
-      -> of_devfreq_cooling_register_power(same as above)
+[PATCH] fs: fix kernel-doc markups
 
-2. Register devfreq cooling device with power_ops and em:
-   (not used)
+Two markups are at the wrong place. Kernel-doc only
+support having the comment just before the identifier.
 
- -> devfreq_cooling_em_register_power(dfc_power != NULL, em obtained
-                                     through various methods)
-   -> of_devfreq_cooling_register_power(same as above)
+Also, some identifiers have different names between their
+prototypes and the kernel-doc markup.
 
-3. Register a devfreq cooling devices with power_ops but no em
-   (not used)
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
- -> of_devfreq_cooling_register_power(dfc_power != NULL)
-
-
-4. Register a devfreq cooling devices without any kind of power
-   information (em or dfc_power/power_ops)
-
- -> devfreq_cooling_register() or of_devfreq_cooling_register()
-   -> of_devfreq_cooling_register_power(dfc_power = NULL)
-
-
-Given this, aren't we ending up with some possible calls to these
-registration functions that don't make sense? That is case 3, as
-of_devfreq_cooling_register_power() could not assign and later use
-power_ops without an em. For this usecase, 2 should be used instead.
-
-Therefore, can't the same be achieved by collapsing
-devfreq_cooling_em_register_power() into
-of_devfreq_cooling_register_power()? (with the user having the
-possibility to provide the em callback similarly to how get_real_power()
-is provided - in devfreq_cooling_power).
-
-IMO is cleaner to unify the functionality (registration and callbacks)
-of cooling devices with power capabilities (based on em alone or together
-with power_ops). Otherwise we just create confusion for users registering
-cooling devices not knowing which function to call.
-
-If this has been discussed previously and I'm missing some details,
-please provide some links to the discussions.
-
-Thank you for the patience :).
-
-Ionela.
+diff --git a/fs/dcache.c b/fs/dcache.c
+index ea0485861d93..6eabb48a49fc 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -456,23 +456,6 @@ static void d_lru_shrink_move(struct list_lru_one *lru, struct dentry *dentry,
+ 	list_lru_isolate_move(lru, &dentry->d_lru, list);
+ }
+ 
+-/**
+- * d_drop - drop a dentry
+- * @dentry: dentry to drop
+- *
+- * d_drop() unhashes the entry from the parent dentry hashes, so that it won't
+- * be found through a VFS lookup any more. Note that this is different from
+- * deleting the dentry - d_delete will try to mark the dentry negative if
+- * possible, giving a successful _negative_ lookup, while d_drop will
+- * just make the cache lookup fail.
+- *
+- * d_drop() is used mainly for stuff that wants to invalidate a dentry for some
+- * reason (NFS timeouts or autofs deletes).
+- *
+- * __d_drop requires dentry->d_lock
+- * ___d_drop doesn't mark dentry as "unhashed"
+- *   (dentry->d_hash.pprev will be LIST_POISON2, not NULL).
+- */
+ static void ___d_drop(struct dentry *dentry)
+ {
+ 	struct hlist_bl_head *b;
+@@ -501,6 +484,23 @@ void __d_drop(struct dentry *dentry)
+ }
+ EXPORT_SYMBOL(__d_drop);
+ 
++/**
++ * d_drop - drop a dentry
++ * @dentry: dentry to drop
++ *
++ * d_drop() unhashes the entry from the parent dentry hashes, so that it won't
++ * be found through a VFS lookup any more. Note that this is different from
++ * deleting the dentry - d_delete will try to mark the dentry negative if
++ * possible, giving a successful _negative_ lookup, while d_drop will
++ * just make the cache lookup fail.
++ *
++ * d_drop() is used mainly for stuff that wants to invalidate a dentry for some
++ * reason (NFS timeouts or autofs deletes).
++ *
++ * __d_drop requires dentry->d_lock
++ * ___d_drop doesn't mark dentry as "unhashed"
++ *   (dentry->d_hash.pprev will be LIST_POISON2, not NULL).
++ */
+ void d_drop(struct dentry *dentry)
+ {
+ 	spin_lock(&dentry->d_lock);
+@@ -989,20 +989,6 @@ struct dentry *d_find_any_alias(struct inode *inode)
+ }
+ EXPORT_SYMBOL(d_find_any_alias);
+ 
+-/**
+- * d_find_alias - grab a hashed alias of inode
+- * @inode: inode in question
+- *
+- * If inode has a hashed alias, or is a directory and has any alias,
+- * acquire the reference to alias and return it. Otherwise return NULL.
+- * Notice that if inode is a directory there can be only one alias and
+- * it can be unhashed only if it has no children, or if it is the root
+- * of a filesystem, or if the directory was renamed and d_revalidate
+- * was the first vfs operation to notice.
+- *
+- * If the inode has an IS_ROOT, DCACHE_DISCONNECTED alias, then prefer
+- * any other hashed alias over that one.
+- */
+ static struct dentry *__d_find_alias(struct inode *inode)
+ {
+ 	struct dentry *alias;
+@@ -1022,6 +1008,20 @@ static struct dentry *__d_find_alias(struct inode *inode)
+ 	return NULL;
+ }
+ 
++/**
++ * d_find_alias - grab a hashed alias of inode
++ * @inode: inode in question
++ *
++ * If inode has a hashed alias, or is a directory and has any alias,
++ * acquire the reference to alias and return it. Otherwise return NULL.
++ * Notice that if inode is a directory there can be only one alias and
++ * it can be unhashed only if it has no children, or if it is the root
++ * of a filesystem, or if the directory was renamed and d_revalidate
++ * was the first vfs operation to notice.
++ *
++ * If the inode has an IS_ROOT, DCACHE_DISCONNECTED alias, then prefer
++ * any other hashed alias over that one.
++ */
+ struct dentry *d_find_alias(struct inode *inode)
+ {
+ 	struct dentry *de = NULL;
+diff --git a/fs/inode.c b/fs/inode.c
+index 9d78c37b00b8..aad3dcf2e259 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1496,7 +1496,7 @@ struct inode *find_inode_rcu(struct super_block *sb, unsigned long hashval,
+ EXPORT_SYMBOL(find_inode_rcu);
+ 
+ /**
+- * find_inode_by_rcu - Find an inode in the inode cache
++ * find_inode_by_ino_rcu - Find an inode in the inode cache
+  * @sb:		Super block of file system to search
+  * @ino:	The inode number to match
+  *
+@@ -1778,7 +1778,7 @@ static int update_time(struct inode *inode, struct timespec64 *time, int flags)
+ }
+ 
+ /**
+- *	touch_atime	-	update the access time
++ *	atime_needs_update	-	update the access time
+  *	@path: the &struct path to update
+  *	@inode: inode to update
+  *
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 03a369ccd28c..cb11a34fb871 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -669,7 +669,8 @@ void seq_puts(struct seq_file *m, const char *s)
+ EXPORT_SYMBOL(seq_puts);
+ 
+ /**
+- * A helper routine for putting decimal numbers without rich format of printf().
++ * seq_put_decimal_ull_width - A helper routine for putting decimal numbers
++ * 			       without rich format of printf().
+  * only 'unsigned long long' is supported.
+  * @m: seq_file identifying the buffer to which data should be written
+  * @delimiter: a string which is printed before the number
+@@ -1044,7 +1045,7 @@ struct hlist_node *seq_hlist_next_rcu(void *v,
+ EXPORT_SYMBOL(seq_hlist_next_rcu);
+ 
+ /**
+- * seq_hlist_start_precpu - start an iteration of a percpu hlist array
++ * seq_hlist_start_percpu - start an iteration of a percpu hlist array
+  * @head: pointer to percpu array of struct hlist_heads
+  * @cpu:  pointer to cpu "cursor"
+  * @pos:  start position of sequence
+diff --git a/fs/super.c b/fs/super.c
+index 98bb0629ee10..912636bbda9e 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -1771,12 +1771,6 @@ int freeze_super(struct super_block *sb)
+ }
+ EXPORT_SYMBOL(freeze_super);
+ 
+-/**
+- * thaw_super -- unlock filesystem
+- * @sb: the super to thaw
+- *
+- * Unlocks the filesystem and marks it writeable again after freeze_super().
+- */
+ static int thaw_super_locked(struct super_block *sb)
+ {
+ 	int error;
+@@ -1812,6 +1806,12 @@ static int thaw_super_locked(struct super_block *sb)
+ 	return 0;
+ }
+ 
++/**
++ * thaw_super -- unlock filesystem
++ * @sb: the super to thaw
++ *
++ * Unlocks the filesystem and marks it writeable again after freeze_super().
++ */
+ int thaw_super(struct super_block *sb)
+ {
+ 	down_write(&sb->s_umount);
