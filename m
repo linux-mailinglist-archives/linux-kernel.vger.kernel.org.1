@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38F22CABE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C592CABA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731350AbgLATXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:23:15 -0500
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:33217 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730345AbgLATXO (ORCPT
+        id S2392318AbgLATUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:20:00 -0500
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:43996 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgLATT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:23:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606850362;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=IAQ8yIuH8zTYK7jwHyUCVO1UbUqSS3sf2HPGaHX9LYk=;
-        b=jpaNAzFLPQ1WHCB6VYbONz6kFarmDJE0K9THd84OEF5JHwE0qbitQilKcvB2ed/Xlz
-        qpTUujeYkdZks1vEX/v9jy6mffcGd8ItP7GSWk4q9N0kbXVthjW/scBCD4aOQIDx97y+
-        9mNuz7T3B+X56s61gZ0dhU9ghWonKjftqSNzcBpBPcvZxmtCTS9uGwwxaJe9mCXEqIJm
-        8gPW9vhSt2e/86s2V1n9PgC04TBWZncuoTP6aSEW6l+x1ewi0wMTNKTljFUyJpp9oYP6
-        GM7W7a/umcNaoQeVjQApXz5YvcEAoT47lQU2c8rLg/jhNPpgO9msCkERQFZrcTb2Ti5w
-        Ywyg==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/vrwDuo6A=="
-X-RZG-CLASS-ID: mo00
-Received: from mbp-13-nikolaus.fritz.box
-        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
-        with ESMTPSA id N02faawB1JJ6VuQ
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Tue, 1 Dec 2020 20:19:06 +0100 (CET)
-Subject: Re: [PATCH] ARM: omap2plus_defconfig: enable SPI GPIO
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+        Tue, 1 Dec 2020 14:19:59 -0500
+Received: by mail-pf1-f180.google.com with SMTP id o9so1716058pfd.10;
+        Tue, 01 Dec 2020 11:19:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4HBnddxeG8nQ7Q4yBAmvFQXRedJfPDrjBB+3fGH8iF4=;
+        b=kkPwZ2tjBh7fcVYKhlE/UhonvMgk5bvjd4c5HK85GSFPhcVJNUy3XOvuiOBnWBP+hc
+         fVfCw3tKEszzfP45VfV749jJvxg1I2BpoloMS/VefE4uPo9BHOz6W6v1BW3+AKcxhg57
+         wGH7mu9ZSPbNNe4dxSrKKKaqfNKwei/428GOmxUc3VYLLdi+WSPT58igKkK4ydMbAZMl
+         azxJNy+0Y13H+G1blK+l0a93lMcPP7Jf6fRXkCsMkeq9wVhwuk0u7dOicBQvOiekcgqY
+         znHDFA3xttSnTFVY/sgv+JYVoCWoZbT+mTi59tM6tXQAY5i7qRT43FTcItf6ZXm1+d4X
+         DXvA==
+X-Gm-Message-State: AOAM530BP3mkWThXp2kB448i5Crz3BVt1qNXO6AHcvMZJ3wvU8v/Pkn/
+        fdlEVzXtdA/Dy3qvyE0fcIU=
+X-Google-Smtp-Source: ABdhPJx1JUigOEFJfeyUwQfo2ty0FGZJr7SHIRYFbSHnvMX49khY8s0xHvilh89wX+yL3DZ0RCjt/Q==
+X-Received: by 2002:a62:8685:0:b029:197:f766:b135 with SMTP id x127-20020a6286850000b0290197f766b135mr4023312pfd.0.1606850358843;
+        Tue, 01 Dec 2020 11:19:18 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id a20sm337747pgg.89.2020.12.01.11.19.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:19:17 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:19:16 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Richard Gong <richard.gong@linux.intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, gregkh@linuxfoundation.org,
+        trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+        sridhar.rajagopal@intel.com, richard.gong@intel.com
+Subject: Re: [PATCHv2 1/5] firmware: stratix10-svc: add
+ COMMAND_AUTHENTICATE_BITSTREAM flag
+Message-ID: <X8aXNKNIPl+piFO+@archbook>
+References: <1605709753-7800-1-git-send-email-richard.gong@linux.intel.com>
+ <1605709753-7800-2-git-send-email-richard.gong@linux.intel.com>
+ <X7U+BTkW7ZmsMByV@epycbox.lan>
+ <d8b58b40-63c6-115e-8e61-f092e3f050b3@linux.intel.com>
+ <X7m6gy/B8DiafyYQ@archbook>
+ <771ba4f4-59e1-74b0-ba55-3f65914e2bc7@linux.intel.com>
+ <X8XHJimPDaE/lNx0@archbook>
+ <e67a2abe-2c97-fe1c-9dc7-100b8a20381b@linux.intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20201201191237.15808-1-andreas@kemnade.info>
-Date:   Tue, 1 Dec 2020 20:19:14 +0100
-Cc:     tony@atomide.com, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <826AB7B5-E860-40D4-8E33-08F9FF820A98@goldelico.com>
-References: <20201201191237.15808-1-andreas@kemnade.info>
-To:     Andreas Kemnade <andreas@kemnade.info>
-X-Mailer: Apple Mail (2.3124)
+Content-Disposition: inline
+In-Reply-To: <e67a2abe-2c97-fe1c-9dc7-100b8a20381b@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Richard,
 
-> Am 01.12.2020 um 20:12 schrieb Andreas Kemnade <andreas@kemnade.info>:
->=20
-> GTA04 uses that for controlling the td028ttec1 panel. So
-> for easier testing/bisecting it is useful to have it
-> enabled in the defconfig.
+On Tue, Dec 01, 2020 at 01:30:16PM -0600, Richard Gong wrote:
 
-++
+> > Can U-Boot determine whether it's the new or old flow? Can you set a
+> > different compatible value in your device-tree, to disambiguate
+> > behaviors?
+> > 
+> 
+> The boot flow is determined by defconfig during compilation, which means
+> each boot flow will have its own defconfig.
+> 
+> SDM firmware loads SPL into OCRAM, then SPL will load the apporiate ATF or
+> U-boot into the DRAM according to the setting of CONFIG_SPL_ATF. If
+> CONFIG_SPL_ATF=y, SPL loads ATF and then jumps to ATF. ATF setups EL3
+> environment and initialize the PSCI services.
+> 
+> CONFIG_SPL_ATF is not set for the old boot flow.
 
->=20
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
-> arch/arm/configs/omap2plus_defconfig | 1 +
-> 1 file changed, 1 insertion(+)
->=20
-> diff --git a/arch/arm/configs/omap2plus_defconfig =
-b/arch/arm/configs/omap2plus_defconfig
-> index 77716f500813..904a8757ad9f 100644
-> --- a/arch/arm/configs/omap2plus_defconfig
-> +++ b/arch/arm/configs/omap2plus_defconfig
-> @@ -280,6 +280,7 @@ CONFIG_SERIAL_OMAP_CONSOLE=3Dy
-> CONFIG_SERIAL_DEV_BUS=3Dy
-> CONFIG_I2C_CHARDEV=3Dy
-> CONFIG_SPI=3Dy
-> +CONFIG_SPI_GPIO=3Dm
-> CONFIG_SPI_OMAP24XX=3Dy
-> CONFIG_SPI_TI_QSPI=3Dm
-> CONFIG_HSI=3Dm
-> --=20
-> 2.20.1
->=20
+So you know at (U-Boot) build time? Can you just pass a different DT to
+the kernel in that case?
 
+- Moritz
