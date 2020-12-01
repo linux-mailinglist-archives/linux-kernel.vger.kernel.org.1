@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96A42C9C0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9337B2C9C0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390325AbgLAJOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:14:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52712 "EHLO mail.kernel.org"
+        id S2390334AbgLAJOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:14:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390204AbgLAJOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390205AbgLAJOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 04:14:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17E2321D46;
-        Tue,  1 Dec 2020 09:13:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10E02221FF;
+        Tue,  1 Dec 2020 09:13:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606814004;
-        bh=vrhCK6X2iUaJHMGsJjbD3BWzwM2rCqHGj3chcMaJe7Y=;
+        s=korg; t=1606814007;
+        bh=C7Hr7eeAjhgBmS1+zePSlbyKpdNUKtdPF2tBJncRM5Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RaumzDgEYfwA9CL692hQ0Wk3huCs4sxGAf54B4Kv/UvhNyDouHSxoulus5V+IXu6f
-         jsN55hrkko2dfxQf6fU87vZFYGGTk7ucuMhXUkgLA5/35XbywnINJA1aykQrONN9tG
-         jp/82Pw6Z9B8hjgMdMFo4OjWipqxfocx+Gxxuw+k=
+        b=r6HG/0kfP0TCfJBLbMaACERjHIRtbhOm5TaF7grgA630HUh2RS4OcL+rs2IRZGpo+
+         MQ5Pwq02DaBsf1/AAQ3aQIv4meKToHiH/oFOJvXU8+aiBUEWDOsZGYYeQ5ac1/5Stt
+         dRYepkHodeZeahHk2LoNXLV5JYTpuUYueTsInzqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Weihang Li <liweihang@huawei.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 133/152] RDMA/hns: Fix wrong field of SRQ number the device supports
-Date:   Tue,  1 Dec 2020 09:54:08 +0100
-Message-Id: <20201201084729.232382314@linuxfoundation.org>
+Subject: [PATCH 5.9 134/152] RDMA/hns: Fix retry_cnt and rnr_cnt when querying QP
+Date:   Tue,  1 Dec 2020 09:54:09 +0100
+Message-Id: <20201201084729.364928887@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -46,34 +46,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wenpeng Liang <liangwenpeng@huawei.com>
 
-[ Upstream commit ebed7b7ca47f3aa95ebf2185a526227744616ac1 ]
+[ Upstream commit ab6f7248cc446b85fe9e31091670ad7c4293d7fd ]
 
-The SRQ capacity is got from the firmware, whose field should be ended at
-bit 19.
+The maximum number of retransmission should be returned when querying QP,
+not the value of retransmission counter.
 
-Fixes: ba6bb7e97421 ("RDMA/hns: Add interfaces to get pf capabilities from firmware")
-Link: https://lore.kernel.org/r/1606382812-23636-1-git-send-email-liweihang@huawei.com
+Fixes: 99fcf82521d9 ("RDMA/hns: Fix the wrong value of rnr_retry when querying qp")
+Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08 SoC")
+Link: https://lore.kernel.org/r/1606382977-21431-1-git-send-email-liweihang@huawei.com
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 17f35f91f4ad2..9d27dfe86821b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -1639,7 +1639,7 @@ struct hns_roce_query_pf_caps_d {
- 	__le32 rsv_uars_rsv_qps;
- };
- #define V2_QUERY_PF_CAPS_D_NUM_SRQS_S 0
--#define V2_QUERY_PF_CAPS_D_NUM_SRQS_M GENMASK(20, 0)
-+#define V2_QUERY_PF_CAPS_D_NUM_SRQS_M GENMASK(19, 0)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index cee140920c579..ccbe12de8e59b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4771,11 +4771,11 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+ 					      V2_QPC_BYTE_28_AT_M,
+ 					      V2_QPC_BYTE_28_AT_S);
+ 	qp_attr->retry_cnt = roce_get_field(context.byte_212_lsn,
+-					    V2_QPC_BYTE_212_RETRY_CNT_M,
+-					    V2_QPC_BYTE_212_RETRY_CNT_S);
++					    V2_QPC_BYTE_212_RETRY_NUM_INIT_M,
++					    V2_QPC_BYTE_212_RETRY_NUM_INIT_S);
+ 	qp_attr->rnr_retry = roce_get_field(context.byte_244_rnr_rxack,
+-					    V2_QPC_BYTE_244_RNR_CNT_M,
+-					    V2_QPC_BYTE_244_RNR_CNT_S);
++					    V2_QPC_BYTE_244_RNR_NUM_INIT_M,
++					    V2_QPC_BYTE_244_RNR_NUM_INIT_S);
  
- #define V2_QUERY_PF_CAPS_D_RQWQE_HOP_NUM_S 20
- #define V2_QUERY_PF_CAPS_D_RQWQE_HOP_NUM_M GENMASK(21, 20)
+ done:
+ 	qp_attr->cur_qp_state = qp_attr->qp_state;
 -- 
 2.27.0
 
