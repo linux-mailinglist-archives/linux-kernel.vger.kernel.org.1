@@ -2,70 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53C52C954D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C93C2C9564
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgLAChg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:37:36 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:55969 "EHLO z5.mailgun.us"
+        id S1726067AbgLACqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:46:39 -0500
+Received: from mga05.intel.com ([192.55.52.43]:2881 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727005AbgLAChg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:37:36 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606790232; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=LuLVx8v5T+nGwlZJeawR9A4EitazVOlcd9+XnWaPHcc=; b=nhbWs/PTHrMAbfG218dPQqOxfnKgkjH0/SNfPgO/E3pa0ScE0oNKs/I2M9Fu5Aj/lkKeXSb9
- d7VdZ8wA9u9Ts460fU8r3rfOIuvw3STZNj4DmH+FAcDYXb13r8DuBz0T5b88z4eXuriqzlJ9
- 6uqR+lRIgsfMpf4sJFFVSSTErRE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fc5ac3d07535c81ba453249 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 02:36:45
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F0EC4C43466; Tue,  1 Dec 2020 02:36:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 01281C433ED;
-        Tue,  1 Dec 2020 02:36:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 01281C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v3 2/2] scsi: ufs-qcom: Keep core_clk_unipro ON while link
- is active
-To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1606356063-38380-1-git-send-email-cang@codeaurora.org>
- <1606356063-38380-3-git-send-email-cang@codeaurora.org>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <7ec66c17-2bb7-a472-6ebb-3151ba51df84@codeaurora.org>
-Date:   Mon, 30 Nov 2020 18:36:42 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1725859AbgLACqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 21:46:39 -0500
+IronPort-SDR: PdAKlKeRl+6WeY7cZEQ9lB/uFzC5STHKaxXY2JfFR2AEETYk79ktXdHyRjvMMOQv/4sTuDza0g
+ qNdnUQFsZ6Mw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="257461851"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="257461851"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:44:58 -0800
+IronPort-SDR: pAVrtwovzBP9hzHfyu8zxU+R0f0gt2Iwi81AK+urnntZmSqxVsG+61j+NQpE0IY+jLyKpFypoc
+ SXUNg8NkifOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="434495516"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Nov 2020 18:44:56 -0800
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        stable@kernel.vger.org
+Subject: Re: Question about domain_init (v5.3-v5.7)
+To:     Jerry Snitselaar <jsnitsel@redhat.com>
+References: <87h7pd6v2k.fsf@redhat.com>
+ <bd1fd204-3596-b16c-5617-7e691ceac83b@linux.intel.com>
+ <87a6v3hkd9.fsf@jsnitsel.users.ipa.redhat.com>
+ <72a7b338-2481-8c0a-5641-6f448557f6ee@linux.intel.com>
+ <87r1oaka46.fsf@redhat.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <da740dc6-0a03-afd5-b684-6f8109279d9b@linux.intel.com>
+Date:   Tue, 1 Dec 2020 10:37:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1606356063-38380-3-git-send-email-cang@codeaurora.org>
+In-Reply-To: <87r1oaka46.fsf@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,46 +51,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/2020 6:01 PM, Can Guo wrote:
-> If we want to disable clocks to save power but still keep the link active,
-> core_clk_unipro, as same as ref_clk, should not be the one being disabled.
+Hi Jerry,
+
+On 12/1/20 1:50 AM, Jerry Snitselaar wrote:
 > 
-> Reviewed-by: Hongwu Su<hongwus@codeaurora.org>
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
-
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-
->   drivers/scsi/ufs/ufs-qcom.c | 6 ++++++
->   1 file changed, 6 insertions(+)
+> Lu Baolu @ 2020-11-26 19:12 MST:
 > 
-> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-> index f9d6ef3..8a7fc62 100644
-> --- a/drivers/scsi/ufs/ufs-qcom.c
-> +++ b/drivers/scsi/ufs/ufs-qcom.c
-> @@ -977,6 +977,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->   	struct platform_device *pdev = to_platform_device(dev);
->   	struct ufs_qcom_host *host;
->   	struct resource *res;
-> +	struct ufs_clk_info *clki;
->   
->   	if (strlen(android_boot_dev) && strcmp(android_boot_dev, dev_name(dev)))
->   		return -ENODEV;
-> @@ -1075,6 +1076,11 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->   		}
->   	}
->   
-> +	list_for_each_entry(clki, &hba->clk_list_head, list) {
-> +		if (!strcmp(clki->name, "core_clk_unipro"))
-> +			clki->keep_link_active = true;
-> +	}
-> +
->   	err = ufs_qcom_init_lane_clks(host);
->   	if (err)
->   		goto out_variant_clear;
+>> Hi Jerry,
+>>
+>> On 11/27/20 5:35 AM, Jerry Snitselaar wrote:
+>>> Lu Baolu @ 2020-11-26 04:01 MST:
+>>>
+>>>> Hi Jerry,
+>>>>
+>>>> On 2020/11/26 4:27, Jerry Snitselaar wrote:
+>>>>> Is there a reason we check the requested guest address width against
+>>>>> the
+>>>>> iommu's mgaw, instead of the agaw that we already know for the iommu?
+>>>>> I've run into a case with a new system where the mgaw reported is 57,
+>>>>> but if they set PAE to 46 instead of 52 in the bios, then sagaw reports
+>>>>> the highest supported agaw is 48 and the domain_init code fails here. In
+>>>>
+>>>> Isn't this a platform bug? If it's too late to fix it in the BIOS, you
+>>>> maybe have to add a platform specific quirk to set mgaw to the highest
+>>>> supported agaw?
+>>>>
+>>>> Best regards,
+>>>> baolu
+>>> Is there somewhere you can point me to that discusses how they
+>>> should be
+>>> setting the mgaw? I misunderstood when I previously asked you about
+>>> whether the mgaw could be a value that was greater than any of sagaw.
+>>> If it is a bios issue, then they should fix it there.
+>>
+>> MGAW indicates the max gpa width supported by 2nd translation. The VT-d
+>> spec requires that this value must be at least equal to the host
+>> physical addressibility. According to this, BIOS is good, right?
+>>
+>> For this failure case, domain_init() just wants to find a suitable agaw
+>> for the private domain. I think it makes sense to check against
+>> iommu->agaw instead of cap_mgaw.
+>>
+>> Best regards,
+>> baolu
+>>
 > 
+>  From this bit in the spec about MGAW:
+> 
+>      Guest addressability for a given DMA request is limited to the
+>      minimum of the value reported through this field and the adjusted
+>      guest address width of the corresponding page-table structure.
+>      (Adjusted guest address widths supported by hardware are reported
+>      through the SAGAW field).
+> 
+> That does suggest it should be adjusted down to the sagaw value in this case, yes?
+> Just want to make sure I'm understanding it correctly.
 
+Yes. I think so.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+Best regards,
+baolu
+
+> 
+>>>
+>>>>
+>>>>> other places like prepare_domain_attach_device, the dmar domain agaw
+>>>>> gets adjusted down to the iommu agaw. The agaw of the iommu gets
+>>>>> determined based off what is reported for sagaw. I'm wondering if it
+>>>>> can't instead do:
+>>>>> ---
+>>>>>     drivers/iommu/intel-iommu.c | 4 ++--
+>>>>>     1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>> diff --git a/drivers/iommu/intel-iommu.c
+>>>>> b/drivers/iommu/intel-iommu.c
+>>>>> index 6ca5c92ef2e5..a8e41ec36d9e 100644
+>>>>> --- a/drivers/iommu/intel-iommu.c
+>>>>> +++ b/drivers/iommu/intel-iommu.c
+>>>>> @@ -1862,8 +1862,8 @@ static int domain_init(struct dmar_domain *domain, struct intel_iommu *iommu,
+>>>>>     	domain_reserve_special_ranges(domain);
+>>>>>     	/* calculate AGAW */
+>>>>> -	if (guest_width > cap_mgaw(iommu->cap))
+>>>>> -	        guest_width = cap_mgaw(iommu->cap);
+>>>>> +	if (guest_width > agaw_to_width(iommu->agaw))
+>>>>> +	        guest_width = agaw_to_width(iommu->agaw);
+>>>>>     	domain->gaw = guest_width;
+>>>>>     	adjust_width = guestwidth_to_adjustwidth(guest_width);
+>>>>>     	agaw = width_to_agaw(adjust_width);
+>>>>> --
+>>>>> 2.27.0
+>>>>>
+>>>>> Thoughts? With the former code the ehci device for the ilo fails when
+>>>>> trying to get a private domain.
+>>>>> Thanks,
+>>>>> Jerry
+>>>>>
+>>>
+> 
