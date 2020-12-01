@@ -2,247 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F472CA4FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACEF2CA501
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391563AbgLAOGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:06:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388154AbgLAOGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:06:47 -0500
-Received: from coco.lan (ip5f5ad5d9.dynamic.kabel-deutschland.de [95.90.213.217])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3FC120857;
-        Tue,  1 Dec 2020 14:06:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606831566;
-        bh=Ialf7VVYOWrStFEyTWHR4a2cJFjkmNc87hIezbnabDc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=APzFqj/76ePP8ghi3a0lmmoXeTWBNutKM149XAk6TQDzUhc3699WdLaWrkXqWdISY
-         skDzLMXkCUCgdtHC7hOj0hCLtBjOVuwabWzs/ksRw3Z9HP2w4Y6zwvA5MqFcpXLOim
-         0E1jHbq+SeO5qHI29S3Sf7NjAtb2Ol1ZsGp4HaAs=
-Date:   Tue, 1 Dec 2020 15:06:01 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 05/16] fs: fix kernel-doc markups
-Message-ID: <20201201150601.7f92bfd6@coco.lan>
-In-Reply-To: <20201201124341.GA21541@infradead.org>
-References: <cover.1606823973.git.mchehab+huawei@kernel.org>
-        <46ccd8f26eb51b2eb092923d74eadf71fdca43d7.1606823973.git.mchehab+huawei@kernel.org>
-        <20201201124341.GA21541@infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2391420AbgLAOHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:07:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387669AbgLAOHe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:07:34 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F6AC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:06:48 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id z14so1748305ilm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:06:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8t4BBaX4dY2Q1whu27yoDRhLqFb2cf6H1DIa9itq5kA=;
+        b=ptlcaT1RH6g5jo73/ATdEqyz2Y9+Gm0GzASKWVdnSTpRf6tAnQK94nfqffpbN4W1el
+         BuGuxYIisagIndqLFQwNNmt4QDWQcC26ZnGnaKl38/Q8hzl6W1wW+ThQIoDCA5BNSeXM
+         BmnTc7VrV3huP5tJeB81hnEWJhoVSaOTuB4cmpFeJBSMlC4Q9mqUryPdlifycuzInXoD
+         TkCfZFngIElm1vLqtx12RStmK4oa/wcwvNe02afR1EadlxN8TBi8f4Pu0YXA8Swq6DO8
+         c/J/t/fXf2jOSBdxzb1rs5l6sxEoI26kRzyxvmsDJYKTJGWZjjLuvXpTfbeW4Plz3wJz
+         PbXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8t4BBaX4dY2Q1whu27yoDRhLqFb2cf6H1DIa9itq5kA=;
+        b=GP/j70okw5vWiK+QumhI2/y9TSqr9UrtZOZ1pCe7lDEc1gJBKgxKHD3JALsEIqyp3E
+         /bT6MzmC+PYjRc7VSGCAqR1VaIonb3jFG5VVCa8lHJdx99Lx02NZ5ZheQyHbdWjGkvhp
+         4G9LDe+oRlzZAYYy+/5lbgmleWjb8Py8A8sdtWAN6wt+1cK+OJbl4L09vopcLOqWmUc0
+         jZrpQJFXJSWtNV9AJsHdW20B1t5NPM2YU+37uqkeTx7eeKnQu5X2EUX9Qr/Su4KniOSQ
+         ghPYmjtyXRDzzlUsT+Vt7aM58eBWmgxROrBIvznn5SAaUyKk3kJh/603TXeQt/UksYF3
+         ehdQ==
+X-Gm-Message-State: AOAM530lCd1BVeiQjootxBFADLcSpZcc1NoJWO8Kh9tKJ3+KeWAUoSLS
+        J7S7UhgD6Q5yYmAZ6tFPXf8ICF9qE2rWNGXOxPCTow3izZ61Xg==
+X-Google-Smtp-Source: ABdhPJzHlf5Wc0szmBp2bVlJPrFl5E/OTCSlcuuILJgojr51/WzlEahvl3pVqmxNqHgcpqwuSxl894sjfERRgMsIzDw=
+X-Received: by 2002:a92:680b:: with SMTP id d11mr2682917ilc.287.1606831608161;
+ Tue, 01 Dec 2020 06:06:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201130164704.22991-1-brgl@bgdev.pl> <20201130164704.22991-4-brgl@bgdev.pl>
+ <20201201112656.GA32252@lst.de>
+In-Reply-To: <20201201112656.GA32252@lst.de>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 1 Dec 2020 15:06:37 +0100
+Message-ID: <CAMRc=MfEtvPfeSCDb1Efgko7QpXFu7-4nuLvTfAoWBcuX_k5jw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] configfs: implement committable items
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Joel Becker <jlbec@evilplan.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 1 Dec 2020 12:43:41 +0000
-Christoph Hellwig <hch@infradead.org> escreveu:
+On Tue, Dec 1, 2020 at 12:26 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Mon, Nov 30, 2020 at 05:47:03PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > This implements configfs committable items. We mostly follow the
+> > documentation except that we extend config_group_ops with uncommit_item()
+> > callback for reverting the changes made by commit_item().
+> >
+> > Each committable group has two sub-directories: pending and live. New
+> > items can only be created in pending/. Attributes can only be modified
+> > while the item is in pending/. Once it's ready to be committed, it must
+> > be moved over to live/ using the rename() system call. This is when the
+> > commit_item() function will be called.
+> >
+> > Implementation-wise: we reuse the default group mechanism to elegantly
+> > plug the new pseude-groups into configfs. The pending group inherits the
+> > parent group's operations so that config_items can be seamlesly created
+> > in it using the callbacks supplied by the user as part of the committable
+> > group itself.
+>
+> This looks pretty awkward in the hierachy, but I can't really think
+> of anything else.  One idea would be to require fsync to stage updates,
+> but that isn't really very well discoverable.
 
-> On Tue, Dec 01, 2020 at 01:08:58PM +0100, Mauro Carvalho Chehab wrote:
-> > Two markups are at the wrong place. Kernel-doc only
-> > support having the comment just before the identifier.
-> > 
-> > Also, some identifiers have different names between their
-> > prototypes and the kernel-doc markup.  
-> 
-> This patch looks really weird, having 30-ish unchanged lines as the
-> unified diff context.
+I'm not sure how that would work. fsync() a directory once the item is
+configured to instantiate it?
 
-That was due to a past review request for this series.
+I was thinking about different solutions other than the one already
+defined but it always requires at least some kind of an additional
+attribute (not defined by the user) to "commit" an item and in the end
+rename() looks like a good candidate to me. We could possibly drop the
+pending and live groups and simple use a magic suffix for committed
+items e.g.: `mv myitem myitem_committed` but this would be even less
+intuitive.
 
-With -U32, all kernel-doc markups and the corresponding function names
-can be seen at the patch.
+If this patch is extended with:
 
-I'm enclosing the same patch with the usual -U3.
-
-Thanks,
-Mauro
-
-[PATCH] fs: fix kernel-doc markups
-
-Two markups are at the wrong place. Kernel-doc only
-support having the comment just before the identifier.
-
-Also, some identifiers have different names between their
-prototypes and the kernel-doc markup.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-diff --git a/fs/dcache.c b/fs/dcache.c
-index ea0485861d93..6eabb48a49fc 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -456,23 +456,6 @@ static void d_lru_shrink_move(struct list_lru_one *lru, struct dentry *dentry,
- 	list_lru_isolate_move(lru, &dentry->d_lru, list);
+@@ -1103,6 +1103,8 @@ static void configfs_dump_one(struct
+configfs_dirent *sd, int level)
+  type_print(CONFIGFS_USET_DIR);
+  type_print(CONFIGFS_USET_DEFAULT);
+  type_print(CONFIGFS_USET_DROPPING);
++ type_print(CONFIGFS_GROUP_PENDING);
++ type_print(CONFIGFS_GROUP_LIVE);
+ #undef type_print
  }
- 
--/**
-- * d_drop - drop a dentry
-- * @dentry: dentry to drop
-- *
-- * d_drop() unhashes the entry from the parent dentry hashes, so that it won't
-- * be found through a VFS lookup any more. Note that this is different from
-- * deleting the dentry - d_delete will try to mark the dentry negative if
-- * possible, giving a successful _negative_ lookup, while d_drop will
-- * just make the cache lookup fail.
-- *
-- * d_drop() is used mainly for stuff that wants to invalidate a dentry for some
-- * reason (NFS timeouts or autofs deletes).
-- *
-- * __d_drop requires dentry->d_lock
-- * ___d_drop doesn't mark dentry as "unhashed"
-- *   (dentry->d_hash.pprev will be LIST_POISON2, not NULL).
-- */
- static void ___d_drop(struct dentry *dentry)
- {
- 	struct hlist_bl_head *b;
-@@ -501,6 +484,23 @@ void __d_drop(struct dentry *dentry)
- }
- EXPORT_SYMBOL(__d_drop);
- 
-+/**
-+ * d_drop - drop a dentry
-+ * @dentry: dentry to drop
-+ *
-+ * d_drop() unhashes the entry from the parent dentry hashes, so that it won't
-+ * be found through a VFS lookup any more. Note that this is different from
-+ * deleting the dentry - d_delete will try to mark the dentry negative if
-+ * possible, giving a successful _negative_ lookup, while d_drop will
-+ * just make the cache lookup fail.
-+ *
-+ * d_drop() is used mainly for stuff that wants to invalidate a dentry for some
-+ * reason (NFS timeouts or autofs deletes).
-+ *
-+ * __d_drop requires dentry->d_lock
-+ * ___d_drop doesn't mark dentry as "unhashed"
-+ *   (dentry->d_hash.pprev will be LIST_POISON2, not NULL).
-+ */
- void d_drop(struct dentry *dentry)
- {
- 	spin_lock(&dentry->d_lock);
-@@ -989,20 +989,6 @@ struct dentry *d_find_any_alias(struct inode *inode)
- }
- EXPORT_SYMBOL(d_find_any_alias);
- 
--/**
-- * d_find_alias - grab a hashed alias of inode
-- * @inode: inode in question
-- *
-- * If inode has a hashed alias, or is a directory and has any alias,
-- * acquire the reference to alias and return it. Otherwise return NULL.
-- * Notice that if inode is a directory there can be only one alias and
-- * it can be unhashed only if it has no children, or if it is the root
-- * of a filesystem, or if the directory was renamed and d_revalidate
-- * was the first vfs operation to notice.
-- *
-- * If the inode has an IS_ROOT, DCACHE_DISCONNECTED alias, then prefer
-- * any other hashed alias over that one.
-- */
- static struct dentry *__d_find_alias(struct inode *inode)
- {
- 	struct dentry *alias;
-@@ -1022,6 +1008,20 @@ static struct dentry *__d_find_alias(struct inode *inode)
- 	return NULL;
- }
- 
-+/**
-+ * d_find_alias - grab a hashed alias of inode
-+ * @inode: inode in question
-+ *
-+ * If inode has a hashed alias, or is a directory and has any alias,
-+ * acquire the reference to alias and return it. Otherwise return NULL.
-+ * Notice that if inode is a directory there can be only one alias and
-+ * it can be unhashed only if it has no children, or if it is the root
-+ * of a filesystem, or if the directory was renamed and d_revalidate
-+ * was the first vfs operation to notice.
-+ *
-+ * If the inode has an IS_ROOT, DCACHE_DISCONNECTED alias, then prefer
-+ * any other hashed alias over that one.
-+ */
- struct dentry *d_find_alias(struct inode *inode)
- {
- 	struct dentry *de = NULL;
-diff --git a/fs/inode.c b/fs/inode.c
-index 9d78c37b00b8..aad3dcf2e259 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1496,7 +1496,7 @@ struct inode *find_inode_rcu(struct super_block *sb, unsigned long hashval,
- EXPORT_SYMBOL(find_inode_rcu);
- 
- /**
-- * find_inode_by_rcu - Find an inode in the inode cache
-+ * find_inode_by_ino_rcu - Find an inode in the inode cache
-  * @sb:		Super block of file system to search
-  * @ino:	The inode number to match
-  *
-@@ -1778,7 +1778,7 @@ static int update_time(struct inode *inode, struct timespec64 *time, int flags)
- }
- 
- /**
-- *	touch_atime	-	update the access time
-+ *	atime_needs_update	-	update the access time
-  *	@path: the &struct path to update
-  *	@inode: inode to update
-  *
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index 03a369ccd28c..cb11a34fb871 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -669,7 +669,8 @@ void seq_puts(struct seq_file *m, const char *s)
- EXPORT_SYMBOL(seq_puts);
- 
- /**
-- * A helper routine for putting decimal numbers without rich format of printf().
-+ * seq_put_decimal_ull_width - A helper routine for putting decimal numbers
-+ * 			       without rich format of printf().
-  * only 'unsigned long long' is supported.
-  * @m: seq_file identifying the buffer to which data should be written
-  * @delimiter: a string which is printed before the number
-@@ -1044,7 +1045,7 @@ struct hlist_node *seq_hlist_next_rcu(void *v,
- EXPORT_SYMBOL(seq_hlist_next_rcu);
- 
- /**
-- * seq_hlist_start_precpu - start an iteration of a percpu hlist array
-+ * seq_hlist_start_percpu - start an iteration of a percpu hlist array
-  * @head: pointer to percpu array of struct hlist_heads
-  * @cpu:  pointer to cpu "cursor"
-  * @pos:  start position of sequence
-diff --git a/fs/super.c b/fs/super.c
-index 98bb0629ee10..912636bbda9e 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1771,12 +1771,6 @@ int freeze_super(struct super_block *sb)
- }
- EXPORT_SYMBOL(freeze_super);
- 
--/**
-- * thaw_super -- unlock filesystem
-- * @sb: the super to thaw
-- *
-- * Unlocks the filesystem and marks it writeable again after freeze_super().
-- */
- static int thaw_super_locked(struct super_block *sb)
- {
- 	int error;
-@@ -1812,6 +1806,12 @@ static int thaw_super_locked(struct super_block *sb)
- 	return 0;
- }
- 
-+/**
-+ * thaw_super -- unlock filesystem
-+ * @sb: the super to thaw
-+ *
-+ * Unlocks the filesystem and marks it writeable again after freeze_super().
-+ */
- int thaw_super(struct super_block *sb)
- {
- 	down_write(&sb->s_umount);
+
+Then dumping the committable subsystem shows:
+
+[  133.603035] configfs:    "04-committable-children":
+[  133.603045] configfs:     CONFIGFS_DIR
+[  133.603050] configfs:      "live":
+[  133.603054] configfs:       CONFIGFS_DIR
+[  133.603058] configfs:       CONFIGFS_USET_DIR
+[  133.603062] configfs:       CONFIGFS_USET_DEFAULT
+[  133.603066] configfs:       CONFIGFS_GROUP_LIVE
+[  133.603070] configfs:        "dupa":
+[  133.603074] configfs:         CONFIGFS_DIR
+[  133.603078] configfs:          "committed":
+[  133.603082] configfs:           CONFIGFS_ITEM_ATTR
+[  133.603086] configfs:          "storeme":
+[  133.603090] configfs:           CONFIGFS_ITEM_ATTR
+[  133.603094] configfs:      "pending":
+[  133.603160] configfs:       CONFIGFS_DIR
+[  133.603167] configfs:       CONFIGFS_USET_DIR
+[  133.603175] configfs:       CONFIGFS_USET_DEFAULT
+[  133.603183] configfs:       CONFIGFS_GROUP_PENDING
+[  133.603191] configfs:      "description":
+[  133.603198] configfs:       CONFIGFS_ITEM_ATTR
+
+Which doesn't look that bad IMO.
+
+Bartosz
