@@ -2,99 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDB82CA320
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A672CA322
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390577AbgLAMtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:49:04 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:54714 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726202AbgLAMtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:49:03 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxqtF9O8ZfOc0YAA--.55233S2;
-        Tue, 01 Dec 2020 20:47:57 +0800 (CST)
-From:   Xingxing Su <suxingxing@loongson.cn>
-To:     Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftest/vm: Fix build error
-Date:   Tue,  1 Dec 2020 20:47:56 +0800
-Message-Id: <1606826876-30656-1-git-send-email-suxingxing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
+        id S2390680AbgLAMtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390585AbgLAMtM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:49:12 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21895C0613CF;
+        Tue,  1 Dec 2020 04:48:32 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id e7so2442066wrv.6;
+        Tue, 01 Dec 2020 04:48:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=E7KISZiUZx5OJ0OBhs8wlh6COiaDQH/ZVHVCHKyzjEk=;
+        b=etC6JcuALdpc+RtrgJomZYX0mIy+qG2liKm9JXAo5RZJQwGx+6CEc8UmOX+O6ibWAH
+         tvjkpDIkIWSCqbCFhtngBD3D4/6vnpbG0harZSRjm0XHN95o81Znfzj/07+K3e+/ZgcT
+         r/yvfgVUsTyGuDCxzQLfceO8tfRsNggB9Hq4DEdWc4w2M2xoGmmLUQNz7z53ahQ4dM/Z
+         Hap0ZGGVlKXLOD2KI3j8HmRH1WIqLozKjrE9cBOJsOQo2MZslGwaoYX2aU3AEVW3g6Az
+         HgJbzV2HAsEthdwW0XHXPhurtpFenVdU8qoaVVTwVx9YJWPQihsji1jZSM5KnHJTv1Hr
+         suVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=E7KISZiUZx5OJ0OBhs8wlh6COiaDQH/ZVHVCHKyzjEk=;
+        b=WmmA9GJ+vfvVFXeuLwd6fuJ8fsrQdu0zsqRv+BPBXFOTdkCqP5JbzeyilCchwpYsvk
+         Pw3PMhfvgCJagmGXfrl4CCMGzEX4oprSjHr4p480xWZNkJeBygLYwrKBUGVDMujyEEXs
+         ht4BxItmHRIPaf8MjrSc/7BtojZgHvDVsuSSiDjipYeBSaqmelWTLfToZiJsoAOuTuvJ
+         jlTCQObbPTgBmU55+xKdIa/WIzLUmCXMvZdrOiFCX6z1AscE6TKqdOnQ/hxSsZI3Ha+M
+         Qus4+4BQ3cug+sZIFybtSDpjZnD8jc5ydPGRb2sEI1QHNwaBRvIHJ7L7JUAArg7YIHik
+         cQAA==
+X-Gm-Message-State: AOAM530g+defYqbuTb2smPZvp+iqvvwB/vpTWbSQ0kdfNeX3LZFzJOMV
+        Z/FZOUI+Y6wtJajQLvng2nY=
+X-Google-Smtp-Source: ABdhPJygrmmsdIFW8rKXVfMkLtQWY8gptVJpqzq0f98XrHiiDQPIDru+U45QZZ5AVf8FFNLLIWC8tg==
+X-Received: by 2002:adf:f3c7:: with SMTP id g7mr3624806wrp.91.1606826910838;
+        Tue, 01 Dec 2020 04:48:30 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.80])
+        by smtp.gmail.com with ESMTPSA id w21sm2624343wmi.29.2020.12.01.04.48.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 04:48:30 -0800 (PST)
+Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-19-djrscally@gmail.com>
+ <20201130205203.GQ4351@valkosipuli.retiisi.org.uk>
+ <3e8494a0-a2c0-59e7-46bb-9635c3c239dd@gmail.com>
+ <20201201064421.GR4351@valkosipuli.retiisi.org.uk>
+ <2a548835-78c6-8fe3-cceb-1fc000707157@gmail.com>
+ <20201201123244.GT4351@valkosipuli.retiisi.org.uk>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <0f85d875-cac2-8273-d687-e5845f4c2bb8@gmail.com>
+Date:   Tue, 1 Dec 2020 12:48:28 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20201201123244.GT4351@valkosipuli.retiisi.org.uk>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxqtF9O8ZfOc0YAA--.55233S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1fJr4kAr1UKw4rCr1ftFb_yoW8XrWDp3
-        Za9w1DZrZ8CFW7K3W8W34UXa10grs2yFW0q3Z0qry7uwn8Xan2gr4IkFZ7Wry3uwsIqrW3
-        Aw1Ig3s3uw1qy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xK
-        xwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
-        ZFpf9x07brNVkUUUUU=
-X-CM-SenderInfo: pvx0x0xj0l0wo6or00hjvr0hdfq/1tbiAQARC13QvMs0YgADs0
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only x86 and PowerPC implement the pkey-xxx.h, 
-and an error was reported when compiling protection_keys.c.
 
-Add a Arch judgment to compile "protection_keys" in the Makefile.
-
-If other arch implement this, add the arch name to the Makefile.
-eg:
-    ifneq (,$(findstring $(ARCH),powerpc mips ... ))
-
-Following build errors:
-    pkey-helpers.h:93:2: error: #error Architecture not supported
-     #error Architecture not supported
-    pkey-helpers.h:96:20: error: ‘PKEY_DISABLE_ACCESS’ undeclared
-     #define PKEY_MASK (PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE)
-                        ^
-    protection_keys.c:218:45: error: ‘PKEY_DISABLE_WRITE’ undeclared
-     pkey_assert(flags & (PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE));
-                                                ^
-
-Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
----
- tools/testing/selftests/vm/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index 30873b1..691893a 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -60,9 +60,13 @@ ifeq ($(CAN_BUILD_X86_64),1)
- TEST_GEN_FILES += $(BINARIES_64)
- endif
- else
-+
-+ifneq (,$(findstring $(ARCH),powerpc))
- TEST_GEN_FILES += protection_keys
- endif
- 
-+endif
-+
- ifneq (,$(filter $(MACHINE),arm64 ia64 mips64 parisc64 ppc64 ppc64le riscv64 s390x sh64 sparc64 x86_64))
- TEST_GEN_FILES += va_128TBswitch
- TEST_GEN_FILES += virtual_address_range
--- 
-1.8.3.1
-
+On 01/12/2020 12:32, Sakari Ailus wrote:
+> Hi Dan,
+>
+> On Tue, Dec 01, 2020 at 08:08:26AM +0000, Dan Scally wrote:
+>> On 01/12/2020 06:44, Sakari Ailus wrote:
+>>> Hi Dan,
+>>>
+>>> On Mon, Nov 30, 2020 at 11:06:03PM +0000, Dan Scally wrote:
+>>>> Hi Sakari
+>>>>
+>>>> On 30/11/2020 20:52, Sakari Ailus wrote:
+>>>>>> +static const struct acpi_device_id int3472_device_id[] = {
+>>>>>> +	{ "INT3472", 0 },
+>>>>> The INT3472 _HID is really allocated for the tps68470 PMIC chip. It may not
+>>>>> be used by other drivers; people will want to build kernels where both of
+>>>>> these ACPI table layouts are functional.
+>>>>>
+>>>>> Instead, I propose, that you add this as an option to the tps68470 driver
+>>>>> that figures out whether the ACPI device for the tps68470 device actually
+>>>>> describes something else, in a similar fashion you do with the cio2-bridge
+>>>>> driver. I think it may need a separate Kconfig option albeit this and
+>>>>> cio2-bridge cannot be used separately.
+>>>> It actually occurs to me that that may not work (I know I called that
+>>>> out as an option we considered, but that was a while ago actually). The
+>>>> reason I wasn't worried about the existing tps68470 driver binding to
+>>>> these devices is that it's an i2c driver, and these dummy devices don't
+>>>> have an I2cSerialBusV2, so no I2C device is created by them the kernel.
+>>>>
+>>>>
+>>>> Won't that mean the tps68470 driver won't ever be probed for these devices?
+>>> Oops. I missed this indeed was not an I²C driver. So please ignore the
+>>> comment.
+>>>
+>>> So I guess this wouldn't be an actual problem. I'd still like to test this
+>>> on a system with tps68470, as the rest of the set.
+>> On my Go2, it .probes() for the actual tps68740 (that machine has both
+>> types of INT3472 device) but fails with EINVAL when it can't find the
+>> CLDB buffer that these discrete type devices have. My understanding is
+>> that means it's free for the actual tps68470 driver to grab the device;
+>> although that's not happening because I had to blacklist that driver or
+>> it stops the machine from booting at the moment - haven't gotten round
+>> to investigating yet.
+> Oh, then the problem is actually there. If it probes the tps68470 driver on
+> the systems with Windows ACPI tables, then it should be that driver which
+> works with the Windows ACPI tables, too.
+Sorry, clarification here: The INT3472 driver in patch #18 runs probe()
+for the device representing a physical tps68470, but then -EINVAL's. The
+existing tps68470 mfd driver doesn't probe() for the dummy INT3472 device.
