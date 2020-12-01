@@ -2,185 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A18B2C9A2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230282C9A39
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387561AbgLAIzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:55:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
+        id S2387667AbgLAI4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:56:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387526AbgLAIzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:55:43 -0500
+        id S2387623AbgLAI4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:56:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E54922249;
-        Tue,  1 Dec 2020 08:54:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF8432220B;
+        Tue,  1 Dec 2020 08:55:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812880;
-        bh=mZob79UGActsfw4qwGSAo7t6H/Su6wnaETRC+gJClEw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UEdiqKyo3dJk0J2enT6iengV3R11cAauo9KHdM99FFaXWZ2wHMGgHW0uF2dpY3CWi
-         i5LEyVQAIxhk0YL5c+Z0cG9VDbF+aoRXsGAbQmeuKTn38kSy7t3JYA9FXJibsrQxUo
-         RuOLFEY+jyTsQ1O8GYv/LeBkvtrkOlpDtFhIfC4Q=
+        s=korg; t=1606812954;
+        bh=HpT54RHx9FS9Hv91WRVKiRblez5KYbBRdSNwdKR7CNc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=x8zKyR27RzN4VNiqH98sjYB5UiPAMh6UiyJCSch9H3kFWwqEVsQZG7Rt9bXtk7WUd
+         EgwFPxpZwMlZ7+Zqwa1xEEc5QL04zYD0DEaKp3iUsx0v9+luWvX3e0Zs33G0kM2euX
+         kJ+PkYY0fGDlKeuZoeWQvC04mtOMVZf6PiaFTHPc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: [PATCH 4.4 00/24] 4.4.247-rc1 review
-Date:   Tue,  1 Dec 2020 09:53:06 +0100
-Message-Id: <20201201084637.754785180@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 09/42] ALSA: hda/hdmi: Use single mutex unlock in error paths
+Date:   Tue,  1 Dec 2020 09:53:07 +0100
+Message-Id: <20201201084642.627849756@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.247-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.247-rc1
-X-KernelTest-Deadline: 2020-12-03T08:46+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.4.247 release.
-There are 24 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Takashi Iwai <tiwai@suse.de>
 
-Responses should be made by Thu, 03 Dec 2020 08:46:29 +0000.
-Anything received after that time might be too late.
+commit f69548ffafcc4942022f16f2f192b24143de1dba upstream
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.247-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-and the diffstat can be found below.
+Instead of calling mutex_unlock() at each error path multiple times,
+take the standard goto-and-a-single-unlock approach.  This will
+simplify the code and make easier to find the unbalanced mutex locks.
 
-thanks,
+No functional changes, but only the code readability improvement as a
+preliminary work for further changes.
 
-greg k-h
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ sound/pci/hda/patch_hdmi.c |   67 ++++++++++++++++++++++-----------------------
+ 1 file changed, 33 insertions(+), 34 deletions(-)
 
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.4.247-rc1
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: fix lockdep splat when reading qgroup config on mount
-
-Alan Stern <stern@rowland.harvard.edu>
-    USB: core: Fix regression in Hercules audio card
-
-Johan Hovold <johan@kernel.org>
-    USB: core: add endpoint-blacklist quirk
-
-Anand K Mistry <amistry@google.com>
-    x86/speculation: Fix prctl() when spectre_v2_user={seccomp,prctl},ibpb
-
-Alan Stern <stern@rowland.harvard.edu>
-    USB: core: Change %pK for __user pointers to %px
-
-Masami Hiramatsu <mhiramat@kernel.org>
-    perf probe: Fix to die_entrypc() returns error correctly
-
-Ard Biesheuvel <ardb@kernel.org>
-    efivarfs: revert "fix memory leak in efivarfs_create()"
-
-Krzysztof Kozlowski <krzk@kernel.org>
-    nfc: s3fwrn5: use signed integer for parsing GPIO numbers
-
-Xiongfeng Wang <wangxiongfeng2@huawei.com>
-    IB/mthca: fix return value of error branch in mthca_init_cq()
-
-Michael Chan <michael.chan@broadcom.com>
-    bnxt_en: Release PCI regions when DMA mask setup fails during probe.
-
-Dexuan Cui <decui@microsoft.com>
-    video: hyperv_fb: Fix the cache type when mapping the VRAM
-
-Zhang Changzhong <zhangchangzhong@huawei.com>
-    bnxt_en: fix error return code in bnxt_init_board()
-
-Stanley Chu <stanley.chu@mediatek.com>
-    scsi: ufs: Fix race between shutdown and runtime resume flow
-
-Mike Christie <michael.christie@oracle.com>
-    scsi: target: iscsi: Fix cmd abort fabric stop race
-
-Lee Duncan <lduncan@suse.com>
-    scsi: libiscsi: Fix NOP race condition
-
-Sugar Zhang <sugar.zhang@rock-chips.com>
-    dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
-
-Jens Axboe <axboe@kernel.dk>
-    proc: don't allow async path resolution of /proc/self components
-
-Brian Masney <bmasney@redhat.com>
-    x86/xen: don't unbind uninitialized lock_kicker_irq
-
-Pablo Ceballos <pceballos@google.com>
-    HID: hid-sensor-hub: Fix issue with devices with no report ID
-
-Hans de Goede <hdegoede@redhat.com>
-    Input: i8042 - allow insmod to succeed on devices without an i8042 controller
-
-Frank Yang <puilp0502@gmail.com>
-    HID: cypress: Support Varmilo Keyboards' media hotkeys
-
-Paolo Bonzini <pbonzini@redhat.com>
-    KVM: x86: Fix split-irqchip vs interrupt injection window request
-
-Qu Wenruo <wqu@suse.com>
-    btrfs: inode: Verify inode mode to avoid NULL pointer dereference
-
-Qu Wenruo <wqu@suse.com>
-    btrfs: tree-checker: Enhance chunk checker to validate chunk profile
-
-
--------------
-
-Diffstat:
-
- Makefile                                  |  4 +--
- arch/x86/include/asm/kvm_host.h           |  1 +
- arch/x86/kernel/cpu/bugs.c                |  4 +--
- arch/x86/kvm/irq.c                        |  2 +-
- arch/x86/kvm/x86.c                        | 18 +++++++------
- arch/x86/xen/spinlock.c                   | 12 ++++++++-
- drivers/dma/pl330.c                       |  2 +-
- drivers/hid/hid-cypress.c                 | 44 +++++++++++++++++++++++++++----
- drivers/hid/hid-ids.h                     |  2 ++
- drivers/hid/hid-sensor-hub.c              |  3 ++-
- drivers/infiniband/hw/mthca/mthca_cq.c    | 10 ++++---
- drivers/input/serio/i8042.c               | 12 ++++++++-
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |  3 ++-
- drivers/nfc/s3fwrn5/i2c.c                 |  4 +--
- drivers/scsi/libiscsi.c                   | 23 ++++++++++------
- drivers/scsi/ufs/ufshcd.c                 |  6 +----
- drivers/target/iscsi/iscsi_target.c       | 17 +++++++++---
- drivers/usb/core/config.c                 | 11 ++++++++
- drivers/usb/core/devio.c                  |  4 +--
- drivers/usb/core/quirks.c                 | 38 ++++++++++++++++++++++++++
- drivers/usb/core/usb.h                    |  3 +++
- drivers/video/fbdev/hyperv_fb.c           |  7 ++++-
- fs/btrfs/inode.c                          | 41 ++++++++++++++++++++++------
- fs/btrfs/qgroup.c                         |  2 +-
- fs/btrfs/tests/inode-tests.c              |  1 +
- fs/btrfs/volumes.c                        |  7 +++++
- fs/efivarfs/inode.c                       |  2 ++
- fs/efivarfs/super.c                       |  1 -
- fs/proc/self.c                            |  7 +++++
- include/linux/usb/quirks.h                |  3 +++
- include/scsi/libiscsi.h                   |  3 +++
- tools/perf/util/dwarf-aux.c               |  8 ++++++
- 32 files changed, 246 insertions(+), 59 deletions(-)
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -307,13 +307,13 @@ static int hdmi_eld_ctl_info(struct snd_
+ 	if (!per_pin) {
+ 		/* no pin is bound to the pcm */
+ 		uinfo->count = 0;
+-		mutex_unlock(&spec->pcm_lock);
+-		return 0;
++		goto unlock;
+ 	}
+ 	eld = &per_pin->sink_eld;
+ 	uinfo->count = eld->eld_valid ? eld->eld_size : 0;
+-	mutex_unlock(&spec->pcm_lock);
+ 
++ unlock:
++	mutex_unlock(&spec->pcm_lock);
+ 	return 0;
+ }
+ 
+@@ -325,6 +325,7 @@ static int hdmi_eld_ctl_get(struct snd_k
+ 	struct hdmi_spec_per_pin *per_pin;
+ 	struct hdmi_eld *eld;
+ 	int pcm_idx;
++	int err = 0;
+ 
+ 	pcm_idx = kcontrol->private_value;
+ 	mutex_lock(&spec->pcm_lock);
+@@ -333,16 +334,15 @@ static int hdmi_eld_ctl_get(struct snd_k
+ 		/* no pin is bound to the pcm */
+ 		memset(ucontrol->value.bytes.data, 0,
+ 		       ARRAY_SIZE(ucontrol->value.bytes.data));
+-		mutex_unlock(&spec->pcm_lock);
+-		return 0;
++		goto unlock;
+ 	}
+-	eld = &per_pin->sink_eld;
+ 
++	eld = &per_pin->sink_eld;
+ 	if (eld->eld_size > ARRAY_SIZE(ucontrol->value.bytes.data) ||
+ 	    eld->eld_size > ELD_MAX_SIZE) {
+-		mutex_unlock(&spec->pcm_lock);
+ 		snd_BUG();
+-		return -EINVAL;
++		err = -EINVAL;
++		goto unlock;
+ 	}
+ 
+ 	memset(ucontrol->value.bytes.data, 0,
+@@ -350,9 +350,10 @@ static int hdmi_eld_ctl_get(struct snd_k
+ 	if (eld->eld_valid)
+ 		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
+ 		       eld->eld_size);
+-	mutex_unlock(&spec->pcm_lock);
+ 
+-	return 0;
++ unlock:
++	mutex_unlock(&spec->pcm_lock);
++	return err;
+ }
+ 
+ static struct snd_kcontrol_new eld_bytes_ctl = {
+@@ -1114,8 +1115,8 @@ static int hdmi_pcm_open(struct hda_pcm_
+ 	pin_idx = hinfo_to_pin_index(codec, hinfo);
+ 	if (!spec->dyn_pcm_assign) {
+ 		if (snd_BUG_ON(pin_idx < 0)) {
+-			mutex_unlock(&spec->pcm_lock);
+-			return -EINVAL;
++			err = -EINVAL;
++			goto unlock;
+ 		}
+ 	} else {
+ 		/* no pin is assigned to the PCM
+@@ -1123,16 +1124,13 @@ static int hdmi_pcm_open(struct hda_pcm_
+ 		 */
+ 		if (pin_idx < 0) {
+ 			err = hdmi_pcm_open_no_pin(hinfo, codec, substream);
+-			mutex_unlock(&spec->pcm_lock);
+-			return err;
++			goto unlock;
+ 		}
+ 	}
+ 
+ 	err = hdmi_choose_cvt(codec, pin_idx, &cvt_idx);
+-	if (err < 0) {
+-		mutex_unlock(&spec->pcm_lock);
+-		return err;
+-	}
++	if (err < 0)
++		goto unlock;
+ 
+ 	per_cvt = get_cvt(spec, cvt_idx);
+ 	/* Claim converter */
+@@ -1168,12 +1166,11 @@ static int hdmi_pcm_open(struct hda_pcm_
+ 			per_cvt->assigned = 0;
+ 			hinfo->nid = 0;
+ 			snd_hda_spdif_ctls_unassign(codec, pcm_idx);
+-			mutex_unlock(&spec->pcm_lock);
+-			return -ENODEV;
++			err = -ENODEV;
++			goto unlock;
+ 		}
+ 	}
+ 
+-	mutex_unlock(&spec->pcm_lock);
+ 	/* Store the updated parameters */
+ 	runtime->hw.channels_min = hinfo->channels_min;
+ 	runtime->hw.channels_max = hinfo->channels_max;
+@@ -1182,7 +1179,9 @@ static int hdmi_pcm_open(struct hda_pcm_
+ 
+ 	snd_pcm_hw_constraint_step(substream->runtime, 0,
+ 				   SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+-	return 0;
++ unlock:
++	mutex_unlock(&spec->pcm_lock);
++	return err;
+ }
+ 
+ /*
+@@ -1726,7 +1725,7 @@ static int generic_hdmi_playback_pcm_pre
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	bool non_pcm;
+ 	int pinctl;
+-	int err;
++	int err = 0;
+ 
+ 	mutex_lock(&spec->pcm_lock);
+ 	pin_idx = hinfo_to_pin_index(codec, hinfo);
+@@ -1738,13 +1737,12 @@ static int generic_hdmi_playback_pcm_pre
+ 		pin_cvt_fixup(codec, NULL, cvt_nid);
+ 		snd_hda_codec_setup_stream(codec, cvt_nid,
+ 					stream_tag, 0, format);
+-		mutex_unlock(&spec->pcm_lock);
+-		return 0;
++		goto unlock;
+ 	}
+ 
+ 	if (snd_BUG_ON(pin_idx < 0)) {
+-		mutex_unlock(&spec->pcm_lock);
+-		return -EINVAL;
++		err = -EINVAL;
++		goto unlock;
+ 	}
+ 	per_pin = get_pin(spec, pin_idx);
+ 	pin_nid = per_pin->pin_nid;
+@@ -1781,6 +1779,7 @@ static int generic_hdmi_playback_pcm_pre
+ 
+ 	err = spec->ops.setup_stream(codec, cvt_nid, pin_nid,
+ 				 stream_tag, format);
++ unlock:
+ 	mutex_unlock(&spec->pcm_lock);
+ 	return err;
+ }
+@@ -1802,6 +1801,7 @@ static int hdmi_pcm_close(struct hda_pcm
+ 	struct hdmi_spec_per_cvt *per_cvt;
+ 	struct hdmi_spec_per_pin *per_pin;
+ 	int pinctl;
++	int err = 0;
+ 
+ 	if (hinfo->nid) {
+ 		pcm_idx = hinfo_to_pcm_index(codec, hinfo);
+@@ -1820,14 +1820,12 @@ static int hdmi_pcm_close(struct hda_pcm
+ 		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
+ 		clear_bit(pcm_idx, &spec->pcm_in_use);
+ 		pin_idx = hinfo_to_pin_index(codec, hinfo);
+-		if (spec->dyn_pcm_assign && pin_idx < 0) {
+-			mutex_unlock(&spec->pcm_lock);
+-			return 0;
+-		}
++		if (spec->dyn_pcm_assign && pin_idx < 0)
++			goto unlock;
+ 
+ 		if (snd_BUG_ON(pin_idx < 0)) {
+-			mutex_unlock(&spec->pcm_lock);
+-			return -EINVAL;
++			err = -EINVAL;
++			goto unlock;
+ 		}
+ 		per_pin = get_pin(spec, pin_idx);
+ 
+@@ -1846,10 +1844,11 @@ static int hdmi_pcm_close(struct hda_pcm
+ 		per_pin->setup = false;
+ 		per_pin->channels = 0;
+ 		mutex_unlock(&per_pin->lock);
++	unlock:
+ 		mutex_unlock(&spec->pcm_lock);
+ 	}
+ 
+-	return 0;
++	return err;
+ }
+ 
+ static const struct hda_pcm_ops generic_ops = {
 
 
