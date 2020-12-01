@@ -2,248 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E5A2CAFDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6C92CAFD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgLAWRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:17:54 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30152 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725987AbgLAWRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 17:17:54 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1MEbMA074002;
-        Tue, 1 Dec 2020 17:17:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=FnnbNNDbUNFtSFb6EmbUdq9Yjs2DYligcGitHr17FfI=;
- b=jDcQTL3RIdKbrT5Vc0x8QD3X2b2YIftX0ACyVmrj7f9fePW8PU9GXNJ14dj7Qt95eYX0
- Nl26lPHWeq62ean39s8sO48UsOD/ePDaYlWzN8oJDTr5cKyGaxZ/ViFnOt20Dh8Aama6
- LaADRzro6Kg36+X97mnbJVLjkzM774NuDJ3EEnXrZnPSe/yntDWRyRrSNVHtnnXZ3G8I
- B/60XC+Mn0m0/FOv7T+m6W6+rPFTKx5WB1JbHsLf51UP+/r+v5yFzKj/51yYAJlYWxUC
- XNmivQrQTREA0LG20GfQfjcqxtaZu0lr/UBHWSb3LKV0TWPbOzlv7RS5bSeyVNVRawtK ZA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355jabdxae-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 17:15:54 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B1MDjkR071197;
-        Tue, 1 Dec 2020 17:13:46 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355jabdx2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 17:13:45 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B1LpQdd026599;
-        Tue, 1 Dec 2020 22:13:01 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03wdc.us.ibm.com with ESMTP id 353e693hpk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 22:13:01 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B1MCpEM21365152
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Dec 2020 22:12:52 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E6536A07B;
-        Tue,  1 Dec 2020 22:12:58 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 293A96A06F;
-        Tue,  1 Dec 2020 22:12:57 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.195.249])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Dec 2020 22:12:56 +0000 (GMT)
-Subject: Re: [PATCH v12 12/17] s390/vfio-ap: allow hot plug/unplug of AP
- resources using mdev device
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
- <20201124214016.3013-13-akrowiak@linux.ibm.com>
- <20201129025250.16eb8355.pasic@linux.ibm.com>
- <103cbe02-2093-c950-8d65-d3dc385942ce@linux.ibm.com>
- <20201201003227.0c3696fc.pasic@linux.ibm.com>
- <20201201185659.72ca96c8.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <84d1126b-08f8-9f8e-ad72-490625aabbd6@linux.ibm.com>
-Date:   Tue, 1 Dec 2020 17:12:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726770AbgLAWOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 17:14:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726725AbgLAWOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 17:14:23 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E5A62086A;
+        Tue,  1 Dec 2020 22:13:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606860822;
+        bh=2xrbD8thbVCarGRICSLuZaB24MH3Ul7Cg9RvDfmf4DQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ysNGN25fQy/Ymm81YC3LmG0tJLl94UuV+x7K88K0I/f1KofY7JsGSat3gd5CZzLt/
+         11Jvka4WqJtUVgZoQ68UMhDZ263WDFdr564TKAxIcPZIl1y1RTtIyDpk4LwXDoO3t2
+         rOf1JfijKBe7aJN5gRwhmBM/lrQ1Nuc/TJp7mUg0=
+Date:   Tue, 1 Dec 2020 22:13:36 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 12/14] arm64: Prevent offlining first CPU with 32-bit
+ EL0 on mismatched system
+Message-ID: <20201201221335.GA28496@willie-the-truck>
+References: <20201124155039.13804-1-will@kernel.org>
+ <20201124155039.13804-13-will@kernel.org>
+ <20201127134122.oughqeizhl2j4iky@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201201185659.72ca96c8.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-01_11:2020-11-30,2020-12-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 clxscore=1015 adultscore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 bulkscore=0 phishscore=0
- suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010131
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201127134122.oughqeizhl2j4iky@e107158-lin.cambridge.arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 27, 2020 at 01:41:22PM +0000, Qais Yousef wrote:
+> On 11/24/20 15:50, Will Deacon wrote:
+> > If we want to support 32-bit applications, then when we identify a CPU
+> > with mismatched 32-bit EL0 support we must ensure that we will always
+> > have an active 32-bit CPU available to us from then on. This is important
+> > for the scheduler, because is_cpu_allowed() will be constrained to 32-bit
+> > CPUs for compat tasks and forced migration due to a hotplug event will
+> > hang if no 32-bit CPUs are available.
+> > 
+> > On detecting a mismatch, prevent offlining of either the mismatching CPU
+> > if it is 32-bit capable, or find the first active 32-bit capable CPU
+> > otherwise.
+>                                        ^^^^^
+> 
+> You use cpumask_any_and(). Better use cpumask_first_and()? We have a truly
+> random function now, cpumask_any_and_distribute(), if you'd like to pick
+> something 'truly' random.
 
+I think cpumask_any_and() is better, because it makes it clear that I don't
+care about which CPU is chosen (and under the hood it ends up calling
+cpumask_first_and() _anyway_). So this is purely cosmetic.
 
-On 12/1/20 12:56 PM, Halil Pasic wrote:
-> On Tue, 1 Dec 2020 00:32:27 +0100
-> Halil Pasic <pasic@linux.ibm.com> wrote:
->
->>>
->>> On 11/28/20 8:52 PM, Halil Pasic wrote:
->> [..]
->>>>> * Unassign adapter from mdev's matrix:
->>>>>
->>>>>     The domain will be hot unplugged from the KVM guest if it is
->>>>>     assigned to the guest's matrix.
->>>>>
->>>>> * Assign a control domain:
->>>>>
->>>>>     The control domain will be hot plugged into the KVM guest if it is not
->>>>>     assigned to the guest's APCB. The AP architecture ensures a guest will
->>>>>     only get access to the control domain if it is in the host's AP
->>>>>     configuration, so there is no risk in hot plugging it; however, it will
->>>>>     become automatically available to the guest when it is added to the host
->>>>>     configuration.
->>>>>
->>>>> * Unassign a control domain:
->>>>>
->>>>>     The control domain will be hot unplugged from the KVM guest if it is
->>>>>     assigned to the guest's APCB.
->>>> This is where things start getting tricky. E.g. do we need to revise
->>>> filtering after an unassign? (For example an assign_adapter X didn't
->>>> change the shadow, because queue XY was missing, but now we unplug domain
->>>> Y. Should the adapter X pop up? I guess it should.)
->>> I suppose that makes sense at the expense of making the code
->>> more complex. It is essentially what we had in the prior version
->>> which used the same filtering code for assignment as well as
->>> host AP configuration changes.
->>>    
->> Will have to think about it some more. Making the user unplug and
->> replug an adapter because at some point it got filtered, but there
->> is no need to filter it does not feel right. On the other hand, I'm
->> afraid I'm complaining in circles.
-> I did some thinking. The following statements are about the state of
-> affairs, when all 17 patches are applied. I'm commenting here, because
-> I believe this is the patch that introduces the most controversial code.
->
-> First about low level problems with the current code/design. The other is
-> empty handling in vfio_ap_assign_apid_to_apcb() (and
-> vfio_ap_assign_apqi_to_apcb()) is troublesome. The final product
-> allows for over-commitment, i.e. assignment of e.g. domains that
-> are not in the crypto host config. Let's assume the host LPAR
-> has usage domains 1 and 2, and adapters 1, 2, and 3. The apmask
-> and aqmask are both 0 (all in on vfio), all bound. We start with an empty
-> mdev that is tied to a running guest:
-> assign_adapter 1
-> assign_adapter 2
-> assign_adapter 3
-> assign_adapter 4
-> all of these will work. The resulting shadow_apcb is completely empty. No
-> commit_apcb.
-> assign_domain 1
-> assign_domain 2
-> assign_domain 3
-> all of these will work. But again the shadow_apcb is completely empty at
-> the end: we did get to the loop that is checking the boundness of the
-> queues, but please note that we are checking against matrix.apm, and
-> adapter 4 is not in the config of the host.
->
-> I've hacked up a fixup patch for these problems that simplifies the
-> code considerably, but there are design level issues, that run deeper,
-> so I'm not sure the fixups are the way to go.
->
-> Now lets talk about design level stuff. Currently the assignment
-> operations are designed in to accommodate the FCFS principle. This
-> is a blessing and a curse at the same time.
->
-> Consider the following scenarios. We have an empty (nothing assigned
-> mdev) and the following queues are bound to the vfio_ap driver:
-> 0.0
-> 0.1
-> 1.0
-> If the we do
-> asssign_adapter 0
-> assign_domain 0
-> assign_domain 1
-> assign_adapter 1
-> We end up with the guest_matrix
-> 0.0
-> 0.1
-> and the matrix
-> 0.0
-> 0.1
-> 1.0
-> 1.0
->
-> That is a different result compared to
-> asssign_adapter 0
-> assign_domain 0
-> assign_adapter 1
-> assign_domain 1
-> or the situation where we have 0.0, 0.1, 1.0 and 1.1 bound to vfio_ap
-> and then 1.1 gets unbound.
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index 29017cbb6c8e..fe470683b43e 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -1237,6 +1237,8 @@ has_cpuid_feature(const struct arm64_cpu_capabilities *entry, int scope)
+> >  
+> >  static int enable_mismatched_32bit_el0(unsigned int cpu)
+> >  {
+> > +	static int lucky_winner = -1;
+> > +
+> >  	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
+> >  	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
+> >  
+> > @@ -1245,6 +1247,22 @@ static int enable_mismatched_32bit_el0(unsigned int cpu)
+> >  		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
+> >  	}
+> >  
+> > +	if (cpumask_test_cpu(0, cpu_32bit_el0_mask) == cpu_32bit)
+> > +		return 0;
+> 
+> Hmm I'm struggling to get what you're doing here. You're treating CPU0 (the
+> boot CPU) specially here, but I don't get why?
 
-In v11 of the patch series, the filtering code always filters
-the matrix assigned to the mdev and is invoked whenever
-an adapter or domain is assigned, a queue is probed and
-when the AP bus scan complete notification is received and
-adapters and/or domains have been added to the host AP
-configuration. So I made a slight modification to that
-filtering function to filter only by APID and ran the above
-scenarios. In each case, the resulting guest matrix was
-identicle. I also tested the bind/unbind and achieved the
-same results.
+If our ability to execute 32-bit code is the same as the boot CPU then we
+don't have to do anything. That way, we can postpone nominating the lucky
+winner until we really need to.
 
->
-> For the same system state (bound, config, ap_perm, matrix) you get a
-> different outcomes (guest_matrix), because the outcomes depend on
-> history.
->
-> Another thing is recovery. I believe the main idea behind shadow_apcb
-> is that we should auto recover once the resources are available again.
-> The current design choices make recovery more difficult to think about
-> because we may end up having either the apid or the apqi filtered on
-> a 'hole' (an queue missing for reasons different than, belonging to
-> default, or not being in the host config).
+> > +	if (lucky_winner >= 0)
+> > +		return 0;
+> > +
+> > +	/*
+> > +	 * We've detected a mismatch. We need to keep one of our CPUs with
+> > +	 * 32-bit EL0 online so that is_cpu_allowed() doesn't end up rejecting
+> > +	 * every CPU in the system for a 32-bit task.
+> > +	 */
+> > +	lucky_winner = cpu_32bit ? cpu : cpumask_any_and(cpu_32bit_el0_mask,
+> > +							 cpu_active_mask);
+> 
+> cpumask_any_and() could return an error. It could be hard or even impossible to
+> trigger, but better check if lucky_winner is not >= nr_cpu_ids before calling
+> get_cpu_device(lucky_winner) to stay in the safe side and avoid a potential
+> splat?
 
-The filtering code from the v11 series with the tweak I
-mentioned above accomplishes this. I tested this by
-doing manual binds/unbinds of a queue using the
-scenarios you layed out.
+I don't see how it can return an error here. There are two cases to
+consider:
 
->
-> I still think for these cases filtering out the apid is the lesser
-> evil. Yes a hotplug of a domain making hot unplugging an adapter is
-> ugly, but at least I can describe that. So I propose the following.
-> Let me hack up a fixup that morphs things in this direction. Maybe
-> I will run into unexpected problems, but if I don't then we will
-> have an alternative design you can run your testcases against. How about
-> that?
+  1. The CPU being brought online is the first 32-bit-capable CPU. In which
+     case, we don't use cpumask_any_and() at all.
 
-I appreciate the offer, but I believe with the change to the v11
-filtering code I described above we have a solution. One of
-your objections to the filtering code was looping over all
-assigned adapters/domains each time an adapter or
-domain is assigned. It should also be easy to examine only
-the APQNs involving the new APID or APQI being assigned.
-Again, I appreciate your offer, but I don't think it is necessary
-to take you away from your priorities to involve yourself in
-mine.
+  2. The CPU being brought online is the first 64-bit-only CPU. In which
+     case, the CPU doing the onlining is 32-bit capable and will be in
+     the active mask.
 
+> We can do better by the way and do smarter check in remove_cpu() to block
+> offlining the last aarch32 capable CPU without 'hardcoding' a specific cpu. But
+> won't insist and happy to wait for someone to come complaining this is not good
+> enough first.
 
+I couldn't find a satisfactory way to do this without the possibility of
+subtle races, so I'd prefer to keep it simple for the moment. In particular,
+I wanted to make sure that somebody iterating over the cpu_possible_mask
+and calling is_cpu_allowed(p, cpu) for each CPU and a 32-bit task can not
+reach the end of the mask without ever getting a value of 'true'.
 
+I'm open to revisiting this once some of this is merged, but right now
+I don't think it's needed and it certainly adds complexity.
 
->
-> Regards,
-> Halil
+> Some vendors play games with hotplug to help with saving power. They might want
+> to dynamically nominate the last man standing 32bit capable CPU. Again, we can
+> wait for someone to complain first I guess.
 
+The reality is that either all "big" cores or all "little" cores will be the
+ones that are 32-bit capable, so I doubt it matters an awful lot which one
+of the cluster is left online from a PM perspective. The real problem is
+that a core has to be left online at all, but I don't think we can avoid
+that.
+
+Will
