@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF8D2C9A08
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A05F32C9A38
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728781AbgLAIyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:54:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57660 "EHLO mail.kernel.org"
+        id S2387658AbgLAI4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:56:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727670AbgLAIyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:54:52 -0500
+        id S2387647AbgLAI4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:56:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E30C221FF;
-        Tue,  1 Dec 2020 08:53:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1984222260;
+        Tue,  1 Dec 2020 08:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812829;
-        bh=Lp4j60jAjeWnw7tqIzJTb7/dkrXJIFmQGxKlGCYuCbE=;
+        s=korg; t=1606812930;
+        bh=DiPoC0zHTq0aKNFarUai5BdPAzCvUtJPT7y9roUYJDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RQMZXReeqwNYzAYHYM+SWZt1FBVikLmResFn/AllcMGrFCpo9aRBl0DzumIEkktaz
-         zm/np/DRfIS1Ugoyero/iOhGbO04zO1TwNAChY9xpvomYO1zxYAD4gTXeQGfPhBpi9
-         BcJw4RWtKHR4W+uHLOv3b+GgINc2afH30uAQTzFw=
+        b=UMIu3cRbslsTguIMTPZ5AL4M8X/3HF3XkUIBhQYxYudmXqzNaUx6Iv9M7QyMbW3d+
+         MbMgW2f+YojmN10iOnNqaoNm9mYel+M/6ThLEpVkOry4z6Y2Wrn4glJ1+9SY2eOv/5
+         KxTXnEUGHdP0wmRfxcw74qeyFgPfsuhrmEn53P2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Michael Chan <michael.chan@broadcom.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 15/24] bnxt_en: Release PCI regions when DMA mask setup fails during probe.
-Date:   Tue,  1 Dec 2020 09:53:21 +0100
-Message-Id: <20201201084638.509434706@linuxfoundation.org>
+Subject: [PATCH 4.9 24/42] bnxt_en: fix error return code in bnxt_init_board()
+Date:   Tue,  1 Dec 2020 09:53:22 +0100
+Message-Id: <20201201084644.003452012@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
-References: <20201201084637.754785180@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit c54bc3ced5106663c2f2b44071800621f505b00e ]
+[ Upstream commit 3383176efc0fb0c0900a191026468a58668b4214 ]
 
-Jump to init_err_release to cleanup.  bnxt_unmap_bars() will also be
-called but it will do nothing if the BARs are not mapped yet.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
 Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Link: https://lore.kernel.org/r/1605858271-8209-1-git-send-email-michael.chan@broadcom.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+Link: https://lore.kernel.org/r/1605792621-6268-1-git-send-email-zhangchangzhong@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index aff1a23078903..250ecbcca019f 100644
+index dc34cfa2a58fc..63c043e8824fc 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -5199,7 +5199,7 @@ static int bnxt_init_board(struct pci_dev *pdev, struct net_device *dev)
+@@ -6319,6 +6319,7 @@ static int bnxt_init_board(struct pci_dev *pdev, struct net_device *dev)
+ 	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0 &&
  	    dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
  		dev_err(&pdev->dev, "System does not support DMA, aborting\n");
- 		rc = -EIO;
--		goto init_err_disable;
-+		goto init_err_release;
++		rc = -EIO;
+ 		goto init_err_disable;
  	}
  
- 	pci_set_master(pdev);
 -- 
 2.27.0
 
