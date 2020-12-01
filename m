@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F632CA3DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9272CA3E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391133AbgLAN3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391125AbgLAN3h (ORCPT
+        id S2391145AbgLANaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:30:20 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:44554 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387677AbgLANaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:29:37 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58919C0613CF;
-        Tue,  1 Dec 2020 05:28:56 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606829334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1YJRW59Yy59fUBwrYfLxtsF+fz7y5/bsfKwLhEMMwLw=;
-        b=QkkZneQ8xwGX3u1ADdvLDl+jTbrRiew2RoZhQfnP2RV/XPHCyLM8IJ5uHBUgtGBK9TnYx5
-        4FaQ5XFpkNhDyG5N0g9d6ydepGNxMm5LiCQN0i9wWLBBTlFZfjVDbVm2XiqLj4sbn7soPl
-        yWtKy92JfyaCsxW6ttUQChMf5IPEVOj4NMuiQw2CNMNtjLG9oeKbngCwB/ZMLuFRqqHsuc
-        hjhfXHSICJHvHEf+YVlJ7Cxi84xCcuDd9QfmAaOXHVTF3XOHEIHjGMJY3X4x1MJiYs7mpd
-        tk+8dB6WRxyJ2JG5DgAa03+cr3KVC5pIfGr0X+iZ6lUXOCImgYa7zC3aG8Ncag==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606829334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1YJRW59Yy59fUBwrYfLxtsF+fz7y5/bsfKwLhEMMwLw=;
-        b=gn3xJ3yiG4kyabDU1Ak6NGZPA+InzSnHjXocPnttQulDD8/gasYGRPjBl6VaUQtbSpZGkq
-        iSAPphxGbQTt/mAA==
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: crypto: sun4i-ss: error with kmap
-In-Reply-To: <20201201130102.GA23461@Red>
-References: <20201201130102.GA23461@Red>
-Date:   Tue, 01 Dec 2020 14:28:54 +0100
-Message-ID: <87ft4phcyx.fsf@nanos.tec.linutronix.de>
+        Tue, 1 Dec 2020 08:30:20 -0500
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 0B1DT7KD007726;
+        Tue, 1 Dec 2020 22:29:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0B1DT7KD007726
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606829348;
+        bh=zMmj+GVqjUXMVH8pNvSfsy5XEgzhkJMYROtJdnMN3pY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iWwW+u7AL0wi0eiCli/wxrySa1Ui0X2/+q040eqPUcBUg0OpAQVTSbNkrpTlbQiVo
+         y2Gn/lLQ1NrrOj1Epa0ZR4DXlxVXAFSrPi4LKHY+1m4cT1RatL/mDTpnbQ27Ft5UuS
+         ZMSkRtKi179h2FVxV4/ywcJJshTUC5dXcO92eRfmcU/1V5/YvOC1i8q21I/RYslapR
+         QaFcRUytmzIvxKR5E/N1DgSrDcIg3y6JhOHkTmoUQg+ghDvEF0otzPtYF2XQdXmWcS
+         +5igzk5l1lvtycWphzgOoIDGHXH9pH+UJfdQBtyfPJDLWbpG6+CR9kmQhskO3eBaIA
+         QNDTwavPoQk6w==
+X-Nifty-SrcIP: [209.85.215.181]
+Received: by mail-pg1-f181.google.com with SMTP id t37so1193127pga.7;
+        Tue, 01 Dec 2020 05:29:08 -0800 (PST)
+X-Gm-Message-State: AOAM530sgs5smY12zI0S1bx15OVJCzGD5Fb2ONo4vxDnm9V/tgAqjkph
+        yGeirDcZ8BHNnUSXxzI1wqbSPtz4fnhCsF3C+Rc=
+X-Google-Smtp-Source: ABdhPJwLhVrfKiBGqZeTDEx8ocu6LlfKlsT/3v235qiU0r8c0WZO0DqBqtiJr5jMPBwrzY0PYOy/XUJP6+BhtIdsI3s=
+X-Received: by 2002:aa7:9606:0:b029:198:14c4:4f44 with SMTP id
+ q6-20020aa796060000b029019814c44f44mr2478107pfg.80.1606829347544; Tue, 01 Dec
+ 2020 05:29:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201113195553.1487659-1-natechancellor@gmail.com>
+ <20201119204656.3261686-1-natechancellor@gmail.com> <202011201607.75FA476@keescook>
+In-Reply-To: <202011201607.75FA476@keescook>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 1 Dec 2020 22:28:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASmiWkw3+F1_AJWYDAXntcpcNQmdX0d_hVQq7oxQ_m74A@mail.gmail.com>
+Message-ID: <CAK7LNASmiWkw3+F1_AJWYDAXntcpcNQmdX0d_hVQq7oxQ_m74A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] kbuild: Hoist '--orphan-handling' into Kconfig
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01 2020 at 14:01, Corentin Labbe wrote:
-> +[  213.050152] ------------[ cut here ]------------
-> +[  213.050207] WARNING: CPU: 0 PID: 18430 at mm/highmem.c:581 kunmap_local_indexed+0x194/0x1d4
-> +[  213.050214] Modules linked in: sm4_generic authenc vmac xcbc hmac streebog_generic sm3_generic sha3_generic crct10dif_generic crct10dif_common seed rmd320 rmd256 rmd160 rmd128 cts lzo lzo_compress salsa20_generic camellia_generic fcrypt pcbc tgr192 anubis wp512 khazad tea michael_mic arc4 cast6_generic cast5_generic cast_common deflate zlib_deflate sha512_generic cfb ofb serpent_generic lrw twofish_generic twofish_common blowfish_generic blowfish_common md4
-> +[  213.050410] CPU: 0 PID: 18430 Comm: cryptsetup Not tainted 5.10.0-rc5-next-20201130-00059-gf7ecf0611042-dirty #242
-> +[  213.050416] Hardware name: Allwinner sun7i (A20) Family
-> +[  213.050448] [<c010d730>] (unwind_backtrace) from [<c010a218>] (show_stack+0x10/0x14)
-> +[  213.050465] [<c010a218>] (show_stack) from [<c08bbdcc>] (dump_stack+0x98/0xac)
-> +[  213.050479] [<c08bbdcc>] (dump_stack) from [<c08b93ac>] (__warn+0xc0/0xd8)
-> +[  213.050491] [<c08b93ac>] (__warn) from [<c08b9428>] (warn_slowpath_fmt+0x64/0xc0)
-> +[  213.050505] [<c08b9428>] (warn_slowpath_fmt) from [<c02018b4>] (kunmap_local_indexed+0x194/0x1d4)
-> +[  213.050525] [<c02018b4>] (kunmap_local_indexed) from [<c03e0390>] (sg_miter_stop+0xb4/0x164)
-> +[  213.050541] [<c03e0390>] (sg_miter_stop) from [<c03e082c>] (sg_miter_next+0xc/0xe4)
-> +[  213.050560] [<c03e082c>] (sg_miter_next) from [<c06b2d04>] (sun4i_ss_opti_poll+0x278/0x40c)
-> +[  213.050575] [<c06b2d04>] (sun4i_ss_opti_poll) from [<c06b338c>] (sun4i_ss_cipher_poll+0x4f4/0x5e4)
-> +[  213.050590] [<c06b338c>] (sun4i_ss_cipher_poll) from [<c03991d4>] (crypto_skcipher_encrypt+0x38/0x5c)
-> +[  213.050604] [<c03991d4>] (crypto_skcipher_encrypt) from [<c03aa980>] (xts_encrypt+0x8c/0xd4)
-> +[  213.050617] [<c03aa980>] (xts_encrypt) from [<c03991d4>] (crypto_skcipher_encrypt+0x38/0x5c)
-> +[  213.050631] [<c03991d4>] (crypto_skcipher_encrypt) from [<c03b3d94>] (skcipher_recvmsg+0x364/0x43c)
-> +[  213.050646] [<c03b3d94>] (skcipher_recvmsg) from [<c0719650>] (sock_read_iter+0xa8/0xf8)
-> +[  213.050663] [<c0719650>] (sock_read_iter) from [<c0239e98>] (vfs_read+0x2b8/0x2d8)
-> +[  213.050676] [<c0239e98>] (vfs_read) from [<c023a398>] (ksys_read+0xb0/0xe4)
-> +[  213.050688] [<c023a398>] (ksys_read) from [<c0100060>] (ret_fast_syscall+0x0/0x58)
-> +[  213.050695] Exception stack(0xc4d13fa8 to 0xc4d13ff0)
-> +[  213.050707] 3fa0:                   00000006 b6f084d0 00000006 b47ff000 00010000 00000000
-> +[  213.050718] 3fc0: 00000006 b6f084d0 00010000 00000003 00000030 beb6e9bc 00000010 beb6e9fc
-> +[  213.050727] 3fe0: b6e3609c beb6e958 b6cc8504 b6cc851c
-> +[  213.050735] ---[ end trace 915906e6b0e8a55d ]---
+On Sat, Nov 21, 2020 at 9:08 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Nov 19, 2020 at 01:46:56PM -0700, Nathan Chancellor wrote:
+> > Currently, '--orphan-handling=warn' is spread out across four different
+> > architectures in their respective Makefiles, which makes it a little
+> > unruly to deal with in case it needs to be disabled for a specific
+> > linker version (in this case, ld.lld 10.0.1).
+> >
+> > To make it easier to control this, hoist this warning into Kconfig and
+> > the main Makefile so that disabling it is simpler, as the warning will
+> > only be enabled in a couple places (main Makefile and a couple of
+> > compressed boot folders that blow away LDFLAGS_vmlinx) and making it
+> > conditional is easier due to Kconfig syntax. One small additional
+> > benefit of this is saving a call to ld-option on incremental builds
+> > because we will have already evaluated it for CONFIG_LD_ORPHAN_WARN.
+> >
+> > To keep the list of supported architectures the same, introduce
+> > CONFIG_ARCH_WANT_LD_ORPHAN_WARN, which an architecture can select to
+> > gain this automatically after all of the sections are specified and size
+> > asserted. A special thanks to Kees Cook for the help text on this
+> > config.
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1187
+> > Acked-by: Kees Cook <keescook@chromium.org>
+> > Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+>
+> Masahiro, do you want to take these to get them to Linus for v5.10? I
+> can send them if you'd prefer.
+>
 
-Hmm. No registers there. Can you apply the patch below so we can see the
-address?
 
-Thanks,
 
-        tglx
----
-diff --git a/mm/highmem.c b/mm/highmem.c
-index b49364a306b8..240fc6e5bfb4 100644
---- a/mm/highmem.c
-+++ b/mm/highmem.c
-@@ -571,8 +571,10 @@ void kunmap_local_indexed(void *vaddr)
- 		 * PAGE_OFFSET. Warn for all other addresses which are in
- 		 * the user space part of the virtual address space.
- 		 */
--		if (!kmap_high_unmap_local(addr))
-+		if (!kmap_high_unmap_local(addr)) {
-+			pr_err("kunmap_local: vaddr %lx\n", (unsigned long) vaddr);
- 			WARN_ON_ONCE(addr < PAGE_OFFSET);
-+		}
- 		return;
- 	}
- 
+Sorry for the delay.
+
+Applied to linux-kbuild.
+
+
+
+
+
+> -Kees
+>
+> --
+> Kees Cook
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/202011201607.75FA476%40keescook.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
