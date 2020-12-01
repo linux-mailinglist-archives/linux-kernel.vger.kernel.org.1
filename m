@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF4A2C9E4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20542C9E50
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgLAJrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727892AbgLAJrD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:47:03 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82303C0613CF;
-        Tue,  1 Dec 2020 01:46:23 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2387618AbgLAJri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:47:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387466AbgLAJri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:47:38 -0500
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ClcgJ1NLgz9sVq;
-        Tue,  1 Dec 2020 20:46:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1606815981;
-        bh=fD4i2kWXYM+NtcZwGi7GTAphrjHdrxgTeHlMHf91pa0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=lOWjBLMUC9WIwnhRiztyWkKagDwj6VM4DtUDLlX9dsYxaM0KfRpzIwn2NEsGwyAHI
-         JWChlSyQwEaZDEJY2iznV9TMCvsKQn/lj3dEatn4CSDhv4TFH6D6SRc/T575MrOwUt
-         6XJM1OgLF8NzenHXp4v9k1GTrHq4XOrW7HZcJCWoBDuseDL33J6FUUjMFzkYSACsKy
-         Vu+wLorwjC+DHzqxv9DTHlxQSnxSTN04hEZtH2uI3Q0mh5gCPhaw52+aafk16VteWW
-         y8JumwPf965YkB4gV7wf8I/DCZM+duKMrfajQssf1KKsqrWj3PYevBAaq9lqq1tZzS
-         HmveDfLK7KJNQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Geoff Levand <geoff@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 02/24] exec: Simplify unshare_files
-In-Reply-To: <CAK8P3a0hPG1cTxksTBCJHkAV_=TLZLCi2pZYMk2Dc2-kLzD3rg@mail.gmail.com>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org> <20201120231441.29911-2-ebiederm@xmission.com> <20201123175052.GA20279@redhat.com> <CAHk-=wj2OnjWr696z4yzDO9_mF44ND60qBHPvi1i9DBrjdLvUw@mail.gmail.com> <87im9vx08i.fsf@x220.int.ebiederm.org> <87pn42r0n7.fsf@x220.int.ebiederm.org> <CAHk-=wi-h8y5MK83DA6Vz2TDSQf4eEadddhWLTT_94bP996=Ug@mail.gmail.com> <CAK8P3a3z1tZSSSyK=tZOkUTqXvewJgd6ntHMysY0gGQ7hPWwfw@mail.gmail.com> <ed83033f-80af-5be0-ecbe-f2bf5c2075e9@infradead.org> <877dqap76p.fsf@x220.int.ebiederm.org> <CAK8P3a0hPG1cTxksTBCJHkAV_=TLZLCi2pZYMk2Dc2-kLzD3rg@mail.gmail.com>
-Date:   Tue, 01 Dec 2020 20:46:19 +1100
-Message-ID: <87lfehx3is.fsf@mpe.ellerman.id.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 60D10206C0;
+        Tue,  1 Dec 2020 09:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606816017;
+        bh=w3kwOokByEnA8Ps2WHcCoXlwpesQvmrePz9i2AHTGMk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OFhBUOqf+6W7jt8MjlUYx5iOfaUyfRU3ijEHBmqXxtNKXtr2KozSOuYlV6h9k4FGz
+         IukiyBuEaXrcHaz3UVoPD9/bqb+xoa9CiuH1DYbntVau3Da8o9QZO59Yz190GOuKow
+         l/hv5CbXUNrx5xrtmhNEdKk6Tj3EUwc8FEud9v8M=
+Received: by pali.im (Postfix)
+        id AE07C11CF; Tue,  1 Dec 2020 10:46:54 +0100 (CET)
+Date:   Tue, 1 Dec 2020 10:46:54 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Terry Zhou <bjzhou@marvell.com>,
+        Konstantin Porotchkin <kostap@marvell.com>
+Subject: Re: [PATCH] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
+Message-ID: <20201201094654.n3w632cmtnsg2irh@pali>
+References: <20201106100039.11385-1-pali@kernel.org>
+ <20201106115118.43eab492@kernel.org>
+ <20201113101919.wega756egs7dinth@pali>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201113101919.wega756egs7dinth@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
-...
->
-> If there are no objections, I can also send a patch to remove
-> CONFIG_PPC_CELL_NATIVE, PPC_IBM_CELL_BLADE and
-> everything that depends on those symbols, leaving only the
-> bits needed by ps3 in the arch/powerpc/platforms/cell directory.
+PING! I would like to remind this patch.
 
-I'm not sure I'd merge it.
-
-The only way I am able to (easily) test Cell code is by using one of
-those blades, a QS22 to be precise.
-
-So if the blade support is removed then the rest of the Cell code is
-likely to bitrot quickly. Which may be the goal.
-
-I'd be more inclined to support removal of the core dump code. That
-seems highly unlikely to be in active use, I don't have the impression
-there are many folks doing active development on Cell.
-
-cheers
+On Friday 13 November 2020 11:19:19 Pali Rohár wrote:
+> Michael, Stephen: Could you take this clk patch?
+> 
+> On Friday 06 November 2020 11:51:18 Marek Behún wrote:
+> > Also, this is how A3720 WTMI code and ATF determines XTAL clock rate.
+> > No reason for kernel to do it differently.
+> > 
+> > Reviewed-by: Marek Behún <kabel@kernel.org>
+> > 
+> > On Fri,  6 Nov 2020 11:00:39 +0100
+> > Pali Rohár <pali@kernel.org> wrote:
+> > 
+> > > From: Terry Zhou <bjzhou@marvell.com>
+> > > 
+> > > There is an error in the current code that the XTAL MODE
+> > > pin was set to NB MPP1_31 which should be NB MPP1_9.
+> > > The latch register of NB MPP1_9 has different offset of 0x8.
+> > > 
+> > > Signed-off-by: Terry Zhou <bjzhou@marvell.com>
+> > > [pali: Fix pin name in commit message]
+> > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
+> > > Cc: stable@vger.kernel.org
+> > > 
+> > > ---
+> > > This patch is present in Marvell SDK and also in Marvell's kernel fork:
+> > > https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/80d4cec4cef8282e5ac3aaf98ce3e68fb299a134
+> > > 
+> > > Konstantin Porotchkin wrote on Github that Gregory Clement was notified
+> > > about this patch, but as this patch is still not in mainline kernel I'm
+> > > sending it again for review.
+> > > 
+> > > In original commit message (only in commit message, not code) was
+> > > specified MPP9 pin on South Bridge, but correct is North Bridge.
+> > > ---
+> > >  drivers/clk/mvebu/armada-37xx-xtal.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/clk/mvebu/armada-37xx-xtal.c b/drivers/clk/mvebu/armada-37xx-xtal.c
+> > > index e9e306d4e9af..41271351cf1f 100644
+> > > --- a/drivers/clk/mvebu/armada-37xx-xtal.c
+> > > +++ b/drivers/clk/mvebu/armada-37xx-xtal.c
+> > > @@ -13,8 +13,8 @@
+> > >  #include <linux/platform_device.h>
+> > >  #include <linux/regmap.h>
+> > >  
+> > > -#define NB_GPIO1_LATCH	0xC
+> > > -#define XTAL_MODE	    BIT(31)
+> > > +#define NB_GPIO1_LATCH	0x8
+> > > +#define XTAL_MODE	    BIT(9)
+> > >  
+> > >  static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
+> > >  {
+> > 
