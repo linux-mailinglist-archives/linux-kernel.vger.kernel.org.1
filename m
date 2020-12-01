@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15E32C9C1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E82D2C9C3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390397AbgLAJPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:15:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52992 "EHLO mail.kernel.org"
+        id S2390244AbgLAJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:16:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390239AbgLAJOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:14:31 -0500
+        id S2390308AbgLAJO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:14:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECB982223C;
-        Tue,  1 Dec 2020 09:13:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C121022240;
+        Tue,  1 Dec 2020 09:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606814024;
-        bh=pA0m0jkbOCzU5bh5FAGnoqQXen6yNmWLvEAHfCOqdYA=;
+        s=korg; t=1606814027;
+        bh=C+gbUkguOSKc2B34TzXK9xji5pbE8YI3SBahlnIfLoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VDMov7KTFIjoJwtBSXGIAfZz64QXYS2DsZimIupMdPfLqHjgn+z8fszbOBVQRpgsl
-         OejTS/9W/0azjofTgk3yu0wYVmQ8uK7ONTngTUnj0T1IArBJNVBDLjIY9Hh54B5kjH
-         cGfRr/1xGqRsVnl+CifoaaBajY2J1MMpYEk5k1zY=
+        b=bNI7Jg6fm7TB/Up+qbRwExuAVnHpze6nkfuaO2BipMEKFeMbgG9ksNtUNYeVQn1kf
+         8l999KGnonMjgVKhlu6n4Bb4X/RICRpR2zqZPPuqGciVWTSThpsfC+i71k4iHuBzzv
+         OwZf/lKb4VH7dirx8YG15sUATbKvd257wBnzvwok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sam Xi <xyzsam@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 139/152] perf stat: Use proper cpu for shadow stats
-Date:   Tue,  1 Dec 2020 09:54:14 +0100
-Message-Id: <20201201084730.009168866@linuxfoundation.org>
+Subject: [PATCH 5.9 140/152] perf probe: Fix to die_entrypc() returns error correctly
+Date:   Tue,  1 Dec 2020 09:54:15 +0100
+Message-Id: <20201201084730.140799760@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -50,87 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit c0ee1d5ae8c8650031badcfca6483a28c0f94f38 ]
+[ Upstream commit ab4200c17ba6fe71d2da64317aae8a8aa684624c ]
 
-Currently perf stat shows some metrics (like IPC) for defined events.
-But when no aggregation mode is used (-A option), it shows incorrect
-values since it used a value from a different cpu.
+Fix die_entrypc() to return error correctly if the DIE has no
+DW_AT_ranges attribute. Since dwarf_ranges() will treat the case as an
+empty ranges and return 0, we have to check it by ourselves.
 
-Before:
-
-  $ perf stat -aA -e cycles,instructions sleep 1
-
-   Performance counter stats for 'system wide':
-
-  CPU0      116,057,380      cycles
-  CPU1       86,084,722      cycles
-  CPU2       99,423,125      cycles
-  CPU3       98,272,994      cycles
-  CPU0       53,369,217      instructions      #    0.46  insn per cycle
-  CPU1       33,378,058      instructions      #    0.29  insn per cycle
-  CPU2       58,150,086      instructions      #    0.50  insn per cycle
-  CPU3       40,029,703      instructions      #    0.34  insn per cycle
-
-       1.001816971 seconds time elapsed
-
-So the IPC for CPU1 should be 0.38 (= 33,378,058 / 86,084,722)
-but it was 0.29 (= 33,378,058 / 116,057,380) and so on.
-
-After:
-
-  $ perf stat -aA -e cycles,instructions sleep 1
-
-   Performance counter stats for 'system wide':
-
-  CPU0      109,621,384      cycles
-  CPU1      159,026,454      cycles
-  CPU2       99,460,366      cycles
-  CPU3      124,144,142      cycles
-  CPU0       44,396,706      instructions      #    0.41  insn per cycle
-  CPU1      120,195,425      instructions      #    0.76  insn per cycle
-  CPU2       44,763,978      instructions      #    0.45  insn per cycle
-  CPU3       69,049,079      instructions      #    0.56  insn per cycle
-
-       1.001910444 seconds time elapsed
-
-Fixes: 44d49a600259 ("perf stat: Support metrics in --per-core/socket mode")
-Reported-by: Sam Xi <xyzsam@google.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20201127041404.390276-1-namhyung@kernel.org
+Fixes: 91e2f539eeda ("perf probe: Fix to show function entry line as probe-able")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc: Thomas Richter <tmricht@linux.ibm.com>
+Link: http://lore.kernel.org/lkml/160645612634.2824037.5284932731175079426.stgit@devnote2
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/stat-display.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ tools/perf/util/dwarf-aux.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 493ec372fdec4..f2709879bad96 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -324,13 +324,10 @@ static int first_shadow_cpu(struct perf_stat_config *config,
- 	struct evlist *evlist = evsel->evlist;
- 	int i;
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index aa898014ad12f..03c1a39c312a8 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -373,6 +373,7 @@ bool die_is_func_def(Dwarf_Die *dw_die)
+ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
+ {
+ 	Dwarf_Addr base, end;
++	Dwarf_Attribute attr;
  
--	if (!config->aggr_get_id)
--		return 0;
--
- 	if (config->aggr_mode == AGGR_NONE)
- 		return id;
- 
--	if (config->aggr_mode == AGGR_GLOBAL)
-+	if (!config->aggr_get_id)
+ 	if (!addr)
+ 		return -EINVAL;
+@@ -380,6 +381,13 @@ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
+ 	if (dwarf_entrypc(dw_die, addr) == 0)
  		return 0;
  
- 	for (i = 0; i < evsel__nr_cpus(evsel); i++) {
++	/*
++	 *  Since the dwarf_ranges() will return 0 if there is no
++	 * DW_AT_ranges attribute, we should check it first.
++	 */
++	if (!dwarf_attr(dw_die, DW_AT_ranges, &attr))
++		return -ENOENT;
++
+ 	return dwarf_ranges(dw_die, 0, &base, addr, &end) < 0 ? -ENOENT : 0;
+ }
+ 
 -- 
 2.27.0
 
