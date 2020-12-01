@@ -2,188 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B896D2CAD1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315252CAD1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730663AbgLAUNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:13:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
+        id S2404459AbgLAUNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730533AbgLAUNs (ORCPT
+        with ESMTP id S1730559AbgLAUNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:13:48 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7601C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:13:07 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 3so9136100wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:13:07 -0800 (PST)
+        Tue, 1 Dec 2020 15:13:50 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB61FC0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:13:09 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id f11so3154354oij.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:13:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xxXPp0Gfj5n7IBRUn22uZpJhktCf0H26FzScuHt2U84=;
-        b=XkoCmpKyUqVxWjTsIia5O7lk++L91iJIMKK+BR/SABxCmwjKSlTU4tEUaidQ9yQWW8
-         /N0DDONsDAp+NSJkJ6OneAHRtRbRQxhU86xCXDI6YOpBCKe5McTAG+FhZqmoTX6J3hU8
-         efEVq/n1tk2FsrPsIogagaMxNBR6ksvl5PrNI=
+        bh=jypGaIji9YGM02Yw6XQ65mzgVpIH31CChrgBYlzyuis=;
+        b=YpEbgJo0LU5tsaVQOtVzXaKMxv7E7zz7mgRXmbKWy6vVxE1hPy+9MGOQPkXvR9qaff
+         dW2ekabbHmxOXpkqDnR4Ox/OG2XcLsCbNB9cePj5rjdtQkXNw5dBqeV3qw61lp6f/K4N
+         mXMMmFhqF/DNtCDBrNeGCEVseUgxCsJ9VWOdglz91sxbPISWw8PEo9oJa8MAJlkSIoM2
+         osODQmQ9hMCc6m1E21wAofWBvlvtwswBSKPC6Yc5I5e43TnkphkVLdkabZ0DybY/65mA
+         19t2QS9Jn9hWkjgkor7b5QE6YIqslCJ/WeSI6B7pxnPOfoXeTOh3KRaU3trfj1bwzLi/
+         2enw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xxXPp0Gfj5n7IBRUn22uZpJhktCf0H26FzScuHt2U84=;
-        b=GqCs9YW5ipzriTRnCH/wcgyy75BGGG5ZBc1Wx2OjHuYq2Sw5lZo4jq7bi/PeQbAZpO
-         8cVgmexfmzf3Qku4EMcT3cWI9rD8Qd0jJhSQqk4ipT3q/Jq6brN9ek6moMUjM6jmfO3y
-         ryswn2zI/jlRPAbZHPG7SfdVldltSSdiUn7x424kjFFxpF72U0GGXHgYu7MXa82v85rM
-         JBeKr/JGxxClucw8JqBkbhRRPdQAjyH5ol02kmsIvS+KBhO0g+jfDGlamGf87WhZvZbJ
-         DZsc0oRTERLEfYhZMHdhmHI+PeVLP3qnY/o078nn+itR/WMBOf6RFyN7/gU1riU26eAY
-         ZYlg==
-X-Gm-Message-State: AOAM533Hqb0xVuZwWF+YvcHkPPhwL4vNvfbztFQjHLviE5AcS7xvd90J
-        7BRBzebRcDF1CAalbGWha+wN6qkzx8iR9Z9DLHlkRg==
-X-Google-Smtp-Source: ABdhPJxbQY47PCNyNf7cE2WuaEWP7oTCvGdthwX66n4r9NJqX/Q0qoYMqAfwC6iVEbh2xMopkeM+rfCpQ02nrofSbtI=
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr4505630wmi.35.1606853586071;
- Tue, 01 Dec 2020 12:13:06 -0800 (PST)
+        bh=jypGaIji9YGM02Yw6XQ65mzgVpIH31CChrgBYlzyuis=;
+        b=QBpFvz/L6xhJHV+3zmn3XApJRGt8tu0RU0mzIZMWBy//w0fIBqPp1SuWwwY+0a0OOA
+         e9Qg2+oCJrt9uY1BJf0sncJqB/5fC71hl8mdsPbFRevXGtUSPs7HwnyID8z9C4nuBGOE
+         Q4jdawMd5tAtF63RCkK2LKzT18ScHuBI+e51W2UHJKfZ3WevRnSEdCgr3NPz2L82T+/n
+         t8Um3a4ZAQLoHLPA4FZI0zzU9WfjVpQ5bocAtVPsKv037Z8JjhrfxhcX8bIexXVbq8m+
+         tAy95jvibylbwNGRyufHVoWhjKlcMDnOzjKCWag/r8nXBSuNpwD1XISbfFyIb9JFYr/r
+         Hg2g==
+X-Gm-Message-State: AOAM5312vahHUCK7HMQRyRRAYiHNsxWReBbDoZCZ8NibAjrJ1hO32emW
+        sXxRNExAoWUMWFipABXK0+q9tf5b6S7nrd8GPo2WcDPcuu8=
+X-Google-Smtp-Source: ABdhPJwNQALI8b5GKr4B/kksrNmhACFxvOrOTtYm7YR6dT5p4twIttL5J8Ujdh85iASjmajc5br1XWTNUjmAtw0bXP8=
+X-Received: by 2002:aca:a988:: with SMTP id s130mr2977504oie.172.1606853589041;
+ Tue, 01 Dec 2020 12:13:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130211145.3012-6-james.quinlan@broadcom.com> <20201201180503.GA1321042@bjorn-Precision-5520>
-In-Reply-To: <20201201180503.GA1321042@bjorn-Precision-5520>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Tue, 1 Dec 2020 15:12:54 -0500
-Message-ID: <CA+-6iNy0O8WJMm+z7QOEsMpGAj=-quBmbPwrZpgxo19kVB921g@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] PCI: brcmstb: Add panic/die handler to RC driver
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000003f5a6905b56cc175"
+References: <20201201152017.3576951-1-elver@google.com> <CAKwvOdkcv=FES2CXfoY+AFcvg_rbPd2Nk8sEwXNBJqXL4wQGBg@mail.gmail.com>
+In-Reply-To: <CAKwvOdkcv=FES2CXfoY+AFcvg_rbPd2Nk8sEwXNBJqXL4wQGBg@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 1 Dec 2020 21:12:57 +0100
+Message-ID: <CANpmjNOfs8Of0Kvp3v7miw5x0Neg5i4egc43bevLV3_rGCNqtA@mail.gmail.com>
+Subject: Re: [PATCH] genksyms: Ignore module scoped _Static_assert()
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000003f5a6905b56cc175
-Content-Type: text/plain; charset="UTF-8"
-
-On Tue, Dec 1, 2020 at 1:05 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+On Tue, 1 Dec 2020 at 21:00, Nick Desaulniers <ndesaulniers@google.com> wrote:
 >
-> On Mon, Nov 30, 2020 at 04:11:42PM -0500, Jim Quinlan wrote:
-> > Whereas most PCIe HW returns 0xffffffff on illegal accesses and the like,
-> > by default Broadcom's STB PCIe controller effects an abort.  This simple
-> > handler determines if the PCIe controller was the cause of the abort and if
-> > so, prints out diagnostic info.
+> On Tue, Dec 1, 2020 at 7:21 AM Marco Elver <elver@google.com> wrote:
+> >
+> > The C11 _Static_assert() keyword may be used at module scope, and we
+> > need to teach genksyms about it to not abort with an error. We currently
+> > have a growing number of static_assert() (but also direct usage of
+> > _Static_assert()) users at module scope:
+> >
+> >         git grep -E '^_Static_assert\(|^static_assert\(' | grep -v '^tools' | wc -l
+> >         135
+> >
+> > More recently, when enabling CONFIG_MODVERSIONS with CONFIG_KCSAN, we
+> > observe a number of warnings:
+> >
+> >         WARNING: modpost: EXPORT symbol "<..all kcsan symbols..>" [vmlinux] [...]
+> >
+> > When running a preprocessed source through 'genksyms -w' a number of
+> > syntax errors point at usage of static_assert()s. In the case of
+> > kernel/kcsan/encoding.h, new static_assert()s had been introduced which
+> > used expressions that appear to cause genksyms to not even be able to
+> > recover from the syntax error gracefully (as it appears was the case
+> > previously).
+> >
+> > Therefore, make genksyms ignore all _Static_assert() and the contained
+> > expression. With the fix, usage of _Static_assert() no longer cause
+> > "syntax error" all over the kernel, and the above modpost warnings for
+> > KCSAN are gone, too.
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
 >
-> What happens during enumeration?  pci_bus_generic_read_dev_vendor_id()
-> assumes a read of Vendor ID returns 0xffffffff if the device doesn't
-> exist.
->
-> I assume this case doesn't cause the abort you're referring to here,
-> or nothing would work.  I think this enumeration case results in PCIe
-> Unsupported Request errors (PCIe r5.0, sec 2.3.2 implementation note).
-Hi Bjorn,
+> Ah, genksyms...if only there were a library that we could use to parse
+> C code...:P
 
-Yes, our controller makes a special case  to allow for config-space
-accesses to the dev_id and vendor_id registers. even if the device is
-missing.  That being said, it will abort on any access if the link is
-down.
+Hehe -- another usecase for using that library ;-)  If only we could
+require LLVM be present even when building the rest of the kernel with
+GCC.
 
-However, the 7216-type SOCs bring PCIe error-reporting HW but also
-have a mode where 0xffffffff  is returned on improper accesses, just
-like many other controllers.  We are debating whether we should turn
-this on by default.
+I guess this works, for now. Until the next new keyword that is used
+at module scope...
 
-Regards,
-Jim Quinlan
-Broadcom STB
->
-> Bjorn
+> Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
---0000000000003f5a6905b56cc175
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
-AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
-hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
-ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
-c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
-aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
-PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
-My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
-KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
-4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
-wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
-VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
-V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
-lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
-5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
-di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGwmFPxyqY9O
-WyrwEsKZxnbwxEkFeosuSltK6lbI5aTWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMTIwMTIwMTMwNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCYwt3I0hyoga9ryZMIF8K5TGAtxqoG
-2JFgj37hFp5bnQIA9xdwO25vqHhyBrmwzqx9v4VrSFA9Zz4/IgEONgNs39r9FK+9Wpxdxpk9GRmP
-z4AYZSvBbnnik/nHJ0bu+2mTBZk2i1z6SOQ+P7qepHfgxm+iY1Knhpbm7BVVJVat8ZJPna8AnnFQ
-hMV+qd6YSg4jI/OyQmJZVZ2wMYxOUQ1Fby2BakiDAtPivKhsW5CEuYhU9Fv4KjpgW01DsI9PQqAH
-Kl8CBGQdkjpV2Pfzehk3Qm/ODxKp6+OzF7ch6hOtEbyPMPNcyNBnxYv9iLQRmRS2ZaOFeEhuWY58
-wUHxBib1
---0000000000003f5a6905b56cc175--
+Thanks!
