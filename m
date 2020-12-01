@@ -2,84 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B522CAFF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A9A2CAFF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgLAW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:27:27 -0500
-Received: from sandeen.net ([63.231.237.45]:59158 "EHLO sandeen.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726921AbgLAW1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 17:27:25 -0500
-Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by sandeen.net (Postfix) with ESMTPSA id 6BAEE1171F;
-        Tue,  1 Dec 2020 16:26:28 -0600 (CST)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
+        id S1727713AbgLAW3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 17:29:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727690AbgLAW3X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 17:29:23 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A822DC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:28:43 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id v3so3314907ilo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 14:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zEVORstsrTaSUgGGMeR0Tq7V6fCGhtA2/JQrS+CPcPM=;
+        b=P1DviP74adgMmlwWKQrywJMta3DKhYPt7EEAf7M9nSMiOTTKSo2CvaGYxrVV4kEnl/
+         B42RELckfkTh6KC+dDfnenfHzx2WM5MoeqWh6UmsCv0d+EE93QvFCF2kaHKBX/lpIOZb
+         KrmZNE56Y3CIOeQaCnp6rLdZhw2c0pi3aiHHA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zEVORstsrTaSUgGGMeR0Tq7V6fCGhtA2/JQrS+CPcPM=;
+        b=SbN5TNL0bWi4Pb3Nbe4P6p9OuK2eJQHt78f8FXsD1Fp3ODt+c0cj0wn1j6Z9oiP4/t
+         zax8D8T76h/np2zp0PAJqv7Pfrm2ZPGZBGobhjVPqH1lsqFFxa3LNG+1TW+Fk6lW/2pF
+         FknajNGEGR3Sy8V+qdUfgHbTYZ2JnWMAnlU9YjdQqWzlShYMjNRnoLPAoTOSJtAn1fci
+         wwYiIsFVnw48YPyFQbbNdFv0qOlTwSgzk4v2W+HBFFQRDivsP8i1F9up5/vu93vTJ3se
+         7p4ZUKSCFNdml/pcK+bS8CPxkkOw8AxjsR2jomXOw1acaGjr9GlkGRscfITWpvMvnlXG
+         telw==
+X-Gm-Message-State: AOAM533tSbvP9dXbjL1YgPUBHI0vB1SdWT6VcriUwFqFaL+vXiQn7U32
+        b/MfHrpL8M5sR1s5wKWgaLlrbg==
+X-Google-Smtp-Source: ABdhPJyoyG9ADgJ6dsBiNM1XKs7dyiBINsra2s2Ul2TQ/NhNuX+TnwTAu5r8ljVvYPPBgzF65GRHfw==
+X-Received: by 2002:a92:512:: with SMTP id q18mr4738719ile.147.1606861722917;
+        Tue, 01 Dec 2020 14:28:42 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id r21sm462090ioa.20.2020.12.01.14.28.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 14:28:42 -0800 (PST)
+Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Marco Elver <elver@google.com>, Theodore Ts'o <tytso@mit.edu>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Bird, Tim" <Tim.Bird@sony.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Xiaoli Feng <xifeng@redhat.com>
-References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
- <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
- <20201201173905.GI143045@magnolia>
- <20201201205243.GK2842436@dread.disaster.area>
- <9ab51770-1917-fc05-ff57-7677f17b6e44@sandeen.net>
- <CAHk-=wjymrd42E6XfiXwR3NF5Fs4EhTzhUukCojEWpz0Vagvtw@mail.gmail.com>
-From:   Eric Sandeen <sandeen@sandeen.net>
-Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to
- filesystems
-Message-ID: <15fd1754-371d-88ff-c60b-6635a2da0b13@sandeen.net>
-Date:   Tue, 1 Dec 2020 16:26:43 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org, skhan@linuxfoundation.org
+References: <20201116054035.211498-1-98.arpi@gmail.com>
+ <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
+ <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com>
+ <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
+ <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <505b8cd0-a61e-5ec3-7e0b-239d0ff55d56@linuxfoundation.org>
+Date:   Tue, 1 Dec 2020 15:28:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjymrd42E6XfiXwR3NF5Fs4EhTzhUukCojEWpz0Vagvtw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 4:12 PM, Linus Torvalds wrote:
-> On Tue, Dec 1, 2020 at 2:03 PM Eric Sandeen <sandeen@sandeen.net> wrote:
+On 11/30/20 3:22 PM, Brendan Higgins wrote:
+> On Mon, Nov 23, 2020 at 11:25 PM David Gow <davidgow@google.com> wrote:
 >>
->> That's why I was keen to just add DAX unconditionally at this point, and if we want
->> to invent/refine meanings for the mask, we can still try to do that?
+>> On Mon, Nov 23, 2020 at 9:08 PM Marco Elver <elver@google.com> wrote:
+>>>
+>>> On Tue, 17 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
+>>>> On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>>>>>
+>>>>> Implementation of support for parameterized testing in KUnit. This
+>>>>> approach requires the creation of a test case using the
+>>>>> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+>>>>>
+>>>>> This generator function should return the next parameter given the
+>>>>> previous parameter in parameterized tests. It also provides a macro to
+>>>>> generate common-case generators based on arrays. Generators may also
+>>>>> optionally provide a human-readable description of parameters, which is
+>>>>> displayed where available.
+>>>>>
+>>>>> Note, currently the result of each parameter run is displayed in
+>>>>> diagnostic lines, and only the overall test case output summarizes
+>>>>> TAP-compliant success or failure of all parameter runs. In future, when
+>>>>> supported by kunit-tool, these can be turned into subsubtest outputs.
+>>>>>
+>>>>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+>>>>> Co-developed-by: Marco Elver <elver@google.com>
+>>>>> Signed-off-by: Marco Elver <elver@google.com>
+>>>>> ---
+>>>> [Resending this because my email client re-defaulted to HTML! Aarrgh!]
+>>>>
+>>>> This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
+>>>> both worked fine.
+>>>>
+>>>> Reviewed-by: David Gow <davidgow@google.com>
+>>>> Tested-by: David Gow <davidgow@google.com>
+>>>
+>>> Thank you!
+>>>
+>>>> Thanks for sticking with this!
+>>>
+>>> Will these patches be landing in 5.11 or 5.12?
+>>>
+>>
+>> I can't think of any reason not to have these in 5.11. We haven't
+>> started staging things in the kselftest/kunit branch for 5.11 yet,
+>> though.
+>>
+>> Patch 2 will probably need to be acked by Ted for ext4 first.
+>>
+>> Brendan, Shuah: can you make sure this doesn't get lost in patchwork?
 > 
-> Oh Gods.  Let's *not* make this some "random filesystem choice" where
-> now semantics depends on what some filesystem decided to do, and
-> different filesystems have very subtly different semantics.
+> Looks good to me. I would definitely like to pick this up. But yeah,
+> in order to pick up 2/2 we will need an ack from either Ted or Iurii.
+> 
+> Ted seems to be busy right now, so I think I will just ask Shuah to go
+> ahead and pick this patch up by itself and we or Ted can pick up patch
+> 2/2 later.
+> 
+> Cheers
+> 
 
-Well, I had hoped that refinement might start with the interface
-documentation, I'm certainly not suggesting every filesystem should go
-its own way.
-> This all screams "please keep this in the VFS layer" so that we at
-> least have _one_ place where these kinds of decisions are made.
+I am seeing
 
-Making the "right decision" depends on what the mask actually means,
-I guess.
+ERROR: need consistent spacing around '*' (ctx:WxV)
+#272: FILE: include/kunit/test.h:1786:
++		typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : 
+(array);	\
+  		                   ^
 
-Today we set a DAX attribute in statx which is not set in the mask.
-That seems clearly broken.
+Can you look into this and send v10?
 
-We can either leave that as it is, set DAX in the mask for everyone in
-the VFS, or delegate that mask-setting task to the individual filesystems
-so that it reflects <something>, probably "can this inode ever be in dax
-mode?"
-
-I honestly don't care if we keep setting the attribute itself in the VFS;
-if that's the right thing to do, that's fine.  (If so, it seems like
-IS_IMMUTABLE -> STATX_ATTR_IMMUTABLE etc could be moved there, too.)
-
--Eric
+thanks,
+-- Shuah
