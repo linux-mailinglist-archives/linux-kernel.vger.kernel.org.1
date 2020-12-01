@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548192C9C22
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0082C9AEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390452AbgLAJPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:15:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53534 "EHLO mail.kernel.org"
+        id S2388656AbgLAJCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:02:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390343AbgLAJOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:14:43 -0500
+        id S2387994AbgLAJCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:02:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60E2720770;
-        Tue,  1 Dec 2020 09:14:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2197D22252;
+        Tue,  1 Dec 2020 09:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606814043;
-        bh=rTTl8HkZ1DrIXRLG0LSKAhE+I9MpqlkH5GZL4IyovdU=;
+        s=korg; t=1606813289;
+        bh=esfKVzGDfYzkj7L+9e4oZSnTVgydKBnm7+UNunbg2+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NPoiWutE8vug4z7Y7pgQrunD9btsaN3aLszYAMfzSsrSZNYH1YM34vjvuzDdgm7b6
-         RQhxjYNCNcQiXMMhkFu7oIyMju70V8p4Sdx5KLD+U/zKJuvl0gnv+GjsmIzbjKBtVj
-         +O03oKgbKDyUxy/ku8vDwwlzcOMHpZDC2GFHLXrs=
+        b=igYZ5TOXVgc5wbQJgHIz9KZ8owyHGACpb7VHYMW+hHd/aLCKfaRS5I3WNHULX9tGJ
+         ZdeZAIkupLidtVC8SMA8oxY7NPI4Zt5YdhbFMhgJQBQxwQOUISLHEGrvcdceNDxjwW
+         MAU5FZDLfo0PRScHO16DBecrYp9cH77DHL65uMCU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Benjamin Berg <bberg@redhat.com>,
+        Henrique de Moraes Holschuh <hnh@hmh.eng.br>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 116/152] ibmvnic: enhance resetting status check during module exit
+Subject: [PATCH 4.19 46/57] platform/x86: thinkpad_acpi: Send tablet mode switch at wakeup time
 Date:   Tue,  1 Dec 2020 09:53:51 +0100
-Message-Id: <20201201084727.016111098@linuxfoundation.org>
+Message-Id: <20201201084651.367647472@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,59 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Benjamin Berg <bberg@redhat.com>
 
-[ Upstream commit 3ada288150fb17ab3fcce2cf5fce20461f86b2ee ]
+[ Upstream commit e40cc1b476d60f22628741e53cf3446a29e6e6b9 ]
 
-Based on the discussion with Sukadev Bhattiprolu and Dany Madden,
-we believe that checking adapter->resetting bit is preferred
-since RESETTING state flag is not as strict as resetting bit.
-RESETTING state flag is removed since it is verbose now.
+The lid state may change while the machine is suspended. As such, we may
+need to re-check the state at wake-up time (at least when waking up from
+hibernation).
+Add the appropriate call to the resume handler in order to sync the
+SW_TABLET_MODE switch state with the hardware state.
 
-Fixes: 7d7195a026ba ("ibmvnic: Do not process device remove during device reset")
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: dda3ec0aa631 ("platform/x86: thinkpad_acpi: Implement tablet mode using GMMS method")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210269
+Signed-off-by: Benjamin Berg <bberg@redhat.com>
+Acked-by: Henrique de Moraes Holschuh <hnh@hmh.eng.br>
+Link: https://lore.kernel.org/r/20201123132157.866303-1-benjamin@sipsolutions.net
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 3 +--
- drivers/net/ethernet/ibm/ibmvnic.h | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/platform/x86/thinkpad_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index af8c10e629f88..81ec233926acb 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2228,7 +2228,6 @@ static void __ibmvnic_reset(struct work_struct *work)
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 98bd8213b0378..8cc01857bc5c0 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -4251,6 +4251,7 @@ static void hotkey_resume(void)
+ 		pr_err("error while attempting to reset the event firmware interface\n");
  
- 		if (!saved_state) {
- 			reset_state = adapter->state;
--			adapter->state = VNIC_RESETTING;
- 			saved_state = true;
- 		}
- 		spin_unlock_irqrestore(&adapter->state_lock, flags);
-@@ -5261,7 +5260,7 @@ static int ibmvnic_remove(struct vio_dev *dev)
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&adapter->state_lock, flags);
--	if (adapter->state == VNIC_RESETTING) {
-+	if (test_bit(0, &adapter->resetting)) {
- 		spin_unlock_irqrestore(&adapter->state_lock, flags);
- 		return -EBUSY;
- 	}
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.h b/drivers/net/ethernet/ibm/ibmvnic.h
-index 43feb96b0a68a..31d604fc7bde7 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.h
-+++ b/drivers/net/ethernet/ibm/ibmvnic.h
-@@ -941,8 +941,7 @@ enum vnic_state {VNIC_PROBING = 1,
- 		 VNIC_CLOSING,
- 		 VNIC_CLOSED,
- 		 VNIC_REMOVING,
--		 VNIC_REMOVED,
--		 VNIC_RESETTING};
-+		 VNIC_REMOVED};
- 
- enum ibmvnic_reset_reason {VNIC_RESET_FAILOVER = 1,
- 			   VNIC_RESET_MOBILITY,
+ 	tpacpi_send_radiosw_update();
++	tpacpi_input_send_tabletsw();
+ 	hotkey_tablet_mode_notify_change();
+ 	hotkey_wakeup_reason_notify_change();
+ 	hotkey_wakeup_hotunplug_complete_notify_change();
 -- 
 2.27.0
 
