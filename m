@@ -2,146 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7D92CA3C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439132CA3DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391071AbgLANZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:25:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725977AbgLANZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:25:55 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5309C2086A;
-        Tue,  1 Dec 2020 13:25:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606829113;
-        bh=UhznvO8zap1Y3rVrYCcaAYTh7y+bw2WlsUPMr4u3OOQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MaDcm7LdTtUTAc+nSZY2ckkSqnVa+kmjQGyJSxtLILZjMqhDT2Wg4qc/4UylxHB4U
-         eGeIqBsRZzx6pw757E0QtOvV7QWIAWjyttKwQ9qjI1zzAM/XjPnvgTgpOX/XR+3gbO
-         QDM/xmhNVKc5Z/tp7fEiM/fJuXVxUMweiZO8r95I=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3230B4079D; Tue,  1 Dec 2020 10:25:17 -0300 (-03)
-Date:   Tue, 1 Dec 2020 10:25:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        id S2390896AbgLAN24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:28:56 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:41675 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbgLAN2z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:28:55 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201201132804euoutp021d2202dafc4263eaff6172d26024c102~MmriM29zS3135731357euoutp02a
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:28:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201201132804euoutp021d2202dafc4263eaff6172d26024c102~MmriM29zS3135731357euoutp02a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1606829284;
+        bh=VFkr+TeeXOlcI2Bu1gftl7UN2NGPdlJ7xgNDYKVJe3w=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=FJf8uGRq0oJd5TL+76fFH1FAt83I1X9l0tEPk80neQrArIcFgmAaKyDFfdeN/TtXb
+         hh7u+iV2thCzIAuTeRiILzCHktsBRxWlBUseGMwGG9R5aoGKeBV5kAxbOUNQBR2wkk
+         i7/OkaagxTQoNWlDvN7ZWUdSUMVRpD1fIYL8H6/Y=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201201132759eucas1p125949234c39f998adb50bc954b979fbd~MmrdL0_Nj0921209212eucas1p1v;
+        Tue,  1 Dec 2020 13:27:59 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 14.E9.45488.FD446CF5; Tue,  1
+        Dec 2020 13:27:59 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201201132758eucas1p2646dd84fcc2a91b6ac1d224842478eda~Mmrcx-qSz2851028510eucas1p2L;
+        Tue,  1 Dec 2020 13:27:58 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201201132758eusmtrp20c2063f121f75f22f0bb93c9eeefecc3~MmrcxVN-31364113641eusmtrp2v;
+        Tue,  1 Dec 2020 13:27:58 +0000 (GMT)
+X-AuditID: cbfec7f5-c5fff7000000b1b0-71-5fc644de08d8
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 13.71.16282.ED446CF5; Tue,  1
+        Dec 2020 13:27:58 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201201132758eusmtip16ebdde7b562762fec494129d1b2d002b~MmrcQDuOL2490724907eusmtip1r;
+        Tue,  1 Dec 2020 13:27:58 +0000 (GMT)
+Subject: Re: linux-next: Tree for Nov 30
+ (drivers/pci/controller/dwc/pcie-designware-host.c)
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-perf-users@vger.kernel.org
-Subject: perf probe can't remove probes
-Message-ID: <20201201132517.GC49333@kernel.org>
-References: <20201125172755.GA53351@kernel.org>
- <20201126092125.402257a8776637d6bd2e090c@kernel.org>
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <8b81ba16-7493-ddd2-65ac-b1ac46537deb@samsung.com>
+Date:   Tue, 1 Dec 2020 14:27:57 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126092125.402257a8776637d6bd2e090c@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201201113412.GA2389@e121166-lin.cambridge.arm.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKKsWRmVeSWpSXmKPExsWy7djP87r3XY7FGyz4yWSxpCnD4savNlaL
+        y7vmsFkcXNjGaHF23nE2ize/X7BbvL0zncVi696r7A4cHmvmrWH0aLxxg81jwaZSj80rtDz6
+        tqxi9Pi8SS6ALYrLJiU1J7MstUjfLoEr4+aVz8wFBzgqrh+dwtrA+Jiti5GTQ0LARGLd/umM
+        XYxcHEICKxgl1nZuZIJwvjBK/Jp4gB3C+cwocfXfA2aYljfdzSwQieWMEu+fHWGDcN4zSkzb
+        9RCsSlggTuLSye9MILaIQKTEg7aZrCBFzAJTmSS2zexhBUmwCRhKdL3tAruEV8BOYsu/hewg
+        NouAisTXg6cYQWxRgSSJgx8fQNUISpyc+YQFxOYUcJLY9OIzWD2zgLzE9rdzmCFscYlbT+aD
+        PSEh8IJD4sKtb0CDOIAcF4mlH1UgXhCWeHV8CzuELSPxfydMfTOjxMNza9khnB5GictNMxgh
+        qqwl7pz7xQYyiFlAU2L9Ln2ImY4SZ97GQZh8EjfeCkKcwCcxadt0Zogwr0RHmxDEDDWJWcfX
+        wW09eOES8wRGpVlIHpuF5JlZSJ6ZhbB2ASPLKkbx1NLi3PTUYuO81HK94sTc4tK8dL3k/NxN
+        jMCUdPrf8a87GFe8+qh3iJGJg/EQowQHs5IIL8u/I/FCvCmJlVWpRfnxRaU5qcWHGKU5WJTE
+        eXdtXRMvJJCeWJKanZpakFoEk2Xi4JRqYFpyc51E28+jWx7v2i2V7rhDkmmxnJKz2H+n7xGa
+        3IvCHTVsb0Yc7V388sKWxm1GE+LvnGzjN9Squ/DjqvJU6WL56Z1HFLb35uxMrb9jODPV1Pd8
+        3ky/sOoVbvHr2/u6U2KnlNfPiWILe3mk3ffbzoOvNq3cVXPpTWPU9QuSRodi7rztWmVRr96g
+        K7PD+56lVdWVwrVz9Ct+Tdkp9N/NbF/0X6Uuq2OFUUnzwq4vspC2iNm3XF3UX2DNqXOGYqr3
+        fy2IXdrhuSUy7DXvJrXIBxs0ypn25r4yf7fmXMu5nIMnGp5mzXrrsc5V1sB493qNG/xcUQzH
+        MlWsD54VVNvYcc90S/D3qAIhyVcPOYSVWJRYijMSDbWYi4oTAUOfp+S4AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOIsWRmVeSWpSXmKPExsVy+t/xu7r3XI7FGyxpVLZY0pRhceNXG6vF
+        5V1z2CwOLmxjtDg77zibxZvfL9gt3t6ZzmKxde9VdgcOjzXz1jB6NN64weaxYFOpx+YVWh59
+        W1YxenzeJBfAFqVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mW
+        WqRvl6CXcfPKZ+aCAxwV149OYW1gfMzWxcjJISFgIvGmu5mli5GLQ0hgKaPEq5mvWCESMhIn
+        pzVA2cISf651gTUICbxllDg8D8wWFoiTuHTyO1MXIweHiECkRNuxCJA5zALTmST+Nx5ghxj6
+        k1Fiys5rzCANbAKGEl1vIQbxCthJbPm3kB3EZhFQkfh68BQjiC0qkCTxe+laqBpBiZMzn7CA
+        2JwCThKbXnwGq2cWMJOYt/khM4QtL7H97RwoW1zi1pP5TBMYhWYhaZ+FpGUWkpZZSFoWMLKs
+        YhRJLS3OTc8tNtIrTswtLs1L10vOz93ECIzBbcd+btnBuPLVR71DjEwcjIcYJTiYlUR4Wf4d
+        iRfiTUmsrEotyo8vKs1JLT7EaAr0z0RmKdHkfGASyCuJNzQzMDU0MbM0MLU0M1YS5zU5siZe
+        SCA9sSQ1OzW1ILUIpo+Jg1OqgWn6xoUKWjrsVRduPDhx//XutD1WsyKeaj14upNHSfXCZM4p
+        c05zzqotY5JeOW9/isGDxTrJl+f7J9f1ylzlVYm1U+dWKdhnnbTm1qO/pUuMVafpS/u3/wjZ
+        Zlrw/1HkRWWVFQed9ri6yXM9/vlC2HmRW3qJj82HbGWBWK5C/c+HS47H/NSecmbbvLVxUpyJ
+        RT9e70nky7s469OnsJl3n6ju3nVBrlYo73rBtUBXTT1RdoczEXGnp6UZX9zwW0z04s+3t049
+        WTLx8a7u9uQPc4C+nTVTZf+Cec7yVxxfyTuGi0r7WusssCjftJhVY9K3ouzns1l+NGYrfQ+7
+        J7o59uKbTawhOlM5WTrdrO9r/VJiKc5INNRiLipOBAAO5hpxSgMAAA==
+X-CMS-MailID: 20201201132758eucas1p2646dd84fcc2a91b6ac1d224842478eda
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201201113428eucas1p2114ad01341ad5cfb9683bc4a410c74b5
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201201113428eucas1p2114ad01341ad5cfb9683bc4a410c74b5
+References: <20201130193626.1c408e47@canb.auug.org.au>
+        <bc0f6da9-6dd4-c1ad-f2f3-dc1a5cd6a51b@infradead.org>
+        <CGME20201201113428eucas1p2114ad01341ad5cfb9683bc4a410c74b5@eucas1p2.samsung.com>
+        <20201201113412.GA2389@e121166-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+Hi
 
-	Any idea why listing the source code doesn't work while simply
-adding the probe works?
+On 01.12.2020 12:34, Lorenzo Pieralisi wrote:
+> On Mon, Nov 30, 2020 at 08:44:55PM -0800, Randy Dunlap wrote:
+>> On 11/30/20 12:36 AM, Stephen Rothwell wrote:
+>>> Changes since 20201127:
+>> on x86_64:
+>>
+>> WARNING: unmet direct dependencies detected for PCIE_DW_HOST
+>>    Depends on [n]: PCI [=y] && PCI_MSI_IRQ_DOMAIN [=n]
+>>    Selected by [y]:
+>>    - PCI_EXYNOS [=y] && PCI [=y] && (ARCH_EXYNOS || COMPILE_TEST [=y])
+>
+> [...]
+>
+>> caused by:
+>> commit f0a6743028f938cdd34e0c3249d3f0e6bfa04073
+>> Author: Jaehoon Chung <jh80.chung@samsung.com>
+>> Date:   Fri Nov 13 18:01:39 2020 +0100
+>>
+>>      PCI: dwc: exynos: Rework the driver to support Exynos5433 varian
+>>
+>>
+>> which removed "depends on PCI_MSI_IRQ_DOMAIN from config PCI_EXYNOS.
+> Fixed up and squashed in the original commit - we should probably rework
+> the DWC driver dependencies on PCI_MSI_IRQ_DOMAIN to really fix it, for
+> the time being this should do.
 
-[root@seventh ~]# perf probe verify_pkcs7_signature
-Added new event:
-  probe:verify_pkcs7_signature (on verify_pkcs7_signature)
+Thanks! I wasn't aware of that hidden dependency.
 
-You can now use it in all perf tools, such as:
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-	perf record -e probe:verify_pkcs7_signature -aR sleep 1
-
-[root@seventh ~]#
-
-[root@seventh ~]# readelf -wi /lib/modules/5.10.0-rc3.bpfsign+/build/vmlinux | grep DW_AT_producer -m2
-    <1c>   DW_AT_producer    : (indirect string, offset: 0x50): GNU AS 2.35
-    <2f>   DW_AT_producer    : (indirect string, offset: 0x2daf): GNU C89 10.2.1 20201016 (Red Hat 10.2.1-6) -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -m64 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -mindirect-branch=thunk-extern -mindirect-branch-register -mrecord-mcount -mfentry -march=x86-64 -g -O2 -std=gnu90 -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -falign-jumps=1 -falign-loops=1 -fno-asynchronous-unwind-tables -fno-jump-tables -fno-delete-null-pointer-checks -fno-allow-store-data-races -fstack-protector-strong -fno-strict-overflow -fstack-check=no -fconserve-stack -fcf-protection=none -fno-stack-protector
-[root@seventh ~]#
-
-[root@seventh ~]# perf probe -L verify_pkcs7_signature
-Specified source line is not found.
-  Error: Failed to show lines.
-[root@seventh ~]# grep verify_pkcs7_signature /proc/kallsyms
-ffffffff9f2617b0 T verify_pkcs7_signature
-ffffffffa047ac30 r __ksymtab_verify_pkcs7_signature
-ffffffffa0482e38 r __kstrtabns_verify_pkcs7_signature
-ffffffffa0483b3b r __kstrtab_verify_pkcs7_signature
-[root@seventh ~]# perf probe -L verify_pkcs7_signature
-Specified source line is not found.
-  Error: Failed to show lines.
-[root@seventh ~]# perf probe -v -L verify_pkcs7_signature
-Looking at the vmlinux_path (8 entries long)
-Using /lib/modules/5.10.0-rc3.bpfsign+/build/vmlinux for symbols
-Open Debuginfo file: /lib/modules/5.10.0-rc3.bpfsign+/build/vmlinux
-fname: /home/acme/git/bpf/include/linux/verification.h, lineno:38
-New line range: 38 to 2147483647
-path: (null)
-Specified source line is not found.
-  Error: Failed to show lines. Reason: No such file or directory (Code: -2)
-[root@seventh ~]# readelf -wi /lib/modules/5.10.0-rc3.bpfsign+/build/vmlinux | grep -B2 -A8 verify_pkcs7_signature
- <1><1a362a2>: Abbrev Number: 64 (DW_TAG_subprogram)
-    <1a362a3>   DW_AT_external    : 1
-    <1a362a3>   DW_AT_name        : (indirect string, offset: 0xc2d22): verify_pkcs7_signature
-    <1a362a7>   DW_AT_decl_file   : 52
-    <1a362a8>   DW_AT_decl_line   : 38
-    <1a362a9>   DW_AT_decl_column : 12
-    <1a362aa>   DW_AT_prototyped  : 1
-    <1a362aa>   DW_AT_type        : <0x1a3333f>
-    <1a362ae>   DW_AT_sibling     : <0x1a36313>
- <2><1a362b2>: Abbrev Number: 65 (DW_TAG_formal_parameter)
-    <1a362b3>   DW_AT_name        : (indirect string, offset: 0x19ee3d): data
---
- <1><24fa79d>: Abbrev Number: 83 (DW_TAG_subprogram)
-    <24fa79e>   DW_AT_external    : 1
-    <24fa79e>   DW_AT_name        : (indirect string, offset: 0xc2d22): verify_pkcs7_signature
-    <24fa7a2>   DW_AT_decl_file   : 218
-    <24fa7a3>   DW_AT_decl_line   : 38
-    <24fa7a4>   DW_AT_decl_column : 12
-    <24fa7a5>   DW_AT_prototyped  : 1
-    <24fa7a5>   DW_AT_type        : <0x24e1e05>
-    <24fa7a9>   DW_AT_sibling     : <0x24fa80e>
- <2><24fa7ad>: Abbrev Number: 41 (DW_TAG_formal_parameter)
-    <24fa7ae>   DW_AT_name        : (indirect string, offset: 0x19ee3d): data
---
-    <26258b8>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0 	(DW_OP_addr: 0)
- <1><26258c2>: Abbrev Number: 116 (DW_TAG_variable)
-    <26258c3>   DW_AT_name        : (indirect string, offset: 0x10523f): __UNIQUE_ID___addressable_verify_pkcs7_signature164
-    <26258c7>   DW_AT_decl_file   : 1
-    <26258c8>   DW_AT_decl_line   : 305
-    <26258ca>   DW_AT_decl_column : 1
-    <26258cb>   DW_AT_type        : <0x2620ca6>
-    <26258cf>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0 	(DW_OP_addr: 0)
- <1><26258d9>: Abbrev Number: 117 (DW_TAG_subprogram)
-    <26258da>   DW_AT_external    : 1
-    <26258da>   DW_AT_name        : (indirect string, offset: 0x1050d9): pkcs7_free_message
---
- <1><2625c2e>: Abbrev Number: 120 (DW_TAG_subprogram)
-    <2625c2f>   DW_AT_external    : 1
-    <2625c2f>   DW_AT_name        : (indirect string, offset: 0xc2d22): verify_pkcs7_signature
-    <2625c33>   DW_AT_decl_file   : 1
-    <2625c34>   DW_AT_decl_line   : 282
-    <2625c36>   DW_AT_decl_column : 5
-    <2625c37>   DW_AT_prototyped  : 1
-    <2625c37>   DW_AT_type        : <0x26209e9>
-    <2625c3b>   DW_AT_low_pc      : 0xffffffff812617b0
-    <2625c43>   DW_AT_high_pc     : 0x73
-    <2625c4b>   DW_AT_frame_base  : 1 byte block: 9c 	(DW_OP_call_frame_cfa)
---
- <1><495560e>: Abbrev Number: 68 (DW_TAG_subprogram)
-    <495560f>   DW_AT_external    : 1
-    <495560f>   DW_AT_name        : (indirect string, offset: 0xc2d22): verify_pkcs7_signature
-    <4955613>   DW_AT_decl_file   : 61
-    <4955614>   DW_AT_decl_line   : 38
-    <4955615>   DW_AT_decl_column : 12
-    <4955616>   DW_AT_prototyped  : 1
-    <4955616>   DW_AT_type        : <0x49519fd>
-    <495561a>   DW_AT_sibling     : <0x495567f>
- <2><495561e>: Abbrev Number: 74 (DW_TAG_formal_parameter)
-    <495561f>   DW_AT_name        : (indirect string, offset: 0x19ee3d): data
