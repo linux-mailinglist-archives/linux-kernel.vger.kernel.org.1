@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEF42C99BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13BC2C99BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgLAIly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:41:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726997AbgLAIly (ORCPT
+        id S1728841AbgLAIm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:42:57 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:38955 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726755AbgLAIm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:41:54 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27B5C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 00:41:13 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id j21so793307otp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 00:41:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ImR5mFtg9wXtOK4HaxnOpZ6Mas0agGqVuxRp77OqsA=;
-        b=ENWN14cwf5Erp2hWTHmj6/ZYf4XWpQfYkqIKHIPZmzszZmQDZMtaI/o4zhWJWx6m4S
-         /rHUlqg1YJu2ENfj7oogh5ZX0p+6MnmsXhswsPWP85X06nXakNYPgfszPHCsRKj1htc3
-         B4MBfAw6Zyo+SDB5f9OjH9sKygIUrjK+bBC7XXjGMfkENAxVpTD7iIShkg4u56fq4hDc
-         z+hJ8N/JqxhwyoIz3SseOZRMBVXG2ErBT/A/iQw65rBikykAvCJVGjafMi2UFotIkPXE
-         Okdsc2WdmukIlpQmO2pkz8yDAtdvjg/uCa9y3DNI1k71f3U9FUrA/HBKnqZzXRUDLwBq
-         Q9Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ImR5mFtg9wXtOK4HaxnOpZ6Mas0agGqVuxRp77OqsA=;
-        b=jcDWcdYtnPaEPwbqkDppjYk+NvKducEwOvGCGnaKRnyQ+Yj+LFKciFmvDdBTlTJg8k
-         2qykTkyw7csAlrTCpGIz6S55ImKW7Dg1ejatVyeKVMdBacad6aYy/jY7l6hRgFOj/mpC
-         yb05noW5dC+xEI+tGL5DFjplaNUeos7B4f8GgUv559LUZi9Duzf4sRLnggAg0lQEQ5Ll
-         4slnnNBMuTUg2MK+myNP24cuLa+XTwvEET5+yLpCvE3o02M7ttxDlgTUf8cWheWhrPoB
-         cnL6AJTYQmYonoh1ub/ZJetcE7BOF5NpSUMUpA8afUmGnvUWi3jQ7eJJSbSeOA7uwEvO
-         L3tA==
-X-Gm-Message-State: AOAM5304g8QSfvYlv8sGPRZhfgiOPdO24lYYXHjZHGrVPMTmbqDIYBDO
-        SwG4Azf/k/OWDjhshuKn4VQfklfHTMpwYZuqy21hQQ==
-X-Google-Smtp-Source: ABdhPJy2FYYGfYobibxQ4zItAlZBew2mWMMTETYVSIJmglwPK78qaXJNfFyrS3uhvJOaP7TA1VW7XY2tubIYMSU9evY=
-X-Received: by 2002:a9d:7d92:: with SMTP id j18mr1142495otn.17.1606812073263;
- Tue, 01 Dec 2020 00:41:13 -0800 (PST)
+        Tue, 1 Dec 2020 03:42:57 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id E67EA5C0191;
+        Tue,  1 Dec 2020 03:42:10 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 01 Dec 2020 03:42:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=G5iYvQJ/IEHDDv47uDKzi67A92D
+        +rXCZFinCidCd03M=; b=11InS3IX42AAAeeCRj+oZsOtlVM5IZFdzJ1vNsFrlUt
+        KPc9FwfOG6e7/CRrhwFWV6AazmqRNeyCNJ8Wm2w+W1KSltoEQ40uhPxwlXb+N75Z
+        vdyQsuXkLHO24rHwzsSiNYlOmB6UCnIXMihc9y0pMzj/GYhwa3ZwX3NFes9BjSFZ
+        mBO/hc5Ojsd2Nubfwd1KAisFVcf6Q09mWTm//kcuwwCe/rKInWe0FLRSJMghY0qH
+        genR+6/Xpz1utJTR6xjlJdqRGJIruj3q0q8IvtcOQ3KLWXA/SuNZPtU+w/TwLFTZ
+        faE6Ljg3udAXg7PH3OCN1ua30y38TnFE0cLe95dFN9g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=G5iYvQ
+        J/IEHDDv47uDKzi67A92D+rXCZFinCidCd03M=; b=ZNtE5X9k6TAVuX5D5PPxzI
+        l1aPMwyqkmsILeoaHLH6FTPFkM17103VB16PaV9osOqTuaZmNchBrGC08PgWFx8A
+        ywDVpFrW3LVUlsnJO1uEjX6ul2DhuayJqmt1eZdGvn0hPhxZuN4KLA+oD/ZRsvMy
+        5rVRKcbCQpZDspQYwtOkNorEhg3sbJYy3dPggnUQe3FuCoh8vVo26kJITnQjETg1
+        m3V3St+jKMJlpty1U217INtQgXpvEdrtL580m6YbBLBsgXc2fTL2gSOEbaEgifcq
+        FT8v03l6r0Gz1W9r/c5lqYL9e3X/d5tSvY40g+J7lWavSP8YtQD8r87LR35UHOtA
+        ==
+X-ME-Sender: <xms:4QHGXxro317dbOD_lMTCTIQa2kYbCm7TCJwTP7ihxx5lP4cFanxMFg>
+    <xme:4QHGXzpLy1u4srOb9bONX2B7XuaxyQ7ttD_G3WlOhGyCqFDHyUWeC8D8wXJXKQTV8
+    P1sCemez-zl0A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeiuddguddvudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelle
+    dtheekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrjeegrdeigeenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgr
+    hhdrtghomh
+X-ME-Proxy: <xmx:4QHGX-N7_VdZnuYAhcwxQ4X9CLbfdqIc1aX2Pon23MwvrwtWE9g7gA>
+    <xmx:4QHGX84dY4gnXM4L0deaSr4ctc1Qm5FGXASzOLEZRdZqSVV59g_uJw>
+    <xmx:4QHGXw6JJnnvPhdkEb5DzByLDrRhlEGz4ZtL1fjiyuK-wBlu-FhHeg>
+    <xmx:4gHGX6SF1zFNXhdNzFQ1PXtgaLhXv1HypYGkWwkR00Ja1fmc5lr7tw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4F8233280063;
+        Tue,  1 Dec 2020 03:42:09 -0500 (EST)
+Date:   Tue, 1 Dec 2020 09:43:22 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Cezary Rojewski <cezary.rojewski@intel.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
+        pierre-louis.bossart@linux.intel.com,
+        mateusz.gorski@linux.intel.com
+Subject: Re: [PATCH 0/8] ASoC: Intel: Skylake: Fix HDAudio and DMIC for v5.4
+Message-ID: <X8YCKiV8/MWKMAUd@kroah.com>
+References: <20201129114148.13772-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-References: <20201124110210.495616-1-elver@google.com>
-In-Reply-To: <20201124110210.495616-1-elver@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 1 Dec 2020 09:41:01 +0100
-Message-ID: <CANpmjNNKgKAxHVdxC9LWpwrxRREU7JdMTeDiCU7hzMG=Oh9QcA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] kcsan: Rewrite kcsan_prandom_u32_max() without prandom_u32_state()
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201129114148.13772-1-cezary.rojewski@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Sun, Nov 29, 2020 at 12:41:40PM +0100, Cezary Rojewski wrote:
+> First six of the backport address numerous problems troubling HDAudio
+> configuration users for Skylake driver. Upstream series:
+> "ASoC: Intel: Skylake: Fix HDaudio and Dmic" [1] provides the
+> explanation and reasoning behind it. These have been initialy pushed
+> into v5.7-rc1 via: "sound updates for 5.7-rc1" [2] by Takashi.
+> 
+> Last two patches are from: "Add support for different DMIC
+> configurations" [3] which focuses on HDAudio with DMIC configuration.
+> Patch: "ASoC: Intel: Skylake: Add alternative topology binary name"
+> of the mentioned series has already been merged to v5.4.y -stable and
+> thus it's not included here.
+> 
+> Fixes target mainly Skylake and Kabylake based platforms, released
+> in 2015-2016 period.
+> 
+> [1]: https://lore.kernel.org/alsa-devel/20200305145314.32579-1-cezary.rojewski@intel.com/
+> [2]: https://lore.kernel.org/lkml/s5htv22uso8.wl-tiwai@suse.de/
+> [3]: https://lore.kernel.org/alsa-devel/20200427132727.24942-1-mateusz.gorski@linux.intel.com/
 
-On Tue, 24 Nov 2020 at 12:02, Marco Elver <elver@google.com> wrote:
-> Rewrite kcsan_prandom_u32_max() to not depend on code that might be
-> instrumented, removing any dependency on lib/random32.c. The rewrite
-> implements a simple linear congruential generator, that is sufficient
-> for our purposes (for udelay() and skip_watch counter randomness).
->
-[...]
+Thanks for these, it was very easy to pick them up in this format, much
+appreciated.
 
-It's been about 7 days -- feel free to pick up this series (unless
-there are new comments).
-
-Thanks,
--- Marco
+greg k-h
