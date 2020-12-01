@@ -2,115 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69AE2CA1C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB4E2CA1AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgLALuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:50:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726530AbgLALuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:50:44 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9726820770;
-        Tue,  1 Dec 2020 11:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606823402;
-        bh=UE/XVXCsi7+x/uyIjMjMl6em1uv7ikjqa7mp1FXveyA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S4VW9Sgn7iW1ndWIZxYcNhZNcYzrdu4YLpAlGR+L9NWq1kn48g6Y4AjQsLMUboqDi
-         px82TrnsP+fOea64waKx9MDPGYbxyC/mmTjMV2SDQGdhlKvlPPX3OrDSqCpOMwmDfU
-         pi97M7j6fHneG9TEh+N29owEJN700T5yy5JzU9kQ=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kk4AS-00F1ps-IO; Tue, 01 Dec 2020 11:50:00 +0000
+        id S2387465AbgLALlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:41:10 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8544 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729067AbgLALlK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:41:10 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ClgBV2bZZzhl5C;
+        Tue,  1 Dec 2020 19:40:02 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Dec 2020 19:40:19 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <michal.simek@xilinx.com>, <rajan.vaja@xilinx.com>,
+        <gregkh@linuxfoundation.org>, <jolly.shah@xilinx.com>,
+        <tejas.patel@xilinx.com>, <manish.narani@xilinx.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next v2] firmware: xilinx: Mark pm_api_features_map with static keyword
+Date:   Tue, 1 Dec 2020 19:51:53 +0800
+Message-ID: <1606823513-121578-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 01 Dec 2020 11:50:00 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
- state to physical side
-In-Reply-To: <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-4-lushenming@huawei.com>
- <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
- <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
- <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
- <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
- <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
- <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
- <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <274dafb2e21f49326a64bb575e668793@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-01 11:40, Shenming Lu wrote:
-> On 2020/12/1 18:55, Marc Zyngier wrote:
->> On 2020-11-30 07:23, Shenming Lu wrote:
->> 
->> Hi Shenming,
->> 
->>> We are pondering over this problem these days, but still don't get a
->>> good solution...
->>> Could you give us some advice on this?
->>> 
->>> Or could we move the restoring of the pending states (include the 
->>> sync
->>> from guest RAM and the transfer to HW) to the GIC VM state change 
->>> handler,
->>> which is completely corresponding to save_pending_tables (more 
->>> symmetric?)
->>> and don't expose GICv4...
->> 
->> What is "the GIC VM state change handler"? Is that a QEMU thing?
-> 
-> Yeah, it is a a QEMU thing...
-> 
->> We don't really have that concept in KVM, so I'd appreciate if you 
->> could
->> be a bit more explicit on this.
-> 
-> My thought is to add a new interface (to QEMU) for the restoring of
-> the pending states, which is completely corresponding to
-> KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES...
-> And it is called from the GIC VM state change handler in QEMU, which
-> is happening after the restoring (call kvm_vgic_v4_set_forwarding())
-> but before the starting (running) of the VFIO device.
+Fix the following sparse warning:
 
-Right, that makes sense. I still wonder how much the GIC save/restore
-stuff differs from other architectures that implement similar features,
-such as x86 with VT-D.
+drivers/firmware/xilinx/zynqmp.c:32:1: warning: symbol 'pm_api_features_map' was not declared. Should it be static?
 
-It is obviously too late to change the userspace interface, but I wonder
-whether we missed something at the time.
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/firmware/xilinx/zynqmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-
-         M.
+diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+index d08ac82..fd95ede 100644
+--- a/drivers/firmware/xilinx/zynqmp.c
++++ b/drivers/firmware/xilinx/zynqmp.c
+@@ -29,7 +29,7 @@
+ #define PM_API_FEATURE_CHECK_MAX_ORDER  7
+ 
+ static bool feature_check_enabled;
+-DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
++static DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
+ 
+ /**
+  * struct pm_api_feature_data - PM API Feature data
 -- 
-Jazz is not dead. It just smells funny...
+2.6.2
+
