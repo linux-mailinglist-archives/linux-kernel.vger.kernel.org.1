@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D709E2C9A72
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725BF2C9C54
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387840AbgLAI5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60746 "EHLO mail.kernel.org"
+        id S2390096AbgLAJRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:17:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729248AbgLAI5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:57:25 -0500
+        id S2389929AbgLAJMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B0F0221FD;
-        Tue,  1 Dec 2020 08:56:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A988122210;
+        Tue,  1 Dec 2020 09:11:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813004;
-        bh=H06m4XaXDEk9/hbe0x+PxElOB0uisivjggLwd6N0cWk=;
+        s=korg; t=1606813889;
+        bh=biJyByNtqt9R7tDM/ysdUIZVpLb/qN50NEwQCDriDsM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o8h8wiPtSks/Rs6u5JTjR1jlrhc9MOW7+QfOoXpK9+8yPJ65WvpQUxBFh/dpGRxyN
-         zi4/RTzcRqfM0fnVGi1bNKhTYDJQyja6dFK/OPZZi0lSMWt3yNikOFvOxWJSqH6lgG
-         TXhYxfR/J5wist+Dy1OHbR+7R38abSapa03se8UI=
+        b=ReQXtFLvZyK/2Qx0vtpnpTeTgNyk0kxhXr4Q767PiLUEV2+hVkyuv57RZJiAfQdqX
+         Z9JWLTYCZ61ay2/VrEcFgxYHn0qMPfLCCFXHIqmUMthW1KLisvHm5wBtfibSsxe6ji
+         mCaeNWWTqsE597nkuAgTwisDP4YSv9U4soG9xM/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 31/42] efivarfs: revert "fix memory leak in efivarfs_create()"
-Date:   Tue,  1 Dec 2020 09:53:29 +0100
-Message-Id: <20201201084644.780505975@linuxfoundation.org>
+Subject: [PATCH 5.9 095/152] s390/qeth: make af_iucv TX notification call more robust
+Date:   Tue,  1 Dec 2020 09:53:30 +0100
+Message-Id: <20201201084724.313826228@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,61 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit ff04f3b6f2e27f8ae28a498416af2a8dd5072b43 ]
+[ Upstream commit 34c7f50f7d0d36fa663c74aee39e25e912505320 ]
 
-The memory leak addressed by commit fe5186cf12e3 is a false positive:
-all allocations are recorded in a linked list, and freed when the
-filesystem is unmounted. This leads to double frees, and as reported
-by David, leads to crashes if SLUB is configured to self destruct when
-double frees occur.
+Calling into socket code is ugly already, at least check whether we are
+dealing with the expected sk_family. Only looking at skb->protocol is
+bound to cause troubles (consider eg. af_packet).
 
-So drop the redundant kfree() again, and instead, mark the offending
-pointer variable so the allocation is ignored by kmemleak.
-
-Cc: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Fixes: fe5186cf12e3 ("efivarfs: fix memory leak in efivarfs_create()")
-Reported-by: David Laight <David.Laight@aculab.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: b333293058aa ("qeth: add support for af_iucv HiperSockets transport")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/efivarfs/inode.c | 2 ++
- fs/efivarfs/super.c | 1 -
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/s390/net/qeth_core_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
-index 71fccccf317e8..5decb3e06563f 100644
---- a/fs/efivarfs/inode.c
-+++ b/fs/efivarfs/inode.c
-@@ -10,6 +10,7 @@
- #include <linux/efi.h>
- #include <linux/fs.h>
- #include <linux/ctype.h>
-+#include <linux/kmemleak.h>
- #include <linux/slab.h>
- #include <linux/uuid.h>
+diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+index 6a73982514237..f22e3653da52d 100644
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -32,6 +32,7 @@
  
-@@ -104,6 +105,7 @@ static int efivarfs_create(struct inode *dir, struct dentry *dentry,
- 	var->var.VariableName[i] = '\0';
+ #include <net/iucv/af_iucv.h>
+ #include <net/dsfield.h>
++#include <net/sock.h>
  
- 	inode->i_private = var;
-+	kmemleak_ignore(var);
- 
- 	err = efivar_entry_add(var, &efivarfs_list);
- 	if (err)
-diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-index bbf056191aaa4..b1e6acec53041 100644
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -23,7 +23,6 @@ LIST_HEAD(efivarfs_list);
- static void efivarfs_evict_inode(struct inode *inode)
- {
- 	clear_inode(inode);
--	kfree(inode->i_private);
+ #include <asm/ebcdic.h>
+ #include <asm/chpid.h>
+@@ -1408,7 +1409,7 @@ static void qeth_notify_skbs(struct qeth_qdio_out_q *q,
+ 	skb_queue_walk(&buf->skb_list, skb) {
+ 		QETH_CARD_TEXT_(q->card, 5, "skbn%d", notification);
+ 		QETH_CARD_TEXT_(q->card, 5, "%lx", (long) skb);
+-		if (skb->protocol == htons(ETH_P_AF_IUCV) && skb->sk)
++		if (skb->sk && skb->sk->sk_family == PF_IUCV)
+ 			iucv_sk(skb->sk)->sk_txnotify(skb, notification);
+ 	}
  }
- 
- static const struct super_operations efivarfs_ops = {
 -- 
 2.27.0
 
