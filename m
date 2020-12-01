@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B536F2CA46E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 909592CA474
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391380AbgLANxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:53:23 -0500
-Received: from mail-eopbgr30076.outbound.protection.outlook.com ([40.107.3.76]:29507
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        id S2391412AbgLANxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:53:34 -0500
+Received: from mail-db8eur05on2067.outbound.protection.outlook.com ([40.107.20.67]:28513
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388187AbgLANxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:53:22 -0500
+        id S2391384AbgLANx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:53:29 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lcemf2b4FZQdZIxHNg2kGdqytmWC0lSO1y8P7E6BxdaWeAiPJ9IGajjYJ4GH75Iqmse7Yt/kL6rKaPuCTIoePVGlSHPQOYR68UGM1D4eVb0HCNeMmTD7uz41MS9Ee8Z/KPWEvC3s9IYhWxDnmjROKiAY1HbNYh06phsDPEe2UFLfLFOn9Z8sOx2nK72vrEF/q0J95T+bJ+btDZpr4nIGYdlqVHMLKMBl3OAJv1bMegeuplyg6djRqKZoclZf+qIlKaKT8f5YL38SboPcT0FdNk9BvWtwqsPIYb/5G79DdiwQ5pTbUV/iaVfyNXr0qzXxtLirg7Iqw3ySMuMACyqQ4Q==
+ b=JUZc9yG7M7Un9tzjDSaI2NeTmAp9o3rws8+iliXgFN/LjGfMt5MM/wkGFvYj4sRn50LB5BICzJiNdvv39zAE2+3/FpqUoTDU4TOvpdyr/G3HntBQ3lkyYHNF072dS9Uizye/ll1fYMVeXxu+7RuJ8d0LcpYO45cK3B4xzahmJRzA2E02nKw4B1ykAVGyWru2UEvj+XLYdSyaGa+LWN0Q1PbXFHzmi4NrBFa6WApKp0iepxcndf7mbo0sbB3zjnvNXc+MtqHKyJ/SEV1c4+pa4PNOq2mCiG0LuV+K4/5dpPvVMdprHQT1RHYWz994racqvQ5cJTTa1DyYu8OJXta9Gg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FUV++1uNwRe8YwFM8iYe07xcJxvt0SFER54DqYkpYRw=;
- b=CQm/0VIYNnxK2+0IMurgjrHXV1EhUi1ar8HhVecZmFt7j1OrBQ53v8ZMGd757bidX4B++CQRFpe7ohXq0grKLBOI7cDFj49q5XRNkUXn3iac42ulZydKFpC6TjHjU7bZx6Li1ykvAq7MyDbdaAz5l4sXbaqr7+3FrPFOGPLzxTnWr1jejqfjigIhuWJXfbmAPW6k2DPSmVnDYafyWOsNNJu0T+MaZ7XPq10eUzCWoLbdrPAX/EebyDdduOQaOb10P0ckppsJWYzRIamUC/Lh24yPyQ0wOvCcOIs4ezV6a3oKR3cwQJub10pjMZRIgSVCuw31op9agKy5LjhcbXWvdw==
+ bh=BwPiMcg+OXJOw2xuAVXeJHVzcTQClw/h4dbT3IO1p8g=;
+ b=NbXTLQDOc2+0+HFoRI2JW1MDun6eROk5UI6htqWJCLiwICzNZMDGVlOP0QYQymT87qWLRYFSvnrT/WRrJCfR5UsEj2aq/Ubm1abERHQov/MytcraWTNWQE94VTqg+JZxLy5O8jAFRgRpdPdUdruo6kCBYjvVoeVkFw2fkQ28fc6jZTEj0PbkkfpcTiUL0u1SvgU81N/p8Cf+i7p8hGdXC6A+iFKOPUfeq/f+6f4pGm7m8H8hIp7Dgzvz8zlQF7P+9pG0zbWp5J7x5h6nJEUz1C+tmIzqo/TLzQJPHXHm8McsFpby+Be/uV6bBftE5KvIxwpDSiJfvUNfi9PM2WSV8A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
  is 193.240.239.45) smtp.rcpttodomain=kernel.org smtp.mailfrom=diasemi.com;
  dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
@@ -27,18 +27,18 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=dialogsemiconductor.onmicrosoft.com;
  s=selector1-dialogsemiconductor-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FUV++1uNwRe8YwFM8iYe07xcJxvt0SFER54DqYkpYRw=;
- b=vPit93myWjgw0Y2DJaNHaecNvaD2BdtWB/HMZSDJveECp6Dnbe316u/hR1pZfAT4dkJa5P/GdPy2ka4aHtK7x5IH+lGuQ7rAhOP7Va7qKkoDEsUO73z6wI3SY0GWWJDvMHufA7LsT0V8NHGrGEr46YW/UKLh08gLJYVBgHdV0Zw=
-Received: from AM9P195CA0006.EURP195.PROD.OUTLOOK.COM (2603:10a6:20b:21f::11)
- by PR3PR10MB4240.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:af::9) with
+ bh=BwPiMcg+OXJOw2xuAVXeJHVzcTQClw/h4dbT3IO1p8g=;
+ b=cS+xM3MDUbtML4uoa9gjHAMcJKU000pO4IYGZPbts/qFgPmXddK01oVIKUExfb8+GIUkuk6nbUv2eAVZ5TIiX1Fg1ELCpLPNQU/3S9UKlylY4vcPof2KJSm33JHK4nu0nCvjZyNe0dFNiDjfP0VgNN15/UYKW3bDN1qMz/urU40=
+Received: from AM9P195CA0010.EURP195.PROD.OUTLOOK.COM (2603:10a6:20b:21f::15)
+ by VI1PR1001MB1215.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:800:71::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.24; Tue, 1 Dec
- 2020 13:52:31 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 1 Dec
+ 2020 13:52:32 +0000
 Received: from AM5EUR02FT064.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:20b:21f:cafe::b2) by AM9P195CA0006.outlook.office365.com
- (2603:10a6:20b:21f::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22 via Frontend
- Transport; Tue, 1 Dec 2020 13:52:31 +0000
+ (2603:10a6:20b:21f:cafe::ac) by AM9P195CA0010.outlook.office365.com
+ (2603:10a6:20b:21f::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23 via Frontend
+ Transport; Tue, 1 Dec 2020 13:52:32 +0000
 X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
  193.240.239.45) smtp.mailfrom=diasemi.com; kernel.org; dkim=none (message not
  signed) header.d=none;kernel.org; dmarc=fail action=none
@@ -48,18 +48,18 @@ Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
 Received: from mailrelay1.diasemi.com (193.240.239.45) by
  AM5EUR02FT064.mail.protection.outlook.com (10.152.9.51) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3611.23 via Frontend Transport; Tue, 1 Dec 2020 13:52:30 +0000
+ 15.20.3611.23 via Frontend Transport; Tue, 1 Dec 2020 13:52:32 +0000
 Received: from swsrvapps-01.diasemi.com (10.20.28.141) by
  NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
- 14.3.468.0; Tue, 1 Dec 2020 14:52:28 +0100
+ 14.3.468.0; Tue, 1 Dec 2020 14:52:29 +0100
 Received: by swsrvapps-01.diasemi.com (Postfix, from userid 23378)      id
- 725163FBE7; Tue,  1 Dec 2020 13:52:28 +0000 (GMT)
-Message-ID: <3527d84448d1e6ddc0fcb883ae564880f75a6cb0.1606830377.git.Adam.Ward.opensource@diasemi.com>
+ 765B63FBBB; Tue,  1 Dec 2020 13:52:29 +0000 (GMT)
+Message-ID: <aaabd3063593e5172fa6b605884d475df64e6d65.1606830377.git.Adam.Ward.opensource@diasemi.com>
 In-Reply-To: <cover.1606830377.git.Adam.Ward.opensource@diasemi.com>
 References: <cover.1606830377.git.Adam.Ward.opensource@diasemi.com>
 From:   Adam Ward <Adam.Ward.opensource@diasemi.com>
-Date:   Tue, 1 Dec 2020 13:52:28 +0000
-Subject: [PATCH V4 02/10] regulator: da9121: Add header file
+Date:   Tue, 1 Dec 2020 13:52:29 +0000
+Subject: [PATCH V4 03/10] regulator: da9121: Add device variants
 To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
 CC:     Liam Girdwood <lgirdwood@gmail.com>,
         Vincent Whitchurch <vincent.whitchurch@axis.com>,
@@ -69,369 +69,122 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1773c389-4b53-46c5-3b76-08d8960058e1
-X-MS-TrafficTypeDiagnostic: PR3PR10MB4240:
-X-Microsoft-Antispam-PRVS: <PR3PR10MB4240800649FA8B93837A1E5CCBF40@PR3PR10MB4240.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Office365-Filtering-Correlation-Id: 9ed44e28-e6e4-4489-7231-08d8960059d1
+X-MS-TrafficTypeDiagnostic: VI1PR1001MB1215:
+X-Microsoft-Antispam-PRVS: <VI1PR1001MB12153932AC5EAE6192F83DE7CBF40@VI1PR1001MB1215.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: odNhT0EAiuW4Q66V/ftkBKDEVeLd5jxBGv6uFqbz7Sovb6LTcVPoNsg8KLs8bCm97rV5a1cEWW4aUBK7oHg88Gi/tFrFxgCZvmmpe9k3g4c+uyA7G/XMmBCrL4HCehjuv7RtU9ik3G110016Jr/B0CZf1bAbNUqNN35u3QcE+R7HBk061LjPxj24UfEDyQTtICxOEEabT+GCe89/qbjQSnfkrzTecS0Hcw4ml3zWtJnZxTew869iWFAtP4lM74rIx72du8aIQaIKcXaxUPiRxBU4Xwc6kBtrs4UlyHMdaX3j5aa7EV63dhz//Gm29eYWYg1rBsQ40sBpGUXVRHfwGeXYqXON5JHv86ADr3GRwhds2OqnEhQu0yniuF0pEdNeDylV2EIovCYhKqJlPGUotw==
-X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966005)(8676002)(36756003)(107886003)(86362001)(54906003)(426003)(19627235002)(2616005)(186003)(6266002)(42186006)(498600001)(336012)(4326008)(81166007)(26005)(8936002)(110136005)(82310400003)(356005)(70206006)(83380400001)(70586007)(30864003)(47076004)(5660300002)(2906002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: XmZDGPMmIUnnx6z7N96ZmopbPt/DGVpcOoZA9a/TtS3IJ2yp/rCJYdECOPWRixsRmkhdPMIR4MQAH7yVeJ755EdeLV/zXww42Hhvgi/TjK3ZR8oda9oFRITRovRg3TAgwSUu3998W1ov/GmoX6ArQtQzXnULfEX1P0q9IzJNjC9FtqcaokKaPAtXIiQKNbeQ60Q2UdTDhtPdup4an7nYNM8IQ9e1YadYLkiFPYjzuVIix177RozfgqxDLITmgK0azZWF6XVzLLZ66+0ihqobqUQRIJH6EtkInLLwdcvxk/Yn5Z6IXJpX4pk8cntE9idUBXyjVDkMeBOfZbB1phEKlObaHGY+WUogYAsyKbIzZ8u1b+cGaPLy/PRd1ZTiGyJAGN+6uUpHlcS+FaeD8+uvgg==
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966005)(2616005)(4326008)(8676002)(2906002)(42186006)(86362001)(110136005)(54906003)(36756003)(8936002)(498600001)(70206006)(70586007)(426003)(5660300002)(107886003)(26005)(186003)(356005)(81166007)(83380400001)(6266002)(47076004)(336012)(82310400003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2020 13:52:30.5808
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2020 13:52:32.1621
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1773c389-4b53-46c5-3b76-08d8960058e1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ed44e28-e6e4-4489-7231-08d8960059d1
 X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
 X-MS-Exchange-CrossTenant-AuthSource: AM5EUR02FT064.eop-EUR02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR10MB4240
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR1001MB1215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add header file for Dialog Semiconductor DA9121 regulator and related
-devices, mostly autogenerated from the chip design databases, and update
-driver to replace local defines with those from header.
+Add basic support for configuration to reference variants of this device,
+and track the selected variant within the driver.
 
 Signed-off-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
 ---
- drivers/regulator/da9121-regulator.c |  15 +-
- drivers/regulator/da9121-regulator.h | 291 +++++++++++++++++++++++++++++++++++
- 2 files changed, 296 insertions(+), 10 deletions(-)
- create mode 100644 drivers/regulator/da9121-regulator.h
+ drivers/regulator/da9121-regulator.c | 46 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 43 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/regulator/da9121-regulator.c b/drivers/regulator/da9121-regulator.c
-index 66bdfd1..c11fe04 100644
+index c11fe04..5bebdb2 100644
 --- a/drivers/regulator/da9121-regulator.c
 +++ b/drivers/regulator/da9121-regulator.c
-@@ -9,12 +9,7 @@
- #include <linux/regmap.h>
- #include <linux/err.h>
+@@ -11,6 +11,12 @@
  #include <linux/i2c.h>
--
--#define DA9121_BUCK_BUCK1_0			0x20
--#define DA9121_BUCK_BUCK1_0_CH1_EN		BIT(0)
--
--#define DA9121_BUCK_BUCK1_5			0x25
--#define DA9121_BUCK_BUCK1_5_CH1_A_VOUT		GENMASK(7, 0)
-+#include "da9121-regulator.h"
+ #include "da9121-regulator.h"
  
- #define DA9121_MIN_MV		300
- #define DA9121_MAX_MV		1900
-@@ -47,10 +42,10 @@
- 	.min_uV = DA9121_MIN_MV * 1000,
- 	.uV_step = DA9121_STEP_MV * 1000,
- 	.linear_min_sel = DA9121_MIN_SEL,
--	.vsel_reg = DA9121_BUCK_BUCK1_5,
--	.vsel_mask = DA9121_BUCK_BUCK1_5_CH1_A_VOUT,
--	.enable_reg = DA9121_BUCK_BUCK1_0,
--	.enable_mask = DA9121_BUCK_BUCK1_0_CH1_EN,
-+	.vsel_reg = DA9121_REG_BUCK_BUCK1_5,
-+	.vsel_mask = DA9121_MASK_BUCK_BUCKx_5_CHx_A_VOUT,
-+	.enable_reg = DA9121_REG_BUCK_BUCK1_0,
-+	.enable_mask = DA9121_MASK_BUCK_BUCKx_0_CHx_EN,
- 	/* Default value of BUCK_BUCK1_0.CH1_SRC_DVC_UP */
- 	.ramp_delay = 20000,
- 	/* tBUCK_EN */
-diff --git a/drivers/regulator/da9121-regulator.h b/drivers/regulator/da9121-regulator.h
-new file mode 100644
-index 0000000..3c34cb8
---- /dev/null
-+++ b/drivers/regulator/da9121-regulator.h
-@@ -0,0 +1,291 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * DA9121 Single-channel dual-phase 10A buck converter
-+ * DA9130 Single-channel dual-phase 10A buck converter (Automotive)
-+ * DA9217 Single-channel dual-phase  6A buck converter
-+ * DA9122 Dual-channel single-phase  5A buck converter
-+ * DA9131 Dual-channel single-phase  5A buck converter (Automotive)
-+ * DA9220 Dual-channel single-phase  3A buck converter
-+ * DA9132 Dual-channel single-phase  3A buck converter (Automotive)
-+ *
-+ * Copyright (C) 2020  Dialog Semiconductor
-+ *
-+ * Authors: Steve Twiss, Dialog Semiconductor
-+ *          Adam Ward, Dialog Semiconductor
-+ */
-+
-+#ifndef __DA9121_REGISTERS_H__
-+#define __DA9121_REGISTERS_H__
-+
-+/* Values for: DA9121_REG_BUCK_BUCKx_4 registers, fields CHx_y_MODE
-+ *             DA9121_REG_BUCK_BUCKx_7 registers, fields CHx_RIPPLE_CANCEL
-+ */
-+#include <dt-bindings/regulator/dlg,da9121-regulator.h>
-+
-+enum da9121_variant {
-+	DA9121_TYPE_DA9121_DA9130,
-+	DA9121_TYPE_DA9220_DA9132,
-+	DA9121_TYPE_DA9122_DA9131,
-+	DA9121_TYPE_DA9217
++/* Chip data */
++struct da9121 {
++	struct device *dev;
++	int variant_id;
 +};
 +
-+/* Minimum, maximum and default polling millisecond periods are provided
-+ * here as an example. It is expected that any final implementation will
-+ * include a modification of these settings to match the required
-+ * application.
-+ */
-+#define DA9121_DEFAULT_POLLING_PERIOD_MS	3000
-+#define DA9121_MAX_POLLING_PERIOD_MS		10000
-+#define DA9121_MIN_POLLING_PERIOD_MS		1000
-+
-+/* Registers */
-+
-+#define DA9121_REG_SYS_STATUS_0		0x01
-+#define DA9121_REG_SYS_STATUS_1		0x02
-+#define DA9121_REG_SYS_STATUS_2		0x03
-+#define DA9121_REG_SYS_EVENT_0		0x04
-+#define DA9121_REG_SYS_EVENT_1		0x05
-+#define DA9121_REG_SYS_EVENT_2		0x06
-+#define DA9121_REG_SYS_MASK_0		0x07
-+#define DA9121_REG_SYS_MASK_1		0x08
-+#define DA9121_REG_SYS_MASK_2		0x09
-+#define DA9121_REG_SYS_MASK_3		0x0A
-+#define DA9121_REG_SYS_CONFIG_0		0x0B
-+#define DA9121_REG_SYS_CONFIG_1		0x0C
-+#define DA9121_REG_SYS_CONFIG_2		0x0D
-+#define DA9121_REG_SYS_CONFIG_3		0x0E
-+#define DA9121_REG_SYS_GPIO0_0		0x10
-+#define DA9121_REG_SYS_GPIO0_1		0x11
-+#define DA9121_REG_SYS_GPIO1_0		0x12
-+#define DA9121_REG_SYS_GPIO1_1		0x13
-+#define DA9121_REG_SYS_GPIO2_0		0x14
-+#define DA9121_REG_SYS_GPIO2_1		0x15
-+#define DA9121_REG_BUCK_BUCK1_0		0x20
-+#define DA9121_REG_BUCK_BUCK1_1		0x21
-+#define DA9121_REG_BUCK_BUCK1_2		0x22
-+#define DA9121_REG_BUCK_BUCK1_3		0x23
-+#define DA9121_REG_BUCK_BUCK1_4		0x24
-+#define DA9121_REG_BUCK_BUCK1_5		0x25
-+#define DA9121_REG_BUCK_BUCK1_6		0x26
-+#define DA9121_REG_BUCK_BUCK1_7		0x27
-+#define DA9xxx_REG_BUCK_BUCK2_0		0x28
-+#define DA9xxx_REG_BUCK_BUCK2_1		0x29
-+#define DA9xxx_REG_BUCK_BUCK2_2		0x2A
-+#define DA9xxx_REG_BUCK_BUCK2_3		0x2B
-+#define DA9xxx_REG_BUCK_BUCK2_4		0x2C
-+#define DA9xxx_REG_BUCK_BUCK2_5		0x2D
-+#define DA9xxx_REG_BUCK_BUCK2_6		0x2E
-+#define DA9xxx_REG_BUCK_BUCK2_7		0x2F
-+#define DA9121_REG_OTP_DEVICE_ID	0x48
-+#define DA9121_REG_OTP_VARIANT_ID	0x49
-+#define DA9121_REG_OTP_CUSTOMER_ID	0x4A
-+#define DA9121_REG_OTP_CONFIG_ID	0x4B
-+
-+/* Register bits */
-+
-+/* DA9121_REG_SYS_STATUS_0 */
-+
-+#define DA9xxx_MASK_SYS_STATUS_0_SG			BIT(2)
-+#define DA9121_MASK_SYS_STATUS_0_TEMP_CRIT		BIT(1)
-+#define DA9121_MASK_SYS_STATUS_0_TEMP_WARN		BIT(0)
-+
-+/* DA9121_REG_SYS_STATUS_1 */
-+
-+#define DA9xxx_MASK_SYS_STATUS_1_PG2			BIT(7)
-+#define DA9xxx_MASK_SYS_STATUS_1_OV2			BIT(6)
-+#define DA9xxx_MASK_SYS_STATUS_1_UV2			BIT(5)
-+#define DA9xxx_MASK_SYS_STATUS_1_OC2			BIT(4)
-+#define DA9121_MASK_SYS_STATUS_1_PG1			BIT(3)
-+#define DA9121_MASK_SYS_STATUS_1_OV1			BIT(2)
-+#define DA9121_MASK_SYS_STATUS_1_UV1			BIT(1)
-+#define DA9121_MASK_SYS_STATUS_1_OC1			BIT(0)
-+
-+/* DA9121_REG_SYS_STATUS_2 */
-+
-+#define DA9121_MASK_SYS_STATUS_2_GPIO2			BIT(2)
-+#define DA9121_MASK_SYS_STATUS_2_GPIO1			BIT(1)
-+#define DA9121_MASK_SYS_STATUS_2_GPIO0			BIT(0)
-+
-+/* DA9121_REG_SYS_EVENT_0 */
-+
-+#define DA9xxx_MASK_SYS_EVENT_0_E_SG			BIT(2)
-+#define DA9121_MASK_SYS_EVENT_0_E_TEMP_CRIT		BIT(1)
-+#define DA9121_MASK_SYS_EVENT_0_E_TEMP_WARN		BIT(0)
-+
-+/* DA9121_REG_SYS_EVENT_1 */
-+
-+#define DA9xxx_MASK_SYS_EVENT_1_E_PG2			BIT(7)
-+#define DA9xxx_MASK_SYS_EVENT_1_E_OV2			BIT(6)
-+#define DA9xxx_MASK_SYS_EVENT_1_E_UV2			BIT(5)
-+#define DA9xxx_MASK_SYS_EVENT_1_E_OC2			BIT(4)
-+#define DA9121_MASK_SYS_EVENT_1_E_PG1			BIT(3)
-+#define DA9121_MASK_SYS_EVENT_1_E_OV1			BIT(2)
-+#define DA9121_MASK_SYS_EVENT_1_E_UV1			BIT(1)
-+#define DA9121_MASK_SYS_EVENT_1_E_OC1			BIT(0)
-+
-+/* DA9121_REG_SYS_EVENT_2 */
-+
-+#define DA9121_MASK_SYS_EVENT_2_E_GPIO2			BIT(2)
-+#define DA9121_MASK_SYS_EVENT_2_E_GPIO1			BIT(1)
-+#define DA9121_MASK_SYS_EVENT_2_E_GPIO0			BIT(0)
-+
-+/* DA9121_REG_SYS_MASK_0 */
-+
-+#define DA9xxx_MASK_SYS_MASK_0_M_SG			BIT(2)
-+#define DA9121_MASK_SYS_MASK_0_M_TEMP_CRIT		BIT(1)
-+#define DA9121_MASK_SYS_MASK_0_M_TEMP_WARN		BIT(0)
-+
-+/* DA9121_REG_SYS_MASK_1 */
-+
-+#define DA9xxx_MASK_SYS_MASK_1_M_PG2			BIT(7)
-+#define DA9xxx_MASK_SYS_MASK_1_M_OV2			BIT(6)
-+#define DA9xxx_MASK_SYS_MASK_1_M_UV2			BIT(5)
-+#define DA9xxx_MASK_SYS_MASK_1_M_OC2			BIT(4)
-+#define DA9121_MASK_SYS_MASK_1_M_PG1			BIT(3)
-+#define DA9121_MASK_SYS_MASK_1_M_OV1			BIT(2)
-+#define DA9121_MASK_SYS_MASK_1_M_UV1			BIT(1)
-+#define DA9121_MASK_SYS_MASK_1_M_OC1			BIT(0)
-+
-+/* DA9121_REG_SYS_MASK_2 */
-+
-+#define DA9121_MASK_SYS_MASK_2_M_GPIO2			BIT(2)
-+#define DA9121_MASK_SYS_MASK_2_M_GPIO1			BIT(1)
-+#define DA9121_MASK_SYS_MASK_2_M_GPIO0			BIT(0)
-+
-+/* DA9122_REG_SYS_MASK_3 */
-+
-+#define DA9121_MASK_SYS_MASK_3_M_VR_HOT			BIT(3)
-+#define DA9xxx_MASK_SYS_MASK_3_M_SG_STAT		BIT(2)
-+#define DA9xxx_MASK_SYS_MASK_3_M_PG2_STAT		BIT(1)
-+#define DA9121_MASK_SYS_MASK_3_M_PG1_STAT		BIT(0)
-+
-+/* DA9121_REG_SYS_CONFIG_0 */
-+
-+#define DA9121_MASK_SYS_CONFIG_0_CH1_DIS_DLY		0xF0
-+#define DA9121_MASK_SYS_CONFIG_0_CH1_EN_DLY		0x0F
-+
-+/* DA9xxx_REG_SYS_CONFIG_1 */
-+
-+#define DA9xxx_MASK_SYS_CONFIG_1_CH2_DIS_DLY		0xF0
-+#define DA9xxx_MASK_SYS_CONFIG_1_CH2_EN_DLY		0x0F
-+
-+/* DA9121_REG_SYS_CONFIG_2 */
-+
-+#define DA9121_MASK_SYS_CONFIG_2_OC_LATCHOFF		0x60
-+#define DA9121_MASK_SYS_CONFIG_2_OC_DVC_MASK		BIT(4)
-+#define DA9121_MASK_SYS_CONFIG_2_PG_DVC_MASK		0x0C
-+
-+/* DA9121_REG_SYS_CONFIG_3 */
-+
-+#define DA9121_MASK_SYS_CONFIG_3_OSC_TUNE		0X70
-+#define DA9121_MASK_SYS_CONFIG_3_I2C_TIMEOUT		BIT(1)
-+
-+/* DA9121_REG_SYS_GPIO0_0 */
-+
-+#define DA9121_MASK_SYS_GPIO0_0_GPIO0_MODE		0X1E
-+#define DA9121_MASK_SYS_GPIO0_0_GPIO0_OBUF		BIT(0)
-+
-+/* DA9121_REG_SYS_GPIO0_1 */
-+
-+#define DA9121_MASK_SYS_GPIO0_1_GPIO0_DEB_FALL		BIT(7)
-+#define DA9121_MASK_SYS_GPIO0_1_GPIO0_DEB_RISE		BIT(6)
-+#define DA9121_MASK_SYS_GPIO0_1_GPIO0_DEB		0x30
-+#define DA9121_MASK_SYS_GPIO0_1_GPIO0_PUPD		BIT(3)
-+#define DA9121_MASK_SYS_GPIO0_1_GPIO0_POL		BIT(2)
-+#define DA9121_MASK_SYS_GPIO0_1_GPIO0_TRIG		0x03
-+
-+/* DA9121_REG_SYS_GPIO1_0 */
-+
-+#define DA9121_MASK_SYS_GPIO1_0_GPIO1_MODE		0x1E
-+#define DA9121_MASK_SYS_GPIO1_0_GPIO1_OBUF		BIT(0)
-+
-+/* DA9121_REG_SYS_GPIO1_1 */
-+
-+#define DA9121_MASK_SYS_GPIO1_1_GPIO1_DEB_FALL		BIT(7)
-+#define DA9121_MASK_SYS_GPIO1_1_GPIO1_DEB_RISE		BIT(6)
-+#define DA9121_MASK_SYS_GPIO1_1_GPIO1_DEB		0x30
-+#define DA9121_MASK_SYS_GPIO1_1_GPIO1_PUPD		BIT(3)
-+#define DA9121_MASK_SYS_GPIO1_1_GPIO1_POL		BIT(2)
-+#define DA9121_MASK_SYS_GPIO1_1_GPIO1_TRIG		0x03
-+
-+/* DA9121_REG_SYS_GPIO2_0 */
-+
-+#define DA9121_MASK_SYS_GPIO2_0_GPIO2_MODE		0x1E
-+#define DA9121_MASK_SYS_GPIO2_0_GPIO2_OBUF		BIT(0)
-+
-+/* DA9121_REG_SYS_GPIO2_1 */
-+
-+#define DA9121_MASK_SYS_GPIO2_1_GPIO2_DEB_FALL		BIT(7)
-+#define DA9121_MASK_SYS_GPIO2_1_GPIO2_DEB_RISE		BIT(6)
-+#define DA9121_MASK_SYS_GPIO2_1_GPIO2_DEB		0x30
-+#define DA9121_MASK_SYS_GPIO2_1_GPIO2_PUPD		BIT(3)
-+#define DA9121_MASK_SYS_GPIO2_1_GPIO2_POL		BIT(2)
-+#define DA9121_MASK_SYS_GPIO2_1_GPIO2_TRIG		0x03
-+
-+/* DA9121_REG_BUCK_BUCK1_0 / DA9xxx_REG_BUCK_BUCK2_0 */
-+
-+#define DA9121_MASK_BUCK_BUCKx_0_CHx_SR_DVC_DWN		0x70
-+#define DA9121_MASK_BUCK_BUCKx_0_CHx_SR_DVC_UP		0x0E
-+#define DA9121_MASK_BUCK_BUCKx_0_CHx_EN			BIT(0)
-+
-+/* DA9121_REG_BUCK_BUCK1_1 / DA9xxx_REG_BUCK_BUCK2_1 */
-+
-+#define DA9121_MASK_BUCK_BUCKx_1_CHx_SR_SHDN		0x70
-+#define DA9121_MASK_BUCK_BUCKx_1_CHx_SR_STARTUP		0x0E
-+#define DA9121_MASK_BUCK_BUCKx_1_CHx_PD_DIS		BIT(0)
-+
-+/* DA9121_REG_BUCK_BUCK1_2 / DA9xxx_REG_BUCK_BUCK2_2 */
-+
-+#define DA9121_MASK_BUCK_BUCKx_2_CHx_ILIM		0x0F
-+
-+/* DA9121_REG_BUCK_BUCK1_3 / DA9xxx_REG_BUCK_BUCK2_3 */
-+
-+#define DA9121_MASK_BUCK_BUCKx_3_CHx_VMAX		0xFF
-+
-+/* DA9121_REG_BUCK_BUCK1_4 / DA9xxx_REG_BUCK_BUCK2_4 */
-+
-+#define DA9121_MASK_BUCK_BUCKx_4_CHx_VSEL		BIT(4)
-+#define DA9121_MASK_BUCK_BUCKx_4_CHx_B_MODE		0x0C
-+#define DA9121_MASK_BUCK_BUCKx_4_CHx_A_MODE		0x03
-+
-+/* DA9121_REG_BUCK_BUCK1_5 / DA9xxx_REG_BUCK_BUCK2_5 */
-+
-+#define DA9121_MASK_BUCK_BUCKx_5_CHx_A_VOUT		0xFF
-+
-+/* DA9121_REG_BUCK_BUCK1_6 / DA9xxx_REG_BUCK_BUCK2_6 */
-+
-+#define DA9121_MASK_BUCK_BUCKx_6_CHx_B_VOUT		0xFF
-+
-+/* DA9121_REG_BUCK_BUCK1_7 / DA9xxx_REG_BUCK_BUCK2_7 */
-+
-+#define DA9xxx_MASK_BUCK_BUCKx_7_CHx_RIPPLE_CANCEL	0x03
-+
-+
-+/* DA9121_REG_OTP_DEVICE_ID */
-+
-+#define DA9121_MASK_OTP_DEVICE_ID_DEV_ID		0xFF
-+
-+#define DA9121_DEVICE_ID	0x05
-+
-+/* DA9121_REG_OTP_VARIANT_ID */
-+
-+#define DA9121_SHIFT_OTP_VARIANT_ID_MRC			4
-+#define DA9121_MASK_OTP_VARIANT_ID_MRC			0xF0
-+#define DA9121_SHIFT_OTP_VARIANT_ID_VRC			0
-+#define DA9121_MASK_OTP_VARIANT_ID_VRC			0x0F
-+
-+#define DA9121_VARIANT_MRC_BASE	0x2
-+#define DA9121_VARIANT_VRC	0x1
-+#define DA9220_VARIANT_VRC	0x0
-+#define DA9122_VARIANT_VRC	0x2
-+#define DA9217_VARIANT_VRC	0x7
-+
-+/* DA9121_REG_OTP_CUSTOMER_ID */
-+
-+#define DA9121_MASK_OTP_CUSTOMER_ID_CUST_ID		0xFF
-+
-+/* DA9121_REG_OTP_CONFIG_ID */
-+
-+#define DA9121_MASK_OTP_CONFIG_ID_CONFIG_REV		0xFF
-+
-+#endif /* __DA9121_REGISTERS_H__ */
+ #define DA9121_MIN_MV		300
+ #define DA9121_MAX_MV		1900
+ #define DA9121_STEP_MV		10
+@@ -53,19 +59,46 @@
+ };
+ 
+ static const struct of_device_id da9121_dt_ids[] = {
+-	{ .compatible = "dlg,da9121", },
++	{ .compatible = "dlg,da9121", .data = (void *) DA9121_TYPE_DA9121_DA9130 },
++	{ .compatible = "dlg,da9130", .data = (void *) DA9121_TYPE_DA9121_DA9130 },
++	{ .compatible = "dlg,da9217", .data = (void *) DA9121_TYPE_DA9217 },
++	{ .compatible = "dlg,da9122", .data = (void *) DA9121_TYPE_DA9122_DA9131 },
++	{ .compatible = "dlg,da9131", .data = (void *) DA9121_TYPE_DA9122_DA9131 },
++	{ .compatible = "dlg,da9220", .data = (void *) DA9121_TYPE_DA9220_DA9132 },
++	{ .compatible = "dlg,da9132", .data = (void *) DA9121_TYPE_DA9220_DA9132 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, da9121_dt_ids);
+ 
++static inline int da9121_of_get_id(struct device *dev)
++{
++	const struct of_device_id *id = of_match_device(da9121_dt_ids, dev);
++
++	if (!id) {
++		dev_err(dev, "%s: Failed\n", __func__);
++		return -EINVAL;
++	}
++	return (uintptr_t)id->data;
++}
++
+ static int da9121_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
++	struct da9121 *chip;
++	int ret = 0;
+ 	struct device *dev = &i2c->dev;
+ 	struct regulator_config config = {};
+ 	struct regulator_dev *rdev;
+ 	struct regmap *regmap;
+ 
++	chip = devm_kzalloc(&i2c->dev, sizeof(struct da9121), GFP_KERNEL);
++	if (!chip) {
++		ret = -ENOMEM;
++		goto error;
++	}
++
++	chip->variant_id = da9121_of_get_id(&i2c->dev);
++
+ 	regmap = devm_regmap_init_i2c(i2c, &da9121_regmap_config);
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+@@ -80,11 +113,18 @@ static int da9121_i2c_probe(struct i2c_client *i2c,
+ 		return PTR_ERR(rdev);
+ 	}
+ 
+-	return 0;
++error:
++	return ret;
+ }
+ 
+ static const struct i2c_device_id da9121_i2c_id[] = {
+-	{ "da9121", 0 },
++	{"da9121", DA9121_TYPE_DA9121_DA9130},
++	{"da9130", DA9121_TYPE_DA9121_DA9130},
++	{"da9217", DA9121_TYPE_DA9217},
++	{"da9122", DA9121_TYPE_DA9122_DA9131},
++	{"da9131", DA9121_TYPE_DA9122_DA9131},
++	{"da9220", DA9121_TYPE_DA9220_DA9132},
++	{"da9132", DA9121_TYPE_DA9220_DA9132},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(i2c, da9121_i2c_id);
 -- 
 1.9.1
 
