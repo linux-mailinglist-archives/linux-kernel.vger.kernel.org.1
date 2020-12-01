@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1DA2C9DAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B32FB2C9DD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390982AbgLAJ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:26:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42080 "EHLO mail.kernel.org"
+        id S2388875AbgLAJ22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:28:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389053AbgLAJFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:05:06 -0500
+        id S2388420AbgLAJAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:00:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3746A206D8;
-        Tue,  1 Dec 2020 09:04:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 237742223F;
+        Tue,  1 Dec 2020 09:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813459;
-        bh=7Xra9K5SHslu5I8jul/MNYH7tcKJGMwiT1/5sblMmqE=;
+        s=korg; t=1606813206;
+        bh=krr+BXO3ubjqEgMxgDqhjCLFm4hDcYwCqMWmI9NCuNk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gzBfcS6K6W7sxSzcflX/j8GaJ1Twe+c2tVDbsgei6XvUPdKgdaZhmETtGyrxWy4ff
-         JFje+9IB0e88hkxsn53r3dpt/JUlA3ku4f22OTY+9GEJBe566KcHtlAxKHmFejSetc
-         vBcwe6skh+fKfVaZXi8FHLX5+vkkF1ErQ2QBP9Io=
+        b=cfev4CUj9xLwKG9zi6souxNKfbkuwv69tTjwNcKGPQ85yyTi5ZxmmqfiNhrt4w7f5
+         dAe3piL+2kXZPB+bg35BOQWThK1f0uGokpcOEjZqToPJZ5PvQpCh4cZHxdh5e+CuXf
+         FTtc9hiWao0Ii8QwqQb+wQ7vbFyI21OBXPj8ALCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
+        stable@vger.kernel.org, Brian Masney <bmasney@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 46/98] batman-adv: set .owner to THIS_MODULE
-Date:   Tue,  1 Dec 2020 09:53:23 +0100
-Message-Id: <20201201084657.358688491@linuxfoundation.org>
+Subject: [PATCH 4.19 19/57] x86/xen: dont unbind uninitialized lock_kicker_irq
+Date:   Tue,  1 Dec 2020 09:53:24 +0100
+Message-Id: <20201201084649.984032041@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +44,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Brian Masney <bmasney@redhat.com>
 
-[ Upstream commit 14a2e551faea53d45bc11629a9dac88f88950ca7 ]
+[ Upstream commit 65cae18882f943215d0505ddc7e70495877308e6 ]
 
-If THIS_MODULE is not set, the module would be removed while debugfs is
-being used.
-It eventually makes kernel panic.
+When booting a hyperthreaded system with the kernel parameter
+'mitigations=auto,nosmt', the following warning occurs:
 
-Fixes: c6c8fea29769 ("net: Add batman-adv meshing protocol")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+    WARNING: CPU: 0 PID: 1 at drivers/xen/events/events_base.c:1112 unbind_from_irqhandler+0x4e/0x60
+    ...
+    Hardware name: Xen HVM domU, BIOS 4.2.amazon 08/24/2006
+    ...
+    Call Trace:
+     xen_uninit_lock_cpu+0x28/0x62
+     xen_hvm_cpu_die+0x21/0x30
+     takedown_cpu+0x9c/0xe0
+     ? trace_suspend_resume+0x60/0x60
+     cpuhp_invoke_callback+0x9a/0x530
+     _cpu_up+0x11a/0x130
+     cpu_up+0x7e/0xc0
+     bringup_nonboot_cpus+0x48/0x50
+     smp_init+0x26/0x79
+     kernel_init_freeable+0xea/0x229
+     ? rest_init+0xaa/0xaa
+     kernel_init+0xa/0x106
+     ret_from_fork+0x35/0x40
+
+The secondary CPUs are not activated with the nosmt mitigations and only
+the primary thread on each CPU core is used. In this situation,
+xen_hvm_smp_prepare_cpus(), and more importantly xen_init_lock_cpu(), is
+not called, so the lock_kicker_irq is not initialized for the secondary
+CPUs. Let's fix this by exiting early in xen_uninit_lock_cpu() if the
+irq is not set to avoid the warning from above for each secondary CPU.
+
+Signed-off-by: Brian Masney <bmasney@redhat.com>
+Link: https://lore.kernel.org/r/20201107011119.631442-1-bmasney@redhat.com
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/log.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/xen/spinlock.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/net/batman-adv/log.c b/net/batman-adv/log.c
-index 11941cf1adcc9..87f3de3d4e4ca 100644
---- a/net/batman-adv/log.c
-+++ b/net/batman-adv/log.c
-@@ -180,6 +180,7 @@ static const struct file_operations batadv_log_fops = {
- 	.read           = batadv_log_read,
- 	.poll           = batadv_log_poll,
- 	.llseek         = no_llseek,
-+	.owner          = THIS_MODULE,
- };
+diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
+index 717b4847b473f..6fffb86a32add 100644
+--- a/arch/x86/xen/spinlock.c
++++ b/arch/x86/xen/spinlock.c
+@@ -101,10 +101,20 @@ void xen_init_lock_cpu(int cpu)
  
- /**
+ void xen_uninit_lock_cpu(int cpu)
+ {
++	int irq;
++
+ 	if (!xen_pvspin)
+ 		return;
+ 
+-	unbind_from_irqhandler(per_cpu(lock_kicker_irq, cpu), NULL);
++	/*
++	 * When booting the kernel with 'mitigations=auto,nosmt', the secondary
++	 * CPUs are not activated, and lock_kicker_irq is not initialized.
++	 */
++	irq = per_cpu(lock_kicker_irq, cpu);
++	if (irq == -1)
++		return;
++
++	unbind_from_irqhandler(irq, NULL);
+ 	per_cpu(lock_kicker_irq, cpu) = -1;
+ 	kfree(per_cpu(irq_name, cpu));
+ 	per_cpu(irq_name, cpu) = NULL;
 -- 
 2.27.0
 
