@@ -2,57 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE382CADFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F39B92CAE00
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388068AbgLAVDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:03:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725899AbgLAVDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:03:00 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388439AbgLAVDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:03:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388236AbgLAVDl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 16:03:41 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CEFC0613CF;
+        Tue,  1 Dec 2020 13:03:00 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D013F204FD;
-        Tue,  1 Dec 2020 21:02:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606856540;
-        bh=tv0qvp7to0qfEmCOChYQQOvDzhMCYnFg7qz3e7fOdT0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XhNyyCxvF53jfvtVVkEPIb7sTB4ys0hgtVFYv4gVM0CBA1gr4VjEkpcULK2p9lc34
-         cRFa/tyjdaKG9ghzutUzoWmu0p6jwvlLOc9PPfg4kCaScEQ59f1vExhWBceGqivoe1
-         IxM4ZA2Eiz8DO0IfMlkQCo9gQlHjnYJmmkDN1Fu8=
-Date:   Tue, 1 Dec 2020 21:02:15 +0000
-From:   Will Deacon <will@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     robin.murphy@arm.com, joro@8bytes.org, xiyou.wangcong@gmail.com,
-        linuxarm@huawei.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, chenxiang66@hisilicon.com
-Subject: Re: [RESEND PATCH v3 0/4] iommu/iova: Solve longterm IOVA issue
-Message-ID: <20201201210215.GB28178@willie-the-truck>
-References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
- <d87ceec4-b7a1-c600-3b78-6852f0320ce2@huawei.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Clvh12NBKz9sPB;
+        Wed,  2 Dec 2020 08:02:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606856577;
+        bh=qgIdUNIu2b01Tkur1AWAWWTMSomrYrJ8vZk5vbj8pj8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KpfJmBZWVxUNhbTb9Iqcl2dlHRji6tU4byPOvAodOR7r9YWed7oG0G33fXwWPZ5f3
+         FG/NXXCotR+ZvriIihBtyJ3phiWko09eYNLPEPgHa1u+T33wAEctdn1AdbZJqhTmDH
+         8gzbL6jZTsIjW/xJSClMiFCV2k46PY4+42nhNunsf2kj335Ro7S8maInhGzua54tn/
+         8w55X32INrdvcaXSrUN/B3hPe65nBYLzaYNIGwPMvOYAYz4zgfcSLy7Whnaakoddf/
+         9jOUXZ82bAoHubFlqqKY514yDvPsDwBNZHEaqwK3eQ9Q7H2btoOSuZZIyExeM/Q5KD
+         J5pJrgiUnMmaw==
+Date:   Wed, 2 Dec 2020 08:02:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the block tree
+Message-ID: <20201202080254.4e8dbb43@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d87ceec4-b7a1-c600-3b78-6852f0320ce2@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/lo+Fo=NVdSKesZ096DsfIWq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 03:35:02PM +0000, John Garry wrote:
-> On 17/11/2020 10:25, John Garry wrote:
-> Is there any chance that we can get these picked up for 5.11? We've seen
-> this issue solved here for a long time.
-> 
-> Or, @Robin, let me know if not happy with this since v1.
-> 
-> BTW, patch #4 has been on the go for ~1 year now, and is a nice small
-> optimisation from Cong, which I picked up and already had a RB tag.
+--Sig_/lo+Fo=NVdSKesZ096DsfIWq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I can pick the last patch up, but I'd really like some reviewed/tested-bys
-on the others.
+Hi all,
 
-Will
+In commit
+
+  573cc9d095bc ("blk-cgroup: fix a hd_struct leak in blkcg_fill_root_iostat=
+s")
+
+Fixes tag
+
+  Fixes: ef45fe470e1 ("blk-cgroup: show global disk stats in root cgroup io=
+.stat")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+
+For the future, this can be fixed by setting core.abbrev to 12 (or more)
+or (for git v2.11 or later) just making sure it is not set (or set to
+"auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lo+Fo=NVdSKesZ096DsfIWq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Gr34ACgkQAVBC80lX
+0GwJpAgAkOvgcvzToc1gYC9AVKxr7ZotDfQjpVQtXhIV+BY2holWXaMlEurJZXaG
+HehmhuWIumnnLSsUsOYymebVHF/SFzWCazs3xqoDtVVNIIT/KgZfXwWdBnhUJqLi
+Q5QKZbKZtVRbhPCH6pDSIhV7nhw6k5FFQW9TjHSCO71rQDbqViOONKAF/oj6dlrA
+FlPo5oiB0kcePVlrQuWzgrNEONnIo08eiIkttwSdHO9TUmnfBFFwxib0W4J0NdlV
+g+508pXmJ74e0UwxSurZ3069sFfsQ+T85XxIDBfq2Dy2CQKBqo8LioQDuSxE4NZ4
+Ya+eD/w1WkP8KxnzHQwoDFB9JP6QTA==
+=z+DD
+-----END PGP SIGNATURE-----
+
+--Sig_/lo+Fo=NVdSKesZ096DsfIWq--
