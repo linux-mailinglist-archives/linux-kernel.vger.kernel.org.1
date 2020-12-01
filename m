@@ -2,102 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD7C2C971B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B49D2C971C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgLAFn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 00:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgLAFn0 (ORCPT
+        id S1726481AbgLAFoz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Dec 2020 00:44:55 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:39850 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725973AbgLAFoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 00:43:26 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEBFC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 21:42:46 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id f12so569633oto.10
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 21:42:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ihaaw08cFhiCTwND/g0fTHzN6wosSubPF99ETYHbTgs=;
-        b=gwDibg4TlAg5NeyOlM6hBjtDtmouEcBLDmyt+9YcL6pdBoS5nB1kdDb2tG6qenFjMX
-         XU5/0feGrXkwZzTkYspdT4UnWQlb7SzhaRS8W2TWV6nXC0YxF1XQAmgcnK2enVW8uQ3e
-         dAo31khv7My8LBj0cjyGERRkzVyF3jvmaWcW9ACePTnSv7kxETrfxIR8SDW03daxXj+X
-         1n2a4UoBNfJiSr0KhrY0wnrdYUfqUK+LMfqwpPp9p+L5YvcRffMH0W6wYTnmeWLfWO1h
-         YdyY70HHJ7DRDyQp1qlbf0h9/J8fpUue0+F0+76OsWTzWWj2vmazJRz4TMjAzwVGfy0+
-         OWhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ihaaw08cFhiCTwND/g0fTHzN6wosSubPF99ETYHbTgs=;
-        b=Aw0iCAs3OGNQbzBPWWB41isKncxuWtzJBDXh2aYPJ8fmQLiGkSTpmZcDLtBLD1mEjE
-         X+uMYdg6Nwo1yop8cxU1arUHQMzVHes14jwyH+/mpD8VjiZcoZDNIxeuMs0LQUuDGxSO
-         pHCXD1fqaDP0zWEU1OMPgkwm6kvDrMut93SqSebOjWi4ONRhyFPeA/UsDIBflsLH7xzs
-         rcjqkMWIw83/rxsePOOjh01tnrLXxDDjCh6nfPTbkcr1TXIF5Lxl2K51+Sg4upfWv1XK
-         SQXwLCdXn8SqrLODMvH2G8R1iY4IHOlCfIC1mClqyRaEsrSJ6sGm2MrDWdMRevt7nTb2
-         G9/Q==
-X-Gm-Message-State: AOAM533MERQzFoYAdZuBB60pm1RqXu/FVEqW3FPPPd1JlfNa65P5rmQy
-        SCCD6l2tJKTjQtmB0OEgKlblLPRXFNGuKg==
-X-Google-Smtp-Source: ABdhPJydhjPMZwS2lnEmgiWCsVcT2IJupPLRtggoGu082WDn6p2VE/1EIPSfdvszf/m7l4kf42tj/g==
-X-Received: by 2002:a9d:7505:: with SMTP id r5mr849109otk.64.1606801363728;
-        Mon, 30 Nov 2020 21:42:43 -0800 (PST)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w6sm171010otj.12.2020.11.30.21.42.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 21:42:42 -0800 (PST)
-Date:   Mon, 30 Nov 2020 23:42:40 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: qcom,pdc: Add compatible for SM8250
-Message-ID: <20201201054240.GK807@yoga>
-References: <20201201053537.2134991-1-vkoul@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201053537.2134991-1-vkoul@kernel.org>
+        Tue, 1 Dec 2020 00:44:54 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UH5tjFA_1606801448;
+Received: from 30.225.112.131(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UH5tjFA_1606801448)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 01 Dec 2020 13:44:12 +0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
+From:   wangrongwei <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <20201130175706.GA25457@willie-the-truck>
+Date:   Tue, 1 Dec 2020 13:44:07 +0800
+Cc:     catalin.marinas@arm.com, bjorn.andersson@linaro.org,
+        shawnguo@kernel.org, vkoul@kernel.org, geert+renesas@glider.be,
+        Anson.Huang@nxp.com, michael@walle.cc, krzk@kernel.org,
+        olof@lixom.net, vincenzo.frascino@arm.com, ardb@kernel.org,
+        masahiroy@kernel.org, gshan@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <232411A5-A587-42D8-B9B3-CDCC0A5F9ADE@linux.alibaba.com>
+References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
+ <20201130175706.GA25457@willie-the-truck>
+To:     Will Deacon <will@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 30 Nov 23:35 CST 2020, Vinod Koul wrote:
+Hi, Will
+Thanks for your reply!
+There are absolutely privileged registers, and seriously expose the interface directly! 
+However, these interfaces (/dev/cpu/<N>/msr) need permissions to access, so there should be few security issues. In addition, it may be due to my unclear description above. This driver is mainly a debugging tool. It make developers can easily get the values of some system registers without modifying the kernel.
+In fact, we first considered the /dev/mem solution, but it seems that /dev/mem can map peripheral or IO registers, but not system registers.
 
-> Add the compatible string for SM8250 SoC from Qualcomm. This compatible
-> is used already in DTS files but not documented yet
+> 2020年12月1日 上午1:57，Will Deacon <will@kernel.org> 写道：
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Although it doesn't matter much until this is translated to yaml...
-
-Regards,
-Bjorn
-
-> ---
->  .../devicetree/bindings/interrupt-controller/qcom,pdc.txt        | 1 +
->  1 file changed, 1 insertion(+)
+> On Tue, Dec 01, 2020 at 01:48:30AM +0800, Rongwei Wang wrote:
+>> MSR ARM driver aims to provide interfacs for user to read or write data to all
+>> system registers. Its functions is same as MSR driver (x86 platform). It mainly
+>> depends on kprobe and undef exception to read or write system registers
+>> dynamicly.
 > 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-> index 1df293953327..9c1a046e6fd9 100644
-> --- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
-> @@ -20,6 +20,7 @@ Properties:
->  	Definition: Should contain "qcom,<soc>-pdc" and "qcom,pdc"
->  		    - "qcom,sc7180-pdc": For SC7180
->  		    - "qcom,sdm845-pdc": For SDM845
-> +		    - "qcom,sdm8250-pdc": For SM8250
->  
->  - reg:
->  	Usage: required
-> -- 
-> 2.26.2
+> ... but why? These are privileged registers for a reason, and giving
+> userspace access to them is bound to cause serious problems. Why can't we
+> do whatever it is that userspace is trying to do by poking these things in
+> the kernel instead? This interface is a bit like using /dev/mem instead of
+> writing a proper device driver.
 > 
+> Thanks,
+> 
+> Will
+
