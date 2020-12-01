@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7B82C9D06
+	by mail.lfdr.de (Postfix) with ESMTP id 77AE52C9D07
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389423AbgLAJJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:09:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
+        id S2389442AbgLAJJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:09:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729271AbgLAJIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:08:07 -0500
+        id S1729397AbgLAJIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:08:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F4C52222A;
-        Tue,  1 Dec 2020 09:07:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7092C21D46;
+        Tue,  1 Dec 2020 09:07:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813646;
-        bh=UYEILy+IuBD8QrpPprBSjeRO6xFLETx0SzOECgxmNLE=;
+        s=korg; t=1606813649;
+        bh=50yd1u6iPrFppC8uI9SEv2TSO/9i/T9PeeCFpCq5ZLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=glWm+JKaSFm+5bJH+dAOvg+YIz5QyHcDbGu8qV95oJRvux5OeGPKkW+7HqnQVpegI
-         2n9Ykw4tcZi1d099CnSWW+6HIaOwnIWUpUbCADe3IwQJPqAe7t6QCkgAkpz4/b+gMY
-         AFwZDIM2JcUEwM4nIBNusA7GAEJVGi2TX385N0ZA=
+        b=YhAaFWkKP6goa0P9hs4+gBXl+eBHTNQ4ge5RrWjtK+7h5VgyAD3+rtNoykIrprJTh
+         YrLMD+Q/k2mmYmmylDggesnPIKG6nW1D+iKhql+/RHBN6+55xtaADXFZZcZYH+4Z2b
+         Yhue9/neFtnogJe6WsbWryvdyMqbt0YFgiP8Dhfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.9 004/152] spi: bcm2835: Fix use-after-free on unbind
-Date:   Tue,  1 Dec 2020 09:51:59 +0100
-Message-Id: <20201201084712.233061390@linuxfoundation.org>
+        stable@vger.kernel.org, Kim Phillips <kim.phillips@arm.com>,
+        Florian Klink <flokli@flokli.de>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 005/152] ipv4: use IS_ENABLED instead of ifdef
+Date:   Tue,  1 Dec 2020 09:52:00 +0100
+Message-Id: <20201201084712.358338824@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -46,87 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Florian Klink <flokli@flokli.de>
 
-commit e1483ac030fb4c57734289742f1c1d38dca61e22 upstream
+commit c09c8a27b9baa417864b9adc3228b10ae5eeec93 upstream.
 
-bcm2835_spi_remove() accesses the driver's private data after calling
-spi_unregister_controller() even though that function releases the last
-reference on the spi_controller and thereby frees the private data.
+Checking for ifdef CONFIG_x fails if CONFIG_x=m.
 
-Fix by switching over to the new devm_spi_alloc_master() helper which
-keeps the private data accessible until the driver has unbound.
+Use IS_ENABLED instead, which is true for both built-ins and modules.
 
-Fixes: f8043872e796 ("spi: add driver for BCM2835")
-Reported-by: Sascha Hauer <s.hauer@pengutronix.de>
-Reported-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v3.10+: 123456789abc: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v3.10+
-Cc: Vladimir Oltean <olteanv@gmail.com>
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/ad66e0a0ad96feb848814842ecf5b6a4539ef35c.1605121038.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Otherwise, a
+> ip -4 route add 1.2.3.4/32 via inet6 fe80::2 dev eth1
+fails with the message "Error: IPv6 support not enabled in kernel." if
+CONFIG_IPV6 is `m`.
+
+In the spirit of b8127113d01e53adba15b41aefd37b90ed83d631.
+
+Fixes: d15662682db2 ("ipv4: Allow ipv6 gateway with ipv4 routes")
+Cc: Kim Phillips <kim.phillips@arm.com>
+Signed-off-by: Florian Klink <flokli@flokli.de>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Link: https://lore.kernel.org/r/20201115224509.2020651-1-flokli@flokli.de
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/spi/spi-bcm2835.c |   27 ++++++++-------------------
- 1 file changed, 8 insertions(+), 19 deletions(-)
 
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -1278,7 +1278,7 @@ static int bcm2835_spi_probe(struct plat
- 	struct bcm2835_spi *bs;
- 	int err;
- 
--	ctlr = spi_alloc_master(&pdev->dev, ALIGN(sizeof(*bs),
-+	ctlr = devm_spi_alloc_master(&pdev->dev, ALIGN(sizeof(*bs),
- 						  dma_get_cache_alignment()));
- 	if (!ctlr)
- 		return -ENOMEM;
-@@ -1299,26 +1299,17 @@ static int bcm2835_spi_probe(struct plat
- 	bs->ctlr = ctlr;
- 
- 	bs->regs = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(bs->regs)) {
--		err = PTR_ERR(bs->regs);
--		goto out_controller_put;
--	}
-+	if (IS_ERR(bs->regs))
-+		return PTR_ERR(bs->regs);
- 
- 	bs->clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(bs->clk)) {
--		err = PTR_ERR(bs->clk);
--		if (err == -EPROBE_DEFER)
--			dev_dbg(&pdev->dev, "could not get clk: %d\n", err);
--		else
--			dev_err(&pdev->dev, "could not get clk: %d\n", err);
--		goto out_controller_put;
--	}
-+	if (IS_ERR(bs->clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(bs->clk),
-+				     "could not get clk\n");
- 
- 	bs->irq = platform_get_irq(pdev, 0);
--	if (bs->irq <= 0) {
--		err = bs->irq ? bs->irq : -ENODEV;
--		goto out_controller_put;
--	}
-+	if (bs->irq <= 0)
-+		return bs->irq ? bs->irq : -ENODEV;
- 
- 	clk_prepare_enable(bs->clk);
- 
-@@ -1352,8 +1343,6 @@ out_dma_release:
- 	bcm2835_dma_release(ctlr, bs);
- out_clk_disable:
- 	clk_disable_unprepare(bs->clk);
--out_controller_put:
--	spi_controller_put(ctlr);
- 	return err;
- }
- 
+---
+ net/ipv4/fib_frontend.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/net/ipv4/fib_frontend.c
++++ b/net/ipv4/fib_frontend.c
+@@ -696,7 +696,7 @@ int fib_gw_from_via(struct fib_config *c
+ 		cfg->fc_gw4 = *((__be32 *)via->rtvia_addr);
+ 		break;
+ 	case AF_INET6:
+-#ifdef CONFIG_IPV6
++#if IS_ENABLED(CONFIG_IPV6)
+ 		if (alen != sizeof(struct in6_addr)) {
+ 			NL_SET_ERR_MSG(extack, "Invalid IPv6 address in RTA_VIA");
+ 			return -EINVAL;
 
 
