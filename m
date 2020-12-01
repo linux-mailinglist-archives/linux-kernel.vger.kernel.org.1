@@ -2,180 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7962C9A34
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A18B2C9A2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387635AbgLAI4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:56:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58526 "EHLO mail.kernel.org"
+        id S2387561AbgLAIzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387591AbgLAI4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:56:04 -0500
+        id S2387526AbgLAIzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD33F21D7A;
-        Tue,  1 Dec 2020 08:55:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E54922249;
+        Tue,  1 Dec 2020 08:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812948;
-        bh=Utn8lO4iQM8/zOerpIdrlQSYySDat3/YF5KgyTyq89M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kHxd1P05v6Hu3sJ9/h4r5oEOiPJtL8NZKzmcPFfC3pe7ZmxRYr9ilFmLXE1ZnUYkg
-         on/MKejNvlkv9XHEJjCRYRZrQMuKQzGLFdIZbHIzS85W+vJXtNgT4LP8NDo2I/jrxk
-         AqEFPzE1OkCXG959A3P+uRg6lsa3HDGMGwPbTjzA=
+        s=korg; t=1606812880;
+        bh=mZob79UGActsfw4qwGSAo7t6H/Su6wnaETRC+gJClEw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UEdiqKyo3dJk0J2enT6iengV3R11cAauo9KHdM99FFaXWZ2wHMGgHW0uF2dpY3CWi
+         i5LEyVQAIxhk0YL5c+Z0cG9VDbF+aoRXsGAbQmeuKTn38kSy7t3JYA9FXJibsrQxUo
+         RuOLFEY+jyTsQ1O8GYv/LeBkvtrkOlpDtFhIfC4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nikos Tsironis <ntsironis@arrikto.com>
-Subject: [PATCH 4.9 07/42] KVM: x86: Fix split-irqchip vs interrupt injection window request
-Date:   Tue,  1 Dec 2020 09:53:05 +0100
-Message-Id: <20201201084642.522450998@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/24] 4.4.247-rc1 review
+Date:   Tue,  1 Dec 2020 09:53:06 +0100
+Message-Id: <20201201084637.754785180@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.247-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.247-rc1
+X-KernelTest-Deadline: 2020-12-03T08:46+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+This is the start of the stable review cycle for the 4.4.247 release.
+There are 24 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit 71cc849b7093bb83af966c0e60cb11b7f35cd746 upstream.
+Responses should be made by Thu, 03 Dec 2020 08:46:29 +0000.
+Anything received after that time might be too late.
 
-kvm_cpu_accept_dm_intr and kvm_vcpu_ready_for_interrupt_injection are
-a hodge-podge of conditions, hacked together to get something that
-more or less works.  But what is actually needed is much simpler;
-in both cases the fundamental question is, do we have a place to stash
-an interrupt if userspace does KVM_INTERRUPT?
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.247-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
-In userspace irqchip mode, that is !vcpu->arch.interrupt.injected.
-Currently kvm_event_needs_reinjection(vcpu) covers it, but it is
-unnecessarily restrictive.
+thanks,
 
-In split irqchip mode it's a bit more complicated, we need to check
-kvm_apic_accept_pic_intr(vcpu) (the IRQ window exit is basically an INTACK
-cycle and thus requires ExtINTs not to be masked) as well as
-!pending_userspace_extint(vcpu).  However, there is no need to
-check kvm_event_needs_reinjection(vcpu), since split irqchip keeps
-pending ExtINT state separate from event injection state, and checking
-kvm_cpu_has_interrupt(vcpu) is wrong too since ExtINT has higher
-priority than APIC interrupts.  In fact the latter fixes a bug:
-when userspace requests an IRQ window vmexit, an interrupt in the
-local APIC can cause kvm_cpu_has_interrupt() to be true and thus
-kvm_vcpu_ready_for_interrupt_injection() to return false.  When this
-happens, vcpu_run does not exit to userspace but the interrupt window
-vmexits keep occurring.  The VM loops without any hope of making progress.
+greg k-h
 
-Once we try to fix these with something like
+-------------
+Pseudo-Shortlog of commits:
 
-     return kvm_arch_interrupt_allowed(vcpu) &&
--        !kvm_cpu_has_interrupt(vcpu) &&
--        !kvm_event_needs_reinjection(vcpu) &&
--        kvm_cpu_accept_dm_intr(vcpu);
-+        (!lapic_in_kernel(vcpu)
-+         ? !vcpu->arch.interrupt.injected
-+         : (kvm_apic_accept_pic_intr(vcpu)
-+            && !pending_userspace_extint(v)));
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.247-rc1
 
-we realize two things.  First, thanks to the previous patch the complex
-conditional can reuse !kvm_cpu_has_extint(vcpu).  Second, the interrupt
-window request in vcpu_enter_guest()
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix lockdep splat when reading qgroup config on mount
 
-        bool req_int_win =
-                dm_request_for_irq_injection(vcpu) &&
-                kvm_cpu_accept_dm_intr(vcpu);
+Alan Stern <stern@rowland.harvard.edu>
+    USB: core: Fix regression in Hercules audio card
 
-should be kept in sync with kvm_vcpu_ready_for_interrupt_injection():
-it is unnecessary to ask the processor for an interrupt window
-if we would not be able to return to userspace.  Therefore,
-kvm_cpu_accept_dm_intr(vcpu) is basically !kvm_cpu_has_extint(vcpu)
-ANDed with the existing check for masked ExtINT.  It all makes sense:
+Johan Hovold <johan@kernel.org>
+    USB: core: add endpoint-blacklist quirk
 
-- we can accept an interrupt from userspace if there is a place
-  to stash it (and, for irqchip split, ExtINTs are not masked).
-  Interrupts from userspace _can_ be accepted even if right now
-  EFLAGS.IF=0.
+Anand K Mistry <amistry@google.com>
+    x86/speculation: Fix prctl() when spectre_v2_user={seccomp,prctl},ibpb
 
-- in order to tell userspace we will inject its interrupt ("IRQ
-  window open" i.e. kvm_vcpu_ready_for_interrupt_injection), both
-  KVM and the vCPU need to be ready to accept the interrupt.
+Alan Stern <stern@rowland.harvard.edu>
+    USB: core: Change %pK for __user pointers to %px
 
-... and this is what the patch implements.
+Masami Hiramatsu <mhiramat@kernel.org>
+    perf probe: Fix to die_entrypc() returns error correctly
 
-Reported-by: David Woodhouse <dwmw@amazon.co.uk>
-Analyzed-by: David Woodhouse <dwmw@amazon.co.uk>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Reviewed-by: Nikos Tsironis <ntsironis@arrikto.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-Tested-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Ard Biesheuvel <ardb@kernel.org>
+    efivarfs: revert "fix memory leak in efivarfs_create()"
 
----
- arch/x86/include/asm/kvm_host.h |    1 +
- arch/x86/kvm/irq.c              |    2 +-
- arch/x86/kvm/x86.c              |   18 ++++++++++--------
- 3 files changed, 12 insertions(+), 9 deletions(-)
+Krzysztof Kozlowski <krzk@kernel.org>
+    nfc: s3fwrn5: use signed integer for parsing GPIO numbers
 
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1350,6 +1350,7 @@ int kvm_test_age_hva(struct kvm *kvm, un
- void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v);
- int kvm_cpu_has_interrupt(struct kvm_vcpu *vcpu);
-+int kvm_cpu_has_extint(struct kvm_vcpu *v);
- int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu);
- int kvm_cpu_get_interrupt(struct kvm_vcpu *v);
- void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event);
---- a/arch/x86/kvm/irq.c
-+++ b/arch/x86/kvm/irq.c
-@@ -52,7 +52,7 @@ static int pending_userspace_extint(stru
-  * check if there is pending interrupt from
-  * non-APIC source without intack.
-  */
--static int kvm_cpu_has_extint(struct kvm_vcpu *v)
-+int kvm_cpu_has_extint(struct kvm_vcpu *v)
- {
- 	u8 accept = kvm_apic_accept_pic_intr(v);
- 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3053,21 +3053,23 @@ static int kvm_vcpu_ioctl_set_lapic(stru
- 
- static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
- {
-+	/*
-+	 * We can accept userspace's request for interrupt injection
-+	 * as long as we have a place to store the interrupt number.
-+	 * The actual injection will happen when the CPU is able to
-+	 * deliver the interrupt.
-+	 */
-+	if (kvm_cpu_has_extint(vcpu))
-+		return false;
-+
-+	/* Acknowledging ExtINT does not happen if LINT0 is masked.  */
- 	return (!lapic_in_kernel(vcpu) ||
- 		kvm_apic_accept_pic_intr(vcpu));
- }
- 
--/*
-- * if userspace requested an interrupt window, check that the
-- * interrupt window is open.
-- *
-- * No need to exit to userspace if we already have an interrupt queued.
-- */
- static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
- {
- 	return kvm_arch_interrupt_allowed(vcpu) &&
--		!kvm_cpu_has_interrupt(vcpu) &&
--		!kvm_event_needs_reinjection(vcpu) &&
- 		kvm_cpu_accept_dm_intr(vcpu);
- }
- 
+Xiongfeng Wang <wangxiongfeng2@huawei.com>
+    IB/mthca: fix return value of error branch in mthca_init_cq()
+
+Michael Chan <michael.chan@broadcom.com>
+    bnxt_en: Release PCI regions when DMA mask setup fails during probe.
+
+Dexuan Cui <decui@microsoft.com>
+    video: hyperv_fb: Fix the cache type when mapping the VRAM
+
+Zhang Changzhong <zhangchangzhong@huawei.com>
+    bnxt_en: fix error return code in bnxt_init_board()
+
+Stanley Chu <stanley.chu@mediatek.com>
+    scsi: ufs: Fix race between shutdown and runtime resume flow
+
+Mike Christie <michael.christie@oracle.com>
+    scsi: target: iscsi: Fix cmd abort fabric stop race
+
+Lee Duncan <lduncan@suse.com>
+    scsi: libiscsi: Fix NOP race condition
+
+Sugar Zhang <sugar.zhang@rock-chips.com>
+    dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
+
+Jens Axboe <axboe@kernel.dk>
+    proc: don't allow async path resolution of /proc/self components
+
+Brian Masney <bmasney@redhat.com>
+    x86/xen: don't unbind uninitialized lock_kicker_irq
+
+Pablo Ceballos <pceballos@google.com>
+    HID: hid-sensor-hub: Fix issue with devices with no report ID
+
+Hans de Goede <hdegoede@redhat.com>
+    Input: i8042 - allow insmod to succeed on devices without an i8042 controller
+
+Frank Yang <puilp0502@gmail.com>
+    HID: cypress: Support Varmilo Keyboards' media hotkeys
+
+Paolo Bonzini <pbonzini@redhat.com>
+    KVM: x86: Fix split-irqchip vs interrupt injection window request
+
+Qu Wenruo <wqu@suse.com>
+    btrfs: inode: Verify inode mode to avoid NULL pointer dereference
+
+Qu Wenruo <wqu@suse.com>
+    btrfs: tree-checker: Enhance chunk checker to validate chunk profile
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                  |  4 +--
+ arch/x86/include/asm/kvm_host.h           |  1 +
+ arch/x86/kernel/cpu/bugs.c                |  4 +--
+ arch/x86/kvm/irq.c                        |  2 +-
+ arch/x86/kvm/x86.c                        | 18 +++++++------
+ arch/x86/xen/spinlock.c                   | 12 ++++++++-
+ drivers/dma/pl330.c                       |  2 +-
+ drivers/hid/hid-cypress.c                 | 44 +++++++++++++++++++++++++++----
+ drivers/hid/hid-ids.h                     |  2 ++
+ drivers/hid/hid-sensor-hub.c              |  3 ++-
+ drivers/infiniband/hw/mthca/mthca_cq.c    | 10 ++++---
+ drivers/input/serio/i8042.c               | 12 ++++++++-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |  3 ++-
+ drivers/nfc/s3fwrn5/i2c.c                 |  4 +--
+ drivers/scsi/libiscsi.c                   | 23 ++++++++++------
+ drivers/scsi/ufs/ufshcd.c                 |  6 +----
+ drivers/target/iscsi/iscsi_target.c       | 17 +++++++++---
+ drivers/usb/core/config.c                 | 11 ++++++++
+ drivers/usb/core/devio.c                  |  4 +--
+ drivers/usb/core/quirks.c                 | 38 ++++++++++++++++++++++++++
+ drivers/usb/core/usb.h                    |  3 +++
+ drivers/video/fbdev/hyperv_fb.c           |  7 ++++-
+ fs/btrfs/inode.c                          | 41 ++++++++++++++++++++++------
+ fs/btrfs/qgroup.c                         |  2 +-
+ fs/btrfs/tests/inode-tests.c              |  1 +
+ fs/btrfs/volumes.c                        |  7 +++++
+ fs/efivarfs/inode.c                       |  2 ++
+ fs/efivarfs/super.c                       |  1 -
+ fs/proc/self.c                            |  7 +++++
+ include/linux/usb/quirks.h                |  3 +++
+ include/scsi/libiscsi.h                   |  3 +++
+ tools/perf/util/dwarf-aux.c               |  8 ++++++
+ 32 files changed, 246 insertions(+), 59 deletions(-)
 
 
