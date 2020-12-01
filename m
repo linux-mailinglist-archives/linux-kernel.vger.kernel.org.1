@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1B62CA650
+	by mail.lfdr.de (Postfix) with ESMTP id EA1D62CA651
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403915AbgLAOvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:51:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389765AbgLAOvO (ORCPT
+        id S2403938AbgLAOvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:51:35 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:33877 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S2389627AbgLAOve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:51:14 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD663C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:50:24 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id f23so4634264ejt.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:50:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u11hnNgXTS9zHw9F1VKspmTAQsvSEt7QVrPJBjDHu6g=;
-        b=M6aCuNhUcEkKmxd2/vopzwE3KJ+WxtGAgKPzeagXFjrrmNAkATleXsRB/oZM/db+dt
-         ls2r4BhXUW2CdPXcopCP75b6Lc8PeGrN6y2MV1V+OEikX1tCgtSTAaov149IlIMU1+P2
-         1umLDMyp5eZZm8FyqysZpP8Z0FIHWVGSg5twL6zjAVagJTQeo5pjd5YF9csMisiSVwTM
-         kTsWUlW2dgQ4h+H5/Y2oA5uQcayqKSuG+TVNxW2ltAM96/x4tHzSC86aFdA0ubYT4uXu
-         ehUSpDUW6w5aASkXX2LO6oFFKZ17FdtCaKdq3F959IqbAUMydq6RsktatxMoU3Q6hVXK
-         Qivg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u11hnNgXTS9zHw9F1VKspmTAQsvSEt7QVrPJBjDHu6g=;
-        b=QlDam+zgMGhFr7ChlN0kQRnm5c3BqqK+70QffGMXWg7dswBbtWZgF0aFObmn0zpkGL
-         FRCJyGwdla943icJrcV7JlOdcL5iQfhGR25rHmjalmhsHhscDZaGRkaBnuavIJDF9R++
-         SJ86DJrk5Frj5RxCdUOsWmYm6uToiTL/Mk+GqEXsn8ZZeI/IhA3pObg2LD9MP+/144Qz
-         Ai2zutFs7GQO2cA1D/9F9QTa6rXHkq8ufGRwLQmOxaL3mnAejWMuq3DeNlH99VCMyDbn
-         VQS+JFAuVTeau9zPSoJg/FrWOn69j5IexQL/qe3JrEu+1ViXOtr6icoZbI5EgAuNcvH5
-         DmuQ==
-X-Gm-Message-State: AOAM533ricHvVb92KiYdAGvpB9FtFhuIDpGoFcx706sfnEB77zsFVTJV
-        E+gxSFavcwKLzfZegatcKpQ4aGo/MM0SBSTVCD9n7g==
-X-Google-Smtp-Source: ABdhPJwG0IqVrtCOsiapz9tOGvEqeMur8iwjMo+Odo3ubld5i/SHRYQZyOqybTSa9RuzGktyWVLOruBXRsHV2wJcHmo=
-X-Received: by 2002:a17:906:15cc:: with SMTP id l12mr3193264ejd.363.1606834223625;
- Tue, 01 Dec 2020 06:50:23 -0800 (PST)
+        Tue, 1 Dec 2020 09:51:34 -0500
+Received: (qmail 1007173 invoked by uid 1000); 1 Dec 2020 09:50:53 -0500
+Date:   Tue, 1 Dec 2020 09:50:53 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com>,
+        eli.billauer@gmail.com, gustavoars@kernel.org,
+        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tiwai@suse.de
+Subject: Re: WARNING in port100_send_frame_async/usb_submit_urb
+Message-ID: <20201201145053.GA1005384@rowland.harvard.edu>
+References: <000000000000bab70f05b563a6cc@google.com>
+ <20201201094702.1762-1-hdanton@sina.com>
+ <X8YT6sbhhGwQ06nw@kroah.com>
 MIME-Version: 1.0
-References: <20201119170901.GA22703@embeddedor>
-In-Reply-To: <20201119170901.GA22703@embeddedor>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 1 Dec 2020 15:50:12 +0100
-Message-ID: <CAMpxmJXD+qiJLoEdFxmceVNyXPDfmvKPwG+SthOS8oHd2GqLuA@mail.gmail.com>
-Subject: Re: [PATCH][next] gpio: ath79: Fix fall-through warning for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Alban Bedel <albeu@free.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8YT6sbhhGwQ06nw@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 6:08 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-> warning by explicitly adding a fallthrough pseudo-keyword to indicate
-> that the code is intended to fall through to the next case.
->
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/gpio/gpio-ath79.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpio/gpio-ath79.c b/drivers/gpio/gpio-ath79.c
-> index d5359341cc6b..678ddd375891 100644
-> --- a/drivers/gpio/gpio-ath79.c
-> +++ b/drivers/gpio/gpio-ath79.c
-> @@ -123,6 +123,7 @@ static int ath79_gpio_irq_set_type(struct irq_data *data,
->         switch (flow_type) {
->         case IRQ_TYPE_EDGE_RISING:
->                 polarity |= mask;
-> +               fallthrough;
->         case IRQ_TYPE_EDGE_FALLING:
->         case IRQ_TYPE_EDGE_BOTH:
->                 break;
-> --
-> 2.27.0
->
+On Tue, Dec 01, 2020 at 10:59:06AM +0100, Greg KH wrote:
+> On Tue, Dec 01, 2020 at 05:47:02PM +0800, Hillf Danton wrote:
+> > On Tue, 01 Dec 2020 01:21:27 -0800
+> > > syzbot found the following issue on:
+> > > 
+> > > HEAD commit:    c84e1efa Merge tag 'asm-generic-fixes-5.10-2' of git://git..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=14a98565500000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=dbec6695a6565a9c6bc0
+> > > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c607f1500000
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com
+> > > 
+> > > usb 1-1: string descriptor 0 read error: -32
+> > > ------------[ cut here ]------------
+> > > URB 000000005c26bc1e submitted while active
 
-Applied, thanks!
+> > Clear urb before putting it in use.
+> > 
+> > --- a/drivers/nfc/port100.c
+> > +++ b/drivers/nfc/port100.c
+> > @@ -1525,7 +1525,7 @@ static int port100_probe(struct usb_inte
+> >  	}
+> >  
+> >  	dev->in_urb = usb_alloc_urb(0, GFP_KERNEL);
+> > -	dev->out_urb = usb_alloc_urb(0, GFP_KERNEL);
+> > +	dev->out_urb = usb_alloc_urb(0, GFP_KERNEL | __GFP_ZERO);
+> >  
+> >  	if (!dev->in_urb || !dev->out_urb) {
+> >  		nfc_err(&interface->dev, "Could not allocate USB URBs\n");
+> 
+> How does this solve a warning in the USB core about a string descriptor
+> error?
 
-Bartosz
+Greg, you misread the bug report.  The problem wasn't the string 
+descriptor read error; it was URB submitted while active.
+
+More to the point, adding __GFP_ZERO to the usb_alloc_urb call won't fix 
+anything, because usb_alloc_urb calls usb_init_urb, which already does a 
+memset.
+
+Alan Stern
