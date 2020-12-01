@@ -2,85 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A1E2CAE38
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B422CAE41
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389578AbgLAVOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:14:12 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14599 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388499AbgLAVOL (ORCPT
+        id S1728947AbgLAVSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:18:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725967AbgLAVSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:14:11 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc6b1d90000>; Tue, 01 Dec 2020 13:12:57 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 1 Dec
- 2020 21:12:57 +0000
-Received: from skomatineni-linux.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 1 Dec 2020 21:12:56 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <broonie@kernel.org>, <robh+dt@kernel.org>
-CC:     <skomatineni@nvidia.com>, <linux-spi@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v1 7/7] arm64: tegra: Enable QSPI on Jetson Xavier NX
-Date:   Tue, 1 Dec 2020 13:12:48 -0800
-Message-ID: <1606857168-5839-8-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
-References: <1606857168-5839-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        Tue, 1 Dec 2020 16:18:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D866C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:17:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=+sh72aA8+dQL6SgV6mWZNnINeOvPmJ4Mq6dWSAFkIa4=; b=d96AMyaT+ixps0qgn0IfBAam+G
+        NPi0DIpyeqzjfE68LymeM+uKzlpQhTRa2OHSQg0ObW/dwzwu4lJw7nyR+14kDjMQq6Xy7zZvoVuR0
+        M8RzX3WH6xJWOT70obVhdyLdH8LRI87d4pO2iue9miSo+6Lqk1MQ+iI+KEbQpFXrTRa94M0H3fJi3
+        5FmOLh4cCPzvwlL9Ne1DUgUZXjhUxRQWz2m4hlXqU2LKyHFvp0sNLriwU+xRxZKi6P81X9dVriTIq
+        nYKP8gUDH4fEpDoX1DeSKwkiS7A8TxmUaptsEwqT4Mn1+zpuYL1wU+q3V7+rSrMnqM9RZTl5B6Bo0
+        7xNQfv8A==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkD1b-0004ce-DO; Tue, 01 Dec 2020 21:17:28 +0000
+Subject: Re: WARNING: filesystem loop5 was created with 512 inodes, the real
+ maximum is 511, mounting anyway
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     syzbot <syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+References: <00000000000019cd7c05b515da9a@google.com>
+ <7e108ab1-0b07-50dd-5862-a5121eab6094@infradead.org>
+ <CACT4Y+YkH042G=+ErWY+dRLs5H0i1ao1xnSeHvGx8x=dn5KH1A@mail.gmail.com>
+ <8d5ec04c-4646-3b70-6f6c-ea989e6c2c59@infradead.org>
+ <CACT4Y+ZByhXxObU0cc6apB8-vMzyD6xu1_WAFtGqzximAvokGA@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <dc76e615-a2fc-64e1-c979-4699d0d57309@infradead.org>
+Date:   Tue, 1 Dec 2020 13:17:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606857177; bh=GInpj6T70m3778V+Yp4yxBHh4Eak5vnqih3rso+ksSM=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=eW8Npzw8B40MM4rQ3VDIkyU+x34hszglC4gYigZsT0HqtmQRoY2GvArnxxWNWTOV5
-         T/Kc5S9jgxphi8uN2BX/dWllgBTNa1UYw+DHtvYbzXcWhog9dmgjqL0VLzrPE3aLKS
-         XOQ5Q4E0PaIcqLae1OlhZZoNzzrIC99pGuQofPBYCPvpHBgiAL/5qW5/Gd0w1pkKSU
-         26dDPvy9mXcFh60kzBENWi2wpKRlSVGmjLTFtOGk+EXGRGetlNTwuWbs1SfoKsZ+5r
-         /D0LcTkA6bTp5okfC8nyd94My1ycDtgzzQxkmwAZfYPiq0V9nwHEv00SHABnFbvb0g
-         6f58HXHk8cXEQ==
+In-Reply-To: <CACT4Y+ZByhXxObU0cc6apB8-vMzyD6xu1_WAFtGqzximAvokGA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jetson Xavier NX has Spansion S25FS26S Quad SPI Flash.
+On 11/30/20 11:47 PM, Dmitry Vyukov wrote:
+> On Tue, Dec 1, 2020 at 2:03 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 11/30/20 12:43 AM, Dmitry Vyukov wrote:
+>>> On Mon, Nov 30, 2020 at 5:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>>
+>>>> On 11/27/20 4:32 AM, syzbot wrote:
+>>>>> Hello,
+>>>>>
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit:    418baf2c Linux 5.10-rc5
+>>>>> git tree:       upstream
+>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=171555b9500000
+>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b81aff78c272da44
+>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3fd34060f26e766536ff
+>>>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>>>>>
+>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>
+>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>> Reported-by: syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com
+>>>>>
+>>>>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
+>>>>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
+>>>>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
+>>>>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
+>>>>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
+>>>>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
+>>>>>
+>>>>>
+>>>>> ---
+>>>>> This report is generated by a bot. It may contain errors.
+>>>>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>>>>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>>>>
+>>>>> syzbot will keep track of this issue. See:
+>>>>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>>>>>
+>>>>
+>>>> Hi,
+>>>> Can you provide the BFS image file that is being mounted?
+>>>> (./file0 I think.)
+>>>>
+>>>> --
+>>>> ~Randy
+>>>
+>>>
+>>> Hi Randy,
+>>>
+>>> I see this bug was reported with a reproducer:
+>>> https://syzkaller.appspot.com/bug?id=a32ebd5db2f7c957b82cf54b97bdecf367bf0421
+>>> I assume it's a dup of this one.
+>>
+>> Sure, looks the same.
+>>
+>>> If you need the image itself, you can dump it to a file in the C
+>>> reproducer inside of syz_mount_image before mount call.
+>>
+>> Yes, got that.
+>>
+>> What outcome or result are you looking for here?
+>> Or what do you see as the problem?
+> 
+> Hi Randy,
+> 
+> "WARNING:" in kernel output is supposed to mean a kernel source bug.
+> Presence of that kernel bug is what syzbot has reported.
+> 
+> Note: the bug may be a misuse of the "WARNING:" for invalid user
+> inputs in output as well :)
 
-This patch enables QSPI on Jetson Xavier NX.
 
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- .../arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+[adding Al Viro]
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts b/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-index 7f97b34..f1053e7 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-@@ -100,6 +100,18 @@
- 			phy-names = "usb2-1", "usb2-2", "usb3-2";
- 		};
- 
-+		spi@3270000 {
-+			status = "okay";
-+
-+			flash@0 {
-+				compatible = "spi-nor";
-+				reg = <0>;
-+				spi-max-frequency = <102000000>;
-+				spi-tx-bus-width = <4>;
-+				spi-rx-bus-width = <4>;
-+			};
-+		};
-+
- 		pwm@32d0000 {
- 			status = "okay";
- 		};
+Hi Dmitry,
+
+I expect that the "WARNING:" message is being interpreted incorrectly here,
+but that's a minor issue IMO.
+
+	if (info->si_lasti == BFS_MAX_LASTI)
+		printf("WARNING: filesystem %s was created with 512 inodes, the real maximum is 511, mounting anyway\n", s->s_id);
+
+
+If you/we look at fs/bfs/bfs.h, it says:
+
+/* In theory BFS supports up to 512 inodes, numbered from 2 (for /) up to 513 inclusive.
+   In actual fact, attempting to create the 512th inode (i.e. inode No. 513 or file No. 511)
+   will fail with ENOSPC in bfs_add_entry(): the root directory cannot contain so many entries, counting '..'.
+   So, mkfs.bfs(8) should really limit its -N option to 511 and not 512. For now, we just print a warning
+   if a filesystem is mounted with such "impossible to fill up" number of inodes */
+
+so one question is why does syzkaller try to do this at all?
+Why not set number-of-inodes to 511 instead of 512 in the BFS image file?
+
+
+However, in testing this, I see that the BFS image is not mounted
+on /dev/loop# at all.
+
+'mount' says:
+
+# mount -t bfs -o loop bfsfilesyz000.img  /mnt/stand
+mount: /mnt/stand: mount(2) system call failed: Not a directory.
+
+(but it is a directory)
+
+and I have tracked that down to fs/namespace.c::graft_tree()
+returning -ENOTDIR, but I don't know why that is happening.
+
+
+Al, can you provide any insights on this?
+
+thanks.
 -- 
-2.7.4
+~Randy
 
