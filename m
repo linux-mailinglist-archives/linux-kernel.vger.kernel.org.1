@@ -2,186 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043A42CA9A5
+	by mail.lfdr.de (Postfix) with ESMTP id F34602CA9A7
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389109AbgLAR3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
+        id S2390143AbgLAR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:29:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731143AbgLAR3M (ORCPT
+        with ESMTP id S1729012AbgLAR35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:29:12 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84FEC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:28:26 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id k3so2390212otp.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:28:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TQyDhRIJ7rEiN9hCk9WyxKUDIyuozNAVVNkVc8YrpXg=;
-        b=HfuFhzV/ccCro+uCbOb/y50FQGd5wN4ICHnvajiWVk0nS0pZiS+AOSFCnDHG7PnRCa
-         GEox+dpy6qHL+erQkJ2IQLymTJ6UQECBqBn5BvhP7dbdM0wD5uLSEmIYpiNlFrDQ827v
-         jMOmW+I724aOht3pb+uWjMxOQRMrdGoRi1HBBi9hfK2ymeetdRiogM10SAQnKMbzIm0G
-         UsPT43p69dvtYbW3lCG+44I27of1q2IDNftLwQWY6AsqBeGi7Ci9v08C0oNx5g8eVL+E
-         y23fVimIgWEuF98Q/cOVWI/lqISILVUdDAFTu7TGq0FjEU+RkKrtkNH54u6DYZxd0OL8
-         +N6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TQyDhRIJ7rEiN9hCk9WyxKUDIyuozNAVVNkVc8YrpXg=;
-        b=S6OUR2nfwIPl4hn56Zks260kHgyQHzljbOo+d6UgYdVhXpwjw6CN0Cnh5EPvYZZEPO
-         XQKx4tFIXtkAaEN8MpqQ5d9m67kpgy+jfMSr5L1a2u5ydQbB785RMSpZ9P1yOgJ0tzWH
-         EiW4dxVNR6IFWTSY3if5KBVoPoHhCvHPUKzEH6CekuINsHnpYnyHUTlRJaRMN5jPZnZB
-         UAMQvPIW6SL5Jg6A34LvJfObYjjyh8EGa1JtVjh8YQRPfWNkpCz26tKGgMyTiRzCGg+h
-         c6GUb1dpcRKUhizFIU9/QNrNazIuMjhHF7cmDI5CeuRt5ZHqJWkkQ2IG7FqM2FRzHzDy
-         BbRA==
-X-Gm-Message-State: AOAM531AvluB+BrXj3KkDuX/cDyt+1CLJ+PqnpOdKyEMeAgLBWcSKz9J
-        tlib20tIHMlei3OeQIVIz9i01X2X1uCvJA==
-X-Google-Smtp-Source: ABdhPJyUjovjQasEJ8gL40gzaNNC8d5vbgNE/y2i5fRr/dA851rZ+zDqg+lrEeDCBXhCwBTr76kNkA==
-X-Received: by 2002:a05:6830:1af7:: with SMTP id c23mr2591590otd.358.1606843705684;
-        Tue, 01 Dec 2020 09:28:25 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g2sm78160ooh.39.2020.12.01.09.28.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 09:28:25 -0800 (PST)
-Date:   Tue, 1 Dec 2020 11:28:23 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
-Message-ID: <X8Z9N2Yu8xiyPRmj@builder.lan>
-References: <20201116143432.15809-1-srinivas.kandagatla@linaro.org>
- <20201116143432.15809-3-srinivas.kandagatla@linaro.org>
- <X8WSucFKyROFJ7gF@builder.lan>
- <ec14afaa-8660-03ac-fbf9-79ff37889de3@linaro.org>
+        Tue, 1 Dec 2020 12:29:57 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC61C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:29:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CObHh35V+AFFfYYIvx+e8+V2B37JZucFJ9DAtVuUcAU=; b=grMiLZ+3xScdv/UVtd6k1wAkLo
+        KXLJCCx5yKyNtudl5sKKuzbANAl+ocX9TUpKWNCf1uzQ/BtkCSe2nFdUPtfn/sqtUyufEjFqwHhQH
+        IwnMyPKasHfbfh4YvCA72YUId28UZBriqSmy9tKyNUYEmid/srp9Q899496MIT/3mCQRMuAM5cBH7
+        O75uPBymL6CHdPmAR8VZKFMh6ONW16zIcUYjtqUvMwr/71dPcyCoLJgIqO0lT6hWmJYjjDuODbOar
+        0h0XewgIPVGMYtTN0+Wb6iCnTJeXB4MwNkhnJVKzasYWwb+xK47oUzC+2tmEnlUoZ+jvRobvp+UEm
+        nw2iPTkg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk9Sb-0007gJ-Q8; Tue, 01 Dec 2020 17:29:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3F2983003E1;
+        Tue,  1 Dec 2020 18:29:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 294CC20103D72; Tue,  1 Dec 2020 18:29:03 +0100 (CET)
+Date:   Tue, 1 Dec 2020 18:29:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, irogers@google.com,
+        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, benh@kernel.crashing.org, paulus@samba.org,
+        mpe@ellerman.id.au
+Subject: Re: [PATCH V2 3/3] perf: Optimize sched_task() in a context switch
+Message-ID: <20201201172903.GT3040@hirez.programming.kicks-ass.net>
+References: <20201130193842.10569-1-kan.liang@linux.intel.com>
+ <20201130193842.10569-3-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ec14afaa-8660-03ac-fbf9-79ff37889de3@linaro.org>
+In-Reply-To: <20201130193842.10569-3-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01 Dec 04:01 CST 2020, Srinivas Kandagatla wrote:
-
-> Many thanks for review Bjorn,
+On Mon, Nov 30, 2020 at 11:38:42AM -0800, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> 
-> On 01/12/2020 00:47, Bjorn Andersson wrote:
-> > On Mon 16 Nov 08:34 CST 2020, Srinivas Kandagatla wrote:
-> > 
-> > > Add initial pinctrl driver to support pin configuration for
-> > > LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
-> > > on SM8250.
-> > > 
-> > > This IP is an additional pin control block for Audio Pins on top the
-> > > existing SoC Top level pin-controller.
-> > > Hardware setup looks like:
-> > > 
-> > > TLMM GPIO[146 - 159] --> LPASS LPI GPIO [0 - 13]
-> > > 
-> > 
-> > Iiuc the LPI TLMM block is just "another pinmux/pinconf block" found in
-> > these SoCs, with the additional magic that the 14 pads are muxed with
-> > some of the TLMM pins - to allow the system integrator to choose how
-> > many pins the LPI should have access to.
-> > 
-> > I also believe this is what the "egpio" bit in the TLMM registers are
-> > used for (i.e. egpio = route to LPI, egpio = 1 route to TLMM), so we
-> > should need to add support for toggling this bit in the TLMM as well
-> > (which I think we should do as a pinconf in the pinctrl-msm).
-> 
-> Yes, we should add egpio function to these pins in main TLMM pinctrl!
-> 
+> Some calls to sched_task() in a context switch can be avoided. For
+> example, large PEBS only requires flushing the buffer in context switch
+> out. The current code still invokes the sched_task() for large PEBS in
+> context switch in.
 
-I was thinking about abusing the pinconf system, but reading you
-sentence makes me feel that expressing it as a "function" and adding a
-special case handling in msm_pinmux_set_mux() would actually make things
-much cleaner to the outside.
+I still hate this one, how's something like this then?
+Which I still don't really like.. but at least its simpler.
 
-i.e. we would then end up with something in DT like:
+(completely untested, may contain spurious edits, might ICE the
+compiler and set your pets on fire if it doesn't)
 
-	pin-is-normal-tlmm-pin {
-		pins = "gpio146";
-		function = "gpio";
-	};
+And given this is an optimization, can we actually measure it to improve
+matters?
 
-and
+---
 
-	pin-routed-to-lpi-pin {
-		pins = "gpio146";
-		function = "egpio";
-	};
-
-Only "drawback" I can see is that we're inverting the chip's meaning of
-"egpio" (i.e. active means route-to-tlmm in the hardware).
-
-> > 
-> > > This pin controller has some similarities compared to Top level
-> > > msm SoC Pin controller like 'each pin belongs to a single group'
-> > > and so on. However this one is intended to control only audio
-> > > pins in particular, which can not be configured/touched by the
-> > > Top level SoC pin controller except setting them as gpios.
-[..]
-> > > diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-[..]
-> > > +	LPI_MUX_qua_mi2s_sclk,
-> > > +	LPI_MUX_swr_tx_data1,
-> > 
-> > As there's no single pin that can be both data1 and data2 I think you
-> > should have a single group for swr_tx_data and use this function for
-> > both swr_tx_data pins. Or perhaps even just have one for swr or swr_tx.
-> > 
-> > (This is nice when you're writing DT later on)
-> 
-> I did think about this, but we have a rx_data2 pin in different function
-> compared to other rx data pins.
-> 
-> The reason to keep it as it is :
-> 1> as this will bring in an additional complexity to the code
-
-For each pin lpi_gpio_set_mux() will be invoked and you'd be searching
-for the index (i) among that pins .funcs. So it doesn't matter that
-looking up a particular function results in different register values
-for different pins, it's already dealt with.
-
-> 2> we have these represented exactly as what hw data sheet mentions it!
-> 
-
-That is true, but the result is that you have to write 2 states in the
-DT to get your 2 pins to switch to the particular function. By grouping
-them you could do:
-
-	data-pins {
-		pins = "gpio1", "gpio2";
-		function = "swr_tx_data";
-	};
-
-
-We do this quite extensively for the TLMM (pinctrl-msm) because it
-results in cleaner DT.
-
-> > 
-> > > +	LPI_MUX_qua_mi2s_ws,
-[..]
-> > > +static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
-> > > +	.tlmm_reg_offset = 0x1000,
-> > 
-> > Do we have any platform in sight where this is not 0x1000? Could we just
-> > make a define out of it?
-> Am not 100% sure ATM, But I wanted to keep this flexible as these offsets in
-> downstream were part of device tree for some reason, so having offset here
-> for particular compatible made more sense for me!
-> 
-
-Downtream does indeed favor "flexible" code. I tend to prefer a #define
-until we actually need the flexibility...
-
-Regards,
-Bjorn
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -380,7 +380,7 @@ static void power_pmu_bhrb_enable(struct
+ 		cpuhw->bhrb_context = event->ctx;
+ 	}
+ 	cpuhw->bhrb_users++;
+-	perf_sched_cb_inc(event->ctx->pmu);
++	perf_sched_cb_inc(event);
+ }
+ 
+ static void power_pmu_bhrb_disable(struct perf_event *event)
+@@ -392,7 +392,7 @@ static void power_pmu_bhrb_disable(struc
+ 
+ 	WARN_ON_ONCE(!cpuhw->bhrb_users);
+ 	cpuhw->bhrb_users--;
+-	perf_sched_cb_dec(event->ctx->pmu);
++	perf_sched_cb_dec(event);
+ 
+ 	if (!cpuhw->disabled && !cpuhw->bhrb_users) {
+ 		/* BHRB cannot be turned off when other
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3567,7 +3567,7 @@ static int intel_pmu_hw_config(struct pe
+ 			if (!(event->attr.sample_type &
+ 			      ~intel_pmu_large_pebs_flags(event))) {
+ 				event->hw.flags |= PERF_X86_EVENT_LARGE_PEBS;
+-				event->attach_state |= PERF_ATTACH_SCHED_CB;
++				event->attach_state |= PERF_ATTACH_SCHED_CB_OUT;
+ 			}
+ 		}
+ 		if (x86_pmu.pebs_aliases)
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -1014,7 +1014,6 @@ static void
+ pebs_update_state(bool needed_cb, struct cpu_hw_events *cpuc,
+ 		  struct perf_event *event, bool add)
+ {
+-	struct pmu *pmu = event->ctx->pmu;
+ 	/*
+ 	 * Make sure we get updated with the first PEBS
+ 	 * event. It will trigger also during removal, but
+@@ -1024,9 +1023,9 @@ pebs_update_state(bool needed_cb, struct
+ 
+ 	if (needed_cb != pebs_needs_sched_cb(cpuc)) {
+ 		if (!needed_cb)
+-			perf_sched_cb_inc(pmu);
++			perf_sched_cb_inc(event);
+ 		else
+-			perf_sched_cb_dec(pmu);
++			perf_sched_cb_dec(event);
+ 
+ 		update = true;
+ 	}
+--- a/arch/x86/events/intel/lbr.c
++++ b/arch/x86/events/intel/lbr.c
+@@ -693,7 +693,7 @@ void intel_pmu_lbr_add(struct perf_event
+ 	 */
+ 	if (x86_pmu.intel_cap.pebs_baseline && event->attr.precise_ip > 0)
+ 		cpuc->lbr_pebs_users++;
+-	perf_sched_cb_inc(event->ctx->pmu);
++	perf_sched_cb_inc(event);
+ 	if (!cpuc->lbr_users++ && !event->total_time_running)
+ 		intel_pmu_lbr_reset();
+ 
+@@ -740,7 +740,7 @@ void intel_pmu_lbr_del(struct perf_event
+ 	cpuc->lbr_users--;
+ 	WARN_ON_ONCE(cpuc->lbr_users < 0);
+ 	WARN_ON_ONCE(cpuc->lbr_pebs_users < 0);
+-	perf_sched_cb_dec(event->ctx->pmu);
++	perf_sched_cb_dec(event);
+ }
+ 
+ static inline bool vlbr_exclude_host(void)
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -601,12 +601,14 @@ struct swevent_hlist {
+ 	struct rcu_head			rcu_head;
+ };
+ 
+-#define PERF_ATTACH_CONTEXT	0x01
+-#define PERF_ATTACH_GROUP	0x02
+-#define PERF_ATTACH_TASK	0x04
+-#define PERF_ATTACH_TASK_DATA	0x08
+-#define PERF_ATTACH_ITRACE	0x10
+-#define PERF_ATTACH_SCHED_CB	0x20
++#define PERF_ATTACH_CONTEXT		0x01
++#define PERF_ATTACH_GROUP		0x02
++#define PERF_ATTACH_TASK		0x04
++#define PERF_ATTACH_TASK_DATA		0x08
++#define PERF_ATTACH_ITRACE		0x10
++#define PERF_ATTACH_SCHED_CB_IN		0x20
++#define PERF_ATTACH_SCHED_CB_OUT	0x40
++#define PERF_ATTACH_SCHED_CB		0x60
+ 
+ struct perf_cgroup;
+ struct perf_buffer;
+@@ -875,6 +877,7 @@ struct perf_cpu_context {
+ 
+ 	struct list_head		sched_cb_entry;
+ 	int				sched_cb_usage;
++	int				sched_cb_dir[2];
+ 
+ 	int				online;
+ 	/*
+@@ -967,8 +970,8 @@ extern const struct perf_event_attr *per
+ extern void perf_event_print_debug(void);
+ extern void perf_pmu_disable(struct pmu *pmu);
+ extern void perf_pmu_enable(struct pmu *pmu);
+-extern void perf_sched_cb_dec(struct pmu *pmu);
+-extern void perf_sched_cb_inc(struct pmu *pmu);
++extern void perf_sched_cb_dec(struct perf_event *event);
++extern void perf_sched_cb_inc(struct perf_event *event);
+ extern int perf_event_task_disable(void);
+ extern int perf_event_task_enable(void);
+ 
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -384,7 +384,6 @@ static DEFINE_MUTEX(perf_sched_mutex);
+ static atomic_t perf_sched_count;
+ 
+ static DEFINE_PER_CPU(atomic_t, perf_cgroup_events);
+-static DEFINE_PER_CPU(int, perf_sched_cb_usage);
+ static DEFINE_PER_CPU(struct pmu_event_list, pmu_sb_events);
+ 
+ static atomic_t nr_mmap_events __read_mostly;
+@@ -3376,6 +3375,16 @@ static void perf_event_sync_stat(struct
+ 	}
+ }
+ 
++static void context_sched_task(struct perf_cpu_context *cpuctx,
++			       struct perf_event_context *ctx,
++			       bool sched_in)
++{
++	struct pmu *pmu = ctx->pmu;
++
++	if (cpuctx->sched_cb_dir[sched_in] && pmu->sched_task)
++		pmu->sched_task(ctx, false);
++}
++
+ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
+ 					 struct task_struct *next)
+ {
+@@ -3424,9 +3433,7 @@ static void perf_event_context_sched_out
+ 			WRITE_ONCE(next_ctx->task, task);
+ 
+ 			perf_pmu_disable(pmu);
+-
+-			if (cpuctx->sched_cb_usage && pmu->sched_task)
+-				pmu->sched_task(ctx, false);
++			context_sched_task(cpuctx, ctx, false);
+ 
+ 			/*
+ 			 * PMU specific parts of task perf context can require
+@@ -3465,8 +3472,7 @@ static void perf_event_context_sched_out
+ 		raw_spin_lock(&ctx->lock);
+ 		perf_pmu_disable(pmu);
+ 
+-		if (cpuctx->sched_cb_usage && pmu->sched_task)
+-			pmu->sched_task(ctx, false);
++		context_sched_task(cpuctx, ctx, false);
+ 		task_ctx_sched_out(cpuctx, ctx, EVENT_ALL);
+ 
+ 		perf_pmu_enable(pmu);
+@@ -3476,25 +3482,38 @@ static void perf_event_context_sched_out
+ 
+ static DEFINE_PER_CPU(struct list_head, sched_cb_list);
+ 
+-void perf_sched_cb_dec(struct pmu *pmu)
++void perf_sched_cb_dec(struct perf_event *event)
+ {
++	struct perf_event_context *ctx = event->ctx;
++	struct pmu *pmu = ctx->pmu;
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	this_cpu_dec(perf_sched_cb_usage);
+-
+-	if (!--cpuctx->sched_cb_usage)
++	if (!ctx->task && !--cpuctx->sched_cb_usage)
+ 		list_del(&cpuctx->sched_cb_entry);
++
++	if (event->attach_state & PERF_ATTACH_SCHED_CB_OUT)
++		cpuctx->sched_cb_dir[0]--;
++	if (event->attach_state & PERF_ATTACH_SCHED_CB_IN)
++		cpuctx->sched_cb_dir[1]--;
+ }
+ 
+ 
+-void perf_sched_cb_inc(struct pmu *pmu)
++void perf_sched_cb_inc(struct perf_event *event)
+ {
++	struct perf_event_context *ctx = event->ctx;
++	struct pmu *pmu = ctx->pmu;
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	if (!cpuctx->sched_cb_usage++)
++	if (!ctx->task && !cpuctx->sched_cb_usage++)
+ 		list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
+ 
+-	this_cpu_inc(perf_sched_cb_usage);
++	if (!(event->attach_state & PERF_ATTACH_SCHED_CB))
++		event->attach_state |= PERF_ATTACH_SCHED_CB;
++
++	if (event->attach_state & PERF_ATTACH_SCHED_CB_OUT)
++		cpuctx->sched_cb_dir[0]++;
++	if (event->attach_state & PERF_ATTACH_SCHED_CB_IN)
++		cpuctx->sched_cb_dir[1]++;
+ }
+ 
+ /*
+@@ -3523,9 +3542,9 @@ static void __perf_pmu_sched_task(struct
+ 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
+ }
+ 
+-static void perf_pmu_sched_task(struct task_struct *prev,
+-				struct task_struct *next,
+-				bool sched_in)
++static inline void perf_pmu_sched_task(struct task_struct *prev,
++				       struct task_struct *next,
++				       bool sched_in)
+ {
+ 	struct perf_cpu_context *cpuctx;
+ 
+@@ -3563,8 +3582,7 @@ void __perf_event_task_sched_out(struct
+ {
+ 	int ctxn;
+ 
+-	if (__this_cpu_read(perf_sched_cb_usage))
+-		perf_pmu_sched_task(task, next, false);
++	perf_pmu_sched_task(task, next, false);
+ 
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, next, false);
+@@ -3828,8 +3846,7 @@ static void perf_event_context_sched_in(
+ 		cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
+ 	perf_event_sched_in(cpuctx, ctx, task);
+ 
+-	if (cpuctx->sched_cb_usage && pmu->sched_task)
+-		pmu->sched_task(cpuctx->task_ctx, true);
++	context_sched_task(cpuctx, ctx, true);
+ 
+ 	perf_pmu_enable(pmu);
+ 
+@@ -3875,8 +3892,7 @@ void __perf_event_task_sched_in(struct t
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, prev, true);
+ 
+-	if (__this_cpu_read(perf_sched_cb_usage))
+-		perf_pmu_sched_task(prev, task, true);
++	perf_pmu_sched_task(prev, task, true);
+ }
+ 
+ static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
