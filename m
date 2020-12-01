@@ -2,67 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E95D2C94C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D372C94D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731216AbgLABjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:39:08 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:32974 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730096AbgLABjI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:39:08 -0500
-Received: by mail-io1-f66.google.com with SMTP id o8so25543ioh.0;
-        Mon, 30 Nov 2020 17:38:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9OeJWnpbG+zxIgcKq2BZN7xUVLsnki92nBChXkb1cmI=;
-        b=Msj8lApcPzVsEJMxwQN1srBwyHwxKqBvNk5ewffSXh5IMfutsmnCHnUXCwxkQksAig
-         qnoEG79u6khGXQrqQBH/YYlxw/KATJgC+wfRr1uRN60X58WX2Bvi+nvXonXtWvB/VhfA
-         KxluVMYfc5w8zqg2+sw4ML8t6DYIv7fudq1shVVq3m/I4uBeCs0Udl9+MIPwZMOcjr4+
-         9fsZQBk2tFSfwfvmLBkkto0xGQBpIcCSMuwKHShCF0C41EX81AIUvyD0d/m/X8OmLYa2
-         jXqnGIV/H2xL6VjOiEcH3B3omam8zrUCj9/Tn4fms5U2XSlZlq8uSDdYFKZ52XoLsDs3
-         RAcw==
-X-Gm-Message-State: AOAM5311B+Lio46dcIg2e2ndoj/R0MuNeexivYmQG9XeNQu5T2qKjIED
-        IWiu8JTl7r5j67qosg+LlRdEDFEqiw==
-X-Google-Smtp-Source: ABdhPJzrq8Yv7N2B6nNUFmcDmw4WI9s3GELNLVyNe56+SfGH0bGJAoULzpnvsJAhGQBOTZF6dW3PPg==
-X-Received: by 2002:a05:6638:526:: with SMTP id j6mr588070jar.1.1606786701660;
-        Mon, 30 Nov 2020 17:38:21 -0800 (PST)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id o10sm188296ili.82.2020.11.30.17.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 17:38:20 -0800 (PST)
-Received: (nullmailer pid 3445725 invoked by uid 1000);
-        Tue, 01 Dec 2020 01:38:19 -0000
-Date:   Mon, 30 Nov 2020 18:38:19 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     devicetree@vger.kernel.org, mturquette@baylibre.com,
-        linux-arm-msm@vger.kernel.org, vkoul@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        id S1730172AbgLABnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:43:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728678AbgLABnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:43:11 -0500
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6277D206E0;
+        Tue,  1 Dec 2020 01:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606786951;
+        bh=lTRsEMrpRvS2rkpUlAULfE1RMIMXCz4/9GqqdWBH9Fs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZNTGYkwQKGjoSgP5+hkVLJMA8B6mn5neQMmBS2FNKmKo272Q+rDMiz3z1oQ9mtxLM
+         Ps0RQsoKBHhl5YQTTJGjq29sjkp1R5Msc7n9ninTMrB4g4e4Ed9GUixyhlV59q8VxW
+         8FoN9bjlzcbr/M4VzDHMQONqoCqE9CE7dQQQAXyA=
+Date:   Tue, 1 Dec 2020 09:42:25 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH v4 5/6] dt-bindings: clock: Add GDSC in SDX55 GCC
-Message-ID: <20201201013819.GA3445671@robh.at.kernel.org>
-References: <20201126072844.35370-1-manivannan.sadhasivam@linaro.org>
- <20201126072844.35370-6-manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH 1/3] ARM: dts: imx28: Fix label name for L2 switch
+Message-ID: <20201201014204.GT4072@dragon>
+References: <20201125161815.2361-1-lukma@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126072844.35370-6-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20201125161815.2361-1-lukma@denx.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 12:58:43 +0530, Manivannan Sadhasivam wrote:
-> Add GDSC instances in SDX55 GCC block.
+On Wed, Nov 25, 2020 at 05:18:13PM +0100, Lukasz Majewski wrote:
+> The 'eth_switch' name has been misspelled in the imx28.dtsi file,
+> so this change fixes it.
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  include/dt-bindings/clock/qcom,gcc-sdx55.h | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Applied, thanks.
