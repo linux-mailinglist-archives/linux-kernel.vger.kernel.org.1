@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535772C9F0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DDD2C9F06
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbgLAKVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:21:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30985 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726003AbgLAKVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:21:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606817993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=knQxcFi9c+keJfS52OVAxQ/QeZhgfa+b2kzcTUqwOy8=;
-        b=NPqhfNVdxNrGxEVwMMqNfng5px0RK9EoYUnE+nH3vgxF7rTf895JBrstvJVXNPnPxaDJ/e
-        8sp1e0Izj+fcn5zS9jNfC/NyISWoyF2Nig3if6AYKEu/zwadKEYEI6jDLl6iNTQF2fxqlp
-        QOJAmH/aYFxk55oYMwsYEHelkrdqygk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-GexQxWKbNvmsvTgySBhIZw-1; Tue, 01 Dec 2020 05:19:49 -0500
-X-MC-Unique: GexQxWKbNvmsvTgySBhIZw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2391108AbgLAKTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:19:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726920AbgLAKTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:19:39 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A408A1092BA0;
-        Tue,  1 Dec 2020 10:19:47 +0000 (UTC)
-Received: from gondolin (ovpn-113-138.ams2.redhat.com [10.36.113.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F1C9260BE5;
-        Tue,  1 Dec 2020 10:19:45 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 11:19:43 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        "Heiko Carstens" <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        "Christian Borntraeger" <borntraeger@de.ibm.com>,
-        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] s390: cio: fix use-after-free in
- ccw_device_destroy_console
-Message-ID: <20201201111943.626cb86f.cohuck@redhat.com>
-In-Reply-To: <20201201063150.82128-1-miaoqinglang@huawei.com>
-References: <20201201063150.82128-1-miaoqinglang@huawei.com>
-Organization: Red Hat GmbH
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CE52207FF;
+        Tue,  1 Dec 2020 10:18:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606817938;
+        bh=x0EFmzJ4H76MAN3cpDLbL7++bBdsOnfMiVEjI/q6XIc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VoZznCUSVLo/wKU7E/ZzY3gvtaoqhvLMVMTT6t1v4EX4SkLZmsF4JiWazeOWbSOCi
+         ibPR1zbmhhqFAlBF/C0qsrdnbaRCvrcekYv8XqtejFIWtVDiB3fXMORf/WURVqaPik
+         7dyC/3omM8N2nFPu2ivF18UrTrqy8jQlT06c6Jy8=
+Date:   Tue, 1 Dec 2020 11:20:10 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Nikos Tsironis <ntsironis@arrikto.com>
+Subject: Re: [PATCH 4.19 08/57] KVM: x86: Fix split-irqchip vs interrupt
+ injection window request
+Message-ID: <X8YY2qW3RQqzmmBl@kroah.com>
+References: <20201201084647.751612010@linuxfoundation.org>
+ <20201201084648.690944071@linuxfoundation.org>
+ <d29c4b25-33f6-8d99-7a45-8f4e06f5ade6@redhat.com>
+ <X8YThgeaonYhB6zi@kroah.com>
+ <fe3fa32b-fc84-9e81-80e0-cb19889fc042@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe3fa32b-fc84-9e81-80e0-cb19889fc042@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 14:31:50 +0800
-Qinglang Miao <miaoqinglang@huawei.com> wrote:
-
-> put_device calls release function which do kfree() inside.
-> So following use of sch&cdev would cause use-after-free bugs.
+On Tue, Dec 01, 2020 at 11:03:36AM +0100, Paolo Bonzini wrote:
+> On 01/12/20 10:57, Greg Kroah-Hartman wrote:
+> > > Since you did not apply "KVM: x86: handle !lapic_in_kernel case in
+> > > kvm_cpu_*_extint" to 4.19 or earlier, please leave this one out as well.
+> > Isn't it patch 07 of this series?
 > 
-> Fix these by simply adjusting the position of put_device.
+> Yes, it arrived a few minutes after I hit send for whatever reason. Though
+> it still applies to 4.14 and earlier:
 > 
-> Fixes: 37db8985b211 ("s390/cio: add basic protected virtualization support")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Suggested-by: Cornelia Huck <cohuck@redhat.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  This patch is indeed a v2 of older one. Considering that the
->  patch's name has changed, I think a normal prefix 'PATCH' is
->  better.
+> ` [PATCH 4.14 04/50] wireless: Use linux/stddef.h instead of stddef.h
+> ` [PATCH 4.14 07/50] btrfs: adjust return values of btrfs_inode_by_name
+> ` [PATCH 4.14 08/50] btrfs: inode: Verify inode mode to avoid NULL pointer
+> dereference
+> ` [PATCH 4.14 09/50] KVM: x86: Fix split-irqchip vs interrupt injection
+> window request
 > 
->  drivers/s390/cio/device.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> ` [PATCH 4.9 05/42] btrfs: tree-checker: Enhance chunk checker to validate
+> chunk profile
+> ` [PATCH 4.9 06/42] btrfs: inode: Verify inode mode to avoid NULL pointer
+> dereference
+> ` [PATCH 4.9 07/42] KVM: x86: Fix split-irqchip vs interrupt injection
+> window request
+> 
+> ` [PATCH 4.4 01/24] btrfs: tree-checker: Enhance chunk checker to validate
+> chunk profile
+> ` [PATCH 4.4 02/24] btrfs: inode: Verify inode mode to avoid NULL pointer
+> dereference
+> ` [PATCH 4.4 03/24] KVM: x86: Fix split-irqchip vs interrupt injection
+> window request
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Ok, I will go drop this patch from 4.14, 4.9, and 4.4.  Or, should the
+needed pre-requisite patch be properly backported there instead?
 
+And was it marked somewhere that this patch depended on that one and I
+just missed it?
+
+thanks,
+
+greg k-h
