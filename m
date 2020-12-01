@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C982C9D6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F2B2C9CB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgLAJXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:23:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42546 "EHLO mail.kernel.org"
+        id S2388107AbgLAI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:59:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388861AbgLAJGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:06:52 -0500
+        id S2388046AbgLAI7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:59:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B95B9206CA;
-        Tue,  1 Dec 2020 09:06:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96A41217A0;
+        Tue,  1 Dec 2020 08:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813597;
-        bh=TEHxrXo5F/J0YHVL1w2tJfOBED4e0voT2juwiB9rR78=;
+        s=korg; t=1606813128;
+        bh=96W6HpKPwJcjWkKM+SXn3e4faqXjMxeVabRykQNdRDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nRCW13jlXdG3uq5aate5P25yNxRa4/p8Q9/cdEA4ozcc8GHfpX8FGVV30NsnCXz5J
-         bk8/L3Gw7pUB+pFJ4WqHc+VblFwYB9Wxqf4I7LXJp9+AKffDXjpWUUfYPt80XLVu5y
-         lbfGgt+wszdyWTZl7/D7z8zfnLMNLPwTC6KrCFEE=
+        b=w8EbF7mhCuZJx4+kL+hPcij7wi3aPz0SftjTXqn+qpG02FyMqAJfddvGhBW55hRxw
+         MF46L0Y9EmfaKSeK8MA6vsXjI3xkHurB+FC+V7lnZWoe9NAUVAtNhXojRTBUpVKhtY
+         +LeAfb3xPgWtUhXUesyG55G90TWcRdw6fDkyURdA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 63/98] nfc: s3fwrn5: use signed integer for parsing GPIO numbers
-Date:   Tue,  1 Dec 2020 09:53:40 +0100
-Message-Id: <20201201084658.172936832@linuxfoundation.org>
+Subject: [PATCH 4.14 42/50] perf probe: Fix to die_entrypc() returns error correctly
+Date:   Tue,  1 Dec 2020 09:53:41 +0100
+Message-Id: <20201201084650.223717431@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit d8f0a86795c69f5b697f7d9e5274c124da93c92d ]
+[ Upstream commit ab4200c17ba6fe71d2da64317aae8a8aa684624c ]
 
-GPIOs - as returned by of_get_named_gpio() and used by the gpiolib - are
-signed integers, where negative number indicates error.  The return
-value of of_get_named_gpio() should not be assigned to an unsigned int
-because in case of !CONFIG_GPIOLIB such number would be a valid GPIO.
+Fix die_entrypc() to return error correctly if the DIE has no
+DW_AT_ranges attribute. Since dwarf_ranges() will treat the case as an
+empty ranges and return 0, we have to check it by ourselves.
 
-Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC Chip")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20201123162351.209100-1-krzk@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 91e2f539eeda ("perf probe: Fix to show function entry line as probe-able")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc: Thomas Richter <tmricht@linux.ibm.com>
+Link: http://lore.kernel.org/lkml/160645612634.2824037.5284932731175079426.stgit@devnote2
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nfc/s3fwrn5/i2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/util/dwarf-aux.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
-index e4f7fa00862de..2505abc8ef281 100644
---- a/drivers/nfc/s3fwrn5/i2c.c
-+++ b/drivers/nfc/s3fwrn5/i2c.c
-@@ -26,8 +26,8 @@ struct s3fwrn5_i2c_phy {
- 	struct i2c_client *i2c_dev;
- 	struct nci_dev *ndev;
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index 289ef63208fb6..7514aa9c68c99 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -332,6 +332,7 @@ bool die_is_func_def(Dwarf_Die *dw_die)
+ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
+ {
+ 	Dwarf_Addr base, end;
++	Dwarf_Attribute attr;
  
--	unsigned int gpio_en;
--	unsigned int gpio_fw_wake;
-+	int gpio_en;
-+	int gpio_fw_wake;
+ 	if (!addr)
+ 		return -EINVAL;
+@@ -339,6 +340,13 @@ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
+ 	if (dwarf_entrypc(dw_die, addr) == 0)
+ 		return 0;
  
- 	struct mutex mutex;
++	/*
++	 *  Since the dwarf_ranges() will return 0 if there is no
++	 * DW_AT_ranges attribute, we should check it first.
++	 */
++	if (!dwarf_attr(dw_die, DW_AT_ranges, &attr))
++		return -ENOENT;
++
+ 	return dwarf_ranges(dw_die, 0, &base, addr, &end) < 0 ? -ENOENT : 0;
+ }
  
 -- 
 2.27.0
