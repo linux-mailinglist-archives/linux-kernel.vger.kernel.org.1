@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C372C9BDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5F12C9BD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390016AbgLAJMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:12:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51024 "EHLO mail.kernel.org"
+        id S2389977AbgLAJMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:12:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389988AbgLAJMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:12:49 -0500
+        id S2388872AbgLAJMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C96222247;
-        Tue,  1 Dec 2020 09:12:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDB9E21D46;
+        Tue,  1 Dec 2020 09:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813928;
-        bh=byTBPk8ZVz+XUki0AtiSUdLe6PhVwayiWW/WjRv0Cq8=;
+        s=korg; t=1606813931;
+        bh=RWpL22H5WCyXuPHlHQxEotOnaHqYtQ8SB457ykaaaM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mZni2jxu5YNMs1JUhFHZ+eKIHZlp9ZcNSkfIZgjjVvBeEq2gifBrmqD0cYAgmn9dJ
-         nwRRYVDpu+EBBT8cLaD0OUgLn5HZ4Bco8wBOMvmzvoijUqDJ5m8tVUkzdh6Wn5XvQj
-         nv7wMc6WyP0YlJaoIX8YvMY3alsfh7lDnWC+MU6g=
+        b=RZY8PfEBguItKWmW3WdeeFniPRZqr3NRaebMJPc29d4kAawF/7iIJs6ko2iHkz7FP
+         LAnkHgQzdc8kZhBa2GxOfugAb/PxkaQFysurdPSLvdGaAf0NXT2By+m76xdu2RTDQc
+         EXb5tTCN6pcXNxOpIoSxV6U47TuiufLXjYs1KM4E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Narani <manish.narani@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
+        stable@vger.kernel.org, Clark Wang <xiaoning.wang@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 106/152] firmware: xilinx: Fix SD DLL node reset issue
-Date:   Tue,  1 Dec 2020 09:53:41 +0100
-Message-Id: <20201201084725.723191562@linuxfoundation.org>
+Subject: [PATCH 5.9 107/152] spi: imx: fix the unbalanced spi runtime pm management
+Date:   Tue,  1 Dec 2020 09:53:42 +0100
+Message-Id: <20201201084725.854163718@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -43,36 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manish Narani <manish.narani@xilinx.com>
+From: Clark Wang <xiaoning.wang@nxp.com>
 
-[ Upstream commit f4426311f927b01776edf8a45f6fad90feae4e72 ]
+[ Upstream commit 7cd71202961090d8f2d2b863ec66b25ae43e1d39 ]
 
-Fix the SD DLL node reset issue where incorrect node is being referenced
-instead of SD DLL node.
+If set active without increase the usage count of pm, the dont use
+autosuspend function will call the suspend callback to close the two
+clocks of spi because the usage count is reduced to -1.
+This will cause the warning dump below when the defer-probe occurs.
 
-Fixes: 426c8d85df7a ("firmware: xilinx: Use APIs instead of IOCTLs")
+[  129.379701] ecspi2_root_clk already disabled
+[  129.384005] WARNING: CPU: 1 PID: 33 at drivers/clk/clk.c:952 clk_core_disable+0xa4/0xb0
 
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-Link: https://lore.kernel.org/r/1605534744-15649-1-git-send-email-manish.narani@xilinx.com
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+So add the get noresume function before set active.
+
+Fixes: 43b6bf406cd0 spi: imx: fix runtime pm support for !CONFIG_PM
+Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+Link: https://lore.kernel.org/r/20201124085247.18025-1-xiaoning.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/xilinx/zynqmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-imx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index 349ab39480068..d08ac824c993c 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -642,7 +642,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
-  */
- int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
- {
--	return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, IOCTL_SET_SD_TAPDELAY,
-+	return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, IOCTL_SD_DLL_RESET,
- 				   type, 0, NULL);
- }
- EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 9aac515b718c8..91578103a3ca9 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -1684,6 +1684,7 @@ static int spi_imx_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_set_autosuspend_delay(spi_imx->dev, MXC_RPM_TIMEOUT);
+ 	pm_runtime_use_autosuspend(spi_imx->dev);
++	pm_runtime_get_noresume(spi_imx->dev);
+ 	pm_runtime_set_active(spi_imx->dev);
+ 	pm_runtime_enable(spi_imx->dev);
+ 
 -- 
 2.27.0
 
