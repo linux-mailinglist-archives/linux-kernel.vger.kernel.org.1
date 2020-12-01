@@ -2,140 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E822CA373
+	by mail.lfdr.de (Postfix) with ESMTP id EF4B92CA375
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:09:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388517AbgLANHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:07:41 -0500
-Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:59745 "EHLO
-        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727077AbgLANHk (ORCPT
+        id S2390744AbgLANIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:08:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387931AbgLANIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:07:40 -0500
-Received: from cmgw11.unifiedlayer.com (unknown [10.9.0.11])
-        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id 15503215CFB
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:06:59 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id k5MwkmWb1dCH5k5MwkqqLg; Tue, 01 Dec 2020 06:06:59 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=MYVCRa3f c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=JfrnYn6hAAAA:8
- a=YWtRXzOXAAAA:8 a=olmuuQao6RMEz0gzl2QA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=1CNFftbPRP8L7MoqJWF3:22 a=XosyFl2cby_8ldcV-F0Q:22
+        Tue, 1 Dec 2020 08:08:10 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3F4C0613CF;
+        Tue,  1 Dec 2020 05:07:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/jjSGUaq3fI4DbfKuYoM37LOgNCu1qQEZMKSfC94mCQ=; b=Ds9DFF8xGJGreZPv3GZx5HX/Ch
-        taX9ghp2ZOeLSxAHkKBa1gdppeYzIu3A0enrQKhEy0ZEkqM3ori7sawAppJqcwsXjqlsdnJaBuMu2
-        fxetayiLvyEwKh4DGUg7zmBGdiEYltBmbrn0jqigC80RianPzWiZF+69lNd5kSnAdB4lQwEBg4Hob
-        cU18V3wH/vVo3cicQUAGXTvpWX6bfmHNeWbIaoR51o0FGryWHmGgRRCqEXdH9o3zU0n9xe8FGUGsy
-        QaXDrnHNU/+ppzh57SufECIMv+JTc40JWq41M/Fy46Apco+5zsEvxnLp+hi1izgz6a1HAz1e67gYR
-        Ei+6e08Q==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:59838 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kk5Mv-0003Gj-QB; Tue, 01 Dec 2020 13:06:57 +0000
-Date:   Tue, 1 Dec 2020 05:06:57 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sven Schnelle <svens@linux.ibm.com>, rafael@kernel.org,
-        viresh.kumar@linaro.org, mingo@kernel.org, x86@kernel.org,
-        mark.rutland@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] sched/idle: Fix arch_cpu_idle() vs tracing
-Message-ID: <20201201130657.GA232197@roeck-us.net>
-References: <20201120114145.197714127@infradead.org>
- <20201120114925.594122626@infradead.org>
- <20201130210003.GA40619@roeck-us.net>
- <20201201110209.GQ3040@hirez.programming.kicks-ass.net>
- <yt9dh7p54u50.fsf@linux.ibm.com>
- <20201201125246.GV2414@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201125246.GV2414@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kk5Mv-0003Gj-QB
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:59838
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 6
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CwDNV/mSp8qeTBKSj3kqmPZZPoJYUSoHZfwF0wMNDqo=; b=nQg9t3/xdfnSz1yt+fFl/hxn5b
+        +QiWs2a9m2DVlqW6zOhBZ3lUprFDVCIDxQhdYptmlYKZrrfU4IUFriIqVQ5kxZ2MabUSB7DDL4YiE
+        KLBf540RoTnHsdSq7hy7K1Nd8Uq6EuFO89R2ahmLrAANun96WNYFVxf1RJPXWcG2X/Y7dbThmn+uJ
+        yyVMNLaJRJhL9LRKqUQlt6ZjiD6Sv/M7bYcQSJ0ZY2CxQWTZeQmmGXHvMXRKddgaBPGSOaoFVS3Ku
+        wigSVo0rLHpL19qqpEUF1StTmYOhaCIepxPk+AR54vOV7zxXul0hJwn+tcSzqAR9IvLbV4tn8mB+f
+        BtZwvSNA==;
+Received: from [54.239.6.185] (helo=freeip.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk5NO-0007gG-FV; Tue, 01 Dec 2020 13:07:26 +0000
+Message-ID: <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
+Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Radim =?UTF-8?Q?Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Date:   Tue, 01 Dec 2020 13:07:23 +0000
+In-Reply-To: <20190220201609.28290-4-joao.m.martins@oracle.com>
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+         <20190220201609.28290-4-joao.m.martins@oracle.com>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-QzfeS7N8NszN9XbfXqN3"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:52:46PM +0100, Peter Zijlstra wrote:
-> On Tue, Dec 01, 2020 at 12:56:27PM +0100, Sven Schnelle wrote:
-> > Hi Peter,
-> > 
-> > Peter Zijlstra <peterz@infradead.org> writes:
-> > 
-> > > On Mon, Nov 30, 2020 at 01:00:03PM -0800, Guenter Roeck wrote:
-> > >> On Fri, Nov 20, 2020 at 12:41:46PM +0100, Peter Zijlstra wrote:
-> > >> > We call arch_cpu_idle() with RCU disabled, but then use
-> > >> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
-> > >> > 
-> > >> > Switch all arch_cpu_idle() implementations to use
-> > >> > raw_local_irq_{en,dis}able() and carefully manage the
-> > >> > lockdep,rcu,tracing state like we do in entry.
-> > >> > 
-> > >> > (XXX: we really should change arch_cpu_idle() to not return with
-> > >> > interrupts enabled)
-> > >> > 
-> > >> 
-> > >> Has this patch been tested on s390 ? Reason for asking is that it causes
-> > >> all my s390 emulations to crash. Reverting it fixes the problem.
-> > >
-> > > My understanding is that it changes the error on s390. Previously it
-> > > would complain about the local_irq_enable() in arch_cpu_idle(), now it
-> > > complains when taking an interrupt during idle.
-> > 
-> > I looked into adding the required functionality for s390, but the code
-> > we would need to add to entry.S is rather large - as you noted we would
-> > have to duplicate large portions of irqentry_enter() into our code.
-> > Given that s390 was fine before that patch, can you revert it and submit
-> > it again during the next merge window?
-> 
-> I'm not sure I understand how s390 was fine without it, let me consdier.
-> Also, what's the status of ARM64, they do need this too.
 
-For v5.10-rc6:
+--=-QzfeS7N8NszN9XbfXqN3
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 426 pass: 421 fail: 5
-Failed tests:
-	s390:defconfig:initrd
-	s390:defconfig:virtio-blk-ccw:rootfs
-	s390:defconfig:scsi[virtio-ccw]:rootfs
-	s390:defconfig:virtio-pci:rootfs
-	s390:defconfig:scsi[virtio-pci]:rootfs
+On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
+> +static int kvm_xen_shared_info_init(struct kvm *kvm, gfn_t gfn)
+> +{
+> +       struct shared_info *shared_info;
+> +       struct page *page;
+> +
+> +       page =3D gfn_to_page(kvm, gfn);
+> +       if (is_error_page(page))
+> +               return -EINVAL;
+> +
+> +       kvm->arch.xen.shinfo_addr =3D gfn;
+> +
+> +       shared_info =3D page_to_virt(page);
+> +       memset(shared_info, 0, sizeof(struct shared_info));
+> +       kvm->arch.xen.shinfo =3D shared_info;
+> +       return 0;
+> +}
+> +
 
-At least with qemu all other tests/architectures are fine.
-You can find the tested architectures at https://kerneltests.org/builders.
+Hm.
 
-Guenter
+How come we get to pin the page and directly dereference it every time,
+while kvm_setup_pvclock_page() has to use kvm_write_guest_cached()
+instead?
+
+If that was allowed, wouldn't it have been a much simpler fix for
+CVE-2019-3016? What am I missing?
+
+Should I rework these to use kvm_write_guest_cached()?=20
+
+
+
+--=-QzfeS7N8NszN9XbfXqN3
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MjAxMTMwNzIzWjAvBgkqhkiG9w0BCQQxIgQgz6Tqx5Td1FTwKCTRAj0rN1/WHNMW6b8KSsbi2aXx
+04Iwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAGeVE3PlV4uejWALyIM2/w3zL6ZVQAYs/M1J9oI7rztqgbWrmSAyxVXF9j/jWjDO
+oPs3G2yv1iM1VcsF5ZRp55bcbN6yxYueCvBePJ3+My7wfNSUB2hLg+gWuphFlwfMPytLqNtL+nBV
+cDOS8sKOAZo65YfBm0Msk72xfZFRsZIwqdI9g3R00bQsBaitmM1J035w4qYrwQOm/Nak8ggnTJQV
+e02zQogdV5ARAYWPNpKHVkyZlufsjj76f9R9D4tYuvhwxKkL7r3L+in1ZNldHew1TYAZr3mEulcU
+IfuDNKO2ibP1ZxciLObjRAZM9wu2ilF9MsB+X/olI2YUZwEjORwAAAAAAAA=
+
+
+--=-QzfeS7N8NszN9XbfXqN3--
+
