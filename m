@@ -2,229 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5312C95D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0E32C95D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727728AbgLADeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 22:34:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbgLADeJ (ORCPT
+        id S1727707AbgLADg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 22:36:58 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:8386 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726026AbgLADg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 22:34:09 -0500
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACB5C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 19:33:29 -0800 (PST)
-Received: by mail-oo1-xc44.google.com with SMTP id t23so87686oov.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 19:33:29 -0800 (PST)
+        Mon, 30 Nov 2020 22:36:57 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B13ZhEM024717;
+        Mon, 30 Nov 2020 19:36:08 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pfpt0220; bh=NDscaHDOG43//S21SULHIlyz+W8hXCiXosMNaPRDOWo=;
+ b=ew420EiYA59IssWrolYl49CyTnWUV9WZB6IaJKy/FsEqjpLALc7idE1qxrWkjx0wH4L6
+ lB+rRKS+uDXy5OIsEs7q1o/DYFLWzCTqE74Jo28TLkRc1yGtZRMti1kRj2pRWfjmkcDp
+ 10f2PnawoEHu4EwPwHe7QtvOibjR2nKH89phiNbKT9BvhW1o1xGEGx/YBHvf4/psvXIt
+ f3p8T2RGAhAa2b2H2nJiJ/Mp40tcXRiJKmyJJR9cG9ShuYEuBmmGG6SWeprlkllC2mtQ
+ w2cDBXN3jb9YtZ2O0Swv+2dxWcffBV58pCFnMRbZh7j+qbp/HELcQOUFMeJUEhlrbBcs iA== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 353pxsem19-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 30 Nov 2020 19:36:08 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 30 Nov
+ 2020 19:36:06 -0800
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 30 Nov
+ 2020 19:36:05 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
+ by SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 30 Nov 2020 19:36:05 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J1lX5wcxrppsdUbTvyTwa9NsOt1pdBQ8b9P42RHSRE2B0CkjC1vRIod1r9doAC+nF3eLL+goyOCQLI/yRhTjMY+NGG5YZxfDUx9lzc9ULAzdLLN15FQaXwlVeMqpz0H73GsmQXOMfvY3EtSZV9EM3MgSptlnwHY3UfVw8W2v4w56Q+TMVUzYC4nBwR5MjUoVQKB4fbbzub6l8DuuTpoprL5GKdtX2DPBI6wR9z9CsQpy0pvVf+DBJXi5u2QDudz9pJirsA5jAcaMgoM4vB/7nfUcLWx2TTU09B89kBM4e1NAsbBVhpiEVSBWuMarDkRIL4F7NMKBGI4YwcBBWN7MGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NDscaHDOG43//S21SULHIlyz+W8hXCiXosMNaPRDOWo=;
+ b=PlyFHpbxz2ArL4w0JPGy1w0g02TnALXLETjar1I6LXbb/cbUOAHBnItGnpO23t078GqWHEUEG55EDZ2uAop27PPueP1SNzpo/ukq27ElQHrNz56LbFf8JkwrM1e0cf9dHrQfX6oCvTl+QMsrgu5/GIqddvC7MIkpy4UkwitMOGtA5BW5VWTNn9L6/VlWR+hk44p9zty7xJvGKwwq7MlqnnwXVsUKr6lzqdg4xlSeQkZxeXLTE+LHUbHi5yvfAAxSG60GlA1Q3Jr+1qGGmSoHW5RvetmhXEsgZGbOS4kjTi2z/H+nAyOExinY8iYoXBdhR/WVq0hqhWWY8c4KmfhocA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zbGZDw8W0Yk78H+DHPLlM669ACPRLsB5AJaN9EhyYqE=;
-        b=CC+1DKp5n085S6zVrdwoMatT6OvtGAbS5SNElzSMEQkBJJI00Z7fJU5q+WmVvTMb4f
-         rEgewZg7TMjuZJFeqP8AdfPXJbhLkBs1u8aMJrrC2gUVIpriIEpRNIaS3VGb/N8E5d7r
-         uvFa4F1iTbOPi43DMkNv4pOX/YS0d/3+B7pCYJAfpKhUDWRQvXPHmiL03IbnT+Q5y49m
-         0ZTxtpcdXIYIzEAGQv6eLPQOqCnT4FD+H1Irb+8LczVkDXMPr80K5cJZfMEiSN9SDB9c
-         GsJu+wK3IQIQJS2FNHNpv0qz79RKMDoxPt4JdNLzuuEdDzRTycx9bGy7VI7Ecy/85vuF
-         UaZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zbGZDw8W0Yk78H+DHPLlM669ACPRLsB5AJaN9EhyYqE=;
-        b=WD1yz+2fW56pZebCgEmxk/PduqtPAlu0i9/7qTqYytb60Mr8+me5da6X8g1IslWcKJ
-         sFUGKx00BpVVRkL+TiuDUpwlLQJKxn7Q+FBv91GSFeGJjBQab+/fHQ7zwGHreO4iKAch
-         oCQoDkPOcoseV3PTtqKtOY60yB8CC7zbFu3uR8OFbWz6qS75p/1EQbaLE92A+mfdaKC+
-         djC9xrgDx1nsY8Y6JRa23T6kbQFsK1zQinG8p2r86Hg6XHOMqEfMGQUKttKHNXhI/r4F
-         G2+aJxYW6kaWU9nGue8XJSwuzBr+Dx0TdIytt+ejpK0L0QWZ6SOYAS7YQyorU6LT3Nmf
-         bxHw==
-X-Gm-Message-State: AOAM532B+1q3F7K6r38ymLq85yxVRIqfFvyAYhI/Q17cFLenuoRjGVvN
-        cc+QqAstyhrJNoRPd7W9XitR0g==
-X-Google-Smtp-Source: ABdhPJxNssokUuLVtjUfT9m8TbTNvdyLwVWLyfORPuxGE9i928NM72s7PiS2rzNzQqpWeBukYw0ZbA==
-X-Received: by 2002:a4a:d495:: with SMTP id o21mr683262oos.12.1606793608837;
-        Mon, 30 Nov 2020 19:33:28 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h8sm126858oom.41.2020.11.30.19.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 19:33:28 -0800 (PST)
-Date:   Mon, 30 Nov 2020 21:33:26 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Cc:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com, beanhuo@micron.com,
-        cang@codeaurora.org, matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
-        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
-        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
-        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
-        alice.chao@mediatek.com
-Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
- values
-Message-ID: <X8W5hiEqBydoU1xO@builder.lan>
-References: <20201130091610.2752-1-stanley.chu@mediatek.com>
- <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
- <X8V83T+Tx6teNLOR@builder.lan>
- <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
- <X8WwPs1MPg64FEp8@builder.lan>
- <bf6e03ee-95ab-4768-7ce5-7f196ab6db60@codeaurora.org>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NDscaHDOG43//S21SULHIlyz+W8hXCiXosMNaPRDOWo=;
+ b=HGrAnMBfvyTsTqGI0FaBuleczvoKBlG3ULjsoYevltoPRBVvmoQXQ7U0uMu7y6l2awMn1bjK5FE79p8ILrljXTalVq+LE+Hrgm+HnA8+loXBRZvK7TsvjfcpQOppBF9bN/jtr5sc/Zo2Q6P3ZrqZyywvi4ZME/BiA3Dqgfgxh9w=
+Received: from BYAPR18MB2679.namprd18.prod.outlook.com (2603:10b6:a03:13c::10)
+ by BY5PR18MB3425.namprd18.prod.outlook.com (2603:10b6:a03:1af::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Tue, 1 Dec
+ 2020 03:36:02 +0000
+Received: from BYAPR18MB2679.namprd18.prod.outlook.com
+ ([fe80::fcc9:71b3:472:ef7a]) by BYAPR18MB2679.namprd18.prod.outlook.com
+ ([fe80::fcc9:71b3:472:ef7a%7]) with mapi id 15.20.3611.025; Tue, 1 Dec 2020
+ 03:35:56 +0000
+From:   George Cherian <gcherian@marvell.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        "Geethasowjanya Akula" <gakula@marvell.com>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+        "saeed@kernel.org" <saeed@kernel.org>,
+        "jiri@resnulli.us" <jiri@resnulli.us>
+Subject: Re: [PATCHv5 net-next 2/3] octeontx2-af: Add devlink health reporters
+ for NPA
+Thread-Topic: [PATCHv5 net-next 2/3] octeontx2-af: Add devlink health
+ reporters for NPA
+Thread-Index: AdbHkfXh13uAAxORSn68kJWCJhFAHg==
+Date:   Tue, 1 Dec 2020 03:35:56 +0000
+Message-ID: <BYAPR18MB2679898E4AB4122CE2E566D6C5F40@BYAPR18MB2679.namprd18.prod.outlook.com>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [116.68.98.5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6bde665c-66ba-441e-56fa-08d895aa36aa
+x-ms-traffictypediagnostic: BY5PR18MB3425:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR18MB3425BC865923554E1FB20B90C5F40@BY5PR18MB3425.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jJwNTR0obKBlHLtR2RCopWH/tXdms8wJA5orKTjez7MgM0gYt6l36pPz5DAmNnsxseyJeUG3AsCD3dnFALHhTrAcRi0G8DbGPTyOt+nNNuxlfHtuYIABz5hm3KW0bX9nnySZqQC2t/uEEFzFZmrKv1yozhqQEohQkNYvK7LFJkVUPEY+YBpqePptPyAkhz1mKHb0bCQWTLZOlKVSyWyf9df5a+housq7cQ+MfCbgHoLNjZciHpDfN5yIyBqlAqDa/Rsbo9CA4HQqgcwU/bBai2t6MIXPVmhnJvbb2jmjxvZtITHUtwKkmNTK8WM1poeHVN9t88fXPLMoD0F00yyKgw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR18MB2679.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(396003)(39860400002)(66946007)(5660300002)(33656002)(66476007)(6506007)(478600001)(7696005)(66556008)(8676002)(54906003)(86362001)(83380400001)(186003)(55236004)(53546011)(9686003)(55016002)(66446008)(76116006)(71200400001)(26005)(8936002)(4326008)(64756008)(2906002)(6916009)(52536014)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?74NRP7u6ruv5xQMNp1PsmclCirhLv77vrdskqXIt7S9pkISj9ZE52zYkJ7/9?=
+ =?us-ascii?Q?GPoxhRvlpKVoVotZ/OKxaRkavwTEfxxsquXmDTGSr3UvOKnSL25TbMpsXJh+?=
+ =?us-ascii?Q?d0ZEF3G8rSx2vWAd0ZQK4BRaXcpr6BDwlfIcq0jWf95TSnJIQQX83qxJ/hYe?=
+ =?us-ascii?Q?ktQs3QDAhC0AnuiimT1ZVWYwvaIjB3zSKt2N6OKF0EzC1m3YYLGAxaC5zSMR?=
+ =?us-ascii?Q?X2bd0p2/BRNpX9J6sxsy5jbxk8JqX9gJHuMSRPSkfY8MjKTFEqDH6/sJhrzP?=
+ =?us-ascii?Q?KSfStGTBSAlkK0rMDpVq/sNahdfZ1upGG4kJGtvVKOarYiiuNzRGzNWQ7/SU?=
+ =?us-ascii?Q?jqKFCmekOdmoIWrtlXla0Z6XeGAv/VEzr85Gx4n7uAMnKQYYsX+PAZ5P2h0f?=
+ =?us-ascii?Q?NTR5m5vOWaUCuo2wrfkKThB36RqfADMuHoHpC0gKvXqgadHHpBD5VuepURib?=
+ =?us-ascii?Q?RFL+3h8z4lp0UgFZ8QO/0rVg4sAKMAUI2Ou3KpVjNmhQRAYyYb36KaHwtxGJ?=
+ =?us-ascii?Q?82537xPDDzyT04xDV0hPoFQabSkx/Wad4mYbuKoUkb/YOJveNldVHsxv1nh8?=
+ =?us-ascii?Q?TiD9PqGGCUf521BRDVP0OLgdJNg8dGEVnByQ9Pkw/X6IeVZYHHiWFI5HbxJh?=
+ =?us-ascii?Q?MF7sf35lCLulWYZcgZcQof7fXJu0RVJY1Vm+0j4taGroYbiWlDUAyz+213iy?=
+ =?us-ascii?Q?nOONPL+VYJnv7F9kftLM8D7Ivkk8vrAxQJQNnesL9dCOY8M1x6499IsIYHvo?=
+ =?us-ascii?Q?qwNz7FzW433Zb2HV4m72F6/4rWTYKAIaJxmAacX3t2LLf9MK7t80tMrSGsdQ?=
+ =?us-ascii?Q?q9d/OPFA+yRRMd8m55MSEYKb7UzDHvFBuJNC7lUpuf0IRGyi0Y7pYjXjbIrX?=
+ =?us-ascii?Q?+YSEClYcBEMfUSXW/nog5WbFesgZLFrMimse9PTFIh3NITGh3Eo9gulDI/3m?=
+ =?us-ascii?Q?0WbCOJEY8D/O1wkFAiNVmXhnRVtbdW+1DI1GrsBym2o=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf6e03ee-95ab-4768-7ce5-7f196ab6db60@codeaurora.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR18MB2679.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bde665c-66ba-441e-56fa-08d895aa36aa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 03:35:56.6097
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5sbkgPxW54bVe7xvcZZ+lYxcIiPgDWnVTzSOvEcpm5ZAQepvkecSjq5C4s1LG04csoCApVbHDh8/uQIs2CPtEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3425
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_12:2020-11-30,2020-11-30 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 30 Nov 21:19 CST 2020, Asutosh Das (asd) wrote:
+Hi Jakub,
 
-> On 11/30/2020 6:53 PM, Bjorn Andersson wrote:
-> > On Mon 30 Nov 17:54 CST 2020, Asutosh Das (asd) wrote:
-> > 
-> > > On 11/30/2020 3:14 PM, Bjorn Andersson wrote:
-> > > > On Mon 30 Nov 16:51 CST 2020, Asutosh Das (asd) wrote:
-> > > > 
-> > > > > On 11/30/2020 1:16 AM, Stanley Chu wrote:
-> > > > > > UFS specficication allows different VCC configurations for UFS devices,
-> > > > > > for example,
-> > > > > > 	(1). 2.70V - 3.60V (By default)
-> > > > > > 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
-> > > > > >                              device tree)
-> > > > > > 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
-> > > > > > 
-> > > > > > With the introduction of UFS 3.x products, an issue is happening that
-> > > > > > UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
-> > > > > > regulator on UFU 3.x products with VCC configuration (3) used.
-> > > > > > 
-> > > > > > To solve this issue, we simply remove pre-defined initial VCC voltage
-> > > > > > values in UFS driver with below reasons,
-> > > > > > 
-> > > > > > 1. UFS specifications do not define how to detect the VCC configuration
-> > > > > >       supported by attached device.
-> > > > > > 
-> > > > > > 2. Device tree already supports standard regulator properties.
-> > > > > > 
-> > > > > > Therefore VCC voltage shall be defined correctly in device tree, and
-> > > > > > shall not be changed by UFS driver. What UFS driver needs to do is simply
-> > > > > > enabling or disabling the VCC regulator only.
-> > > > > > 
-> > > > > > This is a RFC conceptional patch. Please help review this and feel
-> > > > > > free to feedback any ideas. Once this concept is accepted, and then
-> > > > > > I would post a more completed patch series to fix this issue.
-> > > > > > 
-> > > > > > Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> > > > > > ---
-> > > > > >     drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
-> > > > > >     1 file changed, 1 insertion(+), 9 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> > > > > > index a6f76399b3ae..3965be03c136 100644
-> > > > > > --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-> > > > > > +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> > > > > > @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
-> > > > > >     		vreg->max_uA = 0;
-> > > > > >     	}
-> > > > > > -	if (!strcmp(name, "vcc")) {
-> > > > > > -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
-> > > > > > -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
-> > > > > > -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
-> > > > > > -		} else {
-> > > > > > -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
-> > > > > > -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-> > > > > > -		}
-> > > > > > -	} else if (!strcmp(name, "vccq")) {
-> > > > > > +	if (!strcmp(name, "vccq")) {
-> > > > > >     		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
-> > > > > >     		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
-> > > > > >     	} else if (!strcmp(name, "vccq2")) {
-> > > > > > 
-> > > > > 
-> > > > > Hi Stanley
-> > > > > 
-> > > > > Thanks for the patch. Bao (nguyenb) was also working towards something
-> > > > > similar.
-> > > > > Would it be possible for you to take into account the scenario in which the
-> > > > > same platform supports both 2.x and 3.x UFS devices?
-> > > > > 
-> > > > > These've different voltage requirements, 2.4v-3.6v.
-> > > > > I'm not sure if standard dts regulator properties can support this.
-> > > > > 
-> > > > 
-> > > > What is the actual voltage requirement for these devices and how does
-> > > > the software know what voltage to pick in this range?
-> > > > 
-> > > > Regards,
-> > > > Bjorn
-> > > > 
-> > > > > -asd
-> > > > > 
-> > > > > 
-> > > > > -- 
-> > > > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > > > > Linux Foundation Collaborative Project
-> > > 
-> > > For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v), the
-> > > voltage requirements (Vcc) are 2.4v-3.6v. The software initializes the ufs
-> > > device at 2.95v & reads the version and if the device is 3.x, it may do the
-> > > following:
-> > > - Set the device power mode to SLEEP
-> > > - Disable the Vcc
-> > > - Enable the Vcc and set it to 2.5v
-> > > - Set the device power mode to ACTIVE
-> > > 
-> > > All of the above may be done at HS-G1 & moved to max supported gear based on
-> > > the device version, perhaps?
-> > > 
-> > > Am open to other ideas though.
-> > > 
-> > 
-> > But that means that for a board where we don't know (don't want to know)
-> > if we have a 2.x or 3.x device we need to set:
-> > 
-> >    regulator-min-microvolt = <2.4V>
-> >    regulator-max-microvolt = <3.6V>
-> > 
-> > And the 2.5V and the two ranges should be hard coded into the ufshcd (in
-> > particular if they come from the specification).
-> > 
-> > For devices with only 2.x or 3.x devices, regulator-{min,max}-microvolt
-> > should be adjusted accordingly.
-> > 
-> > Note that driving the regulators outside these ranges will either damage
-> > the hardware or cause it to misbehave, so these values should be defined
-> > in the board.dts anyways.
-> > 
-> > Also note that regulator_set_voltage(2.4V, 3.6V) won't give you "a
-> > voltage between 2.4V and 3.6V, it will most likely give either 2.4V or
-> > any more specific voltage that we've specified in the board file because
-> > the regulator happens to be shared with some other consumer and changing
-> > it in runtime would be bad.
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> 
-> Understood.
-> I also understand that assumptions on the regulator limits in the driver is
-> a bad idea. I'm not sure how it's designed, but I should think the
-> power-grid design should take care of regulator sharing; if it's being
-> shared and the platform supports both 2.x and 3.x. Perhaps, such platforms
-> be identified using a dts flag - not sure if that's such a good idea though.
-> 
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Tuesday, December 1, 2020 7:59 AM
+> To: George Cherian <gcherian@marvell.com>
+> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+> davem@davemloft.net; Sunil Kovvuri Goutham <sgoutham@marvell.com>;
+> Linu Cherian <lcherian@marvell.com>; Geethasowjanya Akula
+> <gakula@marvell.com>; masahiroy@kernel.org;
+> willemdebruijn.kernel@gmail.com; saeed@kernel.org; jiri@resnulli.us
+> Subject: Re: [PATCHv5 net-next 2/3] octeontx2-af: Add devlink health
+> reporters for NPA
+>=20
+> On Thu, 26 Nov 2020 19:32:50 +0530 George Cherian wrote:
+> > Add health reporters for RVU NPA block.
+> > NPA Health reporters handle following HW event groups
+> >  - GENERAL events
+> >  - ERROR events
+> >  - RAS events
+> >  - RVU event
+> > An event counter per event is maintained in SW.
+> >
+> > Output:
+> >  # devlink health
+> >  pci/0002:01:00.0:
+> >    reporter hw_npa
+> >      state healthy error 0 recover 0
+> >  # devlink  health dump show pci/0002:01:00.0 reporter hw_npa
+> >  NPA_AF_GENERAL:
+> >         Unmap PF Error: 0
+> >         NIX:
+> >         0: free disabled RX: 0 free disabled TX: 0
+> >         1: free disabled RX: 0 free disabled TX: 0
+> >         Free Disabled for SSO: 0
+> >         Free Disabled for TIM: 0
+> >         Free Disabled for DPI: 0
+> >         Free Disabled for AURA: 0
+> >         Alloc Disabled for Resvd: 0
+> >   NPA_AF_ERR:
+> >         Memory Fault on NPA_AQ_INST_S read: 0
+> >         Memory Fault on NPA_AQ_RES_S write: 0
+> >         AQ Doorbell Error: 0
+> >         Poisoned data on NPA_AQ_INST_S read: 0
+> >         Poisoned data on NPA_AQ_RES_S write: 0
+> >         Poisoned data on HW context read: 0
+> >   NPA_AF_RVU:
+> >         Unmap Slot Error: 0
+>=20
+> You seem to have missed the feedback Saeed and I gave you on v2.
+>=20
+> Did you test this with the errors actually triggering? Devlink should sto=
+re only
+Yes, the same was tested using devlink health test interface by injecting e=
+rrors.
+The dump gets generated automatically and the counters do get out of sync,=
+=20
+in case of continuous error.
+That wouldn't be much of an issue as the user could manually trigger a dump=
+ clear and=20
+Re-dump the counters to get the exact status of the counters at any point o=
+f time.
 
-Presumably you can't share vcc with other peripherals, given that the
-voltage levels might just change while the device is in use then. As you
-say the only way to avoid this is to think these problems through when
-designing the power grid.
-
-> I like Stanley's proposal of a vops and let vendors handle it, until specs
-> or someone has a better suggestion.
-> 
-
-I too think it sounds quite reasonable.
+> one dump, are the counters not going to get out of sync unless something
+> clears the dump every time it triggers?
 
 Regards,
-Bjorn
+-George
