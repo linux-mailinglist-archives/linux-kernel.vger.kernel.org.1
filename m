@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E637C2C9A8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31E02C9A52
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387973AbgLAI6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:58:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34062 "EHLO mail.kernel.org"
+        id S1729209AbgLAI4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:56:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387941AbgLAI62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:58:28 -0500
+        id S1729187AbgLAI4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:56:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9873422240;
-        Tue,  1 Dec 2020 08:57:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACE4D221FD;
+        Tue,  1 Dec 2020 08:55:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813067;
-        bh=YZtaefy9uoNlDPS+o8ED9HYB3bje0g4jljsMjuh5R18=;
+        s=korg; t=1606812951;
+        bh=C24D8wSIW4oyyJZldw4/pHdh47wduITLn8EkdXY+pPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tkHBD9BTqjgCXAuuso2EcwLWsi6EmDG5my21bzVLLldj/su+xcjDkaaDirwdzy91h
-         tK28jyfUX60suo9V6luALtQeCtyUhFQi3cjXpnjeFP4wzQbPbczrtQ8TANMJIOMIJn
-         0OFo3X/Es+WOa2HwDpjPpOScM/ZCsSgfOObBC1mU=
+        b=fInVbm8Z/96wDAjIL9ms30dkRpNzcUDR4zsCcBI3XAAJB529trBvvDqVDveLOvfYo
+         Q6I43vqUgoT1ABUUmf8vcId4RX4s9zHZGOTe98X6jLYRUHYL4OQkcRx+jf8n0Zgq5W
+         c9FzqbXcLUPastsRsCUkXyj52j/ynZC0oWf1NKLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yoon Jungyeon <jungyeon@gatech.edu>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 06/50] btrfs: tree-checker: Enhance chunk checker to validate chunk profile
-Date:   Tue,  1 Dec 2020 09:53:05 +0100
-Message-Id: <20201201084645.518121976@linuxfoundation.org>
+        stable@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 4.9 08/42] arm64: pgtable: Fix pte_accessible()
+Date:   Tue,  1 Dec 2020 09:53:06 +0100
+Message-Id: <20201201084642.573533357@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Will Deacon <will@kernel.org>
 
-commit 80e46cf22ba0bcb57b39c7c3b52961ab3a0fd5f2 upstream
+commit 07509e10dcc77627f8b6a57381e878fe269958d3 upstream.
 
-Btrfs-progs already have a comprehensive type checker, to ensure there
-is only 0 (SINGLE profile) or 1 (DUP/RAID0/1/5/6/10) bit set for chunk
-profile bits.
+pte_accessible() is used by ptep_clear_flush() to figure out whether TLB
+invalidation is necessary when unmapping pages for reclaim. Although our
+implementation is correct according to the architecture, returning true
+only for valid, young ptes in the absence of racing page-table
+modifications, this is in fact flawed due to lazy invalidation of old
+ptes in ptep_clear_flush_young() where we elide the expensive DSB
+instruction for completing the TLB invalidation.
 
-Do the same work for kernel.
+Rather than penalise the aging path, adjust pte_accessible() to return
+true for any valid pte, even if the access flag is cleared.
 
-Reported-by: Yoon Jungyeon <jungyeon@gatech.edu>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=202765
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: manually backport and use btrfs_err instead of chunk_err]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: <stable@vger.kernel.org>
+Fixes: 76c714be0e5e ("arm64: pgtable: implement pte_accessible()")
+Reported-by: Yu Zhao <yuzhao@google.com>
+Acked-by: Yu Zhao <yuzhao@google.com>
+Reviewed-by: Minchan Kim <minchan@kernel.org>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://lore.kernel.org/r/20201120143557.6715-2-will@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/volumes.c |    7 +++++++
- 1 file changed, 7 insertions(+)
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6406,6 +6406,13 @@ static int btrfs_check_chunk_valid(struc
- 		return -EIO;
- 	}
+---
+ arch/arm64/include/asm/pgtable.h |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -85,8 +85,6 @@ extern unsigned long empty_zero_page[PAG
+ #define pte_valid(pte)		(!!(pte_val(pte) & PTE_VALID))
+ #define pte_valid_not_user(pte) \
+ 	((pte_val(pte) & (PTE_VALID | PTE_USER)) == PTE_VALID)
+-#define pte_valid_young(pte) \
+-	((pte_val(pte) & (PTE_VALID | PTE_AF)) == (PTE_VALID | PTE_AF))
+ #define pte_valid_user(pte) \
+ 	((pte_val(pte) & (PTE_VALID | PTE_USER)) == (PTE_VALID | PTE_USER))
  
-+	if (!is_power_of_2(type & BTRFS_BLOCK_GROUP_PROFILE_MASK) &&
-+	    (type & BTRFS_BLOCK_GROUP_PROFILE_MASK) != 0) {
-+		btrfs_err(fs_info,
-+		"invalid chunk profile flag: 0x%llx, expect 0 or 1 bit set",
-+			  type & BTRFS_BLOCK_GROUP_PROFILE_MASK);
-+		return -EUCLEAN;
-+	}
- 	if ((type & BTRFS_BLOCK_GROUP_TYPE_MASK) == 0) {
- 		btrfs_err(fs_info, "missing chunk type flag: 0x%llx", type);
- 		return -EIO;
+@@ -94,9 +92,12 @@ extern unsigned long empty_zero_page[PAG
+  * Could the pte be present in the TLB? We must check mm_tlb_flush_pending
+  * so that we don't erroneously return false for pages that have been
+  * remapped as PROT_NONE but are yet to be flushed from the TLB.
++ * Note that we can't make any assumptions based on the state of the access
++ * flag, since ptep_clear_flush_young() elides a DSB when invalidating the
++ * TLB.
+  */
+ #define pte_accessible(mm, pte)	\
+-	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid_young(pte))
++	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid(pte))
+ 
+ /*
+  * p??_access_permitted() is true for valid user mappings (subject to the
 
 
