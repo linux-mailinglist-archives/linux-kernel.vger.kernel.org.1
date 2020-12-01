@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFA42C93A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BBA2C93AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730986AbgLAAGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:06:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
+        id S1731023AbgLAAGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:06:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgLAAGS (ORCPT
+        with ESMTP id S1725870AbgLAAGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:06:18 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05269C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:05:32 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 3so607095wmg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:05:31 -0800 (PST)
+        Mon, 30 Nov 2020 19:06:48 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25703C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:06:08 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id h3so16254045oie.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:06:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=PxcXUulEgKyT5OqGMviihTXF0lRaKbBQv3juecUtJO8=;
-        b=O7tahjFvfV270xsIxQrZzlM6k0pOwQyJC3RZ5+23q7vBo/Af+t8KarNIHs67XtYjR3
-         MG5fxSV+idLE+yD9ZEqVpNV4QqRuAIoJyiLNmF2q//gSDnIGLe1705lVNg646dyLIbOY
-         l3N7G+Q3Lagwg2lM66LXayYUUQaXmBKIHlxctdOjfTjLLr8tigAnTkRXXLMEoNG+Z02M
-         3e+6cb7+kFzE9fvDrgIskCefZrYNXco1DzWq4KNx9hRGsjlPhURp77jFj8P+evOOawzO
-         pizJJmd8NdBIIrUF0nptK18nImb9dM8agDGLY5ZiyVbyKqfsJOM4jQ/IyKp+Pk2N/aL6
-         r3MQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VJ6GVGZJnlia94V5K1MGzcsJQIbX5tNg1UJ/89bmUcU=;
+        b=TSK5uOsu/FbeF3GDDL0u4zr97u2HPAHfevzLlKrwftFCYXCP3aV0mRrE9lPd14kA2a
+         DxSKOeniR0G6XZzxjmAE6ROPljYL34xNeuDS24kRcTbg7yEcB5nEQoupithEVne70Mjh
+         zPtHZec4cLhdz7O1yWy5yBLDG9ipUQ2X7Tqp5/9SPTtTqPSinqVXJxvzfiNc7J3VEo0e
+         oGy7c8adhKiIx4aI785B/1Hx6qVLhif7HnSPeapZ8ImTo+2G5/E8rNMPArmHm90ZT+wh
+         ap947bOeMkqVqWDX+PceR62RzRVNwH6oZLPU8tudP6EwP3a82BNbZb106+6Vcqfu//Vu
+         8KMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=PxcXUulEgKyT5OqGMviihTXF0lRaKbBQv3juecUtJO8=;
-        b=UWkz+EIDincci7DcZG28NcSlhInCCa+BzgqyNkmpFlZnrh5vATZ/zP/QsIphr/Xa83
-         X8ixzEk0IU/SvRA2d/2xxulIfSZ9tXiaTHN7wwQLQxN5M2ae0UPWiFzOl4Z6j/dUGoXq
-         dglD0cCLNuBdYjq6lewc9Aep8Krc4Sca2Cc6h5T7tRwv1qq2he4yEQCwUIwtlgmZO9mP
-         GKq4jjF6MXuKNnf438FC7ds3+wOPMA4Vc1JpZI5p/HSXxdJ8sHwxBpP+vJjLEHXjuOFB
-         bpaR49xOWqTJhXALtpuPzN4LjrUmf30GvnHWvbD9FzuQoKsOGr0M2kquxG6FD+WSDvXv
-         FZNQ==
-X-Gm-Message-State: AOAM530hIsal1R+tmYbwN8YF8xistlO1MLadPpdUEZSMfkHzQbmSLaPx
-        SUnn0lQBL4RMB4CaG2Vsiqs6ZA==
-X-Google-Smtp-Source: ABdhPJxDo2whkAA2R00WX2/QVf+Qt3ioNPbxjqDxzSFpgUK0pyo10hiDr+JBjoGg0Wl+Gi6pgaZ9mw==
-X-Received: by 2002:a7b:cb09:: with SMTP id u9mr319472wmj.25.1606781130659;
-        Mon, 30 Nov 2020 16:05:30 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id t7sm27223749wrp.26.2020.11.30.16.05.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 16:05:29 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Amjad Ouled-Ameur <aouledameur@baylibre.com>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 0/3] usb: meson: fix shared reset control use
-In-Reply-To: <093933fc-eac5-de56-d314-a1348de348af@baylibre.com>
-References: <20201113000508.14702-1-aouledameur@baylibre.com> <093933fc-eac5-de56-d314-a1348de348af@baylibre.com>
-Date:   Mon, 30 Nov 2020 16:05:24 -0800
-Message-ID: <7hzh2ytmpn.fsf@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VJ6GVGZJnlia94V5K1MGzcsJQIbX5tNg1UJ/89bmUcU=;
+        b=olEpjhgBvsiu+gc1H0WME6uQOaZvpH7J4+DzfpBJAfK7yM+XYaMybP/aQwZ5ABlfcL
+         MDLXFWogkN/z3KcDNpFJt6s2iwfJVx8uqBMPnZWYL2e7RDy2z1GGUmd3vEHVPoFJWCkL
+         A0/6q5TI+K0fVbfdQzLsO6uMBT0YSj58xCDxuCkLLUpuXDy3/fjWExtHHUwVUSL62yJM
+         rtOK+D+MJj/YObK9oaixb0H6XPxCbzFZF4CiDewQhO8CksotaW2shRMy2c67D9lAwXTN
+         k/HB7YaJQr9ssbB1+2x7qULVaw+kx+cwAMRNiMxPFTWk3Ko/foGs33sLksVYA5VGg1hW
+         ts+w==
+X-Gm-Message-State: AOAM530IhocTj7VHybHJ3TpeF/fRa3LLiE+r57RIJkOv89Nzx7tctlbu
+        da1n6cZ6btBp/CKxoSn53tbNoHhs/fIppJ3pNBw=
+X-Google-Smtp-Source: ABdhPJy81PYJy+yCScmXWOfjTflC7etYxCUmcD2F95/TLx6FI5rVtQ+OVJq4ym2V/ewVERoAs5nFMaDLDb0Su4XxR94=
+X-Received: by 2002:a54:4608:: with SMTP id p8mr49420oip.5.1606781167608; Mon,
+ 30 Nov 2020 16:06:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-39-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-39-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Nov 2020 19:05:56 -0500
+Message-ID: <CADnq5_O_-uxOa0463_ZX5D3jMwxJMWX7eCvGHyiwaku559bNLw@mail.gmail.com>
+Subject: Re: [PATCH 38/40] drm/amd/display/dc/basics/conversion: Include
+ header containing our prototypes
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amjad Ouled-Ameur <aouledameur@baylibre.com> writes:
-
-> Hello Felipe and Kevin,
+On Thu, Nov 26, 2020 at 8:44 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> Could you please review this patchset ?
-
-The changes are OK with me.  Please update based on Martin's
-suggestions and this can be queued up by the USB maintainers.
-
-Kevin
-
-> Thank you in advance.
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/basics/conversion.c:34:10: warn=
+ing: no previous prototype for =E2=80=98fixed_point_to_int_frac=E2=80=99 [-=
+Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/basics/conversion.c:81:6: warni=
+ng: no previous prototype for =E2=80=98convert_float_matrix=E2=80=99 [-Wmis=
+sing-prototypes]
 >
-> On 13/11/2020 01:05, Amjad Ouled-Ameur wrote:
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/display/dc/basics/conversion.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
->> This patchset fixes a usb suspend warning seen on the libretech-cc by
->> using reset_control_rearm() call of the reset framework API.
->> This call allows a reset consummer to release the reset line even when
->> just triggered so that it may be triggered again by other reset
->> consummers.
->>
->> reset_control_(de)assert() calls are called, in some meson usb drivers,
->> on a shared reset line when reset_control_reset has been used. This is not
->> allowed by the reset framework.
->>
->> Finally the meson usb drivers are updated to use this new call, which
->> solves the suspend issue addressed by the previous reverted
->> commit 7a410953d1fb ("usb: dwc3: meson-g12a: fix shared reset control
->> use").
->>
->> Important:
->> Please DO NOT merge before this patch [0] is merged, it adds
->> reset_control_rearm() call to the reset framework API.
->>
->> [0] https://lore.kernel.org/lkml/20201112230043.28987-1-aouledameur@baylib
->> re.com/
->>
->> Amjad Ouled-Ameur (3):
->>    phy: amlogic: phy-meson-gxl-usb2: fix shared reset controller use
->>    usb: dwc3: meson-g12a: fix shared reset control use
->>    phy: amlogic: meson8b-usb2: fix shared reset control use
->>
->>   drivers/phy/amlogic/phy-meson-gxl-usb2.c |  5 ++++-
->>   drivers/phy/amlogic/phy-meson8b-usb2.c   |  4 ++++
->>   drivers/usb/dwc3/dwc3-meson-g12a.c       | 19 +++++++++++++------
->>   3 files changed, 21 insertions(+), 7 deletions(-)
->>
->>
-> Sincerely,
-> Amjad
+> diff --git a/drivers/gpu/drm/amd/display/dc/basics/conversion.c b/drivers=
+/gpu/drm/amd/display/dc/basics/conversion.c
+> index 50b47f11875c9..24ed03d8cda74 100644
+> --- a/drivers/gpu/drm/amd/display/dc/basics/conversion.c
+> +++ b/drivers/gpu/drm/amd/display/dc/basics/conversion.c
+> @@ -24,6 +24,7 @@
+>   */
+>
+>  #include "dm_services.h"
+> +#include "conversion.h"
+>
+>  #define DIVIDER 10000
+>
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
