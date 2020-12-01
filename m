@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727422CA1A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A982CA1A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730808AbgLALks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:40:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727165AbgLALkr (ORCPT
+        id S1730834AbgLALlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:41:07 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8901 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730664AbgLALlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:40:47 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17137C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 03:40:07 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id pg6so3452330ejb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 03:40:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=r43o4osB5EUqTM8RlVefBlMVFHSoKs66UHm4/Sm0KMA=;
-        b=hicbPgHOhxonhgnQZRwFoGuScFOVYRni4VFEile9K74kHe7ki+BWGpmhDucNLD0VWZ
-         Av0cYy0PeO2myw6Pc5pbaXUCBacLADD+VrRi7BQlqI59rlkFvkgXtJzSsVQoQGhqLzll
-         crCU63sPUl0lwNeMHc70kEGTmhZProCZAE8bgUaDkl/FKYO98v4hMIhdwQmwl/hPj/+Z
-         FAP83QuG6wMxOrl8ZMrhkhVwQpJYEuQrWAnN0ezQ+C+Ai+6OSjZ8+jtWCbiMhwMDKy9E
-         77KpAUe8PTxlJFvEqGRAIgsPznl0UI07+X913FDIUowytQiq93sBe2WbhYRVA/KmN+MC
-         7VAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=r43o4osB5EUqTM8RlVefBlMVFHSoKs66UHm4/Sm0KMA=;
-        b=UsVxssMG7w4RRp6Lq+McCr1PRrqa8g/tln6htpHURZlBW4Qk5j7Aj7R+NLjHGFjraN
-         AmI3VRyBU05josJn55TPhaXqWkJhbKYAmnZoUIwgdWitVa9h/2km4CKOy1XdcTs91Pt+
-         po3zegwTU3DKRlfy0NqP1a2BmFLfK3a1hr8jZrub4gCGktEmDzzy1Zkj32EjF0BYG6x4
-         w6haimvHM4mDb+S1G80QWptfCWi6LYsomcWK6SfYJ0Lb4RvXjjqmztX2Q6ci8vJA4nw8
-         qZ/FkzBAi4Xs2jMOIEBF4/HiopK9bW+mxAWSkG+pvSFAYaPPFlCP4hIJhe5uJGhfySp4
-         PQ5Q==
-X-Gm-Message-State: AOAM531XzRbksp657TqGksYcuKWkjdoEJT6J/PiG4si66q2gJVQESAf+
-        IaAqO+rqh3uHn4JpULY20QpBJKzzRtkqbw==
-X-Google-Smtp-Source: ABdhPJyPpOs4mgHlw9U+JNvdi8iAf/D3gu9ozEVHyEmtIFqNf+Tg/9AqBTy9bNmR82iT+toatlbQQw==
-X-Received: by 2002:a17:906:4944:: with SMTP id f4mr2497466ejt.231.1606822805170;
-        Tue, 01 Dec 2020 03:40:05 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f23:2800:c8da:c2a2:5860:ab22? (p200300ea8f232800c8dac2a25860ab22.dip0.t-ipconnect.de. [2003:ea:8f23:2800:c8da:c2a2:5860:ab22])
-        by smtp.googlemail.com with ESMTPSA id x15sm685240edj.91.2020.12.01.03.40.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 03:40:04 -0800 (PST)
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH] x86/reboot/quirks: Add Zotac ZBOX CI327 nano PCI reboot quirk
-Message-ID: <1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com>
-Date:   Tue, 1 Dec 2020 12:39:57 +0100
+        Tue, 1 Dec 2020 06:41:07 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4ClgBR4j31z6vLd;
+        Tue,  1 Dec 2020 19:39:59 +0800 (CST)
+Received: from [10.174.184.209] (10.174.184.209) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Dec 2020 19:40:14 +0800
+Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
+ state to physical side
+To:     Marc Zyngier <maz@kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-4-lushenming@huawei.com>
+ <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
+ <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
+ <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
+ <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
+ <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
+ <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
+Date:   Tue, 1 Dec 2020 19:40:14 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.209]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On this system the M.2 PCIe WiFi card isn't detected after reboot,
-only after cold boot. reboot=pci fixes this behavior.
-In [0] the same issue is described, although on another system and
-with another Intel WiFi card. In case it's relevant, both systems
-have Celeron CPU's.
-The dicussion in [0] involved the PCI maintainer, and proposal was
-to go with the PCI reboot quirk on affected systems until a more
-generic fix is available.
+On 2020/12/1 18:55, Marc Zyngier wrote:
+> On 2020-11-30 07:23, Shenming Lu wrote:
+> 
+> Hi Shenming,
+> 
+>> We are pondering over this problem these days, but still don't get a
+>> good solution...
+>> Could you give us some advice on this?
+>>
+>> Or could we move the restoring of the pending states (include the sync
+>> from guest RAM and the transfer to HW) to the GIC VM state change handler,
+>> which is completely corresponding to save_pending_tables (more symmetric?)
+>> and don't expose GICv4...
+> 
+> What is "the GIC VM state change handler"? Is that a QEMU thing?
 
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=202399
+Yeah, it is a a QEMU thing...
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- arch/x86/kernel/reboot.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> We don't really have that concept in KVM, so I'd appreciate if you could
+> be a bit more explicit on this.
 
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index db115943e..9991c5920 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -477,6 +477,15 @@ static const struct dmi_system_id reboot_dmi_table[] __initconst = {
- 		},
- 	},
- 
-+	{	/* PCIe Wifi card isn't detected after reboot otherwise */
-+		.callback = set_pci_reboot,
-+		.ident = "Zotac ZBOX CI327 nano",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "NA"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "ZBOX-CI327NANO-GS-01"),
-+		},
-+	},
-+
- 	/* Sony */
- 	{	/* Handle problems with rebooting on Sony VGN-Z540N */
- 		.callback = set_bios_reboot,
--- 
-2.29.2
+My thought is to add a new interface (to QEMU) for the restoring of the pending
+states, which is completely corresponding to KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES...
+And it is called from the GIC VM state change handler in QEMU, which is happening
+after the restoring (call kvm_vgic_v4_set_forwarding()) but before the starting
+(running) of the VFIO device.
 
+Thanks,
+Shenming
+
+> 
+> Thanks,
+> 
+>         M.
