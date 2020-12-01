@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18592C9767
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741622C976F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgLAGHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 01:07:18 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:40010 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbgLAGHR (ORCPT
+        id S1727050AbgLAGIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 01:08:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725918AbgLAGIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 01:07:17 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B164vi9134342;
-        Tue, 1 Dec 2020 06:06:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=v9FjbK+YMkSwYmlVXFkWeigO4WGzHjdoHRKpOyYQsKk=;
- b=qEjP9CY0/bL5hjR1Cv2SqKtovj3kwMXDPVLze7VouXGOOhQQHB7Gx5yqj9iydiNe+4MD
- vpTfmHxuRWyWkbzEn4UhoZSJJiWO6nVD64WHbUTApJrAD4gAH5woSqsJL+c07GyHIhNF
- wvM26cCBzQ4mAp2ZY232tYyzXZsbZKThfRW5TlfLbMDCatELVl0CPVaXBzUS0xGcLwZn
- E9ljNta2giizBwCdfdWta0q1pVzVSWD3yjwmJd2dW7h8t06KgcqIZwW+5CrtI5x2r4pS
- 3zMD5ljRmCCE+nycYqJ0VwDCmNCxkYnp7iqMddNyH7f6sXVU+MDLS3cKXESacEBpxdAe Ew== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 353c2arvyp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 06:06:30 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B165IpG039188;
-        Tue, 1 Dec 2020 06:06:29 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3540fwcqjp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Dec 2020 06:06:29 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B166Sur024057;
-        Tue, 1 Dec 2020 06:06:28 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 22:06:28 -0800
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-hyperv@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH] scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()
-Date:   Tue,  1 Dec 2020 01:06:24 -0500
-Message-Id: <160680263438.25762.16584811025803290259.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201118145348.109879-1-parri.andrea@gmail.com>
-References: <20201118145348.109879-1-parri.andrea@gmail.com>
+        Tue, 1 Dec 2020 01:08:16 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB3DC0613CF;
+        Mon, 30 Nov 2020 22:07:36 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ClWpr6GPmz9sVj;
+        Tue,  1 Dec 2020 17:07:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606802853;
+        bh=9qls3725HPOQZgTlpKyFjUbgLfJRUxMaKvwR3fYrJYY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tNfToY9TUIQCQc4anUwe5Oy6TKs58sS17zNwCzlSJ9VeEbvb2Md8nCsnszhSznSZd
+         DUlkERdLcKSMQNwTAV20Qbf2UM5R/fbu38Q/xirjPZkifOvkVk1k2LaQXLGgLt3+w9
+         J8szHHV/fOqxWgvijCUeCU+Rls+0b7u5X7SWQjFy9fX9GKkaQ5s4edOeNuiw1AJoIA
+         s6dQ6AT2XZw8U6NmkufdYN7Y1nCROdJMU/yhi/MIc78XmNba1KFqpkhD1YLEsydLz3
+         dy5q2Y7koXcG9w8XjkSw2imTexIp5sfzlUz9juqtmIvgN8hstA+mREfn5rnpRMkk+k
+         sDn/nVBxlylQw==
+Date:   Tue, 1 Dec 2020 17:07:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the phy-next tree
+Message-ID: <20201201170731.4c93b812@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- phishscore=0 mlxlogscore=912 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010041
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=924 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012010041
+Content-Type: multipart/signed; boundary="Sig_/9.BMl_aTB3mEwofIVfO=Q4=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 15:53:48 +0100, Andrea Parri (Microsoft) wrote:
+--Sig_/9.BMl_aTB3mEwofIVfO=Q4=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Check that the packet is of the expected size at least, don't copy
-> data past the packet.
+Hi all,
 
-Applied to 5.10/scsi-fixes, thanks!
+After merging the phy-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-[1/1] scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()
-      https://git.kernel.org/mkp/scsi/c/3b8c72d076c4
+drivers/phy/ralink/phy-mt7621-pci.c:17:10: fatal error: mt7621.h: No such f=
+ile or directory
+   17 | #include <mt7621.h>
+      |          ^~~~~~~~~~
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Caused by commit
+
+  d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
+
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9.BMl_aTB3mEwofIVfO=Q4=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/F3aMACgkQAVBC80lX
+0Gwc2ggAkUpipjZwrDrnhNxhjDolZGt/H92kqjxz7EGQxJw4iIiwQtD4WtGt9N7t
+ThJozdqzkW7CBJTQENWgtffF48PgPPULGvOrE50JFTqAgUZAbrZkWJvL7idwxCHO
+jrKIitzeTbxgscopv2sNoWLmNdW8YLHsT3CDBB+kgBoKOb7iutzHBMwO+yCwJT0X
+8alrjzWTjZbmf+DhJweCWckEFRsvAPB1rkXm4GqM6oKZuytxDoX0/7iuHHSIg76p
+yICZmVlTTCj6bONr8tX/c6w3FHJ+2UsyjreeLpglt2Ld8dF8q0v3/ynAD6/4gVut
+T/pjm4b2sgkDwisD+6aikh4DXiVd6Q==
+=ythC
+-----END PGP SIGNATURE-----
+
+--Sig_/9.BMl_aTB3mEwofIVfO=Q4=--
