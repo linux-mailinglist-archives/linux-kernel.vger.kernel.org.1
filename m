@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129A92CA4DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733792CA4DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391357AbgLAOCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:02:09 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55688 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387628AbgLAOCI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:02:08 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606831286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fH6vXaLD6JyknYN6wcvlAFebplSlI6lIoEByMQneE7k=;
-        b=fU4+RFcpBzVQQkeBKxd/Z/TsfI8RUL4LYY0e4bzgz3Pa1bkvofiWij5DmBKKl6FOMhDabI
-        kfVpDrLL3Jpgea5HXO+V16KwjaHZMHXJokQkhT6hHhkqSS8ceRCHEUBuYB4uqYL6yHO8/a
-        lmlI5DQmf/OcBfaw4Ivys0TzWPCs1Oif00okWbaXjln88J7mU5aa5OLQB0OTFiYH6d7b2M
-        neJHfQEwDf3DB5ZJgNIJgqNnU+tneurZwM2mDSLzDmUYfwIctWX9qI69H6NgmsoRPbYvbG
-        c4XKYpcf+lexocSv18EjARBjBL/m6Wek3pVTVqXNXJjOwJikyKLWsq1P3tI48Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606831286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fH6vXaLD6JyknYN6wcvlAFebplSlI6lIoEByMQneE7k=;
-        b=B3+oM+PSmOc0/ILm8QfBvak9HqhEGOT2w6vw/hq52ePbm/hmMA6AF8BmdcrH9ECvWuV36H
-        tnnUOfz5fw0lyKCQ==
-To:     Marcelo Tosatti <mtosatti@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
-In-Reply-To: <20201130191643.GA18861@fuller.cnet>
-References: <20201130133559.233242-1-mlevitsk@redhat.com> <20201130191643.GA18861@fuller.cnet>
-Date:   Tue, 01 Dec 2020 15:01:26 +0100
-Message-ID: <874kl5hbgp.fsf@nanos.tec.linutronix.de>
+        id S2391453AbgLAOCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:02:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727132AbgLAOCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:02:48 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90665206A5;
+        Tue,  1 Dec 2020 14:02:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606831328;
+        bh=aW2Hilu+u+FMSDt5jSfZ3YdcB27AWISjkZ0EP8TJWQ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CtqmQG0koaZUqaFmNb+rtx67Tm9dd6VjODehyw6xXK8mEEyh7DeGkwz/gajC6g3nv
+         loRp7Ac3YteEiU1ejG1M0OyeYdVkUza0H+cu8Q5qAOBneQekHh40FygeggCjOdac3u
+         R77KJSip6s/6h3NLaJtD2XEn7i00eU2/YQLgT+N0=
+Date:   Tue, 1 Dec 2020 14:01:38 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Adam Ward <Adam.Ward.opensource@diasemi.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Support Opensource <support.opensource@diasemi.com>
+Subject: Re: [PATCH V4 00/10] regulator: da9121: extend support to variants,
+ add features
+Message-ID: <20201201140138.GC5239@sirena.org.uk>
+References: <cover.1606830377.git.Adam.Ward.opensource@diasemi.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yLVHuoLXiP9kZBkt"
+Content-Disposition: inline
+In-Reply-To: <cover.1606830377.git.Adam.Ward.opensource@diasemi.com>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30 2020 at 16:16, Marcelo Tosatti wrote:
-> Not really. The synchronization logic tries to sync TSCs during
-> BIOS boot (and CPU hotplug), because the TSC values are loaded
-> sequentially, say:
->
-> CPU		realtime	TSC val
-> vcpu0		0 usec		0
-> vcpu1		100 usec	0
-> vcpu2		200 usec	0
 
-That's nonsense, really.
+--yLVHuoLXiP9kZBkt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> And we'd like to see all vcpus to read the same value at all times.
+On Tue, Dec 01, 2020 at 01:52:26PM +0000, Adam Ward wrote:
 
-Providing guests with a synchronized and stable TSC on a host with a
-synchronized and stable TSC is trivial.
+> V4:
+>=20
+>  - Request IRQ directly and free in release function to avoid masking race
 
-Write the _same_ TSC offset to _all_ vcpu control structs and be done
-with it. It's not rocket science.
+I already applied the previous version, please send an incremental patch
+with this change.
 
-The guest TSC read is:
+--yLVHuoLXiP9kZBkt
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    hostTSC + vcpu_offset
+-----BEGIN PGP SIGNATURE-----
 
-So if the host TSC is synchronized then the guest TSCs are synchronized
-as well.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GTMIACgkQJNaLcl1U
+h9Akqwf+PbJNGSNYmM2ZeJY3L9kNFrayy+mO58TU0LyCIz+mdLJshwoRPcNoqqha
+YsGcVXjLMRMG6RFUicFl9xJLjFp4gW84CzBu4BfdcQZ2fjn9tkS6O/F9oVA4r3G3
+UcGsuLOR5vMtNQeejOueBhKcmYhU9Ln24lZMXflcSYU955AC0Wk9djbAE3F7KUGo
+cU1ViyZyiC6nzVwb7Vx8PC3Dwp6MS8vZeL9FziGMYHMyiGmnCs7oPYocB61tK5lt
+Xz2/lfJEXzu/En2/ukFPv2Nsn2Oepyf2cE6UGtjOVdm6OgKCJ3bVK9phRCakXUxo
+hhAKaCyVg2ZgPAani37viP09EdPb/A==
+=YEEb
+-----END PGP SIGNATURE-----
 
-If the host TSC is not synchronized, then don't even try.
-
-Thanks,
-
-        tglx
+--yLVHuoLXiP9kZBkt--
