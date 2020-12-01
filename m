@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3904B2C9B5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE822C9A95
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388999AbgLAJHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:07:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42290 "EHLO mail.kernel.org"
+        id S1728761AbgLAI67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:58:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389060AbgLAJFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:05:14 -0500
+        id S2388004AbgLAI6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:58:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2D3F20809;
-        Tue,  1 Dec 2020 09:04:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31C3F2224C;
+        Tue,  1 Dec 2020 08:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813474;
-        bh=Ws4JrFG7hmAkKWrYn6GrNTih35HVAgdhMO+gshlUH3Q=;
+        s=korg; t=1606813087;
+        bh=feyOVk9Nvd7raUGhgw0geW6B0Qe5AngkQVZq4qX3pvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uUzPSQHIgbY6iCXBF32FEXyG/ayznJqDp1bM9PHQpBEyWbdeiNecdwa4xr+vcFoJS
-         1h/CDZmDtWxZtYt/XIPEgJDEhLv3yAVbIgUM4vnyVDF6tKODjoJw+L3Krzl8w5UNzR
-         1PBUCOyJ3xbatYzhbWw5a3uAvT3dpGCTZ0qFhA5E=
+        b=R/XT753vMsfHZGYDSqy5xp+07/1Uku4zb0RkG1Ui25Jj8ygTKymplLKQA5dyf3oqy
+         jrU1vEpCpNT8Xpym2bB6ZcQBPYtjUA5KIAeFeHmPoX0QfGuuWEbHAehMWTafuY8FWp
+         Ta/4cLqnlfpiHwbGIDamQD2VALd6ApmzzGBBq8Ok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Edwin Peer <edwin.peer@broadcom.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 51/98] bnxt_en: fix error return code in bnxt_init_board()
+Subject: [PATCH 4.14 29/50] bnxt_en: fix error return code in bnxt_init_one()
 Date:   Tue,  1 Dec 2020 09:53:28 +0100
-Message-Id: <20201201084657.598677811@linuxfoundation.org>
+Message-Id: <20201201084648.662941616@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,16 +47,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 3383176efc0fb0c0900a191026468a58668b4214 ]
+[ Upstream commit b5f796b62c98cd8c219c4b788ecb6e1218e648cb ]
 
 Fix to return a negative error code from the error handling
 case instead of 0, as done elsewhere in this function.
 
-Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
+Fixes: c213eae8d3cd ("bnxt_en: Improve VF/PF link change logic.")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Link: https://lore.kernel.org/r/1605792621-6268-1-git-send-email-zhangchangzhong@huawei.com
+Link: https://lore.kernel.org/r/1605701851-20270-1-git-send-email-zhangchangzhong@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -64,17 +64,17 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 4869cda460dad..d8e1d7a9196cd 100644
+index e146f6a1fa80d..4a3ee5db19d34 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -10826,6 +10826,7 @@ static int bnxt_init_board(struct pci_dev *pdev, struct net_device *dev)
- 	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0 &&
- 	    dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
- 		dev_err(&pdev->dev, "System does not support DMA, aborting\n");
-+		rc = -EIO;
- 		goto init_err_disable;
- 	}
- 
+@@ -8233,6 +8233,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 				create_singlethread_workqueue("bnxt_pf_wq");
+ 			if (!bnxt_pf_wq) {
+ 				dev_err(&pdev->dev, "Unable to create workqueue.\n");
++				rc = -ENOMEM;
+ 				goto init_err_pci_clean;
+ 			}
+ 		}
 -- 
 2.27.0
 
