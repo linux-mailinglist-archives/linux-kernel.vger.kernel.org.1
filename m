@@ -2,202 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EFF2CAB41
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0E32CAB44
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392271AbgLATAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:00:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729961AbgLATAr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:00:47 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56443C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:00:07 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id z10so2748331ilu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:00:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5WiGFwgTdyvLFhngVWRsy4uz/nVfgxKZUAGEzNFkY80=;
-        b=AX405OszVeGEA2VJJpxsH/hn72j0e7jTzJhWLRs/b0RlYsxWA0D1/IdwNip05R1epM
-         J8egUwok7Bf0bJM/L5ik7nLoz3dL08HQu9bujrshPjJj5LoRh7tw+Jc6w+YqMQmal1cL
-         5WnunY2CJSWcBIgXAahiZA6rFjn12zm817D/nzl+I8TvmjgRr6TA0b7ivQfSWUJvISWz
-         Z9sUqd91oXPSFs2fMh2ZLxh0/MZv9qKG1egjj3QnCWbFiQBMT5szcu0An+wEn6HA491r
-         wFqrLJosGXP5eazDT1KtTy+Ia32vNuxYy4xB3ZhYzZgVBZws3uzdZ+A9K1JM88rDR9P6
-         Ibyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5WiGFwgTdyvLFhngVWRsy4uz/nVfgxKZUAGEzNFkY80=;
-        b=eBC4tRMLM7noL3tGwMtJNvzeeJT+LRl74brbk8Xjm4Rly5wi5Tj7ui647fU/lySh/O
-         Bj1ulndSWD4cMe3VQJ4gGAtvoTk6ZHIcxNX+nvFS5kvx4QDPqOSLC+A/dec+yZUHfoC+
-         DrLpCCnwFQYTQROAC2BUDMfocVZRQ5HRPeB4xlDcXa/1b2RZAW4nbtQq5aCoszx9FphD
-         tknfKVFlQvlrRgC8VaLXT9KMmMRGfspSon8SONAY5VvZ7jgvttQqtM4E2TClShecc1IZ
-         JLsc9XBxsZDcc0ubaGtT/Ul2elf2kC1txac+oQ/4ouEvV67Xg3QAc4EdKnHJEgVOMkl8
-         DPLw==
-X-Gm-Message-State: AOAM531aVU17orMQ5RwWqOn1p/xHlgkF7r2plrjZAO/fUpRtWUXH+yvx
-        rY4BB3yRrpNnTsvObZsa6DKfAt2+svyDV5Z4dZbJbw==
-X-Google-Smtp-Source: ABdhPJxmGG830IYXzUMXpFTTxu5CX/L/t5UT+1fCmZZZ4UmJ9S9qk+VJOtxjVoZs56Wmoi1sqnSSZvv6jSUZ3FaURGs=
-X-Received: by 2002:a05:6e02:128b:: with SMTP id y11mr4148745ilq.75.1606849206187;
- Tue, 01 Dec 2020 11:00:06 -0800 (PST)
+        id S1731289AbgLATBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:01:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbgLATBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 14:01:39 -0500
+Received: from gaia (unknown [95.146.230.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD93720643;
+        Tue,  1 Dec 2020 19:00:54 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 19:00:52 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
+        =?utf-8?B?UGF3ZcWC?= Jasiak <pawel@jasiak.xyz>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH] fanotify: Fix sys_fanotify_mark() on native x86-32
+Message-ID: <20201201190051.GB2502@gaia>
+References: <20201130223059.101286-1-brgerst@gmail.com>
+ <CALCETrWZ5eH=0Rjd-vBFRtk-tFQ3tN8_rReaKdVbSm78PFQ7_g@mail.gmail.com>
+ <CALCETrWbEvD4SO4GosJyeCmaT2BFwX8Xy+EF_D0x91np3k9OaA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201130233242.78413-1-dlatypov@google.com> <20201130233242.78413-2-dlatypov@google.com>
- <CABVgOSmX3foOr6XJhQ_goYabFEg8qNYoQ+5O7JPRW=gLmh=OQA@mail.gmail.com>
-In-Reply-To: <CABVgOSmX3foOr6XJhQ_goYabFEg8qNYoQ+5O7JPRW=gLmh=OQA@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Tue, 1 Dec 2020 10:59:54 -0800
-Message-ID: <CAGS_qxpW=Q=x8WAR3WWhtYnJc+K43kpDw680x+6go1cAjW6oUQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] kunit: tool: fix unit test so it can run from
- non-root dir
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALCETrWbEvD4SO4GosJyeCmaT2BFwX8Xy+EF_D0x91np3k9OaA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 11:33 PM David Gow <davidgow@google.com> wrote:
->
-> On Tue, Dec 1, 2020 at 7:33 AM Daniel Latypov <dlatypov@google.com> wrote:
+On Tue, Dec 01, 2020 at 09:34:32AM -0800, Andy Lutomirski wrote:
+> On Tue, Dec 1, 2020 at 9:23 AM Andy Lutomirski <luto@kernel.org> wrote:
+> > On Mon, Nov 30, 2020 at 2:31 PM Brian Gerst <brgerst@gmail.com> wrote:
+> > > Commit 121b32a58a3a converted native x86-32 which take 64-bit arguments to
+> > > use the compat handlers to allow conversion to passing args via pt_regs.
+> > > sys_fanotify_mark() was however missed, as it has a general compat handler.
+> > > Add a config option that will use the syscall wrapper that takes the split
+> > > args for native 32-bit.
+> > >
+> > > Reported-by: Paweł Jasiak <pawel@jasiak.xyz>
+> > > Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for syscalls taking 64-bit arguments")
+> > > Signed-off-by: Brian Gerst <brgerst@gmail.com>
+> > > ---
+> > >  arch/Kconfig                       |  6 ++++++
+> > >  arch/x86/Kconfig                   |  1 +
+> > >  fs/notify/fanotify/fanotify_user.c | 17 +++++++----------
+> > >  include/linux/syscalls.h           | 24 ++++++++++++++++++++++++
+> > >  4 files changed, 38 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/arch/Kconfig b/arch/Kconfig
+> > > index 090ef3566c56..452cc127c285 100644
+> > > --- a/arch/Kconfig
+> > > +++ b/arch/Kconfig
+> > > @@ -1045,6 +1045,12 @@ config HAVE_STATIC_CALL_INLINE
+> > >         bool
+> > >         depends on HAVE_STATIC_CALL
+> > >
+> > > +config ARCH_SPLIT_ARG64
+> > > +       bool
+> > > +       help
+> > > +          If a 32-bit architecture requires 64-bit arguments to be split into
+> > > +          pairs of 32-bit arguemtns, select this option.
 > >
-> > get_absolute_path() makes an attempt to allow for this.
-> > But that doesn't work as soon as os.chdir() gets called.
->
-> Can we explain why this doesn't work? It's because the test_data/
-> files are accessed with relative paths, so chdir breaks access to
-> them, right?
+> > You misspelled arguments.  You might also want to clarify that, for
+> > 64-bit arches, this means that compat syscalls split their arguments.
+> 
+> No, that's backwards.  Maybe it should be depends !64BIT instead.
+> 
+> But I'm really quite confused about something: what's special about
+> x86 here?  Are there really Linux arches (compat or 32-bit native)
+> that *don't* split arguments like this?  Sure, some arches probably
+> work the same way that x86 used to in which the compiler did the
+> splitting by magic for us, but that was always a bit of a kludge.
 
-Correct.
-Because it actually returns a relative path.
+On arm32 we rely on the compiler splitting a 64-bit argument in two
+consecutive registers. But I wouldn't say it's a kludge (well, mostly)
+as that's part of the arm procedure calling standard. Currently arm32
+doesn't pass the syscall arguments through a read from pt_regs, so all
+is handled transparently.
 
-(I forgot that I called out that get_absolute_path() gives relative
-paths in the last patch, and not this one. I can update the commit
-desc if we want a v2 of this)
+On arm64 compat, we need to re-assemble the arguments with some
+wrappers explicitly (arch/arm64/kernel/sys32.c) or call the generic
+wrapper like in the compat_sys_fanotify_mark() case.
 
->
-> >
-> > So make it so that os.chdir() does nothing to avoid this.
-> >
-> > Note: mock.patch.object() doesn't seem to work in setUpModule(), hence
-> > the introduction of a new base class instead.
-> >
-> > Fixes: 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside kernel tree")
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > ---
->
-> I don't like this: disabling a real system call seems like overkill to
-> work around a path issue like this.
->
-> Wouldn't it be better to either:
-> (a) stop kunit_tool from needing to chdir entirely; or
+> Could this change maybe be made unconditional?
 
-a) is doable, but would require plumbing cwd=get_kernel_root_path() to
-all the subprocess calls to make, etc.
-I'm not sure fixing a internal test-only issue necessarily justifies
-taking that path instead of the easier "just add a chdir" we opted for
-in 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside
-kernel tree").
+I think it's fine in this particular case.
 
-> (b) have get_absolute_path() / test_data_path() produce an absolute path.
->
-> The latter really seems like the most sensible approach: have the
-> script read its own path and read files relative to that.
+I don't think it's valid in general because of the arm (and maybe
+others) requirement that the first register of a 64-bit argument is an
+even number (IIRC, Russell should know better). If the u64 mask was an
+argument before or after the current position, the compiler would have
+introduced a pad register but not if the arg is split in two u32.
 
-b) is not that simple, sadly.
-
-Say I invoke
-$ python3 kunit_tool_test.py
-then __file__ = kunit_tool_test.py.
-
-So __file__ is a relative path, but the code assumed it was an
-absolute one and any change of directory breaks things.
-Working around that would require something like caching the result of
-os.path.abspath(__file__) somewhere.
-
-I can see the point about not mocking out something like os.chdir().
-But on the other hand, do we have any other legitimate reason to call
-it besides that one place in kunit.py?
-If we do have something that relies on doing an os.chdir(), it should
-ideally notice that it didn't work and manifest in a unit test failure
-somehow.
-
-Alternatively, we could make get_kernel_root_path() return ""/None to
-avoid the chdir call.
-kunit.py:       if get_kernel_root_path():
-kunit.py:               os.chdir(get_kernel_root_path())
-
-There'd be no adverse affects atm for stubbing that out, and I don't forsee any.
-But if we want to be even safer, then perhaps we have
-
-def chdir_to_kernel_root():
-   ...
-
-and mock out just that func in the unit test?
-
->
-> Cheers,
-> -- David
->
->
-> >  tools/testing/kunit/kunit_tool_test.py | 15 +++++++++++----
-> >  1 file changed, 11 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> > index 3fbe1acd531a..9f1f1e1b772a 100755
-> > --- a/tools/testing/kunit/kunit_tool_test.py
-> > +++ b/tools/testing/kunit/kunit_tool_test.py
-> > @@ -32,7 +32,13 @@ def tearDownModule():
-> >  def get_absolute_path(path):
-> >         return os.path.join(os.path.dirname(__file__), path)
-> >
-> > -class KconfigTest(unittest.TestCase):
-> > +class KUnitTest(unittest.TestCase):
-> > +       """Contains common setup, like stopping main() from calling chdir."""
-> > +       def setUp(self):
-> > +               mock.patch.object(os, 'chdir').start()
-> > +               self.addCleanup(mock.patch.stopall)
-> > +
-> > +class KconfigTest(KUnitTest):
-> >
-> >         def test_is_subset_of(self):
-> >                 kconfig0 = kunit_config.Kconfig()
-> > @@ -88,7 +94,7 @@ class KconfigTest(unittest.TestCase):
-> >                 self.assertEqual(actual_kconfig.entries(),
-> >                                  expected_kconfig.entries())
-> >
-> > -class KUnitParserTest(unittest.TestCase):
-> > +class KUnitParserTest(KUnitTest):
-> >
-> >         def assertContains(self, needle, haystack):
-> >                 for line in haystack:
-> > @@ -250,7 +256,7 @@ class KUnitParserTest(unittest.TestCase):
-> >                                 result.status)
-> >                         self.assertEqual('kunit-resource-test', result.suites[0].name)
-> >
-> > -class KUnitJsonTest(unittest.TestCase):
-> > +class KUnitJsonTest(KUnitTest):
-> >
-> >         def _json_for(self, log_file):
-> >                 with(open(get_absolute_path(log_file))) as file:
-> > @@ -285,8 +291,9 @@ class StrContains(str):
-> >         def __eq__(self, other):
-> >                 return self in other
-> >
-> > -class KUnitMainTest(unittest.TestCase):
-> > +class KUnitMainTest(KUnitTest):
-> >         def setUp(self):
-> > +               super().setUp()
-> >                 path = get_absolute_path('test_data/test_is_test_passed-all_passed.log')
-> >                 with open(path) as file:
-> >                         all_passed_log = file.readlines()
-> > --
-> > 2.29.2.454.gaff20da3a2-goog
-> >
+-- 
+Catalin
