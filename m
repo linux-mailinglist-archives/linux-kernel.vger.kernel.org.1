@@ -2,172 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2062C2CAA1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DB82CAA43
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404166AbgLARre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:47:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404118AbgLARra (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:47:30 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87446C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:46:44 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id n24so4547815edb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:46:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VxdwyJsEqW1IFZ+wJlnqk+0jlPNFFTXeNogrQYB17Po=;
-        b=z5KgBOz6m3zJGbxmCYtcciYdsmGO5nwq6vLp++P5SLGrT+4ama0sk+fQfa3zVW5lJg
-         1V3BXsSc2kOF7bDFojVIIvTSnqpscsMFywVwEHnBekeZJYLyTZihwG0frVbwlDE6pkLx
-         aEq2EGjGKiwNic83a4TXRS//IyVTn5jZeEUlfOtcQz11Yu8w1VZb8iyTrrKfroVqKixZ
-         9ZA0r0lMJ/TPhZ3iM9N4o5byG6HALe7q/sGwemZOArDwRyN2CLprQLtASlr+Iyz8Mb5E
-         AIXIySdCk+BTOiOVUsNZpAauxQo6NEjkUkz7bVqamzo95YMsKMuHLyXTXqNHegmviRfR
-         F4/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VxdwyJsEqW1IFZ+wJlnqk+0jlPNFFTXeNogrQYB17Po=;
-        b=RexQani+1/0Q+vIvZ1XWKd3lM33YClCuY266NgcqPFRm5qQK/ssbmzTC52znZyNf0V
-         MYU40zLLr1Xg9RGxQa6VSYMsT0voerlYmC79Xg3NBsMVHXPUenA4zPatbMg/QPfhVQtY
-         9zPQMW2hhcNrVpBvP02P1M3naviTE5PgRrbCzjhdjrXfnCALGLsnyLB8O6jaD9uHsDH2
-         FQ6QJcRLPJ/HmvTIOZzg/jwyyZ1Rkr7bsjpzNrs97n66jboAIKUKnLRVO1T85sKBD/OJ
-         ZTeKlZbeNYie+DsNEb1VGVPc/P37uYTzh9560t8veWNecRPOhJrT8p5iwzMx7yDES0Sf
-         Sx1A==
-X-Gm-Message-State: AOAM531lM0JdMluBL58HRdsN3aj/x2KD2fXsmZTJjQSc5p95jJzrVZE8
-        gjDbu0xnSZRaHAWqob/8cfB5NBXEDm4rQ7HCDhM2cg==
-X-Google-Smtp-Source: ABdhPJwi6ZAkxT/Dkmu36hwtj4BtismupXyyY4L1sjNGiIwLSjWY3p2nZonsfYxU7OinI5PtKwDEKsbZpLx4tG2Hxjc=
-X-Received: by 2002:a50:d886:: with SMTP id p6mr4386383edj.366.1606844803086;
- Tue, 01 Dec 2020 09:46:43 -0800 (PST)
+        id S2404182AbgLARyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:54:55 -0500
+Received: from mga14.intel.com ([192.55.52.115]:32626 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729139AbgLARyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:54:55 -0500
+IronPort-SDR: lxb89I+hgIk3kZ1z5tRpioGk+OugZ0q/A4MiQwQswFlgOG7BAlx9vVp3Pa7Xyv/E6u8Us2ZZ6B
+ n9B+WOQnf9QQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="172090288"
+X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
+   d="scan'208";a="172090288"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:53:14 -0800
+IronPort-SDR: xWPLBeStGXG9Cwge6UOzsqxxNd88soLX3oa2speAsdv9z8wx8GD5EWdkvJXiv8UGHJMMPA7rrD
+ sjPbgV9+WKEQ==
+X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
+   d="scan'208";a="345559125"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:53:14 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id AF3CC6363;
+        Tue,  1 Dec 2020 09:53:13 -0800 (PST)
+Date:   Tue, 1 Dec 2020 09:53:13 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Greg KH <greg@kroah.com>
+Cc:     mgross@linux.intel.com, linux-kernel@vger.kernel.org,
+        markgross@kernel.org, adam.r.gretzinger@intel.com
+Subject: Re: [PATCH 00/22] Intel Vision Processing Unit base enabling part 1
+Message-ID: <20201201175313.GC56560@mtg-dev.jf.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20201130230707.46351-1-mgross@linux.intel.com>
+ <X8YXdJ2CDg2TI5LF@kroah.com>
 MIME-Version: 1.0
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
- <1606533966-22821-5-git-send-email-hemantk@codeaurora.org>
- <CAMZdPi8z+-qFqgZ7AFJcNAUMbDQtNN5Hz-geMBcp4azrUGm9iA@mail.gmail.com>
- <c47dcd57-7576-e03e-f70b-0c4d25f724b5@codeaurora.org> <CAMZdPi8mUV5cFs-76K3kg=hN8ht2SKjJwzbJH-+VH4Y8QabcHQ@mail.gmail.com>
- <1247e32e-ed67-de6b-81ec-3bde9ad93250@codeaurora.org>
-In-Reply-To: <1247e32e-ed67-de6b-81ec-3bde9ad93250@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Tue, 1 Dec 2020 18:52:57 +0100
-Message-ID: <CAMZdPi-tjmXWAFzZJAg_6U5h2ZJv478E88T-Lmk=YA-B6=MzRA@mail.gmail.com>
-Subject: Re: [PATCH v13 4/4] bus: mhi: Add userspace client interface driver
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8YXdJ2CDg2TI5LF@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 at 18:37, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
->
-> On 12/1/2020 10:36 AM, Loic Poulain wrote:
-> > On Tue, 1 Dec 2020 at 02:16, Hemant Kumar <hemantk@codeaurora.org> wrote:
-> >>
-> >> Hi Loic,
-> >>
-> >> On 11/30/20 10:22 AM, Loic Poulain wrote:
-> >>> On Sat, 28 Nov 2020 at 04:26, Hemant Kumar <hemantk@codeaurora.org> wrote:
-> >>>>
-> >>>> This MHI client driver allows userspace clients to transfer
-> >>>> raw data between MHI device and host using standard file operations.
-> >>>> Driver instantiates UCI device object which is associated to device
-> >>>> file node. UCI device object instantiates UCI channel object when device
-> >>>> file node is opened. UCI channel object is used to manage MHI channels
-> >>>> by calling MHI core APIs for read and write operations. MHI channels
-> >>>> are started as part of device open(). MHI channels remain in start
-> >>>> state until last release() is called on UCI device file node. Device
-> >>>> file node is created with format
-> >>>
-> >>> [...]
-> >>>
-> >>>> +struct uci_chan {
-> >>>> +       struct uci_dev *udev;
-> >>>> +       wait_queue_head_t ul_wq;
-> >>>> +
-> >>>> +       /* ul channel lock to synchronize multiple writes */
-> >>>> +       struct mutex write_lock;
-> >>>> +
-> >>>> +       wait_queue_head_t dl_wq;
-> >>>> +
-> >>>> +       /* dl channel lock to synchronize multiple reads */
-> >>>> +       struct mutex read_lock;
-> >>>> +
-> >>>> +       /*
-> >>>> +        * protects pending list in bh context, channel release, read and
-> >>>> +        * poll
-> >>>> +        */
-> >>>> +       spinlock_t dl_pending_lock;
-> >>>> +
-> >>>> +       struct list_head dl_pending;
-> >>>> +       struct uci_buf *cur_buf;
-> >>>> +       size_t dl_size;
-> >>>> +       struct kref ref_count;
-> >>>> +};
-> >>>
-> >>> [...]
-> >>>
-> >>>> + * struct uci_dev - MHI UCI device
-> >>>> + * @minor: UCI device node minor number
-> >>>> + * @mhi_dev: associated mhi device object
-> >>>> + * @uchan: UCI uplink and downlink channel object
-> >>>> + * @mtu: max TRE buffer length
-> >>>> + * @enabled: Flag to track the state of the UCI device
-> >>>> + * @lock: mutex lock to manage uchan object
-> >>>> + * @ref_count: uci_dev reference count
-> >>>> + */
-> >>>> +struct uci_dev {
-> >>>> +       unsigned int minor;
-> >>>> +       struct mhi_device *mhi_dev;
-> >>>> +       struct uci_chan *uchan;
-> >>>
-> >>> Why a pointer to uci_chan and not just plainly integrating the
-> >>> structure here, AFAIU uci_chan describes the channels and is just a
-> >>> subpart of uci_dev. That would reduce the number of dynamic
-> >>> allocations you manage and the extra kref. do you even need a separate
-> >>> structure for this?
-> >>
-> >> This goes back to one of my patch versions i tried to address concern
-> >> from Greg. Since we need to ref count the channel as well as the uci
-> >> device i decoupled the two objects and used two reference counts for two
-> >> different objects.
-> >
-> > What Greg complained about is the two kref in the same structure and
-> > that you were using kref as an open() counter. But splitting your
-> > struct in two in order to keep the two kref does not make the much
-> > code better (and simpler). I'm still a bit puzzled about the driver
-> > complexity, it's supposed to be just a passthrough interface to MHI
-> > after all.
-> >
-> > I would suggest several changes, that IMHO would simplify reviewing:
-> > - Use only one structure representing the 'uci' context (uci_dev)
-> > - Keep the read path simple (mhi_uci_read), do no use an intermediate
-> > cur_buf pointer, only dequeue the buffer when it is fully consumed.
-> > - As I commented before, take care of the dl_pending list access
-> > concurrency, even in wait_event.
-> > - You don't need to count the number of open() calls, AFAIK,
-> > mhi_prepare_for_transfer() simply fails if channels are already
-> > started...
->
-> Unless I missed something, you seem to have ignored the root issue that
-> Hemant needs to solve, which is when to call
-> mhi_unprepare_for_transfer().  You can't just call that when close() is
-> called because there might be multiple users, and each one is going to
-> trigger a close(), so you need to know how many close() instances to
-> expect, and only call mhi_unprepare_for_transfer() for the last one.
+On Tue, Dec 01, 2020 at 11:14:12AM +0100, Greg KH wrote:
+> On Mon, Nov 30, 2020 at 03:06:45PM -0800, mgross@linux.intel.com wrote:
+> > From: mark gross <mgross@linux.intel.com>
+> > 
+> > The Intel Vision Processing Unit (VPU) is an IP block that is showing up for
+> > the first time as part of the Keem Bay SOC.  Keem Bay is a quad core A53 Arm
+> > SOC.  It is designed to be used as a stand alone SOC as well as in an PCIe
+> > Vision Processing accelerator add in card.
+> > 
+> > This part 1 of the patches make up the base or core of the stack needed to
+> > enable both use cases for the VPU.
+> > 
+> > Part 2 includes 11 more patches that depend on part 1.  Those should be ready
+> > in a couple of weeks or less.
+> > 
+> > I am trying something a bit new with this sequence where I've been working with
+> > the driver developers as a "pre-maintainer" reviewing and enforcing the kernel
+> > expectations as I understand them.  Its taken a couple of months to get this
+> > code to the point I feel its ready for public posting.  My goal is to make sure
+> > it meets expectations for quality and compliance with kernel expectations and
+> > there will be mostly technical / design issues to talk about.
+> > 
+> > Thanks for looking at these and providing feedback.
+> > 
+> > --mark
+> > p.s. I have had a problem my MTA configuration between mutt and git send-email
+> > where I was using msmpt to send from mutt (because 15+ years ago its the first
+> > way I got to work and never changed) while my worstation MTA that git
+> > send-email uses was un-configured resulting in my return-path naming my
+> > workstion withing the firewall.  I suck at email administration.
+> > 
+> > I appologies for the multiple copies.
+> 
+> Ah, here's the full set of patches...
+> 
+> But, you didn't cc: everyone on them, some of us just got a partial set
+> of patches, why?
+Because I thought ccing everyone on all the changes was not what was expected.
+Does the DT guy want to see all the non-DT changes?
 
-That one part of his problem, yes, but if you unconditionally call
-mhi_prepare_for_transfer in open(), it should fail for subsequent
-users, and so only one user will successfully open the device.
+this is my first time sending a big patch set that crosses subsystems like
+this.  I'm not sure what the preferd way to do things so I used
+get_maintainer.pl on each patch to add thime in the cc: tags just above the
+signed off's.
 
-Regards,
-Loic
+Should I have simply concatinated the list of mainttainers and CC them all on
+all the patches?
+
+> 
+> still confused,
+its my fault.  
+
+--mark
