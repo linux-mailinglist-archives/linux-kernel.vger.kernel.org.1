@@ -2,253 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72302CB0B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3263A2CB0B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgLAXPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:15:52 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54044 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726332AbgLAXPw (ORCPT
+        id S1726985AbgLAXQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:16:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgLAXQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:15:52 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1N2suv064820;
-        Tue, 1 Dec 2020 18:15:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=rnmVbviuLrDh7M5fcFhR9gXOraMeI5tZXxvxlJf4CWU=;
- b=NHmPs3m0YMv0BOnxtRSbT5Gvs9g/MMQdvCJqlQc1STloHB4UkNi5HeoWK2W3ptkTC1jG
- DPqF6hc1fa9PKmhXBcd9zms/Asjgo+CUqXXfpbzXwALxIG+hqYJBJ2R3g1p8eYq+ZRh7
- HqkkMwQObuqqO5OX3PPqCYgXfk9XOP/yKq0U1Gdhx6GAkkqJZJiyy6qetOYzEi+KS2qc
- AaecD2iWrZUlCxqWBWFTZDizb+egfSzivwjFcIClZYy6YBHyY0awSGCjYFOjPHGIZrEd
- 4QQ+hmsIrbrUiMEwEKU1U9gkwk9Ffd7985oUGBIz1iOMbGtdp8eYbiouUNEW+vq5PBQJ uQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjh6u76-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 18:15:07 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B1N3Dju065610;
-        Tue, 1 Dec 2020 18:15:07 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjh6u64-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 18:15:06 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B1N2Y5C012753;
-        Tue, 1 Dec 2020 23:15:04 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 354fpdabxx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 23:15:04 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B1NF2BP58917316
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Dec 2020 23:15:02 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0273AA4062;
-        Tue,  1 Dec 2020 23:15:02 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 05395A405B;
-        Tue,  1 Dec 2020 23:14:59 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.171.25.88])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue,  1 Dec 2020 23:14:58 +0000 (GMT)
-Date:   Wed, 2 Dec 2020 00:14:54 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v12 12/17] s390/vfio-ap: allow hot plug/unplug of AP
- resources using mdev device
-Message-ID: <20201202001454.5ea80130.pasic@linux.ibm.com>
-In-Reply-To: <84d1126b-08f8-9f8e-ad72-490625aabbd6@linux.ibm.com>
-References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
-        <20201124214016.3013-13-akrowiak@linux.ibm.com>
-        <20201129025250.16eb8355.pasic@linux.ibm.com>
-        <103cbe02-2093-c950-8d65-d3dc385942ce@linux.ibm.com>
-        <20201201003227.0c3696fc.pasic@linux.ibm.com>
-        <20201201185659.72ca96c8.pasic@linux.ibm.com>
-        <84d1126b-08f8-9f8e-ad72-490625aabbd6@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Tue, 1 Dec 2020 18:16:27 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73453C0613CF;
+        Tue,  1 Dec 2020 15:15:47 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id e7so5552053wrv.6;
+        Tue, 01 Dec 2020 15:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=3VbF30wKtAJP8MAjXe3KNwVj1p7jHGN4bxqNNTIYUOY=;
+        b=XMWqvkrnDz62fEIqhZb4Fo1254CzBIuHuqZ0rFA9P4jh0wbGopqWnd1n5sprMkdklm
+         /7p9VoK2pVBeshyAtoMHfCqMvvZZTFSJhEcdisoSQtcBttFpyWluRjnK7vbo/xH+tw4/
+         NEEW6qDqyTSyTyjrHRQNm2NmqBGVWJqEntN3gKGTpCD5d3hxFLnzM70bL64ux6o1keZu
+         +iyg4c0h/GXl/owOWyK/RfD3aVOG9ldNBuQFoEMkMyc5JfwSaQV+gDga6+SHL6VhdHm5
+         lwzRFGama84Q0ewjD4rK4oTNW+ZfTUF8FM+Swr92VW+U1OgOZivM6B8a+W9hz3qE9nZt
+         jSnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=3VbF30wKtAJP8MAjXe3KNwVj1p7jHGN4bxqNNTIYUOY=;
+        b=IW0RcYOqJxvTbyv/ou6Ox++X+mQf+sn2tklBA1sqRlW7/ZSTXeaFhxx7hBN4SdEeud
+         P+UZ9zysC1xNw7UnWdQXhxs0MYqtcI7/njE3tbNi/fbgkCyTgwEkM3j+xOm/LxN392Kd
+         4TdFaAOL4CRhpdkNDR8odkv4cdzyLJ0OtewjAuoV4vagkSjKlrfsk+aRKX8tiFs43ifS
+         RhZvDTGHffWHzG4ZkxKdQJlT3nR7BPnAouC3WA5YVKYOo9vZWuJ/nrgF5ijX2lpQrOzj
+         GFUJ6+9aZjqqxWEsVzKo5OVuzJGcdvsM1Wex4nTn/AVaWGimQRjMnhXh+B2TgD+P4Hyx
+         zTVw==
+X-Gm-Message-State: AOAM530qMfuW/YUn/maXLU5HeOW1srp1Kxhmwb0eDmh4u+/Xa0hOHFpd
+        iD2m3MkCb0ZE58K9njXGn8M=
+X-Google-Smtp-Source: ABdhPJw/9cAic6iM8VyiiPQl8pOSzmtDD4F4dW7ovAZneoEikM8hT/0UigDmyxhS6fOjtEqi4GoX3Q==
+X-Received: by 2002:adf:eb88:: with SMTP id t8mr7155076wrn.105.1606864546080;
+        Tue, 01 Dec 2020 15:15:46 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.80])
+        by smtp.gmail.com with ESMTPSA id l16sm1642406wrx.5.2020.12.01.15.15.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 15:15:45 -0800 (PST)
+Subject: Re: [PATCH 13/18] ipu3-cio2: Add functionality allowing software_node
+ connections to sensors on platforms designed for Windows
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-14-djrscally@gmail.com>
+ <20201130170955.GN14465@pendragon.ideasonboard.com>
+ <b5cc6bbd-f679-7023-fde0-de2acb65a3c2@gmail.com>
+ <20201201223053.GB4569@pendragon.ideasonboard.com>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <23cbc632-9a57-ad67-b7f8-61ff0672d070@gmail.com>
+Date:   Tue, 1 Dec 2020 23:15:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-01_12:2020-11-30,2020-12-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 impostorscore=0
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010137
+In-Reply-To: <20201201223053.GB4569@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 17:12:56 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+Hi Laurent
+On 01/12/2020 22:30, Laurent Pinchart wrote:
+>>>> +}
+>>>> +
+>>>> +static void cio2_bridge_create_fwnode_properties(struct cio2_sensor *sensor)
+>>>> +{
+>>>> +	unsigned int i;
+>>>> +
+>>>> +	cio2_bridge_init_property_names(sensor);
+>>>> +
+>>>> +	for (i = 0; i < 4; i++)
+>>>> +		sensor->data_lanes[i] = i + 1;
+>>> Is there no provision in the SSDB for data lane remapping ?
+>> Sorry; don't follow what you mean by data lane remapping here.
+> Some CSI-2 receivers can remap data lanes. The routing inside the SoC
+> from the data lane input pins to the PHYs is configurable. This makes
+> board design easier as you can route the data lanes to any of the
+> inputs. That's why the data lanes DT property is a list of lane numbers
+> instead of a number of lanes. I'm actually not sure if the CIO2 supports
+> this.
 
-> On 12/1/20 12:56 PM, Halil Pasic wrote:
-> > On Tue, 1 Dec 2020 00:32:27 +0100
-> > Halil Pasic <pasic@linux.ibm.com> wrote:
-> >  
-> >>>
-> >>> On 11/28/20 8:52 PM, Halil Pasic wrote:  
-> >> [..]  
-> >>>>> * Unassign adapter from mdev's matrix:
-> >>>>>
-> >>>>>     The domain will be hot unplugged from the KVM guest if it is
-> >>>>>     assigned to the guest's matrix.
-> >>>>>
-> >>>>> * Assign a control domain:
-> >>>>>
-> >>>>>     The control domain will be hot plugged into the KVM guest if it is not
-> >>>>>     assigned to the guest's APCB. The AP architecture ensures a guest will
-> >>>>>     only get access to the control domain if it is in the host's AP
-> >>>>>     configuration, so there is no risk in hot plugging it; however, it will
-> >>>>>     become automatically available to the guest when it is added to the host
-> >>>>>     configuration.
-> >>>>>
-> >>>>> * Unassign a control domain:
-> >>>>>
-> >>>>>     The control domain will be hot unplugged from the KVM guest if it is
-> >>>>>     assigned to the guest's APCB.  
-> >>>> This is where things start getting tricky. E.g. do we need to revise
-> >>>> filtering after an unassign? (For example an assign_adapter X didn't
-> >>>> change the shadow, because queue XY was missing, but now we unplug domain
-> >>>> Y. Should the adapter X pop up? I guess it should.)  
-> >>> I suppose that makes sense at the expense of making the code
-> >>> more complex. It is essentially what we had in the prior version
-> >>> which used the same filtering code for assignment as well as
-> >>> host AP configuration changes.
-> >>>      
-> >> Will have to think about it some more. Making the user unplug and
-> >> replug an adapter because at some point it got filtered, but there
-> >> is no need to filter it does not feel right. On the other hand, I'm
-> >> afraid I'm complaining in circles.  
-> > I did some thinking. The following statements are about the state of
-> > affairs, when all 17 patches are applied. I'm commenting here, because
-> > I believe this is the patch that introduces the most controversial code.
-> >
-> > First about low level problems with the current code/design. The other is
-> > empty handling in vfio_ap_assign_apid_to_apcb() (and
-> > vfio_ap_assign_apqi_to_apcb()) is troublesome. The final product
-> > allows for over-commitment, i.e. assignment of e.g. domains that
-> > are not in the crypto host config. Let's assume the host LPAR
-> > has usage domains 1 and 2, and adapters 1, 2, and 3. The apmask
-> > and aqmask are both 0 (all in on vfio), all bound. We start with an empty
-> > mdev that is tied to a running guest:
-> > assign_adapter 1
-> > assign_adapter 2
-> > assign_adapter 3
-> > assign_adapter 4
-> > all of these will work. The resulting shadow_apcb is completely empty. No
-> > commit_apcb.
-> > assign_domain 1
-> > assign_domain 2
-> > assign_domain 3
-> > all of these will work. But again the shadow_apcb is completely empty at
-> > the end: we did get to the loop that is checking the boundness of the
-> > queues, but please note that we are checking against matrix.apm, and
-> > adapter 4 is not in the config of the host.
-> >
-> > I've hacked up a fixup patch for these problems that simplifies the
-> > code considerably, but there are design level issues, that run deeper,
-> > so I'm not sure the fixups are the way to go.
-> >
-> > Now lets talk about design level stuff. Currently the assignment
-> > operations are designed in to accommodate the FCFS principle. This
-> > is a blessing and a curse at the same time.
-> >
-> > Consider the following scenarios. We have an empty (nothing assigned
-> > mdev) and the following queues are bound to the vfio_ap driver:
-> > 0.0
-> > 0.1
-> > 1.0
-> > If the we do
-> > asssign_adapter 0
-> > assign_domain 0
-> > assign_domain 1
-> > assign_adapter 1
-> > We end up with the guest_matrix
-> > 0.0
-> > 0.1
-> > and the matrix
-> > 0.0
-> > 0.1
-> > 1.0
-> > 1.0
-> >
-> > That is a different result compared to
-> > asssign_adapter 0
-> > assign_domain 0
-> > assign_adapter 1
-> > assign_domain 1
-> > or the situation where we have 0.0, 0.1, 1.0 and 1.1 bound to vfio_ap
-> > and then 1.1 gets unbound.  
-> 
-> In v11 of the patch series, the filtering code always filters
-> the matrix assigned to the mdev and is invoked whenever
-> an adapter or domain is assigned, a queue is probed and
-> when the AP bus scan complete notification is received and
-> adapters and/or domains have been added to the host AP
-> configuration. So I made a slight modification to that
-> filtering function to filter only by APID and ran the above
-> scenarios. In each case, the resulting guest matrix was
-> identicle. I also tested the bind/unbind and achieved the
-> same results.
-> 
-> >
-> > For the same system state (bound, config, ap_perm, matrix) you get a
-> > different outcomes (guest_matrix), because the outcomes depend on
-> > history.
-> >
-> > Another thing is recovery. I believe the main idea behind shadow_apcb
-> > is that we should auto recover once the resources are available again.
-> > The current design choices make recovery more difficult to think about
-> > because we may end up having either the apid or the apqi filtered on
-> > a 'hole' (an queue missing for reasons different than, belonging to
-> > default, or not being in the host config).  
-> 
-> The filtering code from the v11 series with the tweak I
-> mentioned above accomplishes this. I tested this by
-> doing manual binds/unbinds of a queue using the
-> scenarios you layed out.
-> 
-> >
-> > I still think for these cases filtering out the apid is the lesser
-> > evil. Yes a hotplug of a domain making hot unplugging an adapter is
-> > ugly, but at least I can describe that. So I propose the following.
-> > Let me hack up a fixup that morphs things in this direction. Maybe
-> > I will run into unexpected problems, but if I don't then we will
-> > have an alternative design you can run your testcases against. How about
-> > that?  
-> 
-> I appreciate the offer, but I believe with the change to the v11
-> filtering code I described above we have a solution. One of
-> your objections to the filtering code was looping over all
-> assigned adapters/domains each time an adapter or
-> domain is assigned. It should also be easy to examine only
-> the APQNs involving the new APID or APQI being assigned.
-> Again, I appreciate your offer, but I don't think it is necessary
-> to take you away from your priorities to involve yourself in
-> mine.
+I don't see anything in the SSDB that might refer to that, though of
+course we're lacking documentation for it so it could be a part that we
+don't understand yet.
 
-Seems you have it sorted out. Unfortunately I can't really follow without
-code, but I have to trust you. Can you please spin a v13 with these
-improvements implemented?
 
-Maybe I didn't comment on every patch, but I did go through all of them.
-I believe we have enough material for another iteration, and further
-review makes no sense at this point. I intend to come back to this
-once v13 is out.
-
-Thanks,
-Halil
+>>>> +			dev_info(&bridge->cio2->dev,
+>>>> +				 "Found supported sensor %s\n",
+>>>> +				 acpi_dev_name(adev));
+>>>> +
+>>>> +			bridge->n_sensors++;
+>>> We probably want a check here to avoid overflowing bridge->sensors. The
+>>> other option is to make bridge->sensors a struct list_head and allocate
+>>> sensors dynamically.
+>> Err - agree on a check. There's only 4 ports in a CIO2 device, so that's
+>> the maximum. Seems easier to just do a check, unless the wasted memory
+>> is enough that it's worth allocating dynamically. I don't mind either
+>> approach.
+> In theory we could route multiple sensors to the same receiver, as long
+> as only one of them drives the lanes at any given time. It's one way to
+> support multiple sensors in cheap designs. I doubt we'll ever encounter
+> that with the IPU3, so we could just limit the count to 4.
+Ah, that's neat though. But I'll leave it at a check at the top of the
+loop for now.
+>>>> +
+>>>> +	fwnode = software_node_fwnode(&bridge->cio2_hid_node);
+>>>> +	if (!fwnode) {
+>>>> +		dev_err(dev, "Error getting fwnode from cio2 software_node\n");
+>>>> +		ret = -ENODEV;
+>>>> +		goto err_unregister_sensors;
+>>> Can this happen ?
+>> It _shouldn't_ happen, as long as nothing else is touching the swnodes
+>> I've registered or anything. I've never seen it happen. That didn't feel
+>> like quite enough to say it can't ever happen - but I'm happy to skip
+>> the check if you think thats ok.
+> It seems a bit overkill to me, but I'm not a swnode specialist :-)
+I'm going to keep it, if you have no strong feelings, partly through
+caution but also because the other place swnodes are most heavily used
+(drivers/platform/x86/intel_cht_int33fe_typec.c) _does_ perform the
+check, so consistency too.
+>>>> @@ -0,0 +1,108 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +/* Author: Dan Scally <djrscally@gmail.com> */
+>>>> +#ifndef __CIO2_BRIDGE_H
+>>>> +#define __CIO2_BRIDGE_H
+>>>> +
+>>>> +#include <linux/property.h>
+>>>> +
+>>>> +#define CIO2_HID				"INT343E"
+>>>> +#define CIO2_NUM_PORTS			  4
+>>> There are a few rogue spaces before '4'.
+>> Argh, thanks, this is the curse of using VS code on multiple machines...
+> I recommend vim ;-)
+You're not the only one - maybe I need to spend the time and it'll save
+time in the future
