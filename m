@@ -2,208 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB982CA547
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C332CA560
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730200AbgLAOMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:12:31 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2079 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729321AbgLAOMa (ORCPT
+        id S1730308AbgLAOON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:14:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729321AbgLAOOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:12:30 -0500
-Received: from dggeme717-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4ClkXk3DWkzVkDQ;
-        Tue,  1 Dec 2020 22:11:02 +0800 (CST)
-Received: from [10.174.186.123] (10.174.186.123) by
- dggeme717-chm.china.huawei.com (10.1.199.113) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 1 Dec 2020 22:11:45 +0800
-Subject: Re: [RFC PATCH 2/3] KVM: arm64: Fix handling of merging tables into a
- block entry
-To:     Will Deacon <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
-        <lushenming@huawei.com>
-References: <20201130121847.91808-1-wangyanan55@huawei.com>
- <20201130121847.91808-3-wangyanan55@huawei.com>
- <20201130133421.GB24837@willie-the-truck>
- <67e9e393-1836-eca7-4235-6f4a19fed652@huawei.com>
- <20201130160119.GA25051@willie-the-truck>
- <868a4403-10d3-80f3-4ae1-a490813c55e2@huawei.com>
- <20201201134606.GB26973@willie-the-truck>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <2e92a511-496c-d446-95f4-6211ec8b4bb6@huawei.com>
-Date:   Tue, 1 Dec 2020 22:11:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 09:14:12 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03F5C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:13:32 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id t4so2807873wrr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:13:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4ehqe7Y++cS0wt3gaymi/r3HazRaNqrXWmoutWXgkJI=;
+        b=lZtqI0O05N1Z6dBLwLIaL34QXzkEGIU49CpWF5bKywPYvc+NsWlLRJB0jBInC90Mt3
+         89664T8lO6L0YFi13mP2WcsaAhioSBSD4FWBbi6qqWT3STAgmu93CNaVR6LGQ3FqmcPI
+         YLyBVZrr7mD1csA7NvKqYE2HQKEMxKuA8xu5QlXB/KwMoLnF+t8zYN+h4dpgHCqap7QC
+         1EzNcO0dt3YFIHsnoNQBnnnjulsdkJlLYlTi0LR3pTX8ULCGm90EWmy1PEzaMwdvt9Pu
+         2+ZN8BuknXL4/cDhHQ4TJaXyyKwF6IzTh0BdqogMaaBuEIYhwCzlpyXK+4Ma4CeDjgWI
+         OwIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4ehqe7Y++cS0wt3gaymi/r3HazRaNqrXWmoutWXgkJI=;
+        b=Af6YQepPbOMn2S/6A973Nx7JKOJS1oUBvM75QOZja6YMPiGR3vS+1x6TM4wX1U3EhE
+         h90pDhBxHYUtzIGNyYEiMtw4TvZi89tuTTGSwdd0+4JwCtK1zY8dtH0kb1uj5qU2hTHT
+         OVwSoFM3sUuncwyqqf2Y/B+hdqijR85IhvjLAqY1aKWb/RcHzx+TwYnMGppGYv3dn1a7
+         8GgM0Ur0iUAiWU4LhDLZLGs31FWWyxxd8rGDuXeS4gHf6Rsa+PHYto15tryP9yByeJkn
+         joXdyHQ+raRB+HkX3cXtfbBq7XxGKH+2vHYVtDzU7GlZZ8nH508MpVMdHhMWlv1itPGk
+         N8mw==
+X-Gm-Message-State: AOAM533cLgjw4dZ0YBmrWMHSIXKRWEx44Rfa35etQW5IG3MMR7eD7+g8
+        uOGEv2kmmX0rMtQ5zc5IEN1PdA==
+X-Google-Smtp-Source: ABdhPJwilnfXoPtU9DBAwnwLx6lDBU4zU3VtOOSKMiSYHW5am3EAODESWMH7shcHRj6lfYnWD3lu6g==
+X-Received: by 2002:a05:6000:347:: with SMTP id e7mr4104757wre.35.1606832011144;
+        Tue, 01 Dec 2020 06:13:31 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id k16sm3390851wrl.65.2020.12.01.06.13.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 06:13:30 -0800 (PST)
+Date:   Tue, 1 Dec 2020 14:13:27 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>
+Subject: Re: [PATCH] modpost: Make static exports fatal
+Message-ID: <20201201141327.GA1914005@google.com>
+References: <20201124182420.2202514-1-qperret@google.com>
+ <CAK7LNATj8C7C=dYcDD4M5Q-Zc_kUhY2+i6epH=LbiOAUaDZqiw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201201134606.GB26973@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.186.123]
-X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
- dggeme717-chm.china.huawei.com (10.1.199.113)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNATj8C7C=dYcDD4M5Q-Zc_kUhY2+i6epH=LbiOAUaDZqiw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tuesday 01 Dec 2020 at 23:00:37 (+0900), Masahiro Yamada wrote:
+> I am not a big fan of (ab)using fatal() for this case.
+> 
+> Please consider using error() once
+> the following is queued up.
+> 
+> https://patchwork.kernel.org/project/linux-kbuild/patch/20201201103418.675850-2-masahiroy@kernel.org/
 
-On 2020/12/1 21:46, Will Deacon wrote:
-> On Tue, Dec 01, 2020 at 10:30:41AM +0800, wangyanan (Y) wrote:
->> On 2020/12/1 0:01, Will Deacon wrote:
->>> On Mon, Nov 30, 2020 at 11:24:19PM +0800, wangyanan (Y) wrote:
->>>> On 2020/11/30 21:34, Will Deacon wrote:
->>>>> On Mon, Nov 30, 2020 at 08:18:46PM +0800, Yanan Wang wrote:
->>>>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->>>>>> index 696b6aa83faf..fec8dc9f2baa 100644
->>>>>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>>>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>>>>> @@ -500,6 +500,9 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
->>>>>>     	return 0;
->>>>>>     }
->>>>>> +static void stage2_flush_dcache(void *addr, u64 size);
->>>>>> +static bool stage2_pte_cacheable(kvm_pte_t pte);
->>>>>> +
->>>>>>     static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
->>>>>>     				struct stage2_map_data *data)
->>>>>>     {
->>>>>> @@ -507,9 +510,17 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
->>>>>>     	struct page *page = virt_to_page(ptep);
->>>>>>     	if (data->anchor) {
->>>>>> -		if (kvm_pte_valid(pte))
->>>>>> +		if (kvm_pte_valid(pte)) {
->>>>>> +			kvm_set_invalid_pte(ptep);
->>>>>> +			kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu,
->>>>>> +				     addr, level);
->>>>>>     			put_page(page);
->>>>> This doesn't make sense to me: the page-table pages we're walking when the
->>>>> anchor is set are not accessible to the hardware walker because we unhooked
->>>>> the entire sub-table in stage2_map_walk_table_pre(), which has the necessary
->>>>> TLB invalidation.
->>>>>
->>>>> Are you seeing a problem in practice here?
->>>> Yes, I indeed find a problem in practice.
->>>>
->>>> When the migration was cancelled, a TLB conflic abort  was found in guest.
->>>>
->>>> This problem is fixed before rework of the page table code, you can have a
->>>> look in the following two links:
->>>>
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c3736cd32bf5197aed1410ae826d2d254a5b277
->>>>
->>>> https://lists.cs.columbia.edu/pipermail/kvmarm/2019-March/035031.html
->>> Ok, let's go through this, because I still don't see the bug. Please correct
->>> me if you spot any mistakes:
->>>
->>>     1. We have a block mapping for X => Y
->>>     2. Dirty logging is enabled, so the block mapping is write-protected and
->>>        ends up being split into page mappings
->>>     3. Dirty logging is disabled due to a failed migration.
->>>
->>> --- At this point, I think we agree that the state of the MMU is alright ---
->>>
->>>     4. We take a stage-2 fault and want to reinstall the block mapping:
->>>
->>>        a. kvm_pgtable_stage2_map() is invoked to install the block mapping
->>>        b. stage2_map_walk_table_pre() finds a table where we would like to
->>>           install the block:
->>>
->>> 	i.   The anchor is set to point at this entry
->>> 	ii.  The entry is made invalid
->>> 	iii. We invalidate the TLB for the input address. This is
->>> 	     TLBI IPAS2SE1IS without level hint and then TLBI VMALLE1IS.
->>>
->>> 	*** At this point, the page-table pointed to by the old table entry
->>> 	    is not reachable to the hardware walker ***
->>>
->>>        c. stage2_map_walk_leaf() is called for each leaf entry in the
->>>           now-unreachable subtree, dropping page-references for each valid
->>> 	entry it finds.
->>>        d. stage2_map_walk_table_post() is eventually called for the entry
->>>           which we cleared back in b.ii, so we install the new block mapping.
->>>
->>> You are proposing to add additional TLB invalidation to (c), but I don't
->>> think that is necessary, thanks to the invalidation already performed in
->>> b.iii. What am I missing here?
->> The point is at b.iii where the TLBI is not enough. There are many page
->> mappings that we need to merge into a block mapping.
->>
->> We invalidate the TLB for the input address without level hint at b.iii, but
->> this operation just flush TLB for one page mapping, there
->>
->> are still some TLB entries for the other page mappings in the cache, the MMU
->> hardware walker can still hit these entries next time.
-> Ah, yes, I see. Thanks. I hadn't considered the case where there are table
-> entries beneath the anchor. So how about the diff below?
->
-> Will
->
-> --->8
+Yes, much nicer, thanks for that series.
+I'll post a v2 shortly.
 
-Hi, I think it's inappropriate to put the TLBI of all the leaf entries 
-in function stage2_map_walk_table_post(),
-
-because the *ptep must be an upper table entry when we enter 
-stage2_map_walk_table_post().
-
-We should make the TLBI for every leaf entry not table entry in the last 
-lookup level,  just as I am proposing
-
-to add the additional TLBI in function stage2_map_walk_leaf().
-
-Thanks.
-
-
-Yanan
-
->
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 0271b4a3b9fe..12526d8c7ae4 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -493,7 +493,7 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
->   		return 0;
->   
->   	kvm_set_invalid_pte(ptep);
-> -	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, 0);
-> +	/* TLB invalidation is deferred until the _post handler */
->   	data->anchor = ptep;
->   	return 0;
->   }
-> @@ -547,11 +547,21 @@ static int stage2_map_walk_table_post(u64 addr, u64 end, u32 level,
->   				      struct stage2_map_data *data)
->   {
->   	int ret = 0;
-> +	kvm_pte_t pte = *ptep;
->   
->   	if (!data->anchor)
->   		return 0;
->   
-> -	free_page((unsigned long)kvm_pte_follow(*ptep));
-> +	kvm_set_invalid_pte(ptep);
-> +
-> +	/*
-> +	 * Invalidate the whole stage-2, as we may have numerous leaf
-> +	 * entries below us which would otherwise need invalidating
-> +	 * individually.
-> +	 */
-> +	kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
-> +
-> +	free_page((unsigned long)kvm_pte_follow(pte));
->   	put_page(virt_to_page(ptep));
->   
->   	if (data->anchor == ptep) {
-> .
+Thanks,
+Quentin
