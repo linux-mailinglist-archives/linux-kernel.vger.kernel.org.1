@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CF02C9A63
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182E92C9BD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387798AbgLAI5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58602 "EHLO mail.kernel.org"
+        id S2389958AbgLAJMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:12:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387776AbgLAI5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:57:05 -0500
+        id S2388872AbgLAJMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94582206D8;
-        Tue,  1 Dec 2020 08:56:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBACC2067D;
+        Tue,  1 Dec 2020 09:11:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813010;
-        bh=xU1rQjC7OfyYaTi9ml0RZogbix/lo4WzsaNp7q1Aa6M=;
+        s=korg; t=1606813899;
+        bh=GiIcpuIEXT7xJ0orfc9XiiPQIwDzxmqy4Ut5oxb2zXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2e0WvYVtVmgU6W/UONiCFLzutpzRNsWrlDaLTAgq3a6jQYZzbYqetWbpOwXi5v4BZ
-         SGayrDRHnnaGLiXnGUNAf5IFV+eZO9v6EnFcdqfgU7D9+eeqDR5JPr1PPxw153RuEH
-         hEbFmz9M8269TL6xTOkjy1M8E2cDDmnzw3cnWr7E=
+        b=bth9T5JgigG9VVF2vTMD3MPNFOo6MJXwY0DQo7Q7sL/KEynBLtIsg67hsdikob2Dm
+         Yiui1//rb6RafThs2uRSQHdXZIMhDNu7Bmjs/4LS7yY5Eq37r0jfmzFyUanlNdbRk5
+         xg7ngDGa1cQKK+C/hMPcjfUO3XR+CuSxkTPjxSRU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tosk Robot <tencent_os_robot@tencent.com>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 33/42] platform/x86: toshiba_acpi: Fix the wrong variable assignment
-Date:   Tue,  1 Dec 2020 09:53:31 +0100
-Message-Id: <20201201084645.011215155@linuxfoundation.org>
+Subject: [PATCH 5.9 097/152] s390/qeth: fix tear down of async TX buffers
+Date:   Tue,  1 Dec 2020 09:53:32 +0100
+Message-Id: <20201201084724.571225847@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit 2a72c46ac4d665614faa25e267c3fb27fb729ed7 ]
+[ Upstream commit 7ed10e16e50daf74460f54bc922e27c6863c8d61 ]
 
-The commit 78429e55e4057 ("platform/x86: toshiba_acpi: Clean up
-variable declaration") cleans up variable declaration in
-video_proc_write(). Seems it does the variable assignment in the
-wrong place, this results in dead code and changes the source code
-logic. Fix it by doing the assignment at the beginning of the funciton.
+When qeth_iqd_tx_complete() detects that a TX buffer requires additional
+async completion via QAOB, it might fail to replace the queue entry's
+metadata (and ends up triggering recovery).
 
-Fixes: 78429e55e4057 ("platform/x86: toshiba_acpi: Clean up variable declaration")
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-Link: https://lore.kernel.org/r/1606024177-16481-1-git-send-email-kaixuxia@tencent.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Assume now that the device gets torn down, overruling the recovery.
+If the QAOB notification then arrives before the tear down has
+sufficiently progressed, the buffer state is changed to
+QETH_QDIO_BUF_HANDLED_DELAYED by qeth_qdio_handle_aob().
+
+The tear down code calls qeth_drain_output_queue(), where
+qeth_cleanup_handled_pending() will then attempt to replace such a
+buffer _again_. If it succeeds this time, the buffer ends up dangling in
+its replacement's ->next_pending list ... where it will never be freed,
+since there's no further call to qeth_cleanup_handled_pending().
+
+But the second attempt isn't actually needed, we can simply leave the
+buffer on the queue and re-use it after a potential recovery has
+completed. The qeth_clear_output_buffer() in qeth_drain_output_queue()
+will ensure that it's in a clean state again.
+
+Fixes: 72861ae792c2 ("qeth: recovery through asynchronous delivery")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/toshiba_acpi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/s390/net/qeth_core_main.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
-index 79a2289370729..f25278bb3e1a8 100644
---- a/drivers/platform/x86/toshiba_acpi.c
-+++ b/drivers/platform/x86/toshiba_acpi.c
-@@ -1497,7 +1497,7 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
- 	struct toshiba_acpi_dev *dev = PDE_DATA(file_inode(file));
- 	char *buffer;
- 	char *cmd;
--	int lcd_out, crt_out, tv_out;
-+	int lcd_out = -1, crt_out = -1, tv_out = -1;
- 	int remain = count;
- 	int value;
- 	int ret;
-@@ -1534,7 +1534,6 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
+diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+index 54a7eefe73d19..e3666232a19a8 100644
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -501,12 +501,6 @@ static void qeth_cleanup_handled_pending(struct qeth_qdio_out_q *q, int bidx,
  
- 	kfree(cmd);
+ 		}
+ 	}
+-	if (forced_cleanup && (atomic_read(&(q->bufs[bidx]->state)) ==
+-					QETH_QDIO_BUF_HANDLED_DELAYED)) {
+-		/* for recovery situations */
+-		qeth_init_qdio_out_buf(q, bidx);
+-		QETH_CARD_TEXT(q->card, 2, "clprecov");
+-	}
+ }
  
--	lcd_out = crt_out = tv_out = -1;
- 	ret = get_video_status(dev, &video_out);
- 	if (!ret) {
- 		unsigned int new_video_out = video_out;
+ 
 -- 
 2.27.0
 
