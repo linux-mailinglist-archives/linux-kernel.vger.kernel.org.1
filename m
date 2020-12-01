@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250DE2CADE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6872CADE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729615AbgLAU5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
+        id S1728154AbgLAVAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727555AbgLAU5L (ORCPT
+        with ESMTP id S1725971AbgLAVAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:57:11 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CE5C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:56:31 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id bj5so1878415plb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:56:31 -0800 (PST)
+        Tue, 1 Dec 2020 16:00:08 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B04C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:59:28 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id o7so954617pjj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:59:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eM5B4nr3Cj96c0CMfrS63GcaQxQ7JoKbUXWDaO/w/hc=;
-        b=jUifm+7nuTwCtKljBq98E3+TtyCZjBN4r9vPGtA31KmOsul01hRCH97eUQXC8GwbH/
-         C7i2rq9nkTRhgrCCtcZ3S8D+p6rmrYPGAkI8qxzpck3qL0M1i729OQVh44jnWLEebkeg
-         yiaS6qnZVJTF8Mmd5RmWbKpwhyf/lYAdIGlDk=
+        bh=/xp92MbdfOGxMs34FhXWWhWMRKc9mfpWP3SeaYIWAuM=;
+        b=cgNgwFqoY+WBXtcw/+ew5EzVBnDdN6R4Ad53YGqxtRpnzmYTS/jZJN0cC5wbb1OfFp
+         C1oVQk708EoNM1af2naJuj4PoE2oUGg7I63e+jBEKvZltn6FvfeHsikNCiLPpkuhjoR9
+         BL7mbc3B0S/RQoS/M8t/qDsTgdTIudWtp36GU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eM5B4nr3Cj96c0CMfrS63GcaQxQ7JoKbUXWDaO/w/hc=;
-        b=IAbAwP9iNMmP0KoR1/sn/QtXjaEWNnHyG+EaxStxQzk55aN+A8uD5m3/0D4sUeT1t+
-         Ie62f+rQotr9hiPOjvfrs81GNhqcnlW3v2TyouCUwlL1RJitE2ucBpUgKZg4Bb8GHibM
-         HT1Q/FSGQLq9DGAY4i2T4M6NkCUwnXzGLb7M9SEY+IfiJU+Vt1JsseYYAI8lDrbHVklu
-         TKZmWdki2BzQVBFmtFrMUP1qYzsI2GgYWk9e//Q2EIepDMhUUR7jhlaVEKg8WgPMfkoY
-         trMyYrnxA20ljFJrAoDsnkbUtCYwj29dwE3Ha9WMjwDww0IX/lOKE2J7HDdqex5ne2Tj
-         nojw==
-X-Gm-Message-State: AOAM530EmzOunhamJmGtDWdooP24RTLeppRgTSXBLi+/DQlXD6DGFabq
-        f/KfWQr7yorUeRk264SHqd83N3gajXC5ow==
-X-Google-Smtp-Source: ABdhPJzfzvwqmVM12Vqk1uIjHAiXcS/yoSMaRMutHljDGn8QBGiS4fmDmcSk67ItGQUDkZMQd6Ntfg==
-X-Received: by 2002:a17:902:8e81:b029:d9:f1a8:54ac with SMTP id bg1-20020a1709028e81b02900d9f1a854acmr4434841plb.69.1606856191096;
-        Tue, 01 Dec 2020 12:56:31 -0800 (PST)
+        bh=/xp92MbdfOGxMs34FhXWWhWMRKc9mfpWP3SeaYIWAuM=;
+        b=JPBybzhn7Y7e+HKsX5ebtSnoWvoTrmtq19ZjBt1GBUQMTJFDrSYwNYxinQtxyQkbdL
+         FxD1toM6BOtBaaVjcedRqyxNcMBkfo6K0elIH/N340kFbe9tyoctYIQ40D8O3Ec9bJkt
+         wyoq1QUbjRqNsd4DzVw43XoENhIGFFADARtzklfS3Ih/xafZhVzHi5fS3Wb0uCeNH+sc
+         7X+axOM68ulrHeMss67Rh4WC+GJAWLU5uHoCoa1cq4V7SQjgR3jQpAk/AlMXLBLMGBlN
+         TIcAESKXQjArtGYL6p3vUXJ8vc5xf6AHkaGtukiXV9aLHdZsbzEzrn2n5UPq4HC4hKte
+         O6+w==
+X-Gm-Message-State: AOAM532+xqDQlDSI3m0EqTDV2YNHy5cWue42RbbEbggKetJWcB21htkV
+        +oOd+Qaif5EE7w1h0l0bMBeKug==
+X-Google-Smtp-Source: ABdhPJy4Nlx7YUEzxifWv8pAev5FkGJZTqHO15Gj+Zv2RLwtUXlVyBzmWggUAPzozIEFT6nT0/pW2Q==
+X-Received: by 2002:a17:902:b498:b029:da:84a7:be94 with SMTP id y24-20020a170902b498b02900da84a7be94mr4661967plr.52.1606856367675;
+        Tue, 01 Dec 2020 12:59:27 -0800 (PST)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id l1sm534205pju.48.2020.12.01.12.56.30
+        by smtp.gmail.com with ESMTPSA id m9sm629385pfh.94.2020.12.01.12.59.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:56:30 -0800 (PST)
+        Tue, 01 Dec 2020 12:59:27 -0800 (PST)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>
 Cc:     Douglas Anderson <dianders@chromium.org>,
         dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm: panel: add flags to BOE NV110WTM-N61
-Date:   Tue,  1 Dec 2020 12:56:11 -0800
-Message-Id: <20201201125554.v2.1.I8a7bfc0966e803ab91001c9e6d01a736950c4981@changeid>
+Subject: [PATCH] drm: panel: Fully transition panel_desc kerneldoc to inline style
+Date:   Tue,  1 Dec 2020 12:59:12 -0800
+Message-Id: <20201201125822.1.I3c4191336014bd57364309439e56f600c94bb12b@changeid>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,10 +61,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I forgot to add these when posting up the support for BOE
-NV110WTM-N61.  Add them now.
+In commit 131f909ad55f ("drm: panel: simple: Fixup the struct
+panel_desc kernel doc") I transitioned the more deeply nested
+kerneldoc comments into the inline style.  Apparently it is desirable
+to continue the job and move _everything_ in this struct to inline.
+Let's do it.
 
-Fixes: a96ee0f6b58d ("drm: panel: simple: Add BOE NV110WTM-N61")
+While doing this, we also add a short summary for the whole struct to
+fix a warning when we run with extra warnings, AKA:
+  scripts/kernel-doc -v -rst drivers/gpu/drm/panel/panel-simple.c
+
+The warning was:
+  drivers/gpu/drm/panel/panel-simple.c:42: warning: missing initial short description on line:
+   * struct panel_desc
+
+Suggested-by: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Cc: Douglas Anderson <dianders@chromium.org>
 Cc: Sam Ravnborg <sam@ravnborg.org>
@@ -72,30 +83,86 @@ Cc: Thierry Reding <thierry.reding@gmail.com>
 Cc: dri-devel@lists.freedesktop.org
 ---
 
-Changes in v2:
-- Apply to the correct struct
-
- drivers/gpu/drm/panel/panel-simple.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/panel/panel-simple.c | 43 +++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 216cde33b5c4..1db4c10b4480 100644
+index 216cde33b5c4..33d53abdb1fb 100644
 --- a/drivers/gpu/drm/panel/panel-simple.c
 +++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -1407,6 +1407,7 @@ static const struct drm_display_mode boe_nv110wtm_n61_modes[] = {
- 		.vsync_start = 1440 + 3,
- 		.vsync_end = 1440 + 3 + 6,
- 		.vtotal = 1440 + 3 + 6 + 31,
-+		.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
- 	},
- 	{
- 		.clock = 138500,
-@@ -1418,6 +1419,7 @@ static const struct drm_display_mode boe_nv110wtm_n61_modes[] = {
- 		.vsync_start = 1440 + 3,
- 		.vsync_end = 1440 + 3 + 6,
- 		.vtotal = 1440 + 3 + 6 + 31,
-+		.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
- 	},
+@@ -39,31 +39,36 @@
+ #include <drm/drm_panel.h>
+ 
+ /**
+- * struct panel_desc
+- * @modes: Pointer to array of fixed modes appropriate for this panel.  If
+- *         only one mode then this can just be the address of this the mode.
+- *         NOTE: cannot be used with "timings" and also if this is specified
+- *         then you cannot override the mode in the device tree.
+- * @num_modes: Number of elements in modes array.
+- * @timings: Pointer to array of display timings.  NOTE: cannot be used with
+- *           "modes" and also these will be used to validate a device tree
+- *           override if one is present.
+- * @num_timings: Number of elements in timings array.
+- * @bpc: Bits per color.
+- * @size: Structure containing the physical size of this panel.
+- * @delay: Structure containing various delay values for this panel.
+- * @bus_format: See MEDIA_BUS_FMT_... defines.
+- * @bus_flags: See DRM_BUS_FLAG_... defines.
+- * @connector_type: LVDS, eDP, DSI, DPI, etc.
++ * struct panel_desc - Describes a simple panel.
+  */
+ struct panel_desc {
++	/**
++	 * @modes: Pointer to array of fixed modes appropriate for this panel.
++	 *
++	 * If only one mode then this can just be the address of this the mode.
++	 * NOTE: cannot be used with "timings" and also if this is specified
++	 * then you cannot override the mode in the device tree.
++	 */
+ 	const struct drm_display_mode *modes;
++
++	/** @num_modes: Number of elements in modes array. */
+ 	unsigned int num_modes;
++
++	/**
++	 * @timings: Pointer to array of display timings
++	 *
++	 * NOTE: cannot be used with "modes" and also these will be used to
++	 * validate a device tree override if one is present.
++	 */
+ 	const struct display_timing *timings;
++
++	/** @num_timings: Number of elements in timings array. */
+ 	unsigned int num_timings;
+ 
++	/** @bpc: Bits per color. */
+ 	unsigned int bpc;
+ 
++	/** @size: Structure containing the physical size of this panel. */
+ 	struct {
+ 		/**
+ 		 * @size.width: Width (in mm) of the active display area.
+@@ -76,6 +81,7 @@ struct panel_desc {
+ 		unsigned int height;
+ 	} size;
+ 
++	/** @delay: Structure containing various delay values for this panel. */
+ 	struct {
+ 		/**
+ 		 * @delay.prepare: Time for the panel to become ready.
+@@ -154,8 +160,13 @@ struct panel_desc {
+ 		unsigned int unprepare;
+ 	} delay;
+ 
++	/** @bus_format: See MEDIA_BUS_FMT_... defines. */
+ 	u32 bus_format;
++
++	/** @bus_flags: See DRM_BUS_FLAG_... defines. */
+ 	u32 bus_flags;
++
++	/** @connector_type: LVDS, eDP, DSI, DPI, etc. */
+ 	int connector_type;
  };
  
 -- 
