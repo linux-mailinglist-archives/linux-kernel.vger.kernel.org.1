@@ -2,188 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E76D2CA3FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C36F2CA400
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730058AbgLANig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729213AbgLANig (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:38:36 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA75C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 05:37:55 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id p21so777564pjv.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 05:37:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RY+mbu7Kl1ygpq4GVXoYJlYC5IXEp5grIuI4NfzAZkA=;
-        b=yiY4G7I7VbBsdfNgm4ThdpuEh7iRMyPgHeE8cpx3b+QI4tnRg1+qzMslmFCWtaOe2n
-         mgNNiTIKM7t5pl0KZWN5Mju2qP6U6sdQD0+Bkj0K/5vWF+anZbAW4tbKJEq5VbxR/2e2
-         xh+yqySkoEbVCxYcn8Wi3rZAGjqsUNaoOkwdHrDG1K8reIrZU6s4wzaTkWbnLUmP2s5w
-         +QfXYy37oqQLR+fFWPAwC/XEbq+OUV6qDcuTyH0Q3zpkWU2VJy2w/UitorGURWWUVZ1r
-         sPjya/NlGEVDLLrxJw/ggRmlOZvUT+FqHBRsoH0pb90glwkCpqcPNG9WQveg0pMJXfIO
-         hFVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RY+mbu7Kl1ygpq4GVXoYJlYC5IXEp5grIuI4NfzAZkA=;
-        b=YZKKnbUAX/IZzlHAJ9kHCZZh6FJGlrJPk24+gJN/3FTXPf3vZwmltH2gd7skSz6KhN
-         U8OAM9V9jR5Qsv98cH9OIYcnjDX2ggcPHnpUnJ9dns14qR2O68+OVLEKawhtgirZzW+i
-         7zgE4py3v5LLhwrXTfqGidjVXP7NxMvuAIazP0Do0KTTSQohCsU714Nf/2gzrvN4flvc
-         gQstNdXs13cMXDj35gWHJkCSo/aFROnB7QFEfDkZmFowaNL4q2ZI1P3T3Edz7jBDeJyt
-         sigNJRe0/6cvV4p9smaQyh+5zQaej2RwKTNnIUyObKAKZW4ztzK9At31n6JF49jfDHU0
-         yyLg==
-X-Gm-Message-State: AOAM531sCFIgRV6k0MMLcTmCcVQVzT6rNskGmnG+gXfrr3DvPWZMNXVI
-        kYXuHNIWxxZ6UgYDTn7Yo5OO
-X-Google-Smtp-Source: ABdhPJz4OcKskL14b3zM4fgk2dwBWLoVO0nGRnJR4kzOMYJcKWHCEbt8/efyZqYdbRVT3VudMVuNNg==
-X-Received: by 2002:a17:90a:9381:: with SMTP id q1mr2744492pjo.127.1606829875346;
-        Tue, 01 Dec 2020 05:37:55 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id j19sm2796383pff.74.2020.12.01.05.37.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Dec 2020 05:37:54 -0800 (PST)
-Date:   Tue, 1 Dec 2020 19:07:48 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Siddartha Mohanadoss <smohanad@codeaurora.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] bus: mhi: core: Fix error handling in
- mhi_register_controller()
-Message-ID: <20201201133748.GC9748@work>
-References: <X8XqbtkPpEKSfFi2@mwanda>
+        id S2391071AbgLANje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:39:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387833AbgLANje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:39:34 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D1B420770;
+        Tue,  1 Dec 2020 13:38:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606829933;
+        bh=8gXTmmt3DC0RXbInO+Zci/DBi8m+p2naqAk0DIDMcaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MflhGLRXgGztHCmreYipYZgom3arJ1Ub0aepQzQ9zY+Kk9zZlg+xvj6QWHJnRvBqA
+         DP4dbJ+JWGJQcWBIthmndF+I1IGGH+/JSCC+bsJbxhW1EyBEeHRjf9PQH4Jpt9cPMi
+         BHVojB8FFaUi2ur1lt1OmyhSoubGr9oU2XOirSww=
+Date:   Tue, 1 Dec 2020 13:38:47 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Guenter Roeck <linux@roeck-us.net>, rafael@kernel.org,
+        viresh.kumar@linaro.org, mingo@kernel.org, x86@kernel.org,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 1/2] sched/idle: Fix arch_cpu_idle() vs tracing
+Message-ID: <20201201133846.GA26973@willie-the-truck>
+References: <20201120114145.197714127@infradead.org>
+ <20201120114925.594122626@infradead.org>
+ <20201130210003.GA40619@roeck-us.net>
+ <20201201110209.GQ3040@hirez.programming.kicks-ass.net>
+ <yt9dh7p54u50.fsf@linux.ibm.com>
+ <20201201125246.GV2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X8XqbtkPpEKSfFi2@mwanda>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201201125246.GV2414@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:02:54AM +0300, Dan Carpenter wrote:
-> There are a few problems with the error handling in this function.  They
-> mostly center around the alloc_ordered_workqueue() allocation.
-> 1) If that allocation fails or if the kcalloc() prior to it fails then
-> it leads to a NULL dereference when we call
-> destroy_workqueue(mhi_cntrl->hiprio_wq).
-> 2) The error code is not set.
-> 3) The "mhi_cntrl->mhi_cmd" allocation is not freed.
+On Tue, Dec 01, 2020 at 01:52:46PM +0100, Peter Zijlstra wrote:
+> On Tue, Dec 01, 2020 at 12:56:27PM +0100, Sven Schnelle wrote:
+> > Peter Zijlstra <peterz@infradead.org> writes:
+> > > On Mon, Nov 30, 2020 at 01:00:03PM -0800, Guenter Roeck wrote:
+> > >> On Fri, Nov 20, 2020 at 12:41:46PM +0100, Peter Zijlstra wrote:
+> > >> > We call arch_cpu_idle() with RCU disabled, but then use
+> > >> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
+> > >> > 
+> > >> > Switch all arch_cpu_idle() implementations to use
+> > >> > raw_local_irq_{en,dis}able() and carefully manage the
+> > >> > lockdep,rcu,tracing state like we do in entry.
+> > >> > 
+> > >> > (XXX: we really should change arch_cpu_idle() to not return with
+> > >> > interrupts enabled)
+> > >> > 
+> > >> 
+> > >> Has this patch been tested on s390 ? Reason for asking is that it causes
+> > >> all my s390 emulations to crash. Reverting it fixes the problem.
+> > >
+> > > My understanding is that it changes the error on s390. Previously it
+> > > would complain about the local_irq_enable() in arch_cpu_idle(), now it
+> > > complains when taking an interrupt during idle.
+> > 
+> > I looked into adding the required functionality for s390, but the code
+> > we would need to add to entry.S is rather large - as you noted we would
+> > have to duplicate large portions of irqentry_enter() into our code.
+> > Given that s390 was fine before that patch, can you revert it and submit
+> > it again during the next merge window?
 > 
-> The error handling was slightly confusing and I re-ordered it to be in
-> the exact mirror/reverse order of how things were allocated.  I changed
-> the label names to say what the goto does instead of describing where
-> the goto comes from.
-> 
-> Fixes: 8f7039787687 ("bus: mhi: core: Move to using high priority workqueue")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> I'm not sure I understand how s390 was fine without it, let me consdier.
+> Also, what's the status of ARM64, they do need this too.
 
-Applied to mhi-next!
+We've got the batch of fixes from Mark queued for -rc7:
 
-Thanks,
-Mani
+https://fixes.arm64.dev/
 
-> ---
->  drivers/bus/mhi/core/init.c | 29 ++++++++++++++---------------
->  1 file changed, 14 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 96cde9c0034c..f0697f433c2f 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -871,7 +871,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  				     sizeof(*mhi_cntrl->mhi_cmd), GFP_KERNEL);
->  	if (!mhi_cntrl->mhi_cmd) {
->  		ret = -ENOMEM;
-> -		goto error_alloc_cmd;
-> +		goto err_free_event;
->  	}
->  
->  	INIT_LIST_HEAD(&mhi_cntrl->transition_list);
-> @@ -886,7 +886,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  				("mhi_hiprio_wq", WQ_MEM_RECLAIM | WQ_HIGHPRI);
->  	if (!mhi_cntrl->hiprio_wq) {
->  		dev_err(mhi_cntrl->cntrl_dev, "Failed to allocate workqueue\n");
-> -		goto error_alloc_cmd;
-> +		ret = -ENOMEM;
-> +		goto err_free_cmd;
->  	}
->  
->  	mhi_cmd = mhi_cntrl->mhi_cmd;
-> @@ -932,7 +933,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  	ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs,
->  			   SOC_HW_VERSION_OFFS, &soc_info);
->  	if (ret)
-> -		goto error_alloc_dev;
-> +		goto err_destroy_wq;
->  
->  	mhi_cntrl->family_number = (soc_info & SOC_HW_VERSION_FAM_NUM_BMSK) >>
->  					SOC_HW_VERSION_FAM_NUM_SHFT;
-> @@ -946,7 +947,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  	mhi_cntrl->index = ida_alloc(&mhi_controller_ida, GFP_KERNEL);
->  	if (mhi_cntrl->index < 0) {
->  		ret = mhi_cntrl->index;
-> -		goto error_ida_alloc;
-> +		goto err_destroy_wq;
->  	}
->  
->  	/* Register controller with MHI bus */
-> @@ -954,7 +955,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  	if (IS_ERR(mhi_dev)) {
->  		dev_err(mhi_cntrl->cntrl_dev, "Failed to allocate MHI device\n");
->  		ret = PTR_ERR(mhi_dev);
-> -		goto error_alloc_dev;
-> +		goto err_ida_free;
->  	}
->  
->  	mhi_dev->dev_type = MHI_DEVICE_CONTROLLER;
-> @@ -967,7 +968,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  
->  	ret = device_add(&mhi_dev->dev);
->  	if (ret)
-> -		goto error_add_dev;
-> +		goto err_release_dev;
->  
->  	mhi_cntrl->mhi_dev = mhi_dev;
->  
-> @@ -975,19 +976,17 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  
->  	return 0;
->  
-> -error_add_dev:
-> +err_release_dev:
->  	put_device(&mhi_dev->dev);
-> -
-> -error_alloc_dev:
-> +err_ida_free:
->  	ida_free(&mhi_controller_ida, mhi_cntrl->index);
-> -
-> -error_ida_alloc:
-> +err_destroy_wq:
-> +	destroy_workqueue(mhi_cntrl->hiprio_wq);
-> +err_free_cmd:
->  	kfree(mhi_cntrl->mhi_cmd);
-> -
-> -error_alloc_cmd:
-> -	vfree(mhi_cntrl->mhi_chan);
-> +err_free_event:
->  	kfree(mhi_cntrl->mhi_event);
-> -	destroy_workqueue(mhi_cntrl->hiprio_wq);
-> +	vfree(mhi_cntrl->mhi_chan);
->  
->  	return ret;
->  }
-> -- 
-> 2.29.2
-> 
+which rely on Peter's patch:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/fixes&id=114e0a684753516ef4b71ccb55a8ebcfa8735edb
+
+There's room for consolidation and cleanup in future, but right now we've
+focussed purely on fixing things.
+
+Will
