@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC01D2CA81A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7AC2CA82C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392160AbgLAQVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:21:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392161AbgLAQVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:21:46 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A612822244;
-        Tue,  1 Dec 2020 16:21:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606839665;
-        bh=xP4j4dXsCh30TdsYod/HR//GppU6cYvfO1KKkPvjTqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n1yhp3E8gT7DGv2tlmpvZZHWpzg0LWNNQQfIxYQvkFibtA1EYqlA2q/0HNeCmrRcO
-         JtUwWVIfVMuNAfT+XS4Doat2hN51sW2T4H0+cEfpJFw4pHKcVr5irWXGYd/o8uzXC8
-         E5YZAmgfjOWgiNuhbuqhE8jNqObxHmf8YnndbIfk=
-Date:   Tue, 1 Dec 2020 16:20:35 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-Message-ID: <20201201162035.GK5239@sirena.org.uk>
-Mail-Followup-To: Linus Walleij <linus.walleij@linaro.org>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel <letux-kernel@openphoenux.org>
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
- <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com>
- <20201201121620.GB5239@sirena.org.uk>
- <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com>
- <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
+        id S1726303AbgLAQXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:23:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51131 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725986AbgLAQXr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:23:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606839740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uaNc1bG02ND+drTHBuHv0YOXrPi3zYs4BlR7gJGzseU=;
+        b=jOWUtgaMWW27CJfhds5ZWEN4x1PJvtz0lghyEVa+TkmNyZP/CFM5bmmvjCACcGJ9s808Al
+        aNn52C4b0ml1sR6GycbNwqxUeMdO4+eoWHlpKpNdgd3hvn2me1wAY+Fpij5CaY1ysWKaBH
+        O+W44vetvNw7ptQYoeEwOjIl68+K/tg=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-gypuPnSvNwGcLJ5jyVJ0Ig-1; Tue, 01 Dec 2020 11:22:18 -0500
+X-MC-Unique: gypuPnSvNwGcLJ5jyVJ0Ig-1
+Received: by mail-wm1-f71.google.com with SMTP id z16so991378wma.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:22:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uaNc1bG02ND+drTHBuHv0YOXrPi3zYs4BlR7gJGzseU=;
+        b=G37opZAncyQ3ZcwZE8u2zpRVxK4mOBiamYgQ69GYv7Wlupb65Udx9427klnfOHBp67
+         U+YRNNHMM1YD5SUOYVFC+duBgvEUxAFz3sFMCQAJerUNQCeZSHll3CGr7tQa5jt+MjYu
+         4B4VEHoS+anE3r6n99PA7zAIFak2QoF+MpxxqR7IRGSjqiLO+4gq8mgew5SrndiXcbSv
+         WBUHc8b8AEJhx4UWuIluhr7Y3aEsf9od/2+Q8DOMUDKKzkxw3ZXZ5VN7IM0TnYrS2bA6
+         C+uCKf6S14JiFnAtNWmDTP65R31X4tzfOFfNS9XA/xVB9BbfORNKvvj/ReO8Ff4UYxXq
+         2qiA==
+X-Gm-Message-State: AOAM532TRbcjk+8E+YMtNfWJdHfVdHJUpOiuiCX/kzrza1pOWbZg64Om
+        LgA+2w/I1EFO+kFWzWRzOH5+LatrufyT6mxuVfb/Fy+p+1uQuE1ZRgi/KBps4+OzlAkPoxzH3FE
+        luATHD3lXc+BQVkF2Xbx08Q4r
+X-Received: by 2002:a1c:e084:: with SMTP id x126mr3496712wmg.109.1606839736564;
+        Tue, 01 Dec 2020 08:22:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxL+nBC5nM1oqnfl74075vP/XvG9KeD2bzHCX+2QK5ZsH1NiuYezbXRvPOoOc3keUvrKOCleg==
+X-Received: by 2002:a1c:e084:: with SMTP id x126mr3496684wmg.109.1606839736355;
+        Tue, 01 Dec 2020 08:22:16 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id o2sm66934wrq.37.2020.12.01.08.22.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 08:22:15 -0800 (PST)
+Date:   Tue, 1 Dec 2020 17:22:13 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Andra Paraschiv <andraprs@amazon.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v1 2/3] virtio_transport_common: Set sibling VMs
+ flag on the receive path
+Message-ID: <20201201162213.adcshbtspleosyod@steredhat>
+References: <20201201152505.19445-1-andraprs@amazon.com>
+ <20201201152505.19445-3-andraprs@amazon.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7ArrI7P/b+va1vZ8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201201152505.19445-3-andraprs@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 01, 2020 at 05:25:04PM +0200, Andra Paraschiv wrote:
+>The vsock flag can be set during the connect() setup logic, when
+>initializing the vsock address data structure variable. Then the vsock
+>transport is assigned, also considering this flag.
+>
+>The vsock transport is also assigned on the (listen) receive path. The
+>flag needs to be set considering the use case.
+>
+>Set the vsock flag of the remote address to the one targeted for sibling
+>VMs communication if the following conditions are met:
+>
+>* The source CID of the packet is higher than VMADDR_CID_HOST.
+>* The destination CID of the packet is higher than VMADDR_CID_HOST.
+>
+>Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+>---
+> net/vmw_vsock/virtio_transport_common.c | 8 ++++++++
+> 1 file changed, 8 insertions(+)
+>
+>diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>index 5956939eebb78..871c84e0916b1 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -1062,6 +1062,14 @@ virtio_transport_recv_listen(struct sock *sk, struct virtio_vsock_pkt *pkt,
+> 	vsock_addr_init(&vchild->remote_addr, le64_to_cpu(pkt->hdr.src_cid),
+> 			le32_to_cpu(pkt->hdr.src_port));
+>
 
---7ArrI7P/b+va1vZ8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Maybe is better to create an helper function that other transports can 
+use for the same purpose or we can put this code in the 
+vsock_assign_transport() and set this flag only when the 'psk' argument 
+is not NULL (this is the case when it's called by the transports when we 
+receive a new connection request and 'psk' is the listener socket).
 
-On Tue, Dec 01, 2020 at 03:20:12PM +0100, Linus Walleij wrote:
+The second way should allow us to support all the transports without 
+touching them.
 
-> The reason why I shoot in the dark to convert all SPI
-> drivers to use GPIO descriptors instead of the global
-> GPIO numberspace is detailed in drivers/gpio/TODO
-> so I will not repeat it here.
+>+	/* If the packet is coming with the source and destination CIDs higher
+>+	 * than VMADDR_CID_HOST, then a vsock channel should be established for
+>+	 * sibling VMs communication.
+>+	 */
+>+	if (vchild->local_addr.svm_cid > VMADDR_CID_HOST &&
+>+	    vchild->remote_addr.svm_cid > VMADDR_CID_HOST)
+>+		vchild->remote_addr.svm_flag = VMADDR_FLAG_SIBLING_VMS_COMMUNICATION;
 
-> I don't know if much can be done about it other than
-> having better programmers than me at the task. Or
-> less tired when they write the patch. etc.
+svm_flag is always initialized to 0 in vsock_addr_init(), so this 
+assignment is the first one and it's okay, but to avoid future issues 
+I'd use |= here to set the flag.
 
-I think the problem here is more to do with where we started than where
-we're going or how we got there - things have been glued together or
-happened to work in ways that mean I'm not sure we reasonably understand
-the situation we started from or all the requirements it has.  As you
-say I'm not sure anything beyond throwing the API away and starting
-afresh would really help here, but that's not really how we tend to do
-things for a bunch of very good reasons.
+Thanks,
+Stefano
 
---7ArrI7P/b+va1vZ8
-Content-Type: application/pgp-signature; name="signature.asc"
+>+
+> 	ret = vsock_assign_transport(vchild, vsk);
+> 	/* Transport assigned (looking at remote_addr) must be the same
+> 	 * where we received the request.
+>-- 2.20.1 (Apple Git-117)
+>
+>
+>
+>
+>Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GbVMACgkQJNaLcl1U
-h9DRFQf/bvSVNPMLgac30kzXhteF7a25VMyxoCwA6rMBM8pqRmBuy3rZSeU7A1eb
-065JN5kiKk0oHCUj59v3YYEmXmr1pCS8GFfR47Lak2Zj1mRFxBQyNp8/C+C0qYfg
-iwPhAiMgszQTNBYveu7xaHc1fFBx0Lp6LXPH+A9UgH5U2ZBlBZvVpKlPyU98xL8p
-ViWfwrdZ1c/haC4/O5IunDU7zCueemxw6+2diHFBPZw9FhrdKaBMl2bU7+kNo/1b
-28VqPrgsyz8E1ajLnBlFr4QV6cPcs7R8dMw5Haq2Re/yPz8Mfhf5QWqO9BIeEigm
-4w6MUZgsKQ9ZPPtsiQT7AxpSXqOOCw==
-=pEP0
------END PGP SIGNATURE-----
-
---7ArrI7P/b+va1vZ8--
