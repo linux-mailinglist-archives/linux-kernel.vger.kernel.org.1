@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75632CA5E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123022CA5EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391623AbgLAOjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:39:33 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40354 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391368AbgLAOjd (ORCPT
+        id S2391639AbgLAOkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:40:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42762 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389462AbgLAOkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:39:33 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 1E32E1F44B45
-Subject: Re: [PATCH] media: rockchip: rkisp1: remove some dead code
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <X8TrSj3PbqVtN5XQ@mwanda>
- <a6d9660f-84ec-317d-c3aa-9b3bda595d49@collabora.com>
- <20201201142754.GI2767@kadam>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <cedd1dd1-36c5-ff63-4092-e5f6b40e6286@collabora.com>
-Date:   Tue, 1 Dec 2020 11:38:33 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 09:40:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606833535;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ld3EJGeffzGbwS28b30MuPmMHEkVkjE+LANi/PtEf7w=;
+        b=R+msJP2xtHNpFn/o8rczq4VmIeOGAc4dDcwcWGvAEpI9s6YR5xHDEzxcZ6s2mxk/+1gWei
+        pwZtCw3Igc83TOPkFPUF2MXqvAhr7QIzgph/LctmNzOJ/EzsRrxvSP/eJWpjI6xb3hESdB
+        A0BqHSO0awRQHAHDPwzzThGhQWWJwww=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-kdQZuW_kOi2c4cBB98Hy5Q-1; Tue, 01 Dec 2020 09:38:51 -0500
+X-MC-Unique: kdQZuW_kOi2c4cBB98Hy5Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E352CF984;
+        Tue,  1 Dec 2020 14:38:38 +0000 (UTC)
+Received: from holly.tpb.lab.eng.brq.redhat.com (holly.tpb.lab.eng.brq.redhat.com [10.43.134.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DAC9C6EF57;
+        Tue,  1 Dec 2020 14:38:36 +0000 (UTC)
+From:   Miroslav Lichvar <mlichvar@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: [PATCH] rtc: adapt allowed RTC update error
+Date:   Tue,  1 Dec 2020 15:38:35 +0100
+Message-Id: <20201201143835.2054508-1-mlichvar@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201201142754.GI2767@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+When the system clock is marked as synchronized via adjtimex(), the
+kernel is expected to copy the system time to the RTC every 11 minutes.
 
-On 12/1/20 11:27 AM, Dan Carpenter wrote:
-> On Mon, Nov 30, 2020 at 11:20:05AM -0300, Helen Koike wrote:
->> Hi Dan,
->>
->> Thank you for your patch.
->>
->> On 11/30/20 9:53 AM, Dan Carpenter wrote:
->>> The debugfs_create_dir() function never returns NULLs.  It's not supposed
->>> to checked for errors in the normal case and there is no need to check
->>> in this function so let's just delete this dead code.
->>>
->>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->>> ---
->>>  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 4 ----
->>>  1 file changed, 4 deletions(-)
->>>
->>> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->>> index 9af137e4967f..68da1eed753d 100644
->>> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->>> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->>> @@ -430,10 +430,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
->>>  	struct rkisp1_debug *debug = &rkisp1->debug;
->>>  
->>>  	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
->>> -	if (!debug->debugfs_dir) {
->>> -		dev_dbg(rkisp1->dev, "failed to create debugfs directory\n");
->>> -		return;
->>> -	}
->>
->> I was taking a look at the debugfs_create_dir() code, and I saw it can
->> return ERR_PTR(), so ideally we should check for errors with IS_ERR() / PTR_ERR().
-> 
-> Debugfs functions aren't meant to be error checked in the normal case.
-> There are some drivers which dereference the dentry pointer so those
-> need to check it but that's not very common and isn't the case here.
+There are reports that it doesn't always work reliably. It seems the
+current requirement for the RTC update to happen within 5 ticks of the
+target time in some cases can consistently fail for hours or even days.
 
-right, I just saw the functions in inode.c already checks the parent with
-IS_ERR(). the debugfs_create_*() function calls start_creating() which
-already checks the parent.
+It is better to set the RTC with a larger error than let it drift for
+too long.
 
-ok, fair enough, I'll ack v2.
+Add a static variable to rtc_tv_nsec_ok() to count the checks. With each
+failed check, relax the requirement by one jiffie, and reset the counter
+when it finally succeeds. This should allow the RTC update to happen in
+a minute at most.
 
-Regards,
-Helen
+Signed-off-by: Miroslav Lichvar <mlichvar@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Prarit Bhargava <prarit@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+---
+ include/linux/rtc.h | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-> 
-> I'm really sure this must be documented somewhere but I can't find it
-> at all.  :P  But look at commit 057e212eae72 ("media: usb: uvc: no need
-> to check return value of debugfs_create functions") for example.
-> 
-> regards,
-> dan carpenter
-> 
+diff --git a/include/linux/rtc.h b/include/linux/rtc.h
+index 22d1575e4991..8d105f10ef6a 100644
+--- a/include/linux/rtc.h
++++ b/include/linux/rtc.h
+@@ -218,21 +218,30 @@ static inline bool rtc_tv_nsec_ok(s64 set_offset_nsec,
+ 				  struct timespec64 *to_set,
+ 				  const struct timespec64 *now)
+ {
+-	/* Allowed error in tv_nsec, arbitarily set to 5 jiffies in ns. */
+-	const unsigned long TIME_SET_NSEC_FUZZ = TICK_NSEC * 5;
+ 	struct timespec64 delay = {.tv_sec = 0,
+ 				   .tv_nsec = set_offset_nsec};
++	unsigned long time_set_nsec_fuzz;
++	static unsigned int attempt;
+ 
+ 	*to_set = timespec64_add(*now, delay);
+ 
+-	if (to_set->tv_nsec < TIME_SET_NSEC_FUZZ) {
++	/*
++	 * Determine allowed error in tv_nsec.  Start at 5 jiffies and add a
++	 * jiffie with each failed attempt to make sure the RTC will be set at
++	 * some point, even if the update cannot be scheduled very accurately.
++	 */
++	time_set_nsec_fuzz = (5 + attempt++) * TICK_NSEC;
++
++	if (to_set->tv_nsec < time_set_nsec_fuzz) {
+ 		to_set->tv_nsec = 0;
++		attempt = 0;
+ 		return true;
+ 	}
+ 
+-	if (to_set->tv_nsec > NSEC_PER_SEC - TIME_SET_NSEC_FUZZ) {
++	if (to_set->tv_nsec > NSEC_PER_SEC - time_set_nsec_fuzz) {
+ 		to_set->tv_sec++;
+ 		to_set->tv_nsec = 0;
++		attempt = 0;
+ 		return true;
+ 	}
+ 	return false;
+-- 
+2.26.2
+
