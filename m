@@ -2,148 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C93C2C9564
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9B12C9554
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgLACqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:46:39 -0500
-Received: from mga05.intel.com ([192.55.52.43]:2881 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgLACqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:46:39 -0500
-IronPort-SDR: PdAKlKeRl+6WeY7cZEQ9lB/uFzC5STHKaxXY2JfFR2AEETYk79ktXdHyRjvMMOQv/4sTuDza0g
- qNdnUQFsZ6Mw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="257461851"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="257461851"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:44:58 -0800
-IronPort-SDR: pAVrtwovzBP9hzHfyu8zxU+R0f0gt2Iwi81AK+urnntZmSqxVsG+61j+NQpE0IY+jLyKpFypoc
- SXUNg8NkifOQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="434495516"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Nov 2020 18:44:56 -0800
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        stable@kernel.vger.org
-Subject: Re: Question about domain_init (v5.3-v5.7)
-To:     Jerry Snitselaar <jsnitsel@redhat.com>
-References: <87h7pd6v2k.fsf@redhat.com>
- <bd1fd204-3596-b16c-5617-7e691ceac83b@linux.intel.com>
- <87a6v3hkd9.fsf@jsnitsel.users.ipa.redhat.com>
- <72a7b338-2481-8c0a-5641-6f448557f6ee@linux.intel.com>
- <87r1oaka46.fsf@redhat.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <da740dc6-0a03-afd5-b684-6f8109279d9b@linux.intel.com>
-Date:   Tue, 1 Dec 2020 10:37:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <87r1oaka46.fsf@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726956AbgLACjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:39:23 -0500
+Received: from mail-eopbgr140051.outbound.protection.outlook.com ([40.107.14.51]:48352
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726103AbgLACjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 21:39:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CWsqWYeGX++fVTFmFZHZdexvT915ZdjatLdet9pY+rVLNEoD8S3Ffp2RhzfQ1dJb6JD/G1taaqkZO6UOXP9hKC2Q0Mot/ahccb3Yuc4iYzCxq1R1dZcXcuzSzPwddD5Qhkh8WVHnIckMlr5dbV+evVJIgwYdTXppcvtd6rtDyi7yhAVf5OCC/I0M++avm+1ZNH0KJeDh0JkFYvptWrjjOdwWie2AmZyxiHKfpoHuZLUIZtoo4QwAWmoEFc0vc6ahwFSCH/RJk+I9gZ+S4S4z7bLdNO9p0RB4iyxkIqEaRQ03EUCKBzPG1fS6JVvzCWpXbi4Pjej/HvwPJfBGT5Nhfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LeRRzp15yMvGiKAdFjtG47jY5vEO2tfpbszZMVTsrxA=;
+ b=aGwkk3X1DvnHF1QU4qhXJounnBNTs60kJabKqWzjw8yM1Fg2n+LRoae7kXokAnk7HDGiB5UxU6tABU9/N7ieViVQvlGw0dpRnlQFjzkovsejI8/uqt99Z4Cl7es8gZpkAZLcW12hUCB921MZljt0XcElDy/cgYSw8x/936WcWiGKZrI3/T98DVbtkqWX42twTs7QziMSbTMYnEI6AaiybLm4bfnIscMInfZknZzqhk0Jb6OE47+yERvljB0Xc+RHHTxPnRgvZuZX//VlWmnViVTsI+NBp457PokT4/foccdJIw8weVJkR+a2iD+VTi818u2Ah6zDi638RCiX+OYx4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LeRRzp15yMvGiKAdFjtG47jY5vEO2tfpbszZMVTsrxA=;
+ b=rCURioND7RIlLiHa/L6Rd8lSQa3wgibXnchQrAbQK5GCUg7FkVKOyUfB0O3hFJu5lLx2jQLJUuJXoGDQJk8rT+lnLHXFtINcI2FKqafaMWNByNyA/KN5zSpeGObSZ7PjMmNg0Rs9pgU75l9HQYouHaPeG0vgf5bcaoqGAujrrlM=
+Received: from AM7PR04MB6885.eurprd04.prod.outlook.com (2603:10a6:20b:10d::24)
+ by AM7PR04MB6903.eurprd04.prod.outlook.com (2603:10a6:20b:10d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Tue, 1 Dec
+ 2020 02:38:33 +0000
+Received: from AM7PR04MB6885.eurprd04.prod.outlook.com
+ ([fe80::a90d:1d14:7235:b56f]) by AM7PR04MB6885.eurprd04.prod.outlook.com
+ ([fe80::a90d:1d14:7235:b56f%4]) with mapi id 15.20.3611.031; Tue, 1 Dec 2020
+ 02:38:33 +0000
+From:   "Y.b. Lu" <yangbo.lu@nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>, Michael Walle <michael@walle.cc>
+CC:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ashish Kumar <ashish.kumar@nxp.com>
+Subject: RE: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+ controllers use fixed indices
+Thread-Topic: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+ controllers use fixed indices
+Thread-Index: AQHWvovBvcqJCTixR025fdiTeTkR06nQRXqQgAB88ACABimgIIAAB1IAgAAEgOCAAAokAIAAAQaQgAAZ0oCAAARV8IAAC5AAgAD/ncCAAF+YgIAIQVaAgADLcWA=
+Date:   Tue, 1 Dec 2020 02:38:33 +0000
+Message-ID: <AM7PR04MB68854DC5F2C391130581FD8DF8F40@AM7PR04MB6885.eurprd04.prod.outlook.com>
+References: <VI1PR04MB6896C22F6B304F365C3BA626F8FB0@VI1PR04MB6896.eurprd04.prod.outlook.com>
+ <71a86b0fbc95892f8fd240e0919e7e23@walle.cc>
+ <AM7PR04MB6885CA8A965A49C456454254F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <3293d698bf26ecf08f22e7e2ffe55e74@walle.cc>
+ <AM7PR04MB688518B8AE836C2CC37FED6AF8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <20201124103128.zucizod344dgme4o@skbuf>
+ <AM7PR04MB688567CA698191E2DB73DEF5F8FB0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <20201124112822.2ui57jmoc73top35@skbuf>
+ <AM7PR04MB688524B26F99EB2C5B86ED48F8FA0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <31db48954bdf02fc0af73871043fc76b@walle.cc> <20201130142918.GJ4072@dragon>
+In-Reply-To: <20201130142918.GJ4072@dragon>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1f2dfef9-3c0d-4546-d3b5-08d895a2322b
+x-ms-traffictypediagnostic: AM7PR04MB6903:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM7PR04MB69030ADD36FB47DAED2AB355F8F40@AM7PR04MB6903.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TVW0So0TFqnpEzYFGpAs1CVhgt1k8HFgHOswkbCUgW6UulpK77wmrOrLY/cWE1dqMqTsZ6Cc1424c7OEbvYKs1cTe1YrHj/UrVgEIM+pFhX3Jl/DEJRh+HqYKv44MPMPl/JnpuFQfKwNffgFfL28HSlx/SBTAHeDxIBAXGCsxpa94JEpmrKUp+PwCIIzyEIZOKF6EORmjy1CjJ7B1QRbhuqQ/E94/YzO0ddW+mwHvuhBsZlLaUCYbGWv8yKNA9Z+cpqxeFmdHuOg9aew5+B6pcimcsfTrDX1geYZ9QOues69VJPVDjpl9TB54q4IQmteHdYIxxhdnAuXorGoy5Vp0Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6885.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(376002)(346002)(136003)(396003)(52536014)(4326008)(5660300002)(71200400001)(86362001)(2906002)(66946007)(66556008)(66446008)(64756008)(76116006)(9686003)(478600001)(110136005)(7696005)(316002)(54906003)(8676002)(55016002)(66476007)(8936002)(186003)(6506007)(26005)(33656002)(53546011)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?qih9OAtCpwYixQkLrDOg/tLZKsrzFJVF+6Asl1WoocoURjrhBqb5LE41V/h4?=
+ =?us-ascii?Q?M+rZSuoppeitmo7Zu8chAXT+tIu0ULE8fXR76G2XMAPOasTEXsRbtd05nawY?=
+ =?us-ascii?Q?KodGnF+KtvN1xUgpzwVXEwmKDuDV0H4NGKA8pp3TtbsdeNxMLjisN5u0HT/O?=
+ =?us-ascii?Q?mchD+U85rAefYXwcch4oh91RXeK38t5FR8GhElaiIJSCYc6QiAUcv/U0vVWQ?=
+ =?us-ascii?Q?wGW6UqsWTupa9wtzfGaG/X+CnzwmyFPMZ2+LnhnJwIo8AIfymH1Dg0f3BVJj?=
+ =?us-ascii?Q?OnXnmaYRgich5abywF7SIozhsYAmjGIcMf7SC1APOF8L8JLu23wxtYwQOTjG?=
+ =?us-ascii?Q?vv8Iw/EYzeRnH+XpQJxQG5efptNuEQ3fHklwSifIWrF9o5LuinK25FygYwOG?=
+ =?us-ascii?Q?Rhm8MPnw6btEI9Rncj4W/hcj/oDyBEoVjMLP3HqhzvTxyIhQhBOv2m/dyoJS?=
+ =?us-ascii?Q?pTcwT5I4Pkrdv31eIhqVEb5UWd0bGA5/euCNE69NQPhF7+656FdDseEZBITl?=
+ =?us-ascii?Q?6kat5IYxrmVWW6e4O82RcoE8mFV4OE1Bs0+ouyrrhK3bDMBqds1IEdu4Jtdv?=
+ =?us-ascii?Q?crfhInbEPBliC4woPZhpgZSVE7I+AIwwxJz4Mau83aeo2gjSVpUkhn1D2uqF?=
+ =?us-ascii?Q?+gWc11Ef9W8xG5J1V5d+LURP287N1yAfNc5bZ8eCmToR5XcRKhMVH8qfUhJk?=
+ =?us-ascii?Q?gLeDVRsgOdD62VkEGi/FWRqATtXuufWUmPfVGEmGCLdaN8Rc9Xs44RavUaqM?=
+ =?us-ascii?Q?uR6miSpQBiiXFryw7G5vemh6KYx5AkCv3pblb+sVfus3BZB8vLtqMoMUQkYK?=
+ =?us-ascii?Q?tjIKILeqAgXCoBwCDgEaioaymhMCflWYPf375ymSp9u+GAn/rg4zASII0ZaX?=
+ =?us-ascii?Q?UzlvQmNfy4wTRbakLtR6az9229lj1icPrslfJJY7cBlkLFimYsl6+tUuYL1r?=
+ =?us-ascii?Q?IPlz/tdo13N/xeC0L8MUrdzhaUi7F8y1N3WvdPu7qmE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6885.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f2dfef9-3c0d-4546-d3b5-08d895a2322b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 02:38:33.1600
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hIae2l1rQgW1xjZomShIsq96pgBdrUWGaLyE3jOunVk8jZDenT9Sb+m0BCY9HavCAiiRvpDSGkZo2e4uDl6IQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6903
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jerry,
+> -----Original Message-----
+> From: Shawn Guo <shawnguo@kernel.org>
+> Sent: Monday, November 30, 2020 10:29 PM
+> To: Michael Walle <michael@walle.cc>
+> Cc: Y.b. Lu <yangbo.lu@nxp.com>; Vladimir Oltean
+> <vladimir.oltean@nxp.com>; Leo Li <leoyang.li@nxp.com>; Rob Herring
+> <robh+dt@kernel.org>; linux-arm-kernel@lists.infradead.org;
+> devicetree@vger.kernel.org; Adrian Hunter <adrian.hunter@intel.com>; Ulf
+> Hansson <ulf.hansson@linaro.org>; linux-mmc@vger.kernel.org;
+> linux-kernel@vger.kernel.org; Ashish Kumar <ashish.kumar@nxp.com>
+> Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
+> controllers use fixed indices
+>=20
+> On Wed, Nov 25, 2020 at 09:25:23AM +0100, Michael Walle wrote:
+> > We are going cirlces here. I guess Shawn (as the soc maintainer) has to
+> > step in and decide if a common soc include should contain aliases for
+> > nodes which are disabled. That is what it boils down to.
+> >
+> > All other arguments against having aliases in the common include can be
+> > found in this thread.
+> >
+> > > Distros, bootloaders, and users' cases using fixed index before could
+> > > avoid issues, and been used as they were.
+> >
+> > Nobody argue against having these alias. We are arguing against having
+> > them in the common soc include.
+>=20
+> 342ab37ecaf8 ("arm64: dts: freescale: use fixed index mmcN for
+> layerscape") is dropped from my tree.
 
-On 12/1/20 1:50 AM, Jerry Snitselaar wrote:
-> 
-> Lu Baolu @ 2020-11-26 19:12 MST:
-> 
->> Hi Jerry,
->>
->> On 11/27/20 5:35 AM, Jerry Snitselaar wrote:
->>> Lu Baolu @ 2020-11-26 04:01 MST:
->>>
->>>> Hi Jerry,
->>>>
->>>> On 2020/11/26 4:27, Jerry Snitselaar wrote:
->>>>> Is there a reason we check the requested guest address width against
->>>>> the
->>>>> iommu's mgaw, instead of the agaw that we already know for the iommu?
->>>>> I've run into a case with a new system where the mgaw reported is 57,
->>>>> but if they set PAE to 46 instead of 52 in the bios, then sagaw reports
->>>>> the highest supported agaw is 48 and the domain_init code fails here. In
->>>>
->>>> Isn't this a platform bug? If it's too late to fix it in the BIOS, you
->>>> maybe have to add a platform specific quirk to set mgaw to the highest
->>>> supported agaw?
->>>>
->>>> Best regards,
->>>> baolu
->>> Is there somewhere you can point me to that discusses how they
->>> should be
->>> setting the mgaw? I misunderstood when I previously asked you about
->>> whether the mgaw could be a value that was greater than any of sagaw.
->>> If it is a bios issue, then they should fix it there.
->>
->> MGAW indicates the max gpa width supported by 2nd translation. The VT-d
->> spec requires that this value must be at least equal to the host
->> physical addressibility. According to this, BIOS is good, right?
->>
->> For this failure case, domain_init() just wants to find a suitable agaw
->> for the private domain. I think it makes sense to check against
->> iommu->agaw instead of cap_mgaw.
->>
->> Best regards,
->> baolu
->>
-> 
->  From this bit in the spec about MGAW:
-> 
->      Guest addressability for a given DMA request is limited to the
->      minimum of the value reported through this field and the adjusted
->      guest address width of the corresponding page-table structure.
->      (Adjusted guest address widths supported by hardware are reported
->      through the SAGAW field).
-> 
-> That does suggest it should be adjusted down to the sagaw value in this case, yes?
-> Just want to make sure I'm understanding it correctly.
+Ok, fine. Let me send board dts patches for NXP development boards instead.
+Thanks.
 
-Yes. I think so.
-
-Best regards,
-baolu
-
-> 
->>>
->>>>
->>>>> other places like prepare_domain_attach_device, the dmar domain agaw
->>>>> gets adjusted down to the iommu agaw. The agaw of the iommu gets
->>>>> determined based off what is reported for sagaw. I'm wondering if it
->>>>> can't instead do:
->>>>> ---
->>>>>     drivers/iommu/intel-iommu.c | 4 ++--
->>>>>     1 file changed, 2 insertions(+), 2 deletions(-)
->>>>> diff --git a/drivers/iommu/intel-iommu.c
->>>>> b/drivers/iommu/intel-iommu.c
->>>>> index 6ca5c92ef2e5..a8e41ec36d9e 100644
->>>>> --- a/drivers/iommu/intel-iommu.c
->>>>> +++ b/drivers/iommu/intel-iommu.c
->>>>> @@ -1862,8 +1862,8 @@ static int domain_init(struct dmar_domain *domain, struct intel_iommu *iommu,
->>>>>     	domain_reserve_special_ranges(domain);
->>>>>     	/* calculate AGAW */
->>>>> -	if (guest_width > cap_mgaw(iommu->cap))
->>>>> -	        guest_width = cap_mgaw(iommu->cap);
->>>>> +	if (guest_width > agaw_to_width(iommu->agaw))
->>>>> +	        guest_width = agaw_to_width(iommu->agaw);
->>>>>     	domain->gaw = guest_width;
->>>>>     	adjust_width = guestwidth_to_adjustwidth(guest_width);
->>>>>     	agaw = width_to_agaw(adjust_width);
->>>>> --
->>>>> 2.27.0
->>>>>
->>>>> Thoughts? With the former code the ehci device for the ilo fails when
->>>>> trying to get a private domain.
->>>>> Thanks,
->>>>> Jerry
->>>>>
->>>
-> 
+>=20
+> Shawn
