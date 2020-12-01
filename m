@@ -2,124 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E642CA480
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960772CA496
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391462AbgLANxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:53:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391452AbgLANxm (ORCPT
+        id S2391505AbgLANzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:55:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40407 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388223AbgLANzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:53:42 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43382C0613CF;
-        Tue,  1 Dec 2020 05:52:56 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id i2so2746734wrs.4;
-        Tue, 01 Dec 2020 05:52:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=61ZF5C7WOPaSSyFKTA3Jd4EkoVpR2O0GmABB6DAtO/M=;
-        b=qPXC0hQO8OpdRZI104m8FraSMCwSpn+Et3stR+21jZOV9O3VXrd6HW4YZYKFF3+Ks+
-         aierhs90V6L+OmvFxDeym42bp7bQTW/q+RefaHc+QA7BBbjrhFrYonYBaR5QpVXOVjyW
-         kjJCIP9TJWGtxpmXssFodLlrYfQy6v2Yfb4DTwUThhf0IRP8S64JlEnO6z+9heefTbHF
-         N3y3NiLQPrsPP94v3GukxSOAasSoxPx8crAxnkcliVQwOpN7rwU3TYnVoH4S3RSWGf19
-         tFfvN5e7+eiD4uruVlKQ+mMviP2h5S+9MGgkYSLnJ0U71Ct52xWVFl1rsAFtr3tE0uq3
-         xqXw==
+        Tue, 1 Dec 2020 08:55:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606830865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Zlp63ghNuJN5qLaeR/Uw1vB64odm9laTGsc28DExrOk=;
+        b=OWC01J/1WG23dwKwtLykseX61rC1nRR0qqZgbSIsrthgPpYGg9kHnNuEgcUxq+muGfCkx9
+        efWRpXc4g4jJUAIE7KTR6fDH03o9p4E1nHk2jm8+axzqBDZyHViLP/M4xn4BITcx8mLM0/
+        z+CjXxU1DCGq9jKD7Ne85EYgCC7O3gI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-OLVTAZyhOryyOTjU7erF7Q-1; Tue, 01 Dec 2020 08:54:24 -0500
+X-MC-Unique: OLVTAZyhOryyOTjU7erF7Q-1
+Received: by mail-ed1-f70.google.com with SMTP id z20so1365411edi.22
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 05:54:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=61ZF5C7WOPaSSyFKTA3Jd4EkoVpR2O0GmABB6DAtO/M=;
-        b=M8QvL7h6xv705aiJqr4h2ucEgoPY3SuPlI10nSbF5rBOIzKgzNQkXubPR0y62rdeDj
-         lZ/nmnlBjYnzYLJHX9968Bv9HLJFN9CQWKRdQ55mvR+NdFWfyVrzFsHcRHidSog8QWsV
-         LMq1Ak3yAtUOmRf7wgs5lSaOdA3o8X1ZdNNKGq5hlgToF1RDvOzbIqi++vEv0xsIz0ba
-         2qk1Xl/osZJ9qpnH1xZhg1Bty3vPjGuBJC4ngyJ8SeFySLdkvD0yoDe11FJVuFS5b5Fi
-         P/C3MBVt20BI/QBnikySdB+sttgadgQtoM66WSKOFW6kZTSN3Cw3rdLd/oBYhk5cAoQd
-         EKMw==
-X-Gm-Message-State: AOAM531r5fYqclILZzZv5jXrL9253tsLw0mtujylU3cfu5UmMVgHtbP5
-        RRwz0V0Q8Rb/LMZEy6ip/tbs786ctq4=
-X-Google-Smtp-Source: ABdhPJzNqXDB+VXwYa+0PZjxxL8p3TimpJzCucLOvKCHK+ncKgnQg/CctWHRNkn4ceRMCJpSdRnwRA==
-X-Received: by 2002:adf:f602:: with SMTP id t2mr4138518wrp.40.1606830775033;
-        Tue, 01 Dec 2020 05:52:55 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id l8sm3567987wro.46.2020.12.01.05.52.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zlp63ghNuJN5qLaeR/Uw1vB64odm9laTGsc28DExrOk=;
+        b=L5xJ3OsrlZBLvsGfY6L9nBYIWwecbqdWzM7cBZ2vLykXCzhGpaFqqyCxWW+UCCEduL
+         rktoDP3sIfGfrnH+KJqPz1cE4aVM9cmvzfFYL6siIuKmOD2nK44U3GjbsK1fvfWpHxSH
+         iN9xlZZTASuzN7IWqonObiTVx9Xftcii3OcvfND96Mgsf/yXWN731tpQIPz6kmbwcm9k
+         CdjzKhQxEgkZy64so1ZnN1ZndapcZrBrPSbBMP/zGoZbcSsxcfoibQTHhdPc2dfnDhO1
+         Lf8fkvDcU/UMixfsnkfYAVhbZF9PRLgwq9/1/zdmCQ9PtiLR/kmyfRfXub9mTr4nbVga
+         lmbg==
+X-Gm-Message-State: AOAM530stwA7gReugY0rU4YQrzXXBtBThgG2339pVIhW/IaOWn2QrOm2
+        nU2lulFU7z1puZy1p/J7+nZ9utkBCmShvGMONK+EYMEOzqpz8BIbJoV2NPdguPT1AEx2Yu378Tn
+        B2gKgEk4KJBqvK9/nNyaNEeo2
+X-Received: by 2002:a17:906:1481:: with SMTP id x1mr3191921ejc.186.1606830862966;
+        Tue, 01 Dec 2020 05:54:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyuPYcp9AoEFo8pa7arudlzcI2mpRWw2XyW8S7Jv9w9oVSNDVtZazhpCPXvJRRBMa8nz9Wc0w==
+X-Received: by 2002:a17:906:1481:: with SMTP id x1mr3191900ejc.186.1606830862707;
+        Tue, 01 Dec 2020 05:54:22 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id p35sm890952edd.58.2020.12.01.05.54.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 05:52:54 -0800 (PST)
-Date:   Tue, 1 Dec 2020 14:52:52 +0100
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: crypto: sun4i-ss: error with kmap
-Message-ID: <20201201135252.GA9584@Red>
-References: <20201201130102.GA23461@Red>
- <87ft4phcyx.fsf@nanos.tec.linutronix.de>
+        Tue, 01 Dec 2020 05:54:22 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A70EE182EF0; Tue,  1 Dec 2020 14:54:20 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH] fs: 9p: add generic splice_read file operations
+Date:   Tue,  1 Dec 2020 14:54:09 +0100
+Message-Id: <20201201135409.55510-1-toke@redhat.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft4phcyx.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 02:28:54PM +0100, Thomas Gleixner wrote:
-> On Tue, Dec 01 2020 at 14:01, Corentin Labbe wrote:
-> > +[  213.050152] ------------[ cut here ]------------
-> > +[  213.050207] WARNING: CPU: 0 PID: 18430 at mm/highmem.c:581 kunmap_local_indexed+0x194/0x1d4
-> > +[  213.050214] Modules linked in: sm4_generic authenc vmac xcbc hmac streebog_generic sm3_generic sha3_generic crct10dif_generic crct10dif_common seed rmd320 rmd256 rmd160 rmd128 cts lzo lzo_compress salsa20_generic camellia_generic fcrypt pcbc tgr192 anubis wp512 khazad tea michael_mic arc4 cast6_generic cast5_generic cast_common deflate zlib_deflate sha512_generic cfb ofb serpent_generic lrw twofish_generic twofish_common blowfish_generic blowfish_common md4
-> > +[  213.050410] CPU: 0 PID: 18430 Comm: cryptsetup Not tainted 5.10.0-rc5-next-20201130-00059-gf7ecf0611042-dirty #242
-> > +[  213.050416] Hardware name: Allwinner sun7i (A20) Family
-> > +[  213.050448] [<c010d730>] (unwind_backtrace) from [<c010a218>] (show_stack+0x10/0x14)
-> > +[  213.050465] [<c010a218>] (show_stack) from [<c08bbdcc>] (dump_stack+0x98/0xac)
-> > +[  213.050479] [<c08bbdcc>] (dump_stack) from [<c08b93ac>] (__warn+0xc0/0xd8)
-> > +[  213.050491] [<c08b93ac>] (__warn) from [<c08b9428>] (warn_slowpath_fmt+0x64/0xc0)
-> > +[  213.050505] [<c08b9428>] (warn_slowpath_fmt) from [<c02018b4>] (kunmap_local_indexed+0x194/0x1d4)
-> > +[  213.050525] [<c02018b4>] (kunmap_local_indexed) from [<c03e0390>] (sg_miter_stop+0xb4/0x164)
-> > +[  213.050541] [<c03e0390>] (sg_miter_stop) from [<c03e082c>] (sg_miter_next+0xc/0xe4)
-> > +[  213.050560] [<c03e082c>] (sg_miter_next) from [<c06b2d04>] (sun4i_ss_opti_poll+0x278/0x40c)
-> > +[  213.050575] [<c06b2d04>] (sun4i_ss_opti_poll) from [<c06b338c>] (sun4i_ss_cipher_poll+0x4f4/0x5e4)
-> > +[  213.050590] [<c06b338c>] (sun4i_ss_cipher_poll) from [<c03991d4>] (crypto_skcipher_encrypt+0x38/0x5c)
-> > +[  213.050604] [<c03991d4>] (crypto_skcipher_encrypt) from [<c03aa980>] (xts_encrypt+0x8c/0xd4)
-> > +[  213.050617] [<c03aa980>] (xts_encrypt) from [<c03991d4>] (crypto_skcipher_encrypt+0x38/0x5c)
-> > +[  213.050631] [<c03991d4>] (crypto_skcipher_encrypt) from [<c03b3d94>] (skcipher_recvmsg+0x364/0x43c)
-> > +[  213.050646] [<c03b3d94>] (skcipher_recvmsg) from [<c0719650>] (sock_read_iter+0xa8/0xf8)
-> > +[  213.050663] [<c0719650>] (sock_read_iter) from [<c0239e98>] (vfs_read+0x2b8/0x2d8)
-> > +[  213.050676] [<c0239e98>] (vfs_read) from [<c023a398>] (ksys_read+0xb0/0xe4)
-> > +[  213.050688] [<c023a398>] (ksys_read) from [<c0100060>] (ret_fast_syscall+0x0/0x58)
-> > +[  213.050695] Exception stack(0xc4d13fa8 to 0xc4d13ff0)
-> > +[  213.050707] 3fa0:                   00000006 b6f084d0 00000006 b47ff000 00010000 00000000
-> > +[  213.050718] 3fc0: 00000006 b6f084d0 00010000 00000003 00000030 beb6e9bc 00000010 beb6e9fc
-> > +[  213.050727] 3fe0: b6e3609c beb6e958 b6cc8504 b6cc851c
-> > +[  213.050735] ---[ end trace 915906e6b0e8a55d ]---
-> 
-> Hmm. No registers there. Can you apply the patch below so we can see the
-> address?
-> 
-> Thanks,
-> 
->         tglx
-> ---
-> diff --git a/mm/highmem.c b/mm/highmem.c
-> index b49364a306b8..240fc6e5bfb4 100644
-> --- a/mm/highmem.c
-> +++ b/mm/highmem.c
-> @@ -571,8 +571,10 @@ void kunmap_local_indexed(void *vaddr)
->  		 * PAGE_OFFSET. Warn for all other addresses which are in
->  		 * the user space part of the virtual address space.
->  		 */
-> -		if (!kmap_high_unmap_local(addr))
-> +		if (!kmap_high_unmap_local(addr)) {
-> +			pr_err("kunmap_local: vaddr %lx\n", (unsigned long) vaddr);
->  			WARN_ON_ONCE(addr < PAGE_OFFSET);
-> +		}
->  		return;
->  	}
->  
+The v9fs file operations were missing the splice_read operations, which
+breaks sendfile() of files on such a filesystem. I discovered this while
+trying to load an eBPF program using iproute2 inside a 'virtme' environment
+which uses 9pfs for the virtual file system. iproute2 relies on sendfile()
+with an AF_ALG socket to hash files, which was erroring out in the virtual
+environment.
 
-The patch made the board too busy logging and fail to boot until the test.
+Since generic_file_splice_read() seems to just implement splice_read in
+terms of the read_iter operation, I simply added the generic implementation
+to the file operations, which fixed the error I was seeing. A quick grep
+indicates that this is what most other file systems do as well.
 
-Regards
+The only caveat is that my test case was only hitting the
+v9fs_file_operations_dotl implementation. I added it to the other file
+operations structs as well because it seemed like the sensible thing to do
+given that they all implement read_iter, but those are only compile tested.
+
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ fs/9p/vfs_file.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index b177fd3b1eb3..01026b47018c 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -655,6 +655,7 @@ const struct file_operations v9fs_cached_file_operations = {
+ 	.release = v9fs_dir_release,
+ 	.lock = v9fs_file_lock,
+ 	.mmap = v9fs_file_mmap,
++	.splice_read = generic_file_splice_read,
+ 	.fsync = v9fs_file_fsync,
+ };
+ 
+@@ -667,6 +668,7 @@ const struct file_operations v9fs_cached_file_operations_dotl = {
+ 	.lock = v9fs_file_lock_dotl,
+ 	.flock = v9fs_file_flock_dotl,
+ 	.mmap = v9fs_file_mmap,
++	.splice_read = generic_file_splice_read,
+ 	.fsync = v9fs_file_fsync_dotl,
+ };
+ 
+@@ -678,6 +680,7 @@ const struct file_operations v9fs_file_operations = {
+ 	.release = v9fs_dir_release,
+ 	.lock = v9fs_file_lock,
+ 	.mmap = generic_file_readonly_mmap,
++	.splice_read = generic_file_splice_read,
+ 	.fsync = v9fs_file_fsync,
+ };
+ 
+@@ -690,6 +693,7 @@ const struct file_operations v9fs_file_operations_dotl = {
+ 	.lock = v9fs_file_lock_dotl,
+ 	.flock = v9fs_file_flock_dotl,
+ 	.mmap = generic_file_readonly_mmap,
++	.splice_read = generic_file_splice_read,
+ 	.fsync = v9fs_file_fsync_dotl,
+ };
+ 
+@@ -701,6 +705,7 @@ const struct file_operations v9fs_mmap_file_operations = {
+ 	.release = v9fs_dir_release,
+ 	.lock = v9fs_file_lock,
+ 	.mmap = v9fs_mmap_file_mmap,
++	.splice_read = generic_file_splice_read,
+ 	.fsync = v9fs_file_fsync,
+ };
+ 
+@@ -713,5 +718,6 @@ const struct file_operations v9fs_mmap_file_operations_dotl = {
+ 	.lock = v9fs_file_lock_dotl,
+ 	.flock = v9fs_file_flock_dotl,
+ 	.mmap = v9fs_mmap_file_mmap,
++	.splice_read = generic_file_splice_read,
+ 	.fsync = v9fs_file_fsync_dotl,
+ };
+-- 
+2.29.2
+
