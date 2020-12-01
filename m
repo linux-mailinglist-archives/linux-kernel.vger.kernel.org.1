@@ -2,201 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CC92CAA11
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527802CAA19
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403964AbgLARpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:45:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388004AbgLARpd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:45:33 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B8DC0613D4;
-        Tue,  1 Dec 2020 09:44:52 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id v21so1523192plo.12;
-        Tue, 01 Dec 2020 09:44:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rFsYFDq/Q3GPLL9fHJin91E11XSOnALUjdSBz3nDiTA=;
-        b=OTSGIxRd7dTA/pzOwvu61LDGszj5Y/x28kE4X9ua7nZJLWHxRjdC4qhrvhGwzPigrF
-         7w1cRGCEerHd/XfeY8NhH+WtoOkY+OFlV8MJMTKq+Iqak77coNF85BoqZ/t9GpQbQUb3
-         Vk2FKbnlXsRNb4s10eH0mN4LNo5OjKp4mCrQEn03zlgoD1ss7EPN0YP7LGAs9W1io82v
-         lE62vmBmq1Y+HKMibEzCxdiAqglk/vJ1zlKaQRDks9CStLmgpJw0cU+xFwyq3ashvD75
-         SBpVp93c8xYtsxE9y7nGHy3bZU330lZtnHXaHyTdsgO+raTa6yWoJnA8s+4sx4ffUhUc
-         iDyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rFsYFDq/Q3GPLL9fHJin91E11XSOnALUjdSBz3nDiTA=;
-        b=ouYoVZPFx8DyQsNDRG8wkEAOBhhoLqi5Z+kiGgVjBQ+RFhEZRpbi41dHzgm/qBZkkA
-         Pqwvfr/XEq/Ivz3hI2Wlg0ILoopEcw5UD0HsRXnAB0WA66vD4i72nssbTKA+zFVr9qPw
-         Vrjl50q/zAhVF23CP2ys5gk+MmeCRfubfebo8ovHincEBLMTH/yXCKEiYdL6TlLvNuqS
-         X9aco0d3qESh3h/jLpB0W3/6NXv2OQ1Kd9yVgEx2s/+jpfYAMbGYZZ+fKFT7TL3cI8FT
-         35CSSmWfZwJBvx/cfKkUuq3YaXS4PJIWL6lHkizuT4iTaoD7jij97+lze6jGTxbmxifR
-         GSjA==
-X-Gm-Message-State: AOAM531E3VtVTa0FuE8Pg9vMhXPV7oDtSegy+oqQdTrvx6+ESlkf/jsl
-        J0ePavLDGEPzWGvHwaEkTSM=
-X-Google-Smtp-Source: ABdhPJxmK2BHuXRNN5yxjcSqY1P5lL9gpXhjrIzx+Vi5k0D3ei1oy1FgKl9Wed5mX419vdnx4aBW7A==
-X-Received: by 2002:a17:90b:ec2:: with SMTP id gz2mr3897592pjb.143.1606844692537;
-        Tue, 01 Dec 2020 09:44:52 -0800 (PST)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id p15sm360909pjg.21.2020.12.01.09.44.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 09:44:51 -0800 (PST)
-From:   Yang Shi <shy828301@gmail.com>
-To:     guro@fb.com, ktkhai@virtuozzo.com, vdavydov.dev@gmail.com,
-        shakeelb@google.com, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [v2 PATCH] mm: list_lru: set shrinker map bit when child nr_items is not zero
-Date:   Tue,  1 Dec 2020 09:44:49 -0800
-Message-Id: <20201201174449.51435-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1729690AbgLARrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:47:25 -0500
+Received: from mga17.intel.com ([192.55.52.151]:58592 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgLARrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:47:25 -0500
+IronPort-SDR: rTZCZTJ46TYEVNFB/lIXOhhwBh9nVG2IBuB2Ba6ehYKkOVe18qSFZ98imDWV3ji/B1d0d+Feel
+ lO+s/Tv+bHhA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152703199"
+X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
+   d="scan'208";a="152703199"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:45:43 -0800
+IronPort-SDR: b9TtSB08Yw62onAxXyzR23D+l+0x/+faIwT6hDz4m1aaiPz89UNwA4vzt10qHCY25ZirdWXykL
+ Dg6/NgvQdVOQ==
+X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
+   d="scan'208";a="481191895"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:45:43 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 1A9EA6363;
+        Tue,  1 Dec 2020 09:45:43 -0800 (PST)
+Date:   Tue, 1 Dec 2020 09:45:43 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     mgross@linux.intel.com, linux-kernel@vger.kernel.org,
+        markgross@kernel.org, adam.r.gretzinger@intel.com,
+        Srikanth Thokala <srikanth.thokala@intel.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 07/22] misc: xlink-pcie: lh: Add PCIe EPF driver for
+ Local Host
+Message-ID: <20201201174542.GB56560@mtg-dev.jf.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20201130230707.46351-1-mgross@linux.intel.com>
+ <20201130230707.46351-8-mgross@linux.intel.com>
+ <X8YXMVD1i90VWaPa@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8YXMVD1i90VWaPa@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When investigating a slab cache bloat problem, significant amount of
-negative dentry cache was seen, but confusingly they neither got shrunk
-by reclaimer (the host has very tight memory) nor be shrunk by dropping
-cache.  The vmcore shows there are over 14M negative dentry objects on lru,
-but tracing result shows they were even not scanned at all.  The further
-investigation shows the memcg's vfs shrinker_map bit is not set.  So the
-reclaimer or dropping cache just skip calling vfs shrinker.  So we have
-to reboot the hosts to get the memory back.
+On Tue, Dec 01, 2020 at 11:13:05AM +0100, Greg Kroah-Hartman wrote:
+> On Mon, Nov 30, 2020 at 03:06:52PM -0800, mgross@linux.intel.com wrote:
+> > From: Srikanth Thokala <srikanth.thokala@intel.com>
+> > 
+> > Add PCIe EPF driver for local host (lh) to configure BAR's and other
+> > HW resources. Underlying PCIe HW controller is a Synopsys DWC PCIe core.
+> > 
+> > Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+> > Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> > Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
+> 
+> <snip>
+> 
+> Again, you sent this twice?  And it never got to lore.kernel.org nor the
+> mailing lists?
+In my excitement of sorting out my MTA misconfiguration work around I actually
+hit entry without including the magic fix
+"--envelope-sender=mgross@linux.intel.com" in my git send-email command line. 
+> 
+> And I can't see a 00/XX email anywhere explaining this, and I didn't get
+> the whole series?
+https://lore.kernel.org/lkml/20201130230707.46351-1-mgross@linux.intel.com/
 
-I didn't manage to come up with a reproducer in test environment, and the
-problem can't be reproduced after rebooting.  But it seems there is race
-between shrinker map bit clear and reparenting by code inspection.  The
-hypothesis is elaborated as below.
+Did I mess up on who all should get the 00/xx email?
 
-The memcg hierarchy on our production environment looks like:
-                root
-               /    \
-          system   user
+> 
+> Something is really wrong on your end with your email client
+> configuration, please fix that up and send this so that we can actually
+> see it all, and know what the heck we are supposed to be reviewing...
 
-The main workloads are running under user slice's children, and it creates
-and removes memcg frequently.  So reparenting happens very often under user
-slice, but no task is under user slice directly.
+Yes, I think I have it fixed, or worked around now.
 
-So with the frequent reparenting and tight memory pressure, the below
-hypothetical race condition may happen:
+sorry,
 
-    CPU A                            CPU B                         CPU C
-reparent
-    dst->nr_items == 0
-                                 shrinker:
-                                     total_objects == 0
-    add src->nr_items to dst
-    set_bit
-                                     retrun SHRINK_EMPTY
-                                     clear_bit
-child memcg offline
-    replace child's kmemcg_id to
-    parent's (in memcg_offline_kmem())
-                                                                 list_lru_del()
-                                                                     see parent's kmemcg_id
-                                                                     dec dst->nr_items
-reparent again
-    dst->nr_items may go negative
-    due to concurrent list_lru_del()
-    on CPU C
-                                 The second run of shrinker:
-                                     read nr_items without any
-                                     synchronization, so it may
-                                     see intermediate negative
-                                     nr_items then total_objects
-                                     may return 0 conincidently
-
-                                     keep the bit cleared
-    dst->nr_items != 0
-    skip set_bit
-    add scr->nr_item to dst
-
-After this point dst->nr_item may never go zero, so reparenting will not
-set shrinker_map bit anymore.  And since there is no task under user
-slice directly, so no new object will be added to its lru to set the
-shrinker map bit either.  That bit is kept cleared forever.
-
-How does list_lru_del() race with reparenting?  It is because
-reparenting replaces childen's kmemcg_id to parent's without protecting
-from nlru->lock, so list_lru_del() may see parent's kmemcg_id but
-actually deleting items from child's lru, but dec'ing parent's nr_items,
-so the parent's nr_items may go negative as commit
-2788cf0c401c268b4819c5407493a8769b7007aa ("memcg: reparent list_lrus and
-free kmemcg_id on css offline") says.
-
-Can we move kmemcg_id replacement after reparenting?  No, because the
-race with list_lru_del() may result in negative src->nr_items, but it
-will never be fixed.  So the shrinker may never return SHRINK_EMPTY then
-keep the shrinker map bit set always.  The shrinker will be always
-called for nonsense.
-
-Can we synchronize list_lru_del() and reparenting?  Yes, it could be
-done.  But it seems we need introduce a new lock or use nlru->lock.  But
-it sounds complicated to move kmemcg_id replacement code under nlru->lock.
-And list_lru_del() may be called quite often to exacerbate some hot
-path, i.e. dentry kill.
-
-Since it is impossible that dst->nr_items goes negative and
-src->nr_items goes zero at the same time, so it seems we could set the
-shrinker map bit iff src->nr_items != 0.  We could synchronize
-list_lru_count_one() and reparenting with nlru->lock, but it seems
-checking src->nr_items in reparenting is the simplest and avoids lock
-contention.
-
-Fixes: fae91d6d8be5 ("mm/list_lru.c: set bit in memcg shrinker bitmap on first list_lru item appearance")
-Suggested-by: Roman Gushchin <guro@fb.com>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: <stable@vger.kernel.org> v4.19+
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
-v2: * Incorporated Roman's suggestion
-    * Incorporated Kirill's suggestion
-    * Changed the subject of patch to get align with the new fix
-    * Added fixes tag
-
- mm/list_lru.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 5aa6e44bc2ae..fe230081690b 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -534,7 +534,6 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
- 	struct list_lru_node *nlru = &lru->node[nid];
- 	int dst_idx = dst_memcg->kmemcg_id;
- 	struct list_lru_one *src, *dst;
--	bool set;
- 
- 	/*
- 	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
-@@ -546,11 +545,12 @@ static void memcg_drain_list_lru_node(struct list_lru *lru, int nid,
- 	dst = list_lru_from_memcg_idx(nlru, dst_idx);
- 
- 	list_splice_init(&src->list, &dst->list);
--	set = (!dst->nr_items && src->nr_items);
--	dst->nr_items += src->nr_items;
--	if (set)
-+
-+	if (src->nr_items) {
-+		dst->nr_items += src->nr_items;
- 		memcg_set_shrinker_bit(dst_memcg, nid, lru_shrinker_id(lru));
--	src->nr_items = 0;
-+		src->nr_items = 0;
-+	}
- 
- 	spin_unlock_irq(&nlru->lock);
- }
--- 
-2.26.2
-
+--mark
