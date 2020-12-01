@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EB22C9DFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EE22C9D01
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391188AbgLAJaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:30:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33962 "EHLO mail.kernel.org"
+        id S2389251AbgLAJIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:08:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387996AbgLAI6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:58:46 -0500
+        id S2388888AbgLAJG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23667217A0;
-        Tue,  1 Dec 2020 08:58:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D71020656;
+        Tue,  1 Dec 2020 09:06:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813110;
-        bh=O+D1R/pFw8gXaEdV01ch5sUSh8dZ6jxll7Pruf83LAg=;
+        s=korg; t=1606813575;
+        bh=eYLZ2RtVDb4ffQcW9oBSH3pzI9Tev54mpCfvfSnia5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TuBmyBUW49XqPVXEO3ljcg17s/t38ikd4SkUfL0/N6wIpCcpQuR1Zt8PFBAI+y29o
-         vZ5pozqrmggakAScq4qNAS6W/2lAtIwUE7X/gAiMS0Ol4IMKEI3GClGSi2RgQf43NC
-         p1sHrwef1/dU1aWi3HsF5REhvYCiHzNazASlj4hM=
+        b=SYZpcZDB11eeML31wbxQEG7FGPvsT9tpxhqNrFsner6ZmKU14d6vhEhdaWgRxFckO
+         P+YqALVQCsZIopd51xGhDuYNOA9JwwHI3VnrRPemohopDaYK6TrIrjpT3wZBAxVgLG
+         2JHUXas3QateFPOw9dZweiPgMxludHsO3+sGYMNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
+        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
+        Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>,
+        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 37/50] ibmvnic: fix NULL pointer dereference in ibmvic_reset_crq
+Subject: [PATCH 5.4 59/98] ibmvnic: notify peers when failover and migration happen
 Date:   Tue,  1 Dec 2020 09:53:36 +0100
-Message-Id: <20201201084649.611308905@linuxfoundation.org>
+Message-Id: <20201201084657.981073634@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,66 +47,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lijun Pan <ljp@linux.ibm.com>
 
-[ Upstream commit 0e435befaea45f7ea58682eecab5e37e05b2ce65 ]
+[ Upstream commit 98025bce3a6200a0c4637272a33b5913928ba5b8 ]
 
-crq->msgs could be NULL if the previous reset did not complete after
-freeing crq->msgs. Check for NULL before dereferencing them.
+Commit 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
+excluded the failover case for notify call because it said
+netdev_notify_peers() can cause network traffic to stall or halt.
+Current testing does not show network traffic stall
+or halt because of the notify call for failover event.
+netdev_notify_peers may be used when a device wants to inform the
+rest of the network about some sort of a reconfiguration
+such as failover or migration.
 
-Snippet of call trace:
-...
-ibmvnic 30000003 env3 (unregistering): Releasing sub-CRQ
-ibmvnic 30000003 env3 (unregistering): Releasing CRQ
-BUG: Kernel NULL pointer dereference on read at 0x00000000
-Faulting instruction address: 0xc0000000000c1a30
-Oops: Kernel access of bad area, sig: 11 [#1]
-LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-Modules linked in: ibmvnic(E-) rpadlpar_io rpaphp xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables xsk_diag tcp_diag udp_diag tun raw_diag inet_diag unix_diag bridge af_packet_diag netlink_diag stp llc rfkill sunrpc pseries_rng xts vmx_crypto uio_pdrv_genirq uio binfmt_misc ip_tables xfs libcrc32c sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp dm_mirror dm_region_hash dm_log dm_mod [last unloaded: ibmvnic]
-CPU: 20 PID: 8426 Comm: kworker/20:0 Tainted: G            E     5.10.0-rc1+ #12
-Workqueue: events __ibmvnic_reset [ibmvnic]
-NIP:  c0000000000c1a30 LR: c008000001b00c18 CTR: 0000000000000400
-REGS: c00000000d05b7a0 TRAP: 0380   Tainted: G            E      (5.10.0-rc1+)
-MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 44002480  XER: 20040000
-CFAR: c0000000000c19ec IRQMASK: 0
-GPR00: 0000000000000400 c00000000d05ba30 c008000001b17c00 0000000000000000
-GPR04: 0000000000000000 0000000000000000 0000000000000000 00000000000001e2
-GPR08: 000000000001f400 ffffffffffffd950 0000000000000000 c008000001b0b280
-GPR12: c0000000000c19c8 c00000001ec72e00 c00000000019a778 c00000002647b440
-GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-GPR20: 0000000000000006 0000000000000001 0000000000000003 0000000000000002
-GPR24: 0000000000001000 c008000001b0d570 0000000000000005 c00000007ab5d550
-GPR28: c00000007ab5c000 c000000032fcf848 c00000007ab5cc00 c000000032fcf800
-NIP [c0000000000c1a30] memset+0x68/0x104
-LR [c008000001b00c18] ibmvnic_reset_crq+0x70/0x110 [ibmvnic]
-Call Trace:
-[c00000000d05ba30] [0000000000000800] 0x800 (unreliable)
-[c00000000d05bab0] [c008000001b0a930] do_reset.isra.40+0x224/0x634 [ibmvnic]
-[c00000000d05bb80] [c008000001b08574] __ibmvnic_reset+0x17c/0x3c0 [ibmvnic]
-[c00000000d05bc50] [c00000000018d9ac] process_one_work+0x2cc/0x800
-[c00000000d05bd20] [c00000000018df58] worker_thread+0x78/0x520
-[c00000000d05bdb0] [c00000000019a934] kthread+0x1c4/0x1d0
-[c00000000d05be20] [c00000000000d5d0] ret_from_kernel_thread+0x5c/0x6c
+It is unnecessary to call that in other events like
+FATAL, NON_FATAL, CHANGE_PARAM, and TIMEOUT resets
+since in those scenarios the hardware does not change.
+If the driver must do a hard reset, it is necessary to notify peers.
 
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
+Fixes: 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
+Suggested-by: Brian King <brking@linux.vnet.ibm.com>
+Suggested-by: Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>
+Signed-off-by: Dany Madden <drt@linux.ibm.com>
 Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/ibm/ibmvnic.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 3f2816af7b250..9a524b0e3e7ba 100644
+index 8d9e95c2725fb..717f793455056 100644
 --- a/drivers/net/ethernet/ibm/ibmvnic.c
 +++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -3712,6 +3712,9 @@ static int ibmvnic_reset_crq(struct ibmvnic_adapter *adapter)
- 	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
+@@ -1994,7 +1994,8 @@ static int do_reset(struct ibmvnic_adapter *adapter,
+ 	for (i = 0; i < adapter->req_rx_queues; i++)
+ 		napi_schedule(&adapter->napi[i]);
  
- 	/* Clean out the queue */
-+	if (!crq->msgs)
-+		return -EINVAL;
+-	if (adapter->reset_reason != VNIC_RESET_FAILOVER) {
++	if (adapter->reset_reason == VNIC_RESET_FAILOVER ||
++	    adapter->reset_reason == VNIC_RESET_MOBILITY) {
+ 		call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
+ 		call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
+ 	}
+@@ -2067,6 +2068,9 @@ static int do_hard_reset(struct ibmvnic_adapter *adapter,
+ 	if (rc)
+ 		return IBMVNIC_OPEN_FAILED;
+ 
++	call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
++	call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
 +
- 	memset(crq->msgs, 0, PAGE_SIZE);
- 	crq->cur = 0;
+ 	return 0;
+ }
  
 -- 
 2.27.0
