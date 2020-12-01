@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ADA2CA7BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C98E92CA7BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403976AbgLAQFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:05:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:45436 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388182AbgLAQFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:05:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C0311042;
-        Tue,  1 Dec 2020 08:04:09 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 713343F575;
-        Tue,  1 Dec 2020 08:04:06 -0800 (PST)
-References: <20201201025944.18260-1-song.bao.hua@hisilicon.com> <20201201025944.18260-3-song.bao.hua@hisilicon.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        Jonathan.Cameron@huawei.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linuxarm@huawei.com, xuwei5@huawei.com, prime.zeng@hisilicon.com
-Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
-In-reply-to: <20201201025944.18260-3-song.bao.hua@hisilicon.com>
-Date:   Tue, 01 Dec 2020 16:04:04 +0000
-Message-ID: <jhj1rg9v7gr.mognet@arm.com>
+        id S2391941AbgLAQGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:06:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388498AbgLAQGN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:06:13 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B82C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:05:32 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id k17so1165558vsp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:05:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OuJ+iD6xtM+VMtARqwefKzhnGpcfRpOS7XnUWAe2JEY=;
+        b=S26NKxDQQMuZxt+1oFstIH0f+WpADwmUSiWsrMAdTuElMG8Tk8kY59fXqelvjthP2f
+         8db5WERWrK0YCQ4FqlHnBMH/ZATTA6HxEq1tiNLnrLiqZSw/17r/KXgIXCoHSH+Gy1Ww
+         SMYLtA7y7XlkxaPsi0YpsQTcdqtJX+8n/g450=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OuJ+iD6xtM+VMtARqwefKzhnGpcfRpOS7XnUWAe2JEY=;
+        b=T3V7yyfpX4c+zhP2Aqdn3GFwVrisPCEbYL5jumJAX0ekpknz3b2z0eMN177aDjaSTw
+         0ADsQHcFlqsOKGwmQa05oSukC5Vqns1u6QMkfPu9ekPIafnWBva/WvnWoRWJA+9U++Hw
+         gdm1kYD303hyvP9yat2m2x7EXeUuo2VJjot9/5Q7Qdz0lus48V88uxZn48pXSIRRoCBV
+         Ee+efbpiA2ylGaCBfsJGVFLkx2WDiuPnmEcT0o24mlH8xVaayb8jYHkJXt5ibo0H2TwP
+         RR3yah+pBLyVIlvnUcevt0vJzocXXoPCWhwfgiD+1/k176nHN5aDEO9QOf6Kx5BzH/E4
+         f+vw==
+X-Gm-Message-State: AOAM530f6QqY4o23V3PU6301Jh61BPyYdHiDZCZX9cgeAONBYYboiED2
+        JhYqEYuyMK6qYEHBJ8pbZgGXwzsgNW4EWQ==
+X-Google-Smtp-Source: ABdhPJzkU20fIphNTX2PPQQAxW+TNX9maMZo/mZ7GY2FWS4NTMgRUpdYOuWZ0aP1HC5YemnET1e+lA==
+X-Received: by 2002:a05:6102:308f:: with SMTP id l15mr3089882vsb.15.1606838731397;
+        Tue, 01 Dec 2020 08:05:31 -0800 (PST)
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
+        by smtp.gmail.com with ESMTPSA id m123sm378619vsd.17.2020.12.01.08.05.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 08:05:31 -0800 (PST)
+Received: by mail-ua1-f53.google.com with SMTP id q68so736322uaq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:05:30 -0800 (PST)
+X-Received: by 2002:a9f:3dcc:: with SMTP id e12mr3008143uaj.121.1606838729851;
+ Tue, 01 Dec 2020 08:05:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201201031015.23314-1-chris.ruehl@gtsys.com.hk>
+In-Reply-To: <20201201031015.23314-1-chris.ruehl@gtsys.com.hk>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 1 Dec 2020 08:05:18 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Wyk9BYR3cnfm=9tBh=XBxEP=udMTeaEYPzAqa5m8x=yg@mail.gmail.com>
+Message-ID: <CAD=FV=Wyk9BYR3cnfm=9tBh=XBxEP=udMTeaEYPzAqa5m8x=yg@mail.gmail.com>
+Subject: Re: [PATCH] phy: rockchip-emmc: emmc_phy_init() always return 0
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 01/12/20 02:59, Barry Song wrote:
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 1a68a05..ae8ec910 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6106,6 +6106,37 @@ static inline int select_idle_smt(struct task_struct *p, int target)
->  
->  #endif /* CONFIG_SCHED_SMT */
->  
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +/*
-> + * Scan the local CLUSTER mask for idle CPUs.
-> + */
-> +static int select_idle_cluster(struct task_struct *p, int target)
-> +{
-> +	int cpu;
-> +
-> +	/* right now, no hardware with both cluster and smt to run */
-> +	if (sched_smt_active())
-> +		return -1;
-> +
-> +	for_each_cpu_wrap(cpu, cpu_cluster_mask(target), target) {
+On Mon, Nov 30, 2020 at 7:10 PM Chris Ruehl <chris.ruehl@gtsys.com.hk> wrote:
+>
+> rockchip_emmc_phy_init() return variable is not set with the error value
+> if clk_get() failed. The debug message print 0 on error and the function
+> always return 0.
+> Fix it using PTR_ERR().
+>
+> Fixes: 52c0624a10cce phy: rockchip-emmc: Set phyctrl_frqsel based on card clock
+>
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> ---
+>  drivers/phy/rockchip/phy-rockchip-emmc.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/phy/rockchip/phy-rockchip-emmc.c b/drivers/phy/rockchip/phy-rockchip-emmc.c
+> index 48e2d75b1004..75faee5c0d27 100644
+> --- a/drivers/phy/rockchip/phy-rockchip-emmc.c
+> +++ b/drivers/phy/rockchip/phy-rockchip-emmc.c
+> @@ -253,6 +253,7 @@ static int rockchip_emmc_phy_init(struct phy *phy)
+>          */
+>         rk_phy->emmcclk = clk_get(&phy->dev, "emmcclk");
+>         if (IS_ERR(rk_phy->emmcclk)) {
+> +               ret = PTR_ERR(rk_phy->emmcclk);
 
-Gating this behind this new config only leveraged by arm64 doesn't make it
-very generic. Note that powerpc also has this newish "CACHE" level which
-seems to overlap in function with your "CLUSTER" one (both are arch
-specific, though).
+I'm pretty sure your patch isn't correct and it would break use cases.
+Is it fixing some bug that you're aware of, or you found it via code
+inspection?
 
-I think what you are after here is an SD_SHARE_PKG_RESOURCES domain walk,
-i.e. scan CPUs by increasing cache "distance". We already have it in some
-form, as we scan SMT & LLC domains; AFAICT LLC always maps to MC, except
-for said powerpc's CACHE thingie.
+Specifically:
 
-*If* we are to generally support more levels with SD_SHARE_PKG_RESOURCES,
-we could say frob something into select_idle_cpu(). I'm thinking of
-something like the incomplete, untested below: 
+* The big comment block in this function says that the clock is
+optional and that we're ignoring errors.
 
----
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ae7ceba8fd4f..70692888db00 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6120,7 +6120,7 @@ static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd
- static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
--	struct sched_domain *this_sd;
-+	struct sched_domain *this_sd, *child = NULL;
- 	u64 avg_cost, avg_idle;
- 	u64 time;
- 	int this = smp_processor_id();
-@@ -6150,14 +6150,22 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 
- 	time = cpu_clock(this);
- 
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+	do {
-+		/* XXX: sd should start as SMT's parent */
-+		cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+		if (child)
-+			cpumask_andnot(cpus, cpus, sched_domain_span(child));
-+
-+		for_each_cpu_wrap(cpu, cpus, target) {
-+			if (!--nr)
-+				return -1;
-+			if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-+				break;
-+		}
- 
--	for_each_cpu_wrap(cpu, cpus, target) {
--		if (!--nr)
--			return -1;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
--			break;
--	}
-+		child = sd;
-+		sd = sd->parent;
-+	} while (sd && sd->flags & SD_SHARE_PKG_RESOURCES);
- 
- 	time = cpu_clock(this) - time;
- 	update_avg(&this_sd->avg_scan_cost, time);
+* The printout in this function is "dbg" level, which is an extra
+indication that we aren't concerned with these errors.
+
+Arguably the code could be made better.  If you want to improve it,
+you could check for just the error we expect if the clock isn't
+specified (probably -ENODEV, but you should check) and treat all other
+failures as real errors.
+
+
+-Doug
