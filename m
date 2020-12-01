@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EB92C9BAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 259772C9B5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389801AbgLAJLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:11:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48652 "EHLO mail.kernel.org"
+        id S1727889AbgLAJHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389778AbgLAJK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:10:57 -0500
+        id S2389058AbgLAJFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:05:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACAAE21D46;
-        Tue,  1 Dec 2020 09:10:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18E9B21D7A;
+        Tue,  1 Dec 2020 09:04:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813817;
-        bh=1N/kMEsmNUOC9sFU82OMtdArer2/NIxIU2mCVNUY8Is=;
+        s=korg; t=1606813494;
+        bh=kJKwS4GsTZmni+0jTLCZD40IeNVZuyZ27b/reR4p9AQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r7p4JV0epX9QcTJ8Af/abT0YuqB2eVisynD3TpAbrpPcOXrE4D09uxqqSbjS+YG4r
-         CFXQzdKjpe2PFobyYLFoV8Kcl6XIZlJnUjW2hEOOCWXVbB04iMwvu9+xdJpw/CfatZ
-         4svfAde5sSIOhYzQHOV0BLvvbqhdzPYbaHwJLTC0=
+        b=Pvu8jlxBCmMUczyCehQpsVKSCa7TQQuBJq7YEnRRC65uwEPL3IHo/JWTx1GTXPwLG
+         q7+z3gc4q74EYPDR7bAq9G+XLdZ/yHI/V8dmy/BDAQ1Qdjr8lZVJvrK9uTo1ByhNgH
+         6ZN/vS2lV0yoILfx+z/UGjHI+gzDnkdG82SOpNKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 069/152] bus: ti-sysc: Fix reset status check for modules with quirks
-Date:   Tue,  1 Dec 2020 09:53:04 +0100
-Message-Id: <20201201084720.975693420@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Ye <lzye@google.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 28/98] HID: add HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE for Gamevice devices
+Date:   Tue,  1 Dec 2020 09:53:05 +0100
+Message-Id: <20201201084656.256506383@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,90 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Chris Ye <lzye@google.com>
 
-[ Upstream commit e275d2109cdaea8b4554b9eb8a828bdb8f8ba068 ]
+[ Upstream commit f59ee399de4a8ca4d7d19cdcabb4b63e94867f09 ]
 
-Commit d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and
-wait for softreset bit") started showing a "OCP softreset timed out"
-warning on enable if the interconnect target module is not out of reset.
-This caused the warning to be often triggered for i2c and hdq while the
-devices are working properly.
+Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices need to
+be set explicitly with this flag.
 
-Turns out that some interconnect target modules seem to have an unusable
-reset status bits unless the module specific reset quirks are activated.
-
-Let's just skip the reset status check for those modules as we only want
-to activate the reset quirks when doing a reset, and not on enable. This
-way we don't see the bogus "OCP softreset timed out" warnings during boot.
-
-Fixes: d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and wait for softreset bit")
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Chris Ye <lzye@google.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/ti-sysc.c                 | 24 +++++++++++++++---------
- include/linux/platform_data/ti-sysc.h |  1 +
- 2 files changed, 16 insertions(+), 9 deletions(-)
+ drivers/hid/hid-ids.h    | 4 ++++
+ drivers/hid/hid-quirks.c | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index efb088df12766..88a751c11677b 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -970,9 +970,15 @@ static int sysc_enable_module(struct device *dev)
- 			return error;
- 		}
- 	}
--	error = sysc_wait_softreset(ddata);
--	if (error)
--		dev_warn(ddata->dev, "OCP softreset timed out\n");
-+	/*
-+	 * Some modules like i2c and hdq1w have unusable reset status unless
-+	 * the module reset quirk is enabled. Skip status check on enable.
-+	 */
-+	if (!(ddata->cfg.quirks & SYSC_MODULE_QUIRK_ENA_RESETDONE)) {
-+		error = sysc_wait_softreset(ddata);
-+		if (error)
-+			dev_warn(ddata->dev, "OCP softreset timed out\n");
-+	}
- 	if (ddata->cfg.quirks & SYSC_QUIRK_OPT_CLKS_IN_RESET)
- 		sysc_disable_opt_clocks(ddata);
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index d173badafcf1f..6b1c26e6fa4a3 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -451,6 +451,10 @@
+ #define USB_VENDOR_ID_FRUCTEL	0x25B6
+ #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
  
-@@ -1373,17 +1379,17 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 	SYSC_QUIRK("hdmi", 0, 0, 0x10, -ENODEV, 0x50030200, 0xffffffff,
- 		   SYSC_QUIRK_OPT_CLKS_NEEDED),
- 	SYSC_QUIRK("hdq1w", 0, 0, 0x14, 0x18, 0x00000006, 0xffffffff,
--		   SYSC_MODULE_QUIRK_HDQ1W),
-+		   SYSC_MODULE_QUIRK_HDQ1W | SYSC_MODULE_QUIRK_ENA_RESETDONE),
- 	SYSC_QUIRK("hdq1w", 0, 0, 0x14, 0x18, 0x0000000a, 0xffffffff,
--		   SYSC_MODULE_QUIRK_HDQ1W),
-+		   SYSC_MODULE_QUIRK_HDQ1W | SYSC_MODULE_QUIRK_ENA_RESETDONE),
- 	SYSC_QUIRK("i2c", 0, 0, 0x20, 0x10, 0x00000036, 0x000000ff,
--		   SYSC_MODULE_QUIRK_I2C),
-+		   SYSC_MODULE_QUIRK_I2C | SYSC_MODULE_QUIRK_ENA_RESETDONE),
- 	SYSC_QUIRK("i2c", 0, 0, 0x20, 0x10, 0x0000003c, 0x000000ff,
--		   SYSC_MODULE_QUIRK_I2C),
-+		   SYSC_MODULE_QUIRK_I2C | SYSC_MODULE_QUIRK_ENA_RESETDONE),
- 	SYSC_QUIRK("i2c", 0, 0, 0x20, 0x10, 0x00000040, 0x000000ff,
--		   SYSC_MODULE_QUIRK_I2C),
-+		   SYSC_MODULE_QUIRK_I2C | SYSC_MODULE_QUIRK_ENA_RESETDONE),
- 	SYSC_QUIRK("i2c", 0, 0, 0x10, 0x90, 0x5040000a, 0xfffff0f0,
--		   SYSC_MODULE_QUIRK_I2C),
-+		   SYSC_MODULE_QUIRK_I2C | SYSC_MODULE_QUIRK_ENA_RESETDONE),
- 	SYSC_QUIRK("gpu", 0x50000000, 0x14, -ENODEV, -ENODEV, 0x00010201, 0xffffffff, 0),
- 	SYSC_QUIRK("gpu", 0x50000000, 0xfe00, 0xfe10, -ENODEV, 0x40000000 , 0xffffffff,
- 		   SYSC_MODULE_QUIRK_SGX),
-diff --git a/include/linux/platform_data/ti-sysc.h b/include/linux/platform_data/ti-sysc.h
-index c59999ce044e5..240dce553a0bd 100644
---- a/include/linux/platform_data/ti-sysc.h
-+++ b/include/linux/platform_data/ti-sysc.h
-@@ -50,6 +50,7 @@ struct sysc_regbits {
- 	s8 emufree_shift;
- };
- 
-+#define SYSC_MODULE_QUIRK_ENA_RESETDONE	BIT(25)
- #define SYSC_MODULE_QUIRK_PRUSS		BIT(24)
- #define SYSC_MODULE_QUIRK_DSS_RESET	BIT(23)
- #define SYSC_MODULE_QUIRK_RTC_UNLOCK	BIT(22)
++#define USB_VENDOR_ID_GAMEVICE	0x27F8
++#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
++#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
++
+ #define USB_VENDOR_ID_GAMERON		0x0810
+ #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
+ #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index abee4e950a4ee..60d188a704e5e 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -85,6 +85,10 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_SAT_ADAPTOR), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
++	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
++		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
++		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
 -- 
 2.27.0
 
