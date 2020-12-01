@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6262C93E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4D72C93E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389105AbgLAA0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
+        id S2389122AbgLAA1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:27:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgLAA0e (ORCPT
+        with ESMTP id S2388133AbgLAA1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:26:34 -0500
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A01C0613CF;
-        Mon, 30 Nov 2020 16:25:54 -0800 (PST)
-Received: from allenwind.lan (unknown [IPv6:2a02:169:3df5::979])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 475505C072A;
-        Tue,  1 Dec 2020 01:25:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1606782351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=KS8mEizFb71H5F58oXI23doUtIDgwBwc4nDVzFsr1GQ=;
-        b=boTNXx86+d6LfiIEM/Jwsm9QLSOWO013Ncwju9egxzB+BRaSWkZqTjLi9Fh1sNb2ETgBsT
-        H0oBiRa5+NeSOcjD2d9rx7S0V1ZgiJdinuou9bRoYsRjFog6biP6UO6f19Jd+QqzKKffwD
-        JCKSWImKeQQyNK6G5k8RTxPDLLYNwY8=
-From:   Stefan Agner <stefan@agner.ch>
-To:     robh+dt@kernel.org, khilman@baylibre.com
-Cc:     narmstrong@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Stefan Agner <stefan@agner.ch>
-Subject: [PATCH] arm64: dts: meson: fix PHY deassert timing requirements
-Date:   Tue,  1 Dec 2020 01:25:50 +0100
-Message-Id: <e4df74aed2a7cff09366e72c87d408f41317907f.1606782187.git.stefan@agner.ch>
-X-Mailer: git-send-email 2.29.2
+        Mon, 30 Nov 2020 19:27:15 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6437EC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:26:07 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id 64so18827258wra.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:26:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=nMn+2Vd7dQcjrIkLd6jblJNyNbACa1twjNZ31rwGz34=;
+        b=1qfhS2qaDYP1b60lVNudKuwYRgqPRyHMCZy3jdSOyElU7QGfmgPPJ2Pr2qTh7aixra
+         eiJhEG5ffbaC1LjXRpe5sxpj+Xm2UGv24GbsR8bTgQK5QigGQD9QoOmbEAcDs88GQ786
+         R1uYvuV2xgV1SZN3z0oBpgzvKI5t0H8NWsHp4vjYGYnjfB5q44dJsQNud8IW3CTn25JY
+         FlDbzMBl7wW2z9OIFaeBzpUFFpUsP74r5ZDnFXnYJAbPKbKo5s50MD7tkqJMfTJAaqpO
+         Om7NwQBbC/4LwNtkkHzCVOG2Ien0gfriP5s4ZlbKTDny5BufefxpUHK8IufnLpPZ7nGn
+         kyHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=nMn+2Vd7dQcjrIkLd6jblJNyNbACa1twjNZ31rwGz34=;
+        b=c1vS++d8mxblq8/3Bx+0sJ9B4QRxr8sfib8qIdevpnJ8BNh8H+9u6/fG9GW6XLxYUG
+         gpsNV0HEEi6wiVXtFy7kZnI6AAy52ZE3SSHpwx2LPAIXgSMSOnKRkUNogCMPiPs+XoHP
+         shEL9BmxlNrjTf8fNGHh2SFFCCxVdRLSdyj9mXEtAD6UVQNkU4YwYSbnwYWsBymRP5Q7
+         BmORKkcnGdYU4Zfs3lxSIc6v6l9qOvPZP4Zhi9rOtAnyntRJHJ/Q4HVX3RAdXm1fMMgN
+         Vkd6L+UxTW8DGkEf7xdQ9XDTbTNmueLTP9V+jt7B1RjU/PgKQBv63DtYKps+9u5HvRgf
+         uZkA==
+X-Gm-Message-State: AOAM531Rj+3lW2u7c/ehX+BWRjyAsVt2xIH3HjJODCq5OuHzxAz00mVJ
+        yCF5FyvHTvxXCR/QTTuqelQeg5sF1ulXVMl+0/s=
+X-Google-Smtp-Source: ABdhPJzaVC8NXzM0/ZC4iyiTvLhVp4eg06QkIsRTlCbvS05JMJQnOVu7/y0JJ0krbVCIaLrzcvoecA==
+X-Received: by 2002:adf:fe0f:: with SMTP id n15mr102256wrr.357.1606782365968;
+        Mon, 30 Nov 2020 16:26:05 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id y18sm30432998wrr.67.2020.11.30.16.26.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 16:26:05 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Carlo Caione <carlo@caione.org>
+Cc:     Yu Kuai <yukuai3@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the amlogic tree
+In-Reply-To: <20201201100751.6cdf5ec8@canb.auug.org.au>
+References: <20201201100751.6cdf5ec8@canb.auug.org.au>
+Date:   Mon, 30 Nov 2020 16:26:01 -0800
+Message-ID: <7hv9dmtlra.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the datasheet (Rev. 1.4, page 30) the RTL8211F requires
-at least 50ms "for internal circuits settling time" before accessing
-the PHY registers. This fixes an issue where the Ethernet link doesn't
-come up when using ip link set down/up:
-  [   29.360965] meson8b-dwmac ff3f0000.ethernet eth0: Link is Down
-  [   34.569012] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=31)
-  [   34.676732] meson8b-dwmac ff3f0000.ethernet: Failed to reset the dma
-  [   34.678874] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
-  [   34.687850] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_open: Hw setup failed
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-Fixes: 658e4129bb81 ("arm64: dts: meson: g12b: odroid-n2: add the Ethernet PHY reset line")
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi all,
+>
+> In commit
+>
+>   9d822ed94237 ("soc: amlogic: canvas: add missing put_device() call in meson_canvas_get()")
+>
+> Fixes tag
+>
+>   Fixes: commit 382f8be04551 ("soc: amlogic: canvas: Fix meson_canvas_get when probe failed")
+>
+> has these problem(s):
+>
+>   - leading word 'commit' unexpected
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-index 6982632ae646..a5652caacb27 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-@@ -413,7 +413,7 @@ external_phy: ethernet-phy@0 {
- 		max-speed = <1000>;
- 
- 		reset-assert-us = <10000>;
--		reset-deassert-us = <30000>;
-+		reset-deassert-us = <50000>;
- 		reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
- 
- 		interrupt-parent = <&gpio_intc>;
--- 
-2.29.2
+Thanks for the report, I've fixed this commit message.
 
+Kevin
