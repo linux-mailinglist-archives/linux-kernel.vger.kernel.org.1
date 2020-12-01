@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153742C9DA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAB12C9E0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729366AbgLAJ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:26:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
+        id S1728147AbgLAJa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:30:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388005AbgLAJFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:05:21 -0500
+        id S1729095AbgLAIzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD62E20671;
-        Tue,  1 Dec 2020 09:05:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 048CE21D7F;
+        Tue,  1 Dec 2020 08:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813506;
-        bh=eBUn6N6HB56fq/YgtUfd+rCXKb8wTBrpe4QwH0vJWvU=;
+        s=korg; t=1606812866;
+        bh=VvoB9O3rvgqVIAQwDatIjWbfAN0MypYcrzKss5mVpEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yLYsgjWhtPm+UVkeLD0KeOU+l36dU1bRjHZNyus/WSwHvXMrzJDAQAJR2Q7Jf4rWV
-         mIxab42/DTiRCjN6jde9HKx47IZ5YkZUyo9zwP3jlHFS/NiQThDnPuUBBuFqnMhSDv
-         pyrM2SCmt00nrpebhp5xATWYby9QT2R1l8B30c0s=
+        b=khWE70t1jj5tLLO/uQbSCHLdDtGlJJ9oFtCUjkVniT4q/Oxjw0kx7Gyv7+DFTn0YG
+         OySvRi3k+QO5lfRx0kCtUQtyvWD6ocaY205tfwxzZaVBa2PuMFNnMSoA2E8EhCM88T
+         vtBt+htwYx01L3sh39con9BFdsovJNM9RDmQtkpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 32/98] HID: Add Logitech Dinovo Edge battery quirk
-Date:   Tue,  1 Dec 2020 09:53:09 +0100
-Message-Id: <20201201084656.650941220@linuxfoundation.org>
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Marius Iacob <themariusus@gmail.com>
+Subject: [PATCH 4.4 05/24] Input: i8042 - allow insmod to succeed on devices without an i8042 controller
+Date:   Tue,  1 Dec 2020 09:53:11 +0100
+Message-Id: <20201201084638.024569494@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
+References: <20201201084637.754785180@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +46,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 7940fb035abd88040d56be209962feffa33b03d0 ]
+[ Upstream commit b1884583fcd17d6a1b1bba94bbb5826e6b5c6e17 ]
 
-The battery status is also being reported by the logitech-hidpp driver,
-so ignore the standard HID battery status to avoid reporting the same
-info twice.
+The i8042 module exports several symbols which may be used by other
+modules.
 
-Note the logitech-hidpp battery driver provides more info, such as properly
-differentiating between charging and discharging. Also the standard HID
-battery info seems to be wrong, reporting a capacity of just 26% after
-fully charging the device.
+Before this commit it would refuse to load (when built as a module itself)
+on systems without an i8042 controller.
 
+This is a problem specifically for the asus-nb-wmi module. Many Asus
+laptops support the Asus WMI interface. Some of them have an i8042
+controller and need to use i8042_install_filter() to filter some kbd
+events. Other models do not have an i8042 controller (e.g. they use an
+USB attached kbd).
+
+Before this commit the asus-nb-wmi driver could not be loaded on Asus
+models without an i8042 controller, when the i8042 code was built as
+a module (as Arch Linux does) because the module_init function of the
+i8042 module would fail with -ENODEV and thus the i8042_install_filter
+symbol could not be loaded.
+
+This commit fixes this by exiting from module_init with a return code
+of 0 if no controller is found.  It also adds a i8042_present bool to
+make the module_exit function a no-op in this case and also adds a
+check for i8042_present to the exported i8042_command function.
+
+The latter i8042_present check should not really be necessary because
+when builtin that function can already be used on systems without
+an i8042 controller, but better safe then sorry.
+
+Reported-and-tested-by: Marius Iacob <themariusus@gmail.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Link: https://lore.kernel.org/r/20201008112628.3979-2-hdegoede@redhat.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h   | 1 +
- drivers/hid/hid-input.c | 3 +++
- 2 files changed, 4 insertions(+)
+ drivers/input/serio/i8042.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 6b1c26e6fa4a3..2aa810665a78c 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -750,6 +750,7 @@
- #define USB_VENDOR_ID_LOGITECH		0x046d
- #define USB_DEVICE_ID_LOGITECH_AUDIOHUB 0x0a0e
- #define USB_DEVICE_ID_LOGITECH_T651	0xb00c
-+#define USB_DEVICE_ID_LOGITECH_DINOVO_EDGE_KBD	0xb309
- #define USB_DEVICE_ID_LOGITECH_C007	0xc007
- #define USB_DEVICE_ID_LOGITECH_C077	0xc077
- #define USB_DEVICE_ID_LOGITECH_RECEIVER	0xc101
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index b2bff932c524f..b2da8476d0d30 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -319,6 +319,9 @@ static const struct hid_device_id hid_battery_quirks[] = {
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_ASUSTEK,
- 		USB_DEVICE_ID_ASUSTEK_T100CHI_KEYBOARD),
- 	  HID_BATTERY_QUIRK_IGNORE },
-+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH,
-+		USB_DEVICE_ID_LOGITECH_DINOVO_EDGE_KBD),
-+	  HID_BATTERY_QUIRK_IGNORE },
- 	{}
- };
+diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
+index c84c685056b99..6b648339733fa 100644
+--- a/drivers/input/serio/i8042.c
++++ b/drivers/input/serio/i8042.c
+@@ -125,6 +125,7 @@ module_param_named(unmask_kbd_data, i8042_unmask_kbd_data, bool, 0600);
+ MODULE_PARM_DESC(unmask_kbd_data, "Unconditional enable (may reveal sensitive data) of normally sanitize-filtered kbd data traffic debug log [pre-condition: i8042.debug=1 enabled]");
+ #endif
  
++static bool i8042_present;
+ static bool i8042_bypass_aux_irq_test;
+ static char i8042_kbd_firmware_id[128];
+ static char i8042_aux_firmware_id[128];
+@@ -343,6 +344,9 @@ int i8042_command(unsigned char *param, int command)
+ 	unsigned long flags;
+ 	int retval;
+ 
++	if (!i8042_present)
++		return -1;
++
+ 	spin_lock_irqsave(&i8042_lock, flags);
+ 	retval = __i8042_command(param, command);
+ 	spin_unlock_irqrestore(&i8042_lock, flags);
+@@ -1597,12 +1601,15 @@ static int __init i8042_init(void)
+ 
+ 	err = i8042_platform_init();
+ 	if (err)
+-		return err;
++		return (err == -ENODEV) ? 0 : err;
+ 
+ 	err = i8042_controller_check();
+ 	if (err)
+ 		goto err_platform_exit;
+ 
++	/* Set this before creating the dev to allow i8042_command to work right away */
++	i8042_present = true;
++
+ 	pdev = platform_create_bundle(&i8042_driver, i8042_probe, NULL, 0, NULL, 0);
+ 	if (IS_ERR(pdev)) {
+ 		err = PTR_ERR(pdev);
+@@ -1621,6 +1628,9 @@ static int __init i8042_init(void)
+ 
+ static void __exit i8042_exit(void)
+ {
++	if (!i8042_present)
++		return;
++
+ 	platform_device_unregister(i8042_platform_device);
+ 	platform_driver_unregister(&i8042_driver);
+ 	i8042_platform_exit();
 -- 
 2.27.0
 
