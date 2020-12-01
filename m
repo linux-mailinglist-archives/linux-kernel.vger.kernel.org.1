@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57C82C9D1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B022C9D9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390594AbgLAJTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:19:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47504 "EHLO mail.kernel.org"
+        id S2390915AbgLAJZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:25:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389663AbgLAJKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:10:18 -0500
+        id S1729404AbgLAJFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:05:50 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D44920656;
-        Tue,  1 Dec 2020 09:10:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FC7B206D8;
+        Tue,  1 Dec 2020 09:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813803;
-        bh=KS5sNnxLHtIs9E9OLCHNsPezCmnd4ggTIjINV5NcBbE=;
+        s=korg; t=1606813508;
+        bh=xu6GoAxaG8TFA6lEbkHwC9ul7MBVREsvo+HTg/w/7OQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RTpwM+XLx4C/M4IdEFK3gB4kQWY1TMWL4K3n19wApmu6GO7HPbo+7F5RnCjonFCch
-         mC5TAGrZuGElK4TSKaOlpIbR6XUdqpGI32y87meMpJwU/QW9XZ5ltOZZH1z9AdFol3
-         DxvEx9GjXH9SYnJw+JyyH5/GXh8KqVqtBKoq2rFM=
+        b=mPhtg6vvS2lTcrOomWIguiGnCpUw1esGmurGw717AyaMIaVmgjFIMn8qIMU3tM+E/
+         JYrx/Yo4ncLqwM0VcFklbUAHrcphkd9dDI75oBNL+FR7IyIFLbOn4pGSQ0b6ESi5W5
+         LhnOVPTpUh3dguiISswi+Fio/+B+IeDTyaJhqtE0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 064/152] lockdep: Put graph lock/unlock under lock_recursion protection
-Date:   Tue,  1 Dec 2020 09:52:59 +0100
-Message-Id: <20201201084720.323912400@linuxfoundation.org>
+        stable@vger.kernel.org, Frank Yang <puilp0502@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 23/98] HID: cypress: Support Varmilo Keyboards media hotkeys
+Date:   Tue,  1 Dec 2020 09:53:00 +0100
+Message-Id: <20201201084655.610588071@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,84 +42,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boqun Feng <boqun.feng@gmail.com>
+From: Frank Yang <puilp0502@gmail.com>
 
-[ Upstream commit 43be4388e94b915799a24f0eaf664bf95b85231f ]
+[ Upstream commit 652f3d00de523a17b0cebe7b90debccf13aa8c31 ]
 
-A warning was hit when running xfstests/generic/068 in a Hyper-V guest:
+The Varmilo VA104M Keyboard (04b4:07b1, reported as Varmilo Z104M)
+exposes media control hotkeys as a USB HID consumer control device, but
+these keys do not work in the current (5.8-rc1) kernel due to the
+incorrect HID report descriptor. Fix the problem by modifying the
+internal HID report descriptor.
 
-[...] ------------[ cut here ]------------
-[...] DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())
-[...] WARNING: CPU: 2 PID: 1350 at kernel/locking/lockdep.c:5280 check_flags.part.0+0x165/0x170
-[...] ...
-[...] Workqueue: events pwq_unbound_release_workfn
-[...] RIP: 0010:check_flags.part.0+0x165/0x170
-[...] ...
-[...] Call Trace:
-[...]  lock_is_held_type+0x72/0x150
-[...]  ? lock_acquire+0x16e/0x4a0
-[...]  rcu_read_lock_sched_held+0x3f/0x80
-[...]  __send_ipi_one+0x14d/0x1b0
-[...]  hv_send_ipi+0x12/0x30
-[...]  __pv_queued_spin_unlock_slowpath+0xd1/0x110
-[...]  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11/0x20
-[...]  .slowpath+0x9/0xe
-[...]  lockdep_unregister_key+0x128/0x180
-[...]  pwq_unbound_release_workfn+0xbb/0xf0
-[...]  process_one_work+0x227/0x5c0
-[...]  worker_thread+0x55/0x3c0
-[...]  ? process_one_work+0x5c0/0x5c0
-[...]  kthread+0x153/0x170
-[...]  ? __kthread_bind_mask+0x60/0x60
-[...]  ret_from_fork+0x1f/0x30
+More specifically, the keyboard report descriptor specifies the
+logical boundary as 572~10754 (0x023c ~ 0x2a02) while the usage
+boundary is specified as 0~10754 (0x00 ~ 0x2a02). This results in an
+incorrect interpretation of input reports, causing inputs to be ignored.
+By setting the Logical Minimum to zero, we align the logical boundary
+with the Usage ID boundary.
 
-The cause of the problem is we have call chain lockdep_unregister_key()
--> <irq disabled by raw_local_irq_save()> lockdep_unlock() ->
-arch_spin_unlock() -> __pv_queued_spin_unlock_slowpath() -> pv_kick() ->
-__send_ipi_one() -> trace_hyperv_send_ipi_one().
+Some notes:
 
-Although this particular warning is triggered because Hyper-V has a
-trace point in ipi sending, but in general arch_spin_unlock() may call
-another function having a trace point in it, so put the arch_spin_lock()
-and arch_spin_unlock() after lock_recursion protection to fix this
-problem and avoid similiar problems.
+* There seem to be multiple variants of the VA104M keyboard. This
+  patch specifically targets 04b4:07b1 variant.
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201113110512.1056501-1-boqun.feng@gmail.com
+* The device works out-of-the-box on Windows platform with the generic
+  consumer control device driver (hidserv.inf). This suggests that
+  Windows either ignores the Logical Minimum/Logical Maximum or
+  interprets the Usage ID assignment differently from the linux
+  implementation; Maybe there are other devices out there that only
+  works on Windows due to this problem?
+
+Signed-off-by: Frank Yang <puilp0502@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/lockdep.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/hid/hid-cypress.c | 44 ++++++++++++++++++++++++++++++++++-----
+ drivers/hid/hid-ids.h     |  2 ++
+ 2 files changed, 41 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 3eb35ad1b5241..04134a242f3d5 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -108,19 +108,21 @@ static inline void lockdep_lock(void)
- {
- 	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
+diff --git a/drivers/hid/hid-cypress.c b/drivers/hid/hid-cypress.c
+index a50ba4a4a1d71..b88f889b3932e 100644
+--- a/drivers/hid/hid-cypress.c
++++ b/drivers/hid/hid-cypress.c
+@@ -23,19 +23,17 @@
+ #define CP_2WHEEL_MOUSE_HACK		0x02
+ #define CP_2WHEEL_MOUSE_HACK_ON		0x04
  
-+	__this_cpu_inc(lockdep_recursion);
- 	arch_spin_lock(&__lock);
- 	__owner = current;
--	__this_cpu_inc(lockdep_recursion);
- }
- 
- static inline void lockdep_unlock(void)
- {
-+	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
++#define VA_INVAL_LOGICAL_BOUNDARY	0x08
 +
- 	if (debug_locks && DEBUG_LOCKS_WARN_ON(__owner != current))
- 		return;
+ /*
+  * Some USB barcode readers from cypress have usage min and usage max in
+  * the wrong order
+  */
+-static __u8 *cp_report_fixup(struct hid_device *hdev, __u8 *rdesc,
++static __u8 *cp_rdesc_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 		unsigned int *rsize)
+ {
+-	unsigned long quirks = (unsigned long)hid_get_drvdata(hdev);
+ 	unsigned int i;
  
--	__this_cpu_dec(lockdep_recursion);
- 	__owner = NULL;
- 	arch_spin_unlock(&__lock);
-+	__this_cpu_dec(lockdep_recursion);
+-	if (!(quirks & CP_RDESC_SWAPPED_MIN_MAX))
+-		return rdesc;
+-
+ 	if (*rsize < 4)
+ 		return rdesc;
+ 
+@@ -48,6 +46,40 @@ static __u8 *cp_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 	return rdesc;
  }
  
- static inline bool lockdep_assert_locked(void)
++static __u8 *va_logical_boundary_fixup(struct hid_device *hdev, __u8 *rdesc,
++		unsigned int *rsize)
++{
++	/*
++	 * Varmilo VA104M (with VID Cypress and device ID 07B1) incorrectly
++	 * reports Logical Minimum of its Consumer Control device as 572
++	 * (0x02 0x3c). Fix this by setting its Logical Minimum to zero.
++	 */
++	if (*rsize == 25 &&
++			rdesc[0] == 0x05 && rdesc[1] == 0x0c &&
++			rdesc[2] == 0x09 && rdesc[3] == 0x01 &&
++			rdesc[6] == 0x19 && rdesc[7] == 0x00 &&
++			rdesc[11] == 0x16 && rdesc[12] == 0x3c && rdesc[13] == 0x02) {
++		hid_info(hdev,
++			 "fixing up varmilo VA104M consumer control report descriptor\n");
++		rdesc[12] = 0x00;
++		rdesc[13] = 0x00;
++	}
++	return rdesc;
++}
++
++static __u8 *cp_report_fixup(struct hid_device *hdev, __u8 *rdesc,
++		unsigned int *rsize)
++{
++	unsigned long quirks = (unsigned long)hid_get_drvdata(hdev);
++
++	if (quirks & CP_RDESC_SWAPPED_MIN_MAX)
++		rdesc = cp_rdesc_fixup(hdev, rdesc, rsize);
++	if (quirks & VA_INVAL_LOGICAL_BOUNDARY)
++		rdesc = va_logical_boundary_fixup(hdev, rdesc, rsize);
++
++	return rdesc;
++}
++
+ static int cp_input_mapped(struct hid_device *hdev, struct hid_input *hi,
+ 		struct hid_field *field, struct hid_usage *usage,
+ 		unsigned long **bit, int *max)
+@@ -128,6 +160,8 @@ static const struct hid_device_id cp_devices[] = {
+ 		.driver_data = CP_RDESC_SWAPPED_MIN_MAX },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_CYPRESS_MOUSE),
+ 		.driver_data = CP_2WHEEL_MOUSE_HACK },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_CYPRESS_VARMILO_VA104M_07B1),
++		.driver_data = VA_INVAL_LOGICAL_BOUNDARY },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(hid, cp_devices);
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 62b8802a534e8..b2c86403e43b1 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -337,6 +337,8 @@
+ #define USB_DEVICE_ID_CYPRESS_BARCODE_4	0xed81
+ #define USB_DEVICE_ID_CYPRESS_TRUETOUCH	0xc001
+ 
++#define USB_DEVICE_ID_CYPRESS_VARMILO_VA104M_07B1   0X07b1
++
+ #define USB_VENDOR_ID_DATA_MODUL	0x7374
+ #define USB_VENDOR_ID_DATA_MODUL_EASYMAXTOUCH	0x1201
+ 
 -- 
 2.27.0
 
