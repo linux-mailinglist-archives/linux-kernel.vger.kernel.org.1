@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAB12C9E0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900B82C9CAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgLAJa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:30:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57750 "EHLO mail.kernel.org"
+        id S2387867AbgLAI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:58:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729095AbgLAIzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:55:21 -0500
+        id S1729267AbgLAI6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:58:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 048CE21D7F;
-        Tue,  1 Dec 2020 08:54:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E4BD22210;
+        Tue,  1 Dec 2020 08:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812866;
-        bh=VvoB9O3rvgqVIAQwDatIjWbfAN0MypYcrzKss5mVpEA=;
+        s=korg; t=1606813041;
+        bh=+558RP3vP3zlxoLzcYiGUJ8auVdBqnJ25CwCDqJQmpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=khWE70t1jj5tLLO/uQbSCHLdDtGlJJ9oFtCUjkVniT4q/Oxjw0kx7Gyv7+DFTn0YG
-         OySvRi3k+QO5lfRx0kCtUQtyvWD6ocaY205tfwxzZaVBa2PuMFNnMSoA2E8EhCM88T
-         vtBt+htwYx01L3sh39con9BFdsovJNM9RDmQtkpw=
+        b=NBE8sGax9Phal9WvjHfeK1mdT07Z6keksSHJD/aRjHyHYW9NAgnOZyD4pbnu4x3fB
+         vfStidxVXltOX6SacXFEs2lcmyId+XYaBNVN0EWp8PebaKys6HEdX49Q96hoLTwzq9
+         v2AyG5+/xUEv0FyvNzv61po+bjYOUT1mGWYYaPVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Marius Iacob <themariusus@gmail.com>
-Subject: [PATCH 4.4 05/24] Input: i8042 - allow insmod to succeed on devices without an i8042 controller
-Date:   Tue,  1 Dec 2020 09:53:11 +0100
-Message-Id: <20201201084638.024569494@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 13/50] ALSA: hda/hdmi: fix incorrect locking in hdmi_pcm_close
+Date:   Tue,  1 Dec 2020 09:53:12 +0100
+Message-Id: <20201201084646.693396876@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
-References: <20201201084637.754785180@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,97 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit b1884583fcd17d6a1b1bba94bbb5826e6b5c6e17 ]
+commit ce1558c285f9ad04c03b46833a028230771cc0a7 upstream
 
-The i8042 module exports several symbols which may be used by other
-modules.
+A race exists between closing a PCM and update of ELD data. In
+hdmi_pcm_close(), hinfo->nid value is modified without taking
+spec->pcm_lock. If this happens concurrently while processing an ELD
+update in hdmi_pcm_setup_pin(), converter assignment may be done
+incorrectly.
 
-Before this commit it would refuse to load (when built as a module itself)
-on systems without an i8042 controller.
+This bug was found by hitting a WARN_ON in snd_hda_spdif_ctls_assign()
+in a HDMI receiver connection stress test:
 
-This is a problem specifically for the asus-nb-wmi module. Many Asus
-laptops support the Asus WMI interface. Some of them have an i8042
-controller and need to use i8042_install_filter() to filter some kbd
-events. Other models do not have an i8042 controller (e.g. they use an
-USB attached kbd).
+[2739.684569] WARNING: CPU: 5 PID: 2090 at sound/pci/hda/patch_hdmi.c:1898 check_non_pcm_per_cvt+0x41/0x50 [snd_hda_codec_hdmi]
+...
+[2739.684707] Call Trace:
+[2739.684720]  update_eld+0x121/0x5a0 [snd_hda_codec_hdmi]
+[2739.684736]  hdmi_present_sense+0x21e/0x3b0 [snd_hda_codec_hdmi]
+[2739.684750]  check_presence_and_report+0x81/0xd0 [snd_hda_codec_hdmi]
+[2739.684842]  intel_audio_codec_enable+0x122/0x190 [i915]
 
-Before this commit the asus-nb-wmi driver could not be loaded on Asus
-models without an i8042 controller, when the i8042 code was built as
-a module (as Arch Linux does) because the module_init function of the
-i8042 module would fail with -ENODEV and thus the i8042_install_filter
-symbol could not be loaded.
-
-This commit fixes this by exiting from module_init with a return code
-of 0 if no controller is found.  It also adds a i8042_present bool to
-make the module_exit function a no-op in this case and also adds a
-check for i8042_present to the exported i8042_command function.
-
-The latter i8042_present check should not really be necessary because
-when builtin that function can already be used on systems without
-an i8042 controller, but better safe then sorry.
-
-Reported-and-tested-by: Marius Iacob <themariusus@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20201008112628.3979-2-hdegoede@redhat.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 42b2987079ec ("ALSA: hda - hdmi playback without monitor in dynamic pcm bind mode")
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201013152628.920764-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/serio/i8042.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_hdmi.c |   20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-index c84c685056b99..6b648339733fa 100644
---- a/drivers/input/serio/i8042.c
-+++ b/drivers/input/serio/i8042.c
-@@ -125,6 +125,7 @@ module_param_named(unmask_kbd_data, i8042_unmask_kbd_data, bool, 0600);
- MODULE_PARM_DESC(unmask_kbd_data, "Unconditional enable (may reveal sensitive data) of normally sanitize-filtered kbd data traffic debug log [pre-condition: i8042.debug=1 enabled]");
- #endif
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1955,20 +1955,23 @@ static int hdmi_pcm_close(struct hda_pcm
+ 	int pinctl;
+ 	int err = 0;
  
-+static bool i8042_present;
- static bool i8042_bypass_aux_irq_test;
- static char i8042_kbd_firmware_id[128];
- static char i8042_aux_firmware_id[128];
-@@ -343,6 +344,9 @@ int i8042_command(unsigned char *param, int command)
- 	unsigned long flags;
- 	int retval;
++	mutex_lock(&spec->pcm_lock);
+ 	if (hinfo->nid) {
+ 		pcm_idx = hinfo_to_pcm_index(codec, hinfo);
+-		if (snd_BUG_ON(pcm_idx < 0))
+-			return -EINVAL;
++		if (snd_BUG_ON(pcm_idx < 0)) {
++			err = -EINVAL;
++			goto unlock;
++		}
+ 		cvt_idx = cvt_nid_to_cvt_index(codec, hinfo->nid);
+-		if (snd_BUG_ON(cvt_idx < 0))
+-			return -EINVAL;
++		if (snd_BUG_ON(cvt_idx < 0)) {
++			err = -EINVAL;
++			goto unlock;
++		}
+ 		per_cvt = get_cvt(spec, cvt_idx);
+-
+ 		snd_BUG_ON(!per_cvt->assigned);
+ 		per_cvt->assigned = 0;
+ 		hinfo->nid = 0;
  
-+	if (!i8042_present)
-+		return -1;
+-		mutex_lock(&spec->pcm_lock);
+ 		snd_hda_spdif_ctls_unassign(codec, pcm_idx);
+ 		clear_bit(pcm_idx, &spec->pcm_in_use);
+ 		pin_idx = hinfo_to_pin_index(codec, hinfo);
+@@ -1996,10 +1999,11 @@ static int hdmi_pcm_close(struct hda_pcm
+ 		per_pin->setup = false;
+ 		per_pin->channels = 0;
+ 		mutex_unlock(&per_pin->lock);
+-	unlock:
+-		mutex_unlock(&spec->pcm_lock);
+ 	}
+ 
++unlock:
++	mutex_unlock(&spec->pcm_lock);
 +
- 	spin_lock_irqsave(&i8042_lock, flags);
- 	retval = __i8042_command(param, command);
- 	spin_unlock_irqrestore(&i8042_lock, flags);
-@@ -1597,12 +1601,15 @@ static int __init i8042_init(void)
+ 	return err;
+ }
  
- 	err = i8042_platform_init();
- 	if (err)
--		return err;
-+		return (err == -ENODEV) ? 0 : err;
- 
- 	err = i8042_controller_check();
- 	if (err)
- 		goto err_platform_exit;
- 
-+	/* Set this before creating the dev to allow i8042_command to work right away */
-+	i8042_present = true;
-+
- 	pdev = platform_create_bundle(&i8042_driver, i8042_probe, NULL, 0, NULL, 0);
- 	if (IS_ERR(pdev)) {
- 		err = PTR_ERR(pdev);
-@@ -1621,6 +1628,9 @@ static int __init i8042_init(void)
- 
- static void __exit i8042_exit(void)
- {
-+	if (!i8042_present)
-+		return;
-+
- 	platform_device_unregister(i8042_platform_device);
- 	platform_driver_unregister(&i8042_driver);
- 	i8042_platform_exit();
--- 
-2.27.0
-
 
 
