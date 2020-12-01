@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DB32C99D0
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4722C99CF
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728668AbgLAIqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:46:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23654 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727398AbgLAIqf (ORCPT
+        id S1727373AbgLAIq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:46:28 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:45895 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgLAIq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:46:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606812309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QSaVTW8Re5mr4mmiZruNg5eKqQXZkeeVuPsKPpTrCsM=;
-        b=AXyLl04IYl6xDHwM4IaqTrZkU/drereYCRfrgeiywtH19u2ZgM4NhHTt8+rinifPsAwLH3
-        lRA8tsBW/Lj6+jac9Qpwv7hUaycgpsMgVM0nGHR54NBROKagMGmV0XxxrhvSGZBnaIEwkY
-        gTgPAqADkRU6TT9NKk1fBuSI7np8npE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-94-LxOjIfJ_Nbe2RzyVYSkHDA-1; Tue, 01 Dec 2020 03:45:05 -0500
-X-MC-Unique: LxOjIfJ_Nbe2RzyVYSkHDA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7B9D1012774;
-        Tue,  1 Dec 2020 08:44:36 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 124FF19D9B;
-        Tue,  1 Dec 2020 08:44:33 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201127050701.GA22001@gondor.apana.org.au>
-References: <20201127050701.GA22001@gondor.apana.org.au> <20201126063303.GA18366@gondor.apana.org.au> <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk> <1976719.1606378781@warthog.procyon.org.uk>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     dhowells@redhat.com, bfields@fieldses.org,
-        trond.myklebust@hammerspace.com, linux-crypto@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
+        Tue, 1 Dec 2020 03:46:27 -0500
+Received: by mail-lf1-f67.google.com with SMTP id z21so2486770lfe.12;
+        Tue, 01 Dec 2020 00:46:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kx5VQRPsE23X8BsQ1MAGZtQ/+4VWIP6o0cNUR+vHfLU=;
+        b=OLD9lzMwee6+PTPsDR4jI3uE8XQwEumzet4D4mxomcBAdZbctVVZJ2piWvAcfs9tx/
+         NFGW4r4zAItP+A+ndjBF4tFvE7EjtUAhDQ7q0cDabpdQ4j2l4Wb6D0E6Jw7P1C+gxGLu
+         SiWJ+WkIxDRB4rDuMFkLPtJo8ApZnuVldcj7UCn1bMCx6qaYW+w/oKscsTpFXeVgAx+X
+         KlSpLg6iOOjY/cZaHjo4Axr+55K8cMtJm3LUUy4V+pcrrNuKKktUi14J54RpR6eCnhAT
+         ec2N6oqihz9K8vM4XW+v23xRD8DVw7FF5nhTloMVcCzKK6umzgl+Fwewr5PJ+nuC5Gcb
+         w2pA==
+X-Gm-Message-State: AOAM532rNonwVQJWF4PGRQcDmD9cqKjXjGAzNjyvqb6OMrjrpf0pyDiZ
+        e3oP1EEyIUCCBNS98XiKLL4=
+X-Google-Smtp-Source: ABdhPJzzgeTdY9lRHfHKsNi/eKdCmDH5mnNsSBJ+2KGs1prOGoJi5FtVW8FGqbqbixB41KvbWgxHeA==
+X-Received: by 2002:a19:983:: with SMTP id 125mr725555lfj.36.1606812345097;
+        Tue, 01 Dec 2020 00:45:45 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id g130sm126061lfd.227.2020.12.01.00.45.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 00:45:44 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kk1Ib-0003Fu-3a; Tue, 01 Dec 2020 09:46:13 +0100
+Date:   Tue, 1 Dec 2020 09:46:13 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] tty: add port flag to suppress ready signalling on
+ open
+Message-ID: <X8YC1UGSfaarKMcV@localhost>
+References: <20201130153742.9163-1-johan@kernel.org>
+ <20201130153742.9163-2-johan@kernel.org>
+ <ffec9dbe-a238-4411-acdb-41bd33719288@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4035244.1606812273.1@warthog.procyon.org.uk>
-Date:   Tue, 01 Dec 2020 08:44:33 +0000
-Message-ID: <4035245.1606812273@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ffec9dbe-a238-4411-acdb-41bd33719288@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Btw, would it be feasible to make it so that an extra parameter can be added
-to the cipher buffer-supplying functions, e.g.:
+On Tue, Dec 01, 2020 at 06:49:07AM +0100, Jiri Slaby wrote:
+> On 30. 11. 20, 16:37, Johan Hovold wrote:
+> > --- a/include/linux/tty.h
+> > +++ b/include/linux/tty.h
+> > @@ -683,6 +684,19 @@ static inline void tty_port_set_kopened(struct tty_port *port, bool val)
+> >   		clear_bit(TTY_PORT_KOPENED, &port->iflags);
+> >   }
+> >   
+> > +static inline bool tty_port_nordy(struct tty_port *port)
+> 
+> port can be const here.
 
-	skcipher_request_set_crypt(req, input, ciphertext_sg, esize, iv);
+Sure, but see below.
 
-such that we can pass in an offset into the output sg as well?
+> > +{
+> > +	return test_bit(TTY_PORT_NORDY, &port->iflags);
+> > +}
+> > +
+> > +static inline void tty_port_set_nordy(struct tty_port *port, bool val)
+> > +{
+> > +	if (val)
+> > +		set_bit(TTY_PORT_NORDY, &port->iflags);
+> > +	else
+> > +		clear_bit(TTY_PORT_NORDY, &port->iflags);
+> 
+> We have assign_bit() for these cases these days.
 
-David
+Right, but for both your comments this follows the pattern used by the
+other port-flag helpers.
 
+I can add a preparatory patch updating the current helpers, but I don't
+think this needs to be a blocker.
+
+Johan
