@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4B82C9CF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2415C2C9CCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389045AbgLAJGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:06:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41514 "EHLO mail.kernel.org"
+        id S2388500AbgLAJBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:01:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388860AbgLAJE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:04:28 -0500
+        id S1727677AbgLAJBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:01:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C7F62067D;
-        Tue,  1 Dec 2020 09:03:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F325D2224A;
+        Tue,  1 Dec 2020 09:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813427;
-        bh=WKrF+fHOogBVoC2LlHFQk2H2rxbSoQ6iIJIKlmMZy28=;
+        s=korg; t=1606813245;
+        bh=ZVOuzIL+MEZHPmqob7qE+HVlPVFQWeph3wHzA1kib90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bw4suaGCix8LLypuEO/BnUKTqgg6VTvpMec160+WlhqD1UqFlzPP+2R7CPRcd4p1P
-         KBHqirycnROMULek/pyCN/fv+Hi6y4Lo9LXIXUtVAsKT95jQf5urDz/n8Lo91vfDAF
-         Vc0oiNsWz7r3A1Ag0NyjqcDMoutaSQUwZ0fDSReI=
+        b=ybky2WPJN2hLEfkjXl5H9v55izSVB3uiX+P1Psd/JdcBNSqKaUFD8rEgBOQzcMcTp
+         as7KcoFypZE8PU0somiTkRNniJdH2uLvw3Qq1NYG4qA6QaouHye60tZpEnIsKf/uo+
+         MFIoNr9nwYt+WRon2ymRZecJVT0ARdN6FZhZ0ums=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 36/98] dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
+        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nikos Tsironis <ntsironis@arrikto.com>
+Subject: [PATCH 4.19 08/57] KVM: x86: Fix split-irqchip vs interrupt injection window request
 Date:   Tue,  1 Dec 2020 09:53:13 +0100
-Message-Id: <20201201084656.912334712@linuxfoundation.org>
+Message-Id: <20201201084648.690944071@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,69 +43,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit e773ca7da8beeca7f17fe4c9d1284a2b66839cc1 ]
+commit 71cc849b7093bb83af966c0e60cb11b7f35cd746 upstream.
 
-Actually, burst size is equal to '1 << desc->rqcfg.brst_size'.
-we should use burst size, not desc->rqcfg.brst_size.
+kvm_cpu_accept_dm_intr and kvm_vcpu_ready_for_interrupt_injection are
+a hodge-podge of conditions, hacked together to get something that
+more or less works.  But what is actually needed is much simpler;
+in both cases the fundamental question is, do we have a place to stash
+an interrupt if userspace does KVM_INTERRUPT?
 
-dma memcpy performance on Rockchip RV1126
-@ 1512MHz A7, 1056MHz LPDDR3, 200MHz DMA:
+In userspace irqchip mode, that is !vcpu->arch.interrupt.injected.
+Currently kvm_event_needs_reinjection(vcpu) covers it, but it is
+unnecessarily restrictive.
 
-dmatest:
+In split irqchip mode it's a bit more complicated, we need to check
+kvm_apic_accept_pic_intr(vcpu) (the IRQ window exit is basically an INTACK
+cycle and thus requires ExtINTs not to be masked) as well as
+!pending_userspace_extint(vcpu).  However, there is no need to
+check kvm_event_needs_reinjection(vcpu), since split irqchip keeps
+pending ExtINT state separate from event injection state, and checking
+kvm_cpu_has_interrupt(vcpu) is wrong too since ExtINT has higher
+priority than APIC interrupts.  In fact the latter fixes a bug:
+when userspace requests an IRQ window vmexit, an interrupt in the
+local APIC can cause kvm_cpu_has_interrupt() to be true and thus
+kvm_vcpu_ready_for_interrupt_injection() to return false.  When this
+happens, vcpu_run does not exit to userspace but the interrupt window
+vmexits keep occurring.  The VM loops without any hope of making progress.
 
-/# echo dma0chan0 > /sys/module/dmatest/parameters/channel
-/# echo 4194304 > /sys/module/dmatest/parameters/test_buf_size
-/# echo 8 > /sys/module/dmatest/parameters/iterations
-/# echo y > /sys/module/dmatest/parameters/norandom
-/# echo y > /sys/module/dmatest/parameters/verbose
-/# echo 1 > /sys/module/dmatest/parameters/run
+Once we try to fix these with something like
 
-dmatest: dma0chan0-copy0: result #1: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #2: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #3: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #4: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #5: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #6: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #7: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #8: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+     return kvm_arch_interrupt_allowed(vcpu) &&
+-        !kvm_cpu_has_interrupt(vcpu) &&
+-        !kvm_event_needs_reinjection(vcpu) &&
+-        kvm_cpu_accept_dm_intr(vcpu);
++        (!lapic_in_kernel(vcpu)
++         ? !vcpu->arch.interrupt.injected
++         : (kvm_apic_accept_pic_intr(vcpu)
++            && !pending_userspace_extint(v)));
 
-Before:
+we realize two things.  First, thanks to the previous patch the complex
+conditional can reuse !kvm_cpu_has_extint(vcpu).  Second, the interrupt
+window request in vcpu_enter_guest()
 
-  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 48 iops 200338 KB/s (0)
+        bool req_int_win =
+                dm_request_for_irq_injection(vcpu) &&
+                kvm_cpu_accept_dm_intr(vcpu);
 
-After this patch:
+should be kept in sync with kvm_vcpu_ready_for_interrupt_injection():
+it is unnecessary to ask the processor for an interrupt window
+if we would not be able to return to userspace.  Therefore,
+kvm_cpu_accept_dm_intr(vcpu) is basically !kvm_cpu_has_extint(vcpu)
+ANDed with the existing check for masked ExtINT.  It all makes sense:
 
-  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 179 iops 734873 KB/s (0)
+- we can accept an interrupt from userspace if there is a place
+  to stash it (and, for irqchip split, ExtINTs are not masked).
+  Interrupts from userspace _can_ be accepted even if right now
+  EFLAGS.IF=0.
 
-After this patch and increase dma clk to 400MHz:
+- in order to tell userspace we will inject its interrupt ("IRQ
+  window open" i.e. kvm_vcpu_ready_for_interrupt_injection), both
+  KVM and the vCPU need to be ready to accept the interrupt.
 
-  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 259 iops 1062929 KB/s (0)
+... and this is what the patch implements.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-Link: https://lore.kernel.org/r/1605326106-55681-1-git-send-email-sugar.zhang@rock-chips.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: David Woodhouse <dwmw@amazon.co.uk>
+Analyzed-by: David Woodhouse <dwmw@amazon.co.uk>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reviewed-by: Nikos Tsironis <ntsironis@arrikto.com>
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+Tested-by: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/dma/pl330.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/kvm_host.h |    1 +
+ arch/x86/kvm/irq.c              |    2 +-
+ arch/x86/kvm/x86.c              |   18 ++++++++++--------
+ 3 files changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index cd81d10974a29..57b6555d6d042 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -2793,7 +2793,7 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
- 	 * If burst size is smaller than bus width then make sure we only
- 	 * transfer one at a time to avoid a burst stradling an MFIFO entry.
- 	 */
--	if (desc->rqcfg.brst_size * 8 < pl330->pcfg.data_bus_width)
-+	if (burst * 8 < pl330->pcfg.data_bus_width)
- 		desc->rqcfg.brst_len = 1;
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1472,6 +1472,7 @@ int kvm_test_age_hva(struct kvm *kvm, un
+ void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
+ int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v);
+ int kvm_cpu_has_interrupt(struct kvm_vcpu *vcpu);
++int kvm_cpu_has_extint(struct kvm_vcpu *v);
+ int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu);
+ int kvm_cpu_get_interrupt(struct kvm_vcpu *v);
+ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event);
+--- a/arch/x86/kvm/irq.c
++++ b/arch/x86/kvm/irq.c
+@@ -52,7 +52,7 @@ static int pending_userspace_extint(stru
+  * check if there is pending interrupt from
+  * non-APIC source without intack.
+  */
+-static int kvm_cpu_has_extint(struct kvm_vcpu *v)
++int kvm_cpu_has_extint(struct kvm_vcpu *v)
+ {
+ 	/*
+ 	 * FIXME: interrupt.injected represents an interrupt whose
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3351,21 +3351,23 @@ static int kvm_vcpu_ioctl_set_lapic(stru
  
- 	desc->bytes_requested = len;
--- 
-2.27.0
-
+ static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
+ {
++	/*
++	 * We can accept userspace's request for interrupt injection
++	 * as long as we have a place to store the interrupt number.
++	 * The actual injection will happen when the CPU is able to
++	 * deliver the interrupt.
++	 */
++	if (kvm_cpu_has_extint(vcpu))
++		return false;
++
++	/* Acknowledging ExtINT does not happen if LINT0 is masked.  */
+ 	return (!lapic_in_kernel(vcpu) ||
+ 		kvm_apic_accept_pic_intr(vcpu));
+ }
+ 
+-/*
+- * if userspace requested an interrupt window, check that the
+- * interrupt window is open.
+- *
+- * No need to exit to userspace if we already have an interrupt queued.
+- */
+ static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_arch_interrupt_allowed(vcpu) &&
+-		!kvm_cpu_has_interrupt(vcpu) &&
+-		!kvm_event_needs_reinjection(vcpu) &&
+ 		kvm_cpu_accept_dm_intr(vcpu);
+ }
+ 
 
 
