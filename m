@@ -2,42 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194B92C9D17
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E9B2C9E0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390570AbgLAJSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:18:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48228 "EHLO mail.kernel.org"
+        id S2391232AbgLAJa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:30:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389722AbgLAJKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:10:35 -0500
+        id S1729092AbgLAIzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A25CC22244;
-        Tue,  1 Dec 2020 09:09:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 056B32224B;
+        Tue,  1 Dec 2020 08:54:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813794;
-        bh=qMotAVffAEsf++T/AK3uhhl7b0MPcN4XqkYwbcsLpVs=;
+        s=korg; t=1606812883;
+        bh=j8jIezXE1iVzqmmri5lVcq0mQjhgAkZGwGITFThS85Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qb4N3wQe5/v1y/tshP0eUeKNhm5RvlsZa9nVDZ0tAlIXxcrTqbF9XhLjdcuYo4QWt
-         7zcJdGr9oXDJXW/OEEFkXDNwukhZUCillewQqJ/efcbiJhCC3VzhOduk/kCwnUMy5C
-         Pl2pdOfjO29GKLBBMoRqiPR/v0XFaOJhqdKTTG6s=
+        b=bwIRIvppxCs6KL2BKgTL+65xHinmgkzgQYzlmRb+gYj+nFsl5sDXDcW0tBoSi1JDe
+         w5t/iQ9FLWi9pdTbiNtV+HtG8IL9boXCoTdpHMhl2+fAdvRjQv5T65il9KTbT2d3ul
+         IiP02VH87f7YWcBMeWG8ycDYH/PnYUMuz6QkDpNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Lee Duncan <lduncan@suse.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 062/152] scsi: libiscsi: Fix NOP race condition
-Date:   Tue,  1 Dec 2020 09:52:57 +0100
-Message-Id: <20201201084720.043911199@linuxfoundation.org>
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Dahl <ada@thorsis.com>
+Subject: [PATCH 4.9 01/42] perf event: Check ref_reloc_sym before using it
+Date:   Tue,  1 Dec 2020 09:52:59 +0100
+Message-Id: <20201201084642.245523020@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,132 +54,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Duncan <lduncan@suse.com>
+From: Igor Lubashev <ilubashe@akamai.com>
 
-[ Upstream commit fe0a8a95e7134d0b44cd407bc0085b9ba8d8fe31 ]
+commit e9a6882f267a8105461066e3ea6b4b6b9be1b807 upstream.
 
-iSCSI NOPs are sometimes "lost", mistakenly sent to the user-land iscsid
-daemon instead of handled in the kernel, as they should be, resulting in a
-message from the daemon like:
+Check for ref_reloc_sym before using it instead of checking
+symbol_conf.kptr_restrict and relying solely on that check.
 
-  iscsid: Got nop in, but kernel supports nop handling.
+Reported-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Igor Lubashev <ilubashe@akamai.com>
+Tested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc: James Morris <jmorris@namei.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Link: http://lkml.kernel.org/r/1566869956-7154-2-git-send-email-ilubashe@akamai.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Alexander Dahl <ada@thorsis.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This can occur because of the new forward- and back-locks, and the fact
-that an iSCSI NOP response can occur before processing of the NOP send is
-complete. This can result in "conn->ping_task" being NULL in
-iscsi_nop_out_rsp(), when the pointer is actually in the process of being
-set.
-
-To work around this, we add a new state to the "ping_task" pointer. In
-addition to NULL (not assigned) and a pointer (assigned), we add the state
-"being set", which is signaled with an INVALID pointer (using "-1").
-
-Link: https://lore.kernel.org/r/20201106193317.16993-1-leeman.duncan@gmail.com
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libiscsi.c | 23 +++++++++++++++--------
- include/scsi/libiscsi.h |  3 +++
- 2 files changed, 18 insertions(+), 8 deletions(-)
+ tools/perf/util/event.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 1e9c3171fa9f4..f9314f1393fbd 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -533,8 +533,8 @@ static void iscsi_complete_task(struct iscsi_task *task, int state)
- 	if (conn->task == task)
- 		conn->task = NULL;
+--- a/tools/perf/util/event.c
++++ b/tools/perf/util/event.c
+@@ -682,11 +682,13 @@ int perf_event__synthesize_kernel_mmap(s
+ 	int err;
+ 	union perf_event *event;
  
--	if (conn->ping_task == task)
--		conn->ping_task = NULL;
-+	if (READ_ONCE(conn->ping_task) == task)
-+		WRITE_ONCE(conn->ping_task, NULL);
+-	if (symbol_conf.kptr_restrict)
+-		return -1;
+ 	if (map == NULL)
+ 		return -1;
  
- 	/* release get from queueing */
- 	__iscsi_put_task(task);
-@@ -738,6 +738,9 @@ __iscsi_conn_send_pdu(struct iscsi_conn *conn, struct iscsi_hdr *hdr,
- 						   task->conn->session->age);
++	kmap = map__kmap(map);
++	if (!kmap->ref_reloc_sym)
++		return -1;
++
+ 	/*
+ 	 * We should get this from /sys/kernel/sections/.text, but till that is
+ 	 * available use this, and after it is use this as a fallback for older
+@@ -710,7 +712,6 @@ int perf_event__synthesize_kernel_mmap(s
+ 		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
  	}
  
-+	if (unlikely(READ_ONCE(conn->ping_task) == INVALID_SCSI_TASK))
-+		WRITE_ONCE(conn->ping_task, task);
-+
- 	if (!ihost->workq) {
- 		if (iscsi_prep_mgmt_task(conn, task))
- 			goto free_task;
-@@ -941,8 +944,11 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
-         struct iscsi_nopout hdr;
- 	struct iscsi_task *task;
- 
--	if (!rhdr && conn->ping_task)
--		return -EINVAL;
-+	if (!rhdr) {
-+		if (READ_ONCE(conn->ping_task))
-+			return -EINVAL;
-+		WRITE_ONCE(conn->ping_task, INVALID_SCSI_TASK);
-+	}
- 
- 	memset(&hdr, 0, sizeof(struct iscsi_nopout));
- 	hdr.opcode = ISCSI_OP_NOOP_OUT | ISCSI_OP_IMMEDIATE;
-@@ -957,11 +963,12 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
- 
- 	task = __iscsi_conn_send_pdu(conn, (struct iscsi_hdr *)&hdr, NULL, 0);
- 	if (!task) {
-+		if (!rhdr)
-+			WRITE_ONCE(conn->ping_task, NULL);
- 		iscsi_conn_printk(KERN_ERR, conn, "Could not send nopout\n");
- 		return -EIO;
- 	} else if (!rhdr) {
- 		/* only track our nops */
--		conn->ping_task = task;
- 		conn->last_ping = jiffies;
- 	}
- 
-@@ -984,7 +991,7 @@ static int iscsi_nop_out_rsp(struct iscsi_task *task,
- 	struct iscsi_conn *conn = task->conn;
- 	int rc = 0;
- 
--	if (conn->ping_task != task) {
-+	if (READ_ONCE(conn->ping_task) != task) {
- 		/*
- 		 * If this is not in response to one of our
- 		 * nops then it must be from userspace.
-@@ -1923,7 +1930,7 @@ static void iscsi_start_tx(struct iscsi_conn *conn)
-  */
- static int iscsi_has_ping_timed_out(struct iscsi_conn *conn)
- {
--	if (conn->ping_task &&
-+	if (READ_ONCE(conn->ping_task) &&
- 	    time_before_eq(conn->last_recv + (conn->recv_timeout * HZ) +
- 			   (conn->ping_timeout * HZ), jiffies))
- 		return 1;
-@@ -2058,7 +2065,7 @@ enum blk_eh_timer_return iscsi_eh_cmd_timed_out(struct scsi_cmnd *sc)
- 	 * Checking the transport already or nop from a cmd timeout still
- 	 * running
- 	 */
--	if (conn->ping_task) {
-+	if (READ_ONCE(conn->ping_task)) {
- 		task->have_checked_conn = true;
- 		rc = BLK_EH_RESET_TIMER;
- 		goto done;
-diff --git a/include/scsi/libiscsi.h b/include/scsi/libiscsi.h
-index c25fb86ffae95..b3bbd10eb3f07 100644
---- a/include/scsi/libiscsi.h
-+++ b/include/scsi/libiscsi.h
-@@ -132,6 +132,9 @@ struct iscsi_task {
- 	void			*dd_data;	/* driver/transport data */
- };
- 
-+/* invalid scsi_task pointer */
-+#define	INVALID_SCSI_TASK	(struct iscsi_task *)-1l
-+
- static inline int iscsi_task_has_unsol_data(struct iscsi_task *task)
- {
- 	return task->unsol_r2t.data_length > task->unsol_r2t.sent;
--- 
-2.27.0
-
+-	kmap = map__kmap(map);
+ 	size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
+ 			"%s%s", mmap_name, kmap->ref_reloc_sym->name) + 1;
+ 	size = PERF_ALIGN(size, sizeof(u64));
 
 
