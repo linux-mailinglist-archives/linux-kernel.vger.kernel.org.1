@@ -2,74 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BC12CA00F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FE22CA012
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391090AbgLAKjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:39:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729998AbgLAKjW (ORCPT
+        id S1730134AbgLAKkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:40:01 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:51023 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729881AbgLAKkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:39:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4611C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 02:38:41 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606819120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YAJpgh0xPGzhJvQ0+pFj3lmJw3smGNAzIhNqMHD8rYM=;
-        b=a+NZicZbm2aLhKp9Sso4PkLgGDijDyFn2ZJhC8d3Yy9tUAevDyij4/8k5OkR401FuqtIQ5
-        AQr+ROpumRw1uq+ag1znbjN2cAD5d5C4CsCUS3HuhbvWrMKr91iwLJRt5wSiyYkNJIY0cA
-        EQVXScyZxIVVoy34IUZ8LCUQNRHFpNX9uqhDwelVNz+hHnSPVGZUyXsWSCt4Tgt+7xtVgt
-        cuLg0T7kHXFwjtS/u3mvz7/ivnzsmWe7+U3JSEZrwjZ+QqznCAPOsMTOKtVqVolKFZ6FiK
-        h3Fz2M5eXroXWWf7xkyMUrQIcAyVvCWBWqgGAmjd+ft45+xVXJrU7uBQJpwBiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606819120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YAJpgh0xPGzhJvQ0+pFj3lmJw3smGNAzIhNqMHD8rYM=;
-        b=oRM0teRZ/JMiEtUq601w0JwWIPbALRcbxCyxX29dI4GIzoG1C2gIqIot2AufqbKJDC00ss
-        K2Odx+vPrpZP79Aw==
-To:     =?utf-8?Q?Lauren=C8=9Biu?= Nicola <lnicola@dend.ro>
-Cc:     mingo@kernel.org, bp@alien8.de, x86@kernel.org, trivial@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH] x86/irq: Lower unhandled irq error severity
-In-Reply-To: <69841ea6-5998-46ca-8e49-3e9ee65fc8b1@www.fastmail.com>
-References: <20201126074734.12664-1-lnicola@dend.ro> <875z5rk68z.fsf@nanos.tec.linutronix.de> <ea40c3e8-0be1-4783-ba1e-86c96cf8e4af@www.fastmail.com> <87lfeiiy10.fsf@nanos.tec.linutronix.de> <96085c8a-b144-4fd3-b1fb-45763b5b64a4@www.fastmail.com> <87tut6h10u.fsf@nanos.tec.linutronix.de> <69841ea6-5998-46ca-8e49-3e9ee65fc8b1@www.fastmail.com>
-Date:   Tue, 01 Dec 2020 11:38:39 +0100
-Message-ID: <87o8jdhkuo.fsf@nanos.tec.linutronix.de>
+        Tue, 1 Dec 2020 05:40:00 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2A70858061F;
+        Tue,  1 Dec 2020 05:38:54 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 01 Dec 2020 05:38:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=AOpTmHXIB1HGDEnfEEoBW+saz75
+        jDDaup38+K/BCiPs=; b=UpXwBRIOefp7bJnwv8xhvFLijWtThVy7JVaZP75EGrs
+        DfgMw3k0x28LRnq0Jf+ExYNOfuE5rtOLwmPad4ws29L6sO3PQkjnzuhzebje3OGx
+        dcKi8r1UepqQ/pjnEHsRaVX9sdoVcsAWZoO7SANMiuw39wgyDmigVi7FQmy0nuZg
+        b1QI6h16KsN+5yINUD1Yyd7uDiR+F+baCFMQrTR/PMlCtS5GP2SM5U1srXabgHKA
+        7OlVP/En40xxMhThuWn8RZiwIl6mUTGHYriacqRI/kDO5qxSFyrr5WzBHX8dVP+E
+        /8PxE7TpjXpN7d26RG/yj7EWGLs+YSlvLlJPfN4X/nw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=AOpTmH
+        XIB1HGDEnfEEoBW+saz75jDDaup38+K/BCiPs=; b=bz6HSpsbxILtay41kU9oF2
+        L8deEC3aXKXLbH5SUzA/DULlqocSU5lVP7LQFFujZYgBz54w/YAiM++LDfrED+s9
+        nqEzdw8Zhm+PTVg4q1ICePj3lc9UpO2YHV7cXYWc0/axtvQTErwCKPk3D+5VfGyx
+        httNoCD0JjMlsooByRUvL19TmbmMB4o5ZscFgixDzgfmHId0rXn10dwqWjhrPZSy
+        E4eFK7v5vI2CMeIBCBv98O8LOCr/U/aN0+hbej2oIeYzb2pPdkrY2d88LNGSk5Wb
+        J0fqcwAd1Y2+3cpQFN9RxopjoMdjz+53slffvk7unpf1NcD98JJzm49FxrC7drmw
+        ==
+X-ME-Sender: <xms:Ox3GX102woqyBhbf5Scbvu5ViI7X7uL5fF-ok5wFgUx_FB9lmQpM0g>
+    <xme:Ox3GX8A0ur2kV3uf7oqV0fqN4zHAed1hV5Q3hHoL9b5mFVF_AyGvuBaPc-3IFkRCR
+    JD3xBJdkp-lyjLgBAI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeivddgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:Ox3GXyzr0dVxpwckZSiZ9r5y3pPfnuYQBYa9wd0O_GZJjwSFM7IAwA>
+    <xmx:Ox3GX6mW5Vly6aJpEpiZ_CY6FKZfjgbE5urVmkm5ZA-Ahi_yJbJAPw>
+    <xmx:Ox3GX3EF6Ay9nZGMiKNQixsIqIRJJI298bfK0EVewBfPweVzl0OB2Q>
+    <xmx:Ph3GX-lJbjvXCan0hc2I3ghxzbc3zuUyc1ztLuVd3mar7N4q_j-kZQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D94AD1080057;
+        Tue,  1 Dec 2020 05:38:50 -0500 (EST)
+Date:   Tue, 1 Dec 2020 11:38:49 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 03/19] phy: allwinner: phy-sun6i-mipi-dphy: Support
+ D-PHY Rx mode for MIPI CSI-2
+Message-ID: <20201201103849.cqjpf7lurn5htwgs@gilmour>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-4-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zmsqkppuctc6r4g7"
+Content-Disposition: inline
+In-Reply-To: <20201128142839.517949-4-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01 2020 at 10:18, Lauren=C8=9Biu Nicola wrote:
-> On Tue, Dec 1, 2020, at 01:34, Thomas Gleixner wrote:
->> Just for completeness sake. Can you provide the line in /proc/interrupts
->> for irq 7 on that machine?
->
->
->   55:          0          0          0          0          0          0  =
-        0          0          0          0          0          0          0=
-          0          0          0          0          0          0         =
- 0          0          0          0          0          0          0       =
-   0          0          0          0          0          0  IR-PCI-MSI 262=
-5543-edge      xhci_hcd
->
 
-IRQ 55 !=3D IRQ 7. I really meant IRQ 7.
+--zmsqkppuctc6r4g7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
+On Sat, Nov 28, 2020 at 03:28:23PM +0100, Paul Kocialkowski wrote:
+> The Allwinner A31 D-PHY supports both Rx and Tx modes. While the latter
+> is already supported and used for MIPI DSI this adds support for the
+> former, to be used with MIPI CSI-2.
+>=20
+> This implementation is inspired by Allwinner's V3s Linux SDK
+> implementation, which was used as a documentation base.
+>=20
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 
-        tglx
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
+Maxime
+
+--zmsqkppuctc6r4g7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8YdOQAKCRDj7w1vZxhR
+xfabAQCKz+DonqaT9Ix9D8Rls8njfXhm1dyR350ijoHZbIWOdwEAi6e3Q+a0clB6
+8XLbvaH6EtFSjiv+xvN27NigNJ6dYQc=
+=gpZc
+-----END PGP SIGNATURE-----
+
+--zmsqkppuctc6r4g7--
