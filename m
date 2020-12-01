@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A24F2C9A71
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0942C9B76
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387832AbgLAI5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60202 "EHLO mail.kernel.org"
+        id S2389301AbgLAJIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:08:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729249AbgLAI5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:57:25 -0500
+        id S2388971AbgLAJH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:07:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 323EE21D7A;
-        Tue,  1 Dec 2020 08:57:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C11F52223F;
+        Tue,  1 Dec 2020 09:06:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813023;
-        bh=q9jIr5eDkNRsnF9gOo6mVcZmzmd32zyWi8eKm3yiy4Q=;
+        s=korg; t=1606813605;
+        bh=Y/4rQy0AXv9QrcL+WvaXWA5fg6P2blZmyS1st7EIqc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N8jjGr5htfkao/uWiPIS0FnV9f0rUtEMq1xZIRjw/SrwH1d4tOhNqCvJG2T05OxrE
-         1F/VXbQ3LrnEc6gTZHn6lyYlbmGlKVl3PdWZXBFc/4I/FnVgmBLcpUn2o+sXQ++mHR
-         65ovp6mrTlbVKerQcbqcKHwa7alCDs13+mpseOrU=
+        b=V9Kyddfo3hJBsE2QrpoUczi0ahbCjwlLOe7jn+pw/PO/ByVlHwm4hA58vPXpI+vZf
+         E0ts62g+cwHYsCuyRIBf2sNXAu38MkMMBluhvb4HmE27yrTe8X+NwbfWgS1Lk2pxB0
+         MztCM1UA/YtNc1MT8K3TAcxhPqEOcLJk1Ym1w3Mk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH 4.9 35/42] USB: core: Change %pK for __user pointers to %px
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 56/98] s390/qeth: fix af_iucv notification race
 Date:   Tue,  1 Dec 2020 09:53:33 +0100
-Message-Id: <20201201084645.244260654@linuxfoundation.org>
+Message-Id: <20201201084657.842235717@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,93 +43,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-commit f3bc432aa8a7a2bfe9ebb432502be5c5d979d7fe upstream.
+[ Upstream commit 8908f36d20d8ba610d3a7d110b3049b5853b9bb1 ]
 
-Commit 2f964780c03b ("USB: core: replace %p with %pK") used the %pK
-format specifier for a bunch of __user pointers.  But as the 'K' in
-the specifier indicates, it is meant for kernel pointers.  The reason
-for the %pK specifier is to avoid leaks of kernel addresses, but when
-the pointer is to an address in userspace the security implications
-are minimal.  In particular, no kernel information is leaked.
+The two expected notification sequences are
+1. TX_NOTIFY_PENDING with a subsequent TX_NOTIFY_DELAYED_*, when
+   our TX completion code first observed the pending TX and the QAOB
+   then completes at a later time; or
+2. TX_NOTIFY_OK, when qeth_qdio_handle_aob() picked up the QAOB
+   completion before our TX completion code even noticed that the TX
+   was pending.
 
-This patch changes the __user %pK specifiers (used in a bunch of
-debugging output lines) to %px, which will always print the actual
-address with no mangling.  (Notably, there is no printk format
-specifier particularly intended for __user pointers.)
+But as qeth_iqd_tx_complete() and qeth_qdio_handle_aob() can run
+concurrently, we may end up with a race that results in a sequence of
+TX_NOTIFY_DELAYED_* followed by TX_NOTIFY_PENDING. Which would confuse
+the af_iucv code in its tracking of pending transmits.
 
-Fixes: 2f964780c03b ("USB: core: replace %p with %pK")
-CC: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20201119170228.GB576844@rowland.harvard.edu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Rework the notification code, so that qeth_qdio_handle_aob() defers its
+notification if the TX completion code is still active.
 
+Fixes: b333293058aa ("qeth: add support for af_iucv HiperSockets transport")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/devio.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/s390/net/qeth_core.h      |  9 ++--
+ drivers/s390/net/qeth_core_main.c | 73 ++++++++++++++++++++++---------
+ 2 files changed, 58 insertions(+), 24 deletions(-)
 
---- a/drivers/usb/core/devio.c
-+++ b/drivers/usb/core/devio.c
-@@ -477,11 +477,11 @@ static void snoop_urb(struct usb_device
+diff --git a/drivers/s390/net/qeth_core.h b/drivers/s390/net/qeth_core.h
+index 820f2c29376c0..93b4cb156b0bc 100644
+--- a/drivers/s390/net/qeth_core.h
++++ b/drivers/s390/net/qeth_core.h
+@@ -436,10 +436,13 @@ enum qeth_qdio_out_buffer_state {
+ 	QETH_QDIO_BUF_EMPTY,
+ 	/* Filled by driver; owned by hardware in order to be sent. */
+ 	QETH_QDIO_BUF_PRIMED,
+-	/* Identified to be pending in TPQ. */
++	/* Discovered by the TX completion code: */
+ 	QETH_QDIO_BUF_PENDING,
+-	/* Found in completion queue. */
+-	QETH_QDIO_BUF_IN_CQ,
++	/* Finished by the TX completion code: */
++	QETH_QDIO_BUF_NEED_QAOB,
++	/* Received QAOB notification on CQ: */
++	QETH_QDIO_BUF_QAOB_OK,
++	QETH_QDIO_BUF_QAOB_ERROR,
+ 	/* Handled via transfer pending / completion queue. */
+ 	QETH_QDIO_BUF_HANDLED_DELAYED,
+ };
+diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+index 6a2ac575e0a39..f07e73eb37ebb 100644
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -438,6 +438,7 @@ static void qeth_cleanup_handled_pending(struct qeth_qdio_out_q *q, int bidx,
+ static void qeth_qdio_handle_aob(struct qeth_card *card,
+ 				 unsigned long phys_aob_addr)
+ {
++	enum qeth_qdio_out_buffer_state new_state = QETH_QDIO_BUF_QAOB_OK;
+ 	struct qaob *aob;
+ 	struct qeth_qdio_out_buffer *buffer;
+ 	enum iucv_tx_notify notification;
+@@ -449,22 +450,6 @@ static void qeth_qdio_handle_aob(struct qeth_card *card,
+ 	buffer = (struct qeth_qdio_out_buffer *) aob->user1;
+ 	QETH_CARD_TEXT_(card, 5, "%lx", aob->user1);
  
- 	if (userurb) {		/* Async */
- 		if (when == SUBMIT)
--			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
-+			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
- 					"length %u\n",
- 					userurb, ep, t, d, length);
- 		else
--			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
-+			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
- 					"actual_length %u status %d\n",
- 					userurb, ep, t, d, length,
- 					timeout_or_status);
-@@ -1945,7 +1945,7 @@ static int proc_reapurb(struct usb_dev_s
- 	if (as) {
- 		int retval;
+-	if (atomic_cmpxchg(&buffer->state, QETH_QDIO_BUF_PRIMED,
+-			   QETH_QDIO_BUF_IN_CQ) == QETH_QDIO_BUF_PRIMED) {
+-		notification = TX_NOTIFY_OK;
+-	} else {
+-		WARN_ON_ONCE(atomic_read(&buffer->state) !=
+-							QETH_QDIO_BUF_PENDING);
+-		atomic_set(&buffer->state, QETH_QDIO_BUF_IN_CQ);
+-		notification = TX_NOTIFY_DELAYED_OK;
+-	}
+-
+-	if (aob->aorc != 0)  {
+-		QETH_CARD_TEXT_(card, 2, "aorc%02X", aob->aorc);
+-		notification = qeth_compute_cq_notification(aob->aorc, 1);
+-	}
+-	qeth_notify_skbs(buffer->q, buffer, notification);
+-
+ 	/* Free dangling allocations. The attached skbs are handled by
+ 	 * qeth_cleanup_handled_pending().
+ 	 */
+@@ -475,7 +460,33 @@ static void qeth_qdio_handle_aob(struct qeth_card *card,
+ 			kmem_cache_free(qeth_core_header_cache,
+ 					(void *) aob->sba[i]);
+ 	}
+-	atomic_set(&buffer->state, QETH_QDIO_BUF_HANDLED_DELAYED);
++
++	if (aob->aorc) {
++		QETH_CARD_TEXT_(card, 2, "aorc%02X", aob->aorc);
++		new_state = QETH_QDIO_BUF_QAOB_ERROR;
++	}
++
++	switch (atomic_xchg(&buffer->state, new_state)) {
++	case QETH_QDIO_BUF_PRIMED:
++		/* Faster than TX completion code. */
++		notification = qeth_compute_cq_notification(aob->aorc, 0);
++		qeth_notify_skbs(buffer->q, buffer, notification);
++		atomic_set(&buffer->state, QETH_QDIO_BUF_HANDLED_DELAYED);
++		break;
++	case QETH_QDIO_BUF_PENDING:
++		/* TX completion code is active and will handle the async
++		 * completion for us.
++		 */
++		break;
++	case QETH_QDIO_BUF_NEED_QAOB:
++		/* TX completion code is already finished. */
++		notification = qeth_compute_cq_notification(aob->aorc, 1);
++		qeth_notify_skbs(buffer->q, buffer, notification);
++		atomic_set(&buffer->state, QETH_QDIO_BUF_HANDLED_DELAYED);
++		break;
++	default:
++		WARN_ON_ONCE(1);
++	}
  
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl(as, (void __user * __user *)arg);
- 		free_async(as);
- 		return retval;
-@@ -1962,7 +1962,7 @@ static int proc_reapurbnonblock(struct u
+ 	qdio_release_aob(aob);
+ }
+@@ -1095,9 +1106,6 @@ static void qeth_tx_complete_buf(struct qeth_qdio_out_buffer *buf, bool error,
+ 	struct qeth_qdio_out_q *queue = buf->q;
+ 	struct sk_buff *skb;
  
- 	as = async_getcompleted(ps);
- 	if (as) {
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl(as, (void __user * __user *)arg);
- 		free_async(as);
- 	} else {
-@@ -2094,7 +2094,7 @@ static int proc_reapurb_compat(struct us
- 	if (as) {
- 		int retval;
+-	/* release may never happen from within CQ tasklet scope */
+-	WARN_ON_ONCE(atomic_read(&buf->state) == QETH_QDIO_BUF_IN_CQ);
+-
+ 	if (atomic_read(&buf->state) == QETH_QDIO_BUF_PENDING)
+ 		qeth_notify_skbs(queue, buf, TX_NOTIFY_GENERALERROR);
  
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl_compat(as, (void __user * __user *)arg);
- 		free_async(as);
- 		return retval;
-@@ -2111,7 +2111,7 @@ static int proc_reapurbnonblock_compat(s
+@@ -5224,9 +5232,32 @@ static void qeth_iqd_tx_complete(struct qeth_qdio_out_q *queue,
  
- 	as = async_getcompleted(ps);
- 	if (as) {
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl_compat(as, (void __user * __user *)arg);
- 		free_async(as);
- 	} else {
-@@ -2540,7 +2540,7 @@ static long usbdev_do_ioctl(struct file
- #endif
+ 		if (atomic_cmpxchg(&buffer->state, QETH_QDIO_BUF_PRIMED,
+ 						   QETH_QDIO_BUF_PENDING) ==
+-		    QETH_QDIO_BUF_PRIMED)
++		    QETH_QDIO_BUF_PRIMED) {
+ 			qeth_notify_skbs(queue, buffer, TX_NOTIFY_PENDING);
  
- 	case USBDEVFS_DISCARDURB:
--		snoop(&dev->dev, "%s: DISCARDURB %pK\n", __func__, p);
-+		snoop(&dev->dev, "%s: DISCARDURB %px\n", __func__, p);
- 		ret = proc_unlinkurb(ps, p);
- 		break;
++			/* Handle race with qeth_qdio_handle_aob(): */
++			switch (atomic_xchg(&buffer->state,
++					    QETH_QDIO_BUF_NEED_QAOB)) {
++			case QETH_QDIO_BUF_PENDING:
++				/* No concurrent QAOB notification. */
++				break;
++			case QETH_QDIO_BUF_QAOB_OK:
++				qeth_notify_skbs(queue, buffer,
++						 TX_NOTIFY_DELAYED_OK);
++				atomic_set(&buffer->state,
++					   QETH_QDIO_BUF_HANDLED_DELAYED);
++				break;
++			case QETH_QDIO_BUF_QAOB_ERROR:
++				qeth_notify_skbs(queue, buffer,
++						 TX_NOTIFY_DELAYED_GENERALERROR);
++				atomic_set(&buffer->state,
++					   QETH_QDIO_BUF_HANDLED_DELAYED);
++				break;
++			default:
++				WARN_ON_ONCE(1);
++			}
++		}
++
+ 		QETH_CARD_TEXT_(card, 5, "pel%u", bidx);
  
+ 		/* prepare the queue slot for re-use: */
+-- 
+2.27.0
+
 
 
