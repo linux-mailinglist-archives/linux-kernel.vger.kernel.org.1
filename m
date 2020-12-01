@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86AA2CA918
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2792CA91E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391855AbgLAQ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:56:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389756AbgLAQ41 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:56:27 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E9CC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:55:46 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id u7so1274268vsq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:55:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iM9l8tgZXRGlISc4oqNIJMMb7GstcP8ZH/OdjOUcDS8=;
-        b=W9eHUZGNvxYAvC2psNE8PfsPB4W0GsE5CEwo2Pdz1pivePDNSr9LLt9Gc/VXr1O8hA
-         lbzwYxty5SyyRg67oWBBDGDemV96+a8EcKEFG7fHYCEWhlklFkb1GZ0q9Q9XeF+j/uiD
-         G0V8idBEgPv+U9wgGCrejHNAGqCeuKCNar9yIStVO+E3XaEhA9fQt+KG/wZgixDfdN2k
-         n+ERR4icbMBNnR4bNQD8YBXJJYxhmYVsutnAoBk0qlemTIWksxvkBuTISIAzXDEZR+5x
-         Hn1FLEfQAvOvoNNw2vllmax5GRIU0ySSCIDwZz5HCxO4HjAyyaPZyQK5rSs8DfKHWRAv
-         kdyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iM9l8tgZXRGlISc4oqNIJMMb7GstcP8ZH/OdjOUcDS8=;
-        b=EWxOLgJtBNFaeVaQJCw/0qRISfkXZPOMyKZGWb6n7vTP5pcpou9/FzRyAy4WL9EUl+
-         SqKOu4P2fnniWLIOe3pDMtrfuOi6BVElG6xT+8GcGYQW1dWMyZoUIjyPBCk2iMDBERV/
-         jUHhUj/vdmiRGqBn7feB4bWAZRnmQcFM46MMfGJvVc+2GcRbqWsrlmrtQfzC2KAvegsp
-         6p3MEAzKsbUgOsg6Afs+JatgyVDG5lTbDAxwRaUbQgzqPJfVYsSKKChWm0St+/Q19JUn
-         XwnCAqe/V6WQaQt6te6NY9QrPXAEdi2XHJP4ZZ7I554v5aTltcWLalAH4aXu98V6+Ikd
-         qshg==
-X-Gm-Message-State: AOAM531dTWehaK2RaJz/aPQqU024qr5gSyrWRIXK+NCraLKeTpeRjl73
-        FHamJ4NEDlhL9B1QiXZNwA7+ChhTTfy6vS6tqa8=
-X-Google-Smtp-Source: ABdhPJzFQiud71piAWzL/bA79v2nwZQdqSO7giMGUjMJu5UMQC2o03Wut2qo408OwGrAmvyk4aT33JZqCcMA0+BAOS8=
-X-Received: by 2002:a67:e43:: with SMTP id 64mr3592393vso.40.1606841745952;
- Tue, 01 Dec 2020 08:55:45 -0800 (PST)
+        id S2392179AbgLAQ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:56:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388184AbgLAQ4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:56:55 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B156521D7F;
+        Tue,  1 Dec 2020 16:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606841775;
+        bh=ADXYaQ14I9NiCow+1vqfkMHGXmW/crWXzRykvLgTvOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rVw7WYjR4J26gBmvfegd2b7QT/Q58zeB1baEF0J6Wrth/LixkqkigJKPc2xQ0C9LO
+         CQg1UQhapUZXivsix2WUYxflQL6OjyGqsIoHvbcwcYiUtwTZiKQvTJ7hX/bfVROnfX
+         jsuTDL1cv0u/vi7akAIlG1P/MggTBv1JnzlU7DBI=
+Date:   Tue, 1 Dec 2020 16:55:46 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Adam Ward <Adam.Ward.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3 00/10] regulator: da9121: extend support to variants,
+ add features
+Message-ID: <20201201165546.GL5239@sirena.org.uk>
+References: <cover.1606755367.git.Adam.Ward.opensource@diasemi.com>
+ <160683107677.35139.1688443189294014005.b4-ty@kernel.org>
+ <PR3PR10MB4142434AF67B4976D8095ABD80F40@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
- <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk>
- <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
- <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com> <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com>
- <20201201174433.2000c8a3@aktux>
-In-Reply-To: <20201201174433.2000c8a3@aktux>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 1 Dec 2020 11:55:34 -0500
-Message-ID: <CAGngYiU2OafLOHGJd-hQd-6dpnCdhv2wjKE8kDR0+R8T9B=Pkw@mail.gmail.com>
-Subject: Re: [Letux-kernel] [BUG] SPI broken for SPI based panel drivers
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HBg0C3yr6HVa1ZCc"
+Content-Disposition: inline
+In-Reply-To: <PR3PR10MB4142434AF67B4976D8095ABD80F40@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
+X-Cookie: Who was that masked man?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
 
-On Tue, Dec 1, 2020 at 11:44 AM Andreas Kemnade <andreas@kemnade.info> wrote:
->
-> So if that one is really active-low, why did it ever work?!
+--HBg0C3yr6HVa1ZCc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Because the spi gpio chipselect was broken (inverted), and
-766c6b63aa04 ("spi: fix client driver breakages when using GPIO descriptors")
-fixes it.
+On Tue, Dec 01, 2020 at 04:51:43PM +0000, Adam Thomson wrote:
+
+> Was the intention to apply these to the ASoC repo, as this patch set is just
+> for regulator? Just wanted to check.
+
+They're actually applied to regulator, b4 had a bug.
+
+--HBg0C3yr6HVa1ZCc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GdZEACgkQJNaLcl1U
+h9AMyQf/d+AzpooG4KC/y7IL7EEIHj2Z8uPz8lxGZWJ7LFZtA2whZwL7V6z0QsVP
+b/944jF01b7aMqSkt+F5a4Lqu7haFYS4y2eRstleAxS/w5SE8PkYyBKn6wQyktQr
+64AzOJsFWL2IfHOgGqxKdf82VMulLYv2T+7tdMHT8tdmqnfTmf1yowuk+XUHG6Bj
+FQW65JTLvw2cEtwg73QU9HvuMYLbYOernsp2YkdX/GXUynJ4EFHqfM5WASRwFLyO
+9WZ/qG26VXbK644jlOmahdQ9Nfm7RNKOp+xt6iHodYzECXK0ZTurixqRRFee7WRY
+BrNc3oWPjLwLixJV9W8mWEWjkZgJ4g==
+=agOR
+-----END PGP SIGNATURE-----
+
+--HBg0C3yr6HVa1ZCc--
