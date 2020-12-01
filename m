@@ -2,93 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06082CB096
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AB32CB0A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgLAW7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgLAW7F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 17:59:05 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4112DC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:58:25 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id bj5so2089093plb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 14:58:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fpCkvObUiLFV7i8wi0EFFDp0DlPXOlO+Zd8t9lluHfI=;
-        b=j+Q7lTAty3ECkOp2OSuvkZGlS6+RQnAHLLW8l9YFJ7bvLzAsrmXdk0JpYJZIvNCCiA
-         VDwPhwLgpl1+MG/wdMrLyW1vGn7T5M3vCMFHvU6ZIhUZvjN4nwhBLfUahBpNL2wiZ5Lo
-         YuZsYddycPrOSVCKu7jF9R6urpU0inVCB8Guo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fpCkvObUiLFV7i8wi0EFFDp0DlPXOlO+Zd8t9lluHfI=;
-        b=kgk8zJaO+fJ3+jP6I7KC6RO5ejTaKWqE+Yf0fajKi9HqcqqOnhIDM4v3kLAb0V3J8V
-         gyz7kJl/aFuoIPfcS5YwL1M01sYypllBxMrt0X1ciwKN5l7X0VVLBTbev6U+RdpDu0Cl
-         G8Xigw/zWoUhpcyQ4o9W5nZDuuSdzix+mNwzHKzYdTAaANNZc/LDH3XjfZAycjr4NoIp
-         XC5QAOYvrHGApQa56gdGorSYhG01v3jnSJ08GweKhSJEVDai23TuDmy+SI8rglPJLrAl
-         eS0FEKuZt6sFaAi6uiW+B43gY7LHiYm+0ve7F4/eqMCcKuRxmTl3RDGyIYLiWz7GVmMu
-         Ct2w==
-X-Gm-Message-State: AOAM532n/o/koGwfqDnpdCYoYboTTjTc9NK1O84G8T+HF+25lHh7kH4+
-        LYFrCbWg638OUXajgjaIUqVTwg==
-X-Google-Smtp-Source: ABdhPJwx3tUuiRhlr276G7mU77s853AaUDNvhbvf4OgyooV3aVDoQScF3DiQJG/f5Pz8oSb/g/8haA==
-X-Received: by 2002:a17:90a:4d8f:: with SMTP id m15mr5139792pjh.211.1606863504775;
-        Tue, 01 Dec 2020 14:58:24 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y69sm765397pfb.12.2020.12.01.14.58.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 14:58:23 -0800 (PST)
-Date:   Tue, 1 Dec 2020 14:58:23 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, gofmanp@gmail.com,
-        christian.brauner@ubuntu.com, peterz@infradead.org,
-        willy@infradead.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, x86@kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v8 6/7] selftests: Add benchmark for syscall user dispatch
-Message-ID: <202012011458.13B0254D@keescook>
-References: <20201127193238.821364-1-krisman@collabora.com>
- <20201127193238.821364-7-krisman@collabora.com>
+        id S1726817AbgLAXFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:05:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726167AbgLAXFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 18:05:20 -0500
+Date:   Tue, 1 Dec 2020 23:04:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606863879;
+        bh=+P5vOdE+JdhBYVVmnBPwF/BQp7C9Ej9MDqmd8+IjdKI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rAt6FAvKgNYwFAgXKvslaKL2L6D4TLQGFxZmDaTouwi97GTnBFyrm06gN7lGsh3ep
+         JNTvMNBGYwgPEMCS26CZ+p8j7CC0jYFldWx8GhpDNTh5+gMpmQzAV9Pn/tYxecOCxN
+         bwTthtT3eT5majrxU3YmECb7LZk3Mpa8R6JOHjpc=
+From:   Will Deacon <will@kernel.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
+Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb
+ option
+Message-ID: <20201201230432.GC28496@willie-the-truck>
+References: <20201128160141.1003903-1-npiggin@gmail.com>
+ <20201128160141.1003903-7-npiggin@gmail.com>
+ <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
+ <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
+ <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com>
+ <20201201212758.GA28300@willie-the-truck>
+ <CALCETrVP3qAQ50yHU-AzZQsiRB9JGO5FQf91kuk7DCvNY51EXQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201127193238.821364-7-krisman@collabora.com>
+In-Reply-To: <CALCETrVP3qAQ50yHU-AzZQsiRB9JGO5FQf91kuk7DCvNY51EXQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 02:32:37PM -0500, Gabriel Krisman Bertazi wrote:
-> This is the patch I'm using to evaluate the impact syscall user dispatch
-> has on native syscall (syscalls not redirected to userspace) when
-> enabled for the process and submiting syscalls though the unblocked
-> dispatch selector. It works by running a step to define a baseline of
-> the cost of executing sysinfo, then enabling SUD, and rerunning that
-> step.
+On Tue, Dec 01, 2020 at 01:50:38PM -0800, Andy Lutomirski wrote:
+> On Tue, Dec 1, 2020 at 1:28 PM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Mon, Nov 30, 2020 at 10:31:51AM -0800, Andy Lutomirski wrote:
+> > > other arch folk: there's some background here:
+> > >
+> > > https://lkml.kernel.org/r/CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com
+> > >
+> > > On Sun, Nov 29, 2020 at 12:16 PM Andy Lutomirski <luto@kernel.org> wrote:
+> > > >
+> > > > On Sat, Nov 28, 2020 at 7:54 PM Andy Lutomirski <luto@kernel.org> wrote:
+> > > > >
+> > > > > On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+> > > > > >
+> > > > > > On big systems, the mm refcount can become highly contented when doing
+> > > > > > a lot of context switching with threaded applications (particularly
+> > > > > > switching between the idle thread and an application thread).
+> > > > > >
+> > > > > > Abandoning lazy tlb slows switching down quite a bit in the important
+> > > > > > user->idle->user cases, so so instead implement a non-refcounted scheme
+> > > > > > that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
+> > > > > > any remaining lazy ones.
+> > > > > >
+> > > > > > Shootdown IPIs are some concern, but they have not been observed to be
+> > > > > > a big problem with this scheme (the powerpc implementation generated
+> > > > > > 314 additional interrupts on a 144 CPU system during a kernel compile).
+> > > > > > There are a number of strategies that could be employed to reduce IPIs
+> > > > > > if they turn out to be a problem for some workload.
+> > > > >
+> > > > > I'm still wondering whether we can do even better.
+> > > > >
+> > > >
+> > > > Hold on a sec.. __mmput() unmaps VMAs, frees pagetables, and flushes
+> > > > the TLB.  On x86, this will shoot down all lazies as long as even a
+> > > > single pagetable was freed.  (Or at least it will if we don't have a
+> > > > serious bug, but the code seems okay.  We'll hit pmd_free_tlb, which
+> > > > sets tlb->freed_tables, which will trigger the IPI.)  So, on
+> > > > architectures like x86, the shootdown approach should be free.  The
+> > > > only way it ought to have any excess IPIs is if we have CPUs in
+> > > > mm_cpumask() that don't need IPI to free pagetables, which could
+> > > > happen on paravirt.
+> > >
+> > > Indeed, on x86, we do this:
+> > >
+> > > [   11.558844]  flush_tlb_mm_range.cold+0x18/0x1d
+> > > [   11.559905]  tlb_finish_mmu+0x10e/0x1a0
+> > > [   11.561068]  exit_mmap+0xc8/0x1a0
+> > > [   11.561932]  mmput+0x29/0xd0
+> > > [   11.562688]  do_exit+0x316/0xa90
+> > > [   11.563588]  do_group_exit+0x34/0xb0
+> > > [   11.564476]  __x64_sys_exit_group+0xf/0x10
+> > > [   11.565512]  do_syscall_64+0x34/0x50
+> > >
+> > > and we have info->freed_tables set.
+> > >
+> > > What are the architectures that have large systems like?
+> > >
+> > > x86: we already zap lazies, so it should cost basically nothing to do
+> > > a little loop at the end of __mmput() to make sure that no lazies are
+> > > left.  If we care about paravirt performance, we could implement one
+> > > of the optimizations I mentioned above to fix up the refcounts instead
+> > > of sending an IPI to any remaining lazies.
+> > >
+> > > arm64: AFAICT arm64's flush uses magic arm64 hardware support for
+> > > remote flushes, so any lazy mm references will still exist after
+> > > exit_mmap().  (arm64 uses lazy TLB, right?)  So this is kind of like
+> > > the x86 paravirt case.  Are there large enough arm64 systems that any
+> > > of this matters?
+> >
+> > Yes, there are large arm64 systems where performance of TLB invalidation
+> > matters, but they're either niche (supercomputers) or not readily available
+> > (NUMA boxes).
+> >
+> > But anyway, we blow away the TLB for everybody in tlb_finish_mmu() after
+> > freeing the page-tables. We have an optimisation to avoid flushing if
+> > we're just unmapping leaf entries when the mm is going away, but we don't
+> > have a choice once we get to actually reclaiming the page-tables.
+> >
+> > One thing I probably should mention, though, is that we don't maintain
+> > mm_cpumask() because we're not able to benefit from it and the atomic
+> > update is a waste of time.
 > 
-> On my test machine, an AMD Ryzen 5 1500X, I have the following results
-> with the latest version of syscall user dispatch patches.
-> 
-> root@olga:~# syscall_user_dispatch/sud_benchmark
->   Calibrating test set to last ~5 seconds...
->   test iterations = 37500000
->   Avg syscall time 134ns.
->   Caught sys_ff00
->   trapped_call_count 1, native_call_count 0.
->   Avg syscall time 147ns.
->   Interception overhead: 9.7% (+13ns).
-> 
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Do you do anything special for lazy TLB or do you just use the generic
+> code?  (i.e. where do your user pagetables point when you go from a
+> user task to idle or to a kernel thread?)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+We don't do anything special (there's something funny with the PAN emulation
+but you can ignore that); the page-table just points wherever it did before
+for userspace. Switching explicitly to the init_mm, however, causes us to
+unmap userspace entirely.
 
--- 
-Kees Cook
+Since we have ASIDs, switch_mm() generally doesn't have to care about the
+TLBs at all.
+
+> Do you end up with all cpus set in mm_cpumask or can you have the mm
+> loaded on a CPU that isn't in mm_cpumask?
+
+I think the mask is always zero (we never set anything in there).
+
+Will
