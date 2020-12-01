@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927302C9E95
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4E12C9EB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729575AbgLAKEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:04:01 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57979 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgLAKEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:04:00 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cld2r6g3fz9sVq;
-        Tue,  1 Dec 2020 21:03:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606816997;
-        bh=FjlfdSawU3ve6xceGaXc0QUrfyKru3+HxazOT6mqyKY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IHjAgsfE79WFoxv6HT962TApwskmVwbg+TFoy4P2amGUPldXPj7dEfM9nw3ZY9obF
-         6mv9vDBWM37rVBi+54ouahzhn1+Q34Ksg15gbui959tLFvSVNcUPtIZlilSTAiFohj
-         IcHZNSm35vYFtawWC4FXpdJMm9m3IAi63A3pchrKKhC4v9beRrKFQ+NdiNNOrR9zVN
-         N2udVtB8YtgPnBPY91MYCCsEIsZnEkZu30wmmskANsb7NMk2hZn8Fx/jcb9+xjRuKR
-         6Pbd0kclOvdE10i7wstCH2KKjfh5QA5TVwcWDvtaFoYMc8dIMoqAHDLF62d0twCFqI
-         zKH07q16tc6oA==
-Date:   Tue, 1 Dec 2020 21:03:15 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] clk: renesas: r9a06g032: Drop __packed for
- portability
-Message-ID: <20201201210315.45a73673@canb.auug.org.au>
-In-Reply-To: <20201130085743.1656317-1-geert+renesas@glider.be>
-References: <20201130085743.1656317-1-geert+renesas@glider.be>
+        id S1729642AbgLAKFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:05:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60801 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727590AbgLAKFI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:05:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606817021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tbNblql/bgu1kTrPaVv4ukfAe+ESYoXim3MXcwQHQFg=;
+        b=Xov1mK6MI0wSFClPZ6doeOpQSTwfhJeQBJxrkprndnFjMhJg3/bHE9U2vrt+xfKDP0EiPr
+        HmCV+ZeC8hg49AAaB7WHBzoViwObQcshMNU+pLLefvlZXO0+mmDCWLWobh7kJaZXWSWS43
+        HJX4mzuGT1RXv3YPcaKsg28khx5lDE4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-180-u-i2hGdYNqqK29RACpF_MA-1; Tue, 01 Dec 2020 05:03:39 -0500
+X-MC-Unique: u-i2hGdYNqqK29RACpF_MA-1
+Received: by mail-ed1-f70.google.com with SMTP id bc27so992766edb.18
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 02:03:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tbNblql/bgu1kTrPaVv4ukfAe+ESYoXim3MXcwQHQFg=;
+        b=SL0ibb/8WjDdcDF7xDpQaeBWN4XyizH5BX9n4x07gEJi4qJs3N6ZwzFnr6myPQ57oH
+         BGB0yJl3C4O+Rt7V3WvgArOUQ4gEH5I4vZ9s66qjg7juYr/szvT8TRj/Kh0jKwXbCra6
+         FAg92yEnCyGXi/Bx1WXSJFUsO3KMadVL7T14zdi7EdXb9e7iHvMbHGlH0RBTreuEGD9Q
+         ZwgJGyy7OqUQ+ZCreLxem0oP/Q3TWTASq+ZTA/mqQLA5YHbBp6C9qaLZfSyGLj5R6ald
+         UhDPeCC97HX+AcwUYAUd2xkp0EHN2gvr17rKfYsiIg0vPiqnrF1GJh70UEgok60vUs1M
+         ipOA==
+X-Gm-Message-State: AOAM533zJ0lHpFA6+SG3/osb8lg1yP95REbFGf6Xh6UPUqDeQcS2Pw38
+        g2/EnF+76kmnsxRB+pQdN5oap54WYiJyhwA5kvZoMv97VB4Udu/4LMPJmf2h6db0UzQaxjRuExj
+        KOH5Yb/Dk8+752D4jU6qFsSG5
+X-Received: by 2002:aa7:c2d6:: with SMTP id m22mr2200302edp.368.1606817018419;
+        Tue, 01 Dec 2020 02:03:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJycOxYx/Nex1usEn7X2wa0s1d7yHUQ7OMBrOZX+9So4+nOCjgyrvd5+f7dSybH3Ipu+EinTrw==
+X-Received: by 2002:aa7:c2d6:: with SMTP id m22mr2200273edp.368.1606817018220;
+        Tue, 01 Dec 2020 02:03:38 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j22sm578718ejy.106.2020.12.01.02.03.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 02:03:37 -0800 (PST)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Nikos Tsironis <ntsironis@arrikto.com>
+References: <20201201084647.751612010@linuxfoundation.org>
+ <20201201084648.690944071@linuxfoundation.org>
+ <d29c4b25-33f6-8d99-7a45-8f4e06f5ade6@redhat.com>
+ <X8YThgeaonYhB6zi@kroah.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 4.19 08/57] KVM: x86: Fix split-irqchip vs interrupt
+ injection window request
+Message-ID: <fe3fa32b-fc84-9e81-80e0-cb19889fc042@redhat.com>
+Date:   Tue, 1 Dec 2020 11:03:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/x=8K5Ql==6p6MPT1Tt8f7jL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <X8YThgeaonYhB6zi@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/x=8K5Ql==6p6MPT1Tt8f7jL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 01/12/20 10:57, Greg Kroah-Hartman wrote:
+>> Since you did not apply "KVM: x86: handle !lapic_in_kernel case in
+>> kvm_cpu_*_extint" to 4.19 or earlier, please leave this one out as well.
+> Isn't it patch 07 of this series?
 
-Hi Geert,
+Yes, it arrived a few minutes after I hit send for whatever reason. 
+Though it still applies to 4.14 and earlier:
 
-On Mon, 30 Nov 2020 09:57:43 +0100 Geert Uytterhoeven <geert+renesas@glider=
-.be> wrote:
->
-> The R9A06G032 clock driver uses an array of packed structures to reduce
-> kernel size.  However, this array contains pointers, which are no longer
-> aligned naturally, and cannot be relocated on PPC64.  Hence when
-> compile-testing this driver on PPC64 with CONFIG_RELOCATABLE=3Dy (e.g.
-> PowerPC allyesconfig), the following warnings are produced:
->=20
->     WARNING: 136 bad relocations
->     c000000000616be3 R_PPC64_UADDR64   .rodata+0x00000000000cf338
->     c000000000616bfe R_PPC64_UADDR64   .rodata+0x00000000000cf370
->     ...
->=20
-> Fix this by dropping the __packed attribute from the r9a06g032_clkdesc
-> definition, trading a small size increase for portability.
->=20
-> This increases the 156-entry clock table by 1 byte per entry, but due to
-> the compiler generating more efficient code for unpacked accesses, the
-> net size increase is only 76 bytes (gcc 9.3.0 on arm32).
->=20
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Fixes: 4c3d88526eba2143 ("clk: renesas: Renesas R9A06G032 clock driver")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2:
->   - Fix authorship.
-> ---
->  drivers/clk/renesas/r9a06g032-clocks.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas=
-/r9a06g032-clocks.c
-> index d900f6bf53d0b944..892e91b92f2c80f5 100644
-> --- a/drivers/clk/renesas/r9a06g032-clocks.c
-> +++ b/drivers/clk/renesas/r9a06g032-clocks.c
-> @@ -55,7 +55,7 @@ struct r9a06g032_clkdesc {
->  			u16 sel, g1, r1, g2, r2;
->  		} dual;
->  	};
-> -} __packed;
-> +};
-> =20
->  #define I_GATE(_clk, _rst, _rdy, _midle, _scon, _mirack, _mistat) \
->  	{ .gate =3D _clk, .reset =3D _rst, \
-> --=20
-> 2.25.1
->=20
+` [PATCH 4.14 04/50] wireless: Use linux/stddef.h instead of stddef.h
+` [PATCH 4.14 07/50] btrfs: adjust return values of btrfs_inode_by_name
+` [PATCH 4.14 08/50] btrfs: inode: Verify inode mode to avoid NULL 
+pointer dereference
+` [PATCH 4.14 09/50] KVM: x86: Fix split-irqchip vs interrupt injection 
+window request
 
-Tested-by: Stephen Rothwell <sfr@canb.auug.org.au> # PowerPC allyesconfig b=
-uild
+` [PATCH 4.9 05/42] btrfs: tree-checker: Enhance chunk checker to 
+validate chunk profile
+` [PATCH 4.9 06/42] btrfs: inode: Verify inode mode to avoid NULL 
+pointer dereference
+` [PATCH 4.9 07/42] KVM: x86: Fix split-irqchip vs interrupt injection 
+window request
 
---=20
-Cheers,
-Stephen Rothwell
+` [PATCH 4.4 01/24] btrfs: tree-checker: Enhance chunk checker to 
+validate chunk profile
+` [PATCH 4.4 02/24] btrfs: inode: Verify inode mode to avoid NULL 
+pointer dereference
+` [PATCH 4.4 03/24] KVM: x86: Fix split-irqchip vs interrupt injection 
+window request
 
---Sig_/x=8K5Ql==6p6MPT1Tt8f7jL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Paolo
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/GFOQACgkQAVBC80lX
-0Gx20wgAi6BiXoJObYe8V+LMkb6ZXfIlTf41CHmeVC6NHNznore2v1594BTP0Zgf
-gTyOp2mkrn+sKaunxMzoZt3aEwtKkSUs0t5ksN7WIS/Ilnp6RDqtUr3hk5L+Ig0H
-M6GBg+78RiPDvAgF5xjxGTaDh5SCtB1MFNqGy+Yf1pe+p6JZtpBqhaXDLv+cvHSV
-45Fj1RLJ23HYERQ/PUBPHwHI3hVco5EI5eEDuaXEJWGCtsAfWXsj3AYIylx3Emyp
-zYlfxgr5ZVEKsTY8DJBgVvn5K85hjFIy7ljRx+3kByQh6IyPpWWUDoPAS5TfepCj
-YvgHxHtnnei5Urke1xFol0P0jasF2A==
-=A+fg
------END PGP SIGNATURE-----
-
---Sig_/x=8K5Ql==6p6MPT1Tt8f7jL--
