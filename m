@@ -2,862 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CDF2CADD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CF62CADDA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388340AbgLAUy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:54:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        id S2388775AbgLAUyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388211AbgLAUy0 (ORCPT
+        with ESMTP id S2388525AbgLAUyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:54:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CB0C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:53:45 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606856024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0JyONtghvwG2wOQwN5TedDCXCX08zM7fH/v/9+CNORI=;
-        b=eMpR6L9cdiigPpZhFmz5Mr1Ehh1REnWKXaw5ZJKp3nawnTZd4eb2eFHnRTgATjItv/gYk1
-        e0T3HahGVF+jiZXfiv1MDipb33MFWcls7sApsclYOWoRzQOxQOgZyP6FJtUtq0DiXBNoyH
-        FwLHbVraBlROIw62If7W8x0KypM0TNSWMK9A6iCGW5cDS4FdLophl3AbwGuFgAYZavvEd0
-        FBmDBuRn71lIZI2+bQXoclEgAB/qf24aqYUwRq2HTds7gam9fibbq9f2b7Da6ipddJGy+q
-        CbU//p7nwjmjHTLloMaDfhjZWnjAdhJ+lDhKXym52jxXrjL/iZERinEVZnqV0Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606856024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0JyONtghvwG2wOQwN5TedDCXCX08zM7fH/v/9+CNORI=;
-        b=5giS+fqykefnfD6LUSY3v23Oovcr6E1fQFim+aRf63L8VIrd7KVm+fukembAtfIEBkhSef
-        q3FxwunGgwciahCA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH next v2 3/3] printk: remove logbuf_lock, add syslog_lock
-Date:   Tue,  1 Dec 2020 21:59:41 +0106
-Message-Id: <20201201205341.3871-4-john.ogness@linutronix.de>
-In-Reply-To: <20201201205341.3871-1-john.ogness@linutronix.de>
-References: <20201201205341.3871-1-john.ogness@linutronix.de>
+        Tue, 1 Dec 2020 15:54:45 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6120C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:53:59 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id d8so7314916lfa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:53:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t1JzIjD0bsSWEgEcAE5jhkMduDbmpmcUucP5XBr/Mq0=;
+        b=tA+Xt2teB8gpMUCa73X6SalNSV3SpSCKjmfbGP86PcqzAPvkGVZU06JVJqeJXKItdB
+         JWSJjByB8wuCsk+ZKm8l09A7Xr1QvPM6+rvWm9FfwrOwTJTq8siEGugHM/mMG9qOCoFk
+         fFz0qWgoQeEh/qbOvo52gsTfRQc0aSdc4o9N1ZVEcdZfjlmM7vBEwIav95/Kjaxei7zA
+         3mXAiQv102C0+UkDBX6XgfXrU56bBopj0Yes4BAPHBEx18hSPEWWMSSZJ/I1l66vouWC
+         3QtgIRhSDUbejCjvORTJbpIV2zaIOOuiC7yJf/uS/i1Bw+Y3y2aJfB4JaZooP4NJy82x
+         cwhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t1JzIjD0bsSWEgEcAE5jhkMduDbmpmcUucP5XBr/Mq0=;
+        b=pGhGoAw7992McwTrysFvR5fTVJemMhQ9/Uwv6I3zbyKnriSUivz2MzhcRwlVOqOpg3
+         3/VYK1CeyaFkjWaVzCvL8hViCBPCBAB6QxfxZmjuk9obtJh+1A+u1frDkDSGuRZWyW13
+         Dm+DXTBxPYrp5rkU6Gz5VZdq530PnTxpB61/U9pfobeQwxHxlGiVCvJwE/BBYdLV3Se+
+         uCy0KNctbWbKBiRFqnu/YDk4L/q5/KVLpdKppNblTYJa+ZrJjTtTk+ltNHdLhsgabzRK
+         lU/CI3TgojIC/T3/8DigBTNJC7psQn1mwhNKnE3F+h/TkaiKDRlBUCS3FxxFd307c48D
+         im/Q==
+X-Gm-Message-State: AOAM531mEZbpN4hXVn4ILlQw4zYAr6ehLQYsh6bB6J/fBFXyQ4glN4A2
+        mk+r3+LwUzrHEEhwFNX67gPp9g3lG17lfo81Vmtb6Q==
+X-Google-Smtp-Source: ABdhPJz1wism1bJwqN+nz7o45hCSeew8oodpu8lQt0ihJK7HjxGwusOhWEiVIiZA0YphO+jrb7L51aiKhFVYbQtCozM=
+X-Received: by 2002:ac2:5a4d:: with SMTP id r13mr1970603lfn.449.1606856037786;
+ Tue, 01 Dec 2020 12:53:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201130233504.3725241-1-axelrasmussen@google.com>
+ <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com>
+ <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
+ <xr93lfehl8al.fsf@gthelen.svl.corp.google.com> <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
+ <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
+In-Reply-To: <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 1 Dec 2020 12:53:46 -0800
+Message-ID: <CALvZod5CpPhvzB99VZTc33Sb5YCbJNHFe3k33k+HwNfJvJbpJQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
+ in tracepoints
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Rientjes <rientjes@google.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michel Lespinasse <walken@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the ringbuffer is lockless, there is no need for it to be
-protected by @logbuf_lock. Remove @logbuf_lock.
++Tejun Heo
 
-This means that printk_nmi_direct and printk_safe_flush_on_panic()
-no longer need to acquire any lock to run.
+On Tue, Dec 1, 2020 at 11:14 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>
+> On Tue, Dec 1, 2020 at 10:42 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Tue, Dec 1, 2020 at 9:56 AM Greg Thelen <gthelen@google.com> wrote:
+> > >
+> > > Axel Rasmussen <axelrasmussen@google.com> wrote:
+> > >
+> > > > On Mon, Nov 30, 2020 at 5:34 PM Shakeel Butt <shakeelb@google.com> wrote:
+> > > >>
+> > > >> On Mon, Nov 30, 2020 at 3:43 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+> > > >> >
+> > > >> > syzbot reported[1] a use-after-free introduced in 0f818c4bc1f3. The bug
+> > > >> > is that an ongoing trace event might race with the tracepoint being
+> > > >> > disabled (and therefore the _unreg() callback being called). Consider
+> > > >> > this ordering:
+> > > >> >
+> > > >> > T1: trace event fires, get_mm_memcg_path() is called
+> > > >> > T1: get_memcg_path_buf() returns a buffer pointer
+> > > >> > T2: trace_mmap_lock_unreg() is called, buffers are freed
+> > > >> > T1: cgroup_path() is called with the now-freed buffer
+> > > >>
+> > > >> Any reason to use the cgroup_path instead of the cgroup_ino? There are
+> > > >> other examples of trace points using cgroup_ino and no need to
+> > > >> allocate buffers. Also cgroup namespace might complicate the path
+> > > >> usage.
+> > > >
+> > > > Hmm, so in general I would love to use a numeric identifier instead of a string.
+> > > >
+> > > > I did some reading, and it looks like the cgroup_ino() mainly has to
+> > > > do with writeback, instead of being just a general identifier?
+> > > > https://www.kernel.org/doc/Documentation/cgroup-v2.txt
+> >
+> > I think you are confusing cgroup inodes with real filesystem inodes in that doc.
+> >
+> > > >
+> > > > There is cgroup_id() which I think is almost what I'd want, but there
+> > > > are a couple problems with it:
+> > > >
+> > > > - I don't know of a way for userspace to translate IDs -> paths, to
+> > > > make them human readable?
+> > >
+> > > The id => name map can be built from user space with a tree walk.
+> > > Example:
+> > >
+> > > $ find /sys/fs/cgroup/memory -type d -printf '%i %P\n'                                                                          # ~ [main]
+> > > 20387 init.scope
+> > > 31 system.slice
+> > >
+> > > > - Also I think the ID implementation we use for this is "dense",
+> > > > meaning if a cgroup is removed, its ID is likely to be quickly reused.
+> > > >
+> >
+> > The ID for cgroup nodes (underlying it is kernfs) are allocated from
+> > idr_alloc_cyclic() which gives new ID after the last allocated ID and
+> > wrap after around INT_MAX IDs. So, likeliness of repetition is very
+> > low. Also the file_handle returned by name_to_handle_at() for cgroupfs
+> > returns the inode ID which gives confidence to the claim of low chance
+> > of ID reusing.
+>
+> Ah, for some reason I remembered it using idr_alloc(), but you're
+> right, it does use cyclical IDs. Even so, tracepoints which expose
+> these IDs would still be difficult to use I think.
 
-The global variables @syslog_seq, @syslog_partial, @syslog_time
-were also protected by @logbuf_lock. Introduce @syslog_lock to
-protect these.
+The writeback tracepoint in include/trace/events/writeback.h is
+already using the cgroup IDs. Actually it used to use cgroup_path but
+converted to cgroup_ino.
 
-@console_seq, @exclusive_console_stop_seq, @console_dropped are
-protected by @console_lock.
+Tejun, how do you use these tracepoints?
 
-Without @logbuf_lock it is no longer possible to use the single
-static buffer for temporarily sprint'ing the message. Instead,
-use vsnprintf() to determine the length and perform the real
-vscnprintf() using the area reserved from the ringbuffer. This
-leads to suboptimal packing of the message data, but will
-result in less wasted storage than multiple per-cpu buffers to
-support lockless temporary sprint'ing.
+> Say we're trying to
+> collect a histogram of lock latencies over the course of some test
+> we're running. At the end, we want to produce some kind of
+> human-readable report.
+>
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- include/linux/printk.h      |   1 +
- kernel/printk/internal.h    |   4 +-
- kernel/printk/printk.c      | 285 +++++++++++++++++++-----------------
- kernel/printk/printk_safe.c |  18 +--
- 4 files changed, 157 insertions(+), 151 deletions(-)
+I am assuming the test infra and the tracing infra are decoupled
+entities and test infra is orchestrating the cgroups as well.
 
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index fe7eb2351610..6d8f844bfdff 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -45,6 +45,7 @@ static inline const char *printk_skip_headers(const char *buffer)
- }
- 
- #define CONSOLE_EXT_LOG_MAX	8192
-+#define CONSOLE_LOG_MAX		1024
- 
- /* printk's without a loglevel use this.. */
- #define MESSAGE_LOGLEVEL_DEFAULT CONFIG_MESSAGE_LOGLEVEL_DEFAULT
-diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index 3a8fd491758c..e7acc2888c8e 100644
---- a/kernel/printk/internal.h
-+++ b/kernel/printk/internal.h
-@@ -12,8 +12,6 @@
- 
- #define PRINTK_NMI_CONTEXT_OFFSET	0x010000000
- 
--extern raw_spinlock_t logbuf_lock;
--
- __printf(4, 0)
- int vprintk_store(int facility, int level,
- 		  const struct dev_printk_info *dev_info,
-@@ -59,7 +57,7 @@ void defer_console_output(void);
- __printf(1, 0) int vprintk_func(const char *fmt, va_list args) { return 0; }
- 
- /*
-- * In !PRINTK builds we still export logbuf_lock spin_lock, console_sem
-+ * In !PRINTK builds we still export console_sem
-  * semaphore and some of console functions (console_unlock()/etc.), so
-  * printk-safe must preserve the existing local IRQ guarantees.
-  */
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index e9018c4e1b66..7385101210be 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -355,48 +355,18 @@ enum log_flags {
- 	LOG_CONT	= 8,	/* text is a fragment of a continuation line */
- };
- 
--/*
-- * The logbuf_lock protects kmsg buffer, indices, counters.  This can be taken
-- * within the scheduler's rq lock. It must be released before calling
-- * console_unlock() or anything else that might wake up a process.
-- */
--DEFINE_RAW_SPINLOCK(logbuf_lock);
--
--/*
-- * Helper macros to lock/unlock logbuf_lock and switch between
-- * printk-safe/unsafe modes.
-- */
--#define logbuf_lock_irq()				\
--	do {						\
--		printk_safe_enter_irq();		\
--		raw_spin_lock(&logbuf_lock);		\
--	} while (0)
--
--#define logbuf_unlock_irq()				\
--	do {						\
--		raw_spin_unlock(&logbuf_lock);		\
--		printk_safe_exit_irq();			\
--	} while (0)
--
--#define logbuf_lock_irqsave(flags)			\
--	do {						\
--		printk_safe_enter_irqsave(flags);	\
--		raw_spin_lock(&logbuf_lock);		\
--	} while (0)
--
--#define logbuf_unlock_irqrestore(flags)		\
--	do {						\
--		raw_spin_unlock(&logbuf_lock);		\
--		printk_safe_exit_irqrestore(flags);	\
--	} while (0)
-+/* The syslog_lock protects syslog_* variables. */
-+static DEFINE_SPINLOCK(syslog_lock);
- 
- #ifdef CONFIG_PRINTK
- DECLARE_WAIT_QUEUE_HEAD(log_wait);
-+/* All 3 protected by @syslog_lock. */
- /* the next printk record to read by syslog(READ) or /proc/kmsg */
- static u64 syslog_seq;
- static size_t syslog_partial;
- static bool syslog_time;
- 
-+/* All 3 protected by @console_sem. */
- /* the next printk record to write to the console */
- static u64 console_seq;
- static u64 exclusive_console_stop_seq;
-@@ -410,7 +380,7 @@ static atomic64_t clear_seq = ATOMIC64_INIT(0);
- #else
- #define PREFIX_MAX		32
- #endif
--#define LOG_LINE_MAX		(1024 - PREFIX_MAX)
-+#define LOG_LINE_MAX		(CONSOLE_LOG_MAX - PREFIX_MAX)
- 
- #define LOG_LEVEL(v)		((v) & 0x07)
- #define LOG_FACILITY(v)		((v) >> 3 & 0xff)
-@@ -720,27 +690,22 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
- 	if (ret)
- 		return ret;
- 
--	logbuf_lock_irq();
- 	if (!prb_read_valid(prb, user->seq, r)) {
- 		if (file->f_flags & O_NONBLOCK) {
- 			ret = -EAGAIN;
--			logbuf_unlock_irq();
- 			goto out;
- 		}
- 
--		logbuf_unlock_irq();
- 		ret = wait_event_interruptible(log_wait,
- 					prb_read_valid(prb, user->seq, r));
- 		if (ret)
- 			goto out;
--		logbuf_lock_irq();
- 	}
- 
- 	if (user->seq < prb_first_valid_seq(prb)) {
- 		/* our last seen message is gone, return error and reset */
- 		user->seq = prb_first_valid_seq(prb);
- 		ret = -EPIPE;
--		logbuf_unlock_irq();
- 		goto out;
- 	}
- 
-@@ -750,7 +715,6 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
- 				  &r->info->dev_info);
- 
- 	user->seq = r->info->seq + 1;
--	logbuf_unlock_irq();
- 
- 	if (len > count) {
- 		ret = -EINVAL;
-@@ -785,7 +749,6 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
- 	if (offset)
- 		return -ESPIPE;
- 
--	logbuf_lock_irq();
- 	switch (whence) {
- 	case SEEK_SET:
- 		/* the first record */
-@@ -806,7 +769,6 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
- 	default:
- 		ret = -EINVAL;
- 	}
--	logbuf_unlock_irq();
- 	return ret;
- }
- 
-@@ -820,7 +782,6 @@ static __poll_t devkmsg_poll(struct file *file, poll_table *wait)
- 
- 	poll_wait(file, &log_wait, wait);
- 
--	logbuf_lock_irq();
- 	if (prb_read_valid(prb, user->seq, NULL)) {
- 		/* return error when data has vanished underneath us */
- 		if (user->seq < prb_first_valid_seq(prb))
-@@ -828,7 +789,6 @@ static __poll_t devkmsg_poll(struct file *file, poll_table *wait)
- 		else
- 			ret = EPOLLIN|EPOLLRDNORM;
- 	}
--	logbuf_unlock_irq();
- 
- 	return ret;
- }
-@@ -861,9 +821,7 @@ static int devkmsg_open(struct inode *inode, struct file *file)
- 	prb_rec_init_rd(&user->record, &user->info,
- 			&user->text_buf[0], sizeof(user->text_buf));
- 
--	logbuf_lock_irq();
- 	user->seq = prb_first_valid_seq(prb);
--	logbuf_unlock_irq();
- 
- 	file->private_data = user;
- 	return 0;
-@@ -1071,7 +1029,6 @@ void __init setup_log_buf(int early)
- 	struct printk_record r;
- 	size_t new_descs_size;
- 	size_t new_infos_size;
--	unsigned long flags;
- 	char *new_log_buf;
- 	unsigned int free;
- 	u64 seq;
-@@ -1129,8 +1086,6 @@ void __init setup_log_buf(int early)
- 		 new_descs, ilog2(new_descs_count),
- 		 new_infos);
- 
--	logbuf_lock_irqsave(flags);
--
- 	log_buf_len = new_log_buf_len;
- 	log_buf = new_log_buf;
- 	new_log_buf_len = 0;
-@@ -1146,8 +1101,6 @@ void __init setup_log_buf(int early)
- 	 */
- 	prb = &printk_rb_dynamic;
- 
--	logbuf_unlock_irqrestore(flags);
--
- 	if (seq != prb_next_seq(&printk_rb_static)) {
- 		pr_err("dropped %llu messages\n",
- 		       prb_next_seq(&printk_rb_static) - seq);
-@@ -1423,9 +1376,9 @@ static int syslog_print(char __user *buf, int size)
- 		size_t n;
- 		size_t skip;
- 
--		logbuf_lock_irq();
-+		spin_lock_irq(&syslog_lock);
- 		if (!prb_read_valid(prb, syslog_seq, &r)) {
--			logbuf_unlock_irq();
-+			spin_unlock_irq(&syslog_lock);
- 			break;
- 		}
- 		if (r.info->seq != syslog_seq) {
-@@ -1454,7 +1407,7 @@ static int syslog_print(char __user *buf, int size)
- 			syslog_partial += n;
- 		} else
- 			n = 0;
--		logbuf_unlock_irq();
-+		spin_unlock_irq(&syslog_lock);
- 
- 		if (!n)
- 			break;
-@@ -1479,6 +1432,7 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 	struct printk_info info;
- 	unsigned int line_count;
- 	struct printk_record r;
-+	u64 newest_seq;
- 	u64 clr_seq;
- 	char *text;
- 	int len = 0;
-@@ -1490,19 +1444,30 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 		return -ENOMEM;
- 
- 	time = printk_time;
--	logbuf_lock_irq();
- 	clr_seq = atomic64_read(&clear_seq);
- 
- 	/*
- 	 * Find first record that fits, including all following records,
- 	 * into the user-provided buffer for this dump.
- 	 */
-+
- 	prb_for_each_info(clr_seq, prb, seq, &info, &line_count)
- 		len += get_record_print_text_size(&info, line_count, true, time);
- 
--	/* move first record forward until length fits into the buffer */
-+	/*
-+	 * Keep track of the latest in case new records are coming in fast
-+	 * and overwriting the older records.
-+	 */
-+	newest_seq = seq;
-+
-+	/*
-+	 * Move first record forward until length fits into the buffer. This
-+	 * is a best effort attempt. If @newest_seq is reached because the
-+	 * ringbuffer is wrapping too fast, just start filling the buffer
-+	 * from there.
-+	 */
- 	prb_for_each_info(clr_seq, prb, seq, &info, &line_count) {
--		if (len <= size)
-+		if (len <= size || info.seq > newest_seq)
- 			break;
- 		len -= get_record_print_text_size(&info, line_count, true, time);
- 	}
-@@ -1520,12 +1485,10 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 			break;
- 		}
- 
--		logbuf_unlock_irq();
- 		if (copy_to_user(buf + len, text, textlen))
- 			len = -EFAULT;
- 		else
- 			len += textlen;
--		logbuf_lock_irq();
- 
- 		if (len < 0)
- 			break;
-@@ -1533,7 +1496,6 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 
- 	if (clear)
- 		atomic64_set(&clear_seq, seq);
--	logbuf_unlock_irq();
- 
- 	kfree(text);
- 	return len;
-@@ -1541,9 +1503,7 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 
- static void syslog_clear(void)
- {
--	logbuf_lock_irq();
- 	atomic64_set(&clear_seq, prb_next_seq(prb));
--	logbuf_unlock_irq();
- }
- 
- int do_syslog(int type, char __user *buf, int len, int source)
-@@ -1551,6 +1511,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 	bool clear = false;
- 	static int saved_console_loglevel = LOGLEVEL_DEFAULT;
- 	int error;
-+	u64 seq;
- 
- 	error = check_syslog_permissions(type, source);
- 	if (error)
-@@ -1568,8 +1529,11 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 			return 0;
- 		if (!access_ok(buf, len))
- 			return -EFAULT;
-+		spin_lock_irq(&syslog_lock);
-+		seq = syslog_seq;
-+		spin_unlock_irq(&syslog_lock);
- 		error = wait_event_interruptible(log_wait,
--				prb_read_valid(prb, syslog_seq, NULL));
-+				prb_read_valid(prb, seq, NULL));
- 		if (error)
- 			return error;
- 		error = syslog_print(buf, len);
-@@ -1617,7 +1581,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 		break;
- 	/* Number of chars in the log buffer */
- 	case SYSLOG_ACTION_SIZE_UNREAD:
--		logbuf_lock_irq();
-+		spin_lock_irq(&syslog_lock);
- 		if (syslog_seq < prb_first_valid_seq(prb)) {
- 			/* messages are gone, move to first one */
- 			syslog_seq = prb_first_valid_seq(prb);
-@@ -1644,7 +1608,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 			}
- 			error -= syslog_partial;
- 		}
--		logbuf_unlock_irq();
-+		spin_unlock_irq(&syslog_lock);
- 		break;
- 	/* Size of the log buffer */
- 	case SYSLOG_ACTION_SIZE_BUFFER:
-@@ -1847,6 +1811,65 @@ static void call_console_drivers(const char *ext_text, size_t ext_len,
- 	}
- }
- 
-+#ifdef CONFIG_PRINTK_NMI
-+#define NUM_RECURSION_CTX 2
-+#else
-+#define NUM_RECURSION_CTX 1
-+#endif
-+
-+struct printk_recursion {
-+	char	count[NUM_RECURSION_CTX];
-+};
-+
-+static DEFINE_PER_CPU(struct printk_recursion, percpu_printk_recursion);
-+static char printk_recursion_count[NUM_RECURSION_CTX];
-+
-+static char *get_printk_count(void)
-+{
-+	struct printk_recursion *rec;
-+	char *count;
-+
-+	if (!printk_percpu_data_ready()) {
-+		count = &printk_recursion_count[0];
-+	} else {
-+		rec = this_cpu_ptr(&percpu_printk_recursion);
-+
-+		count = &rec->count[0];
-+	}
-+
-+#ifdef CONFIG_PRINTK_NMI
-+	if (in_nmi())
-+		count++;
-+#endif
-+
-+	return count;
-+}
-+
-+static bool printk_enter(unsigned long *flags)
-+{
-+	char *count;
-+
-+	local_irq_save(*flags);
-+	count = get_printk_count();
-+	/* Only 1 level of recursion allowed. */
-+	if (*count > 1) {
-+		local_irq_restore(*flags);
-+		return false;
-+	}
-+	(*count)++;
-+
-+	return true;
-+}
-+
-+static void printk_exit(unsigned long flags)
-+{
-+	char *count;
-+
-+	count = get_printk_count();
-+	(*count)--;
-+	local_irq_restore(flags);
-+}
-+
- int printk_delay_msec __read_mostly;
- 
- static inline void printk_delay(void)
-@@ -1867,40 +1890,75 @@ static inline u32 printk_caller_id(void)
- 		0x80000000 + raw_smp_processor_id();
- }
- 
--/* Must be called under logbuf_lock. */
-+static u16 printk_sprint(char *text, u16 size, int facility, enum log_flags *lflags,
-+			 const char *fmt, va_list args)
-+{
-+	char *orig_text = text;
-+	u16 text_len;
-+
-+	text_len = vscnprintf(text, size, fmt, args);
-+
-+	/* Mark and strip a trailing newline. */
-+	if (text_len && text[text_len - 1] == '\n') {
-+		text_len--;
-+		*lflags |= LOG_NEWLINE;
-+	}
-+
-+	/* Strip kernel syslog prefix. */
-+	if (facility == 0) {
-+		while (text_len >= 2 && printk_get_level(text)) {
-+			text_len -= 2;
-+			text += 2;
-+		}
-+
-+		if (text != orig_text)
-+			memmove(orig_text, text, text_len);
-+	}
-+
-+	return text_len;
-+}
-+
-+__printf(4, 0)
- int vprintk_store(int facility, int level,
- 		  const struct dev_printk_info *dev_info,
- 		  const char *fmt, va_list args)
- {
- 	const u32 caller_id = printk_caller_id();
--	static char textbuf[LOG_LINE_MAX];
- 	struct prb_reserved_entry e;
- 	enum log_flags lflags = 0;
- 	struct printk_record r;
-+	unsigned long irqflags;
- 	u16 trunc_msg_len = 0;
--	char *text = textbuf;
-+	char lvlbuf[8];
-+	va_list args2;
- 	u16 text_len;
-+	int ret = 0;
- 	u64 ts_nsec;
- 
- 	ts_nsec = local_clock();
- 
-+	if (!printk_enter(&irqflags))
-+		return 0;
-+
-+	va_copy(args2, args);
-+
- 	/*
- 	 * The printf needs to come first; we need the syslog
- 	 * prefix which might be passed-in as a parameter.
- 	 */
--	text_len = vscnprintf(text, sizeof(textbuf), fmt, args);
-+	text_len = vsnprintf(&lvlbuf[0], sizeof(lvlbuf), fmt, args) + 1;
-+	if (text_len > CONSOLE_LOG_MAX)
-+		text_len = CONSOLE_LOG_MAX;
- 
--	/* mark and strip a trailing newline */
--	if (text_len && text[text_len-1] == '\n') {
--		text_len--;
--		lflags |= LOG_NEWLINE;
--	}
--
--	/* strip kernel syslog prefix and extract log level or control flags */
-+	/* Extract log level or control flags. */
- 	if (facility == 0) {
- 		int kern_level;
-+		int i;
- 
--		while ((kern_level = printk_get_level(text)) != 0) {
-+		for (i = 0; i < sizeof(lvlbuf); i += 2) {
-+			kern_level = printk_get_level(&lvlbuf[i]);
-+			if (!kern_level)
-+				break;
- 			switch (kern_level) {
- 			case '0' ... '7':
- 				if (level == LOGLEVEL_DEFAULT)
-@@ -1909,9 +1967,6 @@ int vprintk_store(int facility, int level,
- 			case 'c':	/* KERN_CONT */
- 				lflags |= LOG_CONT;
- 			}
--
--			text_len -= 2;
--			text += 2;
- 		}
- 	}
- 
-@@ -1924,7 +1979,8 @@ int vprintk_store(int facility, int level,
- 	if (lflags & LOG_CONT) {
- 		prb_rec_init_wr(&r, text_len);
- 		if (prb_reserve_in_last(&e, prb, &r, caller_id, LOG_LINE_MAX)) {
--			memcpy(&r.text_buf[r.info->text_len], text, text_len);
-+			text_len = printk_sprint(&r.text_buf[r.info->text_len], text_len,
-+						 facility, &lflags, fmt, args2);
- 			r.info->text_len += text_len;
- 
- 			if (lflags & LOG_NEWLINE) {
-@@ -1934,7 +1990,8 @@ int vprintk_store(int facility, int level,
- 				prb_commit(&e);
- 			}
- 
--			return text_len;
-+			ret = text_len;
-+			goto out;
- 		}
- 	}
- 
-@@ -1945,11 +2002,11 @@ int vprintk_store(int facility, int level,
- 
- 		prb_rec_init_wr(&r, text_len + trunc_msg_len);
- 		if (!prb_reserve(&e, prb, &r))
--			return 0;
-+			goto out;
- 	}
- 
- 	/* fill message */
--	memcpy(&r.text_buf[0], text, text_len);
-+	text_len = printk_sprint(&r.text_buf[0], text_len, facility, &lflags, fmt, args2);
- 	if (trunc_msg_len)
- 		memcpy(&r.text_buf[text_len], trunc_msg, trunc_msg_len);
- 	r.info->text_len = text_len + trunc_msg_len;
-@@ -1967,7 +2024,11 @@ int vprintk_store(int facility, int level,
- 	else
- 		prb_final_commit(&e);
- 
--	return (text_len + trunc_msg_len);
-+	ret = text_len + trunc_msg_len;
-+out:
-+	va_end(args2);
-+	printk_exit(irqflags);
-+	return ret;
- }
- 
- asmlinkage int vprintk_emit(int facility, int level,
-@@ -1976,7 +2037,6 @@ asmlinkage int vprintk_emit(int facility, int level,
- {
- 	int printed_len;
- 	bool in_sched = false;
--	unsigned long flags;
- 
- 	/* Suppress unimportant messages after panic happens */
- 	if (unlikely(suppress_printk))
-@@ -1991,9 +2051,7 @@ asmlinkage int vprintk_emit(int facility, int level,
- 	printk_delay();
- 
- 	/* This stops the holder of console_sem just where we want him */
--	logbuf_lock_irqsave(flags);
- 	printed_len = vprintk_store(facility, level, dev_info, fmt, args);
--	logbuf_unlock_irqrestore(flags);
- 
- 	/* If called from the scheduler, we can not call up(). */
- 	if (!in_sched) {
-@@ -2432,7 +2490,6 @@ void console_unlock(void)
- 		size_t len;
- 
- 		printk_safe_enter_irqsave(flags);
--		raw_spin_lock(&logbuf_lock);
- skip:
- 		if (!prb_read_valid(prb, console_seq, &r))
- 			break;
-@@ -2476,7 +2533,6 @@ void console_unlock(void)
- 				console_msg_format & MSG_FORMAT_SYSLOG,
- 				printk_time);
- 		console_seq++;
--		raw_spin_unlock(&logbuf_lock);
- 
- 		/*
- 		 * While actively printing out messages, if another printk()
-@@ -2503,8 +2559,6 @@ void console_unlock(void)
- 
- 	console_locked = 0;
- 
--	raw_spin_unlock(&logbuf_lock);
--
- 	up_console_sem();
- 
- 	/*
-@@ -2513,9 +2567,7 @@ void console_unlock(void)
- 	 * there's a new owner and the console_unlock() from them will do the
- 	 * flush, no worries.
- 	 */
--	raw_spin_lock(&logbuf_lock);
- 	retry = prb_read_valid(prb, console_seq, NULL);
--	raw_spin_unlock(&logbuf_lock);
- 	printk_safe_exit_irqrestore(flags);
- 
- 	if (retry && console_trylock())
-@@ -2579,13 +2631,8 @@ void console_flush_on_panic(enum con_flush_mode mode)
- 	console_trylock();
- 	console_may_schedule = 0;
- 
--	if (mode == CONSOLE_REPLAY_ALL) {
--		unsigned long flags;
--
--		logbuf_lock_irqsave(flags);
-+	if (mode == CONSOLE_REPLAY_ALL)
- 		console_seq = prb_first_valid_seq(prb);
--		logbuf_unlock_irqrestore(flags);
--	}
- 	console_unlock();
- }
- 
-@@ -2809,11 +2856,7 @@ void register_console(struct console *newcon)
- 		nr_ext_console_drivers++;
- 
- 	if (newcon->flags & CON_PRINTBUFFER) {
--		/*
--		 * console_unlock(); will print out the buffered messages
--		 * for us.
--		 */
--		logbuf_lock_irqsave(flags);
-+		spin_lock_irqsave(&syslog_lock, flags);
- 		/*
- 		 * We're about to replay the log buffer.  Only do this to the
- 		 * just-registered console to avoid excessive message spam to
-@@ -2826,7 +2869,7 @@ void register_console(struct console *newcon)
- 		exclusive_console = newcon;
- 		exclusive_console_stop_seq = console_seq;
- 		console_seq = syslog_seq;
--		logbuf_unlock_irqrestore(flags);
-+		spin_unlock_irqrestore(&syslog_lock, flags);
- 	}
- 	console_unlock();
- 	console_sysfs_notify();
-@@ -3190,7 +3233,6 @@ EXPORT_SYMBOL_GPL(kmsg_dump_reason_str);
- void kmsg_dump(enum kmsg_dump_reason reason)
- {
- 	struct kmsg_dumper *dumper;
--	unsigned long flags;
- 
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(dumper, &dump_list, list) {
-@@ -3210,10 +3252,7 @@ void kmsg_dump(enum kmsg_dump_reason reason)
- 		/* initialize iterator with data about the stored records */
- 		dumper->active = true;
- 
--		logbuf_lock_irqsave(flags);
--		dumper->cur_seq = atomic64_read(&clear_seq);
--		dumper->next_seq = prb_next_seq(prb);
--		logbuf_unlock_irqrestore(flags);
-+		kmsg_dump_rewind_nolock(dumper);
- 
- 		/* invoke dumper which will iterate over records */
- 		dumper->dump(dumper, reason);
-@@ -3300,14 +3339,7 @@ bool kmsg_dump_get_line_nolock(struct kmsg_dumper *dumper, bool syslog,
- bool kmsg_dump_get_line(struct kmsg_dumper *dumper, bool syslog,
- 			char *line, size_t size, size_t *len)
- {
--	unsigned long flags;
--	bool ret;
--
--	logbuf_lock_irqsave(flags);
--	ret = kmsg_dump_get_line_nolock(dumper, syslog, line, size, len);
--	logbuf_unlock_irqrestore(flags);
--
--	return ret;
-+	return kmsg_dump_get_line_nolock(dumper, syslog, line, size, len);
- }
- EXPORT_SYMBOL_GPL(kmsg_dump_get_line);
- 
-@@ -3336,7 +3368,6 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper, bool syslog,
- 	struct printk_info info;
- 	unsigned int line_count;
- 	struct printk_record r;
--	unsigned long flags;
- 	u64 seq;
- 	u64 next_seq;
- 	size_t l = 0;
-@@ -3348,17 +3379,14 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper, bool syslog,
- 	if (!dumper->active || !buf || !size)
- 		goto out;
- 
--	logbuf_lock_irqsave(flags);
- 	if (dumper->cur_seq < prb_first_valid_seq(prb)) {
- 		/* messages are gone, move to first available one */
- 		dumper->cur_seq = prb_first_valid_seq(prb);
- 	}
- 
- 	/* last entry */
--	if (dumper->cur_seq >= dumper->next_seq) {
--		logbuf_unlock_irqrestore(flags);
-+	if (dumper->cur_seq >= dumper->next_seq)
- 		goto out;
--	}
- 
- 	/* calculate length of entire buffer */
- 	seq = dumper->cur_seq;
-@@ -3398,7 +3426,6 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper, bool syslog,
- 
- 	dumper->next_seq = next_seq;
- 	ret = true;
--	logbuf_unlock_irqrestore(flags);
- out:
- 	if (len)
- 		*len = l;
-@@ -3413,8 +3440,6 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
-  * Reset the dumper's iterator so that kmsg_dump_get_line() and
-  * kmsg_dump_get_buffer() can be called again and used multiple
-  * times within the same dumper.dump() callback.
-- *
-- * The function is similar to kmsg_dump_rewind(), but grabs no locks.
-  */
- void kmsg_dump_rewind_nolock(struct kmsg_dumper *dumper)
- {
-@@ -3432,11 +3457,7 @@ void kmsg_dump_rewind_nolock(struct kmsg_dumper *dumper)
-  */
- void kmsg_dump_rewind(struct kmsg_dumper *dumper)
- {
--	unsigned long flags;
--
--	logbuf_lock_irqsave(flags);
- 	kmsg_dump_rewind_nolock(dumper);
--	logbuf_unlock_irqrestore(flags);
- }
- EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
- 
-diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
-index a0e6f746de6c..7248b6e3df6c 100644
---- a/kernel/printk/printk_safe.c
-+++ b/kernel/printk/printk_safe.c
-@@ -266,18 +266,6 @@ void printk_safe_flush(void)
-  */
- void printk_safe_flush_on_panic(void)
- {
--	/*
--	 * Make sure that we could access the main ring buffer.
--	 * Do not risk a double release when more CPUs are up.
--	 */
--	if (raw_spin_is_locked(&logbuf_lock)) {
--		if (num_online_cpus() > 1)
--			return;
--
--		debug_locks_off();
--		raw_spin_lock_init(&logbuf_lock);
--	}
--
- 	printk_safe_flush();
- }
- 
-@@ -371,17 +359,15 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
- 	 * Try to use the main logbuf even in NMI. But avoid calling console
- 	 * drivers that might have their own locks.
- 	 */
--	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK) &&
--	    raw_spin_trylock(&logbuf_lock)) {
-+	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
- 		int len;
- 
- 		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
--		raw_spin_unlock(&logbuf_lock);
- 		defer_console_output();
- 		return len;
- 	}
- 
--	/* Use extra buffer in NMI when logbuf_lock is taken or in safe mode. */
-+	/* Use extra buffer in NMI or in safe mode. */
- 	if (this_cpu_read(printk_context) & PRINTK_NMI_CONTEXT_MASK)
- 		return vprintk_nmi(fmt, args);
- 
--- 
-2.20.1
+> cgroups may come and go throughout the test. Even if we never re-use
+> IDs, in order to be able to map all of them to human-readable paths,
+> it seems like we'd need some background process to poll the
+> /sys/fs/cgroup/memory directory tree as Greg described, keeping track
+> of the ID<->path mapping. This seems expensive, and even if we poll
+> relatively frequently we might still miss short-lived cgroups.
+>
+> Trying to aggregate such statistics across physical machines, or
+> reboots of the same machine, is further complicated. The machine(s)
+> may be running the same application, which runs in a container with
+> the same path, but it'll end up with different IDs. So we'd have to
+> collect the ID<->path mapping from each, and then try to match up the
+> names for aggregation.
 
+How about adding another tracepoint in cgroup_create which will output
+the ID along with the name or path? With a little post processing you
+can get the same information. Also note that if the test is
+deleting/creating the cgroup with the same name, you will miss that
+information if filtering with just path.
+
+IMHO cgroup IDs will make the kernel code much simpler with the
+tradeoff of a bit more work in user space.
