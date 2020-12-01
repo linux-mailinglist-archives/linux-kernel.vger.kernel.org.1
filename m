@@ -2,146 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67072CAA65
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DB42CAA6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404236AbgLASCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:02:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
+        id S2404247AbgLASCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:02:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404222AbgLASCQ (ORCPT
+        with ESMTP id S2404222AbgLASCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:02:16 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C09FC0613CF;
-        Tue,  1 Dec 2020 10:01:36 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id 10so2656713ybx.9;
-        Tue, 01 Dec 2020 10:01:36 -0800 (PST)
+        Tue, 1 Dec 2020 13:02:18 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4482C0613D4;
+        Tue,  1 Dec 2020 10:01:37 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id l23so1732264pjg.1;
+        Tue, 01 Dec 2020 10:01:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=immCNs4xDGr/yeWS3YmZEjkNg6wKQAW5VTX5f5Tpknc=;
-        b=YKpqwZaUUhKeLfxngmK3DDiAn38uJZke2a803KK+v6vKIVSjsSVhXpi4O/tjklH9Bd
-         jSD3es5jE2Q77uppB19U2/7n+gTL3gtgdwSZkyRiLtzOFUfAYwKA0Ao7ltRHVRKeDwHl
-         v4eexAmQBEF7cmApzW0O4NMaDbgigs49wnpbK4QdUskwbToKbGoOws459yZQtuR+xS6m
-         2RYNQ72NknLe5fMJSUIm4EjHfTQCdwuF19eZ8mAZRht1u4JBFGTL4td4mIiRaTnEp+/1
-         D7jSZJeX85be+WATzHnFDCYhl6hZtPpDlnT7lNpzL8r1JGH8JmCUL3MAjTvCQaVA1Eod
-         LABQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=uFEAfZo3EGZ57zkwr0Z5gVNfzF2/pBqb9CkqNLIpmIM=;
+        b=hMesW0T9+moc5aBkbRGY8udmssiEYRpYM+zgew8O3tmZwj9K77EvzzCNSfvwZ0hbWn
+         j95MZQL7+/+X65hWzGuEG2R2tOvJasrHVtU8muzSEq+MeU/FzYI2EGEZAWiFV0yaXWCP
+         teICXmCX2YwRfUA53yqee5jsfyBUQ4NWX1VaoordN3fTjrKBUM7/EjxNSbj8Di67gQxa
+         jjmAtU3Kb8MTJvXqTUVlZCmQOKhLSSVQU/T4Dqto4MMZGtsD6OaLv52e9FB0N7tK4t4F
+         x4gbZ62SamoYQGYZm5XS/Sml6xXTSDUxK/QoVSbAAGe3AqgPWabj4u7z3gLyEhf1GWtt
+         1TXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=immCNs4xDGr/yeWS3YmZEjkNg6wKQAW5VTX5f5Tpknc=;
-        b=EryM84V5Fw3Js8EtlxofBEQzrZkcZdnkhzG2E0Fjc7bHzYXK4dEkDbq/dCF1gf6s6U
-         AQzbyF/wZe5tN3VcCxixzWLxABDzTYJMZRPTm2EV89aGy5QqldX2fUf+ljjT0c5Lb4nY
-         EbcMdQ9jmeMnRVRTl5zUgP/VwH2srPfRphj6jeX+fUQY/Pv2ODifiXpZpuRhZ58Q3nNo
-         mm+ahUujDQgEefo+CraMxP2AqY/fxWoFRF5IWKNk6GDusYgdpALHGRZpevss3j3jKY7d
-         sV6l5QNKXNFy/vwyieF/qvw2PafqD/coWQNKsoeB1xLmXXrPaiCY0HbKgtEMMMoDgArG
-         /7PQ==
-X-Gm-Message-State: AOAM531Z7kK5F01426EYBARTPBva5m0/k3jHhaYw5G68oqfgNsiZfr6I
-        U2/UEir/Y636eiGLDWgWToBq8uJFlTBYabjivsE=
-X-Google-Smtp-Source: ABdhPJwc45X9pd+003CCkmjMxs4UKYvW0IGxNyfMvmG2kpS7bZXC0j4ppJ6woxJmpl+P7N2EeLYLvBxYe2soF7yElgE=
-X-Received: by 2002:a25:7717:: with SMTP id s23mr6890166ybc.459.1606845694868;
- Tue, 01 Dec 2020 10:01:34 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=uFEAfZo3EGZ57zkwr0Z5gVNfzF2/pBqb9CkqNLIpmIM=;
+        b=oNKB0ilglEyyD56I3m7geKNDaRZfjMQMVKjVrJuY2bMOMwo+ktY2InFAMP6Wf40gL7
+         xww08qiwkwJ8BsGhgd2hcbdgrX+htvmiCRfYLHzMPwO7cZ7/SMorpvXW3Opa8aI0rsx7
+         B0Sl48/8iyyBhaADp8vqgaQ/nEWpHwEZaT+nJeSchVu1ps334SoNh5iIQbuFniBfomk6
+         VzdE/T9vnzF4rUQb3Dc4ZNOx/PFGX0jjocThuisjoxvlIi5z+wOM7hTxk/Np8V9zmk3N
+         TZCPQZZeNzGMNX/efsoTWD0MpHqdZW9LHRVF7bjP+V3g+e1SDIXuCkQSWpFxPyHJqa/2
+         oTzA==
+X-Gm-Message-State: AOAM532M9hk7mBCNVOfWQ0MQQYNXDtWa0zyk/m5QUTN8TpoHBXKR/lfV
+        S/61JpPrN+5KynDNGO5RFZ+XQxc9dT0=
+X-Google-Smtp-Source: ABdhPJwbcyjA1bd6s8ABJpvmTLYyuQhrxDyZPHj7iXc0w+Anid3Gh1ZZywjeGxqrU03q9qvyDGmIww==
+X-Received: by 2002:a17:90a:bf81:: with SMTP id d1mr4045889pjs.108.1606845697111;
+        Tue, 01 Dec 2020 10:01:37 -0800 (PST)
+Received: from ?IPv6:2001:df0:0:200c:9894:d951:15f8:53bf? ([2001:df0:0:200c:9894:d951:15f8:53bf])
+        by smtp.gmail.com with ESMTPSA id a4sm6417713pjq.0.2020.12.01.10.01.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Dec 2020 10:01:36 -0800 (PST)
+Subject: Re: [PATCH] scsi/NCR5380: Remove in_interrupt() test
+To:     Finn Thain <fthain@telegraphics.com.au>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <58cf6feeaf5dae1ee0c78c1b25c00c73de15b087.1606805196.git.fthain@telegraphics.com.au>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <0673d357-1b04-299b-3e53-169fddf9ae5e@gmail.com>
+Date:   Wed, 2 Dec 2020 07:01:27 +1300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20201201143700.719828-1-leon@kernel.org>
-In-Reply-To: <20201201143700.719828-1-leon@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 10:01:23 -0800
-Message-ID: <CAEf4BzaSL+rmVYNipsfczsF2v684KOhZgFPtUG9opvk7d6zruA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] kbuild: Restore ability to build out-of-tree modules
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Edward Srouji <edwards@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <58cf6feeaf5dae1ee0c78c1b25c00c73de15b087.1606805196.git.fthain@telegraphics.com.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 6:37 AM Leon Romanovsky <leon@kernel.org> wrote:
+Hi Finn,
+
+works fine, thanks!
+
+Tested-By: Michael Schmitz <schmitzmic@gmail.com>
+
+
+On 1/12/20 7:46 PM, Finn Thain wrote:
+> The in_interrupt() macro is deprecated. Also, it's usage in
+> NCR5380_poll_politely2() has long been redundant.
 >
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> The out-of-tree modules are built without vmlinux target and request
-> to recompile that target unconditionally causes to the following
-> compilation error.
->
-> [root@server kernel]# make
-> <..>
-> make -f ./scripts/Makefile.modpost
-> make -f ./scripts/Makefile.modfinal
-> make[3]: *** No rule to make target 'vmlinux', needed by '/my_temp/out-of-tree-module/kernel/test.ko'.  Stop.
-> make[2]: *** [scripts/Makefile.modpost:117: __modpost] Error 2
-> make[1]: *** [Makefile:1703: modules] Error 2
-> make[1]: Leaving directory '/usr/src/kernels/5.10.0-rc5_for_upstream_base_2020_11_29_11_34'
-> make: *** [Makefile:80: modules] Error 2
->
-> As a solution separate between build paths that has vmlinux target and paths without.
->
-> Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
-> Reported-by: Edward Srouji <edwards@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: Ahmed S. Darwish <a.darwish@linutronix.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lore.kernel.org/r/20201126132952.2287996-1-bigeasy@linutronix.de
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 > ---
-
-e732b538f455 ("kbuild: Skip module BTF generation for out-of-tree
-external modules") ([0]) was supposed to take care of this. Did you
-try it?
-
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201121070829.2612884-1-andrii@kernel.org/
-
-
-> Not proficient enough in Makefile, but it fixes the issue.
-> ---
->  scripts/Makefile.modfinal | 5 +++++
->  scripts/Makefile.modpost  | 4 ++++
->  2 files changed, 9 insertions(+)
+>   drivers/scsi/NCR5380.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> index 02b892421f7a..8a7d0604e7d0 100644
-> --- a/scripts/Makefile.modfinal
-> +++ b/scripts/Makefile.modfinal
-> @@ -48,9 +48,14 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
->         $(cmd);                                                              \
->         printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
->
-> +ifdef MODPOST_VMLINUX
->  # Re-generate module BTFs if either module's .ko or vmlinux changed
->  $(modules): %.ko: %.o %.mod.o scripts/module.lds vmlinux FORCE
->         +$(call if_changed_except,ld_ko_o,vmlinux)
-> +else
-> +$(modules): %.ko: %.o %.mod.o scripts/module.lds FORCE
-> +       +$(call if_changed_except,ld_ko_o)
-> +endif
->  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
->         +$(if $(newer-prereqs),$(call cmd,btf_ko))
->  endif
-> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-> index f54b6ac37ac2..f5aa5b422ad7 100644
-> --- a/scripts/Makefile.modpost
-> +++ b/scripts/Makefile.modpost
-> @@ -114,8 +114,12 @@ targets += $(output-symdump)
->
->  __modpost: $(output-symdump)
->  ifneq ($(KBUILD_MODPOST_NOFINAL),1)
-> +ifdef MODPOST_VMLINUX
-> +       $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal MODPOST_VMLINUX=1
-> +else
->         $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal
->  endif
-> +endif
->
->  PHONY += FORCE
->  FORCE:
-> --
-> 2.28.0
->
+> diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
+> index 462d911a89f2..6972e7ceb81a 100644
+> --- a/drivers/scsi/NCR5380.c
+> +++ b/drivers/scsi/NCR5380.c
+> @@ -223,7 +223,10 @@ static int NCR5380_poll_politely2(struct NCR5380_hostdata *hostdata,
+>   		cpu_relax();
+>   	} while (n--);
+>   
+> -	if (irqs_disabled() || in_interrupt())
+> +	/* Sleeping is not allowed when in atomic or interrupt contexts.
+> +	 * Callers in such contexts always disable local irqs.
+> +	 */
+> +	if (irqs_disabled())
+>   		return -ETIMEDOUT;
+>   
+>   	/* Repeatedly sleep for 1 ms until deadline */
