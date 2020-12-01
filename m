@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68262C9E02
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298982C9DE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391205AbgLAJaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:30:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33456 "EHLO mail.kernel.org"
+        id S2388450AbgLAJ2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:28:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387912AbgLAI6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:58:20 -0500
+        id S2387704AbgLAJAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:00:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3957E22249;
-        Tue,  1 Dec 2020 08:58:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5471522241;
+        Tue,  1 Dec 2020 09:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813084;
-        bh=d8IHuYRRoKwpYohJq3GP+buMDjgspo2KGBEpA63w+JI=;
+        s=korg; t=1606813218;
+        bh=BPqbe0gbcVunVD/u3ObKzwmK2U47O1STxy5S5ZJKU1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JB2vzzow1c1qoXljHP92wcB8TG7jHb7fpQoX+TPMyzO2wlLlc/HfyY5PVJ58LDMZS
-         UvPktSGoAjc0Hi4pCMeLNRGLDzBTbx/auS41MZfURbvkWBUSK6S/nslPy3xUR+tGHw
-         WLGX/4r3Y1RxNMiTO44aDN2jr2lsY3OhpNXCKOT4=
+        b=ChwmQ2MSuRfpIexsyCZEF7uBOzbrSLB3HvvIUCRcdHWB6DJy7L3SwwDwmd+67gCsC
+         EqZegPBVjaC5vlLQJQYIhmSig58/I1oykZUIjrzd2VmGz232zLNjTqCZmxsEJSzBv5
+         U1gYXe8O4Sl+OwyKRNAqijJgg9zFYJ0aza7A+MpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 28/50] scsi: ufs: Fix race between shutdown and runtime resume flow
+        stable@vger.kernel.org, Minwoo Im <minwoo.im.dev@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 22/57] nvme: free sq/cq dbbuf pointers when dbbuf set fails
 Date:   Tue,  1 Dec 2020 09:53:27 +0100
-Message-Id: <20201201084648.544632753@linuxfoundation.org>
+Message-Id: <20201201084650.273213507@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanley Chu <stanley.chu@mediatek.com>
+From: Minwoo Im <minwoo.im.dev@gmail.com>
 
-[ Upstream commit e92643db514803c2c87d72caf5950b4c0a8faf4a ]
+[ Upstream commit 0f0d2c876c96d4908a9ef40959a44bec21bdd6cf ]
 
-If UFS host device is in runtime-suspended state while UFS shutdown
-callback is invoked, UFS device shall be resumed for register
-accesses. Currently only UFS local runtime resume function will be invoked
-to wake up the host.  This is not enough because if someone triggers
-runtime resume from block layer, then race may happen between shutdown and
-runtime resume flow, and finally lead to unlocked register access.
+If Doorbell Buffer Config command fails even 'dev->dbbuf_dbs != NULL'
+which means OACS indicates that NVME_CTRL_OACS_DBBUF_SUPP is set,
+nvme_dbbuf_update_and_check_event() will check event even it's not been
+successfully set.
 
-To fix this, in ufshcd_shutdown(), use pm_runtime_get_sync() instead of
-resuming UFS device by ufshcd_runtime_resume() "internally" to let runtime
-PM framework manage the whole resume flow.
+This patch fixes mismatch among dbbuf for sq/cqs in case that dbbuf
+command fails.
 
-Link: https://lore.kernel.org/r/20201119062916.12931-1-stanley.chu@mediatek.com
-Fixes: 57d104c153d3 ("ufs: add UFS power management support")
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Minwoo Im <minwoo.im.dev@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/nvme/host/pci.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index c1792f271ac5d..a3a3ee6e2a002 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -7792,11 +7792,7 @@ int ufshcd_shutdown(struct ufs_hba *hba)
- 	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
- 		goto out;
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 3c68a5b35ec1b..a52b2f15f372a 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -276,9 +276,21 @@ static void nvme_dbbuf_init(struct nvme_dev *dev,
+ 	nvmeq->dbbuf_cq_ei = &dev->dbbuf_eis[cq_idx(qid, dev->db_stride)];
+ }
  
--	if (pm_runtime_suspended(hba->dev)) {
--		ret = ufshcd_runtime_resume(hba);
--		if (ret)
--			goto out;
--	}
-+	pm_runtime_get_sync(hba->dev);
++static void nvme_dbbuf_free(struct nvme_queue *nvmeq)
++{
++	if (!nvmeq->qid)
++		return;
++
++	nvmeq->dbbuf_sq_db = NULL;
++	nvmeq->dbbuf_cq_db = NULL;
++	nvmeq->dbbuf_sq_ei = NULL;
++	nvmeq->dbbuf_cq_ei = NULL;
++}
++
+ static void nvme_dbbuf_set(struct nvme_dev *dev)
+ {
+ 	struct nvme_command c;
++	unsigned int i;
  
- 	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
- out:
+ 	if (!dev->dbbuf_dbs)
+ 		return;
+@@ -292,6 +304,9 @@ static void nvme_dbbuf_set(struct nvme_dev *dev)
+ 		dev_warn(dev->ctrl.device, "unable to set dbbuf\n");
+ 		/* Free memory and continue on */
+ 		nvme_dbbuf_dma_free(dev);
++
++		for (i = 1; i <= dev->online_queues; i++)
++			nvme_dbbuf_free(&dev->queues[i]);
+ 	}
+ }
+ 
 -- 
 2.27.0
 
