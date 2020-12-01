@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93592CAD56
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0E32CAD59
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730825AbgLAU3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:29:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
+        id S2388861AbgLAUcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730263AbgLAU3P (ORCPT
+        with ESMTP id S1727165AbgLAUcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:29:15 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFEAC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:28:29 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id l23so2033680pjg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:28:29 -0800 (PST)
+        Tue, 1 Dec 2020 15:32:06 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D795C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:31:20 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id f27so2189239qtv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:31:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ko75/Fr8d3GQsTIDa9DCUIlQClom7hRVgJtFr4EDnzY=;
-        b=LBPU5BSDN0oDG6xd5T5rIAfXyh1S2b3z4horMexwrFdoZVeZL07exx80fudC45Hh3N
-         mTroJtIjz3zOyniqGquKBzOLMqfDQ8r0k+i/vHSjXnexe4UcgfgGVNJAZragtVCeh8HD
-         DjKQKEWIJwvboLsdEQhezvb0N//K3PSbJR6U0=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZzwh1qZeO2b0+phIivb7f/h0/WTvwlyT6OwTCuU8Go=;
+        b=JT8a4im5mRuwETNO39npw148r3340SB50NEKuWNK0T0EuLy6OY9QxvW2zT/YDF2yFp
+         UDut3hb/IwScMF6t2XadwaGd+yHJh+yFtyRwrtZpeoHwNKSKSdAMjf3ot8WcDsnZjxqf
+         bMAuJ4tVWjR7xLj3IP145iuAhRDUlXYWfYAEA6byKRLe3aotgpbVCFQZZ4gA8DHne6/k
+         Rb5mEgw3XQWX9US8bpL1sM9eU5aL+7nYIo7rmz1/s3gQWSI6h3f+hcarRBw7d+JUJAtw
+         thynGtAl3j149w2TA2Keiu7Q77qscbMbf9q8yi6/+z56GAa+epwJnUIXluzV9/0K2Q8o
+         1Huw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ko75/Fr8d3GQsTIDa9DCUIlQClom7hRVgJtFr4EDnzY=;
-        b=fodTs8KhAVF/O/jCkAHCERN0tjIOL5/RsfxZqczndPB1VOWtC/s6zTyVKPTl9IxOqD
-         VfRitR4SYUR7T2J2ib2kkw+AVD2LGlVLznFVIESdh3/PRwzMmn/FmsTb+JJxk9TaayR9
-         eJmmTPfqCr7YNSUuYHagMS9v+BlP+v4qtRnL11OGRJ+clWJ618Gb4Zm5xbqrYeYlAPBq
-         nVwzPwe/cnotT3L09FttHbSQ7+y+9xgIXKZJMg+ic0wj1ESwHUXNNLFhG0+q02Voq5ly
-         pYblz5bU+4PWXdByhnfgtsSWsdaysQM0FbiCVLCxKhlVfI/WqTVDQO42+jTQmnUsjx3v
-         UVsA==
-X-Gm-Message-State: AOAM53172b/Oq74gpN/a5S2tw4umLXqyF8yuX3X8pEF0DnuyfF4eDOyg
-        bowuHXalNk201CRUOOOIjeKWqA==
-X-Google-Smtp-Source: ABdhPJxk5B/5wh8+G1DWpNRfD5ZuGlXNVzdiMlkNVAZmHCpsZsmib6h50CiXAzeESoe16zt0B05Wvw==
-X-Received: by 2002:a17:90a:f211:: with SMTP id bs17mr4583319pjb.144.1606854509121;
-        Tue, 01 Dec 2020 12:28:29 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i3sm438891pgq.12.2020.12.01.12.28.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:28:27 -0800 (PST)
-Date:   Tue, 1 Dec 2020 12:28:27 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Bhaskara Budiredla <bbudiredla@marvell.com>,
-        ulf.hansson@linaro.org, ccross@android.com, tony.luck@intel.com,
-        sgoutham@marvell.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mmc: Support kmsg dumper based on pstore/blk
-Message-ID: <202012011226.94027EB5E@keescook>
-References: <20201123111925.28999-1-bbudiredla@marvell.com>
- <20201124113720.GA30440@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZzwh1qZeO2b0+phIivb7f/h0/WTvwlyT6OwTCuU8Go=;
+        b=fyh/nJwlNy09km5aNGq5FQXVdOYnem6dTYKlx4u95iLGA77Vzy1w/8FCXwgkZIKpJ7
+         xme+tGeM/kdm76w68dz2/mdj+q0sCKYLxZGYcV6w0pmHxxN1b9CJwtgJrvXs24xJ898w
+         BRu0y29uvDLMxMlDHNTI89Nron7gGdcxb+Amx7YJop7vETtz1cC9lpEYKmKrG3SUfOe3
+         GQuHrLUnjeXYXyHuGjS25++t+7h/wBktjmwZZjlAjXqEJuCxGa7EW2oRpo87jhGxA5BB
+         /HDAnl7XepISNfg4zWJAUvyuLI8Dyj+XU+PUokIVq4U9cz5W+c1QoApBeCn8VwybkjYc
+         uGSQ==
+X-Gm-Message-State: AOAM533NNjaCOHaZ7o4v9EJTzYJI2QIdPDiWY8UKPjiruxaVk593TnJZ
+        pjZ41UtZUnHr3+xkP6zjVz2x36qjjswKRvfNHC64
+X-Google-Smtp-Source: ABdhPJwORLiqHf9AEcfRZc8YF8T9RnXczT+vC9iTlw0cFtvOwxSpw6bde3sJmjRTqSW8oC8iYZN969xbu1Qx+8dDGiA=
+X-Received: by 2002:ac8:679a:: with SMTP id b26mr4823395qtp.79.1606854679256;
+ Tue, 01 Dec 2020 12:31:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124113720.GA30440@infradead.org>
+References: <20201116054035.211498-1-98.arpi@gmail.com> <20201116054150.211562-1-98.arpi@gmail.com>
+In-Reply-To: <20201116054150.211562-1-98.arpi@gmail.com>
+From:   Iurii Zaikin <yzaikin@google.com>
+Date:   Tue, 1 Dec 2020 12:30:42 -0800
+Message-ID: <CAAXuY3rE9D+QbY-0rfkeFSMUULPkzvqZGsyYhM2Fza2nNt3e3w@mail.gmail.com>
+Subject: Re: [PATCH v9 2/2] fs: ext4: Modify inode-test.c to use KUnit
+ parameterized testing feature
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Bird, Timothy" <Tim.Bird@sony.com>,
+        David Gow <davidgow@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:37:20AM +0000, Christoph Hellwig wrote:
-> Please hold this off for now.  I have a major rewrite of the pstore/blk
-> interface pending..
+>
+> Modify fs/ext4/inode-test.c to use the parameterized testing
+> feature of KUnit.
 
-I'm fine with taking these patches -- they're using the pstore "device"
-interface, not the pstore "blk" interface, and I don't expect to be
-making big changes to the existing structures.
-
-With feedback on patch 1 addressed, I'd be happy to Ack this going via
-the mmc tree.
-
--- 
-Kees Cook
+Reviewed-by: Iurii Zaikin <yzaikin@google.com>
