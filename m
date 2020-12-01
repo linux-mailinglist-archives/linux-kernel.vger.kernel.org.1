@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC832C9E33
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC99E2C9E36
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390721AbgLAJle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:41:34 -0500
+        id S2391042AbgLAJlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:41:51 -0500
 Received: from mga11.intel.com ([192.55.52.93]:62080 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388433AbgLAJle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:41:34 -0500
-IronPort-SDR: yJLDU1p7mADdOdVhSA1m5HSFhMO7RcjGY7jPRCI1TmignCz6zyA/hELNE683W287fKtt8eUXF+
- mOtvj/08msJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169297156"
+        id S2388433AbgLAJlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:41:49 -0500
+IronPort-SDR: zA+5FOsrfdFOqt5fEGc4w/jzRYHnaCpGakM6W4s3mdpvJItS6osx9jvAqrLlkfedhW59IPhCLt
+ sN01hG8jDfsQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169297167"
 X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="169297156"
+   d="scan'208";a="169297167"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 01:40:53 -0800
-IronPort-SDR: TFRv9wF/fdy/muGqVYRqC812HvwpT9OKrh2QJQ7o24opACHy8mSKhSsiS7gBJcr5mE/EDPSbC4
- gLNhPI09dlBg==
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 01:41:00 -0800
+IronPort-SDR: Q1pJylIwGATFtEp5KHzjcOYLXYs55rVxPgyk6vF3PChLtm+weNATVaAY+fPwyjsoiDsNJpAxVj
+ dDiI34yWT1kw==
 X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="315605236"
+   d="scan'208";a="367480196"
 Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 01:40:50 -0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 01:40:56 -0800
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -35,10 +35,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Yu Wang <yu1.wang@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
-        Shuo Liu <shuo.a.liu@intel.com>
-Subject: [PATCH v6 10/18] virt: acrn: Introduce PCI configuration space PIO accesses combiner
-Date:   Tue,  1 Dec 2020 17:38:45 +0800
-Message-Id: <20201201093853.12070-11-shuo.a.liu@intel.com>
+        Shuo Liu <shuo.a.liu@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: [PATCH v6 11/18] virt: acrn: Introduce interfaces for PCI device passthrough
+Date:   Tue,  1 Dec 2020 17:38:46 +0800
+Message-Id: <20201201093853.12070-12-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201201093853.12070-1-shuo.a.liu@intel.com>
 References: <20201201093853.12070-1-shuo.a.liu@intel.com>
@@ -50,187 +52,260 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuo Liu <shuo.a.liu@intel.com>
 
-A User VM can access its virtual PCI configuration spaces via port IO
-approach, which has two following steps:
- 1) writes address into port 0xCF8
- 2) put/get data in/from port 0xCFC
+PCI device passthrough enables an OS in a virtual machine to directly
+access a PCI device in the host. It promises almost the native
+performance, which is required in performance-critical scenarios of
+ACRN.
 
-To distribute a complete PCI configuration space access one time, HSM
-need to combine such two accesses together.
+HSM provides the following ioctls:
+ - Assign - ACRN_IOCTL_ASSIGN_PCIDEV
+   Pass data struct acrn_pcidev from userspace to the hypervisor, and
+   inform the hypervisor to assign a PCI device to a User VM.
 
-Combine two paired PIO I/O requests into one PCI I/O request and
-continue the I/O request distribution.
+ - De-assign - ACRN_IOCTL_DEASSIGN_PCIDEV
+   Pass data struct acrn_pcidev from userspace to the hypervisor, and
+   inform the hypervisor to de-assign a PCI device from a User VM.
+
+ - Set a interrupt of a passthrough device - ACRN_IOCTL_SET_PTDEV_INTR
+   Pass data struct acrn_ptdev_irq from userspace to the hypervisor,
+   and inform the hypervisor to map a INTx interrupt of passthrough
+   device of User VM.
+
+ - Reset passthrough device interrupt - ACRN_IOCTL_RESET_PTDEV_INTR
+   Pass data struct acrn_ptdev_irq from userspace to the hypervisor,
+   and inform the hypervisor to unmap a INTx interrupt of passthrough
+   device of User VM.
 
 Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Zhi Wang <zhi.a.wang@intel.com>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc: Yu Wang <yu1.wang@intel.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/virt/acrn/acrn_drv.h |  2 +
- drivers/virt/acrn/ioreq.c    | 76 ++++++++++++++++++++++++++++++++++++
- include/uapi/linux/acrn.h    | 15 +++++++
- 3 files changed, 93 insertions(+)
+ drivers/virt/acrn/hsm.c       | 50 ++++++++++++++++++++++++++++
+ drivers/virt/acrn/hypercall.h | 54 +++++++++++++++++++++++++++++++
+ include/uapi/linux/acrn.h     | 61 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 165 insertions(+)
 
-diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-index 7e89e4944d0f..97a7f31cd681 100644
---- a/drivers/virt/acrn/acrn_drv.h
-+++ b/drivers/virt/acrn/acrn_drv.h
-@@ -154,6 +154,7 @@ extern rwlock_t acrn_vm_list_lock;
-  * @default_client:		The default I/O request client
-  * @ioreq_buf:			I/O request shared buffer
-  * @ioreq_page:			The page of the I/O request shared buffer
-+ * @pci_conf_addr:		Address of a PCI configuration access emulation
-  */
- struct acrn_vm {
- 	struct list_head		list;
-@@ -168,6 +169,7 @@ struct acrn_vm {
- 	struct acrn_ioreq_client	*default_client;
- 	struct acrn_io_request_buffer	*ioreq_buf;
- 	struct page			*ioreq_page;
-+	u32				pci_conf_addr;
- };
+diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+index ea86be0ab5e4..c1eb1dc62801 100644
+--- a/drivers/virt/acrn/hsm.c
++++ b/drivers/virt/acrn/hsm.c
+@@ -49,7 +49,9 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+ 	struct acrn_vm_creation *vm_param;
+ 	struct acrn_vcpu_regs *cpu_regs;
+ 	struct acrn_ioreq_notify notify;
++	struct acrn_ptdev_irq *irq_info;
+ 	struct acrn_vm_memmap memmap;
++	struct acrn_pcidev *pcidev;
+ 	int ret = 0;
  
- struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
-diff --git a/drivers/virt/acrn/ioreq.c b/drivers/virt/acrn/ioreq.c
-index ed22b1c4775d..b469f273e20c 100644
---- a/drivers/virt/acrn/ioreq.c
-+++ b/drivers/virt/acrn/ioreq.c
-@@ -220,6 +220,80 @@ int acrn_ioreq_client_wait(struct acrn_ioreq_client *client)
- 	return 0;
- }
+ 	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
+@@ -131,6 +133,54 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
  
-+static bool is_cfg_addr(struct acrn_io_request *req)
-+{
-+	return ((req->type == ACRN_IOREQ_TYPE_PORTIO) &&
-+		(req->reqs.pio_request.address == 0xcf8));
-+}
+ 		ret = acrn_vm_memseg_unmap(vm, &memmap);
+ 		break;
++	case ACRN_IOCTL_ASSIGN_PCIDEV:
++		pcidev = memdup_user((void __user *)ioctl_param,
++				     sizeof(struct acrn_pcidev));
++		if (IS_ERR(pcidev))
++			return PTR_ERR(pcidev);
 +
-+static bool is_cfg_data(struct acrn_io_request *req)
-+{
-+	return ((req->type == ACRN_IOREQ_TYPE_PORTIO) &&
-+		((req->reqs.pio_request.address >= 0xcfc) &&
-+		 (req->reqs.pio_request.address < (0xcfc + 4))));
-+}
++		ret = hcall_assign_pcidev(vm->vmid, virt_to_phys(pcidev));
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to assign pci device!\n");
++		kfree(pcidev);
++		break;
++	case ACRN_IOCTL_DEASSIGN_PCIDEV:
++		pcidev = memdup_user((void __user *)ioctl_param,
++				     sizeof(struct acrn_pcidev));
++		if (IS_ERR(pcidev))
++			return PTR_ERR(pcidev);
 +
-+/* The low 8-bit of supported pci_reg addr.*/
-+#define PCI_LOWREG_MASK  0xFC
-+/* The high 4-bit of supported pci_reg addr */
-+#define PCI_HIGHREG_MASK 0xF00
-+/* Max number of supported functions */
-+#define PCI_FUNCMAX	7
-+/* Max number of supported slots */
-+#define PCI_SLOTMAX	31
-+/* Max number of supported buses */
-+#define PCI_BUSMAX	255
-+#define CONF1_ENABLE	0x80000000UL
-+/*
-+ * A PCI configuration space access via PIO 0xCF8 and 0xCFC normally has two
-+ * following steps:
-+ *   1) writes address into 0xCF8 port
-+ *   2) accesses data in/from 0xCFC
-+ * This function combines such paired PCI configuration space I/O requests into
-+ * one ACRN_IOREQ_TYPE_PCICFG type I/O request and continues the processing.
-+ */
-+static bool handle_cf8cfc(struct acrn_vm *vm,
-+			  struct acrn_io_request *req, u16 vcpu)
-+{
-+	int offset, pci_cfg_addr, pci_reg;
-+	bool is_handled = false;
++		ret = hcall_deassign_pcidev(vm->vmid, virt_to_phys(pcidev));
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to deassign pci device!\n");
++		kfree(pcidev);
++		break;
++	case ACRN_IOCTL_SET_PTDEV_INTR:
++		irq_info = memdup_user((void __user *)ioctl_param,
++				       sizeof(struct acrn_ptdev_irq));
++		if (IS_ERR(irq_info))
++			return PTR_ERR(irq_info);
 +
-+	if (is_cfg_addr(req)) {
-+		WARN_ON(req->reqs.pio_request.size != 4);
-+		if (req->reqs.pio_request.direction == ACRN_IOREQ_DIR_WRITE)
-+			vm->pci_conf_addr = req->reqs.pio_request.value;
-+		else
-+			req->reqs.pio_request.value = vm->pci_conf_addr;
-+		is_handled = true;
-+	} else if (is_cfg_data(req)) {
-+		if (!(vm->pci_conf_addr & CONF1_ENABLE)) {
-+			if (req->reqs.pio_request.direction ==
-+					ACRN_IOREQ_DIR_READ)
-+				req->reqs.pio_request.value = 0xffffffff;
-+			is_handled = true;
-+		} else {
-+			offset = req->reqs.pio_request.address - 0xcfc;
++		ret = hcall_set_ptdev_intr(vm->vmid, virt_to_phys(irq_info));
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to configure intr for ptdev!\n");
++		kfree(irq_info);
++		break;
++	case ACRN_IOCTL_RESET_PTDEV_INTR:
++		irq_info = memdup_user((void __user *)ioctl_param,
++				       sizeof(struct acrn_ptdev_irq));
++		if (IS_ERR(irq_info))
++			return PTR_ERR(irq_info);
 +
-+			req->type = ACRN_IOREQ_TYPE_PCICFG;
-+			pci_cfg_addr = vm->pci_conf_addr;
-+			req->reqs.pci_request.bus =
-+					(pci_cfg_addr >> 16) & PCI_BUSMAX;
-+			req->reqs.pci_request.dev =
-+					(pci_cfg_addr >> 11) & PCI_SLOTMAX;
-+			req->reqs.pci_request.func =
-+					(pci_cfg_addr >> 8) & PCI_FUNCMAX;
-+			pci_reg = (pci_cfg_addr & PCI_LOWREG_MASK) +
-+				   ((pci_cfg_addr >> 16) & PCI_HIGHREG_MASK);
-+			req->reqs.pci_request.reg = pci_reg + offset;
-+		}
-+	}
-+
-+	if (is_handled)
-+		ioreq_complete_request(vm, vcpu, req);
-+
-+	return is_handled;
-+}
-+
- static bool in_range(struct acrn_ioreq_range *range,
- 		     struct acrn_io_request *req)
- {
-@@ -380,6 +454,8 @@ static int acrn_ioreq_dispatch(struct acrn_vm *vm)
- 				ioreq_complete_request(vm, i, req);
- 				continue;
- 			}
-+			if (handle_cf8cfc(vm, req, i))
-+				continue;
++		ret = hcall_reset_ptdev_intr(vm->vmid, virt_to_phys(irq_info));
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to reset intr for ptdev!\n");
++		kfree(irq_info);
++		break;
+ 	case ACRN_IOCTL_CREATE_IOREQ_CLIENT:
+ 		if (vm->default_client)
+ 			return -EEXIST;
+diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
+index 5eba29e3ed38..f448301832cf 100644
+--- a/drivers/virt/acrn/hypercall.h
++++ b/drivers/virt/acrn/hypercall.h
+@@ -28,6 +28,12 @@
+ #define HC_ID_MEM_BASE			0x40UL
+ #define HC_VM_SET_MEMORY_REGIONS	_HC_ID(HC_ID, HC_ID_MEM_BASE + 0x02)
  
- 			spin_lock_bh(&vm->ioreq_clients_lock);
- 			client = find_ioreq_client(vm, req);
-diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-index 96ebc879b8d0..66c43bd1e1b3 100644
---- a/include/uapi/linux/acrn.h
-+++ b/include/uapi/linux/acrn.h
-@@ -21,6 +21,7 @@
- 
- #define ACRN_IOREQ_TYPE_PORTIO		0
- #define ACRN_IOREQ_TYPE_MMIO		1
-+#define ACRN_IOREQ_TYPE_PCICFG		2
- 
- #define ACRN_IOREQ_DIR_READ		0
- #define ACRN_IOREQ_DIR_WRITE		1
-@@ -41,6 +42,18 @@ struct acrn_pio_request {
- 	__u32	value;
- };
- 
-+/* Need keep same header fields with pio_request */
-+struct acrn_pci_request {
-+	__u32	direction;
-+	__u32	reserved[3];
-+	__u64	size;
-+	__u32	value;
-+	__u32	bus;
-+	__u32	dev;
-+	__u32	func;
-+	__u32	reg;
-+};
++#define HC_ID_PCI_BASE			0x50UL
++#define HC_SET_PTDEV_INTR		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x03)
++#define HC_RESET_PTDEV_INTR		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x04)
++#define HC_ASSIGN_PCIDEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x05)
++#define HC_DEASSIGN_PCIDEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x06)
 +
  /**
-  * struct acrn_io_request - 256-byte ACRN I/O request
-  * @type:		Type of this request (ACRN_IOREQ_TYPE_*).
-@@ -49,6 +62,7 @@ struct acrn_pio_request {
-  * @reserved0:		Reserved fields.
-  * @reqs:		Union of different types of request. Byte offset: 64.
-  * @reqs.pio_request:	PIO request data of the I/O request.
-+ * @reqs.pci_request:	PCI configuration space request data of the I/O request.
-  * @reqs.mmio_request:	MMIO request data of the I/O request.
-  * @reqs.data:		Raw data of the I/O request.
-  * @reserved1:		Reserved fields.
-@@ -108,6 +122,7 @@ struct acrn_io_request {
- 	__u32	reserved0[14];
- 	union {
- 		struct acrn_pio_request		pio_request;
-+		struct acrn_pci_request		pci_request;
- 		struct acrn_mmio_request	mmio_request;
- 		__u64				data[8];
- 	} reqs;
+  * hcall_create_vm() - Create a User VM
+  * @vminfo:	Service VM GPA of info of User VM creation
+@@ -130,4 +136,52 @@ static inline long hcall_set_memory_regions(u64 regions_pa)
+ 	return acrn_hypercall1(HC_VM_SET_MEMORY_REGIONS, regions_pa);
+ }
+ 
++/**
++ * hcall_assign_pcidev() - Assign a PCI device to a User VM
++ * @vmid:	User VM ID
++ * @addr:	Service VM GPA of the &struct acrn_pcidev
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_assign_pcidev(u64 vmid, u64 addr)
++{
++	return acrn_hypercall2(HC_ASSIGN_PCIDEV, vmid, addr);
++}
++
++/**
++ * hcall_deassign_pcidev() - De-assign a PCI device from a User VM
++ * @vmid:	User VM ID
++ * @addr:	Service VM GPA of the &struct acrn_pcidev
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_deassign_pcidev(u64 vmid, u64 addr)
++{
++	return acrn_hypercall2(HC_DEASSIGN_PCIDEV, vmid, addr);
++}
++
++/**
++ * hcall_set_ptdev_intr() - Configure an interrupt for an assigned PCI device.
++ * @vmid:	User VM ID
++ * @irq:	Service VM GPA of the &struct acrn_ptdev_irq
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_set_ptdev_intr(u64 vmid, u64 irq)
++{
++	return acrn_hypercall2(HC_SET_PTDEV_INTR, vmid, irq);
++}
++
++/**
++ * hcall_reset_ptdev_intr() - Reset an interrupt for an assigned PCI device.
++ * @vmid:	User VM ID
++ * @irq:	Service VM GPA of the &struct acrn_ptdev_irq
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_reset_ptdev_intr(u64 vmid, u64 irq)
++{
++	return acrn_hypercall2(HC_RESET_PTDEV_INTR, vmid, irq);
++}
++
+ #endif /* __ACRN_HSM_HYPERCALL_H */
+diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
+index 66c43bd1e1b3..2727f16a7ef4 100644
+--- a/include/uapi/linux/acrn.h
++++ b/include/uapi/linux/acrn.h
+@@ -284,6 +284,58 @@ struct acrn_vm_memmap {
+ 	__u64	len;
+ };
+ 
++/* Type of interrupt of a passthrough device */
++#define ACRN_PTDEV_IRQ_INTX	0
++#define ACRN_PTDEV_IRQ_MSI	1
++#define ACRN_PTDEV_IRQ_MSIX	2
++/**
++ * struct acrn_ptdev_irq - Interrupt data of a passthrough device.
++ * @type:		Type (ACRN_PTDEV_IRQ_*)
++ * @virt_bdf:		Virtual Bus/Device/Function
++ * @phys_bdf:		Physical Bus/Device/Function
++ * @intx:		Info of interrupt
++ * @intx.virt_pin:	Virtual IOAPIC pin
++ * @intx.phys_pin:	Physical IOAPIC pin
++ * @intx.is_pic_pin:	Is PIC pin or not
++ *
++ * This structure will be passed to hypervisor directly.
++ */
++struct acrn_ptdev_irq {
++	__u32	type;
++	__u16	virt_bdf;
++	__u16	phys_bdf;
++
++	struct {
++		__u32	virt_pin;
++		__u32	phys_pin;
++		__u32	is_pic_pin;
++	} intx;
++};
++
++/* Type of PCI device assignment */
++#define ACRN_PTDEV_QUIRK_ASSIGN	(1U << 0)
++
++#define ACRN_PCI_NUM_BARS	6
++/**
++ * struct acrn_pcidev - Info for assigning or de-assigning a PCI device
++ * @type:	Type of the assignment
++ * @virt_bdf:	Virtual Bus/Device/Function
++ * @phys_bdf:	Physical Bus/Device/Function
++ * @intr_line:	PCI interrupt line
++ * @intr_pin:	PCI interrupt pin
++ * @bar:	PCI BARs.
++ *
++ * This structure will be passed to hypervisor directly.
++ */
++struct acrn_pcidev {
++	__u32	type;
++	__u16	virt_bdf;
++	__u16	phys_bdf;
++	__u8	intr_line;
++	__u8	intr_pin;
++	__u32	bar[ACRN_PCI_NUM_BARS];
++};
++
+ /* The ioctl type, documented in ioctl-number.rst */
+ #define ACRN_IOCTL_TYPE			0xA2
+ 
+@@ -319,4 +371,13 @@ struct acrn_vm_memmap {
+ #define ACRN_IOCTL_UNSET_MEMSEG		\
+ 	_IOW(ACRN_IOCTL_TYPE, 0x42, struct acrn_vm_memmap)
+ 
++#define ACRN_IOCTL_SET_PTDEV_INTR	\
++	_IOW(ACRN_IOCTL_TYPE, 0x53, struct acrn_ptdev_irq)
++#define ACRN_IOCTL_RESET_PTDEV_INTR	\
++	_IOW(ACRN_IOCTL_TYPE, 0x54, struct acrn_ptdev_irq)
++#define ACRN_IOCTL_ASSIGN_PCIDEV	\
++	_IOW(ACRN_IOCTL_TYPE, 0x55, struct acrn_pcidev)
++#define ACRN_IOCTL_DEASSIGN_PCIDEV	\
++	_IOW(ACRN_IOCTL_TYPE, 0x56, struct acrn_pcidev)
++
+ #endif /* _UAPI_ACRN_H */
 -- 
 2.28.0
 
