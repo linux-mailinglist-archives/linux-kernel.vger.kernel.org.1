@@ -2,282 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD4A2CA1B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 285672CA1BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgLALmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:42:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgLALmo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:42:44 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB182C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 03:42:03 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kk42f-0000To-Ns; Tue, 01 Dec 2020 12:41:57 +0100
-Message-ID: <350854e574f87f0e14f16702d53b22109fe1ab35.camel@pengutronix.de>
-Subject: Re: [PATCH v1 1/1] drm/imx/dcss: Add interconnect support
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
-        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 01 Dec 2020 12:41:56 +0100
-In-Reply-To: <f44d42dd9b3750e2516413b2cbb3bc799b2a5628.1606822378.git.agx@sigxcpu.org>
-References: <cover.1606822378.git.agx@sigxcpu.org>
-         <f44d42dd9b3750e2516413b2cbb3bc799b2a5628.1606822378.git.agx@sigxcpu.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        id S1730610AbgLALnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:43:33 -0500
+Received: from mail.zx2c4.com ([192.95.5.64]:50697 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730363AbgLALnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:43:33 -0500
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 9dc57d16;
+        Tue, 1 Dec 2020 11:37:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=jbEvcnVie3+BiOHDlwb8pV05AQc=; b=e2B47M
+        haBLMImb04QPd7EBiC9Mb9aUnvN4fhDybiScvo+f9ZFzJ57Dhp6ExrIL5Yn5tpbj
+        W8aeD4WNIlv/CgGygp049t7STELeQDLkVeqZid/1DZsZabJNV0Qh3LUkN9YIGKHf
+        LJQ4T37QTZlDUAMO4ct/we9BTb56CIsN6U9iDzxFqOe7Sp3gMuD2DzT7orCe8Dtk
+        akz0H6JU96kovR8CYgyI+cwo1WaH4z3tmMdC0D49Ncf+8R4Quk1OX+5uOvh7sL4y
+        2ciIDJ1gyhM1dCBqEdP33MrvhxqaOjjlp0fhbEfSqdHz7HUnWJt/bHvLRkJ+aKdF
+        oPB2n07wF3CdK21Q==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 53c2051f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 1 Dec 2020 11:37:09 +0000 (UTC)
+Received: by mail-yb1-f182.google.com with SMTP id x2so1509008ybt.11;
+        Tue, 01 Dec 2020 03:42:49 -0800 (PST)
+X-Gm-Message-State: AOAM5312v8ydbNPwQV4HUaL3AVw54+FvQqd1YAqMFCmKXcaaTs0T+wV2
+        DngWfMD2dJDiVcmM1CpsdDHIFtvV+rngdMN2xUY=
+X-Google-Smtp-Source: ABdhPJyr+E+bKuyTFZDfe3PGxpw6xMPOHc4Tc723dfsW1RLX19X2fkfRJVJaSe0NxLaZlZ7vwWKbLLKy8Qe1h0mUjkg=
+X-Received: by 2002:a25:bb81:: with SMTP id y1mr2761021ybg.456.1606822967704;
+ Tue, 01 Dec 2020 03:42:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201130151231.GA24862@lst.de> <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
+ <20201130165339.GE5364@mit.edu>
+In-Reply-To: <20201130165339.GE5364@mit.edu>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Tue, 1 Dec 2020 12:42:36 +0100
+X-Gmail-Original-Message-ID: <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
+Message-ID: <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
+Subject: Re: drivers/char/random.c needs a (new) maintainer
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     duwe@lst.de, Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>,
+        Willy Tarreau <w@1wt.eu>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        And y Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, den 01.12.2020, 12:34 +0100 schrieb Guido Günther:
-> This allows us to raise DRAM bandiwth to a high enough value for a
-> stable picture on i.mx8mq. We pick a bandwidth that should be sufficient
-> for 4k@60Hz.
-> 
-> Modelled like mdp5_kms.
-> 
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> ---
->  drivers/gpu/drm/imx/dcss/dcss-dev.c | 47 +++++++++++++++++++++++++++--
->  drivers/gpu/drm/imx/dcss/dcss-dev.h |  3 ++
->  2 files changed, 48 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.c b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-> index c849533ca83e..e336f03448d6 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-dev.c
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-> @@ -15,6 +15,9 @@
->  #include "dcss-dev.h"
->  #include "dcss-kms.h"
->  
-> +/* sufficient for 4K at 60 Hz */
-> +#define DCSS_BW_MAX GBps_to_icc(2)
-> +
+On Mon, Nov 30, 2020 at 5:56 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+> patches this cycle.  One thing that would help me is if folks
+> (especially Jason, if you would) could start with a detailed review of
+> Nicolai's patches.
 
-Same comment as for the similar change in mxsfb: this should not be a
-static value, but should be scaled proportional to the current mode and
-plane settings. With a single static value you keep the clocks way too
-high for most use-cases with smaller displays, but fail to account for
-the additional bandwidth requirement when more than one plane is
-active.
-
-Regards,
-Lucas
-
->  static void dcss_clocks_enable(struct dcss_dev *dcss)
->  {
->  	clk_prepare_enable(dcss->axi_clk);
-> @@ -162,6 +165,31 @@ static void dcss_clks_release(struct dcss_dev *dcss)
->  	devm_clk_put(dcss->dev, dcss->apb_clk);
->  }
->  
-> 
-> 
-> 
-> +static int dcss_init_icc(struct dcss_dev *dcss)
-> +{
-> +	int ret;
-> +	struct icc_path *icc_path;
-> +
-> +	/* Optional interconnect request */
-> +	icc_path = of_icc_get(dcss->dev, NULL);
-> +	if (IS_ERR(icc_path)) {
-> +		ret = PTR_ERR(icc_path);
-> +		if (ret == -EPROBE_DEFER)
-> +			return ret;
-> +		/* no interconnect support is not necessarily a fatal
-> +		 * condition, the platform may simply not have an
-> +		 * interconnect driver yet.  But warn about it in case
-> +		 * bootloader didn't setup bus clocks high enough for
-> +		 * scanout.
-> +		 */
-> +		dev_warn(dcss->dev, "No interconnect support may cause display underflows!\n");
-> +		return 0;
-> +	}
-> +	dcss->icc_path = icc_path;
-> +	dcss->icc_peak_bw = DCSS_BW_MAX;
-> +	return 0;
-> +}
-> +
->  struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
->  {
->  	struct platform_device *pdev = to_platform_device(dev);
-> @@ -190,10 +218,14 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
->  	dcss->devtype = devtype;
->  	dcss->hdmi_output = hdmi_output;
->  
-> 
-> 
-> 
-> +	ret = dcss_init_icc(dcss);
-> +	if (ret < 0)
-> +		goto err;
-> +
->  	ret = dcss_clks_init(dcss);
->  	if (ret) {
->  		dev_err(dev, "clocks initialization failed\n");
-> -		goto err;
-> +		goto icc_err;
->  	}
->  
-> 
-> 
-> 
->  	dcss->of_port = of_graph_get_port_by_id(dev->of_node, 0);
-> @@ -223,7 +255,8 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
->  
-> 
-> 
-> 
->  clks_err:
->  	dcss_clks_release(dcss);
-> -
-> +icc_err:
-> +	icc_put(dcss->icc_path);
->  err:
->  	kfree(dcss);
->  
-> 
-> 
-> 
-> @@ -243,6 +276,8 @@ void dcss_dev_destroy(struct dcss_dev *dcss)
->  
-> 
-> 
-> 
->  	dcss_clks_release(dcss);
->  
-> 
-> 
-> 
-> +	icc_put(dcss->icc_path);
-> +
->  	kfree(dcss);
->  }
->  
-> 
-> 
-> 
-> @@ -267,6 +302,8 @@ int dcss_dev_suspend(struct device *dev)
->  
-> 
-> 
-> 
->  	dcss_clocks_disable(dcss);
->  
-> 
-> 
-> 
-> +	icc_set_bw(dcss->icc_path, 0, 0);
-> +
->  	return 0;
->  }
->  
-> 
-> 
-> 
-> @@ -281,6 +318,8 @@ int dcss_dev_resume(struct device *dev)
->  		return 0;
->  	}
->  
-> 
-> 
-> 
-> +	icc_set_bw(dcss->icc_path, 0, dcss->icc_peak_bw);
-> +
->  	dcss_clocks_enable(dcss);
->  
-> 
-> 
-> 
->  	dcss_blkctl_cfg(dcss->blkctl);
-> @@ -307,6 +346,8 @@ int dcss_dev_runtime_suspend(struct device *dev)
->  
-> 
-> 
-> 
->  	dcss_clocks_disable(dcss);
->  
-> 
-> 
-> 
-> +	icc_set_bw(dcss->icc_path, 0, 0);
-> +
->  	return 0;
->  }
->  
-> 
-> 
-> 
-> @@ -314,6 +355,8 @@ int dcss_dev_runtime_resume(struct device *dev)
->  {
->  	struct dcss_dev *dcss = dcss_drv_dev_to_dcss(dev);
->  
-> 
-> 
-> 
-> +	icc_set_bw(dcss->icc_path, 0, dcss->icc_peak_bw);
-> +
->  	dcss_clocks_enable(dcss);
->  
-> 
-> 
-> 
->  	dcss_blkctl_cfg(dcss->blkctl);
-> diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.h b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> index c642ae17837f..1b35a6f0d0d4 100644
-> --- a/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> +++ b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-> @@ -8,6 +8,7 @@
->  
-> 
-> 
-> 
->  #include <drm/drm_fourcc.h>
->  #include <linux/io.h>
-> +#include <linux/interconnect.h>
->  #include <video/videomode.h>
->  
-> 
-> 
-> 
->  #define SET			0x04
-> @@ -85,6 +86,8 @@ struct dcss_dev {
->  	struct clk *pll_phy_ref_clk;
->  
-> 
-> 
-> 
->  	bool hdmi_output;
-> +	struct icc_path *icc_path;
-> +	u32 icc_peak_bw;
->  
-> 
-> 
-> 
->  	void (*disable_callback)(void *data);
->  	struct completion disable_completion;
-
-
+Sure, I'll take a look.
