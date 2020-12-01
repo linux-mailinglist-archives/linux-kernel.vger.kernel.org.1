@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEA92C970E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 208C32C9710
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgLAFdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 00:33:22 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:47808 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgLAFdW (ORCPT
+        id S1726771AbgLAFds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 00:33:48 -0500
+Received: from exmail.andestech.com ([60.248.187.195]:47242 "EHLO
+        ATCSQR.andestech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbgLAFdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 00:33:22 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B15Pv6G187564;
-        Tue, 1 Dec 2020 05:32:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=u/74Y6/LEJEDqI3LGT/nDi4hUN+vgcUNJDMaKHlk3kk=;
- b=ZMdkUT4eHvmK7Y6kWM5iDt9pDnNC4vuoRa3yx5+hPfhPHpdcsRMzhNuWf0YRWiPH2k9g
- tvaPWmoQVZ2fAMVls0Tw3BiwRDewH7ExYYBGbCO2JdALEW5GDnd/6EX67O0hpDIBTfO1
- l87K5+MkXBHvY94KbOK2n+UmsPuBbQsuO7KXjlYj/gvG4RScn+Kltrpj6Z6VBAHebkrI
- JY55dnQvf4+bS8d8l8EtavBuH4dAG/kwQ9hd1YxbxXE8nflnqIdmHsdpHDTlmaY+I6zP
- 0DmCgfs8IyFsU7koHo3prTNCTvzRXTeyAzIMTBPLs7TAtGHUgrdhhszezrEmq9AX8nYH pA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 353dyqgny7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 05:32:35 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B15QErQ047782;
-        Tue, 1 Dec 2020 05:32:35 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 3540arphgt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Dec 2020 05:32:35 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B15WUhG030619;
-        Tue, 1 Dec 2020 05:32:31 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 21:32:28 -0800
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH] SCSI: bnx2i: requires MMU
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mtyygkgt.fsf@ca-mkp.ca.oracle.com>
-References: <20201129070916.3919-1-rdunlap@infradead.org>
-Date:   Tue, 01 Dec 2020 00:32:26 -0500
-In-Reply-To: <20201129070916.3919-1-rdunlap@infradead.org> (Randy Dunlap's
-        message of "Sat, 28 Nov 2020 23:09:16 -0800")
+        Tue, 1 Dec 2020 00:33:47 -0500
+Received: from mail.andestech.com (atcpcs16.andestech.com [10.0.1.222])
+        by ATCSQR.andestech.com with ESMTP id 0B15XHn0081932;
+        Tue, 1 Dec 2020 13:33:17 +0800 (GMT-8)
+        (envelope-from tesheng@andestech.com)
+Received: from atcfdc88 (10.0.15.120) by ATCPCS16.andestech.com (10.0.1.222)
+ with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Dec 2020 13:32:56 +0800
+Date:   Tue, 1 Dec 2020 13:32:57 +0800
+From:   Eric Lin <tesheng@andestech.com>
+To:     Pekka Enberg <penberg@gmail.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "dslin1010@gmail.com" <dslin1010@gmail.com>,
+        "Alan Quey-Liang Kao(?????????)" <alankao@andestech.com>
+Subject: Re: [PATCH] riscv/mm: Prevent kernel module access user-space memory
+ without uaccess routines
+Message-ID: <20201201053257.GB7647@atcfdc88>
+References: <20201130053037.27006-1-tesheng@andestech.com>
+ <CAOJsxLH-tCyvydX_+djXNMpOAxW2Zr7rAZizLUwQVNyU8YreBg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=977 bulkscore=0
- phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=1
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010036
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=1 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010036
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAOJsxLH-tCyvydX_+djXNMpOAxW2Zr7rAZizLUwQVNyU8YreBg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.0.15.120]
+X-DNSRBL: 
+X-MAIL: ATCSQR.andestech.com 0B15XHn0081932
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 30, 2020 at 04:07:03PM +0800, Pekka Enberg wrote:
 
-Randy,
+Hi Pekka,
+> On Mon, Nov 30, 2020 at 7:33 AM Eric Lin <tesheng@andestech.com> wrote:
+> >
+> > In the page fault handler, an access to user-space memory
+> > without get/put_user() or copy_from/to_user() routines is
+> > not resolved properly. Like arm and other architectures,
+> > we need to let it die earlier in page fault handler.
+> 
+> Fix looks good to me. Can you elaborate on how you found the issue and
+> how the bug manifests itself?
 
-> The SCSI_BNX2_ISCSI kconfig symbol selects CNIC and CNIC selects UIO,
-> which depends on MMU.  Since 'select' does not follow dependency
-> chains, add the same MMU dependency to SCSI_BNX2_ISCSI.
+OK, I'll elaborate more on the commit message.
 
-Applied to 5.11/scsi-staging, thanks!
+> 
+> >
+> > Signed-off-by: Eric Lin <tesheng@andestech.com>
+> > Cc: Alan Kao <alankao@andestech.com>
+> > ---
+> >  arch/riscv/mm/fault.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> > index 3c8b9e433c67..a452cfa266a2 100644
+> > --- a/arch/riscv/mm/fault.c
+> > +++ b/arch/riscv/mm/fault.c
+> > @@ -232,6 +232,9 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+> >         if (user_mode(regs))
+> >                 flags |= FAULT_FLAG_USER;
+> >
+> > +       if (!user_mode(regs) && addr < TASK_SIZE && unlikely(!(regs->status & SR_SUM)))
+> > +               die(regs, "Accessing user space memory without uaccess routines\n");
+> 
+> Let's introduce a die_kernel_fault() helper (similar to arm64, for
+> example) to ensure same semantics for the different kernel faults. You
+> can extract the helper from no_context().
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+OK, I'll add a die_kernel_fault() helper function in v2.
+
+Thanks for your review.
+
+> 
+> > +
+> >         perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
+> >
+> >         if (cause == EXC_STORE_PAGE_FAULT)
+> > --
+> > 2.17.0
+> >
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
