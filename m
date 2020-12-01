@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2012C97D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABCA2C97DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbgLAHG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:06:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgLAHG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:06:58 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93289C0613CF;
-        Mon, 30 Nov 2020 23:06:18 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id d77so54886pfd.2;
-        Mon, 30 Nov 2020 23:06:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q1SvftNK3zi/hMGb+K8LgTI3L4X8qWPNkvVjZfh/PF4=;
-        b=uCeo1u1iPqDk0zo/Oo9m+EeB+yHWn7q/buUrmGWP93MAZRNIpvIvoGVyNWzBAjiLE7
-         D+VuEPK7EVOPY/xFi+WvXq012S2zumlGYVI7DkPUW4USj4ICby8+9eyTGpXmUoidN5et
-         YODYRi6XCIkp7AO5Ksvfdr3sdOuCI0cbiD4bp1bSbqz8ei1JwoJbsb0IU6LWnj++zrt5
-         K0a6fkryMSUVBFUazj3R6HmD9OPZ1JY2pfGb7fU+WEDyFGzxEV8ygEyyb6jT596t4lPg
-         l0QCD9jtmZNjFl1i2FTIQhR0NwYwg5Idffdr01zKK71/Q4JmcBfHzwiBknd18gA9SR1R
-         nANA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q1SvftNK3zi/hMGb+K8LgTI3L4X8qWPNkvVjZfh/PF4=;
-        b=PlTo7uXrTg0QdxnjbIlVUTqBLQmvi0xixKXZhVESfsu3PwK4PJMSOrZN/Np+PPT3fw
-         6iWZsBLDrffEdxt9GA4mtzBnmHTPgZNP7KF2ydw7jzlcD8SMlN0lhMcxE5JCUuBtiGIT
-         q4gwKVgaCsiSCmRsTkOQqi/cZ29vomsaputcYVmCy/5mY5zzFa6gbFME37CnqvwWqXB7
-         XhV+ftRvubdQR/3f4SukJcKAmk9Ip2h8jhEhg5D9r6v6BNn9TGqoEAQsiQWsiVSvYx1B
-         CWHjcuYAHbh9tFV5Sx0o2Q7QProYNTvQaVA2GzUDHGDiCBIH7cjMfoLeTJw420YzEg11
-         iLCg==
-X-Gm-Message-State: AOAM530KdbsP/eyOle1x3FQ/GMFPjssgsAKQNgG0PsoRSZLwSo/7o9r6
-        pR6sZ7Bye5DHXt98lbyhaOy6Lm5dNSg=
-X-Google-Smtp-Source: ABdhPJw0Dix9k/qLw9my/qcvzt+npSJvsk9DPAOx6EXRKRFuanHXphbwCnm0/IJcz7SfkILoKn/qyg==
-X-Received: by 2002:a05:6a00:1647:b029:18b:e825:8a6c with SMTP id m7-20020a056a001647b029018be8258a6cmr1253646pfc.19.1606806378096;
-        Mon, 30 Nov 2020 23:06:18 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id e17sm1363579pfm.155.2020.11.30.23.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 23:06:17 -0800 (PST)
-Date:   Mon, 30 Nov 2020 23:06:15 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Furquan Shaikh <furquan@google.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-input@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] input: raydium_ts_i2c: Do not split tx transactions
-Message-ID: <20201201070615.GT2034289@dtor-ws>
-References: <20201201060050.1193986-1-furquan@google.com>
- <20201201062807.GO2034289@dtor-ws>
- <CAEGmHFGYuM91U+Tvq+YDt180cfHQKnOKMY5ToHZ7v44fOs-_8w@mail.gmail.com>
+        id S1727678AbgLAHLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:11:30 -0500
+Received: from mga03.intel.com ([134.134.136.65]:53468 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgLAHL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 02:11:29 -0500
+IronPort-SDR: rO9fOdvou2bGbH8N7ZQttr2HheNGPFRFQW8zOeHxJlfwjc2bh5uxMwGujkTIpriu9Z14TtJElT
+ dP1Zsdwytv7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172879120"
+X-IronPort-AV: E=Sophos;i="5.78,383,1599548400"; 
+   d="scan'208";a="172879120"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 23:09:48 -0800
+IronPort-SDR: Vn09THofrQN9w7Vq4pwPzYjq94ZZPXk+iWJnCoCMvfl5OF6xgGcr0MUZKXmJ5UlVBupzz5Vitj
+ 9wqIElHxjxJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,383,1599548400"; 
+   d="scan'208";a="480979673"
+Received: from ipu5-build.bj.intel.com (HELO [10.238.232.196]) ([10.238.232.196])
+  by orsmga004.jf.intel.com with ESMTP; 30 Nov 2020 23:09:40 -0800
+Subject: Re: [PATCH 10/18] ipu3-cio2: Rename ipu3-cio2.c to allow module to be
+ built from multiple source files retaining ipu3-cio2 name
+From:   Bingbu Cao <bingbu.cao@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-11-djrscally@gmail.com>
+ <832ce84b-0dba-826b-51c8-90162c2f7ab8@linux.intel.com>
+Message-ID: <7861a56c-8cae-6b23-9ed6-55a11e993edc@linux.intel.com>
+Date:   Tue, 1 Dec 2020 15:07:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEGmHFGYuM91U+Tvq+YDt180cfHQKnOKMY5ToHZ7v44fOs-_8w@mail.gmail.com>
+In-Reply-To: <832ce84b-0dba-826b-51c8-90162c2f7ab8@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:54:46PM -0800, Furquan Shaikh wrote:
-> Hello Dmitry,
-> 
-> On Mon, Nov 30, 2020 at 10:28 PM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
-> >
-> > Hi Furquan,
-> >
-> > On Mon, Nov 30, 2020 at 10:00:50PM -0800, Furquan Shaikh wrote:
-> > > Raydium device does not like splitting of tx transactions into
-> > > multiple messages - one for the register address and one for the
-> > > actual data. This results in incorrect behavior on the device side.
-> > >
-> > > This change updates raydium_i2c_read and raydium_i2c_write to create
-> > > i2c_msg arrays separately and passes those arrays into
-> > > raydium_i2c_xfer which decides based on the address whether the bank
-> > > switch command should be sent. The bank switch header is still added
-> > > by raydium_i2c_read and raydium_i2c_write to ensure that all these
-> > > operations are performed as part of a single I2C transfer. It
-> > > guarantees that no other transactions are initiated to any other
-> > > device on the same bus after the bank switch command is sent.
-> >
-> > i2c_transfer locks the bus [segment] for the entire time, so this
-> > explanation on why the change is needed does not make sense.
-> 
-> The actual problem is with raydium_i2c_write chopping off the write
-> data into 2 messages -- one for register address and other for actual
-> data. Raydium devices do not like that. Hence, this change to ensure
-> that the register address and actual data are packaged into a single
-> message. The latter part of the above comment attempts to explain why
-> the bank switch message is added to xfer[] array in raydium_i2c_read
-> and raydium_i2c_write instead of sending a separate message in
-> raydium_i2c_xfer i.e. to ensure that the read/write xfer and bank
-> switch are sent to i2c_transfer as a single array of messages so that
-> they can be handled as an atomic operation from the perspective of
-> communication with this device on the bus.
+On 12/1/20 2:56 PM, Bingbu Cao wrote:
+> I see there will be multiple files, but there will be no conflict if keep as the main
+> file name unchanged, right? If so, I prefer keep as it was.
 
-OK, I see.
+Oops, I notice you try to build all the files into single module, so please ignore my
+comment above.
 
 > 
-> >
-> > Also, does it help if you mark the data message as I2C_M_NOSTART in case
-> > of writes?
+> On 11/30/20 9:31 PM, Daniel Scally wrote:
+>> ipu3-cio2 driver needs extending with multiple files; rename the main
+>> source file and specify the renamed file in Makefile to accommodate that.
+>>
+>> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+>> ---
+>> Changes since RFC v3:
+>>
+>> 	- None
+>>
+>>  drivers/media/pci/intel/ipu3/Makefile                          | 2 ++
+>>  drivers/media/pci/intel/ipu3/{ipu3-cio2.c => ipu3-cio2-main.c} | 0
+>>  2 files changed, 2 insertions(+)
+>>  rename drivers/media/pci/intel/ipu3/{ipu3-cio2.c => ipu3-cio2-main.c} (100%)
+>>
+>> diff --git a/drivers/media/pci/intel/ipu3/Makefile b/drivers/media/pci/intel/ipu3/Makefile
+>> index 98ddd5beafe0..429d516452e4 100644
+>> --- a/drivers/media/pci/intel/ipu3/Makefile
+>> +++ b/drivers/media/pci/intel/ipu3/Makefile
+>> @@ -1,2 +1,4 @@
+>>  # SPDX-License-Identifier: GPL-2.0-only
+>>  obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2.o
+>> +
+>> +ipu3-cio2-y += ipu3-cio2-main.o
+>> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.c b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
+>> similarity index 100%
+>> rename from drivers/media/pci/intel/ipu3/ipu3-cio2.c
+>> rename to drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
+>>
 > 
-> That is a great suggestion. I think this would be helpful in this
-> scenario. Let me follow-up on this to see if it helps with the current
-> problem.
-> 
-> >
-> > I also wonder if we should convert the driver to regmap, which should
-> > help with handling the bank switch as well as figuring out if it can do
-> > "gather write" or fall back to allocating an additional send buffer.
-> 
-> I will start with the above suggestion and fallback to this if that
-> doesn't work.
-
-So my understanding is that not all I2C adapters support I2C_M_NOSTART
-so that is why regmap is nice as it hides it all away and figures things
-on its own.
-
-So simple solution of I2C_M_NOSTART might be a quick fix for Chrome OS
-kernel, but we'd either need to always use more expensive 2nd buffer as
-is in your patch, or regmap.
-
-Thanks.
 
 -- 
-Dmitry
+Best regards,
+Bingbu Cao
