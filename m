@@ -2,92 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76D92C9BC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4322C9C5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389901AbgLAJMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:12:00 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:42849 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389562AbgLAJLs (ORCPT
+        id S2390377AbgLAJRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:17:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389873AbgLAJLx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:11:48 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kk1gY-003MrK-Et; Tue, 01 Dec 2020 10:10:58 +0100
-Received: from p57bd9091.dip0.t-ipconnect.de ([87.189.144.145] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kk1gX-000Ce2-UF; Tue, 01 Dec 2020 10:10:58 +0100
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-References: <20201101170454.9567-1-rppt@kernel.org>
- <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
- <20201117062316.GB370813@kernel.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
-Date:   Tue, 1 Dec 2020 10:10:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 1 Dec 2020 04:11:53 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D173C0613D2;
+        Tue,  1 Dec 2020 01:11:13 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Clbth4xPPz9sW4;
+        Tue,  1 Dec 2020 20:11:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606813869;
+        bh=V2oVLU7Ya8T1FEbPhjvbw0g0LWUsablXABJKhT4Kzbk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LhIgp8E0q4gIucbZRK1uQkuvu/ua0oZ67pa67HWUINZN1VKu8aOkAWbBSEJl+8wO2
+         nVF8DiGxVOiy023Z014p0m3n8lZWK5louusNA3ulz8flG5sWVQEiCnpbv5X8D/THu1
+         fuPFPUreNUAlphbqYb7VATVPb55iOLKMoISa4T2FTm+7UHjK3MT6xc0r+3YI+g/m7n
+         Tf4RgohMlAAblqymqxoOcdagrk91xs13GJGanYbrmBN/0odVGCaBnu3CMrj/YccXCI
+         r8AD2qAkJdjfn6pDEZaQDy8U565rGWWTvavOO1inhAbIXUNvoZr8CSMOBXDwH+rqNf
+         XRYszY0qQuZkw==
+Date:   Tue, 1 Dec 2020 20:11:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Soheil Hassas Yeganeh <soheil@google.com>
+Subject: linux-next: manual merge of the akpm tree with the bpf-next tree
+Message-ID: <20201201201106.3ab8fbce@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201117062316.GB370813@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.144.145
+Content-Type: multipart/signed; boundary="Sig_/Gaz1/bh1l39mvpyLfdfqLGw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike!
+--Sig_/Gaz1/bh1l39mvpyLfdfqLGw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 11/17/20 7:23 AM, Mike Rapoport wrote:
->> Apologies for the late reply. Is this still relevant for testing?
->>
->> I have already successfully tested v1 of the patch set, shall I test v2?
-> 
-> There were minor differences only for m68k between the versions. I've
-> verified them on ARAnyM but if you have a real machine a run there would
-> be nice.
+Hi all,
 
-I have just built a fresh kernel from the tip of Linus' tree and it boots
-fine on my RX-2600:
+Today's linux-next merge of the akpm tree got a conflict in:
 
-root@glendronach:~# uname -a
-Linux glendronach 5.10.0-rc6 #6 SMP Tue Dec 1 04:52:49 CET 2020 ia64 GNU/Linux
-root@glendronach:~#
+  fs/eventpoll.c
 
-No issues observed so far. Looking at the git log, it seems these changes haven't
-been merged for 5.10 yet. I assume they will be coming with 5.11?
+between commits:
 
-Adrian
+  7fd3253a7de6 ("net: Introduce preferred busy-polling")
+  7c951cafc0cb ("net: Add SO_BUSY_POLL_BUDGET socket option")
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+from the bpf-next tree and commit:
 
+  cc2687004c9d ("epoll: simplify and optimize busy loop logic")
+
+from the akpm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/eventpoll.c
+index a80a290005c4,88f5b26806e5..000000000000
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@@ -393,15 -395,19 +395,20 @@@ static bool ep_busy_loop(struct eventpo
+  {
+  	unsigned int napi_id =3D READ_ONCE(ep->napi_id);
+ =20
+- 	if ((napi_id >=3D MIN_NAPI_ID) && net_busy_loop_on())
++ 	if ((napi_id >=3D MIN_NAPI_ID) && net_busy_loop_on()) {
+ -		napi_busy_loop(napi_id, nonblock ? NULL : ep_busy_loop_end, ep);
+ +		napi_busy_loop(napi_id, nonblock ? NULL : ep_busy_loop_end, ep, false,
+ +			       BUSY_POLL_BUDGET);
+- }
+-=20
+- static inline void ep_reset_busy_poll_napi_id(struct eventpoll *ep)
+- {
+- 	if (ep->napi_id)
++ 		if (ep_events_available(ep))
++ 			return true;
++ 		/*
++ 		 * Busy poll timed out.  Drop NAPI ID for now, we can add
++ 		 * it back in when we have moved a socket with a valid NAPI
++ 		 * ID onto the ready list.
++ 		 */
+  		ep->napi_id =3D 0;
++ 		return false;
++ 	}
++ 	return false;
+  }
+ =20
+  /*
+
+--Sig_/Gaz1/bh1l39mvpyLfdfqLGw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/GCKoACgkQAVBC80lX
+0GzrkAf/XHydBRC0Cy49lYG5Rk9J0M4sT9MUOuRmLut4KQauDrIW3wh4gD9W2Lgg
+io+WtsselVsi7HSS0jXmOsq9DARsS4tF2y6Ec/t+FLRjBfTKDjBQPvrixIpzEmE1
+Ym6h48+62dDHzH2swol/sPRfmEU4LeH89y9uxwrE4LNH94KycQwL0otHfOnuuOdl
+14IkmIHdzW0G+DdxUlcm5eULpH+S45/0QHamcq9ni5+DPLAKvka0Gh37l+/qx+jJ
+5U5x6YaL89OpO7/ama7yr1dEYpk2GC2t3nKJ1wFDsaxOy91ykGJbNFARMU6iPvr1
+Au3m2DCIvqts708x6liO/igSoNtApg==
+=l2DX
+-----END PGP SIGNATURE-----
+
+--Sig_/Gaz1/bh1l39mvpyLfdfqLGw--
