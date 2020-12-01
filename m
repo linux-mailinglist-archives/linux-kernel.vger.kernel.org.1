@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09182C9696
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1CA2C9694
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgLAEpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 23:45:33 -0500
-Received: from m42-5.mailgun.net ([69.72.42.5]:37648 "EHLO m42-5.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728202AbgLAEpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 23:45:33 -0500
-X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Nov 2020 23:45:32 EST
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606797907; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TLtwrpKiu92S9nqp5k7/JViYA+Gv4RHwKqws+WomKeI=;
- b=SITwF5mz7SSE4ObO7+w2v3RZbdG5tRIQbE2DaP6GrJp55o3m736V//n3cRkoYS2CRNDegjHf
- QisZXN59X9OtNVBf6nsXuICOR0Oa+fxInI3O5vw0MZlkuolT+rmVkF9S0Xx8nTMGSrva6SXa
- Vh51k3XkGT/VFSA6r2gyKq4bTEU=
-X-Mailgun-Sending-Ip: 69.72.42.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5fc5c8d51f6054cb8d7d1513 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 04:38:45
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 53D9FC43462; Tue,  1 Dec 2020 04:38:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C3EBC433ED;
-        Tue,  1 Dec 2020 04:38:43 +0000 (UTC)
+        id S1728481AbgLAEnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 23:43:40 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:55230 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728229AbgLAEnk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 23:43:40 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14ZP8u101667;
+        Tue, 1 Dec 2020 04:42:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=mWRHIlJyWznLHPBoX5SJAPxO+7J8JHTpfQ/+PEr3Ho4=;
+ b=FcIwGc2lbgbrAEhRj3rJGzpgirc3heCzMoykd14V6Xm37n5uptq60oacZkdJHkAfljFA
+ 00X3NlhztmVdauLNRclvIZLNzgWVHz7ay7U2QW7IDYxJQqgvR3l4dYDvsNWQ6S75ReVs
+ RXthP88Lr8QW6b/7WDQ7cZf+w1JIfUsXeojYZB1/cybCIlRiFCOz72MWeVXdjt3ODEG6
+ VE7OUV12CDZvJPBcxpYYS8Pv7YyWbdX8VYMeejZc6ThVDi/F26sCR+n0C4U50ot4nv+M
+ Nr2f5bTcSQKrk3sc39Pv7OsEAKf62sHPpXDaMKr9ur5jqbGDbY5b3CdyNtQ4JYam3jvw lA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 353dyqgj4y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 04:42:52 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14ZIY5010286;
+        Tue, 1 Dec 2020 04:42:51 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 3540fw9v3b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 04:42:51 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B14goWP006521;
+        Tue, 1 Dec 2020 04:42:50 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 20:42:49 -0800
+To:     John Garry <john.garry@huawei.com>
+Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 0/3] hisi_sas: A small bunch of misc patches
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1r1oai1dn.fsf@ca-mkp.ca.oracle.com>
+References: <1606207594-196362-1-git-send-email-john.garry@huawei.com>
+Date:   Mon, 30 Nov 2020 23:42:46 -0500
+In-Reply-To: <1606207594-196362-1-git-send-email-john.garry@huawei.com> (John
+        Garry's message of "Tue, 24 Nov 2020 16:46:31 +0800")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 01 Dec 2020 10:08:43 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dmitry.baryshkov@linaro.org
-Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: sm8250: Add support for LLCC
- block
-In-Reply-To: <20201130093924.45057-3-manivannan.sadhasivam@linaro.org>
-References: <20201130093924.45057-1-manivannan.sadhasivam@linaro.org>
- <20201130093924.45057-3-manivannan.sadhasivam@linaro.org>
-Message-ID: <ffd62c419433562f1f61ddf0c4e145b3@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010031
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=1 lowpriorityscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-30 15:09, Manivannan Sadhasivam wrote:
-> Add support for Last Level Cache Controller (LLCC) in SM8250 SoC.
-> This LLCC is used to provide common cache memory pool for the cores in
-> the SM8250 SoC thereby minimizing the percore caches.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 65acd1f381eb..118b6bb29ebc 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -1758,6 +1758,12 @@ usb_1_dwc3: dwc3@a600000 {
->  			};
->  		};
-> 
-> +		system-cache-controller@9200000 {
-> +			compatible = "qcom,sm8250-llcc";
-> +			reg = <0 0x09200000 0 0x1d0000>, <0 0x09600000 0 0x50000>;
-> +			reg-names = "llcc_base", "llcc_broadcast_base";
-> +		};
-> +
->  		usb_2: usb@a8f8800 {
->  			compatible = "qcom,sm8250-dwc3", "qcom,dwc3";
->  			reg = <0 0x0a8f8800 0 0x400>;
 
-Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+John,
+
+> This series contains a small bunch of patches for the driver, including:
+> - Fix-up on error paths for v3 hw driver
+> - Relocate as much debugfs code as possible to v3 hw driver since
+>   no other hw drivers support it
+> - A small tidy-up patch
+
+Applied to 5.11/scsi-staging, thanks!
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Martin K. Petersen	Oracle Linux Engineering
