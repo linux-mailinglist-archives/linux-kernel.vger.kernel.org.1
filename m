@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725BF2C9C54
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734A42C9B54
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390096AbgLAJRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:17:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50142 "EHLO mail.kernel.org"
+        id S2389129AbgLAJHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389929AbgLAJMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:12:09 -0500
+        id S2389028AbgLAJE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:04:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A988122210;
-        Tue,  1 Dec 2020 09:11:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EA19221EB;
+        Tue,  1 Dec 2020 09:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813889;
-        bh=biJyByNtqt9R7tDM/ysdUIZVpLb/qN50NEwQCDriDsM=;
+        s=korg; t=1606813482;
+        bh=OVMWgln4or0cDJzFDwpO29MW4EsuAXvwB+vwDWbmbG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ReQXtFLvZyK/2Qx0vtpnpTeTgNyk0kxhXr4Q767PiLUEV2+hVkyuv57RZJiAfQdqX
-         Z9JWLTYCZ61ay2/VrEcFgxYHn0qMPfLCCFXHIqmUMthW1KLisvHm5wBtfibSsxe6ji
-         mCaeNWWTqsE597nkuAgTwisDP4YSv9U4soG9xM/Y=
+        b=cWXcdiuN+8E4MtrUyp9CWstYd6rw7DTaej+LIlVOO55eoJhooda/TUJWFHHM6I8Dr
+         3ztuH1ieCUYwU4JWgC3ltBR1ayfMULeI9N1NRwjdqSzZgcgZ6bAcQ3q2NnAG/0ZGCs
+         QiRuZGP2iN7V2CAA07WVPFmoVeyhDZ300ZCWuTVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Michael Chan <michael.chan@broadcom.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 095/152] s390/qeth: make af_iucv TX notification call more robust
+Subject: [PATCH 5.4 53/98] bnxt_en: Release PCI regions when DMA mask setup fails during probe.
 Date:   Tue,  1 Dec 2020 09:53:30 +0100
-Message-Id: <20201201084724.313826228@linuxfoundation.org>
+Message-Id: <20201201084657.701397651@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit 34c7f50f7d0d36fa663c74aee39e25e912505320 ]
+[ Upstream commit c54bc3ced5106663c2f2b44071800621f505b00e ]
 
-Calling into socket code is ugly already, at least check whether we are
-dealing with the expected sk_family. Only looking at skb->protocol is
-bound to cause troubles (consider eg. af_packet).
+Jump to init_err_release to cleanup.  bnxt_unmap_bars() will also be
+called but it will do nothing if the BARs are not mapped yet.
 
-Fixes: b333293058aa ("qeth: add support for af_iucv HiperSockets transport")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Link: https://lore.kernel.org/r/1605858271-8209-1-git-send-email-michael.chan@broadcom.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/net/qeth_core_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
-index 6a73982514237..f22e3653da52d 100644
---- a/drivers/s390/net/qeth_core_main.c
-+++ b/drivers/s390/net/qeth_core_main.c
-@@ -32,6 +32,7 @@
- 
- #include <net/iucv/af_iucv.h>
- #include <net/dsfield.h>
-+#include <net/sock.h>
- 
- #include <asm/ebcdic.h>
- #include <asm/chpid.h>
-@@ -1408,7 +1409,7 @@ static void qeth_notify_skbs(struct qeth_qdio_out_q *q,
- 	skb_queue_walk(&buf->skb_list, skb) {
- 		QETH_CARD_TEXT_(q->card, 5, "skbn%d", notification);
- 		QETH_CARD_TEXT_(q->card, 5, "%lx", (long) skb);
--		if (skb->protocol == htons(ETH_P_AF_IUCV) && skb->sk)
-+		if (skb->sk && skb->sk->sk_family == PF_IUCV)
- 			iucv_sk(skb->sk)->sk_txnotify(skb, notification);
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index d8e1d7a9196cd..7c8187d386756 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -10827,7 +10827,7 @@ static int bnxt_init_board(struct pci_dev *pdev, struct net_device *dev)
+ 	    dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
+ 		dev_err(&pdev->dev, "System does not support DMA, aborting\n");
+ 		rc = -EIO;
+-		goto init_err_disable;
++		goto init_err_release;
  	}
- }
+ 
+ 	pci_set_master(pdev);
 -- 
 2.27.0
 
