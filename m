@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855B62C9CDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49ECA2C9D79
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgLAJDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:03:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39902 "EHLO mail.kernel.org"
+        id S1729560AbgLAJXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:23:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729326AbgLAJCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:02:46 -0500
+        id S2388615AbgLAJGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B9052223F;
-        Tue,  1 Dec 2020 09:02:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10AAF20671;
+        Tue,  1 Dec 2020 09:06:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813325;
-        bh=YzXtEo56Ux0ugtyP4gSSkJ8sPROLpbO729eQ48puBqM=;
+        s=korg; t=1606813578;
+        bh=Z0sBvT0EL6CU55gckHLrogO86kVHb6i9O8ryaExbsL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JY+hQCgensNRCeAf2DUsVM9uE/y3ruS7OABrvq1tSOqQEZkakpjZpaoUC7gwOzHKk
-         8nnaVZ5AzY0YzKdAgV/+u80rx3qvzXi2kwTdBRf0cFtUbSq4pCe05xbZ9DkJhJqk10
-         NC48C1LWQU3pf4630Vm6btmK62OADrF7iabnzNWM=
+        b=GZ5RFX1qv1ow0kQ/SCZxPk/2tHZFyQKEXO6usgekd2R2/mrPfGoM3EabRTraKUHua
+         KxwPHj1QGBNlgk+72pXfdiWQGLR8J3rdhpJ7Pk5PxFlO5ycrwrClkMeD9uPX3V2T03
+         DWxlYiBDH9EtHehI3MWxgE5+z0VxB2iWO3slOX0s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexander Chalikiopoulos <bugzilla.kernel.org@mrtoasted.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 57/57] USB: core: Fix regression in Hercules audio card
-Date:   Tue,  1 Dec 2020 09:54:02 +0100
-Message-Id: <20201201084651.909089474@linuxfoundation.org>
+        Gabriele Paoloni <gabriele.paoloni@intel.com>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH 5.4 86/98] x86/mce: Do not overwrite no_way_out if mce_end() fails
+Date:   Tue,  1 Dec 2020 09:54:03 +0100
+Message-Id: <20201201084659.257135691@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Gabriele Paoloni <gabriele.paoloni@intel.com>
 
-commit 184eead057cc7e803558269babc1f2cfb9113ad1 upstream
+commit 25bc65d8ddfc17cc1d7a45bd48e9bdc0e729ced3 upstream.
 
-Commit 3e4f8e21c4f2 ("USB: core: fix check for duplicate endpoints")
-aimed to make the USB stack more reliable by detecting and skipping
-over endpoints that are duplicated between interfaces.  This caused a
-regression for a Hercules audio card (reported as Bugzilla #208357),
-which contains such non-compliant duplications.  Although the
-duplications are harmless, skipping the valid endpoints prevented the
-device from working.
+Currently, if mce_end() fails, no_way_out - the variable denoting
+whether the machine can recover from this MCE - is determined by whether
+the worst severity that was found across the MCA banks associated with
+the current CPU, is of panic severity.
 
-This patch fixes the regression by adding ENDPOINT_IGNORE quirks for
-the Hercules card, telling the kernel to ignore the invalid duplicate
-endpoints and thereby allowing the valid endpoints to be used as
-intended.
+However, at this point no_way_out could have been already set by
+mca_start() after looking at all severities of all CPUs that entered the
+MCE handler. If mce_end() fails, check first if no_way_out is already
+set and, if so, stick to it, otherwise use the local worst value.
 
-Fixes: 3e4f8e21c4f2 ("USB: core: fix check for duplicate endpoints")
-CC: <stable@vger.kernel.org>
-Reported-by: Alexander Chalikiopoulos <bugzilla.kernel.org@mrtoasted.com>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20201119170040.GA576844@rowland.harvard.edu
+ [ bp: Massage. ]
+
+Signed-off-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201127161819.3106432-2-gabriele.paoloni@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[sudip: use usb_endpoint_blacklist and USB_QUIRK_ENDPOINT_BLACKLIST]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/usb/core/quirks.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/kernel/cpu/mce/core.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -348,6 +348,10 @@ static const struct usb_device_id usb_qu
- 	/* Guillemot Webcam Hercules Dualpix Exchange*/
- 	{ USB_DEVICE(0x06f8, 0x3005), .driver_info = USB_QUIRK_RESET_RESUME },
- 
-+	/* Guillemot Hercules DJ Console audio card (BZ 208357) */
-+	{ USB_DEVICE(0x06f8, 0xb000), .driver_info =
-+			USB_QUIRK_ENDPOINT_BLACKLIST },
-+
- 	/* Midiman M-Audio Keystation 88es */
- 	{ USB_DEVICE(0x0763, 0x0192), .driver_info = USB_QUIRK_RESET_RESUME },
- 
-@@ -525,6 +529,8 @@ static const struct usb_device_id usb_am
-  * Matched for devices with USB_QUIRK_ENDPOINT_BLACKLIST.
-  */
- static const struct usb_device_id usb_endpoint_blacklist[] = {
-+	{ USB_DEVICE_INTERFACE_NUMBER(0x06f8, 0xb000, 5), .driver_info = 0x01 },
-+	{ USB_DEVICE_INTERFACE_NUMBER(0x06f8, 0xb000, 5), .driver_info = 0x81 },
- 	{ USB_DEVICE_INTERFACE_NUMBER(0x0926, 0x0202, 1), .driver_info = 0x85 },
- 	{ USB_DEVICE_INTERFACE_NUMBER(0x0926, 0x0208, 1), .driver_info = 0x85 },
- 	{ }
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1361,8 +1361,10 @@ void do_machine_check(struct pt_regs *re
+ 	 * When there's any problem use only local no_way_out state.
+ 	 */
+ 	if (!lmce) {
+-		if (mce_end(order) < 0)
+-			no_way_out = worst >= MCE_PANIC_SEVERITY;
++		if (mce_end(order) < 0) {
++			if (!no_way_out)
++				no_way_out = worst >= MCE_PANIC_SEVERITY;
++		}
+ 	} else {
+ 		/*
+ 		 * If there was a fatal machine check we should have
 
 
