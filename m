@@ -2,149 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893EB2CAE60
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8532CAE62
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388536AbgLAV3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:29:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48876 "EHLO mail.kernel.org"
+        id S1728676AbgLAVab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:30:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388128AbgLAV3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:29:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727156AbgLAVaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 16:30:30 -0500
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 477C920870;
-        Tue,  1 Dec 2020 21:28:49 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 16:28:47 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>, davem@davemloft.net,
-        dsahern@kernel.org, gregkh@linuxfoundation.org, kuba@kernel.org,
-        liuhangbin@gmail.com, tj@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2] mm: mmap_lock: fix use-after-free race and css ref
- leak in tracepoints
-Message-ID: <20201201162847.654f3013@gandalf.local.home>
-In-Reply-To: <20201201203249.4172751-1-axelrasmussen@google.com>
-References: <20201201203249.4172751-1-axelrasmussen@google.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1658B208C3;
+        Tue,  1 Dec 2020 21:29:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606858190;
+        bh=PcL86GGZM0lINkp20VJpuJRunmqO7tMbA8yBSVplGwQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YE/potU5SVfVdae4xB77xhKU9Lzw/ie1rO5kOiNINOZGD1jNsC4lu1TyVBGaAjpd6
+         lli+jfT6dK1sadfE+tW8hF1WfgVY+xAWuunjK3+zMxD0DRknIkDCc9cKRSabmtEITe
+         dyNCy2RHF780vsNfe7TMFY2TdKrfaAU7WtyefcE8=
+Received: by mail-oi1-f169.google.com with SMTP id s18so3421772oih.1;
+        Tue, 01 Dec 2020 13:29:50 -0800 (PST)
+X-Gm-Message-State: AOAM532rKM2B9MNGRPW37ENtk8dKIddcdigSzbLFLRWIlMcs/d5ppXzz
+        /kBTgdCH6zKfeS5k0RNPA0KzL+EnnG7rHk4IABY=
+X-Google-Smtp-Source: ABdhPJynUVrnm5jNymCZyz7FpjcNdUGYN5fLNI0BtT9fOXVbhBkozziYwKXo69NsTQsNQCg0w2e4UvNOMdosOAg9dCM=
+X-Received: by 2002:aca:5ec2:: with SMTP id s185mr3103969oib.33.1606858189293;
+ Tue, 01 Dec 2020 13:29:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201201210349.7f617c65@canb.auug.org.au> <6a11bb20-2e3b-e106-8030-019580d176b1@infradead.org>
+In-Reply-To: <6a11bb20-2e3b-e106-8030-019580d176b1@infradead.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 1 Dec 2020 22:29:38 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFiv64fCs8yxm-Z3fktKGcOgWHCdbWrc_921mcx=_54vg@mail.gmail.com>
+Message-ID: <CAMj1kXFiv64fCs8yxm-Z3fktKGcOgWHCdbWrc_921mcx=_54vg@mail.gmail.com>
+Subject: Re: linux-next: Tree for Dec 1 [crypto/aegis128.ko]
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ondrej Mosnacek <omosnacek@gmail.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  1 Dec 2020 12:32:49 -0800
-Axel Rasmussen <axelrasmussen@google.com> wrote:
+On Tue, 1 Dec 2020 at 20:53, Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 12/1/20 2:03 AM, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > Changes since 20201130:
+> >
+>
+> on i386 or x86_64:
+>
+> CONFIG_CRYPTO_AEGIS128=m
+> CONFIG_CRYPTO_AEGIS128_AESNI_SSE2=y
+>
+>
+> ERROR: modpost: "crypto_aegis128_update_simd" [crypto/aegis128.ko] undefined!
+>
 
-> +/* Called with reg_lock held. */
+Fix posted here.
+https://lore.kernel.org/linux-crypto/20201130122620.16640-1-ardb@kernel.org/
 
-The above comment is reduntant, as the lockdep_is_held() below also suggest
-that it is ;-)
-
-> +static void free_memcg_path_bufs(void)
-> +{
-> +	int cpu;
-> +	char *old;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		old = rcu_dereference_protected(per_cpu(memcg_path_buf, cpu),
-> +						lockdep_is_held(&reg_lock));
-> +		if (old == NULL)
-> +			break;
-
-Hmm, what if the topology of the system has missing CPU numbers (this is
-possible I believe on some systems)?
-
-> +		rcu_assign_pointer(per_cpu(memcg_path_buf, cpu), NULL);
-> +		/* Wait for inflight memcg_path_buf users to finish. */
-> +		synchronize_rcu();
-
-Please break this up into two loops. You will need to have another array
-that is created in trace_mmap_lock_reg() function:
-
-static char **path_holders;
-
-trace_mmap_lock_reg()
-{
-[..]
-	path_holders = kmalloc(num_possible_cpus * sizeof(*path_holders));
-[..]
-}
-
-Then this function can be:
-
-static void free_memcg_path_bufs(void)
-{
-	int cpu;
-
-	for_each_possible_cpu(cpu) {
-		path_holders[cpu] = rcu_dereference_protected(per_cpu(memcg_path_buf, cpu),
-						lockdep_is_held(&reg_lock));
-		rcu_assign_pointer(per_cpu(memcg_path_buf, cpu), NULL);
-	}
-
-	/* Wait for inflight memcg_path_buf users to finish. */
-	synchronize_rcu();
-
-	for_each_possible_cpu(cpu) {
-		kfree(path_holders[cpu]);
-	}
-
-	kfree(path_holders);
-	path_holders = NULL;
-}
-
-Otherwise, if you have a machine with 128 possible CPUs, doing 128
-synchronize_rcu()s is going to be expensive!
-
-> +		kfree(old);
-> +	}
-> +}
->  
-
-
->  static inline char *get_memcg_path_buf(void)
->  {
-> +	char *buf;
->  	int idx;
->  
-> +	rcu_read_lock();
-
-The caller of get_mm_memcg_path() has preemption disabled, which is also
-now an RCU lock. So the rcu_read_lock() is somewhat redundant.
-
-Oh, and looking at the original patch:
-
-+                                      memcg_path != NULL ? memcg_path : "",   \
-
-The above could be shorten to:
-
-					memcg_path ? : "",
-
-As gcc has a trick with the "? :" which is if there's nothing in between
-the "?" and ":" it will use what was tested as the result if it is not zero
-or NULL.
-
--- Steve
-
-> +	buf = rcu_dereference(*this_cpu_ptr(&memcg_path_buf));
-> +	if (buf == NULL)
-> +		return NULL;
->  	idx = this_cpu_add_return(memcg_path_buf_idx, MEMCG_PATH_BUF_SIZE) -
->  	      MEMCG_PATH_BUF_SIZE;
-> -	return &this_cpu_read(memcg_path_buf)[idx];
-> +	return &buf[idx];
->  }
+Which compiler version are you using? This does not reproduce for me
+with GCC 7.5.0
