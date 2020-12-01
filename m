@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BE52CA2FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F2A2CA2FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731072AbgLAMmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:42:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbgLAMmc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:42:32 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB030C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:41:45 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id n18so514721ual.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:41:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v43BG8WdmWcru6537pQrqF+UFky2hIVmNYym4F7zcys=;
-        b=pGSpIf1ZUnp/ObvsAXOZwAFXdIH0M5a7ClfrjwfFm0yfyM1SGO61i8H7bdwHdvByGF
-         712YrLSz29NNtaxRRjpMS9ZbBICzmZZLnSrSGtbCFsQX8f2zh6pQoKNhCmAPFUWIPyKF
-         rHI7FJ5uJUrhU/OvjudNu2VmwEsVMsTRnGEH7/neChuMm7vJPbGexsxrr2aJx2JKehVc
-         8Z55l9Bq5Zbx50SgMmOmHyf7utUSyK5cM5OPdYtT25Ya8B7PEBxm4EQiDWaw0qvkDzbk
-         IgZZ1ubcYue4LH5EqPqDhP3Kv+Vm4ITfaLMSZ4uiJvn026//DqU1K0jjyl2OxUtKIpXR
-         FLpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v43BG8WdmWcru6537pQrqF+UFky2hIVmNYym4F7zcys=;
-        b=Pse4cH5azZ0MjrC8d3N3G4hGXtHQv8O6b7FzNEG010rVpg5jMQeooS382qK4ZowVny
-         gE6BjMZnwj+pYpcpse4nvMZYHwXLzMWREUsUuj6F/ypjp2RIUnKCl0fOATVrgAorD0sy
-         dzTNS5/tsdacHytopcmzIOnttKed+jV9bmHnEkgRVc3hUF/w0DWFxvTuxfwLreCd+anS
-         FI532W3MqC657MJELzGtt7lkLFRQKCbSPelAJNMnn0m4ybwc9StQ/luePtqyPT7xOlgS
-         cWC47V1bVnHvuf/lHu3jwE9t9xxGq3oEzV9A/q/WupE3RhPSWMGIVqJoDxUofRE1xuMe
-         gxJA==
-X-Gm-Message-State: AOAM533INjUyXzdMIbZgjl1VVV74GXwXz0X5Yh3fcwcGyY1mX6G/vxmv
-        scAUTVgxNeQxDk6gtw3pscmDcRnRPLdxtTPC6rjfdpXotm8=
-X-Google-Smtp-Source: ABdhPJx7/9m5qfZKrRGotGWEfjI20997wgUO0Nj77ZMeYLf3xBqE/PcapQUroLqXNt26KQBHIpm7WfXEIrBCKaPXaoE=
-X-Received: by 2002:ab0:281a:: with SMTP id w26mr2358094uap.49.1606826504834;
- Tue, 01 Dec 2020 04:41:44 -0800 (PST)
+        id S1731061AbgLAMma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:42:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54614 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727055AbgLAMm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:42:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 81DBCACC4;
+        Tue,  1 Dec 2020 12:41:47 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 12:41:44 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        qianjun.kernel@gmail.com, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH 3/6] sched: make struct sched_statistics independent of
+ fair sched class
+Message-ID: <20201201124144.GT3306@suse.de>
+References: <20201201115416.26515-1-laoar.shao@gmail.com>
+ <20201201115416.26515-4-laoar.shao@gmail.com>
 MIME-Version: 1.0
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com> <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com>
-In-Reply-To: <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 1 Dec 2020 07:41:33 -0500
-Message-ID: <CAGngYiVoj4Gpid5W10pJfiE1FWY=294TJ4fE=CDG4=HwH0WrJw@mail.gmail.com>
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201201115416.26515-4-laoar.shao@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 4:04 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
->
-> Then it should not have been applied to mainline but fully worked out and tested.
->
+On Tue, Dec 01, 2020 at 07:54:13PM +0800, Yafang Shao wrote:
+> If we want to use schedstats facility, we should move out of
+> struct sched_statistics from the struct sched_entity or add it into other
+> sctructs of sched entity as well. Obviously the latter one is bad because
+> that requires more spaces. So we should move it into a common struct which
+> can be used by all sched classes.
+> 
+> The struct sched_statistics is the schedular statistics of a task_struct
+> or a task_group. So we can move it into struct task_struct and
+> struct task_group to achieve the goal.
+> 
+> Below is the detailed explaination of the change in the structs.
+> 
+> - Before this patch
+> 
+> struct task_struct {            |-> struct sched_entity {
+>     ...                         |       ...
+>     struct sched_entity *se; ---|       struct sched_statistics statistics;
+>     struct sched_rt_entity *rt;         ...
+>     ...                                 ...
+> };                                  };
+> 
+> struct task_group {             |--> se[0]->statistics : schedstats of CPU0
+>     ...                         |
+>  #ifdef CONFIG_FAIR_GROUP_SCHED |
+>     struct sched_entity **se; --|--> se[1]->statistics : schedstats of CPU1
+>                                 |
+>  #endif                         |
+>                                 |--> se[N]->statistics : schedstats of CPUn
+> 
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+>     struct sched_rt_entity  **rt_se; (N/A)
+>  #endif
+>     ...
+> };
+> 
+> The '**se' in task_group is allocated in the fair sched class, which is
+> hard to be reused by other sched class.
+> 
+> - After this patch
+> 
+> struct task_struct {
+>     ...
+>     struct sched_statistics statistics;
+>     ...
+>     struct sched_entity *se;
+>     struct sched_rt_entity *rt;
+>     ...
+> };
+> 
+> struct task_group {                    |---> stats[0] : of CPU0
+>     ...                                |
+>     struct sched_statistics **stats; --|---> stats[1] : of CPU1
+>     ...                                |
+>                                        |---> stats[n] : of CPUn
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+>     struct sched_entity **se;
+>  #endif
+>  #ifdef CONFIG_RT_GROUP_SCHED
+>     struct sched_rt_entity  **rt_se;
+>  #endif
+>     ...
+> };
+> 
+> After the patch it is clearly that both of se or rt_se can easily get the
+> sched_statistics by a task_struct or a task_group.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-That would be a reasonable expectation of a product. But Linux
-isn't a product, it's a hugely complex, shared system, which may
-form the basis of your product. The core maintainers aren't
-superhuman, nor do they have access to the 1000s of configurations
-and devices where Linux runs or will run. They do their very best,
-but if every change had to be 100% tested in every possible
-configuration, then few things could ever change, and Linux
-would slow down to a snail's pace.
+I didn't see anything wrong as such, it's mostly a mechanical
+conversion. The one slight caveat is the potential change in cache
+location for the statistics but it's not necessarily negative. The stats
+potentially move to a different cache line but it's less obvious whether
+that even matters given the location is very similar.
 
-When your product is based on Linux and you pull a newer version
-off kernel.org, it's not unreasonable to expect the occasional
-breakage. In my case, when I moved from 5.7 to 5.9, some of the
-things that broke were my network chip, and most SPI drivers. That
-was a bad day, most pulls are trouble-free.
+There is increased overhead now when schedstats are *enabled* because
+_schedstat_from_sched_entity() has to be called but it appears that it is
+protected by a schedstat_enabled() check. So ok, schedstats when enabled
+are now a bit more expensive but they were expensive in the first place
+so does it matter?
 
-I believe LTSes are more stable than 'stable releases' which are in
-turn more stable than RCs. The choice involves a trade-off between
-features, security and stability.
+I'd have been happied if there was a comparison with schedstats enabled
+just in case the overhead is too high but it could also do with a second
+set of eyeballs.
 
-When you do run into a breakage, complaining on the mailing list
-is good, but posting a fix is better :)
+It's somewhat tentative but
 
-This is my layman's understanding of the situation, I'm just a user
-and not a maintainer.
+Acked-by: Mel Gorman <mgorman@suse.de>
 
-> >
-> >>
-> >> What should we do?
-
-Hopefully I have some time this week to look into your breakage,
-I may get overtaken by someone much more knowledgeable than
-me on spi-gpio.
+-- 
+Mel Gorman
+SUSE Labs
