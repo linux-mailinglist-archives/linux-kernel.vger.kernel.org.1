@@ -2,130 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B142CADE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250DE2CADE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729594AbgLAU4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:56:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
+        id S1729615AbgLAU5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:57:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728145AbgLAU4o (ORCPT
+        with ESMTP id S1727555AbgLAU5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:56:44 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2B0C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:56:04 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w187so1944567pfd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:56:04 -0800 (PST)
+        Tue, 1 Dec 2020 15:57:11 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CE5C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:56:31 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id bj5so1878415plb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:56:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jvZxaR1uxdRFvn7XeforUrhpQcomda06FE9z8v9SF+I=;
-        b=TFwSRXZw8tzrXF6TjZXpiOFHg1eTcIgsU/gnBsZvwrvBMi/VZtwhWsjJP6MDcyV7Xq
-         EY1E3QlJDD2LP1zBZrGfMVxa/86yeHYBcTCHMhgcRUuE1NU55SXri1WRb5qI4RcXvbGK
-         JWM4/WDllREpTawjswqFJddFIBj+qQ75I3XUk=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eM5B4nr3Cj96c0CMfrS63GcaQxQ7JoKbUXWDaO/w/hc=;
+        b=jUifm+7nuTwCtKljBq98E3+TtyCZjBN4r9vPGtA31KmOsul01hRCH97eUQXC8GwbH/
+         C7i2rq9nkTRhgrCCtcZ3S8D+p6rmrYPGAkI8qxzpck3qL0M1i729OQVh44jnWLEebkeg
+         yiaS6qnZVJTF8Mmd5RmWbKpwhyf/lYAdIGlDk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jvZxaR1uxdRFvn7XeforUrhpQcomda06FE9z8v9SF+I=;
-        b=XXmThpiQKR725wFYhuYXmMmP0rNDCGdriBXzFGdWo3nxmH1zuKpdIE3Q9ZlK1rhZPB
-         k8UK/sMq9KhBTZbxi/Ogpp/EOqi9fOWRBY40UlZVplweykfri3SyVYLyvDpDn3rVlxGz
-         QZqZ6pDRUpmoTppA3BrjDr8Ysm+O0AycJ4YqLXTtx/bsPCq/0sS5SHGWVbkr/W6rg7GP
-         Bl3BJxRn0azze8QqIMZEmV0sao+S6lIucsajp01SH+/3jwDOQqV41ncJ9ZQE31UI7ygY
-         xzxmYL3HpAgdJK75hxa2oe//7s4Gq9lNkvmnzQnI/vlGtMDiPysxrU4d10ZQo3utxJi1
-         aquw==
-X-Gm-Message-State: AOAM533zGpDP24AYVQLBe6uzDRiiO4Ox7zX+LEhGm30z76PZJSuhz5at
-        L7H7HDyOPxS1UGYyy9DphK9IvA==
-X-Google-Smtp-Source: ABdhPJzCxMuBuZrRcsbYPBK43PxlNzAPIn7sX9mea5Y6YmB2SSRco81+JiT9a3Pib4DSr+575XOIFA==
-X-Received: by 2002:a62:293:0:b029:197:96c2:bef6 with SMTP id 141-20020a6202930000b029019796c2bef6mr4299536pfc.62.1606856164000;
-        Tue, 01 Dec 2020 12:56:04 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i26sm597443pfq.148.2020.12.01.12.56.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eM5B4nr3Cj96c0CMfrS63GcaQxQ7JoKbUXWDaO/w/hc=;
+        b=IAbAwP9iNMmP0KoR1/sn/QtXjaEWNnHyG+EaxStxQzk55aN+A8uD5m3/0D4sUeT1t+
+         Ie62f+rQotr9hiPOjvfrs81GNhqcnlW3v2TyouCUwlL1RJitE2ucBpUgKZg4Bb8GHibM
+         HT1Q/FSGQLq9DGAY4i2T4M6NkCUwnXzGLb7M9SEY+IfiJU+Vt1JsseYYAI8lDrbHVklu
+         TKZmWdki2BzQVBFmtFrMUP1qYzsI2GgYWk9e//Q2EIepDMhUUR7jhlaVEKg8WgPMfkoY
+         trMyYrnxA20ljFJrAoDsnkbUtCYwj29dwE3Ha9WMjwDww0IX/lOKE2J7HDdqex5ne2Tj
+         nojw==
+X-Gm-Message-State: AOAM530EmzOunhamJmGtDWdooP24RTLeppRgTSXBLi+/DQlXD6DGFabq
+        f/KfWQr7yorUeRk264SHqd83N3gajXC5ow==
+X-Google-Smtp-Source: ABdhPJzfzvwqmVM12Vqk1uIjHAiXcS/yoSMaRMutHljDGn8QBGiS4fmDmcSk67ItGQUDkZMQd6Ntfg==
+X-Received: by 2002:a17:902:8e81:b029:d9:f1a8:54ac with SMTP id bg1-20020a1709028e81b02900d9f1a854acmr4434841plb.69.1606856191096;
+        Tue, 01 Dec 2020 12:56:31 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id l1sm534205pju.48.2020.12.01.12.56.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:56:02 -0800 (PST)
-Date:   Tue, 1 Dec 2020 12:56:01 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] kbuild: Disable CONFIG_LD_ORPHAN_WARN for ld.lld
- 10.0.1
-Message-ID: <202012011255.9D677ED3@keescook>
-References: <20201113195553.1487659-1-natechancellor@gmail.com>
- <20201119204656.3261686-2-natechancellor@gmail.com>
- <CAKwvOdkPgwL8H4EGF6=-VuxTdmxA8JHhGbLHVYcLJj9MmAvW=g@mail.gmail.com>
- <202011241421.A2F3062A70@keescook>
- <CAK7LNAR=_+1K7EtpvGzgyM+ans-iNOT0PBXdLRApnsyAzakQ3w@mail.gmail.com>
+        Tue, 01 Dec 2020 12:56:30 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm: panel: add flags to BOE NV110WTM-N61
+Date:   Tue,  1 Dec 2020 12:56:11 -0800
+Message-Id: <20201201125554.v2.1.I8a7bfc0966e803ab91001c9e6d01a736950c4981@changeid>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAR=_+1K7EtpvGzgyM+ans-iNOT0PBXdLRApnsyAzakQ3w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:31:37PM +0900, Masahiro Yamada wrote:
-> On Wed, Nov 25, 2020 at 7:22 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Thu, Nov 19, 2020 at 01:13:27PM -0800, Nick Desaulniers wrote:
-> > > On Thu, Nov 19, 2020 at 12:57 PM Nathan Chancellor
-> > > <natechancellor@gmail.com> wrote:
-> > > >
-> > > > ld.lld 10.0.1 spews a bunch of various warnings about .rela sections,
-> > > > along with a few others. Newer versions of ld.lld do not have these
-> > > > warnings. As a result, do not add '--orphan-handling=warn' to
-> > > > LDFLAGS_vmlinux if ld.lld's version is not new enough.
-> > > >
-> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1187
-> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1193
-> > > > Reported-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > > > Reported-by: kernelci.org bot <bot@kernelci.org>
-> > > > Reported-by: Mark Brown <broonie@kernel.org>
-> > > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > >
-> > > Thanks for the additions in v2.
-> > > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> >
-> > I'm going to carry this for a few days in -next, and if no one screams,
-> > ask Linus to pull it for v5.10-rc6.
-> >
-> > Thanks!
-> >
-> > --
-> > Kees Cook
-> 
-> 
-> Sorry for the delay.
-> Applied to linux-kbuild.
+I forgot to add these when posting up the support for BOE
+NV110WTM-N61.  Add them now.
 
-Great, thanks!
+Fixes: a96ee0f6b58d ("drm: panel: simple: Add BOE NV110WTM-N61")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: dri-devel@lists.freedesktop.org
+---
 
-> But, I already see this in linux-next.
-> Please let me know if I should drop it from my tree.
+Changes in v2:
+- Apply to the correct struct
 
-My intention was to get this to Linus this week. Do you want to do that
-yourself, or Ack the patches in my tree and I'll send it?
+ drivers/gpu/drm/panel/panel-simple.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
--Kees
-
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 216cde33b5c4..1db4c10b4480 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -1407,6 +1407,7 @@ static const struct drm_display_mode boe_nv110wtm_n61_modes[] = {
+ 		.vsync_start = 1440 + 3,
+ 		.vsync_end = 1440 + 3 + 6,
+ 		.vtotal = 1440 + 3 + 6 + 31,
++		.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
+ 	},
+ 	{
+ 		.clock = 138500,
+@@ -1418,6 +1419,7 @@ static const struct drm_display_mode boe_nv110wtm_n61_modes[] = {
+ 		.vsync_start = 1440 + 3,
+ 		.vsync_end = 1440 + 3 + 6,
+ 		.vtotal = 1440 + 3 + 6 + 31,
++		.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
+ 	},
+ };
+ 
 -- 
-Kees Cook
+2.29.2.454.gaff20da3a2-goog
+
