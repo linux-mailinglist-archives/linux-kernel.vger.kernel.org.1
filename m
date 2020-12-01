@@ -2,196 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059772CAD3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A53C2CAD40
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730576AbgLAUXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728371AbgLAUXg (ORCPT
+        id S1731267AbgLAUZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:25:29 -0500
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:44136 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727165AbgLAUZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:23:36 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A4DC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:22:01 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id q137so2980170iod.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:22:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4gs7t9MjEYA5UWOLu3eX1LUX0CiZ69mOlK5lwM97vkI=;
-        b=Kit/biOu4sHqQEb5yzcx6x6d+9T6rLZbLjREZOUmKQG21dAFnBUUQtpUEwzhT4eODp
-         ifXpgMxqpgHPZLUfGuv+Pj5uTAhYrHz+T/opfsr4VxkoS1dIAncp29x7DrHdDhgvb3wL
-         JX8eWxJN9Zl2yu+KHsNfcml9Ae5agzS0GwCgU=
+        Tue, 1 Dec 2020 15:25:29 -0500
+Received: by mail-ed1-f68.google.com with SMTP id l5so5292521edq.11;
+        Tue, 01 Dec 2020 12:25:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4gs7t9MjEYA5UWOLu3eX1LUX0CiZ69mOlK5lwM97vkI=;
-        b=mnh5cQwW3tzApgOsFcGJypCLJvKldpftAuTkHzAPT9rl93f7S0QSeTpIIZ/UX289fz
-         SYG4hlMKGH1vlcEYVDwENTL0zUusL5jYveyLFC/p0uSoN8wALEILHD4rWLGAlgm36y33
-         g0vRaLj3FkMiLxqj+GLHaDBraam+GLzod1xOCXLN2LdYtgg0FS8Mkwcrqo9I2B0Ljt2X
-         7nsaVD09vs8/Kziq2OE6xMMH0O9MR7MOTCtMxqttHBuzTUHnpSc8Apffb5HJvfNmpFlR
-         Dz+z5tsthpMgOi0jpyFre5a/+2pvHXpd7EHnUdH+2gF+eVi5E5rAZASXACdUKitOKV8/
-         3Tlg==
-X-Gm-Message-State: AOAM532I6mg/3HHka+v/xGDXE5HPI/VI3jZz+dsgD41wcQyayTLuAwtr
-        huiNEOG883vY9BDRxNg+uUiEpXHmMvWrIw==
-X-Google-Smtp-Source: ABdhPJwgfKTuzX231iuOFh3HM2J+8+V8c7Ho5xKvWB5EHAHLg8Ugj3Bns3j9Y2oGfqRLOQK11r1igg==
-X-Received: by 2002:a5d:9049:: with SMTP id v9mr3846181ioq.199.1606854120097;
-        Tue, 01 Dec 2020 12:22:00 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id d5sm322949ios.25.2020.12.01.12.21.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 12:21:59 -0800 (PST)
-Subject: Re: [PATCH v5 2/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linus.walleij@linaro.org, bjorn.andersson@linaro.org
-Cc:     robh+dt@kernel.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201201142830.13152-1-srinivas.kandagatla@linaro.org>
- <20201201142830.13152-3-srinivas.kandagatla@linaro.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <bf18cc63-77b2-7929-625a-1ea3d108916e@ieee.org>
-Date:   Tue, 1 Dec 2020 14:21:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZeQhgtJymCHCi7xcHFwnekowg0dZ1ylay8OPyOYHius=;
+        b=qmVKsV2FT9xQze06YSbIRlU9y86vMHFZspH7s8oREuI/BHL8eaWFRii3lMaOjb3gKe
+         9qJMHDH83P6Uy+cCZTAEMpMRlS9rLrwisYncIDbF3RWAOKxxzg77Qi9/TQp3Qf3Q2ApE
+         KV0S8RijG5OwTym6lcCeGM5dIjvFMUEjrf8AC+nA7wLLVY/lbQ8czq119Ok96X+MncIs
+         8/LzJqbU4OYAxEN1iYsGcEoLS8gDbtMQv2xdfGg972ApXyUlUMm4jOIuMkdFyDeRDqn+
+         1/CqH3QEXyJRRAWV9FqJFm1jqToL+fiQL0Um+eMSwcosTvL5jGi2LLhIdPP6Ueq9h1o+
+         9f6g==
+X-Gm-Message-State: AOAM531yPa1Wx5G4iF4xLwRL3Q4NEE1QyU3oX2EJfv8Nuu4ZE/nntYQa
+        ezxzllB8z9ETSck0dnWAhwU=
+X-Google-Smtp-Source: ABdhPJzQqqaHsg2yWf3EuAlhpDz+JHiuWbYCBZowD4C6Nrak+YQb7+xuF0eHcD3V2hn6nxyq+25Bgw==
+X-Received: by 2002:a50:e00b:: with SMTP id e11mr1883546edl.303.1606854285637;
+        Tue, 01 Dec 2020 12:24:45 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n15sm351278eje.112.2020.12.01.12.24.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 12:24:44 -0800 (PST)
+Date:   Tue, 1 Dec 2020 22:24:43 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH v4 net-next 4/4] nfc: s3fwrn5: Support a UART interface
+Message-ID: <20201201202443.GD2435@kozik-lap>
+References: <1606830628-10236-1-git-send-email-bongsu.jeon@samsung.com>
+ <1606830628-10236-5-git-send-email-bongsu.jeon@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20201201142830.13152-3-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1606830628-10236-5-git-send-email-bongsu.jeon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 8:28 AM, Srinivas Kandagatla wrote:
-> Add initial pinctrl driver to support pin configuration for
-> LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
-> on SM8250.
+On Tue, Dec 01, 2020 at 10:50:28PM +0900, Bongsu Jeon wrote:
+> From: Bongsu Jeon <bongsu.jeon@samsung.com>
 > 
-> This IP is an additional pin control block for Audio Pins on top the
-> existing SoC Top level pin-controller.
-> Hardware setup looks like:
+> Since S3FWRN82 NFC Chip, The UART interface can be used.
+> S3FWRN82 uses NCI protocol and supports I2C and UART interface.
 > 
-> TLMM GPIO[146 - 159] --> LPASS LPI GPIO [0 - 13]
-> 
-> This pin controller has some similarities compared to Top level
-> msm SoC Pin controller like 'each pin belongs to a single group'
-> and so on. However this one is intended to control only audio
-> pins in particular, which can not be configured/touched by the
-> Top level SoC pin controller except setting them as gpios.
-> Apart from this, slew rate is also available in this block for
-> certain pins which are connected to SLIMbus or SoundWire Bus.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-Bjorn called my attention to a comment he made on this patch.
-I'm not giving it a full review right now, but I have a
-general suggestion below.
-
+> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
 > ---
->   drivers/pinctrl/qcom/Kconfig             |   8 +
->   drivers/pinctrl/qcom/Makefile            |   1 +
->   drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 727 +++++++++++++++++++++++
->   3 files changed, 736 insertions(+)
->   create mode 100644 drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+>  drivers/nfc/s3fwrn5/Kconfig      |  12 +++
+>  drivers/nfc/s3fwrn5/Makefile     |   2 +
+>  drivers/nfc/s3fwrn5/phy_common.c |  12 +++
+>  drivers/nfc/s3fwrn5/phy_common.h |   1 +
+>  drivers/nfc/s3fwrn5/uart.c       | 196 +++++++++++++++++++++++++++++++++++++++
+>  5 files changed, 223 insertions(+)
+>  create mode 100644 drivers/nfc/s3fwrn5/uart.c
 > 
-> diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
-> index 5fe7b8aaf69d..d3e4e89c2810 100644
-> --- a/drivers/pinctrl/qcom/Kconfig
-> +++ b/drivers/pinctrl/qcom/Kconfig
-> @@ -236,4 +236,12 @@ config PINCTRL_SM8250
->   	  Qualcomm Technologies Inc TLMM block found on the Qualcomm
->   	  Technologies Inc SM8250 platform.
->   
-> +config PINCTRL_LPASS_LPI
-> +	tristate "Qualcomm Technologies Inc LPASS LPI pin controller driver"
-> +	depends on GPIOLIB
-> +	help
-> +	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-> +	  Qualcomm Technologies Inc LPASS (Low Power Audio SubSystem) LPI
-> +	  (Low Power Island) found on the Qualcomm Technologies Inc SoCs.
-> +
->   endif
-> diff --git a/drivers/pinctrl/qcom/Makefile b/drivers/pinctrl/qcom/Makefile
-> index 9e3d9c91a444..c8520155fb1b 100644
-> --- a/drivers/pinctrl/qcom/Makefile
-> +++ b/drivers/pinctrl/qcom/Makefile
-> @@ -28,3 +28,4 @@ obj-$(CONFIG_PINCTRL_SDM660)   += pinctrl-sdm660.o
->   obj-$(CONFIG_PINCTRL_SDM845) += pinctrl-sdm845.o
->   obj-$(CONFIG_PINCTRL_SM8150) += pinctrl-sm8150.o
->   obj-$(CONFIG_PINCTRL_SM8250) += pinctrl-sm8250.o
-> +obj-$(CONFIG_PINCTRL_LPASS_LPI) += pinctrl-lpass-lpi.o
-> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> new file mode 100644
-> index 000000000000..96c63a33fc99
-> --- /dev/null
-> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> @@ -0,0 +1,727 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2016-2019, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2020 Linaro Ltd.
-> + */
-> +
-> +#include <linux/bitops.h>
-> +#include <linux/bitfield.h>
-> +#include <linux/clk.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of.h>
-> +#include <linux/pinctrl/pinconf-generic.h>
-> +#include <linux/pinctrl/pinconf.h>
-> +#include <linux/pinctrl/pinmux.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/types.h>
-> +#include "../core.h"
-> +#include "../pinctrl-utils.h"
-> +
-> +#define LPI_GPIO_CFG_REG		0x00
-> +#define LPI_GPIO_VALUE_REG		0x04
-> +#define LPI_SLEW_RATE_CTL_REG		0xa000
-> +#define LPI_SLEW_RATE_MAX		0x03
-> +#define LPI_SLEW_BITS_SIZE		0x02
-> +#define LPI_GPIO_PULL_SHIFT		0x0
-> +#define LPI_GPIO_PULL_MASK		GENMASK(1, 0)
 
-. . .
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-If you have a mask like this, you do not need the shift.
-The mask alone encodes both the position and the width
-of the field you are describing.  It is better to use
-just the one (mask) value and avoid even the possibility
-of the mask and shift being inconsistent.  You halve the
-number of symbols you need to describe fields too.
-
-For the macros and functions in <linux/bitfield.h> the
-mask values must be constant at compile time, but you
-have that here.
-
-For the LPI_GPIO_PULL, you use it below this way:
-     pull = (ctl_reg & LPI_GPIO_PULL_MASK) >> LPI_GPIO_PULL_SHIFT;
-Instead, use:
-     pull = u32_get_bits(ctl_reg, LPI_GPIO_PULL_MASK);
-
-I see you're using u32_replace_bits(), and what I see
-looks good.  But you can use u32_encode_bits() as well.
-For example, instead of:
-     lpi_gpio_write(pctrl, group, LPI_GPIO_VALUE_REG,
-                    value << LPI_GPIO_DIR_SHIFT);
-Use:
-     val = u32_encode_bits(value ? 1 : 0, LPI_GPIO_DIR_MASK);
-     lpi_gpio_write(pctrl, group, LPI_GPIO_VALUE_REG, val);
-(This one-bit mask might not be a great example.)
-
-In addition to getting rid of extra symbols, using these
-functions typically results in simpler-looking code.
-
-					-Alex
+Best regards,
+Krzysztof
