@@ -2,61 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679612CA33E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E442CA327
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388325AbgLAM5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:57:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727712AbgLAM5A (ORCPT
+        id S2390951AbgLAMt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:49:26 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8482 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389617AbgLAMtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:57:00 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7C9C061A04;
-        Tue,  1 Dec 2020 04:56:20 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kk5CZ-000W9o-07; Tue, 01 Dec 2020 13:56:15 +0100
-Message-ID: <2007533d7d6466fc5e6b588df148238046e25b4c.camel@sipsolutions.net>
-Subject: Re: [PATCH] net: mac80211: cfg: enforce sanity checks for key_index
- in ieee80211_del_key()
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com
-Date:   Tue, 01 Dec 2020 13:56:13 +0100
-In-Reply-To: <a122ca3c-6b1b-3d03-08e3-ac1906ab7389@gmail.com> (sfid-20201201_134519_457943_AF72D8E2)
-References: <20201201095639.63936-1-anant.thazhemadam@gmail.com>
-         <3025db173074d4dfbc323e91d3586f0e36426cf0.camel@sipsolutions.net>
-         <1e5e4471-5cf4-6d23-6186-97f764f4d25f@gmail.com>
-         <a6eb69000eb33ca8f59cbaff2afee205e0877eb8.camel@sipsolutions.net>
-         <a122ca3c-6b1b-3d03-08e3-ac1906ab7389@gmail.com>
-         (sfid-20201201_134519_457943_AF72D8E2)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Tue, 1 Dec 2020 07:49:24 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ClhjL4PPyzhXlG;
+        Tue,  1 Dec 2020 20:48:22 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Dec 2020 20:48:33 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH] drm/tegra: fix reference leak when pm_runtime_get_sync fails
+Date:   Tue, 1 Dec 2020 20:56:31 +0800
+Message-ID: <20201201125631.142590-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-01 at 18:15 +0530, Anant Thazhemadam wrote:
-> 
-> cfg80211_supported_cipher_suite(&rdev->wiphy, params->cipher) returned
-> false, and thus it worked for the syzbot reproducer.
-> Would it be a safer idea to enforce the conditions that I initially put (in
-> ieee80211_del_key()) directly in cfg80211_validate_key_settings() itself - by
-> updating max_key_index, and checking accordingly?
+The PM reference count is not expected to be incremented on
+return in these tegra functions.
 
-Yes, I think so. But similarly to cfg80211_validate_key_settings() it
-should look at the device capabilities (beacon protection, etc.)
+However, pm_runtime_get_sync will increment the PM reference
+count even failed. Forgetting to putting operation will result
+in a reference leak here.
 
-Thanks!
-johannes
+Replace it with pm_runtime_resume_and_get to keep usage
+counter balanced.
+
+Fixes: fd67e9c6ed5a ("drm/tegra: Do not implement runtime PM")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ drivers/gpu/drm/tegra/dc.c   | 2 +-
+ drivers/gpu/drm/tegra/dsi.c  | 2 +-
+ drivers/gpu/drm/tegra/hdmi.c | 2 +-
+ drivers/gpu/drm/tegra/hub.c  | 2 +-
+ drivers/gpu/drm/tegra/sor.c  | 2 +-
+ drivers/gpu/drm/tegra/vic.c  | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+index 424ad60b4..b2c8c68b7 100644
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -2184,7 +2184,7 @@ static int tegra_dc_runtime_resume(struct host1x_client *client)
+ 	struct device *dev = client->dev;
+ 	int err;
+ 
+-	err = pm_runtime_get_sync(dev);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to get runtime PM: %d\n", err);
+ 		return err;
+diff --git a/drivers/gpu/drm/tegra/dsi.c b/drivers/gpu/drm/tegra/dsi.c
+index 5691ef1b0..f46d377f0 100644
+--- a/drivers/gpu/drm/tegra/dsi.c
++++ b/drivers/gpu/drm/tegra/dsi.c
+@@ -1111,7 +1111,7 @@ static int tegra_dsi_runtime_resume(struct host1x_client *client)
+ 	struct device *dev = client->dev;
+ 	int err;
+ 
+-	err = pm_runtime_get_sync(dev);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to get runtime PM: %d\n", err);
+ 		return err;
+diff --git a/drivers/gpu/drm/tegra/hdmi.c b/drivers/gpu/drm/tegra/hdmi.c
+index d09a24931..e5d2a4026 100644
+--- a/drivers/gpu/drm/tegra/hdmi.c
++++ b/drivers/gpu/drm/tegra/hdmi.c
+@@ -1510,7 +1510,7 @@ static int tegra_hdmi_runtime_resume(struct host1x_client *client)
+ 	struct device *dev = client->dev;
+ 	int err;
+ 
+-	err = pm_runtime_get_sync(dev);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to get runtime PM: %d\n", err);
+ 		return err;
+diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
+index 22a03f7ff..5ce771cba 100644
+--- a/drivers/gpu/drm/tegra/hub.c
++++ b/drivers/gpu/drm/tegra/hub.c
+@@ -789,7 +789,7 @@ static int tegra_display_hub_runtime_resume(struct host1x_client *client)
+ 	unsigned int i;
+ 	int err;
+ 
+-	err = pm_runtime_get_sync(dev);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to get runtime PM: %d\n", err);
+ 		return err;
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index e88a17c29..fa1272155 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -3214,7 +3214,7 @@ static int tegra_sor_runtime_resume(struct host1x_client *client)
+ 	struct device *dev = client->dev;
+ 	int err;
+ 
+-	err = pm_runtime_get_sync(dev);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to get runtime PM: %d\n", err);
+ 		return err;
+diff --git a/drivers/gpu/drm/tegra/vic.c b/drivers/gpu/drm/tegra/vic.c
+index ade56b860..b77f72630 100644
+--- a/drivers/gpu/drm/tegra/vic.c
++++ b/drivers/gpu/drm/tegra/vic.c
+@@ -314,7 +314,7 @@ static int vic_open_channel(struct tegra_drm_client *client,
+ 	struct vic *vic = to_vic(client);
+ 	int err;
+ 
+-	err = pm_runtime_get_sync(vic->dev);
++	err = pm_runtime_resume_and_get(vic->dev);
+ 	if (err < 0)
+ 		return err;
+ 
+-- 
+2.23.0
 
