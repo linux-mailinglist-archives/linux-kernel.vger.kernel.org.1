@@ -2,699 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BE22C96A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153332C96D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgLAEzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 23:55:18 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:46268 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgLAEzR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 23:55:17 -0500
-Received: by mail-pf1-f193.google.com with SMTP id s21so292064pfu.13;
-        Mon, 30 Nov 2020 20:55:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6fRpWzSl8K2ypWxPPv+15hwhTOiINxA3VACeq7A6Quk=;
-        b=mKFuLdzD1DW2cBvQMKIC/oNnTSSGyQRWSLfo5JFwq5Fl3IRnJOlPl8QoCZ8KXuPIE9
-         IgCRACMMXkyPQMXXOgC2kATznYjC48Uf7vjF9j88Q12EYPO7ctZB+mvZAfNBPJsEexoO
-         ROzfrJIkz8GBwgfWjzmNW7gE0XHkt7ZGP+V2IRy36X8GJnZrrmfCkVj6t/YC5l3muHOR
-         xCxpnXdDMyfkY/CRDVokXlNOAH4FZrY8bb52cqYdpUKrT8Ao5djCa/S6reQWH2D660+9
-         rScTkrTaLZS5/z5A2JyyiG+IN9W5kTKdulF69cEY7m20A2g52HV7zLtF8BWZ43LohpSo
-         gZLw==
-X-Gm-Message-State: AOAM533HgUlYbVavJ+4slFx29GBf3Prq/oRBOHcK/WSlEZ1Tkuyft6wR
-        bvDUpvjWTFdITdvJsSs5xb2NULZz/N4FmA==
-X-Google-Smtp-Source: ABdhPJw1c9dqmRdLbIj/dJYoIevoE0zS/m8yenBKz9+htMiBmtVdTJmD1cHgGJ1wX7mkQ5Mce7nZXg==
-X-Received: by 2002:a63:1a1e:: with SMTP id a30mr783593pga.168.1606798475832;
-        Mon, 30 Nov 2020 20:54:35 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id r130sm769786pfc.41.2020.11.30.20.54.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 20:54:35 -0800 (PST)
-Date:   Mon, 30 Nov 2020 20:54:33 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Sonal Santan <sonal.santan@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, lizhih@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH Xilinx Alveo 1/8] Documentation: fpga: Add a document
- describing Alveo XRT drivers
-Message-ID: <X8XMicDtVL5mk9Bp@archbook>
-References: <20201129000040.24777-1-sonals@xilinx.com>
- <20201129000040.24777-2-sonals@xilinx.com>
+        id S1726704AbgLAFTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 00:19:05 -0500
+Received: from mout.gmx.net ([212.227.17.20]:46511 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgLAFTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 00:19:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606799806;
+        bh=rPRdtpWM0wkMSizwG2+RY2+Q923cBhHJhfRb9IexAnY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=jzFWy995Y61nuOYwp9YyhrZOx2+zhdBFSCseZfeOF1rd+BKRQwPpsy6F087vIODzE
+         ywhJYthsJ4ZbNilGNfQjPNpnMYYl9v46lJKXQlJRZjtkVBBwyskJI8/Em6wxX615AQ
+         ySyC/73nS+Ahv0rY+3xxsyfWHhCYFwcDmya0tf/0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MXXuB-1kguA51Akx-00Z2Ei; Tue, 01
+ Dec 2020 06:16:46 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v5 4/7] pwm: ntxec: Add driver for PWM function in Netronix EC
+Date:   Tue,  1 Dec 2020 02:15:10 +0100
+Message-Id: <20201201011513.1627028-5-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
+References: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201129000040.24777-2-sonals@xilinx.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ca9Z38lTTxyARgHEHV/TktM9KWbcJaj4CY+vU2TiPpIJwGSunTb
+ 55PpShIGhQFE0ZR0tNe5vZKaeJSdMBc04PI/nj/IAvHliRKtAw/6YyxHPGsGS/J+Gt8FSeu
+ xGwCiX0VzpeuvquQm9bDK+dIJDdsDk1Uu34lP1oPCvwmUu+w4hTmG7zZ8vwNJyRSh+PMktb
+ +VAXcSElqilddkKXoaDTg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Qc0L3ZXK+CA=:BdRXXwDu8Gz9j8B/JfK7Xl
+ PRT9PnCT+ybLIlKh9Bij3I/N2unthD7Wm8miRR1+KgjufX7ZNUpnezjJyglrisUccrd+4sfe+
+ vCxY2IMC3+t5BaUwSFgxp8wrC27RnoLbBdqZFg1T3e2C7XDk+KqFEmKO5A5VUzTJ55JvVcb6A
+ /wwZWxtf2osIMiHhlPf3+DBihyIBdbrCvmEKFjeYpcsOcKvNB4Pztq37tH0QP1xzr2bKikXSg
+ pGQrSx3vIA7iAKcgV6833mO37myN/wMgFseMWnlZwiO9G5/yXUEwUgM1w36MrxF0u6AFIK4zf
+ OtXOoATyx0agzH8RjG+tux+gHeVP0e/aX4mfNviDis0lHA8QRTzSToggHzh3rGOjfVSZp9Y9s
+ y0AKornW3xgGZqdTWdH/fRlDw0e8FyBjA4JzvIy6DRDKFFfdHx+KjS9RQ3mNDhO3zLIK7+6PM
+ WcQGa46xRf8QkwBP+Fdl2z9pPNO/9pp+VXbPo+ZgFEsnhjtxky1zLfKFFgJMDrKXgWsTj3Dm3
+ G8mtXFSH32bXDfxyrel3qxVNXdmFQC3h/BmZI2jqy9j24yEyCI9u0Tzm0EYLxJNsGTNY/7lPX
+ QdVRDMBXy7zDMXuKY5au1fqTzfousduQIcA7NwKDDq1ejqSIeeEidASn/dZOUnJV++tTrWHzk
+ 3m8x9Kd0+QsKyYlb8nNKO8ryO9kcxssCiBl4ei5FWw+dHA9GEh1dTg6SfXef3BoCJcmrmGbY5
+ lFOqQuRToVW+yiVgYdP0tdTiHgQdFSLAdHC3SRTN+guUK2vQjNSErDoZLoElsC0YbIuMeFIrn
+ EAE8B8lJmgSiIlOl1BitgjS9MWJjE4Gy8WBbaRwgzPGxvf+AziW2+XjHReuKIoXfsNazu0o6w
+ qGNVa6hyPrYPvjfyzlng==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 04:00:33PM -0800, Sonal Santan wrote:
-> From: Sonal Santan <sonal.santan@xilinx.com>
-> 
-> Describe Alveo XRT driver architecture and provide basic overview
-> of Xilinx Alveo platform.
-> 
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> ---
->  Documentation/fpga/index.rst |   1 +
->  Documentation/fpga/xrt.rst   | 588 +++++++++++++++++++++++++++++++++++
->  2 files changed, 589 insertions(+)
->  create mode 100644 Documentation/fpga/xrt.rst
-> 
-> diff --git a/Documentation/fpga/index.rst b/Documentation/fpga/index.rst
-> index f80f95667ca2..30134357b70d 100644
-> --- a/Documentation/fpga/index.rst
-> +++ b/Documentation/fpga/index.rst
-> @@ -8,6 +8,7 @@ fpga
->      :maxdepth: 1
-> 
->      dfl
-> +    xrt
-> 
->  .. only::  subproject and html
-> 
-> diff --git a/Documentation/fpga/xrt.rst b/Documentation/fpga/xrt.rst
-> new file mode 100644
-> index 000000000000..9f37d46459b0
-> --- /dev/null
-> +++ b/Documentation/fpga/xrt.rst
-> @@ -0,1 +1,588 @@
-> +==================================
-> +XRTV2 Linux Kernel Driver Overview
-> +==================================
-> +
-> +XRTV2 drivers are second generation `XRT <https://github.com/Xilinx/XRT>`_ drivers which
-> +support `Alveo <https://www.xilinx.com/products/boards-and-kits/alveo.html>`_ PCIe platforms
-> +from Xilinx.
-> +
-> +XRTV2 drivers support *subsystem* style data driven platforms where driver's configuration
-> +and behavior is determined by meta data provided by platform (in *device tree* format).
-> +Primary management physical function (MPF) driver is called **xmgmt**. Primary user physical
-> +function (UPF) driver is called **xuser** and HW subsystem drivers are packaged into a library
-> +module called **xrt-lib**, which is shared by **xmgmt** and **xuser** (WIP).
-WIP?
-> +
-> +Alveo Platform Overview
-> +=======================
-> +
-> +Alveo platforms are architected as two physical FPGA partitions: *Shell* and *User*. Shell
-Nit: The Shell provides ...
-> +provides basic infrastructure for the Alveo platform like PCIe connectivity, board management,
-> +Dynamic Function Exchange (DFX), sensors, clocking, reset, and security. User partition contains
-> +user compiled binary which is loaded by a process called DFX also known as partial reconfiguration.
-> +
-> +Physical partitions require strict HW compatibility with each other for DFX to work properly.
-> +Every physical partition has two interface UUIDs: *parent* UUID and *child* UUID. For simple
-> +single stage platforms Shell → User forms parent child relationship. For complex two stage
-> +platforms Base → Shell → User forms the parent child relationship chain.
-> +
-> +.. note::
-> +   Partition compatibility matching is key design component of Alveo platforms and XRT. Partitions
-> +   have child and parent relationship. A loaded partition exposes child partition UUID to advertise
-> +   its compatibility requirement for child partition. When loading a child partition the xmgmt
-> +   management driver matches parent UUID of the child partition against child UUID exported by the
-> +   parent. Parent and child partition UUIDs are stored in the *xclbin* (for user) or *xsabin* (for
-> +   base and shell). Except for root UUID, VSEC, hardware itself does not know about UUIDs. UUIDs are
-> +   stored in xsabin and xclbin.
-> +
-> +
-> +The physical partitions and their loading is illustrated below::
-> +
-> +            SHELL                               USER
-> +        +-----------+                  +-------------------+
-> +        |           |                  |                   |
-> +        | VSEC UUID | CHILD     PARENT |    LOGIC UUID     |
-> +        |           o------->|<--------o                   |
-> +        |           | UUID       UUID  |                   |
-> +        +-----+-----+                  +--------+----------+
-> +              |                                 |
-> +              .                                 .
-> +              |                                 |
-> +          +---+---+                      +------+--------+
-> +          |  POR  |                      | USER COMPILED |
-> +          | FLASH |                      |    XCLBIN     |
-> +          +-------+                      +---------------+
-> +
-> +
-> +Loading Sequence
-> +----------------
-> +
-> +Shell partition is loaded from flash at system boot time. It establishes the PCIe link and exposes
-Nit: The Shell
-> +two physical functions to the BIOS. After OS boot, xmgmt driver attaches to PCIe physical function
-> +0 exposed by the Shell and then looks for VSEC in PCIe extended configuration space. Using VSEC it
-> +determines the logic UUID of Shell and uses the UUID to load matching *xsabin* file from Linux
-> +firmware directory. The xsabin file contains metadata to discover peripherals that are part of Shell
-> +and firmware(s) for any embedded soft processors in Shell.
+The Netronix EC provides a PWM output which is used for the backlight
+on some ebook readers. This patches adds a driver for the PWM output.
 
-Neat.
-> +
-> +Shell exports child interface UUID which is used for compatibility check when loading user compiled
-Nit: The Shell
-> +xclbin over the User partition as part of DFX. When a user requests loading of a specific xclbin the
-> +xmgmt management driver reads the parent interface UUID specified in the xclbin and matches it with
-> +child interface UUID exported by Shell to determine if xclbin is compatible with the Shell. If match
-> +fails loading of xclbin is denied.
-> +
-> +xclbin loading is requested using ICAP_DOWNLOAD_AXLF ioctl command. When loading xclbin xmgmt driver
-> +performs the following operations:
-> +
-> +1. Sanity check the xclbin contents
-> +2. Isolate the User partition
-> +3. Download the bitstream using the FPGA config engine (ICAP)
-> +4. De-isolate the User partition
-Is this modelled as bridges and regions?
+The .get_state callback is not implemented, because the PWM state can't
+be read back from the hardware.
 
-> +5. Program the clocks (ClockWiz) driving the User partition
-> +6. Wait for memory controller (MIG) calibration
-> +
-> +`Platform Loading Overview <https://xilinx.github.io/XRT/master/html/platforms_partitions.html>`_
-> +provides more detailed information on platform loading.
-> +
-> +xsabin
-> +------
-> +
-> +Each Alveo platform comes packaged with its own xsabin. The xsabin is trusted component of the
-> +platform. For format details refer to :ref:`xsabin/xclbin Container Format`. xsabin contains
-> +basic information like UUIDs, platform name and metadata in the form of device tree. See
-> +:ref:`Device Tree Usage` for details and example.
-> +
-> +xclbin
-> +------
-> +
-> +xclbin is compiled by end user using
-> +`Vitis <https://www.xilinx.com/products/design-tools/vitis/vitis-platform.html>`_ tool set from
-> +Xilinx. The xclbin contains sections describing user compiled acceleration engines/kernels, memory
-> +subsystems, clocking information etc. It also contains bitstream for the user partition, UUIDs,
-> +platform name, etc. xclbin uses the same container format as xsabin which is described below.
-> +
-> +
-> +xsabin/xclbin Container Format
-> +------------------------------
-> +
-> +xclbin/xsabin is ELF-like binary container format. It is structured as series of sections.
-> +There is a file header followed by several section headers which is followed by sections.
-> +A section header points to an actual section. There is an optional signature at the end.
-> +The format is defined by header file ``xclbin.h``. The following figure illustrates a
-> +typical xclbin::
-> +
-> +
-> +          +---------------------+
-> +          |                     |
-> +          |       HEADER        |
-> +          +---------------------+
-> +          |   SECTION  HEADER   |
-> +          |                     |
-> +          +---------------------+
-> +          |         ...         |
-> +          |                     |
-> +          +---------------------+
-> +          |   SECTION  HEADER   |
-> +          |                     |
-> +          +---------------------+
-> +          |       SECTION       |
-> +          |                     |
-> +          +---------------------+
-> +          |         ...         |
-> +          |                     |
-> +          +---------------------+
-> +          |       SECTION       |
-> +          |                     |
-> +          +---------------------+
-> +          |      SIGNATURE      |
-> +          |      (OPTIONAL)     |
-> +          +---------------------+
-> +
-> +
-> +xclbin/xsabin files can be packaged, un-packaged and inspected using XRT utility called
-> +**xclbinutil**. xclbinutil is part of XRT open source software stack. The source code for
-> +xclbinutil can be found at https://github.com/Xilinx/XRT/tree/master/src/runtime_src/tools/xclbinutil
-> +
-> +For example to enumerate the contents of a xclbin/xsabin use the *--info* switch as shown
-> +below::
-> +
-> +  xclbinutil --info --input /opt/xilinx/firmware/u50/gen3x16-xdma/blp/test/bandwidth.xclbin
-> +  xclbinutil --info --input /lib/firmware/xilinx/862c7020a250293e32036f19956669e5/partition.xsabin
-> +
-> +
-> +Device Tree Usage
-> +-----------------
-> +
-> +As mentioned previously xsabin stores metadata which advertise HW subsystems present in a partition.
-> +The metadata is stored in device tree format with well defined schema. Subsystem instantiations are
-> +captured as children of ``addressable_endpoints`` node. Subsystem nodes have standard attributes like
-> +``reg``, ``interrupts`` etc. Additionally the nodes also have PCIe specific attributes:
-> +``pcie_physical_function`` and ``pcie_bar_mapping``. These identify which PCIe physical function and
-> +which BAR space in that physical function the subsystem resides. XRT management driver uses this
-> +information to bind *platform drivers* to the subsystem instantiations. The platform drivers are
-> +found in **xrt-lib.ko** kernel module defined later. Below is an example of device tree for Alveo U50
-> +platform::
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
 
-I might be missing something, but couldn't you structure the addressable
-endpoints in a way that encode the physical function as a parent / child
-relation?
+v5:
+- Avoid truncation of period and duty cycle to 32 bits
+- Make ntxec_pwm_ops const
+- Use regmap_multi_reg_write
+- Add comment about get_state to ntxec_pwm_ops
+- Add comments about non-atomicity of (period, duty cycle) update
 
-What are the regs relative to?
-> +
-> +  /dts-v1/;
-> +
-> +  /{
-> +	logic_uuid = "f465b0a3ae8c64f619bc150384ace69b";
-> +
-> +	schema_version {
-> +		major = <0x01>;
-> +		minor = <0x00>;
-> +	};
-> +
-> +	interfaces {
-> +
-> +		@0 {
-> +			interface_uuid = "862c7020a250293e32036f19956669e5";
-> +		};
-> +	};
-> +
-> +	addressable_endpoints {
-> +
-> +		ep_blp_rom_00 {
-> +			reg = <0x00 0x1f04000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +		};
-> +
-> +		ep_card_flash_program_00 {
-> +			reg = <0x00 0x1f06000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_quad_spi-1.0\0axi_quad_spi";
-> +			interrupts = <0x03 0x03>;
-> +		};
-> +
-> +		ep_cmc_firmware_mem_00 {
-> +			reg = <0x00 0x1e20000 0x00 0x20000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +			firmware {
-> +				firmware_product_name = "cmc";
-> +				firmware_branch_name = "u50";
-> +				firmware_version_major = <0x01>;
-> +				firmware_version_minor = <0x00>;
-> +			};
-> +		};
-> +
-> +		ep_cmc_intc_00 {
-> +			reg = <0x00 0x1e03000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_intc-1.0\0axi_intc";
-> +			interrupts = <0x04 0x04>;
-> +		};
-> +
-> +		ep_cmc_mutex_00 {
-> +			reg = <0x00 0x1e02000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_cmc_regmap_00 {
-> +			reg = <0x00 0x1e08000 0x00 0x2000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +			firmware {
-> +				firmware_product_name = "sc-fw";
-> +				firmware_branch_name = "u50";
-> +				firmware_version_major = <0x05>;
-> +			};
-> +		};
-> +
-> +		ep_cmc_reset_00 {
-> +			reg = <0x00 0x1e01000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_ddr_mem_calib_00 {
-> +			reg = <0x00 0x63000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_debug_bscan_mgmt_00 {
-> +			reg = <0x00 0x1e90000 0x00 0x10000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-debug_bridge-1.0\0debug_bridge";
-> +		};
-> +
-> +		ep_ert_base_address_00 {
-> +			reg = <0x00 0x21000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_ert_command_queue_mgmt_00 {
-> +			reg = <0x00 0x40000 0x00 0x10000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-ert_command_queue-1.0\0ert_command_queue";
-> +		};
-> +
-> +		ep_ert_command_queue_user_00 {
-> +			reg = <0x00 0x40000 0x00 0x10000>;
-> +			pcie_physical_function = <0x01>;
-> +			compatible = "xilinx.com,reg_abs-ert_command_queue-1.0\0ert_command_queue";
-> +		};
-> +
-> +		ep_ert_firmware_mem_00 {
-> +			reg = <0x00 0x30000 0x00 0x8000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +			firmware {
-> +				firmware_product_name = "ert";
-> +				firmware_branch_name = "v20";
-> +				firmware_version_major = <0x01>;
-> +			};
-> +		};
-> +
-> +		ep_ert_intc_00 {
-> +			reg = <0x00 0x23000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_intc-1.0\0axi_intc";
-> +			interrupts = <0x05 0x05>;
-> +		};
-> +
-> +		ep_ert_reset_00 {
-> +			reg = <0x00 0x22000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_ert_sched_00 {
-> +			reg = <0x00 0x50000 0x00 0x1000>;
-> +			pcie_physical_function = <0x01>;
-> +			compatible = "xilinx.com,reg_abs-ert_sched-1.0\0ert_sched";
-> +			interrupts = <0x09 0x0c>;
-> +		};
-> +
-> +		ep_fpga_configuration_00 {
-> +			reg = <0x00 0x1e88000 0x00 0x8000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_hwicap-1.0\0axi_hwicap";
-> +			interrupts = <0x02 0x02>;
-> +		};
-> +
-> +		ep_icap_reset_00 {
-> +			reg = <0x00 0x1f07000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_mailbox_mgmt_00 {
-> +			reg = <0x00 0x1f10000 0x00 0x10000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-mailbox-1.0\0mailbox";
-> +			interrupts = <0x00 0x00>;
-> +		};
-> +
-> +		ep_mailbox_user_00 {
-> +			reg = <0x00 0x1f00000 0x00 0x10000>;
-> +			pcie_physical_function = <0x01>;
-> +			compatible = "xilinx.com,reg_abs-mailbox-1.0\0mailbox";
-> +			interrupts = <0x08 0x08>;
-> +		};
-> +
-> +		ep_msix_00 {
-> +			reg = <0x00 0x00 0x00 0x20000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-msix-1.0\0msix";
-> +			pcie_bar_mapping = <0x02>;
-> +		};
-> +
-> +		ep_pcie_link_mon_00 {
-> +			reg = <0x00 0x1f05000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_pr_isolate_plp_00 {
-> +			reg = <0x00 0x1f01000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_pr_isolate_ulp_00 {
-> +			reg = <0x00 0x1000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +		};
-> +
-> +		ep_uuid_rom_00 {
-> +			reg = <0x00 0x64000 0x00 0x1000>;
-> +			pcie_physical_function = <0x00>;
-> +			compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +		};
-> +
-> +		ep_xdma_00 {
-> +			reg = <0x00 0x00 0x00 0x10000>;
-> +			pcie_physical_function = <0x01>;
-> +			compatible = "xilinx.com,reg_abs-xdma-1.0\0xdma";
-> +			pcie_bar_mapping = <0x02>;
-> +		};
-> +	};
-> +
-> +  }
-> +
-> +
-> +
-> +Deployment Models
-> +=================
-> +
-> +Baremetal
-> +---------
-> +
-> +In bare-metal deployments both MPF and UPF are visible and accessible. xmgmt driver binds to
-> +MPF. xmgmt driver operations are privileged and available to system administrator. The full
-> +stack is illustrated below::
-> +
-> +
-> +                            HOST
-> +
-> +                 [XMGMT]            [XUSER]
-> +                    |                  |
-> +                    |                  |
-> +                 +-----+            +-----+
-> +                 | MPF |            | UPF |
-> +                 |     |            |     |
-> +                 | PF0 |            | PF1 |
-> +                 +--+--+            +--+--+
-> +          ......... ^................. ^..........
-> +                    |                  |
-> +                    |   PCIe DEVICE    |
-> +                    |                  |
-> +                 +--+------------------+--+
-> +                 |         SHELL          |
-> +                 |                        |
-> +                 +------------------------+
-> +                 |         USER           |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 +------------------------+
-> +
-> +
-> +
-> +Virtualized
-> +-----------
-> +
-> +In virtualized deployments privileged MPF is assigned to host but unprivileged UPF
-> +is assigned to guest VM via PCIe pass-through. xmgmt driver in host binds to MPF.
-> +xmgmt driver operations are privileged and only accessible by hosting service provider.
-> +The full stack is illustrated below::
-> +
-> +
-> +                                 .............
-> +                  HOST           .    VM     .
-> +                                 .           .
-> +                 [XMGMT]         .  [XUSER]  .
-> +                    |            .     |     .
-> +                    |            .     |     .
-> +                 +-----+         .  +-----+  .
-> +                 | MPF |         .  | UPF |  .
-> +                 |     |         .  |     |  .
-> +                 | PF0 |         .  | PF1 |  .
-> +                 +--+--+         .  +--+--+  .
-> +          ......... ^................. ^..........
-> +                    |                  |
-> +                    |   PCIe DEVICE    |
-> +                    |                  |
-> +                 +--+------------------+--+
-> +                 |         SHELL          |
-> +                 |                        |
-> +                 +------------------------+
-> +                 |         USER           |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 +------------------------+
-> +
-> +
-> +
-> +Driver Modules
-> +==============
-> +
-> +xrt-lib.ko
-> +----------
-> +
-> +Repository of all subsystem drivers and pure software modules that can potentially
-> +be shared between xmgmt and xuser. All these drivers are structured as Linux
-> +*platform driver* and are instantiated by xmgmt (or xuser in future) based on meta
-> +data associated with hardware. The metadata is in the form of device tree as
-> +explained before.
-> +
-> +xmgmt.ko
-> +--------
-> +
-> +The xmgmt driver is a PCIe device driver driving MPF found on Xilinx's Alveo
-> +PCIE device. It consists of one *root* driver, one or more *partition* drivers
-> +and one or more *leaf* drivers. The root and MPF specific leaf drivers are in
-> +xmgmt.ko. The partition driver and other leaf drivers are in xrt-lib.ko.
-> +
-> +The instantiation of specific partition driver or leaf driver is completely data
-> +driven based on meta data (mostly in device tree format) found through VSEC
-> +capability and inside firmware files, such as xsabin or xclbin file. The root
-> +driver manages life cycle of multiple partition drivers, which, in turn, manages
-> +multiple leaf drivers. This allows a single set of driver code to support all
-> +kinds of subsystems exposed by different shells. The difference among all
-> +these subsystems will be handled in leaf drivers with root and partition drivers
-> +being part of the infrastructure and provide common services for all leaves found
-> +on all platforms.
-> +
-> +
-> +xmgmt-root
-> +^^^^^^^^^^
-> +
-> +The xmgmt-root driver is a PCIe device driver attaches to MPF. It's part of the
-Nit: s/attaches/attached ?
-> +infrastructure of the MPF driver and resides in xmgmt.ko. This driver
-> +
-> +* manages one or more partition drivers
-> +* provides access to functionalities that requires pci_dev, such as PCIE config
-> +  space access, to other leaf drivers through parent calls
-> +* together with partition driver, facilities event callbacks for other leaf drivers
-> +* together with partition driver, facilities inter-leaf driver calls for other leaf
-> +  drivers
-> +
-> +When root driver starts, it will explicitly create an initial partition instance,
-> +which contains leaf drivers that will trigger the creation of other partition
-> +instances. The root driver will wait for all partitions and leaves to be created
-> +before it returns from it's probe routine and claim success of the initialization
-> +of the entire xmgmt driver.
-> +
-> +partition
-> +^^^^^^^^^
-> +
-> +The partition driver is a platform device driver whose life cycle is managed by
-> +root and does not have real IO mem or IRQ resources. It's part of the
-> +infrastructure of the MPF driver and resides in xrt-lib.ko. This driver
-> +
-> +* manages one or more leaf drivers so that multiple leaves can be managed as a group
-> +* provides access to root from leaves, so that parent calls, event notifications
-> +  and inter-leaf calls can happen
-> +
-> +In xmgmt, an initial partition driver instance will be created by root, which
-> +contains leaves that will trigger partition instances to be created to manage
-> +groups of leaves found on different partitions on hardware, such as VSEC, Shell,
-> +and User.
-> +
-> +leaves
-> +^^^^^^
-> +
-> +The leaf driver is a platform device driver whose life cycle is managed by
-> +a partition driver and may or may not have real IO mem or IRQ resources. They
-> +are the real meat of xmgmt and contains platform specific code to Shell and User
-> +found on a MPF.
-> +
-> +A leaf driver may not have real hardware resources when it merely acts as a driver
-> +that manages certain in-memory states for xmgmt. These in-memory states could be
-> +shared by multiple other leaves.
-> +
-> +Leaf drivers assigned to specific hardware resources drive specific subsystem in
-> +the device. To manipulate the subsystem or carry out a task, a leaf driver may ask
-> +help from root via parent calls and/or from other leaves via inter-leaf calls.
-> +
-> +A leaf can also broadcast events through infrastructure code for other leaves
-> +to process. It can also receive event notification from infrastructure about certain
-> +events, such as post-creation or pre-exit of a particular leaf.
-> +
-> +
-> +Driver Interfaces
-> +=================
-> +
-> +xmgmt Driver Ioctls
-> +-------------------
-> +
-> +Ioctls exposed by xmgmt driver to user space are enumerated in the following table:
-> +
-> +== ===================== ============================= ===========================
-> +#  Functionality         ioctl request code            data format
-> +== ===================== ============================= ===========================
-> +1  FPGA image download   XMGMT_IOCICAPDOWNLOAD_AXLF    xmgmt_ioc_bitstream_axlf
-> +2  CL frequency scaling  XMGMT_IOCFREQSCALE            xmgmt_ioc_freqscaling
-> +== ===================== ============================= ===========================
-> +
-> +xmgmt Driver Sysfs
-> +------------------
-> +
-> +xmgmt driver exposes a rich set of sysfs interfaces. Subsystem platform drivers
-> +export sysfs node for every platform instance.
-> +
-> +Every partition also exports its UUIDs. See below for examples::
-> +
-> +  /sys/bus/pci/devices/0000:06:00.0/xmgmt_main.0/interface_uuids
-> +  /sys/bus/pci/devices/0000:06:00.0/xmgmt_main.0/logic_uuids
-> +
-> +
-> +hwmon
-> +-----
-> +
-> +xmgmt driver exposes standard hwmon interface to report voltage, current, temperature,
-> +power, etc. These can easily be viewed using *sensors* command line utility.
-> +
-> +
-> +mailbox
-> +-------
-> +
-> +xmgmt communicates with user physical function driver via HW mailbox. Mailbox opcodes
-> +are defined in ``mailbox_proto.h``. `Mailbox Inter-domain Communication Protocol
-> +<https://xilinx.github.io/XRT/master/html/mailbox.proto.html>`_ defines the full
-> +specification. xmgmt implements subset of the specification. It provides the following
-> +services to the UPF driver:
-> +
-> +1.  Responding to *are you there* request including determining if the two drivers are
-> +    running in the same OS domain
-> +2.  Provide sensor readings, loaded xclbin UUID, clock frequency, shell information, etc.
-> +3.  Perform PCIe hot reset
-> +4.  Download user compiled xclbin
+v4:
+- https://lore.kernel.org/lkml/20201122222739.1455132-5-j.neuschaefer@gmx.=
+net/
+- Document hardware/driver limitations
+- Only accept normal polarity
+- Fix a typo ("zone" -> "zero")
+- change MAX_PERIOD_NS to 0xffff * 125
+- Clamp period to the maximum rather than returning an error
+- Rename private struct pointer to priv
+- Rearrage control flow in _probe to save a few lines and a temporary vari=
+able
+- Add missing MODULE_ALIAS line
+- Spell out ODM
 
-Is this gonna use the mailbox framework?
+v3:
+- https://lore.kernel.org/lkml/20200924192455.2484005-5-j.neuschaefer@gmx.=
+net/
+- Relicense as GPLv2 or later
+- Add email address to copyright line
+- Remove OF compatible string and don't include linux/of_device.h
+- Fix bogus ?: in return line
+- Don't use a comma after sentinels
+- Avoid ret |=3D ... pattern
+- Move 8-bit register conversion to ntxec.h
 
-> +
-> +
-> +Platform Security Considerations
-> +================================
-> +
-> +`Security of Alveo Platform <https://xilinx.github.io/XRT/master/html/security.html>`_
-> +discusses the deployment options and security implications in great detail.
-> --
-> 2.17.1
+v2:
+- https://lore.kernel.org/lkml/20200905133230.1014581-6-j.neuschaefer@gmx.=
+net/
+- Various grammar and style improvements, as suggested by Uwe Kleine-K=C3=
+=B6nig,
+  Lee Jones, and Alexandre Belloni
+- Switch to regmap
+- Prefix registers with NTXEC_REG_
+- Add help text to the Kconfig option
+- Use the .apply callback instead of the old API
+- Add a #define for the time base (125ns)
+- Don't change device state in .probe; this avoids multiple problems
+- Rework division and overflow check logic to perform divisions in 32 bits
+- Avoid setting duty cycle to zero, to work around a hardware quirk
+=2D--
+ drivers/pwm/Kconfig     |   8 ++
+ drivers/pwm/Makefile    |   1 +
+ drivers/pwm/pwm-ntxec.c | 173 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 182 insertions(+)
+ create mode 100644 drivers/pwm/pwm-ntxec.c
 
-That's a lot of text, I'll have to read it again most likely,
+diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+index 63be5362fd3a5..815f329ed5b46 100644
+=2D-- a/drivers/pwm/Kconfig
++++ b/drivers/pwm/Kconfig
+@@ -350,6 +350,14 @@ config PWM_MXS
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called pwm-mxs.
 
-- Moritz
++config PWM_NTXEC
++	tristate "Netronix embedded controller PWM support"
++	depends on MFD_NTXEC
++	help
++	  Say yes here if you want to support the PWM output of the embedded
++	  controller found in certain e-book readers designed by the original
++	  design manufacturer Netronix.
++
+ config PWM_OMAP_DMTIMER
+ 	tristate "OMAP Dual-Mode Timer PWM support"
+ 	depends on OF
+diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+index cbdcd55d69eef..1deb29e6ae8e5 100644
+=2D-- a/drivers/pwm/Makefile
++++ b/drivers/pwm/Makefile
+@@ -32,6 +32,7 @@ obj-$(CONFIG_PWM_MESON)		+=3D pwm-meson.o
+ obj-$(CONFIG_PWM_MEDIATEK)	+=3D pwm-mediatek.o
+ obj-$(CONFIG_PWM_MTK_DISP)	+=3D pwm-mtk-disp.o
+ obj-$(CONFIG_PWM_MXS)		+=3D pwm-mxs.o
++obj-$(CONFIG_PWM_NTXEC)		+=3D pwm-ntxec.o
+ obj-$(CONFIG_PWM_OMAP_DMTIMER)	+=3D pwm-omap-dmtimer.o
+ obj-$(CONFIG_PWM_PCA9685)	+=3D pwm-pca9685.o
+ obj-$(CONFIG_PWM_PXA)		+=3D pwm-pxa.o
+diff --git a/drivers/pwm/pwm-ntxec.c b/drivers/pwm/pwm-ntxec.c
+new file mode 100644
+index 0000000000000..d36c8f8c0a958
+=2D-- /dev/null
++++ b/drivers/pwm/pwm-ntxec.c
+@@ -0,0 +1,173 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * The Netronix embedded controller is a microcontroller found in some
++ * e-book readers designed by the original design manufacturer Netronix, =
+Inc.
++ * It contains RTC, battery monitoring, system power management, and PWM
++ * functionality.
++ *
++ * This driver implements PWM output.
++ *
++ * Copyright 2020 Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
++ *
++ * Limitations:
++ * - The get_state callback is not implemented, because the current state=
+ of
++ *   the PWM output can't be read back from the hardware.
++ * - The hardware can only generate normal polarity output.
++ * - The period and duty cycle can't be changed together in one atomic ac=
+tion.
++ */
++
++#include <linux/mfd/ntxec.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pwm.h>
++#include <linux/regmap.h>
++#include <linux/types.h>
++
++struct ntxec_pwm {
++	struct device *dev;
++	struct ntxec *ec;
++	struct pwm_chip chip;
++};
++
++static struct ntxec_pwm *pwmchip_to_priv(struct pwm_chip *chip)
++{
++	return container_of(chip, struct ntxec_pwm, chip);
++}
++
++#define NTXEC_REG_AUTO_OFF_HI	0xa1
++#define NTXEC_REG_AUTO_OFF_LO	0xa2
++#define NTXEC_REG_ENABLE	0xa3
++#define NTXEC_REG_PERIOD_LOW	0xa4
++#define NTXEC_REG_PERIOD_HIGH	0xa5
++#define NTXEC_REG_DUTY_LOW	0xa6
++#define NTXEC_REG_DUTY_HIGH	0xa7
++
++/*
++ * The time base used in the EC is 8MHz, or 125ns. Period and duty cycle =
+are
++ * measured in this unit.
++ */
++#define TIME_BASE_NS 125
++
++/*
++ * The maximum input value (in nanoseconds) is determined by the time bas=
+e and
++ * the range of the hardware registers that hold the converted value.
++ * It fits into 32 bits, so we can do our calculations in 32 bits as well=
+.
++ */
++#define MAX_PERIOD_NS (TIME_BASE_NS * 0xffff)
++
++static int ntxec_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm_=
+dev,
++			   const struct pwm_state *state)
++{
++	struct ntxec_pwm *priv =3D pwmchip_to_priv(pwm_dev->chip);
++	unsigned int period, duty;
++	struct reg_sequence regs[] =3D {
++		{ NTXEC_REG_PERIOD_HIGH },
++		{ NTXEC_REG_PERIOD_LOW },
++		{ NTXEC_REG_DUTY_HIGH },
++		{ NTXEC_REG_DUTY_LOW }
++	};
++	int res;
++
++	if (state->polarity !=3D PWM_POLARITY_NORMAL)
++		return -EINVAL;
++
++	period =3D min_t(u64, state->period, MAX_PERIOD_NS);
++	duty   =3D min_t(u64, state->duty_cycle, period);
++
++	period /=3D TIME_BASE_NS;
++	duty   /=3D TIME_BASE_NS;
++
++	/*
++	 * Changes to the period and duty cycle take effect as soon as the
++	 * corresponding low byte is written, so the hardware may be configured
++	 * to an inconsistent state after the period is written and before the
++	 * duty cycle is fully written. If, in such a case, the old duty cycle
++	 * is longer than the new period, the EC may output 100% for a moment.
++	 */
++
++	regs[0].def =3D ntxec_reg8(period >> 8);
++	regs[1].def =3D ntxec_reg8(period);
++	regs[2].def =3D ntxec_reg8(duty >> 8);
++	regs[3].def =3D ntxec_reg8(duty);
++
++	res =3D regmap_multi_reg_write(priv->ec->regmap, regs, ARRAY_SIZE(regs))=
+;
++	if (res)
++		return res;
++
++	/*
++	 * Writing a duty cycle of zero puts the device into a state where
++	 * writing a higher duty cycle doesn't result in the brightness that it
++	 * usually results in. This can be fixed by cycling the ENABLE register.
++	 *
++	 * As a workaround, write ENABLE=3D0 when the duty cycle is zero.
++	 */
++	if (state->enabled && duty !=3D 0) {
++		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(1))=
+;
++		if (res)
++			return res;
++
++		/* Disable the auto-off timer */
++		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_HI, ntxec_reg=
+8(0xff));
++		if (res)
++			return res;
++
++		return regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_LO, ntxec_reg8=
+(0xff));
++	} else {
++		return regmap_write(priv->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(0));
++	}
++}
++
++static const struct pwm_ops ntxec_pwm_ops =3D {
++	.owner =3D THIS_MODULE,
++	.apply =3D ntxec_pwm_apply,
++	/*
++	 * No .get_state callback, because the current state cannot be read
++	 * back from the hardware.
++	 */
++};
++
++static int ntxec_pwm_probe(struct platform_device *pdev)
++{
++	struct ntxec *ec =3D dev_get_drvdata(pdev->dev.parent);
++	struct ntxec_pwm *priv;
++	struct pwm_chip *chip;
++
++	priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->ec =3D ec;
++	priv->dev =3D &pdev->dev;
++
++	platform_set_drvdata(pdev, priv);
++
++	chip =3D &priv->chip;
++	chip->dev =3D &pdev->dev;
++	chip->ops =3D &ntxec_pwm_ops;
++	chip->base =3D -1;
++	chip->npwm =3D 1;
++
++	return pwmchip_add(chip);
++}
++
++static int ntxec_pwm_remove(struct platform_device *pdev)
++{
++	struct ntxec_pwm *priv =3D platform_get_drvdata(pdev);
++	struct pwm_chip *chip =3D &priv->chip;
++
++	return pwmchip_remove(chip);
++}
++
++static struct platform_driver ntxec_pwm_driver =3D {
++	.driver =3D {
++		.name =3D "ntxec-pwm",
++	},
++	.probe =3D ntxec_pwm_probe,
++	.remove =3D ntxec_pwm_remove,
++};
++module_platform_driver(ntxec_pwm_driver);
++
++MODULE_AUTHOR("Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>");
++MODULE_DESCRIPTION("PWM driver for Netronix EC");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:ntxec-pwm");
+=2D-
+2.29.2
+
