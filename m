@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A2E2C97D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0970D2C97DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727624AbgLAHKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
+        id S1727639AbgLAHLA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Dec 2020 02:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbgLAHKc (ORCPT
+        with ESMTP id S1725859AbgLAHK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:10:32 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2086DC0613CF;
-        Mon, 30 Nov 2020 23:09:52 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id k17so373471vsp.13;
-        Mon, 30 Nov 2020 23:09:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=gfdRiKeQS5ZmNSxKk+0c7aA/0vSf+2CP1Q0dHquDj5U=;
-        b=h77mcHDPePcZ7/fOj9ZY+/W/6wxnCxYQp4autpWzE+mKDxV3WaJ2aabwVGga8bLfAT
-         Eoah2exgYeba1xw9AAAv6IIMT47up8wmpxqGib9BZiF/2mxj0z7aZkRBRqF73ILNEmvC
-         da/a+YwGDz+4zimY68gVEyOsyMwqMo3qZf0Ckts2d/xL7EZRMD1xmhFVjTsn1e98gffe
-         7I/SUZPPOp8VgA2WbC4y2XJ72bH6ivW+ij/wMsgwOWIzO4bmcf04r7mtkWqlnsmy+rkw
-         B0nw/Pway54GA+UzZ8kSVSY9I9i81VBswTEo0/kq2p8TCOMN3tlGqEsQ90MMAohyYjkD
-         a7yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=gfdRiKeQS5ZmNSxKk+0c7aA/0vSf+2CP1Q0dHquDj5U=;
-        b=C+ih5PzVqLZ1wr1HKqYJ6DMHDXshISUyHRP9SQ49mABwRJvLgWbuVlKEhDdH06IfO+
-         TQ2NAUORNavwq9SWJlNbMhuyrNOjoykcT/LvXCHh8XRiAbY+Ynk6fS2I++EDOCCXfpNb
-         tdDeOMnqfgEAkvlW/h99EzkIFNbEAY0yzE5pOzOZ7GzcLINzWTTvP/1HukL1QdsArJ3x
-         027ZzT2kNWaNBXTqX36YBiEN1AHuaR9q1GG17g2OgEOoQYSsXxpyN7rJbm+d4eSWMD57
-         c+ck8zvicTBFrYaEYZSY9wZxNdo37pGeQiW/NB5uJIbHhkTWZKczhaXkOb58lxn1l3UO
-         6QAg==
-X-Gm-Message-State: AOAM533Vz42fEbTl4/KtIY3HvuYTAfXekVR3/SqHxDQDauK/iQEk48fc
-        VgLOTf4az+nfeKEBT/ds4bqlL7wfJ1G4UMzST26QoBvvIhrHgw==
-X-Google-Smtp-Source: ABdhPJxWXgqOlhdu+xUTSc5snGEx/DQ7+VLorBci2PpS0Kb2zdFbkOnqyarP/7iBDakHtrxOWu0rqoEHSUqo+M22nRI=
-X-Received: by 2002:a67:87cd:: with SMTP id j196mr1352624vsd.43.1606806591417;
- Mon, 30 Nov 2020 23:09:51 -0800 (PST)
+        Tue, 1 Dec 2020 02:10:59 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC20C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:10:19 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kjznf-0000Bz-1A; Tue, 01 Dec 2020 08:10:11 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kjzne-0006Fw-G9; Tue, 01 Dec 2020 08:10:10 +0100
+Date:   Tue, 1 Dec 2020 08:10:10 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v1 2/2] ARM: dts: add Protonic MVT board
+Message-ID: <20201201071010.e6joif4aoxdy23xg@pengutronix.de>
+References: <20201130131406.10925-1-o.rempel@pengutronix.de>
+ <20201130131406.10925-2-o.rempel@pengutronix.de>
+ <CAOMZO5DM8aToy_PRrY2cW5zbZf0xjfN9H4PrYTy+9Mq0NRii7w@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:6ecb:0:0:0:0:0 with HTTP; Mon, 30 Nov 2020 23:09:50
- -0800 (PST)
-In-Reply-To: <ffec9dbe-a238-4411-acdb-41bd33719288@kernel.org>
-References: <20201130153742.9163-1-johan@kernel.org> <20201130153742.9163-2-johan@kernel.org>
- <ffec9dbe-a238-4411-acdb-41bd33719288@kernel.org>
-From:   Mychaela Falconia <mychaela.falconia@gmail.com>
-Date:   Mon, 30 Nov 2020 23:09:50 -0800
-Message-ID: <CA+uuBqa-k0Ztt18cetCdYs=6tBk8xTHufaFAcbpA3wert8nFAA@mail.gmail.com>
-Subject: Re: [PATCH 1/5] tty: add port flag to suppress ready signalling on open
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAOMZO5DM8aToy_PRrY2cW5zbZf0xjfN9H4PrYTy+9Mq0NRii7w@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:05:44 up 381 days, 22:24, 51 users,  load average: 0.09, 0.06,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20, Jiri Slaby <jirislaby@kernel.org> wrote:
-> port can be const here.
-> [...]
-> We have assign_bit() for these cases these days.
+On Mon, Nov 30, 2020 at 10:22:38AM -0300, Fabio Estevam wrote:
+> Hi Oleksij,
+> 
+> On Mon, Nov 30, 2020 at 10:14 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> 
+> > +&ecspi1 {
+> > +       cs-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+> 
+> Shouldn't this be GPIO_ACTIVE_LOW instead?
 
-Johan's patch adding test and set accessor inline functions for the
-new flag follows the style of the existing accessor inline functions
-for previously existing flags, for the sake of consistency. If we are
-going to use the new style (const for test functions, assign_bit() for
-set functions) for the new flag, then we should also change all
-existing ones for consistency. In terms of patch splitting, would it
-be most kosher to have one patch that updates the style of existing
-accessor inline functions, and then the interesting patch that adds
-the new flag?
+ACK, it was fixed up by this code:
+https://elixir.bootlin.com/linux/v5.10-rc6/source/drivers/gpio/gpiolib-of.c#L210
 
-M~
+So, it was still working.
+
+Thank you! I'll fix it.
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
