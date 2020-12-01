@@ -2,154 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AB32CB0A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1D92CB0A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgLAXFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:05:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgLAXFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:05:20 -0500
-Date:   Tue, 1 Dec 2020 23:04:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606863879;
-        bh=+P5vOdE+JdhBYVVmnBPwF/BQp7C9Ej9MDqmd8+IjdKI=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rAt6FAvKgNYwFAgXKvslaKL2L6D4TLQGFxZmDaTouwi97GTnBFyrm06gN7lGsh3ep
-         JNTvMNBGYwgPEMCS26CZ+p8j7CC0jYFldWx8GhpDNTh5+gMpmQzAV9Pn/tYxecOCxN
-         bwTthtT3eT5majrxU3YmECb7LZk3Mpa8R6JOHjpc=
-From:   Will Deacon <will@kernel.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
-Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb
- option
-Message-ID: <20201201230432.GC28496@willie-the-truck>
-References: <20201128160141.1003903-1-npiggin@gmail.com>
- <20201128160141.1003903-7-npiggin@gmail.com>
- <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
- <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
- <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com>
- <20201201212758.GA28300@willie-the-truck>
- <CALCETrVP3qAQ50yHU-AzZQsiRB9JGO5FQf91kuk7DCvNY51EXQ@mail.gmail.com>
+        id S1726486AbgLAXHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:07:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgLAXHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 18:07:09 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3187AC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 15:06:23 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id z21so8082292lfe.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 15:06:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LkvyS2XwAUCBG0T0sNi/1VUrEbEkR9dvlUAWjQGxroE=;
+        b=xo/yQHm9fnuzKkRWd2G26TvO6DmqQuLw3krYpZy5V5t3MW1AafKECSZ78/R3s5aDXY
+         t0i9Qzgn9PhzIWBgxcD7i8XdJA8E9DX4/gBexSTqb+ohp/W++aVErJwjRdgQqOMA8rCb
+         I5PwcV5lWtIC8ObwiKY3hgAiaQgPumyCOWjhRi7XBMUACdZaNgnAh84GBy5y/E/Su6Ry
+         YUcbmB8ratAVfIjgaOIytkzHdz9rdJe2tWViSUqIZj5zqgDDQzz5qE2QDCI5UsYx6TQ+
+         QyMqoN1nnJENPZMTSZgUo0PmGmqnP74ws1lEHsHv3/t//sV/sAPZ2fvDKo0KcPbGi/1H
+         yhQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LkvyS2XwAUCBG0T0sNi/1VUrEbEkR9dvlUAWjQGxroE=;
+        b=E9G5BWX0Z/eLG2KJ1Xy+ttddh1gAnTT3f4vr3pmq17djL7qRs3FpM1eF2CBV9waHz5
+         EZCwinwzJByDPwh/WX2L5piM3J1j+AjoTBwEsDDw5A71HQhBVlRKKMPsexr1F2HX7P4n
+         /mlYSxNch8zeMQtueWg0KX6xXDuPpM949ZUNK/pw44QyOT65AGy+zupVT5Y8hYJkjtI8
+         +EGfBdnOuFq4+qjXYzU69Da976HBLTM71/rOkXEuV+bF0ta4tkTvaQr1YJpXbLOiuy0e
+         uZT5bLd2QIs/J/fpGjZFp0J91AJdv89meHmoL8PjS/Qgmm9xP21jIGPBEEdqrZ5+Ma60
+         jfzw==
+X-Gm-Message-State: AOAM532KWYfpdFAD+8ktGoBMwYCLXm9KQ1XepHRCFnR+MSVpg8ndrK0m
+        DUyy0ttm98fCkIrqJi1zgui2BiVJHi+znUeB/attww==
+X-Google-Smtp-Source: ABdhPJwJpkEJa2W03wohD7Ix8jmmuqkCNfNJAbp0Hj6t9Pli3rRF9RLzMEEx7hjWWK1/zYH0ZDcyhRTNuRDn27QFsE0=
+X-Received: by 2002:a19:5f11:: with SMTP id t17mr2147583lfb.572.1606863981608;
+ Tue, 01 Dec 2020 15:06:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVP3qAQ50yHU-AzZQsiRB9JGO5FQf91kuk7DCvNY51EXQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <d1a71663e96239ced28509980ea484cadc10c80a.1606170299.git.writetopawan@gmail.com>
+In-Reply-To: <d1a71663e96239ced28509980ea484cadc10c80a.1606170299.git.writetopawan@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 2 Dec 2020 00:06:10 +0100
+Message-ID: <CACRpkdYDWGN3iJbEP9F_8vw1+R-farPbKT6x9ZqyksH6cQ4fTA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: core: Fix unused variable build warnings
+To:     Pawan Gupta <writetopawan@gmail.com>, He Zhe <zhe.he@windriver.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:50:38PM -0800, Andy Lutomirski wrote:
-> On Tue, Dec 1, 2020 at 1:28 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Mon, Nov 30, 2020 at 10:31:51AM -0800, Andy Lutomirski wrote:
-> > > other arch folk: there's some background here:
-> > >
-> > > https://lkml.kernel.org/r/CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com
-> > >
-> > > On Sun, Nov 29, 2020 at 12:16 PM Andy Lutomirski <luto@kernel.org> wrote:
-> > > >
-> > > > On Sat, Nov 28, 2020 at 7:54 PM Andy Lutomirski <luto@kernel.org> wrote:
-> > > > >
-> > > > > On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
-> > > > > >
-> > > > > > On big systems, the mm refcount can become highly contented when doing
-> > > > > > a lot of context switching with threaded applications (particularly
-> > > > > > switching between the idle thread and an application thread).
-> > > > > >
-> > > > > > Abandoning lazy tlb slows switching down quite a bit in the important
-> > > > > > user->idle->user cases, so so instead implement a non-refcounted scheme
-> > > > > > that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
-> > > > > > any remaining lazy ones.
-> > > > > >
-> > > > > > Shootdown IPIs are some concern, but they have not been observed to be
-> > > > > > a big problem with this scheme (the powerpc implementation generated
-> > > > > > 314 additional interrupts on a 144 CPU system during a kernel compile).
-> > > > > > There are a number of strategies that could be employed to reduce IPIs
-> > > > > > if they turn out to be a problem for some workload.
-> > > > >
-> > > > > I'm still wondering whether we can do even better.
-> > > > >
-> > > >
-> > > > Hold on a sec.. __mmput() unmaps VMAs, frees pagetables, and flushes
-> > > > the TLB.  On x86, this will shoot down all lazies as long as even a
-> > > > single pagetable was freed.  (Or at least it will if we don't have a
-> > > > serious bug, but the code seems okay.  We'll hit pmd_free_tlb, which
-> > > > sets tlb->freed_tables, which will trigger the IPI.)  So, on
-> > > > architectures like x86, the shootdown approach should be free.  The
-> > > > only way it ought to have any excess IPIs is if we have CPUs in
-> > > > mm_cpumask() that don't need IPI to free pagetables, which could
-> > > > happen on paravirt.
-> > >
-> > > Indeed, on x86, we do this:
-> > >
-> > > [   11.558844]  flush_tlb_mm_range.cold+0x18/0x1d
-> > > [   11.559905]  tlb_finish_mmu+0x10e/0x1a0
-> > > [   11.561068]  exit_mmap+0xc8/0x1a0
-> > > [   11.561932]  mmput+0x29/0xd0
-> > > [   11.562688]  do_exit+0x316/0xa90
-> > > [   11.563588]  do_group_exit+0x34/0xb0
-> > > [   11.564476]  __x64_sys_exit_group+0xf/0x10
-> > > [   11.565512]  do_syscall_64+0x34/0x50
-> > >
-> > > and we have info->freed_tables set.
-> > >
-> > > What are the architectures that have large systems like?
-> > >
-> > > x86: we already zap lazies, so it should cost basically nothing to do
-> > > a little loop at the end of __mmput() to make sure that no lazies are
-> > > left.  If we care about paravirt performance, we could implement one
-> > > of the optimizations I mentioned above to fix up the refcounts instead
-> > > of sending an IPI to any remaining lazies.
-> > >
-> > > arm64: AFAICT arm64's flush uses magic arm64 hardware support for
-> > > remote flushes, so any lazy mm references will still exist after
-> > > exit_mmap().  (arm64 uses lazy TLB, right?)  So this is kind of like
-> > > the x86 paravirt case.  Are there large enough arm64 systems that any
-> > > of this matters?
-> >
-> > Yes, there are large arm64 systems where performance of TLB invalidation
-> > matters, but they're either niche (supercomputers) or not readily available
-> > (NUMA boxes).
-> >
-> > But anyway, we blow away the TLB for everybody in tlb_finish_mmu() after
-> > freeing the page-tables. We have an optimisation to avoid flushing if
-> > we're just unmapping leaf entries when the mm is going away, but we don't
-> > have a choice once we get to actually reclaiming the page-tables.
-> >
-> > One thing I probably should mention, though, is that we don't maintain
-> > mm_cpumask() because we're not able to benefit from it and the atomic
-> > update is a waste of time.
-> 
-> Do you do anything special for lazy TLB or do you just use the generic
-> code?  (i.e. where do your user pagetables point when you go from a
-> user task to idle or to a kernel thread?)
+On Mon, Nov 23, 2020 at 11:41 PM Pawan Gupta <writetopawan@gmail.com> wrote=
+:
 
-We don't do anything special (there's something funny with the PAN emulation
-but you can ignore that); the page-table just points wherever it did before
-for userspace. Switching explicitly to the init_mm, however, causes us to
-unmap userspace entirely.
+> A recent commit f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs
+> file") added build warnings when CONFIG_GPIOLIB=3Dn. Offcourse the kernel
+> fails to build when warnings are treated as errors. Below is the error
+> message:
+>
+>   $ make CFLAGS_KERNEL+=3D-Werror
+>
+>   drivers/pinctrl/core.c: In function =E2=80=98pinctrl_pins_show=E2=80=99=
+:
+>   drivers/pinctrl/core.c:1607:20: error: unused variable =E2=80=98chip=E2=
+=80=99 [-Werror=3Dunused-variable]
+>    1607 |  struct gpio_chip *chip;
+>         |                    ^~~~
+>   drivers/pinctrl/core.c:1606:15: error: unused variable =E2=80=98gpio_nu=
+m=E2=80=99 [-Werror=3Dunused-variable]
+>    1606 |  unsigned int gpio_num;
+>         |               ^~~~~~~~
+>   drivers/pinctrl/core.c:1605:29: error: unused variable =E2=80=98range=
+=E2=80=99 [-Werror=3Dunused-variable]
+>    1605 |  struct pinctrl_gpio_range *range;
+>         |                             ^~~~~
+>   cc1: all warnings being treated as errors
+>
+> These variables are only used inside #ifdef CONFIG_GPIOLIB, fix the
+> build warnings by wrapping the definition inside the config.
+>
+> Fixes: f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
+> Signed-off-by: Pawan Gupta <writetopawan@gmail.com>
 
-Since we have ASIDs, switch_mm() generally doesn't have to care about the
-TLBs at all.
+This was fixed in
+commit b507cb92477ad85902783a183c5ce01d16296687
+"pinctrl: core: Add missing #ifdef CONFIG_GPIOLIB"
+On october 28.
 
-> Do you end up with all cpus set in mm_cpumask or can you have the mm
-> loaded on a CPU that isn't in mm_cpumask?
+Thanks anyways!
 
-I think the mask is always zero (we never set anything in there).
-
-Will
+Yours,
+Linus Walleij
