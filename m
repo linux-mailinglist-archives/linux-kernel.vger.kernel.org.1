@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88AD2CA0E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB412CA0EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730419AbgLALFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:05:38 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:39294 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726481AbgLALFh (ORCPT
+        id S1727637AbgLALGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726689AbgLALGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:05:37 -0500
-Received: by mail-lf1-f66.google.com with SMTP id j205so3313897lfj.6;
-        Tue, 01 Dec 2020 03:05:20 -0800 (PST)
+        Tue, 1 Dec 2020 06:06:51 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACC7C0613D2;
+        Tue,  1 Dec 2020 03:06:11 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id j13so1027564pjz.3;
+        Tue, 01 Dec 2020 03:06:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nKIYXaScaIE7TEOxHPKKOMA1edFOJVdBECoLY/zrsjk=;
+        b=gzKNikVppqu163aDscUKjy47nSF+BZMMVUkL1n8ZhDCAzk/k1f5Gz1cvFju0C5AssG
+         dMiiNelWookXTDzBGk+qPQ0pW2PrMDJ9NNNnKNDrKmJijIz4t+BzJXhM5TPeuzukh3Zp
+         8yLmjVEjzwA1R7OFORS0IAguWeLl2FGTcOajuaOJHRty478JWLV3/s58wiRfmQX9UnOj
+         QTeqaI8KUMGlLld21DZJphgMWDR3BROhD52bb5FYj+V6qK3P+f3OTwTu1hiusvUMSTAz
+         tRSvYXeCW7oSnKuSv4pTaGdtEW5EUfOtL3nJXcGrbQ1LhIQL7P4VzEDMRz4efDwgK1Ma
+         1JFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4ZjTqWQg2jIPQhER2sb7NQwX/zIXr+mOf1RdttZR1ro=;
-        b=RYT3N2Iwj2+8Xkp4ch1LGRZ6k5OezEHJSghKb4UqfVPImb/uXwWr5ewWMNTVkDoxM8
-         bH5d/ceRIjOuowe/uIV5cQiQywe5f6tLwLv3rgSvJK8fT5Oi2858qhxHscvvtY7le5PR
-         G3kmNJwKQ33VW7Qx67L0PLTPmW74fssONHmg93vKWoVuoIYx/6wO2nUdSdKyfmYNjp+J
-         oF0w7BnAbelMAI9MW8ZH5TtYjSq4Lj2RXCi6KrjynQMO9a+mhJrNZbzkZD4r18M97Sjv
-         6Xri6KZIHgQnOC1lYxkbTPwNHTKw3V/Rueus2Tu3UpThfC02u67fFT+HtUzbtnTQOhmB
-         2Xaw==
-X-Gm-Message-State: AOAM5313tuaKhpeChaZJooD60ok13S+2eVe4KW4horEtUsZOWh7drrDO
-        F/uKheMANmv1M88gOubAQCg=
-X-Google-Smtp-Source: ABdhPJyh8cybXM/HYJz+NxigWFIexVLJjuUx8E9eZpx1SXTPfsYPSA/LATO9eFKq44PSpQq5k2i62w==
-X-Received: by 2002:a19:f504:: with SMTP id j4mr967582lfb.163.1606820695097;
-        Tue, 01 Dec 2020 03:04:55 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id d19sm164950lfc.139.2020.12.01.03.04.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 03:04:54 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kk3TH-0007KC-GI; Tue, 01 Dec 2020 12:05:24 +0100
-Date:   Tue, 1 Dec 2020 12:05:23 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
- signalling on open
-Message-ID: <X8Yjc0+Q7fM0nZP+@localhost>
-References: <20201130153742.9163-1-johan@kernel.org>
- <20201130153742.9163-3-johan@kernel.org>
- <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
- <X8X9B1jYujUIWXaK@localhost>
- <CAHp75VfQud=QxwZyhYRU9mtNvrudj0tS6LOuutfJDVdv=-ptXw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nKIYXaScaIE7TEOxHPKKOMA1edFOJVdBECoLY/zrsjk=;
+        b=jKXOD0xL7BJ/M+FQSJo9NjKCvRm7ASUXhBgqA8muLkb5U91Aa0L7PZDHhW6oCO7Sb1
+         wv2ntiJ4/G6NuMUXMpVV9iuRg6Ai6nHbNTTy6mpXlpHUVC4KyCbsqkExgYlm+6bUngM+
+         MaH4TwHfp3Hbbwen5xo+rfslXbJNtsofWVCK9yKbW5UwMDFFXJtakDuuHVVoU/KL3zb6
+         bk1Vyhr1sUR3Te3XCOju62qvMwuKVD+xrn374fjPjF2TEwxImCMk8gNb2wPJtupT62JY
+         HcCae4qr/PTjsrl7VtLDwsUyWt9iVM2/e7mOsxp6lj+ruKG1CVGm0SwHggy/nAQT2LQC
+         wttg==
+X-Gm-Message-State: AOAM532fkHOwTk2+iCQXXGCAOwWT2Dy4WJdnDJx/os1Mroa5dCmFzTA3
+        wKjrCYcYGaZh28QR7c9DVKZTbPYKdHvUk7v4MQ8=
+X-Google-Smtp-Source: ABdhPJwGj51Jga696lxn1uueNX6o3bKkRA2+c5xczsN64bmbGAJmaBGOQfx6Y32TI0yXWgAaHPiLtdss+msba2YlucA=
+X-Received: by 2002:a17:902:ac93:b029:d8:d2c5:e5b1 with SMTP id
+ h19-20020a170902ac93b02900d8d2c5e5b1mr2295356plr.17.1606820771072; Tue, 01
+ Dec 2020 03:06:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VfQud=QxwZyhYRU9mtNvrudj0tS6LOuutfJDVdv=-ptXw@mail.gmail.com>
+References: <20201201071632.68471-1-98.arpi@gmail.com>
+In-Reply-To: <20201201071632.68471-1-98.arpi@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 1 Dec 2020 13:06:59 +0200
+Message-ID: <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: Convert test_hexdump.c to KUnit
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 12:55:54PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 1, 2020 at 10:20 AM Johan Hovold <johan@kernel.org> wrote:
-> > On Mon, Nov 30, 2020 at 08:27:54PM +0200, Andy Shevchenko wrote:
-> > > On Mon, Nov 30, 2020 at 5:42 PM Johan Hovold <johan@kernel.org> wrote:
-> 
-> > > > +       ret = kstrtouint(buf, 0, &val);
-> > > > +       if (ret)
-> > > > +               return ret;
-> > >
-> > > > +       if (val > 1)
-> > > > +               return -EINVAL;
-> > >
-> > > Can't we utilise kstrtobool() instead?
-> >
-> > I chose not to as kstrtobool() results in a horrid interface. To many
-> > options to do the same thing and you end up with confusing things like
-> > "0x01" being accepted but treated as false (as only the first character
-> > is considered).
-> 
-> And this is perfectly fine. 0x01 is not boolean.
+On Tue, Dec 1, 2020 at 9:21 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> Convert test lib/test_hexdump.c to KUnit. More information about
+> KUnit can be found at:
+> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+> KUnit provides a common framework for unit tests in the kernel.
+> KUnit and kselftest are standardizing around KTAP, converting this
+> test to KUnit makes this test output in KTAP which we are trying to
+> make the standard test result format for the kernel.
 
-0x01 is 1 and is generally treated as boolean true as you know.
+Below doesn't suit commit message, perhaps adding it after '---' line
+would be good. In the commit message you can choose one failed case
+followed by all OK and show the difference.
 
-So why should a sysfs-interface accept it as valid input and treat it as
-false? That's just bad design.
+> I ran both the original and converted tests as is to produce the
+> output for success of the test in the two cases. I also ran these
+> tests with a small modification to show the difference in the output
+> for failure of the test in both cases. The modification I made is:
+>  static const char * const test_data_4_le[] __initconst = {
+> -       "7bdb32be", "b293180a", "24c4ba70", "9b34837d",
+> +       "7bdb32be", "b293180a", "24c4ba70", "9b3483d",
+>
+> The difference in outputs can be seen here:
+> https://gist.github.com/arpi-r/38f53a3c65692bf684a6bf3453884b6e
 
-> > Not sure how that ever made it into sysfs code...
-> >
-> > The attribute is read back as "0" or "1" and those are precisely the
-> > values that can be written back (well, modulo radix).
-> 
-> So, how does it affect the kstrtobool() interface?
-> You read back 0 and 1 and they are pretty much accepted by it.
-> 
-> > It's not relevant in this case, but tight control over the inputs also
-> > allows for extending the range later.
-> 
-> And kstrtobool() does it. So I don't see any difference except a few
-> less lines of code and actually *stricter* rules than kstrtouint()
-> has.
+Looks pretty much good, what I'm sad to see is the absence of the test
+statistics. Any ideas if we can get it back?
 
-You miss the point; kstrobool accepts "12" today and treats it as true.
-You cannot extend such an interface to later accept a larger range than
-0 and 1 as you didn't return an error for "12" from the start (as someone
-might now rely on "12" being treated as "1").
-
-Johan
+-- 
+With Best Regards,
+Andy Shevchenko
