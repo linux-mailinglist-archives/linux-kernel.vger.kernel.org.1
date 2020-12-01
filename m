@@ -2,83 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D128D2C968B
+	by mail.lfdr.de (Postfix) with ESMTP id 56CBE2C968A
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387411AbgLAEgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 23:36:06 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:36590 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgLAEgF (ORCPT
+        id S1728490AbgLAEfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 23:35:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725861AbgLAEfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 23:36:05 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14Yx01180179;
-        Tue, 1 Dec 2020 04:35:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=pMZZDgMq3zFb0hZZCK8VotbV6lsM2DekpaRSbmQLUy4=;
- b=nZI9dfYh0/o8uWYSKGGkcQ7NooU21QiXILaMn5Fq8w++mc9Cb27KsQ1DAFKnNOKJOZkq
- EX5pkmPAnCFrhu+e1Jx6omz0th7hSVaJ08RwFoaeGBxmbQFuU9gLEop2YPOax0kF6uHk
- 3fN8So2Fw8997AgPQtQtcvd0D+ErB2bLTJSInafrPUEaw0GwPsGQ9nm5/IVlrgOTOACo
- aRsgvSQuFifOXaOAddXd69MEGj+Ly05YkV768uYxyR+1KUnDSN0OmB2uVdZttZc/as9E
- b5dQFmCyh5I9Ho/eZoJ7L6Wi6j835hq06JUsjry4AvfmaYhI4Y4gCGx5shQgwWzh0/MV vg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 353c2arn0x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 04:35:19 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14ZIH6010356;
-        Tue, 1 Dec 2020 04:35:18 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3540fw9jkj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Dec 2020 04:35:18 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B14Z6wE002132;
-        Tue, 1 Dec 2020 04:35:06 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 20:35:06 -0800
-To:     Colin King <colin.king@canonical.com>
-Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: pm8001: remove space in a debug message
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1wny2i1ov.fsf@ca-mkp.ca.oracle.com>
-References: <20201124093828.307709-1-colin.king@canonical.com>
-Date:   Mon, 30 Nov 2020 23:35:04 -0500
-In-Reply-To: <20201124093828.307709-1-colin.king@canonical.com> (Colin King's
-        message of "Tue, 24 Nov 2020 09:38:28 +0000")
+        Mon, 30 Nov 2020 23:35:47 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC749C0613CF;
+        Mon, 30 Nov 2020 20:35:07 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id e5so466440pjt.0;
+        Mon, 30 Nov 2020 20:35:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=BPtWYGD7y8CigqXoE2gXVtOc81D8k8JttMXCbXMY8s0=;
+        b=YtFuwEFsueHt4H+UiwWyjkGT+32Y7ExycKvIjYZJyciw08BO8hcpGs/PW2Up2XUhDV
+         McPNQ4m4mviviDMYzU/W4wBwVDXT+RmBa6V1PeDFDfyHeNKhhkniIu34apuz41AhSzs6
+         v5FlmRULyJNvR4zG+Mq2y21Hy/R+zftifiFqbLnBCa2ueaPCaYpaPPXHJs5Wy/n4kJ/y
+         r/lxdug5eGLvhr/x+6tdEH8jHqGgs+t9P2boyf/Rrc2IFwElPE3gUVRWMdi0Q0raAMRf
+         Gk5tBWIwjxKz8PqRBg5BdRgWLg424IglcC2I+fsHZX5Yt2LtN0q0p8mPZh7cLK0AMczd
+         IbDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=BPtWYGD7y8CigqXoE2gXVtOc81D8k8JttMXCbXMY8s0=;
+        b=WRjLNXC5P57dTa/Gdkc14MfguUw4XHweeGto3i4b0k98xuuqE/NyrMSUduudytUkjV
+         5XdI40UlCiU1Ssi8bewwQJA6tG2BjUr6HyYLyIaV4dInlvqnzXFnyuSdBJUxD1z48UZu
+         GPydEyZadceRxnc6PiZULjht+jldICj+tFHLWCnltNmo4zr3M+N61J1DxR6QGKUlOxfg
+         A7LtJbZvE+qk2GwVkEHVTC7tOYRfzPQgnF4+lX/xuR3B/ghM5Ou+B8bfAIe2+MeQ6bx4
+         o6pjwvD1lqXcrkg+lzSlFLNB71uxZQ0rvyCAPZi09fK/v5t75MyTwFIx/Jatvs25cHRL
+         RMVg==
+X-Gm-Message-State: AOAM5333UXLa2m7QnHyR55wc2rLIVvRNlymIIvK+DbynlDm22yqRp2qO
+        BGXrJgHqLXRt9mRfuAY06x7wgNG30d2PEYbZLZpol/zRSVg=
+X-Google-Smtp-Source: ABdhPJyBt3QNzW9OVRkY+oVCY64/AnhKw2iU+cGYjXVyQhP9Bv0zJs3DTlgcK9463VIJADa4k/DRkmH2iag8z8YK/zo=
+X-Received: by 2002:a17:902:a581:b029:da:d78:7f79 with SMTP id
+ az1-20020a170902a581b02900da0d787f79mr1073866plb.32.1606797307177; Mon, 30
+ Nov 2020 20:35:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
- phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010031
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012010031
+Received: by 2002:a17:90a:7886:0:0:0:0 with HTTP; Mon, 30 Nov 2020 20:35:06
+ -0800 (PST)
+In-Reply-To: <20201130112137.587437-1-yili@winhong.com>
+References: <20201130112137.587437-1-yili@winhong.com>
+From:   Yi Li <yilikernel@gmail.com>
+Date:   Tue, 1 Dec 2020 12:35:06 +0800
+Message-ID: <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
+Subject: Re: [PATCH] bcache: fix panic due to cache_set is null
+To:     Yi Li <yili@winhong.com>
+Cc:     colyli@suse.de, kent.overstreet@gmail.com,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Chao <guochao@winhong.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+sorry, This patch will cause deadlock, i will check and redo it.
 
-Colin,
-
-> There are two words that need separating with a space in a 
-> pm8001_dbg message. Fix it.
-
-Applied to 5.11/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+On 11/30/20, Yi Li <yili@winhong.com> wrote:
+> bcache_device_detach will release the cache_set after hotunplug cache
+> disk. update_writeback_rate should check validate of cache_set.
+>
+>   IP: [<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+>   PGD 879620067 PUD 8755d3067 PMD 0
+>   Oops: 0000 [#1] SMP
+>   CPU: 8 PID: 1005702 Comm: kworker/8:0 Tainted: G 4.4.0+10 #1
+>   Hardware name: Intel BIOS SE5C610.86B.01.01.0021.032120170601 03/21/2017
+>   Workqueue: events update_writeback_rate [bcache]
+>   task: ffff8808786f3800 ti: ffff88077082c000 task.ti: ffff88077082c000
+>   RIP: e030:[<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+>   RSP: e02b:ffff88077082fde0  EFLAGS: 00010202
+>   RAX: 0000000000000018 RBX: ffff8808047f0b08 RCX: 0000000000000000
+>   RDX: 0000000000000001 RSI: ffff88088170dab8 RDI: ffff88088170dab8
+>   RBP: ffff88077082fe18 R08: 000000000000000a R09: 0000000000000000
+>   R10: 0000000000000000 R11: 0000000000017bc8 R12: 0000000000000000
+>   R13: ffff8808047f0000 R14: 0000000000000200 R15: ffff8808047f0b08
+>   FS:  00007f157b6d6700(0000) GS:ffff880881700000(0000)
+> knlGS:0000000000000000
+>   CS:  e033 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 0000000000000368 CR3: 0000000875c05000 CR4: 0000000000040660
+>   Stack:
+>    0000000000000001 0000000000007ff0 ffff88085ff600c0 ffff880881714e80
+>    ffff880881719500 0000000000000200 ffff8808047f0b08 ffff88077082fe60
+>    ffffffff81088c0c 0000000081714e80 0000000000000000 ffff880881714e80
+>   Call Trace:
+>    [<ffffffff81088c0c>] process_one_work+0x1fc/0x3b0
+>    [<ffffffff81089575>] worker_thread+0x2a5/0x470
+>    [<ffffffff815a2f58>] ? __schedule+0x648/0x870
+>    [<ffffffff810892d0>] ? rescuer_thread+0x300/0x300
+>    [<ffffffff8108e3d5>] kthread+0xd5/0xe0
+>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+>    [<ffffffff815a704f>] ret_from_fork+0x3f/0x70
+>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+>
+> Reported-by: Guo Chao <guochao@winhong.com>
+> Signed-off-by: Guo Chao <guochao@winhong.com>
+> Signed-off-by: Yi Li <yili@winhong.com>
+> ---
+>  drivers/md/bcache/writeback.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+> index 3c74996978da..186c4c6e1607 100644
+> --- a/drivers/md/bcache/writeback.c
+> +++ b/drivers/md/bcache/writeback.c
+> @@ -175,7 +175,15 @@ static void update_writeback_rate(struct work_struct
+> *work)
+>  	struct cached_dev *dc = container_of(to_delayed_work(work),
+>  					     struct cached_dev,
+>  					     writeback_rate_update);
+> -	struct cache_set *c = dc->disk.c;
+> +	struct cache_set *c = NULL;
+> +
+> +	mutex_lock(&bch_register_lock);
+> +	c = dc->disk.c;
+> +
+> +	if (c == NULL) {
+> +		mutex_unlock(&bch_register_lock);
+> +		return;
+> +	}
+>
+>  	/*
+>  	 * should check BCACHE_DEV_RATE_DW_RUNNING before calling
+> @@ -194,6 +202,7 @@ static void update_writeback_rate(struct work_struct
+> *work)
+>  		clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
+>  		/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
+>  		smp_mb__after_atomic();
+> +		mutex_unlock(&bch_register_lock);
+>  		return;
+>  	}
+>
+> @@ -230,6 +239,7 @@ static void update_writeback_rate(struct work_struct
+> *work)
+>  	clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
+>  	/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
+>  	smp_mb__after_atomic();
+> +	mutex_unlock(&bch_register_lock);
+>  }
+>
+>  static unsigned int writeback_delay(struct cached_dev *dc,
+> --
+> 2.25.3
+>
+>
+>
+>
