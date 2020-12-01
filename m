@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D7B2C980E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B322C980F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgLAHWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:22:18 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2323 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727468AbgLAHWR (ORCPT
+        id S1727699AbgLAHY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:24:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727369AbgLAHY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:22:17 -0500
-Received: from dggeme715-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4ClYRF2cLqz13P90;
-        Tue,  1 Dec 2020 15:20:41 +0800 (CST)
-Received: from [10.174.186.123] (10.174.186.123) by
- dggeme715-chm.china.huawei.com (10.1.199.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 1 Dec 2020 15:21:24 +0800
-Subject: Re: [RFC PATCH 1/3] KVM: arm64: Fix possible memory leak in kvm
- stage2
-To:     Will Deacon <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
-        <lushenming@huawei.com>
-References: <20201130121847.91808-1-wangyanan55@huawei.com>
- <20201130121847.91808-2-wangyanan55@huawei.com>
- <20201130132133.GA24837@willie-the-truck>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <ef8f51d6-365b-8b05-0a10-5b4a242f6aa3@huawei.com>
-Date:   Tue, 1 Dec 2020 15:21:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 02:24:27 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF52C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:23:47 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w187so533485pfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:23:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=62XovuLGP8KgQCNcEZEsMV/0NqzJQ6zEFCXEwgkuSHI=;
+        b=YYUWkBfNcbQARP0QF3Xs9Ur4sBY91GGnohJLLydY5/GEVe9zJtNOmS7/yh91Q+Kif7
+         R9W4uLopFWn8+/sRuPCUGvILy2Zm4C+bidh3noH76l0iH4p76pgM6oi0m3qhi4fm5l+r
+         5TXQkAdcO1RtfT/4PMXTwBIEu+6hxjlOgFWc1mjEEm3gGbV6IULtBB8+pgVPcfQ3FX5w
+         VK9mALaumyMCMl5dwqYPZU3BKHrpXBwDq/X7/f1UC6ouXaikBJV3ZIZhhXXAXPl0YCCW
+         rD2k/m8hjigVXL3JiuG1Y+jaLLwdo7YvrHzKkYgA22vj0cTQGNblgjvlRAqmjIe9aR1Q
+         veew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=62XovuLGP8KgQCNcEZEsMV/0NqzJQ6zEFCXEwgkuSHI=;
+        b=Vy7R2Bsd0qoX3ziE2sploB0GTGCcaNjdIXS4qnXPHkVe8qFkZMmdASbbN5MPz2H+rJ
+         4CGVzI0UqtjN3RljUR84jL2NsC1iiknEyxDhRo6UJcwHznkncAafggXIvvjj3Ca/wLGj
+         ans4iY1hChHMUVIo+CLWc136tqU2FSJIcQ61hcngvfo3v325GeB3nFYpCa1TYptycOcp
+         TyKl62hOGPiiQ4z5XWnF6u8Pia34b7OkGQFNJvkaMsVwTsHt9FnakFTPYtj80H0se2pF
+         PY/J1vmM1UBaei+Fw4cGesOtx1hZZBKt2UsVakcqLNLHm3R3/ESddWsvUrf+/iRjiIAv
+         WtZA==
+X-Gm-Message-State: AOAM531TpXmM3b9Qeb+1+7PEaIpewq6CQy2lWwkeWWNUe7KXqVFkKEjK
+        FW60iQjQn3HNVHXbIbpf+ow=
+X-Google-Smtp-Source: ABdhPJwphpb1ohLwz1072VDtVU+EMIcOBVolNX8K1bm+U7Zrj8h3CVWYDFUUAz43YAUeq5DWCLBxQg==
+X-Received: by 2002:a63:100e:: with SMTP id f14mr1186665pgl.8.1606807426888;
+        Mon, 30 Nov 2020 23:23:46 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:60c8:895e:5a85:4183:13b9])
+        by smtp.gmail.com with ESMTPSA id 17sm1386603pfu.180.2020.11.30.23.23.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 23:23:45 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH v2] checkpatch: fix TYPO_SPELLING check for words with apostrophe
+Date:   Tue,  1 Dec 2020 12:53:20 +0530
+Message-Id: <20201201072320.44544-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201130132133.GA24837@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.186.123]
-X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
- dggeme715-chm.china.huawei.com (10.1.199.111)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+checkpatch reports a false TYPO_SPELLING warning for some words
+containing an apostrophe when run with --codespell option.
 
-On 2020/11/30 21:21, Will Deacon wrote:
-> On Mon, Nov 30, 2020 at 08:18:45PM +0800, Yanan Wang wrote:
->> When installing a new leaf pte onto an invalid ptep, we need to get_page(ptep).
->> When just updating a valid leaf ptep, we shouldn't get_page(ptep).
->> Incorrect page_count of translation tables might lead to memory leak,
->> when unmapping a stage 2 memory range.
-> Did you find this by inspection, or did you hit this in practice? I'd be
-> interested to see the backtrace for mapping over an existing mapping.
+A false positive is "doesn't". Occurrence of the word causes
+checkpatch to emit the following warning:
 
-Actually this is found by inspection.
+"WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
 
-In the current code, get_page() will uniformly called at "out_get_page" 
-in function stage2_map_walk_leaf(),
+Modify the regex pattern to be more in line with the codespell
+default word matching regex. This fixes the word capture and
+avoids the false warning.
 
-no matter the old ptep is valid or not.
+Suggested-by: Joe Perches <joe@perches.com>
+Reported-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+Changes in v2:
+- Use the default codespell word regex.
+- Modify commit message to specify --codespell usage
 
-When using stage2_unmap_walker() API to unmap a memory range, some 
-page-table pages might not be
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-freed if page_count of the pages is not right.
-
->> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->> ---
->>   arch/arm64/kvm/hyp/pgtable.c | 7 ++++---
->>   1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->> index 0271b4a3b9fe..696b6aa83faf 100644
->> --- a/arch/arm64/kvm/hyp/pgtable.c
->> +++ b/arch/arm64/kvm/hyp/pgtable.c
->> @@ -186,6 +186,7 @@ static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
->>   		return old == pte;
->>   
->>   	smp_store_release(ptep, pte);
->> +	get_page(virt_to_page(ptep));
-> This is also used for the hypervisor stage-1 page-table, so I'd prefer to
-> leave this function as-is.
-I agree at this point.
->>   	return true;
->>   }
->>   
->> @@ -476,6 +477,7 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->>   	/* There's an existing valid leaf entry, so perform break-before-make */
->>   	kvm_set_invalid_pte(ptep);
->>   	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
->> +	put_page(virt_to_page(ptep));
->>   	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
->>   out:
->>   	data->phys += granule;
-> Isn't this hunk alone sufficient to solve the problem?
->
-> Will
-> .
-
-Not sufficient enough. When the old ptep is valid and old pte equlas new 
-pte, in this case, "True" is also returned by kvm_set_valid_leaf_pte()
-
-and get_page() will still be called.
-
-
-Yanan
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 3c86ea737e9c..bd6304f93e0a 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3106,7 +3106,7 @@ sub process {
+ # Check for various typo / spelling mistakes
+ 		if (defined($misspellings) &&
+ 		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+-			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
++			while ($rawline =~ /(?:^|[^\w\-'`])($misspellings)(?:[^\w\-'`]|$)/gi) {
+ 				my $typo = $1;
+ 				my $typo_fix = $spelling_fix{lc($typo)};
+ 				$typo_fix = ucfirst($typo_fix) if ($typo =~ /^[A-Z]/);
+-- 
+2.27.0
 
