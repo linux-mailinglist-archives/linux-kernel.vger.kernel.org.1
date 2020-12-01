@@ -2,135 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB9E2CAB4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01A12CAB55
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392322AbgLATCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
+        id S2392345AbgLATCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:02:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392316AbgLATCK (ORCPT
+        with ESMTP id S2392316AbgLATCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:02:10 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D9DC061A48
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:01:30 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id t4so4324671wrr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:01:30 -0800 (PST)
+        Tue, 1 Dec 2020 14:02:37 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C7EC061A4B;
+        Tue,  1 Dec 2020 11:01:31 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id f9so6421337ejw.4;
+        Tue, 01 Dec 2020 11:01:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4db92qgs7Cx19eXkYKoRrrPswVYgwmdMYfhe9hzWuuk=;
-        b=EstpTfjBIGANDhV6j9xxplY0OMuMT3mXYXjXGWEmMkfck633Rx5GNrZCx+qvmEMTk+
-         30qwQ2p/RMkaS/35v8gblXZPQ5pjuuuXUIHRjbcb/r9Lca2TSWINH0LzI3+v9pUWInbl
-         CElsK8saKw913EWsTswc0UYIplLU1szE+p828DOBNswnjYIANOCm/BvG68L4F1O+we93
-         X7dAM1fkwe+svPyP9YY6x7ADIGtkL69IQ/GPwVjDdfEtqbl4TT7hnrslBLdpo+TKRQfs
-         2GYQE5TPX9j//2LJPbJxHR2IZ+EXn7+czPTTXYag0QyvyZSBDHHjtfEtv/BYbHQSDs01
-         fT3w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=88kbJJu2Jv4frbwGGFo8+gZMN3U+7GdXo1HwS3naZb8=;
+        b=P8GFsMpK7OgMSzw5Sn/1P1G034n1iWBGK4y+sBYE8i97Yc4eeE8eowHwo3XkYxYe5Y
+         gKR5bjMxNw2NfQBQo/8CB12kMoFeNEHTKkfCSMDsjgGMuAQi0/iTCz3KS83VFOuKiGwC
+         YtSXEH5a/yvsA9yDURQ0VQXCUKhw7P3ohPpcIhKnj0TA/wo9yTGq7jh/F0XKRDKESPRp
+         1v3fQ99R3qin1bfvHIuswvEyxQXRzXlD1eL9PlV8k/HpVzfU4/0UtQSSLrXntpAiX0no
+         tXQPWkWC7v11EwdUWeZy0VjOVDfosrDkQmQaelgs0AvUVnLZvTK1eyUga0VaLNjAJwtg
+         eY+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=4db92qgs7Cx19eXkYKoRrrPswVYgwmdMYfhe9hzWuuk=;
-        b=t0FwB7u1Ovp1lRa5D/I1tTps8Tz8ZjUQZ5ZCF54yW1ItFDw6kZpO9SgfACtmvBL3nW
-         KnWymB33E0T3i8AA+l8qy66uyRIHBYdCV+JTCPaiuHxnijsuI2r8+t6Z+2Fx5gVQj4H+
-         5NeDle+RYh1G1a6LLTDhl9B/k7PKqjlUwOV6j+g+GLOeNws1ooEsMUtz0qYUtICXtsjF
-         /ZcOHS2hZ0WoD0upMQ0qxyrQtdfcmJ6kwD+3gK3XIjFUS8XDjllX3Is3PTb5A0a8W1Aq
-         eeoqA0QJy0NDm3rzxfnXJAgvO7mYWmzj5+rgr/SmbJL5bbCOUGqckkLZqvskKnLg8hN7
-         Ewug==
-X-Gm-Message-State: AOAM531Aj2BEidGSxSlnEe/X82zHmTJjwbSs7TcTxd2XyzJvH0EY8e1P
-        lcc9GS8ZWD1acNYtt1/6MnNNtQ==
-X-Google-Smtp-Source: ABdhPJwIXyPn73uqnfcK1Vyo37ATQR99pYmv4e0H6SMMvE1rbDlHUqqJvBW5/a62nbSNYjYvmSUivg==
-X-Received: by 2002:a5d:5651:: with SMTP id j17mr5761412wrw.221.1606849288897;
-        Tue, 01 Dec 2020 11:01:28 -0800 (PST)
-Received: from localhost.localdomain ([2001:861:3a84:7260:40a4:a590:1da6:9599])
-        by smtp.googlemail.com with ESMTPSA id 138sm887733wma.41.2020.12.01.11.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 11:01:28 -0800 (PST)
-From:   Amjad Ouled-Ameur <aouledameur@baylibre.com>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     Amjad Ouled-Ameur <aouledameur@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Felipe Balbi <balbi@kernel.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH v2 3/3] phy: amlogic: meson8b-usb2: fix shared reset control use
-Date:   Tue,  1 Dec 2020 20:01:00 +0100
-Message-Id: <20201201190100.17831-4-aouledameur@baylibre.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201201190100.17831-1-aouledameur@baylibre.com>
-References: <20201201190100.17831-1-aouledameur@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=88kbJJu2Jv4frbwGGFo8+gZMN3U+7GdXo1HwS3naZb8=;
+        b=s5d+vT4EukofZatzW7Poabv6VRN8ImPtIheSCNO7jS7QjlHpiIXSq6F5tknwVon/Lc
+         9sgwzCNHPvZW0VJH1cY12aQAjeAC7ZILqxSowDxsnjtW2/n6lfP1KQQp8MIzosvTIFXh
+         N5A/ukckVgDn2Xmh2+sL17os3Yw1TrRXMH0f9mhMH1+3c/h7DrhHu9JgG/SW3ovCCLvm
+         BAoJscYCBRLqfkndgkc5O2oDEu9go+7vdYSeWLYEAUDIA5oApjh0PWR55AJNKNcKw+YJ
+         pmUPsIJMs6DTmLLj0+Wg0aR4jOwt+9FTE5LD89dYy+/QkoNOA7NoTgmrWE95gnBGjKf9
+         zeZw==
+X-Gm-Message-State: AOAM533GBtWb8YgSSZbCW4bsvlxSqXjOtl5pElR1WAonQQ5nM5oDND1v
+        5Myl8rNkUZngXPLdtI38Ntt3ErCnhv/V/KoupW3G2k3sR6DqKA==
+X-Google-Smtp-Source: ABdhPJxHvjgbAa1FuLUKDIyPg57/Ou1peVMgtOBWLD8fX5ODOc7hR289yhZuUE8kEKRdr2oR/8XuahuOA5X22kocQ5E=
+X-Received: by 2002:a17:906:5e0f:: with SMTP id n15mr4405903eju.459.1606849290490;
+ Tue, 01 Dec 2020 11:01:30 -0800 (PST)
+MIME-Version: 1.0
+References: <20201128004505.27619-1-scott.branden@broadcom.com>
+ <CAK7LNATD0J3C_mFrXAju8-WmdCmrPmRFn7Um0yebnfL-_zcu8w@mail.gmail.com> <a5ea40a5-17ef-f037-16b3-177f01db6447@broadcom.com>
+In-Reply-To: <a5ea40a5-17ef-f037-16b3-177f01db6447@broadcom.com>
+From:   Bruce Ashfield <bruce.ashfield@gmail.com>
+Date:   Tue, 1 Dec 2020 14:01:19 -0500
+Message-ID: <CADkTA4NTPJrvoFqumNjkU-o-ZTt8iVUzQec+=Qvm4J_59FFQqg@mail.gmail.com>
+Subject: Re: [PATCH] menuconfig,mconf-cfg: Allow specification of ncurses location
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Broadcom Kernel Feedback List 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        OE-core <openembedded-core@lists.openembedded.org>,
+        openembeded-devel <openembedded-devel@lists.openembedded.org>,
+        Michal Marek <mmarek@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use reset_control_rearm() call if an error occurs in case
-phy_meson8b_usb2_power_on() fails after reset() has been called, or in
-case phy_meson8b_usb2_power_off() is called i.e the resource is no longer
-used and the reset line may be triggered again by other devices.
+On Tue, Dec 1, 2020 at 12:19 PM Scott Branden
+<scott.branden@broadcom.com> wrote:
+>
+> Hi Masahiro,
+>
+> On 2020-12-01 4:25 a.m., Masahiro Yamada wrote:
+> > On Sat, Nov 28, 2020 at 9:45 AM Scott Branden
+> > <scott.branden@broadcom.com> wrote:
+> >> From: Bruce Ashfield <bruce.ashfield@windriver.com>
+> >>
+> >> In some cross build environments such as the Yocto Project build
+> >> environment it provides an ncurses library that is compiled
+> >> differently than the host's version.  This causes display corruption
+> >> problems when the host's curses includes are used instead of the
+> >> includes from the provided compiler are overridden.  There is a second
+> >> case where there is no curses libraries at all on the host system and
+> >> menuconfig will just fail entirely.
+> >>
+> >> The solution is simply to allow an override variable in
+> >> check-lxdialog.sh for environments such as the Yocto Project.  Adding
+> >> a CROSS_CURSES_LIB and CROSS_CURSES_INC solves the issue and allowing
+> >> compiling and linking against the right headers and libraries.
+> >>
+> >> Signed-off-by: Jason Wessel <jason.wessel@windriver.com>
+> >> cc: Michal Marek <mmarek@suse.cz>
+> >> cc: linux-kbuild@vger.kernel.org
+> >> Signed-off-by: Bruce Ashfield <bruce.ashfield@windriver.com>
+> >> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> >> ---
+> >
+> > Some people solve the cross-compiling in Yocto
+> > by using pkg-config.
+> >
+> >
+> > For example,
+> >
+> > commit 067c650c456e758f933aaf87a202f841d34be269
+> > Author: Pavel Modilaynen <pavel.modilaynen@axis.com>
+> > Date:   Fri Jul 12 13:52:19 2019 +0200
+> >
+> >     dtc: Use pkg-config to locate libyaml
+> >
+> >     Using Makefile's wildcard with absolute path to detect
+> >     the presence of libyaml results in false-positive
+> >     detection when cross-compiling e.g. in yocto environment.
+> >
+> >
+> >
+> > mconf-cfg.sh already allows the path flexibility with pkg-config.
+> > Why do you want yet another hook?
+> I hope the yocto community can provide more details on this patch.
+> The yocto environment isolates the build environment from the host tools.
+> Running menuconfig with the upstream kernel does not work on the latest yocto without this patch.
 
-reset_control_rearm() keeps use of triggered_count sane in the reset
-framework, use of reset_control_reset() on shared reset line should
-be balanced with reset_control_rearm().
+Sorry for not commenting on the origin patch, gmail buried it within
+some other threads, but luckily this one popped up.
 
-Signed-off-by: Amjad Ouled-Ameur <aouledameur@baylibre.com>
-Reported-by: Jerome Brunet <jbrunet@baylibre.com>
----
-changes since v1: [1]
-* Moved reset_control_rearm after clk_disable_unprepare to clean things up
-in reverse order of initialization for phy: amlogic: meson drivers
+It is true that we've been carrying this for several years to deal with
+the fact that the native sysroot is not searched by the pkg-config
+called by mconf-cfg.sh (since it is separate from host and target
+pkg-config).
 
-IMPORTANT:
-This patchset depends on this patch [2], it adds reset_control_rearm() call
-to the reset framework API, it has been approved by the maintainer, and
-will be applied to reset/next
+As it turns out, in the past few weeks, we have come up with a way
+to inject those native sysroot components into pkg-config without
+the need for any changes to the scripts.
 
-There is currently an immutable branch with it [3]
+Scott: if you try again the the latest oe-core, and are still seeing
+the problem with the mainline kernel, ping me, and we can see if
+the pkg-config fix isn't holding for you, at that point, yes, we may
+still need a hook like this to solve the problem.
 
-[1]: https://lore.kernel.org/lkml/20201113000508.14702-1-aouledameur@baylibre.com/
-[2]: https://lore.kernel.org/lkml/20201112230043.28987-1-aouledameur@baylibre.com/
-[3]: git://git.pengutronix.de/git/pza/linux.git reset/shared-retrigger
+Cheers,
 
- drivers/phy/amlogic/phy-meson8b-usb2.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Bruce
 
-diff --git a/drivers/phy/amlogic/phy-meson8b-usb2.c b/drivers/phy/amlogic/phy-meson8b-usb2.c
-index 03c061dd5f0d..651eec41a896 100644
---- a/drivers/phy/amlogic/phy-meson8b-usb2.c
-+++ b/drivers/phy/amlogic/phy-meson8b-usb2.c
-@@ -154,6 +154,7 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
- 	ret = clk_prepare_enable(priv->clk_usb_general);
- 	if (ret) {
- 		dev_err(&phy->dev, "Failed to enable USB general clock\n");
-+		reset_control_rearm(priv->reset);
- 		return ret;
- 	}
- 
-@@ -161,6 +162,7 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
- 	if (ret) {
- 		dev_err(&phy->dev, "Failed to enable USB DDR clock\n");
- 		clk_disable_unprepare(priv->clk_usb_general);
-+		reset_control_rearm(priv->reset);
- 		return ret;
- 	}
- 
-@@ -199,6 +201,7 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
- 				dev_warn(&phy->dev, "USB ID detect failed!\n");
- 				clk_disable_unprepare(priv->clk_usb);
- 				clk_disable_unprepare(priv->clk_usb_general);
-+				reset_control_rearm(priv->reset);
- 				return -EINVAL;
- 			}
- 		}
-@@ -218,6 +221,7 @@ static int phy_meson8b_usb2_power_off(struct phy *phy)
- 
- 	clk_disable_unprepare(priv->clk_usb);
- 	clk_disable_unprepare(priv->clk_usb_general);
-+	reset_control_rearm(priv->reset);
- 
- 	return 0;
- }
+
+
+> >>  scripts/kconfig/mconf-cfg.sh | 8 ++++++++
+> >>  1 file changed, 8 insertions(+)
+> >>  mode change 100755 => 100644 scripts/kconfig/mconf-cfg.sh
+> >>
+> >> diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
+> >> old mode 100755
+> >> new mode 100644
+> >> index aa68ec95620d..32448bc198a5
+> >> --- a/scripts/kconfig/mconf-cfg.sh
+> >> +++ b/scripts/kconfig/mconf-cfg.sh
+> >> @@ -4,6 +4,14 @@
+> >>  PKG="ncursesw"
+> >>  PKG2="ncurses"
+> >>
+> >> +if [ "$CROSS_CURSES_LIB" != "" ]; then
+> >> +    echo libs=\'$CROSS_CURSES_LIB\'
+> >> +    if [ x"$CROSS_CURSES_INC" != x ]; then
+> >> +       echo cflags=\'$CROSS_CURSES_INC\'
+> >> +    fi
+> >> +    exit 0
+> >> +fi
+> >> +
+> >>  if [ -n "$(command -v pkg-config)" ]; then
+> >>         if pkg-config --exists $PKG; then
+> >>                 echo cflags=\"$(pkg-config --cflags $PKG)\"
+> >> --
+> >> 2.17.1
+> >>
+> >
+>
+
+
 -- 
-2.17.1
-
+- Thou shalt not follow the NULL pointer, for chaos and madness await
+thee at its end
+- "Use the force Harry" - Gandalf, Star Trek II
