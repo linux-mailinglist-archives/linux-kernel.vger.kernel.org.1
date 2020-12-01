@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFD52CADBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03E62CADC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387854AbgLAUto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:49:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbgLAUto (ORCPT
+        id S2387862AbgLAUvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:51:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24974 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727840AbgLAUvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:49:44 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35A7C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:49:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dyBlRLPwKTQ0rIK/KfQyG6Ob+vSn1EgfGLIeGxV2yms=; b=JJv/jUDUAQHzh744cKMjYelWef
-        QTIfn+k/elN1QSMiCosaURKxQ2fWjh8q5u2jiv6QfFKVvUpCoopn/ASQfT2etb0mpcaFppKzMYJXm
-        Go2y9Rwev3yIt6lHEo1tzZH2Wx2Q6u9PRMkr63pL1mC/IMEd1XbOi4IkeJ+0HK/hwir/XDFgjgrEN
-        cdhpbGfdToA0xP9TZ7gkSGag0nCbiIVH+0pdZciOchpvAvCRGfkDtBJxnzM40g2ajgf/GCFJ2W11C
-        YBwt2vpgu5H8EUX4Boxoe/hCjSfDn7VgdY9T2yM55nPU61QYzgqXbURWXBFMxxDDvUGPOpG8UlTrn
-        97JljK1A==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkCa4-0002i8-S3; Tue, 01 Dec 2020 20:49:00 +0000
-Date:   Tue, 1 Dec 2020 20:49:00 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Shutemov, Kirill" <kirill.shutemov@intel.com>,
+        Tue, 1 Dec 2020 15:51:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606855810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=38FF9xvt73XKnUpkOFgpB6GdwGCUNHg/lXcETcqJqJM=;
+        b=dVLVm04hW0J4Tt1NLrbB6IEtfjuKCOxxKCpZbY2n72oGtSYdsjW2BG0o49X20ed4FFR4qR
+        9lnsSmSJf8YjBT+nEVQZ+R/pObeA7YLToYRqp3XBQYFRIa/feRSS3+fxUWn59LdH+aRwAe
+        ++seubfMdigWG+7yayCTb5ZREohd9w0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-Pvsvy1TONwmm5e62aNgFyQ-1; Tue, 01 Dec 2020 15:50:06 -0500
+X-MC-Unique: Pvsvy1TONwmm5e62aNgFyQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D321185E480;
+        Tue,  1 Dec 2020 20:50:05 +0000 (UTC)
+Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A5845D6AD;
+        Tue,  1 Dec 2020 20:50:04 +0000 (UTC)
+Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to
+ filesystems
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: mapcount corruption regression
-Message-ID: <20201201204900.GC11935@casper.infradead.org>
-References: <CAPcyv4isen63tJ7q02rvVuu_Rm6QPdT0Bu-P_HJ2zePMySFNNg@mail.gmail.com>
- <20201201022412.GG4327@casper.infradead.org>
- <CAPcyv4j7wtjOSg8vL5q0PPjWdaknY-PC7m9x-Q1R_YL5dhE+bQ@mail.gmail.com>
+        xfs <linux-xfs@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Xiaoli Feng <xifeng@redhat.com>
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+ <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
+ <CAHk-=wgOu9vgUfOSsjO3hHHxGDn4BKhitC_8XCfgmGKiiSm_ag@mail.gmail.com>
+From:   Eric Sandeen <sandeen@redhat.com>
+Message-ID: <71eecee3-3fc9-d18d-8553-d8326f6d73b3@redhat.com>
+Date:   Tue, 1 Dec 2020 14:50:03 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4j7wtjOSg8vL5q0PPjWdaknY-PC7m9x-Q1R_YL5dhE+bQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgOu9vgUfOSsjO3hHHxGDn4BKhitC_8XCfgmGKiiSm_ag@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 12:42:39PM -0800, Dan Williams wrote:
-> On Mon, Nov 30, 2020 at 6:24 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Mon, Nov 30, 2020 at 05:20:25PM -0800, Dan Williams wrote:
-> > > Kirill, Willy, compound page experts,
-> > >
-> > > I am seeking some debug ideas about the following splat:
-> > >
-> > > BUG: Bad page state in process lt-pmem-ns  pfn:121a12
-> > > page:0000000051ef73f7 refcount:0 mapcount:-1024
-> > > mapping:0000000000000000 index:0x0 pfn:0x121a12
-> >
-> > Mapcount of -1024 is the signature of:
-> >
-> > #define PG_guard        0x00000400
+On 12/1/20 2:04 PM, Linus Torvalds wrote:
+> On Tue, Dec 1, 2020 at 8:59 AM Eric Sandeen <sandeen@redhat.com> wrote:
+>>
+>> It's a bit odd to set STATX_ATTR_DAX into the statx attributes in the VFS;
+>> while the VFS can detect the current DAX state, it is the filesystem which
+>> actually sets S_DAX on the inode, and the filesystem is the place that
+>> knows whether DAX is something that the "filesystem actually supports" [1]
+>> so that the statx attributes_mask can be properly set.
+>>
+>> So, move STATX_ATTR_DAX attribute setting to the individual dax-capable
+>> filesystems, and update the attributes_mask there as well.
 > 
-> Oh, thanks for that. I overlooked how mapcount is overloaded. Although
-> in v5.10-rc4 that value is:
+> I'm not really understanding the logic behind this.
 > 
-> #define PG_table        0x00000400
-
-Ah, I was looking at -next, where Roman renumbered it.
-
-I know UML had a problem where it was not clearing PG_table, but you
-seem to be running on bare metal.  SuperH did too, but again, you're
-not using SuperH.
-
-> >
-> > (the bits are inverted, so this turns into 0xfffffbff which is reported
-> > as -1024)
-> >
-> > I assume you have debug_pagealloc enabled?
+> The whole IS_DAX(inode) thing exists in various places outside the
+> low-level filesystem, why shouldn't stat() do this?
 > 
-> Added it, but no extra spew. I'll dig a bit more on how PG_table is
-> not being cleared in this case.
+> If IS_DAX() is incorrect, then we have much bigger problems than some
+> stat results. We have core functions like generic_file_read_iter() etc
+> all making actual behavioral judgements on IS_DAX().
 
-I only asked about debug_pagealloc because that sets PG_guard.  Since
-the problem is actually PG_table, it's not relevant.
+It's not incorrect, I didn't mean to imply that. Current code does accurately
+set the DAX flag in the statx attributes.
+ 
+> And if IS_DAX() is correct, then why shouldn't this just be done in
+> generic code? Why move it to every individual filesystem?
+
+At the end of the day, it's because only the individual filesystems can
+manage the dax flag in the statx attributes_mask. (That's only place that
+knows if dax "is available" in general, as opposed to being set on a specific
+inode) So if they have to do that, they may as well set the actual attribute
+as well, like they do for every other flag they manage...
+
+I mean, we could leave the statx->attributes setting in the vfs, and add
+the statx->attributes_mask setting to each dax-capable filesystem. That just
+felt a bit asymmetric vs. the way every other filesystem-specific flag gets
+handled.
+
+-Eric
+
