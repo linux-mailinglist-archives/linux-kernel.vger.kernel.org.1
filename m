@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AAA2C9D6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089AC2C9CD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbgLAJXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:23:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43506 "EHLO mail.kernel.org"
+        id S2388538AbgLAJBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:01:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389107AbgLAJG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:06:56 -0500
+        id S2388512AbgLAJBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:01:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C89E220671;
-        Tue,  1 Dec 2020 09:06:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C9EB20809;
+        Tue,  1 Dec 2020 09:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813600;
-        bh=rN6gPxUS8DRh8+1qK/T7s4B5UJo6x7C1PlbAEhkXmnw=;
+        s=korg; t=1606813260;
+        bh=z98ZFUmV7c7WULsRxEoh75Bn7YbFJN6IbAySPvC58Z0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A4BMXd7FYKKSjr4JggeLr+AHhGMPALRRs3gJj5WBOw0Jz4e8IMELklAL76gkohMsm
-         8v9and35TMvp03cwKeJ7/HutdLe7GLFL3VSnp2a7cRvcIA/xuZvVszgIF5fX+pg82L
-         zvrepaMHispl6dvojHRosqg6aUtf97betan9oP7I=
+        b=YyboLJNsSeazRfCS0os4Jnr2NQGP4c/4mxCGjG+/Zj9wIyozqFnSsrQcUMs9ENEPD
+         0LDR+J/1vEOR0ZcFB4U1h57Yh6aq4UHGhjBdrqc0/BLPU2ljIdymivp2oAMDHwkcmt
+         xx37qDM2UnMS533SuidqiP+YU0lTLFrgCypmdNTY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Cui <mikecui@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Shay Agroskin <shayagr@amazon.com>,
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 64/98] net: ena: set initial DMA width to avoid intel iommu issue
-Date:   Tue,  1 Dec 2020 09:53:41 +0100
-Message-Id: <20201201084658.225580358@linuxfoundation.org>
+Subject: [PATCH 4.19 37/57] s390/qeth: fix tear down of async TX buffers
+Date:   Tue,  1 Dec 2020 09:53:42 +0100
+Message-Id: <20201201084650.935855282@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,76 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Agroskin <shayagr@amazon.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit 09323b3bca95181c0da79daebc8b0603e500f573 ]
+[ Upstream commit 7ed10e16e50daf74460f54bc922e27c6863c8d61 ]
 
-The ENA driver uses the readless mechanism, which uses DMA, to find
-out what the DMA mask is supposed to be.
+When qeth_iqd_tx_complete() detects that a TX buffer requires additional
+async completion via QAOB, it might fail to replace the queue entry's
+metadata (and ends up triggering recovery).
 
-If DMA is used without setting the dma_mask first, it causes the
-Intel IOMMU driver to think that ENA is a 32-bit device and therefore
-disables IOMMU passthrough permanently.
+Assume now that the device gets torn down, overruling the recovery.
+If the QAOB notification then arrives before the tear down has
+sufficiently progressed, the buffer state is changed to
+QETH_QDIO_BUF_HANDLED_DELAYED by qeth_qdio_handle_aob().
 
-This patch sets the dma_mask to be ENA_MAX_PHYS_ADDR_SIZE_BITS=48
-before readless initialization in
-ena_device_init()->ena_com_mmio_reg_read_request_init(),
-which is large enough to workaround the intel_iommu issue.
+The tear down code calls qeth_drain_output_queue(), where
+qeth_cleanup_handled_pending() will then attempt to replace such a
+buffer _again_. If it succeeds this time, the buffer ends up dangling in
+its replacement's ->next_pending list ... where it will never be freed,
+since there's no further call to qeth_cleanup_handled_pending().
 
-DMA mask is set again to the correct value after it's received from the
-device after readless is initialized.
+But the second attempt isn't actually needed, we can simply leave the
+buffer on the queue and re-use it after a potential recovery has
+completed. The qeth_clear_output_buffer() in qeth_drain_output_queue()
+will ensure that it's in a clean state again.
 
-The patch also changes the driver to use dma_set_mask_and_coherent()
-function instead of the two pci_set_dma_mask() and
-pci_set_consistent_dma_mask() ones. Both methods achieve the same
-effect.
-
-Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
-Signed-off-by: Mike Cui <mikecui@amazon.com>
-Signed-off-by: Arthur Kiyanovski <akiyano@amazon.com>
-Signed-off-by: Shay Agroskin <shayagr@amazon.com>
+Fixes: 72861ae792c2 ("qeth: recovery through asynchronous delivery")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/s390/net/qeth_core_main.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 635345bced313..2e5348ec2a2e9 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -2622,16 +2622,9 @@ static int ena_device_init(struct ena_com_dev *ena_dev, struct pci_dev *pdev,
- 		goto err_mmio_read_less;
- 	}
+diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+index 5f59e2dfc7db9..d0aaef937b0fe 100644
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -470,12 +470,6 @@ static void qeth_cleanup_handled_pending(struct qeth_qdio_out_q *q, int bidx,
  
--	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
-+	rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(dma_width));
- 	if (rc) {
--		dev_err(dev, "pci_set_dma_mask failed 0x%x\n", rc);
--		goto err_mmio_read_less;
+ 		}
+ 	}
+-	if (forced_cleanup && (atomic_read(&(q->bufs[bidx]->state)) ==
+-					QETH_QDIO_BUF_HANDLED_DELAYED)) {
+-		/* for recovery situations */
+-		qeth_init_qdio_out_buf(q, bidx);
+-		QETH_CARD_TEXT(q->card, 2, "clprecov");
 -	}
--
--	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
--	if (rc) {
--		dev_err(dev, "err_pci_set_consistent_dma_mask failed 0x%x\n",
--			rc);
-+		dev_err(dev, "dma_set_mask_and_coherent failed %d\n", rc);
- 		goto err_mmio_read_less;
- 	}
+ }
  
-@@ -3450,6 +3443,12 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		return rc;
- 	}
  
-+	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(ENA_MAX_PHYS_ADDR_SIZE_BITS));
-+	if (rc) {
-+		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed %d\n", rc);
-+		goto err_disable_device;
-+	}
-+
- 	pci_set_master(pdev);
- 
- 	ena_dev = vzalloc(sizeof(*ena_dev));
 -- 
 2.27.0
 
