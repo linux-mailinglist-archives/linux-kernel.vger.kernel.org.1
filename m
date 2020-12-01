@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409062C9B58
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E495A2C9C62
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388663AbgLAJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:07:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42220 "EHLO mail.kernel.org"
+        id S2389856AbgLAJRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:17:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389057AbgLAJFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:05:09 -0500
+        id S2389536AbgLAJLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:11:42 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0BB62223C;
-        Tue,  1 Dec 2020 09:04:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 300FB20671;
+        Tue,  1 Dec 2020 09:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813468;
-        bh=msMB61T+vAGDNduTzPK9lUybgnukBXjrX1kCfano2AQ=;
+        s=korg; t=1606813880;
+        bh=zD6wCW7jEzn8ryTtSSvwutuQXC+qVdXkoN53FJ3PHX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DcuVwX8lv72VqX5tm4SLXcFwmRJJibK0NSqkbBHzV6kXqY7kC6seZDc3FhNKQjkkp
-         X0TrGYoBQ6Fqew5xWzjsMpL3kRwzY2QdrufGkIicoUenjIUX+wHXnfOsbkXsdWfN27
-         4ZKGpiFWyiZXJU7V+uiHw57K/0LzcuRj/XKzmms0=
+        b=uMlKzlw8CARX/epDR6SmYEkcwwZtIQdTtuj7dZGpTbhD7IscNFPumL8JWIRsFCOVg
+         9maeijT2jGsbCaILm9IMG151nSgDE3QSuDKWYFRs/se6v5MQbbsGtSTbO+yxG3wIbY
+         TQ9XQF6FxALHpj4admOLY3DyRvIH9UzeXz44vLSc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 49/98] scsi: ufs: Fix race between shutdown and runtime resume flow
-Date:   Tue,  1 Dec 2020 09:53:26 +0100
-Message-Id: <20201201084657.497626773@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 092/152] block/keyslot-manager: prevent crash when num_slots=1
+Date:   Tue,  1 Dec 2020 09:53:27 +0100
+Message-Id: <20201201084723.921696550@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanley Chu <stanley.chu@mediatek.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit e92643db514803c2c87d72caf5950b4c0a8faf4a ]
+[ Upstream commit 47a846536e1bf62626f1c0d8488f3718ce5f8296 ]
 
-If UFS host device is in runtime-suspended state while UFS shutdown
-callback is invoked, UFS device shall be resumed for register
-accesses. Currently only UFS local runtime resume function will be invoked
-to wake up the host.  This is not enough because if someone triggers
-runtime resume from block layer, then race may happen between shutdown and
-runtime resume flow, and finally lead to unlocked register access.
+If there is only one keyslot, then blk_ksm_init() computes
+slot_hashtable_size=1 and log_slot_ht_size=0.  This causes
+blk_ksm_find_keyslot() to crash later because it uses
+hash_ptr(key, log_slot_ht_size) to find the hash bucket containing the
+key, and hash_ptr() doesn't support the bits == 0 case.
 
-To fix this, in ufshcd_shutdown(), use pm_runtime_get_sync() instead of
-resuming UFS device by ufshcd_runtime_resume() "internally" to let runtime
-PM framework manage the whole resume flow.
+Fix this by making the hash table always have at least 2 buckets.
 
-Link: https://lore.kernel.org/r/20201119062916.12931-1-stanley.chu@mediatek.com
-Fixes: 57d104c153d3 ("ufs: add UFS power management support")
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Tested by running:
+
+    kvm-xfstests -c ext4 -g encrypt -m inlinecrypt \
+                 -o blk-crypto-fallback.num_keyslots=1
+
+Fixes: 1b2628397058 ("block: Keyslot Manager for Inline Encryption")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ block/keyslot-manager.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 0772327f87d93..b6ce880ddd153 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -8160,11 +8160,7 @@ int ufshcd_shutdown(struct ufs_hba *hba)
- 	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
- 		goto out;
+diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
+index 35abcb1ec051d..86f8195d8039e 100644
+--- a/block/keyslot-manager.c
++++ b/block/keyslot-manager.c
+@@ -103,6 +103,13 @@ int blk_ksm_init(struct blk_keyslot_manager *ksm, unsigned int num_slots)
+ 	spin_lock_init(&ksm->idle_slots_lock);
  
--	if (pm_runtime_suspended(hba->dev)) {
--		ret = ufshcd_runtime_resume(hba);
--		if (ret)
--			goto out;
--	}
-+	pm_runtime_get_sync(hba->dev);
- 
- 	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
- out:
+ 	slot_hashtable_size = roundup_pow_of_two(num_slots);
++	/*
++	 * hash_ptr() assumes bits != 0, so ensure the hash table has at least 2
++	 * buckets.  This only makes a difference when there is only 1 keyslot.
++	 */
++	if (slot_hashtable_size < 2)
++		slot_hashtable_size = 2;
++
+ 	ksm->log_slot_ht_size = ilog2(slot_hashtable_size);
+ 	ksm->slot_hashtable = kvmalloc_array(slot_hashtable_size,
+ 					     sizeof(ksm->slot_hashtable[0]),
 -- 
 2.27.0
 
