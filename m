@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B998D2C9CF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8D42C9DD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389161AbgLAJH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:07:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42876 "EHLO mail.kernel.org"
+        id S2390699AbgLAJ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:27:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388497AbgLAJGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:06:00 -0500
+        id S2388583AbgLAJBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:01:42 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF1812067D;
-        Tue,  1 Dec 2020 09:05:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A4FA2067D;
+        Tue,  1 Dec 2020 09:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813520;
-        bh=fj+TkTfbLpdv8C3gl+cAfNala2UOLeYn1BhGf+5rD+s=;
+        s=korg; t=1606813281;
+        bh=pyLb39sxkFy3SOqNh8X0cHTtddtuP5J9fl4PhM2QnIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZEwFkUHDUsvoUaaiGL33CvPQye+flhfZjfJRf0niqrLysU6jABqf2iRNScr0GCUQj
-         m73J8fM01mcuXQj/bgJ5fIevk5GT1UkIDVdHG+i2lgRp+CtXWUNj84y/XnQLLh6X8n
-         meHD4qsAbrrx77cBsIOcpI0knitiB/4A6c2RjhaM=
+        b=dfxM7Xau10V3DsRL8v+39aU6X5cANtO+cU5w3xP5N0opAspF3S5AwN4tV3UHDmuLA
+         Iw7HdKXDIdLHlTMdYgYeo2kYFzKearGkDxH4NjzX78Ubr5xpZvUcr6z2Ju2svqrShs
+         WcaTspcvp+KtYjmyJ6yhbS3H7U2kaGvM+xyfFwnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>,
-        Dipen Patel <dipenp@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 68/98] arm64: tegra: Wrong AON HSP reg property size
-Date:   Tue,  1 Dec 2020 09:53:45 +0100
-Message-Id: <20201201084658.412492057@linuxfoundation.org>
+Subject: [PATCH 4.19 44/57] efivarfs: revert "fix memory leak in efivarfs_create()"
+Date:   Tue,  1 Dec 2020 09:53:49 +0100
+Message-Id: <20201201084651.264895053@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dipen Patel <dipenp@nvidia.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit 1741e18737948c140ccc4cc643e8126d95ee6e79 ]
+[ Upstream commit ff04f3b6f2e27f8ae28a498416af2a8dd5072b43 ]
 
-The AON HSP node's "reg" property size 0xa0000 will overlap with other
-resources. This patch fixes that wrong value with correct size 0x90000.
+The memory leak addressed by commit fe5186cf12e3 is a false positive:
+all allocations are recorded in a linked list, and freed when the
+filesystem is unmounted. This leads to double frees, and as reported
+by David, leads to crashes if SLUB is configured to self destruct when
+double frees occur.
 
-Reviewed-by: Mikko Perttunen <mperttunen@nvidia.com>
-Signed-off-by: Dipen Patel <dipenp@nvidia.com>
-Fixes: a38570c22e9d ("arm64: tegra: Add nodes for TCU on Tegra194")
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+So drop the redundant kfree() again, and instead, mark the offending
+pointer variable so the allocation is ignored by kmemleak.
+
+Cc: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Fixes: fe5186cf12e3 ("efivarfs: fix memory leak in efivarfs_create()")
+Reported-by: David Laight <David.Laight@aculab.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/nvidia/tegra194.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/efivarfs/inode.c | 2 ++
+ fs/efivarfs/super.c | 1 -
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-index 5728255bd0c1a..78f7e6e50beb0 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-@@ -692,7 +692,7 @@
+diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
+index 8c6ab6c95727e..7f40343b39b05 100644
+--- a/fs/efivarfs/inode.c
++++ b/fs/efivarfs/inode.c
+@@ -10,6 +10,7 @@
+ #include <linux/efi.h>
+ #include <linux/fs.h>
+ #include <linux/ctype.h>
++#include <linux/kmemleak.h>
+ #include <linux/slab.h>
+ #include <linux/uuid.h>
  
- 		hsp_aon: hsp@c150000 {
- 			compatible = "nvidia,tegra194-hsp", "nvidia,tegra186-hsp";
--			reg = <0x0c150000 0xa0000>;
-+			reg = <0x0c150000 0x90000>;
- 			interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>,
- 			             <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>,
- 			             <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
+@@ -106,6 +107,7 @@ static int efivarfs_create(struct inode *dir, struct dentry *dentry,
+ 	var->var.VariableName[i] = '\0';
+ 
+ 	inode->i_private = var;
++	kmemleak_ignore(var);
+ 
+ 	err = efivar_entry_add(var, &efivarfs_list);
+ 	if (err)
+diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+index 7808a26bd33fa..834615f13f3e3 100644
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -23,7 +23,6 @@ LIST_HEAD(efivarfs_list);
+ static void efivarfs_evict_inode(struct inode *inode)
+ {
+ 	clear_inode(inode);
+-	kfree(inode->i_private);
+ }
+ 
+ static const struct super_operations efivarfs_ops = {
 -- 
 2.27.0
 
