@@ -2,75 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04A92CAD27
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9B72CAD2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730598AbgLAUSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:18:20 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:37905 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728371AbgLAUSU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:18:20 -0500
-Received: by mail-ed1-f65.google.com with SMTP id y4so5293743edy.5;
-        Tue, 01 Dec 2020 12:18:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1ns4HG9DM27lmRcUp9biCqhgyVmAToMpSvVFQa0yBXI=;
-        b=qt74laS4NpZHcaZcw4vhseCgJbLGXyQYa8DQV9bHbwCtOqezp8iwVVaA5mOe+47IV9
-         btOm8HmXA7eVMq7RdWkBext2KADK8V3DlHnBv2bvwv7+s9vT+ZaDOwPz+TLAD2VkNKSD
-         P/ZikCFZPZ3G/WVK+9OUJRhtDlr6c7zcs3JI7UsGbRCXnyoeajRDEFUjDL3/fnzxs2Xh
-         Yp7Ps+Fc4GS8ifAbVaM/nrDFTExWx0sfgHeQApFfTirKEdpPKFZOckQSRUElVDoJWrfe
-         q/XGarvLeSsFwqcxYF4SUnrfM7G7bIuMVrknkHRRZjt8Atkz8k5tc9SvEvnYbwEJsWLx
-         bJUw==
-X-Gm-Message-State: AOAM530cr/wPjNIkJ2PwByzm0JAzH8TiMAshD45fyGPFVkfD89u1PCwb
-        wQjQ1fR5/DhO32QFf+4WIZ0=
-X-Google-Smtp-Source: ABdhPJytaTlX5sDtGX2dkVcTazbihS4Em7qkx3GYmCK6ADvKA5s0Ww+UFFOU8w6FLSmjPQ7UdihqTA==
-X-Received: by 2002:aa7:cc19:: with SMTP id q25mr4847401edt.290.1606853857665;
-        Tue, 01 Dec 2020 12:17:37 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id d9sm412152edk.86.2020.12.01.12.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:17:36 -0800 (PST)
-Date:   Tue, 1 Dec 2020 22:17:35 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: Re: [PATCH v4 net-next 3/4] nfc: s3fwrn5: extract the common phy
- blocks
-Message-ID: <20201201201735.GC2435@kozik-lap>
-References: <1606830628-10236-1-git-send-email-bongsu.jeon@samsung.com>
- <1606830628-10236-4-git-send-email-bongsu.jeon@samsung.com>
+        id S2390824AbgLAUUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:20:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388214AbgLAUUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 15:20:34 -0500
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B2E92151B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606853993;
+        bh=6cgQhA+9Fe1MapUiUOn3Uf4foo+0SJKMoMWA/pfA3Is=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kLepZq9jHFg4qycJMv8hPp8WOz4Ewm+cWjoNXhYyRQKezYkaQuW/sh0DUMzJIJR2c
+         pY1fSvWumlADVr7ciTqMNY4Cyqf/cW6L5Ilbh5PKyJSddBuENIkXvt17kRQ4p1ywMu
+         XJfPPtAM/MRE4oa5j9tclRQcAN5G97b74a50pCr4=
+Received: by mail-oi1-f179.google.com with SMTP id l4so562221oii.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:19:53 -0800 (PST)
+X-Gm-Message-State: AOAM530mQ/b3Qe0u06DFzIRQfuKeViopRLo4x2MLbyCq9VPsZZsk9+x3
+        HLyLjJlAnPicfZjvnWCMnm4Ao3W/DL+mbwUDIbA=
+X-Google-Smtp-Source: ABdhPJx3dUBp8fSD53Rf8bQvhGB0ZDRrlR6xTov+kRkzskWZIooEtpZNoOXeBp3TJzuTDnieg4EURE7JMYP79fAn7ts=
+X-Received: by 2002:aca:fd42:: with SMTP id b63mr2814725oii.11.1606853992678;
+ Tue, 01 Dec 2020 12:19:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1606830628-10236-4-git-send-email-bongsu.jeon@samsung.com>
+References: <trinity-56749cfc-536b-45e2-8e6f-621754c07824-1606165260518@3c-app-gmx-bs09>
+In-Reply-To: <trinity-56749cfc-536b-45e2-8e6f-621754c07824-1606165260518@3c-app-gmx-bs09>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 1 Dec 2020 21:19:36 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2dq8VtYARPS9r9aeJipA3hD9M01wmEJ8LuZT1_Taav3w@mail.gmail.com>
+Message-ID: <CAK8P3a2dq8VtYARPS9r9aeJipA3hD9M01wmEJ8LuZT1_Taav3w@mail.gmail.com>
+Subject: Re: [PATCH RESEND] misc/vmw_vmci: bail out earlier on too big queue allocation
+To:     Norbert Slusarek <nslusarek@gmx.net>
+Cc:     gregkh <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:50:27PM +0900, Bongsu Jeon wrote:
-> From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> 
-> Extract the common phy blocks to reuse it.
-> The UART module will use the common blocks.
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> ---
->  drivers/nfc/s3fwrn5/Makefile     |   2 +-
->  drivers/nfc/s3fwrn5/i2c.c        | 117 +++++++++++++--------------------------
->  drivers/nfc/s3fwrn5/phy_common.c |  63 +++++++++++++++++++++
->  drivers/nfc/s3fwrn5/phy_common.h |  36 ++++++++++++
->  4 files changed, 139 insertions(+), 79 deletions(-)
->  create mode 100644 drivers/nfc/s3fwrn5/phy_common.c
->  create mode 100644 drivers/nfc/s3fwrn5/phy_common.h
-> 
+On Mon, Nov 23, 2020 at 10:01 PM Norbert Slusarek <nslusarek@gmx.net> wrote:
+>
+> From: Norbert Slusarek <nslusarek@gmx.net>
+> Date: Mon, 23 Nov 2020 21:53:41 +0100
+> Subject: [PATCH RESEND] misc/vmw_vmci: bail out earlier on too big queue allocation
+>
+> For the allocation of a queue pair in qp_host_alloc_queue() an arbitrary value
+> can be passed for produce_size, which can lead to miscalculation of memory we'd
+> like to allocate in one take. A warning is triggered at __alloc_pages_nodemask()
+> in mm/page_alloc.c:4737 which aborts the false allocation, but it results in a
+> VMware machine freezing for an infinite time.
+>
+> Signed-off-by: Norbert Slusarek <nslusarek@gmx.net>
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Thank you for sending a patch with such a detailed analysis and even
+including a test case!
 
-Best regards,
-Krzysztof
+> diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+> index c49065887e8f..997ff32475b2 100644
+> --- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
+> +++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+> @@ -526,6 +526,7 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
+>         struct vmci_queue *queue;
+>         size_t queue_page_size;
+>         u64 num_pages;
+> +       unsigned int order;
+>         const size_t queue_size = sizeof(*queue) + sizeof(*(queue->kernel_if));
+>
+>         if (size > SIZE_MAX - PAGE_SIZE)
+> @@ -537,6 +538,10 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
+>
+>         queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
+>
+> +       order = get_order(queue_size + queue_page_size);
+> +       if (order >= MAX_ORDER)
+> +               return NULL;
+> +
+>         queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
+
+Calling kzalloc() with that user-provided size may still not be a great
+idea, and MAX_ORDER is probably more than anyone ever needs here
+(I don't know what the interface is needed for, but usually it is).
+
+If there is a reasonable upper bound smaller than MAX_ORDER, I
+would suggest using that. It might also be helpful to use kvzalloc()/kvfree()
+in this case, which can return an arbitrary number of pages
+and suffers less from fragmentation.
+
+Note that both kzalloc() and kvzalloc() will fail for much smaller
+sizes if the kernel is low on memory, so that might have the same
+problem.
+
+       Arnd
