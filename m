@@ -2,152 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A9A2CAFF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D212CAFFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727713AbgLAW3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        id S1727046AbgLAWbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 17:31:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727690AbgLAW3X (ORCPT
+        with ESMTP id S1727650AbgLAW3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 17:29:23 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A822DC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:28:43 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id v3so3314907ilo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 14:28:43 -0800 (PST)
+        Tue, 1 Dec 2020 17:29:20 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D9CC0613CF;
+        Tue,  1 Dec 2020 14:28:40 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 142so5874173ljj.10;
+        Tue, 01 Dec 2020 14:28:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zEVORstsrTaSUgGGMeR0Tq7V6fCGhtA2/JQrS+CPcPM=;
-        b=P1DviP74adgMmlwWKQrywJMta3DKhYPt7EEAf7M9nSMiOTTKSo2CvaGYxrVV4kEnl/
-         B42RELckfkTh6KC+dDfnenfHzx2WM5MoeqWh6UmsCv0d+EE93QvFCF2kaHKBX/lpIOZb
-         KrmZNE56Y3CIOeQaCnp6rLdZhw2c0pi3aiHHA=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=CiTUANgfjfKtdvyzarr1HjDodW8e4dApTwh7hr8NUJw=;
+        b=AnKCvc1zdUE/pzHrZsyEifBYMWV4+7iY5ZD3T21/k6rpyaNDslRq+PGU3M/+s8kvs4
+         acAsoFD1INeR4N7EC9liMdpztyPaCAvD59iaqfUMFfc2I2mAjCgGAyNtTMgJBXw4QlFM
+         CWComiu6F9YNMDPoP5sDsvyD64jdKsE6UCpSOshmHxq+S684U82PZqqmZYmi1PIlTtNh
+         CYoYPzXAaBVVyyfkdj1CVqwh2ac+VKk1I/GD/cb5a6C44QST/Ia2QPt+tUHcSGrDhz50
+         nUDsck3N+3Hq/QGjIuAfTmLsork5Si5WN7kjf6k651XfA/VUS31FySpR7sYV5QUACz+V
+         4dNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zEVORstsrTaSUgGGMeR0Tq7V6fCGhtA2/JQrS+CPcPM=;
-        b=SbN5TNL0bWi4Pb3Nbe4P6p9OuK2eJQHt78f8FXsD1Fp3ODt+c0cj0wn1j6Z9oiP4/t
-         zax8D8T76h/np2zp0PAJqv7Pfrm2ZPGZBGobhjVPqH1lsqFFxa3LNG+1TW+Fk6lW/2pF
-         FknajNGEGR3Sy8V+qdUfgHbTYZ2JnWMAnlU9YjdQqWzlShYMjNRnoLPAoTOSJtAn1fci
-         wwYiIsFVnw48YPyFQbbNdFv0qOlTwSgzk4v2W+HBFFQRDivsP8i1F9up5/vu93vTJ3se
-         7p4ZUKSCFNdml/pcK+bS8CPxkkOw8AxjsR2jomXOw1acaGjr9GlkGRscfITWpvMvnlXG
-         telw==
-X-Gm-Message-State: AOAM533tSbvP9dXbjL1YgPUBHI0vB1SdWT6VcriUwFqFaL+vXiQn7U32
-        b/MfHrpL8M5sR1s5wKWgaLlrbg==
-X-Google-Smtp-Source: ABdhPJyoyG9ADgJ6dsBiNM1XKs7dyiBINsra2s2Ul2TQ/NhNuX+TnwTAu5r8ljVvYPPBgzF65GRHfw==
-X-Received: by 2002:a92:512:: with SMTP id q18mr4738719ile.147.1606861722917;
-        Tue, 01 Dec 2020 14:28:42 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r21sm462090ioa.20.2020.12.01.14.28.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 14:28:42 -0800 (PST)
-Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Marco Elver <elver@google.com>, Theodore Ts'o <tytso@mit.edu>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Bird, Tim" <Tim.Bird@sony.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org, skhan@linuxfoundation.org
-References: <20201116054035.211498-1-98.arpi@gmail.com>
- <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
- <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com>
- <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
- <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <505b8cd0-a61e-5ec3-7e0b-239d0ff55d56@linuxfoundation.org>
-Date:   Tue, 1 Dec 2020 15:28:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=CiTUANgfjfKtdvyzarr1HjDodW8e4dApTwh7hr8NUJw=;
+        b=slsB4wYmldODLhfSi4rbMcwpvLO/I9+xtyybCc/jFaRu2SfC6vSJWfpMSGBC1N7y/m
+         bvqHxIn0QbenYRtE5wQIKyLZvyew87wtUGX5+FlzATNsYedBuik0VNusgyjPC3rZAI88
+         yZerBh4meOFaMUocRJiO8SCLCpMI3zmOs1t9hg+WaTwLBk9Wib7xfDQCio06NryOD+ul
+         gPljcDVdJlf+3ZKZrxk0GtxHH52VI+N3ZBSH7UVrKSK6/v1z2mnZJ8l9Ky42EUWnmLq4
+         ozcz0f4XI/LfsvWDNWwKB3gD/nHXYUy6/JS/lTtdai4f2XXAMxAR75xq5tEd7Wosys0c
+         Rgjw==
+X-Gm-Message-State: AOAM532gu7sIm8QVQSkT/CLIQVB03Fi+cfWS+3gRFdlxdGRLzQDXiI9w
+        AVTat3Ky/Ox7vlrPKS3WETM9Zm8mLt/4mx6f4BwUTaVxVFc=
+X-Google-Smtp-Source: ABdhPJxMqdZExevdBXmhpxkIIqRqn4UUrUJ6ftFmJTHIE5I4fXMrWrwyKr6VDncxUs9eAJ2dXjmBe88Cq0Giq6btcZs=
+X-Received: by 2002:a2e:b0c8:: with SMTP id g8mr2376510ljl.331.1606861718835;
+ Tue, 01 Dec 2020 14:28:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 1 Dec 2020 16:28:27 -0600
+Message-ID: <CAH2r5mskHWLCLFOcyNK7ZE64iRs9S9i+wP9g0+UTzy-bkCnWpg@mail.gmail.com>
+Subject: [GIT PULL] SMB3 Fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 3:22 PM, Brendan Higgins wrote:
-> On Mon, Nov 23, 2020 at 11:25 PM David Gow <davidgow@google.com> wrote:
->>
->> On Mon, Nov 23, 2020 at 9:08 PM Marco Elver <elver@google.com> wrote:
->>>
->>> On Tue, 17 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
->>>> On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->>>>>
->>>>> Implementation of support for parameterized testing in KUnit. This
->>>>> approach requires the creation of a test case using the
->>>>> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
->>>>>
->>>>> This generator function should return the next parameter given the
->>>>> previous parameter in parameterized tests. It also provides a macro to
->>>>> generate common-case generators based on arrays. Generators may also
->>>>> optionally provide a human-readable description of parameters, which is
->>>>> displayed where available.
->>>>>
->>>>> Note, currently the result of each parameter run is displayed in
->>>>> diagnostic lines, and only the overall test case output summarizes
->>>>> TAP-compliant success or failure of all parameter runs. In future, when
->>>>> supported by kunit-tool, these can be turned into subsubtest outputs.
->>>>>
->>>>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
->>>>> Co-developed-by: Marco Elver <elver@google.com>
->>>>> Signed-off-by: Marco Elver <elver@google.com>
->>>>> ---
->>>> [Resending this because my email client re-defaulted to HTML! Aarrgh!]
->>>>
->>>> This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
->>>> both worked fine.
->>>>
->>>> Reviewed-by: David Gow <davidgow@google.com>
->>>> Tested-by: David Gow <davidgow@google.com>
->>>
->>> Thank you!
->>>
->>>> Thanks for sticking with this!
->>>
->>> Will these patches be landing in 5.11 or 5.12?
->>>
->>
->> I can't think of any reason not to have these in 5.11. We haven't
->> started staging things in the kselftest/kunit branch for 5.11 yet,
->> though.
->>
->> Patch 2 will probably need to be acked by Ted for ext4 first.
->>
->> Brendan, Shuah: can you make sure this doesn't get lost in patchwork?
-> 
-> Looks good to me. I would definitely like to pick this up. But yeah,
-> in order to pick up 2/2 we will need an ack from either Ted or Iurii.
-> 
-> Ted seems to be busy right now, so I think I will just ask Shuah to go
-> ahead and pick this patch up by itself and we or Ted can pick up patch
-> 2/2 later.
-> 
-> Cheers
-> 
+Please pull the following changes since commit
+b65054597872ce3aefbc6a666385eabdf9e288da:
 
-I am seeing
+  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
 
-ERROR: need consistent spacing around '*' (ctx:WxV)
-#272: FILE: include/kunit/test.h:1786:
-+		typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : 
-(array);	\
-  		                   ^
+are available in the Git repository at:
 
-Can you look into this and send v10?
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.10-rc6-smb3-fixes
 
-thanks,
--- Shuah
+for you to fetch changes up to 212253367dc7b49ed3fc194ce71b0992eacaecf2:
+
+  cifs: fix potential use-after-free in cifs_echo_request()
+(2020-11-30 15:23:45 -0600)
+
+----------------------------------------------------------------
+Two smb3 fixes for stable including a use after free fix, and
+one for signal handling in read.
+
+Build verification test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/441
+----------------------------------------------------------------
+Paulo Alcantara (2):
+      cifs: allow syscalls to be restarted in __smb_send_rqst()
+      cifs: fix potential use-after-free in cifs_echo_request()
+
+ fs/cifs/connect.c   | 2 ++
+ fs/cifs/transport.c | 4 ++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+--
+Thanks,
+
+Steve
