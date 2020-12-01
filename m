@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F7A2CA7DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8312CA7E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403938AbgLAQLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:11:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
+        id S2404060AbgLAQNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388364AbgLAQLl (ORCPT
+        with ESMTP id S2388364AbgLAQNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:11:41 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567CAC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:11:01 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id h26so734993uan.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:11:01 -0800 (PST)
+        Tue, 1 Dec 2020 11:13:12 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E643DC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:12:26 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id b144so1732987qkc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:12:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lZdKwyZiumYGvQbLwgvXVvBks2dSrXavoorQLj9ViOo=;
-        b=HbdJcTrT+Bm5snlT4I8yNuYKtWRopqXB48P4o3VVBeVAKEZL2VohViYi5I7dTIuu6p
-         5zwVGXKQl/m16KeuJUWiQw6oE7pRxrRVuNZmMiUOWVQKYSDRVWBgOugNyNB0k+1cAd/j
-         lGNwiuuUgxQMVVqUebDRL1GyK2PGnDmOeWg6OInjZ27Kg39hr0Kpt1HL5wTZESE3UD3R
-         DnHIlKTYC86/oUVGyrZGOTd4DuGfvxHr4lRRuk9rIWdYRuvGDnML7bVuMl3jAauWNYwx
-         jk1OPrdKd7DZ3mSdzI1B6o1RjaruFzkJy3Z2HGj9lcMjSyz1zRsAe0gpbeb/QokLF16Z
-         aByw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Pv6Mzxor2+R5OnRVrZEMoeinj6r+eUiZ62bCMKojMyI=;
+        b=dYwCu16kBnubHryi3fTziiQM5QEe7RTg51IUCeYj/YQRiKYeBdFBQsxofehvYiU64V
+         M9OAxZTvCKL+UOzp/TqY5MThox2muiT8b0GUL8d6pnWRxm4X944WMMbS6Smm4eYcKQ85
+         y/Kh0133C3FxOhhhi5qbuiBorNqIOPxo+7B6fgNw9G7Z7tj6zu95Nfy3K9SWMNkO5T7r
+         DHjY7lnOy2ZxsUF1VXoI3K1O06jAx8SsypyJ2N7rp/MSHr2x+zMJuN/sFrgO5LQ+SINY
+         e5ACiUtDHp0pbCjVHkOW81OK2C61cW3xUq0KGnvzbMCCrqTrQiFgXny7l47lyNLd1us4
+         01hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lZdKwyZiumYGvQbLwgvXVvBks2dSrXavoorQLj9ViOo=;
-        b=hY/l4KfN3jCy2TY9w74R/m0FZgTWD/kLoCkAVB4mzPzJ8yq6wJVQCSqvSV0r1ulfgd
-         U4tOXw5ygomwsn+Cr5Cg86ke5OYdioin2Wu4KLfVwiCKfy+gegLvZ6dL/9L4wX+ltSnm
-         Q3gn1yNCAQuuSpB7wGSYJbbRc8ONoq3vVlQw4Q4el+Q3/m/SFQLFCc2VjjH8gZJr9ay/
-         9sG445PdSrg4vgiVh8DrY9hSl0UXjAUMeFjbP0Ooabn12cXNecmCYbo4j+csL1LemWu4
-         xitLf/z4N8XQAC0GegTCX+qhIfVurHwzxHmeDmIFZ0m+G2yVvifItlSWB4HrWeNtq4nW
-         Y9EQ==
-X-Gm-Message-State: AOAM531vAlayh2F+SO4hR80o3FJNn14VHdJU2YMrHvnQaA+isdYuzDjb
-        j0xlxpioPPQiY8u57hHBwW2RRZAnpH7vJ0mIE4/Fr1L6jZE=
-X-Google-Smtp-Source: ABdhPJzC5bdBhz03oVkaK+E87pEZIqovGzW//4BAUBwEFgEahQ/wGQXo8XGxcbvjVJw0FYa/0y0Wve3lHwiwhYTo0A0=
-X-Received: by 2002:ab0:45c6:: with SMTP id u64mr748318uau.58.1606839060547;
- Tue, 01 Dec 2020 08:11:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Pv6Mzxor2+R5OnRVrZEMoeinj6r+eUiZ62bCMKojMyI=;
+        b=VRMHZsepPRGgK0OWdTHTRIPqmCyHObCLxARsJDZazKHqAWrUa4ELrRtFB48gBCQ89N
+         KRqGplW7L4aASANzwSPrkZOrI55cZq7L4XD3uDiZVDbA4DC7d0CUHe77lZqseZdeNuno
+         Aa62x9SpFOIjcvm+Pqdlal9bUGBjO5sGzk0v4Qwk5uFzWGzvcFr7yqT1ipphvnyKB7Qr
+         LIZzDJqWtgu8Oz5AOrQ4fpEye5rC+94nPMeg/+DbNEMheVJXylrguNgUfU5k5HRyh6UP
+         PiVdWxW9/9hMXr3qZw1ggWm0xmWzTGVAuXuVKtzjTHIt6hrAjakogwQaXdjgNKk6IQKN
+         GnYA==
+X-Gm-Message-State: AOAM5316nPEBuN8HET42ijeEWex9pj4GSVK7nFZzDwTyTytQTPqUfjeg
+        lwh3L4qgNux9Li76pBu8NrRYCA==
+X-Google-Smtp-Source: ABdhPJw+PFkd+7IUGHacT0zmkmF9rtPeqw7QY24kQQRg3oufF3wY5SJE/LyHh9dO9agXuOVIfUxW0Q==
+X-Received: by 2002:a05:620a:132d:: with SMTP id p13mr3622067qkj.233.1606839146116;
+        Tue, 01 Dec 2020 08:12:26 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b64sm34463qkg.19.2020.12.01.08.12.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 08:12:25 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kk8GO-004Td8-Jn; Tue, 01 Dec 2020 12:12:24 -0400
+Date:   Tue, 1 Dec 2020 12:12:24 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Miroslav Lichvar <mlichvar@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201201161224.GF5487@ziepe.ca>
+References: <20201201143835.2054508-1-mlichvar@redhat.com>
 MIME-Version: 1.0
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
- <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk>
- <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
- <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com>
-In-Reply-To: <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 1 Dec 2020 11:10:49 -0500
-Message-ID: <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com>
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201143835.2054508-1-mlichvar@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nikolaus,
+On Tue, Dec 01, 2020 at 03:38:35PM +0100, Miroslav Lichvar wrote:
+> When the system clock is marked as synchronized via adjtimex(), the
+> kernel is expected to copy the system time to the RTC every 11 minutes.
+> 
+> There are reports that it doesn't always work reliably. It seems the
+> current requirement for the RTC update to happen within 5 ticks of the
+> target time in some cases can consistently fail for hours or even days.
+> 
+> It is better to set the RTC with a larger error than let it drift for
+> too long.
+> 
+> Add a static variable to rtc_tv_nsec_ok() to count the checks. With each
+> failed check, relax the requirement by one jiffie, and reset the counter
+> when it finally succeeds. This should allow the RTC update to happen in
+> a minute at most.
+> 
+> Signed-off-by: Miroslav Lichvar <mlichvar@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: John Stultz <john.stultz@linaro.org>
+> Cc: Prarit Bhargava <prarit@redhat.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>  include/linux/rtc.h | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/rtc.h b/include/linux/rtc.h
+> index 22d1575e4991..8d105f10ef6a 100644
+> +++ b/include/linux/rtc.h
+> @@ -218,21 +218,30 @@ static inline bool rtc_tv_nsec_ok(s64 set_offset_nsec,
+>  				  struct timespec64 *to_set,
+>  				  const struct timespec64 *now)
+>  {
+> -	/* Allowed error in tv_nsec, arbitarily set to 5 jiffies in ns. */
+> -	const unsigned long TIME_SET_NSEC_FUZZ = TICK_NSEC * 5;
+>  	struct timespec64 delay = {.tv_sec = 0,
+>  				   .tv_nsec = set_offset_nsec};
+> +	unsigned long time_set_nsec_fuzz;
+> +	static unsigned int attempt;
 
-On Tue, Dec 1, 2020 at 9:38 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
->
-> Let's work on a fix for the fix now.
->
+Adding a static value instide a static inline should not be done
 
-Are you quite sure the chip-select of the tpo,td028ttec1 panel
-is active-high? A quick google produced a datasheet which
-seems to indicate that XCS is active-low?
+I'm not sure using a static like this is the best idea anyhow, if you
+want something like this it should be per-rtc, not global
 
-See page 17 here:
-http://www.lcd-source.com/datasheet/TPO/TD028TTEC1.pdf
+Did you look at why time has become so in-accurate in your system? 5
+jiffies is usually a pretty long time?
 
-It is of course possible that you are driving that line behind
-some inverting circuitry. Hardware designers seem to do that
-all the time, if they need to go from one voltage domain to
-the other, etc.
+Jason
