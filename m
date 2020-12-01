@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AB72C9A81
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AB42C9ABC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387903AbgLAI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387895AbgLAI6P (ORCPT
+        id S2388297AbgLAJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:00:20 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9079 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387613AbgLAJAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:58:15 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99FA0C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 00:57:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DT5y9dV2xExdx2CqBhWqvdiaJUbzEJPFpqaFu1q3ylU=; b=C6zbQPxyxUe/xk+UC3Dtia53cX
-        UyzNyHhnMOE9Vq7LbPfFlIaUfp2ygKJfq2MDXZfSwrUgs0J2yAEQlpi9aXRBkWd8vMaoz/Yzx6Vr8
-        z1NenE19/PsipG88RDYZEFVknycW/EgQI46ZzrLhM9HkbEFpd58Aghe6ZELzx1T9TaPij00fVE70b
-        mpNDHMT1Q9ENtfciW4y5WtgaWsKWNQMk1+OX2fQDaqnsRwx+4ACKHaImXkCcOxs+svIRSqGRXYP2p
-        IgOmbWpt5AIGR+28e94A2Wsc/ngyRhEFl9n/cKKnmWD94IesOeBZNPMWahI7NhOrAQxWxGxeDFiLP
-        Pvs+v9+Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kk1TR-0008EH-8I; Tue, 01 Dec 2020 08:57:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 379B73060AE;
-        Tue,  1 Dec 2020 09:57:22 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 295DC20423019; Tue,  1 Dec 2020 09:57:22 +0100 (CET)
-Date:   Tue, 1 Dec 2020 09:57:22 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     x86@kernel.org, willy@infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, aarcange@redhat.com,
-        kirill.shutemov@linux.intel.com, jroedel@suse.de
-Subject: Re: [RFC][PATCH 5/9] mm: Rename pmd_read_atomic()
-Message-ID: <20201201085722.GR2414@hirez.programming.kicks-ass.net>
-References: <20201130112705.900705277@infradead.org>
- <20201130113603.079835817@infradead.org>
- <20201130153120.GZ5487@ziepe.ca>
+        Tue, 1 Dec 2020 04:00:15 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Clbcf2FrYzLvK7;
+        Tue,  1 Dec 2020 16:58:58 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Dec 2020
+ 16:59:21 +0800
+Subject: Re: [PATCH v1] gpio: dwapb: mask/unmask IRQ when disable/enable it
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     <bgolaszewski@baylibre.com>, <linus.walleij@linaro.org>,
+        <Sergey.Semin@baikalelectronics.ru>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1606728979-44259-1-git-send-email-luojiaxing@huawei.com>
+ <20201130112250.GK4077@smile.fi.intel.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <63f7dcc4-a924-515a-2fea-31ec80f3353e@huawei.com>
+Date:   Tue, 1 Dec 2020 16:59:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130153120.GZ5487@ziepe.ca>
+In-Reply-To: <20201130112250.GK4077@smile.fi.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.57.22.126]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 11:31:20AM -0400, Jason Gunthorpe wrote:
-> On Mon, Nov 30, 2020 at 12:27:10PM +0100, Peter Zijlstra wrote:
-> > There's no point in having the identical routines for PTE/PMD have
-> > different names.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> >  include/linux/pgtable.h    |    7 +------
-> >  mm/hmm.c                   |    2 +-
-> >  mm/mapping_dirty_helpers.c |    2 +-
-> >  mm/mprotect.c              |    2 +-
-> >  mm/userfaultfd.c           |    2 +-
-> >  5 files changed, 5 insertions(+), 10 deletions(-)
-> > 
-> > +++ b/include/linux/pgtable.h
-> > @@ -1244,11 +1244,6 @@ static inline int pud_trans_unstable(pud
-> >  #endif
-> >  }
-> >  
-> > -static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
-> > -{
-> > -	return pmdp_get_lockless(pmdp);
-> > -}
-> > -
-> >  #ifndef arch_needs_pgtable_deposit
-> >  #define arch_needs_pgtable_deposit() (false)
-> >  #endif
-> > @@ -1275,7 +1270,7 @@ static inline pmd_t pmd_read_atomic(pmd_
-> >   */
-> >  static inline int pmd_none_or_trans_huge_or_clear_bad(pmd_t *pmd)
-> >  {
-> > -	pmd_t pmdval = pmd_read_atomic(pmd);
-> > +	pmd_t pmdval = pmdp_get_lockless(pmd);
-> >  	/*
-> >  	 * The barrier will stabilize the pmdval in a register or on
-> >  	 * the stack so that it will stop changing under the code.
-> > +++ b/mm/hmm.c
-> > @@ -356,7 +356,7 @@ static int hmm_vma_walk_pmd(pmd_t *pmdp,
-> >  		 * huge or device mapping one and compute corresponding pfn
-> >  		 * values.
-> >  		 */
-> > -		pmd = pmd_read_atomic(pmdp);
-> > +		pmd = pmdp_get_lockless(pmdp);
-> >  		barrier();
-> >  		if (!pmd_devmap(pmd) && !pmd_trans_huge(pmd))
-> >  			goto again;
-> 
-> The pagewalk API doesn't call the functions with interrupts disabled,
-> doesn't this mean we hit this assertion?
-> 
-> +#if CONFIG_PGTABLE_LEVELS > 2
-> +static inline pmd_t pmdp_get_lockless(pmd_t *pmdp)
-> +{
-> +       pmd_t pmd;
-> +
-> +       lockdep_assert_irqs_disabled();
-> +
-> 
-> It is only holding the read side of the mmap_sem here
 
-Hurmph, good point. I'll see what I can do about that.
+On 2020/11/30 19:22, Andy Shevchenko wrote:
+> On Mon, Nov 30, 2020 at 05:36:19PM +0800, Luo Jiaxing wrote:
+>> The mask and unmask registers are not configured in dwapb_irq_enable() and
+>> dwapb_irq_disable(). In the following situations, the IRQ will be masked by
+>> default after the IRQ is enabled:
+>>
+>> mask IRQ -> disable IRQ -> enable IRQ
+>>
+>> In this case, the IRQ status of GPIO controller is inconsistent with it's
+>> irq_data too. For example, in __irq_enable(), IRQD_IRQ_DISABLED and
+>> IRQD_IRQ_MASKED are both clear, but GPIO controller do not perform unmask.
+> Sounds a bit like a papering over the issue which is slightly different.
+> Can you elaborate more, why ->irq_mask() / ->irq_unmask() are not being called?
+
+
+Sure, The basic software invoking process is as follows:
+
+Release IRQ:
+free_irq() -> __free_irq() -> irq_shutdown() ->__irq_disable()
+
+Disable IRQ:
+disable_irq() -> __disable_irq_nosync() -> __disable_irq -> irq_disable 
+-> __irq_disable()
+
+As shown before, both will call __irq_disable(). The code of it is as 
+follows:
+
+if (irqd_irq_disabled(&desc->irq_data)) {
+     if (mask)
+         mask_irq(desc);
+
+} else {
+         irq_state_set_disabled(desc);
+             if (desc->irq_data.chip->irq_disable) {
+desc->irq_data.chip->irq_disable(&desc->irq_data);
+                 irq_state_set_masked(desc);
+             } else if (mask) {
+                 mask_irq(desc);
+     }
+}
+
+Because gpio-dwapb.c provides the hook function of irq_disable, 
+__irq_disable() will directly calls chip->irq_disable() instead of 
+mask_irq().
+
+For irq_enable(), it's similar and the code is as follows:
+
+if (!irqd_irq_disabled(&desc->irq_data)) {
+     unmask_irq(desc);
+} else {
+     irq_state_clr_disabled(desc);
+     if (desc->irq_data.chip->irq_enable) {
+desc->irq_data.chip->irq_enable(&desc->irq_data);
+         irq_state_clr_masked(desc);
+     } else {
+         unmask_irq(desc);
+     }
+}
+
+Similarly, because gpio-dwapb.c provides the hook function of 
+irq_enable, irq_enable() will directly calls chip->irq_enable() but does 
+not call unmask_irq().
+
+
+Therefore, the current handle is as follows:
+
+API of IRQ:        |   mask_irq()             | disable_irq()            
+|    enable_irq()
+
+gpio-dwapb.c:  |   chip->irq_mask()   | chip->irq_diable()   |    
+chip->irq_enable()
+
+I do not know why irq_enable() only calls chip->irq_enable(). However, 
+the code shows that irq_enable() clears the disable and masked flags in 
+the irq_data state.
+
+Therefore, for gpio-dwapb.c, I thinks ->irq_enable also needs to clear 
+the disable and masked flags in the hardware register.
+
+
+
+
