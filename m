@@ -2,220 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159D32C9562
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BCB2C9565
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgLACoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:44:17 -0500
-Received: from mga17.intel.com ([192.55.52.151]:38112 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726630AbgLACoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:44:16 -0500
-IronPort-SDR: d3LFZOTOqRTOAxluG8YRAJYrwboX/jffYlZq6P/qdE4TvoZC/cM6+ym8Inwa2k76BAV8fbRyMK
- dhhqJy+kymeQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="152582122"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="152582122"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:43:35 -0800
-IronPort-SDR: Y1AFoFb8krMbbNbQEgnoyLqtpeFSYHZ2nHjEGJcaIFIygH0mW+eZ4D5IFt0//QpOn6Uvgf/A13
- fdxXvrVLBESA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="549363506"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga005.jf.intel.com with ESMTP; 30 Nov 2020 18:43:25 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 30 Nov 2020 18:43:09 -0800
-Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 30 Nov 2020 18:43:00 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 30 Nov 2020 18:43:00 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Mon, 30 Nov 2020 18:42:59 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iWzKRZHrEO0WBZmzKDBKtnyIYNV0vOzgmZxnQysRjugjgIPfNzlNu+89Fd2mLZrzuejNviv2wkws0r89tEKgASQe7MizLL+Y0Q+lhJrqr3Ggkk124RcV1VqEeN/qs3xBy8pcPdunN91ixHcfA6JCSDw3ZGehWYX3yLZrCJdUx5js0JtqFCVxv70snd26eI4JYTQWTwV+XISPUPAyRwcvE+w631Tz4PJ/SxRJ+1SuzslLI4DNLMGYl+EamVInH6SjzHpm8D41g5ne3waikGAXH5wLMpcxJK1s860VbBmR5o7RBuX3ERpcnPR+iHGfVllOtmX97dZckj9oqOpodlk68g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2VBRM8FzXcGIDPlsuIlB2pzeGxoo/kYBbm+d4l0Kv4Q=;
- b=cDNmEGTzIBSZkmruPCetqpOZRPv1hAm68je2NHMQHiImL6dwp4mrFc1XeoRGwVzxqZBqZosxCCKAp8+1tS+OSW3s+BO3FzdDo2gk0eRTqZOBa6CFwGEfwZewQ+6594hbQkCnRon4g8K20uQqCA/GNe4tmLVAmHr9f8M5UZ2d3HYTLnKtQ1bu8ZFt0qjcs/+lu4oKtOeQhnj+9RvC0h3mHqmEyQwMMB+pl5xtpHcSv7tLGPqG810EPkYSRvQjoo1q6TPsXpFZ7ZaFwXO2xqkPpaf8nr7oDZF+nwy4r2t8ME9Xb2OGiDDK2gr6X0S8I3dMRCLXIbc55lBoovHv44v7xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2VBRM8FzXcGIDPlsuIlB2pzeGxoo/kYBbm+d4l0Kv4Q=;
- b=n+JwU8O00MJMnvlZQmhEAckhHMeXuju/qo0ADS8WOF77t6/ruyZFmcEJ8NFnIh8hQCBik19p8Zk/8b8ML2PrgK2RZDyrEL8HVd2/CClMfsBUcURVSSBW3LOV+7VNNS6zg5ehFheiPKp3AM7ihFigo7jjZi99EHybA/kwZayEMcY=
-Received: from DM6PR11MB4074.namprd11.prod.outlook.com (2603:10b6:5:5::11) by
- DM6PR11MB4202.namprd11.prod.outlook.com (2603:10b6:5:1df::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3611.25; Tue, 1 Dec 2020 02:42:52 +0000
-Received: from DM6PR11MB4074.namprd11.prod.outlook.com
- ([fe80::8941:7045:2dc8:707e]) by DM6PR11MB4074.namprd11.prod.outlook.com
- ([fe80::8941:7045:2dc8:707e%7]) with mapi id 15.20.3611.025; Tue, 1 Dec 2020
- 02:42:52 +0000
-From:   "Liao, Bard" <bard.liao@intel.com>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>
-CC:     "vinod.koul@linaro.org" <vinod.koul@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jank@cadence.com" <jank@cadence.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "hui.wang@canonical.com" <hui.wang@canonical.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "Kale, Sanyog R" <sanyog.r.kale@intel.com>
-Subject: RE: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
-Thread-Topic: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
-Thread-Index: AQHWx4pQDnpV+A2n6kyb1b68GB2Tu6nhheRg
-Date:   Tue, 1 Dec 2020 02:42:52 +0000
-Message-ID: <DM6PR11MB4074311B4E0B70F24383E754FFF40@DM6PR11MB4074.namprd11.prod.outlook.com>
-References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
-In-Reply-To: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-dlp-product: dlpe-windows
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [220.133.4.96]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cbe78de2-3ead-440c-f9ee-08d895a2cc8d
-x-ms-traffictypediagnostic: DM6PR11MB4202:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB420275CE2A952060E5795E90FFF40@DM6PR11MB4202.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jRWQu40qSO/lC3xgXhIogzllY1AFGFB5f2OIf2BIVAZudTn8VxJBQRxYvcB7Fz+B5BB1MPScfx6QKxgH85XF5rhntZBniRqAmX3JcD2dWtRF1P5Rknrjk4VwGFJvgJxAPRh1Bo/idBSlpjRnYUOoCIdU3l+sD4SHJIB3s7MsW22ZeA3ZJhIfTK+51BadKtYNhF9uIz1jrbjGqVLRzXjVn2E73LtWIiMg0VPsC8PfMNrEhQxGd0jMC2Bfpl/kI3kbPWM+r0Y+ColMsOkHL+gulzp3Yw+GbhohKA+cXBuVY89x5iu1k1Y/mIU5SHfTpgDZfpixHFrQYwfXP17eRPl3bg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4074.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(6506007)(2906002)(54906003)(53546011)(8936002)(7416002)(186003)(66556008)(110136005)(7696005)(71200400001)(5660300002)(83380400001)(26005)(478600001)(86362001)(55016002)(64756008)(8676002)(52536014)(9686003)(76116006)(66446008)(66946007)(66476007)(33656002)(316002)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?HCFwAWa2vvR7WeAPGqdOJB9DXvoZAdqg45Izdt0Lx8iZ1Ai1DnLMtjarmO79?=
- =?us-ascii?Q?+6BQbmW0ju/01RE7/AbS+pdyOR180kH6rMLobqF5MHOXb8GYbQ77aqOge2sx?=
- =?us-ascii?Q?lg6NxY8H1OgON6nAf5cvBNR+T54FWWAoJSsU8FUwnfv7fw6DC5T9LmJ+4IK0?=
- =?us-ascii?Q?7F8fEcamFoWiDJBOWezgmuW+WlP0lk+raeG2y5570YserNqc9MDNNAc6UDv9?=
- =?us-ascii?Q?OnmWM6vHG6aF8EOFxBzMMZ2XiuDgw3tEvm/dYi2CrwatpFC7H08PwPgjzHE/?=
- =?us-ascii?Q?+mlA4LDh9kprOy+6dSyWVjGaIWrCzL0wVSdmLL07q/iOs/u/30Opj40E4uco?=
- =?us-ascii?Q?4lrXUwWj07RnEUrB9Rr3i7JgGqCP9GHfNVcNODFQJRWdq9S3gYCIs8z1LouT?=
- =?us-ascii?Q?5ZnS3m6L18VTxXZKyJ0TWfVjA/miqkuas7bc4NPBGFvxUTbK/DKViuc8vNKo?=
- =?us-ascii?Q?7SUoB0boQlZxe3FY4aaXpygR2icSf9ebj/+w57tS02Mx8NfUbGMhVNSuzE6L?=
- =?us-ascii?Q?myR//qowP7HRL0E0bcGnarLCnFIobQqfFfTnoDqzQljObKIbgcyD3wwT4iwg?=
- =?us-ascii?Q?Yh+2P9qEleQCdeaIqffb2E8qSp+gwIupXf8R0Tnf/2LX6xtMutZLt4WdjCaM?=
- =?us-ascii?Q?PDU8skbGUbYmbagG77DNdbL/49D7dw611aKgntuvGuCEh0vW3GaOGvOyjdLH?=
- =?us-ascii?Q?xzsyg9+5p7oUBtrGuXMCALpDHFMjdOZPVdBMz5su50xOSSP81KaGoVdc6pyP?=
- =?us-ascii?Q?7lg3K0YLVpQ1WdQfwjU/voDx2nUanYgC5NBO/475k3+jQobKrMqx8NJoH9qa?=
- =?us-ascii?Q?ShklKv+Vk29pDB3VC08chTXubA76H2PXjoAMcSoG75EUy2VrYN0PfIWtAA9v?=
- =?us-ascii?Q?VCfmhSY4JB0yd1feu6Z3IxXDSRjhbGKjZEBVWrS+/pTtaB9nyfYO7IZI0dJO?=
- =?us-ascii?Q?Lth2CRtA7I9CAF0L6VZVYGQyXR4x2UR01oXvd2XB0z4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726566AbgLACq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:46:59 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9077 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgLACq7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 21:46:59 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ClRKz5t17zLy1d;
+        Tue,  1 Dec 2020 10:45:43 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Dec 2020 10:46:12 +0800
+Subject: Re: [PATCH] scsi: zfcp: fix use-after-free in zfcp_unit_remove
+To:     Steffen Maier <maier@linux.ibm.com>
+CC:     Benjamin Block <bblock@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>
+References: <20201120074854.31754-1-miaoqinglang@huawei.com>
+ <20201125170658.GB8578@t480-pf1aa2c2>
+ <4c65bead-2553-171e-54d2-87a9de0330e8@huawei.com>
+ <20201126091353.50cf6ab6.cohuck@redhat.com>
+ <20201126094259.GE8578@t480-pf1aa2c2>
+ <9ba663ad-97fe-6c2a-e15a-45f2de1f0af0@huawei.com>
+ <20201126151242.GI8578@t480-pf1aa2c2>
+ <90356c8e-f523-1d16-45a2-0c8b9fae15c0@linux.ibm.com>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <fb8fa07f-ed76-479b-4aaa-fbb91dd949e2@huawei.com>
+Date:   Tue, 1 Dec 2020 10:46:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4074.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbe78de2-3ead-440c-f9ee-08d895a2cc8d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 02:42:52.1202
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BBGUKcjuVTHu0X4wztV7XnpTegH1GiqyibAHQqX2J2UGscaFSY1K/6sxPHesXPkG17VpWMaBNE47wtyjS4+c0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4202
-X-OriginatorOrg: intel.com
+In-Reply-To: <90356c8e-f523-1d16-45a2-0c8b9fae15c0@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Sent: Monday, November 30, 2020 10:40 PM
-> To: alsa-devel@alsa-project.org; vkoul@kernel.org
-> Cc: vinod.koul@linaro.org; linux-kernel@vger.kernel.org; tiwai@suse.de;
-> broonie@kernel.org; gregkh@linuxfoundation.org; jank@cadence.com;
-> srinivas.kandagatla@linaro.org; rander.wang@linux.intel.com;
-> ranjani.sridharan@linux.intel.com; hui.wang@canonical.com; pierre-
-> louis.bossart@linux.intel.com; Kale, Sanyog R <sanyog.r.kale@intel.com>;
-> Liao, Bard <bard.liao@intel.com>
-> Subject: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA
-> support
->=20
-> The MIPI SoundWire Device Class standard will define audio functionality
-> beyond the scope of the existing SoundWire 1.2 standard, which is limited=
- to
-> the bus and interface.
->=20
-> The description is inspired by the USB Audio Class, with "functions",
-> "entities", "control selectors", "audio clusters". The main difference wi=
-th the
-> USB Audio class is that the devices are typically on a motherboard and
-> descriptors stored in platform firmware instead of being retrieved from t=
-he
-> device.
->=20
-> The current set of devices managed in this patchset are conformant with t=
-he
-> SDCA 0.6 specification and require dedicated drivers since the descriptor=
-s
-> and platform firmware specification is not complete at this time. They do
-> however rely on the hierarchical addressing required by the SDCA standard=
-.
-> Future devices conformant with SDCA 1.0 should rely on a class driver.
->=20
-> This series adds support for the hierarchical SDCA addressing and extends
-> regmap. It then provides 3 codecs for RT711-sdca headset codec, RT1316
-> amplifier and RT715-scda microphone codec.
->=20
-> Note that the release of this code before the formal adoption of the SDCA
-> 1.0 specification was formally endorsed by the MIPI Board to make sure
-> there is no delay for Linux-based support of this specification.
->=20
-> v2:
-> - rt715-sdca: Use rt715_sdca prefix to avoid compiling issue.
-> - rt715-sdca: Merge multiple mute/volume operation into single
-> mute/volume
->   operation
-> - rt711-sdca: Initial ret =3D 0 as it could be used uninitialized.
->=20
-> Jack Yu (1):
->   ASoC/SoundWire: rt715-sdca: First version of rt715 sdw sdca codec
->     driver
->=20
-> Pierre-Louis Bossart (2):
->   soundwire: SDCA: add helper macro to access controls
->   regmap/SoundWire: sdw: add support for SoundWire 1.2 MBQ
->=20
-> Shuming Fan (2):
->   ASoC/SoundWire: rt1316: Add RT1316 SDCA vendor-specific driver
->   ASoC/SoundWire: rt711-sdca: Add RT711 SDCA vendor-specific driver
->=20
 
-Hi Vinod/Mark,
 
-Could we take this series into Vinod's tree with Mark's Acked-by?
-It failed to build on Mark's tree.
+在 2020/11/27 17:21, Steffen Maier 写道:
+> On 11/26/20 4:12 PM, Benjamin Block wrote:
+>> On Thu, Nov 26, 2020 at 08:07:32PM +0800, Qinglang Miao wrote:
+>>> 在 2020/11/26 17:42, Benjamin Block 写道:
+>>>> On Thu, Nov 26, 2020 at 09:13:53AM +0100, Cornelia Huck wrote:
+>>>>> On Thu, 26 Nov 2020 09:27:41 +0800
+>>>>> Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>>>>>> 在 2020/11/26 1:06, Benjamin Block 写道:
+>>>>>>> On Fri, Nov 20, 2020 at 03:48:54PM +0800, Qinglang Miao wrote:
+>> ....
+>>>> Let's go by example. If we assume the reference count of `unit->dev` is
+>>>> R, and the function starts with R = 1 (otherwise the deivce would've
+>>>> been freed already), we get:
+>>>>
+>>>>       int zfcp_unit_remove(struct zfcp_port *port, u64 fcp_lun)
+>>>>       {
+>>>>           struct zfcp_unit *unit;
+>>>>           struct scsi_device *sdev;
+>>>>           write_lock_irq(&port->unit_list_lock);
+>>>> // unit->dev (R = 1)
+>>>>           unit = _zfcp_unit_find(port, fcp_lun);
+>>>> // get_device(&unit->dev)
+>>>> // unit->dev (R = 2)
+>>>>           if (unit)
+>>>>               list_del(&unit->list);
+>>>>           write_unlock_irq(&port->unit_list_lock);
+>>>>           if (!unit)
+>>>>               return -EINVAL;
+>>>>           sdev = zfcp_unit_sdev(unit);
+>>>>           if (sdev) {
+>>>>               scsi_remove_device(sdev);
+>>>>               scsi_device_put(sdev);
+>>>>           }
+>>>> // unit->dev (R = 2)
+>>>>           put_device(&unit->dev);
+>>>> // unit->dev (R = 1)
+>>>>           device_unregister(&unit->dev);
+>>>> // unit->dev (R = 0)
+>>>>           return 0;
+>>>>       }
+>>>>
+>>>> If we now apply this patch, we'd end up with R = 1 after
+>>>> `device_unregister()`, and the device would not be properly removed.
+>>>>
+>>>> If you still think that's wrong, then you'll need to better explain 
+>>>> why.
+>>>>
+>>> Hi Banjamin and Cornelia,
+>>>
+>>> Your replies make me reliaze that I've been holding a mistake 
+>>> understanding
+>>> of put_device() as well as reference count.
+>>>
+>>> Thanks for you two's patient explanation !!
+>>>
+>>> BTW, should I send a v2 on these two patches to move the position of
+>>> put_device()?
+>>
+>> Feel free to do so.
+>>
+>> I think having the `put_device()` call after `device_unregister()` in
+>> both `zfcp_unit_remove()` and `zfcp_sysfs_port_remove_store()` is more
+>> natural, because it ought to be the last time we touch the object in
+>> both functions.
+> 
+> If you move put_device(), you could add a comment like we did here to 
+> explain which (hidden) get_device is undone:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/s390/scsi?id=ef4021fe5fd77ced0323cede27979d80a56211ca 
+> 
+> ("scsi: zfcp: fix to prevent port_remove with pure auto scan LUNs (only 
+> sdevs)")
+> So in this patch it could be:
+>      put_device(&unit->dev); /* undo _zfcp_unit_find() */
+> And in the other patch it could be:
+>      put_device(&port->dev); /* undo zfcp_get_port_by_wwpn() */
+> Then it would be clearer next time somebody looks at the code.
+>
+Hi, Steffen
 
->=20
-> --
-> 2.17.1
+Sorry I didn't notice this mail when I sent a patch to move put_device, 
+you suggestion sounds resonable to me, so I send a v2 to add comments.
 
+Thanks.
+> Especially for the other patch on zfcp_sysfs_port_remove_store() moving 
+> the put_device(&port->dev) to at least *after* the call of 
+> zfcp_erp_port_shutdown(port, 0, "syprs_1") would make the code cleaner 
+> to me. Along the idead of passing the port to zfcp_erp_port_shutdown 
+> with the reference we got from zfcp_get_port_by_wwpn(). That said, the 
+> current code is of course still correct as we currently have the port 
+> ref of the earlier device_register so passing the port to 
+> zfcp_erp_port_shutdown() is safe.
+> 
+> If we wanted to make the gets and puts nicely nested, then we could move 
+> the puts to just before the device_unregister, but that's bike shedding:
+>      device_register()   --+
+>      get_device() --+      |
+>      put_device() --+      |
+>      device_unregister() --+
+> 
+> Benjamin's suggested move location works for me, too. After all, the 
+> kdoc of device_unregister explicitly mentions the possibility that other 
+> refs might continue to exist after device_unregister was called:
+>      device_register()   --+
+>      get_device() ---------|--+
+>      device_unregister() --+  |
+>      put_device() ------------+
+Glad to know your opinions, I'd like to take this one on my patch.
+> 
