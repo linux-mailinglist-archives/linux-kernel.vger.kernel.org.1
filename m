@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6E82CAB29
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A997F2CAB2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731253AbgLAS4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:56:49 -0500
-Received: from mga17.intel.com ([192.55.52.151]:65533 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726213AbgLAS4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:56:49 -0500
-IronPort-SDR: ymHOwF9dz5a11dYhtIRfpEmCVUe7hDaCdE+ASviyymQRKnEj8N48P2+Bf5GPhpr9PWs25Ymgll
- f65XtC4rMqOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152716011"
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="152716011"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 10:55:08 -0800
-IronPort-SDR: O1EQ8vM/QvOLK7AKHZagQtym6r3r7agEaHfKrsefFl/abSiMiZfy7LQEOEJzQYFMGdozDImMyB
- TZlyuPsZwQZA==
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="361147132"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 10:54:58 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kkAog-00BLBW-ML; Tue, 01 Dec 2020 20:55:58 +0200
-Date:   Tue, 1 Dec 2020 20:55:58 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dan Scally <djrscally@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201201185558.GM4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130205203.GQ4351@valkosipuli.retiisi.org.uk>
- <3e8494a0-a2c0-59e7-46bb-9635c3c239dd@gmail.com>
+        id S2392288AbgLAS4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgLAS4u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 13:56:50 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BABC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:56:10 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id 4so1365379qvh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:56:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SnExyO2cxfLMHMB/MdA4Td+5GAqX/9sCmYFijfCLuv4=;
+        b=j6S8tdmm9n5STmHpqvyJ+gAmYMxWA+XARCQNaQFH50SWIcJwPP8+9HSOS1ZisogmGy
+         Zb9GFhcqloh8I805gC9m5izcFkxwGQLo2/+mVzMujkVVNIhrlhEnebHkf4J2Wg6dR8AX
+         GZQ18YsV50/bM3H4pG3SBPPm8JncHZ7WyM1uY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SnExyO2cxfLMHMB/MdA4Td+5GAqX/9sCmYFijfCLuv4=;
+        b=MqTKid4kbS32a0qDqKcjieVJpvJnwoTKjAVCTTzbGNcChiPxY4KVSF36CDyeYC6xjK
+         QZ/VyyG8Ei3GDy54ETB1WFYi24xcG1qVPCRD+DgapR+AmHqdhpjHV+DS7jbj5W82BKKF
+         NANoOvNwW7abcRULmwvuB64/OHm4WCv3yu3DmI8q/+87GN5edfI2naWsaBB8n9/+8Xac
+         CpV2GexQAr/YOgaEufHnMXhU/hO55nOSS4oUECQscDk68aRYn1O4cmUASwOD3ODMPrRb
+         ND3CWg+ftAv4snkUWLEO3ybXqVLc/OXGlzJlPwNuCCUUx++1Tqei5DT3jF9Emx9rYD1k
+         g1xw==
+X-Gm-Message-State: AOAM532rtYtyTXR+fuIDvengXg7tkfGtBy/4C5uGxkj04TLwggQ1qU/E
+        uk9zLGjAk92LsXEkInSCyjWxhA==
+X-Google-Smtp-Source: ABdhPJy36x/GNPwdutQhGwx4AS2lqhWYw11FX0TYbedMiONQnju8iXiFz1TjFL0FWkepRL60JdAR+A==
+X-Received: by 2002:a0c:cd0d:: with SMTP id b13mr4383243qvm.12.1606848969666;
+        Tue, 01 Dec 2020 10:56:09 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id v9sm525082qkv.34.2020.12.01.10.56.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 10:56:09 -0800 (PST)
+Date:   Tue, 1 Dec 2020 13:56:08 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
+ cookie on fork
+Message-ID: <20201201185608.GA219024@google.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-23-joel@joelfernandes.org>
+ <20201125110709.GR2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3e8494a0-a2c0-59e7-46bb-9635c3c239dd@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201125110709.GR2414@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 11:06:03PM +0000, Dan Scally wrote:
-> On 30/11/2020 20:52, Sakari Ailus wrote:
-> >> +static const struct acpi_device_id int3472_device_id[] = {
-> >> +	{ "INT3472", 0 },
-> > The INT3472 _HID is really allocated for the tps68470 PMIC chip. It may not
-> > be used by other drivers; people will want to build kernels where both of
-> > these ACPI table layouts are functional.
-> >
-> > Instead, I propose, that you add this as an option to the tps68470 driver
-> > that figures out whether the ACPI device for the tps68470 device actually
-> > describes something else, in a similar fashion you do with the cio2-bridge
-> > driver. I think it may need a separate Kconfig option albeit this and
-> > cio2-bridge cannot be used separately.
+On Wed, Nov 25, 2020 at 12:07:09PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
+> > Also, for the per-task cookie, it will get weird if we use pointers of any
+> > emphemeral objects. For this reason, introduce a refcounted object who's sole
+> > purpose is to assign unique cookie value by way of the object's pointer.
 > 
-> It actually occurs to me that that may not work (I know I called that
-> out as an option we considered, but that was a while ago actually). The
-> reason I wasn't worried about the existing tps68470 driver binding to
-> these devices is that it's an i2c driver, and these dummy devices don't
-> have an I2cSerialBusV2, so no I2C device is created by them the kernel.
-> 
-> 
-> Won't that mean the tps68470 driver won't ever be probed for these devices?
+> Might be useful to explain why exactly none of the many pid_t's are
+> good enough.
 
-It won't be probed by kernel as long as it stays pure I²C driver..
+I thought about this already and it does not seem a good fit. When 2
+processes share, it is possible that more processes are added to that logical
+group. Then the original processes that share die, but if we hold on to the
+pid_t or task_struct, that would be awkward. It seemed introducing a new
+refcounted struct was the right way to go. I can add these details to the
+change log.
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks!
 
+ - Joel
 
