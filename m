@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4D72C93E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E312E2C93EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389122AbgLAA1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388133AbgLAA1P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:27:15 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6437EC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:26:07 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id 64so18827258wra.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:26:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=nMn+2Vd7dQcjrIkLd6jblJNyNbACa1twjNZ31rwGz34=;
-        b=1qfhS2qaDYP1b60lVNudKuwYRgqPRyHMCZy3jdSOyElU7QGfmgPPJ2Pr2qTh7aixra
-         eiJhEG5ffbaC1LjXRpe5sxpj+Xm2UGv24GbsR8bTgQK5QigGQD9QoOmbEAcDs88GQ786
-         R1uYvuV2xgV1SZN3z0oBpgzvKI5t0H8NWsHp4vjYGYnjfB5q44dJsQNud8IW3CTn25JY
-         FlDbzMBl7wW2z9OIFaeBzpUFFpUsP74r5ZDnFXnYJAbPKbKo5s50MD7tkqJMfTJAaqpO
-         Om7NwQBbC/4LwNtkkHzCVOG2Ien0gfriP5s4ZlbKTDny5BufefxpUHK8IufnLpPZ7nGn
-         kyHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=nMn+2Vd7dQcjrIkLd6jblJNyNbACa1twjNZ31rwGz34=;
-        b=c1vS++d8mxblq8/3Bx+0sJ9B4QRxr8sfib8qIdevpnJ8BNh8H+9u6/fG9GW6XLxYUG
-         gpsNV0HEEi6wiVXtFy7kZnI6AAy52ZE3SSHpwx2LPAIXgSMSOnKRkUNogCMPiPs+XoHP
-         shEL9BmxlNrjTf8fNGHh2SFFCCxVdRLSdyj9mXEtAD6UVQNkU4YwYSbnwYWsBymRP5Q7
-         BmORKkcnGdYU4Zfs3lxSIc6v6l9qOvPZP4Zhi9rOtAnyntRJHJ/Q4HVX3RAdXm1fMMgN
-         Vkd6L+UxTW8DGkEf7xdQ9XDTbTNmueLTP9V+jt7B1RjU/PgKQBv63DtYKps+9u5HvRgf
-         uZkA==
-X-Gm-Message-State: AOAM531Rj+3lW2u7c/ehX+BWRjyAsVt2xIH3HjJODCq5OuHzxAz00mVJ
-        yCF5FyvHTvxXCR/QTTuqelQeg5sF1ulXVMl+0/s=
-X-Google-Smtp-Source: ABdhPJzaVC8NXzM0/ZC4iyiTvLhVp4eg06QkIsRTlCbvS05JMJQnOVu7/y0JJ0krbVCIaLrzcvoecA==
-X-Received: by 2002:adf:fe0f:: with SMTP id n15mr102256wrr.357.1606782365968;
-        Mon, 30 Nov 2020 16:26:05 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id y18sm30432998wrr.67.2020.11.30.16.26.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 16:26:05 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Carlo Caione <carlo@caione.org>
-Cc:     Yu Kuai <yukuai3@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the amlogic tree
-In-Reply-To: <20201201100751.6cdf5ec8@canb.auug.org.au>
-References: <20201201100751.6cdf5ec8@canb.auug.org.au>
-Date:   Mon, 30 Nov 2020 16:26:01 -0800
-Message-ID: <7hv9dmtlra.fsf@baylibre.com>
+        id S2389132AbgLAA23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:28:29 -0500
+Received: from mga03.intel.com ([134.134.136.65]:20861 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388133AbgLAA22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 19:28:28 -0500
+IronPort-SDR: EGok0JIPBGoXxKI+Qyvggij90dKB/fec+NGHabY8Z6cq1HbDNFlAMvq5sGaT968u7qNzP37ci0
+ CzecyGDtxFtA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172835294"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="172835294"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 16:27:47 -0800
+IronPort-SDR: yj4LV58XLzO268tAWATMfYPQ0jKvINmzRsB/h2Q/p5ZAfNM73gOp5tYLgWAKrXlg8LkmukzX/8
+ Q4mrBZKEgV9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="364459780"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
+  by fmsmga004.fm.intel.com with ESMTP; 30 Nov 2020 16:27:44 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, "Mel Gorman" <mgorman@suse.de>,
+        Rik van Riel <riel@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        <linux-api@vger.kernel.org>
+Subject: Re: [PATCH -v6 2/3] NOT kernel/man-pages man2/set_mempolicy.2: Add mode flag MPOL_F_NUMA_BALANCING
+References: <20201126053219.234793-1-ying.huang@intel.com>
+        <20201126053219.234793-3-ying.huang@intel.com>
+        <a5d4c16b-74d7-403f-5f1c-8a1e8cbe4efb@intel.com>
+Date:   Tue, 01 Dec 2020 08:27:43 +0800
+In-Reply-To: <a5d4c16b-74d7-403f-5f1c-8a1e8cbe4efb@intel.com> (Dave Hansen's
+        message of "Mon, 30 Nov 2020 09:48:56 -0800")
+Message-ID: <87a6uyqsjk.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+Dave Hansen <dave.hansen@intel.com> writes:
 
-> Hi all,
+> On 11/25/20 9:32 PM, Huang Ying wrote:
+>> --- a/man2/set_mempolicy.2
+>> +++ b/man2/set_mempolicy.2
+>> @@ -113,6 +113,11 @@ A nonempty
+>>  .I nodemask
+>>  specifies node IDs that are relative to the set of
+>>  node IDs allowed by the process's current cpuset.
+>> +.TP
+>> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
+>> +Enable the Linux kernel NUMA balancing for the task if it is supported
+>> +by kernel.  If the flag isn't supported by Linux kernel, return -1 and
+>> +errno is set to EINVAL.
 >
-> In commit
+> The one thing I learned about manpage CodingStyle is that new sentences
+> go on new lines.  I think this needs to be:
 >
->   9d822ed94237 ("soc: amlogic: canvas: add missing put_device() call in meson_canvas_get()")
->
-> Fixes tag
->
->   Fixes: commit 382f8be04551 ("soc: amlogic: canvas: Fix meson_canvas_get when probe failed")
->
-> has these problem(s):
->
->   - leading word 'commit' unexpected
+> .TP
+> .BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
+> Enable the Linux kernel NUMA balancing for the task if it is supported
+> by kernel.
+> If the flag isn't supported by Linux kernel, return -1 and errno is set
+> to EINVAL.
 
-Thanks for the report, I've fixed this commit message.
+Thanks a lot for your information!  I will revise this in the next version.
 
-Kevin
+Best Regards,
+Huang, Ying
