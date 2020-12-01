@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F6A2CA449
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FC42CA454
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403764AbgLANtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:49:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39736 "EHLO
+        id S2391243AbgLANv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:51:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388093AbgLANtR (ORCPT
+        with ESMTP id S2387587AbgLANv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:49:17 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A2CC0613CF;
-        Tue,  1 Dec 2020 05:48:31 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id l11so1186787plt.1;
-        Tue, 01 Dec 2020 05:48:31 -0800 (PST)
+        Tue, 1 Dec 2020 08:51:27 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA272C0613D4;
+        Tue,  1 Dec 2020 05:51:02 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f17so1231349pge.6;
+        Tue, 01 Dec 2020 05:51:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=plSlSB8BWAYE/ztLDhWMxwjFWQWCkUimRFhmgFEUAfQ=;
-        b=E3NyYGrdb0vHrL3gi/aN2z92fLeGyfn7i4T//KGcw+q76IES9ImWUlStjN4531WIqL
-         nk2e5Qr4i+8oxK9XkyrCmgZngdMglLw5IusO20TVFr3QtDEgKM0IjFBfCn1hPWt1SxiF
-         zlF2CtnlStwfHRKVjhmjT2Zo2F4Di2imgfApYSLPtpMb24nVjWv4mJ1rBORMFlqg0FrY
-         Y4ZMuOGWTbGBOFVJyuhgIJNNTRKnDzfzC2x1vLUx2e/vIopLaVasNqX/SXFPEuRghmjH
-         n3TBXbeQN7hBfDLXXTasaUvM731htT2YtWRIok/c6FPrYvYC0TDJkRAtdiH8PAUQvcda
-         YPkw==
+        h=from:to:cc:subject:date:message-id;
+        bh=tgdnxgocJilBY0LIhoWcqqg7xNfqmOppZMkE2HBCVKI=;
+        b=q9rPszauSvPYTj6Zxwu//UCEY08rpQ1WLsFJNjxu4NKuq/MiWShM3gzeAK45G/a+Ic
+         xoqBuXphnuCqDkaDv6kvN0pUeiL5tPgW7Dw0SOjxm9/QJA6I40ggJUrtXoJrYCIVNHhG
+         +Uq2m1v23/LwOZOtsds825+rvIAOQP5tU5WDkBZf4e2BdG3hvg/p3Wbmk6jH61ehLnXA
+         jgEMNZH36v2AoadPXROAVCxQe/AAJ5E5DVArkSthPvqLXpHJ1kUduDAw7/VgQDFsIlwX
+         Lvb4snAyPm3wMLZ3xSKZQwfSIqwDaAZQ+Vuk9R/oDYtwKayvMr7KtK0gdnH/J35EYwEQ
+         qe7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=plSlSB8BWAYE/ztLDhWMxwjFWQWCkUimRFhmgFEUAfQ=;
-        b=m2UeyDZglD3fRjZGzdM2e3y6SDRxipRHJSwQAc7Xb3eR8oALETW8C1jMwHsip78gto
-         5NpBRtc/vA1ftZyl70URZf0WAsKjA6lp6jG7UxpUgZl2hu3+uQGPaAiXVBBBwGQj4Rfe
-         DcrJ+OLlrfjx9rxlYTfaSSTAwS2W+HvDIqYFlSOOiWDgTMjfGI7qbwbPXCMz4e/f9dPX
-         7NU10Krc3H0ccuHiQKdBQgYEx0L6NCnPqt0jjRabF5TQbp3P250dk+pLwmzI7nlZJrvx
-         xGUFqaFf5/4lOPhqj+myH9p+KntoHoATCj92Hsq9yr7LMUaqMpI1rFvlnTb2P3T0PRrA
-         ke+A==
-X-Gm-Message-State: AOAM530p2Qrgdi7MNYKwCcTfcbuLyR7Tczp+2QLOsWliqDTe+6H5VqCf
-        bEYJv1xhKPoQYC5FWiaIAd1ucjtaTRZ5mlBuPpI=
-X-Google-Smtp-Source: ABdhPJzkmW2Ov0TQgQn9vqGgt5zEseWGIXG1eQtc/CftuHj7IMouXix0R9fvXlc52UlTXSvDsI1NC0HJbKI8036ARAQ=
-X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr2729806pjf.181.1606830510564;
- Tue, 01 Dec 2020 05:48:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20201130153742.9163-1-johan@kernel.org> <20201130153742.9163-3-johan@kernel.org>
- <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
- <X8X9B1jYujUIWXaK@localhost> <CAHp75VfQud=QxwZyhYRU9mtNvrudj0tS6LOuutfJDVdv=-ptXw@mail.gmail.com>
- <X8Yjc0+Q7fM0nZP+@localhost> <CAHp75VdMcYj0H-HZcmyWFU5ROLwSy=8Pan7JABZxGimqXE35WQ@mail.gmail.com>
- <X8ZDfvuRbxqsKZMh@localhost>
-In-Reply-To: <X8ZDfvuRbxqsKZMh@localhost>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 1 Dec 2020 15:49:19 +0200
-Message-ID: <CAHp75Vct+J7=BaUdzBktQvKvThCuC-HmyRP2s4LRJvgsE2A2UA@mail.gmail.com>
-Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
- signalling on open
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tgdnxgocJilBY0LIhoWcqqg7xNfqmOppZMkE2HBCVKI=;
+        b=FL384n1FRbey++YNkr0AkUTmhpYeAj4Uukk7XJkBCinABx4pkTwscJsoW83es2W5DO
+         Pls+HNRmfXk9NDmCLxfpTGawdrdQnzFFZtxVFuW4xINnGkxdM7B+MLpJ+/XZwBFF7x0Z
+         y9GQXCN2c5n43dfgZrbtYcqzyO4hYoD/EmeaVv8PZcS8WWVh4uPhAP5d0oIjWGTGFo20
+         nbDviSQyQJ8PTkyBwJ84booe91VtzKraS3t9ljGGVE1eAm7a2EA3OqTYDHi6NWZFL+Sg
+         k01q+sc4ELTEg99TBEdKBoauiMD+tsglEXNopfgVllYogj4/i3EmKa0u9QFHDQXsNXc1
+         DS0w==
+X-Gm-Message-State: AOAM533tTTam7KiS4zKu2rW+Dx6i1sSSW2VKkG3Xc9ml6qLg7jyu4H6r
+        sNUdv3LxsbTbSv9UfXBLofE=
+X-Google-Smtp-Source: ABdhPJyb96I51/Z0DlMUwhMsHbFNnUIGGUG7H/1FKq0F9CdCuh8yziVK+k3DqasdNev6gR496AefBg==
+X-Received: by 2002:a63:2351:: with SMTP id u17mr2349405pgm.72.1606830662385;
+        Tue, 01 Dec 2020 05:51:02 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id z22sm3134111pfn.153.2020.12.01.05.50.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Dec 2020 05:51:01 -0800 (PST)
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+X-Google-Original-From: Bongsu Jeon
+To:     krzk@kernel.org
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH v4 net-next 0/4] nfc: s3fwrn5: Support a UART interface
+Date:   Tue,  1 Dec 2020 22:50:24 +0900
+Message-Id: <1606830628-10236-1-git-send-email-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 3:21 PM Johan Hovold <johan@kernel.org> wrote:
-> On Tue, Dec 01, 2020 at 01:19:30PM +0200, Andy Shevchenko wrote:
-> > On Tue, Dec 1, 2020 at 1:04 PM Johan Hovold <johan@kernel.org> wrote:
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-...
+S3FWRN82 is the Samsung's NFC chip that supports the UART communication.
+Before adding the UART driver module, I did refactoring the s3fwrn5_i2c module 
+to reuse the common blocks.
 
-> > > 0x01 is 1 and is generally treated as boolean true as you know.
-> >
-> > Depends how you interpret this. kstrtobool() uses one character (and
-> > in some cases two) of the input. Everything else is garbage.
-> > Should we interpret garbage?
->
-> No, ideally we should reject the input.
+1/4 is the dt bindings for the RN82 UART interface.
+2/4..3/4 are refactoring the s3fwrn5_i2c module.
+4/4 is the UART driver module implementation.
 
-We can do it by the way in kstrtobool() and see if anybody complains
-(I believe the world is saner than relying on 0x01 for false and 123
-for true.
+ChangeLog:
+ v4:
+   1/4
+    - change 'oneOf' to 'items'.
+    - fix the indentation.
+   2/4
+    - add the ACK tag.
+   4/4
+    - remove the of_match_ptr macro.
+ v3:
+   3/4
+    - move the phy_common object to s3fwrn.ko to avoid duplication.
+    - include the header files to include everything which is used inside.
+    - wrap the lines.
+   4/4
+    - remove the kfree(phy) because of duplicated free.
+    - use the phy_common blocks.
+    - wrap lines properly.
+ v2:
+   1/4
+    - change the compatible name.
+    - change the const to enum for compatible.
+    - change the node name to nfc.
+   3/4
+    - remove the common function's definition in common header file.
+    - make the common phy_common.c file to define the common function.
+    - wrap the lines.
+    - change the Header guard.
+    - remove the unused common function.
 
-...
 
-> > > So why should a sysfs-interface accept it as valid input and treat it as
-> > > false? That's just bad design.
-> >
-> > I can agree with this.
->
-> Looks like part of the problem are commits like 4cc7ecb7f2a6 ("param:
-> convert some "on"/"off" users to strtobool") which destroyed perfectly
-> well-defined interfaces.
+Bongsu Jeon (4):
+  dt-bindings: net: nfc: s3fwrn5: Support a UART interface
+  nfc: s3fwrn5: reduce the EN_WAIT_TIME
+  nfc: s3fwrn5: extract the common phy blocks
+  nfc: s3fwrn5: Support a UART interface
 
-Oh, but the strtobool() in ABI was before that, for instance
- % git grep -n -p -w strtobool v3.14
-shows a few dozens of users and some of them looks like ABI.
-
-...
-
-> > Somehow cifs uses kstrtobool() in conjunction with the wider ranges. Nobody
-> > complained so far. But maybe they had it from day 1.
->
-> Wow, that's pretty nasty.
-
-I have checked, the wider range fits one character. So, basically they
-had this kind of interface from day 1.
-
-...
-
-> > So, we have two issues here: kstrtobool() doesn't report an error of
-> > input when it has garbage, the user may rely on garbage to be
-> > discarded.
->
-> Right, parsing is too allowing and there are too many ways to say
-> true/false.
->
-> The power-management attributes use 0 and 1 for boolean like I do here,
-> and I'd prefer to stick to that until we have deprecated the current
-> kstrtobool.
-
-Okay!
-
+ .../bindings/net/nfc/samsung,s3fwrn5.yaml          |  32 +++-
+ drivers/nfc/s3fwrn5/Kconfig                        |  12 ++
+ drivers/nfc/s3fwrn5/Makefile                       |   4 +-
+ drivers/nfc/s3fwrn5/i2c.c                          | 117 ++++--------
+ drivers/nfc/s3fwrn5/phy_common.c                   |  75 ++++++++
+ drivers/nfc/s3fwrn5/phy_common.h                   |  37 ++++
+ drivers/nfc/s3fwrn5/uart.c                         | 196 +++++++++++++++++++++
+ 7 files changed, 391 insertions(+), 82 deletions(-)
+ create mode 100644 drivers/nfc/s3fwrn5/phy_common.c
+ create mode 100644 drivers/nfc/s3fwrn5/phy_common.h
+ create mode 100644 drivers/nfc/s3fwrn5/uart.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
+1.9.1
+
