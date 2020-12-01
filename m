@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0970D2C97DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0182C97E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727639AbgLAHLA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Dec 2020 02:11:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgLAHK7 (ORCPT
+        id S1727776AbgLAHOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:14:51 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:36316 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727109AbgLAHOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:10:59 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC20C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:10:19 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kjznf-0000Bz-1A; Tue, 01 Dec 2020 08:10:11 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kjzne-0006Fw-G9; Tue, 01 Dec 2020 08:10:10 +0100
-Date:   Tue, 1 Dec 2020 08:10:10 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v1 2/2] ARM: dts: add Protonic MVT board
-Message-ID: <20201201071010.e6joif4aoxdy23xg@pengutronix.de>
-References: <20201130131406.10925-1-o.rempel@pengutronix.de>
- <20201130131406.10925-2-o.rempel@pengutronix.de>
- <CAOMZO5DM8aToy_PRrY2cW5zbZf0xjfN9H4PrYTy+9Mq0NRii7w@mail.gmail.com>
+        Tue, 1 Dec 2020 02:14:51 -0500
+Received: by mail-ej1-f66.google.com with SMTP id lt17so1996140ejb.3;
+        Mon, 30 Nov 2020 23:14:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OZosIAZ5kQh+M6bi+XZwxMMNMZ/xJ39Rm7xM03MsjcM=;
+        b=Z9O5lhlGPN5n4qDVVBMLPbnCOOwpRJq/n86cJJYlpubfJKYeJevjoZdFWBchuQmG0D
+         FGZhAVeqa6Hdtn2X4ZpEScDz/8KbYo5ZCZ5G3L2alOU06f/JQRW3aQklOQuthw+fO06O
+         Yt7X+7At0Sliq1Lh7D2LSnyb7awy77cbbKbYM2e+l+GUGP+jmcAqbG4M9q/imNOGT10H
+         suc0VzAHiHA8/s3w1DBswcp/LF0Km3wGkKWohln2Rn30S8lTgK9XktkfJcPyAaU0gRFi
+         uhbxKSalmgmvQGxQjAhh7vNKvk7JdUr1/CWgyzq0GcBpHBzPJ68yD3e8mmwUN/zx/+QU
+         jUrg==
+X-Gm-Message-State: AOAM531XTrdzlWV24eONQgbOdsgo9+713zKA5Mm76wMp4gw6xPToJuyR
+        2iYZoyeUcoZ+ePeYQxh5do1V5otmz8M=
+X-Google-Smtp-Source: ABdhPJzRWz7vobwzkYeFLRzS9k+kWPNCUAcD5jS0op2Gx0uy8xzuSX1j+n1WCiMlDI7DwuVfsSqwvg==
+X-Received: by 2002:a17:906:358e:: with SMTP id o14mr1678870ejb.526.1606806848925;
+        Mon, 30 Nov 2020 23:14:08 -0800 (PST)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id j27sm191022ejo.61.2020.11.30.23.14.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 23:14:08 -0800 (PST)
+Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
+To:     Mychaela Falconia <mychaela.falconia@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201130153742.9163-1-johan@kernel.org>
+ <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <c8f3e485-54c6-99c7-4888-6eef2e174bf6@kernel.org>
+Date:   Tue, 1 Dec 2020 08:14:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAOMZO5DM8aToy_PRrY2cW5zbZf0xjfN9H4PrYTy+9Mq0NRii7w@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:05:44 up 381 days, 22:24, 51 users,  load average: 0.09, 0.06,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 10:22:38AM -0300, Fabio Estevam wrote:
-> Hi Oleksij,
+On 30. 11. 20, 22:22, Mychaela Falconia wrote:
+> 2) For situations in which the luxury of a custom USB ID is not
+> available, e.g., a situation where the device that does not tolerate
+> automatic DTR/RTS assertion on open is a physical RS-232 device that
+> can be connected to "any" serial port, the new sysfs attribute comes
+> to the rescue.
 > 
-> On Mon, Nov 30, 2020 at 10:14 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> 
-> > +&ecspi1 {
-> > +       cs-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-> 
-> Shouldn't this be GPIO_ACTIVE_LOW instead?
+> Johan's patch comments say that the new flag can also be brought out
+> to termios in the future, similarly to HUPCL,
 
-ACK, it was fixed up by this code:
-https://elixir.bootlin.com/linux/v5.10-rc6/source/drivers/gpio/gpiolib-of.c#L210
+The difference to other control flags is that open raises DTR/RTS in any 
+case (i.e. including O_NONBLOCK) -- provided baud rate is set (and it is 
+for casual serials). That means you cannot open a port to configure it 
+(using e.g. setserial) without actually raising the DTR/RTS.
 
-So, it was still working.
+> but I question the
+> usefulness of doing so, as it is a chicken and egg problem: one needs
+> to open the tty device in order to do termios ioctls on it, and if
+> that initial open triggers DTR/RTS hardware actions, then the end user
+> is still screwed.  If Johan or someone else can see a potential use
+> case for manipulating this new flag via termios (as opposed to sysfs
+> or USB-ID-based driver quirks), perhaps you could elaborate on it?
 
-Thank you! I'll fix it.
+We would need to (ab)use another open flag (e.g. O_DIRECT). I am not 
+biased to either of solutions.
 
-Regards,
-Oleksij
+thanks,
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+js
