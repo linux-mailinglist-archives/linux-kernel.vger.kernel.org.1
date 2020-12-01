@@ -2,114 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789102CA89E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504F72CA8AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387985AbgLAQr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39546 "EHLO
+        id S2389280AbgLAQsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729064AbgLAQr5 (ORCPT
+        with ESMTP id S2388131AbgLAQsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:47:57 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2BEC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:47:17 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id i2so3667893wrs.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:47:17 -0800 (PST)
+        Tue, 1 Dec 2020 11:48:38 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC24C061A47
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:47:24 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id j21so2140353otp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:47:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b3U69nUvkDMdtMVIGjWBzkR9SwVXqGD3Tu55Q8FU570=;
-        b=ES2LsJeN4b0KdLMrJORmEDNP6wnEDr7va1Jxsg16QsZi8lUxZR/BNcayu3OVMi7wab
-         Tg26PrvyAfYvjlYRJg9Wn++WQzxb4aKzS5dvdw+zrJuIvQQROqq1393zVNBQKvq3Dqfj
-         5iqpYWgvresWpw0g+qEYfDKAiuc9BleffYPanKqAyJbJoj583Z4jLQnbI8OluyrEmRWD
-         HOk04zKgVoY6B/zai+Ck6liEfJeZH+oKYJOS3Be6qnwIEuFVwbQBncDnC+4fsiD45KJ1
-         tLeirtFfL7HJ7s+hRuQ3np9ZH4i99WgfFK7tKd/ErtgQ2SsP/ExQOhKqUfemiVAYGAo4
-         SWWA==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X9vfkPsuHdDlbRy5N2BDdCLRGG9QdnGsjUUpVaTO710=;
+        b=VQRxBEWJdSffbR1qYHdXDQFAhH0L3/Itxchu5Px/jUiqzaFxez0CtWOIOvHB2t1PoK
+         x0iA19xxkiH04keW+TpqcYYqjGWo/vX3vr/oqd+uptPB4IO1oc/ldKXNDBoR10v1Df9a
+         cOGagtePbDIT/C+kjBlX1MzS1HXnah/R2zthw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b3U69nUvkDMdtMVIGjWBzkR9SwVXqGD3Tu55Q8FU570=;
-        b=JPVtLdXwupokaCvRwq+bFYbXez3Az53NzgiK8O+ohC+gMQ//j014TVZoZMurQxHum8
-         pH1o07kh0FyR4AcHYFWRSiJCY3gnr+OmA24lWbRtFQyeCR5cdjZECF4kh5rlbp6jRGRR
-         pXWMW6fBbxzebZnlvnDBMQmuG2M8XYrWYg1xOpjWqCg+DXzJ7pu4u/zEx41yuc9aTyO0
-         PCFEUIRHrBfC2Jd7cEA0DqCfXY9IkH2BTVwf3pqMdAIx8Ww7rWeG/NYgBbnHc3Oo1LQo
-         7Q7zFXPUaDH+I9T58VmWEj2en8pNlBVVs8JnkDc9zarqTiJ+mjinrUeODj3sg1x7SoUv
-         QPYA==
-X-Gm-Message-State: AOAM533nWxT45nNE6UCX+c+nWTIjkq73nxB6uMg0hxJFJbzF49aqqHvt
-        Lvv3qLpYRs3EPHTp0fNzEZms2A==
-X-Google-Smtp-Source: ABdhPJxcGjMMi+603REgpYabEtKbjHcizw6XeTvxEK1iGsCiJh/2CtHdhzKfbszIdqHbC7uNowZB2w==
-X-Received: by 2002:a5d:6852:: with SMTP id o18mr5005694wrw.336.1606841235753;
-        Tue, 01 Dec 2020 08:47:15 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id a144sm652871wmd.47.2020.12.01.08.47.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 08:47:15 -0800 (PST)
-Date:   Tue, 1 Dec 2020 16:47:12 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] modpost: refactor error handling and clarify
- error/fatal difference
-Message-ID: <20201201164712.GA1949321@google.com>
-References: <20201201103418.675850-1-masahiroy@kernel.org>
- <20201201103418.675850-2-masahiroy@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X9vfkPsuHdDlbRy5N2BDdCLRGG9QdnGsjUUpVaTO710=;
+        b=LPrWZLRi84PkiPhshVmfuVWHQFTyOz5oyn42afopnRHVjDCql96Fev+LjtGlfa13T3
+         wnJ0KYZzyqoGhkl4jYU/M+aeh7JPiL3N80wDb24qhXXMhIJ2KpbnxfxZuxnYdxdL42JS
+         BurUB84lXL9oxyQVG7WKiXXlm3b8rCbdhfE1Qo+fexq+UuOGKTU6BHW6E7RAQAmygJcy
+         mg4HP/5UGMhgBqzwk13m4yUuZZ7A6A6UnQSKTV3zY0lPutZSpK7uqFcNXVcdUdR1jeT2
+         dL9CyTY5fP1rrg6tKjyERn0nTVSRSQ3DoYsQQgRn4NvtDO5C5BgtOfpZDTvRXiG88g00
+         tlxQ==
+X-Gm-Message-State: AOAM530xfLynARu/EQTg2vcWOu3fGopywha+rh4sI54PqB8HFtz8bIlU
+        SoK51gmOInjG+3m5xKvFZM6r1LM9CGDRzxSa6OxggAhLLXk=
+X-Google-Smtp-Source: ABdhPJy7N24WXPqNe9dLY6S3RVDRbNEgT/BYxDzmq3nNhXjLJe6MUlxCqkIvtPu1sVvwQ2OAbRBEBv/Ep/oLkmebcVI=
+X-Received: by 2002:a9d:4e08:: with SMTP id p8mr2542426otf.188.1606841243839;
+ Tue, 01 Dec 2020 08:47:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201103418.675850-2-masahiroy@kernel.org>
+References: <20201201084647.751612010@linuxfoundation.org> <20201201084648.982712007@linuxfoundation.org>
+ <20201201154332.GB23661@amd>
+In-Reply-To: <20201201154332.GB23661@amd>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 1 Dec 2020 17:47:12 +0100
+Message-ID: <CAKMK7uHw8gJEGQcCwR-MSEpndRKDZwO2BsveDThBSACxZfxLrw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 11/57] drm/atomic_helper: Stop modesets on
+ unregistered connectors harder
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>, Lyude Paul <lyude@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 01 Dec 2020 at 19:34:15 (+0900), Masahiro Yamada wrote:
-> We have 3 log functions. fatal() is special because it lets modpost bail
-> out immediately. The difference between warn() and error() is the only
-> prefix parts ("WARNING:" vs "ERROR:").
-> 
-> The intended usage of error() is probably to propagate the return code
-> from the function to the exit code of modpost, as check_exports() etc.
-> already does. This is a good manner because we should display as many
-> issues as possible in a single run of modpost.
-> 
-> What is annoying about fatal() is that it kills modpost at the first
-> error. People would need to run Kbuild again and again until they fix
-> all errors.
-> 
-> But, unfortunately, people tend to do:
-> "This case should not be allowed. Let's replace warn() with fatal()."
+On Tue, Dec 1, 2020 at 4:43 PM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> > From: Lyude Paul <lyude@redhat.com>
+> >
+> > commit de9f8eea5a44b0b756d3d6345af7f8e630a3c8c0 upstream.
+>
+> So this says protected by mutex:
+>
+> >       /**
+> > -      * @registered: Is this connector exposed (registered) with userspace?
+> > +      * @registration_state: Is this connector initializing, exposed
+> > +      * (registered) with userspace, or unregistered?
+> > +      *
+> >        * Protected by @mutex.
+> >        */
+> > -     bool registered;
+> > +     enum drm_connector_registration_state registration_state;
+> >
+> >       /**
+> >        * @modes:
+> > @@ -1165,6 +1214,24 @@ static inline void drm_connector_unrefer
+> >       drm_connector_put(connector);
+> >  }
+> >
+> > +/**
+> > + * drm_connector_is_unregistered - has the connector been unregistered from
+> > + * userspace?
+> > + * @connector: DRM connector
+> > + *
+> > + * Checks whether or not @connector has been unregistered from userspace.
+> > + *
+> > + * Returns:
+> > + * True if the connector was unregistered, false if the connector is
+> > + * registered or has not yet been registered with userspace.
+> > + */
+> > +static inline bool
+> > +drm_connector_is_unregistered(struct drm_connector *connector)
+> > +{
+> > +     return READ_ONCE(connector->registration_state) ==
+> > +             DRM_CONNECTOR_UNREGISTERED;
+> > +}
+>
+>
+> But this uses READ_ONCE() for protection, and corresponding
+> WRITE_ONCE() is nowhere to be seen. Should this take the mutex, too?
 
-Indeed :-)
+The read once here doesn't protect against any races, but just against
+creative compilers doing funny stuff that might really break code
+logic. I guess for symmetry we could throw the WRITE_ONCE on the write
+side, but it really shouldn't matter, the entire thing is racy by
+design. We0d also only ever need the write once on the unregister
+call.
+-Daniel
 
-> One of the reasons is probably it is tedious to manually carry the error
-> code back to the main() function.
+>
+> Best regards,
+>                                                                 Pavel
+> --
+> http://www.livejournal.com/~pavelmachek
 
-And yes, that was the reason.
 
-> This commit refactors error() so any single call for it automatically
-> makes modpost return the error code.
-> 
-> I also added comments in modpost.h for warn(), error(), and fatal().
-> 
-> Again, please use fatal() only when you have a strong reason to do so.
-> For example:
-> 
->   - Memory shortage (i.e. malloc() etc. has failed)
->   - The ELF file is broken, and there is no point to continue parsing
->   - Something really odd has happened
-> 
-> For general coding errors, please use error().
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-I gave it a go and the error is propagated correctly, so FWIW:
-
-Tested-by: Quentin Perret <qperret@google.com>
-
-Thanks,
-Quentin
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
