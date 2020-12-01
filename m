@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5E62C9DA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1802C9E00
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390951AbgLAJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:25:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42480 "EHLO mail.kernel.org"
+        id S2391198AbgLAJaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:30:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729347AbgLAJFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:05:32 -0500
+        id S2387951AbgLAI6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:58:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A792206C1;
-        Tue,  1 Dec 2020 09:04:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91A522222C;
+        Tue,  1 Dec 2020 08:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813491;
-        bh=h60ek0hTv04VHgQSiFeWek+FE4Lk+MHPlUOUUhBX+ng=;
+        s=korg; t=1606813070;
+        bh=SBUTAK6tLgiSZKsOhoZXkz1FRmay8B6GvjFtemMGAKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nDtd+ymdj1LqEtGetxVF74tgy9zCxspjsafcWNNTLKtdiMNz+wsRjf8xCq+JfF+CF
-         0JrtN0N5egA7sTp8hgXpj0pOjufCf3osBPnfOWV+W8fCp6taTGWiov5+4AMYGUqn0x
-         Q5cOHMzdH8WyKDNxX8b5INzIKgrbY8ExFE0MuwW8=
+        b=UhINjmCBxHIx0zK25otwsItqK+4Yq9eZ9blOf/1iUSUzV97OZVeLjaO6Wbpy9VWUv
+         PQteuZw2q8eDzhe5Vv/wvL9TFhjj/690idHb7SuKD4ysO1Bes7d6ZryE+rkeAatcqF
+         buYPXD8q2FjHTDnHjXzRHf5kqpQjdjO+uxlrmiA4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 27/98] staging: ralink-gdma: fix kconfig dependency bug for DMA_RALINK
-Date:   Tue,  1 Dec 2020 09:53:04 +0100
-Message-Id: <20201201084656.103921600@linuxfoundation.org>
+        stable@vger.kernel.org, Su Yue <suy.fnst@cn.fujitsu.com>,
+        David Sterba <dsterba@suse.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 07/50] btrfs: adjust return values of btrfs_inode_by_name
+Date:   Tue,  1 Dec 2020 09:53:06 +0100
+Message-Id: <20201201084645.707259089@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Su Yue <suy.fnst@cn.fujitsu.com>
 
-[ Upstream commit 06ea594051707c6b8834ef5b24e9b0730edd391b ]
+commit 005d67127fa9dfb3382f2c9e918feed7a243a7fe upstream
 
-When DMA_RALINK is enabled and DMADEVICES is disabled, it results in the
-following Kbuild warnings:
+Previously, btrfs_inode_by_name() returned 0 which left caller to check
+objectid of location even location if the type was invalid.
 
-WARNING: unmet direct dependencies detected for DMA_ENGINE
-  Depends on [n]: DMADEVICES [=n]
-  Selected by [y]:
-  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
+Let btrfs_inode_by_name() return -EUCLEAN if a corrupted location of a
+dir entry is found.  Removal of label out_err also simplifies the
+function.
 
-WARNING: unmet direct dependencies detected for DMA_VIRTUAL_CHANNELS
-  Depends on [n]: DMADEVICES [=n]
-  Selected by [y]:
-  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
-
-The reason is that DMA_RALINK selects DMA_ENGINE and DMA_VIRTUAL_CHANNELS
-without depending on or selecting DMADEVICES while DMA_ENGINE and
-DMA_VIRTUAL_CHANNELS are subordinate to DMADEVICES. This can also fail
-building the kernel as demonstrated in a bug report.
-
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210055
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Link: https://lore.kernel.org/r/20201104181522.43567-1-fazilyildiran@gmail.com
+Signed-off-by: Su Yue <suy.fnst@cn.fujitsu.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+[ drop unlikely ]
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/ralink-gdma/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/inode.c |   22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/staging/ralink-gdma/Kconfig b/drivers/staging/ralink-gdma/Kconfig
-index 54e8029e6b1af..0017376234e28 100644
---- a/drivers/staging/ralink-gdma/Kconfig
-+++ b/drivers/staging/ralink-gdma/Kconfig
-@@ -2,6 +2,7 @@
- config DMA_RALINK
- 	tristate "RALINK DMA support"
- 	depends on RALINK && !SOC_RT288X
-+	depends on DMADEVICES
- 	select DMA_ENGINE
- 	select DMA_VIRTUAL_CHANNELS
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5585,7 +5585,8 @@ no_delete:
  
--- 
-2.27.0
-
+ /*
+  * this returns the key found in the dir entry in the location pointer.
+- * If no dir entries were found, location->objectid is 0.
++ * If no dir entries were found, returns -ENOENT.
++ * If found a corrupted location in dir entry, returns -EUCLEAN.
+  */
+ static int btrfs_inode_by_name(struct inode *dir, struct dentry *dentry,
+ 			       struct btrfs_key *location)
+@@ -5603,27 +5604,27 @@ static int btrfs_inode_by_name(struct in
+ 
+ 	di = btrfs_lookup_dir_item(NULL, root, path, btrfs_ino(BTRFS_I(dir)),
+ 			name, namelen, 0);
+-	if (IS_ERR(di))
++	if (!di) {
++		ret = -ENOENT;
++		goto out;
++	}
++	if (IS_ERR(di)) {
+ 		ret = PTR_ERR(di);
+-
+-	if (IS_ERR_OR_NULL(di))
+-		goto out_err;
++		goto out;
++	}
+ 
+ 	btrfs_dir_item_key_to_cpu(path->nodes[0], di, location);
+ 	if (location->type != BTRFS_INODE_ITEM_KEY &&
+ 	    location->type != BTRFS_ROOT_ITEM_KEY) {
++		ret = -EUCLEAN;
+ 		btrfs_warn(root->fs_info,
+ "%s gets something invalid in DIR_ITEM (name %s, directory ino %llu, location(%llu %u %llu))",
+ 			   __func__, name, btrfs_ino(BTRFS_I(dir)),
+ 			   location->objectid, location->type, location->offset);
+-		goto out_err;
+ 	}
+ out:
+ 	btrfs_free_path(path);
+ 	return ret;
+-out_err:
+-	location->objectid = 0;
+-	goto out;
+ }
+ 
+ /*
+@@ -5924,9 +5925,6 @@ struct inode *btrfs_lookup_dentry(struct
+ 	if (ret < 0)
+ 		return ERR_PTR(ret);
+ 
+-	if (location.objectid == 0)
+-		return ERR_PTR(-ENOENT);
+-
+ 	if (location.type == BTRFS_INODE_ITEM_KEY) {
+ 		inode = btrfs_iget(dir->i_sb, &location, root, NULL);
+ 		return inode;
 
 
