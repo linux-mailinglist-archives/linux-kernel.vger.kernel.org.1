@@ -2,228 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C008E2CAB93
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 379AD2CAB94
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731341AbgLATPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
+        id S1731344AbgLATP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:15:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730253AbgLATPG (ORCPT
+        with ESMTP id S1730213AbgLATP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:15:06 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173F0C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:14:26 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id f16so2727346otl.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:14:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pLNjc1Dfn2oLUa5wbC/+KNLD5T+eEW1y3MmCWo+76rA=;
-        b=X/RNeZ1Z1apmBWG0Fup7Yc7lV2BKZh/oZwu070yNHUH6uIB8tgIn6+GpeQm3RS4LT/
-         PQOcDQigQmvbXWLtKgUK3hYyERwL7p+tltSvRldvGHH2FnL3+AGWmyOvh5z4/rV6B3ew
-         IcCTofd1bP2BvI6KcVwZWibs4raSgXYTvK6jOyCHuaRuZ5Z+b6AKLzrY+cyFTMMzvAPG
-         3k895rjfiQXiIdZDCkoCWSiJtR8jUvY4UYk3HFaE13oMrOA8JUhAN1gg+R1lIUxFw+cN
-         HQmG0gTsrw3A4AKssSRaVG8kQm7vUXVkCQGSGiK2Ita6P0P4e21N+39es4WyGRh8lDOv
-         dIzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pLNjc1Dfn2oLUa5wbC/+KNLD5T+eEW1y3MmCWo+76rA=;
-        b=p70F9Uy1QAeDlu5PBjmDIri19Nd3BR4Sp3cau7smVGc7FZpDRKSno1ErtGFdXn+KvK
-         xTCF2PJ3nnDrdyXzUIIpIsL4xJmXNzalV23kEY6rdBz0lP/jKEpGUj3Yvv7c5eWoFPvL
-         C5YK/CfGAWdViEbSHJmuK16750lX6JJRi1GtGVmKwyWVffOsHxjfGVxoijJm9lfBHnGA
-         SQVyUrXCegc+UInwDLiXkXZiABdn27541uZXsD63q5wIfkwwtkk4osdLF0YOajY6VlGS
-         jdSAnFmcZjrLYrfFj1DMvgYrNZ/nZgsA6288+OCRt+ksYcyitYX4gQrP2MlMD2L7LaW/
-         ed3A==
-X-Gm-Message-State: AOAM531E7YJiXRYcZWa5pfwVy9Yu+fYLtjmAZNREvSr2hpl26jsAtPN9
-        5KEviG3Q0j1WZtcgsHLI1/I0fg==
-X-Google-Smtp-Source: ABdhPJwlsxqflDkcGw11vDOYfgkb6oV2LEWKtO1RAqu9en1tdBNns2IIR6E4FO8b82OIhqVpnx8SlQ==
-X-Received: by 2002:a9d:7a8a:: with SMTP id l10mr3004510otn.228.1606850065407;
-        Tue, 01 Dec 2020 11:14:25 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r19sm158271ota.14.2020.12.01.11.14.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 11:14:24 -0800 (PST)
-Date:   Tue, 1 Dec 2020 13:14:22 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] arm64: dts: qcom: sm8250: add lpass lpi pin
- controller node
-Message-ID: <X8aWDj1n6KTM5ma/@builder.lan>
-References: <20201201153706.13450-1-srinivas.kandagatla@linaro.org>
- <20201201153706.13450-4-srinivas.kandagatla@linaro.org>
+        Tue, 1 Dec 2020 14:15:29 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E86C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:14:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sif7xpo+9DZS5lSh1n+V/cNaHPoORMh1IMOhQKE3/bs=; b=yc++PysDYobx4Wm4DVCp4JZP5/
+        7txzgTA/LqLzcYnMbS1puql5WLyJ6Uka2p/lw4FjV5x2WKSH9iGcZdClfQJdAvKbTFXT6e5qO04K3
+        of2OhqzI5vaUQ9kE0/pZyA0EDpO+1zA5PA+OkGnbhyHcxQPYZCjphucAq3gFfWlBinATD3C8ZcwPd
+        gcpsiMseT/sh+U1jkycXN6sbfUkhJNX+Gahl3qWq3xd7mtBN1Y+h3pZRWsnFWqQ7q8b4kq1LYjlZ8
+        /0y5gXJWYKL6CrY61P3oTzR15Wmf+ntSr4VmlpvK9R58e0Vk0a90Bd8mPRpbkl7dFm3ozOMpDZ/Hf
+        13GI1iYA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkB6o-00033m-SV; Tue, 01 Dec 2020 19:14:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A11AD3003E1;
+        Tue,  1 Dec 2020 20:14:41 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 856962BFCEB5F; Tue,  1 Dec 2020 20:14:41 +0100 (CET)
+Date:   Tue, 1 Dec 2020 20:14:41 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+Message-ID: <20201201191441.GW3040@hirez.programming.kicks-ass.net>
+References: <20201130125211.GN2414@hirez.programming.kicks-ass.net>
+ <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
+ <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
+ <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
+ <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
+ <20201201110724.GL3092@hirez.programming.kicks-ass.net>
+ <20201201144644.GF1437@paulmck-ThinkPad-P72>
+ <20201201145519.GY2414@hirez.programming.kicks-ass.net>
+ <20201201181506.GM3092@hirez.programming.kicks-ass.net>
+ <20201201185737.GA93208@C02TD0UTHF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201153706.13450-4-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20201201185737.GA93208@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01 Dec 09:37 CST 2020, Srinivas Kandagatla wrote:
-
-> Add LPASS LPI pinctrl node required for Audio functionality on RB5.
+On Tue, Dec 01, 2020 at 06:57:37PM +0000, Mark Rutland wrote:
+> On Tue, Dec 01, 2020 at 07:15:06PM +0100, Peter Zijlstra wrote:
+> > On Tue, Dec 01, 2020 at 03:55:19PM +0100, Peter Zijlstra wrote:
+> > > On Tue, Dec 01, 2020 at 06:46:44AM -0800, Paul E. McKenney wrote:
+> > > 
+> > > > > So after having talked to Sven a bit, the thing that is happening, is
+> > > > > that this is the one place where we take interrupts with RCU being
+> > > > > disabled. Normally RCU is watching and all is well, except during idle.
+> > > > 
+> > > > Isn't interrupt entry supposed to invoke rcu_irq_enter() at some point?
+> > > > Or did this fall victim to recent optimizations?
+> > > 
+> > > It does, but the problem is that s390 is still using
+> > 
+> > I might've been too quick there, I can't actually seem to find where
+> > s390 does rcu_irq_enter()/exit().
+> > 
+> > Also, I'm thinking the below might just about solve the current problem.
+> > The next problem would then be it calling TRACE_IRQS_ON after it did
+> > rcu_irq_exit()... :/
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 95 ++++++++++++++++++++++++++++
->  1 file changed, 95 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index ec5b53b8f656..4e1309b6571e 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -2607,6 +2607,101 @@
->  			clock-names = "core", "audio", "bus";
->  		};
->  
-> +		lpass_tlmm: pinctrl@33c0000{
-> +			compatible = "qcom,sm8250-lpass-lpi-pinctrl";
-> +			reg = <0 0x33c0000 0x0 0x20000>,
-> +				 <0 0x3550000 0x0 0x10000>;
-> +			gpio-controller;
-> +			#gpio-cells = <2>;
-> +			gpio-ranges = <&lpass_tlmm 0 0 14>;
-> +
-> +			clocks = <&q6afecc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
-> +				<&q6afecc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
-> +			clock-names = "core", "audio";
-> +
-> +			wsa_swr_clk_pin {
+> I gave this patch a go under QEMU TCG atop v5.10-rc6 s390 defconfig with
+> PROVE_LOCKING and DEBUG_ATOMIC_SLEEP. It significantly reduces the
+> number of lockdep splats, but IIUC we need to handle the io_int_handler
+> path in addition to the ext_int_handler path, and there's a remaining
+> lockdep splat (below).
 
-I prefer if you drop this outer "container" node.
+I'm amazed it didn't actually make things worse, given how I failed to
+spot do_IRQ() was arch code etc..
 
-> +				wsa_swr_clk_sleep: wsa_swr_clk_sleep {
+> If this ends up looking like we'll need more point-fixes, I wonder if we
+> should conditionalise the new behaviour of the core idle code under a
+> new CONFIG symbol for now, and opt-in x86 and arm64, then transition the
+> rest once they've had a chance to test. They'll still be broken in the
+> mean time, but no more so than they previously were.
 
-Per the binding I think the name of this node should match '-pins$' and
-the node name may not contain '_' characters.
-
-> +					mux {
-
-The pinctrl state is a collection of all pins, function and pinconf
-properties of the phandle pointed to and its immediate child nodes. As
-such you can flatten this inner "mux" level.
-
-
-On the other hand, I'm assuming that you're always going to mux the
-clock and data pin together, so instead of designing this around the
-pins you could design it around the states and do:
-
-			wsa_swr_active: wsa-swr-active-pins {
-				clk {
-					pins = "gpio10";
-					function = "wsa_swr_clk";
-					drive-strength = <2>;
-					slew-rate = <1>;
-					bias-disable;
-				};
-
-				data {
-					pins = "gpio11";
-					function = "wsa_swr_data";
-					drive-strength = <2>;
-					slew-rate = <1>;
-					bias-bus-hold;
-
-				};
-			};
-
-This way the state describes the whole thing and you don't end up with a
-bunch of states for each part of the function.
-
-Regards,
-Bjorn
-
-> +						pins = "gpio10";
-> +						function = "wsa_swr_clk";
-> +						drive-strength = <2>;
-> +						input-enable;
-> +						bias-pull-down;
-> +					};
-> +				};
-> +
-> +				wsa_swr_clk_active: wsa_swr_clk_active {
-> +					mux {
-> +						pins = "gpio10";
-> +						function = "wsa_swr_clk";
-> +						drive-strength = <2>;
-> +						slew-rate = <1>;
-> +						bias-disable;
-> +					};
-> +				};
-> +			};
-> +
-> +			wsa_swr_data_pin {
-> +				wsa_swr_data_sleep: wsa_swr_data_sleep {
-> +					mux {
-> +						pins = "gpio11";
-> +						function = "wsa_swr_data";
-> +						drive-strength = <2>;
-> +						input-enable;
-> +						bias-pull-down;
-> +					};
-> +				};
-> +
-> +				wsa_swr_data_active: wsa_swr_data_active {
-> +					mux {
-> +						pins = "gpio11";
-> +						function = "wsa_swr_data";
-> +						drive-strength = <2>;
-> +						slew-rate = <1>;
-> +						bias-bus-hold;
-> +					};
-> +				};
-> +			};
-> +
-> +	                cdc_dmic01_data_active: dmic01_data_active {
-> +	                        mux {
-> +	                                pins = "gpio7";
-> +					function = "dmic1_data";
-> +	                                drive-strength = <8>;
-> +	                                input-enable;
-> +	                        };
-> +	                };
-> +
-> +	                cdc_dmic01_data_sleep: dmic01_data_sleep {
-> +	                        mux {
-> +	                                pins = "gpio7";
-> +					function = "dmic1_data";
-> +	                                drive-strength = <2>;
-> +	                                pull-down;
-> +	                                input-enable;
-> +	                        };
-> +	                };
-> +
-> +	                cdc_dmic01_clk_active: dmic01_clk_active {
-> +	                        mux {
-> +	                                pins = "gpio6";
-> +					function = "dmic1_clk";
-> +	                                drive-strength = <8>;
-> +	                                output-high;
-> +	                        };
-> +	                };
-> +
-> +	                cdc_dmic01_clk_sleep: dmic01_clk_sleep {
-> +	                        mux {
-> +	                                pins = "gpio6";
-> +					function = "dmic1_clk";
-> +	                                drive-strength = <2>;
-> +	                                bias-disable;
-> +	                                output-low;
-> +	                        };
-> +	                };
-> +		};
-> +
->  		adsp: remoteproc@17300000 {
->  			compatible = "qcom,sm8250-adsp-pas";
->  			reg = <0 0x17300000 0 0x100>;
-> -- 
-> 2.21.0
-> 
+We can do that I suppose... :/
