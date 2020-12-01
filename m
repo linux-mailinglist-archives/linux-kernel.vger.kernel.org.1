@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6927E2CA0A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6BC2CA09E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730344AbgLAK50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:57:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730336AbgLAK50 (ORCPT
+        id S1730278AbgLAK4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:56:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbgLAK4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:57:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606820160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YNmzJgJQLIGrY0kWToPJSLKakWyOb7HVyuXtRLTuB8E=;
-        b=PQ4sNKFXk4YM0SL6kAKU3qMLXHNZv7bwqHZe8Z5/kBjtAfrZyN63pe+0MR/vOCs0OtC/+H
-        cAvtMi3Q0usvvpRfdf3IiWJN3DVYLeBvTPlQm9cUHkE3XQDWBMbSo+jHYddkTG5pLNdF/G
-        TKs1ha82IBl05JshtyhxTQQ+N8mGcY8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-nVTGl24MNzWmxlcqiCG_IA-1; Tue, 01 Dec 2020 05:55:58 -0500
-X-MC-Unique: nVTGl24MNzWmxlcqiCG_IA-1
-Received: by mail-ed1-f69.google.com with SMTP id dc6so1091493edb.14
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 02:55:58 -0800 (PST)
+        Tue, 1 Dec 2020 05:56:55 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0091C0613CF;
+        Tue,  1 Dec 2020 02:56:14 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id r9so994380pjl.5;
+        Tue, 01 Dec 2020 02:56:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8p48Ecd4f2MK+ddbIBqEbyZIovy7SVRtFNAkfbfdX48=;
+        b=fYUh0okorSUB+aEZlT0TNXbgZDw4sJgYR26aoRTqbaePe0mgOdweGm/Pk9JaaXNix3
+         PamiXf0vw0JHZGFRIdjpBzGbHzeMJv0JO7fWFObntjAsh1ZZivMAD1sqo4zlZFRT3mlU
+         XTqp/WLxy+o3zdtxf5g2xfP2gJ5008PwfdF7M512gwDJJC06e4QMmW5T3P3f34cKJuh+
+         KsX4qDHU0sj10xfP1/Y12CssSF0rRB9kY0lxbFlsfl0OacKagOhRcvExojGZ/xwJ1uOs
+         EBDRoJHc9hd6qddUdkkyD6zfyG0H27rS38wHR6tdCRoUVmZ9nKSFButWMrfts0lwbMyx
+         hv+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=YNmzJgJQLIGrY0kWToPJSLKakWyOb7HVyuXtRLTuB8E=;
-        b=Sjgrxv8G47jEwPryy11/FrPSDijgHh7j0DogP7OrV36APfRD/AiPp8p/WAlX+XTGGn
-         RtaVeyW7mOSY1VIT+x2PuJWLIyet+z2wlYnV4eKKh+yUPguefPtmOfbC72LBzCjGjOU1
-         yrLKVOpknEvVbagT6rYEBE9mocO/IlUcHfxLgXp2bn6ZApmv2tvk/VjEyeYlY4K5yCad
-         bkkkFESOV89CgcAUmlofio8zeu/yL7y3VJR9Hruas4XrAbZDhEucTomBZh5ThiBaSQWO
-         ma9KKzTX9ADM2KF1Z+TPIZ30rNih6MclMr1XOtX3ZeYW1F/yZXb6SuLqfawX8p9Uu/Ao
-         0yfw==
-X-Gm-Message-State: AOAM5317AtXKO5pfSFRmt/jemht2DJEobWkx0dMjVoZ0oFT0vSabzWJG
-        4J6MLJu9a/cmV760So3PSFhM9ppu3YfUjlOdWmqQhRw+e70f1JloGPIia/bYrI+Zqn460BW0CSd
-        fMtBAHEed5cpHyzKKW9o8hG3m
-X-Received: by 2002:aa7:dc05:: with SMTP id b5mr2437762edu.47.1606820157437;
-        Tue, 01 Dec 2020 02:55:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyy59KJA4uSChalvYHv1solJ1McrcUqAiGkBuL/vfQh0c20l3gQAj1/6gwR35CKHhPUGUlP5w==
-X-Received: by 2002:aa7:dc05:: with SMTP id b5mr2437751edu.47.1606820157251;
-        Tue, 01 Dec 2020 02:55:57 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k16sm657569ejv.93.2020.12.01.02.55.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 02:55:56 -0800 (PST)
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Nikos Tsironis <ntsironis@arrikto.com>
-References: <20201201084647.751612010@linuxfoundation.org>
- <20201201084648.690944071@linuxfoundation.org>
- <d29c4b25-33f6-8d99-7a45-8f4e06f5ade6@redhat.com>
- <X8YThgeaonYhB6zi@kroah.com>
- <fe3fa32b-fc84-9e81-80e0-cb19889fc042@redhat.com>
- <X8YY2qW3RQqzmmBl@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 4.19 08/57] KVM: x86: Fix split-irqchip vs interrupt
- injection window request
-Message-ID: <d3311713-013b-003c-248b-22ebf1e45c7c@redhat.com>
-Date:   Tue, 1 Dec 2020 11:55:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        bh=8p48Ecd4f2MK+ddbIBqEbyZIovy7SVRtFNAkfbfdX48=;
+        b=NQRBJfbllsYs3K0QKN30nw1/aaXnJVLpvP+MxxVVqQ3W7Hlvc8q/R4iU5jVm3601Qh
+         PgXc42TQPiymb0zV9UWplfPKTHRjF2AdJjfVi1/Sc9KW5jsarojM62+AyUERBscuoIpN
+         e01ipyPTZcjjTQ8FJPldJtPby6qtkNjlz+GXbKd6bLXS7OK7JcYKDnnmhBkvN6HrAL5t
+         /fNp6Oezr5D4VbrwZx5/hcWenSiDGsKFORli82h6UrcwWii5hLzxPLVjGllJIZXFF4Bb
+         0XAiFQT7N1SsFmhGcsQd8NGVYA8srIl7jrBathljBIgLYTx0VB+3BtTlfS2FFXmjcK0I
+         9xUQ==
+X-Gm-Message-State: AOAM533wjwC/hMf3c0uDnlbG/Qu7lr0JCQIrAYBkYb65VgUgFE5sMv0C
+        EOpDRZrZPk08MAmOuBxcyS4=
+X-Google-Smtp-Source: ABdhPJzGd2GdY/2ouYy9s3D6SOf1WoEa5QkSUrGCJyVmLETv5WHLpD5BwmkivI5QAENbwcR3WL9WpA==
+X-Received: by 2002:a17:902:b983:b029:da:8c9a:6acb with SMTP id i3-20020a170902b983b02900da8c9a6acbmr2207816pls.76.1606820174533;
+        Tue, 01 Dec 2020 02:56:14 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:e004:f0c9:8d8b:3ec2:d4ff:d0b1])
+        by smtp.gmail.com with ESMTPSA id p127sm2217808pfp.93.2020.12.01.02.56.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 02:56:14 -0800 (PST)
+From:   Clement Smith <rclemsmith@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Clement Smith <rclemsmith@gmail.com>
+Subject: [PATCH] tty: serial: jsm : jsm_tty.c : fixed file by adding spacing and removing assignment in if statement
+Date:   Tue,  1 Dec 2020 16:26:02 +0530
+Message-Id: <20201201105602.465899-1-rclemsmith@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <X8YY2qW3RQqzmmBl@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/20 11:20, Greg Kroah-Hartman wrote:
-> Ok, I will go drop this patch from 4.14, 4.9, and 4.4.  Or, should the
-> needed pre-requisite patch be properly backported there instead?
+Fixed a coding style issue
 
-I would just drop it.  It was not reported in five years so it's quite 
-unlikely that people will see the bug.
+Signed-off-by: Clement Smith <rclemsmith@gmail.com>
+---
+ drivers/tty/serial/jsm/jsm_tty.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-> And was it marked somewhere that this patch depended on that one and I
-> just missed it?
-
-I don't see anything in stable-kernel-rules.rst about how to mark such 
-semantic conflicts, so no, it wasn't marked.  (The commit message does 
-say "thanks to the previous patch", but I don't expect you or your 
-scripts to notice that!).
-
-Thanks,
-
-Paolo
+diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
+index 689774c073ca..047e962a4529 100644
+--- a/drivers/tty/serial/jsm/jsm_tty.c
++++ b/drivers/tty/serial/jsm/jsm_tty.c
+@@ -607,14 +607,14 @@ void jsm_input(struct jsm_channel *ch)
+ 				 * Give the Linux ld the flags in the
+ 				 * format it likes.
+ 				 */
+-				if (*(ch->ch_equeue +tail +i) & UART_LSR_BI)
+-					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i),  TTY_BREAK);
+-				else if (*(ch->ch_equeue +tail +i) & UART_LSR_PE)
+-					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i), TTY_PARITY);
+-				else if (*(ch->ch_equeue +tail +i) & UART_LSR_FE)
+-					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i), TTY_FRAME);
++				if (*(ch->ch_equeue + tail + i) & UART_LSR_BI)
++					tty_insert_flip_char(port, *(ch->ch_rqueue + tail + i),  TTY_BREAK);
++				else if (*(ch->ch_equeue + tail + i) & UART_LSR_PE)
++					tty_insert_flip_char(port, *(ch->ch_rqueue + tail + i), TTY_PARITY);
++				else if (*(ch->ch_equeue + tail + i) & UART_LSR_FE)
++					tty_insert_flip_char(port, *(ch->ch_rqueue + tail + i), TTY_FRAME);
+ 				else
+-					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i), TTY_NORMAL);
++					tty_insert_flip_char(port, *(ch->ch_rqueue + tail + i), TTY_NORMAL);
+ 			}
+ 		} else {
+ 			tty_insert_flip_string(port, ch->ch_rqueue + tail, s);
+@@ -742,7 +742,8 @@ void jsm_check_queue_flow_control(struct jsm_channel *ch)
+ 	int qleft;
+ 
+ 	/* Store how much space we have left in the queue */
+-	if ((qleft = ch->ch_r_tail - ch->ch_r_head - 1) < 0)
++	qleft = ch->ch_r_tail - ch->ch_r_head - 1;
++	if (qleft  < 0)
+ 		qleft += RQUEUEMASK + 1;
+ 
+ 	/*
+-- 
+2.27.0
 
