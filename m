@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88F12CA7B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4C42CA7B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404012AbgLAQC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:02:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388988AbgLAQC5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:02:57 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F526C0613D4;
-        Tue,  1 Dec 2020 08:02:17 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e6a009ae7ed3e982f3c10.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:6a00:9ae7:ed3e:982f:3c10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CD9341EC04B9;
-        Tue,  1 Dec 2020 17:02:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606838535;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=SxSydwEX7m96SIq00HrPmCp+mPAnCkJ48WYzsRg9t2w=;
-        b=iJYk51lYHndAR22VW5aqtG8DZmC26iF5UFfr3bh2BnR+sTzvvpV653bT3cxXBCWtbz76cL
-        LO93i127VhTlLn0X1nhsOK0o/4EWL74UjiUQZEJ08Ep3dbwkmbm9z1bt+iMe8HwDdUrv3W
-        e1BLblJOCST0k1xlGtguap+j53Mc8TY=
-Date:   Tue, 1 Dec 2020 17:02:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: Re: [PATCH v15 05/26] x86/cet/shstk: Add Kconfig option for
- user-mode Shadow Stack
-Message-ID: <20201201160212.GF22927@zn.tnic>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-6-yu-cheng.yu@intel.com>
- <20201127171012.GD13163@zn.tnic>
- <98e1b159-bf32-5c67-455b-f798023770ef@intel.com>
- <20201130181500.GH6019@zn.tnic>
- <1db3d369-734e-9925-fa14-e799a19ac30c@intel.com>
+        id S2392033AbgLAQEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:04:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:45396 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388988AbgLAQEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:04:41 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71A2F101E;
+        Tue,  1 Dec 2020 08:03:55 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B232E3F575;
+        Tue,  1 Dec 2020 08:03:52 -0800 (PST)
+References: <20201201025944.18260-1-song.bao.hua@hisilicon.com> <20201201025944.18260-2-song.bao.hua@hisilicon.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        Jonathan.Cameron@huawei.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linuxarm@huawei.com, xuwei5@huawei.com, prime.zeng@hisilicon.com
+Subject: Re: [RFC PATCH v2 1/2] topology: Represent clusters of CPUs within a die.
+In-reply-to: <20201201025944.18260-2-song.bao.hua@hisilicon.com>
+Date:   Tue, 01 Dec 2020 16:03:46 +0000
+Message-ID: <jhj360pv7h9.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1db3d369-734e-9925-fa14-e799a19ac30c@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 02:48:09PM -0800, Yu, Yu-cheng wrote:
-> Logically, enabling IBT without shadow stack does not make sense, but these
-> features have different CPUIDs, and CONFIG_X86_SHADOW_STACK_USER and
-> CONFIG_X86_BRANCH_TRACKING_USER can be selected separately.
-> 
-> Do we want to have only one selection for both features?  In other words, we
-> turn on both or neither.
 
-Question is, do they need to be handled separately at all?
+On 01/12/20 02:59, Barry Song wrote:
+> That means the cost to transfer ownership of a cacheline between CPUs
+> within a cluster is lower than between CPUs in different clusters on
+> the same die. Hence, it can make sense to tell the scheduler to use
+> the cache affinity of the cluster to make better decision on thread
+> migration.
+>
+> This patch simply exposes this information to userspace libraries
+> like hwloc by providing cluster_cpus and related sysfs attributes.
+> PoC of HWLOC support at [2].
+>
+> Note this patch only handle the ACPI case.
+>
 
-If not and IOW, I like dhansen's X86_FEATURE_CET synthetic feature
-suggestion.
+AIUI this requires PPTT to describe your system like so:
 
-Thx.
+ {Processor nodes}             {Caches}
 
--- 
-Regards/Gruss,
-    Boris.
+       [Node0] ----------------> [L3]
+          ^
+          |
+      [Cluster0] ---------------> []
+          ^
+          |
+        [CPU0] ------------> [L1] -> [L2]
 
-https://people.kernel.org/tglx/notes-about-netiquette
+which is a bit odd, because there is that middling level without any
+private resources. I suppose right now this is the only way to describe
+this kind of cache topology via PPTT, but is that widespread?
+
+
+Now, looking at the Ampere eMAG's PPTT, this has a "similar" shape. The
+topology is private L1, L2 shared by pairs of CPUs, shared L3 [1].
+
+If I parse the PPTT thing right this is encoded as:
+
+ {Processor nodes}            {Caches}
+
+      [Cluster0] -------------> ([L3] not present in my PPTT for some reason)
+          ^
+          |
+      [  Pair0  ] ------------> [L2]
+        ^     ^
+        |     |
+        |  [CPU1] ------------> [L1]
+      [CPU0] -----------------> [L1] 
+
+So you could spin the same story there were first scanning the pair and
+then the cluster could help.
+
+[1]: https://en.wikichip.org/wiki/ampere_computing/emag/8180
+
+> Special consideration is needed for SMT processors, where it is
+> necessary to move 2 levels up the hierarchy from the leaf nodes
+> (thus skipping the processor core level).
+>
+> Currently the ID provided is the offset of the Processor
+> Hierarchy Nodes Structure within PPTT.  Whilst this is unique
+> it is not terribly elegant so alternative suggestions welcome.
+>
+
+Skimming through the spec, this sounds like something the ID structure
+(Type 2) could be used for. However in v1 Jonathan and Sudeep talked about
+UID's / DSDT, any news on that?
+
+> Note that arm64 / ACPI does not provide any means of identifying
+> a die level in the topology but that may be unrelate to the cluster
+> level.
+>
+> [1] ACPI Specification 6.3 - section 5.2.29.1 processor hierarchy node
+>     structure (Type 0)
+> [2] https://github.com/hisilicon/hwloc/tree/linux-cluster
+>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
