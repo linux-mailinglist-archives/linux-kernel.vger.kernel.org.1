@@ -2,51 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4326C2C9CBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C5F2C9D9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388302AbgLAJAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36312 "EHLO mail.kernel.org"
+        id S2390931AbgLAJZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:25:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388276AbgLAJAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:00:18 -0500
+        id S1729389AbgLAJFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:05:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF871221FF;
-        Tue,  1 Dec 2020 08:59:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D727B21D46;
+        Tue,  1 Dec 2020 09:04:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813177;
-        bh=c9Opq6kGcTxHdUrCuVg3UmZQJpTW7wDaQAWEf+gQbgc=;
+        s=korg; t=1606813500;
+        bh=p6UGhE7Kc4+yR/tYHmb8lv+gJLMFBCybGCvMZ4pJ5Rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YI9U27TOpksA03CXBN5NkJNPbuwE9fpUW92YEzNE3OC2dxJedNKvdR5nK4RcJXWhm
-         cHBaMKXQP8uqxvHjlumlL4V6eHKDW13d3BjgeBUbm/OeL+Psm9+7KM9Vg96YFWgcN7
-         YWhkbzaIKQcO20S/AFuC9+DQEK73Zg2GK1kM6gw8=
+        b=mPLWNBwN8HpUtMktooT24aPQx00eQ5S1hInj2pj8Ajxa8EejHnSG0BsdujQknj5ZZ
+         POXRQkhx2CyrGSRVQhLA4N8Gyf0aOjC22frduKz72Mb3OV8/P+z0+TPp9sDDhz6qwY
+         tpqx6lSSJYME9zY7tDdPKP0pojM+aeGcwMnFOkgM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Dahl <ada@thorsis.com>
-Subject: [PATCH 4.19 01/57] perf event: Check ref_reloc_sym before using it
-Date:   Tue,  1 Dec 2020 09:53:06 +0100
-Message-Id: <20201201084647.886759183@linuxfoundation.org>
+        stable@vger.kernel.org, Brian Masney <bmasney@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 30/98] x86/xen: dont unbind uninitialized lock_kicker_irq
+Date:   Tue,  1 Dec 2020 09:53:07 +0100
+Message-Id: <20201201084656.440500772@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -54,58 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Lubashev <ilubashe@akamai.com>
+From: Brian Masney <bmasney@redhat.com>
 
-commit e9a6882f267a8105461066e3ea6b4b6b9be1b807 upstream.
+[ Upstream commit 65cae18882f943215d0505ddc7e70495877308e6 ]
 
-Check for ref_reloc_sym before using it instead of checking
-symbol_conf.kptr_restrict and relying solely on that check.
+When booting a hyperthreaded system with the kernel parameter
+'mitigations=auto,nosmt', the following warning occurs:
 
-Reported-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Igor Lubashev <ilubashe@akamai.com>
-Tested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Link: http://lkml.kernel.org/r/1566869956-7154-2-git-send-email-ilubashe@akamai.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Alexander Dahl <ada@thorsis.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    WARNING: CPU: 0 PID: 1 at drivers/xen/events/events_base.c:1112 unbind_from_irqhandler+0x4e/0x60
+    ...
+    Hardware name: Xen HVM domU, BIOS 4.2.amazon 08/24/2006
+    ...
+    Call Trace:
+     xen_uninit_lock_cpu+0x28/0x62
+     xen_hvm_cpu_die+0x21/0x30
+     takedown_cpu+0x9c/0xe0
+     ? trace_suspend_resume+0x60/0x60
+     cpuhp_invoke_callback+0x9a/0x530
+     _cpu_up+0x11a/0x130
+     cpu_up+0x7e/0xc0
+     bringup_nonboot_cpus+0x48/0x50
+     smp_init+0x26/0x79
+     kernel_init_freeable+0xea/0x229
+     ? rest_init+0xaa/0xaa
+     kernel_init+0xa/0x106
+     ret_from_fork+0x35/0x40
 
+The secondary CPUs are not activated with the nosmt mitigations and only
+the primary thread on each CPU core is used. In this situation,
+xen_hvm_smp_prepare_cpus(), and more importantly xen_init_lock_cpu(), is
+not called, so the lock_kicker_irq is not initialized for the secondary
+CPUs. Let's fix this by exiting early in xen_uninit_lock_cpu() if the
+irq is not set to avoid the warning from above for each secondary CPU.
+
+Signed-off-by: Brian Masney <bmasney@redhat.com>
+Link: https://lore.kernel.org/r/20201107011119.631442-1-bmasney@redhat.com
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/event.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/x86/xen/spinlock.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/tools/perf/util/event.c
-+++ b/tools/perf/util/event.c
-@@ -912,11 +912,13 @@ static int __perf_event__synthesize_kern
- 	int err;
- 	union perf_event *event;
+diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
+index 6deb49094c605..d817b7c862a62 100644
+--- a/arch/x86/xen/spinlock.c
++++ b/arch/x86/xen/spinlock.c
+@@ -93,10 +93,20 @@ void xen_init_lock_cpu(int cpu)
  
--	if (symbol_conf.kptr_restrict)
--		return -1;
- 	if (map == NULL)
- 		return -1;
- 
-+	kmap = map__kmap(map);
-+	if (!kmap->ref_reloc_sym)
-+		return -1;
+ void xen_uninit_lock_cpu(int cpu)
+ {
++	int irq;
 +
- 	/*
- 	 * We should get this from /sys/kernel/sections/.text, but till that is
- 	 * available use this, and after it is use this as a fallback for older
-@@ -939,7 +941,6 @@ static int __perf_event__synthesize_kern
- 		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
- 	}
+ 	if (!xen_pvspin)
+ 		return;
  
--	kmap = map__kmap(map);
- 	size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
- 			"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
- 	size = PERF_ALIGN(size, sizeof(u64));
+-	unbind_from_irqhandler(per_cpu(lock_kicker_irq, cpu), NULL);
++	/*
++	 * When booting the kernel with 'mitigations=auto,nosmt', the secondary
++	 * CPUs are not activated, and lock_kicker_irq is not initialized.
++	 */
++	irq = per_cpu(lock_kicker_irq, cpu);
++	if (irq == -1)
++		return;
++
++	unbind_from_irqhandler(irq, NULL);
+ 	per_cpu(lock_kicker_irq, cpu) = -1;
+ 	kfree(per_cpu(irq_name, cpu));
+ 	per_cpu(irq_name, cpu) = NULL;
+-- 
+2.27.0
+
 
 
