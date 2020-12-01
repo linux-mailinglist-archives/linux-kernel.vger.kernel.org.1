@@ -2,100 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C232CAE5F
+	by mail.lfdr.de (Postfix) with ESMTP id 893EB2CAE60
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388352AbgLAV3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:29:19 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2187 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388128AbgLAV3T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:29:19 -0500
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ClwB83t30z67FYd;
-        Wed,  2 Dec 2020 05:25:36 +0800 (CST)
-Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 1 Dec 2020 22:28:32 +0100
-Received: from [10.47.199.27] (10.47.199.27) by lhreml741-chm.china.huawei.com
- (10.201.108.191) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 1 Dec 2020
- 21:28:25 +0000
-Subject: Re: [PATCH v2 1/3] Revert "perf session: Fix decompression of
- PERF_RECORD_COMPRESSED records"
-To:     Jiri Olsa <jolsa@redhat.com>, Petr Malat <oss@malat.biz>,
-        <alexey.v.bayduraev@linux.intel.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>, <abudankov@huawei.com>
-References: <20201124095923.3683-1-oss@malat.biz>
- <20201124102919.15312-1-oss@malat.biz> <20201124143645.GD2088148@krava>
- <20201124181519.GA29264@ntb.petris.klfree.czf>
- <20201130114020.GA29476@ntb.petris.klfree.czf>
- <20201201190928.GB3169083@krava>
- <90d5469d-2591-44bf-70c4-edc1b2750935@huawei.com>
-From:   Alexei Budankov <abudankov@huawei.com>
-Message-ID: <1ee1c9b6-516f-cee1-1b37-388fb5507cd3@huawei.com>
-Date:   Wed, 2 Dec 2020 00:28:18 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2388536AbgLAV3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:29:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388128AbgLAV3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 16:29:31 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 477C920870;
+        Tue,  1 Dec 2020 21:28:49 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 16:28:47 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Rientjes <rientjes@google.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michel Lespinasse <walken@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yafang Shao <laoar.shao@gmail.com>, davem@davemloft.net,
+        dsahern@kernel.org, gregkh@linuxfoundation.org, kuba@kernel.org,
+        liuhangbin@gmail.com, tj@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm: mmap_lock: fix use-after-free race and css ref
+ leak in tracepoints
+Message-ID: <20201201162847.654f3013@gandalf.local.home>
+In-Reply-To: <20201201203249.4172751-1-axelrasmussen@google.com>
+References: <20201201203249.4172751-1-axelrasmussen@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <90d5469d-2591-44bf-70c4-edc1b2750935@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.199.27]
-X-ClientProxiedBy: braeml703-chm.china.huawei.com (10.226.71.47) To
- lhreml741-chm.china.huawei.com (10.201.108.191)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue,  1 Dec 2020 12:32:49 -0800
+Axel Rasmussen <axelrasmussen@google.com> wrote:
 
-Eventually sending to the proper Alexey's address.
+> +/* Called with reg_lock held. */
 
-On 02.12.2020 0:04, Alexei Budankov wrote:
-> 
-> On 01.12.2020 22:09, Jiri Olsa wrote:
->> On Mon, Nov 30, 2020 at 12:40:20PM +0100, Petr Malat wrote:
->>> Hi Jiří,
->>> were you able to reproduce the issue? I may also upload perf-archive
->>> if that would help.
->>
->> oh yea ;-) seems like those 2 commits you reverted broke 32 bits
->> perf for data files > 32MB
->>
->> but the fix you did does not work for Alexey's test he mentioned
->> in the commit:
->>
->>       $ perf record -z -- some_long_running_workload
->>       $ perf report --stdio -vv
->>
->> it's failing for me with:
->>
->> 	# ./perf report
->> 	Couldn't allocate memory for decompression
->> 	0xfe6f3a [0x60]: failed to process type: 81 [Operation not permitted]
->> 	Error:
->> 	failed to process sample
->> 	# To display the perf.data header info, please use --header/--header-only options.
->> 	#
->>
->> I think that's why here's special handling for compressed
->> events, but I'll need to check on that in more detail,
->> I was hoping for Alexey to answer ;-)
-> 
-> Sorry for delay. Alexey Bayduraev could possibly help with that sooner.
-> Alexey, could you please follow up.
-> 
-> Thanks,
-> Alexei
+The above comment is reduntant, as the lockdep_is_held() below also suggest
+that it is ;-)
+
+> +static void free_memcg_path_bufs(void)
+> +{
+> +	int cpu;
+> +	char *old;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		old = rcu_dereference_protected(per_cpu(memcg_path_buf, cpu),
+> +						lockdep_is_held(&reg_lock));
+> +		if (old == NULL)
+> +			break;
+
+Hmm, what if the topology of the system has missing CPU numbers (this is
+possible I believe on some systems)?
+
+> +		rcu_assign_pointer(per_cpu(memcg_path_buf, cpu), NULL);
+> +		/* Wait for inflight memcg_path_buf users to finish. */
+> +		synchronize_rcu();
+
+Please break this up into two loops. You will need to have another array
+that is created in trace_mmap_lock_reg() function:
+
+static char **path_holders;
+
+trace_mmap_lock_reg()
+{
+[..]
+	path_holders = kmalloc(num_possible_cpus * sizeof(*path_holders));
+[..]
+}
+
+Then this function can be:
+
+static void free_memcg_path_bufs(void)
+{
+	int cpu;
+
+	for_each_possible_cpu(cpu) {
+		path_holders[cpu] = rcu_dereference_protected(per_cpu(memcg_path_buf, cpu),
+						lockdep_is_held(&reg_lock));
+		rcu_assign_pointer(per_cpu(memcg_path_buf, cpu), NULL);
+	}
+
+	/* Wait for inflight memcg_path_buf users to finish. */
+	synchronize_rcu();
+
+	for_each_possible_cpu(cpu) {
+		kfree(path_holders[cpu]);
+	}
+
+	kfree(path_holders);
+	path_holders = NULL;
+}
+
+Otherwise, if you have a machine with 128 possible CPUs, doing 128
+synchronize_rcu()s is going to be expensive!
+
+> +		kfree(old);
+> +	}
+> +}
+>  
+
+
+>  static inline char *get_memcg_path_buf(void)
+>  {
+> +	char *buf;
+>  	int idx;
+>  
+> +	rcu_read_lock();
+
+The caller of get_mm_memcg_path() has preemption disabled, which is also
+now an RCU lock. So the rcu_read_lock() is somewhat redundant.
+
+Oh, and looking at the original patch:
+
++                                      memcg_path != NULL ? memcg_path : "",   \
+
+The above could be shorten to:
+
+					memcg_path ? : "",
+
+As gcc has a trick with the "? :" which is if there's nothing in between
+the "?" and ":" it will use what was tested as the result if it is not zero
+or NULL.
+
+-- Steve
+
+> +	buf = rcu_dereference(*this_cpu_ptr(&memcg_path_buf));
+> +	if (buf == NULL)
+> +		return NULL;
+>  	idx = this_cpu_add_return(memcg_path_buf_idx, MEMCG_PATH_BUF_SIZE) -
+>  	      MEMCG_PATH_BUF_SIZE;
+> -	return &this_cpu_read(memcg_path_buf)[idx];
+> +	return &buf[idx];
+>  }
