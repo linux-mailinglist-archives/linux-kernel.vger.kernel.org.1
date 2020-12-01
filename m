@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B042C9AD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2E22C9B56
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388517AbgLAJBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:01:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
+        id S2389028AbgLAJHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388480AbgLAJBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:01:10 -0500
+        id S2389051AbgLAJFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:05:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 366712220B;
-        Tue,  1 Dec 2020 09:00:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9F2520671;
+        Tue,  1 Dec 2020 09:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813254;
-        bh=8qixQJveTgM/slIqqZMCI09l3i7SFF5l94iIB84rPyk=;
+        s=korg; t=1606813488;
+        bh=SlirlzYcBTk8viTHCH1ZEvq3y4PRpTurTNZjdSESbhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUfpR/j6g7+CP+c8WKvI/siVQQ1irbYW6Ahy33WudLocynfHwDTPPdUzbro38oycN
-         /YniMqRwP+f1txK86fFmniqGHRBg3s3wW7V+ZBRCkJ7h9mI6RdoYomqPyx+r5XRnj6
-         LgqMYUk1nmoOQIt+L8gDji9A1bkC6OQZ40h73fHs=
+        b=MlT32oOP6sX9t09V7em1qGsBBfGK7hlXgGivQVq0nG4MixKO6rz1d2iBDdjHx/PLu
+         ROVdZcE/XWRCNYt4gDekkGVaCcqtSuOeYUoMvtovZi8TeqRnKTKkhT9gqzvBF/nDaG
+         FWXA2bXUYGOHlp19PapqxmQ+Ff0zmWpaZnlg8RQQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/57] xtensa: uaccess: Add missing __user to strncpy_from_user() prototype
+Subject: [PATCH 5.4 55/98] s390/qeth: make af_iucv TX notification call more robust
 Date:   Tue,  1 Dec 2020 09:53:32 +0100
-Message-Id: <20201201084650.498869030@linuxfoundation.org>
+Message-Id: <20201201084657.792157024@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit dc293f2106903ab9c24e9cea18c276e32c394c33 ]
+[ Upstream commit 34c7f50f7d0d36fa663c74aee39e25e912505320 ]
 
-When adding __user annotations in commit 2adf5352a34a, the
-strncpy_from_user() function declaration for the
-CONFIG_GENERIC_STRNCPY_FROM_USER case was missed. Fix it.
+Calling into socket code is ugly already, at least check whether we are
+dealing with the expected sk_family. Only looking at skb->protocol is
+bound to cause troubles (consider eg. af_packet).
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Message-Id: <20200831210937.17938-1-laurent.pinchart@ideasonboard.com>
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Fixes: b333293058aa ("qeth: add support for af_iucv HiperSockets transport")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/xtensa/include/asm/uaccess.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/net/qeth_core_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/include/asm/uaccess.h b/arch/xtensa/include/asm/uaccess.h
-index f1158b4c629cf..da4effe270072 100644
---- a/arch/xtensa/include/asm/uaccess.h
-+++ b/arch/xtensa/include/asm/uaccess.h
-@@ -291,7 +291,7 @@ strncpy_from_user(char *dst, const char *src, long count)
- 	return -EFAULT;
- }
- #else
--long strncpy_from_user(char *dst, const char *src, long count);
-+long strncpy_from_user(char *dst, const char __user *src, long count);
- #endif
+diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+index 5043f0fcf399a..6a2ac575e0a39 100644
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -31,6 +31,7 @@
  
- /*
+ #include <net/iucv/af_iucv.h>
+ #include <net/dsfield.h>
++#include <net/sock.h>
+ 
+ #include <asm/ebcdic.h>
+ #include <asm/chpid.h>
+@@ -1083,7 +1084,7 @@ static void qeth_notify_skbs(struct qeth_qdio_out_q *q,
+ 	skb_queue_walk(&buf->skb_list, skb) {
+ 		QETH_CARD_TEXT_(q->card, 5, "skbn%d", notification);
+ 		QETH_CARD_TEXT_(q->card, 5, "%lx", (long) skb);
+-		if (skb->protocol == htons(ETH_P_AF_IUCV) && skb->sk)
++		if (skb->sk && skb->sk->sk_family == PF_IUCV)
+ 			iucv_sk(skb->sk)->sk_txnotify(skb, notification);
+ 	}
+ }
 -- 
 2.27.0
 
