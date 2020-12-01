@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E3C2C9AA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E785E2C9B73
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388176AbgLAI7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:59:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35390 "EHLO mail.kernel.org"
+        id S2389263AbgLAJIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:08:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388137AbgLAI7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:59:32 -0500
+        id S2389119AbgLAJHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:07:04 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F4DF221FF;
-        Tue,  1 Dec 2020 08:58:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 520C32222A;
+        Tue,  1 Dec 2020 09:06:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813131;
-        bh=wI50b/pN0zqd+kuuDgZtLCtxP8o7v0oAtef1RRxmu6A=;
+        s=korg; t=1606813602;
+        bh=P7s0gKDLSw1bSNQbsFFUnn7MXsz4NHoJBoXxiN7IXWY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EakNOGBgBusIUFfNA4q68XvuJ4EvwrAPMYKsJOyw+HSrQUuSQvAlAIoMYdWpNbNs2
-         GR4pOWK4jv7vUomhoFi5jTUaCHHFP/F1qj8RTaUCA33m8hcf4XW7JC34W+u4eKbYi3
-         cIjEuE+2t+VBOpPBTQB70RGaHjUvMXGSjWAM8Ekk=
+        b=zt70Bpr5eHZ0vTkrD48wlxqCq5YUQRP8LkazegsiH7B/CViBS6IRhwezZrJr39D9x
+         XBh0WZib0yjq+8m4YWsqxxEKSekauA4ZzaeYd/7HW9vYtPz8VYPfr8t3lih5XRQQGe
+         p8+9kfelqg/v4YlHbIEvAWzEHi3iHqD7k60P+OtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH 4.14 43/50] USB: core: Change %pK for __user pointers to %px
+        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 65/98] ibmvnic: fix NULL pointer dereference in reset_sub_crq_queues
 Date:   Tue,  1 Dec 2020 09:53:42 +0100
-Message-Id: <20201201084650.286545687@linuxfoundation.org>
+Message-Id: <20201201084658.269011861@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,93 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Lijun Pan <ljp@linux.ibm.com>
 
-commit f3bc432aa8a7a2bfe9ebb432502be5c5d979d7fe upstream.
+[ Upstream commit a0faaa27c71608799e0dd765c5af38a089091802 ]
 
-Commit 2f964780c03b ("USB: core: replace %p with %pK") used the %pK
-format specifier for a bunch of __user pointers.  But as the 'K' in
-the specifier indicates, it is meant for kernel pointers.  The reason
-for the %pK specifier is to avoid leaks of kernel addresses, but when
-the pointer is to an address in userspace the security implications
-are minimal.  In particular, no kernel information is leaked.
+adapter->tx_scrq and adapter->rx_scrq could be NULL if the previous reset
+did not complete after freeing sub crqs. Check for NULL before
+dereferencing them.
 
-This patch changes the __user %pK specifiers (used in a bunch of
-debugging output lines) to %px, which will always print the actual
-address with no mangling.  (Notably, there is no printk format
-specifier particularly intended for __user pointers.)
+Snippet of call trace:
+ibmvnic 30000006 env6: Releasing sub-CRQ
+ibmvnic 30000006 env6: Releasing CRQ
+...
+ibmvnic 30000006 env6: Got Control IP offload Response
+ibmvnic 30000006 env6: Re-setting tx_scrq[0]
+BUG: Kernel NULL pointer dereference on read at 0x00000000
+Faulting instruction address: 0xc008000003dea7cc
+Oops: Kernel access of bad area, sig: 11 [#1]
+LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+Modules linked in: rpadlpar_io rpaphp xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables xsk_diag tcp_diag udp_diag raw_diag inet_diag unix_diag af_packet_diag netlink_diag tun bridge stp llc rfkill sunrpc pseries_rng xts vmx_crypto uio_pdrv_genirq uio binfmt_misc ip_tables xfs libcrc32c sd_mod t10_pi sg ibmvscsi ibmvnic ibmveth scsi_transport_srp dm_mirror dm_region_hash dm_log dm_mod
+CPU: 80 PID: 1856 Comm: kworker/80:2 Tainted: G        W         5.8.0+ #4
+Workqueue: events __ibmvnic_reset [ibmvnic]
+NIP:  c008000003dea7cc LR: c008000003dea7bc CTR: 0000000000000000
+REGS: c0000007ef7db860 TRAP: 0380   Tainted: G        W          (5.8.0+)
+MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 28002422  XER: 0000000d
+CFAR: c000000000bd9520 IRQMASK: 0
+GPR00: c008000003dea7bc c0000007ef7dbaf0 c008000003df7400 c0000007fa26ec00
+GPR04: c0000007fcd0d008 c0000007fcd96350 0000000000000027 c0000007fcd0d010
+GPR08: 0000000000000023 0000000000000000 0000000000000000 0000000000000000
+GPR12: 0000000000002000 c00000001ec18e00 c0000000001982f8 c0000007bad6e840
+GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+GPR20: 0000000000000000 0000000000000000 0000000000000000 fffffffffffffef7
+GPR24: 0000000000000402 c0000007fa26f3a8 0000000000000003 c00000016f8ec048
+GPR28: 0000000000000000 0000000000000000 0000000000000000 c0000007fa26ec00
+NIP [c008000003dea7cc] ibmvnic_reset_init+0x15c/0x258 [ibmvnic]
+LR [c008000003dea7bc] ibmvnic_reset_init+0x14c/0x258 [ibmvnic]
+Call Trace:
+[c0000007ef7dbaf0] [c008000003dea7bc] ibmvnic_reset_init+0x14c/0x258 [ibmvnic] (unreliable)
+[c0000007ef7dbb80] [c008000003de8860] __ibmvnic_reset+0x408/0x970 [ibmvnic]
+[c0000007ef7dbc50] [c00000000018b7cc] process_one_work+0x2cc/0x800
+[c0000007ef7dbd20] [c00000000018bd78] worker_thread+0x78/0x520
+[c0000007ef7dbdb0] [c0000000001984c4] kthread+0x1d4/0x1e0
+[c0000007ef7dbe20] [c00000000000cea8] ret_from_kernel_thread+0x5c/0x74
 
-Fixes: 2f964780c03b ("USB: core: replace %p with %pK")
-CC: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20201119170228.GB576844@rowland.harvard.edu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 57a49436f4e8 ("ibmvnic: Reset sub-crqs during driver reset")
+Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/devio.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/core/devio.c
-+++ b/drivers/usb/core/devio.c
-@@ -478,11 +478,11 @@ static void snoop_urb(struct usb_device
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 717f793455056..238915410d79a 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -2767,6 +2767,9 @@ static int reset_sub_crq_queues(struct ibmvnic_adapter *adapter)
+ {
+ 	int i, rc;
  
- 	if (userurb) {		/* Async */
- 		if (when == SUBMIT)
--			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
-+			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
- 					"length %u\n",
- 					userurb, ep, t, d, length);
- 		else
--			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
-+			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
- 					"actual_length %u status %d\n",
- 					userurb, ep, t, d, length,
- 					timeout_or_status);
-@@ -1946,7 +1946,7 @@ static int proc_reapurb(struct usb_dev_s
- 	if (as) {
- 		int retval;
- 
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl(as, (void __user * __user *)arg);
- 		free_async(as);
- 		return retval;
-@@ -1963,7 +1963,7 @@ static int proc_reapurbnonblock(struct u
- 
- 	as = async_getcompleted(ps);
- 	if (as) {
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl(as, (void __user * __user *)arg);
- 		free_async(as);
- 	} else {
-@@ -2089,7 +2089,7 @@ static int proc_reapurb_compat(struct us
- 	if (as) {
- 		int retval;
- 
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl_compat(as, (void __user * __user *)arg);
- 		free_async(as);
- 		return retval;
-@@ -2106,7 +2106,7 @@ static int proc_reapurbnonblock_compat(s
- 
- 	as = async_getcompleted(ps);
- 	if (as) {
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl_compat(as, (void __user * __user *)arg);
- 		free_async(as);
- 	} else {
-@@ -2531,7 +2531,7 @@ static long usbdev_do_ioctl(struct file
- #endif
- 
- 	case USBDEVFS_DISCARDURB:
--		snoop(&dev->dev, "%s: DISCARDURB %pK\n", __func__, p);
-+		snoop(&dev->dev, "%s: DISCARDURB %px\n", __func__, p);
- 		ret = proc_unlinkurb(ps, p);
- 		break;
- 
++	if (!adapter->tx_scrq || !adapter->rx_scrq)
++		return -EINVAL;
++
+ 	for (i = 0; i < adapter->req_tx_queues; i++) {
+ 		netdev_dbg(adapter->netdev, "Re-setting tx_scrq[%d]\n", i);
+ 		rc = reset_one_sub_crq_queue(adapter, adapter->tx_scrq[i]);
+-- 
+2.27.0
+
 
 
