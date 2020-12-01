@@ -2,207 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C5F2C980A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D7B2C980E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgLAHVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727285AbgLAHVY (ORCPT
+        id S1727956AbgLAHWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:22:18 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2323 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727468AbgLAHWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:21:24 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884E6C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:20:44 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kjzxm-0001lI-9c; Tue, 01 Dec 2020 08:20:38 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kjzxc-000762-JP; Tue, 01 Dec 2020 08:20:28 +0100
-Date:   Tue, 1 Dec 2020 08:20:26 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        allen <allen.chen@ite.com.tw>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mark Brown <broonie@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 4/7] pwm: ntxec: Add driver for PWM function in
- Netronix EC
-Message-ID: <20201201072026.a736ikf3k4udpvfv@pengutronix.de>
-References: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
- <20201201011513.1627028-5-j.neuschaefer@gmx.net>
+        Tue, 1 Dec 2020 02:22:17 -0500
+Received: from dggeme715-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4ClYRF2cLqz13P90;
+        Tue,  1 Dec 2020 15:20:41 +0800 (CST)
+Received: from [10.174.186.123] (10.174.186.123) by
+ dggeme715-chm.china.huawei.com (10.1.199.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 1 Dec 2020 15:21:24 +0800
+Subject: Re: [RFC PATCH 1/3] KVM: arm64: Fix possible memory leak in kvm
+ stage2
+To:     Will Deacon <will@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
+        <lushenming@huawei.com>
+References: <20201130121847.91808-1-wangyanan55@huawei.com>
+ <20201130121847.91808-2-wangyanan55@huawei.com>
+ <20201130132133.GA24837@willie-the-truck>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <ef8f51d6-365b-8b05-0a10-5b4a242f6aa3@huawei.com>
+Date:   Tue, 1 Dec 2020 15:21:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u22gzovpzo4ufbuv"
-Content-Disposition: inline
-In-Reply-To: <20201201011513.1627028-5-j.neuschaefer@gmx.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201130132133.GA24837@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.186.123]
+X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
+ dggeme715-chm.china.huawei.com (10.1.199.111)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Will,
 
---u22gzovpzo4ufbuv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2020/11/30 21:21, Will Deacon wrote:
+> On Mon, Nov 30, 2020 at 08:18:45PM +0800, Yanan Wang wrote:
+>> When installing a new leaf pte onto an invalid ptep, we need to get_page(ptep).
+>> When just updating a valid leaf ptep, we shouldn't get_page(ptep).
+>> Incorrect page_count of translation tables might lead to memory leak,
+>> when unmapping a stage 2 memory range.
+> Did you find this by inspection, or did you hit this in practice? I'd be
+> interested to see the backtrace for mapping over an existing mapping.
 
-Hello Jonathan,
+Actually this is found by inspection.
 
-very nice driver, just a few minor comments below.
+In the current code, get_page() will uniformly called at "out_get_page" 
+in function stage2_map_walk_leaf(),
 
-On Tue, Dec 01, 2020 at 02:15:10AM +0100, Jonathan Neusch=E4fer wrote:
-> +static struct ntxec_pwm *pwmchip_to_priv(struct pwm_chip *chip)
+no matter the old ptep is valid or not.
 
-a function prefix would be great here, I'd pick ntxec_pwm_from_chip as
-name.
+When using stage2_unmap_walker() API to unmap a memory range, some 
+page-table pages might not be
 
-> +{
-> +	return container_of(chip, struct ntxec_pwm, chip);
-> +}
-> +
-> +[...]
-> +static int ntxec_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm=
-_dev,
-> +			   const struct pwm_state *state)
-> +{
-> +	struct ntxec_pwm *priv =3D pwmchip_to_priv(pwm_dev->chip);
-> +	unsigned int period, duty;
-> +	struct reg_sequence regs[] =3D {
-> +		{ NTXEC_REG_PERIOD_HIGH },
-> +		{ NTXEC_REG_PERIOD_LOW },
-> +		{ NTXEC_REG_DUTY_HIGH },
-> +		{ NTXEC_REG_DUTY_LOW }
-> +	};
-> +	int res;
-> +
-> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
-> +		return -EINVAL;
-> +
-> +	period =3D min_t(u64, state->period, MAX_PERIOD_NS);
-> +	duty   =3D min_t(u64, state->duty_cycle, period);
+freed if page_count of the pages is not right.
 
-I'm not a big fan of aligning =3D. (As if you have to add a longer
-variable you have to realign all otherwise unrelated lines.) But that's
-subjective and it's up to you if you want to change this.
+>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>> ---
+>>   arch/arm64/kvm/hyp/pgtable.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>> index 0271b4a3b9fe..696b6aa83faf 100644
+>> --- a/arch/arm64/kvm/hyp/pgtable.c
+>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+>> @@ -186,6 +186,7 @@ static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
+>>   		return old == pte;
+>>   
+>>   	smp_store_release(ptep, pte);
+>> +	get_page(virt_to_page(ptep));
+> This is also used for the hypervisor stage-1 page-table, so I'd prefer to
+> leave this function as-is.
+I agree at this point.
+>>   	return true;
+>>   }
+>>   
+>> @@ -476,6 +477,7 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>>   	/* There's an existing valid leaf entry, so perform break-before-make */
+>>   	kvm_set_invalid_pte(ptep);
+>>   	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+>> +	put_page(virt_to_page(ptep));
+>>   	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
+>>   out:
+>>   	data->phys += granule;
+> Isn't this hunk alone sufficient to solve the problem?
+>
+> Will
+> .
 
-> +	period /=3D TIME_BASE_NS;
-> +	duty   /=3D TIME_BASE_NS;
-> +
-> +	/*
-> +	 * Changes to the period and duty cycle take effect as soon as the
-> +	 * corresponding low byte is written, so the hardware may be configured
-> +	 * to an inconsistent state after the period is written and before the
-> +	 * duty cycle is fully written. If, in such a case, the old duty cycle
-> +	 * is longer than the new period, the EC may output 100% for a moment.
-> +	 */
-> +
-> +	regs[0].def =3D ntxec_reg8(period >> 8);
-> +	regs[1].def =3D ntxec_reg8(period);
-> +	regs[2].def =3D ntxec_reg8(duty >> 8);
-> +	regs[3].def =3D ntxec_reg8(duty);
+Not sufficient enough. When the old ptep is valid and old pte equlas new 
+pte, in this case, "True" is also returned by kvm_set_valid_leaf_pte()
 
-You could even minimize the window by changing the order here to
+and get_page() will still be called.
 
-	NTXEC_REG_PERIOD_HIGH
-	NTXEC_REG_DUTY_HIGH
-	NTXEC_REG_PERIOD_LOW
-	NTXEC_REG_DUTY_LOW
 
-but it gets less readable. Maybe move that to a function to have the
-reg_sequence and the actual write nearer together? Or somehow name the
-indexes to make it more obvious?
+Yanan
 
-> +	res =3D regmap_multi_reg_write(priv->ec->regmap, regs, ARRAY_SIZE(regs)=
-);
-> +	if (res)
-> +		return res;
-> +
-> +	/*
-> +	 * Writing a duty cycle of zero puts the device into a state where
-> +	 * writing a higher duty cycle doesn't result in the brightness that it
-> +	 * usually results in. This can be fixed by cycling the ENABLE register.
-> +	 *
-> +	 * As a workaround, write ENABLE=3D0 when the duty cycle is zero.
-
-If the device already has duty_cycle =3D 0 but ENABLE =3D 1, you might get
-a failure. But I guess this doesn't need addressing in the code. But
-maybe point it out in a comment?
-
-> +	 */
-> +	if (state->enabled && duty !=3D 0) {
-> +		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(1)=
-);
-> +		if (res)
-> +			return res;
-> +
-> +		/* Disable the auto-off timer */
-> +		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_HI, ntxec_re=
-g8(0xff));
-> +		if (res)
-> +			return res;
-> +
-> +		return regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_LO, ntxec_reg=
-8(0xff));
-
-Given that you cannot read back period and duty anyhow: Does it make
-sense to write these only if (state->enabled && duty !=3D 0)?
-
-> +	} else {
-> +		return regmap_write(priv->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(0));
-> +	}
-> +}
-
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---u22gzovpzo4ufbuv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/F7rcACgkQwfwUeK3K
-7Alt8gf/XraVPH6btA/jmysBDXmmpKYQXUUMLc3b+HfFt6mJPYkDH8ARHZHvJTF7
-sZ2yWrm0erhFNUiovVw4dk3w+fJ3GJS+p1HDw/lq+gc4DlEMdvl63KdIVEbNA5Gf
-5xIwyQnrh9sUbwoc76fvrJ10+iygGM3gkqIH+g4ALoUh/pniK0ZgxytmO37gWN90
-GMLIvk/yGYKaqvIcgag90CcBD5Mc0N3jIOYGu9aMvybbAjBYoqwrVhi3glik/dIP
-jvoknFYpQkw+Tg2dCuCOSc/1fWKZR0EhOi5pvu7cXNSHFgmt5NMEBEakmKkkCdzP
-VOpLcgcoMsJmvzsbCk+RZGCPh9xlPw==
-=ur6O
------END PGP SIGNATURE-----
-
---u22gzovpzo4ufbuv--
