@@ -2,372 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B842C2CA427
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736342CA43C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391151AbgLANov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:44:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36192 "EHLO mx2.suse.de"
+        id S2391293AbgLANqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:46:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387932AbgLANov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:44:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E6615AC2D;
-        Tue,  1 Dec 2020 13:44:07 +0000 (UTC)
-Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
- to drm_device
-To:     "tiantao (H)" <tiantao6@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
- <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
- <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
- <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
- <389548c9-772c-d86b-700e-032f7d7bde1f@suse.de>
- <51e7e774-6795-8eeb-6701-b1cccc4c6199@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <5093b12f-11e8-0cf0-d9e7-7ec9b52e364d@suse.de>
-Date:   Tue, 1 Dec 2020 14:44:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2391285AbgLANqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:46:54 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0FC720770;
+        Tue,  1 Dec 2020 13:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606830373;
+        bh=jKd8KoPjJ69TJ40PmJD4Wfy02BVwL1rHNuh/7ARwmdw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OAGcRA/1u/yCOlF1mmmsp9BdD5Y5uHULGMAke3nSBKdj04HTbZkQmetJT8zFYNvna
+         D/ZoIqBmzjQognFPlcRnXsrnouuI4dmUbY/yqAihwcs1ySMvyTpvYsRTcIiCbKTdqy
+         ujr4XK9GDSeDgqokeQMdRxMeDdAqbl/coBb7ZajE=
+Date:   Tue, 1 Dec 2020 13:46:07 +0000
+From:   Will Deacon <will@kernel.org>
+To:     "wangyanan (Y)" <wangyanan55@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com,
+        jiangkunkun@huawei.com, wangjingyi11@huawei.com,
+        lushenming@huawei.com
+Subject: Re: [RFC PATCH 2/3] KVM: arm64: Fix handling of merging tables into
+ a block entry
+Message-ID: <20201201134606.GB26973@willie-the-truck>
+References: <20201130121847.91808-1-wangyanan55@huawei.com>
+ <20201130121847.91808-3-wangyanan55@huawei.com>
+ <20201130133421.GB24837@willie-the-truck>
+ <67e9e393-1836-eca7-4235-6f4a19fed652@huawei.com>
+ <20201130160119.GA25051@willie-the-truck>
+ <868a4403-10d3-80f3-4ae1-a490813c55e2@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <51e7e774-6795-8eeb-6701-b1cccc4c6199@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="A4JPUPC7NesAo488BDQKmbXWShmK6qMf9"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <868a4403-10d3-80f3-4ae1-a490813c55e2@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---A4JPUPC7NesAo488BDQKmbXWShmK6qMf9
-Content-Type: multipart/mixed; boundary="TI2mo2uPX0PHY1EBfv7CKBJPTTwpazYgl";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: "tiantao (H)" <tiantao6@huawei.com>, Tian Tao <tiantao6@hisilicon.com>,
- airlied@linux.ie, daniel@ffwll.ch, kraxel@redhat.com,
- alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <5093b12f-11e8-0cf0-d9e7-7ec9b52e364d@suse.de>
-Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
- to drm_device
-References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
- <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
- <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
- <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
- <389548c9-772c-d86b-700e-032f7d7bde1f@suse.de>
- <51e7e774-6795-8eeb-6701-b1cccc4c6199@huawei.com>
-In-Reply-To: <51e7e774-6795-8eeb-6701-b1cccc4c6199@huawei.com>
+On Tue, Dec 01, 2020 at 10:30:41AM +0800, wangyanan (Y) wrote:
+> On 2020/12/1 0:01, Will Deacon wrote:
+> > On Mon, Nov 30, 2020 at 11:24:19PM +0800, wangyanan (Y) wrote:
+> > > On 2020/11/30 21:34, Will Deacon wrote:
+> > > > On Mon, Nov 30, 2020 at 08:18:46PM +0800, Yanan Wang wrote:
+> > > > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > > > > index 696b6aa83faf..fec8dc9f2baa 100644
+> > > > > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > > > > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > > > > @@ -500,6 +500,9 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
+> > > > >    	return 0;
+> > > > >    }
+> > > > > +static void stage2_flush_dcache(void *addr, u64 size);
+> > > > > +static bool stage2_pte_cacheable(kvm_pte_t pte);
+> > > > > +
+> > > > >    static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+> > > > >    				struct stage2_map_data *data)
+> > > > >    {
+> > > > > @@ -507,9 +510,17 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+> > > > >    	struct page *page = virt_to_page(ptep);
+> > > > >    	if (data->anchor) {
+> > > > > -		if (kvm_pte_valid(pte))
+> > > > > +		if (kvm_pte_valid(pte)) {
+> > > > > +			kvm_set_invalid_pte(ptep);
+> > > > > +			kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu,
+> > > > > +				     addr, level);
+> > > > >    			put_page(page);
+> > > > This doesn't make sense to me: the page-table pages we're walking when the
+> > > > anchor is set are not accessible to the hardware walker because we unhooked
+> > > > the entire sub-table in stage2_map_walk_table_pre(), which has the necessary
+> > > > TLB invalidation.
+> > > > 
+> > > > Are you seeing a problem in practice here?
+> > > Yes, I indeed find a problem in practice.
+> > > 
+> > > When the migration was cancelled, a TLB conflic abort  was found in guest.
+> > > 
+> > > This problem is fixed before rework of the page table code, you can have a
+> > > look in the following two links:
+> > > 
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c3736cd32bf5197aed1410ae826d2d254a5b277
+> > > 
+> > > https://lists.cs.columbia.edu/pipermail/kvmarm/2019-March/035031.html
+> > Ok, let's go through this, because I still don't see the bug. Please correct
+> > me if you spot any mistakes:
+> > 
+> >    1. We have a block mapping for X => Y
+> >    2. Dirty logging is enabled, so the block mapping is write-protected and
+> >       ends up being split into page mappings
+> >    3. Dirty logging is disabled due to a failed migration.
+> > 
+> > --- At this point, I think we agree that the state of the MMU is alright ---
+> > 
+> >    4. We take a stage-2 fault and want to reinstall the block mapping:
+> > 
+> >       a. kvm_pgtable_stage2_map() is invoked to install the block mapping
+> >       b. stage2_map_walk_table_pre() finds a table where we would like to
+> >          install the block:
+> > 
+> > 	i.   The anchor is set to point at this entry
+> > 	ii.  The entry is made invalid
+> > 	iii. We invalidate the TLB for the input address. This is
+> > 	     TLBI IPAS2SE1IS without level hint and then TLBI VMALLE1IS.
+> > 
+> > 	*** At this point, the page-table pointed to by the old table entry
+> > 	    is not reachable to the hardware walker ***
+> > 
+> >       c. stage2_map_walk_leaf() is called for each leaf entry in the
+> >          now-unreachable subtree, dropping page-references for each valid
+> > 	entry it finds.
+> >       d. stage2_map_walk_table_post() is eventually called for the entry
+> >          which we cleared back in b.ii, so we install the new block mapping.
+> > 
+> > You are proposing to add additional TLB invalidation to (c), but I don't
+> > think that is necessary, thanks to the invalidation already performed in
+> > b.iii. What am I missing here?
+> 
+> The point is at b.iii where the TLBI is not enough. There are many page
+> mappings that we need to merge into a block mapping.
+> 
+> We invalidate the TLB for the input address without level hint at b.iii, but
+> this operation just flush TLB for one page mapping, there
+> 
+> are still some TLB entries for the other page mappings in the cache, the MMU
+> hardware walker can still hit these entries next time.
 
---TI2mo2uPX0PHY1EBfv7CKBJPTTwpazYgl
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Ah, yes, I see. Thanks. I hadn't considered the case where there are table
+entries beneath the anchor. So how about the diff below?
 
-Hi
+Will
 
-Am 01.12.20 um 14:05 schrieb tiantao (H):
->=20
->=20
-> =E5=9C=A8 2020/12/1 20:36, Thomas Zimmermann =E5=86=99=E9=81=93:
->> Hi
->>
->> Am 01.12.20 um 13:26 schrieb tiantao (H):
->>>
->>>
->>> =E5=9C=A8 2020/12/1 20:17, Thomas Zimmermann =E5=86=99=E9=81=93:
->>>> Hi
->>>>
->>>> Am 01.12.20 um 12:55 schrieb Tian Tao:
->>>>> Assign local variable to struct drm_device *dev because they are
->>>>> used multiple times within a function.
->>>>>
->>>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->>>>> ---
->>>>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c=C2=A0=C2=A0 |=
-=C2=A0 2 +-
->>>>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c=C2=A0 | 30=20
->>>>> ++++++++++++------------
->>>>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h=C2=A0 |=C2=A0=
- 2 +-
->>>>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |=C2=A0 2 +=
--
->>>>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0 8 ++++---
->>>>> =C2=A0 5 files changed, 23 insertions(+), 21 deletions(-)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c=20
->>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>>>> index ea962ac..096eea9 100644
->>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>>>> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs=20
->>>>> hibmc_crtc_helper_funcs =3D {
->>>>> =C2=A0 int hibmc_de_init(struct hibmc_drm_private *priv)
->>>>> =C2=A0 {
->>>>> -=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D priv->dev;
->>>>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_crtc *crtc =3D &priv->crt=
-c;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_plane *plane =3D &priv->p=
-rimary_plane;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c=20
->>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>>>> index d845657..dd9fadc 100644
->>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>>>> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops =3D=
+--->8
+
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 0271b4a3b9fe..12526d8c7ae4 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -493,7 +493,7 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
+ 		return 0;
+ 
+ 	kvm_set_invalid_pte(ptep);
+-	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, 0);
++	/* TLB invalidation is deferred until the _post handler */
+ 	data->anchor = ptep;
+ 	return 0;
+ }
+@@ -547,11 +547,21 @@ static int stage2_map_walk_table_post(u64 addr, u64 end, u32 level,
+ 				      struct stage2_map_data *data)
  {
->>>>> =C2=A0 static int hibmc_kms_init(struct hibmc_drm_private *priv)
->>>>> =C2=A0 {
->>>>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>>>> -=C2=A0=C2=A0=C2=A0 drm_mode_config_init(priv->dev);
->>>>> +=C2=A0=C2=A0=C2=A0 drm_mode_config_init(dev);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->mode_config_initialized =3D tr=
-ue;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.min_width =3D 0;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.min_height =3D 0;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.max_width =3D 1920;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.max_height =3D 1200;
->>>>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.min_width =3D 0;
->>>>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.min_height =3D 0;
->>>>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.max_width =3D 1920;
->>>>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.max_height =3D 1200;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.fb_base =3D priv->fb_bas=
-e;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.preferred_depth =3D 32;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.prefer_shadow =3D 1;
->>>>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.fb_base =3D priv->fb_base;
->>>>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.preferred_depth =3D 32;
->>>>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.prefer_shadow =3D 1;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.funcs =3D (void *)&hibmc=
-_mode_funcs;
->>>>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.funcs =3D (void *)&hibmc_mode_=
-funcs;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D hibmc_de_init(priv);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(priv->dev, "fai=
-led to init de: %d\n", ret);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(dev, "failed to=
- init de: %d\n", ret);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D hibmc_vdac_init(priv);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(priv->dev, "fai=
-led to init vdac: %d\n", ret);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(dev, "failed to=
- init vdac: %d\n", ret);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct=20
->>>>> hibmc_drm_private *priv)
->>>>> =C2=A0 static void hibmc_kms_fini(struct hibmc_drm_private *priv)
->>>>> =C2=A0 {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (priv->mode_config_initialized) {=
-
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_mode_config_cleanup=
-(priv->dev);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_mode_config_cleanup=
-(&priv->dev);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->mode_c=
-onfig_initialized =3D false;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>> =C2=A0 }
->>>>> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct=20
->>>>> hibmc_drm_private *priv)
->>>>> =C2=A0 static int hibmc_hw_map(struct hibmc_drm_private *priv)
->>>>> =C2=A0 {
->>>>> -=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D priv->dev;
->>>>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pci_dev *pdev =3D dev->pdev;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 resource_size_t addr, size, ioaddr, =
-iosize;
->>>>> @@ -258,7 +259,7 @@ static int hibmc_unload(struct drm_device *dev)=
-
->>>>> =C2=A0 static int hibmc_load(struct drm_device *dev)
->>>>> =C2=A0 {
->>>>> -=C2=A0=C2=A0=C2=A0 struct hibmc_drm_private *priv;
->>>>> +=C2=A0=C2=A0=C2=A0 struct hibmc_drm_private *priv =3D to_hibmc_drm=
-_private(dev);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv =3D drmm_kzalloc(dev, sizeof(*p=
-riv), GFP_KERNEL);
->>>>> @@ -267,7 +268,6 @@ static int hibmc_load(struct drm_device *dev)
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOM=
-EM;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->dev_private =3D priv;
->>>>> -=C2=A0=C2=A0=C2=A0 priv->dev =3D dev;
->>>>
->>>> I'm sure this either does not build or does not work. There's a call=
-=20
->>>> to drm_dev_alloc(), which initialized the DRM device. You need to=20
->>>> assign the returned device here. The embedding of dev only work=20
->>>> after you switched to devm_drm_dev_alloc() in the next patch.
->>>>
->>>> For the patch at hand, just keep struct hibmc_drm_private.dev as a=20
->>>> pointer and you should be fine.
->>>>
->>> Changing drm_device *dev to drm_device dev and using=20
->>> devm_drm_dev_alloc does not easily split into two patches.
->>> The patch does not compile well on its own, but it will compile fine =
-
->>> with patch #2.
->>> Can patch #1 and patch #2 be combined into a single patch,just like V=
-1.
->>
->> Most of the code in this patch does
->>
->> =C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>
->> to get dev as a local variable. Why don't you do
->>
->> =C2=A0=C2=A0 struct drm_device *dev =3D priv->dev;
->>
->> ?
->>
->> That's all that's really needed.
->=20
-> +=C2=A0=C2=A0=C2=A0 priv =3D devm_drm_dev_alloc(&pdev->dev, &hibmc_driv=
-er,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct hibmc_drm_private, dev);
-> devm_drm_dev_alloc function requires parameter 4, dev must be a=20
-> non-pointer for it to work. so had to change dev in the=20
-> hibmc_drm_private=C2=A0 to non-pointer.
-> This is also the reason to change drm_device *dev to drm_device dev.
-
-Yes, but that's what patch 2 is about. Patch 1 is about simplifying=20
-these pointer dereferences into local variables. For this, all you need i=
-s
-
-	struct drm_device *dev =3D priv->dev;
-
-In patch 2, these lines are then changed to
-
-	struct drm_device *dev =3D &priv->dev;
-
-That makes 2 self-contained patches.
-
-Best regards
-Thomas
-
->>
->> Best regards
->> Thomas
->>
->>>> Best regards
->>>> Thomas
->>>>
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D hibmc_hw_init(priv);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
->>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h=20
->>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>>>> index f310a83..e35353a 100644
->>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>>>> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 resource_size_t=C2=A0 fb_size;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* drm */
->>>>> -=C2=A0=C2=A0=C2=A0 struct drm_device=C2=A0 *dev;
->>>>> +=C2=A0=C2=A0=C2=A0 struct drm_device dev;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_plane primary_plane;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_crtc crtc;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder encoder;
->>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c=20
->>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>>>> index 74e26c2..d35548d 100644
->>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>>>> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs=20
->>>>> hibmc_encoder_funcs =3D {
->>>>> =C2=A0 int hibmc_vdac_init(struct hibmc_drm_private *priv)
->>>>> =C2=A0 {
->>>>> -=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D priv->dev;
->>>>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct hibmc_connector *hibmc_connec=
-tor =3D &priv->connector;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder *encoder =3D &pri=
-v->encoder;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_connector *connector =3D =
-&hibmc_connector->base;
->>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c=20
->>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>>>> index 602ece1..e84fb81 100644
->>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>>>> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc=
-)
->>>>> =C2=A0 {
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_vram_mm *vmm;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>>>> -=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D hibmc->dev;
->>>>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &hibmc->dev;
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vmm =3D drm_vram_helper_alloc_mm(dev=
-,
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- pci_resource_start(dev->pdev, 0),
->>>>> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private *hib=
-mc)
->>>>> =C2=A0 void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
->>>>> =C2=A0 {
->>>>> -=C2=A0=C2=A0=C2=A0 if (!hibmc->dev->vram_mm)
->>>>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &hibmc->dev;
->>>>> +
->>>>> +=C2=A0=C2=A0=C2=A0 if (!dev->vram_mm)
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
->>>>> -=C2=A0=C2=A0=C2=A0 drm_vram_helper_release_mm(hibmc->dev);
->>>>> +=C2=A0=C2=A0=C2=A0 drm_vram_helper_release_mm(dev);
->>>>> =C2=A0 }
->>>>> =C2=A0 int hibmc_dumb_create(struct drm_file *file, struct drm_devi=
-ce *dev,
->>>>>
->>>>
->>>
->>
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---TI2mo2uPX0PHY1EBfv7CKBJPTTwpazYgl--
-
---A4JPUPC7NesAo488BDQKmbXWShmK6qMf9
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/GSKYFAwAAAAAACgkQlh/E3EQov+A/
-7w/+MRbsojh58a4/R8mSEk7k0fZFE8GLEx5oO0zZ0Omdvlly7kddTHqvM9/cqtKOJT1Ft6T0oLvJ
-4VaUJfL2f516p40F26Jji6Yj8Fl87nX32QBOr1SGvdDhAG1YL7kwpt47VOsjv5SoC9RjeUemnPq2
-pkD49nr5JAWDe621TDU+1PKx/fQJS9NXSTUwlDg167wXZiLn2KaqgLDhby9wEbplZTYV426oNfaq
-vS5CpDsb9vnRzj1cF1ibw6lA1u/4Z6MRvzNkXYUXYH0iIqqD3qMar1455rkIktA/dn9siqB1iQXJ
-4zEpqnnLGeXtC6+UE6wEtiVWhxB9h3uos4Ns+PYhUVHste7DqyrSAhudAXqjAkTfwkheyLzfX+8t
-y/Jbp6Pz1w0gyVScTmEPFdCfmRq7VGdVh2kBbhNAXXfUr4r6cKLKBJPp9AK73QQcH/mo4PdN6CPL
-zaYONr5pv/DM4oXIpoGYI3/CCM6cEkTW9vbeGfcl0AXdbqZraR2owOjkevDz8aKJTr7WwsW2bpJb
-eq6SoKv0j+orpmrRJKa087z56qr3KVSJtF2ecrC7UmObjjPAZYLeQnTNJ1YuJCm/zVF/wHQTaiXV
-FguSPrZWMZ9h/3+Sk9ZrL5L/KvrpKA5vz093nlo8yNm6cVgi+ghonH0OE72tTocCT3xfdVr0vnLP
-ngM=
-=qjoA
------END PGP SIGNATURE-----
-
---A4JPUPC7NesAo488BDQKmbXWShmK6qMf9--
+ 	int ret = 0;
++	kvm_pte_t pte = *ptep;
+ 
+ 	if (!data->anchor)
+ 		return 0;
+ 
+-	free_page((unsigned long)kvm_pte_follow(*ptep));
++	kvm_set_invalid_pte(ptep);
++
++	/*
++	 * Invalidate the whole stage-2, as we may have numerous leaf
++	 * entries below us which would otherwise need invalidating
++	 * individually.
++	 */
++	kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
++
++	free_page((unsigned long)kvm_pte_follow(pte));
+ 	put_page(virt_to_page(ptep));
+ 
+ 	if (data->anchor == ptep) {
