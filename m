@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FC82CA62F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A268D2CA64A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403988AbgLAOr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:47:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389714AbgLAOrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:47:25 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0956204EA;
-        Tue,  1 Dec 2020 14:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606834004;
-        bh=csvLksHWs85LbETQQSsiH967ScFP8TsaOmqFl4gtQzI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=zV8m0uCeaM8LHXI4SuDf83+RLlDJNeavJvnBBwIPROYayDJJn9OuS7UhBJ7BEjY6t
-         NckES+amWbkRWRXZIdXQP8Oa4hcWMn2IH+arQnrkwOKf+8ea1LKD4+zD/APDfT/ra5
-         +1zl45/Ix6QW0WT3qGt6LBO+cM2Y1i10V80ERaRw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 373A235226B6; Tue,  1 Dec 2020 06:46:44 -0800 (PST)
-Date:   Tue, 1 Dec 2020 06:46:44 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201201144644.GF1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
- <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
- <yt9dh7p78d8l.fsf@linux.ibm.com>
- <yt9dpn3v3u1m.fsf@linux.ibm.com>
- <20201130125211.GN2414@hirez.programming.kicks-ass.net>
- <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
- <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
- <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
- <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
- <20201201110724.GL3092@hirez.programming.kicks-ass.net>
+        id S2391729AbgLAOty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:49:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389038AbgLAOtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:49:53 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BC6C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:49:06 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id lt17so4666756ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:49:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lQmiVxJd+Kl2UDX74aE8ZcT26AtGS/wklDJV5DWlb3M=;
+        b=jwAPYMuzH8oNFpb2B3klwVMdsmIjlpPrDfYD0OKHi+ansmJ1xkPwf6DfJacdvGbEhh
+         6WnHZBSNLKx7hcEJ2IPsIojFee9my/FoLbJlkNlz/NbhTV9jhkQn8ME8J7cdaryRPbo8
+         lVhF5Ij3hgCndTWby3BXtKNErZ9FUeF2dUMjr7NkjYJHyTGXtXou+nSO17xVSXHUawJz
+         8/bOnngSJaErW3NxFTeBTklslB6aQJ0/vTHSJRfjmDuGPnLEFkSvpufW90liCaX/o4QK
+         2nbG3vny/XyoEpAtuaTbCZeWeZwxVQS0F+fr8h56vGWhO1g473rDd0lc0sFTO3XPtqru
+         sIcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lQmiVxJd+Kl2UDX74aE8ZcT26AtGS/wklDJV5DWlb3M=;
+        b=T4zeyiZnpq+2IvBYGjF0Zckea/7BDxwi9ibR6z7+UdMktvK0bRHH37w1p1xeIPsziv
+         cTy8ByA/tAUzqolfsK08bv7CfOLWNxNO3Jq6DRpCOaydmCVhAXzIP+cmYTvsUcTHWjPx
+         /lSvFn7E7j+mQHvCMMTopClkvtOg6Dwb8f4BlKjiDr0zL6UCNi2E3eNMOkSD+5sfDb8N
+         iEz7TymoKHKGykW+RhuYCs9lNzQb2Asz7c1GauUJgK5MmsdnfgzfJpfhRu1LLYpHB9PC
+         KaoT3OXchX/DAlpy57Q5lxbzQdGwd65SbqdgWePDc7OtwKI2jpDyAiFjNnaMJYh+Kq+Y
+         JblA==
+X-Gm-Message-State: AOAM532XAoGZmYACkWhAzXEuPY0FDG2JTgJILCHUWg/xzIzadkDcSw6D
+        v/pblpZceAVBLNDyQft5CHaSO8oWRJr76rK0W4Hkutie3Z8=
+X-Google-Smtp-Source: ABdhPJx/znI8GH1T3tz02M68wDeFcvy3SeGIIJVLF7bwXNUsXDKYkXpr1p5++qs6ZnNs6bz2c6CH7QTdAPo10EfXcyM=
+X-Received: by 2002:a17:906:d8dc:: with SMTP id re28mr3382153ejb.168.1606834145234;
+ Tue, 01 Dec 2020 06:49:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201110724.GL3092@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201119170739.GA22665@embeddedor>
+In-Reply-To: <20201119170739.GA22665@embeddedor>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 1 Dec 2020 15:48:54 +0100
+Message-ID: <CAMpxmJXhy4wRNZWz0iqfB5=g5-F2cdE_q9hRcPr-zRxg9O-jDw@mail.gmail.com>
+Subject: Re: [PATCH][next] gpiolib: acpi: Fix fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 12:07:24PM +0100, Peter Zijlstra wrote:
-> On Tue, Dec 01, 2020 at 09:07:34AM +0100, Peter Zijlstra wrote:
-> > On Mon, Nov 30, 2020 at 08:31:32PM +0100, Christian Borntraeger wrote:
-> > > On 30.11.20 19:04, Linus Torvalds wrote:
-> > > > On Mon, Nov 30, 2020 at 5:03 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > >>
-> > > >>> But but but...
-> > > >>>
-> > > >>>   do_idle()                   # IRQs on
-> > > >>>     local_irq_disable();      # IRQs off
-> > > >>>     defaul_idle_call()        # IRQs off
-> > > >>         lockdep_hardirqs_on();  # IRQs off, but lockdep things they're on
-> > > >>>       arch_cpu_idle()         # IRQs off
-> > > >>>         enabled_wait()        # IRQs off
-> > > >>>         raw_local_save()      # still off
-> > > >>>         psw_idle()            # very much off
-> > > >>>           ext_int_handler     # get an interrupt ?!?!
-> > > >>               rcu_irq_enter()   # lockdep thinks IRQs are on <- FAIL
-> > > >>
-> > > >> I can't much read s390 assembler, but ext_int_handler() has a
-> > > >> TRACE_IRQS_OFF, which would be sufficient to re-align the lockdep state
-> > > >> with the actual state, but there's some condition before it, what's that
-> > > >> test and is that right?
-> > > > 
-> > > > I think that "psw_idle()" enables interrupts, exactly like x86 does.
-> > 
-> > (like ye olde x86, modern x86 idles with interrupts disabled)
-> > 
-> > > Yes, by definition.  Otherwise it would be an software error state.
-> > > The interesting part is the lpswe instruction at the end (load PSW) 
-> > > which loads the full PSW, which contains interrupt enablement, wait bit,
-> > > condition code, paging enablement, machine check enablement the address
-> > > and others. The idle psw is enabled for interrupts and has the wait bit
-> > > set. If the wait bit is set and interrupts are off this is called "disabled
-> > > wait" and is used for panic, shutdown etc. 
-> > 
-> > OK, but at that point, hardware interrupt state is on, lockdep thinks
-> > it's on. And we take an interrupt, just like any old regular interrupt
-> > enabled region.
-> > 
-> > But then the exception handler (ext_int_handler), which I'm assuming is
-> > ran by the hardware with hardware interrupts disabled again, should be
-> > calling into lockdep to tell interrupts were disabled. IOW that
-> > TRACE_IRQS_OFF bit in there.
-> > 
-> > But that doesn't seem to be working right. Why? Because afaict this is
-> > then the exact normal flow of things, but it's only going sideways
-> > during this idle thing.
-> > 
-> > What's going 'funny' ?
-> 
-> So after having talked to Sven a bit, the thing that is happening, is
-> that this is the one place where we take interrupts with RCU being
-> disabled. Normally RCU is watching and all is well, except during idle.
+On Thu, Nov 19, 2020 at 6:07 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
+>
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/gpio/gpiolib-acpi.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+> index 6cc5f91bfe2e..e37a57d0a2f0 100644
+> --- a/drivers/gpio/gpiolib-acpi.c
+> +++ b/drivers/gpio/gpiolib-acpi.c
+> @@ -233,6 +233,7 @@ acpi_gpio_to_gpiod_flags(const struct acpi_resource_gpio *agpio, int polarity)
+>                 default:
+>                         break;
+>                 }
+> +               break;
+>         default:
+>                 break;
+>         }
+> --
+> 2.27.0
+>
 
-Isn't interrupt entry supposed to invoke rcu_irq_enter() at some point?
-Or did this fall victim to recent optimizations?
+Applied, thanks!
 
-							Thanx, Paul
+Bartosz
