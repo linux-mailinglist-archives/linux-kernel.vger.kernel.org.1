@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5022CA955
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8FB2CA95A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbgLARND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:13:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727368AbgLARNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:13:02 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388399AbgLARPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:15:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56138 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726303AbgLARPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:15:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606842868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yYhw/vZvk8MrQ/Lit7Nmq+GciopS/YLhUVtcN0QEwlo=;
+        b=V8QtFnyj3KfR94hvAq/lOA8iaxi/f31+FpD4ygzEMwpN53REO39rJddLZS2/wOMZK/bePe
+        ZSCFUfClkcl/L/T87HfiCCaoJJWmcOPJkSYWBqYqejtbTGa0B9UZj/BSDCMX5O3J9S5ZRD
+        EEueWmCBOSNiIMu7LgEmZduLWiO6bBQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-115-idkHgwGTPw6nOt4-Uxp9Uw-1; Tue, 01 Dec 2020 12:14:24 -0500
+X-MC-Unique: idkHgwGTPw6nOt4-Uxp9Uw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5522206D8;
-        Tue,  1 Dec 2020 17:12:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606842742;
-        bh=LA/wyI+AskkviTCy4hXkk/OQ8SI/xkbgqynthnKkfrE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BgB3WbMzAIPQBd6ApotKIIDrl50qszhyaW2UkK+t8EHwqSRABA9g/yztKH3hOALVF
-         U5WetMNXk9HG97zmBOeXIuSt+551K9WAAP13xTs33vDe9rIBB/ITd1iGCpkPZKY1li
-         9sWqzWIAxvsucj1nr+CQ8R7F+nXhjB+moOApdDw4=
-Date:   Tue, 1 Dec 2020 17:11:53 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-Message-ID: <20201201171153.GM5239@sirena.org.uk>
-Mail-Followup-To: "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel <letux-kernel@openphoenux.org>
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
- <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com>
- <20201201121620.GB5239@sirena.org.uk>
- <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com>
- <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
- <20201201162035.GK5239@sirena.org.uk>
- <8D0E8CDA-96EA-4900-B5B2-0AD371EAD046@goldelico.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DE31805BED;
+        Tue,  1 Dec 2020 17:14:23 +0000 (UTC)
+Received: from localhost (holly.tpb.lab.eng.brq.redhat.com [10.43.134.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2AC1019C44;
+        Tue,  1 Dec 2020 17:14:21 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 18:14:20 +0100
+From:   Miroslav Lichvar <mlichvar@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>
+Subject: Re: [PATCH] rtc: adapt allowed RTC update error
+Message-ID: <20201201171420.GN1900232@localhost>
+References: <20201201143835.2054508-1-mlichvar@redhat.com>
+ <20201201161224.GF5487@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WuedheRyq6FDfQ9j"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8D0E8CDA-96EA-4900-B5B2-0AD371EAD046@goldelico.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201201161224.GF5487@ziepe.ca>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 01, 2020 at 12:12:24PM -0400, Jason Gunthorpe wrote:
+> On Tue, Dec 01, 2020 at 03:38:35PM +0100, Miroslav Lichvar wrote:
+> > +	unsigned long time_set_nsec_fuzz;
+> > +	static unsigned int attempt;
+> 
+> Adding a static value instide a static inline should not be done
 
---WuedheRyq6FDfQ9j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Well, grepping through the other header files in include/linux, this
+would not be the first case.
 
-On Tue, Dec 01, 2020 at 05:41:54PM +0100, H. Nikolaus Schaller wrote:
-> > Am 01.12.2020 um 17:20 schrieb Mark Brown <broonie@kernel.org>:
+> I'm not sure using a static like this is the best idea anyhow, if you
+> want something like this it should be per-rtc, not global
 
-> > I think the problem here is more to do with where we started than where
-> > we're going or how we got there - things have been glued together or
-> > happened to work in ways that mean I'm not sure we reasonably understand
-> > the situation we started from or all the requirements it has.  As you
-> > say I'm not sure anything beyond throwing the API away and starting
-> > afresh would really help here, but that's not really how we tend to do
-> > things for a bunch of very good reasons.
+If there are multiple RTCs, are they all updated in this 11-minute
+sync?
 
-> I think the key problem is GPIO_ACTIVE_HIGH 0 and GPIO_ACTIVE_LOW 1
-> in device tree blobs. But that is so fundamental that we have to live with it.
-> So I guess that even a new API from scratch wouldn't improve that.
+> Did you look at why time has become so in-accurate in your system? 5
+> jiffies is usually a pretty long time?
 
-Yeah, that's definitely part of it - more generally there's multiple
-places trying to determine if the signal is inverted with different
-interactions/expectations.  Having it in an ABI definitely contributes a
-lot to causing trouble though.
+I found no good explanation. It seems to depend on what system is
+doing, if it's idle, etc. I suspect it's a property of the workqueues
+that they cannot generally guarantee the jobs to run exactly on time.
+I tried switching to the non-power-efficient and high priority
+workqueues and it didn't seem to make a big difference.
 
---WuedheRyq6FDfQ9j
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Miroslav Lichvar
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GeVgACgkQJNaLcl1U
-h9CPMQf/SsrwU3DUXaX7CJ7+bYc0OzNzeBvjKkMchBWxHcnEyR7EKhZwHXxNhxbq
-cH5SzVmeuM5I/HsQ0FGpI07ZRWo3nAUlA2QVEOjXYJ7fPFw/bMn10xi7KJzo2aNg
-gWjAJtp8PfaW2J+bjoVCcRxyS5ppsBNj5AmSHr1ZDxHee4TZUZ8MvlbMvBXGkt6L
-4PO0uMJ79QY3KuNzKr+GnceyW+mhcGIuW9OSJepMx+yK2m4ZmsRKy9kduN7Rg0WJ
-ugMF9UY0qZHpsyXEjlgbaUJTOUBMZYhX36f6iUh3hHuTMZXrfEaoK3CEAj9jToYl
-d3aLIj3j80SU6HUmqHYfdkfAqmMcsA==
-=45IK
------END PGP SIGNATURE-----
-
---WuedheRyq6FDfQ9j--
