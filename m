@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8185D2C9DA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3239F2C9D14
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390964AbgLAJ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:26:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42350 "EHLO mail.kernel.org"
+        id S2390562AbgLAJSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:18:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387983AbgLAJFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:05:20 -0500
+        id S2389766AbgLAJKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:10:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2580F21D7F;
-        Tue,  1 Dec 2020 09:04:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E466F206CA;
+        Tue,  1 Dec 2020 09:10:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813479;
-        bh=uOekAwoa5nNQ8ROk2QR8D+nSv/F4MyHfZEL3hys9E8s=;
+        s=korg; t=1606813814;
+        bh=vZSdMDn5q06dOoAvo7hfQwx/Fw6elYtbudxJ3O+GkiQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=11L8/EpIj2EyjK2djmLI/qyeUV8jHND2G910W/ZO6L+2QwV7H5g3y8MVzXknMblGx
-         w3vjufFpgc7v9/Uo7Wqkzj5NPpGYIzf86v4SCV4o2shIldSLDg5WTNyMBFNI9kcRjp
-         v6rdGpa23gRcfu9FVgR3Jq053+Ugn0Eqt5U73BqE=
+        b=NZyUlPnhZnyxGCYSN0Akl5ro89P77TmIbKF/zK5oW/B7oJnbdF3evISueq3tn2Kmf
+         R6Rz7WRw4j0auQUnNgNjGADVMdqvx/+8P3IuoRPlLKKSHgmZZmPmeZkSjO5bi2shC8
+         1xlKqSmLcaZ/u9YClKRFTMhIhORNdHdAS7hM14pc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Ceballos <pceballos@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 26/98] HID: hid-sensor-hub: Fix issue with devices with no report ID
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Ruslan Sushko <rus@sushko.dev>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 068/152] net: dsa: mv88e6xxx: Wait for EEPROM done after HW reset
 Date:   Tue,  1 Dec 2020 09:53:03 +0100
-Message-Id: <20201201084655.977113941@linuxfoundation.org>
+Message-Id: <20201201084720.838696091@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +44,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Ceballos <pceballos@google.com>
+From: Andrew Lunn <andrew@lunn.ch>
 
-[ Upstream commit 34a9fa2025d9d3177c99351c7aaf256c5f50691f ]
+[ Upstream commit a3dcb3e7e70c72a68a79b30fc3a3adad5612731c ]
 
-Some HID devices don't use a report ID because they only have a single
-report. In those cases, the report ID in struct hid_report will be zero
-and the data for the report will start at the first byte, so don't skip
-over the first byte.
+When the switch is hardware reset, it reads the contents of the
+EEPROM. This can contain instructions for programming values into
+registers and to perform waits between such programming. Reading the
+EEPROM can take longer than the 100ms mv88e6xxx_hardware_reset() waits
+after deasserting the reset GPIO. So poll the EEPROM done bit to
+ensure it is complete.
 
-Signed-off-by: Pablo Ceballos <pceballos@google.com>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Ruslan Sushko <rus@sushko.dev>
+Link: https://lore.kernel.org/r/20201116164301.977661-1-rus@sushko.dev
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-sensor-hub.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/dsa/mv88e6xxx/chip.c    |  2 ++
+ drivers/net/dsa/mv88e6xxx/global1.c | 31 +++++++++++++++++++++++++++++
+ drivers/net/dsa/mv88e6xxx/global1.h |  1 +
+ 3 files changed, 34 insertions(+)
 
-diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-sensor-hub.c
-index 94c7398b5c279..3dd7d32467378 100644
---- a/drivers/hid/hid-sensor-hub.c
-+++ b/drivers/hid/hid-sensor-hub.c
-@@ -483,7 +483,8 @@ static int sensor_hub_raw_event(struct hid_device *hdev,
- 		return 1;
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index f0dbc05e30a4d..16040b13579ef 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -2299,6 +2299,8 @@ static void mv88e6xxx_hardware_reset(struct mv88e6xxx_chip *chip)
+ 		usleep_range(10000, 20000);
+ 		gpiod_set_value_cansleep(gpiod, 0);
+ 		usleep_range(10000, 20000);
++
++		mv88e6xxx_g1_wait_eeprom_done(chip);
+ 	}
+ }
  
- 	ptr = raw_data;
--	ptr++; /* Skip report id */
-+	if (report->id)
-+		ptr++; /* Skip report id */
+diff --git a/drivers/net/dsa/mv88e6xxx/global1.c b/drivers/net/dsa/mv88e6xxx/global1.c
+index f62aa83ca08d4..33d443a37efc4 100644
+--- a/drivers/net/dsa/mv88e6xxx/global1.c
++++ b/drivers/net/dsa/mv88e6xxx/global1.c
+@@ -75,6 +75,37 @@ static int mv88e6xxx_g1_wait_init_ready(struct mv88e6xxx_chip *chip)
+ 	return mv88e6xxx_g1_wait_bit(chip, MV88E6XXX_G1_STS, bit, 1);
+ }
  
- 	spin_lock_irqsave(&pdata->lock, flags);
++void mv88e6xxx_g1_wait_eeprom_done(struct mv88e6xxx_chip *chip)
++{
++	const unsigned long timeout = jiffies + 1 * HZ;
++	u16 val;
++	int err;
++
++	/* Wait up to 1 second for the switch to finish reading the
++	 * EEPROM.
++	 */
++	while (time_before(jiffies, timeout)) {
++		err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_STS, &val);
++		if (err) {
++			dev_err(chip->dev, "Error reading status");
++			return;
++		}
++
++		/* If the switch is still resetting, it may not
++		 * respond on the bus, and so MDIO read returns
++		 * 0xffff. Differentiate between that, and waiting for
++		 * the EEPROM to be done by bit 0 being set.
++		 */
++		if (val != 0xffff &&
++		    val & BIT(MV88E6XXX_G1_STS_IRQ_EEPROM_DONE))
++			return;
++
++		usleep_range(1000, 2000);
++	}
++
++	dev_err(chip->dev, "Timeout waiting for EEPROM done");
++}
++
+ /* Offset 0x01: Switch MAC Address Register Bytes 0 & 1
+  * Offset 0x02: Switch MAC Address Register Bytes 2 & 3
+  * Offset 0x03: Switch MAC Address Register Bytes 4 & 5
+diff --git a/drivers/net/dsa/mv88e6xxx/global1.h b/drivers/net/dsa/mv88e6xxx/global1.h
+index 1e3546f8b0727..e05abe61fa114 100644
+--- a/drivers/net/dsa/mv88e6xxx/global1.h
++++ b/drivers/net/dsa/mv88e6xxx/global1.h
+@@ -278,6 +278,7 @@ int mv88e6xxx_g1_set_switch_mac(struct mv88e6xxx_chip *chip, u8 *addr);
+ int mv88e6185_g1_reset(struct mv88e6xxx_chip *chip);
+ int mv88e6352_g1_reset(struct mv88e6xxx_chip *chip);
+ int mv88e6250_g1_reset(struct mv88e6xxx_chip *chip);
++void mv88e6xxx_g1_wait_eeprom_done(struct mv88e6xxx_chip *chip);
  
+ int mv88e6185_g1_ppu_enable(struct mv88e6xxx_chip *chip);
+ int mv88e6185_g1_ppu_disable(struct mv88e6xxx_chip *chip);
 -- 
 2.27.0
 
