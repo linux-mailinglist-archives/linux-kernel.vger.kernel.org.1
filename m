@@ -2,158 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5FB2CAB90
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C008E2CAB93
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731267AbgLATPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
+        id S1731341AbgLATPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:15:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730253AbgLATPA (ORCPT
+        with ESMTP id S1730253AbgLATPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:15:00 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F6DC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:14:20 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id u2so1677404pls.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:14:20 -0800 (PST)
+        Tue, 1 Dec 2020 14:15:06 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173F0C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:14:26 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id f16so2727346otl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:14:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wdocc321VZyr0ixZFcdnUEHMOpRJjTac2mIc24NQYwg=;
-        b=Gf0MeNT55gxsCDRpeW4s7Kjs+enGX/dzKKeUTGutLyd+p2rqOpcAhEN/SvgHPXDnEU
-         GY6MVPfHYEFhbrveN11MdgfgVReEmJflFhBeZOHZY0nRSD78gNKqUCySLJD73Zu1x/GJ
-         Kr+6CCFtY46cY5vidIX/TmOo1zGqAMpCmORScNys91ZMSLuxkGHU/zB/x9/qyhu7vzPK
-         4EJdslCc1En6Ai0BE414lPvEPpQgLVvMsp4U6bMmkBnp7Bc8xgVXafY/yrQmo4zry2k1
-         EbMjBq5rM6zXdciQ7+by//EZiSuD2IZVYASSSmnckA71pNe6oGqBEVrWT9BtCgltlDE5
-         JbKA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pLNjc1Dfn2oLUa5wbC/+KNLD5T+eEW1y3MmCWo+76rA=;
+        b=X/RNeZ1Z1apmBWG0Fup7Yc7lV2BKZh/oZwu070yNHUH6uIB8tgIn6+GpeQm3RS4LT/
+         PQOcDQigQmvbXWLtKgUK3hYyERwL7p+tltSvRldvGHH2FnL3+AGWmyOvh5z4/rV6B3ew
+         IcCTofd1bP2BvI6KcVwZWibs4raSgXYTvK6jOyCHuaRuZ5Z+b6AKLzrY+cyFTMMzvAPG
+         3k895rjfiQXiIdZDCkoCWSiJtR8jUvY4UYk3HFaE13oMrOA8JUhAN1gg+R1lIUxFw+cN
+         HQmG0gTsrw3A4AKssSRaVG8kQm7vUXVkCQGSGiK2Ita6P0P4e21N+39es4WyGRh8lDOv
+         dIzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wdocc321VZyr0ixZFcdnUEHMOpRJjTac2mIc24NQYwg=;
-        b=oO9EhL2C9EvtWOyqgXSmD6g7YcZ9cUZkGIQlUWABKcIpsTINAK1IVojkCJu5E2EShh
-         LRPxTE72QSb6TUUTBtZqINBxfDNNX9ABqVJE+pzalvF4uVS6WymTiXu0hAT+OofGRX79
-         UNy59l7pgYCF3HUgt8MVbcZcrXQOWkdwVBlPf1Wuulp27qG8ZYixPqfcLcAjNsPs2+92
-         47aKhOBiaN4g3kilmZSf9CFpPHo/+F/+JycPearbutVroG6TtXej4JF3mcWZKAcjg4ST
-         qlBX/oVMecSXnKRKI2Ciszoy3n8Pd6k5VyTOM2D2L6YY3eekpfkJQvsiKFOFgdZ2Ar4M
-         8caQ==
-X-Gm-Message-State: AOAM530Fd5XHC1MOPcSADtb3tgo2uz9W2eGWTXQ1NJ0JiTkZOmk7VlpQ
-        JfUyS2GGvsMW0wdTeXA7BaxJtyjORjLvM45gqA+xKA==
-X-Google-Smtp-Source: ABdhPJxpM+h/Ol5ujwAYgDBAn/TNuW7lOCE47CRtxTYaM8G5O4s4TceUUL03NwreIEFaza+hHXQ+so6u+FO0ZPgJlZ8=
-X-Received: by 2002:a17:90b:1287:: with SMTP id fw7mr4341953pjb.52.1606850059415;
- Tue, 01 Dec 2020 11:14:19 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pLNjc1Dfn2oLUa5wbC/+KNLD5T+eEW1y3MmCWo+76rA=;
+        b=p70F9Uy1QAeDlu5PBjmDIri19Nd3BR4Sp3cau7smVGc7FZpDRKSno1ErtGFdXn+KvK
+         xTCF2PJ3nnDrdyXzUIIpIsL4xJmXNzalV23kEY6rdBz0lP/jKEpGUj3Yvv7c5eWoFPvL
+         C5YK/CfGAWdViEbSHJmuK16750lX6JJRi1GtGVmKwyWVffOsHxjfGVxoijJm9lfBHnGA
+         SQVyUrXCegc+UInwDLiXkXZiABdn27541uZXsD63q5wIfkwwtkk4osdLF0YOajY6VlGS
+         jdSAnFmcZjrLYrfFj1DMvgYrNZ/nZgsA6288+OCRt+ksYcyitYX4gQrP2MlMD2L7LaW/
+         ed3A==
+X-Gm-Message-State: AOAM531E7YJiXRYcZWa5pfwVy9Yu+fYLtjmAZNREvSr2hpl26jsAtPN9
+        5KEviG3Q0j1WZtcgsHLI1/I0fg==
+X-Google-Smtp-Source: ABdhPJwlsxqflDkcGw11vDOYfgkb6oV2LEWKtO1RAqu9en1tdBNns2IIR6E4FO8b82OIhqVpnx8SlQ==
+X-Received: by 2002:a9d:7a8a:: with SMTP id l10mr3004510otn.228.1606850065407;
+        Tue, 01 Dec 2020 11:14:25 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r19sm158271ota.14.2020.12.01.11.14.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:14:24 -0800 (PST)
+Date:   Tue, 1 Dec 2020 13:14:22 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] arm64: dts: qcom: sm8250: add lpass lpi pin
+ controller node
+Message-ID: <X8aWDj1n6KTM5ma/@builder.lan>
+References: <20201201153706.13450-1-srinivas.kandagatla@linaro.org>
+ <20201201153706.13450-4-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-References: <20201130233504.3725241-1-axelrasmussen@google.com>
- <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com>
- <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
- <xr93lfehl8al.fsf@gthelen.svl.corp.google.com> <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
-In-Reply-To: <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Tue, 1 Dec 2020 11:13:43 -0800
-Message-ID: <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
-Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
- in tracepoints
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
-        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201153706.13450-4-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 10:42 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Tue, Dec 1, 2020 at 9:56 AM Greg Thelen <gthelen@google.com> wrote:
-> >
-> > Axel Rasmussen <axelrasmussen@google.com> wrote:
-> >
-> > > On Mon, Nov 30, 2020 at 5:34 PM Shakeel Butt <shakeelb@google.com> wrote:
-> > >>
-> > >> On Mon, Nov 30, 2020 at 3:43 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> > >> >
-> > >> > syzbot reported[1] a use-after-free introduced in 0f818c4bc1f3. The bug
-> > >> > is that an ongoing trace event might race with the tracepoint being
-> > >> > disabled (and therefore the _unreg() callback being called). Consider
-> > >> > this ordering:
-> > >> >
-> > >> > T1: trace event fires, get_mm_memcg_path() is called
-> > >> > T1: get_memcg_path_buf() returns a buffer pointer
-> > >> > T2: trace_mmap_lock_unreg() is called, buffers are freed
-> > >> > T1: cgroup_path() is called with the now-freed buffer
-> > >>
-> > >> Any reason to use the cgroup_path instead of the cgroup_ino? There are
-> > >> other examples of trace points using cgroup_ino and no need to
-> > >> allocate buffers. Also cgroup namespace might complicate the path
-> > >> usage.
-> > >
-> > > Hmm, so in general I would love to use a numeric identifier instead of a string.
-> > >
-> > > I did some reading, and it looks like the cgroup_ino() mainly has to
-> > > do with writeback, instead of being just a general identifier?
-> > > https://www.kernel.org/doc/Documentation/cgroup-v2.txt
->
-> I think you are confusing cgroup inodes with real filesystem inodes in that doc.
->
-> > >
-> > > There is cgroup_id() which I think is almost what I'd want, but there
-> > > are a couple problems with it:
-> > >
-> > > - I don't know of a way for userspace to translate IDs -> paths, to
-> > > make them human readable?
-> >
-> > The id => name map can be built from user space with a tree walk.
-> > Example:
-> >
-> > $ find /sys/fs/cgroup/memory -type d -printf '%i %P\n'                                                                          # ~ [main]
-> > 20387 init.scope
-> > 31 system.slice
-> >
-> > > - Also I think the ID implementation we use for this is "dense",
-> > > meaning if a cgroup is removed, its ID is likely to be quickly reused.
-> > >
->
-> The ID for cgroup nodes (underlying it is kernfs) are allocated from
-> idr_alloc_cyclic() which gives new ID after the last allocated ID and
-> wrap after around INT_MAX IDs. So, likeliness of repetition is very
-> low. Also the file_handle returned by name_to_handle_at() for cgroupfs
-> returns the inode ID which gives confidence to the claim of low chance
-> of ID reusing.
+On Tue 01 Dec 09:37 CST 2020, Srinivas Kandagatla wrote:
 
-Ah, for some reason I remembered it using idr_alloc(), but you're
-right, it does use cyclical IDs. Even so, tracepoints which expose
-these IDs would still be difficult to use I think. Say we're trying to
-collect a histogram of lock latencies over the course of some test
-we're running. At the end, we want to produce some kind of
-human-readable report.
+> Add LPASS LPI pinctrl node required for Audio functionality on RB5.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi | 95 ++++++++++++++++++++++++++++
+>  1 file changed, 95 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index ec5b53b8f656..4e1309b6571e 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -2607,6 +2607,101 @@
+>  			clock-names = "core", "audio", "bus";
+>  		};
+>  
+> +		lpass_tlmm: pinctrl@33c0000{
+> +			compatible = "qcom,sm8250-lpass-lpi-pinctrl";
+> +			reg = <0 0x33c0000 0x0 0x20000>,
+> +				 <0 0x3550000 0x0 0x10000>;
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +			gpio-ranges = <&lpass_tlmm 0 0 14>;
+> +
+> +			clocks = <&q6afecc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+> +				<&q6afecc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+> +			clock-names = "core", "audio";
+> +
+> +			wsa_swr_clk_pin {
 
-cgroups may come and go throughout the test. Even if we never re-use
-IDs, in order to be able to map all of them to human-readable paths,
-it seems like we'd need some background process to poll the
-/sys/fs/cgroup/memory directory tree as Greg described, keeping track
-of the ID<->path mapping. This seems expensive, and even if we poll
-relatively frequently we might still miss short-lived cgroups.
+I prefer if you drop this outer "container" node.
 
-Trying to aggregate such statistics across physical machines, or
-reboots of the same machine, is further complicated. The machine(s)
-may be running the same application, which runs in a container with
-the same path, but it'll end up with different IDs. So we'd have to
-collect the ID<->path mapping from each, and then try to match up the
-names for aggregation.
+> +				wsa_swr_clk_sleep: wsa_swr_clk_sleep {
+
+Per the binding I think the name of this node should match '-pins$' and
+the node name may not contain '_' characters.
+
+> +					mux {
+
+The pinctrl state is a collection of all pins, function and pinconf
+properties of the phandle pointed to and its immediate child nodes. As
+such you can flatten this inner "mux" level.
+
+
+On the other hand, I'm assuming that you're always going to mux the
+clock and data pin together, so instead of designing this around the
+pins you could design it around the states and do:
+
+			wsa_swr_active: wsa-swr-active-pins {
+				clk {
+					pins = "gpio10";
+					function = "wsa_swr_clk";
+					drive-strength = <2>;
+					slew-rate = <1>;
+					bias-disable;
+				};
+
+				data {
+					pins = "gpio11";
+					function = "wsa_swr_data";
+					drive-strength = <2>;
+					slew-rate = <1>;
+					bias-bus-hold;
+
+				};
+			};
+
+This way the state describes the whole thing and you don't end up with a
+bunch of states for each part of the function.
+
+Regards,
+Bjorn
+
+> +						pins = "gpio10";
+> +						function = "wsa_swr_clk";
+> +						drive-strength = <2>;
+> +						input-enable;
+> +						bias-pull-down;
+> +					};
+> +				};
+> +
+> +				wsa_swr_clk_active: wsa_swr_clk_active {
+> +					mux {
+> +						pins = "gpio10";
+> +						function = "wsa_swr_clk";
+> +						drive-strength = <2>;
+> +						slew-rate = <1>;
+> +						bias-disable;
+> +					};
+> +				};
+> +			};
+> +
+> +			wsa_swr_data_pin {
+> +				wsa_swr_data_sleep: wsa_swr_data_sleep {
+> +					mux {
+> +						pins = "gpio11";
+> +						function = "wsa_swr_data";
+> +						drive-strength = <2>;
+> +						input-enable;
+> +						bias-pull-down;
+> +					};
+> +				};
+> +
+> +				wsa_swr_data_active: wsa_swr_data_active {
+> +					mux {
+> +						pins = "gpio11";
+> +						function = "wsa_swr_data";
+> +						drive-strength = <2>;
+> +						slew-rate = <1>;
+> +						bias-bus-hold;
+> +					};
+> +				};
+> +			};
+> +
+> +	                cdc_dmic01_data_active: dmic01_data_active {
+> +	                        mux {
+> +	                                pins = "gpio7";
+> +					function = "dmic1_data";
+> +	                                drive-strength = <8>;
+> +	                                input-enable;
+> +	                        };
+> +	                };
+> +
+> +	                cdc_dmic01_data_sleep: dmic01_data_sleep {
+> +	                        mux {
+> +	                                pins = "gpio7";
+> +					function = "dmic1_data";
+> +	                                drive-strength = <2>;
+> +	                                pull-down;
+> +	                                input-enable;
+> +	                        };
+> +	                };
+> +
+> +	                cdc_dmic01_clk_active: dmic01_clk_active {
+> +	                        mux {
+> +	                                pins = "gpio6";
+> +					function = "dmic1_clk";
+> +	                                drive-strength = <8>;
+> +	                                output-high;
+> +	                        };
+> +	                };
+> +
+> +	                cdc_dmic01_clk_sleep: dmic01_clk_sleep {
+> +	                        mux {
+> +	                                pins = "gpio6";
+> +					function = "dmic1_clk";
+> +	                                drive-strength = <2>;
+> +	                                bias-disable;
+> +	                                output-low;
+> +	                        };
+> +	                };
+> +		};
+> +
+>  		adsp: remoteproc@17300000 {
+>  			compatible = "qcom,sm8250-adsp-pas";
+>  			reg = <0 0x17300000 0 0x100>;
+> -- 
+> 2.21.0
+> 
