@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE622C9CEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64EB2C9CA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389080AbgLAJG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:06:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40836 "EHLO mail.kernel.org"
+        id S2387534AbgLAIzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388807AbgLAJES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:04:18 -0500
+        id S2387500AbgLAIzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:37 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E01921D7F;
-        Tue,  1 Dec 2020 09:04:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 333C12222C;
+        Tue,  1 Dec 2020 08:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813442;
-        bh=5NNyRLEct+hm7THH7fiLLwe7wvo/lMM13bbW3N8HnHU=;
+        s=korg; t=1606812921;
+        bh=HsO/PP1epoLExfRcIVAww0DhtBUvWcf87NgyCQrsquc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AZYRuKGrTdfEjE5v5rEiRBEMXaM7Tp0a6of5lT/d22U+WBm9DMGebY4f1x+sn7RHX
-         uhckYiAutW+Hp6T+w8N52yQ0OXWlpRzQ3VyPJuR6Esbdmn0mmYFO3zTnpEr/pKGcux
-         Zdl/BPdlD8yv3kDXdKENV/n5sYnuf1cWSTA2CZZo=
+        b=Y6e2DXO5FEnnx0c+VFAVbIrCqlrKuT+X/KO4jRfKmUxCnVaDMmQvWBux1MyT3gdXu
+         O11m9bo5LFRS3SyFY7LHwCC2FFGVnNtxwvlggTgGzf2EeQYM+6bGW1kIpdkP6JqbvG
+         WBYytOGXD2Q0KGGBK6GNiIA0yiBBoLj8pwjp8L+w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Ruslan Sushko <rus@sushko.dev>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 41/98] net: dsa: mv88e6xxx: Wait for EEPROM done after HW reset
-Date:   Tue,  1 Dec 2020 09:53:18 +0100
-Message-Id: <20201201084657.114842504@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 21/42] phy: tegra: xusb: Fix dangling pointer on probe failure
+Date:   Tue,  1 Dec 2020 09:53:19 +0100
+Message-Id: <20201201084643.696079174@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,95 +42,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Lunn <andrew@lunn.ch>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit a3dcb3e7e70c72a68a79b30fc3a3adad5612731c ]
+[ Upstream commit eb9c4dd9bdfdebaa13846c16a8c79b5b336066b6 ]
 
-When the switch is hardware reset, it reads the contents of the
-EEPROM. This can contain instructions for programming values into
-registers and to perform waits between such programming. Reading the
-EEPROM can take longer than the 100ms mv88e6xxx_hardware_reset() waits
-after deasserting the reset GPIO. So poll the EEPROM done bit to
-ensure it is complete.
+If, for some reason, the xusb PHY fails to probe, it leaves
+a dangling pointer attached to the platform device structure.
 
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Ruslan Sushko <rus@sushko.dev>
-Link: https://lore.kernel.org/r/20201116164301.977661-1-rus@sushko.dev
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This would normally be harmless, but the Tegra XHCI driver then
+goes and extract that pointer from the PHY device. Things go
+downhill from there:
+
+    8.752082] [004d554e5145533c] address between user and kernel address ranges
+[    8.752085] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[    8.752088] Modules linked in: max77620_regulator(E+) xhci_tegra(E+) sdhci_tegra(E+) xhci_hcd(E) sdhci_pltfm(E) cqhci(E) fixed(E) usbcore(E) scsi_mod(E) sdhci(E) host1x(E+)
+[    8.752103] CPU: 4 PID: 158 Comm: systemd-udevd Tainted: G S      W   E     5.9.0-rc7-00298-gf6337624c4fe #1980
+[    8.752105] Hardware name: NVIDIA Jetson TX2 Developer Kit (DT)
+[    8.752108] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+[    8.752115] pc : kobject_put+0x1c/0x21c
+[    8.752120] lr : put_device+0x20/0x30
+[    8.752121] sp : ffffffc012eb3840
+[    8.752122] x29: ffffffc012eb3840 x28: ffffffc010e82638
+[    8.752125] x27: ffffffc008d56440 x26: 0000000000000000
+[    8.752128] x25: ffffff81eb508200 x24: 0000000000000000
+[    8.752130] x23: ffffff81eb538800 x22: 0000000000000000
+[    8.752132] x21: 00000000fffffdfb x20: ffffff81eb538810
+[    8.752134] x19: 3d4d554e51455300 x18: 0000000000000020
+[    8.752136] x17: ffffffc008d00270 x16: ffffffc008d00c94
+[    8.752138] x15: 0000000000000004 x14: ffffff81ebd4ae90
+[    8.752140] x13: 0000000000000000 x12: ffffff81eb86a4e8
+[    8.752142] x11: ffffff81eb86a480 x10: ffffff81eb862fea
+[    8.752144] x9 : ffffffc01055fb28 x8 : ffffff81eb86a4a8
+[    8.752146] x7 : 0000000000000001 x6 : 0000000000000001
+[    8.752148] x5 : ffffff81dff8bc38 x4 : 0000000000000000
+[    8.752150] x3 : 0000000000000001 x2 : 0000000000000001
+[    8.752152] x1 : 0000000000000002 x0 : 3d4d554e51455300
+[    8.752155] Call trace:
+[    8.752157]  kobject_put+0x1c/0x21c
+[    8.752160]  put_device+0x20/0x30
+[    8.752164]  tegra_xusb_padctl_put+0x24/0x3c
+[    8.752170]  tegra_xusb_probe+0x8b0/0xd10 [xhci_tegra]
+[    8.752174]  platform_drv_probe+0x60/0xb4
+[    8.752176]  really_probe+0xf0/0x504
+[    8.752179]  driver_probe_device+0x100/0x170
+[    8.752181]  device_driver_attach+0xcc/0xd4
+[    8.752183]  __driver_attach+0xb0/0x17c
+[    8.752185]  bus_for_each_dev+0x7c/0xd4
+[    8.752187]  driver_attach+0x30/0x3c
+[    8.752189]  bus_add_driver+0x154/0x250
+[    8.752191]  driver_register+0x84/0x140
+[    8.752193]  __platform_driver_register+0x54/0x60
+[    8.752197]  tegra_xusb_init+0x40/0x1000 [xhci_tegra]
+[    8.752201]  do_one_initcall+0x54/0x2d0
+[    8.752205]  do_init_module+0x68/0x29c
+[    8.752207]  load_module+0x2178/0x26c0
+[    8.752209]  __do_sys_finit_module+0xb0/0x120
+[    8.752211]  __arm64_sys_finit_module+0x2c/0x40
+[    8.752215]  el0_svc_common.constprop.0+0x80/0x240
+[    8.752218]  do_el0_svc+0x30/0xa0
+[    8.752220]  el0_svc+0x18/0x50
+[    8.752223]  el0_sync_handler+0x90/0x318
+[    8.752225]  el0_sync+0x158/0x180
+[    8.752230] Code: a9bd7bfd 910003fd a90153f3 aa0003f3 (3940f000)
+[    8.752232] ---[ end trace 90f6c89d62d85ff5 ]---
+
+Reset the pointer on probe failure fixes the issue.
+
+Fixes: 53d2a715c2403 ("phy: Add Tegra XUSB pad controller support")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201013095820.311376-1-maz@kernel.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c    |  2 ++
- drivers/net/dsa/mv88e6xxx/global1.c | 31 +++++++++++++++++++++++++++++
- drivers/net/dsa/mv88e6xxx/global1.h |  1 +
- 3 files changed, 34 insertions(+)
+ drivers/phy/tegra/xusb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index 92e4d140df6fa..469b155df4885 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -2143,6 +2143,8 @@ static void mv88e6xxx_hardware_reset(struct mv88e6xxx_chip *chip)
- 		usleep_range(10000, 20000);
- 		gpiod_set_value_cansleep(gpiod, 0);
- 		usleep_range(10000, 20000);
-+
-+		mv88e6xxx_g1_wait_eeprom_done(chip);
- 	}
+diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
+index bd0e659002161..0156134dd022d 100644
+--- a/drivers/phy/tegra/xusb.c
++++ b/drivers/phy/tegra/xusb.c
+@@ -916,6 +916,7 @@ remove_pads:
+ reset:
+ 	reset_control_assert(padctl->rst);
+ remove:
++	platform_set_drvdata(pdev, NULL);
+ 	soc->ops->remove(padctl);
+ 	return err;
  }
- 
-diff --git a/drivers/net/dsa/mv88e6xxx/global1.c b/drivers/net/dsa/mv88e6xxx/global1.c
-index 8a903624fdd7c..938dd146629f1 100644
---- a/drivers/net/dsa/mv88e6xxx/global1.c
-+++ b/drivers/net/dsa/mv88e6xxx/global1.c
-@@ -75,6 +75,37 @@ static int mv88e6xxx_g1_wait_init_ready(struct mv88e6xxx_chip *chip)
- 	return mv88e6xxx_g1_wait_bit(chip, MV88E6XXX_G1_STS, bit, 1);
- }
- 
-+void mv88e6xxx_g1_wait_eeprom_done(struct mv88e6xxx_chip *chip)
-+{
-+	const unsigned long timeout = jiffies + 1 * HZ;
-+	u16 val;
-+	int err;
-+
-+	/* Wait up to 1 second for the switch to finish reading the
-+	 * EEPROM.
-+	 */
-+	while (time_before(jiffies, timeout)) {
-+		err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_STS, &val);
-+		if (err) {
-+			dev_err(chip->dev, "Error reading status");
-+			return;
-+		}
-+
-+		/* If the switch is still resetting, it may not
-+		 * respond on the bus, and so MDIO read returns
-+		 * 0xffff. Differentiate between that, and waiting for
-+		 * the EEPROM to be done by bit 0 being set.
-+		 */
-+		if (val != 0xffff &&
-+		    val & BIT(MV88E6XXX_G1_STS_IRQ_EEPROM_DONE))
-+			return;
-+
-+		usleep_range(1000, 2000);
-+	}
-+
-+	dev_err(chip->dev, "Timeout waiting for EEPROM done");
-+}
-+
- /* Offset 0x01: Switch MAC Address Register Bytes 0 & 1
-  * Offset 0x02: Switch MAC Address Register Bytes 2 & 3
-  * Offset 0x03: Switch MAC Address Register Bytes 4 & 5
-diff --git a/drivers/net/dsa/mv88e6xxx/global1.h b/drivers/net/dsa/mv88e6xxx/global1.h
-index 0ae96a1e919b6..08d66ef6aace6 100644
---- a/drivers/net/dsa/mv88e6xxx/global1.h
-+++ b/drivers/net/dsa/mv88e6xxx/global1.h
-@@ -277,6 +277,7 @@ int mv88e6xxx_g1_set_switch_mac(struct mv88e6xxx_chip *chip, u8 *addr);
- int mv88e6185_g1_reset(struct mv88e6xxx_chip *chip);
- int mv88e6352_g1_reset(struct mv88e6xxx_chip *chip);
- int mv88e6250_g1_reset(struct mv88e6xxx_chip *chip);
-+void mv88e6xxx_g1_wait_eeprom_done(struct mv88e6xxx_chip *chip);
- 
- int mv88e6185_g1_ppu_enable(struct mv88e6xxx_chip *chip);
- int mv88e6185_g1_ppu_disable(struct mv88e6xxx_chip *chip);
 -- 
 2.27.0
 
