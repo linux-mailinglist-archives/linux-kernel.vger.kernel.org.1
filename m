@@ -2,125 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AB02C9D58
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE842C9D9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389939AbgLAJWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:22:18 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:56791 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390678AbgLAJWH (ORCPT
+        id S2390922AbgLAJZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:25:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50935 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390923AbgLAJZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:22:07 -0500
-Received: by mail-io1-f72.google.com with SMTP id e14so854773iow.23
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 01:21:52 -0800 (PST)
+        Tue, 1 Dec 2020 04:25:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606814639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EHXtAhLA69YQ8pdXKl7mp9XY6rD8BGspbq869Muqv/8=;
+        b=dlG/y2YAATj9M7T7wbhOBFf6dcMWvNRUaXVom78kiRch38OF1SEZtlLUR5vF3Asd5wcLP3
+        xc8stbs5zeDZ/n96ZlqDtZZr72yLtZ711DUPnJ8YDscOYw4uWaOL2gd5pkx+EcwEYC1KD7
+        O+Ngqdv4ggri9juo4gkZUlwtfieyWvo=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-nZdXbSBFOHmmLVGihqxXfA-1; Tue, 01 Dec 2020 04:23:56 -0500
+X-MC-Unique: nZdXbSBFOHmmLVGihqxXfA-1
+Received: by mail-pj1-f72.google.com with SMTP id e21so794775pjh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 01:23:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=IhVped9n3+W7lr2jNSHydqmrdoeSj1nEn4SFaAFBJxA=;
-        b=SxhetXpTUzYb/m6AkAqTpsEEVtK5gsHl6/xhsIpHbqr5gCfxekGEaQL2N5J3SYy3UK
-         mA8ZUGktRuG6s621ErRSRC1rSKflgqjfdgY2hZbpd4HlRCml+RYptVwnh+X4Suv+36cc
-         9Wnudw4NozUXUX7DCq4Q60FmdjkYBg5UCmarMa3EiHNt9soij4TrrueW5KR0KpDWMcYQ
-         y4xPgueDMQYw6tu88B/e4mhqED75vP6DfG9hB4u/lCfXZ0Bed3llIUDd+EBFs6SU8V3F
-         qL3Ejp1w2X5KTURxBMBnLcSWluoFggOM7Ju6sP5bEojVv8TCLpp1UxwY5hBe4Ux2wm4z
-         jfEQ==
-X-Gm-Message-State: AOAM533hFaO6LY8oG32t742O6030w9NkonCTC+sUSZT3Vzc3vcERi0zU
-        O6maKmBC7MfH7dMrbyeIyt8Gaxmy6QEEYQyfDsbcQcZh5Ko1
-X-Google-Smtp-Source: ABdhPJxAjJJ8rInf9KkTfFQdR4DUChFH5bqqanNm46/Yg5PchxRZbZUxCqHRnRiDH6dodb8qOYSfOXaiYE+6IhKSOznG3puuvCEf
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EHXtAhLA69YQ8pdXKl7mp9XY6rD8BGspbq869Muqv/8=;
+        b=QZlyW/d73YEgqekYS0E2V0lVCkAhir/Hze/dnWANfBFEnm+0sF3iQyuMFK5X2CqCp2
+         H1E79Rgmd2gUK9iK7HA4Iifp3vS/DIDDnSnpLq52cIw3wDidDw1qOsJXxQr+beSXCGSF
+         If/RKqLSGIG5xORMFsrfI5OiAAnJ6ItX8iblw2TufzDKE4zuMXdxFIbzteUXS5h3V+Tb
+         hdRZak+B9/3LQVamrkxEL1Ev+509YwST3+qVyzxU5KjTF6HNycixhv5ZiLB6QQigEZPS
+         mOokR4gWc8IF/t3uMrkYdPCBdHXvo/OQh9SCOA28e3JHOP+QSxD51Z8G+WQDSjMTY3pO
+         YpgQ==
+X-Gm-Message-State: AOAM533ErDV5b8JryVlnBpMQg8TKiMdbk5Ay11rwQ2ba6jn8+RmKnhhJ
+        Nl3sdqEz4tdDNI/CXKXZN260Lpi/WF8bLpjL+qzBAM+zWqvedvT7DcD3QHrEiIEF6OHM95UMnBw
+        jY4PrlDBBJIpS91k0ElF7ZMdplI1/tH3O/V/JLVRz
+X-Received: by 2002:a17:90a:9381:: with SMTP id q1mr1803279pjo.127.1606814634934;
+        Tue, 01 Dec 2020 01:23:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzBO6xb5gfmuTIyudttctOOhWn98D2GmCZ1DxfuKu+UK4qjNnp3TyXW76pCjCS7LsujIN4/h01G+w+PqaPxgdU=
+X-Received: by 2002:a17:90a:9381:: with SMTP id q1mr1803261pjo.127.1606814634669;
+ Tue, 01 Dec 2020 01:23:54 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2dcf:: with SMTP id l15mr1625809iow.120.1606814487195;
- Tue, 01 Dec 2020 01:21:27 -0800 (PST)
-Date:   Tue, 01 Dec 2020 01:21:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bab70f05b563a6cc@google.com>
-Subject: WARNING in port100_send_frame_async/usb_submit_urb
-From:   syzbot <syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com>
-To:     eli.billauer@gmail.com, gregkh@linuxfoundation.org,
-        gustavoars@kernel.org, ingrassia@epigenesys.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
-        tiwai@suse.de
+References: <20201129064351.63618-1-elic@nvidia.com> <20201129150505-mutt-send-email-mst@kernel.org>
+ <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx> <20201130035147-mutt-send-email-mst@kernel.org>
+ <20201130092759.GB99449@mtl-vdi-166.wap.labs.mlnx> <20201130043050-mutt-send-email-mst@kernel.org>
+ <CACLfguXB+SzocLppNtrTZwKPFsshS8TLVe8_iFJxgjT-cFpSzA@mail.gmail.com> <20201130103142-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20201130103142-mutt-send-email-mst@kernel.org>
+From:   Cindy Lu <lulu@redhat.com>
+Date:   Tue, 1 Dec 2020 17:23:18 +0800
+Message-ID: <CACLfguWDFgJUJTJik1obvv-vzacRwgkfsN=-Uouu+K9dAKFE+A@mail.gmail.com>
+Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Eli Cohen <elic@nvidia.com>, Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Nov 30, 2020 at 11:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Nov 30, 2020 at 06:41:45PM +0800, Cindy Lu wrote:
+> > On Mon, Nov 30, 2020 at 5:33 PM Michael S. Tsirkin <mst@redhat.com> wro=
+te:
+> > >
+> > > On Mon, Nov 30, 2020 at 11:27:59AM +0200, Eli Cohen wrote:
+> > > > On Mon, Nov 30, 2020 at 04:00:51AM -0500, Michael S. Tsirkin wrote:
+> > > > > On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen wrote:
+> > > > > > On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wr=
+ote:
+> > > > > > > On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
+> > > > > > > > We should not try to use the VF MAC address as that is used=
+ by the
+> > > > > > > > regular (e.g. mlx5_core) NIC implementation. Instead, use a=
+ random
+> > > > > > > > generated MAC address.
+> > > > > > > >
+> > > > > > > > Suggested by: Cindy Lu <lulu@redhat.com>
+> > > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for suppor=
+ted mlx5 devices")
+> > > > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > > >
+> > > > > > > I didn't realise it's possible to use VF in two ways
+> > > > > > > with and without vdpa.
+> > > > > >
+> > > > > > Using a VF you can create quite a few resources, e.g. send queu=
+es
+> > > > > > recieve queues, virtio_net queues etc. So you can possibly crea=
+te
+> > > > > > several instances of vdpa net devices and nic net devices.
+> > > > > >
+> > > > > > > Could you include a bit more description on the failure
+> > > > > > > mode?
+> > > > > >
+> > > > > > Well, using the MAC address of the nic vport is wrong since tha=
+t is the
+> > > > > > MAC of the regular NIC implementation of mlx5_core.
+> > > > >
+> > > > > Right but ATM it doesn't coexist with vdpa so what's the problem?
+> > > > >
+> > > >
+> > > > This call is wrong:  mlx5_query_nic_vport_mac_address()
+> > > >
+> > > > > > > Is switching to a random mac for such an unusual
+> > > > > > > configuration really justified?
+> > > > > >
+> > > > > > Since I can't use the NIC's MAC address, I have two options:
+> > > > > > 1. To get the MAC address as was chosen by the user administeri=
+ng the
+> > > > > >    NIC. This should invoke the set_config callback. Unfortunate=
+ly this
+> > > > > >    is not implemented yet.
+> > > > > >
+> > > > > > 2. Use a random MAC address. This is OK since if (1) is impleme=
+nted it
+> > > > > >    can always override this random configuration.
+> > > > > >
+> > > > > > > It looks like changing a MAC could break some guests,
+> > > > > > > can it not?
+> > > > > > >
+> > > > > >
+> > > > > > No, it will not. The current version of mlx5 VDPA does not allo=
+w regular
+> > > > > > NIC driver and VDPA to co-exist. I have patches ready that enab=
+le that
+> > > > > > from steering point of view. I will post them here once other p=
+atches on
+> > > > > > which they depend will be merged.
+> > > > > >
+> > > > > > https://patchwork.ozlabs.org/project/netdev/patch/2020112023033=
+9.651609-12-saeedm@nvidia.com/
+> > > > >
+> > > > > Could you be more explicit on the following points:
+> > > > > - which configuration is broken ATM (as in, two device have ident=
+ical
+> > > > >   macs? any other issues)?
+> > > >
+> > > > The only wrong thing is the call to  mlx5_query_nic_vport_mac_addre=
+ss().
+> > > > It's not breaking anything yet is wrong. The random MAC address set=
+ting
+> > > > is required for the steering patches.
+> > >
+> > > Okay so I'm not sure the Fixes tag at least is appropriate if it's a
+> > > dependency of a new feature.
+> > >
+> > > > > - why won't device MAC change from guest point of view?
+> > > > >
+> > > >
+> > > > It's lack of implementation in qemu as far as I know.
+> > >
+> > > Sorry not sure I understand. What's not implemented in QEMU?
+> > >
+> > HI Michael, there are some bug in qemu to set_config, this will fix in =
+future,
+> > But this patch is still needed, because without this patch the mlx
+> > driver will give an 0 mac address to qemu
+> > and qemu will overwrite the default mac address.  This will cause traff=
+ic down.
+>
+> Hmm the patch description says VF mac address, not 0 address. Confused.
+> If there's no mac we can clear VIRTIO_NET_F_MAC and have guest
+> use a random value ...
+>
+hi Michael=EF=BC=8C
+I have tried as your suggestion, seems even remove the
+VIRTIO_NET_F_MAC the qemu will still call get_cinfig and overwrite the
+default address in  VM,
+this process is like
+vdpa _init -->qemu call get_config ->mlx driver will give  an mac
+address with all 0-->
+qemu will not check this mac address and use it --> overwrite the mac
+address in qemu
 
-syzbot found the following issue on:
+So for my understanding there are several method to fix this problem
 
-HEAD commit:    c84e1efa Merge tag 'asm-generic-fixes-5.10-2' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a98565500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
-dashboard link: https://syzkaller.appspot.com/bug?extid=dbec6695a6565a9c6bc0
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c607f1500000
+1, qemu check the mac address, if the mac address is all 0, qemu will
+ignore it and set the random mac address to mlx driver.
+2. mlx driver checks the mac address and if this mac is 0, return fail
+to qemu, but this need to change the UAPI.
+3. mlx driver it shelf should get an correct mac address while it init.
+4. add check in qemu get_config function  , if there is not F_MAC Then
+ignore the mac address from mlx driver
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com
+not sure which method is more suitable ?
 
-usb 1-1: string descriptor 0 read error: -32
-------------[ cut here ]------------
-URB 000000005c26bc1e submitted while active
-WARNING: CPU: 0 PID: 5 at drivers/usb/core/urb.c:378 usb_submit_urb+0xf57/0x1510 drivers/usb/core/urb.c:378
-Modules linked in:
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:usb_submit_urb+0xf57/0x1510 drivers/usb/core/urb.c:378
-Code: 5c 41 5d 41 5e 41 5f 5d e9 76 5b ff ff e8 f1 e8 04 fc c6 05 25 0e 8b 07 01 48 c7 c7 a0 b7 5b 8a 4c 89 e6 31 c0 e8 89 07 d5 fb <0f> 0b e9 20 f1 ff ff e8 cd e8 04 fc eb 05 e8 c6 e8 04 fc bb a6 ff
-RSP: 0018:ffffc90000ca6ec8 EFLAGS: 00010246
-RAX: cf72e284cb303700 RBX: ffff888021723708 RCX: ffff888011108000
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: 0000000000000cc0 R08: ffffffff815d29f2 R09: ffffed1017383ffc
-R10: ffffed1017383ffc R11: 0000000000000000 R12: ffff888021723700
-R13: dffffc0000000000 R14: ffff888012cfa458 R15: 1ffff1100259f489
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056157313d160 CR3: 000000001e22c000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- port100_send_frame_async+0x1ea/0x390 drivers/nfc/port100.c:780
- port100_send_cmd_async+0x6c7/0x950 drivers/nfc/port100.c:876
- port100_send_cmd_sync drivers/nfc/port100.c:916 [inline]
- port100_set_command_type drivers/nfc/port100.c:987 [inline]
- port100_probe+0xd4f/0x1600 drivers/nfc/port100.c:1567
- usb_probe_interface+0x662/0xb40 drivers/usb/core/driver.c:396
- really_probe+0x4ab/0x1380 drivers/base/dd.c:558
- driver_probe_device+0x15b/0x310 drivers/base/dd.c:738
- bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
- __device_attach+0x2c9/0x480 drivers/base/dd.c:912
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x1612/0x19e0 drivers/base/core.c:2936
- usb_set_configuration+0x1c17/0x2100 drivers/usb/core/message.c:2159
- usb_generic_driver_probe+0x82/0x140 drivers/usb/core/generic.c:238
- usb_probe_device+0x13a/0x260 drivers/usb/core/driver.c:293
- really_probe+0x4ab/0x1380 drivers/base/dd.c:558
- driver_probe_device+0x15b/0x310 drivers/base/dd.c:738
- bus_for_each_drv+0x108/0x170 drivers/base/bus.c:431
- __device_attach+0x2c9/0x480 drivers/base/dd.c:912
- bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
- device_add+0x1612/0x19e0 drivers/base/core.c:2936
- usb_new_device+0xcc3/0x1700 drivers/usb/core/hub.c:2554
- hub_port_connect+0xec7/0x2540 drivers/usb/core/hub.c:5222
- hub_port_connect_change+0x600/0xb00 drivers/usb/core/hub.c:5362
- port_event+0xae9/0x10a0 drivers/usb/core/hub.c:5508
- hub_event+0x417/0xcb0 drivers/usb/core/hub.c:5590
- process_one_work+0x789/0xfc0 kernel/workqueue.c:2272
- worker_thread+0xaa4/0x1460 kernel/workqueue.c:2418
- kthread+0x39a/0x3c0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Thanks
+Cindy
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> > > > >
+> > > > > > > > ---
+> > > > > > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
+> > > > > > > >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vd=
+pa/mlx5/net/mlx5_vnet.c
+> > > > > > > > index 1fa6fcac8299..80d06d958b8b 100644
+> > > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > @@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_=
+core_dev *mdev)
+> > > > > > > >       if (err)
+> > > > > > > >               goto err_mtu;
+> > > > > > > >
+> > > > > > > > -     err =3D mlx5_query_nic_vport_mac_address(mdev, 0, 0, =
+config->mac);
+> > > > > > > > -     if (err)
+> > > > > > > > -             goto err_mtu;
+> > > > > > > > -
+> > > > > > > > +     eth_random_addr(config->mac);
+> > > > > > > >       mvdev->vdev.dma_dev =3D mdev->device;
+> > > > > > > >       err =3D mlx5_vdpa_alloc_resources(&ndev->mvdev);
+> > > > > > > >       if (err)
+> > > > > > > > --
+> > > > > > > > 2.26.2
+> > > > > > >
+> > > > >
+> > >
+>
+
