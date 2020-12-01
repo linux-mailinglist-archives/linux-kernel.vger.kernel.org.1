@@ -2,102 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D772CA8EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC7D2CA8D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392130AbgLAQzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:55:33 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:10638 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392037AbgLAQz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:55:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606841556;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=61Pj8+ULDC/9CQt8Dl+J/sb0n6Xqryjx4clI8Aq1YQw=;
-        b=PHaBePEEKF03EQjcRx1LFgAAb2k7Nkbr+zd+RHiYF5ol+NLC6u8h//9pib+cD/8/Y6
-        2OuvsQaJ8L0AyGJ8vJXzoiZtRabY2RZcsLhL03Wm8Cvkwz00m+TDV+OT3rcicr/DONZ4
-        zDFIseuoz2eq/XxjJGdlHRMDnizqTrPm7ev0ELQpgZBEvqfxNgFF43IQ+PPSF7KlrlK5
-        BDzqjNikZYPrWekxpwFpP7+O7wTsOCkZDT2yOeccT1eNpoewdbpo8NZwVxOP2Zt0lE4L
-        YZmNnx9AEfsStYOOORXaoYJ73sAZSRItlxZSRCC4xIb0pKkavAEoEUZLedmV9UFpJe3I
-        JcPQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/vrwDuo6A=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
-        with ESMTPSA id N02faawB1GqYVYJ
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Tue, 1 Dec 2020 17:52:34 +0100 (CET)
-Subject: Re: [Letux-kernel] [BUG] SPI broken for SPI based panel drivers
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20201201174433.2000c8a3@aktux>
-Date:   Tue, 1 Dec 2020 17:52:34 +0100
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <1F0CED75-9EB2-401E-80E7-C1CD29D699F0@goldelico.com>
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com> <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com> <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk> <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com> <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com> <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com> <20201201174433.2000c8a3@aktux>
-To:     Andreas Kemnade <andreas@kemnade.info>
-X-Mailer: Apple Mail (2.3124)
+        id S2390881AbgLAQx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:53:58 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:28908 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728229AbgLAQx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:53:58 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Clp7s63DZz9v400;
+        Tue,  1 Dec 2020 17:53:13 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id wq3KDCIGPUsp; Tue,  1 Dec 2020 17:53:13 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Clp7s52ZQz9v3yy;
+        Tue,  1 Dec 2020 17:53:13 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 161398B7BD;
+        Tue,  1 Dec 2020 17:53:15 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 7Dn2a6jQZQ1y; Tue,  1 Dec 2020 17:53:14 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A77558B7B7;
+        Tue,  1 Dec 2020 17:53:08 +0100 (CET)
+Subject: Re: [PATCH v9 2/6] kasan: allow architectures to provide an outline
+ readiness check
+To:     Daniel Axtens <dja@axtens.net>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        kasan-dev@googlegroups.com, christophe.leroy@c-s.fr,
+        aneesh.kumar@linux.ibm.com, bsingharora@gmail.com
+Cc:     "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>
+References: <20201201161632.1234753-1-dja@axtens.net>
+ <20201201161632.1234753-3-dja@axtens.net>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <bc92b30f-f087-ced6-cf00-a62370eae733@csgroup.eu>
+Date:   Tue, 1 Dec 2020 17:53:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201201161632.1234753-3-dja@axtens.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> Am 01.12.2020 um 17:44 schrieb Andreas Kemnade <andreas@kemnade.info>:
->=20
-> On Tue, 1 Dec 2020 11:10:49 -0500
-> Sven Van Asbroeck <thesven73@gmail.com> wrote:
->=20
->> Nikolaus,
->>=20
->> On Tue, Dec 1, 2020 at 9:38 AM H. Nikolaus Schaller =
-<hns@goldelico.com> wrote:
->>>=20
->>> Let's work on a fix for the fix now.
->>>=20
->>=20
->> Are you quite sure the chip-select of the tpo,td028ttec1 panel
->> is active-high? A quick google produced a datasheet which
->> seems to indicate that XCS is active-low?
->>=20
-> Schematics is here:
-> https://projects.goldelico.com/p/gta04-main/downloads/48/
->=20
-> The display connector P204-LCD indicates some inversion at the XCS and
-> XRES pins.
->=20
-> This patch fixes things for a boot where the display was not
-> touched by the bootloader
-> diff --git a/arch/arm/boot/dts/omap3-gta04.dtsi =
-b/arch/arm/boot/dts/omap3-gta04.dtsi
-> index c8745bc800f7..003202d12990 100644
-> --- a/arch/arm/boot/dts/omap3-gta04.dtsi
-> +++ b/arch/arm/boot/dts/omap3-gta04.dtsi
-> @@ -124,7 +124,6 @@
->                        spi-max-frequency =3D <100000>;
->                        spi-cpol;
->                        spi-cpha;
-> -                       spi-cs-high;
 
-BTW: that is what I had planned to try next...
+Le 01/12/2020 à 17:16, Daniel Axtens a écrit :
+> Allow architectures to define a kasan_arch_is_ready() hook that bails
+> out of any function that's about to touch the shadow unless the arch
+> says that it is ready for the memory to be accessed. This is fairly
+> uninvasive and should have a negligible performance penalty.
+> 
+> This will only work in outline mode, so an arch must specify
+> HAVE_ARCH_NO_KASAN_INLINE if it requires this.
+> 
+> Cc: Balbir Singh <bsingharora@gmail.com>
+> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 
->=20
->                        backlight=3D <&backlight>;
->                        label =3D "lcd";
->=20
-> So if that one is really active-low, why did it ever work?!
->=20
-> Regards,
-> Andreas
+Did I signed that off one day ? I can't remember.
 
+Please update my email address, and maybe change it to a Suggested-by: ? I think the first 
+Signed-off-by: has to be the author of the patch.
+
+> Signed-off-by: Daniel Axtens <dja@axtens.net>
+> 
+> --
+> 
+> I discuss the justfication for this later in the series. Also,
+> both previous RFCs for ppc64 - by 2 different people - have
+> needed this trick! See:
+>   - https://lore.kernel.org/patchwork/patch/592820/ # ppc64 hash series
+>   - https://patchwork.ozlabs.org/patch/795211/      # ppc radix series
+> ---
+>   include/linux/kasan.h |  4 ++++
+>   mm/kasan/common.c     | 10 ++++++++++
+>   mm/kasan/generic.c    |  3 +++
+>   3 files changed, 17 insertions(+)
+> 
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 30d343b4a40a..3df66fdf6662 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -20,6 +20,10 @@ struct kunit_kasan_expectation {
+>   	bool report_found;
+>   };
+>   
+> +#ifndef kasan_arch_is_ready
+> +static inline bool kasan_arch_is_ready(void)	{ return true; }
+> +#endif
+> +
+>   extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
+>   extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
+>   extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 950fd372a07e..ba7744d3e319 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -117,6 +117,9 @@ void kasan_poison_shadow(const void *address, size_t size, u8 value)
+>   {
+>   	void *shadow_start, *shadow_end;
+>   
+> +	if (!kasan_arch_is_ready())
+> +		return;
+> +
+>   	/*
+>   	 * Perform shadow offset calculation based on untagged address, as
+>   	 * some of the callers (e.g. kasan_poison_object_data) pass tagged
+> @@ -134,6 +137,9 @@ void kasan_unpoison_shadow(const void *address, size_t size)
+>   {
+>   	u8 tag = get_tag(address);
+>   
+> +	if (!kasan_arch_is_ready())
+> +		return;
+> +
+>   	/*
+>   	 * Perform shadow offset calculation based on untagged address, as
+>   	 * some of the callers (e.g. kasan_unpoison_object_data) pass tagged
+> @@ -406,6 +412,10 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+>   	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
+>   		return false;
+>   
+> +	/* We can't read the shadow byte if the arch isn't ready */
+> +	if (!kasan_arch_is_ready())
+> +		return false;
+> +
+>   	shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(object));
+>   	if (shadow_invalid(tag, shadow_byte)) {
+>   		kasan_report_invalid_free(tagged_object, ip);
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index 248264b9cb76..e87404026b2b 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -169,6 +169,9 @@ static __always_inline bool check_memory_region_inline(unsigned long addr,
+>   						size_t size, bool write,
+>   						unsigned long ret_ip)
+>   {
+> +	if (!kasan_arch_is_ready())
+> +		return true;
+> +
+>   	if (unlikely(size == 0))
+>   		return true;
+>   
+> 
