@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB67D2CA5B7
+	by mail.lfdr.de (Postfix) with ESMTP id 711C62CA5B6
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403905AbgLAOb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:31:58 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:55500 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388915AbgLAOb5 (ORCPT
+        id S2403895AbgLAObw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:31:52 -0500
+Received: from mail.efficios.com ([167.114.26.124]:46864 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403838AbgLAObw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:31:57 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1ET4f3052841;
-        Tue, 1 Dec 2020 14:31:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=mQts94rHer9WemoS7c8i+DV543vHJuK33cqzIkDxFy4=;
- b=KDcY+lTcIJsjw6y+qWKZToLaZNbkaIovCjCXWKgV1Bq6IvIlbMyO0YHDmD9b1qqrzHPv
- E2RrxWpkT6Y8X2mmhEjkMP8XAfx/5csuY6a05yo+42hs8KMtQI4iIjML3n70KLS1LMS1
- gMRISj7Rh08H+uHVl7OpIdNxGA2sMAW3ACPczU67CUwf68GBFJfV/4014StlF9KYIWDI
- 89F/gQbuHJhS7TKQlzkdfOJVFEhjYLE6zIyid7rQn7vP578sjOrqyPEeMi68yqgUUEn5
- vU4UxmhXLCB7f1Oq86rPnCCev/X/a5UzkQyth8NIjaubK9NvKop5rxyV6A4EI31QxO9+ NA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 353c2atxbr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 14:31:07 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1ELJaw117970;
-        Tue, 1 Dec 2020 14:31:06 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 3540fx12mf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Dec 2020 14:31:06 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B1EV5Of030407;
-        Tue, 1 Dec 2020 14:31:05 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Dec 2020 06:31:04 -0800
-Date:   Tue, 1 Dec 2020 17:30:58 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] media: rockchip: rkisp1: remove useless debugfs checks
-Message-ID: <20201201143058.GJ2767@kadam>
+        Tue, 1 Dec 2020 09:31:52 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3EE8B24A05B;
+        Tue,  1 Dec 2020 09:31:11 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Zp-zAbuMb8LL; Tue,  1 Dec 2020 09:31:11 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E5F5624A0E8;
+        Tue,  1 Dec 2020 09:31:10 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E5F5624A0E8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1606833070;
+        bh=w+uCQn+uiG4OM+pnjOLmVNu5uR+sA9gE92dXLy23mHc=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=ZBZveTWArYuxC2SJMqPxOmfjOjslj34TEIpBDGIQWXV4pZR1KSi94oe4hMQCLGqAr
+         F77SSgOmMGdyX7YCRPt72uHleHFfkfzi1ZJgv92dfAMmdwuD2y2v0xys6C106UVD2G
+         2VtijrIIjd0OhDWxjVYWI+ILCGQyDrKw+NsvXkenvSIfWdjnldjcO6rrDlQGaVifOP
+         Y8Cchq+CY4++8N7GIbb/9vRf6I4mPQdAGEh4tEqXt2xcy9LgFB0YUTGQPNK5j4V1Xr
+         EAm3KMe/hGEx2lLMtXMSK8ti1tI+NeFp4X4L565tL+iRt2TyDepHPbRZzVIAFCIIl4
+         MN4mUbhcm3cOQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id lLm7LhGwHE0L; Tue,  1 Dec 2020 09:31:10 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id D9B6324A0E7;
+        Tue,  1 Dec 2020 09:31:10 -0500 (EST)
+Date:   Tue, 1 Dec 2020 09:31:10 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <1317667456.69303.1606833070872.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201201100604.GT2414@hirez.programming.kicks-ass.net>
+References: <cover.1606758530.git.luto@kernel.org> <c67b85690f9cb42d1e92db30e19c78e872bdd0e4.1606758530.git.luto@kernel.org> <20201201100604.GT2414@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH 2/3] membarrier: Add an actual barrier before
+ rseq_preempt()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6d9660f-84ec-317d-c3aa-9b3bda595d49@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010092
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012010093
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF83 (Linux)/8.8.15_GA_3975)
+Thread-Topic: membarrier: Add an actual barrier before rseq_preempt()
+Thread-Index: hzWFZRyWKU9/D8FUUep59auxTPoqpg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The debugfs_create_dir() function never returns NULLs so this code will
-never be executed.  It's not intended that callers will check for
-debugfs errors in the normal case and it's not necessary in this driver,
-so we can just delete this code.
+----- On Dec 1, 2020, at 5:06 AM, Peter Zijlstra peterz@infradead.org wrote:
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-v2: Fix subject
+> On Mon, Nov 30, 2020 at 09:50:34AM -0800, Andy Lutomirski wrote:
+>> It seems to be that most RSEQ membarrier users will expect any
+>> stores done before the membarrier() syscall to be visible to the
+>> target task(s).  While this is extremely likely to be true in
+>> practice, nothing actually guarantees it by a strict reading of the
+>> x86 manuals.  Rather than providing this guarantee by accident and
+>> potentially causing a problem down the road, just add an explicit
+>> barrier.
+> 
+> A very long time ago; when Jens introduced smp_call_function(), we had
+> this discussion. At the time Linus said that receiving an interrupt had
+> better be ordering, and if it is not, then it's up to the architecture
+> to handle that before it gets into the common code.
+> 
+>  https://lkml.kernel.org/r/alpine.LFD.2.00.0902180744520.21686@localhost.localdomain
+> 
+> Maybe we want to revisit this now, but there might be a fair amount of
+> code relying on all this by now.
+> 
+> Documenting it better might help.
 
- drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 4 ----
- 1 file changed, 4 deletions(-)
+Considering that we already have this in membarrier ipi_mb :
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-index 9af137e4967f..68da1eed753d 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-@@ -430,10 +430,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
- 	struct rkisp1_debug *debug = &rkisp1->debug;
- 
- 	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
--	if (!debug->debugfs_dir) {
--		dev_dbg(rkisp1->dev, "failed to create debugfs directory\n");
--		return;
--	}
- 	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
- 			     &debug->data_loss);
- 	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
+static void ipi_mb(void *info)
+{
+        smp_mb();       /* IPIs should be serializing but paranoid. */
+}
+
+I think it makes sense to add this same smp_mb() in the ipi_rseq if the expected
+behavior is to order memory accesses as well, and have the same level of paranoia as
+the ipi_mb.
+
+Thanks,
+
+Mathieu
+
+
+> 
+>> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+>> ---
+>>  kernel/sched/membarrier.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>> 
+>> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+>> index e23e74d52db5..7d98ef5d3bcd 100644
+>> --- a/kernel/sched/membarrier.c
+>> +++ b/kernel/sched/membarrier.c
+>> @@ -40,6 +40,14 @@ static void ipi_mb(void *info)
+>>  
+>>  static void ipi_rseq(void *info)
+>>  {
+>> +	/*
+>> +	 * Ensure that all stores done by the calling thread are visible
+>> +	 * to the current task before the current task resumes.  We could
+>> +	 * probably optimize this away on most architectures, but by the
+>> +	 * time we've already sent an IPI, the cost of the extra smp_mb()
+>> +	 * is negligible.
+>> +	 */
+>> +	smp_mb();
+>>  	rseq_preempt(current);
+>>  }
+> 
+> So I think this really isn't right.
+
 -- 
-2.29.2
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
