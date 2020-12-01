@@ -2,153 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3379A2CA983
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 231072CA985
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390726AbgLARXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389109AbgLARXB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:23:01 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2958BC0613D4;
-        Tue,  1 Dec 2020 09:22:21 -0800 (PST)
-Date:   Tue, 01 Dec 2020 17:22:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606843339;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=icWjIGhRr4t+x0JShmJXCNn1v1KRNtsI5XTRR0zlP3M=;
-        b=bDZzO4XVKjFahZs9imkUigaP14bIGdPpZp5YuHJZMz0xedqbOF9zp2IUd0uoKpoVFhbenp
-        oo249WtAMW0LCtlVmp9s0eh+fq7XgXr4IQeqv4tkMTWD/L+Y8/9BcYOIKTLqFSrpd0S4sI
-        egkgspyrIo0Ie8OCT8JzXAeCVQ1EcG7Cmhk4xC4PTvcx+WCow/jmFEuK88HTbqpKhZK5v1
-        iCGJtPNxLCt8jVPOGgxZboDRxFlewNPLZYY2l48Mz57Qu/edtEK/k/bpipw4hFQiAPI932
-        c50xjShJRBwiPsZ0GWGjBaFNvY78yvR3rvPIeUgvT6tlKET2WoonyrG1qq0cpA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606843339;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=icWjIGhRr4t+x0JShmJXCNn1v1KRNtsI5XTRR0zlP3M=;
-        b=9LZ6FLOJ7qd4JSCNjrQnuYv81qWITk9U/e6XHZ3hsZI2rPv0VZh2yLzH+Lo/8lERpwoChY
-        ugNECi86BW3au+Cg==
-From:   "tip-bot2 for Xiaochen Shen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cache] x86/resctrl: Clean up unused function parameter in
- rmdir path
-Cc:     Xiaochen Shen <xiaochen.shen@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1606759618-13181-1-git-send-email-xiaochen.shen@intel.com>
-References: <1606759618-13181-1-git-send-email-xiaochen.shen@intel.com>
+        id S2391249AbgLARYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:24:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391070AbgLARYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:24:19 -0500
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF03F20757
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 17:23:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606843419;
+        bh=cMWpNNo6B+ZlVFzu224cjifSj9yFS3k9AicU80f4SEc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IV0IyKCwzeBRr1qMgS2FpRiP8GRUZsCHicnOsP6Cw2q1TwwIgurtFqWTEmBxwPhhx
+         4+SIk4cPu7d2SGBZ7YP0MdDGk4u3i5+t5I+od6eWAeHEf3DH4URwoHRBb2Z56Z9hf6
+         Uyf055CCunkhNlwg6vSVLNKzGcS8jqHhUmv4QTAM=
+Received: by mail-wm1-f52.google.com with SMTP id v14so4859569wml.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:23:38 -0800 (PST)
+X-Gm-Message-State: AOAM533xByHgS1iAWzQWoQ57xYYpAFGj5/bU2RitxWzLHrf22Hu/KOT6
+        c9Ct2JtS/1MM3OgbTDJxOFfd5pS5LcdMXXeM5pNrBw==
+X-Google-Smtp-Source: ABdhPJxwIoxnPYmHPBshKhNMIQNApM9L39NbYy3h1Mq+2lSZYau6V+a7ILPJZGh2DAs7Jz8iM7L0uGwILrgNYlfn6ZQ=
+X-Received: by 2002:a7b:cb41:: with SMTP id v1mr3876786wmj.36.1606843417218;
+ Tue, 01 Dec 2020 09:23:37 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160684333874.3364.16804371092102792651.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201130223059.101286-1-brgerst@gmail.com>
+In-Reply-To: <20201130223059.101286-1-brgerst@gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 1 Dec 2020 09:23:24 -0800
+X-Gmail-Original-Message-ID: <CALCETrWZ5eH=0Rjd-vBFRtk-tFQ3tN8_rReaKdVbSm78PFQ7_g@mail.gmail.com>
+Message-ID: <CALCETrWZ5eH=0Rjd-vBFRtk-tFQ3tN8_rReaKdVbSm78PFQ7_g@mail.gmail.com>
+Subject: Re: [PATCH] fanotify: Fix sys_fanotify_mark() on native x86-32
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
+        =?UTF-8?Q?Pawe=C5=82_Jasiak?= <pawel@jasiak.xyz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cache branch of tip:
+On Mon, Nov 30, 2020 at 2:31 PM Brian Gerst <brgerst@gmail.com> wrote:
+>
+> Commit 121b32a58a3a converted native x86-32 which take 64-bit arguments t=
+o
+> use the compat handlers to allow conversion to passing args via pt_regs.
+> sys_fanotify_mark() was however missed, as it has a general compat handle=
+r.
+> Add a config option that will use the syscall wrapper that takes the spli=
+t
+> args for native 32-bit.
+>
+> Reported-by: Pawe=C5=82 Jasiak <pawel@jasiak.xyz>
+> Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for syscal=
+ls taking 64-bit arguments")
+> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+> ---
+>  arch/Kconfig                       |  6 ++++++
+>  arch/x86/Kconfig                   |  1 +
+>  fs/notify/fanotify/fanotify_user.c | 17 +++++++----------
+>  include/linux/syscalls.h           | 24 ++++++++++++++++++++++++
+>  4 files changed, 38 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 090ef3566c56..452cc127c285 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -1045,6 +1045,12 @@ config HAVE_STATIC_CALL_INLINE
+>         bool
+>         depends on HAVE_STATIC_CALL
+>
+> +config ARCH_SPLIT_ARG64
+> +       bool
+> +       help
+> +          If a 32-bit architecture requires 64-bit arguments to be split=
+ into
+> +          pairs of 32-bit arguemtns, select this option.
 
-Commit-ID:     19eb86a72df50adcf554f234469bb5b7209b7640
-Gitweb:        https://git.kernel.org/tip/19eb86a72df50adcf554f234469bb5b7209b7640
-Author:        Xiaochen Shen <xiaochen.shen@intel.com>
-AuthorDate:    Tue, 01 Dec 2020 02:06:58 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 01 Dec 2020 18:06:35 +01:00
+You misspelled arguments.  You might also want to clarify that, for
+64-bit arches, this means that compat syscalls split their arguments.
 
-x86/resctrl: Clean up unused function parameter in rmdir path
+Aside from that:
 
-Commit
-
-  fd8d9db3559a ("x86/resctrl: Remove superfluous kernfs_get() calls to prevent refcount leak")
-
-removed superfluous kernfs_get() calls in rdtgroup_ctrl_remove() and
-rdtgroup_rmdir_ctrl(). That change resulted in an unused function
-parameter to these two functions.
-
-Clean up the unused function parameter in rdtgroup_ctrl_remove(),
-rdtgroup_rmdir_mon() and their callers rdtgroup_rmdir_ctrl() and
-rdtgroup_rmdir().
-
-Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Link: https://lkml.kernel.org/r/1606759618-13181-1-git-send-email-xiaochen.shen@intel.com
----
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 05a026d..bcbec85 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -3018,8 +3018,7 @@ static int rdtgroup_mkdir(struct kernfs_node *parent_kn, const char *name,
- 	return -EPERM;
- }
- 
--static int rdtgroup_rmdir_mon(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
--			      cpumask_var_t tmpmask)
-+static int rdtgroup_rmdir_mon(struct rdtgroup *rdtgrp, cpumask_var_t tmpmask)
- {
- 	struct rdtgroup *prdtgrp = rdtgrp->mon.parent;
- 	int cpu;
-@@ -3051,8 +3050,7 @@ static int rdtgroup_rmdir_mon(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
- 	return 0;
- }
- 
--static int rdtgroup_ctrl_remove(struct kernfs_node *kn,
--				struct rdtgroup *rdtgrp)
-+static int rdtgroup_ctrl_remove(struct rdtgroup *rdtgrp)
- {
- 	rdtgrp->flags = RDT_DELETED;
- 	list_del(&rdtgrp->rdtgroup_list);
-@@ -3061,8 +3059,7 @@ static int rdtgroup_ctrl_remove(struct kernfs_node *kn,
- 	return 0;
- }
- 
--static int rdtgroup_rmdir_ctrl(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
--			       cpumask_var_t tmpmask)
-+static int rdtgroup_rmdir_ctrl(struct rdtgroup *rdtgrp, cpumask_var_t tmpmask)
- {
- 	int cpu;
- 
-@@ -3089,7 +3086,7 @@ static int rdtgroup_rmdir_ctrl(struct kernfs_node *kn, struct rdtgroup *rdtgrp,
- 	closid_free(rdtgrp->closid);
- 	free_rmid(rdtgrp->mon.rmid);
- 
--	rdtgroup_ctrl_remove(kn, rdtgrp);
-+	rdtgroup_ctrl_remove(rdtgrp);
- 
- 	/*
- 	 * Free all the child monitor group rmids.
-@@ -3126,13 +3123,13 @@ static int rdtgroup_rmdir(struct kernfs_node *kn)
- 	    rdtgrp != &rdtgroup_default) {
- 		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP ||
- 		    rdtgrp->mode == RDT_MODE_PSEUDO_LOCKED) {
--			ret = rdtgroup_ctrl_remove(kn, rdtgrp);
-+			ret = rdtgroup_ctrl_remove(rdtgrp);
- 		} else {
--			ret = rdtgroup_rmdir_ctrl(kn, rdtgrp, tmpmask);
-+			ret = rdtgroup_rmdir_ctrl(rdtgrp, tmpmask);
- 		}
- 	} else if (rdtgrp->type == RDTMON_GROUP &&
- 		 is_mon_groups(parent_kn, kn->name)) {
--		ret = rdtgroup_rmdir_mon(kn, rdtgrp, tmpmask);
-+		ret = rdtgroup_rmdir_mon(rdtgrp, tmpmask);
- 	} else {
- 		ret = -EPERM;
- 	}
+Acked-by: Andy Lutomirski <luto@kernel.org>
