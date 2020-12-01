@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4362CA43E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23162CA447
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391280AbgLANrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:47:24 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:45966 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391101AbgLANrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:47:23 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 87F2AFB03;
-        Tue,  1 Dec 2020 14:46:39 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id X1ChpxCqEnvi; Tue,  1 Dec 2020 14:46:38 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 33DF04068E; Tue,  1 Dec 2020 14:46:38 +0100 (CET)
-Date:   Tue, 1 Dec 2020 14:46:38 +0100
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, georgi.djakov@linaro.org,
-        cdleonard@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
-        kernel@puri.sm, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2 4/7] dt-bindings: mxsfb: Add interconnect bindings for
- LCDIF path
-Message-ID: <20201201134638.GA305734@bogon.m.sigxcpu.org>
-References: <20201201123932.12312-1-martin.kepplinger@puri.sm>
- <20201201123932.12312-5-martin.kepplinger@puri.sm>
+        id S2391153AbgLANsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:48:54 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55624 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728848AbgLANsx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:48:53 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606830491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X7vkYB0d4Lflu7QTfntzoP7JhOSDHcXUHS8Skey04w0=;
+        b=sCogktfuvGAYAqsR3wllup0MEisJleDTOz/veQFQ3+WxnJh5ZX4IqvTJZsfquxZa8UR+MM
+        eYR4msMoIhJ6BWlKArOBvYfKoEfwq6Dn8oIkTGUUD3jMoFSyDQjwpwbBQYK2ivTaO9DEKi
+        1eOZm66IhjN8Ln9B8go38cS/815fWJWhQoNlcTJkhadIxm5UYdD7vJUIRXMwtk5JMp4Q8r
+        q9bfjeYpEkyF3N0ptO56wG2lP0g3AP9jUEBkXqVRhvFK1LImRah4VnPO45m89qRBtL57zd
+        8pRIcB7DAkt5TrjS0YTLIeMX/6qL1RnWJMceKuxFBiFjvu/NOyND+afGhBLK2w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606830491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X7vkYB0d4Lflu7QTfntzoP7JhOSDHcXUHS8Skey04w0=;
+        b=EQWFj7/bPK5TaeIVY8G/Qhg8oqXSWyRsTQvYSSfJXMQBySV1McRYlug/Ci1/nRoJkVIorr
+        3/1MwZ3VqoqmacBA==
+To:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
+In-Reply-To: <20201130191643.GA18861@fuller.cnet>
+References: <20201130133559.233242-1-mlevitsk@redhat.com> <20201130191643.GA18861@fuller.cnet>
+Date:   Tue, 01 Dec 2020 14:48:11 +0100
+Message-ID: <877dq1hc2s.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201123932.12312-5-martin.kepplinger@puri.sm>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-On Tue, Dec 01, 2020 at 01:39:29PM +0100, Martin Kepplinger wrote:
-> Add optional interconnect properties for the dram path requests.
-> 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  Documentation/devicetree/bindings/display/mxsfb.txt | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/mxsfb.txt b/Documentation/devicetree/bindings/display/mxsfb.txt
-> index c985871c46b3..d494a2674290 100644
-> --- a/Documentation/devicetree/bindings/display/mxsfb.txt
-> +++ b/Documentation/devicetree/bindings/display/mxsfb.txt
-> @@ -15,6 +15,12 @@ Required properties:
->      - "pix" for the LCDIF block clock
->      - (MX6SX-only) "axi", "disp_axi" for the bus interface clock
->  
-> +Optional properties:
-> +- interconnects : interconnect path specifier for LCDIF according to
-> +		Documentation/devicetree/bindings/interconnect/interconnect.txt.
-> +- interconnect-names: the name describing the interconnect path.
-> +		Should be "dram" for i.MX8MQ.
-> +
+On Mon, Nov 30 2020 at 16:16, Marcelo Tosatti wrote:
+>> Besides, Linux guests don't sync the TSC via IA32_TSC write,
+>> but rather use IA32_TSC_ADJUST which currently doesn't participate
+>> in the tsc sync heruistics.
+>
+> Linux should not try to sync the TSC with IA32_TSC_ADJUST. It expects
+> the BIOS to boot with synced TSCs.
 
-There's a yaml conversion by Laurentiu for mxsfb in flight:
+That's wishful thinking.
 
-    https://lore.kernel.org/dri-devel/20201007012438.27970-2-laurent.pinchart@ideasonboard.com/
+Reality is that BIOS tinkerers fail to get it right. TSC_ADJUST allows
+us to undo the wreckage they create.
 
-Cheers,
- -- Guido
+Thanks,
 
->  Required sub-nodes:
->    - port: The connection to an encoder chip.
->  
-> -- 
-> 2.20.1
-> 
+        tglx
