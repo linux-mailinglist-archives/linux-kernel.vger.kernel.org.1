@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C162A2CA5AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639752CA5A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391358AbgLAOb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:31:28 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60451 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388915AbgLAOb1 (ORCPT
+        id S2391138AbgLAOat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389104AbgLAOas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:31:27 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1E6GEZ140158;
-        Tue, 1 Dec 2020 09:30:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=UkNejHt6d/u1cxS1HNRvIiBgvVzhgMHWHgyUZaVTepo=;
- b=BUp4wQKeOq3UsD+0tEwrLbRQUAymK6oAKPBV4ymZGGKuGiV+6xlEUrj2BnxuO4LbWAhc
- IB7NV6sPyMdMADcS85VliPScLYA5NPwTj/xu8W1CV2ymhPU0vyo7fhKlXrkFeyW6bnMR
- WTSO9VWWQtyMW3hFvJ2kGBXux5ctIJQzZ+4nGCqStucKKjAEN5cS4SMyYYGPL0UQizsm
- YbIVYttsfZqFG2PZ4VGO+BFm2RVnkyOyc2FHq5HqRVeuU6Ez8QOdvwhVihD7O2KvYhs6
- UecezvvXYsu4+70LSNiBmy3S7xK5gzVWTtopdC1FZdHjFg1b+AuYDBCBml185XYZdsMp 8Q== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355k18fuwc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 09:30:42 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B1EMr3W020311;
-        Tue, 1 Dec 2020 14:30:38 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 353e684st7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 14:30:37 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B1ES5Mi25231630
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Dec 2020 14:28:05 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 67B17A4055;
-        Tue,  1 Dec 2020 14:28:05 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 56FC8A404D;
-        Tue,  1 Dec 2020 14:28:05 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  1 Dec 2020 14:28:05 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
-        id 1C465E0161; Tue,  1 Dec 2020 15:28:05 +0100 (CET)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH v2 4/5] entry: add exit_to_user_mode() wrapper
-Date:   Tue,  1 Dec 2020 15:27:54 +0100
-Message-Id: <20201201142755.31931-5-svens@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201201142755.31931-1-svens@linux.ibm.com>
-References: <20201201142755.31931-1-svens@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-01_05:2020-11-30,2020-12-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- adultscore=0 priorityscore=1501 lowpriorityscore=0 impostorscore=0
- suspectscore=0 bulkscore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010087
+        Tue, 1 Dec 2020 09:30:48 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAD8C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:30:02 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id z7so2943859wrn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:30:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QmS1AOYTJduZm5RuQkzYgqsOUKH55c+00NGS1pLNVMw=;
+        b=U7Achn23CBNyWiH9eyYw/aWefQrW+ASyn4yKEpWMYJUwhlPPUMme07oCKzPf8LUSBZ
+         3TW8JV0qltTaXmMPQGHK14uoSVRBiBR09eSUf0dHlpGlyGPIjDroTGYwe9DrsNCCXbWC
+         h01ABC+rQE3wLPACeaDRqHLlwx2X+X/36u0MA/M+MnJAnw4cWRoVNxNHC/H0vXTtJwmR
+         Pg4tMXkWoMm9H4N/RpY2HbR8j74KBSezAMG61XzGn7Cv4c0S8e/Hfa4DPqnlw/jSQa22
+         kD4TbEdj02R8t6OKYhHzsmRBp80GsYktvrurnHZ3Xy14qqivJgDwqoDnZwnz5SZv6krG
+         dSAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QmS1AOYTJduZm5RuQkzYgqsOUKH55c+00NGS1pLNVMw=;
+        b=NPO1mMt8EQVudcreNllq8RqojQaMCiBGKgMWXaI0qPD5s9YWgF1WEJDzcq9L5/6KJT
+         oN8NQcXK7UvOg+WhOUj1Mjrfj1rPW7x3VnkpDNKS0x6JSam+gKxprqg+BO0uucKizbgA
+         qlshXMaVzhtjZ8UkeK352Csv0XkqYs0XsPWKWe5i+96l/FzDv9j/BN5Zo0mlVqRV2nvb
+         4GMBdQTaDQY/3THUHA4kgqLxHRQ0XLCgt4ZNeprcvd70EFGSswwc1fgIq9Xs09dCSB6f
+         35Ts4lOt9oFD/l0j+qToQKArOqBudQPVkaCkDK0S95KMvFMOAJbPAIGlYDeLBq5t67Ns
+         DyrQ==
+X-Gm-Message-State: AOAM532Y9AGWr/wn3Y8hyqSiVpFGaPF3MzWDIp6wSXfOed7qhDOowl/H
+        IC0ypNrvSJEy287eOAAuXDTACA==
+X-Google-Smtp-Source: ABdhPJx/A1S/sUAIDOjXHOpNutH0g6JC8i23aEvaWrE3KOCtK0MgOn3D5mrAp+1vSBZju0YnKfPoEg==
+X-Received: by 2002:adf:9124:: with SMTP id j33mr4052062wrj.376.1606833001420;
+        Tue, 01 Dec 2020 06:30:01 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id 20sm50488wmk.16.2020.12.01.06.30.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 06:30:00 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     linus.walleij@linaro.org, bjorn.andersson@linaro.org
+Cc:     robh+dt@kernel.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srinivas.kandagatla@linaro.org
+Subject: [PATCH v5 0/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl support
+Date:   Tue,  1 Dec 2020 14:28:28 +0000
+Message-Id: <20201201142830.13152-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can be called from architecture dependent code, and simply
-calls __exit_to_user_mode(). This way __exit_to_user_mode()
-can still be inlined because it is declared static.
+This patch adds support for LPASS (Low Power Audio SubSystem)
+LPI (Low Power Island) pinctrl on SM8250.
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- include/linux/entry-common.h | 15 +++++++++++++++
- kernel/entry/common.c        | 17 +++++------------
- 2 files changed, 20 insertions(+), 12 deletions(-)
+This patch has been tested on support to Qualcomm Robotics RB5 Development
+Kit based on QRB5165 Robotics SoC. This board has 2 WSA881X smart speakers
+with onboard DMIC connected to internal LPASS codec via WSA  and VA macros
+respectively.
 
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index 28a8554fad7d..112007525f50 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -413,4 +413,19 @@ void noinstr irqentry_exit(struct pt_regs *regs, irqentry_state_t state);
-  * 3) Trace interrupts off state
-  */
- void enter_from_user_mode(struct pt_regs *regs);
-+
-+/**
-+ * exit_to_user_mode - Fixup state when exiting to user mode
-+ *
-+ * Syscall/interrupt exit enables interrupts, but the kernel state is
-+ * interrupts disabled when this is invoked. Also tell RCU about it.
-+ *
-+ * 1) Trace interrupts on state
-+ * 2) Invoke context tracking if enabled to adjust RCU state
-+ * 3) Invoke architecture specific last minute exit code, e.g. speculation
-+ *    mitigations, etc.
-+ * 4) Tell lockdep that interrupts are enabled
-+ */
-+
-+void exit_to_user_mode(void);
- #endif
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index ee588ee9f122..e696f6912642 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -105,18 +105,6 @@ noinstr void syscall_enter_from_user_mode_prepare(struct pt_regs *regs)
- 	instrumentation_end();
- }
- 
--/**
-- * __exit_to_user_mode - Fixup state when exiting to user mode
-- *
-- * Syscall/interupt exit enables interrupts, but the kernel state is
-- * interrupts disabled when this is invoked. Also tell RCU about it.
-- *
-- * 1) Trace interrupts on state
-- * 2) Invoke context tracking if enabled to adjust RCU state
-- * 3) Invoke architecture specific last minute exit code, e.g. speculation
-- *    mitigations, etc.
-- * 4) Tell lockdep that interrupts are enabled
-- */
- static __always_inline void __exit_to_user_mode(void)
- {
- 	instrumentation_begin();
-@@ -129,6 +117,11 @@ static __always_inline void __exit_to_user_mode(void)
- 	lockdep_hardirqs_on(CALLER_ADDR0);
- }
- 
-+void noinstr exit_to_user_mode(void)
-+{
-+	__exit_to_user_mode();
-+}
-+
- /* Workaround to allow gradual conversion of architecture code */
- void __weak arch_do_signal(struct pt_regs *regs) { }
- 
+Most of the work is derived from downstream Qualcomm kernels.
+Credits to various Qualcomm authors from Patrick Lai's team who have
+contributed to this code.
+
+Am guessing existing qcom folder should cover maintining this driver too!
+If not I can send additional patch to consolidate this along with other
+Audio related drivers in Maintainer file!
+
+Changes since v4:
+	- added Rob's review
+	- updated slew reg range
+	- used u32p_replace_bits
+	- sorted pin functions and its defines
+	- address various trivial comments from Bjorn
+
+Srinivas Kandagatla (2):
+  dt-bindings: pinctrl: qcom: Add sm8250 lpass lpi pinctrl bindings
+  pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
+
+ .../pinctrl/qcom,lpass-lpi-pinctrl.yaml       | 132 ++++
+ drivers/pinctrl/qcom/Kconfig                  |   8 +
+ drivers/pinctrl/qcom/Makefile                 |   1 +
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c      | 727 ++++++++++++++++++
+ 4 files changed, 868 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+
 -- 
-2.17.1
+2.21.0
 
