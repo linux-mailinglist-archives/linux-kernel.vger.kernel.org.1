@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB9A2C9C1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C182C9AB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390406AbgLAJPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:15:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
+        id S2388222AbgLAI74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:59:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390306AbgLAJOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:14:32 -0500
+        id S2388203AbgLAI7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:59:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E310920656;
-        Tue,  1 Dec 2020 09:13:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A97AB21D7A;
+        Tue,  1 Dec 2020 08:59:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606814031;
-        bh=1pzjbr9ortPoQT6b42eysBfSFQtiTs8pQnB8q0CoHqM=;
+        s=korg; t=1606813151;
+        bh=uW6h1dpk5WRQ8A5hECvFORk7m2rs7cHBa3T/Gw34zAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IGcnGy0o3vcqSz0lGPxyD7mTElxB15TQHZELUbaC6cSOyrl1bhmllGqGr5z/DZXaW
-         6MfITGqwGAA0iiPtLNJi57zKa5oLbnEe++zbfEB1/5nlv2rzlHUTFifkhgHlkpEWh2
-         8rwtK+85aoVKTIMT9jW9Hg2Y4EgSUaCMlvCt2vMo=
+        b=R4Tw0ynp0lpDQ16ZVL8F1h9+NFq1DoHj+Obx38ktmUvreaVVY5Kpi0F5X44ysgP/s
+         TSP5LLOy+Ce+fboN62qRKCr6+FuYtCsOOihq6HTXJLljDlinzAIy/HlM3JFey9nTAB
+         4G6zqdhDqNTd4ibBVxoZv7nXPNaDV+3EQiHaI4rQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Cui <mikecui@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 112/152] net: ena: set initial DMA width to avoid intel iommu issue
-Date:   Tue,  1 Dec 2020 09:53:47 +0100
-Message-Id: <20201201084726.507629809@linuxfoundation.org>
+        stable@vger.kernel.org, edes <edes@gmx.net>,
+        Johan Hovold <johan@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 49/50] USB: core: add endpoint-blacklist quirk
+Date:   Tue,  1 Dec 2020 09:53:48 +0100
+Message-Id: <20201201084650.528328585@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,78 +43,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Agroskin <shayagr@amazon.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 09323b3bca95181c0da79daebc8b0603e500f573 ]
+commit 73f8bda9b5dc1c69df2bc55c0cbb24461a6391a9 upstream
 
-The ENA driver uses the readless mechanism, which uses DMA, to find
-out what the DMA mask is supposed to be.
+Add a new device quirk that can be used to blacklist endpoints.
 
-If DMA is used without setting the dma_mask first, it causes the
-Intel IOMMU driver to think that ENA is a 32-bit device and therefore
-disables IOMMU passthrough permanently.
+Since commit 3e4f8e21c4f2 ("USB: core: fix check for duplicate
+endpoints") USB core ignores any duplicate endpoints found during
+descriptor parsing.
 
-This patch sets the dma_mask to be ENA_MAX_PHYS_ADDR_SIZE_BITS=48
-before readless initialization in
-ena_device_init()->ena_com_mmio_reg_read_request_init(),
-which is large enough to workaround the intel_iommu issue.
+In order to handle devices where the first interfaces with duplicate
+endpoints are the ones that should have their endpoints ignored, we need
+to add a blacklist.
 
-DMA mask is set again to the correct value after it's received from the
-device after readless is initialized.
-
-The patch also changes the driver to use dma_set_mask_and_coherent()
-function instead of the two pci_set_dma_mask() and
-pci_set_consistent_dma_mask() ones. Both methods achieve the same
-effect.
-
-Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
-Signed-off-by: Mike Cui <mikecui@amazon.com>
-Signed-off-by: Arthur Kiyanovski <akiyano@amazon.com>
-Signed-off-by: Shay Agroskin <shayagr@amazon.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Tested-by: edes <edes@gmx.net>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20200203153830.26394-2-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/usb/core/config.c  |   11 +++++++++++
+ drivers/usb/core/quirks.c  |   32 ++++++++++++++++++++++++++++++++
+ drivers/usb/core/usb.h     |    3 +++
+ include/linux/usb/quirks.h |    3 +++
+ 4 files changed, 49 insertions(+)
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 0a8520a2e4649..1c978c7987adc 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -3357,16 +3357,9 @@ static int ena_device_init(struct ena_com_dev *ena_dev, struct pci_dev *pdev,
- 		goto err_mmio_read_less;
+--- a/drivers/usb/core/config.c
++++ b/drivers/usb/core/config.c
+@@ -256,6 +256,7 @@ static int usb_parse_endpoint(struct dev
+ 		struct usb_host_interface *ifp, int num_ep,
+ 		unsigned char *buffer, int size)
+ {
++	struct usb_device *udev = to_usb_device(ddev);
+ 	unsigned char *buffer0 = buffer;
+ 	struct usb_endpoint_descriptor *d;
+ 	struct usb_host_endpoint *endpoint;
+@@ -297,6 +298,16 @@ static int usb_parse_endpoint(struct dev
+ 		goto skip_to_next_endpoint_or_interface_descriptor;
  	}
  
--	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
-+	rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(dma_width));
- 	if (rc) {
--		dev_err(dev, "pci_set_dma_mask failed 0x%x\n", rc);
--		goto err_mmio_read_less;
--	}
--
--	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
--	if (rc) {
--		dev_err(dev, "err_pci_set_consistent_dma_mask failed 0x%x\n",
--			rc);
-+		dev_err(dev, "dma_set_mask_and_coherent failed %d\n", rc);
- 		goto err_mmio_read_less;
- 	}
- 
-@@ -4136,6 +4129,12 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		return rc;
- 	}
- 
-+	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(ENA_MAX_PHYS_ADDR_SIZE_BITS));
-+	if (rc) {
-+		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed %d\n", rc);
-+		goto err_disable_device;
++	/* Ignore blacklisted endpoints */
++	if (udev->quirks & USB_QUIRK_ENDPOINT_BLACKLIST) {
++		if (usb_endpoint_is_blacklisted(udev, ifp, d)) {
++			dev_warn(ddev, "config %d interface %d altsetting %d has a blacklisted endpoint with address 0x%X, skipping\n",
++					cfgno, inum, asnum,
++					d->bEndpointAddress);
++			goto skip_to_next_endpoint_or_interface_descriptor;
++		}
 +	}
 +
- 	pci_set_master(pdev);
+ 	endpoint = &ifp->endpoint[ifp->desc.bNumEndpoints];
+ 	++ifp->desc.bNumEndpoints;
  
- 	ena_dev = vzalloc(sizeof(*ena_dev));
--- 
-2.27.0
-
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -344,6 +344,38 @@ static const struct usb_device_id usb_am
+ 	{ }  /* terminating entry must be last */
+ };
+ 
++/*
++ * Entries for blacklisted endpoints that should be ignored when parsing
++ * configuration descriptors.
++ *
++ * Matched for devices with USB_QUIRK_ENDPOINT_BLACKLIST.
++ */
++static const struct usb_device_id usb_endpoint_blacklist[] = {
++	{ }
++};
++
++bool usb_endpoint_is_blacklisted(struct usb_device *udev,
++		struct usb_host_interface *intf,
++		struct usb_endpoint_descriptor *epd)
++{
++	const struct usb_device_id *id;
++	unsigned int address;
++
++	for (id = usb_endpoint_blacklist; id->match_flags; ++id) {
++		if (!usb_match_device(udev, id))
++			continue;
++
++		if (!usb_match_one_id_intf(udev, intf, id))
++			continue;
++
++		address = id->driver_info;
++		if (address == epd->bEndpointAddress)
++			return true;
++	}
++
++	return false;
++}
++
+ static bool usb_match_any_interface(struct usb_device *udev,
+ 				    const struct usb_device_id *id)
+ {
+--- a/drivers/usb/core/usb.h
++++ b/drivers/usb/core/usb.h
+@@ -36,6 +36,9 @@ extern void usb_deauthorize_interface(st
+ extern void usb_authorize_interface(struct usb_interface *);
+ extern void usb_detect_quirks(struct usb_device *udev);
+ extern void usb_detect_interface_quirks(struct usb_device *udev);
++extern bool usb_endpoint_is_blacklisted(struct usb_device *udev,
++		struct usb_host_interface *intf,
++		struct usb_endpoint_descriptor *epd);
+ extern int usb_remove_device(struct usb_device *udev);
+ 
+ extern int usb_get_device_descriptor(struct usb_device *dev,
+--- a/include/linux/usb/quirks.h
++++ b/include/linux/usb/quirks.h
+@@ -60,4 +60,7 @@
+ /* Device needs a pause after every control message. */
+ #define USB_QUIRK_DELAY_CTRL_MSG		BIT(13)
+ 
++/* device has blacklisted endpoints */
++#define USB_QUIRK_ENDPOINT_BLACKLIST		BIT(15)
++
+ #endif /* __LINUX_USB_QUIRKS_H */
 
 
