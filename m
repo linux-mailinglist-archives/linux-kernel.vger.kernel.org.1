@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A0B2CA21A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECED2CA221
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388450AbgLAMHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbgLAMHF (ORCPT
+        id S1728531AbgLAMJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:09:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24051 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727813AbgLAMJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:07:05 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAE9C0613D2;
-        Tue,  1 Dec 2020 04:06:24 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kk4QB-000UkK-Gu; Tue, 01 Dec 2020 13:06:15 +0100
-Message-ID: <a6eb69000eb33ca8f59cbaff2afee205e0877eb8.camel@sipsolutions.net>
-Subject: Re: [PATCH] net: mac80211: cfg: enforce sanity checks for key_index
- in ieee80211_del_key()
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com
-Date:   Tue, 01 Dec 2020 13:06:01 +0100
-In-Reply-To: <1e5e4471-5cf4-6d23-6186-97f764f4d25f@gmail.com> (sfid-20201201_125644_293555_F8FBDA46)
-References: <20201201095639.63936-1-anant.thazhemadam@gmail.com>
-         <3025db173074d4dfbc323e91d3586f0e36426cf0.camel@sipsolutions.net>
-         <1e5e4471-5cf4-6d23-6186-97f764f4d25f@gmail.com>
-         (sfid-20201201_125644_293555_F8FBDA46)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Tue, 1 Dec 2020 07:09:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606824460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PXfc/kqkacP1UiqS7nvKt7QqE8tU45M98d6kX6CKfRY=;
+        b=dGQXU55HFWtwAM1XWDqS48zAdfz+Q9yNytlel86KShSs25y049xBYDVKXn+q/hz5h75Xw9
+        Y0kZBbn7HMPk4K7bojIeLldJPO2ra/DNsCeUdb2wFWsShQCtzKeRRKzd+TnUT0pJmwWYXT
+        1jTtHcNSzJlfNQprsG2EYj4A8glXVtw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-BDSoaGo2PcOHoT5oPOzE-g-1; Tue, 01 Dec 2020 07:07:39 -0500
+X-MC-Unique: BDSoaGo2PcOHoT5oPOzE-g-1
+Received: by mail-ej1-f72.google.com with SMTP id g18so1130185eje.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:07:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PXfc/kqkacP1UiqS7nvKt7QqE8tU45M98d6kX6CKfRY=;
+        b=LznGfXWEjegI9BlQoejbgyCMoLYYyxMrhUGQ0MnDFX2Cx6tlJOl/bksr6vshp6+Vdk
+         /upWCkcdKRjvGEUHeMwLwhKpR8qNS6gLpRkf0NpTFRMiJ9zOcgAjc52ootXyds2eiJ7i
+         +3Af72P6WDujJq8X9gj0QppMGyzNlXQQE3yle6KjPKlhfMya6hazXVwFx684plQ/BPvb
+         KGPtjb5ElCLPoKVGJ62cWP4qAgZCPFEs8e22ATW35VZqkH9NOON0UtRE9G6bL2nPxLAK
+         88BowroZgw7MADfbQOfmaHLw7nOBD7i5JBwqZf2penslLuC32TCaL/mB7IS2RGgJ6aXB
+         r/Xg==
+X-Gm-Message-State: AOAM5301wcaEm8sl/P7s663/Ajq9gB+XQv9QfVxekIvJgmN8OvE5TGgt
+        YNfN6d2nJjA3Cb/FmpszoBQ5nfJqU4dx4iItfL7LmVtPBKYsn2nbkmzlU4EDL8qJZ3ksjpJddma
+        RJoAs534eXYcsHGomfIwL8QTh
+X-Received: by 2002:aa7:c403:: with SMTP id j3mr2619818edq.217.1606824457750;
+        Tue, 01 Dec 2020 04:07:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx1DxtyPC6a1zqrYWrdj42DEWp1B5nUpOxzqYzTrKSPNVvFKMo0ahsqcxwarIESgnaxjNMXjQ==
+X-Received: by 2002:aa7:c403:: with SMTP id j3mr2619797edq.217.1606824457604;
+        Tue, 01 Dec 2020 04:07:37 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u19sm750026ejg.16.2020.12.01.04.07.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 04:07:36 -0800 (PST)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Nikos Tsironis <ntsironis@arrikto.com>
+References: <20201201084647.751612010@linuxfoundation.org>
+ <20201201084648.690944071@linuxfoundation.org>
+ <d29c4b25-33f6-8d99-7a45-8f4e06f5ade6@redhat.com>
+ <X8YThgeaonYhB6zi@kroah.com>
+ <fe3fa32b-fc84-9e81-80e0-cb19889fc042@redhat.com>
+ <X8YY2qW3RQqzmmBl@kroah.com>
+ <d3311713-013b-003c-248b-22ebf1e45c7c@redhat.com>
+ <X8YlUlSXLH5/RckV@kroah.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 4.19 08/57] KVM: x86: Fix split-irqchip vs interrupt
+ injection window request
+Message-ID: <41931e4a-45a5-5ef2-317d-a2a5ae649357@redhat.com>
+Date:   Tue, 1 Dec 2020 13:07:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+In-Reply-To: <X8YlUlSXLH5/RckV@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-01 at 17:26 +0530, Anant Thazhemadam wrote:
-> On 01/12/20 3:30 pm, Johannes Berg wrote:
-> > On Tue, 2020-12-01 at 15:26 +0530, Anant Thazhemadam wrote:
-> > > Currently, it is assumed that key_idx values that are passed to
-> > > ieee80211_del_key() are all valid indexes as is, and no sanity checks
-> > > are performed for it.
-> > > However, syzbot was able to trigger an array-index-out-of-bounds bug
-> > > by passing a key_idx value of 5, when the maximum permissible index
-> > > value is (NUM_DEFAULT_KEYS - 1).
-> > > Enforcing sanity checks helps in preventing this bug, or a similar
-> > > instance in the context of ieee80211_del_key() from occurring.
-> > I think we should do this more generally in cfg80211, like in
-> > nl80211_new_key() we do it via cfg80211_validate_key_settings().
-> > 
-> > I suppose we cannot use the same function, but still, would be good to
-> > address this generally in nl80211 for all drivers.
-> 
-> Hello,
-> 
-> This gave me the idea of trying to use cfg80211_validate_key_settings()
-> directly in ieee80211_del_key(). I did try that out, tested it, and this bug
-> doesn't seem to be getting triggered anymore.
-> If this is okay, then I can send in a v2 soon. :)
-> 
-> If there is any reason that I'm missing as to why cfg80211_validate_key_settings()
-> cannot be used in this context, please let me know.
+On 01/12/20 12:13, Greg Kroah-Hartman wrote:
+> If you look at the section onhttps://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> that starts with "Additionally, some patches..." it will show that you
+> can add "#" comments on the cc: stable line to let me know pre-requsite
+> commits if you know them, and want to do that in the future.
 
-If it works then I guess that's OK. I thought we didn't have all the
-right information, e.g. whether a key is pairwise or not?
+Yeah, I guess that one applies even if it was submitted in the same pull 
+request.  I have used it in the past but not for patches that were 
+submitted in the same pull request, so in this case I should have marked 
+patch 2 like this:
 
-johannes
+Cc: stable@vger.kernel.org # 4.4.x: 123456: kvm: patch 1 in the series
+Cc: stable@vger.kernel.org # 4.4.x
+
+instead of marking both patches with just "Cc: stable".  Upstream commit 
+fcb3a1ab79904d54499db77017793ccca665eb7e is one case in which Rafael did 
+this.
+
+Paolo
 
