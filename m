@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1412C9A0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8B62C9A0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgLAIzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:55:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
+        id S1728467AbgLAIzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728965AbgLAIzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:55:05 -0500
+        id S1728968AbgLAIzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E654E2222C;
-        Tue,  1 Dec 2020 08:53:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57A202222A;
+        Tue,  1 Dec 2020 08:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812837;
-        bh=RhMxrXaQglKe7p18zzosxorZXKKDBSr6PbsUM8x8qLk=;
+        s=korg; t=1606812839;
+        bh=YIPr9Z7UI174ncEFWwzjrk33rZ/qeI5Q7yAMSpY8n0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CjLKcS7plNKVejoGqtvqcRK7Fcc9CwlS4rCO4MjPB33Nf3zTJYOdH3fPMGq3v6E3N
-         j3AjDD3q7A4cQwYKSycAmUe0vHz22ihRaTHdmEp5dWbIaOPmauda4RHhuUYmLIcUJW
-         JvWAcQQU5Bcvojrbhr4mkORAUizt98WyqPaklCYg=
+        b=XpQHDo149hrB8ZNumu/qwqCZ/mlBDkIfjSSib6nazDTu6o8of5W9XusxRHHkqiWJ/
+         3P+KeVxYlwoVi5ML8EkLEIEljuYZ4zcSPwVfGoO/biv7Yqoh4YcwAIVzrGzuvYX59V
+         3b96qr9Uqu3wk09ZMEPhKhEpdukONfV/BUVY7ixs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 18/24] efivarfs: revert "fix memory leak in efivarfs_create()"
-Date:   Tue,  1 Dec 2020 09:53:24 +0100
-Message-Id: <20201201084638.661650900@linuxfoundation.org>
+Subject: [PATCH 4.4 19/24] perf probe: Fix to die_entrypc() returns error correctly
+Date:   Tue,  1 Dec 2020 09:53:25 +0100
+Message-Id: <20201201084638.713235362@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
 References: <20201201084637.754785180@linuxfoundation.org>
@@ -45,61 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit ff04f3b6f2e27f8ae28a498416af2a8dd5072b43 ]
+[ Upstream commit ab4200c17ba6fe71d2da64317aae8a8aa684624c ]
 
-The memory leak addressed by commit fe5186cf12e3 is a false positive:
-all allocations are recorded in a linked list, and freed when the
-filesystem is unmounted. This leads to double frees, and as reported
-by David, leads to crashes if SLUB is configured to self destruct when
-double frees occur.
+Fix die_entrypc() to return error correctly if the DIE has no
+DW_AT_ranges attribute. Since dwarf_ranges() will treat the case as an
+empty ranges and return 0, we have to check it by ourselves.
 
-So drop the redundant kfree() again, and instead, mark the offending
-pointer variable so the allocation is ignored by kmemleak.
-
-Cc: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-Fixes: fe5186cf12e3 ("efivarfs: fix memory leak in efivarfs_create()")
-Reported-by: David Laight <David.Laight@aculab.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: 91e2f539eeda ("perf probe: Fix to show function entry line as probe-able")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc: Thomas Richter <tmricht@linux.ibm.com>
+Link: http://lore.kernel.org/lkml/160645612634.2824037.5284932731175079426.stgit@devnote2
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/efivarfs/inode.c | 2 ++
- fs/efivarfs/super.c | 1 -
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ tools/perf/util/dwarf-aux.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
-index e2ab6d0497f2b..151884b95ee2f 100644
---- a/fs/efivarfs/inode.c
-+++ b/fs/efivarfs/inode.c
-@@ -10,6 +10,7 @@
- #include <linux/efi.h>
- #include <linux/fs.h>
- #include <linux/ctype.h>
-+#include <linux/kmemleak.h>
- #include <linux/slab.h>
- 
- #include "internal.h"
-@@ -138,6 +139,7 @@ static int efivarfs_create(struct inode *dir, struct dentry *dentry,
- 	var->var.VariableName[i] = '\0';
- 
- 	inode->i_private = var;
-+	kmemleak_ignore(var);
- 
- 	efivar_entry_add(var, &efivarfs_list);
- 	d_instantiate(dentry, inode);
-diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-index 0e4f20377d196..fca235020312d 100644
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -23,7 +23,6 @@ LIST_HEAD(efivarfs_list);
- static void efivarfs_evict_inode(struct inode *inode)
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index fd460aca36e55..40e4c933b3728 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -305,6 +305,7 @@ bool die_is_func_def(Dwarf_Die *dw_die)
+ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
  {
- 	clear_inode(inode);
--	kfree(inode->i_private);
+ 	Dwarf_Addr base, end;
++	Dwarf_Attribute attr;
+ 
+ 	if (!addr)
+ 		return -EINVAL;
+@@ -312,6 +313,13 @@ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
+ 	if (dwarf_entrypc(dw_die, addr) == 0)
+ 		return 0;
+ 
++	/*
++	 *  Since the dwarf_ranges() will return 0 if there is no
++	 * DW_AT_ranges attribute, we should check it first.
++	 */
++	if (!dwarf_attr(dw_die, DW_AT_ranges, &attr))
++		return -ENOENT;
++
+ 	return dwarf_ranges(dw_die, 0, &base, addr, &end) < 0 ? -ENOENT : 0;
  }
  
- static const struct super_operations efivarfs_ops = {
 -- 
 2.27.0
 
