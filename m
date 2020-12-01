@@ -2,169 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6872CADE7
+	by mail.lfdr.de (Postfix) with ESMTP id CDBD62CADE8
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgLAVAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgLAVAI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:00:08 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B04C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:59:28 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id o7so954617pjj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:59:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/xp92MbdfOGxMs34FhXWWhWMRKc9mfpWP3SeaYIWAuM=;
-        b=cgNgwFqoY+WBXtcw/+ew5EzVBnDdN6R4Ad53YGqxtRpnzmYTS/jZJN0cC5wbb1OfFp
-         C1oVQk708EoNM1af2naJuj4PoE2oUGg7I63e+jBEKvZltn6FvfeHsikNCiLPpkuhjoR9
-         BL7mbc3B0S/RQoS/M8t/qDsTgdTIudWtp36GU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/xp92MbdfOGxMs34FhXWWhWMRKc9mfpWP3SeaYIWAuM=;
-        b=JPBybzhn7Y7e+HKsX5ebtSnoWvoTrmtq19ZjBt1GBUQMTJFDrSYwNYxinQtxyQkbdL
-         FxD1toM6BOtBaaVjcedRqyxNcMBkfo6K0elIH/N340kFbe9tyoctYIQ40D8O3Ec9bJkt
-         wyoq1QUbjRqNsd4DzVw43XoENhIGFFADARtzklfS3Ih/xafZhVzHi5fS3Wb0uCeNH+sc
-         7X+axOM68ulrHeMss67Rh4WC+GJAWLU5uHoCoa1cq4V7SQjgR3jQpAk/AlMXLBLMGBlN
-         TIcAESKXQjArtGYL6p3vUXJ8vc5xf6AHkaGtukiXV9aLHdZsbzEzrn2n5UPq4HC4hKte
-         O6+w==
-X-Gm-Message-State: AOAM532+xqDQlDSI3m0EqTDV2YNHy5cWue42RbbEbggKetJWcB21htkV
-        +oOd+Qaif5EE7w1h0l0bMBeKug==
-X-Google-Smtp-Source: ABdhPJy4Nlx7YUEzxifWv8pAev5FkGJZTqHO15Gj+Zv2RLwtUXlVyBzmWggUAPzozIEFT6nT0/pW2Q==
-X-Received: by 2002:a17:902:b498:b029:da:84a7:be94 with SMTP id y24-20020a170902b498b02900da84a7be94mr4661967plr.52.1606856367675;
-        Tue, 01 Dec 2020 12:59:27 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id m9sm629385pfh.94.2020.12.01.12.59.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:59:27 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: panel: Fully transition panel_desc kerneldoc to inline style
-Date:   Tue,  1 Dec 2020 12:59:12 -0800
-Message-Id: <20201201125822.1.I3c4191336014bd57364309439e56f600c94bb12b@changeid>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        id S1729183AbgLAVAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:00:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725971AbgLAVAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 16:00:35 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50567207FF;
+        Tue,  1 Dec 2020 20:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606856395;
+        bh=p9JKBySgEVo6cQvfoDeLWixQOBZhOoCP1Hb20LsMwiU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g8BOli3nO/sSpK8q8W0P78yKh5sMbgMiWRYD7GbfsPq3OOO6KBtFxV8BzM0l/NxZ5
+         X3ngjEiJT/5Aryd3eDwUsxi6QNq/0ZUNdaxuew63tAhsQTDkDvCfz7qZ1VeHVW1m+m
+         0x5VuvVHxrFlmcPzA/L6EeiV739sWFPtV57bhXTY=
+Date:   Tue, 1 Dec 2020 20:59:48 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com,
+        jiangkunkun@huawei.com, wangjingyi11@huawei.com,
+        lushenming@huawei.com
+Subject: Re: [PATCH v2 0/3] Fix several bugs in KVM stage 2 translation
+Message-ID: <20201201205948.GA28178@willie-the-truck>
+References: <20201201201034.116760-1-wangyanan55@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201201034.116760-1-wangyanan55@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 131f909ad55f ("drm: panel: simple: Fixup the struct
-panel_desc kernel doc") I transitioned the more deeply nested
-kerneldoc comments into the inline style.  Apparently it is desirable
-to continue the job and move _everything_ in this struct to inline.
-Let's do it.
+On Wed, Dec 02, 2020 at 04:10:31AM +0800, Yanan Wang wrote:
+> When installing a new pte entry or updating an old valid entry in stage 2
+> translation, we use get_page()/put_page() to record page_count of the page-table
+> pages. PATCH 1/3 aims to fix incorrect use of get_page()/put_page() in stage 2,
+> which might make page-table pages unable to be freed when unmapping a range.
+> 
+> When dirty logging of a guest with hugepages is finished, we should merge tables
+> back into a block entry if adjustment of huge mapping is found necessary.
+> In addition to installing the block entry, we should not only free the non-huge
+> page-table pages but also invalidate all the TLB entries of non-huge mappings for
+> the block. PATCH 2/3 adds enough TLBI when merging tables into a block entry.
+> 
+> The rewrite of page-table code and fault handling add two different handlers
+> for "just relaxing permissions" and "map by stage2 page-table walk", that's
+> good improvement. Yet, in function user_mem_abort(), conditions where we choose
+> the above two fault handlers are not strictly distinguished. This will causes
+> guest errors such as infinite-loop (soft lockup will occur in result), because of
+> calling the inappropriate fault handler. So, a solution that can strictly
+> distinguish conditions is introduced in PATCH 3/3.
 
-While doing this, we also add a short summary for the whole struct to
-fix a warning when we run with extra warnings, AKA:
-  scripts/kernel-doc -v -rst drivers/gpu/drm/panel/panel-simple.c
+For the series:
 
-The warning was:
-  drivers/gpu/drm/panel/panel-simple.c:42: warning: missing initial short description on line:
-   * struct panel_desc
+Acked-by: Will Deacon <will@kernel.org>
 
-Suggested-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: dri-devel@lists.freedesktop.org
----
+Thanks for reporting these, helping me to understand the issues and then
+spinning a v2 so promptly.
 
- drivers/gpu/drm/panel/panel-simple.c | 43 +++++++++++++++++-----------
- 1 file changed, 27 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 216cde33b5c4..33d53abdb1fb 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -39,31 +39,36 @@
- #include <drm/drm_panel.h>
- 
- /**
-- * struct panel_desc
-- * @modes: Pointer to array of fixed modes appropriate for this panel.  If
-- *         only one mode then this can just be the address of this the mode.
-- *         NOTE: cannot be used with "timings" and also if this is specified
-- *         then you cannot override the mode in the device tree.
-- * @num_modes: Number of elements in modes array.
-- * @timings: Pointer to array of display timings.  NOTE: cannot be used with
-- *           "modes" and also these will be used to validate a device tree
-- *           override if one is present.
-- * @num_timings: Number of elements in timings array.
-- * @bpc: Bits per color.
-- * @size: Structure containing the physical size of this panel.
-- * @delay: Structure containing various delay values for this panel.
-- * @bus_format: See MEDIA_BUS_FMT_... defines.
-- * @bus_flags: See DRM_BUS_FLAG_... defines.
-- * @connector_type: LVDS, eDP, DSI, DPI, etc.
-+ * struct panel_desc - Describes a simple panel.
-  */
- struct panel_desc {
-+	/**
-+	 * @modes: Pointer to array of fixed modes appropriate for this panel.
-+	 *
-+	 * If only one mode then this can just be the address of this the mode.
-+	 * NOTE: cannot be used with "timings" and also if this is specified
-+	 * then you cannot override the mode in the device tree.
-+	 */
- 	const struct drm_display_mode *modes;
-+
-+	/** @num_modes: Number of elements in modes array. */
- 	unsigned int num_modes;
-+
-+	/**
-+	 * @timings: Pointer to array of display timings
-+	 *
-+	 * NOTE: cannot be used with "modes" and also these will be used to
-+	 * validate a device tree override if one is present.
-+	 */
- 	const struct display_timing *timings;
-+
-+	/** @num_timings: Number of elements in timings array. */
- 	unsigned int num_timings;
- 
-+	/** @bpc: Bits per color. */
- 	unsigned int bpc;
- 
-+	/** @size: Structure containing the physical size of this panel. */
- 	struct {
- 		/**
- 		 * @size.width: Width (in mm) of the active display area.
-@@ -76,6 +81,7 @@ struct panel_desc {
- 		unsigned int height;
- 	} size;
- 
-+	/** @delay: Structure containing various delay values for this panel. */
- 	struct {
- 		/**
- 		 * @delay.prepare: Time for the panel to become ready.
-@@ -154,8 +160,13 @@ struct panel_desc {
- 		unsigned int unprepare;
- 	} delay;
- 
-+	/** @bus_format: See MEDIA_BUS_FMT_... defines. */
- 	u32 bus_format;
-+
-+	/** @bus_flags: See DRM_BUS_FLAG_... defines. */
- 	u32 bus_flags;
-+
-+	/** @connector_type: LVDS, eDP, DSI, DPI, etc. */
- 	int connector_type;
- };
- 
--- 
-2.29.2.454.gaff20da3a2-goog
-
+Will
