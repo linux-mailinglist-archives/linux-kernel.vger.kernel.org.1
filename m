@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802432CAA3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332B52CAA2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404178AbgLARwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:52:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391855AbgLARwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:52:46 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFCF620639;
-        Tue,  1 Dec 2020 17:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606845124;
-        bh=jUfmwSwFjkBDlJ2yKLucSJdrO2Do2GFfT2jP3rl2XF0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B6evOfVtPDO/lqPGI4YNEUtxLDjHbZ2Gn0Fo0LlZJhPXn5WYv1KHmWaBDtNZPQcnM
-         mjSeRMfZVph92b22w85+1sXGKO/sK9bLw4OSpTbJAZhnHNFFEl/kxxChQpoT1nfsYF
-         F/Qw+ItDxJumfTk/UJCa0IEZ6Tgyc4WhgJMslYxI=
-Date:   Tue, 1 Dec 2020 17:51:35 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK
- and LRCLK in LPAIF invalid state
-Message-ID: <20201201175135.GO5239@sirena.org.uk>
-References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
- <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
- <20201130124617.GC4756@sirena.org.uk>
- <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
+        id S2389622AbgLARwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:52:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729602AbgLARwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:52:30 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCE8C0613CF;
+        Tue,  1 Dec 2020 09:51:50 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id r9so1675550pjl.5;
+        Tue, 01 Dec 2020 09:51:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k6Xb9MXJVov2wm4juOQ7YbGN8C26NDDinzdyjfuUn68=;
+        b=ok8kPmCe3llCdZTU47fe5dTRRP4u7SG0gPPLUr2FUD806/GcKfVnyVsXgjOcHewNr+
+         HyXZhRjFiu/IiaCWgjBO9ZzsSRBlNKSpulVhiKziCzQE1zVHBtkA65QRS4vcFapPlgdV
+         UHr/eS5gxALc3bwXwsHfokAxLWuAgCiHpV/GvnmRaQFqNT3PSh3/nr/bOr+OyzkwF40J
+         3zWpu/RmaSvX+e/hYV+ucNN8qJyaEGDDkErBfGTm/8wXLDNg+c3gFVkxe5UyGeqkT8id
+         ITmSl/ToKZiudo/F2EiSj/L9nY/6I8Lw3gnV9d0dvyFwfFeIsOpoO9t7LuBoo/qMkZUH
+         sF8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=k6Xb9MXJVov2wm4juOQ7YbGN8C26NDDinzdyjfuUn68=;
+        b=On/pyF/T3/BlmeagcWGbWXNNcXCYfwXMfhVuBlc86xX2CTa/65APn1TguzhWsPy51I
+         364lIlN/RYsHToS+0cjbfIQRcX7YrmmDbGOK0UADoAEontlsCNz69bcOQi7j2SMKKwhK
+         LXF6xlGMorAcLq/1ivpNFD5REBOG6trjF09ie3BD05au1+KSQL6KNelVPHAl78e1rfX2
+         jYAae+a+75L4q69m60bSZZuNfjQ/Xp09QIoZRRa/8lpvKqfg1gMwV9P2KzsmyhkQsStO
+         MKlq4D/AsLUSH+SaMxl1qBybh8fggWmjmk4pNA7Jk9WZD+RfiImD1n/d7PjrpdIFDUds
+         p6Gw==
+X-Gm-Message-State: AOAM530jZXRX4U2K2AfJtzPGOgp37u2SJ30LEU9d6SHJJnHWYfbhKJps
+        7phLYorGBkdMjr7lvs0oR6c=
+X-Google-Smtp-Source: ABdhPJzSmx8SXb+o8aTUE2sD5HDesL5BsQaDTaF4cLIZmuGSDBxGOhBU7W0xvz5ruGhxvmVGYiktuw==
+X-Received: by 2002:a17:90a:c257:: with SMTP id d23mr3934185pjx.211.1606845109590;
+        Tue, 01 Dec 2020 09:51:49 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id q23sm390082pfg.192.2020.12.01.09.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 09:51:48 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        hyesoo.yu@samsung.com, willy@infradead.org, david@redhat.com,
+        iamjoonsoo.kim@lge.com, vbabka@suse.cz, surenb@google.com,
+        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com,
+        sumit.semwal@linaro.org, john.stultz@linaro.org,
+        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org,
+        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH v2 0/4] Chunk Heap Support on DMA-HEAP
+Date:   Tue,  1 Dec 2020 09:51:40 -0800
+Message-Id: <20201201175144.3996569-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2/+Vq7w28QOSGzSM"
-Content-Disposition: inline
-In-Reply-To: <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset introduces a new dma heap, chunk heap that makes it
+easy to perform the bulk allocation of high order pages.
+It has been created to help optimize the 4K/8K HDR video playback
+with secure DRM HW to protect contents on memory. The HW needs
+physically contiguous memory chunks up to several hundred MB memory.
 
---2/+Vq7w28QOSGzSM
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patchset is against on next-20201130.
 
-On Tue, Dec 01, 2020 at 11:01:21PM +0530, Srinivasa Rao Mandadapu wrote:
-> On 11/30/2020 6:16 PM, Mark Brown wrote:
+The patchset includes the following:
+ - cma_alloc_bulk API
+ - export dma-heap API to register kernel module dma heap.
+ - add chunk heap implementation.
 
-> > Part of this commit message says that the problem was making the regist=
-ers
-> > non-volatile but both the change and the rest of the commit message say
-> > that the issue was that the registers were made volatile.  I'm also
-> > still unclear as to what the issue is either way - how does reading the
-> > state of the registers from the hardware instead of the cache affect
-> > things?
+* Since v1 - 
+  https://lore.kernel.org/linux-mm/20201117181935.3613581-1-minchan@kernel.org/
 
-> Initial problem was, during playback if device suspended, I2S and DMA
-> control registers
+  * introduce alloc_contig_mode - David
+  * use default CMA instead of device tree - John
+    
+Hyesoo Yu (2):
+  dma-buf: add export symbol for dma-heap
+  dma-buf: heaps: add chunk heap to dmabuf heaps
 
-> are getting reset and unable to recover playback after resume.
+Minchan Kim (2):
+  mm: introduce alloc_contig_mode
+  mm: introduce cma_alloc_bulk API
 
-> As these registers were non volatile registers, driver is not getting act=
-ual
-> register value
+ drivers/dma-buf/dma-heap.c         |   2 +
+ drivers/dma-buf/heaps/Kconfig      |  15 +
+ drivers/dma-buf/heaps/Makefile     |   1 +
+ drivers/dma-buf/heaps/chunk_heap.c | 429 +++++++++++++++++++++++++++++
+ drivers/virtio/virtio_mem.c        |   2 +-
+ include/linux/cma.h                |   5 +
+ include/linux/gfp.h                |  10 +-
+ kernel/dma/contiguous.c            |   1 +
+ mm/cma.c                           | 134 ++++++++-
+ mm/page_alloc.c                    |  25 +-
+ 10 files changed, 607 insertions(+), 17 deletions(-)
+ create mode 100644 drivers/dma-buf/heaps/chunk_heap.c
 
-> and unable to report error state to application. Due to this application
+-- 
+2.29.2.454.gaff20da3a2-goog
 
-> keeps on polling for HW current pointer state and not exited from PCM
-> running state.
-
-> Later from review comments by Srinivas kandagatla, I got to know
->=20
-> about regcache sync APIs, which can be used=A0 to sync cache after resume=
- and
->=20
-> HW registers can be updated with=A0 original values. With that playback c=
-an be
-> continued.
->=20
-> So is the reason, I am reverting partial changes in the commit b182496822=
-1c.
-
-I don't understand why a fix for the register cache not being in sync
-with the hardware doesn't involve syncing the register cache with the
-hardware.
-
---2/+Vq7w28QOSGzSM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GgqYACgkQJNaLcl1U
-h9AADgf8CR0hjpkrydEc4Jmmddl9qFfQcl6Ce7ZzoFWbuXciX9c8pj+PPVgpoX/K
-jwlx1LwoYv/e+ods31XWXAdp2nRaCef93oB6iUPjUydd6LdsW40FFiBCB4fiT/v/
-6JqlND0PT2+PAgAkoz1sUM9Hn5U5ocdWfs02/3jICjdnfvHjDWtH6XWgNwt+CA1A
-1PpFFUv4RkRTYZFG/LHHNXPOOBc8jqJ1Z66ZjEd38AvpJXaWsDAAlF4hc2XUk15/
-hSoQ97rYQGjGUfQUB/K9qgkhzAj67DtXgif7iosAO+Th/hAkRwH189Z/lTZrkoOd
-Rp1dumAYfp+wg91tB7hho8TJxhmygg==
-=QxRn
------END PGP SIGNATURE-----
-
---2/+Vq7w28QOSGzSM--
