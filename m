@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9057A2C9AE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FAD2C9B64
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388631AbgLAJB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:01:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38664 "EHLO mail.kernel.org"
+        id S2388660AbgLAJHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388610AbgLAJBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:01:53 -0500
+        id S2387687AbgLAJGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E421C221FF;
-        Tue,  1 Dec 2020 09:01:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E082221FF;
+        Tue,  1 Dec 2020 09:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813272;
-        bh=c9cxOImaJr8Kv0UBxQSfz4AFdOoqybz7HSahaAzbbns=;
+        s=korg; t=1606813526;
+        bh=r1jrhRzId3J+mwff/ZgZqPPEVyjusmeRqjtfsfeGUfQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dYeg9b3Ckcnnly9PETBfRjDNrvY2MsSqSznqppXl2Unog76NOJKkgVkKu48Iokr8P
-         D3UFCSsA/94+Il7zK3Lvr80BkpnxOsYEkfW9qONdxQAMf5hznqjxu6iGO/oM+fnfPo
-         t9oZtMbap2YftlWR2/e0IDkL/cxSF2bKjhzIYp9E=
+        b=Vy63DEpyoenqUaOqK5K2mQ2uGJ7p7ibLtARrTWV+fs3tQ/vIlPLWtVJ0QRJ6QeH0p
+         2XQkWvyhNu76B0hLi8TPEuxfug8C2XPh4OCiFFAkA4lzWd1YFAdGmwnmy+5a4cap2w
+         sYqHLdN+wYGsOGr5M4CxGmlbf4AcaRPIkR4RNrng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 41/57] ibmvnic: fix NULL pointer dereference in reset_sub_crq_queues
-Date:   Tue,  1 Dec 2020 09:53:46 +0100
-Message-Id: <20201201084651.116506366@linuxfoundation.org>
+Subject: [PATCH 5.4 70/98] efi: EFI_EARLYCON should depend on EFI
+Date:   Tue,  1 Dec 2020 09:53:47 +0100
+Message-Id: <20201201084658.504147238@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,71 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit a0faaa27c71608799e0dd765c5af38a089091802 ]
+[ Upstream commit 36a237526cd81ff4b6829e6ebd60921c6f976e3b ]
 
-adapter->tx_scrq and adapter->rx_scrq could be NULL if the previous reset
-did not complete after freeing sub crqs. Check for NULL before
-dereferencing them.
+CONFIG_EFI_EARLYCON defaults to yes, and thus is enabled on systems that
+do not support EFI, or do not have EFI support enabled, but do satisfy
+the symbol's other dependencies.
 
-Snippet of call trace:
-ibmvnic 30000006 env6: Releasing sub-CRQ
-ibmvnic 30000006 env6: Releasing CRQ
-...
-ibmvnic 30000006 env6: Got Control IP offload Response
-ibmvnic 30000006 env6: Re-setting tx_scrq[0]
-BUG: Kernel NULL pointer dereference on read at 0x00000000
-Faulting instruction address: 0xc008000003dea7cc
-Oops: Kernel access of bad area, sig: 11 [#1]
-LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-Modules linked in: rpadlpar_io rpaphp xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables xsk_diag tcp_diag udp_diag raw_diag inet_diag unix_diag af_packet_diag netlink_diag tun bridge stp llc rfkill sunrpc pseries_rng xts vmx_crypto uio_pdrv_genirq uio binfmt_misc ip_tables xfs libcrc32c sd_mod t10_pi sg ibmvscsi ibmvnic ibmveth scsi_transport_srp dm_mirror dm_region_hash dm_log dm_mod
-CPU: 80 PID: 1856 Comm: kworker/80:2 Tainted: G        W         5.8.0+ #4
-Workqueue: events __ibmvnic_reset [ibmvnic]
-NIP:  c008000003dea7cc LR: c008000003dea7bc CTR: 0000000000000000
-REGS: c0000007ef7db860 TRAP: 0380   Tainted: G        W          (5.8.0+)
-MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 28002422  XER: 0000000d
-CFAR: c000000000bd9520 IRQMASK: 0
-GPR00: c008000003dea7bc c0000007ef7dbaf0 c008000003df7400 c0000007fa26ec00
-GPR04: c0000007fcd0d008 c0000007fcd96350 0000000000000027 c0000007fcd0d010
-GPR08: 0000000000000023 0000000000000000 0000000000000000 0000000000000000
-GPR12: 0000000000002000 c00000001ec18e00 c0000000001982f8 c0000007bad6e840
-GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-GPR20: 0000000000000000 0000000000000000 0000000000000000 fffffffffffffef7
-GPR24: 0000000000000402 c0000007fa26f3a8 0000000000000003 c00000016f8ec048
-GPR28: 0000000000000000 0000000000000000 0000000000000000 c0000007fa26ec00
-NIP [c008000003dea7cc] ibmvnic_reset_init+0x15c/0x258 [ibmvnic]
-LR [c008000003dea7bc] ibmvnic_reset_init+0x14c/0x258 [ibmvnic]
-Call Trace:
-[c0000007ef7dbaf0] [c008000003dea7bc] ibmvnic_reset_init+0x14c/0x258 [ibmvnic] (unreliable)
-[c0000007ef7dbb80] [c008000003de8860] __ibmvnic_reset+0x408/0x970 [ibmvnic]
-[c0000007ef7dbc50] [c00000000018b7cc] process_one_work+0x2cc/0x800
-[c0000007ef7dbd20] [c00000000018bd78] worker_thread+0x78/0x520
-[c0000007ef7dbdb0] [c0000000001984c4] kthread+0x1d4/0x1e0
-[c0000007ef7dbe20] [c00000000000cea8] ret_from_kernel_thread+0x5c/0x74
+While drivers/firmware/efi/ won't be entered during the build phase if
+CONFIG_EFI=n, and drivers/firmware/efi/earlycon.c itself thus won't be
+built, enabling EFI_EARLYCON does force-enable CONFIG_FONT_SUPPORT and
+CONFIG_ARCH_USE_MEMREMAP_PROT, and CONFIG_FONT_8x16, which is
+undesirable.
 
-Fixes: 57a49436f4e8 ("ibmvnic: Reset sub-crqs during driver reset")
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fix this by making CONFIG_EFI_EARLYCON depend on CONFIG_EFI.
+
+This reduces kernel size on headless systems by more than 4 KiB.
+
+Fixes: 69c1f396f25b805a ("efi/x86: Convert x86 EFI earlyprintk into generic earlycon implementation")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/r/20201124191646.3559757-1-geert@linux-m68k.org
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/firmware/efi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index d8115a9333e05..2fc8f281c2766 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2560,6 +2560,9 @@ static int reset_sub_crq_queues(struct ibmvnic_adapter *adapter)
- {
- 	int i, rc;
+diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
+index 6a6b412206ec0..3222645c95b33 100644
+--- a/drivers/firmware/efi/Kconfig
++++ b/drivers/firmware/efi/Kconfig
+@@ -216,7 +216,7 @@ config EFI_DEV_PATH_PARSER
  
-+	if (!adapter->tx_scrq || !adapter->rx_scrq)
-+		return -EINVAL;
-+
- 	for (i = 0; i < adapter->req_tx_queues; i++) {
- 		netdev_dbg(adapter->netdev, "Re-setting tx_scrq[%d]\n", i);
- 		rc = reset_one_sub_crq_queue(adapter, adapter->tx_scrq[i]);
+ config EFI_EARLYCON
+ 	def_bool y
+-	depends on SERIAL_EARLYCON && !ARM && !IA64
++	depends on EFI && SERIAL_EARLYCON && !ARM && !IA64
+ 	select FONT_SUPPORT
+ 	select ARCH_USE_MEMREMAP_PROT
+ 
 -- 
 2.27.0
 
