@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113F62CAAB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA45A2CAAC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389510AbgLASYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:24:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727914AbgLASYx (ORCPT
+        id S1729941AbgLASbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:31:43 -0500
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:31903 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728682AbgLASbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:24:53 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73C0C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:24:12 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id d9so2229672qke.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:24:12 -0800 (PST)
+        Tue, 1 Dec 2020 13:31:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rDcmO5EGcDHOUaqtJgIxREJ80cmJezdkiJUzt/0huDY=;
-        b=JthbCB7ET4rwvDCTm5m/rl69OuBEotofzFOW4aaZZHym7qZ+OgIgPkDoQh/KjyxNhv
-         ueivEh/+YTB8RxOXIvgU2lFkWeOLAAUCWR1luIwjauCRlWaFL12aqC8pB0XnLiZo3q4Q
-         dY0l4Lc0vH3RiGEWDWAw7nIBzRZLll4S3B6N8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rDcmO5EGcDHOUaqtJgIxREJ80cmJezdkiJUzt/0huDY=;
-        b=cihd4CmA49gbcHUwYYWafxjaUs2Yj/3FbtoIQFPFyWt0V+P6cnN9+ksBFdVjgLm657
-         h9NTbEWtmRB2NpDKdiX+2IBOTapnmvHQlm4PSnkk8lYgLQosPmMbYHJJNn0+wQHukETK
-         wZQAOma5voxSwqXg+r6YNvA655UfG3nNLuOAaJiN9rECw9Bd7HMcZb9sVAXxUHos8Lm/
-         Hbnab68S0bpLZVjhmiJi5/JC63xH0Xr6o3ez0qyYqgCBC2ukAuuy0JtQaEPUwFEQCiUB
-         vnCSy6Bmw/6DqBljKgDhMwvF0qYj1+UFbNznff5EvdiBctedcFcPIri9La9UlU+ApKqI
-         Bagg==
-X-Gm-Message-State: AOAM533XHHIEvoFta4KN8lKuZqlmIDMrX+m5mjauSbmHYDQvTEc85UwY
-        fhLWDVMcU210m4456s1T7lOKuw==
-X-Google-Smtp-Source: ABdhPJyUZEcKyJSmXwO2J30KU6uw46hH+/5IsjfoUwGdx7s24vhEci1knbCI6QzESV9Jmxf2wn1AZQ==
-X-Received: by 2002:a37:e20d:: with SMTP id g13mr4196885qki.325.1606847051958;
-        Tue, 01 Dec 2020 10:24:11 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id r5sm427066qti.28.2020.12.01.10.24.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 10:24:11 -0800 (PST)
-Date:   Tue, 1 Dec 2020 13:24:10 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 19/32] entry/idle: Enter and exit kernel protection
- during idle entry and exit
-Message-ID: <20201201182410.GA209213@google.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-20-joel@joelfernandes.org>
- <20201124161335.GB3021@hirez.programming.kicks-ass.net>
- <20201124180343.GF1021337@google.com>
- <20201125084908.GO2414@hirez.programming.kicks-ass.net>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1606847501; x=1638383501;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=3v0xYiwGFnepKakD1Kn38bWbXTSKtbR5exXVdyChygA=;
+  b=RY9FpVtchk8PqP6Y9b4QlD1RQapL0jt5eGSDJrwUVTiOxxgofZVRSllM
+   e0+74bz3d686MfEgD02GMM/b/TCc6ZlRlay1spQjTROM5PeAT221DqACV
+   9xjPfmpbVfrL9lKtbpRwBGvSjFzWtJj91r+3NVJ3AWUgQJ1F87Q5/VNqL
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.78,385,1599523200"; 
+   d="scan'208";a="100889006"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-16425a8d.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 01 Dec 2020 18:02:46 +0000
+Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-16425a8d.us-east-1.amazon.com (Postfix) with ESMTPS id 2A9A8100F56;
+        Tue,  1 Dec 2020 18:02:42 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.67) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 1 Dec 2020 18:02:37 +0000
+Subject: Re: [PATCH net-next v1 0/3] vsock: Add flag field in the vsock
+ address
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20201201152505.19445-1-andraprs@amazon.com>
+ <20201201162721.lbngjzofyk3bad5b@steredhat>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <f9384701-9ac2-abb2-2082-820f9fc99904@amazon.com>
+Date:   Tue, 1 Dec 2020 20:02:28 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125084908.GO2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201201162721.lbngjzofyk3bad5b@steredhat>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.67]
+X-ClientProxiedBy: EX13D22UWC002.ant.amazon.com (10.43.162.29) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 09:49:08AM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 24, 2020 at 01:03:43PM -0500, Joel Fernandes wrote:
-> > On Tue, Nov 24, 2020 at 05:13:35PM +0100, Peter Zijlstra wrote:
-> > > On Tue, Nov 17, 2020 at 06:19:49PM -0500, Joel Fernandes (Google) wrote:
-> 
-> > > > +static inline void generic_idle_enter(void)
-> > > > +static inline void generic_idle_exit(void)
-> 
-> > > That naming is terrible..
-> > 
-> > Yeah sorry :-\. The naming I chose was to be aligned with the
-> > CONFIG_GENERIC_ENTRY naming. I am open to ideas on that.
-> 
-> entry_idle_{enter,exit}() ?
-
-Sounds good to me.
-
-> > > I'm confused.. arch_cpu_idle_{enter,exit}() weren't conveniently placed
-> > > for you?
-> > 
-> > The way this patch series works, it does not depend on arch code as much as
-> > possible. Since there are other arch that may need this patchset such as ARM,
-> > it may be better to keep it in the generic entry code.  Thoughts?
-> 
-> I didn't necessarily mean using those hooks, even placing your new hooks
-> right next to them would've covered the exact same code with less lines
-> modified.
-
-Ok sure. I will improve it this way for next posting.
-
-thanks,
-
- - Joel
+CgpPbiAwMS8xMi8yMDIwIDE4OjI3LCBTdGVmYW5vIEdhcnphcmVsbGEgd3JvdGU6Cj4KPgo+IEhp
+IEFuZHJhLAo+Cj4gT24gVHVlLCBEZWMgMDEsIDIwMjAgYXQgMDU6MjU6MDJQTSArMDIwMCwgQW5k
+cmEgUGFyYXNjaGl2IHdyb3RlOgo+PiB2c29jayBlbmFibGVzIGNvbW11bmljYXRpb24gYmV0d2Vl
+biB2aXJ0dWFsIG1hY2hpbmVzIGFuZCB0aGUgaG9zdCAKPj4gdGhleSBhcmUKPj4gcnVubmluZyBv
+bi4gTmVzdGVkIFZNcyBjYW4gYmUgc2V0dXAgdG8gdXNlIHZzb2NrIGNoYW5uZWxzLCBhcyB0aGUg
+bXVsdGkKPj4gdHJhbnNwb3J0IHN1cHBvcnQgaGFzIGJlZW4gYXZhaWxhYmxlIGluIHRoZSBtYWlu
+bGluZSBzaW5jZSB0aGUgdjUuNSAKPj4gTGludXgga2VybmVsCj4+IGhhcyBiZWVuIHJlbGVhc2Vk
+Lgo+Pgo+PiBJbXBsaWNpdGx5LCBpZiBubyBob3N0LT5ndWVzdCB2c29jayB0cmFuc3BvcnQgaXMg
+bG9hZGVkLCBhbGwgdGhlIAo+PiB2c29jayBwYWNrZXRzCj4+IGFyZSBmb3J3YXJkZWQgdG8gdGhl
+IGhvc3QuIFRoaXMgYmVoYXZpb3IgY2FuIGJlIHVzZWQgdG8gc2V0dXAgCj4+IGNvbW11bmljYXRp
+b24KPj4gY2hhbm5lbHMgYmV0d2VlbiBzaWJsaW5nIFZNcyB0aGF0IGFyZSBydW5uaW5nIG9uIHRo
+ZSBzYW1lIGhvc3QuIE9uZSAKPj4gZXhhbXBsZSBjYW4KPj4gYmUgdGhlIHZzb2NrIGNoYW5uZWxz
+IHRoYXQgY2FuIGJlIGVzdGFibGlzaGVkIHdpdGhpbiBBV1MgTml0cm8gRW5jbGF2ZXMKPj4gKHNl
+ZSBEb2N1bWVudGF0aW9uL3ZpcnQvbmVfb3ZlcnZpZXcucnN0KS4KPj4KPj4gVG8gYmUgYWJsZSB0
+byBleHBsaWNpdGx5IG1hcmsgYSBjb25uZWN0aW9uIGFzIGJlaW5nIHVzZWQgZm9yIGEgCj4+IGNl
+cnRhaW4gdXNlIGNhc2UsCj4+IGFkZCBhIGZsYWcgZmllbGQgaW4gdGhlIHZzb2NrIGFkZHJlc3Mg
+ZGF0YSBzdHJ1Y3R1cmUuIFRoZSAKPj4gInN2bV9yZXNlcnZlZDEiIGZpZWxkCj4+IGhhcyBiZWVu
+IHJlcHVycG9zZWQgdG8gYmUgdGhlIGZsYWcgZmllbGQuIFRoZSB2YWx1ZSBvZiB0aGUgZmxhZyB3
+aWxsIAo+PiB0aGVuIGJlCj4+IHRha2VuIGludG8gY29uc2lkZXJhdGlvbiB3aGVuIHRoZSB2c29j
+ayB0cmFuc3BvcnQgaXMgYXNzaWduZWQuCj4+Cj4+IFRoaXMgd2F5IGNhbiBkaXN0aW5ndWlzaCBi
+ZXR3ZWVuIG5lc3RlZCBWTXMgLyBsb2NhbCBjb21tdW5pY2F0aW9uIGFuZCAKPj4gc2libGluZwo+
+PiBWTXMgdXNlIGNhc2VzLiBBbmQgY2FuIGFsc28gc2V0dXAgb25lIG9yIG1vcmUgdHlwZXMgb2Yg
+Y29tbXVuaWNhdGlvbiAKPj4gYXQgdGhlIHNhbWUKPj4gdGltZS4KPgo+IFRoYW5rcyB0byB3b3Jr
+IG9uIHRoaXMsIEkndmUgbGVmdCB5b3UgYSBmZXcgY29tbWVudHMsIGJ1dCBJIHRoaW5rIHRoaXMK
+PiBpcyB0aGUgcmlnaHQgd2F5IHRvIHN1cHBvcnQgbmVzdGVkIGFuZCBzaWJsaW5nIGNvbW11bmlj
+YXRpb24gdG9nZXRoZXIuCgpIaSBTdGVmYW5vLAoKVGhhbmtzIGFsc28gZm9yIHRha2luZyB0aW1l
+IHRvIHJldmlldyBhbmQgYm90aCB5b3UgYW5kIFN0ZWZhbiBmb3IgCnNoYXJpbmcgYW4gb3ZlcnZp
+ZXcgb2YgdGhpcyBwcm9wb3NlZCBvcHRpb24uCgpJJ20gZ29pbmcgdGhyb3VnaCB0aGUgY29tbWVu
+dHMgYW5kIHdpbGwgc2VuZCBvdXQgdGhlIHYyIG9mIHRoZSBwYXRjaCAKc2VyaWVzIGFzIEkgaGF2
+ZSB0aGUgY2hhbmdlcyBkb25lIGFuZCB2YWxpZGF0ZWQuCgpUaGFua3MsCkFuZHJhCgoKCkFtYXpv
+biBEZXZlbG9wbWVudCBDZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiByZWdpc3RlcmVkIG9mZmljZTog
+MjdBIFNmLiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29yIDIsIElhc2ksIElhc2kgQ291bnR5LCA3
+MDAwNDUsIFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJl
+ciBKMjIvMjYyMS8yMDA1Lgo=
 
