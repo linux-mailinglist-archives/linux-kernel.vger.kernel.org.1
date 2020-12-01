@@ -2,188 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190842CACEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7412CACE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404432AbgLAUA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:00:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40987 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404422AbgLAUAz (ORCPT
+        id S2404418AbgLAUAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:00:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389571AbgLAUAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:00:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606852768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G9sp3R9tf8dt5XOtnWwBkrzI+r6TYZwd5QycIhToDrU=;
-        b=buDW9VKOF+QAHkHQBB8L3SWHDWTgBVErJcs0jY/Xj624sYe6LJ94U5/Eyxrk9AHYar7M9v
-        mTCW4tXukovJ/J53wGOG/pgX1phceUl2UdvNNQO+iQi+syp0hmuUEjDvaLUFjQCoTw+mVq
-        RJGdNOWnp+P0VchnSk7a6UVdA/Us1eA=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-7Z-YEgq5NG-tpZLbKBgXug-1; Tue, 01 Dec 2020 14:59:26 -0500
-X-MC-Unique: 7Z-YEgq5NG-tpZLbKBgXug-1
-Received: by mail-qk1-f199.google.com with SMTP id q206so2259593qka.14
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:59:26 -0800 (PST)
+        Tue, 1 Dec 2020 15:00:49 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB38C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:00:02 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f17so1842709pge.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:00:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ST3hE6QaFWUSPeZl1LBt0eW3vQwZ9yVBdwV//6AR6/I=;
+        b=tTFhE9yucwXpEbXArqdu5e0G5AOiVGEvMzt8YWOOiUUKtoHYWgJJLe440MBG/4n9PO
+         c9NxWy89yvvJKkFcNm5m6bqmLLVW+Dn+QHOWfVZteG3hjhJQ4sdV0ttcjKNLfviy4dNc
+         LkT4sB5EOqHc82aRWzNI2z4v0eJhzRJJoHGzRxWAYm5J0rohxEaU/tyk9TLVdbqOeq5U
+         Xl/VqJ7DT+hug7YyONQa+IHWKwdPJ1rIO53UgoKS+X7HakK4KrnXC8Iw8tFIJ39tKSSg
+         n4/iI+ArX0jP7DByG/OgfuXiuVlu9fYL0pTXFZD3qgbFc5/8XSd9DsCPJbPi07zIUX2k
+         CKhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=G9sp3R9tf8dt5XOtnWwBkrzI+r6TYZwd5QycIhToDrU=;
-        b=Rwl2+HpHoO6ZyYo64l898e6ZJbQTOx2osSXfM7jnfQpwUa/OQAcl6sDLeKjDhAOSBK
-         x4PD5AjA8dVAG1g+rRNvQmG4BtrjMKDcXA6367JiusHqF/Q728HRaKtggc8Qq+VOffQF
-         l2sHt2HanthhJmlp9UN/lXfilfbTCY46Gm1X6ichELfx49/B87/nVjq0Ut3SJPm9k3ol
-         AMuoM86eK2OCEN5Sj36e5eQIGS2GoOyoZrs/q9wiQUbyM1QyLRy76t1wEJzCbPpDYJof
-         ygiucMoMk7BoAjKnay6VFEqmXWWF4DRdpH+Kagf0R1jvsvabW+0fasmuKeoNPrKQ+5rz
-         2tkA==
-X-Gm-Message-State: AOAM531t6xoPjgH6Otc9W0LJNenjol9Pv4vNqfplJ9PlJr7rzn2HngqU
-        exa+7fw3ewp998eJ2Y3YVirWHXjz7VJrnyNVQH9FlHSW6RNfT0TgdktUla77h9TzrQzjBjk2JkL
-        bI2HeRheBRivEFogXOOG5nUQCnABpU4b8313imMxiT5IlB/FqvAXsgGvc8V3yrkx2RnP8rfP0xy
-        54
-X-Received: by 2002:ac8:524d:: with SMTP id y13mr4617155qtn.319.1606852766086;
-        Tue, 01 Dec 2020 11:59:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwK7kRfRFSwZNABSwui3VBp0sV2pKB5Lqj1f9VFfGjgAhwdSFLX+gljPD86diPL/wfjVctngA==
-X-Received: by 2002:ac8:524d:: with SMTP id y13mr4617125qtn.319.1606852765771;
-        Tue, 01 Dec 2020 11:59:25 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id y35sm765505qty.58.2020.12.01.11.59.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 11:59:25 -0800 (PST)
-References: <20201130232338.106892-1-jsnitsel@redhat.com>
- <20201201025807.162241-1-jsnitsel@redhat.com> <87czzujjg1.fsf@redhat.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2] tpm_tis: Disable interrupts if interrupt storm detected
-In-reply-to: <87czzujjg1.fsf@redhat.com>
-Date:   Tue, 01 Dec 2020 12:59:23 -0700
-Message-ID: <878sahmh5w.fsf@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ST3hE6QaFWUSPeZl1LBt0eW3vQwZ9yVBdwV//6AR6/I=;
+        b=BU2aYvr3E7Bhaf9jzKkU889Dk3ORjOkMzgRFRBCbwoWBxCs7EeH81PNt1RQwWycrSs
+         3UcCS8anT21q3QE9D/MPtLSOlZWFMMMptrmuIX+fdn50iRBiqZnJPE5r231YxD5K+1cL
+         0pGhiD6QFfdztrRQAsav+AYHJopQZ6dsmSEUun8zrCCdlfK5tbaKFl3ApH3K6ZZf5V4E
+         Nz6SRDqUb0RkUqlHgwNzbbfa6rSWWJ1of453kCoqI215kGEsvBoTjGxyhQ2UXfJXhWek
+         M+OxwHnDWZEWBBv0jWGHBqD35chF/5U1XRkiQ49P+mBe2cXHv/lq2gZh9yfd70sulafl
+         XPxA==
+X-Gm-Message-State: AOAM532ZfwjzabC9ttdiCdAP7ORgN3GJKeAc1XQwUHEp7748lh3QfZ1K
+        5QBLjtbSsGqXdRtKTHaMJcK9aYdS5Dqi351cl50JMQ==
+X-Google-Smtp-Source: ABdhPJzQ1vMWE1DakWfjk+EGUlCZz1KA03oSrNdOmo+ATxl/T+qq1c21Zsng9mF8AijIOoMwTv9nTow9N6tEcL4EGiw=
+X-Received: by 2002:a63:3247:: with SMTP id y68mr3731226pgy.10.1606852802273;
+ Tue, 01 Dec 2020 12:00:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201201152017.3576951-1-elver@google.com>
+In-Reply-To: <20201201152017.3576951-1-elver@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Dec 2020 11:59:50 -0800
+Message-ID: <CAKwvOdkcv=FES2CXfoY+AFcvg_rbPd2Nk8sEwXNBJqXL4wQGBg@mail.gmail.com>
+Subject: Re: [PATCH] genksyms: Ignore module scoped _Static_assert()
+To:     Marco Elver <elver@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Jerry Snitselaar @ 2020-11-30 20:26 MST:
-
-> Jerry Snitselaar @ 2020-11-30 19:58 MST:
+On Tue, Dec 1, 2020 at 7:21 AM Marco Elver <elver@google.com> wrote:
 >
->> When enabling the interrupt code for the tpm_tis driver we have
->> noticed some systems have a bios issue causing an interrupt storm to
->> occur. The issue isn't limited to a single tpm or system manufacturer
->> so keeping a denylist of systems with the issue isn't optimal. Instead
->> try to detect the problem occurring, disable interrupts, and revert to
->> polling when it happens.
->>
->> Cc: Jarkko Sakkinen <jarkko@kernel.org>
->> Cc: Jason Gunthorpe <jgg@ziepe.ca>
->> Cc: Peter Huewe <peterhuewe@gmx.de>
->> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
->> Cc: Matthew Garrett <mjg59@google.com>
->> Cc: Hans de Goede <hdegoede@redhat.com>
->> Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
->> ---
->> v2: drop tpm_tis specific workqueue and use just system_wq
->>
->> drivers/char/tpm/tpm_tis_core.c | 27 +++++++++++++++++++++++++++
->>  drivers/char/tpm/tpm_tis_core.h |  2 ++
->>  2 files changed, 29 insertions(+)
->>
->> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
->> index 23b60583928b..72cc8a5a152c 100644
->> --- a/drivers/char/tpm/tpm_tis_core.c
->> +++ b/drivers/char/tpm/tpm_tis_core.c
->> @@ -24,6 +24,8 @@
->>  #include <linux/wait.h>
->>  #include <linux/acpi.h>
->>  #include <linux/freezer.h>
->> +#include <linux/workqueue.h>
->> +#include <linux/kernel_stat.h>
->>  #include "tpm.h"
->>  #include "tpm_tis_core.h"
->>  
->> @@ -745,9 +747,23 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
->>  {
->>  	struct tpm_chip *chip = dev_id;
->>  	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
->> +	static bool check_storm = true;
->> +	static unsigned int check_start;
->>  	u32 interrupt;
->>  	int i, rc;
->>  
->> +	if (unlikely(check_storm)) {
->> +		if (!check_start) {
->> +			check_start = jiffies_to_msecs(jiffies);
->> +		} else if ((kstat_irqs(priv->irq) > 1000) &&
->> +			   (jiffies_to_msecs(jiffies) - check_start < 500)) {
->> +			check_storm = false;
->> +			schedule_work(&priv->storm_work);
->> +		} else if (jiffies_to_msecs(jiffies) - check_start >= 500) {
->> +			check_storm = false;
->> +		}
->> +	}
->> +
->>  	rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
->>  	if (rc < 0)
->>  		return IRQ_NONE;
->> @@ -987,6 +1003,14 @@ static const struct tpm_class_ops tpm_tis = {
->>  	.clk_enable = tpm_tis_clkrun_enable,
->>  };
->>  
->> +static void tpm_tis_storm_work(struct work_struct *work)
->> +{
->> +	struct tpm_tis_data *priv = container_of(work, struct tpm_tis_data, storm_work);
->> +
->> +	disable_interrupts(priv->chip);
->> +	dev_warn(&priv->chip->dev, "Interrupt storm detected, using polling.\n");
->> +}
->> +
->>  int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
->>  		      const struct tpm_tis_phy_ops *phy_ops,
->>  		      acpi_handle acpi_dev_handle)
->> @@ -1003,6 +1027,9 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
->>  	if (IS_ERR(chip))
->>  		return PTR_ERR(chip);
->>  
->> +	priv->chip = chip;
->> +	INIT_WORK(&priv->storm_work, tpm_tis_storm_work);
->> +
->>  #ifdef CONFIG_ACPI
->>  	chip->acpi_dev_handle = acpi_dev_handle;
->>  #endif
->> diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
->> index edeb5dc61c95..5630f294dc0c 100644
->> --- a/drivers/char/tpm/tpm_tis_core.h
->> +++ b/drivers/char/tpm/tpm_tis_core.h
->> @@ -95,6 +95,8 @@ struct tpm_tis_data {
->>  	u16 clkrun_enabled;
->>  	wait_queue_head_t int_queue;
->>  	wait_queue_head_t read_queue;
->> +	struct work_struct storm_work;
->> +	struct tpm_chip *chip;
->>  	const struct tpm_tis_phy_ops *phy_ops;
->>  	unsigned short rng_quality;
->>  };
+> The C11 _Static_assert() keyword may be used at module scope, and we
+> need to teach genksyms about it to not abort with an error. We currently
+> have a growing number of static_assert() (but also direct usage of
+> _Static_assert()) users at module scope:
 >
-> I've tested this with the Intel platform that has an Infineon chip that
-> I found the other week. It works, but isn't the complete fix. With this
-> on top of James' patchset I sometimes see the message "Lost Interrupt
-> waiting for TPM stat", so I guess there needs to be a check in
-> wait_for_tpm_stat and request_locality to see if interrupts were
-> disabled when the wait_event_interruptible_timeout call times out.
+>         git grep -E '^_Static_assert\(|^static_assert\(' | grep -v '^tools' | wc -l
+>         135
+>
+> More recently, when enabling CONFIG_MODVERSIONS with CONFIG_KCSAN, we
+> observe a number of warnings:
+>
+>         WARNING: modpost: EXPORT symbol "<..all kcsan symbols..>" [vmlinux] [...]
+>
+> When running a preprocessed source through 'genksyms -w' a number of
+> syntax errors point at usage of static_assert()s. In the case of
+> kernel/kcsan/encoding.h, new static_assert()s had been introduced which
+> used expressions that appear to cause genksyms to not even be able to
+> recover from the syntax error gracefully (as it appears was the case
+> previously).
+>
+> Therefore, make genksyms ignore all _Static_assert() and the contained
+> expression. With the fix, usage of _Static_assert() no longer cause
+> "syntax error" all over the kernel, and the above modpost warnings for
+> KCSAN are gone, too.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
 
-As kernel test robot pointed out. kstat_irqs isn't visible when tpm_tis
-builds as a module. It looks like it is only called by kstat_irq_usrs,
-and that is only by the fs/proc code. I have a patch to export it, but
-the i915 driver open codes their own version instead of using it. Is
-there any reason not to export it?
+Ah, genksyms...if only there were a library that we could use to parse
+C code...:P
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
+> ---
+>  scripts/genksyms/keywords.c |  3 +++
+>  scripts/genksyms/lex.l      | 27 ++++++++++++++++++++++++++-
+>  scripts/genksyms/parse.y    |  7 +++++++
+>  3 files changed, 36 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/genksyms/keywords.c b/scripts/genksyms/keywords.c
+> index 057c6cabad1d..b85e0979a00c 100644
+> --- a/scripts/genksyms/keywords.c
+> +++ b/scripts/genksyms/keywords.c
+> @@ -32,6 +32,9 @@ static struct resword {
+>         { "restrict", RESTRICT_KEYW },
+>         { "asm", ASM_KEYW },
+>
+> +       // c11 keywords that can be used at module scope
+> +       { "_Static_assert", STATIC_ASSERT_KEYW },
+> +
+>         // attribute commented out in modutils 2.4.2.  People are using 'attribute' as a
+>         // field name which breaks the genksyms parser.  It is not a gcc keyword anyway.
+>         // KAO. },
+> diff --git a/scripts/genksyms/lex.l b/scripts/genksyms/lex.l
+> index e265c5d96861..ae76472efc43 100644
+> --- a/scripts/genksyms/lex.l
+> +++ b/scripts/genksyms/lex.l
+> @@ -118,7 +118,7 @@ yylex(void)
+>  {
+>    static enum {
+>      ST_NOTSTARTED, ST_NORMAL, ST_ATTRIBUTE, ST_ASM, ST_TYPEOF, ST_TYPEOF_1,
+> -    ST_BRACKET, ST_BRACE, ST_EXPRESSION,
+> +    ST_BRACKET, ST_BRACE, ST_EXPRESSION, ST_STATIC_ASSERT,
+>      ST_TABLE_1, ST_TABLE_2, ST_TABLE_3, ST_TABLE_4,
+>      ST_TABLE_5, ST_TABLE_6
+>    } lexstate = ST_NOTSTARTED;
+> @@ -201,6 +201,11 @@ repeat:
+>
+>                   case EXPORT_SYMBOL_KEYW:
+>                       goto fini;
+> +
+> +                 case STATIC_ASSERT_KEYW:
+> +                   lexstate = ST_STATIC_ASSERT;
+> +                   count = 0;
+> +                   goto repeat;
+>                   }
+>               }
+>             if (!suppress_type_lookup)
+> @@ -401,6 +406,26 @@ repeat:
+>         }
+>        break;
+>
+> +    case ST_STATIC_ASSERT:
+> +      APP;
+> +      switch (token)
+> +       {
+> +       case '(':
+> +         ++count;
+> +         goto repeat;
+> +       case ')':
+> +         if (--count == 0)
+> +           {
+> +             lexstate = ST_NORMAL;
+> +             token = STATIC_ASSERT_PHRASE;
+> +             break;
+> +           }
+> +         goto repeat;
+> +       default:
+> +         goto repeat;
+> +       }
+> +      break;
+> +
+>      case ST_TABLE_1:
+>        goto repeat;
+>
+> diff --git a/scripts/genksyms/parse.y b/scripts/genksyms/parse.y
+> index e22b42245bcc..8e9b5e69e8f0 100644
+> --- a/scripts/genksyms/parse.y
+> +++ b/scripts/genksyms/parse.y
+> @@ -80,6 +80,7 @@ static void record_compound(struct string_list **keyw,
+>  %token SHORT_KEYW
+>  %token SIGNED_KEYW
+>  %token STATIC_KEYW
+> +%token STATIC_ASSERT_KEYW
+>  %token STRUCT_KEYW
+>  %token TYPEDEF_KEYW
+>  %token UNION_KEYW
+> @@ -97,6 +98,7 @@ static void record_compound(struct string_list **keyw,
+>  %token BRACE_PHRASE
+>  %token BRACKET_PHRASE
+>  %token EXPRESSION_PHRASE
+> +%token STATIC_ASSERT_PHRASE
+>
+>  %token CHAR
+>  %token DOTS
+> @@ -130,6 +132,7 @@ declaration1:
+>         | function_definition
+>         | asm_definition
+>         | export_definition
+> +       | static_assert
+>         | error ';'                             { $$ = $2; }
+>         | error '}'                             { $$ = $2; }
+>         ;
+> @@ -493,6 +496,10 @@ export_definition:
+>                 { export_symbol((*$3)->string); $$ = $5; }
+>         ;
+>
+> +/* Ignore any module scoped _Static_assert(...) */
+> +static_assert:
+> +       STATIC_ASSERT_PHRASE ';'                        { $$ = $2; }
+> +       ;
+>
+>  %%
+>
+> --
+> 2.29.2.454.gaff20da3a2-goog
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
