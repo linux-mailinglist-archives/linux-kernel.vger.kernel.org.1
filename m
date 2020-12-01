@@ -2,138 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37852CAFED
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE502CAFEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgLAW1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:27:13 -0500
-Received: from mga05.intel.com ([192.55.52.43]:51705 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbgLAW1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 17:27:12 -0500
-IronPort-SDR: 0pZQ0HhwKK7NAXo7MvWdHIv9brjyfnE4yaN46j+P6PJVSm0HM20y/FSrblyow8OenjjdzFDiwD
- AoYZCdfH4TDg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="257627248"
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="257627248"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 14:26:30 -0800
-IronPort-SDR: 7nKJy83vfwPvm2Ci3MIZ52v8gj3Ezcx54Xi1wMib3YjYA8wve+Ihp0zkpBWvzBGDVEkKDu6CKt
- 8dRtjVs3Jeuw==
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="372933045"
-Received: from poyuchen-mobl1.amr.corp.intel.com (HELO [10.213.164.160]) ([10.213.164.160])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 14:26:28 -0800
-Subject: Re: [PATCH v15 03/26] x86/fpu/xstate: Introduce CET MSR XSAVES
- supervisor states
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-4-yu-cheng.yu@intel.com>
- <cfbd90a8-6996-fa7b-a41a-54ff540f419c@intel.com>
- <3b83517e-17d6-3b53-6dbf-8ad727707b16@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <705fdfec-25a4-60bc-868e-af515c731273@intel.com>
-Date:   Tue, 1 Dec 2020 14:26:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726897AbgLAW1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 17:27:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726873AbgLAW1Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 17:27:24 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D968C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:26:44 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id n14so3306298iom.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 14:26:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yg1PBFAH7R8nhFIJALPS4XmQibaYJrnoJQF408tUMDA=;
+        b=bsGiy1HR3+Cxm8lBK31r7oEQP0m1c0Ma3OpzswYpGk3+tFQs4wGb8cf3neY2mp9O6d
+         Crq3ybmaAbaEmyCBarNbvrNpuKfWH8etXbVBz7MftMvvfY2NisM4fbL9SyLcTBFuDLzO
+         BLiiUm4uOzmQiCGLghht8dGqN2XZqLYpSC23U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yg1PBFAH7R8nhFIJALPS4XmQibaYJrnoJQF408tUMDA=;
+        b=Gvmj0cutgONqdr8/qSQ5AHAYkhki2dfmQWWziciAuM9sjRkzmUZQHUSy6piVPTGGxA
+         +UomjISF+iXP2XPR8VC2I2WpPICeXomoJ2BrykDqVen0tBhp1R8J/OViiH9H3z2cCy+p
+         bPrgOcRR2x6B9U4esi7GFI0RC45RZ8Tu7iQRm0ghcK4j7qE4QtOSK6fibWI4d0DRICoO
+         Zgyqe8PfKuAIGo8rFDkMZV6cmITC1ie4mO3CjY0AwAsw86rbqp4HWmWzs1vqfFa4pELV
+         +8zFa58yRNie2G04b+SIxUx2Vah/6DNAFFjmN0BkqOrL7q2oNW9z9MA0PvBB+pVjzkbO
+         v5tw==
+X-Gm-Message-State: AOAM53251o2TxApJKA9+9mQVPVLOducuOvSKFfZzau3bV98AQN34UPKD
+        GYHze9DVuvgj9ns0A/6JK3uQsyLI8iYSKhE7M3+dlQ==
+X-Google-Smtp-Source: ABdhPJycNkLjLW4kRIFpMcM/uwSfyR5b3PLP69lASe5zPz04yje2d6Oy3wrvmb/2iC6f1bemfox4IFqUmUw1I2CV+F8=
+X-Received: by 2002:a02:a417:: with SMTP id c23mr4669812jal.42.1606861603454;
+ Tue, 01 Dec 2020 14:26:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3b83517e-17d6-3b53-6dbf-8ad727707b16@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201118161541.3844924-1-joel@joelfernandes.org>
+ <20201118201335.GR1437@paulmck-ThinkPad-P72> <20201119035222.GA18458@paulmck-ThinkPad-P72>
+ <20201119035613.GA18816@paulmck-ThinkPad-P72> <20201119183252.GA812262@google.com>
+ <20201119192241.GZ1437@paulmck-ThinkPad-P72> <CAEXW_YSRQ+r_CjFOOEZ38BBRpkhjs5UbpfhGCzA8=XywEU0u8Q@mail.gmail.com>
+ <20201119201615.GA1437@paulmck-ThinkPad-P72> <20201119204221.GB812262@google.com>
+In-Reply-To: <20201119204221.GB812262@google.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 1 Dec 2020 17:26:32 -0500
+Message-ID: <CAEXW_YSHVzzm=fLtamB=K5tjiwUNrYK76MxqfW2w0MJKO5LsTw@mail.gmail.com>
+Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 3:16 PM, Yu, Yu-cheng wrote:
->>
->> Do we have any other spots in the kernel where we care about:
->>
->>     boot_cpu_has(X86_FEATURE_SHSTK) ||
->>     boot_cpu_has(X86_FEATURE_IBT)
->>
->> ?  If so, we could also address this by declaring a software-defined
->> X86_FEATURE_CET and then setting it if SHSTK||IBT is supported, then we
->> just put that one feature in xsave_cpuid_features[].
->>
-> 
-> These features have different CPUIDs but are complementary parts.  I
-> don't know if someday there will be shadow-stack-only CPUs, but an
-> IBT-only CPU is weird.  What if the kernel checks that the CPU has both
-> features and presents only one feature flag (X86_FEATURE_CET), no
-> X86_FEATURE_SHSTK or X86_FEATURE_IBT?
+On Thu, Nov 19, 2020 at 3:42 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+>
+> On Thu, Nov 19, 2020 at 12:16:15PM -0800, Paul E. McKenney wrote:
+> > On Thu, Nov 19, 2020 at 02:44:35PM -0500, Joel Fernandes wrote:
+> > > On Thu, Nov 19, 2020 at 2:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > > > > On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
+> > > > > > > > > After rcu_do_batch(), add a check for whether the seglen counts went to
+> > > > > > > > > zero if the list was indeed empty.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > > > >
+> > > > > > > > Queued for testing and further review, thank you!
+> > > > > > >
+> > > > > > > FYI, the second of the two checks triggered in all four one-hour runs of
+> > > > > > > TREE01, all four one-hour runs of TREE04, and one of the four one-hour
+> > > > > > > runs of TREE07.  This one:
+> > > > > > >
+> > > > > > > WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > > > > > >
+> > > > > > > That is, there are callbacks in the list, but the sum of the segment
+> > > > > > > counts is nevertheless zero.  The ->nocb_lock is held.
+> > > > > > >
+> > > > > > > Thoughts?
+> > > > > >
+> > > > > > FWIW, TREE01 reproduces it very quickly compared to the other two
+> > > > > > scenarios, on all four run, within five minutes.
+> > > > >
+> > > > > So far for TREE01, I traced it down to an rcu_barrier happening so it could
+> > > > > be related to some interaction with rcu_barrier() (Just a guess).
+> > > >
+> > > > Well, rcu_barrier() and srcu_barrier() are the only users of
+> > > > rcu_segcblist_entrain(), if that helps.  Your modification to that
+> > > > function looks plausible to me, but the system's opinion always overrules
+> > > > mine.  ;-)
+> > >
+> > > Right. Does anything the bypass code standout? That happens during
+> > > rcu_barrier() as well, and it messes with the lengths.
+> >
+> > In theory, rcu_barrier_func() flushes the bypass before doing the
+> > entrain, and does the rcu_segcblist_entrain() afterwards.
+> >
+> > Ah, and that is the issue.  If ->cblist is empty and ->nocb_bypass
+> > is not, then ->cblist length will be nonzero, and none of the
+> > segments will be nonzero.
+> >
+> > So you need something like this for that second WARN, correct?
+> >
+> >       WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
+> >                    rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
 
-Logically, that's probably fine.  But, X86_FEATURE_IBT/SHSTK are in a
-non-scattered leaf, so we'll kinda define them whether we like it or
-not.  We'd have to go out of our way to *not* define them.
+Just started to look into it again. If the &rdp->cblist is empty, that
+means the bypass list could not have been used (Since per comments on
+rcu_nocb_try_bypass() , the bypass list is in use only when the cblist
+is non-empty). So the cblist was non empty, then the segment counts
+should not sum to 0.  So I don't think that explains it. Anyway, I
+will try the new version of your warning in case there is something
+about bypass lists that I'm missing.
