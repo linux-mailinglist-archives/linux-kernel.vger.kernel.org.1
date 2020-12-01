@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CBE2C939B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B172C93A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388940AbgLAAFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:05:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
+        id S1730657AbgLAAGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388031AbgLAAFH (ORCPT
+        with ESMTP id S1725870AbgLAAGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:05:07 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A69C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:04:27 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id k26so16287750oiw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:04:27 -0800 (PST)
+        Mon, 30 Nov 2020 19:06:02 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA90C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:05:22 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id h3so16252210oie.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:05:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=cZtvicJF+bE/9VXkTrpcJr6TNUaoTaYis+qWtewxhNw=;
-        b=ddE4eAQtfydhU0o3ivPE1e5MH6wxApoYKJfU8+gSxKX46ZgogRcPsT5uhNrVVi9BHC
-         fWJLSP6L+wr7TgC3bApCbzblpIZGEk5N1pNxfsglInjFvSLEt01pSdEUfslebt4PU0R5
-         LCetXSayENLMYHZEZavEyc5wHuHf/t2/6UriIOdGSdAElN8HuVN8GAA2mKTAF5I92ovO
-         xS6a2g2PRYJf8X3U65NuuB+C35zrKqMHk2KQ9x22CXcNh8jeJETSajuilYi5pZ5CLCvd
-         YdH6ZT+15Jka14OA/xaSgc905jfErO4Jl59XFlQ5d906F9zNwrukEWmD2V3u6lrh9/8C
-         bJow==
+        bh=7BTne8SIxbBFHAj//gRT0I7jmTcVfU7zja0kcb89Maw=;
+        b=XwFwFP5VKQvAjlOlCnUb9C0k+8u7IQBdEwENOiKjGpYUhhJ2ARUNhURKaKtQxncV8G
+         q/XKFGS2/hlRVXidDfvt1MzIYWF5Hix2RSQUw0gG9kHVmHh6KW1wF40+RzC/IYDcbxxw
+         fNAZE4lwbLIhYEPU/BpAOX6i2h93EFQZPoMe6tD8EiHQZmglaKiw04gez3McFgLYPwEs
+         QDcc2tLuuwQlWIRHSTp8Sj1P2GtzB5OJAafErrvH+yIGAXKej14XyU35vhlzl/iWDdIF
+         uHcIwq5suzy5Zh7NR+XQxoKctJ4lnz9n6eAUO6s/UZhydqTP0QTELXtwkdrJp5qM/ciS
+         BdMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cZtvicJF+bE/9VXkTrpcJr6TNUaoTaYis+qWtewxhNw=;
-        b=byZt44UXpS71x6afdFymRnYPVSOJLgYt9oIpRS22UcUwS0ZLar3eAUtcZjmsUkOHvJ
-         03WFejZwTYqlTPvwIfW97yEoorBL5ipNXmuTHUdu/RvP5Fy0k+asrhX7wqGUNu3oudY7
-         YMJBP/r4W6uFAkT2ofPPZBJMe3EOSAp3xz4c6vUzsZr+kaLaGBo4d1Qwbrz58YJvheS9
-         vJFi/K07q7uTOPg5jxOBJa5wSQRswXvXJBFA5IXM3MWwOBBY0oQOOfB8U7LAN+AjKT0/
-         cW9g61Ry8dgzVaquvVYINnhIcXWg4wq6FHR+4Aaw+puYyxaKZKnxN41S+4XIg+ECQD2F
-         LfZQ==
-X-Gm-Message-State: AOAM53393zVc1cLtXIMHBRxorHazF4WoC7gEXhnRgqKCAmDb8gcomhpf
-        OfbuQYRoGPsiUw3AJ9px+gDPf2LOvJ5U3ihVIu0=
-X-Google-Smtp-Source: ABdhPJyysVUbPwkj/2omBPYRmXDPbZmc0RRXzFkq9a6WLNyTZMLo2TtmG9ksjSkT4egbm++nmbs/zp1Vcl8qefPeBL0=
-X-Received: by 2002:aca:4f53:: with SMTP id d80mr49562oib.120.1606781066509;
- Mon, 30 Nov 2020 16:04:26 -0800 (PST)
+        bh=7BTne8SIxbBFHAj//gRT0I7jmTcVfU7zja0kcb89Maw=;
+        b=JASFncmxa3ushqb+5AhxKplbHq53HwK1/xDGHkXFq8CfAAHGIkslsZme1tQ7Nplk+N
+         DDXCsSOj302q3MrPCwpaoymelSK7ti+Iif6bO8kwqZZ2Bln8rIu2Dq8fpsf+XDC4uULI
+         pjnBl0d1mM3hg2PEZpaLlunqoqLDW1KiYwgR1wTXYcxq+xLc6bi8DxOIAuUoMp8eG839
+         JpjIU4keJedB0U7ZrKgjcPOSDc/hTMqq7LPiF7R8nAz9rGx7co/yVwPYY1EqeJ9Y8QJR
+         HsN2W5U0ak+KJLHU1FkNEw3NJAuWKPfpwKOFORwo9Bz64juHjZqf7SdSkF+F6CagDtJa
+         dHNA==
+X-Gm-Message-State: AOAM532o7lxOaBe3cHcFj1haReKv6s2Y1c1qsD0i0PHixu4RB9G93bmx
+        fR1Ml9BrWhw+vazAYBFwacPJ7JgBWQLdSS3z3OM=
+X-Google-Smtp-Source: ABdhPJxVHgdB7XwPl5ai+49mqjjJlX1RpCRFPnKeMadWF7tL8axXfV/9Pz5hvPub5yxk7sXGVF7zHrhDmiNr5sXYJE4=
+X-Received: by 2002:aca:f50e:: with SMTP id t14mr30258oih.123.1606781121640;
+ Mon, 30 Nov 2020 16:05:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-37-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-37-lee.jones@linaro.org>
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-38-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-38-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 19:04:15 -0500
-Message-ID: <CADnq5_PiZ_NN_jAkw+a9LRY4-5jgdTqqNjePAzKxvC+5TPn1cQ@mail.gmail.com>
-Subject: Re: [PATCH 36/40] drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu: Mark
- local functions invoked by reference as static
+Date:   Mon, 30 Nov 2020 19:05:10 -0500
+Message-ID: <CADnq5_NBWdiQm32886bsGCqSpJFYe5R+Cm7pgLTXyNYBwxNAGA@mail.gmail.com>
+Subject: Re: [PATCH 37/40] drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu: Remove
+ unused function 'pp_nv_set_pme_wa_enable()'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
@@ -70,24 +70,9 @@ On Thu, Nov 26, 2020 at 8:44 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:538:6=
-: warning: no previous prototype for =E2=80=98pp_rv_set_wm_ranges=E2=80=99 =
-[-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:590:6=
-: warning: no previous prototype for =E2=80=98pp_rv_set_pme_wa_enable=E2=80=
-=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:601:6=
-: warning: no previous prototype for =E2=80=98pp_rv_set_active_display_coun=
-t=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:614:6=
-: warning: no previous prototype for =E2=80=98pp_rv_set_min_deep_sleep_dcfc=
-lk=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:627:6=
-: warning: no previous prototype for =E2=80=98pp_rv_set_hard_min_dcefclk_by=
-_freq=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:640:6=
-: warning: no previous prototype for =E2=80=98pp_rv_set_hard_min_fclk_by_fr=
-eq=E2=80=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:664:2=
+0: warning: no previous prototype for =E2=80=98pp_nv_set_pme_wa_enable=E2=
+=80=99 [-Wmissing-prototypes]
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -104,84 +89,40 @@ Applied.  Thanks!
 Alex
 
 > ---
->  .../drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c   | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+>  .../drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c | 16 ----------------
+>  1 file changed, 16 deletions(-)
 >
 > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c b/d=
 rivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
-> index 84065c12d4b85..ac0a0539854ef 100644
+> index ac0a0539854ef..607ec09994456 100644
 > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
 > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
-> @@ -535,7 +535,7 @@ bool dm_pp_get_static_clocks(
->         return true;
->  }
->
-> -void pp_rv_set_wm_ranges(struct pp_smu *pp,
-> +static void pp_rv_set_wm_ranges(struct pp_smu *pp,
->                 struct pp_smu_wm_range_sets *ranges)
->  {
->         const struct dc_context *ctx =3D pp->dm;
-> @@ -587,7 +587,7 @@ void pp_rv_set_wm_ranges(struct pp_smu *pp,
->                                                            &wm_with_clock=
-_ranges);
->  }
->
-> -void pp_rv_set_pme_wa_enable(struct pp_smu *pp)
-> +static void pp_rv_set_pme_wa_enable(struct pp_smu *pp)
->  {
->         const struct dc_context *ctx =3D pp->dm;
->         struct amdgpu_device *adev =3D ctx->driver_context;
-> @@ -598,7 +598,7 @@ void pp_rv_set_pme_wa_enable(struct pp_smu *pp)
->                 pp_funcs->notify_smu_enable_pwe(pp_handle);
->  }
->
-> -void pp_rv_set_active_display_count(struct pp_smu *pp, int count)
-> +static void pp_rv_set_active_display_count(struct pp_smu *pp, int count)
->  {
->         const struct dc_context *ctx =3D pp->dm;
->         struct amdgpu_device *adev =3D ctx->driver_context;
-> @@ -611,7 +611,7 @@ void pp_rv_set_active_display_count(struct pp_smu *pp=
-, int count)
->         pp_funcs->set_active_display_count(pp_handle, count);
->  }
->
-> -void pp_rv_set_min_deep_sleep_dcfclk(struct pp_smu *pp, int clock)
-> +static void pp_rv_set_min_deep_sleep_dcfclk(struct pp_smu *pp, int clock=
-)
->  {
->         const struct dc_context *ctx =3D pp->dm;
->         struct amdgpu_device *adev =3D ctx->driver_context;
-> @@ -624,7 +624,7 @@ void pp_rv_set_min_deep_sleep_dcfclk(struct pp_smu *p=
-p, int clock)
->         pp_funcs->set_min_deep_sleep_dcefclk(pp_handle, clock);
->  }
->
-> -void pp_rv_set_hard_min_dcefclk_by_freq(struct pp_smu *pp, int clock)
-> +static void pp_rv_set_hard_min_dcefclk_by_freq(struct pp_smu *pp, int cl=
-ock)
->  {
->         const struct dc_context *ctx =3D pp->dm;
->         struct amdgpu_device *adev =3D ctx->driver_context;
-> @@ -637,7 +637,7 @@ void pp_rv_set_hard_min_dcefclk_by_freq(struct pp_smu=
- *pp, int clock)
->         pp_funcs->set_hard_min_dcefclk_by_freq(pp_handle, clock);
->  }
->
-> -void pp_rv_set_hard_min_fclk_by_freq(struct pp_smu *pp, int mhz)
-> +static void pp_rv_set_hard_min_fclk_by_freq(struct pp_smu *pp, int mhz)
->  {
->         const struct dc_context *ctx =3D pp->dm;
->         struct amdgpu_device *adev =3D ctx->driver_context;
-> @@ -661,7 +661,7 @@ static enum pp_smu_status pp_nv_set_wm_ranges(struct =
-pp_smu *pp,
+> @@ -661,22 +661,6 @@ static enum pp_smu_status pp_nv_set_wm_ranges(struct=
+ pp_smu *pp,
 >         return PP_SMU_RESULT_OK;
 >  }
 >
-> -enum pp_smu_status pp_nv_set_pme_wa_enable(struct pp_smu *pp)
-> +static enum pp_smu_status pp_nv_set_pme_wa_enable(struct pp_smu *pp)
+> -static enum pp_smu_status pp_nv_set_pme_wa_enable(struct pp_smu *pp)
+> -{
+> -       const struct dc_context *ctx =3D pp->dm;
+> -       struct amdgpu_device *adev =3D ctx->driver_context;
+> -       struct smu_context *smu =3D &adev->smu;
+> -
+> -       if (!smu->ppt_funcs)
+> -               return PP_SMU_RESULT_UNSUPPORTED;
+> -
+> -       /* 0: successful or smu.ppt_funcs->set_azalia_d3_pme =3D NULL;  1=
+: fail */
+> -       if (smu_set_azalia_d3_pme(smu))
+> -               return PP_SMU_RESULT_FAIL;
+> -
+> -       return PP_SMU_RESULT_OK;
+> -}
+> -
+>  static enum pp_smu_status pp_nv_set_display_count(struct pp_smu *pp, int=
+ count)
 >  {
 >         const struct dc_context *ctx =3D pp->dm;
->         struct amdgpu_device *adev =3D ctx->driver_context;
 > --
 > 2.25.1
 >
