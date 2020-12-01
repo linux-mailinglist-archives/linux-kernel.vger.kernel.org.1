@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD682CB119
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300F52CB123
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgLAXup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbgLAXuo (ORCPT
+        id S1727256AbgLAXzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:55:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45395 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726765AbgLAXzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:50:44 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F1AC0613D4;
-        Tue,  1 Dec 2020 15:50:03 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id k14so5714043wrn.1;
-        Tue, 01 Dec 2020 15:50:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cejZv8dXO0K8s5BRzKgKRotoP/hMF8X1h5C7NM6FSLs=;
-        b=TgqKWTWzp6r6GiMe1b8dCjPozIRCG4CqiLfxL6gBroITESHdmRjmIggkl2Ouglm6U7
-         /Qp6NdvV8aB2TMsLB050OmABj3wK3xycwZCPyPDOfwy712deXRelyg38MFEDrJVSp75u
-         /w4LE3uhBtZe1H6RJbePd5TiyOXfLHzvJhbnvlDD7PkfvGM+ooR0S1jhCZSJwwsCOfpu
-         WugkV73JtCsW4jPQdjm/J9ky5jr6Y2elb91I/hAVzViaTqTB8CMLbrRMZYOB/T0qB1J3
-         j5h8b8Ilu7UlUD3cAOSXh9OY+ZJaQcmltJwB7sT0ECZTDHcuD1MtDahUFjVNQNKgxeLi
-         sQDg==
+        Tue, 1 Dec 2020 18:55:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606866815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kTWwMY4ZKYnVUyQmcMgy5Pq772/cdOxveE8A1FOaxjU=;
+        b=WoMBZY4MTnb5dk49WYTgy6DGGiAI1DhAxZlyfSIgL5OXTvUDiqZ0+pZsRBw1fbfdaDQhD+
+        MOSwcRj7I212ihU5VDWJRmLXtHc5z4Ud8wOmtkaX+fI59IAo1WTsi4b3kAsTHKtfNTg+L3
+        OPQrgPqNG/bIOlWEgTJpI/BasdlPtSk=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337-2hvNe-EpO3uScfjEgOC8QA-1; Tue, 01 Dec 2020 18:53:33 -0500
+X-MC-Unique: 2hvNe-EpO3uScfjEgOC8QA-1
+Received: by mail-qt1-f198.google.com with SMTP id a22so2539762qtx.20
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 15:53:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cejZv8dXO0K8s5BRzKgKRotoP/hMF8X1h5C7NM6FSLs=;
-        b=pYl+mUdyExNETZu/NOiB+UcZn5CVqZLD4vzkTYvZkpKdJ1+bCriCF82NmEQ+Pk5gw7
-         Vi/OLACNpx866/EquBNA7nHs6TSx3Qrov+kYHadL24FA9+Dhnfa3lZx26Uaj2x2OfDq1
-         fNT6TEo8E7G1e7NEaqDIpR3btr4stpwR+XF7NCTl3W+RlhgP/mQcE6HJzbC/VP1rf4F+
-         mRMg5LBSrWYCmFNiHhriqnzFOMAPrVgwohoZ3iUlXuG2+QS93E6FglzH8vtD8tkJ+PS6
-         mtTTHYY/dDtQR6760K0ZDQPgqOFEzNbBtyAsue+R7GvQg8GyEBjYNDH39NBwb4vnhWrv
-         ZJuQ==
-X-Gm-Message-State: AOAM533FVrFaibWHfS/oJNlHJXx45Zw5H56hRwiHi/kMusNfO353uesN
-        wV3jcSE+31dDIcq1M8SK2SA=
-X-Google-Smtp-Source: ABdhPJzpF6N/3c/AICdkU4bORXN9A9EuPbMMw346RlYRVLhomqOQgONCxH+RJmYctuTEUjn4Ui4yyA==
-X-Received: by 2002:adf:9e4d:: with SMTP id v13mr6795614wre.135.1606866602623;
-        Tue, 01 Dec 2020 15:50:02 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.80])
-        by smtp.gmail.com with ESMTPSA id f17sm72452wmh.10.2020.12.01.15.50.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 15:50:01 -0800 (PST)
-Subject: Re: [PATCH 16/18] i2c: i2c-core-base: Use the new i2c_acpi_dev_name()
- in i2c_set_dev_name()
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-17-djrscally@gmail.com>
- <20201130171241.GP14465@pendragon.ideasonboard.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <b220ba01-893f-ef24-9a41-96af0c1abb20@gmail.com>
-Date:   Tue, 1 Dec 2020 23:50:00 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=kTWwMY4ZKYnVUyQmcMgy5Pq772/cdOxveE8A1FOaxjU=;
+        b=Z5EzAvr72TBRpoYv4+p9uJf5gegQRo2ez+ThgOMT/VvakYF+oigb/EhfTyoJzhRa30
+         WrIYxSBqeIvR2l12/wtAh+N/VllUCkn/9Q9EKF/ALG0ltlLQopwITZh1SvLl947igSib
+         HeKbQ+EkAyiGL/bCSA18mO+r6wnxaOSoaHYeY+gag5j4g6fgQFsWfe5fngU/JzzK7+LS
+         +cSVibELNAdFt6ABKXhmtbnz/Xx2pAfNdWFfDNFZr/Oi90Kp97jZ3GJcLFMn+3SkhJrl
+         0sb2Xuu3Q7R6/dRcKk7BTOCEugsyBA7qQGYcoy1sP8Pz46b4FeJm/E6nJR+NDxTKr/DK
+         iPyw==
+X-Gm-Message-State: AOAM53249qiNqJUB8liDclpwJ+N/3flRaW2VLX++4lbGi5euWT5JOk8q
+        Fm+v95Ate95hDkQH3Vdw+txifyaZhoJXtQ3R11aT1D5agAoej+y4yOGETnCJWBKYhv4/MjbhTdZ
+        c2k9b9o8+pAAFcHe6oQEdMg4U
+X-Received: by 2002:ac8:3855:: with SMTP id r21mr5604054qtb.380.1606866813077;
+        Tue, 01 Dec 2020 15:53:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzOzxndVYqPQFSh1N3T/G4TW6qTcdOT3oSZXbfEAVOFr6V95caA3iOSHKHcZ/VW/NY87Kq1Rw==
+X-Received: by 2002:ac8:3855:: with SMTP id r21mr5604045qtb.380.1606866812869;
+        Tue, 01 Dec 2020 15:53:32 -0800 (PST)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id b197sm36856qkg.65.2020.12.01.15.53.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 15:53:27 -0800 (PST)
+References: <20201015025002.87997-1-suravee.suthikulpanit@amd.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH] iommu/amd: Increase interrupt remapping table limit to
+ 512 entries
+In-reply-to: <20201015025002.87997-1-suravee.suthikulpanit@amd.com>
+Date:   Tue, 01 Dec 2020 16:53:25 -0700
+Message-ID: <87sg8pkrre.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201130171241.GP14465@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/2020 17:12, Laurent Pinchart wrote:
-> Hi Daniel,
-> 
-> Thank you for the patch.
-> 
-> On Mon, Nov 30, 2020 at 01:31:27PM +0000, Daniel Scally wrote:
->> From: Dan Scally <djrscally@gmail.com>
->>
->> To make sure the new i2c_acpi_dev_name() always reflects the name of i2c
->> devices sourced from ACPI, use it in i2c_set_dev_name().
->>
->> Signed-off-by: Dan Scally <djrscally@gmail.com>
-> 
-> I'd squash this with 15/18, which would make it clear there's a memory
-> leak :-)
 
-Ah - that was sloppy...switched from devm_ and forgot to go fix that.
-I'll add the kfree into i2c_unregister_device() and squash to 15/18
+Suravee Suthikulpanit @ 2020-10-14 19:50 MST:
 
->> ---
->> Changes since RFC v3:
->>
->> 	- Patch introduced
->>
->>  drivers/i2c/i2c-core-base.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
->> index 573b5da145d1..a6d4ceb01077 100644
->> --- a/drivers/i2c/i2c-core-base.c
->> +++ b/drivers/i2c/i2c-core-base.c
->> @@ -814,7 +814,7 @@ static void i2c_dev_set_name(struct i2c_adapter *adap,
->>  	}
->>  
->>  	if (adev) {
->> -		dev_set_name(&client->dev, "i2c-%s", acpi_dev_name(adev));
->> +		dev_set_name(&client->dev, i2c_acpi_dev_name(adev));
->>  		return;
->>  	}
->>  
-> 
+> Certain device drivers allocate IO queues on a per-cpu basis.
+> On AMD EPYC platform, which can support up-to 256 cpu threads,
+> this can exceed the current MAX_IRQ_PER_TABLE limit of 256,
+> and result in the error message:
+>
+>     AMD-Vi: Failed to allocate IRTE
+>
+> This has been observed with certain NVME devices.
+>
+> AMD IOMMU hardware can actually support upto 512 interrupt
+> remapping table entries. Therefore, update the driver to
+> match the hardware limit.
+>
+> Please note that this also increases the size of interrupt remapping
+> table to 8KB per device when using the 128-bit IRTE format.
+>
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> ---
+>  drivers/iommu/amd/amd_iommu_types.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
+> index 30a5d412255a..427484c45589 100644
+> --- a/drivers/iommu/amd/amd_iommu_types.h
+> +++ b/drivers/iommu/amd/amd_iommu_types.h
+> @@ -406,7 +406,11 @@ extern bool amd_iommu_np_cache;
+>  /* Only true if all IOMMUs support device IOTLBs */
+>  extern bool amd_iommu_iotlb_sup;
+>  
+> -#define MAX_IRQS_PER_TABLE	256
+> +/*
+> + * AMD IOMMU hardware only support 512 IRTEs despite
+> + * the architectural limitation of 2048 entries.
+> + */
+> +#define MAX_IRQS_PER_TABLE	512
+>  #define IRQ_TABLE_ALIGNMENT	128
+>  
+>  struct irq_remap_table {
+
+With this change should DTE_IRQ_TABLE_LEN be changed to 9? IIUC the spec
+correctly leaving it at 8 is saying the table is 256 entries long.
+
+Regards,
+Jerry
 
