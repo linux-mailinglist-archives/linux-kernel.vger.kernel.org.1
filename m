@@ -2,135 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2812CACB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E8A2CAC64
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404251AbgLATtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:49:11 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:12182 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727866AbgLATtL (ORCPT
+        id S2404404AbgLATaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:30:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404324AbgLATaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:49:11 -0500
+        Tue, 1 Dec 2020 14:30:06 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14FBC061A4B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:29:10 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id 64so4493638wra.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:29:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1606852151; x=1638388151;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=GzkO5rwPs8IlbxZJJrtJwOYn0DQoZfkgjuvYZZOBFQ8=;
-  b=WRExycdlv4/+qPnlc1ANdSJsnXdF3ymAYKzupBD0637AqTgc0euZMWQO
-   P4QhE+JWEMUaOA4g9ntMW1JqRfc+mqpo+/dlMvGn2vaq42GhHJz/rudkJ
-   PDh+MmwcfBqnJ0qnBWaZUSEA5fWE68eWOPGcP/Fdxv6bnLHco1aFcp3zB
-   s=;
-X-IronPort-AV: E=Sophos;i="5.78,385,1599523200"; 
-   d="scan'208";a="99646116"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 01 Dec 2020 19:06:53 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id 57947A0644;
-        Tue,  1 Dec 2020 19:06:51 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.146) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 1 Dec 2020 19:06:45 +0000
-Subject: Re: [PATCH net-next v1 3/3] af_vsock: Assign the vsock transport
- considering the vsock address flag
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20201201152505.19445-1-andraprs@amazon.com>
- <20201201152505.19445-4-andraprs@amazon.com>
- <20201201162323.gwfzktkwtu6x4eef@steredhat>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <17abfe6d-88d2-4d86-911a-247bd4bd677e@amazon.com>
-Date:   Tue, 1 Dec 2020 21:06:39 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201201162323.gwfzktkwtu6x4eef@steredhat>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.146]
-X-ClientProxiedBy: EX13D36UWA002.ant.amazon.com (10.43.160.24) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=VOd3JSDgGEf/sA/gneW99yzrnw1TXcmtGN43mHDRXQY=;
+        b=T09eoCIyyL0p97FRT3WIcvf3dvO1HjfeGP1LTk6iswcKA1VIKznSxtVnYUSVzXJGWs
+         wRgcBydqKmJESEMxQca3qn89xmbZXmilx6wPepjrzrBt+Q9FSs/yJeU5flGyDGAQiHqr
+         mRowDXJ+OLvS1TF/yWi2jWgkRB6rmpKilaoXuMmgd00ryW4WRmreOXQz3mHkn7kJVyph
+         yQtbLqsmsYkNYXbWf9sbG3IhmiQZpUeBS7eYSaZVcf6AFoUZHTJBsqEBUnL09VD2RIs9
+         lj33v+S1ukAs/vVaRHVYpsh7KSYN2lzx9fSqvq83hEioU+M9aXNzzdMZn5pzJ3BomJlI
+         5BRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=VOd3JSDgGEf/sA/gneW99yzrnw1TXcmtGN43mHDRXQY=;
+        b=GUSJmsmhh1vsho0cSajr2tSZDurIpwY/0lLTnCjK2MOwTNeTZ50O/2+Bw5xE82JRHL
+         PXUFICvInXHomYUwsohQBhvxfxcZgDVKvP5/utGC/B1BhsEk4P04ooGZrwAAMm/+xU/+
+         ZuqVp41UDAHmGVC8BLYR2F59GPjI0D4aIM17plJX/OAQt18uq8OmSfYeaw8vh2UYKQrg
+         JycrpjgMTERd+K2/ZkJwZnf1UoRSvA7StuzrkNetITi4OH7n9u0ce2qjgAqg65Uckti5
+         96QtKZcLG+wARlocbYmbR8eubgUmMgUwCh3lHDlKEYOhwSpK1nHeSrCdBjSW6VmrC6uu
+         bWsQ==
+X-Gm-Message-State: AOAM533VxkfV6B5QHM5HFymsqm2YxuVSITwG4kyPN54px9cHnimOGlv4
+        ldfI4woT/8jwyW2VV8rv0vO6kgB07wAUEQ==
+X-Google-Smtp-Source: ABdhPJxquZkyO9JsBW4vJGPgahoZbAmqxDm4OKYyraAIIDQZUIJFE1wOB935o+StRfbXRxp+w9OyFQ==
+X-Received: by 2002:adf:e3cf:: with SMTP id k15mr5848029wrm.259.1606850949389;
+        Tue, 01 Dec 2020 11:29:09 -0800 (PST)
+Received: from localhost.localdomain (lns-bzn-59-82-252-140-184.adsl.proxad.net. [82.252.140.184])
+        by smtp.gmail.com with ESMTPSA id n123sm1317922wmn.7.2020.12.01.11.29.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:29:08 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     rjw@rjwysocki.net
+Cc:     ulf.hansson@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+        lukasz.luba@arm.com, Thara Gopinath <thara.gopinath@linaro.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Zqiang <qiang.zhang@windriver.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v4 4/4] powercap/drivers/dtpm: Add CPU energy model based support
+Date:   Tue,  1 Dec 2020 20:28:01 +0100
+Message-Id: <20201201192801.27607-5-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201201192801.27607-1-daniel.lezcano@linaro.org>
+References: <20201201192801.27607-1-daniel.lezcano@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwMS8xMi8yMDIwIDE4OjIzLCBTdGVmYW5vIEdhcnphcmVsbGEgd3JvdGU6Cj4KPiBPbiBU
-dWUsIERlYyAwMSwgMjAyMCBhdCAwNToyNTowNVBNICswMjAwLCBBbmRyYSBQYXJhc2NoaXYgd3Jv
-dGU6Cj4+IFRoZSB2c29jayBmbGFnIGhhcyBiZWVuIHNldCBpbiB0aGUgY29ubmVjdCBhbmQgKGxp
-c3RlbikgcmVjZWl2ZSBwYXRocy4KPj4KPj4gV2hlbiB0aGUgdnNvY2sgdHJhbnNwb3J0IGlzIGFz
-c2lnbmVkLCB0aGUgcmVtb3RlIENJRCBpcyB1c2VkIHRvCj4+IGRpc3Rpbmd1aXNoIGJldHdlZW4g
-dHlwZXMgb2YgY29ubmVjdGlvbi4KPj4KPj4gVXNlIHRoZSB2c29jayBmbGFnIChpbiBhZGRpdGlv
-biB0byB0aGUgQ0lEKSBmcm9tIHRoZSByZW1vdGUgYWRkcmVzcyB0bwo+PiBkZWNpZGUgd2hpY2gg
-dnNvY2sgdHJhbnNwb3J0IHRvIGFzc2lnbi4gRm9yIHRoZSBzaWJsaW5nIFZNcyB1c2UgY2FzZSwK
-Pj4gYWxsIHRoZSB2c29jayBwYWNrZXRzIG5lZWQgdG8gYmUgZm9yd2FyZGVkIHRvIHRoZSBob3N0
-LCBzbyBhbHdheXMgYXNzaWduCj4+IHRoZSBndWVzdC0+aG9zdCB0cmFuc3BvcnQgaWYgdGhlIHZz
-b2NrIGZsYWcgaXMgc2V0LiBGb3IgdGhlIG90aGVyIHVzZQo+PiBjYXNlcywgdGhlIHZzb2NrIHRy
-YW5zcG9ydCBhc3NpZ25tZW50IGxvZ2ljIGlzIG5vdCBjaGFuZ2VkLgo+Pgo+PiBTaWduZWQtb2Zm
-LWJ5OiBBbmRyYSBQYXJhc2NoaXYgPGFuZHJhcHJzQGFtYXpvbi5jb20+Cj4+IC0tLQo+PiBuZXQv
-dm13X3Zzb2NrL2FmX3Zzb2NrLmMgfCAxNSArKysrKysrKysrKy0tLS0KPj4gMSBmaWxlIGNoYW5n
-ZWQsIDExIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9u
-ZXQvdm13X3Zzb2NrL2FmX3Zzb2NrLmMgYi9uZXQvdm13X3Zzb2NrL2FmX3Zzb2NrLmMKPj4gaW5k
-ZXggZDEwOTE2YWI0NTI2Ny4uYmFmYzFjYjIwYWJkNCAxMDA2NDQKPj4gLS0tIGEvbmV0L3Ztd192
-c29jay9hZl92c29jay5jCj4+ICsrKyBiL25ldC92bXdfdnNvY2svYWZfdnNvY2suYwo+PiBAQCAt
-NDE5LDE2ICs0MTksMjEgQEAgc3RhdGljIHZvaWQgdnNvY2tfZGVhc3NpZ25fdHJhbnNwb3J0KHN0
-cnVjdCAKPj4gdnNvY2tfc29jayAqdnNrKQo+PiDCoCogKGUuZy4gZHVyaW5nIHRoZSBjb25uZWN0
-KCkgb3Igd2hlbiBhIGNvbm5lY3Rpb24gcmVxdWVzdCBvbiBhIGxpc3RlbmVyCj4+IMKgKiBzb2Nr
-ZXQgaXMgcmVjZWl2ZWQpLgo+PiDCoCogVGhlIHZzay0+cmVtb3RlX2FkZHIgaXMgdXNlZCB0byBk
-ZWNpZGUgd2hpY2ggdHJhbnNwb3J0IHRvIHVzZToKPj4gLSAqwqAgLSByZW1vdGUgQ0lEID09IFZN
-QUREUl9DSURfTE9DQUwgb3IgZzJoLT5sb2NhbF9jaWQgb3IgCj4+IFZNQUREUl9DSURfSE9TVCBp
-Zgo+PiAtICrCoMKgwqAgZzJoIGlzIG5vdCBsb2FkZWQsIHdpbGwgdXNlIGxvY2FsIHRyYW5zcG9y
-dDsKPj4gLSAqwqAgLSByZW1vdGUgQ0lEIDw9IFZNQUREUl9DSURfSE9TVCB3aWxsIHVzZSBndWVz
-dC0+aG9zdCB0cmFuc3BvcnQ7Cj4+IC0gKsKgIC0gcmVtb3RlIENJRCA+IFZNQUREUl9DSURfSE9T
-VCB3aWxsIHVzZSBob3N0LT5ndWVzdCB0cmFuc3BvcnQ7Cj4+ICsgKsKgIC0gcmVtb3RlIGZsYWcg
-PT0gVk1BRERSX0ZMQUdfU0lCTElOR19WTVNfQ09NTVVOSUNBVElPTiwgd2lsbCBhbHdheXMKPj4g
-KyAqwqDCoMKgIGZvcndhcmQgdGhlIHZzb2NrIHBhY2tldHMgdG8gdGhlIGhvc3QgYW5kIHVzZSBn
-dWVzdC0+aG9zdCAKPj4gdHJhbnNwb3J0Owo+PiArICrCoCAtIG90aGVyd2lzZSwgZ29pbmcgZm9y
-d2FyZCB3aXRoIHRoZSByZW1vdGUgZmxhZyBkZWZhdWx0IHZhbHVlOgo+PiArICrCoMKgwqAgLSBy
-ZW1vdGUgQ0lEID09IFZNQUREUl9DSURfTE9DQUwgb3IgZzJoLT5sb2NhbF9jaWQgb3IgCj4+IFZN
-QUREUl9DSURfSE9TVAo+PiArICrCoMKgwqDCoMKgIGlmIGcyaCBpcyBub3QgbG9hZGVkLCB3aWxs
-IHVzZSBsb2NhbCB0cmFuc3BvcnQ7Cj4+ICsgKsKgwqDCoCAtIHJlbW90ZSBDSUQgPD0gVk1BRERS
-X0NJRF9IT1NUIG9yIGgyZyBpcyBub3QgbG9hZGVkLCB3aWxsIHVzZQo+PiArICrCoMKgwqDCoMKg
-IGd1ZXN0LT5ob3N0IHRyYW5zcG9ydDsKPj4gKyAqwqDCoMKgIC0gcmVtb3RlIENJRCA+IFZNQURE
-Ul9DSURfSE9TVCB3aWxsIHVzZSBob3N0LT5ndWVzdCB0cmFuc3BvcnQ7Cj4+IMKgKi8KPj4gaW50
-IHZzb2NrX2Fzc2lnbl90cmFuc3BvcnQoc3RydWN0IHZzb2NrX3NvY2sgKnZzaywgc3RydWN0IHZz
-b2NrX3NvY2sgCj4+ICpwc2spCj4+IHsKPj4gwqDCoMKgwqDCoCBjb25zdCBzdHJ1Y3QgdnNvY2tf
-dHJhbnNwb3J0ICpuZXdfdHJhbnNwb3J0Owo+PiDCoMKgwqDCoMKgIHN0cnVjdCBzb2NrICpzayA9
-IHNrX3Zzb2NrKHZzayk7Cj4+IMKgwqDCoMKgwqAgdW5zaWduZWQgaW50IHJlbW90ZV9jaWQgPSB2
-c2stPnJlbW90ZV9hZGRyLnN2bV9jaWQ7Cj4+ICvCoMKgwqDCoMKgIHVuc2lnbmVkIHNob3J0IHJl
-bW90ZV9mbGFnID0gdnNrLT5yZW1vdGVfYWRkci5zdm1fZmxhZzsKPj4gwqDCoMKgwqDCoCBpbnQg
-cmV0Owo+Pgo+PiDCoMKgwqDCoMKgIHN3aXRjaCAoc2stPnNrX3R5cGUpIHsKPj4gQEAgLTQzOCw2
-ICs0NDMsOCBAQCBpbnQgdnNvY2tfYXNzaWduX3RyYW5zcG9ydChzdHJ1Y3QgdnNvY2tfc29jayAK
-Pj4gKnZzaywgc3RydWN0IHZzb2NrX3NvY2sgKnBzaykKPj4gwqDCoMKgwqDCoCBjYXNlIFNPQ0tf
-U1RSRUFNOgo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAodnNvY2tfdXNlX2xvY2Fs
-X3RyYW5zcG9ydChyZW1vdGVfY2lkKSkKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIG5ld190cmFuc3BvcnQgPSB0cmFuc3BvcnRfbG9jYWw7Cj4+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBlbHNlIGlmIChyZW1vdGVfZmxhZyA9PSAKPj4gVk1BRERSX0ZM
-QUdfU0lCTElOR19WTVNfQ09NTVVOSUNBVElPTikKPgo+IE90aGVycyBmbGFncyBjYW4gYmUgYWRk
-ZWQsIHNvIGhlcmUgd2Ugc2hvdWxkIHVzZSB0aGUgYml0d2lzZSBBTkQKPiBvcGVyYXRvciB0byBj
-aGVjayBpZiB0aGlzIGZsYWcgaXMgc2V0Lgo+Cj4gQW5kIHdoYXQgYWJvdXQgbWVyZ2luZyB3aXRo
-IHRoZSBuZXh0IGlmIGNsYXVzZT8KPgoKSW5kZWVkLCBJJ2xsIHVwZGF0ZSB0aGUgY29kZWJhc2Ug
-dG8gdXNlIHRoZSBiaXR3aXNlIG9wZXJhdG9yLiBUaGVuIEkgY2FuIAphbHNvIG1lcmdlIGFsbCB0
-aGUgY2hlY2tzIGNvcnJlc3BvbmRpbmcgdG8gdGhlIGcyaCB0cmFuc3BvcnQgaW4gYSBzaW5nbGUg
-CmlmIGJsb2NrLgoKVGhhbmtzLApBbmRyYQoKPgo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIG5ld190cmFuc3BvcnQgPSB0cmFuc3BvcnRfZzJoOwo+PiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlbHNlIGlmIChyZW1vdGVfY2lkIDw9IFZNQUREUl9DSURf
-SE9TVCB8fAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAhdHJhbnNwb3J0X2gyZykKPj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG5ld190cmFuc3BvcnQg
-PSB0cmFuc3BvcnRfZzJoOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlbHNlCj4+IC0t
-IAo+PiAyLjIwLjEgKEFwcGxlIEdpdC0xMTcpCj4+Cj4KCgoKCkFtYXpvbiBEZXZlbG9wbWVudCBD
-ZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNmLiBMYXphciBT
-dHJlZXQsIFVCQzUsIGZsb29yIDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUsIFJvbWFuaWEu
-IFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIvMjYyMS8yMDA1
-Lgo=
+With the powercap dtpm controller, we are able to plug devices with
+power limitation features in the tree.
+
+The following patch introduces the CPU power limitation based on the
+energy model and the performance states.
+
+The power limitation is done at the performance domain level. If some
+CPUs are unplugged, the corresponding power will be subtracted from
+the performance domain total power.
+
+It is up to the platform to initialize the dtpm tree and add the CPU.
+
+Here is an example to create a simple tree with one root node called
+"pkg" and the CPU's performance domains.
+
+static int dtpm_register_pkg(struct dtpm_descr *descr)
+{
+	struct dtpm *pkg;
+	int ret;
+
+	pkg = dtpm_alloc(NULL);
+	if (!pkg)
+		return -ENOMEM;
+
+	ret = dtpm_register(descr->name, pkg, descr->parent);
+	if (ret)
+		return ret;
+
+	return dtpm_register_cpu(pkg);
+}
+
+static struct dtpm_descr descr = {
+	.name = "pkg",
+	.init = dtpm_register_pkg,
+};
+DTPM_DECLARE(descr);
+
+Cc: Thara Gopinath <thara.gopinath@linaro.org>
+Cc: Lina Iyer <ilina@codeaurora.org>
+Cc: Ram Chandrasekar <rkumbako@codeaurora.org>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/powercap/Kconfig    |   7 +
+ drivers/powercap/Makefile   |   1 +
+ drivers/powercap/dtpm_cpu.c | 257 ++++++++++++++++++++++++++++++++++++
+ include/linux/cpuhotplug.h  |   1 +
+ include/linux/dtpm.h        |   2 +
+ 5 files changed, 268 insertions(+)
+ create mode 100644 drivers/powercap/dtpm_cpu.c
+
+diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
+index cc1953bd8bed..20b4325c6161 100644
+--- a/drivers/powercap/Kconfig
++++ b/drivers/powercap/Kconfig
+@@ -49,4 +49,11 @@ config DTPM
+ 	help
+ 	  This enables support for the power capping for the dynamic
+ 	  thermal power management userspace engine.
++
++config DTPM_CPU
++	bool "Add CPU power capping based on the energy model"
++	depends on DTPM && ENERGY_MODEL
++	help
++	  This enables support for CPU power limitation based on
++	  energy model.
+ endif
+diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
+index 6482ac52054d..fabcf388a8d3 100644
+--- a/drivers/powercap/Makefile
++++ b/drivers/powercap/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_DTPM) += dtpm.o
++obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
+ obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
+ obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
+ obj-$(CONFIG_INTEL_RAPL) += intel_rapl_msr.o
+diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+new file mode 100644
+index 000000000000..6933c783c6b4
+--- /dev/null
++++ b/drivers/powercap/dtpm_cpu.c
+@@ -0,0 +1,257 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright 2020 Linaro Limited
++ *
++ * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
++ *
++ * The DTPM CPU is based on the energy model. It hooks the CPU in the
++ * DTPM tree which in turns update the power number by propagating the
++ * power number from the CPU energy model information to the parents.
++ *
++ * The association between the power and the performance state, allows
++ * to set the power of the CPU at the OPP granularity.
++ *
++ * The CPU hotplug is supported and the power numbers will be updated
++ * if a CPU is hot plugged / unplugged.
++ */
++#include <linux/cpumask.h>
++#include <linux/cpufreq.h>
++#include <linux/cpuhotplug.h>
++#include <linux/dtpm.h>
++#include <linux/energy_model.h>
++#include <linux/pm_qos.h>
++#include <linux/slab.h>
++#include <linux/units.h>
++
++static struct dtpm *__parent;
++
++static DEFINE_PER_CPU(struct dtpm *, dtpm_per_cpu);
++
++struct dtpm_cpu {
++	struct freq_qos_request qos_req;
++	int cpu;
++};
++
++/*
++ * When a new CPU is inserted at hotplug or boot time, add the power
++ * contribution and update the dtpm tree.
++ */
++static int power_add(struct dtpm *dtpm, struct em_perf_domain *em)
++{
++	u64 power_min, power_max;
++
++	power_min = em->table[0].power;
++	power_min *= MICROWATT_PER_MILLIWATT;
++	power_min += dtpm->power_min;
++
++	power_max = em->table[em->nr_perf_states - 1].power;
++	power_max *= MICROWATT_PER_MILLIWATT;
++	power_max += dtpm->power_max;
++
++	return dtpm_update_power(dtpm, power_min, power_max);
++}
++
++/*
++ * When a CPU is unplugged, remove its power contribution from the
++ * dtpm tree.
++ */
++static int power_sub(struct dtpm *dtpm, struct em_perf_domain *em)
++{
++	u64 power_min, power_max;
++
++	power_min = em->table[0].power;
++	power_min *= MICROWATT_PER_MILLIWATT;
++	power_min = dtpm->power_min - power_min;
++
++	power_max = em->table[em->nr_perf_states - 1].power;
++	power_max *= MICROWATT_PER_MILLIWATT;
++	power_max = dtpm->power_max - power_max;
++
++	return dtpm_update_power(dtpm, power_min, power_max);
++}
++
++static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
++{
++	struct dtpm_cpu *dtpm_cpu = dtpm->private;
++	struct em_perf_domain *pd;
++	struct cpumask cpus;
++	unsigned long freq;
++	u64 power;
++	int i, nr_cpus;
++
++	pd = em_cpu_get(dtpm_cpu->cpu);
++
++	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
++
++	nr_cpus = cpumask_weight(&cpus);
++
++	for (i = 0; i < pd->nr_perf_states; i++) {
++
++		power = pd->table[i].power * MICROWATT_PER_MILLIWATT * nr_cpus;
++
++		if (power > power_limit)
++			break;
++	}
++
++	freq = pd->table[i - 1].frequency;
++
++	freq_qos_update_request(&dtpm_cpu->qos_req, freq);
++
++	power_limit = pd->table[i - 1].power *
++		MICROWATT_PER_MILLIWATT * nr_cpus;
++
++	return power_limit;
++}
++
++static u64 get_pd_power_uw(struct dtpm *dtpm)
++{
++	struct dtpm_cpu *dtpm_cpu = dtpm->private;
++	struct em_perf_domain *pd;
++	struct cpumask cpus;
++	unsigned long freq;
++	int i, nr_cpus;
++
++	pd = em_cpu_get(dtpm_cpu->cpu);
++	freq = cpufreq_quick_get(dtpm_cpu->cpu);
++	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
++	nr_cpus = cpumask_weight(&cpus);
++
++	for (i = 0; i < pd->nr_perf_states; i++) {
++
++		if (pd->table[i].frequency < freq)
++			continue;
++
++		return pd->table[i].power *
++			MICROWATT_PER_MILLIWATT * nr_cpus;
++	}
++
++	return 0;
++}
++
++static void pd_release(struct dtpm *dtpm)
++{
++	struct dtpm_cpu *dtpm_cpu = dtpm->private;
++
++	if (freq_qos_request_active(&dtpm_cpu->qos_req))
++		freq_qos_remove_request(&dtpm_cpu->qos_req);
++
++	kfree(dtpm_cpu);
++}
++
++static struct dtpm_ops dtpm_ops = {
++	.set_power_uw = set_pd_power_limit,
++	.get_power_uw = get_pd_power_uw,
++	.release = pd_release,
++};
++
++static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
++{
++	struct cpufreq_policy *policy;
++	struct em_perf_domain *pd;
++	struct dtpm *dtpm;
++
++	policy = cpufreq_cpu_get(cpu);
++
++	if (!policy)
++		return 0;
++
++	pd = em_cpu_get(cpu);
++	if (!pd)
++		return -EINVAL;
++
++	dtpm = per_cpu(dtpm_per_cpu, cpu);
++
++	power_sub(dtpm, pd);
++
++	if (cpumask_weight(policy->cpus) != 1)
++		return 0;
++
++	for_each_cpu(cpu, policy->related_cpus)
++		per_cpu(dtpm_per_cpu, cpu) = NULL;
++
++	dtpm_unregister(dtpm);
++
++	return 0;
++}
++
++static int cpuhp_dtpm_cpu_online(unsigned int cpu)
++{
++	struct dtpm *dtpm;
++	struct dtpm_cpu *dtpm_cpu;
++	struct cpufreq_policy *policy;
++	struct em_perf_domain *pd;
++	char name[CPUFREQ_NAME_LEN];
++	int ret = -ENOMEM;
++
++	policy = cpufreq_cpu_get(cpu);
++
++	if (!policy)
++		return 0;
++
++	pd = em_cpu_get(cpu);
++	if (!pd)
++		return -EINVAL;
++
++	dtpm = per_cpu(dtpm_per_cpu, cpu);
++	if (dtpm)
++		return power_add(dtpm, pd);
++
++	dtpm = dtpm_alloc(&dtpm_ops);
++	if (!dtpm)
++		return -EINVAL;
++
++	dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
++	if (!dtpm_cpu)
++		goto out_kfree_dtpm;
++
++	dtpm->private = dtpm_cpu;
++	dtpm_cpu->cpu = cpu;
++
++	for_each_cpu(cpu, policy->related_cpus)
++		per_cpu(dtpm_per_cpu, cpu) = dtpm;
++
++	sprintf(name, "cpu%d", dtpm_cpu->cpu);
++
++	ret = dtpm_register(name, dtpm, __parent);
++	if (ret)
++		goto out_kfree_dtpm_cpu;
++
++	ret = power_add(dtpm, pd);
++	if (ret)
++		goto out_dtpm_unregister;
++
++	ret = freq_qos_add_request(&policy->constraints,
++				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
++				   pd->table[pd->nr_perf_states - 1].frequency);
++	if (ret)
++		goto out_power_sub;
++
++	return 0;
++
++out_power_sub:
++	power_sub(dtpm, pd);
++
++out_dtpm_unregister:
++	dtpm_unregister(dtpm);
++	dtpm_cpu = NULL;
++	dtpm = NULL;
++
++out_kfree_dtpm_cpu:
++	for_each_cpu(cpu, policy->related_cpus)
++		per_cpu(dtpm_per_cpu, cpu) = NULL;
++	kfree(dtpm_cpu);
++
++out_kfree_dtpm:
++	kfree(dtpm);
++	return ret;
++}
++
++int dtpm_register_cpu(struct dtpm *parent)
++{
++	__parent = parent;
++
++	return cpuhp_setup_state(CPUHP_AP_DTPM_CPU_ONLINE,
++				 "dtpm_cpu:online",
++				 cpuhp_dtpm_cpu_online,
++				 cpuhp_dtpm_cpu_offline);
++}
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index bc56287a1ed1..72fd8db62342 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -192,6 +192,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
+ 	CPUHP_AP_X86_HPET_ONLINE,
+ 	CPUHP_AP_X86_KVM_CLK_ONLINE,
++	CPUHP_AP_DTPM_CPU_ONLINE,
+ 	CPUHP_AP_ACTIVE,
+ 	CPUHP_ONLINE,
+ };
+diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
+index 7a1d0b50e334..e80a332e3d8a 100644
+--- a/include/linux/dtpm.h
++++ b/include/linux/dtpm.h
+@@ -72,4 +72,6 @@ void dtpm_unregister(struct dtpm *dtpm);
+ 
+ int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent);
+ 
++int dtpm_register_cpu(struct dtpm *parent);
++
+ #endif
+-- 
+2.17.1
 
