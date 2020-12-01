@@ -2,112 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97692CA519
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291CE2CA4FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728965AbgLAOIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:08:16 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:27935 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgLAOIQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:08:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606831524;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=J7AKPx0mAAtqxKULqYMJrpgQMcWGlg7fBLA8fAfxJ9o=;
-        b=GJTaJk0j9J0DtjTbt1Ypi5NKK7gqDBO2tS4+/AgN7xPpKAZTzmYFAdwtol4Ip/Uuvn
-        Y5jIP9PRLkBIJYWA3r6oJ2qySAuRigyT92cMWeUNcbp3zciHVm++4foKdCvPfpWiQyJ2
-        ugBUTcIEDeWr8CswTBLlAj7/WwivUZ6JVWaj2UfArALyUsMG+2O+NKYds0g6XkAY/7Lq
-        DbZLBdx0T0zYLeSx4qBp3t0rQ6we4Q8y6+9aRTJfKFQOnU8KQdSAeyH/IOW988SNg/Qs
-        g0L6zauKeujcv1y1cpaNDB1tJal7u0KwZ1mQ5H9o34zYOS3ymNtYZo0q4bxWTLd058ib
-        BmHA==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBp5hRw/qOxWRk4dCz0tZci65gKwSHSOzPCVVBaQfKyHICBNIH6DBKP"
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2001:16b8:26a9:5c00:580e:6fc8:ca54:f161]
-        by smtp.strato.de (RZmta 47.3.4 AUTH)
-        with ESMTPSA id N02faawB1E5FUcP
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Tue, 1 Dec 2020 15:05:15 +0100 (CET)
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=utf-8
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20201201121620.GB5239@sirena.org.uk>
-Date:   Tue, 1 Dec 2020 15:05:14 +0100
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com>
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com> <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com> <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk>
-To:     Mark Brown <broonie@kernel.org>
-X-Mailer: Apple Mail (2.3124)
+        id S2391555AbgLAOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:06:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:43554 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391306AbgLAOGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:06:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1998F30E;
+        Tue,  1 Dec 2020 06:05:23 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AEF763F718;
+        Tue,  1 Dec 2020 06:05:22 -0800 (PST)
+Date:   Tue, 1 Dec 2020 14:05:20 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amit.kucheria@verdurent.com,
+        airlied@linux.ie, daniel.lezcano@linaro.org, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, rui.zhang@intel.com,
+        orjan.eide@arm.com
+Subject: Re: [PATCH 3/5] thermal: devfreq_cooling: add new registration
+ functions with Energy Model
+Message-ID: <20201201140520.GA7206@arm.com>
+References: <20200921122007.29610-1-lukasz.luba@arm.com>
+ <20200921122007.29610-4-lukasz.luba@arm.com>
+ <20201007120746.GA15063@arm.com>
+ <71cfae58-8ea5-c591-455b-d84420d8412a@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71cfae58-8ea5-c591-455b-d84420d8412a@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-> Am 01.12.2020 um 13:16 schrieb Mark Brown <broonie@kernel.org>:
->=20
-> On Tue, Dec 01, 2020 at 09:59:43AM +0100, H. Nikolaus Schaller wrote:
->>> Am 30.11.2020 um 21:13 schrieb Sven Van Asbroeck =
-<thesven73@gmail.com>:
->=20
->>> We knew that there was a chance that our fix would break something =
-else.
->>> But hopefully "it fixes more than it breaks"
->=20
->> Then it should not have been applied to mainline but fully worked out
->> and tested.
->=20
-> If you want to see better testing of things in mainline please
-> contribute to the various kernel testing efforts that are out there,
+On Thursday 22 Oct 2020 at 12:17:31 (+0100), Lukasz Luba wrote:
+[..]
 
-> there's a huge range of systems out there using the kernel and it's
-> simply not realistic to expect that they'll all be covered, the =
-testing
-> effort for the kernel is very much a community effort.  If there are
-> things that are particularly important to you the best way to ensure
-> that they are tested is to provide that testing yourself.
+> > > +/**
+> > > + * devfreq_cooling_em_register_power() - Register devfreq cooling device with
+> > > + *		power information and attempt to register Energy Model (EM)
+> > 
+> > It took me a while to understand the differences between devfreq
+> > register functions and it left me with a nagging feeling that we don't
+> > need all of them. Also, looking over the cpufreq cooling devices, they
+> > keep their registering interfaces quite simple.
+> 
+> This was discussed in previous series, related to EM core changes.
+> It was requested to have a helper registration function which would
+> create EM automatically.
+> 
+> > 
+> > With the functions added by this patch, the devfreq cooling devices will have:
+> >   - old:
+> >         of_devfreq_cooling_register_power
+> >         of_devfreq_cooling_register
+> >         devfreq_cooling_register
+> >         devfreq_cooling_unregister
+> >   - new:
+> >         devfreq_cooling_em_register_power
+> >         devfreq_cooling_em_register
+> > 
+> > My question is whether we actually need the two new
+> > devfreq_cooling_em_register_power() and devfreq_cooling_em_register()?
+> 
+> It is just for consistency, with older scheme. It is only a wrapper, one
+> line, with default NULL. This scheme is common in thermal and some other
+> frameworks.
+> 
+> > 
+> > The power_ops and the em are dependent on one another, so could we
+> > extend the of_devfreq_cooling_register_power() to do the additional em
+> > registration. We only need a way to pass the em_cb and I think that
+> > could fit nicely in devfreq_cooling_power.
+> 
+> No, they aren't 'dependent on one another'. The EM usage doesn't depend
+> on presence of power_ops. Drivers might not support power_ops, but want
+> the framework still use EM and do power estimation.
+> 
+
+Okay, wrong choice of words. There's only a one way dependency: you can't
+use power_ops without an em, according to
+of_devfreq_cooling_register_power().
+
+Correct me if I'm wrong, but I see this as being okay as you still need
+an em to give you the maximum power of a device in a certain state.
+
+With this in mind, and taking in detail the possible calls of the
+devfreq cooling register functions:
+
+1. Register devfreq cooling device with energy model.
+   (used in patch 5/5)
+
+ -> devfreq_cooling_em_register()
+    -> devfreq_cooling_em_register_power(dfc_power = NULL, em obtained
+                                      through various methods)
+      -> of_devfreq_cooling_register_power(same as above)
+
+2. Register devfreq cooling device with power_ops and em:
+   (not used)
+
+ -> devfreq_cooling_em_register_power(dfc_power != NULL, em obtained
+                                     through various methods)
+   -> of_devfreq_cooling_register_power(same as above)
+
+3. Register a devfreq cooling devices with power_ops but no em
+   (not used)
+
+ -> of_devfreq_cooling_register_power(dfc_power != NULL)
 
 
-Well, having a working display of a portable device that has mainline
-Linux support for many years is particularly important...
+4. Register a devfreq cooling devices without any kind of power
+   information (em or dfc_power/power_ops)
 
-BTW, I am already part of this testing efforts out there. Because I test
-almost all -rc when they arrive. So I just did what you propose,
+ -> devfreq_cooling_register() or of_devfreq_cooling_register()
+   -> of_devfreq_cooling_register_power(dfc_power = NULL)
 
-And if I can locate the commit of a regression I write bug reports
-like this one.
 
-The only thing I could have done differently is to always test based
-on linux-next but that is a less structured testing environment and has
-its own pitfalls. But that would have revealed the issue only earlier
-but not with less effort or with a quicker fix.
+Given this, aren't we ending up with some possible calls to these
+registration functions that don't make sense? That is case 3, as
+of_devfreq_cooling_register_power() could not assign and later use
+power_ops without an em. For this usecase, 2 should be used instead.
 
-I am not sure if =C3=ADt is realistic to dream of some way of =
-informing/contacting
-the potentially affected driver authors/maintainers to run a quick test
-before it is merged upstream.
+Therefore, can't the same be achieved by collapsing
+devfreq_cooling_em_register_power() into
+of_devfreq_cooling_register_power()? (with the user having the
+possibility to provide the em callback similarly to how get_real_power()
+is provided - in devfreq_cooling_power).
 
-To be clear: I do not expect that there are no bugs at all (for that I =
-know
-Linux and software far too long). But I do not expect regression of the
-type hopefully "it fixes more than it breaks".
+IMO is cleaner to unify the functionality (registration and callbacks)
+of cooling devices with power capabilities (based on em alone or together
+with power_ops). Otherwise we just create confusion for users registering
+cooling devices not knowing which function to call.
 
-Well, for me it (apparently) breaks more than it fixes. So the easiest =
-fix
-for me would be to revert the patch. But I am sure that then you are not
-happy with it...
+If this has been discussed previously and I'm missing some details,
+please provide some links to the discussions.
 
-So let's set out for a better solution.
+Thank you for the patience :).
 
-BR and thanks,
-Nikolaus
-
+Ionela.
