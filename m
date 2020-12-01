@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1D62C9A5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467002C9C4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387772AbgLAI5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60202 "EHLO mail.kernel.org"
+        id S2390268AbgLAJRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:17:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387762AbgLAI5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:57:01 -0500
+        id S2389015AbgLAJMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:37 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67C1C22250;
-        Tue,  1 Dec 2020 08:56:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 879D6206CA;
+        Tue,  1 Dec 2020 09:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812975;
-        bh=RPqcXIlDlB+4+RN1b9MSkZEsEpMrhpb438RyuRLWWM0=;
+        s=korg; t=1606813917;
+        bh=yzmrYridZZHC56CRIQEOUhTE+VoFsyBBdUhnkMxaCBI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xmqs6oBrxsWC01OvTB6m+x0NMifsGVbOSZz5EafaK6jkeiyg0vIMCSzVbZEKG2/GW
-         nsbvSML6lmC92TbVlD7F2Z+i/LrQ1vaIwlr2CeO4zFw7n8Vl/wvFg/kUopyd8AfDA+
-         YE80QHj27dvy/z2zCBcSM4XJ3gi0mBE2Mg7gRf+A=
+        b=bNenS8X6RSuy8UwjUm/iUqiZaUxaJKQBSjbv/DM3KyI9e/2vGcbXAqpT+c/HtZXls
+         U6rTR34GV8kSjAScffEGdOQ3G9sMud0NADRNR2vXizT+tCJ833s7420nbaQD8m1tjN
+         xXY0UGf1I57qNoCBjXO4p/s6qIlR2dKoxTY9VhhE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Mark Brown <broonie@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 40/42] regulator: workaround self-referent regulators
+        stable@vger.kernel.org,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 103/152] iommu: Check return of __iommu_attach_device()
 Date:   Tue,  1 Dec 2020 09:53:38 +0100
-Message-Id: <20201201084645.890848252@linuxfoundation.org>
+Message-Id: <20201201084725.342977874@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Michał Mirosław" <mirq-linux@rere.qmqm.pl>
+From: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
 
-commit f5c042b23f7429e5c2ac987b01a31c69059a978b upstream
+[ Upstream commit 77c38c8cf52ef715bfc5cab3d14222d4f3e776e2 ]
 
-Workaround regulators whose supply name happens to be the same as its
-own name. This fixes boards that used to work before the early supply
-resolving was removed. The error message is left in place so that
-offending drivers can be detected.
+Currently iommu_create_device_direct_mappings() is called
+without checking the return of __iommu_attach_device(). This
+may result in failures in iommu driver if dev attach returns
+error.
 
-Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
-Cc: stable@vger.kernel.org
-Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # stpmic1
-Link: https://lore.kernel.org/r/d703acde2a93100c3c7a81059d716c50ad1b1f52.1605226675.git.mirq-linux@rere.qmqm.pl
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ce574c27ae27 ("iommu: Move iommu_group_create_direct_mappings() out of iommu_group_add_device()")
+Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+Link: https://lore.kernel.org/r/20201119165846.34180-1-shameerali.kolothum.thodi@huawei.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/core.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/iommu/iommu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1553,7 +1553,10 @@ static int regulator_resolve_supply(stru
- 	if (r == rdev) {
- 		dev_err(dev, "Supply for %s (%s) resolved to itself\n",
- 			rdev->desc->name, rdev->supply_name);
--		return -EINVAL;
-+		if (!have_full_constraints())
-+			return -EINVAL;
-+		r = dummy_regulator_rdev;
-+		get_device(&r->dev);
- 	}
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 609bd25bf154b..6a0a79e3f5641 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -264,16 +264,18 @@ int iommu_probe_device(struct device *dev)
+ 	 */
+ 	iommu_alloc_default_domain(group, dev);
  
- 	/* Recursively resolve the supply of the supply */
+-	if (group->default_domain)
++	if (group->default_domain) {
+ 		ret = __iommu_attach_device(group->default_domain, dev);
++		if (ret) {
++			iommu_group_put(group);
++			goto err_release;
++		}
++	}
+ 
+ 	iommu_create_device_direct_mappings(group, dev);
+ 
+ 	iommu_group_put(group);
+ 
+-	if (ret)
+-		goto err_release;
+-
+ 	if (ops->probe_finalize)
+ 		ops->probe_finalize(dev);
+ 
+-- 
+2.27.0
+
 
 
