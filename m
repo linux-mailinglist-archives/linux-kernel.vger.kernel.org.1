@@ -2,98 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EAB2CA17F
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE612CA180
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730652AbgLALgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730662AbgLALgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 1 Dec 2020 06:36:01 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:56399 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730626AbgLALgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+Received: from mx2.suse.de ([195.135.220.15]:60986 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730635AbgLALgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 06:36:00 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kk3w7-000R6c-Iq; Tue, 01 Dec 2020 12:35:11 +0100
-Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kk3w7-000YLZ-3I; Tue, 01 Dec 2020 12:35:11 +0100
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-References: <20201101170454.9567-1-rppt@kernel.org>
- <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
- <20201117062316.GB370813@kernel.org>
- <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
- <20201201102901.GF557259@kernel.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <e3d5d791-8e4f-afcc-944c-24f66f329bd7@physik.fu-berlin.de>
-Date:   Tue, 1 Dec 2020 12:35:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3D819ADCF;
+        Tue,  1 Dec 2020 11:35:19 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 12:35:16 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: Re: [PATCH 3/7] mm,madvise: call soft_offline_page() without
+ MF_COUNT_INCREASED
+Message-ID: <20201201113511.GA22242@linux>
+References: <20201119105716.5962-1-osalvador@suse.de>
+ <20201119105716.5962-4-osalvador@suse.de>
+ <2aa4bf71-443b-9b9b-b761-12761263dfec@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20201201102901.GF557259@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 160.45.32.140
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2aa4bf71-443b-9b9b-b761-12761263dfec@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike!
-
-On 12/1/20 11:29 AM, Mike Rapoport wrote: 
-> These changes are in linux-mm tree (https://www.ozlabs.org/~akpm/mmotm/
-> with a mirror at https://github.com/hnaz/linux-mm)
+On Wed, Nov 25, 2020 at 07:20:33PM +0100, Vlastimil Babka wrote:
+> On 11/19/20 11:57 AM, Oscar Salvador wrote:
+> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > 
+> > The call to get_user_pages_fast is only to get the pointer to a struct
+> > page of a given address, pinning it is memory-poisoning handler's job,
+> > so drop the refcount grabbed by get_user_pages_fast().
+> > 
+> > Note that the target page is still pinned after this put_page() because
+> > the current process should have refcount from mapping.
 > 
-> I beleive they will be coming in 5.11.
+> Well, but can't it go away due to reclaim, migration or whatever?
 
-Just pulled from that tree and gave it a try, it actually fails to build:
+Yes, it can.
 
-  LDS     arch/ia64/kernel/vmlinux.lds
-  AS      arch/ia64/kernel/entry.o
-arch/ia64/kernel/entry.S: Assembler messages:
-arch/ia64/kernel/entry.S:710: Error: Operand 2 of `and' should be a general register
-arch/ia64/kernel/entry.S:710: Error: qualifying predicate not followed by instruction
-arch/ia64/kernel/entry.S:848: Error: Operand 2 of `and' should be a general register
-arch/ia64/kernel/entry.S:848: Error: qualifying predicate not followed by instruction
-  GEN     usr/initramfs_data.cpio
-make[1]: *** [scripts/Makefile.build:364: arch/ia64/kernel/entry.o] Error 1
-make: *** [Makefile:1797: arch/ia64/kernel] Error 2
-make: *** Waiting for unfinished jobs....
-  CC      init/do_mounts_initrd.o
-  SHIPPED usr/initramfs_inc_data
-  AS      usr/initramfs_data.o
+> > @@ -900,20 +900,23 @@ static int madvise_inject_error(int behavior,
+> >   		 */
+> >   		size = page_size(compound_head(page));
+> > +		/*
+> > +		 * The get_user_pages_fast() is just to get the pfn of the
+> > +		 * given address, and the refcount has nothing to do with
+> > +		 * what we try to test, so it should be released immediately.
+> > +		 * This is racy but it's intended because the real hardware
+> > +		 * errors could happen at any moment and memory error handlers
+> > +		 * must properly handle the race.
+> 
+> Sure they have to. We might just be unexpectedly messing with other process'
+> memory. Or does anything else prevent that?
 
-Adrian
+No, nothing does, and I have to confess that I managed to confuse myself here.
+If we release such page and that page ends up in buddy, nothing prevents someone
+else to get that page, and then we would be messing with other process memory.
+
+I guess the right thing to do is just to make sure we got that page and that
+that page remains pinned as long as the memory failure handling goes.
+
+I will remove those patches from the patchset and re-submit with only the
+refactoring and pcp-disabling.
+
+Thanks Vlastimil
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+Oscar Salvador
+SUSE L3
