@@ -2,185 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1662CAA6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67072CAA65
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404251AbgLASCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:02:24 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:45392 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgLASCW (ORCPT
+        id S2404236AbgLASCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:02:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404222AbgLASCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:02:22 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kk9xz-0034JV-Jl; Tue, 01 Dec 2020 11:01:31 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kk9xy-00081x-2R; Tue, 01 Dec 2020 11:01:31 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     "Catangiu\, Adrian Costin" <acatan@amazon.com>
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Graf <graf@amazon.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jann Horn <jannh@google.com>, Willy Tarreau <w@1wt.eu>,
-        "MacCarthaigh\, Colm" <colmmacc@amazon.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Woodhouse\, David" <dwmw@amazon.co.uk>,
-        "bonzini\@gnu.org" <bonzini@gnu.org>,
-        "Singh\, Balbir" <sblbir@amazon.com>,
-        "Weiss\, Radu" <raduweis@amazon.com>,
-        "oridgar\@gmail.com" <oridgar@gmail.com>,
-        "ghammer\@redhat.com" <ghammer@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>,
-        "mpe\@ellerman.id.au" <mpe@ellerman.id.au>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "areber\@redhat.com" <areber@redhat.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Andrey Vagin <avagin@gmail.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        "gil\@azul.com" <gil@azul.com>,
-        "asmehra\@redhat.com" <asmehra@redhat.com>,
-        "dgunigun\@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun\@ca.ibm.com" <vijaysun@ca.ibm.com>
-References: <3E05451B-A9CD-4719-99D0-72750A304044@amazon.com>
-        <300d4404-3efe-880e-ef30-692eabbff5f7@de.ibm.com>
-        <da1a1fa7-a1de-d0e6-755b-dd587687765e@amazon.de>
-        <20201119173800.GD8537@kernel.org>
-        <1cdb6fac-0d50-3399-74a6-24c119ebbaa5@amazon.de>
-        <106f56ca-49bc-7cad-480f-4b26656e90ce@gmail.com>
-        <96625ce2-66c6-34b8-ef81-7c17c05b4c7a@amazon.com>
-Date:   Tue, 01 Dec 2020 12:00:58 -0600
-In-Reply-To: <96625ce2-66c6-34b8-ef81-7c17c05b4c7a@amazon.com> (Adrian Costin
-        Catangiu's message of "Fri, 27 Nov 2020 20:26:02 +0200")
-Message-ID: <87zh2xcso5.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 1 Dec 2020 13:02:16 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C09FC0613CF;
+        Tue,  1 Dec 2020 10:01:36 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id 10so2656713ybx.9;
+        Tue, 01 Dec 2020 10:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=immCNs4xDGr/yeWS3YmZEjkNg6wKQAW5VTX5f5Tpknc=;
+        b=YKpqwZaUUhKeLfxngmK3DDiAn38uJZke2a803KK+v6vKIVSjsSVhXpi4O/tjklH9Bd
+         jSD3es5jE2Q77uppB19U2/7n+gTL3gtgdwSZkyRiLtzOFUfAYwKA0Ao7ltRHVRKeDwHl
+         v4eexAmQBEF7cmApzW0O4NMaDbgigs49wnpbK4QdUskwbToKbGoOws459yZQtuR+xS6m
+         2RYNQ72NknLe5fMJSUIm4EjHfTQCdwuF19eZ8mAZRht1u4JBFGTL4td4mIiRaTnEp+/1
+         D7jSZJeX85be+WATzHnFDCYhl6hZtPpDlnT7lNpzL8r1JGH8JmCUL3MAjTvCQaVA1Eod
+         LABQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=immCNs4xDGr/yeWS3YmZEjkNg6wKQAW5VTX5f5Tpknc=;
+        b=EryM84V5Fw3Js8EtlxofBEQzrZkcZdnkhzG2E0Fjc7bHzYXK4dEkDbq/dCF1gf6s6U
+         AQzbyF/wZe5tN3VcCxixzWLxABDzTYJMZRPTm2EV89aGy5QqldX2fUf+ljjT0c5Lb4nY
+         EbcMdQ9jmeMnRVRTl5zUgP/VwH2srPfRphj6jeX+fUQY/Pv2ODifiXpZpuRhZ58Q3nNo
+         mm+ahUujDQgEefo+CraMxP2AqY/fxWoFRF5IWKNk6GDusYgdpALHGRZpevss3j3jKY7d
+         sV6l5QNKXNFy/vwyieF/qvw2PafqD/coWQNKsoeB1xLmXXrPaiCY0HbKgtEMMMoDgArG
+         /7PQ==
+X-Gm-Message-State: AOAM531Z7kK5F01426EYBARTPBva5m0/k3jHhaYw5G68oqfgNsiZfr6I
+        U2/UEir/Y636eiGLDWgWToBq8uJFlTBYabjivsE=
+X-Google-Smtp-Source: ABdhPJwc45X9pd+003CCkmjMxs4UKYvW0IGxNyfMvmG2kpS7bZXC0j4ppJ6woxJmpl+P7N2EeLYLvBxYe2soF7yElgE=
+X-Received: by 2002:a25:7717:: with SMTP id s23mr6890166ybc.459.1606845694868;
+ Tue, 01 Dec 2020 10:01:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kk9xy-00081x-2R;;;mid=<87zh2xcso5.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/R0Vga3FxvQqhqZmu6jrIe/AwE1gt5KtU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;"Catangiu\, Adrian Costin" <acatan@amazon.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 986 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 26 (2.6%), b_tie_ro: 24 (2.5%), parse: 1.66
-        (0.2%), extract_message_metadata: 19 (1.9%), get_uri_detail_list: 3.6
-        (0.4%), tests_pri_-1000: 24 (2.5%), tests_pri_-950: 3.3 (0.3%),
-        tests_pri_-900: 2.1 (0.2%), tests_pri_-90: 417 (42.3%), check_bayes:
-        385 (39.1%), b_tokenize: 29 (3.0%), b_tok_get_all: 17 (1.7%),
-        b_comp_prob: 6 (0.6%), b_tok_touch_all: 322 (32.7%), b_finish: 1.30
-        (0.1%), tests_pri_0: 438 (44.4%), check_dkim_signature: 0.82 (0.1%),
-        check_dkim_adsp: 2.9 (0.3%), poll_dns_idle: 1.02 (0.1%), tests_pri_10:
-        2.1 (0.2%), tests_pri_500: 48 (4.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3] drivers/virt: vmgenid: add vm generation id driver
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20201201143700.719828-1-leon@kernel.org>
+In-Reply-To: <20201201143700.719828-1-leon@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Dec 2020 10:01:23 -0800
+Message-ID: <CAEf4BzaSL+rmVYNipsfczsF2v684KOhZgFPtUG9opvk7d6zruA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] kbuild: Restore ability to build out-of-tree modules
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Edward Srouji <edwards@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Catangiu, Adrian Costin" <acatan@amazon.com> writes:
-
-> - Background
+On Tue, Dec 1, 2020 at 6:37 AM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> The VM Generation ID is a feature defined by Microsoft (paper:
-> http://go.microsoft.com/fwlink/?LinkId=260709) and supported by
-> multiple hypervisor vendors.
+> From: Leon Romanovsky <leonro@nvidia.com>
 >
-> The feature is required in virtualized environments by apps that work
-> with local copies/caches of world-unique data such as random values,
-> uuids, monotonically increasing counters, etc.
-> Such apps can be negatively affected by VM snapshotting when the VM
-> is either cloned or returned to an earlier point in time.
-
-How does this differ from /proc/sys/kernel/random/boot_id?
-
-> The VM Generation ID is a simple concept meant to alleviate the issue
-> by providing a unique ID that changes each time the VM is restored
-> from a snapshot. The hw provided UUID value can be used to
-> differentiate between VMs or different generations of the same VM.
-
-Does the VM generation ID change in a running that effectively things it
-is running?
-
-> - Problem
+> The out-of-tree modules are built without vmlinux target and request
+> to recompile that target unconditionally causes to the following
+> compilation error.
 >
-> The VM Generation ID is exposed through an ACPI device by multiple
-> hypervisor vendors but neither the vendors or upstream Linux have no
-> default driver for it leaving users to fend for themselves.
+> [root@server kernel]# make
+> <..>
+> make -f ./scripts/Makefile.modpost
+> make -f ./scripts/Makefile.modfinal
+> make[3]: *** No rule to make target 'vmlinux', needed by '/my_temp/out-of-tree-module/kernel/test.ko'.  Stop.
+> make[2]: *** [scripts/Makefile.modpost:117: __modpost] Error 2
+> make[1]: *** [Makefile:1703: modules] Error 2
+> make[1]: Leaving directory '/usr/src/kernels/5.10.0-rc5_for_upstream_base_2020_11_29_11_34'
+> make: *** [Makefile:80: modules] Error 2
 >
-> Furthermore, simply finding out about a VM generation change is only
-> the starting point of a process to renew internal states of possibly
-> multiple applications across the system. This process could benefit
-> from a driver that provides an interface through which orchestration
-> can be easily done.
+> As a solution separate between build paths that has vmlinux target and paths without.
 >
-> - Solution
+> Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
+> Reported-by: Edward Srouji <edwards@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+
+e732b538f455 ("kbuild: Skip module BTF generation for out-of-tree
+external modules") ([0]) was supposed to take care of this. Did you
+try it?
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201121070829.2612884-1-andrii@kernel.org/
+
+
+> Not proficient enough in Makefile, but it fixes the issue.
+> ---
+>  scripts/Makefile.modfinal | 5 +++++
+>  scripts/Makefile.modpost  | 4 ++++
+>  2 files changed, 9 insertions(+)
 >
-> This patch is a driver that exposes a monotonic incremental Virtual
-> Machine Generation u32 counter via a char-dev FS interface.
-
-Earlier it was a UUID now it is 32bit number?
-
-> The FS
-> interface provides sync and async VmGen counter updates notifications.
-> It also provides VmGen counter retrieval and confirmation mechanisms.
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 02b892421f7a..8a7d0604e7d0 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -48,9 +48,14 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+>         $(cmd);                                                              \
+>         printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
 >
-> The generation counter and the interface through which it is exposed
-> are available even when there is no acpi device present.
+> +ifdef MODPOST_VMLINUX
+>  # Re-generate module BTFs if either module's .ko or vmlinux changed
+>  $(modules): %.ko: %.o %.mod.o scripts/module.lds vmlinux FORCE
+>         +$(call if_changed_except,ld_ko_o,vmlinux)
+> +else
+> +$(modules): %.ko: %.o %.mod.o scripts/module.lds FORCE
+> +       +$(call if_changed_except,ld_ko_o)
+> +endif
+>  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>         +$(if $(newer-prereqs),$(call cmd,btf_ko))
+>  endif
+> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+> index f54b6ac37ac2..f5aa5b422ad7 100644
+> --- a/scripts/Makefile.modpost
+> +++ b/scripts/Makefile.modpost
+> @@ -114,8 +114,12 @@ targets += $(output-symdump)
 >
-> When the device is present, the hw provided UUID is not exposed to
-> userspace, it is internally used by the driver to keep accounting for
-> the exposed VmGen counter. The counter starts from zero when the
-> driver is initialized and monotonically increments every time the hw
-> UUID changes (the VM generation changes).
-> On each hw UUID change, the new hypervisor-provided UUID is also fed
-> to the kernel RNG.
-
-Should this be a hotplug even rather than a new character device?
-
-Without plugging into udev and the rest of the hotplug infrastructure
-I suspect things will be missed.
-
-> If there is no acpi vmgenid device present, the generation changes are
-> not driven by hw vmgenid events but can be driven by software through
-> a dedicated driver ioctl.
+>  __modpost: $(output-symdump)
+>  ifneq ($(KBUILD_MODPOST_NOFINAL),1)
+> +ifdef MODPOST_VMLINUX
+> +       $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal MODPOST_VMLINUX=1
+> +else
+>         $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal
+>  endif
+> +endif
 >
-> This patch builds on top of Or Idgar <oridgar@gmail.com>'s proposal
-> https://lkml.org/lkml/2018/3/1/498
-
-
-Eric
+>  PHONY += FORCE
+>  FORCE:
+> --
+> 2.28.0
+>
