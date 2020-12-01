@@ -2,348 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591362CAA51
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E03B52CAA56
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731143AbgLAR5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:57:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727744AbgLAR5I (ORCPT
+        id S2404163AbgLAR6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:58:05 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6842 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726104AbgLAR6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:57:08 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F61C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:56:22 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id f2so1791600qvb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:56:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=RxC4eruZSZFdoQocSF0whgMTFMUPV6msBdcd+PCemIw=;
-        b=EgydIdIW4HGjUCEEThrBIWtshCR+G+ZYFU8FBUDu8GKJjWmfkFAP6G39kxI6SPg/HT
-         FvPMpnFDU4OufgUEcZ2qXzMBENnRy9dtEl+GudPIsLVCBfMilwfDz/SnpqWHuzYIEF1e
-         7agiGuNzCP3nKAVjE05y/CQAQ4miZLwtGFYbn4A9TiW6XA3GhpQye93g5NA5htaC1B9i
-         9dtNf1erO5wHORJnR10y2m5nN2KHgqCc7d7Ev2dLgg/pzWtuOa2O+1APw9g1rNijpW2x
-         ZsaQGfmfElVNtt6KhNuOzrI2kQYcXF0R+5cfM9X6odHtj+L14KkUSNcVrTNb6ZxV1icC
-         cGEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=RxC4eruZSZFdoQocSF0whgMTFMUPV6msBdcd+PCemIw=;
-        b=sS7vh3fm+U9e+NaoMXo9X27+bcRlKeLSQ4HEKMGu4rtnXxdkhesef0nCSjpVS5fdWr
-         7OQroK+CteWLwuByADIm67EEyXxusXEXVKb42j96L4arbQZPhiqyxpM8vnycfgDCmk2V
-         GS2nozPDs1BKpv+LV/wv65quzf/WymXMi3/qHwCLVfQgZy6p0IeV0PYmYkYLnTuChvBd
-         cAHJ6wheQx3GwLg8Aywx3IHOcgau3j/SAxYkAm5u8/3Z3EMOw4TEgp8CJK6Qdz8oipGC
-         PeJsj+Vm9Gp1epccMgnjjYqnuDo5fkADO2MGM2fiJPmeqW8FsKJQtOu38TPHSZI4RI6p
-         5S6w==
-X-Gm-Message-State: AOAM530QDhmoUdXv3ytK/LKKmqBVpPhqhCmPacOLncGtrHiDHI//PYoJ
-        hEqwL90mcEtEz9iDTj49RZZzVHh2H9MR
-X-Google-Smtp-Source: ABdhPJwyBIKW8A83j3TsftVk5SD90Otc7+F1pw60x9Apjp1hXP/J1maoSswpR9gPbE7xih06rh9rqnZlWooV
-Sender: "gthelen via sendgmr" <gthelen@gthelen.svl.corp.google.com>
-X-Received: from gthelen.svl.corp.google.com ([2620:15c:2cd:202:8edc:d4ff:fe33:9605])
- (user=gthelen job=sendgmr) by 2002:a0c:f4d0:: with SMTP id
- o16mr4378037qvm.43.1606845381350; Tue, 01 Dec 2020 09:56:21 -0800 (PST)
-Date:   Tue, 01 Dec 2020 09:56:18 -0800
-In-Reply-To: <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
-Message-Id: <xr93lfehl8al.fsf@gthelen.svl.corp.google.com>
-Mime-Version: 1.0
-References: <20201130233504.3725241-1-axelrasmussen@google.com>
- <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com> <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
-Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
- in tracepoints
-From:   Greg Thelen <gthelen@google.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
-        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 1 Dec 2020 12:58:05 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1HVvqN011551;
+        Tue, 1 Dec 2020 12:57:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=dH2ctsvET4xi8v0xPbDebqX2yq8lLAveDD3yFimQ4RY=;
+ b=e+OYOlP7DyO6sGrihjXQaXbvQI0i98aqEIHWLyS0U190eStHqlV16fcg19MQo8MDaddc
+ Jw/F++a3lvfiH1dxpFTJdyB1xIRuBCunAhEEKu3QmfxuxrH+Hqug/rqJNok7864/XzLZ
+ 7WCcXQGJKgeboZLXVL6Vu8cH5G3wZzSyFtLDkmmV58mZ9jmP+mTx3FfIK2V8fNQAK4ue
+ mpmRE/PNcbTwi3hhNNUd6F00qFnGWmm8YOmPCMF6efezumy9DWXYZ6L0trmTFRb1vowy
+ VMAnP7zQcLK5rPunqMPbxO+3L3T6gF9Zr1rhL9DiLD4XD7PEyJdfjnY8iPtQc0JkGYsv CQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 355k52gh9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 12:57:19 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B1HpJC9090108;
+        Tue, 1 Dec 2020 12:57:18 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 355k52gh94-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 12:57:18 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B1HgGlP012953;
+        Tue, 1 Dec 2020 17:57:16 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 353e683cxd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 17:57:16 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B1HvDUj54854096
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Dec 2020 17:57:13 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF15FA4051;
+        Tue,  1 Dec 2020 17:57:13 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 06959A4040;
+        Tue,  1 Dec 2020 17:57:11 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.25.88])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue,  1 Dec 2020 17:57:10 +0000 (GMT)
+Date:   Tue, 1 Dec 2020 18:56:59 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v12 12/17] s390/vfio-ap: allow hot plug/unplug of AP
+ resources using mdev device
+Message-ID: <20201201185659.72ca96c8.pasic@linux.ibm.com>
+In-Reply-To: <20201201003227.0c3696fc.pasic@linux.ibm.com>
+References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
+        <20201124214016.3013-13-akrowiak@linux.ibm.com>
+        <20201129025250.16eb8355.pasic@linux.ibm.com>
+        <103cbe02-2093-c950-8d65-d3dc385942ce@linux.ibm.com>
+        <20201201003227.0c3696fc.pasic@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_07:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ phishscore=0 bulkscore=0 impostorscore=0 spamscore=0 clxscore=1015
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012010104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Axel Rasmussen <axelrasmussen@google.com> wrote:
+On Tue, 1 Dec 2020 00:32:27 +0100
+Halil Pasic <pasic@linux.ibm.com> wrote:
 
-> On Mon, Nov 30, 2020 at 5:34 PM Shakeel Butt <shakeelb@google.com> wrote:
->>
->> On Mon, Nov 30, 2020 at 3:43 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
->> >
->> > syzbot reported[1] a use-after-free introduced in 0f818c4bc1f3. The bug
->> > is that an ongoing trace event might race with the tracepoint being
->> > disabled (and therefore the _unreg() callback being called). Consider
->> > this ordering:
->> >
->> > T1: trace event fires, get_mm_memcg_path() is called
->> > T1: get_memcg_path_buf() returns a buffer pointer
->> > T2: trace_mmap_lock_unreg() is called, buffers are freed
->> > T1: cgroup_path() is called with the now-freed buffer
->>
->> Any reason to use the cgroup_path instead of the cgroup_ino? There are
->> other examples of trace points using cgroup_ino and no need to
->> allocate buffers. Also cgroup namespace might complicate the path
->> usage.
->
-> Hmm, so in general I would love to use a numeric identifier instead of a string.
->
-> I did some reading, and it looks like the cgroup_ino() mainly has to
-> do with writeback, instead of being just a general identifier?
-> https://www.kernel.org/doc/Documentation/cgroup-v2.txt
->
-> There is cgroup_id() which I think is almost what I'd want, but there
-> are a couple problems with it:
->
-> - I don't know of a way for userspace to translate IDs -> paths, to
-> make them human readable?
+> > 
+> > 
+> > On 11/28/20 8:52 PM, Halil Pasic wrote:  
+> [..]
+> > >> * Unassign adapter from mdev's matrix:
+> > >>
+> > >>    The domain will be hot unplugged from the KVM guest if it is
+> > >>    assigned to the guest's matrix.
+> > >>
+> > >> * Assign a control domain:
+> > >>
+> > >>    The control domain will be hot plugged into the KVM guest if it is not
+> > >>    assigned to the guest's APCB. The AP architecture ensures a guest will
+> > >>    only get access to the control domain if it is in the host's AP
+> > >>    configuration, so there is no risk in hot plugging it; however, it will
+> > >>    become automatically available to the guest when it is added to the host
+> > >>    configuration.
+> > >>
+> > >> * Unassign a control domain:
+> > >>
+> > >>    The control domain will be hot unplugged from the KVM guest if it is
+> > >>    assigned to the guest's APCB.  
+> > > This is where things start getting tricky. E.g. do we need to revise
+> > > filtering after an unassign? (For example an assign_adapter X didn't
+> > > change the shadow, because queue XY was missing, but now we unplug domain
+> > > Y. Should the adapter X pop up? I guess it should.)  
+> > 
+> > I suppose that makes sense at the expense of making the code
+> > more complex. It is essentially what we had in the prior version
+> > which used the same filtering code for assignment as well as
+> > host AP configuration changes.
+> >   
+> 
+> Will have to think about it some more. Making the user unplug and
+> replug an adapter because at some point it got filtered, but there
+> is no need to filter it does not feel right. On the other hand, I'm
+> afraid I'm complaining in circles. 
 
-The id => name map can be built from user space with a tree walk.
-Example:
+I did some thinking. The following statements are about the state of
+affairs, when all 17 patches are applied. I'm commenting here, because
+I believe this is the patch that introduces the most controversial code.
 
-$ find /sys/fs/cgroup/memory -type d -printf '%i %P\n'                                                                          # ~ [main] 
-20387 init.scope                                                         
-31 system.slice
+First about low level problems with the current code/design. The other is
+empty handling in vfio_ap_assign_apid_to_apcb() (and
+vfio_ap_assign_apqi_to_apcb()) is troublesome. The final product
+allows for over-commitment, i.e. assignment of e.g. domains that
+are not in the crypto host config. Let's assume the host LPAR
+has usage domains 1 and 2, and adapters 1, 2, and 3. The apmask
+and aqmask are both 0 (all in on vfio), all bound. We start with an empty
+mdev that is tied to a running guest:
+assign_adapter 1
+assign_adapter 2
+assign_adapter 3
+assign_adapter 4
+all of these will work. The resulting shadow_apcb is completely empty. No
+commit_apcb.
+assign_domain 1
+assign_domain 2
+assign_domain 3
+all of these will work. But again the shadow_apcb is completely empty at
+the end: we did get to the loop that is checking the boundness of the
+queues, but please note that we are checking against matrix.apm, and
+adapter 4 is not in the config of the host.
 
-> - Also I think the ID implementation we use for this is "dense",
-> meaning if a cgroup is removed, its ID is likely to be quickly reused.
->
->>
->> >
->> > The solution in this commit is to modify trace_mmap_lock_unreg() to
->> > first stop new buffers from being handed out, and then to wait (spin)
->> > until any existing buffer references are dropped (i.e., those trace
->> > events complete).
->> >
->> > I have a simple reproducer program which spins up two pools of threads,
->> > doing the following in a tight loop:
->> >
->> >   Pool 1:
->> >   mmap(NULL, 4096, PROT_READ | PROT_WRITE,
->> >        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)
->> >   munmap()
->> >
->> >   Pool 2:
->> >   echo 1 > /sys/kernel/debug/tracing/events/mmap_lock/enable
->> >   echo 0 > /sys/kernel/debug/tracing/events/mmap_lock/enable
->> >
->> > This triggers the use-after-free very quickly. With this patch, I let it
->> > run for an hour without any BUGs.
->> >
->> > While fixing this, I also noticed and fixed a css ref leak. Previously
->> > we called get_mem_cgroup_from_mm(), but we never called css_put() to
->> > release that reference. get_mm_memcg_path() now does this properly.
->> >
->> > [1]: https://syzkaller.appspot.com/bug?extid=19e6dd9943972fa1c58a
->> >
->> > Fixes: 0f818c4bc1f3 ("mm: mmap_lock: add tracepoints around lock acquisition")
->>
->> The original patch is in mm tree, so the SHA1 is not stabilized.
->> Usually Andrew squash the fixes into the original patches.
->
-> Ah, I added this because it also shows up in linux-next, under the
-> next-20201130 tag. I'll remove it in v2, squashing is fine. :)
->
->>
->> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
->> > ---
->> >  mm/mmap_lock.c | 100 +++++++++++++++++++++++++++++++++++++++++--------
->> >  1 file changed, 85 insertions(+), 15 deletions(-)
->> >
->> > diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
->> > index 12af8f1b8a14..be38dc58278b 100644
->> > --- a/mm/mmap_lock.c
->> > +++ b/mm/mmap_lock.c
->> > @@ -3,6 +3,7 @@
->> >  #include <trace/events/mmap_lock.h>
->> >
->> >  #include <linux/mm.h>
->> > +#include <linux/atomic.h>
->> >  #include <linux/cgroup.h>
->> >  #include <linux/memcontrol.h>
->> >  #include <linux/mmap_lock.h>
->> > @@ -18,13 +19,28 @@ EXPORT_TRACEPOINT_SYMBOL(mmap_lock_released);
->> >  #ifdef CONFIG_MEMCG
->> >
->> >  /*
->> > - * Our various events all share the same buffer (because we don't want or need
->> > - * to allocate a set of buffers *per event type*), so we need to protect against
->> > - * concurrent _reg() and _unreg() calls, and count how many _reg() calls have
->> > - * been made.
->> > + * This is unfortunately complicated... _reg() and _unreg() may be called
->> > + * in parallel, separately for each of our three event types. To save memory,
->> > + * all of the event types share the same buffers. Furthermore, trace events
->> > + * might happen in parallel with _unreg(); we need to ensure we don't free the
->> > + * buffers before all inflights have finished. Because these events happen
->> > + * "frequently", we also want to prevent new inflights from starting once the
->> > + * _unreg() process begins. And, for performance reasons, we want to avoid any
->> > + * locking in the trace event path.
->> > + *
->> > + * So:
->> > + *
->> > + * - Use a spinlock to serialize _reg() and _unreg() calls.
->> > + * - Keep track of nested _reg() calls with a lock-protected counter.
->> > + * - Define a flag indicating whether or not unregistration has begun (and
->> > + *   therefore that there should be no new buffer uses going forward).
->> > + * - Keep track of inflight buffer users with a reference count.
->> >   */
->> >  static DEFINE_SPINLOCK(reg_lock);
->> > -static int reg_refcount;
->> > +static int reg_types_rc; /* Protected by reg_lock. */
->> > +static bool unreg_started; /* Doesn't need synchronization. */
->> > +/* atomic_t instead of refcount_t, as we want ordered inc without locks. */
->> > +static atomic_t inflight_rc = ATOMIC_INIT(0);
->> >
->> >  /*
->> >   * Size of the buffer for memcg path names. Ignoring stack trace support,
->> > @@ -46,9 +62,14 @@ int trace_mmap_lock_reg(void)
->> >         unsigned long flags;
->> >         int cpu;
->> >
->> > +       /*
->> > +        * Serialize _reg() and _unreg(). Without this, e.g. _unreg() might
->> > +        * start cleaning up while _reg() is only partially completed.
->> > +        */
->> >         spin_lock_irqsave(&reg_lock, flags);
->> >
->> > -       if (reg_refcount++)
->> > +       /* If the refcount is going 0->1, proceed with allocating buffers. */
->> > +       if (reg_types_rc++)
->> >                 goto out;
->> >
->> >         for_each_possible_cpu(cpu) {
->> > @@ -62,6 +83,11 @@ int trace_mmap_lock_reg(void)
->> >                 per_cpu(memcg_path_buf_idx, cpu) = 0;
->> >         }
->> >
->> > +       /* Reset unreg_started flag, allowing new trace events. */
->> > +       WRITE_ONCE(unreg_started, false);
->> > +       /* Add the registration +1 to the inflight refcount. */
->> > +       atomic_inc(&inflight_rc);
->> > +
->> >  out:
->> >         spin_unlock_irqrestore(&reg_lock, flags);
->> >         return 0;
->> > @@ -74,7 +100,8 @@ int trace_mmap_lock_reg(void)
->> >                         break;
->> >         }
->> >
->> > -       --reg_refcount;
->> > +       /* Since we failed, undo the earlier increment. */
->> > +       --reg_types_rc;
->> >
->> >         spin_unlock_irqrestore(&reg_lock, flags);
->> >         return -ENOMEM;
->> > @@ -87,9 +114,23 @@ void trace_mmap_lock_unreg(void)
->> >
->> >         spin_lock_irqsave(&reg_lock, flags);
->> >
->> > -       if (--reg_refcount)
->> > +       /* If the refcount is going 1->0, proceed with freeing buffers. */
->> > +       if (--reg_types_rc)
->> >                 goto out;
->> >
->> > +       /* This was the last registration; start preventing new events... */
->> > +       WRITE_ONCE(unreg_started, true);
->> > +       /* Remove the registration +1 from the inflight refcount. */
->> > +       atomic_dec(&inflight_rc);
->> > +       /*
->> > +        * Wait for inflight refcount to be zero (all inflights stopped). Since
->> > +        * we have a spinlock we can't sleep, so just spin. Because trace events
->> > +        * are "fast", and because we stop new inflights from starting at this
->> > +        * point with unreg_started, this should be a short spin.
->> > +        */
->> > +       while (atomic_read(&inflight_rc))
->> > +               barrier();
->> > +
->> >         for_each_possible_cpu(cpu) {
->> >                 kfree(per_cpu(memcg_path_buf, cpu));
->> >         }
->> > @@ -102,6 +143,20 @@ static inline char *get_memcg_path_buf(void)
->> >  {
->> >         int idx;
->> >
->> > +       /*
->> > +        * If unregistration is happening, stop. Yes, this check is racy;
->> > +        * that's fine. It just means _unreg() might spin waiting for an extra
->> > +        * event or two. Use-after-free is actually prevented by the refcount.
->> > +        */
->> > +       if (READ_ONCE(unreg_started))
->> > +               return NULL;
->> > +       /*
->> > +        * Take a reference, unless the registration +1 has been released
->> > +        * and there aren't already existing inflights (refcount is zero).
->> > +        */
->> > +       if (!atomic_inc_not_zero(&inflight_rc))
->> > +               return NULL;
->> > +
->> >         idx = this_cpu_add_return(memcg_path_buf_idx, MEMCG_PATH_BUF_SIZE) -
->> >               MEMCG_PATH_BUF_SIZE;
->> >         return &this_cpu_read(memcg_path_buf)[idx];
->> > @@ -110,27 +165,42 @@ static inline char *get_memcg_path_buf(void)
->> >  static inline void put_memcg_path_buf(void)
->> >  {
->> >         this_cpu_sub(memcg_path_buf_idx, MEMCG_PATH_BUF_SIZE);
->> > +       /* We're done with this buffer; drop the reference. */
->> > +       atomic_dec(&inflight_rc);
->> >  }
->> >
->> >  /*
->> >   * Write the given mm_struct's memcg path to a percpu buffer, and return a
->> > - * pointer to it. If the path cannot be determined, NULL is returned.
->> > + * pointer to it. If the path cannot be determined, or no buffer was available
->> > + * (because the trace event is being unregistered), NULL is returned.
->> >   *
->> >   * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
->> >   * disabled by the caller before calling us, and re-enabled only after the
->> >   * caller is done with the pointer.
->> > + *
->> > + * The caller must call put_memcg_path_buf() once the buffer is no longer
->> > + * needed. This must be done while preemption is still disabled.
->> >   */
->> >  static const char *get_mm_memcg_path(struct mm_struct *mm)
->> >  {
->> > +       char *buf = NULL;
->> >         struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
->> >
->> > -       if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
->> > -               char *buf = get_memcg_path_buf();
->> > +       if (memcg == NULL)
->> > +               goto out;
->> > +       if (unlikely(memcg->css.cgroup == NULL))
->> > +               goto out_put;
->> >
->> > -               cgroup_path(memcg->css.cgroup, buf, MEMCG_PATH_BUF_SIZE);
->> > -               return buf;
->> > -       }
->> > -       return NULL;
->> > +       buf = get_memcg_path_buf();
->> > +       if (buf == NULL)
->> > +               goto out_put;
->> > +
->> > +       cgroup_path(memcg->css.cgroup, buf, MEMCG_PATH_BUF_SIZE);
->> > +
->> > +out_put:
->> > +       css_put(&memcg->css);
->> > +out:
->> > +       return buf;
->> >  }
->> >
->> >  #define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
->> > --
->> > 2.29.2.454.gaff20da3a2-goog
->> >
+I've hacked up a fixup patch for these problems that simplifies the
+code considerably, but there are design level issues, that run deeper,
+so I'm not sure the fixups are the way to go.
+
+Now lets talk about design level stuff. Currently the assignment
+operations are designed in to accommodate the FCFS principle. This
+is a blessing and a curse at the same time. 
+
+Consider the following scenarios. We have an empty (nothing assigned
+mdev) and the following queues are bound to the vfio_ap driver:
+0.0
+0.1
+1.0
+If the we do 
+asssign_adapter 0
+assign_domain 0
+assign_domain 1
+assign_adapter 1
+We end up with the guest_matrix
+0.0
+0.1
+and the matrix
+0.0
+0.1
+1.0
+1.0
+
+That is a different result compared to
+asssign_adapter 0
+assign_domain 0
+assign_adapter 1
+assign_domain 1
+or the situation where we have 0.0, 0.1, 1.0 and 1.1 bound to vfio_ap
+and then 1.1 gets unbound.
+
+For the same system state (bound, config, ap_perm, matrix) you get a
+different outcomes (guest_matrix), because the outcomes depend on
+history.
+
+Another thing is recovery. I believe the main idea behind shadow_apcb
+is that we should auto recover once the resources are available again.
+The current design choices make recovery more difficult to think about
+because we may end up having either the apid or the apqi filtered on
+a 'hole' (an queue missing for reasons different than, belonging to
+default, or not being in the host config).
+
+I still think for these cases filtering out the apid is the lesser
+evil. Yes a hotplug of a domain making hot unplugging an adapter is
+ugly, but at least I can describe that. So I propose the following.
+Let me hack up a fixup that morphs things in this direction. Maybe
+I will run into unexpected problems, but if I don't then we will
+have an alternative design you can run your testcases against. How about
+that?
+
+Regards,
+Halil
