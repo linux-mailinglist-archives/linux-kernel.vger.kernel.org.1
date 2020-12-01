@@ -2,187 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5902C9688
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D128D2C968B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgLAEfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 23:35:44 -0500
-Received: from mga02.intel.com ([134.134.136.20]:14300 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725861AbgLAEfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 23:35:43 -0500
-IronPort-SDR: CW1SHr5q3SpyyADqf/7Da2Nn6Jpk9FFDvo6c/dT0bdbmw5Czds5pfvdmvCC8+LYz7X0BO5HDut
- Prodxow/AxTg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="159816996"
-X-IronPort-AV: E=Sophos;i="5.78,383,1599548400"; 
-   d="scan'208";a="159816996"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 20:34:59 -0800
-IronPort-SDR: wZM4lO5cuJKMRhuAcRBykh97wjGDXaCsGWwbY6Dslu/2od2ao9b/v6TmuWBq9ULlaJ4Ub2tajd
- aZ7oTTXXwglg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,383,1599548400"; 
-   d="scan'208";a="315529274"
-Received: from lkp-server01.sh.intel.com (HELO 70b44b587200) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Nov 2020 20:34:58 -0800
-Received: from kbuild by 70b44b587200 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kjxNR-00007x-GO; Tue, 01 Dec 2020 04:34:57 +0000
-Date:   Tue, 01 Dec 2020 12:33:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 85540fe9bfbe18a7bc488c725d98deb86a717e69
-Message-ID: <5fc5c7b6.5ap0/h6hO0rjIS3T%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2387411AbgLAEgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 23:36:06 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:36590 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725861AbgLAEgF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 23:36:05 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14Yx01180179;
+        Tue, 1 Dec 2020 04:35:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=pMZZDgMq3zFb0hZZCK8VotbV6lsM2DekpaRSbmQLUy4=;
+ b=nZI9dfYh0/o8uWYSKGGkcQ7NooU21QiXILaMn5Fq8w++mc9Cb27KsQ1DAFKnNOKJOZkq
+ EX5pkmPAnCFrhu+e1Jx6omz0th7hSVaJ08RwFoaeGBxmbQFuU9gLEop2YPOax0kF6uHk
+ 3fN8So2Fw8997AgPQtQtcvd0D+ErB2bLTJSInafrPUEaw0GwPsGQ9nm5/IVlrgOTOACo
+ aRsgvSQuFifOXaOAddXd69MEGj+Ly05YkV768uYxyR+1KUnDSN0OmB2uVdZttZc/as9E
+ b5dQFmCyh5I9Ho/eZoJ7L6Wi6j835hq06JUsjry4AvfmaYhI4Y4gCGx5shQgwWzh0/MV vg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 353c2arn0x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 04:35:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14ZIH6010356;
+        Tue, 1 Dec 2020 04:35:18 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 3540fw9jkj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 04:35:18 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B14Z6wE002132;
+        Tue, 1 Dec 2020 04:35:06 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 20:35:06 -0800
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] scsi: pm8001: remove space in a debug message
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1wny2i1ov.fsf@ca-mkp.ca.oracle.com>
+References: <20201124093828.307709-1-colin.king@canonical.com>
+Date:   Mon, 30 Nov 2020 23:35:04 -0500
+In-Reply-To: <20201124093828.307709-1-colin.king@canonical.com> (Colin King's
+        message of "Tue, 24 Nov 2020 09:38:28 +0000")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010031
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 85540fe9bfbe18a7bc488c725d98deb86a717e69  Merge branch 'irq/urgent'
 
-elapsed time: 760m
+Colin,
 
-configs tested: 123
-configs skipped: 4
+> There are two words that need separating with a space in a 
+> pm8001_dbg message. Fix it.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Applied to 5.11/scsi-staging, thanks!
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                         cm_x300_defconfig
-mips                           ip27_defconfig
-mips                      pic32mzda_defconfig
-arm                       imx_v6_v7_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                       maple_defconfig
-xtensa                    xip_kc705_defconfig
-sh                         apsh4a3a_defconfig
-c6x                         dsk6455_defconfig
-powerpc                      ppc64e_defconfig
-openrisc                 simple_smp_defconfig
-s390                       zfcpdump_defconfig
-arm                      pxa255-idp_defconfig
-m68k                                defconfig
-powerpc                     mpc5200_defconfig
-mips                         tb0287_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                 canyonlands_defconfig
-mips                            gpr_defconfig
-arc                        nsimosci_defconfig
-arm                        clps711x_defconfig
-arm                           corgi_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                          r7785rp_defconfig
-powerpc                    adder875_defconfig
-sh                               j2_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      katmai_defconfig
-arc                           tb10x_defconfig
-xtensa                           allyesconfig
-powerpc                        fsp2_defconfig
-mips                       capcella_defconfig
-powerpc                      ppc44x_defconfig
-arm                          imote2_defconfig
-powerpc                       ebony_defconfig
-mips                      malta_kvm_defconfig
-arm                       netwinder_defconfig
-powerpc                     tqm8555_defconfig
-mips                        nlm_xlp_defconfig
-mips                     cu1830-neo_defconfig
-c6x                        evmc6678_defconfig
-powerpc                      walnut_defconfig
-mips                      loongson3_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                     stx_gp3_defconfig
-arm                          simpad_defconfig
-arm                              zx_defconfig
-arm                        realview_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     kmeter1_defconfig
-mips                      maltasmvp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201130
-i386                 randconfig-a002-20201130
-i386                 randconfig-a003-20201130
-i386                 randconfig-a005-20201130
-i386                 randconfig-a006-20201130
-i386                 randconfig-a001-20201130
-x86_64               randconfig-a014-20201130
-x86_64               randconfig-a015-20201130
-x86_64               randconfig-a016-20201130
-x86_64               randconfig-a011-20201130
-x86_64               randconfig-a012-20201130
-x86_64               randconfig-a013-20201130
-i386                 randconfig-a013-20201130
-i386                 randconfig-a012-20201130
-i386                 randconfig-a011-20201130
-i386                 randconfig-a016-20201130
-i386                 randconfig-a015-20201130
-i386                 randconfig-a014-20201130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20201130
-x86_64               randconfig-a006-20201130
-x86_64               randconfig-a005-20201130
-x86_64               randconfig-a004-20201130
-x86_64               randconfig-a001-20201130
-x86_64               randconfig-a003-20201130
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Martin K. Petersen	Oracle Linux Engineering
