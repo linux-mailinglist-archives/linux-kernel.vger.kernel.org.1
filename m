@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104032C9A2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BC72C9A29
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387596AbgLAIzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:55:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58606 "EHLO mail.kernel.org"
+        id S2387549AbgLAIzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387526AbgLAIzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:55:47 -0500
+        id S2387527AbgLAIzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26CA32220B;
-        Tue,  1 Dec 2020 08:55:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DD3922242;
+        Tue,  1 Dec 2020 08:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812906;
-        bh=tYfM9353ynPnCSgC24c73sUw9VqoNZX7YeATcD4fYK8=;
+        s=korg; t=1606812877;
+        bh=7gaxxhkF6cavNJ0bQcNPchk3EjLHyIoWfpNPX2DkjjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xk8PzQazx7n5dDp2ipps/9dkD8Gy4uiTkPfp5ue6Buro8MfkCsHUcCkDqrueQrkcp
-         2zzmDezCGXOx7QjSdm+RNP2eGrpEIHGxB6F6IRcw9hZbCvD1JqcUueU9tujOaGcAho
-         NRclTDqPtavSQ8iQm86VyE6WDhap/3j+eCvWAqYQ=
+        b=jx58zqC4JEXgkG34KqiungFgYEWm4Hk8FfaejB9qVCqgXWnOwadjIe5Sp1CpJZds0
+         6//WyoQUCWuzmhcuTi3CyaV6bpqlWwnszBp17hEvef9BXO6uHtvFgL5fJQ0Sfw5ybu
+         C0+qxA9eDTO8gb8+MkmgBK0DoOLNNPOz1Y+0/5RQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>,
         Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 17/42] dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
+Subject: [PATCH 4.4 09/24] dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
 Date:   Tue,  1 Dec 2020 09:53:15 +0100
-Message-Id: <20201201084643.270378913@linuxfoundation.org>
+Message-Id: <20201201084638.207579777@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
+References: <20201201084637.754785180@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -91,10 +91,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index 16c08846ea0e1..f5a9bb1231882 100644
+index 9aa57b37381a9..7f66ae1945b24 100644
 --- a/drivers/dma/pl330.c
 +++ b/drivers/dma/pl330.c
-@@ -2682,7 +2682,7 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
+@@ -2634,7 +2634,7 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
  	 * If burst size is smaller than bus width then make sure we only
  	 * transfer one at a time to avoid a burst stradling an MFIFO entry.
  	 */
