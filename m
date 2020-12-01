@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FD72CA0D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9ECB2CA0D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387416AbgLALDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:03:18 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:45183 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729425AbgLALDS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:03:18 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 71838240014;
-        Tue,  1 Dec 2020 11:02:35 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 12:02:35 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Biwen Li <biwen.li@oss.nxp.com>
-Cc:     leoyang.li@nxp.com, anson.huang@nxp.com, aisheng.dong@nxp.com,
-        linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        linux-rtc@vger.kernel.org, Biwen Li <biwen.li@nxp.com>
-Subject: Re: [PATCH] rtc: pcf2127: clear the flag TSF1 before enabling
- interrupt generation
-Message-ID: <20201201110235.GC2401593@piout.net>
-References: <20201201084746.20135-1-biwen.li@oss.nxp.com>
+        id S2387744AbgLALDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:03:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729808AbgLALDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:03:32 -0500
+Received: from localhost (unknown [122.171.214.243])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27EAC2084C;
+        Tue,  1 Dec 2020 11:02:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606820571;
+        bh=6ZkXbccJTBEOJD0HUHote1XwYarFlwXDn8PLAiMLWwI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rc1G5BYuOw6C/3nbfU7SqI/dkp3Bhxl+7ArJA/lQ+AxU54V5XoqlD3DHFw50UHk4P
+         fc0LvPvTQ9Ru67PR4rIoIXsZ8ol2YGGHncUX6ZHD/G5vwhFjGznpQbRkhDZu17xDwZ
+         oWHwH5EfDl0eXRHSlQJF4oNXkKiDuqTrTZItKJPA=
+Date:   Tue, 1 Dec 2020 16:32:45 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH 1/3] phy: ralink: phy-mt7621-pci: add include search path
+ in Makefile
+Message-ID: <20201201110245.GB8403@vkoul-mobl>
+References: <20201201101612.28458-1-sergio.paracuellos@gmail.com>
+ <20201201101612.28458-2-sergio.paracuellos@gmail.com>
+ <20201201104246.GA8403@vkoul-mobl>
+ <CAMhs-H_9MTZvC+NkFm28MuiRQ0tpNw7gd97sN9dBgsqYD7_1LA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201084746.20135-1-biwen.li@oss.nxp.com>
+In-Reply-To: <CAMhs-H_9MTZvC+NkFm28MuiRQ0tpNw7gd97sN9dBgsqYD7_1LA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 01/12/2020 16:47:46+0800, Biwen Li wrote:
-> From: Biwen Li <biwen.li@nxp.com>
+On 01-12-20, 11:47, Sergio Paracuellos wrote:
+> Hi Vinod,
 > 
-> - clear the flag TSF1 before enabling interrupt generation
-> - properly set flag WD_CD for rtc chips(pcf2129, pca2129)
+> On Tue, Dec 1, 2020 at 11:42 AM Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > On 01-12-20, 11:16, Sergio Paracuellos wrote:
+> > > This driver includes the following two files directly:
+> > > - mt7621.h
+> > > - ralink_regs.h
+> > >
+> > > Compilation for its related platform properly works because
+> > > its real path is included in 'arch/mips/ralink/Platform' as
+> > > cflags.
+> > >
+> > > This driver depends on RALINK but also is enabled for COMPILE_TEST
+> > > where nothing about its platform is known and this directly
+> > > included files are not found at all breaking compilation.
+> > >
+> > > Fix this problem adding include search path for ralink in
+> > > ralink phy directory Makefile.
+> > >
+> > > Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
+> >
+> > Pls add reported-by sfr..
 > 
-
-This change has to be a separate patch.
-
-> Signed-off-by: Biwen Li <biwen.li@nxp.com>
-> ---
->  drivers/rtc/rtc-pcf2127.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
+> Ok, Will change this and send v2.
 > 
-> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-> index 07a5630ec841..0a45e2512258 100644
-> --- a/drivers/rtc/rtc-pcf2127.c
-> +++ b/drivers/rtc/rtc-pcf2127.c
-> @@ -601,6 +601,10 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
->  	 * Watchdog timer enabled and reset pin /RST activated when timed out.
->  	 * Select 1Hz clock source for watchdog timer.
->  	 * Note: Countdown timer disabled and not available.
-> +	 * For pca2129, pcf2129, only bit[7] is for Symbol WD_CD
-> +	 * of register watchdg_tim_ctl. The bit[6] is labeled
-> +	 * as T. Bits labeled as T must always be written with
-> +	 * logic 0.
->  	 */
->  	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_WD_CTL,
->  				 PCF2127_BIT_WD_CTL_CD1 |
-> @@ -608,7 +612,7 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
->  				 PCF2127_BIT_WD_CTL_TF1 |
->  				 PCF2127_BIT_WD_CTL_TF0,
->  				 PCF2127_BIT_WD_CTL_CD1 |
-> -				 PCF2127_BIT_WD_CTL_CD0 |
-> +				 has_nvmem ? (PCF2127_BIT_WD_CTL_CD0) : (0) |
+> >
+> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > ---
+> > >  drivers/phy/ralink/Makefile | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/drivers/phy/ralink/Makefile b/drivers/phy/ralink/Makefile
+> > > index cda2a4a7ca5e..c8f9adba0d82 100644
+> > > --- a/drivers/phy/ralink/Makefile
+> > > +++ b/drivers/phy/ralink/Makefile
+> > > @@ -1,3 +1,6 @@
+> > >  # SPDX-License-Identifier: GPL-2.0-only
+> > > +
+> > > +ccflags-y    += -I$(srctree)/arch/mips/include/asm/mach-ralink
+> >
+> > Can we include <asm/mips/...> instead of using this?
+> 
+> Doing that also fails because path for 'arch/mips/include' is not
+> added also because we are compiling in x86_64.
+> Looking into other drivers I see the way to avoid this kind of
+> platform specific stuff is adding related paths in
+> cflags. So I don't really know if there is another way.
 
-I don't like that because has_nvmem has nothing to do with
-PCF2127_BIT_WD_CTL_CD0 and nothing guarantees that we won't ever get an
-RTC without RST but with NVRAM and that willprobbly be overlooked.
-
->  				 PCF2127_BIT_WD_CTL_TF1);
->  	if (ret) {
->  		dev_err(dev, "%s: watchdog config (wd_ctl) failed\n", __func__);
-> @@ -659,6 +663,21 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
->  		return ret;
->  	}
->  
-> +	/*
-> +	 * Clear TSF1 field of ctrl1 register to clear interrupt
-> +	 * before enabling interrupt generation when
-> +	 * timestamp flag set. Unless the flag TSF1 won't
-> +	 * be cleared and the interrupt(INT pin) is
-> +	 * triggered continueously.
-> +	 */
-> +	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
-> +				 PCF2127_BIT_CTRL1_TSF1,
-> +				 0);
-> +	if (ret) {
-> +		dev_err(dev, "%s:  control and status register 1 (ctrl1) failed, ret = 0x%x\n",
-> +			__func__, ret);
-> +		return ret;
-> +	}
-
-Doing that means ignoring timestamps taken while the system is offline.
-It also doesn't fully solve the issue because you are not clearing TSF2
-here and also it never gets cleared by the driver later on so I guess
-you will get the interrupt storm once a timestamp is taken.
-
+Right, ideally these headers should have been in include/linux, but.. I
+dont like this way, can we drop compile test..?
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+~Vinod
