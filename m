@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8723C2CACDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F6F2CACDD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404347AbgLAT5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:57:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40682 "EHLO
+        id S1730511AbgLAT5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgLAT5e (ORCPT
+        with ESMTP id S1726148AbgLAT5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:57:34 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97912C0613D4;
-        Tue,  1 Dec 2020 11:56:53 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id e25so8955329wme.0;
-        Tue, 01 Dec 2020 11:56:53 -0800 (PST)
+        Tue, 1 Dec 2020 14:57:14 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597B0C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:56:34 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id v1so1920419pjr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:56:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Qxaxg65nan58qHlFqPugD7TW0lW2OpFi76k39sX/L6s=;
-        b=HyTp/jNA+4GyqidnMug+lWzvDdFRq1bShCqMp0ctawW+500N2Y1EaThkY2OmrbCNP/
-         3ZOdYJDTg3ZkLRtaesN9WRTcOIDJrNUblzHlcs0tdZwWm5Fd1c5GsuP0tqiVDs8YqlzK
-         yQmZfde2tSZx1i+w1r55jI3oQNhv2TuaiugbM3YBHf6wSPGKXEBx5P0Hp/YcoC91RxjD
-         wp07UFBk6jJuUPhVVTg3xo6lgHTDI76M+/PP1cOkyZJE9ZdfogVi5SNrRyyqfoYSv0GI
-         cHfAfle7ngtmXkminqrgDuNy0+8FHqFhZ6M8g9ewzG6OPZHJoLKicY8xcV/5pK5ON0Mi
-         c0nw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wNrUoO5GhGjJ+F0ga/x1uzDpCFyyeAqcGZvey2hPlFA=;
+        b=C70FTDvUfhgCOJfzTxUA5eEUmvVh0GQGj2pAVU9HmbC/YznEBWoEUH9FNJwDRm4ouu
+         yTVSK0/sAqW6YZ/IDDB0Y+sDeW+YcWxqo8Of+BSpxImWP0hxbHBQMYae8E5RMew7reWX
+         JmxzA82GJnHtHuYCmeZwTp3vc1Ypt5tK9QpIc3Qv1GCm6RxNFoc8C/5rmdVVmiASEBRl
+         0XiFtWFykza4PvjOIcNtJDwSz/yJhjjaRm659ZFKfsBKEZ0l5W+j/2IOMphwM/mbeeTi
+         eoR0Ao9X5szwLJRIYwZcYAgJPtJOfTd8t0oeM7p1fvo6aXjil0MLGFAfpVkgR6Vpmq3R
+         84jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Qxaxg65nan58qHlFqPugD7TW0lW2OpFi76k39sX/L6s=;
-        b=kZmNk4Y7oZ29v9D8NvzQIgehE/pBB9UpXgDyIa3FdeGbbakxRvQ2N2O/KTLcFtuCBl
-         SC/4ZztPgiPOzYxEjo5SZtjg6u5aHy4CPUtD4hmUgfr4d1cLOCeAwtfUVoxYZv+8ufTQ
-         973F5y1fwNUErKYLAzTmEt6hW3UPRQ9fOCgOzzwUDa540XFGNCZDd8vl2/c0nXpEK+1Z
-         oD0Ti0yZkS0hHKA3QakMZTNHkkPScHf8z0HqGAFevkwWIgS1UJmXpQBPPJOAV1ZdfTwK
-         oPXD3oEVxbydFTZ+xhE827fxsJ8spKM7QXHSoEbrQmF06KZQZ45b2NIOwGd+ZCdCTIr6
-         jA+w==
-X-Gm-Message-State: AOAM532n5OePH4606Zoc6vVHi6M/96Q2DcGyKp1ZtnC8tOd5iBgAyB+e
-        3kJpf22WXTjDFWraYldmBYk=
-X-Google-Smtp-Source: ABdhPJy9lXWDKuWiFqyLddO5hXPgadNjvP0CxtlhQZCF48DTf04Ba93vHe+QDlt286KHfkQCswBDxQ==
-X-Received: by 2002:a1c:6205:: with SMTP id w5mr4352268wmb.26.1606852612302;
-        Tue, 01 Dec 2020 11:56:52 -0800 (PST)
-Received: from localhost.localdomain (host-79-13-10-171.retail.telecomitalia.it. [79.13.10.171])
-        by smtp.gmail.com with ESMTPSA id w3sm1435409wma.3.2020.12.01.11.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 11:56:51 -0800 (PST)
-From:   Elia Devito <eliadevito@gmail.com>
-Cc:     mario.limonciello@dell.com, Elia Devito <eliadevito@gmail.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] intel-hid: add option to enable/disable switches
-Date:   Tue,  1 Dec 2020 20:56:16 +0100
-Message-Id: <20201201195615.22461-1-eliadevito@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wNrUoO5GhGjJ+F0ga/x1uzDpCFyyeAqcGZvey2hPlFA=;
+        b=qJYsp3fSu6YFoG9is+DGpm9dMuF8eX0V3H8AeQjxDx5/xWh+HowkSFfPyPI4fHFznt
+         JfryKmqE+MH9Rw+Pox5Gsi5cNTPgT5w1bqo2zBIFmk5hW/4O57BwtLGrw2WdIt42wF3e
+         R8CTiVpwiGC86bd36ONep8OQX2m+Gbm0E26MKKEJ7Qc1e9N37SlQjFvCiAILaw/yRzDr
+         KkNfOxQxn7ds7ZEkpcdAJt/7AuXEsAYTIyLTvfPsdBTKkgJtRyi2XnrT6CvwIXTP6afa
+         20x0IFngXBz+psjDk49uLs7JT09dIcS5PRi48wZdhZpY8bVV3LHZKCTD+vUR901ga1Qd
+         91Ug==
+X-Gm-Message-State: AOAM5308A74LxG5SPE8qnKmQK01goCW6aLgXfOxezCzqxYaC+Wlyr1SC
+        MTjU5PH6zmIvIkoLJPXP2oHZ6R1a26hj/lePzHKP8Q==
+X-Google-Smtp-Source: ABdhPJxpcDc6ufvuBegVL6oa+h2CuIjnaWMgHccWQjKvjwXwUF7GYmiZJXrocMXXMLjjglDJEsKqR6vXwPwYYdy6VZU=
+X-Received: by 2002:a17:90a:dc16:: with SMTP id i22mr4567464pjv.32.1606852593726;
+ Tue, 01 Dec 2020 11:56:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20201201152017.3576951-1-elver@google.com> <20201201161414.GA10881@infradead.org>
+ <20201201170421.GA3609680@elver.google.com>
+In-Reply-To: <20201201170421.GA3609680@elver.google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Dec 2020 11:56:22 -0800
+Message-ID: <CAKwvOdkhBTjjtEm9dc9irp8hpWoEDEAMj_Zp4ntKspgDkjrATg@mail.gmail.com>
+Subject: Re: [PATCH] genksyms: Ignore module scoped _Static_assert()
+To:     Marco Elver <elver@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        George Burgess <gbiv@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add option to force enable/disable switches support.
+On Tue, Dec 1, 2020 at 9:04 AM Marco Elver <elver@google.com> wrote:
+>
+> On Tue, Dec 01, 2020 at 04:14PM +0000, Christoph Hellwig wrote:
+> > Why not use the kernels own BUILD_BUG_ON instead of this idiom?
+>
+> BUILD_BUG_ON() was conceived before there was builtin compiler-support
+> in the form of _Static_assert() (static_assert()), which has several
+> advantages (compile-time performance, optional message) but most
+> importantly, that it can be used at module/global scope (which
+> BUILD_BUG_ON() cannot).
+>
+> From include/linux/build_bug:
+>
+>         /**
+>          * static_assert - check integer constant expression at build time
+>          *
+>          [...]
+>          *
+>          * Contrary to BUILD_BUG_ON(), static_assert() can be used at global
+>          * scope, but requires the expression to be an integer constant
+>          * expression (i.e., it is not enough that __builtin_constant_p() is
+>          * true for expr).
+>          [...]
+>
+> .. and there are plenty of global/module scoped users of it already.
 
-Signed-off-by: Elia Devito <eliadevito@gmail.com>
----
- drivers/platform/x86/intel-hid.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
-index 5093c57102cf..54f5cbfd2189 100644
---- a/drivers/platform/x86/intel-hid.c
-+++ b/drivers/platform/x86/intel-hid.c
-@@ -147,6 +147,10 @@ static const char *intel_hid_dsm_fn_to_method[INTEL_HID_DSM_FN_MAX] = {
- 
- static unsigned long long intel_hid_dsm_fn_mask;
- static guid_t intel_dsm_guid;
-+static int tablet_mode_switch = -1;
-+
-+module_param(tablet_mode_switch, int, 0444);
-+MODULE_PARM_DESC(tablet_mode_switch, "Enable/Disable tablet mode switch (0:disable, 1:enable)");
- 
- static bool intel_hid_execute_method(acpi_handle handle,
- 				     enum intel_hid_dsm_fn_codes fn_index,
-@@ -507,9 +511,14 @@ static bool intel_button_array_has_switches(struct platform_device *device)
- 	acpi_handle handle = ACPI_HANDLE(&device->dev);
- 	unsigned long long vgbs;
- 
--	if (!dmi_check_system(button_array_switches_table))
-+	if (tablet_mode_switch == 0)
- 		return false;
- 
-+	if (tablet_mode_switch != 1) {
-+		if (!dmi_check_system(button_array_switches_table))
-+			return false;
-+	}
-+
- 	if (!intel_hid_evaluate_method(handle, INTEL_HID_DSM_VGBS_FN, &vgbs))
- 		return false;
- 
+And to proactively address the inevitable: why do we have both?  We
+looked into wholesale replacing BUILD_BUG_ON's implementation with
+_Static_assert, but found that they differ slightly in the handling of
+integer constant expressions; BUILD_BUG_ON was reliant on some
+compiler optimizations in expressions making use of
+__builtin_constant_p that cannot be evaluated when the compiler
+performs the _Static_assert check.  So the current implementation is
+more flexible for expressions that use __builtin_constant_p than
+_Static_assert is.  If we needed a rule of thumb, I'd recommend "use
+_Static_assert unless you're passing an expression that relies on
+__builtin_constant_p evaluation, at which point BUILD_BUG_ON must be
+used."
 -- 
-2.28.0
-
+Thanks,
+~Nick Desaulniers
