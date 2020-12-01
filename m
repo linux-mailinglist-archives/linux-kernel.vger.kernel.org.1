@@ -2,128 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAFE2CADBD
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFD52CADBC
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728882AbgLAUt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:49:28 -0500
-Received: from m42-5.mailgun.net ([69.72.42.5]:15187 "EHLO m42-5.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727915AbgLAUt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:49:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606855746; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Yo42yaq/01Dx0rVkGb727su6dur/zrnh3T7p2hY8vMQ=; b=kcFQfEN+wEfV5C/YM/R96NQfEHIgbDusLXUUBpGgGWl+kL6UXH+PTGeTc/DtqXpq4Iv06weY
- s5TRD68SvHgYXqDJlOOQIR7NfR8cCFZqebJ2o/mhhoQBFrDqhExG0IvBTdnG/zZLEu1Fmaj+
- j/niW5qm6ZVhin/jvgf+J6uGWkU=
-X-Mailgun-Sending-Ip: 69.72.42.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fc6ac28f4482b01c4fbdf7e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 20:48:40
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3DC4CC43462; Tue,  1 Dec 2020 20:48:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91A89C433ED;
-        Tue,  1 Dec 2020 20:48:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91A89C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
- <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
- <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <817a4346-efb7-cfe5-0678-d1b60d06627d@codeaurora.org>
-Date:   Tue, 1 Dec 2020 13:48:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2387854AbgLAUto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:49:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726083AbgLAUto (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 15:49:44 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35A7C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:49:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dyBlRLPwKTQ0rIK/KfQyG6Ob+vSn1EgfGLIeGxV2yms=; b=JJv/jUDUAQHzh744cKMjYelWef
+        QTIfn+k/elN1QSMiCosaURKxQ2fWjh8q5u2jiv6QfFKVvUpCoopn/ASQfT2etb0mpcaFppKzMYJXm
+        Go2y9Rwev3yIt6lHEo1tzZH2Wx2Q6u9PRMkr63pL1mC/IMEd1XbOi4IkeJ+0HK/hwir/XDFgjgrEN
+        cdhpbGfdToA0xP9TZ7gkSGag0nCbiIVH+0pdZciOchpvAvCRGfkDtBJxnzM40g2ajgf/GCFJ2W11C
+        YBwt2vpgu5H8EUX4Boxoe/hCjSfDn7VgdY9T2yM55nPU61QYzgqXbURWXBFMxxDDvUGPOpG8UlTrn
+        97JljK1A==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkCa4-0002i8-S3; Tue, 01 Dec 2020 20:49:00 +0000
+Date:   Tue, 1 Dec 2020 20:49:00 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Shutemov, Kirill" <kirill.shutemov@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: mapcount corruption regression
+Message-ID: <20201201204900.GC11935@casper.infradead.org>
+References: <CAPcyv4isen63tJ7q02rvVuu_Rm6QPdT0Bu-P_HJ2zePMySFNNg@mail.gmail.com>
+ <20201201022412.GG4327@casper.infradead.org>
+ <CAPcyv4j7wtjOSg8vL5q0PPjWdaknY-PC7m9x-Q1R_YL5dhE+bQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4j7wtjOSg8vL5q0PPjWdaknY-PC7m9x-Q1R_YL5dhE+bQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/2020 1:03 PM, Jakub Kicinski wrote:
-> On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:
->> On 12/1/2020 12:29 PM, Jakub Kicinski wrote:
->>> On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:
->>>> This patch series adds support for UCI driver. UCI driver enables userspace
->>>> clients to communicate to external MHI devices like modem and WLAN. UCI driver
->>>> probe creates standard character device file nodes for userspace clients to
->>>> perform open, read, write, poll and release file operations. These file
->>>> operations call MHI core layer APIs to perform data transfer using MHI bus
->>>> to communicate with MHI device. Patch is tested using arm64 based platform.
->>>
->>> Wait, I thought this was for modems.
->>>
->>> Why do WLAN devices need to communicate with user space?
->>>    
->>
->> Why does it matter what type of device it is?  Are modems somehow unique
->> in that they are the only type of device that userspace is allowed to
->> interact with?
+On Tue, Dec 01, 2020 at 12:42:39PM -0800, Dan Williams wrote:
+> On Mon, Nov 30, 2020 at 6:24 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Mon, Nov 30, 2020 at 05:20:25PM -0800, Dan Williams wrote:
+> > > Kirill, Willy, compound page experts,
+> > >
+> > > I am seeking some debug ideas about the following splat:
+> > >
+> > > BUG: Bad page state in process lt-pmem-ns  pfn:121a12
+> > > page:0000000051ef73f7 refcount:0 mapcount:-1024
+> > > mapping:0000000000000000 index:0x0 pfn:0x121a12
+> >
+> > Mapcount of -1024 is the signature of:
+> >
+> > #define PG_guard        0x00000400
 > 
-> Yes modems are traditionally highly weird and require some serial
-> device dance I don't even know about.
+> Oh, thanks for that. I overlooked how mapcount is overloaded. Although
+> in v5.10-rc4 that value is:
 > 
-> We have proper interfaces in Linux for configuring WiFi which work
-> across vendors. Having char device access to WiFi would be a step
-> back.
+> #define PG_table        0x00000400
 
-So a WLAN device is only ever allowed to do Wi-Fi?  It can't also have 
-GPS functionality for example?
+Ah, I was looking at -next, where Roman renumbered it.
 
+I know UML had a problem where it was not clearing PG_table, but you
+seem to be running on bare metal.  SuperH did too, but again, you're
+not using SuperH.
+
+> >
+> > (the bits are inverted, so this turns into 0xfffffbff which is reported
+> > as -1024)
+> >
+> > I assume you have debug_pagealloc enabled?
 > 
->> However, I'll bite.  Once such usecase would be QMI.  QMI is a generic
->> messaging protocol, and is not strictly limited to the unique operations
->> of a modem.
->>
->> Another usecase would be Sahara - a custom file transfer protocol used
->> for uploading firmware images, and downloading crashdumps.
-> 
-> Thanks, I was asking for use cases, not which proprietary vendor
-> protocol you can implement over it.
-> 
-> None of the use cases you mention here should require a direct FW -
-> user space backdoor for WLAN.
+> Added it, but no extra spew. I'll dig a bit more on how PG_table is
+> not being cleared in this case.
 
-Uploading runtime firmware, with variations based on the runtime mode. 
-Flashing the onboard flash based on cryptographic keys.  Accessing 
-configuration data.  Accessing device logs.  Configuring device logs. 
-Synchronizing the device time reference to Linux local or remote time 
-sources.  Enabling debugging/performance hardware.  Getting software 
-diagnostic events.  Configuring redundancy hardware per workload. 
-Uploading new cryptographic keys.  Invalidating cryptographic keys. 
-Uploading factory test data and running factory tests.
-
-Need more?
-
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+I only asked about debug_pagealloc because that sets PG_guard.  Since
+the problem is actually PG_table, it's not relevant.
