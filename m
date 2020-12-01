@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B54C2C9A8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E402C9BB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387990AbgLAI6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:58:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34130 "EHLO mail.kernel.org"
+        id S2389828AbgLAJLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:11:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387963AbgLAI6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:58:34 -0500
+        id S2389805AbgLAJLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:11:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 700FD2223F;
-        Tue,  1 Dec 2020 08:57:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 322C72067D;
+        Tue,  1 Dec 2020 09:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813073;
-        bh=DIoa+ShhKCnS40dFhfkCkgt/4lAYEhr2/+xqrdugXRg=;
+        s=korg; t=1606813825;
+        bh=JPA/yCCNa/xybkpeTlqzFUPnvJbpnpTyHlzNEN+EP1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wZPP/M5UheLJAUo+J1NeNGdxQpEJpLXb8bd0T/Gticp9BWtJIFHc/XZEgDgWlTqme
-         eaR+6GxFNbMfM+0NJuU+eXCZo/uZECP4LCs2/VDzK5jSB2qaDCIQQfkHp1tVbpduF+
-         5xLZMiH5s6lLlRUpqHVftN7shny8PblqB7ljBWK8=
+        b=xYmst837Q/TE8DnftFOEvxSRfCUpBvTvpJxflsqbY9Xb7StG5t73hgWIFnzwvMtC+
+         H3Uh7KvcnjNk8aCntsH8xiJ/Y5xPb6L6uXjm4EPKdeT+KwNBgmVIl9c81nLrkcRmI/
+         4BJAShCZ3ed41f+1H/fKUc79DQw6ZrA2xKtdP4fc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yoon Jungyeon <jungyeon@gatech.edu>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 08/50] btrfs: inode: Verify inode mode to avoid NULL pointer dereference
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 072/152] phy: tegra: xusb: Fix dangling pointer on probe failure
 Date:   Tue,  1 Dec 2020 09:53:07 +0100
-Message-Id: <20201201084645.864089445@linuxfoundation.org>
+Message-Id: <20201201084721.363189907@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,196 +42,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 6bf9e4bd6a277840d3fe8c5d5d530a1fbd3db592 upstream
+[ Upstream commit eb9c4dd9bdfdebaa13846c16a8c79b5b336066b6 ]
 
-[BUG]
-When accessing a file on a crafted image, btrfs can crash in block layer:
+If, for some reason, the xusb PHY fails to probe, it leaves
+a dangling pointer attached to the platform device structure.
 
-  BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
-  PGD 136501067 P4D 136501067 PUD 124519067 PMD 0
-  CPU: 3 PID: 0 Comm: swapper/3 Not tainted 5.0.0-rc8-default #252
-  RIP: 0010:end_bio_extent_readpage+0x144/0x700
-  Call Trace:
-   <IRQ>
-   blk_update_request+0x8f/0x350
-   blk_mq_end_request+0x1a/0x120
-   blk_done_softirq+0x99/0xc0
-   __do_softirq+0xc7/0x467
-   irq_exit+0xd1/0xe0
-   call_function_single_interrupt+0xf/0x20
-   </IRQ>
-  RIP: 0010:default_idle+0x1e/0x170
+This would normally be harmless, but the Tegra XHCI driver then
+goes and extract that pointer from the PHY device. Things go
+downhill from there:
 
-[CAUSE]
-The crafted image has a tricky corruption, the INODE_ITEM has a
-different type against its parent dir:
+    8.752082] [004d554e5145533c] address between user and kernel address ranges
+[    8.752085] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[    8.752088] Modules linked in: max77620_regulator(E+) xhci_tegra(E+) sdhci_tegra(E+) xhci_hcd(E) sdhci_pltfm(E) cqhci(E) fixed(E) usbcore(E) scsi_mod(E) sdhci(E) host1x(E+)
+[    8.752103] CPU: 4 PID: 158 Comm: systemd-udevd Tainted: G S      W   E     5.9.0-rc7-00298-gf6337624c4fe #1980
+[    8.752105] Hardware name: NVIDIA Jetson TX2 Developer Kit (DT)
+[    8.752108] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+[    8.752115] pc : kobject_put+0x1c/0x21c
+[    8.752120] lr : put_device+0x20/0x30
+[    8.752121] sp : ffffffc012eb3840
+[    8.752122] x29: ffffffc012eb3840 x28: ffffffc010e82638
+[    8.752125] x27: ffffffc008d56440 x26: 0000000000000000
+[    8.752128] x25: ffffff81eb508200 x24: 0000000000000000
+[    8.752130] x23: ffffff81eb538800 x22: 0000000000000000
+[    8.752132] x21: 00000000fffffdfb x20: ffffff81eb538810
+[    8.752134] x19: 3d4d554e51455300 x18: 0000000000000020
+[    8.752136] x17: ffffffc008d00270 x16: ffffffc008d00c94
+[    8.752138] x15: 0000000000000004 x14: ffffff81ebd4ae90
+[    8.752140] x13: 0000000000000000 x12: ffffff81eb86a4e8
+[    8.752142] x11: ffffff81eb86a480 x10: ffffff81eb862fea
+[    8.752144] x9 : ffffffc01055fb28 x8 : ffffff81eb86a4a8
+[    8.752146] x7 : 0000000000000001 x6 : 0000000000000001
+[    8.752148] x5 : ffffff81dff8bc38 x4 : 0000000000000000
+[    8.752150] x3 : 0000000000000001 x2 : 0000000000000001
+[    8.752152] x1 : 0000000000000002 x0 : 3d4d554e51455300
+[    8.752155] Call trace:
+[    8.752157]  kobject_put+0x1c/0x21c
+[    8.752160]  put_device+0x20/0x30
+[    8.752164]  tegra_xusb_padctl_put+0x24/0x3c
+[    8.752170]  tegra_xusb_probe+0x8b0/0xd10 [xhci_tegra]
+[    8.752174]  platform_drv_probe+0x60/0xb4
+[    8.752176]  really_probe+0xf0/0x504
+[    8.752179]  driver_probe_device+0x100/0x170
+[    8.752181]  device_driver_attach+0xcc/0xd4
+[    8.752183]  __driver_attach+0xb0/0x17c
+[    8.752185]  bus_for_each_dev+0x7c/0xd4
+[    8.752187]  driver_attach+0x30/0x3c
+[    8.752189]  bus_add_driver+0x154/0x250
+[    8.752191]  driver_register+0x84/0x140
+[    8.752193]  __platform_driver_register+0x54/0x60
+[    8.752197]  tegra_xusb_init+0x40/0x1000 [xhci_tegra]
+[    8.752201]  do_one_initcall+0x54/0x2d0
+[    8.752205]  do_init_module+0x68/0x29c
+[    8.752207]  load_module+0x2178/0x26c0
+[    8.752209]  __do_sys_finit_module+0xb0/0x120
+[    8.752211]  __arm64_sys_finit_module+0x2c/0x40
+[    8.752215]  el0_svc_common.constprop.0+0x80/0x240
+[    8.752218]  do_el0_svc+0x30/0xa0
+[    8.752220]  el0_svc+0x18/0x50
+[    8.752223]  el0_sync_handler+0x90/0x318
+[    8.752225]  el0_sync+0x158/0x180
+[    8.752230] Code: a9bd7bfd 910003fd a90153f3 aa0003f3 (3940f000)
+[    8.752232] ---[ end trace 90f6c89d62d85ff5 ]---
 
-        item 20 key (268 INODE_ITEM 0) itemoff 2808 itemsize 160
-                generation 13 transid 13 size 1048576 nbytes 1048576
-                block group 0 mode 121644 links 1 uid 0 gid 0 rdev 0
-                sequence 9 flags 0x0(none)
+Reset the pointer on probe failure fixes the issue.
 
-This mode number 0120000 means it's a symlink.
-
-But the dir item think it's still a regular file:
-
-        item 8 key (264 DIR_INDEX 5) itemoff 3707 itemsize 32
-                location key (268 INODE_ITEM 0) type FILE
-                transid 13 data_len 0 name_len 2
-                name: f4
-        item 40 key (264 DIR_ITEM 51821248) itemoff 1573 itemsize 32
-                location key (268 INODE_ITEM 0) type FILE
-                transid 13 data_len 0 name_len 2
-                name: f4
-
-For symlink, we don't set BTRFS_I(inode)->io_tree.ops and leave it
-empty, as symlink is only designed to have inlined extent, all handled
-by tree block read.  Thus no need to trigger btrfs_submit_bio_hook() for
-inline file extent.
-
-However end_bio_extent_readpage() expects tree->ops populated, as it's
-reading regular data extent.  This causes NULL pointer dereference.
-
-[FIX]
-This patch fixes the problem in two ways:
-
-- Verify inode mode against its dir item when looking up inode
-  So in btrfs_lookup_dentry() if we find inode mode mismatch with dir
-  item, we error out so that corrupted inode will not be accessed.
-
-- Verify inode mode when getting extent mapping
-  Only regular file should have regular or preallocated extent.
-  If we found regular/preallocated file extent for symlink or
-  the rest, we error out before submitting the read bio.
-
-With this fix that crafted image can be rejected gracefully:
-
-  BTRFS critical (device loop0): inode mode mismatch with dir: inode mode=0121644 btrfs type=7 dir type=1
-
-Reported-by: Yoon Jungyeon <jungyeon@gatech.edu>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=202763
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: use original btrfs_inode_type()]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 53d2a715c2403 ("phy: Add Tegra XUSB pad controller support")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201013095820.311376-1-maz@kernel.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c             |   41 +++++++++++++++++++++++++++++++++--------
- fs/btrfs/tests/inode-tests.c |    1 +
- 2 files changed, 34 insertions(+), 8 deletions(-)
+ drivers/phy/tegra/xusb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5584,12 +5584,14 @@ no_delete:
+diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
+index de4a46fe17630..ad88d74c18842 100644
+--- a/drivers/phy/tegra/xusb.c
++++ b/drivers/phy/tegra/xusb.c
+@@ -1242,6 +1242,7 @@ power_down:
+ reset:
+ 	reset_control_assert(padctl->rst);
+ remove:
++	platform_set_drvdata(pdev, NULL);
+ 	soc->ops->remove(padctl);
+ 	return err;
  }
- 
- /*
-- * this returns the key found in the dir entry in the location pointer.
-+ * Return the key found in the dir entry in the location pointer, fill @type
-+ * with BTRFS_FT_*, and return 0.
-+ *
-  * If no dir entries were found, returns -ENOENT.
-  * If found a corrupted location in dir entry, returns -EUCLEAN.
-  */
- static int btrfs_inode_by_name(struct inode *dir, struct dentry *dentry,
--			       struct btrfs_key *location)
-+			       struct btrfs_key *location, u8 *type)
- {
- 	const char *name = dentry->d_name.name;
- 	int namelen = dentry->d_name.len;
-@@ -5622,6 +5624,8 @@ static int btrfs_inode_by_name(struct in
- 			   __func__, name, btrfs_ino(BTRFS_I(dir)),
- 			   location->objectid, location->type, location->offset);
- 	}
-+	if (!ret)
-+		*type = btrfs_dir_type(path->nodes[0], di);
- out:
- 	btrfs_free_path(path);
- 	return ret;
-@@ -5908,6 +5912,11 @@ static struct inode *new_simple_dir(stru
- 	return inode;
- }
- 
-+static inline u8 btrfs_inode_type(struct inode *inode)
-+{
-+	return btrfs_type_by_mode[(inode->i_mode & S_IFMT) >> S_SHIFT];
-+}
-+
- struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(dir->i_sb);
-@@ -5915,18 +5924,31 @@ struct inode *btrfs_lookup_dentry(struct
- 	struct btrfs_root *root = BTRFS_I(dir)->root;
- 	struct btrfs_root *sub_root = root;
- 	struct btrfs_key location;
-+	u8 di_type = 0;
- 	int index;
- 	int ret = 0;
- 
- 	if (dentry->d_name.len > BTRFS_NAME_LEN)
- 		return ERR_PTR(-ENAMETOOLONG);
- 
--	ret = btrfs_inode_by_name(dir, dentry, &location);
-+	ret = btrfs_inode_by_name(dir, dentry, &location, &di_type);
- 	if (ret < 0)
- 		return ERR_PTR(ret);
- 
- 	if (location.type == BTRFS_INODE_ITEM_KEY) {
- 		inode = btrfs_iget(dir->i_sb, &location, root, NULL);
-+		if (IS_ERR(inode))
-+			return inode;
-+
-+		/* Do extra check against inode mode with di_type */
-+		if (btrfs_inode_type(inode) != di_type) {
-+			btrfs_crit(fs_info,
-+"inode mode mismatch with dir: inode mode=0%o btrfs type=%u dir type=%u",
-+				  inode->i_mode, btrfs_inode_type(inode),
-+				  di_type);
-+			iput(inode);
-+			return ERR_PTR(-EUCLEAN);
-+		}
- 		return inode;
- 	}
- 
-@@ -6544,11 +6566,6 @@ fail:
- 	return ERR_PTR(ret);
- }
- 
--static inline u8 btrfs_inode_type(struct inode *inode)
--{
--	return btrfs_type_by_mode[(inode->i_mode & S_IFMT) >> S_SHIFT];
--}
--
- /*
-  * utility function to add 'inode' into 'parent_inode' with
-  * a give name and a given sequence number.
-@@ -7160,6 +7177,14 @@ again:
- 	extent_start = found_key.offset;
- 	if (found_type == BTRFS_FILE_EXTENT_REG ||
- 	    found_type == BTRFS_FILE_EXTENT_PREALLOC) {
-+		/* Only regular file could have regular/prealloc extent */
-+		if (!S_ISREG(inode->vfs_inode.i_mode)) {
-+			ret = -EUCLEAN;
-+			btrfs_crit(fs_info,
-+		"regular/prealloc extent found for non-regular inode %llu",
-+				   btrfs_ino(inode));
-+			goto out;
-+		}
- 		extent_end = extent_start +
- 		       btrfs_file_extent_num_bytes(leaf, item);
- 
---- a/fs/btrfs/tests/inode-tests.c
-+++ b/fs/btrfs/tests/inode-tests.c
-@@ -245,6 +245,7 @@ static noinline int test_btrfs_get_exten
- 		return ret;
- 	}
- 
-+	inode->i_mode = S_IFREG;
- 	BTRFS_I(inode)->location.type = BTRFS_INODE_ITEM_KEY;
- 	BTRFS_I(inode)->location.objectid = BTRFS_FIRST_FREE_OBJECTID;
- 	BTRFS_I(inode)->location.offset = 0;
+-- 
+2.27.0
+
 
 
