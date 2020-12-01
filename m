@@ -2,228 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBE72CA9B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 307B92CA9BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404073AbgLARaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:30:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
+        id S2391043AbgLARbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:31:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390848AbgLARaE (ORCPT
+        with ESMTP id S2387840AbgLARbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:30:04 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F790C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:29:24 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id k3so2393978otp.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:29:24 -0800 (PST)
+        Tue, 1 Dec 2020 12:31:49 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88977C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:31:03 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id iq13so1640513pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:31:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=l8vvlkbHOcQOjYY/Opy47c8Dw9W68kDnh+apjcsK7jc=;
-        b=sxS/hByLKJEQs8SSpaMjUL2ervlOHphMtva39THckGzCiSJ0dC7d7ErfZ4WOlA2kdQ
-         waAcYJt22YVIySKlh/I2Pei/RI3PxprBd5kCcxd/5NNqSYnb272u6JuF21Dv2O59xsij
-         ToSgRLw6WbARZntnWaQmmn473GNz8dbbRXveK5bcQpGQ2SGc8VWCPutpwq+SicvIPe/P
-         3bTOExhjWNAFc+sLKYmF672WfQOtXkXCC7jR3gtRmztqHcuD3RfiWzkJ2esYGXfRdoJj
-         OKUTBXHYy+xrp1yxghCo7D3C66p7qhvU7lOC3un4nRiTdTedkhfk1SBpSa1r+Cm2yXH0
-         g33A==
+        bh=fIhrXegmFXx4Y1S8YgnbVoZcP9r/eMN50vMQw7Htjj0=;
+        b=COBsdbubf4U1NB4bryhE6zpFJFlxC6tnZcSZU41etUauCccqXZsiquU+7Pg3YtVZk6
+         FaJj4o1AIWN+/OM9H6u8TAIFxZgoJVNQ/2jTBB5a/m2hHYR3qjgThVUzKnMTBTgmN/d+
+         qjZ/Lpe9hl7c2js/gywR+ayaeczGzpkDoU8ik=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=l8vvlkbHOcQOjYY/Opy47c8Dw9W68kDnh+apjcsK7jc=;
-        b=AFwEr/CNj/uboe8ZAHroVb5qFK3fr3iUqBtDSBz6qKHUjSVt7X4qdrWYaw8izf3rzq
-         EcdYpygb4zOtArHrI04K2DknYW8H0XSeYltDrJCO9SdUzliU1gk56Mq41qGop+iPHudY
-         Yc5S2s90xQEvG4hhianvd/e1OLbnqQFHN94aDWMqKNzytRPm3FEqzFf+horhk474S/MA
-         tSp/wEb5InvV69afjc3A144xyjwCfSP1XRgN2Wrd6ZTPZ5Si8LwjQUYZ0eDNCUcTSxxZ
-         Dn346uP/rlPv9StgFmOh8RpDWfHmmM+TC87TL1Ujgdw5ikOVNj6/Lig7tdyDK08sKrQ7
-         f/ow==
-X-Gm-Message-State: AOAM530LoL/jUmpPslcSXg2YvaKob+xH3enAkYDx6pQLQfFsjHnU6dGx
-        GvzkDQ7Mr6p+VzV3eraNlNvvDQ==
-X-Google-Smtp-Source: ABdhPJz219+0deBZngPjxwfYWY8oaCEqmDmI14IiB4RoHGZbWyhwhfuH1sFxngCr18KnCvfhpECMww==
-X-Received: by 2002:a9d:5c04:: with SMTP id o4mr2564678otk.372.1606843763504;
-        Tue, 01 Dec 2020 09:29:23 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 60sm87238ott.32.2020.12.01.09.29.22
+        bh=fIhrXegmFXx4Y1S8YgnbVoZcP9r/eMN50vMQw7Htjj0=;
+        b=s2G3FgFfBsBsKgBZWWFqxkXbK44b0iSpb7QhzgzjkIm9zP0QBt/gQONa96OWZqLpz6
+         pePsVFVCSu+jtCE4VhqGmYA4t6rfMCQKbXknPocf3B/O1LnLGpcIwEF2MVZ7yodf/WmB
+         G6RuIC8M+G+QGCNSJmmEK5WqKh/4ZTb6Rg9KBg+lyyQW2JcAu87gLh/EvbmstaH1x7Pu
+         ISj67PbBV0HZRs88pty3fgED3yHvXPm5q7jFrE0Bx7PiUfHHtmrFs1YLHOL0t1O8y3n1
+         5Xlq5tveshXXJI8i+siEy27puWIHuexLDYFFLloU/QG9WMylr9W7RpQaKSZPNvxPagNo
+         UaRg==
+X-Gm-Message-State: AOAM533xjSzZAO9ULoro0QGP/PjBxM+Z6LNQwPSYgV0bt3bjKHQtU60h
+        RfKia9bSXqNwQGPlk/XjOlLe0Q==
+X-Google-Smtp-Source: ABdhPJxNXrz8lyJzMPvVj7dGfW+IUsSemW9FmHsAZMwUW4pvNI4+h4MvkJF21vQXTZU3MgV3CsB+ag==
+X-Received: by 2002:a17:90b:224a:: with SMTP id hk10mr3671202pjb.81.1606843863156;
+        Tue, 01 Dec 2020 09:31:03 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j143sm400818pfd.20.2020.12.01.09.31.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 09:29:22 -0800 (PST)
-Date:   Tue, 1 Dec 2020 11:29:21 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 1/2] dt-bindings: pinctrl: qcom: Add sm8250 lpass lpi
- pinctrl bindings
-Message-ID: <X8Z9cUOmHQRNuvCD@builder.lan>
-References: <20201201142830.13152-1-srinivas.kandagatla@linaro.org>
- <20201201142830.13152-2-srinivas.kandagatla@linaro.org>
+        Tue, 01 Dec 2020 09:31:01 -0800 (PST)
+Date:   Tue, 1 Dec 2020 09:31:00 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
+Message-ID: <202012010929.3788AF5@keescook>
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <20201130120130.GF24563@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201142830.13152-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20201130120130.GF24563@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01 Dec 08:28 CST 2020, Srinivas Kandagatla wrote:
-
-> Add device tree binding Documentation details for Qualcomm SM8250
-> LPASS(Low Power Audio Sub System) LPI(Low Power Island) pinctrl driver.
+On Mon, Nov 30, 2020 at 12:01:31PM +0000, Will Deacon wrote:
+> Hi Sami,
 > 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> ---
->  .../pinctrl/qcom,lpass-lpi-pinctrl.yaml       | 132 ++++++++++++++++++
->  1 file changed, 132 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+> On Wed, Nov 18, 2020 at 02:07:14PM -0800, Sami Tolvanen wrote:
+> > This patch series adds support for building the kernel with Clang's
+> > Link Time Optimization (LTO). In addition to performance, the primary
+> > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI) to
+> > be used in the kernel. Google has shipped millions of Pixel devices
+> > running three major kernel versions with LTO+CFI since 2018.
+> > 
+> > Most of the patches are build system changes for handling LLVM bitcode,
+> > which Clang produces with LTO instead of ELF object files, postponing
+> > ELF processing until a later stage, and ensuring initcall ordering.
+> > 
+> > Note that v7 brings back arm64 support as Will has now staged the
+> > prerequisite memory ordering patches [1], and drops x86_64 while we work
+> > on fixing the remaining objtool warnings [2].
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..3543324d9194
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
-> @@ -0,0 +1,132 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/qcom,lpass-lpi-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. Low Power Audio SubSystem (LPASS)
-> +  Low Power Island (LPI) TLMM block
-> +
-> +maintainers:
-> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +
-> +description: |
-> +  This binding describes the Top Level Mode Multiplexer block found in the
-> +  LPASS LPI IP on most Qualcomm SoCs
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sm8250-lpass-lpi-pinctrl
-> +
-> +  reg:
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  clocks:
-> +    items:
-> +      - description: LPASS Core voting clock
-> +      - description: LPASS Audio voting clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core
-> +      - const: audio
-> +
-> +  gpio-controller: true
-> +
-> +  '#gpio-cells':
-> +    description: Specifying the pin number and flags, as defined in
-> +      include/dt-bindings/gpio/gpio.h
-> +    const: 2
-> +
-> +  gpio-ranges:
-> +    maxItems: 1
-> +
-> +#PIN CONFIGURATION NODES
-> +patternProperties:
-> +  '-pins$':
-> +    type: object
-> +    description:
-> +      Pinctrl node's client devices use subnodes for desired pin configuration.
-> +      Client device subnodes use below standard properties.
-> +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
-> +
-> +    properties:
-> +      pins:
-> +        description:
-> +          List of gpio pins affected by the properties specified in this
-> +          subnode.
-> +        items:
-> +          oneOf:
-> +            - pattern: "^gpio([0-9]|[1-9][0-9])$"
-> +        minItems: 1
-> +        maxItems: 14
-> +
-> +      function:
-> +        enum: [ gpio, swr_tx_clk, qua_mi2s_sclk, swr_tx_data1, qua_mi2s_ws,
-> +                swr_tx_data2, qua_mi2s_data0, swr_rx_clk, qua_mi2s_data1,
-> +                swr_rx_data1, qua_mi2s_data2, swr_tx_data3, swr_rx_data2,
-> +                dmic1_clk, i2s1_clk, dmic1_data, i2s1_ws, dmic2_clk,
-> +                i2s1_data0, dmic2_data, i2s1_data1, i2s2_clk, wsa_swr_clk,
-> +                i2s2_ws, wsa_swr_data, dmic3_clk, i2s2_data0, dmic3_data,
-> +                i2s2_data1 ]
-> +        description:
-> +          Specify the alternative function to be configured for the specified
-> +          pins.
-> +
-> +      drive-strength:
-> +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
-> +        default: 2
-> +        description:
-> +          Selects the drive strength for the specified pins, in mA.
-> +
-> +      slew-rate:
-> +        enum: [0, 1, 2, 3]
-> +        default: 0
-> +        description: |
-> +            0: No adjustments
-> +            1: Higher Slew rate (faster edges)
-> +            2: Lower Slew rate (slower edges)
-> +            3: Reserved (No adjustments)
-> +
-> +      bias-pull-down: true
-> +
-> +      bias-pull-up: true
-> +
-> +      bias-disable: true
-> +
-> +      output-high: true
-> +
-> +      output-low: true
-> +
-> +    required:
-> +      - pins
-> +      - function
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - gpio-controller
-> +  - '#gpio-cells'
-> +  - gpio-ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/sound/qcom,q6afe.h>
-> +    lpi_tlmm: pinctrl@33c0000 {
-> +        compatible = "qcom,sm8250-lpass-lpi-pinctrl";
-> +        reg = <0x33c0000 0x20000>,
-> +              <0x3550000 0x10000>;
-> +        clocks = <&q6afecc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
-> +                 <&q6afecc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
-> +        clock-names = "core", "audio";
-> +        gpio-controller;
-> +        #gpio-cells = <2>;
-> +        gpio-ranges = <&lpi_tlmm 0 0 14>;
-> +    };
-> -- 
-> 2.21.0
-> 
+> Sounds like you're going to post a v8, but that's the plan for merging
+> that? The arm64 parts look pretty good to me now.
+
+I haven't seen Masahiro comment on this in a while, so given the review
+history and its use (for years now) in Android, I will carry v8 (assuming
+all is fine with it) it in -next unless there are objections.
+
+-- 
+Kees Cook
