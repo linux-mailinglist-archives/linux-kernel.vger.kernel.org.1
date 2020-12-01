@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0422CA4D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5A32CA4DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391360AbgLAOAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:00:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41892 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387744AbgLAOAd (ORCPT
+        id S2391449AbgLAOCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:02:18 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:49911 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391102AbgLAOCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:00:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606831147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PwJG1illbebhBKC5v2IxyfNes6/XlUwSexlIWlX8yvI=;
-        b=gOH7VivVmdP+EKBhsUJ655Q6Lgbpcytsk0V4x4Af13cyM1yOOtUuXOhpx6guSiY1/PKsaK
-        KC2RFos+p7VoCjaxvUNs2vhe7IAcSR/y6asfx/bO5BT8o79XUnUH/fakd1EQd2QbscWJba
-        6QRSqdjK9AfOgVFZQnNZ4fiOivgqByE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-wovMo1sZOu2TKbhHgVoPFw-1; Tue, 01 Dec 2020 08:59:03 -0500
-X-MC-Unique: wovMo1sZOu2TKbhHgVoPFw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FF338558E9;
-        Tue,  1 Dec 2020 13:59:00 +0000 (UTC)
-Received: from [10.36.112.89] (ovpn-112-89.ams2.redhat.com [10.36.112.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A8A1A5C1BB;
-        Tue,  1 Dec 2020 13:58:53 +0000 (UTC)
-Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
- unmanaged ASIDs
-To:     Xingang Wang <wangxingang5@huawei.com>
-Cc:     alex.williamson@redhat.com, eric.auger.pro@gmail.com,
-        iommu@lists.linux-foundation.org, jean-philippe@linaro.org,
-        joro@8bytes.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, maz@kernel.org, robin.murphy@arm.com,
-        vivek.gautam@arm.com, will@kernel.org, zhangfei.gao@linaro.org,
-        xieyingtai@huawei.com
-References: <20201118112151.25412-8-eric.auger@redhat.com>
- <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
-Date:   Tue, 1 Dec 2020 14:58:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 1 Dec 2020 09:02:18 -0500
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 0B1E1Hc2025598;
+        Tue, 1 Dec 2020 23:01:17 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0B1E1Hc2025598
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606831277;
+        bh=42+OWCIwxDyM+q69U8eB2vW06YbrOCdwfCtvzHCs448=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Gmt7lYV+rHQK/L9WfkAgGjfHGlE0EOxtX3IzUo3Aj0BVMwhX29VhVL+Qv+4F40fx6
+         5yyKKFqzmCWuGRbtoksP4YzlM4g2PQavtBIDvA/i4NaxW6uCW8mKsrvRzRlnHGUhx3
+         peTk8hfgp53rSmmJHZPUVo+8sPV6+dTCyotCyFYqFeLsgDvjHRip7Lgghcoe5HhXxD
+         cj1S7D21kV9p3gHhn2DGokXHDFKRVBSoOK8JHwxBc9TCeOAzrVIJg04Mddb7ljR+gk
+         z9AtADv/WMVlzKQpNcVTMnLjh+aAgHBx6J0AiIMYL6bZfOLI6GuBA8SxzfkPIi9aC+
+         QFTmDH15qjxYA==
+X-Nifty-SrcIP: [209.85.216.54]
+Received: by mail-pj1-f54.google.com with SMTP id r20so1277207pjp.1;
+        Tue, 01 Dec 2020 06:01:17 -0800 (PST)
+X-Gm-Message-State: AOAM531KRRPWESX4MEIa/bprvUN1A7JkBUDV+apQFB2F4b7EBQ6qTTdX
+        aRwfF1RCdUdM9YeQVgUn09TCHU2sWgfhDnoisRk=
+X-Google-Smtp-Source: ABdhPJwlJoYz4cF+HFjxUOTDEdCCTRMJH7oj2/FdPZtkRmI5/Y+CaI9P3b0DOFIbnJQilpCruAR0EO9rMgUqKfs9Lq8=
+X-Received: by 2002:a17:902:402:b029:da:2cb9:56e8 with SMTP id
+ 2-20020a1709020402b02900da2cb956e8mr2802759ple.1.1606831276621; Tue, 01 Dec
+ 2020 06:01:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20201124182420.2202514-1-qperret@google.com>
+In-Reply-To: <20201124182420.2202514-1-qperret@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 1 Dec 2020 23:00:37 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATj8C7C=dYcDD4M5Q-Zc_kUhY2+i6epH=LbiOAUaDZqiw@mail.gmail.com>
+Message-ID: <CAK7LNATj8C7C=dYcDD4M5Q-Zc_kUhY2+i6epH=LbiOAUaDZqiw@mail.gmail.com>
+Subject: Re: [PATCH] modpost: Make static exports fatal
+To:     Quentin Perret <qperret@google.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xingang,
+On Wed, Nov 25, 2020 at 3:24 AM Quentin Perret <qperret@google.com> wrote:
+>
+> Using EXPORT_SYMBOL*() on static functions is fundamentally wrong.
+> Modpost currently reports that as a warning, but clearly this is not a
+> pattern we should allow, and all in-tree occurences should have been
+> fixed by now. So, promote the warn() message to fatal() to make sure
+> this never happens again.
+>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  scripts/mod/modpost.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index f882ce0d9327..70b0e825a139 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -2663,9 +2663,9 @@ int main(int argc, char **argv)
+>
+>                 for (s = symbolhash[n]; s; s = s->next) {
+>                         if (s->is_static)
+> -                               warn("\"%s\" [%s] is a static %s\n",
+> -                                    s->name, s->module->name,
+> -                                    export_str(s->export));
+> +                               fatal("\"%s\" [%s] is a static %s\n",
+> +                                     s->name, s->module->name,
+> +                                     export_str(s->export));
+>                 }
+>         }
+>
+> --
+> 2.29.2.454.gaff20da3a2-goog
+>
 
-On 12/1/20 2:33 PM, Xingang Wang wrote:
-> Hi Eric
-> 
-> On  Wed, 18 Nov 2020 12:21:43, Eric Auger wrote:
->> @@ -1710,7 +1710,11 @@ static void arm_smmu_tlb_inv_context(void *cookie)
->> 	 * insertion to guarantee those are observed before the TLBI. Do be
->> 	 * careful, 007.
->> 	 */
->> -	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
->> +	if (ext_asid >= 0) { /* guest stage 1 invalidation */
->> +		cmd.opcode	= CMDQ_OP_TLBI_NH_ASID;
->> +		cmd.tlbi.asid	= ext_asid;
->> +		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
->> +	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
-> 
-> Found a problem here, the cmd for guest stage 1 invalidation is built,
-> but it is not delivered to smmu.
-> 
 
-Thank you for the report. I will fix that soon. With that fixed, have
-you been able to run vSVA on top of the series. Do you need other stuff
-to be fixed at SMMU level? As I am going to respin soon, please let me
-know what is the best branch to rebase to alleviate your integration.
+I am not a big fan of (ab)using fatal() for this case.
 
+Please consider using error() once
+the following is queued up.
+
+https://patchwork.kernel.org/project/linux-kbuild/patch/20201201103418.675850-2-masahiroy@kernel.org/
+
+
+
+
+-- 
 Best Regards
-
-Eric
-
+Masahiro Yamada
