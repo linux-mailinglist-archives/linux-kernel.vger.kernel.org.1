@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78862C9424
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732412C9428
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729771AbgLAAm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:42:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        id S2389130AbgLAAmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgLAAm1 (ORCPT
+        with ESMTP id S2389120AbgLAAme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:42:27 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49112C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:41:47 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id w8so13202737ilg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:41:47 -0800 (PST)
+        Mon, 30 Nov 2020 19:42:34 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A909C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:41:48 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id t8so13804552iov.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:41:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mfRCDG1DfZk0mjNm0yF+dvADx4aswh9w4XOl0WSoS98=;
-        b=YNB6LrG4Z5CYoFDYin04fFtDEPl70OJ3GzPFIfG5KhjTqYCTqUYiWj+aDNsa39Nhmq
-         d3by2k02FfvxKupn3JJXmkLqtuRCS1b8+U92ecjqr8xJT12zwW1YuFsEbdt0liCd9QDA
-         WvTHXNBY9sB/2+7sXNdi0Mnhb0JuBaaLnPMoMGN++1kLWzBwVt3QJ1PZkpD6bmy4eiE+
-         60GCM8fcEfwF5Ts7MJKQdsqYzOs85O3qdsW0j5Sf7kds3UBwYHljCDQHDSf+9QEVF67b
-         4b4d53ZNFvNTEogc9SHBvK0NAfGPITs9skQm/rTCCPyaJ1m9dbyj1Kf/bzxrWXU4b2ag
-         DyLg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HnzEbVx2smAAOoGAKmXe1MxzApt3PoExhyWVjcN51Tc=;
+        b=Z/9eOuHn68lFWpsnehSX4d4rv62zcE5cHMVXkAPLCRmhv6xQta7Je7+Ntz3L7+mxcb
+         2xzFWxgWPzHV1Xg+0IKUsZOjxL42D6x/BFvyIQM4rMriee7MvBAC2QjaMaMmjqA6R7U8
+         31yb3jGAFfRcnjaR00m0wcy65SVAIg1uI0iIMgPebz4H6H6svOoiQHBxwgxGiBBbJf6v
+         3q3MNHNBcwCo3uCNA/wlAurZjw/Fc65Tyq0dZeTsHUp3SPGL8Y8AqWqOq9nMew0EC9+3
+         zcewf6QrnN+mj43enRjUY6zON1NPCrXqKv6n7BM7XB77LrIglhKHAxKNaCn5+EzfDF8g
+         0vjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mfRCDG1DfZk0mjNm0yF+dvADx4aswh9w4XOl0WSoS98=;
-        b=Ov8PHKCy4R2wbc0wsjmH4QKlfhUFmXj3Gs41ds+xdajm9QX0sEGD4Z7ZRaU5qLwKQe
-         GYCVq8uGmVgSC5fyDduAh6u+PvyYFHXlPB81TUFhsBABxyhi8t8FWVv887bDH7fqV9z5
-         jJsXP9/whJ/3Ejave9qDn9LUesK80XTC9933N+wiFpbwednhXSrUU4ShDelhsLq76EE7
-         uVyqkj9Oh7HCPh7pX+745zZDAfTRvCAS1E4Y7ukr/MakEmjEfjFI3WJrJtl8OQGAbtb0
-         gUvV4wLoFrhSgTxISR9hb+iMm0CCPwv9yKrxb9hj2t1ahG49Q8MNRzGT5Tsde5DpBCO7
-         MF0w==
-X-Gm-Message-State: AOAM533YCDlgmWvL1LSauPB6wvuD+ym9k49VrFLzRq3hkaP84WpCFuvR
-        Q1kwZWF9+kg5AZ8cq9qyJL2cWg==
-X-Google-Smtp-Source: ABdhPJzLkOBwf05+96QUNHZdn5UgAMddI329mHbS8VAWuU9vin5os8cyhLbV/SdhIfDO2SbEyraiAg==
-X-Received: by 2002:a92:8b12:: with SMTP id i18mr325439ild.278.1606783306662;
-        Mon, 30 Nov 2020 16:41:46 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HnzEbVx2smAAOoGAKmXe1MxzApt3PoExhyWVjcN51Tc=;
+        b=aBNmLRfLsfjy7iHD+fLxVOaFFIOsDQRQll9ofvj3zDRJNduqG0TJS5uA2gH8/oOH7w
+         t/Zk2YmZleOdXtdKFA5n3MKwzduSkV8ErsrD18HSJ6a3iGnyWhS83vz72gYcvBoGHUg3
+         g5UQxXMZVVE8lXh/JPiQhFkVS0UmnOYYAW2A7Zn0NrWpT6BC0hmZfTOCRVTll4KB3Xrr
+         YwUBsRPGhw+4dDLScfBfemgea066COSh5/6sbJxWHgvbSxn1dv0AJxv8Dk9NA8EJwFmT
+         EFqdzxBwlfs+w/zAbbnYx+RcJ1K/pmkF3NZfpbCijBwWhLV4tX1XjuHb4d2tyFfoxCBc
+         ZQPQ==
+X-Gm-Message-State: AOAM530LwmBfn7HwWFLDi83d3hRlVZnhB5Vd/g0Qyr23heYAUfM2Qtzl
+        Y18L0+3nhhNlH/2yrlzvvniwVg==
+X-Google-Smtp-Source: ABdhPJz0zGU1M1hhTa+Y6+Wp19wicKcJXjiGEdnbdQ1GQtNjcQqHWD/1bE43MzFkyhZ/niZVUbKd5g==
+X-Received: by 2002:a02:b68e:: with SMTP id i14mr423070jam.36.1606783307827;
+        Mon, 30 Nov 2020 16:41:47 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id p7sm138561iln.11.2020.11.30.16.41.45
+        by smtp.gmail.com with ESMTPSA id p7sm138561iln.11.2020.11.30.16.41.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 16:41:45 -0800 (PST)
+        Mon, 30 Nov 2020 16:41:47 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org, subashab@codeaurora.org
 Cc:     evgreen@chromium.org, cpratapa@codeaurora.org,
         bjorn.andersson@linaro.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 0/2] net: ipa: IPA v4.5 inline checksum offload
-Date:   Mon, 30 Nov 2020 18:41:41 -0600
-Message-Id: <20201201004143.27569-1-elder@linaro.org>
+Subject: [PATCH net-next 1/2] if_rmnet.h: define struct rmnet_map_v5_csum_header
+Date:   Mon, 30 Nov 2020 18:41:42 -0600
+Message-Id: <20201201004143.27569-2-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201201004143.27569-1-elder@linaro.org>
+References: <20201201004143.27569-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series includes one changed destined for a central header file
-and a second (dependent on the first) that applies to the IPA driver.
-If these should be posted a different way, please let me know.
+Define a new rmnet_map_v5_csum_header structure type.  It will be
+used for inline checksum offload, supported with version 5 of the
+QMAP protocol.
 
-The first patch introduces a new data structure defining the format
-of a header that's used for "inline" checksum offload.  Changes to
-the RMNet driver are required to fully support this feature, and
-those will be provided separately.
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ include/linux/if_rmnet.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-The second patch implements changes to the IPA driver required to
-support inline checksum offload for IPA version 4.5.  It uses only
-the *size* of the new data structure.
-
-					-Alex
-
-Alex Elder (2):
-  if_rmnet.h: define struct rmnet_map_v5_csum_header
-  net: ipa: add support for inline checksum offload
-
- drivers/net/ipa/ipa_endpoint.c | 50 ++++++++++++++++++++++++++--------
- drivers/net/ipa/ipa_reg.h      |  1 +
- include/linux/if_rmnet.h       | 30 ++++++++++++++++++++
- 3 files changed, 70 insertions(+), 11 deletions(-)
-
+diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
+index 9661416a9bb47..0fdda0e6e9963 100644
+--- a/include/linux/if_rmnet.h
++++ b/include/linux/if_rmnet.h
+@@ -52,4 +52,34 @@ struct rmnet_map_ul_csum_header {
+ #endif
+ } __aligned(1);
+ 
++
++/* Values for the header_type field of struct rmnet_map_v5_csum_header */
++enum rmnet_map_v5_header_type {
++	RMNET_MAP_HEADER_TYPE_UNKNOWN		= 0x0,
++	RMNET_MAP_HEADER_TYPE_COALESCING	= 0x1,
++	RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD	= 0x2,
++};
++
++/* QMAP v5 checksum offload header */
++struct rmnet_map_v5_csum_header {
++#if defined(__LITTLE_ENDIAN_BITFIELD)
++	u8 next_hdr:1;
++	u8 header_type:7;
++
++	u8 hw_reserved:5;
++	u8 priority:1;
++	u8 hw_reserved_bit:1;
++	u8 csum_valid_required:1;
++#elif defined(__BIG_ENDIAN_BITFIELD)
++	u8 header_type:7;
++	u8 next_hdr:1;
++
++	u8 csum_valid_required:1;
++	u8 hw_reserved_bit:1;
++	u8 priority:1;
++	u8 hw_reserved:5;
++#endif
++	__be16 reserved;
++};
++
+ #endif /* !(_LINUX_IF_RMNET_H_) */
 -- 
 2.20.1
 
