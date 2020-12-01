@@ -2,54 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBE62CA007
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F282CA003
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730106AbgLAKhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:37:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:40272 "EHLO foss.arm.com"
+        id S1730090AbgLAKhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:37:51 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:48506 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730096AbgLAKhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:37:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2FCC21042;
-        Tue,  1 Dec 2020 02:37:09 -0800 (PST)
-Received: from red-moon.arm.com (unknown [10.57.32.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 917E83F66B;
-        Tue,  1 Dec 2020 02:37:05 -0800 (PST)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        gregkh@linuxfoundation.org, robh@kernel.org, bhelgaas@google.com,
-        kw@linux.com, jingoohan1@gmail.com, Vidya Sagar <vidyas@nvidia.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, sagar.tv@gmail.com,
-        linux-pci@vger.kernel.org, mmaddireddy@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kthota@nvidia.com
-Subject: Re: [PATCH] PCI: tegra: Move "dbi" accesses to post common DWC initialization
-Date:   Tue,  1 Dec 2020 10:36:57 +0000
-Message-Id: <160681898561.2864.9528605586162039459.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20201125192234.2270-1-vidyas@nvidia.com>
-References: <20201125192234.2270-1-vidyas@nvidia.com>
+        id S1726026AbgLAKhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:37:50 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kk31n-0002i0-QF; Tue, 01 Dec 2020 21:37:00 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 01 Dec 2020 21:36:59 +1100
+Date:   Tue, 1 Dec 2020 21:36:59 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     David Howells <dhowells@redhat.com>
+Cc:     bfields@fieldses.org, trond.myklebust@hammerspace.com,
+        linux-crypto@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
+Message-ID: <20201201103659.GA28271@gondor.apana.org.au>
+References: <20201201084638.GA27937@gondor.apana.org.au>
+ <20201127050701.GA22001@gondor.apana.org.au>
+ <20201126063303.GA18366@gondor.apana.org.au>
+ <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
+ <1976719.1606378781@warthog.procyon.org.uk>
+ <4035245.1606812273@warthog.procyon.org.uk>
+ <4036797.1606813958@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4036797.1606813958@warthog.procyon.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 00:52:34 +0530, Vidya Sagar wrote:
-> commit a0fd361db8e5 ("PCI: dwc: Move "dbi", "dbi2", and "addr_space"
-> resource setup into common code") moved the code that sets up dbi_base
-> to DWC common code thereby creating a requirement to not access the "dbi"
-> region before calling common DWC initialization code. But, Tegra194
-> already had some code that programs some of the "dbi" registers resulting
-> in system crash. This patch addresses that issue by refactoring the code
-> to have accesses to the "dbi" region only after common DWC initialization.
+On Tue, Dec 01, 2020 at 09:12:38AM +0000, David Howells wrote:
+> 
+> That depends on whether the caller has passed it elsewhere for some other
+> parallel purpose, but I think I'm going to have to go down that road and
+> restore it afterwards.
 
-Applied to pci/dwc, thanks!
+Sure but even if you added it to the API the underlying
+implementataions would just have to do the same thing.
 
-[1/1] PCI: tegra: Move "dbi" accesses to post common DWC initialization
-      https://git.kernel.org/lpieralisi/pci/c/369b868f4a
+Since this is particular to your use-case it's better to leave
+the complexity where it's needed rather than propagting it to
+all the crypto drivers.
 
-Thanks,
-Lorenzo
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
