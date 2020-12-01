@@ -2,171 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAE22C9D1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDD12C9D48
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390585AbgLAJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:19:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
+        id S2390615AbgLAJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:21:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390575AbgLAJSz (ORCPT
+        with ESMTP id S2390476AbgLAJVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:18:55 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7B6C0613CF;
-        Tue,  1 Dec 2020 01:18:15 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Clc2r05pcz9sVk;
-        Tue,  1 Dec 2020 20:18:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606814293;
-        bh=5zJ9IuqI4gLBzisy31CtAwLvFcCEejz2ewdPwr5ZIXc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XSoRTh+EHwvFZY78Bf2irWcrLekZ2C+PGMrccxGEqnd85wF9DEVmI4kJG5cc9SQqD
-         s5ZfS+62iYm+R9Ney8uoxuEemKkMGPyjsV/JAD0ESElLAe7/Kt5nnQdOLvz2mt9BP+
-         AAYJFpkwb25isMoCDhkCNl6VzsXdOVzV181sX9JChIdnr53bI48oQYHcDvbAsehYKb
-         3tmNS2cRqTwhuYELoQpJw3+3tMIrqVwOuAEOznWh4q65iOU0FhL6jXsWVI+ws0J6bG
-         YuQiJrcEpu0SfIJHp5RiFGMw27Qjz8YrMB0QUqO5l107VlCKPBaJ0/sl3BqTHtoiYi
-         /yPpRKftEN26A==
-Date:   Tue, 1 Dec 2020 20:18:11 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Andrew Klychkov <andrew.a.klyckov@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the akpm tree with the jc_docs tree
-Message-ID: <20201201201811.72273de8@canb.auug.org.au>
+        Tue, 1 Dec 2020 04:21:07 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2C2C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 01:20:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dgq+4MNPkXY57/CtpOjPMqTwCmpe7EO+/vNzQu6O7nc=; b=lV1nj8mexXQXXzlqHSkn799Sd4
+        B4fTfLUBffYWbKq6/fnZQqg1Mxz+nYbKh5aJueXOU/rW+LOBBKUM2DMAKZ33EflBICpOERNDXJRy/
+        q9aM8PXTdSyCbyL7Zmm+D0uj73bnDr0c9b6mgGdPIEnyQdF9QmxPGeFL5bbceIMmNrOcS5bqDHKK2
+        sOUZFEhOeke9TOrnwT4iti0HFe6+MBcwgWph4oi8bjkqGneEZgFSt2cw2r678F9DssalGk9ArUxvl
+        xkD3fHJoqA16w6YRTzKleVkEvkp7jGAEneikltwij0mgOCNdowJVFSFteoVPcWutDZet8eR4WjxZS
+        yV5wf7Cw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk1pV-0003Et-5I; Tue, 01 Dec 2020 09:20:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 49CB2307A5F;
+        Tue,  1 Dec 2020 10:20:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 34C0C200E0BD9; Tue,  1 Dec 2020 10:20:11 +0100 (CET)
+Date:   Tue, 1 Dec 2020 10:20:11 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [PATCH 4/5] irqtime: Move irqtime entry accounting after irq
+ offset incrementation
+Message-ID: <20201201092011.GS2414@hirez.programming.kicks-ass.net>
+References: <20201201001226.65107-1-frederic@kernel.org>
+ <20201201001226.65107-5-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ik6Kq09lnXxTrI8ZCP38H7.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201001226.65107-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ik6Kq09lnXxTrI8ZCP38H7.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 01, 2020 at 01:12:25AM +0100, Frederic Weisbecker wrote:
+> +static s64 irqtime_get_delta(struct irqtime *irqtime)
+>  {
+> +	int cpu = smp_processor_id();
+>  	s64 delta;
+>  
+>  	delta = sched_clock_cpu(cpu) - irqtime->irq_start_time;
+>  	irqtime->irq_start_time += delta;
+>  
+> +	return delta;
+> +}
+> +
+> +/* Called after incrementing preempt_count on {soft,}irq_enter */
+> +void irqtime_account_enter(struct task_struct *curr)
+> +{
+> +	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
+> +	u64 delta;
+> +
+> +	if (!sched_clock_irqtime)
+> +		return;
+> +
+> +	delta = irqtime_get_delta(irqtime);
+> +	/*
+> +	 * We do not account for softirq time from ksoftirqd here.
+> +	 * We want to continue accounting softirq time to ksoftirqd thread
+> +	 * in that case, so as not to confuse scheduler with a special task
+> +	 * that do not consume any time, but still wants to run.
+> +	 */
+> +	if ((irq_count() == (SOFTIRQ_OFFSET | HARDIRQ_OFFSET)) &&
+> +	    curr != this_cpu_ksoftirqd())
+> +		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
+> +}
+> +
+> +/* Called before decrementing preempt_count on {soft,}irq_exit */
+> +void irqtime_account_exit(struct task_struct *curr)
+> +{
+> +	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
+> +	u64 delta;
+> +
+> +	if (!sched_clock_irqtime)
+> +		return;
+> +
+> +	delta = irqtime_get_delta(irqtime);
+>  	/*
+>  	 * We do not account for softirq time from ksoftirqd here.
+>  	 * We want to continue accounting softirq time to ksoftirqd thread
 
-Hi all,
 
-Today's linux-next merge of the akpm tree got a conflict in:
+Urgh...
 
-  Documentation/dev-tools/kasan.rst
 
-between commit:
+Why not something like:
 
-  1a37e18bd4b9 ("Documentation: fix typos in dev-tools/kasan.rst")
+void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+{
+	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
+	unsigned int pc = preempt_count() - offset;
+	s64 delta;
+	int cpu;
 
-from the jc_docs tree and commit:
+	if (!sched_clock_irqtime)
+		return;
 
-  bb26c2574ff9 ("kasan: update documentation")
+	cpu = smp_processor_id();
+	delta = sched_clock_cpu(cpu) - irqtime->irq_start_time;
+	irqtime->irq_start_time += delta;
 
-from the akpm tree.
+	/*
+	 * We do not account for softirq time from ksoftirqd here.
+	 * We want to continue accounting softirq time to ksoftirqd thread
+	 * in that case, so as not to confuse scheduler with a special task
+	 * that do not consume any time, but still wants to run.
+	 */
+	if (pc & HARDIRQ_MASK)
+		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
+	else if ((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd())
+		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
+}
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/dev-tools/kasan.rst
-index 6d9abe57feaa,0d5d77919b1a..000000000000
---- a/Documentation/dev-tools/kasan.rst
-+++ b/Documentation/dev-tools/kasan.rst
-@@@ -357,37 -410,30 +410,30 @@@ Or, if one of the tests failed:
- =20
-          not ok 1 - kasan
- =20
-- (1) Loadable Module
-- ~~~~~~~~~~~~~~~~~~~~
-+=20
-+ There are a few ways to run KUnit-compatible KASAN tests.
-+=20
-+ 1. Loadable module
-+ ~~~~~~~~~~~~~~~~~~
- =20
-  With ``CONFIG_KUNIT`` enabled, ``CONFIG_KASAN_KUNIT_TEST`` can be built as
-- a loadable module and run on any architecture that supports KASAN
-- using something like insmod or modprobe. The module is called ``test_kasa=
-n``.
-+ a loadable module and run on any architecture that supports KASAN by load=
-ing
-+ the module with insmod or modprobe. The module is called ``test_kasan``.
- =20
-- (2) Built-In
-- ~~~~~~~~~~~~~
-+ 2. Built-In
-+ ~~~~~~~~~~~
- =20
-  With ``CONFIG_KUNIT`` built-in, ``CONFIG_KASAN_KUNIT_TEST`` can be built-=
-in
-- on any architecture that supports KASAN. These and any other KUnit
-- tests enabled will run and print the results at boot as a late-init
-- call.
- -on any architecure that supports KASAN. These and any other KUnit tests e=
-nabled
-++on any architecture that supports KASAN. These and any other KUnit tests =
-enabled
-+ will run and print the results at boot as a late-init call.
- =20
-- (3) Using kunit_tool
-- ~~~~~~~~~~~~~~~~~~~~~
-+ 3. Using kunit_tool
-+ ~~~~~~~~~~~~~~~~~~~
- =20
-- With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, we can al=
-so
-- use kunit_tool to see the results of these along with other KUnit
-- tests in a more readable way. This will not print the KASAN reports
-- of tests that passed. Use `KUnit documentation <https://www.kernel.org/do=
-c/html/latest/dev-tools/kunit/index.html>`_ for more up-to-date
-- information on kunit_tool.
-+ With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, it's also
-+ possible use ``kunit_tool`` to see the results of these and other KUnit t=
-ests
-+ in a more readable way. This will not print the KASAN reports of the test=
-s that
-+ passed. Use `KUnit documentation <https://www.kernel.org/doc/html/latest/=
-dev-tools/kunit/index.html>`_
-+ for more up-to-date information on ``kunit_tool``.
- =20
-  .. _KUnit: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.h=
-tml
--=20
-- ``CONFIG_TEST_KASAN_MODULE`` is a set of KASAN tests that could not be
-- converted to KUnit. These tests can be run only as a module with
-- ``CONFIG_TEST_KASAN_MODULE`` built as a loadable module and
-- ``CONFIG_KASAN`` built-in. The type of error expected and the
-- function being run is printed before the expression expected to give
-- an error. Then the error is printed, if found, and that test
-- should be interpreted to pass only if the error was the one expected
-- by the test.
-
---Sig_/Ik6Kq09lnXxTrI8ZCP38H7.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/GClMACgkQAVBC80lX
-0GyGYAgAoBoLHvFv49xYYr413PvNhwnQYZX5kt2A6owS0+uNuuSPNB7jwMnryNUH
-oXc1viN/bXp+JfDOZ4MumELIG31lf+5qCHQrFv49015Lp4Lxh3V6sw+hy9OsiVaZ
-mpD/R3bRU1z2EN0kprEzufh+vO09egZUCxhMMrEoonGYXSCrtz3mKKigCGDU06o6
-Va/trUCpvATjLIYmNYI/BBox42gp9uFPF47mTdSg50IlrRwpnkmwpPd2cwUzlNSJ
-tYpDZyNBsQWW2IDJ1ulDG+CdCR1ol/bJ6F+M7ch0xzKNca9/LzCPGaJF0yPI8385
-Bsx5MkMw8LTnZlmHvOXx7D+N/s74TQ==
-=180w
------END PGP SIGNATURE-----
-
---Sig_/Ik6Kq09lnXxTrI8ZCP38H7.--
