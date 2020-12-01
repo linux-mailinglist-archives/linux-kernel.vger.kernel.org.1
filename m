@@ -2,113 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165622C958D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A82A2C9590
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727297AbgLADHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 22:07:33 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:27005 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725859AbgLADHd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 22:07:33 -0500
-X-UUID: 7464e83b8bdc40c49f65b53555b423d8-20201201
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=2aXVN+zVHNxxltuwnwGBJajzVvMc3w46iOtEkP3tAkc=;
-        b=fb2t/M/VJUhauyRALv1pYceOCzyqIjsT/M++V0qELJcw/YxNKaIiTtbLhF99+GVIxxC0aCov9WcEm4RVRu17Dtilvc8kdAjQhY/izNJNEsfVh9ILb6XuuZCAeSZRaKewo+FG130KcNfyeRwAwfSzRyw9ggF8LWjnO7+xk0TXRG4=;
-X-UUID: 7464e83b8bdc40c49f65b53555b423d8-20201201
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1228097533; Tue, 01 Dec 2020 11:06:45 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 1 Dec
- 2020 11:06:44 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 1 Dec 2020 11:06:43 +0800
-Message-ID: <1606792003.14736.63.camel@mhfsdcap03>
-Subject: Re: [v4,2/3] PCI: mediatek: Add new generation controller support
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        <davem@davemloft.net>, <linux-pci@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sj Huang <sj.huang@mediatek.com>, <youlin.pei@mediatek.com>,
-        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
-        <sin_jieyang@mediatek.com>, Lukas Wunner <lukas@wunner.de>
-Date:   Tue, 1 Dec 2020 11:06:43 +0800
-In-Reply-To: <20201130173005.GA1088958@bjorn-Precision-5520>
-References: <20201130173005.GA1088958@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1727368AbgLADIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 22:08:45 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:27241 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726781AbgLADIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 22:08:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606792104; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=JJP6HmmFioq+F2Ir/f2i+rOYKpDP0oPCLDeC6RavsW4=; b=By/88tNaKmUq4ypDj8UUMcLFiXv0XarHotw2ojCgJ1OpGRZOWveIrgzbh5cpu0JaIaG+66nP
+ 7yeku/aObZ3gCS0YPZLjbb6jyW9DIpMPEGuF1CYWcZOGQrUtE8NuAfgrJd5ejPuvJJ0Pznli
+ /DJv6EdbIlAnoQ167FI7QSl3h38=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fc5b38d1f6054cb8d4ac396 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 03:07:57
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C6167C43468; Tue,  1 Dec 2020 03:07:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ED282C433ED;
+        Tue,  1 Dec 2020 03:07:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ED282C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
+ values
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
+        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
+        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
+        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
+        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
+        alice.chao@mediatek.com
+References: <20201130091610.2752-1-stanley.chu@mediatek.com>
+ <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
+ <X8V83T+Tx6teNLOR@builder.lan>
+ <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
+ <1606785904.23925.25.camel@mtkswgap22>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <d998857a-1744-a8bb-1a3e-77166c171f37@codeaurora.org>
+Date:   Mon, 30 Nov 2020 19:07:53 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: FC451FC4603DE65A509FD6378268318300EC02B2017977A484F41EC915355B5E2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <1606785904.23925.25.camel@mtkswgap22>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTExLTMwIGF0IDExOjMwIC0wNjAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
-PiBbK2NjIEx1a2FzLCBwY2llaHAgcG93ZXIgY29udHJvbCBxdWVzdGlvbl0NCj4gDQo+IE9uIE1v
-biwgTm92IDIzLCAyMDIwIGF0IDAyOjQ1OjEzUE0gKzA4MDAsIEppYW5qdW4gV2FuZyB3cm90ZToN
-Cj4gPiBPbiBUaHUsIDIwMjAtMTEtMTkgYXQgMTQ6MjggLTA2MDAsIEJqb3JuIEhlbGdhYXMgd3Jv
-dGU6DQo+ID4gPiAiQWRkIG5ldyBnZW5lcmF0aW9uIiByZWFsbHkgY29udGFpbnMgbm8gaW5mb3Jt
-YXRpb24uICBBbmQgIm1lZGlhdGVrIg0KPiA+ID4gaXMgYWxyZWFkeSB1c2VkIGZvciB0aGUgcGNp
-ZS1tZWRpYXRlay5jIGRyaXZlciwgc28gd2Ugc2hvdWxkIGhhdmUgYQ0KPiA+ID4gbmV3IHRhZyBm
-b3IgdGhpcyBuZXcgZHJpdmVyLiAgSW5jbHVkZSB1c2VmdWwgaW5mb3JtYXRpb24gaW4gdGhlDQo+
-ID4gPiBzdWJqZWN0LCBlLmcuLA0KPiA+ID4gDQo+ID4gPiAgIFBDSTogbWVkaWF0ZWstZ2VuMzog
-QWRkIE1lZGlhVGVrIEdlbjMgZHJpdmVyIGZvciBNVDgxOTINCj4gDQo+ID4gPiA+ICtzdGF0aWMg
-aW50IG10a19wY2llX3NldHVwKHN0cnVjdCBtdGtfcGNpZV9wb3J0ICpwb3J0KQ0KPiA+ID4gPiAr
-ew0KPiA+ID4gPiArCXN0cnVjdCBkZXZpY2UgKmRldiA9IHBvcnQtPmRldjsNCj4gPiA+ID4gKwlz
-dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2ID0gdG9fcGxhdGZvcm1fZGV2aWNlKGRldik7DQo+
-ID4gPiA+ICsJc3RydWN0IHJlc291cmNlICpyZWdzOw0KPiA+ID4gPiArCWludCBlcnI7DQo+ID4g
-PiA+ICsNCj4gPiA+ID4gKwlyZWdzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlX2J5bmFtZShwZGV2
-LCBJT1JFU09VUkNFX01FTSwgInBjaWUtbWFjIik7DQo+ID4gPiA+ICsJcG9ydC0+YmFzZSA9IGRl
-dm1faW9yZW1hcF9yZXNvdXJjZShkZXYsIHJlZ3MpOw0KPiA+ID4gPiArCWlmIChJU19FUlIocG9y
-dC0+YmFzZSkpIHsNCj4gPiA+ID4gKwkJZGV2X25vdGljZShkZXYsICJmYWlsZWQgdG8gbWFwIHJl
-Z2lzdGVyIGJhc2VcbiIpOw0KPiA+ID4gPiArCQlyZXR1cm4gUFRSX0VSUihwb3J0LT5iYXNlKTsN
-Cj4gPiA+ID4gKwl9DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwlwb3J0LT5yZWdfYmFzZSA9IHJlZ3Mt
-PnN0YXJ0Ow0KPiA+ID4gPiArDQo+ID4gPiA+ICsJLyogRG9uJ3QgdG91Y2ggdGhlIGhhcmR3YXJl
-IHJlZ2lzdGVycyBiZWZvcmUgcG93ZXIgdXAgKi8NCj4gPiA+ID4gKwllcnIgPSBtdGtfcGNpZV9w
-b3dlcl91cChwb3J0KTsNCj4gPiA+ID4gKwlpZiAoZXJyKQ0KPiA+ID4gPiArCQlyZXR1cm4gZXJy
-Ow0KPiA+ID4gPiArDQo+ID4gPiA+ICsJLyogVHJ5IGxpbmsgdXAgKi8NCj4gPiA+ID4gKwllcnIg
-PSBtdGtfcGNpZV9zdGFydHVwX3BvcnQocG9ydCk7DQo+ID4gPiA+ICsJaWYgKGVycikgew0KPiA+
-ID4gPiArCQlkZXZfbm90aWNlKGRldiwgIlBDSWUgbGluayBkb3duXG4iKTsNCj4gPiA+ID4gKwkJ
-Z290byBlcnJfc2V0dXA7DQo+ID4gPiANCj4gPiA+IEdlbmVyYWxseSBpdCBzaG91bGQgbm90IGJl
-IGEgZmF0YWwgZXJyb3IgaWYgdGhlIGxpbmsgaXMgbm90IHVwIGF0DQo+ID4gPiBwcm9iZS10aW1l
-LiAgWW91IG1heSBiZSBhYmxlIHRvIGhvdC1hZGQgYSBkZXZpY2UsIG9yIHRoZSBkZXZpY2UgbWF5
-DQo+ID4gPiBoYXZlIHNvbWUgZXh0ZXJuYWwgcG93ZXIgY29udHJvbCB0aGF0IHdpbGwgcG93ZXIg
-aXQgdXAgbGF0ZXIuDQo+ID4gDQo+ID4gVGhpcyBpcyBmb3IgdGhlIHBvd2VyIHNhdmluZyByZXF1
-aXJlbWVudC4gSWYgdGhlcmUgaXMgbm8gZGV2aWNlDQo+ID4gY29ubmVjdGVkIHdpdGggdGhlIFBD
-SWUgc2xvdCwgdGhlIFBDSWUgTUFDIGFuZCBQSFkgc2hvdWxkIGJlIHBvd2VyZWQNCj4gPiBvZmYu
-DQo+ID4gDQo+ID4gSXMgdGhlcmUgYW55IHN0YW5kYXJkIGZsb3cgdG8gc3VwcG9ydCBwb3dlciBk
-b3duIHRoZSBoYXJkd2FyZSBhdA0KPiA+IHByb2JlLXRpbWUgaWYgbm8gZGV2aWNlIGlzIGNvbm5l
-Y3RlZCBhbmQgcG93ZXIgaXQgdXAgd2hlbiBob3QtYWRkIGENCj4gPiBkZXZpY2U/DQo+IA0KPiBU
-aGF0J3MgYSBnb29kIHF1ZXN0aW9uLiAgSSBhc3N1bWUgdGhpcyBsb29rcyBsaWtlIGEgc3RhbmRh
-cmQgUENJZQ0KPiBob3QtYWRkIGV2ZW50Pw0KPiANCj4gV2hlbiB5b3UgaG90LWFkZCBhIGRldmlj
-ZSwgZG9lcyB0aGUgUm9vdCBQb3J0IGdlbmVyYXRlIGEgUHJlc2VuY2UNCj4gRGV0ZWN0IENoYW5n
-ZWQgaW50ZXJydXB0PyAgVGhlIHBjaWVocCBkcml2ZXIgc2hvdWxkIGZpZWxkIHRoYXQNCj4gaW50
-ZXJydXB0IGFuZCB0dXJuIG9uIHBvd2VyIHRvIHRoZSBzbG90IHZpYSB0aGUgUG93ZXIgQ29udHJv
-bGxlcg0KPiBDb250cm9sIGJpdCBpbiB0aGUgU2xvdCBDb250cm9sIHJlZ2lzdGVyLg0KPiANCj4g
-RG9lcyB5b3VyIGhhcmR3YXJlIHJlcXVpcmUgc29tZXRoaW5nIG1vcmUgdGhhbiB0aGF0IHRvIGNv
-bnRyb2wgdGhlIE1BQw0KPiBhbmQgUEhZIHBvd2VyPw0KPiANCj4gQmpvcm4NCg0KVGhlIGhhcmR3
-YXJlIHN1cHBvcnQgdG8gZ2VuZXJhdGUgYSBQcmVzZW5jZSBEZXRlY3QgQ2hhbmdlZCBpbnRlcnJ1
-cHQNCndoZW4gaG90LWFkZCBhIGRldmljZS4NCg0KQnV0IGl0IHNlZW1zIHRoYXQgd2Ugc2hvdWxk
-IGtlZXAgdGhlIFBIWSdzIHBvd2VyIGFuZCBjbG9ja3MgdG8gZW5zdXJlDQp0aGUgZGF0YSBsaW5r
-IGxheWVyIHN0YXRlIGNoYW5nZSBjYW4gYmUgZGV0ZWN0ZWQsIGFuZCBrZWVwIHRoZSBNQUMgbGF5
-ZXINCmFjdGl2ZSBmb3Igcm91dGluZyB0aGUgaW50ZXJydXB0IGV2ZW50IHRvIHBjaWVocCBkcml2
-ZXIgaGFuZGxlci4NCg0KRm9yIHRoZSBwb3dlciBzYXZpbmcgcmVxdWlyZW1lbnQsIHRoZSBtb2R1
-bGVzIHRoYXQgaXMgbm90IHVzZWQgd2hlbg0KcHJvYmUtdGltZSBtdXN0IGJlIHBvd2VyZWQgb2Zm
-LCBzbyBJIHRoaW5rIHdlIG1heSBub3Qgc3VwcG9ydCBob3QtcGx1Zw0KaW4gdGhpcyBjYXNlLg0K
-DQpUaGFua3MNCg==
+On 11/30/2020 5:25 PM, Stanley Chu wrote:
+> On Mon, 2020-11-30 at 15:54 -0800, Asutosh Das (asd) wrote:
+>> On 11/30/2020 3:14 PM, Bjorn Andersson wrote:
+>>> On Mon 30 Nov 16:51 CST 2020, Asutosh Das (asd) wrote:
+>>>
+>>>> On 11/30/2020 1:16 AM, Stanley Chu wrote:
+>>>>> UFS specficication allows different VCC configurations for UFS devices,
+>>>>> for example,
+>>>>> 	(1). 2.70V - 3.60V (By default)
+>>>>> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
+>>>>>                              device tree)
+>>>>> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+>>>>>
+>>>>> With the introduction of UFS 3.x products, an issue is happening that
+>>>>> UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
+>>>>> regulator on UFU 3.x products with VCC configuration (3) used.
+>>>>>
+>>>>> To solve this issue, we simply remove pre-defined initial VCC voltage
+>>>>> values in UFS driver with below reasons,
+>>>>>
+>>>>> 1. UFS specifications do not define how to detect the VCC configuration
+>>>>>       supported by attached device.
+>>>>>
+>>>>> 2. Device tree already supports standard regulator properties.
+>>>>>
+>>>>> Therefore VCC voltage shall be defined correctly in device tree, and
+>>>>> shall not be changed by UFS driver. What UFS driver needs to do is simply
+>>>>> enabling or disabling the VCC regulator only.
+>>>>>
+>>>>> This is a RFC conceptional patch. Please help review this and feel
+>>>>> free to feedback any ideas. Once this concept is accepted, and then
+>>>>> I would post a more completed patch series to fix this issue.
+>>>>>
+>>>>> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+>>>>> ---
+>>>>>     drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
+>>>>>     1 file changed, 1 insertion(+), 9 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>>>> index a6f76399b3ae..3965be03c136 100644
+>>>>> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>>>> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>>>> @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+>>>>>     		vreg->max_uA = 0;
+>>>>>     	}
+>>>>> -	if (!strcmp(name, "vcc")) {
+>>>>> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
+>>>>> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
+>>>>> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
+>>>>> -		} else {
+>>>>> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+>>>>> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+>>>>> -		}
+>>>>> -	} else if (!strcmp(name, "vccq")) {
+>>>>> +	if (!strcmp(name, "vccq")) {
+>>>>>     		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
+>>>>>     		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
+>>>>>     	} else if (!strcmp(name, "vccq2")) {
+>>>>>
+>>>>
+>>>> Hi Stanley
+>>>>
+>>>> Thanks for the patch. Bao (nguyenb) was also working towards something
+>>>> similar.
+>>>> Would it be possible for you to take into account the scenario in which the
+>>>> same platform supports both 2.x and 3.x UFS devices?
+>>>>
+>>>> These've different voltage requirements, 2.4v-3.6v.
+>>>> I'm not sure if standard dts regulator properties can support this.
+>>>>
+>>>
+>>> What is the actual voltage requirement for these devices and how does
+>>> the software know what voltage to pick in this range?
+>>>
+>>> Regards,
+>>> Bjorn
+>>>
+>>>> -asd
+>>>>
+>>>>
+>>>> -- 
+>>>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>>>> Linux Foundation Collaborative Project
+>>
+>> For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v), the
+>> voltage requirements (Vcc) are 2.4v-3.6v. The software initializes the
+>> ufs device at 2.95v & reads the version and if the device is 3.x, it may
+>> do the following:
+>> - Set the device power mode to SLEEP
+>> - Disable the Vcc
+>> - Enable the Vcc and set it to 2.5v
+>> - Set the device power mode to ACTIVE
+>>
+>> All of the above may be done at HS-G1 & moved to max supported gear
+>> based on the device version, perhaps?
+> 
+> Hi Asutosh,
+> 
+> Thanks for sharing this idea.
+> 
+> 1. I did not see above flow defined in UFS specifications, please
+> correct me if I was wrong.
+> 
+> 2. For above flow, the concern is that I am not sure if all devices
+> supporting VCC (2.4v - 2.7v) can accept higher voltage, say 2.95v, for
+> version detection.
+> 
+> 3. For version detection, another concern is that I am not sure if all
+> 3.x devices support VCC (2.4v - 2.7v) only, or in other words, I am not
+> sure if all 2.x devices support VCC (2.7v - 3.6v) only. The above rule
+> will break any devices not obeying this "conventions".
+> 
+> For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v),
+> 
+> It would be good for UFS drivers detecting the correct voltage if the
+> protocol is well-defined in specifications. Until that day, any
+> "non-standard" way may be better implemented in vendor's ops?
+> 
+> If the vop concept works on your platform, we could still keep struct
+> ufs_vreg and allow vendors to configure proper min_uV and max_uV to make
+> regulator_set_voltage() works during VCC toggling flow. Without specific
+> vendor configurations, min_uV and max_uV would be NULL by default and
+> UFS core driver will only enable/disasble VCC regulator only without
+> adjusting its voltage.
+> 
 
+I think this would work. Do you plan to implement this?
+If not, I can take this up. Please let me know.
+
+> Maybe one possible another idea is to decide the correct voltage and
+> configure regulator properly before kernel?
+> 
+> Thanks,
+> Stanley Chu
+> 
+>>
+>> Am open to other ideas though.
+>>
+>> -asd
+>>
+> 
+
+-asd
+
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
