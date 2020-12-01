@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308492C9B4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64692C9BBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388895AbgLAJG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:06:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
+        id S2388775AbgLAJLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:11:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388908AbgLAJEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:04:46 -0500
+        id S2389523AbgLAJLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:11:30 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D28F720671;
-        Tue,  1 Dec 2020 09:04:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 571C02067D;
+        Tue,  1 Dec 2020 09:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813465;
-        bh=cc+KSuO3VxaPw2W2k0+0/0cUuTuf9IkxASgihbdWBi4=;
+        s=korg; t=1606813874;
+        bh=/WM22D6Plq3TyxRGSRFQwgqVa13GcKeMjzi65Rsi9sc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nAFK32JQvMoMkLmizDyvpfuk6vLLLyORm4O7w7+mX9miU6nyqM3WbY5L7ioLnPLEv
-         f9V3EHkOc9TnIwWCu2N3qcFQn4myYa7boHIxCMUX+FYztFSC7LSSGPTSM7y3YM/CMS
-         nw8gU7rFA4/DEg4naN+AKKRjSN75yFf5+A8IJfoM=
+        b=lukd8f8kqGvaw6wrkKBKFc1MWWMsx8+7kpt/gqG0i3PELPVilNVdbaSD/21AaakMR
+         d3TQfocg2ggBsQL38jbWchyJjLyByEKL0iojn/KDRFs4xMYgx6XKgD6t7N5KiTNOGF
+         nHDH3j4NLKn3aP3EnKVPK7Zf9UtSw7no8EP6tgQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Faiz Abbas <faiz_abbas@ti.com>,
-        Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 48/98] ARM: dts: dra76x: m_can: fix order of clocks
+        stable@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 090/152] video: hyperv_fb: Fix the cache type when mapping the VRAM
 Date:   Tue,  1 Dec 2020 09:53:25 +0100
-Message-Id: <20201201084657.446754415@linuxfoundation.org>
+Message-Id: <20201201084723.647631465@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Dexuan Cui <decui@microsoft.com>
 
-[ Upstream commit 05d5de6ba7dbe490dd413b5ca11d0875bd2bc006 ]
+[ Upstream commit 5f1251a48c17b54939d7477305e39679a565382c ]
 
-According to the bosch,m_can.yaml bindings the first clock shall be the "hclk",
-while the second clock "cclk".
+x86 Hyper-V used to essentially always overwrite the effective cache type
+of guest memory accesses to WB. This was problematic in cases where there
+is a physical device assigned to the VM, since that often requires that
+the VM should have control over cache types. Thus, on newer Hyper-V since
+2018, Hyper-V always honors the VM's cache type, but unexpectedly Linux VM
+users start to complain that Linux VM's VRAM becomes very slow, and it
+turns out that Linux VM should not map the VRAM uncacheable by ioremap().
+Fix this slowness issue by using ioremap_cache().
 
-This patch fixes the order accordingly.
+On ARM64, ioremap_cache() is also required as the host also maps the VRAM
+cacheable, otherwise VM Connect can't display properly with ioremap() or
+ioremap_wc().
 
-Fixes: 0adbe832f21a ("ARM: dts: dra76x: Add MCAN node")
-Cc: Faiz Abbas <faiz_abbas@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: linux-omap@vger.kernel.org
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+With this change, the VRAM on new Hyper-V is as fast as regular RAM, so
+it's no longer necessary to use the hacks we added to mitigate the
+slowness, i.e. we no longer need to allocate physical memory and use
+it to back up the VRAM in Generation-1 VM, and we also no longer need to
+allocate physical memory to back up the framebuffer in a Generation-2 VM
+and copy the framebuffer to the real VRAM. A further big change will
+address these for v5.11.
+
+Fixes: 68a2d20b79b1 ("drivers/video: add Hyper-V Synthetic Video Frame Buffer Driver")
+Tested-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Link: https://lore.kernel.org/r/20201118000305.24797-1-decui@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/dra76x.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/video/fbdev/hyperv_fb.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/dra76x.dtsi b/arch/arm/boot/dts/dra76x.dtsi
-index 9f6fbe4c1fee1..859e4382ac4bb 100644
---- a/arch/arm/boot/dts/dra76x.dtsi
-+++ b/arch/arm/boot/dts/dra76x.dtsi
-@@ -32,8 +32,8 @@
- 				interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
- 					     <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-names = "int0", "int1";
--				clocks = <&mcan_clk>, <&l3_iclk_div>;
--				clock-names = "cclk", "hclk";
-+				clocks = <&l3_iclk_div>, <&mcan_clk>;
-+				clock-names = "hclk", "cclk";
- 				bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
- 			};
- 		};
+diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+index e36fb1a0ecdbd..19b3f3416d31c 100644
+--- a/drivers/video/fbdev/hyperv_fb.c
++++ b/drivers/video/fbdev/hyperv_fb.c
+@@ -1092,7 +1092,12 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 		goto err1;
+ 	}
+ 
+-	fb_virt = ioremap(par->mem->start, screen_fb_size);
++	/*
++	 * Map the VRAM cacheable for performance. This is also required for
++	 * VM Connect to display properly for ARM64 Linux VM, as the host also
++	 * maps the VRAM cacheable.
++	 */
++	fb_virt = ioremap_cache(par->mem->start, screen_fb_size);
+ 	if (!fb_virt)
+ 		goto err2;
+ 
 -- 
 2.27.0
 
