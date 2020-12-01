@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466512C9A66
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3904B2C9B5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387811AbgLAI5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        id S2388999AbgLAJHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387790AbgLAI5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:57:07 -0500
+        id S2389060AbgLAJFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:05:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53D79217A0;
-        Tue,  1 Dec 2020 08:56:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2D3F20809;
+        Tue,  1 Dec 2020 09:04:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812986;
-        bh=R999WfZrnUCEzVoNM1x2sDRYxVNFjIjxnBacerztjXg=;
+        s=korg; t=1606813474;
+        bh=Ws4JrFG7hmAkKWrYn6GrNTih35HVAgdhMO+gshlUH3Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KFxIeGKHymmEjLxAFXVFr3/10lKK7PWa5Tp4FvN9Ba9FD1GKs0krojpSe8/7eW9Bm
-         xb+wqCP7KpQYoZphbmVtsTMnQ+OnmTIkpMTiTAwFI5Na4fAEF1MYK3DBi8lcp+2UuG
-         gD/gK6nCHaHNWGJNN963TjAvPJYyRubRX2iuZR0M=
+        b=uUzPSQHIgbY6iCXBF32FEXyG/ayznJqDp1bM9PHQpBEyWbdeiNecdwa4xr+vcFoJS
+         1h/CDZmDtWxZtYt/XIPEgJDEhLv3yAVbIgUM4vnyVDF6tKODjoJw+L3Krzl8w5UNzR
+         1PBUCOyJ3xbatYzhbWw5a3uAvT3dpGCTZ0qFhA5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Cui <mikecui@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Shay Agroskin <shayagr@amazon.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 29/42] net: ena: set initial DMA width to avoid intel iommu issue
-Date:   Tue,  1 Dec 2020 09:53:27 +0100
-Message-Id: <20201201084644.550075795@linuxfoundation.org>
+Subject: [PATCH 5.4 51/98] bnxt_en: fix error return code in bnxt_init_board()
+Date:   Tue,  1 Dec 2020 09:53:28 +0100
+Message-Id: <20201201084657.598677811@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,76 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Agroskin <shayagr@amazon.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 09323b3bca95181c0da79daebc8b0603e500f573 ]
+[ Upstream commit 3383176efc0fb0c0900a191026468a58668b4214 ]
 
-The ENA driver uses the readless mechanism, which uses DMA, to find
-out what the DMA mask is supposed to be.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-If DMA is used without setting the dma_mask first, it causes the
-Intel IOMMU driver to think that ENA is a 32-bit device and therefore
-disables IOMMU passthrough permanently.
-
-This patch sets the dma_mask to be ENA_MAX_PHYS_ADDR_SIZE_BITS=48
-before readless initialization in
-ena_device_init()->ena_com_mmio_reg_read_request_init(),
-which is large enough to workaround the intel_iommu issue.
-
-DMA mask is set again to the correct value after it's received from the
-device after readless is initialized.
-
-The patch also changes the driver to use dma_set_mask_and_coherent()
-function instead of the two pci_set_dma_mask() and
-pci_set_consistent_dma_mask() ones. Both methods achieve the same
-effect.
-
-Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
-Signed-off-by: Mike Cui <mikecui@amazon.com>
-Signed-off-by: Arthur Kiyanovski <akiyano@amazon.com>
-Signed-off-by: Shay Agroskin <shayagr@amazon.com>
+Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+Link: https://lore.kernel.org/r/1605792621-6268-1-git-send-email-zhangchangzhong@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index da21886609e30..de3d6f8b54316 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -2345,16 +2345,9 @@ static int ena_device_init(struct ena_com_dev *ena_dev, struct pci_dev *pdev,
- 		goto err_mmio_read_less;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 4869cda460dad..d8e1d7a9196cd 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -10826,6 +10826,7 @@ static int bnxt_init_board(struct pci_dev *pdev, struct net_device *dev)
+ 	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0 &&
+ 	    dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
+ 		dev_err(&pdev->dev, "System does not support DMA, aborting\n");
++		rc = -EIO;
+ 		goto init_err_disable;
  	}
  
--	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
-+	rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(dma_width));
- 	if (rc) {
--		dev_err(dev, "pci_set_dma_mask failed 0x%x\n", rc);
--		goto err_mmio_read_less;
--	}
--
--	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
--	if (rc) {
--		dev_err(dev, "err_pci_set_consistent_dma_mask failed 0x%x\n",
--			rc);
-+		dev_err(dev, "dma_set_mask_and_coherent failed %d\n", rc);
- 		goto err_mmio_read_less;
- 	}
- 
-@@ -2894,6 +2887,12 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		return rc;
- 	}
- 
-+	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(ENA_MAX_PHYS_ADDR_SIZE_BITS));
-+	if (rc) {
-+		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed %d\n", rc);
-+		goto err_disable_device;
-+	}
-+
- 	pci_set_master(pdev);
- 
- 	ena_dev = vzalloc(sizeof(*ena_dev));
 -- 
 2.27.0
 
