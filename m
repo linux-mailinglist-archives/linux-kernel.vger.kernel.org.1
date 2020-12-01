@@ -2,133 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504F72CA8AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E03572CA89A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389280AbgLAQsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388131AbgLAQsi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:48:38 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC24C061A47
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:47:24 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id j21so2140353otp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:47:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X9vfkPsuHdDlbRy5N2BDdCLRGG9QdnGsjUUpVaTO710=;
-        b=VQRxBEWJdSffbR1qYHdXDQFAhH0L3/Itxchu5Px/jUiqzaFxez0CtWOIOvHB2t1PoK
-         x0iA19xxkiH04keW+TpqcYYqjGWo/vX3vr/oqd+uptPB4IO1oc/ldKXNDBoR10v1Df9a
-         cOGagtePbDIT/C+kjBlX1MzS1HXnah/R2zthw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X9vfkPsuHdDlbRy5N2BDdCLRGG9QdnGsjUUpVaTO710=;
-        b=LPrWZLRi84PkiPhshVmfuVWHQFTyOz5oyn42afopnRHVjDCql96Fev+LjtGlfa13T3
-         wnJ0KYZzyqoGhkl4jYU/M+aeh7JPiL3N80wDb24qhXXMhIJ2KpbnxfxZuxnYdxdL42JS
-         BurUB84lXL9oxyQVG7WKiXXlm3b8rCbdhfE1Qo+fexq+UuOGKTU6BHW6E7RAQAmygJcy
-         mg4HP/5UGMhgBqzwk13m4yUuZZ7A6A6UnQSKTV3zY0lPutZSpK7uqFcNXVcdUdR1jeT2
-         dL9CyTY5fP1rrg6tKjyERn0nTVSRSQ3DoYsQQgRn4NvtDO5C5BgtOfpZDTvRXiG88g00
-         tlxQ==
-X-Gm-Message-State: AOAM530xfLynARu/EQTg2vcWOu3fGopywha+rh4sI54PqB8HFtz8bIlU
-        SoK51gmOInjG+3m5xKvFZM6r1LM9CGDRzxSa6OxggAhLLXk=
-X-Google-Smtp-Source: ABdhPJy7N24WXPqNe9dLY6S3RVDRbNEgT/BYxDzmq3nNhXjLJe6MUlxCqkIvtPu1sVvwQ2OAbRBEBv/Ep/oLkmebcVI=
-X-Received: by 2002:a9d:4e08:: with SMTP id p8mr2542426otf.188.1606841243839;
- Tue, 01 Dec 2020 08:47:23 -0800 (PST)
+        id S1728801AbgLAQq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:46:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727175AbgLAQq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:46:56 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E422C206B7;
+        Tue,  1 Dec 2020 16:46:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606841175;
+        bh=FEcMdC/imqGYEoBFQmrLruQ8oKTT6w6fjIK3QuHiCKA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sOsRnpBlr1TBXAGXAxUjdCR+P4hY6oK1ZCsLJQC2fcUaQV2Bc9cuSp7mAazuVKDK/
+         K9nhhGnww/wn4mHNqKGhb/kFta+Zgl53VVLjqHQH1AHGc3zuBs0Dy+xyIune4A5t52
+         T8WbJAkvei1L7QjUwN9wMEPP4/zIyCUMXmTr/Mf0=
+Date:   Tue, 1 Dec 2020 17:47:27 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     jiladahe1997 <jiladahe1997@gmail.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, 972931182@qq.com
+Subject: Re: [PATCH RESEND] tty/serial/imx: Enable TXEN bit in
+ imx_poll_init().
+Message-ID: <X8Zznz7950E8R+Ol@kroah.com>
+References: <20201201230307.5738-1-972931182@qq.com>
 MIME-Version: 1.0
-References: <20201201084647.751612010@linuxfoundation.org> <20201201084648.982712007@linuxfoundation.org>
- <20201201154332.GB23661@amd>
-In-Reply-To: <20201201154332.GB23661@amd>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 1 Dec 2020 17:47:12 +0100
-Message-ID: <CAKMK7uHw8gJEGQcCwR-MSEpndRKDZwO2BsveDThBSACxZfxLrw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 11/57] drm/atomic_helper: Stop modesets on
- unregistered connectors harder
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>, Lyude Paul <lyude@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201230307.5738-1-972931182@qq.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 4:43 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > From: Lyude Paul <lyude@redhat.com>
-> >
-> > commit de9f8eea5a44b0b756d3d6345af7f8e630a3c8c0 upstream.
->
-> So this says protected by mutex:
->
-> >       /**
-> > -      * @registered: Is this connector exposed (registered) with userspace?
-> > +      * @registration_state: Is this connector initializing, exposed
-> > +      * (registered) with userspace, or unregistered?
-> > +      *
-> >        * Protected by @mutex.
-> >        */
-> > -     bool registered;
-> > +     enum drm_connector_registration_state registration_state;
-> >
-> >       /**
-> >        * @modes:
-> > @@ -1165,6 +1214,24 @@ static inline void drm_connector_unrefer
-> >       drm_connector_put(connector);
-> >  }
-> >
-> > +/**
-> > + * drm_connector_is_unregistered - has the connector been unregistered from
-> > + * userspace?
-> > + * @connector: DRM connector
-> > + *
-> > + * Checks whether or not @connector has been unregistered from userspace.
-> > + *
-> > + * Returns:
-> > + * True if the connector was unregistered, false if the connector is
-> > + * registered or has not yet been registered with userspace.
-> > + */
-> > +static inline bool
-> > +drm_connector_is_unregistered(struct drm_connector *connector)
-> > +{
-> > +     return READ_ONCE(connector->registration_state) ==
-> > +             DRM_CONNECTOR_UNREGISTERED;
-> > +}
->
->
-> But this uses READ_ONCE() for protection, and corresponding
-> WRITE_ONCE() is nowhere to be seen. Should this take the mutex, too?
+On Wed, Dec 02, 2020 at 07:03:08AM +0800, jiladahe1997 wrote:
+> From: Mingrui Ren <jiladahe1997@gmail.com>
+> 
+> As described in Documentation, poll_init() is called by kgdb to initialize
+> hardware which supports both poll_put_char() and poll_get_char().
+> 
+> It's necessary to enable TXEN bit, otherwise, it will cause hardware fault
+> and kernel panic when calling imx_poll_put_char().
+> 
+> Generally, if use /dev/ttymxc0 as kgdb console as well as system
+> console, ttymxc0 is initialized early by system console which does enable
+> TXEN bit.But when use /dev/ttymxc1 as kgbd console, ttymxc1 is only
+> initialized by imx_poll_init() cannot enable the TXEN bit, which will
+> cause kernel panic.
+> 
+> Signed-off-by: Mingrui Ren <jiladahe1997@gmail.com>
+> ---
+> Hi, thanks for your reply, and sorry for sending two identical emails.
+> The email service I used before seems to have some problems, 
+> so I switched to gmail.This is the "correct" version, please check.
+> 
+>  drivers/tty/serial/imx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+> index 43c6d7142fdd..7c665db3d897 100644
+> --- a/drivers/tty/serial/imx.c
+> +++ b/drivers/tty/serial/imx.c
+> @@ -1829,7 +1829,7 @@ static int imx_uart_poll_init(struct uart_port *port)
+>  	ucr1 |= UCR1_UARTEN;
+>  	ucr1 &= ~(UCR1_TRDYEN | UCR1_RTSDEN | UCR1_RRDYEN);
+>  
+> -	ucr2 |= UCR2_RXEN;
+> +	ucr2 |= UCR2_RXEN|UCR2_TXEN;
 
-The read once here doesn't protect against any races, but just against
-creative compilers doing funny stuff that might really break code
-logic. I guess for symmetry we could throw the WRITE_ONCE on the write
-side, but it really shouldn't matter, the entire thing is racy by
-design. We0d also only ever need the write once on the unregister
-call.
--Daniel
+Didn't checkpatch complain about this?  Please use ' ' characters around
+the '|' character.
 
->
-> Best regards,
->                                                                 Pavel
-> --
-> http://www.livejournal.com/~pavelmachek
+thanks,
 
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+greg k-h
