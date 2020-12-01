@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D782C9B6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 891452C9BE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389196AbgLAJIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:08:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43372 "EHLO mail.kernel.org"
+        id S2388857AbgLAJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:13:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389085AbgLAJGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:06:33 -0500
+        id S2390022AbgLAJM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7893A206CA;
-        Tue,  1 Dec 2020 09:05:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3EA220809;
+        Tue,  1 Dec 2020 09:12:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813552;
-        bh=3BrLg32KnNrBxg3LeLbwyyyiLoW/EG5UmyogW+CIUso=;
+        s=korg; t=1606813963;
+        bh=a+sG0RYOjYM8JqKT8I3axdNLLN6AmqISkuuujrt1Weo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dxbe2VSxa5J95kyTa6E+ZA0I3yugSUg1IzHiewyKzxwySSGwALEgr2Z9PQVzm2r0P
-         8V0G+3BdKFU38Vl+X0tEMP589Obne2IZRtzwGKqdE50/iKk705SLY4suOywgAt+Kpw
-         ug6RgnIwja7F/egBwX8r1Ee0wRm6/b6zIgxDOoR4=
+        b=OLn5hyDlCKDFDxV66/CsZVYVV3Jb0aV9zHQGKxKlJhuUXq6pYF3+03mPOmOpOsjEl
+         tPEzLaMSIHbC3wOyK8ZpV+6XAEfopssQD4fGBPJ6dI/3mgSF3TDyd4otKfAphhtXJ0
+         ZMUGjYxw9lOblQFVvstgSdrrmqIPL6qtW7lSbfpU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sam Xi <xyzsam@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 78/98] perf stat: Use proper cpu for shadow stats
+Subject: [PATCH 5.9 120/152] efi/efivars: Set generic ops before loading SSDT
 Date:   Tue,  1 Dec 2020 09:53:55 +0100
-Message-Id: <20201201084658.873383895@linuxfoundation.org>
+Message-Id: <20201201084727.513958611@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,87 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-[ Upstream commit c0ee1d5ae8c8650031badcfca6483a28c0f94f38 ]
+[ Upstream commit 50bdcf047503e30126327d0be4f0ad7337106d68 ]
 
-Currently perf stat shows some metrics (like IPC) for defined events.
-But when no aggregation mode is used (-A option), it shows incorrect
-values since it used a value from a different cpu.
+Efivars allows for overriding of SSDT tables, however starting with
+commit
 
-Before:
+  bf67fad19e493b ("efi: Use more granular check for availability for variable services")
 
-  $ perf stat -aA -e cycles,instructions sleep 1
+this use case is broken. When loading SSDT generic ops should be set
+first, however mentioned commit reversed order of operations. Fix this
+by restoring original order of operations.
 
-   Performance counter stats for 'system wide':
-
-  CPU0      116,057,380      cycles
-  CPU1       86,084,722      cycles
-  CPU2       99,423,125      cycles
-  CPU3       98,272,994      cycles
-  CPU0       53,369,217      instructions      #    0.46  insn per cycle
-  CPU1       33,378,058      instructions      #    0.29  insn per cycle
-  CPU2       58,150,086      instructions      #    0.50  insn per cycle
-  CPU3       40,029,703      instructions      #    0.34  insn per cycle
-
-       1.001816971 seconds time elapsed
-
-So the IPC for CPU1 should be 0.38 (= 33,378,058 / 86,084,722)
-but it was 0.29 (= 33,378,058 / 116,057,380) and so on.
-
-After:
-
-  $ perf stat -aA -e cycles,instructions sleep 1
-
-   Performance counter stats for 'system wide':
-
-  CPU0      109,621,384      cycles
-  CPU1      159,026,454      cycles
-  CPU2       99,460,366      cycles
-  CPU3      124,144,142      cycles
-  CPU0       44,396,706      instructions      #    0.41  insn per cycle
-  CPU1      120,195,425      instructions      #    0.76  insn per cycle
-  CPU2       44,763,978      instructions      #    0.45  insn per cycle
-  CPU3       69,049,079      instructions      #    0.56  insn per cycle
-
-       1.001910444 seconds time elapsed
-
-Fixes: 44d49a600259 ("perf stat: Support metrics in --per-core/socket mode")
-Reported-by: Sam Xi <xyzsam@google.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20201127041404.390276-1-namhyung@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: bf67fad19e493b ("efi: Use more granular check for availability for variable services")
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Link: https://lore.kernel.org/r/20201123172817.124146-1-amadeuszx.slawinski@linux.intel.com
+Tested-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/stat-display.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/firmware/efi/efi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 373e399e57d28..93147cc40162f 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -316,13 +316,10 @@ static int first_shadow_cpu(struct perf_stat_config *config,
- 	struct evlist *evlist = evsel->evlist;
- 	int i;
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index 3aa07c3b51369..8ead4379e6e85 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -387,10 +387,10 @@ static int __init efisubsys_init(void)
  
--	if (!config->aggr_get_id)
--		return 0;
--
- 	if (config->aggr_mode == AGGR_NONE)
- 		return id;
+ 	if (efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE |
+ 				      EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
+-		efivar_ssdt_load();
+ 		error = generic_ops_register();
+ 		if (error)
+ 			goto err_put;
++		efivar_ssdt_load();
+ 		platform_device_register_simple("efivars", 0, NULL, 0);
+ 	}
  
--	if (config->aggr_mode == AGGR_GLOBAL)
-+	if (!config->aggr_get_id)
- 		return 0;
- 
- 	for (i = 0; i < perf_evsel__nr_cpus(evsel); i++) {
 -- 
 2.27.0
 
