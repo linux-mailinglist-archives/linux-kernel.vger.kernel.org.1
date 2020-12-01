@@ -2,330 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BA22CA2CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830BD2CA2D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729782AbgLAMhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:37:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51392 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727109AbgLAMhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:37:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D5DB0ACC0;
-        Tue,  1 Dec 2020 12:36:24 +0000 (UTC)
-Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
- to drm_device
-To:     "tiantao (H)" <tiantao6@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
- <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
- <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
- <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <389548c9-772c-d86b-700e-032f7d7bde1f@suse.de>
-Date:   Tue, 1 Dec 2020 13:36:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1728675AbgLAMik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:38:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726915AbgLAMij (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:38:39 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE08C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:37:53 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id v14so2512129wml.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:37:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lBUww53RFhoSaA4q+roaei0e4iCTcYgJXrbA2ztPW1s=;
+        b=V4UhIUVR2V1Ts6TfWAjd3Xk02gdycLDzXgLKwUvsYOCK3WXCsjGTifjGfsUD2SLFr5
+         v4pdCtNjSfhH6lqdkxSv/sK+K3SmbVydOb/PHVBJYlIca6EzsIL1FsjlsyG3HTh3vNen
+         G/YCDDpD9p9IIpIM6AnIAuwRylLQ6cJEDsLxkrZctPaFeW6MEx7eod3nzNbxaTsHIkMb
+         CKgcLS0dtMfSwHNl2ewGNobaxAEU2+YFS8OvEF7vQhyhhMcrwP9EjvDRE6gmp3eXySOE
+         yuISy+nLTfZ0p+NuMpsJI6/gYvhJSBN6FcOQMRaqbpyuOXXcKbgllp5u0gqe93rM78db
+         GDfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lBUww53RFhoSaA4q+roaei0e4iCTcYgJXrbA2ztPW1s=;
+        b=bhU5LQP38OWLIh+4Cq0u3vtg9w+fHJgApiu/Y1qD3CXqlClhASKjWqyemLM+UbNITt
+         l0chRDYm6LS65a4huf10AruWLrnm/11Bg4Pu2oTi02RbZRnnoXJKfdsclUx+0+jNrtK3
+         9FtZfuLWRCz//x8/H+NObqnzldAWE22qxrI+iUgWxJDd/0kvx1iCCIW3d1+0m/3bFdJu
+         MfXMZYw1c3hQMoPDeFBacXZtOZL0Y4eZ+OMvFQVL+1SKo3HuOLWQV9HdgfDhtdGhFagv
+         KY2843yxBboAH+vr+C7CmTPwSXms6AnZiDlhxBUXIvofSYOCSYfFcmauElYIcDUjL8nf
+         uIXg==
+X-Gm-Message-State: AOAM5334DNGeMQvro6ZTK0Y56ZOA7sCYn10Pybyx8Wo6PdT6lVoVIZmB
+        hLLJpIsMI2Qj9s5jIhXErsjMJA==
+X-Google-Smtp-Source: ABdhPJxVMxM7zxrRtQ5ATPRAIFdYrni8gzqkoCgfysS6KtplDal1I2J1qZu15IQmmDN/O+Q++hoi5g==
+X-Received: by 2002:a7b:c05a:: with SMTP id u26mr2471062wmc.159.1606826272146;
+        Tue, 01 Dec 2020 04:37:52 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id 21sm3147147wme.0.2020.12.01.04.37.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 04:37:51 -0800 (PST)
+Date:   Tue, 1 Dec 2020 12:37:48 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 09/14] cpuset: Don't use the cpu_possible_mask as a
+ last resort for cgroup v1
+Message-ID: <20201201123748.GA1896574@google.com>
+References: <20201124155039.13804-1-will@kernel.org>
+ <20201124155039.13804-10-will@kernel.org>
+ <20201127133245.4hbx65mo3zinawvo@e107158-lin.cambridge.arm.com>
+ <20201130170531.qo67rai5lftskmk2@e107158-lin.cambridge.arm.com>
+ <20201130173610.GA1715200@google.com>
+ <20201201115842.t77abecneuesd5ih@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-In-Reply-To: <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="x2d7DFiRiPY134QtF4u86i5nmflirnT5p"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201115842.t77abecneuesd5ih@e107158-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---x2d7DFiRiPY134QtF4u86i5nmflirnT5p
-Content-Type: multipart/mixed; boundary="woR6XCC6iBKuSAIfUoOJlpIefUmfLp1dm";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: "tiantao (H)" <tiantao6@huawei.com>, Tian Tao <tiantao6@hisilicon.com>,
- airlied@linux.ie, daniel@ffwll.ch, kraxel@redhat.com,
- alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <389548c9-772c-d86b-700e-032f7d7bde1f@suse.de>
-Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
- to drm_device
-References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
- <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
- <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
- <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
-In-Reply-To: <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
+On Tuesday 01 Dec 2020 at 11:58:42 (+0000), Qais Yousef wrote:
+> On 11/30/20 17:36, Quentin Perret wrote:
+> > On Monday 30 Nov 2020 at 17:05:31 (+0000), Qais Yousef wrote:
+> > > I create 3 cpusets: 64bit, 32bit and mix. As the name indicates, 64bit contains
+> > > all 64bit-only cpus, 32bit contains 32bit-capable ones and mix has a mixture of
+> > > both.
+> > > 
+> > > If I try to move my test binary to 64bit cpuset, it moves there and I see the
+> > > WARN_ON_ONCE() triggered. The task has attached to the new cpuset but
+> > > set_allowed_cpus_ptr() has failed and we end up with whatever affinity we had
+> > > previously. Breaking cpusets effectively.
+> > 
+> > Right, and so does exec'ing from a 64 bit task into 32 bit executable
+> > from within a 64 bit-only cpuset :( . And there is nothing we can really
+> 
+> True. The kernel can decide to kill the task or force detach it then, no?
+> Sending SIGKILL makes more sense.
 
---woR6XCC6iBKuSAIfUoOJlpIefUmfLp1dm
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Yeah but again, we need this to work for existing apps. Just killing it
+basically means we have no support, so that doesn't work for the use
+case :/
 
-Hi
+> > do about it, we cannot fail the exec because we need this to work for
+> > existing apps, and there is no way the Android framework can know
+> > upfront.
+> 
+> It knows upfront it has enabled asym aarch32. So it needs to make sure not to
+> create 'invalid' cpusets?
 
-Am 01.12.20 um 13:26 schrieb tiantao (H):
->=20
->=20
-> =E5=9C=A8 2020/12/1 20:17, Thomas Zimmermann =E5=86=99=E9=81=93:
->> Hi
->>
->> Am 01.12.20 um 12:55 schrieb Tian Tao:
->>> Assign local variable to struct drm_device *dev because they are
->>> used multiple times within a function.
->>>
->>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->>> ---
->>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c=C2=A0=C2=A0 |=C2=
-=A0 2 +-
->>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c=C2=A0 | 30=20
->>> ++++++++++++------------
->>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h=C2=A0 |=C2=A0 =
-2 +-
->>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |=C2=A0 2 +-
->>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 |=C2=A0 8 ++++---
->>> =C2=A0 5 files changed, 23 insertions(+), 21 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c=20
->>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>> index ea962ac..096eea9 100644
->>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs=20
->>> hibmc_crtc_helper_funcs =3D {
->>> =C2=A0 int hibmc_de_init(struct hibmc_drm_private *priv)
->>> =C2=A0 {
->>> -=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D priv->dev;
->>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_crtc *crtc =3D &priv->crtc;=
+Problem is, we _really_ don't want to keep a big CPU in the background
+cpuset just for that. And even if we did, we'd have to deal with hotplug.
 
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_plane *plane =3D &priv->pri=
-mary_plane;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c=20
->>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>> index d845657..dd9fadc 100644
->>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops =3D {=
+> > 
+> > So the only thing we can do really is WARN() and proceed to ignore the
+> > cpuset, which is what this series does :/. It's not exactly pretty but I
+> > don't think we can do much better than that TBH, and it's the same thing
+> > for the example you brought up. Failing cpuset_can_attach() will not
+> > help, we can only WARN and proceed ...
+> 
+> I think for cases where we can prevent userspace from doing something wrong, we
+> should. Like trying to attach to a cpuset that will result in an empty mask.
+> FWIW, it does something similar with deadline tasks. See task_can_attach().
+> 
+> Similarly for the case when userspace tries to modify the cpuset.cpus such that
+> a task will end up with empty cpumask. We now have the new case that some tasks
+> can only run on a subset of cpu_possible_mask. So the definition of empty
+> cpumask has gained an extra meaning.
 
->>> =C2=A0 static int hibmc_kms_init(struct hibmc_drm_private *priv)
->>> =C2=A0 {
->>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>> -=C2=A0=C2=A0=C2=A0 drm_mode_config_init(priv->dev);
->>> +=C2=A0=C2=A0=C2=A0 drm_mode_config_init(dev);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->mode_config_initialized =3D true=
-;
->>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.min_width =3D 0;
->>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.min_height =3D 0;
->>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.max_width =3D 1920;
->>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.max_height =3D 1200;
->>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.min_width =3D 0;
->>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.min_height =3D 0;
->>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.max_width =3D 1920;
->>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.max_height =3D 1200;
->>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.fb_base =3D priv->fb_base;=
+I see this differently, e.g. if you affine a task to a CPU and you
+hotunplug it, then the kernel falls back to the remaining online CPUs
+for that task. Not pretty, but it keeps things functional. I'm thinking
+a similar kind of support would be good enough here.
 
->>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.preferred_depth =3D 32;
->>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.prefer_shadow =3D 1;
->>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.fb_base =3D priv->fb_base;
->>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.preferred_depth =3D 32;
->>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.prefer_shadow =3D 1;
->>> -=C2=A0=C2=A0=C2=A0 priv->dev->mode_config.funcs =3D (void *)&hibmc_m=
-ode_funcs;
->>> +=C2=A0=C2=A0=C2=A0 dev->mode_config.funcs =3D (void *)&hibmc_mode_fu=
-ncs;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D hibmc_de_init(priv);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(priv->dev, "faile=
-d to init de: %d\n", ret);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(dev, "failed to i=
-nit de: %d\n", ret);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D hibmc_vdac_init(priv);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(priv->dev, "faile=
-d to init vdac: %d\n", ret);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(dev, "failed to i=
-nit vdac: %d\n", ret);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct=20
->>> hibmc_drm_private *priv)
->>> =C2=A0 static void hibmc_kms_fini(struct hibmc_drm_private *priv)
->>> =C2=A0 {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (priv->mode_config_initialized) {
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_mode_config_cleanup(p=
-riv->dev);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_mode_config_cleanup(&=
-priv->dev);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->mode_con=
-fig_initialized =3D false;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>> =C2=A0 }
->>> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct=20
->>> hibmc_drm_private *priv)
->>> =C2=A0 static int hibmc_hw_map(struct hibmc_drm_private *priv)
->>> =C2=A0 {
->>> -=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D priv->dev;
->>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pci_dev *pdev =3D dev->pdev;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 resource_size_t addr, size, ioaddr, io=
-size;
->>> @@ -258,7 +259,7 @@ static int hibmc_unload(struct drm_device *dev)
->>> =C2=A0 static int hibmc_load(struct drm_device *dev)
->>> =C2=A0 {
->>> -=C2=A0=C2=A0=C2=A0 struct hibmc_drm_private *priv;
->>> +=C2=A0=C2=A0=C2=A0 struct hibmc_drm_private *priv =3D to_hibmc_drm_p=
-rivate(dev);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv =3D drmm_kzalloc(dev, sizeof(*pri=
-v), GFP_KERNEL);
->>> @@ -267,7 +268,6 @@ static int hibmc_load(struct drm_device *dev)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM=
-;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->dev_private =3D priv;
->>> -=C2=A0=C2=A0=C2=A0 priv->dev =3D dev;
->>
->> I'm sure this either does not build or does not work. There's a call=20
->> to drm_dev_alloc(), which initialized the DRM device. You need to=20
->> assign the returned device here. The embedding of dev only work after =
+But yes, this cpuset mess is the part of the series I hate most too.
+It's just not clear we have better solutions :/
 
->> you switched to devm_drm_dev_alloc() in the next patch.
->>
->> For the patch at hand, just keep struct hibmc_drm_private.dev as a=20
->> pointer and you should be fine.
->>
-> Changing drm_device *dev to drm_device dev and using devm_drm_dev_alloc=
-=20
-> does not easily split into two patches.
-> The patch does not compile well on its own, but it will compile fine=20
-> with patch #2.
-> Can patch #1 and patch #2 be combined into a single patch,just like V1.=
+> > 
+> > Now, Android should be fine with that I think. We only need the kernel
+> > to implement a safe fallback mechanism when userspace gives
+> > contradictory commands, because we know there are edge cases userspace
+> > _cannot_ deal with correctly, but this fallback doesn't need to be
+> > highly optimized (at least for Android), but I'm happy to hear what
+> > others think.
+> 
+> Why not go with our original patch that fixes affinity then in the arch code if
+> the task wakes up on the wrong cpu? It is much simpler approach IMO to achieve
+> the same thing.
 
+I personally had no issues with that patch, but as per Peter's original
+reply, that's "not going to happen". Will's proposal seems to go one
+step further and tries its best to honor the contract with userspace (by
+keeping the subset of the affinity mask, ...) when that can be done, so
+if that can be acceptable, then be it. But I'd still rather keep this
+simple if at all possible. It's just my opinion though :)
 
-Most of the code in this patch does
-
-   struct drm_device *dev =3D &priv->dev;
-
-to get dev as a local variable. Why don't you do
-
-   struct drm_device *dev =3D priv->dev;
-
-?
-
-That's all that's really needed.
-
-Best regards
-Thomas
-
->> Best regards
->> Thomas
->>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D hibmc_hw_init(priv);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
->>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h=20
->>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>> index f310a83..e35353a 100644
->>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 resource_size_t=C2=A0 fb_size;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* drm */
->>> -=C2=A0=C2=A0=C2=A0 struct drm_device=C2=A0 *dev;
->>> +=C2=A0=C2=A0=C2=A0 struct drm_device dev;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_plane primary_plane;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_crtc crtc;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder encoder;
->>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c=20
->>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>> index 74e26c2..d35548d 100644
->>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs=20
->>> hibmc_encoder_funcs =3D {
->>> =C2=A0 int hibmc_vdac_init(struct hibmc_drm_private *priv)
->>> =C2=A0 {
->>> -=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D priv->dev;
->>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct hibmc_connector *hibmc_connecto=
-r =3D &priv->connector;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder *encoder =3D &priv-=
->encoder;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_connector *connector =3D &h=
-ibmc_connector->base;
->>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c=20
->>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>> index 602ece1..e84fb81 100644
->>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
->>> =C2=A0 {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_vram_mm *vmm;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>> -=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D hibmc->dev;
->>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &hibmc->dev;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vmm =3D drm_vram_helper_alloc_mm(dev,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- pci_resource_start(dev->pdev, 0),
->>> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc=
-)
->>> =C2=A0 void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
->>> =C2=A0 {
->>> -=C2=A0=C2=A0=C2=A0 if (!hibmc->dev->vram_mm)
->>> +=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &hibmc->dev;
->>> +
->>> +=C2=A0=C2=A0=C2=A0 if (!dev->vram_mm)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
->>> -=C2=A0=C2=A0=C2=A0 drm_vram_helper_release_mm(hibmc->dev);
->>> +=C2=A0=C2=A0=C2=A0 drm_vram_helper_release_mm(dev);
->>> =C2=A0 }
->>> =C2=A0 int hibmc_dumb_create(struct drm_file *file, struct drm_device=
- *dev,
->>>
->>
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---woR6XCC6iBKuSAIfUoOJlpIefUmfLp1dm--
-
---x2d7DFiRiPY134QtF4u86i5nmflirnT5p
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/GOMYFAwAAAAAACgkQlh/E3EQov+DG
-/w/+OqVMCrLsnDPUtYl4zb6IIub19d6CnT2x+6F8Z2400MPRaLrN/HAgCa07oWBkMBgkyWdr0emi
-KY2BqkZVm8oFmMjxW9mD9Lotxr3AqMIDdcV/hUuaiCxz5nrFH5n2dCoCqWkaBLRo8KbkqmBeGOBg
-KrZp0rVnJEW3xDGwGrCcmzRA9loIGpaFG1Z863KHHY6jsENws96EvgiUaBcEoN4ra3bPW51Edg4n
-32btnblcg7AI6/zeHC9AYtZVYT5QQNxZAR8GTmx9KHNo5V9rfjAPXcLSTYKZGnQOgooZOcRQUgFi
-nuX53rptIFlC+0ARzXG0thfUaYGAHvoZ89r1mURI5uRghejJICjRAmMqKlAY0eoBYUZ0Aym2FeCM
-ge43PjBSXNkJqKRGTQrpMx0cmYfca2VPSNR5k1oBg7wVrqOKu+4WJYm4ofp0NIw42sKXcBiZdX0u
-WBpo/oi0X1gTiZszy2sd+bVOmclbSCmqyoUNVatIMtFCtO4QrJfPWDCL2/tsFWjBgRTwTBywk9JV
-xdkpl4uguwka0f8EFSdRBQV3OF7ycoN7CmY+WEa+MWJ7SxWwP4Xv+eQB+ck8oTHAvgjD6YA8qzMR
-RyMMuL9qBGlns9vBMuS/Yc+35Epopp2/vZ5vidS9Vyfqi5pYPgmtarvbOoYaqQBwleGuXo07Y8jV
-Rrg=
-=3jxm
------END PGP SIGNATURE-----
-
---x2d7DFiRiPY134QtF4u86i5nmflirnT5p--
+Thanks,
+Quentin
