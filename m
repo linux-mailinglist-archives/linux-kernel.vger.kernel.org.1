@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C518D2CACF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033152CACFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730537AbgLAUDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:03:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgLAUDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:03:51 -0500
-Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A8CF20870;
-        Tue,  1 Dec 2020 20:03:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606852990;
-        bh=R/5sRgPj5z1/r8MnP/GGJtHNIk5Okfj54rbhBybQYYw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wm8LtrmndYrzGaYf94/+DlonpVKgx26OfaHM5v73wfNsCOQcjVEkodC3l2irf6GTt
-         /xu0gsPSCcAg9p8W4Q8qMd6t8rhCEkJZV+mngqny1Xa3SEQ/HodVl9xmcv1W04ZvUr
-         p2iwEij3JSC6fxxR8j2DgtsSSngTvn5Lh+UsBwB0=
-Date:   Tue, 1 Dec 2020 12:03:02 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
-Message-ID: <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
-        <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-        <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
+        id S1730598AbgLAUGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729538AbgLAUGD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 15:06:03 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC9BC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:05:16 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id a9so6955048lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HEphcGQwY2jeNYDME47hDdQV9bR2WcuThTyY8CTMagA=;
+        b=f+XordXx1HtHQauAu4wnySGZ7GOsfsrQOPdsZpcQHvfL87zHN51ik0PwYfToHQidR0
+         PlZ/E4mqzBriHmbzSkQser0B1m99iGnRC3rEB7nXytmUcWTvmQp/DGH5GienWzwN/RKd
+         ej/bdilwW2TBGDr+jCbzKtRZ0888o0ynwCvig=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HEphcGQwY2jeNYDME47hDdQV9bR2WcuThTyY8CTMagA=;
+        b=VkzU0walLwV80VM8JTM6q57eyTGnHh2ukyTD2LrtWBpRz93jab+HIhUDAY0fTaSJ7Q
+         0DrvultgFnAqNeiOX+7dJC5KQxd7sQeKN0fCiFkyC0j7B6/FGbfjkf/U1vFAWT9XJlKr
+         1Om/Yx5U3i9jjBgbcay1zV7RsvZ53of2Gujbyx6mY75kJoZakoV6SHDLhE35FL9hjRhz
+         O1mDFwe8l4z0DQOa4e7CruJgjjll9DOspDKVtjlIhIaRl7TQQf/rHtAtsFV+28mRYQHu
+         E5Fu7cAeCH11PSd4Jmy5Bcek5sDoHpBLNgy1dalkDhUcPf3iXCJVlN+wha9fTOMkLN4X
+         iAAA==
+X-Gm-Message-State: AOAM532xX3nKL/e/ukie1dKV2lAFOueWRQA1t+Vj2zt7l0SbaYgebMsN
+        AQs4b9CF+hs+CUEV5klDXzhAppK7ChPu6g==
+X-Google-Smtp-Source: ABdhPJxrCfIuMibK4V3ZjpQwOFPMKpSx1j5aqOSRDibodXDNxqvYYWTRxGkp1+GvnfdOjPzVHzxsKQ==
+X-Received: by 2002:a05:6512:3237:: with SMTP id f23mr1939769lfe.6.1606853114389;
+        Tue, 01 Dec 2020 12:05:14 -0800 (PST)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id s23sm72764ljs.75.2020.12.01.12.05.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 12:05:13 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id d8so6974214lfa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:05:13 -0800 (PST)
+X-Received: by 2002:a19:5003:: with SMTP id e3mr1997442lfb.148.1606853112635;
+ Tue, 01 Dec 2020 12:05:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com> <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
+In-Reply-To: <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 1 Dec 2020 12:04:56 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgOu9vgUfOSsjO3hHHxGDn4BKhitC_8XCfgmGKiiSm_ag@mail.gmail.com>
+Message-ID: <CAHk-=wgOu9vgUfOSsjO3hHHxGDn4BKhitC_8XCfgmGKiiSm_ag@mail.gmail.com>
+Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to filesystems
+To:     Eric Sandeen <sandeen@redhat.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Xiaoli Feng <xifeng@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:
-> On 12/1/2020 12:29 PM, Jakub Kicinski wrote:
-> > On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:  
-> >> This patch series adds support for UCI driver. UCI driver enables userspace
-> >> clients to communicate to external MHI devices like modem and WLAN. UCI driver
-> >> probe creates standard character device file nodes for userspace clients to
-> >> perform open, read, write, poll and release file operations. These file
-> >> operations call MHI core layer APIs to perform data transfer using MHI bus
-> >> to communicate with MHI device. Patch is tested using arm64 based platform.  
-> > 
-> > Wait, I thought this was for modems.
-> > 
-> > Why do WLAN devices need to communicate with user space?
-> >   
-> 
-> Why does it matter what type of device it is?  Are modems somehow unique 
-> in that they are the only type of device that userspace is allowed to 
-> interact with?
+On Tue, Dec 1, 2020 at 8:59 AM Eric Sandeen <sandeen@redhat.com> wrote:
+>
+> It's a bit odd to set STATX_ATTR_DAX into the statx attributes in the VFS;
+> while the VFS can detect the current DAX state, it is the filesystem which
+> actually sets S_DAX on the inode, and the filesystem is the place that
+> knows whether DAX is something that the "filesystem actually supports" [1]
+> so that the statx attributes_mask can be properly set.
+>
+> So, move STATX_ATTR_DAX attribute setting to the individual dax-capable
+> filesystems, and update the attributes_mask there as well.
 
-Yes modems are traditionally highly weird and require some serial
-device dance I don't even know about.
+I'm not really understanding the logic behind this.
 
-We have proper interfaces in Linux for configuring WiFi which work
-across vendors. Having char device access to WiFi would be a step 
-back.
+The whole IS_DAX(inode) thing exists in various places outside the
+low-level filesystem, why shouldn't stat() do this?
 
-> However, I'll bite.  Once such usecase would be QMI.  QMI is a generic 
-> messaging protocol, and is not strictly limited to the unique operations 
-> of a modem.
-> 
-> Another usecase would be Sahara - a custom file transfer protocol used 
-> for uploading firmware images, and downloading crashdumps.
+If IS_DAX() is incorrect, then we have much bigger problems than some
+stat results. We have core functions like generic_file_read_iter() etc
+all making actual behavioral judgements on IS_DAX().
 
-Thanks, I was asking for use cases, not which proprietary vendor
-protocol you can implement over it.
+And if IS_DAX() is correct, then why shouldn't this just be done in
+generic code? Why move it to every individual filesystem?
 
-None of the use cases you mention here should require a direct FW -
-user space backdoor for WLAN.
-
-> Off the top of my head, this driver is useful for modems, wlan, and AI 
-> accelerators.
-
-And other Qualcomm products are available as well :/
-
-Kernel is supposed to create abstract interfaces for user space to
-utilize. I will never understand why kernel is expected to be in
-business of shipping this sort of vendor backdoors :/
+               Linus
