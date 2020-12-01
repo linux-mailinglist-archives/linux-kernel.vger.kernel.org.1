@@ -2,144 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8292CA2A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD372CA2A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730880AbgLAMYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:24:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727374AbgLAMYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:24:50 -0500
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1DE220870
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:24:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606825450;
-        bh=bBnrt/qXPq+H01MHvNMWCrKJ7NdoTh2PlKA4hnqr0vw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oamBLPTGYBVKgHcGxo4swpudDywxg915icZq6iIxy7vZGrGgXeJxtEL0gNh5xMjbw
-         c4t44STSXttX0GTkGGvXoAl1DisbmFfGlIOY5Qo71JYr0lISDhQGjEZ2Aba5fgcVCU
-         6JQytp1lZEmg+gZgffbPzKwTE1XlGthk2sAIKE3Q=
-Received: by mail-lj1-f171.google.com with SMTP id y10so2548434ljc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:24:09 -0800 (PST)
-X-Gm-Message-State: AOAM533lj+/ktVckjpjKQvRH3edIqgyy+X5qRuxfJal8zvLiqyqxOkuj
-        XzR5gZR91A2EyMHcn+g3O3aDv5LzPa7dMUnkCws=
-X-Google-Smtp-Source: ABdhPJwFK5+905CbgqECOO1cwvLh6rCSUwEu4cRIahJ2fhT+HsmIJLhDNt1D6iZInyBu8GXHMh1ZstaQibTviZg8st0=
-X-Received: by 2002:a05:651c:1213:: with SMTP id i19mr1110517lja.407.1606825448068;
- Tue, 01 Dec 2020 04:24:08 -0800 (PST)
+        id S1727635AbgLAM1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:27:33 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8481 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgLAM1d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:27:33 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ClhCr72RszhlK2;
+        Tue,  1 Dec 2020 20:26:16 +0800 (CST)
+Received: from [127.0.0.1] (10.57.60.129) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Dec 2020
+ 20:26:29 +0800
+Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
+ to drm_device
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <kraxel@redhat.com>,
+        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
+        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
+ <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
+ <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
+From:   "tiantao (H)" <tiantao6@huawei.com>
+Message-ID: <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
+Date:   Tue, 1 Dec 2020 20:26:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20201105152944.16953-1-ardb@kernel.org> <CAMj1kXGtxWk3Z4fxm=b5YMU1Dy2HfaOAynaMiMGKZx9vLArpmg@mail.gmail.com>
- <X7dB9GCUeHa+Hosn@sol.localdomain>
-In-Reply-To: <X7dB9GCUeHa+Hosn@sol.localdomain>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 1 Dec 2020 13:23:56 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXECHnV6zfXOjEfsjgNTWRsXj7V_+T-hkgn8v69EEdWvEQ@mail.gmail.com>
-Message-ID: <CAMj1kXECHnV6zfXOjEfsjgNTWRsXj7V_+T-hkgn8v69EEdWvEQ@mail.gmail.com>
-Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting
- IRQ randomness
-To:     Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.57.60.129]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ Jason)
 
-On Fri, 20 Nov 2020 at 05:11, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Wed, Nov 11, 2020 at 09:19:37AM +0100, Ard Biesheuvel wrote:
-> > (+ Eric)
-> >
-> > On Thu, 5 Nov 2020 at 16:29, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > When reseeding the CRNG periodically, arch_get_random_seed_long() is
-> > > called to obtain entropy from an architecture specific source if one
-> > > is implemented. In most cases, these are special instructions, but in
-> > > some cases, such as on ARM, we may want to back this using firmware
-> > > calls, which are considerably more expensive.
-> > >
-> > > Another call to arch_get_random_seed_long() exists in the CRNG driver,
-> > > in add_interrupt_randomness(), which collects entropy by capturing
-> > > inter-interrupt timing and relying on interrupt jitter to provide
-> > > random bits. This is done by keeping a per-CPU state, and mixing in
-> > > the IRQ number, the cycle counter and the return address every time an
-> > > interrupt is taken, and mixing this per-CPU state into the entropy pool
-> > > every 64 invocations, or at least once per second. The entropy that is
-> > > gathered this way is credited as 1 bit of entropy. Every time this
-> > > happens, arch_get_random_seed_long() is invoked, and the result is
-> > > mixed in as well, and also credited with 1 bit of entropy.
-> > >
-> > > This means that arch_get_random_seed_long() is called at least once
-> > > per second on every CPU, which seems excessive, and doesn't really
-> > > scale, especially in a virtualization scenario where CPUs may be
-> > > oversubscribed: in cases where arch_get_random_seed_long() is backed
-> > > by an instruction that actually goes back to a shared hardware entropy
-> > > source (such as RNDRRS on ARM), we will end up hitting it hundreds of
-> > > times per second.
-> > >
-> > > So let's drop the call to arch_get_random_seed_long() from
-> > > add_interrupt_randomness(), and instead, rely on crng_reseed() to call
-> > > the arch hook to get random seed material from the platform.
-> > >
-> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > > ---
-> > >  drivers/char/random.c | 15 +--------------
-> > >  1 file changed, 1 insertion(+), 14 deletions(-)
-> > >
-> > > diff --git a/drivers/char/random.c b/drivers/char/random.c
-> > > index 2a41b21623ae..a9c393c1466d 100644
-> > > --- a/drivers/char/random.c
-> > > +++ b/drivers/char/random.c
-> > > @@ -1261,8 +1261,6 @@ void add_interrupt_randomness(int irq, int irq_flags)
-> > >         cycles_t                cycles = random_get_entropy();
-> > >         __u32                   c_high, j_high;
-> > >         __u64                   ip;
-> > > -       unsigned long           seed;
-> > > -       int                     credit = 0;
-> > >
-> > >         if (cycles == 0)
-> > >                 cycles = get_reg(fast_pool, regs);
-> > > @@ -1298,23 +1296,12 @@ void add_interrupt_randomness(int irq, int irq_flags)
-> > >
-> > >         fast_pool->last = now;
-> > >         __mix_pool_bytes(r, &fast_pool->pool, sizeof(fast_pool->pool));
-> > > -
-> > > -       /*
-> > > -        * If we have architectural seed generator, produce a seed and
-> > > -        * add it to the pool.  For the sake of paranoia don't let the
-> > > -        * architectural seed generator dominate the input from the
-> > > -        * interrupt noise.
-> > > -        */
-> > > -       if (arch_get_random_seed_long(&seed)) {
-> > > -               __mix_pool_bytes(r, &seed, sizeof(seed));
-> > > -               credit = 1;
-> > > -       }
-> > >         spin_unlock(&r->lock);
-> > >
-> > >         fast_pool->count = 0;
-> > >
-> > >         /* award one bit for the contents of the fast pool */
-> > > -       credit_entropy_bits(r, credit + 1);
-> > > +       credit_entropy_bits(r, 1);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(add_interrupt_randomness);
->
-> Looks reasonable to me.  The CRNG state already gets XOR'ed with the output of
-> arch_get_random_seed_long() each time the CRNG is reseeded.  Calling
-> arch_get_random_seed_long() here too isn't necessary, and it's not really
-> appropriate to repeatedly call it during interrupt handling, as you point out.
->
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
->
-> - Eric
+
+在 2020/12/1 20:17, Thomas Zimmermann 写道:
+> Hi
+> 
+> Am 01.12.20 um 12:55 schrieb Tian Tao:
+>> Assign local variable to struct drm_device *dev because they are
+>> used multiple times within a function.
+>>
+>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>> ---
+>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
+>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 30 
+>> ++++++++++++------------
+>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +-
+>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
+>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 ++++---
+>>   5 files changed, 23 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c 
+>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>> index ea962ac..096eea9 100644
+>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs 
+>> hibmc_crtc_helper_funcs = {
+>>   int hibmc_de_init(struct hibmc_drm_private *priv)
+>>   {
+>> -    struct drm_device *dev = priv->dev;
+>> +    struct drm_device *dev = &priv->dev;
+>>       struct drm_crtc *crtc = &priv->crtc;
+>>       struct drm_plane *plane = &priv->primary_plane;
+>>       int ret;
+>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c 
+>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>> index d845657..dd9fadc 100644
+>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops = {
+>>   static int hibmc_kms_init(struct hibmc_drm_private *priv)
+>>   {
+>> +    struct drm_device *dev = &priv->dev;
+>>       int ret;
+>> -    drm_mode_config_init(priv->dev);
+>> +    drm_mode_config_init(dev);
+>>       priv->mode_config_initialized = true;
+>> -    priv->dev->mode_config.min_width = 0;
+>> -    priv->dev->mode_config.min_height = 0;
+>> -    priv->dev->mode_config.max_width = 1920;
+>> -    priv->dev->mode_config.max_height = 1200;
+>> +    dev->mode_config.min_width = 0;
+>> +    dev->mode_config.min_height = 0;
+>> +    dev->mode_config.max_width = 1920;
+>> +    dev->mode_config.max_height = 1200;
+>> -    priv->dev->mode_config.fb_base = priv->fb_base;
+>> -    priv->dev->mode_config.preferred_depth = 32;
+>> -    priv->dev->mode_config.prefer_shadow = 1;
+>> +    dev->mode_config.fb_base = priv->fb_base;
+>> +    dev->mode_config.preferred_depth = 32;
+>> +    dev->mode_config.prefer_shadow = 1;
+>> -    priv->dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
+>> +    dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
+>>       ret = hibmc_de_init(priv);
+>>       if (ret) {
+>> -        drm_err(priv->dev, "failed to init de: %d\n", ret);
+>> +        drm_err(dev, "failed to init de: %d\n", ret);
+>>           return ret;
+>>       }
+>>       ret = hibmc_vdac_init(priv);
+>>       if (ret) {
+>> -        drm_err(priv->dev, "failed to init vdac: %d\n", ret);
+>> +        drm_err(dev, "failed to init vdac: %d\n", ret);
+>>           return ret;
+>>       }
+>> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct hibmc_drm_private 
+>> *priv)
+>>   static void hibmc_kms_fini(struct hibmc_drm_private *priv)
+>>   {
+>>       if (priv->mode_config_initialized) {
+>> -        drm_mode_config_cleanup(priv->dev);
+>> +        drm_mode_config_cleanup(&priv->dev);
+>>           priv->mode_config_initialized = false;
+>>       }
+>>   }
+>> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct 
+>> hibmc_drm_private *priv)
+>>   static int hibmc_hw_map(struct hibmc_drm_private *priv)
+>>   {
+>> -    struct drm_device *dev = priv->dev;
+>> +    struct drm_device *dev = &priv->dev;
+>>       struct pci_dev *pdev = dev->pdev;
+>>       resource_size_t addr, size, ioaddr, iosize;
+>> @@ -258,7 +259,7 @@ static int hibmc_unload(struct drm_device *dev)
+>>   static int hibmc_load(struct drm_device *dev)
+>>   {
+>> -    struct hibmc_drm_private *priv;
+>> +    struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+>>       int ret;
+>>       priv = drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+>> @@ -267,7 +268,6 @@ static int hibmc_load(struct drm_device *dev)
+>>           return -ENOMEM;
+>>       }
+>>       dev->dev_private = priv;
+>> -    priv->dev = dev;
+> 
+> I'm sure this either does not build or does not work. There's a call to 
+> drm_dev_alloc(), which initialized the DRM device. You need to assign 
+> the returned device here. The embedding of dev only work after you 
+> switched to devm_drm_dev_alloc() in the next patch.
+> 
+> For the patch at hand, just keep struct hibmc_drm_private.dev as a 
+> pointer and you should be fine.
+> 
+Changing drm_device *dev to drm_device dev and using devm_drm_dev_alloc 
+does not easily split into two patches.
+The patch does not compile well on its own, but it will compile fine 
+with patch #2.
+Can patch #1 and patch #2 be combined into a single patch,just like V1.
+> Best regards
+> Thomas
+> 
+>>       ret = hibmc_hw_init(priv);
+>>       if (ret)
+>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h 
+>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>> index f310a83..e35353a 100644
+>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
+>>       resource_size_t  fb_size;
+>>       /* drm */
+>> -    struct drm_device  *dev;
+>> +    struct drm_device dev;
+>>       struct drm_plane primary_plane;
+>>       struct drm_crtc crtc;
+>>       struct drm_encoder encoder;
+>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c 
+>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>> index 74e26c2..d35548d 100644
+>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs 
+>> hibmc_encoder_funcs = {
+>>   int hibmc_vdac_init(struct hibmc_drm_private *priv)
+>>   {
+>> -    struct drm_device *dev = priv->dev;
+>> +    struct drm_device *dev = &priv->dev;
+>>       struct hibmc_connector *hibmc_connector = &priv->connector;
+>>       struct drm_encoder *encoder = &priv->encoder;
+>>       struct drm_connector *connector = &hibmc_connector->base;
+>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c 
+>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>> index 602ece1..e84fb81 100644
+>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>>   {
+>>       struct drm_vram_mm *vmm;
+>>       int ret;
+>> -    struct drm_device *dev = hibmc->dev;
+>> +    struct drm_device *dev = &hibmc->dev;
+>>       vmm = drm_vram_helper_alloc_mm(dev,
+>>                          pci_resource_start(dev->pdev, 0),
+>> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>>   void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
+>>   {
+>> -    if (!hibmc->dev->vram_mm)
+>> +    struct drm_device *dev = &hibmc->dev;
+>> +
+>> +    if (!dev->vram_mm)
+>>           return;
+>> -    drm_vram_helper_release_mm(hibmc->dev);
+>> +    drm_vram_helper_release_mm(dev);
+>>   }
+>>   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+>>
+> 
+
