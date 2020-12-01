@@ -2,118 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B02F2CA5DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7862CA5DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391343AbgLAOib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:38:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388116AbgLAOib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:38:31 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE81FC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:37:50 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id y10so3251704ljc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:37:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U5JqANZHI6IE63msBOtqjTP9Lnlr40urg8p0rQpF1os=;
-        b=nUmBR6Rhr6RwUm/ExCSsIEelcOzUu2enLaU+tVqRNw1b+hIMOq/A0syBqJtsjqD+3g
-         Kd1BAoJb5/eLkNWsJqmg22QoTwO6YToOWFgeeiNYGFlpkWRk+98Nf645tUA3/MNJgt1c
-         abVbnUZjsTExWTHKhFugK/cEwEUNb5zLcDV0TtyPh6BA70LFaeUbMf4sUvyztf37CMAZ
-         BpKBUUViwXZ9dKUDl7iOXPANg5+qlBpGAHFKrOxnnIRtyyPj4Y/BxSdIhsD4crpG30sW
-         TfBkcBwOYxIfxbAEtL/mGIq1GFVn6xtsN6I+qAA+WDGagBAEEBYyaN26mHWrHWx8l2sW
-         yUBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U5JqANZHI6IE63msBOtqjTP9Lnlr40urg8p0rQpF1os=;
-        b=gSeoqtJkYWR1d1QKmecCiB8/CrU9QFLxzWXJ25tgttwu8bHxpv6Gtu1+VgquUYYS7a
-         tL/PfYnfV3dRIr9yk4c/n7WvHcTTm8IwhRcLgyawvz8l1pZkNntnIEdETJVRpnyzHDfB
-         XjkJo58m7vfznE4LADxCvWUnPmQu6EQt/lcWykxf9unbToK2TKodB2nFIJ8AUVadhez6
-         gDqH/mFxzmEXccuRjGnnAqefmuVHWYp8hoSjkvQVDKrYn7M5k6uSOEYw2gppwpu8xNHd
-         0K/lihcFRo4dDGY/F7YfueOaEZzkQeENbjmOziHJENAwns2ecR7ufuPRBYr0yt+g7L53
-         i1yA==
-X-Gm-Message-State: AOAM532RWyhV8ShNBk9xoASl2Dro6OhO7qbMsw32KG+lNnNF6BfMwhyD
-        XsT3WjaCnc27JjsMRjHBHQadri0UoNhHAJebRVPAXw==
-X-Google-Smtp-Source: ABdhPJwI3mG+5vEbQWTkRy2ZlcHAebtOPhoj2FgTlzifmIeWuXJt4guAi8I8k1kqlc9IN+GThnSimPG/riS27TdNJnY=
-X-Received: by 2002:a05:651c:111:: with SMTP id a17mr1447882ljb.286.1606833469260;
- Tue, 01 Dec 2020 06:37:49 -0800 (PST)
+        id S2391505AbgLAOjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:39:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:44048 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387462AbgLAOjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:39:02 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 808A130E;
+        Tue,  1 Dec 2020 06:38:16 -0800 (PST)
+Received: from [10.57.22.26] (unknown [10.57.22.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 471673F718;
+        Tue,  1 Dec 2020 06:38:05 -0800 (PST)
+Subject: Re: [PATCH 3/5] thermal: devfreq_cooling: add new registration
+ functions with Energy Model
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amit.kucheria@verdurent.com,
+        airlied@linux.ie, daniel.lezcano@linaro.org, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, rui.zhang@intel.com,
+        orjan.eide@arm.com
+References: <20200921122007.29610-1-lukasz.luba@arm.com>
+ <20200921122007.29610-4-lukasz.luba@arm.com> <20201007120746.GA15063@arm.com>
+ <71cfae58-8ea5-c591-455b-d84420d8412a@arm.com>
+ <20201201140520.GA7206@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <a0b70daf-fbd8-928e-36d0-d44d5fd68ca6@arm.com>
+Date:   Tue, 1 Dec 2020 14:37:58 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20201122170822.21715-1-mani@kernel.org> <20201122170822.21715-3-mani@kernel.org>
-In-Reply-To: <20201122170822.21715-3-mani@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 1 Dec 2020 15:37:38 +0100
-Message-ID: <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        patong.mxl@gmail.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        angelo.dureghello@timesys.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201201140520.GA7206@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 6:08 PM Manivannan Sadhasivam <mani@kernel.org> wrote:
 
-> Add gpiochip support for Maxlinear/Exar USB to serial converter
-> for controlling the available gpios.
->
-> Inspired from cp210x usb to serial converter driver.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: linux-gpio@vger.kernel.org
-> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
 
-This looks good to me overall, provided that it plays well with the
-serial port.
+On 12/1/20 2:05 PM, Ionela Voinescu wrote:
+> Hi,
+> 
+> On Thursday 22 Oct 2020 at 12:17:31 (+0100), Lukasz Luba wrote:
+> [..]
+> 
+>>>> +/**
+>>>> + * devfreq_cooling_em_register_power() - Register devfreq cooling device with
+>>>> + *		power information and attempt to register Energy Model (EM)
+>>>
+>>> It took me a while to understand the differences between devfreq
+>>> register functions and it left me with a nagging feeling that we don't
+>>> need all of them. Also, looking over the cpufreq cooling devices, they
+>>> keep their registering interfaces quite simple.
+>>
+>> This was discussed in previous series, related to EM core changes.
+>> It was requested to have a helper registration function which would
+>> create EM automatically.
+>>
+>>>
+>>> With the functions added by this patch, the devfreq cooling devices will have:
+>>>    - old:
+>>>          of_devfreq_cooling_register_power
+>>>          of_devfreq_cooling_register
+>>>          devfreq_cooling_register
+>>>          devfreq_cooling_unregister
+>>>    - new:
+>>>          devfreq_cooling_em_register_power
+>>>          devfreq_cooling_em_register
+>>>
+>>> My question is whether we actually need the two new
+>>> devfreq_cooling_em_register_power() and devfreq_cooling_em_register()?
+>>
+>> It is just for consistency, with older scheme. It is only a wrapper, one
+>> line, with default NULL. This scheme is common in thermal and some other
+>> frameworks.
+>>
+>>>
+>>> The power_ops and the em are dependent on one another, so could we
+>>> extend the of_devfreq_cooling_register_power() to do the additional em
+>>> registration. We only need a way to pass the em_cb and I think that
+>>> could fit nicely in devfreq_cooling_power.
+>>
+>> No, they aren't 'dependent on one another'. The EM usage doesn't depend
+>> on presence of power_ops. Drivers might not support power_ops, but want
+>> the framework still use EM and do power estimation.
+>>
+> 
+> Okay, wrong choice of words. There's only a one way dependency: you can't
+> use power_ops without an em, according to
+> of_devfreq_cooling_register_power().
+> 
+> Correct me if I'm wrong, but I see this as being okay as you still need
+> an em to give you the maximum power of a device in a certain state.
+> 
+> With this in mind, and taking in detail the possible calls of the
+> devfreq cooling register functions:
+> 
+> 1. Register devfreq cooling device with energy model.
+>     (used in patch 5/5)
+> 
+>   -> devfreq_cooling_em_register()
+>      -> devfreq_cooling_em_register_power(dfc_power = NULL, em obtained
+>                                        through various methods)
+>        -> of_devfreq_cooling_register_power(same as above)
+> 
+> 2. Register devfreq cooling device with power_ops and em:
+>     (not used)
+> 
+>   -> devfreq_cooling_em_register_power(dfc_power != NULL, em obtained
+>                                       through various methods)
+>     -> of_devfreq_cooling_register_power(same as above)
+> 
+> 3. Register a devfreq cooling devices with power_ops but no em
+>     (not used)
+> 
+>   -> of_devfreq_cooling_register_power(dfc_power != NULL)
+> 
+> 
+> 4. Register a devfreq cooling devices without any kind of power
+>     information (em or dfc_power/power_ops)
+> 
+>   -> devfreq_cooling_register() or of_devfreq_cooling_register()
+>     -> of_devfreq_cooling_register_power(dfc_power = NULL)
+> 
+> 
+> Given this, aren't we ending up with some possible calls to these
+> registration functions that don't make sense? That is case 3, as
+> of_devfreq_cooling_register_power() could not assign and later use
+> power_ops without an em. For this usecase, 2 should be used instead.
 
-One minor notice:
+In use case 3. you missed that the driver could registered EM by itself.
+Maybe wanted to manage the EM internally, for various reasons. Then this
+registration use case 3. makes sense.
 
-> +enum gpio_pins {
-> +       GPIO_RI = 0,
-> +       GPIO_CD,
-> +       GPIO_DSR,
-> +       GPIO_DTR,
-> +       GPIO_CTS,
-> +       GPIO_RTS,
-> +       GPIO_MAX,
-> +};
+> 
+> Therefore, can't the same be achieved by collapsing
+> devfreq_cooling_em_register_power() into
+> of_devfreq_cooling_register_power()? (with the user having the
+> possibility to provide the em callback similarly to how get_real_power()
+> is provided - in devfreq_cooling_power).
+> 
+> IMO is cleaner to unify the functionality (registration and callbacks)
+> of cooling devices with power capabilities (based on em alone or together
+> with power_ops). Otherwise we just create confusion for users registering
+> cooling devices not knowing which function to call.
 
-You know the names of the pins...
+I don't want to add the code from devfreq_cooling_em_register_power()
+into the of_devfreq_cooling_register_power(), these are pretty dense
+functions with complicated error handling paths.
+In this shape and a few wrappers, which help users to register according
+to their needs, it looks OK.
 
-> +       port_priv->gc.ngpio = 6;
-> +       port_priv->gc.label = "xr_gpios";
-> +       port_priv->gc.request = xr_gpio_request;
-> +       port_priv->gc.free = xr_gpio_free;
-> +       port_priv->gc.get_direction = xr_gpio_direction_get;
-> +       port_priv->gc.direction_input = xr_gpio_direction_input;
-> +       port_priv->gc.direction_output = xr_gpio_direction_output;
-> +       port_priv->gc.get = xr_gpio_get;
-> +       port_priv->gc.set = xr_gpio_set;
-> +       port_priv->gc.owner = THIS_MODULE;
-> +       port_priv->gc.parent = &port->dev;
-> +       port_priv->gc.base = -1;
-> +       port_priv->gc.can_sleep = true;
+There will be always a review of the coming drivers which would like to
+register.
 
-So assign port_priv->gc.names here as well with an array
-of strings with the names ("RI", "CD", ... etc).
-This makes it look really nice in userspace if you do
-e.g. "lsgpio".
-
-With that:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+> 
+> If this has been discussed previously and I'm missing some details,
+> please provide some links to the discussions.
+> 
+> Thank you for the patience :).
+> 
+> Ionela.
+> 
