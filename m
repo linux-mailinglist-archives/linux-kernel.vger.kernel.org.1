@@ -2,88 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0182C97E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EA72C97ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgLAHOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:14:51 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:36316 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgLAHOv (ORCPT
+        id S1727727AbgLAHQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:16:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727109AbgLAHQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:14:51 -0500
-Received: by mail-ej1-f66.google.com with SMTP id lt17so1996140ejb.3;
-        Mon, 30 Nov 2020 23:14:34 -0800 (PST)
+        Tue, 1 Dec 2020 02:16:34 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50F4C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:15:53 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id o25so790631oie.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:15:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rDbSgqB8TBwWDr3fisuZfe912stm4XxcE+IKNp264Wc=;
+        b=CSKco7HlorgjzBLKbfyD7Jy+jMeUXFKIOK/8YmS7xa+YPLQ+GRpf8UGgnQECbPIX6p
+         2mC2gx1YTuQWYyUsLyevlkkgymqhgiat2wwXlq1HU4ZBGePTaIyCJrTWnJJKp3lO9BR+
+         z7gjybfJSfVCt+AvpaKeJLQeHrFk/mUJ/DH311rlB2K14+bLp40bZ40qbPFG11te5u6J
+         KXONgmUMnbhSbeBnstAzC+MiC9YRvKw6+sipm9JOiiRJwbYavgl7DhdYhDsRi3jSGhvh
+         RzuPGQ1C9FRT0uAnTOiJBXdM7UfmAXDe86cP1OSMkAIBVDA1e8vbLV7nZlF33xG7glGx
+         Lkgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OZosIAZ5kQh+M6bi+XZwxMMNMZ/xJ39Rm7xM03MsjcM=;
-        b=Z9O5lhlGPN5n4qDVVBMLPbnCOOwpRJq/n86cJJYlpubfJKYeJevjoZdFWBchuQmG0D
-         FGZhAVeqa6Hdtn2X4ZpEScDz/8KbYo5ZCZ5G3L2alOU06f/JQRW3aQklOQuthw+fO06O
-         Yt7X+7At0Sliq1Lh7D2LSnyb7awy77cbbKbYM2e+l+GUGP+jmcAqbG4M9q/imNOGT10H
-         suc0VzAHiHA8/s3w1DBswcp/LF0Km3wGkKWohln2Rn30S8lTgK9XktkfJcPyAaU0gRFi
-         uhbxKSalmgmvQGxQjAhh7vNKvk7JdUr1/CWgyzq0GcBpHBzPJ68yD3e8mmwUN/zx/+QU
-         jUrg==
-X-Gm-Message-State: AOAM531XTrdzlWV24eONQgbOdsgo9+713zKA5Mm76wMp4gw6xPToJuyR
-        2iYZoyeUcoZ+ePeYQxh5do1V5otmz8M=
-X-Google-Smtp-Source: ABdhPJzRWz7vobwzkYeFLRzS9k+kWPNCUAcD5jS0op2Gx0uy8xzuSX1j+n1WCiMlDI7DwuVfsSqwvg==
-X-Received: by 2002:a17:906:358e:: with SMTP id o14mr1678870ejb.526.1606806848925;
-        Mon, 30 Nov 2020 23:14:08 -0800 (PST)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id j27sm191022ejo.61.2020.11.30.23.14.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Nov 2020 23:14:08 -0800 (PST)
-Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
-To:     Mychaela Falconia <mychaela.falconia@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201130153742.9163-1-johan@kernel.org>
- <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <c8f3e485-54c6-99c7-4888-6eef2e174bf6@kernel.org>
-Date:   Tue, 1 Dec 2020 08:14:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rDbSgqB8TBwWDr3fisuZfe912stm4XxcE+IKNp264Wc=;
+        b=a4pkivYW+B6P3oUjKxRCQvEXaGi8JMzR6od4f65jTxgeY1APPbLsGLwGw69/4M4JB9
+         8S7y01PEooUFLByli92R6VmnPRC5MgESNxtVuChsTffBTT7sXsk58VSmuTkHabDPv7Hs
+         g1Qk83aJmGb+sUc7bchYXeV6+j6Od4TSpAMHzsu8KL8ZmOmOXum5YuG05PgkJtw8XbPN
+         b6WOdSPI9NbcVuZs22ERTOE0HMqEa/PLStTe9+qeER3kZLt7NMTeNQpkyh8j5pBTB4NC
+         qzsXkPaVjpPnKNlD/7wKEUm3iEY3kkfbXWlPcUJAzg5QcnmjOiKmMRJdTkPJvfTnl9nq
+         CT5w==
+X-Gm-Message-State: AOAM531g4mpFb578UQbEDqB9vA04Kev1XV/vI6+Zhni8wKeo0c9z8/9G
+        Rxkg2BoCjklBPr6qFCzyRg6ghZrjY22U4Pbd+LjBKg==
+X-Google-Smtp-Source: ABdhPJwplnP4EdVZLDGQ8C/NDklzE2Qy/FQZb9AiK4SpVzBRWBDN0uneXv+GaoNhfqXbjcZvsW823m/trdX3ViXy5Hg=
+X-Received: by 2002:aca:d594:: with SMTP id m142mr428879oig.17.1606806953018;
+ Mon, 30 Nov 2020 23:15:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201201060050.1193986-1-furquan@google.com> <20201201062807.GO2034289@dtor-ws>
+ <CAEGmHFGYuM91U+Tvq+YDt180cfHQKnOKMY5ToHZ7v44fOs-_8w@mail.gmail.com> <20201201070615.GT2034289@dtor-ws>
+In-Reply-To: <20201201070615.GT2034289@dtor-ws>
+From:   Furquan Shaikh <furquan@google.com>
+Date:   Mon, 30 Nov 2020 23:15:37 -0800
+Message-ID: <CAEGmHFFuJHNpXOjzmBZ0Sjgsz-x19QFdSuns2v_uMFQyPQis=g@mail.gmail.com>
+Subject: Re: [PATCH] input: raydium_ts_i2c: Do not split tx transactions
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-input@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30. 11. 20, 22:22, Mychaela Falconia wrote:
-> 2) For situations in which the luxury of a custom USB ID is not
-> available, e.g., a situation where the device that does not tolerate
-> automatic DTR/RTS assertion on open is a physical RS-232 device that
-> can be connected to "any" serial port, the new sysfs attribute comes
-> to the rescue.
-> 
-> Johan's patch comments say that the new flag can also be brought out
-> to termios in the future, similarly to HUPCL,
+On Mon, Nov 30, 2020 at 11:06 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> On Mon, Nov 30, 2020 at 10:54:46PM -0800, Furquan Shaikh wrote:
+> > Hello Dmitry,
+> >
+> > On Mon, Nov 30, 2020 at 10:28 PM Dmitry Torokhov
+> > <dmitry.torokhov@gmail.com> wrote:
+> > >
+> > > Hi Furquan,
+> > >
+> > > On Mon, Nov 30, 2020 at 10:00:50PM -0800, Furquan Shaikh wrote:
+> > > > Raydium device does not like splitting of tx transactions into
+> > > > multiple messages - one for the register address and one for the
+> > > > actual data. This results in incorrect behavior on the device side.
+> > > >
+> > > > This change updates raydium_i2c_read and raydium_i2c_write to create
+> > > > i2c_msg arrays separately and passes those arrays into
+> > > > raydium_i2c_xfer which decides based on the address whether the bank
+> > > > switch command should be sent. The bank switch header is still added
+> > > > by raydium_i2c_read and raydium_i2c_write to ensure that all these
+> > > > operations are performed as part of a single I2C transfer. It
+> > > > guarantees that no other transactions are initiated to any other
+> > > > device on the same bus after the bank switch command is sent.
+> > >
+> > > i2c_transfer locks the bus [segment] for the entire time, so this
+> > > explanation on why the change is needed does not make sense.
+> >
+> > The actual problem is with raydium_i2c_write chopping off the write
+> > data into 2 messages -- one for register address and other for actual
+> > data. Raydium devices do not like that. Hence, this change to ensure
+> > that the register address and actual data are packaged into a single
+> > message. The latter part of the above comment attempts to explain why
+> > the bank switch message is added to xfer[] array in raydium_i2c_read
+> > and raydium_i2c_write instead of sending a separate message in
+> > raydium_i2c_xfer i.e. to ensure that the read/write xfer and bank
+> > switch are sent to i2c_transfer as a single array of messages so that
+> > they can be handled as an atomic operation from the perspective of
+> > communication with this device on the bus.
+>
+> OK, I see.
+>
+> >
+> > >
+> > > Also, does it help if you mark the data message as I2C_M_NOSTART in case
+> > > of writes?
+> >
+> > That is a great suggestion. I think this would be helpful in this
+> > scenario. Let me follow-up on this to see if it helps with the current
+> > problem.
+> >
+> > >
+> > > I also wonder if we should convert the driver to regmap, which should
+> > > help with handling the bank switch as well as figuring out if it can do
+> > > "gather write" or fall back to allocating an additional send buffer.
+> >
+> > I will start with the above suggestion and fallback to this if that
+> > doesn't work.
+>
+> So my understanding is that not all I2C adapters support I2C_M_NOSTART
+> so that is why regmap is nice as it hides it all away and figures things
+> on its own.
+>
+> So simple solution of I2C_M_NOSTART might be a quick fix for Chrome OS
+> kernel, but we'd either need to always use more expensive 2nd buffer as
+> is in your patch, or regmap.
 
-The difference to other control flags is that open raises DTR/RTS in any 
-case (i.e. including O_NONBLOCK) -- provided baud rate is set (and it is 
-for casual serials). That means you cannot open a port to configure it 
-(using e.g. setserial) without actually raising the DTR/RTS.
+Ah I see. That makes sense. In that case, I think switching to regmap
+would be better. As you suggested, I can use I2C_M_NOSTART as a quick
+fix and work on enabling regmap.
 
-> but I question the
-> usefulness of doing so, as it is a chicken and egg problem: one needs
-> to open the tty device in order to do termios ioctls on it, and if
-> that initial open triggers DTR/RTS hardware actions, then the end user
-> is still screwed.  If Johan or someone else can see a potential use
-> case for manipulating this new flag via termios (as opposed to sysfs
-> or USB-ID-based driver quirks), perhaps you could elaborate on it?
-
-We would need to (ab)use another open flag (e.g. O_DIRECT). I am not 
-biased to either of solutions.
-
-thanks,
--- 
-js
+>
+> Thanks.
+>
+> --
+> Dmitry
