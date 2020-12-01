@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2FC2C9A9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468C62C9A55
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388121AbgLAI7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:59:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
+        id S2387709AbgLAI4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:56:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388057AbgLAI7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:59:05 -0500
+        id S2387694AbgLAI4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:56:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 963322222E;
-        Tue,  1 Dec 2020 08:58:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEBA3206D8;
+        Tue,  1 Dec 2020 08:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813105;
-        bh=JUOFd22DVgRIQGtUWwgaGyH/QHsn4SiS35LQzHEuxRA=;
+        s=korg; t=1606812963;
+        bh=ig5ZftHaOBbxe9qgCny77Qu4kzAVQdQGawWZipBL4Eo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RPJIfS+6CYYz1Lka5JDyGZopfn8G40SYG027vKdDq6KsfFsPef+GCpkpJ/mfSs6Qu
-         k8D2dDqk6+tED1p/eA8n3B9ZHcar18LwFvSnXOQ27aiAdk09eUasOMdR0TnHeMEiGc
-         U6fZYhGBCrvDlPYE90tzKFsRw+a6wN/wm0w9kT40=
+        b=lRgclIyBC5V9oPpTe3PiofHeW3BG1kC8pLeIUxuBpeHuGT6zhwdJoSUAr0cXPSqgy
+         LaaGId5o3fxOJpllVbhq9MqYHbu2D0bgdV3L4ivGa9OTQeUuykz2cdUsksl+0gzwGz
+         Fw9HgsrOX1EEBW9D1zB3KuZ631BrP/h+og5zsEFo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Cui <mikecui@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 35/50] net: ena: set initial DMA width to avoid intel iommu issue
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>
+Subject: [PATCH 4.9 36/42] usb: gadget: f_midi: Fix memleak in f_midi_alloc
 Date:   Tue,  1 Dec 2020 09:53:34 +0100
-Message-Id: <20201201084649.364603007@linuxfoundation.org>
+Message-Id: <20201201084645.356962660@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,78 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Agroskin <shayagr@amazon.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 09323b3bca95181c0da79daebc8b0603e500f573 ]
+commit e7694cb6998379341fd9bf3bd62b48c4e6a79385 upstream.
 
-The ENA driver uses the readless mechanism, which uses DMA, to find
-out what the DMA mask is supposed to be.
+In the error path, if midi is not null, we should
+free the midi->id if necessary to prevent memleak.
 
-If DMA is used without setting the dma_mask first, it causes the
-Intel IOMMU driver to think that ENA is a 32-bit device and therefore
-disables IOMMU passthrough permanently.
+Fixes: b85e9de9e818d ("usb: gadget: f_midi: convert to new function interface with backward compatibility")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201117021629.1470544-2-zhangqilong3@huawei.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This patch sets the dma_mask to be ENA_MAX_PHYS_ADDR_SIZE_BITS=48
-before readless initialization in
-ena_device_init()->ena_com_mmio_reg_read_request_init(),
-which is large enough to workaround the intel_iommu issue.
-
-DMA mask is set again to the correct value after it's received from the
-device after readless is initialized.
-
-The patch also changes the driver to use dma_set_mask_and_coherent()
-function instead of the two pci_set_dma_mask() and
-pci_set_consistent_dma_mask() ones. Both methods achieve the same
-effect.
-
-Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
-Signed-off-by: Mike Cui <mikecui@amazon.com>
-Signed-off-by: Arthur Kiyanovski <akiyano@amazon.com>
-Signed-off-by: Shay Agroskin <shayagr@amazon.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/usb/gadget/function/f_midi.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index d9ece9ac6f53c..938170b91f85e 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -2474,16 +2474,9 @@ static int ena_device_init(struct ena_com_dev *ena_dev, struct pci_dev *pdev,
- 		goto err_mmio_read_less;
+--- a/drivers/usb/gadget/function/f_midi.c
++++ b/drivers/usb/gadget/function/f_midi.c
+@@ -1256,7 +1256,7 @@ static struct usb_function *f_midi_alloc
+ 	midi->id = kstrdup(opts->id, GFP_KERNEL);
+ 	if (opts->id && !midi->id) {
+ 		status = -ENOMEM;
+-		goto setup_fail;
++		goto midi_free;
  	}
+ 	midi->in_ports = opts->in_ports;
+ 	midi->out_ports = opts->out_ports;
+@@ -1267,7 +1267,7 @@ static struct usb_function *f_midi_alloc
  
--	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
-+	rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(dma_width));
- 	if (rc) {
--		dev_err(dev, "pci_set_dma_mask failed 0x%x\n", rc);
--		goto err_mmio_read_less;
--	}
--
--	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
--	if (rc) {
--		dev_err(dev, "err_pci_set_consistent_dma_mask failed 0x%x\n",
--			rc);
-+		dev_err(dev, "dma_set_mask_and_coherent failed %d\n", rc);
- 		goto err_mmio_read_less;
- 	}
+ 	status = kfifo_alloc(&midi->in_req_fifo, midi->qlen, GFP_KERNEL);
+ 	if (status)
+-		goto setup_fail;
++		goto midi_free;
  
-@@ -3141,6 +3134,12 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		return rc;
- 	}
+ 	spin_lock_init(&midi->transmit_lock);
  
-+	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(ENA_MAX_PHYS_ADDR_SIZE_BITS));
-+	if (rc) {
-+		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed %d\n", rc);
-+		goto err_disable_device;
-+	}
+@@ -1283,9 +1283,13 @@ static struct usb_function *f_midi_alloc
+ 
+ 	return &midi->func;
+ 
++midi_free:
++	if (midi)
++		kfree(midi->id);
++	kfree(midi);
+ setup_fail:
+ 	mutex_unlock(&opts->lock);
+-	kfree(midi);
 +
- 	pci_set_master(pdev);
+ 	return ERR_PTR(status);
+ }
  
- 	ena_dev = vzalloc(sizeof(*ena_dev));
--- 
-2.27.0
-
 
 
