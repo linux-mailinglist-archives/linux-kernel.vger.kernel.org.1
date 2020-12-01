@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0A22C9BE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4699A2C9B6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390066AbgLAJNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:13:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50912 "EHLO mail.kernel.org"
+        id S2388745AbgLAJIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:08:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389187AbgLAJNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:13:11 -0500
+        id S2388785AbgLAJGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:23 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 158BB20671;
-        Tue,  1 Dec 2020 09:12:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F235E20770;
+        Tue,  1 Dec 2020 09:06:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813969;
-        bh=hDkUHLtEXHZepNlTq4zsfhMyjfZhkbFrAjuzNoxq4ms=;
+        s=korg; t=1606813561;
+        bh=dQbtmU+u4tSmTn8ENNQn8j9gALkgWiE238aS/UrT8r0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oJisSBvddcf16yzI0xsEOvMCm11kNRbiCWx30JXxjjgthp3sFdKtt/hfUCy89KtNz
-         xBynK/ejcoujdw5mTxBM3kTBiRjv2OxucToRVfKv1Gg0uGayagTyu6bNrZ1csLZBP0
-         HRSfqe3bglQCyoh5zPvRj+XBtL0sRMPUmSrZkHR8=
+        b=rOPdBclBhk0yasdG9yoh2mpXBlOIK+k/Pq6xzEPrvQR5MPHwpU7kH52RI/X8hmCMO
+         46ud7FCxs9Mcn36nKhFXpxpDaMUWfJji2BNr5QKpAatklfBpJ1dYyIrltKaQUSrQxG
+         fV5LBeRM2TO0t3e+12OmGYAs4VCfLMhSFla8hQI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 122/152] efi: EFI_EARLYCON should depend on EFI
-Date:   Tue,  1 Dec 2020 09:53:57 +0100
-Message-Id: <20201201084727.817363356@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Subject: [PATCH 5.4 81/98] USB: core: Change %pK for __user pointers to %px
+Date:   Tue,  1 Dec 2020 09:53:58 +0100
+Message-Id: <20201201084659.018694387@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +43,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-[ Upstream commit 36a237526cd81ff4b6829e6ebd60921c6f976e3b ]
+commit f3bc432aa8a7a2bfe9ebb432502be5c5d979d7fe upstream.
 
-CONFIG_EFI_EARLYCON defaults to yes, and thus is enabled on systems that
-do not support EFI, or do not have EFI support enabled, but do satisfy
-the symbol's other dependencies.
+Commit 2f964780c03b ("USB: core: replace %p with %pK") used the %pK
+format specifier for a bunch of __user pointers.  But as the 'K' in
+the specifier indicates, it is meant for kernel pointers.  The reason
+for the %pK specifier is to avoid leaks of kernel addresses, but when
+the pointer is to an address in userspace the security implications
+are minimal.  In particular, no kernel information is leaked.
 
-While drivers/firmware/efi/ won't be entered during the build phase if
-CONFIG_EFI=n, and drivers/firmware/efi/earlycon.c itself thus won't be
-built, enabling EFI_EARLYCON does force-enable CONFIG_FONT_SUPPORT and
-CONFIG_ARCH_USE_MEMREMAP_PROT, and CONFIG_FONT_8x16, which is
-undesirable.
+This patch changes the __user %pK specifiers (used in a bunch of
+debugging output lines) to %px, which will always print the actual
+address with no mangling.  (Notably, there is no printk format
+specifier particularly intended for __user pointers.)
 
-Fix this by making CONFIG_EFI_EARLYCON depend on CONFIG_EFI.
+Fixes: 2f964780c03b ("USB: core: replace %p with %pK")
+CC: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20201119170228.GB576844@rowland.harvard.edu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This reduces kernel size on headless systems by more than 4 KiB.
-
-Fixes: 69c1f396f25b805a ("efi/x86: Convert x86 EFI earlyprintk into generic earlycon implementation")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/20201124191646.3559757-1-geert@linux-m68k.org
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/core/devio.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
-index 3939699e62fe0..929d6f05b6bb1 100644
---- a/drivers/firmware/efi/Kconfig
-+++ b/drivers/firmware/efi/Kconfig
-@@ -275,7 +275,7 @@ config EFI_DEV_PATH_PARSER
+--- a/drivers/usb/core/devio.c
++++ b/drivers/usb/core/devio.c
+@@ -482,11 +482,11 @@ static void snoop_urb(struct usb_device
  
- config EFI_EARLYCON
- 	def_bool y
--	depends on SERIAL_EARLYCON && !ARM && !IA64
-+	depends on EFI && SERIAL_EARLYCON && !ARM && !IA64
- 	select FONT_SUPPORT
- 	select ARCH_USE_MEMREMAP_PROT
+ 	if (userurb) {		/* Async */
+ 		if (when == SUBMIT)
+-			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
++			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
+ 					"length %u\n",
+ 					userurb, ep, t, d, length);
+ 		else
+-			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
++			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
+ 					"actual_length %u status %d\n",
+ 					userurb, ep, t, d, length,
+ 					timeout_or_status);
+@@ -1992,7 +1992,7 @@ static int proc_reapurb(struct usb_dev_s
+ 	if (as) {
+ 		int retval;
  
--- 
-2.27.0
-
+-		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
++		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
+ 		retval = processcompl(as, (void __user * __user *)arg);
+ 		free_async(as);
+ 		return retval;
+@@ -2009,7 +2009,7 @@ static int proc_reapurbnonblock(struct u
+ 
+ 	as = async_getcompleted(ps);
+ 	if (as) {
+-		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
++		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
+ 		retval = processcompl(as, (void __user * __user *)arg);
+ 		free_async(as);
+ 	} else {
+@@ -2139,7 +2139,7 @@ static int proc_reapurb_compat(struct us
+ 	if (as) {
+ 		int retval;
+ 
+-		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
++		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
+ 		retval = processcompl_compat(as, (void __user * __user *)arg);
+ 		free_async(as);
+ 		return retval;
+@@ -2156,7 +2156,7 @@ static int proc_reapurbnonblock_compat(s
+ 
+ 	as = async_getcompleted(ps);
+ 	if (as) {
+-		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
++		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
+ 		retval = processcompl_compat(as, (void __user * __user *)arg);
+ 		free_async(as);
+ 	} else {
+@@ -2621,7 +2621,7 @@ static long usbdev_do_ioctl(struct file
+ #endif
+ 
+ 	case USBDEVFS_DISCARDURB:
+-		snoop(&dev->dev, "%s: DISCARDURB %pK\n", __func__, p);
++		snoop(&dev->dev, "%s: DISCARDURB %px\n", __func__, p);
+ 		ret = proc_unlinkurb(ps, p);
+ 		break;
+ 
 
 
