@@ -2,142 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1392CB039
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A932CB02B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgLAWhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:37:11 -0500
-Received: from mga06.intel.com ([134.134.136.31]:7601 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbgLAWg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 17:36:57 -0500
-IronPort-SDR: 4ixOzWTCUC1SsAgt1Lmtm2sZuvMppZICNn9RZkdmBMtNirCTfEMJfjplMm5jfuJF4yYFQORLmc
- iLaINXqx6ZLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="234524374"
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="234524374"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 14:35:14 -0800
-IronPort-SDR: +uFoOKl0+W/zBu9FkiWjDagcYeGZO2kC8YuZ77QxAReTS3vRnA9xvm50ArYSykOz0hAN74pAc2
- if3hGL7oNzfQ==
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="405290669"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 14:35:14 -0800
-Received: from mtg-dev (mtg-dev.jf.intel.com [10.54.74.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.ostc.intel.com (Postfix) with ESMTPS id 4D2CA6363;
-        Tue,  1 Dec 2020 14:35:14 -0800 (PST)
-Received: from mgross by mtg-dev with local (Exim 4.90_1)
-        (envelope-from <mgross@linux.intel.com>)
-        id 1kkEEs-000H4L-5Y; Tue, 01 Dec 2020 14:35:14 -0800
-From:   mgross@linux.intel.com
-To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        devicetree@vger.kernel.org
-Subject: [PATCH 02/22] dt-bindings: Add bindings for Keem Bay IPC driver
-Date:   Tue,  1 Dec 2020 14:34:51 -0800
-Message-Id: <20201201223511.65542-3-mgross@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201201223511.65542-1-mgross@linux.intel.com>
-References: <20201201223511.65542-1-mgross@linux.intel.com>
+        id S1726240AbgLAWfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 17:35:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgLAWfl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 17:35:41 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5BBC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:34:55 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id c7so5919794edv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 14:34:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Yvo9niEDaxPhTUXyHt8vt7CyJEGrV1jvtlgHeLTY/fc=;
+        b=GZb7zhGb9fwx8s43+sxGE90a76Q6/tDxePSL/MYKMBMC96onF3fg8FBHyaiqMfG9HO
+         bQAcivow12xDUN/BJJus/Po+QuipUMtrCOAtIscQ3OrXkKi4/qvL/u2vduE6qWmBzy4k
+         qATUvgGjL3r/nW6PR5RjSJ0V9Z+fsHdfi2hdYvqhWOwWlk30fPPB2uAkCOOhZF5uNDLZ
+         IhtUvFHajZDyklToVNTdzs98tpGvhOc6Fy8+Kc+FetVnQ1XfkcqRTOn7UNh/bXi/S1Ll
+         DHxCAj61qkWg1RQZylxE3Jh/tcXziDzkERVIRNSJS70XiBHnb0ExxlaCFQFMMlSKzBg+
+         GXXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yvo9niEDaxPhTUXyHt8vt7CyJEGrV1jvtlgHeLTY/fc=;
+        b=VdhW7tpHb4PQFr803O4BPOp08rPC3fZL6RM0hGIlC2F3ww3X37lThRyrb1WP0RYREH
+         NdOYKRzclDTwDV232gZGi8gKY4uHCoaLwLmJu/2/nXwrXvOx4+NC/tPn0ScftZRgNmJp
+         AIIit6Bp5OLhfaZDyzchP7BBn+0RVb3PnVWiHJVLOfyz9Ta0a37GnqdB9gsCoh9qmeVu
+         WIZdf7EI+H8pZQjiPVpJnDkWH/2JDd7CBNrBRDCTWAn8BFQDmnLvisP+BjpJ1EgBomde
+         nzxWqmnyVsLQZCSks6DDOqyiuJInTynf3DHIqIhHvOpGr7/y8yPYKqZLcTCkBEAMFgOZ
+         Ccqg==
+X-Gm-Message-State: AOAM5309725yTG+iSgulAnqzYx1pfvONRDXRcNvmBXxfCJutpBJWmElz
+        MgEqtXnGD1R1o2Jh567gTnRDxZvWyd7HoL/o
+X-Google-Smtp-Source: ABdhPJw5HeDjUFihksjVdh2T+BOaYOCFtQdZITxYwR0K2J9lN7LjLRweBYnaiaZBM9kSCHfquzSHig==
+X-Received: by 2002:a50:9991:: with SMTP id m17mr5384860edb.48.1606862093621;
+        Tue, 01 Dec 2020 14:34:53 -0800 (PST)
+Received: from [192.168.0.3] (hst-221-103.medicom.bg. [84.238.221.103])
+        by smtp.googlemail.com with ESMTPSA id k18sm546231edx.18.2020.12.01.14.34.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 14:34:53 -0800 (PST)
+Subject: Re: [PATCH v2] venus: vdec: Handle DRC after drain
+To:     Fritz Koenig <frkoenig@chromium.org>, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        acourbot@chromium.org
+References: <20201201042322.3346817-1-frkoenig@chromium.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <57cc5999-e54c-219c-812b-71b214dbe760@linaro.org>
+Date:   Wed, 2 Dec 2020 00:34:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201201042322.3346817-1-frkoenig@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Hi Fritz,
 
-Add DT binding documentation for the Intel Keem Bay IPC driver, which
-enables communication between the Computing Sub-System (CSS) and the
-Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
-Bay.
+On 12/1/20 6:23 AM, Fritz Koenig wrote:
+> If the DRC is near the end of the stream the client
+> may send a V4L2_DEC_CMD_STOP before the DRC occurs.
+> V4L2_DEC_CMD_STOP puts the driver into the
+> VENUS_DEC_STATE_DRAIN state.  DRC must be aware so
+> that after the DRC event the state can be restored
+> correctly.
+> 
+> Signed-off-by: Fritz Koenig <frkoenig@chromium.org>
+> ---
+> 
+> v2: remove TODO
+> 
+>  drivers/media/platform/qcom/venus/core.h |  1 +
+>  drivers/media/platform/qcom/venus/vdec.c | 17 +++++++++++++++--
+>  2 files changed, 16 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 2b0899bf5b05f..1680c936c06fb 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -406,6 +406,7 @@ struct venus_inst {
+>  	unsigned int core_acquired: 1;
+>  	unsigned int bit_depth;
+>  	bool next_buf_last;
+> +	bool drain_active;
 
-Cc: devicetree@vger.kernel.org
-Reviewed-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
----
- .../bindings/soc/intel/intel,keembay-ipc.yaml | 63 +++++++++++++++++++
- 1 file changed, 63 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+Could you introduce a new codec state instead of adding a flag for such
+corner case.
 
-diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-new file mode 100644
-index 000000000000..6e21c54d8f34
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2020 Intel Corporation
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-ipc.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Keem Bay IPC
-+
-+maintainers:
-+  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-+
-+description:
-+  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
-+  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
-+  Keem Bay.
-+
-+properties:
-+  compatible:
-+    const: intel,keembay-ipc
-+
-+  reg:
-+    items:
-+      - description: The CSS (CPU) FIFO registers
-+      - description: The MSS (VPU) FIFO registers
-+
-+  reg-names:
-+    items:
-+      - const: css_fifo
-+      - const: mss_fifo
-+
-+  interrupts:
-+    items:
-+      - description: CSS FIFO not-empty interrupt
-+
-+  interrupt-controller: true
-+
-+  memory-region:
-+    items:
-+      - description: Reserved memory region used for CSS IPC buffers
-+      - description: Reserved memory region used for MSS IPC buffers
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - memory-region
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    ipc@203300f0 {
-+          compatible = "intel,keembay-ipc";
-+          reg = <0x203300f0 0x310>, /* CPU TIM FIFO */
-+                <0x208200f0 0x310>; /* VPU TIM FIFO */
-+          reg-names = "css_fifo", "mss_fifo";
-+          interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
-+          memory-region = <&css_ipc_reserved>, <&mss_ipc_reserved>;
-+    };
+I think that we will need to handle at least one more corner case (DRC
+during seek operation), so then we have to introduce another flag, and
+this is not a good solution to me. These additional flags will
+complicate the state handling and will make the code readability worst
+
+I'd introduce: VENUS_DEC_STATE_DRC_DURING_DRAIN or something similar.
+
+>  };
+>  
+>  #define IS_V1(core)	((core)->res->hfi_version == HFI_VERSION_1XX)
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 5671cf3458a68..1d551b4d651a8 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -523,8 +523,10 @@ vdec_decoder_cmd(struct file *file, void *fh, struct v4l2_decoder_cmd *cmd)
+>  
+>  		ret = hfi_session_process_buf(inst, &fdata);
+>  
+> -		if (!ret && inst->codec_state == VENUS_DEC_STATE_DECODING)
+> +		if (!ret && inst->codec_state == VENUS_DEC_STATE_DECODING) {
+>  			inst->codec_state = VENUS_DEC_STATE_DRAIN;
+> +			inst->drain_active = true;
+> +		}
+>  	}
+>  
+>  unlock:
+> @@ -976,10 +978,14 @@ static int vdec_start_capture(struct venus_inst *inst)
+>  
+>  	inst->codec_state = VENUS_DEC_STATE_DECODING;
+>  
+> +	if (inst->drain_active)
+> +		inst->codec_state = VENUS_DEC_STATE_DRAIN;
+> +
+>  	inst->streamon_cap = 1;
+>  	inst->sequence_cap = 0;
+>  	inst->reconfig = false;
+>  	inst->next_buf_last = false;
+> +	inst->drain_active = false;
+>  
+>  	return 0;
+>  
+> @@ -1105,6 +1111,7 @@ static int vdec_stop_capture(struct venus_inst *inst)
+>  		/* fallthrough */
+>  	case VENUS_DEC_STATE_DRAIN:
+>  		inst->codec_state = VENUS_DEC_STATE_STOPPED;
+> +		inst->drain_active = false;
+>  		/* fallthrough */
+>  	case VENUS_DEC_STATE_SEEK:
+>  		vdec_cancel_dst_buffers(inst);
+> @@ -1304,8 +1311,10 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+>  
+>  			v4l2_event_queue_fh(&inst->fh, &ev);
+>  
+> -			if (inst->codec_state == VENUS_DEC_STATE_DRAIN)
+> +			if (inst->codec_state == VENUS_DEC_STATE_DRAIN) {
+> +				inst->drain_active = false;
+>  				inst->codec_state = VENUS_DEC_STATE_STOPPED;
+> +			}
+>  		}
+>  
+>  		if (!bytesused)
+> @@ -1429,9 +1438,13 @@ static void vdec_event_notify(struct venus_inst *inst, u32 event,
+>  	case EVT_SYS_EVENT_CHANGE:
+>  		switch (data->event_type) {
+>  		case HFI_EVENT_DATA_SEQUENCE_CHANGED_SUFFICIENT_BUF_RESOURCES:
+> +			if (inst->codec_state == VENUS_DEC_STATE_DRAIN)
+> +				inst->codec_state = VENUS_DEC_STATE_DECODING;
+
+Could you move this state transition into vdec_event_change(). That way
+we will do it only once.
+
+>  			vdec_event_change(inst, data, true);
+>  			break;
+>  		case HFI_EVENT_DATA_SEQUENCE_CHANGED_INSUFFICIENT_BUF_RESOURCES:
+> +			if (inst->codec_state == VENUS_DEC_STATE_DRAIN)
+> +				inst->codec_state = VENUS_DEC_STATE_DECODING;
+
+ditto
+
+>  			vdec_event_change(inst, data, false);
+>  			break;
+>  		case HFI_EVENT_RELEASE_BUFFER_REFERENCE:
+> 
+
 -- 
-2.17.1
-
+regards,
+Stan
