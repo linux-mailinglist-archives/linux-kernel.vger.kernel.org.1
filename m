@@ -2,69 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64A52CA995
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9395C2CA999
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404005AbgLARZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:25:30 -0500
-Received: from smtprelay0148.hostedemail.com ([216.40.44.148]:60596 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391673AbgLARZ2 (ORCPT
+        id S2391059AbgLAR0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:26:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42073 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389280AbgLAR0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:25:28 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 07E5018224D8D;
-        Tue,  1 Dec 2020 17:24:47 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4385:5007:6120:7901:7903:7996:10004:10400:10848:11026:11232:11473:11658:11914:12297:12663:12740:12760:12895:13069:13095:13141:13149:13161:13229:13230:13255:13311:13357:13439:14096:14097:14181:14659:14721:21080:21212:21433:21627:21660:21740:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: jump74_6009439273ac
-X-Filterd-Recvd-Size: 1893
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  1 Dec 2020 17:24:46 +0000 (UTC)
-Message-ID: <f4392362e682ce7a02eee8a2036e1035342a0b4f.camel@perches.com>
-Subject: Re: [PATCH v5] checkpatch: add fix and improve warning msg for
- Non-standard signature
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Tue, 01 Dec 2020 09:24:44 -0800
-In-Reply-To: <20201201112931.11192-1-yashsri421@gmail.com>
-References: <20201201112931.11192-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 1 Dec 2020 12:26:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606843521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k05XrRUyRgb4ANHasEbrn5SVTsL9xAA4UGlCC1/jfKA=;
+        b=JhvkkHUn2RLpjdez2a/TGMNfbSgYUpxnt64noYH69EGG8csOj0A0GB7kC0O70tVRZAPE1V
+        c5Q7x/6fL/iBkhVyhjxCU86vlVkOVgsLR0p3qWpRhM1DCyyuopBufJYFiPT2TCwLNsrBAe
+        lpXY8CQUMcBr7y+Iv0CN1SqGXC9ibcw=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-wm_f8QYWM-mGo00rTmYP9g-1; Tue, 01 Dec 2020 12:25:20 -0500
+X-MC-Unique: wm_f8QYWM-mGo00rTmYP9g-1
+Received: by mail-qk1-f197.google.com with SMTP id t141so1905947qke.22
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:25:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=k05XrRUyRgb4ANHasEbrn5SVTsL9xAA4UGlCC1/jfKA=;
+        b=nunR/6mXi6HnDc+OHMwnf1Q5ZfKDiVoIH9njMSwt3Sk9FfJtiu7jmNGfwca2TbIEZi
+         Nx+eNMnuM9uqu0CmYKuRgwsq324bn5AC5LN4+obK3MSRwwG3tq2vLUhYb/CI/WWQnkFO
+         vhIh/QciGDlIHhWMHbdTXFvZQSdbQvw+41yl7NlCUqiQ0PvHkiICQyDW74sKeLj0HMnF
+         5PE+ycSTaaYN067Smg8Mo3Xwgne1SUZcwb2p9FenG1qp+xvQeTsgoAVU4odo7Sg0D35C
+         CfwcHad3JDdBmUQiFv3Udq7nCQ0v/f6lcjaZxYt23b4kJDrk9ZEsTRFbvoWZlUf8NhYU
+         DlqQ==
+X-Gm-Message-State: AOAM531rf1SSAOiEXTUPwow3hze/2CPklFPeCRBxicjfj0E+rZYqfaRM
+        07a/IklBhSvt7GuWDO6b6Bn19w2gCtJ1Eq9qDMOmX/wrqGTqtg/f7DL6YKhGLvbnP0xZ10FSJoQ
+        KE9VCa+6QyCmiy2j8OizWS/dV7f9Qz8TUQjVkgGxPIWuwGAPaRcdidid2JulMUVbenrRRYfY=
+X-Received: by 2002:a37:4c05:: with SMTP id z5mr4012779qka.245.1606843519684;
+        Tue, 01 Dec 2020 09:25:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwhSPlsDgJZASP/hR2Tmsk8orlVlQkFvTTuYSt1IPTQ9TzZpIK78QmtdBF92VH6pJ2vFxmxVQ==
+X-Received: by 2002:a37:4c05:: with SMTP id z5mr4012743qka.245.1606843519374;
+        Tue, 01 Dec 2020 09:25:19 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l79sm282153qke.1.2020.12.01.09.25.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 09:25:18 -0800 (PST)
+Subject: Re: [PATCH] net: bna: remove trailing semicolon in macro definition
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     rmody@marvell.com, skalluru@marvell.com, davem@davemloft.net,
+        GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201127165550.2693417-1-trix@redhat.com>
+ <20201130190102.3220d9eb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <eb49f169-ff60-7a23-a461-f9fa012c0a34@redhat.com>
+Date:   Tue, 1 Dec 2020 09:25:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
+In-Reply-To: <20201130190102.3220d9eb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-01 at 16:59 +0530, Aditya Srivastava wrote:
-> Currently, checkpatch.pl warns for BAD_SIGN_OFF on non-standard signature
-> styles.
+
+On 11/30/20 7:01 PM, Jakub Kicinski wrote:
+> On Fri, 27 Nov 2020 08:55:50 -0800 trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> The macro use will already have a semicolon.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>  drivers/net/ethernet/brocade/bna/bna_hw_defs.h | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/brocade/bna/bna_hw_defs.h b/drivers/net/ethernet/brocade/bna/bna_hw_defs.h
+>> index f335b7115c1b..4b19855017d7 100644
+>> --- a/drivers/net/ethernet/brocade/bna/bna_hw_defs.h
+>> +++ b/drivers/net/ethernet/brocade/bna/bna_hw_defs.h
+>> @@ -218,7 +218,7 @@ do {									\
+>>  
+>>  /* Set the coalescing timer for the given ib */
+>>  #define bna_ib_coalescing_timer_set(_i_dbell, _cls_timer)		\
+>> -	((_i_dbell)->doorbell_ack = BNA_DOORBELL_IB_INT_ACK((_cls_timer), 0));
+>> +	((_i_dbell)->doorbell_ack = BNA_DOORBELL_IB_INT_ACK((_cls_timer), 0))
+>>  
+>>  /* Acks 'events' # of events for a given ib while disabling interrupts */
+>>  #define bna_ib_ack_disable_irq(_i_dbell, _events)			\
+>> @@ -260,7 +260,7 @@ do {									\
+>>  
+>>  #define bna_txq_prod_indx_doorbell(_tcb)				\
+>>  	(writel(BNA_DOORBELL_Q_PRD_IDX((_tcb)->producer_index), \
+>> -		(_tcb)->q_dbell));
+>> +		(_tcb)->q_dbell))
+>>  
+>>  #define bna_rxq_prod_indx_doorbell(_rcb)				\
+>>  	(writel(BNA_DOORBELL_Q_PRD_IDX((_rcb)->producer_index), \
+> Same story here as Daniel pointed out for the BPF patch.
 >
-> This warning occurs because of incorrect use of signature tags,
-> e.g. an evaluation on v4.13..v5.8 showed the use of following incorrect
-> signature tags, which may seem correct, but are not standard:
+> There are 2 macros right below here which also have a semicolon at the
+> end. And these ones are used. So the patch appears to be pretty arbitrary.
 
-I'm not a fan of this patch.
+I will add the other macros in the next revision.
 
-There is already a "non-standard" signature warning for
-all of these cases since 2012, predating the range of this
-retrospective evaluation by over 5 years and yet these
-existing commits have been accepted.
+Sorry,
 
-The value in actual standardization and effectively
-requiring specific signature style tags is quite low.
+Tom
 
-Anyone that signed a thing a particular way should be free
-to sign the thing as they choose.
-
-Most of these warnings would also still be in the tree in
-the future in new patches as running checkpatch without
-it emitting a message of any type isn't a requirement nor
-should checkpatch use actually be required workflow.
-
+>
 
