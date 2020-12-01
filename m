@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8882C9BD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67D12C9A4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389983AbgLAJMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:12:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50690 "EHLO mail.kernel.org"
+        id S1729184AbgLAI4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:56:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389951AbgLAJMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:12:31 -0500
+        id S1729140AbgLAI4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:56:24 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 177D82223C;
-        Tue,  1 Dec 2020 09:11:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7916422240;
+        Tue,  1 Dec 2020 08:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813910;
-        bh=QMgFT7eZ7p9XTU4VKlCUyBLGUrgptRgdSiaQPb1iQGo=;
+        s=korg; t=1606812969;
+        bh=30qxOdba0SGU317bjycn3Qc0y33qxUee770q+x1BktM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kBy8XC5zU08UrOlr7WcnHFBk8S2eHsITv83aVNVRwhpm2KcXyazDxswW2bWZpiDpH
-         XZXo2OcnHJDVTvw4qT/5/cDnfqg1lwys64EFbwwj5r/77JgJeqj5hP8F+h6gxxBn4R
-         SMoQOBKaXYaIz5xD/fG22fTXaBeQTcwTF4oWGWgs=
+        b=l6x9NpsFAe+KWx3uPx7huj9X+3ljRspd62Ssq9wr1DdYvni03nAuAzJU9ESZHu0qL
+         bGwtl7WYY+I31ho/EPRQLJ/a8YXcify5svtV+JN44V9cObwqIVrV4bpTJvhESHdiG7
+         eTK/hLvwNOybvRXFfHUlO4FQzHdUebOwQKw4sr88=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
-        Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>,
-        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 101/152] ibmvnic: notify peers when failover and migration happen
+        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 4.9 38/42] x86/speculation: Fix prctl() when spectre_v2_user={seccomp,prctl},ibpb
 Date:   Tue,  1 Dec 2020 09:53:36 +0100
-Message-Id: <20201201084725.083799234@linuxfoundation.org>
+Message-Id: <20201201084645.598458089@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,61 +42,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Anand K Mistry <amistry@google.com>
 
-[ Upstream commit 98025bce3a6200a0c4637272a33b5913928ba5b8 ]
+commit 33fc379df76b4991e5ae312f07bcd6820811971e upstream.
 
-Commit 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
-excluded the failover case for notify call because it said
-netdev_notify_peers() can cause network traffic to stall or halt.
-Current testing does not show network traffic stall
-or halt because of the notify call for failover event.
-netdev_notify_peers may be used when a device wants to inform the
-rest of the network about some sort of a reconfiguration
-such as failover or migration.
+When spectre_v2_user={seccomp,prctl},ibpb is specified on the command
+line, IBPB is force-enabled and STIPB is conditionally-enabled (or not
+available).
 
-It is unnecessary to call that in other events like
-FATAL, NON_FATAL, CHANGE_PARAM, and TIMEOUT resets
-since in those scenarios the hardware does not change.
-If the driver must do a hard reset, it is necessary to notify peers.
+However, since
 
-Fixes: 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
-Suggested-by: Brian King <brking@linux.vnet.ibm.com>
-Suggested-by: Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>
-Signed-off-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
+
+the spectre_v2_user_ibpb variable is set to SPECTRE_V2_USER_{PRCTL,SECCOMP}
+instead of SPECTRE_V2_USER_STRICT, which is the actual behaviour.
+Because the issuing of IBPB relies on the switch_mm_*_ibpb static
+branches, the mitigations behave as expected.
+
+Since
+
+  1978b3a53a74 ("x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP")
+
+this discrepency caused the misreporting of IB speculation via prctl().
+
+On CPUs with STIBP always-on and spectre_v2_user=seccomp,ibpb,
+prctl(PR_GET_SPECULATION_CTRL) would return PR_SPEC_PRCTL |
+PR_SPEC_ENABLE instead of PR_SPEC_DISABLE since both IBPB and STIPB are
+always on. It also allowed prctl(PR_SET_SPECULATION_CTRL) to set the IB
+speculation mode, even though the flag is ignored.
+
+Similarly, for CPUs without SMT, prctl(PR_GET_SPECULATION_CTRL) should
+also return PR_SPEC_DISABLE since IBPB is always on and STIBP is not
+available.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
+Fixes: 1978b3a53a74 ("x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP")
+Signed-off-by: Anand K Mistry <amistry@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201110123349.1.Id0cbf996d2151f4c143c90f9028651a5b49a5908@changeid
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/bugs.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 723651b34f94d..0341089743ff1 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2087,7 +2087,8 @@ static int do_reset(struct ibmvnic_adapter *adapter,
- 	for (i = 0; i < adapter->req_rx_queues; i++)
- 		napi_schedule(&adapter->napi[i]);
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -732,11 +732,13 @@ spectre_v2_user_select_mitigation(enum s
+ 	if (boot_cpu_has(X86_FEATURE_IBPB)) {
+ 		setup_force_cpu_cap(X86_FEATURE_USE_IBPB);
  
--	if (adapter->reset_reason != VNIC_RESET_FAILOVER) {
-+	if (adapter->reset_reason == VNIC_RESET_FAILOVER ||
-+	    adapter->reset_reason == VNIC_RESET_MOBILITY) {
- 		call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
- 		call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
++		spectre_v2_user_ibpb = mode;
+ 		switch (cmd) {
+ 		case SPECTRE_V2_USER_CMD_FORCE:
+ 		case SPECTRE_V2_USER_CMD_PRCTL_IBPB:
+ 		case SPECTRE_V2_USER_CMD_SECCOMP_IBPB:
+ 			static_branch_enable(&switch_mm_always_ibpb);
++			spectre_v2_user_ibpb = SPECTRE_V2_USER_STRICT;
+ 			break;
+ 		case SPECTRE_V2_USER_CMD_PRCTL:
+ 		case SPECTRE_V2_USER_CMD_AUTO:
+@@ -750,8 +752,6 @@ spectre_v2_user_select_mitigation(enum s
+ 		pr_info("mitigation: Enabling %s Indirect Branch Prediction Barrier\n",
+ 			static_key_enabled(&switch_mm_always_ibpb) ?
+ 			"always-on" : "conditional");
+-
+-		spectre_v2_user_ibpb = mode;
  	}
-@@ -2160,6 +2161,9 @@ static int do_hard_reset(struct ibmvnic_adapter *adapter,
- 	if (rc)
- 		return IBMVNIC_OPEN_FAILED;
  
-+	call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
-+	call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
-+
- 	return 0;
- }
- 
--- 
-2.27.0
-
+ 	/*
 
 
