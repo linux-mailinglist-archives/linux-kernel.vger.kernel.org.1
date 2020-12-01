@@ -2,146 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728002CA8ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86AA2CA918
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392141AbgLAQzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:55:35 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:56491 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390685AbgLAQzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:55:32 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Clp9b1pFmz9v401;
-        Tue,  1 Dec 2020 17:54:43 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id nxZDn_ePIsb5; Tue,  1 Dec 2020 17:54:43 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Clp9b0kvcz9v3yy;
-        Tue,  1 Dec 2020 17:54:43 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 519FA8B7BD;
-        Tue,  1 Dec 2020 17:54:44 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Yy_vIq-izRbX; Tue,  1 Dec 2020 17:54:43 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7FBEA8B7B7;
-        Tue,  1 Dec 2020 17:54:39 +0100 (CET)
-Subject: Re: [PATCH v9 3/6] kasan: define and use MAX_PTRS_PER_* for early
- shadow tables
-To:     Daniel Axtens <dja@axtens.net>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        kasan-dev@googlegroups.com, christophe.leroy@c-s.fr,
-        aneesh.kumar@linux.ibm.com, bsingharora@gmail.com
-References: <20201201161632.1234753-1-dja@axtens.net>
- <20201201161632.1234753-4-dja@axtens.net>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <dc20689a-27cd-b629-7dd3-c29b81b285ba@csgroup.eu>
-Date:   Tue, 1 Dec 2020 17:54:34 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2391855AbgLAQ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:56:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389756AbgLAQ41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:56:27 -0500
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E9CC0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:55:46 -0800 (PST)
+Received: by mail-vs1-xe35.google.com with SMTP id u7so1274268vsq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:55:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iM9l8tgZXRGlISc4oqNIJMMb7GstcP8ZH/OdjOUcDS8=;
+        b=W9eHUZGNvxYAvC2psNE8PfsPB4W0GsE5CEwo2Pdz1pivePDNSr9LLt9Gc/VXr1O8hA
+         lbzwYxty5SyyRg67oWBBDGDemV96+a8EcKEFG7fHYCEWhlklFkb1GZ0q9Q9XeF+j/uiD
+         G0V8idBEgPv+U9wgGCrejHNAGqCeuKCNar9yIStVO+E3XaEhA9fQt+KG/wZgixDfdN2k
+         n+ERR4icbMBNnR4bNQD8YBXJJYxhmYVsutnAoBk0qlemTIWksxvkBuTISIAzXDEZR+5x
+         Hn1FLEfQAvOvoNNw2vllmax5GRIU0ySSCIDwZz5HCxO4HjAyyaPZyQK5rSs8DfKHWRAv
+         kdyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iM9l8tgZXRGlISc4oqNIJMMb7GstcP8ZH/OdjOUcDS8=;
+        b=EWxOLgJtBNFaeVaQJCw/0qRISfkXZPOMyKZGWb6n7vTP5pcpou9/FzRyAy4WL9EUl+
+         SqKOu4P2fnniWLIOe3pDMtrfuOi6BVElG6xT+8GcGYQW1dWMyZoUIjyPBCk2iMDBERV/
+         jUHhUj/vdmiRGqBn7feB4bWAZRnmQcFM46MMfGJvVc+2GcRbqWsrlmrtQfzC2KAvegsp
+         6p3MEAzKsbUgOsg6Afs+JatgyVDG5lTbDAxwRaUbQgzqPJfVYsSKKChWm0St+/Q19JUn
+         XwnCAqe/V6WQaQt6te6NY9QrPXAEdi2XHJP4ZZ7I554v5aTltcWLalAH4aXu98V6+Ikd
+         qshg==
+X-Gm-Message-State: AOAM531dTWehaK2RaJz/aPQqU024qr5gSyrWRIXK+NCraLKeTpeRjl73
+        FHamJ4NEDlhL9B1QiXZNwA7+ChhTTfy6vS6tqa8=
+X-Google-Smtp-Source: ABdhPJzFQiud71piAWzL/bA79v2nwZQdqSO7giMGUjMJu5UMQC2o03Wut2qo408OwGrAmvyk4aT33JZqCcMA0+BAOS8=
+X-Received: by 2002:a67:e43:: with SMTP id 64mr3592393vso.40.1606841745952;
+ Tue, 01 Dec 2020 08:55:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201201161632.1234753-4-dja@axtens.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
+ <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
+ <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk>
+ <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
+ <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com> <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com>
+ <20201201174433.2000c8a3@aktux>
+In-Reply-To: <20201201174433.2000c8a3@aktux>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Tue, 1 Dec 2020 11:55:34 -0500
+Message-ID: <CAGngYiU2OafLOHGJd-hQd-6dpnCdhv2wjKE8kDR0+R8T9B=Pkw@mail.gmail.com>
+Subject: Re: [Letux-kernel] [BUG] SPI broken for SPI based panel drivers
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andreas,
 
+On Tue, Dec 1, 2020 at 11:44 AM Andreas Kemnade <andreas@kemnade.info> wrote:
+>
+> So if that one is really active-low, why did it ever work?!
 
-Le 01/12/2020 à 17:16, Daniel Axtens a écrit :
-> powerpc has a variable number of PTRS_PER_*, set at runtime based
-> on the MMU that the kernel is booted under.
-> 
-> This means the PTRS_PER_* are no longer constants, and therefore
-> breaks the build.
-> 
-> Define default MAX_PTRS_PER_*s in the same style as MAX_PTRS_PER_P4D.
-> As KASAN is the only user at the moment, just define them in the kasan
-> header, and have them default to PTRS_PER_* unless overridden in arch
-> code.
-> 
-> Suggested-by: Christophe Leroy <christophe.leroy@c-s.fr>
-
-My neww address is : christophe.leroy@csgroup.eu
-
-> Suggested-by: Balbir Singh <bsingharora@gmail.com>
-> Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr>
-
-Same
-
-> Reviewed-by: Balbir Singh <bsingharora@gmail.com>
-> Signed-off-by: Daniel Axtens <dja@axtens.net>
-> ---
->   include/linux/kasan.h | 18 +++++++++++++++---
->   mm/kasan/init.c       |  6 +++---
->   2 files changed, 18 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 3df66fdf6662..893d054aad6f 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -24,10 +24,22 @@ struct kunit_kasan_expectation {
->   static inline bool kasan_arch_is_ready(void)	{ return true; }
->   #endif
->   
-> +#ifndef MAX_PTRS_PER_PTE
-> +#define MAX_PTRS_PER_PTE PTRS_PER_PTE
-> +#endif
-> +
-> +#ifndef MAX_PTRS_PER_PMD
-> +#define MAX_PTRS_PER_PMD PTRS_PER_PMD
-> +#endif
-> +
-> +#ifndef MAX_PTRS_PER_PUD
-> +#define MAX_PTRS_PER_PUD PTRS_PER_PUD
-> +#endif
-> +
->   extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
-> -extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
-> -extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
-> -extern pud_t kasan_early_shadow_pud[PTRS_PER_PUD];
-> +extern pte_t kasan_early_shadow_pte[MAX_PTRS_PER_PTE];
-> +extern pmd_t kasan_early_shadow_pmd[MAX_PTRS_PER_PMD];
-> +extern pud_t kasan_early_shadow_pud[MAX_PTRS_PER_PUD];
->   extern p4d_t kasan_early_shadow_p4d[MAX_PTRS_PER_P4D];
->   
->   int kasan_populate_early_shadow(const void *shadow_start,
-> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-> index fe6be0be1f76..42bca3d27db8 100644
-> --- a/mm/kasan/init.c
-> +++ b/mm/kasan/init.c
-> @@ -46,7 +46,7 @@ static inline bool kasan_p4d_table(pgd_t pgd)
->   }
->   #endif
->   #if CONFIG_PGTABLE_LEVELS > 3
-> -pud_t kasan_early_shadow_pud[PTRS_PER_PUD] __page_aligned_bss;
-> +pud_t kasan_early_shadow_pud[MAX_PTRS_PER_PUD] __page_aligned_bss;
->   static inline bool kasan_pud_table(p4d_t p4d)
->   {
->   	return p4d_page(p4d) == virt_to_page(lm_alias(kasan_early_shadow_pud));
-> @@ -58,7 +58,7 @@ static inline bool kasan_pud_table(p4d_t p4d)
->   }
->   #endif
->   #if CONFIG_PGTABLE_LEVELS > 2
-> -pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD] __page_aligned_bss;
-> +pmd_t kasan_early_shadow_pmd[MAX_PTRS_PER_PMD] __page_aligned_bss;
->   static inline bool kasan_pmd_table(pud_t pud)
->   {
->   	return pud_page(pud) == virt_to_page(lm_alias(kasan_early_shadow_pmd));
-> @@ -69,7 +69,7 @@ static inline bool kasan_pmd_table(pud_t pud)
->   	return false;
->   }
->   #endif
-> -pte_t kasan_early_shadow_pte[PTRS_PER_PTE] __page_aligned_bss;
-> +pte_t kasan_early_shadow_pte[MAX_PTRS_PER_PTE] __page_aligned_bss;
->   
->   static inline bool kasan_pte_table(pmd_t pmd)
->   {
-> 
+Because the spi gpio chipselect was broken (inverted), and
+766c6b63aa04 ("spi: fix client driver breakages when using GPIO descriptors")
+fixes it.
