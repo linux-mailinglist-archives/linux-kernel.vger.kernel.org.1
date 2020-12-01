@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC052C9AC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAB62C9BEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387656AbgLAJAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
+        id S2390083AbgLAJNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:13:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388305AbgLAJA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:00:29 -0500
+        id S2390031AbgLAJNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:13:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BD9322240;
-        Tue,  1 Dec 2020 08:59:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A229621D7F;
+        Tue,  1 Dec 2020 09:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813188;
-        bh=4J/xFUW6f43gLFA/3m2TEkp+3KqYjcoXS7kTkFRi+lc=;
+        s=korg; t=1606813943;
+        bh=ujal3ZrL3DxeQXhTnSw2quJHU8Kh8gcNR96acI/asoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hGof6c+NHKcy+oAixq31ZoR3LXPp43JM2ECuk5b7aCFNYnV9M+47FxJOrwUkSBh0c
-         j1CyYVMYOnFJwyyDp3Krw4junIBD3wCplVhDUOigzn6Xd8thkd827GyvZbJI6cIs9H
-         gFvan3R9pWiH+g3eu4c+qIkT/04cv7GxqA/0cG68=
+        b=gKZmZqdnym7qm78jEp77JWXzgEqsotG5h8YRmcKmjx+QzUH9Sq1VZ1HcqA485EPsK
+         nthy/UifPXIHhwU53ixAQpw7S6KDx8IEDr5qyxEfkBxbmCCut/3hch600JYsiyyqFo
+         PxjB/jdhG6OcxiDH0dpAMhukBcI4YSxcriI5VUTQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank Yang <puilp0502@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 13/57] HID: cypress: Support Varmilo Keyboards media hotkeys
+        stable@vger.kernel.org,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 083/152] phy: qualcomm: Fix 28 nm Hi-Speed USB PHY OF dependency
 Date:   Tue,  1 Dec 2020 09:53:18 +0100
-Message-Id: <20201201084649.217171788@linuxfoundation.org>
+Message-Id: <20201201084722.760628401@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,133 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Yang <puilp0502@gmail.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-[ Upstream commit 652f3d00de523a17b0cebe7b90debccf13aa8c31 ]
+[ Upstream commit 14839107b51cc0db19579039b1f72cba7a0c8049 ]
 
-The Varmilo VA104M Keyboard (04b4:07b1, reported as Varmilo Z104M)
-exposes media control hotkeys as a USB HID consumer control device, but
-these keys do not work in the current (5.8-rc1) kernel due to the
-incorrect HID report descriptor. Fix the problem by modifying the
-internal HID report descriptor.
+This Kconfig entry should declare a dependency on OF
 
-More specifically, the keyboard report descriptor specifies the
-logical boundary as 572~10754 (0x023c ~ 0x2a02) while the usage
-boundary is specified as 0~10754 (0x00 ~ 0x2a02). This results in an
-incorrect interpretation of input reports, causing inputs to be ignored.
-By setting the Logical Minimum to zero, we align the logical boundary
-with the Usage ID boundary.
-
-Some notes:
-
-* There seem to be multiple variants of the VA104M keyboard. This
-  patch specifically targets 04b4:07b1 variant.
-
-* The device works out-of-the-box on Windows platform with the generic
-  consumer control device driver (hidserv.inf). This suggests that
-  Windows either ignores the Logical Minimum/Logical Maximum or
-  interprets the Usage ID assignment differently from the linux
-  implementation; Maybe there are other devices out there that only
-  works on Windows due to this problem?
-
-Signed-off-by: Frank Yang <puilp0502@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 67b27dbeac4d ("phy: qualcomm: Add Synopsys 28nm Hi-Speed USB PHY driver")
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Link: https://lore.kernel.org/r/20201113151225.1657600-3-bryan.odonoghue@linaro.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-cypress.c | 44 ++++++++++++++++++++++++++++++++++-----
- drivers/hid/hid-ids.h     |  2 ++
- 2 files changed, 41 insertions(+), 5 deletions(-)
+ drivers/phy/qualcomm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-cypress.c b/drivers/hid/hid-cypress.c
-index 1689568b597d4..12c5d7c96527a 100644
---- a/drivers/hid/hid-cypress.c
-+++ b/drivers/hid/hid-cypress.c
-@@ -26,19 +26,17 @@
- #define CP_2WHEEL_MOUSE_HACK		0x02
- #define CP_2WHEEL_MOUSE_HACK_ON		0x04
+diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
+index 9129c4b8bb9b1..7f6fcb8ec5bab 100644
+--- a/drivers/phy/qualcomm/Kconfig
++++ b/drivers/phy/qualcomm/Kconfig
+@@ -87,7 +87,7 @@ config PHY_QCOM_USB_HSIC
  
-+#define VA_INVAL_LOGICAL_BOUNDARY	0x08
-+
- /*
-  * Some USB barcode readers from cypress have usage min and usage max in
-  * the wrong order
-  */
--static __u8 *cp_report_fixup(struct hid_device *hdev, __u8 *rdesc,
-+static __u8 *cp_rdesc_fixup(struct hid_device *hdev, __u8 *rdesc,
- 		unsigned int *rsize)
- {
--	unsigned long quirks = (unsigned long)hid_get_drvdata(hdev);
- 	unsigned int i;
- 
--	if (!(quirks & CP_RDESC_SWAPPED_MIN_MAX))
--		return rdesc;
--
- 	if (*rsize < 4)
- 		return rdesc;
- 
-@@ -51,6 +49,40 @@ static __u8 *cp_report_fixup(struct hid_device *hdev, __u8 *rdesc,
- 	return rdesc;
- }
- 
-+static __u8 *va_logical_boundary_fixup(struct hid_device *hdev, __u8 *rdesc,
-+		unsigned int *rsize)
-+{
-+	/*
-+	 * Varmilo VA104M (with VID Cypress and device ID 07B1) incorrectly
-+	 * reports Logical Minimum of its Consumer Control device as 572
-+	 * (0x02 0x3c). Fix this by setting its Logical Minimum to zero.
-+	 */
-+	if (*rsize == 25 &&
-+			rdesc[0] == 0x05 && rdesc[1] == 0x0c &&
-+			rdesc[2] == 0x09 && rdesc[3] == 0x01 &&
-+			rdesc[6] == 0x19 && rdesc[7] == 0x00 &&
-+			rdesc[11] == 0x16 && rdesc[12] == 0x3c && rdesc[13] == 0x02) {
-+		hid_info(hdev,
-+			 "fixing up varmilo VA104M consumer control report descriptor\n");
-+		rdesc[12] = 0x00;
-+		rdesc[13] = 0x00;
-+	}
-+	return rdesc;
-+}
-+
-+static __u8 *cp_report_fixup(struct hid_device *hdev, __u8 *rdesc,
-+		unsigned int *rsize)
-+{
-+	unsigned long quirks = (unsigned long)hid_get_drvdata(hdev);
-+
-+	if (quirks & CP_RDESC_SWAPPED_MIN_MAX)
-+		rdesc = cp_rdesc_fixup(hdev, rdesc, rsize);
-+	if (quirks & VA_INVAL_LOGICAL_BOUNDARY)
-+		rdesc = va_logical_boundary_fixup(hdev, rdesc, rsize);
-+
-+	return rdesc;
-+}
-+
- static int cp_input_mapped(struct hid_device *hdev, struct hid_input *hi,
- 		struct hid_field *field, struct hid_usage *usage,
- 		unsigned long **bit, int *max)
-@@ -131,6 +163,8 @@ static const struct hid_device_id cp_devices[] = {
- 		.driver_data = CP_RDESC_SWAPPED_MIN_MAX },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_CYPRESS_MOUSE),
- 		.driver_data = CP_2WHEEL_MOUSE_HACK },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_CYPRESS_VARMILO_VA104M_07B1),
-+		.driver_data = VA_INVAL_LOGICAL_BOUNDARY },
- 	{ }
- };
- MODULE_DEVICE_TABLE(hid, cp_devices);
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index e18d796d985f8..e9155f7c8c51c 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -330,6 +330,8 @@
- #define USB_DEVICE_ID_CYPRESS_BARCODE_4	0xed81
- #define USB_DEVICE_ID_CYPRESS_TRUETOUCH	0xc001
- 
-+#define USB_DEVICE_ID_CYPRESS_VARMILO_VA104M_07B1   0X07b1
-+
- #define USB_VENDOR_ID_DATA_MODUL	0x7374
- #define USB_VENDOR_ID_DATA_MODUL_EASYMAXTOUCH	0x1201
- 
+ config PHY_QCOM_USB_HS_28NM
+ 	tristate "Qualcomm 28nm High-Speed PHY"
+-	depends on ARCH_QCOM || COMPILE_TEST
++	depends on OF && (ARCH_QCOM || COMPILE_TEST)
+ 	depends on EXTCON || !EXTCON # if EXTCON=m, this cannot be built-in
+ 	select GENERIC_PHY
+ 	help
 -- 
 2.27.0
 
