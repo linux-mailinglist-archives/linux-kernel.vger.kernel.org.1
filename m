@@ -2,105 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903BB2CAA4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539832CAA44
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:56:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731167AbgLARzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:55:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404187AbgLARzP (ORCPT
+        id S1731159AbgLARzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:55:00 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:35406 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729741AbgLARzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:55:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606845229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v6BFyU2UYKTaosDZ89o5LvY8H2HM/d+FWPuM2+XPNh0=;
-        b=Fb4XIPUPIwQJ89h3fcaWrmY8Wu6hRZK6XGBQnuMjDQ5o/0ZZtSkkGIGfzG+YcM2E3gscmW
-        iMqFGM35s9HbdOWjKIz2VrTh5mXTRvphFchrPsk1WAQ1b8Wuq7FFq+PWjBF+JamFJMcs83
-        GiCnNrje7GQvWHEs9ri2axF3hu1i3BQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-5Y-NiigVMVePOR6i0Ml_Ow-1; Tue, 01 Dec 2020 12:53:45 -0500
-X-MC-Unique: 5Y-NiigVMVePOR6i0Ml_Ow-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BFAD858188;
-        Tue,  1 Dec 2020 17:53:44 +0000 (UTC)
-Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 315AB5D6AD;
-        Tue,  1 Dec 2020 17:53:43 +0000 (UTC)
-Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to
- filesystems
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     torvalds@linux-foundation.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
-References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
- <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
- <20201201173905.GI143045@magnolia>
-From:   Eric Sandeen <sandeen@redhat.com>
-Message-ID: <98503625-d40e-78d7-334b-5fa5ff06045e@redhat.com>
-Date:   Tue, 1 Dec 2020 11:53:42 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        Tue, 1 Dec 2020 12:55:00 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kk9qz-006d9m-5Z; Tue, 01 Dec 2020 10:54:17 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kk9qy-004hnJ-3X; Tue, 01 Dec 2020 10:54:16 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, christian.brauner@ubuntu.com,
+        serge@hallyn.com,
+        Linux Containers <containers@lists.linux-foundation.org>
+References: <20201126100839.381415-1-gscrivan@redhat.com>
+Date:   Tue, 01 Dec 2020 11:53:45 -0600
+In-Reply-To: <20201126100839.381415-1-gscrivan@redhat.com> (Giuseppe
+        Scrivano's message of "Thu, 26 Nov 2020 11:08:39 +0100")
+Message-ID: <87ft4pe7km.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201201173905.GI143045@magnolia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
+X-XM-SPF: eid=1kk9qy-004hnJ-3X;;;mid=<87ft4pe7km.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+Fu0dFA+bYSGa77HVml2uWF1UtEkv3LNk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Giuseppe Scrivano <gscrivan@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 468 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 12 (2.6%), b_tie_ro: 10 (2.2%), parse: 1.29
+        (0.3%), extract_message_metadata: 6 (1.3%), get_uri_detail_list: 3.3
+        (0.7%), tests_pri_-1000: 4.0 (0.9%), tests_pri_-950: 1.77 (0.4%),
+        tests_pri_-900: 1.36 (0.3%), tests_pri_-90: 143 (30.6%), check_bayes:
+        141 (30.1%), b_tokenize: 9 (1.8%), b_tok_get_all: 10 (2.0%),
+        b_comp_prob: 4.0 (0.8%), b_tok_touch_all: 113 (24.2%), b_finish: 1.51
+        (0.3%), tests_pri_0: 279 (59.6%), check_dkim_signature: 0.55 (0.1%),
+        check_dkim_adsp: 2.8 (0.6%), poll_dns_idle: 1.11 (0.2%), tests_pri_10:
+        2.3 (0.5%), tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] kernel: automatically split user namespace extent
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 11:39 AM, Darrick J. Wong wrote:
->> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
->> index 1414ab79eacf..56deda7042fd 100644
->> --- a/fs/xfs/xfs_iops.c
->> +++ b/fs/xfs/xfs_iops.c
->> @@ -575,10 +575,13 @@ xfs_vn_getattr(
->>  		stat->attributes |= STATX_ATTR_APPEND;
->>  	if (ip->i_d.di_flags & XFS_DIFLAG_NODUMP)
->>  		stat->attributes |= STATX_ATTR_NODUMP;
->> +	if (IS_DAX(inode))
->> +		stat->attributes |= STATX_ATTR_DAX;
->>  
->>  	stat->attributes_mask |= (STATX_ATTR_IMMUTABLE |
->>  				  STATX_ATTR_APPEND |
->> -				  STATX_ATTR_NODUMP);
->> +				  STATX_ATTR_NODUMP |
->> +				  STATX_ATTR_DAX);
-> TBH I preferred your previous iteration on this, which only set the DAX
-> bit in the attributes_mask if the underlying storage was pmem and the
-> blocksize was correct, etc. since it made it easier to distinguish
-> between a filesystem where you /could/ have DAX (but it wasn't currently
-> enabled) and a filesystem where it just isn't possible.
-> 
-> That might be enough to satisfy any critics who want to be able to
-> detect DAX support from an installer program.
 
-(nb: that previous iteration wasn't in public, just something I talked to
-Darrick about)
+Nit: The tag should have been "userns:" rather than kernel.
 
-I'm sympathetic to that argument, but the exact details of what the mask means
-in general, and for dax in particular, seems to be subject to ongoing debate.
+Giuseppe Scrivano <gscrivan@redhat.com> writes:
 
-I'd like to just set it with the simplest definition "the fileystem supports
-the feature" for now, so that we aren't ever setting a feature that's omitted
-from the mask, and refine the mask-setting for the dax flag in another
-iteration if/when we reach agreement.
+> writing to the id map fails when an extent overlaps multiple mappings
+> in the parent user namespace, e.g.:
+>
+> $ cat /proc/self/uid_map
+>          0       1000          1
+>          1     100000      65536
+> $ unshare -U sleep 100 &
+> [1] 1029703
+> $ printf "0 0 100\n" | tee /proc/$!/uid_map
+> 0 0 100
+> tee: /proc/1029703/uid_map: Operation not permitted
+>
+> To prevent it from happening, automatically split an extent so that
+> each portion fits in one extent in the parent user namespace.
 
--Eric
+I don't see anything fundamentally wrong with relaxing this
+restriction, but more code does have more room for bugs to hide.
 
-> --D
-> 
+What is the advantage of relaxing this restriction?
 
+> $ cat /proc/self/uid_map
+>          0       1000          1
+>          1     110000      65536
+> $ unshare -U sleep 100 &
+> [1] 1552
+> $ printf "0 0 100\n" | tee /proc/$!/uid_map
+> 0 0 100
+> $ cat /proc/$!/uid_map
+>          0          0          1
+>          1          1         99
+>
+> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> ---
+>  kernel/user_namespace.c | 62 ++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 52 insertions(+), 10 deletions(-)
+>
+> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> index 87804e0371fe..b5542be2bd0a 100644
+> --- a/kernel/user_namespace.c
+> +++ b/kernel/user_namespace.c
+> @@ -706,6 +706,41 @@ const struct seq_operations proc_projid_seq_operations = {
+>  	.show = projid_m_show,
+>  };
+>  
+> +static void split_overlapping_mappings(struct uid_gid_map *parent_map,
+> +				       struct uid_gid_extent *extent,
+> +				       struct uid_gid_extent *overflow_extent)
+> +{
+> +	unsigned int idx;
+> +
+> +	overflow_extent->first = (u32) -1;
+> +
+> +	/* Split extent if it not fully contained in an extent from parent_map.  */
+> +	for (idx = 0; idx < parent_map->nr_extents; idx++) {
+
+Ouch!
+
+For the larger tree we perform binary searches typically and
+here you are walking every entry unconditionally.
+
+It looks like this makes the write O(N^2) from O(NlogN)
+which for a user facing function is not desirable.
+
+I think something like insert_and_split_extent may be ok.
+Incorporating your loop and the part that inserts an element.
+
+As written this almost doubles the complexity of the code,
+as well as making it perform much worse.  Which is a problem.
+
+
+> +		struct uid_gid_extent *prev;
+> +		u32 first, last, prev_last, size;
+> +
+> +		if (parent_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+> +			prev = &parent_map->extent[idx];
+> +		else
+> +			prev = &parent_map->forward[idx];
+> +
+> +		first = extent->lower_first;
+> +		last = extent->lower_first + extent->count - 1;
+> +		prev_last = prev->first + prev->count - 1;
+> +
+> +		if ((first <= prev_last) && (last > prev_last)) {
+> +			size = prev_last - first + 1;
+> +
+> +			overflow_extent->first = extent->first + size;
+> +			overflow_extent->lower_first = extent->lower_first + size;
+> +			overflow_extent->count = extent->count - size;
+> +
+> +			extent->count = size;
+> +			return;
+> +		}
+> +	}
+> +}
+> +
+>  static bool mappings_overlap(struct uid_gid_map *new_map,
+>  			     struct uid_gid_extent *extent)
+>  {
+> @@ -852,6 +887,7 @@ static ssize_t map_write(struct file *file, const char __user *buf,
+>  	struct uid_gid_map new_map;
+>  	unsigned idx;
+>  	struct uid_gid_extent extent;
+> +	struct uid_gid_extent overflow_extent;
+>  	char *kbuf = NULL, *pos, *next_line;
+>  	ssize_t ret;
+>  
+> @@ -946,18 +982,24 @@ static ssize_t map_write(struct file *file, const char __user *buf,
+>  		     extent.lower_first)
+>  			goto out;
+>  
+> -		/* Do the ranges in extent overlap any previous extents? */
+> -		if (mappings_overlap(&new_map, &extent))
+> -			goto out;
+> +		do {
+> +			/* Do the ranges in extent overlap any previous extents? */
+> +			if (mappings_overlap(&new_map, &extent))
+> +				goto out;
+
+Why should mappings_overlap be called in the loop?   Will splitting an
+extent create the possibility for creating overlapping mappings?
+
+> -		if ((new_map.nr_extents + 1) == UID_GID_MAP_MAX_EXTENTS &&
+> -		    (next_line != NULL))
+> -			goto out;
+> +			if ((new_map.nr_extents + 1) == UID_GID_MAP_MAX_EXTENTS &&
+> +			    (next_line != NULL))
+> +				goto out;
+>  
+> -		ret = insert_extent(&new_map, &extent);
+> -		if (ret < 0)
+> -			goto out;
+> -		ret = -EINVAL;
+> +			split_overlapping_mappings(parent_map, &extent, &overflow_extent);
+> +
+> +			ret = insert_extent(&new_map, &extent);
+> +			if (ret < 0)
+> +				goto out;
+> +			ret = -EINVAL;
+> +
+> +			extent = overflow_extent;
+> +		} while (overflow_extent.first != (u32) -1);
+>  	}
+>  	/* Be very certaint the new map actually exists */
+>  	if (new_map.nr_extents == 0)
+
+Eric
