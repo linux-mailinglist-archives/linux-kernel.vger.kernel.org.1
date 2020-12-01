@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F4C2C9ACB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308492C9B4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388452AbgLAJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
+        id S2388895AbgLAJG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:06:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388426AbgLAJAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:00:54 -0500
+        id S2388908AbgLAJEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:04:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1332217A0;
-        Tue,  1 Dec 2020 09:00:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D28F720671;
+        Tue,  1 Dec 2020 09:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813213;
-        bh=hxkcGanDN1clyyqXEFogoewdZ8re6+5iebuHCSgRWUc=;
+        s=korg; t=1606813465;
+        bh=cc+KSuO3VxaPw2W2k0+0/0cUuTuf9IkxASgihbdWBi4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2vzYyrzZabsH6iFXmXDVOccOLgaEFT9qyCynqo+nolUtu2k2ugTHWbfEg0ubwgOwL
-         Fnw3vPnRduzTgckO4Z8Tv3DqrPerdk6I1eemUOudWLtUqyPDNq2wNR+LRek4sLjdTt
-         S6MgNSv1o9Y74D9uKIxElJf5SfhRT6gV05xyvZUs=
+        b=nAFK32JQvMoMkLmizDyvpfuk6vLLLyORm4O7w7+mX9miU6nyqM3WbY5L7ioLnPLEv
+         f9V3EHkOc9TnIwWCu2N3qcFQn4myYa7boHIxCMUX+FYztFSC7LSSGPTSM7y3YM/CMS
+         nw8gU7rFA4/DEg4naN+AKKRjSN75yFf5+A8IJfoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        stable@vger.kernel.org, Faiz Abbas <faiz_abbas@ti.com>,
+        Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 20/57] HID: Add Logitech Dinovo Edge battery quirk
+Subject: [PATCH 5.4 48/98] ARM: dts: dra76x: m_can: fix order of clocks
 Date:   Tue,  1 Dec 2020 09:53:25 +0100
-Message-Id: <20201201084650.103824813@linuxfoundation.org>
+Message-Id: <20201201084657.446754415@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-[ Upstream commit 7940fb035abd88040d56be209962feffa33b03d0 ]
+[ Upstream commit 05d5de6ba7dbe490dd413b5ca11d0875bd2bc006 ]
 
-The battery status is also being reported by the logitech-hidpp driver,
-so ignore the standard HID battery status to avoid reporting the same
-info twice.
+According to the bosch,m_can.yaml bindings the first clock shall be the "hclk",
+while the second clock "cclk".
 
-Note the logitech-hidpp battery driver provides more info, such as properly
-differentiating between charging and discharging. Also the standard HID
-battery info seems to be wrong, reporting a capacity of just 26% after
-fully charging the device.
+This patch fixes the order accordingly.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Fixes: 0adbe832f21a ("ARM: dts: dra76x: Add MCAN node")
+Cc: Faiz Abbas <faiz_abbas@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: linux-omap@vger.kernel.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h   | 1 +
- drivers/hid/hid-input.c | 3 +++
- 2 files changed, 4 insertions(+)
+ arch/arm/boot/dts/dra76x.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index ad079aca68898..6d118da1615d4 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -733,6 +733,7 @@
- #define USB_VENDOR_ID_LOGITECH		0x046d
- #define USB_DEVICE_ID_LOGITECH_AUDIOHUB 0x0a0e
- #define USB_DEVICE_ID_LOGITECH_T651	0xb00c
-+#define USB_DEVICE_ID_LOGITECH_DINOVO_EDGE_KBD	0xb309
- #define USB_DEVICE_ID_LOGITECH_C007	0xc007
- #define USB_DEVICE_ID_LOGITECH_C077	0xc077
- #define USB_DEVICE_ID_LOGITECH_RECEIVER	0xc101
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 11bd2ca22a2e6..13deb9a676855 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -331,6 +331,9 @@ static const struct hid_device_id hid_battery_quirks[] = {
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_ASUSTEK,
- 		USB_DEVICE_ID_ASUSTEK_T100CHI_KEYBOARD),
- 	  HID_BATTERY_QUIRK_IGNORE },
-+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH,
-+		USB_DEVICE_ID_LOGITECH_DINOVO_EDGE_KBD),
-+	  HID_BATTERY_QUIRK_IGNORE },
- 	{}
- };
- 
+diff --git a/arch/arm/boot/dts/dra76x.dtsi b/arch/arm/boot/dts/dra76x.dtsi
+index 9f6fbe4c1fee1..859e4382ac4bb 100644
+--- a/arch/arm/boot/dts/dra76x.dtsi
++++ b/arch/arm/boot/dts/dra76x.dtsi
+@@ -32,8 +32,8 @@
+ 				interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
+ 					     <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
+ 				interrupt-names = "int0", "int1";
+-				clocks = <&mcan_clk>, <&l3_iclk_div>;
+-				clock-names = "cclk", "hclk";
++				clocks = <&l3_iclk_div>, <&mcan_clk>;
++				clock-names = "hclk", "cclk";
+ 				bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
+ 			};
+ 		};
 -- 
 2.27.0
 
