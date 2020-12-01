@@ -2,145 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8F82C94E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A8B2C94EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgLABxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:53:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgLABxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:53:32 -0500
-Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1635207FF;
-        Tue,  1 Dec 2020 01:52:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606787570;
-        bh=G6N04VSxm9NBg8ZwbdFSw3JTH6KMSaJ31FSrM3w3lDc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AUiGXNyExrYDQ4y1Vrl6cdFqBxcD1Y57xAsW0RfNwFNdcKRFSrBaVyZgZlyuYl88V
-         9R/ZNmrioxa+aHXmSYEYl+pvqMfQdVe6U5NZQpr/BaI6qwyGRa5RkwUrgDx6oYU5wq
-         0vcqjJgCBHfuEcuQXlmlkwHCLohkUdqBzgWSt+QM=
-Date:   Mon, 30 Nov 2020 17:52:48 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>, fw@strlen.de,
-        davem@davemloft.net, johannes@sipsolutions.net,
-        edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
-Message-ID: <20201130175248.7f0b5309@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201121160941.GA485907@shredder.lan>
-References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
-        <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
-        <20201121160941.GA485907@shredder.lan>
+        id S1726151AbgLAB56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:57:58 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:46739 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgLAB55 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:57:57 -0500
+X-Greylist: delayed 28283 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Nov 2020 20:57:56 EST
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 0B11uswA001093;
+        Tue, 1 Dec 2020 10:56:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0B11uswA001093
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606787815;
+        bh=eBmxAR7K2Jbfp4KHt3489WMG4z7PgIgZCJ+eBjBop4A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o59lXxne9HU0MBSkhL5X+CMfz5WG7gA9UqFXr7ANoeiOVmPi5KZ35D63E1umWv9Ly
+         qCesk5Q1y3sXj7Oh7r1bqdWUtYBfPBYJW82rox1KK/C3PrZjYnILAQcF9v1TaD61wz
+         k521PnjOiwkfALoHzZ3iHH3j8OSexqol8njVs7cp1WNNh//Ml8DvS4dn0dlSoGLExL
+         EMpuJqmrOjOMU0uvQ+7YiMUzwBt21YItjSysCYhydyWNLdj/XM+MSQhg/l6HWyAT67
+         rszy903/Ha6qEb93gfwFg8N3THmAH41tzSBuvq0cTmKkyMg/Oh95xDZWJCLZ7l5jMv
+         o1iIHTqkqIoRQ==
+X-Nifty-SrcIP: [209.85.216.43]
+Received: by mail-pj1-f43.google.com with SMTP id b12so256337pjl.0;
+        Mon, 30 Nov 2020 17:56:54 -0800 (PST)
+X-Gm-Message-State: AOAM530qg2t2s0pwXy7pq3ms7C3fXOX8ig3Puer990lm/zH5Ld1oen99
+        Dc31YMC4GIBeK3UtGOTGL6h3fZU8pFf8z+PDFzE=
+X-Google-Smtp-Source: ABdhPJzs/K4WAhOqjcW7rbHxPYRw4w+y9p3XcLwZSV8nNzLXgahqO+YMinhSGhaNSXVZI/MmcPmuqzg16tINVy6/GjQ=
+X-Received: by 2002:a17:902:6949:b029:da:17d0:d10f with SMTP id
+ k9-20020a1709026949b02900da17d0d10fmr453041plt.71.1606787813943; Mon, 30 Nov
+ 2020 17:56:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+ <20201104005343.4192504-1-ndesaulniers@google.com> <20201104005343.4192504-5-ndesaulniers@google.com>
+In-Reply-To: <20201104005343.4192504-5-ndesaulniers@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 1 Dec 2020 10:56:17 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARx36Go6pKsxh__e72RS-U4T0UJiVLXKW-gUfBHRzDzJA@mail.gmail.com>
+Message-ID: <CAK7LNARx36Go6pKsxh__e72RS-U4T0UJiVLXKW-gUfBHRzDzJA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] Kbuild: implement support for DWARF v5
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jakub Jelinek <jakub@redhat.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Nov 2020 18:09:41 +0200 Ido Schimmel wrote:
-> + Florian
-> 
-> On Thu, Oct 29, 2020 at 05:36:19PM +0000, Aleksandr Nogikh wrote:
-> > From: Aleksandr Nogikh <nogikh@google.com>
-> > 
-> > Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> > code that is not reachable during normal system call execution. It is
-> > especially helpful for fuzzing networking subsystems, where it is
-> > common to perform packet handling in separate work queues even for the
-> > packets that originated directly from the user space.
-> > 
-> > Enable coverage-guided frame injection by adding kcov remote handle to
-> > skb extensions. Default initialization in __alloc_skb and
-> > __build_skb_around ensures that no socket buffer that was generated
-> > during a system call will be missed.
-> > 
-> > Code that is of interest and that performs packet processing should be
-> > annotated with kcov_remote_start()/kcov_remote_stop().
-> > 
-> > An alternative approach is to determine kcov_handle solely on the
-> > basis of the device/interface that received the specific socket
-> > buffer. However, in this case it would be impossible to distinguish
-> > between packets that originated during normal background network
-> > processes or were intentionally injected from the user space.
-> > 
-> > Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> > Acked-by: Willem de Bruijn <willemb@google.com>  
-> 
-> [...]
-> 
-> > @@ -249,6 +249,9 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
-> >  
-> >  		fclones->skb2.fclone = SKB_FCLONE_CLONE;
-> >  	}
-> > +
-> > +	skb_set_kcov_handle(skb, kcov_common_handle());  
-> 
-> Hi,
-> 
-> This causes skb extensions to be allocated for the allocated skb, but
-> there are instances that blindly overwrite 'skb->extensions' by invoking
-> skb_copy_header() after __alloc_skb(). For example, skb_copy(),
-> __pskb_copy_fclone() and skb_copy_expand(). This results in the skb
-> extensions being leaked [1].
-> 
-> One possible solution is to try to patch all these instances with
-> skb_ext_put() before skb_copy_header().
-> 
-> Another possible solution is to convert skb_copy_header() to use
-> skb_ext_copy() instead of __skb_ext_copy(). It will first drop the
-> reference on the skb extensions of the new skb, but it assumes that
-> 'skb->active_extensions' is valid. This is not the case in the
-> skb_clone() path so we should probably zero this field in __skb_clone().
-> 
-> Other suggestions?
+On Wed, Nov 4, 2020 at 9:54 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> DWARF v5 is the latest standard of the DWARF debug info format.
+>
+> Feature detection of DWARF5 is onerous, especially given that we've
+> removed $(AS), so we must query $(CC) for DWARF5 assembler directive
+> support.  GNU `as` only recently gained support for specifying
+> -gdwarf-5.
+>
+> The DWARF version of a binary can be validated with:
+> $ llvm-dwarfdump vmlinux | head -n 5 | grep version
+> or
+> $ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
+>
+> DWARF5 wins significantly in terms of size when mixed with compression
+> (CONFIG_DEBUG_INFO_COMPRESSED).
+>
+> 363M    vmlinux.clang12.dwarf5.compressed
+> 434M    vmlinux.clang12.dwarf4.compressed
+> 439M    vmlinux.clang12.dwarf2.compressed
+> 457M    vmlinux.clang12.dwarf5
+> 536M    vmlinux.clang12.dwarf4
+> 548M    vmlinux.clang12.dwarf2
+>
+> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Suggested-by: Jakub Jelinek <jakub@redhat.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  Makefile                          | 1 +
+>  include/asm-generic/vmlinux.lds.h | 6 +++++-
+>  lib/Kconfig.debug                 | 8 ++++++++
+>  scripts/test_dwarf5_support.sh    | 9 +++++++++
+>  4 files changed, 23 insertions(+), 1 deletion(-)
+>  create mode 100755 scripts/test_dwarf5_support.sh
+>
+> diff --git a/Makefile b/Makefile
+> index e23786a4c1c7..9056bac0ff85 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -828,6 +828,7 @@ endif
+>
+>  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
+>  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
+>  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+>  ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
+>  # Binutils 2.35+ required for -gdwarf-4+ support.
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index b2b3d81b1535..76ce62c77029 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -829,7 +829,11 @@
+>                 .debug_types    0 : { *(.debug_types) }                 \
+>                 /* DWARF 5 */                                           \
+>                 .debug_macro    0 : { *(.debug_macro) }                 \
+> -               .debug_addr     0 : { *(.debug_addr) }
+> +               .debug_addr     0 : { *(.debug_addr) }                  \
+> +               .debug_line_str 0 : { *(.debug_line_str) }              \
+> +               .debug_loclists 0 : { *(.debug_loclists) }              \
+> +               .debug_rnglists 0 : { *(.debug_rnglists) }              \
+> +               .debug_str_offsets      0 : { *(.debug_str_offsets) }
+>
+>  /* Stabs debugging sections. */
+>  #define STABS_DEBUG                                                    \
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 03c494eefabd..c5b54ba51060 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -274,6 +274,14 @@ config DEBUG_INFO_DWARF4
+>           It makes the debug information larger, but it significantly
+>           improves the success of resolving variables in gdb on optimized code.
+>
+> +config DEBUG_INFO_DWARF5
+> +       bool "Generate DWARF5 debuginfo"
 
-Looking at the patch from Marco to move back to a field now I'm
-wondering how you run into this, Ido :D
 
-AFAIU the extension is only added if process as a KCOV handle.
+The choice menu looks like follows:
 
-Are you using KCOV?
+(X) Generate DWARF v2 debuginfo
+( ) Generate dwarf4 debuginfo
+( ) Generate DWARF5 debuginfo
 
-> [1]
-> BUG: memory leak
-> unreferenced object 0xffff888027f9a490 (size 16):
->   comm "syz-executor.0", pid 1155, jiffies 4295996826 (age 66.927s)
->   hex dump (first 16 bytes):
->     01 00 00 00 01 02 6b 6b 01 00 00 00 00 00 00 00  ......kk........
->   backtrace:
->     [<0000000005a5f2c4>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
->     [<0000000005a5f2c4>] slab_post_alloc_hook mm/slab.h:528 [inline]
->     [<0000000005a5f2c4>] slab_alloc_node mm/slub.c:2891 [inline]
->     [<0000000005a5f2c4>] slab_alloc mm/slub.c:2899 [inline]
->     [<0000000005a5f2c4>] kmem_cache_alloc+0x173/0x800 mm/slub.c:2904
->     [<00000000c5e43ea9>] __skb_ext_alloc+0x22/0x90 net/core/skbuff.c:6173
->     [<000000000de35e81>] skb_ext_add+0x230/0x4a0 net/core/skbuff.c:6268
->     [<000000003b7efba4>] skb_set_kcov_handle include/linux/skbuff.h:4622 [inline]
->     [<000000003b7efba4>] skb_set_kcov_handle include/linux/skbuff.h:4612 [inline]
->     [<000000003b7efba4>] __alloc_skb+0x47f/0x6a0 net/core/skbuff.c:253
->     [<000000007f789b23>] skb_copy+0x151/0x310 net/core/skbuff.c:1512
->     [<000000001ce26864>] mlxsw_emad_transmit+0x4e/0x620 drivers/net/ethernet/mellanox/mlxsw/core.c:585
->     [<000000005c732123>] mlxsw_emad_reg_access drivers/net/ethernet/mellanox/mlxsw/core.c:829 [inline]
->     [<000000005c732123>] mlxsw_core_reg_access_emad+0xda8/0x1770 drivers/net/ethernet/mellanox/mlxsw/core.c:2408
->     [<00000000c07840b3>] mlxsw_core_reg_access+0x101/0x7f0 drivers/net/ethernet/mellanox/mlxsw/core.c:2583
->     [<000000007c47f30f>] mlxsw_reg_write+0x30/0x40 drivers/net/ethernet/mellanox/mlxsw/core.c:2603
->     [<00000000675e3fc7>] mlxsw_sp_port_admin_status_set+0x8a7/0x980 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:300
->     [<00000000fefe35a4>] mlxsw_sp_port_stop+0x63/0x70 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:537
->     [<00000000c41390e8>] __dev_close_many+0x1c7/0x300 net/core/dev.c:1607
->     [<00000000628c5987>] __dev_close net/core/dev.c:1619 [inline]
->     [<00000000628c5987>] __dev_change_flags+0x2b9/0x710 net/core/dev.c:8421
->     [<000000008cc810c6>] dev_change_flags+0x97/0x170 net/core/dev.c:8494
->     [<0000000053274a78>] do_setlink+0xa5b/0x3b80 net/core/rtnetlink.c:2706
->     [<00000000e4085785>] rtnl_group_changelink net/core/rtnetlink.c:3225 [inline]
->     [<00000000e4085785>] __rtnl_newlink+0xe06/0x17d0 net/core/rtnetlink.c:3379
 
+Upper / Lower case inconsistency.
+
+
+
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
