@@ -2,108 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79E72C9FDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C49D2C9FE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729987AbgLAKeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:34:46 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:41191 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726026AbgLAKep (ORCPT
+        id S1730032AbgLAKfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:35:34 -0500
+Received: from conuserg-09.nifty.com ([210.131.2.76]:24201 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729846AbgLAKfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:34:45 -0500
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 40A4E12EE;
-        Tue,  1 Dec 2020 05:33:59 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Tue, 01 Dec 2020 05:33:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=0LEfd4MCIrC63dAvEa6z1MW0wtY
-        FYRkWZYqY55AEO8g=; b=jSVkKhsgYZeSIM++cj4EeOcK+b3KmjZNTi6FPx5B721
-        Pt2qxkJcAfgM91OgCCovFez6CqdU/dcnXgzWn7UZA6N0uVlacZWvsh2RVr6o1nKp
-        BaXqS97EdYzmHDEWlLLrCm1ozESoCg0PGtxIZ+ddqYEtVyjhGJZOew/Cls0QhQr2
-        5iqtOxjDcHc/HVkgnEx6HuZ9TAdyvAW+yKyGIJBAeaEsf9gY+699L28W7IRoMWgp
-        rKiv37s4sXoi6lPnf/8fieN5EVYwSIDyZmax2+Gac9RPxax4LXZGT7vPaUnIO411
-        I1QhAdnhw6tLjKAxwRHR1iw/iOzozyNH0Xz4eJidqTA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=0LEfd4
-        MCIrC63dAvEa6z1MW0wtYFYRkWZYqY55AEO8g=; b=TBqmcqoXxOvtWbFmXKpv3I
-        7xGFOb+fBksE+xxjusPd+eX3xKve+bHPy9bxuai/VoONGbFc9BrXvlLJPMbluXIF
-        dlsWA+nGVgxeZ5eMYafVMy/odL26cTIhvBnB3C/Scu+xqZV/L5TupRZNzPhige7w
-        dDFxWeYqzDJLBkHRSV1L8q/M+C1ex4MtXppwexKiRzFXqns9p6gDcCME82IUD/kz
-        Hzbn6A/8vfmZH/3r9/2Gfonl14YkFB1u8jRKI6uBecp4CKazozCltN9LdK/ElNZ2
-        85q9bLBWKHmRYJa1xi/zn44gfihXmG621ZLuurFEbVgauT4I/xRHUWhg/vHts2Og
-        ==
-X-ME-Sender: <xms:FRzGX1saAobQBmoRaP2Ql8kz9q_5KMBOOgAyoyqxYS8KakAFRKoSYw>
-    <xme:FRzGX6IzHZyxxL055yVKFTY_3Yf2zbXcxtGPgGQrF_cgxWpcY1MQ9wuKh8KyKRgjd
-    ygQSJOy0nQUb1BoO3U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeivddgudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:FRzGX1OJn_o_oS7GTYyC2YINhiHWAch-ta9Wi-SjkZ6pNCq2ValGjA>
-    <xmx:FRzGX1Xi7_m7CPiHfZXO7A9W0U5PlWGt_1tLbneGfkeHwyiiuUbz4w>
-    <xmx:FRzGX7kz2iUdCaANsm-3_P5cqD07grJ93w_stRgB4XWFh7-RXKN7kw>
-    <xmx:FhzGX7h991ektQJ-dSnXplKgbbv3dBQQPaeu-GmHT_kSMfM7kg5ckA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B9E0D108005C;
-        Tue,  1 Dec 2020 05:33:57 -0500 (EST)
-Date:   Tue, 1 Dec 2020 11:33:56 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Willy Liu <willy.liu@realtek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tue, 1 Dec 2020 05:35:33 -0500
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 0B1AYKHd001992;
+        Tue, 1 Dec 2020 19:34:21 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 0B1AYKHd001992
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606818861;
+        bh=14hHLn0gihVMVkJ3AN6v+GnGdZ/fCtITftkO1TeIJdg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=M6dBUTseHBP7mIf9+V1nFNrqBboYHueA9dqU0euQem7YGn0OvQ3LRE9E0bDyIpqjB
+         hbXHQ3eGQQGYr+7W371cawDc+PY2F1hHo8VTkM5OzuCz+Lepcou12rageiKuj2X1hE
+         dZxpJE8QkqZ2hozVs79AVTNxoB4ttvRTvRh7vqVpRFOYe+C3EJ0s+GK0vYAgYqfksb
+         17zbMuf8/ALa5qdb85EAopJyBCOyrzLSZNyrROQGJfuOWS+Pjc0oWRpfnqzpJMII33
+         B6igfK3JnNhFvwNy3VcHWTC78zFQ+bUNxB131qv7dN2zHwGfmXEe3EpNp1SogWPDO0
+         Rkjwtr4NdK/xg==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Quentin Perret <qperret@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] arm64: dts: allwinner: H5: NanoPi Neo Plus2:
- phy-mode rgmii-id
-Message-ID: <20201201103356.qedqb24n5ucx2eps@gilmour>
-References: <20201129194512.1475586-1-xypron.glpk@gmx.de>
+Subject: [PATCH 1/5] modpost: rename merror() to error()
+Date:   Tue,  1 Dec 2020 19:34:14 +0900
+Message-Id: <20201201103418.675850-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xmjuxfopfcov7c44"
-Content-Disposition: inline
-In-Reply-To: <20201129194512.1475586-1-xypron.glpk@gmx.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The log function names, warn(), merror(), fatal() are inconsistent.
 
---xmjuxfopfcov7c44
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit 2a11665945d5 ("kbuild: distinguish between errors and warnings
+in modpost") intentionally chose merror() to avoid the conflict with
+the library function error(). See man page of error(3).
 
-On Sun, Nov 29, 2020 at 08:45:12PM +0100, Heinrich Schuchardt wrote:
-> Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx
-> delay config") network is broken on the NanoPi Neo Plus2.
->=20
-> This patch changes the phy-mode to use internal delays both for RX and TX
-> as has been done for other boards affected by the same commit.
->=20
-> Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
-> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+But, we are already causing the conflict with warn() because it is also
+a library function. See man page of warn(3). err() would be a problem
+for the same reason.
 
-Applied, thanks!
-Maxime
+The common technique to work around name conflicts is to use macros.
 
---xmjuxfopfcov7c44
-Content-Type: application/pgp-signature; name="signature.asc"
+    #define error __error
+    void __error(const char *fmt, ...)
+    {
+            <our own implementation>
+    }
 
------BEGIN PGP SIGNATURE-----
+    #define warn __warn
+    void __warn(const char *fmt, ...)
+    {
+            <our own implementation>
+    }
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8YcFAAKCRDj7w1vZxhR
-xb7BAQCqCR/UJ4Xh5CChtMLLJuo9b1NQwbTyk2T93GgLjg+I0QD+JzUXAMFE+LVk
-YnlfT8pUzdg8JUEF37cKbBIuXkYgfQ8=
-=Eupy
------END PGP SIGNATURE-----
+In this way, we can implement our own warn() and error(), still we can
+include <error.h> and <err.h> with no problem.
 
---xmjuxfopfcov7c44--
+And, commit 93c95e526a4e ("modpost: rework and consolidate logging
+interface") already did that.
+
+Since the log functions are all macros, we can use error() without
+causing "conflicting types" errors.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/mod/modpost.c | 10 +++++-----
+ scripts/mod/modpost.h |  2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index f882ce0d9327..337f6ca4bda3 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -403,8 +403,8 @@ static void sym_update_namespace(const char *symname, const char *namespace)
+ 	 * actually an assertion.
+ 	 */
+ 	if (!s) {
+-		merror("Could not update namespace(%s) for symbol %s\n",
+-		       namespace, symname);
++		error("Could not update namespace(%s) for symbol %s\n",
++		      namespace, symname);
+ 		return;
+ 	}
+ 
+@@ -2226,7 +2226,7 @@ static int check_modname_len(struct module *mod)
+ 	else
+ 		mod_name++;
+ 	if (strlen(mod_name) >= MODULE_NAME_LEN) {
+-		merror("module name is too long [%s.ko]\n", mod->name);
++		error("module name is too long [%s.ko]\n", mod->name);
+ 		return 1;
+ 	}
+ 
+@@ -2319,8 +2319,8 @@ static int add_versions(struct buffer *b, struct module *mod)
+ 			continue;
+ 		}
+ 		if (strlen(s->name) >= MODULE_NAME_LEN) {
+-			merror("too long symbol \"%s\" [%s.ko]\n",
+-			       s->name, mod->name);
++			error("too long symbol \"%s\" [%s.ko]\n",
++			      s->name, mod->name);
+ 			err = 1;
+ 			break;
+ 		}
+diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+index 3aa052722233..f453504ad4df 100644
+--- a/scripts/mod/modpost.h
++++ b/scripts/mod/modpost.h
+@@ -202,5 +202,5 @@ enum loglevel {
+ void modpost_log(enum loglevel loglevel, const char *fmt, ...);
+ 
+ #define warn(fmt, args...)	modpost_log(LOG_WARN, fmt, ##args)
+-#define merror(fmt, args...)	modpost_log(LOG_ERROR, fmt, ##args)
++#define error(fmt, args...)	modpost_log(LOG_ERROR, fmt, ##args)
+ #define fatal(fmt, args...)	modpost_log(LOG_FATAL, fmt, ##args)
+-- 
+2.27.0
+
