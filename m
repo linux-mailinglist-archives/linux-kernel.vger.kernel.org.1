@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4557F2C9839
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9292C983D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728151AbgLAHet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:34:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgLAHes (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:34:48 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67573C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:34:08 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 142so1231306ljj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:34:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3sAfYzfnHpBDQQEiR5AB4kL1wrJ/tmzzqABS0iM18lo=;
-        b=GHXUq2YpLuIQ36kaJyi6gm+57jEHYfI6XasZB7E8uDctHdzu7RWhpv4EGD1pUV/Lea
-         UP63nqdng6ZhpZg7NP/OTVWmHJslZ3spK7pjGIxQZopEsEIbHuDtkiHmy+u0uCYnw2g0
-         Q8QgCGLR1UUBHiRPmDdQ0vecTsMRD6KLthMZh291cZxqPcR+VuBSfUcvOFjWGkZPhHCR
-         aUL7Nsv4eECy7to6BV2N/MdGNpvpXZvSxNRV8gWapBmFggYOHvWFkYzaXAOKpB9IYayy
-         W3lXzunc5ErjdF5fCTPCwSciYu8c0xP+gFsvM+PRdjBTOF8JxdxmjtZNhsXjiurggb1v
-         w2Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3sAfYzfnHpBDQQEiR5AB4kL1wrJ/tmzzqABS0iM18lo=;
-        b=OkXZ1N8x/71KIiia0nc7S4ymBmEbhfQhFqvbPvlHlA4TughrADGR6/Uh+7WZYUjROv
-         1e3q28Llhkd3cu0zaNk5d4mN3GF+3nXnBjF+nsx+O1Agtn0pnS7aegZLuiGU/W35E9EC
-         kCkkIAnLklLhlhc37lMQp36gRKSoABt838Zrr0rtze51/VGewDFhpWzGs5QU22ii3aV9
-         OChmbj1eNcZrDwARmxon4NPW0k7sHqABsj/jUeccDH7IfEUogqZ2GCWlHplJLyBUQzIU
-         Av4AsLpiOH7/iBEih3BIenw66gudqPlQb0VrajkFd/C4ob8kvZtolpu8j/MaUkLt3sK6
-         fA5Q==
-X-Gm-Message-State: AOAM530S6nNsXiPOSl/Fd9Q2hnAHQ7y+SZK+ZRa2vg56PascmcNLLcgZ
-        I/9FEh6aDmOJPXVJG7m36t2ECh38NoIkauJs7SOTTg==
-X-Google-Smtp-Source: ABdhPJxsHo7jWyLvtclHc5phZMJ2NRcTEMgll8C8jkpEWdcV6iozaUa6EbEg14cZVBhgXvtZiTb3kqSxHi6+e2yLbEA=
-X-Received: by 2002:a2e:8504:: with SMTP id j4mr673944lji.169.1606808046741;
- Mon, 30 Nov 2020 23:34:06 -0800 (PST)
+        id S1728105AbgLAHgl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Dec 2020 02:36:41 -0500
+Received: from mailout05.rmx.de ([94.199.90.90]:48477 "EHLO mailout05.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727429AbgLAHgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 02:36:40 -0500
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout05.rmx.de (Postfix) with ESMTPS id 4ClYms0Rytz9vZl;
+        Tue,  1 Dec 2020 08:35:57 +0100 (CET)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4ClYmS2TjMz2TTLk;
+        Tue,  1 Dec 2020 08:35:36 +0100 (CET)
+Received: from n95hx1g2.localnet (192.168.54.19) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 1 Dec
+ 2020 08:34:53 +0100
+From:   Christian Eggers <ceggers@arri.de>
+To:     Wolfram Sang <wsa@kernel.org>, <wsa@the-dreams.de>
+CC:     Oleksij Rempel <linux@rempel-privat.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "David Laight" <David.Laight@aculab.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH v6 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Date:   Tue, 1 Dec 2020 08:34:52 +0100
+Message-ID: <18285740.IRuNKOj0Az@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201010110920.GB4669@ninjato>
+References: <20201009110320.20832-1-ceggers@arri.de> <20201009110320.20832-2-ceggers@arri.de> <20201010110920.GB4669@ninjato>
 MIME-Version: 1.0
-References: <20201130233242.78413-1-dlatypov@google.com> <20201130233242.78413-5-dlatypov@google.com>
-In-Reply-To: <20201130233242.78413-5-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Tue, 1 Dec 2020 15:33:55 +0800
-Message-ID: <CABVgOSkTEudDdbJ3b8mRBvKFtnC=hV9qT8h8EZhJqyEcpFxd5g@mail.gmail.com>
-Subject: Re: [PATCH 5/5] minor: kunit: tool: s/get_absolute_path/test_data_path
- in unit test
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+X-Originating-IP: [192.168.54.19]
+X-RMX-ID: 20201201-083538-4ClYmS2TjMz2TTLk-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 7:33 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> 1. the name is a lie. It gives relative paths, e.g. if I run from the
-> same dir as the test file, it gives './test_data/<file>'
->
-> 2. it's only used for generating paths to tools/testing/kunit/test_data/
-> So we can tersen things by making it less general.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> ---
-This is an excellent and overdue rename/replacement.
+On Saturday, 10 October 2020, 13:09:20 CET, Wolfram Sang wrote:
+> On Fri, Oct 09, 2020 at 01:03:18PM +0200, Christian Eggers wrote:
+> > According to the "VFxxx Controller Reference Manual" (and the comment
+> > block starting at line 97), Vybrid requires writing a one for clearing
+> > an interrupt flag. Syncing the method for clearing I2SR_IIF in
+> > i2c_imx_isr().
+> > 
+> > Signed-off-by: Christian Eggers <ceggers@arri.de>
+> > Fixes: 4b775022f6fd ("i2c: imx: add struct to hold more configurable quirks")
+> > Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > Cc: stable@vger.kernel.org
+> 
+> Applied to for-next, thanks!
+> 
+I cannot find my patches in kernel/git/wsa/linux.git, branch "for-next".
+Did they get lost?
 
-My only note is re: the concerns I have in patch 2, where I think we
-probably ought to make this function actually return an absolute path.
-It seems from the code (and the function name) that that was the
-intent, so if we can fix it, that'd be ideal.
-
-Personally, though, I'd still prefer the new test_data_path(), just
-have it be an actually absolute path.
+regards
+Christian
 
 
--- David
+
+
