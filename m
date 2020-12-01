@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F7A2CAA5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E01922CAA63
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404188AbgLASBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:01:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgLASBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:01:10 -0500
-Received: from thinkpad (unknown [103.59.133.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3DE22067D;
-        Tue,  1 Dec 2020 18:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606845629;
-        bh=1A3M3IZxhjNTlfEppcuI+Cqimzqb6oCIf9GcfsYOUKM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J5WZtdv37182NGhggCUz9MRj8u1nbxav9WG15ogkm2dyuGlWVViKlVpjS+MZqOBqf
-         J9AOe4N4t295jj418sTQ/oC075XhWgmeRt+INQ2XLr78uexYAxusHmPl47Q34UcULb
-         0IG3Zrt5bvDVvQ8n/78uTwLfkqQArrSuWBc87VCs=
-Date:   Tue, 1 Dec 2020 23:30:18 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        patong.mxl@gmail.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        angelo.dureghello@timesys.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
-Message-ID: <20201201180018.GA78529@thinkpad>
-References: <20201122170822.21715-1-mani@kernel.org>
- <20201122170822.21715-3-mani@kernel.org>
- <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
+        id S2404199AbgLASBs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Dec 2020 13:01:48 -0500
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:41148 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgLASBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 13:01:48 -0500
+Received: by mail-ej1-f65.google.com with SMTP id f23so5969469ejt.8;
+        Tue, 01 Dec 2020 10:01:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OB+Hqk1PmlZ4ftbIA0TQ8qnbxHVt4BJHYtXBZHFPTDo=;
+        b=eQHLlqvM4XdtEcj1xxjDEYNbexmrvrouC/pZ85xHMnTo6j1v4WiWJxL1EDvRbvCGqP
+         ME0BjnskdsvAjIzolSMDdOjW+18cFDs9a98Q5nS1SheRbct7V3BjglmX9jGWebTyp4Pt
+         sW1plTieUiOFqeORTxofakM5dnRR+bVTSf6cW/LGRc3wuE4Pps7vr4ZGtL8ua9HMy53Z
+         g6Aac18E/I3K6wpZmgOKbm5OSCYrZt+qESi2aQgc12amFXwTgokgXH0cpSogCvWaW/Ig
+         XdU88uS32+fQhxVlj9CY6ZkSdiZD6lXVeTEfXKH32W8HiPNpTCR9vQCZBi5oIWxUpby9
+         tP5A==
+X-Gm-Message-State: AOAM530zI9uJr5XHbmtKcnYu9zO67fwDzyFLDJW1kiCGikoAiwbYkJbA
+        ivlZWGoPkE/TzTnAZZfh8D9h2mr70uZhD7+87LoJ+vWkA/A=
+X-Google-Smtp-Source: ABdhPJybhgiq1OPsE29YW/dUukjFPtOpcSFPbONMO0salgmbkEWl4urIsO55d9iXGGnU4Aq+bdfzH0j71KtjXFQMT2w=
+X-Received: by 2002:a17:907:214d:: with SMTP id rk13mr4100873ejb.501.1606845665874;
+ Tue, 01 Dec 2020 10:01:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
+References: <20201119233257.2939-1-chang.seok.bae@intel.com>
+ <20201119233257.2939-23-chang.seok.bae@intel.com> <CALCETrXBRATBVySDM9f0H-+gD37n7=CsNLWa446eLHi1mjokGw@mail.gmail.com>
+ <CAJvTdKng_WMrmO_KtkuCxvvzGZ_HLcd84u2SwJiD_UJivb4Yaw@mail.gmail.com> <CALCETrX_1RkatiJxScjXhA38KTHvgrDxtj_e1YUs6fLTeHZufw@mail.gmail.com>
+In-Reply-To: <CALCETrX_1RkatiJxScjXhA38KTHvgrDxtj_e1YUs6fLTeHZufw@mail.gmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 1 Dec 2020 13:00:54 -0500
+Message-ID: <CAJvTdKnVqUw8qBWJOCssk0pBhUzXzj-qR+UJOoyzx=eSYCKKYQ@mail.gmail.com>
+Subject: Re: [PATCH v2 22/22] x86/fpu/xstate: Introduce boot-parameters for
+ control some state component support
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        X86 ML <x86@kernel.org>, Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+> > ﻿On Fri, Nov 20, 2020 at 12:03 AM Andy Lutomirski <luto@kernel.org> wrote:
 
-On Tue, Dec 01, 2020 at 03:37:38PM +0100, Linus Walleij wrote:
-> On Sun, Nov 22, 2020 at 6:08 PM Manivannan Sadhasivam <mani@kernel.org> wrote:
-> 
-> > Add gpiochip support for Maxlinear/Exar USB to serial converter
-> > for controlling the available gpios.
-> >
-> > Inspired from cp210x usb to serial converter driver.
-> >
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: linux-gpio@vger.kernel.org
-> > Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
-> 
-> This looks good to me overall, provided that it plays well with the
-> serial port.
-> 
-> One minor notice:
-> 
-> > +enum gpio_pins {
-> > +       GPIO_RI = 0,
-> > +       GPIO_CD,
-> > +       GPIO_DSR,
-> > +       GPIO_DTR,
-> > +       GPIO_CTS,
-> > +       GPIO_RTS,
-> > +       GPIO_MAX,
-> > +};
-> 
-> You know the names of the pins...
-> 
-> > +       port_priv->gc.ngpio = 6;
-> > +       port_priv->gc.label = "xr_gpios";
-> > +       port_priv->gc.request = xr_gpio_request;
-> > +       port_priv->gc.free = xr_gpio_free;
-> > +       port_priv->gc.get_direction = xr_gpio_direction_get;
-> > +       port_priv->gc.direction_input = xr_gpio_direction_input;
-> > +       port_priv->gc.direction_output = xr_gpio_direction_output;
-> > +       port_priv->gc.get = xr_gpio_get;
-> > +       port_priv->gc.set = xr_gpio_set;
-> > +       port_priv->gc.owner = THIS_MODULE;
-> > +       port_priv->gc.parent = &port->dev;
-> > +       port_priv->gc.base = -1;
-> > +       port_priv->gc.can_sleep = true;
-> 
-> So assign port_priv->gc.names here as well with an array
-> of strings with the names ("RI", "CD", ... etc).
-> This makes it look really nice in userspace if you do
-> e.g. "lsgpio".
-> 
+> We may want to taint the kernel if one of these flags is used
 
-As Johan stated, this doesn't work with multiple devices attached to the system.
-That's the reason for not adding the line names.
+I agree with Andy.
+I can imagine a distro would want to see the taint bit set if a user
+overrides the default that they ship and support.
 
-This gives me the motivation to get my hands dirty with gpiolib (but I fear of
-breaking the ABI)...
+Chang,
+Please taint when the enable flag is used -- Thanks!
 
-> With that:
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
+> because,
+> frankly, Intel’s track record is poor. Suppose we get a new feature
+> with PKRU-like semantics -- switching it blindly using
+> XSAVE(C,S,OPT,whatever) would simply incorrect.
 
-Thanks for the review!
+A valid concern.
+To mitigate, there is a new CPUID bit on the way to tell us explicitly
+which features are simple (require just XSAVE), versus which
+features are not simple and require more complex support.n t
+When that bit is locked down, we will add that sanity check here.
 
-Regards,
-Mani
+> And XFD itself has
+> problems — supposedly it’s difficult or impossible to virtualize. It
+> wouldn’t utterly shock me if Intel were to drop IA32_XFD_ERR and
+> replace it with a new mechanism that’s less janky.
+>
+> So this whole thing makes me quite nervous.
+>
+> (I'm not a virtualization expert, but AIUI IA32_XFD_ERR has some
+> issues.  If it's too late to fix those issues, Intel could probably
+> get away with completely dropping IA32_XFD_ERR from the spec -- OSes
+> can handle AMX just fine without it.  Then the next XFD-able feature
+> could introduce a new improved way of reporting which feature
+> triggered #NM.)
 
-> Yours,
-> Linus Walleij
+I don't follow the XFD concern.
+
+There are a couple of cases.
+
+If the hypervisor isn't aware of XFD, it neither uses it, or shows it
+to the guests.
+
+If the hypervisor is aware of XFD and supports TMUL, it allocates its
+own context
+switch buffers at boot time, and does not use the XFD optimization to
+save space inside the hypervisor.  It can expose XFD to the guests,
+(and context switch it when guests switch on/off physical CPUs)
+
+The guest sees two cases, either XFD exists or it doesn't, just like
+on real hardware.
+
+thanks,
+Len Brown, Intel Open Source Technology Center
