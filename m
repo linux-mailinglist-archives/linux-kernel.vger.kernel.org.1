@@ -2,201 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817B32C9571
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193F62C9572
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgLACyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:54:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726932AbgLACyj (ORCPT
+        id S1726932AbgLAC4O convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Nov 2020 21:56:14 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:54458 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725900AbgLAC4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:54:39 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF02C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:53:53 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id x15so310459otp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:53:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X45Jkktu9OpTlNX/eJhP3x2IhQt9mJKmemAaV1I+Aas=;
-        b=jsaDTuyKW4WfAmZdcZXfomtxfloorQ2zFL1aVBN8BqiOwPjtiCpoxA6dwzQuc85xs0
-         8e3b1rH4IIq3u3grWhCHhgyNk2AwVqKtBjUt9DmGbZ4R1amR6AItIrbJFOevlbkTUk2g
-         Gp7mv97DVDI1Td5T25kzfSJZuqddPHOtW6dxbYk+3e4ttdrRnGCC7AI5/InaokdWHBwO
-         9j+SgmAZSuEEmmMVyNUO/eo+C4OzBk5oL3YjFLc2KVOgSG1PGGL5Xc59Lpqpnf67Eupy
-         46WwecL4/0WcFnxLF8vgORg2PfeAwZz+N9pXv4I/HDwlJU9NnOKMHUCRWU14M+O9/tf6
-         DaGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X45Jkktu9OpTlNX/eJhP3x2IhQt9mJKmemAaV1I+Aas=;
-        b=A92Yw4uXOpHxetJNq8qTYBFvuiEIwB/BGmyaLcef/4YjkNOlZ8Jz6Sj+U5oavDKNsE
-         dCOzxPVd4PvbKqWdCoqnSx04jsboi0UC+b7IC114rZtA6n5+lPiKHF31zvd3PzCzRuvc
-         rludsKixpYkN2TUl9IMW7io8gj0GMydHiNcIlisEdBiB/iyGyl9NWsQ+zaTccZXu1Ez9
-         UWXG+8gysUFTG9HtLdZAldgAPxJuzjWD1PjeMrQYpu9xBzBJFblbdLOpbedEgnMa/prL
-         VJKHi9Z50FIWYAHdMCiA+xs9rvY5M8VD2baT8JcAiwDeztMoa91uOlumNhbUwON27+DZ
-         ZJLA==
-X-Gm-Message-State: AOAM530BHtX9p9DXJAd5wloyAq5tMPJrYu0DyX2sb2NIrHHPfEMGjtFW
-        BsZPnFK/LDkD5qeuvdiC40frOw==
-X-Google-Smtp-Source: ABdhPJxIWb8DvEdDoULocFRnGiXoanXS8eiSHOKS+D2bxTame5uxqYqLFWhLA33iUQlmxOQhMSBvzg==
-X-Received: by 2002:a9d:6290:: with SMTP id x16mr464476otk.15.1606791232800;
-        Mon, 30 Nov 2020 18:53:52 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 8sm79990otv.26.2020.11.30.18.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 18:53:52 -0800 (PST)
-Date:   Mon, 30 Nov 2020 20:53:50 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Cc:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com, beanhuo@micron.com,
-        cang@codeaurora.org, matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
-        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
-        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
-        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
-        alice.chao@mediatek.com
-Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
- values
-Message-ID: <X8WwPs1MPg64FEp8@builder.lan>
-References: <20201130091610.2752-1-stanley.chu@mediatek.com>
- <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
- <X8V83T+Tx6teNLOR@builder.lan>
- <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
+        Mon, 30 Nov 2020 21:56:13 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UH5AeAb_1606791329;
+Received: from 30.225.32.58(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UH5AeAb_1606791329)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 01 Dec 2020 10:55:30 +0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
+From:   wangrongwei <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <20201130175706.GA25457@willie-the-truck>
+Date:   Tue, 1 Dec 2020 10:55:29 +0800
+Cc:     catalin.marinas@arm.com, bjorn.andersson@linaro.org,
+        shawnguo@kernel.org, vkoul@kernel.org, geert+renesas@glider.be,
+        Anson.Huang@nxp.com, michael@walle.cc, krzk@kernel.org,
+        olof@lixom.net, vincenzo.frascino@arm.com, ardb@kernel.org,
+        masahiroy@kernel.org, gshan@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <B7C5D40A-CBD9-49BC-878B-A527C79476E7@linux.alibaba.com>
+References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
+ <20201130175706.GA25457@willie-the-truck>
+To:     Will Deacon <will@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 30 Nov 17:54 CST 2020, Asutosh Das (asd) wrote:
+Hi, Will
+Thanks for your reply!
+There are absolutely privileged registers, and seriously expose the interface directly! 
+However, these interfaces (/dev/cpu/<N>/msr) need permissions to access, so there should be few security issues. In addition, it may be due to my unclear description above. This driver is mainly a debugging tool. It make developers can easily get the values of some system registers without modifying the kernel.
+In fact, we first considered the /dev/mem solution, but it seems that /dev/mem can map peripheral or IO registers, but not system registers.
 
-> On 11/30/2020 3:14 PM, Bjorn Andersson wrote:
-> > On Mon 30 Nov 16:51 CST 2020, Asutosh Das (asd) wrote:
-> > 
-> > > On 11/30/2020 1:16 AM, Stanley Chu wrote:
-> > > > UFS specficication allows different VCC configurations for UFS devices,
-> > > > for example,
-> > > > 	(1). 2.70V - 3.60V (By default)
-> > > > 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
-> > > >                             device tree)
-> > > > 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
-> > > > 
-> > > > With the introduction of UFS 3.x products, an issue is happening that
-> > > > UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
-> > > > regulator on UFU 3.x products with VCC configuration (3) used.
-> > > > 
-> > > > To solve this issue, we simply remove pre-defined initial VCC voltage
-> > > > values in UFS driver with below reasons,
-> > > > 
-> > > > 1. UFS specifications do not define how to detect the VCC configuration
-> > > >      supported by attached device.
-> > > > 
-> > > > 2. Device tree already supports standard regulator properties.
-> > > > 
-> > > > Therefore VCC voltage shall be defined correctly in device tree, and
-> > > > shall not be changed by UFS driver. What UFS driver needs to do is simply
-> > > > enabling or disabling the VCC regulator only.
-> > > > 
-> > > > This is a RFC conceptional patch. Please help review this and feel
-> > > > free to feedback any ideas. Once this concept is accepted, and then
-> > > > I would post a more completed patch series to fix this issue.
-> > > > 
-> > > > Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> > > > ---
-> > > >    drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
-> > > >    1 file changed, 1 insertion(+), 9 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> > > > index a6f76399b3ae..3965be03c136 100644
-> > > > --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-> > > > +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> > > > @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
-> > > >    		vreg->max_uA = 0;
-> > > >    	}
-> > > > -	if (!strcmp(name, "vcc")) {
-> > > > -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
-> > > > -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
-> > > > -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
-> > > > -		} else {
-> > > > -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
-> > > > -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-> > > > -		}
-> > > > -	} else if (!strcmp(name, "vccq")) {
-> > > > +	if (!strcmp(name, "vccq")) {
-> > > >    		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
-> > > >    		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
-> > > >    	} else if (!strcmp(name, "vccq2")) {
-> > > > 
-> > > 
-> > > Hi Stanley
-> > > 
-> > > Thanks for the patch. Bao (nguyenb) was also working towards something
-> > > similar.
-> > > Would it be possible for you to take into account the scenario in which the
-> > > same platform supports both 2.x and 3.x UFS devices?
-> > > 
-> > > These've different voltage requirements, 2.4v-3.6v.
-> > > I'm not sure if standard dts regulator properties can support this.
-> > > 
-> > 
-> > What is the actual voltage requirement for these devices and how does
-> > the software know what voltage to pick in this range?
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > -asd
-> > > 
-> > > 
-> > > -- 
-> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > > Linux Foundation Collaborative Project
+> 2020年12月1日 上午1:57，Will Deacon <will@kernel.org> 写道：
 > 
-> For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v), the
-> voltage requirements (Vcc) are 2.4v-3.6v. The software initializes the ufs
-> device at 2.95v & reads the version and if the device is 3.x, it may do the
-> following:
-> - Set the device power mode to SLEEP
-> - Disable the Vcc
-> - Enable the Vcc and set it to 2.5v
-> - Set the device power mode to ACTIVE
+> On Tue, Dec 01, 2020 at 01:48:30AM +0800, Rongwei Wang wrote:
+>> MSR ARM driver aims to provide interfacs for user to read or write data to all
+>> system registers. Its functions is same as MSR driver (x86 platform). It mainly
+>> depends on kprobe and undef exception to read or write system registers
+>> dynamicly.
 > 
-> All of the above may be done at HS-G1 & moved to max supported gear based on
-> the device version, perhaps?
+> ... but why? These are privileged registers for a reason, and giving
+> userspace access to them is bound to cause serious problems. Why can't we
+> do whatever it is that userspace is trying to do by poking these things in
+> the kernel instead? This interface is a bit like using /dev/mem instead of
+> writing a proper device driver.
 > 
-> Am open to other ideas though.
+> Thanks,
 > 
+> Will
 
-But that means that for a board where we don't know (don't want to know)
-if we have a 2.x or 3.x device we need to set:
-
-  regulator-min-microvolt = <2.4V>
-  regulator-max-microvolt = <3.6V>
-
-And the 2.5V and the two ranges should be hard coded into the ufshcd (in
-particular if they come from the specification).
-
-For devices with only 2.x or 3.x devices, regulator-{min,max}-microvolt
-should be adjusted accordingly.
-
-Note that driving the regulators outside these ranges will either damage
-the hardware or cause it to misbehave, so these values should be defined
-in the board.dts anyways.
-
-Also note that regulator_set_voltage(2.4V, 3.6V) won't give you "a
-voltage between 2.4V and 3.6V, it will most likely give either 2.4V or
-any more specific voltage that we've specified in the board file because
-the regulator happens to be shared with some other consumer and changing
-it in runtime would be bad.
-
-Regards,
-Bjorn
