@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2843D2C972D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0095E2C972A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgLAFuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 00:50:15 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:44643 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbgLAFuO (ORCPT
+        id S1726572AbgLAFt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 00:49:58 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:44376 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgLAFt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 00:50:14 -0500
-Received: from mail-pg1-f197.google.com ([209.85.215.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1kjyXc-0005JM-70
-        for linux-kernel@vger.kernel.org; Tue, 01 Dec 2020 05:49:32 +0000
-Received: by mail-pg1-f197.google.com with SMTP id i6so415358pgg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 21:49:32 -0800 (PST)
+        Tue, 1 Dec 2020 00:49:57 -0500
+Received: by mail-ed1-f67.google.com with SMTP id l5so1312693edq.11;
+        Mon, 30 Nov 2020 21:49:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ZNT1fNZ3OIc93NBIX9oqtJGb9j7CBMquWYBPqfNvPgU=;
-        b=g8T+hXKLxBEIdsV5VXwoU+hqPCe9v8DYYf6QtMJ0UBas3zrFrdwjzWdJsLDFHRLd/0
-         RI+vM7yOIyepnKR/iXlqcbP2hgxHuxi0w9M586deiu1rN5HbWw9Rh0UXSM+908L9BP6p
-         Rm47rwBLqKW1Lpop/gRUFsdvWD2nr12v9QEzh2qW7rjV5YBbmwOt3PMyKnigKngesqim
-         sRncDD5jiLWcTzWtB3HDz/cAmp1M7l61VaiDhl78K9uIJwxkmsaCJ3CGGjkwPviZpdH0
-         qAc5ltO56IGqUrU4oXK/6qdfG/0jTWE0HwRuPucJ/sSVjktdkNyMDtw/lk8uwXHxzmfU
-         eymw==
-X-Gm-Message-State: AOAM5331lowddTWEextS8BezLqQSxALeVFYYcDvN4ICIPQlIGzOfW697
-        NYDJPM5QIQBO9e5z+cFKVIiQZTeEhpjj+vNCSNVj4YW5/UNRquXma9bHp4WvSqsUkdGbIIMkaki
-        VF8ANbz8VlPF0FFE0t4gvOnSiwaz+Oq8Hedrh/XrW
-X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr1133396pjb.54.1606801770599;
-        Mon, 30 Nov 2020 21:49:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwjAXFeeHedfQPV7Rahm5nmSYGg6tvJQrwzePM3kLhkoYrSBiysdJQ8meanGjkpiNFeO+Yy+w==
-X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr1133376pjb.54.1606801770227;
-        Mon, 30 Nov 2020 21:49:30 -0800 (PST)
-Received: from localhost.localdomain ([2001:67c:1560:8007::aac:c227])
-        by smtp.gmail.com with ESMTPSA id r11sm1028321pgn.26.2020.11.30.21.49.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 21:49:29 -0800 (PST)
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        bh=il4OrsFi/+ZmpHKzmwybykJE1rrEwD0WSXk3jzdi72I=;
+        b=fLn4lHcnXpH57H3ulw7kQpTsSQnQipnq35POuw4tZHmaTmEmXLB1XPakkRSRdPuWXM
+         qGTJwPE+ServoGSlJkVgT91O+yEnO0hrlhCVOrM6OMqH6fwmy6cE2LE0kKQjP324iyAc
+         H/f4+9TxriyY0H7dV9xnfBuXkd0VkOGJkSx3oPrBTvNHWR0fw6PeD/1bkVAvag0tQbqP
+         Hdu9F95IP7rdaTKSXGbaIao75SYcRYYaIHrsk8RO+LOiz1BYaWA0+hYyfdg/DAnvmS9o
+         Br3LZ5NyQNEWxct4yzoFKO88BHLJLJwfOanX4+ISYLn7T3mR5D0fegIAvOtF3PQbqn/n
+         5xEA==
+X-Gm-Message-State: AOAM530OLdicD/W3IPUZvAXQ9OpcQAEmBdEmdeEJbooVz8kvYCbgzkdP
+        X+XxDUm9aXJsvfK8qytNVIBg/1wB8+0=
+X-Google-Smtp-Source: ABdhPJwWPMSyk47AyVrRNMUatJNVHKwfArNXreja8lzZqzEHNBW6hFp0/8fHekt7sABXqBrcUmC7GQ==
+X-Received: by 2002:a50:fe14:: with SMTP id f20mr1343583edt.61.1606801749749;
+        Mon, 30 Nov 2020 21:49:09 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id g15sm251467edj.49.2020.11.30.21.49.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 21:49:08 -0800 (PST)
+Subject: Re: [PATCH 1/5] tty: add port flag to suppress ready signalling on
+ open
+To:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     kevin@kevinlocke.name, hdegoede@redhat.com, limero1337@gmail.com,
-        jkosina@suse.cz, rajatja@google.com, po-hsu.lin@canonical.com
-Subject: [PATCH] Input: i8042 - Add ByteSpeed touchpad to noloop table
-Date:   Tue,  1 Dec 2020 13:47:23 +0800
-Message-Id: <20201201054723.5939-1-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.25.1
+References: <20201130153742.9163-1-johan@kernel.org>
+ <20201130153742.9163-2-johan@kernel.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <ffec9dbe-a238-4411-acdb-41bd33719288@kernel.org>
+Date:   Tue, 1 Dec 2020 06:49:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201130153742.9163-2-johan@kernel.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It looks like the C15B laptop got another vendor: ByteSpeed LLC.
+On 30. 11. 20, 16:37, Johan Hovold wrote:
+> --- a/include/linux/tty.h
+> +++ b/include/linux/tty.h
+> @@ -683,6 +684,19 @@ static inline void tty_port_set_kopened(struct tty_port *port, bool val)
+>   		clear_bit(TTY_PORT_KOPENED, &port->iflags);
+>   }
+>   
+> +static inline bool tty_port_nordy(struct tty_port *port)
 
-Avoid AUX loopback on this touchpad as well, thus input subsystem will
-be able to recognize a Synaptics touchpad in the AUX port.
+port can be const here.
 
-BugLink: https://bugs.launchpad.net/bugs/1906128
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- drivers/input/serio/i8042-x86ia64io.h | 4 ++++
- 1 file changed, 4 insertions(+)
+> +{
+> +	return test_bit(TTY_PORT_NORDY, &port->iflags);
+> +}
+> +
+> +static inline void tty_port_set_nordy(struct tty_port *port, bool val)
+> +{
+> +	if (val)
+> +		set_bit(TTY_PORT_NORDY, &port->iflags);
+> +	else
+> +		clear_bit(TTY_PORT_NORDY, &port->iflags);
 
-diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
-index a4c9b96..7ecb651 100644
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -219,6 +219,10 @@ static const struct dmi_system_id __initconst i8042_dmi_noloop_table[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PEGATRON CORPORATION"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "C15B"),
- 		},
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "ByteSpeed LLC"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "ByteSpeed Laptop C15B"),
-+		},
- 	},
- 	{ }
- };
+We have assign_bit() for these cases these days.
+
+thanks,
 -- 
-2.7.4
-
+js
