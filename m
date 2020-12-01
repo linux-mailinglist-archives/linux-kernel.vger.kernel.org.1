@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E20C2CA677
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5712CA679
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389984AbgLAPBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:01:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389514AbgLAPBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:01:45 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        id S2391534AbgLAPCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389514AbgLAPCI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 10:02:08 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07F6C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 07:01:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jnht86pD3yq7U+rFN+c+PZKSrM6gKzPyOSAK99iCZwQ=; b=dgSYvfILuoEV3q8g19JLd64Hlg
+        A5nve0zQ+bttY1SBLgg81B4wWGS0Ur8aLNv6AptVT2HWC9qkAQITGaBEjpwbRWOIsKngV0ggDvVhw
+        6+GmOrxg4pKonhOcSdcZE+mx9+ywo/ZOrUVA9vehhAnOih30EMkENKotnq2AXjoZXvUxtHRrCd62f
+        n8UPe3uW+HMeh3J8tgBZNX4EuIFMdhGvv7Sc7ZlgVxHfOGL0sOisiFxLan1m3a1NvoHtnP4WTpLsu
+        C+PEA/Uux/W4fYWOXfODSbnfCEAkPOx3BNKyuTttM7+/asI/zvaMeSIt7zuh+JOuSRcxd1aoa18Ws
+        /L5L/p6A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk79Z-0006nC-0s; Tue, 01 Dec 2020 15:01:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A7952076C;
-        Tue,  1 Dec 2020 15:01:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606834865;
-        bh=tdQZ8jjvG7J/xpHtajPQDufefYQVstBWL2sN2icfXrs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O7qEBHqFQMeuZY3W5sm8BFgn6tbZbZi+ISHgPGeYyyorUHINEItzSjng4EPROcO+X
-         tYAhqHwnpybwSs3KtBPVXer9NCQqt3HD0LVIIHrLR7gmFTm7aqX0ou7lKcVjTlTBSp
-         qqfxZLsL+7Ho72pDOR/6mMydz0uNR4+vexrzik6I=
-Date:   Tue, 1 Dec 2020 15:00:36 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     dinghua ma <dinghua.ma.sz@gmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] regulatx DLDO2 voltage control register mask for
- AXP22x
-Message-ID: <20201201150036.GH5239@sirena.org.uk>
-References: <20201130234520.13255-1-dinghua.ma.sz@gmail.com>
- <CA+Jj2f8ADtb8JPPPzafvgVM0jssk8fz_BS-3LDUaYjZHcouTJQ@mail.gmail.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18EE63003E1;
+        Tue,  1 Dec 2020 16:01:15 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 03C332BAB3CBF; Tue,  1 Dec 2020 16:01:14 +0100 (CET)
+Date:   Tue, 1 Dec 2020 16:01:14 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [PATCH 4/5] irqtime: Move irqtime entry accounting after irq
+ offset incrementation
+Message-ID: <20201201150114.GZ2414@hirez.programming.kicks-ass.net>
+References: <20201201001226.65107-1-frederic@kernel.org>
+ <20201201001226.65107-5-frederic@kernel.org>
+ <20201201092011.GS2414@hirez.programming.kicks-ass.net>
+ <87im9lhibd.fsf@nanos.tec.linutronix.de>
+ <20201201114026.GB72897@lothringen>
+ <87blfdhcp2.fsf@nanos.tec.linutronix.de>
+ <20201201143545.GC72897@lothringen>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="G44BJl3Aq1QbV/QL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+Jj2f8ADtb8JPPPzafvgVM0jssk8fz_BS-3LDUaYjZHcouTJQ@mail.gmail.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201201143545.GC72897@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 01, 2020 at 03:35:45PM +0100, Frederic Weisbecker wrote:
+> And that one too makes things simple. But note that
+> 
+>     account_hardirq_enter_time()
+> 
+> will still need some preempt count checks to see if
+> this is a nested hardirq, a hardirq interrupting a softirq
+> or a hardirq interrupting a task.
 
---G44BJl3Aq1QbV/QL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So the current tests get that all correct in a single function.
+Splitting it out will just result in more lines to get wrong.
 
-On Tue, Dec 01, 2020 at 08:04:51AM +0800, dinghua ma wrote:
+That is, I don't think you can do it saner than:
 
-> I feel very sorry, I found the subject of the email was wrong at the
-> moment I sent the email, which wasted everyone=E2=80=99s reading time. I =
-have
-> already sent the third email and I am sorry again
+  account_softirq_enter() := irqtime_account_irq(curr, SOFTIRQ_OFFSET);
+  account_softirq_exit()  := irqtime_account_irq(curr, 0);
+  account_hardirq_enter() := irqtime_account_irq(curr, HARDIRQ_OFFSET);
+  account_hardirq_exit()  := irqtime_account_irq(curr, 0);
 
-I don't appear to have any other mail from you recently and can't look
-it up with lore either so I think perhaps it got stopped by some filter
-somewhere in your mail system and you've not actually been disrupting
-anything, at least for me - can you resend please?
-
---G44BJl3Aq1QbV/QL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GWpMACgkQJNaLcl1U
-h9CFMAf/W1lhCenUB8rEjQ/pjj4ikfn1PtGIq87fBx9jEXAbKNEGpgEbpZP7fisV
-RyJCvLwe8OKOcUl2pHnPMolqpgYUoR4zv+BGs2SqASCYPI7PtV4ND1Lzpc0H0TpR
-N+e3CzRMtGT9BLEdKZ/NTO7r7NlT5iYtcNEYFNCyRimjIr0SfCgEAeGqDMRs+pon
-wBw1BgbXSemUiz75enEAlNYdN5woF7BO64/9q+ktaHXrYfJVd3LgjNBxEtZgAUc8
-6c9JvabnnNMk80Z0903WvhC6znvofiAS8lt7OwahUSjeg8fMBkpsgJHpJ0yCZb02
-urZbOglmNkvA5J8cYSPzFnbBRNmwOg==
-=gEwI
------END PGP SIGNATURE-----
-
---G44BJl3Aq1QbV/QL--
+Fundamentally you have to determine the previous context to determine
+where to account the delta to. Note that when the previous context is
+task context we throw away the delta.
