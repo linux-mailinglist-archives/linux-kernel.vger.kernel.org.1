@@ -2,143 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB0E2CA0F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C228A2CA10F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgLALMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:12:30 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:13750 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727758AbgLALMa (ORCPT
+        id S2387931AbgLALN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:13:27 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29252 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730183AbgLALN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:12:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606821149; x=1638357149;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=MY9r6utLTlvqf3J/LbeLMJwl9yBw+6A7gDGJDGUYg2c=;
-  b=jDAz04z9PQC5sjWk4qRtcJZMQ0HGzFbrQlpdhuE2GNGqeLNs9AKqT3tY
-   f7SHrcj3XDIn+OMpr3b/qYSFnGNRYVWpxXYuKubllhSBtRK0jkynz2icL
-   zinw9t+Eah4rnYFO6z9D8MLThEi75/cEF20IkAY5BT/H6/DOk7Xyh7JlE
-   VRyQewKzR4XqVxY8UxLyXAclg1/wAXJEMbBk5UYgrmow87+SvYevztmx3
-   fkHIGJ96oQtJT/0jLhaDB4DF+vl9+spwOf4JSLti2BuhgYggSCT1789t9
-   o/L21RAiw+1jusgh/SqeXqVtfh5Ed8sAB1FVJXAK2g/dseIAs8XxwpXjm
-   A==;
-IronPort-SDR: pyyP6SCcRFqQ47ABFhPxbbeTdi9xo5TRFb/GDOapTehgqfnvhdIrWSZvsu4GByFLU11+atosZk
- oBLdna9ba9sHBQA1SZLozhg/vB1koTzNhbJxklmhdzzE4kdOTsDyyy9gzgoSOY1Fn3qnbYld8X
- FCtOHjocCMv/f2i3s6NfopGdCVXHWy/SyFkjM3UjtKpNAp1a5mSiHZ1+YT/7PvfPnSckQA5i3L
- ZVypJx09VWatjkFasAY7OSBoq5qFhxk58AcSkKxnppTUy++wOSpsNLmwYo1iCIAWtRF5piVu2q
- nfs=
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="95391162"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Dec 2020 04:11:24 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 1 Dec 2020 04:11:24 -0700
-Received: from soft-dev10.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Tue, 1 Dec 2020 04:11:21 -0700
-References: <20201127133307.2969817-1-steen.hegelund@microchip.com> <20201127133307.2969817-3-steen.hegelund@microchip.com> <20201128192410.GG2191767@lunn.ch>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "Bjarni Jonasson" <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 2/3] net: sparx5: Add Sparx5 switchdev driver
-In-Reply-To: <20201128192410.GG2191767@lunn.ch>
-Date:   Tue, 1 Dec 2020 12:11:14 +0100
-Message-ID: <87h7p5pyr1.fsf@microchip.com>
+        Tue, 1 Dec 2020 06:13:26 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1B3aqq068391;
+        Tue, 1 Dec 2020 06:12:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=CRbrZlcxtyheNMGS1l2aRWIuMKxowCI8eynd4savJhc=;
+ b=ehGRgFZzqdqOzS3tykpBWkGOv1yd2Pnqd5iFyFgugdR2SAPogvLt3RbjOEUN4pB+YCyd
+ IXVEn/ye9mL1EHYBqxSnlC9eqnIiRE6sglKwfDn27Sffpny55lnroDvo7jryiC68RHRZ
+ y+26q7De36Ab6RSYXL/HUuWy+j3OzsXd0n37sqdLtE66JAGD77AsInwpNQjAt0BHHDff
+ 8+NJ8qKDz1Mpv+kq0b1k0cIlbvJP19FCEK0+1mpZCW4SXhsi3dYlgECoFStA8jMeBMP9
+ MhHQc9Mf1GRf0fyGYsPqZ/yl9wRi5zG0j/p3T1CrWk91zXn9iIFhq2Yibo97zjpUY1OO 1Q== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 355jwuudhj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 06:12:24 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B1B73V3018535;
+        Tue, 1 Dec 2020 11:12:22 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 353e684h9h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 11:12:22 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B1BCJHh33161708
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Dec 2020 11:12:19 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 13B6CA4051;
+        Tue,  1 Dec 2020 11:12:19 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADC7FA404D;
+        Tue,  1 Dec 2020 11:12:18 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  1 Dec 2020 11:12:18 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, rafael@kernel.org,
+        viresh.kumar@linaro.org, mingo@kernel.org, x86@kernel.org,
+        mark.rutland@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/idle: Fix arch_cpu_idle() vs tracing
+References: <20201120114145.197714127@infradead.org>
+        <20201120114925.594122626@infradead.org>
+        <20201130210003.GA40619@roeck-us.net>
+        <20201201110209.GQ3040@hirez.programming.kicks-ass.net>
+Date:   Tue, 01 Dec 2020 12:12:18 +0100
+In-Reply-To: <20201201110209.GQ3040@hirez.programming.kicks-ass.net> (Peter
+        Zijlstra's message of "Tue, 1 Dec 2020 12:02:09 +0100")
+Message-ID: <yt9d4kl56ar1.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_04:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=628 spamscore=0
+ suspectscore=0 impostorscore=0 priorityscore=1501 adultscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Peter Zijlstra <peterz@infradead.org> writes:
 
-Andrew Lunn writes:
-
->> +static void sparx5_attr_stp_state_set(struct sparx5_port *port,
->> +                                   struct switchdev_trans *trans,
->> +                                   u8 state)
->> +{
->> +     struct sparx5 *sparx5 = port->sparx5;
->> +
->> +     if (!test_bit(port->portno, sparx5->bridge_mask)) {
->> +             netdev_err(port->ndev,
->> +                        "Controlling non-bridged port %d?\n", port->portno);
->> +             return;
->> +     }
->> +
->> +     switch (state) {
->> +     case BR_STATE_FORWARDING:
->> +             set_bit(port->portno, sparx5->bridge_fwd_mask);
->> +             break;
->> +     default:
->> +             clear_bit(port->portno, sparx5->bridge_fwd_mask);
->> +             break;
->> +     }
+> On Mon, Nov 30, 2020 at 01:00:03PM -0800, Guenter Roeck wrote:
+>> On Fri, Nov 20, 2020 at 12:41:46PM +0100, Peter Zijlstra wrote:
+>> > We call arch_cpu_idle() with RCU disabled, but then use
+>> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
+>> > 
+>> > Switch all arch_cpu_idle() implementations to use
+>> > raw_local_irq_{en,dis}able() and carefully manage the
+>> > lockdep,rcu,tracing state like we do in entry.
+>> > 
+>> > (XXX: we really should change arch_cpu_idle() to not return with
+>> > interrupts enabled)
+>> > 
+>> 
+>> Has this patch been tested on s390 ? Reason for asking is that it causes
+>> all my s390 emulations to crash. Reverting it fixes the problem.
 >
-> That is pretty odd. What about listening, learning, blocking?
->
+> My understanding is that it changes the error on s390. Previously it
+> would complain about the local_irq_enable() in arch_cpu_idle(), now it
+> complains when taking an interrupt during idle.
 
-This only handles simple forward/block. We'll add the learning state as
-well.
+The errors on s390 all were fixed in the meantime. I cannot say which
+patch fixed it, but we haven't seen any warning in our internal CI
+during the last weeks. So reverting the patch would likely fix the issue
+for us.
 
->> +static int sparx5_port_bridge_join(struct sparx5_port *port,
->> +                                struct net_device *bridge)
->> +{
->> +     struct sparx5 *sparx5 = port->sparx5;
->> +
->> +     if (bitmap_empty(sparx5->bridge_mask, SPX5_PORTS))
->> +             /* First bridged port */
->> +             sparx5->hw_bridge_dev = bridge;
->> +     else
->> +             if (sparx5->hw_bridge_dev != bridge)
->> +                     /* This is adding the port to a second bridge, this is
->> +                      * unsupported
->> +                      */
->> +                     return -ENODEV;
->> +
->> +     set_bit(port->portno, sparx5->bridge_mask);
->> +
->> +     /* Port enters in bridge mode therefor don't need to copy to CPU
->> +      * frames for multicast in case the bridge is not requesting them
->> +      */
->> +     __dev_mc_unsync(port->ndev, sparx5_mc_unsync);
->> +
->> +     return 0;
->> +}
->
-> This looks suspiciously empty? Don't you need to tell the hardware
-> which ports this port is bridges to? Normally you see some code which
-> walks all the ports and finds those in the same bridge, and sets a bit
-> which allows these ports to talk to each other. Is that code somewhere
-> else?
->
-
-This is applied when the STP state is handled - sparx5_update_fwd().
-
-This is pretty much as in the ocelot driver, which can a somewhat
-similar switch - and driver - architecture.
-
->         Andrew
-
-Thank you for your comments,
-
----Lars
-
---
-Lars Povlsen,
-Microchip
+s390 is likely to switch to generic entry with the next merge window (im
+working on it), so all that stuff will be easier than.
