@@ -2,246 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CE82CA3BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC8E2CA3B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727423AbgLANYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:24:51 -0500
-Received: from mout.gmx.net ([212.227.15.15]:39937 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726630AbgLANYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:24:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606828950;
-        bh=i99VwzJVGDFj3yDrUcbTJd0SNy2PldxWlO3kTHGKLXw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Zwd0VIYYnGXiDuOA6FLSux2St/gVHc1ZCYSj+oXFYP+92QdH/VOHnd2luK+POgYee
-         I7P1tEsKF4VIfntD3Synfo54JVpV7XV5EBDlFZa5T+R9LtTfRudySMYUIWvjdIQlGY
-         N/D6qOQeCOso+G9rZSALz8OvtwQyRuCIOYF/Njrg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MVNAr-1kZslF2XSh-00SSVC; Tue, 01
- Dec 2020 14:22:30 +0100
-Date:   Tue, 1 Dec 2020 14:22:14 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        allen <allen.chen@ite.com.tw>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mark Brown <broonie@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 4/7] pwm: ntxec: Add driver for PWM function in
- Netronix EC
-Message-ID: <20201201132214.GI456020@latitude>
-References: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
- <20201201011513.1627028-5-j.neuschaefer@gmx.net>
- <20201201072026.a736ikf3k4udpvfv@pengutronix.de>
+        id S2403772AbgLANXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387439AbgLANXY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:23:24 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB3CC0613CF;
+        Tue,  1 Dec 2020 05:22:43 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id lt17so4069712ejb.3;
+        Tue, 01 Dec 2020 05:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uADe8pIjhPSuCRhZ6wL+nTegabcP2vd7po21w3/KsKc=;
+        b=omjzs4OIh0H0sHYUNmwiXYUGGpzCAAS6J/sItDiufcNI3jka57fonKBcXPHYZ7EC3w
+         AqLZcIzbTeNVW0c2I3+JFfvc8LbaA+N3OSA5kU5bLEsXHk7ey8xXeITb4y8BDGmkSuEX
+         hnhkY9dSxfZLgLIQnczOR5S5HMKm+X7Jv0afzHvs4nlyr69ybrpO7EVWh6s6RZgB6Mkn
+         lYmSW2uOOaAeRQOm0KA1q31X9cNYK3/WEn63GNDPTPmca1DLBuO2Blex+UBkVzSy+0K6
+         4Qu2amZVXcEhnwiECDLa3n03Q3H8ZM/P0xJKQl1pedcKaAHTPsyAzDhlUOPYREoTmZhq
+         HEXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uADe8pIjhPSuCRhZ6wL+nTegabcP2vd7po21w3/KsKc=;
+        b=He2rSKGBQeFPu0KqEoMcq2WddMQV9p2cfLqkjK8DzIkwPpadwUhXRsPyHKAdVAwKAB
+         plkcwt2NuixdrpLmgCqMvUvcTU+GNehHaVzUZDL3ktF2ztHAl8Gud063KvVmpZyOdZjq
+         yOXAYnTyKAh6RiL1OTt/fcl9ztjm6nvEX7p4Fl0k6LD2R5A7Lnn7FlgVB1BXfia7Wmmy
+         BeGtEfMWUVce2K5dNL6rPj0Ll0W1/qqGfi7Kfe3+7ekHHWsYkC+RmUGpZBnf6akb0g8L
+         Wefo9e7xDBQorurw7Q3E73ASbAYO0fnFKtTWD7Sl5WbutgNHEzvO3krcEkPw3lNbStPC
+         6Frw==
+X-Gm-Message-State: AOAM533vzThRWXU0145afIoblfXijkrlesvBCKzQnRvVVZqrNXjaD1rD
+        oGy4+ILG0lRlRHPcBl6dYEJwuyAKOm2MLMIkTPU=
+X-Google-Smtp-Source: ABdhPJz0oX8n58WEDpkBVOtEEmsqhZFkHTca/aDr4LQ7oluH4avRguTL/Swrpq6KXGmBFui3PPL0bTwu0E0hx+11DBY=
+X-Received: by 2002:a17:906:68d1:: with SMTP id y17mr2997597ejr.447.1606828962469;
+ Tue, 01 Dec 2020 05:22:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tT3UgwmDxwvOMqfu"
-Content-Disposition: inline
-In-Reply-To: <20201201072026.a736ikf3k4udpvfv@pengutronix.de>
-X-Provags-ID: V03:K1:3pVRVbCHusToiK9w2c2SDTiGjXj/Tj+6gQjSAUb5JekWayHQDXA
- wcasTbzJCVBBO6njymdHIgFtmDPU9chbDh/Fk4bLj603l8LoqWDSRe0YcVWwsO+jOukabGF
- SPAFK4ww4JnVLbrgbngHLgOghkISvExEATUY812ilwdf2Sjob/lVTbr4wuPg7f4mdT+gHrH
- WW/jExP5U7+1QU/m8xRyg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ytFrjKioSvE=:Fjb5K17JJr1g923oMgTnwP
- A1lRewsRZFpkZjcrv8VFhEWOLp6I0HiUNB4sKlaY7LMB58CWwYViIzm0K7Xd7UgQto6d/lpiS
- TqVCNKBWOXIEPQP5dzh+xptE2+DAmLZY0tgMt+MEx93EpxZnQV+gBpS01ynwf7WxU0muW6VlJ
- HqqixcFNMx24hPcST4jjQE1EPdVqEle8j2iZo5j/acZLbdJOt3lNCLfoYPO6fJe+AqhapxSFE
- fS2giEKcPSMqm7W22ToJJ4rLTJVMdLIQcRGRQQPGn85ZSDgr2hv8PebQXGv6PHNgCS+ZXtR73
- qYI1seXN+BzOHIMqqFzXYjVwwMAmbT34y8uVYYMQdrywBS2fwHXyg7Xyl+QVDdN8hrq5YHkTi
- UgUvGVDPlLMOloJ2/9GmnBdkTHTPgHwcXyiY9Cn5xwVUKaY/GnNoS+kNVXT7whknGXtYXbh4Y
- hcI5lGP/UzqnmhDFn4uz6MNohvaQMv8owXUxPWJeHy5N5BVxba63UemBBUp4g19skMYVKj8k7
- rhUodmxLhXyoBTBBmqy8VElxbnOGJyTAj5XIk6aJqU5JKx14sA15tVDUg9I8mkgvvLnL7aPvc
- x9GdQTwhrK6TPeYWEx2j0IFegHGMwFZZCkpl4KgxUWU+veFyFms/BMZy8UtMCNGeCEN0hAzp6
- bmboyAlV8RmSK0pYEiPg0ujdzfPyNjl0+4BTAPVwERqPhm5r9uMNrNMubDsw7KmmV8DCtbQG3
- p7qqQjPJoWrxfyDjdmMsqOnSXhhdexPO61lb9gsuamLArYZLX3awTuzZiq1z7vB2eSu6tlkg6
- f4OBUamJNYwrBEU6ezr61I9ez2fFhqj6eRk0C6S5h5fe8ZAARXS+9Tf3hdVi2RcRDLbJLrZYw
- bp31UxZ6+nFm5SjOBOzw==
+References: <20201201053949.143175-1-selvakuma.s1@samsung.com>
+ <CGME20201201054057epcas5p1d5bd2813146d2cb57eb66b7cedce1f63@epcas5p1.samsung.com>
+ <20201201053949.143175-2-selvakuma.s1@samsung.com> <942255077c7caf5a2b1983570e30c3bf06410f62.camel@mail.ru>
+In-Reply-To: <942255077c7caf5a2b1983570e30c3bf06410f62.camel@mail.ru>
+From:   Selva Jove <selvajove@gmail.com>
+Date:   Tue, 1 Dec 2020 18:52:28 +0530
+Message-ID: <CAHqX9vantopwsTYLNh92uaVaP_vOsbB0O-XgMSEjdKUsRk=gFQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] block: add simple copy support
+To:     Aleksei Marov <alekseymmm@mail.ru>
+Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
+        linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
+        Damien Le Moal <damien.lemoal@wdc.com>, hch@lst.de,
+        sagi@grimberg.me, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nj.shetty@samsung.com,
+        joshi.k@samsung.com, javier.gonz@samsung.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for reporting the memory leak. Will add a fix.
 
---tT3UgwmDxwvOMqfu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Dec 01, 2020 at 08:20:26AM +0100, Uwe Kleine-K=C3=B6nig wrote:
-> Hello Jonathan,
->=20
-> very nice driver, just a few minor comments below.
->=20
-> On Tue, Dec 01, 2020 at 02:15:10AM +0100, Jonathan Neusch=C3=A4fer wrote:
-> > +static struct ntxec_pwm *pwmchip_to_priv(struct pwm_chip *chip)
->=20
-> a function prefix would be great here, I'd pick ntxec_pwm_from_chip as
-> name.
-
-Good point, will do.
-
->=20
-> > +{
-> > +	return container_of(chip, struct ntxec_pwm, chip);
+On Tue, Dec 1, 2020 at 3:58 PM Aleksei Marov <alekseymmm@mail.ru> wrote:
+>
+> On Tue, 2020-12-01 at 11:09 +0530, SelvaKumar S wrote:
+> > +     ret = __blkdev_issue_copy(bdev, dest, nr_srcs, rlist, gfp_mask, flags,
+> > +                     &bio);
+> > +     if (!ret && bio) {
+> > +             ret = submit_bio_wait(bio);
+> > +             if (ret == -EOPNOTSUPP)
+> > +                     ret = 0;
+> > +
+> > +             kfree(page_address(bio_first_bvec_all(bio)->bv_page) +
+> > +                             bio_first_bvec_all(bio)->bv_offset);
+> > +             bio_put(bio);
+> > +     }
+> > +
+> > +     return ret;
 > > +}
-> > +
-> > +[...]
-> > +static int ntxec_pwm_apply(struct pwm_chip *chip, struct pwm_device *p=
-wm_dev,
-> > +			   const struct pwm_state *state)
-> > +{
-> > +	struct ntxec_pwm *priv =3D pwmchip_to_priv(pwm_dev->chip);
-> > +	unsigned int period, duty;
-> > +	struct reg_sequence regs[] =3D {
-> > +		{ NTXEC_REG_PERIOD_HIGH },
-> > +		{ NTXEC_REG_PERIOD_LOW },
-> > +		{ NTXEC_REG_DUTY_HIGH },
-> > +		{ NTXEC_REG_DUTY_LOW }
-> > +	};
-> > +	int res;
-> > +
-> > +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
-> > +		return -EINVAL;
-> > +
-> > +	period =3D min_t(u64, state->period, MAX_PERIOD_NS);
-> > +	duty   =3D min_t(u64, state->duty_cycle, period);
->=20
-> I'm not a big fan of aligning =3D. (As if you have to add a longer
-> variable you have to realign all otherwise unrelated lines.) But that's
-> subjective and it's up to you if you want to change this.
-
-In this case, I thought it helps the readability, because the lines are
-quite similar.
-
-> > +	period /=3D TIME_BASE_NS;
-> > +	duty   /=3D TIME_BASE_NS;
-
-Here, I did it because I had already aligned the previous two lines.
-
-> > +
-> > +	/*
-> > +	 * Changes to the period and duty cycle take effect as soon as the
-> > +	 * corresponding low byte is written, so the hardware may be configur=
-ed
-> > +	 * to an inconsistent state after the period is written and before the
-> > +	 * duty cycle is fully written. If, in such a case, the old duty cycle
-> > +	 * is longer than the new period, the EC may output 100% for a moment.
-> > +	 */
-> > +
-> > +	regs[0].def =3D ntxec_reg8(period >> 8);
-> > +	regs[1].def =3D ntxec_reg8(period);
-> > +	regs[2].def =3D ntxec_reg8(duty >> 8);
-> > +	regs[3].def =3D ntxec_reg8(duty);
->=20
-> You could even minimize the window by changing the order here to
->=20
-> 	NTXEC_REG_PERIOD_HIGH
-> 	NTXEC_REG_DUTY_HIGH
-> 	NTXEC_REG_PERIOD_LOW
-> 	NTXEC_REG_DUTY_LOW
-
-Good idea, but I'm not sure if the EC handles this kind of interleaving
-correctly.
-
-> but it gets less readable. Maybe move that to a function to have the
-> reg_sequence and the actual write nearer together?
-
-Indeed, a separate function would keep register names and values
-together (without resorting to declarations-after-statements).
-
-> Or somehow name the indexes to make it more obvious?
-
-Too much unnecessary complexity, IMHO.
-
-> > +	res =3D regmap_multi_reg_write(priv->ec->regmap, regs, ARRAY_SIZE(reg=
-s));
-> > +	if (res)
-> > +		return res;
-> > +
-> > +	/*
-> > +	 * Writing a duty cycle of zero puts the device into a state where
-> > +	 * writing a higher duty cycle doesn't result in the brightness that =
-it
-> > +	 * usually results in. This can be fixed by cycling the ENABLE regist=
-er.
-> > +	 *
-> > +	 * As a workaround, write ENABLE=3D0 when the duty cycle is zero.
->=20
-> If the device already has duty_cycle =3D 0 but ENABLE =3D 1, you might get
-> a failure. But I guess this doesn't need addressing in the code. But
-> maybe point it out in a comment?
-
-Good point. I'll add something to the comment.
-
-> > +	 */
-> > +	if (state->enabled && duty !=3D 0) {
-> > +		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(=
-1));
-> > +		if (res)
-> > +			return res;
-> > +
-> > +		/* Disable the auto-off timer */
-> > +		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_HI, ntxec_=
-reg8(0xff));
-> > +		if (res)
-> > +			return res;
-> > +
-> > +		return regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_LO, ntxec_r=
-eg8(0xff));
->=20
-> Given that you cannot read back period and duty anyhow: Does it make
-> sense to write these only if (state->enabled && duty !=3D 0)?
-
-I think it does.
-
-
-Thanks,
-Jonathan
-
---tT3UgwmDxwvOMqfu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl/GQ3EACgkQCDBEmo7z
-X9usHg/9FsmfCpoU+cy2Zt6dY0RcesbvapgYo5C8a/EuXIF22fNiiOlU+ONMCdjG
-FDKzKhXmkstFv2VaBM41mUYHPiic4Yf58OS96UJdb7r+fhrFsQajX4h96ILbUkhH
-bhGOzgHwwc3HRKb2YYlTGLcVhT6a5BFLIZW5bjfgs5x+ucKjD5VjInHU56WNHzO2
-1QH3Qrg/essPZ5+ftewe0aFDKinyby4b1sd3gEA6n4NlUIi2COH84Mn5C8vJY6cG
-uts9NJD80+DqpKyaLNh9a0IDwNWRX1cueizPLF9OghbyFhR7pFNxCDPkC5PkxkvW
-0namUmrwk/SyZ5KM77xGCKwqZql6KvIBHtPtszuHXiaqd89tNM/CpxEoF9VQkY5g
-BZdo0lCR1tEVBzy5ZsM6bQ/0uUB5+0N2hmkjcZ/W08HYUKa47jqNBCtV2dbYsF4m
-3O4spfB6F7jM5+UBIfeslyXDnixDhegAAblkCYs8k9AQ/VlMVHtHaXikbi+Dx3d3
-i+7AT+lfODFxSmvqWoYK6r0fjoLClTHDgoYC3huLFomaAKDeG1LAxDWosESJz5Lx
-FGRjFN2kSCI/26KJ6FcLzF6viBC2yd/W7ht0x8+pMMU+L16mGB3bJGZSIAHvSPPh
-CsVIC2HZIlMdpt57QCMq2Ocw0at9xwbhyFP3xr9kWKKMLjpQSxc=
-=qsyh
------END PGP SIGNATURE-----
-
---tT3UgwmDxwvOMqfu--
+> I think  there is an issue here that if bio_add_page  returns error in
+> __blkdev_issue_copy then ret is -ENOMEM and we never do bio_put for bio
+> allocated in  __blkdev_issue_copy so it is small memory leak.
+>
+>
