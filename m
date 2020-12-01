@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDD42C9A03
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B762C9A24
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgLAIyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:54:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57292 "EHLO mail.kernel.org"
+        id S2387494AbgLAIzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728664AbgLAIyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:54:21 -0500
+        id S2387468AbgLAIzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:35 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8245721D7A;
-        Tue,  1 Dec 2020 08:53:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C6E1206D8;
+        Tue,  1 Dec 2020 08:55:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812820;
-        bh=zKKapAvPt+jJptUDwooX5mUsC4KSeReGhpncMDE0sjs=;
+        s=korg; t=1606812919;
+        bh=2y6WtOpXXp95u9cSxbHjIm3mAompjKNAH5T0cadqkKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NjtdQkyf73QpsF5IxKYcqVnvfl0EMa9GWtsbg89CLvD18vIWXWKZoESyhPU++zHVk
-         Hl3D+TC4oowPYWiIkBPZ4Fiia/ZmP6XY7rvn+mTDWQ4SwGjHdrl+0WYTyDYHJYgOc3
-         mTqshti/WU4OxGmzoQv4kg9I6VK+IVgBl+3A2Qxc=
+        b=e8ur+IvmYQAE7j3csnIdfncTsnjyVk35TvB0rn+DDy2ogCKPFEGvkhBDcHwG/j/oG
+         eqb+WE/EmT5B3boRkyTqSjm29JTkaKxE+Np+rR1ziRVzS4fRVwK7p1kGIFyjY30AV5
+         9ufTPpWn7hIK7mUKmv7eTS89E0V5RyASePWGApY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Sedat Dilek <sedat.dilek@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 12/24] scsi: ufs: Fix race between shutdown and runtime resume flow
+Subject: [PATCH 4.9 20/42] perf/x86: fix sysfs type mismatches
 Date:   Tue,  1 Dec 2020 09:53:18 +0100
-Message-Id: <20201201084638.360712530@linuxfoundation.org>
+Message-Id: <20201201084643.572498803@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
-References: <20201201084637.754785180@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +45,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanley Chu <stanley.chu@mediatek.com>
+From: Sami Tolvanen <samitolvanen@google.com>
 
-[ Upstream commit e92643db514803c2c87d72caf5950b4c0a8faf4a ]
+[ Upstream commit ebd19fc372e3e78bf165f230e7c084e304441c08 ]
 
-If UFS host device is in runtime-suspended state while UFS shutdown
-callback is invoked, UFS device shall be resumed for register
-accesses. Currently only UFS local runtime resume function will be invoked
-to wake up the host.  This is not enough because if someone triggers
-runtime resume from block layer, then race may happen between shutdown and
-runtime resume flow, and finally lead to unlocked register access.
+This change switches rapl to use PMU_FORMAT_ATTR, and fixes two other
+macros to use device_attribute instead of kobj_attribute to avoid
+callback type mismatches that trip indirect call checking with Clang's
+Control-Flow Integrity (CFI).
 
-To fix this, in ufshcd_shutdown(), use pm_runtime_get_sync() instead of
-resuming UFS device by ufshcd_runtime_resume() "internally" to let runtime
-PM framework manage the whole resume flow.
-
-Link: https://lore.kernel.org/r/20201119062916.12931-1-stanley.chu@mediatek.com
-Fixes: 57d104c153d3 ("ufs: add UFS power management support")
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lkml.kernel.org/r/20201113183126.1239404-1-samitolvanen@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ arch/x86/events/intel/cstate.c |  6 +++---
+ arch/x86/events/intel/rapl.c   | 14 +-------------
+ arch/x86/events/intel/uncore.c |  4 ++--
+ arch/x86/events/intel/uncore.h | 12 ++++++------
+ 4 files changed, 12 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index d7a0a64f64536..e37f6db0dd156 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5387,11 +5387,7 @@ int ufshcd_shutdown(struct ufs_hba *hba)
- 	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
- 		goto out;
+diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
+index 72d09340c24d2..88ba013d08d49 100644
+--- a/arch/x86/events/intel/cstate.c
++++ b/arch/x86/events/intel/cstate.c
+@@ -98,14 +98,14 @@
+ MODULE_LICENSE("GPL");
  
--	if (pm_runtime_suspended(hba->dev)) {
--		ret = ufshcd_runtime_resume(hba);
--		if (ret)
--			goto out;
--	}
-+	pm_runtime_get_sync(hba->dev);
+ #define DEFINE_CSTATE_FORMAT_ATTR(_var, _name, _format)		\
+-static ssize_t __cstate_##_var##_show(struct kobject *kobj,	\
+-				struct kobj_attribute *attr,	\
++static ssize_t __cstate_##_var##_show(struct device *dev,	\
++				struct device_attribute *attr,	\
+ 				char *page)			\
+ {								\
+ 	BUILD_BUG_ON(sizeof(_format) >= PAGE_SIZE);		\
+ 	return sprintf(page, _format "\n");			\
+ }								\
+-static struct kobj_attribute format_attr_##_var =		\
++static struct device_attribute format_attr_##_var =		\
+ 	__ATTR(_name, 0444, __cstate_##_var##_show, NULL)
  
- 	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
- out:
+ static ssize_t cstate_get_attr_cpumask(struct device *dev,
+diff --git a/arch/x86/events/intel/rapl.c b/arch/x86/events/intel/rapl.c
+index 4c1b7ea185415..38dae3d1391b5 100644
+--- a/arch/x86/events/intel/rapl.c
++++ b/arch/x86/events/intel/rapl.c
+@@ -115,18 +115,6 @@ static const char *const rapl_domain_names[NR_RAPL_DOMAINS] __initconst = {
+  * any other bit is reserved
+  */
+ #define RAPL_EVENT_MASK	0xFFULL
+-
+-#define DEFINE_RAPL_FORMAT_ATTR(_var, _name, _format)		\
+-static ssize_t __rapl_##_var##_show(struct kobject *kobj,	\
+-				struct kobj_attribute *attr,	\
+-				char *page)			\
+-{								\
+-	BUILD_BUG_ON(sizeof(_format) >= PAGE_SIZE);		\
+-	return sprintf(page, _format "\n");			\
+-}								\
+-static struct kobj_attribute format_attr_##_var =		\
+-	__ATTR(_name, 0444, __rapl_##_var##_show, NULL)
+-
+ #define RAPL_CNTR_WIDTH 32
+ 
+ #define RAPL_EVENT_ATTR_STR(_name, v, str)					\
+@@ -548,7 +536,7 @@ static struct attribute_group rapl_pmu_events_group = {
+ 	.attrs = NULL, /* patched at runtime */
+ };
+ 
+-DEFINE_RAPL_FORMAT_ATTR(event, event, "config:0-7");
++PMU_FORMAT_ATTR(event, "config:0-7");
+ static struct attribute *rapl_formats_attr[] = {
+ 	&format_attr_event.attr,
+ 	NULL,
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 4f365267b12fe..9f572bf6c6216 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -90,8 +90,8 @@ end:
+ 	return map;
+ }
+ 
+-ssize_t uncore_event_show(struct kobject *kobj,
+-			  struct kobj_attribute *attr, char *buf)
++ssize_t uncore_event_show(struct device *dev,
++			  struct device_attribute *attr, char *buf)
+ {
+ 	struct uncore_event_desc *event =
+ 		container_of(attr, struct uncore_event_desc, attr);
+diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
+index ad986c1e29bcc..f699783114ee3 100644
+--- a/arch/x86/events/intel/uncore.h
++++ b/arch/x86/events/intel/uncore.h
+@@ -124,7 +124,7 @@ struct intel_uncore_box {
+ #define UNCORE_BOX_FLAG_CTL_OFFS8	1 /* event config registers are 8-byte apart */
+ 
+ struct uncore_event_desc {
+-	struct kobj_attribute attr;
++	struct device_attribute attr;
+ 	const char *config;
+ };
+ 
+@@ -136,8 +136,8 @@ struct pci2phy_map {
+ 
+ struct pci2phy_map *__find_pci2phy_map(int segment);
+ 
+-ssize_t uncore_event_show(struct kobject *kobj,
+-			  struct kobj_attribute *attr, char *buf);
++ssize_t uncore_event_show(struct device *dev,
++			  struct device_attribute *attr, char *buf);
+ 
+ #define INTEL_UNCORE_EVENT_DESC(_name, _config)			\
+ {								\
+@@ -146,14 +146,14 @@ ssize_t uncore_event_show(struct kobject *kobj,
+ }
+ 
+ #define DEFINE_UNCORE_FORMAT_ATTR(_var, _name, _format)			\
+-static ssize_t __uncore_##_var##_show(struct kobject *kobj,		\
+-				struct kobj_attribute *attr,		\
++static ssize_t __uncore_##_var##_show(struct device *dev,		\
++				struct device_attribute *attr,		\
+ 				char *page)				\
+ {									\
+ 	BUILD_BUG_ON(sizeof(_format) >= PAGE_SIZE);			\
+ 	return sprintf(page, _format "\n");				\
+ }									\
+-static struct kobj_attribute format_attr_##_var =			\
++static struct device_attribute format_attr_##_var =			\
+ 	__ATTR(_name, 0444, __uncore_##_var##_show, NULL)
+ 
+ static inline unsigned uncore_pci_box_ctl(struct intel_uncore_box *box)
 -- 
 2.27.0
 
