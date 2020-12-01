@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDC72CA377
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24332CA37C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390805AbgLANJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        id S1728855AbgLANLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:11:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388599AbgLANJN (ORCPT
+        with ESMTP id S1727077AbgLANLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:09:13 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1F0C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 05:08:28 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id y5so1500742iow.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 05:08:28 -0800 (PST)
+        Tue, 1 Dec 2020 08:11:21 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93542C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 05:10:35 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id k14so2564046wrn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 05:10:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=ZGcFuRI/bJF+HhBMzLDe2qGtoT/j0joOqdDzilS2qpo=;
-        b=gTV19U7L/PRLjHjLVMBT9mj1qEMnpXhJ4DrO/+phoB5vlcweQ4DDm5pyPwcF/OJKeD
-         p1IFSmdvJmxj7FFSzHjtbqBJTkDHtdP2dna0fFX6/moLUXI0ng4cU7iAIkXFEav/LiQL
-         g791l9yDscEX979Y+yY4E+S1SLs3YXrE861Bk=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=tD7lW8WjSrRAwrauSTkItu7q0mgGf77gOj0uFtLmfHc=;
+        b=kidd5nkR1gcHW5NLYjMY7MiUA15JI8OL4z3O4/TU2FAOB/VULuO0Hm4tRTMRVykScE
+         PvvWilLHI3TxbdWV7k5OL7p2yxy80Ex+Gkc9geaATPtulSsV4pDoBtY7nlVKZxgD7Zc5
+         VM8ZB9clHq7RhlKr4nqkyewcwLKal9K/Kt8gncaQm+rDZ4siAKVfshlUa6JrcgGUX2X1
+         kf0qoC3Np9pZrrDfL1luK1OUfEJtpmiaB3cE9yqqVJcVIr5ISswF0AP7hFqCnFq26JWn
+         XengzQ4JH1dXIQndC6gNT/FakRwBhH/5H1vzED/DuFHRTjCvgEoXIoE34ZpHXOlIKmWf
+         Kq5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=ZGcFuRI/bJF+HhBMzLDe2qGtoT/j0joOqdDzilS2qpo=;
-        b=Qm4YoakHWywUCm41Grik3XPMfCbFVaKOB61oFMNDUl2x5FWpnanQkg3OeuVY3uQ1ot
-         berwtIbTHWkPfDiDfFozHxajYWXA6cKfGNmWVfp7v47x5xhbduQrT4eFd+3q124XonCu
-         kEBu5uDN1+aX01zhg3zbLq9QOmFI3l0rgkevGgliGPUV85AEpTyaiut8MqBnzXN64rVc
-         3U0Y7YnmpMdlb+gvYR3FThS9tovQSOGu20K64onVjSaEugwpNDIhUAuG2PRQKo4igUlz
-         lqrATXI0WnV2U5ShFvCPRGyxCf5RND8qcAK74w6fYJ6l3QvrlE6k2829JH9mq4tjdDEL
-         hVgQ==
-X-Gm-Message-State: AOAM533hsW+OKzvir/ZISGflBweRjvF4NutFvi5OmGnnASSkQ3f9k2UR
-        vL5q17/mAzlWUP4iHswCo+GeWg==
-X-Google-Smtp-Source: ABdhPJxwlwKDoOdC8evZD54rtRTBt2PosvC3O4D1AZaVXoFjuWZXLX6+JWQ51f7bO1ilExJucdfw1A==
-X-Received: by 2002:a02:3e86:: with SMTP id s128mr2383118jas.131.1606828107257;
-        Tue, 01 Dec 2020 05:08:27 -0800 (PST)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id u18sm765171iob.53.2020.12.01.05.08.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Dec 2020 05:08:26 -0800 (PST)
-Date:   Tue, 1 Dec 2020 13:08:25 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Alban Crequy <alban@kinvolk.io>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: SECCOMP_IOCTL_NOTIF_ADDFD race condition
-Message-ID: <20201201130824.GA27822@ircssh-2.c.rugged-nimbus-611.internal>
-References: <CADZs7q4sw71iNHmV8EOOXhUKJMORPzF7thraxZYddTZsxta-KQ@mail.gmail.com>
- <20201130232009.GC38675@cisco>
- <20201201124105.GB103125@cisco>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tD7lW8WjSrRAwrauSTkItu7q0mgGf77gOj0uFtLmfHc=;
+        b=frxIACpL1NmJaRsftq6uj98dKZj5R57tXW7c39TgUFM22EktXsmtM3gHO2Kis2RtfZ
+         LoVIoAiS12sdoOe7bdjFer1AtoQ9p6wSNv0CJtFZIOhTClt/7+j1uJHaDtB9YiBtM2gt
+         X3U5TVUBbdsoLxdtmEikiLMwIadtr8l5WCu04ujbRNGpSqqlsXiZi7EHbznaG938rKP9
+         STEHnCjemT5bTFM4zG0TqRKFW7shOQH+51Lte2huKCnXVVgOrnYuyq/4DkCQjvTP8gYa
+         mNxywy/hUz0Q9opXXlImgxTniGos5hQKzcX7q2woY0F6YLNXKgqm3ByVlzLxGNtXFHSE
+         giTA==
+X-Gm-Message-State: AOAM531rlw4Humo1uM9JvUbx/QTaPDeaxls7odmqq9f1otYp5zrNzyFW
+        3YktLxfalqDoyyLUuLSpu50k4Q==
+X-Google-Smtp-Source: ABdhPJyoKaXp94oxtZFzKE6AUzgI8hcGm4c3/RCkF1rQPUlrMMoXAY1tc6etaO39l7cymIYuLnuN/A==
+X-Received: by 2002:a05:6000:45:: with SMTP id k5mr3929976wrx.108.1606828234332;
+        Tue, 01 Dec 2020 05:10:34 -0800 (PST)
+Received: from MacBook-Pro.local ([212.45.64.13])
+        by smtp.googlemail.com with ESMTPSA id o67sm3046825wmo.31.2020.12.01.05.10.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 05:10:33 -0800 (PST)
+Subject: Re: [PATCH v2 7/7] arm64: defconfig: Enable interconnect for imx8mq
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>, robh@kernel.org,
+        shawnguo@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
+        will@kernel.org, cdleonard@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20201201123932.12312-1-martin.kepplinger@puri.sm>
+ <20201201123932.12312-8-martin.kepplinger@puri.sm>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Message-ID: <cb498c2c-e052-390a-c64a-2be44d1d2b42@linaro.org>
+Date:   Tue, 1 Dec 2020 15:10:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201201124105.GB103125@cisco>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201201123932.12312-8-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 07:41:05AM -0500, Tycho Andersen wrote:
-> On Mon, Nov 30, 2020 at 06:20:09PM -0500, Tycho Andersen wrote:
-> > Idea 1 sounds best to me, but maybe that's because it's the way I
-> > originally did the fd support that never landed :)
-> > 
-> > But here's an Idea 4: we add a way to remotely close an fd (I don't
-> > see that the current infra can do this, but perhaps I didn't look hard
-> > enough), and then when you get ENOENT you have to close the fd. Of
-> > course, this can't be via seccomp, so maybe it's even more racy.
+On 1.12.20 14:39, Martin Kepplinger wrote:
+> Enable INTERCONNECT_IMX8MQ in order to make interconnect more widely
+> available for testing.
+
+I hope that it's not just for testing, but using it.
+
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> ---
+>   arch/arm64/configs/defconfig | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Or better yet: what if the kernel closed everything it had added via
-> ADDFD if it didn't get a valid response from the supervisor? Then
-> everyone gets this bug fixed for free.
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 1fed16950a7c..830c26a95b3d 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -1023,7 +1023,8 @@ CONFIG_OPTEE=y
+>   CONFIG_MUX_MMIO=y
+>   CONFIG_SLIM_QCOM_CTRL=m
+>   CONFIG_SLIM_QCOM_NGD_CTRL=m
+> -CONFIG_INTERCONNECT=y
+
+Why are you removing this line?
+
+Thanks,
+Georgi
+
+> +CONFIG_INTERCONNECT_IMX=m
+> +CONFIG_INTERCONNECT_IMX8MQ=m
+>   CONFIG_INTERCONNECT_QCOM=y
+>   CONFIG_INTERCONNECT_QCOM_MSM8916=m
+>   CONFIG_INTERCONNECT_QCOM_SDM845=m
 > 
-> Tycho
-> _______________________________________________
-> Containers mailing list
-> Containers@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/containers
-
-This doesn't solve the problem universally because of the (Go) preemption 
-problem. Unless we can guarantee that the supervisor can always handle the 
-request in fewer than 10ms, or if it implements resumption behaviour. I know 
-that resumption behaviour is a requirement no matter what, but the easier we can 
-make it to implement resumption, the better chance we are giving users to get 
-this right.
-
-I think that the easiest solution is to add to the SECCOMP_IOCTL_NOTIF_RECV
-ioctl. Either we have a flag like "block all blockable signals" or pass a
-sigset_t directly of which signals to allow (and return an einval if they
-try to block non-blockable signals).
-
 
