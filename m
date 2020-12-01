@@ -2,61 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA29A2C97B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D752C97AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbgLAGwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 01:52:33 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:50828 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgLAGwc (ORCPT
+        id S1727219AbgLAGth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 01:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgLAGtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 01:52:32 -0500
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id BD4322B6CF; Tue,  1 Dec 2020 01:51:51 -0500 (EST)
-To:     Michael Schmitz <schmitzmic@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     "Sebastian Andrzej Siewior" <bigeasy@linutronix.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "Thomas Gleixner" <tglx@linutronix.de>, linux-scsi@vger.kernel.org,
+        Tue, 1 Dec 2020 01:49:36 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E889C0613CF;
+        Mon, 30 Nov 2020 22:48:56 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id v1so635988pjr.2;
+        Mon, 30 Nov 2020 22:48:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Dk2Z1eCeA2+ln1Aj7Jv+4mmrerL9/IMIjrPeBWfbcYY=;
+        b=AZj4va6QdxcyXtz5DQs0Kz94jPE3JZbffdjwDSmEB6lVQytpag8bAEwkeuQMWLMfuw
+         T/NLgt5sj7zMEQB4wF/4e3hrYULlpbykfsx9Hj0toDfqFFOpe2H9mCu9+fN0hJoxXWQB
+         kXn+2lIZfPXoyEbxugA43Mx83FTHknE6wJKjA6oVV/WBTi2MXDtMxnmAHJkXePLxqupL
+         EwoWMfnCazaFcl7Wo9519qR5ODkWBEraz+W1JChG/9UcjISgVfu7G9Kyt3642Pzr1knP
+         tSRZiKv9RTz/OeOpn8KqO22Y7LG2Hln257yXP/G2IJLR50WZngS3N/2NlwLxIKBiAi2A
+         Ebpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Dk2Z1eCeA2+ln1Aj7Jv+4mmrerL9/IMIjrPeBWfbcYY=;
+        b=NT8uidutg8cjvCkq7jy+H4arxHcL5FcVPp/l8KM9tlfJiQ1kXCN8bWUvi8H3h/svL9
+         Gj/yI+QdE6HeFFhjO2vjDn6PmggV+UwhcPOaz0yASZ+LtVKMrMBbilkcgfikunuKvyoO
+         kiSsnD1e9yN2Ty+6pzI+c892zzAgqWBuWqAkCyO02L+w+4oras+Euq4RPzdFycnRYZXm
+         NCEwnonW1Uc6iVAb/Na9boxrnpoiqYq3TazhGNleVwM1qIqW63OZOOLfqmTUAVhibZNh
+         tvLmWAF1GeDq6uk6764RCjwUhQ5AvcuvCwBz/X0H0uobic5QlobwzMzoCVgAirrSG87/
+         mrvQ==
+X-Gm-Message-State: AOAM533m+Xmj2gzoCs80AngxXEzIKpt7KWkPpmT1bZEA4FA3iEGjA9R8
+        6AgtLWjwj+1N5Y0uuLVsynk=
+X-Google-Smtp-Source: ABdhPJwZ/X97r+Knl315CF6O//3POZhF45zaYg5twieZPyh6XXDwcbQ9mpXHUv/93HGFXmIhJTc71w==
+X-Received: by 2002:a17:90a:43c1:: with SMTP id r59mr1294063pjg.13.1606805336162;
+        Mon, 30 Nov 2020 22:48:56 -0800 (PST)
+Received: from archlinux.GovzHome.Govindz.co.nz ([2407:7000:aa27:b302:92e6:aee5:1373:39cd])
+        by smtp.gmail.com with ESMTPSA id z12sm1286727pfg.123.2020.11.30.22.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 22:48:55 -0800 (PST)
+From:   sanjay.govind9@gmail.com
+To:     dmitry.torokhov@gmail.com
+Cc:     Sanjay Govind <sanjay.govind9@gmail.com>, aicommander@gmail.com,
+        priv.luk@gmail.com, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Message-Id: <58cf6feeaf5dae1ee0c78c1b25c00c73de15b087.1606805196.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] scsi/NCR5380: Remove in_interrupt() test
-Date:   Tue, 01 Dec 2020 17:46:36 +1100
+Subject: [PATCH] INPUT: xpad: support Ardwiino Controllers
+Date:   Tue,  1 Dec 2020 19:48:45 +1300
+Message-Id: <20201201064844.128122-1-sanjay.govind9@gmail.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The in_interrupt() macro is deprecated. Also, it's usage in
-NCR5380_poll_politely2() has long been redundant.
+From: Sanjay Govind <sanjay.govind9@gmail.com>
 
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Ahmed S. Darwish <a.darwish@linutronix.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201126132952.2287996-1-bigeasy@linutronix.de
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+This commit adds support for Ardwiino Controllers
+
+Signed-off-by: Sanjay Govind <sanjay.govind9@gmail.com>
 ---
- drivers/scsi/NCR5380.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/input/joystick/xpad.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
-index 462d911a89f2..6972e7ceb81a 100644
---- a/drivers/scsi/NCR5380.c
-+++ b/drivers/scsi/NCR5380.c
-@@ -223,7 +223,10 @@ static int NCR5380_poll_politely2(struct NCR5380_hostdata *hostdata,
- 		cpu_relax();
- 	} while (n--);
- 
--	if (irqs_disabled() || in_interrupt())
-+	/* Sleeping is not allowed when in atomic or interrupt contexts.
-+	 * Callers in such contexts always disable local irqs.
-+	 */
-+	if (irqs_disabled())
- 		return -ETIMEDOUT;
- 
- 	/* Repeatedly sleep for 1 ms until deadline */
+diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+index c77cdb3b62b5..c9d78e2acb38 100644
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -418,6 +418,7 @@ static const struct usb_device_id xpad_table[] = {
+ 	XPAD_XBOXONE_VENDOR(0x0f0d),		/* Hori Controllers */
+ 	XPAD_XBOX360_VENDOR(0x1038),		/* SteelSeries Controllers */
+ 	XPAD_XBOX360_VENDOR(0x11c9),		/* Nacon GC100XF */
++	XPAD_XBOX360_VENDOR(0x1209),		/* Ardwiino Controllers */
+ 	XPAD_XBOX360_VENDOR(0x12ab),		/* X-Box 360 dance pads */
+ 	XPAD_XBOX360_VENDOR(0x1430),		/* RedOctane X-Box 360 controllers */
+ 	XPAD_XBOX360_VENDOR(0x146b),		/* BigBen Interactive Controllers */
 -- 
-2.26.2
+2.29.2
 
