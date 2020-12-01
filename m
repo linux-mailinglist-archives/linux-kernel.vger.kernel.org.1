@@ -2,118 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806942CB08B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0662CB091
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgLAW4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:56:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
+        id S1726765AbgLAW6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 17:58:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgLAW4o (ORCPT
+        with ESMTP id S1726208AbgLAW6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 17:56:44 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739E8C0613D4;
-        Tue,  1 Dec 2020 14:55:58 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id iq13so2260787pjb.3;
-        Tue, 01 Dec 2020 14:55:58 -0800 (PST)
+        Tue, 1 Dec 2020 17:58:08 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E24C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:57:28 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w187so2169669pfd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 14:57:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=xF9wBhJ/ruSDlA6Srxw1jVi0WbujgXsPSvslQZosYxU=;
-        b=kJ3eowGG6g5XcJ9j4rRIQL+S4zJl30r+BhTrFCtmOwibuAKtR4DDYXdV8bKdDWROYr
-         hIJWB+9HfBhIHCvajqYuY/YoA4dBE9kgYcK1rvjITkuv9vWV2vbKzN4c3Q2M/9dDbTvJ
-         mb0KuF4fCvmofdUjb/UAqGCpTb4hHuzvX9Pp0eKJE0uGqhqHNCW8i/nE6BO94oySkznK
-         JLSsVoxB7aGrcQt0uGkK+SXilz9hE+OhFDpfodutUmq7ZEyoOhnvKWj70Np9qJ5QN6o1
-         B7eFOzNhMNQr5jL8B58gtPE6Rx15ttucZ4kxgzye2HAVpNsA0P6gnZc5Q169xinM0Bka
-         kbcw==
+        bh=Mfm81XCcJKf/0ns4PxId/S79la9obThZUGZ2CR40z18=;
+        b=Jm92V4Wy4ZXFTfDxQFr2dJCmhE7bpPZIUHYELek8z1/CO4Y1WoJrDTqgi8FkAEInXa
+         lZ8OYHo9fmRtwdI1fNdN9qvjJ4UPbaCbLp4KhDigzIz8tSd/xdGv5/CAllauIu03Gk1o
+         EtAeBbwpM4V7tbzqj/K9PdycneNJnRV93XkKg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=xF9wBhJ/ruSDlA6Srxw1jVi0WbujgXsPSvslQZosYxU=;
-        b=YgutM2LfeURqdiYqx9qjEmgvLPQw/I7sBusQ/2prij7s/2OkGMjVxwRY9SSl1+OKb6
-         LD82ciUGrTdACG/eqsvREedbq9tnJakO1Yu3L2EeOq5qcGnSEHlgF1+hBKJx1uj/9khe
-         R4SPWgeEAkqNmvgpNSo72AZtq8mPC1+JVmsWFUic9xDlGLTLsl2T69J8lWRC8EoN2JDq
-         qNtC9sdoh4zNFTpN1lk5F/BaVBi5606+9AL3b8kpQnG/qjyoIoNBun6AZ8XU0ZM26BWI
-         QSt3R67sM8HEBu5QuNzN24YN1DOe1HsFmp5C/hS6sJVBC2IRO00riyXRQ3e1uajV91NW
-         2P7Q==
-X-Gm-Message-State: AOAM533ruUbWnOTBSnLeatNOQGBre0WWfm81RBGoKkZwFxqQnKDNGmjd
-        7I1BPos4oU6BzqMv51+LGCw=
-X-Google-Smtp-Source: ABdhPJy3f2TRP3AqnHaRLUzLECJ1htGQGvX3mrji3EHlmRSp8/8UXe2pBn1MoP8oA9an04VIieWPDQ==
-X-Received: by 2002:a17:90a:d308:: with SMTP id p8mr5051014pju.110.1606863357919;
-        Tue, 01 Dec 2020 14:55:57 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id v196sm758721pfc.34.2020.12.01.14.55.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mfm81XCcJKf/0ns4PxId/S79la9obThZUGZ2CR40z18=;
+        b=Iz4FlPsuk8vEUNuDrPlseK7rO06BQ5tgXz+T8pZU9qr71Ck4OGEVQr0hpZZYp8lx7x
+         3yBVCztTHSEevmtu3Zr2FcKAscUOb8HsWUX4Cos3glrywwM9IDSeG+AsbHqYdxMO17pT
+         twM9Va0YLia8MApqdBqbBqILwXdpxExTGwmf/+JiIL+cucxAUkI3U7XRs6Dhfh/vIonM
+         HND+GAiTfQBiIo5GjV6Waa72/VJDc5KVUnrZH2vPU+YlykNGTDIX5uO2sTDEayBM6rIz
+         ZGWqAEEgr0aIOf0o9heooqORaQVxoxlaZHRaVXb4KSxvjDPOIUPf876o1FTz8WIUOCUl
+         89gg==
+X-Gm-Message-State: AOAM530litHLprzhq8F/h/wnfEzk24hbl4W/OdzTR0oeLImQi4y9llCb
+        b2LOYWFUj7Va/tXIEYWbL0vAkA==
+X-Google-Smtp-Source: ABdhPJxC8oUUVRC4p7tFIkPqeMj8OD4Q0SDjNXzQn9WmurpEcptKRx4Nk7igggK2YMCx9lYijFntnw==
+X-Received: by 2002:a62:8685:0:b029:197:f766:b135 with SMTP id x127-20020a6286850000b0290197f766b135mr4745230pfd.0.1606863447614;
+        Tue, 01 Dec 2020 14:57:27 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x21sm721946pfc.151.2020.12.01.14.57.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 14:55:56 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 1 Dec 2020 14:55:54 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Hyesoo Yu <hyesoo.yu@samsung.com>,
-        Matthew Wilcox <willy@infradead.org>, david@redhat.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        Suren Baghdasaryan <surenb@google.com>,
-        KyongHo Cho <pullip.cho@samsung.com>,
-        John Dias <joaodias@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v2 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
-Message-ID: <20201201225554.GA3968963@google.com>
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-5-minchan@kernel.org>
- <CALAqxLXFeUStaJ8Mtm5v3kSxmeqnjzLTsyathkrKF0ke3fYGiQ@mail.gmail.com>
+        Tue, 01 Dec 2020 14:57:26 -0800 (PST)
+Date:   Tue, 1 Dec 2020 14:57:25 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     luto@kernel.org, tglx@linutronix.de, gofmanp@gmail.com,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        willy@infradead.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, x86@kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v8 3/7] kernel: Implement selective syscall userspace
+ redirection
+Message-ID: <202012011457.DAA0F0F5@keescook>
+References: <20201127193238.821364-1-krisman@collabora.com>
+ <20201127193238.821364-4-krisman@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALAqxLXFeUStaJ8Mtm5v3kSxmeqnjzLTsyathkrKF0ke3fYGiQ@mail.gmail.com>
+In-Reply-To: <20201127193238.821364-4-krisman@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 11:48:15AM -0800, John Stultz wrote:
-> On Tue, Dec 1, 2020 at 9:51 AM Minchan Kim <minchan@kernel.org> wrote:
+On Fri, Nov 27, 2020 at 02:32:34PM -0500, Gabriel Krisman Bertazi wrote:
+> Introduce a mechanism to quickly disable/enable syscall handling for a
+> specific process and redirect to userspace via SIGSYS.  This is useful
+> for processes with parts that require syscall redirection and parts that
+> don't, but who need to perform this boundary crossing really fast,
+> without paying the cost of a system call to reconfigure syscall handling
+> on each boundary transition.  This is particularly important for Windows
+> games running over Wine.
 > 
-> Thanks for reworking and resending this!
+> The proposed interface looks like this:
 > 
-> ...
-> > +static int __init chunk_heap_init(void)
-> > +{
-> > +       struct cma *default_cma = dev_get_cma_area(NULL);
-> > +       struct dma_heap_export_info exp_info;
-> > +       struct chunk_heap *chunk_heap;
-> > +
-> > +       if (!default_cma)
-> > +               return 0;
-> > +
-> > +       chunk_heap = kzalloc(sizeof(*chunk_heap), GFP_KERNEL);
-> > +       if (!chunk_heap)
-> > +               return -ENOMEM;
-> > +
-> > +       chunk_heap->order = CHUNK_HEAP_ORDER;
-> > +       chunk_heap->cma = default_cma;
-> > +
-> > +       exp_info.name = cma_get_name(default_cma);
+>   prctl(PR_SET_SYSCALL_USER_DISPATCH, <op>, <off>, <length>, [selector])
 > 
-> So, this would create a chunk heap name with the default CMA name,
-> which would be indistinguishable from the heap name used for the plain
-> CMA heap.
+> The range [<offset>,<offset>+<length>) is a part of the process memory
+> map that is allowed to by-pass the redirection code and dispatch
+> syscalls directly, such that in fast paths a process doesn't need to
+> disable the trap nor the kernel has to check the selector.  This is
+> essential to return from SIGSYS to a blocked area without triggering
+> another SIGSYS from rt_sigreturn.
 > 
-> Probably a good idea to prefix it with "chunk-" so the heap device
-> names are unique?
+> selector is an optional pointer to a char-sized userspace memory region
+> that has a key switch for the mechanism. This key switch is set to
+> either PR_SYS_DISPATCH_ON, PR_SYS_DISPATCH_OFF to enable and disable the
+> redirection without calling the kernel.
+> 
+> The feature is meant to be set per-thread and it is disabled on
+> fork/clone/execv.
+> 
+> Internally, this doesn't add overhead to the syscall hot path, and it
+> requires very little per-architecture support.  I avoided using seccomp,
+> even though it duplicates some functionality, due to previous feedback
+> that maybe it shouldn't mix with seccomp since it is not a security
+> mechanism.  And obviously, this should never be considered a security
+> mechanism, since any part of the program can by-pass it by using the
+> syscall dispatcher.
+> 
+> For the sysinfo benchmark, which measures the overhead added to
+> executing a native syscall that doesn't require interception, the
+> overhead using only the direct dispatcher region to issue syscalls is
+> pretty much irrelevant.  The overhead of using the selector goes around
+> 40ns for a native (unredirected) syscall in my system, and it is (as
+> expected) dominated by the supervisor-mode user-address access.  In
+> fact, with SMAP off, the overhead is consistently less than 5ns on my
+> test box.
+> 
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Paul Gofman <gofmanp@gmail.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: linux-api@vger.kernel.org
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-That will give an impression to user that they are using different CMA
-area but that's not true. IMHO, let's be honest at this moment.
-When DT binding with CMA is landing down, it could provide unique name.
-Thought?
+Acked-by: Kees Cook <keescook@chromium.org>
+
+
+-- 
+Kees Cook
