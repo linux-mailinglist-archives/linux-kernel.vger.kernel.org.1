@@ -2,148 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BDF2CB105
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F282CB10B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727413AbgLAXoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:44:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
+        id S1727304AbgLAXra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:47:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbgLAXoK (ORCPT
+        with ESMTP id S1727005AbgLAXra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:44:10 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBBEC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 15:43:30 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id s63so2221507pgc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 15:43:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fY5hyTL1LADJADDjDb5GgSei5a/r8R7nT6CdkOspJ28=;
-        b=lba3JsSdXWmCmomk5hDRDrU0RfEXL/zI9mP+sysVQ26ffSeUkzoWmCnrwMD8MA3k0C
-         MpoAbiOU7sfG9zEMNd1vBTW3GX8OLaoQb3QJGohAFbRlivgh3vW+/2Vxk+d8FJ1ZmHSj
-         kxYoTW2Q0dCoOr7eF4D8S6zr12lEpAghudQ7KVgVZvpMnqb4yRJu1bts6mEnyvz72S0D
-         bSnUGEut2DjNPXbqFowsWhJHt/yYpRyjt5TY9i39s48uRLZO+SJwG9YVSAy1gJLblrsV
-         a/J9QoJJYBwKkF069EGYjV8yBW9IAhkgoksIu1oQ2kTE1nYZ2wLfQv5cWU1kDIAn2IqS
-         /j5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fY5hyTL1LADJADDjDb5GgSei5a/r8R7nT6CdkOspJ28=;
-        b=TH7bNJfOtgZj+MxuoBiyW7n+i6qSaSghM6Egdcg6soqzI4LTswUDQJY/4cv8yUndy+
-         FUPVdroyh/pvpzQAxgPPHowrOtCk7aqdeiRBJoOix/HkqBJ6foA3UfSjGcYAl2H6DVkX
-         OUAJO8VqIqrt6K96CJ5rkpgxDyBISMiMQWP6EDn3CkVlkbjos3FbFIGvknumYfX635r3
-         neNZgtk99L1kfZqU9lcVcWZV+dHUbhPJPC/IBbf+n2hBWQcBThYUvPi2I5PyfV1zDg5W
-         B7iLcUqGHP9pH74/rCag779LD9bhHOOsGXC6OQbezkMgUBRGIkNYxNW0YLNou+P7nJK+
-         0cdw==
-X-Gm-Message-State: AOAM5327w1eMr3cGSdQeL4MoO1Y9kNc+G6BZ67LMKaPuXSE3xEMyh6Wr
-        IYKbhvV/k7PgbZSDX6VQFW9ucQ==
-X-Google-Smtp-Source: ABdhPJwxw2fmhWBtHdIVtKdFchQm9O/5vYe7BHNrQ87GcJXUHXbUQqiahRlbXkb6titFrIE4fINVgA==
-X-Received: by 2002:a63:4c12:: with SMTP id z18mr46620pga.66.1606866210006;
-        Tue, 01 Dec 2020 15:43:30 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id q35sm24158pjh.38.2020.12.01.15.43.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 15:43:29 -0800 (PST)
-Date:   Tue, 1 Dec 2020 16:43:27 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com
-Subject: Re: [PATCH v3 01/15] dt-bindings: remoteproc: Add bindind to support
- autonomous processors
-Message-ID: <20201201234327.GA1248055@xps15>
-References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
- <20201126210642.897302-2-mathieu.poirier@linaro.org>
- <20201130173321.GB2662913@robh.at.kernel.org>
+        Tue, 1 Dec 2020 18:47:30 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B746AC0613CF;
+        Tue,  1 Dec 2020 15:46:49 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606866407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JgIOpsf5LPtRog4ZlP7P6So7zHuSC1VIRrzzYKueefM=;
+        b=f5YY7G1DAL8bRimVjlZA6B3TVNlcO4rPU/jpUj6oSkaTIYj4KJ0LrJAGaUogg6Jaur6Ioh
+        3Am8yAABYiatEx0YuSAXnACslJd0HVAsSubi99TL18q1HW/XlAh0orhFWAPa5m6nHsRPOp
+        bR+7h/Oz96i9S8bOu8FJwi+qwLU9ZW80gcXbqFSB6To8fYmr5Vt2Ou5Cbpas4CP1Ksdw0N
+        +m7Oz3BCuPvuiHx7VJsRjOA7/nI56dKz7U8xrII7OEFou8jGf8A/G7DGRH+jGQoinz/SaH
+        Cg7x0knOEGf+0DvjAan5IM5jrpxGlgkD+fBiid4UBwaiSvYtymeurfqI/HJoNw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606866407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JgIOpsf5LPtRog4ZlP7P6So7zHuSC1VIRrzzYKueefM=;
+        b=ADs6QvH5URJ+Rn5saeUG17RwepRbFMdHYbkzOVewg4UtdAka84q/I3FHV19M5KWyluJF4/
+        ac/guvANx/UcxABA==
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     luto@kernel.org, keescook@chromium.org, gofmanp@gmail.com,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        willy@infradead.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, x86@kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v8 7/7] docs: Document Syscall User Dispatch
+In-Reply-To: <20201201152119.3654ba61@lwn.net>
+References: <20201127193238.821364-1-krisman@collabora.com> <20201127193238.821364-8-krisman@collabora.com> <20201201152119.3654ba61@lwn.net>
+Date:   Wed, 02 Dec 2020 00:46:47 +0100
+Message-ID: <874kl5f5so.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130173321.GB2662913@robh.at.kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Tue, Dec 01 2020 at 15:21, Jonathan Corbet wrote:
+> On Fri, 27 Nov 2020 14:32:38 -0500
+> Gabriel Krisman Bertazi <krisman@collabora.com> wrote:
+>
+>> Explain the interface, provide some background and security notes.
+>> 
+>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>
+> Nice to see documentation included...:)  One nit:
+>> ---
+>> Changes since v7:
+>>   - Change process -> thread (Florian Weimer)
+>>   - Drop bogus reference to CONFIG_SYSCALL_USER_DISPATCH (me)
+>>   - Document the interval as a half-open interval (me)
+>> ---
+>>  .../admin-guide/syscall-user-dispatch.rst     | 87 +++++++++++++++++++
+>>  1 file changed, 87 insertions(+)
+>>  create mode 100644 Documentation/admin-guide/syscall-user-dispatch.rst
+>
+> You need to add this file to index.rst in that directory as well so it
+> gets included in the docs build.
 
-On Mon, Nov 30, 2020 at 10:33:21AM -0700, Rob Herring wrote:
-> On Thu, Nov 26, 2020 at 02:06:28PM -0700, Mathieu Poirier wrote:
-> > This patch adds a binding to guide the remoteproc core on how to deal with
-> > remote processors in two cases:
-> > 
-> > 1) When an application holding a reference to a remote processor character
-> >    device interface crashes.
-> > 
-> > 2) when the platform driver for a remote processor is removed.
-> > 
-> > In both cases if "autonomous-on-core-reboot" is specified in the remote
-> > processor DT node, the remoteproc core will detach the remote processor
-> > rather than switching it off.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  .../bindings/remoteproc/remoteproc-core.yaml  | 25 +++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml b/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
-> > new file mode 100644
-> > index 000000000000..3032734f42a3
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
-> > @@ -0,0 +1,25 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: "http://devicetree.org/schemas/remoteproc/remoteproc-core.yaml#"
-> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > +
-> > +title: Binding for the remoteproc core applicable to all remote processors
-> > +
-> > +maintainers:
-> > +  - Bjorn Andersson <bjorn.andersson@linaro.org>
-> > +  - Mathieu Poirier <mathieu.poirier@linaro.org>
-> > +
-> > +description:
-> > +  This document defines the binding recognised by the remoteproc core that can
-> > +  be used by any remote processor in the subsystem.
-> > +
-> > +properties:
-> > +  autonomous-on-core-reboot:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description:
-> > +      Used in two situations, i.e when a user space application releases the
-> > +      handle it has on the remote processor's character driver interface and
-> > +      when a remote processor's platform driver is being removed.  If defined,
-> > +      this flag instructs the remoteproc core to detach the remote processor
-> > +      rather than turning it off.
-> 
-> Userspace? character driver? platform driver? remoteproc core? Please 
-> explain this without OS specific terms.
-
-The remoteproc state machine is gaining in complexity and having technical terms
-in the binding's description helps understand when and how it should be used.  I
-could make it more generic but that will lead to confusion and abuse.  Should I
-make it "rproc,autonomous-on-core-reboot" ?
-
-> 
-> Seems to me this would be implied by functionality the remote proc 
-> provides.
-
-Exactly - this binding is used by the remoteproc core itself.  It is specified
-in the remote processor DT nodes but the individual platform drivers don't do
-anything with it - the core takes care of enacting the desired behavior on their
-behalf.  Otherwise each platform driver would end up adding the same code, which
-nobody wants to see happening.
-
-How do you want me to proceed?
-
-Thanks,
-Mathieu
-
-> 
-> Rob
+Fixed that already after trying to build it :)
