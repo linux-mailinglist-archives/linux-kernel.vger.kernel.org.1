@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D342CA97D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4418D2CA981
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388682AbgLARWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:22:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45798 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726303AbgLARWb (ORCPT
+        id S2389555AbgLARWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389109AbgLARWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:22:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606843265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lMe49E1mnnmlHTInfsQf5rgPXjI/ES+UysXV6vFipss=;
-        b=KSzi+DkntUm7spw1oCvMkYvY1/zolC8uW4c5JGCE5k7Mez03xI0Te8JhgmQnJ/VphHGhg3
-        wbPwZqbEfMZH9izLHodjp0pbzS8lcQwmYuX7BN1BIoSkl3OO2VyEf2QPtkqurMc1EkgNtz
-        2SI4uFqHReuZUQfiEs0xD63nA4LYDGc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-16vq1k01M-unSC-WCvPP0Q-1; Tue, 01 Dec 2020 12:21:03 -0500
-X-MC-Unique: 16vq1k01M-unSC-WCvPP0Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06C959A232;
-        Tue,  1 Dec 2020 17:21:02 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-159.rdu2.redhat.com [10.10.112.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C6D660C0F;
-        Tue,  1 Dec 2020 17:20:56 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
-References: <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com> <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
-To:     Eric Sandeen <sandeen@redhat.com>
-Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-fsdevel@vger.kernel.org,
-        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xfs <linux-xfs@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        Xiaoli Feng <xifeng@redhat.com>
-Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to filesystems
+        Tue, 1 Dec 2020 12:22:54 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C77BC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:22:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x0XHf59KGZcgvn21tEeZCHzW0XTFgVINGVzfBJCJ+k0=; b=gNdPeg7MYayD7Lvs1w7OiBk/Rq
+        AlCIZXFYLXTSjgwABuq+KqRG67cGfjUrJKgg2OXkmcc75g/fKxgcdvHBMwOa579syxyAPlLphD3Ve
+        nHWRPn/TpBQlfwMcKhACZxUI3TU3pu6GPK7Ejzp5MwPNo4ut+f8yCyOSj1PpOPUKZMdhxqEK8Lf9y
+        3q5GtPZQJfQV6HG097ZYIoqSdpMWhu+KuHgl4vCTXoUHHHY3EiYZ2cr3HWmV9eexeO7gKp6l00QwV
+        NjXARxTve8cXZM0nfwCNCKACcHEI7D44fqNkDmj8oLEz+kKvYY2bBGlmoBJbGpsxHuA4zl5+FaG3G
+        DZgvRsfg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk9LW-0007KZ-OY; Tue, 01 Dec 2020 17:21:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD7DF30018A;
+        Tue,  1 Dec 2020 18:21:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5BA9E20103D72; Tue,  1 Dec 2020 18:21:43 +0100 (CET)
+Date:   Tue, 1 Dec 2020 18:21:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, irogers@google.com,
+        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, benh@kernel.crashing.org, paulus@samba.org,
+        mpe@ellerman.id.au
+Subject: Re: [PATCH V2 1/3] perf/core: Flush PMU internal buffers for per-CPU
+ events
+Message-ID: <20201201172143.GS3040@hirez.programming.kicks-ass.net>
+References: <20201130193842.10569-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <286507.1606843256.1@warthog.procyon.org.uk>
-Date:   Tue, 01 Dec 2020 17:20:56 +0000
-Message-ID: <286508.1606843256@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130193842.10569-1-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Sandeen <sandeen@redhat.com> wrote:
+On Mon, Nov 30, 2020 at 11:38:40AM -0800, kan.liang@linux.intel.com wrote:
+> +static DEFINE_PER_CPU(int, perf_sched_cb_usages);
 
-> -	if (IS_DAX(inode))
-> -		stat->attributes |= STATX_ATTR_DAX;
-> -
-
-This could probably be left in and not distributed amongst the filesytems
-provided that any filesystem that might turn it on sets the bit in the
-attributes_mask.
-
-I'm presuming that the core doesn't turn it on without the filesystem buying
-in.
-
-David
-
+% s/perf_sched_cb_usages/perf_sched_cb_usage/g
