@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C6E2C9A58
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4C62C9BC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387721AbgLAI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:56:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58602 "EHLO mail.kernel.org"
+        id S2389878AbgLAJLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:11:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387696AbgLAI4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:56:45 -0500
+        id S2389543AbgLAJLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:11:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 299422220B;
-        Tue,  1 Dec 2020 08:56:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EE4C20770;
+        Tue,  1 Dec 2020 09:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812989;
-        bh=hmQqA3gU2qV0cG5N8JPjCQPhAMc7wN7gRqRgyP7IAds=;
+        s=korg; t=1606813883;
+        bh=DKzJ8l27nwCgpSyAhsjwF0kAnIbc16qUSwJ0cyQpX0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xtL8wOpePA+diN0UtQllr2fAkZOlbjNyTREHa+vkq0gxjAhcHXs6ZURT9hadhZu22
-         SN/diYXU4UdHSsD7LUGeiPTzQ9YjXTQ9/lQ2YM9WPuRvzp+yrnygDhuh8t7OlwNeuq
-         ST80ReXLUwiDW06/8Tn5zQTCNRnlKT6b+zy66fk4=
+        b=UjrILIhLmXf7wpiJOHvZDIzrd5h85jB2X1c5Z5zPLmVfJiyhi08sMod8hm8ppywd9
+         mPxlpvqO4S1CBVfeQf3ICWv4vb3Y3HNRhhQrsTGr1OlSbczBrfAMPzW/KrnyKkHtFg
+         On/q6tj1uglSti+NQ0iou+qEZFPNOrgi4BqAaX/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
+        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 30/42] ibmvnic: fix NULL pointer dereference in ibmvic_reset_crq
+Subject: [PATCH 5.9 093/152] cxgb4: fix the panic caused by non smac rewrite
 Date:   Tue,  1 Dec 2020 09:53:28 +0100
-Message-Id: <20201201084644.657098108@linuxfoundation.org>
+Message-Id: <20201201084724.070420315@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Raju Rangoju <rajur@chelsio.com>
 
-[ Upstream commit 0e435befaea45f7ea58682eecab5e37e05b2ce65 ]
+[ Upstream commit bff453921ae105a8dbbad0ed7dd5f5ce424536e7 ]
 
-crq->msgs could be NULL if the previous reset did not complete after
-freeing crq->msgs. Check for NULL before dereferencing them.
+SMT entry is allocated only when loopback Source MAC
+rewriting is requested. Accessing SMT entry for non
+smac rewrite cases results in kernel panic.
 
-Snippet of call trace:
-...
-ibmvnic 30000003 env3 (unregistering): Releasing sub-CRQ
-ibmvnic 30000003 env3 (unregistering): Releasing CRQ
-BUG: Kernel NULL pointer dereference on read at 0x00000000
-Faulting instruction address: 0xc0000000000c1a30
-Oops: Kernel access of bad area, sig: 11 [#1]
-LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-Modules linked in: ibmvnic(E-) rpadlpar_io rpaphp xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables xsk_diag tcp_diag udp_diag tun raw_diag inet_diag unix_diag bridge af_packet_diag netlink_diag stp llc rfkill sunrpc pseries_rng xts vmx_crypto uio_pdrv_genirq uio binfmt_misc ip_tables xfs libcrc32c sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp dm_mirror dm_region_hash dm_log dm_mod [last unloaded: ibmvnic]
-CPU: 20 PID: 8426 Comm: kworker/20:0 Tainted: G            E     5.10.0-rc1+ #12
-Workqueue: events __ibmvnic_reset [ibmvnic]
-NIP:  c0000000000c1a30 LR: c008000001b00c18 CTR: 0000000000000400
-REGS: c00000000d05b7a0 TRAP: 0380   Tainted: G            E      (5.10.0-rc1+)
-MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 44002480  XER: 20040000
-CFAR: c0000000000c19ec IRQMASK: 0
-GPR00: 0000000000000400 c00000000d05ba30 c008000001b17c00 0000000000000000
-GPR04: 0000000000000000 0000000000000000 0000000000000000 00000000000001e2
-GPR08: 000000000001f400 ffffffffffffd950 0000000000000000 c008000001b0b280
-GPR12: c0000000000c19c8 c00000001ec72e00 c00000000019a778 c00000002647b440
-GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-GPR20: 0000000000000006 0000000000000001 0000000000000003 0000000000000002
-GPR24: 0000000000001000 c008000001b0d570 0000000000000005 c00000007ab5d550
-GPR28: c00000007ab5c000 c000000032fcf848 c00000007ab5cc00 c000000032fcf800
-NIP [c0000000000c1a30] memset+0x68/0x104
-LR [c008000001b00c18] ibmvnic_reset_crq+0x70/0x110 [ibmvnic]
-Call Trace:
-[c00000000d05ba30] [0000000000000800] 0x800 (unreliable)
-[c00000000d05bab0] [c008000001b0a930] do_reset.isra.40+0x224/0x634 [ibmvnic]
-[c00000000d05bb80] [c008000001b08574] __ibmvnic_reset+0x17c/0x3c0 [ibmvnic]
-[c00000000d05bc50] [c00000000018d9ac] process_one_work+0x2cc/0x800
-[c00000000d05bd20] [c00000000018df58] worker_thread+0x78/0x520
-[c00000000d05bdb0] [c00000000019a934] kthread+0x1c4/0x1d0
-[c00000000d05be20] [c00000000000d5d0] ret_from_kernel_thread+0x5c/0x6c
+Fix the panic caused by non smac rewrite
 
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
+Fixes: 937d84205884 ("cxgb4: set up filter action after rewrites")
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
+Link: https://lore.kernel.org/r/20201118143213.13319-1-rajur@chelsio.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index d25b76440c114..88c837504c7d6 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -3525,6 +3525,9 @@ static int ibmvnic_reset_crq(struct ibmvnic_adapter *adapter)
- 	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
- 
- 	/* Clean out the queue */
-+	if (!crq->msgs)
-+		return -EINVAL;
-+
- 	memset(crq->msgs, 0, PAGE_SIZE);
- 	crq->cur = 0;
- 
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+index 8eb976106d0c8..7e7537eabf000 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+@@ -883,7 +883,8 @@ int set_filter_wr(struct adapter *adapter, int fidx)
+ 		 FW_FILTER_WR_OVLAN_VLD_V(f->fs.val.ovlan_vld) |
+ 		 FW_FILTER_WR_IVLAN_VLDM_V(f->fs.mask.ivlan_vld) |
+ 		 FW_FILTER_WR_OVLAN_VLDM_V(f->fs.mask.ovlan_vld));
+-	fwr->smac_sel = f->smt->idx;
++	if (f->fs.newsmac)
++		fwr->smac_sel = f->smt->idx;
+ 	fwr->rx_chan_rx_rpl_iq =
+ 		htons(FW_FILTER_WR_RX_CHAN_V(0) |
+ 		      FW_FILTER_WR_RX_RPL_IQ_V(adapter->sge.fw_evtq.abs_id));
 -- 
 2.27.0
 
