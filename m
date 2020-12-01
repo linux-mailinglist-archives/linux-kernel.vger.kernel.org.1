@@ -2,211 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A77A2CAD0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D44E2CAD0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404436AbgLAUJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:09:26 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2080 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404423AbgLAUJZ (ORCPT
+        id S2390862AbgLAUK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727992AbgLAUK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:09:25 -0500
-Received: from dggeme720-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CltSb0XVfzVjpl;
-        Wed,  2 Dec 2020 04:07:59 +0800 (CST)
-Received: from [10.174.186.123] (10.174.186.123) by
- dggeme720-chm.china.huawei.com (10.1.199.116) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 2 Dec 2020 04:08:42 +0800
-Subject: Re: [RFC PATCH 1/3] KVM: arm64: Fix possible memory leak in kvm
- stage2
-To:     Will Deacon <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
-        <lushenming@huawei.com>
-References: <20201130121847.91808-1-wangyanan55@huawei.com>
- <20201130121847.91808-2-wangyanan55@huawei.com>
- <20201130132133.GA24837@willie-the-truck>
- <ef8f51d6-365b-8b05-0a10-5b4a242f6aa3@huawei.com>
- <20201201141632.GC26973@willie-the-truck>
- <1dbb71f2-a794-86ab-e1cc-ceb9c1e3dd37@huawei.com>
- <20201201181510.GA27955@willie-the-truck>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <775d2d78-1a59-f317-6eb4-045163240ae0@huawei.com>
-Date:   Wed, 2 Dec 2020 04:08:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 15:10:57 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAA5C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:10:16 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id e23so1841467pgk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:10:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tl7NwbCgPB4FUQziRcqAk5bwi9HxMdhHj333bo2TW/M=;
+        b=MNqqTk+8wQFzYwHDIulSC0n0tpuXsS4zGpNUpp301624jzL/9+PsDGtaaaNW2AuMQo
+         hvEXWv2j/J1rgvntkFh37d7nx4nBjCoWRtgU6s3b3mw1eJVCdLRKUHbByJbdYN3Szid5
+         2gn7jq7wNLxOd6WaMsugKlMP9pZkhQ29rR4SmfOU0AwFtVEWa5DH7xv9j3lGpwRTRJeJ
+         E4zCKTiA4HBVAlTfZMML+8L4p/h1INeaUsVGALltQ5J1R2CbkfhbuUxND0SCju18LLay
+         vCDAvEEKE6/1ND/wQ7MidfcxC7x/Exf0daMu38OzJ/UzegmheFEbcO2P3DECNu6/b0Nz
+         ERCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tl7NwbCgPB4FUQziRcqAk5bwi9HxMdhHj333bo2TW/M=;
+        b=prZOFgsgcb8c9mBS9Tnn4SnmdRZ8qbgj91wCqCz97bgpaJqRPMxNJj7XIzZQSPtwfX
+         jYfPIhUDR6gynDul29Zt5Amkbovv7O/b2UXHcfYQBCqaiF0VUz2MQ5CUYGF/243Lp8mS
+         e+/u6ENPpBOY/rxAm0KY5L/E2iP+XghakxGWwwtAFc+xN3zCyQ3xjj2dNC6560uAOhp9
+         Qo0CGGRoh9JU+MYJDEcJiJjJofWvRtpvGFWdVnRIVE67OBhV0AlLAfwNHth2502XM/me
+         UBoNWa1BoUfC4wnnciZJHxv2jdIOM+GhBM1jwwNCgUuzPiQmXAGACk2fBZfatWJm2JZX
+         c58A==
+X-Gm-Message-State: AOAM531AocCUUta7tTDpmSRTdQ4AK9bEplyDgutKHwD7r+D/r9HNM1kD
+        3snqpuS4PGkW42LcMgDOJI4PUn84R89rZPtt8QA6/A==
+X-Google-Smtp-Source: ABdhPJye7nF810RrUIWwzBhcGCeBxTWvT8Mt1zXFoOR/zxFhAr+Msh+GI3GZYWqeCuWuT1zkuuBc54fKh9BANFQUdcA=
+X-Received: by 2002:a63:a902:: with SMTP id u2mr3776969pge.263.1606853416126;
+ Tue, 01 Dec 2020 12:10:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201201181510.GA27955@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.186.123]
-X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
- dggeme720-chm.china.huawei.com (10.1.199.116)
-X-CFilter-Loop: Reflected
+References: <CA+G9fYt0qHxUty2qt7_9_YTOZamdtknhddbsi5gc3PDy0PvZ5A@mail.gmail.com>
+ <X79NpRIqAHEp2Lym@kroah.com> <CAKwvOdmfEY6fnNFUUzLvN9bKyeTt7OMc-Uvx=YqTuMR2BuD5XA@mail.gmail.com>
+ <X8X8y4j9Ip+C5DwS@kroah.com>
+In-Reply-To: <X8X8y4j9Ip+C5DwS@kroah.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Dec 2020 12:10:04 -0800
+Message-ID: <CAKwvOdkYWBsL-QXcfPztsCTzyAHLiSodzDznDxOz1MPkktWS1w@mail.gmail.com>
+Subject: Re: [stable 4.9] PANIC: double fault, error_code: 0x0 - clang boot
+ failed on x86_64
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux-stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Sasha Levin <sashal@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        x86@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/12/2 2:15, Will Deacon wrote:
-> On Wed, Dec 02, 2020 at 01:19:35AM +0800, wangyanan (Y) wrote:
->> On 2020/12/1 22:16, Will Deacon wrote:
->>> On Tue, Dec 01, 2020 at 03:21:23PM +0800, wangyanan (Y) wrote:
->>>> On 2020/11/30 21:21, Will Deacon wrote:
->>>>> On Mon, Nov 30, 2020 at 08:18:45PM +0800, Yanan Wang wrote:
->>>>>> @@ -476,6 +477,7 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->>>>>>     	/* There's an existing valid leaf entry, so perform break-before-make */
->>>>>>     	kvm_set_invalid_pte(ptep);
->>>>>>     	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
->>>>>> +	put_page(virt_to_page(ptep));
->>>>>>     	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
->>>>>>     out:
->>>>>>     	data->phys += granule;
->>>>> Isn't this hunk alone sufficient to solve the problem?
->>>>>
->>>> Not sufficient enough. When the old ptep is valid and old pte equlas new
->>>> pte, in this case, "True" is also returned by kvm_set_valid_leaf_pte()
->>>>
->>>> and get_page() will still be called.
->>> I had a go at fixing this without introducing refcounting to the hyp stage-1
->>> case, and ended up with the diff below. What do you think?
->> Functionally this diff looks fine to me. A small comment inline, please see
->> below.
->>
->> I had made an alternative fix (after sending v1) and it looks much more
->> concise.
->>
->> If you're ok with it, I can send it as v2 (together with patch#2 and #3)
->> after some tests.
-> Thanks.
+On Tue, Dec 1, 2020 at 12:19 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
->> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->> index 0271b4a3b9fe..b232bdd142a6 100644
->> --- a/arch/arm64/kvm/hyp/pgtable.c
->> +++ b/arch/arm64/kvm/hyp/pgtable.c
->> @@ -470,6 +470,9 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64
->> end, u32 level,
->>          if (!kvm_block_mapping_supported(addr, end, phys, level))
->>                  return false;
->>
->> +       if (kvm_pte_valid(*ptep))
->> +               put_page(virt_to_page(ptep));
->> +
->>          if (kvm_set_valid_leaf_pte(ptep, phys, data->attr, level))
->>                  goto out;
-> This is certainly smaller, but see below.
+> On Mon, Nov 30, 2020 at 12:12:39PM -0800, Nick Desaulniers wrote:
+> > On Wed, Nov 25, 2020 at 10:38 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > Is the mainline 4.9 tree supposed to work with clang?  I didn't think
+> > > that upstream effort started until 4.19 or so.
+> >
+> > (For historical records, separate from the initial bug report that
+> > started this thread)
+> >
+> > I consider 785f11aa595b ("kbuild: Add better clang cross build
+> > support") to be the starting point of a renewed effort to upstream
+> > clang support. 785f11aa595b landed in v4.12-rc1.  I think most patches
+> > landed between there and 4.15 (would have been my guess).  From there,
+> > support was backported to 4.14, 4.9, and 4.4 for x86_64 and aarch64.
+> > We still have CI coverage of those branches+arches with Clang today.
+> > Pixel 2 shipped with 4.4+clang, Pixel 3 and 3a with 4.9+clang, Pixel 4
+> > and 4a with 4.14+clang.  CrOS has also shipped clang built kernels
+> > since 4.4+.
 >
->>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->>> index 0271b4a3b9fe..78e2c0dc47ae 100644
->>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>> @@ -170,23 +170,16 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp)
->>>    	smp_store_release(ptep, pte);
->>>    }
->>> -static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
->>> -				   u32 level)
->>> +static kvm_pte_t kvm_init_valid_leaf_pte(u64 pa, kvm_pte_t attr, u32 level)
->>>    {
->>> -	kvm_pte_t old = *ptep, pte = kvm_phys_to_pte(pa);
->>> +	kvm_pte_t pte = kvm_phys_to_pte(pa);
->>>    	u64 type = (level == KVM_PGTABLE_MAX_LEVELS - 1) ? KVM_PTE_TYPE_PAGE :
->>>    							   KVM_PTE_TYPE_BLOCK;
->>>    	pte |= attr & (KVM_PTE_LEAF_ATTR_LO | KVM_PTE_LEAF_ATTR_HI);
->>>    	pte |= FIELD_PREP(KVM_PTE_TYPE, type);
->>>    	pte |= KVM_PTE_VALID;
->>> -
->>> -	/* Tolerate KVM recreating the exact same mapping. */
->>> -	if (kvm_pte_valid(old))
->>> -		return old == pte;
->>> -
->>> -	smp_store_release(ptep, pte);
->>> -	return true;
->>> +	return pte;
->>>    }
->>>    static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
->>> @@ -341,12 +334,17 @@ static int hyp_map_set_prot_attr(enum kvm_pgtable_prot prot,
->>>    static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->>>    				    kvm_pte_t *ptep, struct hyp_map_data *data)
->>>    {
->>> +	kvm_pte_t new, old = *ptep;
->>>    	u64 granule = kvm_granule_size(level), phys = data->phys;
->>>    	if (!kvm_block_mapping_supported(addr, end, phys, level))
->>>    		return false;
->>> -	WARN_ON(!kvm_set_valid_leaf_pte(ptep, phys, data->attr, level));
->>> +	/* Tolerate KVM recreating the exact same mapping. */
->>> +	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
->>> +	if (old != new && !WARN_ON(kvm_pte_valid(old)))
->>> +		smp_store_release(ptep, new);
->>> +
->>>    	data->phys += granule;
->>>    	return true;
->>>    }
->>> @@ -465,19 +463,24 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->>>    				       kvm_pte_t *ptep,
->>>    				       struct stage2_map_data *data)
->>>    {
->>> +	kvm_pte_t new, old = *ptep;
->>>    	u64 granule = kvm_granule_size(level), phys = data->phys;
->>>    	if (!kvm_block_mapping_supported(addr, end, phys, level))
->>>    		return false;
->>> -	if (kvm_set_valid_leaf_pte(ptep, phys, data->attr, level))
->>> -		goto out;
->>> +	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
->>> +	if (kvm_pte_valid(old)) {
->>> +		/*
->>> +		 * There's an existing valid leaf entry, so perform
->>> +		 * break-before-make.
->>> +		 */
->>> +		kvm_set_invalid_pte(ptep);
->>> +		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
->>> +		put_page(virt_to_page(ptep));
->> When old PTE is valid and equals to the new one, we will also perform
->> break-before-make and the new PTE installation. But they're actually not
->> necessary in this case.
-> Agreed, but I don't think that case should happen for stage-2 mappings.
-> That's why I prefer my diff here, as it makes that 'old == new' logic
-> specific to the hyp mappings.
->
-> But I'll leave it all up to you (these diffs are only intended to be
-> helpful).
->
-> Will
-> .
+> Thanks for the info.  Naresh, does this help explain why maybe testing
+> these kernel branches with clang might not be the best thing to do?
 
-Hi Will,
+On the contrary, I think it's very much worthwhile to test these
+branches with Clang.  Particularly since CrOS is shipping x86_64
+devices built with Clang since 4.4.y.  This looks like a problem
+that's potentially been fixed but the fix not yet identified and
+backported.  It would be good for us to identify and fix the issue
+before it becomes a problem for CrOS.
 
-In my opinion, the 'old == new' case might happen too in stage-2 
-translation,  especially in the condition of concurrent access of 
-multiple vCPUs.
+Though, it looks like CrOS just skipped 4.9...? Looking at:
+https://chromium.googlesource.com/chromiumos/third_party/kernel/+refs
+I don't see a chromeos-4.9 branch.
 
-For example, when merging tables into a block, we will perform 
-break-before-make for a valid old PTE in function stage2_map_walk_pre().
-
-If the other vCPUs are trying to access the same GPA range, so the MMUs 
-will target at the same PTE as above, and they might just catch the moment
-
-when the target PTE is set invalid in BBM by the vCPU holding the 
-mmu_lock, but the old PTE will be updated to valid later.
-
-As a result, translation fault will be triggered in these vCPUs, then 
-they will wait for the mmu_lock to map exactly the *same* mapping (old 
-== new).
-
-
+That said, I still find such reports helpful to track.
+-- 
 Thanks,
-
-Yanan
-
+~Nick Desaulniers
