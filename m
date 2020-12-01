@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05F32C9A38
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C092C9A0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387658AbgLAI4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:56:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59148 "EHLO mail.kernel.org"
+        id S1729012AbgLAIzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387647AbgLAI4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:56:11 -0500
+        id S1728965AbgLAIzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1984222260;
-        Tue,  1 Dec 2020 08:55:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7609C22210;
+        Tue,  1 Dec 2020 08:53:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812930;
-        bh=DiPoC0zHTq0aKNFarUai5BdPAzCvUtJPT7y9roUYJDI=;
+        s=korg; t=1606812835;
+        bh=OrVp3SXKnU7yVQJwib/lo8RqkvUDnVYKellt84cZ9g4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UMIu3cRbslsTguIMTPZ5AL4M8X/3HF3XkUIBhQYxYudmXqzNaUx6Iv9M7QyMbW3d+
-         MbMgW2f+YojmN10iOnNqaoNm9mYel+M/6ThLEpVkOry4z6Y2Wrn4glJ1+9SY2eOv/5
-         KxTXnEUGHdP0wmRfxcw74qeyFgPfsuhrmEn53P2c=
+        b=qlz2P9n4VtikS03B4zN0NERI/g5ts6GMO1LLN3V4aUy+xjlizybZR8h2nZAJoYtmR
+         u0T4LIJkbUQWpNkECA1EKCA88URX8Ra4De3h2rPnWDh5y2O1VEnD644EaZgREXTUmX
+         /qhSl8TT8xm5Bz09gzl5dCFTgZp39aJm89XuRJow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Edwin Peer <edwin.peer@broadcom.com>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 24/42] bnxt_en: fix error return code in bnxt_init_board()
-Date:   Tue,  1 Dec 2020 09:53:22 +0100
-Message-Id: <20201201084644.003452012@linuxfoundation.org>
+Subject: [PATCH 4.4 17/24] nfc: s3fwrn5: use signed integer for parsing GPIO numbers
+Date:   Tue,  1 Dec 2020 09:53:23 +0100
+Message-Id: <20201201084638.611870546@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
+References: <20201201084637.754785180@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 3383176efc0fb0c0900a191026468a58668b4214 ]
+[ Upstream commit d8f0a86795c69f5b697f7d9e5274c124da93c92d ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+GPIOs - as returned by of_get_named_gpio() and used by the gpiolib - are
+signed integers, where negative number indicates error.  The return
+value of of_get_named_gpio() should not be assigned to an unsigned int
+because in case of !CONFIG_GPIOLIB such number would be a valid GPIO.
 
-Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Link: https://lore.kernel.org/r/1605792621-6268-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC Chip")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20201123162351.209100-1-krzk@kernel.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/nfc/s3fwrn5/i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index dc34cfa2a58fc..63c043e8824fc 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -6319,6 +6319,7 @@ static int bnxt_init_board(struct pci_dev *pdev, struct net_device *dev)
- 	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0 &&
- 	    dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
- 		dev_err(&pdev->dev, "System does not support DMA, aborting\n");
-+		rc = -EIO;
- 		goto init_err_disable;
- 	}
+diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
+index c61d8a308da45..779f7a76ecd3d 100644
+--- a/drivers/nfc/s3fwrn5/i2c.c
++++ b/drivers/nfc/s3fwrn5/i2c.c
+@@ -37,8 +37,8 @@ struct s3fwrn5_i2c_phy {
+ 	struct i2c_client *i2c_dev;
+ 	struct nci_dev *ndev;
+ 
+-	unsigned int gpio_en;
+-	unsigned int gpio_fw_wake;
++	int gpio_en;
++	int gpio_fw_wake;
+ 
+ 	struct mutex mutex;
  
 -- 
 2.27.0
