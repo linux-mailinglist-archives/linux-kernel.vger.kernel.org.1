@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B0D2C9AAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDDE2C9C38
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388186AbgLAI7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:59:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35510 "EHLO mail.kernel.org"
+        id S2390314AbgLAJO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:14:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388158AbgLAI7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:59:43 -0500
+        id S2390169AbgLAJNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:13:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F14C52223F;
-        Tue,  1 Dec 2020 08:59:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8308520770;
+        Tue,  1 Dec 2020 09:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813142;
-        bh=gDBlbcMbKZZqQg/NjkBGE1geSp0degN8fuShHNPWCfM=;
+        s=korg; t=1606814019;
+        bh=6TvL/hUeQqKv6hDCPBdWHDaRD5UHa64vcBKjcH3i18s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bp4r+BvV6E2w3LmK+ZDJNRzS0MVUyRct8bhXQibO5FNn79vwfAT2vpoF6U2F/kbMH
-         AizbLvfF7j1MmpXomfc8tQKUKiaDBfjijH/Q9CAN+7icIpViFc5UR9l6JhFUuYFsg0
-         dTvp7HfhKw9dS0JaR9aCHhRRu1xN4VqjVbp+EXJQ=
+        b=gLFjtH0lllITPy7gz1Ghmh35OK7i7/90NlTZiQ8oczlopFkblclzxLp7cmtfeYhoW
+         4COwVGw8t0WJU65qpkITibLEXkHFFGTXpBZuKzxXOEB0CufyHJbLZ2IOQ9JDFSvIQi
+         MxvzdBd/FrHocYP3ifo8zjLbbAyS8QWIZYlaZSpA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Willem de Bruijn <willemb@google.com>,
-        Xiaochen Shen <xiaochen.shen@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Subject: [PATCH 4.14 47/50] x86/resctrl: Remove superfluous kernfs_get() calls to prevent refcount leak
+        stable@vger.kernel.org, Ido Segev <idose@amazon.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 111/152] net: ena: handle bad request id in ena_netdev
 Date:   Tue,  1 Dec 2020 09:53:46 +0100
-Message-Id: <20201201084650.455803274@linuxfoundation.org>
+Message-Id: <20201201084726.383820177@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,182 +44,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaochen Shen <xiaochen.shen@intel.com>
+From: Shay Agroskin <shayagr@amazon.com>
 
-commit fd8d9db3559a29fd737bcdb7c4fcbe1940caae34 upstream.
+[ Upstream commit 5b7022cf1dc0d721bd4b5f3bada05bd8ced82fe0 ]
 
-Willem reported growing of kernfs_node_cache entries in slabtop when
-repeatedly creating and removing resctrl subdirectories as well as when
-repeatedly mounting and unmounting the resctrl filesystem.
+After request id is checked in validate_rx_req_id() its value is still
+used in the line
+	rx_ring->free_ids[next_to_clean] =
+					rx_ring->ena_bufs[i].req_id;
+even if it was found to be out-of-bound for the array free_ids.
 
-On resource group (control as well as monitoring) creation via a mkdir
-an extra kernfs_node reference is obtained to ensure that the rdtgroup
-structure remains accessible for the rdtgroup_kn_unlock() calls where it
-is removed on deletion. The kernfs_node reference count is dropped by
-kernfs_put() in rdtgroup_kn_unlock().
+The patch moves the request id to an earlier stage in the napi routine and
+makes sure its value isn't used if it's found out-of-bounds.
 
-With the above explaining the need for one kernfs_get()/kernfs_put()
-pair in resctrl there are more places where a kernfs_node reference is
-obtained without a corresponding release. The excessive amount of
-reference count on kernfs nodes will never be dropped to 0 and the
-kernfs nodes will never be freed in the call paths of rmdir and umount.
-It leads to reference count leak and kernfs_node_cache memory leak.
-
-Remove the superfluous kernfs_get() calls and expand the existing
-comments surrounding the remaining kernfs_get()/kernfs_put() pair that
-remains in use.
-
-Superfluous kernfs_get() calls are removed from two areas:
-
-  (1) In call paths of mount and mkdir, when kernfs nodes for "info",
-  "mon_groups" and "mon_data" directories and sub-directories are
-  created, the reference count of newly created kernfs node is set to 1.
-  But after kernfs_create_dir() returns, superfluous kernfs_get() are
-  called to take an additional reference.
-
-  (2) kernfs_get() calls in rmdir call paths.
-
-Backporting notes:
-
-Since upstream commit fa7d949337cc ("x86/resctrl: Rename and move rdt
-files to a separate directory"), the file
-arch/x86/kernel/cpu/intel_rdt_rdtgroup.c has been renamed and moved to
-arch/x86/kernel/cpu/resctrl/rdtgroup.c.
-Apply the change against file arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-for older stable trees.
-
-Upstream commit 17eafd076291 ("x86/intel_rdt: Split resource group
-removal in two") moved part of resource group removal code from
-rdtgroup_rmdir_ctrl() into a separate function rdtgroup_ctrl_remove().
-Apply the change against original code base of rdtgroup_rmdir_ctrl() for
-older stable trees.
-
-Fixes: 17eafd076291 ("x86/intel_rdt: Split resource group removal in two")
-Fixes: 4af4a88e0c92 ("x86/intel_rdt/cqm: Add mount,umount support")
-Fixes: f3cbeacaa06e ("x86/intel_rdt/cqm: Add rmdir support")
-Fixes: d89b7379015f ("x86/intel_rdt/cqm: Add mon_data")
-Fixes: c7d9aac61311 ("x86/intel_rdt/cqm: Add mkdir support for RDT monitoring")
-Fixes: 5dc1d5c6bac2 ("x86/intel_rdt: Simplify info and base file lists")
-Fixes: 60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
-Fixes: 4e978d06dedb ("x86/intel_rdt: Add "info" files to resctrl file system")
-Reported-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Tested-by: Willem de Bruijn <willemb@google.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/1604085053-31639-1-git-send-email-xiaochen.shen@intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 30623e1ed116 ("net: ena: avoid memory access violation by validating req_id properly")
+Signed-off-by: Ido Segev <idose@amazon.com>
+Signed-off-by: Shay Agroskin <shayagr@amazon.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/intel_rdt_rdtgroup.c |   35 +------------------------------
- 1 file changed, 2 insertions(+), 33 deletions(-)
+ drivers/net/ethernet/amazon/ena/ena_eth_com.c |  3 ++
+ drivers/net/ethernet/amazon/ena/ena_netdev.c  | 43 +++++--------------
+ 2 files changed, 14 insertions(+), 32 deletions(-)
 
---- a/arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-+++ b/arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
-@@ -830,7 +830,6 @@ static int rdtgroup_mkdir_info_resdir(st
- 	if (IS_ERR(kn_subdir))
- 		return PTR_ERR(kn_subdir);
+diff --git a/drivers/net/ethernet/amazon/ena/ena_eth_com.c b/drivers/net/ethernet/amazon/ena/ena_eth_com.c
+index ccd4405895651..336f115e8091f 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_eth_com.c
++++ b/drivers/net/ethernet/amazon/ena/ena_eth_com.c
+@@ -538,6 +538,7 @@ int ena_com_rx_pkt(struct ena_com_io_cq *io_cq,
+ {
+ 	struct ena_com_rx_buf_info *ena_buf = &ena_rx_ctx->ena_bufs[0];
+ 	struct ena_eth_io_rx_cdesc_base *cdesc = NULL;
++	u16 q_depth = io_cq->q_depth;
+ 	u16 cdesc_idx = 0;
+ 	u16 nb_hw_desc;
+ 	u16 i = 0;
+@@ -565,6 +566,8 @@ int ena_com_rx_pkt(struct ena_com_io_cq *io_cq,
+ 	do {
+ 		ena_buf[i].len = cdesc->length;
+ 		ena_buf[i].req_id = cdesc->req_id;
++		if (unlikely(ena_buf[i].req_id >= q_depth))
++			return -EIO;
  
--	kernfs_get(kn_subdir);
- 	ret = rdtgroup_kn_set_ugid(kn_subdir);
- 	if (ret)
- 		return ret;
-@@ -853,7 +852,6 @@ static int rdtgroup_create_info_dir(stru
- 	kn_info = kernfs_create_dir(parent_kn, "info", parent_kn->mode, NULL);
- 	if (IS_ERR(kn_info))
- 		return PTR_ERR(kn_info);
--	kernfs_get(kn_info);
+ 		if (++i >= nb_hw_desc)
+ 			break;
+diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+index a3a8edf9a734d..0a8520a2e4649 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
++++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+@@ -801,24 +801,6 @@ static void ena_free_all_io_tx_resources(struct ena_adapter *adapter)
+ 					      adapter->num_io_queues);
+ }
  
- 	for_each_alloc_enabled_rdt_resource(r) {
- 		fflags =  r->fflags | RF_CTRL_INFO;
-@@ -870,12 +868,6 @@ static int rdtgroup_create_info_dir(stru
- 			goto out_destroy;
- 	}
- 
--	/*
--	 * This extra ref will be put in kernfs_remove() and guarantees
--	 * that @rdtgrp->kn is always accessible.
--	 */
--	kernfs_get(kn_info);
+-static int validate_rx_req_id(struct ena_ring *rx_ring, u16 req_id)
+-{
+-	if (likely(req_id < rx_ring->ring_size))
+-		return 0;
 -
- 	ret = rdtgroup_kn_set_ugid(kn_info);
- 	if (ret)
- 		goto out_destroy;
-@@ -904,12 +896,6 @@ mongroup_create_dir(struct kernfs_node *
- 	if (dest_kn)
- 		*dest_kn = kn;
- 
--	/*
--	 * This extra ref will be put in kernfs_remove() and guarantees
--	 * that @rdtgrp->kn is always accessible.
--	 */
--	kernfs_get(kn);
+-	netif_err(rx_ring->adapter, rx_err, rx_ring->netdev,
+-		  "Invalid rx req_id: %hu\n", req_id);
 -
- 	ret = rdtgroup_kn_set_ugid(kn);
- 	if (ret)
- 		goto out_destroy;
-@@ -1178,7 +1164,6 @@ static struct dentry *rdt_mount(struct f
- 			dentry = ERR_PTR(ret);
- 			goto out_info;
- 		}
--		kernfs_get(kn_mongrp);
+-	u64_stats_update_begin(&rx_ring->syncp);
+-	rx_ring->rx_stats.bad_req_id++;
+-	u64_stats_update_end(&rx_ring->syncp);
+-
+-	/* Trigger device reset */
+-	rx_ring->adapter->reset_reason = ENA_REGS_RESET_INV_RX_REQ_ID;
+-	set_bit(ENA_FLAG_TRIGGER_RESET, &rx_ring->adapter->flags);
+-	return -EFAULT;
+-}
+-
+ /* ena_setup_rx_resources - allocate I/O Rx resources (Descriptors)
+  * @adapter: network interface device structure
+  * @qid: queue index
+@@ -1368,15 +1350,10 @@ static struct sk_buff *ena_rx_skb(struct ena_ring *rx_ring,
+ 	struct ena_rx_buffer *rx_info;
+ 	u16 len, req_id, buf = 0;
+ 	void *va;
+-	int rc;
  
- 		ret = mkdir_mondata_all(rdtgroup_default.kn,
- 					&rdtgroup_default, &kn_mondata);
-@@ -1186,7 +1171,6 @@ static struct dentry *rdt_mount(struct f
- 			dentry = ERR_PTR(ret);
- 			goto out_mongrp;
- 		}
--		kernfs_get(kn_mondata);
- 		rdtgroup_default.mon.mon_data_kn = kn_mondata;
- 	}
+ 	len = ena_bufs[buf].len;
+ 	req_id = ena_bufs[buf].req_id;
  
-@@ -1461,11 +1445,6 @@ static int mkdir_mondata_subdir(struct k
- 	if (IS_ERR(kn))
- 		return PTR_ERR(kn);
+-	rc = validate_rx_req_id(rx_ring, req_id);
+-	if (unlikely(rc < 0))
+-		return NULL;
+-
+ 	rx_info = &rx_ring->rx_buffer_info[req_id];
  
--	/*
--	 * This extra ref will be put in kernfs_remove() and guarantees
--	 * that kn is always accessible.
--	 */
--	kernfs_get(kn);
- 	ret = rdtgroup_kn_set_ugid(kn);
- 	if (ret)
- 		goto out_destroy;
-@@ -1626,8 +1605,8 @@ static int mkdir_rdt_prepare(struct kern
- 	/*
- 	 * kernfs_remove() will drop the reference count on "kn" which
- 	 * will free it. But we still need it to stick around for the
--	 * rdtgroup_kn_unlock(kn} call below. Take one extra reference
--	 * here, which will be dropped inside rdtgroup_kn_unlock().
-+	 * rdtgroup_kn_unlock(kn) call. Take one extra reference here,
-+	 * which will be dropped inside rdtgroup_kn_unlock().
- 	 */
- 	kernfs_get(kn);
+ 	if (unlikely(!rx_info->page)) {
+@@ -1452,10 +1429,6 @@ static struct sk_buff *ena_rx_skb(struct ena_ring *rx_ring,
+ 		len = ena_bufs[buf].len;
+ 		req_id = ena_bufs[buf].req_id;
  
-@@ -1839,11 +1818,6 @@ static int rdtgroup_rmdir_mon(struct ker
- 	WARN_ON(list_empty(&prdtgrp->mon.crdtgrp_list));
- 	list_del(&rdtgrp->mon.crdtgrp_list);
+-		rc = validate_rx_req_id(rx_ring, req_id);
+-		if (unlikely(rc < 0))
+-			return NULL;
+-
+ 		rx_info = &rx_ring->rx_buffer_info[req_id];
+ 	} while (1);
  
--	/*
--	 * one extra hold on this, will drop when we kfree(rdtgrp)
--	 * in rdtgroup_kn_unlock()
--	 */
--	kernfs_get(kn);
- 	kernfs_remove(rdtgrp->kn);
+@@ -1704,12 +1677,18 @@ static int ena_clean_rx_irq(struct ena_ring *rx_ring, struct napi_struct *napi,
+ error:
+ 	adapter = netdev_priv(rx_ring->netdev);
+ 
+-	u64_stats_update_begin(&rx_ring->syncp);
+-	rx_ring->rx_stats.bad_desc_num++;
+-	u64_stats_update_end(&rx_ring->syncp);
++	if (rc == -ENOSPC) {
++		u64_stats_update_begin(&rx_ring->syncp);
++		rx_ring->rx_stats.bad_desc_num++;
++		u64_stats_update_end(&rx_ring->syncp);
++		adapter->reset_reason = ENA_REGS_RESET_TOO_MANY_RX_DESCS;
++	} else {
++		u64_stats_update_begin(&rx_ring->syncp);
++		rx_ring->rx_stats.bad_req_id++;
++		u64_stats_update_end(&rx_ring->syncp);
++		adapter->reset_reason = ENA_REGS_RESET_INV_RX_REQ_ID;
++	}
+ 
+-	/* Too many desc from the device. Trigger reset */
+-	adapter->reset_reason = ENA_REGS_RESET_TOO_MANY_RX_DESCS;
+ 	set_bit(ENA_FLAG_TRIGGER_RESET, &adapter->flags);
  
  	return 0;
-@@ -1880,11 +1854,6 @@ static int rdtgroup_rmdir_ctrl(struct ke
- 
- 	list_del(&rdtgrp->rdtgroup_list);
- 
--	/*
--	 * one extra hold on this, will drop when we kfree(rdtgrp)
--	 * in rdtgroup_kn_unlock()
--	 */
--	kernfs_get(kn);
- 	kernfs_remove(rdtgrp->kn);
- 
- 	/*
+-- 
+2.27.0
+
 
 
