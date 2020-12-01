@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891452C9BE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6FF2C9AE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388857AbgLAJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:13:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50570 "EHLO mail.kernel.org"
+        id S2388637AbgLAJCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:02:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390022AbgLAJM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:12:58 -0500
+        id S1729262AbgLAJCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:02:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3EA220809;
-        Tue,  1 Dec 2020 09:12:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDE712067D;
+        Tue,  1 Dec 2020 09:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813963;
-        bh=a+sG0RYOjYM8JqKT8I3axdNLLN6AmqISkuuujrt1Weo=;
+        s=korg; t=1606813304;
+        bh=dHXjmeE6FYGVRb6S8w2kvnBpoApvG1nJ8ma+eJ9ENVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OLn5hyDlCKDFDxV66/CsZVYVV3Jb0aV9zHQGKxKlJhuUXq6pYF3+03mPOmOpOsjEl
-         tPEzLaMSIHbC3wOyK8ZpV+6XAEfopssQD4fGBPJ6dI/3mgSF3TDyd4otKfAphhtXJ0
-         ZMUGjYxw9lOblQFVvstgSdrrmqIPL6qtW7lSbfpU=
+        b=kjZeTWsvEOlTZgZMH2WBeNMFFA4jUlQBRQ+AnpFybChWogkcvbxMR0+29H2Egh7DV
+         D/LQKxpotoB2+4AAmlRXpwVwUPldM6e8bAJy0BWOESGeoL5V6lGx8bMIRqaBDtEHqz
+         jbbyZ03s1GpqE1NfsiRn33BTYc/SenIEQ+C+qL0s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 120/152] efi/efivars: Set generic ops before loading SSDT
-Date:   Tue,  1 Dec 2020 09:53:55 +0100
-Message-Id: <20201201084727.513958611@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>
+Subject: [PATCH 4.19 51/57] usb: gadget: f_midi: Fix memleak in f_midi_alloc
+Date:   Tue,  1 Dec 2020 09:53:56 +0100
+Message-Id: <20201201084651.617115515@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 50bdcf047503e30126327d0be4f0ad7337106d68 ]
+commit e7694cb6998379341fd9bf3bd62b48c4e6a79385 upstream.
 
-Efivars allows for overriding of SSDT tables, however starting with
-commit
+In the error path, if midi is not null, we should
+free the midi->id if necessary to prevent memleak.
 
-  bf67fad19e493b ("efi: Use more granular check for availability for variable services")
+Fixes: b85e9de9e818d ("usb: gadget: f_midi: convert to new function interface with backward compatibility")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201117021629.1470544-2-zhangqilong3@huawei.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-this use case is broken. When loading SSDT generic ops should be set
-first, however mentioned commit reversed order of operations. Fix this
-by restoring original order of operations.
-
-Fixes: bf67fad19e493b ("efi: Use more granular check for availability for variable services")
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Link: https://lore.kernel.org/r/20201123172817.124146-1-amadeuszx.slawinski@linux.intel.com
-Tested-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/efi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_midi.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 3aa07c3b51369..8ead4379e6e85 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -387,10 +387,10 @@ static int __init efisubsys_init(void)
- 
- 	if (efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE |
- 				      EFI_RT_SUPPORTED_GET_NEXT_VARIABLE_NAME)) {
--		efivar_ssdt_load();
- 		error = generic_ops_register();
- 		if (error)
- 			goto err_put;
-+		efivar_ssdt_load();
- 		platform_device_register_simple("efivars", 0, NULL, 0);
+--- a/drivers/usb/gadget/function/f_midi.c
++++ b/drivers/usb/gadget/function/f_midi.c
+@@ -1315,7 +1315,7 @@ static struct usb_function *f_midi_alloc
+ 	midi->id = kstrdup(opts->id, GFP_KERNEL);
+ 	if (opts->id && !midi->id) {
+ 		status = -ENOMEM;
+-		goto setup_fail;
++		goto midi_free;
  	}
+ 	midi->in_ports = opts->in_ports;
+ 	midi->out_ports = opts->out_ports;
+@@ -1327,7 +1327,7 @@ static struct usb_function *f_midi_alloc
  
--- 
-2.27.0
-
+ 	status = kfifo_alloc(&midi->in_req_fifo, midi->qlen, GFP_KERNEL);
+ 	if (status)
+-		goto setup_fail;
++		goto midi_free;
+ 
+ 	spin_lock_init(&midi->transmit_lock);
+ 
+@@ -1343,9 +1343,13 @@ static struct usb_function *f_midi_alloc
+ 
+ 	return &midi->func;
+ 
++midi_free:
++	if (midi)
++		kfree(midi->id);
++	kfree(midi);
+ setup_fail:
+ 	mutex_unlock(&opts->lock);
+-	kfree(midi);
++
+ 	return ERR_PTR(status);
+ }
+ 
 
 
