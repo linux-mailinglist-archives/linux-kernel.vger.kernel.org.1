@@ -2,149 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0E62C94F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 979692C9503
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgLACIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:08:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgLACIa (ORCPT
+        id S1726745AbgLACJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:09:48 -0500
+Received: from mail-il1-f195.google.com ([209.85.166.195]:37670 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgLACJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:08:30 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00A1C0613CF;
-        Mon, 30 Nov 2020 18:07:50 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id k5so219509plt.6;
-        Mon, 30 Nov 2020 18:07:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YzRoQK48hdn26VwNICKcMxppEh6YmVkly2mV0TpEsRM=;
-        b=Xsg1VUulHwkQfdILKkBsYjqHAtcrFzXA6wZ05axioxZiTH4XBlkHSJaOmjs74Z5Xd9
-         76ccBwPaFGtNxtJwy+Nd651I1jEAJPLZYY2qKUQSLa54aQRpL+YqV8yT0JSPZLqbJP6n
-         UiEyhlPNkzyGCBzBI00H3tiHDVlfyg/vTBzObX2lLmjLp5eYaBAESZOAyoxN0qNkElZH
-         e3zjD+lSk04DbNrtlwybURtZb+kF4jhr3VRz2EmDI07woZYC+ZlxTyQxrNut10Ts6g6a
-         Uvu4zuHEJ1mGgt+OmZv94p/L106k8ahnS+4Nr/HnPN0pWy8Do6yhhqHAwcvRFGIws+QW
-         xQIw==
+        Mon, 30 Nov 2020 21:09:47 -0500
+Received: by mail-il1-f195.google.com with SMTP id k8so173347ilr.4;
+        Mon, 30 Nov 2020 18:09:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YzRoQK48hdn26VwNICKcMxppEh6YmVkly2mV0TpEsRM=;
-        b=KdDsrQXCGKrTW6foxBhiAPTAvyqdOWN9VyFZSdaQotbgcU26gstonyROKU3l+ZezHD
-         pd0OUFSIKvKZc/Ru/GVy4pOEylKZeKlDc1TVCFN8ve/o5tkcJxHF+KFqBcm3Lx/SZ1PD
-         BrUUJYHXlIXtF0DUHD3vPKV/O8UvQHsGm9xafjo/bk7Po8bDbtZmONWtao5b5AwxWi//
-         4ageHPcfiSsyoXsX/x+a5lWjh0ENow263kdRJ9rdFagC5muiLM4GG8NauFBwUygjcJZ7
-         euWi/5j3E4I5Jf7NRRKosn4dXmK4vozWgzDBY4tkaIghnI5fxoLXkJrX8/pORP+3q3ls
-         6KnA==
-X-Gm-Message-State: AOAM53056n0i/1WWsZuoz+6qc9efJ+D66NeqS5McsgIcAvbYtoGUbIVx
-        NVyMKlKd5vQuibyacc6nc9iQCNBp/fbKchh4ZR4=
-X-Google-Smtp-Source: ABdhPJw8Q293pQSHy+xmCE/WnmtGsJ7v0tqKoGQ0rGQvPsKLVAK+dPRQlbFRB7zuFh9nBcHLbJ5oRo39e/Dr4sI7TGo=
-X-Received: by 2002:a17:902:7144:b029:da:7268:d730 with SMTP id
- u4-20020a1709027144b02900da7268d730mr632304plm.20.1606788470247; Mon, 30 Nov
- 2020 18:07:50 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MDcAkPWg6r1CvNkSpBNZR5QQHHH+YNbNEbY/B/QhrOk=;
+        b=crtI7fL0Iyl2+8URNFqFAcKqoxCtDOXlq6SOIaOBvL+U0haOEsz4PtEF9yc+uSahCk
+         +31mjPC3M3UN28x332nBFzRDGZs7WMG0PqPZQL528YHlDm8TEWjY4lVtBbdfSEKdbxB1
+         vd1XI4hqHFGmetTXfdGiXI5N/D81vZ8JOWVQ2lJEPTcFXRB8qZZaBEvolJ4OlRX1Wiav
+         pZdLIWwgLvb/bOj17vqUJHF9/a7XBitkCEvAR9RPVwPsbDm9ny9Ip9BotQKxM+98MHbX
+         /6OWQNCN7B0qeltGaEGwelo+LF3pMAfYInkVPhVOVvC38u9+yIUAoSq6+38/LVoQY/BM
+         OHxw==
+X-Gm-Message-State: AOAM532HCktcidhNmpHaNq59JCOV8djukACpm4dyMuk/22OgRZbbetY7
+        pbGE278Zqk+wDhbI/LHcvg==
+X-Google-Smtp-Source: ABdhPJzlcCKd722WEqdXZrsNxM9uNm7QlBazEUb4vNFFAPAxdFDwS3eGe0LTyWBp+X9Zxy420l35tQ==
+X-Received: by 2002:a05:6e02:90:: with SMTP id l16mr665790ilm.228.1606788546547;
+        Mon, 30 Nov 2020 18:09:06 -0800 (PST)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id p89sm228214ili.29.2020.11.30.18.09.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 18:09:05 -0800 (PST)
+Received: (nullmailer pid 3494650 invoked by uid 1000);
+        Tue, 01 Dec 2020 02:09:02 -0000
+Date:   Mon, 30 Nov 2020 19:09:02 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Biwen Li <biwen.li@oss.nxp.com>
+Cc:     xiaobo.xie@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jiafei.pan@nxp.com, mark.rutland@arm.com, maz@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        leoyang.li@nxp.com, Biwen Li <biwen.li@nxp.com>,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        jason@lakedaemon.net, linux@rasmusvillemoes.dk,
+        zhiqiang.hou@nxp.com
+Subject: Re: [v4 11/11] dt-bindings: interrupt-controller: update bindings
+ for supporting more SoCs
+Message-ID: <20201201020902.GA3494421@robh.at.kernel.org>
+References: <20201130101515.27431-1-biwen.li@oss.nxp.com>
+ <20201130101515.27431-11-biwen.li@oss.nxp.com>
 MIME-Version: 1.0
-References: <d0ac1a26ed5943127cb0156148735f5f52a07075.1606459576.git.mchehab+huawei@kernel.org>
- <CA+FuTSenOoVxM6W9viwXQmPHo_MEoQzQ=GPxJi72fYGHHmqmwA@mail.gmail.com>
- <20201130104420.321531ec@coco.lan> <CAA7C2qiOAZR+QwY5Bs-UHQzBEfA15gMG-GjriqNo3Q5biY4+ZQ@mail.gmail.com>
- <20201130180834.07a3116f@coco.lan>
-In-Reply-To: <20201130180834.07a3116f@coco.lan>
-From:   VDRU VDRU <user.vdr@gmail.com>
-Date:   Mon, 30 Nov 2020 18:07:37 -0800
-Message-ID: <CAA7C2qgAC8vnxu4xVhdi2CsMXyx85J44yUxGk00JhoQ6j5U3tw@mail.gmail.com>
-Subject: Re: [PATCH] media: gp8psk: initialize stats at power control logic
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130101515.27431-11-biwen.li@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Mon, 30 Nov 2020 18:15:15 +0800, Biwen Li wrote:
+> From: Biwen Li <biwen.li@nxp.com>
+> 
+> Update bindings for Layerscape external irqs,
+> support more SoCs(LS1043A, LS1046A, LS1088A,
+> LS208xA, LX216xA)
+> 
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> ---
+> Change in v4:
+> 	- none
+> 
+> Change in v3:
+> 	- remove robust information
+> 
+> Change in v2:
+> 	- update reg property
+> 	- update compatible property
+> 
+>  .../bindings/interrupt-controller/fsl,ls-extirq.txt       | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
 
-After many attempts ret was always 0. Please let me know if further
-testing is needed.
-
-Best regards,
-Derek
-
-On Mon, Nov 30, 2020 at 9:09 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Hi Derek,
->
-> Em Mon, 30 Nov 2020 08:04:31 -0800
-> VDRU VDRU <user.vdr@gmail.com> escreveu:
->
-> > I have hardware that uses this driver and can conduct a test if it
-> > will help resolve any confusion/assumption. I'd also like to suggest
-> > that making changes to drivers with no means of testing those changes
-> > is bad. This has happened in the past and resulted in unnecessarily
-> > breaking drivers for those who use it. No patch should be merged
-> > without testing!
->
-> It helps a lot if you could test it.
->
-> The current situation is that, if the I2C read fails, the
-> driver will randomly power up only partially, which could
-> cause issues.
->
-> The original proposed approach:
->
->         https://lore.kernel.org/linux-media/20190627222020.45909-1-willemdebruijn.kernel@gmail.com/
->
-> Will just give up trying to powering it up, while the
-> patch I'm proposing will force the device to power up
-> all parts of it. So, it seems safer than the original
-> one.
->
-> Please test with the enclosed patch. It is basically
-> the same as the one I proposed, although this one will
-> print a message at dlog, due to this:
->
->         pr_info("ret returned %d\n", ret);
->
-> This could happen when the device got plugged and/or if
-> you put the machine into suspend mode, when resuming it
-> while streaming[1]
->
-> Regards,
-> Mauro
->
-> [1] not sure if dvb-usb supports it. One of the rationales
-> behind dvb-usb-v2 were to be able of properly do
-> suspend/resumes.
->
->
->
-> diff --git a/drivers/media/usb/dvb-usb/gp8psk.c b/drivers/media/usb/dvb-usb/gp8psk.c
-> index c07f46f5176e..be55496cc717 100644
-> --- a/drivers/media/usb/dvb-usb/gp8psk.c
-> +++ b/drivers/media/usb/dvb-usb/gp8psk.c
-> @@ -182,11 +182,16 @@ static int gp8psk_load_bcm4500fw(struct dvb_usb_device *d)
->
->  static int gp8psk_power_ctrl(struct dvb_usb_device *d, int onoff)
->  {
-> -       u8 status, buf;
-> +       u8 status = 0, buf;
-> +       int ret;
->         int gp_product_id = le16_to_cpu(d->udev->descriptor.idProduct);
->
->         if (onoff) {
-> -               gp8psk_usb_in_op(d, GET_8PSK_CONFIG,0,0,&status,1);
-> +               ret = gp8psk_usb_in_op(d, GET_8PSK_CONFIG,0,0,&status,1);
-> +               // Just to check if the condition happens in practice
-> +               if (ret < 0)
-> +                       pr_info("ret returned %d\n", ret);
-> +
->                 if (! (status & bm8pskStarted)) {  /* started */
->                         if(gp_product_id == USB_PID_GENPIX_SKYWALKER_CW3K)
->                                 gp8psk_usb_out_op(d, CW3K_INIT, 1, 0, NULL, 0);
->
+Acked-by: Rob Herring <robh@kernel.org>
