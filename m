@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD502C9DF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1852C9DF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391174AbgLAJ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:29:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34712 "EHLO mail.kernel.org"
+        id S2391183AbgLAJ3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:29:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387593AbgLAI7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:59:06 -0500
+        id S2388004AbgLAI7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:59:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D64A722210;
-        Tue,  1 Dec 2020 08:58:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D2152220B;
+        Tue,  1 Dec 2020 08:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813099;
-        bh=VCawFnsDnQNth3TO+YKU9YQEsIltI4b3xyFvMrV7n4E=;
+        s=korg; t=1606813102;
+        bh=+KAV5TpWZsMtus3sPqDNKIJn9zEMcmInVFdr/5H7mBI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NbkFVLodG/B8/zLJNZbspW1Ycm2xu0Y94rHcDgyBDsSeKhlVTdBNtcGEsLyabo++5
-         fA2lyB+z5LzdJje6QOwBPiGSvHhh569rHYLx625Y9k9cSt9u6iRBDyTnHfytbpOpUA
-         BlSEnxB8eiIgfz9Z/Nj7yUeQ1/1CzaaLbQ3nN314=
+        b=ERkrLWP30KmQtwgBD+ITCacuAI2xMCr2nKSamgSQJTTVdvKWMgkIQiK8rfPoFm4tN
+         CKm6Glasxr2bIfORuJ0eQsQY3nbL8IUdfgf8/ON+GI9l+gnAzQjf17/GVui732K2Cg
+         xI8DrqHOXCN++Ssu7VWdHOEMhPFD5xu1/Hlg91z8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 33/50] IB/mthca: fix return value of error branch in mthca_init_cq()
-Date:   Tue,  1 Dec 2020 09:53:32 +0100
-Message-Id: <20201201084649.107348521@linuxfoundation.org>
+Subject: [PATCH 4.14 34/50] nfc: s3fwrn5: use signed integer for parsing GPIO numbers
+Date:   Tue,  1 Dec 2020 09:53:33 +0100
+Message-Id: <20201201084649.241092843@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
 References: <20201201084644.803812112@linuxfoundation.org>
@@ -44,54 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 6830ff853a5764c75e56750d59d0bbb6b26f1835 ]
+[ Upstream commit d8f0a86795c69f5b697f7d9e5274c124da93c92d ]
 
-We return 'err' in the error branch, but this variable may be set as zero
-by the above code. Fix it by setting 'err' as a negative value before we
-goto the error label.
+GPIOs - as returned by of_get_named_gpio() and used by the gpiolib - are
+signed integers, where negative number indicates error.  The return
+value of of_get_named_gpio() should not be assigned to an unsigned int
+because in case of !CONFIG_GPIOLIB such number would be a valid GPIO.
 
-Fixes: 74c2174e7be5 ("IB uverbs: add mthca user CQ support")
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Link: https://lore.kernel.org/r/1605837422-42724-1-git-send-email-wangxiongfeng2@huawei.com
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC Chip")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20201123162351.209100-1-krzk@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mthca/mthca_cq.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/nfc/s3fwrn5/i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
-index a6531ffe29a6f..a5694dec3f2ee 100644
---- a/drivers/infiniband/hw/mthca/mthca_cq.c
-+++ b/drivers/infiniband/hw/mthca/mthca_cq.c
-@@ -808,8 +808,10 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
- 	}
+diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
+index 3f09d7fd2285f..da7ca08d185e4 100644
+--- a/drivers/nfc/s3fwrn5/i2c.c
++++ b/drivers/nfc/s3fwrn5/i2c.c
+@@ -37,8 +37,8 @@ struct s3fwrn5_i2c_phy {
+ 	struct i2c_client *i2c_dev;
+ 	struct nci_dev *ndev;
  
- 	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
--	if (IS_ERR(mailbox))
-+	if (IS_ERR(mailbox)) {
-+		err = PTR_ERR(mailbox);
- 		goto err_out_arm;
-+	}
+-	unsigned int gpio_en;
+-	unsigned int gpio_fw_wake;
++	int gpio_en;
++	int gpio_fw_wake;
  
- 	cq_context = mailbox->buf;
+ 	struct mutex mutex;
  
-@@ -851,9 +853,9 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
- 	}
- 
- 	spin_lock_irq(&dev->cq_table.lock);
--	if (mthca_array_set(&dev->cq_table.cq,
--			    cq->cqn & (dev->limits.num_cqs - 1),
--			    cq)) {
-+	err = mthca_array_set(&dev->cq_table.cq,
-+			      cq->cqn & (dev->limits.num_cqs - 1), cq);
-+	if (err) {
- 		spin_unlock_irq(&dev->cq_table.lock);
- 		goto err_out_free_mr;
- 	}
 -- 
 2.27.0
 
