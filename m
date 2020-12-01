@@ -2,159 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392A22CA93C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 476C92CA93A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgLARBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:01:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45807 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726005AbgLARBH (ORCPT
+        id S1729325AbgLARA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbgLARA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:01:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606841981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 1 Dec 2020 12:00:58 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E212C0613D4;
+        Tue,  1 Dec 2020 09:00:18 -0800 (PST)
+Date:   Tue, 01 Dec 2020 17:00:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606842016;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=T7i5uotD/IpTPlUrBO3NFp7pR07GWqIu1OIGoP+fxvk=;
-        b=gOnNrO6FOiC6ldBr0MbjpN1uDzlgwdNZLd3a1ET2BsN/kdOZ4TCHFIkCau6suTk4UDkI+U
-        f4JN9hgYwoInhs10k9aSVJ4FCbVMZmoGypu+SWhg5yx0sLGyk9w5WBFpjwmNzjWtvX6zFr
-        Pp0De8NJZbRBS8yt0TZk6nt/5P7w2jM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-IHTBsiIEPnyyAbiv00K3AQ-1; Tue, 01 Dec 2020 11:59:39 -0500
-X-MC-Unique: IHTBsiIEPnyyAbiv00K3AQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB0609A223;
-        Tue,  1 Dec 2020 16:59:37 +0000 (UTC)
-Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D8C919C44;
-        Tue,  1 Dec 2020 16:59:36 +0000 (UTC)
-Subject: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to
- filesystems
-To:     torvalds@linux-foundation.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
-References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
-From:   Eric Sandeen <sandeen@redhat.com>
-Message-ID: <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
-Date:   Tue, 1 Dec 2020 10:59:36 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        bh=wVIMKRD7s9B20AHCrU0fh/AK9+bnfcAmltC1MBzLuZg=;
+        b=2UJeKOrOIsaZnK0XJXvK2pB5CtWlS3GLZ/C3TCY2Sz3wSI7RvvG5sdo0i1QZZ2fBat9nox
+        7deQ9Wjm38C5PFbe4TLSuRbUkvYpm/ypBhz7a1MKTn/ziAkeGkW8sVhv+zi80EaOSJQOoo
+        LL6ViIDNr6TVtBtxVXV1vT+qfja7djwxoVcnXmw+heYNs+mfFf83VrFrw5jUowkXua4EHg
+        FHL1I5pQeZH4EwrSiorbvg7P8cql5ZYyAe6nc9OaHG6jtk0AmAmFFv7WDN26KNc4Yf4QiC
+        chHPLuK5r3Na8+MWn0Ghv+48Q3hjgI3rPbH/yujF2JgOTE6zppH5RResuuRX3A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606842016;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wVIMKRD7s9B20AHCrU0fh/AK9+bnfcAmltC1MBzLuZg=;
+        b=diJsXXxFNpe0avqHJRsVV/tNWxTp4Ee1E1hWy1mRrISk98HEYXPfFDqT3DEA2ppKbmL/lO
+        FPQA1vz9HpztB6Cw==
+From:   "tip-bot2 for Babu Moger" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/resctrl: Fix AMD L3 QOS CDP enable/disable
+Cc:     Babu Moger <babu.moger@amd.com>, Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <160675180380.15628.3309402017215002347.stgit@bmoger-ubuntu>
+References: <160675180380.15628.3309402017215002347.stgit@bmoger-ubuntu>
 MIME-Version: 1.0
-In-Reply-To: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <160684201570.3364.4966217184350853149.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a bit odd to set STATX_ATTR_DAX into the statx attributes in the VFS;
-while the VFS can detect the current DAX state, it is the filesystem which
-actually sets S_DAX on the inode, and the filesystem is the place that
-knows whether DAX is something that the "filesystem actually supports" [1]
-so that the statx attributes_mask can be properly set.
+The following commit has been merged into the x86/urgent branch of tip:
 
-So, move STATX_ATTR_DAX attribute setting to the individual dax-capable
-filesystems, and update the attributes_mask there as well.
+Commit-ID:     fae3a13d2a3d49a89391889808428cf1e72afbd7
+Gitweb:        https://git.kernel.org/tip/fae3a13d2a3d49a89391889808428cf1e72afbd7
+Author:        Babu Moger <babu.moger@amd.com>
+AuthorDate:    Mon, 30 Nov 2020 09:57:20 -06:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 01 Dec 2020 17:53:31 +01:00
 
-[1] 3209f68b3ca4 statx: Include a mask for stx_attributes in struct statx
+x86/resctrl: Fix AMD L3 QOS CDP enable/disable
 
-Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+When the AMD QoS feature CDP (code and data prioritization) is enabled
+or disabled, the CDP bit in MSR 0000_0C81 is written on one of the CPUs
+in an L3 domain (core complex). That is not correct - the CDP bit needs
+to be updated on all the logical CPUs in the domain.
+
+This was not spelled out clearly in the spec earlier. The specification
+has been updated and the updated document, "AMD64 Technology Platform
+Quality of Service Extensions Publication # 56375 Revision: 1.02 Issue
+Date: October 2020" is available now. Refer the section: Code and Data
+Prioritization.
+
+Fix the issue by adding a new flag arch_has_per_cpu_cfg in rdt_cache
+data structure.
+
+The documentation can be obtained at:
+https://developer.amd.com/wp-content/resources/56375.pdf
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+
+ [ bp: Massage commit message. ]
+
+Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Link: https://lkml.kernel.org/r/160675180380.15628.3309402017215002347.stgit@bmoger-ubuntu
 ---
- fs/ext2/inode.c   | 6 +++++-
- fs/ext4/inode.c   | 5 ++++-
- fs/stat.c         | 3 ---
- fs/xfs/xfs_iops.c | 5 ++++-
- 4 files changed, 13 insertions(+), 6 deletions(-)
+ arch/x86/kernel/cpu/resctrl/core.c     |  4 ++++
+ arch/x86/kernel/cpu/resctrl/internal.h |  3 +++
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |  9 +++++++--
+ 3 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-index 11c5c6fe75bb..3550783a6ea0 100644
---- a/fs/ext2/inode.c
-+++ b/fs/ext2/inode.c
-@@ -1653,11 +1653,15 @@ int ext2_getattr(const struct path *path, struct kstat *stat,
- 		stat->attributes |= STATX_ATTR_IMMUTABLE;
- 	if (flags & EXT2_NODUMP_FL)
- 		stat->attributes |= STATX_ATTR_NODUMP;
-+	if (IS_DAX(inode))
-+		stat->attributes |= STATX_ATTR_DAX;
-+
- 	stat->attributes_mask |= (STATX_ATTR_APPEND |
- 			STATX_ATTR_COMPRESSED |
- 			STATX_ATTR_ENCRYPTED |
- 			STATX_ATTR_IMMUTABLE |
--			STATX_ATTR_NODUMP);
-+			STATX_ATTR_NODUMP |
-+			STATX_ATTR_DAX);
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index e5f4ee8..e8b5f1c 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -570,6 +570,8 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
  
- 	generic_fillattr(inode, stat);
- 	return 0;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 0d8385aea898..848a0f2b154e 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5550,13 +5550,16 @@ int ext4_getattr(const struct path *path, struct kstat *stat,
- 		stat->attributes |= STATX_ATTR_NODUMP;
- 	if (flags & EXT4_VERITY_FL)
- 		stat->attributes |= STATX_ATTR_VERITY;
-+	if (IS_DAX(inode))
-+		stat->attributes |= STATX_ATTR_DAX;
+ 	if (d) {
+ 		cpumask_set_cpu(cpu, &d->cpu_mask);
++		if (r->cache.arch_has_per_cpu_cfg)
++			rdt_domain_reconfigure_cdp(r);
+ 		return;
+ 	}
  
- 	stat->attributes_mask |= (STATX_ATTR_APPEND |
- 				  STATX_ATTR_COMPRESSED |
- 				  STATX_ATTR_ENCRYPTED |
- 				  STATX_ATTR_IMMUTABLE |
- 				  STATX_ATTR_NODUMP |
--				  STATX_ATTR_VERITY);
-+				  STATX_ATTR_VERITY |
-+				  STATX_ATTR_DAX);
+@@ -923,6 +925,7 @@ static __init void rdt_init_res_defs_intel(void)
+ 		    r->rid == RDT_RESOURCE_L2CODE) {
+ 			r->cache.arch_has_sparse_bitmaps = false;
+ 			r->cache.arch_has_empty_bitmaps = false;
++			r->cache.arch_has_per_cpu_cfg = false;
+ 		} else if (r->rid == RDT_RESOURCE_MBA) {
+ 			r->msr_base = MSR_IA32_MBA_THRTL_BASE;
+ 			r->msr_update = mba_wrmsr_intel;
+@@ -943,6 +946,7 @@ static __init void rdt_init_res_defs_amd(void)
+ 		    r->rid == RDT_RESOURCE_L2CODE) {
+ 			r->cache.arch_has_sparse_bitmaps = true;
+ 			r->cache.arch_has_empty_bitmaps = true;
++			r->cache.arch_has_per_cpu_cfg = true;
+ 		} else if (r->rid == RDT_RESOURCE_MBA) {
+ 			r->msr_base = MSR_IA32_MBA_BW_BASE;
+ 			r->msr_update = mba_wrmsr_amd;
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 80fa997..f65d3c0 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -360,6 +360,8 @@ struct msr_param {
+  *			executing entities
+  * @arch_has_sparse_bitmaps:	True if a bitmap like f00f is valid.
+  * @arch_has_empty_bitmaps:	True if the '0' bitmap is valid.
++ * @arch_has_per_cpu_cfg:	True if QOS_CFG register for this cache
++ *				level has CPU scope.
+  */
+ struct rdt_cache {
+ 	unsigned int	cbm_len;
+@@ -369,6 +371,7 @@ struct rdt_cache {
+ 	unsigned int	shareable_bits;
+ 	bool		arch_has_sparse_bitmaps;
+ 	bool		arch_has_empty_bitmaps;
++	bool		arch_has_per_cpu_cfg;
+ };
  
- 	generic_fillattr(inode, stat);
- 	return 0;
-diff --git a/fs/stat.c b/fs/stat.c
-index dacecdda2e79..5bd90949c69b 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -80,9 +80,6 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
- 	if (IS_AUTOMOUNT(inode))
- 		stat->attributes |= STATX_ATTR_AUTOMOUNT;
+ /**
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 6f4ca4b..f341842 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -1909,8 +1909,13 @@ static int set_cache_qos_cfg(int level, bool enable)
  
--	if (IS_DAX(inode))
--		stat->attributes |= STATX_ATTR_DAX;
--
- 	if (inode->i_op->getattr)
- 		return inode->i_op->getattr(path, stat, request_mask,
- 					    query_flags);
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index 1414ab79eacf..56deda7042fd 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -575,10 +575,13 @@ xfs_vn_getattr(
- 		stat->attributes |= STATX_ATTR_APPEND;
- 	if (ip->i_d.di_flags & XFS_DIFLAG_NODUMP)
- 		stat->attributes |= STATX_ATTR_NODUMP;
-+	if (IS_DAX(inode))
-+		stat->attributes |= STATX_ATTR_DAX;
- 
- 	stat->attributes_mask |= (STATX_ATTR_IMMUTABLE |
- 				  STATX_ATTR_APPEND |
--				  STATX_ATTR_NODUMP);
-+				  STATX_ATTR_NODUMP |
-+				  STATX_ATTR_DAX);
- 
- 	switch (inode->i_mode & S_IFMT) {
- 	case S_IFBLK:
--- 
-2.17.0
-
-
+ 	r_l = &rdt_resources_all[level];
+ 	list_for_each_entry(d, &r_l->domains, list) {
+-		/* Pick one CPU from each domain instance to update MSR */
+-		cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
++		if (r_l->cache.arch_has_per_cpu_cfg)
++			/* Pick all the CPUs in the domain instance */
++			for_each_cpu(cpu, &d->cpu_mask)
++				cpumask_set_cpu(cpu, cpu_mask);
++		else
++			/* Pick one CPU from each domain instance to update MSR */
++			cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
+ 	}
+ 	cpu = get_cpu();
+ 	/* Update QOS_CFG MSR on this cpu if it's in cpu_mask. */
