@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB732CAAA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E48F2CAAAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729718AbgLASVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:21:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        id S1729799AbgLASWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:22:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726803AbgLASVc (ORCPT
+        with ESMTP id S1726733AbgLASWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:21:32 -0500
+        Tue, 1 Dec 2020 13:22:31 -0500
 Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A38C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:20:46 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id y5so2601341iow.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:20:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE66BC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:21:50 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id z136so2623249iof.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:21:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9VB4WdJpknAhtdy/6FU5lpgVyQvzyyXRv43V/9k8IIg=;
-        b=UGtZmI5uMYtK2j8reNzIsyprn805+aTQG8IEtXBx/wGYt54MWP0paYcBfYu/zUEzBx
-         gxTo5K+7m42S2QcbeYNCaOe6Du/NsG84wl1uSC0RcC4+OUyqRWTcbU71kqttZXjUdSbz
-         Q5Fe7pN0YGjlfs0xaFQ1AU9Uw1Y0XQr6ZZWC1JTvl67xOMDeiQZfCv0jO5LwmLupNJ0e
-         VZ/Y5lUnVkBbvrVkJfYkkgAONtYJ4JQ5pZ9IW3wtlPAY+JjUZKYxroShbxpk5ec6Z8Qt
-         N2gdz1Ujt+HXy13JQy/rc8GnMOYQ0r1Fbnqf3aFaB7Jf8rsIkkB8NjpGUoRwftpe/YnP
-         HuEw==
+        bh=4ouobtBm8sSQb0vz2vqGGkrgo2OjHAJ9nHVRL58pUGE=;
+        b=uX0hz1qc271RdjaSAXcDDyqtvFg0GUk//wxyUkAsoxen3KpmlHi3IEYgsenDvk5C80
+         v4/0ljBXXPLRJnotPXKT9MRhl3nAX1NTudLW4h5x91eDfsC3vHaL9P2xj+hoMD5OoIxD
+         vOu22nw2eghmX+PK/io3Z3qq8xU2jQ6DrZWJbWXIJVfPigqXzYlq02nNIfaigGWmzlan
+         bYKfGEjAplaTTjwl10RX/HUvN/N3A+ItWennAFnc3Hy2TWtSKqLj/2BNXYqlPQDcnPi9
+         k/C3gOOSfhkXezcbjhASXWGhQuyTSdGrQ6fNxVM5EbaDxXVnN0EVe/OdvS5QjxCsSGKR
+         1dLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9VB4WdJpknAhtdy/6FU5lpgVyQvzyyXRv43V/9k8IIg=;
-        b=nMm0/N6Ob2mcHjYcZCVZpxpgq9RlpTRFAGG9y2Jv2mNtZNN7UAElvq0oX0TQolKnsZ
-         k8CMJA7rSwDNisIBEWeTv05vEP1AuVYZV/mENuInEBk0BBcsheHE1Q76okwemypteRHL
-         cQJtkxtz/N1C+eS3f/dKQldz77/gPQWOvHIicGtbRPgBLN7hD2QDmnPl4Hq6UbILtVWs
-         MjrhNi3DNteDpoAnP3QnxprlZL3WEunVnQBxRZWsDQwCKp3HaEHNs8TTMTzBbHZMmTZM
-         W9dOixAnXfu8vXqRqpJUAN3ZpyXVa1b3Ia0fUxLuqSWSsIw+cvvCISjMsIx/GWMheQ++
-         mQCw==
-X-Gm-Message-State: AOAM5302rztikLNWw79ZPhVn2TUnE4vLRUMEftZFeoY+Zj2Fov9Jb1kf
-        GbC0zeQeHsTEdRIxgAj+wwjmUVYh0O9WaUW2EZ8gmA==
-X-Google-Smtp-Source: ABdhPJyA/x5M6ycyZAEa1UC93jJ/ctxhlSWPFIvDzBIEz5KFMsYDbZfHW//l9ShSmwH4SH1GSfL+h6Gdu1JeCUQHE5I=
-X-Received: by 2002:a02:3b26:: with SMTP id c38mr3731469jaa.114.1606846845673;
- Tue, 01 Dec 2020 10:20:45 -0800 (PST)
+        bh=4ouobtBm8sSQb0vz2vqGGkrgo2OjHAJ9nHVRL58pUGE=;
+        b=ueoEug3+Abq5WH8mECqykYDd03Ix/MLRl4Je3DuGsK7T3kj/Gw6YVlRpMvuoO1d1Pt
+         ydMLww2SrD1/eDYtQJ3jLIWpfpHpZJ9xFWJXMJq8ov6rHwXVLV3hQVtZELbmkC6cTuVm
+         gMwr2+88VO+CT3rLxgy3aDFDRCXhh99g2tqgvSLYP5UbeNGhjr0JixV67Wtp+Yii3TuW
+         VIsypLCTpqZdeWWWk2P9MItkbue0RvdfN9B6zHh197SiKfIeLv9+DWnKZb6WegPzZA5n
+         lSx0Y5n0K/fMDTWg0xYclND8EDlT+m9yqsExQWtZOVGZ60LctX8FOTZGw97qGj1HITEW
+         COGQ==
+X-Gm-Message-State: AOAM5317qlKn/2GniwON1Y+9OxtFc6nwtgoObrlproF3oh0bZrjwPIGD
+        JtcmbcZyWUcvnR2HAkEuJwYSpD0t/JVtEttaVvrDFT7jYfAT8g==
+X-Google-Smtp-Source: ABdhPJwtX+nHYBolzK2l0oZRuVJ03EZTJvWOEnie/fZJWiF3VTwTR48gquIufwsVkdo+3j96NU3nHOCXX1vVhZTCD+g=
+X-Received: by 2002:a6b:c047:: with SMTP id q68mr3418312iof.189.1606846910267;
+ Tue, 01 Dec 2020 10:21:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20201014231158.34117-1-warthog618@gmail.com> <CACRpkdbTsN6p4n3f9SJrgAjdkzDu2S67rU3tLWwX0X50ekjctQ@mail.gmail.com>
- <20201028232211.GB4384@sol> <CAMpxmJX61dRE_d2Eyu2nXKx64rNrrTfScrdg=Cc-N-R_FKfUNg@mail.gmail.com>
- <CAMpxmJXiObcKyoE264oyiZOs08=uRYno6siMzz6BH+jmT_NKgQ@mail.gmail.com>
- <20201031000139.GA7042@sol> <CACRpkdZ2MoV04YCVxCxG-wPTgNAORkN6D+AXVOC1vEqsdGqo8w@mail.gmail.com>
-In-Reply-To: <CACRpkdZ2MoV04YCVxCxG-wPTgNAORkN6D+AXVOC1vEqsdGqo8w@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 1 Dec 2020 19:20:35 +0100
-Message-ID: <CAMRc=MctVES7EVrOMwcH5j4D=PwhSjFseQZ+ggigBgeZqQiLhw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] gpiolib: cdev: allow edge event timestamps to be
- configured as REALTIME
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20201201112931.11192-1-yashsri421@gmail.com> <f4392362e682ce7a02eee8a2036e1035342a0b4f.camel@perches.com>
+In-Reply-To: <f4392362e682ce7a02eee8a2036e1035342a0b4f.camel@perches.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 1 Dec 2020 19:21:39 +0100
+Message-ID: <CAKXUXMx8RURmeyzp5Ak7_409oaVJo622ndpC5VceN-C_f-HPdg@mail.gmail.com>
+Subject: Re: [PATCH v5] checkpatch: add fix and improve warning msg for
+ Non-standard signature
+To:     Joe Perches <joe@perches.com>
+Cc:     Aditya Srivastava <yashsri421@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 2:49 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+On Tue, Dec 1, 2020 at 6:24 PM Joe Perches <joe@perches.com> wrote:
 >
-> On Sat, Oct 31, 2020 at 1:01 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > On Fri, Oct 30, 2020 at 03:52:24PM +0100, Bartosz Golaszewski wrote:
->
-> > > The series no longer applies on top of v5.10-rc1. Could you rebase and resend?
+> On Tue, 2020-12-01 at 16:59 +0530, Aditya Srivastava wrote:
+> > Currently, checkpatch.pl warns for BAD_SIGN_OFF on non-standard signature
+> > styles.
 > >
-> > Nuts, it relies on my doc tidy-up series that Linus has pulled into
-> > fixes, and so will likely go into v5.10-rc2??
+> > This warning occurs because of incorrect use of signature tags,
+> > e.g. an evaluation on v4.13..v5.8 showed the use of following incorrect
+> > signature tags, which may seem correct, but are not standard:
 >
-> If I have time to get the GPIO fixes into -rc2. Otherwise -rc3
-> and then I need to merge the resulting -rc into the devel branch
-> before applying.
+> I'm not a fan of this patch.
 >
-> I will get to it sooner or later, I think Bartosz might have some
-> more GPIO fixes that I need to pull first before sending any
-> fixes upstream.
+> There is already a "non-standard" signature warning for
+> all of these cases since 2012, predating the range of this
+> retrospective evaluation by over 5 years and yet these
+> existing commits have been accepted.
 >
-> Yours,
-> Linus Walleij
+> The value in actual standardization and effectively
+> requiring specific signature style tags is quite low.
+>
+> Anyone that signed a thing a particular way should be free
+> to sign the thing as they choose.
+>
+> Most of these warnings would also still be in the tree in
+> the future in new patches as running checkpatch without
+> it emitting a message of any type isn't a requirement nor
+> should checkpatch use actually be required workflow.
+>
 
-Hi Linus,
+Can we scale this fixing feature down to the very obvious synonyms
+that simply do not add anything but confusion?
 
-Just a gentle ping on this, so it doesn't get forgotten before the
-next merge window.
+Such as for those four here:
 
-Bartosz
+Co-authored-by (count: 43) => Co-developed-by
+Reviewed-off-by (count: 5) => Reviewed-by
+Proposed-by (count: 5) => Suggested-by
+Suggestions-by (count: 3) => Suggested-by
+
+Then, we can probably also drop the rationale because it is pretty clear.
+
+Of course, the impact might be really zero, given that it is unclear
+if those authors did actually ever run checkpatch in the first place.
+
+Joe, if you see no value in even such a minimal fix feature, let us
+drop that idea and move on. There are enough other things to work on.
+
+Lukas
