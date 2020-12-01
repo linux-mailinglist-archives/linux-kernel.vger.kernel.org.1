@@ -2,238 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1C02C975F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5582C9761
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgLAGBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 01:01:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbgLAGBl (ORCPT
+        id S1726725AbgLAGFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 01:05:06 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2386 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgLAGFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 01:01:41 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F551C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 22:00:55 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id u37so1058056ybi.15
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 22:00:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=BXjmZ1sOwVvPO8ExUuMoZV+zGQg9arf+EXCDwTRHuko=;
-        b=E6zHA3wLXar2YcIt1Ch+JhfmbvesOH/4+qlCbyxw3JlCPKSlLjWrx9P+IELhyOsg6Q
-         XCIv0WtBd0w/cKYKVThJmyAXU7C3riXuic0YCfOVJL1su0tq+33xaEdfEyuzAby/W3aU
-         ftUZCG/zW3nX+apfTWK0L9Pj+9GD5arv/jSpvrh+YWcXCf/SIIOywUbJG6Mx311uzNc2
-         th+AwoNMum0HpEw2h5daw+SVsZ+sMPi/Zp3Y/EIwsJtR2bJf6aXR2hZ5OcbhxwlzAFV7
-         0pHyxevGkdEtaSwerY1KvRyjFzr/yzNwc61v6krTVZeyi8Clt40VoTOW43brp3b43Cm3
-         6sKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=BXjmZ1sOwVvPO8ExUuMoZV+zGQg9arf+EXCDwTRHuko=;
-        b=nS7+NkUnWxtnjsIuqYx0Oxe/sw4jCAZDoGcvrnv3FOQ60+ZwROK7SJhCL+dtcUrK09
-         r1PIhsZ+S/AcAFA85VcLD+2WIqv8Iq1hr5EMQo5TyYxhMql5pAftMKNO3SdR9/BCN/w7
-         WzK5CwNv23CD2ZiuRTUXKVWpsW/0/KsiH+XbnKkINNQQcbs5HeESzhXFfMmdf5ZkJJw7
-         jUnpH89FfKY0Y5FMiBV3Q3FxpjhH8/8l6T+jCleYxxlxGVBXVPlzybDiGRm2hEYG5uwz
-         ksbNQ4IyRfhsT7oW2LlIigXgjKGykbxACa6kKxAwiVf0iOPa6b/0mEWaiMG/ZA3TjNZX
-         qtZA==
-X-Gm-Message-State: AOAM5321fzQ22GHZ+gGiSWenbvgmu/yjvNAeolgHoSkswkz1Iv5yUVPn
-        AYO+lCX28KAc8c/QwzTbK4nR8zB0Eb9B
-X-Google-Smtp-Source: ABdhPJzWcXtzYl8QF7TpX00GV5xEh9A/0dTa3AeOcRBE/+7NNC4r0q4+QJ+OlNzjEI9MHQBTrCHnIh+CjSqa
-Sender: "furquan via sendgmr" <furquan@furquan.mtv.corp.google.com>
-X-Received: from furquan.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:13a4])
- (user=furquan job=sendgmr) by 2002:a25:2e4e:: with SMTP id
- b14mr1389084ybn.259.1606802454260; Mon, 30 Nov 2020 22:00:54 -0800 (PST)
-Date:   Mon, 30 Nov 2020 22:00:50 -0800
-Message-Id: <20201201060050.1193986-1-furquan@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH] input: raydium_ts_i2c: Do not split tx transactions
-From:   Furquan Shaikh <furquan@google.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Furquan Shaikh <furquan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 1 Dec 2020 01:05:05 -0500
+Received: from dggeme768-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4ClWkW0TyDz4yHX;
+        Tue,  1 Dec 2020 14:03:47 +0800 (CST)
+Received: from [10.174.186.123] (10.174.186.123) by
+ dggeme768-chm.china.huawei.com (10.3.19.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 1 Dec 2020 14:04:18 +0800
+Subject: Re: [RFC PATCH 3/3] KVM: arm64: Add usage of stage 2 fault lookup
+ level in user_mem_abort()
+To:     Will Deacon <will@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
+        <lushenming@huawei.com>
+References: <20201130121847.91808-1-wangyanan55@huawei.com>
+ <20201130121847.91808-4-wangyanan55@huawei.com>
+ <20201130134913.GC24837@willie-the-truck>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <a508c1cd-45af-5b53-7754-92334fe95c47@huawei.com>
+Date:   Tue, 1 Dec 2020 14:04:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201130134913.GC24837@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.186.123]
+X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
+ dggeme768-chm.china.huawei.com (10.3.19.114)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Raydium device does not like splitting of tx transactions into
-multiple messages - one for the register address and one for the
-actual data. This results in incorrect behavior on the device side.
+Hi Will,
 
-This change updates raydium_i2c_read and raydium_i2c_write to create
-i2c_msg arrays separately and passes those arrays into
-raydium_i2c_xfer which decides based on the address whether the bank
-switch command should be sent. The bank switch header is still added
-by raydium_i2c_read and raydium_i2c_write to ensure that all these
-operations are performed as part of a single I2C transfer. It
-guarantees that no other transactions are initiated to any other
-device on the same bus after the bank switch command is sent.
+On 2020/11/30 21:49, Will Deacon wrote:
+> On Mon, Nov 30, 2020 at 08:18:47PM +0800, Yanan Wang wrote:
+>> If we get a FSC_PERM fault, just using (logging_active && writable) to determine
+>> calling kvm_pgtable_stage2_map(). There will be two more cases we should consider.
+>>
+>> (1) After logging_active is configged back to false from true. When we get a
+>> FSC_PERM fault with write_fault and adjustment of hugepage is needed, we should
+>> merge tables back to a block entry. This case is ignored by still calling
+>> kvm_pgtable_stage2_relax_perms(), which will lead to an endless loop and guest
+>> panic due to soft lockup.
+>>
+>> (2) We use (FSC_PERM && logging_active && writable) to determine collapsing
+>> a block entry into a table by calling kvm_pgtable_stage2_map(). But sometimes
+>> we may only need to relax permissions when trying to write to a page other than
+>> a block. In this condition, using kvm_pgtable_stage2_relax_perms() will be fine.
+>>
+>> The ISS filed bit[1:0] in ESR_EL2 regesiter indicates the stage2 lookup level
+>> at which a D-abort or I-abort occured. By comparing granule of the fault lookup
+>> level with vma_pagesize, we can strictly distinguish conditions of calling
+>> kvm_pgtable_stage2_relax_perms() or kvm_pgtable_stage2_map(), and the above
+>> two cases will be well considered.
+>>
+>> Suggested-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>> ---
+>>   arch/arm64/include/asm/esr.h         |  1 +
+>>   arch/arm64/include/asm/kvm_emulate.h |  5 +++++
+>>   arch/arm64/kvm/mmu.c                 | 11 +++++++++--
+>>   3 files changed, 15 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
+>> index 22c81f1edda2..85a3e49f92f4 100644
+>> --- a/arch/arm64/include/asm/esr.h
+>> +++ b/arch/arm64/include/asm/esr.h
+>> @@ -104,6 +104,7 @@
+>>   /* Shared ISS fault status code(IFSC/DFSC) for Data/Instruction aborts */
+>>   #define ESR_ELx_FSC		(0x3F)
+>>   #define ESR_ELx_FSC_TYPE	(0x3C)
+>> +#define ESR_ELx_FSC_LEVEL	(0x03)
+>>   #define ESR_ELx_FSC_EXTABT	(0x10)
+>>   #define ESR_ELx_FSC_SERROR	(0x11)
+>>   #define ESR_ELx_FSC_ACCESS	(0x08)
+>> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+>> index 5ef2669ccd6c..2e0e8edf6306 100644
+>> --- a/arch/arm64/include/asm/kvm_emulate.h
+>> +++ b/arch/arm64/include/asm/kvm_emulate.h
+>> @@ -350,6 +350,11 @@ static __always_inline u8 kvm_vcpu_trap_get_fault_type(const struct kvm_vcpu *vc
+>>   	return kvm_vcpu_get_esr(vcpu) & ESR_ELx_FSC_TYPE;
+>>   }
+>>   
+>> +static __always_inline u8 kvm_vcpu_trap_get_fault_level(const struct kvm_vcpu *vcpu)
+>> +{
+>> +	return kvm_vcpu_get_esr(vcpu) & ESR_ELx_FSC_LEVEL;
+>> +{
+>> +
+>>   static __always_inline bool kvm_vcpu_abt_issea(const struct kvm_vcpu *vcpu)
+>>   {
+>>   	switch (kvm_vcpu_trap_get_fault(vcpu)) {
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index 1a01da9fdc99..75814a02d189 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -754,10 +754,12 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>   	gfn_t gfn;
+>>   	kvm_pfn_t pfn;
+>>   	bool logging_active = memslot_is_logging(memslot);
+>> -	unsigned long vma_pagesize;
+>> +	unsigned long fault_level = kvm_vcpu_trap_get_fault_level(vcpu);
+>> +	unsigned long vma_pagesize, fault_granule;
+>>   	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R;
+>>   	struct kvm_pgtable *pgt;
+>>   
+>> +	fault_granule = 1UL << ARM64_HW_PGTABLE_LEVEL_SHIFT(fault_level);
+> I like the idea, but is this macro reliable for stage-2 page-tables, given
+> that we could have a concatenated pgd?
+>
+> Will
+> .
 
-Signed-off-by: Furquan Shaikh <furquan@google.com>
----
- drivers/input/touchscreen/raydium_i2c_ts.c | 120 ++++++++++++++-------
- 1 file changed, 82 insertions(+), 38 deletions(-)
+Yes, it's fine even when we have a concatenated pgd table.
 
-diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
-index e694a9b2b1e5..259ecfdf33f1 100644
---- a/drivers/input/touchscreen/raydium_i2c_ts.c
-+++ b/drivers/input/touchscreen/raydium_i2c_ts.c
-@@ -137,45 +137,25 @@ struct raydium_data {
- 	bool wake_irq_enabled;
- };
- 
--static int raydium_i2c_xfer(struct i2c_client *client,
--			    u32 addr, void *data, size_t len, bool is_read)
--{
--	struct raydium_bank_switch_header {
--		u8 cmd;
--		__be32 be_addr;
--	} __packed header = {
--		.cmd = RM_CMD_BANK_SWITCH,
--		.be_addr = cpu_to_be32(addr),
--	};
--
--	u8 reg_addr = addr & 0xff;
--
--	struct i2c_msg xfer[] = {
--		{
--			.addr = client->addr,
--			.len = sizeof(header),
--			.buf = (u8 *)&header,
--		},
--		{
--			.addr = client->addr,
--			.len = 1,
--			.buf = &reg_addr,
--		},
--		{
--			.addr = client->addr,
--			.len = len,
--			.buf = data,
--			.flags = is_read ? I2C_M_RD : 0,
--		}
--	};
-+/*
-+ * Header to be sent for RM_CMD_BANK_SWITCH command. This is used by
-+ * raydium_i2c_{read|send} below.
-+ */
-+struct __packed raydium_bank_switch_header {
-+	u8 cmd;
-+	__be32 be_addr;
-+};
- 
-+static int raydium_i2c_xfer(struct i2c_client *client, u32 addr,
-+			    struct i2c_msg *xfer, size_t xfer_count)
-+{
-+	int ret;
- 	/*
- 	 * If address is greater than 255, then RM_CMD_BANK_SWITCH needs to be
- 	 * sent first. Else, skip the header i.e. xfer[0].
- 	 */
- 	int xfer_start_idx = (addr > 0xff) ? 0 : 1;
--	size_t xfer_count = ARRAY_SIZE(xfer) - xfer_start_idx;
--	int ret;
-+	xfer_count -= xfer_start_idx;
- 
- 	ret = i2c_transfer(client->adapter, &xfer[xfer_start_idx], xfer_count);
- 	if (likely(ret == xfer_count))
-@@ -189,10 +169,43 @@ static int raydium_i2c_send(struct i2c_client *client,
- {
- 	int tries = 0;
- 	int error;
-+	u8 *tx_buf;
-+	u8 reg_addr = addr & 0xff;
-+
-+	tx_buf = kmalloc(len + 1, GFP_KERNEL);
-+	if (!tx_buf)
-+		return -ENOMEM;
-+
-+	tx_buf[0] = reg_addr;
-+	memcpy(tx_buf + 1, data, len);
- 
- 	do {
--		error = raydium_i2c_xfer(client, addr, (void *)data, len,
--					 false);
-+		struct raydium_bank_switch_header header = {
-+			.cmd = RM_CMD_BANK_SWITCH,
-+			.be_addr = cpu_to_be32(addr),
-+		};
-+
-+		/*
-+		 * Perform as a single i2c_transfer transaction to ensure that
-+		 * no other I2C transactions are initiated on the bus to any
-+		 * other device in between. Initiating transacations to other
-+		 * devices after RM_CMD_BANK_SWITCH is sent is known to cause
-+		 * issues.
-+		 */
-+		struct i2c_msg xfer[] = {
-+			{
-+				.addr = client->addr,
-+				.len = sizeof(header),
-+				.buf = (u8 *)&header,
-+			},
-+			{
-+				.addr = client->addr,
-+				.len = len + 1,
-+				.buf = tx_buf,
-+			},
-+		};
-+
-+		error = raydium_i2c_xfer(client, addr, xfer, ARRAY_SIZE(xfer));
- 		if (likely(!error))
- 			return 0;
- 
-@@ -206,12 +219,43 @@ static int raydium_i2c_send(struct i2c_client *client,
- static int raydium_i2c_read(struct i2c_client *client,
- 			    u32 addr, void *data, size_t len)
- {
--	size_t xfer_len;
- 	int error;
- 
- 	while (len) {
--		xfer_len = min_t(size_t, len, RM_MAX_READ_SIZE);
--		error = raydium_i2c_xfer(client, addr, data, xfer_len, true);
-+		u8 reg_addr = addr & 0xff;
-+		struct raydium_bank_switch_header header = {
-+			.cmd = RM_CMD_BANK_SWITCH,
-+			.be_addr = cpu_to_be32(addr),
-+		};
-+		size_t xfer_len = min_t(size_t, len, RM_MAX_READ_SIZE);
-+
-+		/*
-+		 * Perform as a single i2c_transfer transaction to ensure that
-+		 * no other I2C transactions are initiated on the bus to any
-+		 * other device in between. Initiating transacations to other
-+		 * devices after RM_CMD_BANK_SWITCH is sent is known to cause
-+		 * issues.
-+		 */
-+		struct i2c_msg xfer[] = {
-+			{
-+				.addr = client->addr,
-+				.len = sizeof(header),
-+				.buf = (u8 *)&header,
-+			},
-+			{
-+				.addr = client->addr,
-+				.len = 1,
-+				.buf = &reg_addr,
-+			},
-+			{
-+				.addr = client->addr,
-+				.len = xfer_len,
-+				.buf = data,
-+				.flags = I2C_M_RD,
-+			}
-+		};
-+
-+		error = raydium_i2c_xfer(client, addr, xfer, ARRAY_SIZE(xfer));
- 		if (unlikely(error))
- 			return error;
- 
--- 
-2.29.2.454.gaff20da3a2-goog
+No matter a concatenated pgd will be made or not, the initial lookup 
+level (start _level) is set in VTCR_EL2 register.
+
+The MMU hardware walker will know the start_level according to 
+information in VTCR_EL2.
+
+This idea runs well in practice on host where ia_bits is 40, PAGE_SIZE 
+is 4k, and a concatenated pgd is made for guest stage2.
+
+According to the kernel info printed, the start_level is 1, and stage 2 
+translation runs as expected.
+
+
+Yanan
 
