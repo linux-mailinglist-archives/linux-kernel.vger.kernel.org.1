@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB29F2C9CCD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06562C9CB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388490AbgLAJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:01:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37414 "EHLO mail.kernel.org"
+        id S2388072AbgLAI7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:59:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388473AbgLAJBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:01:06 -0500
+        id S2388029AbgLAI6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:58:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA74B221FF;
-        Tue,  1 Dec 2020 09:00:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCA9F21D7A;
+        Tue,  1 Dec 2020 08:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813225;
-        bh=muE24eixzSgiB3UpGqlnzGPKxwVuB3tYFUCgeSEmiq8=;
+        s=korg; t=1606813093;
+        bh=RccXeOf06Uamqb4/AwKlFrIiqLaMCZpeLLEmrTHswvQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dJ8Bd5iTYyvIMqgkSSRJ7Xw6h27+R8uZ75JfQb9UaKLdGXDaAZDHPBbI8fqig+UNe
-         ugpeAIbRb7J/K7Oyij0I/T3pd6LSMS0HTZwX7Q7MeKjFbvVgv1aHTM9WCc/VZ00nOa
-         ljKyCNsRxLZrD1MHFbMwCamdTvVV9mMRrqEuenC0=
+        b=WY7pahdMJpCQyeft58MlHicv8Kidy/A7TqFF0e2ffFrudoIAMGaZHoJSLLJlYP85b
+         mfZ9JehFKtvNAiskSPsIldoiAQbHN+lLiv76q9t6PYs6wMuSqoUwHoskxBCysnJ4Fp
+         n71SbGGwwV6B5mYDzG8PqZuTEIjAYxmOLrQCqUso=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Lee Duncan <lduncan@suse.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 24/57] scsi: libiscsi: Fix NOP race condition
-Date:   Tue,  1 Dec 2020 09:53:29 +0100
-Message-Id: <20201201084650.367300584@linuxfoundation.org>
+        stable@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 31/50] video: hyperv_fb: Fix the cache type when mapping the VRAM
+Date:   Tue,  1 Dec 2020 09:53:30 +0100
+Message-Id: <20201201084648.875214121@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,130 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Duncan <lduncan@suse.com>
+From: Dexuan Cui <decui@microsoft.com>
 
-[ Upstream commit fe0a8a95e7134d0b44cd407bc0085b9ba8d8fe31 ]
+[ Upstream commit 5f1251a48c17b54939d7477305e39679a565382c ]
 
-iSCSI NOPs are sometimes "lost", mistakenly sent to the user-land iscsid
-daemon instead of handled in the kernel, as they should be, resulting in a
-message from the daemon like:
+x86 Hyper-V used to essentially always overwrite the effective cache type
+of guest memory accesses to WB. This was problematic in cases where there
+is a physical device assigned to the VM, since that often requires that
+the VM should have control over cache types. Thus, on newer Hyper-V since
+2018, Hyper-V always honors the VM's cache type, but unexpectedly Linux VM
+users start to complain that Linux VM's VRAM becomes very slow, and it
+turns out that Linux VM should not map the VRAM uncacheable by ioremap().
+Fix this slowness issue by using ioremap_cache().
 
-  iscsid: Got nop in, but kernel supports nop handling.
+On ARM64, ioremap_cache() is also required as the host also maps the VRAM
+cacheable, otherwise VM Connect can't display properly with ioremap() or
+ioremap_wc().
 
-This can occur because of the new forward- and back-locks, and the fact
-that an iSCSI NOP response can occur before processing of the NOP send is
-complete. This can result in "conn->ping_task" being NULL in
-iscsi_nop_out_rsp(), when the pointer is actually in the process of being
-set.
+With this change, the VRAM on new Hyper-V is as fast as regular RAM, so
+it's no longer necessary to use the hacks we added to mitigate the
+slowness, i.e. we no longer need to allocate physical memory and use
+it to back up the VRAM in Generation-1 VM, and we also no longer need to
+allocate physical memory to back up the framebuffer in a Generation-2 VM
+and copy the framebuffer to the real VRAM. A further big change will
+address these for v5.11.
 
-To work around this, we add a new state to the "ping_task" pointer. In
-addition to NULL (not assigned) and a pointer (assigned), we add the state
-"being set", which is signaled with an INVALID pointer (using "-1").
-
-Link: https://lore.kernel.org/r/20201106193317.16993-1-leeman.duncan@gmail.com
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 68a2d20b79b1 ("drivers/video: add Hyper-V Synthetic Video Frame Buffer Driver")
+Tested-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Link: https://lore.kernel.org/r/20201118000305.24797-1-decui@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libiscsi.c | 23 +++++++++++++++--------
- include/scsi/libiscsi.h |  3 +++
- 2 files changed, 18 insertions(+), 8 deletions(-)
+ drivers/video/fbdev/hyperv_fb.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 7a05c72717666..1c69515e870cb 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -571,8 +571,8 @@ static void iscsi_complete_task(struct iscsi_task *task, int state)
- 	if (conn->task == task)
- 		conn->task = NULL;
- 
--	if (conn->ping_task == task)
--		conn->ping_task = NULL;
-+	if (READ_ONCE(conn->ping_task) == task)
-+		WRITE_ONCE(conn->ping_task, NULL);
- 
- 	/* release get from queueing */
- 	__iscsi_put_task(task);
-@@ -781,6 +781,9 @@ __iscsi_conn_send_pdu(struct iscsi_conn *conn, struct iscsi_hdr *hdr,
- 						   task->conn->session->age);
+diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+index 2fd49b2358f8b..f3938c5278832 100644
+--- a/drivers/video/fbdev/hyperv_fb.c
++++ b/drivers/video/fbdev/hyperv_fb.c
+@@ -712,7 +712,12 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 		goto err1;
  	}
  
-+	if (unlikely(READ_ONCE(conn->ping_task) == INVALID_SCSI_TASK))
-+		WRITE_ONCE(conn->ping_task, task);
-+
- 	if (!ihost->workq) {
- 		if (iscsi_prep_mgmt_task(conn, task))
- 			goto free_task;
-@@ -988,8 +991,11 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
-         struct iscsi_nopout hdr;
- 	struct iscsi_task *task;
+-	fb_virt = ioremap(par->mem->start, screen_fb_size);
++	/*
++	 * Map the VRAM cacheable for performance. This is also required for
++	 * VM Connect to display properly for ARM64 Linux VM, as the host also
++	 * maps the VRAM cacheable.
++	 */
++	fb_virt = ioremap_cache(par->mem->start, screen_fb_size);
+ 	if (!fb_virt)
+ 		goto err2;
  
--	if (!rhdr && conn->ping_task)
--		return -EINVAL;
-+	if (!rhdr) {
-+		if (READ_ONCE(conn->ping_task))
-+			return -EINVAL;
-+		WRITE_ONCE(conn->ping_task, INVALID_SCSI_TASK);
-+	}
- 
- 	memset(&hdr, 0, sizeof(struct iscsi_nopout));
- 	hdr.opcode = ISCSI_OP_NOOP_OUT | ISCSI_OP_IMMEDIATE;
-@@ -1004,11 +1010,12 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
- 
- 	task = __iscsi_conn_send_pdu(conn, (struct iscsi_hdr *)&hdr, NULL, 0);
- 	if (!task) {
-+		if (!rhdr)
-+			WRITE_ONCE(conn->ping_task, NULL);
- 		iscsi_conn_printk(KERN_ERR, conn, "Could not send nopout\n");
- 		return -EIO;
- 	} else if (!rhdr) {
- 		/* only track our nops */
--		conn->ping_task = task;
- 		conn->last_ping = jiffies;
- 	}
- 
-@@ -1021,7 +1028,7 @@ static int iscsi_nop_out_rsp(struct iscsi_task *task,
- 	struct iscsi_conn *conn = task->conn;
- 	int rc = 0;
- 
--	if (conn->ping_task != task) {
-+	if (READ_ONCE(conn->ping_task) != task) {
- 		/*
- 		 * If this is not in response to one of our
- 		 * nops then it must be from userspace.
-@@ -1961,7 +1968,7 @@ static void iscsi_start_tx(struct iscsi_conn *conn)
-  */
- static int iscsi_has_ping_timed_out(struct iscsi_conn *conn)
- {
--	if (conn->ping_task &&
-+	if (READ_ONCE(conn->ping_task) &&
- 	    time_before_eq(conn->last_recv + (conn->recv_timeout * HZ) +
- 			   (conn->ping_timeout * HZ), jiffies))
- 		return 1;
-@@ -2096,7 +2103,7 @@ enum blk_eh_timer_return iscsi_eh_cmd_timed_out(struct scsi_cmnd *sc)
- 	 * Checking the transport already or nop from a cmd timeout still
- 	 * running
- 	 */
--	if (conn->ping_task) {
-+	if (READ_ONCE(conn->ping_task)) {
- 		task->have_checked_conn = true;
- 		rc = BLK_EH_RESET_TIMER;
- 		goto done;
-diff --git a/include/scsi/libiscsi.h b/include/scsi/libiscsi.h
-index c9bd935f4fd1c..1ee0f30ae190b 100644
---- a/include/scsi/libiscsi.h
-+++ b/include/scsi/libiscsi.h
-@@ -145,6 +145,9 @@ struct iscsi_task {
- 	void			*dd_data;	/* driver/transport data */
- };
- 
-+/* invalid scsi_task pointer */
-+#define	INVALID_SCSI_TASK	(struct iscsi_task *)-1l
-+
- static inline int iscsi_task_has_unsol_data(struct iscsi_task *task)
- {
- 	return task->unsol_r2t.data_length > task->unsol_r2t.sent;
 -- 
 2.27.0
 
