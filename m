@@ -2,94 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3481B2C944D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C87D2C9452
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731203AbgLAAto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:49:44 -0500
-Received: from gproxy10-pub.mail.unifiedlayer.com ([69.89.20.226]:43509 "EHLO
-        gproxy10-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731157AbgLAAtn (ORCPT
+        id S1731056AbgLAAvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:51:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730645AbgLAAvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:49:43 -0500
-Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
-        by gproxy10.mail.unifiedlayer.com (Postfix) with ESMTP id 49D86140488
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 17:49:02 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id jtqnkXOT5eMJHjtqokeEo8; Mon, 30 Nov 2020 17:49:02 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=Ff8ZOq26 c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=KKAkSRfTAAAA:8
- a=OPsBkE8w8ii4HYlIn34A:9 a=QEXdDO2ut3YA:10:nop_charset_2
- a=cvBusfyB2V15izCimMoJ:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zI3joqWDlNyPs6bVf8+a9QgpBtZydGTR6Q0nqoSqJCs=; b=cl4NLuzgmlSGV9w23vnsynMSUL
-        ctsX3/w9j3MfI3v6w4EIM5h9OX7ud/5AZarOsFP586oGUmmKh36IDJBHqIMj0sJpS6SHZ9KfpCpDz
-        /orhtrALNcb7H7NMPcIRlJK+MRCOBq8zFKC1BcHonTwELhFTmoFTLT6wcYVX/8unox1UGULGpLu0N
-        rTVBFxBf8iPB+TV/oimZOULk+CTuZFjxSJ3WCQ4iXBH51puuD/cdJYPl6VQ9RlJvlRsZxgJd04J1G
-        W80J5BrB+E1DfjT54TN+3ykKGDR9RTN7A6DTwEfwAKr0PiZIc4kK0JjLxXeUCch8FKMpnpVfZnMLu
-        aDlVc55g==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:57206 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kjtqn-002dFx-AB; Tue, 01 Dec 2020 00:49:01 +0000
-Date:   Mon, 30 Nov 2020 16:49:00 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     b.zolnierkie@samsung.com, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: hwmon: pwm-fan: fix warning unused variable
- 'ctx'
-Message-ID: <20201201004900.GA48095@roeck-us.net>
-References: <20201201003118.2219422-1-anders.roxell@linaro.org>
+        Mon, 30 Nov 2020 19:51:42 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3DFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:50:56 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id u19so402647lfr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:50:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hTzreJVzLotSX8irlBhPZqAylN9milv6wwdHJbswZfM=;
+        b=lB69+LPUUaj1ZBcNvsU2p+cK6bIbmBIVipajVEP1yZp7o/DDaeNRl3eYPL1s1ej/pg
+         FiFOA4ooV9xJGj8NJADTZOgXw4DcDN8uIWU5cB06U0iENMDdTa68SCxxeIBTmUsyZiHJ
+         mBu3AkUks+4/piWuoh/TE1suJPQDRpFvvhdwArUkEOduAfhjZVnNTXR69ks50yPcLIjG
+         pb8O+3REqbzJVccxnTHScEGbHria5icsO+3w911yf5oaJ47NNMLC0BILdtNBBmclQWxC
+         vm2tn3yDcZ/fRbthPPcI22Fn/aGr+5kJb7oy9go/JwFrJ5qkif6dNaFzTfbZEgwYNTxk
+         L1Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hTzreJVzLotSX8irlBhPZqAylN9milv6wwdHJbswZfM=;
+        b=j5jFZcuZqgAa3TvYOHqeOQ1O39WKcSlr2qp0N/2OfxAeCyuLxfs5k1TxkESwBtAz+N
+         sVEH+bIn4MFSsybISVGtI8/VY1nT7Zu//njyoffM7reOrsP695ZUHGIx2CndEkK0d0A7
+         /qh3nlzKFZXjeQlFTmwtmcXUqNXy4K4XXRZqGnt6bYlmgFybRx3fb/9A4ULrC1baNtib
+         MYnR8+YF7u7sFZKFYHiLz5AB0YWfkFoK2cRDDeS6OoeNib7dFZlu4+lFc0HUoX//pN/C
+         Y1W+Y5GFQBx2iZaQ/mrAvV3c3HhjnNEuSI8ocGIMMMnEnlx8MewDu/9FKbOhtno6W4wP
+         hOww==
+X-Gm-Message-State: AOAM530szIUOULaG0DdIQfAe3WBs4TipF2dGMn8z9U187N6h3+Uj0H2h
+        dkNUD12yGiG/spGj5BqkgpOBbjRJRa3xh/k25i54/Q==
+X-Google-Smtp-Source: ABdhPJzLDuUoyOaXGvJV7ddixQZrYbkIgtocLcUsFyL1K3QhrUL3QJz7vbX6WUy7OUML2qpgY37GW8Jydd94L3u35SI=
+X-Received: by 2002:a19:5015:: with SMTP id e21mr80952lfb.566.1606783854666;
+ Mon, 30 Nov 2020 16:50:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201201003118.2219422-1-anders.roxell@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kjtqn-002dFx-AB
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:57206
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 1
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+References: <20201127083938.2666770-1-anders.roxell@linaro.org> <CAKwvOdkbPCaJO8c+Zj_BSwfkwcVuMQSFhnxj6PXGo5i86NQ_Zg@mail.gmail.com>
+In-Reply-To: <CAKwvOdkbPCaJO8c+Zj_BSwfkwcVuMQSFhnxj6PXGo5i86NQ_Zg@mail.gmail.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Tue, 1 Dec 2020 01:50:43 +0100
+Message-ID: <CADYN=9LRiz8ix9Rb_vMzQsCQs6YmR7CgoVkt8qEbcT=H_NFWHw@mail.gmail.com>
+Subject: Re: [PATCH] mips: lib: uncached: fix uninitialized variable 'sp'
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:31:18AM +0100, Anders Roxell wrote:
-> When building hwmon/pwm-fan the following unused-variable warning shows
-> up:
-> 
-> /tmp/drivers/hwmon/pwm-fan.c: In function ‘pwm_fan_is_visible’:
-> /tmp/drivers/hwmon/pwm-fan.c:167:22: warning: unused variable ‘ctx’ [-Wunused-variable]
-> 
-> Remove the unneeded variable declaration 'ctx'.
-> 
-> Fixes: 439ed83acc19 ("hwmon: (pwm-fan) Convert to hwmon_device_register_with_info API")
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+On Mon, 30 Nov 2020 at 21:22, Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Fri, Nov 27, 2020 at 12:39 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+> >
+> > When building mips tinyconfig with clang the following warning show up:
+> >
+> > /tmp/arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
+> >         register long sp __asm__("$sp");
+> >                         ^
+> >                          = 0
+>
+> Hi Anders
 
-I already folded this change into the original patch.
+Hi Nick,
 
-Guenter
+>, thank you for sending the patch. Do you have the full text
+> of the warning; it looks like only the note was included?
+
+oops, looks like I missed this:
+
+/srv/src/kernel/next/arch/mips/lib/uncached.c:45:6: warning: variable
+'sp' is uninitialized when used here [-Wuninitialized]
+        if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+            ^~
+/srv/src/kernel/next/arch/mips/lib/uncached.c:40:18: note: initialize
+the variable 'sp' to silence this warning
+        register long sp __asm__("$sp");
+                        ^
+                         = 0
+1 warning generated.
+
+Cheers,
+Anders
+
+>
+> >
+> > Rework to make an explicit inline move.
+> >
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >  arch/mips/lib/uncached.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
+> > index 09d5deea747f..21a4b94a0558 100644
+> > --- a/arch/mips/lib/uncached.c
+> > +++ b/arch/mips/lib/uncached.c
+> > @@ -37,10 +37,11 @@
+> >   */
+> >  unsigned long run_uncached(void *func)
+> >  {
+> > -       register long sp __asm__("$sp");
+> >         register long ret __asm__("$2");
+> >         long lfunc = (long)func, ufunc;
+> >         long usp;
+> > +       long sp;
+> > +       asm ("move %0, $sp" : "=r" (sp));
+> >
+> >         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+> >                 usp = CKSEG1ADDR(sp);
+> > --
+> > 2.29.2
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
