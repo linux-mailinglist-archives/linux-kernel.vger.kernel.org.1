@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5682F2C9B47
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F4C2C9BA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388816AbgLAJGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:06:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40992 "EHLO mail.kernel.org"
+        id S2389777AbgLAJK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:10:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388265AbgLAJDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:03:51 -0500
+        id S2389734AbgLAJKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:10:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DD1B20671;
-        Tue,  1 Dec 2020 09:03:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8261222245;
+        Tue,  1 Dec 2020 09:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813391;
-        bh=POG2yQfZgrtmTr75Yxvj9VSPH7jgq3D0r6llJSNcUWg=;
+        s=korg; t=1606813797;
+        bh=h60ek0hTv04VHgQSiFeWek+FE4Lk+MHPlUOUUhBX+ng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fOI5LIw/VOXQkn2Me1vOkCaCjx0kq0tMeIZm74tkhfahTv3gq79ppIfZ5B/KD4gd8
-         nWcUP0V7cHOrfxfXSbSn3loOTf3bSa11vwzRFUyDmtgto0FNqhPQh8fV1BQ5xxPh+F
-         N+siLoBKQbDcDi6GwTZGCDeRzHa/PFdhqvt+j37M=
+        b=DNvLPCVm5756JzsycwUgj4R004HfVjw/Mj04VStIxuzOKnxfpMJwlrPUPBqWY+CA+
+         lffyp4DRAgrXX5EPDNjG1O42l3gVC5Si+PuGI9UCItbIOkAmWuDo1D0MD7qpySVr9B
+         3NVbeWcMm0vN4FmVXue8PwBGCl0O7oFeifeGVn7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kim Phillips <kim.phillips@arm.com>,
-        Florian Klink <flokli@flokli.de>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 03/98] ipv4: use IS_ENABLED instead of ifdef
+        stable@vger.kernel.org,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 045/152] staging: ralink-gdma: fix kconfig dependency bug for DMA_RALINK
 Date:   Tue,  1 Dec 2020 09:52:40 +0100
-Message-Id: <20201201084653.153353096@linuxfoundation.org>
+Message-Id: <20201201084717.777362894@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Klink <flokli@flokli.de>
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-commit c09c8a27b9baa417864b9adc3228b10ae5eeec93 upstream.
+[ Upstream commit 06ea594051707c6b8834ef5b24e9b0730edd391b ]
 
-Checking for ifdef CONFIG_x fails if CONFIG_x=m.
+When DMA_RALINK is enabled and DMADEVICES is disabled, it results in the
+following Kbuild warnings:
 
-Use IS_ENABLED instead, which is true for both built-ins and modules.
+WARNING: unmet direct dependencies detected for DMA_ENGINE
+  Depends on [n]: DMADEVICES [=n]
+  Selected by [y]:
+  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
 
-Otherwise, a
-> ip -4 route add 1.2.3.4/32 via inet6 fe80::2 dev eth1
-fails with the message "Error: IPv6 support not enabled in kernel." if
-CONFIG_IPV6 is `m`.
+WARNING: unmet direct dependencies detected for DMA_VIRTUAL_CHANNELS
+  Depends on [n]: DMADEVICES [=n]
+  Selected by [y]:
+  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
 
-In the spirit of b8127113d01e53adba15b41aefd37b90ed83d631.
+The reason is that DMA_RALINK selects DMA_ENGINE and DMA_VIRTUAL_CHANNELS
+without depending on or selecting DMADEVICES while DMA_ENGINE and
+DMA_VIRTUAL_CHANNELS are subordinate to DMADEVICES. This can also fail
+building the kernel as demonstrated in a bug report.
 
-Fixes: d15662682db2 ("ipv4: Allow ipv6 gateway with ipv4 routes")
-Cc: Kim Phillips <kim.phillips@arm.com>
-Signed-off-by: Florian Klink <flokli@flokli.de>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Link: https://lore.kernel.org/r/20201115224509.2020651-1-flokli@flokli.de
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Honor the kconfig dependency to remove unmet direct dependency warnings
+and avoid any potential build failures.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=210055
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Link: https://lore.kernel.org/r/20201104181522.43567-1-fazilyildiran@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/fib_frontend.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/ralink-gdma/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/ipv4/fib_frontend.c
-+++ b/net/ipv4/fib_frontend.c
-@@ -706,7 +706,7 @@ int fib_gw_from_via(struct fib_config *c
- 		cfg->fc_gw4 = *((__be32 *)via->rtvia_addr);
- 		break;
- 	case AF_INET6:
--#ifdef CONFIG_IPV6
-+#if IS_ENABLED(CONFIG_IPV6)
- 		if (alen != sizeof(struct in6_addr)) {
- 			NL_SET_ERR_MSG(extack, "Invalid IPv6 address in RTA_VIA");
- 			return -EINVAL;
+diff --git a/drivers/staging/ralink-gdma/Kconfig b/drivers/staging/ralink-gdma/Kconfig
+index 54e8029e6b1af..0017376234e28 100644
+--- a/drivers/staging/ralink-gdma/Kconfig
++++ b/drivers/staging/ralink-gdma/Kconfig
+@@ -2,6 +2,7 @@
+ config DMA_RALINK
+ 	tristate "RALINK DMA support"
+ 	depends on RALINK && !SOC_RT288X
++	depends on DMADEVICES
+ 	select DMA_ENGINE
+ 	select DMA_VIRTUAL_CHANNELS
+ 
+-- 
+2.27.0
+
 
 
