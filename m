@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEF92C9ACA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBDE2C9AD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388414AbgLAJA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36720 "EHLO mail.kernel.org"
+        id S2388555AbgLAJB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:01:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388374AbgLAJAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:00:52 -0500
+        id S2388489AbgLAJBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:01:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B37821D7A;
-        Tue,  1 Dec 2020 09:00:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75FAE21D7F;
+        Tue,  1 Dec 2020 09:00:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813237;
-        bh=5zTnQBR2uQiioZtrlCyvXMGvrTPfTxctW7F2T1dYdAA=;
+        s=korg; t=1606813240;
+        bh=pChzZcg54YaLWRqnqhoyp1YgF1WL9Xmkn37FInhqhaI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1QiAuAQ5UeUXpTWwSsJQe8SM+ih9GDJl8Qpld/O5ithNscu9GcMVCZJYjaop9TvJ2
-         CD+oGdP3nbH9V+igyX3PpC482Ya/PmUwCtBjEihBET04I5gkybd3O8O9ZTd3yIhEdr
-         wLsebiPeAJG0bIQYLckQGAYCrUgVwPnA9mW06lZY=
+        b=a7AhdSxUQZWe48ZUvltKeIGz/beirfyQ5MeQkpf4aB668ikI63G/uQ7m5AEoNFE+i
+         WKnxqfUbbrnR2Go1M1xatrMjfSOPXLfg4KZyri6ucQNHqBNM7vgX/NAY/kAkeFPFlK
+         Y3GAOahexQYVatvm6yIDtcml+L1CTlNha2ZRmGfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.19 05/57] wireless: Use linux/stddef.h instead of stddef.h
-Date:   Tue,  1 Dec 2020 09:53:10 +0100
-Message-Id: <20201201084648.353869437@linuxfoundation.org>
+        stable@vger.kernel.org, Keqian Zhu <zhukeqian1@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>
+Subject: [PATCH 4.19 06/57] KVM: arm64: vgic-v3: Drop the reporting of GICR_TYPER.Last for userspace
+Date:   Tue,  1 Dec 2020 09:53:11 +0100
+Message-Id: <20201201084648.462639229@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
 References: <20201201084647.751612010@linuxfoundation.org>
@@ -42,39 +44,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hauke Mehrtens <hauke@hauke-m.de>
+From: Zenghui Yu <yuzenghui@huawei.com>
 
-commit 1b9ae0c92925ac40489be526d67d0010d0724ce0 upstream.
+commit 23bde34771f1ea92fb5e6682c0d8c04304d34b3b upstream.
 
-When compiling inside the kernel include linux/stddef.h instead of
-stddef.h. When I compile this header file in backports for power PC I
-run into a conflict with ptrdiff_t. I was unable to reproduce this in
-mainline kernel. I still would like to fix this problem in the kernel.
+It was recently reported that if GICR_TYPER is accessed before the RD base
+address is set, we'll suffer from the unset @rdreg dereferencing. Oops...
 
-Fixes: 6989310f5d43 ("wireless: Use offsetof instead of custom macro.")
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-Link: https://lore.kernel.org/r/20200521201422.16493-1-hauke@hauke-m.de
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
+			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
+
+It's "expected" that users will access registers in the redistributor if
+the RD has been properly configured (e.g., the RD base address is set). But
+it hasn't yet been covered by the existing documentation.
+
+Per discussion on the list [1], the reporting of the GICR_TYPER.Last bit
+for userspace never actually worked. And it's difficult for us to emulate
+it correctly given that userspace has the flexibility to access it any
+time. Let's just drop the reporting of the Last bit for userspace for now
+(userspace should have full knowledge about it anyway) and it at least
+prevents kernel from panic ;-)
+
+[1] https://lore.kernel.org/kvmarm/c20865a267e44d1e2c0d52ce4e012263@kernel.org/
+
+Fixes: ba7b3f1275fd ("KVM: arm/arm64: Revisit Redistributor TYPER last bit computation")
+Reported-by: Keqian Zhu <zhukeqian1@huawei.com>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20201117151629.1738-1-yuzenghui@huawei.com
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/uapi/linux/wireless.h |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ virt/kvm/arm/vgic/vgic-mmio-v3.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
---- a/include/uapi/linux/wireless.h
-+++ b/include/uapi/linux/wireless.h
-@@ -74,7 +74,11 @@
- #include <linux/socket.h>		/* for "struct sockaddr" et al	*/
- #include <linux/if.h>			/* for IFNAMSIZ and co... */
+--- a/virt/kvm/arm/vgic/vgic-mmio-v3.c
++++ b/virt/kvm/arm/vgic/vgic-mmio-v3.c
+@@ -226,6 +226,23 @@ static unsigned long vgic_mmio_read_v3r_
+ 	return extract_bytes(value, addr & 7, len);
+ }
  
--#include <stddef.h>                     /* for offsetof */
-+#ifdef __KERNEL__
-+#	include <linux/stddef.h>	/* for offsetof */
-+#else
-+#	include <stddef.h>		/* for offsetof */
-+#endif
- 
- /***************************** VERSION *****************************/
- /*
++static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
++						 gpa_t addr, unsigned int len)
++{
++	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
++	int target_vcpu_id = vcpu->vcpu_id;
++	u64 value;
++
++	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
++	value |= ((target_vcpu_id & 0xffff) << 8);
++
++	if (vgic_has_its(vcpu->kvm))
++		value |= GICR_TYPER_PLPIS;
++
++	/* reporting of the Last bit is not supported for userspace */
++	return extract_bytes(value, addr & 7, len);
++}
++
+ static unsigned long vgic_mmio_read_v3r_iidr(struct kvm_vcpu *vcpu,
+ 					     gpa_t addr, unsigned int len)
+ {
+@@ -532,8 +549,9 @@ static const struct vgic_register_region
+ 	REGISTER_DESC_WITH_LENGTH(GICR_IIDR,
+ 		vgic_mmio_read_v3r_iidr, vgic_mmio_write_wi, 4,
+ 		VGIC_ACCESS_32bit),
+-	REGISTER_DESC_WITH_LENGTH(GICR_TYPER,
+-		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi, 8,
++	REGISTER_DESC_WITH_LENGTH_UACCESS(GICR_TYPER,
++		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi,
++		vgic_uaccess_read_v3r_typer, vgic_mmio_uaccess_write_wi, 8,
+ 		VGIC_ACCESS_64bit | VGIC_ACCESS_32bit),
+ 	REGISTER_DESC_WITH_LENGTH(GICR_WAKER,
+ 		vgic_mmio_read_raz, vgic_mmio_write_wi, 4,
 
 
