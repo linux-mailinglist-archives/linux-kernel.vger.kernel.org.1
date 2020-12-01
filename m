@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6ED82C9CEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4B82C9CF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388743AbgLAJGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:06:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40836 "EHLO mail.kernel.org"
+        id S2389045AbgLAJGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:06:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388737AbgLAJEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:04:00 -0500
+        id S2388860AbgLAJE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:04:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 961EC206C1;
-        Tue,  1 Dec 2020 09:03:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C7F62067D;
+        Tue,  1 Dec 2020 09:03:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813425;
-        bh=/8c1Man/mllWLcUVYHSfgb+rDJvQlTZhZsG1a0laReg=;
+        s=korg; t=1606813427;
+        bh=WKrF+fHOogBVoC2LlHFQk2H2rxbSoQ6iIJIKlmMZy28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i5xFAZi231f/2zPS/qXbiz+hUUinYSeXV6HzpN6JoVM1rjMEZJYjJYXOaC3X7R1r4
-         BF+tUnJsDTkDAFJenHiCVPIuSj9HDb5gfAWIuRYVa6NCuw4/rKOJSSE9PGeDNg8Shx
-         F4N0mS0H/uUqeJZCrOBtIieP6x627/Eyqofe9DXc=
+        b=Bw4suaGCix8LLypuEO/BnUKTqgg6VTvpMec160+WlhqD1UqFlzPP+2R7CPRcd4p1P
+         KBHqirycnROMULek/pyCN/fv+Hi6y4Lo9LXIXUtVAsKT95jQf5urDz/n8Lo91vfDAF
+         Vc0oiNsWz7r3A1Ag0NyjqcDMoutaSQUwZ0fDSReI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Maurizio Lombardi <mlombard@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 35/98] vhost scsi: fix cmd completion race
-Date:   Tue,  1 Dec 2020 09:53:12 +0100
-Message-Id: <20201201084656.850570201@linuxfoundation.org>
+        stable@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 36/98] dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
+Date:   Tue,  1 Dec 2020 09:53:13 +0100
+Message-Id: <20201201084656.912334712@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
 References: <20201201084652.827177826@linuxfoundation.org>
@@ -46,124 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
 
-[ Upstream commit 47a3565e8bb14ec48a75b48daf57aa830e2691f8 ]
+[ Upstream commit e773ca7da8beeca7f17fe4c9d1284a2b66839cc1 ]
 
-We might not do the final se_cmd put from vhost_scsi_complete_cmd_work.
-When the last put happens a little later then we could race where
-vhost_scsi_complete_cmd_work does vhost_signal, the guest runs and sends
-more IO, and vhost_scsi_handle_vq runs but does not find any free cmds.
+Actually, burst size is equal to '1 << desc->rqcfg.brst_size'.
+we should use burst size, not desc->rqcfg.brst_size.
 
-This patch has us delay completing the cmd until the last lio core ref
-is dropped. We then know that once we signal to the guest that the cmd
-is completed that if it queues a new command it will find a free cmd.
+dma memcpy performance on Rockchip RV1126
+@ 1512MHz A7, 1056MHz LPDDR3, 200MHz DMA:
 
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Reviewed-by: Maurizio Lombardi <mlombard@redhat.com>
-Link: https://lore.kernel.org/r/1604986403-4931-4-git-send-email-michael.christie@oracle.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Stefan Hajnoczi <stefanha@redhat.com>
+dmatest:
+
+/# echo dma0chan0 > /sys/module/dmatest/parameters/channel
+/# echo 4194304 > /sys/module/dmatest/parameters/test_buf_size
+/# echo 8 > /sys/module/dmatest/parameters/iterations
+/# echo y > /sys/module/dmatest/parameters/norandom
+/# echo y > /sys/module/dmatest/parameters/verbose
+/# echo 1 > /sys/module/dmatest/parameters/run
+
+dmatest: dma0chan0-copy0: result #1: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+dmatest: dma0chan0-copy0: result #2: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+dmatest: dma0chan0-copy0: result #3: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+dmatest: dma0chan0-copy0: result #4: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+dmatest: dma0chan0-copy0: result #5: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+dmatest: dma0chan0-copy0: result #6: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+dmatest: dma0chan0-copy0: result #7: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+dmatest: dma0chan0-copy0: result #8: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
+
+Before:
+
+  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 48 iops 200338 KB/s (0)
+
+After this patch:
+
+  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 179 iops 734873 KB/s (0)
+
+After this patch and increase dma clk to 400MHz:
+
+  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 259 iops 1062929 KB/s (0)
+
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Link: https://lore.kernel.org/r/1605326106-55681-1-git-send-email-sugar.zhang@rock-chips.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vhost/scsi.c | 42 +++++++++++++++---------------------------
- 1 file changed, 15 insertions(+), 27 deletions(-)
+ drivers/dma/pl330.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
-index f63f84a257256..98c484149ac7f 100644
---- a/drivers/vhost/scsi.c
-+++ b/drivers/vhost/scsi.c
-@@ -320,7 +320,7 @@ static u32 vhost_scsi_tpg_get_inst_index(struct se_portal_group *se_tpg)
- 	return 1;
- }
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index cd81d10974a29..57b6555d6d042 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -2793,7 +2793,7 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
+ 	 * If burst size is smaller than bus width then make sure we only
+ 	 * transfer one at a time to avoid a burst stradling an MFIFO entry.
+ 	 */
+-	if (desc->rqcfg.brst_size * 8 < pl330->pcfg.data_bus_width)
++	if (burst * 8 < pl330->pcfg.data_bus_width)
+ 		desc->rqcfg.brst_len = 1;
  
--static void vhost_scsi_release_cmd(struct se_cmd *se_cmd)
-+static void vhost_scsi_release_cmd_res(struct se_cmd *se_cmd)
- {
- 	struct vhost_scsi_cmd *tv_cmd = container_of(se_cmd,
- 				struct vhost_scsi_cmd, tvc_se_cmd);
-@@ -340,6 +340,16 @@ static void vhost_scsi_release_cmd(struct se_cmd *se_cmd)
- 	target_free_tag(se_sess, se_cmd);
- }
- 
-+static void vhost_scsi_release_cmd(struct se_cmd *se_cmd)
-+{
-+	struct vhost_scsi_cmd *cmd = container_of(se_cmd,
-+					struct vhost_scsi_cmd, tvc_se_cmd);
-+	struct vhost_scsi *vs = cmd->tvc_vhost;
-+
-+	llist_add(&cmd->tvc_completion_list, &vs->vs_completion_list);
-+	vhost_work_queue(&vs->dev, &vs->vs_completion_work);
-+}
-+
- static u32 vhost_scsi_sess_get_index(struct se_session *se_sess)
- {
- 	return 0;
-@@ -362,28 +372,15 @@ static int vhost_scsi_get_cmd_state(struct se_cmd *se_cmd)
- 	return 0;
- }
- 
--static void vhost_scsi_complete_cmd(struct vhost_scsi_cmd *cmd)
--{
--	struct vhost_scsi *vs = cmd->tvc_vhost;
--
--	llist_add(&cmd->tvc_completion_list, &vs->vs_completion_list);
--
--	vhost_work_queue(&vs->dev, &vs->vs_completion_work);
--}
--
- static int vhost_scsi_queue_data_in(struct se_cmd *se_cmd)
- {
--	struct vhost_scsi_cmd *cmd = container_of(se_cmd,
--				struct vhost_scsi_cmd, tvc_se_cmd);
--	vhost_scsi_complete_cmd(cmd);
-+	transport_generic_free_cmd(se_cmd, 0);
- 	return 0;
- }
- 
- static int vhost_scsi_queue_status(struct se_cmd *se_cmd)
- {
--	struct vhost_scsi_cmd *cmd = container_of(se_cmd,
--				struct vhost_scsi_cmd, tvc_se_cmd);
--	vhost_scsi_complete_cmd(cmd);
-+	transport_generic_free_cmd(se_cmd, 0);
- 	return 0;
- }
- 
-@@ -429,15 +426,6 @@ vhost_scsi_allocate_evt(struct vhost_scsi *vs,
- 	return evt;
- }
- 
--static void vhost_scsi_free_cmd(struct vhost_scsi_cmd *cmd)
--{
--	struct se_cmd *se_cmd = &cmd->tvc_se_cmd;
--
--	/* TODO locking against target/backend threads? */
--	transport_generic_free_cmd(se_cmd, 0);
--
--}
--
- static int vhost_scsi_check_stop_free(struct se_cmd *se_cmd)
- {
- 	return target_put_sess_cmd(se_cmd);
-@@ -556,7 +544,7 @@ static void vhost_scsi_complete_cmd_work(struct vhost_work *work)
- 		} else
- 			pr_err("Faulted on virtio_scsi_cmd_resp\n");
- 
--		vhost_scsi_free_cmd(cmd);
-+		vhost_scsi_release_cmd_res(se_cmd);
- 	}
- 
- 	vq = -1;
-@@ -1088,7 +1076,7 @@ vhost_scsi_handle_vq(struct vhost_scsi *vs, struct vhost_virtqueue *vq)
- 						      &prot_iter, exp_data_len,
- 						      &data_iter))) {
- 				vq_err(vq, "Failed to map iov to sgl\n");
--				vhost_scsi_release_cmd(&cmd->tvc_se_cmd);
-+				vhost_scsi_release_cmd_res(&cmd->tvc_se_cmd);
- 				goto err;
- 			}
- 		}
+ 	desc->bytes_requested = len;
 -- 
 2.27.0
 
