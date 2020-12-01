@@ -2,198 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64572CA546
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB982CA547
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbgLAOMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:12:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:43662 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgLAOMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:12:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 349D630E;
-        Tue,  1 Dec 2020 06:11:26 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 022223F718;
-        Tue,  1 Dec 2020 06:11:23 -0800 (PST)
-Date:   Tue, 1 Dec 2020 14:11:21 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        id S1730200AbgLAOMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:12:31 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2079 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729321AbgLAOMa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:12:30 -0500
+Received: from dggeme717-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4ClkXk3DWkzVkDQ;
+        Tue,  1 Dec 2020 22:11:02 +0800 (CST)
+Received: from [10.174.186.123] (10.174.186.123) by
+ dggeme717-chm.china.huawei.com (10.1.199.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 1 Dec 2020 22:11:45 +0800
+Subject: Re: [RFC PATCH 2/3] KVM: arm64: Fix handling of merging tables into a
+ block entry
+To:     Will Deacon <will@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
         Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 09/14] cpuset: Don't use the cpu_possible_mask as a
- last resort for cgroup v1
-Message-ID: <20201201141121.5w2wed3633slo6dw@e107158-lin.cambridge.arm.com>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-10-will@kernel.org>
- <20201127133245.4hbx65mo3zinawvo@e107158-lin.cambridge.arm.com>
- <20201130170531.qo67rai5lftskmk2@e107158-lin.cambridge.arm.com>
- <20201130173610.GA1715200@google.com>
- <20201201115842.t77abecneuesd5ih@e107158-lin.cambridge.arm.com>
- <20201201123748.GA1896574@google.com>
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
+        <lushenming@huawei.com>
+References: <20201130121847.91808-1-wangyanan55@huawei.com>
+ <20201130121847.91808-3-wangyanan55@huawei.com>
+ <20201130133421.GB24837@willie-the-truck>
+ <67e9e393-1836-eca7-4235-6f4a19fed652@huawei.com>
+ <20201130160119.GA25051@willie-the-truck>
+ <868a4403-10d3-80f3-4ae1-a490813c55e2@huawei.com>
+ <20201201134606.GB26973@willie-the-truck>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <2e92a511-496c-d446-95f4-6211ec8b4bb6@huawei.com>
+Date:   Tue, 1 Dec 2020 22:11:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201201123748.GA1896574@google.com>
+In-Reply-To: <20201201134606.GB26973@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.186.123]
+X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
+ dggeme717-chm.china.huawei.com (10.1.199.113)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/20 12:37, Quentin Perret wrote:
-> On Tuesday 01 Dec 2020 at 11:58:42 (+0000), Qais Yousef wrote:
-> > On 11/30/20 17:36, Quentin Perret wrote:
-> > > On Monday 30 Nov 2020 at 17:05:31 (+0000), Qais Yousef wrote:
-> > > > I create 3 cpusets: 64bit, 32bit and mix. As the name indicates, 64bit contains
-> > > > all 64bit-only cpus, 32bit contains 32bit-capable ones and mix has a mixture of
-> > > > both.
-> > > > 
-> > > > If I try to move my test binary to 64bit cpuset, it moves there and I see the
-> > > > WARN_ON_ONCE() triggered. The task has attached to the new cpuset but
-> > > > set_allowed_cpus_ptr() has failed and we end up with whatever affinity we had
-> > > > previously. Breaking cpusets effectively.
-> > > 
-> > > Right, and so does exec'ing from a 64 bit task into 32 bit executable
-> > > from within a 64 bit-only cpuset :( . And there is nothing we can really
-> > 
-> > True. The kernel can decide to kill the task or force detach it then, no?
-> > Sending SIGKILL makes more sense.
-> 
-> Yeah but again, we need this to work for existing apps. Just killing it
-> basically means we have no support, so that doesn't work for the use
-> case :/
 
-I don't get you. Unless what you're saying is you want to support this without
-userspace having to do anything to opt-in, then this statement is hard to
-digest for me. Existing apps will work. OEMs and vendors who want to enable
-this feature must configure their userspace to deal with this correctly. This
-includes passing the cmdline option, and parsing the cpumask in
-/sys/device/system/cpu/aarch32_el0 to ensure their cpusets contains at least
-one cpu from this list.
+On 2020/12/1 21:46, Will Deacon wrote:
+> On Tue, Dec 01, 2020 at 10:30:41AM +0800, wangyanan (Y) wrote:
+>> On 2020/12/1 0:01, Will Deacon wrote:
+>>> On Mon, Nov 30, 2020 at 11:24:19PM +0800, wangyanan (Y) wrote:
+>>>> On 2020/11/30 21:34, Will Deacon wrote:
+>>>>> On Mon, Nov 30, 2020 at 08:18:46PM +0800, Yanan Wang wrote:
+>>>>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>>>>>> index 696b6aa83faf..fec8dc9f2baa 100644
+>>>>>> --- a/arch/arm64/kvm/hyp/pgtable.c
+>>>>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+>>>>>> @@ -500,6 +500,9 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
+>>>>>>     	return 0;
+>>>>>>     }
+>>>>>> +static void stage2_flush_dcache(void *addr, u64 size);
+>>>>>> +static bool stage2_pte_cacheable(kvm_pte_t pte);
+>>>>>> +
+>>>>>>     static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+>>>>>>     				struct stage2_map_data *data)
+>>>>>>     {
+>>>>>> @@ -507,9 +510,17 @@ static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+>>>>>>     	struct page *page = virt_to_page(ptep);
+>>>>>>     	if (data->anchor) {
+>>>>>> -		if (kvm_pte_valid(pte))
+>>>>>> +		if (kvm_pte_valid(pte)) {
+>>>>>> +			kvm_set_invalid_pte(ptep);
+>>>>>> +			kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu,
+>>>>>> +				     addr, level);
+>>>>>>     			put_page(page);
+>>>>> This doesn't make sense to me: the page-table pages we're walking when the
+>>>>> anchor is set are not accessible to the hardware walker because we unhooked
+>>>>> the entire sub-table in stage2_map_walk_table_pre(), which has the necessary
+>>>>> TLB invalidation.
+>>>>>
+>>>>> Are you seeing a problem in practice here?
+>>>> Yes, I indeed find a problem in practice.
+>>>>
+>>>> When the migration was cancelled, a TLB conflic abort  was found in guest.
+>>>>
+>>>> This problem is fixed before rework of the page table code, you can have a
+>>>> look in the following two links:
+>>>>
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c3736cd32bf5197aed1410ae826d2d254a5b277
+>>>>
+>>>> https://lists.cs.columbia.edu/pipermail/kvmarm/2019-March/035031.html
+>>> Ok, let's go through this, because I still don't see the bug. Please correct
+>>> me if you spot any mistakes:
+>>>
+>>>     1. We have a block mapping for X => Y
+>>>     2. Dirty logging is enabled, so the block mapping is write-protected and
+>>>        ends up being split into page mappings
+>>>     3. Dirty logging is disabled due to a failed migration.
+>>>
+>>> --- At this point, I think we agree that the state of the MMU is alright ---
+>>>
+>>>     4. We take a stage-2 fault and want to reinstall the block mapping:
+>>>
+>>>        a. kvm_pgtable_stage2_map() is invoked to install the block mapping
+>>>        b. stage2_map_walk_table_pre() finds a table where we would like to
+>>>           install the block:
+>>>
+>>> 	i.   The anchor is set to point at this entry
+>>> 	ii.  The entry is made invalid
+>>> 	iii. We invalidate the TLB for the input address. This is
+>>> 	     TLBI IPAS2SE1IS without level hint and then TLBI VMALLE1IS.
+>>>
+>>> 	*** At this point, the page-table pointed to by the old table entry
+>>> 	    is not reachable to the hardware walker ***
+>>>
+>>>        c. stage2_map_walk_leaf() is called for each leaf entry in the
+>>>           now-unreachable subtree, dropping page-references for each valid
+>>> 	entry it finds.
+>>>        d. stage2_map_walk_table_post() is eventually called for the entry
+>>>           which we cleared back in b.ii, so we install the new block mapping.
+>>>
+>>> You are proposing to add additional TLB invalidation to (c), but I don't
+>>> think that is necessary, thanks to the invalidation already performed in
+>>> b.iii. What am I missing here?
+>> The point is at b.iii where the TLBI is not enough. There are many page
+>> mappings that we need to merge into a block mapping.
+>>
+>> We invalidate the TLB for the input address without level hint at b.iii, but
+>> this operation just flush TLB for one page mapping, there
+>>
+>> are still some TLB entries for the other page mappings in the cache, the MMU
+>> hardware walker can still hit these entries next time.
+> Ah, yes, I see. Thanks. I hadn't considered the case where there are table
+> entries beneath the anchor. So how about the diff below?
+>
+> Will
+>
+> --->8
 
-> 
-> > > do about it, we cannot fail the exec because we need this to work for
-> > > existing apps, and there is no way the Android framework can know
-> > > upfront.
-> > 
-> > It knows upfront it has enabled asym aarch32. So it needs to make sure not to
-> > create 'invalid' cpusets?
-> 
-> Problem is, we _really_ don't want to keep a big CPU in the background
+Hi, I think it's inappropriate to put the TLBI of all the leaf entries 
+in function stage2_map_walk_table_post(),
 
-I don't get you here too.
+because the *ptep must be an upper table entry when we enter 
+stage2_map_walk_table_post().
 
-AFAIU, OEMs have to define their cpusets. So it makes sense to me for them to
-define it correctly if they want to enable asym aarch32.
+We should make the TLBI for every leaf entry not table entry in the last 
+lookup level,  just as I am proposing
 
-Systems that don't care about this feature shouldn't be affected. If they do,
-then I'm missing something.
+to add the additional TLBI in function stage2_map_walk_leaf().
 
-> cpuset just for that. And even if we did, we'd have to deal with hotplug.
+Thanks.
 
-We deal with hotplug by not allowing one of the aarch32 cpus from going
-offline.
 
-> 
-> > > 
-> > > So the only thing we can do really is WARN() and proceed to ignore the
-> > > cpuset, which is what this series does :/. It's not exactly pretty but I
-> > > don't think we can do much better than that TBH, and it's the same thing
-> > > for the example you brought up. Failing cpuset_can_attach() will not
-> > > help, we can only WARN and proceed ...
-> > 
-> > I think for cases where we can prevent userspace from doing something wrong, we
-> > should. Like trying to attach to a cpuset that will result in an empty mask.
-> > FWIW, it does something similar with deadline tasks. See task_can_attach().
-> > 
-> > Similarly for the case when userspace tries to modify the cpuset.cpus such that
-> > a task will end up with empty cpumask. We now have the new case that some tasks
-> > can only run on a subset of cpu_possible_mask. So the definition of empty
-> > cpumask has gained an extra meaning.
-> 
-> I see this differently, e.g. if you affine a task to a CPU and you
-> hotunplug it, then the kernel falls back to the remaining online CPUs
-> for that task. Not pretty, but it keeps things functional. I'm thinking
-> a similar kind of support would be good enough here.
+Yanan
 
-Sorry I can't see it this way :(
-
-The comparison is fundamentally different. Being able to attach to a cpuset, or
-modify its cpus is different than short circuiting a cpu out of the system.
-
-For hotplug we have to make sure a single cpu stays alive. The fallback you're
-talking about should still work the same if the task is not attached to
-a cpuset. Just it has to take the intersection with the
-arch_task_cpu_possible_cpu() into account.
-
-For cpusets, if hotunplug results in an empty cpuset, then all tasks are moved
-to the nearest ancestor if I read the code correctly. In our case, only 32bit
-tasks have to move out to retain this behavior. Since now for the first time we
-have tasks that can't run on all cpus.
-
-Which by the way might be the right behavior for 64bit tasks execing 32bit
-binary in a 64bit only cpuset. I suggested SIGKILL'ing them but maybe moving
-them to the nearest ancestor too is more aligned with the behavior above.
-
-> 
-> But yes, this cpuset mess is the part of the series I hate most too.
-> It's just not clear we have better solutions :/
-> 
-> > > 
-> > > Now, Android should be fine with that I think. We only need the kernel
-> > > to implement a safe fallback mechanism when userspace gives
-> > > contradictory commands, because we know there are edge cases userspace
-> > > _cannot_ deal with correctly, but this fallback doesn't need to be
-> > > highly optimized (at least for Android), but I'm happy to hear what
-> > > others think.
-> > 
-> > Why not go with our original patch that fixes affinity then in the arch code if
-> > the task wakes up on the wrong cpu? It is much simpler approach IMO to achieve
-> > the same thing.
-> 
-> I personally had no issues with that patch, but as per Peter's original
-> reply, that's "not going to happen". Will's proposal seems to go one
-> step further and tries its best to honor the contract with userspace (by
-
-The only difference I see is that this series blocks sched_setaffinity(). Other
-than that we fix up the task affinity in a similar way, just in different
-places.
-
-If the intersection was empty, we sent a SIGKILL; making it fallback to
-something sensible is dead easy. I opted for SIGKILL because I didn't expect
-Peter to agree with the fallback. But if we're arguing it's okay now, then it
-should be okay in that patch too then.
-
-> keeping the subset of the affinity mask, ...) when that can be done, so
-> if that can be acceptable, then be it. But I'd still rather keep this
-> simple if at all possible. It's just my opinion though :)
-
-The way I see it, this series adds support to handle generic asym ISA. Asym
-AArch32 will be the first and only user for now, but it's paving the way for
-others.
-
-It's up to the maintainers to decide, but IMHO if we'll do this via enabling
-scheduler to deal with generic asym ISA support, we should deal with these
-corner cases. Otherwise a specific solution for the current problem at hand in
-the arch code makes more sense to me.
-
-It all depends how much the community wants/is willing to cater for these
-systems in the future too.
-
-Thanks
-
---
-Qais Yousef
+>
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 0271b4a3b9fe..12526d8c7ae4 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -493,7 +493,7 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
+>   		return 0;
+>   
+>   	kvm_set_invalid_pte(ptep);
+> -	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, 0);
+> +	/* TLB invalidation is deferred until the _post handler */
+>   	data->anchor = ptep;
+>   	return 0;
+>   }
+> @@ -547,11 +547,21 @@ static int stage2_map_walk_table_post(u64 addr, u64 end, u32 level,
+>   				      struct stage2_map_data *data)
+>   {
+>   	int ret = 0;
+> +	kvm_pte_t pte = *ptep;
+>   
+>   	if (!data->anchor)
+>   		return 0;
+>   
+> -	free_page((unsigned long)kvm_pte_follow(*ptep));
+> +	kvm_set_invalid_pte(ptep);
+> +
+> +	/*
+> +	 * Invalidate the whole stage-2, as we may have numerous leaf
+> +	 * entries below us which would otherwise need invalidating
+> +	 * individually.
+> +	 */
+> +	kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
+> +
+> +	free_page((unsigned long)kvm_pte_follow(pte));
+>   	put_page(virt_to_page(ptep));
+>   
+>   	if (data->anchor == ptep) {
+> .
