@@ -2,171 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABD42CA9DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187A22CA9E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392198AbgLARh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:37:57 -0500
-Received: from m42-5.mailgun.net ([69.72.42.5]:11695 "EHLO m42-5.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391945AbgLARh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:37:57 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606844250; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=lExQYH3Hcu6IMfr6Uk4+ulaceeEs8V2qygtLsani6Fo=; b=O/zwp3m0bLOFgDmnynqyhIh41dQ5frF8nYxJJ0A2oXS1lAXeAUASHb3TxY2v4hJ7jYuALLv1
- vF/i0Qyamt5EpL66e7PL77hPi2TaNGMz1M6U9yV66W7mxx+C8I5/D+zp5SmZrtC3UczptC/1
- LU6ey/8X+TIpsdQpttopSPd0n2g=
-X-Mailgun-Sending-Ip: 69.72.42.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fc67f3f875646f1e977970d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 17:37:03
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CA943C43461; Tue,  1 Dec 2020 17:37:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 87A5CC43460;
-        Tue,  1 Dec 2020 17:37:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 87A5CC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v13 4/4] bus: mhi: Add userspace client interface driver
-To:     Loic Poulain <loic.poulain@linaro.org>,
-        Hemant Kumar <hemantk@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
- <1606533966-22821-5-git-send-email-hemantk@codeaurora.org>
- <CAMZdPi8z+-qFqgZ7AFJcNAUMbDQtNN5Hz-geMBcp4azrUGm9iA@mail.gmail.com>
- <c47dcd57-7576-e03e-f70b-0c4d25f724b5@codeaurora.org>
- <CAMZdPi8mUV5cFs-76K3kg=hN8ht2SKjJwzbJH-+VH4Y8QabcHQ@mail.gmail.com>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <1247e32e-ed67-de6b-81ec-3bde9ad93250@codeaurora.org>
-Date:   Tue, 1 Dec 2020 10:37:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2392238AbgLARj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:39:56 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:56432 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387820AbgLARjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:39:55 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1HYvmH051943;
+        Tue, 1 Dec 2020 17:39:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=4dj3kScweVczOZbYU+emzj8oUQKL0l0sEkzlyn1Dy+0=;
+ b=qDv3LaV0UbHVS52KNTXYzLfGc/Y4teoG3Kq1CN2tWnIyyipxrgHvs146vDrbkW0ajI63
+ ih2q4AsPeKjZVrBox4e5VSVu6hY/h/kxRYz3h09mfMc3F/qfTZLPK3xWhs0oFDe+NdYP
+ rcGykFqcxVtvK5slRq1CA0DH4UiZrOJbzBAupqWARadrTWp2Yq+GWrycGFGCjHpuPu/a
+ FYTnJCJ58cHy1YPzsvf9WhOWN6cG/8CTaNkH+yCQZmlvPsXb/barj64NqGzm3ZIhpa2g
+ XoQV09uNG1zG1+ZRJRS8z1drMsCk/Oa0xJG3Da9MEbOGLeqGOWS02JMjpT6+oBax95aZ 8A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 353c2av1by-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 17:39:10 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1HZLqV083775;
+        Tue, 1 Dec 2020 17:39:09 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3540fxad0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 17:39:09 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B1Hd7Q9014206;
+        Tue, 1 Dec 2020 17:39:07 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Dec 2020 09:39:07 -0800
+Date:   Tue, 1 Dec 2020 09:39:05 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Eric Sandeen <sandeen@redhat.com>
+Cc:     torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
+Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to
+ filesystems
+Message-ID: <20201201173905.GI143045@magnolia>
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+ <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMZdPi8mUV5cFs-76K3kg=hN8ht2SKjJwzbJH-+VH4Y8QabcHQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/2020 10:36 AM, Loic Poulain wrote:
-> On Tue, 1 Dec 2020 at 02:16, Hemant Kumar <hemantk@codeaurora.org> wrote:
->>
->> Hi Loic,
->>
->> On 11/30/20 10:22 AM, Loic Poulain wrote:
->>> On Sat, 28 Nov 2020 at 04:26, Hemant Kumar <hemantk@codeaurora.org> wrote:
->>>>
->>>> This MHI client driver allows userspace clients to transfer
->>>> raw data between MHI device and host using standard file operations.
->>>> Driver instantiates UCI device object which is associated to device
->>>> file node. UCI device object instantiates UCI channel object when device
->>>> file node is opened. UCI channel object is used to manage MHI channels
->>>> by calling MHI core APIs for read and write operations. MHI channels
->>>> are started as part of device open(). MHI channels remain in start
->>>> state until last release() is called on UCI device file node. Device
->>>> file node is created with format
->>>
->>> [...]
->>>
->>>> +struct uci_chan {
->>>> +       struct uci_dev *udev;
->>>> +       wait_queue_head_t ul_wq;
->>>> +
->>>> +       /* ul channel lock to synchronize multiple writes */
->>>> +       struct mutex write_lock;
->>>> +
->>>> +       wait_queue_head_t dl_wq;
->>>> +
->>>> +       /* dl channel lock to synchronize multiple reads */
->>>> +       struct mutex read_lock;
->>>> +
->>>> +       /*
->>>> +        * protects pending list in bh context, channel release, read and
->>>> +        * poll
->>>> +        */
->>>> +       spinlock_t dl_pending_lock;
->>>> +
->>>> +       struct list_head dl_pending;
->>>> +       struct uci_buf *cur_buf;
->>>> +       size_t dl_size;
->>>> +       struct kref ref_count;
->>>> +};
->>>
->>> [...]
->>>
->>>> + * struct uci_dev - MHI UCI device
->>>> + * @minor: UCI device node minor number
->>>> + * @mhi_dev: associated mhi device object
->>>> + * @uchan: UCI uplink and downlink channel object
->>>> + * @mtu: max TRE buffer length
->>>> + * @enabled: Flag to track the state of the UCI device
->>>> + * @lock: mutex lock to manage uchan object
->>>> + * @ref_count: uci_dev reference count
->>>> + */
->>>> +struct uci_dev {
->>>> +       unsigned int minor;
->>>> +       struct mhi_device *mhi_dev;
->>>> +       struct uci_chan *uchan;
->>>
->>> Why a pointer to uci_chan and not just plainly integrating the
->>> structure here, AFAIU uci_chan describes the channels and is just a
->>> subpart of uci_dev. That would reduce the number of dynamic
->>> allocations you manage and the extra kref. do you even need a separate
->>> structure for this?
->>
->> This goes back to one of my patch versions i tried to address concern
->> from Greg. Since we need to ref count the channel as well as the uci
->> device i decoupled the two objects and used two reference counts for two
->> different objects.
+On Tue, Dec 01, 2020 at 10:59:36AM -0600, Eric Sandeen wrote:
+> It's a bit odd to set STATX_ATTR_DAX into the statx attributes in the VFS;
+> while the VFS can detect the current DAX state, it is the filesystem which
+> actually sets S_DAX on the inode, and the filesystem is the place that
+> knows whether DAX is something that the "filesystem actually supports" [1]
+> so that the statx attributes_mask can be properly set.
 > 
-> What Greg complained about is the two kref in the same structure and
-> that you were using kref as an open() counter. But splitting your
-> struct in two in order to keep the two kref does not make the much
-> code better (and simpler). I'm still a bit puzzled about the driver
-> complexity, it's supposed to be just a passthrough interface to MHI
-> after all.
+> So, move STATX_ATTR_DAX attribute setting to the individual dax-capable
+> filesystems, and update the attributes_mask there as well.
 > 
-> I would suggest several changes, that IMHO would simplify reviewing:
-> - Use only one structure representing the 'uci' context (uci_dev)
-> - Keep the read path simple (mhi_uci_read), do no use an intermediate
-> cur_buf pointer, only dequeue the buffer when it is fully consumed.
-> - As I commented before, take care of the dl_pending list access
-> concurrency, even in wait_event.
-> - You don't need to count the number of open() calls, AFAIK,
-> mhi_prepare_for_transfer() simply fails if channels are already
-> started...
+> [1] 3209f68b3ca4 statx: Include a mask for stx_attributes in struct statx
+> 
+> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+> ---
+>  fs/ext2/inode.c   | 6 +++++-
+>  fs/ext4/inode.c   | 5 ++++-
+>  fs/stat.c         | 3 ---
+>  fs/xfs/xfs_iops.c | 5 ++++-
+>  4 files changed, 13 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+> index 11c5c6fe75bb..3550783a6ea0 100644
+> --- a/fs/ext2/inode.c
+> +++ b/fs/ext2/inode.c
+> @@ -1653,11 +1653,15 @@ int ext2_getattr(const struct path *path, struct kstat *stat,
+>  		stat->attributes |= STATX_ATTR_IMMUTABLE;
+>  	if (flags & EXT2_NODUMP_FL)
+>  		stat->attributes |= STATX_ATTR_NODUMP;
+> +	if (IS_DAX(inode))
+> +		stat->attributes |= STATX_ATTR_DAX;
+> +
+>  	stat->attributes_mask |= (STATX_ATTR_APPEND |
+>  			STATX_ATTR_COMPRESSED |
+>  			STATX_ATTR_ENCRYPTED |
+>  			STATX_ATTR_IMMUTABLE |
+> -			STATX_ATTR_NODUMP);
+> +			STATX_ATTR_NODUMP |
+> +			STATX_ATTR_DAX);
+>  
+>  	generic_fillattr(inode, stat);
+>  	return 0;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 0d8385aea898..848a0f2b154e 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5550,13 +5550,16 @@ int ext4_getattr(const struct path *path, struct kstat *stat,
+>  		stat->attributes |= STATX_ATTR_NODUMP;
+>  	if (flags & EXT4_VERITY_FL)
+>  		stat->attributes |= STATX_ATTR_VERITY;
+> +	if (IS_DAX(inode))
+> +		stat->attributes |= STATX_ATTR_DAX;
+>  
+>  	stat->attributes_mask |= (STATX_ATTR_APPEND |
+>  				  STATX_ATTR_COMPRESSED |
+>  				  STATX_ATTR_ENCRYPTED |
+>  				  STATX_ATTR_IMMUTABLE |
+>  				  STATX_ATTR_NODUMP |
+> -				  STATX_ATTR_VERITY);
+> +				  STATX_ATTR_VERITY |
+> +				  STATX_ATTR_DAX);
+>  
+>  	generic_fillattr(inode, stat);
+>  	return 0;
+> diff --git a/fs/stat.c b/fs/stat.c
+> index dacecdda2e79..5bd90949c69b 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -80,9 +80,6 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
+>  	if (IS_AUTOMOUNT(inode))
+>  		stat->attributes |= STATX_ATTR_AUTOMOUNT;
+>  
+> -	if (IS_DAX(inode))
+> -		stat->attributes |= STATX_ATTR_DAX;
+> -
+>  	if (inode->i_op->getattr)
+>  		return inode->i_op->getattr(path, stat, request_mask,
+>  					    query_flags);
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 1414ab79eacf..56deda7042fd 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -575,10 +575,13 @@ xfs_vn_getattr(
+>  		stat->attributes |= STATX_ATTR_APPEND;
+>  	if (ip->i_d.di_flags & XFS_DIFLAG_NODUMP)
+>  		stat->attributes |= STATX_ATTR_NODUMP;
+> +	if (IS_DAX(inode))
+> +		stat->attributes |= STATX_ATTR_DAX;
+>  
+>  	stat->attributes_mask |= (STATX_ATTR_IMMUTABLE |
+>  				  STATX_ATTR_APPEND |
+> -				  STATX_ATTR_NODUMP);
+> +				  STATX_ATTR_NODUMP |
+> +				  STATX_ATTR_DAX);
 
-Unless I missed something, you seem to have ignored the root issue that 
-Hemant needs to solve, which is when to call 
-mhi_unprepare_for_transfer().  You can't just call that when close() is 
-called because there might be multiple users, and each one is going to 
-trigger a close(), so you need to know how many close() instances to 
-expect, and only call mhi_unprepare_for_transfer() for the last one.
+TBH I preferred your previous iteration on this, which only set the DAX
+bit in the attributes_mask if the underlying storage was pmem and the
+blocksize was correct, etc. since it made it easier to distinguish
+between a filesystem where you /could/ have DAX (but it wasn't currently
+enabled) and a filesystem where it just isn't possible.
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+That might be enough to satisfy any critics who want to be able to
+detect DAX support from an installer program.
+
+--D
+
+>  
+>  	switch (inode->i_mode & S_IFMT) {
+>  	case S_IFBLK:
+> -- 
+> 2.17.0
+> 
+> 
