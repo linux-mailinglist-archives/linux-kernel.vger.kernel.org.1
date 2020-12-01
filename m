@@ -2,161 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A852CA2EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C58A2CA2F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730995AbgLAMlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:41:25 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:42388 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbgLAMlZ (ORCPT
+        id S1731058AbgLAMmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:42:15 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:50245 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731050AbgLAMmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:41:25 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9CF42538;
-        Tue,  1 Dec 2020 13:40:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1606826440;
-        bh=HhiBJ8kWaly9TjVOpknv4GCCj8g3nx/JKA7v8nB8WLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cMgFuotNmqlimzf4CKRgwwZWhUMCWn2syvrkr6O50tLRNLLG2/NbQAy9XmczZZj6l
-         NLJ9/RxpWvuS46+fHKAxL1e5vdl+eILGDTiZ/mRDc2ePlLDYLmMv+EzpUi/+tikPmE
-         CqjvuwOIHW6vCdlPy5NRNKEIjRs6CfnI4goX3xQQ=
-Date:   Tue, 1 Dec 2020 14:40:32 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201201124032.GD4569@pendragon.ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130205203.GQ4351@valkosipuli.retiisi.org.uk>
- <3e8494a0-a2c0-59e7-46bb-9635c3c239dd@gmail.com>
- <20201201064421.GR4351@valkosipuli.retiisi.org.uk>
- <2a548835-78c6-8fe3-cceb-1fc000707157@gmail.com>
- <20201201123244.GT4351@valkosipuli.retiisi.org.uk>
+        Tue, 1 Dec 2020 07:42:14 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id DA16248F;
+        Tue,  1 Dec 2020 07:41:07 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 01 Dec 2020 07:41:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=R6fmSKML9KtTVBoh+tDAcNNZx9k
+        zhrwiKD5SpJTg/LM=; b=E+hrFEK/2joQP5vI6qceFQl9vFdt04UZ7sVBRVrbUav
+        gWWq2uJSDajxWFQkqzuFeGL39IwkCs/jTgHPK2Jc5EbpdgVQ96rki5U+Ef8b0Y4G
+        MLRFpbcPqWAGodyMeviLHmKqK6JRvR4vCbjx3GoakhsLDIDWGYysabRpZfqv3DPo
+        hT0SfYi8Fd4Q6Ovbgez1HB3KoqDiq81LKlGpebTC6O1aJjoe4a142uDhgHY8kRZR
+        dF8zJZmjSjUjdKUjBvyj2POher4uC3pVX/usHC9+GNPUEf4M1WxGZZ8AOxHh1x+k
+        Uz/I8h6nj53LO2HsgxReSSRdJzFlwy7uxEZm6SMqVdg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=R6fmSK
+        ML9KtTVBoh+tDAcNNZx9kzhrwiKD5SpJTg/LM=; b=V3AZfWSUzMNTBrcHI06F9v
+        QwEsJLv39B9047AsuXXTCFfxrbVxAhepKYxdGY9YMIXc+wQFTHV0iaYlZO6cUOM5
+        IE1B0O+oKF2bTMQ6mj3t5iZKhB1L1On+llSGtv4thfp2/gAc6BgkUz3VqabsqW1x
+        Ozkon0EqMhyaQEAQ9nYPUl6aueYfTx2Dxy6cHS3uZb8wM8ImJY/5lg6Z8yqkv1dI
+        2NLikEv+llOpcPeuVEckOBwAKyHaiCoNMOdAhpB8IxKqZTnEg5l8YxVx18/vCP4L
+        +cTUlnP5A15RlqpYZ10jwGy4IK9yAgieL+6a1aamThPfBOjHlJeu8hxCLLC6etIw
+        ==
+X-ME-Sender: <xms:4jnGXxEfg8ukKO2LUKknxF8HNsoQQfBzhe5TcXchPvvvgxYn1-4VfQ>
+    <xme:4jnGX2WcXx4n2FfGkyIr8o7-sryVtj1idAlDMpBR_TDvcf1jqyoc907w40W7sLI81
+    GfP4L46ME306EQH-dk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeivddggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
+    gfethfenucfkphepgeejrddvtddurdeghedrvddtvdenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:4jnGXzKttI9aOxYwfSJf7GLOUB9uBGFvv81_0-tHMp2PQ_WXC1Qo5w>
+    <xmx:4jnGX3EWhM4y-UgCc2x9_dhoChzMPkStd-7yuwazySbTwgslFTlc8g>
+    <xmx:4jnGX3XY1oRVTXdENi1h8YYjhEUqp_QWQB9gx2BwdZ0WZH-x4rKgdA>
+    <xmx:4znGX0if1kD89z4om3QGmblNCfaJBU_kSrMzWhYgX8SRmNbRzv7uNQ>
+Received: from cisco (unknown [47.201.45.202])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2D1F1328005D;
+        Tue,  1 Dec 2020 07:41:06 -0500 (EST)
+Date:   Tue, 1 Dec 2020 07:41:05 -0500
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Alban Crequy <alban@kinvolk.io>
+Cc:     Giuseppe Scrivano <gscrivan@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: SECCOMP_IOCTL_NOTIF_ADDFD race condition
+Message-ID: <20201201124105.GB103125@cisco>
+References: <CADZs7q4sw71iNHmV8EOOXhUKJMORPzF7thraxZYddTZsxta-KQ@mail.gmail.com>
+ <20201130232009.GC38675@cisco>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201201123244.GT4351@valkosipuli.retiisi.org.uk>
+In-Reply-To: <20201130232009.GC38675@cisco>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+On Mon, Nov 30, 2020 at 06:20:09PM -0500, Tycho Andersen wrote:
+> Idea 1 sounds best to me, but maybe that's because it's the way I
+> originally did the fd support that never landed :)
+> 
+> But here's an Idea 4: we add a way to remotely close an fd (I don't
+> see that the current infra can do this, but perhaps I didn't look hard
+> enough), and then when you get ENOENT you have to close the fd. Of
+> course, this can't be via seccomp, so maybe it's even more racy.
 
-On Tue, Dec 01, 2020 at 02:32:44PM +0200, Sakari Ailus wrote:
-> On Tue, Dec 01, 2020 at 08:08:26AM +0000, Dan Scally wrote:
-> > On 01/12/2020 06:44, Sakari Ailus wrote:
-> > > On Mon, Nov 30, 2020 at 11:06:03PM +0000, Dan Scally wrote:
-> > >> On 30/11/2020 20:52, Sakari Ailus wrote:
-> > >>>> +static const struct acpi_device_id int3472_device_id[] = {
-> > >>>> +	{ "INT3472", 0 },
-> > >>>
-> > >>> The INT3472 _HID is really allocated for the tps68470 PMIC chip. It may not
-> > >>> be used by other drivers; people will want to build kernels where both of
-> > >>> these ACPI table layouts are functional.
-> > >>>
-> > >>> Instead, I propose, that you add this as an option to the tps68470 driver
-> > >>> that figures out whether the ACPI device for the tps68470 device actually
-> > >>> describes something else, in a similar fashion you do with the cio2-bridge
-> > >>> driver. I think it may need a separate Kconfig option albeit this and
-> > >>> cio2-bridge cannot be used separately.
-> > >>
-> > >> It actually occurs to me that that may not work (I know I called that
-> > >> out as an option we considered, but that was a while ago actually). The
-> > >> reason I wasn't worried about the existing tps68470 driver binding to
-> > >> these devices is that it's an i2c driver, and these dummy devices don't
-> > >> have an I2cSerialBusV2, so no I2C device is created by them the kernel.
-> > >>
-> > >> Won't that mean the tps68470 driver won't ever be probed for these devices?
-> > >
-> > > Oops. I missed this indeed was not an I²C driver. So please ignore the
-> > > comment.
-> > >
-> > > So I guess this wouldn't be an actual problem. I'd still like to test this
-> > > on a system with tps68470, as the rest of the set.
-> >
-> > On my Go2, it .probes() for the actual tps68740 (that machine has both
-> > types of INT3472 device) but fails with EINVAL when it can't find the
-> > CLDB buffer that these discrete type devices have. My understanding is
-> > that means it's free for the actual tps68470 driver to grab the device;
-> > although that's not happening because I had to blacklist that driver or
-> > it stops the machine from booting at the moment - haven't gotten round
-> > to investigating yet.
-> 
-> Oh, then the problem is actually there. If it probes the tps68470 driver on
-> the systems with Windows ACPI tables, then it should be that driver which
-> works with the Windows ACPI tables, too.
-> 
-> Checking for random objects such as CLDB in multiple drivers and returning
-> an error based on them being there or not wouldn't be exactly neat.
-> Although I'm not sure thare are options that are obviosly pretty here. I
-> wouldn't two separate drivers checking for e.g. CLDB (tps68470 + this one).
-> 
-> The tps68470 driver is an MFD driver that instantiates a number of platform
-> devices. Alternatively, if you make this one a platform device, you can, in
-> case the CLDB (or whatever object) is present, in the tps68470 driver
-> instantiate a device for this driver instead of the rest.
-> 
-> So I'd think what matters is that both drivers can be selected at the same
-> time but the user does not need to manually select them. Both ways could
-> work I guess?
+Or better yet: what if the kernel closed everything it had added via
+ADDFD if it didn't get a valid response from the supervisor? Then
+everyone gets this bug fixed for free.
 
-Let's make it simpler instead of creating lots of devices. Here's what
-I've proposed in a different e-mail in this thread.
-
-> Given that INT3472 means Intel camera power management device (that's
-> more or less the wording in Windows, I can double-check), would the
-> following make sense ?
-> 
-> A top-level module named intel-camera-pmic (or int3472, or ...) would
-> register two drivers, a platform driver and an I2C driver, to
-> accommodate for both cases ("discrete PMIC" that doesn't have an
-> I2cSerialBusV2, and TPS64870 or uP6641Q that are I2C devices). The probe
-> function would perform the following:
-> 
-> - If there's no CLDB, then the device uses the Chrome OS "ACPI
->   bindings", and refers to a TPS64870. The code that exists in the
->   kernel today (registering GPIOs, and registering an OpRegion to
->   communicate with the power management code in the DSDT) would be
->   activated.
-> 
-> - If there's a CLDB, then the device type would be retrieved from it:
-> 
->   - If the device is a "discrete PMIC", the driver would register clocks
->     and regulators controlled by GPIOs, and create clock, regulator and
->     GPIO lookup entries for the sensor device that references the PMIC.
-> 
->   - If the device is a TPS64870, the code that exists in the kernel
->     today to register GPIOs would be activated, and new code would need
->     to be written to register regulators and clocks.
-> 
->   - If the device is a uP6641Q, a new driver will need to be written (I
->     don't know on which devices this PMIC is used, so this can probably
->     be deferred).
-> 
-> We can split this in multiple files and/or modules.
-
-Could you reply to 20201130233232.GD25713@pendragon.ideasonboard.com to
-avoid splitting the conversation ?
-
--- 
-Regards,
-
-Laurent Pinchart
+Tycho
