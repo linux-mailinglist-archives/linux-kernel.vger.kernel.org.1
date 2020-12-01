@@ -2,162 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672FD2CA7D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F7A2CA7DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392130AbgLAQLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:11:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32471 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390790AbgLAQLM (ORCPT
+        id S2403938AbgLAQLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388364AbgLAQLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:11:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606838985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FmeUIl5gKiTi3zNwJ/hCxS5K2ryAZ0zswO+YxWmjOmo=;
-        b=Bu03HYNpBt9219IsMF9Iwf0/Wn+B6ELNSIFEqVwnT9GK847KgaK3zeDYpfCTOakumqH52j
-        op6bkzZw8J0aAQVZC9zrPufzK0znrlqs1S7oQ1+0GFaHz9+r7YsfkBbeITk6mL5H67mEVq
-        1hz7/YVttFXAXOa+DGgbO37oGzUX7ko=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-0cLj-J02O3mfT2cKgL7AOg-1; Tue, 01 Dec 2020 11:09:43 -0500
-X-MC-Unique: 0cLj-J02O3mfT2cKgL7AOg-1
-Received: by mail-wm1-f71.google.com with SMTP id y187so1144822wmy.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:09:42 -0800 (PST)
+        Tue, 1 Dec 2020 11:11:41 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567CAC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:11:01 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id h26so734993uan.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:11:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZdKwyZiumYGvQbLwgvXVvBks2dSrXavoorQLj9ViOo=;
+        b=HbdJcTrT+Bm5snlT4I8yNuYKtWRopqXB48P4o3VVBeVAKEZL2VohViYi5I7dTIuu6p
+         5zwVGXKQl/m16KeuJUWiQw6oE7pRxrRVuNZmMiUOWVQKYSDRVWBgOugNyNB0k+1cAd/j
+         lGNwiuuUgxQMVVqUebDRL1GyK2PGnDmOeWg6OInjZ27Kg39hr0Kpt1HL5wTZESE3UD3R
+         DnHIlKTYC86/oUVGyrZGOTd4DuGfvxHr4lRRuk9rIWdYRuvGDnML7bVuMl3jAauWNYwx
+         jk1OPrdKd7DZ3mSdzI1B6o1RjaruFzkJy3Z2HGj9lcMjSyz1zRsAe0gpbeb/QokLF16Z
+         aByw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FmeUIl5gKiTi3zNwJ/hCxS5K2ryAZ0zswO+YxWmjOmo=;
-        b=YnyXIIozvKRTfVKWRSZAm/xJW7mgvSBk+5lId3VoX37DS3VZpVgCIlnQjO2CgQIQze
-         PeS6YB2e9ufE/rBgNdOHBMUuIlSMpb51min+sYfqKQmZwOwCY4DhqYi2K775e/a5/bGt
-         8e+HanKPELLnaawn0AxTI//7fKuQ/OejnpYsMW/ms57RkTnxPmjbUSyzBBKUJRGCUgeG
-         MWDcrRRb5rLqTlH8Z+e/s/B/HJhwRP7gQaLySfks+XAodp0LxzyasO0RJkU3uupe15+I
-         UtsldKWiT2msjEkT5FL4rqanr2iGmwur6JQidvbp2t/5oSnFjBR1CA6nimJj+/8nCbwV
-         +YEg==
-X-Gm-Message-State: AOAM5305LqECuRUa8dEgpsypsyx/RHhAWNoBMOubl/dJKpYHa4j41kJA
-        4mgXuvbx6KffXY93Kv+EGM7ro+4dmEqmb3N8rkdLaTvBXvHHjUFHdgtLdKZCF1NsMRUBu54qLPt
-        Mv9uOk1ELhAmBdiXjm8RGF/bL
-X-Received: by 2002:a7b:c015:: with SMTP id c21mr3377366wmb.79.1606838981756;
-        Tue, 01 Dec 2020 08:09:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwPVt1eahGleV7/m/61AodRx9ufD5CueGJuH+1j+yzVjP58dGrebIJ7Cg7HtKEs90D7L+R+lQ==
-X-Received: by 2002:a7b:c015:: with SMTP id c21mr3377336wmb.79.1606838981480;
-        Tue, 01 Dec 2020 08:09:41 -0800 (PST)
-Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
-        by smtp.gmail.com with ESMTPSA id g11sm38598wrq.7.2020.12.01.08.09.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 08:09:40 -0800 (PST)
-Date:   Tue, 1 Dec 2020 17:09:37 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH net-next v1 1/3] vm_sockets: Include flag field in the
- vsock address data structure
-Message-ID: <20201201160937.sswd3prfn6r52ihc@steredhat>
-References: <20201201152505.19445-1-andraprs@amazon.com>
- <20201201152505.19445-2-andraprs@amazon.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZdKwyZiumYGvQbLwgvXVvBks2dSrXavoorQLj9ViOo=;
+        b=hY/l4KfN3jCy2TY9w74R/m0FZgTWD/kLoCkAVB4mzPzJ8yq6wJVQCSqvSV0r1ulfgd
+         U4tOXw5ygomwsn+Cr5Cg86ke5OYdioin2Wu4KLfVwiCKfy+gegLvZ6dL/9L4wX+ltSnm
+         Q3gn1yNCAQuuSpB7wGSYJbbRc8ONoq3vVlQw4Q4el+Q3/m/SFQLFCc2VjjH8gZJr9ay/
+         9sG445PdSrg4vgiVh8DrY9hSl0UXjAUMeFjbP0Ooabn12cXNecmCYbo4j+csL1LemWu4
+         xitLf/z4N8XQAC0GegTCX+qhIfVurHwzxHmeDmIFZ0m+G2yVvifItlSWB4HrWeNtq4nW
+         Y9EQ==
+X-Gm-Message-State: AOAM531vAlayh2F+SO4hR80o3FJNn14VHdJU2YMrHvnQaA+isdYuzDjb
+        j0xlxpioPPQiY8u57hHBwW2RRZAnpH7vJ0mIE4/Fr1L6jZE=
+X-Google-Smtp-Source: ABdhPJzC5bdBhz03oVkaK+E87pEZIqovGzW//4BAUBwEFgEahQ/wGQXo8XGxcbvjVJw0FYa/0y0Wve3lHwiwhYTo0A0=
+X-Received: by 2002:ab0:45c6:: with SMTP id u64mr748318uau.58.1606839060547;
+ Tue, 01 Dec 2020 08:11:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201201152505.19445-2-andraprs@amazon.com>
+References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
+ <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
+ <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk>
+ <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
+ <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com>
+In-Reply-To: <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Tue, 1 Dec 2020 11:10:49 -0500
+Message-ID: <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com>
+Subject: Re: [BUG] SPI broken for SPI based panel drivers
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 05:25:03PM +0200, Andra Paraschiv wrote:
->vsock enables communication between virtual machines and the host they
->are running on. With the multi transport support (guest->host and
->host->guest), nested VMs can also use vsock channels for communication.
->
->In addition to this, by default, all the vsock packets are forwarded to
->the host, if no host->guest transport is loaded. This behavior can be
->implicitly used for enabling vsock communication between sibling VMs.
->
->Add a flag field in the vsock address data structure that can be used to
->explicitly mark the vsock connection as being targeted for a certain
->type of communication. This way, can distinguish between nested VMs and
->sibling VMs use cases and can also setup them at the same time. Till
->now, could either have nested VMs or sibling VMs at a time using the
->vsock communication stack.
->
->Use the already available "svm_reserved1" field and mark it as a flag
->field instead. This flag can be set when initializing the vsock address
->variable used for the connect() call.
+Nikolaus,
 
-Maybe we can split this patch in 2 patches, one to rename the svm_flag 
-and one to add the new flags.
-
+On Tue, Dec 1, 2020 at 9:38 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
 >
->Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->---
-> include/uapi/linux/vm_sockets.h | 18 +++++++++++++++++-
-> 1 file changed, 17 insertions(+), 1 deletion(-)
->
->diff --git a/include/uapi/linux/vm_sockets.h b/include/uapi/linux/vm_sockets.h
->index fd0ed7221645d..58da5a91413ac 100644
->--- a/include/uapi/linux/vm_sockets.h
->+++ b/include/uapi/linux/vm_sockets.h
->@@ -114,6 +114,22 @@
->
-> #define VMADDR_CID_HOST 2
->
->+/* This sockaddr_vm flag value covers the current default use case:
->+ * local vsock communication between guest and host and nested VMs setup.
->+ * In addition to this, implicitly, the vsock packets are forwarded to the host
->+ * if no host->guest vsock transport is set.
->+ */
->+#define VMADDR_FLAG_DEFAULT_COMMUNICATION	0x0000
-
-I think we don't need this macro, since the next one can be used to 
-check if it a sibling communication (flag 0x1 set) or not (flag 0x1 
-not set).
-
->+
->+/* Set this flag value in the sockaddr_vm corresponding field if the vsock
->+ * channel needs to be setup between two sibling VMs running on the same host.
->+ * This way can explicitly distinguish between vsock channels created for nested
->+ * VMs (or local communication between guest and host) and the ones created for
->+ * sibling VMs. And vsock channels for multiple use cases (nested / sibling VMs)
->+ * can be setup at the same time.
->+ */
->+#define VMADDR_FLAG_SIBLING_VMS_COMMUNICATION	0x0001
-
-What do you think if we shorten in VMADDR_FLAG_SIBLING?
-
-Thanks,
-Stefano
-
->+
-> /* Invalid vSockets version. */
->
-> #define VM_SOCKETS_INVALID_VERSION -1U
->@@ -145,7 +161,7 @@
->
-> struct sockaddr_vm {
-> 	__kernel_sa_family_t svm_family;
->-	unsigned short svm_reserved1;
->+	unsigned short svm_flag;
-> 	unsigned int svm_port;
-> 	unsigned int svm_cid;
-> 	unsigned char svm_zero[sizeof(struct sockaddr) -
->-- 
->2.20.1 (Apple Git-117)
->
->
->
->
->Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+> Let's work on a fix for the fix now.
 >
 
+Are you quite sure the chip-select of the tpo,td028ttec1 panel
+is active-high? A quick google produced a datasheet which
+seems to indicate that XCS is active-low?
+
+See page 17 here:
+http://www.lcd-source.com/datasheet/TPO/TD028TTEC1.pdf
+
+It is of course possible that you are driving that line behind
+some inverting circuitry. Hardware designers seem to do that
+all the time, if they need to go from one voltage domain to
+the other, etc.
