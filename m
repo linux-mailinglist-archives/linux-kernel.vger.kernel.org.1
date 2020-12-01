@@ -2,85 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0C62C969B
+	by mail.lfdr.de (Postfix) with ESMTP id 77C592C969A
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgLAEpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 23:45:52 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:58532 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728229AbgLAEpw (ORCPT
+        id S1728527AbgLAEpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 23:45:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728229AbgLAEpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 23:45:52 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14ZMT5101662;
-        Tue, 1 Dec 2020 04:44:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=DeB8Vzw3aLX4KP7kVRUoCP7Ijj+R0v5gEtQH6VBGpEU=;
- b=dUqdqu5M7crntrMIUjrHZLWaRLnNfxk6HIZyTpZ7HKliM79E6g8696tVKXi5Xbv1iMVB
- c0G+UzobbktlCnE6Xep9L1EDM3bwPKksSRj/Cti2Ywr2/aOFBa0nXflKRnoBT7MaEl6v
- Fd0HbhkXlHiS6vOBDJ3LKbWmOq/jWsdsiHPs3jfQVrCy9PR7hCRpbLVyImJd3jvEjh8h
- np6cytw+itxZnjWVIGtEwrI2a9cIoThK6nGX9tmW3Fd989f4kGvFxDAqUxrCpHGMX/ko
- Ro+E0iynjx6P1GsA1LBmkGbyI/AHOEkHq+SdZfCw25AmFbKaQuj/iM2Bt7LYrsVbUQTG Qw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 353dyqgj8t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 04:44:54 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14ZI3p010238;
-        Tue, 1 Dec 2020 04:44:54 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3540fw9w9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Dec 2020 04:44:54 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B14ikFG007908;
-        Tue, 1 Dec 2020 04:44:47 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 20:44:46 -0800
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: Remove unnecessary if condition in
- ufshcd_suspend()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1lfeii18r.fsf@ca-mkp.ca.oracle.com>
-References: <20201125185300.3394-1-huobean@gmail.com>
-Date:   Mon, 30 Nov 2020 23:44:43 -0500
-In-Reply-To: <20201125185300.3394-1-huobean@gmail.com> (Bean Huo's message of
-        "Wed, 25 Nov 2020 19:53:00 +0100")
+        Mon, 30 Nov 2020 23:45:50 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAF7C0613CF;
+        Mon, 30 Nov 2020 20:45:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=G6GpRZBGfBzMDHCdfX5TBRig+PVhgeBkRdlB8ph/yWk=; b=sRwZuiXdhi+oD6/GhAIQA4HDEl
+        w4/SxKgmYQbMxdwu9BD5pQelzpeh0GzFxwPJaqf05HVR73h1Iaque1fvRKP15o/CIf+fwcHLL5kBp
+        Fe5tCimv7GRdfd682K4pkKk7uAHQmw04xIhRLkzhx8DtjjETl/LNlnOkD992cQ8Fy7iTCtJ1s5sAq
+        ulD+YOyvYeuH8XO/BL9uy7BDVfMvuDUem9fyhTuj2dM+ZfHXErrAxoq1PqMafmtNSwm2z5kUaGPfN
+        iPic3Up2lTdgh7DPT+s3lG6iB1wx0gcrpD4nXef7kZr4NHxb/Xg8FM127fUcLKqRvBZcjnCiZzwV0
+        gbPRfyoA==;
+Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kjxX8-0000AZ-SY; Tue, 01 Dec 2020 04:45:00 +0000
+Subject: Re: linux-next: Tree for Nov 30
+ (drivers/pci/controller/dwc/pcie-designware-host.c)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20201130193626.1c408e47@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bc0f6da9-6dd4-c1ad-f2f3-dc1a5cd6a51b@infradead.org>
+Date:   Mon, 30 Nov 2020 20:44:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
- phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010031
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=1 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010031
+In-Reply-To: <20201130193626.1c408e47@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/30/20 12:36 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20201127:
+> 
 
-Bean,
+on x86_64:
 
-> In the case that auto_bkops_enable is false, which means auto bkops
-> has been disabled, so no need to call ufshcd_disable_auto_bkops().
+WARNING: unmet direct dependencies detected for PCIE_DW_HOST
+  Depends on [n]: PCI [=y] && PCI_MSI_IRQ_DOMAIN [=n]
+  Selected by [y]:
+  - PCI_EXYNOS [=y] && PCI [=y] && (ARCH_EXYNOS || COMPILE_TEST [=y])
 
-Applied to 5.11/scsi-staging, thanks!
+../drivers/pci/controller/dwc/pcie-designware-host.c:49:15: error: variable ‘dw_pcie_msi_domain_info’ has initializer but incomplete type
+ static struct msi_domain_info dw_pcie_msi_domain_info = {
+               ^~~~~~~~~~~~~~~
+../drivers/pci/controller/dwc/pcie-designware-host.c:50:3: error: ‘struct msi_domain_info’ has no member named ‘flags’
+  .flags = (MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+   ^~~~~
+../drivers/pci/controller/dwc/pcie-designware-host.c:50:12: error: ‘MSI_FLAG_USE_DEF_DOM_OPS’ undeclared here (not in a function); did you mean ‘SIMPLE_DEV_PM_OPS’?
+  .flags = (MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+            ^~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/pci/controller/dwc/pcie-designware-host.c:50:39: error: ‘MSI_FLAG_USE_DEF_CHIP_OPS’ undeclared here (not in a function); did you mean ‘MSI_FLAG_USE_DEF_DOM_OPS’?
+  .flags = (MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+                                       ^~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/pci/controller/dwc/pcie-designware-host.c:51:6: error: ‘MSI_FLAG_PCI_MSIX’ undeclared here (not in a function); did you mean ‘SS_FLAG_BITS’?
+      MSI_FLAG_PCI_MSIX | MSI_FLAG_MULTI_PCI_MSI),
+      ^~~~~~~~~~~~~~~~~
+../drivers/pci/controller/dwc/pcie-designware-host.c:51:26: error: ‘MSI_FLAG_MULTI_PCI_MSI’ undeclared here (not in a function); did you mean ‘MSI_FLAG_PCI_MSIX’?
+      MSI_FLAG_PCI_MSIX | MSI_FLAG_MULTI_PCI_MSI),
+                          ^~~~~~~~~~~~~~~~~~~~~~
+../drivers/pci/controller/dwc/pcie-designware-host.c:50:11: warning: excess elements in struct initializer
+  .flags = (MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+           ^
+../drivers/pci/controller/dwc/pcie-designware-host.c:52:3: error: ‘struct msi_domain_info’ has no member named ‘chip’
+  .chip = &dw_pcie_msi_irq_chip,
+   ^~~~
+../drivers/pci/controller/dwc/pcie-designware-host.c:52:10: warning: excess elements in struct initializer
+  .chip = &dw_pcie_msi_irq_chip,
+          ^
+../drivers/pci/controller/dwc/pcie-designware-host.c: In function ‘dw_pcie_allocate_domains’:
+../drivers/pci/controller/dwc/pcie-designware-host.c:247:19: error: implicit declaration of function ‘pci_msi_create_irq_domain’; did you mean ‘pci_msi_get_device_domain’? [-Werror=implicit-function-declaration]
+  pp->msi_domain = pci_msi_create_irq_domain(fwnode,
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~
+                   pci_msi_get_device_domain
+../drivers/pci/controller/dwc/pcie-designware-host.c:247:17: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+  pp->msi_domain = pci_msi_create_irq_domain(fwnode,
+                 ^
+../drivers/pci/controller/dwc/pcie-designware-host.c: At top level:
+../drivers/pci/controller/dwc/pcie-designware-host.c:49:31: error: storage size of ‘dw_pcie_msi_domain_info’ isn’t known
+ static struct msi_domain_info dw_pcie_msi_domain_info = {
+
+
+caused by:
+commit f0a6743028f938cdd34e0c3249d3f0e6bfa04073
+Author: Jaehoon Chung <jh80.chung@samsung.com>
+Date:   Fri Nov 13 18:01:39 2020 +0100
+
+    PCI: dwc: exynos: Rework the driver to support Exynos5433 varian
+
+
+which removed "depends on PCI_MSI_IRQ_DOMAIN from config PCI_EXYNOS.
+
+
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
