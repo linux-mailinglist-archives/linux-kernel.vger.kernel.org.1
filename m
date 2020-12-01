@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020CF2CA468
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702112CA483
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391352AbgLANwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:52:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387833AbgLANwo (ORCPT
+        id S2391495AbgLANyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:54:39 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:37562 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390730AbgLANyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:52:44 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E0AC0613D6;
-        Tue,  1 Dec 2020 05:51:58 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id b6so1150231pfp.7;
-        Tue, 01 Dec 2020 05:51:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=U8eJNOHS+aUbBXn7pcWjETPrHmmQZ5+rMmh0rfza66c=;
-        b=Zs0zlqNz5yvaZTjtyetjqTA/N59AU/PLxzuAxbg7oluNJXAAosAncYfbQ4gqeWRl71
-         0sopphmkSvDUwdoxU3STU6Fj0zCQnup0aNfqEJHDniloim4EqK++ST62cD65exMtHGKG
-         n/rIQrfHyKYn6bxJ6ovXsnXp9iS/A/r93CPe39cL+1xC/5mK5g8eA6JazRuqdu4lT7ZG
-         yjc9sGLJzA82NrkPQasvDOEbbx6Hzbrxl95PTXTJL66BqGMLjKVzuXjENbYZELYFC0Cn
-         WVUjPV7nciq/zytcpXGMwpi50t/QJuxkOreYqpn1JWRMUwURwangM2vGkajqATeC9Q1c
-         LMRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=U8eJNOHS+aUbBXn7pcWjETPrHmmQZ5+rMmh0rfza66c=;
-        b=ty2ayfYKtPEYlykA1sloUppvkmZDQo4QGLJ7jIIoMU0UE24rP/LdiJO2VJU9QDn4v4
-         jeb5W+wWHyHOMOMEblFiK67X0u9SEQ8zrFEMn5u4Lf/aKtuFZLHbnUFd0gw27iD73hpg
-         FoxcpSJMa+BfqOsLqx/BIf6jkeJDzjyFXSc6SLZaPPha09RYSZcG90pKm+rvcNF8gvXm
-         XlJO8Per/OTubzyVDJScKy9Sp7HWIbxS4aJ5XqDlQPeD0VybUVG4g0MCEIbFtg0I1u/g
-         MLYHGBH3toknrvwDPCIRiaXyUdrin3gtqKm8VkoivQPEk8yW0/BaFUnn9SylRuS6TdG/
-         rh6A==
-X-Gm-Message-State: AOAM531PdGM91/bmZmrWyBIxjZ2Y7PJXRTiiefpHat2O+kwhQMK8l6eO
-        P0WZQ1B2porQ+8sdiwjJ71P6e971PGr23Ojy5dHXfCDD6wY=
-X-Google-Smtp-Source: ABdhPJzkxeLTyDyGsVXpEwI/AlYj0VzxJq37602ZsfoiCdy29DoYIk86M0FBPsiMCf2cQij+pRUC8uY63L2zmwlZWRk=
-X-Received: by 2002:a63:1514:: with SMTP id v20mr2348579pgl.203.1606830717796;
- Tue, 01 Dec 2020 05:51:57 -0800 (PST)
+        Tue, 1 Dec 2020 08:54:37 -0500
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 0B1DrQTV021869;
+        Tue, 1 Dec 2020 22:53:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0B1DrQTV021869
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606830807;
+        bh=Ok1QqgsbTvLJR9T2w9uzm16olUMbK7QKnvuiz2CLeqM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qN/IjIZBhMZoBtAgolas/uVF3Rp/Hk0w0pMlmeOop7VUsl/YaBH2movBpJWDegVJA
+         vnxeRoD6m2RKQZCbqbCKvRi38r+rGpKkt/67VyTCB0b1uhKJC4Q3zf05t0W9Wf+9gi
+         zS2wc/t3UJnZQz5jD9p+lnnGB5g0gGxnL+Pk2clHnx+lEPcV6tT/qblqHk6BugwW0j
+         wEoPSj9tVpVUlYOjGCnzilyrjyZUnHN+lX/5F1AvnO1l1PweA91a8/l7n64FAGEviY
+         3smNN36Wf4UfKU9sAdj7a4BEbKLtTU5MhX6UYu9WWFzIHQWIWZATgOza97Tb93vGyO
+         m+29oJTO4+/bw==
+X-Nifty-SrcIP: [209.85.214.176]
+Received: by mail-pl1-f176.google.com with SMTP id bj5so1184179plb.4;
+        Tue, 01 Dec 2020 05:53:27 -0800 (PST)
+X-Gm-Message-State: AOAM532H5py1JWCD8BMFJkeYbqoyMvvBzYj4o/FNnpa3guZzbA4gx5Sx
+        gGcQ421QlcO6KJihLxKdotXHIII3PDr4XH9Qt18=
+X-Google-Smtp-Source: ABdhPJytF7/TSiOE8RQwh1z0tE6AjvW8ZFpYvV7UD1hS+NhCt//ZFmmGhZxWq0ziQeW4eXdFQh/WV0dS2BmI+kOqu8Y=
+X-Received: by 2002:a17:90a:5905:: with SMTP id k5mr2779502pji.198.1606830806327;
+ Tue, 01 Dec 2020 05:53:26 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1606827507.git.agx@sigxcpu.org> <ee2df27df04e6ff01d15255665458be1000dcfa8.1606827507.git.agx@sigxcpu.org>
-In-Reply-To: <ee2df27df04e6ff01d15255665458be1000dcfa8.1606827507.git.agx@sigxcpu.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 1 Dec 2020 15:52:40 +0200
-Message-ID: <CAHp75VdwnGD+39AHusGvSKcnOZs7q_AfXniTBaA+J=yMqL4_nw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] usb: typec: tps6598x: Export some power supply properties
-To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
+References: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
+In-Reply-To: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 1 Dec 2020 22:52:48 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQP+e18qAVEUJvmkwpCwTtS4Auqth7u+xPW6pBbE_+z0A@mail.gmail.com>
+Message-ID: <CAK7LNAQP+e18qAVEUJvmkwpCwTtS4Auqth7u+xPW6pBbE_+z0A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ld-version: use /usr/bin/env awk for shebank
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 2:59 PM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
-> This allows downstream supplies and userspace to detect
-> whether external power is supplied.
+On Tue, Dec 1, 2020 at 10:18 PM Dominique Martinet
+<asmadeus@codewreck.org> wrote:
+>
+> /usr/bin/awk is not garanteed to exist (and doesn't on e.g. nixos),
+> using /usr/bin/env to have it look in PATH is more robust
+>
+> Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+> ---
 
-...
+Both applied to linux-kbuild. Thanks.
 
-> +static int devm_tps6598_psy_register(struct tps6598x *tps)
-> +{
-> +       struct power_supply_config psy_cfg =3D {};
-> +       const char *port_dev_name =3D dev_name(tps->dev);
 
-> +       size_t psy_name_len =3D strlen(tps6598x_psy_name_prefix) +
-> +                                    strlen(port_dev_name) + 1;
+> I've been carrying these two patchs for local kernel development on
+> nixos for a while, I don't think it'd break anything for anyone so
+> might as well submit these -- please consider it :)
+>
+>  scripts/ld-version.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+> index f2be0ff9a738..05476b8f8925 100755
+> --- a/scripts/ld-version.sh
+> +++ b/scripts/ld-version.sh
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/awk -f
+> +#!/usr/bin/env -S awk -f
+>  # SPDX-License-Identifier: GPL-2.0
+>  # extract linker version number from stdin and turn into single number
+>         {
+> --
+> 2.28.0
+>
 
-I'm so sorry by not noticing this one...
 
-> +       char *psy_name;
-> +
-> +       psy_cfg.drv_data =3D tps;
-> +       psy_cfg.fwnode =3D dev_fwnode(tps->dev);
-> +       psy_name =3D devm_kzalloc(tps->dev, psy_name_len, GFP_KERNEL);
-> +       if (!psy_name)
-> +               return -ENOMEM;
-> +
-> +       snprintf(psy_name, psy_name_len, "%s%s", tps6598x_psy_name_prefix=
-,
-> +                port_dev_name);
-
-...followed by this.
-
-Please, use devm_kasprintf() instead.
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Best Regards
+Masahiro Yamada
