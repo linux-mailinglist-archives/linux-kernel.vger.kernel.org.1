@@ -2,95 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171E12C99AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CB02C99A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgLAIhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:37:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
+        id S1728882AbgLAIie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:38:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727253AbgLAIhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:37:54 -0500
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727253AbgLAIid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:38:33 -0500
+Received: from gaia (unknown [95.146.230.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1A47216C4;
-        Tue,  1 Dec 2020 08:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606811834;
-        bh=e8JrzJWeuIo1NZeYPMcOvF7yCpKy+jzFNIQUQ88Bvqg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E5hLKCNPzPZ8UenenX+jbkaIda/JRuJ7VSF0RevT/+xfrHF2faxfp8xLuVAxyXxAc
-         rfqHpbl+TXREjuhdw4SBWeqJ/Hu4vH2V8q/6vK+sF2tAuCpDxA9/PtyTaUoZ06xH8K
-         yhlEXBBSkurzj6jqVS2UrXOwYXzAm3ZaSGPI0h1U=
-Received: by mail-oi1-f182.google.com with SMTP id w15so933159oie.13;
-        Tue, 01 Dec 2020 00:37:13 -0800 (PST)
-X-Gm-Message-State: AOAM532vpzVYN+cv2vBEWVTMlGCq0dkUDCmX0X2sVbi/xBCzlSUyRuaS
-        EvbDzuLhoVIZqrrwH6oQMpBUHRgmXDF6+VYxkaQ=
-X-Google-Smtp-Source: ABdhPJx90wJXi/uYHsmH7ZqUTSQfpMzmABaIjcGD0/COs+03flTvBPfUTB+JmvdfainOr2k7yZGqlzw4R+oAFyTiBTE=
-X-Received: by 2002:aca:b809:: with SMTP id i9mr1080357oif.174.1606811832882;
- Tue, 01 Dec 2020 00:37:12 -0800 (PST)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85CCC2054F;
+        Tue,  1 Dec 2020 08:37:51 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 08:37:48 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>
+Subject: Re: linux-next: manual merge of the arm64 tree with the arm64-fixes
+ tree
+Message-ID: <20201201083747.GA31404@gaia>
+References: <20201201100547.16b07093@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201015110241.89676-1-tianjia.zhang@linux.alibaba.com>
- <20201015120504.GA12976@gondor.apana.org.au> <f6d98764-dde8-6f40-c0e7-9eb5b087d713@linux.alibaba.com>
- <20201130022422.GA21049@gondor.apana.org.au> <df22e694-0a2e-811a-412e-269303c5d27d@linux.alibaba.com>
-In-Reply-To: <df22e694-0a2e-811a-412e-269303c5d27d@linux.alibaba.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 1 Dec 2020 09:37:02 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFUG8Q8YB4M1GBsjcehrSMH8DYcPu4dFebxVAiZdew2gA@mail.gmail.com>
-Message-ID: <CAMj1kXFUG8Q8YB4M1GBsjcehrSMH8DYcPu4dFebxVAiZdew2gA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: ecrdsa - use subsys_initcall instead of module_init
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201100547.16b07093@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020 at 07:58, Tianjia Zhang
-<tianjia.zhang@linux.alibaba.com> wrote:
->
->
->
-> On 11/30/20 10:24 AM, Herbert Xu wrote:
-> > On Mon, Nov 30, 2020 at 10:21:56AM +0800, Tianjia Zhang wrote:
-> >>
-> >>> That is true only if there are non-generic implementations of
-> >>> the algorithms, which is not the case here.  Please explain the
-> >>> real reason why this is needed.
-> >>
-> >> This is a generic algorithm, the author Vitaly Chikunov has also confi=
-rmed
-> >> it, please consider this patch again.
-> >
-> > As I said, the generic algorithm only needs to be loaded early *if*
-> > there are non-generic implementations.
-> >
-> > Cheers,
-> >
->
-> For ecrdsa, there is no reason to advance the initialization to
-> subsys_init, this is just to make code clean up to have algorithm
-> initialization uniform with other implementations.
->
-> It=E2=80=99s just that I think that in the commit c4741b230597 ("crypto: =
-run
-> initcalls for generic implementations earlier"), the modification to
-> ecrdsa happened to be omitted, because from the point of commit time, it
-> was submitted at the same time as the ecrdsa commits, and it may happen
-> to be omitted for ecrdsa.
->
+On Tue, Dec 01, 2020 at 10:05:47AM +1100, Stephen Rothwell wrote:
+> diff --cc arch/arm64/include/asm/exception.h
+> index 0756191f44f6,2a8aa1884d8a..000000000000
+> --- a/arch/arm64/include/asm/exception.h
+> +++ b/arch/arm64/include/asm/exception.h
+> @@@ -31,13 -31,8 +31,13 @@@ static inline u32 disr_to_esr(u64 disr
+>   	return esr;
+>   }
+>   
+>  +asmlinkage void noinstr enter_el1_irq_or_nmi(struct pt_regs *regs);
+>  +asmlinkage void noinstr exit_el1_irq_or_nmi(struct pt_regs *regs);
+>   asmlinkage void enter_from_user_mode(void);
+>  +asmlinkage void exit_to_user_mode(void);
+>  +void arm64_enter_nmi(struct pt_regs *regs);
+>  +void arm64_exit_nmi(struct pt_regs *regs);
+> - void do_mem_abort(unsigned long addr, unsigned int esr, struct pt_regs *regs);
+> + void do_mem_abort(unsigned long far, unsigned int esr, struct pt_regs *regs);
+>   void do_undefinstr(struct pt_regs *regs);
+>   void do_bti(struct pt_regs *regs);
+>   asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int esr);
 
-Whether or not it is a generic algorithm is irrelevant.
+Thanks Stephen. It looks alright.
 
-What is relevant is whether any other implementations exist of the
-same algorithm, because in this case, the generic implementation must
-be available earlier, so that it can be used for testing the other
-implementation.
-
-This concern does not apply for ecrdsa, so this patch is unnecessary.
+-- 
+Catalin
