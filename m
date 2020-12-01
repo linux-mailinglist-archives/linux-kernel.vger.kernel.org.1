@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AB92CB0A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E312CB0AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgLAXKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:10:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726082AbgLAXKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:10:22 -0500
-Date:   Tue, 1 Dec 2020 23:09:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606864181;
-        bh=R1LZxKhC63MgOhIWSKRcfmgG/w02ZOoz7xHqWe+Pr7k=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zsaqQBCXac4ssa46wKGJrHjx78Yx+BKPCLV22+wvuO2lvTanFDGUxj+NCPAd7BT2E
-         TQo1DGLBSM79hGhonz/V0LYXVbogx5ZAv/HDAPU3QyZI4crCjRZPDk3x8CH2QsIBsJ
-         5osHzXr+wQYAdBUuuOnHChySkw+W5DZWwAQdrdJ8=
-From:   Will Deacon <will@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Al Grant <al.grant@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: Re: [PATCH] drivers/perf: Enable PID_IN_CONTEXTIDR with SPE
-Message-ID: <20201201230935.GD28496@willie-the-truck>
-References: <20201130162454.28255-1-james.clark@arm.com>
- <20201130164650.GA25187@willie-the-truck>
- <20201201041040.GC28939@leoy-ThinkPad-X240s>
+        id S1726760AbgLAXNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:13:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726344AbgLAXNL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 18:13:11 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0409C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 15:12:30 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 142so6089349ljj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 15:12:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1CTlTv39RPYPAy/+NOAJ8dQCTyzV9XuGFgDycIoPAug=;
+        b=sYDGEFW7UQXK0Zq0BGH7Qta+/pGARj1ad8W+QhJrmva0XAGPn79l5ZSb86k6CJHi7C
+         yIHYMuI0ejBzQN35Gy0d7lOeoFrgUgOaF23kAy/mzZIZRcGsCVSjKFRZUvk6Tp2QZJw+
+         bNGZCnvsx8Eo+MSlbphU7nU+Bup1I1lg2UJ2fFU3DszIEgL612HvjtfULje/SYWw0zNU
+         BHv5zyvfqO0imIzz4qng7sQnBHjQxGT4QtdW+m+z3fVwuAa5OuAF7hF40q5MQL0ed9e+
+         uG5k5rDVIFf5aHTnnUByi9KCJCTmNjmHOMOocKHmEfgqcDVBXNLy2dOK+QHAeMyMnqpK
+         JYXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1CTlTv39RPYPAy/+NOAJ8dQCTyzV9XuGFgDycIoPAug=;
+        b=rhVXyN0gziCpOuHASf2oJn13pNZgDAePYSsmS6wUhOKxfpr7UXWWpa54FmUfR5hs+g
+         nYOOmU7mc0diZZb1fOseE8DJNG1hpirTJ7dN3Fr1QEWq7sWpa4sEZCftZo7xvDkB1Juo
+         WMd9FfBhAZDHxvpk90pPdAs2tersDr5oPvE7EmQdN4Ju4z0y091x/gZisKleEWd1iC5y
+         /MUr3xKM0Tqc3fk7AXEic+M7PEdhAbPZhaWjsLcsy/5oFkxAfgI0p6aXaJOwg94zspA0
+         E4WmfZXhcijAvW0rAfsrmyqQ0WYoD6eOafjEAzllYoGBIVfKXJCaWUMYCQdwLnEzOSmr
+         YyOQ==
+X-Gm-Message-State: AOAM531Ek61QXsPucVvwNHM2fBTncmkSdwjaKgixPOsgmEVPLoF4K/Q9
+        R6hXuccrQdO82mGNLXlYUHuLy4HsMcn0E/xUYJP33Q==
+X-Google-Smtp-Source: ABdhPJxFgznn14qUCcOpS03trneRudWl7bCmYiKVjZ72gjQiUcF/JqdQlJcHbLqD7fKnWE8FyJHBDACcWXhADyaojvo=
+X-Received: by 2002:a2e:b1c9:: with SMTP id e9mr2389105lja.283.1606864349186;
+ Tue, 01 Dec 2020 15:12:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201041040.GC28939@leoy-ThinkPad-X240s>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201125122014.11237-1-lars.povlsen@microchip.com>
+In-Reply-To: <20201125122014.11237-1-lars.povlsen@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 2 Dec 2020 00:12:18 +0100
+Message-ID: <CACRpkdY=wXBQ730YoCLW_XM3aqa6WHxHxj17EP8gr_PtMR6cgQ@mail.gmail.com>
+Subject: Re: [PATCH -next] pinctrl: pinctrl-microchip-sgpio: Add OF config dependency
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 12:10:40PM +0800, Leo Yan wrote:
-> On Mon, Nov 30, 2020 at 04:46:51PM +0000, Will Deacon wrote:
-> > On Mon, Nov 30, 2020 at 06:24:54PM +0200, James Clark wrote:
-> > > Enable PID_IN_CONTEXTIDR by default when Arm SPE is enabled.
-> > > This flag is required to get PID data in the SPE trace. Without
-> > > it the perf tool will report 0 for PID which isn't very useful,
-> > > especially when doing system wide profiling or profiling
-> > > applications that fork.
-> > 
-> > Can perf not figure out the pid some other way? (e.g. by tracing context
-> > switches and correlating that with the SPE data?).
-> 
-> For perf 'per-thread' mode, we can use context switch trace event as
-> assisted info to select thread context.  But for "system wide" mode and
-> "snapshot" mode in perf tool, since the trace data is continuous, I
-> think we cannot use context switch trace event to correlate the SPE
-> trace data.
+On Wed, Nov 25, 2020 at 1:20 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
-Is there no way to correlate them with something like CNTVCT?
+> The pinctrl-microchip-sgpio driver needs OF support, so add that to
+> Kconfig.
+>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
 
-> > Also, how does this work with pid namespaces?
-> 
-> Here we are studying the implemetation of Intel-PT and Arm CoreSight.
-> 
-> The context ID is stored into the hardware trace data when record;
-> afterwards when perf tool decodes the trace data and detects the
-> packet for context ID, it will select the machine's thread context in
-> perf [1].  Since the perf tool gathers all the threads infomation in
-> perf data file, based on the context ID, it can find the corresponding
-> thread pointer with function machine__find_thread() [2].
-> 
-> Since your question is for "pid namespace", to be honest, I don't know
-> how perf tool to handle any confliction for differrent processes share
-> the same PID, and I am not sure if you are asking CGroup related stuff
-> or not.  If this cannot answer your question, please let me know.
+Patch applied!
 
-My point was that the pid value written to CONTEXTIDR is a global pid
-and does not take namespacing into account. If perf is run inside a pid
-namespace, it will therefore not work.
-
-Will
+Yours,
+Linus Walleij
