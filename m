@@ -2,164 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1942CB102
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BDF2CB105
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbgLAXnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:43:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726066AbgLAXnt (ORCPT
+        id S1727413AbgLAXoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:44:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbgLAXoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:43:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606866142;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6fYN72Vc1ksEdLS02U8r6R3GAd3TEksP02Cj+AmRSto=;
-        b=e5ZJG2pIkiz+Tfr680BR//kqQAwQUC5jFPKx+5QS4mCGM+bXNAeh8nMoF3QgmuDlVU0IsM
-        1haRSrQCjJ0uFQS8KU0XedKoAP24xd3rhI6jWbz74lNzJoU2FwQV7vzNMkBU/azKLMLFC5
-        IKBJgkjv6jqtwGTG+12O9xQ72rD2x8Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-bFkd3oyFNwmOgRFmZbcTTg-1; Tue, 01 Dec 2020 18:42:18 -0500
-X-MC-Unique: bFkd3oyFNwmOgRFmZbcTTg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2EC22185E485;
-        Tue,  1 Dec 2020 23:42:17 +0000 (UTC)
-Received: from mail (ovpn-112-118.rdu2.redhat.com [10.10.112.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C95EE5C1B4;
-        Tue,  1 Dec 2020 23:42:13 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 18:42:13 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH] mm: Don't fault around userfaultfd-registered regions on
- reads
-Message-ID: <X8bU1eIMdF7rpTkK@redhat.com>
-References: <20201126222359.8120-1-peterx@redhat.com>
- <20201127122224.GX4327@casper.infradead.org>
- <X8Ga44uXHmzn/vB9@redhat.com>
- <20201128152903.GK6573@xz-x1>
- <alpine.LSU.2.11.2012011250070.1582@eggly.anvils>
+        Tue, 1 Dec 2020 18:44:10 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBBEC0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 15:43:30 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id s63so2221507pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 15:43:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fY5hyTL1LADJADDjDb5GgSei5a/r8R7nT6CdkOspJ28=;
+        b=lba3JsSdXWmCmomk5hDRDrU0RfEXL/zI9mP+sysVQ26ffSeUkzoWmCnrwMD8MA3k0C
+         MpoAbiOU7sfG9zEMNd1vBTW3GX8OLaoQb3QJGohAFbRlivgh3vW+/2Vxk+d8FJ1ZmHSj
+         kxYoTW2Q0dCoOr7eF4D8S6zr12lEpAghudQ7KVgVZvpMnqb4yRJu1bts6mEnyvz72S0D
+         bSnUGEut2DjNPXbqFowsWhJHt/yYpRyjt5TY9i39s48uRLZO+SJwG9YVSAy1gJLblrsV
+         a/J9QoJJYBwKkF069EGYjV8yBW9IAhkgoksIu1oQ2kTE1nYZ2wLfQv5cWU1kDIAn2IqS
+         /j5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fY5hyTL1LADJADDjDb5GgSei5a/r8R7nT6CdkOspJ28=;
+        b=TH7bNJfOtgZj+MxuoBiyW7n+i6qSaSghM6Egdcg6soqzI4LTswUDQJY/4cv8yUndy+
+         FUPVdroyh/pvpzQAxgPPHowrOtCk7aqdeiRBJoOix/HkqBJ6foA3UfSjGcYAl2H6DVkX
+         OUAJO8VqIqrt6K96CJ5rkpgxDyBISMiMQWP6EDn3CkVlkbjos3FbFIGvknumYfX635r3
+         neNZgtk99L1kfZqU9lcVcWZV+dHUbhPJPC/IBbf+n2hBWQcBThYUvPi2I5PyfV1zDg5W
+         B7iLcUqGHP9pH74/rCag779LD9bhHOOsGXC6OQbezkMgUBRGIkNYxNW0YLNou+P7nJK+
+         0cdw==
+X-Gm-Message-State: AOAM5327w1eMr3cGSdQeL4MoO1Y9kNc+G6BZ67LMKaPuXSE3xEMyh6Wr
+        IYKbhvV/k7PgbZSDX6VQFW9ucQ==
+X-Google-Smtp-Source: ABdhPJwxw2fmhWBtHdIVtKdFchQm9O/5vYe7BHNrQ87GcJXUHXbUQqiahRlbXkb6titFrIE4fINVgA==
+X-Received: by 2002:a63:4c12:: with SMTP id z18mr46620pga.66.1606866210006;
+        Tue, 01 Dec 2020 15:43:30 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id q35sm24158pjh.38.2020.12.01.15.43.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 15:43:29 -0800 (PST)
+Date:   Tue, 1 Dec 2020 16:43:27 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com
+Subject: Re: [PATCH v3 01/15] dt-bindings: remoteproc: Add bindind to support
+ autonomous processors
+Message-ID: <20201201234327.GA1248055@xps15>
+References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
+ <20201126210642.897302-2-mathieu.poirier@linaro.org>
+ <20201130173321.GB2662913@robh.at.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2012011250070.1582@eggly.anvils>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201130173321.GB2662913@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hugh,
+Hi Rob,
 
-On Tue, Dec 01, 2020 at 01:31:21PM -0800, Hugh Dickins wrote:
-> Please don't ever rely on that i_private business for correctness: as
+On Mon, Nov 30, 2020 at 10:33:21AM -0700, Rob Herring wrote:
+> On Thu, Nov 26, 2020 at 02:06:28PM -0700, Mathieu Poirier wrote:
+> > This patch adds a binding to guide the remoteproc core on how to deal with
+> > remote processors in two cases:
+> > 
+> > 1) When an application holding a reference to a remote processor character
+> >    device interface crashes.
+> > 
+> > 2) when the platform driver for a remote processor is removed.
+> > 
+> > In both cases if "autonomous-on-core-reboot" is specified in the remote
+> > processor DT node, the remoteproc core will detach the remote processor
+> > rather than switching it off.
+> > 
+> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > ---
+> >  .../bindings/remoteproc/remoteproc-core.yaml  | 25 +++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml b/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
+> > new file mode 100644
+> > index 000000000000..3032734f42a3
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
+> > @@ -0,0 +1,25 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/remoteproc/remoteproc-core.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Binding for the remoteproc core applicable to all remote processors
+> > +
+> > +maintainers:
+> > +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> > +  - Mathieu Poirier <mathieu.poirier@linaro.org>
+> > +
+> > +description:
+> > +  This document defines the binding recognised by the remoteproc core that can
+> > +  be used by any remote processor in the subsystem.
+> > +
+> > +properties:
+> > +  autonomous-on-core-reboot:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description:
+> > +      Used in two situations, i.e when a user space application releases the
+> > +      handle it has on the remote processor's character driver interface and
+> > +      when a remote processor's platform driver is being removed.  If defined,
+> > +      this flag instructs the remoteproc core to detach the remote processor
+> > +      rather than turning it off.
+> 
+> Userspace? character driver? platform driver? remoteproc core? Please 
+> explain this without OS specific terms.
 
-The out of order and lockless "if (inode->i_private)" branch didn't
-inspire much confidence in terms of being able to rely on it for
-locking correctness indeed.
+The remoteproc state machine is gaining in complexity and having technical terms
+in the binding's description helps understand when and how it should be used.  I
+could make it more generic but that will lead to confusion and abuse.  Should I
+make it "rproc,autonomous-on-core-reboot" ?
 
-> more of the comment around "So refrain from" explains, it was added
-> to avoid a livelock with the trinity fuzzer, and I'd gladly delete
-> it all, if I could ever be confident that enough has changed in the
-> intervening years that it's no longer necessary.
+> 
+> Seems to me this would be implied by functionality the remote proc 
+> provides.
 
-I was wondering if it's still needed, so now I checked the old code
-and it also did an unconditional lock_page in shmem_fault, so I assume
-it's still necessary.
+Exactly - this binding is used by the remoteproc core itself.  It is specified
+in the remote processor DT nodes but the individual platform drivers don't do
+anything with it - the core takes care of enacting the desired behavior on their
+behalf.  Otherwise each platform driver would end up adding the same code, which
+nobody wants to see happening.
 
-> It tends to prevent shmem faults racing hole punches in the same area
-> (without quite guaranteeing no race at all).  But without the livelock
-> issue, I'd just have gone on letting them race.  "Punch hole" ==
-> "Lose data" - though I can imagine that UFFD would like more control
-> over that.  Since map_pages is driven by faulting, it should already
-> be throttled too.
-
-Yes I see now it just needs to "eventually" stop the shmem_fault
-activity, it doesn't need to catch those faults already in flight, so
-it cannot relied upon as the form of serialization to zap the
-pageteables while truncating the page.
-
-> But Andrea in next mail goes on to see other issues with UFFD_WP
-> in relation to shmem swap, so this thread is probably dead now.
-> If there's a bit to spare for UFFD_WP in the anonymous swap entry,
-> then that bit should be usable for shmem too: but a shmem page
-> (and its swap entry) can be shared between many different users,
-> so I don't know whether that will make sense.
-
-An UFFD_WP software bit exists both for the present pte and for the
-swap entry:
-
-#define _PAGE_UFFD_WP		(_AT(pteval_t, 1) << _PAGE_BIT_UFFD_WP)
-#define _PAGE_SWP_UFFD_WP	_PAGE_USER
-
-It works similarly to soft dirty, if the page is swapped _PAGE_UFFD_WP
-it's translated to _PAGE_SWP_UFFD_WP and the other way around during
-swapin.
-
-The problem is that the bit represents an information that is specific
-to an mm and a single mapping.
-
-If you punch an hole in a shmem, you map the shmem file in two
-processes A and B, you register the mapped range in a uffd opened by
-process A using VM_UFFD_MISSING, only process A will generate
-userfaults if you access the virtual address that corresponds to the
-hole in the file, process B will still fill the hole normally and it
-won't trigger userfaults in process A.
-
-The uffd context is attached to an mm, and the notification only has
-effect on that mm, the mm that created the context. Only the UFFDIO_
-operations that resolve the fault (like UFFDIO_COPY) have effect
-visible by all file sharers.
-
-So VM_UFFD_WP shall work the same, and the _PAGE_SWP_UFFD_WP
-information of a swapped out shmem page shouldn't go in the xarray
-because doing so would share it with all "mm" sharing the mapping.
-
-Currently uffd-wp only works on anon memory so this is a new challenge
-in extending uffd-wp to shmem it seems.
-
-If any pagetable of an anonymous memory mapping is zapped, then not
-just the _PAGE_SWP_UFFD_WP bit is lost, the whole data is lost too so
-it'd break not just uffd-wp. As opposed with shmem the ptes can be
-zapped at all times by memory pressure alone even before the final
-->writepage swap out is invoked.
-
-It's always possible to make uffd-wp work without those bits (anon
-memory also would work without those bits), but the reason those bits
-exist is to avoid a flood of UFFDIO_WRITEPROTECT ioctl false-negatives
-after fork or after swapping (in the anon case). In the shmem case if
-we'd it without a bitflag to track which page was wrprotected in which
-vma, the uffd handler would be required to mark each pte writable with
-a syscall every time a new pte has been established on the range and
-there's a write to the page.
-
-One possibility could be to store the bit set by UFFDIO_WRITEPROTECT
-in a vmalloc bitmap associated with the shmem vma at uffd registration
-time, so it can be checked during the shmem_fault() if VM_UFFD_WP is
-set on the vma? The vma_splits and vma_merge would be the hard part.
-
-Another possibility would be to change how the pte invalidate work for
-vmas with VM_UFFD_WP set, the pte and the _PAGE_UFFD_WP would need to
-survive all invalidates... only the final truncation under page lock
-would be really allowed to clear the whole pte and destroy the
-_PAGE_UFFD_WP information in the pte and then to free the pgtables on
-those ranges.
-
-Once we find a way to make that bit survive the invalidates, we can
-check it in shmem_fault to decide if to invoke handle_userfault if the
-bit is set and FAULT_FLAG_WRITE is set in vmf->flags, or if to map the
-page wrprotected in that vaddr if the bit is set and FAULT_FLAG_WRITE
-is not set.
+How do you want me to proceed?
 
 Thanks,
-Andrea
+Mathieu
 
+> 
+> Rob
