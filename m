@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7132C99B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEF42C99BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgLAIkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:40:25 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:43147 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728794AbgLAIkY (ORCPT
+        id S1727885AbgLAIly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:41:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726997AbgLAIly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:40:24 -0500
-Received: by mail-lf1-f67.google.com with SMTP id q13so2478521lfr.10;
-        Tue, 01 Dec 2020 00:40:08 -0800 (PST)
+        Tue, 1 Dec 2020 03:41:54 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27B5C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 00:41:13 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id j21so793307otp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 00:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/ImR5mFtg9wXtOK4HaxnOpZ6Mas0agGqVuxRp77OqsA=;
+        b=ENWN14cwf5Erp2hWTHmj6/ZYf4XWpQfYkqIKHIPZmzszZmQDZMtaI/o4zhWJWx6m4S
+         /rHUlqg1YJu2ENfj7oogh5ZX0p+6MnmsXhswsPWP85X06nXakNYPgfszPHCsRKj1htc3
+         B4MBfAw6Zyo+SDB5f9OjH9sKygIUrjK+bBC7XXjGMfkENAxVpTD7iIShkg4u56fq4hDc
+         z+hJ8N/JqxhwyoIz3SseOZRMBVXG2ErBT/A/iQw65rBikykAvCJVGjafMi2UFotIkPXE
+         Okdsc2WdmukIlpQmO2pkz8yDAtdvjg/uCa9y3DNI1k71f3U9FUrA/HBKnqZzXRUDLwBq
+         Q9Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MjLBH1cflhBFcl6LdyISGTYGBSe5XpfGgyu9jQzj1CM=;
-        b=tUE9Qy2Cf1iRC+gsusfaE7IHMfI0UlTk4CKUYZCO7acFwE5JFG1KqEv+6q25jD3lUF
-         1FnTOdNlJX9zYM1oV0ARMCyEpijt+8fMC9BFw87uTGjqQqo6n9OXGJF/e+KgkUstgdDr
-         xb8iRmfZZZ2ctpbO37LK+bZdyoiyilDJx/vjnddRn2+wItIhbosisIz5FEoVdYqzVGNC
-         uSqpEY26wzBlTQuoE5nxIorL7Hb2502JXoPYiMPTpKYHZwbE0zKiQOhsDhbLVlvRtU4v
-         FQ9atbf47LL9wry532PlF87UpCtR+GwEvPfrg5l+2DUFaN7/BzC5V/TToYEkxiFHNClt
-         sv1w==
-X-Gm-Message-State: AOAM532ViKtrNIb1c5p7NkMI+g/izG5/ONsDl+Lo5CR9lxXDdNmGPx9p
-        or1DTFL8A5O7GfhL4807+/0=
-X-Google-Smtp-Source: ABdhPJxkpVHP/xAsARyqEb2/B9OVaHDG/Bej/tto3bL6B27YKQ6177MMhs3NVPJ+KWVDoAIVtRIpzQ==
-X-Received: by 2002:a19:8854:: with SMTP id k81mr740945lfd.577.1606811982325;
-        Tue, 01 Dec 2020 00:39:42 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id x23sm124165lfa.219.2020.12.01.00.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 00:39:41 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kk1Cl-0003EW-8j; Tue, 01 Dec 2020 09:40:11 +0100
-Date:   Tue, 1 Dec 2020 09:40:11 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Mychaela Falconia <mychaela.falconia@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
-Message-ID: <X8YBaydsuB/+UxcX@localhost>
-References: <20201130153742.9163-1-johan@kernel.org>
- <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/ImR5mFtg9wXtOK4HaxnOpZ6Mas0agGqVuxRp77OqsA=;
+        b=jcDWcdYtnPaEPwbqkDppjYk+NvKducEwOvGCGnaKRnyQ+Yj+LFKciFmvDdBTlTJg8k
+         2qykTkyw7csAlrTCpGIz6S55ImKW7Dg1ejatVyeKVMdBacad6aYy/jY7l6hRgFOj/mpC
+         yb05noW5dC+xEI+tGL5DFjplaNUeos7B4f8GgUv559LUZi9Duzf4sRLnggAg0lQEQ5Ll
+         4slnnNBMuTUg2MK+myNP24cuLa+XTwvEET5+yLpCvE3o02M7ttxDlgTUf8cWheWhrPoB
+         cnL6AJTYQmYonoh1ub/ZJetcE7BOF5NpSUMUpA8afUmGnvUWi3jQ7eJJSbSeOA7uwEvO
+         L3tA==
+X-Gm-Message-State: AOAM5304g8QSfvYlv8sGPRZhfgiOPdO24lYYXHjZHGrVPMTmbqDIYBDO
+        SwG4Azf/k/OWDjhshuKn4VQfklfHTMpwYZuqy21hQQ==
+X-Google-Smtp-Source: ABdhPJy2FYYGfYobibxQ4zItAlZBew2mWMMTETYVSIJmglwPK78qaXJNfFyrS3uhvJOaP7TA1VW7XY2tubIYMSU9evY=
+X-Received: by 2002:a9d:7d92:: with SMTP id j18mr1142495otn.17.1606812073263;
+ Tue, 01 Dec 2020 00:41:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+References: <20201124110210.495616-1-elver@google.com>
+In-Reply-To: <20201124110210.495616-1-elver@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 1 Dec 2020 09:41:01 +0100
+Message-ID: <CANpmjNNKgKAxHVdxC9LWpwrxRREU7JdMTeDiCU7hzMG=Oh9QcA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] kcsan: Rewrite kcsan_prandom_u32_max() without prandom_u32_state()
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:22:07PM -0800, Mychaela Falconia wrote:
+Hi Paul,
 
-> Johan's patch comments say that the new flag can also be brought out
-> to termios in the future, similarly to HUPCL, but I question the
-> usefulness of doing so, as it is a chicken and egg problem: one needs
-> to open the tty device in order to do termios ioctls on it, and if
-> that initial open triggers DTR/RTS hardware actions, then the end user
-> is still screwed.  If Johan or someone else can see a potential use
-> case for manipulating this new flag via termios (as opposed to sysfs
-> or USB-ID-based driver quirks), perhaps you could elaborate on it?
+On Tue, 24 Nov 2020 at 12:02, Marco Elver <elver@google.com> wrote:
+> Rewrite kcsan_prandom_u32_max() to not depend on code that might be
+> instrumented, removing any dependency on lib/random32.c. The rewrite
+> implements a simple linear congruential generator, that is sufficient
+> for our purposes (for udelay() and skip_watch counter randomness).
+>
+[...]
 
-Depending on the application it may be acceptable to assert the
-modem-control lines on first open (e.g. before initialisation). 
+It's been about 7 days -- feel free to pick up this series (unless
+there are new comments).
 
-A new termios flag allows for a generic interface which could be shared
-with other OSes and controlled through stty.
-
-In case that isn't sufficient and you need control over the default port
-setting, you can always fall back to the Linux-specific sysfs interface.
-
-> In any case, it would be really awesome if this patch series (with or
-> without further modifications) can make it into 5.10 - any chance of
-> such happening, or will it have to be pushed out to 5.11?
-
-Let's see, but I don't think this necessarily has to take that long to
-get merged.
-
-Johan
+Thanks,
+-- Marco
