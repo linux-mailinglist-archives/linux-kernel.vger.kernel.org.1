@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BD42C9CC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6832A2C9CF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388429AbgLAJAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36612 "EHLO mail.kernel.org"
+        id S2388956AbgLAJHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388388AbgLAJAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:00:43 -0500
+        id S2389054AbgLAJFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:05:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAA6B21D46;
-        Tue,  1 Dec 2020 09:00:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0747E20770;
+        Tue,  1 Dec 2020 09:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813228;
-        bh=xRhEKCxH1itKE1wlM/YR80gfrAOlSyTV8ixtllnBiPs=;
+        s=korg; t=1606813485;
+        bh=YA5Hb5iW4oPD5YG/PKpDlP0HxEPYoCp4gDPPfvoEFMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a4Zjss3x65dWQbvSOygEcEm8fudd1SCm7DXMISqOlW1EFCpO1uXan80wjBoLyP0Rs
-         WVXd2Af8KxyxnmMeXnX9MRKOucJXqaqacbbpdd3iJT8oCNAWOu0DbgQSBEOl/lwFwd
-         AAPqUJl2cMyHBLw79veEs3NxjllyfIFE7cwtYtWs=
+        b=O768hO3+ZUDuxxd4PrNl/ow2jAPwibrjeiJkBjZpaKaFAukwnpDL/VdRvXG8p+cv1
+         F2wTVcTpHdRnrhwLGAymbyuRFLofddQxiV3/229GMyq0/f9ADzSl3yWA+9sUIoA3Gr
+         TGZ76ZiufC4vfbCcmAmvUfgn8PZk0MwUedAWIfAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maurizio Lombardi <mlombard@redhat.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/57] scsi: target: iscsi: Fix cmd abort fabric stop race
-Date:   Tue,  1 Dec 2020 09:53:30 +0100
-Message-Id: <20201201084650.410035711@linuxfoundation.org>
+Subject: [PATCH 5.4 54/98] cxgb4: fix the panic caused by non smac rewrite
+Date:   Tue,  1 Dec 2020 09:53:31 +0100
+Message-Id: <20201201084657.749144116@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,86 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Raju Rangoju <rajur@chelsio.com>
 
-[ Upstream commit f36199355c64a39fe82cfddc7623d827c7e050da ]
+[ Upstream commit bff453921ae105a8dbbad0ed7dd5f5ce424536e7 ]
 
-Maurizio found a race where the abort and cmd stop paths can race as
-follows:
+SMT entry is allocated only when loopback Source MAC
+rewriting is requested. Accessing SMT entry for non
+smac rewrite cases results in kernel panic.
 
- 1. thread1 runs iscsit_release_commands_from_conn and sets
-    CMD_T_FABRIC_STOP.
+Fix the panic caused by non smac rewrite
 
- 2. thread2 runs iscsit_aborted_task and then does __iscsit_free_cmd. It
-    then returns from the aborted_task callout and we finish
-    target_handle_abort and do:
-
-    target_handle_abort -> transport_cmd_check_stop_to_fabric ->
-	lio_check_stop_free -> target_put_sess_cmd
-
-    The cmd is now freed.
-
- 3. thread1 now finishes iscsit_release_commands_from_conn and runs
-    iscsit_free_cmd while accessing a command we just released.
-
-In __target_check_io_state we check for CMD_T_FABRIC_STOP and set the
-CMD_T_ABORTED if the driver is not cleaning up the cmd because of a session
-shutdown. However, iscsit_release_commands_from_conn only sets the
-CMD_T_FABRIC_STOP and does not check to see if the abort path has claimed
-completion ownership of the command.
-
-This adds a check in iscsit_release_commands_from_conn so only the abort or
-fabric stop path cleanup the command.
-
-Link: https://lore.kernel.org/r/1605318378-9269-1-git-send-email-michael.christie@oracle.com
-Reported-by: Maurizio Lombardi <mlombard@redhat.com>
-Reviewed-by: Maurizio Lombardi <mlombard@redhat.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 937d84205884 ("cxgb4: set up filter action after rewrites")
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
+Link: https://lore.kernel.org/r/20201118143213.13319-1-rajur@chelsio.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/iscsi/iscsi_target.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
-index 2602b57936d4b..58ccded1be857 100644
---- a/drivers/target/iscsi/iscsi_target.c
-+++ b/drivers/target/iscsi/iscsi_target.c
-@@ -492,8 +492,7 @@ EXPORT_SYMBOL(iscsit_queue_rsp);
- void iscsit_aborted_task(struct iscsi_conn *conn, struct iscsi_cmd *cmd)
- {
- 	spin_lock_bh(&conn->cmd_lock);
--	if (!list_empty(&cmd->i_conn_node) &&
--	    !(cmd->se_cmd.transport_state & CMD_T_FABRIC_STOP))
-+	if (!list_empty(&cmd->i_conn_node))
- 		list_del_init(&cmd->i_conn_node);
- 	spin_unlock_bh(&conn->cmd_lock);
- 
-@@ -4054,12 +4053,22 @@ static void iscsit_release_commands_from_conn(struct iscsi_conn *conn)
- 	spin_lock_bh(&conn->cmd_lock);
- 	list_splice_init(&conn->conn_cmd_list, &tmp_list);
- 
--	list_for_each_entry(cmd, &tmp_list, i_conn_node) {
-+	list_for_each_entry_safe(cmd, cmd_tmp, &tmp_list, i_conn_node) {
- 		struct se_cmd *se_cmd = &cmd->se_cmd;
- 
- 		if (se_cmd->se_tfo != NULL) {
- 			spin_lock_irq(&se_cmd->t_state_lock);
--			se_cmd->transport_state |= CMD_T_FABRIC_STOP;
-+			if (se_cmd->transport_state & CMD_T_ABORTED) {
-+				/*
-+				 * LIO's abort path owns the cleanup for this,
-+				 * so put it back on the list and let
-+				 * aborted_task handle it.
-+				 */
-+				list_move_tail(&cmd->i_conn_node,
-+					       &conn->conn_cmd_list);
-+			} else {
-+				se_cmd->transport_state |= CMD_T_FABRIC_STOP;
-+			}
- 			spin_unlock_irq(&se_cmd->t_state_lock);
- 		}
- 	}
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+index 202af8dc79662..cb50b41cd3df2 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+@@ -630,7 +630,8 @@ int set_filter_wr(struct adapter *adapter, int fidx)
+ 		 FW_FILTER_WR_OVLAN_VLD_V(f->fs.val.ovlan_vld) |
+ 		 FW_FILTER_WR_IVLAN_VLDM_V(f->fs.mask.ivlan_vld) |
+ 		 FW_FILTER_WR_OVLAN_VLDM_V(f->fs.mask.ovlan_vld));
+-	fwr->smac_sel = f->smt->idx;
++	if (f->fs.newsmac)
++		fwr->smac_sel = f->smt->idx;
+ 	fwr->rx_chan_rx_rpl_iq =
+ 		htons(FW_FILTER_WR_RX_CHAN_V(0) |
+ 		      FW_FILTER_WR_RX_RPL_IQ_V(adapter->sge.fw_evtq.abs_id));
 -- 
 2.27.0
 
