@@ -2,68 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB25A2C9596
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDE72C9599
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbgLADKC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Nov 2020 22:10:02 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:36315 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726755AbgLADKC (ORCPT
+        id S1727418AbgLADKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 22:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgLADKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 22:10:02 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R801e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UH4wNhQ_1606792158;
-Received: from 30.225.32.58(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UH4wNhQ_1606792158)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 01 Dec 2020 11:09:18 +0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
-From:   wangrongwei <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <5e7f7225982b2df63e62ea60ec632376@misterjones.org>
-Date:   Tue, 1 Dec 2020 11:09:18 +0800
-Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-        bjorn.andersson@linaro.org, shawnguo@kernel.org, gshan@redhat.com,
-        geert+renesas@glider.be, Anson.Huang@nxp.com, masahiroy@kernel.org,
-        michael@walle.cc, krzk@kernel.org, linux-kernel@vger.kernel.org,
-        vkoul@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
-        ardb@kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <855BA92C-5B22-4F14-965A-B1F72A872B8D@linux.alibaba.com>
-References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
- <5e7f7225982b2df63e62ea60ec632376@misterjones.org>
-To:     Marc Zyngier <maz@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Mon, 30 Nov 2020 22:10:22 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B36DC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 19:09:42 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id j13so347545pjz.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 19:09:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zhX8ZUA3tjghvwSj2KIWCxYRVWbQSGeyUdB541HY0aA=;
+        b=ohJBXdTdX2IhHGEQBW+8LK0HXwSwL1wm506TQrolqLjZ8p0h5KAXUxvt69uGuE5N/Y
+         MXP8Ab61Ekys0XeG8525JHRtYyvyDiEjz+rXkEGcuoqnbslLMJrgw7tunum7vs4CNmUr
+         NX7FgKfpO+8EZfhW4H525XRwF+WqxuCukaWBxdy6ivpzVhBhyLGLbXNnXR4iXrbfIF2c
+         f3mRHBDp2XTtQqSaU07q6m6sRJS0HYDbJ0zI4H8+6NwcvKG69JRoSWUA+ely+Kzq1KQ6
+         QYqAuXVpkL7gjYAmFHDKtKVZFwJmntX/T2nCwNnVxfKECjrA/VuxFWHzHhJwYJzrHs5p
+         mgng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=zhX8ZUA3tjghvwSj2KIWCxYRVWbQSGeyUdB541HY0aA=;
+        b=mnyA6fKM2i2eN2eE9yPk8j9FFeTwwM1bYxM6Mc5Z9VQtcZTN+b0NWr9MNDnsKm6iNK
+         qLNx2m6WUc02AmIT17N069x9oXgXvPTbQxB5rGBkVSFP36+AriC/MeleJ7xdxIlW/nrY
+         YgPHcXFWfn9UxAsRKYH1LGuF4xXPw2H7Y3wl3GbatzebKETNno+AOTkAN97VNo368zhU
+         DsW9JaSA4Wpy5L4HsA8MQLbWGtQP2OiHlVaCMgYgwILe6iaoR4wQQYLTdwHonpmPef/F
+         rbPeY92UiFiL3e0RIjm3iKVoAEPnxHjYcy2a1tgO9FMFyH82rwazTmSjpWl4IzXHI4Xl
+         NKNA==
+X-Gm-Message-State: AOAM532kDuGvJCbz+S7n76CVtcOsg/BNuHlB9xw/HV55ry2A4G3+nlJz
+        Ik5jHROW2zy/if3/fBOF6QdyUA==
+X-Google-Smtp-Source: ABdhPJzmUMmdEX7Wvhacd4QcDGhCGQmHkd+bRKgRAvyCyL3Kdk3VhJJYAKagEIUo7bYrlVbjqGNmbA==
+X-Received: by 2002:a17:902:b209:b029:d8:e821:efc6 with SMTP id t9-20020a170902b209b02900d8e821efc6mr820567plr.5.1606792181785;
+        Mon, 30 Nov 2020 19:09:41 -0800 (PST)
+Received: from laputa (p784a5642.tkyea130.ap.so-net.ne.jp. [120.74.86.66])
+        by smtp.gmail.com with ESMTPSA id z20sm350034pjq.16.2020.11.30.19.09.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 19:09:41 -0800 (PST)
+Date:   Tue, 1 Dec 2020 12:09:37 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw
+Subject: Re: [RFC PATCH v3.1 00/27] Add support UHS-II for GL9755
+Message-ID: <20201201030937.GE43403@laputa>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+ <20201125074125.GC62993@laputa>
+ <c8f7e9ad-3e8d-01cc-edeb-5be364bfcc36@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c8f7e9ad-3e8d-01cc-edeb-5be364bfcc36@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-We have validate this driver in vm and physical machine, and works fine.
-Actually, we used existing interfaces to realize this driver, likes aarch64_insn_read and aarch64_insn_patch_text. These existing intefaces had validated a CPU. 
+Adrian,
 
-> 2020年12月1日 上午2:05，Marc Zyngier <maz@kernel.org> 写道：
-> 
-> On 2020-11-30 17:48, Rongwei Wang wrote:
-> 
->> The interfaces of this module is same as MSR module in user space, and to solve
->> the problem that ARM platform has no similar MSR module. Using this interface,
->> we did some pressure tests to test the stability and security of MSR driver. The
->> test results show that the driver will not cause system panic if various
->> illegal values and multithreading concurrent access are passed through the
->> interface.
-> 
-> It would certainly help if you described what problem you are trying
-> to solve here. In general, giving userspace access to random system
-> registers is a pretty bad idea.
-> 
-> Are you trying to validate a CPU? a hypervisor? Or is it just a fun way
-> to check how many things you can poke before something catches fire?
-> 
-> Thanks,
-> 
->        M.
-> -- 
-> Jazz is not dead. It just smells funny...
+Thank you for your review comments.
 
+On Thu, Nov 26, 2020 at 10:18:55AM +0200, Adrian Hunter wrote:
+> On 25/11/20 9:41 am, AKASHI Takahiro wrote:
+> > Gentle ping;
+> > 
+> > On Fri, Nov 06, 2020 at 11:26:59AM +0900, AKASHI Takahiro wrote:
+> >> This is an interim snapshot of our next version, v4, for enabling
+> >> UHS-II on MMC/SD.
+> >>
+> >> It is focused on 'sdhci' side to address Adrian's comments regarding
+> >> "modularising" sdhci-uhs2.c.
+> >> The whole aim of this version is to get early feedback from Adrian (and
+> >> others) on this issue. Without any consensus about the code structure,
+> > 
+> > Any comments so far?
+> > 
+> 
+> Overall, I like this approach of separating UHS2 from legacy sdhci as much
+> as possible.  The only major change, is to drop support for legacy quirks
+> and features that you do not need.  The reason for that, is that there may
+> be few drivers that end up with UHS-II support (opting instead for SD
+> Express), so there is no point going to a lot of trouble to support things
+> that never get used.
+> 
+> From what I have seen that looks like it includes:
+> 	- any quirks
+
+GLI driver (gl9755) needs
+  * SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC
+  * SDHCI_QUIRK2_BROKEN_DDR50
+but they are managed in sdhci code.
+
+> 	- SDHCI LED support
+> 	- external DMA support
+
+Should we add 'depends on !SDHCI_UHS2' to MMC_SDHCI_EXTERNAL_DMA?
+
+> In this regard, the important thing is to have a comment somewhere that
+> lists what is not supported.
+> 
+> I have only looked at SDHCI patches so far, and only up to about patch 20,
+> but maybe that gives you enough to go on for a while.
+
+Well, I have almost done.
+Can I expect your comments on the patches #21-#27 as well soon?
+
+-Takahiro Akashi
