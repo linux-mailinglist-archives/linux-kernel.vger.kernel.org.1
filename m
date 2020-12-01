@@ -2,108 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172E72CA3A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CE82CA3BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgLANW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:22:26 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:39844 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727630AbgLANW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:22:26 -0500
-Received: by mail-lj1-f196.google.com with SMTP id o24so2832404ljj.6;
-        Tue, 01 Dec 2020 05:22:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tyomTbeXHwoWL2hrAF8S1rI5kbguY96zuSzDzrQnHfg=;
-        b=KRLnhTZ3Q50AANnSCOEB07DkWRWvRsewIxk3efJfpAfL8VTO+KQBZUNRyeF4OzWcYz
-         JSUG0s8F0/EgBzfzOlzkej7abSDW2zZFFzZ3lbFrEtUb/Gyx/V+o+OyJ1M2hvy5sbV5Y
-         Lhaz9eojFZVGKi189DzgkiIC6EJYm4o0BTxuAvp3IZHLctIIlDP7S0gzvumTuLb2fmnD
-         V8xrKvqPZzfJu43gVFNIEO3N/sc8Hwg6EOmDOfrBzahU4ri3384GYsnpuk67YFGq2mzT
-         lOyptyARmJ1vgQsrUMoZ7Kh+Waowe57ohLN8i/wEsRgefNeaKdAqAKcvtU0oOMQ7I73i
-         HYCg==
-X-Gm-Message-State: AOAM530SGjYmAEfHGQYC4GLmfJj4I/8qeqnDn7+CD4s5MMUNiZtMUYjj
-        aglWAJXRS0rKZH2/WqqvDAs=
-X-Google-Smtp-Source: ABdhPJziLALFQnI9UjteLCD0+I/+HOaKArjvgiWnIFvbgaGJseEjKVR9YmsHQ+btGB6fCrElGpwzFQ==
-X-Received: by 2002:a2e:8346:: with SMTP id l6mr1239463ljh.132.1606828897528;
-        Tue, 01 Dec 2020 05:21:37 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id n28sm199545lfh.272.2020.12.01.05.21.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 05:21:36 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kk5ba-0007dK-PP; Tue, 01 Dec 2020 14:22:06 +0100
-Date:   Tue, 1 Dec 2020 14:22:06 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
- signalling on open
-Message-ID: <X8ZDfvuRbxqsKZMh@localhost>
-References: <20201130153742.9163-1-johan@kernel.org>
- <20201130153742.9163-3-johan@kernel.org>
- <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
- <X8X9B1jYujUIWXaK@localhost>
- <CAHp75VfQud=QxwZyhYRU9mtNvrudj0tS6LOuutfJDVdv=-ptXw@mail.gmail.com>
- <X8Yjc0+Q7fM0nZP+@localhost>
- <CAHp75VdMcYj0H-HZcmyWFU5ROLwSy=8Pan7JABZxGimqXE35WQ@mail.gmail.com>
+        id S1727423AbgLANYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:24:51 -0500
+Received: from mout.gmx.net ([212.227.15.15]:39937 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726630AbgLANYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:24:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606828950;
+        bh=i99VwzJVGDFj3yDrUcbTJd0SNy2PldxWlO3kTHGKLXw=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Zwd0VIYYnGXiDuOA6FLSux2St/gVHc1ZCYSj+oXFYP+92QdH/VOHnd2luK+POgYee
+         I7P1tEsKF4VIfntD3Synfo54JVpV7XV5EBDlFZa5T+R9LtTfRudySMYUIWvjdIQlGY
+         N/D6qOQeCOso+G9rZSALz8OvtwQyRuCIOYF/Njrg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MVNAr-1kZslF2XSh-00SSVC; Tue, 01
+ Dec 2020 14:22:30 +0100
+Date:   Tue, 1 Dec 2020 14:22:14 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        allen <allen.chen@ite.com.tw>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Mark Brown <broonie@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 4/7] pwm: ntxec: Add driver for PWM function in
+ Netronix EC
+Message-ID: <20201201132214.GI456020@latitude>
+References: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
+ <20201201011513.1627028-5-j.neuschaefer@gmx.net>
+ <20201201072026.a736ikf3k4udpvfv@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tT3UgwmDxwvOMqfu"
 Content-Disposition: inline
-In-Reply-To: <CAHp75VdMcYj0H-HZcmyWFU5ROLwSy=8Pan7JABZxGimqXE35WQ@mail.gmail.com>
+In-Reply-To: <20201201072026.a736ikf3k4udpvfv@pengutronix.de>
+X-Provags-ID: V03:K1:3pVRVbCHusToiK9w2c2SDTiGjXj/Tj+6gQjSAUb5JekWayHQDXA
+ wcasTbzJCVBBO6njymdHIgFtmDPU9chbDh/Fk4bLj603l8LoqWDSRe0YcVWwsO+jOukabGF
+ SPAFK4ww4JnVLbrgbngHLgOghkISvExEATUY812ilwdf2Sjob/lVTbr4wuPg7f4mdT+gHrH
+ WW/jExP5U7+1QU/m8xRyg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ytFrjKioSvE=:Fjb5K17JJr1g923oMgTnwP
+ A1lRewsRZFpkZjcrv8VFhEWOLp6I0HiUNB4sKlaY7LMB58CWwYViIzm0K7Xd7UgQto6d/lpiS
+ TqVCNKBWOXIEPQP5dzh+xptE2+DAmLZY0tgMt+MEx93EpxZnQV+gBpS01ynwf7WxU0muW6VlJ
+ HqqixcFNMx24hPcST4jjQE1EPdVqEle8j2iZo5j/acZLbdJOt3lNCLfoYPO6fJe+AqhapxSFE
+ fS2giEKcPSMqm7W22ToJJ4rLTJVMdLIQcRGRQQPGn85ZSDgr2hv8PebQXGv6PHNgCS+ZXtR73
+ qYI1seXN+BzOHIMqqFzXYjVwwMAmbT34y8uVYYMQdrywBS2fwHXyg7Xyl+QVDdN8hrq5YHkTi
+ UgUvGVDPlLMOloJ2/9GmnBdkTHTPgHwcXyiY9Cn5xwVUKaY/GnNoS+kNVXT7whknGXtYXbh4Y
+ hcI5lGP/UzqnmhDFn4uz6MNohvaQMv8owXUxPWJeHy5N5BVxba63UemBBUp4g19skMYVKj8k7
+ rhUodmxLhXyoBTBBmqy8VElxbnOGJyTAj5XIk6aJqU5JKx14sA15tVDUg9I8mkgvvLnL7aPvc
+ x9GdQTwhrK6TPeYWEx2j0IFegHGMwFZZCkpl4KgxUWU+veFyFms/BMZy8UtMCNGeCEN0hAzp6
+ bmboyAlV8RmSK0pYEiPg0ujdzfPyNjl0+4BTAPVwERqPhm5r9uMNrNMubDsw7KmmV8DCtbQG3
+ p7qqQjPJoWrxfyDjdmMsqOnSXhhdexPO61lb9gsuamLArYZLX3awTuzZiq1z7vB2eSu6tlkg6
+ f4OBUamJNYwrBEU6ezr61I9ez2fFhqj6eRk0C6S5h5fe8ZAARXS+9Tf3hdVi2RcRDLbJLrZYw
+ bp31UxZ6+nFm5SjOBOzw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:19:30PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 1, 2020 at 1:04 PM Johan Hovold <johan@kernel.org> wrote:
 
-> > 0x01 is 1 and is generally treated as boolean true as you know.
-> 
-> Depends how you interpret this. kstrtobool() uses one character (and
-> in some cases two) of the input. Everything else is garbage.
-> Should we interpret garbage?
+--tT3UgwmDxwvOMqfu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No, ideally we should reject the input.
+On Tue, Dec 01, 2020 at 08:20:26AM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> Hello Jonathan,
+>=20
+> very nice driver, just a few minor comments below.
+>=20
+> On Tue, Dec 01, 2020 at 02:15:10AM +0100, Jonathan Neusch=C3=A4fer wrote:
+> > +static struct ntxec_pwm *pwmchip_to_priv(struct pwm_chip *chip)
+>=20
+> a function prefix would be great here, I'd pick ntxec_pwm_from_chip as
+> name.
 
-> > So why should a sysfs-interface accept it as valid input and treat it as
-> > false? That's just bad design.
-> 
-> I can agree with this.
+Good point, will do.
 
-Looks like part of the problem are commits like 4cc7ecb7f2a6 ("param:
-convert some "on"/"off" users to strtobool") which destroyed perfectly
-well-defined interfaces.
+>=20
+> > +{
+> > +	return container_of(chip, struct ntxec_pwm, chip);
+> > +}
+> > +
+> > +[...]
+> > +static int ntxec_pwm_apply(struct pwm_chip *chip, struct pwm_device *p=
+wm_dev,
+> > +			   const struct pwm_state *state)
+> > +{
+> > +	struct ntxec_pwm *priv =3D pwmchip_to_priv(pwm_dev->chip);
+> > +	unsigned int period, duty;
+> > +	struct reg_sequence regs[] =3D {
+> > +		{ NTXEC_REG_PERIOD_HIGH },
+> > +		{ NTXEC_REG_PERIOD_LOW },
+> > +		{ NTXEC_REG_DUTY_HIGH },
+> > +		{ NTXEC_REG_DUTY_LOW }
+> > +	};
+> > +	int res;
+> > +
+> > +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
+> > +		return -EINVAL;
+> > +
+> > +	period =3D min_t(u64, state->period, MAX_PERIOD_NS);
+> > +	duty   =3D min_t(u64, state->duty_cycle, period);
+>=20
+> I'm not a big fan of aligning =3D. (As if you have to add a longer
+> variable you have to realign all otherwise unrelated lines.) But that's
+> subjective and it's up to you if you want to change this.
 
-> > You miss the point; kstrobool accepts "12" today and treats it as true.
-> > You cannot extend such an interface to later accept a larger range than
-> > 0 and 1 as you didn't return an error for "12" from the start (as someone
-> > might now rely on "12" being treated as "1").
-> 
-> Somehow cifs uses kstrtobool() in conjunction with the wider ranges. Nobody
-> complained so far. But maybe they had it from day 1.
+In this case, I thought it helps the readability, because the lines are
+quite similar.
 
-Wow, that's pretty nasty.
+> > +	period /=3D TIME_BASE_NS;
+> > +	duty   /=3D TIME_BASE_NS;
 
-> So, we have two issues here: kstrtobool() doesn't report an error of
-> input when it has garbage, the user may rely on garbage to be
-> discarded.
+Here, I did it because I had already aligned the previous two lines.
 
-Right, parsing is too allowing and there are too many ways to say
-true/false.
+> > +
+> > +	/*
+> > +	 * Changes to the period and duty cycle take effect as soon as the
+> > +	 * corresponding low byte is written, so the hardware may be configur=
+ed
+> > +	 * to an inconsistent state after the period is written and before the
+> > +	 * duty cycle is fully written. If, in such a case, the old duty cycle
+> > +	 * is longer than the new period, the EC may output 100% for a moment.
+> > +	 */
+> > +
+> > +	regs[0].def =3D ntxec_reg8(period >> 8);
+> > +	regs[1].def =3D ntxec_reg8(period);
+> > +	regs[2].def =3D ntxec_reg8(duty >> 8);
+> > +	regs[3].def =3D ntxec_reg8(duty);
+>=20
+> You could even minimize the window by changing the order here to
+>=20
+> 	NTXEC_REG_PERIOD_HIGH
+> 	NTXEC_REG_DUTY_HIGH
+> 	NTXEC_REG_PERIOD_LOW
+> 	NTXEC_REG_DUTY_LOW
 
-The power-management attributes use 0 and 1 for boolean like I do here,
-and I'd prefer to stick to that until we have deprecated the current
-kstrtobool.
+Good idea, but I'm not sure if the EC handles this kind of interleaving
+correctly.
 
-Johan
+> but it gets less readable. Maybe move that to a function to have the
+> reg_sequence and the actual write nearer together?
+
+Indeed, a separate function would keep register names and values
+together (without resorting to declarations-after-statements).
+
+> Or somehow name the indexes to make it more obvious?
+
+Too much unnecessary complexity, IMHO.
+
+> > +	res =3D regmap_multi_reg_write(priv->ec->regmap, regs, ARRAY_SIZE(reg=
+s));
+> > +	if (res)
+> > +		return res;
+> > +
+> > +	/*
+> > +	 * Writing a duty cycle of zero puts the device into a state where
+> > +	 * writing a higher duty cycle doesn't result in the brightness that =
+it
+> > +	 * usually results in. This can be fixed by cycling the ENABLE regist=
+er.
+> > +	 *
+> > +	 * As a workaround, write ENABLE=3D0 when the duty cycle is zero.
+>=20
+> If the device already has duty_cycle =3D 0 but ENABLE =3D 1, you might get
+> a failure. But I guess this doesn't need addressing in the code. But
+> maybe point it out in a comment?
+
+Good point. I'll add something to the comment.
+
+> > +	 */
+> > +	if (state->enabled && duty !=3D 0) {
+> > +		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(=
+1));
+> > +		if (res)
+> > +			return res;
+> > +
+> > +		/* Disable the auto-off timer */
+> > +		res =3D regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_HI, ntxec_=
+reg8(0xff));
+> > +		if (res)
+> > +			return res;
+> > +
+> > +		return regmap_write(priv->ec->regmap, NTXEC_REG_AUTO_OFF_LO, ntxec_r=
+eg8(0xff));
+>=20
+> Given that you cannot read back period and duty anyhow: Does it make
+> sense to write these only if (state->enabled && duty !=3D 0)?
+
+I think it does.
+
+
+Thanks,
+Jonathan
+
+--tT3UgwmDxwvOMqfu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl/GQ3EACgkQCDBEmo7z
+X9usHg/9FsmfCpoU+cy2Zt6dY0RcesbvapgYo5C8a/EuXIF22fNiiOlU+ONMCdjG
+FDKzKhXmkstFv2VaBM41mUYHPiic4Yf58OS96UJdb7r+fhrFsQajX4h96ILbUkhH
+bhGOzgHwwc3HRKb2YYlTGLcVhT6a5BFLIZW5bjfgs5x+ucKjD5VjInHU56WNHzO2
+1QH3Qrg/essPZ5+ftewe0aFDKinyby4b1sd3gEA6n4NlUIi2COH84Mn5C8vJY6cG
+uts9NJD80+DqpKyaLNh9a0IDwNWRX1cueizPLF9OghbyFhR7pFNxCDPkC5PkxkvW
+0namUmrwk/SyZ5KM77xGCKwqZql6KvIBHtPtszuHXiaqd89tNM/CpxEoF9VQkY5g
+BZdo0lCR1tEVBzy5ZsM6bQ/0uUB5+0N2hmkjcZ/W08HYUKa47jqNBCtV2dbYsF4m
+3O4spfB6F7jM5+UBIfeslyXDnixDhegAAblkCYs8k9AQ/VlMVHtHaXikbi+Dx3d3
+i+7AT+lfODFxSmvqWoYK6r0fjoLClTHDgoYC3huLFomaAKDeG1LAxDWosESJz5Lx
+FGRjFN2kSCI/26KJ6FcLzF6viBC2yd/W7ht0x8+pMMU+L16mGB3bJGZSIAHvSPPh
+CsVIC2HZIlMdpt57QCMq2Ocw0at9xwbhyFP3xr9kWKKMLjpQSxc=
+=qsyh
+-----END PGP SIGNATURE-----
+
+--tT3UgwmDxwvOMqfu--
