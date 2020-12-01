@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3002CA8CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D772CA8EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404060AbgLAQxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:53:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388284AbgLAQxW (ORCPT
+        id S2392130AbgLAQzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:55:33 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:10638 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392037AbgLAQz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:53:22 -0500
-Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F45C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:52:35 -0800 (PST)
-Received: by mail-ej1-x64a.google.com with SMTP id y10so1547250ejg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:52:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=7J2rIU7NG1spfWolovEBqiTIkQod3FyymVw5u4J4xKA=;
-        b=HMRWOVPawresJEri9vwe5OAQkAqTCsl6dlMR+u1UNoDoHH6RbQaUwdgAJ1SQv8Q5bU
-         CqlJP8IK0+UOwr32kekS3X6pe1aKHWUwpycegjqqxbyWASoTk93WCwhUYmRAfGzBMYvf
-         o5dc4oOfy7mUHyhaifj0uAXbH3wH9CSPcUWApGOgzaSE7PUejyhPwvMGLwY0T2DrTrm9
-         o3UzWmtcFm7U+dXq1pK3QSkrrw8bbiR3resQdt9ATutmPjP5rhXFf2wrkdJCaaKHwL5J
-         P9MlHaihMNzGKvVg3Tl8gYn+6ztJ65RBxTeQrBezks98OgZaJaArdZlQQz0LCrqta5WL
-         Lohw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=7J2rIU7NG1spfWolovEBqiTIkQod3FyymVw5u4J4xKA=;
-        b=hVm6RrBIaa82ljIWRdSaaUz36JlgCtWYwQrCoe7qrZqNA6xi+1h0qEFIygDZbx3aJ6
-         UDir2Cm+7YxO7WhrkokfNoJvJZj4Y3mdrfGpDZyrHnjCYPC4ZdRGQKxU87vqtt2Vf6Q3
-         WKAMJGXJLQMshXRxz7xKfZ8JSroSg7tTNr+13quIaY/9NW5yR5+ygXmXYetxrddPjqe4
-         7g3HWwP87qPKyfsuULRtkR2MmtXKM6gioquDK9swdPgLfhM9JKLEHysjAi1uOYVmFNJ9
-         NrKHW3x8nyppsatLtw7MHp23d0G4ttfj+ua2hPOS+jtJwtoS2BlvaVOypC5oTGMPt6NW
-         liWA==
-X-Gm-Message-State: AOAM530FRaLvdlARjCwHfX2u8evr9LyCGlj0Cdpig7S2QAxiUxILH6Qi
-        SL/4sROPa/k2XMaXtdQ9Cd/tXZSwtL+Y
-X-Google-Smtp-Source: ABdhPJxcFEFb3HZPmb7f2rVe8+bDLBadD+Ea3YClzGi0bJXXWHPjBMwHyKyRbk6uMfZoP/zYg/0vOrHFEenm
-Sender: "qperret via sendgmr" <qperret@luke.lon.corp.google.com>
-X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
- (user=qperret job=sendgmr) by 2002:a05:6402:143a:: with SMTP id
- c26mr3846526edx.131.1606841554118; Tue, 01 Dec 2020 08:52:34 -0800 (PST)
-Date:   Tue,  1 Dec 2020 16:52:22 +0000
-Message-Id: <20201201165222.2001985-1-qperret@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2] modpost: turn static exports into error
-From:   Quentin Perret <qperret@google.com>
-To:     masahiroy@kernel.org, michal.lkml@markovi.net
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, kernel-team@android.com,
-        maennich@google.com, Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 1 Dec 2020 11:55:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606841556;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=61Pj8+ULDC/9CQt8Dl+J/sb0n6Xqryjx4clI8Aq1YQw=;
+        b=PHaBePEEKF03EQjcRx1LFgAAb2k7Nkbr+zd+RHiYF5ol+NLC6u8h//9pib+cD/8/Y6
+        2OuvsQaJ8L0AyGJ8vJXzoiZtRabY2RZcsLhL03Wm8Cvkwz00m+TDV+OT3rcicr/DONZ4
+        zDFIseuoz2eq/XxjJGdlHRMDnizqTrPm7ev0ELQpgZBEvqfxNgFF43IQ+PPSF7KlrlK5
+        BDzqjNikZYPrWekxpwFpP7+O7wTsOCkZDT2yOeccT1eNpoewdbpo8NZwVxOP2Zt0lE4L
+        YZmNnx9AEfsStYOOORXaoYJ73sAZSRItlxZSRCC4xIb0pKkavAEoEUZLedmV9UFpJe3I
+        JcPQ==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/vrwDuo6A=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
+        with ESMTPSA id N02faawB1GqYVYJ
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Tue, 1 Dec 2020 17:52:34 +0100 (CET)
+Subject: Re: [Letux-kernel] [BUG] SPI broken for SPI based panel drivers
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20201201174433.2000c8a3@aktux>
+Date:   Tue, 1 Dec 2020 17:52:34 +0100
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1F0CED75-9EB2-401E-80E7-C1CD29D699F0@goldelico.com>
+References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com> <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com> <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk> <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com> <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com> <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com> <20201201174433.2000c8a3@aktux>
+To:     Andreas Kemnade <andreas@kemnade.info>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using EXPORT_SYMBOL*() on static functions is fundamentally wrong.
-Modpost currently reports that as a warning, but clearly this is not a
-pattern we should allow, and all in-tree occurences should have been
-fixed by now. So, promote the warn() message to error() to make sure
-this never happens again.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Matthias Maennich <maennich@google.com>
-Signed-off-by: Quentin Perret <qperret@google.com>
+> Am 01.12.2020 um 17:44 schrieb Andreas Kemnade <andreas@kemnade.info>:
+>=20
+> On Tue, 1 Dec 2020 11:10:49 -0500
+> Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>=20
+>> Nikolaus,
+>>=20
+>> On Tue, Dec 1, 2020 at 9:38 AM H. Nikolaus Schaller =
+<hns@goldelico.com> wrote:
+>>>=20
+>>> Let's work on a fix for the fix now.
+>>>=20
+>>=20
+>> Are you quite sure the chip-select of the tpo,td028ttec1 panel
+>> is active-high? A quick google produced a datasheet which
+>> seems to indicate that XCS is active-low?
+>>=20
+> Schematics is here:
+> https://projects.goldelico.com/p/gta04-main/downloads/48/
+>=20
+> The display connector P204-LCD indicates some inversion at the XCS and
+> XRES pins.
+>=20
+> This patch fixes things for a boot where the display was not
+> touched by the bootloader
+> diff --git a/arch/arm/boot/dts/omap3-gta04.dtsi =
+b/arch/arm/boot/dts/omap3-gta04.dtsi
+> index c8745bc800f7..003202d12990 100644
+> --- a/arch/arm/boot/dts/omap3-gta04.dtsi
+> +++ b/arch/arm/boot/dts/omap3-gta04.dtsi
+> @@ -124,7 +124,6 @@
+>                        spi-max-frequency =3D <100000>;
+>                        spi-cpol;
+>                        spi-cpha;
+> -                       spi-cs-high;
 
----
-v2: now depends on 20201201103418.675850-2-masahiroy@kernel.org
----
- scripts/mod/modpost.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+BTW: that is what I had planned to try next...
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 43e00867623a..5562526c8c32 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -2648,9 +2648,9 @@ int main(int argc, char **argv)
- 
- 		for (s = symbolhash[n]; s; s = s->next) {
- 			if (s->is_static)
--				warn("\"%s\" [%s] is a static %s\n",
--				     s->name, s->module->name,
--				     export_str(s->export));
-+				error("\"%s\" [%s] is a static %s\n",
-+				      s->name, s->module->name,
-+				      export_str(s->export));
- 		}
- 	}
- 
--- 
-2.29.2.454.gaff20da3a2-goog
+>=20
+>                        backlight=3D <&backlight>;
+>                        label =3D "lcd";
+>=20
+> So if that one is really active-low, why did it ever work?!
+>=20
+> Regards,
+> Andreas
 
