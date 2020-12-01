@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06562C9CB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BD42C9CC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388072AbgLAI7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:59:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
+        id S2388429AbgLAJAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:00:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388029AbgLAI6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:58:54 -0500
+        id S2388388AbgLAJAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:00:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCA9F21D7A;
-        Tue,  1 Dec 2020 08:58:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAA6B21D46;
+        Tue,  1 Dec 2020 09:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813093;
-        bh=RccXeOf06Uamqb4/AwKlFrIiqLaMCZpeLLEmrTHswvQ=;
+        s=korg; t=1606813228;
+        bh=xRhEKCxH1itKE1wlM/YR80gfrAOlSyTV8ixtllnBiPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WY7pahdMJpCQyeft58MlHicv8Kidy/A7TqFF0e2ffFrudoIAMGaZHoJSLLJlYP85b
-         mfZ9JehFKtvNAiskSPsIldoiAQbHN+lLiv76q9t6PYs6wMuSqoUwHoskxBCysnJ4Fp
-         n71SbGGwwV6B5mYDzG8PqZuTEIjAYxmOLrQCqUso=
+        b=a4Zjss3x65dWQbvSOygEcEm8fudd1SCm7DXMISqOlW1EFCpO1uXan80wjBoLyP0Rs
+         WVXd2Af8KxyxnmMeXnX9MRKOucJXqaqacbbpdd3iJT8oCNAWOu0DbgQSBEOl/lwFwd
+         AAPqUJl2cMyHBLw79veEs3NxjllyfIFE7cwtYtWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 31/50] video: hyperv_fb: Fix the cache type when mapping the VRAM
+        stable@vger.kernel.org, Maurizio Lombardi <mlombard@redhat.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 25/57] scsi: target: iscsi: Fix cmd abort fabric stop race
 Date:   Tue,  1 Dec 2020 09:53:30 +0100
-Message-Id: <20201201084648.875214121@linuxfoundation.org>
+Message-Id: <20201201084650.410035711@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,61 +44,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit 5f1251a48c17b54939d7477305e39679a565382c ]
+[ Upstream commit f36199355c64a39fe82cfddc7623d827c7e050da ]
 
-x86 Hyper-V used to essentially always overwrite the effective cache type
-of guest memory accesses to WB. This was problematic in cases where there
-is a physical device assigned to the VM, since that often requires that
-the VM should have control over cache types. Thus, on newer Hyper-V since
-2018, Hyper-V always honors the VM's cache type, but unexpectedly Linux VM
-users start to complain that Linux VM's VRAM becomes very slow, and it
-turns out that Linux VM should not map the VRAM uncacheable by ioremap().
-Fix this slowness issue by using ioremap_cache().
+Maurizio found a race where the abort and cmd stop paths can race as
+follows:
 
-On ARM64, ioremap_cache() is also required as the host also maps the VRAM
-cacheable, otherwise VM Connect can't display properly with ioremap() or
-ioremap_wc().
+ 1. thread1 runs iscsit_release_commands_from_conn and sets
+    CMD_T_FABRIC_STOP.
 
-With this change, the VRAM on new Hyper-V is as fast as regular RAM, so
-it's no longer necessary to use the hacks we added to mitigate the
-slowness, i.e. we no longer need to allocate physical memory and use
-it to back up the VRAM in Generation-1 VM, and we also no longer need to
-allocate physical memory to back up the framebuffer in a Generation-2 VM
-and copy the framebuffer to the real VRAM. A further big change will
-address these for v5.11.
+ 2. thread2 runs iscsit_aborted_task and then does __iscsit_free_cmd. It
+    then returns from the aborted_task callout and we finish
+    target_handle_abort and do:
 
-Fixes: 68a2d20b79b1 ("drivers/video: add Hyper-V Synthetic Video Frame Buffer Driver")
-Tested-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Link: https://lore.kernel.org/r/20201118000305.24797-1-decui@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+    target_handle_abort -> transport_cmd_check_stop_to_fabric ->
+	lio_check_stop_free -> target_put_sess_cmd
+
+    The cmd is now freed.
+
+ 3. thread1 now finishes iscsit_release_commands_from_conn and runs
+    iscsit_free_cmd while accessing a command we just released.
+
+In __target_check_io_state we check for CMD_T_FABRIC_STOP and set the
+CMD_T_ABORTED if the driver is not cleaning up the cmd because of a session
+shutdown. However, iscsit_release_commands_from_conn only sets the
+CMD_T_FABRIC_STOP and does not check to see if the abort path has claimed
+completion ownership of the command.
+
+This adds a check in iscsit_release_commands_from_conn so only the abort or
+fabric stop path cleanup the command.
+
+Link: https://lore.kernel.org/r/1605318378-9269-1-git-send-email-michael.christie@oracle.com
+Reported-by: Maurizio Lombardi <mlombard@redhat.com>
+Reviewed-by: Maurizio Lombardi <mlombard@redhat.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/hyperv_fb.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/target/iscsi/iscsi_target.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
-index 2fd49b2358f8b..f3938c5278832 100644
---- a/drivers/video/fbdev/hyperv_fb.c
-+++ b/drivers/video/fbdev/hyperv_fb.c
-@@ -712,7 +712,12 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
- 		goto err1;
+diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
+index 2602b57936d4b..58ccded1be857 100644
+--- a/drivers/target/iscsi/iscsi_target.c
++++ b/drivers/target/iscsi/iscsi_target.c
+@@ -492,8 +492,7 @@ EXPORT_SYMBOL(iscsit_queue_rsp);
+ void iscsit_aborted_task(struct iscsi_conn *conn, struct iscsi_cmd *cmd)
+ {
+ 	spin_lock_bh(&conn->cmd_lock);
+-	if (!list_empty(&cmd->i_conn_node) &&
+-	    !(cmd->se_cmd.transport_state & CMD_T_FABRIC_STOP))
++	if (!list_empty(&cmd->i_conn_node))
+ 		list_del_init(&cmd->i_conn_node);
+ 	spin_unlock_bh(&conn->cmd_lock);
+ 
+@@ -4054,12 +4053,22 @@ static void iscsit_release_commands_from_conn(struct iscsi_conn *conn)
+ 	spin_lock_bh(&conn->cmd_lock);
+ 	list_splice_init(&conn->conn_cmd_list, &tmp_list);
+ 
+-	list_for_each_entry(cmd, &tmp_list, i_conn_node) {
++	list_for_each_entry_safe(cmd, cmd_tmp, &tmp_list, i_conn_node) {
+ 		struct se_cmd *se_cmd = &cmd->se_cmd;
+ 
+ 		if (se_cmd->se_tfo != NULL) {
+ 			spin_lock_irq(&se_cmd->t_state_lock);
+-			se_cmd->transport_state |= CMD_T_FABRIC_STOP;
++			if (se_cmd->transport_state & CMD_T_ABORTED) {
++				/*
++				 * LIO's abort path owns the cleanup for this,
++				 * so put it back on the list and let
++				 * aborted_task handle it.
++				 */
++				list_move_tail(&cmd->i_conn_node,
++					       &conn->conn_cmd_list);
++			} else {
++				se_cmd->transport_state |= CMD_T_FABRIC_STOP;
++			}
+ 			spin_unlock_irq(&se_cmd->t_state_lock);
+ 		}
  	}
- 
--	fb_virt = ioremap(par->mem->start, screen_fb_size);
-+	/*
-+	 * Map the VRAM cacheable for performance. This is also required for
-+	 * VM Connect to display properly for ARM64 Linux VM, as the host also
-+	 * maps the VRAM cacheable.
-+	 */
-+	fb_virt = ioremap_cache(par->mem->start, screen_fb_size);
- 	if (!fb_virt)
- 		goto err2;
- 
 -- 
 2.27.0
 
