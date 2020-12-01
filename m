@@ -2,483 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BED2C9DF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935A12C9DFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403770AbgLAJ3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:29:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390923AbgLAJ3Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:29:16 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF79C061A48
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 01:28:26 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kk1wn-0000MV-9p; Tue, 01 Dec 2020 10:27:45 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kk1wl-0004iL-SQ; Tue, 01 Dec 2020 10:27:43 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        David Jander <david@protonic.nl>, devicetree@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v5 6/6] ARM: dts: add Plymovent BAS board
-Date:   Tue,  1 Dec 2020 10:27:42 +0100
-Message-Id: <20201201092742.17658-7-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201092742.17658-1-o.rempel@pengutronix.de>
-References: <20201201092742.17658-1-o.rempel@pengutronix.de>
+        id S2391191AbgLAJaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:30:08 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:59935 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388019AbgLAJaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:30:01 -0500
+Received: from [141.14.16.43] (donald-xps13.molgen.mpg.de [141.14.16.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 81C522064786D;
+        Tue,  1 Dec 2020 10:29:18 +0100 (CET)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+raid@molgen.mpg.de
+References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+ <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Message-ID: <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
+Date:   Tue, 1 Dec 2020 10:29:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Plymovent BAS is a base system controller produced for the Plymovent filter
-systems.
+Am 30.11.20 um 03:06 schrieb Guoqing Jiang:
+> 
+> 
+> On 11/28/20 13:25, Donald Buczek wrote:
+>> Dear Linux mdraid people,
+>>
+>> we are using raid6 on several servers. Occasionally we had failures, where a mdX_raid6 process seems to go into a busy loop and all I/O to the md device blocks. We've seen this on various kernel versions.
+>>
+>> The last time this happened (in this case with Linux 5.10.0-rc4), I took some data.
+>>
+>> The triggering event seems to be the md_check cron job trying to pause the ongoing check operation in the morning with
+>>
+>>      echo idle > /sys/devices/virtual/block/md1/md/sync_action
+>>
+>> This doesn't complete. Here's /proc/stack of this process:
+>>
+>>      root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# ps -fp 23333
+>>      UID        PID  PPID  C STIME TTY          TIME CMD
+>>      root     23333 23331  0 02:00 ?        00:00:00 /bin/bash /usr/bin/mdcheck --continue --duration 06:00
+>>      root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# cat /proc/23333/stack
+>>      [<0>] kthread_stop+0x6e/0x150
+>>      [<0>] md_unregister_thread+0x3e/0x70
+>>      [<0>] md_reap_sync_thread+0x1f/0x1e0
+>>      [<0>] action_store+0x141/0x2b0
+>>      [<0>] md_attr_store+0x71/0xb0
+>>      [<0>] kernfs_fop_write+0x113/0x1a0
+>>      [<0>] vfs_write+0xbc/0x250
+>>      [<0>] ksys_write+0xa1/0xe0
+>>      [<0>] do_syscall_64+0x33/0x40
+>>      [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> Note, that md0 has been paused successfully just before.
+> 
+> What is the personality of md0? Is it also raid6?
 
-Co-Developed-by: David Jander <david@protonic.nl>
-Signed-off-by: David Jander <david@protonic.nl>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/boot/dts/Makefile          |   1 +
- arch/arm/boot/dts/imx6dl-plybas.dts | 394 ++++++++++++++++++++++++++++
- 2 files changed, 395 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6dl-plybas.dts
+Yes.
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 31249fc5f85c..ee725aebc3a8 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -461,6 +461,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6dl-pico-hobbit.dtb \
- 	imx6dl-pico-nymph.dtb \
- 	imx6dl-pico-pi.dtb \
-+	imx6dl-plybas.dtb \
- 	imx6dl-plym2m.dtb \
- 	imx6dl-prtrvt.dtb \
- 	imx6dl-prtvt7.dtb \
-diff --git a/arch/arm/boot/dts/imx6dl-plybas.dts b/arch/arm/boot/dts/imx6dl-plybas.dts
-new file mode 100644
-index 000000000000..333c306aa946
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-plybas.dts
-@@ -0,0 +1,394 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright (c) 2014 Protonic Holland
-+ * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-+ */
-+
-+/dts-v1/;
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include "imx6dl.dtsi"
-+
-+/ {
-+	model = "Plymovent BAS board";
-+	compatible = "ply,plybas", "fsl,imx6dl";
-+
-+	chosen {
-+		stdout-path = &uart4;
-+	};
-+
-+	gpio_keys {
-+		compatible = "gpio-keys";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		autorepeat;
-+
-+		button@20 {
-+			label = "START";
-+			linux,code = <31>;
-+			gpios = <&gpio5 8 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		button@21 {
-+			label = "CLEAN";
-+			linux,code = <46>;
-+			gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_leds>;
-+
-+		led-0 {
-+			label = "debug0";
-+			gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-1 {
-+			label = "debug1";
-+			gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-2 {
-+			label = "light_tower1";
-+			gpios = <&gpio4 22 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		led-3 {
-+			label = "light_tower2";
-+			gpios = <&gpio4 23 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-4 {
-+			label = "light_tower3";
-+			gpios = <&gpio4 24 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-5 {
-+			label = "light_tower4";
-+			gpios = <&gpio4 25 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+
-+	clk50m_phy: phy-clock {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
-+
-+	reg_5v0: regulator-5v0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5v0";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1>;
-+	xceiver-supply = <&reg_5v0>;
-+	status = "okay";
-+};
-+
-+&can2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can2>;
-+	xceiver-supply = <&reg_5v0>;
-+	status = "okay";
-+};
-+
-+&ecspi1 {
-+	cs-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi1>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <20000000>;
-+	};
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet>;
-+	phy-mode = "rmii";
-+	clocks = <&clks IMX6QDL_CLK_ENET>,
-+		 <&clks IMX6QDL_CLK_ENET>,
-+		 <&clk50m_phy>;
-+	clock-names = "ipg", "ahb", "ptp";
-+	phy-handle = <&rgmii_phy>;
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* Microchip KSZ8081RNA PHY */
-+		rgmii_phy: ethernet-phy@0 {
-+			reg = <0>;
-+			interrupts-extended = <&gpio4 30 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio4 26 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <300>;
-+		};
-+	};
-+};
-+
-+&gpio1 {
-+	gpio-line-names =
-+		"", "SD1_CD", "", "", "", "", "", "",
-+		"DEBUG_0", "DEBUG_1", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&gpio3 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "ECSPI1_SS1", "", "USB_EXT_PWR", "", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&gpio4 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "CAN1_SR", "CAN2_SR", "", "",
-+		"LED_DI0_DEBUG_0", "LED_DI0_DEBUG_1", "IMX6_IN12", "IMX6_HMI",
-+			"IMX6_IN11", "IMX6_BUZZER", "IMX6_LED1", "IMX6_LED2",
-+		"IMX6_LED3", "IMX6_LED4", "ETH_RESET", "IMX6_ANA_OUT_SD",
-+			"IMX6_ANA_OUT_ERR", "IMX6_ANA_OUT", "ETH_INTRP", "";
-+};
-+
-+&gpio5 {
-+	gpio-line-names =
-+		"", "", "", "", "", "IMX6_RELAY1", "IMX6_RELAY2", "",
-+		"IMX6_IN1", "IMX6_IN2", "IMX6_IN3", "IMX6_IN4", "IMX6_IN5",
-+			"IMX6_IN6", "IMX6_IN7", "IMX6_IN8",
-+		"IMX6_IN9", "IMX6_IN10", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	/* additional i2c devices are added automatically by the boot loader */
-+};
-+
-+&i2c3 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	status = "okay";
-+
-+	temperature-sensor@70 {
-+		compatible = "ti,tmp103";
-+		reg = <0x70>;
-+	};
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+	};
-+};
-+
-+&pwm1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm1>;
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart2>;
-+	fsl,uart-has-rtscts;
-+	linux,rs485-enabled-at-boot-time;
-+	rs485-rts-delay = <0 20>;
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4>;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg>;
-+	phy_type = "utmi";
-+	dr_mode = "host";
-+	disable-over-current;
-+	status = "okay";
-+};
-+
-+&usbphynop1 {
-+	status = "disabled";
-+};
-+
-+&usbphynop2 {
-+	status = "disabled";
-+};
-+
-+&iomuxc {
-+	pinctrl_can1: can1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_ROW2__FLEXCAN1_RX		0x1b000
-+			MX6QDL_PAD_KEY_COL2__FLEXCAN1_TX		0x3008
-+			/* CAN1_SR */
-+			MX6QDL_PAD_KEY_COL3__GPIO4_IO12			0x13008
-+		>;
-+	};
-+
-+	pinctrl_can2: can2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_ROW4__FLEXCAN2_RX		0x1b000
-+			MX6QDL_PAD_KEY_COL4__FLEXCAN2_TX		0x3008
-+			/* CAN2_SR */
-+			MX6QDL_PAD_KEY_ROW3__GPIO4_IO13			0x13008
-+		>;
-+	};
-+
-+	pinctrl_ecspi1: ecspi1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D17__ECSPI1_MISO			0x1b000
-+			MX6QDL_PAD_EIM_D18__ECSPI1_MOSI			0x3008
-+			MX6QDL_PAD_EIM_D16__ECSPI1_SCLK			0x3008
-+			/* CS */
-+			MX6QDL_PAD_EIM_D19__GPIO3_IO19			0x3008
-+		>;
-+	};
-+
-+	pinctrl_enet: enetgrp {
-+		fsl,pins = <
-+			/* MX6QDL_ENET_PINGRP4 */
-+			MX6QDL_PAD_ENET_MDC__ENET_MDC			0x1b0b0
-+			MX6QDL_PAD_ENET_MDIO__ENET_MDIO			0x1b0b0
-+			MX6QDL_PAD_ENET_RXD0__ENET_RX_DATA0		0x1b0b0
-+			MX6QDL_PAD_ENET_RXD1__ENET_RX_DATA1		0x1b0b0
-+			MX6QDL_PAD_ENET_RX_ER__ENET_RX_ER		0x1b0b0
-+			MX6QDL_PAD_ENET_TX_EN__ENET_TX_EN		0x1b0b0
-+			MX6QDL_PAD_ENET_TXD0__ENET_TX_DATA0		0x1b0b0
-+			MX6QDL_PAD_ENET_TXD1__ENET_TX_DATA1		0x1b0b0
-+			MX6QDL_PAD_ENET_CRS_DV__ENET_RX_EN		0x1b0b0
-+
-+			MX6QDL_PAD_GPIO_16__ENET_REF_CLK		0x1b0b0
-+			/* Phy reset */
-+			MX6QDL_PAD_DISP0_DAT5__GPIO4_IO26		0x1b0b0
-+			/* nINTRP */
-+			MX6QDL_PAD_DISP0_DAT9__GPIO4_IO30		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT8__I2C1_SDA			0x4001f8b1
-+			MX6QDL_PAD_CSI0_DAT9__I2C1_SCL			0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_i2c3: i2c3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_5__I2C3_SCL			0x4001b8b1
-+			MX6QDL_PAD_GPIO_6__I2C3_SDA			0x4001b8b1
-+		>;
-+	};
-+
-+	pinctrl_leds: ledsgrp {
-+		fsl,pins = <
-+			/* DEBUG_0 */
-+			MX6QDL_PAD_GPIO_8__GPIO1_IO08			0x1b0b0
-+			/* DEBUG_1 */
-+			MX6QDL_PAD_GPIO_9__GPIO1_IO09			0x1b0b0
-+
-+			/* LED1 (lighttower) */
-+			MX6QDL_PAD_DISP0_DAT1__GPIO4_IO22		0x13070
-+			/* LED2 (lighttower) */
-+			MX6QDL_PAD_DISP0_DAT2__GPIO4_IO23		0x13070
-+			/* LED3 (lighttower) */
-+			MX6QDL_PAD_DISP0_DAT3__GPIO4_IO24		0x13070
-+			/* LED4 (lighttower) */
-+			MX6QDL_PAD_DISP0_DAT4__GPIO4_IO25		0x13070
-+		>;
-+	};
-+
-+	pinctrl_pwm1: pwm1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT8__PWM1_OUT			0x1b0b0
-+		>;
-+	};
-+
-+	/* YaCO AUX Uart */
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT10__UART1_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_CSI0_DAT11__UART1_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_uart2: uart2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D26__UART2_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_EIM_D27__UART2_RX_DATA		0x1b0b1
-+			MX6QDL_PAD_EIM_D28__UART2_DTE_CTS_B		0x130b1
-+		>;
-+	};
-+
-+	pinctrl_uart4: uart4grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_COL0__UART4_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_KEY_ROW0__UART4_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_usbotg: usbotggrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D21__USB_OTG_OC			0x1b0b0
-+			/* power enable, high active */
-+			MX6QDL_PAD_EIM_D22__GPIO3_IO22			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD1_CMD__SD1_CMD			0x170f9
-+			MX6QDL_PAD_SD1_CLK__SD1_CLK			0x100f9
-+			MX6QDL_PAD_SD1_DAT0__SD1_DATA0			0x170f9
-+			MX6QDL_PAD_SD1_DAT1__SD1_DATA1			0x170f9
-+			MX6QDL_PAD_SD1_DAT2__SD1_DATA2			0x170f9
-+			MX6QDL_PAD_SD1_DAT3__SD1_DATA3			0x170f9
-+			MX6QDL_PAD_GPIO_1__GPIO1_IO01			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD3_CMD__SD3_CMD			0x17099
-+			MX6QDL_PAD_SD3_CLK__SD3_CLK			0x10099
-+			MX6QDL_PAD_SD3_DAT0__SD3_DATA0			0x17099
-+			MX6QDL_PAD_SD3_DAT1__SD3_DATA1			0x17099
-+			MX6QDL_PAD_SD3_DAT2__SD3_DATA2			0x17099
-+			MX6QDL_PAD_SD3_DAT3__SD3_DATA3			0x17099
-+			MX6QDL_PAD_SD3_DAT4__SD3_DATA4			0x17099
-+			MX6QDL_PAD_SD3_DAT5__SD3_DATA5			0x17099
-+			MX6QDL_PAD_SD3_DAT6__SD3_DATA6			0x17099
-+			MX6QDL_PAD_SD3_DAT7__SD3_DATA7			0x17099
-+			MX6QDL_PAD_SD3_RST__SD3_RESET			0x1b0b1
-+		>;
-+	};
-+};
+> 
+>>
+>>      2020-11-27T02:00:01+01:00 done CROND[23333]: (root) CMD (/usr/bin/mdcheck --continue --duration "06:00")
+>>      2020-11-27T02:00:01+01:00 done root: mdcheck continue checking /dev/md0 from 10623180920
+>>      2020-11-27T02:00:01.382994+01:00 done kernel: [378596.606381] md: data-check of RAID array md0
+>>      2020-11-27T02:00:01+01:00 done root: mdcheck continue checking /dev/md1 from 11582849320
+>>      2020-11-27T02:00:01.437999+01:00 done kernel: [378596.661559] md: data-check of RAID array md1
+>>      2020-11-27T06:00:01.842003+01:00 done kernel: [392996.625147] md: md0: data-check interrupted.
+>>      2020-11-27T06:00:02+01:00 done root: pause checking /dev/md0 at 13351127680
+>>      2020-11-27T06:00:02.338989+01:00 done kernel: [392997.122520] md: md1: data-check interrupted.
+>>      [ nothing related following.... ]
+>>
+>> After that, we see md1_raid6 in a busy loop:
+>>
+>>      PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+>>      2376 root     20   0       0      0      0 R 100.0  0.0   1387:38 md1_raid6
+> 
+> Seems the reap sync thread was trying to stop md1_raid6 while md1_raid6 was triggered again and again.
+> 
+>>
+>> Also, all processes doing I/O do the md device block.
+>>
+>> This is /proc/mdstat:
+>>
+>>      Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4] [multipath]
+>>      md1 : active raid6 sdk[0] sdj[15] sdi[14] sdh[13] sdg[12] sdf[11] sde[10] sdd[9] sdc[8] sdr[7] sdq[6] sdp[5] sdo[4] sdn[3] sdm[2] sdl[1]
+>>            109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
+>>            [==================>..]  check = 94.0% (7350290348/7813894144) finish=57189.3min speed=135K/sec
+>>            bitmap: 0/59 pages [0KB], 65536KB chunk
+>>      md0 : active raid6 sds[0] sdah[15] sdag[16] sdaf[13] sdae[12] sdad[11] sdac[10] sdab[9] sdaa[8] sdz[7] sdy[6] sdx[17] sdw[4] sdv[3] sdu[2] sdt[1]
+>>            109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
+>>            bitmap: 0/59 pages [0KB], 65536KB chunk
+>>
+> 
+> So the RECOVERY_CHECK flag should be set, not sure if the simple changes
+> helps, but you may give it a try.
+
+Thanks. I've copied the original condition block to execute before the modified one and added some logging to it to see, if the change actually triggers. I will pause and unpause the check frequently on a busy machine to get this code executed more often.
+
+Best
+   Donald
+
+> 
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 98bac4f..e2697d0 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -9300,7 +9300,8 @@ void md_check_recovery(struct mddev *mddev)
+>                          md_update_sb(mddev, 0);
+> 
+>                  if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
+> -                   !test_bit(MD_RECOVERY_DONE, &mddev->recovery)) {
+> +                   (!test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
+> +                    test_bit(MD_RECOVERY_CHECK, &mddev->recovery))) {
+>                          /* resync/recovery still happening */
+>                          clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+>                          goto unlock;
+> 
+> Thanks,
+> Guoqing
+
 -- 
-2.29.2
-
+Donald Buczek
+buczek@molgen.mpg.de
+Tel: +49 30 8413 1433
