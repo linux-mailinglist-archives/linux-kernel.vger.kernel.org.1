@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A132C9A5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D416C2C9AA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387760AbgLAI5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60366 "EHLO mail.kernel.org"
+        id S2388147AbgLAI7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:59:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387749AbgLAI47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:56:59 -0500
+        id S1729007AbgLAI70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:59:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69BBC2222E;
-        Tue,  1 Dec 2020 08:56:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D73A21D46;
+        Tue,  1 Dec 2020 08:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812978;
-        bh=72mt7MPFu0qBMAIVe2v5dXiPDj1Dh1bCsRL5rPqWPSA=;
+        s=korg; t=1606813125;
+        bh=GJL65GZGi3EOuDnTzArVhNwhERhIIvwyePww8iSeO0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h+2gs0i7XqdgvMo9HQHbfVfpDGg6GcwXeLx94jrzw6UzmJ9sBfmSoNyb49N+3F3qd
-         7JCb/Csw2gwsJK04E4nkkx5QU+vxZfCHuTRTkn4gmP90hcVZJkuVT569+SmzmbcfIb
-         MtpWYFwDbWYQRA5B6HuBOBSnl3XqtKxWyTYGUef0=
+        b=MImEHIV0S9ZtUrVUtInwUkgq4F79Qx7NBOwg37WO6SKsNJLHZcPuy0UL7pHa5v+tC
+         XLRR4IIX/Z5KTJPiZpoHG9VTh9ZFSNDgFUqmpXPtGCJOenDS/ajIxWrmcEZwOUwiUi
+         fCYnFTusqWlZ6/9HV6zIzlM4tCf9gcwo6N2Ts1B0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, edes <edes@gmx.net>,
-        Johan Hovold <johan@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 41/42] USB: core: add endpoint-blacklist quirk
-Date:   Tue,  1 Dec 2020 09:53:39 +0100
-Message-Id: <20201201084646.006741628@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Mario Huettel <mario.huettel@gmx.net>,
+        Sriram Dash <sriram.dash@samsung.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 41/50] can: m_can: fix nominal bitiming tseg2 min for version >= 3.1
+Date:   Tue,  1 Dec 2020 09:53:40 +0100
+Message-Id: <20201201084650.146689436@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,124 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-commit 73f8bda9b5dc1c69df2bc55c0cbb24461a6391a9 upstream
+[ Upstream commit e3409e4192535fbcc86a84b7a65d9351f46039ec ]
 
-Add a new device quirk that can be used to blacklist endpoints.
+At lest the revision 3.3.0 of the bosch m_can IP core specifies that valid
+register values for "Nominal Time segment after sample point (NTSEG2)" are from
+1 to 127. As the hardware uses a value of one more than the programmed value,
+mean tseg2_min is 2.
 
-Since commit 3e4f8e21c4f2 ("USB: core: fix check for duplicate
-endpoints") USB core ignores any duplicate endpoints found during
-descriptor parsing.
+This patch fixes the tseg2_min value accordingly.
 
-In order to handle devices where the first interfaces with duplicate
-endpoints are the ones that should have their endpoints ignored, we need
-to add a blacklist.
-
-Tested-by: edes <edes@gmx.net>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20200203153830.26394-2-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Dan Murphy <dmurphy@ti.com>
+Cc: Mario Huettel <mario.huettel@gmx.net>
+Acked-by: Sriram Dash <sriram.dash@samsung.com>
+Link: https://lore.kernel.org/r/20201124190751.3972238-1-mkl@pengutronix.de
+Fixes: b03cfc5bb0e1 ("can: m_can: Enable M_CAN version dependent initialization")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/config.c  |   11 +++++++++++
- drivers/usb/core/quirks.c  |   32 ++++++++++++++++++++++++++++++++
- drivers/usb/core/usb.h     |    3 +++
- include/linux/usb/quirks.h |    3 +++
- 4 files changed, 49 insertions(+)
+ drivers/net/can/m_can/m_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/core/config.c
-+++ b/drivers/usb/core/config.c
-@@ -251,6 +251,7 @@ static int usb_parse_endpoint(struct dev
- 		struct usb_host_interface *ifp, int num_ep,
- 		unsigned char *buffer, int size)
- {
-+	struct usb_device *udev = to_usb_device(ddev);
- 	unsigned char *buffer0 = buffer;
- 	struct usb_endpoint_descriptor *d;
- 	struct usb_host_endpoint *endpoint;
-@@ -292,6 +293,16 @@ static int usb_parse_endpoint(struct dev
- 		goto skip_to_next_endpoint_or_interface_descriptor;
- 	}
- 
-+	/* Ignore blacklisted endpoints */
-+	if (udev->quirks & USB_QUIRK_ENDPOINT_BLACKLIST) {
-+		if (usb_endpoint_is_blacklisted(udev, ifp, d)) {
-+			dev_warn(ddev, "config %d interface %d altsetting %d has a blacklisted endpoint with address 0x%X, skipping\n",
-+					cfgno, inum, asnum,
-+					d->bEndpointAddress);
-+			goto skip_to_next_endpoint_or_interface_descriptor;
-+		}
-+	}
-+
- 	endpoint = &ifp->endpoint[ifp->desc.bNumEndpoints];
- 	++ifp->desc.bNumEndpoints;
- 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -344,6 +344,38 @@ static const struct usb_device_id usb_am
- 	{ }  /* terminating entry must be last */
- };
- 
-+/*
-+ * Entries for blacklisted endpoints that should be ignored when parsing
-+ * configuration descriptors.
-+ *
-+ * Matched for devices with USB_QUIRK_ENDPOINT_BLACKLIST.
-+ */
-+static const struct usb_device_id usb_endpoint_blacklist[] = {
-+	{ }
-+};
-+
-+bool usb_endpoint_is_blacklisted(struct usb_device *udev,
-+		struct usb_host_interface *intf,
-+		struct usb_endpoint_descriptor *epd)
-+{
-+	const struct usb_device_id *id;
-+	unsigned int address;
-+
-+	for (id = usb_endpoint_blacklist; id->match_flags; ++id) {
-+		if (!usb_match_device(udev, id))
-+			continue;
-+
-+		if (!usb_match_one_id_intf(udev, intf, id))
-+			continue;
-+
-+		address = id->driver_info;
-+		if (address == epd->bEndpointAddress)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- static bool usb_match_any_interface(struct usb_device *udev,
- 				    const struct usb_device_id *id)
- {
---- a/drivers/usb/core/usb.h
-+++ b/drivers/usb/core/usb.h
-@@ -31,6 +31,9 @@ extern void usb_deauthorize_interface(st
- extern void usb_authorize_interface(struct usb_interface *);
- extern void usb_detect_quirks(struct usb_device *udev);
- extern void usb_detect_interface_quirks(struct usb_device *udev);
-+extern bool usb_endpoint_is_blacklisted(struct usb_device *udev,
-+		struct usb_host_interface *intf,
-+		struct usb_endpoint_descriptor *epd);
- extern int usb_remove_device(struct usb_device *udev);
- 
- extern int usb_get_device_descriptor(struct usb_device *dev,
---- a/include/linux/usb/quirks.h
-+++ b/include/linux/usb/quirks.h
-@@ -59,4 +59,7 @@
- /* Device needs a pause after every control message. */
- #define USB_QUIRK_DELAY_CTRL_MSG		BIT(13)
- 
-+/* device has blacklisted endpoints */
-+#define USB_QUIRK_ENDPOINT_BLACKLIST		BIT(15)
-+
- #endif /* __LINUX_USB_QUIRKS_H */
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 680ee8345211f..a3f2548c5548c 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -972,7 +972,7 @@ static const struct can_bittiming_const m_can_bittiming_const_31X = {
+ 	.name = KBUILD_MODNAME,
+ 	.tseg1_min = 2,		/* Time segment 1 = prop_seg + phase_seg1 */
+ 	.tseg1_max = 256,
+-	.tseg2_min = 1,		/* Time segment 2 = phase_seg2 */
++	.tseg2_min = 2,		/* Time segment 2 = phase_seg2 */
+ 	.tseg2_max = 128,
+ 	.sjw_max = 128,
+ 	.brp_min = 1,
+-- 
+2.27.0
+
 
 
