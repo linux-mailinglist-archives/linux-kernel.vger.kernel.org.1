@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0102C9ADE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339012C9BFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388608AbgLAJBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:01:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38466 "EHLO mail.kernel.org"
+        id S2390171AbgLAJNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:13:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388602AbgLAJBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:01:47 -0500
+        id S2390158AbgLAJNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:13:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F322421D7A;
-        Tue,  1 Dec 2020 09:01:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA97C221FD;
+        Tue,  1 Dec 2020 09:13:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813266;
-        bh=jSj+2hvfiT3oQ/3DWGXUtBkYYRTez2wEp8bn+BE8+vc=;
+        s=korg; t=1606813987;
+        bh=tDeKhy4Ja2H7eQ9JtPqG9LWEKq3Lr5meVQCI1lW2YdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MFyIM28aP8cRIkNFk69QeanOCsDGjoUFFsH6WMNnE68yX3bPU6t6okCv8CMB8WMdV
-         ckQ+uLrDEy82Vt2WBz2lrWzbuc73JPe6KRUt7S0m95gSBW66mtO8mAiSMl9l+GzE3F
-         vHKv4JRINdnBDhj0zUTA3vVaTenUTM4uVChcg364=
+        b=IiODEa1EWQFvY1ZTp9vFrnSf53nvaMHlmwyr5ySLcDhDCKER09ktW/0vbTrvNzY39
+         4QRRH5WNYqiRau0d8q8msr+CJ1KkeipJYZtDaMqsNQLJ01jFoTjEVHHmpSArffaETk
+         j3CHjQpiV6kLAPiiLYpSyivzU2ttWDJ+AxxAJM6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 39/57] nfc: s3fwrn5: use signed integer for parsing GPIO numbers
-Date:   Tue,  1 Dec 2020 09:53:44 +0100
-Message-Id: <20201201084651.011240824@linuxfoundation.org>
+Subject: [PATCH 5.9 110/152] nfc: s3fwrn5: use signed integer for parsing GPIO numbers
+Date:   Tue,  1 Dec 2020 09:53:45 +0100
+Message-Id: <20201201084726.265251952@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,10 +62,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
-index 4da409e77a72e..6c78529a8c89b 100644
+index b4eb926d220ac..d7ecff0b1c662 100644
 --- a/drivers/nfc/s3fwrn5/i2c.c
 +++ b/drivers/nfc/s3fwrn5/i2c.c
-@@ -37,8 +37,8 @@ struct s3fwrn5_i2c_phy {
+@@ -26,8 +26,8 @@ struct s3fwrn5_i2c_phy {
  	struct i2c_client *i2c_dev;
  	struct nci_dev *ndev;
  
