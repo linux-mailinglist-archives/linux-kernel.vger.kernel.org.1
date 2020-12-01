@@ -2,187 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C935E2CAE79
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C2C2CAEA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgLAVcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:32:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
+        id S1729366AbgLAVhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727908AbgLAVcU (ORCPT
+        with ESMTP id S1728676AbgLAVhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:32:20 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FD7C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:31:40 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id 79so3142676otc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 13:31:39 -0800 (PST)
+        Tue, 1 Dec 2020 16:37:50 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0F5C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:37:10 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id j138so3966440ybg.20
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 13:37:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=EdSEejUBnam4KyFCA2TjLSdmd0XXpVEcrnOSSkBF68Q=;
-        b=sAG5xQr7qlmjSN37qADpl74MFGzcH7BABaU2IWfaLP1zLlqQT0I92iszLrSfyLkEXP
-         Z7JJH1ofw05227Sq/3nWvMDOfM2yO2whvCGVTEAoen2eBzCem0Y+MEtAialnapF6MJ0b
-         xs6mDoXI6tK3SqWDQDXKeQAMmq/P3s458x+ZctIl9iVQo5npYpqdWoZxoXDeAn44uw6C
-         FECN3OhUZLbq0R1dGrhBpoeUbt7Cchrdattlfky+vM8MNl24wIyJxURDCMXKi5v7F76Q
-         RAauinVvRsvtZkMYm9HCcFbbQEMt9BP46a92+w3xujx2YRefKe7Hn/d7QuQsuT1WXTaF
-         1Atg==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/Ydp+qeiWXHO6I7zK5gxOYIhZihlQbGAyMr7COYjNo8=;
+        b=uP8b9PacbViNuju3jU4Y7pQopc/D13IK9+EgFguKjQ71Rj4a4pDH62wMzEVMzTGdgL
+         A3A67LktcpWWVek2Xxu10AIYqibTKqLwW/RJnT0sIk9Sp7B6dRZsUkovRq6s2dpn3cga
+         2wHcebF3x2YFGZP6VqaT8vo5ANbAkpHZH/rp2ALxYckkRwVNaaEgWhFOB0m3mB96lVrQ
+         KhneUkQCpG+O4jwnVJbzSzP7J/KIEDqqIwxIExNayWW0lDsj1em6+v9ZazfgE8/gduNa
+         8aXAzKqIaIL1cj2a5t+vFZlekXsZNzqTLBCQguZ23yyj4s9L2GONhXh+25Fm257CMHTt
+         kOYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=EdSEejUBnam4KyFCA2TjLSdmd0XXpVEcrnOSSkBF68Q=;
-        b=iBv4Sl9f8RrglYtlWp/QKn7H1SgFh+Dz3ABERU1PB1rS1agBnD932Ou2pkKG4NjJN2
-         ZXeyG7y4Nt8fEqLWbCMUYMueTXyR/KDBnChTtgADbmk9mswms7e0ldyPbECNKpd4c5qF
-         5ugD5ev6s/Wmv2ny8vrEOHU0tSUSzpQqOVz7sHB18qwuMb1KtckMTKdwLiPz2jiuYYTv
-         rLl5wWVvpCVWE/DkgUDTyBIS+/yEeRvcVZvCdrcVz/SYsBjlaPhb4AquArpXunTpIuw7
-         iqvWOSz1fAtmeyrVZnQshXfxSnxsGc6qdn0H637tTZzZ1hSHW8Y1cOEXuta89Y3RbP+s
-         KwWQ==
-X-Gm-Message-State: AOAM530eG05eLJYYY9/UIj1ZKGZ3Z/iFjNEp0YnpIkR3GElQz+a6WVRt
-        /ZPBY1Pfc0tdWBqglh53r4wgNQE/LYAAMw==
-X-Google-Smtp-Source: ABdhPJyvi63yAw5X1ZSHmGEKe+2zyCR/Uknn5yGRuOAm60Y2Z6gxegraZ26YYoF9Mu5J/tqrphChDg==
-X-Received: by 2002:a9d:7cc8:: with SMTP id r8mr3178276otn.233.1606858299045;
-        Tue, 01 Dec 2020 13:31:39 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id k5sm238374oot.30.2020.12.01.13.31.37
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 01 Dec 2020 13:31:38 -0800 (PST)
-Date:   Tue, 1 Dec 2020 13:31:21 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Peter Xu <peterx@redhat.com>
-cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH] mm: Don't fault around userfaultfd-registered regions
- on reads
-In-Reply-To: <20201128152903.GK6573@xz-x1>
-Message-ID: <alpine.LSU.2.11.2012011250070.1582@eggly.anvils>
-References: <20201126222359.8120-1-peterx@redhat.com> <20201127122224.GX4327@casper.infradead.org> <X8Ga44uXHmzn/vB9@redhat.com> <20201128152903.GK6573@xz-x1>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/Ydp+qeiWXHO6I7zK5gxOYIhZihlQbGAyMr7COYjNo8=;
+        b=tSSRoE6VjI4ouXzb2Qd+t4OWFg48L5/EM4VSDZZHnbJ9zXbrWexO9pfhu0ICfVd0GJ
+         cFlVboeM/7u8bUvR76I7lP//ld3bFA/6p7Z91IFHXfqHCpugS7J1tyNl5k3mFl17IWSo
+         JYbAGhbXNLk8JI8QepUEQ3jWooNz9sDg3eGj4Z0Y4TXuytWCEQSFQ9qgdsr7nadgyCaE
+         g196MU5iQNT846+qoMM9yRTkV+gkcsuzFY0PcfQL4QJQCBWPsO/ryfyfxCfT995Rz5VF
+         YL2BT3BOszk8we/93IOUMiPWA5Jg962Tqu2ktY3zJkY1rATy4Cc4j4xIC8DcdHpwAJdk
+         TB3Q==
+X-Gm-Message-State: AOAM532APvXtdV0zbjXCHRkl1P0tJ4MZzLWD5c70Y40rmjqn6/OlnmCa
+        /6YyKINi5ATharn4CwxyuKBoMW6aDYrBF2ZMtQw=
+X-Google-Smtp-Source: ABdhPJynKo/QcQ3ER0aMzDLxbXuS+BG4gD3OR3K6Nh+qfPOFy0xY1fApLMu+UZgd7x2StzuuvUUGP/FHZZDZBVMpQcA=
+Sender: "samitolvanen via sendgmr" 
+        <samitolvanen@samitolvanen1.mtv.corp.google.com>
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:a25:abae:: with SMTP id
+ v43mr6680681ybi.397.1606858629755; Tue, 01 Dec 2020 13:37:09 -0800 (PST)
+Date:   Tue,  1 Dec 2020 13:36:51 -0800
+Message-Id: <20201201213707.541432-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH v8 00/16] Add support for Clang LTO
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Nov 2020, Peter Xu wrote:
-> On Fri, Nov 27, 2020 at 07:33:39PM -0500, Andrea Arcangeli wrote:
-> 
-> > Now it would be ok if filemap_map_pages re-filled the ptes, after they
-> > were zapped the first time by fallocate, and then the fallocate would
-> > zap them again before truncating the page, but I don't see a second
-> > pte zap... there's just the below single call of unmap_mapping_range:
-> > 
-> > 		if ((u64)unmap_end > (u64)unmap_start)
-> > 			unmap_mapping_range(mapping, unmap_start,
-> > 					    1 + unmap_end - unmap_start, 0);
-> > 		shmem_truncate_range(inode, offset, offset + len - 1);
-> 
-> IMHO the 2nd pte zap is inside shmem_truncate_range(), where we will call
-> truncate_inode_page() then onto truncate_cleanup_page().
+This patch series adds support for building the kernel with Clang's
+Link Time Optimization (LTO). In addition to performance, the primary
+motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
+to be used in the kernel. Google has shipped millions of Pixel
+devices running three major kernel versions with LTO+CFI since 2018.
 
-Correct.
+Most of the patches are build system changes for handling LLVM
+bitcode, which Clang produces with LTO instead of ELF object files,
+postponing ELF processing until a later stage, and ensuring initcall
+ordering.
 
-> 
-> Since we're at it, some more context: this is actually where I started to
-> notice the issue, that we'll try to pre-unmap the whole region first before
-> shmem_truncate_range().  The thing is shmem_truncate_range() will zap the ptes
-> too, in an even safer way (with page lock held).  So before I came up with the
-> current patch, I also tried below patch, and it also fixes the data corrupt
-> issue:
-> 
-> -----8<-----
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index efa19e33e470..b275f401fe1f 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2777,7 +2777,6 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
->         inode_lock(inode);
->  
->         if (mode & FALLOC_FL_PUNCH_HOLE) {
-> -               struct address_space *mapping = file->f_mapping;
->                 loff_t unmap_start = round_up(offset, PAGE_SIZE);
->                 loff_t unmap_end = round_down(offset + len, PAGE_SIZE) - 1;
->                 DECLARE_WAIT_QUEUE_HEAD_ONSTACK(shmem_falloc_waitq);
-> @@ -2795,9 +2794,6 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
->                 inode->i_private = &shmem_falloc;
->                 spin_unlock(&inode->i_lock);
->  
-> -               if ((u64)unmap_end > (u64)unmap_start)
-> -                       unmap_mapping_range(mapping, unmap_start,
-> -                                           1 + unmap_end - unmap_start, 0);
->                 shmem_truncate_range(inode, offset, offset + len - 1);
->                 /* No need to unmap again: hole-punching leaves COWed pages */
-> -----8<-----
->  
-> Above code existed starting from the 1st day of shmem fallocate code, so I was
-> thinking why we did that.  One reason could be for performance, since this
-> pre-unmap of explicit unmap_mapping_range() will try to walk the page tables
-> once rather than walking for every single page, so when the hole is huge it
-> could benefit us since truncate_cleanup_page() is able to avoid those per-page
-> walks then because page_mapped() could be more likely to be zero:
-> 
-> 	if (page_mapped(page)) {
-> 		pgoff_t nr = PageTransHuge(page) ? HPAGE_PMD_NR : 1;
-> 		unmap_mapping_pages(mapping, page->index, nr, false);
-> 	}
-> 
-> It would be good if Hugh can help confirm whether my understanding is correct,
-> though..
+Note that arm64 support depends on Will's memory ordering patches
+[1]. I will post x86_64 patches separately after we have fixed the
+remaining objtool warnings [2][3].
 
-Correct.  Code duplicated from mm/truncate.c, but with more comments
-over there, in truncate_pagecache() and in truncate_pagecache_range().
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/lto
+[2] https://lore.kernel.org/lkml/20201120040424.a3wctajzft4ufoiw@treble/
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/log/?h=objtool-vmlinux
 
-> 
-> As a summary, that's why I didn't try to remove the optimization (which fixes
-> the issue too) but instead I tried to dissable fault around instead for uffd,
-> which sounds a better thing to do.
-> 
-> > 
-> > So looking at filemap_map_pages in shmem, I'm really wondering if the
-> > non-uffd case is correct or not.
-> > 
-> > Do we end up with ptes pointing to non pagecache, so then the virtual
-> > mapping is out of sync also with read/write syscalls that will then
-> > allocate another shmem page out of sync of the ptes?
+You can also pull this series from
 
-No, as you point out, the second pte zap, under page lock, keeps it safe.
+  https://github.com/samitolvanen/linux.git lto-v8
 
-> > 
-> > If a real page fault happened instead of filemap_map_pages, the
-> > shmem_fault() would block during fallocate punch hole by checking
-> > inode->i_private, as the comment says:
-> > 
-> > 	 * So refrain from
-> > 	 * faulting pages into the hole while it's being punched.
-> > 
-> > It's not immediately clear where filemap_map_pages refrains from
-> > faulting pages into the hole while it's being punched... given it's
-> > ignoring inode->i_private.
+---
+Changes in v8:
 
-Please don't ever rely on that i_private business for correctness: as
-more of the comment around "So refrain from" explains, it was added
-to avoid a livelock with the trinity fuzzer, and I'd gladly delete
-it all, if I could ever be confident that enough has changed in the
-intervening years that it's no longer necessary.
+  - Cleaned up the LTO Kconfig options based on suggestions from
+    Nick and Kees.
 
-It tends to prevent shmem faults racing hole punches in the same area
-(without quite guaranteeing no race at all).  But without the livelock
-issue, I'd just have gone on letting them race.  "Punch hole" ==
-"Lose data" - though I can imagine that UFFD would like more control
-over that.  Since map_pages is driven by faulting, it should already
-be throttled too.
+  - Dropped the patch to disable LTO for the arm64 nVHE KVM code as
+    David pointed out it's not needed anymore.
 
-But Andrea in next mail goes on to see other issues with UFFD_WP
-in relation to shmem swap, so this thread is probably dead now.
-If there's a bit to spare for UFFD_WP in the anonymous swap entry,
-then that bit should be usable for shmem too: but a shmem page
-(and its swap entry) can be shared between many different users,
-so I don't know whether that will make sense.
+Changes in v7:
 
-Hugh
+  - Rebased to master again.
+
+  - Added back arm64 patches as the prerequisites are now staged,
+    and dropped x86_64 support until the remaining objtool issues
+    are resolved.
+
+  - Dropped ifdefs from module.lds.S.
+
+Changes in v6:
+
+  - Added the missing --mcount flag to patch 5.
+
+  - Dropped the arm64 patches from this series and will repost them
+    later.
+
+Changes in v5:
+
+  - Rebased on top of tip/master.
+
+  - Changed the command line for objtool to use --vmlinux --duplicate
+    to disable warnings about retpoline thunks and to fix .orc_unwind
+    generation for vmlinux.o.
+
+  - Added --noinstr flag to objtool, so we can use --vmlinux without
+    also enabling noinstr validation.
+
+  - Disabled objtool's unreachable instruction warnings with LTO to
+    disable false positives for the int3 padding in vmlinux.o.
+
+  - Added ANNOTATE_RETPOLINE_SAFE annotations to the indirect jumps
+    in x86 assembly code to fix objtool warnings with retpoline.
+
+  - Fixed modpost warnings about missing version information with
+    CONFIG_MODVERSIONS.
+
+  - Included Makefile.lib into Makefile.modpost for ld_flags. Thanks
+    to Sedat for pointing this out.
+
+  - Updated the help text for ThinLTO to better explain the trade-offs.
+
+  - Updated commit messages with better explanations.
+
+Changes in v4:
+
+  - Fixed a typo in Makefile.lib to correctly pass --no-fp to objtool.
+
+  - Moved ftrace configs related to generating __mcount_loc to Kconfig,
+    so they are available also in Makefile.modfinal.
+
+  - Dropped two prerequisite patches that were merged to Linus' tree.
+
+Changes in v3:
+
+  - Added a separate patch to remove the unused DISABLE_LTO treewide,
+    as filtering out CC_FLAGS_LTO instead is preferred.
+
+  - Updated the Kconfig help to explain why LTO is behind a choice
+    and disabled by default.
+
+  - Dropped CC_FLAGS_LTO_CLANG, compiler-specific LTO flags are now
+    appended directly to CC_FLAGS_LTO.
+
+  - Updated $(AR) flags as KBUILD_ARFLAGS was removed earlier.
+
+  - Fixed ThinLTO cache handling for external module builds.
+
+  - Rebased on top of Masahiro's patch for preprocessing modules.lds,
+    and moved the contents of module-lto.lds to modules.lds.S.
+
+  - Moved objtool_args to Makefile.lib to avoid duplication of the
+    command line parameters in Makefile.modfinal.
+
+  - Clarified in the commit message for the initcall ordering patch
+    that the initcall order remains the same as without LTO.
+
+  - Changed link-vmlinux.sh to use jobserver-exec to control the
+    number of jobs started by generate_initcall_ordering.pl.
+
+  - Dropped the x86/relocs patch to whitelist L4_PAGE_OFFSET as it's
+    no longer needed with ToT kernel.
+
+  - Disabled LTO for arch/x86/power/cpu.c to work around a Clang bug
+    with stack protector attributes.
+
+Changes in v2:
+
+  - Fixed -Wmissing-prototypes warnings with W=1.
+
+  - Dropped cc-option from -fsplit-lto-unit and added .thinlto-cache
+    scrubbing to make distclean.
+
+  - Added a comment about Clang >=11 being required.
+
+  - Added a patch to disable LTO for the arm64 KVM nVHE code.
+
+  - Disabled objtool's noinstr validation with LTO unless enabled.
+
+  - Included Peter's proposed objtool mcount patch in the series
+    and replaced recordmcount with the objtool pass to avoid
+    whitelisting relocations that are not calls.
+
+  - Updated several commit messages with better explanations.
+
+
+Sami Tolvanen (17):
+  tracing: move function tracer options to Kconfig
+  kbuild: add support for Clang LTO
+  kbuild: lto: fix module versioning
+  kbuild: lto: limit inlining
+  kbuild: lto: merge module sections
+  kbuild: lto: remove duplicate dependencies from .mod files
+  init: lto: ensure initcall ordering
+  init: lto: fix PREL32 relocations
+  PCI: Fix PREL32 relocations for LTO
+  modpost: lto: strip .lto from module names
+  scripts/mod: disable LTO for empty.c
+  efi/libstub: disable LTO
+  drivers/misc/lkdtm: disable LTO for rodata.o
+  arm64: vdso: disable LTO
+  KVM: arm64: disable LTO for the nVHE directory
+  arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
+  arm64: allow LTO_CLANG and THINLTO to be selected
+
+ .gitignore                            |   1 +
+ Makefile                              |  45 +++--
+ arch/Kconfig                          |  74 +++++++
+ arch/arm64/Kconfig                    |   4 +
+ arch/arm64/kernel/vdso/Makefile       |   3 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile      |   4 +-
+ drivers/firmware/efi/libstub/Makefile |   2 +
+ drivers/misc/lkdtm/Makefile           |   1 +
+ include/asm-generic/vmlinux.lds.h     |  11 +-
+ include/linux/init.h                  |  79 +++++++-
+ include/linux/pci.h                   |  19 +-
+ kernel/trace/Kconfig                  |  16 ++
+ scripts/Makefile.build                |  50 ++++-
+ scripts/Makefile.lib                  |   6 +-
+ scripts/Makefile.modfinal             |   9 +-
+ scripts/Makefile.modpost              |  25 ++-
+ scripts/generate_initcall_order.pl    | 270 ++++++++++++++++++++++++++
+ scripts/link-vmlinux.sh               |  70 ++++++-
+ scripts/mod/Makefile                  |   1 +
+ scripts/mod/modpost.c                 |  16 +-
+ scripts/mod/modpost.h                 |   9 +
+ scripts/mod/sumversion.c              |   6 +-
+ scripts/module.lds.S                  |  24 +++
+ 23 files changed, 677 insertions(+), 68 deletions(-)
+ create mode 100755 scripts/generate_initcall_order.pl
+
+
+base-commit: 0fa8ee0d9ab95c9350b8b84574824d9a384a9f7d
+-- 
+2.29.2.299.gdc1121823c-goog
+
+
+*** BLURB HERE ***
+
+Sami Tolvanen (16):
+  tracing: move function tracer options to Kconfig
+  kbuild: add support for Clang LTO
+  kbuild: lto: fix module versioning
+  kbuild: lto: limit inlining
+  kbuild: lto: merge module sections
+  kbuild: lto: remove duplicate dependencies from .mod files
+  init: lto: ensure initcall ordering
+  init: lto: fix PREL32 relocations
+  PCI: Fix PREL32 relocations for LTO
+  modpost: lto: strip .lto from module names
+  scripts/mod: disable LTO for empty.c
+  efi/libstub: disable LTO
+  drivers/misc/lkdtm: disable LTO for rodata.o
+  arm64: vdso: disable LTO
+  arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
+  arm64: allow LTO to be selected
+
+ .gitignore                            |   1 +
+ Makefile                              |  45 +++--
+ arch/Kconfig                          |  87 +++++++++
+ arch/arm64/Kconfig                    |   4 +
+ arch/arm64/kernel/vdso/Makefile       |   3 +-
+ drivers/firmware/efi/libstub/Makefile |   2 +
+ drivers/misc/lkdtm/Makefile           |   1 +
+ include/asm-generic/vmlinux.lds.h     |  11 +-
+ include/linux/init.h                  |  79 +++++++-
+ include/linux/pci.h                   |  19 +-
+ kernel/trace/Kconfig                  |  16 ++
+ scripts/Makefile.build                |  50 ++++-
+ scripts/Makefile.lib                  |   6 +-
+ scripts/Makefile.modfinal             |   9 +-
+ scripts/Makefile.modpost              |  25 ++-
+ scripts/generate_initcall_order.pl    | 270 ++++++++++++++++++++++++++
+ scripts/link-vmlinux.sh               |  70 ++++++-
+ scripts/mod/Makefile                  |   1 +
+ scripts/mod/modpost.c                 |  16 +-
+ scripts/mod/modpost.h                 |   9 +
+ scripts/mod/sumversion.c              |   6 +-
+ scripts/module.lds.S                  |  24 +++
+ 22 files changed, 688 insertions(+), 66 deletions(-)
+ create mode 100755 scripts/generate_initcall_order.pl
+
+
+base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
+-- 
+2.29.2.576.ga3fc446d84-goog
+
