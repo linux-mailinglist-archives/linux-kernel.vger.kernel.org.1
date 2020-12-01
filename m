@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA912CAC6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ABC2CAC77
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404332AbgLATdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:33:35 -0500
-Received: from smtprelay0237.hostedemail.com ([216.40.44.237]:45346 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726148AbgLATdf (ORCPT
+        id S2392355AbgLATg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:36:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387432AbgLATg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:33:35 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 4FF3D18028E7E;
-        Tue,  1 Dec 2020 19:32:54 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:4321:4362:5007:6119:7514:7875:7903:8531:9545:10004:10400:10848:11026:11232:11658:11914:12043:12295:12296:12297:12555:12740:12895:13095:13439:13894:14093:14097:14181:14659:14721:21080:21221:21433:21451:21611:21627:30025:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: joke83_280d582273ad
-X-Filterd-Recvd-Size: 3300
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  1 Dec 2020 19:32:53 +0000 (UTC)
-Message-ID: <7f29e46d73c0b12ce53e659f0bcd3ec194522f2e.camel@perches.com>
-Subject: Re: [PATCH v3] checkpatch: fix TYPO_SPELLING check for words with
- apostrophe
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Date:   Tue, 01 Dec 2020 11:32:51 -0800
-In-Reply-To: <20201201190729.169733-1-dwaipayanray1@gmail.com>
-References: <20201201190729.169733-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 1 Dec 2020 14:36:28 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDBAC0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:35:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R5SUCHQ8/qMgiIJHmUJrStDsWioTT1j3yJ0DpJ9zmSU=; b=HdBRnDEQiteQwPVOHhvT3zvcDy
+        mmCd0JGSpuH3LgwPwv8wUiImHZ9c3fUx6J5JQGONMjRmUCYg+mp0ggmOFNXzTBtKV3A3/uxWoDI6q
+        EJvdI+NRylkY/tO4JWqkheL8iiOaG9TzWexLWfFY02ksuf74WvnNrLSF0QjssuscWebSidmsaifiY
+        4Ck6iZITkMLoIsP3OhepTBOBIAMK5Aj7xRGKNiiRSNQvcy1N/CMvsEXRoKPhuJcIc0FiAOpw7oh1r
+        qcmhuQgHexEWpc4gwu8ZegZXVO5HPjZJwogtGMDLJlD6SWWQPDJavQFy7gynigSZXLfz2dXwR96bg
+        tGcWMGfA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkBQM-00068c-O6; Tue, 01 Dec 2020 19:34:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD853302753;
+        Tue,  1 Dec 2020 20:34:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 981022C55544B; Tue,  1 Dec 2020 20:34:51 +0100 (CET)
+Date:   Tue, 1 Dec 2020 20:34:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
+ cookie on fork
+Message-ID: <20201201193451.GY3040@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-23-joel@joelfernandes.org>
+ <20201125111014.GS2414@hirez.programming.kicks-ass.net>
+ <20201201192028.GA222419@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201192028.GA222419@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-02 at 00:37 +0530, Dwaipayan Ray wrote:
-> checkpatch reports a false TYPO_SPELLING warning for some words
-> containing an apostrophe when run with --codespell option.
+On Tue, Dec 01, 2020 at 02:20:28PM -0500, Joel Fernandes wrote:
+> On Wed, Nov 25, 2020 at 12:10:14PM +0100, Peter Zijlstra wrote:
+> > On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
+> > > +void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie, bool group)
+> > > +{
+> > > +	if (!p)
+> > > +		return;
+> > > +
+> > > +	if (group)
+> > > +		p->core_group_cookie = cookie;
+> > > +	else
+> > > +		p->core_task_cookie = cookie;
+> > > +
+> > > +	/* Use up half of the cookie's bits for task cookie and remaining for group cookie. */
+> > > +	p->core_cookie = (p->core_task_cookie <<
+> > > +				(sizeof(unsigned long) * 4)) + p->core_group_cookie;
+> > 
+> > This seems dangerous; afaict there is nothing that prevents cookie
+> > collision.
+> 
+> This is fixed in a later patch by Josh "sched: Refactor core cookie into
+> struct" where we are having independent fields for each type of cookie.
 
-Thanks.
-Acked-by: Joe Perches <joe@perches.com>
+So I don't think that later patch is right... That is, it works, but
+afaict it's massive overkill.
 
-> 
-> A false positive is "doesn't". Occurrence of the word causes
-> checkpatch to emit the following warning:
-> 
-> "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
-> 
-> Modify the regex pattern to be more in line with the codespell
-> default word matching regex. This fixes the word capture and
-> avoids the false warning.
-> 
-> In addition, highlight the misspelled word location by adding a
-> caret below the word.
-> 
-> Suggested-by: Joe Perches <joe@perches.com>
-> Reported-by: Peilin Ye <yepeilin.cs@gmail.com>
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> ---
-> Changes in v3:
-> - Highlight misspelled word location using a caret
-> 
-> Changes in v2:
-> - Use the default codespell word regex.
-> - Modify commit message to specify --codespell usage
-> 
->  scripts/checkpatch.pl | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 3c86ea737e9c..e8c1ed0b1fad 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3106,15 +3106,18 @@ sub process {
->  # Check for various typo / spelling mistakes
->  		if (defined($misspellings) &&
->  		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
-> -			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
-> +			while ($rawline =~ /(?:^|[^\w\-'`])($misspellings)(?:[^\w\-'`]|$)/gi) {
->  				my $typo = $1;
-> +				my $blank = copy_spacing($rawline);
-> +				my $ptr = substr($blank, 0, $-[1]) . "^";
-> +				my $hereptr = "$hereline$ptr\n";
->  				my $typo_fix = $spelling_fix{lc($typo)};
->  				$typo_fix = ucfirst($typo_fix) if ($typo =~ /^[A-Z]/);
->  				$typo_fix = uc($typo_fix) if ($typo =~ /^[A-Z]+$/);
->  				my $msg_level = \&WARN;
->  				$msg_level = \&CHK if ($file);
->  				if (&{$msg_level}("TYPO_SPELLING",
-> -						  "'$typo' may be misspelled - perhaps '$typo_fix'?\n" . $herecurr) &&
-> +						  "'$typo' may be misspelled - perhaps '$typo_fix'?\n" . $hereptr) &&
->  				    $fix) {
->  					$fixed[$fixlinenr] =~ s/(^|[^A-Za-z@])($typo)($|[^A-Za-z@])/$1$typo_fix$3/;
->  				}
+	COOKIE_CMP_RETURN(task_cookie);
+	COOKIE_CMP_RETURN(group_cookie);
+	COOKIE_CMP_RETURN(color);
+
+So if task_cookie matches, we consider group_cookie, if that matches we
+consider color.
+
+Now, afaict that's semantically exactly the same as just using the
+narrowest cookie. That is, use the task cookie if there is, and then,
+walking the cgroup hierarchy (up) pick the first cgroup cookie.
+
+(I don't understand the color thing, but lets have that discussion in
+that subthread)
+
+Which means you only need a single active cookie field.
+
+IOW, you're just making things complicated and expensive.
 
 
