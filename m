@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B611E2CA655
+	by mail.lfdr.de (Postfix) with ESMTP id 494DC2CA654
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389833AbgLAOwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391675AbgLAOwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 1 Dec 2020 09:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388491AbgLAOwH (ORCPT
+        with ESMTP id S2388952AbgLAOwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 09:52:07 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087F5C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:51:27 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id 1so1472502qka.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:51:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=55sCzQdwTnWWY4frFoH/T/BSKgGKnPew/6aq6eljiTo=;
-        b=Od7Oq8i5EKOt7lyAPLohe/T+qZWO41dmeqZhqZpqtDgfvunVjdg9tf32XLjJenj8L+
-         JGidx639XPF8hqU42hKavQY/o0ww8LWaxLXeStBRoE5igoG8X9kxoORory35BiCYr0E9
-         HzsGUGiqSTL1ts87Bl3ZH1DxxvuqoMl1tWsJ7EuEzbUtwafzKk0fS+JCI3C9x5JMkgFl
-         LcOoRC5QQT2Vi2QFULdi/0FU32TizK504jXS8wi2Dtd7rZI3SGHSEPXMul3KJgenD9SV
-         q8gQnWlGGaRf4lazzxswYs7WeQYK50tXi0qt5aobSwa6iH5VsOgJtcHrVMLessAf+PNy
-         wf6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=55sCzQdwTnWWY4frFoH/T/BSKgGKnPew/6aq6eljiTo=;
-        b=AEDfugba93tFltDLGRdKsuAJFB//+WpLDuT1XvHVgz/TdzMKMeH91w+r3VZ5h2TGSy
-         f3xd6LQ3lbyw1Kk+JiK+z1qx7kQxFeJIazSDljmyJRnXIxrJin0HudzSd91BfsdqIgFP
-         wahII0wSiq82uUizGDZ77Pkf5g7rG3aeAt+15/arFxq/I+6g6Opn0nto5yiJRRNoETWz
-         wV6bxaw3PT1sfQlNm/dxbBWQTpA6Wy2eUHDxTXTWheFZFa+EeP+5HDNA7xUbrbpm4pCD
-         PiBSHwM6xHcM/gdeVI2yXUjslZRKMunTUeW85YZop5axp7iCoGlVKNXo3Um3WfOx70Cw
-         kaSw==
-X-Gm-Message-State: AOAM530QorSdWORfDkUEuMmxZXNR1FbRapFrlMwBQDi2A0z0ptxaw9R7
-        M1gMgsPPOl9yTryE1Z7vPi7kSc+6DBCBEakfymy4sA==
-X-Google-Smtp-Source: ABdhPJzpKx5kjzDF60IrrSHfJjD1sCFpkAQsI2Hw2vF4+LKJGRJnyv7Y0PWJYKsCVbdIIj/02E5TWg3mKpDOj/VXPo4=
-X-Received: by 2002:a37:7b44:: with SMTP id w65mr3270634qkc.350.1606834285972;
- Tue, 01 Dec 2020 06:51:25 -0800 (PST)
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10481C0613D6;
+        Tue,  1 Dec 2020 06:51:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=79hZSRO8jFXaFARYMzWI118qQEGUmsvhHJdNwcVa21I=; b=mi9X6HehR6l4KQKYRy/GebLKZx
+        h1Pk0u4xUriQ+MV2OE4N0WH7o71QVdT0x20Ewv+vFGS7ElsE2EL5lvE52XRJ75yHMS9ChpoIPvbDK
+        vXnU1skMZA3IpPtAKatQzdTH8nyOfiXuV75KaNUzMXFxRYlZv81+Blg73jQINtPjfA/G/L3Eom5bV
+        HXzaXQxrZk2CvRs8xAyI+4WYXx9wah1AIqtK2T01NHJf7swhCEN3k8sQ0fVbef19X4KNrSPOlilcQ
+        ZY9dCJLuB5cnsSCSKbmk7B/5BB9eigmb+JcCuNV8TLoUVjYjd6mPKqzuDftNAxHmBxBh65PzP5FRO
+        xBR4/G2A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk6zv-000660-8q; Tue, 01 Dec 2020 14:51:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5FA293003E1;
+        Tue,  1 Dec 2020 15:51:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2BC9E2BAB3C8B; Tue,  1 Dec 2020 15:51:16 +0100 (CET)
+Date:   Tue, 1 Dec 2020 15:51:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>, rafael@kernel.org,
+        viresh.kumar@linaro.org, mingo@kernel.org, x86@kernel.org,
+        mark.rutland@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 1/2] sched/idle: Fix arch_cpu_idle() vs tracing
+Message-ID: <20201201145116.GX2414@hirez.programming.kicks-ass.net>
+References: <20201120114145.197714127@infradead.org>
+ <20201120114925.594122626@infradead.org>
+ <20201130210003.GA40619@roeck-us.net>
+ <20201201110209.GQ3040@hirez.programming.kicks-ass.net>
+ <yt9dh7p54u50.fsf@linux.ibm.com>
 MIME-Version: 1.0
-References: <20200924040152.30851-1-walter-zh.wu@mediatek.com>
- <87h7rfi8pn.fsf@nanos.tec.linutronix.de> <CACT4Y+a=GmYVZwwjyXwO=_AeGy4QB9X=5x7cL76erwjPvRW6Zw@mail.gmail.com>
- <871rg9hawf.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <871rg9hawf.fsf@nanos.tec.linutronix.de>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 1 Dec 2020 15:51:14 +0100
-Message-ID: <CACT4Y+bWm_bPdbes60u=3d_u34yxBBC7rGQz1yAt1FQXXqP4-A@mail.gmail.com>
-Subject: Re: [PATCH v4 0/6] kasan: add workqueue and timer stack for generic KASAN
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yt9dh7p54u50.fsf@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 3:13 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> > Syzbot reports many UAF issues for workqueue or timer, see [1] and [2].
-> >> > In some of these access/allocation happened in process_one_work(),
-> >> > we see the free stack is useless in KASAN report, it doesn't help
-> >> > programmers to solve UAF on workqueue. The same may stand for times.
-> >> >
-> >> > This patchset improves KASAN reports by making them to have workqueue
-> >> > queueing stack and timer stack information. It is useful for programmers
-> >> > to solve use-after-free or double-free memory issue.
-> >> >
-> >> > Generic KASAN also records the last two workqueue and timer stacks and
-> >> > prints them in KASAN report. It is only suitable for generic KASAN.
+On Tue, Dec 01, 2020 at 12:56:27PM +0100, Sven Schnelle wrote:
+> Hi Peter,
+> 
+> Peter Zijlstra <peterz@infradead.org> writes:
+> 
+> > On Mon, Nov 30, 2020 at 01:00:03PM -0800, Guenter Roeck wrote:
+> >> On Fri, Nov 20, 2020 at 12:41:46PM +0100, Peter Zijlstra wrote:
+> >> > We call arch_cpu_idle() with RCU disabled, but then use
+> >> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
+> >> > 
+> >> > Switch all arch_cpu_idle() implementations to use
+> >> > raw_local_irq_{en,dis}able() and carefully manage the
+> >> > lockdep,rcu,tracing state like we do in entry.
+> >> > 
+> >> > (XXX: we really should change arch_cpu_idle() to not return with
+> >> > interrupts enabled)
+> >> > 
+> >> 
+> >> Has this patch been tested on s390 ? Reason for asking is that it causes
+> >> all my s390 emulations to crash. Reverting it fixes the problem.
 > >
-> > Walter, did you mail v5?
-> > Checking statuses of KASAN issues and this seems to be not in linux-next.
-> >
-> >> > [1]https://groups.google.com/g/syzkaller-bugs/search?q=%22use-after-free%22+process_one_work
-> >> > [2]https://groups.google.com/g/syzkaller-bugs/search?q=%22use-after-free%22%20expire_timers
-> >>
-> >> How are these links useful for people who do not have a gurgle account?
-> >
-> > This is a public mailing list archive, so effectively the same way as
-> > lore links ;)
->
-> Just that it asked me to log in last time. That's why I wrote the
-> above. Today it does not, odd.
+> > My understanding is that it changes the error on s390. Previously it
+> > would complain about the local_irq_enable() in arch_cpu_idle(), now it
+> > complains when taking an interrupt during idle.
+> 
+> I looked into adding the required functionality for s390, but the code
+> we would need to add to entry.S is rather large - as you noted we would
+> have to duplicate large portions of irqentry_enter() into our code.
+> Given that s390 was fine before that patch, can you revert it and submit
+> it again during the next merge window?
 
-Some random permissions settings changes were observed before, so I
-can believe that.
+So the thing that got me started here was:
+
+  https://lkml.kernel.org/r/yt9dimbm79qi.fsf@linux.ibm.com/
+
+And I got a very similar report from Mark for arm64. I'm not sure what
+you meanwhile did to get rid of that. But I'm struggling to understand
+how s390 can work on v5.10-rc5.
+
+There's just too much calling into tracing while RCU is stopped.
