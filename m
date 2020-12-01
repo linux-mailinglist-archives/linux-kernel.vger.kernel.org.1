@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C162C9A1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953052C9A2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbgLAIzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:55:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57722 "EHLO mail.kernel.org"
+        id S2387585AbgLAIzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729090AbgLAIzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:55:21 -0500
+        id S2387558AbgLAIzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C98F221FF;
-        Tue,  1 Dec 2020 08:54:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FF6021D7A;
+        Tue,  1 Dec 2020 08:54:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812895;
-        bh=cNppHkZnF3+Z7WHrTwu0Ms/zaJMXaE3guCjcVLUTt4s=;
+        s=korg; t=1606812869;
+        bh=BxOy3NRojKPNp5qD23VYpEnFipfJooUeIQohb2/hlBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fhvdi4mOrb8JUipJwnUkTJvTm1COlmhDhsmr25bMrwwNdDXSt0MOg/Obm6nfUEwXY
-         NVKhH+cPf7CScLGIg3cI65CFh0wbV3X3HQ18f5KXDL8M00MGbX1oEyXuG7BosX6yFs
-         g8Pr6x2AR7+KOHDSleVUm5Cm8i6DfWVZqV62Pf+I=
+        b=MA5Lc7iPQ8qK+nT8V6Fs0I65mUSADuVbWzeqEIwCG/hem1TtDqN4M2cdlvfGO855R
+         xTT0d2tuxT+hpOn3lYtyxwTSx+TwVRTjLo3TvwfEYNOze+rmp5qGIJtW0cFpcjVP+k
+         2N8n0Y4JAv6Ez8kiKH4Ya83oc4PGzSdaEMDkOv7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pablo Ceballos <pceballos@google.com>,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
         Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 13/42] HID: hid-sensor-hub: Fix issue with devices with no report ID
-Date:   Tue,  1 Dec 2020 09:53:11 +0100
-Message-Id: <20201201084642.846849568@linuxfoundation.org>
+Subject: [PATCH 4.4 06/24] HID: hid-sensor-hub: Fix issue with devices with no report ID
+Date:   Tue,  1 Dec 2020 09:53:12 +0100
+Message-Id: <20201201084638.063938557@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
+References: <20201201084637.754785180@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,10 +61,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-sensor-hub.c
-index 4ef73374a8f98..7001f07ca3996 100644
+index 8efaa88329aa3..83e45d5801a98 100644
 --- a/drivers/hid/hid-sensor-hub.c
 +++ b/drivers/hid/hid-sensor-hub.c
-@@ -489,7 +489,8 @@ static int sensor_hub_raw_event(struct hid_device *hdev,
+@@ -473,7 +473,8 @@ static int sensor_hub_raw_event(struct hid_device *hdev,
  		return 1;
  
  	ptr = raw_data;
