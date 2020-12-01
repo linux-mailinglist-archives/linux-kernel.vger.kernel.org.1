@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7AC2C98E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71E12C98FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbgLAILY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:11:24 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:35430 "EHLO inva020.nxp.com"
+        id S1728524AbgLAIT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:19:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726342AbgLAILY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:11:24 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3BB8D1A0A4D;
-        Tue,  1 Dec 2020 09:10:37 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 42FB21A0A4A;
-        Tue,  1 Dec 2020 09:10:35 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 502EA402BC;
-        Tue,  1 Dec 2020 09:10:32 +0100 (CET)
-From:   andy.tang@nxp.com
-To:     axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yuantian Tang <andy.tang@nxp.com>
-Subject: [PATCH] ahci: qoriq: update the port register settings
-Date:   Tue,  1 Dec 2020 16:18:41 +0800
-Message-Id: <20201201081841.16228-1-andy.tang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728193AbgLAITz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:19:55 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FEFD2085B;
+        Tue,  1 Dec 2020 08:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606810755;
+        bh=0/yOIYQ98fm3d3u1FxrZ+6Y5Jj/gTetcUK3rSD1zAa4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t902PH78vejIKt9/oIji5wZ3DjzlRhnwu3eYsRbwg/CWslYw7nbCdkcgEdwR4175w
+         uuC5l45f1FM66NEZ7BPb1LVrc7xg5uGM0J8U+pVcbsmX7Jm/hj5WjGBsqw1M2RM3bO
+         ZtzV1br9AYFBwyS9KsO7fZ1Q8EP4XgKphPnZ+Cf4=
+Date:   Tue, 1 Dec 2020 09:20:27 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Sasha Levin <sashal@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        x86@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
+Subject: Re: [stable 4.9] PANIC: double fault, error_code: 0x0 - clang boot
+ failed on x86_64
+Message-ID: <X8X8y4j9Ip+C5DwS@kroah.com>
+References: <CA+G9fYt0qHxUty2qt7_9_YTOZamdtknhddbsi5gc3PDy0PvZ5A@mail.gmail.com>
+ <X79NpRIqAHEp2Lym@kroah.com>
+ <CAKwvOdmfEY6fnNFUUzLvN9bKyeTt7OMc-Uvx=YqTuMR2BuD5XA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdmfEY6fnNFUUzLvN9bKyeTt7OMc-Uvx=YqTuMR2BuD5XA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuantian Tang <andy.tang@nxp.com>
+On Mon, Nov 30, 2020 at 12:12:39PM -0800, Nick Desaulniers wrote:
+> On Wed, Nov 25, 2020 at 10:38 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > Is the mainline 4.9 tree supposed to work with clang?  I didn't think
+> > that upstream effort started until 4.19 or so.
+> 
+> (For historical records, separate from the initial bug report that
+> started this thread)
+> 
+> I consider 785f11aa595b ("kbuild: Add better clang cross build
+> support") to be the starting point of a renewed effort to upstream
+> clang support. 785f11aa595b landed in v4.12-rc1.  I think most patches
+> landed between there and 4.15 (would have been my guess).  From there,
+> support was backported to 4.14, 4.9, and 4.4 for x86_64 and aarch64.
+> We still have CI coverage of those branches+arches with Clang today.
+> Pixel 2 shipped with 4.4+clang, Pixel 3 and 3a with 4.9+clang, Pixel 4
+> and 4a with 4.14+clang.  CrOS has also shipped clang built kernels
+> since 4.4+.
 
-The default values for Port register PORT_PHY2 and PORT_PHY3
-are better, no need to overwrite them.
-The following boards are affected: ls208x, ls1088a, ls1043a,
-ls1046a, ls1028a and ls1012a.
+Thanks for the info.  Naresh, does this help explain why maybe testing
+these kernel branches with clang might not be the best thing to do?
 
-Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
----
- drivers/ata/ahci_qoriq.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/drivers/ata/ahci_qoriq.c b/drivers/ata/ahci_qoriq.c
-index 5b46fc9aeb4a..896e4dba8500 100644
---- a/drivers/ata/ahci_qoriq.c
-+++ b/drivers/ata/ahci_qoriq.c
-@@ -32,8 +32,6 @@
- 
- /* port register default value */
- #define AHCI_PORT_PHY_1_CFG	0xa003fffe
--#define AHCI_PORT_PHY2_CFG	0x28184d1f
--#define AHCI_PORT_PHY3_CFG	0x0e081509
- #define AHCI_PORT_TRANS_CFG	0x08000029
- #define AHCI_PORT_AXICC_CFG	0x3fffffff
- 
-@@ -197,8 +195,6 @@ static int ahci_qoriq_phy_init(struct ahci_host_priv *hpriv)
- 			       ECC_DIS_ARMV8_CH2,
- 			       qpriv->ecc_addr);
- 		writel(AHCI_PORT_PHY_1_CFG, reg_base + PORT_PHY1);
--		writel(AHCI_PORT_PHY2_CFG, reg_base + PORT_PHY2);
--		writel(AHCI_PORT_PHY3_CFG, reg_base + PORT_PHY3);
- 		writel(AHCI_PORT_TRANS_CFG, reg_base + PORT_TRANS);
- 		if (qpriv->is_dmacoherent)
- 			writel(AHCI_PORT_AXICC_CFG, reg_base + PORT_AXICC);
-@@ -206,8 +202,6 @@ static int ahci_qoriq_phy_init(struct ahci_host_priv *hpriv)
- 
- 	case AHCI_LS2080A:
- 		writel(AHCI_PORT_PHY_1_CFG, reg_base + PORT_PHY1);
--		writel(AHCI_PORT_PHY2_CFG, reg_base + PORT_PHY2);
--		writel(AHCI_PORT_PHY3_CFG, reg_base + PORT_PHY3);
- 		writel(AHCI_PORT_TRANS_CFG, reg_base + PORT_TRANS);
- 		if (qpriv->is_dmacoherent)
- 			writel(AHCI_PORT_AXICC_CFG, reg_base + PORT_AXICC);
-@@ -221,8 +215,6 @@ static int ahci_qoriq_phy_init(struct ahci_host_priv *hpriv)
- 			       ECC_DIS_ARMV8_CH2,
- 			       qpriv->ecc_addr);
- 		writel(AHCI_PORT_PHY_1_CFG, reg_base + PORT_PHY1);
--		writel(AHCI_PORT_PHY2_CFG, reg_base + PORT_PHY2);
--		writel(AHCI_PORT_PHY3_CFG, reg_base + PORT_PHY3);
- 		writel(AHCI_PORT_TRANS_CFG, reg_base + PORT_TRANS);
- 		if (qpriv->is_dmacoherent)
- 			writel(AHCI_PORT_AXICC_CFG, reg_base + PORT_AXICC);
-@@ -238,8 +230,6 @@ static int ahci_qoriq_phy_init(struct ahci_host_priv *hpriv)
- 			       ECC_DIS_LS1088A,
- 			       qpriv->ecc_addr);
- 		writel(AHCI_PORT_PHY_1_CFG, reg_base + PORT_PHY1);
--		writel(AHCI_PORT_PHY2_CFG, reg_base + PORT_PHY2);
--		writel(AHCI_PORT_PHY3_CFG, reg_base + PORT_PHY3);
- 		writel(AHCI_PORT_TRANS_CFG, reg_base + PORT_TRANS);
- 		if (qpriv->is_dmacoherent)
- 			writel(AHCI_PORT_AXICC_CFG, reg_base + PORT_AXICC);
-@@ -247,8 +237,6 @@ static int ahci_qoriq_phy_init(struct ahci_host_priv *hpriv)
- 
- 	case AHCI_LS2088A:
- 		writel(AHCI_PORT_PHY_1_CFG, reg_base + PORT_PHY1);
--		writel(AHCI_PORT_PHY2_CFG, reg_base + PORT_PHY2);
--		writel(AHCI_PORT_PHY3_CFG, reg_base + PORT_PHY3);
- 		writel(AHCI_PORT_TRANS_CFG, reg_base + PORT_TRANS);
- 		if (qpriv->is_dmacoherent)
- 			writel(AHCI_PORT_AXICC_CFG, reg_base + PORT_AXICC);
--- 
-2.17.1
-
+greg k-h
