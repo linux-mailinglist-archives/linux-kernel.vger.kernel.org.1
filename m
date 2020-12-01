@@ -2,208 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144F22CA1A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3EC2CA1A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730805AbgLALk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730792AbgLALk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 1 Dec 2020 06:40:27 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60212 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730646AbgLALk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:40:26 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1BWoOc194166;
-        Tue, 1 Dec 2020 06:39:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=3R71xWX7EOICe2ryEC+thn9RyY+wps7xMitcUuPVvGQ=;
- b=qNeWEgcEULQYZHtcw8diO0EaB1t++qgyhsOrCbkp+yUvP3qz6mVgwRhcD/OeWjRVWglV
- +wOronTo9KDcfO0RlX5D/8+NuQp2Hz8wEPpNDDeC8ikzU9u5+/plvAnJliJIfqPrZU29
- ZajDNPwbVobmd/SJ7qQMboyWpGKXwb8TzDYqKSImWvbpD1tW+ZtYpmdBumlOBIg+Dn2s
- 8Mfa4cZZZAu6QndTFl10BPi++DL03i1oatATo59p4AIzQNy8m62ULNMZEqc3ysBrbR1W
- qDB8eYiYzKZTicKJ68Z8Qxks2S2z5joEn1KW2tJtTEGkkaBAoZTntjPA1IrFViCzX7FA lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjncvdr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 06:39:17 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B1BXHfK004063;
-        Tue, 1 Dec 2020 06:39:17 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjncvcy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 06:39:16 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B1BN0V4029991;
-        Tue, 1 Dec 2020 11:39:14 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 353e68b32v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 11:39:14 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B1BdCFn56951058
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Dec 2020 11:39:12 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E33974203F;
-        Tue,  1 Dec 2020 11:39:11 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00F2742045;
-        Tue,  1 Dec 2020 11:39:05 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.54.13])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Dec 2020 11:39:04 +0000 (GMT)
-Message-ID: <f0ac42878a713b270f7bad22d44f61739d582db8.camel@linux.ibm.com>
-Subject: Re: [PATCH v9 7/8] arm64: Store IMA log information in kimage used
- for kexec
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        bauerman@linux.ibm.com, robh@kernel.org,
-        gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
-        balajib@linux.microsoft.com
-Date:   Tue, 01 Dec 2020 06:39:04 -0500
-In-Reply-To: <20201113192243.1993-8-nramas@linux.microsoft.com>
-References: <20201113192243.1993-1-nramas@linux.microsoft.com>
-         <20201113192243.1993-8-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-01_04:2020-11-30,2020-12-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 mlxlogscore=999
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010075
+Received: from mail-eopbgr00096.outbound.protection.outlook.com ([40.107.0.96]:12193
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728042AbgLALkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:40:25 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YiCx60ZvIVo2ubwdNceZ92fug1CGxKJg8fq+VD2iHwk7LIXnQ1T9LvX98xxWNgjxN/j9m3KssXGZVpDu8X61CD7h98J00DV8DUga11fVVPcmHRurqkKEyVkRD6/C9iDvmxGB3CoeGytw3ngjJra6Xgmrnw5jLsYSOFm4/D1+h6mbfWNzY7jhwPTGrm14QsuqmmcwWr68c0Wv5Nvxe5vekiwrRagnKX59QlCqt8CGqeMbgc4TJz8UTzrD6hYKDD2s0Miiz2LxZIP9Nc/FIdq21JBcOc/JKg51Rp7mtVrMdYz51fkLZx3ryMQ/LOfVtJ2U35FBOhZ6DEGvFBEuOGZzUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EUTw9bqlijiLWiEMXVx49T2fVCgvkcJZfeVjvSZxtTQ=;
+ b=NJdocxYYAlvKP3DZQSNTlUL10NRN47uOkkoaVxU13s0EIspZPfSGV7lqw4iO8eb+4r7iBsH/unfNIy1R//xsrxWAubf7VziQbfASGsalZ9tzLoR8XmvpyAL47tLeu60ZeAEsmQC492j1SUUFuDlh9TXYuvhkt1M5cdDLLFCDcbNq7CoAfi799FdyB6JzCpAjWtkvbsvOa6mod73s6Sw5I8RCBW7wtNJg7JqsLWFEPm6j+VTDJ1QiCbSN+xm4RLRvFYxcvMNVZ+x7L1s2ZwaHWW7sPVr09Dn7z5y1ikOcnKZ9EF0MdrVWI1aayVRv5xIclp+g024Flo9YCy90jL4BqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EUTw9bqlijiLWiEMXVx49T2fVCgvkcJZfeVjvSZxtTQ=;
+ b=g1PHGS1u45J2izsf/0RHS/M/R5E3N6kG64/FJ47I2xbGuQcbUkx3M8nld/o1q1aduQpzshid3qgsYgidGTJk8+qCOyj0vgCW5NWU9kFwkkmB2oCG83CvZWnTGVnnGq0I0xFY0A0TSyiNcanZlzutrNxtZE256QlohvxoeVkucu8=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM9PR10MB4514.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:26d::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 1 Dec
+ 2020 11:39:35 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9d5:953d:42a3:f862]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9d5:953d:42a3:f862%7]) with mapi id 15.20.3611.031; Tue, 1 Dec 2020
+ 11:39:35 +0000
+From:   Schrempf Frieder <frieder.schrempf@kontron.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Gorand <charles.gorand@effinnov.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH v3] NFC: nxp-nci: Make firmware GPIO pin optional
+Date:   Tue,  1 Dec 2020 12:39:09 +0100
+Message-Id: <20201201113921.6572-1-frieder.schrempf@kontron.de>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [46.142.171.176]
+X-ClientProxiedBy: AM0PR03CA0009.eurprd03.prod.outlook.com
+ (2603:10a6:208:14::22) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fs-work.localdomain (46.142.171.176) by AM0PR03CA0009.eurprd03.prod.outlook.com (2603:10a6:208:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Tue, 1 Dec 2020 11:39:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bfbe8d01-9d6c-4a26-8a70-08d895edc70a
+X-MS-TrafficTypeDiagnostic: AM9PR10MB4514:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM9PR10MB4514318E0351B876FBC4DDA4E9F40@AM9PR10MB4514.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:669;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O/xuLoZYsy4gzVNcfjw4mYp9JW2f1FcavmdxtBWnf/kP+F4X1EOBmJCISqHMNGCJBp/PzPF8uEw/NKpqc92HysxvG2IuhlkIGWluGE+ApjCpsUpCflyyiKwBROKCMHKkcCgTL4wU9Ka+91eDwy67C0YNYlYIZvnF1d6QVuYl+yDRjPkciEx5XVavKaNd4P5Iqo/Cvq2w+4y/bT1B1pspMM3ZcDW9AQXAX7wugB0hb9eIwYG4OIKVSW+hwCWYuRV6Tpvkxatv4FtU9hj6gZiZTGKek5Ph8JdnK93IJt6bpZ/pnOVxBampueuNq0AKmjxmK9cNaTPYfqQ+rJwQ9j+xxg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(396003)(39860400002)(7049001)(6506007)(8676002)(26005)(83380400001)(16526019)(186003)(478600001)(110136005)(6486002)(86362001)(8936002)(54906003)(52116002)(36756003)(316002)(5660300002)(1076003)(6512007)(6666004)(66476007)(956004)(2616005)(4326008)(66946007)(66556008)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?7u14C0wpsYA9beuGLuhUSyEYyDeQ1K0yMT60ArfxrRCZ0YiIQURB7D5/W0px?=
+ =?us-ascii?Q?R6SsWKKpPJBwVmXD7QeosKeOWcazG7FAlkdTPMfUFJ+RRSnDWR6LbHzgzqrq?=
+ =?us-ascii?Q?Qpd6U586dGSRrZ3HtMndjc/+PRuS+eOYWdyALuvgIOoCazW2XiqoI0+FFz/V?=
+ =?us-ascii?Q?PTjmmGCkMOaUG406M4epKza3dYorLnZ87o+xXDhTmDa4WnsMkjuQrno7D1rZ?=
+ =?us-ascii?Q?MAHLQEYhRpIDuZH5ILG6kspfzQAA/ZjIfnkKAoQa7YHshVvmCrTTFwEz5wRF?=
+ =?us-ascii?Q?JFwgrnkOuBJqf0/RQ7Qb1uKhjf9CSIceqK5lqQ/NuL9ivHxCoI/SMtwOzoDK?=
+ =?us-ascii?Q?MHDC3CzHhn6ZvaqU/M2ocsno0ic8DwgO1Ti4WUGSs7Nq8df3w++5U8zzypu4?=
+ =?us-ascii?Q?Zd4FPk89kUJHUpDF/Hp03uc9N2BdeacUyOrsdVJR4vPlRMORvMSPmoKuQRoy?=
+ =?us-ascii?Q?RQ/+HXEy2d/0HMzaKC2Pu/2y5prfdMPp9GGIInOTiNcY8+QC44DJQH9HxnVo?=
+ =?us-ascii?Q?qV5TGLic/i/ydOigwAOhMJXxogPFf9Ik1MwwHhDUwIC2C94l2AGTyfEcRH/y?=
+ =?us-ascii?Q?pkRsTgfn9TjCjJ9IKoQzRBBKrDkUdG/8meIDJSSAM02+zO9JmEeiGv0aDZoe?=
+ =?us-ascii?Q?z6WTKQvAk2Fowt+bUw0QiuZtNttU317l82JTiGGItpmrKsgwGoGjfC69IyaX?=
+ =?us-ascii?Q?hbtETgoBZylzA/fnlcRD1nTPbw1JmN8kLhl1R0YWdp2ADJH0eiU8bZLEqxux?=
+ =?us-ascii?Q?MjN/a2QysJtDZjPwxHPad63YWRX8aKXHNVYd9czKQ8vtz5eQj2TLSZzkYbWC?=
+ =?us-ascii?Q?KzKNOWgl/iidkzJ/LMimhzXGCJEvaSYM3zLiAGPkz0tpNAsDFIv2TzH6MPY0?=
+ =?us-ascii?Q?in+GrYw3c7I8kZRm4dUXgX8+Ccwqg7TDbFX1G4Mfh3yrU7y0BAeAkEOX2ZCY?=
+ =?us-ascii?Q?McTdMeBq1iDTCQI/h1XAFkSDedfTdmJOmnHhLgn9HvW8yLhTGyTO6rIZjgCj?=
+ =?us-ascii?Q?aEvZ?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: bfbe8d01-9d6c-4a26-8a70-08d895edc70a
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2020 11:39:35.3628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9rwXakWHE6YQgqWY1HwvLj/8t6Y06jX6WgafPl9haDBD+faZ5TpX8CkpC8RcLvNtSqVDGKrPfOwYSlJkknZQ7e6kBINlrNNi6a4NHbVPmEo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4514
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-11-13 at 11:22 -0800, Lakshmi Ramasubramanian wrote:
-> Address and size of the buffer containing the IMA measurement log need
-> to be passed from the current kernel to the next kernel on kexec.
-> 
-> Add address and size fields to "struct kimage_arch" for ARM64 platform
-> to hold the address and size of the IMA measurement log buffer.
-> Define an architecture specific function for ARM64 namely
-> arch_ima_add_kexec_buffer() that will set the address and size of
-> the current kernel's IMA buffer to be passed to the next kernel on kexec.
-> 
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-> ---
->  arch/arm64/include/asm/ima.h   | 18 ++++++++++++++++++
->  arch/arm64/include/asm/kexec.h |  3 +++
->  arch/arm64/kernel/Makefile     |  1 +
->  arch/arm64/kernel/ima_kexec.c  | 34 ++++++++++++++++++++++++++++++++++
->  4 files changed, 56 insertions(+)
->  create mode 100644 arch/arm64/include/asm/ima.h
->  create mode 100644 arch/arm64/kernel/ima_kexec.c
-> 
-> diff --git a/arch/arm64/include/asm/ima.h b/arch/arm64/include/asm/ima.h
-> new file mode 100644
-> index 000000000000..507fc94ddaba
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/ima.h
-> @@ -0,0 +1,18 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright (C) 2019 Microsoft Corporation
-> + *
-> + * Author: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> + *
-> + */
-> +#ifndef _ASM_ARCH_IMA_H
-> +#define _ASM_ARCH_IMA_H
-> +
-> +struct kimage;
-> +
-> +#ifdef CONFIG_IMA_KEXEC
-> +int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
-> +			      size_t size);
-> +#endif /* CONFIG_IMA_KEXEC */
-> +
-> +#endif /* _ASM_ARCH_IMA_H */
-> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-> index d24b527e8c00..7bd60c185ad3 100644
-> --- a/arch/arm64/include/asm/kexec.h
-> +++ b/arch/arm64/include/asm/kexec.h
-> @@ -100,6 +100,9 @@ struct kimage_arch {
->  	void *elf_headers;
->  	unsigned long elf_headers_mem;
->  	unsigned long elf_headers_sz;
-> +
-> +	phys_addr_t ima_buffer_addr;
-> +	size_t ima_buffer_size;
->  };
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Any reason these definitions are not conditionally defined based on
-CONFIG_IMA_KEXEC, like on powerpc?
+There are other NXP NCI compatible NFC controllers such as the PN7150
+that use an integrated firmware and therefore do not have a GPIO to
+select firmware downloading mode. To support this kind of controller,
+let's make the firmware GPIO optional.
 
-> 
-> diff --git a/arch/arm64/kernel/ima_kexec.c b/arch/arm64/kernel/ima_kexec.c
-> new file mode 100644
-> index 000000000000..1847f1230710
-> --- /dev/null
-> +++ b/arch/arm64/kernel/ima_kexec.c
-> @@ -0,0 +1,34 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2019 Microsoft Corporation
-> + *
-> + * Author: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> + *
-> + * File: ima_kexec.c
-> + *       Defines IMA kexec functions.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/kexec.h>
-> +#include <linux/types.h>
-> +#include <asm/ima.h>
-> +
-> +/**
-> + * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
-> + *
-> + * @image: kimage structure to set ima buffer information in for kexec
-> + * @load_addr: Start address of the IMA buffer
-> + * @size: size of the IMA buffer
-> + *
-> + * Architectures should use this function to pass on the IMA buffer
-> + * information to the next kernel.
-> + *
-> + * Return: 0 on success, negative errno on error.
-> + */
-> +int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
-> +			      size_t size)
-> +{
-> +	image->arch.ima_buffer_addr = load_addr;
-> +	image->arch.ima_buffer_size = size;
-> +	return 0;
-> +}
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-This is exactly the same as the powerpc version.  Couldn't there be a
-common version of this as well?
+---
+Changes in v2:
+  * Remove unneeded null check for phy->gpiod_fw
 
-Mimi
+Changes in v3:
+  * Improve commit message
+  * Add Andy's R-b tag
+---
+ Documentation/devicetree/bindings/net/nfc/nxp-nci.txt | 2 +-
+ drivers/nfc/nxp-nci/i2c.c                             | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-
+diff --git a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+index cfaf88998918..cb2385c277d0 100644
+--- a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
++++ b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+@@ -6,11 +6,11 @@ Required properties:
+ - reg: address on the bus
+ - interrupts: GPIO interrupt to which the chip is connected
+ - enable-gpios: Output GPIO pin used for enabling/disabling the chip
+-- firmware-gpios: Output GPIO pin used to enter firmware download mode
+ 
+ Optional SoC Specific Properties:
+ - pinctrl-names: Contains only one value - "default".
+ - pintctrl-0: Specifies the pin control groups used for this controller.
++- firmware-gpios: Output GPIO pin used to enter firmware download mode
+ 
+ Example (for ARM-based BeagleBone with NPC100 NFC controller on I2C2):
+ 
+diff --git a/drivers/nfc/nxp-nci/i2c.c b/drivers/nfc/nxp-nci/i2c.c
+index 9f60e4dc5a90..7e451c10985d 100644
+--- a/drivers/nfc/nxp-nci/i2c.c
++++ b/drivers/nfc/nxp-nci/i2c.c
+@@ -286,7 +286,7 @@ static int nxp_nci_i2c_probe(struct i2c_client *client,
+ 		return PTR_ERR(phy->gpiod_en);
+ 	}
+ 
+-	phy->gpiod_fw = devm_gpiod_get(dev, "firmware", GPIOD_OUT_LOW);
++	phy->gpiod_fw = devm_gpiod_get_optional(dev, "firmware", GPIOD_OUT_LOW);
+ 	if (IS_ERR(phy->gpiod_fw)) {
+ 		nfc_err(dev, "Failed to get FW gpio\n");
+ 		return PTR_ERR(phy->gpiod_fw);
+-- 
+2.17.1
 
