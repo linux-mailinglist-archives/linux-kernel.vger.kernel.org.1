@@ -2,66 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B762C964F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC9B2C9651
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728039AbgLAEMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 23:12:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60066 "EHLO mail.kernel.org"
+        id S1728162AbgLAEOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 23:14:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726614AbgLAEMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 23:12:24 -0500
-Received: from localhost (unknown [122.171.214.243])
+        id S1728056AbgLAEOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 23:14:51 -0500
+Received: from localhost (unknown [104.132.1.66])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6549020725;
-        Tue,  1 Dec 2020 04:11:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49A1420725;
+        Tue,  1 Dec 2020 04:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606795903;
-        bh=SdakvgRnTxtSgskiL5/rtYasL84SX/GuXdSsUwb3fts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PYrfTCVG9xvWAzt4axPZRVoD3DNqJR5CMtcAwK5NKhEXpI+oXdghm4i6wwZMDRd1J
-         qa/QWysryw5R3A3xw17Z/ToI4wXNLzSZokwwo6V6I0DXbKFEu/HyKiNGC8tqgW5B2Q
-         7EVn+ccvaBshnaOysYw5kLX4KVvchTnDxk261SAE=
-Date:   Tue, 1 Dec 2020 09:41:38 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     "Liao, Bard" <bard.liao@intel.com>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jank@cadence.com" <jank@cadence.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "hui.wang@canonical.com" <hui.wang@canonical.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "Kale, Sanyog R" <sanyog.r.kale@intel.com>
-Subject: Re: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
-Message-ID: <20201201041138.GY8403@vkoul-mobl>
-References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
- <DM6PR11MB4074311B4E0B70F24383E754FFF40@DM6PR11MB4074.namprd11.prod.outlook.com>
+        s=default; t=1606796050;
+        bh=PlLOAxsEMv5+xbPFqK55E56Pqe82bs9RFICqdVs/xuA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y4ggzrxIARtzC+hrMoiQOKkijo7yTCg4STb2dZUi3eZkQTkSQQEPfH2/8YEYRYlI9
+         cJENdFlu6VYC2XBvPKd3HVMFrU8Aim0ULyFSqNlmmHgBPVWjYaw0nIuM7VqeIlhpTO
+         oAlzQOMnE681ybFQS1wph88vFF6CDFJ75ra8qZmM=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     cang@codeaurora.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
+        bvanassche@acm.org, martin.petersen@oracle.com,
+        stanley.chu@mediatek.com, Randall Huang <huangrandall@google.com>,
+        Leo Liou <leoliou@google.com>, Jaegeuk Kim <jaegeuk@google.com>
+Subject: [PATCH] scsi: ufs: clear uac for RPMB after ufshcd resets
+Date:   Mon, 30 Nov 2020 20:14:02 -0800
+Message-Id: <20201201041402.3860525-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB4074311B4E0B70F24383E754FFF40@DM6PR11MB4074.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-12-20, 02:42, Liao, Bard wrote:
+From: Randall Huang <huangrandall@google.com>
 
-> Hi Vinod/Mark,
-> 
-> Could we take this series into Vinod's tree with Mark's Acked-by?
-> It failed to build on Mark's tree.
+If RPMB is not provisioned, we may see RPMB failure after UFS suspend/resume.
+Inject request_sense to clear uac in ufshcd reset flow.
 
-I see Mark has already applied 1-3 ..
+Signed-off-by: Randall Huang <huangrandall@google.com>
+Signed-off-by: Leo Liou <leoliou@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-Thanks
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index dba3ee307307..c728c00b58db 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -220,6 +220,7 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba);
+ static int ufshcd_eh_host_reset_handler(struct scsi_cmnd *cmd);
+ static int ufshcd_clear_tm_cmd(struct ufs_hba *hba, int tag);
+ static void ufshcd_hba_exit(struct ufs_hba *hba);
++static int ufshcd_clear_ua_wluns(struct ufs_hba *hba);
+ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
+ static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+ 				 bool skip_ref_clk);
+@@ -6814,7 +6815,8 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+ 
+ 	/* Establish the link again and restore the device */
+ 	err = ufshcd_probe_hba(hba, false);
+-
++	if (!err)
++		ufshcd_clear_ua_wluns(hba);
+ out:
+ 	if (err)
+ 		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+@@ -8304,13 +8306,7 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
+ 	 * handling context.
+ 	 */
+ 	hba->host->eh_noresume = 1;
+-	if (hba->wlun_dev_clr_ua) {
+-		ret = ufshcd_send_request_sense(hba, sdp);
+-		if (ret)
+-			goto out;
+-		/* Unit attention condition is cleared now */
+-		hba->wlun_dev_clr_ua = false;
+-	}
++	ufshcd_clear_ua_wluns(hba);
+ 
+ 	cmd[4] = pwr_mode << 4;
+ 
 -- 
-~Vinod
+2.29.2.454.gaff20da3a2-goog
+
