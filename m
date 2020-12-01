@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447972C9BCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F0A2C9AF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389943AbgLAJMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:12:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47718 "EHLO mail.kernel.org"
+        id S2387843AbgLAJDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:03:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389886AbgLAJMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:12:03 -0500
+        id S1727770AbgLAJCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:02:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5015920671;
-        Tue,  1 Dec 2020 09:11:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 498CE206C1;
+        Tue,  1 Dec 2020 09:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813907;
-        bh=bS7P7B3lMjsOed17TZjqOIDLwmzE7rc+WAAwBchKx/g=;
+        s=korg; t=1606813330;
+        bh=QnqNeQ8YPPwrJ/IQ6gFGEOgIou9X5w4DbBWp2jUcZs4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jeQIRDyzVbsSXqKlYTCrEbgnpe5gpHuontMehmW5sXEsyFC+fZAFac19I8hiE8Ksb
-         a5tMPeZDJPPSjmjV6YCrLkawKISpXT4zulX4rSei0tTahuv/xKtjuN/W/v/iCI1t1/
-         K5+F6hWlFZ54Zr2urGtUVi1q6sF+tmvjGxZRK6d4=
+        b=qE/C6atcZcrIATHRfOF57LSu8ThQs19P2BtdkkceCBx5XXW4qTPHrqCX70Z7yZuTj
+         LQqPxoGZ/YEUZ/vThMxIyQFmFIOPBjI5OqUvYEL+5vCw53UUssSb3c/slx4/Is3Jl6
+         uNDfjbGox7dCNtuOy0EympFIP16kHg+syscXLoYU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
-        Dany Madden <drt@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 100/152] ibmvnic: fix call_netdevice_notifiers in do_reset
-Date:   Tue,  1 Dec 2020 09:53:35 +0100
-Message-Id: <20201201084724.963956594@linuxfoundation.org>
+Subject: [PATCH 4.19 31/57] scsi: ufs: Fix race between shutdown and runtime resume flow
+Date:   Tue,  1 Dec 2020 09:53:36 +0100
+Message-Id: <20201201084650.657187665@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Stanley Chu <stanley.chu@mediatek.com>
 
-[ Upstream commit 8393597579f5250636f1cff157ea73f402b6501e ]
+[ Upstream commit e92643db514803c2c87d72caf5950b4c0a8faf4a ]
 
-When netdev_notify_peers was substituted in
-commit 986103e7920c ("net/ibmvnic: Fix RTNL deadlock during device reset"),
-call_netdevice_notifiers(NETDEV_RESEND_IGMP, dev) was missed.
-Fix it now.
+If UFS host device is in runtime-suspended state while UFS shutdown
+callback is invoked, UFS device shall be resumed for register
+accesses. Currently only UFS local runtime resume function will be invoked
+to wake up the host.  This is not enough because if someone triggers
+runtime resume from block layer, then race may happen between shutdown and
+runtime resume flow, and finally lead to unlocked register access.
 
-Fixes: 986103e7920c ("net/ibmvnic: Fix RTNL deadlock during device reset")
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
-Reviewed-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+To fix this, in ufshcd_shutdown(), use pm_runtime_get_sync() instead of
+resuming UFS device by ufshcd_runtime_resume() "internally" to let runtime
+PM framework manage the whole resume flow.
+
+Link: https://lore.kernel.org/r/20201119062916.12931-1-stanley.chu@mediatek.com
+Fixes: 57d104c153d3 ("ufs: add UFS power management support")
+Reviewed-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index c6ee42278fdcf..723651b34f94d 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2087,8 +2087,10 @@ static int do_reset(struct ibmvnic_adapter *adapter,
- 	for (i = 0; i < adapter->req_rx_queues; i++)
- 		napi_schedule(&adapter->napi[i]);
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index a63119c35fde8..7e4e6e982055e 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -7926,11 +7926,7 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+ 	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
+ 		goto out;
  
--	if (adapter->reset_reason != VNIC_RESET_FAILOVER)
-+	if (adapter->reset_reason != VNIC_RESET_FAILOVER) {
- 		call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
-+		call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
-+	}
+-	if (pm_runtime_suspended(hba->dev)) {
+-		ret = ufshcd_runtime_resume(hba);
+-		if (ret)
+-			goto out;
+-	}
++	pm_runtime_get_sync(hba->dev);
  
- 	rc = 0;
- 
+ 	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
+ out:
 -- 
 2.27.0
 
