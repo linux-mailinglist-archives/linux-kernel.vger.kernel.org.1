@@ -2,105 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3262CA528
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C95482CA55C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391644AbgLAOJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:09:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391358AbgLAOJq (ORCPT
+        id S2391617AbgLAONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:13:14 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:38140 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729321AbgLAONK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:09:46 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A61BC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:09:06 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id x4so948877vsp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:09:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d53CrRsuKFphGM0Ukf26idzqPR8FDHjnWAcVRccas1I=;
-        b=gd0h+UVMpnRlERqZSy4ZoI7yNpwNZeBMLcq1+3ThevcQjCevGt+rEFnpKwWxOTg7c/
-         ssG84Q6/luF3lsB8owsaQhCO41dTc02NVV5sbmk1n+H/pBg5eke0HE4fglKZBLid6B4r
-         tJoETbGKWhU6ucVAhUQd3zKEOdjiP7Ehh5slPukj9fiKinVliooSZxwBaTXwVsYLrbHW
-         Japrf34VaRnQizRXgTvx9FMxWKZWL40Y1VoDNIuk5BUNMr4Q9W7uQB6bFDrW3/cuW0bn
-         kqiFN6S80So1r2kvEDwGAb+OaQQwWGMVNRTyAfsC0Ph1P9d1eJLia0uqnNylDpL4nNlq
-         My7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d53CrRsuKFphGM0Ukf26idzqPR8FDHjnWAcVRccas1I=;
-        b=kJS4Zt7sEYYPa1dXOCKjGVSjRJ6EdXR1gGmsh3mwiH9JwDAd000oRdI8Rt3cuQHpMd
-         KnVwNMWUU+VVXw9OwHpaVf9OSdLYn+d6RlvjT3MzA8Z0MEvJkU5uQq1yHUdDO5O2l7bB
-         OINrgRzxn6nQseKtyl30HFXim1UZCDeLNfBwJOWQSndsZJk+8Ai8xUsbjNIe8ZI4pA4h
-         0U1JVsgrQLLwpm6tGApus3WqV85KbCWctAqZELqPguC4oQ54QI3lxpkJz8FfEPv29hak
-         eGciW4t/aqAuJN2PG27B2GfSKA22//Kte13xjq8agIPnrN/Y77sAGq+o6vO4q4sRK0iQ
-         CP4w==
-X-Gm-Message-State: AOAM533YzXy27T2swfETOcRj02m4stI/npoZEsew3ffoxlpXlW1nCPgB
-        Qgb9BijZ9UyQUWCh04GbNAFxKbkdoUvWHWgjE4g=
-X-Google-Smtp-Source: ABdhPJx66nUh33kQIjJN8jGim1W210QOZOU1rDIRUdVx+dBdedc3HJE9QjDx9FMybhP6AnjfTQl3GAMqz9iqins3KHA=
-X-Received: by 2002:a05:6102:2148:: with SMTP id h8mr2584022vsg.12.1606831728725;
- Tue, 01 Dec 2020 06:08:48 -0800 (PST)
+        Tue, 1 Dec 2020 09:13:10 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1Dt8Jx186047;
+        Tue, 1 Dec 2020 14:11:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=CVxJrJvszPiYRoVvo8QMoaANjq0rT1w3VAIVepGqitY=;
+ b=Q8Pq03hifJp4hxcZYQuiJvbKTKZMKP2mLNTS1aHW6hAxlDpObu2xNteC6Yj/L36I1kmY
+ WSfMJZMdSk8bN2J9+UmYiF9MWo5KvhVT37I7ctRf5KKEocNW4v8PFVCDeiU3k6pn404k
+ Igra+V15xZpvhIpriUlAo6fac2mI985JVt4CqtU5vfkzzkfANqieFePUQJBzO6eRndXt
+ r4RGB+aUeJDKgHUaSwwmUD5k/B0oZ1T+RFudNU+Upzz4yF4kbfdExpcaXwIzXbiJCqdd
+ NFMbLYQpnYBf2dU4wooUhfeXNwTuWm/ESbR6RxVNN2eeS+ZfeOwZNtuQUXq4Dn72Z2fB vg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 353c2attky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 14:11:31 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1Du5hA003823;
+        Tue, 1 Dec 2020 14:09:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 3540ey0nwv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 14:09:31 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B1E8IaF039759;
+        Tue, 1 Dec 2020 14:09:29 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 3540ey0nvu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 14:09:29 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B1E9NOp018011;
+        Tue, 1 Dec 2020 14:09:24 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Dec 2020 06:09:23 -0800
+Date:   Tue, 1 Dec 2020 17:08:49 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@tron.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
+        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
+        bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-ext4@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        selinux@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hwmon@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+        tipc-discussion@lists.sourceforge.net,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
+        Joe Perches <joe@perches.com>, linux-integrity@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+Message-ID: <20201201140849.GH2767@kadam>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook>
+ <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook>
+ <CAKwvOdntVfXj2WRR5n6Kw7BfG7FdKpTeHeh5nPu5AzwVMhOHTg@mail.gmail.com>
 MIME-Version: 1.0
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
- <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <CAGngYiVoj4Gpid5W10pJfiE1FWY=294TJ4fE=CDG4=HwH0WrJw@mail.gmail.com>
- <460191B6-EDD3-46DE-A1ED-47F758F111E8@goldelico.com>
-In-Reply-To: <460191B6-EDD3-46DE-A1ED-47F758F111E8@goldelico.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 1 Dec 2020 09:08:34 -0500
-Message-ID: <CAGngYiVU5Udm6zUzrJPNF-V+uchhiv0-tWbUzb+_aSYVF=Dpug@mail.gmail.com>
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdntVfXj2WRR5n6Kw7BfG7FdKpTeHeh5nPu5AzwVMhOHTg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=924 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 8:36 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
->
-> Well I only complain because you wrote that you knew that it may
-> break something else. So it is known to induces a regression.
+On Mon, Nov 23, 2020 at 05:32:51PM -0800, Nick Desaulniers wrote:
+> On Sun, Nov 22, 2020 at 8:17 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Fri, Nov 20, 2020 at 11:51:42AM -0800, Jakub Kicinski wrote:
+> > > If none of the 140 patches here fix a real bug, and there is no change
+> > > to machine code then it sounds to me like a W=2 kind of a warning.
+> >
+> > FWIW, this series has found at least one bug so far:
+> > https://lore.kernel.org/lkml/CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com/
+> 
+> So looks like the bulk of these are:
+> switch (x) {
+>   case 0:
+>     ++x;
+>   default:
+>     break;
+> }
 
-We knew that it would fix an important, common problem, but
-we also knew that there is always a possibility of breaking
-something else when making a change to the core.
+This should not generate a warning.
 
->
-> Maybe printing a "please check your spi setup" in spi_setup() with
-> a comment hinting at your patch would have saved me a lot of time.
->
+> 
+> I have a patch that fixes those up for clang:
+> https://reviews.llvm.org/D91895
+> 
+> There's 3 other cases that don't quite match between GCC and Clang I
+> observe in the kernel:
+> switch (x) {
+>   case 0:
+>     ++x;
+>   default:
+>     goto y;
+> }
+> y:;
 
-You could ask the maintainer for such a policy, but I fear that soon
-the code would emit too many "please check" messages.
+This should generate a warning.
 
->
-> Well, I am sort of maintainer of a vendor kernel that tries to
-> follow linus/master and fix things before we release an LTS.
+> 
+> switch (x) {
+>   case 0:
+>     ++x;
+>   default:
+>     return;
+> }
 
-Makes sense, I understand your situation better now.
+Warn for this.
 
->
-> Anyways, there is still time until v5.10.0 to fix it better than by
-> a revert.
 
-When we find a fix, it'll have a Fixes: tag, which means it'll
-automatically be applied to every supported kernel, including
-v5.10 even if already released.
+> 
+> switch (x) {
+>   case 0:
+>     ++x;
+>   default:
+>     ;
+> }
 
->
-> Hope that you have an idea soon. I am happy to test any suggestions/patches/alternatives
-> better than a simple revert.
->
+Don't warn for this.
 
-Thank you, that's great. I may come back with a few suggestions
-for you to test this week.
+If adding a break statement changes the flow of the code then warn about
+potentially missing break statements, but if it doesn't change anything
+then don't warn about it.
+
+regards,
+dan carpenter
