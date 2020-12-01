@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77F92C9ADA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C372C9BDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388603AbgLAJBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:01:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38124 "EHLO mail.kernel.org"
+        id S2390016AbgLAJMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:12:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729172AbgLAJBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:01:38 -0500
+        id S2389988AbgLAJMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DFD6217A0;
-        Tue,  1 Dec 2020 09:00:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C96222247;
+        Tue,  1 Dec 2020 09:12:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813257;
-        bh=ZpkPbHABkPSdlvDPzsLQTFnY64e5kI/7Iuz5Ie22OKg=;
+        s=korg; t=1606813928;
+        bh=byTBPk8ZVz+XUki0AtiSUdLe6PhVwayiWW/WjRv0Cq8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jkIt1kbMn+0EgEiX59NViqJ+t3PHTdyW0HC80oBLHadUhgm35Gf1oJxG5Z5ZS3i5K
-         8q+WNpNwbe9jTahyRYmzofwKn8n/ZMUy8GpwVDEXag/hPzfBATarGhPcpb2V2F3VnR
-         4jp9S7dyqSdroAU7J7mC1Tn08fE8YcNCIh1W4PLU=
+        b=mZni2jxu5YNMs1JUhFHZ+eKIHZlp9ZcNSkfIZgjjVvBeEq2gifBrmqD0cYAgmn9dJ
+         nwRRYVDpu+EBBT8cLaD0OUgLn5HZ4Bco8wBOMvmzvoijUqDJ5m8tVUkzdh6Wn5XvQj
+         nv7wMc6WyP0YlJaoIX8YvMY3alsfh7lDnWC+MU6g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Manish Narani <manish.narani@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 36/57] cxgb4: fix the panic caused by non smac rewrite
+Subject: [PATCH 5.9 106/152] firmware: xilinx: Fix SD DLL node reset issue
 Date:   Tue,  1 Dec 2020 09:53:41 +0100
-Message-Id: <20201201084650.893433854@linuxfoundation.org>
+Message-Id: <20201201084725.723191562@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raju Rangoju <rajur@chelsio.com>
+From: Manish Narani <manish.narani@xilinx.com>
 
-[ Upstream commit bff453921ae105a8dbbad0ed7dd5f5ce424536e7 ]
+[ Upstream commit f4426311f927b01776edf8a45f6fad90feae4e72 ]
 
-SMT entry is allocated only when loopback Source MAC
-rewriting is requested. Accessing SMT entry for non
-smac rewrite cases results in kernel panic.
+Fix the SD DLL node reset issue where incorrect node is being referenced
+instead of SD DLL node.
 
-Fix the panic caused by non smac rewrite
+Fixes: 426c8d85df7a ("firmware: xilinx: Use APIs instead of IOCTLs")
 
-Fixes: 937d84205884 ("cxgb4: set up filter action after rewrites")
-Signed-off-by: Raju Rangoju <rajur@chelsio.com>
-Link: https://lore.kernel.org/r/20201118143213.13319-1-rajur@chelsio.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+Link: https://lore.kernel.org/r/1605534744-15649-1-git-send-email-manish.narani@xilinx.com
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/firmware/xilinx/zynqmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-index a62c96001761b..9160b44c68bbf 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-@@ -626,7 +626,8 @@ int set_filter_wr(struct adapter *adapter, int fidx)
- 		 FW_FILTER_WR_OVLAN_VLD_V(f->fs.val.ovlan_vld) |
- 		 FW_FILTER_WR_IVLAN_VLDM_V(f->fs.mask.ivlan_vld) |
- 		 FW_FILTER_WR_OVLAN_VLDM_V(f->fs.mask.ovlan_vld));
--	fwr->smac_sel = f->smt->idx;
-+	if (f->fs.newsmac)
-+		fwr->smac_sel = f->smt->idx;
- 	fwr->rx_chan_rx_rpl_iq =
- 		htons(FW_FILTER_WR_RX_CHAN_V(0) |
- 		      FW_FILTER_WR_RX_RPL_IQ_V(adapter->sge.fw_evtq.abs_id));
+diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+index 349ab39480068..d08ac824c993c 100644
+--- a/drivers/firmware/xilinx/zynqmp.c
++++ b/drivers/firmware/xilinx/zynqmp.c
+@@ -642,7 +642,7 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
+  */
+ int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
+ {
+-	return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, IOCTL_SET_SD_TAPDELAY,
++	return zynqmp_pm_invoke_fn(PM_IOCTL, node_id, IOCTL_SD_DLL_RESET,
+ 				   type, 0, NULL);
+ }
+ EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
 -- 
 2.27.0
 
