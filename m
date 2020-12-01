@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1BF2CA66B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DF62CA66D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391714AbgLAO62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:58:28 -0500
-Received: from nautica.notk.org ([91.121.71.147]:33666 "EHLO nautica.notk.org"
+        id S2391739AbgLAO7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:59:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:44412 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389268AbgLAO62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:58:28 -0500
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id 9C8B2C009; Tue,  1 Dec 2020 15:57:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1606834663; bh=KWM9/yD4Vf2GzZmCpfsa4i12NAQl3U3t4hvjjC22bOg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MFKTVGZOh4oWAw0CakGRic0UDGpkp8pWIkr8bX5tDScoKsPIdHhLZAWk7YX8av9En
-         mlfIhkeYy0qBFbIT23fFHxnHdHnNW2RP3QYYhvN40UAT1k/oKigfn5rXuYTYdCFo/u
-         Uk/Y/NQ9nUNrFo5toEIyczPDT+ggFf72SRjtAFMByDL+EHqSaRz7leYda06Aa3V7fY
-         xKJjo8o7sfWmrFr2M7TcGruAXAKoubEHJFdiiPXc+0n9rAb2qtKfU2zPnTDR5F2MMe
-         14G80x3mJEutD6kVcO3yL0lpLwdNl0Z5/J2KXRLk38BtUTk1ugGO/84EPtmqLydnMX
-         UWifdvQnHNoZw==
-Date:   Tue, 1 Dec 2020 15:57:28 +0100
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: 9p: add generic splice_read file operations
-Message-ID: <20201201145728.GA11144@nautica>
-References: <20201201135409.55510-1-toke@redhat.com>
+        id S2389972AbgLAO7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:59:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6CCA30E;
+        Tue,  1 Dec 2020 06:58:47 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.30.155])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 444ED3F575;
+        Tue,  1 Dec 2020 06:58:43 -0800 (PST)
+Date:   Tue, 1 Dec 2020 14:58:40 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, kvmarm@lists.cs.columbia.edu,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel-team@android.com
+Subject: Re: [PATCH v3 06/23] kvm: arm64: Add kvm-arm.protected early kernel
+ parameter
+Message-ID: <20201201145840.GC86881@C02TD0UTHF1T.local>
+References: <20201126155421.14901-1-dbrazdil@google.com>
+ <20201126155421.14901-7-dbrazdil@google.com>
+ <20201127163254.zxdrszlveaxhluwn@bogus>
+ <20201201131913.u7m2eifvtus74dra@google.com>
+ <20201201140734.GA86881@C02TD0UTHF1T.local>
+ <20201201144349.bglz7yicc3peixe6@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201201135409.55510-1-toke@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20201201144349.bglz7yicc3peixe6@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Toke Høiland-Jørgensen wrote on Tue, Dec 01, 2020:
-> The v9fs file operations were missing the splice_read operations, which
-> breaks sendfile() of files on such a filesystem. I discovered this while
-> trying to load an eBPF program using iproute2 inside a 'virtme' environment
-> which uses 9pfs for the virtual file system. iproute2 relies on sendfile()
-> with an AF_ALG socket to hash files, which was erroring out in the virtual
-> environment.
+On Tue, Dec 01, 2020 at 02:43:49PM +0000, David Brazdil wrote:
+> > > > be just me, but if you agree please update so that it doesn't give remote
+> > > > idea that it is not valid on VHE enabled hardware.
+> > > > 
+> > > > I was trying to run this on the hardware and was trying to understand the
+> > > > details on how to do that.
+> > > 
+> > > I see what you're saying, but !CONFIG_ARM64_VHE isn't accurate either. The
+> > > option makes sense if:
+> > >   1) all cores booted in EL2
+> > >      == is_hyp_mode_available()
+> > >   2) ID_AA64MMFR1_EL1.VH=0 or !CONFIG_ARM64_VHE
+> > >      == !is_kernel_in_hyp_mode()
+> > > 
+> > > The former feels implied for KVM, the latter could be 'Valid if the kernel
+> > > is running in EL1'? WDYT?
+> > 
+> > I reckon we can avoid the restriction if we instead add an early stub
+> > like with have for KASLR. That way we could parse the command line
+> > early, and if necessary re-initialize EL2 and drop to EL1 before the
+> > main kernel has to make any decisions about how to initialize things.
+> > That would allow us to have a more general kvm-arm.mode option where a
+> > single kernel Image could support:
+> > 
+> > * "protected" mode on nVHE or VHE HW
+> > * "nvhe" mode on nVHE or VHE HW
+> > * "vhe" mode on VHE HW
+> > 
+> > ... defaulting to VHE/nVHE modes depending on HW support.
+> > 
+> > That would also be somewhat future-proof if we have to add other
+> > variants of protected mode in future, as we could extend the mode option
+> > with parameters for each mode.
 > 
-> Since generic_file_splice_read() seems to just implement splice_read in
-> terms of the read_iter operation, I simply added the generic implementation
-> to the file operations, which fixed the error I was seeing. A quick grep
-> indicates that this is what most other file systems do as well.
+> Agreed that 'mode' is a more future-proof flag and I would very much love to
+> have an option to force nVHE on VHE HW. I however expect that the early stub
+> would not be a trivial addition and would not want to get into that in this
+> series. Could we agree on 'protected' as the only supported value for the time
+> being?
 
-Good catch, might as well do that.
-I'm surprised you didn't hit the same problem with splice_write?
+Sure, that works for me.
 
-I see iter_file_splice_write being used for it on many filesystems,
-it's probably better to add both?
-
-
-> The only caveat is that my test case was only hitting the
-> v9fs_file_operations_dotl implementation. I added it to the other file
-> operations structs as well because it seemed like the sensible thing to do
-> given that they all implement read_iter, but those are only compile tested.
-
-The logic is close enough that it should work, I'll run it through in
-cached mode at least first though (just mount with cache=loose or
-cache=fscache to hit v9fs_cached_file_operations_dotl yourself if you
-want to)
-non-dotl operations are harder to test, I don't have any server
-compatible either so we'll have to trust it works close enough...
-
-(note you can write comments such as this one after the three dashes
-line before the diff chunk so maintainers can reply without having it in
-commit message itself)
-
--- 
-Dominique
+Thanks,
+Mark. 
