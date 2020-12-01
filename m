@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED51A2C97AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C252C97AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgLAGvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 01:51:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgLAGvP (ORCPT
+        id S1727229AbgLAGwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 01:52:10 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:32907 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725859AbgLAGwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 01:51:15 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB732C0613CF;
-        Mon, 30 Nov 2020 22:50:34 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q22so205394pfk.12;
-        Mon, 30 Nov 2020 22:50:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5TbZRDFuS6pZ0tUWXbMbLbpnoAnGVDMU7ST9hOrM+1w=;
-        b=e+AzRyBR4DLj0yY3x0KPjvibjwmrpTiNoi6bJ+DdYAu5BLOJFpji490fQs/2baa3Og
-         zvKeYgBvczsT14jpc+vT8b9kdm4U4GdwfVCuIEWHw3k/pRd3pVJEuQvXxAu1Ev21E9Dr
-         9WxHziTFY1S9/w9Ct6N2kPaYIK7pQT5m6rtOa5TQ57l0f2MacMEz3zM7QEnsCP5sdpQN
-         9v6U/WEEWZKumdRnRHO0GbW39xkTq4yK+QrAo8r3iownSOLyzak21fNRDiz9VG+ce1Ac
-         aYmQ8os5cWiyFqFvuUgztBn661Aw7H6UwyZsFOlIsY2oA3CIKuV4M26OaONB1fc5Po3v
-         ssEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5TbZRDFuS6pZ0tUWXbMbLbpnoAnGVDMU7ST9hOrM+1w=;
-        b=B61kRVEjq5DQBX8ztv2SvLecFsSXwE5ual5M1MqOeDwJBEWK+Yq9netUVoTf5LXDQx
-         9Mw8DXrQlD1XlVbYu7o0lWUD+4/XZPhVUFnKtau26AmmNTj+bA00C4tORFe4XAj8MJJl
-         Vugeo9pl4/Z2Y7GoSmuFMm6NIYSJFCKlE2ig8uIVybI+7k4BAKiSik5emg5VzUby5RM+
-         DpVoD08RX/Lsvc0u7DQ/UctxOP07yOUVDdsI0UabYo/Y9gMvA7qwjKOvH3xgzmSvI8tU
-         wUivkGj2euqZb2q4gCAoHKCFCktAGpCzWH5v5RZTjxRd3NLMXeKdVWYq1wH6Zelw4HLU
-         anNw==
-X-Gm-Message-State: AOAM533esAJDXBRz+DfAqKsIneDt7kobrHVRWni/n+6bD7HqHJLNhzmO
-        bTEFC8H/aHoPzrELrZIOHfv+TYpiFB0=
-X-Google-Smtp-Source: ABdhPJxLXb0m/onpoQcyuCUIYX5W7JPNbhOhJrKliJRDzbDshn8gU+6egfzSiG5G1p6tIdZmUj6DCg==
-X-Received: by 2002:a63:a503:: with SMTP id n3mr1075553pgf.416.1606805434370;
-        Mon, 30 Nov 2020 22:50:34 -0800 (PST)
-Received: from localhost.localdomain ([8.210.202.142])
-        by smtp.gmail.com with ESMTPSA id l3sm1035966pju.44.2020.11.30.22.50.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Nov 2020 22:50:33 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     xuzaibo@huawei.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yejune.deng@gmail.com
-Subject: [PATCH] crypto: hisilicon/trng replace atomic_add_return()
-Date:   Tue,  1 Dec 2020 14:50:18 +0800
-Message-Id: <1606805418-4739-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 1 Dec 2020 01:52:10 -0500
+X-UUID: e96c658d37ca48289ae3785a25f75126-20201201
+X-UUID: e96c658d37ca48289ae3785a25f75126-20201201
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 151745018; Tue, 01 Dec 2020 14:51:23 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 1 Dec 2020 14:51:14 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 1 Dec 2020 14:51:12 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
+        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v2] scsi: ufs: Remove pre-defined initial voltage values of device powers
+Date:   Tue, 1 Dec 2020 14:51:14 +0800
+Message-ID: <20201201065114.1001-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 5428731B956507ECEFDF6B91B5227C59E128979F9A063864B9E6434E4E3E18F72000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-a set of atomic_inc_return() looks more neater
+UFS specficication allows different VCC configurations for UFS devices,
+for example,
+	(1). 2.70V - 3.60V (Activated by default in UFS core driver)
+	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
+                          device tree)
+	(3). 2.40V - 2.70V (Supported since UFS 3.x)
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+With the introduction of UFS 3.x products, an issue is happening that
+UFS driver will use wrong "min_uV-max_uV" values to configure the
+voltage of VCC regulator on UFU 3.x products with the configuration (3)
+used.
+
+To solve this issue, we simply remove pre-defined initial VCC voltage
+values in UFS core driver with below reasons,
+
+1. UFS specifications do not define how to detect the VCC configuration
+   supported by attached device.
+
+2. Device tree already supports standard regulator properties.
+
+Therefore VCC voltage shall be defined correctly in device tree, and
+shall not changed by UFS driver. What UFS driver needs to do is simply
+enable or disable the VCC regulator only.
+
+Similar change is applied to VCCQ and VCCQ2 as well.
+
+Note that we keep struct ufs_vreg unchanged. This is allow vendors to
+configure proper min_uV and max_uV of any regulators to make
+regulator_set_voltage() works during regulator toggling flow.
+Without specific vendor configurations, min_uV and max_uV will be NULL
+by default and UFS core driver will enable or disable the regulator
+only without adjusting its voltage.
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
 ---
- drivers/crypto/hisilicon/trng/trng.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/ufs/ufshcd-pltfrm.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/trng/trng.c b/drivers/crypto/hisilicon/trng/trng.c
-index a5033cf..2971268 100644
---- a/drivers/crypto/hisilicon/trng/trng.c
-+++ b/drivers/crypto/hisilicon/trng/trng.c
-@@ -267,12 +267,12 @@ static int hisi_trng_probe(struct platform_device *pdev)
+diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+index a6f76399b3ae..09e2f04bf4f6 100644
+--- a/drivers/scsi/ufs/ufshcd-pltfrm.c
++++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+@@ -133,22 +133,6 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+ 		vreg->max_uA = 0;
  	}
  
- 	hisi_trng_add_to_list(trng);
--	if (atomic_add_return(1, &trng_active_devs) == 1) {
-+	if (atomic_inc_return(&trng_active_devs) == 1) {
- 		ret = crypto_register_rng(&hisi_trng_alg);
- 		if (ret) {
- 			dev_err(&pdev->dev,
- 				"failed to register crypto(%d)\n", ret);
--			atomic_sub_return(1, &trng_active_devs);
-+			atomic_dec_return(&trng_active_devs);
- 			goto err_remove_from_list;
- 		}
- 	}
-@@ -289,7 +289,7 @@ static int hisi_trng_probe(struct platform_device *pdev)
- 	return ret;
+-	if (!strcmp(name, "vcc")) {
+-		if (of_property_read_bool(np, "vcc-supply-1p8")) {
+-			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
+-			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
+-		} else {
+-			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+-			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+-		}
+-	} else if (!strcmp(name, "vccq")) {
+-		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
+-		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
+-	} else if (!strcmp(name, "vccq2")) {
+-		vreg->min_uV = UFS_VREG_VCCQ2_MIN_UV;
+-		vreg->max_uV = UFS_VREG_VCCQ2_MAX_UV;
+-	}
+-
+ 	goto out;
  
- err_crypto_unregister:
--	if (atomic_sub_return(1, &trng_active_devs) == 0)
-+	if (atomic_dec_return(&trng_active_devs) == 0)
- 		crypto_unregister_rng(&hisi_trng_alg);
- 
- err_remove_from_list:
-@@ -305,7 +305,7 @@ static int hisi_trng_remove(struct platform_device *pdev)
- 	while (hisi_trng_del_from_list(trng))
- 		;
- 
--	if (atomic_sub_return(1, &trng_active_devs) == 0)
-+	if (atomic_dec_return(&trng_active_devs) == 0)
- 		crypto_unregister_rng(&hisi_trng_alg);
- 
- 	return 0;
+ out:
 -- 
-1.9.1
+2.18.0
 
