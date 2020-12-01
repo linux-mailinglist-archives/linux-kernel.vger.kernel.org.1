@@ -2,63 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CB02C99A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7132C99B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728882AbgLAIie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:38:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727253AbgLAIid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:38:33 -0500
-Received: from gaia (unknown [95.146.230.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85CCC2054F;
-        Tue,  1 Dec 2020 08:37:51 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 08:37:48 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>
-Subject: Re: linux-next: manual merge of the arm64 tree with the arm64-fixes
- tree
-Message-ID: <20201201083747.GA31404@gaia>
-References: <20201201100547.16b07093@canb.auug.org.au>
+        id S1728899AbgLAIkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:40:25 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:43147 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728794AbgLAIkY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:40:24 -0500
+Received: by mail-lf1-f67.google.com with SMTP id q13so2478521lfr.10;
+        Tue, 01 Dec 2020 00:40:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MjLBH1cflhBFcl6LdyISGTYGBSe5XpfGgyu9jQzj1CM=;
+        b=tUE9Qy2Cf1iRC+gsusfaE7IHMfI0UlTk4CKUYZCO7acFwE5JFG1KqEv+6q25jD3lUF
+         1FnTOdNlJX9zYM1oV0ARMCyEpijt+8fMC9BFw87uTGjqQqo6n9OXGJF/e+KgkUstgdDr
+         xb8iRmfZZZ2ctpbO37LK+bZdyoiyilDJx/vjnddRn2+wItIhbosisIz5FEoVdYqzVGNC
+         uSqpEY26wzBlTQuoE5nxIorL7Hb2502JXoPYiMPTpKYHZwbE0zKiQOhsDhbLVlvRtU4v
+         FQ9atbf47LL9wry532PlF87UpCtR+GwEvPfrg5l+2DUFaN7/BzC5V/TToYEkxiFHNClt
+         sv1w==
+X-Gm-Message-State: AOAM532ViKtrNIb1c5p7NkMI+g/izG5/ONsDl+Lo5CR9lxXDdNmGPx9p
+        or1DTFL8A5O7GfhL4807+/0=
+X-Google-Smtp-Source: ABdhPJxkpVHP/xAsARyqEb2/B9OVaHDG/Bej/tto3bL6B27YKQ6177MMhs3NVPJ+KWVDoAIVtRIpzQ==
+X-Received: by 2002:a19:8854:: with SMTP id k81mr740945lfd.577.1606811982325;
+        Tue, 01 Dec 2020 00:39:42 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id x23sm124165lfa.219.2020.12.01.00.39.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 00:39:41 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kk1Cl-0003EW-8j; Tue, 01 Dec 2020 09:40:11 +0100
+Date:   Tue, 1 Dec 2020 09:40:11 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Mychaela Falconia <mychaela.falconia@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
+Message-ID: <X8YBaydsuB/+UxcX@localhost>
+References: <20201130153742.9163-1-johan@kernel.org>
+ <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201100547.16b07093@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:05:47AM +1100, Stephen Rothwell wrote:
-> diff --cc arch/arm64/include/asm/exception.h
-> index 0756191f44f6,2a8aa1884d8a..000000000000
-> --- a/arch/arm64/include/asm/exception.h
-> +++ b/arch/arm64/include/asm/exception.h
-> @@@ -31,13 -31,8 +31,13 @@@ static inline u32 disr_to_esr(u64 disr
->   	return esr;
->   }
->   
->  +asmlinkage void noinstr enter_el1_irq_or_nmi(struct pt_regs *regs);
->  +asmlinkage void noinstr exit_el1_irq_or_nmi(struct pt_regs *regs);
->   asmlinkage void enter_from_user_mode(void);
->  +asmlinkage void exit_to_user_mode(void);
->  +void arm64_enter_nmi(struct pt_regs *regs);
->  +void arm64_exit_nmi(struct pt_regs *regs);
-> - void do_mem_abort(unsigned long addr, unsigned int esr, struct pt_regs *regs);
-> + void do_mem_abort(unsigned long far, unsigned int esr, struct pt_regs *regs);
->   void do_undefinstr(struct pt_regs *regs);
->   void do_bti(struct pt_regs *regs);
->   asmlinkage void bad_mode(struct pt_regs *regs, int reason, unsigned int esr);
+On Mon, Nov 30, 2020 at 01:22:07PM -0800, Mychaela Falconia wrote:
 
-Thanks Stephen. It looks alright.
+> Johan's patch comments say that the new flag can also be brought out
+> to termios in the future, similarly to HUPCL, but I question the
+> usefulness of doing so, as it is a chicken and egg problem: one needs
+> to open the tty device in order to do termios ioctls on it, and if
+> that initial open triggers DTR/RTS hardware actions, then the end user
+> is still screwed.  If Johan or someone else can see a potential use
+> case for manipulating this new flag via termios (as opposed to sysfs
+> or USB-ID-based driver quirks), perhaps you could elaborate on it?
 
--- 
-Catalin
+Depending on the application it may be acceptable to assert the
+modem-control lines on first open (e.g. before initialisation). 
+
+A new termios flag allows for a generic interface which could be shared
+with other OSes and controlled through stty.
+
+In case that isn't sufficient and you need control over the default port
+setting, you can always fall back to the Linux-specific sysfs interface.
+
+> In any case, it would be really awesome if this patch series (with or
+> without further modifications) can make it into 5.10 - any chance of
+> such happening, or will it have to be pushed out to 5.11?
+
+Let's see, but I don't think this necessarily has to take that long to
+get merged.
+
+Johan
