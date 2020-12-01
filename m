@@ -2,225 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EF02C95B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 147032C95B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727584AbgLADSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 22:18:38 -0500
-Received: from mga07.intel.com ([134.134.136.100]:2091 "EHLO mga07.intel.com"
+        id S1727514AbgLADUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 22:20:22 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:15881 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgLADSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 22:18:37 -0500
-IronPort-SDR: AonZfNRcKh4ihiQkx6FqUOOQtVSpiXBmQqXgDwAubfUp56EEIq4ip/1+7FJe3yXh/7JyuQbUs+
- zVRcz/CJwvsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="236881667"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="236881667"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 19:17:56 -0800
-IronPort-SDR: O3ifYaxDP4u0svSEXDdOniBuuNtw3KCO5+WLNGbp1avQ3UGPhXRppq6QtGHDE2q0Bom1iglpt2
- tFeunU4AJe0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="367358791"
-Received: from lkp-server01.sh.intel.com (HELO 70b44b587200) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 30 Nov 2020 19:17:54 -0800
-Received: from kbuild by 70b44b587200 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kjwAr-00005s-Ul; Tue, 01 Dec 2020 03:17:53 +0000
-Date:   Tue, 01 Dec 2020 11:16:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/urgent] BUILD SUCCESS
- 9ea69a55b3b9a71cded9726af591949c1138f235
-Message-ID: <5fc5b5a8.WnYeHXykQvtVw7IY%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727344AbgLADUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 22:20:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606792796; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=e5XSNz5GYuQl6HFRNC6Bk5fj6G7MZnlEwPsXQRTJm5Y=; b=Jmnlpxwelj70kFkx0DMLSXVCgxdZF99Vb8RXBAgMzc4Q6gKdfmy2lMlEi5uOn45v0Qvhhm07
+ 4fDOU5/te+cbcttWXCvl+ds/NjTW184q4bkgv5T9mVy6t+h/WT1tsi4bcC/K+WrKkraeUR84
+ hHuBYaKvqzF5nx/Q+kefOZ+Q0gI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fc5b63d8d03b22a5a0c2337 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 03:19:25
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B0B2DC43466; Tue,  1 Dec 2020 03:19:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8DADAC43460;
+        Tue,  1 Dec 2020 03:19:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8DADAC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
+ values
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, avri.altman@wdc.com,
+        alim.akhtar@samsung.com, jejb@linux.ibm.com, beanhuo@micron.com,
+        cang@codeaurora.org, matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
+        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
+        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
+        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
+        alice.chao@mediatek.com
+References: <20201130091610.2752-1-stanley.chu@mediatek.com>
+ <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
+ <X8V83T+Tx6teNLOR@builder.lan>
+ <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
+ <X8WwPs1MPg64FEp8@builder.lan>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <bf6e03ee-95ab-4768-7ce5-7f196ab6db60@codeaurora.org>
+Date:   Mon, 30 Nov 2020 19:19:21 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <X8WwPs1MPg64FEp8@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  irq/urgent
-branch HEAD: 9ea69a55b3b9a71cded9726af591949c1138f235  powerpc/pseries: Pass MSI affinity to irq_create_mapping()
+On 11/30/2020 6:53 PM, Bjorn Andersson wrote:
+> On Mon 30 Nov 17:54 CST 2020, Asutosh Das (asd) wrote:
+> 
+>> On 11/30/2020 3:14 PM, Bjorn Andersson wrote:
+>>> On Mon 30 Nov 16:51 CST 2020, Asutosh Das (asd) wrote:
+>>>
+>>>> On 11/30/2020 1:16 AM, Stanley Chu wrote:
+>>>>> UFS specficication allows different VCC configurations for UFS devices,
+>>>>> for example,
+>>>>> 	(1). 2.70V - 3.60V (By default)
+>>>>> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
+>>>>>                              device tree)
+>>>>> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+>>>>>
+>>>>> With the introduction of UFS 3.x products, an issue is happening that
+>>>>> UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
+>>>>> regulator on UFU 3.x products with VCC configuration (3) used.
+>>>>>
+>>>>> To solve this issue, we simply remove pre-defined initial VCC voltage
+>>>>> values in UFS driver with below reasons,
+>>>>>
+>>>>> 1. UFS specifications do not define how to detect the VCC configuration
+>>>>>       supported by attached device.
+>>>>>
+>>>>> 2. Device tree already supports standard regulator properties.
+>>>>>
+>>>>> Therefore VCC voltage shall be defined correctly in device tree, and
+>>>>> shall not be changed by UFS driver. What UFS driver needs to do is simply
+>>>>> enabling or disabling the VCC regulator only.
+>>>>>
+>>>>> This is a RFC conceptional patch. Please help review this and feel
+>>>>> free to feedback any ideas. Once this concept is accepted, and then
+>>>>> I would post a more completed patch series to fix this issue.
+>>>>>
+>>>>> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+>>>>> ---
+>>>>>     drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
+>>>>>     1 file changed, 1 insertion(+), 9 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>>>> index a6f76399b3ae..3965be03c136 100644
+>>>>> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>>>> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+>>>>> @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+>>>>>     		vreg->max_uA = 0;
+>>>>>     	}
+>>>>> -	if (!strcmp(name, "vcc")) {
+>>>>> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
+>>>>> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
+>>>>> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
+>>>>> -		} else {
+>>>>> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+>>>>> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+>>>>> -		}
+>>>>> -	} else if (!strcmp(name, "vccq")) {
+>>>>> +	if (!strcmp(name, "vccq")) {
+>>>>>     		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
+>>>>>     		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
+>>>>>     	} else if (!strcmp(name, "vccq2")) {
+>>>>>
+>>>>
+>>>> Hi Stanley
+>>>>
+>>>> Thanks for the patch. Bao (nguyenb) was also working towards something
+>>>> similar.
+>>>> Would it be possible for you to take into account the scenario in which the
+>>>> same platform supports both 2.x and 3.x UFS devices?
+>>>>
+>>>> These've different voltage requirements, 2.4v-3.6v.
+>>>> I'm not sure if standard dts regulator properties can support this.
+>>>>
+>>>
+>>> What is the actual voltage requirement for these devices and how does
+>>> the software know what voltage to pick in this range?
+>>>
+>>> Regards,
+>>> Bjorn
+>>>
+>>>> -asd
+>>>>
+>>>>
+>>>> -- 
+>>>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>>>> Linux Foundation Collaborative Project
+>>
+>> For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v), the
+>> voltage requirements (Vcc) are 2.4v-3.6v. The software initializes the ufs
+>> device at 2.95v & reads the version and if the device is 3.x, it may do the
+>> following:
+>> - Set the device power mode to SLEEP
+>> - Disable the Vcc
+>> - Enable the Vcc and set it to 2.5v
+>> - Set the device power mode to ACTIVE
+>>
+>> All of the above may be done at HS-G1 & moved to max supported gear based on
+>> the device version, perhaps?
+>>
+>> Am open to other ideas though.
+>>
+> 
+> But that means that for a board where we don't know (don't want to know)
+> if we have a 2.x or 3.x device we need to set:
+> 
+>    regulator-min-microvolt = <2.4V>
+>    regulator-max-microvolt = <3.6V>
+> 
+> And the 2.5V and the two ranges should be hard coded into the ufshcd (in
+> particular if they come from the specification).
+> 
+> For devices with only 2.x or 3.x devices, regulator-{min,max}-microvolt
+> should be adjusted accordingly.
+> 
+> Note that driving the regulators outside these ranges will either damage
+> the hardware or cause it to misbehave, so these values should be defined
+> in the board.dts anyways.
+> 
+> Also note that regulator_set_voltage(2.4V, 3.6V) won't give you "a
+> voltage between 2.4V and 3.6V, it will most likely give either 2.4V or
+> any more specific voltage that we've specified in the board file because
+> the regulator happens to be shared with some other consumer and changing
+> it in runtime would be bad.
+> 
+> Regards,
+> Bjorn
+> 
 
-elapsed time: 722m
+Understood.
+I also understand that assumptions on the regulator limits in the driver 
+is a bad idea. I'm not sure how it's designed, but I should think the 
+power-grid design should take care of regulator sharing; if it's being 
+shared and the platform supports both 2.x and 3.x. Perhaps, such 
+platforms be identified using a dts flag - not sure if that's such a 
+good idea though.
 
-configs tested: 161
-configs skipped: 4
+I like Stanley's proposal of a vops and let vendors handle it, until 
+specs or someone has a better suggestion.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-asd
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                           sama5_defconfig
-sh                             espt_defconfig
-sh                        edosk7705_defconfig
-arm                      jornada720_defconfig
-arm                       aspeed_g5_defconfig
-mips                         db1xxx_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                        neponset_defconfig
-sh                         ecovec24_defconfig
-arm                         cm_x300_defconfig
-mips                           ip27_defconfig
-mips                      pic32mzda_defconfig
-arm                       imx_v6_v7_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                       maple_defconfig
-xtensa                    xip_kc705_defconfig
-sh                         apsh4a3a_defconfig
-c6x                         dsk6455_defconfig
-powerpc                      ppc64e_defconfig
-openrisc                 simple_smp_defconfig
-s390                       zfcpdump_defconfig
-mips                           gcw0_defconfig
-arm                      pxa255-idp_defconfig
-arm                        multi_v7_defconfig
-m68k                                defconfig
-s390                          debug_defconfig
-powerpc                      ep88xc_defconfig
-arm                            mmp2_defconfig
-sh                   secureedge5410_defconfig
-arm                         lpc32xx_defconfig
-powerpc                     mpc5200_defconfig
-mips                         tb0287_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                 canyonlands_defconfig
-mips                            gpr_defconfig
-arc                        nsimosci_defconfig
-arm                        clps711x_defconfig
-arm                           corgi_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                          r7785rp_defconfig
-powerpc                    sam440ep_defconfig
-mips                        workpad_defconfig
-arm                          gemini_defconfig
-mips                     cu1000-neo_defconfig
-ia64                        generic_defconfig
-powerpc                     kilauea_defconfig
-powerpc                    adder875_defconfig
-sh                               j2_defconfig
-powerpc                      katmai_defconfig
-arc                           tb10x_defconfig
-nios2                         10m50_defconfig
-um                           x86_64_defconfig
-powerpc                     skiroot_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                        fsp2_defconfig
-mips                       capcella_defconfig
-powerpc                      ppc44x_defconfig
-arm                          imote2_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                   bluestone_defconfig
-powerpc                   lite5200b_defconfig
-m68k                        m5272c3_defconfig
-powerpc                       ebony_defconfig
-mips                      malta_kvm_defconfig
-arm                       netwinder_defconfig
-powerpc                     tqm8555_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                   motionpro_defconfig
-mips                             allyesconfig
-riscv                               defconfig
-sh                            hp6xx_defconfig
-sh                          lboxre2_defconfig
-arm                             pxa_defconfig
-powerpc                 xes_mpc85xx_defconfig
-xtensa                          iss_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                       multi_v4t_defconfig
-arc                              allyesconfig
-m68k                        mvme16x_defconfig
-mips                          rm200_defconfig
-m68k                       bvme6000_defconfig
-mips                     cu1830-neo_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                     stx_gp3_defconfig
-arm                          simpad_defconfig
-arm                              zx_defconfig
-arm                        realview_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     kmeter1_defconfig
-mips                      maltasmvp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201130
-i386                 randconfig-a002-20201130
-i386                 randconfig-a003-20201130
-i386                 randconfig-a005-20201130
-i386                 randconfig-a006-20201130
-i386                 randconfig-a001-20201130
-x86_64               randconfig-a014-20201130
-x86_64               randconfig-a015-20201130
-x86_64               randconfig-a016-20201130
-x86_64               randconfig-a011-20201130
-x86_64               randconfig-a012-20201130
-x86_64               randconfig-a013-20201130
-i386                 randconfig-a013-20201130
-i386                 randconfig-a012-20201130
-i386                 randconfig-a011-20201130
-i386                 randconfig-a016-20201130
-i386                 randconfig-a015-20201130
-i386                 randconfig-a014-20201130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-a002-20201130
-x86_64               randconfig-a006-20201130
-x86_64               randconfig-a005-20201130
-x86_64               randconfig-a004-20201130
-x86_64               randconfig-a001-20201130
-x86_64               randconfig-a003-20201130
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
