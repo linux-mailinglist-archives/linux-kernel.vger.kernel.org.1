@@ -2,147 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27512CAD18
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B896D2CAD1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404448AbgLAUN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
+        id S1730663AbgLAUNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgLAUN0 (ORCPT
+        with ESMTP id S1730533AbgLAUNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:13:26 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06F1C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:12:40 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id k11so1874273pgq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:12:40 -0800 (PST)
+        Tue, 1 Dec 2020 15:13:48 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7601C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:13:07 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 3so9136100wmg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:13:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GY9q7Q3SEs+LZ5nsgUd0mJEof5WxA7fLTd/LB+B0AYc=;
-        b=n8Ra7U76Np/V2wMEwjTjxpX/NywIXiuFKfn1Q+Vs0h4Xeuh1g5rzA5Z+Bsv+159wr3
-         J0cT50RsLNpi2vqF9yGNV+u4ahGAhQ3tUOPGn9Grwcnc0+XuhOWwkT6gWhw0z+uNrbrM
-         EDCe9Nw57SnXQmuCNuyciNSo6NM/aF+stNuBM=
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xxXPp0Gfj5n7IBRUn22uZpJhktCf0H26FzScuHt2U84=;
+        b=XkoCmpKyUqVxWjTsIia5O7lk++L91iJIMKK+BR/SABxCmwjKSlTU4tEUaidQ9yQWW8
+         /N0DDONsDAp+NSJkJ6OneAHRtRbRQxhU86xCXDI6YOpBCKe5McTAG+FhZqmoTX6J3hU8
+         efEVq/n1tk2FsrPsIogagaMxNBR6ksvl5PrNI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GY9q7Q3SEs+LZ5nsgUd0mJEof5WxA7fLTd/LB+B0AYc=;
-        b=ltMuOFcUdXOjPI9lKa0q8p+LLQPnGxv66Gujd21dlKHolFA77qpNHDda0Qd9TOwoKo
-         U/SFx/g+MP62/ezpdK9AgrFaHakbjmO6k0d6wcKkupx0mHUVhc1a94CtUprbSJKvzsbV
-         0ytbqJ79zaMfsUCuWj0HZax/IlDSF5Fi9k7DM08GWTwnMS2hNeObcJr9Thd27C6kT0Rt
-         nDhNqpie/LmAse5Tm/UlU1exEFIFDYSIoZobM8plnHCq6QA5xTlUQY3LN6Asf3S7xx8V
-         3aEZOS4F+0ngUIyblfZKCl2Nem0Pi+eiIwCfkUsRhm9MXkD1/xvgXboAus1h6XVlZUVa
-         zhVw==
-X-Gm-Message-State: AOAM5300Qm+au5QhHj2LkeEt4WXpWJHWvg1/EJU1yZ/AYRqiX5ORgDH2
-        Wbo7NEWUuokzsJPSXihG7GL6Ug==
-X-Google-Smtp-Source: ABdhPJzTpGe05hQLK+1ccdnHuSr5Wi4dvijrv3VlnojWQYlRl1cz/N2PkOpHbnNPMfOS/e2YU1QM9Q==
-X-Received: by 2002:a63:4703:: with SMTP id u3mr3595226pga.199.1606853560488;
-        Tue, 01 Dec 2020 12:12:40 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z5sm414129pgv.53.2020.12.01.12.12.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:12:39 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Vasile-Laurentiu Stanimir 
-        <vasile-laurentiu.stanimir@windriver.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] pstore: Move kmsg_bytes default into Kconfig
-Date:   Tue,  1 Dec 2020 12:12:34 -0800
-Message-Id: <20201201201234.137572-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xxXPp0Gfj5n7IBRUn22uZpJhktCf0H26FzScuHt2U84=;
+        b=GqCs9YW5ipzriTRnCH/wcgyy75BGGG5ZBc1Wx2OjHuYq2Sw5lZo4jq7bi/PeQbAZpO
+         8cVgmexfmzf3Qku4EMcT3cWI9rD8Qd0jJhSQqk4ipT3q/Jq6brN9ek6moMUjM6jmfO3y
+         ryswn2zI/jlRPAbZHPG7SfdVldltSSdiUn7x424kjFFxpF72U0GGXHgYu7MXa82v85rM
+         JBeKr/JGxxClucw8JqBkbhRRPdQAjyH5ol02kmsIvS+KBhO0g+jfDGlamGf87WhZvZbJ
+         DZsc0oRTERLEfYhZMHdhmHI+PeVLP3qnY/o078nn+itR/WMBOf6RFyN7/gU1riU26eAY
+         ZYlg==
+X-Gm-Message-State: AOAM533Hqb0xVuZwWF+YvcHkPPhwL4vNvfbztFQjHLviE5AcS7xvd90J
+        7BRBzebRcDF1CAalbGWha+wN6qkzx8iR9Z9DLHlkRg==
+X-Google-Smtp-Source: ABdhPJxbQY47PCNyNf7cE2WuaEWP7oTCvGdthwX66n4r9NJqX/Q0qoYMqAfwC6iVEbh2xMopkeM+rfCpQ02nrofSbtI=
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr4505630wmi.35.1606853586071;
+ Tue, 01 Dec 2020 12:13:06 -0800 (PST)
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=5188d80bb08a7429f2821faecd7e4b8f43335a49; i=qXzl4k9if/tqI+qf9sQSdobkw8F/B4XyfRu25EvzWHg=; m=UaQeAnVdS9JxENrU7lkMv8luMkCW5fcEeUURc6i7C+Y=; p=7kXwmTRpUr5d8jARB34wGbgj6tGEH7YchKsTFqtUZac=
-X-Patch-Sig: m=pgp; i=vasile-laurentiu.stanimir@windriver.com; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAl/Go7EACgkQiXL039xtwCYoUw/+PqU OxiNDgwBhi+xR0QSi02CzJmYwkaPzwZKelq1VvilrOMCkoP7aIjqZ3hmakASGsNyCadEMeCoigkwS BICa0jWYtDhOBe5cTYiTbKdYg7WmWuiLDC0x9zYiCL+LpBRa6ksVBAZFO7v848+j6lUMcFVUi7SAC x69FYCn98H2MlAlgS3CH4N+oOlclW/qz0X9RT3cLjDYPzwQf65e5S3pYlLgRjpnjv3PP3PTnWCkN0 fDPH078DIjXRkqSg4Nf4/RboYnVS8x+AB4GVM6KIIQmkPkSs1VRl8EVGbEV/ym9Z8yMWR24f2hrwj X0NesgKTYBptEGXsOsKWORLFAtQq9iDBfyInEO9hMYvScRHa4UO5V8yHAJOMllaibt4yzGflrnmd5 mZafCpzs35iASmtlWjT0rlvpsufN6U5bp1ncTUSO1gVrPstF5IhmKwLWyhDfezP+X8nxoi7ukiFgh 0Ai+js6W+XvQ4A3ck8rUcktT6Rxo3FIqMiP0miWCmmpi57sG+YzozbS3pTAqbFNgLEjOYEtUVgCG8 mTyZh3oV7t7MG5s7jhyASFJXN2aWYLAtXlP8Ci6S2G/JMaQYbtQmNAFRqMhDVRgWqD2pn69eLXXD3 IMc4oC7CVozpDAJz1hcCLPhI2ORYmDCkIvQ2kuCbSHh1JLryphPIfuvwWuBXOMEE=
-Content-Transfer-Encoding: 8bit
+References: <20201130211145.3012-6-james.quinlan@broadcom.com> <20201201180503.GA1321042@bjorn-Precision-5520>
+In-Reply-To: <20201201180503.GA1321042@bjorn-Precision-5520>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Tue, 1 Dec 2020 15:12:54 -0500
+Message-ID: <CA+-6iNy0O8WJMm+z7QOEsMpGAj=-quBmbPwrZpgxo19kVB921g@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] PCI: brcmstb: Add panic/die handler to RC driver
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000003f5a6905b56cc175"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasile-Laurentiu Stanimir <vasile-laurentiu.stanimir@windriver.com>
+--0000000000003f5a6905b56cc175
+Content-Type: text/plain; charset="UTF-8"
 
-While kmsg_bytes can be set for pstore via mount, if a crash occurs
-before the mount only partial console log will be stored as kmsg_bytes
-defaults to a potentially different hardcoded value in the kernel
-(PSTORE_DEFAULT_KMSG_BYTES). This makes it impossible to analyze valuable
-post-mortem data especially on the embedded development or in the process
-of bringing up new boards. Change this value to be a Kconfig option
-with the default of old PSTORE_DEFAULT_KMSG_BYTES
+On Tue, Dec 1, 2020 at 1:05 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Mon, Nov 30, 2020 at 04:11:42PM -0500, Jim Quinlan wrote:
+> > Whereas most PCIe HW returns 0xffffffff on illegal accesses and the like,
+> > by default Broadcom's STB PCIe controller effects an abort.  This simple
+> > handler determines if the PCIe controller was the cause of the abort and if
+> > so, prints out diagnostic info.
+>
+> What happens during enumeration?  pci_bus_generic_read_dev_vendor_id()
+> assumes a read of Vendor ID returns 0xffffffff if the device doesn't
+> exist.
+>
+> I assume this case doesn't cause the abort you're referring to here,
+> or nothing would work.  I think this enumeration case results in PCIe
+> Unsupported Request errors (PCIe r5.0, sec 2.3.2 implementation note).
+Hi Bjorn,
 
-Signed-off-by: Vasile-Laurentiu Stanimir <vasile-laurentiu.stanimir@windriver.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-This was sent off-list, so I'm resending it to lkml (with the commit log
-cleaned up sligthly) before I push it into for-next/pstore.
----
- fs/pstore/Kconfig    | 8 ++++++++
- fs/pstore/inode.c    | 2 +-
- fs/pstore/internal.h | 1 -
- fs/pstore/platform.c | 2 +-
- 4 files changed, 10 insertions(+), 3 deletions(-)
+Yes, our controller makes a special case  to allow for config-space
+accesses to the dev_id and vendor_id registers. even if the device is
+missing.  That being said, it will abort on any access if the link is
+down.
 
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index e16a49ebfe54..8adabde685f1 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -14,6 +14,14 @@ config PSTORE
- 	   If you don't have a platform persistent store driver,
- 	   say N.
- 
-+config PSTORE_DEFAULT_KMSG_BYTES
-+	int "Default kernel log storage space" if EXPERT
-+	depends on PSTORE
-+	default "10240"
-+	help
-+	  Defines default size of pstore kernel log storage.
-+	  Can be enlarged if needed, not recommended to shrink it.
-+
- config PSTORE_DEFLATE_COMPRESS
- 	tristate "DEFLATE (ZLIB) compression"
- 	default y
-diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
-index c331efe8de95..93a217e4f563 100644
---- a/fs/pstore/inode.c
-+++ b/fs/pstore/inode.c
-@@ -266,7 +266,7 @@ static void parse_options(char *options)
-  */
- static int pstore_show_options(struct seq_file *m, struct dentry *root)
- {
--	if (kmsg_bytes != PSTORE_DEFAULT_KMSG_BYTES)
-+	if (kmsg_bytes != CONFIG_PSTORE_DEFAULT_KMSG_BYTES)
- 		seq_printf(m, ",kmsg_bytes=%lu", kmsg_bytes);
- 	return 0;
- }
-diff --git a/fs/pstore/internal.h b/fs/pstore/internal.h
-index 7fb219042f13..801d6c0b170c 100644
---- a/fs/pstore/internal.h
-+++ b/fs/pstore/internal.h
-@@ -6,7 +6,6 @@
- #include <linux/time.h>
- #include <linux/pstore.h>
- 
--#define PSTORE_DEFAULT_KMSG_BYTES 10240
- extern unsigned long kmsg_bytes;
- 
- #ifdef CONFIG_PSTORE_FTRACE
-diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index 36714df37d5d..32f64abc277c 100644
---- a/fs/pstore/platform.c
-+++ b/fs/pstore/platform.c
-@@ -101,7 +101,7 @@ static char *big_oops_buf;
- static size_t big_oops_buf_sz;
- 
- /* How much of the console log to snapshot */
--unsigned long kmsg_bytes = PSTORE_DEFAULT_KMSG_BYTES;
-+unsigned long kmsg_bytes = CONFIG_PSTORE_DEFAULT_KMSG_BYTES;
- 
- void pstore_set_kmsg_bytes(int bytes)
- {
--- 
-2.25.1
+However, the 7216-type SOCs bring PCIe error-reporting HW but also
+have a mode where 0xffffffff  is returned on improper accesses, just
+like many other controllers.  We are debating whether we should turn
+this on by default.
 
+Regards,
+Jim Quinlan
+Broadcom STB
+>
+> Bjorn
+
+--0000000000003f5a6905b56cc175
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIQQwYJKoZIhvcNAQcCoIIQNDCCEDACAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg2YMIIE6DCCA9CgAwIBAgIOSBtqCRO9gCTKXSLwFPMwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UE
+CxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMT
+Ckdsb2JhbFNpZ24wHhcNMTYwNjE1MDAwMDAwWhcNMjQwNjE1MDAwMDAwWjBdMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25h
+bFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+tpZok2X9LAHsYqMNVL+Ly6RDkaKar7GD8rVtb9nw6tzPFnvXGeOEA4X5xh9wjx9sScVpGR5wkTg1
+fgJIXTlrGESmaqXIdPRd9YQ+Yx9xRIIIPu3Jp/bpbiZBKYDJSbr/2Xago7sb9nnfSyjTSnucUcIP
+ZVChn6hKneVGBI2DT9yyyD3PmCEJmEzA8Y96qT83JmVH2GaPSSbCw0C+Zj1s/zqtKUbwE5zh8uuZ
+p4vC019QbaIOb8cGlzgvTqGORwK0gwDYpOO6QQdg5d03WvIHwTunnJdoLrfvqUg2vOlpqJmqR+nH
+9lHS+bEstsVJtZieU1Pa+3LzfA/4cT7XA/pnwwIDAQABo4IBtTCCAbEwDgYDVR0PAQH/BAQDAgEG
+MGoGA1UdJQRjMGEGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwkGCisGAQQBgjcUAgIGCisG
+AQQBgjcKAwQGCSsGAQQBgjcVBgYKKwYBBAGCNwoDDAYIKwYBBQUHAwcGCCsGAQUFBwMRMBIGA1Ud
+EwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGlygmIxZ5VEhXeRgMQENkmdewthMB8GA1UdIwQYMBaA
+FI/wS3+oLkUkrk1Q+mOai97i3Ru8MD4GCCsGAQUFBwEBBDIwMDAuBggrBgEFBQcwAYYiaHR0cDov
+L29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3RyMzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3Js
+Lmdsb2JhbHNpZ24uY29tL3Jvb3QtcjMuY3JsMGcGA1UdIARgMF4wCwYJKwYBBAGgMgEoMAwGCisG
+AQQBoDIBKAowQQYJKwYBBAGgMgFfMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNp
+Z24uY29tL3JlcG9zaXRvcnkvMA0GCSqGSIb3DQEBCwUAA4IBAQConc0yzHxn4gtQ16VccKNm4iXv
+6rS2UzBuhxI3XDPiwihW45O9RZXzWNgVcUzz5IKJFL7+pcxHvesGVII+5r++9eqI9XnEKCILjHr2
+DgvjKq5Jmg6bwifybLYbVUoBthnhaFB0WLwSRRhPrt5eGxMw51UmNICi/hSKBKsHhGFSEaJQALZy
+4HL0EWduE6ILYAjX6BSXRDtHFeUPddb46f5Hf5rzITGLsn9BIpoOVrgS878O4JnfUWQi29yBfn75
+HajifFvPC+uqn+rcVnvrpLgsLOYG/64kWX/FRH8+mhVe+mcSX3xsUpcxK9q9vLTVtroU/yJUmEC4
+OcH5dQsbHBqjMIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4G
+A1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNV
+BAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQL
+ExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMK
+R2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aE
+yiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5
+uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bL
+yCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg
+6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkW
+qQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8w
+HQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+
+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5
+RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBov
+Hd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX42
+68NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o
+2HLO02JQZR7rkpeDMdmztcpHWD9fMIIFRTCCBC2gAwIBAgIME79sZrUeCjpiuELzMA0GCSqGSIb3
+DQEBCwUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
+EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMwHhcNMjAwOTA0MDcw
+ODQ0WhcNMjIwOTA1MDcwODQ0WjCBjjELMAkGA1UEBhMCSU4xEjAQBgNVBAgTCUthcm5hdGFrYTES
+MBAGA1UEBxMJQmFuZ2Fsb3JlMRYwFAYDVQQKEw1Ccm9hZGNvbSBJbmMuMRQwEgYDVQQDEwtKaW0g
+UXVpbmxhbjEpMCcGCSqGSIb3DQEJARYaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDqsBkKCQn3+AT8d+247+l35R4b3HcQmAIBLNwR78Pv
+pMo/m+/bgJGpfN9+2p6a/M0l8nzvM+kaKcDdXKfYrnSGE5t+AFFb6dQD1UbJAX1IpZLyjTC215h2
+49CKrg1K58cBpU95z5THwRvY/lDS1AyNJ8LkrKF20wMGQzam3LVfmrYHEUPSsMOVw7rRMSbVSGO9
++I2BkxB5dBmbnwpUPXY5+Mx6BEac1mEWA5+7anZeAAxsyvrER6cbU8MwwlrORp5lkeqDQKW3FIZB
+mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
+AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
+4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
+wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
+VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
+V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
+lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
+5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGwmFPxyqY9O
+WyrwEsKZxnbwxEkFeosuSltK6lbI5aTWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTIwMTIwMTMwNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCYwt3I0hyoga9ryZMIF8K5TGAtxqoG
+2JFgj37hFp5bnQIA9xdwO25vqHhyBrmwzqx9v4VrSFA9Zz4/IgEONgNs39r9FK+9Wpxdxpk9GRmP
+z4AYZSvBbnnik/nHJ0bu+2mTBZk2i1z6SOQ+P7qepHfgxm+iY1Knhpbm7BVVJVat8ZJPna8AnnFQ
+hMV+qd6YSg4jI/OyQmJZVZ2wMYxOUQ1Fby2BakiDAtPivKhsW5CEuYhU9Fv4KjpgW01DsI9PQqAH
+Kl8CBGQdkjpV2Pfzehk3Qm/ODxKp6+OzF7ch6hOtEbyPMPNcyNBnxYv9iLQRmRS2ZaOFeEhuWY58
+wUHxBib1
+--0000000000003f5a6905b56cc175--
