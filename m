@@ -2,190 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95482CA55C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64572CA546
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391617AbgLAONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:13:14 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:38140 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729321AbgLAONK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:13:10 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1Dt8Jx186047;
-        Tue, 1 Dec 2020 14:11:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=CVxJrJvszPiYRoVvo8QMoaANjq0rT1w3VAIVepGqitY=;
- b=Q8Pq03hifJp4hxcZYQuiJvbKTKZMKP2mLNTS1aHW6hAxlDpObu2xNteC6Yj/L36I1kmY
- WSfMJZMdSk8bN2J9+UmYiF9MWo5KvhVT37I7ctRf5KKEocNW4v8PFVCDeiU3k6pn404k
- Igra+V15xZpvhIpriUlAo6fac2mI985JVt4CqtU5vfkzzkfANqieFePUQJBzO6eRndXt
- r4RGB+aUeJDKgHUaSwwmUD5k/B0oZ1T+RFudNU+Upzz4yF4kbfdExpcaXwIzXbiJCqdd
- NFMbLYQpnYBf2dU4wooUhfeXNwTuWm/ESbR6RxVNN2eeS+ZfeOwZNtuQUXq4Dn72Z2fB vg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 353c2attky-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 14:11:31 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1Du5hA003823;
-        Tue, 1 Dec 2020 14:09:31 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3540ey0nwv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 14:09:31 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B1E8IaF039759;
-        Tue, 1 Dec 2020 14:09:29 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 3540ey0nvu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Dec 2020 14:09:29 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B1E9NOp018011;
-        Tue, 1 Dec 2020 14:09:24 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Dec 2020 06:09:23 -0800
-Date:   Tue, 1 Dec 2020 17:08:49 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@tron.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
-        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
-        bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-ext4@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        selinux@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
-        tipc-discussion@lists.sourceforge.net,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
-        Joe Perches <joe@perches.com>, linux-integrity@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-Message-ID: <20201201140849.GH2767@kadam>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <CAKwvOdntVfXj2WRR5n6Kw7BfG7FdKpTeHeh5nPu5AzwVMhOHTg@mail.gmail.com>
+        id S1729430AbgLAOMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:12:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:43662 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727132AbgLAOMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:12:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 349D630E;
+        Tue,  1 Dec 2020 06:11:26 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 022223F718;
+        Tue,  1 Dec 2020 06:11:23 -0800 (PST)
+Date:   Tue, 1 Dec 2020 14:11:21 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 09/14] cpuset: Don't use the cpu_possible_mask as a
+ last resort for cgroup v1
+Message-ID: <20201201141121.5w2wed3633slo6dw@e107158-lin.cambridge.arm.com>
+References: <20201124155039.13804-1-will@kernel.org>
+ <20201124155039.13804-10-will@kernel.org>
+ <20201127133245.4hbx65mo3zinawvo@e107158-lin.cambridge.arm.com>
+ <20201130170531.qo67rai5lftskmk2@e107158-lin.cambridge.arm.com>
+ <20201130173610.GA1715200@google.com>
+ <20201201115842.t77abecneuesd5ih@e107158-lin.cambridge.arm.com>
+ <20201201123748.GA1896574@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdntVfXj2WRR5n6Kw7BfG7FdKpTeHeh5nPu5AzwVMhOHTg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=924 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012010090
+In-Reply-To: <20201201123748.GA1896574@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 05:32:51PM -0800, Nick Desaulniers wrote:
-> On Sun, Nov 22, 2020 at 8:17 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Fri, Nov 20, 2020 at 11:51:42AM -0800, Jakub Kicinski wrote:
-> > > If none of the 140 patches here fix a real bug, and there is no change
-> > > to machine code then it sounds to me like a W=2 kind of a warning.
-> >
-> > FWIW, this series has found at least one bug so far:
-> > https://lore.kernel.org/lkml/CAFCwf11izHF=g1mGry1fE5kvFFFrxzhPSM6qKAO8gxSp=Kr_CQ@mail.gmail.com/
+On 12/01/20 12:37, Quentin Perret wrote:
+> On Tuesday 01 Dec 2020 at 11:58:42 (+0000), Qais Yousef wrote:
+> > On 11/30/20 17:36, Quentin Perret wrote:
+> > > On Monday 30 Nov 2020 at 17:05:31 (+0000), Qais Yousef wrote:
+> > > > I create 3 cpusets: 64bit, 32bit and mix. As the name indicates, 64bit contains
+> > > > all 64bit-only cpus, 32bit contains 32bit-capable ones and mix has a mixture of
+> > > > both.
+> > > > 
+> > > > If I try to move my test binary to 64bit cpuset, it moves there and I see the
+> > > > WARN_ON_ONCE() triggered. The task has attached to the new cpuset but
+> > > > set_allowed_cpus_ptr() has failed and we end up with whatever affinity we had
+> > > > previously. Breaking cpusets effectively.
+> > > 
+> > > Right, and so does exec'ing from a 64 bit task into 32 bit executable
+> > > from within a 64 bit-only cpuset :( . And there is nothing we can really
+> > 
+> > True. The kernel can decide to kill the task or force detach it then, no?
+> > Sending SIGKILL makes more sense.
 > 
-> So looks like the bulk of these are:
-> switch (x) {
->   case 0:
->     ++x;
->   default:
->     break;
-> }
+> Yeah but again, we need this to work for existing apps. Just killing it
+> basically means we have no support, so that doesn't work for the use
+> case :/
 
-This should not generate a warning.
-
-> 
-> I have a patch that fixes those up for clang:
-> https://reviews.llvm.org/D91895
-> 
-> There's 3 other cases that don't quite match between GCC and Clang I
-> observe in the kernel:
-> switch (x) {
->   case 0:
->     ++x;
->   default:
->     goto y;
-> }
-> y:;
-
-This should generate a warning.
+I don't get you. Unless what you're saying is you want to support this without
+userspace having to do anything to opt-in, then this statement is hard to
+digest for me. Existing apps will work. OEMs and vendors who want to enable
+this feature must configure their userspace to deal with this correctly. This
+includes passing the cmdline option, and parsing the cpumask in
+/sys/device/system/cpu/aarch32_el0 to ensure their cpusets contains at least
+one cpu from this list.
 
 > 
-> switch (x) {
->   case 0:
->     ++x;
->   default:
->     return;
-> }
+> > > do about it, we cannot fail the exec because we need this to work for
+> > > existing apps, and there is no way the Android framework can know
+> > > upfront.
+> > 
+> > It knows upfront it has enabled asym aarch32. So it needs to make sure not to
+> > create 'invalid' cpusets?
+> 
+> Problem is, we _really_ don't want to keep a big CPU in the background
 
-Warn for this.
+I don't get you here too.
 
+AFAIU, OEMs have to define their cpusets. So it makes sense to me for them to
+define it correctly if they want to enable asym aarch32.
+
+Systems that don't care about this feature shouldn't be affected. If they do,
+then I'm missing something.
+
+> cpuset just for that. And even if we did, we'd have to deal with hotplug.
+
+We deal with hotplug by not allowing one of the aarch32 cpus from going
+offline.
 
 > 
-> switch (x) {
->   case 0:
->     ++x;
->   default:
->     ;
-> }
+> > > 
+> > > So the only thing we can do really is WARN() and proceed to ignore the
+> > > cpuset, which is what this series does :/. It's not exactly pretty but I
+> > > don't think we can do much better than that TBH, and it's the same thing
+> > > for the example you brought up. Failing cpuset_can_attach() will not
+> > > help, we can only WARN and proceed ...
+> > 
+> > I think for cases where we can prevent userspace from doing something wrong, we
+> > should. Like trying to attach to a cpuset that will result in an empty mask.
+> > FWIW, it does something similar with deadline tasks. See task_can_attach().
+> > 
+> > Similarly for the case when userspace tries to modify the cpuset.cpus such that
+> > a task will end up with empty cpumask. We now have the new case that some tasks
+> > can only run on a subset of cpu_possible_mask. So the definition of empty
+> > cpumask has gained an extra meaning.
+> 
+> I see this differently, e.g. if you affine a task to a CPU and you
+> hotunplug it, then the kernel falls back to the remaining online CPUs
+> for that task. Not pretty, but it keeps things functional. I'm thinking
+> a similar kind of support would be good enough here.
 
-Don't warn for this.
+Sorry I can't see it this way :(
 
-If adding a break statement changes the flow of the code then warn about
-potentially missing break statements, but if it doesn't change anything
-then don't warn about it.
+The comparison is fundamentally different. Being able to attach to a cpuset, or
+modify its cpus is different than short circuiting a cpu out of the system.
 
-regards,
-dan carpenter
+For hotplug we have to make sure a single cpu stays alive. The fallback you're
+talking about should still work the same if the task is not attached to
+a cpuset. Just it has to take the intersection with the
+arch_task_cpu_possible_cpu() into account.
+
+For cpusets, if hotunplug results in an empty cpuset, then all tasks are moved
+to the nearest ancestor if I read the code correctly. In our case, only 32bit
+tasks have to move out to retain this behavior. Since now for the first time we
+have tasks that can't run on all cpus.
+
+Which by the way might be the right behavior for 64bit tasks execing 32bit
+binary in a 64bit only cpuset. I suggested SIGKILL'ing them but maybe moving
+them to the nearest ancestor too is more aligned with the behavior above.
+
+> 
+> But yes, this cpuset mess is the part of the series I hate most too.
+> It's just not clear we have better solutions :/
+> 
+> > > 
+> > > Now, Android should be fine with that I think. We only need the kernel
+> > > to implement a safe fallback mechanism when userspace gives
+> > > contradictory commands, because we know there are edge cases userspace
+> > > _cannot_ deal with correctly, but this fallback doesn't need to be
+> > > highly optimized (at least for Android), but I'm happy to hear what
+> > > others think.
+> > 
+> > Why not go with our original patch that fixes affinity then in the arch code if
+> > the task wakes up on the wrong cpu? It is much simpler approach IMO to achieve
+> > the same thing.
+> 
+> I personally had no issues with that patch, but as per Peter's original
+> reply, that's "not going to happen". Will's proposal seems to go one
+> step further and tries its best to honor the contract with userspace (by
+
+The only difference I see is that this series blocks sched_setaffinity(). Other
+than that we fix up the task affinity in a similar way, just in different
+places.
+
+If the intersection was empty, we sent a SIGKILL; making it fallback to
+something sensible is dead easy. I opted for SIGKILL because I didn't expect
+Peter to agree with the fallback. But if we're arguing it's okay now, then it
+should be okay in that patch too then.
+
+> keeping the subset of the affinity mask, ...) when that can be done, so
+> if that can be acceptable, then be it. But I'd still rather keep this
+> simple if at all possible. It's just my opinion though :)
+
+The way I see it, this series adds support to handle generic asym ISA. Asym
+AArch32 will be the first and only user for now, but it's paving the way for
+others.
+
+It's up to the maintainers to decide, but IMHO if we'll do this via enabling
+scheduler to deal with generic asym ISA support, we should deal with these
+corner cases. Otherwise a specific solution for the current problem at hand in
+the arch code makes more sense to me.
+
+It all depends how much the community wants/is willing to cater for these
+systems in the future too.
+
+Thanks
+
+--
+Qais Yousef
