@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF2F2C9AB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4682C9A9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388250AbgLAJAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35696 "EHLO mail.kernel.org"
+        id S2388144AbgLAI7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:59:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387599AbgLAJAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:00:07 -0500
+        id S2388094AbgLAI7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:59:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18502217A0;
-        Tue,  1 Dec 2020 08:59:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11B2021D7F;
+        Tue,  1 Dec 2020 08:58:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813191;
-        bh=csn/Hk+YBhchIph27lvMqOAt+Ne57dazRGG/PH73ALY=;
+        s=korg; t=1606813113;
+        bh=S2hOqoDlK5MPvLUKCjduU+DTQ9JNcGnXtpFB+KJ6Wfc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mje8QkGTrvi9hB9qEENSRNnJZgach22kAXxD5nqbwUZqAthKxNYjP3dZPhGfmlrlg
-         HBbkrOh+pl8rxjasrYb6hthc+u+b24btSUVlX/y2Cl7Yj/k4xrkwXwRbhoBGvMR3oD
-         8Lkv6YXRDLQMRNMtF6WVD6n9fqV9ysMwlAR2U0EU=
+        b=w5pkbvq+JYrJiGw4+Ky/JdhQ0/jTg6A1LjHLU7i3PnaR27lbXJVKPdqlUrN3gwK1h
+         oCO/904NsdkIUH/ouXaJL3WdgaIiR8vYBPBwV5+w6F9HpYPUR+B6u60tzGKmN+zRE9
+         mKq4DegdnZJkKKCeJ9aGx3qncYcPdca7wKHnlFIg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>,
-        Sasha Levin <sashal@kernel.org>,
-        =?UTF-8?q?David=20G=C3=A1miz=20Jim=C3=A9nez?= 
-        <david.gamiz@gmail.com>
-Subject: [PATCH 4.19 14/57] HID: add support for Sega Saturn
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 20/50] proc: dont allow async path resolution of /proc/self components
 Date:   Tue,  1 Dec 2020 09:53:19 +0100
-Message-Id: <20201201084649.323495333@linuxfoundation.org>
+Message-Id: <20201201084647.650735416@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 1811977cb11354aef8cbd13e35ff50db716728a4 ]
+[ Upstream commit 8d4c3e76e3be11a64df95ddee52e99092d42fc19 ]
 
-This device needs HID_QUIRK_MULTI_INPUT in order to be presented to userspace
-in a consistent way.
+If this is attempted by a kthread, then return -EOPNOTSUPP as we don't
+currently support that. Once we can get task_pid_ptr() doing the right
+thing, then this can go away again.
 
-Reported-and-tested-by: David Gámiz Jiménez <david.gamiz@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h    | 1 +
- drivers/hid/hid-quirks.c | 1 +
- 2 files changed, 2 insertions(+)
+ fs/proc/self.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index e9155f7c8c51c..4d2a1d540a821 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -479,6 +479,7 @@
- #define USB_DEVICE_ID_PENPOWER		0x00f4
+diff --git a/fs/proc/self.c b/fs/proc/self.c
+index 398cdf9a9f0c6..eba167e1700ef 100644
+--- a/fs/proc/self.c
++++ b/fs/proc/self.c
+@@ -15,6 +15,13 @@ static const char *proc_self_get_link(struct dentry *dentry,
+ 	pid_t tgid = task_tgid_nr_ns(current, ns);
+ 	char *name;
  
- #define USB_VENDOR_ID_GREENASIA		0x0e8f
-+#define USB_DEVICE_ID_GREENASIA_DUAL_SAT_ADAPTOR 0x3010
- #define USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD	0x3013
- 
- #define USB_VENDOR_ID_GRETAGMACBETH	0x0971
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index 2d8d20a7f4574..493e2e7e12de0 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -85,6 +85,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_FORMOSA, USB_DEVICE_ID_FORMOSA_IR_RECEIVER), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28), HID_QUIRK_NOGET },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_SAT_ADAPTOR), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
++	/*
++	 * Not currently supported. Once we can inherit all of struct pid,
++	 * we can allow this.
++	 */
++	if (current->flags & PF_KTHREAD)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (!tgid)
+ 		return ERR_PTR(-ENOENT);
+ 	/* 11 for max length of signed int in decimal + NULL term */
 -- 
 2.27.0
 
