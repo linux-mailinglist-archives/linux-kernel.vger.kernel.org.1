@@ -2,86 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3572CA31A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 679612CA33E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390397AbgLAMrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:47:55 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9083 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390345AbgLAMry (ORCPT
+        id S2388325AbgLAM5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727712AbgLAM5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:47:54 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ClhgM1VxCzLxml;
-        Tue,  1 Dec 2020 20:46:39 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 1 Dec 2020 20:47:03 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH 3/3] drm/rockchip: lvds: fix reference leak when pm_runtime_get_sync fails
-Date:   Tue, 1 Dec 2020 20:54:59 +0800
-Message-ID: <20201201125459.142178-4-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201201125459.142178-1-miaoqinglang@huawei.com>
-References: <20201201125459.142178-1-miaoqinglang@huawei.com>
+        Tue, 1 Dec 2020 07:57:00 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7C9C061A04;
+        Tue,  1 Dec 2020 04:56:20 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kk5CZ-000W9o-07; Tue, 01 Dec 2020 13:56:15 +0100
+Message-ID: <2007533d7d6466fc5e6b588df148238046e25b4c.camel@sipsolutions.net>
+Subject: Re: [PATCH] net: mac80211: cfg: enforce sanity checks for key_index
+ in ieee80211_del_key()
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com
+Date:   Tue, 01 Dec 2020 13:56:13 +0100
+In-Reply-To: <a122ca3c-6b1b-3d03-08e3-ac1906ab7389@gmail.com> (sfid-20201201_134519_457943_AF72D8E2)
+References: <20201201095639.63936-1-anant.thazhemadam@gmail.com>
+         <3025db173074d4dfbc323e91d3586f0e36426cf0.camel@sipsolutions.net>
+         <1e5e4471-5cf4-6d23-6186-97f764f4d25f@gmail.com>
+         <a6eb69000eb33ca8f59cbaff2afee205e0877eb8.camel@sipsolutions.net>
+         <a122ca3c-6b1b-3d03-08e3-ac1906ab7389@gmail.com>
+         (sfid-20201201_134519_457943_AF72D8E2)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PM reference count is not expected to be incremented on
-return in functions rk3288_lvds_poweron and px30_lvds_poweron.
+On Tue, 2020-12-01 at 18:15 +0530, Anant Thazhemadam wrote:
+> 
+> cfg80211_supported_cipher_suite(&rdev->wiphy, params->cipher) returned
+> false, and thus it worked for the syzbot reproducer.
+> Would it be a safer idea to enforce the conditions that I initially put (in
+> ieee80211_del_key()) directly in cfg80211_validate_key_settings() itself - by
+> updating max_key_index, and checking accordingly?
 
-However, pm_runtime_get_sync will increment the PM reference
-count even failed. Forgetting to putting operation will result
-in a reference leak here.
+Yes, I think so. But similarly to cfg80211_validate_key_settings() it
+should look at the device capabilities (beacon protection, etc.)
 
-Replace it with pm_runtime_resume_and_get to keep usage
-counter balanced.
-
-Fixes: cca1705c3d89 ("drm/rockchip: lvds: Add PX30 support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/gpu/drm/rockchip/rockchip_lvds.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-index f292c6a6e..c3b1ac484 100644
---- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-@@ -145,7 +145,7 @@ static int rk3288_lvds_poweron(struct rockchip_lvds *lvds)
- 		DRM_DEV_ERROR(lvds->dev, "failed to enable lvds pclk %d\n", ret);
- 		return ret;
- 	}
--	ret = pm_runtime_get_sync(lvds->dev);
-+	ret = pm_runtime_resume_and_get(lvds->dev);
- 	if (ret < 0) {
- 		DRM_DEV_ERROR(lvds->dev, "failed to get pm runtime: %d\n", ret);
- 		clk_disable(lvds->pclk);
-@@ -329,7 +329,7 @@ static int px30_lvds_poweron(struct rockchip_lvds *lvds)
- {
- 	int ret;
- 
--	ret = pm_runtime_get_sync(lvds->dev);
-+	ret = pm_runtime_resume_and_get(lvds->dev);
- 	if (ret < 0) {
- 		DRM_DEV_ERROR(lvds->dev, "failed to get pm runtime: %d\n", ret);
- 		return ret;
--- 
-2.23.0
+Thanks!
+johannes
 
