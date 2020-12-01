@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD1D2CABA8
+	by mail.lfdr.de (Postfix) with ESMTP id 91FB42CABA9
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730357AbgLATUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:20:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
+        id S1730390AbgLATU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:20:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgLATUe (ORCPT
+        with ESMTP id S1725933AbgLATU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:20:34 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D36C0613D4;
-        Tue,  1 Dec 2020 11:19:54 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id t13so2810838ilp.2;
-        Tue, 01 Dec 2020 11:19:54 -0800 (PST)
+        Tue, 1 Dec 2020 14:20:59 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF1BC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:20:17 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id o9so1717906pfd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:20:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Sr08HjmDbgx5MNr2x8MaTWBjl+K7jFaDDL1XeuJD/Zw=;
-        b=QqzlkzabXHudadx7BxMEpiicwlwqBNFvF0SjIQBXIB/WaD+9sZ62650yyJeR8dmNQF
-         SQ4ia7+zDGY/cNEgRRnsz3AD8dQp9HzxLscPOAxZfEqu0sAk+vD5yGA+fWkqco3RVFal
-         6u+19dgJic2c+t6NMoucqruTlny3TSZG5Ls42Fp0zH4GoHFnVfdOZV3M/U222fvtCDSP
-         vhG14yBBZDg/TSPSE2XCY25KG7fxeDY0M8Tv4RkzUI8ze4A5h8A6pyiuGFqc18Q9pmZ8
-         FWTcWz6ZAgFOQP6F9TukvvjI9irIU4iteDA3S8A0ZHM5kbcOODwTkWbb1j/DFrtn/0Y0
-         Zo/A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UNtFxOQ4O2xPBFWrY/r+XwQcNVVjoO3zZJHkFA0yk+E=;
+        b=KIVEomxVAADgG+V3vucWYExkCHk7pkgg652UAixA4Q3FRU8XTmPH3XX5dK5BCzfR2l
+         ebbvWYq4vvxBYFyUa0fMS+4zN0kjEtBEzbG/0IDsu1WJoN1ayoSPcLvveTmvwZLOEZWA
+         1931MXK+C3YJMyK9b2KJHge4rVxoa2aMsfe9c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Sr08HjmDbgx5MNr2x8MaTWBjl+K7jFaDDL1XeuJD/Zw=;
-        b=E7gBIxRIdQioVHQ+HbqbKThrN3y6AM/UPYq44KXuSX6/h/yjxvQsyPRfiO6FA5i+DY
-         Z/uf4bzxtcZJLrcRtUmpKRpx70MZRzbHDqlFRCYN4tphIsf7sxoY9Ac3qU6cbse+o63x
-         nzen4R/im6AHRYmlOHp8dxFg51TpHzKy/O6b5wNFDFU3lqBUtv4I56kNl93nIilxDavq
-         jm1gjABG1/0g9RiqHPCPVtVm3XyhzOm5dF9tRmQEkFEMCSpYoyti68RgNGu1sbtdbmGY
-         PuNHmGzFFYIxCIxy1EVcr/naorA32xvVDps1hm5nb5hgakNpBHCqoE/qJphyF1UzYaMm
-         FHDA==
-X-Gm-Message-State: AOAM532lXmv8aFm73/iAoMaCHjSz5Xjh+/2mYX9CmUojZgOBFFqvu5v/
-        ki/4mAjUoy3pkhghfbXKc8u7rni0eN0oEEnQkw==
-X-Google-Smtp-Source: ABdhPJyrYBBBi63cAKcNX+DJ5Q6/bcrpP5lpHNXwEG/xbY4sHCGjvdO3jAER/0grorkaPMnRIwTk3MPftalHG8X88o0=
-X-Received: by 2002:a92:84c1:: with SMTP id y62mr3990531ilk.191.1606850393795;
- Tue, 01 Dec 2020 11:19:53 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UNtFxOQ4O2xPBFWrY/r+XwQcNVVjoO3zZJHkFA0yk+E=;
+        b=DV99vFxbPc5wGqWHdd5gqb+XvFzLgBRv0QgXGDN+dj8OUm6OCHwFTbfznbnOcCbFiw
+         mKxqsh8gkH31sk50kZ3ZWoOOH0Q8+vJh51WINUH+xVlAQAjPpYCjV/dquT3Sd0SX0aAX
+         ZoV6IK5pxJAivOCxvwhTD2ik43Df8X3c9bkEwb54cOalB4eqt150o3plPUkXtYZZvPkz
+         wp1AsF+Am/+t8V+U39vGrr706gx0EMxIRfLsd6rFnsx8Xj5JyD4WsxVpkINNJQ3gpEBh
+         +kHDLgYIM2slkQ8fX+yB1FRvGQ6+H/kZRaSjluPA4tPRYwn9re8xqiZig/cG6m+2t3Lk
+         5s/w==
+X-Gm-Message-State: AOAM533Zq94ZJ0XVUAmwI+B3EfromGygVm29RoZstWY9JltIwRRbhdfa
+        MxmSmJRoN5AMZrbFi07Pq4Cf2w==
+X-Google-Smtp-Source: ABdhPJxzRPXUo3h35t+Wv6xoj7vNs214gALSlt5JxU9Scdc9UW3uX5K0pMMc0ffAavMIlm60tp8uGQ==
+X-Received: by 2002:a05:6a00:882:b029:19c:5287:4a1e with SMTP id q2-20020a056a000882b029019c52874a1emr2345984pfj.44.1606850417451;
+        Tue, 01 Dec 2020 11:20:17 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s21sm344612pgk.52.2020.12.01.11.20.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:20:16 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:20:15 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/9] pstore/blk: remove __unregister_pstore_blk
+Message-ID: <202012011119.A3816E1B0@keescook>
+References: <20201016132047.3068029-1-hch@lst.de>
+ <20201016132047.3068029-5-hch@lst.de>
 MIME-Version: 1.0
-References: <20201130223059.101286-1-brgerst@gmail.com> <CALCETrWZ5eH=0Rjd-vBFRtk-tFQ3tN8_rReaKdVbSm78PFQ7_g@mail.gmail.com>
- <CALCETrWbEvD4SO4GosJyeCmaT2BFwX8Xy+EF_D0x91np3k9OaA@mail.gmail.com>
-In-Reply-To: <CALCETrWbEvD4SO4GosJyeCmaT2BFwX8Xy+EF_D0x91np3k9OaA@mail.gmail.com>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Tue, 1 Dec 2020 14:19:41 -0500
-Message-ID: <CAMzpN2jLQ2PAjjhZ7U-HGyH7RYaY_8G-HAv68-fMBosHBixDXw@mail.gmail.com>
-Subject: Re: [PATCH] fanotify: Fix sys_fanotify_mark() on native x86-32
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
-        =?UTF-8?Q?Pawe=C5=82_Jasiak?= <pawel@jasiak.xyz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016132047.3068029-5-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 12:34 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Tue, Dec 1, 2020 at 9:23 AM Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On Mon, Nov 30, 2020 at 2:31 PM Brian Gerst <brgerst@gmail.com> wrote:
-> > >
-> > > Commit 121b32a58a3a converted native x86-32 which take 64-bit argumen=
-ts to
-> > > use the compat handlers to allow conversion to passing args via pt_re=
-gs.
-> > > sys_fanotify_mark() was however missed, as it has a general compat ha=
-ndler.
-> > > Add a config option that will use the syscall wrapper that takes the =
-split
-> > > args for native 32-bit.
-> > >
-> > > Reported-by: Pawe=C5=82 Jasiak <pawel@jasiak.xyz>
-> > > Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for sy=
-scalls taking 64-bit arguments")
-> > > Signed-off-by: Brian Gerst <brgerst@gmail.com>
-> > > ---
-> > >  arch/Kconfig                       |  6 ++++++
-> > >  arch/x86/Kconfig                   |  1 +
-> > >  fs/notify/fanotify/fanotify_user.c | 17 +++++++----------
-> > >  include/linux/syscalls.h           | 24 ++++++++++++++++++++++++
-> > >  4 files changed, 38 insertions(+), 10 deletions(-)
-> > >
-> > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > index 090ef3566c56..452cc127c285 100644
-> > > --- a/arch/Kconfig
-> > > +++ b/arch/Kconfig
-> > > @@ -1045,6 +1045,12 @@ config HAVE_STATIC_CALL_INLINE
-> > >         bool
-> > >         depends on HAVE_STATIC_CALL
-> > >
-> > > +config ARCH_SPLIT_ARG64
-> > > +       bool
-> > > +       help
-> > > +          If a 32-bit architecture requires 64-bit arguments to be s=
-plit into
-> > > +          pairs of 32-bit arguemtns, select this option.
-> >
-> > You misspelled arguments.  You might also want to clarify that, for
-> > 64-bit arches, this means that compat syscalls split their arguments.
->
-> No, that's backwards.  Maybe it should be depends !64BIT instead.
->
-> But I'm really quite confused about something: what's special about
-> x86 here?
+On Fri, Oct 16, 2020 at 03:20:42PM +0200, Christoph Hellwig wrote:
+> Fold __unregister_pstore_blk into its only caller, and merge the
+> two identical calls to __unregister_pstore_device that exist in the
+> caller now.
 
-x86 is special because of the pt_regs-based syscall interface.  It
-would be nice to get all arches to that point eventually.
+Meh, I'm not a fan of this. I like it in a separate function. Pushing it
+into the _exit() routine feels weird to me.
 
-> Are there really Linux arches (compat or 32-bit native)
-> that *don't* split arguments like this?  Sure, some arches probably
-> work the same way that x86 used to in which the compiler did the
-> splitting by magic for us, but that was always a bit of a kludge.
-> Could this change maybe be made unconditional?
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/pstore/blk.c | 27 ++++++---------------------
+>  1 file changed, 6 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
+> index 7f8368e94b3604..3a2214ecf942ae 100644
+> --- a/fs/pstore/blk.c
+> +++ b/fs/pstore/blk.c
+> @@ -388,19 +388,6 @@ static int __register_pstore_blk(void)
+>  	return ret;
+>  }
+>  
+> -static void __unregister_pstore_blk(unsigned int major)
+> -{
+> -	struct pstore_device_info dev = { .read = psblk_generic_blk_read };
+> -	void *holder = blkdev;
+> -
+> -	lockdep_assert_held(&pstore_blk_lock);
+> -	if (psblk_bdev && MAJOR(psblk_bdev->bd_dev) == major) {
+> -		__unregister_pstore_device(&dev);
+> -		psblk_put_bdev(psblk_bdev, holder);
+> -		psblk_bdev = NULL;
+> -	}
+> -}
+> -
+>  /* get information of pstore/blk */
+>  int pstore_blk_get_config(struct pstore_blk_config *info)
+>  {
+> @@ -430,16 +417,14 @@ late_initcall(pstore_blk_init);
+>  
+>  static void __exit pstore_blk_exit(void)
+>  {
+> +	struct pstore_device_info dev = { };
+> +
+>  	mutex_lock(&pstore_blk_lock);
+> +	if (pstore_zone_info)
+> +		dev.read = pstore_zone_info->read;
+> +	__unregister_pstore_device(&dev);
+>  	if (psblk_bdev)
+> -		__unregister_pstore_blk(MAJOR(psblk_bdev->bd_dev));
+> -	else {
+> -		struct pstore_device_info dev = { };
+> -
+> -		if (pstore_zone_info)
+> -			dev.read = pstore_zone_info->read;
+> -		__unregister_pstore_device(&dev);
+> -	}
+> +		psblk_put_bdev(psblk_bdev, blkdev);
+>  	mutex_unlock(&pstore_blk_lock);
+>  }
+>  module_exit(pstore_blk_exit);
+> -- 
+> 2.28.0
+> 
 
-It probably can be made unconditional.  That will take some research
-on which arches have the implicit alignment requirement.  From looking
-at the existing compat handlers, ARM, MIPS, and PowerPC 32-bit ABIs
-need alignment.
-
---
-Brian Gerst
+-- 
+Kees Cook
