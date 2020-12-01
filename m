@@ -2,256 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B970D2C955F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 159D32C9562
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727278AbgLACmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:42:39 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:22908 "EHLO m42-4.mailgun.net"
+        id S1726801AbgLACoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:44:17 -0500
+Received: from mga17.intel.com ([192.55.52.151]:38112 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727126AbgLACmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:42:39 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606790539; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=bmnMEgeHu2+d1Q3HLkgVB3Z0SXVqSHWP2jBAsjKGVhc=; b=b5cVV69Z7EYT6EM4kZHB3appKGPlF3HBuAVdPLHBUGPT1gnXwytC/DBX1G6THAwq/l68G4vL
- tBZyig49vDT71UmNMWswI7soROsRk/g4ttH8E4iG30e06znH6HkeC6QT7QV5uxpgUHPzG1mS
- tEDOexhPrwc0VQ9dXcIXeIyIZ1o=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fc5ad830f9adc18c787f313 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 02:42:11
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E320C43461; Tue,  1 Dec 2020 02:42:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 241F9C43460;
-        Tue,  1 Dec 2020 02:42:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 241F9C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v3 2/3] scsi: ufs: Fix a racing problem between
- ufshcd_abort and eh_work
-To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1605596660-2987-1-git-send-email-cang@codeaurora.org>
- <1605596660-2987-3-git-send-email-cang@codeaurora.org>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <0a3a545b-55f8-e358-7d62-00cde64d40aa@codeaurora.org>
-Date:   Mon, 30 Nov 2020 18:42:07 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <1605596660-2987-3-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726630AbgLACoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 21:44:16 -0500
+IronPort-SDR: d3LFZOTOqRTOAxluG8YRAJYrwboX/jffYlZq6P/qdE4TvoZC/cM6+ym8Inwa2k76BAV8fbRyMK
+ dhhqJy+kymeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="152582122"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="152582122"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:43:35 -0800
+IronPort-SDR: Y1AFoFb8krMbbNbQEgnoyLqtpeFSYHZ2nHjEGJcaIFIygH0mW+eZ4D5IFt0//QpOn6Uvgf/A13
+ fdxXvrVLBESA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="549363506"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga005.jf.intel.com with ESMTP; 30 Nov 2020 18:43:25 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 30 Nov 2020 18:43:09 -0800
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 30 Nov 2020 18:43:00 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 30 Nov 2020 18:43:00 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Mon, 30 Nov 2020 18:42:59 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iWzKRZHrEO0WBZmzKDBKtnyIYNV0vOzgmZxnQysRjugjgIPfNzlNu+89Fd2mLZrzuejNviv2wkws0r89tEKgASQe7MizLL+Y0Q+lhJrqr3Ggkk124RcV1VqEeN/qs3xBy8pcPdunN91ixHcfA6JCSDw3ZGehWYX3yLZrCJdUx5js0JtqFCVxv70snd26eI4JYTQWTwV+XISPUPAyRwcvE+w631Tz4PJ/SxRJ+1SuzslLI4DNLMGYl+EamVInH6SjzHpm8D41g5ne3waikGAXH5wLMpcxJK1s860VbBmR5o7RBuX3ERpcnPR+iHGfVllOtmX97dZckj9oqOpodlk68g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2VBRM8FzXcGIDPlsuIlB2pzeGxoo/kYBbm+d4l0Kv4Q=;
+ b=cDNmEGTzIBSZkmruPCetqpOZRPv1hAm68je2NHMQHiImL6dwp4mrFc1XeoRGwVzxqZBqZosxCCKAp8+1tS+OSW3s+BO3FzdDo2gk0eRTqZOBa6CFwGEfwZewQ+6594hbQkCnRon4g8K20uQqCA/GNe4tmLVAmHr9f8M5UZ2d3HYTLnKtQ1bu8ZFt0qjcs/+lu4oKtOeQhnj+9RvC0h3mHqmEyQwMMB+pl5xtpHcSv7tLGPqG810EPkYSRvQjoo1q6TPsXpFZ7ZaFwXO2xqkPpaf8nr7oDZF+nwy4r2t8ME9Xb2OGiDDK2gr6X0S8I3dMRCLXIbc55lBoovHv44v7xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2VBRM8FzXcGIDPlsuIlB2pzeGxoo/kYBbm+d4l0Kv4Q=;
+ b=n+JwU8O00MJMnvlZQmhEAckhHMeXuju/qo0ADS8WOF77t6/ruyZFmcEJ8NFnIh8hQCBik19p8Zk/8b8ML2PrgK2RZDyrEL8HVd2/CClMfsBUcURVSSBW3LOV+7VNNS6zg5ehFheiPKp3AM7ihFigo7jjZi99EHybA/kwZayEMcY=
+Received: from DM6PR11MB4074.namprd11.prod.outlook.com (2603:10b6:5:5::11) by
+ DM6PR11MB4202.namprd11.prod.outlook.com (2603:10b6:5:1df::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3611.25; Tue, 1 Dec 2020 02:42:52 +0000
+Received: from DM6PR11MB4074.namprd11.prod.outlook.com
+ ([fe80::8941:7045:2dc8:707e]) by DM6PR11MB4074.namprd11.prod.outlook.com
+ ([fe80::8941:7045:2dc8:707e%7]) with mapi id 15.20.3611.025; Tue, 1 Dec 2020
+ 02:42:52 +0000
+From:   "Liao, Bard" <bard.liao@intel.com>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>
+CC:     "vinod.koul@linaro.org" <vinod.koul@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jank@cadence.com" <jank@cadence.com>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "hui.wang@canonical.com" <hui.wang@canonical.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "Kale, Sanyog R" <sanyog.r.kale@intel.com>
+Subject: RE: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
+Thread-Topic: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
+Thread-Index: AQHWx4pQDnpV+A2n6kyb1b68GB2Tu6nhheRg
+Date:   Tue, 1 Dec 2020 02:42:52 +0000
+Message-ID: <DM6PR11MB4074311B4E0B70F24383E754FFF40@DM6PR11MB4074.namprd11.prod.outlook.com>
+References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-reaction: no-action
+dlp-product: dlpe-windows
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [220.133.4.96]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cbe78de2-3ead-440c-f9ee-08d895a2cc8d
+x-ms-traffictypediagnostic: DM6PR11MB4202:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB420275CE2A952060E5795E90FFF40@DM6PR11MB4202.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jRWQu40qSO/lC3xgXhIogzllY1AFGFB5f2OIf2BIVAZudTn8VxJBQRxYvcB7Fz+B5BB1MPScfx6QKxgH85XF5rhntZBniRqAmX3JcD2dWtRF1P5Rknrjk4VwGFJvgJxAPRh1Bo/idBSlpjRnYUOoCIdU3l+sD4SHJIB3s7MsW22ZeA3ZJhIfTK+51BadKtYNhF9uIz1jrbjGqVLRzXjVn2E73LtWIiMg0VPsC8PfMNrEhQxGd0jMC2Bfpl/kI3kbPWM+r0Y+ColMsOkHL+gulzp3Yw+GbhohKA+cXBuVY89x5iu1k1Y/mIU5SHfTpgDZfpixHFrQYwfXP17eRPl3bg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4074.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(6506007)(2906002)(54906003)(53546011)(8936002)(7416002)(186003)(66556008)(110136005)(7696005)(71200400001)(5660300002)(83380400001)(26005)(478600001)(86362001)(55016002)(64756008)(8676002)(52536014)(9686003)(76116006)(66446008)(66946007)(66476007)(33656002)(316002)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?HCFwAWa2vvR7WeAPGqdOJB9DXvoZAdqg45Izdt0Lx8iZ1Ai1DnLMtjarmO79?=
+ =?us-ascii?Q?+6BQbmW0ju/01RE7/AbS+pdyOR180kH6rMLobqF5MHOXb8GYbQ77aqOge2sx?=
+ =?us-ascii?Q?lg6NxY8H1OgON6nAf5cvBNR+T54FWWAoJSsU8FUwnfv7fw6DC5T9LmJ+4IK0?=
+ =?us-ascii?Q?7F8fEcamFoWiDJBOWezgmuW+WlP0lk+raeG2y5570YserNqc9MDNNAc6UDv9?=
+ =?us-ascii?Q?OnmWM6vHG6aF8EOFxBzMMZ2XiuDgw3tEvm/dYi2CrwatpFC7H08PwPgjzHE/?=
+ =?us-ascii?Q?+mlA4LDh9kprOy+6dSyWVjGaIWrCzL0wVSdmLL07q/iOs/u/30Opj40E4uco?=
+ =?us-ascii?Q?4lrXUwWj07RnEUrB9Rr3i7JgGqCP9GHfNVcNODFQJRWdq9S3gYCIs8z1LouT?=
+ =?us-ascii?Q?5ZnS3m6L18VTxXZKyJ0TWfVjA/miqkuas7bc4NPBGFvxUTbK/DKViuc8vNKo?=
+ =?us-ascii?Q?7SUoB0boQlZxe3FY4aaXpygR2icSf9ebj/+w57tS02Mx8NfUbGMhVNSuzE6L?=
+ =?us-ascii?Q?myR//qowP7HRL0E0bcGnarLCnFIobQqfFfTnoDqzQljObKIbgcyD3wwT4iwg?=
+ =?us-ascii?Q?Yh+2P9qEleQCdeaIqffb2E8qSp+gwIupXf8R0Tnf/2LX6xtMutZLt4WdjCaM?=
+ =?us-ascii?Q?PDU8skbGUbYmbagG77DNdbL/49D7dw611aKgntuvGuCEh0vW3GaOGvOyjdLH?=
+ =?us-ascii?Q?xzsyg9+5p7oUBtrGuXMCALpDHFMjdOZPVdBMz5su50xOSSP81KaGoVdc6pyP?=
+ =?us-ascii?Q?7lg3K0YLVpQ1WdQfwjU/voDx2nUanYgC5NBO/475k3+jQobKrMqx8NJoH9qa?=
+ =?us-ascii?Q?ShklKv+Vk29pDB3VC08chTXubA76H2PXjoAMcSoG75EUy2VrYN0PfIWtAA9v?=
+ =?us-ascii?Q?VCfmhSY4JB0yd1feu6Z3IxXDSRjhbGKjZEBVWrS+/pTtaB9nyfYO7IZI0dJO?=
+ =?us-ascii?Q?Lth2CRtA7I9CAF0L6VZVYGQyXR4x2UR01oXvd2XB0z4=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4074.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbe78de2-3ead-440c-f9ee-08d895a2cc8d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 02:42:52.1202
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BBGUKcjuVTHu0X4wztV7XnpTegH1GiqyibAHQqX2J2UGscaFSY1K/6sxPHesXPkG17VpWMaBNE47wtyjS4+c0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4202
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/2020 11:04 PM, Can Guo wrote:
-> In current task abort routine, if task abort happens to the device W-LU,
-> the code directly jumps to ufshcd_eh_host_reset_handler() to perform a
-> full reset and restore then returns FAIL or SUCCESS. Commands sent to the
-> device W-LU are most likely the SSU cmds sent during UFS PM operations. If
-> such SSU cmd enters task abort routine, when ufshcd_eh_host_reset_handler()
-> flushes eh_work, there will be racing because err_handler is serialized
-> with any PM operations.
-> 
-> Since the main idea of aborting one cmd to the device W-LU is to perform
-> a full reset and restore, in order to resolve the racing problem, we merely
-> clean up the lrb taken by this cmd, queue the eh_work and abort the cmd.
-> Since the cmd has been aborted, the PM operation which sends the cmd simply
-> errors out, thus err_handler will not be blocked by ongoing PM operations
-> and err_handler can also recover PM error if any, which comes as another
-> benefit of this change.
-> 
-> Because such cmd is aborted even before it is actually cleared from HW, set
-> the lrb->in_use flag to prevent subsequent cmds, including SCSI cmds and
-> dev cmds, from taking the lrb released by this cmd. Flag lrb->in_use shall
-> evetually be cleared in __ufshcd_transfer_req_compl() invoked by the full
-> reset and restore from err_handler.
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
+> -----Original Message-----
+> From: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Sent: Monday, November 30, 2020 10:40 PM
+> To: alsa-devel@alsa-project.org; vkoul@kernel.org
+> Cc: vinod.koul@linaro.org; linux-kernel@vger.kernel.org; tiwai@suse.de;
+> broonie@kernel.org; gregkh@linuxfoundation.org; jank@cadence.com;
+> srinivas.kandagatla@linaro.org; rander.wang@linux.intel.com;
+> ranjani.sridharan@linux.intel.com; hui.wang@canonical.com; pierre-
+> louis.bossart@linux.intel.com; Kale, Sanyog R <sanyog.r.kale@intel.com>;
+> Liao, Bard <bard.liao@intel.com>
+> Subject: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA
+> support
+>=20
+> The MIPI SoundWire Device Class standard will define audio functionality
+> beyond the scope of the existing SoundWire 1.2 standard, which is limited=
+ to
+> the bus and interface.
+>=20
+> The description is inspired by the USB Audio Class, with "functions",
+> "entities", "control selectors", "audio clusters". The main difference wi=
+th the
+> USB Audio class is that the devices are typically on a motherboard and
+> descriptors stored in platform firmware instead of being retrieved from t=
+he
+> device.
+>=20
+> The current set of devices managed in this patchset are conformant with t=
+he
+> SDCA 0.6 specification and require dedicated drivers since the descriptor=
+s
+> and platform firmware specification is not complete at this time. They do
+> however rely on the hierarchical addressing required by the SDCA standard=
+.
+> Future devices conformant with SDCA 1.0 should rely on a class driver.
+>=20
+> This series adds support for the hierarchical SDCA addressing and extends
+> regmap. It then provides 3 codecs for RT711-sdca headset codec, RT1316
+> amplifier and RT715-scda microphone codec.
+>=20
+> Note that the release of this code before the formal adoption of the SDCA
+> 1.0 specification was formally endorsed by the MIPI Board to make sure
+> there is no delay for Linux-based support of this specification.
+>=20
+> v2:
+> - rt715-sdca: Use rt715_sdca prefix to avoid compiling issue.
+> - rt715-sdca: Merge multiple mute/volume operation into single
+> mute/volume
+>   operation
+> - rt711-sdca: Initial ret =3D 0 as it could be used uninitialized.
+>=20
+> Jack Yu (1):
+>   ASoC/SoundWire: rt715-sdca: First version of rt715 sdw sdca codec
+>     driver
+>=20
+> Pierre-Louis Bossart (2):
+>   soundwire: SDCA: add helper macro to access controls
+>   regmap/SoundWire: sdw: add support for SoundWire 1.2 MBQ
+>=20
+> Shuming Fan (2):
+>   ASoC/SoundWire: rt1316: Add RT1316 SDCA vendor-specific driver
+>   ASoC/SoundWire: rt711-sdca: Add RT711 SDCA vendor-specific driver
+>=20
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+Hi Vinod/Mark,
 
->   drivers/scsi/ufs/ufshcd.c | 55 ++++++++++++++++++++++++++++++++++++-----------
->   drivers/scsi/ufs/ufshcd.h |  2 ++
->   2 files changed, 45 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 7e764e8..cd7394e 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -2539,6 +2539,14 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->   		(hba->clk_gating.state != CLKS_ON));
->   
->   	lrbp = &hba->lrb[tag];
-> +	if (unlikely(lrbp->in_use)) {
-> +		if (hba->pm_op_in_progress)
-> +			set_host_byte(cmd, DID_BAD_TARGET);
-> +		else
-> +			err = SCSI_MLQUEUE_HOST_BUSY;
-> +		ufshcd_release(hba);
-> +		goto out;
-> +	}
->   
->   	WARN_ON(lrbp->cmd);
->   	lrbp->cmd = cmd;
-> @@ -2781,6 +2789,11 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
->   
->   	init_completion(&wait);
->   	lrbp = &hba->lrb[tag];
-> +	if (unlikely(lrbp->in_use)) {
-> +		err = -EBUSY;
-> +		goto out;
-> +	}
-> +
->   	WARN_ON(lrbp->cmd);
->   	err = ufshcd_compose_dev_cmd(hba, lrbp, cmd_type, tag);
->   	if (unlikely(err))
-> @@ -2797,6 +2810,7 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
->   
->   	err = ufshcd_wait_for_dev_cmd(hba, lrbp, timeout);
->   
-> +out:
->   	ufshcd_add_query_upiu_trace(hba, tag,
->   			err ? "query_complete_err" : "query_complete");
->   
-> @@ -4932,6 +4946,7 @@ static void __ufshcd_transfer_req_compl(struct ufs_hba *hba,
->   
->   	for_each_set_bit(index, &completed_reqs, hba->nutrs) {
->   		lrbp = &hba->lrb[index];
-> +		lrbp->in_use = false;
->   		lrbp->compl_time_stamp = ktime_get();
->   		cmd = lrbp->cmd;
->   		if (cmd) {
-> @@ -6374,8 +6389,12 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
->   
->   	init_completion(&wait);
->   	lrbp = &hba->lrb[tag];
-> -	WARN_ON(lrbp->cmd);
-> +	if (unlikely(lrbp->in_use)) {
-> +		err = -EBUSY;
-> +		goto out;
-> +	}
->   
-> +	WARN_ON(lrbp->cmd);
->   	lrbp->cmd = NULL;
->   	lrbp->sense_bufflen = 0;
->   	lrbp->sense_buffer = NULL;
-> @@ -6447,6 +6466,7 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
->   		}
->   	}
->   
-> +out:
->   	blk_put_request(req);
->   out_unlock:
->   	up_read(&hba->clk_scaling_lock);
-> @@ -6696,16 +6716,6 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->   		BUG();
->   	}
->   
-> -	/*
-> -	 * Task abort to the device W-LUN is illegal. When this command
-> -	 * will fail, due to spec violation, scsi err handling next step
-> -	 * will be to send LU reset which, again, is a spec violation.
-> -	 * To avoid these unnecessary/illegal step we skip to the last error
-> -	 * handling stage: reset and restore.
-> -	 */
-> -	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN)
-> -		return ufshcd_eh_host_reset_handler(cmd);
-> -
->   	ufshcd_hold(hba, false);
->   	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
->   	/* If command is already aborted/completed, return SUCCESS */
-> @@ -6726,7 +6736,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->   	 * to reduce repeated printouts. For other aborted requests only print
->   	 * basic details.
->   	 */
-> -	scsi_print_command(hba->lrb[tag].cmd);
-> +	scsi_print_command(cmd);
->   	if (!hba->req_abort_count) {
->   		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, 0);
->   		ufshcd_print_host_regs(hba);
-> @@ -6745,6 +6755,27 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->   		goto cleanup;
->   	}
->   
-> +	/*
-> +	 * Task abort to the device W-LUN is illegal. When this command
-> +	 * will fail, due to spec violation, scsi err handling next step
-> +	 * will be to send LU reset which, again, is a spec violation.
-> +	 * To avoid these unnecessary/illegal steps, first we clean up
-> +	 * the lrb taken by this cmd and mark the lrb as in_use, then
-> +	 * queue the eh_work and bail.
-> +	 */
-> +	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
-> +		spin_lock_irqsave(host->host_lock, flags);
-> +		if (lrbp->cmd) {
-> +			__ufshcd_transfer_req_compl(hba, (1UL << tag));
-> +			__set_bit(tag, &hba->outstanding_reqs);
-> +			lrbp->in_use = true;
-> +			hba->force_reset = true;
-> +			ufshcd_schedule_eh_work(hba);
-> +		}
-> +		spin_unlock_irqrestore(host->host_lock, flags);
-> +		goto out;
-> +	}
-> +
->   	/* Skip task abort in case previous aborts failed and report failure */
->   	if (lrbp->req_abort_skip)
->   		err = -EIO;
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 1e680bf..66e5338 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -163,6 +163,7 @@ struct ufs_pm_lvl_states {
->    * @crypto_key_slot: the key slot to use for inline crypto (-1 if none)
->    * @data_unit_num: the data unit number for the first block for inline crypto
->    * @req_abort_skip: skip request abort task flag
-> + * @in_use: indicates that this lrb is still in use
->    */
->   struct ufshcd_lrb {
->   	struct utp_transfer_req_desc *utr_descriptor_ptr;
-> @@ -192,6 +193,7 @@ struct ufshcd_lrb {
->   #endif
->   
->   	bool req_abort_skip;
-> +	bool in_use;
->   };
->   
->   /**
-> 
+Could we take this series into Vinod's tree with Mark's Acked-by?
+It failed to build on Mark's tree.
 
+>=20
+> --
+> 2.17.1
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
