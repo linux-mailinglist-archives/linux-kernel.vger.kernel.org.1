@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BA62C93D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEED2C93D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730939AbgLAAW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:22:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727373AbgLAAW1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:22:27 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948C7C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:21:41 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id b12so134680pjl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:21:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ud1sJmSP4gp0T9UDyAeUZIg/Ds3SexVM6owNh2yBJcY=;
-        b=bJXb/dPJ4sE9SWvMKK6ZI1rpXsGHM4w8RDOpCK3+tW/MRDv/CeCe+1GXffZ9QoulXa
-         aA8wlWV/GyVJr/b99QBWTujbJM7g9ElLfD3oIuzW6WseNHWeb4Jte5ZgvooI0eDpkj6s
-         HnCdEWHTghkEBpN81Zh8BzyH2Z46soZSfqXEMXoDpdo8ryxqzmWIDREiFlojhfyGnKob
-         XpwU26Tj/NBA/OAdOCfZapK8wM0ZoBFEAgfTeB7Juh861K4RJ3owPnTqeLDyI/yOUnyv
-         BXTRgFeqU2HOpekyd/0rwGJHJ0MXoqTND2XqxHuNfh2lGso2ub8a6a4takX1dVXDCkLY
-         siew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ud1sJmSP4gp0T9UDyAeUZIg/Ds3SexVM6owNh2yBJcY=;
-        b=FKylOYibftpRCOSExNvjZzSfzrgFEqwM7hqixP0zDPr4M/hPOEdv6XKCGBSTk2D880
-         yhUhfKba4NFrzHXN1cHVyMUW5xZxjCEGu0iYg2fGw3EBmiJheB+lhMar7Jr1V0bMksCg
-         iMhvdqsHGM6ALyPlIijoCkAPPll7a66BHr9KBIlGQlFLiWyXxQN9OretYEORRVrEz8G5
-         S/sNn87rH4V4Rh2F+4CpZ8ldQjwm56z85FAo6AfIv21B/TjFd6cjygtHLVv9cnV7jW55
-         LS4cWhm8mxDfHg/FsaxHaxakqWqLzKi/m0WsyS0u5oWVj+21ayC7Fa5kHeSGpMZ5/tZl
-         YLKg==
-X-Gm-Message-State: AOAM533+1/baV23u4KBxrPG35Ey0t4Zxsxqvru4E1v3yH7bWTbNCDZHx
-        xCGB57fNsAqwU7Q10rUMVLw=
-X-Google-Smtp-Source: ABdhPJxvCjlZwbdSd0S11CToH2RmAL/s7p/VhnQNtQQVdOomM8j5ZZ3ynyzrncYgyijLseZdQEPjZw==
-X-Received: by 2002:a17:90a:9f98:: with SMTP id o24mr385313pjp.207.1606782101058;
-        Mon, 30 Nov 2020 16:21:41 -0800 (PST)
-Received: from localhost (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id l20sm39972pjq.33.2020.11.30.16.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 16:21:39 -0800 (PST)
-Date:   Tue, 1 Dec 2020 11:21:37 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 32/32] sched: Debug bits...
-Message-ID: <20201201002137.GG473773@balbir-desktop>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-33-joel@joelfernandes.org>
+        id S1730801AbgLAAWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:22:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727375AbgLAAWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 19:22:40 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E14720706;
+        Tue,  1 Dec 2020 00:21:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606782119;
+        bh=jidxCeKSZhkwUbNx5KSkEk3WyfcJfqoe6qsuKPa93Xg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OZSIUni6CuHazkbY4OgDC4XQpZdATYDeMo2AQrStNF+L0AxXLrQVGpDeIJspqRJdZ
+         igso+8FlvYZAATRbsbBFCBTIx7AYTpkTMfpk5a0BS1kMRmstzrgYG3GCxtzywkfgZ5
+         pJXoeQtko8JHeg1/5/lv2AZSjNYTxnBM/sTMZH3A=
+Date:   Mon, 30 Nov 2020 19:21:57 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Maurizio Drocco <maurizio.drocco@ibm.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with kernel
+ measurements
+Message-ID: <20201201002157.GT643756@sasha-vm>
+References: <20200708154116.3199728-1-sashal@kernel.org>
+ <20200708154116.3199728-3-sashal@kernel.org>
+ <1594224793.23056.251.camel@linux.ibm.com>
+ <20200709012735.GX2722994@sasha-vm>
+ <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201117232003.3580179-33-joel@joelfernandes.org>
+In-Reply-To: <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:20:02PM -0500, Joel Fernandes (Google) wrote:
-> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> Not-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
+On Sun, Nov 29, 2020 at 08:17:38AM -0500, Mimi Zohar wrote:
+>Hi Sasha,
+>
+>On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
+>> On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
+>> >Hi Sasha,
+>> >
+>> >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
+>> >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
+>> >>
+>> >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
+>> >>
+>> >> Registers 8-9 are used to store measurements of the kernel and its
+>> >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
+>> >> should include them in the boot aggregate. Registers 8-9 should be
+>> >> only included in non-SHA1 digests to avoid ambiguity.
+>> >
+>> >Prior to Linux 5.8, the SHA1 template data hashes were padded before
+>> >being extended into the TPM.  Support for calculating and extending
+>> >the per TPM bank template data digests is only being upstreamed in
+>> >Linux 5.8.
+>> >
+>> >How will attestation servers know whether to include PCRs 8 & 9 in the
+>> >the boot_aggregate calculation?  Now, there is a direct relationship
+>> >between the template data SHA1 padded digest not including PCRs 8 & 9,
+>> >and the new per TPM bank template data digest including them.
+>>
+>> Got it, I'll drop it then, thank you!
+>
+>After re-thinking this over, I realized that the attestation server can
+>verify the "boot_aggregate" based on the quoted PCRs without knowing
+>whether padded SHA1 hashes or per TPM bank hash values were extended
+>into the TPM[1], but non-SHA1 boot aggregate values [2] should always
+>include PCRs 8 & 9.
+>
+>Any place commit 6f1a1d103b48 was backported [2], this commit
+>20c59ce010f8 ("ima: extend boot_aggregate with kernel measurements")
+>should be backported as well.
 
-May be put it under a #ifdef CONFIG_SCHED_CORE_DEBUG, even then please
-make it more driven by selection via tracing rather than just trace_printk()
+Which kernels should it apply to? 5.7 is EOL now, so I looked at 5.4 but
+it doesn't apply cleanly there.
 
-Balbir Singh.
-
+-- 
+Thanks,
+Sasha
