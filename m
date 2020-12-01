@@ -2,192 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FF52C98DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512502C98E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgLAILT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:11:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47920 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726342AbgLAILT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:11:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606810232; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MGzl2nOb3KiDpgdpAOqgUoee3zM2sP5KMdEu1eaWBnk=;
-        b=YI2SaO5wcat10Ip5qGVCLc0TcbYPddKdnPqNgWABlkJtiV77zGgClDcNiFYK+Bdx9Dqc2K
-        uGcXdIUIcEpGzlIVKxOXBGWigLZ4FhnPHtHbysfwhzfJPk7BI2bXuHC8TjKFopAfuuWZRv
-        5BIv5SRJKEKttXPPLNXawJjQZgDUGGI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 74001AC2F;
-        Tue,  1 Dec 2020 08:10:32 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 09:10:31 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     vbabka@suse.cz, Konstantin Khlebnikov <koct9i@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mm/swap.c: pre-sort pages in pagevec for
- pagevec_lru_move_fn
-Message-ID: <20201201081031.GQ17338@dhcp22.suse.cz>
-References: <20201126155553.GT4327@casper.infradead.org>
- <1606809735-43300-1-git-send-email-alex.shi@linux.alibaba.com>
+        id S1728226AbgLAINO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:13:14 -0500
+Received: from mail-vi1eur05on2106.outbound.protection.outlook.com ([40.107.21.106]:54048
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726120AbgLAINN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:13:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i7LWwyKCJLUShE4mocVP+IP+9hIZ/9BUdz2RhLVy6I38tv+7N5EnmgObuOdya2ewlzH+OzhfoIrXZgixudHvanMEY4o+z5GA+lVgU9gmRy+NRRm8xBQqc0QHuE0WynBlgF4XgWyWxDTNDrCwocUBLtFtb3KrVUR966oQCtdu6yPKbtKZr9f83VlWO21UGERdBpqjjEhbpwioSNUOmxZtLXKv9I1v1GtMzxVTl9uAFZvthPjF5sJA8HzQnVRxvRMwapODyPtIwaOdfyCtESSy/6UdNIpk35adhLuERvucxZXCGg+k9gQKJO7+BqafLlnxc1NPt1VvfGNmfiLXLTxv/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PFu8IchtZOeRmHXf5iVcFo2EuAipSvGbYA7AtnDYf2w=;
+ b=R9ec1/op6+pyDSM+TUbUNSgW1ZMGndaYPg6Jxe0ySq8s0AcaxdI/77/FZ2gK3dQb+69bmwsDFvYaJgrROk8TS/wmJlxu3bp7KBqdNfcgbNXcXnaEMd16jS2heXOjuygfub1tvjfflMFjxR/HC3HmIbUqzcbx9Cx3gt6eVzJhFGrIKuwJw3o5C/bZKGYoh/AMWxC1w09djeyjzOSJMUFTcibAei9jZVEZPePY7L3ijCOMIurxP60mS/VWH8FN3ZBE21ms0lA3guJXvwTbVuqmmd8ODflJnB3lj1OZwDExi2S79E/ujnMRu7/tiQuPZQaUTNCS6zS99JK+Lox12xPgbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PFu8IchtZOeRmHXf5iVcFo2EuAipSvGbYA7AtnDYf2w=;
+ b=Ja+4mqKzVO5WKsW9ExJqfmaIpdoWq4qrSZUIJnzsN6ya9tsOoZjsPCS3lRU2H4Jiuq5n7hgmXLZ8aNp6QMCOtcOwZd/AGTBVXbxdfslCVL7cNH2CEg9WJtFUM+VSueySlgXYP5MH712bCzfrfqxDiUs5jbwcGNbTYB5PvgtPCgQ=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM0PR10MB2771.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:131::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.31; Tue, 1 Dec
+ 2020 08:12:23 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9d5:953d:42a3:f862]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9d5:953d:42a3:f862%7]) with mapi id 15.20.3611.031; Tue, 1 Dec 2020
+ 08:12:23 +0000
+From:   Schrempf Frieder <frieder.schrempf@kontron.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Gorand <charles.gorand@effinnov.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH v2] NFC: nxp-nci: Make firmware GPIO pin optional
+Date:   Tue,  1 Dec 2020 09:11:38 +0100
+Message-Id: <20201201081146.31332-1-frieder.schrempf@kontron.de>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [46.142.171.176]
+X-ClientProxiedBy: BEXP281CA0015.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10::25)
+ To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1606809735-43300-1-git-send-email-alex.shi@linux.alibaba.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fs-work.localdomain (46.142.171.176) by BEXP281CA0015.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.6 via Frontend Transport; Tue, 1 Dec 2020 08:12:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ed47b71-d9d8-487d-3d60-08d895d0d4c6
+X-MS-TrafficTypeDiagnostic: AM0PR10MB2771:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR10MB27719009A0AC6056C19E4D84E9F40@AM0PR10MB2771.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aSVMowvIA4ssfiU2RSFwL9aKYzqWOqG7OFS+btYDwRiq1wWQrnQuXnPBdKhor9MDe5lE0ymCJ1FaHoYK3FqOOG+szMiaWqCDRGI+/XK5JxVvm5/0GvUYy1jP1BQphR5ywCnddUUm134s+4vHlvo5gG1hdlOFyo0wvq3sY5aFJvmsxvkum7F/N0QcQz5/x+N3la8e57AZujSy58Ps2RCLYdz8HvdoWqRFQhpExUa8ckohL/Yj1fsg4hi0EX6ecoitVkAw/U3weCCMb3NDpg1VCmgFRI/v4GLkDBvzGMj0kfueSfkC2DWIP5QInX+EDf7Ly7dm+LivTkOfx91I/wVvGw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(39850400004)(396003)(376002)(6512007)(2906002)(4326008)(478600001)(52116002)(6666004)(1076003)(86362001)(8936002)(5660300002)(8676002)(2616005)(110136005)(316002)(956004)(54906003)(6486002)(6506007)(26005)(36756003)(16526019)(66946007)(186003)(66476007)(66556008)(83380400001)(7049001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Qfs8mUQ8Ld+VklYM4IEPV6tdaOUZ6yYpWlHjxW8gCc0yb9zPwE1cAD5NdmaF?=
+ =?us-ascii?Q?5VCDauADuwaibnxQDkxTP5BGQu7Bcq/zdVXPM1FJNC9QQAIsV8f2H2lulFt5?=
+ =?us-ascii?Q?DEZuT1tZ/VViFCvpniZZUZzJxsOkh0Q2pdqWbszwstErmgvoR06tLZ9DTdFj?=
+ =?us-ascii?Q?76FCmduf2iwfAcBCuUgRzFsejV4ZQLbr6RpCeCDbWFY40e1qxTrPC7/Bqt+U?=
+ =?us-ascii?Q?uTt2c0iVyP6l//r9XXPREgBNsvG60EStO/zrC6fzv1psglgUBFrRNqnncxV0?=
+ =?us-ascii?Q?DhdFZUTeLOuxjwSZa0aKuM0Ojr7soROqe5sqpGbhpU7zX6Z2F43TgbdmVdbH?=
+ =?us-ascii?Q?yyMCBedKtoDWSkJB98yv3o7a58AlsUVVeDQiIOHqjAlI0XBn6pjArdAzmUc0?=
+ =?us-ascii?Q?1lwkt2/e2Q+Sv9AOweggLXBIHw61c0pJ80cjwjs/czFqLLyMJyFPmDzsUv0P?=
+ =?us-ascii?Q?oAukA8yaTx3ZISsaRND64oknHTWAl9BGD4h0YaJY1rsHfUlp8rbVkWggnvv6?=
+ =?us-ascii?Q?c+T2asolOyiG92wDFHziBjFOsxLv7UwQqBtqLRi/PTGxJxSnN98jlNndLB95?=
+ =?us-ascii?Q?HcqHndmcip5aEmUYDCMFyy1s/C+UVRZtUZEAaxbfTc8dCkD89NarHq1tt9rL?=
+ =?us-ascii?Q?TXZqoL2UAbVDfrRqqzTBnRND2augcj0McqVRGOjaj2vOy2qfYyeoLrU0PmJf?=
+ =?us-ascii?Q?fd6qV5X3q309YEEjvlNFmfEuoZustLHE1EGTeRT3ygAas4WdhwixCAIaVYuy?=
+ =?us-ascii?Q?n8hL+jtY/l0E3EKjFclgeX16/HZi4YIXGOnK7NghuaLRiV9F07ORi68/r6Vn?=
+ =?us-ascii?Q?mbKgN/WFunErUtp4C3KltctCU6eHqNghjn12KagHA9f0rcIqro6fwbWtoWTS?=
+ =?us-ascii?Q?Gd4OLghTuILcZE9Iwk67k3HcWRc1iqipeLT2vauUzXIf08LyKjYSSIbjKFse?=
+ =?us-ascii?Q?xCezjHN0pq20wXiXgnUjASLVtjI/R8o7tG9zevTopSSEfdj09TS+9GecoAfE?=
+ =?us-ascii?Q?yheb?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ed47b71-d9d8-487d-3d60-08d895d0d4c6
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2020 08:12:23.0341
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CoJASr+x/O3ldhQwZ/EFe6JZq7+Tpog0rMd9PrFtGK0bmmH12nToSxFnLVXR1yGIDM6rfUw16MafJB+s7A5xxIASsN48A6Pswk/WVgioRoY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2771
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01-12-20 16:02:13, Alex Shi wrote:
-> Pages in pagevec may have different lruvec, so we have to do relock in
-> function pagevec_lru_move_fn(), but a relock may cause current cpu wait
-> for long time on the same lock for spinlock fairness reason.
-> 
-> Before per memcg lru_lock, we have to bear the relock since the spinlock
-> is the only way to serialize page's memcg/lruvec. Now TestClearPageLRU
-> could be used to isolate pages exculsively, and stable the page's
-> lruvec/memcg. So it gives us a chance to sort the page's lruvec before
-> moving action in pagevec_lru_move_fn. Then we don't suffer from the
-> spinlock's fairness wait.
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Do you have any data to show any improvements from this?
+There are other NXP NCI compatible NFC controllers such as the PN7150
+that use an integrated firmware and therefore do not have a GPIO to
+select firmware downloading mode. To support these kind of chips,
+let's make the firmware GPIO optional.
 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Konstantin Khlebnikov <koct9i@gmail.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  mm/swap.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 79 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/swap.c b/mm/swap.c
-> index 490553f3f9ef..17d8990e5ca7 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -201,29 +201,95 @@ int get_kernel_page(unsigned long start, int write, struct page **pages)
->  }
->  EXPORT_SYMBOL_GPL(get_kernel_page);
->  
-> +/* Pratt's gaps for shell sort, https://en.wikipedia.org/wiki/Shellsort */
-> +static int gaps[] = { 6, 4, 3, 2, 1, 0};
-> +
-> +/* Shell sort pagevec[] on page's lruvec.*/
-> +static void shell_sort(struct pagevec *pvec, unsigned long *lvaddr)
-> +{
-> +	int g, i, j, n = pagevec_count(pvec);
-> +
-> +	for (g=0; gaps[g] > 0 && gaps[g] <= n/2; g++) {
-> +		int gap = gaps[g];
-> +
-> +		for (i = gap; i < n; i++) {
-> +			unsigned long tmp = lvaddr[i];
-> +			struct page *page = pvec->pages[i];
-> +
-> +			for (j = i - gap; j >= 0 && lvaddr[j] > tmp; j -= gap) {
-> +				lvaddr[j + gap] = lvaddr[j];
-> +				pvec->pages[j + gap] = pvec->pages[j];
-> +			}
-> +			lvaddr[j + gap] = tmp;
-> +			pvec->pages[j + gap] = page;
-> +		}
-> +	}
-> +}
-> +
-> +/* Get lru bit cleared page and their lruvec address, release the others */
-> +void sort_isopv(struct pagevec *pvec, struct pagevec *isopv,
-> +		unsigned long *lvaddr)
-> +{
-> +	int i, j;
-> +	struct pagevec busypv;
-> +
-> +	pagevec_init(&busypv);
-> +
-> +	for (i = 0, j = 0; i < pagevec_count(pvec); i++) {
-> +		struct page *page = pvec->pages[i];
-> +
-> +		pvec->pages[i] = NULL;
-> +
-> +		/* block memcg migration during page moving between lru */
-> +		if (!TestClearPageLRU(page)) {
-> +			pagevec_add(&busypv, page);
-> +			continue;
-> +		}
-> +		lvaddr[j++] = (unsigned long)
-> +				mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		pagevec_add(isopv, page);
-> +	}
-> +	pagevec_reinit(pvec);
-> +	if (pagevec_count(&busypv))
-> +		release_pages(busypv.pages, busypv.nr);
-> +
-> +	shell_sort(isopv, lvaddr);
-> +}
-> +
->  static void pagevec_lru_move_fn(struct pagevec *pvec,
->  	void (*move_fn)(struct page *page, struct lruvec *lruvec))
->  {
-> -	int i;
-> +	int i, n;
->  	struct lruvec *lruvec = NULL;
->  	unsigned long flags = 0;
-> +	unsigned long lvaddr[PAGEVEC_SIZE];
-> +	struct pagevec isopv;
->  
-> -	for (i = 0; i < pagevec_count(pvec); i++) {
-> -		struct page *page = pvec->pages[i];
-> +	pagevec_init(&isopv);
->  
-> -		/* block memcg migration during page moving between lru */
-> -		if (!TestClearPageLRU(page))
-> -			continue;
-> +	sort_isopv(pvec, &isopv, lvaddr);
->  
-> -		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
-> -		(*move_fn)(page, lruvec);
-> +	n = pagevec_count(&isopv);
-> +	if (!n)
-> +		return;
->  
-> -		SetPageLRU(page);
-> +	lruvec = (struct lruvec *)lvaddr[0];
-> +	spin_lock_irqsave(&lruvec->lru_lock, flags);
-> +
-> +	for (i = 0; i < n; i++) {
-> +		/* lock new lruvec if lruvec changes, we have sorted them */
-> +		if (lruvec != (struct lruvec *)lvaddr[i]) {
-> +			spin_unlock_irqrestore(&lruvec->lru_lock, flags);
-> +			lruvec = (struct lruvec *)lvaddr[i];
-> +			spin_lock_irqsave(&lruvec->lru_lock, flags);
-> +		}
-> +
-> +		(*move_fn)(isopv.pages[i], lruvec);
-> +
-> +		SetPageLRU(isopv.pages[i]);
->  	}
-> -	if (lruvec)
-> -		unlock_page_lruvec_irqrestore(lruvec, flags);
-> -	release_pages(pvec->pages, pvec->nr);
-> -	pagevec_reinit(pvec);
-> +	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
-> +	release_pages(isopv.pages, isopv.nr);
->  }
->  
->  static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
-> -- 
-> 2.29.GIT
-> 
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 
+---
+Changes in v2:
+  * Remove unneeded null check for phy->gpiod_fw
+---
+ Documentation/devicetree/bindings/net/nfc/nxp-nci.txt | 2 +-
+ drivers/nfc/nxp-nci/i2c.c                             | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+index cfaf88998918..cb2385c277d0 100644
+--- a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
++++ b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+@@ -6,11 +6,11 @@ Required properties:
+ - reg: address on the bus
+ - interrupts: GPIO interrupt to which the chip is connected
+ - enable-gpios: Output GPIO pin used for enabling/disabling the chip
+-- firmware-gpios: Output GPIO pin used to enter firmware download mode
+ 
+ Optional SoC Specific Properties:
+ - pinctrl-names: Contains only one value - "default".
+ - pintctrl-0: Specifies the pin control groups used for this controller.
++- firmware-gpios: Output GPIO pin used to enter firmware download mode
+ 
+ Example (for ARM-based BeagleBone with NPC100 NFC controller on I2C2):
+ 
+diff --git a/drivers/nfc/nxp-nci/i2c.c b/drivers/nfc/nxp-nci/i2c.c
+index 9f60e4dc5a90..7e451c10985d 100644
+--- a/drivers/nfc/nxp-nci/i2c.c
++++ b/drivers/nfc/nxp-nci/i2c.c
+@@ -286,7 +286,7 @@ static int nxp_nci_i2c_probe(struct i2c_client *client,
+ 		return PTR_ERR(phy->gpiod_en);
+ 	}
+ 
+-	phy->gpiod_fw = devm_gpiod_get(dev, "firmware", GPIOD_OUT_LOW);
++	phy->gpiod_fw = devm_gpiod_get_optional(dev, "firmware", GPIOD_OUT_LOW);
+ 	if (IS_ERR(phy->gpiod_fw)) {
+ 		nfc_err(dev, "Failed to get FW gpio\n");
+ 		return PTR_ERR(phy->gpiod_fw);
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
