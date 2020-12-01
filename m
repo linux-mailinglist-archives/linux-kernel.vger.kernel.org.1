@@ -2,194 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490762CA28F
+	by mail.lfdr.de (Postfix) with ESMTP id B53E02CA290
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730960AbgLAMU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:20:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:41940 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbgLAMU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:20:59 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35EA0106F;
-        Tue,  1 Dec 2020 04:20:13 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.85.56])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DEB853F718;
-        Tue,  1 Dec 2020 04:20:08 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        steven.price@arm.com, christophe.leroy@csgroup.eu,
-        gerald.schaefer@linux.ibm.com, vgupta@synopsys.com,
-        paul.walmsley@sifive.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V2 2/2] mm/debug_vm_pgtable/basic: Iterate over entire protection_map[]
-Date:   Tue,  1 Dec 2020 17:49:29 +0530
-Message-Id: <1606825169-5229-3-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606825169-5229-1-git-send-email-anshuman.khandual@arm.com>
-References: <1606825169-5229-1-git-send-email-anshuman.khandual@arm.com>
+        id S1730967AbgLAMVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:21:16 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9081 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726390AbgLAMVQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:21:16 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Clh4Z2lrszLyCh;
+        Tue,  1 Dec 2020 20:19:58 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Dec 2020 20:20:22 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: compress: support compress level
+Date:   Tue, 1 Dec 2020 20:20:19 +0800
+Message-ID: <20201201122019.50077-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the basic tests just validate various page table transformations
-after starting with vm_get_page_prot(VM_READ|VM_WRITE|VM_EXEC) protection.
-Instead scan over the entire protection_map[] for better coverage. It also
-makes sure that all these basic page table tranformations checks hold true
-irrespective of the starting protection value for the page table entry.
-There is also a slight change in the debug print format for basic tests to
-capture the protection value it is being tested with. The modified output
-looks something like
+Expand 'compress_algorithm' mount option to accept parameter as format of
+<algorithm>:<level>, by this way, it gives a way to allow user to do more
+specified config on lz4 and zstd compression level, then f2fs compression
+can provide higher compress ratio.
 
-[pte_basic_tests          ]: Validating PTE basic ()
-[pte_basic_tests          ]: Validating PTE basic (read)
-[pte_basic_tests          ]: Validating PTE basic (write)
-[pte_basic_tests          ]: Validating PTE basic (read|write)
-[pte_basic_tests          ]: Validating PTE basic (exec)
-[pte_basic_tests          ]: Validating PTE basic (read|exec)
-[pte_basic_tests          ]: Validating PTE basic (write|exec)
-[pte_basic_tests          ]: Validating PTE basic (read|write|exec)
-[pte_basic_tests          ]: Validating PTE basic (shared)
-[pte_basic_tests          ]: Validating PTE basic (read|shared)
-[pte_basic_tests          ]: Validating PTE basic (write|shared)
-[pte_basic_tests          ]: Validating PTE basic (read|write|shared)
-[pte_basic_tests          ]: Validating PTE basic (exec|shared)
-[pte_basic_tests          ]: Validating PTE basic (read|exec|shared)
-[pte_basic_tests          ]: Validating PTE basic (write|exec|shared)
-[pte_basic_tests          ]: Validating PTE basic (read|write|exec|shared)
+In order to set compress level for lz4 algorithm, it needs to set
+CONFIG_LZ4HC_COMPRESS and CONFIG_F2FS_FS_LZ4HC config to enable lz4hc
+compress algorithm.
 
-This adds a missing argument 'struct mm_struct *' in pud_basic_tests() test
-. This never got exposed before as PUD based THP is available only on X86
-platform where mm_pmd_folded(mm) call gets macro replaced without requiring
-the mm_struct i.e __is_defined(__PAGETABLE_PMD_FOLDED).
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Steven Price <steven.price@arm.com>
-Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- mm/debug_vm_pgtable.c | 47 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 35 insertions(+), 12 deletions(-)
+v2:
+- support more generic mount option to configure compress level
+- add to support setting compress level for zstd instead of only for lz4
+ Documentation/filesystems/f2fs.rst |  5 +++
+ fs/f2fs/Kconfig                    |  9 ++++
+ fs/f2fs/compress.c                 | 40 ++++++++++++++++--
+ fs/f2fs/f2fs.h                     |  9 ++++
+ fs/f2fs/super.c                    | 66 +++++++++++++++++++++++++++++-
+ include/linux/f2fs_fs.h            |  3 ++
+ 6 files changed, 127 insertions(+), 5 deletions(-)
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index c6fffea54522..a96b5270e451 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -58,11 +58,13 @@
- #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
- #define RANDOM_NZVALUE	GENMASK(7, 0)
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index 8830a11a11be..ec7498d8f8cd 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -249,6 +249,11 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+ 			 This space is reclaimed once checkpoint=enable.
+ compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
+ 			 "lz4", "zstd" and "lzo-rle" algorithm.
++compress_algorithm=%s:%d Control compress algorithm and its compress level, now, only
++			 "lz4" and "zstd" support compress level config.
++			 		level range
++			 lz4		3 - 16
++			 zstd		1 - 22
+ compress_log_size=%u	 Support configuring compress cluster size, the size will
+ 			 be 4KB * (1 << %u), 16KB is minimum size, also it's
+ 			 default size.
+diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+index d13c5c6a9787..8134b145ae4f 100644
+--- a/fs/f2fs/Kconfig
++++ b/fs/f2fs/Kconfig
+@@ -119,6 +119,15 @@ config F2FS_FS_LZ4
+ 	help
+ 	  Support LZ4 compress algorithm, if unsure, say Y.
  
--static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
-+static void __init pte_basic_tests(unsigned long pfn, int idx)
- {
-+	pgprot_t prot = protection_map[idx];
- 	pte_t pte = pfn_pte(pfn, prot);
-+	unsigned long val = idx, *ptr = &val;
- 
--	pr_debug("Validating PTE basic\n");
-+	pr_debug("Validating PTE basic (%pGv)\n", ptr);
- 
- 	/*
- 	 * This test needs to execute right after the given page
-@@ -142,14 +144,16 @@ static void __init pte_savedwrite_tests(unsigned long pfn, pgprot_t prot)
- }
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
-+static void __init pmd_basic_tests(unsigned long pfn, int idx)
- {
-+	pgprot_t prot = protection_map[idx];
- 	pmd_t pmd = pfn_pmd(pfn, prot);
-+	unsigned long val = idx, *ptr = &val;
- 
- 	if (!has_transparent_hugepage())
- 		return;
- 
--	pr_debug("Validating PMD basic\n");
-+	pr_debug("Validating PMD basic (%pGv)\n", ptr);
- 
- 	/*
- 	 * This test needs to execute right after the given page
-@@ -276,14 +280,16 @@ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
- }
- 
- #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
--static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot)
-+static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx)
- {
-+	pgprot_t prot = protection_map[idx];
- 	pud_t pud = pfn_pud(pfn, prot);
-+	unsigned long val = idx, *ptr = &val;
- 
- 	if (!has_transparent_hugepage())
- 		return;
- 
--	pr_debug("Validating PUD basic\n");
-+	pr_debug("Validating PUD basic (%pGv)\n", ptr);
- 
- 	/*
- 	 * This test needs to execute right after the given page
-@@ -401,7 +407,7 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
- #endif /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
- 
- #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
--static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot) { }
-+static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
- static void __init pud_advanced_tests(struct mm_struct *mm,
- 				      struct vm_area_struct *vma, pud_t *pudp,
- 				      unsigned long pfn, unsigned long vaddr,
-@@ -414,8 +420,8 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
- }
- #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
- #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
--static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot) { }
--static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot) { }
-+static void __init pmd_basic_tests(unsigned long pfn, int idx) { }
-+static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
- static void __init pmd_advanced_tests(struct mm_struct *mm,
- 				      struct vm_area_struct *vma, pmd_t *pmdp,
- 				      unsigned long pfn, unsigned long vaddr,
-@@ -941,6 +947,7 @@ static int __init debug_vm_pgtable(void)
- 	unsigned long vaddr, pte_aligned, pmd_aligned;
- 	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
- 	spinlock_t *ptl = NULL;
-+	int idx;
- 
- 	pr_info("Validating architecture page table helpers\n");
- 	prot = vm_get_page_prot(VMFLAGS);
-@@ -1005,9 +1012,25 @@ static int __init debug_vm_pgtable(void)
- 	saved_pmdp = pmd_offset(pudp, 0UL);
- 	saved_ptep = pmd_pgtable(pmd);
- 
--	pte_basic_tests(pte_aligned, prot);
--	pmd_basic_tests(pmd_aligned, prot);
--	pud_basic_tests(pud_aligned, prot);
-+	/*
-+	 * Iterate over the protection_map[] to make sure that all
-+	 * the basic page table transformation validations just hold
-+	 * true irrespective of the starting protection value for a
-+	 * given page table entry.
-+	 */
-+	for (idx = 0; idx < ARRAY_SIZE(protection_map); idx++) {
-+		pte_basic_tests(pte_aligned, idx);
-+		pmd_basic_tests(pmd_aligned, idx);
-+		pud_basic_tests(mm, pud_aligned, idx);
-+	}
++config F2FS_FS_LZ4HC
++	bool "LZ4HC compression support"
++	depends on F2FS_FS_COMPRESSION
++	depends on F2FS_FS_LZ4
++	select LZ4HC_COMPRESS
++	default y
++	help
++	  Support LZ4HC compress algorithm, if unsure, say Y.
 +
-+	/*
-+	 * Both P4D and PGD level tests are very basic which do not
-+	 * involve creating page table entries from the protection
-+	 * value and the given pfn. Hence just keep them out from
-+	 * the above iteration for now to save some test execution
-+	 * time.
-+	 */
- 	p4d_basic_tests(p4d_aligned, prot);
- 	pgd_basic_tests(pgd_aligned, prot);
+ config F2FS_FS_ZSTD
+ 	bool "ZSTD compression support"
+ 	depends on F2FS_FS_COMPRESSION
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 7a7b29f3679a..32a5d7a13bd9 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -254,8 +254,13 @@ static const struct f2fs_compress_ops f2fs_lzo_ops = {
+ #ifdef CONFIG_F2FS_FS_LZ4
+ static int lz4_init_compress_ctx(struct compress_ctx *cc)
+ {
+-	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+-				LZ4_MEM_COMPRESS, GFP_NOFS);
++	unsigned int size;
++	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
++						COMPRESS_LEVEL_OFFSET;
++
++	size = level ? LZ4HC_MEM_COMPRESS : LZ4_MEM_COMPRESS;
++
++	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode), size, GFP_NOFS);
+ 	if (!cc->private)
+ 		return -ENOMEM;
  
+@@ -274,10 +279,34 @@ static void lz4_destroy_compress_ctx(struct compress_ctx *cc)
+ 	cc->private = NULL;
+ }
+ 
++#ifdef CONFIG_F2FS_FS_LZ4HC
++static int lz4hc_compress_pages(struct compress_ctx *cc)
++{
++	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
++						COMPRESS_LEVEL_OFFSET;
++	int len;
++
++	if (level)
++		len = LZ4_compress_HC(cc->rbuf, cc->cbuf->cdata, cc->rlen,
++					cc->clen, level, cc->private);
++	else
++		len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
++						cc->clen, cc->private);
++	if (!len)
++		return -EAGAIN;
++
++	cc->clen = len;
++	return 0;
++}
++#endif
++
+ static int lz4_compress_pages(struct compress_ctx *cc)
+ {
+ 	int len;
+ 
++#ifdef CONFIG_F2FS_FS_LZ4HC
++	return lz4hc_compress_pages(cc);
++#endif
+ 	len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+ 						cc->clen, cc->private);
+ 	if (!len)
+@@ -327,8 +356,13 @@ static int zstd_init_compress_ctx(struct compress_ctx *cc)
+ 	ZSTD_CStream *stream;
+ 	void *workspace;
+ 	unsigned int workspace_size;
++	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
++						COMPRESS_LEVEL_OFFSET;
++
++	if (!level)
++		level = F2FS_ZSTD_DEFAULT_CLEVEL;
+ 
+-	params = ZSTD_getParams(F2FS_ZSTD_DEFAULT_CLEVEL, cc->rlen, 0);
++	params = ZSTD_getParams(level, cc->rlen, 0);
+ 	workspace_size = ZSTD_CStreamWorkspaceBound(params.cParams);
+ 
+ 	workspace = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index caee0c29a97b..aae72d2ebad4 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -149,6 +149,7 @@ struct f2fs_mount_info {
+ 	/* For compression */
+ 	unsigned char compress_algorithm;	/* algorithm type */
+ 	unsigned char compress_log_size;	/* cluster log size */
++	unsigned char compress_level;		/* compress level */
+ 	bool compress_chksum;			/* compressed data chksum */
+ 	unsigned char compress_ext_cnt;		/* extension count */
+ 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+@@ -734,6 +735,7 @@ struct f2fs_inode_info {
+ 	atomic_t i_compr_blocks;		/* # of compressed blocks */
+ 	unsigned char i_compress_algorithm;	/* algorithm type */
+ 	unsigned char i_log_cluster_size;	/* log of cluster size */
++	unsigned char i_compress_level;		/* compress level (lz4hc,zstd) */
+ 	unsigned short i_compress_flag;		/* compress flag */
+ 	unsigned int i_cluster_size;		/* cluster size */
+ };
+@@ -1294,6 +1296,9 @@ struct compress_data {
+ 
+ #define F2FS_COMPRESSED_PAGE_MAGIC	0xF5F2C000
+ 
++#define	COMPRESS_LEVEL_OFFSET	8
++#define COMPRESS_INVALID_LEVEL	0xff
++
+ /* compress context */
+ struct compress_ctx {
+ 	struct inode *inode;		/* inode the context belong to */
+@@ -3935,6 +3940,10 @@ static inline void set_compress_context(struct inode *inode)
+ 				1 << COMPRESS_CHKSUM : 0;
+ 	F2FS_I(inode)->i_cluster_size =
+ 			1 << F2FS_I(inode)->i_log_cluster_size;
++	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
++			F2FS_OPTION(sbi).compress_level)
++		F2FS_I(inode)->i_flags |= F2FS_OPTION(sbi).compress_level <<
++							COMPRESS_LEVEL_OFFSET;
+ 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+ 	set_inode_flag(inode, FI_COMPRESSED_FILE);
+ 	stat_inc_compr_inode(inode);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index b0c6ef2df7b8..d4472917ffc1 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -25,6 +25,8 @@
+ #include <linux/quota.h>
+ #include <linux/unicode.h>
+ #include <linux/part_stat.h>
++#include <linux/zstd.h>
++#include <linux/lz4.h>
+ 
+ #include "f2fs.h"
+ #include "node.h"
+@@ -464,6 +466,50 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++static int f2fs_compress_set_level(struct f2fs_sb_info *sbi, const char *str,
++						int type)
++{
++	unsigned int level;
++	int len;
++
++	if (type == COMPRESS_LZ4)
++		len = 3;
++	else if (type == COMPRESS_ZSTD)
++		len = 4;
++
++	if (strlen(str) == len)
++		return 0;
++
++	str += len;
++
++	if (str[0] != ':') {
++		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
++		return -EINVAL;
++	}
++	if (kstrtouint(str + 1, 10, &level))
++		return -EINVAL;
++	if (type == COMPRESS_LZ4) {
++#ifdef CONFIG_F2FS_FS_LZ4HC
++		if (level < LZ4HC_MIN_CLEVEL || level > LZ4HC_MAX_CLEVEL) {
++			f2fs_info(sbi, "invalid lz4hc compress level: %d", level);
++			return -EINVAL;
++		}
++#else
++		f2fs_info(sbi, "doesn't support lz4hc compression");
++		return 0;
++#endif
++	} else if (type == COMPRESS_ZSTD) {
++		if (!level || level > ZSTD_maxCLevel()) {
++			f2fs_info(sbi, "invalid zstd compress level: %d", level);
++			return -EINVAL;
++		}
++	}
++	F2FS_OPTION(sbi).compress_level = level;
++	return 0;
++}
++#endif
++
+ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+@@ -884,10 +930,22 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 			if (!strcmp(name, "lzo")) {
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_LZO;
+-			} else if (!strcmp(name, "lz4")) {
++			} else if (!strncmp(name, "lz4", 3)) {
++				ret = f2fs_compress_set_level(sbi, name,
++								COMPRESS_LZ4);
++				if (ret) {
++					kfree(name);
++					return -EINVAL;
++				}
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_LZ4;
+-			} else if (!strcmp(name, "zstd")) {
++			} else if (!strncmp(name, "zstd", 4)) {
++				ret = f2fs_compress_set_level(sbi, name,
++								COMPRESS_ZSTD);
++				if (ret) {
++					kfree(name);
++					return -EINVAL;
++				}
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_ZSTD;
+ 			} else if (!strcmp(name, "lzo-rle")) {
+@@ -1530,6 +1588,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+ 	}
+ 	seq_printf(seq, ",compress_algorithm=%s", algtype);
+ 
++	if (F2FS_OPTION(sbi).compress_level != COMPRESS_INVALID_LEVEL)
++		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
++
+ 	seq_printf(seq, ",compress_log_size=%u",
+ 			F2FS_OPTION(sbi).compress_log_size);
+ 
+@@ -1692,6 +1753,7 @@ static void default_options(struct f2fs_sb_info *sbi)
+ 	F2FS_OPTION(sbi).compress_algorithm = COMPRESS_LZ4;
+ 	F2FS_OPTION(sbi).compress_log_size = MIN_COMPRESS_LOG_SIZE;
+ 	F2FS_OPTION(sbi).compress_ext_cnt = 0;
++	F2FS_OPTION(sbi).compress_level = COMPRESS_INVALID_LEVEL;
+ 	F2FS_OPTION(sbi).bggc_mode = BGGC_MODE_ON;
+ 
+ 	sbi->sb->s_flags &= ~SB_INLINECRYPT;
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index 55be7afeee90..2dcc63fe8494 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -275,6 +275,9 @@ struct f2fs_inode {
+ 			__u8 i_compress_algorithm;	/* compress algorithm */
+ 			__u8 i_log_cluster_size;	/* log of cluster size */
+ 			__le16 i_compress_flag;		/* compress flag */
++						/* 0 bit: chksum flag
++						 * [10,15] bits: compress level
++						 */
+ 			__le32 i_extra_end[0];	/* for attribute size calculation */
+ 		} __packed;
+ 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
 -- 
-2.20.1
+2.26.2
 
