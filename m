@@ -2,566 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ABE2CAA37
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2062C2CAA1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404168AbgLARwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:52:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        id S2404166AbgLARre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:47:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391855AbgLARwj (ORCPT
+        with ESMTP id S2404118AbgLARra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:52:39 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FBDC0617A7;
-        Tue,  1 Dec 2020 09:51:59 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id o9so1554553pfd.10;
-        Tue, 01 Dec 2020 09:51:59 -0800 (PST)
+        Tue, 1 Dec 2020 12:47:30 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87446C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:46:44 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id n24so4547815edb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:46:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bYRnT6meiNHkxAgZPYwSbGdDS48Uvqnd+UI5WVDlRIo=;
-        b=hWBXtKPmFreatgchOXPxb8I6zutB24f/ziw4eDAqHjbN0a+hiWJJdxgAW8NqnrnLqq
-         v6SqcIafXQGiqd+NS6JkhDZpWGBKMWc3lIBk325OH7p2yTUp+WWhk33Qgm0mQu506ZRz
-         434w2TTh093Y8mrW5fU27QDbN+Lcnngtij2H4KzLha+GOb+UswF9kZWy6Q41R5CUx/xf
-         IiiQrdJbJBRnN3cAtj6bw9NqEnAL/ZKleL4c3Rzj1n/st3/kuAyjoO1yBBe4au0ZR4Zv
-         pG4x0X9zOBCn58x3W675dSYXFLfhrceoFFDqJutASvmStsm36yHFw2eeSZAv7iIOtiL7
-         IfMw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VxdwyJsEqW1IFZ+wJlnqk+0jlPNFFTXeNogrQYB17Po=;
+        b=z5KgBOz6m3zJGbxmCYtcciYdsmGO5nwq6vLp++P5SLGrT+4ama0sk+fQfa3zVW5lJg
+         1V3BXsSc2kOF7bDFojVIIvTSnqpscsMFywVwEHnBekeZJYLyTZihwG0frVbwlDE6pkLx
+         aEq2EGjGKiwNic83a4TXRS//IyVTn5jZeEUlfOtcQz11Yu8w1VZb8iyTrrKfroVqKixZ
+         9ZA0r0lMJ/TPhZ3iM9N4o5byG6HALe7q/sGwemZOArDwRyN2CLprQLtASlr+Iyz8Mb5E
+         AIXIySdCk+BTOiOVUsNZpAauxQo6NEjkUkz7bVqamzo95YMsKMuHLyXTXqNHegmviRfR
+         F4/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=bYRnT6meiNHkxAgZPYwSbGdDS48Uvqnd+UI5WVDlRIo=;
-        b=EP+tyzZf5OHCsLIvw6RqG9TGYLf7GecAzdCIvfWIRXkXbjCJEwHHVQppdDWV6ogl6r
-         3HJTMe8pPuFsElojqwIMI94SBGtdz6e3mI0rIN0yeeUwYIUruFdYVtQsfYzPY9JPyoaO
-         Yj+1PUDk22YeSolaM4bqBqSiNlraIzO7XkdP5roJ0hHZiuUwRV1aQn5S/Wowr/sE+cPt
-         Ptd3eVyEiYxdmCbQvQk+cZodT+fIhttQ1BWwCZDEvY50zaeAoBQKTEMhZRngm0CltGpa
-         DEX1jbutfk1cEH1KDPXan2yJFLIYcyNMz4z5yARiT9J5xTzfcyzFE3HxTBykbBQwECSh
-         fUSg==
-X-Gm-Message-State: AOAM533iDY/Jgo8qa16UDd76f4YmfabtjzlG9FAdIDDfllGqtJiYNFi5
-        5+mA+GeT0g1JsBD7a594f7w=
-X-Google-Smtp-Source: ABdhPJxPMBUU5/Z5mNi1wm+3qVG2Z14gAaQt2uPUeLlEWWh2TAsg5KL2eW8/0LCEd/AJCDUVDQXCfg==
-X-Received: by 2002:aa7:8595:0:b029:198:159e:52d4 with SMTP id w21-20020aa785950000b0290198159e52d4mr3509713pfn.7.1606845119118;
-        Tue, 01 Dec 2020 09:51:59 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id q23sm390082pfg.192.2020.12.01.09.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 09:51:58 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        hyesoo.yu@samsung.com, willy@infradead.org, david@redhat.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz, surenb@google.com,
-        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com,
-        sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH v2 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
-Date:   Tue,  1 Dec 2020 09:51:44 -0800
-Message-Id: <20201201175144.3996569-5-minchan@kernel.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201201175144.3996569-1-minchan@kernel.org>
-References: <20201201175144.3996569-1-minchan@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VxdwyJsEqW1IFZ+wJlnqk+0jlPNFFTXeNogrQYB17Po=;
+        b=RexQani+1/0Q+vIvZ1XWKd3lM33YClCuY266NgcqPFRm5qQK/ssbmzTC52znZyNf0V
+         MYU40zLLr1Xg9RGxQa6VSYMsT0voerlYmC79Xg3NBsMVHXPUenA4zPatbMg/QPfhVQtY
+         9zPQMW2hhcNrVpBvP02P1M3naviTE5PgRrbCzjhdjrXfnCALGLsnyLB8O6jaD9uHsDH2
+         FQ6QJcRLPJ/HmvTIOZzg/jwyyZ1Rkr7bsjpzNrs97n66jboAIKUKnLRVO1T85sKBD/OJ
+         ZTeKlZbeNYie+DsNEb1VGVPc/P37uYTzh9560t8veWNecRPOhJrT8p5iwzMx7yDES0Sf
+         Sx1A==
+X-Gm-Message-State: AOAM531lM0JdMluBL58HRdsN3aj/x2KD2fXsmZTJjQSc5p95jJzrVZE8
+        gjDbu0xnSZRaHAWqob/8cfB5NBXEDm4rQ7HCDhM2cg==
+X-Google-Smtp-Source: ABdhPJwi6ZAkxT/Dkmu36hwtj4BtismupXyyY4L1sjNGiIwLSjWY3p2nZonsfYxU7OinI5PtKwDEKsbZpLx4tG2Hxjc=
+X-Received: by 2002:a50:d886:: with SMTP id p6mr4386383edj.366.1606844803086;
+ Tue, 01 Dec 2020 09:46:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+ <1606533966-22821-5-git-send-email-hemantk@codeaurora.org>
+ <CAMZdPi8z+-qFqgZ7AFJcNAUMbDQtNN5Hz-geMBcp4azrUGm9iA@mail.gmail.com>
+ <c47dcd57-7576-e03e-f70b-0c4d25f724b5@codeaurora.org> <CAMZdPi8mUV5cFs-76K3kg=hN8ht2SKjJwzbJH-+VH4Y8QabcHQ@mail.gmail.com>
+ <1247e32e-ed67-de6b-81ec-3bde9ad93250@codeaurora.org>
+In-Reply-To: <1247e32e-ed67-de6b-81ec-3bde9ad93250@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Tue, 1 Dec 2020 18:52:57 +0100
+Message-ID: <CAMZdPi-tjmXWAFzZJAg_6U5h2ZJv478E88T-Lmk=YA-B6=MzRA@mail.gmail.com>
+Subject: Re: [PATCH v13 4/4] bus: mhi: Add userspace client interface driver
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     Hemant Kumar <hemantk@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hyesoo Yu <hyesoo.yu@samsung.com>
+On Tue, 1 Dec 2020 at 18:37, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+>
+> On 12/1/2020 10:36 AM, Loic Poulain wrote:
+> > On Tue, 1 Dec 2020 at 02:16, Hemant Kumar <hemantk@codeaurora.org> wrote:
+> >>
+> >> Hi Loic,
+> >>
+> >> On 11/30/20 10:22 AM, Loic Poulain wrote:
+> >>> On Sat, 28 Nov 2020 at 04:26, Hemant Kumar <hemantk@codeaurora.org> wrote:
+> >>>>
+> >>>> This MHI client driver allows userspace clients to transfer
+> >>>> raw data between MHI device and host using standard file operations.
+> >>>> Driver instantiates UCI device object which is associated to device
+> >>>> file node. UCI device object instantiates UCI channel object when device
+> >>>> file node is opened. UCI channel object is used to manage MHI channels
+> >>>> by calling MHI core APIs for read and write operations. MHI channels
+> >>>> are started as part of device open(). MHI channels remain in start
+> >>>> state until last release() is called on UCI device file node. Device
+> >>>> file node is created with format
+> >>>
+> >>> [...]
+> >>>
+> >>>> +struct uci_chan {
+> >>>> +       struct uci_dev *udev;
+> >>>> +       wait_queue_head_t ul_wq;
+> >>>> +
+> >>>> +       /* ul channel lock to synchronize multiple writes */
+> >>>> +       struct mutex write_lock;
+> >>>> +
+> >>>> +       wait_queue_head_t dl_wq;
+> >>>> +
+> >>>> +       /* dl channel lock to synchronize multiple reads */
+> >>>> +       struct mutex read_lock;
+> >>>> +
+> >>>> +       /*
+> >>>> +        * protects pending list in bh context, channel release, read and
+> >>>> +        * poll
+> >>>> +        */
+> >>>> +       spinlock_t dl_pending_lock;
+> >>>> +
+> >>>> +       struct list_head dl_pending;
+> >>>> +       struct uci_buf *cur_buf;
+> >>>> +       size_t dl_size;
+> >>>> +       struct kref ref_count;
+> >>>> +};
+> >>>
+> >>> [...]
+> >>>
+> >>>> + * struct uci_dev - MHI UCI device
+> >>>> + * @minor: UCI device node minor number
+> >>>> + * @mhi_dev: associated mhi device object
+> >>>> + * @uchan: UCI uplink and downlink channel object
+> >>>> + * @mtu: max TRE buffer length
+> >>>> + * @enabled: Flag to track the state of the UCI device
+> >>>> + * @lock: mutex lock to manage uchan object
+> >>>> + * @ref_count: uci_dev reference count
+> >>>> + */
+> >>>> +struct uci_dev {
+> >>>> +       unsigned int minor;
+> >>>> +       struct mhi_device *mhi_dev;
+> >>>> +       struct uci_chan *uchan;
+> >>>
+> >>> Why a pointer to uci_chan and not just plainly integrating the
+> >>> structure here, AFAIU uci_chan describes the channels and is just a
+> >>> subpart of uci_dev. That would reduce the number of dynamic
+> >>> allocations you manage and the extra kref. do you even need a separate
+> >>> structure for this?
+> >>
+> >> This goes back to one of my patch versions i tried to address concern
+> >> from Greg. Since we need to ref count the channel as well as the uci
+> >> device i decoupled the two objects and used two reference counts for two
+> >> different objects.
+> >
+> > What Greg complained about is the two kref in the same structure and
+> > that you were using kref as an open() counter. But splitting your
+> > struct in two in order to keep the two kref does not make the much
+> > code better (and simpler). I'm still a bit puzzled about the driver
+> > complexity, it's supposed to be just a passthrough interface to MHI
+> > after all.
+> >
+> > I would suggest several changes, that IMHO would simplify reviewing:
+> > - Use only one structure representing the 'uci' context (uci_dev)
+> > - Keep the read path simple (mhi_uci_read), do no use an intermediate
+> > cur_buf pointer, only dequeue the buffer when it is fully consumed.
+> > - As I commented before, take care of the dl_pending list access
+> > concurrency, even in wait_event.
+> > - You don't need to count the number of open() calls, AFAIK,
+> > mhi_prepare_for_transfer() simply fails if channels are already
+> > started...
+>
+> Unless I missed something, you seem to have ignored the root issue that
+> Hemant needs to solve, which is when to call
+> mhi_unprepare_for_transfer().  You can't just call that when close() is
+> called because there might be multiple users, and each one is going to
+> trigger a close(), so you need to know how many close() instances to
+> expect, and only call mhi_unprepare_for_transfer() for the last one.
 
-This patch supports chunk heap that allocates the buffers that
-arranged into a list a fixed size chunks taken from CMA.
+That one part of his problem, yes, but if you unconditionally call
+mhi_prepare_for_transfer in open(), it should fail for subsequent
+users, and so only one user will successfully open the device.
 
-The chunk heap doesn't use heap-helper although it can remove
-duplicated code since heap-helper is under deprecated process.[1]
-
-NOTE: This patch only adds the default CMA heap to allocate chunk
-pages. We will add another CMA memory regions to the dmabuf heaps
-interface with a later patch (which requires a dt binding)
-
-[1] https://lore.kernel.org/patchwork/patch/1336002
-
-Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- drivers/dma-buf/heaps/Kconfig      |  15 +
- drivers/dma-buf/heaps/Makefile     |   1 +
- drivers/dma-buf/heaps/chunk_heap.c | 429 +++++++++++++++++++++++++++++
- 3 files changed, 445 insertions(+)
- create mode 100644 drivers/dma-buf/heaps/chunk_heap.c
-
-diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
-index a5eef06c4226..9153f83afed7 100644
---- a/drivers/dma-buf/heaps/Kconfig
-+++ b/drivers/dma-buf/heaps/Kconfig
-@@ -12,3 +12,18 @@ config DMABUF_HEAPS_CMA
- 	  Choose this option to enable dma-buf CMA heap. This heap is backed
- 	  by the Contiguous Memory Allocator (CMA). If your system has these
- 	  regions, you should say Y here.
-+
-+config DMABUF_HEAPS_CHUNK
-+	tristate "DMA-BUF CHUNK Heap"
-+	depends on DMABUF_HEAPS && DMA_CMA
-+	help
-+	  Choose this option to enable dma-buf CHUNK heap. This heap is backed
-+	  by the Contiguous Memory Allocator (CMA) and allocates the buffers that
-+	  arranged into a list of fixed size chunks taken from CMA.
-+
-+config DMABUF_HEAPS_CHUNK_ORDER
-+	int "Chunk page order for dmabuf chunk heap"
-+	default 4
-+	depends on DMABUF_HEAPS_CHUNK
-+	help
-+	  Set page order of fixed chunk size to allocate from CMA.
-diff --git a/drivers/dma-buf/heaps/Makefile b/drivers/dma-buf/heaps/Makefile
-index 974467791032..8faa6cfdc0c5 100644
---- a/drivers/dma-buf/heaps/Makefile
-+++ b/drivers/dma-buf/heaps/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_DMABUF_HEAPS_SYSTEM)	+= system_heap.o
- obj-$(CONFIG_DMABUF_HEAPS_CMA)		+= cma_heap.o
-+obj-$(CONFIG_DMABUF_HEAPS_CHUNK)	+= chunk_heap.o
-diff --git a/drivers/dma-buf/heaps/chunk_heap.c b/drivers/dma-buf/heaps/chunk_heap.c
-new file mode 100644
-index 000000000000..0277707a93a9
---- /dev/null
-+++ b/drivers/dma-buf/heaps/chunk_heap.c
-@@ -0,0 +1,429 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ION Memory Allocator chunk heap exporter
-+ *
-+ * Copyright (c) 2020 Samsung Electronics Co., Ltd.
-+ * Author: <hyesoo.yu@samsung.com> for Samsung Electronics.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/cma.h>
-+#include <linux/device.h>
-+#include <linux/dma-buf.h>
-+#include <linux/dma-heap.h>
-+#include <linux/dma-map-ops.h>
-+#include <linux/err.h>
-+#include <linux/errno.h>
-+#include <linux/highmem.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/scatterlist.h>
-+#include <linux/sched/signal.h>
-+#include <linux/of_reserved_mem.h>
-+#include <linux/of.h>
-+
-+struct chunk_heap {
-+	struct dma_heap *heap;
-+	unsigned int order;
-+	struct cma *cma;
-+};
-+
-+struct chunk_heap_buffer {
-+	struct chunk_heap *heap;
-+	struct list_head attachments;
-+	struct mutex lock;
-+	struct sg_table sg_table;
-+	unsigned long len;
-+	int vmap_cnt;
-+	void *vaddr;
-+};
-+
-+struct chunk_heap_attachment {
-+	struct device *dev;
-+	struct sg_table *table;
-+	struct list_head list;
-+	bool mapped;
-+};
-+
-+static struct sg_table *dup_sg_table(struct sg_table *table)
-+{
-+	struct sg_table *new_table;
-+	int ret, i;
-+	struct scatterlist *sg, *new_sg;
-+
-+	new_table = kzalloc(sizeof(*new_table), GFP_KERNEL);
-+	if (!new_table)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ret = sg_alloc_table(new_table, table->orig_nents, GFP_KERNEL);
-+	if (ret) {
-+		kfree(new_table);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	new_sg = new_table->sgl;
-+	for_each_sgtable_sg(table, sg, i) {
-+		sg_set_page(new_sg, sg_page(sg), sg->length, sg->offset);
-+		new_sg = sg_next(new_sg);
-+	}
-+
-+	return new_table;
-+}
-+
-+static int chunk_heap_attach(struct dma_buf *dmabuf, struct dma_buf_attachment *attachment)
-+{
-+	struct chunk_heap_buffer *buffer = dmabuf->priv;
-+	struct chunk_heap_attachment *a;
-+	struct sg_table *table;
-+
-+	a = kzalloc(sizeof(*a), GFP_KERNEL);
-+	if (!a)
-+		return -ENOMEM;
-+
-+	table = dup_sg_table(&buffer->sg_table);
-+	if (IS_ERR(table)) {
-+		kfree(a);
-+		return -ENOMEM;
-+	}
-+
-+	a->table = table;
-+	a->dev = attachment->dev;
-+	INIT_LIST_HEAD(&a->list);
-+	a->mapped = false;
-+
-+	attachment->priv = a;
-+
-+	mutex_lock(&buffer->lock);
-+	list_add(&a->list, &buffer->attachments);
-+	mutex_unlock(&buffer->lock);
-+
-+	return 0;
-+}
-+
-+static void chunk_heap_detach(struct dma_buf *dmabuf, struct dma_buf_attachment *attachment)
-+{
-+	struct chunk_heap_buffer *buffer = dmabuf->priv;
-+	struct chunk_heap_attachment *a = attachment->priv;
-+
-+	mutex_lock(&buffer->lock);
-+	list_del(&a->list);
-+	mutex_unlock(&buffer->lock);
-+
-+	sg_free_table(a->table);
-+	kfree(a->table);
-+	kfree(a);
-+}
-+
-+static struct sg_table *chunk_heap_map_dma_buf(struct dma_buf_attachment *attachment,
-+					       enum dma_data_direction direction)
-+{
-+	struct chunk_heap_attachment *a = attachment->priv;
-+	struct sg_table *table = a->table;
-+	int ret;
-+
-+	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	a->mapped = true;
-+	return table;
-+}
-+
-+static void chunk_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
-+				     struct sg_table *table,
-+				     enum dma_data_direction direction)
-+{
-+	struct chunk_heap_attachment *a = attachment->priv;
-+
-+	a->mapped = false;
-+	dma_unmap_sgtable(attachment->dev, table, direction, 0);
-+}
-+
-+static int chunk_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
-+						enum dma_data_direction direction)
-+{
-+	struct chunk_heap_buffer *buffer = dmabuf->priv;
-+	struct chunk_heap_attachment *a;
-+
-+	mutex_lock(&buffer->lock);
-+
-+	if (buffer->vmap_cnt)
-+		invalidate_kernel_vmap_range(buffer->vaddr, buffer->len);
-+
-+	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
-+		dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
-+	}
-+	mutex_unlock(&buffer->lock);
-+
-+	return 0;
-+}
-+
-+static int chunk_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
-+					      enum dma_data_direction direction)
-+{
-+	struct chunk_heap_buffer *buffer = dmabuf->priv;
-+	struct chunk_heap_attachment *a;
-+
-+	mutex_lock(&buffer->lock);
-+
-+	if (buffer->vmap_cnt)
-+		flush_kernel_vmap_range(buffer->vaddr, buffer->len);
-+
-+	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
-+		dma_sync_sgtable_for_device(a->dev, a->table, direction);
-+	}
-+	mutex_unlock(&buffer->lock);
-+
-+	return 0;
-+}
-+
-+static int chunk_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
-+{
-+	struct chunk_heap_buffer *buffer = dmabuf->priv;
-+	struct sg_table *table = &buffer->sg_table;
-+	unsigned long addr = vma->vm_start;
-+	struct sg_page_iter piter;
-+	int ret;
-+
-+	for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
-+		struct page *page = sg_page_iter_page(&piter);
-+
-+		ret = remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
-+				      vma->vm_page_prot);
-+		if (ret)
-+			return ret;
-+		addr += PAGE_SIZE;
-+		if (addr >= vma->vm_end)
-+			return 0;
-+	}
-+	return 0;
-+}
-+
-+static void *chunk_heap_do_vmap(struct chunk_heap_buffer *buffer)
-+{
-+	struct sg_table *table = &buffer->sg_table;
-+	int npages = PAGE_ALIGN(buffer->len) / PAGE_SIZE;
-+	struct page **pages = vmalloc(sizeof(struct page *) * npages);
-+	struct page **tmp = pages;
-+	struct sg_page_iter piter;
-+	void *vaddr;
-+
-+	if (!pages)
-+		return ERR_PTR(-ENOMEM);
-+
-+	for_each_sgtable_page(table, &piter, 0) {
-+		WARN_ON(tmp - pages >= npages);
-+		*tmp++ = sg_page_iter_page(&piter);
-+	}
-+
-+	vaddr = vmap(pages, npages, VM_MAP, PAGE_KERNEL);
-+	vfree(pages);
-+
-+	if (!vaddr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	return vaddr;
-+}
-+
-+static int chunk_heap_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
-+{
-+	struct chunk_heap_buffer *buffer = dmabuf->priv;
-+	int ret = 0;
-+	void *vaddr;
-+
-+	mutex_lock(&buffer->lock);
-+	if (buffer->vmap_cnt) {
-+		vaddr = buffer->vaddr;
-+		goto done;
-+	}
-+
-+	vaddr = chunk_heap_do_vmap(buffer);
-+	if (IS_ERR(vaddr)) {
-+		ret = PTR_ERR(vaddr);
-+		goto err;
-+	}
-+
-+	buffer->vaddr = vaddr;
-+done:
-+	buffer->vmap_cnt++;
-+	dma_buf_map_set_vaddr(map, vaddr);
-+err:
-+	mutex_unlock(&buffer->lock);
-+
-+	return ret;
-+}
-+
-+static void chunk_heap_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
-+{
-+	struct chunk_heap_buffer *buffer = dmabuf->priv;
-+
-+	mutex_lock(&buffer->lock);
-+	if (!--buffer->vmap_cnt) {
-+		vunmap(buffer->vaddr);
-+		buffer->vaddr = NULL;
-+	}
-+	mutex_unlock(&buffer->lock);
-+}
-+
-+static void chunk_heap_dma_buf_release(struct dma_buf *dmabuf)
-+{
-+	struct chunk_heap_buffer *buffer = dmabuf->priv;
-+	struct chunk_heap *chunk_heap = buffer->heap;
-+	struct sg_table *table;
-+	struct scatterlist *sg;
-+	int i;
-+
-+	table = &buffer->sg_table;
-+	for_each_sgtable_sg(table, sg, i)
-+		cma_release(chunk_heap->cma, sg_page(sg), 1 << chunk_heap->order);
-+	sg_free_table(table);
-+	kfree(buffer);
-+}
-+
-+static const struct dma_buf_ops chunk_heap_buf_ops = {
-+	.attach = chunk_heap_attach,
-+	.detach = chunk_heap_detach,
-+	.map_dma_buf = chunk_heap_map_dma_buf,
-+	.unmap_dma_buf = chunk_heap_unmap_dma_buf,
-+	.begin_cpu_access = chunk_heap_dma_buf_begin_cpu_access,
-+	.end_cpu_access = chunk_heap_dma_buf_end_cpu_access,
-+	.mmap = chunk_heap_mmap,
-+	.vmap = chunk_heap_vmap,
-+	.vunmap = chunk_heap_vunmap,
-+	.release = chunk_heap_dma_buf_release,
-+};
-+
-+static int chunk_heap_allocate(struct dma_heap *heap, unsigned long len,
-+			       unsigned long fd_flags, unsigned long heap_flags)
-+{
-+	struct chunk_heap *chunk_heap = dma_heap_get_drvdata(heap);
-+	struct chunk_heap_buffer *buffer;
-+	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-+	struct dma_buf *dmabuf;
-+	struct sg_table *table;
-+	struct scatterlist *sg;
-+	struct page **pages;
-+	unsigned int chunk_size = PAGE_SIZE << chunk_heap->order;
-+	unsigned int count, alloced = 0;
-+	unsigned int num_retry = 5;
-+	int ret = -ENOMEM;
-+	pgoff_t pg;
-+
-+	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
-+	if (!buffer)
-+		return ret;
-+
-+	INIT_LIST_HEAD(&buffer->attachments);
-+	mutex_init(&buffer->lock);
-+	buffer->heap = chunk_heap;
-+	buffer->len = ALIGN(len, chunk_size);
-+	count = buffer->len / chunk_size;
-+
-+	pages = kvmalloc_array(count, sizeof(*pages), GFP_KERNEL);
-+	if (!pages)
-+		goto err_pages;
-+
-+	while (num_retry--) {
-+		unsigned long nr_pages;
-+
-+		ret = cma_alloc_bulk(chunk_heap->cma, chunk_heap->order,
-+				     num_retry ? true : false,
-+				     chunk_heap->order, count - alloced,
-+				     pages + alloced, &nr_pages);
-+		alloced += nr_pages;
-+		if (alloced == count)
-+			break;
-+		if (ret != -EBUSY)
-+			break;
-+
-+	}
-+	if (ret < 0)
-+		goto err_alloc;
-+
-+	table = &buffer->sg_table;
-+	if (sg_alloc_table(table, count, GFP_KERNEL))
-+		goto err_alloc;
-+
-+	sg = table->sgl;
-+	for (pg = 0; pg < count; pg++) {
-+		sg_set_page(sg, pages[pg], chunk_size, 0);
-+		sg = sg_next(sg);
-+	}
-+
-+	exp_info.ops = &chunk_heap_buf_ops;
-+	exp_info.size = buffer->len;
-+	exp_info.flags = fd_flags;
-+	exp_info.priv = buffer;
-+	dmabuf = dma_buf_export(&exp_info);
-+	if (IS_ERR(dmabuf)) {
-+		ret = PTR_ERR(dmabuf);
-+		goto err_export;
-+	}
-+	kvfree(pages);
-+
-+	ret = dma_buf_fd(dmabuf, fd_flags);
-+	if (ret < 0) {
-+		dma_buf_put(dmabuf);
-+		return ret;
-+	}
-+
-+	return 0;
-+err_export:
-+	sg_free_table(table);
-+err_alloc:
-+	for (pg = 0; pg < alloced; pg++)
-+		cma_release(chunk_heap->cma, pages[pg], 1 << chunk_heap->order);
-+	kvfree(pages);
-+err_pages:
-+	kfree(buffer);
-+
-+	return ret;
-+}
-+
-+static const struct dma_heap_ops chunk_heap_ops = {
-+	.allocate = chunk_heap_allocate,
-+};
-+
-+#ifdef CONFIG_DMABUF_HEAPS_CHUNK_ORDER
-+#define CHUNK_HEAP_ORDER (CONFIG_DMABUF_HEAPS_CHUNK_ORDER)
-+#else
-+#define CHUNK_HEAP_ORDER (0)
-+#endif
-+
-+static int __init chunk_heap_init(void)
-+{
-+	struct cma *default_cma = dev_get_cma_area(NULL);
-+	struct dma_heap_export_info exp_info;
-+	struct chunk_heap *chunk_heap;
-+
-+	if (!default_cma)
-+		return 0;
-+
-+	chunk_heap = kzalloc(sizeof(*chunk_heap), GFP_KERNEL);
-+	if (!chunk_heap)
-+		return -ENOMEM;
-+
-+	chunk_heap->order = CHUNK_HEAP_ORDER;
-+	chunk_heap->cma = default_cma;
-+
-+	exp_info.name = cma_get_name(default_cma);
-+	exp_info.ops = &chunk_heap_ops;
-+	exp_info.priv = chunk_heap;
-+
-+	chunk_heap->heap = dma_heap_add(&exp_info);
-+	if (IS_ERR(chunk_heap->heap)) {
-+		int ret = PTR_ERR(chunk_heap->heap);
-+
-+		kfree(chunk_heap);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+module_init(chunk_heap_init);
-+MODULE_DESCRIPTION("DMA-BUF Chunk Heap");
-+MODULE_LICENSE("GPL v2");
--- 
-2.29.2.454.gaff20da3a2-goog
-
+Regards,
+Loic
