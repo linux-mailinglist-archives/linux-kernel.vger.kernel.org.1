@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F4C2C9BA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F00F2C9B5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389777AbgLAJK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:10:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48262 "EHLO mail.kernel.org"
+        id S2388974AbgLAJHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389734AbgLAJKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:10:38 -0500
+        id S2388191AbgLAJDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:03:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8261222245;
-        Tue,  1 Dec 2020 09:09:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E40A21D7F;
+        Tue,  1 Dec 2020 09:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813797;
-        bh=h60ek0hTv04VHgQSiFeWek+FE4Lk+MHPlUOUUhBX+ng=;
+        s=korg; t=1606813395;
+        bh=ZfyxbyXJNsR7Ox478lYb9kMLqF/gdHTamP66YJE3i8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DNvLPCVm5756JzsycwUgj4R004HfVjw/Mj04VStIxuzOKnxfpMJwlrPUPBqWY+CA+
-         lffyp4DRAgrXX5EPDNjG1O42l3gVC5Si+PuGI9UCItbIOkAmWuDo1D0MD7qpySVr9B
-         3NVbeWcMm0vN4FmVXue8PwBGCl0O7oFeifeGVn7E=
+        b=BMLSTeo/UY4hf6kWMcGnfEXNHPpFO6VLtAnY7M934w28oX+BdsadMly5EeyCOLq6j
+         65LyEH3LPPPfpTUo7STqhsox2xRVXA9OlPEMjdaam5FXYUC8mIkWtDEAhGJyiiN/lq
+         0hNc+UbyLbiESzINkxL/Z0/oRv9Ar6T+UtdAhhjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 045/152] staging: ralink-gdma: fix kconfig dependency bug for DMA_RALINK
-Date:   Tue,  1 Dec 2020 09:52:40 +0100
-Message-Id: <20201201084717.777362894@linuxfoundation.org>
+        stable@vger.kernel.org, liuzx@knownsec.com,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree@solarflare.com>,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: [PATCH 5.4 04/98] netfilter: clear skb->next in NF_HOOK_LIST()
+Date:   Tue,  1 Dec 2020 09:52:41 +0100
+Message-Id: <20201201084653.262544594@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-[ Upstream commit 06ea594051707c6b8834ef5b24e9b0730edd391b ]
+From: Cong Wang <cong.wang@bytedance.com>
 
-When DMA_RALINK is enabled and DMADEVICES is disabled, it results in the
-following Kbuild warnings:
+NF_HOOK_LIST() uses list_del() to remove skb from the linked list,
+however, it is not sufficient as skb->next still points to other
+skb. We should just call skb_list_del_init() to clear skb->next,
+like the rest places which using skb list.
 
-WARNING: unmet direct dependencies detected for DMA_ENGINE
-  Depends on [n]: DMADEVICES [=n]
-  Selected by [y]:
-  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
+This has been fixed in upstream by commit ca58fbe06c54
+("netfilter: add and use nf_hook_slow_list()").
 
-WARNING: unmet direct dependencies detected for DMA_VIRTUAL_CHANNELS
-  Depends on [n]: DMADEVICES [=n]
-  Selected by [y]:
-  - DMA_RALINK [=y] && STAGING [=y] && RALINK [=y] && !SOC_RT288X [=n]
-
-The reason is that DMA_RALINK selects DMA_ENGINE and DMA_VIRTUAL_CHANNELS
-without depending on or selecting DMADEVICES while DMA_ENGINE and
-DMA_VIRTUAL_CHANNELS are subordinate to DMADEVICES. This can also fail
-building the kernel as demonstrated in a bug report.
-
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210055
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Link: https://lore.kernel.org/r/20201104181522.43567-1-fazilyildiran@gmail.com
+Fixes: 9f17dbf04ddf ("netfilter: fix use-after-free in NF_HOOK_LIST")
+Reported-by: liuzx@knownsec.com
+Tested-by: liuzx@knownsec.com
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Edward Cree <ecree@solarflare.com>
+Cc: stable@vger.kernel.org # between 4.19 and 5.4
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/staging/ralink-gdma/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/netfilter.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/ralink-gdma/Kconfig b/drivers/staging/ralink-gdma/Kconfig
-index 54e8029e6b1af..0017376234e28 100644
---- a/drivers/staging/ralink-gdma/Kconfig
-+++ b/drivers/staging/ralink-gdma/Kconfig
-@@ -2,6 +2,7 @@
- config DMA_RALINK
- 	tristate "RALINK DMA support"
- 	depends on RALINK && !SOC_RT288X
-+	depends on DMADEVICES
- 	select DMA_ENGINE
- 	select DMA_VIRTUAL_CHANNELS
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -316,7 +316,7 @@ NF_HOOK_LIST(uint8_t pf, unsigned int ho
  
--- 
-2.27.0
-
+ 	INIT_LIST_HEAD(&sublist);
+ 	list_for_each_entry_safe(skb, next, head, list) {
+-		list_del(&skb->list);
++		skb_list_del_init(skb);
+ 		if (nf_hook(pf, hook, net, sk, skb, in, out, okfn) == 1)
+ 			list_add_tail(&skb->list, &sublist);
+ 	}
 
 
