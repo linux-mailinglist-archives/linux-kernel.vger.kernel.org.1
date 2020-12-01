@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8B62C9A0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 671FB2C9A0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgLAIzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:55:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57750 "EHLO mail.kernel.org"
+        id S1729005AbgLAIzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728968AbgLAIzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:55:00 -0500
+        id S1728985AbgLAIzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57A202222A;
-        Tue,  1 Dec 2020 08:53:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BCC02223C;
+        Tue,  1 Dec 2020 08:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812839;
-        bh=YIPr9Z7UI174ncEFWwzjrk33rZ/qeI5Q7yAMSpY8n0Y=;
+        s=korg; t=1606812845;
+        bh=fvR6XWov8DypphIb0Z8ChDOSG2vyMU6R67aQSSW+6z0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XpQHDo149hrB8ZNumu/qwqCZ/mlBDkIfjSSib6nazDTu6o8of5W9XusxRHHkqiWJ/
-         3P+KeVxYlwoVi5ML8EkLEIEljuYZ4zcSPwVfGoO/biv7Yqoh4YcwAIVzrGzuvYX59V
-         3b96qr9Uqu3wk09ZMEPhKhEpdukONfV/BUVY7ixs=
+        b=GDESN+E+0HMUKWdeiM8eN0LfsBYJT0MVpAHJ+ycKBPWXaiJRnbsVGPrsD6wi9dXwN
+         Lummsr1ZLBgN9Wy0iGbMtlKQsZ6nxcT1DPbllcB8d/ylQatJWHdO7y1xj7zPye/gke
+         EUlAx38Pse6AJloyIrhRGXF1qG/Lx9pNEdcRhDhg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 19/24] perf probe: Fix to die_entrypc() returns error correctly
-Date:   Tue,  1 Dec 2020 09:53:25 +0100
-Message-Id: <20201201084638.713235362@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Subject: [PATCH 4.4 20/24] USB: core: Change %pK for __user pointers to %px
+Date:   Tue,  1 Dec 2020 09:53:26 +0100
+Message-Id: <20201201084638.765195922@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
 References: <20201201084637.754785180@linuxfoundation.org>
@@ -45,53 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-[ Upstream commit ab4200c17ba6fe71d2da64317aae8a8aa684624c ]
+commit f3bc432aa8a7a2bfe9ebb432502be5c5d979d7fe upstream.
 
-Fix die_entrypc() to return error correctly if the DIE has no
-DW_AT_ranges attribute. Since dwarf_ranges() will treat the case as an
-empty ranges and return 0, we have to check it by ourselves.
+Commit 2f964780c03b ("USB: core: replace %p with %pK") used the %pK
+format specifier for a bunch of __user pointers.  But as the 'K' in
+the specifier indicates, it is meant for kernel pointers.  The reason
+for the %pK specifier is to avoid leaks of kernel addresses, but when
+the pointer is to an address in userspace the security implications
+are minimal.  In particular, no kernel information is leaked.
 
-Fixes: 91e2f539eeda ("perf probe: Fix to show function entry line as probe-able")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Sumanth Korikkar <sumanthk@linux.ibm.com>
-Cc: Thomas Richter <tmricht@linux.ibm.com>
-Link: http://lore.kernel.org/lkml/160645612634.2824037.5284932731175079426.stgit@devnote2
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch changes the __user %pK specifiers (used in a bunch of
+debugging output lines) to %px, which will always print the actual
+address with no mangling.  (Notably, there is no printk format
+specifier particularly intended for __user pointers.)
+
+Fixes: 2f964780c03b ("USB: core: replace %p with %pK")
+CC: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20201119170228.GB576844@rowland.harvard.edu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/perf/util/dwarf-aux.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/usb/core/devio.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-index fd460aca36e55..40e4c933b3728 100644
---- a/tools/perf/util/dwarf-aux.c
-+++ b/tools/perf/util/dwarf-aux.c
-@@ -305,6 +305,7 @@ bool die_is_func_def(Dwarf_Die *dw_die)
- int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
- {
- 	Dwarf_Addr base, end;
-+	Dwarf_Attribute attr;
+--- a/drivers/usb/core/devio.c
++++ b/drivers/usb/core/devio.c
+@@ -369,11 +369,11 @@ static void snoop_urb(struct usb_device
  
- 	if (!addr)
- 		return -EINVAL;
-@@ -312,6 +313,13 @@ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
- 	if (dwarf_entrypc(dw_die, addr) == 0)
- 		return 0;
- 
-+	/*
-+	 *  Since the dwarf_ranges() will return 0 if there is no
-+	 * DW_AT_ranges attribute, we should check it first.
-+	 */
-+	if (!dwarf_attr(dw_die, DW_AT_ranges, &attr))
-+		return -ENOENT;
-+
- 	return dwarf_ranges(dw_die, 0, &base, addr, &end) < 0 ? -ENOENT : 0;
- }
- 
--- 
-2.27.0
-
+ 	if (userurb) {		/* Async */
+ 		if (when == SUBMIT)
+-			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
++			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
+ 					"length %u\n",
+ 					userurb, ep, t, d, length);
+ 		else
+-			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
++			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
+ 					"actual_length %u status %d\n",
+ 					userurb, ep, t, d, length,
+ 					timeout_or_status);
 
 
