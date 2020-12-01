@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB412CA0EF
+	by mail.lfdr.de (Postfix) with ESMTP id A975E2CA0F0
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727637AbgLALGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
+        id S1730342AbgLALIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgLALGv (ORCPT
+        with ESMTP id S1726689AbgLALIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:06:51 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACC7C0613D2;
-        Tue,  1 Dec 2020 03:06:11 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id j13so1027564pjz.3;
-        Tue, 01 Dec 2020 03:06:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nKIYXaScaIE7TEOxHPKKOMA1edFOJVdBECoLY/zrsjk=;
-        b=gzKNikVppqu163aDscUKjy47nSF+BZMMVUkL1n8ZhDCAzk/k1f5Gz1cvFju0C5AssG
-         dMiiNelWookXTDzBGk+qPQ0pW2PrMDJ9NNNnKNDrKmJijIz4t+BzJXhM5TPeuzukh3Zp
-         8yLmjVEjzwA1R7OFORS0IAguWeLl2FGTcOajuaOJHRty478JWLV3/s58wiRfmQX9UnOj
-         QTeqaI8KUMGlLld21DZJphgMWDR3BROhD52bb5FYj+V6qK3P+f3OTwTu1hiusvUMSTAz
-         tRSvYXeCW7oSnKuSv4pTaGdtEW5EUfOtL3nJXcGrbQ1LhIQL7P4VzEDMRz4efDwgK1Ma
-         1JFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nKIYXaScaIE7TEOxHPKKOMA1edFOJVdBECoLY/zrsjk=;
-        b=jKXOD0xL7BJ/M+FQSJo9NjKCvRm7ASUXhBgqA8muLkb5U91Aa0L7PZDHhW6oCO7Sb1
-         wv2ntiJ4/G6NuMUXMpVV9iuRg6Ai6nHbNTTy6mpXlpHUVC4KyCbsqkExgYlm+6bUngM+
-         MaH4TwHfp3Hbbwen5xo+rfslXbJNtsofWVCK9yKbW5UwMDFFXJtakDuuHVVoU/KL3zb6
-         bk1Vyhr1sUR3Te3XCOju62qvMwuKVD+xrn374fjPjF2TEwxImCMk8gNb2wPJtupT62JY
-         HcCae4qr/PTjsrl7VtLDwsUyWt9iVM2/e7mOsxp6lj+ruKG1CVGm0SwHggy/nAQT2LQC
-         wttg==
-X-Gm-Message-State: AOAM532fkHOwTk2+iCQXXGCAOwWT2Dy4WJdnDJx/os1Mroa5dCmFzTA3
-        wKjrCYcYGaZh28QR7c9DVKZTbPYKdHvUk7v4MQ8=
-X-Google-Smtp-Source: ABdhPJwGj51Jga696lxn1uueNX6o3bKkRA2+c5xczsN64bmbGAJmaBGOQfx6Y32TI0yXWgAaHPiLtdss+msba2YlucA=
-X-Received: by 2002:a17:902:ac93:b029:d8:d2c5:e5b1 with SMTP id
- h19-20020a170902ac93b02900d8d2c5e5b1mr2295356plr.17.1606820771072; Tue, 01
- Dec 2020 03:06:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201071632.68471-1-98.arpi@gmail.com>
-In-Reply-To: <20201201071632.68471-1-98.arpi@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 1 Dec 2020 13:06:59 +0200
-Message-ID: <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
-Subject: Re: [PATCH v3] lib: Convert test_hexdump.c to KUnit
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kunit-dev@googlegroups.com,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+        Tue, 1 Dec 2020 06:08:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD745C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 03:07:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6OZTsRzvMVKf4KrmCiDoNbzVmmudpDYoiLjnn4bghwI=; b=RqNtvIsg+VsYF/MhZ/D+Avwpsj
+        //BxgmIldt9Y30KnsQ0UoyBZYKMo+YZAwjLO6X4vp3t9RW2WKiih2CGSCV6yyTAv7fm2afV52r/lL
+        kGw0vjOXkr6+n1/8FhIe76yBhnkIQOhugRozSjws9OOkm8Ch4mTdOp88FqaAtnuYeIwN/bukGLIJZ
+        UoLm2syad3Iw/5iLViqKJiUQ9W4ffH+QdIvbSOQZAEmPC5mdOu+bEwuICOigckYDPove/FSg6cjor
+        aPJtBZS/yB6NPRsIVKZwlZVeep9EAWONI558ODVKKuqM1v4NoWZyj//Soebea73s35S1hEO+RfBTq
+        48BuynIQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk3VF-0007co-JD; Tue, 01 Dec 2020 11:07:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9CCD4302753;
+        Tue,  1 Dec 2020 12:07:24 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8B038200DF1C4; Tue,  1 Dec 2020 12:07:24 +0100 (CET)
+Date:   Tue, 1 Dec 2020 12:07:24 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+Message-ID: <20201201110724.GL3092@hirez.programming.kicks-ass.net>
+References: <160665708065.2808.15317906761841446715.tglx@nanos>
+ <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
+ <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
+ <yt9dh7p78d8l.fsf@linux.ibm.com>
+ <yt9dpn3v3u1m.fsf@linux.ibm.com>
+ <20201130125211.GN2414@hirez.programming.kicks-ass.net>
+ <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
+ <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
+ <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
+ <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 9:21 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> Convert test lib/test_hexdump.c to KUnit. More information about
-> KUnit can be found at:
-> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
-> KUnit provides a common framework for unit tests in the kernel.
-> KUnit and kselftest are standardizing around KTAP, converting this
-> test to KUnit makes this test output in KTAP which we are trying to
-> make the standard test result format for the kernel.
+On Tue, Dec 01, 2020 at 09:07:34AM +0100, Peter Zijlstra wrote:
+> On Mon, Nov 30, 2020 at 08:31:32PM +0100, Christian Borntraeger wrote:
+> > On 30.11.20 19:04, Linus Torvalds wrote:
+> > > On Mon, Nov 30, 2020 at 5:03 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >>
+> > >>> But but but...
+> > >>>
+> > >>>   do_idle()                   # IRQs on
+> > >>>     local_irq_disable();      # IRQs off
+> > >>>     defaul_idle_call()        # IRQs off
+> > >>         lockdep_hardirqs_on();  # IRQs off, but lockdep things they're on
+> > >>>       arch_cpu_idle()         # IRQs off
+> > >>>         enabled_wait()        # IRQs off
+> > >>>         raw_local_save()      # still off
+> > >>>         psw_idle()            # very much off
+> > >>>           ext_int_handler     # get an interrupt ?!?!
+> > >>               rcu_irq_enter()   # lockdep thinks IRQs are on <- FAIL
+> > >>
+> > >> I can't much read s390 assembler, but ext_int_handler() has a
+> > >> TRACE_IRQS_OFF, which would be sufficient to re-align the lockdep state
+> > >> with the actual state, but there's some condition before it, what's that
+> > >> test and is that right?
+> > > 
+> > > I think that "psw_idle()" enables interrupts, exactly like x86 does.
+> 
+> (like ye olde x86, modern x86 idles with interrupts disabled)
+> 
+> > Yes, by definition.  Otherwise it would be an software error state.
+> > The interesting part is the lpswe instruction at the end (load PSW) 
+> > which loads the full PSW, which contains interrupt enablement, wait bit,
+> > condition code, paging enablement, machine check enablement the address
+> > and others. The idle psw is enabled for interrupts and has the wait bit
+> > set. If the wait bit is set and interrupts are off this is called "disabled
+> > wait" and is used for panic, shutdown etc. 
+> 
+> OK, but at that point, hardware interrupt state is on, lockdep thinks
+> it's on. And we take an interrupt, just like any old regular interrupt
+> enabled region.
+> 
+> But then the exception handler (ext_int_handler), which I'm assuming is
+> ran by the hardware with hardware interrupts disabled again, should be
+> calling into lockdep to tell interrupts were disabled. IOW that
+> TRACE_IRQS_OFF bit in there.
+> 
+> But that doesn't seem to be working right. Why? Because afaict this is
+> then the exact normal flow of things, but it's only going sideways
+> during this idle thing.
+> 
+> What's going 'funny' ?
 
-Below doesn't suit commit message, perhaps adding it after '---' line
-would be good. In the commit message you can choose one failed case
-followed by all OK and show the difference.
+So after having talked to Sven a bit, the thing that is happening, is
+that this is the one place where we take interrupts with RCU being
+disabled. Normally RCU is watching and all is well, except during idle.
 
-> I ran both the original and converted tests as is to produce the
-> output for success of the test in the two cases. I also ran these
-> tests with a small modification to show the difference in the output
-> for failure of the test in both cases. The modification I made is:
->  static const char * const test_data_4_le[] __initconst = {
-> -       "7bdb32be", "b293180a", "24c4ba70", "9b34837d",
-> +       "7bdb32be", "b293180a", "24c4ba70", "9b3483d",
->
-> The difference in outputs can be seen here:
-> https://gist.github.com/arpi-r/38f53a3c65692bf684a6bf3453884b6e
-
-Looks pretty much good, what I'm sad to see is the absence of the test
-statistics. Any ideas if we can get it back?
-
--- 
-With Best Regards,
-Andy Shevchenko
