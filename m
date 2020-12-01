@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EF12C9DD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D1D2C9CFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390670AbgLAJ1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:27:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39486 "EHLO mail.kernel.org"
+        id S2389231AbgLAJI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:08:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729298AbgLAJCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:02:34 -0500
+        id S2388831AbgLAJGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1D9E20770;
-        Tue,  1 Dec 2020 09:01:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B635D206C1;
+        Tue,  1 Dec 2020 09:06:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813313;
-        bh=Fqd08q6ULXgk8oeFymIU9Q5qSM6g/VApXQdxsacXWFs=;
+        s=korg; t=1606813567;
+        bh=K//IOY9Vb8ru+mIm92M8ULH1E7sDdEbteHa07jMEsHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PBQSR5D20OKCMBmYyJGTrJ7RgMWJjwUltAkXmKygt5K6+HO1QObVtxcKcWwpenodF
-         PU+VFIuVeQ9paqO98MgTNGLHbvhyRztA/KZHF9s8SUk0Dm1atFoRpKReGMNboC2+hR
-         jwSJgt649armY5eo2bYJno+kIHBZSLDMCuErRKlA=
+        b=yqqXq2xqvMAJg9Y1fyPydojHjD5KK8bS3L4mvLFIubjUMsS240tcEBASTiWr6ErEh
+         zNFDqsNEqAUiRrvJaBHgAUL1w2pyD/7OhvSDSM5SNx7stoRE89NNSgp3jZIcqsQw7J
+         02fY/cNopTH2ucfxd5uagoAVBKfLF1Xg7hBz2IrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 4.19 54/57] x86/speculation: Fix prctl() when spectre_v2_user={seccomp,prctl},ibpb
-Date:   Tue,  1 Dec 2020 09:53:59 +0100
-Message-Id: <20201201084651.760469216@linuxfoundation.org>
+        stable@vger.kernel.org, penghao <penghao@uniontech.com>
+Subject: [PATCH 5.4 83/98] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for Lenovo A630Z TIO built-in usb-audio card
+Date:   Tue,  1 Dec 2020 09:54:00 +0100
+Message-Id: <20201201084659.113771711@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,77 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand K Mistry <amistry@google.com>
+From: penghao <penghao@uniontech.com>
 
-commit 33fc379df76b4991e5ae312f07bcd6820811971e upstream.
+commit 9ca57518361418ad5ae7dc38a2128fbf4855e1a2 upstream.
 
-When spectre_v2_user={seccomp,prctl},ibpb is specified on the command
-line, IBPB is force-enabled and STIPB is conditionally-enabled (or not
-available).
+Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
+usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
+seconds later by usb-audio disconnect interrupt to avoids the issue.
+eg dmesg:
+....
+[  626.974091 ] usb 7-1.1: USB disconnect, device number 3
+....
+....
+[ 1774.486691] usb 7-1.1: new full-speed USB device number 5 using xhci_hcd
+[ 1774.947742] usb 7-1.1: New USB device found, idVendor=17ef, idProduct=a012, bcdDevice= 0.55
+[ 1774.956588] usb 7-1.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[ 1774.964339] usb 7-1.1: Product: Thinkcentre TIO24Gen3 for USB-audio
+[ 1774.970999] usb 7-1.1: Manufacturer: Lenovo
+[ 1774.975447] usb 7-1.1: SerialNumber: 000000000000
+[ 1775.048590] usb 7-1.1: 2:1: cannot get freq at ep 0x1
+.......
+Seeking a better fix, we've tried a lot of things, including:
+ - Check that the device's power/wakeup is disabled
+ - Check that remote wakeup is off at the USB level
+ - All the quirks in drivers/usb/core/quirks.c
+   e.g. USB_QUIRK_RESET_RESUME,
+        USB_QUIRK_RESET,
+        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
+        USB_QUIRK_NO_LPM.
 
-However, since
+but none of that makes any difference.
 
-  21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
+There are no errors in the logs showing any suspend/resume-related issues.
+When the system wakes up due to the modem, log-wise it appears to be a
+normal resume.
 
-the spectre_v2_user_ibpb variable is set to SPECTRE_V2_USER_{PRCTL,SECCOMP}
-instead of SPECTRE_V2_USER_STRICT, which is the actual behaviour.
-Because the issuing of IBPB relies on the switch_mm_*_ibpb static
-branches, the mitigations behave as expected.
+Introduce a quirk to disable the port during suspend when the modem is
+detected.
 
-Since
-
-  1978b3a53a74 ("x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP")
-
-this discrepency caused the misreporting of IB speculation via prctl().
-
-On CPUs with STIBP always-on and spectre_v2_user=seccomp,ibpb,
-prctl(PR_GET_SPECULATION_CTRL) would return PR_SPEC_PRCTL |
-PR_SPEC_ENABLE instead of PR_SPEC_DISABLE since both IBPB and STIPB are
-always on. It also allowed prctl(PR_SET_SPECULATION_CTRL) to set the IB
-speculation mode, even though the flag is ignored.
-
-Similarly, for CPUs without SMT, prctl(PR_GET_SPECULATION_CTRL) should
-also return PR_SPEC_DISABLE since IBPB is always on and STIBP is not
-available.
-
- [ bp: Massage commit message. ]
-
-Fixes: 21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
-Fixes: 1978b3a53a74 ("x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP")
-Signed-off-by: Anand K Mistry <amistry@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201110123349.1.Id0cbf996d2151f4c143c90f9028651a5b49a5908@changeid
+Signed-off-by: penghao <penghao@uniontech.com>
+Link: https://lore.kernel.org/r/20201118123039.11696-1-penghao@uniontech.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/cpu/bugs.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/core/quirks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -733,11 +733,13 @@ spectre_v2_user_select_mitigation(enum s
- 	if (boot_cpu_has(X86_FEATURE_IBPB)) {
- 		setup_force_cpu_cap(X86_FEATURE_USE_IBPB);
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -421,6 +421,10 @@ static const struct usb_device_id usb_qu
+ 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
+ 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
  
-+		spectre_v2_user_ibpb = mode;
- 		switch (cmd) {
- 		case SPECTRE_V2_USER_CMD_FORCE:
- 		case SPECTRE_V2_USER_CMD_PRCTL_IBPB:
- 		case SPECTRE_V2_USER_CMD_SECCOMP_IBPB:
- 			static_branch_enable(&switch_mm_always_ibpb);
-+			spectre_v2_user_ibpb = SPECTRE_V2_USER_STRICT;
- 			break;
- 		case SPECTRE_V2_USER_CMD_PRCTL:
- 		case SPECTRE_V2_USER_CMD_AUTO:
-@@ -751,8 +753,6 @@ spectre_v2_user_select_mitigation(enum s
- 		pr_info("mitigation: Enabling %s Indirect Branch Prediction Barrier\n",
- 			static_key_enabled(&switch_mm_always_ibpb) ?
- 			"always-on" : "conditional");
--
--		spectre_v2_user_ibpb = mode;
- 	}
- 
- 	/*
++	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
++	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
++			USB_QUIRK_DISCONNECT_SUSPEND },
++
+ 	/* BUILDWIN Photo Frame */
+ 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
+ 			USB_QUIRK_HONOR_BNUMINTERFACES },
 
 
