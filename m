@@ -2,148 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D762CA835
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8312CA83A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgLAQZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:25:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39616 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725979AbgLAQZl (ORCPT
+        id S1726670AbgLAQ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:27:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgLAQ1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:25:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606839854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gHS3kkYggRLy+5fMrWoIB0GgrNcrW36mXXiiHAGr4Pk=;
-        b=KGJwXdtUVvlX5T0FcRPrtO2VLF8lJSuYwsXz2SzvBdCtZOcPf12zFCh29HHBD4Tv2nOIwj
-        pNW0k5BihRUHcc8isbU57tCck6m0iDuq/oUDpnv2zP0MBy2VkbqqGL94Xcj6XcSdysEeFX
-        BNlTy3NprrThKvkb5biPbyHKXx3xxcA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-v2YW1THhOJS5rEuIk1Ut1Q-1; Tue, 01 Dec 2020 11:24:13 -0500
-X-MC-Unique: v2YW1THhOJS5rEuIk1Ut1Q-1
-Received: by mail-wr1-f72.google.com with SMTP id f4so1200474wru.21
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:24:13 -0800 (PST)
+        Tue, 1 Dec 2020 11:27:22 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25730C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 08:26:42 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id s27so5373201lfp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 08:26:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1UJVLM5Dqv2cefS+n6lGrGwBWlmWKE0R3TDne+pe3Bs=;
+        b=FOt9Uwe8mMuQpkLtE3HwADznhiQAPHIv5qbx/nee+V6fPYII6uwM8YcQa45LjSkNit
+         xN2Ni8+aSuqbC8DEl3H2dRFy4L64QfRY26qmEwmobmvloqKDLa4Y1T1/tglSCSYyVjFz
+         TGzZv08fH5E8I0xMZXZ35LySIHJ4y5qOxJCt/eRpg+i9AmdV1KYwf3RRe+21Bau3FyAk
+         TgjcdVwXs+hgZ3oOPDOHLZRRpn3QIXgLlfeoSqj+PYEgRXxsUTvPB9z2raugESsDCDi7
+         PoPjiizivTLMGsoEb5gLH/0USm8goY99nieSXEeif8xF9VTmKdzk9lvolETkT+NJW5OI
+         E5RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gHS3kkYggRLy+5fMrWoIB0GgrNcrW36mXXiiHAGr4Pk=;
-        b=t1MTutXpQCZvc+/D/9mITi3FF/9Z5rmeUkFBeQFvwgcjmg8O/r/i8HPtHPZwaj02qj
-         ZwHrSmoRGa5IShi2658OdKEWd4Lic7xXV4VumduzxDAu/LSfYSpV090e7Kl1mgom4sSH
-         vbdhCtKX5gdEP9L4U9hqR8jSYDc54owliUbdqdf3bYP5guqZchufrzThd/FZrPon0kiZ
-         iNkOzFBNhBp6wdUSxAW35E/7CArNvkvO37ihw4atFSHBLchFM99EgDZIfeY5iwf9iq0t
-         asL8fdTv+nuNZ/lV0jTQn6kxSqm7VLNle+PFM5h4g6N1x+WIl9Gll0yMOHadjhhB7Cf9
-         78wg==
-X-Gm-Message-State: AOAM531dRH0RpVoFqrRzGlLH+rC8Y38DPB0OTySBqMtdTUGklBXMVdUj
-        t9ehaMoz0B3vrT+hrAjIdzFJabBmcBxW4h6OO5egJ5LDCtwyKGrprmCE8M2/vf2PfSbZLmasT0P
-        Sx6B/TK1AN4CumZGVjynIorM9
-X-Received: by 2002:adf:f88c:: with SMTP id u12mr4978107wrp.209.1606839806266;
-        Tue, 01 Dec 2020 08:23:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzMzlkHaVe3TzHploDAHelHS+jFVLyPnEfjgtjahqXyoGh2s8BCarcKwuVJSImK4JNC0Xdt7Q==
-X-Received: by 2002:adf:f88c:: with SMTP id u12mr4978086wrp.209.1606839806086;
-        Tue, 01 Dec 2020 08:23:26 -0800 (PST)
-Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
-        by smtp.gmail.com with ESMTPSA id a1sm41293wrv.61.2020.12.01.08.23.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 08:23:25 -0800 (PST)
-Date:   Tue, 1 Dec 2020 17:23:23 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH net-next v1 3/3] af_vsock: Assign the vsock transport
- considering the vsock address flag
-Message-ID: <20201201162323.gwfzktkwtu6x4eef@steredhat>
-References: <20201201152505.19445-1-andraprs@amazon.com>
- <20201201152505.19445-4-andraprs@amazon.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1UJVLM5Dqv2cefS+n6lGrGwBWlmWKE0R3TDne+pe3Bs=;
+        b=MGQ+G3vCBRgjC5NhxqjveGPV4redDjpaQOAgOxxXx70rckSaSUzA7xklUiWyjsxErw
+         iRDPuTrcWcmPu8J512wFo8JTxpOhWiIogRTeM/OMOoa0cJNVGsiWiKjNNUc9C9Bmlm5V
+         XLdVe8hKH3utCbJI5n5ffF/3xRcW6PUxqj5efDXEaMMZ71IAiSfCmfj87sYlmbxTXIP/
+         r2OZ5+56PxdHvkC+23oCrVUpw90aDfXFSf5LYozU+WAjRK3sA4zuN/CFmE60fDyJqyv8
+         Jenx2w8eU/9ikjgk2SZMWlXoyGxbdH/GU4R/Si3DzzrCY0SN7eQoDr2lvDnrg3RQlkKQ
+         cuGg==
+X-Gm-Message-State: AOAM530JIws4hEW7qm+OsI/248ygDZ5wRsv/Nd+JHaucKzrMYcHr7oVu
+        2xDDyGUPQ0ZCNILH71ovEgwS3BzQMXjrZE6mwDVBsg==
+X-Google-Smtp-Source: ABdhPJytohNJ8iNZKzbCo9+sP2alA9aq9BKvpr0U+vIWUQXazYra1OUcGEIazvY7fNo2GDXrYBRdoJ+yVVYi2C5hE9o=
+X-Received: by 2002:a19:cc42:: with SMTP id c63mr1600882lfg.521.1606840000078;
+ Tue, 01 Dec 2020 08:26:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201201152505.19445-4-andraprs@amazon.com>
+References: <20201201074559.27742-1-rppt@kernel.org> <20201201074559.27742-8-rppt@kernel.org>
+In-Reply-To: <20201201074559.27742-8-rppt@kernel.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 1 Dec 2020 08:26:28 -0800
+Message-ID: <CALvZod4bTBGf7DS=5EUCeU810p5C1aqf5sB0n1N8sc4jt5W3Tg@mail.gmail.com>
+Subject: Re: [PATCH v13 07/10] secretmem: add memcg accounting
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 05:25:05PM +0200, Andra Paraschiv wrote:
->The vsock flag has been set in the connect and (listen) receive paths.
+On Mon, Nov 30, 2020 at 11:47 PM Mike Rapoport <rppt@kernel.org> wrote:
 >
->When the vsock transport is assigned, the remote CID is used to
->distinguish between types of connection.
+> From: Mike Rapoport <rppt@linux.ibm.com>
 >
->Use the vsock flag (in addition to the CID) from the remote address to
->decide which vsock transport to assign. For the sibling VMs use case,
->all the vsock packets need to be forwarded to the host, so always assign
->the guest->host transport if the vsock flag is set. For the other use
->cases, the vsock transport assignment logic is not changed.
+> Account memory consumed by secretmem to memcg. The accounting is updated
+> when the memory is actually allocated and freed.
 >
->Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->---
-> net/vmw_vsock/af_vsock.c | 15 +++++++++++----
-> 1 file changed, 11 insertions(+), 4 deletions(-)
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> ---
+>  mm/filemap.c   |  3 ++-
+>  mm/secretmem.c | 36 +++++++++++++++++++++++++++++++++++-
+>  2 files changed, 37 insertions(+), 2 deletions(-)
 >
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index d10916ab45267..bafc1cb20abd4 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -419,16 +419,21 @@ static void vsock_deassign_transport(struct vsock_sock *vsk)
->  * (e.g. during the connect() or when a connection request on a listener
->  * socket is received).
->  * The vsk->remote_addr is used to decide which transport to use:
->- *  - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST if
->- *    g2h is not loaded, will use local transport;
->- *  - remote CID <= VMADDR_CID_HOST will use guest->host transport;
->- *  - remote CID > VMADDR_CID_HOST will use host->guest transport;
->+ *  - remote flag == VMADDR_FLAG_SIBLING_VMS_COMMUNICATION, will always
->+ *    forward the vsock packets to the host and use guest->host transport;
->+ *  - otherwise, going forward with the remote flag default value:
->+ *    - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST
->+ *      if g2h is not loaded, will use local transport;
->+ *    - remote CID <= VMADDR_CID_HOST or h2g is not loaded, will use
->+ *      guest->host transport;
->+ *    - remote CID > VMADDR_CID_HOST will use host->guest transport;
->  */
-> int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> {
-> 	const struct vsock_transport *new_transport;
-> 	struct sock *sk = sk_vsock(vsk);
-> 	unsigned int remote_cid = vsk->remote_addr.svm_cid;
->+	unsigned short remote_flag = vsk->remote_addr.svm_flag;
-> 	int ret;
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 249cf489f5df..cf7f1dc9f4b8 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -42,6 +42,7 @@
+>  #include <linux/psi.h>
+>  #include <linux/ramfs.h>
+>  #include <linux/page_idle.h>
+> +#include <linux/secretmem.h>
+>  #include "internal.h"
 >
-> 	switch (sk->sk_type) {
->@@ -438,6 +443,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 	case SOCK_STREAM:
-> 		if (vsock_use_local_transport(remote_cid))
-> 			new_transport = transport_local;
->+		else if (remote_flag == VMADDR_FLAG_SIBLING_VMS_COMMUNICATION)
-
-Others flags can be added, so here we should use the bitwise AND 
-operator to check if this flag is set.
-
-And what about merging with the next if clause?
-
-
-Thanks,
-Stefano
-
->+			new_transport = transport_g2h;
-> 		else if (remote_cid <= VMADDR_CID_HOST || 
-> 		!transport_h2g)
-> 			new_transport = transport_g2h;
-> 		else
->-- 
->2.20.1 (Apple Git-117)
+>  #define CREATE_TRACE_POINTS
+> @@ -844,7 +845,7 @@ static noinline int __add_to_page_cache_locked(struct page *page,
+>         page->mapping = mapping;
+>         page->index = offset;
 >
+> -       if (!huge) {
+> +       if (!huge && !page_is_secretmem(page)) {
+>                 error = mem_cgroup_charge(page, current->mm, gfp);
+>                 if (error)
+>                         goto error;
+> diff --git a/mm/secretmem.c b/mm/secretmem.c
+> index 52a900a135a5..5e3e5102ad4c 100644
+> --- a/mm/secretmem.c
+> +++ b/mm/secretmem.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/memblock.h>
+>  #include <linux/pseudo_fs.h>
+>  #include <linux/secretmem.h>
+> +#include <linux/memcontrol.h>
+>  #include <linux/set_memory.h>
+>  #include <linux/sched/signal.h>
+>
+> @@ -44,6 +45,32 @@ struct secretmem_ctx {
+>
+>  static struct cma *secretmem_cma;
+>
+> +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
+> +{
+> +       int err;
+> +
+> +       err = memcg_kmem_charge_page(page, gfp, order);
+> +       if (err)
+> +               return err;
+> +
+> +       /*
+> +        * seceremem caches are unreclaimable kernel allocations, so treat
+> +        * them as unreclaimable slab memory for VM statistics purposes
+> +        */
+> +       mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
+> +                             PAGE_SIZE << order);
+> +
+> +       return 0;
+> +}
+> +
+> +static void secretmem_unaccount_pages(struct page *page, int order)
+> +{
+> +
+> +       mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
+> +                           -PAGE_SIZE << order);
 
+mod_lruvec_page_state()
+
+> +       memcg_kmem_uncharge_page(page, order);
+> +}
+> +
+>  static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+>  {
+>         unsigned long nr_pages = (1 << PMD_PAGE_ORDER);
+> @@ -56,10 +83,14 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+>         if (!page)
+>                 return -ENOMEM;
+>
+> -       err = set_direct_map_invalid_noflush(page, nr_pages);
+> +       err = secretmem_account_pages(page, gfp, PMD_PAGE_ORDER);
+>         if (err)
+>                 goto err_cma_release;
+>
+> +       err = set_direct_map_invalid_noflush(page, nr_pages);
+> +       if (err)
+> +               goto err_memcg_uncharge;
+> +
+>         addr = (unsigned long)page_address(page);
+>         err = gen_pool_add(pool, addr, PMD_SIZE, NUMA_NO_NODE);
+>         if (err)
+> @@ -76,6 +107,8 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+>          * won't fail
+>          */
+>         set_direct_map_default_noflush(page, nr_pages);
+> +err_memcg_uncharge:
+> +       secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
+>  err_cma_release:
+>         cma_release(secretmem_cma, page, nr_pages);
+>         return err;
+> @@ -302,6 +335,7 @@ static void secretmem_cleanup_chunk(struct gen_pool *pool,
+>         int i;
+>
+>         set_direct_map_default_noflush(page, nr_pages);
+> +       secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
+>
+>         for (i = 0; i < nr_pages; i++)
+>                 clear_highpage(page + i);
+> --
+> 2.28.0
+>
