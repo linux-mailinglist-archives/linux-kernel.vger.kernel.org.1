@@ -2,153 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31DE62CAD08
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A77A2CAD0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404409AbgLAUJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:09:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392341AbgLAUJT (ORCPT
+        id S2404436AbgLAUJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:09:26 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2080 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404423AbgLAUJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:09:19 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B2FC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:08:39 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id q5so2584305qkc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:08:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rzel40zSudejgIjeov/IizCnVcxFKEcYDOuHATdDn1Y=;
-        b=m+O9c0ZJGiiiIEpOnhSk1nsDkDSieTY5j5gdo2mPNGjjLo153Eh3W0I3+7bwRghcsp
-         N8FH1aj7QaMrVltKRMylAHSLyKz7SQb6zxgAj26zYH9Q6aJwkBsJz+eQpwKNzRdF+rKb
-         gEP7OfIhjwYpB1iZ91PMyRsgqSxDfFiVExkqo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rzel40zSudejgIjeov/IizCnVcxFKEcYDOuHATdDn1Y=;
-        b=oJZQt28T3dFNXMDy3X/IrSQPQUYeaPTLOMlMRU2+4P1juP5JKqE4ElvxhGC/rWsqwS
-         5XSI//JwvRuWrrAWhN+R7AkqLR7NJP+679v69Oq5B27eJ2PWtsIwgwbo1nwy668LZB/S
-         uEmxLzBwhwIe3PZPUYhXsCx8QHopTisMJrAWLjK0M/2fXyg1EIDthJeRbOfn2uMebEqx
-         bKZxujkblNXDRMOxVBu8V9bXriseX4CNE1aebGL2jEkq321Gx08c43y3DWoeMGjVJ5j/
-         Cjh3/cJhHYFOhiE6k+kNygo9JcOEcDwnAivjkkiCjjTpDFwYJUEeUI/oy1Z618WXflq2
-         bu3g==
-X-Gm-Message-State: AOAM530Up/E1szJmJ9DiMzYM6kRe5Ihj2e1+HInnXmZZxspQjjqGIW/O
-        kLwsx08qCDKkzTFhrjjccyXswg==
-X-Google-Smtp-Source: ABdhPJwTlvwQSumsluEKI7+7HNXWFrfskYOhdBlDX/QMuYIrTy12av3yA4R+RRvju+UV9VElMYSIvg==
-X-Received: by 2002:a05:620a:632:: with SMTP id 18mr4682664qkv.173.1606853318835;
-        Tue, 01 Dec 2020 12:08:38 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id r89sm768703qtd.16.2020.12.01.12.08.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:08:38 -0800 (PST)
-Date:   Tue, 1 Dec 2020 15:08:37 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 26/32] sched: Add a second-level tag for nested
- CGroup usecase
-Message-ID: <20201201200837.GA226869@google.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-27-joel@joelfernandes.org>
- <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
+        Tue, 1 Dec 2020 15:09:25 -0500
+Received: from dggeme720-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CltSb0XVfzVjpl;
+        Wed,  2 Dec 2020 04:07:59 +0800 (CST)
+Received: from [10.174.186.123] (10.174.186.123) by
+ dggeme720-chm.china.huawei.com (10.1.199.116) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 2 Dec 2020 04:08:42 +0800
+Subject: Re: [RFC PATCH 1/3] KVM: arm64: Fix possible memory leak in kvm
+ stage2
+To:     Will Deacon <will@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
+        <lushenming@huawei.com>
+References: <20201130121847.91808-1-wangyanan55@huawei.com>
+ <20201130121847.91808-2-wangyanan55@huawei.com>
+ <20201130132133.GA24837@willie-the-truck>
+ <ef8f51d6-365b-8b05-0a10-5b4a242f6aa3@huawei.com>
+ <20201201141632.GC26973@willie-the-truck>
+ <1dbb71f2-a794-86ab-e1cc-ceb9c1e3dd37@huawei.com>
+ <20201201181510.GA27955@willie-the-truck>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <775d2d78-1a59-f317-6eb4-045163240ae0@huawei.com>
+Date:   Wed, 2 Dec 2020 04:08:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201201181510.GA27955@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.186.123]
+X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+ dggeme720-chm.china.huawei.com (10.1.199.116)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
 
-On Wed, Nov 25, 2020 at 02:42:37PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 17, 2020 at 06:19:56PM -0500, Joel Fernandes (Google) wrote:
-> > From: Josh Don <joshdon@google.com>
-> > 
-> > Google has a usecase where the first level tag to tag a CGroup is not
-> > sufficient. So, a patch is carried for years where a second tag is added which
-> > is writeable by unprivileged users.
-> > 
-> > Google uses DAC controls to make the 'tag' possible to set only by root while
-> > the second-level 'color' can be changed by anyone. The actual names that
-> > Google uses is different, but the concept is the same.
-> > 
-> > The hierarchy looks like:
-> > 
-> > Root group
-> >    / \
-> >   A   B    (These are created by the root daemon - borglet).
-> >  / \   \
-> > C   D   E  (These are created by AppEngine within the container).
-> > 
-> > The reason why Google has two parts is that AppEngine wants to allow a subset of
-> > subcgroups within a parent tagged cgroup sharing execution. Think of these
-> > subcgroups belong to the same customer or project. Because these subcgroups are
-> > created by AppEngine, they are not tracked by borglet (the root daemon),
-> > therefore borglet won't have a chance to set a color for them. That's where
-> > 'color' file comes from. Color could be set by AppEngine, and once set, the
-> > normal tasks within the subcgroup would not be able to overwrite it. This is
-> > enforced by promoting the permission of the color file in cgroupfs.
-> 
-> Why can't the above work by setting 'tag' (that's a terrible name, why
-> does that still live) in CDE? Have the most specific tag live. Same with
-> that thread stuff.
+On 2020/12/2 2:15, Will Deacon wrote:
+> On Wed, Dec 02, 2020 at 01:19:35AM +0800, wangyanan (Y) wrote:
+>> On 2020/12/1 22:16, Will Deacon wrote:
+>>> On Tue, Dec 01, 2020 at 03:21:23PM +0800, wangyanan (Y) wrote:
+>>>> On 2020/11/30 21:21, Will Deacon wrote:
+>>>>> On Mon, Nov 30, 2020 at 08:18:45PM +0800, Yanan Wang wrote:
+>>>>>> @@ -476,6 +477,7 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>>>>>>     	/* There's an existing valid leaf entry, so perform break-before-make */
+>>>>>>     	kvm_set_invalid_pte(ptep);
+>>>>>>     	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+>>>>>> +	put_page(virt_to_page(ptep));
+>>>>>>     	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
+>>>>>>     out:
+>>>>>>     	data->phys += granule;
+>>>>> Isn't this hunk alone sufficient to solve the problem?
+>>>>>
+>>>> Not sufficient enough. When the old ptep is valid and old pte equlas new
+>>>> pte, in this case, "True" is also returned by kvm_set_valid_leaf_pte()
+>>>>
+>>>> and get_page() will still be called.
+>>> I had a go at fixing this without introducing refcounting to the hyp stage-1
+>>> case, and ended up with the diff below. What do you think?
+>> Functionally this diff looks fine to me. A small comment inline, please see
+>> below.
+>>
+>> I had made an alternative fix (after sending v1) and it looks much more
+>> concise.
+>>
+>> If you're ok with it, I can send it as v2 (together with patch#2 and #3)
+>> after some tests.
+> Thanks.
+>
+>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>> index 0271b4a3b9fe..b232bdd142a6 100644
+>> --- a/arch/arm64/kvm/hyp/pgtable.c
+>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+>> @@ -470,6 +470,9 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64
+>> end, u32 level,
+>>          if (!kvm_block_mapping_supported(addr, end, phys, level))
+>>                  return false;
+>>
+>> +       if (kvm_pte_valid(*ptep))
+>> +               put_page(virt_to_page(ptep));
+>> +
+>>          if (kvm_set_valid_leaf_pte(ptep, phys, data->attr, level))
+>>                  goto out;
+> This is certainly smaller, but see below.
+>
+>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>>> index 0271b4a3b9fe..78e2c0dc47ae 100644
+>>> --- a/arch/arm64/kvm/hyp/pgtable.c
+>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+>>> @@ -170,23 +170,16 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp)
+>>>    	smp_store_release(ptep, pte);
+>>>    }
+>>> -static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
+>>> -				   u32 level)
+>>> +static kvm_pte_t kvm_init_valid_leaf_pte(u64 pa, kvm_pte_t attr, u32 level)
+>>>    {
+>>> -	kvm_pte_t old = *ptep, pte = kvm_phys_to_pte(pa);
+>>> +	kvm_pte_t pte = kvm_phys_to_pte(pa);
+>>>    	u64 type = (level == KVM_PGTABLE_MAX_LEVELS - 1) ? KVM_PTE_TYPE_PAGE :
+>>>    							   KVM_PTE_TYPE_BLOCK;
+>>>    	pte |= attr & (KVM_PTE_LEAF_ATTR_LO | KVM_PTE_LEAF_ATTR_HI);
+>>>    	pte |= FIELD_PREP(KVM_PTE_TYPE, type);
+>>>    	pte |= KVM_PTE_VALID;
+>>> -
+>>> -	/* Tolerate KVM recreating the exact same mapping. */
+>>> -	if (kvm_pte_valid(old))
+>>> -		return old == pte;
+>>> -
+>>> -	smp_store_release(ptep, pte);
+>>> -	return true;
+>>> +	return pte;
+>>>    }
+>>>    static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
+>>> @@ -341,12 +334,17 @@ static int hyp_map_set_prot_attr(enum kvm_pgtable_prot prot,
+>>>    static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>>>    				    kvm_pte_t *ptep, struct hyp_map_data *data)
+>>>    {
+>>> +	kvm_pte_t new, old = *ptep;
+>>>    	u64 granule = kvm_granule_size(level), phys = data->phys;
+>>>    	if (!kvm_block_mapping_supported(addr, end, phys, level))
+>>>    		return false;
+>>> -	WARN_ON(!kvm_set_valid_leaf_pte(ptep, phys, data->attr, level));
+>>> +	/* Tolerate KVM recreating the exact same mapping. */
+>>> +	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
+>>> +	if (old != new && !WARN_ON(kvm_pte_valid(old)))
+>>> +		smp_store_release(ptep, new);
+>>> +
+>>>    	data->phys += granule;
+>>>    	return true;
+>>>    }
+>>> @@ -465,19 +463,24 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>>>    				       kvm_pte_t *ptep,
+>>>    				       struct stage2_map_data *data)
+>>>    {
+>>> +	kvm_pte_t new, old = *ptep;
+>>>    	u64 granule = kvm_granule_size(level), phys = data->phys;
+>>>    	if (!kvm_block_mapping_supported(addr, end, phys, level))
+>>>    		return false;
+>>> -	if (kvm_set_valid_leaf_pte(ptep, phys, data->attr, level))
+>>> -		goto out;
+>>> +	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
+>>> +	if (kvm_pte_valid(old)) {
+>>> +		/*
+>>> +		 * There's an existing valid leaf entry, so perform
+>>> +		 * break-before-make.
+>>> +		 */
+>>> +		kvm_set_invalid_pte(ptep);
+>>> +		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+>>> +		put_page(virt_to_page(ptep));
+>> When old PTE is valid and equals to the new one, we will also perform
+>> break-before-make and the new PTE installation. But they're actually not
+>> necessary in this case.
+> Agreed, but I don't think that case should happen for stage-2 mappings.
+> That's why I prefer my diff here, as it makes that 'old == new' logic
+> specific to the hyp mappings.
+>
+> But I'll leave it all up to you (these diffs are only intended to be
+> helpful).
+>
+> Will
+> .
 
-There's 2 parts that Google's usecase has. The first part is set by a
-privileged process, and the second part (color) is set within the container.
-Maybe we can just put the "color" feature behind a CONFIG option for Google
-to enable?
+Hi Will,
 
-> All this API stuff here is a complete and utter trainwreck. Please just
-> delete the patches and start over. Hint: if you use stop_machine(),
-> you're doing it wrong.
+In my opinion, the 'old == new' case might happen too in stage-2 
+translation,  especially in the condition of concurrent access of 
+multiple vCPUs.
 
-Ok, the idea was to use stop_machine() as in your initial patch. It works
-quite well in testing. However I agree with its horrible we ought to do
-better (or at least try).
+For example, when merging tables into a block, we will perform 
+break-before-make for a valid old PTE in function stage2_map_walk_pre().
 
-Maybe we can do a synchronize_rcu() after changing cookie, to ensure we are
-no longer using the old cookie value in the scheduler.
+If the other vCPUs are trying to access the same GPA range, so the MMUs 
+will target at the same PTE as above, and they might just catch the moment
 
-> At best you now have the requirements sorted.
+when the target PTE is set invalid in BBM by the vCPU holding the 
+mmu_lock, but the old PTE will be updated to valid later.
 
-Yes.
+As a result, translation fault will be triggered in these vCPUs, then 
+they will wait for the mmu_lock to map exactly the *same* mapping (old 
+== new).
 
-thanks,
 
- - Joel
+Thanks,
+
+Yanan
 
