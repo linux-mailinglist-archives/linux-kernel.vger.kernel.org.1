@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285672CA1BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B25E2CA1BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730610AbgLALnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:43:33 -0500
-Received: from mail.zx2c4.com ([192.95.5.64]:50697 "EHLO mail.zx2c4.com"
+        id S1730621AbgLALpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:45:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730363AbgLALnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:43:33 -0500
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 9dc57d16;
-        Tue, 1 Dec 2020 11:37:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=jbEvcnVie3+BiOHDlwb8pV05AQc=; b=e2B47M
-        haBLMImb04QPd7EBiC9Mb9aUnvN4fhDybiScvo+f9ZFzJ57Dhp6ExrIL5Yn5tpbj
-        W8aeD4WNIlv/CgGygp049t7STELeQDLkVeqZid/1DZsZabJNV0Qh3LUkN9YIGKHf
-        LJQ4T37QTZlDUAMO4ct/we9BTb56CIsN6U9iDzxFqOe7Sp3gMuD2DzT7orCe8Dtk
-        akz0H6JU96kovR8CYgyI+cwo1WaH4z3tmMdC0D49Ncf+8R4Quk1OX+5uOvh7sL4y
-        2ciIDJ1gyhM1dCBqEdP33MrvhxqaOjjlp0fhbEfSqdHz7HUnWJt/bHvLRkJ+aKdF
-        oPB2n07wF3CdK21Q==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 53c2051f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 1 Dec 2020 11:37:09 +0000 (UTC)
-Received: by mail-yb1-f182.google.com with SMTP id x2so1509008ybt.11;
-        Tue, 01 Dec 2020 03:42:49 -0800 (PST)
-X-Gm-Message-State: AOAM5312v8ydbNPwQV4HUaL3AVw54+FvQqd1YAqMFCmKXcaaTs0T+wV2
-        DngWfMD2dJDiVcmM1CpsdDHIFtvV+rngdMN2xUY=
-X-Google-Smtp-Source: ABdhPJyr+E+bKuyTFZDfe3PGxpw6xMPOHc4Tc723dfsW1RLX19X2fkfRJVJaSe0NxLaZlZ7vwWKbLLKy8Qe1h0mUjkg=
-X-Received: by 2002:a25:bb81:: with SMTP id y1mr2761021ybg.456.1606822967704;
- Tue, 01 Dec 2020 03:42:47 -0800 (PST)
+        id S1728263AbgLALpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:45:39 -0500
+Received: from localhost (unknown [122.171.214.243])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8207C2084C;
+        Tue,  1 Dec 2020 11:44:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606823098;
+        bh=gS9MWi6bdd8oOA6Tei96Y/BfKSWuUlHJrbBNQ+XvtjA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J//ap6l19SfsL7GGgMuYZZwRAfg1Aw7GK7E7YXFqPP7hMjpNYWi3ofqNwv5yFDnsC
+         8IEU0/0lsYDyf/H5RnuRlBL3XDA6+S9tFwbfslkuG1/ppYTqsGuSxLj27hs7303Wpn
+         85h8F9v/antgIz4x3TUq3tNc8gK5/hx0Brun+jFY=
+Date:   Tue, 1 Dec 2020 17:14:53 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     kishon@ti.com, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] phy: ralink: phy-mt7621-pci: some fixes for
+ COMPILE_TEST
+Message-ID: <20201201114453.GC8403@vkoul-mobl>
+References: <20201201112051.17463-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
-References: <20201130151231.GA24862@lst.de> <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
- <20201130165339.GE5364@mit.edu>
-In-Reply-To: <20201130165339.GE5364@mit.edu>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 1 Dec 2020 12:42:36 +0100
-X-Gmail-Original-Message-ID: <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
-Message-ID: <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
-Subject: Re: drivers/char/random.c needs a (new) maintainer
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     duwe@lst.de, Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201112051.17463-1-sergio.paracuellos@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 5:56 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
-> patches this cycle.  One thing that would help me is if folks
-> (especially Jason, if you would) could start with a detailed review of
-> Nicolai's patches.
+On 01-12-20, 12:20, Sergio Paracuellos wrote:
+> Hi Vinod,
+> 
+> After merging the phy-next tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/phy/ralink/phy-mt7621-pci.c:17:10: fatal error: mt7621.h: No such file or directory
+> 17 | #include <mt7621.h>
+>  |          ^~~~~~~~~~
+> 
+> This driver has two includes which are in
+> "arch/mips/include/asm/mach-ralink" and are directly included in the
+> driver:
+> * mt7621.h
+> * ralink_regs.h
+> 
+> This is because this path is directly included in 'arch/mips/ralink/Platform'
+> for "ralink".
+> 
+> Adding the include search path to the phy ralink directory fix the problem but
+> as you told me I finally end up removing COMPILE_TEST from Kconfig.
+> 
+> Making 'allmodconfig' in x86_64 also showed two warnings for this driver
+> because of pointer size and not valid name for MODULE_DEVICE_TABLE ids.
+> 
+> Ids for the macro has been also included in this series.
 
-Sure, I'll take a look.
+Applied, thanks
+
+-- 
+~Vinod
