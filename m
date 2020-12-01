@@ -2,250 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3C02CA36E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9E92CA372
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728869AbgLANGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:06:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727658AbgLANF6 (ORCPT
+        id S1730058AbgLANGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:06:54 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8229 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727077AbgLANGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:05:58 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57823C0613CF;
-        Tue,  1 Dec 2020 05:05:18 -0800 (PST)
-Date:   Tue, 01 Dec 2020 13:05:15 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606827916;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KFuvBeXbb5Qha5117BpiLnSV6VXffW4601AaYnTTivA=;
-        b=FRgVMrzRLNwOY7lKvnsfOULV6vTQk95pgiKmY93l1CtRPSoc4jbGuVIKrmg1IVW8yg8lEZ
-        kI1HTQUbwKHMiVPxL60LA6bY1mYxMd0Mf/82xJdw1g9obDNKeq0A2QQkpI59oed3w8aBsI
-        /cc1ZL0aP0OBQzT+Me9b7WHgOGpoNJZ4CLmF7a+Gyve9+XCDpCvVNpd8KKH7bPOEHL4CDb
-        rndJWsfykC5HznpX/yDlUSj/MZLLvdkhSKr3y2gNAATinHv5/4W3HCyWjbkDl7N1hOImqY
-        rldWjZ25dWcBi0Yb37MfnWNtNktFeW1hUIq19DzA2GR+M1J7CkPKTfItj1pW7g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606827916;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KFuvBeXbb5Qha5117BpiLnSV6VXffW4601AaYnTTivA=;
-        b=j0m7igy41w2IuN8FTtRSMnDYP7HRyvRrMQjL/2Xx/gzdkeAeDnHJutO3+uQrfhanUgdEg7
-        NpNUBPDVZ1u8uOBQ==
-From:   "tip-bot2 for Justin Ernst" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/uv: Update ABI documentation of
- /sys/firmware/sgi_uv/
-Cc:     Justin Ernst <justin.ernst@hpe.com>, Borislav Petkov <bp@suse.de>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201125175444.279074-5-justin.ernst@hpe.com>
-References: <20201125175444.279074-5-justin.ernst@hpe.com>
+        Tue, 1 Dec 2020 08:06:54 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Clj5G26RwzkjyS;
+        Tue,  1 Dec 2020 21:05:38 +0800 (CST)
+Received: from [127.0.0.1] (10.57.60.129) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Dec 2020
+ 21:05:38 +0800
+Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
+ to drm_device
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <kraxel@redhat.com>,
+        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
+        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
+ <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
+ <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
+ <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
+ <389548c9-772c-d86b-700e-032f7d7bde1f@suse.de>
+From:   "tiantao (H)" <tiantao6@huawei.com>
+Message-ID: <51e7e774-6795-8eeb-6701-b1cccc4c6199@huawei.com>
+Date:   Tue, 1 Dec 2020 21:05:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Message-ID: <160682791558.3364.10722231000383777426.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <389548c9-772c-d86b-700e-032f7d7bde1f@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.57.60.129]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
 
-Commit-ID:     c159376490eef39f0f2cb1ce5dd38a6d41c859b4
-Gitweb:        https://git.kernel.org/tip/c159376490eef39f0f2cb1ce5dd38a6d41c859b4
-Author:        Justin Ernst <justin.ernst@hpe.com>
-AuthorDate:    Wed, 25 Nov 2020 11:54:43 -06:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 01 Dec 2020 13:59:07 +01:00
 
-x86/platform/uv: Update ABI documentation of /sys/firmware/sgi_uv/
+在 2020/12/1 20:36, Thomas Zimmermann 写道:
+> Hi
+> 
+> Am 01.12.20 um 13:26 schrieb tiantao (H):
+>>
+>>
+>> 在 2020/12/1 20:17, Thomas Zimmermann 写道:
+>>> Hi
+>>>
+>>> Am 01.12.20 um 12:55 schrieb Tian Tao:
+>>>> Assign local variable to struct drm_device *dev because they are
+>>>> used multiple times within a function.
+>>>>
+>>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>>>> ---
+>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
+>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 30 
+>>>> ++++++++++++------------
+>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +-
+>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
+>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 ++++---
+>>>>   5 files changed, 23 insertions(+), 21 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c 
+>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>>>> index ea962ac..096eea9 100644
+>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+>>>> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs 
+>>>> hibmc_crtc_helper_funcs = {
+>>>>   int hibmc_de_init(struct hibmc_drm_private *priv)
+>>>>   {
+>>>> -    struct drm_device *dev = priv->dev;
+>>>> +    struct drm_device *dev = &priv->dev;
+>>>>       struct drm_crtc *crtc = &priv->crtc;
+>>>>       struct drm_plane *plane = &priv->primary_plane;
+>>>>       int ret;
+>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c 
+>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>> index d845657..dd9fadc 100644
+>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>>> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops = {
+>>>>   static int hibmc_kms_init(struct hibmc_drm_private *priv)
+>>>>   {
+>>>> +    struct drm_device *dev = &priv->dev;
+>>>>       int ret;
+>>>> -    drm_mode_config_init(priv->dev);
+>>>> +    drm_mode_config_init(dev);
+>>>>       priv->mode_config_initialized = true;
+>>>> -    priv->dev->mode_config.min_width = 0;
+>>>> -    priv->dev->mode_config.min_height = 0;
+>>>> -    priv->dev->mode_config.max_width = 1920;
+>>>> -    priv->dev->mode_config.max_height = 1200;
+>>>> +    dev->mode_config.min_width = 0;
+>>>> +    dev->mode_config.min_height = 0;
+>>>> +    dev->mode_config.max_width = 1920;
+>>>> +    dev->mode_config.max_height = 1200;
+>>>> -    priv->dev->mode_config.fb_base = priv->fb_base;
+>>>> -    priv->dev->mode_config.preferred_depth = 32;
+>>>> -    priv->dev->mode_config.prefer_shadow = 1;
+>>>> +    dev->mode_config.fb_base = priv->fb_base;
+>>>> +    dev->mode_config.preferred_depth = 32;
+>>>> +    dev->mode_config.prefer_shadow = 1;
+>>>> -    priv->dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
+>>>> +    dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
+>>>>       ret = hibmc_de_init(priv);
+>>>>       if (ret) {
+>>>> -        drm_err(priv->dev, "failed to init de: %d\n", ret);
+>>>> +        drm_err(dev, "failed to init de: %d\n", ret);
+>>>>           return ret;
+>>>>       }
+>>>>       ret = hibmc_vdac_init(priv);
+>>>>       if (ret) {
+>>>> -        drm_err(priv->dev, "failed to init vdac: %d\n", ret);
+>>>> +        drm_err(dev, "failed to init vdac: %d\n", ret);
+>>>>           return ret;
+>>>>       }
+>>>> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct 
+>>>> hibmc_drm_private *priv)
+>>>>   static void hibmc_kms_fini(struct hibmc_drm_private *priv)
+>>>>   {
+>>>>       if (priv->mode_config_initialized) {
+>>>> -        drm_mode_config_cleanup(priv->dev);
+>>>> +        drm_mode_config_cleanup(&priv->dev);
+>>>>           priv->mode_config_initialized = false;
+>>>>       }
+>>>>   }
+>>>> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct 
+>>>> hibmc_drm_private *priv)
+>>>>   static int hibmc_hw_map(struct hibmc_drm_private *priv)
+>>>>   {
+>>>> -    struct drm_device *dev = priv->dev;
+>>>> +    struct drm_device *dev = &priv->dev;
+>>>>       struct pci_dev *pdev = dev->pdev;
+>>>>       resource_size_t addr, size, ioaddr, iosize;
+>>>> @@ -258,7 +259,7 @@ static int hibmc_unload(struct drm_device *dev)
+>>>>   static int hibmc_load(struct drm_device *dev)
+>>>>   {
+>>>> -    struct hibmc_drm_private *priv;
+>>>> +    struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+>>>>       int ret;
+>>>>       priv = drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+>>>> @@ -267,7 +268,6 @@ static int hibmc_load(struct drm_device *dev)
+>>>>           return -ENOMEM;
+>>>>       }
+>>>>       dev->dev_private = priv;
+>>>> -    priv->dev = dev;
+>>>
+>>> I'm sure this either does not build or does not work. There's a call 
+>>> to drm_dev_alloc(), which initialized the DRM device. You need to 
+>>> assign the returned device here. The embedding of dev only work after 
+>>> you switched to devm_drm_dev_alloc() in the next patch.
+>>>
+>>> For the patch at hand, just keep struct hibmc_drm_private.dev as a 
+>>> pointer and you should be fine.
+>>>
+>> Changing drm_device *dev to drm_device dev and using 
+>> devm_drm_dev_alloc does not easily split into two patches.
+>> The patch does not compile well on its own, but it will compile fine 
+>> with patch #2.
+>> Can patch #1 and patch #2 be combined into a single patch,just like V1.
+> 
+> Most of the code in this patch does
+> 
+>    struct drm_device *dev = &priv->dev;
+> 
+> to get dev as a local variable. Why don't you do
+> 
+>    struct drm_device *dev = priv->dev;
+> 
+> ?
+> 
+> That's all that's really needed.
 
-Update the ABI documentation to describe the sysfs interface provided by
-the new uv_sysfs platform driver.
++	priv = devm_drm_dev_alloc(&pdev->dev, &hibmc_driver,
++				  struct hibmc_drm_private, dev);
+devm_drm_dev_alloc function requires parameter 4, dev must be a 
+non-pointer for it to work. so had to change dev in the 
+hibmc_drm_private  to non-pointer.
+This is also the reason to change drm_device *dev to drm_device dev.
+> 
+> Best regards
+> Thomas
+> 
+>>> Best regards
+>>> Thomas
+>>>
+>>>>       ret = hibmc_hw_init(priv);
+>>>>       if (ret)
+>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h 
+>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>>> index f310a83..e35353a 100644
+>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>>> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
+>>>>       resource_size_t  fb_size;
+>>>>       /* drm */
+>>>> -    struct drm_device  *dev;
+>>>> +    struct drm_device dev;
+>>>>       struct drm_plane primary_plane;
+>>>>       struct drm_crtc crtc;
+>>>>       struct drm_encoder encoder;
+>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c 
+>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>>>> index 74e26c2..d35548d 100644
+>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+>>>> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs 
+>>>> hibmc_encoder_funcs = {
+>>>>   int hibmc_vdac_init(struct hibmc_drm_private *priv)
+>>>>   {
+>>>> -    struct drm_device *dev = priv->dev;
+>>>> +    struct drm_device *dev = &priv->dev;
+>>>>       struct hibmc_connector *hibmc_connector = &priv->connector;
+>>>>       struct drm_encoder *encoder = &priv->encoder;
+>>>>       struct drm_connector *connector = &hibmc_connector->base;
+>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c 
+>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>>>> index 602ece1..e84fb81 100644
+>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+>>>> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>>>>   {
+>>>>       struct drm_vram_mm *vmm;
+>>>>       int ret;
+>>>> -    struct drm_device *dev = hibmc->dev;
+>>>> +    struct drm_device *dev = &hibmc->dev;
+>>>>       vmm = drm_vram_helper_alloc_mm(dev,
+>>>>                          pci_resource_start(dev->pdev, 0),
+>>>> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+>>>>   void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
+>>>>   {
+>>>> -    if (!hibmc->dev->vram_mm)
+>>>> +    struct drm_device *dev = &hibmc->dev;
+>>>> +
+>>>> +    if (!dev->vram_mm)
+>>>>           return;
+>>>> -    drm_vram_helper_release_mm(hibmc->dev);
+>>>> +    drm_vram_helper_release_mm(dev);
+>>>>   }
+>>>>   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+>>>>
+>>>
+>>
+> 
 
- [ bp: Merge in kernel-doc warning fixes, see second Link: below. ]
-
-Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-Acked-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lkml.kernel.org/r/20201125175444.279074-5-justin.ernst@hpe.com
-Link: https://lkml.kernel.org/r/20201130214304.369348-1-justin.ernst@hpe.com
----
- Documentation/ABI/testing/sysfs-firmware-sgi_uv | 144 +++++++++++++--
- 1 file changed, 130 insertions(+), 14 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-index 66800ba..351b1f4 100644
---- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-+++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-@@ -1,27 +1,143 @@
- What:		/sys/firmware/sgi_uv/
--Date:		August 2008
--Contact:	Russ Anderson <rja@sgi.com>
-+Date:		September 2020
-+Contact:	Justin Ernst <justin.ernst@hpe.com>
- Description:
- 		The /sys/firmware/sgi_uv directory contains information
--		about the SGI UV platform.
-+		about the UV platform.
- 
--		Under that directory are a number of files::
-+		Under that directory are a number of read-only attributes::
- 
- 			partition_id
- 			coherence_id
-+			uv_type
- 
- 		The partition_id entry contains the partition id.
--		SGI UV systems can be partitioned into multiple physical
-+		UV systems can be partitioned into multiple physical
- 		machines, which each partition running a unique copy
--		of the operating system.  Each partition will have a unique
--		partition id.  To display the partition id, use the command::
--
--			cat /sys/firmware/sgi_uv/partition_id
-+		of the operating system. Each partition will have a unique
-+		partition id.
- 
- 		The coherence_id entry contains the coherence id.
--		A partitioned SGI UV system can have one or more coherence
--		domain.  The coherence id indicates which coherence domain
--		this partition is in.  To display the coherence id, use the
--		command::
-+		A partitioned UV system can have one or more coherence
-+		domains. The coherence id indicates which coherence domain
-+		this partition is in.
-+
-+		The uv_type entry contains the hub revision number.
-+		This value can be used to identify the UV system version::
-+
-+			"3.0" = UV2
-+			"5.0" = UV3
-+			"7.0" = UV4
-+			"7.1" = UV4a
-+			"9.0" = UV5
-+
-+		The /sys/firmware/sgi_uv directory also contains two directories::
-+
-+			hubs/
-+			pcibuses/
-+
-+		The hubs directory contains a number of hub objects, each representing
-+		a UV Hub visible to the BIOS. Each hub object's name is appended by a
-+		unique ordinal value (ex. /sys/firmware/sgi_uv/hubs/hub_5)
-+
-+		Each hub object directory contains a number of read-only attributes::
-+
-+			cnode
-+			location
-+			name
-+			nasid
-+			shared
-+			this_partition
-+
-+		The cnode entry contains the cnode number of the corresponding hub.
-+		If a cnode value is not applicable, the value returned will be -1.
-+
-+		The location entry contains the location string of the corresponding hub.
-+		This value is used to physically identify a hub within a system.
-+
-+		The name entry contains the name of the corresponding hub. This name can
-+		be two variants::
-+
-+			"UVHub x.x" = A 'node' ASIC, connecting a CPU to the interconnect
-+			fabric. The 'x.x' value represents the ASIC revision.
-+			(ex. 'UVHub 5.0')
-+
-+			"NLxRouter" = A 'router ASIC, only connecting other ASICs to
-+			the interconnect fabric. The 'x' value representing
-+			the fabric technology version. (ex. 'NL8Router')
-+
-+		The nasid entry contains the nasid number of the corresponding hub.
-+		If a nasid value is not applicable, the value returned will be -1.
-+
-+		The shared entry contains a boolean value describing whether the
-+		corresponding hub is shared between system partitions.
-+
-+		The this_partition entry contains a boolean value describing whether
-+		the corresponding hub is local to the current partition.
-+
-+		Each hub object directory also contains a number of port objects,
-+		each representing a fabric port on the corresponding hub.
-+		A port object's name is appended by a unique ordinal value
-+		(ex. /sys/firmware/sgi_uv/hubs/hub_5/port_3)
-+
-+		Each port object directory contains a number of read-only attributes::
-+
-+			conn_hub
-+			conn_port
-+
-+		The conn_hub entry contains a value representing the unique
-+		oridinal value of the hub on the other end of the fabric
-+		cable plugged into the port. If the port is disconnected,
-+		the value returned will be -1.
-+
-+		The conn_port entry contains a value representing the unique
-+		oridinal value of the port on the other end of the fabric cable
-+		plugged into the port. If the port is disconnected, the value
-+		returned will be -1.
-+
-+		Ex:
-+			A value of '3' is read from:
-+				/sys/firmware/sgi_uv/hubs/hub_5/port_3/conn_hub
-+
-+			and a value of '6' is read from:
-+				/sys/firmware/sgi_uv/hubs/hub_5/port_3/conn_port
-+
-+			representing that this port is connected to:
-+				/sys/firmware/sgi_uv/hubs/hub_3/port_6
-+
-+		The pcibuses directory contains a number of PCI bus objects.
-+		Each PCI bus object's name is appended by its PCI bus address.
-+		(ex. pcibus_0003:80)
-+
-+		Each pcibus object has a number of possible read-only attributes::
-+
-+			type
-+			location
-+			slot
-+			ppb_addr
-+			iio_stack
-+
-+		The type entry contains a value describing the type of IO at
-+		the corresponding PCI bus address. Known possible values
-+		across all UV versions are::
-+
-+			BASE IO
-+			PCIe IO
-+			PCIe SLOT
-+			NODE IO
-+			Riser
-+			PPB
-+
-+		The location entry contains the location string of the UV Hub
-+		of the CPU physically connected to the corresponding PCI bus.
-+
-+		The slot entry contains the physical slot number of the
-+		corresponding PCI bus. This value is used to physically locate
-+		PCI cards within a system.
-+
-+		The ppb_addr entry contains the PCI address string of the
-+		bridged PCI bus. This entry is only present when the PCI bus
-+		object type is 'PPB'.
- 
--			cat /sys/firmware/sgi_uv/coherence_id
-+		The iio_stack entry contains a value describing the IIO stack
-+		number that the corresponding PCI bus object is connected to.
