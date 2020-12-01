@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FB92CB03B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3C62CB033
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727366AbgLAWhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:37:19 -0500
-Received: from mga02.intel.com ([134.134.136.20]:54382 "EHLO mga02.intel.com"
+        id S1726737AbgLAWg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 17:36:58 -0500
+Received: from mga05.intel.com ([192.55.52.43]:52529 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgLAWg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725900AbgLAWg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 17:36:56 -0500
-IronPort-SDR: olxpMpe/8ib62oMVd64TMEy5tsm2QTiUtGcN64MmJpVw+Afwq7osZbv/4yOPLihjC1eL53dxHF
- ghyR1sFb6nqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="159974145"
+IronPort-SDR: LB86lEMy7IqJwN8Naa926Ba9kXcl3vYs9xVNBanK/hU8Qbgwz7moC0qG0SndP7dYixzHKBVRPP
+ 4SwgkTvI3P/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="257628549"
 X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="159974145"
+   d="scan'208";a="257628549"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 14:35:15 -0800
-IronPort-SDR: umAsFM+lr+Yu+0Swnp5PuFLMcTdH7OtrKqpTj2BK9uEjUi4c445sJPVLlnxFcetjn8aXGZBcHx
- 2dH7WKdhjF9w==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 14:35:15 -0800
+IronPort-SDR: 9jwVRR7iKnd3mpZPzKZTm2rvqyL6GfNRIcTmEELSC3gBDdfICQNfbsiLGAVSYJt26xsu3nevlI
+ m1YemTQASa6A==
 X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="361217627"
+   d="scan'208";a="315874529"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 14:35:15 -0800
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 14:35:15 -0800
 Received: from mtg-dev (mtg-dev.jf.intel.com [10.54.74.10])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp.ostc.intel.com (Postfix) with ESMTPS id 25381636D;
+        by smtp.ostc.intel.com (Postfix) with ESMTPS id 3BFCC636D;
         Tue,  1 Dec 2020 14:35:15 -0800 (PST)
 Received: from mgross by mtg-dev with local (Exim 4.90_1)
         (envelope-from <mgross@linux.intel.com>)
-        id 1kkEEt-000H4m-01; Tue, 01 Dec 2020 14:35:15 -0800
+        id 1kkEEt-000H4p-3E; Tue, 01 Dec 2020 14:35:15 -0800
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -43,9 +43,9 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         shawnguo@kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Srikanth Thokala <srikanth.thokala@intel.com>
-Subject: [PATCH 11/22] misc: xlink-pcie: rh: Add PCIe EP driver for Remote Host
-Date:   Tue,  1 Dec 2020 14:35:00 -0800
-Message-Id: <20201201223511.65542-12-mgross@linux.intel.com>
+Subject: [PATCH 12/22] misc: xlink-pcie: rh: Add core communication logic
+Date:   Tue,  1 Dec 2020 14:35:01 -0800
+Message-Id: <20201201223511.65542-13-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201201223511.65542-1-mgross@linux.intel.com>
 References: <20201201223511.65542-1-mgross@linux.intel.com>
@@ -55,712 +55,803 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-Add PCIe Endpoint driver that configures PCIe BARs and MSIs on the
-Remote Host
+Add logic to establish communication with the local host which is through
+ring buffer management and MSI/Doorbell interrupts
 
 Reviewed-by: Mark Gross <mgross@linux.intel.com>
 Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
 ---
- MAINTAINERS                                  |   2 +-
- drivers/misc/xlink-pcie/Kconfig              |  11 +
- drivers/misc/xlink-pcie/Makefile             |   1 +
- drivers/misc/xlink-pcie/common/xpcie.h       |   1 +
- drivers/misc/xlink-pcie/remote_host/Makefile |   3 +
- drivers/misc/xlink-pcie/remote_host/main.c   |  93 ++++
- drivers/misc/xlink-pcie/remote_host/pci.c    | 451 +++++++++++++++++++
- drivers/misc/xlink-pcie/remote_host/pci.h    |  64 +++
- 8 files changed, 625 insertions(+), 1 deletion(-)
- create mode 100644 drivers/misc/xlink-pcie/remote_host/Makefile
- create mode 100644 drivers/misc/xlink-pcie/remote_host/main.c
- create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.c
- create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.h
+ drivers/misc/xlink-pcie/common/core.h        |  11 +-
+ drivers/misc/xlink-pcie/remote_host/Makefile |   2 +
+ drivers/misc/xlink-pcie/remote_host/core.c   | 647 +++++++++++++++++++
+ drivers/misc/xlink-pcie/remote_host/pci.c    |  48 +-
+ 4 files changed, 696 insertions(+), 12 deletions(-)
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/core.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9af8685967ac..b3468dea6557 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1952,7 +1952,7 @@ F:	Documentation/devicetree/bindings/arm/intel,keembay.yaml
- F:	arch/arm64/boot/dts/intel/keembay-evm.dts
- F:	arch/arm64/boot/dts/intel/keembay-soc.dtsi
+diff --git a/drivers/misc/xlink-pcie/common/core.h b/drivers/misc/xlink-pcie/common/core.h
+index 84985ef41a64..eec8566c19d9 100644
+--- a/drivers/misc/xlink-pcie/common/core.h
++++ b/drivers/misc/xlink-pcie/common/core.h
+@@ -10,15 +10,11 @@
+ #ifndef XPCIE_CORE_HEADER_
+ #define XPCIE_CORE_HEADER_
  
--ARM KEEMBAY XLINK PCIE SUPPORT
-+ARM/INTEL KEEMBAY XLINK PCIE SUPPORT
- M:	Srikanth Thokala <srikanth.thokala@intel.com>
- M:	Mark Gross <mgross@linux.intel.com>
- S:	Maintained
-diff --git a/drivers/misc/xlink-pcie/Kconfig b/drivers/misc/xlink-pcie/Kconfig
-index 46aa401d79b7..448b9bfbdfa2 100644
---- a/drivers/misc/xlink-pcie/Kconfig
-+++ b/drivers/misc/xlink-pcie/Kconfig
-@@ -1,3 +1,14 @@
-+config XLINK_PCIE_RH_DRIVER
-+	tristate "XLink PCIe Remote Host driver"
-+	depends on PCI && X86_64
-+	help
-+	  This option enables XLink PCIe Remote Host driver.
-+
-+	  Choose M here to compile this driver as a module, name is mxlk.
-+	  This driver is used for XLink communication over PCIe,
-+	  and is to be loaded on the IA host which is connected to
-+	  the Intel Keem Bay.
-+
- config XLINK_PCIE_LH_DRIVER
- 	tristate "XLink PCIe Local Host driver"
- 	depends on PCI_ENDPOINT && ARCH_KEEMBAY
-diff --git a/drivers/misc/xlink-pcie/Makefile b/drivers/misc/xlink-pcie/Makefile
-index d693d382e9c6..1dd984d8d88c 100644
---- a/drivers/misc/xlink-pcie/Makefile
-+++ b/drivers/misc/xlink-pcie/Makefile
-@@ -1 +1,2 @@
-+obj-$(CONFIG_XLINK_PCIE_RH_DRIVER) += remote_host/
- obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += local_host/
-diff --git a/drivers/misc/xlink-pcie/common/xpcie.h b/drivers/misc/xlink-pcie/common/xpcie.h
-index 5ae0b3dbd503..c62443d61865 100644
---- a/drivers/misc/xlink-pcie/common/xpcie.h
-+++ b/drivers/misc/xlink-pcie/common/xpcie.h
-@@ -89,6 +89,7 @@ struct xpcie_mmio {
- struct xpcie {
- 	u32 status;
- 	bool legacy_a0;
-+	void *bar0;
- 	void *mmio;
- 	void *bar4;
- 
-diff --git a/drivers/misc/xlink-pcie/remote_host/Makefile b/drivers/misc/xlink-pcie/remote_host/Makefile
-new file mode 100644
-index 000000000000..96374a43023e
---- /dev/null
-+++ b/drivers/misc/xlink-pcie/remote_host/Makefile
-@@ -0,0 +1,3 @@
-+obj-$(CONFIG_XLINK_PCIE_RH_DRIVER) += mxlk.o
-+mxlk-objs := main.o
-+mxlk-objs += pci.o
-diff --git a/drivers/misc/xlink-pcie/remote_host/main.c b/drivers/misc/xlink-pcie/remote_host/main.c
-new file mode 100644
-index 000000000000..810da1509418
---- /dev/null
-+++ b/drivers/misc/xlink-pcie/remote_host/main.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*****************************************************************************
-+ *
-+ * Intel Keem Bay XLink PCIe Driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ ****************************************************************************/
-+
-+#include "pci.h"
-+#include "../common/core.h"
-+
-+#define HW_ID_LO_MASK	GENMASK(7, 0)
-+#define HW_ID_HI_MASK	GENMASK(15, 8)
-+
-+static const struct pci_device_id xpcie_pci_table[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_KEEMBAY), 0 },
-+	{ 0 }
-+};
-+
-+static int intel_xpcie_probe(struct pci_dev *pdev,
-+			     const struct pci_device_id *ent)
-+{
-+	bool new_device = false;
-+	struct xpcie_dev *xdev;
-+	u32 sw_devid;
-+	u16 hw_id;
-+	int ret;
-+
-+	hw_id = FIELD_PREP(HW_ID_HI_MASK, pdev->bus->number) |
-+		FIELD_PREP(HW_ID_LO_MASK, PCI_SLOT(pdev->devfn));
-+
-+	sw_devid = FIELD_PREP(XLINK_DEV_INF_TYPE_MASK,
-+			      XLINK_DEV_INF_PCIE) |
-+		   FIELD_PREP(XLINK_DEV_PHYS_ID_MASK, hw_id) |
-+		   FIELD_PREP(XLINK_DEV_TYPE_MASK, XLINK_DEV_TYPE_KMB) |
-+		   FIELD_PREP(XLINK_DEV_PCIE_ID_MASK, XLINK_DEV_PCIE_0) |
-+		   FIELD_PREP(XLINK_DEV_FUNC_MASK, XLINK_DEV_FUNC_VPU);
-+
-+	xdev = intel_xpcie_get_device_by_id(sw_devid);
-+	if (!xdev) {
-+		xdev = intel_xpcie_create_device(sw_devid, pdev);
-+		if (!xdev)
-+			return -ENOMEM;
-+
-+		new_device = true;
-+	}
-+
-+	ret = intel_xpcie_pci_init(xdev, pdev);
-+	if (ret) {
-+		intel_xpcie_remove_device(xdev);
-+		return ret;
-+	}
-+
-+	if (new_device)
-+		intel_xpcie_list_add_device(xdev);
-+
-+	return ret;
-+}
-+
-+static void intel_xpcie_remove(struct pci_dev *pdev)
-+{
-+	struct xpcie_dev *xdev = pci_get_drvdata(pdev);
-+
-+	if (xdev) {
-+		intel_xpcie_pci_cleanup(xdev);
-+		intel_xpcie_remove_device(xdev);
-+	}
-+}
-+
-+static struct pci_driver xpcie_driver = {
-+	.name = XPCIE_DRIVER_NAME,
-+	.id_table = xpcie_pci_table,
-+	.probe = intel_xpcie_probe,
-+	.remove = intel_xpcie_remove
-+};
-+
-+static int __init intel_xpcie_init_module(void)
-+{
-+	return pci_register_driver(&xpcie_driver);
-+}
-+
-+static void __exit intel_xpcie_exit_module(void)
-+{
-+	pci_unregister_driver(&xpcie_driver);
-+}
-+
-+module_init(intel_xpcie_init_module);
-+module_exit(intel_xpcie_exit_module);
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Intel Corporation");
-+MODULE_DESCRIPTION(XPCIE_DRIVER_DESC);
-+MODULE_VERSION(XPCIE_DRIVER_VERSION);
-diff --git a/drivers/misc/xlink-pcie/remote_host/pci.c b/drivers/misc/xlink-pcie/remote_host/pci.c
-new file mode 100644
-index 000000000000..0ca0755b591f
---- /dev/null
-+++ b/drivers/misc/xlink-pcie/remote_host/pci.c
-@@ -0,0 +1,451 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*****************************************************************************
-+ *
-+ * Intel Keem Bay XLink PCIe Driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ ****************************************************************************/
-+
+-#include <linux/io.h>
+-#include <linux/types.h>
+-#include <linux/workqueue.h>
+-#include <linux/slab.h>
+-#include <linux/mutex.h>
+-#include <linux/mempool.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/cache.h>
 +#include <linux/mutex.h>
-+#include <linux/sched.h>
-+#include <linux/wait.h>
++#include <linux/slab.h>
+ #include <linux/wait.h>
 +#include <linux/workqueue.h>
+ 
+ #include <linux/xlink_drv_inf.h>
+ 
+@@ -64,6 +60,7 @@ struct xpcie_buf_desc {
+ struct xpcie_stream {
+ 	size_t frag;
+ 	struct xpcie_pipe pipe;
++	struct xpcie_buf_desc **ddr;
+ };
+ 
+ struct xpcie_list {
+diff --git a/drivers/misc/xlink-pcie/remote_host/Makefile b/drivers/misc/xlink-pcie/remote_host/Makefile
+index 96374a43023e..e8074dbb1161 100644
+--- a/drivers/misc/xlink-pcie/remote_host/Makefile
++++ b/drivers/misc/xlink-pcie/remote_host/Makefile
+@@ -1,3 +1,5 @@
+ obj-$(CONFIG_XLINK_PCIE_RH_DRIVER) += mxlk.o
+ mxlk-objs := main.o
+ mxlk-objs += pci.o
++mxlk-objs += core.o
++mxlk-objs += ../common/util.o
+diff --git a/drivers/misc/xlink-pcie/remote_host/core.c b/drivers/misc/xlink-pcie/remote_host/core.c
+new file mode 100644
+index 000000000000..668fded17e9c
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/remote_host/core.c
+@@ -0,0 +1,647 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*****************************************************************************
++ *
++ * Intel Keem Bay XLink PCIe Driver
++ *
++ * Copyright (C) 2020 Intel Corporation
++ *
++ ****************************************************************************/
 +
 +#include "pci.h"
 +
 +#include "../common/core.h"
 +#include "../common/util.h"
 +
-+static int aspm_enable;
-+module_param(aspm_enable, int, 0664);
-+MODULE_PARM_DESC(aspm_enable, "enable ASPM");
++static int rx_pool_size = SZ_32M;
++module_param(rx_pool_size, int, 0664);
++MODULE_PARM_DESC(rx_pool_size, "receive pool size (default 32 MiB)");
 +
-+static LIST_HEAD(dev_list);
-+static DEFINE_MUTEX(dev_list_mutex);
++static int tx_pool_size = SZ_32M;
++module_param(tx_pool_size, int, 0664);
++MODULE_PARM_DESC(tx_pool_size, "transmit pool size (default 32 MiB)");
 +
-+struct xpcie_dev *intel_xpcie_get_device_by_id(u32 id)
++static int intel_xpcie_version_check(struct xpcie *xpcie)
 +{
-+	struct xpcie_dev *xdev;
++	struct xpcie_version version;
 +
-+	mutex_lock(&dev_list_mutex);
++	memcpy_fromio(&version,
++		      (void __iomem *)(xpcie->mmio + XPCIE_MMIO_VERSION),
++		      sizeof(version));
 +
-+	if (list_empty(&dev_list)) {
-+		mutex_unlock(&dev_list_mutex);
-+		return NULL;
++	dev_dbg(xpcie_to_dev(xpcie), "ver: device %u.%u.%u, host %u.%u.%u\n",
++		version.major, version.minor, version.build,
++		XPCIE_VERSION_MAJOR, XPCIE_VERSION_MINOR, XPCIE_VERSION_BUILD);
++
++	if (intel_xpcie_ioread8(xpcie->mmio + XPCIE_MMIO_LEGACY_A0))
++		xpcie->legacy_a0 = true;
++
++	return 0;
++}
++
++static int intel_xpcie_map_dma(struct xpcie *xpcie, struct xpcie_buf_desc *bd,
++			       int direction)
++{
++	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
++	struct device *dev = &xdev->pci->dev;
++
++	bd->phys = dma_map_single(dev, bd->data, bd->length, direction);
++
++	return dma_mapping_error(dev, bd->phys);
++}
++
++static void intel_xpcie_unmap_dma(struct xpcie *xpcie,
++				  struct xpcie_buf_desc *bd,
++				  int direction)
++{
++	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
++	struct device *dev = &xdev->pci->dev;
++
++	dma_unmap_single(dev, bd->phys, bd->length, direction);
++}
++
++static void intel_xpcie_txrx_cleanup(struct xpcie *xpcie)
++{
++	struct xpcie_interface *inf = &xpcie->interfaces[0];
++	struct xpcie_stream *tx = &xpcie->tx;
++	struct xpcie_stream *rx = &xpcie->rx;
++	struct xpcie_buf_desc *bd;
++	int index;
++
++	xpcie->stop_flag = true;
++	xpcie->no_tx_buffer = false;
++	inf->data_avail = true;
++	wake_up_interruptible(&xpcie->tx_waitq);
++	wake_up_interruptible(&inf->rx_waitq);
++	mutex_lock(&xpcie->wlock);
++	mutex_lock(&inf->rlock);
++
++	if (tx->ddr) {
++		for (index = 0; index < tx->pipe.ndesc; index++) {
++			struct xpcie_transfer_desc *td = tx->pipe.tdr + index;
++
++			bd = tx->ddr[index];
++			if (bd) {
++				intel_xpcie_unmap_dma(xpcie, bd, DMA_TO_DEVICE);
++				intel_xpcie_free_tx_bd(xpcie, bd);
++				intel_xpcie_set_td_address(td, 0);
++				intel_xpcie_set_td_length(td, 0);
++			}
++		}
++		kfree(tx->ddr);
 +	}
 +
-+	list_for_each_entry(xdev, &dev_list, list) {
-+		if (xdev->devid == id) {
-+			mutex_unlock(&dev_list_mutex);
-+			return xdev;
++	if (rx->ddr) {
++		for (index = 0; index < rx->pipe.ndesc; index++) {
++			struct xpcie_transfer_desc *td = rx->pipe.tdr + index;
++
++			bd = rx->ddr[index];
++			if (bd) {
++				intel_xpcie_unmap_dma(xpcie,
++						      bd, DMA_FROM_DEVICE);
++				intel_xpcie_free_rx_bd(xpcie, bd);
++				intel_xpcie_set_td_address(td, 0);
++				intel_xpcie_set_td_length(td, 0);
++			}
++		}
++		kfree(rx->ddr);
++	}
++
++	intel_xpcie_list_cleanup(&xpcie->tx_pool);
++	intel_xpcie_list_cleanup(&xpcie->rx_pool);
++
++	mutex_unlock(&inf->rlock);
++	mutex_unlock(&xpcie->wlock);
++}
++
++static int intel_xpcie_txrx_init(struct xpcie *xpcie,
++				 struct xpcie_cap_txrx *cap)
++{
++	struct xpcie_stream *tx = &xpcie->tx;
++	struct xpcie_stream *rx = &xpcie->rx;
++	struct xpcie_buf_desc *bd;
++	int rc, index, ndesc;
++
++	xpcie->txrx = cap;
++	xpcie->fragment_size = intel_xpcie_ioread32(&cap->fragment_size);
++	xpcie->stop_flag = false;
++
++	tx->pipe.ndesc = intel_xpcie_ioread32(&cap->tx.ndesc);
++	tx->pipe.head = &cap->tx.head;
++	tx->pipe.tail = &cap->tx.tail;
++	tx->pipe.old = intel_xpcie_ioread32(&cap->tx.tail);
++	tx->pipe.tdr = (struct xpcie_transfer_desc *)(xpcie->mmio +
++				intel_xpcie_ioread32(&cap->tx.ring));
++
++	tx->ddr = kcalloc(tx->pipe.ndesc, sizeof(struct xpcie_buf_desc *),
++			  GFP_KERNEL);
++	if (!tx->ddr) {
++		rc = -ENOMEM;
++		goto error;
++	}
++
++	rx->pipe.ndesc = intel_xpcie_ioread32(&cap->rx.ndesc);
++	rx->pipe.head = &cap->rx.head;
++	rx->pipe.tail = &cap->rx.tail;
++	rx->pipe.old = intel_xpcie_ioread32(&cap->rx.head);
++	rx->pipe.tdr = (struct xpcie_transfer_desc *)(xpcie->mmio +
++				intel_xpcie_ioread32(&cap->rx.ring));
++
++	rx->ddr = kcalloc(rx->pipe.ndesc, sizeof(struct xpcie_buf_desc *),
++			  GFP_KERNEL);
++	if (!rx->ddr) {
++		rc = -ENOMEM;
++		goto error;
++	}
++
++	intel_xpcie_list_init(&xpcie->rx_pool);
++	rx_pool_size = roundup(rx_pool_size, xpcie->fragment_size);
++	ndesc = rx_pool_size / xpcie->fragment_size;
++
++	for (index = 0; index < ndesc; index++) {
++		bd = intel_xpcie_alloc_bd(xpcie->fragment_size);
++		if (bd) {
++			intel_xpcie_list_put(&xpcie->rx_pool, bd);
++		} else {
++			rc = -ENOMEM;
++			goto error;
 +		}
 +	}
 +
-+	mutex_unlock(&dev_list_mutex);
++	intel_xpcie_list_init(&xpcie->tx_pool);
++	tx_pool_size = roundup(tx_pool_size, xpcie->fragment_size);
++	ndesc = tx_pool_size / xpcie->fragment_size;
 +
-+	return NULL;
-+}
-+
-+struct xpcie_dev *intel_xpcie_create_device(u32 sw_device_id,
-+					    struct pci_dev *pdev)
-+{
-+	struct xpcie_dev *xdev = kzalloc(sizeof(*xdev), GFP_KERNEL);
-+
-+	if (!xdev)
-+		return NULL;
-+
-+	xdev->devid = sw_device_id;
-+	snprintf(xdev->name, XPCIE_MAX_NAME_LEN, "%02x:%02x.%x",
-+		 pdev->bus->number,
-+		 PCI_SLOT(pdev->devfn),
-+		 PCI_FUNC(pdev->devfn));
-+
-+	mutex_init(&xdev->lock);
-+
-+	return xdev;
-+}
-+
-+void intel_xpcie_remove_device(struct xpcie_dev *xdev)
-+{
-+	mutex_destroy(&xdev->lock);
-+	kfree(xdev);
-+}
-+
-+void intel_xpcie_list_add_device(struct xpcie_dev *xdev)
-+{
-+	mutex_lock(&dev_list_mutex);
-+
-+	list_add_tail(&xdev->list, &dev_list);
-+
-+	mutex_unlock(&dev_list_mutex);
-+}
-+
-+void intel_xpcie_list_del_device(struct xpcie_dev *xdev)
-+{
-+	mutex_lock(&dev_list_mutex);
-+
-+	list_del(&xdev->list);
-+
-+	mutex_unlock(&dev_list_mutex);
-+}
-+
-+static void intel_xpcie_pci_set_aspm(struct xpcie_dev *xdev, int aspm)
-+{
-+	u16 link_control;
-+	u8 cap_exp;
-+
-+	cap_exp = pci_find_capability(xdev->pci, PCI_CAP_ID_EXP);
-+	if (!cap_exp) {
-+		dev_err(&xdev->pci->dev, "failed to find pcie capability\n");
-+		return;
++	for (index = 0; index < ndesc; index++) {
++		bd = intel_xpcie_alloc_bd(xpcie->fragment_size);
++		if (bd) {
++			intel_xpcie_list_put(&xpcie->tx_pool, bd);
++		} else {
++			rc = -ENOMEM;
++			goto error;
++		}
 +	}
 +
-+	pci_read_config_word(xdev->pci, cap_exp + PCI_EXP_LNKCTL,
-+			     &link_control);
-+	link_control &= ~(PCI_EXP_LNKCTL_ASPMC);
-+	link_control |= (aspm & PCI_EXP_LNKCTL_ASPMC);
-+	pci_write_config_word(xdev->pci, cap_exp + PCI_EXP_LNKCTL,
-+			      link_control);
-+}
++	for (index = 0; index < rx->pipe.ndesc; index++) {
++		struct xpcie_transfer_desc *td = rx->pipe.tdr + index;
 +
-+static void intel_xpcie_pci_unmap_bar(struct xpcie_dev *xdev)
-+{
-+	if (xdev->xpcie.bar0) {
-+		iounmap((void __iomem *)xdev->xpcie.bar0);
-+		xdev->xpcie.bar0 = NULL;
-+	}
++		bd = intel_xpcie_alloc_rx_bd(xpcie);
++		if (!bd) {
++			rc = -ENOMEM;
++			goto error;
++		}
 +
-+	if (xdev->xpcie.mmio) {
-+		iounmap((void __iomem *)(xdev->xpcie.mmio - XPCIE_MMIO_OFFSET));
-+		xdev->xpcie.mmio = NULL;
-+	}
++		if (intel_xpcie_map_dma(xpcie, bd, DMA_FROM_DEVICE)) {
++			dev_err(xpcie_to_dev(xpcie), "failed to map rx bd\n");
++			rc = -ENOMEM;
++			goto error;
++		}
 +
-+	if (xdev->xpcie.bar4) {
-+		iounmap((void __iomem *)xdev->xpcie.bar4);
-+		xdev->xpcie.bar4 = NULL;
-+	}
-+}
-+
-+static int intel_xpcie_pci_map_bar(struct xpcie_dev *xdev)
-+{
-+	if (pci_resource_len(xdev->pci, 2) < XPCIE_IO_COMM_SIZE) {
-+		dev_err(&xdev->pci->dev, "device BAR region is too small\n");
-+		return -EIO;
-+	}
-+
-+	xdev->xpcie.bar0 = (void __force *)pci_ioremap_bar(xdev->pci, 0);
-+	if (!xdev->xpcie.bar0) {
-+		dev_err(&xdev->pci->dev, "failed to ioremap BAR0\n");
-+		goto bar_error;
-+	}
-+
-+	xdev->xpcie.mmio = (void __force *)
-+			   (pci_ioremap_bar(xdev->pci, 2) + XPCIE_MMIO_OFFSET);
-+	if (!xdev->xpcie.mmio) {
-+		dev_err(&xdev->pci->dev, "failed to ioremap BAR2\n");
-+		goto bar_error;
-+	}
-+
-+	xdev->xpcie.bar4 = (void __force *)pci_ioremap_wc_bar(xdev->pci, 4);
-+	if (!xdev->xpcie.bar4) {
-+		dev_err(&xdev->pci->dev, "failed to ioremap BAR4\n");
-+		goto bar_error;
++		rx->ddr[index] = bd;
++		intel_xpcie_set_td_address(td, bd->phys);
++		intel_xpcie_set_td_length(td, bd->length);
 +	}
 +
 +	return 0;
 +
-+bar_error:
-+	intel_xpcie_pci_unmap_bar(xdev);
-+	return -EIO;
++error:
++	intel_xpcie_txrx_cleanup(xpcie);
++
++	return rc;
 +}
 +
-+static void intel_xpcie_pci_irq_cleanup(struct xpcie_dev *xdev)
++static int intel_xpcie_discover_txrx(struct xpcie *xpcie)
 +{
-+	int irq = pci_irq_vector(xdev->pci, 0);
++	struct xpcie_cap_txrx *cap;
++	int error;
 +
-+	if (irq < 0)
++	cap = intel_xpcie_cap_find(xpcie, 0, XPCIE_CAP_TXRX);
++	if (cap)
++		error = intel_xpcie_txrx_init(xpcie, cap);
++	else
++		error = -EIO;
++
++	return error;
++}
++
++static void intel_xpcie_start_tx(struct xpcie *xpcie, unsigned long delay)
++{
++	queue_delayed_work(xpcie->tx_wq, &xpcie->tx_event, delay);
++}
++
++static void intel_xpcie_start_rx(struct xpcie *xpcie, unsigned long delay)
++{
++	queue_delayed_work(xpcie->rx_wq, &xpcie->rx_event, delay);
++}
++
++static void intel_xpcie_rx_event_handler(struct work_struct *work)
++{
++	struct xpcie *xpcie = container_of(work, struct xpcie, rx_event.work);
++	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
++	struct xpcie_buf_desc *bd, *replacement = NULL;
++	unsigned long delay = msecs_to_jiffies(1);
++	struct xpcie_stream *rx = &xpcie->rx;
++	struct xpcie_transfer_desc *td;
++	u32 head, tail, ndesc, length;
++	u16 status, interface;
++	int rc;
++
++	if (intel_xpcie_get_device_status(xpcie) != XPCIE_STATUS_RUN)
 +		return;
 +
-+	synchronize_irq(irq);
-+	free_irq(irq, xdev);
-+	pci_free_irq_vectors(xdev->pci);
++	ndesc = rx->pipe.ndesc;
++	tail = intel_xpcie_get_tdr_tail(&rx->pipe);
++	head = intel_xpcie_get_tdr_head(&rx->pipe);
++
++	while (head != tail) {
++		td = rx->pipe.tdr + head;
++		bd = rx->ddr[head];
++
++		replacement = intel_xpcie_alloc_rx_bd(xpcie);
++		if (!replacement) {
++			delay = msecs_to_jiffies(20);
++			break;
++		}
++
++		rc = intel_xpcie_map_dma(xpcie, replacement, DMA_FROM_DEVICE);
++		if (rc) {
++			dev_err(xpcie_to_dev(xpcie),
++				"failed to map rx bd (%d)\n", rc);
++			intel_xpcie_free_rx_bd(xpcie, replacement);
++			break;
++		}
++
++		status = intel_xpcie_get_td_status(td);
++		interface = intel_xpcie_get_td_interface(td);
++		length = intel_xpcie_get_td_length(td);
++		intel_xpcie_unmap_dma(xpcie, bd, DMA_FROM_DEVICE);
++
++		if (unlikely(status != XPCIE_DESC_STATUS_SUCCESS) ||
++		    unlikely(interface >= XPCIE_NUM_INTERFACES)) {
++			dev_err(xpcie_to_dev(xpcie),
++				"rx desc failure, status(%u), interface(%u)\n",
++			status, interface);
++			intel_xpcie_free_rx_bd(xpcie, bd);
++		} else {
++			bd->interface = interface;
++			bd->length = length;
++			bd->next = NULL;
++
++			intel_xpcie_add_bd_to_interface(xpcie, bd);
++		}
++
++		rx->ddr[head] = replacement;
++		intel_xpcie_set_td_address(td, replacement->phys);
++		intel_xpcie_set_td_length(td, replacement->length);
++		head = XPCIE_CIRCULAR_INC(head, ndesc);
++	}
++
++	if (intel_xpcie_get_tdr_head(&rx->pipe) != head) {
++		intel_xpcie_set_tdr_head(&rx->pipe, head);
++		intel_xpcie_pci_raise_irq(xdev, DATA_RECEIVED, 1);
++	}
++
++	if (!replacement)
++		intel_xpcie_start_rx(xpcie, delay);
 +}
 +
-+static int intel_xpcie_pci_irq_init(struct xpcie_dev *xdev,
-+				    irq_handler_t irq_handler)
++static void intel_xpcie_tx_event_handler(struct work_struct *work)
 +{
-+	int rc, irq;
++	struct xpcie *xpcie = container_of(work, struct xpcie, tx_event.work);
++	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
++	struct xpcie_stream *tx = &xpcie->tx;
++	struct xpcie_transfer_desc *td;
++	u32 head, tail, old, ndesc;
++	struct xpcie_buf_desc *bd;
++	size_t bytes, buffers;
++	u16 status;
 +
-+	rc = pci_alloc_irq_vectors(xdev->pci, 1, 1, PCI_IRQ_MSI);
-+	if (rc < 0) {
++	if (intel_xpcie_get_device_status(xpcie) != XPCIE_STATUS_RUN)
++		return;
++
++	ndesc = tx->pipe.ndesc;
++	old = tx->pipe.old;
++	tail = intel_xpcie_get_tdr_tail(&tx->pipe);
++	head = intel_xpcie_get_tdr_head(&tx->pipe);
++
++	/* clean old entries first */
++	while (old != head) {
++		bd = tx->ddr[old];
++		td = tx->pipe.tdr + old;
++		status = intel_xpcie_get_td_status(td);
++		if (status != XPCIE_DESC_STATUS_SUCCESS)
++			dev_err(xpcie_to_dev(xpcie),
++				"detected tx desc failure (%u)\n", status);
++
++		intel_xpcie_unmap_dma(xpcie, bd, DMA_TO_DEVICE);
++		intel_xpcie_free_tx_bd(xpcie, bd);
++		tx->ddr[old] = NULL;
++		old = XPCIE_CIRCULAR_INC(old, ndesc);
++	}
++	tx->pipe.old = old;
++
++	/* add new entries */
++	while (XPCIE_CIRCULAR_INC(tail, ndesc) != head) {
++		bd = intel_xpcie_list_get(&xpcie->write);
++		if (!bd)
++			break;
++
++		td = tx->pipe.tdr + tail;
++
++		if (intel_xpcie_map_dma(xpcie, bd, DMA_TO_DEVICE)) {
++			dev_err(xpcie_to_dev(xpcie),
++				"dma mapping error bd addr %p, size %zu\n",
++				bd->data, bd->length);
++			break;
++		}
++
++		tx->ddr[tail] = bd;
++		intel_xpcie_set_td_address(td, bd->phys);
++		intel_xpcie_set_td_length(td, bd->length);
++		intel_xpcie_set_td_interface(td, bd->interface);
++		intel_xpcie_set_td_status(td, XPCIE_DESC_STATUS_ERROR);
++
++		tail = XPCIE_CIRCULAR_INC(tail, ndesc);
++	}
++
++	if (intel_xpcie_get_tdr_tail(&tx->pipe) != tail) {
++		intel_xpcie_set_tdr_tail(&tx->pipe, tail);
++		intel_xpcie_pci_raise_irq(xdev, DATA_SENT, 1);
++	}
++
++	intel_xpcie_list_info(&xpcie->write, &bytes, &buffers);
++	if (buffers)
++		xpcie->tx_pending = true;
++	else
++		xpcie->tx_pending = false;
++}
++
++static irqreturn_t intel_xpcie_interrupt(int irq, void *args)
++{
++	struct xpcie_dev *xdev = args;
++	struct xpcie *xpcie;
++
++	xpcie = &xdev->xpcie;
++
++	if (intel_xpcie_get_doorbell(xpcie, FROM_DEVICE, DATA_SENT)) {
++		intel_xpcie_set_doorbell(xpcie, FROM_DEVICE, DATA_SENT, 0);
++		intel_xpcie_start_rx(xpcie, 0);
++	}
++	if (intel_xpcie_get_doorbell(xpcie, FROM_DEVICE, DATA_RECEIVED)) {
++		intel_xpcie_set_doorbell(xpcie, FROM_DEVICE, DATA_RECEIVED, 0);
++		if (xpcie->tx_pending)
++			intel_xpcie_start_tx(xpcie, 0);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static int intel_xpcie_events_init(struct xpcie *xpcie)
++{
++	xpcie->rx_wq = alloc_ordered_workqueue(XPCIE_DRIVER_NAME,
++					       WQ_MEM_RECLAIM | WQ_HIGHPRI);
++	if (!xpcie->rx_wq) {
++		dev_err(xpcie_to_dev(xpcie), "failed to allocate workqueue\n");
++		return -ENOMEM;
++	}
++
++	xpcie->tx_wq = alloc_ordered_workqueue(XPCIE_DRIVER_NAME,
++					       WQ_MEM_RECLAIM | WQ_HIGHPRI);
++	if (!xpcie->tx_wq) {
++		dev_err(xpcie_to_dev(xpcie), "failed to allocate workqueue\n");
++		destroy_workqueue(xpcie->rx_wq);
++		return -ENOMEM;
++	}
++
++	INIT_DELAYED_WORK(&xpcie->rx_event, intel_xpcie_rx_event_handler);
++	INIT_DELAYED_WORK(&xpcie->tx_event, intel_xpcie_tx_event_handler);
++
++	return 0;
++}
++
++static void intel_xpcie_events_cleanup(struct xpcie *xpcie)
++{
++	cancel_delayed_work_sync(&xpcie->rx_event);
++	cancel_delayed_work_sync(&xpcie->tx_event);
++
++	destroy_workqueue(xpcie->rx_wq);
++	destroy_workqueue(xpcie->tx_wq);
++}
++
++int intel_xpcie_core_init(struct xpcie *xpcie)
++{
++	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
++	int status, rc;
++
++	status = intel_xpcie_get_device_status(xpcie);
++	if (status != XPCIE_STATUS_RUN) {
 +		dev_err(&xdev->pci->dev,
-+			"failed to allocate %d MSI vectors\n", 1);
++			"device status not RUNNING (%d)\n", status);
++		rc = -EBUSY;
 +		return rc;
 +	}
 +
-+	irq = pci_irq_vector(xdev->pci, 0);
-+	if (irq < 0) {
-+		dev_err(&xdev->pci->dev, "failed to get irq\n");
-+		rc = irq;
-+		goto error_irq;
-+	}
-+	rc = request_irq(irq, irq_handler, 0,
-+			 XPCIE_DRIVER_NAME, xdev);
-+	if (rc) {
-+		dev_err(&xdev->pci->dev, "failed to request irq\n");
-+		goto error_irq;
-+	}
++	intel_xpcie_version_check(xpcie);
++
++	rc = intel_xpcie_events_init(xpcie);
++	if (rc)
++		return rc;
++
++	rc = intel_xpcie_discover_txrx(xpcie);
++	if (rc)
++		goto error_txrx;
++
++	intel_xpcie_interfaces_init(xpcie);
++
++	rc = intel_xpcie_pci_register_irq(xdev, &intel_xpcie_interrupt);
++	if (rc)
++		goto error_txrx;
++
++	intel_xpcie_set_host_status(xpcie, XPCIE_STATUS_RUN);
 +
 +	return 0;
 +
-+error_irq:
-+	pci_free_irq_vectors(xdev->pci);
++error_txrx:
++	intel_xpcie_events_cleanup(xpcie);
++	intel_xpcie_set_host_status(xpcie, XPCIE_STATUS_ERROR);
++
 +	return rc;
 +}
 +
-+static void xpcie_device_poll(struct work_struct *work)
++void intel_xpcie_core_cleanup(struct xpcie *xpcie)
 +{
-+	struct xpcie_dev *xdev = container_of(work, struct xpcie_dev,
-+					      wait_event.work);
-+	u32 dev_status = intel_xpcie_ioread32(xdev->xpcie.mmio +
-+					      XPCIE_MMIO_DEV_STATUS);
-+
-+	if (dev_status < XPCIE_STATUS_RUN)
-+		schedule_delayed_work(&xdev->wait_event,
-+				      msecs_to_jiffies(100));
-+	else
-+		xdev->xpcie.status = XPCIE_STATUS_READY;
-+}
-+
-+static int intel_xpcie_pci_prepare_dev_reset(struct xpcie_dev *xdev,
-+					     bool notify)
-+{
-+	if (mutex_lock_interruptible(&xdev->lock))
-+		return -EINTR;
-+
-+	if (xdev->core_irq_callback)
-+		xdev->core_irq_callback = NULL;
-+
-+	xdev->xpcie.status = XPCIE_STATUS_OFF;
-+	if (notify)
-+		intel_xpcie_pci_raise_irq(xdev, DEV_EVENT, REQUEST_RESET);
-+
-+	mutex_unlock(&xdev->lock);
-+
-+	return 0;
-+}
-+
-+static void xpcie_device_shutdown(struct work_struct *work)
-+{
-+	struct xpcie_dev *xdev = container_of(work, struct xpcie_dev,
-+					      shutdown_event.work);
-+
-+	intel_xpcie_pci_prepare_dev_reset(xdev, false);
-+}
-+
-+static int xpcie_device_init(struct xpcie_dev *xdev)
-+{
-+	INIT_DELAYED_WORK(&xdev->wait_event, xpcie_device_poll);
-+	INIT_DELAYED_WORK(&xdev->shutdown_event, xpcie_device_shutdown);
-+
-+	pci_set_master(xdev->pci);
-+
-+	xdev->xpcie.status = XPCIE_STATUS_UNINIT;
-+
-+	init_waitqueue_head(&xdev->waitqueue);
-+	schedule_delayed_work(&xdev->wait_event, 0);
-+
-+	return 0;
-+}
-+
-+int intel_xpcie_pci_init(struct xpcie_dev *xdev, struct pci_dev *pdev)
-+{
-+	int rc;
-+
-+	if (mutex_lock_interruptible(&xdev->lock))
-+		return -EINTR;
-+
-+	xdev->pci = pdev;
-+	pci_set_drvdata(pdev, xdev);
-+
-+	rc = pci_enable_device_mem(xdev->pci);
-+	if (rc) {
-+		dev_err(&pdev->dev, "failed to enable pci device\n");
-+		goto error_exit;
++	if (xpcie->status == XPCIE_STATUS_RUN) {
++		intel_xpcie_set_host_status(xpcie, XPCIE_STATUS_UNINIT);
++		intel_xpcie_events_cleanup(xpcie);
++		intel_xpcie_interfaces_cleanup(xpcie);
++		intel_xpcie_txrx_cleanup(xpcie);
 +	}
-+
-+	rc = pci_request_regions(xdev->pci, XPCIE_DRIVER_NAME);
-+	if (rc) {
-+		dev_err(&pdev->dev, "failed to request mmio regions\n");
-+		goto error_req_mem;
-+	}
-+
-+	rc = intel_xpcie_pci_map_bar(xdev);
-+	if (rc)
-+		goto error_map;
-+
-+	rc = dma_set_mask_and_coherent(&xdev->pci->dev, DMA_BIT_MASK(64));
-+	if (rc) {
-+		dev_err(&pdev->dev, "failed to set dma mask\n");
-+		goto error_dma_mask;
-+	}
-+
-+	intel_xpcie_pci_set_aspm(xdev, aspm_enable);
-+
-+	rc = xpcie_device_init(xdev);
-+	if (!rc)
-+		goto init_exit;
-+
-+error_dma_mask:
-+	intel_xpcie_pci_unmap_bar(xdev);
-+
-+error_map:
-+	pci_release_regions(xdev->pci);
-+
-+error_req_mem:
-+	pci_disable_device(xdev->pci);
-+
-+error_exit:
-+	xdev->xpcie.status = XPCIE_STATUS_ERROR;
-+
-+init_exit:
-+	mutex_unlock(&xdev->lock);
-+	if (rc)
-+		mutex_destroy(&xdev->lock);
-+	return rc;
 +}
 +
-+int intel_xpcie_pci_cleanup(struct xpcie_dev *xdev)
++int intel_xpcie_core_read(struct xpcie *xpcie, void *buffer, size_t *length,
++			  uint32_t timeout_ms)
 +{
-+	if (mutex_lock_interruptible(&xdev->lock))
-+		return -EINTR;
++	long jiffies_timeout = (long)msecs_to_jiffies(timeout_ms);
++	struct xpcie_interface *inf = &xpcie->interfaces[0];
++	unsigned long jiffies_start = jiffies;
++	struct xpcie_buf_desc *bd;
++	size_t remaining, len;
++	long jiffies_passed = 0;
++	int ret;
 +
-+	cancel_delayed_work(&xdev->wait_event);
-+	cancel_delayed_work(&xdev->shutdown_event);
-+	xdev->core_irq_callback = NULL;
-+	intel_xpcie_pci_irq_cleanup(xdev);
-+
-+	intel_xpcie_pci_unmap_bar(xdev);
-+	pci_release_regions(xdev->pci);
-+	pci_disable_device(xdev->pci);
-+	pci_set_drvdata(xdev->pci, NULL);
-+	xdev->xpcie.status = XPCIE_STATUS_OFF;
-+	xdev->irq_enabled = false;
-+
-+	mutex_unlock(&xdev->lock);
-+
-+	return 0;
-+}
-+
-+int intel_xpcie_pci_register_irq(struct xpcie_dev *xdev,
-+				 irq_handler_t irq_handler)
-+{
-+	int rc;
-+
-+	if (xdev->xpcie.status != XPCIE_STATUS_READY)
++	if (*length == 0)
 +		return -EINVAL;
 +
-+	rc = intel_xpcie_pci_irq_init(xdev, irq_handler);
-+	if (rc)
-+		dev_warn(&xdev->pci->dev, "failed to initialize pci irq\n");
-+
-+	return rc;
-+}
-+
-+int intel_xpcie_pci_raise_irq(struct xpcie_dev *xdev,
-+			      enum xpcie_doorbell_type type,
-+			      u8 value)
-+{
-+	u16 pci_status;
-+
-+	pci_read_config_word(xdev->pci, PCI_STATUS, &pci_status);
-+
-+	return 0;
-+}
-+
-+u32 intel_xpcie_get_device_num(u32 *id_list)
-+{
-+	struct xpcie_dev *p;
-+	u32 num = 0;
-+
-+	mutex_lock(&dev_list_mutex);
-+
-+	if (list_empty(&dev_list)) {
-+		mutex_unlock(&dev_list_mutex);
-+		return 0;
-+	}
-+
-+	list_for_each_entry(p, &dev_list, list) {
-+		*id_list++ = p->devid;
-+		num++;
-+	}
-+	mutex_unlock(&dev_list_mutex);
-+
-+	return num;
-+}
-+
-+int intel_xpcie_get_device_name_by_id(u32 id,
-+				      char *device_name, size_t name_size)
-+{
-+	struct xpcie_dev *xdev;
-+	size_t size;
-+
-+	xdev = intel_xpcie_get_device_by_id(id);
-+	if (!xdev)
++	if (xpcie->status != XPCIE_STATUS_RUN)
 +		return -ENODEV;
 +
-+	mutex_lock(&xdev->lock);
++	len = *length;
++	remaining = len;
++	*length = 0;
 +
-+	size = (name_size > XPCIE_MAX_NAME_LEN) ?
-+		XPCIE_MAX_NAME_LEN : name_size;
-+	memcpy(device_name, xdev->name, size);
++	ret = mutex_lock_interruptible(&inf->rlock);
++	if (ret < 0)
++		return -EINTR;
 +
-+	mutex_unlock(&xdev->lock);
++	do {
++		while (!inf->data_avail) {
++			mutex_unlock(&inf->rlock);
++			if (timeout_ms == 0) {
++				ret = wait_event_interruptible(inf->rx_waitq,
++							       inf->data_avail);
++			} else {
++				ret =
++			wait_event_interruptible_timeout(inf->rx_waitq,
++							 inf->data_avail,
++							 jiffies_timeout -
++							 jiffies_passed);
++				if (ret == 0)
++					return -ETIME;
++			}
++			if (ret < 0 || xpcie->stop_flag)
++				return -EINTR;
++
++			ret = mutex_lock_interruptible(&inf->rlock);
++			if (ret < 0)
++				return -EINTR;
++		}
++
++		bd = (inf->partial_read) ? inf->partial_read :
++					   intel_xpcie_list_get(&inf->read);
++		while (remaining && bd) {
++			size_t bcopy;
++
++			bcopy = min(remaining, bd->length);
++			memcpy(buffer, bd->data, bcopy);
++
++			buffer += bcopy;
++			remaining -= bcopy;
++			bd->data += bcopy;
++			bd->length -= bcopy;
++
++			if (bd->length == 0) {
++				intel_xpcie_free_rx_bd(xpcie, bd);
++				bd = intel_xpcie_list_get(&inf->read);
++			}
++		}
++
++		/* save for next time */
++		inf->partial_read = bd;
++
++		if (!bd)
++			inf->data_avail = false;
++
++		*length = len - remaining;
++
++		jiffies_passed = (long)jiffies - (long)jiffies_start;
++	} while (remaining > 0 && (jiffies_passed < jiffies_timeout ||
++				   timeout_ms == 0));
++
++	mutex_unlock(&inf->rlock);
 +
 +	return 0;
 +}
 +
-+int intel_xpcie_get_device_status_by_id(u32 id, u32 *status)
++int intel_xpcie_core_write(struct xpcie *xpcie, void *buffer, size_t *length,
++			   uint32_t timeout_ms)
++{
++	long jiffies_timeout = (long)msecs_to_jiffies(timeout_ms);
++	struct xpcie_interface *inf = &xpcie->interfaces[0];
++	unsigned long jiffies_start = jiffies;
++	struct xpcie_buf_desc *bd, *head;
++	long jiffies_passed = 0;
++	size_t remaining, len;
++	int ret;
++
++	if (*length == 0)
++		return -EINVAL;
++
++	if (xpcie->status != XPCIE_STATUS_RUN)
++		return -ENODEV;
++
++	len = *length;
++	remaining = len;
++	*length = 0;
++
++	ret = mutex_lock_interruptible(&xpcie->wlock);
++	if (ret < 0)
++		return -EINTR;
++
++	do {
++		bd = intel_xpcie_alloc_tx_bd(xpcie);
++		head = bd;
++		while (!head) {
++			mutex_unlock(&xpcie->wlock);
++			if (timeout_ms == 0) {
++				ret =
++				wait_event_interruptible(xpcie->tx_waitq,
++							 !xpcie->no_tx_buffer);
++			} else {
++				ret =
++			wait_event_interruptible_timeout(xpcie->tx_waitq,
++							 !xpcie->no_tx_buffer,
++							 jiffies_timeout -
++							 jiffies_passed);
++				if (ret == 0)
++					return -ETIME;
++			}
++			if (ret < 0 || xpcie->stop_flag)
++				return -EINTR;
++
++			ret = mutex_lock_interruptible(&xpcie->wlock);
++			if (ret < 0)
++				return -EINTR;
++
++			bd = intel_xpcie_alloc_tx_bd(xpcie);
++			head = bd;
++		}
++
++		while (remaining && bd) {
++			size_t bcopy;
++
++			bcopy = min(bd->length, remaining);
++			memcpy(bd->data, buffer, bcopy);
++
++			buffer += bcopy;
++			remaining -= bcopy;
++			bd->length = bcopy;
++			bd->interface = inf->id;
++
++			if (remaining) {
++				bd->next = intel_xpcie_alloc_tx_bd(xpcie);
++				bd = bd->next;
++			}
++		}
++
++		intel_xpcie_list_put(&xpcie->write, head);
++		intel_xpcie_start_tx(xpcie, 0);
++
++		*length = len - remaining;
++
++		jiffies_passed = (long)jiffies - (long)jiffies_start;
++	} while (remaining > 0 && (jiffies_passed < jiffies_timeout ||
++				   timeout_ms == 0));
++
++	mutex_unlock(&xpcie->wlock);
++
++	return 0;
++}
+diff --git a/drivers/misc/xlink-pcie/remote_host/pci.c b/drivers/misc/xlink-pcie/remote_host/pci.c
+index 0ca0755b591f..f92a78f41324 100644
+--- a/drivers/misc/xlink-pcie/remote_host/pci.c
++++ b/drivers/misc/xlink-pcie/remote_host/pci.c
+@@ -208,10 +208,8 @@ static void xpcie_device_poll(struct work_struct *work)
+ {
+ 	struct xpcie_dev *xdev = container_of(work, struct xpcie_dev,
+ 					      wait_event.work);
+-	u32 dev_status = intel_xpcie_ioread32(xdev->xpcie.mmio +
+-					      XPCIE_MMIO_DEV_STATUS);
+ 
+-	if (dev_status < XPCIE_STATUS_RUN)
++	if (intel_xpcie_get_device_status(&xdev->xpcie) < XPCIE_STATUS_RUN)
+ 		schedule_delayed_work(&xdev->wait_event,
+ 				      msecs_to_jiffies(100));
+ 	else
+@@ -224,9 +222,10 @@ static int intel_xpcie_pci_prepare_dev_reset(struct xpcie_dev *xdev,
+ 	if (mutex_lock_interruptible(&xdev->lock))
+ 		return -EINTR;
+ 
+-	if (xdev->core_irq_callback)
++	if (xdev->core_irq_callback) {
+ 		xdev->core_irq_callback = NULL;
+-
++		intel_xpcie_core_cleanup(&xdev->xpcie);
++	}
+ 	xdev->xpcie.status = XPCIE_STATUS_OFF;
+ 	if (notify)
+ 		intel_xpcie_pci_raise_irq(xdev, DEV_EVENT, REQUEST_RESET);
+@@ -326,6 +325,8 @@ int intel_xpcie_pci_cleanup(struct xpcie_dev *xdev)
+ 	xdev->core_irq_callback = NULL;
+ 	intel_xpcie_pci_irq_cleanup(xdev);
+ 
++	intel_xpcie_core_cleanup(&xdev->xpcie);
++
+ 	intel_xpcie_pci_unmap_bar(xdev);
+ 	pci_release_regions(xdev->pci);
+ 	pci_disable_device(xdev->pci);
+@@ -359,6 +360,7 @@ int intel_xpcie_pci_raise_irq(struct xpcie_dev *xdev,
+ {
+ 	u16 pci_status;
+ 
++	intel_xpcie_set_doorbell(&xdev->xpcie, TO_DEVICE, type, value);
+ 	pci_read_config_word(xdev->pci, PCI_STATUS, &pci_status);
+ 
+ 	return 0;
+@@ -445,7 +447,43 @@ int intel_xpcie_pci_connect_device(u32 id)
+ 		goto connect_cleanup;
+ 	}
+ 
++	rc = intel_xpcie_core_init(&xdev->xpcie);
++	if (rc < 0) {
++		dev_err(&xdev->pci->dev, "failed to sync with device\n");
++		goto connect_cleanup;
++	}
++
+ connect_cleanup:
+ 	mutex_unlock(&xdev->lock);
+ 	return rc;
+ }
++
++int intel_xpcie_pci_read(u32 id, void *data, size_t *size, u32 timeout)
 +{
 +	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(id);
 +
 +	if (!xdev)
 +		return -ENODEV;
 +
-+	mutex_lock(&xdev->lock);
-+	*status = xdev->xpcie.status;
-+	mutex_unlock(&xdev->lock);
-+
-+	return 0;
++	return intel_xpcie_core_read(&xdev->xpcie, data, size, timeout);
 +}
 +
-+int intel_xpcie_pci_connect_device(u32 id)
++int intel_xpcie_pci_write(u32 id, void *data, size_t *size, u32 timeout)
 +{
-+	struct xpcie_dev *xdev;
-+	int rc = 0;
++	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(id);
 +
-+	xdev = intel_xpcie_get_device_by_id(id);
 +	if (!xdev)
 +		return -ENODEV;
 +
-+	if (mutex_lock_interruptible(&xdev->lock))
-+		return -EINTR;
-+
-+	if (xdev->xpcie.status == XPCIE_STATUS_RUN)
-+		goto connect_cleanup;
-+
-+	if (xdev->xpcie.status == XPCIE_STATUS_OFF) {
-+		rc = -ENODEV;
-+		goto connect_cleanup;
-+	}
-+
-+	if (xdev->xpcie.status != XPCIE_STATUS_READY) {
-+		rc = -EBUSY;
-+		goto connect_cleanup;
-+	}
-+
-+connect_cleanup:
-+	mutex_unlock(&xdev->lock);
-+	return rc;
++	return intel_xpcie_core_write(&xdev->xpcie, data, size, timeout);
 +}
-diff --git a/drivers/misc/xlink-pcie/remote_host/pci.h b/drivers/misc/xlink-pcie/remote_host/pci.h
-new file mode 100644
-index 000000000000..72de3701f83a
---- /dev/null
-+++ b/drivers/misc/xlink-pcie/remote_host/pci.h
-@@ -0,0 +1,64 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*****************************************************************************
-+ *
-+ * Intel Keem Bay XLink PCIe Driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ ****************************************************************************/
 +
-+#ifndef XPCIE_PCI_HEADER_
-+#define XPCIE_PCI_HEADER_
-+
-+#include <linux/interrupt.h>
-+#include <linux/list.h>
-+#include <linux/pci.h>
-+#include <linux/xlink_drv_inf.h>
-+#include "../common/xpcie.h"
-+#include "../common/util.h"
-+
-+#define XPCIE_DRIVER_NAME "mxlk"
-+#define XPCIE_DRIVER_DESC "Intel(R) Keem Bay XLink PCIe driver"
-+
-+#define XPCIE_MAX_NAME_LEN	(32)
-+
-+struct xpcie_dev {
-+	struct list_head list;
-+	struct mutex lock; /* Device Lock */
-+
-+	struct pci_dev *pci;
-+	char name[XPCIE_MAX_NAME_LEN];
-+	u32 devid;
-+	char fw_name[XPCIE_MAX_NAME_LEN];
-+
-+	struct delayed_work wait_event;
-+	struct delayed_work shutdown_event;
-+	wait_queue_head_t waitqueue;
-+	bool irq_enabled;
-+	irq_handler_t core_irq_callback;
-+
-+	struct xpcie xpcie;
-+};
-+
-+static inline struct device *xpcie_to_dev(struct xpcie *xpcie)
++int intel_xpcie_pci_reset_device(u32 id)
 +{
-+	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
++	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(id);
 +
-+	return &xdev->pci->dev;
++	if (!xdev)
++		return -ENOMEM;
++
++	return intel_xpcie_pci_prepare_dev_reset(xdev, true);
 +}
-+
-+int intel_xpcie_pci_init(struct xpcie_dev *xdev, struct pci_dev *pdev);
-+int intel_xpcie_pci_cleanup(struct xpcie_dev *xdev);
-+int intel_xpcie_pci_register_irq(struct xpcie_dev *xdev,
-+				 irq_handler_t irq_handler);
-+int intel_xpcie_pci_raise_irq(struct xpcie_dev *xdev,
-+			      enum xpcie_doorbell_type type,
-+			      u8 value);
-+
-+struct xpcie_dev *intel_xpcie_create_device(u32 sw_device_id,
-+					    struct pci_dev *pdev);
-+void intel_xpcie_remove_device(struct xpcie_dev *xdev);
-+void intel_xpcie_list_add_device(struct xpcie_dev *xdev);
-+void intel_xpcie_list_del_device(struct xpcie_dev *xdev);
-+
-+#endif /* XPCIE_PCI_HEADER_ */
 -- 
 2.17.1
 
