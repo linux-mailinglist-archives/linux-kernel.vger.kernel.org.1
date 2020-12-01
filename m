@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FA52CA3B5
+	by mail.lfdr.de (Postfix) with ESMTP id 43CFB2CA3B4
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391090AbgLANWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:22:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
+        id S2391058AbgLANWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:22:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729676AbgLANWc (ORCPT
+        with ESMTP id S1729075AbgLANWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 08:22:32 -0500
 Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD415C0617A7;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EFEC0617A6;
         Tue,  1 Dec 2020 05:21:51 -0800 (PST)
 Received: from allenwind.lan (unknown [IPv6:2a02:169:3df5::979])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id C07EF5C2AB7;
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id DA1E85C2CBC;
         Tue,  1 Dec 2020 14:21:49 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
         t=1606828909;
@@ -24,10 +24,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
          to:to:cc:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OtFe8i1obXmaq2UarSATtwgKWDwPVnyMFK5sF7gJVHo=;
-        b=E8FWOCDF8u8bEc0WDVHeUhTm80cxqxN6gUgJr0snnbvuwDItpg85MqJNozVieUcYOAlJCe
-        /ywDxatSQpyIpArJ3Oh4VKlfausKGG9g2OpDhGyBKQYaatrO/eYT/oiV8RQfctxhVPmLZT
-        BK7N3I0uKpvp5+O931zenfIGPbiWNwg=
+        bh=z+tlywN731WKb34n3E2K/Io83PN1fHG7CeqNlqmhK4Q=;
+        b=kRE047eW0pF2zMBT4sW+2RtK15SU3sdxl8+ljtI3bb8TAtc6t/0Fie7UP0wHtluHPqzAuW
+        efjAMrjN29jCl52BSt7vae9HJGTMH04Re/CvfVrINvyAAaNKQMQ0ZJiOXuC5Av5J696Bf6
+        /+IVXKNmOGzS4YE/A+c/qVJ99vpIpXI=
 From:   Stefan Agner <stefan@agner.ch>
 To:     khilman@baylibre.com
 Cc:     robh+dt@kernel.org, narmstrong@baylibre.com, jbrunet@baylibre.com,
@@ -36,9 +36,9 @@ Cc:     robh+dt@kernel.org, narmstrong@baylibre.com, jbrunet@baylibre.com,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v2 4/5] arm64: dts: meson: g12a: x96-max: fix PHY deassert timing requirements
-Date:   Tue,  1 Dec 2020 14:21:40 +0100
-Message-Id: <83c1a57cb99c04dc31098166f0c26073de5e7709.1606828668.git.stefan@agner.ch>
+Subject: [PATCH v2 5/5] arm64: dts: meson: g12b: w400: fix PHY deassert timing requirements
+Date:   Tue,  1 Dec 2020 14:21:41 +0100
+Message-Id: <a899168379ce425b35eea4a369504fd75977bd71.1606828668.git.stefan@agner.ch>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <14754fd95378b78eb9a0a3f8b6bab13f7263c7f1.1606828668.git.stefan@agner.ch>
 References: <14754fd95378b78eb9a0a3f8b6bab13f7263c7f1.1606828668.git.stefan@agner.ch>
@@ -53,18 +53,18 @@ According to the datasheet (Rev. 1.9) the RTL8211F requires at least
 egisters. On similar boards with the same PHY this fixes an issue where
 Ethernet link would not come up when using ip link set down/up.
 
-Fixes: ed5e8f689154 ("arm64: dts: meson: g12a: x96-max: fix the Ethernet PHY reset line")
+Fixes: 2cd2310fca4c ("arm64: dts: meson-g12b-ugoos-am6: add initial device-tree")
 Signed-off-by: Stefan Agner <stefan@agner.ch>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
-index 1b07c8c06eac..463a72d6bb7c 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
-@@ -340,7 +340,7 @@ external_phy: ethernet-phy@0 {
- 		eee-broken-1000t;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
+index 2802ddbb83ac..feb088504740 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
+@@ -264,7 +264,7 @@ external_phy: ethernet-phy@0 {
+ 		max-speed = <1000>;
  
  		reset-assert-us = <10000>;
 -		reset-deassert-us = <30000>;
