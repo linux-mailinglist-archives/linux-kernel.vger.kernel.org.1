@@ -2,85 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1022CA0AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82972CA0BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730356AbgLAK6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:58:16 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:40074 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgLAK6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:58:15 -0500
-Received: by mail-lf1-f66.google.com with SMTP id u19so3260996lfr.7;
-        Tue, 01 Dec 2020 02:57:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=du7uqxSFDOlCM/d6eepPiXeCZVMNky/Lr2KTn2WudY4=;
-        b=IAMqSIRAh7QvKLiHcCM6q3RQMpXFiN4V/ttF5moY/5uworb0A5WAvsnygJp5dfhIgK
-         dQXFbg4hBvr0in0dF9t8y11r97p1ZwvG1AanKEoau7ztDdIvFYoZfPNeX+VsDsw5Tfay
-         +lOa4wcsJ5lMNsdoRZFyoz0/Rw3VTxOyvpYaIzhBfai16Sn7lhOpsYgaZl4fOx/1Haxl
-         rsXwTXwHhQxbpSL6z4kUE/vGyi9+H3Nzo3e6nmKociBgUyQ9dI90mlSzlRWW+dEi1+kj
-         I+YYKPvxPycX9TdFx/4jEMe5HzbVe9hoIJcbIm00HnQaGZ6HBrko2j9CwRT1XOO6xoui
-         T0Sg==
-X-Gm-Message-State: AOAM530IqG7WwPEkpuirPiIkn3eJvkxN/F7kpGz6LVLwqrE7pOgoOARV
-        iM3mQylFhThRrO+R5kVy1Q4=
-X-Google-Smtp-Source: ABdhPJwT47z4c6gcp5xcXM7WhIzVaegIW/1/ElHuQiuhC816et9p1/qKqS2CNVExVnI3Cp4rAU4cpA==
-X-Received: by 2002:ac2:4c9a:: with SMTP id d26mr932274lfl.427.1606820253539;
-        Tue, 01 Dec 2020 02:57:33 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id a22sm165777lfl.11.2020.12.01.02.57.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 02:57:32 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kk3M9-0007Iw-Tz; Tue, 01 Dec 2020 11:58:02 +0100
-Date:   Tue, 1 Dec 2020 11:58:01 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
-Message-ID: <X8YhuQeBtMrbh42W@localhost>
-References: <20201130153742.9163-1-johan@kernel.org>
- <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
- <CAHp75Vczx=qjNed-8nwm6iSq5sxUKE2mXzPSd70zUxumZ5sANQ@mail.gmail.com>
+        id S1730404AbgLAK7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:59:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730234AbgLAK7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:59:40 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6AC6C20809;
+        Tue,  1 Dec 2020 10:58:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606820339;
+        bh=fjeXvv1+eOJ5uqv6M23051ubV3+oKlwmWBbroYxu4fw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Hh/ScutavvVCdCl58vcCojICg7CUUG5ERNrak0LxRYScrExjctS6PH40T0x1BYSkQ
+         o0GVgS1ppX077mlPbIml6Z4xF2DkBGekEKRDTslWE0H8Vxa/nLK4wxF/oIEoyg+cHe
+         z74rNevxrT0YthG8Hguh1Bjx2nwzVQpxpD8Pu6+A=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kk3N1-00F13G-9R; Tue, 01 Dec 2020 10:58:55 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vczx=qjNed-8nwm6iSq5sxUKE2mXzPSd70zUxumZ5sANQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 01 Dec 2020 10:58:54 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     luojiaxing <luojiaxing@huawei.com>
+Cc:     Shenming Lu <lushenming@huawei.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v1 1/4] irqchip/gic-v4.1: Plumb get_irqchip_state VLPI
+ callback
+In-Reply-To: <316fe41d-f004-f004-4f31-6fe6e7ff64b7@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-2-lushenming@huawei.com>
+ <869dbc36-c510-fd00-407a-b05e068537c8@huawei.com>
+ <875z5p6ayp.wl-maz@kernel.org>
+ <316fe41d-f004-f004-4f31-6fe6e7ff64b7@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <7f578fa825b946f74e9ebdee557d6804@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: luojiaxing@huawei.com, lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 12:48:48PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 30, 2020 at 11:25 PM Mychaela Falconia
-> <mychaela.falconia@gmail.com> wrote:
+On 2020-12-01 09:38, luojiaxing wrote:
+> On 2020/11/28 18:18, Marc Zyngier wrote:
+>> On Sat, 28 Nov 2020 07:19:48 +0000,
+>> luojiaxing <luojiaxing@huawei.com> wrote:
 
-> > > Why not call it nomctrl ?
-> >
-> > I have no opinion one way or another as to what the new sysfs attribute
-> > should be called - my use case won't involve this sysfs mechanism at
-> > all, instead I care much more about the path where the tty port flag
-> > gets set via a driver quirk upon seeing my custom USB ID. :)
+>>> How can you confirm that the interrupt pending status is the latest?
+>>> Is it possible that the interrupt pending status is still cached in
+>>> the GICR but not synchronized to the memory.
+>> That's a consequence of the vPE having been unmapped:
+>> 
+>> "A VMAPP with {V,Alloc}=={0,1} cleans and invalidates any caching of
+>> the Virtual Pending Table and Virtual Configuration Table associated
+>> with the vPEID held in the GIC."
 > 
-> Then why do we bother with sysfs right now? It's an ABI and Johan is
-> completely aware and knows that once it's in the kernel it is close to
-> being carved in stone.
-> I would vote to remove sysfs from now and see if we really need it in
-> the future.
+> 
+> Yes, in addition to that, if a vPE is scheduled out of the PE, the
+> cache clearing and write-back to VPT are also performed, I think.
 
-Eh, because this is generally useful and has come up in the past. I'm
-not interested in adding quirks for odd devices that want non-standard
-behaviour that we need to maintain indefinitely; that's precisely why I
-proposed a general interface that can be use with any serial port.
+There is no such architectural requirement.
 
-Johan
+> However, I feel a litter confusing to read this comment at first , 
+> because it is not only VMAPP that causes cache clearing.
+
+I can't see anything else that guarantee that the caches are clean,
+and that there is no possible write to the PE table.
+
+> I don't know why VMAPP was mentioned here until I check the other two
+> patches ("KVM: arm64: GICv4.1: Try to save hw pending state in
+> save_pending_tables").
+> 
+> So I think may be it's better to add some background description here.
+
+Well, relying on the standard irqchip state methods to peek at the
+pending state isn't very reliable, as you could be temped to call into
+this even when the VPE is mapped. Which is why I've suggested
+a different implementation.
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
