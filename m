@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBA62C9A41
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7962C9A34
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgLAI40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:56:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59586 "EHLO mail.kernel.org"
+        id S2387635AbgLAI4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:56:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387678AbgLAI4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:56:20 -0500
+        id S2387591AbgLAI4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:56:04 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1FC121D7F;
-        Tue,  1 Dec 2020 08:55:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD33F21D7A;
+        Tue,  1 Dec 2020 08:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812939;
-        bh=aEhNW8fhyTg4AhYeFdozIpWqmSjx864+GcAOrH+FIlw=;
+        s=korg; t=1606812948;
+        bh=Utn8lO4iQM8/zOerpIdrlQSYySDat3/YF5KgyTyq89M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cFF9cT1s/vE81rfEYyrfwvf85ZXXs2zW1T9sYjyNDntEEnj4HKSguF2iioHOHLcK/
-         /YCXTINjSdtE9O/prqrYs82pVgnVKw4JrMM5MWiEhKvJndpin7gtscxKJOL8Vmfl0+
-         riqV6Bb8oe6gGsGXHvG4EIuKN0Ldb1gaK32AR8Jc=
+        b=kHxd1P05v6Hu3sJ9/h4r5oEOiPJtL8NZKzmcPFfC3pe7ZmxRYr9ilFmLXE1ZnUYkg
+         on/MKejNvlkv9XHEJjCRYRZrQMuKQzGLFdIZbHIzS85W+vJXtNgT4LP8NDo2I/jrxk
+         AqEFPzE1OkCXG959A3P+uRg6lsa3HDGMGwPbTjzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rajat Jain <rajatja@google.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 04/42] PCI: Add device even if driver attach failed
-Date:   Tue,  1 Dec 2020 09:53:02 +0100
-Message-Id: <20201201084642.384498201@linuxfoundation.org>
+        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nikos Tsironis <ntsironis@arrikto.com>
+Subject: [PATCH 4.9 07/42] KVM: x86: Fix split-irqchip vs interrupt injection window request
+Date:   Tue,  1 Dec 2020 09:53:05 +0100
+Message-Id: <20201201084642.522450998@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
 References: <20201201084642.194933793@linuxfoundation.org>
@@ -43,47 +43,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajat Jain <rajatja@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 2194bc7c39610be7cabe7456c5f63a570604f015 upstream.
+commit 71cc849b7093bb83af966c0e60cb11b7f35cd746 upstream.
 
-device_attach() returning failure indicates a driver error while trying to
-probe the device. In such a scenario, the PCI device should still be added
-in the system and be visible to the user.
+kvm_cpu_accept_dm_intr and kvm_vcpu_ready_for_interrupt_injection are
+a hodge-podge of conditions, hacked together to get something that
+more or less works.  But what is actually needed is much simpler;
+in both cases the fundamental question is, do we have a place to stash
+an interrupt if userspace does KVM_INTERRUPT?
 
-When device_attach() fails, merely warn about it and keep the PCI device in
-the system.
+In userspace irqchip mode, that is !vcpu->arch.interrupt.injected.
+Currently kvm_event_needs_reinjection(vcpu) covers it, but it is
+unnecessarily restrictive.
 
-This partially reverts ab1a187bba5c ("PCI: Check device_attach() return
-value always").
+In split irqchip mode it's a bit more complicated, we need to check
+kvm_apic_accept_pic_intr(vcpu) (the IRQ window exit is basically an INTACK
+cycle and thus requires ExtINTs not to be masked) as well as
+!pending_userspace_extint(vcpu).  However, there is no need to
+check kvm_event_needs_reinjection(vcpu), since split irqchip keeps
+pending ExtINT state separate from event injection state, and checking
+kvm_cpu_has_interrupt(vcpu) is wrong too since ExtINT has higher
+priority than APIC interrupts.  In fact the latter fixes a bug:
+when userspace requests an IRQ window vmexit, an interrupt in the
+local APIC can cause kvm_cpu_has_interrupt() to be true and thus
+kvm_vcpu_ready_for_interrupt_injection() to return false.  When this
+happens, vcpu_run does not exit to userspace but the interrupt window
+vmexits keep occurring.  The VM loops without any hope of making progress.
 
-Link: https://lore.kernel.org/r/20200706233240.3245512-1-rajatja@google.com
-Signed-off-by: Rajat Jain <rajatja@google.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org	# v4.6+
-[sudip: use dev_warn]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Once we try to fix these with something like
+
+     return kvm_arch_interrupt_allowed(vcpu) &&
+-        !kvm_cpu_has_interrupt(vcpu) &&
+-        !kvm_event_needs_reinjection(vcpu) &&
+-        kvm_cpu_accept_dm_intr(vcpu);
++        (!lapic_in_kernel(vcpu)
++         ? !vcpu->arch.interrupt.injected
++         : (kvm_apic_accept_pic_intr(vcpu)
++            && !pending_userspace_extint(v)));
+
+we realize two things.  First, thanks to the previous patch the complex
+conditional can reuse !kvm_cpu_has_extint(vcpu).  Second, the interrupt
+window request in vcpu_enter_guest()
+
+        bool req_int_win =
+                dm_request_for_irq_injection(vcpu) &&
+                kvm_cpu_accept_dm_intr(vcpu);
+
+should be kept in sync with kvm_vcpu_ready_for_interrupt_injection():
+it is unnecessary to ask the processor for an interrupt window
+if we would not be able to return to userspace.  Therefore,
+kvm_cpu_accept_dm_intr(vcpu) is basically !kvm_cpu_has_extint(vcpu)
+ANDed with the existing check for masked ExtINT.  It all makes sense:
+
+- we can accept an interrupt from userspace if there is a place
+  to stash it (and, for irqchip split, ExtINTs are not masked).
+  Interrupts from userspace _can_ be accepted even if right now
+  EFLAGS.IF=0.
+
+- in order to tell userspace we will inject its interrupt ("IRQ
+  window open" i.e. kvm_vcpu_ready_for_interrupt_injection), both
+  KVM and the vCPU need to be ready to accept the interrupt.
+
+... and this is what the patch implements.
+
+Reported-by: David Woodhouse <dwmw@amazon.co.uk>
+Analyzed-by: David Woodhouse <dwmw@amazon.co.uk>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reviewed-by: Nikos Tsironis <ntsironis@arrikto.com>
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+Tested-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/pci/bus.c |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
---- a/drivers/pci/bus.c
-+++ b/drivers/pci/bus.c
-@@ -324,12 +324,8 @@ void pci_bus_add_device(struct pci_dev *
+---
+ arch/x86/include/asm/kvm_host.h |    1 +
+ arch/x86/kvm/irq.c              |    2 +-
+ arch/x86/kvm/x86.c              |   18 ++++++++++--------
+ 3 files changed, 12 insertions(+), 9 deletions(-)
+
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1350,6 +1350,7 @@ int kvm_test_age_hva(struct kvm *kvm, un
+ void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
+ int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v);
+ int kvm_cpu_has_interrupt(struct kvm_vcpu *vcpu);
++int kvm_cpu_has_extint(struct kvm_vcpu *v);
+ int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu);
+ int kvm_cpu_get_interrupt(struct kvm_vcpu *v);
+ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event);
+--- a/arch/x86/kvm/irq.c
++++ b/arch/x86/kvm/irq.c
+@@ -52,7 +52,7 @@ static int pending_userspace_extint(stru
+  * check if there is pending interrupt from
+  * non-APIC source without intack.
+  */
+-static int kvm_cpu_has_extint(struct kvm_vcpu *v)
++int kvm_cpu_has_extint(struct kvm_vcpu *v)
+ {
+ 	u8 accept = kvm_apic_accept_pic_intr(v);
  
- 	dev->match_driver = true;
- 	retval = device_attach(&dev->dev);
--	if (retval < 0 && retval != -EPROBE_DEFER) {
-+	if (retval < 0 && retval != -EPROBE_DEFER)
- 		dev_warn(&dev->dev, "device attach failed (%d)\n", retval);
--		pci_proc_detach_device(dev);
--		pci_remove_sysfs_dev_files(dev);
--		return;
--	}
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3053,21 +3053,23 @@ static int kvm_vcpu_ioctl_set_lapic(stru
  
- 	dev->is_added = 1;
+ static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
+ {
++	/*
++	 * We can accept userspace's request for interrupt injection
++	 * as long as we have a place to store the interrupt number.
++	 * The actual injection will happen when the CPU is able to
++	 * deliver the interrupt.
++	 */
++	if (kvm_cpu_has_extint(vcpu))
++		return false;
++
++	/* Acknowledging ExtINT does not happen if LINT0 is masked.  */
+ 	return (!lapic_in_kernel(vcpu) ||
+ 		kvm_apic_accept_pic_intr(vcpu));
  }
+ 
+-/*
+- * if userspace requested an interrupt window, check that the
+- * interrupt window is open.
+- *
+- * No need to exit to userspace if we already have an interrupt queued.
+- */
+ static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_arch_interrupt_allowed(vcpu) &&
+-		!kvm_cpu_has_interrupt(vcpu) &&
+-		!kvm_event_needs_reinjection(vcpu) &&
+ 		kvm_cpu_accept_dm_intr(vcpu);
+ }
+ 
 
 
