@@ -2,62 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E2A2CA043
+	by mail.lfdr.de (Postfix) with ESMTP id C68DE2CA044
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgLAKrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:47:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:40528 "EHLO foss.arm.com"
+        id S1726630AbgLAKrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:47:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52146 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725899AbgLAKrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:47:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38384101E;
-        Tue,  1 Dec 2020 02:46:29 -0800 (PST)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB68E3F66B;
-        Tue,  1 Dec 2020 02:46:21 -0800 (PST)
-Subject: Re: [RFC PATCH v2 0/2] scheduler: expose the topology of clusters and
- add cluster scheduler
-To:     Barry Song <song.bao.hua@hisilicon.com>,
-        valentin.schneider@arm.com, catalin.marinas@arm.com,
-        will@kernel.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, Jonathan.Cameron@huawei.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, mark.rutland@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     linuxarm@huawei.com, xuwei5@huawei.com, prime.zeng@hisilicon.com
-References: <20201201025944.18260-1-song.bao.hua@hisilicon.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <fb332889-6385-fe23-be12-5caf150d5817@arm.com>
-Date:   Tue, 1 Dec 2020 11:46:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725899AbgLAKrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:47:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606819610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4XjxTKeWtP85u4526YK/SSmoEntBxdWY4/p5zoANOP4=;
+        b=TAzVYi8vnq0zQMjJEIsvdiOYFoPxx5uscNRrykhIOJGq3ghBk6yMk/adgzffNIgHxoQKUV
+        hNSzuvfGEE2nVdUZMsdtDsr4sEa23wQWXKwzfSNCUUkJch4OMhtdP9qxBfbDzu7ayhF9zc
+        HCFtSaXYDNsWg/MhksNi3ZJNpELWeOY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 76A20AC90;
+        Tue,  1 Dec 2020 10:46:50 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 11:46:50 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/2] reboot: allow to override reboot type if quirks are
+ found
+Message-ID: <X8YfGllCdPcyH1my@alley>
+References: <20201130173717.198952-1-mcroce@linux.microsoft.com>
+ <20201130173717.198952-2-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20201201025944.18260-1-song.bao.hua@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130173717.198952-2-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2020 03:59, Barry Song wrote:
-
-[...]
-
-> Although I believe there is still a lot to do, sending a RFC to get feedbacks
-> of community experts might be helpful for the next step.
+On Mon 2020-11-30 18:37:16, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> Barry Song (1):
->   scheduler: add scheduler level for clusters
+> On some machines a quirk can force a specific reboot type.
+> Quirks are found during a DMI scan, the list of machines which need
+> special reboot handling is defined in reboot_dmi_table.
 > 
-> Jonathan Cameron (1):
->   topology: Represent clusters of CPUs within a die.
+> The kernel command line reboot= option overrides this via a global
+> variable `reboot_default`, so that the reboot type requested in
+> the command line is really performed.
+> 
+> This was not true when setting the reboot type via the new sysfs
+> interface. Fix this by setting reboot_default upon the first change,
+> like reboot_setup() does for the command line.
 
-Just to make sure. Since this is v2, the v1 is
-https://lkml.kernel.org/r//20201016152702.1513592-1-Jonathan.Cameron@huawei.com
+Strictly speaking this is not necessary. The quirks are proceed
+in core_initcall() while the sysfs interface is created in
+late_initcall(). By other words, the quirks are uses before
+the default can be modified by the sysfs interface.
 
-Might not be obvious to everyone since sender and subject have changed.
+On the other hand, it does not harm. Better be on the safe
+side for eventual future changes.
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
