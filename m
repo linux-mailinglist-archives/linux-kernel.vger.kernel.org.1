@@ -2,80 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC5A2CA1D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2412CA1DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730227AbgLALwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:52:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43646 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbgLALwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:52:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E5CDEAD6D;
-        Tue,  1 Dec 2020 11:52:11 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     david@redhat.com
-Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com,
-        Oscar Salvador <osalvador@suse.de>
-Subject: [RFC PATCH v3 4/4] mm,memory_hotplug: Add mhp_memmap_on_memory boot option
-Date:   Tue,  1 Dec 2020 12:51:58 +0100
-Message-Id: <20201201115158.22638-5-osalvador@suse.de>
-X-Mailer: git-send-email 2.13.7
-In-Reply-To: <20201201115158.22638-1-osalvador@suse.de>
-References: <20201201115158.22638-1-osalvador@suse.de>
+        id S2389562AbgLALzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:55:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388429AbgLALza (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:55:30 -0500
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567A9C0613D6;
+        Tue,  1 Dec 2020 03:54:50 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id t142so326928oot.7;
+        Tue, 01 Dec 2020 03:54:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+difrXmtbLteqVpNCchCmfcy5oFstbJ0wJIdrMVXC6k=;
+        b=vDdd+JCuyhL/5IFnULP4Z36PBiW0ZIQJb7UDWcgfamDosKdMfRzpgVvCjJ3LQzWoBc
+         sjQSPt5jOx0B0TDWvOiMXmMeqrjqUMp5Mt+G3XO0ABV2Jh3m2gY3bLI1llK7749cfXLF
+         vOLXL7Awu/vq9MI0iOgIZrejFbcEaF1Sf2CtmA3+XREOPbftnPGkrrkxoKHk/SusFx+A
+         dFSj8W8ybKpdNJ9JxTD6c2RCNP/T3XbjxoeHXg8CxONHYS0OrWDZ69VvE8jsZhB0VadA
+         VM7GIki4JWX8glIuLVl25BEQ6NRmCX16Uj2pkvCbf0qy1BuXLLLJWGM1/UVVDjwYLUiA
+         JrUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+difrXmtbLteqVpNCchCmfcy5oFstbJ0wJIdrMVXC6k=;
+        b=k7Q2eMThSwO/FvHVeTWnV/uIzGi7ihs5euAV3yFMwmVvjn/0XACKf/HhPTwCwXNT0F
+         wAkezvlROOnSHMvSsk7aFk31kHzoxe9nqV/QMq2s8O11liDAqFwknzzNsudNAsZGgm5z
+         zL0RrgAUTQ2V/iuIaPMOQumRHhJMOzGKWk8qRfLIiiKRl6NlrsZMsDn9SS/sOn3TOPjE
+         Oe2YuAUutMV0xzC9HNAzc0E8IPBRR5BHitOo628tuWt8Kr93FnAQU4GiWcN6NhB8OEg+
+         PJSxIpXZikiOP5KtGukqk69pHZNbRjlfTGGfFuwlv+XBZbYsK1tai2zDD5hczJ7WflNy
+         utfw==
+X-Gm-Message-State: AOAM530AVnjx8q6oh5M/V1RAuWOUu9wuthNoMhrdRVVCDA6coq2OYAW0
+        +PNU5zILR+W1N+MObhM63y4=
+X-Google-Smtp-Source: ABdhPJyiupzAMniwxTmeu5I9mbPrOaTp/4VhwRayouXHorsZwyGGeMVfCLx7+0IAQ9ULCEW60s0F5Q==
+X-Received: by 2002:a4a:d5d3:: with SMTP id a19mr1514485oot.61.1606823689785;
+        Tue, 01 Dec 2020 03:54:49 -0800 (PST)
+Received: from localhost.localdomain ([122.225.203.131])
+        by smtp.gmail.com with ESMTPSA id o6sm342592oon.7.2020.12.01.03.54.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Dec 2020 03:54:49 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     mgorman@suse.de, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, qianjun.kernel@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH 0/6] sched: support schedstats for RT sched class 
+Date:   Tue,  1 Dec 2020 19:54:10 +0800
+Message-Id: <20201201115416.26515-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Self stored memmap leads to a sparse memory situation which is unsuitable
-for workloads that requires large contiguous memory chunks.
+We want to measure the latency of RT tasks in our production
+environment with schedstats facility, but currently schedstats is only
+supported for fair sched class. This patch enable it for RT sched class
+as well.
 
-Make this an opt-in which needs to be explicitly enabled.
+- Structure
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- mm/memory_hotplug.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Before we make schedstats available for RT sched class, we should make
+struct sched_statistics independent of fair sched class first.
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 4b4708512f82..858d6161e915 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -42,6 +42,8 @@
- #include "internal.h"
- #include "shuffle.h"
+
+The struct sched_statistics is the schedular statistics of a task_struct
+or a task_group. So we can move it into struct task_struct and
+struct task_group to achieve the goal.
+
+Below is the detailed explaination of the change in the structs.
+
+The struct before this patch:
+
+struct task_struct {            |-> struct sched_entity {
+    ...                         |       ...
+    struct sched_entity *se; ---|       struct sched_statistics statistics;
+    struct sched_rt_entity *rt;         ...
+    ...                                 ...
+};                                  };
+
+struct task_group {             |--> se[0]->statistics : schedstats of CPU0
+    ...                         |
+ #ifdef CONFIG_FAIR_GROUP_SCHED |
+    struct sched_entity **se; --|--> se[1]->statistics : schedstats of CPU1
+                                |
+ #endif                         |
+                                |--> se[N]->statistics : schedstats of CPUn
+
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+    struct sched_rt_entity  **rt_se; (N/A)
+ #endif
+    ...
+};
+
+The '**se' in task_group is allocated in the fair sched class, which is
+hard to be reused by other sched class.
+
+The struct after this patch:
+struct task_struct {
+    ...
+    struct sched_statistics statistics;
+    ...
+    struct sched_entity *se;
+    struct sched_rt_entity *rt;
+    ...
+};
+
+struct task_group {                    |---> stats[0] : of CPU0
+    ...                                |
+    struct sched_statistics **stats; --|---> stats[1] : of CPU1
+    ...                                |
+                                       |---> stats[n] : of CPUn
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+    struct sched_entity **se;
+ #endif
+ #ifdef CONFIG_RT_GROUP_SCHED
+    struct sched_rt_entity  **rt_se;
+ #endif
+    ...
+};
+
+After the patch it is clearly that both of se or rt_se can easily get the
+sched_statistics by a task_struct or a task_group.
+
+- Function Interface
+
+The original prototype of the schedstats helpers are
+
+update_stats_wait_*(struct cfs_rq *cfs_rq, struct sched_entity *se)
+
+The cfs_rq in these helpers is used to get the rq_clock, and the se is
+used to get the struct sched_statistics and the struct task_struct. In
+order to make these helpers available by all sched classes, we can pass
+the rq, sched_statistics and task_struct directly.
+
+Then the new helpers are
+
+update_stats_wait_*(struct rq *rq, struct task_struct *p,
+                    struct sched_statistics *stats)
+
+which are independent of fair sched class.
+
+To avoid vmlinux growing too large or introducing ovehead when
+!schedstat_enabled(), some new helpers after schedstat_enabled() are also
+introduced, Suggested by Mel. These helpers are in sched/stats.c,
+
+__update_stats_wait_*(struct rq *rq, struct task_struct *p,
+                      struct sched_statistics *stats)
+
+- Implementation
+
+After we make the struct sched_statistics and the helpers of it
+independent of fair sched class, we can easily use the schedstats
+facility for RT sched class.
+
+The schedstat usage in RT sched class is similar with fair sched class,
+for example,
+                fair                            RT
+enqueue         update_stats_enqueue_fair       update_stats_enqueue_rt
+dequeue         update_stats_dequeue_fair       update_stats_dequeue_rt
+put_prev_task   update_stats_wait_start         update_stats_wait_start
+set_next_task   update_stats_wait_end           update_stats_wait_end
+
+- Usage
  
-+static bool memmap_on_memory_enabled __read_mostly = false;
-+
- /*
-  * online_page_callback contains pointer to current page onlining function.
-  * Initially it is generic_online_page(). If it is required it could be
-@@ -1034,7 +1036,7 @@ bool __weak arch_support_memmap_on_memory(void)
- 
- bool mhp_supports_memmap_on_memory(unsigned long size)
- {
--	if (!arch_support_memmap_on_memory() ||
-+	if (!memmap_on_memory_enabled || !arch_support_memmap_on_memory() ||
- 	    !IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP) ||
- 	    size > memory_block_size_bytes())
- 		return false;
-@@ -1422,6 +1424,13 @@ static int __init cmdline_parse_movable_node(char *p)
- }
- early_param("movable_node", cmdline_parse_movable_node);
- 
-+static int __init cmdline_parse_memmap_on_memory(char *p)
-+{
-+	memmap_on_memory_enabled = true;
-+	return 0;
-+}
-+early_param("mhp_memmap_on_memory", cmdline_parse_memmap_on_memory);
-+
- /* check which state of node_states will be changed when offline memory */
- static void node_states_check_changes_offline(unsigned long nr_pages,
- 		struct zone *zone, struct memory_notify *arg)
+The user can get the schedstats information in the same way in fair sched
+class. For example,
+		fair				RT
+task show	/proc/[pid]/sched               /proc/[pid]/sched
+group show	cpu.stat in cgroup		cpu.stat in cgroup
+
+The sched:sched_stat_{wait, sleep, iowait, blocked, runtime} tracepoints
+can be used to trace RT tasks as well.
+
+Detailed examples of the output of schedstats for RT tasks are in patch #6.
+
+
+Changes since RFC:
+- improvement of schedstats helpers, per Mel.
+- make struct schedstats independent of fair sched class
+
+Yafang Shao (6):
+  sched: don't include stats.h in sched.h
+  sched, fair: use __schedstat_set() in set_next_entity()
+  sched: make struct sched_statistics independent of fair sched class
+  sched: make schedstats helpers independent of fair sched class
+  sched, rt: support sched_stat_runtime tracepoint for RT sched class
+  sched, rt: support schedstats for RT sched class
+
+ include/linux/sched.h    |   3 +-
+ kernel/sched/core.c      |  25 +++--
+ kernel/sched/deadline.c  |   5 +-
+ kernel/sched/debug.c     |  82 +++++++--------
+ kernel/sched/fair.c      | 209 +++++++++++++++------------------------
+ kernel/sched/idle.c      |   1 +
+ kernel/sched/rt.c        | 142 +++++++++++++++++++++++++-
+ kernel/sched/sched.h     |   9 +-
+ kernel/sched/stats.c     | 105 ++++++++++++++++++++
+ kernel/sched/stats.h     |  80 +++++++++++++++
+ kernel/sched/stop_task.c |   5 +-
+ 11 files changed, 476 insertions(+), 190 deletions(-)
+
 -- 
-2.26.2
+2.18.4
 
