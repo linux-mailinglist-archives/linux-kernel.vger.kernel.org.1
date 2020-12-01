@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3541C2CA201
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B122CA207
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390268AbgLAL5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:57:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
+        id S2390435AbgLAL6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:58:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387398AbgLAL5W (ORCPT
+        with ESMTP id S2387394AbgLAL57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:57:22 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B45C0613CF;
-        Tue,  1 Dec 2020 03:56:42 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id l23so1103550pjg.1;
-        Tue, 01 Dec 2020 03:56:42 -0800 (PST)
+        Tue, 1 Dec 2020 06:57:59 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38D6C0613D2;
+        Tue,  1 Dec 2020 03:57:19 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id s18so1477663oih.1;
+        Tue, 01 Dec 2020 03:57:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=5hgImp7mtfyoIITXeXte4NNvXY5OiJT0esiIV50KJpM=;
-        b=lWOTJbbbgEMI60IivvuuQmAV2odlXSz6fZw8/Iszp7pYWor6b3zFNFQFsFM6Up5Kdp
-         QFqBHeutH7Yw0GaA2mJ3koaPoWpIk72FVZu5RMo2nEtrkss9ZlPkYb0qHl1U1Z4nvMcE
-         wwLFuCMN0dlmweMQgSs+zbrmSbkJ2HxmO0jM00flUSXb7vSBn7ia+Pe3VBFrgy2+4Jza
-         AtFlxBVsYL5ZcODz2pnTH97xjSoNRIsVdv9gDeWZZoh2vXamSt4AQ18M1z91oBXOPBOu
-         uTmLb+NUodI1LrwNSNnlK6rnSVvTy+lU2ZCw1eu2TXyCGRZh6h7YMWGPr7agsuQscdCI
-         rCVg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zAXFY6fJ1YLQju/dgAT7ymnIazjqdCFT7ZohpiAR7h0=;
+        b=B5oZFdGisxiEfLGaypmeD6FFwPEpgdc+deqKKz8AjHK9t8Bp332JjduLj8je/+LURv
+         dqjHbFK9qNDMgcyscLQeS/CdJxrPduCZwpEC7/TtpPxgTuUYK8VTAwPgH6bAjmDQqjs4
+         6p/uK79kfcfOjS4HQUdgcemxzjAojGDhYfTi2945fC4oSJnEz8T2UuQwm5qAEHuCkT1A
+         od0CRW2JiWvsjha63CoDBvRGRdNWV2u2LKEbIyKX0DwQ2gGY4TdSIJApx/4fRDgdk7lO
+         3ps/BJ3DbZQ9lWqFwjDo1OxZWahYRbJGOga9sCz7Z4Vjlo7fk/JnjWYXbZlufQEqK4YA
+         PX7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5hgImp7mtfyoIITXeXte4NNvXY5OiJT0esiIV50KJpM=;
-        b=WWogOGBkbxrhCgBQnqyQl3aZjMpsvQHyfC0wQfNsovyPhGgPW2WwOSG/AfkQecb8oy
-         erQjkJjcWXRosyauBudAtamYtrThjrk/GEs20JmwZTin8eve7MqxcIho1mLziLgL4L/S
-         wdRxG/it06KxJgonfE8E46Yva3vzmsf0/+ZNoZBuasmb2G8BC7SGbiLvrcDe5q3qCkLU
-         qr6230nebD/NRKp47jmE4RG8JhGl5obWZMsNxpRI6S3jahwxdkqtCWAxLI9kEmFgOaKY
-         MWoYpwfLHpW3F6YPVHH8t4+wpsCwktlymx5VmQToGs9sA0gpQQ7yUyvXXRPuE1gpyHAd
-         fe5A==
-X-Gm-Message-State: AOAM5311ZJlkbgjTP3TG6Sy609gfIrFzIMWR6O+0cGqkCxpX9P3VQfL8
-        Tx1b6ah6qtL2J05WOOQq6eY=
-X-Google-Smtp-Source: ABdhPJzJQXCJUZt03XNnhIFMYuHfxE6/gQWdjcgU4X26SNEJ+vUFu73++gnhJ342p3YQhBQNExwl7A==
-X-Received: by 2002:a17:902:c155:b029:da:9460:99a0 with SMTP id 21-20020a170902c155b02900da946099a0mr2471436plj.20.1606823802205;
-        Tue, 01 Dec 2020 03:56:42 -0800 (PST)
-Received: from [192.168.0.104] ([49.207.197.72])
-        by smtp.gmail.com with ESMTPSA id h11sm2574403pfo.69.2020.12.01.03.56.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 03:56:41 -0800 (PST)
-Subject: Re: [PATCH] net: mac80211: cfg: enforce sanity checks for key_index
- in ieee80211_del_key()
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+49d4cab497c2142ee170@syzkaller.appspotmail.com
-References: <20201201095639.63936-1-anant.thazhemadam@gmail.com>
- <3025db173074d4dfbc323e91d3586f0e36426cf0.camel@sipsolutions.net>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <1e5e4471-5cf4-6d23-6186-97f764f4d25f@gmail.com>
-Date:   Tue, 1 Dec 2020 17:26:37 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zAXFY6fJ1YLQju/dgAT7ymnIazjqdCFT7ZohpiAR7h0=;
+        b=pFloeUkpgT0g0WZ88Q3a1Ks5aXUvbHXFtA4zngjAjXe4c5yPZQiVKaZlZl2C40IhUe
+         7ik6jpcA2HaDbrLtVijHVIKz57OoIzgJeFgXbWnhWTDrjC3cp5mP04gJGc3C1dnrgUYv
+         K2JoN6XhKeRjxOWxx6YcK+3YjPjmQwqT1fPg9LCBCqLnaUvtRPgKmH54F6f0JR4v2etI
+         CxcbBfohu0PSd1aGwbUbEoDbtW9cr62QeBIyzCj3c2ftbvYxhxyg8PmLivWqDcYKze1c
+         /5153DJo1vmN3aNpRKiy4xM9FsUMpdUK+8k1ms8Wtg3RAFLwxj0DCqvhSzRvPqBtjjHW
+         reaw==
+X-Gm-Message-State: AOAM531s9Bp1Z5d36QawS+nGzCg8HV7GjDalzjNzrX+2ug4KeNbAF/oa
+        Kka7YGPJh7Xx/7UBnXx0QsU7q7KfPVmE5chwdJU=
+X-Google-Smtp-Source: ABdhPJyZ2TQsP+JkXdvjbZgCeRRu8qSVaZ8b9BjgQupepn8HPr6x5f6QArKfwsnB47bn+5cDjsN4fGHMXYUyiLMxvSU=
+X-Received: by 2002:aca:6106:: with SMTP id v6mr1433151oib.158.1606823839282;
+ Tue, 01 Dec 2020 03:57:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3025db173074d4dfbc323e91d3586f0e36426cf0.camel@sipsolutions.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201201112051.17463-1-sergio.paracuellos@gmail.com> <20201201114453.GC8403@vkoul-mobl>
+In-Reply-To: <20201201114453.GC8403@vkoul-mobl>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Tue, 1 Dec 2020 12:57:08 +0100
+Message-ID: <CAMhs-H9PtGs8uO-Hg0o7YL2+HKQKrRC-gRJs3sFH04bz2SsMng@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] phy: ralink: phy-mt7621-pci: some fixes for COMPILE_TEST
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 01/12/20 3:30 pm, Johannes Berg wrote:
-> On Tue, 2020-12-01 at 15:26 +0530, Anant Thazhemadam wrote:
->> Currently, it is assumed that key_idx values that are passed to
->> ieee80211_del_key() are all valid indexes as is, and no sanity checks
->> are performed for it.
->> However, syzbot was able to trigger an array-index-out-of-bounds bug
->> by passing a key_idx value of 5, when the maximum permissible index
->> value is (NUM_DEFAULT_KEYS - 1).
->> Enforcing sanity checks helps in preventing this bug, or a similar
->> instance in the context of ieee80211_del_key() from occurring.
-> I think we should do this more generally in cfg80211, like in
-> nl80211_new_key() we do it via cfg80211_validate_key_settings().
+On Tue, Dec 1, 2020 at 12:44 PM Vinod Koul <vkoul@kernel.org> wrote:
 >
-> I suppose we cannot use the same function, but still, would be good to
-> address this generally in nl80211 for all drivers.
+> On 01-12-20, 12:20, Sergio Paracuellos wrote:
+> > Hi Vinod,
+> >
+> > After merging the phy-next tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >
+> > drivers/phy/ralink/phy-mt7621-pci.c:17:10: fatal error: mt7621.h: No such file or directory
+> > 17 | #include <mt7621.h>
+> >  |          ^~~~~~~~~~
+> >
+> > This driver has two includes which are in
+> > "arch/mips/include/asm/mach-ralink" and are directly included in the
+> > driver:
+> > * mt7621.h
+> > * ralink_regs.h
+> >
+> > This is because this path is directly included in 'arch/mips/ralink/Platform'
+> > for "ralink".
+> >
+> > Adding the include search path to the phy ralink directory fix the problem but
+> > as you told me I finally end up removing COMPILE_TEST from Kconfig.
+> >
+> > Making 'allmodconfig' in x86_64 also showed two warnings for this driver
+> > because of pointer size and not valid name for MODULE_DEVICE_TABLE ids.
+> >
+> > Ids for the macro has been also included in this series.
+>
+> Applied, thanks
+>
 
-Hello,
+Thanks for letting me know.
 
-This gave me the idea of trying to use cfg80211_validate_key_settings()
-directly in ieee80211_del_key(). I did try that out, tested it, and this bug
-doesn't seem to be getting triggered anymore.
-If this is okay, then I can send in a v2 soon. :)
-
-If there is any reason that I'm missing as to why cfg80211_validate_key_settings()
-cannot be used in this context, please let me know.
-
-Thanks,
-Anant
-
+Best regards,
+    Sergio Paracuellos
+> --
+> ~Vinod
