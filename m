@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993762C9D69
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202982C9D04
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729472AbgLAJXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:23:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
+        id S2389312AbgLAJIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:08:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389118AbgLAJHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:07:04 -0500
+        id S2389134AbgLAJHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:07:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5F652067D;
-        Tue,  1 Dec 2020 09:06:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDF5E206C1;
+        Tue,  1 Dec 2020 09:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813608;
-        bh=YzXtEo56Ux0ugtyP4gSSkJ8sPROLpbO729eQ48puBqM=;
+        s=korg; t=1606813611;
+        bh=aolf/JTFx8UwBgnU90Rlf5q5kYjL3ySZ4Yh56LQpZUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HSXvTH0ablDx+PtD+3O/PYUu07AaLEaPEh3TguInAJ1zPMMkk0yY4PIyfLFS5LWRG
-         79HuhOQk9NTL8kJS7qOtWWaHxoec9gX5W5/Qblqi6Kob3YXGNwseD3vkVG75mMlYq7
-         pvioTOCIlFfSz+8BdiDpCcqXODAp+FaqBrMZPpfI=
+        b=Xt5BMYMRdrS7+eSNdwB/ABwr1rAn1fyshUyftM4XExQiKe+Dc/EUhGkdgaGlUC9oA
+         OPwYmKrb6Ku0YRRKDe2TIlwgdh/vqSZ5Vt+rDCRddkz8ZRO6af8s5K+3xFeu2BQLaC
+         VLKnSmglR86RhEY6YrHqa6CeXf/sQm2s6Zla5f38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexander Chalikiopoulos <bugzilla.kernel.org@mrtoasted.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.4 90/98] USB: core: Fix regression in Hercules audio card
-Date:   Tue,  1 Dec 2020 09:54:07 +0100
-Message-Id: <20201201084659.490281066@linuxfoundation.org>
+        "alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
+        pierre-louis.bossart@linux.intel.com, mateusz.gorski@linux.intel.com,
+        Cezary Rojewski" <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH 5.4 91/98] ASoC: Intel: Skylake: Remove superfluous chip initialization
+Date:   Tue,  1 Dec 2020 09:54:08 +0100
+Message-Id: <20201201084659.522735398@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
 References: <20201201084652.827177826@linuxfoundation.org>
@@ -44,57 +47,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-commit 184eead057cc7e803558269babc1f2cfb9113ad1 upstream
+commit 2ef81057d80456870b97890dd79c8f56a85b1242 upstream.
 
-Commit 3e4f8e21c4f2 ("USB: core: fix check for duplicate endpoints")
-aimed to make the USB stack more reliable by detecting and skipping
-over endpoints that are duplicated between interfaces.  This caused a
-regression for a Hercules audio card (reported as Bugzilla #208357),
-which contains such non-compliant duplications.  Although the
-duplications are harmless, skipping the valid endpoints prevented the
-device from working.
+Skylake driver does the controller init operation twice:
+- first during probe (only to stop it just before scheduling probe_work)
+- and during said probe_work where the actual correct sequence is
+executed
 
-This patch fixes the regression by adding ENDPOINT_IGNORE quirks for
-the Hercules card, telling the kernel to ignore the invalid duplicate
-endpoints and thereby allowing the valid endpoints to be used as
-intended.
+To properly complete boot sequence when iDisp codec is present, bus
+initialization has to be called only after _i915_init() finishes.
+With additional _reset_list preceding _i915_init(), iDisp codec never
+gets the chance to enumerate on the link. Remove the superfluous
+initialization to address the issue.
 
-Fixes: 3e4f8e21c4f2 ("USB: core: fix check for duplicate endpoints")
-CC: <stable@vger.kernel.org>
-Reported-by: Alexander Chalikiopoulos <bugzilla.kernel.org@mrtoasted.com>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20201119170040.GA576844@rowland.harvard.edu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[sudip: use usb_endpoint_blacklist and USB_QUIRK_ENDPOINT_BLACKLIST]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200305145314.32579-2-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org> # 5.4.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/core/quirks.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/intel/skylake/skl.c |   13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -348,6 +348,10 @@ static const struct usb_device_id usb_qu
- 	/* Guillemot Webcam Hercules Dualpix Exchange*/
- 	{ USB_DEVICE(0x06f8, 0x3005), .driver_info = USB_QUIRK_RESET_RESUME },
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -807,6 +807,9 @@ static void skl_probe_work(struct work_s
+ 			return;
+ 	}
  
-+	/* Guillemot Hercules DJ Console audio card (BZ 208357) */
-+	{ USB_DEVICE(0x06f8, 0xb000), .driver_info =
-+			USB_QUIRK_ENDPOINT_BLACKLIST },
++	skl_init_pci(skl);
++	skl_dum_set(bus);
 +
- 	/* Midiman M-Audio Keystation 88es */
- 	{ USB_DEVICE(0x0763, 0x0192), .driver_info = USB_QUIRK_RESET_RESUME },
+ 	err = skl_init_chip(bus, true);
+ 	if (err < 0) {
+ 		dev_err(bus->dev, "Init chip failed with err: %d\n", err);
+@@ -922,8 +925,6 @@ static int skl_first_init(struct hdac_bu
+ 		return -ENXIO;
+ 	}
  
-@@ -525,6 +529,8 @@ static const struct usb_device_id usb_am
-  * Matched for devices with USB_QUIRK_ENDPOINT_BLACKLIST.
-  */
- static const struct usb_device_id usb_endpoint_blacklist[] = {
-+	{ USB_DEVICE_INTERFACE_NUMBER(0x06f8, 0xb000, 5), .driver_info = 0x01 },
-+	{ USB_DEVICE_INTERFACE_NUMBER(0x06f8, 0xb000, 5), .driver_info = 0x81 },
- 	{ USB_DEVICE_INTERFACE_NUMBER(0x0926, 0x0202, 1), .driver_info = 0x85 },
- 	{ USB_DEVICE_INTERFACE_NUMBER(0x0926, 0x0208, 1), .driver_info = 0x85 },
- 	{ }
+-	snd_hdac_bus_reset_link(bus, true);
+-
+ 	snd_hdac_bus_parse_capabilities(bus);
+ 
+ 	/* check if PPCAP exists */
+@@ -971,11 +972,7 @@ static int skl_first_init(struct hdac_bu
+ 	if (err < 0)
+ 		return err;
+ 
+-	/* initialize chip */
+-	skl_init_pci(skl);
+-	skl_dum_set(bus);
+-
+-	return skl_init_chip(bus, true);
++	return 0;
+ }
+ 
+ static int skl_probe(struct pci_dev *pci,
+@@ -1080,8 +1077,6 @@ static int skl_probe(struct pci_dev *pci
+ 	if (bus->mlcap)
+ 		snd_hdac_ext_bus_get_ml_capabilities(bus);
+ 
+-	snd_hdac_bus_stop_chip(bus);
+-
+ 	/* create device for soc dmic */
+ 	err = skl_dmic_device_register(skl);
+ 	if (err < 0) {
 
 
