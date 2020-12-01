@@ -2,156 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F18B2C952C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2782C9530
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgLAC15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:27:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        id S1726877AbgLAC3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:29:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgLAC14 (ORCPT
+        with ESMTP id S1726658AbgLAC3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:27:56 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EBCC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:27:16 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id l23so295231pjg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:27:16 -0800 (PST)
+        Mon, 30 Nov 2020 21:29:14 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E099C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:28:28 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id j13so292402pjz.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:28:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ta9y/swT35VtKhxTfZV2j6YXFZIC2RzBuLf4MvgxmWk=;
-        b=n3Q9N9syDD99I9uMqSd4m6kqwfHlg75lSW91G78qkQaPPx0atgYLB6Vs0DbSN/aZI6
-         vz5Dn8Bjq2PzEp8ZmNafPVuogag0nn53yzndVWqzFxCchapnWE/ne3fdTVF6xroUkKzG
-         PeYIspFeDjko2NhKQoWY1JmxFay2+Exd3c/aGRT0y5IGYDF2sxI1z1xBioW7kLWfc+lL
-         2fTtyCiTcr8g4SyvAX9LG+xKNSHL6sZqGQ+0lgt/MLWIbM+x6q5Fbn6rDQvnfP0axApZ
-         DtcBHGIhyCDufsuba1lJedrP3xbD6/j8P/Fi1vV82OXi90S1zrmNIMEVIo/8rhDUosWk
-         EaHQ==
+        bh=EXoDwvSjt22E8mrtUvILlvBbztf50ITW2DwnFsqDqOY=;
+        b=Tz/zcBvQZ/T+ZZV4+7cBfs7h72J4yEszVWGaNb+QjOSynIFfPbkdzYzzU9S9dcMqkN
+         ZYLM8GzMd+GKqE8h6xMRYG7DXjkPkp1ErVmKyvKTbhLiSUf43H9cEibz8HalldOdrxkr
+         +CkxOIDM4cj4Uorv6QlE/ZLIaBz04xDjOnQrSRmXNIfNy0VLsmT+1JoE0k4KzBmuXGSJ
+         kHQjG+IdinN9eTF2AFjXUsaP7gnztXDYelca5W6tIS7k7jEUqC1lchgWrdYjAmMomkbn
+         FzMW2MoBAMVFGztjUwnIYaozuR3n8QXQQ+EdBnpDwhvjJBupzFFyUQPwbpwEqyWvqTAN
+         ljng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=ta9y/swT35VtKhxTfZV2j6YXFZIC2RzBuLf4MvgxmWk=;
-        b=Qy6Ry8676ONuXVllOfKZ5uESclx7TEXCDCgPlr6eYePpivHXtN6tR7oFt0N/IiUP6M
-         qb3PHGPgKGFrOwbES9VBSu3A9Mxtw7W4vAM5LbH/7fZwhw4gmafyMdY0M5vTbVrUXtS+
-         aQLtoGaP0OOyqahEGBsimdjrf94Le6aU82j+w90N4RBjqKlI45M4oS0TFY0O+k/tnJvs
-         u/3atRVzw8FFNrOKCnfqq8Dxg6fnEW1tTGKgyhXd8/6bexQ/CyKVoqnV+WrK2KOBWnik
-         KbfIOtnmbG47p1eJQWT+8e8UXWL9Uccr55y6uIBcj/tejTqBd48jJMclREi3YGf6g5v5
-         dluA==
-X-Gm-Message-State: AOAM531mYai56E3Y5fR/Wb9bIL3fzKEqPPk0fs9Chirqwt2Puj7oxJT4
-        rai8VXnk5qgcsi5tb4PszmAmCw==
-X-Google-Smtp-Source: ABdhPJy+qtSYBcbF8raBn9CjNSKugPUMhxwhxbhTHo9RabT/9zqd/PA2T2T2Mwq4sDchSmvcphYAzg==
-X-Received: by 2002:a17:90b:4b0a:: with SMTP id lx10mr414148pjb.128.1606789636094;
-        Mon, 30 Nov 2020 18:27:16 -0800 (PST)
+        bh=EXoDwvSjt22E8mrtUvILlvBbztf50ITW2DwnFsqDqOY=;
+        b=WLCV/xWe5NB/ZyiC0Gk+bUpUTdtmnKtbJ3NBWHZkiv71rLmRXvoZmXs/3wXPClSVot
+         fSgoEsh+FaHtBHqVz6U1j4TQT2KbryGCd2IhSP0TOcBig+e9t28gbS3He6jFbZnEEafy
+         qhtnVCYgXAjrSeRZ4CP4ousBYiY4OVqj4hd+d/tAVwoDAhpcLxjGfwNVTXzxHfYBzz41
+         QSHwtjq8QaU9NxWcKRhSLJNhdi8zGd8EDF0w5q7cOjd0HSdFCd+hcwoNEwGoDPrXCVDR
+         77BjO01saqyn2qT9irMy5vH/tQarqNnAy6oH3pje0rTyER6sAPOOmiMC8j9tnG5olIT6
+         8wyg==
+X-Gm-Message-State: AOAM5334D94/2qnhZaQfWxDJnaxcsrs9mqggElk0PrbqI5Byt6M2eJ0J
+        ihb46uqDg37y7BIc1bidx2zXQkQixQuCdA==
+X-Google-Smtp-Source: ABdhPJyAS3ArmLirT98GlWYnDPZln9OFDPoScT1Tt8wK9FFy2ujWhMXdE3AK5C+pq45FKn8dunYmYw==
+X-Received: by 2002:a17:902:b90b:b029:da:97e2:722d with SMTP id bf11-20020a170902b90bb02900da97e2722dmr664648plb.3.1606789707973;
+        Mon, 30 Nov 2020 18:28:27 -0800 (PST)
 Received: from laputa (p784a5642.tkyea130.ap.so-net.ne.jp. [120.74.86.66])
-        by smtp.gmail.com with ESMTPSA id q24sm257447pjd.30.2020.11.30.18.27.13
+        by smtp.gmail.com with ESMTPSA id s11sm363266pfh.128.2020.11.30.18.28.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 18:27:15 -0800 (PST)
-Date:   Tue, 1 Dec 2020 11:27:11 +0900
+        Mon, 30 Nov 2020 18:28:27 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:28:23 +0900
 From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
 To:     Adrian Hunter <adrian.hunter@intel.com>
 Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
         linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
         greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH v3.1 18/27] mmc: sdhci-uhs2: add clock operations
-Message-ID: <20201201022711.GB43403@laputa>
+Subject: Re: [RFC PATCH v3.1 19/27] mmc: sdhci-uhs2: add set_reg() to
+ initialise the interface
+Message-ID: <20201201022823.GC43403@laputa>
 Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
         Adrian Hunter <adrian.hunter@intel.com>, ulf.hansson@linaro.org,
         linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
 References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
- <20201106022726.19831-19-takahiro.akashi@linaro.org>
- <14ad8c85-0dbb-b023-6a0d-7805cc6f0ab8@intel.com>
+ <20201106022726.19831-20-takahiro.akashi@linaro.org>
+ <2356a6bc-bb19-0689-3b69-93f612ccb719@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <14ad8c85-0dbb-b023-6a0d-7805cc6f0ab8@intel.com>
+In-Reply-To: <2356a6bc-bb19-0689-3b69-93f612ccb719@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 10:17:59AM +0200, Adrian Hunter wrote:
+On Thu, Nov 26, 2020 at 10:18:26AM +0200, Adrian Hunter wrote:
 > On 6/11/20 4:27 am, AKASHI Takahiro wrote:
-> > This is a sdhci version of mmc's uhs2_[enable|disable]_clk operations.
+> > This is a sdhci version of mmc's uhs2_set_reg operation.
+> > UHS-II interface (related registers) will be initialised here.
 > > 
 > > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 > > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
 > > ---
-> >  drivers/mmc/host/sdhci-uhs2.c | 41 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 41 insertions(+)
+> >  drivers/mmc/host/sdhci-uhs2.c | 103 ++++++++++++++++++++++++++++++++++
+> >  1 file changed, 103 insertions(+)
 > > 
 > > diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-> > index 994dff967e85..55362ace1857 100644
+> > index 55362ace1857..d8afb99a9918 100644
 > > --- a/drivers/mmc/host/sdhci-uhs2.c
 > > +++ b/drivers/mmc/host/sdhci-uhs2.c
-> > @@ -11,6 +11,7 @@
-> >   */
-> >  
-> >  #include <linux/delay.h>
-> > +#include <linux/ktime.h>
-> >  #include <linux/module.h>
-> >  
-> >  #include "sdhci.h"
-> > @@ -385,6 +386,42 @@ void sdhci_uhs2_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  	__sdhci_uhs2_set_ios(mmc, ios);
+> > @@ -332,6 +332,68 @@ static void __sdhci_uhs2_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+> >  	spin_unlock_irqrestore(&host->lock, flags);
 > >  }
 > >  
-> > +static void sdhci_uhs2_disable_clk(struct mmc_host *mmc)
+> > +/* TODO: move this function to sdhci.c */
+> > +static void sdhci_clear_set_irqs(struct sdhci_host *host, u32 clear, u32 set)
 > > +{
-> > +        struct sdhci_host *host = mmc_priv(mmc);
-> > +	u16 clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> > +	u32 ier;
 > > +
-> > +	clk &= ~SDHCI_CLOCK_CARD_EN;
-> > +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> > +	ier = sdhci_readl(host, SDHCI_INT_ENABLE);
+> > +	ier &= ~clear;
+> > +	ier |= set;
+> > +	sdhci_writel(host, ier, SDHCI_INT_ENABLE);
+> > +	sdhci_writel(host, ier, SDHCI_SIGNAL_ENABLE);
 > > +}
 > > +
-> > +static void sdhci_uhs2_enable_clk(struct mmc_host *mmc)
+> > +static void sdhci_uhs2_set_config(struct sdhci_host *host)
 > > +{
-> > +        struct sdhci_host *host = mmc_priv(mmc);
-> > +	u16 clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> > +	ktime_t timeout;
+> > +	u32 value;
+> > +	u16 sdhci_uhs2_set_ptr = sdhci_readw(host, SDHCI_UHS2_SET_PTR);
+> > +	u16 sdhci_uhs2_gen_set_reg = (sdhci_uhs2_set_ptr + 0);
+> > +	u16 sdhci_uhs2_phy_set_reg = (sdhci_uhs2_set_ptr + 4);
+> > +	u16 sdhci_uhs2_tran_set_reg = (sdhci_uhs2_set_ptr + 8);
+> > +	u16 sdhci_uhs2_tran_set_1_reg = (sdhci_uhs2_set_ptr + 12);
 > > +
-> > +	clk |= SDHCI_CLOCK_CARD_EN;
-> > +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> > +	/* Set Gen Settings */
+> > +	sdhci_writel(host, host->mmc->uhs2_caps.n_lanes_set <<
+> > +		SDHCI_UHS2_GEN_SET_N_LANES_POS, sdhci_uhs2_gen_set_reg);
 > > +
-> > +	/* Wait max 20 ms */
-> > +	timeout = ktime_add_ms(ktime_get(), 20);
-> > +	while (1) {
-> > +		bool timedout = ktime_after(ktime_get(), timeout);
+> > +	/* Set PHY Settings */
+> > +	value = (host->mmc->uhs2_caps.n_lss_dir_set <<
+> > +			SDHCI_UHS2_PHY_SET_N_LSS_DIR_POS) |
+> > +		(host->mmc->uhs2_caps.n_lss_sync_set <<
+> > +			SDHCI_UHS2_PHY_SET_N_LSS_SYN_POS);
+> > +	if (host->mmc->flags & MMC_UHS2_SPEED_B)
+> > +		value |= 1 << SDHCI_UHS2_PHY_SET_SPEED_POS;
+> > +	sdhci_writel(host, value, sdhci_uhs2_phy_set_reg);
 > > +
-> > +		clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> > +	/* Set LINK-TRAN Settings */
+> > +	value = (host->mmc->uhs2_caps.max_retry_set <<
+> > +			SDHCI_UHS2_TRAN_SET_RETRY_CNT_POS) |
+> > +		(host->mmc->uhs2_caps.n_fcu_set <<
+> > +			SDHCI_UHS2_TRAN_SET_N_FCU_POS);
+> > +	sdhci_writel(host, value, sdhci_uhs2_tran_set_reg);
+> > +	sdhci_writel(host, host->mmc->uhs2_caps.n_data_gap_set,
+> > +		     sdhci_uhs2_tran_set_1_reg);
+> > +}
+> > +
+> > +static int sdhci_uhs2_check_dormant(struct sdhci_host *host)
+> > +{
+> > +	int timeout = 100;
+> > +
+> > +	while (!(sdhci_readl(host, SDHCI_PRESENT_STATE) &
+> > +		SDHCI_UHS2_IN_DORMANT_STATE)) {
 > 
-> Can use read_poll_timeout(sdhci_readw,..., host, SDHCI_CLOCK_CONTROL)
+> Can use read_poll_timeout(sdhci_readl,..., host, SDHCI_PRESENT_STATE)
 
-Okay.
+Okay
 
 -Takahiro Akashi
 
-> > +		if (clk & SDHCI_CLOCK_INT_STABLE)
-> > +			break;
-> > +		if (timedout) {
-> > +			pr_err("%s: Internal clock never stabilised.\n",
-> > +			       mmc_hostname(host->mmc));
+> > +		if (timeout == 0) {
+> > +			pr_warn("%s: UHS2 IN_DORMANT fail in 100ms.\n",
+> > +				mmc_hostname(host->mmc));
 > > +			sdhci_dumpregs(host);
-> > +			return;
+> > +			return -EIO;
 > > +		}
-> > +		udelay(10);
+> > +		timeout--;
+> > +		mdelay(1);
 > > +	}
+> > +	return 0;
+> > +}
+> > +
+> >  /*****************************************************************************\
+> >   *                                                                           *
+> >   * MMC callbacks                                                             *
+> > @@ -422,6 +484,45 @@ static void sdhci_uhs2_enable_clk(struct mmc_host *mmc)
+> >  	}
+> >  }
+> >  
+> > +static int sdhci_uhs2_set_reg(struct mmc_host *mmc, enum uhs2_act act)
+> > +{
+> > +        struct sdhci_host *host = mmc_priv(mmc);
+> > +	unsigned long flags;
+> > +	int err = 0;
+> > +	u16 sdhci_uhs2_set_ptr = sdhci_readw(host, SDHCI_UHS2_SET_PTR);
+> > +	u16 sdhci_uhs2_phy_set_reg = (sdhci_uhs2_set_ptr + 4);
+> > +
+> > +	DBG("Begin sdhci_uhs2_set_reg, act %d.\n", act);
+> > +	spin_lock_irqsave(&host->lock, flags);
+> > +
+> > +	switch (act) {
+> > +	case SET_CONFIG:
+> > +		sdhci_uhs2_set_config(host);
+> > +		break;
+> > +	case ENABLE_INT:
+> > +		sdhci_clear_set_irqs(host, 0, SDHCI_INT_CARD_INT);
+> > +		break;
+> > +	case DISABLE_INT:
+> > +		sdhci_clear_set_irqs(host, SDHCI_INT_CARD_INT, 0);
+> > +		break;
+> > +	case SET_SPEED_B:
+> > +		sdhci_writeb(host, 1 << SDHCI_UHS2_PHY_SET_SPEED_POS,
+> > +			     sdhci_uhs2_phy_set_reg);
+> > +		break;
+> > +	case CHECK_DORMANT:
+> > +		err = sdhci_uhs2_check_dormant(host);
+> > +		break;
+> > +	default:
+> > +		pr_err("%s: input action %d is wrong!\n",
+> > +		       mmc_hostname(host->mmc), act);
+> > +		err = -EIO;
+> > +		break;
+> > +	}
+> > +
+> > +	spin_unlock_irqrestore(&host->lock, flags);
+> > +	return err;
 > > +}
 > > +
 > >  /*****************************************************************************\
 > >   *                                                                           *
 > >   * Driver init/exit                                                          *
-> > @@ -556,6 +593,10 @@ static int sdhci_uhs2_host_ops_init(struct sdhci_host *host)
-> >  
-> >  	if (!host->mmc_host_ops.uhs2_detect_init)
-> >  		host->mmc_host_ops.uhs2_detect_init = sdhci_uhs2_do_detect_init;
-> > +	if (!host->mmc_host_ops.uhs2_disable_clk)
-> > +		host->mmc_host_ops.uhs2_disable_clk = sdhci_uhs2_disable_clk;
-> > +	if (!host->mmc_host_ops.uhs2_enable_clk)
-> > +		host->mmc_host_ops.uhs2_enable_clk = sdhci_uhs2_enable_clk;
+> > @@ -597,6 +698,8 @@ static int sdhci_uhs2_host_ops_init(struct sdhci_host *host)
+> >  		host->mmc_host_ops.uhs2_disable_clk = sdhci_uhs2_disable_clk;
+> >  	if (!host->mmc_host_ops.uhs2_enable_clk)
+> >  		host->mmc_host_ops.uhs2_enable_clk = sdhci_uhs2_enable_clk;
+> > +	if (!host->mmc_host_ops.uhs2_set_reg)
+> > +		host->mmc_host_ops.uhs2_set_reg = sdhci_uhs2_set_reg;
 > >  
 > >  	return 0;
 > >  }
