@@ -2,200 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9082CAAC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A21A2CAAC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392212AbgLASas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:30:48 -0500
-Received: from mail.efficios.com ([167.114.26.124]:58922 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391625AbgLASaX (ORCPT
+        id S1730757AbgLASc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729907AbgLAScV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:30:23 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 8035B24C0D0;
-        Tue,  1 Dec 2020 13:29:41 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id eiuekbqyRmvJ; Tue,  1 Dec 2020 13:29:41 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 085C524C587;
-        Tue,  1 Dec 2020 13:29:41 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 085C524C587
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1606847381;
-        bh=9BQJZhFO8tdyg4wdmp7w+inWqo5ORdxMQeYqT4FiCGw=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=oCHVgpwcrcxpzs8iX6vFkmqh9HqHyNbZXbZAiCQMCiZ1wQiCz+31xquf7roYJIJxi
-         lRfjaoZ9mo1UK6Sh4EBMbvhN8xAxyEFnP9sOIplXbBmhasD5zYlSYLiqIPfBKUEw8s
-         9WBgyf09ZNdJbzxDGE34T8ynu58bvtwuAOvnaib4A6CdbjWxzyVzuTqfe8JTyEnDJ/
-         HPcOzxcXiVVyDwl63mrxNzciZwt8CeFfKhK3tGDKy4uOScPAzc4ZS18Ncx1dTA2xlp
-         MqWGTLn4P/kxx+VwutV+FHseMSns6VCavLaSos99yQvhp3r1xmjGlWQ0qoWeX1ZzrV
-         24Auh9CibQZDw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id xDoQQ6cd3Z9J; Tue,  1 Dec 2020 13:29:40 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id F05F524C398;
-        Tue,  1 Dec 2020 13:29:40 -0500 (EST)
-Date:   Tue, 1 Dec 2020 13:29:40 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anton Blanchard <anton@ozlabs.org>
-Message-ID: <763536813.69859.1606847380892.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CALCETrVXG0A2NwiPY31G3uQYvVzbwFM80hFbVLWi8tb-_+k1dQ@mail.gmail.com>
-References: <cover.1606758530.git.luto@kernel.org> <5495e4c344dc09011ff57756c7e0a1330830eafc.1606758530.git.luto@kernel.org> <20201201101637.GU2414@hirez.programming.kicks-ass.net> <1044280457.69297.1606832917168.JavaMail.zimbra@efficios.com> <CALCETrVXG0A2NwiPY31G3uQYvVzbwFM80hFbVLWi8tb-_+k1dQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] membarrier: Propagate SYNC_CORE and RSEQ actions
- more carefully
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF83 (Linux)/8.8.15_GA_3975)
-Thread-Topic: membarrier: Propagate SYNC_CORE and RSEQ actions more carefully
-Thread-Index: mZ5ofS8BFWPmQNHhZ4PAUmTF9vPVzg==
+        Tue, 1 Dec 2020 13:32:21 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F2FC0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:31:34 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id e23so1666860pgk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:31:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=0RILkJhwT1gNN2v1WOAqqXRJY0oRcDFSFoTrZJdnf4Q=;
+        b=IR51M4ehABuMM6RkJRems+o/xPTA7D/jAaO6107e5tcDmAXTvPitnW8s5XBAhd+TbX
+         fKHr+MG4+EHWwKWNe4LtLdebu1hKdi0IdE+L3rIxBnffFg3KwDWSsESsccmV8naMKW5o
+         P7Boq6nAtTyR7XtX43JdqzM481lFcE3Zg3k19CMaWpO9ta41CIHxp0+oRZu1tMAQUP8B
+         bSaM1z2HuhPdldAntdGBFc73qvV/oPisao2Pu12/0eLsaPdwk3g+b08iWjczQG/HS9dK
+         hcSegO1s40rq/nDM8/s39ZLjjEkgXeFjjJg5A/JQ4fYi3c7Aw32viwp8Z1q4zo/Vrou5
+         Z/Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=0RILkJhwT1gNN2v1WOAqqXRJY0oRcDFSFoTrZJdnf4Q=;
+        b=GtJO1eAtPyjqGv1YxDLzZAkchQl5KD9EjqqAcwLZS/xPY9zJiyItLw6QGuwZMHGOTL
+         g0Fcxf2qJyAjwmoykBrvp/zQB6Wgpi7rqX/VnLyhYpfEmDRJ3Q3g35FpHp8moy0oKvJ0
+         u9XzHf86HNcKvmaPSw7Tochbxc7ZP8w0XjSGo0sxsawvWuQBHnHVBM02Pv5sNQ+iyTg2
+         ZgankPJukkPeNWgxfNiBa53sKjyDBK2qYN4haWCgz/jM3yYS9AsAuVXuQPG7CkWfAnrw
+         L49WUmS4SrPFB5rSLKnDKGfpuEGFxP8OEqfdFRpFQRNXVDCBlcmlYyjdgZ9HBrbvVPV7
+         3zOg==
+X-Gm-Message-State: AOAM531FZe4fbj8OgBGkiv6scrJzT9u0kxRoYq1mx3zGdol3MwLXX2ee
+        UFv2nPLGsM3fdjj9wTzNq7zwlQ==
+X-Google-Smtp-Source: ABdhPJylEh/Yf0I5dqANnamzUb9OMOunJOqwyS2HEELj8E62cuaX7M7t9wxCRpFmCuPCZn2bQgWrmw==
+X-Received: by 2002:a63:b511:: with SMTP id y17mr3432421pge.345.1606847494108;
+        Tue, 01 Dec 2020 10:31:34 -0800 (PST)
+Received: from [192.168.10.160] (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id iq3sm368325pjb.57.2020.12.01.10.31.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Dec 2020 10:31:32 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <7E59D613-41D7-4AD1-8674-BCF9F5DC2A0C@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_0A927CB4-C95C-4C8C-AFBA-8F091BDCA3B9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 1/2] uapi: fix statx attribute value overlap for DAX &
+ MOUNT_ROOT
+Date:   Tue, 1 Dec 2020 11:31:28 -0700
+In-Reply-To: <242fce05-90ed-2d2a-36f9-3c8432d57cbc@redhat.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        Xiaoli Feng <xifeng@redhat.com>
+To:     Eric Sandeen <sandeen@redhat.com>
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+ <7027520f-7c79-087e-1d00-743bdefa1a1e@redhat.com>
+ <20201201173213.GH143045@magnolia>
+ <242fce05-90ed-2d2a-36f9-3c8432d57cbc@redhat.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Dec 1, 2020, at 1:12 PM, Andy Lutomirski luto@kernel.org wrote:
 
-> On Tue, Dec 1, 2020 at 6:28 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->>
->> ----- On Dec 1, 2020, at 5:16 AM, Peter Zijlstra peterz@infradead.org wr=
-ote:
->>
->> > On Mon, Nov 30, 2020 at 09:50:35AM -0800, Andy Lutomirski wrote:
->> >> membarrier() carefully propagates SYNC_CORE and RSEQ actions to all
->> >> other CPUs, but there are two issues.
->> >>
->> >>  - membarrier() does not sync_core() or rseq_preempt() the calling
->> >>    CPU.  Aside from the logic being mind-bending, this also means
->> >>    that it may not be safe to modify user code through an alias,
->> >>    call membarrier(), and then jump to a different executable alias
->> >>    of the same code.
->> >
->> > I always understood this to be on purpose. The calling CPU can fix up
->> > itself just fine. The pain point is fixing up the other CPUs, and that=
-'s
->> > where membarrier() helps.
->>
->> Indeed, as documented in the man page:
->>
->>        MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE (since Linux 4.16)
->>               In  addition  to  providing  the  memory ordering guarante=
-es de=E2=80=90
->>               scribed in MEMBARRIER_CMD_PRIVATE_EXPEDITED,  upon  return=
-  from
->>               system call the calling thread has a guarantee that all it=
-s run=E2=80=90
->>               ning thread siblings have executed a core  serializing  in=
-struc=E2=80=90
->>               tion.   This  guarantee is provided only for threads in th=
-e same
->>               process as the calling thread.
->>
->> membarrier sync core guarantees a core serializing instruction on the si=
-blings,
->> not on the caller thread. This has been done on purpose given that the c=
-aller
->> thread can always issue its core serializing instruction from user-space=
- on
->> its own.
->>
->> >
->> > That said, I don't mind including self, these aren't fast calls by any
->> > means.
->>
->> I don't mind including self either, but this would require documentation
->> updates, including man pages, to state that starting from kernel Y this
->> is the guaranteed behavior. It's then tricky for user-space to query wha=
-t
->> the behavior is unless we introduce a new membarrier command for it. So =
-this
->> could introduce issues if software written for the newer kernels runs on=
- older
->> kernels.
+--Apple-Mail=_0A927CB4-C95C-4C8C-AFBA-8F091BDCA3B9
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Dec 1, 2020, at 10:44 AM, Eric Sandeen <sandeen@redhat.com> wrote:
 >=20
-> For rseq at least, if we do this now we don't have this issue -- I
-> don't think any released kernel has the rseq mode.
-
-But for rseq, there is no core-sync. And considering that it is invalid
-to issue a system call within an rseq critical section (including membarrie=
-r),
-I don't see what we gain by doing a rseq barrier on self ?
-
-The only case where it really changes the semantic is for core-sync I think=
-.
-And in this case, it would be adding an additional core-sync on self. I
-am OK with doing that considering that it will simplify use of the system
-call. I'm just wondering how we should document this change in the man page=
-.
-
+> On 12/1/20 11:32 AM, Darrick J. Wong wrote:
+>> On Tue, Dec 01, 2020 at 10:57:11AM -0600, Eric Sandeen wrote:
+>>> STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same =
+value,
+>>> so one of them needs fixing. Move STATX_ATTR_DAX.
+>>>=20
+>>> While we're in here, clarify the value-matching scheme for some of =
+the
+>>> attributes, and explain why the value for DAX does not match.
+>>>=20
+>>> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+>>> ---
+>>> include/uapi/linux/stat.h | 7 ++++---
+>>> 1 file changed, 4 insertions(+), 3 deletions(-)
+>>>=20
+>>> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+>>> index 82cc58fe9368..9ad19eb9bbbf 100644
+>>> --- a/include/uapi/linux/stat.h
+>>> +++ b/include/uapi/linux/stat.h
+>>> @@ -171,9 +171,10 @@ struct statx {
+>>>  * be of use to ordinary userspace programs such as GUIs or ls =
+rather than
+>>>  * specialised tools.
+>>>  *
+>>> - * Note that the flags marked [I] correspond to generic =
+FS_IOC_FLAGS
+>>> + * Note that the flags marked [I] correspond to the FS_IOC_SETFLAGS =
+flags
+>>>  * semantically.  Where possible, the numerical value is picked to =
+correspond
+>>> - * also.
+>>> + * also. Note that the DAX attribute indicates that the inode is =
+currently
+>>> + * DAX-enabled, not simply that the per-inode flag has been set.
+>>=20
+>> I don't really like using "DAX-enabled" to define "DAX attribute".  =
+How
+>> about cribbing from the statx manpage?
+>>=20
+>> "Note that the DAX attribute indicates that the file is in the CPU
+>> direct access state.  It does not correspond to the per-inode flag =
+that
+>> some filesystems support."
 >=20
->>
->> >
->> >>  - membarrier() does not explicitly sync_core() remote CPUs either;
->> >>    instead, it relies on the assumption that an IPI will result in a
->> >>    core sync.  On x86, I think this may be true in practice, but
->> >>    it's not architecturally reliable.  In particular, the SDM and
->> >>    APM do not appear to guarantee that interrupt delivery is
->> >>    serializing.
->> >
->> > Right, I don't think we rely on that, we do rely on interrupt delivery
->> > providing order though -- as per the previous email.
->> >
->> >>    On a preemptible kernel, IPI return can schedule,
->> >>    thereby switching to another task in the same mm that was
->> >>    sleeping in a syscall.  The new task could then SYSRET back to
->> >>    usermode without ever executing IRET.
->> >
->> > This; I think we all overlooked this scenario.
->>
->> Indeed, this is an issue which needs to be fixed.
->>
->> >
->> >> This patch simplifies the code to treat the calling CPU just like
->> >> all other CPUs, and explicitly sync_core() on all target CPUs.  This
->> >> eliminates the need for the smp_mb() at the end of the function
->> >> except in the special case of a targeted remote membarrier().  This
->> >> patch updates that code and the comments accordingly.
->>
->> I am not confident that removing the smp_mb at the end of membarrier is
->> an appropriate change, nor that it simplifies the model.
+> Sure.  Consistency and specificity is good, I'll change that.
 >=20
-> Ah, but I didn't remove it.  I carefully made sure that every possible
-> path through the function does an smp_mb() or stronger after all the
-> cpu_rq reads.  ipi_func(), on_each_cpu(), and the explicit smp_mb()
-> cover the three cases.
+>>>  */
+>>> #define STATX_ATTR_COMPRESSED		0x00000004 /* [I] File =
+is compressed by the fs */
+>>> #define STATX_ATTR_IMMUTABLE		0x00000010 /* [I] File =
+is marked immutable */
+>>> @@ -183,7 +184,7 @@ struct statx {
+>>> #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: =
+Automount trigger */
+>>> #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a =
+mount */
+>>> #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity =
+protected file */
+>>> -#define STATX_ATTR_DAX			0x00002000 /* [I] File =
+is DAX */
+>>> +#define STATX_ATTR_DAX			0x00400000 /* File is =
+currently DAX-enabled */
+>>=20
+>> Why not use the next bit in the series (0x200000)?  Did someone =
+already
+>> claim it in for-next?
 >=20
-> That being said, if you prefer, I can make the change to skip the
-> calling CPU, in which case I'll leave the smp_mb() at the end alone.
+> Since it didn't match the FS_IOC_SETFLAGS flag, I was trying to pick =
+one that
+> seemed unlikely to ever gain a corresponding statx flag, and since =
+0x00400000 is
+> "reserved for ext4" it seemed like a decent choice.
+>=20
+> But 0x200000 corresponds to FS_EA_INODE_FL/EXT4_EA_INODE_FL which is =
+ext4-specific
+> as well, so sure, I'll change to that.
 
-For the memory barrier commands, I prefer skipping self and leaving the
-smp_mb at the very beginning/end of the system call. Those are the key
-before/after points we are synchronizing against, and those are simple
-to document.
+If you look a few lines up in the context, this is supposed to be using =
+the
+same value as the other inode flags:
 
-For rseq, I would not mind calling the ipi callback on self, but I don't
-see how useful it would be considering that issuing system calls within
-rseq c.s. is invalid.
+ * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
+ * semantically.  Where possible, the numerical value is picked to =
+correspond
+ * also.
 
-For core-sync, I agree that doing a core-sync on self would be an actual
-simplification for users, but we should think about how we plan to update
-the man page to convey that behavior change to end users.
+#define FS_DAX_FL                       0x02000000 /* Inode is DAX */
+#define EXT4_DAX_FL                     0x02000000 /* Inode is DAX */
 
-Thanks,
+(FS_DAX_FL also used by XFS) so this should really be "0x02000000" =
+instead
+of some other value.
 
-Mathieu
+Cheers, Andreas
 
---=20
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+
+
+
+
+
+--Apple-Mail=_0A927CB4-C95C-4C8C-AFBA-8F091BDCA3B9
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/GjAAACgkQcqXauRfM
+H+AnKw//cRgK1C4EfGuGNe66Y54cpBM0GiwtonyQ9A3HdrekbHxppM4b47mYBUoj
+km4UMhalpNyJS/2OvEoKfpjzBmni6TCvyTaGcAqt9qoTsRIniGXimGXKQI4m//gq
+mjmNiVMlp00H3e7/BNGHUfq5U/6kquPwspv3Qb+VCeEOE2ZOLJG8htYhOejoKaiK
+RWxL6JCvoaJAvzeywnoeaiDDqt70sU8KGx+dBptJ6My3gcJviBtifRBjC04aqwjr
+Hs+jwCxlJNFRRg6SWVXXY7i/8WLyHYeWDrGpcNYIO8DyN7tJ58SQvZsdCiBz9UTQ
+USHMCUnte5oQw7FuPavdzn7NMKvuL21s4nu8gLEuDhW2tFMg2hIZyVa/WwjBpcbT
+TDQymhAs376Ex8D19/XxAKxtsHwO5ioZfmzxol/WXLWeY2y/Rk8i5ifAbYlTAQB1
+oYE8kZmrVJevRE86P5TBqWacrl2SP51YFo7V/3uooCaq8bhPi1tcE3fzcXpK02Yd
+oktXB9HEhNwn+mSAjwxxXhBXYL77vUnwrH/NhsaK7SuSzLtEq+RfHgP2AZcTala9
+2K41nItn2UlWLBnD4j1v1p2ba4HqVyvMVN6FABDjTDd1Sls7F7cX4h2NvRpKtABC
+g/mM9Q3YIgn3/jqmX7jkBgegQfgy6cBoZV+tvRJBzia2qWwzQR8=
+=6iL3
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_0A927CB4-C95C-4C8C-AFBA-8F091BDCA3B9--
