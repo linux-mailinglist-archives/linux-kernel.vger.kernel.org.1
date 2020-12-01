@@ -2,51 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF342C9E52
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF3C2C9E60
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391066AbgLAJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
+        id S1728977AbgLAJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391044AbgLAJtn (ORCPT
+        with ESMTP id S1728482AbgLAJun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:49:43 -0500
+        Tue, 1 Dec 2020 04:50:43 -0500
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFFAC0613CF;
-        Tue,  1 Dec 2020 01:49:02 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D82C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 01:50:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
         In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MWkNSoZ3D07G192OOADegav63gGyGdDp8F2F38XjV+M=; b=jMEzvUza8lZSDq/lXnEJw3jhrO
-        U1FpFuF6MzQxmj/FOKppiNJy4XcgbU8LGLf7MG4284ruWb6p2j3bGZsjj7o/1RNeWNxhoO6w+rAFX
-        IhWm+hF+4oznI8QHOhHUBJ5Lu2+L+aZ6wPMou8gxWLFzCMgB1ZB/kU7I/LDo7fzFnJRaZQDBE1bNF
-        /TWUftx8jdVlfck9ygp9QhqMgtpCJjc3B6kwJnKGPRXbkGq8YGDJV3LVQVH1QidSh+Nt55O2d1aj/
-        gCKnahUOVRT0oMcK7ZMsoUNM29pYW9M1hC0Pv+j0UVlM0E1wRQLN2ts+mJbazF4ZtCGvjA7lPuzxe
-        IP/PKOlA==;
-Received: from dyn-227.woodhou.se ([90.155.92.227] helo=u3832b3a9db3152.infradead.org)
+        bh=/zt1zxHGQKCphv/4lZVrlz0DlEtzDDr0dZ7+rYKgE+o=; b=spfppcC9JaeMt5TEP3z+CK84cC
+        6KyKVFxwf2OhnaFT4DEpPWjPC8vjcBqMSc9nyOfdYhAeVSYeT9tPFNM3iLEw2jfro6Yumo07Ft9rY
+        CSwgvXep1Vi6ik3FQeysZ/q/QDtja1Sdzk+lP7zg1wVjy/BHDvMcXf1419vYifgVUZSDn0xG8J7sb
+        6sTGiquo5F4Pu7MxfoW7pA1SoK8+Kbo17IDwolSvRCHTIgrdoll94hIjRsjIVTd4CrFamFehG4lNh
+        wr9RGvHljeASQ4qF9aZXMIxlWEnhl30itwsGvnPX6G5olGIwDtx1xQ6Uk9EdRxcQGlFk1Dq04x/MM
+        7ZyOsSVQ==;
+Received: from dyn-227.woodhou.se ([90.155.92.227])
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kk2HK-0000mv-D6; Tue, 01 Dec 2020 09:48:58 +0000
-Message-ID: <b56f763e6bf29a65a11b7a36c4d7bfa79b2ec1b2.camel@infradead.org>
-Subject: Re: [PATCH RFC 02/39] KVM: x86/xen: intercept xen hypercalls if
- enabled
+        id 1kk2IE-0000pU-Mk; Tue, 01 Dec 2020 09:49:54 +0000
+Message-ID: <400efca21b03186bde263f5c87c1f42d6955410e.camel@infradead.org>
+Subject: Re: [PATCH] x86, build: remove -m16 workaround for unsupported
+ versions of GCC
 From:   David Woodhouse <dwmw2@infradead.org>
-To:     Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+To:     Nick Desaulniers <ndesaulniers@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Date:   Tue, 01 Dec 2020 09:48:56 +0000
-In-Reply-To: <20190220201609.28290-3-joao.m.martins@oracle.com>
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
-         <20190220201609.28290-3-joao.m.martins@oracle.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Date:   Tue, 01 Dec 2020 09:49:52 +0000
+In-Reply-To: <20201201011307.3676986-1-ndesaulniers@google.com>
+References: <20201201011307.3676986-1-ndesaulniers@google.com>
 Content-Type: multipart/signed; micalg="sha-256";
         protocol="application/x-pkcs7-signature";
-        boundary="=-8CJS0TjsYLv+JTyOHTwh"
+        boundary="=-zoyimHSB2W58F+/bImn6"
 X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 Mime-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
@@ -55,655 +52,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-8CJS0TjsYLv+JTyOHTwh
+--=-zoyimHSB2W58F+/bImn6
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
-> Add a new exit reason for emulator to handle Xen hypercalls.
-> Albeit these are injected only if guest has initialized the Xen
-> hypercall page=20
+On Mon, 2020-11-30 at 17:13 -0800, Nick Desaulniers wrote:
+> A revert of the following two commits.
+> commit de3accdaec88 ("x86, build: Build 16-bit code with -m16 where
+> possible")
+> commit a9cfccee6604 ("x86, build: Change code16gcc.h from a C header to
+> an assembly header")
+>=20
+> Since commit 0bddd227f3dc ("Documentation: update for gcc 4.9
+> requirement") the minimum supported version of GCC is gcc-4.9.  It's now
+> safe to remove this code.
+>=20
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-I've reworked this a little.
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
 
-I didn't like the inconsistency of allowing userspace to provide the
-hypercall pages even though the ABI is now defined by the kernel and it
-*has* to be VMCALL/VMMCALL.
-
-So I switched it to generate the hypercall page directly from the
-kernel, just like we do for the Hyper-V hypercall page.
-
-I introduced a new flag in the xen_hvm_config struct to enable this
-behaviour, and advertised it in the KVM_CAP_XEN_HVM return value.
-
-I also added the cpl and support for 6-argument hypercalls, and made it
-check the guest RIP when completing the call as discussed (although I
-still think that probably ought to be a generic thing).
-
-I adjusted the test case from my version of the patch, and added
-support for actually testing the hypercall page MSR.
-
-https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/xenpv
-
-I'll go through and rebase your patch series at least up to patch 16
-and collect them in that tree, then probably post them for real once
-I've got everything working locally.
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=46rom c037c329c8867b219afe2100e383c62e9db7b06d Mon Sep 17 00:00:00 2001
-From: Joao Martins <joao.m.martins@oracle.com>
-Date: Wed, 13 Jun 2018 09:55:44 -0400
-Subject: [PATCH] KVM: x86/xen: intercept xen hypercalls if enabled
-
-Add a new exit reason for emulator to handle Xen hypercalls.
-
-Since this means KVM owns the ABI, dispense with the facility for the
-VMM to provide its own copy of the hypercall pages; just fill them in
-directly using VMCALL/VMMCALL as we do for the Hyper-V hypercall page.
-
-This behaviour is enabled by a new INTERCEPT_HCALL flag in the
-KVM_XEN_HVM_CONFIG ioctl structure, and advertised by the same flag
-being returned from the KVM_CAP_XEN_HVM check.
-
-Add a test case and shift xen_hvm_config() to the nascent xen.c while
-we're at it.
-
-Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- arch/x86/include/asm/kvm_host.h               |   6 +
- arch/x86/kvm/Makefile                         |   2 +-
- arch/x86/kvm/trace.h                          |  36 +++++
- arch/x86/kvm/x86.c                            |  46 +++---
- arch/x86/kvm/xen.c                            | 140 ++++++++++++++++++
- arch/x86/kvm/xen.h                            |  21 +++
- include/uapi/linux/kvm.h                      |  19 +++
- tools/testing/selftests/kvm/Makefile          |   1 +
- tools/testing/selftests/kvm/lib/kvm_util.c    |   1 +
- .../selftests/kvm/x86_64/xen_vmcall_test.c    | 123 +++++++++++++++
- 10 files changed, 365 insertions(+), 30 deletions(-)
- create mode 100644 arch/x86/kvm/xen.c
- create mode 100644 arch/x86/kvm/xen.h
- create mode 100644 tools/testing/selftests/kvm/x86_64/xen_vmcall_test.c
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_hos=
-t.h
-index 7e5f33a0d0e2..9de3229e91e1 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -520,6 +520,11 @@ struct kvm_vcpu_hv {
- 	cpumask_t tlb_flush;
- };
-=20
-+/* Xen HVM per vcpu emulation context */
-+struct kvm_vcpu_xen {
-+	u64 hypercall_rip;
-+};
-+
- struct kvm_vcpu_arch {
- 	/*
- 	 * rip and regs accesses must go through
-@@ -717,6 +722,7 @@ struct kvm_vcpu_arch {
- 	unsigned long singlestep_rip;
-=20
- 	struct kvm_vcpu_hv hyperv;
-+	struct kvm_vcpu_xen xen;
-=20
- 	cpumask_var_t wbinvd_dirty_mask;
-=20
-diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-index b804444e16d4..8bee4afc1fec 100644
---- a/arch/x86/kvm/Makefile
-+++ b/arch/x86/kvm/Makefile
-@@ -13,7 +13,7 @@ kvm-y			+=3D $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o \
- 				$(KVM)/eventfd.o $(KVM)/irqchip.o $(KVM)/vfio.o
- kvm-$(CONFIG_KVM_ASYNC_PF)	+=3D $(KVM)/async_pf.o
-=20
--kvm-y			+=3D x86.o emulate.o i8259.o irq.o lapic.o \
-+kvm-y			+=3D x86.o emulate.o i8259.o irq.o lapic.o xen.o \
- 			   i8254.o ioapic.o irq_comm.o cpuid.o pmu.o mtrr.o \
- 			   hyperv.o debugfs.o mmu/mmu.o mmu/page_track.o \
- 			   mmu/spte.o mmu/tdp_iter.o mmu/tdp_mmu.o
-diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-index aef960f90f26..d28ecb37b62c 100644
---- a/arch/x86/kvm/trace.h
-+++ b/arch/x86/kvm/trace.h
-@@ -92,6 +92,42 @@ TRACE_EVENT(kvm_hv_hypercall,
- 		  __entry->outgpa)
- );
-=20
-+/*
-+ * Tracepoint for Xen hypercall.
-+ */
-+TRACE_EVENT(kvm_xen_hypercall,
-+	TP_PROTO(unsigned long nr, unsigned long a0, unsigned long a1,
-+		 unsigned long a2, unsigned long a3, unsigned long a4,
-+		 unsigned long a5),
-+	    TP_ARGS(nr, a0, a1, a2, a3, a4, a5),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned long, nr)
-+		__field(unsigned long, a0)
-+		__field(unsigned long, a1)
-+		__field(unsigned long, a2)
-+		__field(unsigned long, a3)
-+		__field(unsigned long, a4)
-+		__field(unsigned long, a5)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->nr =3D nr;
-+		__entry->a0 =3D a0;
-+		__entry->a1 =3D a1;
-+		__entry->a2 =3D a2;
-+		__entry->a3 =3D a3;
-+		__entry->a4 =3D a4;
-+		__entry->a4 =3D a5;
-+	),
-+
-+	TP_printk("nr 0x%lx a0 0x%lx a1 0x%lx a2 0x%lx a3 0x%lx a4 0x%lx a5 %lx",
-+		  __entry->nr, __entry->a0, __entry->a1,  __entry->a2,
-+		  __entry->a3, __entry->a4, __entry->a5)
-+);
-+
-+
-+
- /*
-  * Tracepoint for PIO.
-  */
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 0836023963ec..adf04e8cc64a 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -29,6 +29,7 @@
- #include "pmu.h"
- #include "hyperv.h"
- #include "lapic.h"
-+#include "xen.h"
-=20
- #include <linux/clocksource.h>
- #include <linux/interrupt.h>
-@@ -2842,32 +2843,6 @@ static int set_msr_mce(struct kvm_vcpu *vcpu, struct=
- msr_data *msr_info)
- 	return 0;
- }
-=20
--static int xen_hvm_config(struct kvm_vcpu *vcpu, u64 data)
--{
--	struct kvm *kvm =3D vcpu->kvm;
--	int lm =3D is_long_mode(vcpu);
--	u8 *blob_addr =3D lm ? (u8 *)(long)kvm->arch.xen_hvm_config.blob_addr_64
--		: (u8 *)(long)kvm->arch.xen_hvm_config.blob_addr_32;
--	u8 blob_size =3D lm ? kvm->arch.xen_hvm_config.blob_size_64
--		: kvm->arch.xen_hvm_config.blob_size_32;
--	u32 page_num =3D data & ~PAGE_MASK;
--	u64 page_addr =3D data & PAGE_MASK;
--	u8 *page;
--
--	if (page_num >=3D blob_size)
--		return 1;
--
--	page =3D memdup_user(blob_addr + (page_num * PAGE_SIZE), PAGE_SIZE);
--	if (IS_ERR(page))
--		return PTR_ERR(page);
--
--	if (kvm_vcpu_write_guest(vcpu, page_addr, page, PAGE_SIZE)) {
--		kfree(page);
--		return 1;
--	}
--	return 0;
--}
--
- static inline bool kvm_pv_async_pf_enabled(struct kvm_vcpu *vcpu)
- {
- 	u64 mask =3D KVM_ASYNC_PF_ENABLED | KVM_ASYNC_PF_DELIVERY_AS_INT;
-@@ -3002,7 +2977,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct =
-msr_data *msr_info)
- 	u64 data =3D msr_info->data;
-=20
- 	if (msr && (msr =3D=3D vcpu->kvm->arch.xen_hvm_config.msr))
--		return xen_hvm_config(vcpu, data);
-+		return kvm_xen_hvm_config(vcpu, data);
-=20
- 	switch (msr) {
- 	case MSR_AMD64_NB_CFG:
-@@ -3703,7 +3678,6 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, lon=
-g ext)
- 	case KVM_CAP_PIT2:
- 	case KVM_CAP_PIT_STATE2:
- 	case KVM_CAP_SET_IDENTITY_MAP_ADDR:
--	case KVM_CAP_XEN_HVM:
- 	case KVM_CAP_VCPU_EVENTS:
- 	case KVM_CAP_HYPERV:
- 	case KVM_CAP_HYPERV_VAPIC:
-@@ -3742,6 +3716,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, lon=
-g ext)
- 	case KVM_CAP_ENFORCE_PV_FEATURE_CPUID:
- 		r =3D 1;
- 		break;
-+	case KVM_CAP_XEN_HVM:
-+		r =3D 1 | KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL;
-+		break;
- 	case KVM_CAP_SYNC_REGS:
- 		r =3D KVM_SYNC_X86_VALID_FIELDS;
- 		break;
-@@ -5603,7 +5580,15 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 		if (copy_from_user(&xhc, argp, sizeof(xhc)))
- 			goto out;
- 		r =3D -EINVAL;
--		if (xhc.flags)
-+		if (xhc.flags & ~KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL)
-+			goto out;
-+		/*
-+		 * With hypercall interception the kernel generates its own
-+		 * hypercall page so it must not be provided.
-+		 */
-+		if ((xhc.flags & KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL) &&
-+		    (xhc.blob_addr_32 || xhc.blob_addr_64 ||
-+		     xhc.blob_size_32 || xhc.blob_size_64))
- 			goto out;
- 		memcpy(&kvm->arch.xen_hvm_config, &xhc, sizeof(xhc));
- 		r =3D 0;
-@@ -8066,6 +8051,9 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
- 	unsigned long nr, a0, a1, a2, a3, ret;
- 	int op_64_bit;
-=20
-+	if (kvm_xen_hypercall_enabled(vcpu->kvm))
-+		return kvm_xen_hypercall(vcpu);
-+
- 	if (kvm_hv_hypercall_enabled(vcpu->kvm))
- 		return kvm_hv_hypercall(vcpu);
-=20
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-new file mode 100644
-index 000000000000..6400a4bc8480
---- /dev/null
-+++ b/arch/x86/kvm/xen.c
-@@ -0,0 +1,140 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright =C2=A9 2019 Oracle and/or its affiliates. All rights reserved=
-.
-+ * Copyright =C2=A9 2020 Amazon.com, Inc. or its affiliates. All Rights Re=
-served.
-+ *
-+ * KVM Xen emulation
-+ */
-+
-+#include "x86.h"
-+#include "xen.h"
-+
-+#include <linux/kvm_host.h>
-+
-+#include <trace/events/kvm.h>
-+
-+#include "trace.h"
-+
-+int kvm_xen_hvm_config(struct kvm_vcpu *vcpu, u64 data)
-+	{
-+	struct kvm *kvm =3D vcpu->kvm;
-+	u32 page_num =3D data & ~PAGE_MASK;
-+	u64 page_addr =3D data & PAGE_MASK;
-+
-+	/*
-+	 * If Xen hypercall intercept is enabled, fill the hypercall
-+	 * page with VMCALL/VMMCALL instructions since that's what
-+	 * we catch. Else the VMM has provided the hypercall pages
-+	 * with instructions of its own choosing, so use those.
-+	 */
-+	if (kvm_xen_hypercall_enabled(kvm)) {
-+		u8 instructions[32];
-+		int i;
-+
-+		if (page_num)
-+			return 1;
-+
-+		/* mov imm32, %eax */
-+		instructions[0] =3D 0xb8;
-+
-+		/* vmcall / vmmcall */
-+		kvm_x86_ops.patch_hypercall(vcpu, instructions + 5);
-+
-+		/* ret */
-+		instructions[8] =3D 0xc3;
-+
-+		/* int3 to pad */
-+		memset(instructions + 9, 0xcc, sizeof(instructions) - 9);
-+
-+		for (i =3D 0; i < PAGE_SIZE / sizeof(instructions); i++) {
-+			*(u32 *)&instructions[1] =3D i;
-+			if (kvm_vcpu_write_guest(vcpu,
-+						 page_addr + (i * sizeof(instructions)),
-+						 instructions, sizeof(instructions)))
-+				return 1;
-+		}
-+	} else {
-+		int lm =3D is_long_mode(vcpu);
-+		u8 *blob_addr =3D lm ? (u8 *)(long)kvm->arch.xen_hvm_config.blob_addr_64
-+				   : (u8 *)(long)kvm->arch.xen_hvm_config.blob_addr_32;
-+		u8 blob_size =3D lm ? kvm->arch.xen_hvm_config.blob_size_64
-+				  : kvm->arch.xen_hvm_config.blob_size_32;
-+		u8 *page;
-+
-+		if (page_num >=3D blob_size)
-+			return 1;
-+
-+		page =3D memdup_user(blob_addr + (page_num * PAGE_SIZE), PAGE_SIZE);
-+		if (IS_ERR(page))
-+			return PTR_ERR(page);
-+
-+		if (kvm_vcpu_write_guest(vcpu, page_addr, page, PAGE_SIZE)) {
-+			kfree(page);
-+			return 1;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int kvm_xen_hypercall_set_result(struct kvm_vcpu *vcpu, u64 result)
-+{
-+	kvm_rax_write(vcpu, result);
-+	return kvm_skip_emulated_instruction(vcpu);
-+}
-+
-+static int kvm_xen_hypercall_complete_userspace(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_run *run =3D vcpu->run;
-+
-+	if (unlikely(!kvm_is_linear_rip(vcpu, vcpu->arch.xen.hypercall_rip)))
-+		return 1;
-+
-+	return kvm_xen_hypercall_set_result(vcpu, run->xen.u.hcall.result);
-+}
-+
-+int kvm_xen_hypercall(struct kvm_vcpu *vcpu)
-+{
-+	bool longmode;
-+	u64 input, params[6];
-+
-+	input =3D (u64)kvm_register_read(vcpu, VCPU_REGS_RAX);
-+
-+	longmode =3D is_64_bit_mode(vcpu);
-+	if (!longmode) {
-+		params[0] =3D (u32)kvm_rbx_read(vcpu);
-+		params[1] =3D (u32)kvm_rcx_read(vcpu);
-+		params[2] =3D (u32)kvm_rdx_read(vcpu);
-+		params[3] =3D (u32)kvm_rsi_read(vcpu);
-+		params[4] =3D (u32)kvm_rdi_read(vcpu);
-+		params[5] =3D (u32)kvm_rbp_read(vcpu);
-+	}
-+#ifdef CONFIG_X86_64
-+	else {
-+		params[0] =3D (u64)kvm_rdi_read(vcpu);
-+		params[1] =3D (u64)kvm_rsi_read(vcpu);
-+		params[2] =3D (u64)kvm_rdx_read(vcpu);
-+		params[3] =3D (u64)kvm_r10_read(vcpu);
-+		params[4] =3D (u64)kvm_r8_read(vcpu);
-+		params[5] =3D (u64)kvm_r9_read(vcpu);
-+	}
-+#endif
-+	trace_kvm_xen_hypercall(input, params[0], params[1], params[2],
-+				params[3], params[4], params[5]);
-+
-+	vcpu->run->exit_reason =3D KVM_EXIT_XEN;
-+	vcpu->run->xen.type =3D KVM_EXIT_XEN_HCALL;
-+	vcpu->run->xen.u.hcall.longmode =3D longmode;
-+	vcpu->run->xen.u.hcall.cpl =3D kvm_x86_ops.get_cpl(vcpu);
-+	vcpu->run->xen.u.hcall.input =3D input;
-+	vcpu->run->xen.u.hcall.params[0] =3D params[0];
-+	vcpu->run->xen.u.hcall.params[1] =3D params[1];
-+	vcpu->run->xen.u.hcall.params[2] =3D params[2];
-+	vcpu->run->xen.u.hcall.params[3] =3D params[3];
-+	vcpu->run->xen.u.hcall.params[4] =3D params[4];
-+	vcpu->run->xen.u.hcall.params[5] =3D params[5];
-+	vcpu->arch.xen.hypercall_rip =3D kvm_get_linear_rip(vcpu);
-+	vcpu->arch.complete_userspace_io =3D
-+		kvm_xen_hypercall_complete_userspace;
-+
-+	return 0;
-+}
-diff --git a/arch/x86/kvm/xen.h b/arch/x86/kvm/xen.h
-new file mode 100644
-index 000000000000..81e12f716d2e
---- /dev/null
-+++ b/arch/x86/kvm/xen.h
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright =C2=A9 2019 Oracle and/or its affiliates. All rights reserved=
-.
-+ * Copyright =C2=A9 2020 Amazon.com, Inc. or its affiliates. All Rights Re=
-served.
-+ *
-+ * KVM Xen emulation
-+ */
-+
-+#ifndef __ARCH_X86_KVM_XEN_H__
-+#define __ARCH_X86_KVM_XEN_H__
-+
-+int kvm_xen_hypercall(struct kvm_vcpu *vcpu);
-+int kvm_xen_hvm_config(struct kvm_vcpu *vcpu, u64 data);
-+
-+static inline bool kvm_xen_hypercall_enabled(struct kvm *kvm)
-+{
-+	return kvm->arch.xen_hvm_config.flags &
-+		KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL;
-+}
-+
-+#endif /* __ARCH_X86_KVM_XEN_H__ */
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index ca41220b40b8..00221fe56994 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -216,6 +216,20 @@ struct kvm_hyperv_exit {
- 	} u;
- };
-=20
-+struct kvm_xen_exit {
-+#define KVM_EXIT_XEN_HCALL          1
-+	__u32 type;
-+	union {
-+		struct {
-+			__u32 longmode;
-+			__u32 cpl;
-+			__u64 input;
-+			__u64 result;
-+			__u64 params[6];
-+		} hcall;
-+	} u;
-+};
-+
- #define KVM_S390_GET_SKEYS_NONE   1
- #define KVM_S390_SKEYS_MAX        1048576
-=20
-@@ -250,6 +264,7 @@ struct kvm_hyperv_exit {
- #define KVM_EXIT_ARM_NISV         28
- #define KVM_EXIT_X86_RDMSR        29
- #define KVM_EXIT_X86_WRMSR        30
-+#define KVM_EXIT_XEN              31
-=20
- /* For KVM_EXIT_INTERNAL_ERROR */
- /* Emulate instruction failed. */
-@@ -426,6 +441,8 @@ struct kvm_run {
- 			__u32 index; /* kernel -> user */
- 			__u64 data; /* kernel <-> user */
- 		} msr;
-+		/* KVM_EXIT_XEN */
-+		struct kvm_xen_exit xen;
- 		/* Fix the size of the union. */
- 		char padding[256];
- 	};
-@@ -1126,6 +1143,8 @@ struct kvm_x86_mce {
- #endif
-=20
- #ifdef KVM_CAP_XEN_HVM
-+#define KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL	(1 << 1)
-+
- struct kvm_xen_hvm_config {
- 	__u32 flags;
- 	__u32 msr;
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests=
-/kvm/Makefile
-index 3d14ef77755e..d94abec627e6 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -59,6 +59,7 @@ TEST_GEN_PROGS_x86_64 +=3D x86_64/xss_msr_test
- TEST_GEN_PROGS_x86_64 +=3D x86_64/debug_regs
- TEST_GEN_PROGS_x86_64 +=3D x86_64/tsc_msrs_test
- TEST_GEN_PROGS_x86_64 +=3D x86_64/user_msr_test
-+TEST_GEN_PROGS_x86_64 +=3D x86_64/xen_vmcall_test
- TEST_GEN_PROGS_x86_64 +=3D demand_paging_test
- TEST_GEN_PROGS_x86_64 +=3D dirty_log_test
- TEST_GEN_PROGS_x86_64 +=3D dirty_log_perf_test
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/sel=
-ftests/kvm/lib/kvm_util.c
-index 126c6727a6b0..6e96ae47d28c 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -1654,6 +1654,7 @@ static struct exit_reason {
- 	{KVM_EXIT_INTERNAL_ERROR, "INTERNAL_ERROR"},
- 	{KVM_EXIT_OSI, "OSI"},
- 	{KVM_EXIT_PAPR_HCALL, "PAPR_HCALL"},
-+	{KVM_EXIT_XEN, "XEN"},
- #ifdef KVM_EXIT_MEMORY_NOT_PRESENT
- 	{KVM_EXIT_MEMORY_NOT_PRESENT, "MEMORY_NOT_PRESENT"},
- #endif
-diff --git a/tools/testing/selftests/kvm/x86_64/xen_vmcall_test.c b/tools/t=
-esting/selftests/kvm/x86_64/xen_vmcall_test.c
-new file mode 100644
-index 000000000000..3f1dd93626e5
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/xen_vmcall_test.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * svm_vmcall_test
-+ *
-+ * Copyright =C2=A9 2020 Amazon.com, Inc. or its affiliates.
-+ *
-+ * Userspace hypercall testing
-+ */
-+
-+#include "test_util.h"
-+#include "kvm_util.h"
-+#include "processor.h"
-+
-+#define VCPU_ID		5
-+
-+#define HCALL_REGION_GPA	0xc0000000ULL
-+#define HCALL_REGION_SLOT	10
-+
-+static struct kvm_vm *vm;
-+
-+#define INPUTVALUE 17
-+#define ARGVALUE(x) (0xdeadbeef5a5a0000UL + x)
-+#define RETVALUE 0xcafef00dfbfbffffUL
-+
-+#define XEN_HYPERCALL_MSR 0x40000000
-+
-+static void guest_code(void)
-+{
-+	unsigned long rax =3D INPUTVALUE;
-+	unsigned long rdi =3D ARGVALUE(1);
-+	unsigned long rsi =3D ARGVALUE(2);
-+	unsigned long rdx =3D ARGVALUE(3);
-+	register unsigned long r10 __asm__("r10") =3D ARGVALUE(4);
-+	register unsigned long r8 __asm__("r8") =3D ARGVALUE(5);
-+	register unsigned long r9 __asm__("r9") =3D ARGVALUE(6);
-+
-+	/* First a direct invocation of 'vmcall' */
-+	__asm__ __volatile__("vmcall" :
-+			     "=3Da"(rax) :
-+			     "a"(rax), "D"(rdi), "S"(rsi), "d"(rdx),
-+			     "r"(r10), "r"(r8), "r"(r9));
-+	GUEST_ASSERT(rax =3D=3D RETVALUE);
-+
-+	/* Now fill in the hypercall page */
-+	__asm__ __volatile__("wrmsr" : : "c" (XEN_HYPERCALL_MSR),
-+			     "a" (HCALL_REGION_GPA & 0xffffffff),
-+			     "d" (HCALL_REGION_GPA >> 32));
-+
-+	/* And invoke the same hypercall that way */
-+	__asm__ __volatile__("call *%1" : "=3Da"(rax) :
-+			     "r"(HCALL_REGION_GPA + INPUTVALUE * 32),
-+			     "a"(rax), "D"(rdi), "S"(rsi), "d"(rdx),
-+			     "r"(r10), "r"(r8), "r"(r9));
-+	GUEST_ASSERT(rax =3D=3D RETVALUE);
-+
-+	GUEST_DONE();
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	if (!(kvm_check_cap(KVM_CAP_XEN_HVM) &
-+	      KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL) ) {
-+		print_skip("KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL not available");
-+		exit(KSFT_SKIP);
-+	}
-+
-+	vm =3D vm_create_default(VCPU_ID, 0, (void *) guest_code);
-+	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
-+
-+	struct kvm_xen_hvm_config hvmc =3D {
-+		.flags =3D KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL,
-+		.msr =3D XEN_HYPERCALL_MSR,
-+	};
-+	vm_ioctl(vm, KVM_XEN_HVM_CONFIG, &hvmc);
-+
-+	/* Map a region for the hypercall page */
-+	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-+                                    HCALL_REGION_GPA, HCALL_REGION_SLOT,
-+				    getpagesize(), 0);
-+	virt_map(vm, HCALL_REGION_GPA, HCALL_REGION_GPA, 1, 0);
-+
-+	for (;;) {
-+		volatile struct kvm_run *run =3D vcpu_state(vm, VCPU_ID);
-+		struct ucall uc;
-+
-+		vcpu_run(vm, VCPU_ID);
-+
-+		if (run->exit_reason =3D=3D KVM_EXIT_XEN) {
-+			ASSERT_EQ(run->xen.type, KVM_EXIT_XEN_HCALL);
-+			ASSERT_EQ(run->xen.u.hcall.cpl, 0);
-+			ASSERT_EQ(run->xen.u.hcall.longmode, 1);
-+			ASSERT_EQ(run->xen.u.hcall.input, INPUTVALUE);
-+			ASSERT_EQ(run->xen.u.hcall.params[0], ARGVALUE(1));
-+			ASSERT_EQ(run->xen.u.hcall.params[1], ARGVALUE(2));
-+			ASSERT_EQ(run->xen.u.hcall.params[2], ARGVALUE(3));
-+			ASSERT_EQ(run->xen.u.hcall.params[3], ARGVALUE(4));
-+			ASSERT_EQ(run->xen.u.hcall.params[4], ARGVALUE(5));
-+			ASSERT_EQ(run->xen.u.hcall.params[5], ARGVALUE(6));
-+			run->xen.u.hcall.result =3D RETVALUE;
-+			continue;
-+		}
-+
-+		TEST_ASSERT(run->exit_reason =3D=3D KVM_EXIT_IO,
-+			    "Got exit_reason other than KVM_EXIT_IO: %u (%s)\n",
-+			    run->exit_reason,
-+			    exit_reason_str(run->exit_reason));
-+
-+		switch (get_ucall(vm, VCPU_ID, &uc)) {
-+		case UCALL_ABORT:
-+			TEST_FAIL("%s", (const char *)uc.args[0]);
-+			/* NOT REACHED */
-+		case UCALL_SYNC:
-+			break;
-+		case UCALL_DONE:
-+			goto done;
-+		default:
-+			TEST_FAIL("Unknown ucall 0x%lx.", uc.cmd);
-+		}
-+	}
-+done:
-+	kvm_vm_free(vm);
-+	return 0;
-+}
---=20
-2.17.1
-
-
---=-8CJS0TjsYLv+JTyOHTwh
+--=-zoyimHSB2W58F+/bImn6
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -786,20 +154,20 @@ BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
 BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
 ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
 ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
-MjAxMDk0ODU2WjAvBgkqhkiG9w0BCQQxIgQgVi7ufE/v4C9ItLE61nqMoflI2UvTcrPSLEqW1dw2
-e2Ewgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+MjAxMDk0OTUzWjAvBgkqhkiG9w0BCQQxIgQgMtFkXPb1c0Lg8eqVCZHGzdhBDFBxXe7P6L1J5vDD
+sMUwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
 TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
 PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
 aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
 A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
 bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAKrfXf/2MPB+hMHfKF7MAb4MMjUFf+cOzdROX4NfGzr6ZzeQmLe8/3aGI7E5qYym
-FWWSObFRFQJSMSJNwoeS1GGEhdzqtSdaDpwgi7os5jSaaMd4Tz6d/jsbOcXGDlAig6gxOkj9ZPlD
-MNv+fg7Pw63OmDB5DwKUFlsARjDlrrrnDga4l+Ebb3L5cvMFrjxMXUefhePQq0NuyT6K1jfJ5v92
-gLVNd0mBzWzD5wTvHk3VVUj6yCfHGSdXvhhnqFTymP3gWcVyh9/0WFtwT/2Uyq9e70K5EGp4j+J0
-GG6URWpzdezkreZPaq8kgBBh0LByfITFc8nXK/GUCtom6LVmZ7AAAAAAAAA=
+DQEBAQUABIIBAJY4WgAf6oxoenVv4LThpcbslP2yJ05elmaDVdBRVWjzvvKlXUQ9LrNQC5M4fqIW
++H1rDlapM3XXOG80uCt7kbAlZ8K7xNqDROaNzQuYdcMfsHjWDuUyEzyToBeSqhkqI5nwabBbxWMQ
+u46cs0NUNRgVwZHmwwrSnB98ltPUFxzjB0drlS4oVr+JKm8U9Ryq7Y4p9jrJzpWBiRwEKZx06UaD
+eS95ZK1svDANIdS5C0/bMQLmQ+kpwCINJV92oiCkL6kb6mHTIu0hcvhju2z2NYe0KKCY67x4N4xG
+emmFE2VOvEm3i5o4ByLl4YX5ARA/4Va9Ab9mpJQlWeSt3m5XhAsAAAAAAAA=
 
 
---=-8CJS0TjsYLv+JTyOHTwh--
+--=-zoyimHSB2W58F+/bImn6--
 
