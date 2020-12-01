@@ -2,55 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECA42C99E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B052C99E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbgLAIri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:47:38 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:48310 "EHLO fornost.hmeau.com"
+        id S1728917AbgLAIrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:47:41 -0500
+Received: from correo.us.es ([193.147.175.20]:51318 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727499AbgLAIri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:47:38 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kk1J0-0006Rz-J0; Tue, 01 Dec 2020 19:46:39 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 01 Dec 2020 19:46:38 +1100
-Date:   Tue, 1 Dec 2020 19:46:38 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     bfields@fieldses.org, trond.myklebust@hammerspace.com,
-        linux-crypto@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 00/18] crypto: Add generic Kerberos library
-Message-ID: <20201201084638.GA27937@gondor.apana.org.au>
-References: <20201127050701.GA22001@gondor.apana.org.au>
- <20201126063303.GA18366@gondor.apana.org.au>
- <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
- <1976719.1606378781@warthog.procyon.org.uk>
- <4035245.1606812273@warthog.procyon.org.uk>
+        id S1727499AbgLAIrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:47:40 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id B4BEB1F0D0C
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:46:57 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 9F5FD11C374
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:46:57 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 9E17611C371; Tue,  1 Dec 2020 09:46:57 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 5D92C11C368;
+        Tue,  1 Dec 2020 09:46:55 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 01 Dec 2020 09:46:55 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 4145B4265A5A;
+        Tue,  1 Dec 2020 09:46:55 +0100 (CET)
+Date:   Tue, 1 Dec 2020 09:46:55 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     xiakaixu1987@gmail.com
+Cc:     kadlec@netfilter.org, fw@strlen.de,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: Re: [PATCH] netfilter: Remove unnecessary conversion to bool
+Message-ID: <20201201084655.GA26468@salvia>
+References: <1604650813-1132-1-git-send-email-kaixuxia@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4035245.1606812273@warthog.procyon.org.uk>
+In-Reply-To: <1604650813-1132-1-git-send-email-kaixuxia@tencent.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 08:44:33AM +0000, David Howells wrote:
-> Btw, would it be feasible to make it so that an extra parameter can be added
-> to the cipher buffer-supplying functions, e.g.:
+On Fri, Nov 06, 2020 at 04:20:13PM +0800, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
 > 
-> 	skcipher_request_set_crypt(req, input, ciphertext_sg, esize, iv);
+> Here we could use the '!=' expression to fix the following coccicheck
+> warning:
 > 
-> such that we can pass in an offset into the output sg as well?
+> ./net/netfilter/xt_nfacct.c:30:41-46: WARNING: conversion to bool not needed here
 
-Couldn't you just change the output sg to include the offset?
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Applied.
