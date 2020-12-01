@@ -2,179 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56272CA716
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BE42CA71F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgLAPay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:30:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgLAPay (ORCPT
+        id S2388004AbgLAPdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:33:55 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42118 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729216AbgLAPdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:30:54 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1238C0613CF;
-        Tue,  1 Dec 2020 07:30:13 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id k10so3764875wmi.3;
-        Tue, 01 Dec 2020 07:30:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zya8zNGwc0JOgR3BNhTJLeqnKysXmnYYm6ovJAlSB1I=;
-        b=ePgxNCrjTOyRbDbE41NFEEBc18d3NhIYODNwu9pgHGtpC9foa7XCVxaV8lHmyfpeoO
-         mtcGqUvLHQFZGjs/yhp9D1w/AL2VFPDDnj/qoC86tCxHxI+MLQV6eN+EiLj/sHwvMnr7
-         RvCuxOa757jHFO8bysZApk0OLYdvhMuHaQb2pMPZuL2T5rruRCLqmPD99T6MLn1jFFgp
-         dthFvEvhZU4W0mtNDem6ho/bukr/9qS7zt5arB7AlHohYqGgL6suO6OfLml5/FWQ832/
-         bhun/8BaYBoK0wtP0lBGwntyRXVvCnImyKK+rYBs/ae0zfRyZOHqS+AlVz1OidzMmAyv
-         FOgg==
+        Tue, 1 Dec 2020 10:33:54 -0500
+Received: by mail-ot1-f67.google.com with SMTP id 11so1994346oty.9;
+        Tue, 01 Dec 2020 07:33:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zya8zNGwc0JOgR3BNhTJLeqnKysXmnYYm6ovJAlSB1I=;
-        b=VU4Nh5T4aRkKK1/IraYmzo8yQ2KZSfRSXAsQDMSjiMN6EJG1sckjSdCTbr3asI18GB
-         W+q01rb+zQ0TwL+r4hM4xF1tqsMC2vHn93aBZOs3+ui9z/Ojdj4wRELZOn02gEIEpG0z
-         Q1vxL55XvYO51ItScyYjtVUZ1iup8CuH7EVYkmNFWIoMLaTesb5NqFBTPsffHf5gTqIR
-         y6Fqu00i7ZZfJ+GXAwLclnfG7w+2AkqpBUQOQ1TzfqG1qnSOt2lGePJKtl621RUQWjC7
-         bD78QT2EOBbzUxCRja0NuASzNMNG5edzT3AnY5BqCclkwFIY2FGNUy9+PXDoU4BFg+tL
-         yk8w==
-X-Gm-Message-State: AOAM532DNnDcqoWnOPYVG/bMs0ndLV/Sb16cawrqNwBKuTgayCVtabgL
-        x5CkU3ZN7QIB9Kq1GFvK+6xaUEzgiPE=
-X-Google-Smtp-Source: ABdhPJy3Da9v6esC6liiN7iilFLmDfN5EqOJHZeF4OMfzIlkI031R53Xyz/8yOawvikH/JC/653mog==
-X-Received: by 2002:a1c:4604:: with SMTP id t4mr3164924wma.17.1606836611903;
-        Tue, 01 Dec 2020 07:30:11 -0800 (PST)
-Received: from [192.168.8.116] ([37.165.175.127])
-        by smtp.gmail.com with ESMTPSA id x4sm4084522wrv.81.2020.12.01.07.30.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 07:30:11 -0800 (PST)
-Subject: Re: [PATCH v1 bpf-next 04/11] tcp: Migrate TFO requests causing RST
- during TCP_SYN_RECV.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        osa-contribution-log@amazon.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201201144418.35045-1-kuniyu@amazon.co.jp>
- <20201201144418.35045-5-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <9d290a57-49e1-04cd-2487-262b0d7c5844@gmail.com>
-Date:   Tue, 1 Dec 2020 16:30:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3TYEuLB7a0GZMz9VHnUGScyAuLcS1oGx4ZirLfVhD58=;
+        b=JkISPntkiRBmJGOtCWV17IMkMkGPJIRsoLx+nXEnh4ZKKxv+SOaamlQ4Csg2j97Wto
+         QVB2dUhZ3q0udJIHZxE7TXj9Qngzajxw/JTeJIxyw5h9wXNBD68zugREqfEguj6an0k0
+         8hcOBlNmI+4fUwh+YrloosZ3vFReI7/dG0J1a4VOc4Zhmct2QF/Ef7FokRMOiE5LcHX1
+         g+7WUakNtkdiRlz3UhWv9ZntD5CkEneq8t6QpV3yTwqo038p9MDl1R3e2S9Otyz9pzpV
+         lDeHDs8TH1a8vSWpp3+39pyfDzIQ4GNpU5bkdkqhjVh2M1THw1naF+1q/Mrb1pzdZgZc
+         InKA==
+X-Gm-Message-State: AOAM530x3ylCDO8ih8iT8ARPNM+InE3PoCVgpDSKTn0DNG06psV/tStM
+        gjzgsyftfll7wiWD41rZzm7SbxYOfLUyCiurWQY=
+X-Google-Smtp-Source: ABdhPJwjl/WrymSGG1q6QSWA4NULJul1vnTn+2DnKqCieAk1A5M/ct7FjmDTX3AX+1wL4kK44UIIt92TTByk+q4tP5g=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr2273458oth.250.1606836793188;
+ Tue, 01 Dec 2020 07:33:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201201144418.35045-5-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201101170454.9567-1-rppt@kernel.org> <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
+ <20201117062316.GB370813@kernel.org> <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
+ <20201201102901.GF557259@kernel.org> <e3d5d791-8e4f-afcc-944c-24f66f329bd7@physik.fu-berlin.de>
+ <20201201121033.GG557259@kernel.org> <49a2022c-f106-55ec-9390-41307a056517@physik.fu-berlin.de>
+ <20201201135623.GA751215@kernel.org> <59351dbb-96cc-93b2-f2ec-b8968e935845@kernel.dk>
+In-Reply-To: <59351dbb-96cc-93b2-f2ec-b8968e935845@kernel.dk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 1 Dec 2020 16:33:01 +0100
+Message-ID: <CAMuHMdWRc8W7U0LKyH9u1hdMuN515PCZiTEJ12FrDaCx-eTdaQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux MM <linux-mm@kvack.org>,
+        arcml <linux-snps-arc@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jens,
+
+On Tue, Dec 1, 2020 at 4:03 PM Jens Axboe <axboe@kernel.dk> wrote:
+> On 12/1/20 6:56 AM, Mike Rapoport wrote:
+> > (added Jens)
+> >
+> > On Tue, Dec 01, 2020 at 01:16:05PM +0100, John Paul Adrian Glaubitz wrote:
+> >> Hi Mike!
+> >>
+> >> On 12/1/20 1:10 PM, Mike Rapoport wrote:
+> >>> On Tue, Dec 01, 2020 at 12:35:09PM +0100, John Paul Adrian Glaubitz wrote:
+> >>>> Hi Mike!
+> >>>>
+> >>>> On 12/1/20 11:29 AM, Mike Rapoport wrote:
+> >>>>> These changes are in linux-mm tree (https://www.ozlabs.org/~akpm/mmotm/
+> >>>>> with a mirror at https://github.com/hnaz/linux-mm)
+> >>>>>
+> >>>>> I beleive they will be coming in 5.11.
+> >>>>
+> >>>> Just pulled from that tree and gave it a try, it actually fails to build:
+> >>>>
+> >>>>   LDS     arch/ia64/kernel/vmlinux.lds
+> >>>>   AS      arch/ia64/kernel/entry.o
+> >>>> arch/ia64/kernel/entry.S: Assembler messages:
+> >>>> arch/ia64/kernel/entry.S:710: Error: Operand 2 of `and' should be a general register
+> >>>> arch/ia64/kernel/entry.S:710: Error: qualifying predicate not followed by instruction
+> >>>> arch/ia64/kernel/entry.S:848: Error: Operand 2 of `and' should be a general register
+> >>>> arch/ia64/kernel/entry.S:848: Error: qualifying predicate not followed by instruction
+> >>>>   GEN     usr/initramfs_data.cpio
+> >>>> make[1]: *** [scripts/Makefile.build:364: arch/ia64/kernel/entry.o] Error 1
+> >>>> make: *** [Makefile:1797: arch/ia64/kernel] Error 2
+> >>>> make: *** Waiting for unfinished jobs....
+> >>>>   CC      init/do_mounts_initrd.o
+> >>>>   SHIPPED usr/initramfs_inc_data
+> >>>>   AS      usr/initramfs_data.o
+> >>>
+> >>> Hmm, it was buidling fine with v5.10-rc2-mmotm-2020-11-07-21-40.
+> >>> I'll try to see what could cause this.
+> >>>
+> >>> Do you build with defconfig or do you use a custom config?
+> >>
+> >> That's with "localmodconfig", see attached configuration file.
+> >
+> > Thanks.
+> > It seems that the recent addition of TIF_NOTIFY_SIGNAL to ia64 in
+> > linux-next caused the issue. Can you please try the below patch?
+>
+> That's a lot of typos in that patch... I wonder why the buildbot hasn't
+> complained about this. Thanks for fixing this up! I'm going to fold this
+> into the original to avoid the breakage.
+
+Does lkp@intel.com do ia64 builds? Yes, it builds zx1_defconfig.
+
+Kisskb doesn't seem to build zx1_defconfig, but generic_defconfig.
+http://kisskb.ellerman.id.au/kisskb/target/101883/ shows this has been broken
+since Oct 30.  Perhaps kisskb build failures are not emailed to the ia64
+maintainers, or not acted upon?
+(I do receive kisskb build failure emails for m68k)
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 
-On 12/1/20 3:44 PM, Kuniyuki Iwashima wrote:
-> A TFO request socket is only freed after BOTH 3WHS has completed (or
-> aborted) and the child socket has been accepted (or its listener has been
-> closed). Hence, depending on the order, there can be two kinds of request
-> sockets in the accept queue.
-> 
->   3WHS -> accept : TCP_ESTABLISHED
->   accept -> 3WHS : TCP_SYN_RECV
-> 
-> Unlike TCP_ESTABLISHED socket, accept() does not free the request socket
-> for TCP_SYN_RECV socket. It is freed later at reqsk_fastopen_remove().
-> Also, it accesses request_sock.rsk_listener. So, in order to complete TFO
-> socket migration, we have to set the current listener to it at accept()
-> before reqsk_fastopen_remove().
-> 
-> Moreover, if TFO request caused RST before 3WHS has completed, it is held
-> in the listener's TFO queue to prevent DDoS attack. Thus, we also have to
-> migrate the requests in TFO queue.
-> 
-> Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> ---
->  net/ipv4/inet_connection_sock.c | 35 ++++++++++++++++++++++++++++++++-
->  1 file changed, 34 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index b27241ea96bd..361efe55b1ad 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -500,6 +500,16 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
->  	    tcp_rsk(req)->tfo_listener) {
->  		spin_lock_bh(&queue->fastopenq.lock);
->  		if (tcp_rsk(req)->tfo_listener) {
-> +			if (req->rsk_listener != sk) {
-> +				/* TFO request was migrated to another listener so
-> +				 * the new listener must be used in reqsk_fastopen_remove()
-> +				 * to hold requests which cause RST.
-> +				 */
-> +				sock_put(req->rsk_listener);
-> +				sock_hold(sk);
-> +				req->rsk_listener = sk;
-> +			}
-> +
->  			/* We are still waiting for the final ACK from 3WHS
->  			 * so can't free req now. Instead, we set req->sk to
->  			 * NULL to signify that the child socket is taken
-> @@ -954,7 +964,6 @@ static void inet_child_forget(struct sock *sk, struct request_sock *req,
->  
->  	if (sk->sk_protocol == IPPROTO_TCP && tcp_rsk(req)->tfo_listener) {
->  		BUG_ON(rcu_access_pointer(tcp_sk(child)->fastopen_rsk) != req);
-> -		BUG_ON(sk != req->rsk_listener);
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->  
->  		/* Paranoid, to prevent race condition if
->  		 * an inbound pkt destined for child is
-> @@ -995,6 +1004,7 @@ EXPORT_SYMBOL(inet_csk_reqsk_queue_add);
->  void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk)
->  {
->  	struct request_sock_queue *old_accept_queue, *new_accept_queue;
-> +	struct fastopen_queue *old_fastopenq, *new_fastopenq;
->  
->  	old_accept_queue = &inet_csk(sk)->icsk_accept_queue;
->  	new_accept_queue = &inet_csk(nsk)->icsk_accept_queue;
-> @@ -1019,6 +1029,29 @@ void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk)
->  
->  	spin_unlock(&new_accept_queue->rskq_lock);
->  	spin_unlock(&old_accept_queue->rskq_lock);
-> +
-> +	old_fastopenq = &old_accept_queue->fastopenq;
-> +	new_fastopenq = &new_accept_queue->fastopenq;
-> +
-> +	spin_lock_bh(&old_fastopenq->lock);
-> +	spin_lock_bh(&new_fastopenq->lock);
-
-
-Same remark about lockdep being not happy with this (I guess)
-
-> +
-> +	new_fastopenq->qlen += old_fastopenq->qlen;
-> +	old_fastopenq->qlen = 0;
-> +
-> +	if (old_fastopenq->rskq_rst_head) {
-> +		if (new_fastopenq->rskq_rst_head)
-> +			old_fastopenq->rskq_rst_tail->dl_next = new_fastopenq->rskq_rst_head;
-> +		else
-> +			old_fastopenq->rskq_rst_tail = new_fastopenq->rskq_rst_tail;
-> +
-> +		new_fastopenq->rskq_rst_head = old_fastopenq->rskq_rst_head;
-> +		old_fastopenq->rskq_rst_head = NULL;
-> +		old_fastopenq->rskq_rst_tail = NULL;
-> +	}
-> +
-> +	spin_unlock_bh(&new_fastopenq->lock);
-> +	spin_unlock_bh(&old_fastopenq->lock);
->  }
->  EXPORT_SYMBOL(inet_csk_reqsk_queue_migrate);
->  
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
