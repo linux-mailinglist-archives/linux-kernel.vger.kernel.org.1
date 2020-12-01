@@ -2,84 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA012CA2B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFE12CA2AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbgLAM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:28:59 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:39969 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgLAM27 (ORCPT
+        id S1728906AbgLAM2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:28:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgLAM2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:28:59 -0500
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 0B1CS0pI007236
-        for <linux-kernel@vger.kernel.org>; Tue, 1 Dec 2020 21:28:01 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0B1CS0pI007236
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606825681;
-        bh=VyWzw1DvMDFjjtA/3/S0sKeLcAuAFNayvwZdG4gboqo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qhEuwsNEJsh33k59vzkl2ot113SesjdpjwuP7bD6IcaxERipfCg9X6ErDprYwwN+X
-         k8wXigRtxQXOMyclUxQOudp8m1GR7HRcRLMZOfoXWoPV8YlXQqUPOLHC+q3mIwqF3H
-         Ulzb49taRLH1Hf+kSka6hcz1Hp7U+mMCZM/CXlRFV8g1uTxNi2TTF/lGccXFKlwNhA
-         ig3orJj69KvJ03v8u3pbzRx8MPjiYmkXpwU4W6tt4IvwnTli/wNhsvJJUCWtcfooPO
-         BOSCLevHjDHY0paHbv8rsQWbzfx0J+q1sNHe8x0q0LgEq0TvNowyqZ/r5dljZjduE9
-         C9yrM2PqIM0pA==
-X-Nifty-SrcIP: [209.85.210.176]
-Received: by mail-pf1-f176.google.com with SMTP id w6so1029622pfu.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:28:00 -0800 (PST)
-X-Gm-Message-State: AOAM530n/mxBOTyZ02eoJa56Eczk12Y+bJOuGkj+dQaMdhNzn0Xrr+cB
-        lJdUp10i4wN8yCdXVL2S7ImLWpVqpCuZXOnheWE=
-X-Google-Smtp-Source: ABdhPJy+ofSVZ9Ikv2DuaLyZkregh9m//GeneZayHvYZ66OBCRiXI/pmfCGr0AWBTx++jj5S83lXfRAoQ4UqQcfr8IU=
-X-Received: by 2002:a65:6a16:: with SMTP id m22mr2070015pgu.175.1606825680148;
- Tue, 01 Dec 2020 04:28:00 -0800 (PST)
+        Tue, 1 Dec 2020 07:28:17 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30364C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:27:37 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id 64so2330593wra.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:27:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mTIT9saW4JZE48elAbVCzCLGem+oE0gSHJTG1Irc+L8=;
+        b=d6ntMLNLl1d9+VneIchH4PzLGhiXxI2qo0NKQWfgCD6PsNmCSq3GMuFVPqxCHsA8wS
+         efiON3u3aoR+FWg1GjPGYT4hKV3wXygKXORxEMN4BWVD06yUzR8JMXGfi/9Zxa9334Oc
+         EQEoN9dww0K8+LHSvSIew3YqbOaINFNG4FT6p5UCsrrIw9LnKOXUp+OEmElM3LYfX90D
+         8BjCK5dHpG3ROdJw0VaaUWT9mRi1KgyAIf0MVXoyQVY3c2Q8oZBrj5xd5y/TZE13oQNz
+         KzLkJNKxws4V1BvlCZp7gayrcm0oKBnFCRjngZ37lP9LUgS7WWDCzn/xz2eJYWhAtkh0
+         w9Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mTIT9saW4JZE48elAbVCzCLGem+oE0gSHJTG1Irc+L8=;
+        b=gBwCko/a5SH8hSgWdvZGETnGaKGxh1Oqx49UpS7q2Iit3F2Qd2jzjh1KULYLCa6NP2
+         WjZm9y4Ck89LG5WWll4a7Nx4mY6w467H9tw8bi7jh4FW/KxiMmdOpNe/7vCh05KhhCXo
+         7cCmHlUbnlcGLZPYsp9jLz5aOxDdyuG2HoNJ+1kXBlw7nj0Z1eBP2Bc1zUY8ckqhA3am
+         x/YY4zFB2df8g9yq5iJl5IMoEU0kZoGt7CeFau4XiyGTBLjVZ0V+xitcTOWPFAMdtxmD
+         odjjHBckGxhAYlJ8q7yPZJR0Kt6fv2RVuuaAqf3+Ap1AwvUPk4J4YKgXcGCyS1F6xZpz
+         HMGA==
+X-Gm-Message-State: AOAM531DxPbLXmKiNnSEgLdB+q2BktCPAxvPKS6MCAhzU3zEXI1zdccQ
+        4BrHyrQZo8kulGycoZI9ujygkw==
+X-Google-Smtp-Source: ABdhPJzGQ1DkDeqZG4y0QvJTbZlxvyDUO7Iu+8yS+OD2Se1Oro2ko85UUgC9VgwUXnkvhnJB/H4r4w==
+X-Received: by 2002:adf:e44d:: with SMTP id t13mr3602310wrm.144.1606825655734;
+        Tue, 01 Dec 2020 04:27:35 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id 2sm3712858wrq.87.2020.12.01.04.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 04:27:34 -0800 (PST)
+Date:   Tue, 1 Dec 2020 12:27:31 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v2 bpf-next 08/13] bpf: Add instructions for
+ atomic_[cmp]xchg
+Message-ID: <20201201122731.GE2114905@google.com>
+References: <20201127175738.1085417-1-jackmanb@google.com>
+ <20201127175738.1085417-9-jackmanb@google.com>
+ <c6d1763a-9674-9af3-51c5-c1467332c22b@fb.com>
 MIME-Version: 1.0
-References: <20201121193657.51441-1-masahiroy@kernel.org> <01998029-6222-a2d1-9147-1a0dbc7b7e4b@synopsys.com>
-In-Reply-To: <01998029-6222-a2d1-9147-1a0dbc7b7e4b@synopsys.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 1 Dec 2020 21:27:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASvscBtRU3E3c-3Sy3tw8nTF+sqy5P0FYd_u0Dp8NKmZA@mail.gmail.com>
-Message-ID: <CAK7LNASvscBtRU3E3c-3Sy3tw8nTF+sqy5P0FYd_u0Dp8NKmZA@mail.gmail.com>
-Subject: Re: [PATCH 0/6] ARC: build: fix various issues in arc boot Makefile
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc:     "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c6d1763a-9674-9af3-51c5-c1467332c22b@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 1:40 PM Vineet Gupta <Vineet.Gupta1@synopsys.com> wrote:
->
-> Hi Masahiro San,
->
-> On 11/21/20 11:36 AM, Masahiro Yamada wrote:
-> >
-> >
-> > Masahiro Yamada (6):
-> >    ARC: build: remove non-existing bootpImage from KBUILD_IMAGE
-> >    ARC: build: add uImage.lzma to the top-level target
-> >    ARC: build: add boot_targets to PHONY
-> >    ARC: build: move symlink creation to arch/arc/Makefile to avoid race
-> >    ARC: build: remove unneeded extra-y
-> >    ARC: build: use $(READELF) instead of hard-coded readelf
-> >
-> >   arch/arc/Makefile      | 20 +++++++++++++-------
-> >   arch/arc/boot/Makefile | 18 ++++--------------
-> >   2 files changed, 17 insertions(+), 21 deletions(-)
->
-> This LGTM. Do you want me to pick up these via ARC tree ?
->
-> Thx,
-> -Vineet
+On Fri, Nov 27, 2020 at 09:25:53PM -0800, Yonghong Song wrote:
+> 
+> 
+> On 11/27/20 9:57 AM, Brendan Jackman wrote:
+> > This adds two atomic opcodes, both of which include the BPF_FETCH
+> > flag. XCHG without the BPF_FETCh flag would naturally encode
+> 
+> BPF_FETCH
 
-Yes, please. Thanks.
+Ack, thanks
 
+> > atomic_set. This is not supported because it would be of limited
+> > value to userspace (it doesn't imply any barriers). CMPXCHG without
+> > BPF_FETCH woulud be an atomic compare-and-write. We don't have such
+> > an operation in the kernel so it isn't provided to BPF either.
+> > 
+> > There are two significant design decisions made for the CMPXCHG
+> > instruction:
+> > 
+> >   - To solve the issue that this operation fundamentally has 3
+> >     operands, but we only have two register fields. Therefore the
+> >     operand we compare against (the kernel's API calls it 'old') is
+> >     hard-coded to be R0. x86 has similar design (and A64 doesn't
+> >     have this problem).
+> > 
+> >     A potential alternative might be to encode the other operand's
+> >     register number in the immediate field.
+> > 
+> >   - The kernel's atomic_cmpxchg returns the old value, while the C11
+> >     userspace APIs return a boolean indicating the comparison
+> >     result. Which should BPF do? A64 returns the old value. x86 returns
+> >     the old value in the hard-coded register (and also sets a
+> >     flag). That means return-old-value is easier to JIT.
+> > 
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > ---
+> >   arch/x86/net/bpf_jit_comp.c    |  8 ++++++++
+> >   include/linux/filter.h         | 20 ++++++++++++++++++++
+> >   include/uapi/linux/bpf.h       |  4 +++-
+> >   kernel/bpf/core.c              | 20 ++++++++++++++++++++
+> >   kernel/bpf/disasm.c            | 15 +++++++++++++++
+> >   kernel/bpf/verifier.c          | 19 +++++++++++++++++--
+> >   tools/include/linux/filter.h   | 20 ++++++++++++++++++++
+> >   tools/include/uapi/linux/bpf.h |  4 +++-
+> >   8 files changed, 106 insertions(+), 4 deletions(-)
+> > 
+> [...]
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index cd4c03b25573..c8311cc114ec 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3601,10 +3601,13 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+> >   static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
+> >   {
+> >   	int err;
+> > +	int load_reg;
+> >   	switch (insn->imm) {
+> >   	case BPF_ADD:
+> >   	case BPF_ADD | BPF_FETCH:
+> > +	case BPF_XCHG:
+> > +	case BPF_CMPXCHG:
+> >   		break;
+> >   	default:
+> >   		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n", insn->imm);
+> > @@ -3626,6 +3629,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+> >   	if (err)
+> >   		return err;
+> > +	if (insn->imm == BPF_CMPXCHG) {
+> > +		/* check src3 operand */
+> 
+> better comment about what src3 means here?
 
-
-
--- 
-Best Regards
-Masahiro Yamada
+Ack,  adding "Check comparison of R0 with memory location"
