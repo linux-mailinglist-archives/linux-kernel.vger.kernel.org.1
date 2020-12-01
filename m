@@ -2,67 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E512CA74D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5992CA752
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391930AbgLAPkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:40:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391563AbgLAPkr (ORCPT
+        id S2391834AbgLAPma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:42:30 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:41637 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390017AbgLAPma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:40:47 -0500
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3BAC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 07:40:06 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id 29740C009; Tue,  1 Dec 2020 16:40:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1606837205; bh=GoRwIwonAOU1Q5PokVg4Jw2hvJ7Uen6eODPUPTDWBsw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a91gR3o5zarCtnU2Ikl2WiUlVy/+sJQanroKYqVUEMnAcWoCHTWsNf1fNiupZib7e
-         wVEcGRRiEpL7xBeZNXzrl9BlvdM44V8tuKOIhHTuSS37ChVLJ8P2jBpBVN2rm2Q+KQ
-         SJTYPktxWUY05qNAER+/7EiBY4LlpactC+Ldsw1i/exRkUFSTVFbYxSStbIdnb3AUA
-         rsIECmjCLseY1kJVBxdVHfLQb1T44nTxDj5wfRU0gSYireS8ezLfCVWb9lc9Y0+SjI
-         0vKY7Xj64TgL+qUk50pp3hmzNwM+nfQ4586EPwPhWf29M5wpohgJcrkkDdHmJKqEU4
-         NgdbhPy+UXpiA==
-Date:   Tue, 1 Dec 2020 16:39:50 +0100
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
-Subject: Re: [V9fs-developer] [PATCH] fs: 9p: add generic splice_read file
- operations
-Message-ID: <20201201153950.GA20545@nautica>
-References: <20201201135409.55510-1-toke@redhat.com>
- <20201201145728.GA11144@nautica>
- <20201201151658.GA13180@nautica>
- <87mtyx1rem.fsf@toke.dk>
+        Tue, 1 Dec 2020 10:42:30 -0500
+X-Greylist: delayed 86638 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Dec 2020 10:42:28 EST
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 533AA240006;
+        Tue,  1 Dec 2020 15:41:39 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 16:41:39 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+        "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
+        "tony@atomide.com" <tony@atomide.com>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "wens@csie.org" <wens@csie.org>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
+        "James.Bottomley@HansenPartnership.com" 
+        <James.Bottomley@hansenpartnership.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "sam@ravnborg.org" <sam@ravnborg.org>,
+        "emil.l.velikov@gmail.com" <emil.l.velikov@gmail.com>,
+        "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        arm@kernel.org
+Subject: Re: [PATCH 1/5] ARM: configs: drop unused BACKLIGHT_GENERIC option
+Message-ID: <20201201154139.GF2401593@piout.net>
+References: <20201130152137.24909-1-andrey.zhizhikin@leica-geosystems.com>
+ <20201130152137.24909-2-andrey.zhizhikin@leica-geosystems.com>
+ <20201130185227.GA29434@kozik-lap>
+ <AM6PR06MB4691EC52BA41B86AB16EE14FA6F50@AM6PR06MB4691.eurprd06.prod.outlook.com>
+ <20201201144052.GE31404@gaia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87mtyx1rem.fsf@toke.dk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20201201144052.GE31404@gaia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Toke Høiland-Jørgensen wrote on Tue, Dec 01, 2020:
-> > This made me test copy_file_range, and it works with both as well (used
-> > not to)
-> >
-> > interestingly on older kernels this came as default somehow? I have
-> > splice working on 5.4.67 :/ so this broke somewhat recently...
+On 01/12/2020 14:40:53+0000, Catalin Marinas wrote:
+> On Mon, Nov 30, 2020 at 07:50:25PM +0000, ZHIZHIKIN Andrey wrote:
+> > From Krzysztof Kozlowski <krzk@kernel.org>:
+> > > On Mon, Nov 30, 2020 at 03:21:33PM +0000, Andrey Zhizhikin wrote:
+> > > > Commit 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
+> > > > unused") removed geenric_bl driver from the tree, together with
+> > > > corresponding config option.
+> > > >
+> > > > Remove BACKLIGHT_GENERIC config item from all ARM configurations.
+> > > >
+> > > > Fixes: 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it
+> > > > is unused")
+> > > > Cc: Sam Ravnborg <sam@ravnborg.org>
+> > > > Signed-off-by: Andrey Zhizhikin
+> > > > <andrey.zhizhikin@leica-geosystems.com>
+> > > > ---
+> > > >  arch/arm/configs/at91_dt_defconfig        | 1 -
+> > > >  arch/arm/configs/cm_x300_defconfig        | 1 -
+> > > >  arch/arm/configs/colibri_pxa300_defconfig | 1 -
+> > > >  arch/arm/configs/jornada720_defconfig     | 1 -
+> > > >  arch/arm/configs/magician_defconfig       | 1 -
+> > > >  arch/arm/configs/mini2440_defconfig       | 1 -
+> > > >  arch/arm/configs/omap2plus_defconfig      | 1 -
+> > > >  arch/arm/configs/pxa3xx_defconfig         | 1 -
+> > > >  arch/arm/configs/qcom_defconfig           | 1 -
+> > > >  arch/arm/configs/sama5_defconfig          | 1 -
+> > > >  arch/arm/configs/sunxi_defconfig          | 1 -
+> > > >  arch/arm/configs/tegra_defconfig          | 1 -
+> > > >  arch/arm/configs/u8500_defconfig          | 1 -
+> > > >  13 files changed, 13 deletions(-)
+> > > 
+> > > You need to send it to arm-soc maintainers, otherwise no one might feel
+> > > responsible enough to pick it up.
+> > 
+> > Good point, thanks a lot!
+> > 
+> > I was not aware of the fact that there is a separate ML that should
+> > receive patches targeted ARM SOCs. Can you (or anyone else) please
+> > share it, so I can re-send it there as well?
 > 
-> Huh, no idea; this is my first time digging into filesystem code, I
-> normally do networking and BPF :)
+> It's not a mailing list as such (with archives etc.), just an alias to
+> the arm-soc maintainers: arm@kernel.org.
+> 
+> > > Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > 
+> > > +CC Arnd and Olof,
+> > > 
+> > > Dear Arnd and Olof,
+> > > 
+> > > Maybe it is worth to add arm-soc entry to the MAINTAINERS file?
+> > > Otherwise how one could get your email address? Not mentioning the
+> > > secret-soc address. :)
+> 
+> I tried to convince them before, it didn't work. I guess they don't like
+> to be spammed ;).
 
-In case anyone else wants to know, this broke in 5.10-rc1 with
-36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
+The first rule of arm-soc is: you do not talk about arm@ and soc@
 
-So really a recent regression, good catch :)
+> Or rather, SoC-specific patches, even to defconfig,
+> should go through the specific SoC maintainers. However, there are
+> occasional defconfig patches which are more generic or affecting
+> multiple SoCs. I just ignore them as the arm64 defconfig is usually
+> handled by the arm-soc folk (when I need a defconfig change, I go for
+> arch/arm64/Kconfig directly ;)).
+> 
+
+IIRC, the plan was indeed to get defconfig changes through the platform
+sub-trees. It is also supposed to be how multi_v5 and multi_v7 are
+handled and they will take care of the merge.
 
 -- 
-Dominique
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
