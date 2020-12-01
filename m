@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1727E2CF318
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DD02CF352
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Dec 2020 18:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731229AbgLDR0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 12:26:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60776 "EHLO mx2.suse.de"
+        id S1731446AbgLDRpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 12:45:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731043AbgLDR0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:26:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 316DFAD20;
-        Fri,  4 Dec 2020 17:25:32 +0000 (UTC)
-Subject: Re: [PATCH 3/7] mm,madvise: call soft_offline_page() without
- MF_COUNT_INCREASED
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Dan Williams <dan.j.williams@intel.com>
-References: <20201119105716.5962-1-osalvador@suse.de>
- <20201119105716.5962-4-osalvador@suse.de>
- <2aa4bf71-443b-9b9b-b761-12761263dfec@suse.cz> <20201201113511.GA22242@linux>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <840d4669-ae3f-b7c4-6132-e20d1bf9e952@suse.cz>
-Date:   Fri, 4 Dec 2020 18:25:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1731332AbgLDRpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 12:45:23 -0500
+X-Google-Smtp-Source: ABdhPJzLo/um57d5SBKoDjkJ8Aq6RFZxjg3AtdiXvFU4dXJhpV3kPdIIEqkS+p4ivDYD6SCFbiEe
+X-Received: by 2002:a63:ed0b:: with SMTP id d11mr20176710pgi.261.1606781411628;
+        Mon, 30 Nov 2020 16:10:11 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1606781411; cv=none;
+        d=google.com; s=arc-20160816;
+        b=zrj3Mc+e3RVIaQyvu13A0A995cuNWeEXPL3P6IElgyfsieX+y4IHb5GMLlV7sn7RXC
+         ZTEFoUxU3yC5SehLlGS0jY1Qvv/X+rP9GBUsYDs7icotT3mF6LYGHZOWLhKjFcJa4QZ0
+         GmD8Xvh1krsNtjcjUWDJcoOZDWYy5r3UyzQ+DaupOEYp5gMIW4lSjBs0enJBQudiBDL/
+         EIoMcUb8FmbO45IzLJUnAXjuZLQ66ClecY9GtACfnpDaGAMhknv/1zMIOjOCzxuoBb6u
+         yR/5OZdioa9gF5n+my/G97E7PpX3nHP1c1LioLDTR/2Z6PkSLn9yfQlfqMRpzIMp9pU4
+         1WhA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from;
+        bh=6MLTGHalydcTQTGUwzRwTZrDmmmY8YI8mHLG05wiU7Q=;
+        b=aCXkylq87ycXwTlTWAQQAjpSrbmF6mPCfxvsfTwZ86FX3Qf55ATtVczL18C7ZxY0qm
+         b2lnd6iySVKRTjHSe+7DQyQfb9Dz3h3ljpKyj5j4FfyPDI6Sb4Rho0f6LvveSK1r83Zh
+         V/bGWOAhX9Dc0qcqhy826XIcF+kwFLSkJt4AIf/H71DmtBOTk/k5NOKhXzOoNm1kW5+I
+         P+2SbW3zflH1uncmam2ICRNJ/TTuPdYAGI2gKcgb2BRe20v7hSty25bgKb6SQ1Bp4fek
+         KdS8aYf5wvhdyc6FHNc3WOwcDSQttjlF1OeqlbgD1AgAxuBhHRXTJ4JBAmnBxRlMc5fN
+         PBQQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: best guess record for domain of postmaster@muse.csie.ntu.edu.tw designates 140.112.30.240 as permitted sender) smtp.helo=muse.csie.ntu.edu.tw;
+       dmarc=fail (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+Received-SPF: pass (google.com: best guess record for domain of postmaster@muse.csie.ntu.edu.tw designates 140.112.30.240 as permitted sender) client-ip=140.112.30.240;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: best guess record for domain of postmaster@muse.csie.ntu.edu.tw designates 140.112.30.240 as permitted sender) smtp.helo=muse.csie.ntu.edu.tw;
+       dmarc=fail (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6MLTGHalydcTQTGUwzRwTZrDmmmY8YI8mHLG05wiU7Q=;
+        b=h1mXEqoy8Er9fq32d6NbvDBJxffq56bhQizLP5efI5A1TYA5laEwXXmfLVlmxcFSxB
+         +dTpdn9NuvwrGGV7KJxc80WGBOgZxkuxzTkgnn8Jd2uXxjoNgx5/WIKD3wMuBO/Mj5em
+         +EygY6KeC9307Ozm96iUskgjS5VSaE++0ywYqPr1rXcr2Qgx6eARNImPTKRw/oxkVob0
+         X2/4jL10PllYNL2zTL3aSX80jY5IK3fayLx9m5fB/QDpx+BXPv7C65zG/TtlL/7koixe
+         lkuHAXyzINOBg4yproSljXmjF8J4meHIg+KGp8YLWEm4tJjdRJ3ahmNnG9J5ocwMOF/2
+         s9Nw==
+X-Gm-Message-State: AOAM531zbR3S5toDQmbLg8OLRdg7NBoCZz/m6njqBMnQ4J1xIX3K9TWi
+        SJ4BpfZ0nyUGBkbz8YzVq4UcZx9JeOcagw==
+X-Received: by 2002:a17:90a:7c44:: with SMTP id e4mr368179pjl.138.1606781409114;
+        Mon, 30 Nov 2020 16:10:09 -0800 (PST)
+From:   dinghua.ma@wens.csie.org, dinghua.ma.sz@gmail.com
+To:     Chen-Yu Tsai <wens@csie.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "DingHua Ma" <dinghua.ma.sz@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH v3] regulator: axp20x: Fix DLDO2 voltage control register mask for AXP22x
+Date:   Tue,  1 Dec 2020 08:10:00 +0800
+Message-Id: <20201201001000.22302-1-dinghua.ma.sz@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201201113511.GA22242@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 12:35 PM, Oscar Salvador wrote:
-> On Wed, Nov 25, 2020 at 07:20:33PM +0100, Vlastimil Babka wrote:
->> On 11/19/20 11:57 AM, Oscar Salvador wrote:
->> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
->> > 
->> > The call to get_user_pages_fast is only to get the pointer to a struct
->> > page of a given address, pinning it is memory-poisoning handler's job,
->> > so drop the refcount grabbed by get_user_pages_fast().
->> > 
->> > Note that the target page is still pinned after this put_page() because
->> > the current process should have refcount from mapping.
->> 
->> Well, but can't it go away due to reclaim, migration or whatever?
-> 
-> Yes, it can.
-> 
->> > @@ -900,20 +900,23 @@ static int madvise_inject_error(int behavior,
->> >   		 */
->> >   		size = page_size(compound_head(page));
->> > +		/*
->> > +		 * The get_user_pages_fast() is just to get the pfn of the
->> > +		 * given address, and the refcount has nothing to do with
->> > +		 * what we try to test, so it should be released immediately.
->> > +		 * This is racy but it's intended because the real hardware
->> > +		 * errors could happen at any moment and memory error handlers
->> > +		 * must properly handle the race.
->> 
->> Sure they have to. We might just be unexpectedly messing with other process'
->> memory. Or does anything else prevent that?
-> 
-> No, nothing does, and I have to confess that I managed to confuse myself here.
-> If we release such page and that page ends up in buddy, nothing prevents someone
-> else to get that page, and then we would be messing with other process memory.
-> 
-> I guess the right thing to do is just to make sure we got that page and that
-> that page remains pinned as long as the memory failure handling goes.
+From: "DingHua Ma" <dinghua.ma.sz@gmail.com>
 
-OK, so that means we don't introduce this race for MADV_SOFT_OFFLINE, but it's
-already (and still) there for MADV_HWPOISON since Dan's 23e7b5c2e271 ("mm,
-madvise_inject_error: Let memory_failure() optionally take a page reference") no?
+When I use the axp20x chip to power my SDIO device on the 5.4 kernel, 
+the output voltage of DLDO2 is wrong. After comparing the register 
+manual and source code of the chip, I found that the mask bit of the 
+driver register of the port was wrong. I fixed this error by modifying 
+the mask register of the source code. This error seems to be a copy 
+error of the macro when writing the code. Now the voltage output of 
+the DLDO2 port of axp20x is correct. My development environment is 
+Allwinner A40I of arm architecture, and the kernel version is 5.4.
 
-> I will remove those patches from the patchset and re-submit with only the
-> refactoring and pcp-disabling.
-> 
-> Thanks Vlastimil
-> 
+Signed-off-by: DingHua Ma <dinghua.ma.sz@gmail.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org> 
+Cc: <stable@vger.kernel.org>
+Fixes: db4a555f7c4c ("regulator: axp20x: use defines for masks")
+---
+Changes since v2:
+- Modify topic description
+---
+Changes since v1:
+- More accurate description for this patch
+---
+ drivers/regulator/axp20x-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
+index cd1224182ad7..90cb8445f721 100644
+--- a/drivers/regulator/axp20x-regulator.c
++++ b/drivers/regulator/axp20x-regulator.c
+@@ -594,7 +594,7 @@ static const struct regulator_desc axp22x_regulators[] = {
+ 		 AXP22X_DLDO1_V_OUT, AXP22X_DLDO1_V_OUT_MASK,
+ 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO1_MASK),
+ 	AXP_DESC(AXP22X, DLDO2, "dldo2", "dldoin", 700, 3300, 100,
+-		 AXP22X_DLDO2_V_OUT, AXP22X_PWR_OUT_DLDO2_MASK,
++		 AXP22X_DLDO2_V_OUT, AXP22X_DLDO2_V_OUT_MASK,
+ 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO2_MASK),
+ 	AXP_DESC(AXP22X, DLDO3, "dldo3", "dldoin", 700, 3300, 100,
+ 		 AXP22X_DLDO3_V_OUT, AXP22X_DLDO3_V_OUT_MASK,
+-- 
+2.25.1
 
