@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C14D2C9D3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 795252C9D39
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390284AbgLAJUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:20:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46702 "EHLO mail.kernel.org"
+        id S2390341AbgLAJUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:20:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389399AbgLAJJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:09:14 -0500
+        id S2389439AbgLAJJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:09:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B053E206D8;
-        Tue,  1 Dec 2020 09:08:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FDE62224A;
+        Tue,  1 Dec 2020 09:08:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813713;
-        bh=URSU+A2hAwZDJFwhZzz5JFRTJIXZj/xFvQzzxq7tvm8=;
+        s=korg; t=1606813724;
+        bh=pU4+iLvfEPqb4ShgmgqBEAl5Mh4SYEhmO3+yTyncc/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VY2gFgZLCiX+W1C4OjgBFlJ223QQVlKuCXRkj8JjrphRZUpSkmliwxqYjp2xzAX+t
-         qF4wwr2bN+z2tLmejQe7XK118NlqFCuSPPa4C8IAh4AJQ0TDiROP5yUIHPmOEBWkkh
-         tWveLf/7rHX5pit897Lvpr591W5RNEWaytxJPCOo=
+        b=YvnID7FTi8uUCZOvvqwTGttqvtfyiW4wCFmgaA3m75IpO0Woao57J2hQhdkRqyi2S
+         FGQdX/AUzhPH3y+/IqZcHvnfsi6AGDMNXR523VEAD9WwpH+UGIuXDL3lmJ4pEEcmW/
+         5gFi0umLhXX5MV2K5ndtOaAjJNLEnOR7QPbmrBQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.9 033/152] arm64: pgtable: Fix pte_accessible()
-Date:   Tue,  1 Dec 2020 09:52:28 +0100
-Message-Id: <20201201084716.224151308@linuxfoundation.org>
+        stable@vger.kernel.org, Kenneth Feng <kenneth.feng@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.9 037/152] drm/amd/amdgpu: fix null pointer in runtime pm
+Date:   Tue,  1 Dec 2020 09:52:32 +0100
+Message-Id: <20201201084716.744009594@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -44,59 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Kenneth Feng <kenneth.feng@amd.com>
 
-commit 07509e10dcc77627f8b6a57381e878fe269958d3 upstream.
+commit 7acc79eb5f78d3d1aa5dd21fc0a0329f1b7f2be5 upstream.
 
-pte_accessible() is used by ptep_clear_flush() to figure out whether TLB
-invalidation is necessary when unmapping pages for reclaim. Although our
-implementation is correct according to the architecture, returning true
-only for valid, young ptes in the absence of racing page-table
-modifications, this is in fact flawed due to lazy invalidation of old
-ptes in ptep_clear_flush_young() where we elide the expensive DSB
-instruction for completing the TLB invalidation.
+fix the null pointer issue when runtime pm is triggered.
 
-Rather than penalise the aging path, adjust pte_accessible() to return
-true for any valid pte, even if the access flag is cleared.
-
-Cc: <stable@vger.kernel.org>
-Fixes: 76c714be0e5e ("arm64: pgtable: implement pte_accessible()")
-Reported-by: Yu Zhao <yuzhao@google.com>
-Acked-by: Yu Zhao <yuzhao@google.com>
-Reviewed-by: Minchan Kim <minchan@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/20201120143557.6715-2-will@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Kenneth Feng <kenneth.feng@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/include/asm/pgtable.h |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -108,8 +108,6 @@ extern unsigned long empty_zero_page[PAG
- #define pte_valid(pte)		(!!(pte_val(pte) & PTE_VALID))
- #define pte_valid_not_user(pte) \
- 	((pte_val(pte) & (PTE_VALID | PTE_USER)) == PTE_VALID)
--#define pte_valid_young(pte) \
--	((pte_val(pte) & (PTE_VALID | PTE_AF)) == (PTE_VALID | PTE_AF))
- #define pte_valid_user(pte) \
- 	((pte_val(pte) & (PTE_VALID | PTE_USER)) == (PTE_VALID | PTE_USER))
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -4593,7 +4593,7 @@ int amdgpu_device_baco_enter(struct drm_
+ 	if (!amdgpu_device_supports_baco(adev->ddev))
+ 		return -ENOTSUPP;
  
-@@ -117,9 +115,12 @@ extern unsigned long empty_zero_page[PAG
-  * Could the pte be present in the TLB? We must check mm_tlb_flush_pending
-  * so that we don't erroneously return false for pages that have been
-  * remapped as PROT_NONE but are yet to be flushed from the TLB.
-+ * Note that we can't make any assumptions based on the state of the access
-+ * flag, since ptep_clear_flush_young() elides a DSB when invalidating the
-+ * TLB.
-  */
- #define pte_accessible(mm, pte)	\
--	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid_young(pte))
-+	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid(pte))
+-	if (ras && ras->supported)
++	if (ras && ras->supported && adev->nbio.funcs->enable_doorbell_interrupt)
+ 		adev->nbio.funcs->enable_doorbell_interrupt(adev, false);
  
- /*
-  * p??_access_permitted() is true for valid user mappings (subject to the
+ 	return amdgpu_dpm_baco_enter(adev);
+@@ -4612,7 +4612,7 @@ int amdgpu_device_baco_exit(struct drm_d
+ 	if (ret)
+ 		return ret;
+ 
+-	if (ras && ras->supported)
++	if (ras && ras->supported && adev->nbio.funcs->enable_doorbell_interrupt)
+ 		adev->nbio.funcs->enable_doorbell_interrupt(adev, true);
+ 
+ 	return 0;
 
 
