@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318422C9D7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D483E2C9CF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgLAJYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:24:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43214 "EHLO mail.kernel.org"
+        id S2389020AbgLAJHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388758AbgLAJGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:06:21 -0500
+        id S2388511AbgLAJGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82F0722245;
-        Tue,  1 Dec 2020 09:05:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F4002224A;
+        Tue,  1 Dec 2020 09:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813541;
-        bh=cLlfYmBM43nEai9iLzYZtVzly2bVU8zKa6peQumlORw=;
+        s=korg; t=1606813546;
+        bh=z//7JeVCb8EzAnvPDC5wUpe0tLfUjr/1kiZZTgYCeYM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0stIo/QQKTwfkR78WYH7s7MKjR6uTUSNbUR2QoTVmu0wvHpavOMVOFY/BFlorEt/Z
-         ORXgHkUs9n59BUaeDBsGxWch/cDlxZeGjmsjmaddnTJn18+fSyKmqqLrABH3PR3YmT
-         BUyUPbI5XdP7Liurpxu3OMCnswLiuWGyegdrDupg=
+        b=SRx+bTilQbLQvLLlC5cAXcDTOgVphgZdMBnxNx41RxNYfYl5pvqCwRgnv6QuY0drD
+         f4tZsP0prbLud9yyOs80mWvnWGa2UZ/8n8KHat7IE5wo+l2Be4lXt6Ba0798F9Jfas
+         BwbkpqJtbG8I+9EF+smXg5QMSCOznX/GHJvuz+C4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yixian Liu <liuyixian@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Sriram Dash <sriram.dash@samsung.com>,
+        Pankaj Sharma <pankj.sharma@samsung.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 75/98] RDMA/hns: Bugfix for memory window mtpt configuration
-Date:   Tue,  1 Dec 2020 09:53:52 +0100
-Message-Id: <20201201084658.742503695@linuxfoundation.org>
+Subject: [PATCH 5.4 76/98] can: m_can: m_can_open(): remove IRQF_TRIGGER_FALLING from request_threaded_irq()s flags
+Date:   Tue,  1 Dec 2020 09:53:53 +0100
+Message-Id: <20201201084658.783493642@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
 References: <20201201084652.827177826@linuxfoundation.org>
@@ -44,35 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-[ Upstream commit 17475e104dcb74217c282781817f8f52b46130d3 ]
+[ Upstream commit 865f5b671b48d0088ce981cff1e822d9f7da441f ]
 
-When a memory window is bound to a memory region, the local write access
-should be set for its mtpt table.
+The threaded IRQ handler is used for the tcan4x5x driver only. The IRQ pin of
+the tcan4x5x controller is active low, so better not use IRQF_TRIGGER_FALLING
+when requesting the IRQ. As this can result in missing interrupts.
 
-Fixes: c7c28191408b ("RDMA/hns: Add MW support for hip08")
-Link: https://lore.kernel.org/r/1606386372-21094-1-git-send-email-liweihang@huawei.com
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Further, if the device tree specified the interrupt as "IRQ_TYPE_LEVEL_LOW",
+unloading and reloading of the driver results in the following error during
+ifup:
+
+| irq: type mismatch, failed to map hwirq-31 for gpio@20a8000!
+| tcan4x5x spi1.1: m_can device registered (irq=0, version=32)
+| tcan4x5x spi1.1 can2: TCAN4X5X successfully initialized.
+| tcan4x5x spi1.1 can2: failed to request interrupt
+
+This patch fixes the problem by removing the IRQF_TRIGGER_FALLING from the
+request_threaded_irq().
+
+Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
+Cc: Dan Murphy <dmurphy@ti.com>
+Cc: Sriram Dash <sriram.dash@samsung.com>
+Cc: Pankaj Sharma <pankj.sharma@samsung.com>
+Link: https://lore.kernel.org/r/20201127093548.509253-1-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/m_can/m_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index b285920bcd8ab..e8933daab4995 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2423,6 +2423,7 @@ static int hns_roce_v2_mw_write_mtpt(void *mb_buf, struct hns_roce_mw *mw)
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 246fa2657d744..eafdb4441d441 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1605,7 +1605,7 @@ static int m_can_open(struct net_device *dev)
+ 		INIT_WORK(&cdev->tx_work, m_can_tx_work_queue);
  
- 	roce_set_bit(mpt_entry->byte_8_mw_cnt_en, V2_MPT_BYTE_8_R_INV_EN_S, 1);
- 	roce_set_bit(mpt_entry->byte_8_mw_cnt_en, V2_MPT_BYTE_8_L_INV_EN_S, 1);
-+	roce_set_bit(mpt_entry->byte_8_mw_cnt_en, V2_MPT_BYTE_8_LW_EN_S, 1);
- 
- 	roce_set_bit(mpt_entry->byte_12_mw_pa, V2_MPT_BYTE_12_PA_S, 0);
- 	roce_set_bit(mpt_entry->byte_12_mw_pa, V2_MPT_BYTE_12_MR_MW_S, 1);
+ 		err = request_threaded_irq(dev->irq, NULL, m_can_isr,
+-					   IRQF_ONESHOT | IRQF_TRIGGER_FALLING,
++					   IRQF_ONESHOT,
+ 					   dev->name, dev);
+ 	} else {
+ 		err = request_irq(dev->irq, m_can_isr, IRQF_SHARED, dev->name,
 -- 
 2.27.0
 
