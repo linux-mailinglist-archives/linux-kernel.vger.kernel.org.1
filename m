@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8532CAE62
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC682CAE6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgLAVab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:30:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727156AbgLAVaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:30:30 -0500
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1658B208C3;
-        Tue,  1 Dec 2020 21:29:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606858190;
-        bh=PcL86GGZM0lINkp20VJpuJRunmqO7tMbA8yBSVplGwQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YE/potU5SVfVdae4xB77xhKU9Lzw/ie1rO5kOiNINOZGD1jNsC4lu1TyVBGaAjpd6
-         lli+jfT6dK1sadfE+tW8hF1WfgVY+xAWuunjK3+zMxD0DRknIkDCc9cKRSabmtEITe
-         dyNCy2RHF780vsNfe7TMFY2TdKrfaAU7WtyefcE8=
-Received: by mail-oi1-f169.google.com with SMTP id s18so3421772oih.1;
-        Tue, 01 Dec 2020 13:29:50 -0800 (PST)
-X-Gm-Message-State: AOAM532rKM2B9MNGRPW37ENtk8dKIddcdigSzbLFLRWIlMcs/d5ppXzz
-        /kBTgdCH6zKfeS5k0RNPA0KzL+EnnG7rHk4IABY=
-X-Google-Smtp-Source: ABdhPJynUVrnm5jNymCZyz7FpjcNdUGYN5fLNI0BtT9fOXVbhBkozziYwKXo69NsTQsNQCg0w2e4UvNOMdosOAg9dCM=
-X-Received: by 2002:aca:5ec2:: with SMTP id s185mr3103969oib.33.1606858189293;
- Tue, 01 Dec 2020 13:29:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201210349.7f617c65@canb.auug.org.au> <6a11bb20-2e3b-e106-8030-019580d176b1@infradead.org>
-In-Reply-To: <6a11bb20-2e3b-e106-8030-019580d176b1@infradead.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 1 Dec 2020 22:29:38 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFiv64fCs8yxm-Z3fktKGcOgWHCdbWrc_921mcx=_54vg@mail.gmail.com>
-Message-ID: <CAMj1kXFiv64fCs8yxm-Z3fktKGcOgWHCdbWrc_921mcx=_54vg@mail.gmail.com>
-Subject: Re: linux-next: Tree for Dec 1 [crypto/aegis128.ko]
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ondrej Mosnacek <omosnacek@gmail.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
+        id S2388970AbgLAVbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729347AbgLAVbE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 16:31:04 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FCEC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:30:24 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id k7so3995845ybm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 13:30:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=0fZJNYwOSqcD8+IxQldlQWReWNbfGau5AHEVcdiMUlE=;
+        b=sjUzOmeqHlEVulc92piMYN9qFlBmLj+7D8kxU4XW2ReOVTN03rm69uePsvpz8soROf
+         sle7We46ZVXIdVxl/HwOuGnjAG9I9usk2JlXX7Z7FgUtMGKjLm6vQCJy6fAgU+pGZSHb
+         PIYRmxtVLS3578blW2fEke3e6kpT6bSRKJ1ijQhZcX64xj0AGZU5Euv8bhPsHU5gYdJN
+         SzQhe3lqCpDem4jcNtOJs0nfxaRuMWifFdkVodfaYjrhsdXWKvn13UyDZ2dhNfaljWX1
+         +BH5JxsmzS0au1misZgLU7a8ELBNTqGJHQ25YnTxBb1IhoWC+Lw66J6HZZ55cMRMXjeO
+         6FOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=0fZJNYwOSqcD8+IxQldlQWReWNbfGau5AHEVcdiMUlE=;
+        b=YeFBclKUle767Fy4zjxbfmahcz1ioy4GZXBAPyItXvX5UqbD+398AgbH5Qxot4c+Mi
+         5/gOfT7kqD2D0jTjeXgWoPz3jg1oXdKa7oxWmH8HI82DgY5TLPqWeA8kybeuVu1yRE0Z
+         tqKT4d+AX9eLckN0fGIu1g/ekx5aVqoPi4xJL6ch8jQiuYYS/r5Xv7YR9xXux7Duj89z
+         f/bLOg6RDI1qgKHQAt61Vxp6YmMnpi4SMuOZ1IN3Nb2cvDWO5/B9UFVu4qoWu+ed4AWu
+         QGV9deDT1seKbFSfSxgUYpPfPPB5T1q86xcEtFynTMvLy7P+2Kz860K8FXjXCNMQeJW1
+         E2dw==
+X-Gm-Message-State: AOAM530IrwIbaDLl6bys1Lf0926MvHiIT8vZZ/GR+Z0F18J9krsd8oMp
+        XTIi1q+rNVaE8u9DFwYMcV/bJWGbhofL
+X-Google-Smtp-Source: ABdhPJzwbH9QOsffb86FfNWo79SZUkTVor2Plwd0GZicm/PB5AP+/QrE6MFqyeBUo3SlaGcW58JW6fO+9hS+
+Sender: "furquan via sendgmr" <furquan@furquan.mtv.corp.google.com>
+X-Received: from furquan.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:13a4])
+ (user=furquan job=sendgmr) by 2002:a25:9392:: with SMTP id
+ a18mr7255295ybm.330.1606858223245; Tue, 01 Dec 2020 13:30:23 -0800 (PST)
+Date:   Tue,  1 Dec 2020 13:30:19 -0800
+Message-Id: <20201201213019.1558738-1-furquan@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH] drivers: core: Detach device from power domain on shutdown
+From:   Furquan Shaikh <furquan@google.com>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Furquan Shaikh <furquan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 at 20:53, Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 12/1/20 2:03 AM, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Changes since 20201130:
-> >
->
-> on i386 or x86_64:
->
-> CONFIG_CRYPTO_AEGIS128=m
-> CONFIG_CRYPTO_AEGIS128_AESNI_SSE2=y
->
->
-> ERROR: modpost: "crypto_aegis128_update_simd" [crypto/aegis128.ko] undefined!
->
+When the system is powered off or rebooted, devices are not detached
+from their PM domain. This results in ACPI PM not being invoked and
+hence PowerResouce _OFF method not being invoked for any of the
+devices. Because the ACPI power resources are not turned off in case
+of poweroff and reboot, it violates the power sequencing requirements
+which impacts the reliability of the devices over the lifetime of the
+platform. This is currently observed on all Chromebooks using ACPI.
 
-Fix posted here.
-https://lore.kernel.org/linux-crypto/20201130122620.16640-1-ardb@kernel.org/
+In order to solve the above problem, this change detaches a device
+from its PM domain whenever it is shutdown. This action is basically
+analogous to ->remove() from driver model perspective. Detaching the
+device from its PM domain ensures that the ACPI PM gets a chance to
+turn off the power resources for the device thus complying with its
+power sequencing requirements.
 
-Which compiler version are you using? This does not reproduce for me
-with GCC 7.5.0
+Signed-off-by: Furquan Shaikh <furquan@google.com>
+---
+ drivers/base/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index d661ada1518f..5823f1d719e1 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -23,6 +23,7 @@
+ #include <linux/of_device.h>
+ #include <linux/genhd.h>
+ #include <linux/mutex.h>
++#include <linux/pm_domain.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/netdevice.h>
+ #include <linux/sched/signal.h>
+@@ -4057,6 +4058,8 @@ void device_shutdown(void)
+ 			dev->driver->shutdown(dev);
+ 		}
+ 
++		dev_pm_domain_detach(dev, true);
++
+ 		device_unlock(dev);
+ 		if (parent)
+ 			device_unlock(parent);
+-- 
+2.29.2.454.gaff20da3a2-goog
+
