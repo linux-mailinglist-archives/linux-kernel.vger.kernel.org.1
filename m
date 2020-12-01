@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098FF2CA0CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FD72CA0D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbgLALDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:03:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgLALDC (ORCPT
+        id S2387416AbgLALDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:03:18 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:45183 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729425AbgLALDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:03:02 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE1DC0613CF;
-        Tue,  1 Dec 2020 03:02:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2SCn4JlSamV69DOhuHkaaHHDkWdEHLNroHw+GqxnhKA=; b=IxI289gjll//VzkPWqs5LPvNE7
-        ME07sDg+BNtzea65e0vyN3kdjectclnL4YJH1mPUBQRHoeQH8IR9azDTK+QsJye0iP1xfdhnlIYEs
-        utLBzHWcyFJhsnsrLrHGKDsOREGA/8U7YUsHEYTNS3iHk1CMof/8B/PK85vp1Geu2Q7IZI+XB6yT4
-        MOkhducVVGX4cyO5vSROAyB6hVQnWnjNKYim8nLvfYVbDv2Vta+6uViXo6SFYERJjel5ihTu1Sfse
-        h+1nhSUAcNBfmm73Mp6WwCWd2pXZN43hrW6IAvkQiQa6tWKRSfvOMayn53+x/9jS1enhlAOrOprjH
-        QF/QbveA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kk3QB-0007Cn-Vn; Tue, 01 Dec 2020 11:02:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 57DC13059DD;
-        Tue,  1 Dec 2020 12:02:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 38E122BE3991C; Tue,  1 Dec 2020 12:02:09 +0100 (CET)
-Date:   Tue, 1 Dec 2020 12:02:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     rafael@kernel.org, viresh.kumar@linaro.org, mingo@kernel.org,
-        x86@kernel.org, mark.rutland@arm.com, will@kernel.org,
-        svens@linux.ibm.com, linux-kernel@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH 1/2] sched/idle: Fix arch_cpu_idle() vs tracing
-Message-ID: <20201201110209.GQ3040@hirez.programming.kicks-ass.net>
-References: <20201120114145.197714127@infradead.org>
- <20201120114925.594122626@infradead.org>
- <20201130210003.GA40619@roeck-us.net>
+        Tue, 1 Dec 2020 06:03:18 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 71838240014;
+        Tue,  1 Dec 2020 11:02:35 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 12:02:35 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Biwen Li <biwen.li@oss.nxp.com>
+Cc:     leoyang.li@nxp.com, anson.huang@nxp.com, aisheng.dong@nxp.com,
+        linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
+        linux-rtc@vger.kernel.org, Biwen Li <biwen.li@nxp.com>
+Subject: Re: [PATCH] rtc: pcf2127: clear the flag TSF1 before enabling
+ interrupt generation
+Message-ID: <20201201110235.GC2401593@piout.net>
+References: <20201201084746.20135-1-biwen.li@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201130210003.GA40619@roeck-us.net>
+In-Reply-To: <20201201084746.20135-1-biwen.li@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 01:00:03PM -0800, Guenter Roeck wrote:
-> On Fri, Nov 20, 2020 at 12:41:46PM +0100, Peter Zijlstra wrote:
-> > We call arch_cpu_idle() with RCU disabled, but then use
-> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
-> > 
-> > Switch all arch_cpu_idle() implementations to use
-> > raw_local_irq_{en,dis}able() and carefully manage the
-> > lockdep,rcu,tracing state like we do in entry.
-> > 
-> > (XXX: we really should change arch_cpu_idle() to not return with
-> > interrupts enabled)
-> > 
+Hi,
+
+On 01/12/2020 16:47:46+0800, Biwen Li wrote:
+> From: Biwen Li <biwen.li@nxp.com>
 > 
-> Has this patch been tested on s390 ? Reason for asking is that it causes
-> all my s390 emulations to crash. Reverting it fixes the problem.
+> - clear the flag TSF1 before enabling interrupt generation
+> - properly set flag WD_CD for rtc chips(pcf2129, pca2129)
+> 
 
-My understanding is that it changes the error on s390. Previously it
-would complain about the local_irq_enable() in arch_cpu_idle(), now it
-complains when taking an interrupt during idle.
+This change has to be a separate patch.
 
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> ---
+>  drivers/rtc/rtc-pcf2127.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+> index 07a5630ec841..0a45e2512258 100644
+> --- a/drivers/rtc/rtc-pcf2127.c
+> +++ b/drivers/rtc/rtc-pcf2127.c
+> @@ -601,6 +601,10 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
+>  	 * Watchdog timer enabled and reset pin /RST activated when timed out.
+>  	 * Select 1Hz clock source for watchdog timer.
+>  	 * Note: Countdown timer disabled and not available.
+> +	 * For pca2129, pcf2129, only bit[7] is for Symbol WD_CD
+> +	 * of register watchdg_tim_ctl. The bit[6] is labeled
+> +	 * as T. Bits labeled as T must always be written with
+> +	 * logic 0.
+>  	 */
+>  	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_WD_CTL,
+>  				 PCF2127_BIT_WD_CTL_CD1 |
+> @@ -608,7 +612,7 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
+>  				 PCF2127_BIT_WD_CTL_TF1 |
+>  				 PCF2127_BIT_WD_CTL_TF0,
+>  				 PCF2127_BIT_WD_CTL_CD1 |
+> -				 PCF2127_BIT_WD_CTL_CD0 |
+> +				 has_nvmem ? (PCF2127_BIT_WD_CTL_CD0) : (0) |
+
+I don't like that because has_nvmem has nothing to do with
+PCF2127_BIT_WD_CTL_CD0 and nothing guarantees that we won't ever get an
+RTC without RST but with NVRAM and that willprobbly be overlooked.
+
+>  				 PCF2127_BIT_WD_CTL_TF1);
+>  	if (ret) {
+>  		dev_err(dev, "%s: watchdog config (wd_ctl) failed\n", __func__);
+> @@ -659,6 +663,21 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
+>  		return ret;
+>  	}
+>  
+> +	/*
+> +	 * Clear TSF1 field of ctrl1 register to clear interrupt
+> +	 * before enabling interrupt generation when
+> +	 * timestamp flag set. Unless the flag TSF1 won't
+> +	 * be cleared and the interrupt(INT pin) is
+> +	 * triggered continueously.
+> +	 */
+> +	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
+> +				 PCF2127_BIT_CTRL1_TSF1,
+> +				 0);
+> +	if (ret) {
+> +		dev_err(dev, "%s:  control and status register 1 (ctrl1) failed, ret = 0x%x\n",
+> +			__func__, ret);
+> +		return ret;
+> +	}
+
+Doing that means ignoring timestamps taken while the system is offline.
+It also doesn't fully solve the issue because you are not clearing TSF2
+here and also it never gets cleared by the driver later on so I guess
+you will get the interrupt storm once a timestamp is taken.
+
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
