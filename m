@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782172C9A17
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2E12C9A2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729083AbgLAIzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:55:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57764 "EHLO mail.kernel.org"
+        id S2387605AbgLAIzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729074AbgLAIzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:55:18 -0500
+        id S2387592AbgLAIzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FBEF22244;
-        Tue,  1 Dec 2020 08:54:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4793922210;
+        Tue,  1 Dec 2020 08:55:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812875;
-        bh=p56lrdY5ZhqQEjuwgoXjBLvEgDUWDJPeSLi/zSLGKIo=;
+        s=korg; t=1606812903;
+        bh=OR03ArxZpx1ev48Opm/zHPcx8htfqUY6NcYEAm56Djs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SKsqCa/jIQMHebZGzKiyqRj4pX5Hjzv5r//G27yUjlvgvedcERPV4SiOc/wm6RwVw
-         4FINx0SoGVyNHhQc5c+F/IBaoVfFt7vofMLLUf3cBmoPVCVixAFvJZ76/WBqSZQwwm
-         5nnzB4SSCHHougyZVAvyYwDn7Q22aOkZzJRxCz1A=
+        b=hc88eItkNHsEcfmkUxHMAk2et5Uwis6Q4yk3oW3d7p2JC91VlsrWbDw+1RK5FaQGd
+         e7I6CP//juWVIGr9g1YoDiomeLpOHWaA29nmP6XZCknXO/XE4xkErBuiAiIhKR2C75
+         UZ8bz+Bs4FuicGqjEKezEK0Nfiq9hqcj4tQfYViQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 08/24] proc: dont allow async path resolution of /proc/self components
+Subject: [PATCH 4.9 16/42] proc: dont allow async path resolution of /proc/self components
 Date:   Tue,  1 Dec 2020 09:53:14 +0100
-Message-Id: <20201201084638.166527632@linuxfoundation.org>
+Message-Id: <20201201084643.160433102@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
-References: <20201201084637.754785180@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,10 +57,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+)
 
 diff --git a/fs/proc/self.c b/fs/proc/self.c
-index 2dcc2558b3aa7..dffbe533d53fc 100644
+index c8bbc1c84a39a..f6e2e3fb8a226 100644
 --- a/fs/proc/self.c
 +++ b/fs/proc/self.c
-@@ -24,6 +24,13 @@ static const char *proc_self_follow_link(struct dentry *dentry, void **cookie)
+@@ -26,6 +26,13 @@ static const char *proc_self_get_link(struct dentry *dentry,
  	pid_t tgid = task_tgid_nr_ns(current, ns);
  	char *name;
  
