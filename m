@@ -2,107 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371172C998D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B58302C9994
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgLAIch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:32:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
+        id S1728779AbgLAIfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:35:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgLAIch (ORCPT
+        with ESMTP id S1727363AbgLAIfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:32:37 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA1CC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 00:31:51 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id h21so3226006wmb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 00:31:51 -0800 (PST)
+        Tue, 1 Dec 2020 03:35:10 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8082C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 00:34:23 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id bo9so2331828ejb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 00:34:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=TxYCO6cWwJuHI7h5DWT27KZsbPoNU+/ayiJlqSncKfw=;
-        b=rqb2bw6eKpmf53iOTGKAcD99gWWxxeOsA8KlODalPevcpYj640jondhUuOrOR9OoKm
-         8dKDV3Yu8hZn/K6RJUnVr4xfPXVIlBxG/P+W9OgHhl8TP/EsO8gBe7hQ/kEvPDwxtxI6
-         EtrAJW0QwlOjcDkHciPEFope7B46Gmh8rFzVfqcCt+INzGTddWiDP3AD/rvRzb4XyjvS
-         pjKn16q4Yuhkhmg2outK20lnWXFIk08Xe79TbobHlhohxOz79fKCUkgZR5WlGbmom2yE
-         6IBKVu1/GzRCQGdh29DFyuMZyweI/ClTZ8Lh9gm+ElkUSGyRcYr4U5ik0sMMSufLN6MD
-         IJ6Q==
+        d=newoldbits-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m/3Vg/QqxRAHJbDe0CxGSyyv7iws+9zRRr1f65R8fuo=;
+        b=FM/ZIqNlf6mVRsRqIPflwyzlZliPGy7P2OAW5IOFL3qxQXEXBm04NLInXHGeSCXeTy
+         hnAEgKeNgZjxDuXdt+NfQYuTvmt+0iD1/k8UkNoT2rtRpYBHlIqEbKMnHbV/lrl5Lhum
+         a6Lw2u6/beZXkHT/ehl6hrsQ+sTqyIeaROehQ+B3JCoC31hf6Ik9i8DlQb4hRoOzNCQq
+         tr2Ayr9sqa/fALAsVHRmsad/BPvVYSCO7boLgECX4HxZzN4Y/7w43y58cwBsFPEHR3tu
+         jmsM4rZ0LQl1xX9dRzdyvpoJKvqXDFWxjpk0pdt6/zSvxjSTrA63hveoriCsZuzFF2CO
+         sQGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=TxYCO6cWwJuHI7h5DWT27KZsbPoNU+/ayiJlqSncKfw=;
-        b=i8Z2GwdoJ/bAmSd/0RWU14Ep4lytewKPqkIwxhKbUm/o3MkAZW5rhoy9eeeYXZy28N
-         2tArt8zTf2YikfWKUZBd0DOHZlHlttiiGMDn9K9avDB/EaxIx15pIgMy4SMtmTss34wS
-         VufJvP/Xek7WCIies5Nexj4HNcSdtgKz20bCoV3JjCx5cb7QFK3RMctovc25Vv/p3w6o
-         /O3gQTBZPcLf+/v5xW5c85o5E/qHh6RpFLsVyKANISeHUaNc44qm3QTH0hh28zxc1/b6
-         Z4U5MxTW+xI6rWy0Cdl5mSXt3xDnnZ2ov88TdGjUSEWXcl96AJOk4iVFPm1ZlUfpO2Pd
-         QRPA==
-X-Gm-Message-State: AOAM53386uqwMXwBreNnhS4EjgvdN+/Xro6xzUUzIpOZhIJI0M47KoaB
-        230oR3MbWpHH5RhJ8TbvFMEHJw==
-X-Google-Smtp-Source: ABdhPJysze0Tk/EFsjvf7saAh4/g3+BzAjZd8SNKiyvNLDFY7ZwWNB2mQsNM5BotMYyX6kOS9bPtzA==
-X-Received: by 2002:a1c:220a:: with SMTP id i10mr1501475wmi.93.1606811508544;
-        Tue, 01 Dec 2020 00:31:48 -0800 (PST)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id z19sm1635915wmk.12.2020.12.01.00.31.47
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m/3Vg/QqxRAHJbDe0CxGSyyv7iws+9zRRr1f65R8fuo=;
+        b=oNLyiBVTwGWvl/pghCn0QNU9bo3taCWBgbfgXHdoUwSe1tX6FP7zy1ZhCXT/H5waiW
+         OW57MQ6d5hCgRbrl8y2ZRW0WlGqks1wMFltpuixlH6ATTYY3BjlwKn49/OMPtDHIir3t
+         7hhh88kjv1WG6EKMHCKsNXMjaNwdk6rYj+GcIZeM0wxibdfrFV3BsGmoACMCKNJAu+UP
+         OkpKB2hW1Ba7zrLysvRA7JotTsmJZL2D22moZ05gVoLMUMk70tkJWa63WR3U7lmewqYl
+         BFfFyIpLeeI1LoFxjQVt/pDPlGp+2P+VoUiBvQOrIoYwXcJ9iF5+fgPeMKolX4McLmnf
+         XXGw==
+X-Gm-Message-State: AOAM530+QjmYt9hlxjongcrn3f1Jlh2+4fiWcIxMj0rbLZ/LUQTJpXDR
+        oE9TaXr5oxDiAHvXMb6FnQ4yDQ==
+X-Google-Smtp-Source: ABdhPJyehl/I+4bBX8teUz/UJJsuu0zwAAYUCYiXlbgNa7sJKNCWznb5jy0B6Z7SKF18nQ2mUktWIg==
+X-Received: by 2002:a17:906:d9c7:: with SMTP id qk7mr1938154ejb.384.1606811662624;
+        Tue, 01 Dec 2020 00:34:22 -0800 (PST)
+Received: from nuc1.lan ([91.176.93.208])
+        by smtp.gmail.com with ESMTPSA id d1sm458417eje.82.2020.12.01.00.34.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 00:31:48 -0800 (PST)
-References: <e4df74aed2a7cff09366e72c87d408f41317907f.1606782187.git.stefan@agner.ch>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Stefan Agner <stefan@agner.ch>, robh+dt@kernel.org,
-        khilman@baylibre.com
-Cc:     narmstrong@baylibre.com, martin.blumenstingl@googlemail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: meson: fix PHY deassert timing requirements
-In-reply-to: <e4df74aed2a7cff09366e72c87d408f41317907f.1606782187.git.stefan@agner.ch>
-Message-ID: <1j8sai7wr0.fsf@starbuckisacylon.baylibre.com>
-Date:   Tue, 01 Dec 2020 09:31:47 +0100
+        Tue, 01 Dec 2020 00:34:21 -0800 (PST)
+From:   Jean Pihet <jean.pihet@newoldbits.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ryan Barnett <ryan.barnett@rockwellcollins.com>,
+        Conrad Ratschan <conrad.ratschan@rockwellcollins.com>,
+        Hugo Cornelis <hugo.cornelis@essensium.com>,
+        Arnout Vandecappelle <arnout.vandecappelle@essensium.com>,
+        Jean Pihet <jean.pihet@newoldbits.com>
+Subject: [PATCH v2] net: dsa: ksz8795: adjust CPU link to host interface
+Date:   Tue,  1 Dec 2020 09:34:08 +0100
+Message-Id: <20201201083408.51006-1-jean.pihet@newoldbits.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support for RGMII in 100 and 1000 Mbps.
 
-On Tue 01 Dec 2020 at 01:25, Stefan Agner <stefan@agner.ch> wrote:
+Adjust the CPU port settings from the host interface settings: interface
+MII type, speed, duplex.
 
-> According to the datasheet (Rev. 1.4, page 30) the RTL8211F requires
-> at least 50ms "for internal circuits settling time" before accessing
-> the PHY registers. This fixes an issue where the Ethernet link doesn't
-> come up when using ip link set down/up:
->   [   29.360965] meson8b-dwmac ff3f0000.ethernet eth0: Link is Down
->   [   34.569012] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=31)
->   [   34.676732] meson8b-dwmac ff3f0000.ethernet: Failed to reset the dma
->   [   34.678874] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
->   [   34.687850] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_open: Hw setup failed
->
-> Fixes: 658e4129bb81 ("arm64: dts: meson: g12b: odroid-n2: add the Ethernet PHY reset line")
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-> index 6982632ae646..a5652caacb27 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-> @@ -413,7 +413,7 @@ external_phy: ethernet-phy@0 {
->  		max-speed = <1000>;
->  
->  		reset-assert-us = <10000>;
-> -		reset-deassert-us = <30000>;
-> +		reset-deassert-us = <50000>;
->  		reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
->  
->  		interrupt-parent = <&gpio_intc>;
+Signed-off-by: Jean Pihet <jean.pihet@newoldbits.com>
+---
+ drivers/net/dsa/microchip/ksz8795.c | 93 ++++++++++++++++++-----------
+ 1 file changed, 57 insertions(+), 36 deletions(-)
 
-Thanks for sharing this is Stefan,
-The title of your patch should probably be modified to show that it
-addresses the odroid n2 only, as it stands.
+diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+index 1e101ab56cea..e76390bba3a0 100644
+--- a/drivers/net/dsa/microchip/ksz8795.c
++++ b/drivers/net/dsa/microchip/ksz8795.c
+@@ -916,10 +916,53 @@ static void ksz8795_port_mirror_del(struct dsa_switch *ds, int port,
+ 			     PORT_MIRROR_SNIFFER, false);
+ }
+ 
++static void ksz8795_mii_config(struct ksz_device *dev, struct ksz_port *p)
++{
++	u8 data8;
++
++	/* Configure MII interface for proper network communication. */
++	ksz_read8(dev, REG_PORT_5_CTRL_6, &data8);
++	data8 &= ~PORT_INTERFACE_TYPE;
++	data8 &= ~PORT_GMII_1GPS_MODE;
++	switch (p->interface) {
++	case PHY_INTERFACE_MODE_MII:
++		p->phydev.speed = SPEED_100;
++		break;
++	case PHY_INTERFACE_MODE_RMII:
++		data8 |= PORT_INTERFACE_RMII;
++		p->phydev.speed = SPEED_100;
++		break;
++	case PHY_INTERFACE_MODE_GMII:
++		data8 |= PORT_GMII_1GPS_MODE;
++		data8 |= PORT_INTERFACE_GMII;
++		p->phydev.speed = SPEED_1000;
++		break;
++	default:
++		data8 &= ~PORT_RGMII_ID_IN_ENABLE;
++		data8 &= ~PORT_RGMII_ID_OUT_ENABLE;
++		if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
++		    p->interface == PHY_INTERFACE_MODE_RGMII_RXID)
++			data8 |= PORT_RGMII_ID_IN_ENABLE;
++		if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
++		    p->interface == PHY_INTERFACE_MODE_RGMII_TXID)
++			data8 |= PORT_RGMII_ID_OUT_ENABLE;
++		/* Support RGMII in 100 and 1000 Mbps */
++		if (p->phydev.speed == SPEED_1000) {
++			data8 |= PORT_GMII_1GPS_MODE;
++		} else {
++			p->phydev.speed = SPEED_100;
++		}
++		data8 |= PORT_INTERFACE_RGMII;
++		break;
++	}
++	ksz_write8(dev, REG_PORT_5_CTRL_6, data8);
++	p->phydev.duplex = 1;
++}
++
+ static void ksz8795_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ {
+ 	struct ksz_port *p = &dev->ports[port];
+-	u8 data8, member;
++	u8 member;
+ 
+ 	/* enable broadcast storm limit */
+ 	ksz_port_cfg(dev, port, P_BCAST_STORM_CTRL, PORT_BROADCAST_STORM, true);
+@@ -943,41 +986,7 @@ static void ksz8795_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ 				 port);
+ 			p->interface = dev->compat_interface;
+ 		}
+-
+-		/* Configure MII interface for proper network communication. */
+-		ksz_read8(dev, REG_PORT_5_CTRL_6, &data8);
+-		data8 &= ~PORT_INTERFACE_TYPE;
+-		data8 &= ~PORT_GMII_1GPS_MODE;
+-		switch (p->interface) {
+-		case PHY_INTERFACE_MODE_MII:
+-			p->phydev.speed = SPEED_100;
+-			break;
+-		case PHY_INTERFACE_MODE_RMII:
+-			data8 |= PORT_INTERFACE_RMII;
+-			p->phydev.speed = SPEED_100;
+-			break;
+-		case PHY_INTERFACE_MODE_GMII:
+-			data8 |= PORT_GMII_1GPS_MODE;
+-			data8 |= PORT_INTERFACE_GMII;
+-			p->phydev.speed = SPEED_1000;
+-			break;
+-		default:
+-			data8 &= ~PORT_RGMII_ID_IN_ENABLE;
+-			data8 &= ~PORT_RGMII_ID_OUT_ENABLE;
+-			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+-			    p->interface == PHY_INTERFACE_MODE_RGMII_RXID)
+-				data8 |= PORT_RGMII_ID_IN_ENABLE;
+-			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+-			    p->interface == PHY_INTERFACE_MODE_RGMII_TXID)
+-				data8 |= PORT_RGMII_ID_OUT_ENABLE;
+-			data8 |= PORT_GMII_1GPS_MODE;
+-			data8 |= PORT_INTERFACE_RGMII;
+-			p->phydev.speed = SPEED_1000;
+-			break;
+-		}
+-		ksz_write8(dev, REG_PORT_5_CTRL_6, data8);
+-		p->phydev.duplex = 1;
+-
++        ksz8795_mii_config(dev, p);
+ 		member = dev->port_mask;
+ 	} else {
+ 		member = dev->host_mask | p->vid_member;
+@@ -1102,11 +1111,23 @@ static int ksz8795_setup(struct dsa_switch *ds)
+ 	return 0;
+ }
+ 
++static void ksz8795_adjust_link(struct dsa_switch *ds, int port,
++								struct phy_device *phydev)
++{
++	struct ksz_device *dev = ds->priv;
++	struct ksz_port *p = &dev->ports[port];
++
++	/* Adjust the link interface mode and speed for the CPU port */
++	if (dsa_is_cpu_port(ds, port))
++		ksz8795_mii_config(dev, p);
++}
++
+ static const struct dsa_switch_ops ksz8795_switch_ops = {
+ 	.get_tag_protocol	= ksz8795_get_tag_protocol,
+ 	.setup			= ksz8795_setup,
+ 	.phy_read		= ksz_phy_read16,
+ 	.phy_write		= ksz_phy_write16,
++	.adjust_link		= ksz8795_adjust_link,
+ 	.phylink_mac_link_down	= ksz_mac_link_down,
+ 	.port_enable		= ksz_enable_port,
+ 	.get_strings		= ksz8795_get_strings,
+-- 
+2.26.2
 
-I have checked the RTL8211F doc I have, v1.9, and this one mention
-"72ms at least - not including the 1.0V supply rise time" before
-accessing the PHY registers :/ ... so 80ms maybe ?
