@@ -2,134 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83292CA126
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6DB2CA12B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730494AbgLALVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
+        id S1730521AbgLALVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:21:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgLALVH (ORCPT
+        with ESMTP id S1727417AbgLALVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:21:07 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1DDC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 03:20:27 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kk3hl-00063f-Ft; Tue, 01 Dec 2020 12:20:21 +0100
-Message-ID: <0a7f2c0e8618f89c1e2eede661cf5a59d68cecad.camel@pengutronix.de>
-Subject: Re: [PATCH] drm: mxsfb: Add interconnect path request
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>, marex@denx.de,
-        stefan@agner.ch, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org
-Date:   Tue, 01 Dec 2020 12:20:18 +0100
-In-Reply-To: <20201201103757.32165-1-martin.kepplinger@puri.sm>
-References: <20201201103757.32165-1-martin.kepplinger@puri.sm>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        Tue, 1 Dec 2020 06:21:34 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498EFC0613D4;
+        Tue,  1 Dec 2020 03:20:54 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d3so2211787wmb.4;
+        Tue, 01 Dec 2020 03:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pk+AeFtfxfYd0H7QNYNcMFIbA1b9N2btxjSaZ5WRW3A=;
+        b=aIuwQi17yJnH2ibYAI18vWnyks8GCl5QTIlX6svAZQfs3rNXWP9RNeH2kafZdT6jX1
+         lskn0GWMdbucmrxgnB50lQBxL9z4PnyCfOpVnAMOI/vWytEvmVcE7+Z3Xb0EnCbRUA1f
+         f/TmcQ95TSKpjkA3rHYT912Wb0pQHelfhn236gxW3W8bH8NOjYUdT8TMNep5DxHy0nih
+         bTREO/V1LikQAyXAUKey1u4cjXKArUakCv/DRs5mQ9br8dlCrvSpTiRAOOfm5sJK5op0
+         TAgExHHUK4qrB4Vd1h+CuWcWq8QOONF5/VNw+b0Z1wM2YyuhuCB9FhS+EtA1hhYlHQo1
+         wbRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pk+AeFtfxfYd0H7QNYNcMFIbA1b9N2btxjSaZ5WRW3A=;
+        b=WMEOdmOVIRg3hPQ9B9QXf7WXRkKcSBN9gQ2iLSSetG2nG1Wzw9761DN47WXJeEB5yi
+         6JDQNtf0xsi7uyl37JrQsh4FO8TzMKzLJuF/jQkA7Ld4D/CFdB5JnnNuWzs/c/75iOis
+         ocGFVoh58sfEy9oe+PSmEiXXm9+f5NbbyiSBEENoh1KOLGVvWl7PnlDkfB5NgVS3W0Ke
+         V5kM8DY5VS0bnVLCt1BgCb6CdsoAC2IaD/Ht7dLq/fIVFg1Cij0qL8eBI3QGPRSl1lZZ
+         /sjLw8wiJTI80FLJOt8P9mrOwHUXB9sxdEAeOChNk0AtbowAXhRnKnfzypiOA52D9EPw
+         91+g==
+X-Gm-Message-State: AOAM532GyefK133xsyoXKwp08tTVQQquRRUGqHTGTUNDSjRM//gd1rzG
+        ddSSPywIZjiSfjQMf3lO4zexaX/3+Rc=
+X-Google-Smtp-Source: ABdhPJyvNFubnoZjuqm8G6k3SSBe8kjjgWLjs06/RwEhs44/pCGrDZbGUjelrshESFRpXH8SW5I3ig==
+X-Received: by 2002:a7b:c00b:: with SMTP id c11mr2194360wmb.175.1606821653099;
+        Tue, 01 Dec 2020 03:20:53 -0800 (PST)
+Received: from localhost.localdomain (188.red-81-44-87.dynamicip.rima-tde.net. [81.44.87.188])
+        by smtp.gmail.com with ESMTPSA id v20sm2223818wmh.44.2020.12.01.03.20.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Dec 2020 03:20:52 -0800 (PST)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     vkoul@kernel.org
+Cc:     kishon@ti.com, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org
+Subject: [PATCH v3 0/2] phy: ralink: phy-mt7621-pci: some fixes for COMPILE_TEST
+Date:   Tue,  1 Dec 2020 12:20:49 +0100
+Message-Id: <20201201112051.17463-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, den 01.12.2020, 11:37 +0100 schrieb Martin Kepplinger:
-> Add interconnect support to mxsfb so that it is able to request enough
-> bandwidth to DDR for display output to work.
-> 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  drivers/gpu/drm/mxsfb/mxsfb_drv.c | 33 +++++++++++++++++++++++++++++++
->  drivers/gpu/drm/mxsfb/mxsfb_drv.h |  2 ++
->  drivers/gpu/drm/mxsfb/mxsfb_kms.c | 13 ++++++++++++
->  3 files changed, 48 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> index 6faf17b6408d..b05e8e5f1e38 100644
-> --- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> +++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> @@ -15,6 +15,7 @@
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/interconnect.h>
->  
-> 
-> 
-> 
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_bridge.h>
-> @@ -311,6 +312,34 @@ static const struct of_device_id mxsfb_dt_ids[] = {
->  };
->  MODULE_DEVICE_TABLE(of, mxsfb_dt_ids);
-> 
-> +
-> +static int mxsfb_init_icc(struct platform_device *pdev)
-> +{
-> +	struct drm_device *drm = platform_get_drvdata(pdev);
-> +	struct mxsfb_drm_private *mxsfb = drm->dev_private;
-> +	int ret;
-> +
-> +	/* Optional interconnect request */
-> +	mxsfb->icc_path = devm_of_icc_get(&pdev->dev, "lcdif-dram");
-> +	if (IS_ERR(mxsfb->icc_path)) {
-> +		ret = PTR_ERR(mxsfb->icc_path);
-> +		if (ret == -EPROBE_DEFER)
-> +			return ret;
-> +
-> +		mxsfb->icc_path = NULL;
-> +		dev_dbg(drm->dev,
-> +			"No interconnect may cause display underflows!\n");
-> +	}
-> +
-> +	ret = icc_set_bw(mxsfb->icc_path, 0, MBps_to_icc(700));
+Hi Vinod,
 
-Shouldn't this be proportional to the current mode, instead of a fixed
-value? 700MB looks like 1080p@60Hz@32bpp with a bit of headroom, but
-there are many valid use-cases where significantly smaller displays are
-connected to the eLCDIF. Also it doesn't cover the case where an
-overlay is active, which needs additional bandwidth.
+After merging the phy-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-> +	if (ret) {
-> +		dev_err(drm->dev, "%s: icc_set_bw failed: %d\n", __func__, ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-[...]
->  #include <drm/drm_atomic.h>
->  #include <drm/drm_atomic_helper.h>
-> @@ -310,6 +311,12 @@ static void mxsfb_crtc_atomic_enable(struct drm_crtc *crtc,
->  	struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(crtc->dev);
->  	struct drm_device *drm = mxsfb->drm;
->  	dma_addr_t paddr;
-> +	int ret;
-> +
-> +	ret = icc_enable(mxsfb->icc_path);
-> +	if (ret)
-> +		dev_err_ratelimited(drm->dev, "%s: icc_enable failed: %d\n",
-> +				    __func__, ret);
+drivers/phy/ralink/phy-mt7621-pci.c:17:10: fatal error: mt7621.h: No such file or directory
+17 | #include <mt7621.h>
+ |          ^~~~~~~~~~
 
-Why ratelimited? I wouldn't expect atomic enable/disable to be called
-often enough for this to make any difference.
+This driver has two includes which are in
+"arch/mips/include/asm/mach-ralink" and are directly included in the
+driver:
+* mt7621.h
+* ralink_regs.h
 
-Regards,
-Lucas
+This is because this path is directly included in 'arch/mips/ralink/Platform'
+for "ralink".
 
-> 
->  	pm_runtime_get_sync(drm->dev);
->  	mxsfb_enable_axi_clk(mxsfb);
+Adding the include search path to the phy ralink directory fix the problem but
+as you told me I finally end up removing COMPILE_TEST from Kconfig.
+
+Making 'allmodconfig' in x86_64 also showed two warnings for this driver
+because of pointer size and not valid name for MODULE_DEVICE_TABLE ids.
+
+Ids for the macro has been also included in this series.
+
+Changes in v3:
+    - PATCH 1/3 completely changed:
+        - Makefile is not touched.
+        - Drop 'COMPILE_TEST' in Kconfig.
+    - Drop PATCH 2/3 in previous series because COMPILE_TEST does not apply anymore.
+
+Changes in v2:
+    - Added 'Reported-by' tag in PATCH 1/3.
+
+Best regards,
+    Sergio Paracuellos
+
+Sergio Paracuellos (2):
+  phy: ralink: phy-mt7621-pci: drop 'COMPILE_TEST' from Kconfig
+  phy: ralink: phy-mt7621-pci: set correct name in MODULE_DEVICE_TABLE
+    macro
+
+ drivers/phy/ralink/Kconfig          | 2 +-
+ drivers/phy/ralink/phy-mt7621-pci.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
 
