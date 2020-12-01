@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1D92CB0A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AB92CB0A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgLAXHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgLAXHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:07:09 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3187AC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 15:06:23 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id z21so8082292lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 15:06:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LkvyS2XwAUCBG0T0sNi/1VUrEbEkR9dvlUAWjQGxroE=;
-        b=xo/yQHm9fnuzKkRWd2G26TvO6DmqQuLw3krYpZy5V5t3MW1AafKECSZ78/R3s5aDXY
-         t0i9Qzgn9PhzIWBgxcD7i8XdJA8E9DX4/gBexSTqb+ohp/W++aVErJwjRdgQqOMA8rCb
-         I5PwcV5lWtIC8ObwiKY3hgAiaQgPumyCOWjhRi7XBMUACdZaNgnAh84GBy5y/E/Su6Ry
-         YUcbmB8ratAVfIjgaOIytkzHdz9rdJe2tWViSUqIZj5zqgDDQzz5qE2QDCI5UsYx6TQ+
-         QyMqoN1nnJENPZMTSZgUo0PmGmqnP74ws1lEHsHv3/t//sV/sAPZ2fvDKo0KcPbGi/1H
-         yhQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LkvyS2XwAUCBG0T0sNi/1VUrEbEkR9dvlUAWjQGxroE=;
-        b=E9G5BWX0Z/eLG2KJ1Xy+ttddh1gAnTT3f4vr3pmq17djL7qRs3FpM1eF2CBV9waHz5
-         EZCwinwzJByDPwh/WX2L5piM3J1j+AjoTBwEsDDw5A71HQhBVlRKKMPsexr1F2HX7P4n
-         /mlYSxNch8zeMQtueWg0KX6xXDuPpM949ZUNK/pw44QyOT65AGy+zupVT5Y8hYJkjtI8
-         +EGfBdnOuFq4+qjXYzU69Da976HBLTM71/rOkXEuV+bF0ta4tkTvaQr1YJpXbLOiuy0e
-         uZT5bLd2QIs/J/fpGjZFp0J91AJdv89meHmoL8PjS/Qgmm9xP21jIGPBEEdqrZ5+Ma60
-         jfzw==
-X-Gm-Message-State: AOAM532KWYfpdFAD+8ktGoBMwYCLXm9KQ1XepHRCFnR+MSVpg8ndrK0m
-        DUyy0ttm98fCkIrqJi1zgui2BiVJHi+znUeB/attww==
-X-Google-Smtp-Source: ABdhPJwJpkEJa2W03wohD7Ix8jmmuqkCNfNJAbp0Hj6t9Pli3rRF9RLzMEEx7hjWWK1/zYH0ZDcyhRTNuRDn27QFsE0=
-X-Received: by 2002:a19:5f11:: with SMTP id t17mr2147583lfb.572.1606863981608;
- Tue, 01 Dec 2020 15:06:21 -0800 (PST)
+        id S1726734AbgLAXKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:10:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726082AbgLAXKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 18:10:22 -0500
+Date:   Tue, 1 Dec 2020 23:09:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606864181;
+        bh=R1LZxKhC63MgOhIWSKRcfmgG/w02ZOoz7xHqWe+Pr7k=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zsaqQBCXac4ssa46wKGJrHjx78Yx+BKPCLV22+wvuO2lvTanFDGUxj+NCPAd7BT2E
+         TQo1DGLBSM79hGhonz/V0LYXVbogx5ZAv/HDAPU3QyZI4crCjRZPDk3x8CH2QsIBsJ
+         5osHzXr+wQYAdBUuuOnHChySkw+W5DZWwAQdrdJ8=
+From:   Will Deacon <will@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Al Grant <al.grant@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: Re: [PATCH] drivers/perf: Enable PID_IN_CONTEXTIDR with SPE
+Message-ID: <20201201230935.GD28496@willie-the-truck>
+References: <20201130162454.28255-1-james.clark@arm.com>
+ <20201130164650.GA25187@willie-the-truck>
+ <20201201041040.GC28939@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-References: <d1a71663e96239ced28509980ea484cadc10c80a.1606170299.git.writetopawan@gmail.com>
-In-Reply-To: <d1a71663e96239ced28509980ea484cadc10c80a.1606170299.git.writetopawan@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 2 Dec 2020 00:06:10 +0100
-Message-ID: <CACRpkdYDWGN3iJbEP9F_8vw1+R-farPbKT6x9ZqyksH6cQ4fTA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: core: Fix unused variable build warnings
-To:     Pawan Gupta <writetopawan@gmail.com>, He Zhe <zhe.he@windriver.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Drew Fustini <drew@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201041040.GC28939@leoy-ThinkPad-X240s>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 11:41 PM Pawan Gupta <writetopawan@gmail.com> wrote=
-:
+On Tue, Dec 01, 2020 at 12:10:40PM +0800, Leo Yan wrote:
+> On Mon, Nov 30, 2020 at 04:46:51PM +0000, Will Deacon wrote:
+> > On Mon, Nov 30, 2020 at 06:24:54PM +0200, James Clark wrote:
+> > > Enable PID_IN_CONTEXTIDR by default when Arm SPE is enabled.
+> > > This flag is required to get PID data in the SPE trace. Without
+> > > it the perf tool will report 0 for PID which isn't very useful,
+> > > especially when doing system wide profiling or profiling
+> > > applications that fork.
+> > 
+> > Can perf not figure out the pid some other way? (e.g. by tracing context
+> > switches and correlating that with the SPE data?).
+> 
+> For perf 'per-thread' mode, we can use context switch trace event as
+> assisted info to select thread context.  But for "system wide" mode and
+> "snapshot" mode in perf tool, since the trace data is continuous, I
+> think we cannot use context switch trace event to correlate the SPE
+> trace data.
 
-> A recent commit f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs
-> file") added build warnings when CONFIG_GPIOLIB=3Dn. Offcourse the kernel
-> fails to build when warnings are treated as errors. Below is the error
-> message:
->
->   $ make CFLAGS_KERNEL+=3D-Werror
->
->   drivers/pinctrl/core.c: In function =E2=80=98pinctrl_pins_show=E2=80=99=
-:
->   drivers/pinctrl/core.c:1607:20: error: unused variable =E2=80=98chip=E2=
-=80=99 [-Werror=3Dunused-variable]
->    1607 |  struct gpio_chip *chip;
->         |                    ^~~~
->   drivers/pinctrl/core.c:1606:15: error: unused variable =E2=80=98gpio_nu=
-m=E2=80=99 [-Werror=3Dunused-variable]
->    1606 |  unsigned int gpio_num;
->         |               ^~~~~~~~
->   drivers/pinctrl/core.c:1605:29: error: unused variable =E2=80=98range=
-=E2=80=99 [-Werror=3Dunused-variable]
->    1605 |  struct pinctrl_gpio_range *range;
->         |                             ^~~~~
->   cc1: all warnings being treated as errors
->
-> These variables are only used inside #ifdef CONFIG_GPIOLIB, fix the
-> build warnings by wrapping the definition inside the config.
->
-> Fixes: f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
-> Signed-off-by: Pawan Gupta <writetopawan@gmail.com>
+Is there no way to correlate them with something like CNTVCT?
 
-This was fixed in
-commit b507cb92477ad85902783a183c5ce01d16296687
-"pinctrl: core: Add missing #ifdef CONFIG_GPIOLIB"
-On october 28.
+> > Also, how does this work with pid namespaces?
+> 
+> Here we are studying the implemetation of Intel-PT and Arm CoreSight.
+> 
+> The context ID is stored into the hardware trace data when record;
+> afterwards when perf tool decodes the trace data and detects the
+> packet for context ID, it will select the machine's thread context in
+> perf [1].  Since the perf tool gathers all the threads infomation in
+> perf data file, based on the context ID, it can find the corresponding
+> thread pointer with function machine__find_thread() [2].
+> 
+> Since your question is for "pid namespace", to be honest, I don't know
+> how perf tool to handle any confliction for differrent processes share
+> the same PID, and I am not sure if you are asking CGroup related stuff
+> or not.  If this cannot answer your question, please let me know.
 
-Thanks anyways!
+My point was that the pid value written to CONTEXTIDR is a global pid
+and does not take namespacing into account. If perf is run inside a pid
+namespace, it will therefore not work.
 
-Yours,
-Linus Walleij
+Will
