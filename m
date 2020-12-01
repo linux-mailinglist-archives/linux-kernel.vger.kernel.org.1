@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F782C9D08
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E42A2C9D42
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389469AbgLAJJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:09:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45100 "EHLO mail.kernel.org"
+        id S2390348AbgLAJVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:21:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389181AbgLAJIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:08:17 -0500
+        id S2389319AbgLAJIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:08:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B12782067D;
-        Tue,  1 Dec 2020 09:08:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63E5020809;
+        Tue,  1 Dec 2020 09:08:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813681;
-        bh=0ZKrzedkeNaQQav56syj/ZPxW7yKpfWqhJQGXPQPkac=;
+        s=korg; t=1606813687;
+        bh=dtbxG18nTbrzcthdILD/jhvMzAF4T8Y7OY/SrZV1+I8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KSZi3euRtWOSS6IRz+Ps9oKFYNtzWgmPZITQXxjrF3fbJ3FUp4S/fJn2jtOof7nXK
-         Je6yaStEMLDgLUPD6ywk2IINso8akPXeOMN0QWdFter7/S5OrcwlEv0sBYmPJ/qcML
-         WhlFFqabtk4pDWTx+ohiQEFDiWV38S1Pyunt2CKA=
+        b=amCvKTR21FH9kWNgUTNJ9oJgbCtvsEKafVUDVnYco59pFWHdOunXS2nWFsobOJbQB
+         xjCDVpEOU2x1JfJHZ5CDVcNnTXh8YUMf08VOyF4e85xzOwNjs9MDwTCpCEc2DRS4VT
+         UPnSVCybbMnM6pMl4K+oNHt3ZDOlk6hZ4mlr9uFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Keqian Zhu <zhukeqian1@huawei.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>
-Subject: [PATCH 5.9 023/152] KVM: arm64: vgic-v3: Drop the reporting of GICR_TYPER.Last for userspace
-Date:   Tue,  1 Dec 2020 09:52:18 +0100
-Message-Id: <20201201084714.917455697@linuxfoundation.org>
+        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nikos Tsironis <ntsironis@arrikto.com>
+Subject: [PATCH 5.9 025/152] KVM: x86: Fix split-irqchip vs interrupt injection window request
+Date:   Tue,  1 Dec 2020 09:52:20 +0100
+Message-Id: <20201201084715.179140669@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -44,79 +43,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 23bde34771f1ea92fb5e6682c0d8c04304d34b3b upstream.
+commit 71cc849b7093bb83af966c0e60cb11b7f35cd746 upstream.
 
-It was recently reported that if GICR_TYPER is accessed before the RD base
-address is set, we'll suffer from the unset @rdreg dereferencing. Oops...
+kvm_cpu_accept_dm_intr and kvm_vcpu_ready_for_interrupt_injection are
+a hodge-podge of conditions, hacked together to get something that
+more or less works.  But what is actually needed is much simpler;
+in both cases the fundamental question is, do we have a place to stash
+an interrupt if userspace does KVM_INTERRUPT?
 
-	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
-			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
+In userspace irqchip mode, that is !vcpu->arch.interrupt.injected.
+Currently kvm_event_needs_reinjection(vcpu) covers it, but it is
+unnecessarily restrictive.
 
-It's "expected" that users will access registers in the redistributor if
-the RD has been properly configured (e.g., the RD base address is set). But
-it hasn't yet been covered by the existing documentation.
+In split irqchip mode it's a bit more complicated, we need to check
+kvm_apic_accept_pic_intr(vcpu) (the IRQ window exit is basically an INTACK
+cycle and thus requires ExtINTs not to be masked) as well as
+!pending_userspace_extint(vcpu).  However, there is no need to
+check kvm_event_needs_reinjection(vcpu), since split irqchip keeps
+pending ExtINT state separate from event injection state, and checking
+kvm_cpu_has_interrupt(vcpu) is wrong too since ExtINT has higher
+priority than APIC interrupts.  In fact the latter fixes a bug:
+when userspace requests an IRQ window vmexit, an interrupt in the
+local APIC can cause kvm_cpu_has_interrupt() to be true and thus
+kvm_vcpu_ready_for_interrupt_injection() to return false.  When this
+happens, vcpu_run does not exit to userspace but the interrupt window
+vmexits keep occurring.  The VM loops without any hope of making progress.
 
-Per discussion on the list [1], the reporting of the GICR_TYPER.Last bit
-for userspace never actually worked. And it's difficult for us to emulate
-it correctly given that userspace has the flexibility to access it any
-time. Let's just drop the reporting of the Last bit for userspace for now
-(userspace should have full knowledge about it anyway) and it at least
-prevents kernel from panic ;-)
+Once we try to fix these with something like
 
-[1] https://lore.kernel.org/kvmarm/c20865a267e44d1e2c0d52ce4e012263@kernel.org/
+     return kvm_arch_interrupt_allowed(vcpu) &&
+-        !kvm_cpu_has_interrupt(vcpu) &&
+-        !kvm_event_needs_reinjection(vcpu) &&
+-        kvm_cpu_accept_dm_intr(vcpu);
++        (!lapic_in_kernel(vcpu)
++         ? !vcpu->arch.interrupt.injected
++         : (kvm_apic_accept_pic_intr(vcpu)
++            && !pending_userspace_extint(v)));
 
-Fixes: ba7b3f1275fd ("KVM: arm/arm64: Revisit Redistributor TYPER last bit computation")
-Reported-by: Keqian Zhu <zhukeqian1@huawei.com>
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20201117151629.1738-1-yuzenghui@huawei.com
+we realize two things.  First, thanks to the previous patch the complex
+conditional can reuse !kvm_cpu_has_extint(vcpu).  Second, the interrupt
+window request in vcpu_enter_guest()
+
+        bool req_int_win =
+                dm_request_for_irq_injection(vcpu) &&
+                kvm_cpu_accept_dm_intr(vcpu);
+
+should be kept in sync with kvm_vcpu_ready_for_interrupt_injection():
+it is unnecessary to ask the processor for an interrupt window
+if we would not be able to return to userspace.  Therefore,
+kvm_cpu_accept_dm_intr(vcpu) is basically !kvm_cpu_has_extint(vcpu)
+ANDed with the existing check for masked ExtINT.  It all makes sense:
+
+- we can accept an interrupt from userspace if there is a place
+  to stash it (and, for irqchip split, ExtINTs are not masked).
+  Interrupts from userspace _can_ be accepted even if right now
+  EFLAGS.IF=0.
+
+- in order to tell userspace we will inject its interrupt ("IRQ
+  window open" i.e. kvm_vcpu_ready_for_interrupt_injection), both
+  KVM and the vCPU need to be ready to accept the interrupt.
+
+... and this is what the patch implements.
+
+Reported-by: David Woodhouse <dwmw@amazon.co.uk>
+Analyzed-by: David Woodhouse <dwmw@amazon.co.uk>
 Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reviewed-by: Nikos Tsironis <ntsironis@arrikto.com>
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+Tested-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/kvm/vgic/vgic-mmio-v3.c |   22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/kvm_host.h |    1 +
+ arch/x86/kvm/irq.c              |    2 +-
+ arch/x86/kvm/x86.c              |   18 ++++++++++--------
+ 3 files changed, 12 insertions(+), 9 deletions(-)
 
---- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-+++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-@@ -273,6 +273,23 @@ static unsigned long vgic_mmio_read_v3r_
- 	return extract_bytes(value, addr & 7, len);
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1603,6 +1603,7 @@ int kvm_test_age_hva(struct kvm *kvm, un
+ int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
+ int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v);
+ int kvm_cpu_has_interrupt(struct kvm_vcpu *vcpu);
++int kvm_cpu_has_extint(struct kvm_vcpu *v);
+ int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu);
+ int kvm_cpu_get_interrupt(struct kvm_vcpu *v);
+ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event);
+--- a/arch/x86/kvm/irq.c
++++ b/arch/x86/kvm/irq.c
+@@ -40,7 +40,7 @@ static int pending_userspace_extint(stru
+  * check if there is pending interrupt from
+  * non-APIC source without intack.
+  */
+-static int kvm_cpu_has_extint(struct kvm_vcpu *v)
++int kvm_cpu_has_extint(struct kvm_vcpu *v)
+ {
+ 	/*
+ 	 * FIXME: interrupt.injected represents an interrupt whose
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3839,21 +3839,23 @@ static int kvm_vcpu_ioctl_set_lapic(stru
+ 
+ static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
+ {
++	/*
++	 * We can accept userspace's request for interrupt injection
++	 * as long as we have a place to store the interrupt number.
++	 * The actual injection will happen when the CPU is able to
++	 * deliver the interrupt.
++	 */
++	if (kvm_cpu_has_extint(vcpu))
++		return false;
++
++	/* Acknowledging ExtINT does not happen if LINT0 is masked.  */
+ 	return (!lapic_in_kernel(vcpu) ||
+ 		kvm_apic_accept_pic_intr(vcpu));
  }
  
-+static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
-+						 gpa_t addr, unsigned int len)
-+{
-+	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
-+	int target_vcpu_id = vcpu->vcpu_id;
-+	u64 value;
-+
-+	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
-+	value |= ((target_vcpu_id & 0xffff) << 8);
-+
-+	if (vgic_has_its(vcpu->kvm))
-+		value |= GICR_TYPER_PLPIS;
-+
-+	/* reporting of the Last bit is not supported for userspace */
-+	return extract_bytes(value, addr & 7, len);
-+}
-+
- static unsigned long vgic_mmio_read_v3r_iidr(struct kvm_vcpu *vcpu,
- 					     gpa_t addr, unsigned int len)
+-/*
+- * if userspace requested an interrupt window, check that the
+- * interrupt window is open.
+- *
+- * No need to exit to userspace if we already have an interrupt queued.
+- */
+ static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
  {
-@@ -593,8 +610,9 @@ static const struct vgic_register_region
- 	REGISTER_DESC_WITH_LENGTH(GICR_IIDR,
- 		vgic_mmio_read_v3r_iidr, vgic_mmio_write_wi, 4,
- 		VGIC_ACCESS_32bit),
--	REGISTER_DESC_WITH_LENGTH(GICR_TYPER,
--		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi, 8,
-+	REGISTER_DESC_WITH_LENGTH_UACCESS(GICR_TYPER,
-+		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi,
-+		vgic_uaccess_read_v3r_typer, vgic_mmio_uaccess_write_wi, 8,
- 		VGIC_ACCESS_64bit | VGIC_ACCESS_32bit),
- 	REGISTER_DESC_WITH_LENGTH(GICR_WAKER,
- 		vgic_mmio_read_raz, vgic_mmio_write_wi, 4,
+ 	return kvm_arch_interrupt_allowed(vcpu) &&
+-		!kvm_cpu_has_interrupt(vcpu) &&
+-		!kvm_event_needs_reinjection(vcpu) &&
+ 		kvm_cpu_accept_dm_intr(vcpu);
+ }
+ 
 
 
