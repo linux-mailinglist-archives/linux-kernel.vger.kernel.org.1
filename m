@@ -2,258 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EF82CA78E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE342CA793
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391932AbgLAP5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:57:07 -0500
-Received: from mga06.intel.com ([134.134.136.31]:30482 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388395AbgLAP5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:57:07 -0500
-IronPort-SDR: S9K7opjTIa/JsbxFxonXeMdtL5dQRutd88uN8jypLxiUUqXyNgdBErz0Px47munoP2Ay85CfQa
- UVWnMdovOj8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="234453436"
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="234453436"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 07:55:23 -0800
-IronPort-SDR: QfcYMzGShBE137FZNZLaRpHlgTLYVcGE+1s1yU7a+CfUUHvYLSDyZMsF9MTm3asiBC2wXbeTpJ
- 4z04FpiZgDYQ==
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="481151293"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 07:55:16 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id EDCA221E1A; Tue,  1 Dec 2020 17:55:13 +0200 (EET)
-Date:   Tue, 1 Dec 2020 17:55:13 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201201155513.GB852@paasikivi.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com>
- <20201130233232.GD25713@pendragon.ideasonboard.com>
+        id S2391973AbgLAP5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:57:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389233AbgLAP5k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 10:57:40 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B3EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 07:56:54 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 23so3372903wrc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 07:56:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yVk5KHBR+Mddw8rCuMxzgEChumqmL4eB1KqK5P0hH5E=;
+        b=UlFHk+22AOC3daNQPBuWa/WMNZh1Aip8NACSrVS7zIMCaANpB+k7HZYxRY/53FozG5
+         ejfoB5rw0FQIm/4x7tHSlcIZytPxDItsRVPnGd7qrBKCVtkYSq3bsbEn0wieqpSLza+M
+         J5P4tX7HOYIWiNwkc4h0gs+0qMY8CyEKgTY2ZohmAZWJCjwibOoXG3Xw/aJhrnDLH0d7
+         tQoRF5o1yotOhTPfrhiXDDTIjYasLy0/3zw0CBtfa6Gkeoj3PrvpzNMJFmcYlueLw16X
+         nRRH8FJcCl4/tElozP8dUn1P8pWTY4XIxbjDnPtR6vv4TP9yNf4vlMmJq4ISdt0lBAxl
+         vvgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yVk5KHBR+Mddw8rCuMxzgEChumqmL4eB1KqK5P0hH5E=;
+        b=DBdE2cjgS0xEXSb/+pxMZ0b4vu8vWmmDCCy/HZK49lsIDihMDGIBB2lpCA2Y63m1v6
+         kqeZPbh0DE0l9G5kiQKOvs+otRgb5aJ1xZLPDSScb0UBYICrYOLnwsCrkmtR13IwADBg
+         JthnWaXGsd7PM9v7ywSCtb9hymAp+k7DDNStCi39SYPc8vRZzpAyiuXGu0PWutt5+ER9
+         VN/9AqyUXmGfuGj3bfHHrTcFOhVv8epYkt1SYzUp6QTn1OhZwXrktWmsdJwT3PIfQaXf
+         V0+HIvPb+ait3rX6IP19WQMIUkAU08s7Nj6pbKXNLwCTT6YQtjgZ2sKqVyTSAdSHDawM
+         sRCA==
+X-Gm-Message-State: AOAM530f+f4OApSz9Dsur5zK/GUTL/9vl1qTIMvi45x2Y5nHRJE29cdm
+        hcvnOGuIuwAo5cE4kMV8kJyw/iRtWmVHrg==
+X-Google-Smtp-Source: ABdhPJy1biYd6YQn7O1yE1QJCAD4BDZLFDdoPnTRU70gL8vejvUzgcP6kviW3MJ5lcRJrE6SWUoDnw==
+X-Received: by 2002:adf:e788:: with SMTP id n8mr4738634wrm.84.1606838213044;
+        Tue, 01 Dec 2020 07:56:53 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id n4sm376363wmc.30.2020.12.01.07.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 07:56:52 -0800 (PST)
+Date:   Tue, 1 Dec 2020 15:56:49 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 09/14] cpuset: Don't use the cpu_possible_mask as a
+ last resort for cgroup v1
+Message-ID: <20201201155649.GB1914005@google.com>
+References: <20201124155039.13804-1-will@kernel.org>
+ <20201124155039.13804-10-will@kernel.org>
+ <20201127133245.4hbx65mo3zinawvo@e107158-lin.cambridge.arm.com>
+ <20201130170531.qo67rai5lftskmk2@e107158-lin.cambridge.arm.com>
+ <20201130173610.GA1715200@google.com>
+ <20201201115842.t77abecneuesd5ih@e107158-lin.cambridge.arm.com>
+ <20201201123748.GA1896574@google.com>
+ <20201201141121.5w2wed3633slo6dw@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201130233232.GD25713@pendragon.ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201201141121.5w2wed3633slo6dw@e107158-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On Tuesday 01 Dec 2020 at 14:11:21 (+0000), Qais Yousef wrote:
+> AFAIU, OEMs have to define their cpusets. So it makes sense to me for them to
+> define it correctly if they want to enable asym aarch32.
+> 
+> Systems that don't care about this feature shouldn't be affected. If they do,
+> then I'm missing something.
 
-On Tue, Dec 01, 2020 at 01:32:32AM +0200, Laurent Pinchart wrote:
-> Hi Andy,
-> 
-> On Mon, Nov 30, 2020 at 10:07:19PM +0200, Andy Shevchenko wrote:
-> > On Mon, Nov 30, 2020 at 01:31:29PM +0000, Daniel Scally wrote:
-> > > On platforms where ACPI is designed for use with Windows, resources
-> > > that are intended to be consumed by sensor devices are sometimes in
-> > > the _CRS of a dummy INT3472 device upon which the sensor depends. This
-> > > driver binds to the dummy acpi device (which does not represent a
-> > 
-> > acpi device -> acpi_device
-> > 
-> > > physical PMIC) and maps them into GPIO lines and regulators for use by
-> > > the sensor device instead.
-> > 
-> > ...
-> > 
-> > > This patch contains the bits of this process that we're least sure about.
-> > > The sensors in scope for this work are called out as dependent (in their
-> > > DSDT entry's _DEP) on a device with _HID INT3472. These come in at least
-> > > 2 kinds; those with an I2cSerialBusV2 entry (which we presume therefore
-> > > are legitimate tps68470 PMICs that need handling by those drivers - work
-> > > on that in the future). And those without an I2C device. For those without
-> > > an I2C device they instead have an array of GPIO pins defined in _CRS. So
-> > > for example, my Lenovo Miix 510's OVTI2680 sensor is dependent on one of
-> > > the _latter_ kind of INT3472 devices, with this _CRS:
-> > > 
-> > > Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-> > > {
-> > >     Name (SBUF, ResourceTemplate ()
-> > >     {
-> > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > 	    0x00, ResourceConsumer, ,
-> > >             )
-> > >             {   // Pin list
-> > >                 0x0079
-> > >             }
-> > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > 	    0x00, ResourceConsumer, ,
-> > >             )
-> > >             {   // Pin list
-> > >                 0x007A
-> > >             }
-> > >         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
-> > > 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
-> > > 	    0x00, ResourceConsumer, ,
-> > >             )
-> > >             {   // Pin list
-> > >                 0x008F
-> > >             }
-> > >     })
-> > >     Return (SBUF) /* \_SB_.PCI0.PMI1._CRS.SBUF */
-> > > }
-> > > 
-> > > and the same device has a _DSM Method, which returns 32-bit ints where
-> > > the second lowest byte we noticed to match the pin numbers of the GPIO
-> > > lines:
-> > > 
-> > > Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
-> > > {
-> > >     If ((Arg0 == ToUUID ("79234640-9e10-4fea-a5c1-b5aa8b19756f")))
-> > >     {
-> > >         If ((Arg2 == One))
-> > >         {
-> > >             Return (0x03)
-> > >         }
-> > > 
-> > >         If ((Arg2 == 0x02))
-> > >         {
-> > >             Return (0x01007900)
-> > >         }
-> > > 
-> > >         If ((Arg2 == 0x03))
-> > >         {
-> > >             Return (0x01007A0C)
-> > >         }
-> > > 
-> > >         If ((Arg2 == 0x04))
-> > >         {
-> > >             Return (0x01008F01)
-> > >         }
-> > >     }
-> > > 
-> > >     Return (Zero)
-> > > }
-> > > 
-> > > We know that at least some of those pins have to be toggled active for the
-> > > sensor devices to be available in i2c, so the conclusion we came to was
-> > > that those GPIO entries assigned to the INT3472 device actually represent
-> > > GPIOs and regulators to be consumed by the sensors themselves. Tsuchiya
-> > > noticed that the lowest byte in the return values of the _DSM method
-> > > seemed to represent the type or function of the GPIO line, and we
-> > > confirmed that by testing on each surface device that GPIO lines where the
-> > > low byte in the _DSM entry for that pin was 0x0d controlled the privacy
-> > > LED of the cameras.
-> > > 
-> > > We're guessing as to the exact meaning of the function byte, but I
-> > > conclude they're something like this:
-> > > 
-> > > 0x00 - probably a reset GPIO
-> > > 0x01 - regulator for the sensor
-> > > 0x0c - regulator for the sensor
-> > > 0x0b - regulator again, but for a VCM or EEPROM
-> > > 0x0d - privacy led (only one we're totally confident of since we can see
-> > >        it happen!)
-> > 
-> > It's solely Windows driver design...
-> > Luckily I found some information and can clarify above table:
-> > 
-> > 0x00 Reset
-> > 0x01 Power down
-> > 0x0b Power enable
-> > 0x0c Clock enable
-> > 0x0d LED (active high)
-> 
-> That's very useful information ! Thank you.
-> 
-> > The above text perhaps should go somewhere under Documentation.
-> 
-> Or in the driver source code, but definitely somewhere else than in the
-> commit message.
-> 
-> > > After much internal debate I decided to write this as a standalone
-> > > acpi_driver. Alternative options we considered:
-> > > 
-> > > 1. Squash all this into the cio2-bridge code, which I did originally write
-> > > but decided I didn't like.
-> > > 2. Extend the existing tps68470 mfd driver...they share an ACPI ID so this
-> > > kinda makes sense, but ultimately given there is no actual physical
-> > > tps68470 in the scenario this patch handles I decided I didn't like this
-> > > either.
-> > 
-> > Looking to this I think the best is to create a module that can be consumed by tps68470 and separately.
-> > So, something near to it rather than under ipu3 hood.
-> > 
-> > You may use same ID's in both drivers (in PMIC less case it can be simple
-> > platform and thus they won't conflict), but both of them should provide GPIO
-> > resources for consumption.
-> > 
-> > So, something like
-> > 
-> >  tps68470.h with API to consume
-> >  split tps68470 to -core, -i2c parts
-> >  add int3472, which will serve for above and be standalone platform driver
-> >  update cio2-bridge accordingly
-> > 
-> > Would it be feasible?
-> 
-> Given that INT3472 means Intel camera power management device (that's
-> more or less the wording in Windows, I can double-check), would the
-> following make sense ?
-> 
-> A top-level module named intel-camera-pmic (or int3472, or ...) would
-> register two drivers, a platform driver and an I2C driver, to
-> accommodate for both cases ("discrete PMIC" that doesn't have an
-> I2cSerialBusV2, and TPS64870 or uP6641Q that are I2C devices). The probe
-> function would perform the following:
-> 
-> - If there's no CLDB, then the device uses the Chrome OS "ACPI
->   bindings", and refers to a TPS64870. The code that exists in the
->   kernel today (registering GPIOs, and registering an OpRegion to
->   communicate with the power management code in the DSDT) would be
->   activated.
-> 
-> - If there's a CLDB, then the device type would be retrieved from it:
-> 
->   - If the device is a "discrete PMIC", the driver would register clocks
->     and regulators controlled by GPIOs, and create clock, regulator and
->     GPIO lookup entries for the sensor device that references the PMIC.
-> 
->   - If the device is a TPS64870, the code that exists in the kernel
->     today to register GPIOs would be activated, and new code would need
->     to be written to register regulators and clocks.
-> 
->   - If the device is a uP6641Q, a new driver will need to be written (I
->     don't know on which devices this PMIC is used, so this can probably
->     be deferred).
-> 
-> We can split this in multiple files and/or modules.
+Right, but there are 2 cases for 32 bit tasks in Android:
 
-That's what I thought of, too, as one option, but with some more detail.
-This would be indeed the cleanest option.
+  1. 32 bit apps; these are not an issue, the Android framework knows
+     about them and it's fine to expect it to setup cpusets accordingly
+     IMO.
 
-I think it'd be nice if the CLDB stuff (apart from checking whether it's
-there) would be in a different module to avoid cluttering up the real
-tps68470 driver.
+  2. 64 bit apps that also happen to have a 32 bit binary payload, and
+     exec into it. The Android framework has no visibility over that,
+     all it sees is a 64 bit app. Sadly we can't detect this stupid
+     pattern, but we need these to remain somewhat functional.
 
--- 
-Regards,
+I was only talking about 2. the whole time, sorry if that wasn't clear.
+With that said, see below for the discussion about cpuset/hotplug.
 
-Sakari Ailus
+> We deal with hotplug by not allowing one of the aarch32 cpus from going
+> offline.
+
+Sure, but that would only work if we have that 32 bit CPU present in
+_all_ cpusets, no? What I'd like to avoid is to keep a (big) 32
+bit CPU in the background cpuset of 64 bit tasks. That would make that
+big CPU available to _all_ 64 bit apps in the background, whether they
+need 32 bit support or not, because again we cannot distinguish them.
+And yeah, I expect this to be not go down well in practice.
+
+
+So, if we're going to support this, a requirement for Android is that
+some cpusets will be 64 bit only, and it's possible that we'll exec into
+32 bit from within these cpusets. It's an edge case, we don't really
+want to optimize for it, but it needs to not fall apart completely.
+I'm not fundamentally against doing smarter things at all, I'm saying we
+(Android) just don't _need_ smarter things ATM, so we may want to keep
+it simple.
+
+My point in the previous message is, if we're accepting this for exec,
+a logical next step could be to accept it for cpuset migrations too.
+Failing the cgroup migration is hard since: there is no guarantee the
+source cpuset has 32 bit CPUs anyway (assuming the exec'd task is kept
+in the same cpuset), so why bother; userspace just doesn't know there
+are 32 bit tasks in an app and would keep trying to migrate it to 64 bit
+cpuset over and over again; you could end up with apps being stuck
+halfway through a top-app->background transition where some tasks have
+migrated but not others, ...
+
+It's a bit of a mess :/
+
+
+<snip>
+> For hotplug we have to make sure a single cpu stays alive. The fallback you're
+> talking about should still work the same if the task is not attached to
+> a cpuset. Just it has to take the intersection with the
+> arch_task_cpu_possible_cpu() into account.
+
+Yep, agreed, there's probably room for improvement there.
+
+> For cpusets, if hotunplug results in an empty cpuset, then all tasks are moved
+> to the nearest ancestor if I read the code correctly. In our case, only 32bit
+> tasks have to move out to retain this behavior. Since now for the first time we
+> have tasks that can't run on all cpus.
+> 
+> Which by the way might be the right behavior for 64bit tasks execing 32bit
+> binary in a 64bit only cpuset. I suggested SIGKILL'ing them but maybe moving
+> them to the nearest ancestor too is more aligned with the behavior above.
+
+Hmm, I guess that means putting all 32-bit-execd-from-64-bit tasks in
+the root group in Android. I'll try and check the implications, but that
+might be just fine... Sounds like a sensible behaviour to me anyways.
+
+Thanks,
+Quentin
