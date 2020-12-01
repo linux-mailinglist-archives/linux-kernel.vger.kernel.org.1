@@ -2,135 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47D32CADB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE36C2CADB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730033AbgLAUqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:46:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S1729842AbgLAUqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:46:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729183AbgLAUqe (ORCPT
+        with ESMTP id S1728793AbgLAUqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 15:46:34 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAC0C0613D6;
-        Tue,  1 Dec 2020 12:45:45 -0800 (PST)
-Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kkCWq-0002fK-AY; Tue, 01 Dec 2020 21:45:40 +0100
-To:     Christoph Hellwig <hch@lst.de>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <cover.1606137108.git.linux@leemhuis.info>
- <c07e51e153f453c83c77a75513ad3d5ec70ef1be.1606137108.git.linux@leemhuis.info>
- <20201124091852.GB11695@lst.de>
- <04eae024-811d-d11e-b8bd-52f0dd0e225f@leemhuis.info>
- <20201124093658.GA13174@lst.de>
- <e424e24f-08d3-0b83-3d5b-ac500c753792@leemhuis.info>
- <20201124121109.GY4327@casper.infradead.org>
- <20201130075137.3b551bef@lwn.net> <20201201144314.GA14256@lst.de>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [PATCH v3 1/3] LICENSES: Add the CC-BY-4.0 license
-Message-ID: <8ef49ddf-e64f-d09b-9d31-9f64c89b6efb@leemhuis.info>
-Date:   Tue, 1 Dec 2020 21:45:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8EBC061A4E;
+        Tue,  1 Dec 2020 12:45:25 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id p21so1149359pjv.0;
+        Tue, 01 Dec 2020 12:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vft8Q6Q9s+nEgkzeUZ7AbqidJOMsxAnfPND7gPdOPjk=;
+        b=DgrOKUXCK7p91HhE9p00kKXef+m4A0fwNg1TRBI5JBhJqAACyue0Aj3ue1wp1JLG5E
+         BmwKDXIeFX1Ol0goaJUUcAhe/IKccBCE/I8ealSvqlZz4XVijERr75fQbbM8Z5rFkxYI
+         qZabxAE9K57EiNNR3osif3f0tNhw7aynMAbcUwEnRBhFUJuvf4PaaiBvG5EjWANvd6WP
+         Pn/Yfxs5zoY4KkRiAKopZhG5WP4P7eMUM3MegjSREsba2eEIvlKOVT3jguvdkfBu3p60
+         HusYEzwEoFZs0RchG5jGTEw4k8anp97bS9aRquhpOXlcm59lt23hGd/gxtZDkx7E93Pl
+         YINw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vft8Q6Q9s+nEgkzeUZ7AbqidJOMsxAnfPND7gPdOPjk=;
+        b=aSQgDaeLlRu+nVpk5yU9z4wDWHTgxAnOOHI7FpZ9td99Xr1T+WEH8R3xd6Pr4f3yHj
+         aeHrIodULza3ZfSv9FW90Ay5jNuIXjbaAOO7jGXY9GkhuQ04nYza+PDAuRYAL3CggdSy
+         /X9Y7A06QVSzYxCJzRr39TfR/Hedxgt12cn6E1yBf/Vtfmz+1LuhnTTLuGnnpzLniSd4
+         ykfBuIlOC6r+lSO6Qj+RPkIbfm4uSp2bMf9MswtOy1P9sdNj0WKEL9s2Qx6ZN197Em1k
+         d2MoL7bjS4IyoG9UMXjJYuT5aOIai5EQUs4HmPr3k8fLoRMiLcka9hwv9R1tzk4xsrGV
+         5bBA==
+X-Gm-Message-State: AOAM533GD34MfizMhlL8tRthfWRm7gwhGOqS5F6lMKID0XCFr5MdNnk5
+        eGo08h5Nu57N6I3Z5FojB5kVfdVeTfYdjnkcuhA=
+X-Google-Smtp-Source: ABdhPJxp4jjL2M9ncR7r6UvA1hOEIHS9ZYzxO9X0q8s7jO9MO7SkN7u3A6KFmucin+odDhpUd05gwsSo8eoFllvjBMA=
+X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr4638832pjt.228.1606855525238;
+ Tue, 01 Dec 2020 12:45:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201201144314.GA14256@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1606855546;f0a041f6;
-X-HE-SMSGID: 1kkCWq-0002fK-AY
+References: <20201130133129.1024662-1-djrscally@gmail.com> <20201130133129.1024662-19-djrscally@gmail.com>
+ <20201130200719.GB4077@smile.fi.intel.com> <8a1b0f5b-1289-256b-b25d-cf8af43bdc84@gmail.com>
+ <20201201185417.GL4077@smile.fi.intel.com> <20201201185548.GV4569@pendragon.ideasonboard.com>
+ <20201201190523.GO4077@smile.fi.intel.com> <20201201190638.GZ4569@pendragon.ideasonboard.com>
+ <20201201192137.GR4077@smile.fi.intel.com> <4831d44a-5bcc-8cf3-964c-c7dca6827458@redhat.com>
+In-Reply-To: <4831d44a-5bcc-8cf3-964c-c7dca6827458@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 1 Dec 2020 22:46:13 +0200
+Message-ID: <CAHp75Vfq1zPxt5RpdD16rKiLOSfda7FwfHsot5JCTd98tXxPdQ@mail.gmail.com>
+Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dan Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>, Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, Tsuchiya Yuto <kitakar@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 01.12.20 um 15:43 schrieb Christoph Hellwig:
-> On Mon, Nov 30, 2020 at 07:51:37AM -0700, Jonathan Corbet wrote:
+On Tue, Dec 1, 2020 at 10:39 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 12/1/20 8:21 PM, Andy Shevchenko wrote:
+> > On Tue, Dec 01, 2020 at 09:06:38PM +0200, Laurent Pinchart wrote:
+> >> On Tue, Dec 01, 2020 at 09:05:23PM +0200, Andy Shevchenko wrote:
+> >>> On Tue, Dec 01, 2020 at 08:55:48PM +0200, Laurent Pinchart wrote:
+> >>>> On Tue, Dec 01, 2020 at 08:54:17PM +0200, Andy Shevchenko wrote:
+> >>>>> On Tue, Dec 01, 2020 at 08:30:03AM +0000, Dan Scally wrote:
+> >>>>>> On 30/11/2020 20:07, Andy Shevchenko wrote:
 
-@Jonathan: thx for getting the ball rolling again!
+...
 
->> We could also, if we saw fit, take the position that anything that has
->> been processed through the docs build is a derived product of the kernel
->> and must be GPL-licensed -
+> >>>>>>>> +static struct int3472_sensor_regulator_map int3472_sensor_regulator_maps[] = {
+> >>>>>>>> +      { "GNDF140809R", 2, miix_510_ov2680 },
+> >>>>>>>> +      { "YHCU", 2, surface_go2_ov5693 },
+> >>>>>>>> +      { "MSHW0070", 2, surface_book_ov5693 },
+> >>>>>>>> +};
+> >>>>>>>
+> >>>>>>> Hmm... Usual way is to use DMI for that. I'm not sure above will not give us
+> >>>>>>> false positive matches.
+> >>>>>>
+> >>>>>> I considered DMI too, no problem to switch to that if it's a better choice.
+> >>>>>
+> >>>>> I prefer DMI as it's a standard way to describe platform quirks in x86 world.
+> >>>>
+> >>>> Do you think the Windows driver would use DMI ?
+> >>>
+> >>> Linux is using DMI for quirks.
+> >>>
+> >>>> That seems quite
+> >>>> unlikely to me, given how they would have to release a new driver binary
+> >>>> for every machine. I'm pretty sure that a different mechanism is used to
+> >>>> identify camera integration, and I think it would make sense to follow
+> >>>> the same approach. That would allow us to avoid large tables of DMI
+> >>>> identifiers that would need to be constently updated, potentially making
+> >>>> user experience better.
+> >>>
+> >>> All Surface family can be matched in a way as Apple machines [1].
+> >>>
+> >>> [1]: https://lkml.org/lkml/2020/4/15/1198
+> >>
+> >> But not all Surface machines necessarily have the same camera
+> >> architecture. My point is that there seems to be identifiers reported in
+> >> ACPI for the exact purpose of identifying the camera architecture. If we
+> >> used DMI instead, we would have to handle each machine individually.
+> >
+> > With help of DMI we may narrow down the search.
+> >
+> > But again, we are talking about uncertainity. It may be your way (a lot of
+> > platforms that have different settings), or mine (only a few with more or less
+> > standard sets of settings).
+> >
+> > DMI is simply standard in Linux (people usually easier can grep for quirks for
+> > a specific platform).
+> >
+> > I would rather ask Hans' opinion since he has quite an expertise with DMI for
+> > good and bad.
+>
+> So generally there are 2 ways how things like this can go:
+>
+> 1) There is sufficient information in the ACPI table and we use data from the
+> ACPI tables
+>
+> 2) There is unsufficient info in the ACPI tables (or we don't know how to
+> get / interpret the data) and we use DMI quirks
+>
+> Although we do often also use a combination, getting what we can from ACPI,
+> combined with a set of defaults for what we cannot get from ACPI
+> based on what reference designs use (IOW what most devices seem to have
+> copy and pasted). Combined with DMI quirks for when the defaults do not
+> work (which is quite often).
+>
+> Depending on if "not working because of wrong defaults" has bad side effects,
+> another option is also to only allow the driver to load on devices which
+> have the necessary info provided through a DMI match.
+>
+> I hope this helps.
 
-That position is totally fine for me (and in fact I think that's how 
-things are in that area anyway, but I'm no licensing expect).
+Thanks! Yes, it sounds to me as a useful input!
 
->> any dual-licensing would be stripped by that
->> act.  That, too, should address this concern, I think.
-
-How to make this explicit? Right now the document I want to submit only 
-mentions the license in a comment near the top. From a quick test with 
-'make htmldocs' on f33 with sphinx-build 3.2.1 it seems comments are 
-stripped during processing, so the license won't be visible in the 
-processed document anyway. So I guess adding this as comment below the 
-SPDX tag should be enough:
-
-```
-
-Note: Only the contents of this rst file as found in the Linux kernel 
-sources are available under CC-BY-4.0, as processed versions might 
-contain content taken from files that use a more restrictive license.
-
-```
-
-
-Or should we add something like this to a top-level documentation file 
-to make it explicit for all of the documentation:
-
-```
-The processed Linux kernel documentation can be distributed under GPL 
-v2.0; some of the files used to build the documentation are available 
-under other licenses, check the Documentation/ directory in the Linux 
-sources for details.
-```
-
->> In general I'd rather see fewer licenses in Documentation/ than more.
-
-Fully agreed, but I checked the existing licenses first and none of them 
-afaics came even close to what I'd prefer to see (maybe MIT does, but 
-I'm not really sure).
-
->>  But
->> Thorsten has put a lot of effort into this work; if he wants to
->> dual-license it in this way, my inclination is to accommodate him.
-
-Thx for your support.
-
->>  But
->> that requires getting CC-BY-4.0 accepted into the LICENSES directory.
->> (That said, I believe it should go into LICENSES/dual/ rather than
->> preferred/).
-> I agree with everything said above.
-
-Fine with me also, but I guess I need a little help here. The files that 
-currently resist in that directory all contain this near the top:
-
-```
-Do NOT use. The Apache-2.0 is not GPL2 compatible. It may only be used 
-for dual-licensed files where the other license is GPL2 compatible. If 
-you end up using this it MUST be used together with a GPL2 compatible 
-license using "OR".
-```
-
-CC-BY-4.0 is GPL2 compatible afaik, so what do I write instead? 
-Something like this?
-
-```
-Do NOT use for code, but it's acceptable for content like artwork or 
-documentation. When using it for the latter, it's best to use it 
-together with a GPL2 compatible license using "OR", as processed 
-CC-BY-4.0 document might include content taken from more restrictive 
-licenses.
-```
-
-Do we need more? Something like this maybe: "That's also why you might 
-want to point that risk out in a comment near the SPDX tag." Or is that 
-too much?
-
-Ciao, Thorsten
+-- 
+With Best Regards,
+Andy Shevchenko
