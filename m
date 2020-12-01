@@ -2,172 +2,456 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B422CAE41
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8972CAE42
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgLAVSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        id S1729391AbgLAVSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725967AbgLAVSK (ORCPT
+        with ESMTP id S1725967AbgLAVSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:18:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D866C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:17:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=+sh72aA8+dQL6SgV6mWZNnINeOvPmJ4Mq6dWSAFkIa4=; b=d96AMyaT+ixps0qgn0IfBAam+G
-        NPi0DIpyeqzjfE68LymeM+uKzlpQhTRa2OHSQg0ObW/dwzwu4lJw7nyR+14kDjMQq6Xy7zZvoVuR0
-        M8RzX3WH6xJWOT70obVhdyLdH8LRI87d4pO2iue9miSo+6Lqk1MQ+iI+KEbQpFXrTRa94M0H3fJi3
-        5FmOLh4cCPzvwlL9Ne1DUgUZXjhUxRQWz2m4hlXqU2LKyHFvp0sNLriwU+xRxZKi6P81X9dVriTIq
-        nYKP8gUDH4fEpDoX1DeSKwkiS7A8TxmUaptsEwqT4Mn1+zpuYL1wU+q3V7+rSrMnqM9RZTl5B6Bo0
-        7xNQfv8A==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkD1b-0004ce-DO; Tue, 01 Dec 2020 21:17:28 +0000
-Subject: Re: WARNING: filesystem loop5 was created with 512 inodes, the real
- maximum is 511, mounting anyway
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     syzbot <syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-References: <00000000000019cd7c05b515da9a@google.com>
- <7e108ab1-0b07-50dd-5862-a5121eab6094@infradead.org>
- <CACT4Y+YkH042G=+ErWY+dRLs5H0i1ao1xnSeHvGx8x=dn5KH1A@mail.gmail.com>
- <8d5ec04c-4646-3b70-6f6c-ea989e6c2c59@infradead.org>
- <CACT4Y+ZByhXxObU0cc6apB8-vMzyD6xu1_WAFtGqzximAvokGA@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <dc76e615-a2fc-64e1-c979-4699d0d57309@infradead.org>
-Date:   Tue, 1 Dec 2020 13:17:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 16:18:16 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA81FC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:17:35 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id o4so2000916pgj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 13:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yrQqCmw77Pyiuwgk2rT8QaIQKT88yDwYEAJlg3YBJLA=;
+        b=UeMtAU6+4lmH3sz76LSboYXeuk6tLvLkLQPJ7nE6WmtN76GUJ+mFtUIFHTOb/A2nHk
+         t/KbwO8fF3hvsW8haTt4l0e4VYHteb0RgonL3uz/cD56Fqd4tHdOcWcoSSKM9fj7fdlP
+         KfdeM7+RBZSGXmx40wuqkiDKEYe2LZgpq3Jdg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yrQqCmw77Pyiuwgk2rT8QaIQKT88yDwYEAJlg3YBJLA=;
+        b=PVuGUSdoDXBBD8m/BSoaZKlbHvndN+IfMoZgNzNR7U7Nsu7+J/CFzBajQOTynY+091
+         StwPdFP+6CRNzwNgWsooCgI2XPv/b5kNTQNvymfwJtiFjEqw+8YEpTAkiRb7OgsCGjO3
+         FZSI8nzT/r23pD0SyDq4LjMBnPWg7NaQbtlY0JKnLNd+wGZKHqDYcH96qEz2WU+nYR+W
+         ZNSIUK6fxIaPHgRZ8cSLoGV7bATVp1UME4muKwlnq66j2th/ayabcVYwBVrYv7Vii3H6
+         DKHSGbp9KeiPmVRKexGmdVkAtRL2lkZm7Lb+G+CO41Ohpvv8yIhcrY/H6sVHm+DwsZcA
+         BhgQ==
+X-Gm-Message-State: AOAM532WrTFNY0o594J22/Z0rz+WWVgH0xILsAvywT6/PM16Qflbm22d
+        JRjdJ4ytDEgB8iR+qQpME8nV3A==
+X-Google-Smtp-Source: ABdhPJz1oCH9elwSOz1oAFRayKhwPL0loHheCBd/l7CYzx2gBiFpucUBIEEo2Z4LTcut6+IeJEGMsw==
+X-Received: by 2002:a63:644:: with SMTP id 65mr1137853pgg.252.1606857455099;
+        Tue, 01 Dec 2020 13:17:35 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f18sm638807pfa.167.2020.12.01.13.17.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 13:17:33 -0800 (PST)
+Date:   Tue, 1 Dec 2020 13:17:32 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Shuah Khan <shuah@kernel.org>, Will Drewry <wad@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v5 14/16] selftests: kselftest_harness.h: partially fix
+ kernel-doc markups
+Message-ID: <202012011315.E71F0B6B@keescook>
+References: <cover.1606823973.git.mchehab+huawei@kernel.org>
+ <cf4d5e686dd62eb2c0a3c2ee86da5377fec57e92.1606823973.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+ZByhXxObU0cc6apB8-vMzyD6xu1_WAFtGqzximAvokGA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf4d5e686dd62eb2c0a3c2ee86da5377fec57e92.1606823973.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 11:47 PM, Dmitry Vyukov wrote:
-> On Tue, Dec 1, 2020 at 2:03 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 11/30/20 12:43 AM, Dmitry Vyukov wrote:
->>> On Mon, Nov 30, 2020 at 5:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>>
->>>> On 11/27/20 4:32 AM, syzbot wrote:
->>>>> Hello,
->>>>>
->>>>> syzbot found the following issue on:
->>>>>
->>>>> HEAD commit:    418baf2c Linux 5.10-rc5
->>>>> git tree:       upstream
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=171555b9500000
->>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b81aff78c272da44
->>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3fd34060f26e766536ff
->>>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>>>>
->>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>
->>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>> Reported-by: syzbot+3fd34060f26e766536ff@syzkaller.appspotmail.com
->>>>>
->>>>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
->>>>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
->>>>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
->>>>> BFS-fs: bfs_fill_super(): loop5 is unclean, continuing
->>>>> BFS-fs: bfs_fill_super(): WARNING: filesystem loop5 was created with 512 inodes, the real maximum is 511, mounting anyway
->>>>> BFS-fs: bfs_fill_super(): Last block not available on loop5: 120
->>>>>
->>>>>
->>>>> ---
->>>>> This report is generated by a bot. It may contain errors.
->>>>> See https://goo.gl/tpsmEJ for more information about syzbot.
->>>>> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>>>>
->>>>> syzbot will keep track of this issue. See:
->>>>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>>>>
->>>>
->>>> Hi,
->>>> Can you provide the BFS image file that is being mounted?
->>>> (./file0 I think.)
->>>>
->>>> --
->>>> ~Randy
->>>
->>>
->>> Hi Randy,
->>>
->>> I see this bug was reported with a reproducer:
->>> https://syzkaller.appspot.com/bug?id=a32ebd5db2f7c957b82cf54b97bdecf367bf0421
->>> I assume it's a dup of this one.
->>
->> Sure, looks the same.
->>
->>> If you need the image itself, you can dump it to a file in the C
->>> reproducer inside of syz_mount_image before mount call.
->>
->> Yes, got that.
->>
->> What outcome or result are you looking for here?
->> Or what do you see as the problem?
+On Tue, Dec 01, 2020 at 01:09:07PM +0100, Mauro Carvalho Chehab wrote:
+> The kernel-doc markups on this file are weird: they don't
+> follow what's specified at:
 > 
-> Hi Randy,
+> 	Documentation/doc-guide/kernel-doc.rst
 > 
-> "WARNING:" in kernel output is supposed to mean a kernel source bug.
-> Presence of that kernel bug is what syzbot has reported.
+> In particular, markups should use this format:
+>         identifier - description
 > 
-> Note: the bug may be a misuse of the "WARNING:" for invalid user
-> inputs in output as well :)
+> and not this:
+> 	identifier(args)
+> 
+> The way the definitions are inside this file cause the
+> parser to completely miss the identifier name of each
+> function.
+> 
+> This prevents improving the script to do some needed validation
+> tests.
+> 
+> Address this part. Yet, furter changes are needed in order
+> for it to fully follow the specs.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  tools/testing/selftests/kselftest_harness.h | 22 ++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+> index edce85420d19..99920466076a 100644
+> --- a/tools/testing/selftests/kselftest_harness.h
+> +++ b/tools/testing/selftests/kselftest_harness.h
+> @@ -50,325 +50,325 @@
+>  #ifndef __KSELFTEST_HARNESS_H
+>  #define __KSELFTEST_HARNESS_H
+>  
+>  #ifndef _GNU_SOURCE
+>  #define _GNU_SOURCE
+>  #endif
+>  #include <asm/types.h>
+>  #include <errno.h>
+>  #include <stdbool.h>
+>  #include <stdint.h>
+>  #include <stdio.h>
+>  #include <stdlib.h>
+>  #include <string.h>
+>  #include <sys/mman.h>
+>  #include <sys/types.h>
+>  #include <sys/wait.h>
+>  #include <unistd.h>
+>  
+>  #include "kselftest.h"
+>  
+>  #define TEST_TIMEOUT_DEFAULT 30
+>  
+>  /* Utilities exposed to the test definitions */
+>  #ifndef TH_LOG_STREAM
+>  #  define TH_LOG_STREAM stderr
+>  #endif
+>  
+>  #ifndef TH_LOG_ENABLED
+>  #  define TH_LOG_ENABLED 1
+>  #endif
+>  
+>  /**
+> - * TH_LOG(fmt, ...)
+> + * TH_LOG()
+>   *
+>   * @fmt: format string
+>   * @...: optional arguments
+>   *
+>   * .. code-block:: c
+>   *
+>   *     TH_LOG(format, ...)
+>   *
+>   * Optional debug logging function available for use in tests.
+>   * Logging may be enabled or disabled by defining TH_LOG_ENABLED.
+>   * E.g., #define TH_LOG_ENABLED 1
+>   *
+>   * If no definition is provided, logging is enabled by default.
+>   *
+>   * If there is no way to print an error message for the process running the
+>   * test (e.g. not allowed to write to stderr), it is still possible to get the
+>   * ASSERT_* number for which the test failed.  This behavior can be enabled by
+>   * writing `_metadata->no_print = true;` before the check sequence that is
+>   * unable to print.  When an error occur, instead of printing an error message
+>   * and calling `abort(3)`, the test process call `_exit(2)` with the assert
+>   * number as argument, which is then printed by the parent process.
+>   */
+>  #define TH_LOG(fmt, ...) do { \
+>  	if (TH_LOG_ENABLED) \
+>  		__TH_LOG(fmt, ##__VA_ARGS__); \
+>  } while (0)
+>  
+>  /* Unconditional logger for internal use. */
+>  #define __TH_LOG(fmt, ...) \
+>  		fprintf(TH_LOG_STREAM, "# %s:%d:%s:" fmt "\n", \
+>  			__FILE__, __LINE__, _metadata->name, ##__VA_ARGS__)
+>  
+>  /**
+> - * SKIP(statement, fmt, ...)
+> + * SKIP()
+>   *
+>   * @statement: statement to run after reporting SKIP
+>   * @fmt: format string
+>   * @...: optional arguments
 
+Please add something like this to retain the "prototype" details:
 
-[adding Al Viro]
+ * .. code-block:: c
+ *
+ *     SKIP(statement, fmt, ...);
 
-Hi Dmitry,
+With that added, sure, looks good:
 
-I expect that the "WARNING:" message is being interpreted incorrectly here,
-but that's a minor issue IMO.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-	if (info->si_lasti == BFS_MAX_LASTI)
-		printf("WARNING: filesystem %s was created with 512 inodes, the real maximum is 511, mounting anyway\n", s->s_id);
+Thanks!
 
+>   *
+>   * Optional debug logging function available for use in tests.
+>   *
+>   * This forces a "pass" after reporting why something is being skipped
+>   * and runs "statement", which is usually "return" or "goto skip".
+>   */
+>  #define SKIP(statement, fmt, ...) do { \
+>  	snprintf(_metadata->results->reason, \
+>  		 sizeof(_metadata->results->reason), fmt, ##__VA_ARGS__); \
+>  	if (TH_LOG_ENABLED) { \
+>  		fprintf(TH_LOG_STREAM, "#      SKIP      %s\n", \
+>  			_metadata->results->reason); \
+>  	} \
+>  	_metadata->passed = 1; \
+>  	_metadata->skip = 1; \
+>  	_metadata->trigger = 0; \
+>  	statement; \
+>  } while (0)
+>  
+>  /**
+> - * TEST(test_name) - Defines the test function and creates the registration
+> + * TEST() - Defines the test function and creates the registration
+>   * stub
+>   *
+>   * @test_name: test name
+>   *
+>   * .. code-block:: c
+>   *
+>   *     TEST(name) { implementation }
+>   *
+>   * Defines a test by name.
+>   * Names must be unique and tests must not be run in parallel.  The
+>   * implementation containing block is a function and scoping should be treated
+>   * as such.  Returning early may be performed with a bare "return;" statement.
+>   *
+>   * EXPECT_* and ASSERT_* are valid in a TEST() { } context.
+>   */
+>  #define TEST(test_name) __TEST_IMPL(test_name, -1)
+>  
+>  /**
+> - * TEST_SIGNAL(test_name, signal)
+> + * TEST_SIGNAL()
+>   *
+>   * @test_name: test name
+>   * @signal: signal number
+>   *
+>   * .. code-block:: c
+>   *
+>   *     TEST_SIGNAL(name, signal) { implementation }
+>   *
+>   * Defines a test by name and the expected term signal.
+>   * Names must be unique and tests must not be run in parallel.  The
+>   * implementation containing block is a function and scoping should be treated
+>   * as such.  Returning early may be performed with a bare "return;" statement.
+>   *
+>   * EXPECT_* and ASSERT_* are valid in a TEST() { } context.
+>   */
+>  #define TEST_SIGNAL(test_name, signal) __TEST_IMPL(test_name, signal)
+>  
+>  #define __TEST_IMPL(test_name, _signal) \
+>  	static void test_name(struct __test_metadata *_metadata); \
+>  	static inline void wrapper_##test_name( \
+>  		struct __test_metadata *_metadata, \
+>  		struct __fixture_variant_metadata *variant) \
+>  	{ \
+>  		test_name(_metadata); \
+>  	} \
+>  	static struct __test_metadata _##test_name##_object = \
+>  		{ .name = #test_name, \
+>  		  .fn = &wrapper_##test_name, \
+>  		  .fixture = &_fixture_global, \
+>  		  .termsig = _signal, \
+>  		  .timeout = TEST_TIMEOUT_DEFAULT, }; \
+>  	static void __attribute__((constructor)) _register_##test_name(void) \
+>  	{ \
+>  		__register_test(&_##test_name##_object); \
+>  	} \
+>  	static void test_name( \
+>  		struct __test_metadata __attribute__((unused)) *_metadata)
+>  
+>  /**
+> - * FIXTURE_DATA(datatype_name) - Wraps the struct name so we have one less
+> + * FIXTURE_DATA() - Wraps the struct name so we have one less
+>   * argument to pass around
+>   *
+>   * @datatype_name: datatype name
+>   *
+>   * .. code-block:: c
+>   *
+>   *     FIXTURE_DATA(datatype_name)
+>   *
+>   * Almost always, you want just FIXTURE() instead (see below).
+>   * This call may be used when the type of the fixture data
+>   * is needed.  In general, this should not be needed unless
+>   * the *self* is being passed to a helper directly.
+>   */
+>  #define FIXTURE_DATA(datatype_name) struct _test_data_##datatype_name
+>  
+>  /**
+> - * FIXTURE(fixture_name) - Called once per fixture to setup the data and
+> + * FIXTURE() - Called once per fixture to setup the data and
+>   * register
+>   *
+>   * @fixture_name: fixture name
+>   *
+>   * .. code-block:: c
+>   *
+>   *     FIXTURE(fixture_name) {
+>   *       type property1;
+>   *       ...
+>   *     };
+>   *
+>   * Defines the data provided to TEST_F()-defined tests as *self*.  It should be
+>   * populated and cleaned up using FIXTURE_SETUP() and FIXTURE_TEARDOWN().
+>   */
+>  #define FIXTURE(fixture_name) \
+>  	FIXTURE_VARIANT(fixture_name); \
+>  	static struct __fixture_metadata _##fixture_name##_fixture_object = \
+>  		{ .name =  #fixture_name, }; \
+>  	static void __attribute__((constructor)) \
+>  	_register_##fixture_name##_data(void) \
+>  	{ \
+>  		__register_fixture(&_##fixture_name##_fixture_object); \
+>  	} \
+>  	FIXTURE_DATA(fixture_name)
+>  
+>  /**
+> - * FIXTURE_SETUP(fixture_name) - Prepares the setup function for the fixture.
+> + * FIXTURE_SETUP() - Prepares the setup function for the fixture.
+>   * *_metadata* is included so that EXPECT_* and ASSERT_* work correctly.
+>   *
+>   * @fixture_name: fixture name
+>   *
+>   * .. code-block:: c
+>   *
+>   *     FIXTURE_SETUP(fixture_name) { implementation }
+>   *
+>   * Populates the required "setup" function for a fixture.  An instance of the
+>   * datatype defined with FIXTURE_DATA() will be exposed as *self* for the
+>   * implementation.
+>   *
+>   * ASSERT_* are valid for use in this context and will prempt the execution
+>   * of any dependent fixture tests.
+>   *
+>   * A bare "return;" statement may be used to return early.
+>   */
+>  #define FIXTURE_SETUP(fixture_name) \
+>  	void fixture_name##_setup( \
+>  		struct __test_metadata __attribute__((unused)) *_metadata, \
+>  		FIXTURE_DATA(fixture_name) __attribute__((unused)) *self, \
+>  		const FIXTURE_VARIANT(fixture_name) \
+>  			__attribute__((unused)) *variant)
+>  
+>  /**
+> - * FIXTURE_TEARDOWN(fixture_name)
+> + * FIXTURE_TEARDOWN()
+>   * *_metadata* is included so that EXPECT_* and ASSERT_* work correctly.
+>   *
+>   * @fixture_name: fixture name
+>   *
+>   * .. code-block:: c
+>   *
+>   *     FIXTURE_TEARDOWN(fixture_name) { implementation }
+>   *
+>   * Populates the required "teardown" function for a fixture.  An instance of the
+>   * datatype defined with FIXTURE_DATA() will be exposed as *self* for the
+>   * implementation to clean up.
+>   *
+>   * A bare "return;" statement may be used to return early.
+>   */
+>  #define FIXTURE_TEARDOWN(fixture_name) \
+>  	void fixture_name##_teardown( \
+>  		struct __test_metadata __attribute__((unused)) *_metadata, \
+>  		FIXTURE_DATA(fixture_name) __attribute__((unused)) *self)
+>  
+>  /**
+> - * FIXTURE_VARIANT(fixture_name) - Optionally called once per fixture
+> + * FIXTURE_VARIANT() - Optionally called once per fixture
+>   * to declare fixture variant
+>   *
+>   * @fixture_name: fixture name
+>   *
+>   * .. code-block:: c
+>   *
+>   *     FIXTURE_VARIANT(fixture_name) {
+>   *       type property1;
+>   *       ...
+>   *     };
+>   *
+>   * Defines type of constant parameters provided to FIXTURE_SETUP() and TEST_F()
+>   * as *variant*. Variants allow the same tests to be run with different
+>   * arguments.
+>   */
+>  #define FIXTURE_VARIANT(fixture_name) struct _fixture_variant_##fixture_name
+>  
+>  /**
+> - * FIXTURE_VARIANT_ADD(fixture_name, variant_name) - Called once per fixture
+> + * FIXTURE_VARIANT_ADD() - Called once per fixture
+>   * variant to setup and register the data
+>   *
+>   * @fixture_name: fixture name
+>   * @variant_name: name of the parameter set
+>   *
+>   * .. code-block:: c
+>   *
+>   *     FIXTURE_VARIANT_ADD(fixture_name, variant_name) {
+>   *       .property1 = val1,
+>   *       ...
+>   *     };
+>   *
+>   * Defines a variant of the test fixture, provided to FIXTURE_SETUP() and
+>   * TEST_F() as *variant*. Tests of each fixture will be run once for each
+>   * variant.
+>   */
+>  #define FIXTURE_VARIANT_ADD(fixture_name, variant_name) \
+>  	extern FIXTURE_VARIANT(fixture_name) \
+>  		_##fixture_name##_##variant_name##_variant; \
+>  	static struct __fixture_variant_metadata \
+>  		_##fixture_name##_##variant_name##_object = \
+>  		{ .name = #variant_name, \
+>  		  .data = &_##fixture_name##_##variant_name##_variant}; \
+>  	static void __attribute__((constructor)) \
+>  		_register_##fixture_name##_##variant_name(void) \
+>  	{ \
+>  		__register_fixture_variant(&_##fixture_name##_fixture_object, \
+>  			&_##fixture_name##_##variant_name##_object);	\
+>  	} \
+>  	FIXTURE_VARIANT(fixture_name) \
+>  		_##fixture_name##_##variant_name##_variant =
+>  
+>  /**
+> - * TEST_F(fixture_name, test_name) - Emits test registration and helpers for
+> + * TEST_F() - Emits test registration and helpers for
+>   * fixture-based test cases
+>   *
+>   * @fixture_name: fixture name
+>   * @test_name: test name
+>   *
+>   * .. code-block:: c
+>   *
+>   *     TEST_F(fixture, name) { implementation }
+>   *
+>   * Defines a test that depends on a fixture (e.g., is part of a test case).
+>   * Very similar to TEST() except that *self* is the setup instance of fixture's
+>   * datatype exposed for use by the implementation.
+>   *
+>   * Warning: use of ASSERT_* here will skip TEARDOWN.
+>   */
+>  /* TODO(wad) register fixtures on dedicated test lists. */
+>  #define TEST_F(fixture_name, test_name) \
+>  	__TEST_F_IMPL(fixture_name, test_name, -1, TEST_TIMEOUT_DEFAULT)
+>  
+>  #define TEST_F_SIGNAL(fixture_name, test_name, signal) \
+>  	__TEST_F_IMPL(fixture_name, test_name, signal, TEST_TIMEOUT_DEFAULT)
+>  
+>  #define TEST_F_TIMEOUT(fixture_name, test_name, timeout) \
+>  	__TEST_F_IMPL(fixture_name, test_name, -1, timeout)
+>  
+>  #define __TEST_F_IMPL(fixture_name, test_name, signal, tmout) \
+>  	static void fixture_name##_##test_name( \
+>  		struct __test_metadata *_metadata, \
+>  		FIXTURE_DATA(fixture_name) *self, \
+>  		const FIXTURE_VARIANT(fixture_name) *variant); \
+>  	static inline void wrapper_##fixture_name##_##test_name( \
+>  		struct __test_metadata *_metadata, \
+> -- 
+> 2.28.0
+> 
 
-If you/we look at fs/bfs/bfs.h, it says:
-
-/* In theory BFS supports up to 512 inodes, numbered from 2 (for /) up to 513 inclusive.
-   In actual fact, attempting to create the 512th inode (i.e. inode No. 513 or file No. 511)
-   will fail with ENOSPC in bfs_add_entry(): the root directory cannot contain so many entries, counting '..'.
-   So, mkfs.bfs(8) should really limit its -N option to 511 and not 512. For now, we just print a warning
-   if a filesystem is mounted with such "impossible to fill up" number of inodes */
-
-so one question is why does syzkaller try to do this at all?
-Why not set number-of-inodes to 511 instead of 512 in the BFS image file?
-
-
-However, in testing this, I see that the BFS image is not mounted
-on /dev/loop# at all.
-
-'mount' says:
-
-# mount -t bfs -o loop bfsfilesyz000.img  /mnt/stand
-mount: /mnt/stand: mount(2) system call failed: Not a directory.
-
-(but it is a directory)
-
-and I have tracked that down to fs/namespace.c::graft_tree()
-returning -ENOTDIR, but I don't know why that is happening.
-
-
-Al, can you provide any insights on this?
-
-thanks.
 -- 
-~Randy
-
+Kees Cook
