@@ -2,184 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926692C97C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B48DC2C97CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727403AbgLAHCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:02:14 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:19483 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727329AbgLAHCN (ORCPT
+        id S1727566AbgLAHGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:06:02 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:57868 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgLAHGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:02:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1606806133; x=1638342133;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=GxMZaX6lm0BqYJV4mguMmKnnIF6A0vkp/bQSCDTssLg=;
-  b=SAQSSBwGjjxyXDh5TOA6UQF15XR7TcMbeABtPtE+6/bXYkNRBx2sefXU
-   CxacmZPKBH18eKANvPb6s9D1tcZcMK1sMkYuxsBAd27xPrVD5+P3ObINQ
-   wDw3gJ/nzgHwLj3gaQBqZm89/1AOdJ2XqM5gdWtwQhACBqjil8Fi7fGfV
-   7Xs7qsww+qmmiQoL3aPKYaiI0B6lTxm3lG6/jyvsZaIrXu1WKppr+TDmT
-   xbf4D8d15ADOSeXKTaV5nd+CDbFNn779VP+/dWDqP4IAd4bZrEQyIkPzW
-   cqJg4elO5/X81MgPor/CrzJTtEgJBB5JKpCQ1+jyvxaQWTo93VaE7cpl+
-   w==;
-IronPort-SDR: nVlAcVRZjvj3gwmUMAZTPgKidJIpnjZocU2uXPk/GuVVe1oNwBbjA3FHTzX6YF+VdZ2e6zFpUg
- EgknvMid/g02GAkZSsIjmkJ6gim6wZNaGfl9ullFoZ6b9WiQpPOTSyDqmqSv8TkeF2izWVwNxD
- nnndbFAAVXOxv/Acu/03tHN1jwFM/0bfB0+1c1IKys3Xn643x1BtkU7l+Ab5KslPjPX+UxMBA8
- lLZdMqnVb94E+uqs2ZozbsndqPFbu23Hr/G8DA/O2QhtPLhvNJYZL3M54A7M3aOr5yHPIj8SYS
- C7E=
-X-IronPort-AV: E=Sophos;i="5.78,383,1599494400"; 
-   d="scan'208";a="153958471"
-Received: from mail-dm6nam10lp2108.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.108])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Dec 2020 15:01:24 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d4YSLGoNOLkn2POF/VrCVrfA9v2i1Gh6fcqRDUVLGIupACsOFowJgK61fsTg9pFe2fQW1c2f9gsKUR014OvvxgVMJoO22E/lmXfTZwqqHtMAYKkKVm2ehS2X/fTs5EOgbJEwIEAqcsDhWqyvm21iEZyDuewNA6gKNMM+Hq9Ugw1kFhvT1kAbo7l5oY/L7NDtqE+mIt5cC5qOsu5wuqTFOzXT6eD8tCNiJsnzoNhNOwc3ZpbD8+lPxuquP2JpHc28Sy2rYvGSiAhZjSH7aYFz6URDH3kw7WLzkfOdIl7CaO/nAYPBxXJ9nurxriMATlRT9c402Iu3ra83rWCfFcipFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XIq556wau+puVwL0DZn+szyRbzLSDk2r1dZ9y4lhq1E=;
- b=Ta3v6NT4y7cIHWXRtj1MNMV22OX5jI+kMVsFAvXoLP7q8C7KWgMuzT0mL+hVO0W1HubWcO4mYqbKiWnPQAe85toit3Kd0klZjAdi006pWe5/3GLWPxlUocN2mD6F04z1MlKtiJjE+V7crMaNR2h8xvuq8s/yg7BEZNIC5CB+qros2U/aB8TlEE4tVVv++94LfmOLVtkTyunpBN/6hX71c1NIvguKEZYrhsnRJSnwodwnyDjw1LfFVsXskjg9bNYy846GlMDZP5VRq35OG7a7fsVDRDZ+tpc5edfoGdDigSKEs3gY+qBQmsrvVph71RvhBLLbzEFgAqnOocUCf62zrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XIq556wau+puVwL0DZn+szyRbzLSDk2r1dZ9y4lhq1E=;
- b=f6bdZXpkTq3ztfcoT1ubOvcJP6yQEgwYiyjuHlGKnvxf7ZkMrLxU5Bg08OSi094Jpg6WSc2CO84sLxqSeR/LEfulHZ/3ZlzQ6CbecSQRtcujvxeOaUIVlmKSWWFcVs0oXPOWvSgFtce2csgrIOeLBcrNr3xMTp3F0QCqjsx4BKc=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB6140.namprd04.prod.outlook.com (2603:10b6:5:12c::28) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3611.25; Tue, 1 Dec 2020 07:01:23 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::a564:c676:b866:34f6%8]) with mapi id 15.20.3632.017; Tue, 1 Dec 2020
- 07:01:23 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-CC:     "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
-        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
-        "alice.chao@mediatek.com" <alice.chao@mediatek.com>
-Subject: RE: [PATCH v2] scsi: ufs: Remove pre-defined initial voltage values
- of device powers
-Thread-Topic: [PATCH v2] scsi: ufs: Remove pre-defined initial voltage values
- of device powers
-Thread-Index: AQHWx65onxXE/o6nwEmQABYecW9/fKnhz+9A
-Date:   Tue, 1 Dec 2020 07:01:23 +0000
-Message-ID: <DM6PR04MB6575D146BBE580B0EF1F995EFCF40@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201201065114.1001-1-stanley.chu@mediatek.com>
-In-Reply-To: <20201201065114.1001-1-stanley.chu@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5336c9b3-b5ec-4c30-4319-08d895c6e9fc
-x-ms-traffictypediagnostic: DM6PR04MB6140:
-x-microsoft-antispam-prvs: <DM6PR04MB61404213ED6AE6A7B09CDA7FFCF40@DM6PR04MB6140.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tYu03Iq8NM+T9nxn/AZi21r6cOXbtaexdHPKk53l/w42K+uoBTLIpYYhipH9VURCVFyaoAObA2sRXgijuFJdheUEIOYqgNqDStXKu6vkLv8tzIKg2NLs9ipPQRLbsAIZSgfbap1kFQ9bboZ51v4J48yxyQEofsnrFb7OcMiYR/jd9VDClrYqkLR+eY0p/Y2rI5SE9uUW0ovZXgOsQMJ3rVKi6Q9C9C1EyjfI/+cSTqd/YRmKBgyx6I++UWCYw3UAkrAGf6yrkJKO4AVGofSKtCNjtTsiwIC0we6XTZDbIDYbwp/0EfBXpApz8HvYtwYi
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(396003)(366004)(55016002)(7696005)(4326008)(316002)(9686003)(86362001)(478600001)(54906003)(26005)(7416002)(8936002)(110136005)(8676002)(186003)(66556008)(66446008)(33656002)(6506007)(71200400001)(5660300002)(52536014)(64756008)(83380400001)(2906002)(66946007)(76116006)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?k4Br2qijvmg3GlluASUJq6rOFhk5mrlS1Ax+bdX28cpDNtFGPFq3BoynD+x8?=
- =?us-ascii?Q?qdxF3maHBAw6J39VET31VzV/d7tmT5BLSZMJrQ17w9a4Oa0ueaKCJnT3zOtZ?=
- =?us-ascii?Q?uqY4x3QmG3+U5w3iFrkyCgBdAezFGDtrzgX136hIrDzjUzLiW+hNMwPsUQMx?=
- =?us-ascii?Q?DyHW/tjHhZTlrj4OPpsLkfK7OSCBXaE67ZAl9H5KSZPVb1SmyjRkgicmla8A?=
- =?us-ascii?Q?AG4hRjrDxgHQts3/h+sHipmTvQzpiJZ0cFv83gGw/0xWmLskOdaeHoqhRe0q?=
- =?us-ascii?Q?4BiXRg7G/b/zBKZo1Pj0SZiqg1D4nuv3erUOf1qGAI6OCjvkPCWk3EGsTLFO?=
- =?us-ascii?Q?omWaEqgMfy2dW2A3ngTau837KBRDJ0l8b+FBNB051M5RH4vLKrj+sS/ckVAk?=
- =?us-ascii?Q?euT8XE4WrYh6xyck9F471OmRB4tXh9LkKERDx1bSgI1CAH0Zi/DA0qxLLDHW?=
- =?us-ascii?Q?qlqQpvWEh+eCDDUhO/7YQvfn6/Q0QHgdGWtMwmQWXIM8aNHbK8YgcFC1MrZZ?=
- =?us-ascii?Q?dq9FaA0zZqOI/DdXGyeGmteQz5XRntQyK21dycggY1mNR4rJOgJjMnrgc355?=
- =?us-ascii?Q?L+nuoKG74HG8ddsy5gEk8O3zDlN/1hMLI67+OkZQh1gdxqlJOtmbWw2S3vdZ?=
- =?us-ascii?Q?HtcTf0Ugw3RaiLzBJcigxswPsxcj2BLHeNiaaV2FQfrQSmWJMBXiuswn91CA?=
- =?us-ascii?Q?vlr9eiA+9PCNWrf5RxnIOCAbKdUyTfQ6YzHjb3RBuFWHWBMTYP50MZAHBArL?=
- =?us-ascii?Q?UQltAhymH5tX1ZPpIDxvNkgioLbXy56F+cJCDaRgnuxHmmsH9sT8qSrthi+e?=
- =?us-ascii?Q?BWRE9s0XbAPavq5FAMhUe9tPj0obunT4r8vC82rTKKW3IsUPK4+OhVhXRFbT?=
- =?us-ascii?Q?9DO8CG5ZI/muElQmvNgs2sSaXs71ltcB8fFdADS4bK7EsXgZNopEME6FYIAv?=
- =?us-ascii?Q?s86nKfo5EJow/uGp88OlqJ8fVSVyNpPcZjuHTIakWRg=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 1 Dec 2020 02:06:02 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B16xURN164535;
+        Tue, 1 Dec 2020 07:05:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=lxQhznWrhqttBj2GenegIUeidXIBtS/QO68pBLdlh1k=;
+ b=Y8a/OTslULivHgRs6t1k2yYCncddZtS16cudf69ceAh4O4dyJKBbfOvY0hFZa0T5omd6
+ XdRrXGKLW7fqzpDcdd7kmlk8ndE3Dp8dlcyMRN/kRLQe1/dFSnLlmKeLPUN4ttkRmaz7
+ MYFS46u2Kow98Cl7+/abFJTlSs5WdeAg3hcX9FIo6Yap+b9/xnWEW78BzZFjG17RzYWE
+ 7JTMYJvufS41GBSqRadVU2DQWGfcq0urS28uAIbvigkGmwTfCc5hkE/G01+M7KHCKGas
+ xrHbV86lelAf2kQ4eKOL0MY8l0oqc16bkehC99QEc+5l4+qJY14IQuvMw2Hjw+N/ZorP ig== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 353dyqh03e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 07:05:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1703wd040465;
+        Tue, 1 Dec 2020 07:03:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 3540exjs8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 07:03:14 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B173CXY006362;
+        Tue, 1 Dec 2020 07:03:13 GMT
+Received: from mwanda (/41.210.145.16)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 23:03:08 -0800
+Date:   Tue, 1 Dec 2020 10:02:54 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     Hemant Kumar <hemantk@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Siddartha Mohanadoss <smohanad@codeaurora.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] bus: mhi: core: Fix error handling in
+ mhi_register_controller()
+Message-ID: <X8XqbtkPpEKSfFi2@mwanda>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5336c9b3-b5ec-4c30-4319-08d895c6e9fc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 07:01:23.3795
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rE0QYkk3ue8qX5NQR0XEuqagc5uf8/tEtrfXEK45DCeZFEd11QmdNRoQ3xIlHmEJGP4sSAcKcfsTQCTw27q00g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6140
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ suspectscore=2 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010045
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=2 lowpriorityscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> UFS specficication allows different VCC configurations for UFS devices,
-> for example,
->         (1). 2.70V - 3.60V (Activated by default in UFS core driver)
->         (2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
->                           device tree)
->         (3). 2.40V - 2.70V (Supported since UFS 3.x)
->=20
-> With the introduction of UFS 3.x products, an issue is happening that
-> UFS driver will use wrong "min_uV-max_uV" values to configure the
-> voltage of VCC regulator on UFU 3.x products with the configuration (3)
-> used.
->=20
-> To solve this issue, we simply remove pre-defined initial VCC voltage
-> values in UFS core driver with below reasons,
->=20
-> 1. UFS specifications do not define how to detect the VCC configuration
->    supported by attached device.
->=20
-> 2. Device tree already supports standard regulator properties.
->=20
-> Therefore VCC voltage shall be defined correctly in device tree, and
-> shall not changed by UFS driver. What UFS driver needs to do is simply
-> enable or disable the VCC regulator only.
->=20
-> Similar change is applied to VCCQ and VCCQ2 as well.
->=20
-> Note that we keep struct ufs_vreg unchanged. This is allow vendors to
-> configure proper min_uV and max_uV of any regulators to make
-> regulator_set_voltage() works during regulator toggling flow.
-> Without specific vendor configurations, min_uV and max_uV will be NULL
-> by default and UFS core driver will enable or disable the regulator
-> only without adjusting its voltage.
->=20
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Acked-by: Avri Altman <avri.altman@wdc.com>
+There are a few problems with the error handling in this function.  They
+mostly center around the alloc_ordered_workqueue() allocation.
+1) If that allocation fails or if the kcalloc() prior to it fails then
+it leads to a NULL dereference when we call
+destroy_workqueue(mhi_cntrl->hiprio_wq).
+2) The error code is not set.
+3) The "mhi_cntrl->mhi_cmd" allocation is not freed.
+
+The error handling was slightly confusing and I re-ordered it to be in
+the exact mirror/reverse order of how things were allocated.  I changed
+the label names to say what the goto does instead of describing where
+the goto comes from.
+
+Fixes: 8f7039787687 ("bus: mhi: core: Move to using high priority workqueue")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/bus/mhi/core/init.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 96cde9c0034c..f0697f433c2f 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -871,7 +871,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 				     sizeof(*mhi_cntrl->mhi_cmd), GFP_KERNEL);
+ 	if (!mhi_cntrl->mhi_cmd) {
+ 		ret = -ENOMEM;
+-		goto error_alloc_cmd;
++		goto err_free_event;
+ 	}
+ 
+ 	INIT_LIST_HEAD(&mhi_cntrl->transition_list);
+@@ -886,7 +886,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 				("mhi_hiprio_wq", WQ_MEM_RECLAIM | WQ_HIGHPRI);
+ 	if (!mhi_cntrl->hiprio_wq) {
+ 		dev_err(mhi_cntrl->cntrl_dev, "Failed to allocate workqueue\n");
+-		goto error_alloc_cmd;
++		ret = -ENOMEM;
++		goto err_free_cmd;
+ 	}
+ 
+ 	mhi_cmd = mhi_cntrl->mhi_cmd;
+@@ -932,7 +933,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 	ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs,
+ 			   SOC_HW_VERSION_OFFS, &soc_info);
+ 	if (ret)
+-		goto error_alloc_dev;
++		goto err_destroy_wq;
+ 
+ 	mhi_cntrl->family_number = (soc_info & SOC_HW_VERSION_FAM_NUM_BMSK) >>
+ 					SOC_HW_VERSION_FAM_NUM_SHFT;
+@@ -946,7 +947,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 	mhi_cntrl->index = ida_alloc(&mhi_controller_ida, GFP_KERNEL);
+ 	if (mhi_cntrl->index < 0) {
+ 		ret = mhi_cntrl->index;
+-		goto error_ida_alloc;
++		goto err_destroy_wq;
+ 	}
+ 
+ 	/* Register controller with MHI bus */
+@@ -954,7 +955,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 	if (IS_ERR(mhi_dev)) {
+ 		dev_err(mhi_cntrl->cntrl_dev, "Failed to allocate MHI device\n");
+ 		ret = PTR_ERR(mhi_dev);
+-		goto error_alloc_dev;
++		goto err_ida_free;
+ 	}
+ 
+ 	mhi_dev->dev_type = MHI_DEVICE_CONTROLLER;
+@@ -967,7 +968,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 
+ 	ret = device_add(&mhi_dev->dev);
+ 	if (ret)
+-		goto error_add_dev;
++		goto err_release_dev;
+ 
+ 	mhi_cntrl->mhi_dev = mhi_dev;
+ 
+@@ -975,19 +976,17 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 
+ 	return 0;
+ 
+-error_add_dev:
++err_release_dev:
+ 	put_device(&mhi_dev->dev);
+-
+-error_alloc_dev:
++err_ida_free:
+ 	ida_free(&mhi_controller_ida, mhi_cntrl->index);
+-
+-error_ida_alloc:
++err_destroy_wq:
++	destroy_workqueue(mhi_cntrl->hiprio_wq);
++err_free_cmd:
+ 	kfree(mhi_cntrl->mhi_cmd);
+-
+-error_alloc_cmd:
+-	vfree(mhi_cntrl->mhi_chan);
++err_free_event:
+ 	kfree(mhi_cntrl->mhi_event);
+-	destroy_workqueue(mhi_cntrl->hiprio_wq);
++	vfree(mhi_cntrl->mhi_chan);
+ 
+ 	return ret;
+ }
+-- 
+2.29.2
+
