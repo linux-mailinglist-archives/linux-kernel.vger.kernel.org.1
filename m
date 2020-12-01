@@ -2,93 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60A72CA883
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F562CA899
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387997AbgLAQnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:43:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58020 "EHLO mail.kernel.org"
+        id S2388738AbgLAQpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:45:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726485AbgLAQnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:43:46 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1728720AbgLAQpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:45:22 -0500
+Received: from kernel.org (unknown [87.71.85.130])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDC31206C1;
-        Tue,  1 Dec 2020 16:42:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606840979;
-        bh=QiWRNieJdF6tgJhKrlOVcaaFrsOwulRSCoTFwHEsMm4=;
+        by mail.kernel.org (Postfix) with ESMTPSA id DAF89206B7;
+        Tue,  1 Dec 2020 16:44:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606841081;
+        bh=GUtX0hNx32YEEtCdAUkzC5OF7zPy+e78biDig6Frozg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yc1l69A5mYYwjRy+2oo91foSfJ/DmhA3rwR9yRvmupDvv47Arm0FNiqpZkEsBYmmB
-         MDeq33z6kBd9ij7k7vnDJbBqQI1Ht1o8goj5PixEI1Hov9FyJAZRnJpy2HgfEpbwv0
-         rqsNQCb9ucGitAkzhJtGa0ykg2A/ihSbKwOwdhR8=
-Date:   Tue, 1 Dec 2020 17:44:10 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
- signalling on open
-Message-ID: <X8Zy2uVyhzZfseUd@kroah.com>
-References: <20201130153742.9163-1-johan@kernel.org>
- <20201130153742.9163-3-johan@kernel.org>
- <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
- <X8X9B1jYujUIWXaK@localhost>
- <CAHp75VfQud=QxwZyhYRU9mtNvrudj0tS6LOuutfJDVdv=-ptXw@mail.gmail.com>
- <X8Yjc0+Q7fM0nZP+@localhost>
+        b=gvfnhaSLv1jMRih6i9BkZFwqT83+9p5JD98gXcO7JIrkTzOBB+rRro5U9QgAxqQSV
+         7dt/xWjtLVQEVt1Ex5jrQh1zNLQMN4ovnZ42jokTz+d8CL1J4Neq9s1+q39AS5euFb
+         +V52ld2bkVC2Nmbbgl6GFHYT0sShRwKokRlnOllM=
+Date:   Tue, 1 Dec 2020 18:44:24 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v13 07/10] secretmem: add memcg accounting
+Message-ID: <20201201164424.GC751215@kernel.org>
+References: <20201201074559.27742-1-rppt@kernel.org>
+ <20201201074559.27742-8-rppt@kernel.org>
+ <CALvZod4bTBGf7DS=5EUCeU810p5C1aqf5sB0n1N8sc4jt5W3Tg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X8Yjc0+Q7fM0nZP+@localhost>
+In-Reply-To: <CALvZod4bTBGf7DS=5EUCeU810p5C1aqf5sB0n1N8sc4jt5W3Tg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 12:05:23PM +0100, Johan Hovold wrote:
-> On Tue, Dec 01, 2020 at 12:55:54PM +0200, Andy Shevchenko wrote:
-> > On Tue, Dec 1, 2020 at 10:20 AM Johan Hovold <johan@kernel.org> wrote:
-> > > On Mon, Nov 30, 2020 at 08:27:54PM +0200, Andy Shevchenko wrote:
-> > > > On Mon, Nov 30, 2020 at 5:42 PM Johan Hovold <johan@kernel.org> wrote:
-> > 
-> > > > > +       ret = kstrtouint(buf, 0, &val);
-> > > > > +       if (ret)
-> > > > > +               return ret;
-> > > >
-> > > > > +       if (val > 1)
-> > > > > +               return -EINVAL;
-> > > >
-> > > > Can't we utilise kstrtobool() instead?
-> > >
-> > > I chose not to as kstrtobool() results in a horrid interface. To many
-> > > options to do the same thing and you end up with confusing things like
-> > > "0x01" being accepted but treated as false (as only the first character
-> > > is considered).
-> > 
-> > And this is perfectly fine. 0x01 is not boolean.
+On Tue, Dec 01, 2020 at 08:26:28AM -0800, Shakeel Butt wrote:
+> On Mon, Nov 30, 2020 at 11:47 PM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> >
+> > Account memory consumed by secretmem to memcg. The accounting is updated
+> > when the memory is actually allocated and freed.
+> >
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Acked-by: Roman Gushchin <guro@fb.com>
+> > ---
+> >  mm/filemap.c   |  3 ++-
+> >  mm/secretmem.c | 36 +++++++++++++++++++++++++++++++++++-
+> >  2 files changed, 37 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/filemap.c b/mm/filemap.c
+> > index 249cf489f5df..cf7f1dc9f4b8 100644
+> > --- a/mm/filemap.c
+> > +++ b/mm/filemap.c
+> > @@ -42,6 +42,7 @@
+> >  #include <linux/psi.h>
+> >  #include <linux/ramfs.h>
+> >  #include <linux/page_idle.h>
+> > +#include <linux/secretmem.h>
+> >  #include "internal.h"
+> >
+> >  #define CREATE_TRACE_POINTS
+> > @@ -844,7 +845,7 @@ static noinline int __add_to_page_cache_locked(struct page *page,
+> >         page->mapping = mapping;
+> >         page->index = offset;
+> >
+> > -       if (!huge) {
+> > +       if (!huge && !page_is_secretmem(page)) {
+> >                 error = mem_cgroup_charge(page, current->mm, gfp);
+> >                 if (error)
+> >                         goto error;
+> > diff --git a/mm/secretmem.c b/mm/secretmem.c
+> > index 52a900a135a5..5e3e5102ad4c 100644
+> > --- a/mm/secretmem.c
+> > +++ b/mm/secretmem.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/memblock.h>
+> >  #include <linux/pseudo_fs.h>
+> >  #include <linux/secretmem.h>
+> > +#include <linux/memcontrol.h>
+> >  #include <linux/set_memory.h>
+> >  #include <linux/sched/signal.h>
+> >
+> > @@ -44,6 +45,32 @@ struct secretmem_ctx {
+> >
+> >  static struct cma *secretmem_cma;
+> >
+> > +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
+> > +{
+> > +       int err;
+> > +
+> > +       err = memcg_kmem_charge_page(page, gfp, order);
+> > +       if (err)
+> > +               return err;
+> > +
+> > +       /*
+> > +        * seceremem caches are unreclaimable kernel allocations, so treat
+> > +        * them as unreclaimable slab memory for VM statistics purposes
+> > +        */
+> > +       mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
+> > +                             PAGE_SIZE << order);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static void secretmem_unaccount_pages(struct page *page, int order)
+> > +{
+> > +
+> > +       mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
+> > +                           -PAGE_SIZE << order);
 > 
-> 0x01 is 1 and is generally treated as boolean true as you know.
-> 
-> So why should a sysfs-interface accept it as valid input and treat it as
-> false? That's just bad design.
+> mod_lruvec_page_state()
 
-The "design" was to accept "sane" flags here:
-	1, y, Y mean "enable"
-	0, n, N mean "disable"
+Argh... Will fix.
 
-We never thought someone would try to write "0x01" as "enable" for a
-boolean flag :)
+> > +       memcg_kmem_uncharge_page(page, order);
+> > +}
+> > +
+> >  static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+> >  {
+> >         unsigned long nr_pages = (1 << PMD_PAGE_ORDER);
+> > @@ -56,10 +83,14 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+> >         if (!page)
+> >                 return -ENOMEM;
+> >
+> > -       err = set_direct_map_invalid_noflush(page, nr_pages);
+> > +       err = secretmem_account_pages(page, gfp, PMD_PAGE_ORDER);
+> >         if (err)
+> >                 goto err_cma_release;
+> >
+> > +       err = set_direct_map_invalid_noflush(page, nr_pages);
+> > +       if (err)
+> > +               goto err_memcg_uncharge;
+> > +
+> >         addr = (unsigned long)page_address(page);
+> >         err = gen_pool_add(pool, addr, PMD_SIZE, NUMA_NO_NODE);
+> >         if (err)
+> > @@ -76,6 +107,8 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
+> >          * won't fail
+> >          */
+> >         set_direct_map_default_noflush(page, nr_pages);
+> > +err_memcg_uncharge:
+> > +       secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
+> >  err_cma_release:
+> >         cma_release(secretmem_cma, page, nr_pages);
+> >         return err;
+> > @@ -302,6 +335,7 @@ static void secretmem_cleanup_chunk(struct gen_pool *pool,
+> >         int i;
+> >
+> >         set_direct_map_default_noflush(page, nr_pages);
+> > +       secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
+> >
+> >         for (i = 0; i < nr_pages; i++)
+> >                 clear_highpage(page + i);
+> > --
+> > 2.28.0
+> >
 
-So it's not a bad design, it works well what it was designed for.  It
-just is NOT designed for hex values.
-
-If your sysfs file is "enable/disable", then please, use kstrtobool, as
-that is the standard way of doing this, and don't expect 0x01 to work :)
-
-thanks,
-
-greg k-h
+-- 
+Sincerely yours,
+Mike.
