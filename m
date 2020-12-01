@@ -2,119 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A975E2CA0F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314522CA0F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730342AbgLALIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        id S1730246AbgLALK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:10:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgLALIL (ORCPT
+        with ESMTP id S1726689AbgLALK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:08:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD745C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 03:07:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6OZTsRzvMVKf4KrmCiDoNbzVmmudpDYoiLjnn4bghwI=; b=RqNtvIsg+VsYF/MhZ/D+Avwpsj
-        //BxgmIldt9Y30KnsQ0UoyBZYKMo+YZAwjLO6X4vp3t9RW2WKiih2CGSCV6yyTAv7fm2afV52r/lL
-        kGw0vjOXkr6+n1/8FhIe76yBhnkIQOhugRozSjws9OOkm8Ch4mTdOp88FqaAtnuYeIwN/bukGLIJZ
-        UoLm2syad3Iw/5iLViqKJiUQ9W4ffH+QdIvbSOQZAEmPC5mdOu+bEwuICOigckYDPove/FSg6cjor
-        aPJtBZS/yB6NPRsIVKZwlZVeep9EAWONI558ODVKKuqM1v4NoWZyj//Soebea73s35S1hEO+RfBTq
-        48BuynIQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kk3VF-0007co-JD; Tue, 01 Dec 2020 11:07:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9CCD4302753;
-        Tue,  1 Dec 2020 12:07:24 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8B038200DF1C4; Tue,  1 Dec 2020 12:07:24 +0100 (CET)
-Date:   Tue, 1 Dec 2020 12:07:24 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201201110724.GL3092@hirez.programming.kicks-ass.net>
-References: <160665708065.2808.15317906761841446715.tglx@nanos>
- <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
- <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
- <yt9dh7p78d8l.fsf@linux.ibm.com>
- <yt9dpn3v3u1m.fsf@linux.ibm.com>
- <20201130125211.GN2414@hirez.programming.kicks-ass.net>
- <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
- <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
- <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
- <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
+        Tue, 1 Dec 2020 06:10:27 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1141C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 03:09:46 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606820985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7yEy47MB100mmuwphhCKWZCuPQblXI1mQGNNE1xKOq8=;
+        b=rKAVGUQUoPtmaq5HiQbmz+WO0fFpIhqot689y7zDhV7w0UB8ef9jHVoumQXH1v/9UWKDXT
+        WGxyMRuY5KRhc0ZsLjJV+FlKG6W6hAaYlXsB/Na7C0YRduJngT6bvm9dZXSG1Bzsa7nx4a
+        F8LSRWgvHCbQLOHW+5wRRrkXqQwfov+uWCMX2S3368n1dH6gz/lieoffaARwPa41fKhYsh
+        26surxBlhOMJ8EEJDQyAfU5SV0ABFr65XmL+Z4bcU44VR25uy2+IWXpNAl44P2oVPovL47
+        pKA1sCGJNeYC1+56rcNMdxr2GhLjaQV6G7SuKNX23cB+Uyr8D7VWRWEF/BhKrw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606820985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7yEy47MB100mmuwphhCKWZCuPQblXI1mQGNNE1xKOq8=;
+        b=G5oR9DuUgceMKEgQEClFrOblnWhEmDUo+kkFmSGr6fz6zlvNDIMVBa42y8T6q2E+Q2SkqZ
+        oiH5cbaLwmyB0IDQ==
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, hca@linux.ibm.com,
+        Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH] entry: split lockdep and syscall work functions
+In-Reply-To: <20201201083553.50996-2-svens@linux.ibm.com>
+References: <20201201083553.50996-1-svens@linux.ibm.com> <20201201083553.50996-2-svens@linux.ibm.com>
+Date:   Tue, 01 Dec 2020 12:09:45 +0100
+Message-ID: <87lfehhjeu.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 09:07:34AM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 30, 2020 at 08:31:32PM +0100, Christian Borntraeger wrote:
-> > On 30.11.20 19:04, Linus Torvalds wrote:
-> > > On Mon, Nov 30, 2020 at 5:03 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >>
-> > >>> But but but...
-> > >>>
-> > >>>   do_idle()                   # IRQs on
-> > >>>     local_irq_disable();      # IRQs off
-> > >>>     defaul_idle_call()        # IRQs off
-> > >>         lockdep_hardirqs_on();  # IRQs off, but lockdep things they're on
-> > >>>       arch_cpu_idle()         # IRQs off
-> > >>>         enabled_wait()        # IRQs off
-> > >>>         raw_local_save()      # still off
-> > >>>         psw_idle()            # very much off
-> > >>>           ext_int_handler     # get an interrupt ?!?!
-> > >>               rcu_irq_enter()   # lockdep thinks IRQs are on <- FAIL
-> > >>
-> > >> I can't much read s390 assembler, but ext_int_handler() has a
-> > >> TRACE_IRQS_OFF, which would be sufficient to re-align the lockdep state
-> > >> with the actual state, but there's some condition before it, what's that
-> > >> test and is that right?
-> > > 
-> > > I think that "psw_idle()" enables interrupts, exactly like x86 does.
-> 
-> (like ye olde x86, modern x86 idles with interrupts disabled)
-> 
-> > Yes, by definition.  Otherwise it would be an software error state.
-> > The interesting part is the lpswe instruction at the end (load PSW) 
-> > which loads the full PSW, which contains interrupt enablement, wait bit,
-> > condition code, paging enablement, machine check enablement the address
-> > and others. The idle psw is enabled for interrupts and has the wait bit
-> > set. If the wait bit is set and interrupts are off this is called "disabled
-> > wait" and is used for panic, shutdown etc. 
-> 
-> OK, but at that point, hardware interrupt state is on, lockdep thinks
-> it's on. And we take an interrupt, just like any old regular interrupt
-> enabled region.
-> 
-> But then the exception handler (ext_int_handler), which I'm assuming is
-> ran by the hardware with hardware interrupts disabled again, should be
-> calling into lockdep to tell interrupts were disabled. IOW that
-> TRACE_IRQS_OFF bit in there.
-> 
-> But that doesn't seem to be working right. Why? Because afaict this is
-> then the exact normal flow of things, but it's only going sideways
-> during this idle thing.
-> 
-> What's going 'funny' ?
+Sven,
 
-So after having talked to Sven a bit, the thing that is happening, is
-that this is the one place where we take interrupts with RCU being
-disabled. Normally RCU is watching and all is well, except during idle.
+On Tue, Dec 01 2020 at 09:35, Sven Schnelle wrote:
+> On s390, we can not call one function which sets lockdep
+> state and do the syscall work at the same time. There add
+> make enter_from_user_mode() and exit_to_user_mode() public, and
+> add syscall_exit_to_user_mode1() which does the same as
+> syscall_exit_to_user_mode() but skips the final exit_to_user_mode().
 
+the explanation in the "cover letter" made at least sense, but the above
+is unparseable word salad.
+
+> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> ---
+>  include/linux/entry-common.h |  4 +++-
+>  kernel/entry/common.c        | 35 +++++++++++++++++++++++++++--------
+>  2 files changed, 30 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+> index 474f29638d2c..496c9a47eab4 100644
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -124,7 +124,7 @@ static inline __must_check int arch_syscall_enter_tracehook(struct pt_regs *regs
+>   * to be done between establishing state and handling user mode entry work.
+>   */
+>  void syscall_enter_from_user_mode_prepare(struct pt_regs *regs);
+> -
+> +void enter_from_user_mode(struct pt_regs *regs);
+
+You might have noticed, that all of these function prototypes have
+proper kernel documentation. So just glueing this on to the previous
+prototype does not cut it. enter_from/exit_to_user_mode() want to go
+together into a seperate section.
+
+>  /**
+>   * syscall_enter_from_user_mode_work - Check and handle work before invoking
+>   *				       a syscall
+> @@ -311,6 +311,8 @@ static inline void arch_syscall_exit_tracehook(struct pt_regs *regs, bool step)
+>   *     arch_exit_to_user_mode() to handle e.g. speculation mitigations
+>   */
+>  void syscall_exit_to_user_mode(struct pt_regs *regs);
+> +void syscall_exit_to_user_mode1(struct pt_regs *regs);
+
+Same here and as you mentioned ...mode1() is a pretty horrible name.
+
+     syscall_exit_to_user_mode_work() perhaps?
+
+> +void exit_to_user_mode(void);
+>  
+>  /**
+>   * irqentry_enter_from_user_mode - Establish state before invoking the irq handler
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index e9e2df3f3f9e..3ad462ebfa15 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -18,7 +18,7 @@
+>   * 2) Invoke context tracking if enabled to reactivate RCU
+>   * 3) Trace interrupts off state
+>   */
+> -static __always_inline void enter_from_user_mode(struct pt_regs *regs)
+> +static __always_inline void __enter_from_user_mode(struct pt_regs
+>  *regs)
+
+Can you please split the renaming into a seperate preparatory patch?
+
+> +__visible noinstr void syscall_exit_to_user_mode1(struct pt_regs *regs)
+
+What's the point of marking this function noinstr? Everything it does is
+instrumentable.
+
+Thanks,
+
+        tglx
