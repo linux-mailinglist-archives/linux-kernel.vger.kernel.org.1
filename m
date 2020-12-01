@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF71A2CA51B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5AA2CA527
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391280AbgLAOIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:08:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:43596 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387443AbgLAOIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:08:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2F0A30E;
-        Tue,  1 Dec 2020 06:07:46 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.30.155])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03C943F718;
-        Tue,  1 Dec 2020 06:07:42 -0800 (PST)
-Date:   Tue, 1 Dec 2020 14:07:34 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, kvmarm@lists.cs.columbia.edu,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH v3 06/23] kvm: arm64: Add kvm-arm.protected early kernel
- parameter
-Message-ID: <20201201140734.GA86881@C02TD0UTHF1T.local>
-References: <20201126155421.14901-1-dbrazdil@google.com>
- <20201126155421.14901-7-dbrazdil@google.com>
- <20201127163254.zxdrszlveaxhluwn@bogus>
- <20201201131913.u7m2eifvtus74dra@google.com>
+        id S2391609AbgLAOJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391602AbgLAOJQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:09:16 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AD8C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:08:29 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id y9so1797256ilb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:08:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ejKqQ0vym6GF9ncfzmdmAootAcWNMggjwsqgg5x200=;
+        b=pgCmQm0vjoZ09UaxCjAtKMjsBzJsuCXFT9k1SlstEGel9UZAcJ1oQnrs35CftrD4g/
+         3iEgIZbyqZBjY94sbbIKs802wKLHKg/hEBWzJ/gTN31vcc+LnL+YGcF9uwkGjdg3FWF5
+         5KCCaykKIpcPJdNCp+2OYICRB8cFfUvpOYu6YLBPXXs9qlycir7A1rEolXTR2ygHZMTm
+         4ACiWW/Zoc559P3LcVheA53o4o+E0H4UYMmQRTWDQ6pzuJswAaMJwxmYXj2ykyVzYIQ7
+         9CgEL8UYJy4cl0XVr7ZYeV8OJ+eaxFOK4nuw2gSAlI2Rnlbe8MwU7CEpQ7qbdufDERuA
+         H+Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ejKqQ0vym6GF9ncfzmdmAootAcWNMggjwsqgg5x200=;
+        b=Uxbwq/N+7WHPeBiaRCV5kngNKPBlySTORJ0AZpMmdeM/pNN2feBJBaekpFCunr20kL
+         jVNvSKqMFELDCvu4+7jfM8vr1+byh1++GvXPDpLhLMmCduBuhDThcfLRr5Dz24MpUyUs
+         BzU5xDoQi7Fzl7CmkFbDaWE60r/pPaSOgWdy0o761tzyD/0ue8+jsXCmUSJevjzAVfUK
+         6o9B1Z0fRKksKNk1xpV0hvygjHXi5g8hI8YBulsz/EDyfeBXqetE/1V/4rWnL0KZsjCB
+         OVizOwRQ6KYvF4i74sHmj6So+SWNoiL+PLyCyGcl8f/kXCIi0CdHruGdIUHFUwP9H/QW
+         bOHw==
+X-Gm-Message-State: AOAM533l9RWB3fqouu553HjT86JqiwzdEB5/25lFpVBntsJmoAaPUfHN
+        Yhc2B3gkb7VmF7Hz9WERYm4olsDH8XraFtqK0OLrPQ==
+X-Google-Smtp-Source: ABdhPJyzAkLCs0G7NVlLosvrguBE5juNevbmMq+XkHE/qr2CGZxNSd1y2NQYiF347w7X6XEDZ6j4n/l7Ra+x8S5wXDk=
+X-Received: by 2002:a92:dc07:: with SMTP id t7mr2653018iln.189.1606831709397;
+ Tue, 01 Dec 2020 06:08:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201131913.u7m2eifvtus74dra@google.com>
+References: <20201130164704.22991-1-brgl@bgdev.pl> <20201130164704.22991-3-brgl@bgdev.pl>
+ <20201201112215.GA31985@lst.de>
+In-Reply-To: <20201201112215.GA31985@lst.de>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 1 Dec 2020 15:08:18 +0100
+Message-ID: <CAMRc=Mcj8LDOigVB76b1w_R-5QTMKgB4xxhbqk_zDuPyMi-oWQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] configfs: use BIT() for internal flags
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Joel Becker <jlbec@evilplan.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:19:13PM +0000, David Brazdil wrote:
-> Hey Sudeep,
-> 
-> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > index 526d65d8573a..06c89975c29c 100644
-> > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > @@ -2259,6 +2259,11 @@
-> > >  			for all guests.
-> > >  			Default is 1 (enabled) if in 64-bit or 32-bit PAE mode.
-> > >  
-> > > +	kvm-arm.protected=
-> > > +			[KVM,ARM] Allow spawning protected guests whose state
-> > > +			is kept private from the host. Only valid for non-VHE.
-> > > +			Default is 0 (disabled).
-> > > +
-> > 
-> > Sorry for being pedantic. Can we reword this to say valid for
-> > !CONFIG_ARM64_VHE ? I read this as valid only for non-VHE hardware, it may
-> > be just me, but if you agree please update so that it doesn't give remote
-> > idea that it is not valid on VHE enabled hardware.
-> > 
-> > I was trying to run this on the hardware and was trying to understand the
-> > details on how to do that.
-> 
-> I see what you're saying, but !CONFIG_ARM64_VHE isn't accurate either. The
-> option makes sense if:
->   1) all cores booted in EL2
->      == is_hyp_mode_available()
->   2) ID_AA64MMFR1_EL1.VH=0 or !CONFIG_ARM64_VHE
->      == !is_kernel_in_hyp_mode()
-> 
-> The former feels implied for KVM, the latter could be 'Valid if the kernel
-> is running in EL1'? WDYT?
+On Tue, Dec 1, 2020 at 12:22 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Mon, Nov 30, 2020 at 05:47:02PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > For better readability and maintenance: use the BIT() macro for flag
+> > definitions.
+>
+> This does not improve readability, as I now need to look up a macro,
+> one that doesn't make any sense at all.  If you really prefer bit based
+> numbering just use the totally obvious (1 << bit) syntax.
 
-I reckon we can avoid the restriction if we instead add an early stub
-like with have for KASLR. That way we could parse the command line
-early, and if necessary re-initialize EL2 and drop to EL1 before the
-main kernel has to make any decisions about how to initialize things.
-That would allow us to have a more general kvm-arm.mode option where a
-single kernel Image could support:
+(1 << bit) is better than a number in hex but BIT() has been in the
+kernel for so long that I doubt anyone needs to look it up.
 
-* "protected" mode on nVHE or VHE HW
-* "nvhe" mode on nVHE or VHE HW
-* "vhe" mode on VHE HW
+Anyway, it's your call, it'll be (1 << bit) in v3.
 
-... defaulting to VHE/nVHE modes depending on HW support.
-
-That would also be somewhat future-proof if we have to add other
-variants of protected mode in future, as we could extend the mode option
-with parameters for each mode.
-
-Thanks,
-Mark.
+Bartosz
