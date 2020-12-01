@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DB82CAA43
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 903BB2CAA4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404182AbgLARyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:54:55 -0500
-Received: from mga14.intel.com ([192.55.52.115]:32626 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729139AbgLARyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:54:55 -0500
-IronPort-SDR: lxb89I+hgIk3kZ1z5tRpioGk+OugZ0q/A4MiQwQswFlgOG7BAlx9vVp3Pa7Xyv/E6u8Us2ZZ6B
- n9B+WOQnf9QQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="172090288"
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="172090288"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:53:14 -0800
-IronPort-SDR: xWPLBeStGXG9Cwge6UOzsqxxNd88soLX3oa2speAsdv9z8wx8GD5EWdkvJXiv8UGHJMMPA7rrD
- sjPbgV9+WKEQ==
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="345559125"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:53:14 -0800
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id AF3CC6363;
-        Tue,  1 Dec 2020 09:53:13 -0800 (PST)
-Date:   Tue, 1 Dec 2020 09:53:13 -0800
-From:   mark gross <mgross@linux.intel.com>
-To:     Greg KH <greg@kroah.com>
-Cc:     mgross@linux.intel.com, linux-kernel@vger.kernel.org,
-        markgross@kernel.org, adam.r.gretzinger@intel.com
-Subject: Re: [PATCH 00/22] Intel Vision Processing Unit base enabling part 1
-Message-ID: <20201201175313.GC56560@mtg-dev.jf.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20201130230707.46351-1-mgross@linux.intel.com>
- <X8YXdJ2CDg2TI5LF@kroah.com>
+        id S1731167AbgLARzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:55:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404187AbgLARzP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:55:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606845229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v6BFyU2UYKTaosDZ89o5LvY8H2HM/d+FWPuM2+XPNh0=;
+        b=Fb4XIPUPIwQJ89h3fcaWrmY8Wu6hRZK6XGBQnuMjDQ5o/0ZZtSkkGIGfzG+YcM2E3gscmW
+        iMqFGM35s9HbdOWjKIz2VrTh5mXTRvphFchrPsk1WAQ1b8Wuq7FFq+PWjBF+JamFJMcs83
+        GiCnNrje7GQvWHEs9ri2axF3hu1i3BQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-5Y-NiigVMVePOR6i0Ml_Ow-1; Tue, 01 Dec 2020 12:53:45 -0500
+X-MC-Unique: 5Y-NiigVMVePOR6i0Ml_Ow-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BFAD858188;
+        Tue,  1 Dec 2020 17:53:44 +0000 (UTC)
+Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 315AB5D6AD;
+        Tue,  1 Dec 2020 17:53:43 +0000 (UTC)
+Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to
+ filesystems
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+ <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
+ <20201201173905.GI143045@magnolia>
+From:   Eric Sandeen <sandeen@redhat.com>
+Message-ID: <98503625-d40e-78d7-334b-5fa5ff06045e@redhat.com>
+Date:   Tue, 1 Dec 2020 11:53:42 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8YXdJ2CDg2TI5LF@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201201173905.GI143045@magnolia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 11:14:12AM +0100, Greg KH wrote:
-> On Mon, Nov 30, 2020 at 03:06:45PM -0800, mgross@linux.intel.com wrote:
-> > From: mark gross <mgross@linux.intel.com>
-> > 
-> > The Intel Vision Processing Unit (VPU) is an IP block that is showing up for
-> > the first time as part of the Keem Bay SOC.  Keem Bay is a quad core A53 Arm
-> > SOC.  It is designed to be used as a stand alone SOC as well as in an PCIe
-> > Vision Processing accelerator add in card.
-> > 
-> > This part 1 of the patches make up the base or core of the stack needed to
-> > enable both use cases for the VPU.
-> > 
-> > Part 2 includes 11 more patches that depend on part 1.  Those should be ready
-> > in a couple of weeks or less.
-> > 
-> > I am trying something a bit new with this sequence where I've been working with
-> > the driver developers as a "pre-maintainer" reviewing and enforcing the kernel
-> > expectations as I understand them.  Its taken a couple of months to get this
-> > code to the point I feel its ready for public posting.  My goal is to make sure
-> > it meets expectations for quality and compliance with kernel expectations and
-> > there will be mostly technical / design issues to talk about.
-> > 
-> > Thanks for looking at these and providing feedback.
-> > 
-> > --mark
-> > p.s. I have had a problem my MTA configuration between mutt and git send-email
-> > where I was using msmpt to send from mutt (because 15+ years ago its the first
-> > way I got to work and never changed) while my worstation MTA that git
-> > send-email uses was un-configured resulting in my return-path naming my
-> > workstion withing the firewall.  I suck at email administration.
-> > 
-> > I appologies for the multiple copies.
+On 12/1/20 11:39 AM, Darrick J. Wong wrote:
+>> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+>> index 1414ab79eacf..56deda7042fd 100644
+>> --- a/fs/xfs/xfs_iops.c
+>> +++ b/fs/xfs/xfs_iops.c
+>> @@ -575,10 +575,13 @@ xfs_vn_getattr(
+>>  		stat->attributes |= STATX_ATTR_APPEND;
+>>  	if (ip->i_d.di_flags & XFS_DIFLAG_NODUMP)
+>>  		stat->attributes |= STATX_ATTR_NODUMP;
+>> +	if (IS_DAX(inode))
+>> +		stat->attributes |= STATX_ATTR_DAX;
+>>  
+>>  	stat->attributes_mask |= (STATX_ATTR_IMMUTABLE |
+>>  				  STATX_ATTR_APPEND |
+>> -				  STATX_ATTR_NODUMP);
+>> +				  STATX_ATTR_NODUMP |
+>> +				  STATX_ATTR_DAX);
+> TBH I preferred your previous iteration on this, which only set the DAX
+> bit in the attributes_mask if the underlying storage was pmem and the
+> blocksize was correct, etc. since it made it easier to distinguish
+> between a filesystem where you /could/ have DAX (but it wasn't currently
+> enabled) and a filesystem where it just isn't possible.
 > 
-> Ah, here's the full set of patches...
+> That might be enough to satisfy any critics who want to be able to
+> detect DAX support from an installer program.
+
+(nb: that previous iteration wasn't in public, just something I talked to
+Darrick about)
+
+I'm sympathetic to that argument, but the exact details of what the mask means
+in general, and for dax in particular, seems to be subject to ongoing debate.
+
+I'd like to just set it with the simplest definition "the fileystem supports
+the feature" for now, so that we aren't ever setting a feature that's omitted
+from the mask, and refine the mask-setting for the dax flag in another
+iteration if/when we reach agreement.
+
+-Eric
+
+> --D
 > 
-> But, you didn't cc: everyone on them, some of us just got a partial set
-> of patches, why?
-Because I thought ccing everyone on all the changes was not what was expected.
-Does the DT guy want to see all the non-DT changes?
 
-this is my first time sending a big patch set that crosses subsystems like
-this.  I'm not sure what the preferd way to do things so I used
-get_maintainer.pl on each patch to add thime in the cc: tags just above the
-signed off's.
-
-Should I have simply concatinated the list of mainttainers and CC them all on
-all the patches?
-
-> 
-> still confused,
-its my fault.  
-
---mark
