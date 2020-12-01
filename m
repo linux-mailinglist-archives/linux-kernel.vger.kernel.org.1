@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BBA2C93AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1410D2C93AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731023AbgLAAGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:06:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
+        id S1731043AbgLAAHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:07:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgLAAGs (ORCPT
+        with ESMTP id S1725870AbgLAAHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:06:48 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25703C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:06:08 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id h3so16254045oie.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:06:08 -0800 (PST)
+        Mon, 30 Nov 2020 19:07:45 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5298DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:07:05 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id h3so16256410oie.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:07:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=VJ6GVGZJnlia94V5K1MGzcsJQIbX5tNg1UJ/89bmUcU=;
-        b=TSK5uOsu/FbeF3GDDL0u4zr97u2HPAHfevzLlKrwftFCYXCP3aV0mRrE9lPd14kA2a
-         DxSKOeniR0G6XZzxjmAE6ROPljYL34xNeuDS24kRcTbg7yEcB5nEQoupithEVne70Mjh
-         zPtHZec4cLhdz7O1yWy5yBLDG9ipUQ2X7Tqp5/9SPTtTqPSinqVXJxvzfiNc7J3VEo0e
-         oGy7c8adhKiIx4aI785B/1Hx6qVLhif7HnSPeapZ8ImTo+2G5/E8rNMPArmHm90ZT+wh
-         ap947bOeMkqVqWDX+PceR62RzRVNwH6oZLPU8tudP6EwP3a82BNbZb106+6Vcqfu//Vu
-         8KMQ==
+        bh=Vo+tRjj+TvDhpBanVcRgzaWE8EwPmtDQZF4FRG6eKXY=;
+        b=FPTgQsr72ct5YMfbQd/8bBoOc+nJMAYfufnd3HIj9QUe2gLM61BxOMmyuBqkg8clWs
+         2lb1FRal9GojomQUPxANgXhyF/SyB3mpOXycLHsqsjhqRUhNHuQ8IhDXjdPLpIlAgTXa
+         9YY+r6WfnF+eOPm9fSvFjL3VXchzUskf2CHow610wWMXmILNaaZ/Wozb/bAhXmJ1jbPM
+         yFt3o+zwpaHCsH/rV0r8fqbeibzGhKQHK4dBBU2wrfkkrXq/LzPfgpUGr/HpTWxSRa7l
+         qznMH+MoBAl0k/yLcXdjI4VoDuvJk1aw/5eTl9L7Mi+l3x/ebEDdr7I5Z4/IDVEUAgBz
+         etzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VJ6GVGZJnlia94V5K1MGzcsJQIbX5tNg1UJ/89bmUcU=;
-        b=olEpjhgBvsiu+gc1H0WME6uQOaZvpH7J4+DzfpBJAfK7yM+XYaMybP/aQwZ5ABlfcL
-         MDLXFWogkN/z3KcDNpFJt6s2iwfJVx8uqBMPnZWYL2e7RDy2z1GGUmd3vEHVPoFJWCkL
-         A0/6q5TI+K0fVbfdQzLsO6uMBT0YSj58xCDxuCkLLUpuXDy3/fjWExtHHUwVUSL62yJM
-         rtOK+D+MJj/YObK9oaixb0H6XPxCbzFZF4CiDewQhO8CksotaW2shRMy2c67D9lAwXTN
-         k/HB7YaJQr9ssbB1+2x7qULVaw+kx+cwAMRNiMxPFTWk3Ko/foGs33sLksVYA5VGg1hW
-         ts+w==
-X-Gm-Message-State: AOAM530IhocTj7VHybHJ3TpeF/fRa3LLiE+r57RIJkOv89Nzx7tctlbu
-        da1n6cZ6btBp/CKxoSn53tbNoHhs/fIppJ3pNBw=
-X-Google-Smtp-Source: ABdhPJy81PYJy+yCScmXWOfjTflC7etYxCUmcD2F95/TLx6FI5rVtQ+OVJq4ym2V/ewVERoAs5nFMaDLDb0Su4XxR94=
-X-Received: by 2002:a54:4608:: with SMTP id p8mr49420oip.5.1606781167608; Mon,
- 30 Nov 2020 16:06:07 -0800 (PST)
+        bh=Vo+tRjj+TvDhpBanVcRgzaWE8EwPmtDQZF4FRG6eKXY=;
+        b=trFjRXTyAutL8nsoYQbUFDPAnVHWTtH8K1q96kbCXkTkvygFfbQuHCyp50zfx4pA5g
+         13kBNocTGpq9Eu/fy/aaNV033lDFREWGbidcdRYPhceSXGyPptKhpDq4JioF2dMz3nW3
+         RGfBjxSS5jKbsgBjyI7g+bj3NYLB7mAgLJjFNpXeyY3Q2ri/LznKNkMbVaQKmrGW68yb
+         xbnbx8Jx6KWx9H/VgE9zV+lAM/RobXHPcP+58XKm26QJKvUE+B0Z881EPdWG/9fB0w1r
+         nC5U+qYUpuOlplTpHhMFZakTJ4y393K0njovk3YqOmsbF7CvnkzAeeAQuopqNpiLd2CQ
+         QQxQ==
+X-Gm-Message-State: AOAM532HaX8c74NfCkjxuHmvny0LwirZ7BdtPRlCR1JUwWtop2Wm6jH1
+        /KO4lGvLLoGXx55OTpEgLU/fD56W5eUfwECHfm/ZJJyO
+X-Google-Smtp-Source: ABdhPJwv19U5fZe9MwiHGKE6plwyHcsTtrydbT5iN+fr9a6dO/iWooI7CFtk+go/ABD8ulFVXGOZ9FMelO/POjnwE/s=
+X-Received: by 2002:aca:f50e:: with SMTP id t14mr36785oih.123.1606781224826;
+ Mon, 30 Nov 2020 16:07:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-39-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-39-lee.jones@linaro.org>
+References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-40-lee.jones@linaro.org>
+In-Reply-To: <20201126134240.3214176-40-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 19:05:56 -0500
-Message-ID: <CADnq5_O_-uxOa0463_ZX5D3jMwxJMWX7eCvGHyiwaku559bNLw@mail.gmail.com>
-Subject: Re: [PATCH 38/40] drm/amd/display/dc/basics/conversion: Include
- header containing our prototypes
+Date:   Mon, 30 Nov 2020 19:06:53 -0500
+Message-ID: <CADnq5_NBM_6Fz566zvFnW5X=s6NFhYM+eMx36sftjMRnNz6mPw@mail.gmail.com>
+Subject: Re: [PATCH 39/40] drm/amd/display/dc/basics/fixpt31_32: Remove unused
+ variable 'dc_fixpt_pi'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
@@ -70,12 +70,9 @@ On Thu, Nov 26, 2020 at 8:44 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/basics/conversion.c:34:10: warn=
-ing: no previous prototype for =E2=80=98fixed_point_to_int_frac=E2=80=99 [-=
-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/basics/conversion.c:81:6: warni=
-ng: no previous prototype for =E2=80=98convert_float_matrix=E2=80=99 [-Wmis=
-sing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/basics/fixpt31_32.c:29:32: warn=
+ing: =E2=80=98dc_fixpt_pi=E2=80=99 defined but not used [-Wunused-const-var=
+iable=3D]
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -83,6 +80,7 @@ sing-prototypes]
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Lee Jones <lee.jones@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
@@ -92,22 +90,22 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/amd/display/dc/basics/conversion.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/gpu/drm/amd/display/dc/basics/fixpt31_32.c | 1 -
+>  1 file changed, 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/basics/conversion.c b/drivers=
-/gpu/drm/amd/display/dc/basics/conversion.c
-> index 50b47f11875c9..24ed03d8cda74 100644
-> --- a/drivers/gpu/drm/amd/display/dc/basics/conversion.c
-> +++ b/drivers/gpu/drm/amd/display/dc/basics/conversion.c
-> @@ -24,6 +24,7 @@
->   */
->
+> diff --git a/drivers/gpu/drm/amd/display/dc/basics/fixpt31_32.c b/drivers=
+/gpu/drm/amd/display/dc/basics/fixpt31_32.c
+> index 59f37563704ad..1726bdf89bae8 100644
+> --- a/drivers/gpu/drm/amd/display/dc/basics/fixpt31_32.c
+> +++ b/drivers/gpu/drm/amd/display/dc/basics/fixpt31_32.c
+> @@ -26,7 +26,6 @@
 >  #include "dm_services.h"
-> +#include "conversion.h"
+>  #include "include/fixed31_32.h"
 >
->  #define DIVIDER 10000
->
+> -static const struct fixed31_32 dc_fixpt_pi =3D { 13493037705LL };
+>  static const struct fixed31_32 dc_fixpt_two_pi =3D { 26986075409LL };
+>  static const struct fixed31_32 dc_fixpt_ln2 =3D { 2977044471LL };
+>  static const struct fixed31_32 dc_fixpt_ln2_div_2 =3D { 1488522236LL };
 > --
 > 2.25.1
 >
