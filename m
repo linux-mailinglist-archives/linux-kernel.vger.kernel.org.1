@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C252C97AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B8A2C97B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbgLAGwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 01:52:10 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:32907 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725859AbgLAGwK (ORCPT
+        id S1727369AbgLAGyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 01:54:54 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:40628 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727096AbgLAGyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 01:52:10 -0500
-X-UUID: e96c658d37ca48289ae3785a25f75126-20201201
-X-UUID: e96c658d37ca48289ae3785a25f75126-20201201
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 151745018; Tue, 01 Dec 2020 14:51:23 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 1 Dec 2020 14:51:14 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 1 Dec 2020 14:51:12 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
-        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v2] scsi: ufs: Remove pre-defined initial voltage values of device powers
-Date:   Tue, 1 Dec 2020 14:51:14 +0800
-Message-ID: <20201201065114.1001-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 1 Dec 2020 01:54:54 -0500
+Received: by mail-ej1-f66.google.com with SMTP id x16so1853277ejj.7;
+        Mon, 30 Nov 2020 22:54:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZV1alx9cQi5DBVKj0PE/L98oT12k3PzvYdb0ghwF4C4=;
+        b=rELu+H7yE8kRgGfehqRgplHMpcvkCpYAQn+jIlP9rKdu+VenW93OBoMzlTNG8NPWet
+         +hy+5CNsIweKCYN2zQEzDUfDagsO7VDsbc8RkCxpRKmYvMbL+pQWjbu+z1Q4mIcjzIfU
+         fXTqa46Zw/QqgaNIpFcWW07M0/q7/P8TXu60GM27sv9kFpj0bB3djLr0vmF/k2l4QR48
+         ppl/E3C+VwVtQTzWeiKkuY0KsOV+2dXJyCKja/Mcpo4FSI/DLcbw4K2vj8kiB0ejPkPz
+         mlzcms0pbv3fTJ9WdTCenUBoavE1GOSGxuDBekDdjAfyQfzYN33nawRx7has7HUMSvOl
+         ofCw==
+X-Gm-Message-State: AOAM533j4jP6i4xBbLHTyk+EM+uT2ccmb8r5Dnrv+XiGaPXE8wzPHXfK
+        j2FkHaESqhRKltWBVjm20gU4m/r5muY=
+X-Google-Smtp-Source: ABdhPJwNIqGisXxyQClu1V6mBMWKF8EilDuHvcrDMxrc7dIoYhoSYBJ5tMb3H/7AzRiV1IOcbQwVcA==
+X-Received: by 2002:a17:906:4348:: with SMTP id z8mr1659550ejm.119.1606805651808;
+        Mon, 30 Nov 2020 22:54:11 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id b17sm343622eju.76.2020.11.30.22.54.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 22:54:10 -0800 (PST)
+Subject: Re: [PATCH 5/5] USB: serial: ftdi_sio: add support for FreeCalypso
+ DUART28C adapter
+To:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201130153742.9163-1-johan@kernel.org>
+ <20201130153742.9163-6-johan@kernel.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <8f38320e-0f1c-c8a0-208e-2fa689be52f0@kernel.org>
+Date:   Tue, 1 Dec 2020 07:54:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 5428731B956507ECEFDF6B91B5227C59E128979F9A063864B9E6434E4E3E18F72000:8
-X-MTK:  N
+In-Reply-To: <20201130153742.9163-6-johan@kernel.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UFS specficication allows different VCC configurations for UFS devices,
-for example,
-	(1). 2.70V - 3.60V (Activated by default in UFS core driver)
-	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
-                          device tree)
-	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+On 30. 11. 20, 16:37, Johan Hovold wrote:
+> --- a/drivers/usb/serial/ftdi_sio.c
+> +++ b/drivers/usb/serial/ftdi_sio.c
+...
+> @@ -2386,6 +2393,21 @@ static int ftdi_stmclite_probe(struct usb_serial *serial)
+>   	return 0;
+>   }
+>   
+> +/*
+> + * FreeCalypso DUART28C is an FT2232D-based USB to dual UART adapter
+> + * with a special quirk: Channel B RTS and DTR outputs (BDBUS2 and BDBUS4
+> + * on the chip) have been repurposed to drive PWON and RESET controls.
+> + */
+> +static void ftdi_duart28c_setup(struct usb_serial_port *port)
+> +{
+> +	struct usb_serial *serial = port->serial;
+> +	struct usb_interface *intf = serial->interface;
+> +	int ifnum = intf->cur_altsetting->desc.bInterfaceNumber;
+> +
+> +	if (ifnum == 1)
+> +		tty_port_set_nordy(&port->port, 1);
 
-With the introduction of UFS 3.x products, an issue is happening that
-UFS driver will use wrong "min_uV-max_uV" values to configure the
-voltage of VCC regulator on UFU 3.x products with the configuration (3)
-used.
+So s/1/true, provided the parameter is defined as bool now.
 
-To solve this issue, we simply remove pre-defined initial VCC voltage
-values in UFS core driver with below reasons,
-
-1. UFS specifications do not define how to detect the VCC configuration
-   supported by attached device.
-
-2. Device tree already supports standard regulator properties.
-
-Therefore VCC voltage shall be defined correctly in device tree, and
-shall not changed by UFS driver. What UFS driver needs to do is simply
-enable or disable the VCC regulator only.
-
-Similar change is applied to VCCQ and VCCQ2 as well.
-
-Note that we keep struct ufs_vreg unchanged. This is allow vendors to
-configure proper min_uV and max_uV of any regulators to make
-regulator_set_voltage() works during regulator toggling flow.
-Without specific vendor configurations, min_uV and max_uV will be NULL
-by default and UFS core driver will enable or disable the regulator
-only without adjusting its voltage.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd-pltfrm.c | 16 ----------------
- 1 file changed, 16 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-index a6f76399b3ae..09e2f04bf4f6 100644
---- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-+++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-@@ -133,22 +133,6 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
- 		vreg->max_uA = 0;
- 	}
- 
--	if (!strcmp(name, "vcc")) {
--		if (of_property_read_bool(np, "vcc-supply-1p8")) {
--			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
--			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
--		} else {
--			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
--			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
--		}
--	} else if (!strcmp(name, "vccq")) {
--		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
--		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
--	} else if (!strcmp(name, "vccq2")) {
--		vreg->min_uV = UFS_VREG_VCCQ2_MIN_UV;
--		vreg->max_uV = UFS_VREG_VCCQ2_MAX_UV;
--	}
--
- 	goto out;
- 
- out:
+thanks,
 -- 
-2.18.0
-
+js
