@@ -2,131 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B172C93A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE992C93A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730657AbgLAAGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:06:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
+        id S1730895AbgLAAGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:06:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgLAAGC (ORCPT
+        with ESMTP id S1725870AbgLAAGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:06:02 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA90C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:05:22 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id h3so16252210oie.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:05:22 -0800 (PST)
+        Mon, 30 Nov 2020 19:06:03 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6791AC0613D2;
+        Mon, 30 Nov 2020 16:05:23 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id g185so618922wmf.3;
+        Mon, 30 Nov 2020 16:05:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7BTne8SIxbBFHAj//gRT0I7jmTcVfU7zja0kcb89Maw=;
-        b=XwFwFP5VKQvAjlOlCnUb9C0k+8u7IQBdEwENOiKjGpYUhhJ2ARUNhURKaKtQxncV8G
-         q/XKFGS2/hlRVXidDfvt1MzIYWF5Hix2RSQUw0gG9kHVmHh6KW1wF40+RzC/IYDcbxxw
-         fNAZE4lwbLIhYEPU/BpAOX6i2h93EFQZPoMe6tD8EiHQZmglaKiw04gez3McFgLYPwEs
-         QDcc2tLuuwQlWIRHSTp8Sj1P2GtzB5OJAafErrvH+yIGAXKej14XyU35vhlzl/iWDdIF
-         uHcIwq5suzy5Zh7NR+XQxoKctJ4lnz9n6eAUO6s/UZhydqTP0QTELXtwkdrJp5qM/ciS
-         BdMg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=A/+NbCD2nn5qNE8Byz47K7lsLQVWcJbcb8SwGxU/euw=;
+        b=EquvRw5oHOExywMZZbEccBGVphHgaPj0IQeTUFgQPXSj5nCzjmZlRY11KMluJRe/mh
+         vLwYdwFXB6+ltRls6DLJgp0ik9FY8zu9KVwXOC3rSqzPsk17RcGEkf7czkUXNDWseCKU
+         lgpjAz/i0JqioMzMyjkoQnPQVjVMyLZDZAEucCKCY7KS8s2SA/hNspXZjMRca26ZWkQw
+         qqzENmutVhpkhVkwNa1Rx0/mNlW3EGmUvzZ9siqYYbeQwyCBe9ADZwHyQ+fA3fzbDBP7
+         4sDXE9gNRaZbXWYrnqaWFgQ+YZ7xrSLnFTedO1ovS4LTJiF6Y1/2oq3cZ9v8djmtcAWo
+         O2lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7BTne8SIxbBFHAj//gRT0I7jmTcVfU7zja0kcb89Maw=;
-        b=JASFncmxa3ushqb+5AhxKplbHq53HwK1/xDGHkXFq8CfAAHGIkslsZme1tQ7Nplk+N
-         DDXCsSOj302q3MrPCwpaoymelSK7ti+Iif6bO8kwqZZ2Bln8rIu2Dq8fpsf+XDC4uULI
-         pjnBl0d1mM3hg2PEZpaLlunqoqLDW1KiYwgR1wTXYcxq+xLc6bi8DxOIAuUoMp8eG839
-         JpjIU4keJedB0U7ZrKgjcPOSDc/hTMqq7LPiF7R8nAz9rGx7co/yVwPYY1EqeJ9Y8QJR
-         HsN2W5U0ak+KJLHU1FkNEw3NJAuWKPfpwKOFORwo9Bz64juHjZqf7SdSkF+F6CagDtJa
-         dHNA==
-X-Gm-Message-State: AOAM532o7lxOaBe3cHcFj1haReKv6s2Y1c1qsD0i0PHixu4RB9G93bmx
-        fR1Ml9BrWhw+vazAYBFwacPJ7JgBWQLdSS3z3OM=
-X-Google-Smtp-Source: ABdhPJxVHgdB7XwPl5ai+49mqjjJlX1RpCRFPnKeMadWF7tL8axXfV/9Pz5hvPub5yxk7sXGVF7zHrhDmiNr5sXYJE4=
-X-Received: by 2002:aca:f50e:: with SMTP id t14mr30258oih.123.1606781121640;
- Mon, 30 Nov 2020 16:05:21 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=A/+NbCD2nn5qNE8Byz47K7lsLQVWcJbcb8SwGxU/euw=;
+        b=KCwghdqu53fx6gAjzHlptpuOmxI7WiKhwkj3n45BH7orCz4JWDNn6G02G3O7zl4lTx
+         1uTzSGNNHGAsOfzliTTAHZn2+tiF47VO7Rb79+IHZ5pdkRjskXStVSdQrxozmKUf8vRC
+         kGvl7QVTY5FuCqLmaaOEnFIbcueLnQ8JlGpQOJ45U6RIwWtLBgW+jodrqRZ/r/FuyPBh
+         JW9ZLyWRpxDNxWvlrXnJAGDTirclwMoDyJyQbDEhVZoVw4o7gINBYUODLvfb3PUWh22v
+         YylR0Mc+yFMCN4QcFfkJuDPIBI8PvK//Jurhe2zbr7bl3iW1MErKLvrdEKJu3mbBxCWK
+         x1xA==
+X-Gm-Message-State: AOAM5326SXHbWxbSlH+mzDJbaNQcg67GgJaW/TDzmpGfw0dmTkuvizIW
+        dSNgL8NaKUVIdQPBl4DMS/o=
+X-Google-Smtp-Source: ABdhPJxPqRD9okPxZ4LlJq6XJD+BpsNuTlSSwcNht+lZVo1Pn14ISpEdXMe3klCIsn49mGnK8tPHZA==
+X-Received: by 2002:a1c:9acb:: with SMTP id c194mr280966wme.43.1606781113548;
+        Mon, 30 Nov 2020 16:05:13 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.80])
+        by smtp.gmail.com with ESMTPSA id f3sm8087542wrx.10.2020.11.30.16.05.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Nov 2020 16:05:12 -0800 (PST)
+Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Sakari Ailus <sakari.ailus@iki.fi>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-19-djrscally@gmail.com>
+ <20201130205203.GQ4351@valkosipuli.retiisi.org.uk>
+ <3e8494a0-a2c0-59e7-46bb-9635c3c239dd@gmail.com>
+ <20201130232150.GC25713@pendragon.ideasonboard.com>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <098d9b49-d42b-66d3-56ac-8c50b2ad3921@gmail.com>
+Date:   Tue, 1 Dec 2020 00:05:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201126134240.3214176-1-lee.jones@linaro.org> <20201126134240.3214176-38-lee.jones@linaro.org>
-In-Reply-To: <20201126134240.3214176-38-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 30 Nov 2020 19:05:10 -0500
-Message-ID: <CADnq5_NBWdiQm32886bsGCqSpJFYe5R+Cm7pgLTXyNYBwxNAGA@mail.gmail.com>
-Subject: Re: [PATCH 37/40] drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu: Remove
- unused function 'pp_nv_set_pme_wa_enable()'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201130232150.GC25713@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 8:44 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_pp_smu.c:664:2=
-0: warning: no previous prototype for =E2=80=98pp_nv_set_pme_wa_enable=E2=
-=80=99 [-Wmissing-prototypes]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Applied.  Thanks!
-
-Alex
-
-> ---
->  .../drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c | 16 ----------------
->  1 file changed, 16 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c b/d=
-rivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
-> index ac0a0539854ef..607ec09994456 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_pp_smu.c
-> @@ -661,22 +661,6 @@ static enum pp_smu_status pp_nv_set_wm_ranges(struct=
- pp_smu *pp,
->         return PP_SMU_RESULT_OK;
->  }
->
-> -static enum pp_smu_status pp_nv_set_pme_wa_enable(struct pp_smu *pp)
-> -{
-> -       const struct dc_context *ctx =3D pp->dm;
-> -       struct amdgpu_device *adev =3D ctx->driver_context;
-> -       struct smu_context *smu =3D &adev->smu;
-> -
-> -       if (!smu->ppt_funcs)
-> -               return PP_SMU_RESULT_UNSUPPORTED;
-> -
-> -       /* 0: successful or smu.ppt_funcs->set_azalia_d3_pme =3D NULL;  1=
-: fail */
-> -       if (smu_set_azalia_d3_pme(smu))
-> -               return PP_SMU_RESULT_FAIL;
-> -
-> -       return PP_SMU_RESULT_OK;
-> -}
-> -
->  static enum pp_smu_status pp_nv_set_display_count(struct pp_smu *pp, int=
- count)
->  {
->         const struct dc_context *ctx =3D pp->dm;
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+On 30/11/2020 23:21, Laurent Pinchart wrote:
+>>> Instead, I propose, that you add this as an option to the tps68470 driver
+>>> that figures out whether the ACPI device for the tps68470 device actually
+>>> describes something else, in a similar fashion you do with the cio2-bridge
+>>> driver. I think it may need a separate Kconfig option albeit this and
+>>> cio2-bridge cannot be used separately.
+>> It actually occurs to me that that may not work (I know I called that
+>> out as an option we considered, but that was a while ago actually). The
+>> reason I wasn't worried about the existing tps68470 driver binding to
+>> these devices is that it's an i2c driver, and these dummy devices don't
+>> have an I2cSerialBusV2, so no I2C device is created by them the kernel.
+>>
+>> Won't that mean the tps68470 driver won't ever be probed for these devices?
+> I think we can create a platform driver in that case. The same module
+> can register multiple drivers (platform and I2C).
+Ah, I follow. OK, that's an option then.
