@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259772C9B5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37002C9BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgLAJHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:07:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41922 "EHLO mail.kernel.org"
+        id S2389746AbgLAJKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:10:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389058AbgLAJFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:05:10 -0500
+        id S2389725AbgLAJKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:10:35 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18E9B21D7A;
-        Tue,  1 Dec 2020 09:04:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BF9F206D8;
+        Tue,  1 Dec 2020 09:10:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813494;
-        bh=kJKwS4GsTZmni+0jTLCZD40IeNVZuyZ27b/reR4p9AQ=;
+        s=korg; t=1606813820;
+        bh=0ClhIdJhCWwDi+qydXSoja2ZLD5laYbrdfwjbDwa4TI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pvu8jlxBCmMUczyCehQpsVKSCa7TQQuBJq7YEnRRC65uwEPL3IHo/JWTx1GTXPwLG
-         q7+z3gc4q74EYPDR7bAq9G+XLdZ/yHI/V8dmy/BDAQ1Qdjr8lZVJvrK9uTo1ByhNgH
-         6ZN/vS2lV0yoILfx+z/UGjHI+gzDnkdG82SOpNKE=
+        b=ZW6XffHr9O1qRFCFNDBNARrdDNiahhXF/ZGW43/yER6tx2NSFqjSmEFLyllPAwGFo
+         jEfycHujOMGROFSZwe0bG4pkjHWLq6YmrK6wf9ufIjKu0lFAaT7AgvvZ9gB9qPq5S5
+         uV0dNuHhXuYm1qtF90gVr2Gv4Co9rDlzu07AIEtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Ye <lzye@google.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 28/98] HID: add HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE for Gamevice devices
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 070/152] bus: ti-sysc: Fix bogus resetdone warning on enable for cpsw
 Date:   Tue,  1 Dec 2020 09:53:05 +0100
-Message-Id: <20201201084656.256506383@linuxfoundation.org>
+Message-Id: <20201201084721.107677622@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Ye <lzye@google.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit f59ee399de4a8ca4d7d19cdcabb4b63e94867f09 ]
+[ Upstream commit e7ae08d398e094e1305dee823435b1f996d39106 ]
 
-Kernel 5.4 introduces HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE, devices need to
-be set explicitly with this flag.
+Bail out early from sysc_wait_softreset() just like we do in sysc_reset()
+if there's no sysstatus srst_shift to fix a bogus resetdone warning on
+enable as suggested by Grygorii Strashko <grygorii.strashko@ti.com>.
 
-Signed-off-by: Chris Ye <lzye@google.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+We do not currently handle resets for modules that need writing to the
+sysstatus register. If we at some point add that, we also need to add
+SYSS_QUIRK_RESETDONE_INVERTED flag for cpsw as the sysstatus bit is low
+when reset is done as described in the am335x TRM "Table 14-202
+SOFT_RESET Register Field Descriptions"
+
+Fixes: d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and wait for softreset bit")
+Suggested-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Acked-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h    | 4 ++++
- drivers/hid/hid-quirks.c | 4 ++++
- 2 files changed, 8 insertions(+)
+ drivers/bus/ti-sysc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index d173badafcf1f..6b1c26e6fa4a3 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -451,6 +451,10 @@
- #define USB_VENDOR_ID_FRUCTEL	0x25B6
- #define USB_DEVICE_ID_GAMETEL_MT_MODE	0x0002
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 88a751c11677b..16132e6e91f8d 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -227,6 +227,9 @@ static int sysc_wait_softreset(struct sysc *ddata)
+ 	u32 sysc_mask, syss_done, rstval;
+ 	int syss_offset, error = 0;
  
-+#define USB_VENDOR_ID_GAMEVICE	0x27F8
-+#define USB_DEVICE_ID_GAMEVICE_GV186	0x0BBE
-+#define USB_DEVICE_ID_GAMEVICE_KISHI	0x0BBF
++	if (ddata->cap->regbits->srst_shift < 0)
++		return 0;
 +
- #define USB_VENDOR_ID_GAMERON		0x0810
- #define USB_DEVICE_ID_GAMERON_DUAL_PSX_ADAPTOR	0x0001
- #define USB_DEVICE_ID_GAMERON_DUAL_PCS_ADAPTOR	0x0002
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index abee4e950a4ee..60d188a704e5e 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -85,6 +85,10 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_FUTABA, USB_DEVICE_ID_LED_DISPLAY), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_SAT_ADAPTOR), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_GREENASIA, USB_DEVICE_ID_GREENASIA_DUAL_USB_JOYPAD), HID_QUIRK_MULTI_INPUT },
-+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_GV186),
-+		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_GAMEVICE, USB_DEVICE_ID_GAMEVICE_KISHI),
-+		HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_DRIVING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FIGHTING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_HAPP, USB_DEVICE_ID_UGCI_FLYING), HID_QUIRK_BADPAD | HID_QUIRK_MULTI_INPUT },
+ 	syss_offset = ddata->offsets[SYSC_SYSSTATUS];
+ 	sysc_mask = BIT(ddata->cap->regbits->srst_shift);
+ 
 -- 
 2.27.0
 
