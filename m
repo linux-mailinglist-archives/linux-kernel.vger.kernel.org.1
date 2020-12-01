@@ -2,144 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED3B2CA67E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0E92CA684
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391584AbgLAPDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
+        id S2391669AbgLAPFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388695AbgLAPDq (ORCPT
+        with ESMTP id S2388658AbgLAPFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:03:46 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8677AC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 07:03:06 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id i9so1902495ioo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 07:03:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Og6g/lyCjIcL1kVP5tZ0QAgJA4aZEi6Vqr/nNvj+z/c=;
-        b=MuJqInQZV0OrkCoMCfzib+ByRspfryye7ScpvL1lLH2mX7NIsytrmRxolmgtJ9fehy
-         EbBP/aISbDHRpdOD5loNtEUerij2pZmUpMmUXabE4MTbgLqQTGiN1E8/2+XHluf6FGt7
-         RX2J4Jg/H1cUlGQdmuUFT6gfHB2UBbkhTCfAwzG5pdvDGhtrcqZz6tB4oxo19nKrQsOu
-         jKoANA3VnBqbkAYWC8rpsG34RztYl9VAjQzCZc2EVqsalbS9SdeVQE9rsjul3fuGnFXA
-         LEQIXyj9US4vZsCrqyALxiMfO2iSyFmFdxk7I7HJVNQcsSl4LlCsElbVCoxYnRqt17Jm
-         y6Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Og6g/lyCjIcL1kVP5tZ0QAgJA4aZEi6Vqr/nNvj+z/c=;
-        b=s76lCc1bujSUSuhFmjfBLqwfFn/OFuJ6XvfOdsznA2jG/WczNumpijxeuQ92Mq4jEK
-         0fSXN2IFBDpKUEq/kSlLqD8+Cuuq1epBw06MDt5v7D6/Oelcfc9ttmMP1BGTh8vg646p
-         QApcMHRjSRvIioMLDOOYO43h6GSnewRCz8+fgUPZFxLgETp4emRX9TNllcmAlUm5n0bL
-         D25LIi2+UwqtHrYrDDutyZyOjJLV9TuT1bCjPHboAP2MYZxUTUXBjsa7nwojEdAgohGc
-         WKuC4zfJEDiSXf2/WXi0Fb56aZONvqDya6ympj3+mwn+iGrdZLQaxFakHh8oux73BKx1
-         sn2Q==
-X-Gm-Message-State: AOAM530+DCSpzGP5wpJaSL6facx81c4MT+5kZtPxKP0KcQ56Yce21KOH
-        aAUcN4Ij8z5su0hP4OxCDFsyKQ==
-X-Google-Smtp-Source: ABdhPJwnZnnT3CSvidMrOWY7WttjZ3ON/dA9qpMhE8X0d7c2GzTEq5bmfutQ1PBUEhW9MbRonHjKIw==
-X-Received: by 2002:a02:90c6:: with SMTP id c6mr2924306jag.3.1606834985798;
-        Tue, 01 Dec 2020 07:03:05 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id h70sm35580iof.31.2020.12.01.07.03.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 07:03:04 -0800 (PST)
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-To:     Mike Rapoport <rppt@kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-References: <20201101170454.9567-1-rppt@kernel.org>
- <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
- <20201117062316.GB370813@kernel.org>
- <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
- <20201201102901.GF557259@kernel.org>
- <e3d5d791-8e4f-afcc-944c-24f66f329bd7@physik.fu-berlin.de>
- <20201201121033.GG557259@kernel.org>
- <49a2022c-f106-55ec-9390-41307a056517@physik.fu-berlin.de>
- <20201201135623.GA751215@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <59351dbb-96cc-93b2-f2ec-b8968e935845@kernel.dk>
-Date:   Tue, 1 Dec 2020 08:03:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Dec 2020 10:05:13 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433F3C0613CF;
+        Tue,  1 Dec 2020 07:04:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=lQkIAITTxB6dPbZfefyPfQUOz6UBfNpX4sJm/fCoIDk=; b=hktHOsboRi8yvEDCwuTZGRu/0
+        Ic45sRVJ42vTGFqx8/jXtEmFwBV0B1wnH0dWmOEYag1ty1hoLdZOR3luxSy7fiPPomQqz9XYOdXg2
+        hCqAhFf16vnwili4UqxZsz+JU9GU02mX5mWZt2ughzQN0XemGkSN3XGC9QChj3S68TFYtuT3uaeE8
+        ybi19YOI746dhucIHRDgV2lkWktLam4uc+HwMr7grrBw/9fVmrTD6d8MrSJAZ3x90t9fvQ/yXgwi5
+        ku9iAeKsc2OAyDTTxrnnXw8on8WSl2riYClmz4jBqJ66JxlrO5XwXNJtFxI893mExu01ZfDB7YMet
+        rfOZ+rTMg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38450)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kk7Cc-0000Ec-PQ; Tue, 01 Dec 2020 15:04:26 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kk7Cb-00066C-Hx; Tue, 01 Dec 2020 15:04:25 +0000
+Date:   Tue, 1 Dec 2020 15:04:25 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     devicetree@vger.kernel.org, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        olof@lixom.net, arnd@arndb.de, robh@kernel.org, w@1wt.eu
+Subject: Re: [PATCH v2 10/10] ARM: mstar: SMP support
+Message-ID: <20201201150425.GC1551@shell.armlinux.org.uk>
+References: <20201201134330.3037007-1-daniel@0x0f.com>
+ <20201201134330.3037007-11-daniel@0x0f.com>
 MIME-Version: 1.0
-In-Reply-To: <20201201135623.GA751215@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201134330.3037007-11-daniel@0x0f.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 6:56 AM, Mike Rapoport wrote:
-> (added Jens)
-> 
-> On Tue, Dec 01, 2020 at 01:16:05PM +0100, John Paul Adrian Glaubitz wrote:
->> Hi Mike!
->>
->> On 12/1/20 1:10 PM, Mike Rapoport wrote:
->>> On Tue, Dec 01, 2020 at 12:35:09PM +0100, John Paul Adrian Glaubitz wrote:
->>>> Hi Mike!
->>>>
->>>> On 12/1/20 11:29 AM, Mike Rapoport wrote: 
->>>>> These changes are in linux-mm tree (https://www.ozlabs.org/~akpm/mmotm/
->>>>> with a mirror at https://github.com/hnaz/linux-mm)
->>>>>
->>>>> I beleive they will be coming in 5.11.
->>>>
->>>> Just pulled from that tree and gave it a try, it actually fails to build:
->>>>
->>>>   LDS     arch/ia64/kernel/vmlinux.lds
->>>>   AS      arch/ia64/kernel/entry.o
->>>> arch/ia64/kernel/entry.S: Assembler messages:
->>>> arch/ia64/kernel/entry.S:710: Error: Operand 2 of `and' should be a general register
->>>> arch/ia64/kernel/entry.S:710: Error: qualifying predicate not followed by instruction
->>>> arch/ia64/kernel/entry.S:848: Error: Operand 2 of `and' should be a general register
->>>> arch/ia64/kernel/entry.S:848: Error: qualifying predicate not followed by instruction
->>>>   GEN     usr/initramfs_data.cpio
->>>> make[1]: *** [scripts/Makefile.build:364: arch/ia64/kernel/entry.o] Error 1
->>>> make: *** [Makefile:1797: arch/ia64/kernel] Error 2
->>>> make: *** Waiting for unfinished jobs....
->>>>   CC      init/do_mounts_initrd.o
->>>>   SHIPPED usr/initramfs_inc_data
->>>>   AS      usr/initramfs_data.o
->>>
->>> Hmm, it was buidling fine with v5.10-rc2-mmotm-2020-11-07-21-40.
->>> I'll try to see what could cause this.
->>>
->>> Do you build with defconfig or do you use a custom config?
->>
->> That's with "localmodconfig", see attached configuration file.
-> 
-> Thanks.
-> It seems that the recent addition of TIF_NOTIFY_SIGNAL to ia64 in
-> linux-next caused the issue. Can you please try the below patch?
+On Tue, Dec 01, 2020 at 10:43:30PM +0900, Daniel Palmer wrote:
+> +	np = of_find_compatible_node(NULL, NULL, "mstar,smpctrl");
+> +	smpctrl = of_iomap(np, 0);
+> +
+> +	if (!smpctrl)
+> +		return -ENODEV;
 
-That's a lot of typos in that patch... I wonder why the buildbot hasn't
-complained about this. Thanks for fixing this up! I'm going to fold this
-into the original to avoid the breakage.
-
+Wouldn't -ENOMEM be more appropriate here?
 -- 
-Jens Axboe
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
