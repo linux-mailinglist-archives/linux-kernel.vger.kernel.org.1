@@ -2,155 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DBB2CAA8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDF32CAA8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729786AbgLASKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:10:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbgLASKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:10:19 -0500
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D2632151B
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 18:09:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606846178;
-        bh=EhrZkmA9Szocp4hMa9ZLKDMOcJbzH5Tz9JqGL69MrcM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sjlcWhdxLfWSE1JO3nRaRUwqRhe0D3u/nDyu0MvUWeRNg/FIr2kzSE09VfQKwybc1
-         U9Hq1jYuDkrGbTEj4qqIScU/FCGwUBrgo7gTqZ+d5pF2fh7iBQxYFsUcGIzW9+Wj2J
-         vmib/i5M8Q1BvSN39QytQEjOPrlahvgo0Xev6Y1k=
-Received: by mail-wr1-f50.google.com with SMTP id l1so4095413wrb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:09:37 -0800 (PST)
-X-Gm-Message-State: AOAM53356WzjG6mwv133TsYGrCgn0jH9cA1IJ31RYlqytPS3Hzv6NO19
-        HIyboPByYmJ9lDmVR1XxN0g7D2BKyCNjqoDWFBM5iA==
-X-Google-Smtp-Source: ABdhPJwL1A7ldTocM+lmFFcHnFAXIjQ15HhJ15nbX0vXG6dSoRM+SNnNTimVNikAgX9B2yoVi/V+7Kclr4Tqn+ZVNDs=
-X-Received: by 2002:adf:e449:: with SMTP id t9mr5420621wrm.257.1606846176406;
- Tue, 01 Dec 2020 10:09:36 -0800 (PST)
+        id S1731167AbgLASLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726558AbgLASLC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 13:11:02 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FADC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:10:16 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id j10so4512895lja.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:10:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A5abX7MmZ8u7dm9lClNeO6iU0UD2UQZWPold2l0WgmI=;
+        b=jd8NCTLOi/t7oIgpm4GVcEhDJdcWcrvyD8R2dORLa016CDb32ZI3mx960CIJjQUx33
+         bSnMYi6x/CtMfngRFTgs+rZJSSIXuEC5aMTY8XeUO6RLJJfK0A0zOL1ZIKpzh9OebYnF
+         hHt0bpVddFF24/P0T1cINe82Qvjjtpb1NVYMaJvHqgTZj+8VMMINqKbx2ddsAw4dcnrk
+         DX30ChvJIqTxPiBrDQiGkGw/HvlpcS+W8U8u/rforInXq58klZPL0Ed7R/vrkC7w410R
+         /pmvrEb6OS+YLcQZXuHKmWtYg2pmfu34xbbE9busXp6UwBgog9hMqTJFdCDQG8pfzZ7b
+         USmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A5abX7MmZ8u7dm9lClNeO6iU0UD2UQZWPold2l0WgmI=;
+        b=QQOnWKg/r4xmch1TU+E1UV2L9xnaqEobsRgBP51gwITNsFWZOnwidKaP3mcuzVkycD
+         l3A5VciCYzTIhGg3eHPpsWhuRrN3+jP8JDprEyStRltMOXpkT9ZftThIaiFPwO6S7bjl
+         yAqi2KxY8K0qKAYnPCXeq2+BCimezeuaSOtwxIGR+w9QaRyfe2hc0PJiWwc+vAZIrvve
+         VMOD6jq71c9I/dH2XiwflABwZsIeLAukJsiVmElArOc92xwt/P+zNgcNP64AufXrhMyd
+         Ldtw4ZwOdNXHPphrT2mVKt7kcObuZgAdr4cK8Rt+S5dGHS5osp3KIMbJGDQo+rBJbVOP
+         j5uw==
+X-Gm-Message-State: AOAM5313Tv/5hlw/uzgBFQ3t6DzCLGaFCsBQ2WhKN/LB+SgvZdZW6/n0
+        P6pAzbqNzpgvXHdwAR01GrM7l4Zah3x7oBGph9mFDd9rIWTWAA==
+X-Google-Smtp-Source: ABdhPJz/nYzMJPiXpXkp7KIwgYj5vUEFPbUG6EBnzhSK8i2kXlmfSuaqWGsIrypp//JvdE+zZsUDaZERdfnDSaUvziE=
+X-Received: by 2002:a05:651c:cb:: with SMTP id 11mr1964692ljr.159.1606846213318;
+ Tue, 01 Dec 2020 10:10:13 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1606758530.git.luto@kernel.org> <5495e4c344dc09011ff57756c7e0a1330830eafc.1606758530.git.luto@kernel.org>
- <20201201101637.GU2414@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201201101637.GU2414@hirez.programming.kicks-ass.net>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 1 Dec 2020 10:09:22 -0800
-X-Gmail-Original-Message-ID: <CALCETrUZHWvjO8otEWat6SDwDFRdV0iSp=RZDaHnyytJ=4a6cg@mail.gmail.com>
-Message-ID: <CALCETrUZHWvjO8otEWat6SDwDFRdV0iSp=RZDaHnyytJ=4a6cg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] membarrier: Propagate SYNC_CORE and RSEQ actions more carefully
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anton Blanchard <anton@ozlabs.org>
+References: <20201201072320.44544-1-dwaipayanray1@gmail.com> <2d507d3042a97613078554b1b5f1169ab8c41b42.camel@perches.com>
+In-Reply-To: <2d507d3042a97613078554b1b5f1169ab8c41b42.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Tue, 1 Dec 2020 23:39:44 +0530
+Message-ID: <CABJPP5A75ufynVGn37XteQ=KBrTenr2dGHPPdz83n1=qg6vztA@mail.gmail.com>
+Subject: Re: [PATCH v2] checkpatch: fix TYPO_SPELLING check for words with apostrophe
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Peilin Ye <yepeilin.cs@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 2:16 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Dec 1, 2020 at 11:32 PM Joe Perches <joe@perches.com> wrote:
 >
-> On Mon, Nov 30, 2020 at 09:50:35AM -0800, Andy Lutomirski wrote:
-> > membarrier() carefully propagates SYNC_CORE and RSEQ actions to all
-> > other CPUs, but there are two issues.
+> On Tue, 2020-12-01 at 12:53 +0530, Dwaipayan Ray wrote:
+> > checkpatch reports a false TYPO_SPELLING warning for some words
+> > containing an apostrophe when run with --codespell option.
 > >
-> >  - membarrier() does not sync_core() or rseq_preempt() the calling
-> >    CPU.  Aside from the logic being mind-bending, this also means
-> >    that it may not be safe to modify user code through an alias,
-> >    call membarrier(), and then jump to a different executable alias
-> >    of the same code.
->
-> I always understood this to be on purpose. The calling CPU can fix up
-> itself just fine. The pain point is fixing up the other CPUs, and that's
-> where membarrier() helps.
->
-> That said, I don't mind including self, these aren't fast calls by any
-> means.
-
-Honestly, I mostly did this because IMO it's a nice cleanup.  It took
-quite some reading of the code and the comments that try not to target
-the calling CPU to decide that it was correct, and I think the new
-code is considerably more clear.  If we want to skip the calling CPU,
-then I think we should still use the new code but use
-smp_call_function instead, which will itself skip the caller.
-Thoughts?
-
->
-> >  - membarrier() does not explicitly sync_core() remote CPUs either;
-> >    instead, it relies on the assumption that an IPI will result in a
-> >    core sync.  On x86, I think this may be true in practice, but
-> >    it's not architecturally reliable.  In particular, the SDM and
-> >    APM do not appear to guarantee that interrupt delivery is
-> >    serializing.
->
-> Right, I don't think we rely on that, we do rely on interrupt delivery
-> providing order though -- as per the previous email.
-
-I looked for a bit, and I couldn't find anything in the SDM or APM to
-support this, and I would be rather surprised if other architectures
-synchronize their instruction streams on interrupt delivery.  On
-architectures without hardware I$ coherency and with actual fast
-interrupts, I would be surprised if interrupts ensured I$ coherency
-with prior writes from other cores.
-
-On x86, interrupt *return* via IRET is definitely serializing but, as
-mentioned in patch 1, we don't actually guarantee that we'll execute
-IRET on the way out of an IPI before running user code.
-
-So I stand by this part of my patch.
-
->
-> >    On a preemptible kernel, IPI return can schedule,
-> >    thereby switching to another task in the same mm that was
-> >    sleeping in a syscall.  The new task could then SYSRET back to
-> >    usermode without ever executing IRET.
->
-> This; I think we all overlooked this scenario.
->
-> > This patch simplifies the code to treat the calling CPU just like
-> > all other CPUs, and explicitly sync_core() on all target CPUs.  This
-> > eliminates the need for the smp_mb() at the end of the function
-> > except in the special case of a targeted remote membarrier().  This
-> > patch updates that code and the comments accordingly.
+> > A false positive is "doesn't". Occurrence of the word causes
+> > checkpatch to emit the following warning:
 > >
-> > Signed-off-by: Andy Lutomirski <luto@kernel.org>
->
-> > @@ -228,25 +258,33 @@ static int membarrier_private_expedited(int flags, int cpu_id)
-> >               rcu_read_unlock();
-> >       }
+> > "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
 > >
-> > -     preempt_disable();
-> > -     if (cpu_id >= 0)
-> > -             smp_call_function_single(cpu_id, ipi_func, NULL, 1);
-> > -     else
-> > -             smp_call_function_many(tmpmask, ipi_func, NULL, 1);
-> > -     preempt_enable();
-> > +     if (cpu_id >= 0) {
-> > +             int cpu = get_cpu();
-> > +
-> > +             if (cpu_id == cpu) {
-> > +                     ipi_func(NULL);
-> > +             } else {
-> > +                     smp_call_function_single(cpu_id, ipi_func, NULL, 1);
-> > +                     /*
-> > +                      * This is analogous to the smp_mb() at the beginning
-> > +                      * of the function -- exit from a system call is not a
-> > +                      * barrier.  We only need this if we're targeting a
-> > +                      * specific remote CPU, though -- otherwise ipi_func()
-> > +                      * would serves the same purpose.
-> > +                      */
-> > +                     smp_mb();
+> > Modify the regex pattern to be more in line with the codespell
+> > default word matching regex. This fixes the word capture and
+> > avoids the false warning.
+> >
+> > Suggested-by: Joe Perches <joe@perches.com>
+> > Reported-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> > ---
+> > Changes in v2:
+> > - Use the default codespell word regex.
+> > - Modify commit message to specify --codespell usage
+> >
+> >  scripts/checkpatch.pl | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -3106,7 +3106,7 @@ sub process {
+> >  # Check for various typo / spelling mistakes
+> >               if (defined($misspellings) &&
+> >                   ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+> > -                     while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
+> > +                     while ($rawline =~ /(?:^|[^\w\-'`])($misspellings)(?:[^\w\-'`]|$)/gi) {
 >
-> smp_call_function_single(.wait=1) already orders against completion of
-> the IPI. Do we really need more?
+> This regex seems to work well, thanks.
+>
+> >                               my $typo = $1;
+>
+> A trivial improvement might be to highlight the location of the
+> misspelled word with a caret using
+>
+>                                 my $blank = copy_spacing($rawline);
+>                                 my $ptr = substr($blank, 0, $-[0] + 1) . "^";
+>                                 my $hereptr = "$hereline$ptr\n";
+>
+> >                               my $typo_fix = $spelling_fix{lc($typo)};
+> >                               $typo_fix = ucfirst($typo_fix) if ($typo =~ /^[A-Z]/);
+>
+> and using $hereptr and not $hereline when emitting the message.
+>
+>
+Sure I will do that.
+Is the color highlighting also supported in most systems? Maybe a red colored
+word would be nice to notice as well.
 
-What kind of order does it provide?  A quick skim of the code suggests
-that it's an acquire barrier, but I think we need a full sequential
-consistency barrier, at least on sufficiently weakly ordered
-architectures.  On x86, loads are ordered and this is probably
-irrelevant.  Also, this barrier was already there (it's the one I
-deleted below), and I think that removing it should be its own patch
-if we want to go that route.
+Thanks,
+Dwaipayan.
