@@ -2,239 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2392CA970
+	by mail.lfdr.de (Postfix) with ESMTP id 7D55F2CA971
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730971AbgLARUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:20:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730686AbgLARUS (ORCPT
+        id S1731096AbgLARUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:20:20 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2515 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730717AbgLARUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:20:18 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F00C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:19:38 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id b23so1485304pls.11
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:19:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=rvplo0QIZm2HwMkvf+juC83EzSGTaTyNj9sgi8XrNSo=;
-        b=BJTG9ovwepFrEQ970bGEXe6X5F4M8GLrP4febOWwLsmjg48tFxVwde5DLQTFtUv8m5
-         9E9D67HHiRgyiGl+hKcR7k7WTZhGNTXYHEZNJ0NPUuP9ZGVytnVJlpST9xN9ngRlODVs
-         CcldUvZaKpOP1hVrUWeLiNNQpk4W6DAPr/kg0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=rvplo0QIZm2HwMkvf+juC83EzSGTaTyNj9sgi8XrNSo=;
-        b=titNbaOZ6AsFOYUUaZAcO4zdSxfampCrTgbdaqyx50taCOmNK33Ke5UshGuMb9SXuN
-         SM87Oz4lCnxDqLnSHYrBp1UdE1AAu01ZLuNE0TAo/eRxCxJB5ww1c1143vGmyqqEmw1K
-         wSs2sfmabus4JnUs8L2ewNPbJaaY+A10thUCosOVW7wRXKlKfsvhfVxKBbUj+VjhJmmL
-         sNAuAJw4G4QDL81o5Ar0oXCAhNAtkvBvvMpQ8/wtc9NZI/dZcbXK0hUe2XCHKYAFBISE
-         tYJADkuIoY0T+Fz2Lu6GYI2graegv/OLpzOeOyBf/ziIvKpeuTEsFD4tzXYuPCNbo486
-         KDFA==
-X-Gm-Message-State: AOAM533rGxWB/4fxrHWeywPxd1+3BmQ0mCyIQn05WwBUDPVhX0mAD5sS
-        M3UOersy1ybpv6WSztAxHZ0F2A==
-X-Google-Smtp-Source: ABdhPJy1xVpW1w5F87b2nSunyyZc0bMYQ5iVOFHjEkOEzWQsdu1+jqx6f1ONGE/3/vVK8TXRzhZ6BA==
-X-Received: by 2002:a17:90b:3594:: with SMTP id mm20mr3755250pjb.121.1606843177852;
-        Tue, 01 Dec 2020 09:19:37 -0800 (PST)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id p14sm261792pjo.53.2020.12.01.09.19.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 09:19:36 -0800 (PST)
-Subject: Re: [PATCH] menuconfig,mconf-cfg: Allow specification of ncurses
- location
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Broadcom Kernel Feedback List 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        OE-core <openembedded-core@lists.openembedded.org>,
-        openembeded-devel <openembedded-devel@lists.openembedded.org>,
-        Michal Marek <mmarek@suse.cz>
-References: <20201128004505.27619-1-scott.branden@broadcom.com>
- <CAK7LNATD0J3C_mFrXAju8-WmdCmrPmRFn7Um0yebnfL-_zcu8w@mail.gmail.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <a5ea40a5-17ef-f037-16b3-177f01db6447@broadcom.com>
-Date:   Tue, 1 Dec 2020 09:19:34 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Dec 2020 12:20:19 -0500
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Clpjt1hNKzQlbg;
+        Wed,  2 Dec 2020 01:19:14 +0800 (CST)
+Received: from [10.174.186.123] (10.174.186.123) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 2 Dec 2020 01:19:35 +0800
+Subject: Re: [RFC PATCH 1/3] KVM: arm64: Fix possible memory leak in kvm
+ stage2
+To:     Will Deacon <will@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
+        <lushenming@huawei.com>
+References: <20201130121847.91808-1-wangyanan55@huawei.com>
+ <20201130121847.91808-2-wangyanan55@huawei.com>
+ <20201130132133.GA24837@willie-the-truck>
+ <ef8f51d6-365b-8b05-0a10-5b4a242f6aa3@huawei.com>
+ <20201201141632.GC26973@willie-the-truck>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <1dbb71f2-a794-86ab-e1cc-ceb9c1e3dd37@huawei.com>
+Date:   Wed, 2 Dec 2020 01:19:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNATD0J3C_mFrXAju8-WmdCmrPmRFn7Um0yebnfL-_zcu8w@mail.gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000dc8d9805b56a5431"
+In-Reply-To: <20201201141632.GC26973@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.186.123]
+X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000dc8d9805b56a5431
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
+On 2020/12/1 22:16, Will Deacon wrote:
 
-Hi Masahiro,
+> On Tue, Dec 01, 2020 at 03:21:23PM +0800, wangyanan (Y) wrote:
+>> On 2020/11/30 21:21, Will Deacon wrote:
+>>> On Mon, Nov 30, 2020 at 08:18:45PM +0800, Yanan Wang wrote:
+>>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>>>> index 0271b4a3b9fe..696b6aa83faf 100644
+>>>> --- a/arch/arm64/kvm/hyp/pgtable.c
+>>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+>>>> @@ -186,6 +186,7 @@ static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
+>>>>    		return old == pte;
+>>>>    	smp_store_release(ptep, pte);
+>>>> +	get_page(virt_to_page(ptep));
+>>> This is also used for the hypervisor stage-1 page-table, so I'd prefer to
+>>> leave this function as-is.
+>> I agree at this point.
+>>>>    	return true;
+>>>>    }
+>>>> @@ -476,6 +477,7 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>>>>    	/* There's an existing valid leaf entry, so perform break-before-make */
+>>>>    	kvm_set_invalid_pte(ptep);
+>>>>    	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+>>>> +	put_page(virt_to_page(ptep));
+>>>>    	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
+>>>>    out:
+>>>>    	data->phys += granule;
+>>> Isn't this hunk alone sufficient to solve the problem?
+>>>
+>>> Will
+>>> .
+>> Not sufficient enough. When the old ptep is valid and old pte equlas new
+>> pte, in this case, "True" is also returned by kvm_set_valid_leaf_pte()
+>>
+>> and get_page() will still be called.
+> I had a go at fixing this without introducing refcounting to the hyp stage-1
+> case, and ended up with the diff below. What do you think?
 
-On 2020-12-01 4:25 a.m., Masahiro Yamada wrote:
-> On Sat, Nov 28, 2020 at 9:45 AM Scott Branden
-> <scott.branden@broadcom.com> wrote:
->> From: Bruce Ashfield <bruce.ashfield@windriver.com>
->>
->> In some cross build environments such as the Yocto Project build
->> environment it provides an ncurses library that is compiled
->> differently than the host's version.  This causes display corruption
->> problems when the host's curses includes are used instead of the
->> includes from the provided compiler are overridden.  There is a second
->> case where there is no curses libraries at all on the host system and
->> menuconfig will just fail entirely.
->>
->> The solution is simply to allow an override variable in
->> check-lxdialog.sh for environments such as the Yocto Project.  Adding
->> a CROSS_CURSES_LIB and CROSS_CURSES_INC solves the issue and allowing
->> compiling and linking against the right headers and libraries.
->>
->> Signed-off-by: Jason Wessel <jason.wessel@windriver.com>
->> cc: Michal Marek <mmarek@suse.cz>
->> cc: linux-kbuild@vger.kernel.org
->> Signed-off-by: Bruce Ashfield <bruce.ashfield@windriver.com>
->> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
->> ---
->
-> Some people solve the cross-compiling in Yocto
-> by using pkg-config.
->
->
-> For example,
->
-> commit 067c650c456e758f933aaf87a202f841d34be269
-> Author: Pavel Modilaynen <pavel.modilaynen@axis.com>
-> Date:   Fri Jul 12 13:52:19 2019 +0200
->
->     dtc: Use pkg-config to locate libyaml
->
->     Using Makefile's wildcard with absolute path to detect
->     the presence of libyaml results in false-positive
->     detection when cross-compiling e.g. in yocto environment.
->
->
->
-> mconf-cfg.sh already allows the path flexibility with pkg-config.
-> Why do you want yet another hook?
-I hope the yocto community can provide more details on this patch.
-The yocto environment isolates the build environment from the host tools.
-Running menuconfig with the upstream kernel does not work on the latest yocto without this patch.
->>  scripts/kconfig/mconf-cfg.sh | 8 ++++++++
->>  1 file changed, 8 insertions(+)
->>  mode change 100755 => 100644 scripts/kconfig/mconf-cfg.sh
->>
->> diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
->> old mode 100755
->> new mode 100644
->> index aa68ec95620d..32448bc198a5
->> --- a/scripts/kconfig/mconf-cfg.sh
->> +++ b/scripts/kconfig/mconf-cfg.sh
->> @@ -4,6 +4,14 @@
->>  PKG="ncursesw"
->>  PKG2="ncurses"
->>
->> +if [ "$CROSS_CURSES_LIB" != "" ]; then
->> +    echo libs=\'$CROSS_CURSES_LIB\'
->> +    if [ x"$CROSS_CURSES_INC" != x ]; then
->> +       echo cflags=\'$CROSS_CURSES_INC\'
->> +    fi
->> +    exit 0
->> +fi
->> +
->>  if [ -n "$(command -v pkg-config)" ]; then
->>         if pkg-config --exists $PKG; then
->>                 echo cflags=\"$(pkg-config --cflags $PKG)\"
->> --
->> 2.17.1
->>
->
+Hi Will,
+
+Functionally this diff looks fine to me. A small comment inline, please 
+see below.
+
+I had made an alternative fix (after sending v1) and it looks much more 
+concise.
+
+If you're ok with it, I can send it as v2 (together with patch#2 and #3) 
+after some tests.
 
 
---000000000000dc8d9805b56a5431
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Thanks,
 
-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
-I/3RRboOeC9M13VNr5feU91O0iDoMreAgPQJ0Lo7YrodKYug0Tt/fFDjkW3v3VIbEr2liUN69U0C
-AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
-MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
-YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
-ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
-FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
-HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
-MmczLmNybDAlBgNVHREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUWOK7
-qiyDSt/IDm/SRcNi/sTEiyswDQYJKoZIhvcNAQELBQADggEBAEe2edd4F9tpp0GPmrFrQ+xp9kY7
-uxBzPdCw588bgVrPemjLwiwV37XTT4iWJtNhPfEpaguM6jeLm58LCvHq5/IBjcyHyf4URQVwAg7B
-pqkH8/M+IBstu4/D+znPHB59X+c+au3Q8D+xoNFd7I30kaE+oJuBuFsGXRBc0Ci+FM86x9k7SF8U
-aui1E7Y9wDfsRSCL2TSwU773f09WkrvVdlKxNqQZj2z7bQUUn+yfXdFfBz0LqlYNfn7xJOpQE3HI
-H4jq6U9+b0Qf+J0n0wyysjXPSeQ7EKXVkT8dM2KSpIN86v5dd9LkAz3C1dmjuPRGEC8ZhI1IjMBt
-0itrn6C23NsxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
-RzMCDFtD165RQeUC8DvoCDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg1jHKelYf
-WFmqo3Dkhwxcisi+BuOiRxuwU98YNkpGvfIwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
-hkiG9w0BCQUxDxcNMjAxMjAxMTcxOTM4WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
-BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
-9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAEUFzR7aI1qxywMDaOO0U4qyCBSk
-+Zs1iT3JIDSdA12pq3zIV2Cldp28mv2V79UTAv1KIwH+ufQ+o9/vIN1jOBKTrloT7CKybEX60PmF
-i8VfRb9k3Gupbri0ZLFW3hHGCKaNoOIaQyPooTYgOgQEZKVdmMejrAUfom8dAt4Zxdegmifj9L39
-vfTR7rttUjl5NCdBO3sD7B0Zz6Q4fRJZUeRtoroj8QMPnzoql7I4CrGHnTWRqFBGRUk/q5UcCgd6
-Mcd7EaT9RKRqgCIpoPF8d9W5VFtOjCqBDFAWr0gS02zF1ycRH5zb1t00IDhP07s5yMlfZ8RxdOGE
-fyKsLwPHiCE=
---000000000000dc8d9805b56a5431--
+Yanan
+
+
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 0271b4a3b9fe..b232bdd142a6 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -470,6 +470,9 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 
+end, u32 level,
+         if (!kvm_block_mapping_supported(addr, end, phys, level))
+                 return false;
+
++       if (kvm_pte_valid(*ptep))
++               put_page(virt_to_page(ptep));
++
+         if (kvm_set_valid_leaf_pte(ptep, phys, data->attr, level))
+                 goto out;
+
+>
+> --->8
+>
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 0271b4a3b9fe..78e2c0dc47ae 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -170,23 +170,16 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp)
+>   	smp_store_release(ptep, pte);
+>   }
+>   
+> -static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
+> -				   u32 level)
+> +static kvm_pte_t kvm_init_valid_leaf_pte(u64 pa, kvm_pte_t attr, u32 level)
+>   {
+> -	kvm_pte_t old = *ptep, pte = kvm_phys_to_pte(pa);
+> +	kvm_pte_t pte = kvm_phys_to_pte(pa);
+>   	u64 type = (level == KVM_PGTABLE_MAX_LEVELS - 1) ? KVM_PTE_TYPE_PAGE :
+>   							   KVM_PTE_TYPE_BLOCK;
+>   
+>   	pte |= attr & (KVM_PTE_LEAF_ATTR_LO | KVM_PTE_LEAF_ATTR_HI);
+>   	pte |= FIELD_PREP(KVM_PTE_TYPE, type);
+>   	pte |= KVM_PTE_VALID;
+> -
+> -	/* Tolerate KVM recreating the exact same mapping. */
+> -	if (kvm_pte_valid(old))
+> -		return old == pte;
+> -
+> -	smp_store_release(ptep, pte);
+> -	return true;
+> +	return pte;
+>   }
+>   
+>   static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
+> @@ -341,12 +334,17 @@ static int hyp_map_set_prot_attr(enum kvm_pgtable_prot prot,
+>   static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>   				    kvm_pte_t *ptep, struct hyp_map_data *data)
+>   {
+> +	kvm_pte_t new, old = *ptep;
+>   	u64 granule = kvm_granule_size(level), phys = data->phys;
+>   
+>   	if (!kvm_block_mapping_supported(addr, end, phys, level))
+>   		return false;
+>   
+> -	WARN_ON(!kvm_set_valid_leaf_pte(ptep, phys, data->attr, level));
+> +	/* Tolerate KVM recreating the exact same mapping. */
+> +	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
+> +	if (old != new && !WARN_ON(kvm_pte_valid(old)))
+> +		smp_store_release(ptep, new);
+> +
+>   	data->phys += granule;
+>   	return true;
+>   }
+> @@ -465,19 +463,24 @@ static bool stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>   				       kvm_pte_t *ptep,
+>   				       struct stage2_map_data *data)
+>   {
+> +	kvm_pte_t new, old = *ptep;
+>   	u64 granule = kvm_granule_size(level), phys = data->phys;
+>   
+>   	if (!kvm_block_mapping_supported(addr, end, phys, level))
+>   		return false;
+>   
+> -	if (kvm_set_valid_leaf_pte(ptep, phys, data->attr, level))
+> -		goto out;
+> +	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
+> +	if (kvm_pte_valid(old)) {
+> +		/*
+> +		 * There's an existing valid leaf entry, so perform
+> +		 * break-before-make.
+> +		 */
+> +		kvm_set_invalid_pte(ptep);
+> +		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+> +		put_page(virt_to_page(ptep));
+
+When old PTE is valid and equals to the new one, we will also perform 
+break-before-make and the new PTE installation. But they're actually not 
+necessary in this case.
+
+> +	}
+>   
+> -	/* There's an existing valid leaf entry, so perform break-before-make */
+> -	kvm_set_invalid_pte(ptep);
+> -	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+> -	kvm_set_valid_leaf_pte(ptep, phys, data->attr, level);
+> -out:
+> +	smp_store_release(ptep, new);
+>   	data->phys += granule;
+>   	return true;
+>   }
+> .
