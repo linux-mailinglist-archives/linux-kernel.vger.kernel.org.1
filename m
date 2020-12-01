@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401692C9FDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79E72C9FDD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729978AbgLAKeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729987AbgLAKeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 1 Dec 2020 05:34:46 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:47843 "EHLO
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:41191 "EHLO
         wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726871AbgLAKek (ORCPT
+        by vger.kernel.org with ESMTP id S1726026AbgLAKep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:34:40 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id A018612F7;
-        Tue,  1 Dec 2020 05:33:48 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 01 Dec 2020 05:33:49 -0500
+        Tue, 1 Dec 2020 05:34:45 -0500
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 40A4E12EE;
+        Tue,  1 Dec 2020 05:33:59 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Tue, 01 Dec 2020 05:33:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=miypkxvthetDBOn9oi94R0JCWeh
-        iNAhQ1JY9FWr5gUc=; b=ZQ8sL1l9cQD7eWkMldcwaECkS5P9JRvlEYdsNBfi8WD
-        4VnLiM7Jd455Gwy7Euoh70SntSP0PTLWRlwaWHbtXHdjF7HoSwEJD5ntjWCrrBtV
-        mk8Th7bESJw2AFWreCY4ZwTMAM0+BdeEOaDhM63MLHxtm8JTY62jUCMzvvZJfyXW
-        WEmm2nWT8WUF7G7ub1aAzKrdEaoC0DAfontrwJQ2SfAgkCbHIMv2p/U+mon2JHQJ
-        NKIXUCVbwP+w7+ynSpFKWR+1e/YSw6Um/a+nJgTZzuxK7C7Um2kQKz4XOrBH4YnH
-        4jruP/9Lntor5HJzgESt5T+KBli5tbrwIklPFp2rWuA==
+        :content-type:in-reply-to; s=fm1; bh=0LEfd4MCIrC63dAvEa6z1MW0wtY
+        FYRkWZYqY55AEO8g=; b=jSVkKhsgYZeSIM++cj4EeOcK+b3KmjZNTi6FPx5B721
+        Pt2qxkJcAfgM91OgCCovFez6CqdU/dcnXgzWn7UZA6N0uVlacZWvsh2RVr6o1nKp
+        BaXqS97EdYzmHDEWlLLrCm1ozESoCg0PGtxIZ+ddqYEtVyjhGJZOew/Cls0QhQr2
+        5iqtOxjDcHc/HVkgnEx6HuZ9TAdyvAW+yKyGIJBAeaEsf9gY+699L28W7IRoMWgp
+        rKiv37s4sXoi6lPnf/8fieN5EVYwSIDyZmax2+Gac9RPxax4LXZGT7vPaUnIO411
+        I1QhAdnhw6tLjKAxwRHR1iw/iOzozyNH0Xz4eJidqTA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=miypkx
-        vthetDBOn9oi94R0JCWehiNAhQ1JY9FWr5gUc=; b=C5jRc34TmyVb+Jd63uC2MA
-        zKp4aCpTW76YZPSB163pksJSuscmk+YfwxKLbUDxDMT+3I5jhc8MvEWJF7D4DUdZ
-        NmA2z54wIyiB4/0Ytt3JS7Dyd7Y6/fGqK8ZV9XzhW51DOvcnsRZeKxDSs/3Sf5JH
-        KjrD6NFG3efWb4/sGBREWRzYcezYZRkEW+geJmvcp9wzXmU+tCCzJuA8qexMSCys
-        c/RKoojHq2AenVXcUU85EpHVN7YnRFrLK5JMER1ZwOdSxAxHSt/op+TS3wb6OXLk
-        U8wDt40mKvn0k7QE67HUxHcjSzzmuhCrz89V/Nv/CfdGSHFRUbriZLx+vIjkgttw
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=0LEfd4
+        MCIrC63dAvEa6z1MW0wtYFYRkWZYqY55AEO8g=; b=TBqmcqoXxOvtWbFmXKpv3I
+        7xGFOb+fBksE+xxjusPd+eX3xKve+bHPy9bxuai/VoONGbFc9BrXvlLJPMbluXIF
+        dlsWA+nGVgxeZ5eMYafVMy/odL26cTIhvBnB3C/Scu+xqZV/L5TupRZNzPhige7w
+        dDFxWeYqzDJLBkHRSV1L8q/M+C1ex4MtXppwexKiRzFXqns9p6gDcCME82IUD/kz
+        Hzbn6A/8vfmZH/3r9/2Gfonl14YkFB1u8jRKI6uBecp4CKazozCltN9LdK/ElNZ2
+        85q9bLBWKHmRYJa1xi/zn44gfihXmG621ZLuurFEbVgauT4I/xRHUWhg/vHts2Og
         ==
-X-ME-Sender: <xms:ChzGXyL1N8TP0-FRdDWukIwdI10Yvyua1oTeNyUFQLZ-rDIhzKjbyw>
-    <xme:ChzGX6IHXpEpPYRKXtCDUxoZWtwGX08FBZ1ddOSmy10Y8Cfr9mYqfI1PGwvYDqxW5
-    asxWhi32JwT1sar-TA>
+X-ME-Sender: <xms:FRzGX1saAobQBmoRaP2Ql8kz9q_5KMBOOgAyoyqxYS8KakAFRKoSYw>
+    <xme:FRzGX6IzHZyxxL055yVKFTY_3Yf2zbXcxtGPgGQrF_cgxWpcY1MQ9wuKh8KyKRgjd
+    ygQSJOy0nQUb1BoO3U>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeivddgudekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -48,14 +48,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeivddgudekucetufdoteggod
     htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
     gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
     frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ChzGXyskndzYKl9H-N95TZddXCmzRBubhrLtNIu8mclmadyItNZHCg>
-    <xmx:ChzGX3Z07gOTVhyIh8pLK2hNGTIhbYxLeyyMLcce51VpPFEHKZRSeg>
-    <xmx:ChzGX5ZeNdYNUAc-8ICi5TCqzbU5s3gldoJum13DVE2yBj7bukKZ2g>
-    <xmx:DBzGX8ybq8L_BBQFISfAwY1X1DXp5Cly50z_7ypcpVbs4OFBuTO_8A>
+X-ME-Proxy: <xmx:FRzGX1OJn_o_oS7GTYyC2YINhiHWAch-ta9Wi-SjkZ6pNCq2ValGjA>
+    <xmx:FRzGX1Xi7_m7CPiHfZXO7A9W0U5PlWGt_1tLbneGfkeHwyiiuUbz4w>
+    <xmx:FRzGX7kz2iUdCaANsm-3_P5cqD07grJ93w_stRgB4XWFh7-RXKN7kw>
+    <xmx:FhzGX7h991ektQJ-dSnXplKgbbv3dBQQPaeu-GmHT_kSMfM7kg5ckA>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4FCE73280068;
-        Tue,  1 Dec 2020 05:33:46 -0500 (EST)
-Date:   Tue, 1 Dec 2020 11:33:44 +0100
+        by mail.messagingengine.com (Postfix) with ESMTPA id B9E0D108005C;
+        Tue,  1 Dec 2020 05:33:57 -0500 (EST)
+Date:   Tue, 1 Dec 2020 11:33:56 +0100
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
 Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
@@ -63,27 +63,28 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         "David S . Miller" <davem@davemloft.net>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] arm64: dts: allwinner: A64 Sopine: phy-mode rgmii-id
-Message-ID: <20201201103344.5zc35klj334aflpk@gilmour>
-References: <20201129162627.1244808-1-xypron.glpk@gmx.de>
+Subject: Re: [PATCH 1/1] arm64: dts: allwinner: H5: NanoPi Neo Plus2:
+ phy-mode rgmii-id
+Message-ID: <20201201103356.qedqb24n5ucx2eps@gilmour>
+References: <20201129194512.1475586-1-xypron.glpk@gmx.de>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="phy4sbo5vae5y3zo"
+        protocol="application/pgp-signature"; boundary="xmjuxfopfcov7c44"
 Content-Disposition: inline
-In-Reply-To: <20201129162627.1244808-1-xypron.glpk@gmx.de>
+In-Reply-To: <20201129194512.1475586-1-xypron.glpk@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---phy4sbo5vae5y3zo
+--xmjuxfopfcov7c44
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Nov 29, 2020 at 05:26:27PM +0100, Heinrich Schuchardt wrote:
+On Sun, Nov 29, 2020 at 08:45:12PM +0100, Heinrich Schuchardt wrote:
 > Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx
-> delay config") iSCSI booting fails on the Pine A64 LTS.
+> delay config") network is broken on the NanoPi Neo Plus2.
 >=20
 > This patch changes the phy-mode to use internal delays both for RX and TX
 > as has been done for other boards affected by the same commit.
@@ -91,18 +92,18 @@ On Sun, Nov 29, 2020 at 05:26:27PM +0100, Heinrich Schuchardt wrote:
 > Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
 > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
 
-Applied, thanks
+Applied, thanks!
 Maxime
 
---phy4sbo5vae5y3zo
+--xmjuxfopfcov7c44
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8YcCAAKCRDj7w1vZxhR
-xf02AQD/FiprdlhjFA/6zTeA0NIXyimkwUHILyJsDztvkohCygEAq9I6EY0gfVLt
-MCyjkdzLXqvbUOwgm+7AhXF6gadupAM=
-=JuLM
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8YcFAAKCRDj7w1vZxhR
+xb7BAQCqCR/UJ4Xh5CChtMLLJuo9b1NQwbTyk2T93GgLjg+I0QD+JzUXAMFE+LVk
+YnlfT8pUzdg8JUEF37cKbBIuXkYgfQ8=
+=Eupy
 -----END PGP SIGNATURE-----
 
---phy4sbo5vae5y3zo--
+--xmjuxfopfcov7c44--
