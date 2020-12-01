@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEE22C9C37
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE69E2C9BE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390242AbgLAJQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:16:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53576 "EHLO mail.kernel.org"
+        id S2390030AbgLAJM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:12:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390349AbgLAJOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:14:46 -0500
+        id S2390022AbgLAJMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36EC520809;
-        Tue,  1 Dec 2020 09:14:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31C5420770;
+        Tue,  1 Dec 2020 09:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606814045;
-        bh=I7zec5XKVFOpAujn43qhFeJhbJU70mbj3jifrQPgHy4=;
+        s=korg; t=1606813957;
+        bh=M+XAIcM5levjL+hXw4vdea57kjm6p9vwSMf2RP4oqpk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rtFbauNUDL1wS7jLq/jYxvya+mgrJ0sOxMAWwdh9pmw47w56A52x53Jn3PQZVGp4R
-         q55jc+X5mDIExo59JoAdfjbnrcA4YG03xZnqOUq7EsqDTFv+MNTmYw26+2fZFSj/R9
-         U1SVzzjbbor8YxX/NyKTugSEWqEdYVkBFMxwvUms=
+        b=RPv8+Vx9xmrnhIxiuiJoXGfaBjj28Emp3IU67/tslv/NIJ7djNweZQPBXgk5PJVcU
+         SLsQlmdCRCNL1ECNRrtrVl+8YI1RqXsEdnJm3c3SgG08Mz1ZJbZ5FYPJA5jr1l+8rB
+         04wmqrK/rCo6BHdctuayeBKTQK4llZVm++TnV0os=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rui Miguel Silva <rui.silva@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 117/152] optee: add writeback to valid memory type
-Date:   Tue,  1 Dec 2020 09:53:52 +0100
-Message-Id: <20201201084727.137553773@linuxfoundation.org>
+        stable@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        Adrian Huang <ahuang12@lenovo.com>
+Subject: [PATCH 5.9 118/152] x86/tboot: Dont disable swiotlb when iommu is forced on
+Date:   Tue,  1 Dec 2020 09:53:53 +0100
+Message-Id: <20201201084727.257311425@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -43,39 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rui Miguel Silva <rui.silva@linaro.org>
+From: Lu Baolu <baolu.lu@linux.intel.com>
 
-[ Upstream commit 853735e404244f5496cdb6188c5ed9a0f9627ee6 ]
+[ Upstream commit e2be2a833ab5338fa5b8b99ba622b911d96f1795 ]
 
-Only in smp systems the cache policy is setup as write alloc, in
-single cpu systems the cache policy is set as writeback and it is
-normal memory, so, it should pass the is_normal_memory check in the
-share memory registration.
+After commit 327d5b2fee91c ("iommu/vt-d: Allow 32bit devices to uses DMA
+domain"), swiotlb could also be used for direct memory access if IOMMU
+is enabled but a device is configured to pass through the DMA translation.
+Keep swiotlb when IOMMU is forced on, otherwise, some devices won't work
+if "iommu=pt" kernel parameter is used.
 
-Add the right condition to make it work in no smp systems.
-
-Fixes: cdbcf83d29c1 ("tee: optee: check type of registered shared memory")
-Signed-off-by: Rui Miguel Silva <rui.silva@linaro.org>
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+Fixes: 327d5b2fee91 ("iommu/vt-d: Allow 32bit devices to uses DMA domain")
+Reported-and-tested-by: Adrian Huang <ahuang12@lenovo.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20201125014124.4070776-1-baolu.lu@linux.intel.com
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=210237
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tee/optee/call.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kernel/tboot.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index 20b6fd7383c54..c981757ba0d40 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -534,7 +534,8 @@ void optee_free_pages_list(void *list, size_t num_entries)
- static bool is_normal_memory(pgprot_t p)
- {
- #if defined(CONFIG_ARM)
--	return (pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEALLOC;
-+	return (((pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEALLOC) ||
-+		((pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEBACK));
- #elif defined(CONFIG_ARM64)
- 	return (pgprot_val(p) & PTE_ATTRINDX_MASK) == PTE_ATTRINDX(MT_NORMAL);
- #else
+diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
+index 420be871d9d45..ae64f98ec2ab6 100644
+--- a/arch/x86/kernel/tboot.c
++++ b/arch/x86/kernel/tboot.c
+@@ -514,13 +514,10 @@ int tboot_force_iommu(void)
+ 	if (!tboot_enabled())
+ 		return 0;
+ 
+-	if (no_iommu || swiotlb || dmar_disabled)
++	if (no_iommu || dmar_disabled)
+ 		pr_warn("Forcing Intel-IOMMU to enabled\n");
+ 
+ 	dmar_disabled = 0;
+-#ifdef CONFIG_SWIOTLB
+-	swiotlb = 0;
+-#endif
+ 	no_iommu = 0;
+ 
+ 	return 1;
 -- 
 2.27.0
 
