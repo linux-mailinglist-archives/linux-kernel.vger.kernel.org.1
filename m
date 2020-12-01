@@ -2,51 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D1F2C9A6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC742C9B9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387822AbgLAI53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        id S2389704AbgLAJK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:10:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729251AbgLAI5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:57:25 -0500
+        id S2389685AbgLAJKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:10:23 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE763217A0;
-        Tue,  1 Dec 2020 08:57:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F42372067D;
+        Tue,  1 Dec 2020 09:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813029;
-        bh=h1W4HaVghn4s9MK9eosH2RNEJR7M4Y5nEnsp+sYZ9XQ=;
+        s=korg; t=1606813808;
+        bh=aKivXo9prfiD48kBv+1THI6AQjC3GMkfvkx95PB3S48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1kHocxZ5BVtLUeNPbmDzlHwi7OTzerLbkHV0cspItzph2pusnJI+2qhz/f6dVbc2W
-         +R+I/XUvxHaXGDQ2y+KZixQ1n84t2E7FVi+2b78wB219ah8k7WkaFXdLWQJianCVcR
-         3XqlMOjGawe71QcFC4RWK+VpWAKn1+xDi7Z6O8FM=
+        b=k9nlptr+fkuawBNAIQ4IZiXpAW4gUtHPRTjEXQZP/nfRcKPc86qi9KPjBDy6lFZ+h
+         /5uCLPttbb783fqAU/qiT9Hwl9GLbBceuxcQosgFZkvrw0bsORfBRL2EDFn7kiITnl
+         9aAV/Vt64yOq3GVs5UA4vZpFp7HDWp4FTF4gdPrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Dahl <ada@thorsis.com>
-Subject: [PATCH 4.14 01/50] perf event: Check ref_reloc_sym before using it
-Date:   Tue,  1 Dec 2020 09:53:00 +0100
-Message-Id: <20201201084644.950526926@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 066/152] xtensa: uaccess: Add missing __user to strncpy_from_user() prototype
+Date:   Tue,  1 Dec 2020 09:53:01 +0100
+Message-Id: <20201201084720.583155767@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -54,58 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Lubashev <ilubashe@akamai.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-commit e9a6882f267a8105461066e3ea6b4b6b9be1b807 upstream.
+[ Upstream commit dc293f2106903ab9c24e9cea18c276e32c394c33 ]
 
-Check for ref_reloc_sym before using it instead of checking
-symbol_conf.kptr_restrict and relying solely on that check.
+When adding __user annotations in commit 2adf5352a34a, the
+strncpy_from_user() function declaration for the
+CONFIG_GENERIC_STRNCPY_FROM_USER case was missed. Fix it.
 
-Reported-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Igor Lubashev <ilubashe@akamai.com>
-Tested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Link: http://lkml.kernel.org/r/1566869956-7154-2-git-send-email-ilubashe@akamai.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Alexander Dahl <ada@thorsis.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Message-Id: <20200831210937.17938-1-laurent.pinchart@ideasonboard.com>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/event.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/xtensa/include/asm/uaccess.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/perf/util/event.c
-+++ b/tools/perf/util/event.c
-@@ -794,11 +794,13 @@ int perf_event__synthesize_kernel_mmap(s
- 	int err;
- 	union perf_event *event;
+diff --git a/arch/xtensa/include/asm/uaccess.h b/arch/xtensa/include/asm/uaccess.h
+index b9758119feca1..5c9fb8005aa89 100644
+--- a/arch/xtensa/include/asm/uaccess.h
++++ b/arch/xtensa/include/asm/uaccess.h
+@@ -302,7 +302,7 @@ strncpy_from_user(char *dst, const char __user *src, long count)
+ 	return -EFAULT;
+ }
+ #else
+-long strncpy_from_user(char *dst, const char *src, long count);
++long strncpy_from_user(char *dst, const char __user *src, long count);
+ #endif
  
--	if (symbol_conf.kptr_restrict)
--		return -1;
- 	if (map == NULL)
- 		return -1;
- 
-+	kmap = map__kmap(map);
-+	if (!kmap->ref_reloc_sym)
-+		return -1;
-+
- 	/*
- 	 * We should get this from /sys/kernel/sections/.text, but till that is
- 	 * available use this, and after it is use this as a fallback for older
-@@ -822,7 +824,6 @@ int perf_event__synthesize_kernel_mmap(s
- 		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
- 	}
- 
--	kmap = map__kmap(map);
- 	size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
- 			"%s%s", mmap_name, kmap->ref_reloc_sym->name) + 1;
- 	size = PERF_ALIGN(size, sizeof(u64));
+ /*
+-- 
+2.27.0
+
 
 
