@@ -2,131 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E36C2C946D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365462C9471
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389221AbgLABJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:09:12 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:35083 "EHLO m42-4.mailgun.net"
+        id S2389232AbgLABJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:09:53 -0500
+Received: from mga02.intel.com ([134.134.136.20]:62798 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389212AbgLABJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:09:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606784931; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=pTKbiMBtrJ26sLvaoisUJXi2hC33groLwAZEMc865T4=; b=FoMrPqQnQn9fgOGkT2UkxTFLx080pe9S3P1MpRrLWGNPwIBG4V0RDR3bdF6iypWK4qcGQ9/4
- nvzH+r6Q3xROMTdY0FHbwmfqui+++/xSHCvL78wDpG85T4L329Rywwg9CHZlelZQvPNKfD+z
- oDc5lFgnTgtt+82MKIHg/5HXrno=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5fc59789f4482b01c461eefe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 01:08:25
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 247ADC43464; Tue,  1 Dec 2020 01:08:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EC7CFC43460;
-        Tue,  1 Dec 2020 01:08:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EC7CFC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v13 4/4] bus: mhi: Add userspace client interface driver
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jhugo@codeaurora.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org,
-        netdev@vger.kernel.org
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
- <1606533966-22821-5-git-send-email-hemantk@codeaurora.org>
- <20201128061117.GJ3077@thinkpad>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <becbd9ac-09a1-1ce7-7fdb-333a302601cb@codeaurora.org>
-Date:   Mon, 30 Nov 2020 17:08:23 -0800
+        id S1726684AbgLABJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:09:53 -0500
+IronPort-SDR: DSStL4CHiaTcVpH5P8ps+uXFtCwJRQUF8AjR5c9kOhWEF3nc3AJwH7eDr2jySqF+92JbHUiGo7
+ tRPIbMCJJ9qw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="159794885"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="159794885"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 17:09:12 -0800
+IronPort-SDR: 2QO5EKwyGtliPdiCa5T0s+N33CDu+ekUx+qgruqo7CxwAHxSrih4iqp/G7eeG9XDYIIf5bDCKR
+ Ol0EQQzTOjSA==
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="364474329"
+Received: from rvalimx-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.91.3])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 17:09:11 -0800
+Subject: Re: [PATCH v12 10/15] PCI/ERR: Limit AER resets in pcie_do_recovery()
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "xerces.zhao@gmail.com" <xerces.zhao@gmail.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201201002516.GA1130192@bjorn-Precision-5520>
+From:   "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
+Message-ID: <35019c15-27da-2ce4-fcd9-94559d39a7ec@intel.com>
+Date:   Mon, 30 Nov 2020 17:09:08 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201128061117.GJ3077@thinkpad>
+In-Reply-To: <20201201002516.GA1130192@bjorn-Precision-5520>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
 
-On 11/27/20 10:11 PM, Manivannan Sadhasivam wrote:
-> Hi Hemant,
-> 
-> On Fri, Nov 27, 2020 at 07:26:06PM -0800, Hemant Kumar wrote:
->> This MHI client driver allows userspace clients to transfer
->> raw data between MHI device and host using standard file operations.
->> Driver instantiates UCI device object which is associated to device
->> file node. UCI device object instantiates UCI channel object when device
->> file node is opened. UCI channel object is used to manage MHI channels
->> by calling MHI core APIs for read and write operations. MHI channels
->> are started as part of device open(). MHI channels remain in start
->> state until last release() is called on UCI device file node. Device
->> file node is created with format
->>
->> /dev/mhi_<mhi_device_name>
->>
->> Currently it supports QMI channel.
->>
-> 
-> Thanks for the update. This patch looks good to me. But as I'm going to
-> apply Loic's "bus: mhi: core: Indexed MHI controller name" patch, you
-> need to update the documentation accordingly.
+On 11/30/20 4:25 PM, Bjorn Helgaas wrote:
+> I think EDR is the same as DPC?
+Yes, EDR is same as DPC.
 
-This is what i added in documentation on v13
-
-
-Device file node is created with format:-
-
-/dev/mhi_<mhi_device_name>
-
-mhi_device_name includes mhi controller name and the name of the MHI
-channel being used by MHI client in userspace to send or receive data
-using MHI protocol.
-
-​
-Loic's patch is going to update the controller name as indexed 
-controller name, which goes fine with or without his change going first.
-
-For example:   With Loic's change name of device node would be 
-/dev/mhi_mhi0_QMI
-
-Without Loic's change it would be
-
-/dev/mhi_0000:00:01.2_QMI
-
-Please let me know if i am missing something.
-
-Thanks,
-Hemant
-
-> 
->> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> 
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Thanks,
-> Mani
-> 
-[..]
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
