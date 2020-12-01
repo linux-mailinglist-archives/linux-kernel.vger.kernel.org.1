@@ -2,53 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BB12C9CC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 074F32C9D57
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388439AbgLAJA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:56 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8542 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388390AbgLAJAw (ORCPT
+        id S2390680AbgLAJWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:22:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44326 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389219AbgLAJI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:00:52 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ClbdT3v1SzhlNJ;
-        Tue,  1 Dec 2020 16:59:41 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 1 Dec 2020
- 17:00:02 +0800
-Subject: Re: [f2fs-dev] [PATCH 2/4] f2fs: use new conversion functions between
- blks and bytes
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@android.com>
-CC:     Linux F2FS Dev Mailing List 
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201126022416.3068426-1-jaegeuk@kernel.org>
- <20201126022416.3068426-2-jaegeuk@kernel.org>
- <20201201040944.GD3858797@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <57ca6cbd-6378-6ede-dc4a-47e0dfc0f13a@huawei.com>
-Date:   Tue, 1 Dec 2020 17:00:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 1 Dec 2020 04:08:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606813619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S8eqZj7fPMFZ00nLqUWB8YSuSEn9DKOcT/A5jGQUnIw=;
+        b=Vtv1NXN3E0C9TS8lIRaewrWMSrn3w0WF4P2XdyWoLOV5iDTyOJf7g7nc8MwsMNslPsY3BF
+        fcsk4MePMu3Rw4yXOP3FJ9YU/+nXk+Xvzg1xc/4T2FZv/fK55PJxXHy0pPSdxviJ/aKVM7
+        h30k/0BjOcbfNTuhZz5eb2QcCqJlIck=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352---gUOHdXN-WDy0c56fP0aQ-1; Tue, 01 Dec 2020 04:06:57 -0500
+X-MC-Unique: --gUOHdXN-WDy0c56fP0aQ-1
+Received: by mail-ej1-f70.google.com with SMTP id h17so822409ejk.21
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 01:06:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S8eqZj7fPMFZ00nLqUWB8YSuSEn9DKOcT/A5jGQUnIw=;
+        b=s4ly+ztX5OYy1sHa0rZFOJ8EJ93qgw5zrjD0TRJFYI+DS3A04SQgAH4PlLbAbb2dv2
+         ieqd24PX2Dh52irQNfDP4QuqMAzD0UMC6haOWLIc1flMmz9gwsfDBigjbbJxMjowoJzU
+         pN8KFqqjt6swsUzuNGZEilP+/De25EIU+8hzV7+mc9yc9evfD272SbcTeYebZWRFB3hi
+         DE6cZFD/Kyc3k/T5iZq6QkqjDWPE5CT9jMuffxXG4OWYLsMKr5BCX0kksQbL3Kvw8lyG
+         wH0JNikFfrsPDiF8F/92aWRivkZ3F98DpC0yVms7j7mkpu89VCs8soQ4C64AC0q8Ix4G
+         sYyQ==
+X-Gm-Message-State: AOAM5308AbjpuA7j2uDDgRbZikEqnavUZoH0AOvJuTJxEFj9JO2Tkiur
+        QyKw8Xg4dnRV9KqwS0VM1V4p10kILvpf9Brqwfk0Fy3a0Zf0C8ztujyz92dH1WGL+juSh00dzNd
+        YXkiqHy63gsz2B1JoLZGpNxXE
+X-Received: by 2002:a05:6402:714:: with SMTP id w20mr2013398edx.252.1606813616606;
+        Tue, 01 Dec 2020 01:06:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwsGaRmELbAzEX8fHKL0sbBJshDojcjnaqhBer5fplEH//fj1holAlI/77GZeJgnCFN8urpCw==
+X-Received: by 2002:a05:6402:714:: with SMTP id w20mr2013380edx.252.1606813616386;
+        Tue, 01 Dec 2020 01:06:56 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p91sm485315edp.9.2020.12.01.01.06.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 01:06:55 -0800 (PST)
+Subject: Re: [PATCH 4.19 08/57] KVM: x86: Fix split-irqchip vs interrupt
+ injection window request
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Nikos Tsironis <ntsironis@arrikto.com>
+References: <20201201084647.751612010@linuxfoundation.org>
+ <20201201084648.690944071@linuxfoundation.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d29c4b25-33f6-8d99-7a45-8f4e06f5ade6@redhat.com>
+Date:   Tue, 1 Dec 2020 10:06:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201201040944.GD3858797@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20201201084648.690944071@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/1 12:09, Jaegeuk Kim wrote:
-> On 11/25, Jaegeuk Kim wrote:
->> This patch cleans up blks and bytes conversions.
->>
->> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+On 01/12/20 09:53, Greg Kroah-Hartman wrote:
+> From: Paolo Bonzini <pbonzini@redhat.com>
+> 
+> commit 71cc849b7093bb83af966c0e60cb11b7f35cd746 upstream.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Since you did not apply "KVM: x86: handle !lapic_in_kernel case in 
+kvm_cpu_*_extint" to 4.19 or earlier, please leave this one out as well.
 
 Thanks,
+
+Paolo
+
+> kvm_cpu_accept_dm_intr and kvm_vcpu_ready_for_interrupt_injection are
+> a hodge-podge of conditions, hacked together to get something that
+> more or less works.  But what is actually needed is much simpler;
+> in both cases the fundamental question is, do we have a place to stash
+> an interrupt if userspace does KVM_INTERRUPT?
+> 
+> In userspace irqchip mode, that is !vcpu->arch.interrupt.injected.
+> Currently kvm_event_needs_reinjection(vcpu) covers it, but it is
+> unnecessarily restrictive.
+> 
+> In split irqchip mode it's a bit more complicated, we need to check
+> kvm_apic_accept_pic_intr(vcpu) (the IRQ window exit is basically an INTACK
+> cycle and thus requires ExtINTs not to be masked) as well as
+> !pending_userspace_extint(vcpu).  However, there is no need to
+> check kvm_event_needs_reinjection(vcpu), since split irqchip keeps
+> pending ExtINT state separate from event injection state, and checking
+> kvm_cpu_has_interrupt(vcpu) is wrong too since ExtINT has higher
+> priority than APIC interrupts.  In fact the latter fixes a bug:
+> when userspace requests an IRQ window vmexit, an interrupt in the
+> local APIC can cause kvm_cpu_has_interrupt() to be true and thus
+> kvm_vcpu_ready_for_interrupt_injection() to return false.  When this
+> happens, vcpu_run does not exit to userspace but the interrupt window
+> vmexits keep occurring.  The VM loops without any hope of making progress.
+> 
+> Once we try to fix these with something like
+> 
+>       return kvm_arch_interrupt_allowed(vcpu) &&
+> -        !kvm_cpu_has_interrupt(vcpu) &&
+> -        !kvm_event_needs_reinjection(vcpu) &&
+> -        kvm_cpu_accept_dm_intr(vcpu);
+> +        (!lapic_in_kernel(vcpu)
+> +         ? !vcpu->arch.interrupt.injected
+> +         : (kvm_apic_accept_pic_intr(vcpu)
+> +            && !pending_userspace_extint(v)));
+> 
+> we realize two things.  First, thanks to the previous patch the complex
+> conditional can reuse !kvm_cpu_has_extint(vcpu).  Second, the interrupt
+> window request in vcpu_enter_guest()
+> 
+>          bool req_int_win =
+>                  dm_request_for_irq_injection(vcpu) &&
+>                  kvm_cpu_accept_dm_intr(vcpu);
+> 
+> should be kept in sync with kvm_vcpu_ready_for_interrupt_injection():
+> it is unnecessary to ask the processor for an interrupt window
+> if we would not be able to return to userspace.  Therefore,
+> kvm_cpu_accept_dm_intr(vcpu) is basically !kvm_cpu_has_extint(vcpu)
+> ANDed with the existing check for masked ExtINT.  It all makes sense:
+> 
+> - we can accept an interrupt from userspace if there is a place
+>    to stash it (and, for irqchip split, ExtINTs are not masked).
+>    Interrupts from userspace _can_ be accepted even if right now
+>    EFLAGS.IF=0.
+> 
+> - in order to tell userspace we will inject its interrupt ("IRQ
+>    window open" i.e. kvm_vcpu_ready_for_interrupt_injection), both
+>    KVM and the vCPU need to be ready to accept the interrupt.
+> 
+> ... and this is what the patch implements.
+> 
+> Reported-by: David Woodhouse <dwmw@amazon.co.uk>
+> Analyzed-by: David Woodhouse <dwmw@amazon.co.uk>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Reviewed-by: Nikos Tsironis <ntsironis@arrikto.com>
+> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+> Tested-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> ---
+>   arch/x86/include/asm/kvm_host.h |    1 +
+>   arch/x86/kvm/irq.c              |    2 +-
+>   arch/x86/kvm/x86.c              |   18 ++++++++++--------
+>   3 files changed, 12 insertions(+), 9 deletions(-)
+> 
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1472,6 +1472,7 @@ int kvm_test_age_hva(struct kvm *kvm, un
+>   void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
+>   int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v);
+>   int kvm_cpu_has_interrupt(struct kvm_vcpu *vcpu);
+> +int kvm_cpu_has_extint(struct kvm_vcpu *v);
+>   int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu);
+>   int kvm_cpu_get_interrupt(struct kvm_vcpu *v);
+>   void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event);
+> --- a/arch/x86/kvm/irq.c
+> +++ b/arch/x86/kvm/irq.c
+> @@ -52,7 +52,7 @@ static int pending_userspace_extint(stru
+>    * check if there is pending interrupt from
+>    * non-APIC source without intack.
+>    */
+> -static int kvm_cpu_has_extint(struct kvm_vcpu *v)
+> +int kvm_cpu_has_extint(struct kvm_vcpu *v)
+>   {
+>   	/*
+>   	 * FIXME: interrupt.injected represents an interrupt whose
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3351,21 +3351,23 @@ static int kvm_vcpu_ioctl_set_lapic(stru
+>   
+>   static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
+>   {
+> +	/*
+> +	 * We can accept userspace's request for interrupt injection
+> +	 * as long as we have a place to store the interrupt number.
+> +	 * The actual injection will happen when the CPU is able to
+> +	 * deliver the interrupt.
+> +	 */
+> +	if (kvm_cpu_has_extint(vcpu))
+> +		return false;
+> +
+> +	/* Acknowledging ExtINT does not happen if LINT0 is masked.  */
+>   	return (!lapic_in_kernel(vcpu) ||
+>   		kvm_apic_accept_pic_intr(vcpu));
+>   }
+>   
+> -/*
+> - * if userspace requested an interrupt window, check that the
+> - * interrupt window is open.
+> - *
+> - * No need to exit to userspace if we already have an interrupt queued.
+> - */
+>   static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
+>   {
+>   	return kvm_arch_interrupt_allowed(vcpu) &&
+> -		!kvm_cpu_has_interrupt(vcpu) &&
+> -		!kvm_event_needs_reinjection(vcpu) &&
+>   		kvm_cpu_accept_dm_intr(vcpu);
+>   }
+>   
+> 
+> 
+
