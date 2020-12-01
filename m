@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4251A2CAB89
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3012E2CAB8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731295AbgLATLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:11:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730070AbgLATLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:11:46 -0500
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DB2820639
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 19:11:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606849865;
-        bh=JqwaoK4HBPCT+/h+D8qURvwc3oM0DqI5/EEkWIzSOGk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iqHTGKxFX8str4vKF7dqTHknZh4uChxGxcH981c5983+DfHyXmb6SeLnou4HZpqBD
-         APnFX8IZ06nyHB3cIF9o3PvWokhbytT3fX4gmQ/P5VcO217SyltUv/oKdS4ccc0cl0
-         IOkKjamdGTtpMvdwxkjMLkWEtH7PR6YdKSswYYro=
-Received: by mail-wm1-f45.google.com with SMTP id d3so5935122wmb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:11:05 -0800 (PST)
-X-Gm-Message-State: AOAM532+XhMZGc6MjE7NwkoXJQTfizAQd4JuQmmO8Vn6xapHU823uQ5Y
-        Nx0ndz/PnoV4VJawOVHOQlU0PfuBE7pc1bpLMnioJg==
-X-Google-Smtp-Source: ABdhPJzPgRcN7okq7ZrswstmNVAuq9cXLaY+iQkRDyjlkmRLK/ACJLAGhXQ7survHU0Dh8zFOr55l5ZBm43LDkan8wQ=
-X-Received: by 2002:a1c:1d85:: with SMTP id d127mr4261484wmd.49.1606849862284;
- Tue, 01 Dec 2020 11:11:02 -0800 (PST)
+        id S1731310AbgLATMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730335AbgLATMP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 14:12:15 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D44C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:11:35 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id q22so2412668qkq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:11:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ntCr/pSg4JSjFrxMtHG6/5C4LU/dmq+6fzeMtN2uAWo=;
+        b=t0vLKiLJRvy0c0Nnj8o1sPgoGSFAC+rf0FMNPceESjE/RnamnVgF2DX8hdpQEFofd5
+         qXUP1EhGMKMJBNp7SoJHwOkft/4/ztkAby1AQSO7Pl166Q1eIdtzUFezAyTQfIp8kQLU
+         4SHUbR3m24HO8N7hfA0bVDJBeyVbV/l8NVfwo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ntCr/pSg4JSjFrxMtHG6/5C4LU/dmq+6fzeMtN2uAWo=;
+        b=THirxJfqgkZpoU39b5Ktxj0J9K2MLF5YsJevHUGgrHhPJF63iYZFPvmQ4TQNbD00g8
+         kMBgxzelchlRgypgLSAFEacNJY5a5O9YR2D/+FjoPVFn1zs0tql0S4yzp/1HqmkbFAFT
+         Iots/64M6uQyPX+Y3hBQGLRxPmKlzgTKsL2e3AIYbpzn9S6DvYic/FH6TXrgfcKaMeL0
+         G4HHTwawwO5x6BNg7gR3XKiWLMECuC1fgq3PgF1YGcYcf1kBBflzSykzceFWpt81asMV
+         PGJjAz8bviOXeXcoBoan3kQhhUFUqLkHqS80huXPz5FDLoDdeXHsoozvJ7buHsw8vm7m
+         Uh1g==
+X-Gm-Message-State: AOAM530QiHP3/IiX5R7+qK3lac9IziGchmeVsB34ZbR4aVmc0hsmb8L2
+        cwM+gP1CLN8JGABKhJ8Poa46DA==
+X-Google-Smtp-Source: ABdhPJz1K38BmdjVVwKV4VzTJ1WBU1g5hFGcYHPnBKILBTTVgyF0kGSrYv+ZOzpAXXzQtccijUsMFg==
+X-Received: by 2002:a37:614b:: with SMTP id v72mr4470028qkb.355.1606849894348;
+        Tue, 01 Dec 2020 11:11:34 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id u20sm435358qtw.88.2020.12.01.11.11.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:11:33 -0800 (PST)
+Date:   Tue, 1 Dec 2020 14:11:33 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
+ cookie on fork
+Message-ID: <20201201191133.GA221478@google.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-23-joel@joelfernandes.org>
+ <20201125111541.GU2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20201130223059.101286-1-brgerst@gmail.com> <CALCETrWZ5eH=0Rjd-vBFRtk-tFQ3tN8_rReaKdVbSm78PFQ7_g@mail.gmail.com>
- <CALCETrWbEvD4SO4GosJyeCmaT2BFwX8Xy+EF_D0x91np3k9OaA@mail.gmail.com> <20201201190051.GB2502@gaia>
-In-Reply-To: <20201201190051.GB2502@gaia>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 1 Dec 2020 11:10:48 -0800
-X-Gmail-Original-Message-ID: <CALCETrXfOxBRn4XrkAtOATT_Z6VVOHBNkmi9W127V-K+uEkzNA@mail.gmail.com>
-Message-ID: <CALCETrXfOxBRn4XrkAtOATT_Z6VVOHBNkmi9W127V-K+uEkzNA@mail.gmail.com>
-Subject: Re: [PATCH] fanotify: Fix sys_fanotify_mark() on native x86-32
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
-        =?UTF-8?Q?Pawe=C5=82_Jasiak?= <pawel@jasiak.xyz>,
-        Russell King <linux@armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125111541.GU2414@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 11:00 AM Catalin Marinas <catalin.marinas@arm.com> w=
-rote:
->
-> On Tue, Dec 01, 2020 at 09:34:32AM -0800, Andy Lutomirski wrote:
-> > On Tue, Dec 1, 2020 at 9:23 AM Andy Lutomirski <luto@kernel.org> wrote:
-> > > On Mon, Nov 30, 2020 at 2:31 PM Brian Gerst <brgerst@gmail.com> wrote=
-:
-> > > > Commit 121b32a58a3a converted native x86-32 which take 64-bit argum=
-ents to
-> > > > use the compat handlers to allow conversion to passing args via pt_=
-regs.
-> > > > sys_fanotify_mark() was however missed, as it has a general compat =
-handler.
-> > > > Add a config option that will use the syscall wrapper that takes th=
-e split
-> > > > args for native 32-bit.
-> > > >
-> > > > Reported-by: Pawe=C5=82 Jasiak <pawel@jasiak.xyz>
-> > > > Fixes: 121b32a58a3a ("x86/entry/32: Use IA32-specific wrappers for =
-syscalls taking 64-bit arguments")
-> > > > Signed-off-by: Brian Gerst <brgerst@gmail.com>
-> > > > ---
-> > > >  arch/Kconfig                       |  6 ++++++
-> > > >  arch/x86/Kconfig                   |  1 +
-> > > >  fs/notify/fanotify/fanotify_user.c | 17 +++++++----------
-> > > >  include/linux/syscalls.h           | 24 ++++++++++++++++++++++++
-> > > >  4 files changed, 38 insertions(+), 10 deletions(-)
-> > > >
-> > > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > > index 090ef3566c56..452cc127c285 100644
-> > > > --- a/arch/Kconfig
-> > > > +++ b/arch/Kconfig
-> > > > @@ -1045,6 +1045,12 @@ config HAVE_STATIC_CALL_INLINE
-> > > >         bool
-> > > >         depends on HAVE_STATIC_CALL
-> > > >
-> > > > +config ARCH_SPLIT_ARG64
-> > > > +       bool
-> > > > +       help
-> > > > +          If a 32-bit architecture requires 64-bit arguments to be=
- split into
-> > > > +          pairs of 32-bit arguemtns, select this option.
-> > >
-> > > You misspelled arguments.  You might also want to clarify that, for
-> > > 64-bit arches, this means that compat syscalls split their arguments.
-> >
-> > No, that's backwards.  Maybe it should be depends !64BIT instead.
-> >
-> > But I'm really quite confused about something: what's special about
-> > x86 here?  Are there really Linux arches (compat or 32-bit native)
-> > that *don't* split arguments like this?  Sure, some arches probably
-> > work the same way that x86 used to in which the compiler did the
-> > splitting by magic for us, but that was always a bit of a kludge.
->
-> On arm32 we rely on the compiler splitting a 64-bit argument in two
-> consecutive registers. But I wouldn't say it's a kludge (well, mostly)
-> as that's part of the arm procedure calling standard. Currently arm32
-> doesn't pass the syscall arguments through a read from pt_regs, so all
-> is handled transparently.
->
-> On arm64 compat, we need to re-assemble the arguments with some
-> wrappers explicitly (arch/arm64/kernel/sys32.c) or call the generic
-> wrapper like in the compat_sys_fanotify_mark() case.
->
-> > Could this change maybe be made unconditional?
->
-> I think it's fine in this particular case.
->
-> I don't think it's valid in general because of the arm (and maybe
-> others) requirement that the first register of a 64-bit argument is an
-> even number (IIRC, Russell should know better). If the u64 mask was an
-> argument before or after the current position, the compiler would have
-> introduced a pad register but not if the arg is split in two u32.
->
+On Wed, Nov 25, 2020 at 12:15:41PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
+> 
+> > +/*
+> > + * Ensure that the task has been requeued. The stopper ensures that the task cannot
+> > + * be migrated to a different CPU while its core scheduler queue state is being updated.
+> > + * It also makes sure to requeue a task if it was running actively on another CPU.
+> > + */
+> > +static int sched_core_task_join_stopper(void *data)
+> > +{
+> > +	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
+> > +	int i;
+> > +
+> > +	for (i = 0; i < 2; i++)
+> > +		sched_core_tag_requeue(tag->tasks[i], tag->cookies[i], false /* !group */);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
+> > +{
+> 
+> > +	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
+> 
+> > +}
+> 
+> This is *REALLY* terrible...
 
-So I guess Brian's macro is more like "this is a 32-bit arch that
-needs to split 64-bit syscall args but naively splitting them is
-correct", which is true on x86_32 but not necessarily on arm.
+I pulled this bit from your original patch. Are you concerned about the
+stop_machine? Sharing a core is a slow path for our usecases (and as far as I
+know, for everyone else's). We can probably do something different if that
+requirement changes.
 
-Should we consider having a real program that runs as part of the
-build generate the syscall wrappers?  The logic involved is pushing
-the bounds of C macro magic and human comprehension.
-
---Andy
