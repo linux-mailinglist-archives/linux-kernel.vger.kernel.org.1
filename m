@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB84B2C9A18
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2624E2C9A2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbgLAIzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:55:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57724 "EHLO mail.kernel.org"
+        id S2387577AbgLAIzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729073AbgLAIzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:55:18 -0500
+        id S2387554AbgLAIzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7B6022245;
-        Tue,  1 Dec 2020 08:54:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F93F2222A;
+        Tue,  1 Dec 2020 08:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812872;
-        bh=N/9mYrylQeD41uQIKVHiCHGYsB0T/taFOwU3YpP8X10=;
+        s=korg; t=1606812900;
+        bh=wTQOE4SUn+DPuZZHeu0shEVL9fFiq/gn30Nkhrmkl8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2h/DVU6s9hsG+U4+vuw9ZrjMUQ8ASDtVm7YSKDNsLo4xDwSJojocst3Fkb32h1kNN
-         dyfTl4S9NJZZ5I6qgdo5WD1MysGbgTpMA9yCxx1ln/qkM2Do4Sczum2+xMEC7+A0i7
-         FErKV+rC6G4sjgbqLtSgROJppgUGX7eOxo22IFv4=
+        b=H4Qb/8CCvgHWZuKXk913S0P44ew3dl9cdHBZzmd2/iKfRnLz47CpmhoEe9RVMzf83
+         DD2ntheJSJAi84dtPly3gIz/9yGALqhnMvfyzl40Fotbayoze1wYBK5SWe78gmyLEd
+         oqc46RnYZNxJO8kY9JWGpxF+eLi1Dhe2y0SFH+DU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 07/24] x86/xen: dont unbind uninitialized lock_kicker_irq
+Subject: [PATCH 4.9 15/42] x86/xen: dont unbind uninitialized lock_kicker_irq
 Date:   Tue,  1 Dec 2020 09:53:13 +0100
-Message-Id: <20201201084638.114361390@linuxfoundation.org>
+Message-Id: <20201201084643.044126770@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
-References: <20201201084637.754785180@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -87,10 +87,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
-index 85872a08994a1..e9fc0f7df0da8 100644
+index 8d2c6f071dccf..44bf8a22c97b8 100644
 --- a/arch/x86/xen/spinlock.c
 +++ b/arch/x86/xen/spinlock.c
-@@ -301,10 +301,20 @@ void xen_init_lock_cpu(int cpu)
+@@ -98,10 +98,20 @@ void xen_init_lock_cpu(int cpu)
  
  void xen_uninit_lock_cpu(int cpu)
  {
