@@ -2,276 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528782CAA93
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889082CAA96
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgLASPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2404222AbgLASPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:15:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729718AbgLASPx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 13:15:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726360AbgLASPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:15:52 -0500
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DBFA20870;
-        Tue,  1 Dec 2020 18:15:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606846511;
-        bh=Ze155kRMQl2GwetuTWF4bBxznb5Q+M6GA7dHqsHY51s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vyQaPDqrpiWDmqeS37M5S7/HcBUzzDjRnaARXsooxtPfpwEZlNIzRbw6rbyHuWeJL
-         b/oHQeS2X/j44OX84ZhOE5mzCXKQonM1y7lqBr21qYVS53r+YcFciYnDEGCQSPY3qZ
-         6NEfBVJV8qj/f3qbX8ynSzDQGa/3c8/f+aUCCon4=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     linux-mm@kvack.org
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: refactor initialization of stuct page for holes in memory layout
-Date:   Tue,  1 Dec 2020 20:15:02 +0200
-Message-Id: <20201201181502.2340-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F6BCC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:15:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XgMEgGoFfl4yztESyoS12tcQTUQkM31JMYd6l5FT3RI=; b=R0VeOYQ/tZhk0B6Q47IS49Jcl/
+        0G+xhvf7BqL5oMk11YIq+d8+y/g4zg7/XDjAn5Y+wB9MA5C+qo6ozSDmGYFEydrKazpsYrRDq3ny0
+        CGXhTyFRF3sURNGmjFdurLLAsNgso86tLVuai6B7lsR7Ueys/9aNzS2h0dxZ0DnYh5O/WIy3woobF
+        ZYrl7I7jQsvn74kzK1mneWPASqrEDZMu6E+lq18gSMt2rrgxOMtEx+pp9/nTr6CYfEJ7RqDzvcw0t
+        qgcjhWqAM/K8G27Fej4GEG9NQriysptE8+VvR0dsStp4RbsbxZZo82mfFH7nd4n2CmmnWmS3Sr1+Z
+        iz+Hce3Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkABA-0005I9-2e; Tue, 01 Dec 2020 18:15:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BDA573003E1;
+        Tue,  1 Dec 2020 19:15:06 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ABC052C23DB31; Tue,  1 Dec 2020 19:15:06 +0100 (CET)
+Date:   Tue, 1 Dec 2020 19:15:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+Message-ID: <20201201181506.GM3092@hirez.programming.kicks-ass.net>
+References: <yt9dh7p78d8l.fsf@linux.ibm.com>
+ <yt9dpn3v3u1m.fsf@linux.ibm.com>
+ <20201130125211.GN2414@hirez.programming.kicks-ass.net>
+ <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
+ <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
+ <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
+ <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
+ <20201201110724.GL3092@hirez.programming.kicks-ass.net>
+ <20201201144644.GF1437@paulmck-ThinkPad-P72>
+ <20201201145519.GY2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201145519.GY2414@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Tue, Dec 01, 2020 at 03:55:19PM +0100, Peter Zijlstra wrote:
+> On Tue, Dec 01, 2020 at 06:46:44AM -0800, Paul E. McKenney wrote:
+> 
+> > > So after having talked to Sven a bit, the thing that is happening, is
+> > > that this is the one place where we take interrupts with RCU being
+> > > disabled. Normally RCU is watching and all is well, except during idle.
+> > 
+> > Isn't interrupt entry supposed to invoke rcu_irq_enter() at some point?
+> > Or did this fall victim to recent optimizations?
+> 
+> It does, but the problem is that s390 is still using
 
-There could be struct pages that are not backed by actual physical memory.
-This can happen when the actual memory bank is not a multiple of
-SECTION_SIZE or when an architecture does not register memory holes
-reserved by the firmware as memblock.memory.
+I might've been too quick there, I can't actually seem to find where
+s390 does rcu_irq_enter()/exit().
 
-Such pages are currently initialized using init_unavailable_mem() function
-that iterated through PFNs in holes in memblock.memory and if there is a
-struct page corresponding to a PFN, the fields if this page are set to
-default values and it is marked as Reserved.
+Also, I'm thinking the below might just about solve the current problem.
+The next problem would then be it calling TRACE_IRQS_ON after it did
+rcu_irq_exit()... :/
 
-init_unavailable_mem() does not take into account zone and node the page
-belongs to and sets both zone and node links in struct page to zero.
 
-On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-instance in a configuration below:
-
-	# grep -A1 E820 /proc/iomem
-	7a17b000-7a216fff : Unknown E820 type
-	7a217000-7bffffff : System RAM
-
-unset zone link in struct page will trigger
-
-	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-
-because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link in
-struct page) in the same pageblock.
-
-Interleave initialization of pages that correspond to holes with the
-initialization of memory map, so that zone and node information will be
-properly set on such pages.
-
-Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- mm/page_alloc.c | 151 ++++++++++++++++++++----------------------------
- 1 file changed, 64 insertions(+), 87 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index eaa227a479e4..ce2bdaabdf96 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6185,24 +6185,84 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
- }
+diff --git a/arch/s390/include/asm/irq.h b/arch/s390/include/asm/irq.h
+index 9f75d67b8c20..24d3dd482df7 100644
+--- a/arch/s390/include/asm/irq.h
++++ b/arch/s390/include/asm/irq.h
+@@ -113,6 +113,8 @@ void irq_subclass_unregister(enum irq_subclass subclass);
  
--void __meminit __weak memmap_init(unsigned long size, int nid,
--				  unsigned long zone,
--				  unsigned long range_start_pfn)
-+#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-+/*
-+ * Only struct pages that are backed by physical memory available to the
-+ * kernel are zeroed and initialized by memmap_init_zone().
-+ * But, there are some struct pages that are either reserved by firmware or
-+ * do not correspond to physical page frames becuase the actual memory bank
-+ * is not a multiple of SECTION_SIZE.
-+ * Fields of those struct pages may be accessed (for example page_to_pfn()
-+ * on some configuration accesses page flags) so we must explicitly
-+ * initialize those struct pages.
-+ */
-+static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int node)
- {
--	unsigned long start_pfn, end_pfn;
-+	unsigned long pfn;
-+	u64 pgcnt = 0;
+ #define irq_canonicalize(irq)  (irq)
+ 
++extern __visible void ext_do_IRQ(struct pt_regs *regs, unsigned long vector);
 +
-+	for (pfn = spfn; pfn < epfn; pfn++) {
-+		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-+			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-+				+ pageblock_nr_pages - 1;
-+			continue;
-+		}
-+		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
-+		__SetPageReserved(pfn_to_page(pfn));
-+		pgcnt++;
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_IRQ_H */
+diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+index 26bb0603c5a1..b8e89b685038 100644
+--- a/arch/s390/kernel/entry.S
++++ b/arch/s390/kernel/entry.S
+@@ -976,16 +976,10 @@ ENTRY(ext_int_handler)
+ 	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
+ 	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
+ 	jo	.Lio_restore
+-#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
+-	tmhh	%r8,0x300
+-	jz	1f
+-	TRACE_IRQS_OFF
+-1:
+-#endif
+ 	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
+ 	lgr	%r2,%r11		# pass pointer to pt_regs
+ 	lghi	%r3,EXT_INTERRUPT
+-	brasl	%r14,do_IRQ
++	brasl	%r14,ext_do_IRQ
+ 	j	.Lio_return
+ ENDPROC(ext_int_handler)
+ 
+diff --git a/arch/s390/kernel/irq.c b/arch/s390/kernel/irq.c
+index 3514420f0259..f4a29114e9fd 100644
+--- a/arch/s390/kernel/irq.c
++++ b/arch/s390/kernel/irq.c
+@@ -329,3 +329,23 @@ void irq_subclass_unregister(enum irq_subclass subclass)
+ 	spin_unlock(&irq_subclass_lock);
+ }
+ EXPORT_SYMBOL(irq_subclass_unregister);
++
++noinstr void ext_do_IRQ(struct pt_regs *regs, unsigned long vector)
++{
++	bool rcu = false;
++
++	lockdep_hardirqs_off(CALLER_ADDR0);
++	if (!IS_ENABLED(CONFIG_TINY_RCU) && is_idle_task(current)) {
++		rcu_irq_enter();
++		rcu = true;
 +	}
++	/* instrumentation_begin(); */
 +
-+	return pgcnt;
++	trace_hardirqs_off_finish();
++
++	do_IRQ(regs, vector);
++
++	/* instrumentation_end(); */
++	if (rcu)
++		rcu_irq_exit();
 +}
-+#else
-+static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int node)
-+{
-+	return 0;
-+}
-+#endif
-+
-+void __init __weak memmap_init(unsigned long size, int nid,
-+			       unsigned long zone,
-+			       unsigned long range_start_pfn)
-+{
-+	unsigned long start_pfn, end_pfn, next_pfn = 0;
- 	unsigned long range_end_pfn = range_start_pfn + size;
-+	u64 pgcnt = 0;
- 	int i;
- 
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
- 		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
- 		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-+		next_pfn = clamp(next_pfn, range_start_pfn, range_end_pfn);
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
- 			memmap_init_zone(size, nid, zone, start_pfn,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
-+
-+		if (next_pfn < start_pfn)
-+			pgcnt += init_unavailable_range(next_pfn, start_pfn,
-+							zone, nid);
-+		next_pfn = end_pfn;
- 	}
-+
-+	/*
-+	 * Early sections always have a fully populated memmap for the whole
-+	 * section - see pfn_valid(). If the last section has holes at the
-+	 * end and that section is marked "online", the memmap will be
-+	 * considered initialized. Make sure that memmap has a well defined
-+	 * state.
-+	 */
-+	if (next_pfn < range_end_pfn)
-+		pgcnt += init_unavailable_range(next_pfn, range_end_pfn,
-+						zone, nid);
-+
-+	if (pgcnt)
-+		pr_info("%s: Zeroed struct page in unavailable ranges: %lld\n",
-+			zone_names[zone], pgcnt);
- }
- 
- static int zone_batchsize(struct zone *zone)
-@@ -6995,88 +7055,6 @@ void __init free_area_init_memoryless_node(int nid)
- 	free_area_init_node(nid);
- }
- 
--#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
--/*
-- * Initialize all valid struct pages in the range [spfn, epfn) and mark them
-- * PageReserved(). Return the number of struct pages that were initialized.
-- */
--static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
--{
--	unsigned long pfn;
--	u64 pgcnt = 0;
--
--	for (pfn = spfn; pfn < epfn; pfn++) {
--		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
--			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
--				+ pageblock_nr_pages - 1;
--			continue;
--		}
--		/*
--		 * Use a fake node/zone (0) for now. Some of these pages
--		 * (in memblock.reserved but not in memblock.memory) will
--		 * get re-initialized via reserve_bootmem_region() later.
--		 */
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
--		__SetPageReserved(pfn_to_page(pfn));
--		pgcnt++;
--	}
--
--	return pgcnt;
--}
--
--/*
-- * Only struct pages that are backed by physical memory are zeroed and
-- * initialized by going through __init_single_page(). But, there are some
-- * struct pages which are reserved in memblock allocator and their fields
-- * may be accessed (for example page_to_pfn() on some configuration accesses
-- * flags). We must explicitly initialize those struct pages.
-- *
-- * This function also addresses a similar issue where struct pages are left
-- * uninitialized because the physical address range is not covered by
-- * memblock.memory or memblock.reserved. That could happen when memblock
-- * layout is manually configured via memmap=, or when the highest physical
-- * address (max_pfn) does not end on a section boundary.
-- */
--static void __init init_unavailable_mem(void)
--{
--	phys_addr_t start, end;
--	u64 i, pgcnt;
--	phys_addr_t next = 0;
--
--	/*
--	 * Loop through unavailable ranges not covered by memblock.memory.
--	 */
--	pgcnt = 0;
--	for_each_mem_range(i, &start, &end) {
--		if (next < start)
--			pgcnt += init_unavailable_range(PFN_DOWN(next),
--							PFN_UP(start));
--		next = end;
--	}
--
--	/*
--	 * Early sections always have a fully populated memmap for the whole
--	 * section - see pfn_valid(). If the last section has holes at the
--	 * end and that section is marked "online", the memmap will be
--	 * considered initialized. Make sure that memmap has a well defined
--	 * state.
--	 */
--	pgcnt += init_unavailable_range(PFN_DOWN(next),
--					round_up(max_pfn, PAGES_PER_SECTION));
--
--	/*
--	 * Struct pages that do not have backing memory. This could be because
--	 * firmware is using some of this memory, or for some other reasons.
--	 */
--	if (pgcnt)
--		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
--}
--#else
--static inline void __init init_unavailable_mem(void)
--{
--}
--#endif /* !CONFIG_FLAT_NODE_MEM_MAP */
--
- #if MAX_NUMNODES > 1
- /*
-  * Figure out the number of possible node ids.
-@@ -7500,7 +7478,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
- 	/* Initialise every node */
- 	mminit_verify_pageflags_layout();
- 	setup_nr_node_ids();
--	init_unavailable_mem();
- 	for_each_online_node(nid) {
- 		pg_data_t *pgdat = NODE_DATA(nid);
- 		free_area_init_node(nid);
--- 
-2.28.0
-
