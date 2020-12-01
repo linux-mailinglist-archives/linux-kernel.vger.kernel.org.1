@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A53C2CAD40
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2272CAD44
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731267AbgLAUZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:25:29 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:44136 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727165AbgLAUZ3 (ORCPT
+        id S2392456AbgLAUZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:25:55 -0500
+Received: from smtprelay0003.hostedemail.com ([216.40.44.3]:56378 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389343AbgLAUZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:25:29 -0500
-Received: by mail-ed1-f68.google.com with SMTP id l5so5292521edq.11;
-        Tue, 01 Dec 2020 12:25:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZeQhgtJymCHCi7xcHFwnekowg0dZ1ylay8OPyOYHius=;
-        b=qmVKsV2FT9xQze06YSbIRlU9y86vMHFZspH7s8oREuI/BHL8eaWFRii3lMaOjb3gKe
-         9qJMHDH83P6Uy+cCZTAEMpMRlS9rLrwisYncIDbF3RWAOKxxzg77Qi9/TQp3Qf3Q2ApE
-         KV0S8RijG5OwTym6lcCeGM5dIjvFMUEjrf8AC+nA7wLLVY/lbQ8czq119Ok96X+MncIs
-         8/LzJqbU4OYAxEN1iYsGcEoLS8gDbtMQv2xdfGg972ApXyUlUMm4jOIuMkdFyDeRDqn+
-         1/CqH3QEXyJRRAWV9FqJFm1jqToL+fiQL0Um+eMSwcosTvL5jGi2LLhIdPP6Ueq9h1o+
-         9f6g==
-X-Gm-Message-State: AOAM531yPa1Wx5G4iF4xLwRL3Q4NEE1QyU3oX2EJfv8Nuu4ZE/nntYQa
-        ezxzllB8z9ETSck0dnWAhwU=
-X-Google-Smtp-Source: ABdhPJzQqqaHsg2yWf3EuAlhpDz+JHiuWbYCBZowD4C6Nrak+YQb7+xuF0eHcD3V2hn6nxyq+25Bgw==
-X-Received: by 2002:a50:e00b:: with SMTP id e11mr1883546edl.303.1606854285637;
-        Tue, 01 Dec 2020 12:24:45 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n15sm351278eje.112.2020.12.01.12.24.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:24:44 -0800 (PST)
-Date:   Tue, 1 Dec 2020 22:24:43 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: Re: [PATCH v4 net-next 4/4] nfc: s3fwrn5: Support a UART interface
-Message-ID: <20201201202443.GD2435@kozik-lap>
-References: <1606830628-10236-1-git-send-email-bongsu.jeon@samsung.com>
- <1606830628-10236-5-git-send-email-bongsu.jeon@samsung.com>
+        Tue, 1 Dec 2020 15:25:54 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 94328180A8123;
+        Tue,  1 Dec 2020 20:25:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3872:3873:4321:4362:5007:6119:7904:8531:9545:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14180:14181:14659:14721:21080:21221:21451:21611:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: touch68_2b14747273ad
+X-Filterd-Recvd-Size: 2075
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  1 Dec 2020 20:25:12 +0000 (UTC)
+Message-ID: <09c24ef1aa2f1c4fe909d76f5426f08780b9d81c.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: fix TYPO_SPELLING check for words with
+ apostrophe
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Date:   Tue, 01 Dec 2020 12:25:11 -0800
+In-Reply-To: <7f29e46d73c0b12ce53e659f0bcd3ec194522f2e.camel@perches.com>
+References: <20201201190729.169733-1-dwaipayanray1@gmail.com>
+         <7f29e46d73c0b12ce53e659f0bcd3ec194522f2e.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1606830628-10236-5-git-send-email-bongsu.jeon@samsung.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:50:28PM +0900, Bongsu Jeon wrote:
-> From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> 
-> Since S3FWRN82 NFC Chip, The UART interface can be used.
-> S3FWRN82 uses NCI protocol and supports I2C and UART interface.
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> ---
->  drivers/nfc/s3fwrn5/Kconfig      |  12 +++
->  drivers/nfc/s3fwrn5/Makefile     |   2 +
->  drivers/nfc/s3fwrn5/phy_common.c |  12 +++
->  drivers/nfc/s3fwrn5/phy_common.h |   1 +
->  drivers/nfc/s3fwrn5/uart.c       | 196 +++++++++++++++++++++++++++++++++++++++
->  5 files changed, 223 insertions(+)
->  create mode 100644 drivers/nfc/s3fwrn5/uart.c
-> 
+On Tue, 2020-12-01 at 11:32 -0800, Joe Perches wrote:
+> On Wed, 2020-12-02 at 00:37 +0530, Dwaipayan Ray wrote:
+> > checkpatch reports a false TYPO_SPELLING warning for some words
+> > containing an apostrophe when run with --codespell option.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Hey Andrew.  If Dwaipayan doesn't mind, can you update this
+when you apply it to extend the length of the caret printed?
 
-Best regards,
-Krzysztof
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> > @@ -3106,15 +3106,18 @@ sub process {
+> >  # Check for various typo / spelling mistakes
+> >  		if (defined($misspellings) &&
+> >  		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+> > -			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
+> > +			while ($rawline =~ /(?:^|[^\w\-'`])($misspellings)(?:[^\w\-'`]|$)/gi) {
+> >  				my $typo = $1;
+> > +				my $blank = copy_spacing($rawline);
+> > +				my $ptr = substr($blank, 0, $-[1]) . "^";
+
+Changing this to:
+
+				my $ptr = substr($blank, 0, $-[1]) . "^" x length($typo);
+
+makes the matched misspelling more obvious
+
+Thanks, Joe
+
