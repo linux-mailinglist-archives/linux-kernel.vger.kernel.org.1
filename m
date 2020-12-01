@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5C32C9AB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033022C9B53
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388230AbgLAJAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:00:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
+        id S2388926AbgLAJHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:07:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388213AbgLAI7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:59:54 -0500
+        id S2389025AbgLAJE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:04:57 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7005E2222E;
-        Tue,  1 Dec 2020 08:59:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5754F21D46;
+        Tue,  1 Dec 2020 09:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813154;
-        bh=s04otEKyyrUeTCStCHfLrx++jbsvN6FsIIB0dPDYNPs=;
+        s=korg; t=1606813456;
+        bh=+epLQOywSKr4H8YsAtiywKquam3D5Mw0crRQwxPtGyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ubZZ4ojAz/C/AOKyepFDBGZpqTHnLqfEfNSrrosQug48c1xBfq0vC8/I/Cr9ykDtt
-         UTK2jxx4A/RvU/uGUbmQpJ6al6VfQTTc1O67xOJu7mjQZXRnNAFOMucQi0XegkUZHM
-         0OZU2vjHUHgkoUBdZkoM//KeK8DsgsPDJefVhKxY=
+        b=jhA7aLYVR5C/6OPc+vJ34NuWU+1CEhucDz+x/7CMq9616VliTu487yg37knYLbjWd
+         lqNJLCNZrk4YuhHjoP3Y/9iK6/xmRVWnEPtNwjzIIC6TRpkTheVrrRYWgREft84Glz
+         My2QSVYs+g7pyeF1h5E2rKkjbe0cODPxxfflG7H8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 22/50] dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
-Date:   Tue,  1 Dec 2020 09:53:21 +0100
-Message-Id: <20201201084647.834515954@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 45/98] iwlwifi: mvm: write queue_sync_state only for sync
+Date:   Tue,  1 Dec 2020 09:53:22 +0100
+Message-Id: <20201201084657.316007712@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
-References: <20201201084644.803812112@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,67 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
+From: Avraham Stern <avraham.stern@intel.com>
 
-[ Upstream commit e773ca7da8beeca7f17fe4c9d1284a2b66839cc1 ]
+[ Upstream commit 97cc16943f23078535fdbce4f6391b948b4ccc08 ]
 
-Actually, burst size is equal to '1 << desc->rqcfg.brst_size'.
-we should use burst size, not desc->rqcfg.brst_size.
+We use mvm->queue_sync_state to wait for synchronous queue sync
+messages, but if an async one happens inbetween we shouldn't
+clear mvm->queue_sync_state after sending the async one, that
+can run concurrently (at least from the CPU POV) with another
+synchronous queue sync.
 
-dma memcpy performance on Rockchip RV1126
-@ 1512MHz A7, 1056MHz LPDDR3, 200MHz DMA:
-
-dmatest:
-
-/# echo dma0chan0 > /sys/module/dmatest/parameters/channel
-/# echo 4194304 > /sys/module/dmatest/parameters/test_buf_size
-/# echo 8 > /sys/module/dmatest/parameters/iterations
-/# echo y > /sys/module/dmatest/parameters/norandom
-/# echo y > /sys/module/dmatest/parameters/verbose
-/# echo 1 > /sys/module/dmatest/parameters/run
-
-dmatest: dma0chan0-copy0: result #1: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #2: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #3: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #4: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #5: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #6: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #7: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-dmatest: dma0chan0-copy0: result #8: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-
-Before:
-
-  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 48 iops 200338 KB/s (0)
-
-After this patch:
-
-  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 179 iops 734873 KB/s (0)
-
-After this patch and increase dma clk to 400MHz:
-
-  dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 259 iops 1062929 KB/s (0)
-
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-Link: https://lore.kernel.org/r/1605326106-55681-1-git-send-email-sugar.zhang@rock-chips.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 3c514bf831ac ("iwlwifi: mvm: add a loose synchronization of the NSSN across Rx queues")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20201107104557.51a3148f2c14.I0772171dbaec87433a11513e9586d98b5d920b5f@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/pl330.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index ff8b7042d28f4..c034f506e015a 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -2666,7 +2666,7 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
- 	 * If burst size is smaller than bus width then make sure we only
- 	 * transfer one at a time to avoid a burst stradling an MFIFO entry.
- 	 */
--	if (desc->rqcfg.brst_size * 8 < pl330->pcfg.data_bus_width)
-+	if (burst * 8 < pl330->pcfg.data_bus_width)
- 		desc->rqcfg.brst_len = 1;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index 01b26b3327b01..73b8bf0fbf16f 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -3069,6 +3069,9 @@ static int iwl_mvm_mac_sta_state(struct ieee80211_hw *hw,
+ 			goto out_unlock;
+ 		}
  
- 	desc->bytes_requested = len;
++		if (vif->type == NL80211_IFTYPE_STATION)
++			vif->bss_conf.he_support = sta->he_cap.has_he;
++
+ 		if (sta->tdls &&
+ 		    (vif->p2p ||
+ 		     iwl_mvm_tdls_sta_count(mvm, NULL) ==
 -- 
 2.27.0
 
