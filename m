@@ -2,132 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D284C2CA4E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F342CA4E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391484AbgLAODr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:03:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388491AbgLAODr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:03:47 -0500
-Received: from coco.lan (ip5f5ad5d9.dynamic.kabel-deutschland.de [95.90.213.217])
+        id S2391510AbgLAOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:05:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388154AbgLAOFL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:05:11 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0C1C0617A6;
+        Tue,  1 Dec 2020 06:04:31 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34329206A5;
-        Tue,  1 Dec 2020 14:03:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606831386;
-        bh=fN4NSS/2Z3e5ZDp6dT8LOOMaJ+kpvmyC/239xA9Oq1s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kePb5KVkqAS71FlmuATQK/WwMBod77n2IDiESe9VYDlwQ+Kk93lNPKZQz2HE8e8c6
-         FR0RJ4TJ0O2+VouNrgju7q5qrgPW4wnqZRDRKoO82YMXWwVi0kBAsfooq4x1lSTJPV
-         dSik+VGazyEbU0EjntWoaFbiK45G1/El4qfxOn9I=
-Date:   Tue, 1 Dec 2020 15:03:01 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 07/16] completion: drop init_completion define
-Message-ID: <20201201150249.56132775@coco.lan>
-In-Reply-To: <20201201125445.GW2414@hirez.programming.kicks-ass.net>
-References: <cover.1606823973.git.mchehab+huawei@kernel.org>
-        <e657bfc533545c185b1c3c55926a449ead56a88b.1606823973.git.mchehab+huawei@kernel.org>
-        <20201201125445.GW2414@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DD61922FAD;
+        Tue,  1 Dec 2020 15:04:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1606831468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LgcoC/q7pyVkhvpyWhlU5Ne9ks4PahNRgu8btRatkvU=;
+        b=vhNuVUhQMRWHcrhJL1c/FP27Jc9RIFUipGXA9bN/oNhXtF8MUpxKyJWjyZZLuKP/guYVZV
+        haLXNuHV/E46uR3wbwfez76Bp2QXCJnLdEiAjtwIfHcyoe68AgPHEEa+/Xf5pYxCeL3C0T
+        dekf0bmKFc5vyb/4UvklIc0JAQp9B3w=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 01 Dec 2020 15:04:27 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v3] spi: fsl-dspi: fix NULL pointer dereference
+In-Reply-To: <160683107674.35139.13937083243515034859.b4-ty@kernel.org>
+References: <20200928085500.28254-1-michael@walle.cc>
+ <160683107674.35139.13937083243515034859.b4-ty@kernel.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <c1dd024150ed624a6b42562573851f84@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 1 Dec 2020 13:54:45 +0100
-Peter Zijlstra <peterz@infradead.org> escreveu:
+Hi Mark,
 
-> On Tue, Dec 01, 2020 at 01:09:00PM +0100, Mauro Carvalho Chehab wrote:
-> > Changeset cd8084f91c02 ("locking/lockdep: Apply crossrelease to completions")
-> > added a CONFIG_LOCKDEP_COMPLETE (that was later renamed to
-> > CONFIG_LOCKDEP_COMPLETIONS).
-> > 
-> > Such changeset renamed the init_completion, and add a macro
-> > that would either run a modified version or the original code.
-> > 
-> > However, such code reported too many false positives. So, it
-> > ended being dropped later on by
-> > changeset e966eaeeb623 ("locking/lockdep: Remove the cross-release locking checks").
-> > 
-> > Yet, the define remained there as just:
-> > 
-> > 	 #define init_completion(x) __init_completion(x)
-> > 
-> > Get rid of the define, and return __init_completion() function
-> > to its original name.
-> > 
-> > Fixes: e966eaeeb623 ("locking/lockdep: Remove the cross-release locking checks")
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---  
+Am 2020-12-01 14:57, schrieb Mark Brown:
+> On Mon, 28 Sep 2020 10:55:00 +0200, Michael Walle wrote:
+>> Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in 
+>> remove
+>> path") this driver causes a kernel oops:
+>> 
+>> [    1.891065] Unable to handle kernel NULL pointer dereference at 
+>> virtual address 0000000000000080
+>> [..]
+>> [    2.056973] Call trace:
+>> [    2.059425]  dspi_setup+0xc8/0x2e0
+>> [    2.062837]  spi_setup+0xcc/0x248
+>> [    2.066160]  spi_add_device+0xb4/0x198
+>> [    2.069918]  of_register_spi_device+0x250/0x370
+>> [    2.074462]  spi_register_controller+0x4f4/0x770
+>> [    2.079094]  dspi_probe+0x5bc/0x7b0
+>> [    2.082594]  platform_drv_probe+0x5c/0xb0
+>> [    2.086615]  really_probe+0xec/0x3c0
+>> [    2.090200]  driver_probe_device+0x60/0xc0
+>> [    2.094308]  device_driver_attach+0x7c/0x88
+>> [    2.098503]  __driver_attach+0x60/0xe8
+>> [    2.102263]  bus_for_each_dev+0x7c/0xd0
+>> [    2.106109]  driver_attach+0x2c/0x38
+>> [    2.109692]  bus_add_driver+0x194/0x1f8
+>> [    2.113538]  driver_register+0x6c/0x128
+>> [    2.117385]  __platform_driver_register+0x50/0x60
+>> [    2.122105]  fsl_dspi_driver_init+0x24/0x30
+>> [    2.126302]  do_one_initcall+0x54/0x2d0
+>> [    2.130149]  kernel_init_freeable+0x1ec/0x258
+>> [    2.134520]  kernel_init+0x1c/0x120
+>> [    2.138018]  ret_from_fork+0x10/0x34
+>> [    2.141606] Code: 97e0b11d aa0003f3 b4000680 f94006e0 (f9404000)
+>> [    2.147723] ---[ end trace 26cf63e6cbba33a8 ]---
+>> 
+>> [...]
 > 
-> Your patch is weird, did you add -C 1000 or something?
+> Applied to
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> for-next
 
-Per a past review request, I used -U32 on this particular series, in order
-to be able to display the function name and the kernel-doc markup at
-the same time.
+Is that correct? Some time ago you've already applied that to your spi 
+tree:
+https://lore.kernel.org/linux-spi/160132174502.55568.11234605078950751454.b4-ty@kernel.org/
 
-I'm enclosing the patch with -U3.
-
-Thanks,
-Mauro
-
-[PATCH] completion: drop init_completion define
-
-Changeset cd8084f91c02 ("locking/lockdep: Apply crossrelease to completions")
-added a CONFIG_LOCKDEP_COMPLETE (that was later renamed to
-CONFIG_LOCKDEP_COMPLETIONS).
-
-Such changeset renamed the init_completion, and add a macro
-that would either run a modified version or the original code.
-
-However, such code reported too many false positives. So, it
-ended being dropped later on by
-changeset e966eaeeb623 ("locking/lockdep: Remove the cross-release locking checks").
-
-Yet, the define remained there as just:
-
-	 #define init_completion(x) __init_completion(x)
-
-Get rid of the define, and return __init_completion() function
-to its original name.
-
-Fixes: e966eaeeb623 ("locking/lockdep: Remove the cross-release locking checks")
-
-diff --git a/include/linux/completion.h b/include/linux/completion.h
-index bf8e77001f18..51d9ab079629 100644
---- a/include/linux/completion.h
-+++ b/include/linux/completion.h
-@@ -28,8 +28,7 @@ struct completion {
- 	struct swait_queue_head wait;
- };
- 
--#define init_completion_map(x, m) __init_completion(x)
--#define init_completion(x) __init_completion(x)
-+#define init_completion_map(x, m) init_completion(x)
- static inline void complete_acquire(struct completion *x) {}
- static inline void complete_release(struct completion *x) {}
- 
-@@ -82,7 +81,7 @@ static inline void complete_release(struct completion *x) {}
-  * This inline function will initialize a dynamically created completion
-  * structure.
-  */
--static inline void __init_completion(struct completion *x)
-+static inline void init_completion(struct completion *x)
- {
- 	x->done = 0;
- 	init_swait_queue_head(&x->wait);
-
+-michael
