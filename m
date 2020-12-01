@@ -2,66 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C952C94AB
+	by mail.lfdr.de (Postfix) with ESMTP id 828482C94AC
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731203AbgLABaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:30:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726400AbgLABaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:30:14 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D2C0206F9;
-        Tue,  1 Dec 2020 01:29:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606786174;
-        bh=bn+t73NCcKbHDuxJ+TbX4uW/Gg8nVTmjkkki83n51R4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UEjV/v7LcZlAsHyw3Sn6AfwyYN2sWr5VVHkx5HFOp/a3PEIYDC/QwWMasKfhcr3h2
-         Qg1vhSFa1kdBguFKJ9yg1enhPJ8xG2uscAgwzRQxR0ylCTCUgFAvFlJ4crN++IL/y8
-         GJ8wFA9dQTct5XG53E7/uWXgSD+54WJvu+abnJkk=
-Date:   Tue, 1 Dec 2020 09:29:28 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v4 0/3] mainline Protonic WD3 board
-Message-ID: <20201201012927.GS4072@dragon>
-References: <20201117131354.30943-1-o.rempel@pengutronix.de>
+        id S2388381AbgLABaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:30:20 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14712 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgLABaU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:30:20 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc59c830000>; Mon, 30 Nov 2020 17:29:39 -0800
+Received: from localhost (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 1 Dec
+ 2020 01:29:38 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <nouveau@lists.freedesktop.org>
+CC:     <linux-kernel@vger.kernel.org>, <bskeggs@redhat.com>,
+        <rcampbell@nvidia.com>, <dri-devel@lists.freedesktop.org>,
+        Alistair Popple <apopple@nvidia.com>
+Subject: [PATCH] drm/nouveau/svm: Only map migrating pages
+Date:   Tue, 1 Dec 2020 12:29:36 +1100
+Message-ID: <20201201012936.9046-1-apopple@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117131354.30943-1-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606786179; bh=U2FLmjEm94rPLnGodJhcYwZBdpdbhTX9UL1a65sI3bI=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=FhgNlKphVf9oOOynU0gD9eLLDsorI+EotpUqSf8jOBf+GNKe/PnzOUBfizzEXTZ6I
+         Nk2lDdBcBE7zxrOZjniP9rtuTSUCFME1er5nTEM75pUcTtcTQ3QLnqhLm2q+nsdqXN
+         kF3WgO2Lohicz68fGDinflQYxSGiXwk56VWviw1uhu0Xhkmb3WKpFyyLBD/aJqBeKz
+         ABVnrPp+jkKOOTGRzo36dPdcqFVHkGM5kOCbANft6wiXJiurj5C6YQ0VBGC5S5t4M1
+         VHKDQEHYji1fG2224bbE6e5isZWjW4gxqO97RAZ9rGUmjL7AsUVv3P5l6Whqtf02V+
+         OyIp/3rhTN6Uw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:13:51PM +0100, Oleksij Rempel wrote:
-> changes v4:
-> - spell fix for "virtual"
-> - change SPI CAN freq to 10MHz
-> - change SPI CAN irq from IRQ_TYPE_EDGE_FALLING to IRQ_TYPE_LEVEL_LOW 
-> 
-> changes v3:
-> - fix checkpatch varnings
-> - add "virtual" to the vendor-prefixes.yaml 
-> 
-> changes v2:
-> - fix comment: WD2 -> WD3
-> 
-> Oleksij Rempel (3):
->   dt-bindings: vendor-prefixes: add "virtual" prefix
->   dt-bindings: arm: fsl: add Protonic WD3 board
->   ARM: dts: add Protonic WD3 board
+Only pages which were actually migrated should be mapped on the GPU.
+migrate_vma_pages() clears MIGRATE_PFN_MIGRATE in the src_pfn array, so
+test this prior to mapping the pages on the GPU. If any pages failed to
+migrate don't install any mappings - the GPU will demand fault any as
+required.
 
-Applied all, thanks.
+Fixes: e3d8b0890469 ("drm/nouveau/svm: map pages after migration")
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_dmem.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouve=
+au/nouveau_dmem.c
+index 92987daa5e17..a2169644f114 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
++++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+@@ -618,8 +618,9 @@ static void nouveau_dmem_migrate_chunk(struct nouveau_d=
+rm *drm,
+ 		dma_addr_t *dma_addrs, u64 *pfns)
+ {
+ 	struct nouveau_fence *fence;
+-	unsigned long addr =3D args->start, nr_dma =3D 0, i;
++	unsigned long addr =3D args->start, nr_dma =3D 0, i, npages;
+=20
++	npages =3D (args->end - args->start) >> PAGE_SHIFT;
+ 	for (i =3D 0; addr < args->end; i++) {
+ 		args->dst[i] =3D nouveau_dmem_migrate_copy_one(drm, svmm,
+ 				args->src[i], dma_addrs + nr_dma, pfns + i);
+@@ -631,7 +632,16 @@ static void nouveau_dmem_migrate_chunk(struct nouveau_=
+drm *drm,
+ 	nouveau_fence_new(drm->dmem->migrate.chan, false, &fence);
+ 	migrate_vma_pages(args);
+ 	nouveau_dmem_fence_done(&fence);
+-	nouveau_pfns_map(svmm, args->vma->vm_mm, args->start, pfns, i);
++
++	for (i =3D 0; i < npages; i++)
++		if (!(args->src[i] & MIGRATE_PFN_MIGRATE))
++			break;
++
++	/* If all pages were migrated successfully map them on the GPU. If any
++	 * failed just let the GPU fault to create the mapping.
++	 */
++	if (i =3D=3D npages)
++		nouveau_pfns_map(svmm, args->vma->vm_mm, args->start, pfns, npages);
+=20
+ 	while (nr_dma--) {
+ 		dma_unmap_page(drm->dev->dev, dma_addrs[nr_dma], PAGE_SIZE,
+--=20
+2.20.1
+
