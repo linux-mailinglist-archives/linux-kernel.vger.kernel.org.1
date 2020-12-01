@@ -2,133 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DC52CA5F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24D92CA5F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391428AbgLAOlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:41:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387462AbgLAOlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:41:42 -0500
-Received: from gaia (unknown [95.146.230.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A2B720757;
-        Tue,  1 Dec 2020 14:40:55 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 14:40:53 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
-        "tony@atomide.com" <tony@atomide.com>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "wens@csie.org" <wens@csie.org>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "James.Bottomley@HansenPartnership.com" 
-        <James.Bottomley@HansenPartnership.com>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "sam@ravnborg.org" <sam@ravnborg.org>,
-        "emil.l.velikov@gmail.com" <emil.l.velikov@gmail.com>,
-        "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        arm@kernel.org
-Subject: Re: [PATCH 1/5] ARM: configs: drop unused BACKLIGHT_GENERIC option
-Message-ID: <20201201144052.GE31404@gaia>
-References: <20201130152137.24909-1-andrey.zhizhikin@leica-geosystems.com>
- <20201130152137.24909-2-andrey.zhizhikin@leica-geosystems.com>
- <20201130185227.GA29434@kozik-lap>
- <AM6PR06MB4691EC52BA41B86AB16EE14FA6F50@AM6PR06MB4691.eurprd06.prod.outlook.com>
+        id S2391541AbgLAOl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:41:58 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53006 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387462AbgLAOl5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:41:57 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1EXdJK095532;
+        Tue, 1 Dec 2020 09:41:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=uGCqCp10+oaj15yPZPEOOY2cYafooLAxWSolNIH6rz0=;
+ b=Kx0HDkmbDJBzFFJnGWaLnA7iTJv6FmYaHaWMIRUUcqwE0TJzu5OJ+14lr6/MFK7ERvpn
+ I8Abx0kk0g+PZHydS5WuH4C2uvC8mcJpA/s3KCDiVbx0QVrX1yDH6ZJqsMk8Cmv0gQJn
+ rJEtjjh4SofO+1HfxvAzmF5iTqP1eAiShJNGDhGY/F15MFJYyyrEE+HL21U7h2v6ANGC
+ uQ9eilDlL+m8hFdwNRxJlZysik9EodXvmjIUJDCczLgnhr/2iDg20uOd509DPGc6Qc1i
+ zLgCTWzIoOly7YYoxelIgE0gCAeUeL3gnmzPfY34jvpBJ98kad0nkJiNGH7ObmkEwvwy qw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355ghqxe4v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 09:41:14 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B1Ebr2b026714;
+        Tue, 1 Dec 2020 14:41:12 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 354fpda04p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 14:41:12 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B1EfA7F65077508
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Dec 2020 14:41:10 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20EABA405E;
+        Tue,  1 Dec 2020 14:41:10 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B3A8A404D;
+        Tue,  1 Dec 2020 14:41:10 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  1 Dec 2020 14:41:09 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] entry: rename exit_from_user_mode()
+References: <20201201142755.31931-1-svens@linux.ibm.com>
+        <20201201142755.31931-3-svens@linux.ibm.com>
+Date:   Tue, 01 Dec 2020 15:41:09 +0100
+In-Reply-To: <20201201142755.31931-3-svens@linux.ibm.com> (Sven Schnelle's
+        message of "Tue, 1 Dec 2020 15:27:52 +0100")
+Message-ID: <yt9dft4pwpve.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR06MB4691EC52BA41B86AB16EE14FA6F50@AM6PR06MB4691.eurprd06.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_07:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 07:50:25PM +0000, ZHIZHIKIN Andrey wrote:
-> From Krzysztof Kozlowski <krzk@kernel.org>:
-> > On Mon, Nov 30, 2020 at 03:21:33PM +0000, Andrey Zhizhikin wrote:
-> > > Commit 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
-> > > unused") removed geenric_bl driver from the tree, together with
-> > > corresponding config option.
-> > >
-> > > Remove BACKLIGHT_GENERIC config item from all ARM configurations.
-> > >
-> > > Fixes: 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it
-> > > is unused")
-> > > Cc: Sam Ravnborg <sam@ravnborg.org>
-> > > Signed-off-by: Andrey Zhizhikin
-> > > <andrey.zhizhikin@leica-geosystems.com>
-> > > ---
-> > >  arch/arm/configs/at91_dt_defconfig        | 1 -
-> > >  arch/arm/configs/cm_x300_defconfig        | 1 -
-> > >  arch/arm/configs/colibri_pxa300_defconfig | 1 -
-> > >  arch/arm/configs/jornada720_defconfig     | 1 -
-> > >  arch/arm/configs/magician_defconfig       | 1 -
-> > >  arch/arm/configs/mini2440_defconfig       | 1 -
-> > >  arch/arm/configs/omap2plus_defconfig      | 1 -
-> > >  arch/arm/configs/pxa3xx_defconfig         | 1 -
-> > >  arch/arm/configs/qcom_defconfig           | 1 -
-> > >  arch/arm/configs/sama5_defconfig          | 1 -
-> > >  arch/arm/configs/sunxi_defconfig          | 1 -
-> > >  arch/arm/configs/tegra_defconfig          | 1 -
-> > >  arch/arm/configs/u8500_defconfig          | 1 -
-> > >  13 files changed, 13 deletions(-)
-> > 
-> > You need to send it to arm-soc maintainers, otherwise no one might feel
-> > responsible enough to pick it up.
-> 
-> Good point, thanks a lot!
-> 
-> I was not aware of the fact that there is a separate ML that should
-> receive patches targeted ARM SOCs. Can you (or anyone else) please
-> share it, so I can re-send it there as well?
+Sven Schnelle <svens@linux.ibm.com> writes:
 
-It's not a mailing list as such (with archives etc.), just an alias to
-the arm-soc maintainers: arm@kernel.org.
+> In order to make this function publicly available rename
+> it so it can still be inlined. An additional exit_from_user_mode()
+> function will be added with a later commit.
 
-> > Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > 
-> > +CC Arnd and Olof,
-> > 
-> > Dear Arnd and Olof,
-> > 
-> > Maybe it is worth to add arm-soc entry to the MAINTAINERS file?
-> > Otherwise how one could get your email address? Not mentioning the
-> > secret-soc address. :)
+That should of course be exit_to_user_mode() in the commit
+description...
 
-I tried to convince them before, it didn't work. I guess they don't like
-to be spammed ;). Or rather, SoC-specific patches, even to defconfig,
-should go through the specific SoC maintainers. However, there are
-occasional defconfig patches which are more generic or affecting
-multiple SoCs. I just ignore them as the arm64 defconfig is usually
-handled by the arm-soc folk (when I need a defconfig change, I go for
-arch/arm64/Kconfig directly ;)).
-
-Anyway, I still think that we should add a MAINTAINERS entry for
-arch/arm64/configs/defconfig and arch/arm64/Kconfig.platforms.
-
--- 
-Catalin
+> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> ---
+>  kernel/entry/common.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index 683a8e1b5388..076ee1cde67f 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -111,7 +111,7 @@ noinstr void syscall_enter_from_user_mode_prepare(struct pt_regs *regs)
+>  }
+>  
+>  /**
+> - * exit_to_user_mode - Fixup state when exiting to user mode
+> + * __exit_to_user_mode - Fixup state when exiting to user mode
+>   *
+>   * Syscall/interupt exit enables interrupts, but the kernel state is
+>   * interrupts disabled when this is invoked. Also tell RCU about it.
+> @@ -122,7 +122,7 @@ noinstr void syscall_enter_from_user_mode_prepare(struct pt_regs *regs)
+>   *    mitigations, etc.
+>   * 4) Tell lockdep that interrupts are enabled
+>   */
+> -static __always_inline void exit_to_user_mode(void)
+> +static __always_inline void __exit_to_user_mode(void)
+>  {
+>  	instrumentation_begin();
+>  	trace_hardirqs_on_prepare();
+> @@ -265,7 +265,7 @@ __visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
+>  	local_irq_disable_exit_to_user();
+>  	exit_to_user_mode_prepare(regs);
+>  	instrumentation_end();
+> -	exit_to_user_mode();
+> +	__exit_to_user_mode();
+>  }
+>  
+>  noinstr void irqentry_enter_from_user_mode(struct pt_regs *regs)
+> @@ -278,7 +278,7 @@ noinstr void irqentry_exit_to_user_mode(struct pt_regs *regs)
+>  	instrumentation_begin();
+>  	exit_to_user_mode_prepare(regs);
+>  	instrumentation_end();
+> -	exit_to_user_mode();
+> +	__exit_to_user_mode();
+>  }
+>  
+>  noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
