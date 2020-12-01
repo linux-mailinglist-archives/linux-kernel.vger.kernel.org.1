@@ -2,162 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6B12CA00E
+	by mail.lfdr.de (Postfix) with ESMTP id E6BC12CA00F
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390968AbgLAKiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:38:52 -0500
-Received: from comms.puri.sm ([159.203.221.185]:54806 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725918AbgLAKiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:38:51 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id DE821E0141;
-        Tue,  1 Dec 2020 02:38:10 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1Eg-ax_6CXk5; Tue,  1 Dec 2020 02:38:09 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     marex@denx.de, stefan@agner.ch, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH] drm: mxsfb: Add interconnect path request
-Date:   Tue,  1 Dec 2020 11:37:57 +0100
-Message-Id: <20201201103757.32165-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S2391090AbgLAKjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:39:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729998AbgLAKjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:39:22 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4611C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 02:38:41 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606819120;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YAJpgh0xPGzhJvQ0+pFj3lmJw3smGNAzIhNqMHD8rYM=;
+        b=a+NZicZbm2aLhKp9Sso4PkLgGDijDyFn2ZJhC8d3Yy9tUAevDyij4/8k5OkR401FuqtIQ5
+        AQr+ROpumRw1uq+ag1znbjN2cAD5d5C4CsCUS3HuhbvWrMKr91iwLJRt5wSiyYkNJIY0cA
+        EQVXScyZxIVVoy34IUZ8LCUQNRHFpNX9uqhDwelVNz+hHnSPVGZUyXsWSCt4Tgt+7xtVgt
+        cuLg0T7kHXFwjtS/u3mvz7/ivnzsmWe7+U3JSEZrwjZ+QqznCAPOsMTOKtVqVolKFZ6FiK
+        h3Fz2M5eXroXWWf7xkyMUrQIcAyVvCWBWqgGAmjd+ft45+xVXJrU7uBQJpwBiw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606819120;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YAJpgh0xPGzhJvQ0+pFj3lmJw3smGNAzIhNqMHD8rYM=;
+        b=oRM0teRZ/JMiEtUq601w0JwWIPbALRcbxCyxX29dI4GIzoG1C2gIqIot2AufqbKJDC00ss
+        K2Odx+vPrpZP79Aw==
+To:     =?utf-8?Q?Lauren=C8=9Biu?= Nicola <lnicola@dend.ro>
+Cc:     mingo@kernel.org, bp@alien8.de, x86@kernel.org, trivial@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] x86/irq: Lower unhandled irq error severity
+In-Reply-To: <69841ea6-5998-46ca-8e49-3e9ee65fc8b1@www.fastmail.com>
+References: <20201126074734.12664-1-lnicola@dend.ro> <875z5rk68z.fsf@nanos.tec.linutronix.de> <ea40c3e8-0be1-4783-ba1e-86c96cf8e4af@www.fastmail.com> <87lfeiiy10.fsf@nanos.tec.linutronix.de> <96085c8a-b144-4fd3-b1fb-45763b5b64a4@www.fastmail.com> <87tut6h10u.fsf@nanos.tec.linutronix.de> <69841ea6-5998-46ca-8e49-3e9ee65fc8b1@www.fastmail.com>
+Date:   Tue, 01 Dec 2020 11:38:39 +0100
+Message-ID: <87o8jdhkuo.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add interconnect support to mxsfb so that it is able to request enough
-bandwidth to DDR for display output to work.
+On Tue, Dec 01 2020 at 10:18, Lauren=C8=9Biu Nicola wrote:
+> On Tue, Dec 1, 2020, at 01:34, Thomas Gleixner wrote:
+>> Just for completeness sake. Can you provide the line in /proc/interrupts
+>> for irq 7 on that machine?
+>
+>
+>   55:          0          0          0          0          0          0  =
+        0          0          0          0          0          0          0=
+          0          0          0          0          0          0         =
+ 0          0          0          0          0          0          0       =
+   0          0          0          0          0          0  IR-PCI-MSI 262=
+5543-edge      xhci_hcd
+>
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- drivers/gpu/drm/mxsfb/mxsfb_drv.c | 33 +++++++++++++++++++++++++++++++
- drivers/gpu/drm/mxsfb/mxsfb_drv.h |  2 ++
- drivers/gpu/drm/mxsfb/mxsfb_kms.c | 13 ++++++++++++
- 3 files changed, 48 insertions(+)
+IRQ 55 !=3D IRQ 7. I really meant IRQ 7.
 
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-index 6faf17b6408d..b05e8e5f1e38 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-@@ -15,6 +15,7 @@
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/interconnect.h>
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
-@@ -311,6 +312,34 @@ static const struct of_device_id mxsfb_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, mxsfb_dt_ids);
- 
-+
-+static int mxsfb_init_icc(struct platform_device *pdev)
-+{
-+	struct drm_device *drm = platform_get_drvdata(pdev);
-+	struct mxsfb_drm_private *mxsfb = drm->dev_private;
-+	int ret;
-+
-+	/* Optional interconnect request */
-+	mxsfb->icc_path = devm_of_icc_get(&pdev->dev, "lcdif-dram");
-+	if (IS_ERR(mxsfb->icc_path)) {
-+		ret = PTR_ERR(mxsfb->icc_path);
-+		if (ret == -EPROBE_DEFER)
-+			return ret;
-+
-+		mxsfb->icc_path = NULL;
-+		dev_dbg(drm->dev,
-+			"No interconnect may cause display underflows!\n");
-+	}
-+
-+	ret = icc_set_bw(mxsfb->icc_path, 0, MBps_to_icc(700));
-+	if (ret) {
-+		dev_err(drm->dev, "%s: icc_set_bw failed: %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int mxsfb_probe(struct platform_device *pdev)
- {
- 	struct drm_device *drm;
-@@ -329,6 +358,10 @@ static int mxsfb_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_free;
- 
-+	ret = mxsfb_init_icc(pdev);
-+	if (ret)
-+		goto err_free;
-+
- 	ret = drm_dev_register(drm, 0);
- 	if (ret)
- 		goto err_unload;
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.h b/drivers/gpu/drm/mxsfb/mxsfb_drv.h
-index 399d23e91ed1..d74ff4818e62 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.h
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.h
-@@ -41,6 +41,8 @@ struct mxsfb_drm_private {
- 	struct drm_encoder		encoder;
- 	struct drm_connector		*connector;
- 	struct drm_bridge		*bridge;
-+
-+	struct icc_path			*icc_path;
- };
- 
- static inline struct mxsfb_drm_private *
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-index 3e1bb0aefb87..8925ee7deeaa 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-@@ -13,6 +13,7 @@
- #include <linux/iopoll.h>
- #include <linux/pm_runtime.h>
- #include <linux/spinlock.h>
-+#include <linux/interconnect.h>
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
-@@ -310,6 +311,12 @@ static void mxsfb_crtc_atomic_enable(struct drm_crtc *crtc,
- 	struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(crtc->dev);
- 	struct drm_device *drm = mxsfb->drm;
- 	dma_addr_t paddr;
-+	int ret;
-+
-+	ret = icc_enable(mxsfb->icc_path);
-+	if (ret)
-+		dev_err_ratelimited(drm->dev, "%s: icc_enable failed: %d\n",
-+				    __func__, ret);
- 
- 	pm_runtime_get_sync(drm->dev);
- 	mxsfb_enable_axi_clk(mxsfb);
-@@ -334,6 +341,7 @@ static void mxsfb_crtc_atomic_disable(struct drm_crtc *crtc,
- 	struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(crtc->dev);
- 	struct drm_device *drm = mxsfb->drm;
- 	struct drm_pending_vblank_event *event;
-+	int ret;
- 
- 	mxsfb_disable_controller(mxsfb);
- 
-@@ -349,6 +357,11 @@ static void mxsfb_crtc_atomic_disable(struct drm_crtc *crtc,
- 
- 	mxsfb_disable_axi_clk(mxsfb);
- 	pm_runtime_put_sync(drm->dev);
-+
-+	ret = icc_disable(mxsfb->icc_path);
-+	if (ret)
-+		dev_err_ratelimited(drm->dev, "%s: icc_disable failed: %d\n",
-+				    __func__, ret);
- }
- 
- static int mxsfb_crtc_enable_vblank(struct drm_crtc *crtc)
--- 
-2.20.1
+Thanks,
+
+        tglx
 
