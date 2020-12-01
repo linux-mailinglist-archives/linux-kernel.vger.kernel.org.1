@@ -2,174 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861162CAB66
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 824E22CAB6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392298AbgLATG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:06:29 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:55168 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729852AbgLATG3 (ORCPT
+        id S1730194AbgLATH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:07:29 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:45722 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbgLATH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:06:29 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 585DE20B717A;
-        Tue,  1 Dec 2020 11:05:47 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 585DE20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1606849547;
-        bh=1bXx8POpNuesUco9nR+1jimVOmyvNWOw/SyzMIguCxg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YDf3JFolHlEBiE//7wtGnx6S6VMjjvZWd5bAYkhNqd6tKNAosz0AzEi6izfC0LqlQ
-         1Vd+eUrcbf703H+SNMgUI5Ynhj+m3TuFnZq9xj3sIMi3qGqczDZZWC4J5yE0oKriU1
-         QtXyCskkkgmIu5R7qwx1Kca7XaQ1YNa4ND8Av8/A=
-Subject: Re: [PATCH v9 6/8] powerpc: Move ima_get_kexec_buffer() and
- ima_free_kexec_buffer() to ima
-To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
-        robh@kernel.org, gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
-        balajib@linux.microsoft.com
-References: <20201113192243.1993-1-nramas@linux.microsoft.com>
- <20201113192243.1993-7-nramas@linux.microsoft.com>
- <493cf3c91579877d7e9cb79ad87ac086671d6ffc.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <19d10383-7059-ff90-37d1-7806585b331d@linux.microsoft.com>
-Date:   Tue, 1 Dec 2020 11:05:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Dec 2020 14:07:29 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8CC91DBD;
+        Tue,  1 Dec 2020 20:06:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1606849606;
+        bh=9z5nUkzAbtzk9GChlVEMcwzq8DFFTconlJjzhX95x04=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZiSHFgmWkByw2sH9cObhUvVmOQmOUMgy5WaVESMS9OXi8zaIgeg/mrjjfkG3jMOG8
+         QdP0v52O1/n60WcKKYaqECfHoPhegJUc477Vor2s8e3eR8nfhsyB0a+3Z4oD+S4MCK
+         zKHx4/hvySioZ3aeLSTvLuDUdiQHcAJPsuoOR+oM=
+Date:   Tue, 1 Dec 2020 21:06:38 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
+Message-ID: <20201201190638.GZ4569@pendragon.ideasonboard.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-19-djrscally@gmail.com>
+ <20201130200719.GB4077@smile.fi.intel.com>
+ <8a1b0f5b-1289-256b-b25d-cf8af43bdc84@gmail.com>
+ <20201201185417.GL4077@smile.fi.intel.com>
+ <20201201185548.GV4569@pendragon.ideasonboard.com>
+ <20201201190523.GO4077@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <493cf3c91579877d7e9cb79ad87ac086671d6ffc.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201201190523.GO4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 3:38 AM, Mimi Zohar wrote:
-> Hi Lakshmi,
+On Tue, Dec 01, 2020 at 09:05:23PM +0200, Andy Shevchenko wrote:
+> On Tue, Dec 01, 2020 at 08:55:48PM +0200, Laurent Pinchart wrote:
+> > On Tue, Dec 01, 2020 at 08:54:17PM +0200, Andy Shevchenko wrote:
+> > > On Tue, Dec 01, 2020 at 08:30:03AM +0000, Dan Scally wrote:
+> > > > On 30/11/2020 20:07, Andy Shevchenko wrote:
 > 
-> On Fri, 2020-11-13 at 11:22 -0800, Lakshmi Ramasubramanian wrote:
->> ima_get_kexec_buffer() retrieves the address and size of the buffer
->> used for carrying forward the IMA measurement logs on kexec from
->> the device tree.
->>
->> ima_free_kexec_buffer() removes the chosen node namely
->> "linux,ima-kexec-buffer" from the device tree, and frees the buffer
->> used for carrying forward the IMA measurement logs on kexec.
->>
->> These functions do not have architecture specific code, but are
->> currently limited to powerpc.
->>
->> Move ima_get_kexec_buffer() and ima_free_kexec_buffer() to ima_kexec.c
->> in IMA so that they are accessible for other architectures as well.
+> ...
 > 
-> This sentence flows from the previous line.  No need for separate
-> paragraphs here.
+> > > > >> +static struct int3472_sensor_regulator_map int3472_sensor_regulator_maps[] = {
+> > > > >> +	{ "GNDF140809R", 2, miix_510_ov2680 },
+> > > > >> +	{ "YHCU", 2, surface_go2_ov5693 },
+> > > > >> +	{ "MSHW0070", 2, surface_book_ov5693 },
+> > > > >> +};
+> > > > >
+> > > > > Hmm... Usual way is to use DMI for that. I'm not sure above will not give us
+> > > > > false positive matches.
+> > > >
+> > > > I considered DMI too, no problem to switch to that if it's a better choice.
+> > > 
+> > > I prefer DMI as it's a standard way to describe platform quirks in x86 world.
+> > 
+> > Do you think the Windows driver would use DMI ?
+> 
+> Linux is using DMI for quirks.
+> 
+> > That seems quite
+> > unlikely to me, given how they would have to release a new driver binary
+> > for every machine. I'm pretty sure that a different mechanism is used to
+> > identify camera integration, and I think it would make sense to follow
+> > the same approach. That would allow us to avoid large tables of DMI
+> > identifiers that would need to be constently updated, potentially making
+> > user experience better.
+> 
+> All Surface family can be matched in a way as Apple machines [1].
+> 
+> [1]: https://lkml.org/lkml/2020/4/15/1198
 
-Sure - will update Mimi.
+But not all Surface machines necessarily have the same camera
+architecture. My point is that there seems to be identifiers reported in
+ACPI for the exact purpose of identifying the camera architecture. If we
+used DMI instead, we would have to handle each machine individually.
 
->>
->> With the above change the functions in arch/powerpc/kexec/ima.c are
->> defined only when the kernel config CONFIG_IMA_KEXEC is enabled.
->> Update the Makefile to build arch/powerpc/kexec/ima.c only when
->> CONFIG_IMA_KEXEC is enabled and remove "#ifdef CONFIG_IMA_KEXEC"
->> in arch/powerpc/kexec/ima.c.
->>
->> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> 
-> After making the two changes,
-> 
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> 
-> 
->> diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
->> index 121de3e04af2..3f0fa2673dd3 100644
->> --- a/security/integrity/ima/ima_kexec.c
->> +++ b/security/integrity/ima/ima_kexec.c
->> @@ -9,9 +9,60 @@
->>   
->>   #include <linux/seq_file.h>
->>   #include <linux/vmalloc.h>
->> +#include <linux/memblock.h>
->> +#include <linux/of.h>
->>   #include <linux/kexec.h>
->> +#include <linux/ima.h>
->>   #include "ima.h"
->>   
->> +/**
->> + * ima_get_kexec_buffer - get IMA buffer from the previous kernel
->> + * @addr:	On successful return, set to point to the buffer contents.
->> + * @size:	On successful return, set to the buffer size.
->> + *
->> + * Return: 0 on success, negative errno on error.
->> + */
->> +static int ima_get_kexec_buffer(void **addr, size_t *size)
->> +{
->> +	int ret;
->> +	unsigned long tmp_addr;
->> +	size_t tmp_size;
->> +
->> +	ret = get_ima_kexec_buffer(NULL, 0, &tmp_addr, &tmp_size);
->> +	if (ret)
->> +		return ret;
->> +
->> +	*addr = __va(tmp_addr);
->> +	*size = tmp_size;
->> +
->> +	return 0;
->> +}
->> +
->> +/**
->> + * ima_free_kexec_buffer - free memory used by the IMA buffer
->> + */
->> +static int ima_free_kexec_buffer(void)
->> +{
->> +	int ret;
->> +	unsigned long addr;
->> +	size_t size;
->> +	struct property *prop;
->> +
->> +	prop = of_find_property(of_chosen, "linux,ima-kexec-buffer", NULL);
->> +	if (!prop)
->> +		return -ENOENT;
->> +
->> +	ret = get_ima_kexec_buffer(NULL, 0, &addr, &size);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = of_remove_property(of_chosen, prop);
->> +	if (ret)
->> +		return ret;
->> +
->> +	return memblock_free(addr, size);
->> +}
->> +
-> 
-> Please move these functions, after the ifdef below, before the function
-> where they're used.
+-- 
+Regards,
 
-Will make the above change.
-
-thanks,
-  -lakshmi
-
-> 
->>   #ifdef CONFIG_IMA_KEXEC
->>   static int ima_dump_measurement_list(unsigned long *buffer_size, void **buffer,
->>   				     unsigned long segment_size)
-> 
-
+Laurent Pinchart
