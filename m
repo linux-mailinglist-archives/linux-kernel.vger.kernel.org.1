@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAD52C9935
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9B02C991B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387449AbgLAIWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:22:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727192AbgLAIWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:22:07 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94ECB20659;
-        Tue,  1 Dec 2020 08:21:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606810884;
-        bh=xHTFstOj6O/KMLPWIJ9livXkeh5E3cNJZoMEX1ICbl0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0ugfFVtmDEFz3qweRxNJGIbdlhHbJEbe+SPrGbc9I44gM+O6I2rVgrcZagGiPQlJe
-         qDa/e9cJY/n7rREFFqWQI6CYR7sTmaWJfiub5J4ReXH3L76qQfPF0XWoTZ+/KCqBa1
-         43uSa/AsDxhQJOFTJrlenu8ULt+S2HlexiyIiZjk=
-Date:   Tue, 1 Dec 2020 02:20:47 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        amd-gfx@lists.freedesktop.org, bridge@lists.linux-foundation.org,
-        ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
-        coreteam@netfilter.org, devel@driverdev.osuosl.org,
-        dm-devel@redhat.com, drbd-dev@tron.linbit.com,
-        dri-devel@lists.freedesktop.org, GR-everest-linux-l2@marvell.com,
-        GR-Linux-NIC-Dev@marvell.com, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
-        linux-afs@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-Message-ID: <20201201082047.GA11832@embeddedor>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <yq1h7p6gjkk.fsf@ca-mkp.ca.oracle.com>
+        id S1728652AbgLAIVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:21:42 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:43642 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgLAIVl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:21:41 -0500
+Received: by mail-lj1-f195.google.com with SMTP id 142so1431892ljj.10;
+        Tue, 01 Dec 2020 00:21:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=acVfLOkdWoJC7KDjn7IA2m7Ws8ZjrdYl8Gt7Q0jLJnQ=;
+        b=axjhgjhfVsn64B0ezlbQxOmbYyAKpRyZdgCD8fAlfDrrvjHyJ5OrUxOHlokk4djnf4
+         np9gVacgxbO4AGID0er6LMTQJaOGrQw7BpDHMMQK0fxsa4x/wPra1XCmSeNeL078HUTm
+         M4KKipwTPE9Xnva3MP+k9paXuXCdGRfyoocKFCBccgSI0aurgQMA7GiDzJyvxWuRos6h
+         /RQQkqN1TTe62/2ouR0kSIMdO5wb3qN3FyvGn9e0u2qb63UTV2oxO7w0kfel03GEAQRk
+         oDseHZ3u+PrzI7y1gt+ewj1QqtXbm7M3RvjfGzgrgtlWf7SktdQzaYDR3aQ57+3VNJxc
+         Zg2A==
+X-Gm-Message-State: AOAM53303sblAy1ahlO0IoFP9LXUmZ+Ijc99VPqk+n7JAIQSyqRyOz8Q
+        /bKy3R1xNxvog3Tz00M6sPg=
+X-Google-Smtp-Source: ABdhPJwKEFgG60heUDRAJu4xBG78Mv8Yr6B92yBiB8iem+B6hATW+kMOAXzDCWz5Y/lvPktN1ktvHg==
+X-Received: by 2002:a2e:808b:: with SMTP id i11mr723754ljg.202.1606810858845;
+        Tue, 01 Dec 2020 00:20:58 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id w2sm125729lfe.40.2020.12.01.00.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 00:20:58 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kk0ud-0003C6-Kc; Tue, 01 Dec 2020 09:21:27 +0100
+Date:   Tue, 1 Dec 2020 09:21:27 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
+ signalling on open
+Message-ID: <X8X9B1jYujUIWXaK@localhost>
+References: <20201130153742.9163-1-johan@kernel.org>
+ <20201130153742.9163-3-johan@kernel.org>
+ <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yq1h7p6gjkk.fsf@ca-mkp.ca.oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 12:52:27AM -0500, Martin K. Petersen wrote:
+On Mon, Nov 30, 2020 at 08:27:54PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 30, 2020 at 5:42 PM Johan Hovold <johan@kernel.org> wrote:
+> >
+> > Add a nordy sysfs attribute to suppress raising the modem-control lines
+> > on open to signal DTE readiness.
 > 
-> Gustavo,
-> 
-> > This series aims to fix almost all remaining fall-through warnings in
-> > order to enable -Wimplicit-fallthrough for Clang.
-> 
-> Applied 20-22,54,120-124 to 5.11/scsi-staging, thanks.
+> Why not call it nomctrl ?
 
-Awesome! :)
+That was one of the candidates I rejected.
 
-Thanks, Martin.
---
-Gustavo
+As I hinted in the cover letter (and patch adding the flag) I chose the
+name to match the current termios flags (e.g. HUPCL and NOFLSH).
+
+NOMCTRL is both too general and specific; HUPCL still controls the
+modem-control lines on final close. Also, like HUPCL, I wanted a more
+general name that can be used for terminal devices which can signal
+readiness through other means (e.g. network).
+
+Like the other termios flags it is terse, but once you learn the meaning
+it's easy to remember. And I think there's value in keeping the same
+name throughout (cf. termios flags and stty).
+ 
+> > This can be use to prevent undesirable side-effects on open for
+> 
+> used
+
+Thanks, I'll fix that up before applying or resending
+
+> > applications where the DTR and RTS lines are used for non-standard
+> > purposes such as generating power-on and reset pulses.
+> 
+> ...
+> 
+> > +static ssize_t nordy_store(struct device *dev, struct device_attribute *attr,
+> > +                               const char *buf, size_t count)
+> > +{
+> > +       struct tty_port *port = dev_get_drvdata(dev);
+> > +       unsigned int val;
+> > +       int ret;
+> > +
+> > +       ret = kstrtouint(buf, 0, &val);
+> > +       if (ret)
+> > +               return ret;
+> 
+> > +       if (val > 1)
+> > +               return -EINVAL;
+> 
+> Can't we utilise kstrtobool() instead?
+
+I chose not to as kstrtobool() results in a horrid interface. To many
+options to do the same thing and you end up with confusing things like
+"0x01" being accepted but treated as false (as only the first character
+is considered).
+
+Not sure how that ever made it into sysfs code...
+
+The attribute is read back as "0" or "1" and those are precisely the
+values that can be written back (well, modulo radix).
+
+It's not relevant in this case, but tight control over the inputs also
+allows for extending the range later.
+
+> > +       tty_port_set_nordy(port, val);
+> > +
+> > +       return count;
+> > +}
+
+Johan
