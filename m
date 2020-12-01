@@ -2,118 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EC42C9569
+	by mail.lfdr.de (Postfix) with ESMTP id B56822C956A
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 03:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgLACtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 21:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgLACtB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:49:01 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147F0C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:48:15 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id v1so326093pjr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 18:48:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=/sab8xCMw8RgjXjo/DVBc0lxpkXKlUbFmD4vJTwFtIA=;
-        b=tJiOo+gqIKFS8oZKBOEAo2TGGZrVOY57aNEUiBDq+f42dXG2Ugh6GC961LFlhQ06tH
-         69UjmZLZjylJdOXQPZYA0V/yHKRvMSWO1bl743KlXCFIYB8UVioguelr9OKwQiUhSS2x
-         oxdTc4QnxrKhFqnemHVsMe5UgNhXB3GQuxA4ayH2Yxr6cSV+MlKMzdc5IVU7URAf0jRy
-         iDSUIMGnW2X4sPMMvSG/MPrqLsfwYbB2I8dxEmPMmUgsIJp1be5HgHZPYPhLQMHysYKD
-         rsxI5GmoxZjk9j0N375EHFiUNKF6L42EKhhmouw6jZjKkWWIqycZNS1X6FHs5O2YonpO
-         gtqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=/sab8xCMw8RgjXjo/DVBc0lxpkXKlUbFmD4vJTwFtIA=;
-        b=V2aycKE3KyOvJ8IDOlXBucAoTURTRiHuARh86tatep8A/Un/5/JCCI+qTIb/0daMK/
-         6Qrp3J6M73IuD1aPO/C952PKtov1lk5dN63yDYsiSKPE8th2Ngi36VXoyY4Edo/DKv7f
-         y6SEg2Z3qKgYRkosYZEEEcZIwheSU8FF6zGqeWPrndw/Apvsr6d8R7savJyFgOzD7sL1
-         N4vdG2wIHQrohHHi0h8CZpXbtPqrDCoJMBiZevybhAeQAdr0bEhhRaRQhLvcEBVricrE
-         SUcyGh67q9+ABygPXfS4Rzj7ZfYY6CJdERfXIvHHdsowamigsHbPn4IUBtN13puCxamw
-         qS7A==
-X-Gm-Message-State: AOAM532DqrMD3H43jJB+oPkMLmJEhmOI74Tee9TtkSltRDq/3NLSYENg
-        s3e5ha2t6F1kqmEFbVW7GN0+nvbWBqsVQpeO
-X-Google-Smtp-Source: ABdhPJzs1TBNX5078HV2nzTBlxK82aANmkQxDcHg2xrUjPWEQqrmU0rqxH7LPTYDDJHmHhXCkubMww==
-X-Received: by 2002:a17:90a:664c:: with SMTP id f12mr482815pjm.94.1606790894314;
-        Mon, 30 Nov 2020 18:48:14 -0800 (PST)
-Received: from ip-172-31-62-0.us-west-2.compute.internal (ec2-44-230-211-174.us-west-2.compute.amazonaws.com. [44.230.211.174])
-        by smtp.gmail.com with ESMTPSA id 184sm394733pfc.28.2020.11.30.18.48.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 30 Nov 2020 18:48:13 -0800 (PST)
-Date:   Mon, 30 Nov 2020 18:48:11 -0800
-From:   Alakesh Haloi <alakesh.haloi@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Minchan Kim <minchan@kernel.org>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>
-Subject: [PATCH] pid: add null pointer check in pid_nr_ns()
-Message-ID: <20201201024811.GA72235@ip-172-31-62-0.us-west-2.compute.internal>
+        id S1726817AbgLACt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 21:49:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725859AbgLACt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 21:49:28 -0500
+Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B91620809;
+        Tue,  1 Dec 2020 02:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606790926;
+        bh=H6e0oqcPK0U5uZ5zajusrZhvNPrGpQvXS7M5mrhdYUs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j6nnp4c69RboxrK59+msqLt0WGuzUmD7Q1ft+xkkF1fGFkLwaA1JraLZf9tQAmhWH
+         m7+5sODI2zo7nv9ANRuNLhKB5V67SI8Fagf+DUeo1y+ncZRZljVi75OBGTYZ6bJcvk
+         sfyzS/tAOnEV5pHxo3kwkKZdpy6fGamPLtQzuG/o=
+Date:   Mon, 30 Nov 2020 18:48:45 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     bongsu.jeon2@gmail.com
+Cc:     linux-nfc@lists.01.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH net-next v3] net/nfc/nci: Support NCI 2.x initial
+ sequence
+Message-ID: <20201130184845.304f54d3@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <5fc100ec.1c69fb81.58b7b.2dee@mx.google.com>
+References: <5fc100ec.1c69fb81.58b7b.2dee@mx.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There has been at least one occurrence where a null pointer derefernce
-panic was seen with following stack trace.
+On Fri, 27 Nov 2020 22:36:31 +0900 bongsu.jeon2@gmail.com wrote:
+> From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> 
+> implement the NCI 2.x initial sequence to support NCI 2.x NFCC.
+> Since NCI 2.0, CORE_RESET and CORE_INIT sequence have been changed.
+> If NFCEE supports NCI 2.x, then NCI 2.x initial sequence will work.
+> 
+> In NCI 1.0, Initial sequence and payloads are as below:
+> (DH)                     (NFCC)
+>  |  -- CORE_RESET_CMD --> |
+>  |  <-- CORE_RESET_RSP -- |
+>  |  -- CORE_INIT_CMD -->  |
+>  |  <-- CORE_INIT_RSP --  |
+>  CORE_RESET_RSP payloads are Status, NCI version, Configuration Status.
+>  CORE_INIT_CMD payloads are empty.
+>  CORE_INIT_RSP payloads are Status, NFCC Features,
+>     Number of Supported RF Interfaces, Supported RF Interface,
+>     Max Logical Connections, Max Routing table Size,
+>     Max Control Packet Payload Size, Max Size for Large Parameters,
+>     Manufacturer ID, Manufacturer Specific Information.
+> 
+> In NCI 2.0, Initial Sequence and Parameters are as below:
+> (DH)                     (NFCC)
+>  |  -- CORE_RESET_CMD --> |
+>  |  <-- CORE_RESET_RSP -- |
+>  |  <-- CORE_RESET_NTF -- |
+>  |  -- CORE_INIT_CMD -->  |
+>  |  <-- CORE_INIT_RSP --  |
+>  CORE_RESET_RSP payloads are Status.
+>  CORE_RESET_NTF payloads are Reset Trigger,
+>     Configuration Status, NCI Version, Manufacturer ID,
+>     Manufacturer Specific Information Length,
+>     Manufacturer Specific Information.
+>  CORE_INIT_CMD payloads are Feature1, Feature2.
+>  CORE_INIT_RSP payloads are Status, NFCC Features,
+>     Max Logical Connections, Max Routing Table Size,
+>     Max Control Packet Payload Size,
+>     Max Data Packet Payload Size of the Static HCI Connection,
+>     Number of Credits of the Static HCI Connection,
+>     Max NFC-V RF Frame Size, Number of Supported RF Interfaces,
+>     Supported RF Interfaces.
+> 
+> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
 
- #0 [ffffff800bcd3800] machine_kexec at ffffff8008095fb4
- #1 [ffffff800bcd3860] __crash_kexec at ffffff8008122a30
- #2 [ffffff800bcd39f0] panic at ffffff80080aa054
- #3 [ffffff800bcd3ae0] die at ffffff800808aee8
- #4 [ffffff800bcd3b20] die_kernel_fault at ffffff8008099520
- #5 [ffffff800bcd3b50] __do_kernel_fault at ffffff8008098e50
- #6 [ffffff800bcd3b80] do_translation_fault at ffffff800809929c
- #7 [ffffff800bcd3b90] do_mem_abort at ffffff8008081204
- #8 [ffffff800bcd3d90] el1_ia at ffffff800808304c
-     PC: ffffff80080c20ec  [pid_nr_ns+4]
-     LR: ffffff80080c231c  [__task_pid_nr_ns+72]
-     SP: ffffff800bcd3da0  PSTATE: 60000005
-    X29: ffffff800bcd3da0  X28: ffffffc00691c380  X27: 0000000000000001
-    X26: 00000000004ce8e8  X25: 00000000004ce8d0  X24: ffffffc00691c3e0
-    X23: ffffffc004e8c000  X22: 0000000000000000  X21: ffffffc00b042ed2
-    X20: ffffff800876a4f0  X19: 0000000000000000  X18: 0000000000000000
-    X17: 0000000000000001  X16: 0000000000000000  X15: 0000000000000000
-    X14: 0000000400000003  X13: 0000000000000008  X12: fefefefefefefeff
-    X11: 0000000000000000  X10: 0000007fffffffff   X9: 00000000004ce8b0
-     X8: 00000000004ce8b0   X7: 0000000000000000   X6: ffffffc00b042ed2
-     X5: ffffffc00b042ed2   X4: 0000000000020008   X3: 53206e69616c702f
-     X2: ffffff800876a4f0   X1: ffffff800876a4f0   X0: 53206e69616c702f
- #9 [ffffff800bcd3da0] pid_nr_ns at ffffff80080c20e8
+>  static void nci_init_req(struct nci_dev *ndev, unsigned long opt)
+>  {
+> -	nci_send_cmd(ndev, NCI_OP_CORE_INIT_CMD, 0, NULL);
+> +	struct nci_core_init_v2_cmd *cmd = (struct nci_core_init_v2_cmd *)opt;
+> +
+> +	if (!cmd)
+> +		nci_send_cmd(ndev, NCI_OP_CORE_INIT_CMD, 0, NULL);
+> +	else
+> +		/* if nci version is 2.0, then use the feature parameters */
+> +		nci_send_cmd(ndev, NCI_OP_CORE_INIT_CMD,
+> +			     sizeof(struct nci_core_init_v2_cmd), cmd);
 
-Signed-off-by: Alakesh Haloi <alakesh.haloi@gmail.com>
-Cc: stable@vger.kernel.org
----
- kernel/pid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This would be better written as:
 
-diff --git a/kernel/pid.c b/kernel/pid.c
-index a96bc4bf4f86..3767b9e1431d 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -474,7 +474,7 @@ pid_t pid_nr_ns(struct pid *pid, struct pid_namespace *ns)
- 	struct upid *upid;
- 	pid_t nr = 0;
- 
--	if (pid && ns->level <= pid->level) {
-+	if (pid && ns && ns->level <= pid->level) {
- 		upid = &pid->numbers[ns->level];
- 		if (upid->ns == ns)
- 			nr = upid->nr;
--- 
-2.17.1
+	u8 plen = 0;
 
+	if (opt)
+		plen = sizeof(struct nci_core_init_v2_cmd);
+	
+	nci_send_cmd(ndev, NCI_OP_CORE_INIT_CMD, plen, (void *)opt);
+
+> +
+
+unnecessary empty line
+
+>  }
+>  
+>  static void nci_init_complete_req(struct nci_dev *ndev, unsigned long opt)
+> @@ -497,8 +505,18 @@ static int nci_open_device(struct nci_dev *ndev)
+>  	}
+>  
+>  	if (!rc) {
+> -		rc = __nci_request(ndev, nci_init_req, 0,
+> -				   msecs_to_jiffies(NCI_INIT_TIMEOUT));
+> +		if (!(ndev->nci_ver & NCI_VER_2_MASK)) {
+> +			rc = __nci_request(ndev, nci_init_req, 0,
+> +					   msecs_to_jiffies(NCI_INIT_TIMEOUT));
+> +		} else {
+> +			struct nci_core_init_v2_cmd nci_init_v2_cmd;
+> +
+> +			nci_init_v2_cmd.feature1 = NCI_FEATURE_DISABLE;
+> +			nci_init_v2_cmd.feature2 = NCI_FEATURE_DISABLE;
+> +
+> +			rc = __nci_request(ndev, nci_init_req, (unsigned long)&nci_init_v2_cmd,
+> +					   msecs_to_jiffies(NCI_INIT_TIMEOUT));
+> +		}
+
+again please try to pull out the common code:
+
+	struct nci_core_init_v2_cmd nci_init_v2_cmd = {
+		.feature1 = NCI_FEATURE_DISABLE;
+		.feature2 = NCI_FEATURE_DISABLE;
+	};
+	unsigned long opt = 0;
+	
+	if (ndev->nci_ver & NCI_VER_2_MASK)
+		opt = (unsigned long)&nci_init_v2_cmd;
+
+	rc = __nci_request(ndev, nci_init_req, opt,
+			   msecs_to_jiffies(NCI_INIT_TIMEOUT));
+	
+
+>  	}
+
+> -static void nci_core_init_rsp_packet(struct nci_dev *ndev, struct sk_buff *skb)
+> +static unsigned char nci_core_init_rsp_packet_v1(struct nci_dev *ndev, struct sk_buff *skb)
+>  {
+>  	struct nci_core_init_rsp_1 *rsp_1 = (void *) skb->data;
+>  	struct nci_core_init_rsp_2 *rsp_2;
+> @@ -48,16 +51,14 @@ static void nci_core_init_rsp_packet(struct nci_dev *ndev, struct sk_buff *skb)
+>  	pr_debug("status 0x%x\n", rsp_1->status);
+>  
+>  	if (rsp_1->status != NCI_STATUS_OK)
+> -		goto exit;
+> +		return rsp_1->status;
+>  
+>  	ndev->nfcc_features = __le32_to_cpu(rsp_1->nfcc_features);
+>  	ndev->num_supported_rf_interfaces = rsp_1->num_supported_rf_interfaces;
+>  
+> -	if (ndev->num_supported_rf_interfaces >
+> -	    NCI_MAX_SUPPORTED_RF_INTERFACES) {
+> -		ndev->num_supported_rf_interfaces =
+> -			NCI_MAX_SUPPORTED_RF_INTERFACES;
+> -	}
+> +	ndev->num_supported_rf_interfaces =
+> +		min((int)ndev->num_supported_rf_interfaces,
+> +		    NCI_MAX_SUPPORTED_RF_INTERFACES);
+>  
+>  	memcpy(ndev->supported_rf_interfaces,
+>  	       rsp_1->supported_rf_interfaces,
+> @@ -77,6 +78,58 @@ static void nci_core_init_rsp_packet(struct nci_dev *ndev, struct sk_buff *skb)
+>  	ndev->manufact_specific_info =
+>  		__le32_to_cpu(rsp_2->manufact_specific_info);
+>  
+> +	return NCI_STATUS_OK;
+> +}
+> +
+> +static unsigned char nci_core_init_rsp_packet_v2(struct nci_dev *ndev, struct sk_buff *skb)
+> +{
+> +	struct nci_core_init_rsp_nci_ver2 *rsp = (void *)skb->data;
+> +	unsigned char rf_interface_idx = 0;
+
+Prefer the use of u8 type in the kernel
+
+> +	unsigned char rf_extension_cnt = 0;
+> +	unsigned char *supported_rf_interface = rsp->supported_rf_interfaces;
+
+Please order the variable declarations longest to shortest.
+Don't initialize them inline if that'd cause the order to break.
+
+> +	pr_debug("status %x\n", rsp->status);
+> +
+> +	if (rsp->status != NCI_STATUS_OK)
+> +		return rsp->status;
+> +
