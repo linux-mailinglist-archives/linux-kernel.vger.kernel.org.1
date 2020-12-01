@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597932C9A4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4FE2C9A84
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729174AbgLAI4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:56:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59670 "EHLO mail.kernel.org"
+        id S2387939AbgLAI60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:58:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727629AbgLAI4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:56:23 -0500
+        id S2387920AbgLAI6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:58:22 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 001E5217A0;
-        Tue,  1 Dec 2020 08:55:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9669221FF;
+        Tue,  1 Dec 2020 08:57:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812942;
-        bh=Devu7aS3yxUpDTSuBwIzeXyPYg3/pWezv87Va7+bAmE=;
+        s=korg; t=1606813061;
+        bh=5zTnQBR2uQiioZtrlCyvXMGvrTPfTxctW7F2T1dYdAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ln6975tjM1+pyQJVC7xLukYqQ46Fd+3OOjTgmoGOzk84rEiHhJ0QdYVNVhTTrLqgt
-         frmGMZ8+/Wx4vp5Jvfkf9lEB7+aCGNwSxQL/0KGgU/n9ACLL7iEm3bUAbFesPct4oy
-         WfjBUB1ACl4U28kR/vJOxGuwH3N9nM7CZdi3prjA=
+        b=N+riaCd2i8Eaja8PBM0FxuXI8wF0SFg8+fv3nawDpRZUrx47tgHezPfmyQTaMFwcW
+         Ny8Rel08TkNi+KCmFSsQRBQ5mZgYb0Y1mr4VP20vVBUjF6CKs4HsfBc9TlelaHzpUc
+         ZNCKlmU5E+vHgJYCikXA97B+nZOfocywZTO0gAKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yoon Jungyeon <jungyeon@gatech.edu>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 05/42] btrfs: tree-checker: Enhance chunk checker to validate chunk profile
+        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.14 04/50] wireless: Use linux/stddef.h instead of stddef.h
 Date:   Tue,  1 Dec 2020 09:53:03 +0100
-Message-Id: <20201201084642.426783814@linuxfoundation.org>
+Message-Id: <20201201084645.288291546@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Hauke Mehrtens <hauke@hauke-m.de>
 
-commit 80e46cf22ba0bcb57b39c7c3b52961ab3a0fd5f2 upstream
+commit 1b9ae0c92925ac40489be526d67d0010d0724ce0 upstream.
 
-Btrfs-progs already have a comprehensive type checker, to ensure there
-is only 0 (SINGLE profile) or 1 (DUP/RAID0/1/5/6/10) bit set for chunk
-profile bits.
+When compiling inside the kernel include linux/stddef.h instead of
+stddef.h. When I compile this header file in backports for power PC I
+run into a conflict with ptrdiff_t. I was unable to reproduce this in
+mainline kernel. I still would like to fix this problem in the kernel.
 
-Do the same work for kernel.
-
-Reported-by: Yoon Jungyeon <jungyeon@gatech.edu>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=202765
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: manually backport, use btrfs_err with root->fs_info]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fixes: 6989310f5d43 ("wireless: Use offsetof instead of custom macro.")
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Link: https://lore.kernel.org/r/20200521201422.16493-1-hauke@hauke-m.de
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/volumes.c |    7 +++++++
- 1 file changed, 7 insertions(+)
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6414,6 +6414,13 @@ static int btrfs_check_chunk_valid(struc
- 		return -EIO;
- 	}
+---
+ include/uapi/linux/wireless.h |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+--- a/include/uapi/linux/wireless.h
++++ b/include/uapi/linux/wireless.h
+@@ -74,7 +74,11 @@
+ #include <linux/socket.h>		/* for "struct sockaddr" et al	*/
+ #include <linux/if.h>			/* for IFNAMSIZ and co... */
  
-+	if (!is_power_of_2(type & BTRFS_BLOCK_GROUP_PROFILE_MASK) &&
-+	    (type & BTRFS_BLOCK_GROUP_PROFILE_MASK) != 0) {
-+		btrfs_err(root->fs_info,
-+		"invalid chunk profile flag: 0x%llx, expect 0 or 1 bit set",
-+			  type & BTRFS_BLOCK_GROUP_PROFILE_MASK);
-+		return -EUCLEAN;
-+	}
- 	if ((type & BTRFS_BLOCK_GROUP_TYPE_MASK) == 0) {
- 		btrfs_err(root->fs_info, "missing chunk type flag: 0x%llx", type);
- 		return -EIO;
+-#include <stddef.h>                     /* for offsetof */
++#ifdef __KERNEL__
++#	include <linux/stddef.h>	/* for offsetof */
++#else
++#	include <stddef.h>		/* for offsetof */
++#endif
+ 
+ /***************************** VERSION *****************************/
+ /*
 
 
