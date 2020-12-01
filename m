@@ -2,130 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F2A2CA2FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9992CA2FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731061AbgLAMma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:42:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54614 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727055AbgLAMm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:42:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 81DBCACC4;
-        Tue,  1 Dec 2020 12:41:47 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 12:41:44 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        qianjun.kernel@gmail.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH 3/6] sched: make struct sched_statistics independent of
- fair sched class
-Message-ID: <20201201124144.GT3306@suse.de>
-References: <20201201115416.26515-1-laoar.shao@gmail.com>
- <20201201115416.26515-4-laoar.shao@gmail.com>
+        id S1731083AbgLAMoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729823AbgLAMoX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:44:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A557C0613CF;
+        Tue,  1 Dec 2020 04:43:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YB0thBF7GjuedFieR4hV45nwqrGcIU5L4KJGUs96Eog=; b=fJaQwflKUoj7MSgwsq3oWC8W4f
+        OwXUQi8MdCWgbvpHVMMgmA45UkMa+uC2I9AJZxUr7gF6vkR1XhJDnHoMVikMW2YcqQOucuNaSPekk
+        R/GC4AKp+9pMPK8BGSaESgiFJL9KdX7HtGfg7N99EzCgp5vhMB95fzVrmgd8bFsZ0BXuyRZOzGfUt
+        8MF9Xy6A6gm0EhZvPidMC/+iqKDgd5j9lR+y898pRpaPeuHSDHObJgdExI2UPisVe4L+KOKBeoq5G
+        ClJYxFwj1dF+L6cJXNvARIq91cJQodIfdTnzsb7ZbZoKQ7TfZOrqexfR7XOfL4Rtgqyouag5+r8JR
+        NlYRBlEw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk50P-0005ds-6z; Tue, 01 Dec 2020 12:43:41 +0000
+Date:   Tue, 1 Dec 2020 12:43:41 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 05/16] fs: fix kernel-doc markups
+Message-ID: <20201201124341.GA21541@infradead.org>
+References: <cover.1606823973.git.mchehab+huawei@kernel.org>
+ <46ccd8f26eb51b2eb092923d74eadf71fdca43d7.1606823973.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201115416.26515-4-laoar.shao@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <46ccd8f26eb51b2eb092923d74eadf71fdca43d7.1606823973.git.mchehab+huawei@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 07:54:13PM +0800, Yafang Shao wrote:
-> If we want to use schedstats facility, we should move out of
-> struct sched_statistics from the struct sched_entity or add it into other
-> sctructs of sched entity as well. Obviously the latter one is bad because
-> that requires more spaces. So we should move it into a common struct which
-> can be used by all sched classes.
+On Tue, Dec 01, 2020 at 01:08:58PM +0100, Mauro Carvalho Chehab wrote:
+> Two markups are at the wrong place. Kernel-doc only
+> support having the comment just before the identifier.
 > 
-> The struct sched_statistics is the schedular statistics of a task_struct
-> or a task_group. So we can move it into struct task_struct and
-> struct task_group to achieve the goal.
-> 
-> Below is the detailed explaination of the change in the structs.
-> 
-> - Before this patch
-> 
-> struct task_struct {            |-> struct sched_entity {
->     ...                         |       ...
->     struct sched_entity *se; ---|       struct sched_statistics statistics;
->     struct sched_rt_entity *rt;         ...
->     ...                                 ...
-> };                                  };
-> 
-> struct task_group {             |--> se[0]->statistics : schedstats of CPU0
->     ...                         |
->  #ifdef CONFIG_FAIR_GROUP_SCHED |
->     struct sched_entity **se; --|--> se[1]->statistics : schedstats of CPU1
->                                 |
->  #endif                         |
->                                 |--> se[N]->statistics : schedstats of CPUn
-> 
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->     struct sched_rt_entity  **rt_se; (N/A)
->  #endif
->     ...
-> };
-> 
-> The '**se' in task_group is allocated in the fair sched class, which is
-> hard to be reused by other sched class.
-> 
-> - After this patch
-> 
-> struct task_struct {
->     ...
->     struct sched_statistics statistics;
->     ...
->     struct sched_entity *se;
->     struct sched_rt_entity *rt;
->     ...
-> };
-> 
-> struct task_group {                    |---> stats[0] : of CPU0
->     ...                                |
->     struct sched_statistics **stats; --|---> stats[1] : of CPU1
->     ...                                |
->                                        |---> stats[n] : of CPUn
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->     struct sched_entity **se;
->  #endif
->  #ifdef CONFIG_RT_GROUP_SCHED
->     struct sched_rt_entity  **rt_se;
->  #endif
->     ...
-> };
-> 
-> After the patch it is clearly that both of se or rt_se can easily get the
-> sched_statistics by a task_struct or a task_group.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Also, some identifiers have different names between their
+> prototypes and the kernel-doc markup.
 
-I didn't see anything wrong as such, it's mostly a mechanical
-conversion. The one slight caveat is the potential change in cache
-location for the statistics but it's not necessarily negative. The stats
-potentially move to a different cache line but it's less obvious whether
-that even matters given the location is very similar.
-
-There is increased overhead now when schedstats are *enabled* because
-_schedstat_from_sched_entity() has to be called but it appears that it is
-protected by a schedstat_enabled() check. So ok, schedstats when enabled
-are now a bit more expensive but they were expensive in the first place
-so does it matter?
-
-I'd have been happied if there was a comparison with schedstats enabled
-just in case the overhead is too high but it could also do with a second
-set of eyeballs.
-
-It's somewhat tentative but
-
-Acked-by: Mel Gorman <mgorman@suse.de>
-
--- 
-Mel Gorman
-SUSE Labs
+This patch looks really weird, having 30-ish unchanged lines as the
+unified diff context.
