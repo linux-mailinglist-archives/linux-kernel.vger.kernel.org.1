@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031272CA5B5
+	by mail.lfdr.de (Postfix) with ESMTP id EB67D2CA5B7
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403878AbgLAObt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:31:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403838AbgLAObs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:31:48 -0500
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5188C2087C
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606833067;
-        bh=iKyVt3ei4IjF6uUcpgpDuCr1OPzvs8ktfZvmbaiq0V4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oMsqBM0RKejCzfstwlt6YyEpaxDWsKgOG+o0IPk82w9kBAgkGtQL6ftCiJ8ERMZ2u
-         cgwTOds2N8B26XkSvBv5MlYgDUiE9ylwA2mJ0qy/1mmvH+QikgJwL40rAjTzcrQnRt
-         8tIXOjHigZTfKj6SbWHaYT2ryjk+BGEnLXZ0qT3E=
-Received: by mail-ej1-f48.google.com with SMTP id d17so4495243ejy.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:31:07 -0800 (PST)
-X-Gm-Message-State: AOAM532hT5/77+YFCwtLALAYFeId+DEUwwXYE1Bb2JPoGSZKiAFjcbqj
-        7yiB0rUZ4kfbWh4qJt99xAVsThfuIthGuOq4jg==
-X-Google-Smtp-Source: ABdhPJzlHxdV4VGqzoWpb7rYlMAdgwMJ1nH13c0Yed4GR1AZ/tKtVHvegqEicS3dnzhWhT9kSKQM68aoJzZdQwO0v8w=
-X-Received: by 2002:a17:906:af0a:: with SMTP id lx10mr3263894ejb.75.1606833065729;
- Tue, 01 Dec 2020 06:31:05 -0800 (PST)
+        id S2403905AbgLAOb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:31:58 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:55500 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388915AbgLAOb5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:31:57 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1ET4f3052841;
+        Tue, 1 Dec 2020 14:31:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=mQts94rHer9WemoS7c8i+DV543vHJuK33cqzIkDxFy4=;
+ b=KDcY+lTcIJsjw6y+qWKZToLaZNbkaIovCjCXWKgV1Bq6IvIlbMyO0YHDmD9b1qqrzHPv
+ E2RrxWpkT6Y8X2mmhEjkMP8XAfx/5csuY6a05yo+42hs8KMtQI4iIjML3n70KLS1LMS1
+ gMRISj7Rh08H+uHVl7OpIdNxGA2sMAW3ACPczU67CUwf68GBFJfV/4014StlF9KYIWDI
+ 89F/gQbuHJhS7TKQlzkdfOJVFEhjYLE6zIyid7rQn7vP578sjOrqyPEeMi68yqgUUEn5
+ vU4UxmhXLCB7f1Oq86rPnCCev/X/a5UzkQyth8NIjaubK9NvKop5rxyV6A4EI31QxO9+ NA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 353c2atxbr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 14:31:07 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1ELJaw117970;
+        Tue, 1 Dec 2020 14:31:06 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 3540fx12mf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 14:31:06 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B1EV5Of030407;
+        Tue, 1 Dec 2020 14:31:05 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Dec 2020 06:31:04 -0800
+Date:   Tue, 1 Dec 2020 17:30:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] media: rockchip: rkisp1: remove useless debugfs checks
+Message-ID: <20201201143058.GJ2767@kadam>
 MIME-Version: 1.0
-References: <20201116231407.94-1-chunkuang.hu@kernel.org> <20201116231407.94-3-chunkuang.hu@kernel.org>
- <20201130103411.GN8403@vkoul-mobl>
-In-Reply-To: <20201130103411.GN8403@vkoul-mobl>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 1 Dec 2020 22:30:54 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-Dkn_cwb39+G3SHJZdKdiBk9fsUWJN8sfM2fhLbVT8tg@mail.gmail.com>
-Message-ID: <CAAOTY_-Dkn_cwb39+G3SHJZdKdiBk9fsUWJN8sfM2fhLbVT8tg@mail.gmail.com>
-Subject: Re: [RESEND PATCH 2/3] phy: mediatek: Move mtk_mipi_dsi_phy driver
- into drivers/phy/mediatek folder
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a6d9660f-84ec-317d-c3aa-9b3bda595d49@collabora.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010092
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Vinod:
+The debugfs_create_dir() function never returns NULLs so this code will
+never be executed.  It's not intended that callers will check for
+debugfs errors in the normal case and it's not necessary in this driver,
+so we can just delete this code.
 
-Vinod Koul <vkoul@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8830=E6=97=A5=
- =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=886:34=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On 17-11-20, 07:14, Chun-Kuang Hu wrote:
-> > mtk_mipi_dsi_phy is currently placed inside mediatek drm driver, but it=
-'s
-> > more suitable to place a phy driver into phy driver folder, so move
-> > mtk_mipi_dsi_phy driver into phy driver folder.
->
-> Acked-By: Vinod Koul <vkoul@kernel.org>
->
-> I am thinking this would go thru drm-tree, if not let me know I would
-> apply this
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2: Fix subject
 
-Applied to mediatek-drm-next [1], thanks.
+ drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
-
-Regards,
-Chun-Kuang.
-
->
-> --
-> ~Vinod
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+index 9af137e4967f..68da1eed753d 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+@@ -430,10 +430,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+ 	struct rkisp1_debug *debug = &rkisp1->debug;
+ 
+ 	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
+-	if (!debug->debugfs_dir) {
+-		dev_dbg(rkisp1->dev, "failed to create debugfs directory\n");
+-		return;
+-	}
+ 	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
+ 			     &debug->data_loss);
+ 	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
+-- 
+2.29.2
