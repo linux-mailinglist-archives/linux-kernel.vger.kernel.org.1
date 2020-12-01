@@ -2,76 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A362CA14B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535702CA14C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgLAL1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:27:34 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:50908 "EHLO mail.skyhub.de"
+        id S1730438AbgLAL1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:27:40 -0500
+Received: from verein.lst.de ([213.95.11.211]:49293 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727722AbgLAL1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:27:33 -0500
-Received: from zn.tnic (p200300ec2f0e6a00835f506c18984427.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:6a00:835f:506c:1898:4427])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A33A01EC03CE;
-        Tue,  1 Dec 2020 12:26:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606822011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kG05JigLq40d1naxqpJ6O+B10zBDQJXKWSq7mQrphYg=;
-        b=BojY9LhbBSwQ8ArzVxrc7xJmMa4uIFOav+p30OL3Syx6JraGb//TATTYxZZJFIjUiez9A2
-        09xGNqYRskkRNf8Xc1CMYnDSWvJuTK+AxDFujk4khnAeCy1t2Vo04v1Br8C9dwrmoUNa3h
-        q7gIMGzlZ3iVWvjaihbgym07HcKoVjU=
-Date:   Tue, 1 Dec 2020 12:26:47 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     wangrongwei <rongwei.wang@linux.alibaba.com>
-Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-        bjorn.andersson@linaro.org, shawnguo@kernel.org, vkoul@kernel.org,
-        geert+renesas@glider.be, Anson.Huang@nxp.com, michael@walle.cc,
-        krzk@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
-        ardb@kernel.org, masahiroy@kernel.org, gshan@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
-Message-ID: <20201201112647.GA22927@zn.tnic>
-References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
- <20201130190331.GI6019@zn.tnic>
- <8724DF91-5BF0-4265-8091-F9E0C7DC2F1A@linux.alibaba.com>
+        id S1727177AbgLAL1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:27:39 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2070268AFE; Tue,  1 Dec 2020 12:26:57 +0100 (CET)
+Date:   Tue, 1 Dec 2020 12:26:56 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 3/4] configfs: implement committable items
+Message-ID: <20201201112656.GA32252@lst.de>
+References: <20201130164704.22991-1-brgl@bgdev.pl> <20201130164704.22991-4-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8724DF91-5BF0-4265-8091-F9E0C7DC2F1A@linux.alibaba.com>
+In-Reply-To: <20201130164704.22991-4-brgl@bgdev.pl>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 11:44:52AM +0800, wangrongwei wrote:
-> Indeed, I have read the commit message, and it seems that writes data
-> to a system register may cause many problems. Actually, we have taken
-> this into account. In the current version, we have separated the read
-> and write functions to the system registers into two commands,
+On Mon, Nov 30, 2020 at 05:47:03PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> This implements configfs committable items. We mostly follow the
+> documentation except that we extend config_group_ops with uncommit_item()
+> callback for reverting the changes made by commit_item().
+> 
+> Each committable group has two sub-directories: pending and live. New
+> items can only be created in pending/. Attributes can only be modified
+> while the item is in pending/. Once it's ready to be committed, it must
+> be moved over to live/ using the rename() system call. This is when the
+> commit_item() function will be called.
+> 
+> Implementation-wise: we reuse the default group mechanism to elegantly
+> plug the new pseude-groups into configfs. The pending group inherits the
+> parent group's operations so that config_items can be seamlesly created
+> in it using the callbacks supplied by the user as part of the committable
+> group itself.
 
-There's rdmsr and wrmsr in msr-tools on x86 too.
-
-> In providing the WRASR function, we consider that users should bear
-> the consequences of rewriting registers during the debugging phase. In
-> fact, most of the time we rarely use WRASR, and only use it when we
-> are very confident.
-
-As I said, there should never never ever be a tool which allows writing
-of registers from userspace. If I could go back in time, I'd stop this
-on x86 but it is too late now. Not for ARM though.
-
-Also, do you see how all the people who replied to your mail, put the
-text under the quoted text. Do that too, pls, from now on, and refrain
-from top-posting.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+This looks pretty awkward in the hierachy, but I can't really think
+of anything else.  One idea would be to require fsync to stage updates,
+but that isn't really very well discoverable.
