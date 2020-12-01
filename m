@@ -2,226 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CC22C949C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B473E2C948B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730984AbgLABXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:23:01 -0500
-Received: from mga05.intel.com ([192.55.52.43]:60521 "EHLO mga05.intel.com"
+        id S1731089AbgLABSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:18:33 -0500
+Received: from mout.gmx.net ([212.227.17.20]:34545 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726684AbgLABXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:23:00 -0500
-IronPort-SDR: UMaZwwVD1z/2ERP5wmDrD4rpXXqTg0vvCSJJlHdhY8Bo/9itBCKe6rwXP1mABxWwGpk3IidYkU
- ks4ZixgHe7VA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="257452522"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="257452522"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 17:21:20 -0800
-IronPort-SDR: ASvIKUZncV5eu+9IUkqE2q2lrUVQ+fmHbeDeeZI8EOZ7C/yMzaYkawLxgFpLRTvdXYqVt1pw22
- 5bmXeasEoD8Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="434475417"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Nov 2020 17:21:16 -0800
-Cc:     baolu.lu@linux.intel.com, Cornelia Huck <cohuck@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] vfio/type1: Add vfio_group_domain()
-To:     Alex Williamson <alex.williamson@redhat.com>
-References: <20201126012726.1185171-1-baolu.lu@linux.intel.com>
- <20201130135725.70fdf17f@w520.home>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <b5b0d138-bb79-5a05-d964-e87b7e67e7a8@linux.intel.com>
-Date:   Tue, 1 Dec 2020 09:13:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726684AbgLABSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:18:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606785355;
+        bh=mD0Si5W49evwADqXMAI9/Un1LBCPTBcDxQlGOJrxn+g=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=bzTeNGFSNBvYoVCNZ2QIQpDvSFOpk5YVXzIIepsg0gYvdAfglsEj4reL5k7dCGXtM
+         yc0cHM5SaFmJcDlj/+2GJiS9ZkvaO4ZTswUbjRsoStFc9TUYrRmpX5SK89DPyQqmy7
+         QvcWpHJKUi/8r3yKziP4FZHA6MPV6DEP76WkBYf8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MFKGP-1kz2R80npR-00FilY; Tue, 01
+ Dec 2020 02:15:55 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v5 0/7] Netronix embedded controller driver for Kobo and Tolino ebook readers
+Date:   Tue,  1 Dec 2020 02:15:06 +0100
+Message-Id: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201130135725.70fdf17f@w520.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SX923n3QBE3V79LeM2lq2SqSH46aAJ2pp9lz28fvewY9IxFxeum
+ tIlpd4v6DpGfzWKWtfuGqjC8aOqs8k8zHIUMm5ohrLHV/V+p9ik5AeNb1+H5VlzG7RxLh6o
+ MRRnQA6qEc5dzG58N4nNHIUGI1R6WX/DA5VRmNp/1qLj8qAt3Ib5eBbWzqUcIGmv0QpENY6
+ wlOh0zbRFEFgHy+hZIJDQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bvndPoRiDog=:XjqbPRvTdzaE3VMzEp6pW6
+ KyYdfRIs8iSO7faGcBMo7mnh1P7GCWPtlkWgT6p7l86fDptWXxYRMSn2zD9yYEtZpx1JkgD3O
+ ictGk1EDF3a5/3Twfe1/qzk1Gol7y8NSV5M0wan0uz2sSnavNjvTRUloyB0pl+nI5t+wPyyWm
+ fy4u4Sueh8obE2zamTRx/+pwzAxWGL/Q4tcfg6usqmVtExbRmEo8KAb+tM0lfUdaoCdqSaHeU
+ 9sd7RITBsFIzprN7A6dHFELpodJNrIY8CVpDWMA3gw3Rsl3OK7iy/UZwNWgbD/q5wfgKoYO4I
+ jBx7Eu+97n15tWkPJvcbCJZEiXxtcoxU9oFIFEJ7YnjVyXBSQ6mpIdtWgVyR2WJTgbZc88Iis
+ JbFwEEehGcZPV5sXoti9LEbIJyhHnUauBaEsaRULn/HNyDZRlNVn5Tqn0pP6FN9oEBTd5L16e
+ vGbzyaC4GvprTD5OZ8nZK0wmbKTohGtkk4lvcRSG1xoZfMkAGxh+eZdg+0ToDmoc2NdTX25pA
+ Ypfnt2Px73JJNh7mRuTrYI0U09ZL0WNbqbxgQQ/MBFKWQYxUa22M90Fzb5OUndYfQXJd5bVpT
+ mZsOWse/zBgBPglsAR6O7Vc0Vcos0Dsp9nvp3mJglobtJJawk9o0DG0Zaa+bRa/OPys0NQw4U
+ 1RP1jqTD5xTd/5B8RETDkqJMxcY0jj5hH7BpkhxALjqyJDy44lnpPajnQYfZRFBnloO70PGUr
+ y23sSY7lMi5jVjZ4KRb4Psmb7yJbXkjRvrySeLHCATTITbW+oXq/mx1ps0zZHA9fVbGVdE76z
+ ZYFnxQOk4aXwpl0UKCwdY8iApUDFdwsV5PqDuuxf2I/9dsi2zaHWwym7Dfk0H1artAdnVc3Wm
+ sO8D/Osnx7zUicaov8EA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+This patchset adds basic support for the embedded controller found on
+older ebook reader boards designed by/with the ODM Netronix Inc.[1] and
+sold by Kobo or Tolino, for example the Kobo Aura and the Tolino Shine.
+These drivers are based on information contained in the vendor kernel
+sources, but in order to all information in a single place, I documented
+the register interface of the EC on GitHub[2].
 
-Thanks a lot for your review comments.
+[1]: http://www.netronixinc.com/products.aspx?ID=3D1
+[2]: https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-co=
+ntroller
 
-On 12/1/20 4:57 AM, Alex Williamson wrote:
-> On Thu, 26 Nov 2020 09:27:26 +0800
-> Lu Baolu <baolu.lu@linux.intel.com> wrote:
-> 
->> Add the API for getting the domain from a vfio group. This could be used
->> by the physical device drivers which rely on the vfio/mdev framework for
->> mediated device user level access. The typical use case like below:
->>
->> 	unsigned int pasid;
->> 	struct vfio_group *vfio_group;
->> 	struct iommu_domain *iommu_domain;
->> 	struct device *dev = mdev_dev(mdev);
->> 	struct device *iommu_device = mdev_get_iommu_device(dev);
->>
->> 	if (!iommu_device ||
->> 	    !iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
->> 		return -EINVAL;
->>
->> 	vfio_group = vfio_group_get_external_user_from_dev(dev);(dev);
->> 	if (IS_ERR_OR_NULL(vfio_group))
->> 		return -EFAULT;
->>
->> 	iommu_domain = vfio_group_domain(vfio_group);
->> 	if (IS_ERR_OR_NULL(iommu_domain)) {
->> 		vfio_group_put_external_user(vfio_group);
->> 		return -EFAULT;
->> 	}
->>
->> 	pasid = iommu_aux_get_pasid(iommu_domain, iommu_device);
->> 	if (pasid < 0) {
->> 		vfio_group_put_external_user(vfio_group);
->> 		return -EFAULT;
->> 	}
->>
->> 	/* Program device context with pasid value. */
->> 	...
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/vfio/vfio.c             | 18 ++++++++++++++++++
->>   drivers/vfio/vfio_iommu_type1.c | 23 +++++++++++++++++++++++
->>   include/linux/vfio.h            |  3 +++
->>   3 files changed, 44 insertions(+)
->>
->> Change log:
->>   - v1: https://lore.kernel.org/linux-iommu/20201112022407.2063896-1-baolu.lu@linux.intel.com/
->>   - Changed according to comments @ https://lore.kernel.org/linux-iommu/20201116125631.2d043fcd@w520.home/
->>
->> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
->> index 2151bc7f87ab..62c652111c88 100644
->> --- a/drivers/vfio/vfio.c
->> +++ b/drivers/vfio/vfio.c
->> @@ -2331,6 +2331,24 @@ int vfio_unregister_notifier(struct device *dev, enum vfio_notify_type type,
->>   }
->>   EXPORT_SYMBOL(vfio_unregister_notifier);
->>   
->> +struct iommu_domain *vfio_group_domain(struct vfio_group *group)
->> +{
->> +	struct vfio_container *container;
->> +	struct vfio_iommu_driver *driver;
->> +
->> +	if (!group)
->> +		return ERR_PTR(-EINVAL);
->> +
->> +	container = group->container;
->> +	driver = container->iommu_driver;
->> +	if (likely(driver && driver->ops->group_domain))
->> +		return driver->ops->group_domain(container->iommu_data,
->> +						 group->iommu_group);
->> +	else
->> +		return ERR_PTR(-ENOTTY);
->> +}
->> +EXPORT_SYMBOL(vfio_group_domain);
-> 
-> 
-> _GPL?  I don't see that there's a way for a driver to get the
-> vfio_group pointer that's not already _GPL.
-> 
+v5:
+- Avoid truncation of PWM period and duty cycle to 32 bits
+- A few cleanups and additional comments in the PWM driver
+- Use regmap_multi_reg_write
 
-It should be _GPL. Will fix it.
+v4:
+- Spell out ODM (original design manufacturer)
+- Solve corner cases in the RTC driver
+- Clean up use of log levels vs. error codes
+- Add more comments explaining some peculiarities
+- Add missing MODULE_ALIAS lines
+- Various other cleanups
 
-> 
->> +
->>   /**
->>    * Module/class support
->>    */
->> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
->> index 67e827638995..783f18f21b95 100644
->> --- a/drivers/vfio/vfio_iommu_type1.c
->> +++ b/drivers/vfio/vfio_iommu_type1.c
->> @@ -2980,6 +2980,28 @@ static int vfio_iommu_type1_dma_rw(void *iommu_data, dma_addr_t user_iova,
->>   	return ret;
->>   }
->>   
->> +static void *vfio_iommu_type1_group_domain(void *iommu_data,
->> +					   struct iommu_group *iommu_group)
->> +{
->> +	struct vfio_iommu *iommu = iommu_data;
->> +	struct iommu_domain *domain = NULL;
->> +	struct vfio_domain *d;
->> +
->> +	if (!iommu || !iommu_group)
->> +		return ERR_PTR(-EINVAL);
->> +
->> +	mutex_lock(&iommu->lock);
->> +	list_for_each_entry(d, &iommu->domain_list, next) {
->> +		if (find_iommu_group(d, iommu_group)) {
->> +			domain = d->domain;
->> +			break;
->> +		}
->> +	}
->> +	mutex_unlock(&iommu->lock);
->> +
->> +	return domain;
->> +}
-> 
-> 
-> Why does this return void* rather than struct iommu_domain*, and why
-> does the error case return an ERR_PTR but the not-found case returns
-> NULL?
 
-I will change it to return iommu_domain* and return an error number for
-the not-found case.
+v3:
+- https://lore.kernel.org/lkml/20200924192455.2484005-1-j.neuschaefer@gmx.=
+net/
+- A few code cleanups
+- A few devicetree related cleanups
+- PWM and RTC functionality were moved from subnodes in the devicetree to
+  the main node. This also means that the subdrivers no longer need DT
+  compatible strings, but are instead loaded via the mfd_cell mechanism.
+- The drivers are now published under GPLv2-or-later rather than GPLv2-onl=
+y.
 
-Best regards,
-baolu
 
->  Thanks,
-> 
-> Alex
-> 
-> 
->> +
->>   static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
->>   	.name			= "vfio-iommu-type1",
->>   	.owner			= THIS_MODULE,
->> @@ -2993,6 +3015,7 @@ static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
->>   	.register_notifier	= vfio_iommu_type1_register_notifier,
->>   	.unregister_notifier	= vfio_iommu_type1_unregister_notifier,
->>   	.dma_rw			= vfio_iommu_type1_dma_rw,
->> +	.group_domain		= vfio_iommu_type1_group_domain,
->>   };
->>   
->>   static int __init vfio_iommu_type1_init(void)
->> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
->> index 38d3c6a8dc7e..a0613a6f21cc 100644
->> --- a/include/linux/vfio.h
->> +++ b/include/linux/vfio.h
->> @@ -90,6 +90,7 @@ struct vfio_iommu_driver_ops {
->>   					       struct notifier_block *nb);
->>   	int		(*dma_rw)(void *iommu_data, dma_addr_t user_iova,
->>   				  void *data, size_t count, bool write);
->> +	void		*(*group_domain)(void *iommu_data, struct iommu_group *group);
->>   };
->>   
->>   extern int vfio_register_iommu_driver(const struct vfio_iommu_driver_ops *ops);
->> @@ -126,6 +127,8 @@ extern int vfio_group_unpin_pages(struct vfio_group *group,
->>   extern int vfio_dma_rw(struct vfio_group *group, dma_addr_t user_iova,
->>   		       void *data, size_t len, bool write);
->>   
->> +extern struct iommu_domain *vfio_group_domain(struct vfio_group *group);
->> +
->>   /* each type has independent events */
->>   enum vfio_notify_type {
->>   	VFIO_IOMMU_NOTIFY = 0,
-> 
+v2:
+- https://lore.kernel.org/lkml/20200905133230.1014581-1-j.neuschaefer@gmx.=
+net/
+- Moved txt DT bindings to patch descriptions and removed patch 1/10
+  "DT bindings in plain text format"
+- New patch 7/10 "rtc: Introduce RTC_TIMESTAMP_END_2255"
+- Rebased on 5.9-rc3
+- Various other changes which are documented in each patch
+
+v1:
+- https://lore.kernel.org/lkml/20200620223915.1311485-1-j.neuschaefer@gmx.=
+net/
+
+Jonathan Neusch=C3=A4fer (7):
+  dt-bindings: Add vendor prefix for Netronix, Inc.
+  dt-bindings: mfd: Add binding for Netronix embedded controller
+  mfd: Add base driver for Netronix embedded controller
+  pwm: ntxec: Add driver for PWM function in Netronix EC
+  rtc: New driver for RTC in Netronix embedded controller
+  MAINTAINERS: Add entry for Netronix embedded controller
+  ARM: dts: imx50-kobo-aura: Add Netronix embedded controller
+
+ .../bindings/mfd/netronix,ntxec.yaml          |  76 ++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   9 +
+ arch/arm/boot/dts/imx50-kobo-aura.dts         |  16 +-
+ drivers/mfd/Kconfig                           |  11 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/ntxec.c                           | 216 ++++++++++++++++++
+ drivers/pwm/Kconfig                           |   8 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-ntxec.c                       | 173 ++++++++++++++
+ drivers/rtc/Kconfig                           |   8 +
+ drivers/rtc/Makefile                          |   1 +
+ drivers/rtc/rtc-ntxec.c                       | 143 ++++++++++++
+ include/linux/mfd/ntxec.h                     |  34 +++
+ 14 files changed, 698 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/netronix,ntxec.y=
+aml
+ create mode 100644 drivers/mfd/ntxec.c
+ create mode 100644 drivers/pwm/pwm-ntxec.c
+ create mode 100644 drivers/rtc/rtc-ntxec.c
+ create mode 100644 include/linux/mfd/ntxec.h
+
+=2D-
+2.29.2
+
