@@ -2,186 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3802C99A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBB22C99A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728860AbgLAIhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:37:10 -0500
-Received: from mga09.intel.com ([134.134.136.24]:29608 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727391AbgLAIhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:37:09 -0500
-IronPort-SDR: rVhIn17sh5sntEci+EnFQO/LSTe6feJ0nf8BHaWWUxNW3bd+4EcbilVHJrTfJr6h/yLPJ6s3s7
- hoFyXEuKKwjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172949757"
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="172949757"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 00:36:28 -0800
-IronPort-SDR: T+1s6vcfeFIpgbyg4Qz7eJDQUCreaSn18469V4nuYszHM8/Tct22T8WxCWoSVUONIn+tKPrXF0
- C+15EiPDZqLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="372822205"
-Received: from lkp-server01.sh.intel.com (HELO 70b44b587200) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 01 Dec 2020 00:36:26 -0800
-Received: from kbuild by 70b44b587200 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kk197-0000C7-Dv; Tue, 01 Dec 2020 08:36:25 +0000
-Date:   Tue, 01 Dec 2020 16:35:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.11.27a] BUILD SUCCESS
- 253d2df24d9b489825ad22b6c191a42d2a83343e
-Message-ID: <5fc60060.YAJ8aQUmMS14lU7J%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1728834AbgLAIgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:36:48 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36592 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727391AbgLAIgr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:36:47 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B182pox055406;
+        Tue, 1 Dec 2020 03:36:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=VyPdlnJoO0c9Ribr/dt1Rk75ubOoNxfX/Qj0qOLpu1o=;
+ b=o0d7iJjZ+fRxkxSN63IHpBN5NpB2yexK9j7YYsFlVIPrpDCI4XTVo4ON8OtWteH0eJI9
+ PZJxxOepv4pjri43sUxxMVLvkAWqAprT38hwEp8ZpIU4zeCX3fl4e5e4qbnw6QkpezA6
+ zC3wic2oYkDk7BEXW5US1wht/nD4/A3s0/LobOZ3b1x5MNS9qR6VnUv5njQmTXWkoXdc
+ qO3C8vz3AkuLctTCUO2qntRqw7mPO/wZWIztSmRiAoB5GDmNjyvzRJ7EucRNgB2CYOc+
+ fWaQwJQgdCRU7kQQFB4pZoEgoDZEcLrcnkCDHSqXQmQ3Csmos7qMAAtLrU3Vit2wHYGU 4w== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355gtbavdq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 03:36:04 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B18ZFcl006358;
+        Tue, 1 Dec 2020 08:36:01 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 353e689gs7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 08:36:01 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B18Zwjo41288030
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Dec 2020 08:35:58 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 740AE4C044;
+        Tue,  1 Dec 2020 08:35:58 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 631174C040;
+        Tue,  1 Dec 2020 08:35:58 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  1 Dec 2020 08:35:58 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
+        id F3B09E24F9; Tue,  1 Dec 2020 09:35:57 +0100 (CET)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, hca@linux.ibm.com
+Subject: split up lockdep and syscall related functionailty in generic entry code
+Date:   Tue,  1 Dec 2020 09:35:52 +0100
+Message-Id: <20201201083553.50996-1-svens@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_01:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=353
+ clxscore=1015 adultscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.11.27a
-branch HEAD: 253d2df24d9b489825ad22b6c191a42d2a83343e  fixup! torture: Make torture.sh throttle VERBOSE_TOROUT_*() for refscale
+i'm currently working on converting s390 to use the generic entry
+functionality. So far things are straigt-forward, there's only one
+slight problem. There is a syscall_enter_from_user_mode() which sets
+lockdep state and other initial stuff + does the entry work at the same
+time. This is a problem on s390 because the way we restart syscalls isn't
+as easy as on x86.
 
-elapsed time: 723m
+My understanding on x86 is that syscalls are restarted there by just rewinding
+the program counter and return to user space, so the instruction causing
+the syscall gets executed again.
 
-configs tested: 122
-configs skipped: 2
+On s390 this doesn't work, because the syscall number might be hard coded
+into the 'svc' instruction, so when the syscall number has to be changed we
+would repeat the wrong (old) syscall.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+So we would need functions that only do the stuff that is required when switching
+from user space to kernel and back, and functions which do the system call tracing
+and work which might be called repeatedly.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-h8300                     edosk2674_defconfig
-sh                          rsk7203_defconfig
-arm                       imx_v6_v7_defconfig
-arc                            hsdk_defconfig
-ia64                            zx1_defconfig
-sh                              ul2_defconfig
-powerpc                    sam440ep_defconfig
-nds32                            alldefconfig
-arm                            qcom_defconfig
-powerpc                 mpc832x_rdb_defconfig
-mips                           xway_defconfig
-powerpc                       maple_defconfig
-xtensa                    xip_kc705_defconfig
-sh                         apsh4a3a_defconfig
-c6x                         dsk6455_defconfig
-powerpc                      ppc64e_defconfig
-openrisc                 simple_smp_defconfig
-s390                       zfcpdump_defconfig
-mips                           gcw0_defconfig
-arm                      pxa255-idp_defconfig
-arm                        multi_v7_defconfig
-m68k                                defconfig
-powerpc                    adder875_defconfig
-sh                               j2_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      katmai_defconfig
-arc                           tb10x_defconfig
-mips                      fuloong2e_defconfig
-m68k                         apollo_defconfig
-arm                           spitz_defconfig
-arm                         vf610m4_defconfig
-arm                          lpd270_defconfig
-xtensa                           allyesconfig
-powerpc                        fsp2_defconfig
-mips                       capcella_defconfig
-powerpc                      ppc44x_defconfig
-arm                          imote2_defconfig
-powerpc                       ebony_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                      malta_kvm_defconfig
-arm                       netwinder_defconfig
-powerpc                     tqm8555_defconfig
-mips                        nlm_xlp_defconfig
-mips                     cu1830-neo_defconfig
-c6x                        evmc6678_defconfig
-powerpc                      walnut_defconfig
-mips                      loongson3_defconfig
-arc                              allyesconfig
-m68k                        mvme16x_defconfig
-mips                          rm200_defconfig
-m68k                       bvme6000_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201130
-i386                 randconfig-a002-20201130
-i386                 randconfig-a003-20201130
-i386                 randconfig-a005-20201130
-i386                 randconfig-a006-20201130
-i386                 randconfig-a001-20201130
-x86_64               randconfig-a014-20201130
-x86_64               randconfig-a015-20201130
-x86_64               randconfig-a016-20201130
-x86_64               randconfig-a011-20201130
-x86_64               randconfig-a012-20201130
-x86_64               randconfig-a013-20201130
-i386                 randconfig-a013-20201130
-i386                 randconfig-a012-20201130
-i386                 randconfig-a011-20201130
-i386                 randconfig-a016-20201130
-i386                 randconfig-a015-20201130
-i386                 randconfig-a014-20201130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+With the attached patch, the s390 code now looks like this:
 
-clang tested configs:
-x86_64               randconfig-a002-20201130
-x86_64               randconfig-a006-20201130
-x86_64               randconfig-a005-20201130
-x86_64               randconfig-a004-20201130
-x86_64               randconfig-a001-20201130
-x86_64               randconfig-a003-20201130
+(i removed some s390 specific stuff here to make the function easier
+to read)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+__do_syscall is the function which gets called by low level entry.S code:
+
+void noinstr __do_syscall(struct pt_regs *regs)
+{
+	enter_from_user_mode(regs);	/* sets lockdep state, and other initial stuff */
+
+	/*
+	 * functions that need to run with irqs disabled,
+	 * but lockdep state and other stuff set up
+	 */
+	memcpy(&regs->gprs[8], S390_lowcore.save_area_sync, 8 * sizeof(unsigned long));
+	memcpy(&regs->int_code, &S390_lowcore.svc_ilc, sizeof(regs->int_code));
+	regs->psw = S390_lowcore.svc_old_psw;
+
+	update_timer_sys();
+
+	local_irq_enable();
+
+	regs->orig_gpr2 = regs->gprs[2];
+
+	do {
+		regs->flags = _PIF_SYSCALL;
+		do_syscall(regs);
+	} while (test_pt_regs_flag(regs, PIF_SYSCALL_RESTART));
+
+	exit_to_user_mode();
+}
+
+__do_syscall calls do_syscall which does all the syscall work, and this might
+be called more than once if PIF_SYSCALL_RESTART is set:
+
+void do_syscall(struct pt_regs *regs)
+{
+	unsigned long nr = regs->int_code & 0xffff;
+
+	nr = syscall_enter_from_user_mode_work(regs, nr);
+	regs->gprs[2] = -ENOSYS;
+	if (likely(nr < NR_syscalls)) {
+		regs->gprs[2] = current->thread.sys_call_table[nr](
+				regs->orig_gpr2, regs->gprs[3],
+				regs->gprs[4], regs->gprs[5],
+				regs->gprs[6], regs->gprs[7]);
+	}
+	syscall_exit_to_user_mode1(regs);
+}
+
+What do you think about the attach patch? I'm also open for a proper name
+for syscall_exit_to_user_mode1() ;-)
+
+
