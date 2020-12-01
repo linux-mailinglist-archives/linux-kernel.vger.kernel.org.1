@@ -2,327 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E41D2CAD8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7B52CAD93
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727384AbgLAUmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:42:13 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:59804 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgLAUmM (ORCPT
+        id S1728947AbgLAUoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:44:46 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36600 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726415AbgLAUoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:42:12 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1KdDAr023774;
-        Tue, 1 Dec 2020 20:40:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=K4sJueQWoshKIfrrjBIw1vFWnEfdeqdwL9VzWeJyWT4=;
- b=GOyeqKz3WeFPazEFMTnmVGVYHkoNKm8e32glahdb/t9UOOLTpwpEqHdAi7tFjzuaNEN8
- e0q0Z7nsYf1ThDugeLr8k3TuBjWyQzPUDse/d0tk99fwS4mT6WuJGemvXwHA9ywdhrOW
- RyoI/fnt/m9AhOfdzAZuCOJK+v1v/T94MzXXK+QSCpCgzxebRFw33pq/U64z9tgHlu4x
- wgawZ+lMe1sqjbFR0s5YMr3HIGQY/EnPxnMcqxO16MnFLrr1eNOVBPzAxS/sjgFzFtC6
- aA8VThjMnaxphHWB8OrLwy7QSt1QhINxmavl4CRScVZTXx3TDRxIihnr407n7lpr9oF2 Ww== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 353c2avvct-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Dec 2020 20:40:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B1KVKDF052973;
-        Tue, 1 Dec 2020 20:40:45 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3540fxhnxh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Dec 2020 20:40:45 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B1KecaZ011014;
-        Tue, 1 Dec 2020 20:40:39 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Dec 2020 12:40:38 -0800
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id 88B9B6A00D6; Tue,  1 Dec 2020 15:42:39 -0500 (EST)
-Date:   Tue, 1 Dec 2020 15:42:39 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Borislav Petkov <bp@alien8.de>, hch@lst.de, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
-        peterz@infradead.org, dave.hansen@linux-intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, jon.grimm@amd.com,
-        rientjes@google.com
-Subject: Re: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
- guests.
-Message-ID: <20201201204239.GA4528@char.us.oracle.com>
-References: <20201119214205.11062-1-Ashish.Kalra@amd.com>
- <20201123170647.GE15044@zn.tnic>
- <20201123175632.GA21539@char.us.oracle.com>
- <20201123225631.GA16055@ashkalra_ubuntu_server>
- <20201124234622.GA16867@ashkalra_ubuntu_server>
+        Tue, 1 Dec 2020 15:44:46 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1KcdvI031239;
+        Tue, 1 Dec 2020 12:43:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=R1BPDchuLUy1K8ZU16aa6PTT9NITj0lm+bekH7baMwM=;
+ b=Id1N8NXVIoAnAddttyX+j1IuSSQsUw0C1aNKrElhCoReah0ZYzslAH804Z0JI6WmqPlu
+ sM1FnhQHiSVn59px5jgGPbnCvBNolh+aZ3Y24PDT3EtqucVaBpNeTpMaO8t9o4P3o+QX
+ iZrM+jiI80WN6T95cSkpXMTXzLKgaSeu3Yo= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3547pspq1f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 01 Dec 2020 12:43:52 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 1 Dec 2020 12:43:51 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J4+6W+gj741axBp+i02nLiUa0+SRwzUkxWY0LC7DeUqtvueB0hUaiDzy4NsowU5mihhMShCd03Ph0eoHnb8SYLzfv8xOKlS46KCj8p4BwFQ7XVnQwbwuslRqsGFwIAHvGUTbRZvRTMfsf9wUmDUA4fd0K1yKZHr3xLTkrY8wTozR6g9o2S3sFunvmDEtHdOlaSjxEwMF4tRIeBAjkKSQnBW+Rb2xfW56cJyEhLiXzRHdCo/gaYdvbCDg9WQbQ2vb1OUffTOdmu2LZayptD+LmEERNs+pHG8X3NCGRLz+r6kne8SWUWEucKYDTienYjgnvaFScy9XNUUYTBM8UCIp6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R1BPDchuLUy1K8ZU16aa6PTT9NITj0lm+bekH7baMwM=;
+ b=WFC6AGhgCM2ulxrrS0fdJZoBOSpiD6mqAhF6VOelUoUDblCxWfAhYfHKyfXlnq6fz4T9hPwm1VdJ3o6Rqy8ei/q47VnlXIzPKHSq2XUwxfWsf4l867/MPu1CzWEdBYM+7GCax52p8EsI4GXK74ew2Xy4rkwGsvsU3Qtv17DjHsln2RhhO2FRSv4eevSe4em4HymK77rqUwfHRnswDseP1UVEa6oUhZmkVgjf/8GKt2wYbT37ncARafE+AJ9F2oZHcWjxw4lefgD59IFIXIsKNdZ8aqVO4rKxkmlEu/5rpbmIavjuIZMPpI3GYtbisomIUsRWNsVThmu6PyrT7lj7sg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R1BPDchuLUy1K8ZU16aa6PTT9NITj0lm+bekH7baMwM=;
+ b=KSL7Ik0RjYDSU6+ZClHE2fCSmy3xyp2aeZwQ+S00qAIeW8RTvPzEgo/S4XhgazLVbehS92pLHMBEM7sVYIuS3yhsSmF20nJ/OwVIILCbg9FuYxOjP/TdOPW23YAWJXpnYplw8YIH13HljVnpxFAjglGm2HKCqLB09onoyqDfHUY=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2773.namprd15.prod.outlook.com (2603:10b6:a03:150::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Tue, 1 Dec
+ 2020 20:43:50 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::f49e:bdbb:8cd7:bf6b]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::f49e:bdbb:8cd7:bf6b%7]) with mapi id 15.20.3611.022; Tue, 1 Dec 2020
+ 20:43:50 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+Subject: Re: [RFC v2 0/2] Introduce perf-stat -b for BPF programs
+Thread-Topic: [RFC v2 0/2] Introduce perf-stat -b for BPF programs
+Thread-Index: AQHWx7S/FR2wDHKdC0yuuC4wObs7JqnirmgAgAAHg4A=
+Date:   Tue, 1 Dec 2020 20:43:50 +0000
+Message-ID: <2E0DA3EB-BFE7-4439-9142-DA98825B4159@fb.com>
+References: <20201201073647.753079-1-songliubraving@fb.com>
+ <20201201201654.GD3169083@krava>
+In-Reply-To: <20201201201654.GD3169083@krava>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:438f]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 837fc6fc-6c48-40fd-6281-08d89639ceeb
+x-ms-traffictypediagnostic: BYAPR15MB2773:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB27737F778EFB66DBB9E64F95B3F40@BYAPR15MB2773.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: L6mYRoxUlBXLQrbDNAYbx8V6aEC+78jER0TfvZuK5fuTE/94qj3ro/4waLIJlDCb5tOca6m0S1LCYbTJlaqb4YRyrt/nu+wGnO31SF3FpZQ++0Wi06o2ImjcEQxtsnnBGXhETcqEeFJGHxq+QBPn5FY7iLWJKgcir4iQX4MBcG7Ioytru78mMgax/lWKzjF1Ly25fmifoy7j1hBysmVLII9kFCQJtchDTQrPS7zJgBi+AjqiZlvMxN3KBOfAY8+OZi703+WLbFc6sIahTboDGJt0XSSvhF0gQGcGlcW6QKqDmJVg8EUe3xTqxFF34Xc/iGP5TW7du6rEOYxCdrFXFA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(39860400002)(396003)(376002)(316002)(6486002)(8676002)(8936002)(54906003)(71200400001)(6916009)(83380400001)(6512007)(2906002)(66556008)(478600001)(33656002)(86362001)(76116006)(4326008)(36756003)(66446008)(2616005)(91956017)(66946007)(186003)(66476007)(64756008)(53546011)(5660300002)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?m4VRh4gFjvhQJW9oASLpIH9A5uSZ+qOsWPcqj9UTTNEv4m0Q6yWcmRSBlBiR?=
+ =?us-ascii?Q?3pHYQITRioa2m6/JyqllIt4954Cl//OY3ChXsgqR2KDRwLDJx+7HQjGleU+I?=
+ =?us-ascii?Q?v8OWNCjRO2Z+elMmMxLCwcYr4HEHEBVgxpdy4DI0P7m+sP3v/t390x18sp4Q?=
+ =?us-ascii?Q?43hWnXReKd375eXKRAktJOvB4bkqg0maAsAdfN/x1741OYud8QdJlQRlThJ1?=
+ =?us-ascii?Q?AsNOVcDCQLLaIi+W5ysM4SbhncrXhOG1wXRODmH7sudCgehxElbleLea+Y6+?=
+ =?us-ascii?Q?pNYc39QXaLrqc1p9vMMx2ljdwb7krxIPYNvKeIF2Q1nUT3NdteRmIhK3xrl6?=
+ =?us-ascii?Q?GZGXod6Inm+iHbQcRvJZiLvLkWQA4adkPvD9xcJRhSzbEzyzrcN5LGv+xusy?=
+ =?us-ascii?Q?SbHY18LwVbVzUJKmYai5ZiE9v+v0DNtCwk1x8kIGAsyvt6dIG3bJjCYuwEfI?=
+ =?us-ascii?Q?Z/BIPwATe044JGxBRnJ8DWbdyl4PDrHsqHTMBXhEGjGFc/+8epFJ6BUGmexl?=
+ =?us-ascii?Q?geCyeFromwvGOrJbx+8aYqir0dzNsD7wrMGuUOeGY+loNH2N7uZMWiuYGnfQ?=
+ =?us-ascii?Q?8YFQYsrWl0PxAQAlrY8GtvTov3mGw/KUIFYDjiMzcVHLjj2fWjalwVqZoxfF?=
+ =?us-ascii?Q?cx0BpV6FkMYMsMCTDd+daFociB/5hWzUfN9LjJ8Oz82R7EDr5EoCT9W+7ctd?=
+ =?us-ascii?Q?6BVqcn/Pfc4wUPvrxwGpCV1W4T1PazTvoozkxAmgXGbTeyx1VlhuVCRExxuY?=
+ =?us-ascii?Q?Y5jL784AmqPnA+H5Z2SlSfVoS32sor7kkpFQ1iw/f8V8Lh0VAXhOzMdKbZsZ?=
+ =?us-ascii?Q?zjYLVNbpRwHwF3R5yFVYCbgyW3vnM6B+VJvXygwmvahd5AB6gYJACYLqzZlg?=
+ =?us-ascii?Q?09aGFSYXabY+VaJzHnZ+/3GQ32f1280rCnvM1FFVJ19qA0lF5CGI+k80F2B5?=
+ =?us-ascii?Q?j202kECBcq+o4fUBAYAqnIiR0MTvLQv04NeRO+bhMx9Jiaj81FohUtXT2A9D?=
+ =?us-ascii?Q?AJAM617IiYgrlY5YrRJ01xl524W+YcPN4vDCSd7dDLTt3lg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B4B2C7FDA19A094EBD5661CB3731F8E4@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124234622.GA16867@ashkalra_ubuntu_server>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012010125
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 837fc6fc-6c48-40fd-6281-08d89639ceeb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 20:43:50.0880
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ilA0K28wj8soA9m/2Or1SLU9oIZxkmVVYMHYEUa26EHTSlzu0Ju0Nw2zFW6ZiJ2atoiSbjaSdZoTb5GtERDoJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2773
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_09:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ mlxscore=0 malwarescore=0 spamscore=0 priorityscore=1501 bulkscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 lowpriorityscore=0
+ phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010125
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:46:22PM +0000, Ashish Kalra wrote:
-> Hello Konrad, 
-> 
-> On Mon, Nov 23, 2020 at 10:56:31PM +0000, Ashish Kalra wrote:
-> > Hello Konrad,
-> > 
-> > On Mon, Nov 23, 2020 at 12:56:32PM -0500, Konrad Rzeszutek Wilk wrote:
-> > > On Mon, Nov 23, 2020 at 06:06:47PM +0100, Borislav Petkov wrote:
-> > > > On Thu, Nov 19, 2020 at 09:42:05PM +0000, Ashish Kalra wrote:
-> > > > > From: Ashish Kalra <ashish.kalra@amd.com>
-> > > > > 
-> > > > > For SEV, all DMA to and from guest has to use shared (un-encrypted) pages.
-> > > > > SEV uses SWIOTLB to make this happen without requiring changes to device
-> > > > > drivers.  However, depending on workload being run, the default 64MB of
-> > > > > SWIOTLB might not be enough and SWIOTLB may run out of buffers to use
-> > > > > for DMA, resulting in I/O errors and/or performance degradation for
-> > > > > high I/O workloads.
-> > > > > 
-> > > > > Increase the default size of SWIOTLB for SEV guests using a minimum
-> > > > > value of 128MB and a maximum value of 512MB, determining on amount
-> > > > > of provisioned guest memory.
-> > > > 
-> > > > That sentence needs massaging.
-> > > > 
-> > > > > Using late_initcall() interface to invoke swiotlb_adjust() does not
-> > > > > work as the size adjustment needs to be done before mem_encrypt_init()
-> > > > > and reserve_crashkernel() which use the allocated SWIOTLB buffer size,
-> > > > > hence calling it explicitly from setup_arch().
-> > > > 
-> > > > "hence call it ... "
-> > > > 
-> > > > > 
-> > > > > The SWIOTLB default size adjustment is added as an architecture specific
-> > > > 
-> > > > "... is added... " needs to be "Add ..."
-> > > > 
-> > > > > interface/callback to allow architectures such as those supporting memory
-> > > > > encryption to adjust/expand SWIOTLB size for their use.
-> > > > > 
-> > > > > v5 fixed build errors and warnings as
-> > > > > Reported-by: kbuild test robot <lkp@intel.com>
-> > > > > 
-> > > > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> > > > > ---
-> > > > >  arch/x86/kernel/setup.c   |  2 ++
-> > > > >  arch/x86/mm/mem_encrypt.c | 32 ++++++++++++++++++++++++++++++++
-> > > > >  include/linux/swiotlb.h   |  6 ++++++
-> > > > >  kernel/dma/swiotlb.c      | 24 ++++++++++++++++++++++++
-> > > > >  4 files changed, 64 insertions(+)
-> > > > > 
-> > > > > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> > > > > index 3511736fbc74..b073d58dd4a3 100644
-> > > > > --- a/arch/x86/kernel/setup.c
-> > > > > +++ b/arch/x86/kernel/setup.c
-> > > > > @@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
-> > > > >  	if (boot_cpu_has(X86_FEATURE_GBPAGES))
-> > > > >  		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
-> > > > >  
-> > > > > +	swiotlb_adjust();
-> > > > > +
-> > > > >  	/*
-> > > > >  	 * Reserve memory for crash kernel after SRAT is parsed so that it
-> > > > >  	 * won't consume hotpluggable memory.
-> > > > > diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> > > > > index 3f248f0d0e07..c79a0d761db5 100644
-> > > > > --- a/arch/x86/mm/mem_encrypt.c
-> > > > > +++ b/arch/x86/mm/mem_encrypt.c
-> > > > > @@ -490,6 +490,38 @@ static void print_mem_encrypt_feature_info(void)
-> > > > >  }
-> > > > >  
-> > > > >  /* Architecture __weak replacement functions */
-> > > > > +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
-> > > > > +{
-> > > > > +	unsigned long size = 0;
-> > > > 
-> > > > 	unsigned long size = iotlb_default_size;
-> > > > 
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
-> > > > > +	 * SEV uses SWOTLB to make this happen without changing device
-> > > > > +	 * drivers. However, depending on the workload being run, the
-> > > > > +	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
-> > > > 						     ^
-> > > > 
-> > > > Use words pls, not "&".
-> > > > 
-> > > > 
-> > > > > +	 * run out of buffers for DMA, resulting in I/O errors and/or
-> > > > > +	 * performance degradation especially with high I/O workloads.
-> > > > > +	 * Increase the default size of SWIOTLB for SEV guests using
-> > > > > +	 * a minimum value of 128MB and a maximum value of 512MB,
-> > > > > +	 * depending on amount of provisioned guest memory.
-> > > > > +	 */
-> > > > > +	if (sev_active()) {
-> > > > > +		phys_addr_t total_mem = memblock_phys_mem_size();
-> > > > > +
-> > > > > +		if (total_mem <= SZ_1G)
-> > > > > +			size = max(iotlb_default_size, (unsigned long) SZ_128M);
-> > > > > +		else if (total_mem <= SZ_4G)
-> > > > > +			size = max(iotlb_default_size, (unsigned long) SZ_256M);
-> > > 
-> > > That is eating 128MB for 1GB, aka 12% of the guest memory allocated statically for this.
-> > > 
-> > > And for guests that are 2GB, that is 12% until it gets to 3GB when it is 8%
-> > > and then 6% at 4GB.
-> > > 
-> > > I would prefer this to be based on your memory count, that is 6% of total
-> > > memory. And then going forward we can allocate memory _after_ boot and then stich
-> > > the late SWIOTLB pool and allocate on demand.
-> > > 
-> > > 
-> > Ok. 
-> > 
-> > As i mentioned earlier, the patch was initially based on using a % of guest memory,
-> > as below:
-> > 
-> > +#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT        5
-> > +#define SEV_ADJUST_SWIOTLB_SIZE_MAX    (1UL << 30)
-> > ...
-> > ...
-> > +       if (sev_active() && !io_tlb_nslabs) {
-> > +               unsigned long total_mem = get_num_physpages() <<
-> > + PAGE_SHIFT;
-> > +
-> > +               default_size = total_mem *
-> > +                       SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
-> > +
-> > +               default_size = ALIGN(default_size, 1 << IO_TLB_SHIFT);
-> > +
-> > +               default_size = clamp_val(default_size, IO_TLB_DEFAULT_SIZE,
-> > +                       SEV_ADJUST_SWIOTLB_SIZE_MAX);
-> > +       }
-> > 
-> > So a similar logic can be applied here.
-> > 
-> > > 
-> > > > > +		else
-> > > > > +			size = max(iotlb_default_size, (unsigned long) SZ_512M);
-> > > > > +
-> > > > > +		pr_info("SWIOTLB bounce buffer size adjusted to %luMB for SEV platform",
-> > > > 
-> > > > just "... for SEV" - no need for "platform".
-> > > > 
-> > > > ...
-> > > > 
-> > > > > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > > > > index c19379fabd20..3be9a19ea0a5 100644
-> > > > > --- a/kernel/dma/swiotlb.c
-> > > > > +++ b/kernel/dma/swiotlb.c
-> > > > > @@ -163,6 +163,30 @@ unsigned long swiotlb_size_or_default(void)
-> > > > >  	return size ? size : (IO_TLB_DEFAULT_SIZE);
-> > > > >  }
-> > > > >  
-> > > > > +unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
-> > > > > +{
-> > > > > +	return 0;
-> > > > 
-> > > > That, of course, needs to return size, not 0.
-> > > 
-> > > This is not going to work for TDX. I think having a registration
-> > > to SWIOTLB to have this function would be better going forward.
-> > > 
-> > > As in there will be a swiotlb_register_adjuster() which AMD SEV
-> > > code can call at start, also TDX can do it (and other platforms).
-> > > 
-> > 
-> > The question is how does mem_encrypt_init() work ?
-> > 
-> > That uses a similar logic as arch_swiotlb_adjust() as a "__weak"
-> > function and i am sure it will also need to have added support for TDX,
-> > can't both arch_swiotlb_adjust() and mem_encrypt_init() have specific
-> > checks for active AMD/INTEL memory encryption technology and accordingly
-> > perform actions, as mem_encrypt_init() currently checks for
-> > sev_active().
-> > 
-> > init/main.c: 
-> > 
-> > void __init __weak mem_encrypt_init(void) { }
-> > 
-> > start_kernel()
-> > {
-> >    ..
-> >    mem_encrypt_init();
-> >    ..
-> > }
-> > 
-> > arch/x86/mm/mem_encrypt.c: 
-> >     
-> > /* Architecture __weak replacement functions */
-> > 
-> > void __init mem_encrypt_init(void)
-> > {
-> >         if (!sme_me_mask)
-> >                 return;
-> > 
-> >         /* Call into SWIOTLB to update the SWIOTLB DMA buffers */
-> >         swiotlb_update_mem_attributes();
-> > 
-> >         /*
-> >          * With SEV, we need to unroll the rep string I/O instructions.
-> >          */
-> >         if (sev_active())
-> >                 static_branch_enable(&sev_enable_key);
-> > ...
-> > ...
-> > 
-> 
-> Your thoughts on this ?
 
-That looks quite sensible. 
-> 
-> Thanks,
-> Ashish
-> 
-> > 
-> > > > 
-> > > > > +}
-> > > > > +
-> > > > > +void __init swiotlb_adjust(void)
-> > > > > +{
-> > > > > +	unsigned long size;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * If swiotlb parameter has not been specified, give a chance to
-> > > > > +	 * architectures such as those supporting memory encryption to
-> > > > > +	 * adjust/expand SWIOTLB size for their use.
-> > > > > +	 */
-> > > > 
-> > > > And when you preset the function-local argument "size" with the size
-> > > > coming in as the size argument of arch_swiotlb_adjust()...
-> > > > 
-> > > > > +	if (!io_tlb_nslabs) {
-> > > > > +		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
-> > > > > +		if (size) {
-> > > > 
-> > > > ... you don't have to do if (size) here either but simply use size to
-> > > > compute io_tlb_nslabs, I'd say.
-> > > > 
-> > > > Thx.
-> > > > 
-> > > > -- 
-> > > > Regards/Gruss,
-> > > >     Boris.
-> > > > 
-> > > > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpeople.kernel.org%2Ftglx%2Fnotes-about-netiquette&amp;data=04%7C01%7CAshish.Kalra%40amd.com%7Cebd4a85f98f44bdfcb5408d88fd8dfac%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637417508926083910%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Ub9PjAPzhDWr7K2iQggTAXwgg4VbORxP%2F%2Fcg6gQreCc%3D&amp;reserved=0
+
+> On Dec 1, 2020, at 12:16 PM, Jiri Olsa <jolsa@redhat.com> wrote:
+>=20
+> On Mon, Nov 30, 2020 at 11:36:45PM -0800, Song Liu wrote:
+>> This set introduces perf-stat -b option to count events for BPF programs=
+.
+>> This is similar to bpftool-prog-profile. But perf-stat makes it much mor=
+e
+>> flexible.
+>>=20
+>> Sending as RFC because I haven't addressed some known limitations:
+>>  1. Only counting events for one BPF program at a time.
+>>  2. Need extra logic in target__validate().
+>=20
+> hi,
+> I'm getting this eror:
+>=20
+> 	  CLANG    /home/jolsa/linux-perf/tools/perf/util/bpf_skel/.tmp/dummy.bp=
+f.o
+> 	util/bpf_skel/dummy.bpf.c:4:10: fatal error: 'bpf/bpf_helpers.h' file no=
+t found
+> 	#include <bpf/bpf_helpers.h>
+> 		 ^~~~~~~~~~~~~~~~~~~
+> 	1 error generated.
+>=20
+> I added change below to fix it, but not sure it's the best fix
+>=20
+> jirka
+
+The fix looks great to me. I will fold it in.=20
+
+Thanks!
+Song
+
+>=20
+>=20
+> ---
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index d926f0c35ed4..c8f012132d19 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -1022,7 +1022,7 @@ BPFTOOL_CFLAGS :=3D $(filter-out -D_GNU_SOURCE,$(CF=
+LAGS))
+> BPFTOOL :=3D $(SKEL_TMP_OUT)/bpftool-bootstrap
+> LIBBPF_SRC :=3D $(abspath ../lib/bpf)
+> BPFOBJ :=3D $(SKEL_TMP_OUT)/libbpf.a
+> -BPF_INCLUDE :=3D $(SKEL_TMP_OUT)
+> +BPF_INCLUDE :=3D -I$(LIBBPF_SRC)/..
+> submake_extras :=3D feature_display=3D0
+>=20
+> $(SKEL_TMP_OUT):
+> @@ -1034,7 +1034,7 @@ $(BPFTOOL): | $(SKEL_TMP_OUT)
+>=20
+> $(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(BPFOBJ) | $(SKEL_TMP_OUT=
+)
+> 	$(call QUIET_CLANG, $@)
+> -	$(Q)$(CLANG) -g -O2 -target bpf	-c $(filter util/bpf_skel/%.bpf.c,$^) -=
+o $@ && \
+> +	$(Q)$(CLANG) -g -O2 -target bpf	$(BPF_INCLUDE) -c $(filter util/bpf_ske=
+l/%.bpf.c,$^) -o $@ && \
+> 	$(LLVM_STRIP) -g $@
+>=20
+> $(SKEL_OUT)/%.skel.h: $(SKEL_TMP_OUT)/%.bpf.o | $(BPFTOOL)
+>=20
+
