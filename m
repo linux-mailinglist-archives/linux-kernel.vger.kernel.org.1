@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E2A2C9C10
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7612C9B72
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390345AbgLAJOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:14:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52156 "EHLO mail.kernel.org"
+        id S2389243AbgLAJI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:08:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390163AbgLAJNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:13:51 -0500
+        id S2388866AbgLAJGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06D0B22210;
-        Tue,  1 Dec 2020 09:13:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DEFB20809;
+        Tue,  1 Dec 2020 09:06:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813984;
-        bh=ZTzkVEYoopztrzG8S+k6U0HDmbUwN0WFALg73bJfVOs=;
+        s=korg; t=1606813572;
+        bh=PGMjPs3kovMg+0Qndby3acphdD/4Zb9vuLi9PMjCAew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n71YzJbJtCIoU8OIoKKjSlFNQe4VtxFwjbs1NpguVvU4Np5ctDn2NA86djog8/25Y
-         gZ3cNQITUcv3TbNFh3y6Kpqvn3V+3vD4Zc7y5MV/Um7bYxs4WSFd5jdZ8IH1Rtqojx
-         wYt7fXNu0o7lhuIww9rZZpMImY2cRbP0/XXAYf6Q=
+        b=Q/p84YYlnxi0T/QHmv196MgDfegUs6KZTSNlX+VekAMICFs3c8XVy4qEXa8eJ3rZa
+         xizO/D4xQuIxmOPERHdBKVVb6ObGF75r5aAB7tsEZ3hnnCvZT7HHzEtHQ8SADJiCxt
+         XcrXijda+9kvGsLVJSMt+pL8OF10FwgApV2F/2n8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 127/152] enetc: Let the hardware auto-advance the taprio base-time of 0
+        stable@vger.kernel.org, Chen Baozi <chenbaozi@phytium.com.cn>,
+        Marc Zyngier <maz@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.4 85/98] irqchip/exiu: Fix the index of fwspec for IRQ type
 Date:   Tue,  1 Dec 2020 09:54:02 +0100
-Message-Id: <20201201084728.444083960@linuxfoundation.org>
+Message-Id: <20201201084659.214027436@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,77 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Chen Baozi <chenbaozi@phytium.com.cn>
 
-[ Upstream commit 90cf87d16bd566cff40c2bc8e32e6d4cd3af23f0 ]
+commit d001e41e1b15716e9b759df5ef00510699f85282 upstream.
 
-The tc-taprio base time indicates the beginning of the tc-taprio
-schedule, which is cyclic by definition (where the length of the cycle
-in nanoseconds is called the cycle time). The base time is a 64-bit PTP
-time in the TAI domain.
+Since fwspec->param_count of ACPI node is two, the index of IRQ type
+in fwspec->param[] should be 1 rather than 2.
 
-Logically, the base-time should be a future time. But that imposes some
-restrictions to user space, which has to retrieve the current PTP time
-from the NIC first, then calculate a base time that will still be larger
-than the base time by the time the kernel driver programs this value
-into the hardware. Actually ensuring that the programmed base time is in
-the future is still a problem even if the kernel alone deals with this.
+Fixes: 3d090a36c8c8 ("irqchip/exiu: Implement ACPI support")
+Signed-off-by: Chen Baozi <chenbaozi@phytium.com.cn>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Link: https://lore.kernel.org/r/20201117032015.11805-1-cbz@baozis.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Luckily, the enetc hardware already advances a base-time that is in the
-past into a congruent time in the immediate future, according to the
-same formula that can be found in the software implementation of taprio
-(in taprio_get_start_time):
-
-	/* Schedule the start time for the beginning of the next
-	 * cycle.
-	 */
-	n = div64_s64(ktime_sub_ns(now, base), cycle);
-	*start = ktime_add_ns(base, (n + 1) * cycle);
-
-There's only one problem: the driver doesn't let the hardware do that.
-It interferes with the base-time passed from user space, by special-casing
-the situation when the base-time is zero, and replaces that with the
-current PTP time. This changes the intended effective base-time of the
-schedule, which will in the end have a different phase offset than if
-the base-time of 0.000000000 was to be advanced by an integer multiple
-of the cycle-time.
-
-Fixes: 34c6adf1977b ("enetc: Configure the Time-Aware Scheduler via tc-taprio offload")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Link: https://lore.kernel.org/r/20201124220259.3027991-1-vladimir.oltean@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc_qos.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/irqchip/irq-sni-exiu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_qos.c b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-index 1c4a535890dac..9a91e3568adbf 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
-@@ -95,18 +95,8 @@ static int enetc_setup_taprio(struct net_device *ndev,
- 	gcl_config->atc = 0xff;
- 	gcl_config->acl_len = cpu_to_le16(gcl_len);
- 
--	if (!admin_conf->base_time) {
--		gcl_data->btl =
--			cpu_to_le32(enetc_rd(&priv->si->hw, ENETC_SICTR0));
--		gcl_data->bth =
--			cpu_to_le32(enetc_rd(&priv->si->hw, ENETC_SICTR1));
--	} else {
--		gcl_data->btl =
--			cpu_to_le32(lower_32_bits(admin_conf->base_time));
--		gcl_data->bth =
--			cpu_to_le32(upper_32_bits(admin_conf->base_time));
--	}
--
-+	gcl_data->btl = cpu_to_le32(lower_32_bits(admin_conf->base_time));
-+	gcl_data->bth = cpu_to_le32(upper_32_bits(admin_conf->base_time));
- 	gcl_data->ct = cpu_to_le32(admin_conf->cycle_time);
- 	gcl_data->cte = cpu_to_le32(admin_conf->cycle_time_extension);
- 
--- 
-2.27.0
-
+--- a/drivers/irqchip/irq-sni-exiu.c
++++ b/drivers/irqchip/irq-sni-exiu.c
+@@ -136,7 +136,7 @@ static int exiu_domain_translate(struct
+ 		if (fwspec->param_count != 2)
+ 			return -EINVAL;
+ 		*hwirq = fwspec->param[0];
+-		*type = fwspec->param[2] & IRQ_TYPE_SENSE_MASK;
++		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+ 	}
+ 	return 0;
+ }
 
 
