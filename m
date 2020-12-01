@@ -2,81 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F5D2CA890
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885742CA87E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgLAQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:44:50 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:27478 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728345AbgLAQot (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:44:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606840917;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=Pnd9RyOkaw5mK5HLX0+EUHATeM6rpD28J4eLpJ4iBb0=;
-        b=e427UWmKAIjAebUsji6LShlrpMdBLHOddM79UGQG5RG7RyO2aDTzOhlZOspd1vKwSC
-        PE9JoFsO4qGKhrCqrkn7cWUT1X3ECGWvMHvlt18uYLvQxcB4LW5SInunkEE0iDA7jNk/
-        PjYagA+cG+5nC2SXj+L1QCP8IEwk3G11IhmxpuR5FnDLsA/YJNo3Orxm1KAi6m7BtAxO
-        JuZaUvHQ52EHC+hTZE3tmrTGXiJ/p5K3KvanIbl5KjBcthj801vclDtKm5McejEVhQ8F
-        5BY6DaZslRMU1Y4Wk7vzM4dY6JqvjlDSEOhaz1AZ64bCMEfq5IXjcW1V+996ztf6jPnd
-        E+/Q==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/vrwDuo6A=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
-        with ESMTPSA id N02faawB1GftVWA
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Tue, 1 Dec 2020 17:41:55 +0100 (CET)
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20201201162035.GK5239@sirena.org.uk>
-Date:   Tue, 1 Dec 2020 17:41:54 +0100
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8D0E8CDA-96EA-4900-B5B2-0AD371EAD046@goldelico.com>
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com> <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com> <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk> <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com> <20201201162035.GK5239@sirena.org.uk>
-To:     Mark Brown <broonie@kernel.org>
-X-Mailer: Apple Mail (2.3124)
+        id S1727826AbgLAQnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:43:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52028 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726981AbgLAQnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:43:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2CC2AAC2F;
+        Tue,  1 Dec 2020 16:42:29 +0000 (UTC)
+Subject: Re: [PATCH] bcache: fix panic due to cache_set is null
+To:     Yi Li <yilikernel@gmail.com>, Yi Li <yili@winhong.com>
+Cc:     kent.overstreet@gmail.com, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guo Chao <guochao@winhong.com>
+References: <20201130112137.587437-1-yili@winhong.com>
+ <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <b838b790-e1e3-d644-2b1c-5de02a10669f@suse.de>
+Date:   Wed, 2 Dec 2020 00:42:25 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/1/20 12:35 PM, Yi Li wrote:
+> sorry, This patch will cause deadlock, i will check and redo it.
 
-> Am 01.12.2020 um 17:20 schrieb Mark Brown <broonie@kernel.org>:
->=20
-> On Tue, Dec 01, 2020 at 03:20:12PM +0100, Linus Walleij wrote:
->=20
->> The reason why I shoot in the dark to convert all SPI
->> drivers to use GPIO descriptors instead of the global
->> GPIO numberspace is detailed in drivers/gpio/TODO
->> so I will not repeat it here.
->=20
->> I don't know if much can be done about it other than
->> having better programmers than me at the task. Or
->> less tired when they write the patch. etc.
->=20
-> I think the problem here is more to do with where we started than =
-where
-> we're going or how we got there - things have been glued together or
-> happened to work in ways that mean I'm not sure we reasonably =
-understand
-> the situation we started from or all the requirements it has.  As you
-> say I'm not sure anything beyond throwing the API away and starting
-> afresh would really help here, but that's not really how we tend to do
-> things for a bunch of very good reasons.
+Can you try latest upstream kernel firstly ? Before spending more time
+on the fix.
 
-I think the key problem is GPIO_ACTIVE_HIGH 0 and GPIO_ACTIVE_LOW 1
-in device tree blobs. But that is so fundamental that we have to live =
-with it.
-So I guess that even a new API from scratch wouldn't improve that.=
+If I remember correctly, when cancel_writeback_rate_update_dwork() is
+not timed out, the cache set memory won't be freed before the
+writeback_rate_update worker terminates. It is possible that I miss
+something in the code, but I suggest to test with a kernel after v5.3,
+and better a v5.8+ kernel.
+
+Coly Li
+
+> 
+> On 11/30/20, Yi Li <yili@winhong.com> wrote:
+>> bcache_device_detach will release the cache_set after hotunplug cache
+>> disk. update_writeback_rate should check validate of cache_set.
+>>
+>>   IP: [<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+>>   PGD 879620067 PUD 8755d3067 PMD 0
+>>   Oops: 0000 [#1] SMP
+>>   CPU: 8 PID: 1005702 Comm: kworker/8:0 Tainted: G 4.4.0+10 #1
+>>   Hardware name: Intel BIOS SE5C610.86B.01.01.0021.032120170601 03/21/2017
+>>   Workqueue: events update_writeback_rate [bcache]
+>>   task: ffff8808786f3800 ti: ffff88077082c000 task.ti: ffff88077082c000
+>>   RIP: e030:[<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
+>>   RSP: e02b:ffff88077082fde0  EFLAGS: 00010202
+>>   RAX: 0000000000000018 RBX: ffff8808047f0b08 RCX: 0000000000000000
+>>   RDX: 0000000000000001 RSI: ffff88088170dab8 RDI: ffff88088170dab8
+>>   RBP: ffff88077082fe18 R08: 000000000000000a R09: 0000000000000000
+>>   R10: 0000000000000000 R11: 0000000000017bc8 R12: 0000000000000000
+>>   R13: ffff8808047f0000 R14: 0000000000000200 R15: ffff8808047f0b08
+>>   FS:  00007f157b6d6700(0000) GS:ffff880881700000(0000)
+>> knlGS:0000000000000000
+>>   CS:  e033 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>   CR2: 0000000000000368 CR3: 0000000875c05000 CR4: 0000000000040660
+>>   Stack:
+>>    0000000000000001 0000000000007ff0 ffff88085ff600c0 ffff880881714e80
+>>    ffff880881719500 0000000000000200 ffff8808047f0b08 ffff88077082fe60
+>>    ffffffff81088c0c 0000000081714e80 0000000000000000 ffff880881714e80
+>>   Call Trace:
+>>    [<ffffffff81088c0c>] process_one_work+0x1fc/0x3b0
+>>    [<ffffffff81089575>] worker_thread+0x2a5/0x470
+>>    [<ffffffff815a2f58>] ? __schedule+0x648/0x870
+>>    [<ffffffff810892d0>] ? rescuer_thread+0x300/0x300
+>>    [<ffffffff8108e3d5>] kthread+0xd5/0xe0
+>>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+>>    [<ffffffff815a704f>] ret_from_fork+0x3f/0x70
+>>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
+>>
+>> Reported-by: Guo Chao <guochao@winhong.com>
+>> Signed-off-by: Guo Chao <guochao@winhong.com>
+>> Signed-off-by: Yi Li <yili@winhong.com>
+>> ---
+>>  drivers/md/bcache/writeback.c | 12 +++++++++++-
+>>  1 file changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+>> index 3c74996978da..186c4c6e1607 100644
+>> --- a/drivers/md/bcache/writeback.c
+>> +++ b/drivers/md/bcache/writeback.c
+>> @@ -175,7 +175,15 @@ static void update_writeback_rate(struct work_struct
+>> *work)
+>>  	struct cached_dev *dc = container_of(to_delayed_work(work),
+>>  					     struct cached_dev,
+>>  					     writeback_rate_update);
+>> -	struct cache_set *c = dc->disk.c;
+>> +	struct cache_set *c = NULL;
+>> +
+>> +	mutex_lock(&bch_register_lock);
+>> +	c = dc->disk.c;
+>> +
+>> +	if (c == NULL) {
+>> +		mutex_unlock(&bch_register_lock);
+>> +		return;
+>> +	}
+>>
+>>  	/*
+>>  	 * should check BCACHE_DEV_RATE_DW_RUNNING before calling
+>> @@ -194,6 +202,7 @@ static void update_writeback_rate(struct work_struct
+>> *work)
+>>  		clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
+>>  		/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
+>>  		smp_mb__after_atomic();
+>> +		mutex_unlock(&bch_register_lock);
+>>  		return;
+>>  	}
+>>
+>> @@ -230,6 +239,7 @@ static void update_writeback_rate(struct work_struct
+>> *work)
+>>  	clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
+>>  	/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
+>>  	smp_mb__after_atomic();
+>> +	mutex_unlock(&bch_register_lock);
+>>  }
+>>
+>>  static unsigned int writeback_delay(struct cached_dev *dc,
+>> --
+>> 2.25.3
+>>
+>>
+>>
+>>
+
