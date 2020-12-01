@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4302C9F38
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6022C9F3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgLAK34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:29:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726962AbgLAK3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:29:55 -0500
-Received: from kernel.org (unknown [87.71.85.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 194602080A;
-        Tue,  1 Dec 2020 10:29:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606818554;
-        bh=Ws6dR/OG3AOU58f5wZaP5SOr5YFu6occCl/egAoMHKA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SUadOkONZm3yl4vUgx4ptuiDtfj+cJiQNuA5oHKmXZxvGWy0g8QkVsFClkrV67HlY
-         vRhIZcBu2BlL3N3eBSHPLP47jfJ1d1NpKcGqF/7pM3biCdU1ahEBnZj+ZAulT6sx2x
-         QaOaVP9R5iZI2YknaXdnDtAwtqchPwXSObLcS3RA=
-Date:   Tue, 1 Dec 2020 12:29:01 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-Message-ID: <20201201102901.GF557259@kernel.org>
-References: <20201101170454.9567-1-rppt@kernel.org>
- <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
- <20201117062316.GB370813@kernel.org>
- <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
+        id S1729821AbgLAKan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:30:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726908AbgLAKan (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:30:43 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D093C0613CF;
+        Tue,  1 Dec 2020 02:30:02 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:29:58 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606818599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c+mh8IiMhr9jjVGTsprtu7DC4kjlpsleCKlPdsklsk0=;
+        b=dxzQhHNuiY+WE/Mf3VqgPhfFScEEbv9hmeUPWpDqyIJnfuNH76ehOaK1NKFxSleLUBcnj9
+        3LenQS5u5+8P7fgYqrbiBlOlzrp3WCRRHHDOAl9yR5xcq6Da8fKl9hZUf7nFT+ayHV7+8C
+        zt75fr+CssEFzO5R6VNFMrasDOSs458jP7awFd5XcA2HFIjDebaDXKVQEKC6yvfzJ24LLM
+        vV+Tc+Rpc1S498kyAp2vnUSIW6XlEw2vsg6+xleMy2Jow8R9BXRPfNQbB5VyoQzA7Ew5ub
+        c4Ptx0eSlucAai1Ylpw/dZJhhy9HjDuoQv0tuhg1qEttUbA5O0Pmj+0XdFfIVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606818599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c+mh8IiMhr9jjVGTsprtu7DC4kjlpsleCKlPdsklsk0=;
+        b=aDBLxqfNefkVgwl4hajC6l9jEZH94ouwvCI4CleXd6A/c+YCiyjMRftI4sxKH9n9xqvWG/
+        BH5OV+PICLzK7RCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc6-rt13
+Message-ID: <20201201102958.5gu5jjysk42q74si@linutronix.de>
+References: <20201130175344.27uunqcpftzpbtle@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
+In-Reply-To: <20201130175344.27uunqcpftzpbtle@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+On 2020-11-30 18:53:44 [+0100], To Thomas Gleixner wrote:
+> Known issues
+>      - It has been pointed out that due to changes to the printk code the
+>        internal buffer representation changed. This is only an issue if tools
+>        like `crash' are used to extract the printk buffer from a kernel memory
+>        image.
 
-On Tue, Dec 01, 2020 at 10:10:56AM +0100, John Paul Adrian Glaubitz wrote:
-> Hi Mike!
-> 
-> On 11/17/20 7:23 AM, Mike Rapoport wrote:
-> >> Apologies for the late reply. Is this still relevant for testing?
-> >>
-> >> I have already successfully tested v1 of the patch set, shall I test v2?
-> > 
-> > There were minor differences only for m68k between the versions. I've
-> > verified them on ARAnyM but if you have a real machine a run there would
-> > be nice.
-> 
-> I have just built a fresh kernel from the tip of Linus' tree and it boots
-> fine on my RX-2600:
-> 
-> root@glendronach:~# uname -a
-> Linux glendronach 5.10.0-rc6 #6 SMP Tue Dec 1 04:52:49 CET 2020 ia64 GNU/Linux
-> root@glendronach:~#
-> 
-> No issues observed so far. Looking at the git log, it seems these changes haven't
-> been merged for 5.10 yet. I assume they will be coming with 5.11?
+I'm going to drop this in the next release. According to John, progress
+has been made now that the ringbuffer changes were merged upstream:
+- makedumpfile
+  https://github.com/makedumpfile/makedumpfile/commit/c617ec63339222f3a44d73e36677a9acc8954ccd
+  Should be part of to be released 1.6.9
 
-These changes are in linux-mm tree (https://www.ozlabs.org/~akpm/mmotm/
-with a mirror at https://github.com/hnaz/linux-mm)
+- kexec-tools
+  https://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git/commit/?id=4149df9005f2cdd2ecf70058dfe7d72f48c3a68c
+  Should be part of a post v2.0.20 release.
 
-I beleive they will be coming in 5.11.
+- crash
+  https://github.com/crash-utility/crash/commit/a5531b24750e7949c35640d996ea14c0587938bc
+  Has been merged into the 7.3.0 development phase a few hours ago.
 
-> Adrian
-> 
-> -- 
->  .''`.  John Paul Adrian Glaubitz
-> : :' :  Debian Developer - glaubitz@debian.org
-> `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
->   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-> 
-> 
+- Tools shipped by the kernel
+  - lx-dmesg (gdb helper script) in scripts/gdb/linux
+  - dmesg (gdb macro) Documentation/admin-guide/kdump/gdbmacros.txt
+  will be part of the v5.10 release.
 
--- 
-Sincerely yours,
-Mike.
+Sebastian
