@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC9F2CA7AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88F12CA7B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403986AbgLAQBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:01:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391860AbgLAQB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:01:28 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S2404012AbgLAQC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:02:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388988AbgLAQC5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:02:57 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F526C0613D4;
+        Tue,  1 Dec 2020 08:02:17 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0e6a009ae7ed3e982f3c10.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:6a00:9ae7:ed3e:982f:3c10])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FD8622247;
-        Tue,  1 Dec 2020 16:00:08 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kk84U-002R9s-Uc; Tue, 01 Dec 2020 11:00:06 -0500
-Message-ID: <20201201160006.827647495@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Tue, 01 Dec 2020 10:58:47 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org
-Subject: [for-linus][PATCH 12/12] ring-buffer: Always check to put back before stamp when crossing
- pages
-References: <20201201155835.647858317@goodmis.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CD9341EC04B9;
+        Tue,  1 Dec 2020 17:02:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606838535;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SxSydwEX7m96SIq00HrPmCp+mPAnCkJ48WYzsRg9t2w=;
+        b=iJYk51lYHndAR22VW5aqtG8DZmC26iF5UFfr3bh2BnR+sTzvvpV653bT3cxXBCWtbz76cL
+        LO93i127VhTlLn0X1nhsOK0o/4EWL74UjiUQZEJ08Ep3dbwkmbm9z1bt+iMe8HwDdUrv3W
+        e1BLblJOCST0k1xlGtguap+j53Mc8TY=
+Date:   Tue, 1 Dec 2020 17:02:12 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v15 05/26] x86/cet/shstk: Add Kconfig option for
+ user-mode Shadow Stack
+Message-ID: <20201201160212.GF22927@zn.tnic>
+References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
+ <20201110162211.9207-6-yu-cheng.yu@intel.com>
+ <20201127171012.GD13163@zn.tnic>
+ <98e1b159-bf32-5c67-455b-f798023770ef@intel.com>
+ <20201130181500.GH6019@zn.tnic>
+ <1db3d369-734e-9925-fa14-e799a19ac30c@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1db3d369-734e-9925-fa14-e799a19ac30c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Mon, Nov 30, 2020 at 02:48:09PM -0800, Yu, Yu-cheng wrote:
+> Logically, enabling IBT without shadow stack does not make sense, but these
+> features have different CPUIDs, and CONFIG_X86_SHADOW_STACK_USER and
+> CONFIG_X86_BRANCH_TRACKING_USER can be selected separately.
+> 
+> Do we want to have only one selection for both features?  In other words, we
+> turn on both or neither.
 
-The current ring buffer logic checks to see if the updating of the event
-buffer was interrupted, and if it is, it will try to fix up the before stamp
-with the write stamp to make them equal again. This logic is flawed, because
-if it is not interrupted, the two are guaranteed to be different, as the
-current event just updated the before stamp before allocation. This
-guarantees that the next event (this one or another interrupting one) will
-think it interrupted the time updates of a previous event and inject an
-absolute time stamp to compensate.
+Question is, do they need to be handled separately at all?
 
-The correct logic is to always update the timestamps when traversing to a
-new sub buffer.
+If not and IOW, I like dhansen's X86_FEATURE_CET synthetic feature
+suggestion.
 
-Cc: stable@vger.kernel.org
-Fixes: a389d86f7fd09 ("ring-buffer: Have nested events still record running time stamp")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+Thx.
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 35d91b20d47a..a6268e09160a 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3234,14 +3234,12 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	/* See if we shot pass the end of this buffer page */
- 	if (unlikely(write > BUF_PAGE_SIZE)) {
--		if (tail != w) {
--			/* before and after may now different, fix it up*/
--			b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
--			a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
--			if (a_ok && b_ok && info->before != info->after)
--				(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
--						      info->before, info->after);
--		}
-+		/* before and after may now different, fix it up*/
-+		b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
-+		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-+		if (a_ok && b_ok && info->before != info->after)
-+			(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
-+					      info->before, info->after);
- 		return rb_move_tail(cpu_buffer, tail, info);
- 	}
- 
 -- 
-2.28.0
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
