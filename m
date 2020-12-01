@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E727C2C9B88
+	by mail.lfdr.de (Postfix) with ESMTP id 090C32C9B86
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389518AbgLAJJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:09:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46058 "EHLO mail.kernel.org"
+        id S2389477AbgLAJJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:09:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389266AbgLAJIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:08:36 -0500
+        id S2389221AbgLAJI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:08:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDE2D22245;
-        Tue,  1 Dec 2020 09:07:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A81FB206CA;
+        Tue,  1 Dec 2020 09:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813675;
-        bh=OIl2PaLR6m+mUydIo7T59Uy4mlHqDn+kQDtyLPEktvA=;
+        s=korg; t=1606813684;
+        bh=P7xgj838hqxXBue6fEyOp3fcYfutepcV+JG4HL6sZAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rGpOLu8VQqTynyZLFGZkUaUiJHkgcZo8T8r2iJUqVsyMGsfeXRCSmzLBmjmLJ9WCw
-         Yvwz7XY73iQhAwgQUiSrdZJfoLUbLooaNY6QuhfKILZrqw1kXfpsU8BSlHsmq/Ugfy
-         LJizv9BpRIZ+KF8XRzNPewUiT9+xLgGQPyKcKHe4=
+        b=hvk39uAOpQ9F55dZ+aEW70MIi0HWf85XFbW/POjNX5ZQLJjlTGV6I3tL6a2DmVPtI
+         hxhTfF87syvTbnMBofcSLf15QGn1DsUd0ndnh3aZndkkNp/m9eWbzNLQGBsb8RBkPU
+         1ZCEmlkcZsIRmu4yT+jVoaZxzceYTKrulCFv67Ro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.9 021/152] powerpc/64s/exception: KVM Fix for host DSI being taken in HPT guest MMU context
-Date:   Tue,  1 Dec 2020 09:52:16 +0100
-Message-Id: <20201201084714.627633394@linuxfoundation.org>
+        stable@vger.kernel.org, Filippo Sironi <sironi@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.9 024/152] KVM: x86: handle !lapic_in_kernel case in kvm_cpu_*_extint
+Date:   Tue,  1 Dec 2020 09:52:19 +0100
+Message-Id: <20201201084715.047445468@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -42,74 +43,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit cd81acc600a9684ea4b4d25a47900d38a3890eab upstream.
+commit 72c3bcdcda494cbd600712a32e67702cdee60c07 upstream.
 
-Commit 2284ffea8f0c ("powerpc/64s/exception: Only test KVM in SRR
-interrupts when PR KVM is supported") removed KVM guest tests from
-interrupts that do not set HV=1, when PR-KVM is not configured.
+Centralize handling of interrupts from the userspace APIC
+in kvm_cpu_has_extint and kvm_cpu_get_extint, since
+userspace APIC interrupts are handled more or less the
+same as ExtINTs are with split irqchip.  This removes
+duplicated code from kvm_cpu_has_injectable_intr and
+kvm_cpu_has_interrupt, and makes the code more similar
+between kvm_cpu_has_{extint,interrupt} on one side
+and kvm_cpu_get_{extint,interrupt} on the other.
 
-This is wrong for HV-KVM HPT guest MMIO emulation case which attempts
-to load the faulting instruction word with MSR[DR]=1 and MSR[HV]=1 with
-the guest MMU context loaded. This can cause host DSI, DSLB interrupts
-which must test for KVM guest. Restore this and add a comment.
-
-Fixes: 2284ffea8f0c ("powerpc/64s/exception: Only test KVM in SRR interrupts when PR KVM is supported")
-Cc: stable@vger.kernel.org # v5.7+
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201117135617.3521127-1-npiggin@gmail.com
+Cc: stable@vger.kernel.org
+Reviewed-by: Filippo Sironi <sironi@amazon.de>
+Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+Tested-by: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/exceptions-64s.S |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ arch/x86/kvm/irq.c   |   83 ++++++++++++++++++++-------------------------------
+ arch/x86/kvm/lapic.c |    2 -
+ 2 files changed, 34 insertions(+), 51 deletions(-)
 
---- a/arch/powerpc/kernel/exceptions-64s.S
-+++ b/arch/powerpc/kernel/exceptions-64s.S
-@@ -1410,6 +1410,11 @@ END_FTR_SECTION_IFSET(CPU_FTR_HVMODE)
-  *   If none is found, do a Linux page fault. Linux page faults can happen in
-  *   kernel mode due to user copy operations of course.
-  *
-+ *   KVM: The KVM HDSI handler may perform a load with MSR[DR]=1 in guest
-+ *   MMU context, which may cause a DSI in the host, which must go to the
-+ *   KVM handler. MSR[IR] is not enabled, so the real-mode handler will
-+ *   always be used regardless of AIL setting.
-+ *
-  * - Radix MMU
-  *   The hardware loads from the Linux page table directly, so a fault goes
-  *   immediately to Linux page fault.
-@@ -1420,10 +1425,8 @@ INT_DEFINE_BEGIN(data_access)
- 	IVEC=0x300
- 	IDAR=1
- 	IDSISR=1
--#ifdef CONFIG_KVM_BOOK3S_PR_POSSIBLE
- 	IKVM_SKIP=1
- 	IKVM_REAL=1
--#endif
- INT_DEFINE_END(data_access)
- 
- EXC_REAL_BEGIN(data_access, 0x300, 0x80)
-@@ -1462,6 +1465,8 @@ ALT_MMU_FTR_SECTION_END_IFCLR(MMU_FTR_TY
-  *   ppc64_bolted_size (first segment). The kernel handler must avoid stomping
-  *   on user-handler data structures.
-  *
-+ *   KVM: Same as 0x300, DSLB must test for KVM guest.
-+ *
-  * A dedicated save area EXSLB is used (XXX: but it actually need not be
-  * these days, we could use EXGEN).
+--- a/arch/x86/kvm/irq.c
++++ b/arch/x86/kvm/irq.c
+@@ -42,27 +42,8 @@ static int pending_userspace_extint(stru
   */
-@@ -1470,10 +1475,8 @@ INT_DEFINE_BEGIN(data_access_slb)
- 	IAREA=PACA_EXSLB
- 	IRECONCILE=0
- 	IDAR=1
--#ifdef CONFIG_KVM_BOOK3S_PR_POSSIBLE
- 	IKVM_SKIP=1
- 	IKVM_REAL=1
--#endif
- INT_DEFINE_END(data_access_slb)
+ static int kvm_cpu_has_extint(struct kvm_vcpu *v)
+ {
+-	u8 accept = kvm_apic_accept_pic_intr(v);
+-
+-	if (accept) {
+-		if (irqchip_split(v->kvm))
+-			return pending_userspace_extint(v);
+-		else
+-			return v->kvm->arch.vpic->output;
+-	} else
+-		return 0;
+-}
+-
+-/*
+- * check if there is injectable interrupt:
+- * when virtual interrupt delivery enabled,
+- * interrupt from apic will handled by hardware,
+- * we don't need to check it here.
+- */
+-int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v)
+-{
+ 	/*
+-	 * FIXME: interrupt.injected represents an interrupt that it's
++	 * FIXME: interrupt.injected represents an interrupt whose
+ 	 * side-effects have already been applied (e.g. bit from IRR
+ 	 * already moved to ISR). Therefore, it is incorrect to rely
+ 	 * on interrupt.injected to know if there is a pending
+@@ -75,6 +56,23 @@ int kvm_cpu_has_injectable_intr(struct k
+ 	if (!lapic_in_kernel(v))
+ 		return v->arch.interrupt.injected;
  
- EXC_REAL_BEGIN(data_access_slb, 0x380, 0x80)
++	if (!kvm_apic_accept_pic_intr(v))
++		return 0;
++
++	if (irqchip_split(v->kvm))
++		return pending_userspace_extint(v);
++	else
++		return v->kvm->arch.vpic->output;
++}
++
++/*
++ * check if there is injectable interrupt:
++ * when virtual interrupt delivery enabled,
++ * interrupt from apic will handled by hardware,
++ * we don't need to check it here.
++ */
++int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v)
++{
+ 	if (kvm_cpu_has_extint(v))
+ 		return 1;
+ 
+@@ -91,20 +89,6 @@ EXPORT_SYMBOL_GPL(kvm_cpu_has_injectable
+  */
+ int kvm_cpu_has_interrupt(struct kvm_vcpu *v)
+ {
+-	/*
+-	 * FIXME: interrupt.injected represents an interrupt that it's
+-	 * side-effects have already been applied (e.g. bit from IRR
+-	 * already moved to ISR). Therefore, it is incorrect to rely
+-	 * on interrupt.injected to know if there is a pending
+-	 * interrupt in the user-mode LAPIC.
+-	 * This leads to nVMX/nSVM not be able to distinguish
+-	 * if it should exit from L2 to L1 on EXTERNAL_INTERRUPT on
+-	 * pending interrupt or should re-inject an injected
+-	 * interrupt.
+-	 */
+-	if (!lapic_in_kernel(v))
+-		return v->arch.interrupt.injected;
+-
+ 	if (kvm_cpu_has_extint(v))
+ 		return 1;
+ 
+@@ -118,16 +102,21 @@ EXPORT_SYMBOL_GPL(kvm_cpu_has_interrupt)
+  */
+ static int kvm_cpu_get_extint(struct kvm_vcpu *v)
+ {
+-	if (kvm_cpu_has_extint(v)) {
+-		if (irqchip_split(v->kvm)) {
+-			int vector = v->arch.pending_external_vector;
+-
+-			v->arch.pending_external_vector = -1;
+-			return vector;
+-		} else
+-			return kvm_pic_read_irq(v->kvm); /* PIC */
+-	} else
++	if (!kvm_cpu_has_extint(v)) {
++		WARN_ON(!lapic_in_kernel(v));
+ 		return -1;
++	}
++
++	if (!lapic_in_kernel(v))
++		return v->arch.interrupt.nr;
++
++	if (irqchip_split(v->kvm)) {
++		int vector = v->arch.pending_external_vector;
++
++		v->arch.pending_external_vector = -1;
++		return vector;
++	} else
++		return kvm_pic_read_irq(v->kvm); /* PIC */
+ }
+ 
+ /*
+@@ -135,13 +124,7 @@ static int kvm_cpu_get_extint(struct kvm
+  */
+ int kvm_cpu_get_interrupt(struct kvm_vcpu *v)
+ {
+-	int vector;
+-
+-	if (!lapic_in_kernel(v))
+-		return v->arch.interrupt.nr;
+-
+-	vector = kvm_cpu_get_extint(v);
+-
++	int vector = kvm_cpu_get_extint(v);
+ 	if (vector != -1)
+ 		return vector;			/* PIC */
+ 
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -2461,7 +2461,7 @@ int kvm_apic_has_interrupt(struct kvm_vc
+ 	struct kvm_lapic *apic = vcpu->arch.apic;
+ 	u32 ppr;
+ 
+-	if (!kvm_apic_hw_enabled(apic))
++	if (!kvm_apic_present(vcpu))
+ 		return -1;
+ 
+ 	__apic_update_ppr(apic, &ppr);
 
 
