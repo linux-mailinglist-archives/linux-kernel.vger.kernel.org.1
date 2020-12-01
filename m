@@ -2,224 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD372CA2A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF27A2CA2AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727635AbgLAM1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:27:33 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8481 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgLAM1d (ORCPT
+        id S1728757AbgLAM1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:27:38 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:41466 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgLAM1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:27:33 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ClhCr72RszhlK2;
-        Tue,  1 Dec 2020 20:26:16 +0800 (CST)
-Received: from [127.0.0.1] (10.57.60.129) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Dec 2020
- 20:26:29 +0800
-Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
- to drm_device
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <kraxel@redhat.com>,
-        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>
-References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
- <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
- <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
-From:   "tiantao (H)" <tiantao6@huawei.com>
-Message-ID: <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
-Date:   Tue, 1 Dec 2020 20:26:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 1 Dec 2020 07:27:37 -0500
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 0B1CQWoB009844;
+        Tue, 1 Dec 2020 21:26:33 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0B1CQWoB009844
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606825593;
+        bh=KWhXf126QdKZSIcCJw3jkh2GX10MniKd1jCj0kydoFw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nJfgxtSftWBlTEWVRbAeA1HNHcvxd6vqlY3IDtDzIPGx3weWblfqIepRRZLUYVnlj
+         X4623+/a44Ec7DYryjwWxZgPC+tXZ/BVTKwvMla2Ipr+m544Qw9qnqBBc3CWdTqGZI
+         SABly++IBGRjSrVs3/VNT5LowTIsjDK6Doqi+KnyE6bJ077uiDm26c8juHY/gtEGi5
+         6v8IGqH2toM0aLPmbIcEMLlVoNYL/dMyxLKrcIwnRVtHkAzmqd1blQ2ydRTerBRxsw
+         vOYGM86e/PPxDrJpownLV4sdioCtRQeMlBmiVMOz7xjdnzgKrH9ZlLvRWCa8DDRijp
+         nJ4GEYrtfaLJw==
+X-Nifty-SrcIP: [209.85.216.48]
+Received: by mail-pj1-f48.google.com with SMTP id v1so1129771pjr.2;
+        Tue, 01 Dec 2020 04:26:32 -0800 (PST)
+X-Gm-Message-State: AOAM533aih94qkAQmebMSGtBs6ep7SJEiAnBCbRZu3sv/i8a8Usr34HG
+        6Pc3GiQL9kr96t6j7DZKJuqsHxE6aWZe1Kl63P0=
+X-Google-Smtp-Source: ABdhPJxrotxNyHz233h6Czrg+SlWWO9Z9TFpx4dm8LPfrSJcncE+mazgZwdvVQ573qCfB2t7UjUoLvqxAyFiV3KyE4I=
+X-Received: by 2002:a17:90a:c209:: with SMTP id e9mr2490401pjt.87.1606825592194;
+ Tue, 01 Dec 2020 04:26:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.57.60.129]
-X-CFilter-Loop: Reflected
+References: <20201128004505.27619-1-scott.branden@broadcom.com>
+In-Reply-To: <20201128004505.27619-1-scott.branden@broadcom.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 1 Dec 2020 21:25:55 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATD0J3C_mFrXAju8-WmdCmrPmRFn7Um0yebnfL-_zcu8w@mail.gmail.com>
+Message-ID: <CAK7LNATD0J3C_mFrXAju8-WmdCmrPmRFn7Um0yebnfL-_zcu8w@mail.gmail.com>
+Subject: Re: [PATCH] menuconfig,mconf-cfg: Allow specification of ncurses location
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Broadcom Kernel Feedback List 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Bruce Ashfield <bruce.ashfield@windriver.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Michal Marek <mmarek@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Nov 28, 2020 at 9:45 AM Scott Branden
+<scott.branden@broadcom.com> wrote:
+>
+> From: Bruce Ashfield <bruce.ashfield@windriver.com>
+>
+> In some cross build environments such as the Yocto Project build
+> environment it provides an ncurses library that is compiled
+> differently than the host's version.  This causes display corruption
+> problems when the host's curses includes are used instead of the
+> includes from the provided compiler are overridden.  There is a second
+> case where there is no curses libraries at all on the host system and
+> menuconfig will just fail entirely.
+>
+> The solution is simply to allow an override variable in
+> check-lxdialog.sh for environments such as the Yocto Project.  Adding
+> a CROSS_CURSES_LIB and CROSS_CURSES_INC solves the issue and allowing
+> compiling and linking against the right headers and libraries.
+>
+> Signed-off-by: Jason Wessel <jason.wessel@windriver.com>
+> cc: Michal Marek <mmarek@suse.cz>
+> cc: linux-kbuild@vger.kernel.org
+> Signed-off-by: Bruce Ashfield <bruce.ashfield@windriver.com>
+> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> ---
 
 
-在 2020/12/1 20:17, Thomas Zimmermann 写道:
-> Hi
-> 
-> Am 01.12.20 um 12:55 schrieb Tian Tao:
->> Assign local variable to struct drm_device *dev because they are
->> used multiple times within a function.
->>
->> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->> ---
->>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
->>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 30 
->> ++++++++++++------------
->>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +-
->>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
->>   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 ++++---
->>   5 files changed, 23 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c 
->> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->> index ea962ac..096eea9 100644
->> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs 
->> hibmc_crtc_helper_funcs = {
->>   int hibmc_de_init(struct hibmc_drm_private *priv)
->>   {
->> -    struct drm_device *dev = priv->dev;
->> +    struct drm_device *dev = &priv->dev;
->>       struct drm_crtc *crtc = &priv->crtc;
->>       struct drm_plane *plane = &priv->primary_plane;
->>       int ret;
->> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c 
->> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->> index d845657..dd9fadc 100644
->> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops = {
->>   static int hibmc_kms_init(struct hibmc_drm_private *priv)
->>   {
->> +    struct drm_device *dev = &priv->dev;
->>       int ret;
->> -    drm_mode_config_init(priv->dev);
->> +    drm_mode_config_init(dev);
->>       priv->mode_config_initialized = true;
->> -    priv->dev->mode_config.min_width = 0;
->> -    priv->dev->mode_config.min_height = 0;
->> -    priv->dev->mode_config.max_width = 1920;
->> -    priv->dev->mode_config.max_height = 1200;
->> +    dev->mode_config.min_width = 0;
->> +    dev->mode_config.min_height = 0;
->> +    dev->mode_config.max_width = 1920;
->> +    dev->mode_config.max_height = 1200;
->> -    priv->dev->mode_config.fb_base = priv->fb_base;
->> -    priv->dev->mode_config.preferred_depth = 32;
->> -    priv->dev->mode_config.prefer_shadow = 1;
->> +    dev->mode_config.fb_base = priv->fb_base;
->> +    dev->mode_config.preferred_depth = 32;
->> +    dev->mode_config.prefer_shadow = 1;
->> -    priv->dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
->> +    dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
->>       ret = hibmc_de_init(priv);
->>       if (ret) {
->> -        drm_err(priv->dev, "failed to init de: %d\n", ret);
->> +        drm_err(dev, "failed to init de: %d\n", ret);
->>           return ret;
->>       }
->>       ret = hibmc_vdac_init(priv);
->>       if (ret) {
->> -        drm_err(priv->dev, "failed to init vdac: %d\n", ret);
->> +        drm_err(dev, "failed to init vdac: %d\n", ret);
->>           return ret;
->>       }
->> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct hibmc_drm_private 
->> *priv)
->>   static void hibmc_kms_fini(struct hibmc_drm_private *priv)
->>   {
->>       if (priv->mode_config_initialized) {
->> -        drm_mode_config_cleanup(priv->dev);
->> +        drm_mode_config_cleanup(&priv->dev);
->>           priv->mode_config_initialized = false;
->>       }
->>   }
->> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct 
->> hibmc_drm_private *priv)
->>   static int hibmc_hw_map(struct hibmc_drm_private *priv)
->>   {
->> -    struct drm_device *dev = priv->dev;
->> +    struct drm_device *dev = &priv->dev;
->>       struct pci_dev *pdev = dev->pdev;
->>       resource_size_t addr, size, ioaddr, iosize;
->> @@ -258,7 +259,7 @@ static int hibmc_unload(struct drm_device *dev)
->>   static int hibmc_load(struct drm_device *dev)
->>   {
->> -    struct hibmc_drm_private *priv;
->> +    struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
->>       int ret;
->>       priv = drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->> @@ -267,7 +268,6 @@ static int hibmc_load(struct drm_device *dev)
->>           return -ENOMEM;
->>       }
->>       dev->dev_private = priv;
->> -    priv->dev = dev;
-> 
-> I'm sure this either does not build or does not work. There's a call to 
-> drm_dev_alloc(), which initialized the DRM device. You need to assign 
-> the returned device here. The embedding of dev only work after you 
-> switched to devm_drm_dev_alloc() in the next patch.
-> 
-> For the patch at hand, just keep struct hibmc_drm_private.dev as a 
-> pointer and you should be fine.
-> 
-Changing drm_device *dev to drm_device dev and using devm_drm_dev_alloc 
-does not easily split into two patches.
-The patch does not compile well on its own, but it will compile fine 
-with patch #2.
-Can patch #1 and patch #2 be combined into a single patch,just like V1.
-> Best regards
-> Thomas
-> 
->>       ret = hibmc_hw_init(priv);
->>       if (ret)
->> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h 
->> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->> index f310a83..e35353a 100644
->> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
->>       resource_size_t  fb_size;
->>       /* drm */
->> -    struct drm_device  *dev;
->> +    struct drm_device dev;
->>       struct drm_plane primary_plane;
->>       struct drm_crtc crtc;
->>       struct drm_encoder encoder;
->> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c 
->> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->> index 74e26c2..d35548d 100644
->> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs 
->> hibmc_encoder_funcs = {
->>   int hibmc_vdac_init(struct hibmc_drm_private *priv)
->>   {
->> -    struct drm_device *dev = priv->dev;
->> +    struct drm_device *dev = &priv->dev;
->>       struct hibmc_connector *hibmc_connector = &priv->connector;
->>       struct drm_encoder *encoder = &priv->encoder;
->>       struct drm_connector *connector = &hibmc_connector->base;
->> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c 
->> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->> index 602ece1..e84fb81 100644
->> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
->>   {
->>       struct drm_vram_mm *vmm;
->>       int ret;
->> -    struct drm_device *dev = hibmc->dev;
->> +    struct drm_device *dev = &hibmc->dev;
->>       vmm = drm_vram_helper_alloc_mm(dev,
->>                          pci_resource_start(dev->pdev, 0),
->> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
->>   void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
->>   {
->> -    if (!hibmc->dev->vram_mm)
->> +    struct drm_device *dev = &hibmc->dev;
->> +
->> +    if (!dev->vram_mm)
->>           return;
->> -    drm_vram_helper_release_mm(hibmc->dev);
->> +    drm_vram_helper_release_mm(dev);
->>   }
->>   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
->>
-> 
+Some people solve the cross-compiling in Yocto
+by using pkg-config.
 
+
+For example,
+
+commit 067c650c456e758f933aaf87a202f841d34be269
+Author: Pavel Modilaynen <pavel.modilaynen@axis.com>
+Date:   Fri Jul 12 13:52:19 2019 +0200
+
+    dtc: Use pkg-config to locate libyaml
+
+    Using Makefile's wildcard with absolute path to detect
+    the presence of libyaml results in false-positive
+    detection when cross-compiling e.g. in yocto environment.
+
+
+
+mconf-cfg.sh already allows the path flexibility with pkg-config.
+Why do you want yet another hook?
+
+
+
+
+
+
+
+
+>  scripts/kconfig/mconf-cfg.sh | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>  mode change 100755 => 100644 scripts/kconfig/mconf-cfg.sh
+>
+> diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
+> old mode 100755
+> new mode 100644
+> index aa68ec95620d..32448bc198a5
+> --- a/scripts/kconfig/mconf-cfg.sh
+> +++ b/scripts/kconfig/mconf-cfg.sh
+> @@ -4,6 +4,14 @@
+>  PKG="ncursesw"
+>  PKG2="ncurses"
+>
+> +if [ "$CROSS_CURSES_LIB" != "" ]; then
+> +    echo libs=\'$CROSS_CURSES_LIB\'
+> +    if [ x"$CROSS_CURSES_INC" != x ]; then
+> +       echo cflags=\'$CROSS_CURSES_INC\'
+> +    fi
+> +    exit 0
+> +fi
+> +
+>  if [ -n "$(command -v pkg-config)" ]; then
+>         if pkg-config --exists $PKG; then
+>                 echo cflags=\"$(pkg-config --cflags $PKG)\"
+> --
+> 2.17.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
