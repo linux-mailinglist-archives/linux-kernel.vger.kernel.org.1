@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8602C9AD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A9A2C9AA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387729AbgLAJBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:01:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37284 "EHLO mail.kernel.org"
+        id S2388183AbgLAI7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:59:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388524AbgLAJBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:01:19 -0500
+        id S2388149AbgLAI7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:59:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14D872223F;
-        Tue,  1 Dec 2020 09:01:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C6C12222C;
+        Tue,  1 Dec 2020 08:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813263;
-        bh=VCawFnsDnQNth3TO+YKU9YQEsIltI4b3xyFvMrV7n4E=;
+        s=korg; t=1606813133;
+        bh=rW0ulsd0x2mf4yx9x+CuPh113Gw6V2chp8HuAY/tGUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rcJTGD4tRBesoqw/2qQrljx96YDJmNKiVkYwjZPEd+Mr9kd7pXE0FhvQiQfsztOdZ
-         VWhTeu1yNR5iLJmWuiY48jEM5eI9mHRu96muwrWu2CYo4px0aLiSA7MDqLtJ8mIT+5
-         TtmQ1sv6bMea+3SUDD+sfQ9mwS1ui1INKxm7WLO4=
+        b=GSBPFTrUbVKwghk4314KqPrQ4LKBZg3EFDXc/F2pRoPTwc4d9/AHvNrXQIg+b+GsP
+         0HoWv3ZsFDJFiKgZ7X2uauef2qBuDq1iITjDUaA2//m0wSYB2O16qS0aEuDBYrkWoO
+         eGDePIojXPI+FLLbd9LA27s1tA936fB7QgzHVmQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 38/57] IB/mthca: fix return value of error branch in mthca_init_cq()
+        Zhang Qilong <zhangqilong3@huawei.com>
+Subject: [PATCH 4.14 44/50] usb: gadget: f_midi: Fix memleak in f_midi_alloc
 Date:   Tue,  1 Dec 2020 09:53:43 +0100
-Message-Id: <20201201084650.971301510@linuxfoundation.org>
+Message-Id: <20201201084650.332320199@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 6830ff853a5764c75e56750d59d0bbb6b26f1835 ]
+commit e7694cb6998379341fd9bf3bd62b48c4e6a79385 upstream.
 
-We return 'err' in the error branch, but this variable may be set as zero
-by the above code. Fix it by setting 'err' as a negative value before we
-goto the error label.
+In the error path, if midi is not null, we should
+free the midi->id if necessary to prevent memleak.
 
-Fixes: 74c2174e7be5 ("IB uverbs: add mthca user CQ support")
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Link: https://lore.kernel.org/r/1605837422-42724-1-git-send-email-wangxiongfeng2@huawei.com
+Fixes: b85e9de9e818d ("usb: gadget: f_midi: convert to new function interface with backward compatibility")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201117021629.1470544-2-zhangqilong3@huawei.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/hw/mthca/mthca_cq.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/function/f_midi.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
-index a6531ffe29a6f..a5694dec3f2ee 100644
---- a/drivers/infiniband/hw/mthca/mthca_cq.c
-+++ b/drivers/infiniband/hw/mthca/mthca_cq.c
-@@ -808,8 +808,10 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
+--- a/drivers/usb/gadget/function/f_midi.c
++++ b/drivers/usb/gadget/function/f_midi.c
+@@ -1303,7 +1303,7 @@ static struct usb_function *f_midi_alloc
+ 	midi->id = kstrdup(opts->id, GFP_KERNEL);
+ 	if (opts->id && !midi->id) {
+ 		status = -ENOMEM;
+-		goto setup_fail;
++		goto midi_free;
  	}
+ 	midi->in_ports = opts->in_ports;
+ 	midi->out_ports = opts->out_ports;
+@@ -1315,7 +1315,7 @@ static struct usb_function *f_midi_alloc
  
- 	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
--	if (IS_ERR(mailbox))
-+	if (IS_ERR(mailbox)) {
-+		err = PTR_ERR(mailbox);
- 		goto err_out_arm;
-+	}
+ 	status = kfifo_alloc(&midi->in_req_fifo, midi->qlen, GFP_KERNEL);
+ 	if (status)
+-		goto setup_fail;
++		goto midi_free;
  
- 	cq_context = mailbox->buf;
+ 	spin_lock_init(&midi->transmit_lock);
  
-@@ -851,9 +853,9 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
- 	}
+@@ -1331,9 +1331,13 @@ static struct usb_function *f_midi_alloc
  
- 	spin_lock_irq(&dev->cq_table.lock);
--	if (mthca_array_set(&dev->cq_table.cq,
--			    cq->cqn & (dev->limits.num_cqs - 1),
--			    cq)) {
-+	err = mthca_array_set(&dev->cq_table.cq,
-+			      cq->cqn & (dev->limits.num_cqs - 1), cq);
-+	if (err) {
- 		spin_unlock_irq(&dev->cq_table.lock);
- 		goto err_out_free_mr;
- 	}
--- 
-2.27.0
-
+ 	return &midi->func;
+ 
++midi_free:
++	if (midi)
++		kfree(midi->id);
++	kfree(midi);
+ setup_fail:
+ 	mutex_unlock(&opts->lock);
+-	kfree(midi);
++
+ 	return ERR_PTR(status);
+ }
+ 
 
 
