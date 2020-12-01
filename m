@@ -2,142 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A815D2CADD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D532CADD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729391AbgLAUxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:53:39 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3068 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729183AbgLAUxi (ORCPT
+        id S2388119AbgLAUyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:54:24 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:57958 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729526AbgLAUyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:53:38 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1KXBwA055455;
-        Tue, 1 Dec 2020 15:52:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=APMTXe6+p68TNGCweQqMwpTcWSnBIulipluxdg/4dMI=;
- b=ro3anzC85I+sf6+LeJKjYBW0cIvmTnbV5cVAipOfkFZiwezT1/r3eHOI2A7/mkT9zQZ1
- z2KKZ4/8sbdVwa1tuaiEffwbmrqiOoLY3Xy3VlI00kdslZN7qYv6rNjoh8VblCDsPkK0
- xdO9mlLsr8c05t2de1cqjxLYaGJnnF1zuF1FbS9za6PSuHazrmBauQzce95hL/chtAFM
- qx7DqtyPGFHnpnm33NNTUdzWqVR6Ie4ey+gLCzpiZ/3hBlPvFZEqxcG8neigMQ01W7Op
- CP/P5pYWz63ztSMhlv1FzZQYmsvGGdvhf4kq2XtFXjLmD9tDu8SNVdw6JoylvcuKqVvy YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjnxnxt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 15:52:53 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B1KYHkE062548;
-        Tue, 1 Dec 2020 15:52:52 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjnxnx3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 15:52:52 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B1KmZMI007327;
-        Tue, 1 Dec 2020 20:52:50 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 354fpda8y6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 20:52:50 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B1Kqm2E63832448
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Dec 2020 20:52:48 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 133454C040;
-        Tue,  1 Dec 2020 20:52:48 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 434514C044;
-        Tue,  1 Dec 2020 20:52:46 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.54.13])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Dec 2020 20:52:46 +0000 (GMT)
-Message-ID: <feb537b46b78054239397396ea1fdabc1a3c44e2.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 00/11] evm: Improve usability of portable signatures
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        silviu.vlasceanu@huawei.com
-Date:   Tue, 01 Dec 2020 15:52:45 -0500
-In-Reply-To: <20201111092302.1589-1-roberto.sassu@huawei.com>
-References: <20201111092302.1589-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-01_09:2020-11-30,2020-12-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 mlxlogscore=910
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010124
+        Tue, 1 Dec 2020 15:54:23 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606856022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/OOCNvL7SE61EO1OMfIYIJlIVPJFwHzAYHNMjWpVi6U=;
+        b=j/AteXD9cZS7kdQ/qJf3bLzetr+EMv2hpbi5edVxvANuu1/gbgmur0oTWE4HgFQxigw40e
+        r2tzMSY8wxdHAmVuh4zS9WL+6rYWjmy+G2Ax3oZ+gB3Pp8t5tWABIbH5QltKsjbBFZixtk
+        iPBpoqvf6lzhbJXOwTk04DU975PfTTHFg9bB98NiSBbPQW1waMJPTpcGWRynDv31ti6XFD
+        hRaI3z+gd8Oal6ic6WMoa4AkY+1zjYWu7vCxeU3zpSvdMIkvl5wnxvHHfITETuYVW8G+qg
+        b2vD1AOFQ14z5wpXim2Pm0AVE8MBn52Y40lnZUU4A2FoCBZqHBvgAmw1JRYR8A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606856022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/OOCNvL7SE61EO1OMfIYIJlIVPJFwHzAYHNMjWpVi6U=;
+        b=TY+rBXtAXVfppeKxJ9YNJZ+OkBqgDjfosb88+i0tBeTAm2KdvoOfhu8cb0nBpIPavGyPZ3
+        5EtiEPxQatBTpYAw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH next v2 0/3] printk: remove logbuf_lock
+Date:   Tue,  1 Dec 2020 21:59:38 +0106
+Message-Id: <20201201205341.3871-1-john.ogness@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roberto,
+Hello,
 
-On Wed, 2020-11-11 at 10:22 +0100, Roberto Sassu wrote:
-> EVM portable signatures are particularly suitable for the protection of
-> metadata of immutable files where metadata is signed by a software vendor.
-> They can be used for example in conjunction with an IMA policy that
-> appraises only executed and memory mapped files.
+Here is a v2 of the next series for the printk-rework. It
+removes the @logbuf_lock. v1 is here [0]. Since this lock
+protected more than just the ringbuffer, a new
+finer-grained @syslog_lock is introduced.
 
-The existing "appraise_tcb" builtin policy verify all root owned files.
-Defining a new builtin policy to verify only executed and memory
-mmapped files would make a nice addition and would probably simplify
-testing.
+With this series, vprintk_store() becomes lockless.
 
-> 
-> However, some usability issues are still unsolved, especially when EVM is
-> used without loading an HMAC key. This patch set attempts to fix the open
-> issues.
+A consequence of this locklessness is that a buffer for
+temporary sprint space is no longer available. To get
+around this, vsnprintf() is used to determine the full
+length to reserve in the ringbuffer and then the message is
+directly sprint'ed to the reserved space.
 
-We need regression tests for each of these changes.
+Since the sprint'ed message may include syslog prefix and
+newline (both of which get stripped), there will be some
+bytes of wasted space per message. This space could be
+reclaimed by introducing a "trimming function" to the
+ringbuffer, which could reduce the size of a reserved data
+block if no newer block is reserved. However, such a
+function is not part of this series.
 
-To prevent affecting the running system, the appraise policy rules
-could be limited to a loopback mounted filesystem. 
+This series falls in line with the printk-rework plan as
+presented [1] at Linux Plumbers in Lisbon 2019.
 
-> 
-> Patch 1 allows EVM to be used without loading an HMAC key. Patch 2 avoids
-> appraisal verification of public keys (they are already verified by the key
-> subsystem).
+The series is based on next-20201201.
 
-Loading the EVM key(s) occurs early, either the builtin x509 EVM key or
-during the initramfs, makes testing difficult.  Based on
-security/evm/evm, different tests could be defined for when only x509
-keys, only HMAC key, or both EVM key types are loaded.
+John Ogness
 
-> 
-> Patches 3-5 allow metadata verification to be turned off when no HMAC key
-> is loaded and to use this mode in a safe way (by ensuring that IMA
-> revalidates metadata when there is a change).
-> 
-> Patches 6-8 make portable signatures more usable if metadata verification
-> is not turned off, by ignoring the INTEGRITY_NOLABEL error when no HMAC key
-> is loaded, by accepting any metadata modification until signature
-> verification succeeds (useful when xattrs/attrs are copied sequentially
-> from a source) and by allowing operations that don't change metadata.
-> 
-> Patch 9 makes it possible to use portable signatures when the IMA policy
-> requires file signatures and patch 10 shows portable signatures in the
-> measurement list when the ima-sig template is selected.
+[0] https://lkml.kernel.org/r/20200922153816.5883-1-john.ogness@linutronix.de
+[1] https://linuxplumbersconf.org/event/4/contributions/290/attachments/276/463/lpc2019_jogness_printk.pdf (slide 23)
 
-ima-evm-utils needs to be updated to support EVM portable & immutable
-signatures.
+John Ogness (3):
+  printk: inline log_output(),log_store() in vprintk_store()
+  printk: change @clear_seq to atomic64_t
+  printk: remove logbuf_lock, add syslog_lock
 
-> 
-> Lastly, patch 11 avoids undesired removal of security.ima when a file is
-> not selected by the IMA policy.
+ include/linux/printk.h      |   1 +
+ kernel/printk/internal.h    |   4 +-
+ kernel/printk/printk.c      | 411 ++++++++++++++++++------------------
+ kernel/printk/printk_safe.c |  18 +-
+ 4 files changed, 212 insertions(+), 222 deletions(-)
 
-thanks,
-
-Mimi
+-- 
+2.20.1
 
