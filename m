@@ -2,142 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7412CA6BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 413F82CA6CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391768AbgLAPOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:14:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391675AbgLAPOa (ORCPT
+        id S2391784AbgLAPPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:15:52 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:56046 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391549AbgLAPPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:14:30 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E4AC0613CF;
-        Tue,  1 Dec 2020 07:13:43 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 3so5839240wmg.4;
-        Tue, 01 Dec 2020 07:13:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tlhIYoIq9e3CaEPaXdMjL7drXTusDUU9rzK4hAthGZ0=;
-        b=cyP4KlWpFNGCcb0/elouH0+cdYKwDMbUoRTZRROjot83CUc0Qw6t4is1RAGHb2jO/C
-         ldT0w1qqy7nQuu4D0YRvJgUQdRcdCSim9t9+Du6EFo9SozWyGExfmCqIBeOAaxXYAhwt
-         +ykQF358mEGMfCml/NR8oYqTIVT3zk9HLFcukSLHf9qzzskuA8SvNqk2d1iDWiw57IEe
-         ETps2UWTvNQExjqHMZUNBTYAAELSuuKNtLucp0HxF11Q5lsmwZa/dIEI68+OwORLycrj
-         Up37B+3gkTzNylT20KpbJHQo/obZ/VBhU/m1kPmqNflOuHRL2l0IiFlKDOcXj9TNCch6
-         5lCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tlhIYoIq9e3CaEPaXdMjL7drXTusDUU9rzK4hAthGZ0=;
-        b=F7psFLotJ7USXe8wzHq9yWPDud8veRTaDzgj7vkrqeHFfanFD1oS8OayXBoz/QaT1L
-         PqFWGVX8o7JHF9hDLP0x0kqyy0TLAiyxMmnNUyOzY7vZ5Qx0QDYYqPpUJ9f0iBfpXTzz
-         XqugSO7zhfu2Fa8EDZTpVsxPcgmmL1ApMUwBmyUKycgv/UTvfujZHrbZYDAB7uPAALl4
-         8Opd3rPBZXri+7MfgdSyUfvQt8HJLC6+uwi+kRvFTV+hLkcT2444ZGNhUD71W6K8fQ4N
-         gsXLLg8RDce9ZjXKWUwhom4OKpMwrueF00Jq6ZwyKw07pnUSSmVutCo8jbtmFp/XxOnS
-         yMYA==
-X-Gm-Message-State: AOAM532JC6lfSvWfbn95Fz+o4vsy8McYltfl2pa+b90UR9dNODApay0c
-        Bv86A3rxg4nJuimv00W+SetTlG/RGTM=
-X-Google-Smtp-Source: ABdhPJxVZacII63n6CKeMEZxzuIpwNpMB2NqST95mdNmS5GWshD7PxuwqBJOIAwPTEoiTtwGYRqSGQ==
-X-Received: by 2002:a7b:c8da:: with SMTP id f26mr3186808wml.50.1606835622180;
-        Tue, 01 Dec 2020 07:13:42 -0800 (PST)
-Received: from [192.168.8.116] ([37.165.175.127])
-        by smtp.gmail.com with ESMTPSA id n14sm3897039wrx.79.2020.12.01.07.13.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 07:13:41 -0800 (PST)
-Subject: Re: [PATCH v1 bpf-next 05/11] tcp: Migrate TCP_NEW_SYN_RECV requests.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        osa-contribution-log@amazon.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201201144418.35045-1-kuniyu@amazon.co.jp>
- <20201201144418.35045-6-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <6b34c251-05af-06c0-8003-858b6ae8d1fd@gmail.com>
-Date:   Tue, 1 Dec 2020 16:13:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 10:15:50 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606835708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MsXeMQ47McPWqbbEZn2X1D+kqQzuS1hMi5EWz6bK4Uk=;
+        b=ltmVNyD5+BvygaqiVzK9ZDnlWMHSHNWaEdbeBa/nCER1t70kyWNVzPR0tTfKoKbuz2ckOW
+        3sdqC1NViFTOc7/gUiRJxWVTA4z0T5m+F1RyfcOZ7PI8ECg7U6mkigKfSf1MhEeA1RH1CE
+        N0vBE5R0qr7QH/VJWkIQ0O3xGPzHpZ14Khf3rBfSVj6+2Zba3KGkRILFLaodwxMoACYXtn
+        HUBcRPQ5exM87SOYSrkOs+paa6pXvU2O61q9AKmpsDZ958x/wN0SKY4W90n44L45kkHEFS
+        L9BjAmFnWRFcIwc+5ifL0EgllhsqunL84C41w2nBlx6iM2O+IQSW0LJhB1127Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606835708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MsXeMQ47McPWqbbEZn2X1D+kqQzuS1hMi5EWz6bK4Uk=;
+        b=QBKJlVkRNcyH0Bclc71acDWFd6u6gDY9f+B8NvXAq9eLz9HdL+JvO4FyI1FZ8kaogqW+VB
+        s9M/ut+0Uo77xIAQ==
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: crypto: sun4i-ss: error with kmap
+In-Reply-To: <20201201144529.GA6786@Red>
+References: <20201201130102.GA23461@Red> <87ft4phcyx.fsf@nanos.tec.linutronix.de> <20201201135252.GA9584@Red> <87y2ihfw6z.fsf@nanos.tec.linutronix.de> <20201201144529.GA6786@Red>
+Date:   Tue, 01 Dec 2020 16:15:08 +0100
+Message-ID: <87v9dlfthf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201201144418.35045-6-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/1/20 3:44 PM, Kuniyuki Iwashima wrote:
-> This patch renames reuseport_select_sock() to __reuseport_select_sock() and
-> adds two wrapper function of it to pass the migration type defined in the
-> previous commit.
-> 
->   reuseport_select_sock          : BPF_SK_REUSEPORT_MIGRATE_NO
->   reuseport_select_migrated_sock : BPF_SK_REUSEPORT_MIGRATE_REQUEST
-> 
-> As mentioned before, we have to select a new listener for TCP_NEW_SYN_RECV
-> requests at receiving the final ACK or sending a SYN+ACK. Therefore, this
-> patch also changes the code to call reuseport_select_migrated_sock() even
-> if the listening socket is TCP_CLOSE. If we can pick out a listening socket
-> from the reuseport group, we rewrite request_sock.rsk_listener and resume
-> processing the request.
-> 
-> Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> ---
->  include/net/inet_connection_sock.h | 12 +++++++++++
->  include/net/request_sock.h         | 13 ++++++++++++
->  include/net/sock_reuseport.h       |  8 +++----
->  net/core/sock_reuseport.c          | 34 ++++++++++++++++++++++++------
->  net/ipv4/inet_connection_sock.c    | 13 ++++++++++--
->  net/ipv4/tcp_ipv4.c                |  9 ++++++--
->  net/ipv6/tcp_ipv6.c                |  9 ++++++--
->  7 files changed, 81 insertions(+), 17 deletions(-)
-> 
-> diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-> index 2ea2d743f8fc..1e0958f5eb21 100644
-> --- a/include/net/inet_connection_sock.h
-> +++ b/include/net/inet_connection_sock.h
-> @@ -272,6 +272,18 @@ static inline void inet_csk_reqsk_queue_added(struct sock *sk)
->  	reqsk_queue_added(&inet_csk(sk)->icsk_accept_queue);
->  }
+On Tue, Dec 01 2020 at 15:45, Corentin Labbe wrote:
+> On Tue, Dec 01, 2020 at 03:16:36PM +0100, Thomas Gleixner wrote:
+> In fact the warn was a bit later so I added:
+>        preempt_disable();
+>         idx = arch_kmap_local_unmap_idx(kmap_local_idx(), addr);
+> -       WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
+> +       if (WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx)))
+> +               pr_err("kunmap_local: vaddr %lx\n", (unsigned long) vaddr);
 >  
-> +static inline void inet_csk_reqsk_queue_migrated(struct sock *sk,
-> +						 struct sock *nsk,
-> +						 struct request_sock *req)
-> +{
-> +	reqsk_queue_migrated(&inet_csk(sk)->icsk_accept_queue,
-> +			     &inet_csk(nsk)->icsk_accept_queue,
-> +			     req);
-> +	sock_put(sk);
-> +	sock_hold(nsk);
+>         arch_kmap_local_pre_unmap(addr);
+>         pte_clear(&init_mm, addr, kmap_pte - idx);
+>
+> and this give kunmap_local: vaddr ffefe000
 
-This looks racy to me. nsk refcount might be zero at this point.
+which looks like a valid one.
 
-If you think it can _not_ be zero, please add a big comment here,
-because this would mean something has been done before reaching this function,
-and this sock_hold() would be not needed in the first place.
+Can you apply the patch below and add 'ftrace_dump_on_oops' on the
+command line or enable it in /proc/sys/kernel/ftrace_dump_on_oops before
+starting the test.
 
-There is a good reason reqsk_alloc() is using refcount_inc_not_zero().
+That should spill out the trace after crashing.
 
-> +	req->rsk_listener = nsk;
-> +}
-> +
+Thanks,
 
-Honestly, this patch series looks quite complex, and finding a bug in the
-very first function I am looking at is not really a good sign...
-
-
+        tglx
+---
+diff --git a/mm/highmem.c b/mm/highmem.c
+index b49364a306b8..461fe2c26107 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -485,6 +485,7 @@ static inline bool kmap_high_unmap_local(unsigned long vaddr)
+ {
+ #ifdef ARCH_NEEDS_KMAP_HIGH_GET
+ 	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP)) {
++		trace_printk("kunmap_high: %lx\n", vaddr);
+ 		kunmap_high(pte_page(pkmap_page_table[PKMAP_NR(vaddr)]));
+ 		return true;
+ 	}
+@@ -520,6 +521,7 @@ void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot)
+ 	preempt_disable();
+ 	idx = arch_kmap_local_map_idx(kmap_local_idx_push(), pfn);
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
++	trace_printk("kmap_local_pfn: %d %lx\n", idx, (unsigned long) vaddr);
+ 	BUG_ON(!pte_none(*(kmap_pte - idx)));
+ 	pteval = pfn_pte(pfn, prot);
+ 	set_pte_at(&init_mm, vaddr, kmap_pte - idx, pteval);
+@@ -545,8 +547,10 @@ void *__kmap_local_page_prot(struct page *page, pgprot_t prot)
+ 
+ 	/* Try kmap_high_get() if architecture has it enabled */
+ 	kmap = arch_kmap_local_high_get(page);
+-	if (kmap)
++	if (kmap) {
++		trace_printk("kmap_local_high_get: %lx\n", (unsigned long) kmap);
+ 		return kmap;
++	}
+ 
+ 	return __kmap_local_pfn_prot(page_to_pfn(page), prot);
+ }
+@@ -578,6 +582,7 @@ void kunmap_local_indexed(void *vaddr)
+ 
+ 	preempt_disable();
+ 	idx = arch_kmap_local_unmap_idx(kmap_local_idx(), addr);
++	trace_printk("kunmap_local: %i %lx\n", idx, (unsigned long) vaddr);
+ 	WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
+ 
+ 	arch_kmap_local_pre_unmap(addr);
 
