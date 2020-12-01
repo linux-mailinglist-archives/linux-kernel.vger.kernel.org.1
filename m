@@ -2,176 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6162C983B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2122C983F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbgLAHgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:36:40 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:45415 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727116AbgLAHgk (ORCPT
+        id S1727974AbgLAHhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:37:43 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18060 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726314AbgLAHhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:36:40 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2469E580702;
-        Tue,  1 Dec 2020 02:35:33 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 01 Dec 2020 02:35:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=3rvwiy
-        VdVZV5V8QGYNBeGX9oQIeF+iVozuxS7xV+TcM=; b=pSj9KZofQf5nMeLG/FT1tB
-        DJlWiva4FpadnXv7AeNrvN8MTHDQQdH7RvrhEUYmXfv1mlYMGHjFMb/c57Ogf4Gb
-        q04q74M0kUxVoVKUJNoQJVaBjjxoXgBRLKnmtLrTEniqSRMI+gqJOvR9dArABJZD
-        1swycH4rCcHq6U2WlinuQp7FOmnhGThvDVBtDmYirRrd52LIrOLUDeWkyvIPE6NB
-        yZx/2QSK/1p1Cv5zITPvFlxo/YSfVitonw8WoyTVgRRb1+jYpNMgZqN6cRhhxxso
-        OFUf0dLTCRuAZUqTlW4k+tGH0dcEWAMFI0dpmjW2XmSXRvwF85fDvG7bRPW85HUg
-        ==
-X-ME-Sender: <xms:RPLFX-u4cZyfZ9HaY-8ORBCHA2Ju3Ptv1NksxPJePw3T7jiUXmO0Fw>
-    <xme:RPLFXzf6KFPIC6kGHyYQ7CzlpZn1yuu_q9fdfjoo57P0N6XZhRyo3fEzwwmsTesLY
-    MAs_1Wzo2PzeNg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeiuddguddtjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
-    leetnecukfhppeekgedrvddvledrudehgedrudegjeenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:RPLFX5xLVI1MJAGTFCfRPZv9xH4PB1GRwD9ThsevMD7fKMJRrcKULQ>
-    <xmx:RPLFX5PFhSnqR5PQkuuTdTVdiQHoJE_coTvGDkHxqd3J5vRDcqCScw>
-    <xmx:RPLFX-_1PrfXi7lOwZ7RHq8TX6OtscvZc5AQJoLBLsS9_KvqVzfAXw>
-    <xmx:RfLFXxWPtZkKEReIhB_EG5CASv8xH0nkYlfrtsouSFNyihk1quilnw>
-Received: from localhost (igld-84-229-154-147.inter.net.il [84.229.154.147])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 33054328005D;
-        Tue,  1 Dec 2020 02:35:32 -0500 (EST)
-Date:   Tue, 1 Dec 2020 09:35:29 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>, fw@strlen.de,
-        davem@davemloft.net, johannes@sipsolutions.net,
-        edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
-Message-ID: <20201201073529.GA1473056@shredder.lan>
-References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
- <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
- <20201121160941.GA485907@shredder.lan>
- <20201130175248.7f0b5309@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        Tue, 1 Dec 2020 02:37:42 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B17TLH9005707
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:36:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=mG8kMFe0hpzW7+SS/HuAFCIQXx4s467SNhS2DkUKe0c=;
+ b=kF0Ferp9JyDRsSfQPI4WFRMmpX1ETPgWU2OrxVbNfW56SqFEp4MQE5U/TTbW6QJN2pcR
+ /O9je+FdcoT5Cu6sw/cX0RuXtcmbc50F/U3KROuQrs/UKebacG6cG9TlIbg6yf4PMnmF
+ /QDbzC7VJ42v6vaKA3B6GKIloCGRlr34kYw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 353uh4uvf7-12
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 23:36:59 -0800
+Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 23:36:56 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 8D8DA62E5919; Mon, 30 Nov 2020 23:36:52 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, Song Liu <songliubraving@fb.com>
+Subject: [RFC v2 0/2] Introduce perf-stat -b for BPF programs
+Date:   Mon, 30 Nov 2020 23:36:45 -0800
+Message-ID: <20201201073647.753079-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130175248.7f0b5309@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_01:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ malwarescore=0 adultscore=0 lowpriorityscore=0 suspectscore=1
+ priorityscore=1501 mlxscore=0 phishscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 mlxlogscore=824 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012010049
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 05:52:48PM -0800, Jakub Kicinski wrote:
-> On Sat, 21 Nov 2020 18:09:41 +0200 Ido Schimmel wrote:
-> > + Florian
-> > 
-> > On Thu, Oct 29, 2020 at 05:36:19PM +0000, Aleksandr Nogikh wrote:
-> > > From: Aleksandr Nogikh <nogikh@google.com>
-> > > 
-> > > Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> > > code that is not reachable during normal system call execution. It is
-> > > especially helpful for fuzzing networking subsystems, where it is
-> > > common to perform packet handling in separate work queues even for the
-> > > packets that originated directly from the user space.
-> > > 
-> > > Enable coverage-guided frame injection by adding kcov remote handle to
-> > > skb extensions. Default initialization in __alloc_skb and
-> > > __build_skb_around ensures that no socket buffer that was generated
-> > > during a system call will be missed.
-> > > 
-> > > Code that is of interest and that performs packet processing should be
-> > > annotated with kcov_remote_start()/kcov_remote_stop().
-> > > 
-> > > An alternative approach is to determine kcov_handle solely on the
-> > > basis of the device/interface that received the specific socket
-> > > buffer. However, in this case it would be impossible to distinguish
-> > > between packets that originated during normal background network
-> > > processes or were intentionally injected from the user space.
-> > > 
-> > > Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> > > Acked-by: Willem de Bruijn <willemb@google.com>  
-> > 
-> > [...]
-> > 
-> > > @@ -249,6 +249,9 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
-> > >  
-> > >  		fclones->skb2.fclone = SKB_FCLONE_CLONE;
-> > >  	}
-> > > +
-> > > +	skb_set_kcov_handle(skb, kcov_common_handle());  
-> > 
-> > Hi,
-> > 
-> > This causes skb extensions to be allocated for the allocated skb, but
-> > there are instances that blindly overwrite 'skb->extensions' by invoking
-> > skb_copy_header() after __alloc_skb(). For example, skb_copy(),
-> > __pskb_copy_fclone() and skb_copy_expand(). This results in the skb
-> > extensions being leaked [1].
-> > 
-> > One possible solution is to try to patch all these instances with
-> > skb_ext_put() before skb_copy_header().
-> > 
-> > Another possible solution is to convert skb_copy_header() to use
-> > skb_ext_copy() instead of __skb_ext_copy(). It will first drop the
-> > reference on the skb extensions of the new skb, but it assumes that
-> > 'skb->active_extensions' is valid. This is not the case in the
-> > skb_clone() path so we should probably zero this field in __skb_clone().
-> > 
-> > Other suggestions?
-> 
-> Looking at the patch from Marco to move back to a field now I'm
-> wondering how you run into this, Ido :D
-> 
-> AFAIU the extension is only added if process as a KCOV handle.
-> 
-> Are you using KCOV?
+This set introduces perf-stat -b option to count events for BPF programs.
+This is similar to bpftool-prog-profile. But perf-stat makes it much more
+flexible.
 
-Hi Jakub,
+Sending as RFC because I haven't addressed some known limitations:
+  1. Only counting events for one BPF program at a time.
+  2. Need extra logic in target__validate().
 
-Yes. We have an internal syzkaller instance where this is enabled. See
-"syz-executor.0" in the trace below.
+Changes RFCv1 =3D> RFCv2:
+  1. Use bootstrap version of bpftool. (Jiri)
+  2. Set default to not building bpf skeletons. (Jiri)
+  3. Remove util/bpf_skel/Makefile, keep all the logic in Makefile.perf.
+     (Jiri)
+  4. Remove dependency to vmlinux.h in the two skeletons. The goal here i=
+s
+     to enable building perf without building kernel (vmlinux) first.
+     Note: I also removed the logic that build vmlinux.h. We can add that
+     back when we have to use it (to access big kernel structures).
 
-> 
-> > [1]
-> > BUG: memory leak
-> > unreferenced object 0xffff888027f9a490 (size 16):
-> >   comm "syz-executor.0", pid 1155, jiffies 4295996826 (age 66.927s)
-> >   hex dump (first 16 bytes):
-> >     01 00 00 00 01 02 6b 6b 01 00 00 00 00 00 00 00  ......kk........
-> >   backtrace:
-> >     [<0000000005a5f2c4>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
-> >     [<0000000005a5f2c4>] slab_post_alloc_hook mm/slab.h:528 [inline]
-> >     [<0000000005a5f2c4>] slab_alloc_node mm/slub.c:2891 [inline]
-> >     [<0000000005a5f2c4>] slab_alloc mm/slub.c:2899 [inline]
-> >     [<0000000005a5f2c4>] kmem_cache_alloc+0x173/0x800 mm/slub.c:2904
-> >     [<00000000c5e43ea9>] __skb_ext_alloc+0x22/0x90 net/core/skbuff.c:6173
-> >     [<000000000de35e81>] skb_ext_add+0x230/0x4a0 net/core/skbuff.c:6268
-> >     [<000000003b7efba4>] skb_set_kcov_handle include/linux/skbuff.h:4622 [inline]
-> >     [<000000003b7efba4>] skb_set_kcov_handle include/linux/skbuff.h:4612 [inline]
-> >     [<000000003b7efba4>] __alloc_skb+0x47f/0x6a0 net/core/skbuff.c:253
-> >     [<000000007f789b23>] skb_copy+0x151/0x310 net/core/skbuff.c:1512
-> >     [<000000001ce26864>] mlxsw_emad_transmit+0x4e/0x620 drivers/net/ethernet/mellanox/mlxsw/core.c:585
-> >     [<000000005c732123>] mlxsw_emad_reg_access drivers/net/ethernet/mellanox/mlxsw/core.c:829 [inline]
-> >     [<000000005c732123>] mlxsw_core_reg_access_emad+0xda8/0x1770 drivers/net/ethernet/mellanox/mlxsw/core.c:2408
-> >     [<00000000c07840b3>] mlxsw_core_reg_access+0x101/0x7f0 drivers/net/ethernet/mellanox/mlxsw/core.c:2583
-> >     [<000000007c47f30f>] mlxsw_reg_write+0x30/0x40 drivers/net/ethernet/mellanox/mlxsw/core.c:2603
-> >     [<00000000675e3fc7>] mlxsw_sp_port_admin_status_set+0x8a7/0x980 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:300
-> >     [<00000000fefe35a4>] mlxsw_sp_port_stop+0x63/0x70 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:537
-> >     [<00000000c41390e8>] __dev_close_many+0x1c7/0x300 net/core/dev.c:1607
-> >     [<00000000628c5987>] __dev_close net/core/dev.c:1619 [inline]
-> >     [<00000000628c5987>] __dev_change_flags+0x2b9/0x710 net/core/dev.c:8421
-> >     [<000000008cc810c6>] dev_change_flags+0x97/0x170 net/core/dev.c:8494
-> >     [<0000000053274a78>] do_setlink+0xa5b/0x3b80 net/core/rtnetlink.c:2706
-> >     [<00000000e4085785>] rtnl_group_changelink net/core/rtnetlink.c:3225 [inline]
-> >     [<00000000e4085785>] __rtnl_newlink+0xe06/0x17d0 net/core/rtnetlink.c:3379
-> 
+Song Liu (2):
+  perf: support build BPF skeletons with perf
+  perf-stat: enable counting events for BPF programs
+
+ tools/bpf/bpftool/Makefile                    |   2 +
+ tools/build/Makefile.feature                  |   3 +-
+ tools/perf/Makefile.config                    |   9 +
+ tools/perf/Makefile.perf                      |  52 ++++-
+ tools/perf/builtin-stat.c                     |  59 ++++-
+ tools/perf/util/Build                         |   1 +
+ tools/perf/util/bpf_counter.c                 | 215 ++++++++++++++++++
+ tools/perf/util/bpf_counter.h                 |  71 ++++++
+ tools/perf/util/bpf_skel/.gitignore           |   3 +
+ .../util/bpf_skel/bpf_prog_profiler.bpf.c     |  96 ++++++++
+ tools/perf/util/bpf_skel/dummy.bpf.c          |  19 ++
+ tools/perf/util/evsel.c                       |  10 +
+ tools/perf/util/evsel.h                       |   5 +
+ tools/perf/util/target.h                      |   6 +
+ tools/scripts/Makefile.include                |   1 +
+ 15 files changed, 541 insertions(+), 11 deletions(-)
+ create mode 100644 tools/perf/util/bpf_counter.c
+ create mode 100644 tools/perf/util/bpf_counter.h
+ create mode 100644 tools/perf/util/bpf_skel/.gitignore
+ create mode 100644 tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
+ create mode 100644 tools/perf/util/bpf_skel/dummy.bpf.c
+
+--
+2.24.1
