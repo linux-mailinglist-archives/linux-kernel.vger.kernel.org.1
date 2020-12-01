@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E772CA65C
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3CA2CA65D
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391760AbgLAOyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:54:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391634AbgLAOyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:54:32 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        id S2391525AbgLAOzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:55:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389519AbgLAOzE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:55:04 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAA1C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:54:23 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0e6a00797954e951a06088.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:6a00:7979:54e9:51a0:6088])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 682D92084C;
-        Tue,  1 Dec 2020 14:53:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606834431;
-        bh=qf7aGX9gVYdAZTqguqoDkQAl8piUxDoOcWMwnRZ1JdI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pyz5H9tjiwtuE3hMxgjaeQpKseUdVdTuM07OYBL6nE2M2bwxe4Z4tp2p22rwlQruI
-         bhsk0B3Yc9mbZyXZlwEDtIb0DWBFYlw8qDXFyONC/AJe8dGgh4s8j7VL9GzfNDMdH9
-         OKVYO15xSUIUNsxJsurjMSxttEOFY1wqOpYMVAZg=
-Date:   Tue, 1 Dec 2020 14:53:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, "Liao, Bard" <bard.liao@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "hui.wang@canonical.com" <hui.wang@canonical.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "jank@cadence.com" <jank@cadence.com>,
-        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
-Subject: Re: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
-Message-ID: <20201201145322.GG5239@sirena.org.uk>
-References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
- <DM6PR11MB4074311B4E0B70F24383E754FFF40@DM6PR11MB4074.namprd11.prod.outlook.com>
- <20201201041138.GY8403@vkoul-mobl>
- <e9478e45-2a24-05f9-eb56-5905d54ab6a4@linux.intel.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5F2571EC04B9;
+        Tue,  1 Dec 2020 15:54:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606834461;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=+P6mLtdTiCQEV00e7XUadSCicMLYNZyllTVA4ujVE+o=;
+        b=ZOIf/oSEITo3E5OhQyNscvmmsjaDOIIHwhzRquBXC578emnt0yrzEdIO5r7xaFlGLjIzO6
+        5rbj30wI2HprBxobcfVxKlsMS0PMp5DXf9766TOV7zkizup8AtVqAliL19rQed/93Y+bst
+        afiu8WaY26y1CA/Gqnk2T19JBpwLiWs=
+Date:   Tue, 1 Dec 2020 15:54:15 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     wangrongwei <rongwei.wang@linux.alibaba.com>
+Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
+        bjorn.andersson@linaro.org, shawnguo@kernel.org, vkoul@kernel.org,
+        geert+renesas@glider.be, Anson.Huang@nxp.com, michael@walle.cc,
+        krzk@kernel.org, olof@lixom.net, vincenzo.frascino@arm.com,
+        ardb@kernel.org, masahiroy@kernel.org, gshan@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] arm64:msr: Add MSR driver
+Message-ID: <20201201145415.GC22927@zn.tnic>
+References: <20201130174833.41315-1-rongwei.wang@linux.alibaba.com>
+ <20201130190331.GI6019@zn.tnic>
+ <8724DF91-5BF0-4265-8091-F9E0C7DC2F1A@linux.alibaba.com>
+ <20201201112647.GA22927@zn.tnic>
+ <FD133B32-6FC4-43FC-A6EE-A03FF3F7B1B1@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="E69HUUNAyIJqGpVn"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e9478e45-2a24-05f9-eb56-5905d54ab6a4@linux.intel.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <FD133B32-6FC4-43FC-A6EE-A03FF3F7B1B1@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 01, 2020 at 10:33:42PM +0800, wangrongwei wrote:
+> Yes, and x86 also provides two instructions with the same name in the
+> instruction set, but not in ARM.
 
---E69HUUNAyIJqGpVn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry, I can't parse what you're trying to say here.
 
-On Tue, Dec 01, 2020 at 08:35:42AM -0600, Pierre-Louis Bossart wrote:
-> On 11/30/20 10:11 PM, Vinod Koul wrote:
+-- 
+Regards/Gruss,
+    Boris.
 
-> > I see Mark has already applied 1-3 ..
-
-> Sorry, I thought Mark had reversed the entire series.
-
-Yeah, I just backed out the one change for the driver.
-
-> Vinod, would you mind providing a tag for Mark then? The following commit is
-> needed to compile:
-
-> b7cab9be7c161 ('soundwire: SDCA: detect sdca_cascade interrupt')
-
-That'd work, looks like there's only one fix patch it's based off.
-
---E69HUUNAyIJqGpVn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GWOEACgkQJNaLcl1U
-h9B0Igf9Fzb38TLz0RVIqHyT/CX9u1t8YCBFEH1IJgAGjAkq8z49rjYj49kYtcsW
-4QD5eUeFKMmggnVdL4uQLdK5TYkHy3kX+sqn5ajxOFP2fKU5noEDJLMxRCNSoyxX
-UhyghvlIObK/EV3B3G20CSBvCCGIMGCIMsEtLCjT9GQ0htvVUgRAATbxCaDXXtT1
-UXg6CmASMQfbbnyTJYBy5aphdgPQHujuUWtswz9hR39VyWaGTg6Di4GHoVKFFD3u
-HNAbuR9st/tmPx25aGs6bKup1IPh6M9yvQ2I/gJV/44Sh0g/SSvff3HyHx2va0rV
-8s6QiPs1PLCwbaB/eLWfW5fs/+1rTw==
-=87Ur
------END PGP SIGNATURE-----
-
---E69HUUNAyIJqGpVn--
+https://people.kernel.org/tglx/notes-about-netiquette
