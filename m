@@ -2,99 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49ECE2C94DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8F82C94E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgLABvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:51:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgLABvl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:51:41 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302EEC0613D6;
-        Mon, 30 Nov 2020 17:51:01 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id p5so124829iln.8;
-        Mon, 30 Nov 2020 17:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=em4YU42Fs6lSBwH+JyScO6dSKH6FGFIk8tAnL75Dz34=;
-        b=CIAjauV1yX8a6ogo9BAT9XwExhmpU03eb44Ku59Vkgd68h1RqaPWaFDo/EpoUSMdEq
-         GbkU77UupGI1B+ZLQURhBeBflaD/kJqEWaIwaYjPimMFAZ1AHAOvQgKFUkCqwbP5U3gM
-         wrUJGOlZLEZaP5m5YEjcgJRbqq7h2QMVlGU4YpZ5fd5r2l8M7stOpefVQCug87Y8CfQw
-         mt1yse0bkhuRbFUYvWalMjh3XgQ16nFQ+TieS2WMJJge173aoTDERViKYfD3G2odO6vu
-         OcihRPnI39rJLqwPVbfdhYp2+cMd1/RfW0r87gVcI4qMs27VfLOwqtcEA61qtSpIfpnR
-         1IJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=em4YU42Fs6lSBwH+JyScO6dSKH6FGFIk8tAnL75Dz34=;
-        b=BOZL/Zt0AC5x1behuum+7feKfda8v+SLGBLiW+iZ/69xN3y2eD4PK8V5MazjST1M6+
-         3COrqbGYNNpkviq51Qx1eOK1y3cvdSoLWKwoQQ9PRHfAfdpDebWZ/2mjGsxn5K+oGp4Z
-         lOGHbDvyWqFTJx3BFgUAwXFE0Bqdtr8QxL8IebLUZPvvdb4ad7LoRJ8ef2OAa+gYiayd
-         HJAXqLv4vOHaAz5yKZHdZeQfkHfCLiTqXqFzFN+Z72tpj72eBVlDQkZ1afpT9nxIzBEo
-         KrNVPXRnZvxphfrpv63xrbgZATc4szpp3UqFSzVpDyXu6JtzFTF8HjZMD6DuQ0gpPyEs
-         Ix9g==
-X-Gm-Message-State: AOAM530kwqiOKk2wRDWr6dlfNbG32OZsxTwGHydW1lPnBrbAKZNuEGXH
-        YuibN5DRmw6cRmGlaIUBuEwXAKn9ndzlwtpr+50=
-X-Google-Smtp-Source: ABdhPJwjiN6p/qStPk13tgf0UmwOMI/OARKj3UxZ7e/eUnj8ai0C+Ttr48c7PQwV624NnzL1JW5S7LLFPSetxOoIobU=
-X-Received: by 2002:a92:cf4b:: with SMTP id c11mr610910ilr.46.1606787460409;
- Mon, 30 Nov 2020 17:51:00 -0800 (PST)
+        id S1726597AbgLABxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:53:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgLABxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:53:32 -0500
+Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1635207FF;
+        Tue,  1 Dec 2020 01:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606787570;
+        bh=G6N04VSxm9NBg8ZwbdFSw3JTH6KMSaJ31FSrM3w3lDc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AUiGXNyExrYDQ4y1Vrl6cdFqBxcD1Y57xAsW0RfNwFNdcKRFSrBaVyZgZlyuYl88V
+         9R/ZNmrioxa+aHXmSYEYl+pvqMfQdVe6U5NZQpr/BaI6qwyGRa5RkwUrgDx6oYU5wq
+         0vcqjJgCBHfuEcuQXlmlkwHCLohkUdqBzgWSt+QM=
+Date:   Mon, 30 Nov 2020 17:52:48 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>, fw@strlen.de,
+        davem@davemloft.net, johannes@sipsolutions.net,
+        edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
+        elver@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        willemdebruijn.kernel@gmail.com,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
+Message-ID: <20201130175248.7f0b5309@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201121160941.GA485907@shredder.lan>
+References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
+        <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
+        <20201121160941.GA485907@shredder.lan>
 MIME-Version: 1.0
-References: <20201107144811.1977108-1-aford173@gmail.com> <20201110033243.GA31601@dragon>
-In-Reply-To: <20201110033243.GA31601@dragon>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 30 Nov 2020 19:50:48 -0600
-Message-ID: <CAHCN7xLdB4q=DpRYOiPVewbpqGmx3aC4Ktm27vpUsNYtfppFcg@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] dt-bindings: arm: fsl: Add beacon,imx8mn-beacon-kit
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 9:32 PM Shawn Guo <shawnguo@kernel.org> wrote:
->
-> On Sat, Nov 07, 2020 at 08:48:08AM -0600, Adam Ford wrote:
-> > Add beacon,imx8mn-beacon-kit to list of compatible options.
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> > Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> You need to stop posting patches that have dependency not accepted yet,
-> or explicitly mention the dependency.
+On Sat, 21 Nov 2020 18:09:41 +0200 Ido Schimmel wrote:
+> + Florian
+> 
+> On Thu, Oct 29, 2020 at 05:36:19PM +0000, Aleksandr Nogikh wrote:
+> > From: Aleksandr Nogikh <nogikh@google.com>
+> > 
+> > Remote KCOV coverage collection enables coverage-guided fuzzing of the
+> > code that is not reachable during normal system call execution. It is
+> > especially helpful for fuzzing networking subsystems, where it is
+> > common to perform packet handling in separate work queues even for the
+> > packets that originated directly from the user space.
+> > 
+> > Enable coverage-guided frame injection by adding kcov remote handle to
+> > skb extensions. Default initialization in __alloc_skb and
+> > __build_skb_around ensures that no socket buffer that was generated
+> > during a system call will be missed.
+> > 
+> > Code that is of interest and that performs packet processing should be
+> > annotated with kcov_remote_start()/kcov_remote_stop().
+> > 
+> > An alternative approach is to determine kcov_handle solely on the
+> > basis of the device/interface that received the specific socket
+> > buffer. However, in this case it would be impossible to distinguish
+> > between packets that originated during normal background network
+> > processes or were intentionally injected from the user space.
+> > 
+> > Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+> > Acked-by: Willem de Bruijn <willemb@google.com>  
+> 
+> [...]
+> 
+> > @@ -249,6 +249,9 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+> >  
+> >  		fclones->skb2.fclone = SKB_FCLONE_CLONE;
+> >  	}
+> > +
+> > +	skb_set_kcov_handle(skb, kcov_common_handle());  
+> 
+> Hi,
+> 
+> This causes skb extensions to be allocated for the allocated skb, but
+> there are instances that blindly overwrite 'skb->extensions' by invoking
+> skb_copy_header() after __alloc_skb(). For example, skb_copy(),
+> __pskb_copy_fclone() and skb_copy_expand(). This results in the skb
+> extensions being leaked [1].
+> 
+> One possible solution is to try to patch all these instances with
+> skb_ext_put() before skb_copy_header().
+> 
+> Another possible solution is to convert skb_copy_header() to use
+> skb_ext_copy() instead of __skb_ext_copy(). It will first drop the
+> reference on the skb extensions of the new skb, but it assumes that
+> 'skb->active_extensions' is valid. This is not the case in the
+> skb_clone() path so we should probably zero this field in __skb_clone().
+> 
+> Other suggestions?
 
-Sorry about that.  I wrongly assumed the series dependency would have
-been accepted by the time this was reviewed.  I'll try not to do that
-again.
+Looking at the patch from Marco to move back to a field now I'm
+wondering how you run into this, Ido :D
 
-Based on your e-mail from [1], it appears as if you've accepted the
-other series upon which this depends.  Is there any way this can be
-reapplied again, or do you need me to re-submit it?
+AFAIU the extension is only added if process as a KCOV handle.
 
-thanks,
+Are you using KCOV?
 
-adam
+> [1]
+> BUG: memory leak
+> unreferenced object 0xffff888027f9a490 (size 16):
+>   comm "syz-executor.0", pid 1155, jiffies 4295996826 (age 66.927s)
+>   hex dump (first 16 bytes):
+>     01 00 00 00 01 02 6b 6b 01 00 00 00 00 00 00 00  ......kk........
+>   backtrace:
+>     [<0000000005a5f2c4>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
+>     [<0000000005a5f2c4>] slab_post_alloc_hook mm/slab.h:528 [inline]
+>     [<0000000005a5f2c4>] slab_alloc_node mm/slub.c:2891 [inline]
+>     [<0000000005a5f2c4>] slab_alloc mm/slub.c:2899 [inline]
+>     [<0000000005a5f2c4>] kmem_cache_alloc+0x173/0x800 mm/slub.c:2904
+>     [<00000000c5e43ea9>] __skb_ext_alloc+0x22/0x90 net/core/skbuff.c:6173
+>     [<000000000de35e81>] skb_ext_add+0x230/0x4a0 net/core/skbuff.c:6268
+>     [<000000003b7efba4>] skb_set_kcov_handle include/linux/skbuff.h:4622 [inline]
+>     [<000000003b7efba4>] skb_set_kcov_handle include/linux/skbuff.h:4612 [inline]
+>     [<000000003b7efba4>] __alloc_skb+0x47f/0x6a0 net/core/skbuff.c:253
+>     [<000000007f789b23>] skb_copy+0x151/0x310 net/core/skbuff.c:1512
+>     [<000000001ce26864>] mlxsw_emad_transmit+0x4e/0x620 drivers/net/ethernet/mellanox/mlxsw/core.c:585
+>     [<000000005c732123>] mlxsw_emad_reg_access drivers/net/ethernet/mellanox/mlxsw/core.c:829 [inline]
+>     [<000000005c732123>] mlxsw_core_reg_access_emad+0xda8/0x1770 drivers/net/ethernet/mellanox/mlxsw/core.c:2408
+>     [<00000000c07840b3>] mlxsw_core_reg_access+0x101/0x7f0 drivers/net/ethernet/mellanox/mlxsw/core.c:2583
+>     [<000000007c47f30f>] mlxsw_reg_write+0x30/0x40 drivers/net/ethernet/mellanox/mlxsw/core.c:2603
+>     [<00000000675e3fc7>] mlxsw_sp_port_admin_status_set+0x8a7/0x980 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:300
+>     [<00000000fefe35a4>] mlxsw_sp_port_stop+0x63/0x70 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:537
+>     [<00000000c41390e8>] __dev_close_many+0x1c7/0x300 net/core/dev.c:1607
+>     [<00000000628c5987>] __dev_close net/core/dev.c:1619 [inline]
+>     [<00000000628c5987>] __dev_change_flags+0x2b9/0x710 net/core/dev.c:8421
+>     [<000000008cc810c6>] dev_change_flags+0x97/0x170 net/core/dev.c:8494
+>     [<0000000053274a78>] do_setlink+0xa5b/0x3b80 net/core/rtnetlink.c:2706
+>     [<00000000e4085785>] rtnl_group_changelink net/core/rtnetlink.c:3225 [inline]
+>     [<00000000e4085785>] __rtnl_newlink+0xe06/0x17d0 net/core/rtnetlink.c:3379
 
-[1] - https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201107115809.1866131-2-aford173@gmail.com/
-
->
-> Series dropped.
->
-> Shawn
