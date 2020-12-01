@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E312E2C93EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 081752C93F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 01:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389132AbgLAA23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 19:28:29 -0500
-Received: from mga03.intel.com ([134.134.136.65]:20861 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388133AbgLAA22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 19:28:28 -0500
-IronPort-SDR: EGok0JIPBGoXxKI+Qyvggij90dKB/fec+NGHabY8Z6cq1HbDNFlAMvq5sGaT968u7qNzP37ci0
- CzecyGDtxFtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="172835294"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="172835294"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 16:27:47 -0800
-IronPort-SDR: yj4LV58XLzO268tAWATMfYPQ0jKvINmzRsB/h2Q/p5ZAfNM73gOp5tYLgWAKrXlg8LkmukzX/8
- Q4mrBZKEgV9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="364459780"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Nov 2020 16:27:44 -0800
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, "Mel Gorman" <mgorman@suse.de>,
-        Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        <linux-api@vger.kernel.org>
-Subject: Re: [PATCH -v6 2/3] NOT kernel/man-pages man2/set_mempolicy.2: Add mode flag MPOL_F_NUMA_BALANCING
-References: <20201126053219.234793-1-ying.huang@intel.com>
-        <20201126053219.234793-3-ying.huang@intel.com>
-        <a5d4c16b-74d7-403f-5f1c-8a1e8cbe4efb@intel.com>
-Date:   Tue, 01 Dec 2020 08:27:43 +0800
-In-Reply-To: <a5d4c16b-74d7-403f-5f1c-8a1e8cbe4efb@intel.com> (Dave Hansen's
-        message of "Mon, 30 Nov 2020 09:48:56 -0800")
-Message-ID: <87a6uyqsjk.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S2389136AbgLAAcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 19:32:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388351AbgLAAcI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 19:32:08 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6718AC0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:31:22 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id o24so21096582ljj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 16:31:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X/bKBturRyIf9vMXnB4V35qfxrB0eSEPoc0/x0nF2eU=;
+        b=R88iTfRVb4F7Pq1bsAQjgSL7Jfetnmbut1dZQgSQmn8Wk3qzqs4NVHIsDq3ul55xxY
+         deQC7k6sMchjPYAf9ZKrsLgbOILTiNNoE5dl3uaCLcZuGyIXPnfYZc4IAuN4Ex915pJQ
+         QiLLylgjJihakVxmX0udSjcclnJfbkvM+LvAayR22ITiBsvUgOjGhOKNUi0/Z4WAdpKB
+         lXbRBeOzk7tDn+nlOY7TDuvR0ORhz0mwN5bQ01qVKb8NROkmx9OLuxbNMW2PTIo9PQGV
+         kbAN/qZ4y+AKdDqbQSOSK0M0wdCvuGHkgilFf+AJ+fJn0An6OX8pfCCidAuEdfKDu8kw
+         es3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X/bKBturRyIf9vMXnB4V35qfxrB0eSEPoc0/x0nF2eU=;
+        b=rJPeFlyGlor4+EKRMbXGC3KmC/InkzbdDxvvth2NRRrxnWAvjWHMXj1lK6QDyklGr6
+         KCnCSNFvgSQQr8LtAA9RB4mVC/byrURT+BSWHbOS05HlMVu2v0e2w7O94qBqtSgemrCn
+         WwORgYsivwpw0Xp1pNxnd0hF67T6+aLtdGSzMmmgAcQ9uPw5/9rgcwdmKn+0aKawKI7S
+         PhzMJlUx6VHVXrsj+iTthrqanlfshzlmyeO9GWJ2+32r/2gt1yM2Ubdrk7mO1GvERQWS
+         k33lw79vBKXD0ghhboBWpzRfkqSxf7eS4gKBNnAayIion+bHhPiuynHr38EISrx49BYu
+         HlUA==
+X-Gm-Message-State: AOAM532EN3uV3YW2lxUhWWr6SCafE4wKPdPcZJ4nRgf823jmHs/UPe0M
+        PZw2cNEasUZkl5DCd/0TJ/IyAw==
+X-Google-Smtp-Source: ABdhPJzidyDJ/SYMmPFhPBtHSfz2wcKljDTL5MCm/DZKMEPBh4dSfw4K/awKjb+x64TjviAtHEW/sA==
+X-Received: by 2002:a2e:878c:: with SMTP id n12mr91604lji.319.1606782680750;
+        Mon, 30 Nov 2020 16:31:20 -0800 (PST)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id f10sm24868ljf.26.2020.11.30.16.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 16:31:20 -0800 (PST)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     b.zolnierkie@samsung.com, jdelvare@suse.com, linux@roeck-us.net
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH] drivers: hwmon: pwm-fan: fix warning unused variable 'ctx'
+Date:   Tue,  1 Dec 2020 01:31:18 +0100
+Message-Id: <20201201003118.2219422-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave Hansen <dave.hansen@intel.com> writes:
+When building hwmon/pwm-fan the following unused-variable warning shows
+up:
 
-> On 11/25/20 9:32 PM, Huang Ying wrote:
->> --- a/man2/set_mempolicy.2
->> +++ b/man2/set_mempolicy.2
->> @@ -113,6 +113,11 @@ A nonempty
->>  .I nodemask
->>  specifies node IDs that are relative to the set of
->>  node IDs allowed by the process's current cpuset.
->> +.TP
->> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
->> +Enable the Linux kernel NUMA balancing for the task if it is supported
->> +by kernel.  If the flag isn't supported by Linux kernel, return -1 and
->> +errno is set to EINVAL.
->
-> The one thing I learned about manpage CodingStyle is that new sentences
-> go on new lines.  I think this needs to be:
->
-> .TP
-> .BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
-> Enable the Linux kernel NUMA balancing for the task if it is supported
-> by kernel.
-> If the flag isn't supported by Linux kernel, return -1 and errno is set
-> to EINVAL.
+/tmp/drivers/hwmon/pwm-fan.c: In function ‘pwm_fan_is_visible’:
+/tmp/drivers/hwmon/pwm-fan.c:167:22: warning: unused variable ‘ctx’ [-Wunused-variable]
 
-Thanks a lot for your information!  I will revise this in the next version.
+Remove the unneeded variable declaration 'ctx'.
 
-Best Regards,
-Huang, Ying
+Fixes: 439ed83acc19 ("hwmon: (pwm-fan) Convert to hwmon_device_register_with_info API")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ drivers/hwmon/pwm-fan.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
+index 57b574837b58..777439f48c14 100644
+--- a/drivers/hwmon/pwm-fan.c
++++ b/drivers/hwmon/pwm-fan.c
+@@ -164,8 +164,6 @@ static umode_t pwm_fan_is_visible(const void *data,
+ 				  enum hwmon_sensor_types type,
+ 				  u32 attr, int channel)
+ {
+-	struct pwm_fan_ctx *ctx = (struct pwm_fan_ctx *)data;
+-
+ 	switch (type) {
+ 	case hwmon_pwm:
+ 		return 0644;
+-- 
+2.29.2
+
