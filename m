@@ -2,89 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702112CA483
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E642CA480
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391495AbgLANyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:54:39 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:37562 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390730AbgLANyh (ORCPT
+        id S2391462AbgLANxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391452AbgLANxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:54:37 -0500
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 0B1DrQTV021869;
-        Tue, 1 Dec 2020 22:53:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0B1DrQTV021869
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606830807;
-        bh=Ok1QqgsbTvLJR9T2w9uzm16olUMbK7QKnvuiz2CLeqM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qN/IjIZBhMZoBtAgolas/uVF3Rp/Hk0w0pMlmeOop7VUsl/YaBH2movBpJWDegVJA
-         vnxeRoD6m2RKQZCbqbCKvRi38r+rGpKkt/67VyTCB0b1uhKJC4Q3zf05t0W9Wf+9gi
-         zS2wc/t3UJnZQz5jD9p+lnnGB5g0gGxnL+Pk2clHnx+lEPcV6tT/qblqHk6BugwW0j
-         wEoPSj9tVpVUlYOjGCnzilyrjyZUnHN+lX/5F1AvnO1l1PweA91a8/l7n64FAGEviY
-         3smNN36Wf4UfKU9sAdj7a4BEbKLtTU5MhX6UYu9WWFzIHQWIWZATgOza97Tb93vGyO
-         m+29oJTO4+/bw==
-X-Nifty-SrcIP: [209.85.214.176]
-Received: by mail-pl1-f176.google.com with SMTP id bj5so1184179plb.4;
-        Tue, 01 Dec 2020 05:53:27 -0800 (PST)
-X-Gm-Message-State: AOAM532H5py1JWCD8BMFJkeYbqoyMvvBzYj4o/FNnpa3guZzbA4gx5Sx
-        gGcQ421QlcO6KJihLxKdotXHIII3PDr4XH9Qt18=
-X-Google-Smtp-Source: ABdhPJytF7/TSiOE8RQwh1z0tE6AjvW8ZFpYvV7UD1hS+NhCt//ZFmmGhZxWq0ziQeW4eXdFQh/WV0dS2BmI+kOqu8Y=
-X-Received: by 2002:a17:90a:5905:: with SMTP id k5mr2779502pji.198.1606830806327;
- Tue, 01 Dec 2020 05:53:26 -0800 (PST)
+        Tue, 1 Dec 2020 08:53:42 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43382C0613CF;
+        Tue,  1 Dec 2020 05:52:56 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id i2so2746734wrs.4;
+        Tue, 01 Dec 2020 05:52:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=61ZF5C7WOPaSSyFKTA3Jd4EkoVpR2O0GmABB6DAtO/M=;
+        b=qPXC0hQO8OpdRZI104m8FraSMCwSpn+Et3stR+21jZOV9O3VXrd6HW4YZYKFF3+Ks+
+         aierhs90V6L+OmvFxDeym42bp7bQTW/q+RefaHc+QA7BBbjrhFrYonYBaR5QpVXOVjyW
+         kjJCIP9TJWGtxpmXssFodLlrYfQy6v2Yfb4DTwUThhf0IRP8S64JlEnO6z+9heefTbHF
+         N3y3NiLQPrsPP94v3GukxSOAasSoxPx8crAxnkcliVQwOpN7rwU3TYnVoH4S3RSWGf19
+         tFfvN5e7+eiD4uruVlKQ+mMviP2h5S+9MGgkYSLnJ0U71Ct52xWVFl1rsAFtr3tE0uq3
+         xqXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=61ZF5C7WOPaSSyFKTA3Jd4EkoVpR2O0GmABB6DAtO/M=;
+        b=M8QvL7h6xv705aiJqr4h2ucEgoPY3SuPlI10nSbF5rBOIzKgzNQkXubPR0y62rdeDj
+         lZ/nmnlBjYnzYLJHX9968Bv9HLJFN9CQWKRdQ55mvR+NdFWfyVrzFsHcRHidSog8QWsV
+         LMq1Ak3yAtUOmRf7wgs5lSaOdA3o8X1ZdNNKGq5hlgToF1RDvOzbIqi++vEv0xsIz0ba
+         2qk1Xl/osZJ9qpnH1xZhg1Bty3vPjGuBJC4ngyJ8SeFySLdkvD0yoDe11FJVuFS5b5Fi
+         P/C3MBVt20BI/QBnikySdB+sttgadgQtoM66WSKOFW6kZTSN3Cw3rdLd/oBYhk5cAoQd
+         EKMw==
+X-Gm-Message-State: AOAM531r5fYqclILZzZv5jXrL9253tsLw0mtujylU3cfu5UmMVgHtbP5
+        RRwz0V0Q8Rb/LMZEy6ip/tbs786ctq4=
+X-Google-Smtp-Source: ABdhPJzNqXDB+VXwYa+0PZjxxL8p3TimpJzCucLOvKCHK+ncKgnQg/CctWHRNkn4ceRMCJpSdRnwRA==
+X-Received: by 2002:adf:f602:: with SMTP id t2mr4138518wrp.40.1606830775033;
+        Tue, 01 Dec 2020 05:52:55 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id l8sm3567987wro.46.2020.12.01.05.52.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 05:52:54 -0800 (PST)
+Date:   Tue, 1 Dec 2020 14:52:52 +0100
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: crypto: sun4i-ss: error with kmap
+Message-ID: <20201201135252.GA9584@Red>
+References: <20201201130102.GA23461@Red>
+ <87ft4phcyx.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
-In-Reply-To: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 1 Dec 2020 22:52:48 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQP+e18qAVEUJvmkwpCwTtS4Auqth7u+xPW6pBbE_+z0A@mail.gmail.com>
-Message-ID: <CAK7LNAQP+e18qAVEUJvmkwpCwTtS4Auqth7u+xPW6pBbE_+z0A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ld-version: use /usr/bin/env awk for shebank
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ft4phcyx.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 10:18 PM Dominique Martinet
-<asmadeus@codewreck.org> wrote:
->
-> /usr/bin/awk is not garanteed to exist (and doesn't on e.g. nixos),
-> using /usr/bin/env to have it look in PATH is more robust
->
-> Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+On Tue, Dec 01, 2020 at 02:28:54PM +0100, Thomas Gleixner wrote:
+> On Tue, Dec 01 2020 at 14:01, Corentin Labbe wrote:
+> > +[  213.050152] ------------[ cut here ]------------
+> > +[  213.050207] WARNING: CPU: 0 PID: 18430 at mm/highmem.c:581 kunmap_local_indexed+0x194/0x1d4
+> > +[  213.050214] Modules linked in: sm4_generic authenc vmac xcbc hmac streebog_generic sm3_generic sha3_generic crct10dif_generic crct10dif_common seed rmd320 rmd256 rmd160 rmd128 cts lzo lzo_compress salsa20_generic camellia_generic fcrypt pcbc tgr192 anubis wp512 khazad tea michael_mic arc4 cast6_generic cast5_generic cast_common deflate zlib_deflate sha512_generic cfb ofb serpent_generic lrw twofish_generic twofish_common blowfish_generic blowfish_common md4
+> > +[  213.050410] CPU: 0 PID: 18430 Comm: cryptsetup Not tainted 5.10.0-rc5-next-20201130-00059-gf7ecf0611042-dirty #242
+> > +[  213.050416] Hardware name: Allwinner sun7i (A20) Family
+> > +[  213.050448] [<c010d730>] (unwind_backtrace) from [<c010a218>] (show_stack+0x10/0x14)
+> > +[  213.050465] [<c010a218>] (show_stack) from [<c08bbdcc>] (dump_stack+0x98/0xac)
+> > +[  213.050479] [<c08bbdcc>] (dump_stack) from [<c08b93ac>] (__warn+0xc0/0xd8)
+> > +[  213.050491] [<c08b93ac>] (__warn) from [<c08b9428>] (warn_slowpath_fmt+0x64/0xc0)
+> > +[  213.050505] [<c08b9428>] (warn_slowpath_fmt) from [<c02018b4>] (kunmap_local_indexed+0x194/0x1d4)
+> > +[  213.050525] [<c02018b4>] (kunmap_local_indexed) from [<c03e0390>] (sg_miter_stop+0xb4/0x164)
+> > +[  213.050541] [<c03e0390>] (sg_miter_stop) from [<c03e082c>] (sg_miter_next+0xc/0xe4)
+> > +[  213.050560] [<c03e082c>] (sg_miter_next) from [<c06b2d04>] (sun4i_ss_opti_poll+0x278/0x40c)
+> > +[  213.050575] [<c06b2d04>] (sun4i_ss_opti_poll) from [<c06b338c>] (sun4i_ss_cipher_poll+0x4f4/0x5e4)
+> > +[  213.050590] [<c06b338c>] (sun4i_ss_cipher_poll) from [<c03991d4>] (crypto_skcipher_encrypt+0x38/0x5c)
+> > +[  213.050604] [<c03991d4>] (crypto_skcipher_encrypt) from [<c03aa980>] (xts_encrypt+0x8c/0xd4)
+> > +[  213.050617] [<c03aa980>] (xts_encrypt) from [<c03991d4>] (crypto_skcipher_encrypt+0x38/0x5c)
+> > +[  213.050631] [<c03991d4>] (crypto_skcipher_encrypt) from [<c03b3d94>] (skcipher_recvmsg+0x364/0x43c)
+> > +[  213.050646] [<c03b3d94>] (skcipher_recvmsg) from [<c0719650>] (sock_read_iter+0xa8/0xf8)
+> > +[  213.050663] [<c0719650>] (sock_read_iter) from [<c0239e98>] (vfs_read+0x2b8/0x2d8)
+> > +[  213.050676] [<c0239e98>] (vfs_read) from [<c023a398>] (ksys_read+0xb0/0xe4)
+> > +[  213.050688] [<c023a398>] (ksys_read) from [<c0100060>] (ret_fast_syscall+0x0/0x58)
+> > +[  213.050695] Exception stack(0xc4d13fa8 to 0xc4d13ff0)
+> > +[  213.050707] 3fa0:                   00000006 b6f084d0 00000006 b47ff000 00010000 00000000
+> > +[  213.050718] 3fc0: 00000006 b6f084d0 00010000 00000003 00000030 beb6e9bc 00000010 beb6e9fc
+> > +[  213.050727] 3fe0: b6e3609c beb6e958 b6cc8504 b6cc851c
+> > +[  213.050735] ---[ end trace 915906e6b0e8a55d ]---
+> 
+> Hmm. No registers there. Can you apply the patch below so we can see the
+> address?
+> 
+> Thanks,
+> 
+>         tglx
 > ---
+> diff --git a/mm/highmem.c b/mm/highmem.c
+> index b49364a306b8..240fc6e5bfb4 100644
+> --- a/mm/highmem.c
+> +++ b/mm/highmem.c
+> @@ -571,8 +571,10 @@ void kunmap_local_indexed(void *vaddr)
+>  		 * PAGE_OFFSET. Warn for all other addresses which are in
+>  		 * the user space part of the virtual address space.
+>  		 */
+> -		if (!kmap_high_unmap_local(addr))
+> +		if (!kmap_high_unmap_local(addr)) {
+> +			pr_err("kunmap_local: vaddr %lx\n", (unsigned long) vaddr);
+>  			WARN_ON_ONCE(addr < PAGE_OFFSET);
+> +		}
+>  		return;
+>  	}
+>  
 
-Both applied to linux-kbuild. Thanks.
+The patch made the board too busy logging and fail to boot until the test.
 
-
-> I've been carrying these two patchs for local kernel development on
-> nixos for a while, I don't think it'd break anything for anyone so
-> might as well submit these -- please consider it :)
->
->  scripts/ld-version.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-> index f2be0ff9a738..05476b8f8925 100755
-> --- a/scripts/ld-version.sh
-> +++ b/scripts/ld-version.sh
-> @@ -1,4 +1,4 @@
-> -#!/usr/bin/awk -f
-> +#!/usr/bin/env -S awk -f
->  # SPDX-License-Identifier: GPL-2.0
->  # extract linker version number from stdin and turn into single number
->         {
-> --
-> 2.28.0
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+Regards
