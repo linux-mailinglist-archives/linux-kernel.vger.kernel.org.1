@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982542C9DD2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AAD2C9D78
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729312AbgLAJ1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:27:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39316 "EHLO mail.kernel.org"
+        id S1729545AbgLAJXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:23:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729254AbgLAJC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:02:29 -0500
+        id S2389102AbgLAJGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:36 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3752520809;
-        Tue,  1 Dec 2020 09:01:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A177A2225E;
+        Tue,  1 Dec 2020 09:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813301;
-        bh=7Ue//Zng0WP0KW0pSdTtBSWbvhT1XT/7/kSp4eyX0n8=;
+        s=korg; t=1606813555;
+        bh=QdB5NDOHuHyll+XXf09xHbXpggwRRqsdVt57TeVvwk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iqUJW287jqFODTNx0ozNk0Rd+MCHLIAqkvGULBx7BKnUgysFSa0nbwRkCTg/zfbqz
-         OTy/ntzK6W3tdlRNYpTBrOFbiNWKGLaLuN1Lc6bzxFzMOSQZI6c2GPj+rrMTLrtyIc
-         AOn98oFh60DhTJqI/mOkXuCe8Zp+rPKhrSAgRJJI=
+        b=quxTM8tFPdf0Z6070D9Vc48Sdeo3enqJD2gt4FD3U2c0wYqG5UwJpyeBKAxErnXEc
+         KOfZzoV7Mk02X+kA5NN9N8zrkl03QMLjmYVL46vo0e/pnJSMEcTqMtg4VpUg6K+fKN
+         LjEVxjLCsIJ5sILOiGQX4u28/1Xksiw0bFaY6br4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vamsi Krishna Samavedam <vskrishn@codeaurora.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH 4.19 50/57] USB: core: Change %pK for __user pointers to %px
-Date:   Tue,  1 Dec 2020 09:53:55 +0100
-Message-Id: <20201201084651.570228911@linuxfoundation.org>
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 79/98] perf probe: Fix to die_entrypc() returns error correctly
+Date:   Tue,  1 Dec 2020 09:53:56 +0100
+Message-Id: <20201201084658.919495546@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,93 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit f3bc432aa8a7a2bfe9ebb432502be5c5d979d7fe upstream.
+[ Upstream commit ab4200c17ba6fe71d2da64317aae8a8aa684624c ]
 
-Commit 2f964780c03b ("USB: core: replace %p with %pK") used the %pK
-format specifier for a bunch of __user pointers.  But as the 'K' in
-the specifier indicates, it is meant for kernel pointers.  The reason
-for the %pK specifier is to avoid leaks of kernel addresses, but when
-the pointer is to an address in userspace the security implications
-are minimal.  In particular, no kernel information is leaked.
+Fix die_entrypc() to return error correctly if the DIE has no
+DW_AT_ranges attribute. Since dwarf_ranges() will treat the case as an
+empty ranges and return 0, we have to check it by ourselves.
 
-This patch changes the __user %pK specifiers (used in a bunch of
-debugging output lines) to %px, which will always print the actual
-address with no mangling.  (Notably, there is no printk format
-specifier particularly intended for __user pointers.)
-
-Fixes: 2f964780c03b ("USB: core: replace %p with %pK")
-CC: Vamsi Krishna Samavedam <vskrishn@codeaurora.org>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20201119170228.GB576844@rowland.harvard.edu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 91e2f539eeda ("perf probe: Fix to show function entry line as probe-able")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc: Thomas Richter <tmricht@linux.ibm.com>
+Link: http://lore.kernel.org/lkml/160645612634.2824037.5284932731175079426.stgit@devnote2
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/devio.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ tools/perf/util/dwarf-aux.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/usb/core/devio.c
-+++ b/drivers/usb/core/devio.c
-@@ -463,11 +463,11 @@ static void snoop_urb(struct usb_device
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index 5544bfbd0f6c0..ab34ef2c661f8 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -319,6 +319,7 @@ bool die_is_func_def(Dwarf_Die *dw_die)
+ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
+ {
+ 	Dwarf_Addr base, end;
++	Dwarf_Attribute attr;
  
- 	if (userurb) {		/* Async */
- 		if (when == SUBMIT)
--			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
-+			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
- 					"length %u\n",
- 					userurb, ep, t, d, length);
- 		else
--			dev_info(&udev->dev, "userurb %pK, ep%d %s-%s, "
-+			dev_info(&udev->dev, "userurb %px, ep%d %s-%s, "
- 					"actual_length %u status %d\n",
- 					userurb, ep, t, d, length,
- 					timeout_or_status);
-@@ -1927,7 +1927,7 @@ static int proc_reapurb(struct usb_dev_s
- 	if (as) {
- 		int retval;
+ 	if (!addr)
+ 		return -EINVAL;
+@@ -326,6 +327,13 @@ int die_entrypc(Dwarf_Die *dw_die, Dwarf_Addr *addr)
+ 	if (dwarf_entrypc(dw_die, addr) == 0)
+ 		return 0;
  
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl(as, (void __user * __user *)arg);
- 		free_async(as);
- 		return retval;
-@@ -1944,7 +1944,7 @@ static int proc_reapurbnonblock(struct u
++	/*
++	 *  Since the dwarf_ranges() will return 0 if there is no
++	 * DW_AT_ranges attribute, we should check it first.
++	 */
++	if (!dwarf_attr(dw_die, DW_AT_ranges, &attr))
++		return -ENOENT;
++
+ 	return dwarf_ranges(dw_die, 0, &base, addr, &end) < 0 ? -ENOENT : 0;
+ }
  
- 	as = async_getcompleted(ps);
- 	if (as) {
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl(as, (void __user * __user *)arg);
- 		free_async(as);
- 	} else {
-@@ -2070,7 +2070,7 @@ static int proc_reapurb_compat(struct us
- 	if (as) {
- 		int retval;
- 
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl_compat(as, (void __user * __user *)arg);
- 		free_async(as);
- 		return retval;
-@@ -2087,7 +2087,7 @@ static int proc_reapurbnonblock_compat(s
- 
- 	as = async_getcompleted(ps);
- 	if (as) {
--		snoop(&ps->dev->dev, "reap %pK\n", as->userurb);
-+		snoop(&ps->dev->dev, "reap %px\n", as->userurb);
- 		retval = processcompl_compat(as, (void __user * __user *)arg);
- 		free_async(as);
- 	} else {
-@@ -2512,7 +2512,7 @@ static long usbdev_do_ioctl(struct file
- #endif
- 
- 	case USBDEVFS_DISCARDURB:
--		snoop(&dev->dev, "%s: DISCARDURB %pK\n", __func__, p);
-+		snoop(&dev->dev, "%s: DISCARDURB %px\n", __func__, p);
- 		ret = proc_unlinkurb(ps, p);
- 		break;
- 
+-- 
+2.27.0
+
 
 
