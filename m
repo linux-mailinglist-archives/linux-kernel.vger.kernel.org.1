@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38AC2CA032
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B602CA02C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730022AbgLAKoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:44:21 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:58145 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729324AbgLAKoU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:44:20 -0500
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 0B1AhFxh002630;
-        Tue, 1 Dec 2020 19:43:15 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 0B1AhFxh002630
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606819395;
-        bh=pMIMQvJ5hrz3FqswIIZKhGNQpY6MFXLxRQkeQgLnDqM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sh82VYY8qV3Oq9A/eOqKCgG43FzFvvLteHZj++uNT+v7RlJSHMr/UNkFu9fL1udVp
-         DTTMjQWokwZWEmQ/Fn4mEMcZN7itGNa6bmkjbow8XJMZ6JswNadXPducC5M3SfnS6+
-         sc/knl0Hq0E/BNOhoEoLPDMjFeSw+hEaKhUu0mD/Q7WPZPm45YNmOeVIOhGqZNwN3j
-         0BeGHCGX0e4dKym4mGUqvjbHbYQw/usKptdBAyHcFLJ7nEqqMtEvmoE+wPMq4sYsn1
-         LxdYUbqr/3xhtOg76JNG3Jqew/HgP4F+fBpmWApq2P7mJ9WElYN0V7gqxRTIdaYpaQ
-         HZbhDPCfbS2SA==
-X-Nifty-SrcIP: [209.85.214.182]
-Received: by mail-pl1-f182.google.com with SMTP id bj5so929983plb.4;
-        Tue, 01 Dec 2020 02:43:15 -0800 (PST)
-X-Gm-Message-State: AOAM533X64oSETEM5iw5zxNpnqNlUdEQ9yfuC0YUTRoHbiZZjRKjFkEB
-        jT0cTqcJqQ1h1dnqUibMZrYVd/9Oy01KwPW3Rnw=
-X-Google-Smtp-Source: ABdhPJzU9mhbmZrWnB67E+X7PCt4UV40yWzMeu2zDhscE9PrkWjTvxP7Whk3SFEd5nK4FCl10HJnDlSbWJS6MRvA3Uw=
-X-Received: by 2002:a17:90a:5304:: with SMTP id x4mr2048220pjh.153.1606819394577;
- Tue, 01 Dec 2020 02:43:14 -0800 (PST)
+        id S1726054AbgLAKnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:43:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725899AbgLAKnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:43:32 -0500
+Received: from localhost (unknown [122.171.214.243])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 535A720809;
+        Tue,  1 Dec 2020 10:42:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606819371;
+        bh=Zz2nhRfdKwkp/9D1FoCKHCB7GyTWLmDJ7RBVZaYIkpw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O+1ofRARdpI/DXvQBQvKDREzQxITarBbaFCahcKVQYzr9NvFLJyr/pdMl6o8BYM68
+         HvwI4SMPaOT406eQLC01vsJyThKDXgUgbNNfgX9xrdV0SRGKBStZfuRm6BClsf6ZpD
+         vnChpTsG/cAjVfLHHYuMN0+s47hmnJky2NWrnyqQ=
+Date:   Tue, 1 Dec 2020 16:12:46 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     kishon@ti.com, sfr@canb.auug.org.au, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH 1/3] phy: ralink: phy-mt7621-pci: add include search path
+ in Makefile
+Message-ID: <20201201104246.GA8403@vkoul-mobl>
+References: <20201201101612.28458-1-sergio.paracuellos@gmail.com>
+ <20201201101612.28458-2-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
-References: <20201117104736.24997-1-olaf@aepfle.de>
-In-Reply-To: <20201117104736.24997-1-olaf@aepfle.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 1 Dec 2020 19:42:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATq68FyLEuck34uD6zTOfsOu2UP=yS=TX4Bvq+OR-zoNA@mail.gmail.com>
-Message-ID: <CAK7LNATq68FyLEuck34uD6zTOfsOu2UP=yS=TX4Bvq+OR-zoNA@mail.gmail.com>
-Subject: Re: [PATCH v1] kbuild: enforce -Werror=unused-result
-To:     Olaf Hering <olaf@aepfle.de>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201101612.28458-2-sergio.paracuellos@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 7:47 PM Olaf Hering <olaf@aepfle.de> wrote:
->
-> It is a hard error if a return value is ignored.
-> In case the return value has no meaning, remove the attribute.
->
-> Signed-off-by: Olaf Hering <olaf@aepfle.de>
+On 01-12-20, 11:16, Sergio Paracuellos wrote:
+> This driver includes the following two files directly:
+> - mt7621.h
+> - ralink_regs.h
+> 
+> Compilation for its related platform properly works because
+> its real path is included in 'arch/mips/ralink/Platform' as
+> cflags.
+> 
+> This driver depends on RALINK but also is enabled for COMPILE_TEST
+> where nothing about its platform is known and this directly
+> included files are not found at all breaking compilation.
+> 
+> Fix this problem adding include search path for ralink in
+> ralink phy directory Makefile.
+> 
+> Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
 
-Applied to linux-kbuild.
-Thanks.
+Pls add reported-by sfr..
 
-
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 > ---
->  Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index e2c3f65c4721..c7f9acffad42 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -497,7 +497,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
->  KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
->                    -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
->                    -Werror=implicit-function-declaration -Werror=implicit-int \
-> -                  -Werror=return-type -Wno-format-security \
-> +                  -Werror=return-type -Werror=unused-result -Wno-format-security \
->                    -std=gnu89
->  KBUILD_CPPFLAGS := -D__KERNEL__
->  KBUILD_AFLAGS_KERNEL :=
+>  drivers/phy/ralink/Makefile | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/phy/ralink/Makefile b/drivers/phy/ralink/Makefile
+> index cda2a4a7ca5e..c8f9adba0d82 100644
+> --- a/drivers/phy/ralink/Makefile
+> +++ b/drivers/phy/ralink/Makefile
+> @@ -1,3 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> +
+> +ccflags-y	+= -I$(srctree)/arch/mips/include/asm/mach-ralink
 
+Can we include <asm/mips/...> instead of using this?
 
+> +
+>  obj-$(CONFIG_PHY_MT7621_PCI)	+= phy-mt7621-pci.o
+>  obj-$(CONFIG_PHY_RALINK_USB)	+= phy-ralink-usb.o
+> -- 
+> 2.25.1
 
 -- 
-Best Regards
-Masahiro Yamada
+~Vinod
