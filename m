@@ -2,129 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692A92CB0CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 850702CB0CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 00:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgLAXbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 18:31:24 -0500
-Received: from mga05.intel.com ([192.55.52.43]:57103 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726071AbgLAXbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 18:31:23 -0500
-IronPort-SDR: WZSWPhxBra9pP+ftUaXprhW334TjQZYD4J+xsTZgSCUnGLbHTu6845lPRSz0qyaqsWPSNZysCT
- u3PJFPcwpBIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="257634759"
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="257634759"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 15:30:43 -0800
-IronPort-SDR: mEjNizPwsa5Xa8gB8/7KDCBUubNUNqUOfipfUunmzdf8Sff0y6prwzy7yoXnTCASl0fGO3k5bd
- /Sy8cIklZQFg==
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="481299500"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.212.174.43])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 15:30:42 -0800
-Subject: Re: [PATCH v6 2/7] fpga: sec-mgr: enable secure updates
-To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-References: <20201106010905.11935-1-russell.h.weight@intel.com>
- <20201106010905.11935-3-russell.h.weight@intel.com>
- <9dd75daf-eb73-4008-ca65-6f7ea3923e35@silicom.dk>
- <c6dc2edb-9639-9c4f-c065-18cade768fb6@intel.com>
- <5b49ef38-2c03-02bc-6a1e-5b663180acf3@silicom.dk>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <25ee1ab1-3d81-d9b9-240d-143a9936d0f8@intel.com>
-Date:   Tue, 1 Dec 2020 15:30:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727178AbgLAXcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 18:32:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727088AbgLAXcm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 18:32:42 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68D8C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 15:32:02 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id z23so3416249oti.13
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 15:32:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qatnj/FNqaZ+ECXKGoFl0+ahWNatAD/GWmAFXeDRJQM=;
+        b=awn9xZYFYPP8d4N7JYbiimYAXu2Qt6OiesaX9d0YsLeK5vBZ6zjJorN0ylQ9Mm4e8r
+         hSX6nk+pRrn3FhJmhGaPhVHJf0ayigkpjjbjBGHaC7UnmkJel98ElBUUCUeJ+egvLrAk
+         Z/JohGhI1i+7Gu6dMdOBcOaCo8Mof41wF+3y8bADMhapKhMiMGQkXak6lJPgu0uuw4s4
+         KXjC+4sNZosHOvcNSu/h+y/YbCgjo9TOPT+G5tNzTRXq+yV7eR1qCwEFwRFTGwozppeo
+         pSweIifim5oan7zodp/2a4dYpMcSn+HQAgDKZOxkwXXpep8p60T59Yta9vanVcF+00Pi
+         OgFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qatnj/FNqaZ+ECXKGoFl0+ahWNatAD/GWmAFXeDRJQM=;
+        b=OPd62Y073BEtaUET5lgl9uxsO+ql6mgv7fDk+DR+89IValMKFzAXVJzxlR/xzdS0KA
+         8/M2V3d48i4+3OkiCKp10oGNy3L43SjE1+8oGihOhuo+D9LZ+33IjNQbO3wi4f7CN9kP
+         E8qR6UkU1YFEUOf+IoFd02TPtJm40RoBNTa3Q6yO00wA5epA/8a3a5pBbAaF+a+VV7qB
+         Rpi7PA+nnomzkumT19eL6xvHzxTBGIY4f1jojqnY+SYVEN/+aFP4NQstbS4MJ6AtEeva
+         alLvw6pUzrnE+0uy58rDQC1/ybbR/xacrt8voWZWh7rH/h7H4oF4mr6vl/HQ947yWthT
+         xu8g==
+X-Gm-Message-State: AOAM531s/lxkifzaTZBsmBr0TUmn+duBKTkOsKuqcqQeNsd1zPe/gb1s
+        8ldTOKzUZGHy5l/pcttPCIHOyMalyCr0NOXB4h/0tQ==
+X-Google-Smtp-Source: ABdhPJz/36KpN1WvMgoRTCuz9DIhS7HBCPsjrvLJzDcsAseeN5SvuBZkEgRGwYf1aPe0KsPwYmZQN2oA8wwIn6w9Vvo=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr3704860otk.251.1606865521640;
+ Tue, 01 Dec 2020 15:32:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5b49ef38-2c03-02bc-6a1e-5b663180acf3@silicom.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20201116054035.211498-1-98.arpi@gmail.com> <CABVgOSkoQahYqMJ3dD1_X2+rF3OgwT658+8HRM2EZ5e0-94jmw@mail.gmail.com>
+ <CANpmjNOhb13YthVHmXxMjpD2JZUO4H2Z1KZSKqHeFUv-RbM5+Q@mail.gmail.com>
+ <CABVgOSnGnkCnAyAqVoLhMGb6XV_irtYB7pyOTon5Scab8GxKtg@mail.gmail.com>
+ <CAFd5g4768o7UtOmM3X0X5upD0uF3j-=g3txi0_Ue3z8oM_Ghow@mail.gmail.com> <505b8cd0-a61e-5ec3-7e0b-239d0ff55d56@linuxfoundation.org>
+In-Reply-To: <505b8cd0-a61e-5ec3-7e0b-239d0ff55d56@linuxfoundation.org>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 2 Dec 2020 00:31:49 +0100
+Message-ID: <CANpmjNMOMD+2OhBWNh5XuFufbm1bhXTUm4Y3_YiNNdfC=G2xdQ@mail.gmail.com>
+Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Iurii Zaikin <yzaikin@google.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Bird, Tim" <Tim.Bird@sony.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/1/20 12:47 AM, Martin Hundebøll wrote:
-> Hi Russ,
+On Tue, 1 Dec 2020 at 23:28, Shuah Khan <skhan@linuxfoundation.org> wrote:
 >
-> On 01/12/2020 00.54, Russ Weight wrote:
->> Thanks Martin. I'll work on a fix for this.
+> On 11/30/20 3:22 PM, Brendan Higgins wrote:
+> > On Mon, Nov 23, 2020 at 11:25 PM David Gow <davidgow@google.com> wrote:
+> >>
+> >> On Mon, Nov 23, 2020 at 9:08 PM Marco Elver <elver@google.com> wrote:
+> >>>
+> >>> On Tue, 17 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
+> >>>> On Mon, Nov 16, 2020 at 1:41 PM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> >>>>>
+> >>>>> Implementation of support for parameterized testing in KUnit. This
+> >>>>> approach requires the creation of a test case using the
+> >>>>> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+> >>>>>
+> >>>>> This generator function should return the next parameter given the
+> >>>>> previous parameter in parameterized tests. It also provides a macro to
+> >>>>> generate common-case generators based on arrays. Generators may also
+> >>>>> optionally provide a human-readable description of parameters, which is
+> >>>>> displayed where available.
+> >>>>>
+> >>>>> Note, currently the result of each parameter run is displayed in
+> >>>>> diagnostic lines, and only the overall test case output summarizes
+> >>>>> TAP-compliant success or failure of all parameter runs. In future, when
+> >>>>> supported by kunit-tool, these can be turned into subsubtest outputs.
+> >>>>>
+> >>>>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> >>>>> Co-developed-by: Marco Elver <elver@google.com>
+> >>>>> Signed-off-by: Marco Elver <elver@google.com>
+> >>>>> ---
+> >>>> [Resending this because my email client re-defaulted to HTML! Aarrgh!]
+> >>>>
+> >>>> This looks good to me! I tested it in UML and x86-64 w/ KASAN, and
+> >>>> both worked fine.
+> >>>>
+> >>>> Reviewed-by: David Gow <davidgow@google.com>
+> >>>> Tested-by: David Gow <davidgow@google.com>
+> >>>
+> >>> Thank you!
+> >>>
+> >>>> Thanks for sticking with this!
+> >>>
+> >>> Will these patches be landing in 5.11 or 5.12?
+> >>>
+> >>
+> >> I can't think of any reason not to have these in 5.11. We haven't
+> >> started staging things in the kselftest/kunit branch for 5.11 yet,
+> >> though.
+> >>
+> >> Patch 2 will probably need to be acked by Ted for ext4 first.
+> >>
+> >> Brendan, Shuah: can you make sure this doesn't get lost in patchwork?
+> >
+> > Looks good to me. I would definitely like to pick this up. But yeah,
+> > in order to pick up 2/2 we will need an ack from either Ted or Iurii.
+> >
+> > Ted seems to be busy right now, so I think I will just ask Shuah to go
+> > ahead and pick this patch up by itself and we or Ted can pick up patch
+> > 2/2 later.
+> >
+> > Cheers
+> >
 >
-> Attached is my in-house fix.
+> I am seeing
 >
-> // Martin
+> ERROR: need consistent spacing around '*' (ctx:WxV)
+> #272: FILE: include/kunit/test.h:1786:
+> +               typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 :
+> (array);        \
+>                                    ^
 >
->> On 11/26/20 6:02 AM, Martin Hundebøll wrote:
->>> Hi Russ,
->>>
->>> I found another thing while testing this...
->>>
->>> On 06/11/2020 02.09, Russ Weight wrote:
->>>
->>> <snip>
->>>
->>>> +static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
->>>> +                  const char *buf, size_t count)
->>>> +{
->>>> +    struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
->>>> +    int ret = count;
->>>> +
->>>> +    if (count == 0 || count >= PATH_MAX)
->>>> +        return -EINVAL;
->>>> +
->>>> +    mutex_lock(&smgr->lock);
->>>> +    if (smgr->driver_unload || smgr->progress != FPGA_SEC_PROG_IDLE) {
->>>> +        ret = -EBUSY;
->>>> +        goto unlock_exit;
->>>> +    }
->>>> +
->>>> +    smgr->filename = kstrndup(buf, count - 1, GFP_KERNEL);
->>>
->>> The `count - 1` is meant to remove a trailing newline, but opae-sdk writes the filename without newline, so better do it conditionally...
+> Can you look into this and send v10?
 
-After looking at how kstrndup() is used elsewhere, and after
-doing some experimentation, I think the best fix may be to just
-remove the "- 1":
+This is a false positive. I pointed this out here before:
+https://lkml.kernel.org/r/CANpmjNNhpe6TYt0KmBCCR-Wfz1Bxd8qnhiwegwnDQsxRAWmUMg@mail.gmail.com
 
-    smgr->filename = kstrndup(buf, count, GFP_KERNEL);
+checkpatch.pl thinks this is a multiplication, but this is a pointer,
+so the spacing here is correct.
 
-The code shouldn't have assumed a "\n", and I don't think the
-kernel should be required to do white-space cleanup.
+Thanks,
+-- Marco
 
-Does this fix seem OK to you?
-
-- Russ
->>>
->>>> +    if (!smgr->filename) {
->>>> +        ret = -ENOMEM;
->>>> +        goto unlock_exit;
->>>> +    }
->>>> +
->>>> +    smgr->err_code = FPGA_SEC_ERR_NONE;
->>>> +    smgr->progress = FPGA_SEC_PROG_READING;
->>>> +    reinit_completion(&smgr->update_done);
->>>> +    schedule_work(&smgr->work);
->>>> +
->>>> +unlock_exit:
->>>> +    mutex_unlock(&smgr->lock);
->>>> +    return ret;
->>>> +}
->>>> +static DEVICE_ATTR_WO(filename);
->>>> +
->>>> +static struct attribute *sec_mgr_update_attrs[] = {
->>>> +    &dev_attr_filename.attr,
->>>> +    NULL,
->>>> +};
->>>
->>> Thanks,
->>> Martin
->>
-
+> thanks,
+> -- Shuah
