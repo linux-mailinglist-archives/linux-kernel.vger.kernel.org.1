@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706922C94B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60E12C94B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731225AbgLABdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:33:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S2389229AbgLABdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731118AbgLABdf (ORCPT
+        with ESMTP id S2389164AbgLABdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:33:35 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5526C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 17:32:54 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id z3so510400ybc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 17:32:54 -0800 (PST)
+        Mon, 30 Nov 2020 20:33:42 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F944C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 17:32:56 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id t17so9811371qtp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 17:32:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=luAMirKoJYalsuVhjtemmSEQvYQcvAW4IlIYXWdu+v4=;
-        b=v97sVUC1aNXg1H56zuiHW0CwftWHHHRjK4dpvsipbKlzj9fqmu+ZZw0N2vXsfVTWmQ
-         xtSu8HlqWRYfanPdrlfWCpZPJZ15fZywIYQFy9k/0jvRXz/4jYBFsArVSZeVd1bp8b5Z
-         mudqhkNXnt+bdEgWeEV02omxZR1OVMlTVeVYDHDvpeDQy36PgQw4JY7kiEimhGYY/qvr
-         AVE3s5IT+kV5CeSViJn0cxQusWpdMRshrMJXXZYfo8XA40CDwR66yU5+O7wgaI8aeULY
-         1uGdNLLovwEz/qsf4r7qIqMF0SWy0/irBjlZN4Lq3f59IPUmSw9TIV71iV75x7hdOMoX
-         8gAQ==
+        bh=QhLigLn75FAzXhIZ0bPoDFSVJj4c0SqhtU7L4z8HlcQ=;
+        b=u0x83zQV/jRreAFGvsZ+wU1pXUVK4f7vHF+SEAm9974nWnWvBEbopyBw0e9TRsDrcS
+         XghVo/rtgrUrJWMGnSeun6wTs9fajtlhWj3VDyOGK5sRwP24dmpfWnX5xUqTWjRgDQlJ
+         ilhi/OxE3xDp/mPSVr9R7gSbML2nld8LzmNNsBLLFXBy9GBQlnhBGZSzYZaz95wuNbc6
+         NCjClDAssQTTCFuO1yRi3xMFyZn6H/pyp8Pxr0GanWr2ApoLSjj14pHSeLzz5WakjCWH
+         2+zd1DktDDOl32y2wLU+IfYXhd2B89bcFjNjxbuuPY+pnBO5vVJk6pftGjog/ovRMfZF
+         HPiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=luAMirKoJYalsuVhjtemmSEQvYQcvAW4IlIYXWdu+v4=;
-        b=mqV5lyIDS9cwvyqStpG5dst+sdTB01f7axU5M5nxPVwnYKF5bxRMMMKngJ9i3sCc+G
-         HGFsXpXSbVx0Q0DEVJheN9k/oRtUqC5gv953On+5EPakdym1DdV4+gqYojwZVg2gqVCK
-         ub8IGJzSXZ3uun4YOml9nkISAz0GOEBnjeFaum51HRpvA6jd62MB5fnp83ZKa5nEv8NH
-         7rd3R4uJkjjX/LkvOJt63bCWOWmdC+uv/LFhwV9I6VC3TQg3kBMfpM+CS2S6V+Yujs+g
-         VLfpfVQcV2uhXsxw6EDKokbW0RhVTwSyWLdipIL0MOmV7k9PZ6Pzlko+IGDtLpVO6DyG
-         iBrg==
-X-Gm-Message-State: AOAM531TSD1DxV6lS9R5si+vIrryrflj04vqx81kedIt4JfHZwTWeJvx
-        4SZ69x+um6lIttjSEdH5xUNGwsTaVzo=
-X-Google-Smtp-Source: ABdhPJxRq76JNsioT9qhQtE6gOclW1Ojx17Kl991aKFZGQLLHnA47UxluzIxNPnRXoH6Owd0I52xXnsqu4U=
+        bh=QhLigLn75FAzXhIZ0bPoDFSVJj4c0SqhtU7L4z8HlcQ=;
+        b=iNxEN/Wdo6zjpa0VjrTxKoHWLp8uirfQx1tefFtAQ5xKI1ppdxoj8/yA+NMVDkSfAM
+         /QFYYsLskpG+gQaynsbHvT4Z6NeVPiaj9rY5gfI1rhL0M4LmaP49PnIYoyl4fe6TtK6b
+         Mst37/V9sNysN4p+bTOVAZ4J8pWVc+u867ekw19J7ydwBBAJhlo1qfwaJ9bCRk5+EqYN
+         TwmJSaECmyudjgEs3gV22GiV+A/bJhUAVxyiNuiD54U937TMSsZ+7PLgQ8/Ksjp1RPFb
+         9lYCnYsRvJbxU0qoMrXq1VS82VM9H92xAmnWCeEasskXGHhcm+KSP8E4AkGAUIOSinbY
+         yDcw==
+X-Gm-Message-State: AOAM532qJfHRWf8FL7jq4exa/1F23KTV4UO3Nm5CcZQzfM6RuJ266y/h
+        p/QKZewn+hXT1o9SsAjLpGsvzIHSUdw=
+X-Google-Smtp-Source: ABdhPJyDYmJvnlZr2NIh57BebNSj+vT3RUHM8Z1J6YSG1rOMEPclFBovVukLEU19lt5yvjdFZQVwrc4pHPw=
 Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
 X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a25:11c2:: with SMTP id 185mr396896ybr.410.1606786373958;
- Mon, 30 Nov 2020 17:32:53 -0800 (PST)
-Date:   Mon, 30 Nov 2020 17:32:45 -0800
+ (user=badhri job=sendgmr) by 2002:a0c:ba20:: with SMTP id w32mr751329qvf.50.1606786375808;
+ Mon, 30 Nov 2020 17:32:55 -0800 (PST)
+Date:   Mon, 30 Nov 2020 17:32:46 -0800
 In-Reply-To: <20201201013246.32034-1-badhri@google.com>
-Message-Id: <20201201013246.32034-2-badhri@google.com>
+Message-Id: <20201201013246.32034-3-badhri@google.com>
 Mime-Version: 1.0
 References: <20201201013246.32034-1-badhri@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v1 2/3] usb: typec: tcpci: Add support to report vSafe0V
+Subject: [PATCH v1 3/3] usb: typec: tcpci_maxim: Enable VSAFE0V signalling
 From:   Badhri Jagan Sridharan <badhri@google.com>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -64,148 +64,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds vbus_vsafe0v which when set, makes TCPM
-query for VSAFE0V by assigning the tcpc.is_vbus_vsafe0v callback.
-Also enables ALERT.ExtendedStatus which is triggered when
-status of EXTENDED_STATUS.vSafe0V changes.
-EXTENDED_STATUS.vSafe0V is set when vbus is at vSafe0V and
-cleared otherwise.
+Unmask EXTENDED_STATUS_MASK.vSafe0V, ALERT.Extended_Status
+and set vbus_vsafe0v to enable VSAFE0V signalling.
 
 Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
- drivers/usb/typec/tcpm/tcpci.c | 55 ++++++++++++++++++++++++++--------
- drivers/usb/typec/tcpm/tcpci.h |  6 ++++
- 2 files changed, 49 insertions(+), 12 deletions(-)
+ drivers/usb/typec/tcpm/tcpci_maxim.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index 12d983a75510..e281b8bee4db 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -402,6 +402,19 @@ static int tcpci_get_vbus(struct tcpc_dev *tcpc)
- 	return !!(reg & TCPC_POWER_STATUS_VBUS_PRES);
- }
- 
-+static int tcpci_is_vbus_vsafe0v(struct tcpc_dev *tcpc)
-+{
-+	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-+	unsigned int reg;
-+	int ret;
-+
-+	ret = regmap_read(tcpci->regmap, TCPC_EXTENDED_STATUS, &reg);
-+	if (ret < 0)
-+		return ret;
-+
-+	return !!(reg & TCPC_EXTENDED_STATUS_VSAFE0V);
-+}
-+
- static int tcpci_set_vbus(struct tcpc_dev *tcpc, bool source, bool sink)
- {
- 	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-@@ -554,12 +567,22 @@ static int tcpci_init(struct tcpc_dev *tcpc)
- 		TCPC_ALERT_RX_HARD_RST | TCPC_ALERT_CC_STATUS;
- 	if (tcpci->controls_vbus)
- 		reg |= TCPC_ALERT_POWER_STATUS;
-+	/* Enable VSAFE0V status interrupt when detecting VSAFE0V is supported */
-+	if (tcpci->data->vbus_vsafe0v) {
-+		reg |= TCPC_ALERT_EXTENDED_STATUS;
-+		ret = regmap_write(tcpci->regmap, TCPC_EXTENDED_STATUS_MASK,
-+				   TCPC_EXTENDED_STATUS_VSAFE0V);
-+		if (ret < 0)
-+			return ret;
-+	}
- 	return tcpci_write16(tcpci, TCPC_ALERT_MASK, reg);
- }
- 
- irqreturn_t tcpci_irq(struct tcpci *tcpci)
- {
- 	u16 status;
-+	int ret;
-+	unsigned int raw;
- 
- 	tcpci_read16(tcpci, TCPC_ALERT, &status);
- 
-@@ -575,18 +598,17 @@ irqreturn_t tcpci_irq(struct tcpci *tcpci)
- 		tcpm_cc_change(tcpci->port);
- 
- 	if (status & TCPC_ALERT_POWER_STATUS) {
--		unsigned int reg;
--
--		regmap_read(tcpci->regmap, TCPC_POWER_STATUS_MASK, &reg);
--
--		/*
--		 * If power status mask has been reset, then the TCPC
--		 * has reset.
--		 */
--		if (reg == 0xff)
--			tcpm_tcpc_reset(tcpci->port);
--		else
--			tcpm_vbus_change(tcpci->port);
-+		ret = regmap_read(tcpci->regmap, TCPC_POWER_STATUS_MASK, &raw);
-+		if (ret >= 0) {
-+			/*
-+			 * If power status mask has been reset, then the TCPC
-+			 * has reset.
-+			 */
-+			if (raw == 0xff)
-+				tcpm_tcpc_reset(tcpci->port);
-+			else
-+				tcpm_vbus_change(tcpci->port);
-+		}
+diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+index c1797239bf08..1aabe6abd819 100644
+--- a/drivers/usb/typec/tcpm/tcpci_maxim.c
++++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
+@@ -112,11 +112,18 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
+ 		return;
  	}
  
- 	if (status & TCPC_ALERT_RX_STATUS) {
-@@ -622,6 +644,12 @@ irqreturn_t tcpci_irq(struct tcpci *tcpci)
- 		tcpm_pd_receive(tcpci->port, &msg);
++	/* Enable VSAFE0V detection */
++	ret = max_tcpci_write8(chip, TCPC_EXTENDED_STATUS_MASK, TCPC_EXTENDED_STATUS_VSAFE0V);
++	if (ret < 0) {
++		dev_err(chip->dev, "Unable to unmask TCPC_EXTENDED_STATUS_VSAFE0V ret:%d\n", ret);
++		return;
++	}
++
+ 	alert_mask = TCPC_ALERT_TX_SUCCESS | TCPC_ALERT_TX_DISCARDED | TCPC_ALERT_TX_FAILED |
+ 		TCPC_ALERT_RX_HARD_RST | TCPC_ALERT_RX_STATUS | TCPC_ALERT_CC_STATUS |
+ 		TCPC_ALERT_VBUS_DISCNCT | TCPC_ALERT_RX_BUF_OVF | TCPC_ALERT_POWER_STATUS |
+ 		/* Enable Extended alert for detecting Fast Role Swap Signal */
+-		TCPC_ALERT_EXTND;
++		TCPC_ALERT_EXTND | TCPC_ALERT_EXTENDED_STATUS;
+ 
+ 	ret = max_tcpci_write16(chip, TCPC_ALERT_MASK, alert_mask);
+ 	if (ret < 0) {
+@@ -315,6 +322,12 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
+ 		}
  	}
  
 +	if (status & TCPC_ALERT_EXTENDED_STATUS) {
-+		ret = regmap_read(tcpci->regmap, TCPC_EXTENDED_STATUS, &raw);
-+		if (ret >= 0 && (raw & TCPC_EXTENDED_STATUS_VSAFE0V))
-+			tcpm_vbus_change(tcpci->port);
++		ret = max_tcpci_read8(chip, TCPC_EXTENDED_STATUS, (u8 *)&reg_status);
++		if (ret >= 0 && (reg_status & TCPC_EXTENDED_STATUS_VSAFE0V))
++			tcpm_vbus_change(chip->port);
 +	}
 +
- 	if (status & TCPC_ALERT_RX_HARD_RST)
- 		tcpm_pd_hard_reset(tcpci->port);
+ 	if (status & TCPC_ALERT_RX_STATUS)
+ 		process_rx(chip, status);
  
-@@ -699,6 +727,9 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
- 			tcpci_set_auto_vbus_discharge_threshold;
- 	}
+@@ -442,6 +455,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+ 	chip->data.init = tcpci_init;
+ 	chip->data.frs_sourcing_vbus = max_tcpci_frs_sourcing_vbus;
+ 	chip->data.auto_discharge_disconnect = true;
++	chip->data.vbus_vsafe0v = 1;
  
-+	if (tcpci->data->vbus_vsafe0v)
-+		tcpci->tcpc.is_vbus_vsafe0v = tcpci_is_vbus_vsafe0v;
-+
- 	err = tcpci_parse_config(tcpci);
- 	if (err < 0)
- 		return ERR_PTR(err);
-diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-index 3fe313655f0c..116a69c85e38 100644
---- a/drivers/usb/typec/tcpm/tcpci.h
-+++ b/drivers/usb/typec/tcpm/tcpci.h
-@@ -49,6 +49,9 @@
- #define TCPC_TCPC_CTRL_ORIENTATION	BIT(0)
- #define TCPC_TCPC_CTRL_BIST_TM		BIT(1)
- 
-+#define TCPC_EXTENDED_STATUS		0x20
-+#define TCPC_EXTENDED_STATUS_VSAFE0V	BIT(0)
-+
- #define TCPC_ROLE_CTRL			0x1a
- #define TCPC_ROLE_CTRL_DRP		BIT(6)
- #define TCPC_ROLE_CTRL_RP_VAL_SHIFT	4
-@@ -155,11 +158,14 @@ struct tcpci;
-  *		is sourcing vbus.
-  * @auto_discharge_disconnect:
-  *		Optional; Enables TCPC to autonously discharge vbus on disconnect.
-+ * @vbus_vsafe0v:
-+ *		optional; Set when TCPC can detect whether vbus is at VSAFE0V.
-  */
- struct tcpci_data {
- 	struct regmap *regmap;
- 	unsigned char TX_BUF_BYTE_x_hidden:1;
- 	unsigned char auto_discharge_disconnect:1;
-+	unsigned char vbus_vsafe0v:1;
- 
- 	int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
- 	int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
+ 	max_tcpci_init_regs(chip);
+ 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
 -- 
 2.29.2.454.gaff20da3a2-goog
 
