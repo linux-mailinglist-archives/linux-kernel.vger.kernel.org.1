@@ -2,196 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B62F2CAB7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E312CACA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731267AbgLATLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:11:20 -0500
-Received: from mga17.intel.com ([192.55.52.151]:2546 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731248AbgLATLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:11:19 -0500
-IronPort-SDR: htJPhwuBw5+0xOFLP7qpOmJhLiYAxEBe0si/kfT5LtFVcilS10OqEoNBUU/rm6rDouLQmXPG0O
- 85QI5xtycSrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152718780"
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="152718780"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 11:09:31 -0800
-IronPort-SDR: btcYYaIT38WOT1WsfHcisBpaR8qvgMFNa1ubGn8s8TajCwcM/fu2mAfFebHEmcmtg5m5BEAOtI
- jb8nNn7Cp+Tg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="537645085"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by fmsmga006.fm.intel.com with ESMTP; 01 Dec 2020 11:09:31 -0800
-Subject: Re: [PATCHv2 1/5] firmware: stratix10-svc: add
- COMMAND_AUTHENTICATE_BITSTREAM flag
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     gregkh@linuxfoundation.org, trix@redhat.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        richard.gong@intel.com
-References: <1605709753-7800-1-git-send-email-richard.gong@linux.intel.com>
- <1605709753-7800-2-git-send-email-richard.gong@linux.intel.com>
- <X7U+BTkW7ZmsMByV@epycbox.lan>
- <d8b58b40-63c6-115e-8e61-f092e3f050b3@linux.intel.com>
- <X7m6gy/B8DiafyYQ@archbook>
- <771ba4f4-59e1-74b0-ba55-3f65914e2bc7@linux.intel.com>
- <X8XHJimPDaE/lNx0@archbook>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <e67a2abe-2c97-fe1c-9dc7-100b8a20381b@linux.intel.com>
-Date:   Tue, 1 Dec 2020 13:30:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2392393AbgLAToq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:44:46 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:40620 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgLATop (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 14:44:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1606851884; x=1638387884;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=594SgZNdjDsywSezcV0Z6nCc3hdXELc3K5lOR/HXMoU=;
+  b=o7fpzL4tEPvJGnCRXLjeMorWlhPvFaKITQezPM9NVsdDs9KNMBHFnnA1
+   oXK4G4v+L8MCLvU8SI+w68nyI7oohBtAbDoxX3m4EwJoon9kszoqnJFP2
+   sCGypnkmKjA2lAOuVr0rMKycckTZGKPdmw8R9hhVhiroQMBE7IUAVY8sj
+   I=;
+X-IronPort-AV: E=Sophos;i="5.78,385,1599523200"; 
+   d="scan'208";a="92639036"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 01 Dec 2020 19:01:20 +0000
+Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 0DE74A1F05;
+        Tue,  1 Dec 2020 19:01:16 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.252) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 1 Dec 2020 19:01:11 +0000
+Subject: Re: [PATCH net-next v1 2/3] virtio_transport_common: Set sibling VMs
+ flag on the receive path
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20201201152505.19445-1-andraprs@amazon.com>
+ <20201201152505.19445-3-andraprs@amazon.com>
+ <20201201162213.adcshbtspleosyod@steredhat>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <447c0557-68f7-54ae-88ac-ebe50c6f2f9b@amazon.com>
+Date:   Tue, 1 Dec 2020 21:01:05 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <X8XHJimPDaE/lNx0@archbook>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201201162213.adcshbtspleosyod@steredhat>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.252]
+X-ClientProxiedBy: EX13D10UWA003.ant.amazon.com (10.43.160.248) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+CgpPbiAwMS8xMi8yMDIwIDE4OjIyLCBTdGVmYW5vIEdhcnphcmVsbGEgd3JvdGU6Cj4KPiBPbiBU
+dWUsIERlYyAwMSwgMjAyMCBhdCAwNToyNTowNFBNICswMjAwLCBBbmRyYSBQYXJhc2NoaXYgd3Jv
+dGU6Cj4+IFRoZSB2c29jayBmbGFnIGNhbiBiZSBzZXQgZHVyaW5nIHRoZSBjb25uZWN0KCkgc2V0
+dXAgbG9naWMsIHdoZW4KPj4gaW5pdGlhbGl6aW5nIHRoZSB2c29jayBhZGRyZXNzIGRhdGEgc3Ry
+dWN0dXJlIHZhcmlhYmxlLiBUaGVuIHRoZSB2c29jawo+PiB0cmFuc3BvcnQgaXMgYXNzaWduZWQs
+IGFsc28gY29uc2lkZXJpbmcgdGhpcyBmbGFnLgo+Pgo+PiBUaGUgdnNvY2sgdHJhbnNwb3J0IGlz
+IGFsc28gYXNzaWduZWQgb24gdGhlIChsaXN0ZW4pIHJlY2VpdmUgcGF0aC4gVGhlCj4+IGZsYWcg
+bmVlZHMgdG8gYmUgc2V0IGNvbnNpZGVyaW5nIHRoZSB1c2UgY2FzZS4KPj4KPj4gU2V0IHRoZSB2
+c29jayBmbGFnIG9mIHRoZSByZW1vdGUgYWRkcmVzcyB0byB0aGUgb25lIHRhcmdldGVkIGZvciBz
+aWJsaW5nCj4+IFZNcyBjb21tdW5pY2F0aW9uIGlmIHRoZSBmb2xsb3dpbmcgY29uZGl0aW9ucyBh
+cmUgbWV0Ogo+Pgo+PiAqIFRoZSBzb3VyY2UgQ0lEIG9mIHRoZSBwYWNrZXQgaXMgaGlnaGVyIHRo
+YW4gVk1BRERSX0NJRF9IT1NULgo+PiAqIFRoZSBkZXN0aW5hdGlvbiBDSUQgb2YgdGhlIHBhY2tl
+dCBpcyBoaWdoZXIgdGhhbiBWTUFERFJfQ0lEX0hPU1QuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEFu
+ZHJhIFBhcmFzY2hpdiA8YW5kcmFwcnNAYW1hem9uLmNvbT4KPj4gLS0tCj4+IG5ldC92bXdfdnNv
+Y2svdmlydGlvX3RyYW5zcG9ydF9jb21tb24uYyB8IDggKysrKysrKysKPj4gMSBmaWxlIGNoYW5n
+ZWQsIDggaW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvbmV0L3Ztd192c29jay92aXJ0
+aW9fdHJhbnNwb3J0X2NvbW1vbi5jIAo+PiBiL25ldC92bXdfdnNvY2svdmlydGlvX3RyYW5zcG9y
+dF9jb21tb24uYwo+PiBpbmRleCA1OTU2OTM5ZWViYjc4Li44NzFjODRlMDkxNmIxIDEwMDY0NAo+
+PiAtLS0gYS9uZXQvdm13X3Zzb2NrL3ZpcnRpb190cmFuc3BvcnRfY29tbW9uLmMKPj4gKysrIGIv
+bmV0L3Ztd192c29jay92aXJ0aW9fdHJhbnNwb3J0X2NvbW1vbi5jCj4+IEBAIC0xMDYyLDYgKzEw
+NjIsMTQgQEAgdmlydGlvX3RyYW5zcG9ydF9yZWN2X2xpc3RlbihzdHJ1Y3Qgc29jayAqc2ssIAo+
+PiBzdHJ1Y3QgdmlydGlvX3Zzb2NrX3BrdCAqcGt0LAo+PiDCoMKgwqDCoMKgIHZzb2NrX2FkZHJf
+aW5pdCgmdmNoaWxkLT5yZW1vdGVfYWRkciwgCj4+IGxlNjRfdG9fY3B1KHBrdC0+aGRyLnNyY19j
+aWQpLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGUzMl90
+b19jcHUocGt0LT5oZHIuc3JjX3BvcnQpKTsKPj4KPgo+IE1heWJlIGlzIGJldHRlciB0byBjcmVh
+dGUgYW4gaGVscGVyIGZ1bmN0aW9uIHRoYXQgb3RoZXIgdHJhbnNwb3J0cyBjYW4KPiB1c2UgZm9y
+IHRoZSBzYW1lIHB1cnBvc2Ugb3Igd2UgY2FuIHB1dCB0aGlzIGNvZGUgaW4gdGhlCj4gdnNvY2tf
+YXNzaWduX3RyYW5zcG9ydCgpIGFuZCBzZXQgdGhpcyBmbGFnIG9ubHkgd2hlbiB0aGUgJ3Bzaycg
+YXJndW1lbnQKPiBpcyBub3QgTlVMTCAodGhpcyBpcyB0aGUgY2FzZSB3aGVuIGl0J3MgY2FsbGVk
+IGJ5IHRoZSB0cmFuc3BvcnRzIHdoZW4gd2UKPiByZWNlaXZlIGEgbmV3IGNvbm5lY3Rpb24gcmVx
+dWVzdCBhbmQgJ3BzaycgaXMgdGhlIGxpc3RlbmVyIHNvY2tldCkuCj4KPiBUaGUgc2Vjb25kIHdh
+eSBzaG91bGQgYWxsb3cgdXMgdG8gc3VwcG9ydCBhbGwgdGhlIHRyYW5zcG9ydHMgd2l0aG91dAo+
+IHRvdWNoaW5nIHRoZW0uCgpBY2ssIEkgd2FzIHdvbmRlcmluZyBhYm91dCB0aGUgb3RoZXIgdHJh
+bnNwb3J0cyBzdWNoIGFzIHZtY2kgb3IgaHlwZXJ2LgoKSSBjYW4gbW92ZSB0aGUgbG9naWMgYmVs
+b3cgaW4gdGhlIGNvZGViYXNlIHRoYXQgYXNzaWducyB0aGUgdHJhbnNwb3J0LCAKYWZ0ZXIgY2hl
+Y2tpbmcgJ3BzaycuCgo+Cj4+ICvCoMKgwqDCoMKgIC8qIElmIHRoZSBwYWNrZXQgaXMgY29taW5n
+IHdpdGggdGhlIHNvdXJjZSBhbmQgZGVzdGluYXRpb24gCj4+IENJRHMgaGlnaGVyCj4+ICvCoMKg
+wqDCoMKgwqAgKiB0aGFuIFZNQUREUl9DSURfSE9TVCwgdGhlbiBhIHZzb2NrIGNoYW5uZWwgc2hv
+dWxkIGJlIAo+PiBlc3RhYmxpc2hlZCBmb3IKPj4gK8KgwqDCoMKgwqDCoCAqIHNpYmxpbmcgVk1z
+IGNvbW11bmljYXRpb24uCj4+ICvCoMKgwqDCoMKgwqAgKi8KPj4gK8KgwqDCoMKgwqAgaWYgKHZj
+aGlsZC0+bG9jYWxfYWRkci5zdm1fY2lkID4gVk1BRERSX0NJRF9IT1NUICYmCj4+ICvCoMKgwqDC
+oMKgwqDCoMKgwqAgdmNoaWxkLT5yZW1vdGVfYWRkci5zdm1fY2lkID4gVk1BRERSX0NJRF9IT1NU
+KQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmNoaWxkLT5yZW1vdGVfYWRkci5zdm1f
+ZmxhZyA9IAo+PiBWTUFERFJfRkxBR19TSUJMSU5HX1ZNU19DT01NVU5JQ0FUSU9OOwo+Cj4gc3Zt
+X2ZsYWcgaXMgYWx3YXlzIGluaXRpYWxpemVkIHRvIDAgaW4gdnNvY2tfYWRkcl9pbml0KCksIHNv
+IHRoaXMKPiBhc3NpZ25tZW50IGlzIHRoZSBmaXJzdCBvbmUgYW5kIGl0J3Mgb2theSwgYnV0IHRv
+IGF2b2lkIGZ1dHVyZSBpc3N1ZXMKPiBJJ2QgdXNlIHw9IGhlcmUgdG8gc2V0IHRoZSBmbGFnLgoK
+RmFpciBwb2ludC4gSSB3YXMgdGhpbmtpbmcgbW9yZSB0b3dhcmRzIGV4Y2x1c2l2ZSBmbGFncyB2
+YWx1ZXMgCihwdXJwb3NlcyksIGJ1dCB0aGF0J3MgZmluZSB3aXRoIHRoZSBiaXR3aXNlIG9wZXJh
+dG9yIGlmIHdlIHdvdWxkIGdldCBhIApzZXQgb2YgZmxhZyB2YWx1ZXMgdG9nZXRoZXIuIEkgd2ls
+bCBhbHNvIHVwZGF0ZSB0aGUgZmllbGQgbmFtZSB0byAKJ3N2bV9mbGFncycsIGxldCBtZSBrbm93
+IGlmIHdlIHNob3VsZCBrZWVwIHRoZSBwcmV2aW91cyBvbmUgb3IgdGhlcmUgaXMgCmEgYmV0dGVy
+IG9wdGlvbi4KClRoYW5rcywKQW5kcmEKCj4KPj4gKwo+PiDCoMKgwqDCoMKgIHJldCA9IHZzb2Nr
+X2Fzc2lnbl90cmFuc3BvcnQodmNoaWxkLCB2c2spOwo+PiDCoMKgwqDCoMKgIC8qIFRyYW5zcG9y
+dCBhc3NpZ25lZCAobG9va2luZyBhdCByZW1vdGVfYWRkcikgbXVzdCBiZSB0aGUgc2FtZQo+PiDC
+oMKgwqDCoMKgwqAgKiB3aGVyZSB3ZSByZWNlaXZlZCB0aGUgcmVxdWVzdC4KPj4gLS0gMi4yMC4x
+IChBcHBsZSBHaXQtMTE3KQo+Pgo+Pgo+Pgo+Pgo+PiBBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVy
+IChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gCj4+IExhemFyIFN0
+cmVldCwgVUJDNSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4g
+Cj4+IFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIvMjYyMS8y
+MDA1Lgo+Pgo+CgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4g
+cmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJ
+YXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEu
+IFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
 
-Hi Moritz,
-
-On 11/30/20 10:31 PM, Moritz Fischer wrote:
-> Hi Richard,
-> 
-> On Mon, Nov 30, 2020 at 12:55:44PM -0600, Richard Gong wrote:
->>
->> Hi Moritz,
->>
->> Sorry for late reply, I was out last week.
-> 
-> No worries, usually I'm late with replies ;-)
->>
->> On 11/21/20 7:10 PM, Moritz Fischer wrote:
->>> Richard,
->>>
->>> On Wed, Nov 18, 2020 at 12:16:09PM -0600, Richard Gong wrote:
->>>
->>>>>> -#define COMMAND_RECONFIG_FLAG_PARTIAL	1
->>>>>> +#define COMMAND_RECONFIG_FLAG_PARTIAL	0
->>>>>> +#define COMMAND_AUTHENTICATE_BITSTREAM	1
->>>>>
->>>>> Can you explain how this commit by itself doesn't break things?
->>>>>
->>>>> Before this change firmware expected BIT(0) to be set for partial
->>>>> reconfiguration, now BIT(0) suddenly means authentication? How doest his
->>>>> work? :)
->>>>>    > Was there a firmware version change? Did this never work before?
->>>>>
->>>>> If this is version depenedent for firmware, then this might need a
->>>>> different compatible string / id / some form of probing?
->>>>>
->>>>> Entirely possible that I'm missing something, but it doesn't *seem*
->>>>> right.
->>>>
->>>> It did work before.
->>>>
->>>> Before this change, firmware only checks if the received flag value is zero.
->>>> If the value is zero, it preforms full reconfiguration. Otherwise it does
->>>> partial reconfiguration.
->>>>
->>>> To support bitstream authentication feature, firmware is updated to check
->>>> the received flag value as below:
->>>> 	0	--- full reconfiguration
->>>> 	BIT(0) 	--- partial reconfiguration
->>>> 	BIT(1) 	--- bitstream authentication
->>>
->>> So there are two different versions of firmware involved that behave
->>> differently?
->>>
->>> Old firmware:
->>> - ctype.flags  = 0x0 -> Full reconfig
->>> - ctype.flags != 0 -> Partial reconfig
->>>
->>> New firmware:
->>> - ctype.flags = 0x0 -> Full reconfig
->>> - ctype.flags = 0x1 -> Partial reconfig
->>> - ctype.flags = 0x2 -> Authenticate
->>>
->>> Old software:
->>> - Send 0x0 for Full
->>> - Send 0x1 for Partial
->>>
->>> New software:
->>> - Send 0x0 for Full
->>> - Send 0x1 for Partial
->>> - Send 0x2 for Auth
->>>
->>> If I send request for authentication BIT(1) (new software) to old
->>> firmware it'd try and attempt a partial reconfiguration with the data I
->>> send? Is that safe?
->>>
->>
->> Yes, it is possible and it is not safe. But we will inform our customers
->> they should update to the latest firmware (SDM firmware and ATF) if they
->> want to have authentication feature.
->>
->> We are migrating boot loader boot flow to the new ATF boot flow, which is
->> SDM firmware -> SPL -> ATF -> U-boot proper -> Linux. The new authentication
->> feature is supported only in the new ATF boot flow. ATF communicates with
->> SDM firmware via mailbox, and SDM firmware performs the actual full/partial
->> reconfiguration and bitstream authentication. ATF sets up EL3 environment
->> and initializes PSCI services.
-> 
-> Can U-Boot determine whether it's the new or old flow? Can you set a
-> different compatible value in your device-tree, to disambiguate
-> behaviors?
-> 
-
-The boot flow is determined by defconfig during compilation, which means 
-each boot flow will have its own defconfig.
-
-SDM firmware loads SPL into OCRAM, then SPL will load the apporiate ATF 
-or U-boot into the DRAM according to the setting of CONFIG_SPL_ATF. If 
-CONFIG_SPL_ATF=y, SPL loads ATF and then jumps to ATF. ATF setups EL3 
-environment and initialize the PSCI services.
-
-CONFIG_SPL_ATF is not set for the old boot flow.
-
->> The old boot flow is SDM firmware -> SPL -> U-boot proper -> Linux, which
->> SPL/U-boot handles PSCI services and communicates with SDM firmware via
->> mailbox. SDM firmware performs the actual full/partial reconfiguration.
->>
->> ATF = Arm Trust Firmware, SDM = Secure Device Manager
->>
->>> Is there a way for software to figure out the firmware version and do
->>> the right thing?
->>
->> It is not feasible for kernel driver to get the firmware version per current
->> designs and implementations. I don't think there is other way around this.
->>
->>>
->>>> Therefore I have updated the command flag setting at Intel service layer
->>>> driver to align with firmware.
->>>>
->>>> Regards,
->>>> Richard
->>>>
->>>>>>     /**
->>>>>>      * Timeout settings for service clients:
->>>>>> -- 
->>>>>> 2.7.4
->>>>>>
->>>>>
->>>>> Cheers,
->>>>> Moritz
->>>>>
->>>
->>> Thanks,
->>> Moritz
->>>
->> Regards,
->> Richard
-> 
-> Thanks,
-> Moritz
-> 
-Regards,
-Richard
