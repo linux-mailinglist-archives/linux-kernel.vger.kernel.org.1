@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22332CA006
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E052CA00B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388517AbgLAKhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:37:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:40264 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbgLAKhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:37:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90EF6101E;
-        Tue,  1 Dec 2020 02:37:08 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 035113F774;
-        Tue,  1 Dec 2020 02:37:07 -0800 (PST)
-Date:   Tue, 1 Dec 2020 10:37:05 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] mailbox: arm_mhu_db: Fix mhu_db_shutdown by replacing
- kfree with devm_kfree
-Message-ID: <20201201103705.GA8455@e120937-lin>
-References: <20201130102804.2345083-1-sudeep.holla@arm.com>
+        id S2388895AbgLAKip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:38:45 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:53359 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730020AbgLAKio (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:38:44 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D6F35580612;
+        Tue,  1 Dec 2020 05:37:57 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 01 Dec 2020 05:37:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=dJ8x8jAF+EN65W8rz5a676aKHaM
+        W6X9PYkMXzzLt4c0=; b=AC7jsIO5A93hvm2W+ZtFmXGxbvQja4KaRIQmELdI59R
+        WRSDaZYvi5/N7fv8SfT14h64m0RrZC1UMFSVrmKbFn8J056K4Ye3BiDYy/asmBWw
+        KHSd9DeWzFp6qSb4h5rhQK5iaj/P4nKOs4TurEoll6MPZYyLCP3igM87pnQ7JCIe
+        qbZ8pPpmh0jnLtZ15rLY2IzJJsj60DN4l9hetMH1mkhrf7QAY9cSo27irpQGbGYa
+        BqkBj5WaVQiJy1vW+laG9q/ZlbEoCwxGMs+Pw5RSbviBCTEHF5bFLGvrlmjLGBm9
+        Q2KhzufBoN4j7XgWF7x7QFwzAfOF4ZTSiS/iP/NJP4Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=dJ8x8j
+        AF+EN65W8rz5a676aKHaMW6X9PYkMXzzLt4c0=; b=VzO9X1InHedAohX3LQmDBT
+        LM544c1GWJ8D/2/xtPXpB7wQUvNt7hieHgWPaOUFqLSRBxjGBF6LhI/LNx530CLi
+        oIe/IZGRazbiECBxcJjW6D407GdhYy7FrVOYzmXa6yfgu5ZbJvw9L2FxISvyfay3
+        EDh0bhmONRzk41u7cDyixSUeWfD5zJnzyUyW3qWaA3A11tttmZkSKHKvrGgw8q4E
+        fYRgW5kwww1Pvj60NXvo7mum3qdeOR4LlI++dBPk8Ye97vMfwfkq5xRViwPp+9df
+        fHCJeNJo1X59QBqdi+cLs083osi+1Nl0I7pmVkVeiuIva18M0nKkMLHgXZD+piAw
+        ==
+X-ME-Sender: <xms:Ah3GX-bHmRs_HYXGX5gb0lJ37ZcrTKJxtAJXkh3jx7KWPBntKXr4Ng>
+    <xme:Ah3GXxbdEO5V4q6I0KY1FucIA77JP2CkxNca-nQb54fBvaHc_WdU7HsPbUpJ-3p4U
+    PAZVgVa2wD9ukvxHQc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeivddgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:Ah3GX48-eF-Q3iknySKMaaL7KKZ515W8OEjdae9G4gncjM7UDEz3lg>
+    <xmx:Ah3GXwqJHqFh8s_UmGdq5FF_aIqhiwFGM1ICAma8ra_mhsmFKeECZA>
+    <xmx:Ah3GX5oZm0ZaiiFI44BVit7QaCUI66Yavxd1T5Wv39b3hpIlbQ81cg>
+    <xmx:BR3GX9CmHHN7jhptvS7H-J2QrflJnMm8l4IjZIJgim3jEwsj24lb_A>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 054EC108005C;
+        Tue,  1 Dec 2020 05:37:54 -0500 (EST)
+Date:   Tue, 1 Dec 2020 11:37:53 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 01/19] docs: phy: Add a part about PHY mode and submode
+Message-ID: <20201201103753.klvoqrv7grboovgq@gilmour>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-2-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="h4ge5f64arxtqfzl"
 Content-Disposition: inline
-In-Reply-To: <20201130102804.2345083-1-sudeep.holla@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201128142839.517949-2-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudeep,
 
-fixes the crash for me.
+--h4ge5f64arxtqfzl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Cristian Marussi <cristian.marussi@arm.com>
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+On Sat, Nov 28, 2020 at 03:28:21PM +0100, Paul Kocialkowski wrote:
+> Besides giving pointers to the relevant functions for PHY mode and
+> submode configuration, this clarifies the need to set them before
+> powering on the PHY.
+>=20
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 
-Thanks
+Reviewed-by: Maxime Ripard <mripard@kernel.org>
 
-Cristian
+Maxime
 
-On Mon, Nov 30, 2020 at 10:28:04AM +0000, Sudeep Holla wrote:
-> The mhu_db_channel info is allocated per channel using devm_kzalloc from
-> mhu_db_mbox_xlate which gets called from mbox_request_channel. However
-> we are releasing the allocated mhu_db_channel info using plain kfree from
-> mhu_db_shutdown which is called from mbox_free_channel.
-> 
-> This leads to random crashes when the channel is freed like below one:
-> 
->   Unable to handle kernel paging request at virtual address 0080000400000008
->   [0080000400000008] address between user and kernel address ranges
->   Internal error: Oops: 96000044 [#1] PREEMPT SMP
->   Modules linked in: scmi_module(-)
->   CPU: 1 PID: 2212 Comm: rmmod Not tainted 5.10.0-rc5 #31
->   Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno
->   	Development Platform, BIOS EDK II Nov 19 2020
->   pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
->   pc : release_nodes+0x74/0x230
->   lr : devres_release_all+0x40/0x68
->   Call trace:
->    release_nodes+0x74/0x230
->    devres_release_all+0x40/0x68
->    device_release_driver_internal+0x12c/0x1f8
->    driver_detach+0x58/0xe8
->    bus_remove_driver+0x64/0xe0
->    driver_unregister+0x38/0x68
->    platform_driver_unregister+0x1c/0x28
->    scmi_driver_exit+0x38/0x44 [scmi_module]
->    __arm64_sys_delete_module+0x188/0x260
->    el0_svc_common.constprop.0+0x80/0x1a8
->    do_el0_svc+0x2c/0x98
->    el0_sync_handler+0x160/0x168
->    el0_sync+0x174/0x180
->   Code: 1400000d eb07009f 54000460 f9400486 (f90004a6)
->   ---[ end trace c55ffd306c140233 ]---
-> 
-> Fix it by replacing kfree with devm_kfree as required.
-> 
-> Fixes: 7002ca237b21 ("mailbox: arm_mhu: Add ARM MHU doorbell driver")
-> Reported-by: Cristian Marussi <cristian.marussi@arm.com>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/mailbox/arm_mhu_db.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mailbox/arm_mhu_db.c b/drivers/mailbox/arm_mhu_db.c
-> index 275efe4cca0c..8eb66c4ecf5b 100644
-> --- a/drivers/mailbox/arm_mhu_db.c
-> +++ b/drivers/mailbox/arm_mhu_db.c
-> @@ -180,7 +180,7 @@ static void mhu_db_shutdown(struct mbox_chan *chan)
->  
->  	/* Reset channel */
->  	mhu_db_mbox_clear_irq(chan);
-> -	kfree(chan->con_priv);
-> +	devm_kfree(mbox->dev, chan->con_priv);
->  	chan->con_priv = NULL;
->  }
->  
-> -- 
-> 2.25.1
-> 
+--h4ge5f64arxtqfzl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8YdAQAKCRDj7w1vZxhR
+xSjSAP4lTrtYAZ2B8ltcBIkKXx8jrh9WOHUZmd/jTVBbrlpaAQEA/Mym782MhSQN
+oNoxZn8BKL4FeHuPgnid9BUa8QH5FQ4=
+=VneL
+-----END PGP SIGNATURE-----
+
+--h4ge5f64arxtqfzl--
