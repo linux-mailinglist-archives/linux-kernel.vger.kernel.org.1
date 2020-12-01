@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82972CA0BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098FF2CA0CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbgLAK7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:59:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730234AbgLAK7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:59:40 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1727132AbgLALDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:03:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgLALDC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:03:02 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE1DC0613CF;
+        Tue,  1 Dec 2020 03:02:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2SCn4JlSamV69DOhuHkaaHHDkWdEHLNroHw+GqxnhKA=; b=IxI289gjll//VzkPWqs5LPvNE7
+        ME07sDg+BNtzea65e0vyN3kdjectclnL4YJH1mPUBQRHoeQH8IR9azDTK+QsJye0iP1xfdhnlIYEs
+        utLBzHWcyFJhsnsrLrHGKDsOREGA/8U7YUsHEYTNS3iHk1CMof/8B/PK85vp1Geu2Q7IZI+XB6yT4
+        MOkhducVVGX4cyO5vSROAyB6hVQnWnjNKYim8nLvfYVbDv2Vta+6uViXo6SFYERJjel5ihTu1Sfse
+        h+1nhSUAcNBfmm73Mp6WwCWd2pXZN43hrW6IAvkQiQa6tWKRSfvOMayn53+x/9jS1enhlAOrOprjH
+        QF/QbveA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kk3QB-0007Cn-Vn; Tue, 01 Dec 2020 11:02:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AC6C20809;
-        Tue,  1 Dec 2020 10:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606820339;
-        bh=fjeXvv1+eOJ5uqv6M23051ubV3+oKlwmWBbroYxu4fw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Hh/ScutavvVCdCl58vcCojICg7CUUG5ERNrak0LxRYScrExjctS6PH40T0x1BYSkQ
-         o0GVgS1ppX077mlPbIml6Z4xF2DkBGekEKRDTslWE0H8Vxa/nLK4wxF/oIEoyg+cHe
-         z74rNevxrT0YthG8Hguh1Bjx2nwzVQpxpD8Pu6+A=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kk3N1-00F13G-9R; Tue, 01 Dec 2020 10:58:55 +0000
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 57DC13059DD;
+        Tue,  1 Dec 2020 12:02:09 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 38E122BE3991C; Tue,  1 Dec 2020 12:02:09 +0100 (CET)
+Date:   Tue, 1 Dec 2020 12:02:09 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     rafael@kernel.org, viresh.kumar@linaro.org, mingo@kernel.org,
+        x86@kernel.org, mark.rutland@arm.com, will@kernel.org,
+        svens@linux.ibm.com, linux-kernel@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/idle: Fix arch_cpu_idle() vs tracing
+Message-ID: <20201201110209.GQ3040@hirez.programming.kicks-ass.net>
+References: <20201120114145.197714127@infradead.org>
+ <20201120114925.594122626@infradead.org>
+ <20201130210003.GA40619@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 01 Dec 2020 10:58:54 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     luojiaxing <luojiaxing@huawei.com>
-Cc:     Shenming Lu <lushenming@huawei.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v1 1/4] irqchip/gic-v4.1: Plumb get_irqchip_state VLPI
- callback
-In-Reply-To: <316fe41d-f004-f004-4f31-6fe6e7ff64b7@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-2-lushenming@huawei.com>
- <869dbc36-c510-fd00-407a-b05e068537c8@huawei.com>
- <875z5p6ayp.wl-maz@kernel.org>
- <316fe41d-f004-f004-4f31-6fe6e7ff64b7@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <7f578fa825b946f74e9ebdee557d6804@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: luojiaxing@huawei.com, lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130210003.GA40619@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-01 09:38, luojiaxing wrote:
-> On 2020/11/28 18:18, Marc Zyngier wrote:
->> On Sat, 28 Nov 2020 07:19:48 +0000,
->> luojiaxing <luojiaxing@huawei.com> wrote:
-
->>> How can you confirm that the interrupt pending status is the latest?
->>> Is it possible that the interrupt pending status is still cached in
->>> the GICR but not synchronized to the memory.
->> That's a consequence of the vPE having been unmapped:
->> 
->> "A VMAPP with {V,Alloc}=={0,1} cleans and invalidates any caching of
->> the Virtual Pending Table and Virtual Configuration Table associated
->> with the vPEID held in the GIC."
+On Mon, Nov 30, 2020 at 01:00:03PM -0800, Guenter Roeck wrote:
+> On Fri, Nov 20, 2020 at 12:41:46PM +0100, Peter Zijlstra wrote:
+> > We call arch_cpu_idle() with RCU disabled, but then use
+> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
+> > 
+> > Switch all arch_cpu_idle() implementations to use
+> > raw_local_irq_{en,dis}able() and carefully manage the
+> > lockdep,rcu,tracing state like we do in entry.
+> > 
+> > (XXX: we really should change arch_cpu_idle() to not return with
+> > interrupts enabled)
+> > 
 > 
-> 
-> Yes, in addition to that, if a vPE is scheduled out of the PE, the
-> cache clearing and write-back to VPT are also performed, I think.
+> Has this patch been tested on s390 ? Reason for asking is that it causes
+> all my s390 emulations to crash. Reverting it fixes the problem.
 
-There is no such architectural requirement.
+My understanding is that it changes the error on s390. Previously it
+would complain about the local_irq_enable() in arch_cpu_idle(), now it
+complains when taking an interrupt during idle.
 
-> However, I feel a litter confusing to read this comment at first , 
-> because it is not only VMAPP that causes cache clearing.
-
-I can't see anything else that guarantee that the caches are clean,
-and that there is no possible write to the PE table.
-
-> I don't know why VMAPP was mentioned here until I check the other two
-> patches ("KVM: arm64: GICv4.1: Try to save hw pending state in
-> save_pending_tables").
-> 
-> So I think may be it's better to add some background description here.
-
-Well, relying on the standard irqchip state methods to peek at the
-pending state isn't very reliable, as you could be temped to call into
-this even when the VPE is mapped. Which is why I've suggested
-a different implementation.
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
