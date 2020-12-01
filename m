@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06FE2C9793
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 929CB2C9798
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgLAGcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 01:32:42 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8540 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgLAGcl (ORCPT
+        id S1727069AbgLAGkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 01:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726865AbgLAGkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 01:32:41 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ClXLW74sDzhl8L;
-        Tue,  1 Dec 2020 14:31:31 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 1 Dec 2020 14:31:52 +0800
-Subject: Re: [PATCH] s390: cio: fix two use-after-free bugs in device.c
-To:     Cornelia Huck <cohuck@redhat.com>
-CC:     Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201120074849.31557-1-miaoqinglang@huawei.com>
- <20201120085526.257a5596.cohuck@redhat.com>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <a78e4d86-159e-ec3a-64eb-3a035a162a2c@huawei.com>
-Date:   Tue, 1 Dec 2020 14:31:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 1 Dec 2020 01:40:10 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BBCC0613CF;
+        Mon, 30 Nov 2020 22:39:30 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id iq13so618798pjb.3;
+        Mon, 30 Nov 2020 22:39:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/ne6Cpwt3KfxILuDv4MKwR/4P8WmgZmGmpAEbbHp2gk=;
+        b=sQCbn1hxOSeNFGdy45v1t7aoEqyc4J+wHdw799j686OOrKeCIqxNzRxtwg9MV6CBGq
+         5eDUXU8P+nxb/ACKDi9hzKOJX5aBQVjvmZJsdOr2xbvqKa6ab8l4L2ZO7U0pBSjOdGTd
+         JPSbsLIO8UbA21RoBprnGIcbeI66nLiM9qNnyoTahoLIdYDBWBnJXwI1np9pSdSPeQsv
+         gcyPw6C+NByHSucWq21HevS+AvFhZrk78GeWdxXjgsRuCamlperZsmloCLiSbIxOW1bF
+         kgkrCrtufSYpVR88KdIzpAt5SGersLBrv9KgW0kFnBf5oGyRDas4ReeuXyA2YNFtEpt2
+         0Mrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/ne6Cpwt3KfxILuDv4MKwR/4P8WmgZmGmpAEbbHp2gk=;
+        b=AbNzy3KPGHMfG63aH3sFs0X/D7a8TLUPymikLKAajbMv84+r/OWOCQyA6elGgynzuU
+         qP5PoEZfPxqoO/JhaFRXq2BigmGyijL5PuVt2itUTccNQBxIwRl4/IC+AnM5wFYmgVr7
+         RqxVh6295+UrjjiStqoLf9tZKat7A0r4qVjEm8RpQkUqzjI5bbqcHYUvWER42ROTg0aE
+         lppWkhgtMGjeusK6Cgwn7Gc6oLQ8MhlefdPBQGZR/a140azXfclTc2SMlS9Rfdq1Hx/u
+         FWbeM8r7vg0sgSK1YPgfxSOymTBhh56cdbNLsTRyLBe/vU0m4baufQ9/HBU8uXXEzES7
+         GY8g==
+X-Gm-Message-State: AOAM532P32KTO0DhJuCW5c7zmU/qENqiTV93eKEb2kwoddGpzzC/8C5Y
+        4hdxNzDh0ImJhoPk7fOSw8/WuohXDco=
+X-Google-Smtp-Source: ABdhPJz0XDBXISnxlpw+GuQqXmx0N3amhXnuTxtpqhOiNW98+lMQ/GSQk8OIq1S0cqUb7HpKyRQLvg==
+X-Received: by 2002:a17:902:b717:b029:d9:e816:fd0b with SMTP id d23-20020a170902b717b02900d9e816fd0bmr1456690pls.50.1606804770090;
+        Mon, 30 Nov 2020 22:39:30 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id e31sm1132897pgb.16.2020.11.30.22.39.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 22:39:29 -0800 (PST)
+Date:   Mon, 30 Nov 2020 22:39:26 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Sanjay Govind <sanjay.govind9@gmail.com>
+Cc:     Cameron Gutman <aicommander@gmail.com>,
+        =?utf-8?Q?=C5=81ukasz?= Patron <priv.luk@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] INPUT: xpad: support Ardwiino Controllers
+Message-ID: <20201201063926.GQ2034289@dtor-ws>
+References: <CALQgdA3Yh1XjENpFRAaqQ3AXNfp10R-52j77xK=fM2ZPkUJZtA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201120085526.257a5596.cohuck@redhat.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALQgdA3Yh1XjENpFRAaqQ3AXNfp10R-52j77xK=fM2ZPkUJZtA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sanjay,
 
+On Thu, Nov 26, 2020 at 10:25:40PM +1300, Sanjay Govind wrote:
+> This commit adds support for Ardwiino Controllers
 
-ÔÚ 2020/11/20 15:55, Cornelia Huck Ð´µÀ:
-> On Fri, 20 Nov 2020 15:48:49 +0800
-> Qinglang Miao <miaoqinglang@huawei.com> wrote:
-> 
->> put_device calls release function which do kfree() inside.
->> So following use of sch&cdev would cause use-after-free bugs.
->>
->> Fix these by simply adjusting the position of put_device.
->>
->> Fixes: 37db8985b211 ("s390/cio: add basic protected virtualization support")
->> Fixes: 74bd0d859dc3 ("s390/cio: fix unlocked access of online member")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/s390/cio/device.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
->> index b29fe8d50..69492417b 100644
->> --- a/drivers/s390/cio/device.c
->> +++ b/drivers/s390/cio/device.c
->> @@ -1664,10 +1664,10 @@ void __init ccw_device_destroy_console(struct ccw_device *cdev)
->>   	struct io_subchannel_private *io_priv = to_io_private(sch);
->>   
->>   	set_io_private(sch, NULL);
->> -	put_device(&sch->dev);
->> -	put_device(&cdev->dev);
->>   	dma_free_coherent(&sch->dev, sizeof(*io_priv->dma_area),
->>   			  io_priv->dma_area, io_priv->dma_area_dma);
->> +	put_device(&sch->dev);
->> +	put_device(&cdev->dev);
-> 
-> That change looks reasonable.
-> 
->>   	kfree(io_priv);
->>   }
->>   
->> @@ -1774,8 +1774,8 @@ static int ccw_device_remove(struct device *dev)
->>   				      ret, cdev->private->dev_id.ssid,
->>   				      cdev->private->dev_id.devno);
->>   		/* Give up reference obtained in ccw_device_set_online(). */
->> -		put_device(&cdev->dev);
->>   		spin_lock_irq(cdev->ccwlock);
->> +		put_device(&cdev->dev);
-> 
-> As the comment above states, the put_device() gives up the reference
-> obtained in ccw_device_set_online(). There's at least one more
-> reference remaining (held by the caller of the remove function). Moving
-> the put_device() does not fix anything here.
-Hi, Cornelia
+Unfortunately the patch is line-wrapped, with tabs removed, and
+therefore can not be applied. It is also sent as HTML so most mailing
+lists dropped it. I guess you sent it through gmail's web interface,
+which is known not to work for patch submission. Could you please resend
+via "git send-email" which will ensure that it is formatted properly.
 
-Sorry for the delayed reply.
-
-Your suggestion is reasonable, there is a mistake in this patch for I 
-didn't notice that there would be at least one more reference remaining.
-
-So I sent a new patch only to move put_device after dma_free_coherent. I 
-put the link as below:
-https://lore.kernel.org/lkml/20201201063150.82128-1-miaoqinglang@huawei.com/
-
-Thanks!
 > 
->>   	}
->>   	ccw_device_set_timeout(cdev, 0);
->>   	cdev->drv = NULL;
+> Signed-off-by: Sanjay Govind <sanjay.govind9@gmail.com>
+> ---
 > 
-> .
-> 
+> diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+> index c77cdb3b62b5..c9d78e2acb38 100644
+> --- a/drivers/input/joystick/xpad.c
+> +++ b/drivers/input/joystick/xpad.c
+> @@ -418,6 +418,7 @@ static const struct usb_device_id xpad_table[] = {
+>         XPAD_XBOXONE_VENDOR(0x0f0d),            /* Hori Controllers */
+>         XPAD_XBOX360_VENDOR(0x1038),            /* SteelSeries Controllers
+> */
+>         XPAD_XBOX360_VENDOR(0x11c9),            /* Nacon GC100XF */
+> +       XPAD_XBOX360_VENDOR(0x1209),            /* Ardwiino Controllers */
+>         XPAD_XBOX360_VENDOR(0x12ab),            /* X-Box 360 dance pads */
+>         XPAD_XBOX360_VENDOR(0x1430),            /* RedOctane X-Box 360
+> controllers */
+>         XPAD_XBOX360_VENDOR(0x146b),            /* BigBen Interactive
+> Controllers */
+
+Thanks.
+
+-- 
+Dmitry
