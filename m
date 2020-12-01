@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6692CA269
+	by mail.lfdr.de (Postfix) with ESMTP id DB5ED2CA26A
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728641AbgLAMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgLAMPX (ORCPT
+        id S1729337AbgLAMQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:16:07 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8479 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgLAMQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:15:23 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB0BC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:14:43 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 3so4464678wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:14:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1rTErOWq4BazLczHw4DrMHhncARKuQSlTHmfFJkGcB8=;
-        b=v906Cy0MJaMm693YSxRi2oUJFFCslK5UhqB60swVdYLuafxe6oZhzXYFALpyPVObCD
-         I2ruXztndADxBKB+w8TbRhmratDuc6bw4X9Qst/EOAfOdO18aY04I6wlmzD1fx0+6xIS
-         tVvO5LPE1yBBQH0tqGnwBQ7hXP9DMAWbL8QqL1AbHKUN9isVS9YDRHfE/CA78WmotNDI
-         pj0YgbGSrF2KCWtmD5vR5hEncx2Fd9dNVzCQ6UHAakG6sD44x+0DAc6VHRXh7h62JAtU
-         aaxxRURa2oni63iTH52kGiPbruYNPQOuG1x1+rDLWHRtErohIjF56cV8subv7ek/2t3t
-         OYmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1rTErOWq4BazLczHw4DrMHhncARKuQSlTHmfFJkGcB8=;
-        b=eJVhzIfqObsdky5Je6+e2LUaLR/EY2uoxLxdE251xQN8utTG1OppLX7/X1KLGHnMod
-         6F5iKJD7CL0XHhyNeGCP85BHI3PCZ+UxhNS2vOCXKe7xE4pZcSOhFNccOB2D94BYNsPl
-         oFJMlM8F+k7B0RUzPI5urQgSaygCg/WTKAQCukUvK/YSQsiOwA0QKzhqtg7kVGGYEZtJ
-         xlz2soLP/plDIVP5cJGwHA+SuFCi+qXT2F/N9PJNgJqgExG0CDn6OX0wx7UzRkyF5jJ8
-         iSk57QvvNSsoRK2uhzZ+lZvBXtHIEKia1CS/FSkmWolkMavCrOV8ZoOufp0Tt5DO1Qix
-         KJLw==
-X-Gm-Message-State: AOAM532OPRv+DqYtXqeF8Mew3MfPs5cy4ZXT4pEn7P6Wzo1FVlSmxGgg
-        lpdwFolosbp5Yl2TMuierwL7gg==
-X-Google-Smtp-Source: ABdhPJzTXQ8LcIGOtj3LXwvM4prmhSQ/FBPRcdjNTRTkWSj1AnwJ48PvwFrwDGV45EPVhnobzXPQEw==
-X-Received: by 2002:a1c:2e16:: with SMTP id u22mr2330149wmu.149.1606824881813;
-        Tue, 01 Dec 2020 04:14:41 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id a144sm2964179wmd.47.2020.12.01.04.14.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 04:14:41 -0800 (PST)
-Date:   Tue, 1 Dec 2020 12:14:37 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 bpf-next 01/13] bpf: x86: Factor out emission of
- ModR/M for *(reg + off)
-Message-ID: <20201201121437.GB2114905@google.com>
-References: <20201127175738.1085417-1-jackmanb@google.com>
- <20201127175738.1085417-2-jackmanb@google.com>
- <20201129011552.jbepegeeo2lqv6ke@ast-mbp>
+        Tue, 1 Dec 2020 07:16:07 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Clgyx4s0YzhlQd;
+        Tue,  1 Dec 2020 20:15:05 +0800 (CST)
+Received: from [10.174.184.209] (10.174.184.209) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Dec 2020 20:15:15 +0800
+Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
+ state to physical side
+To:     Marc Zyngier <maz@kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-4-lushenming@huawei.com>
+ <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
+ <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
+ <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
+ <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
+ <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
+ <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
+ <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
+ <274dafb2e21f49326a64bb575e668793@kernel.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
+Date:   Tue, 1 Dec 2020 20:15:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201129011552.jbepegeeo2lqv6ke@ast-mbp>
+In-Reply-To: <274dafb2e21f49326a64bb575e668793@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.209]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 05:15:52PM -0800, Alexei Starovoitov wrote:
-> On Fri, Nov 27, 2020 at 05:57:26PM +0000, Brendan Jackman wrote:
-> > +/* Emit the ModR/M byte for addressing *(r1 + off) and r2 */
-> > +static void emit_modrm_dstoff(u8 **pprog, u32 r1, u32 r2, int off)
+On 2020/12/1 19:50, Marc Zyngier wrote:
+> On 2020-12-01 11:40, Shenming Lu wrote:
+>> On 2020/12/1 18:55, Marc Zyngier wrote:
+>>> On 2020-11-30 07:23, Shenming Lu wrote:
+>>>
+>>> Hi Shenming,
+>>>
+>>>> We are pondering over this problem these days, but still don't get a
+>>>> good solution...
+>>>> Could you give us some advice on this?
+>>>>
+>>>> Or could we move the restoring of the pending states (include the sync
+>>>> from guest RAM and the transfer to HW) to the GIC VM state change handler,
+>>>> which is completely corresponding to save_pending_tables (more symmetric?)
+>>>> and don't expose GICv4...
+>>>
+>>> What is "the GIC VM state change handler"? Is that a QEMU thing?
+>>
+>> Yeah, it is a a QEMU thing...
+>>
+>>> We don't really have that concept in KVM, so I'd appreciate if you could
+>>> be a bit more explicit on this.
+>>
+>> My thought is to add a new interface (to QEMU) for the restoring of
+>> the pending states, which is completely corresponding to
+>> KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES...
+>> And it is called from the GIC VM state change handler in QEMU, which
+>> is happening after the restoring (call kvm_vgic_v4_set_forwarding())
+>> but before the starting (running) of the VFIO device.
 > 
-> same concern as in the another patch. If you could avoid intel's puzzling names
-> like above it will make reviewing the patch easier.
+> Right, that makes sense. I still wonder how much the GIC save/restore
+> stuff differs from other architectures that implement similar features,
+> such as x86 with VT-D.
 
-In this case there is actually a call like
+I am not familiar with it...
 
-  emit_modrm_dstoff(&prog, src_reg, dst_reg)
+> 
+> It is obviously too late to change the userspace interface, but I wonder
+> whether we missed something at the time.
 
-So calling the function args dst_reg, src_reg would be misleading.
+The interface seems to be really asymmetrical?...
 
-I could call them ptr_reg and val_reg or something?
+Or is there a possibility that we could know which irq is hw before the VFIO
+device calls kvm_vgic_v4_set_forwarding()?
+
+Thanks,
+Shenming
+
+> 
+> Thanks,
+> 
+>         M.
