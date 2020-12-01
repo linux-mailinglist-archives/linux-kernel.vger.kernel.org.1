@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB0C2CA5E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AF32CA5EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391631AbgLAOkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:40:00 -0500
-Received: from mail.efficios.com ([167.114.26.124]:49162 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389462AbgLAOj7 (ORCPT
+        id S2391665AbgLAOka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:40:30 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:40368 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391650AbgLAOk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:39:59 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E8AF724A203;
-        Tue,  1 Dec 2020 09:39:18 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id fiOIHKj3Q1ju; Tue,  1 Dec 2020 09:39:18 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 9CF5E249FE7;
-        Tue,  1 Dec 2020 09:39:18 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9CF5E249FE7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1606833558;
-        bh=jQeiv0iNOrHBNjsFdgWBlUQqBIRtEj0NVZFIKRGxHwE=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=AyDat0Cu20v5G+96ucQyTP3ZKx3VFDimRSA15HUoMB9/wwdj1UiJC7SPzsNYLzpHz
-         ErWDGcNMkNDaRTBV5b0d/7oLGm96Q7GNVwkrOu9dC5gxuK2YnAdNm4HRlbnd43Nddb
-         4q9rAX859A1sd6ZmGr4aZLzYzLKTtZbEKX0cpabOPgFVWJO1oOzJq4WP4FJxNZVbO3
-         kFacZ5LPj7oTQmA4QOCMUCjn16PAmq5sFq0bb3AxmDKDAzXfuP1IBH76/KHlMghmho
-         hJHFscFVIi/job3M8T8Hr7yERdIBGAYZM2KvxZH99yhjFVQfmTB2cytSu+kwxEm08h
-         l+30RsAq5wcLA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id PgweP0lwY3-5; Tue,  1 Dec 2020 09:39:18 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 918C5249FE6;
-        Tue,  1 Dec 2020 09:39:18 -0500 (EST)
-Date:   Tue, 1 Dec 2020 09:39:18 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86 <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anton Blanchard <anton@ozlabs.org>
-Message-ID: <1261102549.69322.1606833558510.JavaMail.zimbra@efficios.com>
-In-Reply-To: <9b8ecd9a017960c9e56ef3f3e733f32aa1194366.1606758530.git.luto@kernel.org>
-References: <cover.1606758530.git.luto@kernel.org> <9b8ecd9a017960c9e56ef3f3e733f32aa1194366.1606758530.git.luto@kernel.org>
-Subject: Re: [PATCH 1/3] x86/membarrier: Get rid of a dubious optimization
+        Tue, 1 Dec 2020 09:40:29 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id ADBA41F40F5D
+Subject: Re: [PATCH v2] media: rockchip: rkisp1: remove useless debugfs checks
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20201201143058.GJ2767@kadam>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <17d5555c-1f95-159b-f5db-cd3db0704a6c@collabora.com>
+Date:   Tue, 1 Dec 2020 11:39:41 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20201201143058.GJ2767@kadam>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF83 (Linux)/8.8.15_GA_3975)
-Thread-Topic: x86/membarrier: Get rid of a dubious optimization
-Thread-Index: wAGaXecJPCqZ4duYmAECrI9Dg3cfkg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Nov 30, 2020, at 12:50 PM, Andy Lutomirski luto@kernel.org wrote:
-[...]
-> diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-> index 11666ba19b62..dabe683ab076 100644
-> --- a/arch/x86/mm/tlb.c
-> +++ b/arch/x86/mm/tlb.c
-> @@ -474,8 +474,10 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct
-> mm_struct *next,
-> 	/*
-> 	 * The membarrier system call requires a full memory barrier and
-> 	 * core serialization before returning to user-space, after
-> -	 * storing to rq->curr. Writing to CR3 provides that full
-> -	 * memory barrier and core serializing instruction.
-> +	 * storing to rq->curr, when changing mm.  This is because membarrier()
-> +	 * sends IPIs to all CPUs that are in the target mm, but another
-> +	 * CPU switch to the target mm in the mean time.
-
-The sentence "This is because membarrier() sends IPIs to all CPUs that are in
-the target mm, but another CPU switch to the target mm in the mean time." seems
-rather unclear. Could be clarified with e.g.:
-
-"This is because membarrier() sends IPIs to all CPUs that are in the target mm
-to make them issue memory barriers. However, if another CPU switches to/from the
-target mm concurrently with membarrier(), it can cause that CPU not to receive the
-IPI when it really should issue a memory barrier."
-
-For the rest of this patch:
-
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-
-Thanks!
-
-Mathieu
 
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+On 12/1/20 11:30 AM, Dan Carpenter wrote:
+> The debugfs_create_dir() function never returns NULLs so this code will
+> never be executed.  It's not intended that callers will check for
+> debugfs errors in the normal case and it's not necessary in this driver,
+> so we can just delete this code.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+Since the debugfs_create_*() functions already check the parent
+with IS_ERR(), this looks good to me.
+
+Acked-by: Helen Koike <helen.koike@collabora.com>
+
+Thanks
+Helen
+
+> ---
+> v2: Fix subject
+> 
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> index 9af137e4967f..68da1eed753d 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> @@ -430,10 +430,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+>  	struct rkisp1_debug *debug = &rkisp1->debug;
+>  
+>  	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
+> -	if (!debug->debugfs_dir) {
+> -		dev_dbg(rkisp1->dev, "failed to create debugfs directory\n");
+> -		return;
+> -	}
+>  	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
+>  			     &debug->data_loss);
+>  	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
+> 
