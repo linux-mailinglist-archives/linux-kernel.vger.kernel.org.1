@@ -2,112 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF51C2CA3EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942382CA411
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389423AbgLANdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:33:20 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:49427 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387578AbgLANdU (ORCPT
+        id S2391143AbgLANkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:40:52 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.22]:23567 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387761AbgLANkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:33:20 -0500
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 0B1DWG8g009356;
-        Tue, 1 Dec 2020 22:32:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0B1DWG8g009356
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606829537;
-        bh=BCmIt+mXGDdopPkiBBw+3x1M8rDQB/5oH9HpU4uQ5qA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=THr+eUx4SWCPegG1uRLmRHq1mlzwZIBJZfMOhYfUi9PvS1ZmkPpZzJJvSBKEXI9sU
-         hGC9IjavC/i0M1vYGEAMjvM98V1iWPC3aWRaEJSIOHHtzxpNfyiU+Xwd2P6gXrIQPS
-         SBI2ODfn0nhkwR8fjb1OQE+Yjh/NV9bSiWHzDE2LI9RpqgZs+QdPfBpe51hHlxXvAJ
-         RCvvpEU+nYui6Z2WZAO+0K3fgTe6V0Jz2Wi18KbjOr7S2LM8NCEoX5aV0ocxOflfoN
-         1puiE9MAIrJw5ZvQfSeKd0GYgw0KCnvdZxS7Qn+x0fA5AwGdHaaXZErK79XdW2aK8u
-         bNGE8JRlo2tXA==
-X-Nifty-SrcIP: [209.85.214.180]
-Received: by mail-pl1-f180.google.com with SMTP id 4so1140537plk.5;
-        Tue, 01 Dec 2020 05:32:16 -0800 (PST)
-X-Gm-Message-State: AOAM530Gi31sgn5oXBL3YkiyqrPbHWceFo05ZdWsqGVM8Bl8yf7VxBn2
-        WqmLJOj65504lMCLIX93Weui6VkEdW638itm2aE=
-X-Google-Smtp-Source: ABdhPJxkfQ9oggzotEcl6XRa/pHYRdnHTVyaDTtBNoctn5AxYzZdCy2G1D8jd7raU+usum4j5kNizUmaOheYMGClFnM=
-X-Received: by 2002:a17:902:402:b029:da:2cb9:56e8 with SMTP id
- 2-20020a1709020402b02900da2cb956e8mr2703980ple.1.1606829536018; Tue, 01 Dec
- 2020 05:32:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20201113195553.1487659-1-natechancellor@gmail.com>
- <20201119204656.3261686-2-natechancellor@gmail.com> <CAKwvOdkPgwL8H4EGF6=-VuxTdmxA8JHhGbLHVYcLJj9MmAvW=g@mail.gmail.com>
- <202011241421.A2F3062A70@keescook>
-In-Reply-To: <202011241421.A2F3062A70@keescook>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 1 Dec 2020 22:31:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR=_+1K7EtpvGzgyM+ans-iNOT0PBXdLRApnsyAzakQ3w@mail.gmail.com>
-Message-ID: <CAK7LNAR=_+1K7EtpvGzgyM+ans-iNOT0PBXdLRApnsyAzakQ3w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] kbuild: Disable CONFIG_LD_ORPHAN_WARN for ld.lld 10.0.1
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 1 Dec 2020 08:40:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1606829819;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=p09wCgfnFWECw5za2RIZ8yumoZ8WHAQjdDDc44v+u6o=;
+        b=Ls1dnbweERfPhU4z2OJhk1QeVZhWnK6CR8TZmNzPH4EIcRdPkb/p2myeEv+E+F+JrX
+        Pd6Ep1zE6rb5YVf+QaQfYwPjbPz1Tgd2SNiXCP9iuzdapqSkDUW/5hiNLit61mmTU83S
+        ZfjoFf3Hlw8bldZhU772dW+qWB5CVDGH6MASwCNuAKQAos7yLCBCoqOU4Jx0RpukaC7d
+        5IjnOu9jnOMcIHnqpJBdLc4t2wZO5HZNssF/D9R33wMA1Eyv54G5140FzAvnx34fi2Th
+        0fzFvOyrS/16CPxSzxzGZ5wa4GeC2sUHQpHHIXWI2l+5dVorjQlYRhXeipwh/h0k1qGt
+        Wibg==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/vrwDuo6A=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 47.3.4 DYNA|AUTH)
+        with ESMTPSA id N02faawB1DWkUP0
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Tue, 1 Dec 2020 14:32:46 +0100 (CET)
+Subject: Re: [BUG] SPI broken for SPI based panel drivers
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAGngYiVoj4Gpid5W10pJfiE1FWY=294TJ4fE=CDG4=HwH0WrJw@mail.gmail.com>
+Date:   Tue, 1 Dec 2020 14:32:45 +0100
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <460191B6-EDD3-46DE-A1ED-47F758F111E8@goldelico.com>
+References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com> <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com> <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <CAGngYiVoj4Gpid5W10pJfiE1FWY=294TJ4fE=CDG4=HwH0WrJw@mail.gmail.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 7:22 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, Nov 19, 2020 at 01:13:27PM -0800, Nick Desaulniers wrote:
-> > On Thu, Nov 19, 2020 at 12:57 PM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > >
-> > > ld.lld 10.0.1 spews a bunch of various warnings about .rela sections,
-> > > along with a few others. Newer versions of ld.lld do not have these
-> > > warnings. As a result, do not add '--orphan-handling=warn' to
-> > > LDFLAGS_vmlinux if ld.lld's version is not new enough.
-> > >
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1187
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1193
-> > > Reported-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > > Reported-by: kernelci.org bot <bot@kernelci.org>
-> > > Reported-by: Mark Brown <broonie@kernel.org>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> >
-> > Thanks for the additions in v2.
-> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> I'm going to carry this for a few days in -next, and if no one screams,
-> ask Linus to pull it for v5.10-rc6.
->
-> Thanks!
->
-> --
-> Kees Cook
+Hi Sven,
 
+> Am 01.12.2020 um 13:41 schrieb Sven Van Asbroeck =
+<thesven73@gmail.com>:
+>=20
+> On Tue, Dec 1, 2020 at 4:04 AM H. Nikolaus Schaller =
+<hns@goldelico.com> wrote:
+>>=20
+>> Then it should not have been applied to mainline but fully worked out =
+and tested.
 
-Sorry for the delay.
-Applied to linux-kbuild.
+Well I only complain because you wrote that you knew that it may
+break something else. So it is known to induces a regression.
 
-But, I already see this in linux-next.
+But I did not know until I got a report from our own testing effort (we
+run a vendor kernel and do tests all days over the week).
 
-Please let me know if I should drop it from my tree.
+So I had to bisect what was going on. There could have been 100 reasons.
+Took me several hours because I had to look at the display to see if
+it is on or off after boot. There was no simple shell command to find =
+out
+and let the bisect run over night.
 
+Maybe printing a "please check your spi setup" in spi_setup() with
+a comment hinting at your patch would have saved me a lot of time.
 
--- 
-Best Regards
-Masahiro Yamada
+>=20
+> That would be a reasonable expectation of a product. But Linux
+> isn't a product, it's a hugely complex, shared system, which may
+> form the basis of your product. The core maintainers aren't
+> superhuman, nor do they have access to the 1000s of configurations
+> and devices where Linux runs or will run. They do their very best,
+> but if every change had to be 100% tested in every possible
+> configuration, then few things could ever change, and Linux
+> would slow down to a snail's pace.
+
+> When your product is based on Linux and you pull a newer version
+> off kernel.org, it's not unreasonable to expect the occasional
+> breakage. In my case, when I moved from 5.7 to 5.9, some of the
+> things that broke were my network chip, and most SPI drivers. That
+> was a bad day, most pulls are trouble-free.
+
+If it were occasional it would be good.... It is not the first time
+that I have to do bisect tests to find what did go wrong upstream.
+Even in LTS kernels and some of my fixes were backported later.
+
+> I believe LTSes are more stable than 'stable releases' which are in
+> turn more stable than RCs. The choice involves a trade-off between
+> features, security and stability.
+>=20
+> When you do run into a breakage, complaining on the mailing list
+> is good, but posting a fix is better :)
+
+I usually do - if I have the time to go the extra mile to fix something
+what somebody else did break. But I need to have a lot of spare time
+if I have no idea what made the regression for a device driver where I
+know that it was not touched and have to study the details.
+
+And for me it is much less effort (hours vs. seconds) to do a revert...
+I could submit that as a quick fix :) But then you are not happy.
+
+> This is my layman's understanding of the situation, I'm just a user
+> and not a maintainer.
+
+Me too...
+
+Well, I am sort of maintainer of a vendor kernel that tries to
+follow linus/master and fix things before we release an LTS.
+
+That is why I need a solution and can not go back to some LTS or wait
+for the next one...
+
+Anyways, there is still time until v5.10.0 to fix it better than by
+a revert.
+
+>=20
+>>>=20
+>>>>=20
+>>>> What should we do?
+>=20
+> Hopefully I have some time this week to look into your breakage,
+> I may get overtaken by someone much more knowledgeable than
+> me on spi-gpio.
+
+Hm. Then we are already two of us who have not much knowledge about
+spi-gpio...
+
+Hope that you have an idea soon. I am happy to test any =
+suggestions/patches/alternatives
+better than a simple revert.
+
+BR and thanks,
+Nikolaus
+
