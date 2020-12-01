@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66A22CA08F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74AC2CA08B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730272AbgLAK4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:56:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727356AbgLAK4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:56:04 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 476C520674;
-        Tue,  1 Dec 2020 10:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606820123;
-        bh=mA7gSISgii7mt8Pbmo+IU3yz1WqfVYYfTdx2GpQD6x8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AmY/k2C0BgWr90iEzC9dOhMlvwuJyMxSKKvOTs1VvUrlAy5FcRM74f+6m7iye6s8a
-         u7JH4S6EvxiyWFuZkHq3RXNdWQTqVTWjxFF15jlID19MkKnRDKMAwTsSFIhf/U7VWh
-         zBGPix+9TnT884jIlOBG/koTtAr2TwI+lCAD5Zao=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kk3JZ-00F0yi-0p; Tue, 01 Dec 2020 10:55:21 +0000
+        id S1730212AbgLAKzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:55:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgLAKzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:55:46 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF0DC0613CF;
+        Tue,  1 Dec 2020 02:55:06 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id e5so1004195pjt.0;
+        Tue, 01 Dec 2020 02:55:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i38OjRaT5QGFCtCwwPd1SCJNsYfsg7NYH5qbGP41LaE=;
+        b=gy1yls4AWND+ZkAKtaYVfm0KX7T5I3KQtm6rPo9I/pWU1SURLBXEYxK3Nx5Ztn1FJC
+         9MJpl/v45pAguKyhOaGHf49WG0M7bJDHumrMOi6Xy2dL/VSVLO+NDlncCUuWB3dY2l0A
+         aa5xWDVv/BRObEup7FHT0KUoXmoTuXPNsmZrWWSQXF5+2lJEORMBOzt8YldBXXBhUAq6
+         QKXd7ub6+ZUN/svp8aE0/9bKLHxyW1SacjW9g5JIjvFsuj8DmW0nLLPdvndN6mhscNOd
+         MZ1he+FW2xHgAmZSV4jqdAW+/nysDOjfJJwVaKdaN3W6C7NbtztLnus7brBXrsnbIaS0
+         nxvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i38OjRaT5QGFCtCwwPd1SCJNsYfsg7NYH5qbGP41LaE=;
+        b=QN2hl3JrqMTpZYa3ZOH4QMx7GBeOR3MTeIxJJ09lmUz7zM+y5PM0igNtBQKmfxL21c
+         uPr37t+kIF8DwocOklGmvxRqfv3O1hjo/rsMlsMMuZTq7muC8F6EnZuKMN0vuxAeXLxz
+         WMRTbQT+s1kkhdIcLuYVR2KlWTJk9b+fj20iTp9fDlzr9SkxKXCemh/a9RcO22KOTejw
+         xs+7AkCmyVL+HFmFEV43kvE4umjrSB3IXOYJQWVY9kBW7y2htgh+bCZ/E37UijSlguwD
+         9+TDJnGDY87BeNxspuA6xY1Fjmxbjx52Vnu7gjKpcwv9gznyyI7DfYUazA+UsMFlVFuV
+         1Z+A==
+X-Gm-Message-State: AOAM533xJ3vnKifKGcG4OlhuRyM8j3AKuuO4RqMBqRipW0K+2+9T/SQI
+        FjPCcV7ENAH6BSA2P07NndIu6PtAnryvojpba1o=
+X-Google-Smtp-Source: ABdhPJzPqmVEtEfeNfnNHED2wtu5NFar6uX+4pBneqsIFHYxmVj9mNmtNEcMOQyDrr1cQzLPNvaEvqZGxstIY8DXJmo=
+X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr2065322pjf.181.1606820106113;
+ Tue, 01 Dec 2020 02:55:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 01 Dec 2020 10:55:20 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
- state to physical side
-In-Reply-To: <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-4-lushenming@huawei.com>
- <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
- <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
- <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
- <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
- <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: lushenming@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, christoffer.dall@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, cjia@nvidia.com, wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201130153742.9163-1-johan@kernel.org> <20201130153742.9163-3-johan@kernel.org>
+ <CAHp75VdedN5iaGFpfiPFz6G=Ey3axgaZbKYtt95HEwwjWoWbmQ@mail.gmail.com> <X8X9B1jYujUIWXaK@localhost>
+In-Reply-To: <X8X9B1jYujUIWXaK@localhost>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 1 Dec 2020 12:55:54 +0200
+Message-ID: <CAHp75VfQud=QxwZyhYRU9mtNvrudj0tS6LOuutfJDVdv=-ptXw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] serial: core: add sysfs attribute to suppress ready
+ signalling on open
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-30 07:23, Shenming Lu wrote:
+On Tue, Dec 1, 2020 at 10:20 AM Johan Hovold <johan@kernel.org> wrote:
+> On Mon, Nov 30, 2020 at 08:27:54PM +0200, Andy Shevchenko wrote:
+> > On Mon, Nov 30, 2020 at 5:42 PM Johan Hovold <johan@kernel.org> wrote:
 
-Hi Shenming,
+> > > +       ret = kstrtouint(buf, 0, &val);
+> > > +       if (ret)
+> > > +               return ret;
+> >
+> > > +       if (val > 1)
+> > > +               return -EINVAL;
+> >
+> > Can't we utilise kstrtobool() instead?
+>
+> I chose not to as kstrtobool() results in a horrid interface. To many
+> options to do the same thing and you end up with confusing things like
+> "0x01" being accepted but treated as false (as only the first character
+> is considered).
 
-> We are pondering over this problem these days, but still don't get a
-> good solution...
-> Could you give us some advice on this?
-> 
-> Or could we move the restoring of the pending states (include the sync
-> from guest RAM and the transfer to HW) to the GIC VM state change 
-> handler,
-> which is completely corresponding to save_pending_tables (more 
-> symmetric?)
-> and don't expose GICv4...
+And this is perfectly fine. 0x01 is not boolean.
 
-What is "the GIC VM state change handler"? Is that a QEMU thing?
-We don't really have that concept in KVM, so I'd appreciate if you could
-be a bit more explicit on this.
+> Not sure how that ever made it into sysfs code...
+>
+> The attribute is read back as "0" or "1" and those are precisely the
+> values that can be written back (well, modulo radix).
 
-Thanks,
+So, how does it affect the kstrtobool() interface?
+You read back 0 and 1 and they are pretty much accepted by it.
 
-         M.
+> It's not relevant in this case, but tight control over the inputs also
+> allows for extending the range later.
+
+And kstrtobool() does it. So I don't see any difference except a few
+less lines of code and actually *stricter* rules than kstrtouint()
+has.
+
 -- 
-Jazz is not dead. It just smells funny...
+With Best Regards,
+Andy Shevchenko
