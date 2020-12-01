@@ -2,100 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307B92CA9BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 163652CA9C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391043AbgLARbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:31:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387840AbgLARbt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:31:49 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88977C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:31:03 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id iq13so1640513pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:31:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fIhrXegmFXx4Y1S8YgnbVoZcP9r/eMN50vMQw7Htjj0=;
-        b=COBsdbubf4U1NB4bryhE6zpFJFlxC6tnZcSZU41etUauCccqXZsiquU+7Pg3YtVZk6
-         FaJj4o1AIWN+/OM9H6u8TAIFxZgoJVNQ/2jTBB5a/m2hHYR3qjgThVUzKnMTBTgmN/d+
-         qjZ/Lpe9hl7c2js/gywR+ayaeczGzpkDoU8ik=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fIhrXegmFXx4Y1S8YgnbVoZcP9r/eMN50vMQw7Htjj0=;
-        b=s2G3FgFfBsBsKgBZWWFqxkXbK44b0iSpb7QhzgzjkIm9zP0QBt/gQONa96OWZqLpz6
-         pePsVFVCSu+jtCE4VhqGmYA4t6rfMCQKbXknPocf3B/O1LnLGpcIwEF2MVZ7yodf/WmB
-         G6RuIC8M+G+QGCNSJmmEK5WqKh/4ZTb6Rg9KBg+lyyQW2JcAu87gLh/EvbmstaH1x7Pu
-         ISj67PbBV0HZRs88pty3fgED3yHvXPm5q7jFrE0Bx7PiUfHHtmrFs1YLHOL0t1O8y3n1
-         5Xlq5tveshXXJI8i+siEy27puWIHuexLDYFFLloU/QG9WMylr9W7RpQaKSZPNvxPagNo
-         UaRg==
-X-Gm-Message-State: AOAM533xjSzZAO9ULoro0QGP/PjBxM+Z6LNQwPSYgV0bt3bjKHQtU60h
-        RfKia9bSXqNwQGPlk/XjOlLe0Q==
-X-Google-Smtp-Source: ABdhPJxNXrz8lyJzMPvVj7dGfW+IUsSemW9FmHsAZMwUW4pvNI4+h4MvkJF21vQXTZU3MgV3CsB+ag==
-X-Received: by 2002:a17:90b:224a:: with SMTP id hk10mr3671202pjb.81.1606843863156;
-        Tue, 01 Dec 2020 09:31:03 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j143sm400818pfd.20.2020.12.01.09.31.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 09:31:01 -0800 (PST)
-Date:   Tue, 1 Dec 2020 09:31:00 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
-Message-ID: <202012010929.3788AF5@keescook>
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <20201130120130.GF24563@willie-the-truck>
+        id S2391855AbgLARcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:32:24 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:54350 "EHLO m42-5.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387494AbgLARcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:32:24 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606843918; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=K1x8lx2ayye4/N0xNELnpa6CNM0J4yfcDBWhh1G+S30=; b=TMJSOJ+DZ6duwGfpO+kFkT33OVIXHzGpGZTIqWu43qTr3UGr3R8lFAKfm9q6OwrLxMJnd2or
+ z/hagxbkfYHan9N5GYma+jAoynSelmGE55IY8P5vtjzCZbff8Swmvt99MwiURTMBsJeYmh66
+ kyrYBygXGQ0shalZz15smCTfuQU=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5fc67df3edac2724d86d40e6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 17:31:31
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0547DC43462; Tue,  1 Dec 2020 17:31:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [172.20.10.2] (unknown [27.59.188.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47E31C43460;
+        Tue,  1 Dec 2020 17:31:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 47E31C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK and
+ LRCLK in LPAIF invalid state
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
+ <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
+ <20201130124617.GC4756@sirena.org.uk>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
+Date:   Tue, 1 Dec 2020 23:01:21 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130120130.GF24563@willie-the-truck>
+In-Reply-To: <20201130124617.GC4756@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 12:01:31PM +0000, Will Deacon wrote:
-> Hi Sami,
-> 
-> On Wed, Nov 18, 2020 at 02:07:14PM -0800, Sami Tolvanen wrote:
-> > This patch series adds support for building the kernel with Clang's
-> > Link Time Optimization (LTO). In addition to performance, the primary
-> > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI) to
-> > be used in the kernel. Google has shipped millions of Pixel devices
-> > running three major kernel versions with LTO+CFI since 2018.
-> > 
-> > Most of the patches are build system changes for handling LLVM bitcode,
-> > which Clang produces with LTO instead of ELF object files, postponing
-> > ELF processing until a later stage, and ensuring initcall ordering.
-> > 
-> > Note that v7 brings back arm64 support as Will has now staged the
-> > prerequisite memory ordering patches [1], and drops x86_64 while we work
-> > on fixing the remaining objtool warnings [2].
-> 
-> Sounds like you're going to post a v8, but that's the plan for merging
-> that? The arm64 parts look pretty good to me now.
+Thanks Mark for your time!!!
 
-I haven't seen Masahiro comment on this in a while, so given the review
-history and its use (for years now) in Android, I will carry v8 (assuming
-all is fine with it) it in -next unless there are objections.
+On 11/30/2020 6:16 PM, Mark Brown wrote:
+> On Sat, Nov 28, 2020 at 10:29:18AM +0530, Srinivasa Rao Mandadapu wrote:
+>> This reverts part of commit b1824968221c
+>> ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state")
+>>
+>> To identify LPAIF invalid state after device suspend and resume,
+>> made I2S and DMA control registers not volatile, which is not necessary.
+>> Instead invalid reg state can be handled with regcache APIs.
+>> The BCLK ref count is necessary to enable clock only it's in disable state.
+> Part of this commit message says that the problem was making the registers
+> non-volatile but both the change and the rest of the commit message say
+> that the issue was that the registers were made volatile.  I'm also
+> still unclear as to what the issue is either way - how does reading the
+> state of the registers from the hardware instead of the cache affect
+> things?
+
+Initial problem was, during playback if device suspended, I2S and DMA 
+control registers
+
+are getting reset and unable to recover playback after resume.
+
+As these registers were non volatile registers, driver is not getting 
+actual register value
+
+and unable to report error state to application. Due to this application
+
+keeps on polling for HW current pointer state and not exited from PCM 
+running state.
+
+To handle this scenario I made registers volatile and if they are in 
+reset state, reported error
+
+to application(commit b1824968221c).
+
+Later from review comments by Srinivas kandagatla, I got to know
+
+about regcache sync APIs, which can be used  to sync cache after resume and
+
+HW registers can be updated with  original values. With that playback 
+can be continued.
+
+So is the reason, I am reverting partial changes in the commit b1824968221c.
+
+
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
+> Look at what existing commits in the area you're changing are doing and
+> make sure your subject lines visually resemble what they're doing.
+> There's no need to resubmit to fix this alone.
 
 -- 
-Kees Cook
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
