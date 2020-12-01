@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BB52CAA04
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636602CAA12
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729632AbgLARnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:43:55 -0500
-Received: from mga03.intel.com ([134.134.136.65]:52258 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgLARny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:43:54 -0500
-IronPort-SDR: 1z75BDRdU+7ZhUF1FaDY9s95/W+Nt5u22woZZPj60vByYCVWb5j1am+PZgtEfQYjF9gFO+kRX9
- UUOAE6FEbtrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="172970735"
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="172970735"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:43:10 -0800
-IronPort-SDR: IvMacxZMHyHpE6ncjih8Q7rFYiQ2p5JTGyZI7goaou+/NiJX+kiBpApj1/Cz4nIG+QDAMXodun
- Q48sJKR8dQFA==
-X-IronPort-AV: E=Sophos;i="5.78,384,1599548400"; 
-   d="scan'208";a="367635561"
-Received: from poyuchen-mobl1.amr.corp.intel.com (HELO [10.213.164.160]) ([10.213.164.160])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 09:43:09 -0800
-Subject: Re: [PATCH 1/2] x86/mm/pti: Check unaligned address for pmd clone in
- pti_clone_pagetable()
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-References: <20201130152516.2387-1-jiangshanlai@gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <0766416e-bab5-c8e7-9466-a72e965fdb8a@intel.com>
-Date:   Tue, 1 Dec 2020 09:43:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2404155AbgLARqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:46:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46551 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404117AbgLARqD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:46:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606844676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tcQqw8FNohQsgX6eE6NAJbjUyNM6Eexh/ekG8LwxPCU=;
+        b=GBuHmMRYlEDPGs7IFIYsuxuc2FdrZBlL7iWYhq4zhB8gIMm4T/5VpESQHC0f3bWt2mPKkj
+        oRlhnvLK+ddGznbQwUXwjRdkUKDmALjTOHXZZ2Q+u2hZLQKmk0QrfZ0FJhUdb7bzlneuCv
+        mY0no+ZDeUs/Vs+u6HmUuQG0I8C+od4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-nOzvlp74N7KyPfj8Q-hc2w-1; Tue, 01 Dec 2020 12:44:35 -0500
+X-MC-Unique: nOzvlp74N7KyPfj8Q-hc2w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 955AFE743;
+        Tue,  1 Dec 2020 17:44:33 +0000 (UTC)
+Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9ED6D5D6AD;
+        Tue,  1 Dec 2020 17:44:32 +0000 (UTC)
+Subject: Re: [PATCH 1/2] uapi: fix statx attribute value overlap for DAX &
+ MOUNT_ROOT
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+ <7027520f-7c79-087e-1d00-743bdefa1a1e@redhat.com>
+ <20201201173213.GH143045@magnolia>
+From:   Eric Sandeen <sandeen@redhat.com>
+Message-ID: <242fce05-90ed-2d2a-36f9-3c8432d57cbc@redhat.com>
+Date:   Tue, 1 Dec 2020 11:44:32 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201130152516.2387-1-jiangshanlai@gmail.com>
+In-Reply-To: <20201201173213.GH143045@magnolia>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 7:25 AM, Lai Jiangshan wrote:
-> The commit 825d0b73cd752("x86/mm/pti: Handle unaligned address gracefully
-> in pti_clone_pagetable()") handles unaligned address well for unmapped
-> PUD/PMD etc. But unaligned address for pmd_large() or PTI_CLONE_PMD is also
-> needed to be aware.
+On 12/1/20 11:32 AM, Darrick J. Wong wrote:
+> On Tue, Dec 01, 2020 at 10:57:11AM -0600, Eric Sandeen wrote:
+>> STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same value,
+>> so one of them needs fixing. Move STATX_ATTR_DAX.
+>>
+>> While we're in here, clarify the value-matching scheme for some of the
+>> attributes, and explain why the value for DAX does not match.
+>>
+>> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+>> ---
+>>  include/uapi/linux/stat.h | 7 ++++---
+>>  1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+>> index 82cc58fe9368..9ad19eb9bbbf 100644
+>> --- a/include/uapi/linux/stat.h
+>> +++ b/include/uapi/linux/stat.h
+>> @@ -171,9 +171,10 @@ struct statx {
+>>   * be of use to ordinary userspace programs such as GUIs or ls rather than
+>>   * specialised tools.
+>>   *
+>> - * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
+>> + * Note that the flags marked [I] correspond to the FS_IOC_SETFLAGS flags
+>>   * semantically.  Where possible, the numerical value is picked to correspond
+>> - * also.
+>> + * also. Note that the DAX attribute indicates that the inode is currently
+>> + * DAX-enabled, not simply that the per-inode flag has been set.
+> 
+> I don't really like using "DAX-enabled" to define "DAX attribute".  How
+> about cribbing from the statx manpage?
+> 
+> "Note that the DAX attribute indicates that the file is in the CPU
+> direct access state.  It does not correspond to the per-inode flag that
+> some filesystems support."
 
-That 825d0b73cd752 changelog says:
+Sure.  Consistency and specificity is good, I'll change that.
 
->     pti_clone_pmds() assumes that the supplied address is either:
->     
->      - properly PUD/PMD aligned
->     or
->      - the address is actually mapped which means that independently
->        of the mapping level (PUD/PMD/PTE) the next higher mapping
->        exists.
+>>   */
+>>  #define STATX_ATTR_COMPRESSED		0x00000004 /* [I] File is compressed by the fs */
+>>  #define STATX_ATTR_IMMUTABLE		0x00000010 /* [I] File is marked immutable */
+>> @@ -183,7 +184,7 @@ struct statx {
+>>  #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
+>>  #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
+>>  #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
+>> -#define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
+>> +#define STATX_ATTR_DAX			0x00400000 /* File is currently DAX-enabled */
+> 
+> Why not use the next bit in the series (0x200000)?  Did someone already
+> claim it in for-next?
 
-... and that was the root of the bug.  If there was a large, unmapped
-area, it would skip a PUD_SIZE or PMD_SIZE *area* instead of skipping to
-the *next* pud/pmd.
+Since it didn't match the FS_IOC_SETFLAGS flag, I was trying to pick one that
+seemed unlikely to ever gain a corresponding statx flag, and since 0x00400000 is
+"reserved for ext4" it seemed like a decent choice.
 
-The case being patched here is from a *present* PTE/PMD, so it's a
-mapped area, not a hole.
+But 0x200000 corresponds to FS_EA_INODE_FL/EXT4_EA_INODE_FL which is ext4-specific
+as well, so sure, I'll change to that.
 
-That said, I think the previous changelog was wrong.  An unaligned
-address to a mapped, large (2M) region followed by a smaller (4k) region
-would skip too far into the 4k region.
+Thanks,
+-Eric
 
-That said, I'm not sure I like this fix.  If someone is explicitly
-asking to clone a PMD (which pti_clone_pgtable() forces you to do), they
-better align the address.
+> --D
+> 
+>>  
+>>  
+>>  #endif /* _UAPI_LINUX_STAT_H */
+>> -- 
+>> 2.17.0
+>>
+> 
+
