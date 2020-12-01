@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAB62C9BEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEA52C9B43
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390083AbgLAJNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:13:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51370 "EHLO mail.kernel.org"
+        id S2387742AbgLAJGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:06:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390031AbgLAJNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:13:09 -0500
+        id S2388832AbgLAJEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:04:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A229621D7F;
-        Tue,  1 Dec 2020 09:12:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1889621D7A;
+        Tue,  1 Dec 2020 09:04:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813943;
-        bh=ujal3ZrL3DxeQXhTnSw2quJHU8Kh8gcNR96acI/asoE=;
+        s=korg; t=1606813445;
+        bh=qW4Okc9SGp3n6wIi4MXS+Qo7u7tQ+3l4AEIGC1RCLa8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gKZmZqdnym7qm78jEp77JWXzgEqsotG5h8YRmcKmjx+QzUH9Sq1VZ1HcqA485EPsK
-         nthy/UifPXIHhwU53ixAQpw7S6KDx8IEDr5qyxEfkBxbmCCut/3hch600JYsiyyqFo
-         PxjB/jdhG6OcxiDH0dpAMhukBcI4YSxcriI5VUTQ=
+        b=FjuOX2QmsN1jOfAQMyOcDBtokw4j2znMGScprXTD2ZHcdG91eRH6tes3xycXXYl4y
+         3YBUgTljLG+J2E7emZp3Lfu6xLARFP6xMdqgy02VED0RIf+uXyOEN0VpVjNHvUHU0V
+         oNxxaijFSduzb24lrXXSpZ2ioJP3w2gYFwBPIpkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 083/152] phy: qualcomm: Fix 28 nm Hi-Speed USB PHY OF dependency
-Date:   Tue,  1 Dec 2020 09:53:18 +0100
-Message-Id: <20201201084722.760628401@linuxfoundation.org>
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 42/98] bus: ti-sysc: Fix bogus resetdone warning on enable for cpsw
+Date:   Tue,  1 Dec 2020 09:53:19 +0100
+Message-Id: <20201201084657.167879966@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 14839107b51cc0db19579039b1f72cba7a0c8049 ]
+[ Upstream commit e7ae08d398e094e1305dee823435b1f996d39106 ]
 
-This Kconfig entry should declare a dependency on OF
+Bail out early from sysc_wait_softreset() just like we do in sysc_reset()
+if there's no sysstatus srst_shift to fix a bogus resetdone warning on
+enable as suggested by Grygorii Strashko <grygorii.strashko@ti.com>.
 
-Fixes: 67b27dbeac4d ("phy: qualcomm: Add Synopsys 28nm Hi-Speed USB PHY driver")
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Link: https://lore.kernel.org/r/20201113151225.1657600-3-bryan.odonoghue@linaro.org
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+We do not currently handle resets for modules that need writing to the
+sysstatus register. If we at some point add that, we also need to add
+SYSS_QUIRK_RESETDONE_INVERTED flag for cpsw as the sysstatus bit is low
+when reset is done as described in the am335x TRM "Table 14-202
+SOFT_RESET Register Field Descriptions"
+
+Fixes: d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and wait for softreset bit")
+Suggested-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Acked-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/qualcomm/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bus/ti-sysc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
-index 9129c4b8bb9b1..7f6fcb8ec5bab 100644
---- a/drivers/phy/qualcomm/Kconfig
-+++ b/drivers/phy/qualcomm/Kconfig
-@@ -87,7 +87,7 @@ config PHY_QCOM_USB_HSIC
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 770a780dfa544..3934ce3385ac3 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -192,6 +192,9 @@ static int sysc_wait_softreset(struct sysc *ddata)
+ 	u32 sysc_mask, syss_done, rstval;
+ 	int syss_offset, error = 0;
  
- config PHY_QCOM_USB_HS_28NM
- 	tristate "Qualcomm 28nm High-Speed PHY"
--	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on OF && (ARCH_QCOM || COMPILE_TEST)
- 	depends on EXTCON || !EXTCON # if EXTCON=m, this cannot be built-in
- 	select GENERIC_PHY
- 	help
++	if (ddata->cap->regbits->srst_shift < 0)
++		return 0;
++
+ 	syss_offset = ddata->offsets[SYSC_SYSSTATUS];
+ 	sysc_mask = BIT(ddata->cap->regbits->srst_shift);
+ 
 -- 
 2.27.0
 
