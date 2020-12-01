@@ -2,103 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B5D2CAAAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622002CAAB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729858AbgLASWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729816AbgLASWk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:22:40 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18D2C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:21:59 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id r20so1733465pjp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:21:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=3wVl7AQw7YfGdQmKD3HVJT834y1hUCU2+m4Z3qdyyYo=;
-        b=Dls5fLnL0gLVcKVWjt6HnWDP6qgpeIsFHtHHJB3FoSUQWXIjug1jvZrarrE2U6pN/x
-         jhEqa7kqs9we4K3WfpOt9DzDeBk8vkBf90bSokJRBlSeykf73xFqxGFVkuPzE/6o3z30
-         /afHK3AGdClaCbpw5uA0i9M30fnzYL8Wo/zEVsZ3a4Hi97Izpceo4RhkFm64rrp5+7rx
-         9k5ensm2l7JpyO7JfUCt+doUCxNIMbql5ao/zs60fKFMhzmkPsYtD6g4Szw2k53X0Uq5
-         M3h/WsYUw8xgNK6zYitbH6prWAN9wz+DeS2QLQLgDCyrzNtQeslGYcRkf7NOrx7Y1z4P
-         i4Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=3wVl7AQw7YfGdQmKD3HVJT834y1hUCU2+m4Z3qdyyYo=;
-        b=qgrrx+NesBD0gWhUy/+nj8/BDnolLPMB5pJTHvsmobEyTz0/N1rc0ZgE6jnKLhncr/
-         pax6TRCPruUcXzBdAf5f/cjEenDZXoOSxMKm9cwNNu3MnjTwCGdJ6YXDnDwOCvgHqmle
-         XtfjVERg5Tfwn7p10Uif7WeNHGDySwQK5rGuuBZP6kf+oBHYVc1Q1H3pz2XNReNfAWqq
-         W8dgp9MkND00mcgMTflVZqmNtWB0kBXpdUdeF6WieJFW3vxlBrdh+/udB2hspgKe3R+P
-         +xfdGrzT2oWAYUrHFkDuns+F672F1p/O/zDaeiuqS37SQ+6fPJlrsyGFQiHtOq+/vG3n
-         Q60A==
-X-Gm-Message-State: AOAM5314T842t4xxZ1dheb0bUguvZxRAnsY98xPcnyYvpoGQPJDHC7/1
-        KcAQ5XYSprOuwZif7ZUpK6X9jw==
-X-Google-Smtp-Source: ABdhPJzNmqfQkYiWnjvw6ooAq9sxr3HtM5CN1pbMX5RPxx/fwdvj833jUU2F986IevaEnEuHOlSiYQ==
-X-Received: by 2002:a17:902:5581:b029:da:a547:b6a6 with SMTP id g1-20020a1709025581b02900daa547b6a6mr1906487pli.78.1606846919392;
-        Tue, 01 Dec 2020 10:21:59 -0800 (PST)
-Received: from [192.168.1.9] ([171.49.174.71])
-        by smtp.gmail.com with ESMTPSA id h188sm460205pfe.88.2020.12.01.10.21.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 10:21:58 -0800 (PST)
-Message-ID: <b46f5368d281ceaad1c27adf818b986ca68ce925.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.9 000/152] 5.9.12-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Date:   Tue, 01 Dec 2020 23:51:42 +0530
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        id S1730521AbgLASX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:23:26 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:60384 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726733AbgLASXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 13:23:25 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kkAIJ-009jTn-Ji; Tue, 01 Dec 2020 19:22:31 +0100
+Date:   Tue, 1 Dec 2020 19:22:31 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2] ARM: dts: mvebu: Add device tree for ATL-x530 Board
+Message-ID: <20201201182231.GL2073444@lunn.ch>
+References: <20201130223507.23571-1-aryan.srivastava@alliedtelesis.co.nz>
+ <20201130230359.GH2073444@lunn.ch>
+ <3570cb6d-44e0-3ab5-b464-a013ba1007b1@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3570cb6d-44e0-3ab5-b464-a013ba1007b1@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-01 at 09:51 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.9.12 release.
-> There are 152 patches in this series, all will be posted as a
-> response
-> to this one.  If anyone has any issues with these being applied,
-> please
-> let me know.
-> 
-> Responses should be made by Thu, 03 Dec 2020 08:46:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->         
-> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.12-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> stable-rc.git linux-5.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> This is what we've done in our kernel fork. But for upstreaming we 
+> wanted to start slow and maybe move things into one or more common .dtsi 
+> files if/when needed (in particular there are some models in development 
+> now that use different i2c mux and hwmon chips).
 
-hello,
+O.K. It is not particularly disruptive to refactor later, so lets
+start with this.
 
-Compiled and booted  5.9.12-rc1+. No typical dmesg regression 
-or regressions.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
-
+    Andrew
