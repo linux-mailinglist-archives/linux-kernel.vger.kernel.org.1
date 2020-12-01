@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7972CB075
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5AA2CB078
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 23:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgLAWwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 17:52:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
+        id S1726325AbgLAWxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 17:53:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgLAWwZ (ORCPT
+        with ESMTP id S1725955AbgLAWxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 17:52:25 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C049C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:51:39 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id z21so7990453lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 14:51:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kuGYiAw93uDx+xaKnW4QcfmpD+bqUd6sOz1Gxw+OYkc=;
-        b=s9gA9NnbuZMwhgs/0p6cuZz+VMVRS/lamlHAPdz2exim393gyZGCxk0CcZuEMpbwMK
-         fH4JQSsH2YEr+kYUFYUp/uwTAlwU5sxCbQX1ZDduTY/XnJI2xorGm6wM3wgzQ7/IwPhb
-         wrvDk2d53Cspe2zNLTQ/CLOrKVbBTf17PkvLDXyZyaekiwXK9TVnkAEznuYn0mFsCRDR
-         o0zp4TiQARV3hIwxo4oQeN2OLsQcJMZl7ZvddVqXGUcXQjRgKcuQZcDQJYBN7JbGNaOt
-         jWGYQvUnPxsuaPo9VC355ztSRSIou2SoEjE1GeajgWebXStPebq3VS56R5Vqh53LeTJz
-         fKXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kuGYiAw93uDx+xaKnW4QcfmpD+bqUd6sOz1Gxw+OYkc=;
-        b=M7i4zJeyJbNXIRIDZbHcQGfErutHGw4x3ZOstEFCmul5VWAetEVxE3D7g8xI9AhdRT
-         4nPTugeoxwlLNFXt3PNgsVKOpH53iOvjV2t9pSlAmK/g90NQs2g7C1E4M9tJ54MTxiV6
-         rueb9dVKT0ThKkfoUA7YZfB5WI0ebfzSrNl0AjqqRIj/HwG1JoJJAQA21QpyOLNByQde
-         zrQo7+/+y+wgETfojyyBXZvppRlchRN71ZtHWbNAnJprYF38VNrCrX7NgK45A1vNh+8L
-         nwc5NHItLFYvx9FtxGG5QB4yWVqnBNAJEWfr3XOUIogoPZ2T6E3i18lSBn+07YJTfJxl
-         i7nA==
-X-Gm-Message-State: AOAM531MU9cW6LUkniJwRPMoDzJRzqqTZ7+8bJA8jpn73l0J6VoA+6cT
-        jKBScnH8xU9NO44Q3aApVo/fTJWr+B0kH0OerYOFWg==
-X-Google-Smtp-Source: ABdhPJyMHXSo0CkA53KWmGGRnV17KWYucQiKdb4Cvj5CJ08lhkLxW78peAVGTVWbJO/2UnueSxN2YjPI1XiO2T7etmU=
-X-Received: by 2002:a19:8686:: with SMTP id i128mr2242469lfd.333.1606863097604;
- Tue, 01 Dec 2020 14:51:37 -0800 (PST)
+        Tue, 1 Dec 2020 17:53:49 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BC4C0613CF;
+        Tue,  1 Dec 2020 14:53:09 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606863187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TgZGODn285I66J8L4GvbT1qQkmKT/v8XbJlr6izRTLE=;
+        b=4ye6Z4KlvJ5qQ5e6FxUs5D46elQxx2dkpqnxyjzngm47Sjliwx+UggMY/SZx6WqtZIgv4E
+        Zln2cp7hsd7soJ0kewekcccXZZ09u89CT6NhBrnvApMfIAoNbZzVkDc96jO1jIFSLnUDZb
+        fsozrv233+0HplMgX0iipn6SPepjckQTzPB9jE/mapByX8FK3WuOMvz24O/l624gKR7QMg
+        42bNa3LW2+FzJA3Hdr5fdKvki3QaX7SN4vmEJdKAb4OB31XEVHe2rIlmDTlRziCdy7oCTJ
+        Q2KOKySWJiM3HEMxwidRTBl5xdEHQAGcgmGDDCKHNsP+G7u9U+UvpLdP61hBwg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606863187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TgZGODn285I66J8L4GvbT1qQkmKT/v8XbJlr6izRTLE=;
+        b=g+ac3s3Ylgc621GOUHtTePBTk73TOW5QZ2fc4BThRNc4K3E+KCtT6bg4NS5w9lfDswsp7h
+        WxsCMOQu5lSltZAQ==
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>, luto@kernel.org,
+        keescook@chromium.org
+Cc:     gofmanp@gmail.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, willy@infradead.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, x86@kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: Re: [PATCH v8 7/7] docs: Document Syscall User Dispatch
+In-Reply-To: <20201127193238.821364-8-krisman@collabora.com>
+References: <20201127193238.821364-1-krisman@collabora.com> <20201127193238.821364-8-krisman@collabora.com>
+Date:   Tue, 01 Dec 2020 23:53:06 +0100
+Message-ID: <87a6uxf8a5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <2D7916FA-678F-4236-B478-C953CADF2FFA@goldelico.com>
- <CAGngYiXgc_m2A7Wihxuhzm-u4qH-JZgxHjke653zvyT45jMU7Q@mail.gmail.com>
- <4AC29229-9542-4E77-B993-217E29C7E209@goldelico.com> <20201201121620.GB5239@sirena.org.uk>
- <A499CCB9-F2EC-4F24-AA79-5A7FA6A092A9@goldelico.com> <CACRpkdYf2dUF6PjYcvnsKDPoxXPWiWKKAqpik4-2AAQjRmatfw@mail.gmail.com>
- <6283C16F-549C-4463-BC08-E2C1A1D78B2F@goldelico.com> <CAGngYiUG76Q-cb_HdDKMia5yXzv_mS+5NPeaBquK3_4b3tr-4Q@mail.gmail.com>
- <9380CE00-9CE6-4E0B-B2E1-1B534F85E47D@goldelico.com> <CAGngYiVF5yMAGPJ8xZgt=BfJ3JfBMABVC0t+dQ2oOq986T9iKg@mail.gmail.com>
- <BD3995F3-F4E6-4DC9-B0B9-5DCD6655F049@goldelico.com>
-In-Reply-To: <BD3995F3-F4E6-4DC9-B0B9-5DCD6655F049@goldelico.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 1 Dec 2020 23:51:26 +0100
-Message-ID: <CACRpkdYNL=PbWgf9wdKpiC2y1iZFG-ZD47O8u2a22zzGus9P2Q@mail.gmail.com>
-Subject: Re: [BUG] SPI broken for SPI based panel drivers
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>,
-        Andreas Kemnade <andreas@kemnade.info>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 6:13 PM H. Nikolaus Schaller <hns@goldelico.com> wrote:
+On Fri, Nov 27 2020 at 14:32, Gabriel Krisman Bertazi wrote:
+> +Compatibility layers like Wine need a way to efficiently emulate system
+> +calls of only a part of their process - the part that has the
+> +incompatible code - while being able to execute native syscalls without
+> +a high performance penalty on the native part of the process.  Seccomp
+> +falls short on this task, since it has limited support to efficiently
+> +filter syscalls based on memory regions, and it doesn't support removing
+> +filters.  Therefore a new mechanism is necessary.
+> +
+> +Syscall User Dispatch brings the filtering of the syscall dispatcher
+> +address back to userspace.  The application is in control of a flip
+> +switch, indicating the current personality of the process.  A
+> +multiple-personality application can then flip the switch without
+> +invoking the kernel, when crossing the compatibility layer API
+> +boundaries, to enable/disable the syscall redirection and execute
+> +syscalls directly (disabled) or send them to be emulated in userspace
+> +through a SIGSYS.
+> +
+> +The goal of this design is to provide very quick compatibility layer
+> +boundary crosses, which is achieved by not executing a syscall to change
+> +personality every time the compatibility layer executes.  Instead, a
+> +userspace memory region exposed to the kernel indicates the current
+> +personality, and the application simply modifies that variable to
+> +configure the mechanism.
+> +
+> +There is a relatively high cost associated with handling signals on most
+> +architectures, like x86, but at least for Wine, syscalls issued by
+> +native Windows code are currently not known to be a performance problem,
+> +since they are quite rare, at least for modern gaming applications.
+> +
+> +Since this mechanism is designed to capture syscalls issued by
+> +non-native applications, it must function on syscalls whose invocation
+> +ABI is completely unexpected to Linux.  Syscall User Dispatch, therefore
+> +doesn't rely on any of the syscall ABI to make the filtering.  It uses
+> +only the syscall dispatcher address and the userspace key.
 
-> I am not sure if DT maintainers accept that we revert a DT change just to
-> handle some change in a driver. Usually they insist on fixing a driver and
-> live with the DT. DT is carved in stone or could be ROM...
+I think this lacks information about the non-visiblity of these
+syscalls. Something like this:
 
-I usually use this rough consensus: is the DTB flashed into millions of
-devices and supplied to the kernel using some bootloader, and
-is the kernel upgraded on the device without also upgrading the
-DTB?
+  As the ABI of these intercepted syscalls is unknown to Linux, these
+  syscalls are not instrumentable via ptrace or the syscall tracepoints.
 
-And I mean in practice, not in theory.
+I'll add that unless someone objects or comes up with better wording
+before I apply the lot tomorrow morning.
 
-So whether the DTB ABI can be changed or not is a practical
-deployment question, not a religious sacrament. It came from systems
-such as Sun machines where the DTB was, indeed, in a PROM,
-and indeed intended for SunOS so Linux had no control over
-it. We had to just treat it as static ABI.
+Thanks,
 
-If the actual situation is different, sucn as kernel and DTB are
-always updated together, or those are a few custom systems in
-a factory floor (not millions of mobile phones or laptops) then
-it is fine to change it occasionally even if it is seen as "bad".
-
-Yours,
-Linus Walleij
+        tglx
