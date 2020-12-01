@@ -2,90 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC8E2CA3B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7D92CA3C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403772AbgLANXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:23:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387439AbgLANXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:23:24 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB3CC0613CF;
-        Tue,  1 Dec 2020 05:22:43 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id lt17so4069712ejb.3;
-        Tue, 01 Dec 2020 05:22:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uADe8pIjhPSuCRhZ6wL+nTegabcP2vd7po21w3/KsKc=;
-        b=omjzs4OIh0H0sHYUNmwiXYUGGpzCAAS6J/sItDiufcNI3jka57fonKBcXPHYZ7EC3w
-         AqLZcIzbTeNVW0c2I3+JFfvc8LbaA+N3OSA5kU5bLEsXHk7ey8xXeITb4y8BDGmkSuEX
-         hnhkY9dSxfZLgLIQnczOR5S5HMKm+X7Jv0afzHvs4nlyr69ybrpO7EVWh6s6RZgB6Mkn
-         lYmSW2uOOaAeRQOm0KA1q31X9cNYK3/WEn63GNDPTPmca1DLBuO2Blex+UBkVzSy+0K6
-         4Qu2amZVXcEhnwiECDLa3n03Q3H8ZM/P0xJKQl1pedcKaAHTPsyAzDhlUOPYREoTmZhq
-         HEXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uADe8pIjhPSuCRhZ6wL+nTegabcP2vd7po21w3/KsKc=;
-        b=He2rSKGBQeFPu0KqEoMcq2WddMQV9p2cfLqkjK8DzIkwPpadwUhXRsPyHKAdVAwKAB
-         plkcwt2NuixdrpLmgCqMvUvcTU+GNehHaVzUZDL3ktF2ztHAl8Gud063KvVmpZyOdZjq
-         yOXAYnTyKAh6RiL1OTt/fcl9ztjm6nvEX7p4Fl0k6LD2R5A7Lnn7FlgVB1BXfia7Wmmy
-         BeGtEfMWUVce2K5dNL6rPj0Ll0W1/qqGfi7Kfe3+7ekHHWsYkC+RmUGpZBnf6akb0g8L
-         Wefo9e7xDBQorurw7Q3E73ASbAYO0fnFKtTWD7Sl5WbutgNHEzvO3krcEkPw3lNbStPC
-         6Frw==
-X-Gm-Message-State: AOAM533vzThRWXU0145afIoblfXijkrlesvBCKzQnRvVVZqrNXjaD1rD
-        oGy4+ILG0lRlRHPcBl6dYEJwuyAKOm2MLMIkTPU=
-X-Google-Smtp-Source: ABdhPJz0oX8n58WEDpkBVOtEEmsqhZFkHTca/aDr4LQ7oluH4avRguTL/Swrpq6KXGmBFui3PPL0bTwu0E0hx+11DBY=
-X-Received: by 2002:a17:906:68d1:: with SMTP id y17mr2997597ejr.447.1606828962469;
- Tue, 01 Dec 2020 05:22:42 -0800 (PST)
+        id S2391071AbgLANZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:25:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725977AbgLANZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:25:55 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5309C2086A;
+        Tue,  1 Dec 2020 13:25:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606829113;
+        bh=UhznvO8zap1Y3rVrYCcaAYTh7y+bw2WlsUPMr4u3OOQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MaDcm7LdTtUTAc+nSZY2ckkSqnVa+kmjQGyJSxtLILZjMqhDT2Wg4qc/4UylxHB4U
+         eGeIqBsRZzx6pw757E0QtOvV7QWIAWjyttKwQ9qjI1zzAM/XjPnvgTgpOX/XR+3gbO
+         QDM/xmhNVKc5Z/tp7fEiM/fJuXVxUMweiZO8r95I=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3230B4079D; Tue,  1 Dec 2020 10:25:17 -0300 (-03)
+Date:   Tue, 1 Dec 2020 10:25:17 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-perf-users@vger.kernel.org
+Subject: perf probe can't remove probes
+Message-ID: <20201201132517.GC49333@kernel.org>
+References: <20201125172755.GA53351@kernel.org>
+ <20201126092125.402257a8776637d6bd2e090c@kernel.org>
 MIME-Version: 1.0
-References: <20201201053949.143175-1-selvakuma.s1@samsung.com>
- <CGME20201201054057epcas5p1d5bd2813146d2cb57eb66b7cedce1f63@epcas5p1.samsung.com>
- <20201201053949.143175-2-selvakuma.s1@samsung.com> <942255077c7caf5a2b1983570e30c3bf06410f62.camel@mail.ru>
-In-Reply-To: <942255077c7caf5a2b1983570e30c3bf06410f62.camel@mail.ru>
-From:   Selva Jove <selvajove@gmail.com>
-Date:   Tue, 1 Dec 2020 18:52:28 +0530
-Message-ID: <CAHqX9vantopwsTYLNh92uaVaP_vOsbB0O-XgMSEjdKUsRk=gFQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] block: add simple copy support
-To:     Aleksei Marov <alekseymmm@mail.ru>
-Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
-        linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
-        Damien Le Moal <damien.lemoal@wdc.com>, hch@lst.de,
-        sagi@grimberg.me, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nj.shetty@samsung.com,
-        joshi.k@samsung.com, javier.gonz@samsung.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126092125.402257a8776637d6bd2e090c@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for reporting the memory leak. Will add a fix.
+Hi Masami,
 
-On Tue, Dec 1, 2020 at 3:58 PM Aleksei Marov <alekseymmm@mail.ru> wrote:
->
-> On Tue, 2020-12-01 at 11:09 +0530, SelvaKumar S wrote:
-> > +     ret = __blkdev_issue_copy(bdev, dest, nr_srcs, rlist, gfp_mask, flags,
-> > +                     &bio);
-> > +     if (!ret && bio) {
-> > +             ret = submit_bio_wait(bio);
-> > +             if (ret == -EOPNOTSUPP)
-> > +                     ret = 0;
-> > +
-> > +             kfree(page_address(bio_first_bvec_all(bio)->bv_page) +
-> > +                             bio_first_bvec_all(bio)->bv_offset);
-> > +             bio_put(bio);
-> > +     }
-> > +
-> > +     return ret;
-> > +}
-> I think  there is an issue here that if bio_add_page  returns error in
-> __blkdev_issue_copy then ret is -ENOMEM and we never do bio_put for bio
-> allocated in  __blkdev_issue_copy so it is small memory leak.
->
->
+	Any idea why listing the source code doesn't work while simply
+adding the probe works?
+
+[root@seventh ~]# perf probe verify_pkcs7_signature
+Added new event:
+  probe:verify_pkcs7_signature (on verify_pkcs7_signature)
+
+You can now use it in all perf tools, such as:
+
+	perf record -e probe:verify_pkcs7_signature -aR sleep 1
+
+[root@seventh ~]#
+
+[root@seventh ~]# readelf -wi /lib/modules/5.10.0-rc3.bpfsign+/build/vmlinux | grep DW_AT_producer -m2
+    <1c>   DW_AT_producer    : (indirect string, offset: 0x50): GNU AS 2.35
+    <2f>   DW_AT_producer    : (indirect string, offset: 0x2daf): GNU C89 10.2.1 20201016 (Red Hat 10.2.1-6) -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -m64 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -mindirect-branch=thunk-extern -mindirect-branch-register -mrecord-mcount -mfentry -march=x86-64 -g -O2 -std=gnu90 -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -falign-jumps=1 -falign-loops=1 -fno-asynchronous-unwind-tables -fno-jump-tables -fno-delete-null-pointer-checks -fno-allow-store-data-races -fstack-protector-strong -fno-strict-overflow -fstack-check=no -fconserve-stack -fcf-protection=none -fno-stack-protector
+[root@seventh ~]#
+
+[root@seventh ~]# perf probe -L verify_pkcs7_signature
+Specified source line is not found.
+  Error: Failed to show lines.
+[root@seventh ~]# grep verify_pkcs7_signature /proc/kallsyms
+ffffffff9f2617b0 T verify_pkcs7_signature
+ffffffffa047ac30 r __ksymtab_verify_pkcs7_signature
+ffffffffa0482e38 r __kstrtabns_verify_pkcs7_signature
+ffffffffa0483b3b r __kstrtab_verify_pkcs7_signature
+[root@seventh ~]# perf probe -L verify_pkcs7_signature
+Specified source line is not found.
+  Error: Failed to show lines.
+[root@seventh ~]# perf probe -v -L verify_pkcs7_signature
+Looking at the vmlinux_path (8 entries long)
+Using /lib/modules/5.10.0-rc3.bpfsign+/build/vmlinux for symbols
+Open Debuginfo file: /lib/modules/5.10.0-rc3.bpfsign+/build/vmlinux
+fname: /home/acme/git/bpf/include/linux/verification.h, lineno:38
+New line range: 38 to 2147483647
+path: (null)
+Specified source line is not found.
+  Error: Failed to show lines. Reason: No such file or directory (Code: -2)
+[root@seventh ~]# readelf -wi /lib/modules/5.10.0-rc3.bpfsign+/build/vmlinux | grep -B2 -A8 verify_pkcs7_signature
+ <1><1a362a2>: Abbrev Number: 64 (DW_TAG_subprogram)
+    <1a362a3>   DW_AT_external    : 1
+    <1a362a3>   DW_AT_name        : (indirect string, offset: 0xc2d22): verify_pkcs7_signature
+    <1a362a7>   DW_AT_decl_file   : 52
+    <1a362a8>   DW_AT_decl_line   : 38
+    <1a362a9>   DW_AT_decl_column : 12
+    <1a362aa>   DW_AT_prototyped  : 1
+    <1a362aa>   DW_AT_type        : <0x1a3333f>
+    <1a362ae>   DW_AT_sibling     : <0x1a36313>
+ <2><1a362b2>: Abbrev Number: 65 (DW_TAG_formal_parameter)
+    <1a362b3>   DW_AT_name        : (indirect string, offset: 0x19ee3d): data
+--
+ <1><24fa79d>: Abbrev Number: 83 (DW_TAG_subprogram)
+    <24fa79e>   DW_AT_external    : 1
+    <24fa79e>   DW_AT_name        : (indirect string, offset: 0xc2d22): verify_pkcs7_signature
+    <24fa7a2>   DW_AT_decl_file   : 218
+    <24fa7a3>   DW_AT_decl_line   : 38
+    <24fa7a4>   DW_AT_decl_column : 12
+    <24fa7a5>   DW_AT_prototyped  : 1
+    <24fa7a5>   DW_AT_type        : <0x24e1e05>
+    <24fa7a9>   DW_AT_sibling     : <0x24fa80e>
+ <2><24fa7ad>: Abbrev Number: 41 (DW_TAG_formal_parameter)
+    <24fa7ae>   DW_AT_name        : (indirect string, offset: 0x19ee3d): data
+--
+    <26258b8>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0 	(DW_OP_addr: 0)
+ <1><26258c2>: Abbrev Number: 116 (DW_TAG_variable)
+    <26258c3>   DW_AT_name        : (indirect string, offset: 0x10523f): __UNIQUE_ID___addressable_verify_pkcs7_signature164
+    <26258c7>   DW_AT_decl_file   : 1
+    <26258c8>   DW_AT_decl_line   : 305
+    <26258ca>   DW_AT_decl_column : 1
+    <26258cb>   DW_AT_type        : <0x2620ca6>
+    <26258cf>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0 	(DW_OP_addr: 0)
+ <1><26258d9>: Abbrev Number: 117 (DW_TAG_subprogram)
+    <26258da>   DW_AT_external    : 1
+    <26258da>   DW_AT_name        : (indirect string, offset: 0x1050d9): pkcs7_free_message
+--
+ <1><2625c2e>: Abbrev Number: 120 (DW_TAG_subprogram)
+    <2625c2f>   DW_AT_external    : 1
+    <2625c2f>   DW_AT_name        : (indirect string, offset: 0xc2d22): verify_pkcs7_signature
+    <2625c33>   DW_AT_decl_file   : 1
+    <2625c34>   DW_AT_decl_line   : 282
+    <2625c36>   DW_AT_decl_column : 5
+    <2625c37>   DW_AT_prototyped  : 1
+    <2625c37>   DW_AT_type        : <0x26209e9>
+    <2625c3b>   DW_AT_low_pc      : 0xffffffff812617b0
+    <2625c43>   DW_AT_high_pc     : 0x73
+    <2625c4b>   DW_AT_frame_base  : 1 byte block: 9c 	(DW_OP_call_frame_cfa)
+--
+ <1><495560e>: Abbrev Number: 68 (DW_TAG_subprogram)
+    <495560f>   DW_AT_external    : 1
+    <495560f>   DW_AT_name        : (indirect string, offset: 0xc2d22): verify_pkcs7_signature
+    <4955613>   DW_AT_decl_file   : 61
+    <4955614>   DW_AT_decl_line   : 38
+    <4955615>   DW_AT_decl_column : 12
+    <4955616>   DW_AT_prototyped  : 1
+    <4955616>   DW_AT_type        : <0x49519fd>
+    <495561a>   DW_AT_sibling     : <0x495567f>
+ <2><495561e>: Abbrev Number: 74 (DW_TAG_formal_parameter)
+    <495561f>   DW_AT_name        : (indirect string, offset: 0x19ee3d): data
