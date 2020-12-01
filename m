@@ -2,129 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204D22C97FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384C92C97E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 08:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgLAHTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 02:19:34 -0500
-Received: from mout.gmx.net ([212.227.15.19]:43011 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbgLAHTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 02:19:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606807025;
-        bh=5CW4HOQArD0ga03PAufrXrrqr/PGZhg5w5QyN9LY5+w=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=dg6UYBrRE4m7GWZcAN2j1qNMHWUO0AYCJiSafjFy9jcQbH/SIOebw5Ds5kyt7OXO1
-         BdBYum4+sqr0YFVnqrCKym+4YGVZzihT+nnTngUyhKShWC/E1WiiAuepb1FbZsHa/a
-         PD6+MQL1hRaxiRDSRjVnFsufu9H0x1HB+ZXhCpfM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MuUnA-1jtXud0Y9C-00rUKI; Tue, 01
- Dec 2020 08:17:05 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v5 6/7] MAINTAINERS: Add entry for Netronix embedded controller
-Date:   Tue,  1 Dec 2020 02:15:12 +0100
-Message-Id: <20201201011513.1627028-7-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
-References: <20201201011513.1627028-1-j.neuschaefer@gmx.net>
+        id S1727699AbgLAHMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 02:12:48 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:48340 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727345AbgLAHMs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 02:12:48 -0500
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201201071204epoutp0376c111de22193b780f19bfaf2e6fbabb~MhjPqC2qR1184611846epoutp03F
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 07:12:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201201071204epoutp0376c111de22193b780f19bfaf2e6fbabb~MhjPqC2qR1184611846epoutp03F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1606806724;
+        bh=dSZxR9MSN2+0IuqkpjmxEKtgOBexygC82P18mNnNo3g=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=cPCJozz9Rfe5jeTCY3DBgbiX3V0TPYxdepTNL4wQJERFipU+drSwd9G+X+i+4lqhz
+         Jj/tW46qvVlCegG8DAdzcQwrqsqb+AKELh4wK0DtGry+FwSa5Y85X5XjKhJoKthOk9
+         lWqOwJsiHf5XCiXwcOTB5vCRQWNwReh/leKChE+M=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20201201071203epcas5p496c4b86aed88c66d1f3ccd3cc619f031~MhjOy_Dfw1118911189epcas5p4J;
+        Tue,  1 Dec 2020 07:12:03 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        97.00.50652.3CCE5CF5; Tue,  1 Dec 2020 16:12:03 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201201054049epcas5p2e0118abda14aaf8d8bdcfb543bc330fc~MgTkfg-1Y2045320453epcas5p2l;
+        Tue,  1 Dec 2020 05:40:49 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201201054049epsmtrp2fa8c3b202a21b2bfab414a41b419e895~MgTkevAtx1422914229epsmtrp22;
+        Tue,  1 Dec 2020 05:40:49 +0000 (GMT)
+X-AuditID: b6c32a4a-6c9ff7000000c5dc-7c-5fc5ecc3c8b8
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B4.6E.13470.167D5CF5; Tue,  1 Dec 2020 14:40:49 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.110.206.5]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201201054045epsmtip2a51dd3abb6c426536449e143900b0656~MgTgupi9U0384403844epsmtip2k;
+        Tue,  1 Dec 2020 05:40:45 +0000 (GMT)
+From:   SelvaKumar S <selvakuma.s1@samsung.com>
+To:     linux-nvme@lists.infradead.org
+Cc:     kbusch@kernel.org, axboe@kernel.dk, damien.lemoal@wdc.com,
+        hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selvajove@gmail.com,
+        nj.shetty@samsung.com, joshi.k@samsung.com,
+        javier.gonz@samsung.com, SelvaKumar S <selvakuma.s1@samsung.com>
+Subject: [RFC PATCH 0/2] add simple copy support
+Date:   Tue,  1 Dec 2020 11:09:47 +0530
+Message-Id: <20201201053949.143175-1-selvakuma.s1@samsung.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0jQyFfee5jYVyk0F/4yqqagvTFNbSZgQo8QuIW7MRTI/7zgyN7O
- NUPnrSUmpRGSqdeGOZoszPfCMlM6oNVN7LlIDRyjrTDO/h2Qn2gaIC8vA5IhmuJ39Pooz36
- nlM/3P1J61T/bKwoiQ9XGdmXuOgBPWty5Tp896ty8u15ZklcEffVY4tHUDmyeiTygJUFOMa
- 1jTKwKhGfkQhxC+YQ07JQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vBQhdFPsBIU=:sBSq7NRSzSOvrGYzREJRwQ
- JAUmJhJCCo2QWEY4ELIVfJ5db0D5qCziYoafcpbVi9eXgeGKsz9ly1m7kP9psevyA0CRzTaZk
- mx5ITA0z3I4XAI8elaakBesiuQ+olW0TtfQi6znOdrAF+NO9bBJl9T89X5RL3yA7JG5KV8/KJ
- 9nbLmVF7m9V8FRrZ38J4cavpIgH28qHVltqbnBaemvtcf+YwRnmNCmvQWer160oJmncM3WrKj
- LTnJZpfq4/dZv5OulQuNSWF/1c8KnSK7xvGPu02lRhFvLYsxDipAwcQ1ClynpJ1guu5JwfhK9
- 7d1n578hVnlwwfo2J1QM4HnCCT+uNNABew925vgnMJ5NESnLFoz0+7EGR31eMxUDtfzZLhnLQ
- ///6pfpoHKaJzyrJoqEWliVBJnmJa87kfP6L+x8YSuw7mpCGbNdFc6fDwOtoRdgJmNVgkOgQ5
- eOq9bJqF+8AQOlHzCike98dTFbxR0iGQubXTmLV8MP1ascXtQgFHR5N2zwSCXIjURYKKUPbHm
- 3rTqYmp3jbMR8DujI1j/2VLzotzg/e72fGtYcRKQU+BbvbN8I/QWB/YFnlG8TER6TvTBMiKFT
- gR7XPxcXpnRlLNYrT1ovBNDA6YHoyL53yDlykYVZPGCnTnocnA5kb165snzA0lsxVemf6K8hn
- CAx81MvqazviJkZVLK4H+24IUmt4gHaXtZpMiGBDVM0bWbF0PzImjfhxNK1Dco1ck148nU7/z
- oQBOXXg3a2LArpzN/mKHYgaAwaVzDl8ZabZ+VIOymqwaXD/TJgvtUSi+bNBZOo/Ij9Ld7yABE
- nesgWiqzwgvsfPlj6OU0dJDO/0546Ey1TL91HlyI+zt+ilon/zM04bLCqqTRu4IJjrV8L+9P3
- FkkPw9ub4bekq1pu3bAw==
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsWy7bCmhu7hN0fjDR7sUrFYfbefzaK1/RuT
+        xcrVR5ksHt/5zG5x9P9bNotJh64xWuy9pW1xedccNov5y56yW2z7PZ/Z4sqURcwW616/Z7F4
+        8P46u8XrHyfZHPg8ds66y+5x/t5GFo/LZ0s9Nq3qZPPYvKTeY/fNBjaPvi2rGD0+b5LzaD/Q
+        zRTAGcVlk5Kak1mWWqRvl8CVMW2ZXcEXvoqruw+yNTCe4e5i5OSQEDCROHRoCROILSSwm1Hi
+        6qraLkYuIPsTo0TnnFmMEM43RokDDz6ywXQs3beEHSKxl1GivfMpE4TzmVHi2YFlLCBVbAK6
+        EteWbAKzRQSUJP6ub2IBKWIWmM8kMfn2VVaQhLCAgURb72ywIhYBVYmdz8+yg9i8AnYSyxa9
+        YIRYJy8x89J3qLigxMmZT8DqmYHizVtnM0PUrOSQeLwiCMJ2kVjy8BUThC0s8er4FnYIW0ri
+        87u9UC+USzzrnAZV08Ao0fe+HMK2l7i45y9QnANovqbE+l36EGFZiamn1jFBrOWT6P39BKqV
+        V2LHvCdg5RICahKntptBhGUkPhzeBbXJQ6Jr5w5WSPDGSiw4Npd9AqP8LCTPzELyzCyExQsY
+        mVcxSqYWFOempxabFhjlpZbrFSfmFpfmpesl5+duYgQnLy2vHYwPH3zQO8TIxMF4iFGCg1lJ
+        hJfl35F4Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rxKP87ECQmkJ5akZqemFqQWwWSZODilGphW
+        sivwXPGfu9133mIp/91uPsWRG2yXTMuauXya2uPfuk71kRw/gw/W/lAPq1ReuLJz95SJeXer
+        W7l+siw78Mj398zaK5unz7jXFXf82eweMduzcxa2N/K4TLXTWn31o5Tf6n8Ny/8Kl5UIrr/M
+        o8fYmlVS9SKmumOpaIl34koB+ecC8z5+Pz0z/sbixoKU/ulxCwQKhc//YRB518Lo7q+QEOSW
+        8vhUk+dSySZ+//VrJv/b3CLcd/nSthDN2ROyIha5HGxMi/7yY5I817MVvJ5GGqlX7k6OOXdD
+        /fDD+D2rw6paXhpITYtULtZtv/ujzcg5+7Kg4LvFj+NvptrYP78cVa7w2f3cNh27f3c3pTAq
+        sRRnJBpqMRcVJwIAT3iO0M0DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJLMWRmVeSWpSXmKPExsWy7bCSvG7i9aPxBivu8lmsvtvPZtHa/o3J
+        YuXqo0wWj+98Zrc4+v8tm8WkQ9cYLfbe0ra4vGsOm8X8ZU/ZLbb9ns9scWXKImaLda/fs1g8
+        eH+d3eL1j5NsDnweO2fdZfc4f28ji8fls6Uem1Z1snlsXlLvsftmA5tH35ZVjB6fN8l5tB/o
+        ZgrgjOKySUnNySxLLdK3S+DKmLbMruALX8XV3QfZGhjPcHcxcnJICJhILN23hL2LkYtDSGA3
+        o8TFDz2MEAkZibV3O9kgbGGJlf+eQxV9ZJQ4OuURWIJNQFfi2pJNLCC2iICSxN/1TSwgRcwC
+        65kkdm38AlYkLGAg0dY7G6yIRUBVYufzs+wgNq+AncSyRS+gtslLzLz0HSouKHFy5hOgeg6g
+        QeoS6+cJgYSZgUqat85mnsDIPwtJ1SyEqllIqhYwMq9ilEwtKM5Nzy02LDDMSy3XK07MLS7N
+        S9dLzs/dxAiOHS3NHYzbV33QO8TIxMF4iFGCg1lJhJfl35F4Id6UxMqq1KL8+KLSnNTiQ4zS
+        HCxK4rw3ChfGCQmkJ5akZqemFqQWwWSZODilGpiS2hRC5zmuuyOe8+Cki2Dh8aKzX68UKm1+
+        8PSpcMD3As+2HV8Nnh+JcIprfXvsidXsJFdTtissur/kHNMSNEUiNyRLrjoSazLTVrr641Rp
+        Iz6/NUyzHJrufZnwz3zXhoJ9u89emWXy9frst2fyV3usjg5KmqK3a+1Oh/2yHz2WMC9e0txW
+        vWRHGm8pA0dbsjdX4+Fb5vOj407rrhezUFG626egnaT3emL9POckC3mRVSs60uTyL1RLLl4z
+        0XjxU6dWbc+pN999CI3j+1UkXzGPS316Q/yvrWlBCw2f1TLMXWJ2Kfic+v6v1zrli8NTDRa/
+        4Os7zle3Yx3Lw1WK/rtbQg9z7vlykPvj8eOX2X4rsRRnJBpqMRcVJwIArIYlzAwDAAA=
+X-CMS-MailID: 20201201054049epcas5p2e0118abda14aaf8d8bdcfb543bc330fc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20201201054049epcas5p2e0118abda14aaf8d8bdcfb543bc330fc
+References: <CGME20201201054049epcas5p2e0118abda14aaf8d8bdcfb543bc330fc@epcas5p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's make sure I'll notice when there are patches for the NTXEC
-drivers.
+This patchset tries to add support for TP4065a ("Simple Copy Command"),
+v2020.05.04 ("Ratified")
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
+The Specification can be found in following link.
+https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
 
-v4, v5:
-- no changes
+This is an RFC. Looking forward for any feedbacks or other alternate
+designs for plumbing simple copy to IO stack.
 
-v3:
-- https://lore.kernel.org/lkml/20200924192455.2484005-7-j.neuschaefer@gmx.=
-net/
-- Remove pwm and rtc bindings
+Simple copy command is a copy offloading operation and is  used to copy
+multiple contiguous ranges (source_ranges) of LBA's to a single destination
+LBA within the device reducing traffic between host and device.
 
-v2:
-- https://lore.kernel.org/lkml/20200905144503.1067124-2-j.neuschaefer@gmx.=
-net/
-- No changes
-=2D--
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+This implementation accepts destination, no of sources and arrays of
+source ranges from application and attach it as payload to the bio and
+submits to the device.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2daa6ee673f7f..9eedf3c1e1e09 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12087,6 +12087,15 @@ F:	include/net/netrom.h
- F:	include/uapi/linux/netrom.h
- F:	net/netrom/
+Following limits are added to queue limits and are exposed in sysfs
+to userspace
+	- *max_copy_sectors* limits the sum of all source_range length
+	- *max_copy_nr_ranges* limits the number of source ranges
+	- *max_copy_range_sectors* limit the maximum number of sectors
+		that can constitute a single source range.
 
-+NETRONIX EMBEDDED CONTROLLER
-+M:	Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
-+F:	drivers/mfd/ntxec.c
-+F:	drivers/pwm/pwm-ntxec.c
-+F:	drivers/rtc/rtc-ntxec.c
-+F:	include/linux/mfd/ntxec.h
-+
- NETRONOME ETHERNET DRIVERS
- M:	Simon Horman <simon.horman@netronome.com>
- R:	Jakub Kicinski <kuba@kernel.org>
-=2D-
-2.29.2
+
+SelvaKumar S (2):
+  block: add simple copy support
+  nvme: add simple copy support
+
+ block/blk-core.c          | 104 +++++++++++++++++++++++++++++++---
+ block/blk-lib.c           | 116 ++++++++++++++++++++++++++++++++++++++
+ block/blk-merge.c         |   2 +
+ block/blk-settings.c      |  11 ++++
+ block/blk-sysfs.c         |  23 ++++++++
+ block/blk-zoned.c         |   1 +
+ block/bounce.c            |   1 +
+ block/ioctl.c             |  43 ++++++++++++++
+ drivers/nvme/host/core.c  |  91 ++++++++++++++++++++++++++++++
+ drivers/nvme/host/nvme.h  |   4 ++
+ include/linux/bio.h       |   1 +
+ include/linux/blk_types.h |   7 +++
+ include/linux/blkdev.h    |  15 +++++
+ include/linux/nvme.h      |  45 +++++++++++++--
+ include/uapi/linux/fs.h   |  21 +++++++
+ 15 files changed, 473 insertions(+), 12 deletions(-)
+
+-- 
+2.25.1
 
