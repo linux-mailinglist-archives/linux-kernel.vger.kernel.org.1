@@ -2,155 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CBE2C968A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A09182C9696
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 05:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728490AbgLAEfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 23:35:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgLAEfr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 23:35:47 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC749C0613CF;
-        Mon, 30 Nov 2020 20:35:07 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id e5so466440pjt.0;
-        Mon, 30 Nov 2020 20:35:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=BPtWYGD7y8CigqXoE2gXVtOc81D8k8JttMXCbXMY8s0=;
-        b=YtFuwEFsueHt4H+UiwWyjkGT+32Y7ExycKvIjYZJyciw08BO8hcpGs/PW2Up2XUhDV
-         McPNQ4m4mviviDMYzU/W4wBwVDXT+RmBa6V1PeDFDfyHeNKhhkniIu34apuz41AhSzs6
-         v5FlmRULyJNvR4zG+Mq2y21Hy/R+zftifiFqbLnBCa2ueaPCaYpaPPXHJs5Wy/n4kJ/y
-         r/lxdug5eGLvhr/x+6tdEH8jHqGgs+t9P2boyf/Rrc2IFwElPE3gUVRWMdi0Q0raAMRf
-         Gk5tBWIwjxKz8PqRBg5BdRgWLg424IglcC2I+fsHZX5Yt2LtN0q0p8mPZh7cLK0AMczd
-         IbDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=BPtWYGD7y8CigqXoE2gXVtOc81D8k8JttMXCbXMY8s0=;
-        b=WRjLNXC5P57dTa/Gdkc14MfguUw4XHweeGto3i4b0k98xuuqE/NyrMSUduudytUkjV
-         5XdI40UlCiU1Ssi8bewwQJA6tG2BjUr6HyYLyIaV4dInlvqnzXFnyuSdBJUxD1z48UZu
-         GPydEyZadceRxnc6PiZULjht+jldICj+tFHLWCnltNmo4zr3M+N61J1DxR6QGKUlOxfg
-         A7LtJbZvE+qk2GwVkEHVTC7tOYRfzPQgnF4+lX/xuR3B/ghM5Ou+B8bfAIe2+MeQ6bx4
-         o6pjwvD1lqXcrkg+lzSlFLNB71uxZQ0rvyCAPZi09fK/v5t75MyTwFIx/Jatvs25cHRL
-         RMVg==
-X-Gm-Message-State: AOAM5333UXLa2m7QnHyR55wc2rLIVvRNlymIIvK+DbynlDm22yqRp2qO
-        BGXrJgHqLXRt9mRfuAY06x7wgNG30d2PEYbZLZpol/zRSVg=
-X-Google-Smtp-Source: ABdhPJyBt3QNzW9OVRkY+oVCY64/AnhKw2iU+cGYjXVyQhP9Bv0zJs3DTlgcK9463VIJADa4k/DRkmH2iag8z8YK/zo=
-X-Received: by 2002:a17:902:a581:b029:da:d78:7f79 with SMTP id
- az1-20020a170902a581b02900da0d787f79mr1073866plb.32.1606797307177; Mon, 30
- Nov 2020 20:35:07 -0800 (PST)
+        id S1728510AbgLAEpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 23:45:33 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:37648 "EHLO m42-5.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728202AbgLAEpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 23:45:33 -0500
+X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Nov 2020 23:45:32 EST
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606797907; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=TLtwrpKiu92S9nqp5k7/JViYA+Gv4RHwKqws+WomKeI=;
+ b=SITwF5mz7SSE4ObO7+w2v3RZbdG5tRIQbE2DaP6GrJp55o3m736V//n3cRkoYS2CRNDegjHf
+ QisZXN59X9OtNVBf6nsXuICOR0Oa+fxInI3O5vw0MZlkuolT+rmVkF9S0Xx8nTMGSrva6SXa
+ Vh51k3XkGT/VFSA6r2gyKq4bTEU=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fc5c8d51f6054cb8d7d1513 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 04:38:45
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 53D9FC43462; Tue,  1 Dec 2020 04:38:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C3EBC433ED;
+        Tue,  1 Dec 2020 04:38:43 +0000 (UTC)
 MIME-Version: 1.0
-Received: by 2002:a17:90a:7886:0:0:0:0 with HTTP; Mon, 30 Nov 2020 20:35:06
- -0800 (PST)
-In-Reply-To: <20201130112137.587437-1-yili@winhong.com>
-References: <20201130112137.587437-1-yili@winhong.com>
-From:   Yi Li <yilikernel@gmail.com>
-Date:   Tue, 1 Dec 2020 12:35:06 +0800
-Message-ID: <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
-Subject: Re: [PATCH] bcache: fix panic due to cache_set is null
-To:     Yi Li <yili@winhong.com>
-Cc:     colyli@suse.de, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guo Chao <guochao@winhong.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 01 Dec 2020 10:08:43 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmitry.baryshkov@linaro.org
+Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: sm8250: Add support for LLCC
+ block
+In-Reply-To: <20201130093924.45057-3-manivannan.sadhasivam@linaro.org>
+References: <20201130093924.45057-1-manivannan.sadhasivam@linaro.org>
+ <20201130093924.45057-3-manivannan.sadhasivam@linaro.org>
+Message-ID: <ffd62c419433562f1f61ddf0c4e145b3@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sorry, This patch will cause deadlock, i will check and redo it.
-
-On 11/30/20, Yi Li <yili@winhong.com> wrote:
-> bcache_device_detach will release the cache_set after hotunplug cache
-> disk. update_writeback_rate should check validate of cache_set.
->
->   IP: [<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
->   PGD 879620067 PUD 8755d3067 PMD 0
->   Oops: 0000 [#1] SMP
->   CPU: 8 PID: 1005702 Comm: kworker/8:0 Tainted: G 4.4.0+10 #1
->   Hardware name: Intel BIOS SE5C610.86B.01.01.0021.032120170601 03/21/2017
->   Workqueue: events update_writeback_rate [bcache]
->   task: ffff8808786f3800 ti: ffff88077082c000 task.ti: ffff88077082c000
->   RIP: e030:[<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
->   RSP: e02b:ffff88077082fde0  EFLAGS: 00010202
->   RAX: 0000000000000018 RBX: ffff8808047f0b08 RCX: 0000000000000000
->   RDX: 0000000000000001 RSI: ffff88088170dab8 RDI: ffff88088170dab8
->   RBP: ffff88077082fe18 R08: 000000000000000a R09: 0000000000000000
->   R10: 0000000000000000 R11: 0000000000017bc8 R12: 0000000000000000
->   R13: ffff8808047f0000 R14: 0000000000000200 R15: ffff8808047f0b08
->   FS:  00007f157b6d6700(0000) GS:ffff880881700000(0000)
-> knlGS:0000000000000000
->   CS:  e033 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 0000000000000368 CR3: 0000000875c05000 CR4: 0000000000040660
->   Stack:
->    0000000000000001 0000000000007ff0 ffff88085ff600c0 ffff880881714e80
->    ffff880881719500 0000000000000200 ffff8808047f0b08 ffff88077082fe60
->    ffffffff81088c0c 0000000081714e80 0000000000000000 ffff880881714e80
->   Call Trace:
->    [<ffffffff81088c0c>] process_one_work+0x1fc/0x3b0
->    [<ffffffff81089575>] worker_thread+0x2a5/0x470
->    [<ffffffff815a2f58>] ? __schedule+0x648/0x870
->    [<ffffffff810892d0>] ? rescuer_thread+0x300/0x300
->    [<ffffffff8108e3d5>] kthread+0xd5/0xe0
->    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
->    [<ffffffff815a704f>] ret_from_fork+0x3f/0x70
->    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
->
-> Reported-by: Guo Chao <guochao@winhong.com>
-> Signed-off-by: Guo Chao <guochao@winhong.com>
-> Signed-off-by: Yi Li <yili@winhong.com>
+On 2020-11-30 15:09, Manivannan Sadhasivam wrote:
+> Add support for Last Level Cache Controller (LLCC) in SM8250 SoC.
+> This LLCC is used to provide common cache memory pool for the cores in
+> the SM8250 SoC thereby minimizing the percore caches.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
->  drivers/md/bcache/writeback.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-> index 3c74996978da..186c4c6e1607 100644
-> --- a/drivers/md/bcache/writeback.c
-> +++ b/drivers/md/bcache/writeback.c
-> @@ -175,7 +175,15 @@ static void update_writeback_rate(struct work_struct
-> *work)
->  	struct cached_dev *dc = container_of(to_delayed_work(work),
->  					     struct cached_dev,
->  					     writeback_rate_update);
-> -	struct cache_set *c = dc->disk.c;
-> +	struct cache_set *c = NULL;
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index 65acd1f381eb..118b6bb29ebc 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -1758,6 +1758,12 @@ usb_1_dwc3: dwc3@a600000 {
+>  			};
+>  		};
+> 
+> +		system-cache-controller@9200000 {
+> +			compatible = "qcom,sm8250-llcc";
+> +			reg = <0 0x09200000 0 0x1d0000>, <0 0x09600000 0 0x50000>;
+> +			reg-names = "llcc_base", "llcc_broadcast_base";
+> +		};
 > +
-> +	mutex_lock(&bch_register_lock);
-> +	c = dc->disk.c;
-> +
-> +	if (c == NULL) {
-> +		mutex_unlock(&bch_register_lock);
-> +		return;
-> +	}
->
->  	/*
->  	 * should check BCACHE_DEV_RATE_DW_RUNNING before calling
-> @@ -194,6 +202,7 @@ static void update_writeback_rate(struct work_struct
-> *work)
->  		clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
->  		/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
->  		smp_mb__after_atomic();
-> +		mutex_unlock(&bch_register_lock);
->  		return;
->  	}
->
-> @@ -230,6 +239,7 @@ static void update_writeback_rate(struct work_struct
-> *work)
->  	clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
->  	/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
->  	smp_mb__after_atomic();
-> +	mutex_unlock(&bch_register_lock);
->  }
->
->  static unsigned int writeback_delay(struct cached_dev *dc,
-> --
-> 2.25.3
->
->
->
->
+>  		usb_2: usb@a8f8800 {
+>  			compatible = "qcom,sm8250-dwc3", "qcom,dwc3";
+>  			reg = <0 0x0a8f8800 0 0x400>;
+
+Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
