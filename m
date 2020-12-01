@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A0A2CA0A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1022CA0AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730322AbgLAK5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:57:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730281AbgLAK5A (ORCPT
+        id S1730356AbgLAK6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:58:16 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:40074 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgLAK6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:57:00 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31EFC0613D4;
-        Tue,  1 Dec 2020 02:56:19 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id f190so4106574wme.1;
-        Tue, 01 Dec 2020 02:56:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z6ol6e7klFedDuDmZExZMrwFT1Yc7vGtnMGzME94CxM=;
-        b=g6UEmSr2DBzwXxODLx2ydU/djCG4U0eVuc12XEla56fefTOm68cE0dBfAJ8riORLAk
-         OzlgD+YXikRmzU6gQD1uLfLGrBdoKfM5ldCdKbfywWZTy/LNPXom+/oRFJYfMiruOOYr
-         fQqUIUOX3W6pQZDDE6ynyeB9uCt+VAcF+02I/3pFL7gdFfaZLOgXSZpRogVhYSmuNJEv
-         xhPntBbqHxvUcFsfQwwJSqNqdaYEuerrAtTaHnv/Dyhtl61ZR4rpUsKxISaTQ5WBMWsy
-         8oB/v7+K9si726mSMiQ/TqfU5npOs145b+vmB/kKzf0EQjEUeuluKrW4qKOCWgYM6Dd/
-         V8RA==
+        Tue, 1 Dec 2020 05:58:15 -0500
+Received: by mail-lf1-f66.google.com with SMTP id u19so3260996lfr.7;
+        Tue, 01 Dec 2020 02:57:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z6ol6e7klFedDuDmZExZMrwFT1Yc7vGtnMGzME94CxM=;
-        b=MERm6D88q8nEIo4fUMbPCEpK/43hmdT62m+8hTmzh6+K9jX6mOsFsFNqdcGHojZ0wO
-         Xf6JPXStkEhetwEcqPyybdx4aYD1Iev9SbqTJfiNdcLT9dpFWBvtHdZYN2rCxdY0WgIA
-         lnJRjeoLPHPBWwleGcvgVBzpjj/PouIMnOog6gyPLncfjd8fA0QMgp/48X06J6Hqsjyj
-         lWZRD7gMZvf0zWSuDfi5s8EdMWGRPQDiHyHZvU8aUFnuK0hFWooJh16XdWq7WzQtjPwv
-         CFwDYnZvReLRMSQcDkt8i0oyMmnsB3g7mSBQZPvRmtl7zfa07E271+SbOMLq6LVGL8Qs
-         UBng==
-X-Gm-Message-State: AOAM5334ueIf+DBSQDMQ8tEIUaBowtLmEk1Bqu+cTX3NoH5UCeWuH1wz
-        cCkQRwtFIMvCeoldMg28oAE=
-X-Google-Smtp-Source: ABdhPJxSYynQT7WZwOsz3mCQ2mRZxS7WAnOdHaXICI90eSVQCzu6PFwdKtTvC+dIKhv5Vr2A0Aptow==
-X-Received: by 2002:a1c:ddd5:: with SMTP id u204mr2107884wmg.174.1606820178556;
-        Tue, 01 Dec 2020 02:56:18 -0800 (PST)
-Received: from localhost.localdomain (188.red-81-44-87.dynamicip.rima-tde.net. [81.44.87.188])
-        by smtp.gmail.com with ESMTPSA id u66sm2318138wmg.2.2020.12.01.02.56.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Dec 2020 02:56:18 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     vkoul@kernel.org
-Cc:     sfr@canb.auug.org.au, kishon@ti.com, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-Subject: [PATCH v2 3/3] phy: ralink: phy-mt7621-pci: set correct name in MODULE_DEVICE_TABLE macro
-Date:   Tue,  1 Dec 2020 11:56:13 +0100
-Message-Id: <20201201105613.23252-4-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201201105613.23252-1-sergio.paracuellos@gmail.com>
-References: <20201201105613.23252-1-sergio.paracuellos@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=du7uqxSFDOlCM/d6eepPiXeCZVMNky/Lr2KTn2WudY4=;
+        b=IAMqSIRAh7QvKLiHcCM6q3RQMpXFiN4V/ttF5moY/5uworb0A5WAvsnygJp5dfhIgK
+         dQXFbg4hBvr0in0dF9t8y11r97p1ZwvG1AanKEoau7ztDdIvFYoZfPNeX+VsDsw5Tfay
+         +lOa4wcsJ5lMNsdoRZFyoz0/Rw3VTxOyvpYaIzhBfai16Sn7lhOpsYgaZl4fOx/1Haxl
+         rsXwTXwHhQxbpSL6z4kUE/vGyi9+H3Nzo3e6nmKociBgUyQ9dI90mlSzlRWW+dEi1+kj
+         I+YYKPvxPycX9TdFx/4jEMe5HzbVe9hoIJcbIm00HnQaGZ6HBrko2j9CwRT1XOO6xoui
+         T0Sg==
+X-Gm-Message-State: AOAM530IqG7WwPEkpuirPiIkn3eJvkxN/F7kpGz6LVLwqrE7pOgoOARV
+        iM3mQylFhThRrO+R5kVy1Q4=
+X-Google-Smtp-Source: ABdhPJwT47z4c6gcp5xcXM7WhIzVaegIW/1/ElHuQiuhC816et9p1/qKqS2CNVExVnI3Cp4rAU4cpA==
+X-Received: by 2002:ac2:4c9a:: with SMTP id d26mr932274lfl.427.1606820253539;
+        Tue, 01 Dec 2020 02:57:33 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id a22sm165777lfl.11.2020.12.01.02.57.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 02:57:32 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kk3M9-0007Iw-Tz; Tue, 01 Dec 2020 11:58:02 +0100
+Date:   Tue, 1 Dec 2020 11:58:01 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
+Message-ID: <X8YhuQeBtMrbh42W@localhost>
+References: <20201130153742.9163-1-johan@kernel.org>
+ <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+ <CAHp75Vczx=qjNed-8nwm6iSq5sxUKE2mXzPSd70zUxumZ5sANQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vczx=qjNed-8nwm6iSq5sxUKE2mXzPSd70zUxumZ5sANQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct name passed into 'MODULE_DEVICE_TABLE' which was wrong and
-was showing a warning when the driver is enabled for 'COMPILE_TEST'.
+On Tue, Dec 01, 2020 at 12:48:48PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 30, 2020 at 11:25 PM Mychaela Falconia
+> <mychaela.falconia@gmail.com> wrote:
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- drivers/phy/ralink/phy-mt7621-pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > Why not call it nomctrl ?
+> >
+> > I have no opinion one way or another as to what the new sysfs attribute
+> > should be called - my use case won't involve this sysfs mechanism at
+> > all, instead I care much more about the path where the tty port flag
+> > gets set via a driver quirk upon seeing my custom USB ID. :)
+> 
+> Then why do we bother with sysfs right now? It's an ABI and Johan is
+> completely aware and knows that once it's in the kernel it is close to
+> being carved in stone.
+> I would vote to remove sysfs from now and see if we really need it in
+> the future.
 
-diff --git a/drivers/phy/ralink/phy-mt7621-pci.c b/drivers/phy/ralink/phy-mt7621-pci.c
-index befa282e2447..072f848ec0cf 100644
---- a/drivers/phy/ralink/phy-mt7621-pci.c
-+++ b/drivers/phy/ralink/phy-mt7621-pci.c
-@@ -335,7 +335,7 @@ static const struct of_device_id mt7621_pci_phy_ids[] = {
- 	{ .compatible = "mediatek,mt7621-pci-phy" },
- 	{},
- };
--MODULE_DEVICE_TABLE(of, mt7621_pci_ids);
-+MODULE_DEVICE_TABLE(of, mt7621_pci_phy_ids);
- 
- static struct platform_driver mt7621_pci_phy_driver = {
- 	.probe = mt7621_pci_phy_probe,
--- 
-2.25.1
+Eh, because this is generally useful and has come up in the past. I'm
+not interested in adding quirks for odd devices that want non-standard
+behaviour that we need to maintain indefinitely; that's precisely why I
+proposed a general interface that can be use with any serial port.
 
+Johan
