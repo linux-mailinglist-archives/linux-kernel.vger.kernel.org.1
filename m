@@ -2,89 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF272CAB1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 356972CAB1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730175AbgLASxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:53:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
+        id S1731223AbgLASyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgLASxx (ORCPT
+        with ESMTP id S1730176AbgLASyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:53:53 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF9DC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:53:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PvixetNBTkwDipyboOvyhGP073UdIatZGn4wq/qiTm0=; b=Th9Xcx2EcMqZGowWHALwp5peGn
-        KYhBzaBfUtlWATgq11F78bWvlNGbsHnR1SjPkrKjBcAVE4CZY30lGCsthuNJRN/NvUeDl9g2E1kAf
-        jm3a2cYhQcMR9fu5ARzbdV1YITZzNslld4Lvn8ky19fKux68RO2CogO228UGAXWW4Hwiv10ms96t6
-        oywJRnXPQ1XyqPYbzJEoH1gS/gCgOiy4+IiMbEX+nUeQZVqkpIItGA5VHVJZxVreh+N+UxNLb7qwi
-        rZdZNdiSte5JBX9XnWVPLRGFI7q+dh+RJZAD31Yl2DOJ+dfwuq3rscequ1RnYYL/GcFzodj2obUVz
-        GIp4sC9w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkAlu-0000RM-Ug; Tue, 01 Dec 2020 18:53:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5E4F4304D58;
-        Tue,  1 Dec 2020 19:53:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4021A2BF16C02; Tue,  1 Dec 2020 19:53:05 +0100 (CET)
-Date:   Tue, 1 Dec 2020 19:53:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     X86 ML <x86@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anton Blanchard <anton@ozlabs.org>
-Subject: Re: [PATCH 3/3] membarrier: Propagate SYNC_CORE and RSEQ actions
- more carefully
-Message-ID: <20201201185305.GU3040@hirez.programming.kicks-ass.net>
-References: <cover.1606758530.git.luto@kernel.org>
- <5495e4c344dc09011ff57756c7e0a1330830eafc.1606758530.git.luto@kernel.org>
- <20201201101637.GU2414@hirez.programming.kicks-ass.net>
- <CALCETrUZHWvjO8otEWat6SDwDFRdV0iSp=RZDaHnyytJ=4a6cg@mail.gmail.com>
+        Tue, 1 Dec 2020 13:54:20 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5891AC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 10:53:40 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d20so6361207lfe.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 10:53:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U2qeRu/LeJOscAYThRsCGXT4SMQV2re1YPCsWBbPqRc=;
+        b=rK2Pj8AUNIWuRIo19w+AThX5iFBV7G71XMh0o3Y1lHfwC1op2ZT+Ds+rCfuUN6n6d7
+         1ykwf6Ywr1VjIujuk1nfGj5be+1k7OJ68arM5Q1lHeNvFEDq7XNmYlLhh6R7X7mHOpOS
+         myi6IZvJB8EsF5v2xd437mTx0ucyGR6mTBJpbbviaCRAG4kXWkrOVrsZ9k9do23Q3l2Y
+         C1qlBZuvB5HRsS6P2Hk3PRdStJQUhmNSlJ1dZmqFVQwjV6GwFcbTGPDEHeEPWq9gFAAH
+         Yz18P3pKzjSkJKSjh2mRpPiQ0e/CK5WhjAHLJGcDXehdRSRfyGG9e7sT0ku9mCD7JlR4
+         v0XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U2qeRu/LeJOscAYThRsCGXT4SMQV2re1YPCsWBbPqRc=;
+        b=M904T4nNk7GzgR4WoZwHXHIsSUEXyvlrwZ7Y0IqL3UuEYRznnbLPaf+mj9k0iE8X2O
+         jTAvxdw2wBeBzYbY9ooWGJIrpOMisHmMzOH22TXoRUk9W367vI+r6N6Uvtu1e1XW4Vsn
+         y4V4xD4lpggJPKJhh7jr9c/YObJybmYHAeqyRlxmafBtirt3Gj2TiLqMAqqeWqzEL0t/
+         gdKuWOXfydtnScvUfLIh5yWRWerzyDesUkgCL9dvnI+8YevbTqaLsPhM16F0vzFGiAYz
+         rL3Gbz8Z+5LoKXDcYOAazBxUJ/t/hb3yoT02wYrWnPPc1gwOP9i5TwElIB1Vg9EbklFs
+         QzDg==
+X-Gm-Message-State: AOAM5315njh0Ki8TsRZLcLcNgfaefN2/2yJDgRHuST97MRgZXeGHWLxK
+        Z+UlroJ7jdgh2Taik4svdBKmda8ESI+SieBDrgH5yx64JIAfbw==
+X-Google-Smtp-Source: ABdhPJzVcEtnodYh2pnvREeVDWuHhxl6qGmUGOqC5xL1m0tP0kIKv1axWSCin5LLtY9uzzHHpIoJgcZz5d2YlNpqS7Y=
+X-Received: by 2002:a19:9c7:: with SMTP id 190mr1949940lfj.545.1606848818502;
+ Tue, 01 Dec 2020 10:53:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrUZHWvjO8otEWat6SDwDFRdV0iSp=RZDaHnyytJ=4a6cg@mail.gmail.com>
+References: <20201117003135.1749391-1-rkir@google.com> <X7OUZmlRAuwWWHEn@kroah.com>
+ <CAOGAQequ6hhzCjpf8V9vp=0xrAS3rs283goSFFfxVFw0ByjfPg@mail.gmail.com>
+In-Reply-To: <CAOGAQequ6hhzCjpf8V9vp=0xrAS3rs283goSFFfxVFw0ByjfPg@mail.gmail.com>
+From:   Roman Kiryanov <rkir@google.com>
+Date:   Tue, 1 Dec 2020 10:53:27 -0800
+Message-ID: <CAOGAQeq3jcksFbp8EWtW_XyuqkOvvFOHW2J3wp60ug7X8SgnjA@mail.gmail.com>
+Subject: Re: [PATCH] Update MAINTAINERS for goldfish-rtc
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        =?UTF-8?B?6ZmI5Y2O5omN?= <chenhc@lemote.com>
+Cc:     Rob Herring <robh@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Lingfeng Yang <lfy@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:09:22AM -0800, Andy Lutomirski wrote:
-> On Tue, Dec 1, 2020 at 2:16 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >  - membarrier() does not explicitly sync_core() remote CPUs either;
-> > >    instead, it relies on the assumption that an IPI will result in a
-> > >    core sync.  On x86, I think this may be true in practice, but
-> > >    it's not architecturally reliable.  In particular, the SDM and
-> > >    APM do not appear to guarantee that interrupt delivery is
-> > >    serializing.
+On Thu, Nov 19, 2020 at 2:43 PM Roman Kiryanov <rkir@google.com> wrote:
+>
+> > > +M:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+> > > +M:   Huacai Chen <chenhc@lemote.com>
 > >
-> > Right, I don't think we rely on that, we do rely on interrupt delivery
-> > providing order though -- as per the previous email.
+> > It would be nice to get an ack from the people you are removing and
+> > adding to this entry :(
+>
+> Hi Jiaxun and Huacai, could you please ack this change?
 
-order, not serializing.
-
-> I looked for a bit, and I couldn't find anything in the SDM or APM to
-> support this, and I would be rather surprised if other architectures
-> synchronize their instruction streams on interrupt delivery.  On
-> architectures without hardware I$ coherency and with actual fast
-> interrupts, I would be surprised if interrupts ensured I$ coherency
-> with prior writes from other cores.
-
-Data, not I$. smp_mb() has nothing on I$. The claim is that smp_mb() at
-the start of an IPI is pointless (as a means of ordering against the CPU
-raising the IPI).
-
-Doing smp_mb() before raising the IPI does make sense and is actually
-done IIRC.
-
-
+Gentle ping.
