@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901CF2C9D89
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816332C9CFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390840AbgLAJYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:24:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43116 "EHLO mail.kernel.org"
+        id S2388138AbgLAJIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:08:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388367AbgLAJGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:06:13 -0500
+        id S2388737AbgLAJGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:06:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E31F92223F;
-        Tue,  1 Dec 2020 09:05:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3BB722240;
+        Tue,  1 Dec 2020 09:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813532;
-        bh=lqZRJVJAtiv01l+CYjt2C3UksiMzZFKzjkY40VVyF7U=;
+        s=korg; t=1606813535;
+        bh=GDxCK7EMhtJ09P+XOLtIuIB5aM9MsET/FEncrx5ptPQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KOvpiWR7UNQ9YU0A4/IiApat4iA6Zhn/Z8xuMIsJAxxLv85eC6CmuBIokZeiuAPpr
-         c+bxeECDp/8kZohmXaFuGvEmM5pXj3baP0EKfzWWGr6Kv4e0ltM66NHbznCRm5Jvx9
-         fQwDo6i9Unif0CVTDHlDLdb1G4ozwLJ7wtM8KOiE=
+        b=flsmlZFn283k/Im+i2F5D+cop6zHhaPU9y3Mcqn5Ge+fIx/EzhDutDJAJFzz5t6at
+         bUOiBRCtqpHtcs3oWbLQ0m1AgeO7SsQogUoZolCe3x/Vbk8KwkUHG3qY3ivd9LpwMX
+         DFxSBh2CRBUz+7jxVnnG7yONRUkHdBg6Xukk1RCQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Berg <bberg@redhat.com>,
-        Henrique de Moraes Holschuh <hnh@hmh.eng.br>,
+        stable@vger.kernel.org, Tosk Robot <tencent_os_robot@tencent.com>,
+        Kaixu Xia <kaixuxia@tencent.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 72/98] platform/x86: thinkpad_acpi: Send tablet mode switch at wakeup time
-Date:   Tue,  1 Dec 2020 09:53:49 +0100
-Message-Id: <20201201084658.600170370@linuxfoundation.org>
+Subject: [PATCH 5.4 73/98] platform/x86: toshiba_acpi: Fix the wrong variable assignment
+Date:   Tue,  1 Dec 2020 09:53:50 +0100
+Message-Id: <20201201084658.641015672@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
 References: <20201201084652.827177826@linuxfoundation.org>
@@ -44,39 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Berg <bberg@redhat.com>
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-[ Upstream commit e40cc1b476d60f22628741e53cf3446a29e6e6b9 ]
+[ Upstream commit 2a72c46ac4d665614faa25e267c3fb27fb729ed7 ]
 
-The lid state may change while the machine is suspended. As such, we may
-need to re-check the state at wake-up time (at least when waking up from
-hibernation).
-Add the appropriate call to the resume handler in order to sync the
-SW_TABLET_MODE switch state with the hardware state.
+The commit 78429e55e4057 ("platform/x86: toshiba_acpi: Clean up
+variable declaration") cleans up variable declaration in
+video_proc_write(). Seems it does the variable assignment in the
+wrong place, this results in dead code and changes the source code
+logic. Fix it by doing the assignment at the beginning of the funciton.
 
-Fixes: dda3ec0aa631 ("platform/x86: thinkpad_acpi: Implement tablet mode using GMMS method")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210269
-Signed-off-by: Benjamin Berg <bberg@redhat.com>
-Acked-by: Henrique de Moraes Holschuh <hnh@hmh.eng.br>
-Link: https://lore.kernel.org/r/20201123132157.866303-1-benjamin@sipsolutions.net
+Fixes: 78429e55e4057 ("platform/x86: toshiba_acpi: Clean up variable declaration")
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+Link: https://lore.kernel.org/r/1606024177-16481-1-git-send-email-kaixuxia@tencent.com
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/thinkpad_acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/platform/x86/toshiba_acpi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index abcb336a515a1..5081048f2356e 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -4238,6 +4238,7 @@ static void hotkey_resume(void)
- 		pr_err("error while attempting to reset the event firmware interface\n");
+diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
+index a1e6569427c34..71a969fc3b206 100644
+--- a/drivers/platform/x86/toshiba_acpi.c
++++ b/drivers/platform/x86/toshiba_acpi.c
+@@ -1485,7 +1485,7 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
+ 	struct toshiba_acpi_dev *dev = PDE_DATA(file_inode(file));
+ 	char *buffer;
+ 	char *cmd;
+-	int lcd_out, crt_out, tv_out;
++	int lcd_out = -1, crt_out = -1, tv_out = -1;
+ 	int remain = count;
+ 	int value;
+ 	int ret;
+@@ -1517,7 +1517,6 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
  
- 	tpacpi_send_radiosw_update();
-+	tpacpi_input_send_tabletsw();
- 	hotkey_tablet_mode_notify_change();
- 	hotkey_wakeup_reason_notify_change();
- 	hotkey_wakeup_hotunplug_complete_notify_change();
+ 	kfree(cmd);
+ 
+-	lcd_out = crt_out = tv_out = -1;
+ 	ret = get_video_status(dev, &video_out);
+ 	if (!ret) {
+ 		unsigned int new_video_out = video_out;
 -- 
 2.27.0
 
