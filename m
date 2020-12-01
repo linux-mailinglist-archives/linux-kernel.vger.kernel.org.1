@@ -2,62 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB4E2CA1AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8E62CA1CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 12:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387465AbgLALlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:41:10 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8544 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729067AbgLALlK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:41:10 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ClgBV2bZZzhl5C;
-        Tue,  1 Dec 2020 19:40:02 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 1 Dec 2020 19:40:19 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <michal.simek@xilinx.com>, <rajan.vaja@xilinx.com>,
-        <gregkh@linuxfoundation.org>, <jolly.shah@xilinx.com>,
-        <tejas.patel@xilinx.com>, <manish.narani@xilinx.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next v2] firmware: xilinx: Mark pm_api_features_map with static keyword
-Date:   Tue, 1 Dec 2020 19:51:53 +0800
-Message-ID: <1606823513-121578-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+        id S1729327AbgLALww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 06:52:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43550 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725893AbgLALwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:52:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F1481ACC1;
+        Tue,  1 Dec 2020 11:52:09 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     david@redhat.com
+Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com,
+        Oscar Salvador <osalvador@suse.de>
+Subject: [RFC PATCH v3 0/4] Allocate memmap from hotadded memory (per device)
+Date:   Tue,  1 Dec 2020 12:51:54 +0100
+Message-Id: <20201201115158.22638-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+This is v3 of [1]:
 
-drivers/firmware/xilinx/zynqmp.c:32:1: warning: symbol 'pm_api_features_map' was not declared. Should it be static?
+Changes from v2 -> v3:
+ - Re-order patches (Michal)
+ - Fold "mm,memory_hotplug: Introduce MHP_MEMMAP_ON_MEMORY" in patch#1
+ - Add kernel boot option to enable this feature (Michal)
 
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/firmware/xilinx/zynqmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes from v1 -> v2:
+ - Addressed feedback provided by David
+ - Add a arch_support_memmap_on_memory to be called
+   from mhp_supports_memmap_on_memory, as atm,
+   only ARM, powerpc and x86_64 have altmat support.
 
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index d08ac82..fd95ede 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -29,7 +29,7 @@
- #define PM_API_FEATURE_CHECK_MAX_ORDER  7
- 
- static bool feature_check_enabled;
--DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
-+static DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
- 
- /**
-  * struct pm_api_feature_data - PM API Feature data
+
+Original cover letter:
+
+----
+
+The primary goal of this patchset is to reduce memory overhead of the
+hot-added memory (at least for SPARSEMEM_VMEMMAP memory model).
+The current way we use to populate memmap (struct page array) has two main drawbacks:
+
+a) it consumes an additional memory until the hotadded memory itself is
+   onlined and
+b) memmap might end up on a different numa node which is especially true
+   for movable_node configuration.
+c) due to fragmentation we might end up populating memmap with base
+   pages
+
+One way to mitigate all these issues is to simply allocate memmap array
+(which is the largest memory footprint of the physical memory hotplug)
+from the hot-added memory itself. SPARSEMEM_VMEMMAP memory model allows
+us to map any pfn range so the memory doesn't need to be online to be
+usable for the array. See patch 3 for more details.
+This feature is only usable when CONFIG_SPARSEMEM_VMEMMAP is set.
+
+[Overall design]:
+
+Implementation wise we reuse vmem_altmap infrastructure to override
+the default allocator used by vmemap_populate.
+memory_block structure gained a new field called nr_vmemmap_pages.
+This plays well for two reasons:
+
+ 1) {offline/online}_pages know the difference between start_pfn and
+    buddy_start_pfn, which is start_pfn + nr_vmemmap_pages.
+    In this way all isolation/migration operations are
+    done to within the right range of memory without vmemmap pages.
+    This allows us for a much cleaner handling.
+
+ 2) In try_remove_memory, we construct a new vmemap_altmap struct with the
+    right information based on memory_block->nr_vmemap_pages, so we end up
+    calling vmem_altmap_free instead of free_pagetable when removing the memory.
+
+Oscar Salvador (4):
+  mm,memory_hotplug: Add mhp_supports_memmap_on_memory
+  mm,memory_hotplug: Allocate memmap from the added memory range
+  mm,memory_hotplug: Enable MHP_MEMMAP_ON_MEMORY when supported
+  mm,memory_hotplug: Add mhp_memmap_on_memory boot option
+
+ arch/arm64/mm/mmu.c                           |   5 +
+ arch/powerpc/mm/mem.c                         |   5 +
+ .../platforms/pseries/hotplug-memory.c        |   5 +-
+ arch/x86/mm/init_64.c                         |   5 +
+ drivers/acpi/acpi_memhotplug.c                |   5 +-
+ drivers/base/memory.c                         |  21 +--
+ include/linux/memory.h                        |   7 +-
+ include/linux/memory_hotplug.h                |  22 ++-
+ include/linux/memremap.h                      |   2 +-
+ mm/memory_hotplug.c                           | 127 +++++++++++++++---
+ mm/page_alloc.c                               |   4 +-
+ 11 files changed, 171 insertions(+), 37 deletions(-)
+
 -- 
-2.6.2
+2.26.2
 
