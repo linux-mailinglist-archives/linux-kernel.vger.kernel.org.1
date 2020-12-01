@@ -2,112 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAF62CA20B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E512CA212
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390730AbgLAL7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 06:59:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:41540 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389432AbgLAL7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 06:59:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BEE38101E;
-        Tue,  1 Dec 2020 03:58:46 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C8D43F718;
-        Tue,  1 Dec 2020 03:58:44 -0800 (PST)
-Date:   Tue, 1 Dec 2020 11:58:42 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 09/14] cpuset: Don't use the cpu_possible_mask as a
- last resort for cgroup v1
-Message-ID: <20201201115842.t77abecneuesd5ih@e107158-lin.cambridge.arm.com>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-10-will@kernel.org>
- <20201127133245.4hbx65mo3zinawvo@e107158-lin.cambridge.arm.com>
- <20201130170531.qo67rai5lftskmk2@e107158-lin.cambridge.arm.com>
- <20201130173610.GA1715200@google.com>
+        id S1730875AbgLAME4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:04:56 -0500
+Received: from mail-bn8nam12on2053.outbound.protection.outlook.com ([40.107.237.53]:51552
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730865AbgLAME4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:04:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hu4H5FjFHnBKIzm+7SVbxGvcMNFtt2KWw9q1MH8jcjCeFyrH9YIn1b8wkbnOoWtG0vTvCg87wJDWyWFlps6/gAuOpll+NcCIy9jg81u3NzMCGF220vjoeWO1ioN60+XowLqCXXHwp135rKf3h/IC/Yfhx1aMdXRbQ1ZF++Gvy9a9CPPD+5uP6Q6oosJdjfxegOfvV8HhEfAZaLjnT0h/yviyGe2K0in2Y7RLokDT9ABOQUDNq1FRoHS6HZ82keUnmxQ7VfH5sDDAClUtgYLDqsvXHQN5Q+L3NojeGsTuXMP+IcFO4s32Yf40KnMkWjEBX5LuVzUtBY2JFNHkt2H7zQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LEsiiCYU1z608q7jgzEPmyUiWrjP+TuIJ8sS8M9sLH8=;
+ b=aWF4u+VYpb3PwvMkBPBUsV/mSy+aPtAuRO8oypNjExtz8yr/xDaSmYQvh30ZxQ06R3Xrjlzc8DdHmJDd0Z7AxYbH3H6IwdKaYpOLylvgBTh3QfpYK3uFQvByMZzamPe/D66Ocr7+kDoUQkqYnGQyNGzLklwcl+Bwhtvp+FeYcfyczIw5JeGhmehvACwKFVoC59iqslTgILqyQx4xM4DvM8RFOKdH3hFQ7zalfbcOahJs0CUCuDFWSUu43JvKArPcldurr2fxvmzrvlJ4KIhNsXTy1GcJwyJiZhb/t5pdnLUwnuk8CyfVlM9q3AQDduYsQMWIZ5GESPnE4fXceYrS3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LEsiiCYU1z608q7jgzEPmyUiWrjP+TuIJ8sS8M9sLH8=;
+ b=f5eEaa8hWXdKThG58uIo6EYWzg5rREMBeyDW5696M9q9LUWSFK1RZ9zzDf5P+ICcGlyZtjim2wz4A1X8gKTFCgmEk+uZBKUNBjX2rW4k31bIxkSx90hIrJW56BAmU6z6KlrAlMDnHgoEVpxO1YhGyUXOTe7k1hEIG9X5rxpQ3TM=
+Received: from BL0PR01CA0011.prod.exchangelabs.com (2603:10b6:208:71::24) by
+ CH2PR02MB6215.namprd02.prod.outlook.com (2603:10b6:610:c::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3611.25; Tue, 1 Dec 2020 12:04:03 +0000
+Received: from BL2NAM02FT036.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:71:cafe::b4) by BL0PR01CA0011.outlook.office365.com
+ (2603:10b6:208:71::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend
+ Transport; Tue, 1 Dec 2020 12:04:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT036.mail.protection.outlook.com (10.152.77.154) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3611.27 via Frontend Transport; Tue, 1 Dec 2020 12:04:02 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 1 Dec 2020 04:04:02 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Tue, 1 Dec 2020 04:04:02 -0800
+Envelope-to: manish.narani@xilinx.com,
+ tejas.patel@xilinx.com,
+ rajan.vaja@xilinx.com,
+ michal.simek@xilinx.com,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ gregkh@linuxfoundation.org,
+ zou_wei@huawei.com
+Received: from [172.30.17.109] (port=40420)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kk4O2-0003UG-3o; Tue, 01 Dec 2020 04:04:02 -0800
+Subject: Re: [PATCH -next v2] firmware: xilinx: Mark pm_api_features_map with
+ static keyword
+To:     Zou Wei <zou_wei@huawei.com>, <michal.simek@xilinx.com>,
+        <rajan.vaja@xilinx.com>, <gregkh@linuxfoundation.org>,
+        <jolly.shah@xilinx.com>, <tejas.patel@xilinx.com>,
+        <manish.narani@xilinx.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1606823513-121578-1-git-send-email-zou_wei@huawei.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <65ea30eb-2595-4af8-09c2-6d352b9be509@xilinx.com>
+Date:   Tue, 1 Dec 2020 13:03:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201130173610.GA1715200@google.com>
+In-Reply-To: <1606823513-121578-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 58d3ed86-b15f-4857-3beb-08d895f131f9
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6215:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB6215CC1A3D029906AD7C85C7C6F40@CH2PR02MB6215.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eJG6eLrE94TocL5jh8cRfZEKU3JNxMhcunSIVT3naTlmRz33H9qxKO1I4eUDshGqbE4K2XrNQ9GAWTrRWED7tvgWJis+Yk4hU1qzBSrVgrbScwXhozCkWa04YaS2eIjYnnTJgxHX5vdeEo3cyPp3K0OjwK7E7IFym8CwzVAne8Ra+ulqlBY0j6+lXUvKWgSm35DNMSMtOlRqki+LeUrJt/aF2Np8Dl8YtI3vDenJ3H+m2INXdqtoVS0rUWF23SFSCzslWHii6laLJxvh/v/qot4sNZ9YVZbm0tnf+BGa3ERrn5zEQPhPekzF51k/Hag0zqF3OZ34utLLWQd9BWiLUROof4VBaxQ3wbD1Wec1HMxQReZP9GEoebHTlD3lTDUaI+tPsoxwuuncGqnY2moHaeoz0IOAK0xaYmWVvRG7R5QqxCkHHFOeoTzQepiHtYzEIVJ4LRb7J+DjXLm5puTsqQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(46966005)(31686004)(36906005)(2906002)(31696002)(2616005)(110136005)(426003)(44832011)(316002)(36756003)(26005)(8676002)(6666004)(54906003)(478600001)(336012)(9786002)(5660300002)(70206006)(6636002)(47076004)(186003)(82740400003)(83380400001)(8936002)(82310400003)(4326008)(356005)(7636003)(70586007)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2020 12:04:02.9590
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58d3ed86-b15f-4857-3beb-08d895f131f9
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT036.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 17:36, Quentin Perret wrote:
-> On Monday 30 Nov 2020 at 17:05:31 (+0000), Qais Yousef wrote:
-> > I create 3 cpusets: 64bit, 32bit and mix. As the name indicates, 64bit contains
-> > all 64bit-only cpus, 32bit contains 32bit-capable ones and mix has a mixture of
-> > both.
-> > 
-> > If I try to move my test binary to 64bit cpuset, it moves there and I see the
-> > WARN_ON_ONCE() triggered. The task has attached to the new cpuset but
-> > set_allowed_cpus_ptr() has failed and we end up with whatever affinity we had
-> > previously. Breaking cpusets effectively.
+
+
+On 01. 12. 20 12:51, Zou Wei wrote:
+> Fix the following sparse warning:
 > 
-> Right, and so does exec'ing from a 64 bit task into 32 bit executable
-> from within a 64 bit-only cpuset :( . And there is nothing we can really
-
-True. The kernel can decide to kill the task or force detach it then, no?
-Sending SIGKILL makes more sense.
-
-> do about it, we cannot fail the exec because we need this to work for
-> existing apps, and there is no way the Android framework can know
-> upfront.
-
-It knows upfront it has enabled asym aarch32. So it needs to make sure not to
-create 'invalid' cpusets?
-
+> drivers/firmware/xilinx/zynqmp.c:32:1: warning: symbol 'pm_api_features_map' was not declared. Should it be static?
 > 
-> So the only thing we can do really is WARN() and proceed to ignore the
-> cpuset, which is what this series does :/. It's not exactly pretty but I
-> don't think we can do much better than that TBH, and it's the same thing
-> for the example you brought up. Failing cpuset_can_attach() will not
-> help, we can only WARN and proceed ...
-
-I think for cases where we can prevent userspace from doing something wrong, we
-should. Like trying to attach to a cpuset that will result in an empty mask.
-FWIW, it does something similar with deadline tasks. See task_can_attach().
-
-Similarly for the case when userspace tries to modify the cpuset.cpus such that
-a task will end up with empty cpumask. We now have the new case that some tasks
-can only run on a subset of cpu_possible_mask. So the definition of empty
-cpumask has gained an extra meaning.
-
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  drivers/firmware/xilinx/zynqmp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Now, Android should be fine with that I think. We only need the kernel
-> to implement a safe fallback mechanism when userspace gives
-> contradictory commands, because we know there are edge cases userspace
-> _cannot_ deal with correctly, but this fallback doesn't need to be
-> highly optimized (at least for Android), but I'm happy to hear what
-> others think.
+> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+> index d08ac82..fd95ede 100644
+> --- a/drivers/firmware/xilinx/zynqmp.c
+> +++ b/drivers/firmware/xilinx/zynqmp.c
+> @@ -29,7 +29,7 @@
+>  #define PM_API_FEATURE_CHECK_MAX_ORDER  7
+>  
+>  static bool feature_check_enabled;
+> -DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
+> +static DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
+>  
+>  /**
+>   * struct pm_api_feature_data - PM API Feature data
+> 
 
-Why not go with our original patch that fixes affinity then in the arch code if
-the task wakes up on the wrong cpu? It is much simpler approach IMO to achieve
-the same thing.
+The patch is good but I am missing fixed tag to get it to LTS.
+When you add it please add my
+Reviewed-by: Michal Simek <michal.simek@xilinx.com>
 
-I was under the impression that if we go down teaching the scheduler about asym
-ISA, then we have to deal with these edge cases. I don't think we're far away
-from getting there.
-
-Thanks
-
---
-Qais Yousef
+Thanks,
+Michal
