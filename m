@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BBD2C9ACD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A062C9A69
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgLAJBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:01:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37284 "EHLO mail.kernel.org"
+        id S1729222AbgLAI5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:57:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388466AbgLAJBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:01:02 -0500
+        id S2387776AbgLAI5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:57:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8735722210;
-        Tue,  1 Dec 2020 09:00:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A82721D46;
+        Tue,  1 Dec 2020 08:56:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813216;
-        bh=ENY+mqGEe+q/L4YtMjHE/0TMdVjOn63QqfSl30mYYU8=;
+        s=korg; t=1606812983;
+        bh=vVo6xRBuEmD283EBAlMZ8JQd4NILCllEYVVQDL/wIg8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jevvIAr/3IVcAtj4x3NnfR+7J9/uVPrPCjwNJZiEbeCxI0vtvuIdquCFB66kwIISE
-         kqf9/S2NCUHljR90X+aQJBVrtB8V9S+Lj8eXVajbGQm9ZMRlQDdhXV2JPzW7kGg6iZ
-         j+AIfvF09rgCFzee5rQMU7IimpSHbA4K1RJc+O8Y=
+        b=owNrlNU2gS/qwNtdRxTiIym9XjTFKRLCQDmdum5Uej+zWbRZyNe8XdQR6djNXVO1e
+         bb3DbT6jO/TSGtAazav6hZxh0iBXC6FPt91zIi7mPC655CXMODtQzaOYG3bib2UiWa
+         7rhCdTASE61ZENGfz1cbH9XgG5NmzyRWTapZ0t3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/57] proc: dont allow async path resolution of /proc/self components
+Subject: [PATCH 4.9 28/42] nfc: s3fwrn5: use signed integer for parsing GPIO numbers
 Date:   Tue,  1 Dec 2020 09:53:26 +0100
-Message-Id: <20201201084650.205087954@linuxfoundation.org>
+Message-Id: <20201201084644.430476386@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 8d4c3e76e3be11a64df95ddee52e99092d42fc19 ]
+[ Upstream commit d8f0a86795c69f5b697f7d9e5274c124da93c92d ]
 
-If this is attempted by a kthread, then return -EOPNOTSUPP as we don't
-currently support that. Once we can get task_pid_ptr() doing the right
-thing, then this can go away again.
+GPIOs - as returned by of_get_named_gpio() and used by the gpiolib - are
+signed integers, where negative number indicates error.  The return
+value of of_get_named_gpio() should not be assigned to an unsigned int
+because in case of !CONFIG_GPIOLIB such number would be a valid GPIO.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC Chip")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20201123162351.209100-1-krzk@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/self.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/nfc/s3fwrn5/i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/proc/self.c b/fs/proc/self.c
-index cc6d4253399d1..7922edf70ce1a 100644
---- a/fs/proc/self.c
-+++ b/fs/proc/self.c
-@@ -16,6 +16,13 @@ static const char *proc_self_get_link(struct dentry *dentry,
- 	pid_t tgid = task_tgid_nr_ns(current, ns);
- 	char *name;
+diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
+index 3ed0adf6479b0..5b0c065bd279f 100644
+--- a/drivers/nfc/s3fwrn5/i2c.c
++++ b/drivers/nfc/s3fwrn5/i2c.c
+@@ -37,8 +37,8 @@ struct s3fwrn5_i2c_phy {
+ 	struct i2c_client *i2c_dev;
+ 	struct nci_dev *ndev;
  
-+	/*
-+	 * Not currently supported. Once we can inherit all of struct pid,
-+	 * we can allow this.
-+	 */
-+	if (current->flags & PF_KTHREAD)
-+		return ERR_PTR(-EOPNOTSUPP);
-+
- 	if (!tgid)
- 		return ERR_PTR(-ENOENT);
- 	/* max length of unsigned int in decimal + NULL term */
+-	unsigned int gpio_en;
+-	unsigned int gpio_fw_wake;
++	int gpio_en;
++	int gpio_fw_wake;
+ 
+ 	struct mutex mutex;
+ 
 -- 
 2.27.0
 
