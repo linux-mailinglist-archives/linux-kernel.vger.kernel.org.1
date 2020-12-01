@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFCB2C9A01
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8252C9A31
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbgLAIyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:54:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57244 "EHLO mail.kernel.org"
+        id S2387616AbgLAI4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:56:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728664AbgLAIyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:54:18 -0500
+        id S2387595AbgLAIzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA48E2067D;
-        Tue,  1 Dec 2020 08:53:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F37F12223F;
+        Tue,  1 Dec 2020 08:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812817;
-        bh=Nx3+TXzhYx9GxR8pYOwTKrw7pbA6HDeUtK44cL5CG5c=;
+        s=korg; t=1606812912;
+        bh=S+18DW3RWsDkFAZ23f5RlVDOPNUV8uvTQoe1C2dAA+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aPpkXxDCLUN+qSU5rD66kgfn+1EP2UPePZWq+hxFL+aWqDAjta0O+ZgfFdba9qaFq
-         ZYlQ9NTGAOJLa7shxkVxuxXqtvHJPZ6Fs/aWe9AjD2NklEwPJ0o03DVFfy85+qO69E
-         nmNW0v46PgHylV1znsovXo9MIDuS4jCGC4tbGgic=
+        b=WeFyMXXoPR9+cLxWctRpwxJc/c7ey/LS2unJBSH6ezZOxAfrbPzzwhOh7cFuQ2Fmj
+         urD1lHVUxTQ4f/RE/lNhxt4R9NRNSkMg6GUuCn4jPnAcPzRCepIBO6k2emVro59TSj
+         klvyAkSWAfa61+Eo4/F3o28zbxy4DySnVf21pU7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mike Christie <michael.christie@oracle.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 11/24] scsi: target: iscsi: Fix cmd abort fabric stop race
+Subject: [PATCH 4.9 19/42] scsi: target: iscsi: Fix cmd abort fabric stop race
 Date:   Tue,  1 Dec 2020 09:53:17 +0100
-Message-Id: <20201201084638.309801865@linuxfoundation.org>
+Message-Id: <20201201084643.482426287@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
-References: <20201201084637.754785180@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -86,10 +86,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 13 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
-index cbb4414edd71b..c48aca1360c89 100644
+index 7c0f4b96816a8..eba21f06a9b95 100644
 --- a/drivers/target/iscsi/iscsi_target.c
 +++ b/drivers/target/iscsi/iscsi_target.c
-@@ -493,8 +493,7 @@ static void iscsit_aborted_task(struct iscsi_conn *conn, struct iscsi_cmd *cmd)
+@@ -493,8 +493,7 @@ void iscsit_aborted_task(struct iscsi_conn *conn, struct iscsi_cmd *cmd)
  	bool scsi_cmd = (cmd->iscsi_opcode == ISCSI_OP_SCSI_CMD);
  
  	spin_lock_bh(&conn->cmd_lock);
@@ -99,7 +99,7 @@ index cbb4414edd71b..c48aca1360c89 100644
  		list_del_init(&cmd->i_conn_node);
  	spin_unlock_bh(&conn->cmd_lock);
  
-@@ -4228,12 +4227,22 @@ static void iscsit_release_commands_from_conn(struct iscsi_conn *conn)
+@@ -4093,12 +4092,22 @@ static void iscsit_release_commands_from_conn(struct iscsi_conn *conn)
  	spin_lock_bh(&conn->cmd_lock);
  	list_splice_init(&conn->conn_cmd_list, &tmp_list);
  
