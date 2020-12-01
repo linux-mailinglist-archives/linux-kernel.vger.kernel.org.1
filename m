@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202982C9D04
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B112C9D60
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389312AbgLAJIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:08:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
+        id S1728007AbgLAJWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:22:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389134AbgLAJHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:07:31 -0500
+        id S2388638AbgLAJHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:07:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDF5E206C1;
-        Tue,  1 Dec 2020 09:06:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C47421D7A;
+        Tue,  1 Dec 2020 09:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813611;
-        bh=aolf/JTFx8UwBgnU90Rlf5q5kYjL3ySZ4Yh56LQpZUk=;
+        s=korg; t=1606813622;
+        bh=BbU6Hr7e+pRq9nrVXXo1dwEeD1dgrs25CEtb8rFAtv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xt5BMYMRdrS7+eSNdwB/ABwr1rAn1fyshUyftM4XExQiKe+Dc/EUhGkdgaGlUC9oA
-         OPwYmKrb6Ku0YRRKDe2TIlwgdh/vqSZ5Vt+rDCRddkz8ZRO6af8s5K+3xFeu2BQLaC
-         VLKnSmglR86RhEY6YrHqa6CeXf/sQm2s6Zla5f38=
+        b=X60VwPzBHglZVuWdOoPb6YFdRs21PHCRHPFHvH0J9iD8ORLXG2uslz7tuxLFui0DF
+         apg+LjyegVVYo3aaJOEauXjrHwwhsNZCOCSdNEdAzsuGuRB+rWObU+DkSSQZebPze/
+         S2QSwucKbcL+yx3sIIMt/ARvaVgGLrXlRuIc7TjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -33,9 +33,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 5.4 91/98] ASoC: Intel: Skylake: Remove superfluous chip initialization
-Date:   Tue,  1 Dec 2020 09:54:08 +0100
-Message-Id: <20201201084659.522735398@linuxfoundation.org>
+Subject: [PATCH 5.4 95/98] ASoC: Intel: Allow for ROM init retry on CNL platforms
+Date:   Tue,  1 Dec 2020 09:54:12 +0100
+Message-Id: <20201201084659.719019674@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
 References: <20201201084652.827177826@linuxfoundation.org>
@@ -49,71 +49,86 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-commit 2ef81057d80456870b97890dd79c8f56a85b1242 upstream.
+commit 024aa45f55ccd40704cfdef61b2a8b6d0de9cdd1 upstream.
 
-Skylake driver does the controller init operation twice:
-- first during probe (only to stop it just before scheduling probe_work)
-- and during said probe_work where the actual correct sequence is
-executed
+Due to unconditional initial timeouts, firmware may fail to load during
+its initialization. This issue cannot be resolved on driver side as it
+is caused by external sources such as CSME but has to be accounted for
+nonetheless.
 
-To properly complete boot sequence when iDisp codec is present, bus
-initialization has to be called only after _i915_init() finishes.
-With additional _reset_list preceding _i915_init(), iDisp codec never
-gets the chance to enumerate on the link. Remove the superfluous
-initialization to address the issue.
-
+Fixes: cb6a55284629 ("ASoC: Intel: cnl: Add sst library functions for cnl platform")
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200305145314.32579-2-cezary.rojewski@intel.com
+Link: https://lore.kernel.org/r/20200305145314.32579-7-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: <stable@vger.kernel.org> # 5.4.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/intel/skylake/skl.c |   13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c     |    2 --
+ sound/soc/intel/skylake/cnl-sst.c     |   15 ++++++++++-----
+ sound/soc/intel/skylake/skl-sst-dsp.h |    1 +
+ 3 files changed, 11 insertions(+), 7 deletions(-)
 
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -807,6 +807,9 @@ static void skl_probe_work(struct work_s
- 			return;
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -38,8 +38,6 @@
+ /* Delay before scheduling D0i3 entry */
+ #define BXT_D0I3_DELAY 5000
+ 
+-#define BXT_FW_ROM_INIT_RETRY 3
+-
+ static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
+ {
+ 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -109,7 +109,7 @@ static int cnl_load_base_firmware(struct
+ {
+ 	struct firmware stripped_fw;
+ 	struct skl_dev *cnl = ctx->thread_context;
+-	int ret;
++	int ret, i;
+ 
+ 	if (!ctx->fw) {
+ 		ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
+@@ -131,12 +131,16 @@ static int cnl_load_base_firmware(struct
+ 	stripped_fw.size = ctx->fw->size;
+ 	skl_dsp_strip_extended_manifest(&stripped_fw);
+ 
+-	ret = cnl_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
+-	if (ret < 0) {
+-		dev_err(ctx->dev, "prepare firmware failed: %d\n", ret);
+-		goto cnl_load_base_firmware_failed;
++	for (i = 0; i < BXT_FW_ROM_INIT_RETRY; i++) {
++		ret = cnl_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
++		if (!ret)
++			break;
++		dev_dbg(ctx->dev, "prepare firmware failed: %d\n", ret);
  	}
  
-+	skl_init_pci(skl);
-+	skl_dum_set(bus);
++	if (ret < 0)
++		goto cnl_load_base_firmware_failed;
 +
- 	err = skl_init_chip(bus, true);
- 	if (err < 0) {
- 		dev_err(bus->dev, "Init chip failed with err: %d\n", err);
-@@ -922,8 +925,6 @@ static int skl_first_init(struct hdac_bu
- 		return -ENXIO;
- 	}
+ 	ret = sst_transfer_fw_host_dma(ctx);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "transfer firmware failed: %d\n", ret);
+@@ -158,6 +162,7 @@ static int cnl_load_base_firmware(struct
+ 	return 0;
  
--	snd_hdac_bus_reset_link(bus, true);
--
- 	snd_hdac_bus_parse_capabilities(bus);
+ cnl_load_base_firmware_failed:
++	dev_err(ctx->dev, "firmware load failed: %d\n", ret);
+ 	release_firmware(ctx->fw);
+ 	ctx->fw = NULL;
  
- 	/* check if PPCAP exists */
-@@ -971,11 +972,7 @@ static int skl_first_init(struct hdac_bu
- 	if (err < 0)
- 		return err;
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -67,6 +67,7 @@ struct skl_dev;
  
--	/* initialize chip */
--	skl_init_pci(skl);
--	skl_dum_set(bus);
--
--	return skl_init_chip(bus, true);
-+	return 0;
- }
+ #define SKL_FW_INIT			0x1
+ #define SKL_FW_RFW_START		0xf
++#define BXT_FW_ROM_INIT_RETRY		3
  
- static int skl_probe(struct pci_dev *pci,
-@@ -1080,8 +1077,6 @@ static int skl_probe(struct pci_dev *pci
- 	if (bus->mlcap)
- 		snd_hdac_ext_bus_get_ml_capabilities(bus);
- 
--	snd_hdac_bus_stop_chip(bus);
--
- 	/* create device for soc dmic */
- 	err = skl_dmic_device_register(skl);
- 	if (err < 0) {
+ #define SKL_ADSPIC_IPC			1
+ #define SKL_ADSPIS_IPC			1
 
 
