@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AAF2C9BFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC752C9BFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390160AbgLAJNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:13:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52082 "EHLO mail.kernel.org"
+        id S2390184AbgLAJN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:13:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390150AbgLAJNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:13:44 -0500
+        id S2389368AbgLAJNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:13:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C026E20656;
-        Tue,  1 Dec 2020 09:12:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93DDF20809;
+        Tue,  1 Dec 2020 09:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813978;
-        bh=1y1EnHCggBSrN+kP9QH7fU+iKszKeC/wn4B5PpRxN58=;
+        s=korg; t=1606813981;
+        bh=pCJfn7/POhgLsd1U3TbNnpg71NrJvduuboPg4UHUftg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zk2b4VEa6nuB8IhvoxCaAlfds/HFYMMKPN15vP9ubnlNeVTaABI6JjyABDF+HK5Qk
-         FyJYhdR7LUjS8cB0pLwraFXnEZJaGMthfjhc07D11Hq5hsB+KCW2pSX3vq02eMEGDw
-         PbO3QBCH2Uilq/24UzV/S0m3fau11nZeTQExsiJI=
+        b=jSEuON91FfIUTVWK7vYmfPeLTsxHHEfcEeBvV5CwBgZft+5CPJmXh1mffHL4Q3vmj
+         Dvri5uxRlY+R37YVRzmbawKYY+O1k10/29ekHXa2dUE7z3aWFAXYY2HGdHg7VzpuIh
+         d6k7rtPdCfJpOXRMV1jk1xcU4C1paNv0aYEbbjok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Schwab <schwab@linux-m68k.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        stable@vger.kernel.org, Antonio Borneo <antonio.borneo@st.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 125/152] RISC-V: fix barrier() use in <vdso/processor.h>
-Date:   Tue,  1 Dec 2020 09:54:00 +0100
-Message-Id: <20201201084728.182880570@linuxfoundation.org>
+Subject: [PATCH 5.9 126/152] net: stmmac: fix incorrect merge of patch upstream
+Date:   Tue,  1 Dec 2020 09:54:01 +0100
+Message-Id: <20201201084728.297437683@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -46,56 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Antonio Borneo <antonio.borneo@st.com>
 
-[ Upstream commit 30aca1bacb398dec6c1ed5eeca33f355bd7b6203 ]
+[ Upstream commit 12a8fe56c0f06eaab1f9d89d246c3591bcc7a966 ]
 
-riscv's <vdso/processor.h> uses barrier() so it should include
-<asm/barrier.h>
+Commit 757926247836 ("net: stmmac: add flexible PPS to dwmac
+4.10a") was intended to modify the struct dwmac410_ops, but it got
+somehow badly merged and modified the struct dwmac4_ops.
 
-Fixes this build error:
-  CC [M]  drivers/net/ethernet/emulex/benet/be_main.o
-In file included from ./include/vdso/processor.h:10,
-                 from ./arch/riscv/include/asm/processor.h:11,
-                 from ./include/linux/prefetch.h:15,
-                 from drivers/net/ethernet/emulex/benet/be_main.c:14:
-./arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
-./arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
-   14 |  barrier();
+Revert the modification in struct dwmac4_ops and re-apply it
+properly in struct dwmac410_ops.
 
-This happens with a total of 5 networking drivers -- they all use
-<linux/prefetch.h>.
-
-rv64 allmodconfig now builds cleanly after this patch.
-
-Fixes fallout from:
-815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
-
-Fixes: ad5d1122b82f ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
-Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Fixes: 757926247836 ("net: stmmac: add flexible PPS to dwmac 4.10a")
+Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Link: https://lore.kernel.org/r/20201124223729.886992-1-antonio.borneo@st.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/include/asm/vdso/processor.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/include/asm/vdso/processor.h b/arch/riscv/include/asm/vdso/processor.h
-index 82a5693b18614..134388cbaaa1d 100644
---- a/arch/riscv/include/asm/vdso/processor.h
-+++ b/arch/riscv/include/asm/vdso/processor.h
-@@ -4,6 +4,8 @@
- 
- #ifndef __ASSEMBLY__
- 
-+#include <asm/barrier.h>
-+
- static inline void cpu_relax(void)
- {
- #ifdef __riscv_muldiv
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+index ecd834e0e1216..72a5408a44d61 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+@@ -1160,7 +1160,6 @@ const struct stmmac_ops dwmac4_ops = {
+ 	.pcs_get_adv_lp = dwmac4_get_adv_lp,
+ 	.debug = dwmac4_debug,
+ 	.set_filter = dwmac4_set_filter,
+-	.flex_pps_config = dwmac5_flex_pps_config,
+ 	.set_mac_loopback = dwmac4_set_mac_loopback,
+ 	.update_vlan_hash = dwmac4_update_vlan_hash,
+ 	.sarc_configure = dwmac4_sarc_configure,
+@@ -1202,6 +1201,7 @@ const struct stmmac_ops dwmac410_ops = {
+ 	.pcs_get_adv_lp = dwmac4_get_adv_lp,
+ 	.debug = dwmac4_debug,
+ 	.set_filter = dwmac4_set_filter,
++	.flex_pps_config = dwmac5_flex_pps_config,
+ 	.set_mac_loopback = dwmac4_set_mac_loopback,
+ 	.update_vlan_hash = dwmac4_update_vlan_hash,
+ 	.sarc_configure = dwmac4_sarc_configure,
 -- 
 2.27.0
 
