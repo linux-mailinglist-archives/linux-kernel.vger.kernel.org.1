@@ -2,149 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9202CA8C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEDD2CA887
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404028AbgLAQu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:50:29 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:39777 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390658AbgLAQu2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:50:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606841402; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=J4NInOiSsOXx9djpu9n6TUdGlG96H46ZcKWid9CcFaU=; b=p2g3RSqn1vGGlPbZYyQ8B7jcNSCgaJ1puTV5yFwm3EHjSy/sfPOUjRc0M7LGicLg3oAt8A6Z
- 1W15ycGINaw9JtQfGo1X/1xn7CUKdj3u+/8JPtYQSc/7JGQ7UmpmAtVibWz3HgyT74/8PUhW
- YfbJJz9MFXEHUTQBh28IgMUhPPg=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fc672b451762b1886ea4ded (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 16:43:32
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 531DCC43460; Tue,  1 Dec 2020 16:43:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2388512AbgLAQoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:44:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726485AbgLAQoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:44:25 -0500
+Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D80AC433ED;
-        Tue,  1 Dec 2020 16:43:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9D80AC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v2] scsi: ufs: Remove pre-defined initial voltage values
- of device powers
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
-        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, bjorn.andersson@linaro.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com
-References: <20201201065114.1001-1-stanley.chu@mediatek.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <1ad24257-70cd-b16a-6ad4-c6705189a0e6@codeaurora.org>
-Date:   Tue, 1 Dec 2020 08:43:27 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        by mail.kernel.org (Postfix) with ESMTPSA id BE4392076C;
+        Tue,  1 Dec 2020 16:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606841021;
+        bh=/4jrMcP32LSnKeYZZ/sDmA7PrGEwuYfMoP2zFqrEWqQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PBdLYyjprHBie7dt3VzZZ74KkVrYNi04za5NtcmW0JELfBaJtAPNzNgqoEmBJOjx/
+         0Qjg0TtH1Fvc4iAUr9vhzIY0MOIPQ71YTnN5kxa8lyr5MvJlBN5rWn+Yzb3/p7b2qC
+         dYb8Nfit6dpWN0szam/xvWgDrOvF2aeBB3r+Ev6A=
+Date:   Tue, 1 Dec 2020 08:43:39 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>, fw@strlen.de,
+        davem@davemloft.net, johannes@sipsolutions.net,
+        edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
+        elver@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        willemdebruijn.kernel@gmail.com,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
+Message-ID: <20201201084339.6d4efa5a@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201201073529.GA1473056@shredder.lan>
+References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
+        <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
+        <20201121160941.GA485907@shredder.lan>
+        <20201130175248.7f0b5309@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <20201201073529.GA1473056@shredder.lan>
 MIME-Version: 1.0
-In-Reply-To: <20201201065114.1001-1-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2020 10:51 PM, Stanley Chu wrote:
-> UFS specficication allows different VCC configurations for UFS devices,
-> for example,
-> 	(1). 2.70V - 3.60V (Activated by default in UFS core driver)
-> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
->                            device tree)
-> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+On Tue, 1 Dec 2020 09:35:29 +0200 Ido Schimmel wrote:
+> > Looking at the patch from Marco to move back to a field now I'm
+> > wondering how you run into this, Ido :D
+> > 
+> > AFAIU the extension is only added if process as a KCOV handle.
+> > 
+> > Are you using KCOV?  
 > 
-> With the introduction of UFS 3.x products, an issue is happening that
-> UFS driver will use wrong "min_uV-max_uV" values to configure the
-> voltage of VCC regulator on UFU 3.x products with the configuration (3)
-> used.
+> Hi Jakub,
 > 
-> To solve this issue, we simply remove pre-defined initial VCC voltage
-> values in UFS core driver with below reasons,
-> 
-> 1. UFS specifications do not define how to detect the VCC configuration
->     supported by attached device.
-> 
-> 2. Device tree already supports standard regulator properties.
-> 
-> Therefore VCC voltage shall be defined correctly in device tree, and
-> shall not changed by UFS driver. What UFS driver needs to do is simply
-> enable or disable the VCC regulator only.
-> 
-> Similar change is applied to VCCQ and VCCQ2 as well.
-> 
-> Note that we keep struct ufs_vreg unchanged. This is allow vendors to
-> configure proper min_uV and max_uV of any regulators to make
-> regulator_set_voltage() works during regulator toggling flow.
-> Without specific vendor configurations, min_uV and max_uV will be NULL
-> by default and UFS core driver will enable or disable the regulator
-> only without adjusting its voltage.
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
+> Yes. We have an internal syzkaller instance where this is enabled. See
+> "syz-executor.0" in the trace below.
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-
->   drivers/scsi/ufs/ufshcd-pltfrm.c | 16 ----------------
->   1 file changed, 16 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> index a6f76399b3ae..09e2f04bf4f6 100644
-> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-> @@ -133,22 +133,6 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
->   		vreg->max_uA = 0;
->   	}
->   
-> -	if (!strcmp(name, "vcc")) {
-> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
-> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
-> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
-> -		} else {
-> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
-> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-> -		}
-> -	} else if (!strcmp(name, "vccq")) {
-> -		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
-> -		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
-> -	} else if (!strcmp(name, "vccq2")) {
-> -		vreg->min_uV = UFS_VREG_VCCQ2_MIN_UV;
-> -		vreg->max_uV = UFS_VREG_VCCQ2_MAX_UV;
-> -	}
-> -
->   	goto out;
->   
->   out:
-> 
-
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+I see, thanks! The world makes sense again :)
