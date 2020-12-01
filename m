@@ -2,65 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAEF2CA354
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDB52CA357
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 14:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729798AbgLANAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 08:00:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40444 "EHLO mx2.suse.de"
+        id S1730795AbgLANAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 08:00:35 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:44918 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726220AbgLANAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 08:00:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606827577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d9FfBclj08BT/a6NAs1kZbmhLZLgpFAdOCX78dQ2gW0=;
-        b=ty09/Jx26xpHWxlnAJgkEKa70Q14vMEEtvwf+/Uld7rqK+Y2AhCAuGjrud5ewo5KAmvV3t
-        LZaDw2TEfSjpzdZqcPYeJ6UQKC1SVcgzCZAfUVPvAgD3wBwYbNMqRi97necLKukzzY223m
-        9AFEEd7uWnU/tTDdCSvfRkNs80nWDoY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 828CDAC55;
-        Tue,  1 Dec 2020 12:59:37 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 13:59:37 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH 0/3] clear_warn_once: add timed interval resetting
-Message-ID: <X8Y+OVaXzAO4AWE2@alley>
-References: <20201126063029.2030-1-paul.gortmaker@windriver.com>
- <X8ElwBh9tw+OLHF+@alley>
- <20201127174316.GA11748@windriver.com>
+        id S1726220AbgLANAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 08:00:34 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id DED5CFB05;
+        Tue,  1 Dec 2020 13:59:51 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MgI_jk9lB2pJ; Tue,  1 Dec 2020 13:59:50 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 4289E4068E; Tue,  1 Dec 2020 13:59:50 +0100 (CET)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v4 0/2] usb: typec: tps6598x: Export some power supply properties
+Date:   Tue,  1 Dec 2020 13:59:48 +0100
+Message-Id: <cover.1606827507.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127174316.GA11748@windriver.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-11-27 12:43:16, Paul Gortmaker wrote:
-> > On Thu 2020-11-26 01:30:26, Paul Gortmaker wrote:
-> > + Move clear_warn_once from debugfs to a location that is always
-> >   available. For example, into /proc
-> 
-> I don't have a problem with that, other than won't we have to maintain
-> both interfaces forever?
 
-Yes, we would. But this patchset adds a new interface as well.
-In addition, it adds also new functionality that might create new
-scenarios.
+This allows downstream supplies and userspace to detect whether external power
+is supplied.
 
-Again, I am not strongly against it. But I have to think more
-about it.
+The Librem 5 has the tp65982 in front of bq25980 charge controller.  Since that
+is capable of sinking and sourcing power the online property helps to decide
+what to do. It also makes upower happy.
 
-Best Regards,
-Petr
+There will be follow up patches providing more properties but these need some
+more time to cook and i wanted to check if this is the right way to go?
 
-PS: I did not comment other parts of this mail. They were either
-discussed elsewhere in this thread. Or I did not have
-anything to add.
+changes from v3
+  - As per review comments from Andy Shevchenko
+    https://lore.kernel.org/linux-usb/CAHp75VeLZtm85Y=3QMkPGb332wn05-zr-_mrrwXvnqLhazR1Gg@mail.gmail.com/
+    - Use positive conditionals
+  - Add reviewed by from Heikki Krogerus
+    https://lore.kernel.org/linux-usb/20201130102720.GA2911464@kuha.fi.intel.com/T/#u
+    https://lore.kernel.org/linux-usb/20201130102942.GB2911464@kuha.fi.intel.com/T/#u
+  - Fix typc vs typec typo in commit message
+
+changes from v2
+  - As per kernel test robot
+    https://lore.kernel.org/linux-usb/202011271005.zJVawX74-lkp@intel.com/
+    - Flip USB_ROLE_SWITCH and REGMAP_I2C from 'depends on' to 'select'
+      This matches tcpm and avoids a config symbol recursion which went
+      unnoticed on my arm64 build but trips up x86_64.
+
+changes from v1
+  - As per review comments from Heikki Krogerus
+    https://lore.kernel.org/linux-usb/20201126123552.GP1008337@kuha.fi.intel.com/
+    - select POWER_SUPPLY
+    - use POWER_SUPPLY_USB_TYPE_PD when a PD contract got negotiated
+
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,Greg Kroah-Hartman <gregkh@linuxfoundation.org>,linux-usb@vger.kernel.org,linux-kernel@vger.kernel.org,Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Guido Günther (2):
+  usb: typec: tps6598x: Select USB_ROLE_SWITCH and REGMAP_I2C
+  usb: typec: tps6598x: Export some power supply properties
+
+ drivers/usb/typec/Kconfig    |   5 +-
+ drivers/usb/typec/tps6598x.c | 105 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 108 insertions(+), 2 deletions(-)
+
+-- 
+2.29.2
+
