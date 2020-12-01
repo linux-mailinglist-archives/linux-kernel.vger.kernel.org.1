@@ -2,149 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AB62CAC78
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6142CAC80
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 20:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392387AbgLATgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 14:36:31 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:57504 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387432AbgLATgb (ORCPT
+        id S2392422AbgLAThN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 14:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgLAThM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 14:36:31 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606851348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QoHglNiFqttLAMD1LnFOWcb3m1VkGTd8+DTKZfhRou4=;
-        b=Is4eUNZJildV/CJ7l16sguVDyRab5B0iwcWHirrqKmHtJ6ceKhon/evkdbqvcVDlXihlap
-        rGVrlk4daTkHDcNWSG70CcvUc7v+AIY54FGZX2fW213nNnzvvmPpColVINF0B0r2IRkC5t
-        hLvjnXwC2ihlnEoAZjiIsViD+ZLdxLi0q7X9d8qkY1f6YYnKeMX/4nf/COP17Q/b2MR32K
-        CoZ5ke5mfb5RhDlgGFLFI9z60mZy/nTIwVxm8CN9tASQEEng/uV9G/rnxWoJeU+lajSB13
-        KGwlLOHewqR8przTSMm3RSzPwWsGHW2kV1iV02QJ2pxR18mgM+wteu36seAeEg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606851348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QoHglNiFqttLAMD1LnFOWcb3m1VkGTd8+DTKZfhRou4=;
-        b=dONq+lQABPzBv+OJYQCxDUQXqDV+Gf6gt31FFJ5enKhUz2/I1cqlvOP4vw3wiIRPIH7CLD
-        OKxpTvpUdIRcJqAA==
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 0/2] RFC: Precise TSC migration
-In-Reply-To: <20201130133559.233242-1-mlevitsk@redhat.com>
-References: <20201130133559.233242-1-mlevitsk@redhat.com>
-Date:   Tue, 01 Dec 2020 20:35:48 +0100
-Message-ID: <87lfehfhez.fsf@nanos.tec.linutronix.de>
+        Tue, 1 Dec 2020 14:37:12 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512A4C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 11:36:32 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id y11so1411589qvu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 11:36:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hNZMHtCuZ+zg70LmwAEupxaHE1lRjI7+oyWV0t26jrg=;
+        b=UlEcIybmDlIoueI+4Lnu4CGs/T4GAQ5wKzh3J8ltJKyU5Dg3XpaxB5ucl51QOFdiSK
+         x6Q0fRKUDgS0VRqgIrVz4a4fjxrMrce+Xx9DAdiLNn8BiA91VeCR0O6ewrAyyRG/wcrQ
+         bg73YiX208SeDx/56Xak4/dHFAWd7cc4LDlAw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hNZMHtCuZ+zg70LmwAEupxaHE1lRjI7+oyWV0t26jrg=;
+        b=aeZZIWbVP21hTJRGIHEXxRaIW57lZN/Vw2BWtViRGu6hBvZOwzCvU1qEeOaZLueHCS
+         bG5B33njjyygJmFmJ0uvHAFP2eSsP7KaEOjNI+Qawa5Q5Efy9qnlxovINP6lPLaV2/RW
+         1S08CzXxzPFmJqCIkGT4o+EuGKvoIK0PxZcGxnqzNqlxVWgIXv/fw5UvdlgNgV633sBb
+         Omt34BsgVjEw1mbrgq3KCG4ojf9V+1O91Mf+T+gcJOV1ukhQlj3PEjT6RwJWm3c9T0iA
+         e2GtzxiOcESBkBGYtHSdvJJOsN2/KDlez39mSBsUZK3Z/Z342VXZyRWxajkQqxDj/Q0+
+         3DJw==
+X-Gm-Message-State: AOAM531LXwfXZSQKhUiauWknojbNFXHlublXpQE5Wl/Qq9YgjecA6VP4
+        NeJoVsBHQGEn53F95BBCFZoP6Q==
+X-Google-Smtp-Source: ABdhPJyquDScWgcbdBQerlNeAsyZ+k3xJXAVh68Ing78pVLtN9/kHORLTPLrqoC3f9ygrWfH23EUxw==
+X-Received: by 2002:a05:6214:3a9:: with SMTP id m9mr4750124qvy.1.1606851391402;
+        Tue, 01 Dec 2020 11:36:31 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id e10sm540172qkn.126.2020.12.01.11.36.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 11:36:30 -0800 (PST)
+Date:   Tue, 1 Dec 2020 14:36:30 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -tip 23/32] sched: Add a per-thread core scheduling
+ interface
+Message-ID: <20201201193630.GA223927@google.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-24-joel@joelfernandes.org>
+ <20201125130808.GY2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125130808.GY2414@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30 2020 at 15:35, Maxim Levitsky wrote:
-> The idea of masterclock is that when the host TSC is synchronized
-> (or as kernel call it, stable), and the guest TSC is synchronized as well,
-> then we can base the kvmclock, on the same pair of
-> (host time in nsec, host tsc value), for all vCPUs.
+On Wed, Nov 25, 2020 at 02:08:08PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 17, 2020 at 06:19:53PM -0500, Joel Fernandes (Google) wrote:
+> > +/* Called from prctl interface: PR_SCHED_CORE_SHARE */
+> > +int sched_core_share_pid(pid_t pid)
+> > +{
+> > +	struct task_struct *task;
+> > +	int err;
+> > +
+> > +	if (pid == 0) { /* Recent current task's cookie. */
+> > +		/* Resetting a cookie requires privileges. */
+> > +		if (current->core_task_cookie)
+> > +			if (!capable(CAP_SYS_ADMIN))
+> > +				return -EPERM;
+> 
+> Coding-Style fail.
+> 
+> Also, why?!? I realize it is true for your case, because hardware fail.
+> But in general this just isn't true. This wants to be some configurable
+> policy.
 
-That's correct. All guest CPUs should see exactly the same TSC value,
-i.e.
+True. I think me and you discussed eons ago though that it needs to
+privileged.  For our case, actually we use seccomp so we don't let
+untrusted task set a cookie anyway, let alone reset it. We do it before we
+enter the seccomp sandbox. So we don't really need this security check here.
 
-        hostTSC + vcpu_offset
+Since you dislike this part of the patch, I am Ok with just dropping it as
+below:
 
-> This makes the random error in calculation of this value invariant
-> across vCPUS, and allows the guest to do kvmclock calculation in userspace
-> (vDSO) since kvmclock parameters are vCPU invariant.
+---8<-----------------------
 
-That's not the case today? OMG!
-
-> To ensure that the guest tsc is synchronized we currently track host/guest tsc
-> writes, and enable the master clock only when roughly the same guest's TSC value
-> was written across all vCPUs.
-
-The Linux kernel never writes the TSC. We've tried that ~15 years ago
-and it was a total disaster.
-
-> Recently this was disabled by Paulo and I agree with this, because I think
-> that we indeed should only make the guest TSC synchronized by default
-> (including new hotplugged vCPUs) and not do any tsc synchronization beyond that.
-> (Trying to guess when the guest syncs the TSC can cause more harm that good).
->
-> Besides, Linux guests don't sync the TSC via IA32_TSC write,
-> but rather use IA32_TSC_ADJUST which currently doesn't participate
-> in the tsc sync heruistics.
-
-The kernel only writes TSC_ADJUST when it is advertised in CPUID and:
-
-    1) when the boot CPU detects a non-zero TSC_ADJUST value it writes
-       it to 0, except when running on SGI-UV
-
-    2) when a starting CPU has a different TSC_ADJUST value than the
-       first CPU which came up on the same socket.
-
-    3) When the first CPU of a different socket is starting and the TSC
-       synchronization check fails against a CPU on an already checked
-       socket then the kernel tries to adjust TSC_ADJUST to the point
-       that the synchronization check does not fail anymore.
-
-> And as far as I know, Linux guest is the primary (only?) user of the kvmclock.
->
-> I *do think* however that we should redefine KVM_CLOCK_TSC_STABLE
-> in the documentation to state that it only guarantees invariance if the guest
-> doesn't mess with its own TSC.
->
-> Also I think we should consider enabling the X86_FEATURE_TSC_RELIABLE
-> in the guest kernel, when kvm is detected to avoid the guest even from trying
-> to sync TSC on newly hotplugged vCPUs.
->
-> (The guest doesn't end up touching TSC_ADJUST usually, but it still might
-> in some cases due to scheduling of guest vCPUs)
-
-The only cases it would try to write are #3 above or because the
-hypervisor or BIOS messed it up (#1, #2).
-
-> (X86_FEATURE_TSC_RELIABLE short circuits tsc synchronization on CPU hotplug,
-> and TSC clocksource watchdog, and the later we might want to keep).
-
-Depends. If the host TSC is stable and synchronized, then you don't need
-the TSC watchdog. We are slowly starting to trust the TSC to some extent
-and phase out the watchdog for newer parts (hopefully).
-
-If the host TSC really falls apart then it still can invalidate
-KVM_CLOCK and force the guest to reevaluate the situation.
-
-> Few more random notes:
->
-> I have a weird feeling about using 'nsec since 1 January 1970'.
-> Common sense is telling me that a 64 bit value can hold about 580
-> years,
-
-which is plenty.
-
-> but still I see that it is more common to use timespec which is a
-> (sec,nsec) pair.
-
-timespecs are horrible.
-
-Thanks,
-
-        tglx
+diff --git a/kernel/sched/coretag.c b/kernel/sched/coretag.c
+index 8fce3f4b7cae..9b587a1245f5 100644
+--- a/kernel/sched/coretag.c
++++ b/kernel/sched/coretag.c
+@@ -443,11 +443,7 @@ int sched_core_share_pid(pid_t pid)
+ 	struct task_struct *task;
+ 	int err;
+ 
+-	if (pid == 0) { /* Recent current task's cookie. */
+-		/* Resetting a cookie requires privileges. */
+-		if (current->core_task_cookie)
+-			if (!capable(CAP_SYS_ADMIN))
+-				return -EPERM;
++	if (!pid) { /* Reset current task's cookie. */
+ 		task = NULL;
+ 	} else {
+ 		rcu_read_lock();
