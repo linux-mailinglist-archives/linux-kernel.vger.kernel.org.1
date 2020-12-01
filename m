@@ -2,61 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774992CA07D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92A82CA084
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 11:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730200AbgLAKx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 05:53:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57416 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725899AbgLAKx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 05:53:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606819961; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S1730240AbgLAKye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 05:54:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28051 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727330AbgLAKye (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 05:54:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606819987;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TyvBSFSCVH42jmUB2hpFXQQFaqAXwy5GGCvM4Ps/q0k=;
-        b=tvjxp99M2vWI7boZjVzVgHo/eLe4kCvbjrBoEd47pJuWCx6SyiwsqXsAZcygAMAF2Rqhof
-        zFjEDgy6HruYlmHIjGG8DMRwn5fX+zyr58hTIMaFOQ2He5pTeh7sHsxTvWHwu510Kj8IBm
-        b4b13vcKmAJ2pOGyzUSU0O0N1Ktrpgs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4052AAC90;
-        Tue,  1 Dec 2020 10:52:41 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 11:52:40 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/2] reboot: hide from sysfs not applicable settings
-Message-ID: <X8YgeKHP7AhK37FV@alley>
-References: <20201130173717.198952-1-mcroce@linux.microsoft.com>
- <20201130173717.198952-3-mcroce@linux.microsoft.com>
+        bh=myXYBD46UvClc6/JcJZBliDe+/db79psyDbz7J+w+P0=;
+        b=adfk0FFgK/2tF46CPU65qvuu/j4aY3xf5czxT+JgO8MjymTQEBhb5nlRz2lYe0K46cZPJT
+        gDqXGZJ27nAibxtfRgITZoIQSfyzDKyL1rcpEAgsZHjpG5Tp98inuqrefmihaM/3jdYVvI
+        815YqfHxIqMVVXMPtYEvg6fikaeeb30=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-cITHzwIhN9mI081tXNE-BA-1; Tue, 01 Dec 2020 05:53:05 -0500
+X-MC-Unique: cITHzwIhN9mI081tXNE-BA-1
+Received: by mail-wm1-f72.google.com with SMTP id g198so544218wme.7
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 02:53:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=myXYBD46UvClc6/JcJZBliDe+/db79psyDbz7J+w+P0=;
+        b=rxGXEAE2/5U/O5qwqeO4Une9vaIjmSq/dzyV4ukke8KAre+iZgI6GH6DiI7YNzu1QF
+         s2xyExhbXdP7vJEtot709X+Na9t4DvTfmIrybAtOzLsWie/h6MEVdfq2zB72aQSrp30Q
+         m6KdFcpzN3mOeiTLytPcrrhPg8mm4hJMtcuIIHEeWlwbfskHYd64OpPOb7ZMnd1VOJbT
+         UFUMPsrshyBIKStmwXU+XBdPDhlNzJeJm2UnqouYncnud1vnW+Nn26Lj20s70kezu80h
+         ecxHdLlAA+Mqaa38mB4FGPfdC0Ipk0/YNg2/2doGkioMPIsZ7liptFsosvCm+CJUR8TV
+         LFTA==
+X-Gm-Message-State: AOAM532iaYph0mKwGHqnm8OL79mzEhw56nnILXPHbMH09h8yaVAHyNKU
+        pMaGVFnLrcRUVQTss0UHgYpUBzrwRJ00x4nPDrot2ZtuU6S3HK8hiTpP1TEXU4fnCjMKz8F51FW
+        1U4D97XIV5EgNY30trlZOHhOm
+X-Received: by 2002:a5d:630b:: with SMTP id i11mr3180902wru.404.1606819982891;
+        Tue, 01 Dec 2020 02:53:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwANHPgmffBjgqLIriYCcA7hDiYfuos66MtUBeFTKqZovjJZ0ZQZMwbUhGDNGn/kirUQjmryw==
+X-Received: by 2002:a5d:630b:: with SMTP id i11mr3180319wru.404.1606819975700;
+        Tue, 01 Dec 2020 02:52:55 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id q16sm2490957wrn.13.2020.12.01.02.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 02:52:53 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:52:50 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Laurent Vivier <lvivier@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
+Subject: Re: [PATCH v2 12/17] vdpa_sim: add get_config callback in
+ vdpasim_dev_attr
+Message-ID: <20201201105250.a72yxsxmyalio6c3@steredhat>
+References: <20201126144950.92850-1-sgarzare@redhat.com>
+ <20201126144950.92850-13-sgarzare@redhat.com>
+ <f8106986-e19d-ea32-436c-14cddd2b6ff4@redhat.com>
+ <20201130141453.jobe76loyfy4qrdw@steredhat>
+ <c2158059-6509-7702-f52a-e497ce899293@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201130173717.198952-3-mcroce@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c2158059-6509-7702-f52a-e497ce899293@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-11-30 18:37:17, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
-> 
-> Not all the reboot settings from both the kernel command line or sysfs
-> interface are available to all platforms.
-> 
-> Filter out reboot_type and reboot_force which are x86 only, and also
-> remove reboot_cpu on kernels without SMP support.
-> 
-> This saves some space, and avoid confusing the user with settings which
-> will have no effect.
-> 
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+On Tue, Dec 01, 2020 at 11:44:19AM +0800, Jason Wang wrote:
+>
+>On 2020/11/30 下午10:14, Stefano Garzarella wrote:
+>>On Mon, Nov 30, 2020 at 11:25:31AM +0800, Jason Wang wrote:
+>>>
+>>>On 2020/11/26 下午10:49, Stefano Garzarella wrote:
+>>>>The get_config callback can be used by the device to fill the
+>>>>config structure.
+>>>>The callback will be invoked in vdpasim_get_config() before copying
+>>>>bytes into caller buffer.
+>>>>
+>>>>Move vDPA-net config updates from vdpasim_set_features() in the
+>>>>new vdpasim_net_get_config() callback.
+>>>>
+>>>>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>>>>---
+>>>> drivers/vdpa/vdpa_sim/vdpa_sim.c | 33 +++++++++++++++++++-------------
+>>>> 1 file changed, 20 insertions(+), 13 deletions(-)
+>>>>
+>>>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c 
+>>>>b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>>>index c07ddf6af720..8b87ce0485b6 100644
+>>>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>>>@@ -58,6 +58,8 @@ struct vdpasim_virtqueue {
+>>>> #define VDPASIM_NET_FEATURES    (VDPASIM_FEATURES | \
+>>>>                  (1ULL << VIRTIO_NET_F_MAC))
+>>>>+struct vdpasim;
+>>>>+
+>>>> struct vdpasim_dev_attr {
+>>>>     u64 supported_features;
+>>>>     size_t config_size;
+>>>>@@ -65,6 +67,7 @@ struct vdpasim_dev_attr {
+>>>>     u32 id;
+>>>>     work_func_t work_fn;
+>>>>+    void (*get_config)(struct vdpasim *vdpasim, void *config);
+>>>> };
+>>>> /* State of each vdpasim device */
+>>>>@@ -520,8 +523,6 @@ static u64 vdpasim_get_features(struct 
+>>>>vdpa_device *vdpa)
+>>>> static int vdpasim_set_features(struct vdpa_device *vdpa, u64 
+>>>>features)
+>>>> {
+>>>>     struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>>>>-    struct virtio_net_config *config =
+>>>>-        (struct virtio_net_config *)vdpasim->config;
+>>>>     /* DMA mapping must be done by driver */
+>>>>     if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+>>>>@@ -529,15 +530,6 @@ static int vdpasim_set_features(struct 
+>>>>vdpa_device *vdpa, u64 features)
+>>>>     vdpasim->features = features & 
+>>>>vdpasim->dev_attr.supported_features;
+>>>>-    /* We generally only know whether guest is using the legacy 
+>>>>interface
+>>>>-     * here, so generally that's the earliest we can set config 
+>>>>fields.
+>>>>-     * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
+>>>>-     * implies VIRTIO_F_VERSION_1, but let's not try to be 
+>>>>clever here.
+>>>>-     */
+>>>>-
+>>>>-    config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
+>>>>-    config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
+>>>>-    memcpy(config->mac, macaddr_buf, ETH_ALEN);
+>>>>     return 0;
+>>>> }
+>>>>@@ -593,8 +585,12 @@ static void vdpasim_get_config(struct 
+>>>>vdpa_device *vdpa, unsigned int offset,
+>>>> {
+>>>>     struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>>>>-    if (offset + len < vdpasim->dev_attr.config_size)
+>>>>-        memcpy(buf, vdpasim->config + offset, len);
+>>>>+    if (offset + len > vdpasim->dev_attr.config_size)
+>>>>+        return;
+>>>>+
+>>>>+    vdpasim->dev_attr.get_config(vdpasim, vdpasim->config);
+>>>>+
+>>>>+    memcpy(buf, vdpasim->config + offset, len);
+>>>> }
+>>>
+>>>
+>>>I wonder how much value we can get from vdpasim->config consider 
+>>>we've already had get_config() method.
+>>>
+>>>Is it possible to copy to the buffer directly here?
+>>
+>>I had thought of eliminating it too, but then I wanted to do something 
+>>similar to what we do in QEMU (hw/virtio/virtio.c), leaving in the 
+>>simulator core the buffer, the memory copy (handling offset and len), 
+>>and the boundary checks.
+>>
+>>In this way each device should simply fill the entire configuration 
+>>and we can avoid code duplication.
+>>
+>>Storing the configuration in the core may also be useful if some 
+>>device needs to support config writes.
+>
+>
+>I think in that way we need should provide config_write().
 
-Looks good to be.
+Yes, I'll add set_config() callback.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+>
+>
+>>
+>>Do you think it makes sense, or is it better to move everything in the 
+>>device?
+>
+>
+>I prefer to do that in the device but it's also fine keep what the 
+>patch has done.
 
-Best Regards,
-Petr
+Okay, for now I'll keep it and add the set_config() callback, but I'm 
+open to move it in the device.
+
+Thanks,
+Stefano
+
