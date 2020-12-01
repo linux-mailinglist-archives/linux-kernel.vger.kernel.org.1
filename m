@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DB42CAA6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 873E32CAA6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 19:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404247AbgLASCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 13:02:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404222AbgLASCS (ORCPT
+        id S2404260AbgLASCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 13:02:41 -0500
+Received: from smtprelay0046.hostedemail.com ([216.40.44.46]:36228 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404253AbgLASCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:02:18 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4482C0613D4;
-        Tue,  1 Dec 2020 10:01:37 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id l23so1732264pjg.1;
-        Tue, 01 Dec 2020 10:01:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=uFEAfZo3EGZ57zkwr0Z5gVNfzF2/pBqb9CkqNLIpmIM=;
-        b=hMesW0T9+moc5aBkbRGY8udmssiEYRpYM+zgew8O3tmZwj9K77EvzzCNSfvwZ0hbWn
-         j95MZQL7+/+X65hWzGuEG2R2tOvJasrHVtU8muzSEq+MeU/FzYI2EGEZAWiFV0yaXWCP
-         teICXmCX2YwRfUA53yqee5jsfyBUQ4NWX1VaoordN3fTjrKBUM7/EjxNSbj8Di67gQxa
-         jjmAtU3Kb8MTJvXqTUVlZCmQOKhLSSVQU/T4Dqto4MMZGtsD6OaLv52e9FB0N7tK4t4F
-         x4gbZ62SamoYQGYZm5XS/Sml6xXTSDUxK/QoVSbAAGe3AqgPWabj4u7z3gLyEhf1GWtt
-         1TXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=uFEAfZo3EGZ57zkwr0Z5gVNfzF2/pBqb9CkqNLIpmIM=;
-        b=oNKB0ilglEyyD56I3m7geKNDaRZfjMQMVKjVrJuY2bMOMwo+ktY2InFAMP6Wf40gL7
-         xww08qiwkwJ8BsGhgd2hcbdgrX+htvmiCRfYLHzMPwO7cZ7/SMorpvXW3Opa8aI0rsx7
-         B0Sl48/8iyyBhaADp8vqgaQ/nEWpHwEZaT+nJeSchVu1ps334SoNh5iIQbuFniBfomk6
-         VzdE/T9vnzF4rUQb3Dc4ZNOx/PFGX0jjocThuisjoxvlIi5z+wOM7hTxk/Np8V9zmk3N
-         TZCPQZZeNzGMNX/efsoTWD0MpHqdZW9LHRVF7bjP+V3g+e1SDIXuCkQSWpFxPyHJqa/2
-         oTzA==
-X-Gm-Message-State: AOAM532M9hk7mBCNVOfWQ0MQQYNXDtWa0zyk/m5QUTN8TpoHBXKR/lfV
-        S/61JpPrN+5KynDNGO5RFZ+XQxc9dT0=
-X-Google-Smtp-Source: ABdhPJwbcyjA1bd6s8ABJpvmTLYyuQhrxDyZPHj7iXc0w+Anid3Gh1ZZywjeGxqrU03q9qvyDGmIww==
-X-Received: by 2002:a17:90a:bf81:: with SMTP id d1mr4045889pjs.108.1606845697111;
-        Tue, 01 Dec 2020 10:01:37 -0800 (PST)
-Received: from ?IPv6:2001:df0:0:200c:9894:d951:15f8:53bf? ([2001:df0:0:200c:9894:d951:15f8:53bf])
-        by smtp.gmail.com with ESMTPSA id a4sm6417713pjq.0.2020.12.01.10.01.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Dec 2020 10:01:36 -0800 (PST)
-Subject: Re: [PATCH] scsi/NCR5380: Remove in_interrupt() test
-To:     Finn Thain <fthain@telegraphics.com.au>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <58cf6feeaf5dae1ee0c78c1b25c00c73de15b087.1606805196.git.fthain@telegraphics.com.au>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <0673d357-1b04-299b-3e53-169fddf9ae5e@gmail.com>
-Date:   Wed, 2 Dec 2020 07:01:27 +1300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Tue, 1 Dec 2020 13:02:41 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 3D9F7837F24D;
+        Tue,  1 Dec 2020 18:02:00 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:4321:5007:6119:7514:7875:8531:9545:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12895:13069:13095:13311:13357:13439:13894:14093:14097:14181:14659:14721:21080:21221:21433:21451:21627:21740:21741:30025:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:6,LUA_SUMMARY:none
+X-HE-Tag: lace58_1c0f780273ac
+X-Filterd-Recvd-Size: 2679
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  1 Dec 2020 18:01:59 +0000 (UTC)
+Message-ID: <2d507d3042a97613078554b1b5f1169ab8c41b42.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: fix TYPO_SPELLING check for words with
+ apostrophe
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Date:   Tue, 01 Dec 2020 10:01:57 -0800
+In-Reply-To: <20201201072320.44544-1-dwaipayanray1@gmail.com>
+References: <20201201072320.44544-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <58cf6feeaf5dae1ee0c78c1b25c00c73de15b087.1606805196.git.fthain@telegraphics.com.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
-
-works fine, thanks!
-
-Tested-By: Michael Schmitz <schmitzmic@gmail.com>
-
-
-On 1/12/20 7:46 PM, Finn Thain wrote:
-> The in_interrupt() macro is deprecated. Also, it's usage in
-> NCR5380_poll_politely2() has long been redundant.
->
-> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Ahmed S. Darwish <a.darwish@linutronix.de>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lore.kernel.org/r/20201126132952.2287996-1-bigeasy@linutronix.de
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+On Tue, 2020-12-01 at 12:53 +0530, Dwaipayan Ray wrote:
+> checkpatch reports a false TYPO_SPELLING warning for some words
+> containing an apostrophe when run with --codespell option.
+> 
+> A false positive is "doesn't". Occurrence of the word causes
+> checkpatch to emit the following warning:
+> 
+> "WARNING: 'doesn'' may be misspelled - perhaps 'doesn't'?"
+> 
+> Modify the regex pattern to be more in line with the codespell
+> default word matching regex. This fixes the word capture and
+> avoids the false warning.
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Reported-by: Peilin Ye <yepeilin.cs@gmail.com>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 > ---
->   drivers/scsi/NCR5380.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
-> index 462d911a89f2..6972e7ceb81a 100644
-> --- a/drivers/scsi/NCR5380.c
-> +++ b/drivers/scsi/NCR5380.c
-> @@ -223,7 +223,10 @@ static int NCR5380_poll_politely2(struct NCR5380_hostdata *hostdata,
->   		cpu_relax();
->   	} while (n--);
->   
-> -	if (irqs_disabled() || in_interrupt())
-> +	/* Sleeping is not allowed when in atomic or interrupt contexts.
-> +	 * Callers in such contexts always disable local irqs.
-> +	 */
-> +	if (irqs_disabled())
->   		return -ETIMEDOUT;
->   
->   	/* Repeatedly sleep for 1 ms until deadline */
+> Changes in v2:
+> - Use the default codespell word regex.
+> - Modify commit message to specify --codespell usage
+> 
+>  scripts/checkpatch.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3106,7 +3106,7 @@ sub process {
+>  # Check for various typo / spelling mistakes
+>  		if (defined($misspellings) &&
+>  		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+> -			while ($rawline =~ /(?:^|[^a-z@])($misspellings)(?:\b|$|[^a-z@])/gi) {
+> +			while ($rawline =~ /(?:^|[^\w\-'`])($misspellings)(?:[^\w\-'`]|$)/gi) {
+
+This regex seems to work well, thanks.
+
+>  				my $typo = $1;
+
+A trivial improvement might be to highlight the location of the
+misspelled word with a caret using
+
+				my $blank = copy_spacing($rawline);
+				my $ptr = substr($blank, 0, $-[0] + 1) . "^";
+				my $hereptr = "$hereline$ptr\n";
+
+>  				my $typo_fix = $spelling_fix{lc($typo)};
+>  				$typo_fix = ucfirst($typo_fix) if ($typo =~ /^[A-Z]/);
+
+and using $hereptr and not $hereline when emitting the message.
+
+
