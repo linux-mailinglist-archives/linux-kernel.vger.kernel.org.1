@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F152CA72E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9D82CA733
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 16:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391791AbgLAPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 10:36:18 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2185 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387672AbgLAPgR (ORCPT
+        id S2389555AbgLAPiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 10:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388069AbgLAPiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 10:36:17 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ClmMz6ZdRz67KjJ;
-        Tue,  1 Dec 2020 23:33:35 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 1 Dec 2020 16:35:29 +0100
-Received: from [10.47.7.145] (10.47.7.145) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 1 Dec 2020
- 15:35:28 +0000
-Subject: Re: [RESEND PATCH v3 0/4] iommu/iova: Solve longterm IOVA issue
-To:     <robin.murphy@arm.com>, <joro@8bytes.org>, <will@kernel.org>
-CC:     <xiyou.wangcong@gmail.com>, <linuxarm@huawei.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <chenxiang66@hisilicon.com>
-References: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <d87ceec4-b7a1-c600-3b78-6852f0320ce2@huawei.com>
-Date:   Tue, 1 Dec 2020 15:35:02 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 1 Dec 2020 10:38:02 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC7EC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 07:37:16 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a3so6068679wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 07:37:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v1tdT9VkIaH9wWJpbxE5lJpDmELxG1sVxZZj9o9uu3A=;
+        b=fIAyafuTplF29ELTSUubZtnC1Dyco6rIUzftoOb0UqSkgUFVmFCEURfWkTQ1A+3GRJ
+         DQBxJqPptP/Nf9Ety2eKQKTY2hSnVdBl1RuGBL9rZHpCnav58Fs3NmqApk4zVvAI07Lt
+         D+IFze3fa5mS+CKy35+rNPzCy3KY7ihbliGjjKRlGJzj5IFcjuxqj78Z7LmQMpLisXPX
+         U0fFlB9UiHNHcmE8wefkQ0T9CTVNd99+QQzKdJojbdmBnn7RQqUp59FQhX0HUZqR3FNV
+         B3/r7gBGIsVyG9gdMt7KWzr1qtd+ZBr4Gs4x8MUOh/23vGgkJzNEvOmHzw8hC7OC4rKX
+         CU4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v1tdT9VkIaH9wWJpbxE5lJpDmELxG1sVxZZj9o9uu3A=;
+        b=gnkNwzRr7fR8i58dQw8111axsVjzr8gzCFMja7hpyQcNw+C7eu5oY1Y8amBH+vEt7p
+         6Sa0ZQp6hextGe1A0Pu98GC3MLVWwnbc0vei5Khtg4yVELjGzzqwDsWDbCwNmUvEWHf7
+         /8CYp3nLX0S9uCEClBAQ4hMLlQZaI3A0sa9BKmIpbVMANKD6bCye30gri/LenhtxCc/r
+         6ho9DaKY0v1SEQN1I1kQq7ddW7A1dtPDg+OlE0YBoWzc9WuK77+Hno9ETtNcEcMbIij8
+         h0uv18e928sFmMnYSdBkT36iX7HSMN19jj0dsBXVOPcE5J33KG3+ghoD4m+CE3sV3vNs
+         r1bw==
+X-Gm-Message-State: AOAM530I1E8KzodBBL2mJ4M/lCPw7qByqvsTB6AFXjrKv1WcSurdwYA2
+        pTBC4rvArbYc7pqIuI9+h02GtQ==
+X-Google-Smtp-Source: ABdhPJwIXAaeDJBvwMcw42rQ2vmRrhH0lyO+aKysIJbAeKzKRYsHiu/BePVKP1XpaPQj5dQxkkJ15g==
+X-Received: by 2002:a1c:240a:: with SMTP id k10mr3190455wmk.173.1606837035050;
+        Tue, 01 Dec 2020 07:37:15 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id y7sm302171wmb.37.2020.12.01.07.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 07:37:14 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/6] arm64: dts: qcom: qrb5165-rb5 audio support
+Date:   Tue,  1 Dec 2020 15:37:00 +0000
+Message-Id: <20201201153706.13450-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <1605608734-84416-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.7.145]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2020 10:25, John Garry wrote:
+This patchset adds support to Qualcomm Robotics RB5 Development Kit based on
+QRB5165 Robotics SoC. This board has 2 WSA881X smart speakers with onboard
+DMIC connected to internal LPASS codec via WSA and VA macros respectively.
 
-Hi Will,
-
-Is there any chance that we can get these picked up for 5.11? We've seen 
-this issue solved here for a long time.
-
-Or, @Robin, let me know if not happy with this since v1.
-
-BTW, patch #4 has been on the go for ~1 year now, and is a nice small 
-optimisation from Cong, which I picked up and already had a RB tag.
+All the audio related driver patches are merged via respective maintainer trees
+along with bindings. Only LPI pinctrl driver is not merged yet, however the
+bindings are acked by Rob, so am guessing that the dt changes should be okay to go!
 
 Thanks,
-John
+srini
 
-> This series contains a patch to solve the longterm IOVA issue which
-> leizhen originally tried to address at [0].
-> 
-> A sieved kernel log is at the following, showing periodic dumps of IOVA
-> sizes, per CPU and per depot bin, per IOVA size granule:
-> https://raw.githubusercontent.com/hisilicon/kernel-dev/topic-iommu-5.10-iova-debug-v3/aging_test
-> 
-> Notice, for example, the following logs:
-> [13175.355584] print_iova1 cpu_total=40135 depot_total=3866 total=44001
-> [83483.457858] print_iova1 cpu_total=62532 depot_total=24476 total=87008
-> 
-> Where total IOVA rcache size has grown from 44K->87K over a long time.
-> 
-> Along with this patch, I included the following:
-> - A smaller helper to clear all IOVAs for a domain
-> - Change polarity of the IOVA magazine helpers
-> - Small optimisation from Cong Wang included, which was never applied [1].
->    There was some debate of the other patches in that series, but this one
->    is quite straightforward.
-> 
-> Differnces to v2:
-> - Update commit message for patch 3/4
-> 
-> Differences to v1:
-> - Add IOVA clearing helper
-> - Add patch to change polarity of mag helpers
-> - Avoid logically-redundant extra variable in __iova_rcache_insert()
-> 
-> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
-> [1] https://lore.kernel.org/linux-iommu/4b74d40a-22d1-af53-fcb6-5d70183705a8@huawei.com/
-> 
-> Cong Wang (1):
->    iommu: avoid taking iova_rbtree_lock twice
-> 
-> John Garry (3):
->    iommu/iova: Add free_all_cpu_cached_iovas()
->    iommu/iova: Avoid double-negatives in magazine helpers
->    iommu/iova: Flush CPU rcache for when a depot fills
-> 
->   drivers/iommu/iova.c | 66 +++++++++++++++++++++++++-------------------
->   1 file changed, 38 insertions(+), 28 deletions(-)
-> 
+Srinivas Kandagatla (6):
+  arm64: dts: qcom: sm8250: add apr and its services
+  arm64: dts: qcom: sm8250: add audio clock controllers
+  arm64: dts: qcom: sm8250: add lpass lpi pin controller node
+  arm64: dts: qcom: sm8250: add wsa and va codec macros
+  arm64: dts: qcom: sm8250: add mi2s pinconfs
+  arm64: dts: qcom: qrb5165-rb5: Add Audio support
+
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 125 +++++++++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi     | 327 +++++++++++++++++++++++
+ 2 files changed, 452 insertions(+)
+
+-- 
+2.21.0
 
