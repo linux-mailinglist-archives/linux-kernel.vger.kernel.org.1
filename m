@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D1D2C9CFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFB22C9DCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389231AbgLAJI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:08:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43674 "EHLO mail.kernel.org"
+        id S2389226AbgLAJ10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:27:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388831AbgLAJGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:06:48 -0500
+        id S1729310AbgLAJCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:02:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B635D206C1;
-        Tue,  1 Dec 2020 09:06:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA2A922264;
+        Tue,  1 Dec 2020 09:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813567;
-        bh=K//IOY9Vb8ru+mIm92M8ULH1E7sDdEbteHa07jMEsHg=;
+        s=korg; t=1606813316;
+        bh=ZploHyvQpLi4/wZRAUzOaJ4GV7pHlNY2+QTjfLfYheI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yqqXq2xqvMAJg9Y1fyPydojHjD5KK8bS3L4mvLFIubjUMsS240tcEBASTiWr6ErEh
-         zNFDqsNEqAUiRrvJaBHgAUL1w2pyD/7OhvSDSM5SNx7stoRE89NNSgp3jZIcqsQw7J
-         02fY/cNopTH2ucfxd5uagoAVBKfLF1Xg7hBz2IrM=
+        b=GTkf+hbt5MSzrpXLsEIl/oQHzfd0mJLlKVsVU8uZRp1LL83LkHRVBBRJTP5V2eImK
+         gIquvs39nTBcOUSP7ImXdKdqQGTew0DFKV1M1VRf6zR1+EQI+3pdIcz1MB8H3CYMvC
+         poShdwlMnW1sL0cb9R0gorAf03nRUNRCmFVSvuls=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, penghao <penghao@uniontech.com>
-Subject: [PATCH 5.4 83/98] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for Lenovo A630Z TIO built-in usb-audio card
+        stable@vger.kernel.org, Willem de Bruijn <willemb@google.com>,
+        Xiaochen Shen <xiaochen.shen@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>
+Subject: [PATCH 4.19 55/57] x86/resctrl: Remove superfluous kernfs_get() calls to prevent refcount leak
 Date:   Tue,  1 Dec 2020 09:54:00 +0100
-Message-Id: <20201201084659.113771711@linuxfoundation.org>
+Message-Id: <20201201084651.811488107@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +44,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: penghao <penghao@uniontech.com>
+From: Xiaochen Shen <xiaochen.shen@intel.com>
 
-commit 9ca57518361418ad5ae7dc38a2128fbf4855e1a2 upstream.
+commit fd8d9db3559a29fd737bcdb7c4fcbe1940caae34 upstream.
 
-Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
-usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
-seconds later by usb-audio disconnect interrupt to avoids the issue.
-eg dmesg:
-....
-[  626.974091 ] usb 7-1.1: USB disconnect, device number 3
-....
-....
-[ 1774.486691] usb 7-1.1: new full-speed USB device number 5 using xhci_hcd
-[ 1774.947742] usb 7-1.1: New USB device found, idVendor=17ef, idProduct=a012, bcdDevice= 0.55
-[ 1774.956588] usb 7-1.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[ 1774.964339] usb 7-1.1: Product: Thinkcentre TIO24Gen3 for USB-audio
-[ 1774.970999] usb 7-1.1: Manufacturer: Lenovo
-[ 1774.975447] usb 7-1.1: SerialNumber: 000000000000
-[ 1775.048590] usb 7-1.1: 2:1: cannot get freq at ep 0x1
-.......
-Seeking a better fix, we've tried a lot of things, including:
- - Check that the device's power/wakeup is disabled
- - Check that remote wakeup is off at the USB level
- - All the quirks in drivers/usb/core/quirks.c
-   e.g. USB_QUIRK_RESET_RESUME,
-        USB_QUIRK_RESET,
-        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
-        USB_QUIRK_NO_LPM.
+Willem reported growing of kernfs_node_cache entries in slabtop when
+repeatedly creating and removing resctrl subdirectories as well as when
+repeatedly mounting and unmounting the resctrl filesystem.
 
-but none of that makes any difference.
+On resource group (control as well as monitoring) creation via a mkdir
+an extra kernfs_node reference is obtained to ensure that the rdtgroup
+structure remains accessible for the rdtgroup_kn_unlock() calls where it
+is removed on deletion. The kernfs_node reference count is dropped by
+kernfs_put() in rdtgroup_kn_unlock().
 
-There are no errors in the logs showing any suspend/resume-related issues.
-When the system wakes up due to the modem, log-wise it appears to be a
-normal resume.
+With the above explaining the need for one kernfs_get()/kernfs_put()
+pair in resctrl there are more places where a kernfs_node reference is
+obtained without a corresponding release. The excessive amount of
+reference count on kernfs nodes will never be dropped to 0 and the
+kernfs nodes will never be freed in the call paths of rmdir and umount.
+It leads to reference count leak and kernfs_node_cache memory leak.
 
-Introduce a quirk to disable the port during suspend when the modem is
-detected.
+Remove the superfluous kernfs_get() calls and expand the existing
+comments surrounding the remaining kernfs_get()/kernfs_put() pair that
+remains in use.
 
-Signed-off-by: penghao <penghao@uniontech.com>
-Link: https://lore.kernel.org/r/20201118123039.11696-1-penghao@uniontech.com
-Cc: stable <stable@vger.kernel.org>
+Superfluous kernfs_get() calls are removed from two areas:
+
+  (1) In call paths of mount and mkdir, when kernfs nodes for "info",
+  "mon_groups" and "mon_data" directories and sub-directories are
+  created, the reference count of newly created kernfs node is set to 1.
+  But after kernfs_create_dir() returns, superfluous kernfs_get() are
+  called to take an additional reference.
+
+  (2) kernfs_get() calls in rmdir call paths.
+
+Backporting notes:
+
+Since upstream commit fa7d949337cc ("x86/resctrl: Rename and move rdt
+files to a separate directory"), the file
+arch/x86/kernel/cpu/intel_rdt_rdtgroup.c has been renamed and moved to
+arch/x86/kernel/cpu/resctrl/rdtgroup.c.
+Apply the change against file arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
+for older stable trees.
+
+Fixes: 17eafd076291 ("x86/intel_rdt: Split resource group removal in two")
+Fixes: 4af4a88e0c92 ("x86/intel_rdt/cqm: Add mount,umount support")
+Fixes: f3cbeacaa06e ("x86/intel_rdt/cqm: Add rmdir support")
+Fixes: d89b7379015f ("x86/intel_rdt/cqm: Add mon_data")
+Fixes: c7d9aac61311 ("x86/intel_rdt/cqm: Add mkdir support for RDT monitoring")
+Fixes: 5dc1d5c6bac2 ("x86/intel_rdt: Simplify info and base file lists")
+Fixes: 60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
+Fixes: 4e978d06dedb ("x86/intel_rdt: Add "info" files to resctrl file system")
+Reported-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Tested-by: Willem de Bruijn <willemb@google.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/1604085053-31639-1-git-send-email-xiaochen.shen@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/core/quirks.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/kernel/cpu/intel_rdt_rdtgroup.c |   35 +------------------------------
+ 1 file changed, 2 insertions(+), 33 deletions(-)
 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -421,6 +421,10 @@ static const struct usb_device_id usb_qu
- 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
- 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
+--- a/arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
++++ b/arch/x86/kernel/cpu/intel_rdt_rdtgroup.c
+@@ -1626,7 +1626,6 @@ static int rdtgroup_mkdir_info_resdir(st
+ 	if (IS_ERR(kn_subdir))
+ 		return PTR_ERR(kn_subdir);
  
-+	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
-+	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
-+			USB_QUIRK_DISCONNECT_SUSPEND },
-+
- 	/* BUILDWIN Photo Frame */
- 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
- 			USB_QUIRK_HONOR_BNUMINTERFACES },
+-	kernfs_get(kn_subdir);
+ 	ret = rdtgroup_kn_set_ugid(kn_subdir);
+ 	if (ret)
+ 		return ret;
+@@ -1649,7 +1648,6 @@ static int rdtgroup_create_info_dir(stru
+ 	kn_info = kernfs_create_dir(parent_kn, "info", parent_kn->mode, NULL);
+ 	if (IS_ERR(kn_info))
+ 		return PTR_ERR(kn_info);
+-	kernfs_get(kn_info);
+ 
+ 	ret = rdtgroup_add_files(kn_info, RF_TOP_INFO);
+ 	if (ret)
+@@ -1670,12 +1668,6 @@ static int rdtgroup_create_info_dir(stru
+ 			goto out_destroy;
+ 	}
+ 
+-	/*
+-	 * This extra ref will be put in kernfs_remove() and guarantees
+-	 * that @rdtgrp->kn is always accessible.
+-	 */
+-	kernfs_get(kn_info);
+-
+ 	ret = rdtgroup_kn_set_ugid(kn_info);
+ 	if (ret)
+ 		goto out_destroy;
+@@ -1704,12 +1696,6 @@ mongroup_create_dir(struct kernfs_node *
+ 	if (dest_kn)
+ 		*dest_kn = kn;
+ 
+-	/*
+-	 * This extra ref will be put in kernfs_remove() and guarantees
+-	 * that @rdtgrp->kn is always accessible.
+-	 */
+-	kernfs_get(kn);
+-
+ 	ret = rdtgroup_kn_set_ugid(kn);
+ 	if (ret)
+ 		goto out_destroy;
+@@ -2025,7 +2011,6 @@ static struct dentry *rdt_mount(struct f
+ 			dentry = ERR_PTR(ret);
+ 			goto out_info;
+ 		}
+-		kernfs_get(kn_mongrp);
+ 
+ 		ret = mkdir_mondata_all(rdtgroup_default.kn,
+ 					&rdtgroup_default, &kn_mondata);
+@@ -2033,7 +2018,6 @@ static struct dentry *rdt_mount(struct f
+ 			dentry = ERR_PTR(ret);
+ 			goto out_mongrp;
+ 		}
+-		kernfs_get(kn_mondata);
+ 		rdtgroup_default.mon.mon_data_kn = kn_mondata;
+ 	}
+ 
+@@ -2326,11 +2310,6 @@ static int mkdir_mondata_subdir(struct k
+ 	if (IS_ERR(kn))
+ 		return PTR_ERR(kn);
+ 
+-	/*
+-	 * This extra ref will be put in kernfs_remove() and guarantees
+-	 * that kn is always accessible.
+-	 */
+-	kernfs_get(kn);
+ 	ret = rdtgroup_kn_set_ugid(kn);
+ 	if (ret)
+ 		goto out_destroy;
+@@ -2622,8 +2601,8 @@ static int mkdir_rdt_prepare(struct kern
+ 	/*
+ 	 * kernfs_remove() will drop the reference count on "kn" which
+ 	 * will free it. But we still need it to stick around for the
+-	 * rdtgroup_kn_unlock(kn} call below. Take one extra reference
+-	 * here, which will be dropped inside rdtgroup_kn_unlock().
++	 * rdtgroup_kn_unlock(kn) call. Take one extra reference here,
++	 * which will be dropped inside rdtgroup_kn_unlock().
+ 	 */
+ 	kernfs_get(kn);
+ 
+@@ -2838,11 +2817,6 @@ static int rdtgroup_rmdir_mon(struct ker
+ 	WARN_ON(list_empty(&prdtgrp->mon.crdtgrp_list));
+ 	list_del(&rdtgrp->mon.crdtgrp_list);
+ 
+-	/*
+-	 * one extra hold on this, will drop when we kfree(rdtgrp)
+-	 * in rdtgroup_kn_unlock()
+-	 */
+-	kernfs_get(kn);
+ 	kernfs_remove(rdtgrp->kn);
+ 
+ 	return 0;
+@@ -2854,11 +2828,6 @@ static int rdtgroup_ctrl_remove(struct k
+ 	rdtgrp->flags = RDT_DELETED;
+ 	list_del(&rdtgrp->rdtgroup_list);
+ 
+-	/*
+-	 * one extra hold on this, will drop when we kfree(rdtgrp)
+-	 * in rdtgroup_kn_unlock()
+-	 */
+-	kernfs_get(kn);
+ 	kernfs_remove(rdtgrp->kn);
+ 	return 0;
+ }
 
 
