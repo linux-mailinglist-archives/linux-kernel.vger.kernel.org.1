@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93E62CA92B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E322CA930
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392240AbgLAQ54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:57:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391923AbgLAQ5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:57:55 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2391241AbgLAQ6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:58:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727529AbgLAQ6n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:58:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606841837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4Ro4gapDF/c1vHKexZiNGzqQBi5h9f7igOkn2/s1ehI=;
+        b=KfgYPkqjdH2p3lnep1vgh30v2tU4Wai0TvX4BaW/QBimmOn9AI98VV3YDMef30B2boDl45
+        3foFcNdNdiid9QdEuZO9Y7tKfFkLboYuDa7j8f0OrdkfUcTaxuz3nY5pK7xMvWRcsu/BHm
+        0hTzw0Wrs1xytejzWrgaVTrAJdhm3/o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-niUJn-4kNAuxnRoPOyqzVw-1; Tue, 01 Dec 2020 11:57:14 -0500
+X-MC-Unique: niUJn-4kNAuxnRoPOyqzVw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF72D208FE;
-        Tue,  1 Dec 2020 16:57:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606841835;
-        bh=TD1OZINnY67L3Dc0uTdiWI+k0pIiWGWqD8B7hdSEwtY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cerhKoK4Goj22/4KIM/bZh+JacRzL+mMtrkqnS6nd/4K2XghIlz8IpR945QMidmyU
-         Bv/DyiZUVDLW/UDzs5/v77e4wKdS05kZ6yP0QTdtUrTFOi7XCR9G5bD1WLtJruPVuH
-         XPEPDg1fqmG/FzNrr/srx2Q9oL89rLAXy6TgnlHI=
-Date:   Tue, 1 Dec 2020 16:57:08 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 03/14] KVM: arm64: Kill 32-bit vCPUs on systems with
- mismatched EL0 support
-Message-ID: <20201201165707.GF27783@willie-the-truck>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-4-will@kernel.org>
- <9bd06b193e7fb859a1207bb1302b7597@kernel.org>
- <20201127115304.GB20564@willie-the-truck>
- <583c4074bbd4cf8b8085037745a5d1c0@kernel.org>
- <20201127172434.GA984327@google.com>
- <9de8639549040b4478b312503fd5a23f@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E86181084427;
+        Tue,  1 Dec 2020 16:57:12 +0000 (UTC)
+Received: from liberator.sandeen.net (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D32219D61;
+        Tue,  1 Dec 2020 16:57:12 +0000 (UTC)
+Subject: [PATCH 1/2] uapi: fix statx attribute value overlap for DAX &
+ MOUNT_ROOT
+To:     torvalds@linux-foundation.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
+References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+From:   Eric Sandeen <sandeen@redhat.com>
+Message-ID: <7027520f-7c79-087e-1d00-743bdefa1a1e@redhat.com>
+Date:   Tue, 1 Dec 2020 10:57:11 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9de8639549040b4478b312503fd5a23f@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 06:16:35PM +0000, Marc Zyngier wrote:
-> On 2020-11-27 17:24, Quentin Perret wrote:
-> > On Friday 27 Nov 2020 at 17:14:11 (+0000), Marc Zyngier wrote:
-> 
-> [...]
-> 
-> > > Yeah, the sanitized read feels better, if only because that is
-> > > what we are going to read in all the valid cases, unfortunately.
-> > > read_sanitised_ftr_reg() is sadly not designed to be called on
-> > > a fast path, meaning that 32bit guests will do a bsearch() on
-> > > the ID-regs every time they exit...
-> > > 
-> > > I guess we will have to evaluate how much we loose with this.
-> > 
-> > Could we use the trick we have for arm64_ftr_reg_ctrel0 to speed this
-> > up?
-> 
-> Maybe. I want to first verify whether this has any measurable impact.
-> Another possibility would be to cache the last read_sanitised_ftr_reg()
-> access, just to see if that helps. There shouldn't be that many code
-> paths hammering it.
+STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same value,
+so one of them needs fixing. Move STATX_ATTR_DAX.
 
-We don't have huge numbers of ID registers, so the bsearch shouldn't be
-too expensive. However, I'd like to remind myself why we can't index into
-the feature register array directly as we _should_ know all of this stuff
-at compile time, right?
+While we're in here, clarify the value-matching scheme for some of the
+attributes, and explain why the value for DAX does not match.
 
-Will
+Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+---
+ include/uapi/linux/stat.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+index 82cc58fe9368..9ad19eb9bbbf 100644
+--- a/include/uapi/linux/stat.h
++++ b/include/uapi/linux/stat.h
+@@ -171,9 +171,10 @@ struct statx {
+  * be of use to ordinary userspace programs such as GUIs or ls rather than
+  * specialised tools.
+  *
+- * Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
++ * Note that the flags marked [I] correspond to the FS_IOC_SETFLAGS flags
+  * semantically.  Where possible, the numerical value is picked to correspond
+- * also.
++ * also. Note that the DAX attribute indicates that the inode is currently
++ * DAX-enabled, not simply that the per-inode flag has been set.
+  */
+ #define STATX_ATTR_COMPRESSED		0x00000004 /* [I] File is compressed by the fs */
+ #define STATX_ATTR_IMMUTABLE		0x00000010 /* [I] File is marked immutable */
+@@ -183,7 +184,7 @@ struct statx {
+ #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
+ #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
+ #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
+-#define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
++#define STATX_ATTR_DAX			0x00400000 /* File is currently DAX-enabled */
+ 
+ 
+ #endif /* _UAPI_LINUX_STAT_H */
+-- 
+2.17.0
+
