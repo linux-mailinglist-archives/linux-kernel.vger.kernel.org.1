@@ -2,196 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FF62CA346
+	by mail.lfdr.de (Postfix) with ESMTP id A88CD2CA347
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgLAM5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        id S1728826AbgLAM5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:57:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgLAM5i (ORCPT
+        with ESMTP id S1726589AbgLAM5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:57:38 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41DFAC061A4B
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:56:52 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id v14so2606327wml.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:56:52 -0800 (PST)
+        Tue, 1 Dec 2020 07:57:42 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBE3C061A49
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:56:49 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id e7so2478941wrv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:56:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+e54grMGH+3x/X56AP2qTQeH5OWhU1Fo6l1imoZcFiA=;
-        b=q5ZyriwEe3J/eFk8Vn+yKFgDuUFOWx4hX7wSZgVazYXvVWPT1h/fPwARvvxom+tRs5
-         7BUB9Te/ks9+jJoPR0KmKVNtpOv6Bw0TGV2swvHt5/QNR/RETRrjVyCbJj8eU4qt9FCm
-         f2BIaJQycoZqrWcJQMhddMnfM9Z22ZCbHfC9fqvs6h7JW/aqaHxIZwl9ioFXDQnt4dXz
-         UD4+OgmWHZ0niTxzBwFJBRe8yLdeWNQj8Ujw5jYZMjvCy8VgO8ONBqCHzgQp+6APm75v
-         pcEzVH7nm3g1i41r07OirPSXj9w2Cm/A4dEKhgDZqHFQ+S+lMhjyiujCItXhZojqQKgU
-         DJWQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=fhSdydiNHIuE7kH/VZv5LNrrxvRIALi9bCyYo0cAOQ0=;
+        b=GBU61fFcIfgXME5qVa36xFJVFJmb5+EHsvpQuu7GUNrca+sC99MVJa5L3eXYGY/ue6
+         vdeiDP5CstZt8slf4x3ydVOXINeGZElSS0q8mbuRJvo6Oqwe3F/cohI9+8Dctlke5zAs
+         iBJHA+WM/dzYl8ENXWS1nAFYIlYtk9O8bO7h/hv1Gg8OJbrpYerXmC11DJn2tcMn60JM
+         R0LUj26CsIy4MI6mFnbb5TJS7rlRV/CJ0eE8mqt7lXv9PQKD+LghHjpWccgBryN6KDJ1
+         QqgwV6HnY3qwDzziY9sCwy8lwtq8pK7Xz55e2dVFbR/or3HpVdiqom+tOB5TDbf1QNKB
+         GMTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+e54grMGH+3x/X56AP2qTQeH5OWhU1Fo6l1imoZcFiA=;
-        b=M3Ri1iiIsLKCAWD/p3OGAx9HHeJg35aSEzvPH9FEOn7ffXB3ica36Q7CZAEggK71Nb
-         VCP1tKr9XmnCPPUanPltRaGZUoNp0q7w/+ZVBrqb6sYlguyXj5oEhyuugpRfz8owckk0
-         DksVW4+GDdBTk7WaLpQmZ8NbaUX3yJPbpWgLmsA0sqFtx7F7WgBChHtmzfwuP5QbnfIH
-         jAd8SQnzJNpJTY7k1K/nt6MNVs36J5JjXlLS6i3o/Sy3SX/L6Q92v+wdkga1VqPmIRyk
-         RLzEhz41W+I9SYvPZFL9c47QgVoI/lkVxN8o2bXmMdmQ+GuxWh4oXVndQfir/H7RjFJJ
-         jkyQ==
-X-Gm-Message-State: AOAM531D3Rb53VNcFrpzggG+XJWEJEWLj99VLRHzqBVpOGVv+zIW8/bv
-        25+i3WNz1LMRdnzUwE3gvCzU9g==
-X-Google-Smtp-Source: ABdhPJyuSsCeTIVAfNFzmw/CBCJqCRxgpiA4F6h0YkauNZ7Pp5uLQ32w3lRdBmm+0WLkkGD190K1Qw==
-X-Received: by 2002:a1c:f617:: with SMTP id w23mr2595979wmc.52.1606827407331;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fhSdydiNHIuE7kH/VZv5LNrrxvRIALi9bCyYo0cAOQ0=;
+        b=D/Rh6VuAwqwNZMtgQlTu6/yJcj5iVD8KOWrmdc4R5MaQg7h9rfvh3fwYEz15+uK5z4
+         rnZbCCi+Ce67UJozH9OE/YRcdMT1KfsUl5v4YViqoIi1A8l+VgQgOm3gEkzbBCah7YrF
+         jxhSpxdR7n99pxT8R4NQLeYF2AoFYiCTwzrTSyLBzTP3QT8weLP1K63HWTo3qq04p3l4
+         B08oMdK8udiT8nWbqJcKOLPIJyS+07stW99inIaP/fqDegcxP+ieQqNfAOTllf/gGLxD
+         FA25pWXdxTUEtaJVhnCXHnw7iZqsgtWI9vF8/jxiyDjDlnv3Sj89fNS1/eSlgtTbFJas
+         TRkQ==
+X-Gm-Message-State: AOAM533cs0wW4KI2FYFto02moK13pxtfdYJvKxhU/6OU84JJsPT4PYfB
+        uhktO83wFONSfupLG3aMkuaZzQ==
+X-Google-Smtp-Source: ABdhPJzQ1k3k98QkgMHXg5Y+DER3dcc331ppnIuJxF97i7TDGLT/iMqZRO5mfpwO6uJSzeSvhQu5ow==
+X-Received: by 2002:a5d:4e87:: with SMTP id e7mr3887518wru.70.1606827408027;
+        Tue, 01 Dec 2020 04:56:48 -0800 (PST)
+Received: from MacBook-Pro.local ([212.45.64.13])
+        by smtp.googlemail.com with ESMTPSA id t136sm2859898wmt.18.2020.12.01.04.56.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 01 Dec 2020 04:56:47 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id y130sm3074687wmc.22.2020.12.01.04.56.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 04:56:46 -0800 (PST)
-Date:   Tue, 1 Dec 2020 12:56:42 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 bpf-next 12/13] bpf: Add tests for new BPF atomic
- operations
-Message-ID: <20201201125642.GH2114905@google.com>
-References: <20201127175738.1085417-1-jackmanb@google.com>
- <20201127175738.1085417-13-jackmanb@google.com>
- <1e1656a9-6f0e-f17e-176c-37d996641e9a@fb.com>
+Subject: Re: [PATCH v2 1/7] arm64: dts: imx8m: Add NOC nodes
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>, robh@kernel.org,
+        shawnguo@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
+        will@kernel.org, cdleonard@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Leonard Crestez <leonard.crestez@nxp.com>
+References: <20201201123932.12312-1-martin.kepplinger@puri.sm>
+ <20201201123932.12312-2-martin.kepplinger@puri.sm>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Message-ID: <4d089936-65fe-8601-73e7-0424d363b6f2@linaro.org>
+Date:   Tue, 1 Dec 2020 14:56:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1e1656a9-6f0e-f17e-176c-37d996641e9a@fb.com>
+In-Reply-To: <20201201123932.12312-2-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 07:55:02PM -0800, Yonghong Song wrote:
-> On 11/27/20 9:57 AM, Brendan Jackman wrote:
-[...]
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 3d5940cd110d..5eadfd09037d 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -228,6 +228,12 @@ IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
-> >   			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
-> >   MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
-> > +# Determine if Clang supports BPF arch v4, and therefore atomics.
-> > +CLANG_SUPPORTS_V4=$(if $(findstring v4,$(shell $(CLANG) --target=bpf -mcpu=? 2>&1)),true,)
-> > +ifeq ($(CLANG_SUPPORTS_V4),true)
-> > +	CFLAGS += -DENABLE_ATOMICS_TESTS
-> > +endif
-> > +
-> >   CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
-> >   BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
-> >   	     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)			\
-> > @@ -250,7 +256,9 @@ define CLANG_BPF_BUILD_RULE
-> >   	$(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
-> >   	$(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm			\
-> >   		-c $1 -o - || echo "BPF obj compilation failed") | 	\
-> > -	$(LLC) -mattr=dwarfris -march=bpf -mcpu=v3 $4 -filetype=obj -o $2
-> > +	$(LLC) -mattr=dwarfris -march=bpf				\
-> > +		-mcpu=$(if $(CLANG_SUPPORTS_V4),v4,v3)			\
-> > +		$4 -filetype=obj -o $2
-> >   endef
-> >   # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
-> >   define CLANG_NOALU32_BPF_BUILD_RULE
-> > @@ -391,7 +399,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
-> >   TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
-> >   		       $(wildcard progs/btf_dump_test_case_*.c)
-> >   TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-> > -TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
-> > +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) $(if $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)
-> 
-> If the compiler indeed supports cpu v4 (i.e., atomic insns),
-> -DENABLE_ATOMICS_TESTS will be added to TRUNNER_BPF_FLAGS and
-> eventually -DENABLE_ATOMICS_TESTS is also available for
-> no-alu32 test and this will cause compilation error.
-> 
-> I did the following hack to workaround the issue, i.e., only adds
-> the definition to default (alu32) test run.
-> 
-> index 5eadfd09037d..3d1320fd93eb 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -230,9 +230,6 @@ MENDIAN=$(if
-> $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
-> 
->  # Determine if Clang supports BPF arch v4, and therefore atomics.
->  CLANG_SUPPORTS_V4=$(if $(findstring v4,$(shell $(CLANG) --target=bpf
-> -mcpu=? 2>&1)),true,)
-> -ifeq ($(CLANG_SUPPORTS_V4),true)
-> -       CFLAGS += -DENABLE_ATOMICS_TESTS
-> -endif
-> 
->  CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
->  BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                  \
-> @@ -255,6 +252,7 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
->  define CLANG_BPF_BUILD_RULE
->         $(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
->         $(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm                     \
-> +               $(if $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)      \
->                 -c $1 -o - || echo "BPF obj compilation failed") |      \
->         $(LLC) -mattr=dwarfris -march=bpf                               \
->                 -mcpu=$(if $(CLANG_SUPPORTS_V4),v4,v3)                  \
-> @@ -399,7 +397,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c
-> trace_helpers.c      \
->  TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read                          \
->                        $(wildcard progs/btf_dump_test_case_*.c)
->  TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-> -TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) $(if
-> $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)
-> +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
->  TRUNNER_BPF_LDFLAGS := -mattr=+alu32
->  $(eval $(call DEFINE_TEST_RUNNER,test_progs))
+Hi Martin,
 
-Ah, good point. I think your "hack" actually improves the overall result
-anyway since it avoids the akward global mutation of CFLAGS. Thanks!
+Thank you for sending the patches.
 
-I wonder if we should actually have Clang define a built-in macro to say
-that the atomics are supported?
-
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/atomics_test.c b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
-> > new file mode 100644
-> > index 000000000000..8ecc0392fdf9
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
-> > @@ -0,0 +1,329 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <test_progs.h>
-> > +
-> > +#ifdef ENABLE_ATOMICS_TESTS
-> > +
-> > +#include "atomics_test.skel.h"
-> > +
-> > +static void test_add(void)
-> [...]
-> > +
-> > +#endif /* ENABLE_ATOMICS_TESTS */
-> > diff --git a/tools/testing/selftests/bpf/progs/atomics_test.c b/tools/testing/selftests/bpf/progs/atomics_test.c
-[...]
-> > +__u64 xor64_value = (0x110ull << 32);
-> > +__u64 xor64_result = 0;
-> > +__u32 xor32_value = 0x110;
-> > +__u32 xor32_result = 0;
-> > +SEC("fentry/bpf_fentry_test1")
-> > +int BPF_PROG(xor, int a)
-> > +{
-> > +	xor64_result = __sync_fetch_and_xor(&xor64_value, 0x011ull << 32);
-> > +	xor32_result = __sync_fetch_and_xor(&xor32_value, 0x011);
-> > +
-> > +	return 0;
-> > +}
+On 1.12.20 14:39, Martin Kepplinger wrote:
+> From: Leonard Crestez <leonard.crestez@nxp.com>
 > 
-> All above __sync_fetch_and_{add, sub, and, or, xor} produces a return
-> value used later. To test atomic_<op> instructions, it will be good if
-> you can add some tests which ignores the return value.
+> Add initial support for dynamic frequency scaling of main NOC.
+> 
+> Make DDRC the parent of the NOC (using passive governor) so that the
+> main NOC is automatically scaled together with DDRC by default.
+> 
+> Support for proactive scaling via interconnect will come on top.
+> 
+> Signed-off-by: Leonard Crestez <leonard.crestez@nxp.com>
+> Tested-by: Martin Kepplinger <martin.kepplinger@puri.sm> (imx8mq)
 
-Good idea - adding an extra case to each prog. This won't assert that
-LLVM is generating "optimal" code (without BPF_FETCH) but we can at
-least get some confidence we aren't generating total garbage.
+As you are sending this, i believe that it should have your signed-off 
+line (please check Documentation/process/submitting-patches.rst).
+
+Also please give people some time to look into this (at least 1-2 weeks) 
+before submitting a new version.
+
+Thanks,
+Georgi
+
+> ---
+>   arch/arm64/boot/dts/freescale/imx8mm.dtsi | 22 ++++++++++++++++++++++
+>   arch/arm64/boot/dts/freescale/imx8mn.dtsi | 22 ++++++++++++++++++++++
+>   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 22 ++++++++++++++++++++++
+>   3 files changed, 66 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index c824f2615fe8..835b19f0ea42 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -921,6 +921,28 @@
+>   
+>   		};
+>   
+> +		noc: interconnect@32700000 {
+> +			compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
+> +			reg = <0x32700000 0x100000>;
+> +			clocks = <&clk IMX8MM_CLK_NOC>;
+> +			devfreq = <&ddrc>;
+> +			operating-points-v2 = <&noc_opp_table>;
+> +
+> +			noc_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-150M {
+> +					opp-hz = /bits/ 64 <150000000>;
+> +				};
+> +				opp-375M {
+> +					opp-hz = /bits/ 64 <375000000>;
+> +				};
+> +				opp-750M {
+> +					opp-hz = /bits/ 64 <750000000>;
+> +				};
+> +			};
+> +		};
+> +
+>   		aips4: bus@32c00000 {
+>   			compatible = "fsl,aips-bus", "simple-bus";
+>   			reg = <0x32c00000 0x400000>;
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> index a06d2a6268e6..8e2d413f97d4 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> @@ -772,6 +772,28 @@
+>   
+>   		};
+>   
+> +		noc: interconnect@32700000 {
+> +			compatible = "fsl,imx8mn-noc", "fsl,imx8m-noc";
+> +			reg = <0x32700000 0x100000>;
+> +			clocks = <&clk IMX8MN_CLK_NOC>;
+> +			devfreq = <&ddrc>;
+> +			operating-points-v2 = <&noc_opp_table>;
+> +
+> +			noc_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-100M {
+> +					opp-hz = /bits/ 64 <100000000>;
+> +				};
+> +				opp-600M {
+> +					opp-hz = /bits/ 64 <600000000>;
+> +				};
+> +				opp-800M {
+> +					opp-hz = /bits/ 64 <800000000>;
+> +				};
+> +			};
+> +		};
+> +
+>   		aips4: bus@32c00000 {
+>   			compatible = "fsl,aips-bus", "simple-bus";
+>   			reg = <0x32c00000 0x400000>;
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> index a841a023e8e0..d139a46ee8ce 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> @@ -1158,6 +1158,28 @@
+>   			};
+>   		};
+>   
+> +		noc: interconnect@32700000 {
+> +			compatible = "fsl,imx8mq-noc", "fsl,imx8m-noc";
+> +			reg = <0x32700000 0x100000>;
+> +			clocks = <&clk IMX8MQ_CLK_NOC>;
+> +			devfreq = <&ddrc>;
+> +			operating-points-v2 = <&noc_opp_table>;
+> +
+> +			noc_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-133M {
+> +					opp-hz = /bits/ 64 <133333333>;
+> +				};
+> +				opp-400M {
+> +					opp-hz = /bits/ 64 <400000000>;
+> +				};
+> +				opp-800M {
+> +					opp-hz = /bits/ 64 <800000000>;
+> +				};
+> +			};
+> +		};
+> +
+>   		bus@32c00000 { /* AIPS4 */
+>   			compatible = "fsl,aips-bus", "simple-bus";
+>   			reg = <0x32c00000 0x400000>;
+> 
+
