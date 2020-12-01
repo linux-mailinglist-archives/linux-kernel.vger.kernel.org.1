@@ -2,212 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6F92CA5AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031272CA5B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 15:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391334AbgLAObR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 09:31:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388915AbgLAObR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:31:17 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A88C061A04
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 06:30:04 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id f9so4524901ejw.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:30:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WO5uI3wqo8BxEatZNnJUdmrNd6YvRjUl6nOzRzJj5ts=;
-        b=tDivfi4snLHRZnjcpXGbIG3jOFgykooGKj6LDmom5rwgcJ9bA+LT4oCpxnNPitfgIG
-         +gDkujk+ret3qH59dm5T9KNZG6TW/myRcKpl7HqRDHVL+zBvMLoZVGEy+wW/CIvmfYwm
-         G1GFmktC6qroZT7miiE190NoI0L4AxnTx908dxDVVI0YjKjO/l0Uly+5Xau3B81c0MHK
-         Z7oCNHTmNhVKdwTQQy9PMMQfdKazkGGVF2yc7sFYPKtayW7xWjSZcdVRiSFYCUPwP+0S
-         SKkoFPx1a12mMXZlGTupySZD3sJvsEQswaSY56MqHQGU9Q9elTyagouVqDbzUL7Q9zS+
-         WDLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=WO5uI3wqo8BxEatZNnJUdmrNd6YvRjUl6nOzRzJj5ts=;
-        b=NJapZrLcn1QEMrsMt3NoYl6fi2GKaNRaa0derBpgm3rWdEsf/J9goda2VrfwaMKR1z
-         z5GhL/yKEbr+y7hgR8cE81zi7LLPBketzUsQGnMFlsRDpRfVCvhzpN6OTjFCy322xNvn
-         q7DYM1bZHCpEUfQ/uareSqZ8x85qoqZqwCDawr3IrKNxVP95wLza2ToKhSWQZtULHEcV
-         XC4pz6B4ERfUduUM5L4MUhFLTLgiyiGBWGT64Ngga1z9V+0TtOERSRHdJAYHgvQss+1w
-         khd++d0u+gwodiB/xoPyMK6nFD1vKHEYVvyXBsdH1x61EXflQ37Z5RORvtLBvNbDymPR
-         dC8g==
-X-Gm-Message-State: AOAM530ckb4Ni3ar3G37olIb0LeTO0/oGLe+FcpiC6nb7Ud3OK0cJaNH
-        JKBy6Nj/yIdd4BvEf8Z7OiOcOBlYT/K1SsMr
-X-Google-Smtp-Source: ABdhPJy6E1/hUVZhiVShCZ9UIUdnza6vjqzW8pG4frcVUCvFe94wBK0kPaiqudlfun797Xks+yQmBw==
-X-Received: by 2002:a17:906:1405:: with SMTP id p5mr3206491ejc.282.1606833001611;
-        Tue, 01 Dec 2020 06:30:01 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id q5sm924676ejr.89.2020.12.01.06.30.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Dec 2020 06:30:01 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jolly Shah <jolly.shah@xilinx.com>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Ravi Patel <ravi.patel@xilinx.com>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Tejas Patel <tejas.patel@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] firmware: xilinx: Fix kernel-doc warnings
-Date:   Tue,  1 Dec 2020 15:29:59 +0100
-Message-Id: <e606233d15bfdc594535dd34eb85472b42f61830.1606832997.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.29.2
+        id S2403878AbgLAObt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 09:31:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403838AbgLAObs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:31:48 -0500
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5188C2087C
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 14:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606833067;
+        bh=iKyVt3ei4IjF6uUcpgpDuCr1OPzvs8ktfZvmbaiq0V4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oMsqBM0RKejCzfstwlt6YyEpaxDWsKgOG+o0IPk82w9kBAgkGtQL6ftCiJ8ERMZ2u
+         cgwTOds2N8B26XkSvBv5MlYgDUiE9ylwA2mJ0qy/1mmvH+QikgJwL40rAjTzcrQnRt
+         8tIXOjHigZTfKj6SbWHaYT2ryjk+BGEnLXZ0qT3E=
+Received: by mail-ej1-f48.google.com with SMTP id d17so4495243ejy.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 06:31:07 -0800 (PST)
+X-Gm-Message-State: AOAM532hT5/77+YFCwtLALAYFeId+DEUwwXYE1Bb2JPoGSZKiAFjcbqj
+        7yiB0rUZ4kfbWh4qJt99xAVsThfuIthGuOq4jg==
+X-Google-Smtp-Source: ABdhPJzlHxdV4VGqzoWpb7rYlMAdgwMJ1nH13c0Yed4GR1AZ/tKtVHvegqEicS3dnzhWhT9kSKQM68aoJzZdQwO0v8w=
+X-Received: by 2002:a17:906:af0a:: with SMTP id lx10mr3263894ejb.75.1606833065729;
+ Tue, 01 Dec 2020 06:31:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201116231407.94-1-chunkuang.hu@kernel.org> <20201116231407.94-3-chunkuang.hu@kernel.org>
+ <20201130103411.GN8403@vkoul-mobl>
+In-Reply-To: <20201130103411.GN8403@vkoul-mobl>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 1 Dec 2020 22:30:54 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-Dkn_cwb39+G3SHJZdKdiBk9fsUWJN8sfM2fhLbVT8tg@mail.gmail.com>
+Message-ID: <CAAOTY_-Dkn_cwb39+G3SHJZdKdiBk9fsUWJN8sfM2fhLbVT8tg@mail.gmail.com>
+Subject: Re: [RESEND PATCH 2/3] phy: mediatek: Move mtk_mipi_dsi_phy driver
+ into drivers/phy/mediatek folder
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel-doc is reporting some style issues. The patch is fixing them.
+Hi, Vinod:
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+Vinod Koul <vkoul@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8830=E6=97=A5=
+ =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=886:34=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On 17-11-20, 07:14, Chun-Kuang Hu wrote:
+> > mtk_mipi_dsi_phy is currently placed inside mediatek drm driver, but it=
+'s
+> > more suitable to place a phy driver into phy driver folder, so move
+> > mtk_mipi_dsi_phy driver into phy driver folder.
+>
+> Acked-By: Vinod Koul <vkoul@kernel.org>
+>
+> I am thinking this would go thru drm-tree, if not let me know I would
+> apply this
 
- drivers/firmware/xilinx/zynqmp.c | 46 ++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+Applied to mediatek-drm-next [1], thanks.
 
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index d6f12c89c6f3..ddf8e4e72584 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -585,13 +585,13 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_get_pll_frac_data);
- /**
-  * zynqmp_pm_set_sd_tapdelay() -  Set tap delay for the SD device
-  *
-- * @node_id	Node ID of the device
-- * @type	Type of tap delay to set (input/output)
-- * @value	Value to set fot the tap delay
-+ * @node_id:	Node ID of the device
-+ * @type:	Type of tap delay to set (input/output)
-+ * @value:	Value to set fot the tap delay
-  *
-  * This function sets input/output tap delay for the SD device.
-  *
-- * @return	Returns status, either success or error+reason
-+ * Return:	Returns status, either success or error+reason
-  */
- int zynqmp_pm_set_sd_tapdelay(u32 node_id, u32 type, u32 value)
- {
-@@ -603,12 +603,12 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_set_sd_tapdelay);
- /**
-  * zynqmp_pm_sd_dll_reset() - Reset DLL logic
-  *
-- * @node_id	Node ID of the device
-- * @type	Reset type
-+ * @node_id:	Node ID of the device
-+ * @type:	Reset type
-  *
-  * This function resets DLL logic for the SD device.
-  *
-- * @return	Returns status, either success or error+reason
-+ * Return:	Returns status, either success or error+reason
-  */
- int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
- {
-@@ -619,12 +619,12 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
- 
- /**
-  * zynqmp_pm_write_ggs() - PM API for writing global general storage (ggs)
-- * @index	GGS register index
-- * @value	Register value to be written
-+ * @index:	GGS register index
-+ * @value:	Register value to be written
-  *
-  * This function writes value to GGS register.
-  *
-- * @return      Returns status, either success or error+reason
-+ * Return:      Returns status, either success or error+reason
-  */
- int zynqmp_pm_write_ggs(u32 index, u32 value)
- {
-@@ -635,12 +635,12 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_write_ggs);
- 
- /**
-  * zynqmp_pm_write_ggs() - PM API for reading global general storage (ggs)
-- * @index	GGS register index
-- * @value	Register value to be written
-+ * @index:	GGS register index
-+ * @value:	Register value to be written
-  *
-  * This function returns GGS register value.
-  *
-- * @return      Returns status, either success or error+reason
-+ * Return:	Returns status, either success or error+reason
-  */
- int zynqmp_pm_read_ggs(u32 index, u32 *value)
- {
-@@ -652,12 +652,12 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_read_ggs);
- /**
-  * zynqmp_pm_write_pggs() - PM API for writing persistent global general
-  *			     storage (pggs)
-- * @index	PGGS register index
-- * @value	Register value to be written
-+ * @index:	PGGS register index
-+ * @value:	Register value to be written
-  *
-  * This function writes value to PGGS register.
-  *
-- * @return      Returns status, either success or error+reason
-+ * Return:	Returns status, either success or error+reason
-  */
- int zynqmp_pm_write_pggs(u32 index, u32 value)
- {
-@@ -669,12 +669,12 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_write_pggs);
- /**
-  * zynqmp_pm_write_pggs() - PM API for reading persistent global general
-  *			     storage (pggs)
-- * @index	PGGS register index
-- * @value	Register value to be written
-+ * @index:	PGGS register index
-+ * @value:	Register value to be written
-  *
-  * This function returns PGGS register value.
-  *
-- * @return      Returns status, either success or error+reason
-+ * Return:	Returns status, either success or error+reason
-  */
- int zynqmp_pm_read_pggs(u32 index, u32 *value)
- {
-@@ -685,12 +685,12 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_read_pggs);
- 
- /**
-  * zynqmp_pm_set_boot_health_status() - PM API for setting healthy boot status
-- * @value	Status value to be written
-+ * @value:	Status value to be written
-  *
-  * This function sets healthy bit value to indicate boot health status
-  * to firmware.
-  *
-- * @return      Returns status, either success or error+reason
-+ * Return:	Returns status, either success or error+reason
-  */
- int zynqmp_pm_set_boot_health_status(u32 value)
- {
-@@ -899,10 +899,10 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_pinctrl_set_config);
-  * zynqmp_pm_init_finalize() - PM call to inform firmware that the caller
-  *			       master has initialized its own power management
-  *
-+ * Return: Returns status, either success or error+reason
-+ *
-  * This API function is to be used for notify the power management controller
-  * about the completed power management initialization.
-- *
-- * Return: Returns status, either success or error+reason
-  */
- int zynqmp_pm_init_finalize(void)
- {
--- 
-2.29.2
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
+Regards,
+Chun-Kuang.
+
+>
+> --
+> ~Vinod
