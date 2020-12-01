@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C5F2C9D9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CAF2C9DE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390931AbgLAJZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:25:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42576 "EHLO mail.kernel.org"
+        id S2390749AbgLAJ2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:28:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729389AbgLAJFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:05:41 -0500
+        id S2388330AbgLAJAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:00:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D727B21D46;
-        Tue,  1 Dec 2020 09:04:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F16832224C;
+        Tue,  1 Dec 2020 09:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813500;
-        bh=p6UGhE7Kc4+yR/tYHmb8lv+gJLMFBCybGCvMZ4pJ5Rk=;
+        s=korg; t=1606813210;
+        bh=NQATGuLRhU93w/kDiUKvCju7GIzcSrj1MKQiUZVyn00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mPLWNBwN8HpUtMktooT24aPQx00eQ5S1hInj2pj8Ajxa8EejHnSG0BsdujQknj5ZZ
-         POXRQkhx2CyrGSRVQhLA4N8Gyf0aOjC22frduKz72Mb3OV8/P+z0+TPp9sDDhz6qwY
-         tpqx6lSSJYME9zY7tDdPKP0pojM+aeGcwMnFOkgM=
+        b=ZGTwODFXcP58UKP3JlPLB2ljkP+WwjIo7CZcUyu+jDvSBV8jBaQLADilf+dBXklPm
+         0VNAEH0Sdqtrpm6hkhR1U6oO1g1LyoahpTyuoDjP8GmnSi5tLUAQt8FcIUfzzWAlDW
+         QpN23IxiBawGmTiNyDScPgPY2erZ77xnC1R+9hCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Masney <bmasney@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 30/98] x86/xen: dont unbind uninitialized lock_kicker_irq
+        stable@vger.kernel.org, liuzx@knownsec.com,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree@solarflare.com>,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: [PATCH 4.19 02/57] netfilter: clear skb->next in NF_HOOK_LIST()
 Date:   Tue,  1 Dec 2020 09:53:07 +0100
-Message-Id: <20201201084656.440500772@linuxfoundation.org>
+Message-Id: <20201201084648.007878659@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,76 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Masney <bmasney@redhat.com>
 
-[ Upstream commit 65cae18882f943215d0505ddc7e70495877308e6 ]
+From: Cong Wang <cong.wang@bytedance.com>
 
-When booting a hyperthreaded system with the kernel parameter
-'mitigations=auto,nosmt', the following warning occurs:
+NF_HOOK_LIST() uses list_del() to remove skb from the linked list,
+however, it is not sufficient as skb->next still points to other
+skb. We should just call skb_list_del_init() to clear skb->next,
+like the rest places which using skb list.
 
-    WARNING: CPU: 0 PID: 1 at drivers/xen/events/events_base.c:1112 unbind_from_irqhandler+0x4e/0x60
-    ...
-    Hardware name: Xen HVM domU, BIOS 4.2.amazon 08/24/2006
-    ...
-    Call Trace:
-     xen_uninit_lock_cpu+0x28/0x62
-     xen_hvm_cpu_die+0x21/0x30
-     takedown_cpu+0x9c/0xe0
-     ? trace_suspend_resume+0x60/0x60
-     cpuhp_invoke_callback+0x9a/0x530
-     _cpu_up+0x11a/0x130
-     cpu_up+0x7e/0xc0
-     bringup_nonboot_cpus+0x48/0x50
-     smp_init+0x26/0x79
-     kernel_init_freeable+0xea/0x229
-     ? rest_init+0xaa/0xaa
-     kernel_init+0xa/0x106
-     ret_from_fork+0x35/0x40
+This has been fixed in upstream by commit ca58fbe06c54
+("netfilter: add and use nf_hook_slow_list()").
 
-The secondary CPUs are not activated with the nosmt mitigations and only
-the primary thread on each CPU core is used. In this situation,
-xen_hvm_smp_prepare_cpus(), and more importantly xen_init_lock_cpu(), is
-not called, so the lock_kicker_irq is not initialized for the secondary
-CPUs. Let's fix this by exiting early in xen_uninit_lock_cpu() if the
-irq is not set to avoid the warning from above for each secondary CPU.
+Fixes: 9f17dbf04ddf ("netfilter: fix use-after-free in NF_HOOK_LIST")
+Reported-by: liuzx@knownsec.com
+Tested-by: liuzx@knownsec.com
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Edward Cree <ecree@solarflare.com>
+Cc: stable@vger.kernel.org # between 4.19 and 5.4
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Brian Masney <bmasney@redhat.com>
-Link: https://lore.kernel.org/r/20201107011119.631442-1-bmasney@redhat.com
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/xen/spinlock.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/linux/netfilter.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/xen/spinlock.c b/arch/x86/xen/spinlock.c
-index 6deb49094c605..d817b7c862a62 100644
---- a/arch/x86/xen/spinlock.c
-+++ b/arch/x86/xen/spinlock.c
-@@ -93,10 +93,20 @@ void xen_init_lock_cpu(int cpu)
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -300,7 +300,7 @@ NF_HOOK_LIST(uint8_t pf, unsigned int ho
  
- void xen_uninit_lock_cpu(int cpu)
- {
-+	int irq;
-+
- 	if (!xen_pvspin)
- 		return;
- 
--	unbind_from_irqhandler(per_cpu(lock_kicker_irq, cpu), NULL);
-+	/*
-+	 * When booting the kernel with 'mitigations=auto,nosmt', the secondary
-+	 * CPUs are not activated, and lock_kicker_irq is not initialized.
-+	 */
-+	irq = per_cpu(lock_kicker_irq, cpu);
-+	if (irq == -1)
-+		return;
-+
-+	unbind_from_irqhandler(irq, NULL);
- 	per_cpu(lock_kicker_irq, cpu) = -1;
- 	kfree(per_cpu(irq_name, cpu));
- 	per_cpu(irq_name, cpu) = NULL;
--- 
-2.27.0
-
+ 	INIT_LIST_HEAD(&sublist);
+ 	list_for_each_entry_safe(skb, next, head, list) {
+-		list_del(&skb->list);
++		skb_list_del_init(skb);
+ 		if (nf_hook(pf, hook, net, sk, skb, in, out, okfn) == 1)
+ 			list_add_tail(&skb->list, &sublist);
+ 	}
 
 
