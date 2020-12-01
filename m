@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1E22C9AE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B96252C9C21
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgLAJCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:02:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38868 "EHLO mail.kernel.org"
+        id S2390429AbgLAJPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:15:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727760AbgLAJCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:02:05 -0500
+        id S2390335AbgLAJOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:14:40 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63236206C1;
-        Tue,  1 Dec 2020 09:01:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BBA020671;
+        Tue,  1 Dec 2020 09:13:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813284;
-        bh=gh9WW26k4AUudRdA0TMsTXyLoBvVygRIslIY+C0cYSw=;
+        s=korg; t=1606814040;
+        bh=ECs0fNFD/mlQePsxXxRgX6EAPUBJt8Tf9FBGnP/2KTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=riStUDwnmDrUP8bFvf9aNVkfSJCL11pfsmA1fBIQzXllhTtCVKbm85C84w7waoyJa
-         ZPz8ZrQ5Q1LZEepA9XWPi5Uc6SXAHgxKgxLOfBAnnH4aMHsf2KX7JMTQn6g3jRHc/8
-         7kAGZ5E1+xC0DycHFUWSafXkkfWwwjZKVKpQCfrQ=
+        b=T4qJFzS6Atj6ob+JVhrmPocxsJuupAYRMW4VDlhN1TNHLhJtj33oABaDjjtKNHRuQ
+         ikY0m2USc1NNWd/FW0Zf3X88kNniN6Y7dEliW1DKLDS0XCsrF5TMC+Tm7Hiy8hvOkw
+         7KERc25LW6xHZ1aOzG9yPfTdhdCk4sGC2CuLmVug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Maximilian Schneider <max@schneidersoft.net>,
-        Hubert Denkmair <hubert@denkmair.de>,
-        Michael Rausch <mr@netadair.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 45/57] can: gs_usb: fix endianess problem with candleLight firmware
+Subject: [PATCH 5.9 115/152] ibmvnic: fix NULL pointer dereference in ibmvic_reset_crq
 Date:   Tue,  1 Dec 2020 09:53:50 +0100
-Message-Id: <20201201084651.316151367@linuxfoundation.org>
+Message-Id: <20201201084726.893841670@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
-References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,318 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Lijun Pan <ljp@linux.ibm.com>
 
-[ Upstream commit 4ba1cb39fce4464151517a37ce0ac0a1a3f580d6 ]
+[ Upstream commit 0e435befaea45f7ea58682eecab5e37e05b2ce65 ]
 
-The firmware on the original USB2CAN by Geschwister Schneider Technologie
-Entwicklungs- und Vertriebs UG exchanges all data between the host and the
-device in host byte order. This is done with the struct
-gs_host_config::byte_order member, which is sent first to indicate the desired
-byte order.
+crq->msgs could be NULL if the previous reset did not complete after
+freeing crq->msgs. Check for NULL before dereferencing them.
 
-The widely used open source firmware candleLight doesn't support this feature
-and exchanges the data in little endian byte order. This breaks if a device
-with candleLight firmware is used on big endianess systems.
+Snippet of call trace:
+...
+ibmvnic 30000003 env3 (unregistering): Releasing sub-CRQ
+ibmvnic 30000003 env3 (unregistering): Releasing CRQ
+BUG: Kernel NULL pointer dereference on read at 0x00000000
+Faulting instruction address: 0xc0000000000c1a30
+Oops: Kernel access of bad area, sig: 11 [#1]
+LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+Modules linked in: ibmvnic(E-) rpadlpar_io rpaphp xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables xsk_diag tcp_diag udp_diag tun raw_diag inet_diag unix_diag bridge af_packet_diag netlink_diag stp llc rfkill sunrpc pseries_rng xts vmx_crypto uio_pdrv_genirq uio binfmt_misc ip_tables xfs libcrc32c sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp dm_mirror dm_region_hash dm_log dm_mod [last unloaded: ibmvnic]
+CPU: 20 PID: 8426 Comm: kworker/20:0 Tainted: G            E     5.10.0-rc1+ #12
+Workqueue: events __ibmvnic_reset [ibmvnic]
+NIP:  c0000000000c1a30 LR: c008000001b00c18 CTR: 0000000000000400
+REGS: c00000000d05b7a0 TRAP: 0380   Tainted: G            E      (5.10.0-rc1+)
+MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 44002480  XER: 20040000
+CFAR: c0000000000c19ec IRQMASK: 0
+GPR00: 0000000000000400 c00000000d05ba30 c008000001b17c00 0000000000000000
+GPR04: 0000000000000000 0000000000000000 0000000000000000 00000000000001e2
+GPR08: 000000000001f400 ffffffffffffd950 0000000000000000 c008000001b0b280
+GPR12: c0000000000c19c8 c00000001ec72e00 c00000000019a778 c00000002647b440
+GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+GPR20: 0000000000000006 0000000000000001 0000000000000003 0000000000000002
+GPR24: 0000000000001000 c008000001b0d570 0000000000000005 c00000007ab5d550
+GPR28: c00000007ab5c000 c000000032fcf848 c00000007ab5cc00 c000000032fcf800
+NIP [c0000000000c1a30] memset+0x68/0x104
+LR [c008000001b00c18] ibmvnic_reset_crq+0x70/0x110 [ibmvnic]
+Call Trace:
+[c00000000d05ba30] [0000000000000800] 0x800 (unreliable)
+[c00000000d05bab0] [c008000001b0a930] do_reset.isra.40+0x224/0x634 [ibmvnic]
+[c00000000d05bb80] [c008000001b08574] __ibmvnic_reset+0x17c/0x3c0 [ibmvnic]
+[c00000000d05bc50] [c00000000018d9ac] process_one_work+0x2cc/0x800
+[c00000000d05bd20] [c00000000018df58] worker_thread+0x78/0x520
+[c00000000d05bdb0] [c00000000019a934] kthread+0x1c4/0x1d0
+[c00000000d05be20] [c00000000000d5d0] ret_from_kernel_thread+0x5c/0x6c
 
-To fix this problem, all u32 (but not the struct gs_host_frame::echo_id, which
-is a transparent cookie) are converted to __le32.
-
-Cc: Maximilian Schneider <max@schneidersoft.net>
-Cc: Hubert Denkmair <hubert@denkmair.de>
-Reported-by: Michael Rausch <mr@netadair.de>
-Link: https://lore.kernel.org/r/b58aace7-61f3-6df7-c6df-69fee2c66906@netadair.de
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
-Link: https://lore.kernel.org/r/20201120103818.3386964-1-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
+Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/gs_usb.c | 131 +++++++++++++++++++----------------
- 1 file changed, 70 insertions(+), 61 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index cc2e224661b30..6a57169c27158 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -71,21 +71,27 @@ enum gs_can_identify_mode {
- };
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 349d0b3d9edc3..af8c10e629f88 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -4919,6 +4919,9 @@ static int ibmvnic_reset_crq(struct ibmvnic_adapter *adapter)
+ 	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
  
- /* data types passed between host and device */
+ 	/* Clean out the queue */
++	if (!crq->msgs)
++		return -EINVAL;
 +
-+/* The firmware on the original USB2CAN by Geschwister Schneider
-+ * Technologie Entwicklungs- und Vertriebs UG exchanges all data
-+ * between the host and the device in host byte order. This is done
-+ * with the struct gs_host_config::byte_order member, which is sent
-+ * first to indicate the desired byte order.
-+ *
-+ * The widely used open source firmware candleLight doesn't support
-+ * this feature and exchanges the data in little endian byte order.
-+ */
- struct gs_host_config {
--	u32 byte_order;
-+	__le32 byte_order;
- } __packed;
--/* All data exchanged between host and device is exchanged in host byte order,
-- * thanks to the struct gs_host_config byte_order member, which is sent first
-- * to indicate the desired byte order.
-- */
- 
- struct gs_device_config {
- 	u8 reserved1;
- 	u8 reserved2;
- 	u8 reserved3;
- 	u8 icount;
--	u32 sw_version;
--	u32 hw_version;
-+	__le32 sw_version;
-+	__le32 hw_version;
- } __packed;
- 
- #define GS_CAN_MODE_NORMAL               0
-@@ -95,26 +101,26 @@ struct gs_device_config {
- #define GS_CAN_MODE_ONE_SHOT             BIT(3)
- 
- struct gs_device_mode {
--	u32 mode;
--	u32 flags;
-+	__le32 mode;
-+	__le32 flags;
- } __packed;
- 
- struct gs_device_state {
--	u32 state;
--	u32 rxerr;
--	u32 txerr;
-+	__le32 state;
-+	__le32 rxerr;
-+	__le32 txerr;
- } __packed;
- 
- struct gs_device_bittiming {
--	u32 prop_seg;
--	u32 phase_seg1;
--	u32 phase_seg2;
--	u32 sjw;
--	u32 brp;
-+	__le32 prop_seg;
-+	__le32 phase_seg1;
-+	__le32 phase_seg2;
-+	__le32 sjw;
-+	__le32 brp;
- } __packed;
- 
- struct gs_identify_mode {
--	u32 mode;
-+	__le32 mode;
- } __packed;
- 
- #define GS_CAN_FEATURE_LISTEN_ONLY      BIT(0)
-@@ -125,23 +131,23 @@ struct gs_identify_mode {
- #define GS_CAN_FEATURE_IDENTIFY         BIT(5)
- 
- struct gs_device_bt_const {
--	u32 feature;
--	u32 fclk_can;
--	u32 tseg1_min;
--	u32 tseg1_max;
--	u32 tseg2_min;
--	u32 tseg2_max;
--	u32 sjw_max;
--	u32 brp_min;
--	u32 brp_max;
--	u32 brp_inc;
-+	__le32 feature;
-+	__le32 fclk_can;
-+	__le32 tseg1_min;
-+	__le32 tseg1_max;
-+	__le32 tseg2_min;
-+	__le32 tseg2_max;
-+	__le32 sjw_max;
-+	__le32 brp_min;
-+	__le32 brp_max;
-+	__le32 brp_inc;
- } __packed;
- 
- #define GS_CAN_FLAG_OVERFLOW 1
- 
- struct gs_host_frame {
- 	u32 echo_id;
--	u32 can_id;
-+	__le32 can_id;
- 
- 	u8 can_dlc;
- 	u8 channel;
-@@ -337,13 +343,13 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
- 		if (!skb)
- 			return;
- 
--		cf->can_id = hf->can_id;
-+		cf->can_id = le32_to_cpu(hf->can_id);
- 
- 		cf->can_dlc = get_can_dlc(hf->can_dlc);
- 		memcpy(cf->data, hf->data, 8);
- 
- 		/* ERROR frames tell us information about the controller */
--		if (hf->can_id & CAN_ERR_FLAG)
-+		if (le32_to_cpu(hf->can_id) & CAN_ERR_FLAG)
- 			gs_update_state(dev, cf);
- 
- 		netdev->stats.rx_packets++;
-@@ -426,11 +432,11 @@ static int gs_usb_set_bittiming(struct net_device *netdev)
- 	if (!dbt)
- 		return -ENOMEM;
- 
--	dbt->prop_seg = bt->prop_seg;
--	dbt->phase_seg1 = bt->phase_seg1;
--	dbt->phase_seg2 = bt->phase_seg2;
--	dbt->sjw = bt->sjw;
--	dbt->brp = bt->brp;
-+	dbt->prop_seg = cpu_to_le32(bt->prop_seg);
-+	dbt->phase_seg1 = cpu_to_le32(bt->phase_seg1);
-+	dbt->phase_seg2 = cpu_to_le32(bt->phase_seg2);
-+	dbt->sjw = cpu_to_le32(bt->sjw);
-+	dbt->brp = cpu_to_le32(bt->brp);
- 
- 	/* request bit timings */
- 	rc = usb_control_msg(interface_to_usbdev(intf),
-@@ -511,7 +517,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
- 
- 	cf = (struct can_frame *)skb->data;
- 
--	hf->can_id = cf->can_id;
-+	hf->can_id = cpu_to_le32(cf->can_id);
- 	hf->can_dlc = cf->can_dlc;
- 	memcpy(hf->data, cf->data, cf->can_dlc);
- 
-@@ -581,6 +587,7 @@ static int gs_can_open(struct net_device *netdev)
- 	int rc, i;
- 	struct gs_device_mode *dm;
- 	u32 ctrlmode;
-+	u32 flags = 0;
- 
- 	rc = open_candev(netdev);
- 	if (rc)
-@@ -648,24 +655,24 @@ static int gs_can_open(struct net_device *netdev)
- 
- 	/* flags */
- 	ctrlmode = dev->can.ctrlmode;
--	dm->flags = 0;
- 
- 	if (ctrlmode & CAN_CTRLMODE_LOOPBACK)
--		dm->flags |= GS_CAN_MODE_LOOP_BACK;
-+		flags |= GS_CAN_MODE_LOOP_BACK;
- 	else if (ctrlmode & CAN_CTRLMODE_LISTENONLY)
--		dm->flags |= GS_CAN_MODE_LISTEN_ONLY;
-+		flags |= GS_CAN_MODE_LISTEN_ONLY;
- 
- 	/* Controller is not allowed to retry TX
- 	 * this mode is unavailable on atmels uc3c hardware
- 	 */
- 	if (ctrlmode & CAN_CTRLMODE_ONE_SHOT)
--		dm->flags |= GS_CAN_MODE_ONE_SHOT;
-+		flags |= GS_CAN_MODE_ONE_SHOT;
- 
- 	if (ctrlmode & CAN_CTRLMODE_3_SAMPLES)
--		dm->flags |= GS_CAN_MODE_TRIPLE_SAMPLE;
-+		flags |= GS_CAN_MODE_TRIPLE_SAMPLE;
- 
- 	/* finally start device */
--	dm->mode = GS_CAN_MODE_START;
-+	dm->mode = cpu_to_le32(GS_CAN_MODE_START);
-+	dm->flags = cpu_to_le32(flags);
- 	rc = usb_control_msg(interface_to_usbdev(dev->iface),
- 			     usb_sndctrlpipe(interface_to_usbdev(dev->iface), 0),
- 			     GS_USB_BREQ_MODE,
-@@ -745,9 +752,9 @@ static int gs_usb_set_identify(struct net_device *netdev, bool do_identify)
- 		return -ENOMEM;
- 
- 	if (do_identify)
--		imode->mode = GS_CAN_IDENTIFY_ON;
-+		imode->mode = cpu_to_le32(GS_CAN_IDENTIFY_ON);
- 	else
--		imode->mode = GS_CAN_IDENTIFY_OFF;
-+		imode->mode = cpu_to_le32(GS_CAN_IDENTIFY_OFF);
- 
- 	rc = usb_control_msg(interface_to_usbdev(dev->iface),
- 			     usb_sndctrlpipe(interface_to_usbdev(dev->iface),
-@@ -798,6 +805,7 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 	struct net_device *netdev;
- 	int rc;
- 	struct gs_device_bt_const *bt_const;
-+	u32 feature;
- 
- 	bt_const = kmalloc(sizeof(*bt_const), GFP_KERNEL);
- 	if (!bt_const)
-@@ -838,14 +846,14 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 
- 	/* dev settup */
- 	strcpy(dev->bt_const.name, "gs_usb");
--	dev->bt_const.tseg1_min = bt_const->tseg1_min;
--	dev->bt_const.tseg1_max = bt_const->tseg1_max;
--	dev->bt_const.tseg2_min = bt_const->tseg2_min;
--	dev->bt_const.tseg2_max = bt_const->tseg2_max;
--	dev->bt_const.sjw_max = bt_const->sjw_max;
--	dev->bt_const.brp_min = bt_const->brp_min;
--	dev->bt_const.brp_max = bt_const->brp_max;
--	dev->bt_const.brp_inc = bt_const->brp_inc;
-+	dev->bt_const.tseg1_min = le32_to_cpu(bt_const->tseg1_min);
-+	dev->bt_const.tseg1_max = le32_to_cpu(bt_const->tseg1_max);
-+	dev->bt_const.tseg2_min = le32_to_cpu(bt_const->tseg2_min);
-+	dev->bt_const.tseg2_max = le32_to_cpu(bt_const->tseg2_max);
-+	dev->bt_const.sjw_max = le32_to_cpu(bt_const->sjw_max);
-+	dev->bt_const.brp_min = le32_to_cpu(bt_const->brp_min);
-+	dev->bt_const.brp_max = le32_to_cpu(bt_const->brp_max);
-+	dev->bt_const.brp_inc = le32_to_cpu(bt_const->brp_inc);
- 
- 	dev->udev = interface_to_usbdev(intf);
- 	dev->iface = intf;
-@@ -862,28 +870,29 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 
- 	/* can settup */
- 	dev->can.state = CAN_STATE_STOPPED;
--	dev->can.clock.freq = bt_const->fclk_can;
-+	dev->can.clock.freq = le32_to_cpu(bt_const->fclk_can);
- 	dev->can.bittiming_const = &dev->bt_const;
- 	dev->can.do_set_bittiming = gs_usb_set_bittiming;
- 
- 	dev->can.ctrlmode_supported = 0;
- 
--	if (bt_const->feature & GS_CAN_FEATURE_LISTEN_ONLY)
-+	feature = le32_to_cpu(bt_const->feature);
-+	if (feature & GS_CAN_FEATURE_LISTEN_ONLY)
- 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_LISTENONLY;
- 
--	if (bt_const->feature & GS_CAN_FEATURE_LOOP_BACK)
-+	if (feature & GS_CAN_FEATURE_LOOP_BACK)
- 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_LOOPBACK;
- 
--	if (bt_const->feature & GS_CAN_FEATURE_TRIPLE_SAMPLE)
-+	if (feature & GS_CAN_FEATURE_TRIPLE_SAMPLE)
- 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
- 
--	if (bt_const->feature & GS_CAN_FEATURE_ONE_SHOT)
-+	if (feature & GS_CAN_FEATURE_ONE_SHOT)
- 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_ONE_SHOT;
- 
- 	SET_NETDEV_DEV(netdev, &intf->dev);
- 
--	if (dconf->sw_version > 1)
--		if (bt_const->feature & GS_CAN_FEATURE_IDENTIFY)
-+	if (le32_to_cpu(dconf->sw_version) > 1)
-+		if (feature & GS_CAN_FEATURE_IDENTIFY)
- 			netdev->ethtool_ops = &gs_usb_ethtool_ops;
- 
- 	kfree(bt_const);
-@@ -918,7 +927,7 @@ static int gs_usb_probe(struct usb_interface *intf,
- 	if (!hconf)
- 		return -ENOMEM;
- 
--	hconf->byte_order = 0x0000beef;
-+	hconf->byte_order = cpu_to_le32(0x0000beef);
- 
- 	/* send host config */
- 	rc = usb_control_msg(interface_to_usbdev(intf),
+ 	memset(crq->msgs, 0, PAGE_SIZE);
+ 	crq->cur = 0;
+ 	crq->active = false;
 -- 
 2.27.0
 
