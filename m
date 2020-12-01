@@ -2,220 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147032C95B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651E62C95BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 04:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgLADUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 22:20:22 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:15881 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727344AbgLADUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 22:20:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606792796; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=e5XSNz5GYuQl6HFRNC6Bk5fj6G7MZnlEwPsXQRTJm5Y=; b=Jmnlpxwelj70kFkx0DMLSXVCgxdZF99Vb8RXBAgMzc4Q6gKdfmy2lMlEi5uOn45v0Qvhhm07
- 4fDOU5/te+cbcttWXCvl+ds/NjTW184q4bkgv5T9mVy6t+h/WT1tsi4bcC/K+WrKkraeUR84
- hHuBYaKvqzF5nx/Q+kefOZ+Q0gI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fc5b63d8d03b22a5a0c2337 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 03:19:25
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B0B2DC43466; Tue,  1 Dec 2020 03:19:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8DADAC43460;
-        Tue,  1 Dec 2020 03:19:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8DADAC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
- values
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com, beanhuo@micron.com,
-        cang@codeaurora.org, matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
-        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
-        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
-        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
-        alice.chao@mediatek.com
-References: <20201130091610.2752-1-stanley.chu@mediatek.com>
- <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
- <X8V83T+Tx6teNLOR@builder.lan>
- <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
- <X8WwPs1MPg64FEp8@builder.lan>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <bf6e03ee-95ab-4768-7ce5-7f196ab6db60@codeaurora.org>
-Date:   Mon, 30 Nov 2020 19:19:21 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1727666AbgLADUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 22:20:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727344AbgLADUr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 22:20:47 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F02C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 19:20:06 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id p126so320603oif.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Nov 2020 19:20:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z0jYbSuM2A7vj2WRSnCHpCXmrIAzvssFmwAmhCHBSEo=;
+        b=XqI9UrtwtN+Xkgx9qqN1YpdIsr6BCmdt1rKQKFt7pEhILlu4Pj/Le6iJMF+WhAOETY
+         A1tu2xf189iKGMPNVQECBebYglBbJzmwEg+sSVVHfEoXAdTuiJjBe9Ir8z1j0+R0dVBm
+         HYQ00J7UwnYAqA1Nxdn9nw2wQRdbvPilvYXoE7ioGCITj7zVdzjB4ifT46aDZO0jpKmK
+         nS3jobLJsNm1kfK1FIG4FZQ3M2CMWM6OUMNT3Ltxazz9OI9PAPVgLsAfRYPIEfrWtVkL
+         1AK5TURlrwTkqXxpvOs46WIIvJFlzFF9U9DyBWq4I9GrSV/nrcJHHLPXazZ3kUH+TfqL
+         vtrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z0jYbSuM2A7vj2WRSnCHpCXmrIAzvssFmwAmhCHBSEo=;
+        b=ivBEksMJf7wHRLMHaQcSdhHv5QRHO2+mga8DZX42JVCPj4feWzXCl/XTO9bdAxs55z
+         UYChrq+xU4sivMPCkZx63h8grP81D0dpaM+gpnDlnGcfQB40O5vOHupKSTxb3aKeJaEC
+         IQxCeB9XSYgvK3P9kk/OGCU8roi4YX5MWimQj8X/FFXIdOMv8WAoud6F9uixDAIiEbyM
+         ErbX910RpNfvqWUDjkB73CAgVXxDUrDEvEUqAz8rsibphAEqHIPR0cixDTe7g2iNPJtz
+         jD2L4AIWUGabOFrm90l3DSDvOpJg3sg8ukUS8/SpwYSbF/BL/BpFivnZAtgGs7DgeWUc
+         EK+w==
+X-Gm-Message-State: AOAM532j4BqzotwGwFLASnN0UPDMIZ6PUAgbd5OdgFaAmmKeeOvxj2Il
+        gk34Jegk4aym5FdbYYiOasoZjg==
+X-Google-Smtp-Source: ABdhPJyN6aZnDw4AEl91NWEpYuIybD/5h2IcygpeviYHF8UN9qRx/2maQBrEcAUtwwRmtlRlduj85Q==
+X-Received: by 2002:aca:fc92:: with SMTP id a140mr603776oii.4.1606792806105;
+        Mon, 30 Nov 2020 19:20:06 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 189sm127035oob.26.2020.11.30.19.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 19:20:05 -0800 (PST)
+Date:   Mon, 30 Nov 2020 21:20:03 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845: Add gpi dma node
+Message-ID: <X8W2Y9gH7HBrx20v@builder.lan>
+References: <20201130063946.2060317-1-vkoul@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <X8WwPs1MPg64FEp8@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130063946.2060317-1-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2020 6:53 PM, Bjorn Andersson wrote:
-> On Mon 30 Nov 17:54 CST 2020, Asutosh Das (asd) wrote:
-> 
->> On 11/30/2020 3:14 PM, Bjorn Andersson wrote:
->>> On Mon 30 Nov 16:51 CST 2020, Asutosh Das (asd) wrote:
->>>
->>>> On 11/30/2020 1:16 AM, Stanley Chu wrote:
->>>>> UFS specficication allows different VCC configurations for UFS devices,
->>>>> for example,
->>>>> 	(1). 2.70V - 3.60V (By default)
->>>>> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
->>>>>                              device tree)
->>>>> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
->>>>>
->>>>> With the introduction of UFS 3.x products, an issue is happening that
->>>>> UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
->>>>> regulator on UFU 3.x products with VCC configuration (3) used.
->>>>>
->>>>> To solve this issue, we simply remove pre-defined initial VCC voltage
->>>>> values in UFS driver with below reasons,
->>>>>
->>>>> 1. UFS specifications do not define how to detect the VCC configuration
->>>>>       supported by attached device.
->>>>>
->>>>> 2. Device tree already supports standard regulator properties.
->>>>>
->>>>> Therefore VCC voltage shall be defined correctly in device tree, and
->>>>> shall not be changed by UFS driver. What UFS driver needs to do is simply
->>>>> enabling or disabling the VCC regulator only.
->>>>>
->>>>> This is a RFC conceptional patch. Please help review this and feel
->>>>> free to feedback any ideas. Once this concept is accepted, and then
->>>>> I would post a more completed patch series to fix this issue.
->>>>>
->>>>> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
->>>>> ---
->>>>>     drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
->>>>>     1 file changed, 1 insertion(+), 9 deletions(-)
->>>>>
->>>>> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
->>>>> index a6f76399b3ae..3965be03c136 100644
->>>>> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
->>>>> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
->>>>> @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
->>>>>     		vreg->max_uA = 0;
->>>>>     	}
->>>>> -	if (!strcmp(name, "vcc")) {
->>>>> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
->>>>> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
->>>>> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
->>>>> -		} else {
->>>>> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
->>>>> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
->>>>> -		}
->>>>> -	} else if (!strcmp(name, "vccq")) {
->>>>> +	if (!strcmp(name, "vccq")) {
->>>>>     		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
->>>>>     		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
->>>>>     	} else if (!strcmp(name, "vccq2")) {
->>>>>
->>>>
->>>> Hi Stanley
->>>>
->>>> Thanks for the patch. Bao (nguyenb) was also working towards something
->>>> similar.
->>>> Would it be possible for you to take into account the scenario in which the
->>>> same platform supports both 2.x and 3.x UFS devices?
->>>>
->>>> These've different voltage requirements, 2.4v-3.6v.
->>>> I'm not sure if standard dts regulator properties can support this.
->>>>
->>>
->>> What is the actual voltage requirement for these devices and how does
->>> the software know what voltage to pick in this range?
->>>
->>> Regards,
->>> Bjorn
->>>
->>>> -asd
->>>>
->>>>
->>>> -- 
->>>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->>>> Linux Foundation Collaborative Project
->>
->> For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v), the
->> voltage requirements (Vcc) are 2.4v-3.6v. The software initializes the ufs
->> device at 2.95v & reads the version and if the device is 3.x, it may do the
->> following:
->> - Set the device power mode to SLEEP
->> - Disable the Vcc
->> - Enable the Vcc and set it to 2.5v
->> - Set the device power mode to ACTIVE
->>
->> All of the above may be done at HS-G1 & moved to max supported gear based on
->> the device version, perhaps?
->>
->> Am open to other ideas though.
->>
-> 
-> But that means that for a board where we don't know (don't want to know)
-> if we have a 2.x or 3.x device we need to set:
-> 
->    regulator-min-microvolt = <2.4V>
->    regulator-max-microvolt = <3.6V>
-> 
-> And the 2.5V and the two ranges should be hard coded into the ufshcd (in
-> particular if they come from the specification).
-> 
-> For devices with only 2.x or 3.x devices, regulator-{min,max}-microvolt
-> should be adjusted accordingly.
-> 
-> Note that driving the regulators outside these ranges will either damage
-> the hardware or cause it to misbehave, so these values should be defined
-> in the board.dts anyways.
-> 
-> Also note that regulator_set_voltage(2.4V, 3.6V) won't give you "a
-> voltage between 2.4V and 3.6V, it will most likely give either 2.4V or
-> any more specific voltage that we've specified in the board file because
-> the regulator happens to be shared with some other consumer and changing
-> it in runtime would be bad.
-> 
-> Regards,
-> Bjorn
-> 
+On Mon 30 Nov 00:39 CST 2020, Vinod Koul wrote:
 
-Understood.
-I also understand that assumptions on the regulator limits in the driver 
-is a bad idea. I'm not sure how it's designed, but I should think the 
-power-grid design should take care of regulator sharing; if it's being 
-shared and the platform supports both 2.x and 3.x. Perhaps, such 
-platforms be identified using a dts flag - not sure if that's such a 
-good idea though.
+> This add the device node for gpi_dma0 and gpi_dma1 instances found in
+> sdm845.
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 45 ++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index 6465a6653ad9..a6f41678794c 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -1114,6 +1114,28 @@ opp-128000000 {
+>  			};
+>  		};
+>  
+> +		gpi_dma0: dma-controller@800000 {
+> +			#dma-cells = <3>;
 
-I like Stanley's proposal of a vops and let vendors handle it, until 
-specs or someone has a better suggestion.
+I know you like dma, but may I have the compatible etc first in the
+nodes? Perhaps move #dma-cells down by the other dma- properties?
 
--asd
+> +			compatible = "qcom,sdm845-gpi-dma";
+> +			reg = <0 0x00800000 0 0x60000>;
+> +			interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
+> +			dma-channels = <13>;
+> +			dma-channel-mask = <0xfa>;
+> +			iommus = <&apps_smmu 0x0016 0x0>;
+> +		};
+> +
+>  		qupv3_id_0: geniqup@8c0000 {
+>  			compatible = "qcom,geni-se-qup";
+>  			reg = <0 0x008c0000 0 0x6000>;
+> @@ -1454,6 +1476,29 @@ uart7: serial@89c000 {
+>  			};
+>  		};
+>  
+> +		gpi_dma1: dma-controller@0xa00000 {
+> +			#dma-cells = <3>;
+> +			compatible = "qcom,sdm845-gpi-dma";
+> +			reg = <0 0x00a00000 0 0x60000>;
+> +			interrupts = <GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 293 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 294 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 295 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 296 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 297 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 298 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 299 IRQ_TYPE_LEVEL_HIGH>;
+> +			dma-channels = <13>;
+> +			dma-channel-mask = <0xfa>;
+> +			iommus = <&apps_smmu 0x06d6 0x0>;
+> +			status = "disabled";
 
+I don't think it's nice to keep gpi_dma0 enabled and gpi_dma1 disabled.
+Either we do both enabled in sdm845.dtsi or we do both disabled and rely
+on the boards to enable what they need.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+Regards,
+Bjorn
+
+> +		};
+> +
+>  		qupv3_id_1: geniqup@ac0000 {
+>  			compatible = "qcom,geni-se-qup";
+>  			reg = <0 0x00ac0000 0 0x6000>;
+> -- 
+> 2.26.2
+> 
