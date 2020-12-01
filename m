@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AD62C9D4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F782C9D08
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390624AbgLAJVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:21:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46116 "EHLO mail.kernel.org"
+        id S2389469AbgLAJJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:09:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389279AbgLAJIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:08:39 -0500
+        id S2389181AbgLAJIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:08:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6FEF20671;
-        Tue,  1 Dec 2020 09:07:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B12782067D;
+        Tue,  1 Dec 2020 09:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813678;
-        bh=ixL9nFnJJ3R66vfzSew4uiaMwSoJwzTIAma1YrpfBrM=;
+        s=korg; t=1606813681;
+        bh=0ZKrzedkeNaQQav56syj/ZPxW7yKpfWqhJQGXPQPkac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=paoetPCX7yGD1q77rsaAOn5keJAtsm1dU0XuiojOOqY85/c/mRzr9RlovRvJKX5iu
-         4A1/llu7ouBntRaKIHYS5ChvwwkgiEb8RtroeqhNykqdJkLP4rt3ORoP6o4dbDPOUY
-         4XFz1xPQXIddjpCnBYRPyusIB5X4Ldws/KrggMYM=
+        b=KSZi3euRtWOSS6IRz+Ps9oKFYNtzWgmPZITQXxjrF3fbJ3FUp4S/fJn2jtOof7nXK
+         Je6yaStEMLDgLUPD6ywk2IINso8akPXeOMN0QWdFter7/S5OrcwlEv0sBYmPJ/qcML
+         WhlFFqabtk4pDWTx+ohiQEFDiWV38S1Pyunt2CKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Kurz <groug@kaod.org>,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.9 022/152] KVM: PPC: Book3S HV: XIVE: Fix possible oops when accessing ESB page
-Date:   Tue,  1 Dec 2020 09:52:17 +0100
-Message-Id: <20201201084714.767481964@linuxfoundation.org>
+        stable@vger.kernel.org, Keqian Zhu <zhukeqian1@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>
+Subject: [PATCH 5.9 023/152] KVM: arm64: vgic-v3: Drop the reporting of GICR_TYPER.Last for userspace
+Date:   Tue,  1 Dec 2020 09:52:18 +0100
+Message-Id: <20201201084714.917455697@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
 References: <20201201084711.707195422@linuxfoundation.org>
@@ -43,77 +44,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Zenghui Yu <yuzenghui@huawei.com>
 
-commit 75b49620267c700f0a07fec7f27f69852db70e46 upstream.
+commit 23bde34771f1ea92fb5e6682c0d8c04304d34b3b upstream.
 
-When accessing the ESB page of a source interrupt, the fault handler
-will retrieve the page address from the XIVE interrupt 'xive_irq_data'
-structure. If the associated KVM XIVE interrupt is not valid, that is
-not allocated at the HW level for some reason, the fault handler will
-dereference a NULL pointer leading to the oops below :
+It was recently reported that if GICR_TYPER is accessed before the RD base
+address is set, we'll suffer from the unset @rdreg dereferencing. Oops...
 
-  WARNING: CPU: 40 PID: 59101 at arch/powerpc/kvm/book3s_xive_native.c:259 xive_native_esb_fault+0xe4/0x240 [kvm]
-  CPU: 40 PID: 59101 Comm: qemu-system-ppc Kdump: loaded Tainted: G        W        --------- -  - 4.18.0-240.el8.ppc64le #1
-  NIP:  c00800000e949fac LR: c00000000044b164 CTR: c00800000e949ec8
-  REGS: c000001f69617840 TRAP: 0700   Tainted: G        W        --------- -  -  (4.18.0-240.el8.ppc64le)
-  MSR:  9000000000029033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR: 44044282  XER: 00000000
-  CFAR: c00000000044b160 IRQMASK: 0
-  GPR00: c00000000044b164 c000001f69617ac0 c00800000e96e000 c000001f69617c10
-  GPR04: 05faa2b21e000080 0000000000000000 0000000000000005 ffffffffffffffff
-  GPR08: 0000000000000000 0000000000000001 0000000000000000 0000000000000001
-  GPR12: c00800000e949ec8 c000001ffffd3400 0000000000000000 0000000000000000
-  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-  GPR20: 0000000000000000 0000000000000000 c000001f5c065160 c000000001c76f90
-  GPR24: c000001f06f20000 c000001f5c065100 0000000000000008 c000001f0eb98c78
-  GPR28: c000001dcab40000 c000001dcab403d8 c000001f69617c10 0000000000000011
-  NIP [c00800000e949fac] xive_native_esb_fault+0xe4/0x240 [kvm]
-  LR [c00000000044b164] __do_fault+0x64/0x220
-  Call Trace:
-  [c000001f69617ac0] [0000000137a5dc20] 0x137a5dc20 (unreliable)
-  [c000001f69617b50] [c00000000044b164] __do_fault+0x64/0x220
-  [c000001f69617b90] [c000000000453838] do_fault+0x218/0x930
-  [c000001f69617bf0] [c000000000456f50] __handle_mm_fault+0x350/0xdf0
-  [c000001f69617cd0] [c000000000457b1c] handle_mm_fault+0x12c/0x310
-  [c000001f69617d10] [c00000000007ef44] __do_page_fault+0x264/0xbb0
-  [c000001f69617df0] [c00000000007f8c8] do_page_fault+0x38/0xd0
-  [c000001f69617e30] [c00000000000a714] handle_page_fault+0x18/0x38
-  Instruction dump:
-  40c2fff0 7c2004ac 2fa90000 409e0118 73e90001 41820080 e8bd0008 7c2004ac
-  7ca90074 39400000 915c0000 7929d182 <0b090000> 2fa50000 419e0080 e89e0018
-  ---[ end trace 66c6ff034c53f64f ]---
-  xive-kvm: xive_native_esb_fault: accessing invalid ESB page for source 8 !
+	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
+			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
 
-Fix that by checking the validity of the KVM XIVE interrupt structure.
+It's "expected" that users will access registers in the redistributor if
+the RD has been properly configured (e.g., the RD base address is set). But
+it hasn't yet been covered by the existing documentation.
 
-Fixes: 6520ca64cde7 ("KVM: PPC: Book3S HV: XIVE: Add a mapping for the source ESB pages")
-Cc: stable@vger.kernel.org # v5.2+
-Reported-by: Greg Kurz <groug@kaod.org>
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Tested-by: Greg Kurz <groug@kaod.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201105134713.656160-1-clg@kaod.org
+Per discussion on the list [1], the reporting of the GICR_TYPER.Last bit
+for userspace never actually worked. And it's difficult for us to emulate
+it correctly given that userspace has the flexibility to access it any
+time. Let's just drop the reporting of the Last bit for userspace for now
+(userspace should have full knowledge about it anyway) and it at least
+prevents kernel from panic ;-)
+
+[1] https://lore.kernel.org/kvmarm/c20865a267e44d1e2c0d52ce4e012263@kernel.org/
+
+Fixes: ba7b3f1275fd ("KVM: arm/arm64: Revisit Redistributor TYPER last bit computation")
+Reported-by: Keqian Zhu <zhukeqian1@huawei.com>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Link: https://lore.kernel.org/r/20201117151629.1738-1-yuzenghui@huawei.com
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kvm/book3s_xive_native.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/kvm/book3s_xive_native.c
-+++ b/arch/powerpc/kvm/book3s_xive_native.c
-@@ -251,6 +251,13 @@ static vm_fault_t xive_native_esb_fault(
- 	}
+--- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
++++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+@@ -273,6 +273,23 @@ static unsigned long vgic_mmio_read_v3r_
+ 	return extract_bytes(value, addr & 7, len);
+ }
  
- 	state = &sb->irq_state[src];
++static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
++						 gpa_t addr, unsigned int len)
++{
++	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
++	int target_vcpu_id = vcpu->vcpu_id;
++	u64 value;
 +
-+	/* Some sanity checking */
-+	if (!state->valid) {
-+		pr_devel("%s: source %lx invalid !\n", __func__, irq);
-+		return VM_FAULT_SIGBUS;
-+	}
++	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
++	value |= ((target_vcpu_id & 0xffff) << 8);
 +
- 	kvmppc_xive_select_irq(state, &hw_num, &xd);
- 
- 	arch_spin_lock(&sb->lock);
++	if (vgic_has_its(vcpu->kvm))
++		value |= GICR_TYPER_PLPIS;
++
++	/* reporting of the Last bit is not supported for userspace */
++	return extract_bytes(value, addr & 7, len);
++}
++
+ static unsigned long vgic_mmio_read_v3r_iidr(struct kvm_vcpu *vcpu,
+ 					     gpa_t addr, unsigned int len)
+ {
+@@ -593,8 +610,9 @@ static const struct vgic_register_region
+ 	REGISTER_DESC_WITH_LENGTH(GICR_IIDR,
+ 		vgic_mmio_read_v3r_iidr, vgic_mmio_write_wi, 4,
+ 		VGIC_ACCESS_32bit),
+-	REGISTER_DESC_WITH_LENGTH(GICR_TYPER,
+-		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi, 8,
++	REGISTER_DESC_WITH_LENGTH_UACCESS(GICR_TYPER,
++		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi,
++		vgic_uaccess_read_v3r_typer, vgic_mmio_uaccess_write_wi, 8,
+ 		VGIC_ACCESS_64bit | VGIC_ACCESS_32bit),
+ 	REGISTER_DESC_WITH_LENGTH(GICR_WAKER,
+ 		vgic_mmio_read_raz, vgic_mmio_write_wi, 4,
 
 
