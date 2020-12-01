@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBA12C9B20
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FA32C9B9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388083AbgLAJDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:03:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40108 "EHLO mail.kernel.org"
+        id S2389682AbgLAJKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:10:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387959AbgLAJDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:03:21 -0500
+        id S2389659AbgLAJKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:10:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0947720770;
-        Tue,  1 Dec 2020 09:03:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FE7F22247;
+        Tue,  1 Dec 2020 09:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813385;
-        bh=0ugI040/amBDGw2cudqxi8oqdNwVsgh8NjKXwVtFsJo=;
+        s=korg; t=1606813800;
+        bh=pUGDZrd+Ioaup822M6QC2UlHABmuW71vc5EibKGl3Wk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=duyXLWtmNaXeQvFc2TBkp9YyoAhGTLrmC3yqdxsys+FWuPQhRhYFTm3PTZjlShZdE
-         9/+YAK2ntlJ/f/nMxIX42FgYpYYJVV/Mqs3eL3iavlnIOAmq7FYsnynpVjYWjTuKNH
-         1L3KghFGnrcA5bS7nXhS0cUrwrgZrUvSnqSJqh5c=
+        b=ozOrg/xyx2/+TSVolFHIIZlNtrJf4n8QwaH9CLo5irI6tpW/gDYR9xVTn0u1q2QIo
+         q8DhiCSlfcwQkCmffRdB2miyBnKwdm9Gqi4xGBZj2ko3UyM8dtXEwlbMNZxh0ADFsv
+         WJROHZQU89mE5V3R3Lpon/b5vI9bQMBXOGY+6/UY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martijn van de Streek <martijn@zeewinde.xyz>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 21/98] HID: uclogic: Add ID for Trust Flex Design Tablet
+        stable@vger.kernel.org, Maurizio Lombardi <mlombard@redhat.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 063/152] scsi: target: iscsi: Fix cmd abort fabric stop race
 Date:   Tue,  1 Dec 2020 09:52:58 +0100
-Message-Id: <20201201084655.384067646@linuxfoundation.org>
+Message-Id: <20201201084720.197306773@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +44,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martijn van de Streek <martijn@zeewinde.xyz>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit 022fc5315b7aff69d3df2c953b892a6232642d50 ]
+[ Upstream commit f36199355c64a39fe82cfddc7623d827c7e050da ]
 
-The Trust Flex Design Tablet has an UGTizer USB ID and requires the same
-initialization as the UGTizer GP0610 to be detected as a graphics tablet
-instead of a mouse.
+Maurizio found a race where the abort and cmd stop paths can race as
+follows:
 
-Signed-off-by: Martijn van de Streek <martijn@zeewinde.xyz>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+ 1. thread1 runs iscsit_release_commands_from_conn and sets
+    CMD_T_FABRIC_STOP.
+
+ 2. thread2 runs iscsit_aborted_task and then does __iscsit_free_cmd. It
+    then returns from the aborted_task callout and we finish
+    target_handle_abort and do:
+
+    target_handle_abort -> transport_cmd_check_stop_to_fabric ->
+	lio_check_stop_free -> target_put_sess_cmd
+
+    The cmd is now freed.
+
+ 3. thread1 now finishes iscsit_release_commands_from_conn and runs
+    iscsit_free_cmd while accessing a command we just released.
+
+In __target_check_io_state we check for CMD_T_FABRIC_STOP and set the
+CMD_T_ABORTED if the driver is not cleaning up the cmd because of a session
+shutdown. However, iscsit_release_commands_from_conn only sets the
+CMD_T_FABRIC_STOP and does not check to see if the abort path has claimed
+completion ownership of the command.
+
+This adds a check in iscsit_release_commands_from_conn so only the abort or
+fabric stop path cleanup the command.
+
+Link: https://lore.kernel.org/r/1605318378-9269-1-git-send-email-michael.christie@oracle.com
+Reported-by: Maurizio Lombardi <mlombard@redhat.com>
+Reviewed-by: Maurizio Lombardi <mlombard@redhat.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h            | 1 +
- drivers/hid/hid-uclogic-core.c   | 2 ++
- drivers/hid/hid-uclogic-params.c | 2 ++
- 3 files changed, 5 insertions(+)
+ drivers/target/iscsi/iscsi_target.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 7363d0b488bd8..62b8802a534e8 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -1292,6 +1292,7 @@
+diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
+index 7b56fe9f10628..2e18ec42c7045 100644
+--- a/drivers/target/iscsi/iscsi_target.c
++++ b/drivers/target/iscsi/iscsi_target.c
+@@ -483,8 +483,7 @@ EXPORT_SYMBOL(iscsit_queue_rsp);
+ void iscsit_aborted_task(struct iscsi_conn *conn, struct iscsi_cmd *cmd)
+ {
+ 	spin_lock_bh(&conn->cmd_lock);
+-	if (!list_empty(&cmd->i_conn_node) &&
+-	    !(cmd->se_cmd.transport_state & CMD_T_FABRIC_STOP))
++	if (!list_empty(&cmd->i_conn_node))
+ 		list_del_init(&cmd->i_conn_node);
+ 	spin_unlock_bh(&conn->cmd_lock);
  
- #define USB_VENDOR_ID_UGTIZER			0x2179
- #define USB_DEVICE_ID_UGTIZER_TABLET_GP0610	0x0053
-+#define USB_DEVICE_ID_UGTIZER_TABLET_GT5040	0x0077
+@@ -4083,12 +4082,22 @@ static void iscsit_release_commands_from_conn(struct iscsi_conn *conn)
+ 	spin_lock_bh(&conn->cmd_lock);
+ 	list_splice_init(&conn->conn_cmd_list, &tmp_list);
  
- #define USB_VENDOR_ID_VIEWSONIC			0x0543
- #define USB_DEVICE_ID_VIEWSONIC_PD1011		0xe621
-diff --git a/drivers/hid/hid-uclogic-core.c b/drivers/hid/hid-uclogic-core.c
-index 86b568037cb8a..8e9c9e646cb7d 100644
---- a/drivers/hid/hid-uclogic-core.c
-+++ b/drivers/hid/hid-uclogic-core.c
-@@ -385,6 +385,8 @@ static const struct hid_device_id uclogic_devices[] = {
- 				USB_DEVICE_ID_UCLOGIC_DRAWIMAGE_G3) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_UGTIZER,
- 				USB_DEVICE_ID_UGTIZER_TABLET_GP0610) },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_UGTIZER,
-+				USB_DEVICE_ID_UGTIZER_TABLET_GT5040) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_UGEE,
- 				USB_DEVICE_ID_UGEE_TABLET_G5) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_UGEE,
-diff --git a/drivers/hid/hid-uclogic-params.c b/drivers/hid/hid-uclogic-params.c
-index 78a364ae2f685..e80c812f44a77 100644
---- a/drivers/hid/hid-uclogic-params.c
-+++ b/drivers/hid/hid-uclogic-params.c
-@@ -997,6 +997,8 @@ int uclogic_params_init(struct uclogic_params *params,
- 		break;
- 	case VID_PID(USB_VENDOR_ID_UGTIZER,
- 		     USB_DEVICE_ID_UGTIZER_TABLET_GP0610):
-+	case VID_PID(USB_VENDOR_ID_UGTIZER,
-+		     USB_DEVICE_ID_UGTIZER_TABLET_GT5040):
- 	case VID_PID(USB_VENDOR_ID_UGEE,
- 		     USB_DEVICE_ID_UGEE_XPPEN_TABLET_G540):
- 	case VID_PID(USB_VENDOR_ID_UGEE,
+-	list_for_each_entry(cmd, &tmp_list, i_conn_node) {
++	list_for_each_entry_safe(cmd, cmd_tmp, &tmp_list, i_conn_node) {
+ 		struct se_cmd *se_cmd = &cmd->se_cmd;
+ 
+ 		if (se_cmd->se_tfo != NULL) {
+ 			spin_lock_irq(&se_cmd->t_state_lock);
+-			se_cmd->transport_state |= CMD_T_FABRIC_STOP;
++			if (se_cmd->transport_state & CMD_T_ABORTED) {
++				/*
++				 * LIO's abort path owns the cleanup for this,
++				 * so put it back on the list and let
++				 * aborted_task handle it.
++				 */
++				list_move_tail(&cmd->i_conn_node,
++					       &conn->conn_cmd_list);
++			} else {
++				se_cmd->transport_state |= CMD_T_FABRIC_STOP;
++			}
+ 			spin_unlock_irq(&se_cmd->t_state_lock);
+ 		}
+ 	}
 -- 
 2.27.0
 
