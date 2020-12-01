@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D752C97AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED51A2C97AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 07:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727219AbgLAGth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 01:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
+        id S1727106AbgLAGvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 01:51:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgLAGtg (ORCPT
+        with ESMTP id S1725859AbgLAGvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 01:49:36 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E889C0613CF;
-        Mon, 30 Nov 2020 22:48:56 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id v1so635988pjr.2;
-        Mon, 30 Nov 2020 22:48:56 -0800 (PST)
+        Tue, 1 Dec 2020 01:51:15 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB732C0613CF;
+        Mon, 30 Nov 2020 22:50:34 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q22so205394pfk.12;
+        Mon, 30 Nov 2020 22:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Dk2Z1eCeA2+ln1Aj7Jv+4mmrerL9/IMIjrPeBWfbcYY=;
-        b=AZj4va6QdxcyXtz5DQs0Kz94jPE3JZbffdjwDSmEB6lVQytpag8bAEwkeuQMWLMfuw
-         T/NLgt5sj7zMEQB4wF/4e3hrYULlpbykfsx9Hj0toDfqFFOpe2H9mCu9+fN0hJoxXWQB
-         kXn+2lIZfPXoyEbxugA43Mx83FTHknE6wJKjA6oVV/WBTi2MXDtMxnmAHJkXePLxqupL
-         EwoWMfnCazaFcl7Wo9519qR5ODkWBEraz+W1JChG/9UcjISgVfu7G9Kyt3642Pzr1knP
-         tSRZiKv9RTz/OeOpn8KqO22Y7LG2Hln257yXP/G2IJLR50WZngS3N/2NlwLxIKBiAi2A
-         Ebpg==
+        h=from:to:cc:subject:date:message-id;
+        bh=5TbZRDFuS6pZ0tUWXbMbLbpnoAnGVDMU7ST9hOrM+1w=;
+        b=e+AzRyBR4DLj0yY3x0KPjvibjwmrpTiNoi6bJ+DdYAu5BLOJFpji490fQs/2baa3Og
+         zvKeYgBvczsT14jpc+vT8b9kdm4U4GdwfVCuIEWHw3k/pRd3pVJEuQvXxAu1Ev21E9Dr
+         9WxHziTFY1S9/w9Ct6N2kPaYIK7pQT5m6rtOa5TQ57l0f2MacMEz3zM7QEnsCP5sdpQN
+         9v6U/WEEWZKumdRnRHO0GbW39xkTq4yK+QrAo8r3iownSOLyzak21fNRDiz9VG+ce1Ac
+         aYmQ8os5cWiyFqFvuUgztBn661Aw7H6UwyZsFOlIsY2oA3CIKuV4M26OaONB1fc5Po3v
+         ssEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Dk2Z1eCeA2+ln1Aj7Jv+4mmrerL9/IMIjrPeBWfbcYY=;
-        b=NT8uidutg8cjvCkq7jy+H4arxHcL5FcVPp/l8KM9tlfJiQ1kXCN8bWUvi8H3h/svL9
-         Gj/yI+QdE6HeFFhjO2vjDn6PmggV+UwhcPOaz0yASZ+LtVKMrMBbilkcgfikunuKvyoO
-         kiSsnD1e9yN2Ty+6pzI+c892zzAgqWBuWqAkCyO02L+w+4oras+Euq4RPzdFycnRYZXm
-         NCEwnonW1Uc6iVAb/Na9boxrnpoiqYq3TazhGNleVwM1qIqW63OZOOLfqmTUAVhibZNh
-         tvLmWAF1GeDq6uk6764RCjwUhQ5AvcuvCwBz/X0H0uobic5QlobwzMzoCVgAirrSG87/
-         mrvQ==
-X-Gm-Message-State: AOAM533m+Xmj2gzoCs80AngxXEzIKpt7KWkPpmT1bZEA4FA3iEGjA9R8
-        6AgtLWjwj+1N5Y0uuLVsynk=
-X-Google-Smtp-Source: ABdhPJwZ/X97r+Knl315CF6O//3POZhF45zaYg5twieZPyh6XXDwcbQ9mpXHUv/93HGFXmIhJTc71w==
-X-Received: by 2002:a17:90a:43c1:: with SMTP id r59mr1294063pjg.13.1606805336162;
-        Mon, 30 Nov 2020 22:48:56 -0800 (PST)
-Received: from archlinux.GovzHome.Govindz.co.nz ([2407:7000:aa27:b302:92e6:aee5:1373:39cd])
-        by smtp.gmail.com with ESMTPSA id z12sm1286727pfg.123.2020.11.30.22.48.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 22:48:55 -0800 (PST)
-From:   sanjay.govind9@gmail.com
-To:     dmitry.torokhov@gmail.com
-Cc:     Sanjay Govind <sanjay.govind9@gmail.com>, aicommander@gmail.com,
-        priv.luk@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] INPUT: xpad: support Ardwiino Controllers
-Date:   Tue,  1 Dec 2020 19:48:45 +1300
-Message-Id: <20201201064844.128122-1-sanjay.govind9@gmail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5TbZRDFuS6pZ0tUWXbMbLbpnoAnGVDMU7ST9hOrM+1w=;
+        b=B61kRVEjq5DQBX8ztv2SvLecFsSXwE5ual5M1MqOeDwJBEWK+Yq9netUVoTf5LXDQx
+         9Mw8DXrQlD1XlVbYu7o0lWUD+4/XZPhVUFnKtau26AmmNTj+bA00C4tORFe4XAj8MJJl
+         Vugeo9pl4/Z2Y7GoSmuFMm6NIYSJFCKlE2ig8uIVybI+7k4BAKiSik5emg5VzUby5RM+
+         DpVoD08RX/Lsvc0u7DQ/UctxOP07yOUVDdsI0UabYo/Y9gMvA7qwjKOvH3xgzmSvI8tU
+         wUivkGj2euqZb2q4gCAoHKCFCktAGpCzWH5v5RZTjxRd3NLMXeKdVWYq1wH6Zelw4HLU
+         anNw==
+X-Gm-Message-State: AOAM533esAJDXBRz+DfAqKsIneDt7kobrHVRWni/n+6bD7HqHJLNhzmO
+        bTEFC8H/aHoPzrELrZIOHfv+TYpiFB0=
+X-Google-Smtp-Source: ABdhPJxLXb0m/onpoQcyuCUIYX5W7JPNbhOhJrKliJRDzbDshn8gU+6egfzSiG5G1p6tIdZmUj6DCg==
+X-Received: by 2002:a63:a503:: with SMTP id n3mr1075553pgf.416.1606805434370;
+        Mon, 30 Nov 2020 22:50:34 -0800 (PST)
+Received: from localhost.localdomain ([8.210.202.142])
+        by smtp.gmail.com with ESMTPSA id l3sm1035966pju.44.2020.11.30.22.50.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 22:50:33 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     xuzaibo@huawei.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] crypto: hisilicon/trng replace atomic_add_return()
+Date:   Tue,  1 Dec 2020 14:50:18 +0800
+Message-Id: <1606805418-4739-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay Govind <sanjay.govind9@gmail.com>
+a set of atomic_inc_return() looks more neater
 
-This commit adds support for Ardwiino Controllers
-
-Signed-off-by: Sanjay Govind <sanjay.govind9@gmail.com>
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 ---
- drivers/input/joystick/xpad.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/hisilicon/trng/trng.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index c77cdb3b62b5..c9d78e2acb38 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -418,6 +418,7 @@ static const struct usb_device_id xpad_table[] = {
- 	XPAD_XBOXONE_VENDOR(0x0f0d),		/* Hori Controllers */
- 	XPAD_XBOX360_VENDOR(0x1038),		/* SteelSeries Controllers */
- 	XPAD_XBOX360_VENDOR(0x11c9),		/* Nacon GC100XF */
-+	XPAD_XBOX360_VENDOR(0x1209),		/* Ardwiino Controllers */
- 	XPAD_XBOX360_VENDOR(0x12ab),		/* X-Box 360 dance pads */
- 	XPAD_XBOX360_VENDOR(0x1430),		/* RedOctane X-Box 360 controllers */
- 	XPAD_XBOX360_VENDOR(0x146b),		/* BigBen Interactive Controllers */
+diff --git a/drivers/crypto/hisilicon/trng/trng.c b/drivers/crypto/hisilicon/trng/trng.c
+index a5033cf..2971268 100644
+--- a/drivers/crypto/hisilicon/trng/trng.c
++++ b/drivers/crypto/hisilicon/trng/trng.c
+@@ -267,12 +267,12 @@ static int hisi_trng_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	hisi_trng_add_to_list(trng);
+-	if (atomic_add_return(1, &trng_active_devs) == 1) {
++	if (atomic_inc_return(&trng_active_devs) == 1) {
+ 		ret = crypto_register_rng(&hisi_trng_alg);
+ 		if (ret) {
+ 			dev_err(&pdev->dev,
+ 				"failed to register crypto(%d)\n", ret);
+-			atomic_sub_return(1, &trng_active_devs);
++			atomic_dec_return(&trng_active_devs);
+ 			goto err_remove_from_list;
+ 		}
+ 	}
+@@ -289,7 +289,7 @@ static int hisi_trng_probe(struct platform_device *pdev)
+ 	return ret;
+ 
+ err_crypto_unregister:
+-	if (atomic_sub_return(1, &trng_active_devs) == 0)
++	if (atomic_dec_return(&trng_active_devs) == 0)
+ 		crypto_unregister_rng(&hisi_trng_alg);
+ 
+ err_remove_from_list:
+@@ -305,7 +305,7 @@ static int hisi_trng_remove(struct platform_device *pdev)
+ 	while (hisi_trng_del_from_list(trng))
+ 		;
+ 
+-	if (atomic_sub_return(1, &trng_active_devs) == 0)
++	if (atomic_dec_return(&trng_active_devs) == 0)
+ 		crypto_unregister_rng(&hisi_trng_alg);
+ 
+ 	return 0;
 -- 
-2.29.2
+1.9.1
 
