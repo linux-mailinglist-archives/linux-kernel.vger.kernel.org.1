@@ -2,564 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170C72CA8C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454212CA8CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389178AbgLAQwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:52:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387953AbgLAQwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:52:02 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3605A20758;
-        Tue,  1 Dec 2020 16:51:19 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 11:51:17 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Vasily Averin <vvs@virtuozzo.com>
-Subject: [GIT PULL] tracing: Fixes for 5.10-rc6
-Message-ID: <20201201115117.056f3c1f@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2404041AbgLAQwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:52:47 -0500
+Received: from mail-db8eur05on2061.outbound.protection.outlook.com ([40.107.20.61]:57967
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387795AbgLAQwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:52:46 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=noml8yJsUgQa4MVDmeCgsmYutTV9eWSfGLsMWgY4H4nUG1UpEsDeABp7QQi0t1XbBj6S1JQf7WbLdERrhdx7dFDNPmuo4Pnqjdjgae5x4CawGu6V0ZLKJNVw/V+MHoMsl3LpuzPuZ0WAjP/A52d+b94jCdRVhKm8Pa+3grsW1Se/AHdi4KfE5wYQmRFwkdzdEpAm6w0P0ITV0jWeCAaNLHzf5y0cYV3ctHdfUPMApqW/WmvRNWXavWxKMFZA2+IYuDX6l87CPHnXJQ4N745pcVTBDYizZFKR4KUsWdHaTQ0vvDRGjCg4+WZt55juHd9zg5YlOQOCH7BdG+uxQJZQZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dUBTfqcvayTrpMtuwdJTWd1jxDC19ETPJxZOmrRNH20=;
+ b=f95Iv54nhNHTEViDUTuLvRCkUEayH5tDrPq5VMrE9FLitKfmKHjlSNYih3JmzSL3KrF/3TcMmKEa+d+OVPKzoXZiqEns7+rLjscdiGt6m9fN015ycmkRfR9cDyVvS5aiuUXFYx77ZQXKA+EYFH/Y9Qqme4k4OQ3ihON5AtPz/y8nJME2OE3J20BlZ7YMjUF2ZO1G6kEoFC6f5djF7tXfTwbVKb/21wc53THq5tn/34TXmsgfRcb0sZ5dXiPK5HTBjO03uD+EJaRARZUXubU07ffD8xoNtSaU7P2FPESPPfeNtawC6Q5w0xfgpR54AKHs/BTl7+s5RP0itThYLu8jGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dUBTfqcvayTrpMtuwdJTWd1jxDC19ETPJxZOmrRNH20=;
+ b=PWNZ/DOLJb4fVvtd2HHLPD+vmTCZ7zaVxINWYecwe671JOjIPGe6S3RBhz1pBrAmyYpziR+qHkdLqVIv/6haUMEYlWoV0WMq7muXoNpVcZYxfFWR9HaMyFQxahNt2aqlXxwEEyZ29YIFNk/yyZfjMHmcYQJiwWcNeTja0a74C/U=
+Received: from PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:ac::5)
+ by PA4PR10MB4384.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:be::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Tue, 1 Dec
+ 2020 16:51:43 +0000
+Received: from PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::67:233d:68c6:cabc]) by PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::67:233d:68c6:cabc%7]) with mapi id 15.20.3611.023; Tue, 1 Dec 2020
+ 16:51:43 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Adam Ward <Adam.Ward.opensource@diasemi.com>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V3 00/10] regulator: da9121: extend support to variants,
+ add features
+Thread-Topic: [PATCH V3 00/10] regulator: da9121: extend support to variants,
+ add features
+Thread-Index: AQHWxzog6Yib7XBzdU6un7pKnt6hn6niRXwAgAAvq9A=
+Date:   Tue, 1 Dec 2020 16:51:43 +0000
+Message-ID: <PR3PR10MB4142434AF67B4976D8095ABD80F40@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
+References: <cover.1606755367.git.Adam.Ward.opensource@diasemi.com>
+ <160683107677.35139.1688443189294014005.b4-ty@kernel.org>
+In-Reply-To: <160683107677.35139.1688443189294014005.b4-ty@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [165.225.196.102]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8deea1e1-0271-47cc-8d85-08d896196230
+x-ms-traffictypediagnostic: PA4PR10MB4384:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PA4PR10MB4384F07FB0A436B4F23F38ACA7F40@PA4PR10MB4384.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ELHBrBRUC3u/3WGMg7rhilQJDl3MQuLYgqeJ/Cin3FTf3SbMnqhSaellQe18nDYa0/cHK6XiWoauRAvVXJwJd8hG+rtuEFGr5UryqvcVhUFMHrme9TVmcsbhkxcElChWak82ddJXE7R0nPdw5KaTjSYyTTckNO2+v80b20kaRSpfBgFk12BbUYIuVI2PKUjKUcRYni4n3KZdWmvpqLdlOykQ4eRSrR4NdN/4RPPAuReTgWStU4hoFN5aQZrdgy7DABeg+BbfH+D6ZtlCvyOm80xi/CiHtjOs165XpftHOl+61r33F/slVP6JE2vWOnpCWxXso74xrT4rnlBbhV//hcTsQnRN2LKN53cinlNomXtD0TVAIP8zzRM8lPycHYiUFuFSWhble4wOsGzS6f3ANg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39850400004)(396003)(346002)(366004)(4326008)(9686003)(8936002)(110136005)(55016002)(86362001)(966005)(8676002)(316002)(66476007)(64756008)(66946007)(76116006)(33656002)(66556008)(66446008)(52536014)(54906003)(7696005)(6636002)(2906002)(478600001)(186003)(5660300002)(26005)(53546011)(55236004)(6506007)(4744005)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?elpqcHNFRHBUakR6NGZDdUJjTmpxK052UkFQVjhoNXJmZ3lkZXlSVk8xNkNz?=
+ =?utf-8?B?cDBIK1gyT0tDWElaMjV5WmQrZnRDR1RvdFpoYjU5RFVYRm94djNCNG1udkRP?=
+ =?utf-8?B?Ti9LT2Q1SG9yLzB1ZEVWQVlpNkVCSkRRTjZiV0IzdURXTEdKWFBTa0hxazMw?=
+ =?utf-8?B?empwdk5rOFR4Y250dGptU3Q3UUxYTW9ybHpHd042eFFHZjRwUzE0OHk1U3Ns?=
+ =?utf-8?B?a1NZMjNNb1RGWXVpVS84bEtqSGpCVFhJaW15WmIxM0xCb0pEWkdjMFUrSHpm?=
+ =?utf-8?B?a3hTak1RSWdlanp6a1NGVXZjUWJvdGlpN3lYalp2ZFdkOVh1anUwL0VCd3Ba?=
+ =?utf-8?B?cWN4RGd5aVl4VnBTZ0toQVZjNUYvM2ZhVXBESjZNM1hrTTZ3Q2tQNythazhJ?=
+ =?utf-8?B?dWp5eGFBNE01STViTjZKSTZjL0MvUzVJTmQ5dldCT3dMUzZlSmhTQytKWEJQ?=
+ =?utf-8?B?dlRxY0w2OWhtNldQbzB5NGN3cEVYNVpsMTU0aldlRElSZmVDOW1sL1pOQmpC?=
+ =?utf-8?B?aVhkS0RISy8xTisvRGpLMUg2WW1OUnloYnovNTFRTzlZalVjTU1MajRKdDhl?=
+ =?utf-8?B?N3FYR2pRZG9WaUtqdTAzVzNucWlldmhKQlJ2QnBGRkszZUM5ZWMvVVBIQlVU?=
+ =?utf-8?B?R3pOTk51T2FMeXpTVWNmM3hYZ0t4aUcwSlNYQnRvQ3RORUd0TElkbndaSHJD?=
+ =?utf-8?B?aDRmVENjMW42cDlwVXBLaDJCbzRNSG1BNkZ3cnRPWk1waExrM2tzV0ZYbGFH?=
+ =?utf-8?B?dmNlcEJaU25WN1lCeGRvTGF1QXlyL0pGcWJiTlVIUi80aVBXS0ZtMWtoZThY?=
+ =?utf-8?B?QWh2czhaQmpiQkZSOTVLZGxIMGYybGxITzl0YndwMzFrUGNTdXNIZGtnTFF1?=
+ =?utf-8?B?bklOV2NMRnp2NEdMN05IdHdvOWF4bkozSHM4bVd2elNIWVR6ZFY2M2k3bTVa?=
+ =?utf-8?B?TUI5MHBTNS82eDJrZU4ySnlNMXRVQm12ZUpxZWg3SzJGWXNvaW5BblhrNU1J?=
+ =?utf-8?B?UGJSNzk5Z1JKUlNTRU9OUXJIVU1YM2drTEtBamREcHVMWUx3YlVVaDE2L3F5?=
+ =?utf-8?B?QWNNMmlaM09TQnArcWhFN28wTEJWcFdKd2xwK2hRdnNwWG1qNkJ5bHVOSjdK?=
+ =?utf-8?B?NTU3OHBybWJRV21uSTlPS2dBa091eVdlQStoTWpEV2k4bVFrSXNFRVR0Y1hh?=
+ =?utf-8?B?enlRYThXTkEwbEs0RlFIS0pnWVlHZmRxZW5lMm10WnhPN3BEL3F0dFN6dG9C?=
+ =?utf-8?B?NjVJV0MvRFdpMlB0NEhBUGZwK1ZVT1gwdlVMR250dTArRExsdkhaQThNMTVP?=
+ =?utf-8?Q?dJnb/TBRx+WPA3CzzPrE1SDxpa2DfqSG2r?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8deea1e1-0271-47cc-8d85-08d896196230
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 16:51:43.7916
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YempX900f3sfs766hu0cPanYYIR9cBOAiJDbM99bNAChRn2dohXyTMKqhnbULi9+JGjv+5BOr1XZvzLSN7OepUTNYEX5NS48J2OlInhqxm0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR10MB4384
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Linus,
-
-Tracing fixes for 5.10-rc6
-
- - Use correct timestamp variable for ring buffer write stamp update
- - Fix up before stamp and write stamp when crossing ring buffer sub
-   buffers
- - Keep a zero delta in ring buffer in slow path if cmpxchg fails
- - Fix trace_printk static buffer alignment for archs that care
- - Fix ftrace record accounting for ftrace ops with trampolines
- - Fix DYNAMIC_FTRACE_WITH_DIRECT_CALLS dependency
- - Remove WARN_ON in hwlat tracer that triggers on something that is OK
- - Make "my_tramp" trampoline in ftrace direct sample code global
- - Fixes in the bootconfig tool for better alignment management
-
-
-Please pull the latest trace-v5.10-rc6 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.10-rc6
-
-Tag SHA1: 12fb5fc11f67463def8e96a7d35c94832bb061f9
-Head SHA1: 68e10d5ff512b503dcba1246ad5620f32035e135
-
-
-Andrea Righi (1):
-      ring-buffer: Set the right timestamp in the slow path of __rb_reserve_next()
-
-Masami Hiramatsu (4):
-      tools/bootconfig: Fix errno reference after printf()
-      tools/bootconfig: Fix to check the write failure correctly
-      tools/bootconfig: Align the bootconfig applied initrd image size to 4
-      docs: bootconfig: Update file format on initrd image
-
-Minchan Kim (1):
-      tracing: Fix alignment of static buffer
-
-Naveen N. Rao (2):
-      ftrace: Fix updating FTRACE_FL_TRAMP
-      ftrace: Fix DYNAMIC_FTRACE_WITH_DIRECT_CALLS dependency
-
-Sami Tolvanen (1):
-      samples/ftrace: Mark my_tramp[12]? global
-
-Steven Rostedt (VMware) (2):
-      ring-buffer: Update write stamp with the correct ts
-      ring-buffer: Always check to put back before stamp when crossing pages
-
-Vasily Averin (1):
-      tracing: Remove WARN_ON in start_thread()
-
-----
- Documentation/admin-guide/bootconfig.rst |  18 +++--
- include/linux/bootconfig.h               |   3 +
- kernel/trace/Kconfig                     |   2 +-
- kernel/trace/ftrace.c                    |  22 +++++-
- kernel/trace/ring_buffer.c               |  20 +++--
- kernel/trace/trace.c                     |   2 +-
- kernel/trace/trace_hwlat.c               |   2 +-
- samples/ftrace/ftrace-direct-modify.c    |   2 +
- samples/ftrace/ftrace-direct-too.c       |   1 +
- samples/ftrace/ftrace-direct.c           |   1 +
- tools/bootconfig/main.c                  | 121 ++++++++++++++++++++-----------
- tools/bootconfig/test-bootconfig.sh      |   6 +-
- 12 files changed, 138 insertions(+), 62 deletions(-)
----------------------------
-diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-index a22024f9175e..363599683784 100644
---- a/Documentation/admin-guide/bootconfig.rst
-+++ b/Documentation/admin-guide/bootconfig.rst
-@@ -137,15 +137,22 @@ Boot Kernel With a Boot Config
- ==============================
- 
- Since the boot configuration file is loaded with initrd, it will be added
--to the end of the initrd (initramfs) image file with size, checksum and
--12-byte magic word as below.
-+to the end of the initrd (initramfs) image file with padding, size,
-+checksum and 12-byte magic word as below.
- 
--[initrd][bootconfig][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+[initrd][bootconfig][padding][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+
-+When the boot configuration is added to the initrd image, the total
-+file size is aligned to 4 bytes. To fill the gap, null characters
-+(``\0``) will be added. Thus the ``size`` is the length of the bootconfig
-+file + padding bytes.
- 
- The Linux kernel decodes the last part of the initrd image in memory to
- get the boot configuration data.
- Because of this "piggyback" method, there is no need to change or
--update the boot loader and the kernel image itself.
-+update the boot loader and the kernel image itself as long as the boot
-+loader passes the correct initrd file size. If by any chance, the boot
-+loader passes a longer size, the kernel feils to find the bootconfig data.
- 
- To do this operation, Linux kernel provides "bootconfig" command under
- tools/bootconfig, which allows admin to apply or delete the config file
-@@ -176,7 +183,8 @@ up to 512 key-value pairs. If keys contains 3 words in average, it can
- contain 256 key-value pairs. In most cases, the number of config items
- will be under 100 entries and smaller than 8KB, so it would be enough.
- If the node number exceeds 1024, parser returns an error even if the file
--size is smaller than 32KB.
-+size is smaller than 32KB. (Note that this maximum size is not including
-+the padding null characters.)
- Anyway, since bootconfig command verifies it when appending a boot config
- to initrd image, user can notice it before boot.
- 
-diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-index 9903088891fa..2696eb0fc149 100644
---- a/include/linux/bootconfig.h
-+++ b/include/linux/bootconfig.h
-@@ -12,6 +12,9 @@
- 
- #define BOOTCONFIG_MAGIC	"#BOOTCONFIG\n"
- #define BOOTCONFIG_MAGIC_LEN	12
-+#define BOOTCONFIG_ALIGN_SHIFT	2
-+#define BOOTCONFIG_ALIGN	(1 << BOOTCONFIG_ALIGN_SHIFT)
-+#define BOOTCONFIG_ALIGN_MASK	(BOOTCONFIG_ALIGN - 1)
- 
- /* XBC tree node */
- struct xbc_node {
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index a4020c0b4508..e1bf5228fb69 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -202,7 +202,7 @@ config DYNAMIC_FTRACE_WITH_REGS
- 
- config DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	def_bool y
--	depends on DYNAMIC_FTRACE
-+	depends on DYNAMIC_FTRACE_WITH_REGS
- 	depends on HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 
- config FUNCTION_PROFILER
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 8185f7240095..9c1bba8cc51b 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -1629,6 +1629,8 @@ static bool test_rec_ops_needs_regs(struct dyn_ftrace *rec)
- static struct ftrace_ops *
- ftrace_find_tramp_ops_any(struct dyn_ftrace *rec);
- static struct ftrace_ops *
-+ftrace_find_tramp_ops_any_other(struct dyn_ftrace *rec, struct ftrace_ops *op_exclude);
-+static struct ftrace_ops *
- ftrace_find_tramp_ops_next(struct dyn_ftrace *rec, struct ftrace_ops *ops);
- 
- static bool __ftrace_hash_rec_update(struct ftrace_ops *ops,
-@@ -1778,7 +1780,7 @@ static bool __ftrace_hash_rec_update(struct ftrace_ops *ops,
- 			 * to it.
- 			 */
- 			if (ftrace_rec_count(rec) == 1 &&
--			    ftrace_find_tramp_ops_any(rec))
-+			    ftrace_find_tramp_ops_any_other(rec, ops))
- 				rec->flags |= FTRACE_FL_TRAMP;
- 			else
- 				rec->flags &= ~FTRACE_FL_TRAMP;
-@@ -2244,6 +2246,24 @@ ftrace_find_tramp_ops_any(struct dyn_ftrace *rec)
- 	return NULL;
- }
- 
-+static struct ftrace_ops *
-+ftrace_find_tramp_ops_any_other(struct dyn_ftrace *rec, struct ftrace_ops *op_exclude)
-+{
-+	struct ftrace_ops *op;
-+	unsigned long ip = rec->ip;
-+
-+	do_for_each_ftrace_op(op, ftrace_ops_list) {
-+
-+		if (op == op_exclude || !op->trampoline)
-+			continue;
-+
-+		if (hash_contains_ip(ip, op->func_hash))
-+			return op;
-+	} while_for_each_ftrace_op(op);
-+
-+	return NULL;
-+}
-+
- static struct ftrace_ops *
- ftrace_find_tramp_ops_next(struct dyn_ftrace *rec,
- 			   struct ftrace_ops *op)
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index dc83b3fa9fe7..a6268e09160a 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3234,14 +3234,12 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	/* See if we shot pass the end of this buffer page */
- 	if (unlikely(write > BUF_PAGE_SIZE)) {
--		if (tail != w) {
--			/* before and after may now different, fix it up*/
--			b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
--			a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
--			if (a_ok && b_ok && info->before != info->after)
--				(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
--						      info->before, info->after);
--		}
-+		/* before and after may now different, fix it up*/
-+		b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
-+		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-+		if (a_ok && b_ok && info->before != info->after)
-+			(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
-+					      info->before, info->after);
- 		return rb_move_tail(cpu_buffer, tail, info);
- 	}
- 
-@@ -3287,11 +3285,11 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 		ts = rb_time_stamp(cpu_buffer->buffer);
- 		barrier();
-  /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
--		    info->after < ts) {
-+		    info->after < ts &&
-+		    rb_time_cmpxchg(&cpu_buffer->write_stamp,
-+				    info->after, ts)) {
- 			/* Nothing came after this event between C and E */
- 			info->delta = ts - info->after;
--			(void)rb_time_cmpxchg(&cpu_buffer->write_stamp,
--					      info->after, info->ts);
- 			info->ts = ts;
- 		} else {
- 			/*
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 410cfeb16db5..7d53c5bdea3e 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3534,7 +3534,7 @@ __find_next_entry(struct trace_iterator *iter, int *ent_cpu,
- }
- 
- #define STATIC_TEMP_BUF_SIZE	128
--static char static_temp_buf[STATIC_TEMP_BUF_SIZE];
-+static char static_temp_buf[STATIC_TEMP_BUF_SIZE] __aligned(4);
- 
- /* Find the next real entry, without updating the iterator itself */
- struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index c9ad5c6fbaad..d071fc271eef 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -368,7 +368,7 @@ static int start_kthread(struct trace_array *tr)
- 	struct task_struct *kthread;
- 	int next_cpu;
- 
--	if (WARN_ON(hwlat_kthread))
-+	if (hwlat_kthread)
- 		return 0;
- 
- 	/* Just pick the first CPU on first iteration */
-diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
-index c13a5bc5095b..5b9a09957c6e 100644
---- a/samples/ftrace/ftrace-direct-modify.c
-+++ b/samples/ftrace/ftrace-direct-modify.c
-@@ -21,6 +21,7 @@ static unsigned long my_ip = (unsigned long)schedule;
- asm (
- "	.pushsection    .text, \"ax\", @progbits\n"
- "	.type		my_tramp1, @function\n"
-+"	.globl		my_tramp1\n"
- "   my_tramp1:"
- "	pushq %rbp\n"
- "	movq %rsp, %rbp\n"
-@@ -29,6 +30,7 @@ asm (
- "	.size		my_tramp1, .-my_tramp1\n"
- "	ret\n"
- "	.type		my_tramp2, @function\n"
-+"	.globl		my_tramp2\n"
- "   my_tramp2:"
- "	pushq %rbp\n"
- "	movq %rsp, %rbp\n"
-diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
-index d5c5022be664..3f0079c9bd6f 100644
---- a/samples/ftrace/ftrace-direct-too.c
-+++ b/samples/ftrace/ftrace-direct-too.c
-@@ -16,6 +16,7 @@ extern void my_tramp(void *);
- asm (
- "	.pushsection    .text, \"ax\", @progbits\n"
- "	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
- "   my_tramp:"
- "	pushq %rbp\n"
- "	movq %rsp, %rbp\n"
-diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
-index 63ca06d42c80..a2729d1ef17f 100644
---- a/samples/ftrace/ftrace-direct.c
-+++ b/samples/ftrace/ftrace-direct.c
-@@ -14,6 +14,7 @@ extern void my_tramp(void *);
- asm (
- "	.pushsection    .text, \"ax\", @progbits\n"
- "	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
- "   my_tramp:"
- "	pushq %rbp\n"
- "	movq %rsp, %rbp\n"
-diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index eb92027817a7..4a445b6304bb 100644
---- a/tools/bootconfig/main.c
-+++ b/tools/bootconfig/main.c
-@@ -147,6 +147,12 @@ static int load_xbc_file(const char *path, char **buf)
- 	return ret;
- }
- 
-+static int pr_errno(const char *msg, int err)
-+{
-+	pr_err("%s: %d\n", msg, err);
-+	return err;
-+}
-+
- static int load_xbc_from_initrd(int fd, char **buf)
- {
- 	struct stat stat;
-@@ -162,26 +168,24 @@ static int load_xbc_from_initrd(int fd, char **buf)
- 	if (stat.st_size < 8 + BOOTCONFIG_MAGIC_LEN)
- 		return 0;
- 
--	if (lseek(fd, -BOOTCONFIG_MAGIC_LEN, SEEK_END) < 0) {
--		pr_err("Failed to lseek: %d\n", -errno);
--		return -errno;
--	}
-+	if (lseek(fd, -BOOTCONFIG_MAGIC_LEN, SEEK_END) < 0)
-+		return pr_errno("Failed to lseek for magic", -errno);
-+
- 	if (read(fd, magic, BOOTCONFIG_MAGIC_LEN) < 0)
--		return -errno;
-+		return pr_errno("Failed to read", -errno);
-+
- 	/* Check the bootconfig magic bytes */
- 	if (memcmp(magic, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN) != 0)
- 		return 0;
- 
--	if (lseek(fd, -(8 + BOOTCONFIG_MAGIC_LEN), SEEK_END) < 0) {
--		pr_err("Failed to lseek: %d\n", -errno);
--		return -errno;
--	}
-+	if (lseek(fd, -(8 + BOOTCONFIG_MAGIC_LEN), SEEK_END) < 0)
-+		return pr_errno("Failed to lseek for size", -errno);
- 
- 	if (read(fd, &size, sizeof(u32)) < 0)
--		return -errno;
-+		return pr_errno("Failed to read size", -errno);
- 
- 	if (read(fd, &csum, sizeof(u32)) < 0)
--		return -errno;
-+		return pr_errno("Failed to read checksum", -errno);
- 
- 	/* Wrong size error  */
- 	if (stat.st_size < size + 8 + BOOTCONFIG_MAGIC_LEN) {
-@@ -190,10 +194,8 @@ static int load_xbc_from_initrd(int fd, char **buf)
- 	}
- 
- 	if (lseek(fd, stat.st_size - (size + 8 + BOOTCONFIG_MAGIC_LEN),
--		  SEEK_SET) < 0) {
--		pr_err("Failed to lseek: %d\n", -errno);
--		return -errno;
--	}
-+		  SEEK_SET) < 0)
-+		return pr_errno("Failed to lseek", -errno);
- 
- 	ret = load_xbc_fd(fd, buf, size);
- 	if (ret < 0)
-@@ -262,14 +264,16 @@ static int show_xbc(const char *path, bool list)
- 
- 	ret = stat(path, &st);
- 	if (ret < 0) {
--		pr_err("Failed to stat %s: %d\n", path, -errno);
--		return -errno;
-+		ret = -errno;
-+		pr_err("Failed to stat %s: %d\n", path, ret);
-+		return ret;
- 	}
- 
- 	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
--		pr_err("Failed to open initrd %s: %d\n", path, fd);
--		return -errno;
-+		ret = -errno;
-+		pr_err("Failed to open initrd %s: %d\n", path, ret);
-+		return ret;
- 	}
- 
- 	ret = load_xbc_from_initrd(fd, &buf);
-@@ -307,8 +311,9 @@ static int delete_xbc(const char *path)
- 
- 	fd = open(path, O_RDWR);
- 	if (fd < 0) {
--		pr_err("Failed to open initrd %s: %d\n", path, fd);
--		return -errno;
-+		ret = -errno;
-+		pr_err("Failed to open initrd %s: %d\n", path, ret);
-+		return ret;
- 	}
- 
- 	size = load_xbc_from_initrd(fd, &buf);
-@@ -332,11 +337,13 @@ static int delete_xbc(const char *path)
- 
- static int apply_xbc(const char *path, const char *xbc_path)
- {
-+	char *buf, *data, *p;
-+	size_t total_size;
-+	struct stat stat;
-+	const char *msg;
- 	u32 size, csum;
--	char *buf, *data;
-+	int pos, pad;
- 	int ret, fd;
--	const char *msg;
--	int pos;
- 
- 	ret = load_xbc_file(xbc_path, &buf);
- 	if (ret < 0) {
-@@ -346,13 +353,12 @@ static int apply_xbc(const char *path, const char *xbc_path)
- 	size = strlen(buf) + 1;
- 	csum = checksum((unsigned char *)buf, size);
- 
--	/* Prepare xbc_path data */
--	data = malloc(size + 8);
-+	/* Backup the bootconfig data */
-+	data = calloc(size + BOOTCONFIG_ALIGN +
-+		      sizeof(u32) + sizeof(u32) + BOOTCONFIG_MAGIC_LEN, 1);
- 	if (!data)
- 		return -ENOMEM;
--	strcpy(data, buf);
--	*(u32 *)(data + size) = size;
--	*(u32 *)(data + size + 4) = csum;
-+	memcpy(data, buf, size);
- 
- 	/* Check the data format */
- 	ret = xbc_init(buf, &msg, &pos);
-@@ -383,28 +389,61 @@ static int apply_xbc(const char *path, const char *xbc_path)
- 	/* Apply new one */
- 	fd = open(path, O_RDWR | O_APPEND);
- 	if (fd < 0) {
--		pr_err("Failed to open %s: %d\n", path, fd);
-+		ret = -errno;
-+		pr_err("Failed to open %s: %d\n", path, ret);
- 		free(data);
--		return fd;
-+		return ret;
- 	}
- 	/* TODO: Ensure the @path is initramfs/initrd image */
--	ret = write(fd, data, size + 8);
--	if (ret < 0) {
--		pr_err("Failed to apply a boot config: %d\n", ret);
-+	if (fstat(fd, &stat) < 0) {
-+		pr_err("Failed to get the size of %s\n", path);
- 		goto out;
- 	}
--	/* Write a magic word of the bootconfig */
--	ret = write(fd, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
--	if (ret < 0) {
--		pr_err("Failed to apply a boot config magic: %d\n", ret);
--		goto out;
--	}
--	ret = 0;
-+
-+	/* To align up the total size to BOOTCONFIG_ALIGN, get padding size */
-+	total_size = stat.st_size + size + sizeof(u32) * 2 + BOOTCONFIG_MAGIC_LEN;
-+	pad = ((total_size + BOOTCONFIG_ALIGN - 1) & (~BOOTCONFIG_ALIGN_MASK)) - total_size;
-+	size += pad;
-+
-+	/* Add a footer */
-+	p = data + size;
-+	*(u32 *)p = size;
-+	p += sizeof(u32);
-+
-+	*(u32 *)p = csum;
-+	p += sizeof(u32);
-+
-+	memcpy(p, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
-+	p += BOOTCONFIG_MAGIC_LEN;
-+
-+	total_size = p - data;
-+
-+	ret = write(fd, data, total_size);
-+	if (ret < total_size) {
-+		if (ret < 0)
-+			ret = -errno;
-+		pr_err("Failed to apply a boot config: %d\n", ret);
-+		if (ret >= 0)
-+			goto out_rollback;
-+	} else
-+		ret = 0;
-+
- out:
- 	close(fd);
- 	free(data);
- 
- 	return ret;
-+
-+out_rollback:
-+	/* Map the partial write to -ENOSPC */
-+	if (ret >= 0)
-+		ret = -ENOSPC;
-+	if (ftruncate(fd, stat.st_size) < 0) {
-+		ret = -errno;
-+		pr_err("Failed to rollback the write error: %d\n", ret);
-+		pr_err("The initrd %s may be corrupted. Recommend to rebuild.\n", path);
-+	}
-+	goto out;
- }
- 
- static int usage(void)
-diff --git a/tools/bootconfig/test-bootconfig.sh b/tools/bootconfig/test-bootconfig.sh
-index d295e406a756..baed891d0ba4 100755
---- a/tools/bootconfig/test-bootconfig.sh
-+++ b/tools/bootconfig/test-bootconfig.sh
-@@ -9,6 +9,7 @@ else
-   TESTDIR=.
- fi
- BOOTCONF=${TESTDIR}/bootconfig
-+ALIGN=4
- 
- INITRD=`mktemp ${TESTDIR}/initrd-XXXX`
- TEMPCONF=`mktemp ${TESTDIR}/temp-XXXX.bconf`
-@@ -59,7 +60,10 @@ echo "Show command test"
- xpass $BOOTCONF $INITRD
- 
- echo "File size check"
--xpass test $new_size -eq $(expr $bconf_size + $initrd_size + 9 + 12)
-+total_size=$(expr $bconf_size + $initrd_size + 9 + 12 + $ALIGN - 1 )
-+total_size=$(expr $total_size / $ALIGN)
-+total_size=$(expr $total_size \* $ALIGN)
-+xpass test $new_size -eq $total_size
- 
- echo "Apply command repeat test"
- xpass $BOOTCONF -a $TEMPCONF $INITRD
+T24gMDEgRGVjZW1iZXIgMjAyMCAxMzo1OCwgTWFyayBCcm93biB3cm90ZToNCg0KPiBPbiBNb24s
+IDMwIE5vdiAyMDIwIDE2OjU5OjA0ICswMDAwLCBBZGFtIFdhcmQgd3JvdGU6DQo+ID4gVGhpcyBz
+ZXJpZXMgZXh0ZW5kcyB0aGUgREE5MTIxIGRyaXZlciB0byBhZGQgc3VwcG9ydCBmb3IgcmVsYXRl
+ZCBwcm9kdWN0czoNCj4gPg0KPiA+ICAgREE5MTMwLCAxMEEsIER1YWwtUGhhc2UgKEF1dG9tb3Rp
+dmUgR3JhZGUpDQo+ID4gICBEQTkxMjIsIDVBICsgNUENCj4gPiAgIERBOTEzMSwgNUEgKyA1QSAo
+QXV0b21vdGl2ZSBHcmFkZSkNCj4gPiAgIERBOTIyMCwgM0EgKyAzQQ0KPiA+ICAgREE5MTMyLCAz
+QSArIDNBIChBdXRvbW90aXZlIEdyYWRlKQ0KPiA+ICAgREE5MjE3LCA2QSwgRHVhbC1QaGFzZQ0K
+PiA+DQo+ID4gWy4uLl0NCj4gDQo+IEFwcGxpZWQgdG8NCj4gDQo+ICAgIGh0dHBzOi8vZ2l0Lmtl
+cm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Jyb29uaWUvc291bmQuZ2l0IGZvci1u
+ZXh0DQo+IA0KDQpIaSBNYXJrLA0KDQpXYXMgdGhlIGludGVudGlvbiB0byBhcHBseSB0aGVzZSB0
+byB0aGUgQVNvQyByZXBvLCBhcyB0aGlzIHBhdGNoIHNldCBpcyBqdXN0DQpmb3IgcmVndWxhdG9y
+PyBKdXN0IHdhbnRlZCB0byBjaGVjay4NCg==
