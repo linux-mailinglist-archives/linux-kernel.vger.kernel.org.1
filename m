@@ -2,161 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830BD2CA2D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B16F2CA2D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgLAMik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
+        id S1729798AbgLAMir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgLAMij (ORCPT
+        with ESMTP id S1726915AbgLAMiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:38:39 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE08C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:37:53 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id v14so2512129wml.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:37:53 -0800 (PST)
+        Tue, 1 Dec 2020 07:38:46 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25038C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:38:06 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id g25so642863wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:38:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=lBUww53RFhoSaA4q+roaei0e4iCTcYgJXrbA2ztPW1s=;
-        b=V4UhIUVR2V1Ts6TfWAjd3Xk02gdycLDzXgLKwUvsYOCK3WXCsjGTifjGfsUD2SLFr5
-         v4pdCtNjSfhH6lqdkxSv/sK+K3SmbVydOb/PHVBJYlIca6EzsIL1FsjlsyG3HTh3vNen
-         G/YCDDpD9p9IIpIM6AnIAuwRylLQ6cJEDsLxkrZctPaFeW6MEx7eod3nzNbxaTsHIkMb
-         CKgcLS0dtMfSwHNl2ewGNobaxAEU2+YFS8OvEF7vQhyhhMcrwP9EjvDRE6gmp3eXySOE
-         yuISy+nLTfZ0p+NuMpsJI6/gYvhJSBN6FcOQMRaqbpyuOXXcKbgllp5u0gqe93rM78db
-         GDfw==
+        bh=CFJoCo9pGKzz38Qf5U4Ymk7qbp28hoCq6Dpp7bT0lkg=;
+        b=TQ3ioOF4E5jkFmiHOU+QgPeu+/1fYg78yG8i36jSZUeHyCoJUbr2wGb9P+/oWD3KrI
+         0pOze1JyAKUZkega+AuiYUlyqGEun3kJKY4yo8pPwJ0nOf2ydd6VfkCcy3VJYAntV2EM
+         CNkdQjAzFx1T71gak+UBnoUKp6VgoWpwsiZS7HMh7QtqEMNRWoLfbU//Iw1CxzPJS+EB
+         Lk/g8KuHuRAjJZcFjGAjLCxQLZWPLbYf5FJ+560fkGex2a2wrZDbluFNXHg9w5FY89rg
+         i4RyvJlTbmkFbiTm4aAtdKySLwlc+F23Zgrm3CLR3W0Dai1z2jxGPD/Yfb5CHI1nEGgF
+         tj/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lBUww53RFhoSaA4q+roaei0e4iCTcYgJXrbA2ztPW1s=;
-        b=bhU5LQP38OWLIh+4Cq0u3vtg9w+fHJgApiu/Y1qD3CXqlClhASKjWqyemLM+UbNITt
-         l0chRDYm6LS65a4huf10AruWLrnm/11Bg4Pu2oTi02RbZRnnoXJKfdsclUx+0+jNrtK3
-         9FtZfuLWRCz//x8/H+NObqnzldAWE22qxrI+iUgWxJDd/0kvx1iCCIW3d1+0m/3bFdJu
-         MfXMZYw1c3hQMoPDeFBacXZtOZL0Y4eZ+OMvFQVL+1SKo3HuOLWQV9HdgfDhtdGhFagv
-         KY2843yxBboAH+vr+C7CmTPwSXms6AnZiDlhxBUXIvofSYOCSYfFcmauElYIcDUjL8nf
-         uIXg==
-X-Gm-Message-State: AOAM5334DNGeMQvro6ZTK0Y56ZOA7sCYn10Pybyx8Wo6PdT6lVoVIZmB
-        hLLJpIsMI2Qj9s5jIhXErsjMJA==
-X-Google-Smtp-Source: ABdhPJxVMxM7zxrRtQ5ATPRAIFdYrni8gzqkoCgfysS6KtplDal1I2J1qZu15IQmmDN/O+Q++hoi5g==
-X-Received: by 2002:a7b:c05a:: with SMTP id u26mr2471062wmc.159.1606826272146;
-        Tue, 01 Dec 2020 04:37:52 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id 21sm3147147wme.0.2020.12.01.04.37.51
+        bh=CFJoCo9pGKzz38Qf5U4Ymk7qbp28hoCq6Dpp7bT0lkg=;
+        b=V44gyrPEYRfrofEtbZHBtiekW0XH2SAwTzRV/iSbcLdi+l3S0+9ksTetUFzYn6Tex5
+         8UN1VRP7ymi+D0h8so4s/VY6YnCZXCGUK2t54vOTazW6TUesyTpjquIERRaspyxsdF6c
+         xjOfXoT7v6cJnaQIegTpUxqd13coTy4B9h5hsDY8dtuKBl81hhYluWLvTa7n9g4AiVas
+         X96Pq4XcSAlXrNwEC6blwSwkssLpQloZWb9usqbicWFdgQB3EGNPTgkClU4j+K7c9bZl
+         rhSI76uax7wOeMIZdQEeveeD/rvP1ISaACiD8zHrCgywi3EDvlcLewmfsXzTwSgewYVN
+         c6kw==
+X-Gm-Message-State: AOAM533GJ/aZ5FknM7wt8UKJUyursvhw024PTcTguhtKFrlxG1mJ9PA4
+        sXpdnucqRRksIJKabyk/1cKXPA==
+X-Google-Smtp-Source: ABdhPJzCBtX7sfsffGEcm/750hR+tpjSI8VFLs8CRGMT0oo8WSg6lUVUCSCaOM8lz+rgd66K4V4lhA==
+X-Received: by 2002:a05:600c:2209:: with SMTP id z9mr2520138wml.72.1606826284613;
+        Tue, 01 Dec 2020 04:38:04 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id l3sm3015166wrr.89.2020.12.01.04.38.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 04:37:51 -0800 (PST)
-Date:   Tue, 1 Dec 2020 12:37:48 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 09/14] cpuset: Don't use the cpu_possible_mask as a
- last resort for cgroup v1
-Message-ID: <20201201123748.GA1896574@google.com>
-References: <20201124155039.13804-1-will@kernel.org>
- <20201124155039.13804-10-will@kernel.org>
- <20201127133245.4hbx65mo3zinawvo@e107158-lin.cambridge.arm.com>
- <20201130170531.qo67rai5lftskmk2@e107158-lin.cambridge.arm.com>
- <20201130173610.GA1715200@google.com>
- <20201201115842.t77abecneuesd5ih@e107158-lin.cambridge.arm.com>
+        Tue, 01 Dec 2020 04:38:03 -0800 (PST)
+Date:   Tue, 1 Dec 2020 12:38:00 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v2 bpf-next 10/13] bpf: Add instructions for
+ atomic[64]_[fetch_]sub
+Message-ID: <20201201123800.GG2114905@google.com>
+References: <20201127175738.1085417-1-jackmanb@google.com>
+ <20201127175738.1085417-11-jackmanb@google.com>
+ <0fd52966-24b2-c50c-4f23-93428d8993c4@fb.com>
+ <20201129013420.yi7ehnseawm5hsb7@ast-mbp>
+ <1dfd2e5e-f8d2-eac2-d6b2-7428ceb00c36@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201115842.t77abecneuesd5ih@e107158-lin.cambridge.arm.com>
+In-Reply-To: <1dfd2e5e-f8d2-eac2-d6b2-7428ceb00c36@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 01 Dec 2020 at 11:58:42 (+0000), Qais Yousef wrote:
-> On 11/30/20 17:36, Quentin Perret wrote:
-> > On Monday 30 Nov 2020 at 17:05:31 (+0000), Qais Yousef wrote:
-> > > I create 3 cpusets: 64bit, 32bit and mix. As the name indicates, 64bit contains
-> > > all 64bit-only cpus, 32bit contains 32bit-capable ones and mix has a mixture of
-> > > both.
+On Mon, Nov 30, 2020 at 09:18:09AM -0800, Yonghong Song wrote:
+> On 11/28/20 5:34 PM, Alexei Starovoitov wrote:
+> > On Fri, Nov 27, 2020 at 09:35:07PM -0800, Yonghong Song wrote:
+> > > On 11/27/20 9:57 AM, Brendan Jackman wrote:
+[...]
+> > > > +#define BPF_ATOMIC_SUB(SIZE, DST, SRC, OFF)			\
+> > > > +	((struct bpf_insn) {					\
+> > > > +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+> > > > +		.dst_reg = DST,					\
+> > > > +		.src_reg = SRC,					\
+> > > > +		.off   = OFF,					\
+> > > > +		.imm   = BPF_SUB })
 > > > 
-> > > If I try to move my test binary to 64bit cpuset, it moves there and I see the
-> > > WARN_ON_ONCE() triggered. The task has attached to the new cpuset but
-> > > set_allowed_cpus_ptr() has failed and we end up with whatever affinity we had
-> > > previously. Breaking cpusets effectively.
+> > > Currently, llvm does not support XSUB, should we support it in llvm?
+> > > At source code, as implemented in JIT, user can just do a negate
+> > > followed by xadd.
 > > 
-> > Right, and so does exec'ing from a 64 bit task into 32 bit executable
-> > from within a 64 bit-only cpuset :( . And there is nothing we can really
+> > I forgot we have BPF_NEG insn :)
+> > Indeed it's probably easier to handle atomic_fetch_sub() builtin
+> > completely on llvm side. It can generate bpf_neg followed by atomic_fetch_add.
 > 
-> True. The kernel can decide to kill the task or force detach it then, no?
-> Sending SIGKILL makes more sense.
-
-Yeah but again, we need this to work for existing apps. Just killing it
-basically means we have no support, so that doesn't work for the use
-case :/
-
-> > do about it, we cannot fail the exec because we need this to work for
-> > existing apps, and there is no way the Android framework can know
-> > upfront.
+> Just tried. llvm selectiondag won't be able to automatically
+> convert atomic_fetch_sub to neg + atomic_fetch_add. So there
+> will be a need in BPFInstrInfo.td to match atomic_fetch_sub IR
+> pattern. I will experiment this together with xsub.
 > 
-> It knows upfront it has enabled asym aarch32. So it needs to make sure not to
-> create 'invalid' cpusets?
-
-Problem is, we _really_ don't want to keep a big CPU in the background
-cpuset just for that. And even if we did, we'd have to deal with hotplug.
-
+> > No need to burden verifier, interpreter and JITs with it.
 > > 
-> > So the only thing we can do really is WARN() and proceed to ignore the
-> > cpuset, which is what this series does :/. It's not exactly pretty but I
-> > don't think we can do much better than that TBH, and it's the same thing
-> > for the example you brought up. Failing cpuset_can_attach() will not
-> > help, we can only WARN and proceed ...
-> 
-> I think for cases where we can prevent userspace from doing something wrong, we
-> should. Like trying to attach to a cpuset that will result in an empty mask.
-> FWIW, it does something similar with deadline tasks. See task_can_attach().
-> 
-> Similarly for the case when userspace tries to modify the cpuset.cpus such that
-> a task will end up with empty cpumask. We now have the new case that some tasks
-> can only run on a subset of cpu_possible_mask. So the definition of empty
-> cpumask has gained an extra meaning.
 
-I see this differently, e.g. if you affine a task to a CPU and you
-hotunplug it, then the kernel falls back to the remaining online CPUs
-for that task. Not pretty, but it keeps things functional. I'm thinking
-a similar kind of support would be good enough here.
-
-But yes, this cpuset mess is the part of the series I hate most too.
-It's just not clear we have better solutions :/
-
-> > 
-> > Now, Android should be fine with that I think. We only need the kernel
-> > to implement a safe fallback mechanism when userspace gives
-> > contradictory commands, because we know there are edge cases userspace
-> > _cannot_ deal with correctly, but this fallback doesn't need to be
-> > highly optimized (at least for Android), but I'm happy to hear what
-> > others think.
-> 
-> Why not go with our original patch that fixes affinity then in the arch code if
-> the task wakes up on the wrong cpu? It is much simpler approach IMO to achieve
-> the same thing.
-
-I personally had no issues with that patch, but as per Peter's original
-reply, that's "not going to happen". Will's proposal seems to go one
-step further and tries its best to honor the contract with userspace (by
-keeping the subset of the affinity mask, ...) when that can be done, so
-if that can be acceptable, then be it. But I'd still rather keep this
-simple if at all possible. It's just my opinion though :)
-
-Thanks,
-Quentin
+I guess it's also worth remembering other archs might have an atomic
+subtract.
