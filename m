@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93D32C96A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C362C96AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 06:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgLAFES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 00:04:18 -0500
-Received: from mo-csw1116.securemx.jp ([210.130.202.158]:38624 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgLAFES (ORCPT
+        id S1726226AbgLAFFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 00:05:20 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:55656 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726083AbgLAFFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 00:04:18 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 0B1527gj002940; Tue, 1 Dec 2020 14:02:08 +0900
-X-Iguazu-Qid: 2wHHLA7xMpfc7myY54
-X-Iguazu-QSIG: v=2; s=0; t=1606798927; q=2wHHLA7xMpfc7myY54; m=cJHqGlfb1V063hhBREcXiFkKnrnXq0x2hVYSI8uE6DE=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1111) id 0B1526Ji038343;
-        Tue, 1 Dec 2020 14:02:07 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 0B1526H1009157;
-        Tue, 1 Dec 2020 14:02:06 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 0B1526wY012148;
-        Tue, 1 Dec 2020 14:02:06 +0900
-Date:   Tue, 1 Dec 2020 14:02:04 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, yuji2.ishikawa@toshiba.co.jp,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 2/4] gpio: visoconti: Add Toshiba Visconti GPIO support
-X-TSB-HOP: ON
-Message-ID: <20201201050204.jlwmkdptrxxptzil@toshiba.co.jp>
-References: <20201112084057.1399983-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20201112084057.1399983-3-nobuhiro1.iwamatsu@toshiba.co.jp>
- <CACRpkdbtkLjzMqRKzd3ppmwZ9hZESL4+zGOf7-uqjuF==Wm=3A@mail.gmail.com>
+        Tue, 1 Dec 2020 00:05:19 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14nG8C008493;
+        Tue, 1 Dec 2020 05:04:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=vvL4IJ2G7NlSTfaTAS4JXtLo8kry4yfNip+qSJGDInY=;
+ b=DpKX57hKtv0Z6SiycceP2rThYUEKqHaJxjySUvdZhrKeidlfsHMrquLjYgMO1NwUcPhj
+ SMzNRtB7maMaMoLcl8JJMbhFJz8MWZmOebQShpgb2yIr01DaabycSOnJi4x2CeiHVmG7
+ d7h6yfrahdVwxahaChYIdHCfqCclzpyTapk5e8Ae9h/A/ACDrseTYsp6H+xUFwH/OCpx
+ zsUkIbdSE5MuWl6mOUR7OkL5tPHQkC4BfWmdBQ4ekahvK8CXP/4iBD9o0aA7Ov3dYxgC
+ /oUyT2wygaajla0wy7O2ZMkpYJG43UNuAc/M/TyOhhZtkt898sU0ociqlc2YjEYopZBT jw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 353c2arqdc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 05:04:28 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14oMqP134962;
+        Tue, 1 Dec 2020 05:04:27 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 35404mdvgn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 05:04:27 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B154PZf022129;
+        Tue, 1 Dec 2020 05:04:25 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 21:04:25 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Can Guo <cang@codeaurora.org>, Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: Adjust logic in common ADAPT helper
+Date:   Tue,  1 Dec 2020 00:04:15 -0500
+Message-Id: <160636449893.25598.9433065109930517138.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201121044810.507288-1-bjorn.andersson@linaro.org>
+References: <20201121044810.507288-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbtkLjzMqRKzd3ppmwZ9hZESL4+zGOf7-uqjuF==Wm=3A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010033
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 20 Nov 2020 20:48:10 -0800, Bjorn Andersson wrote:
 
-Thanks for your review.
+> The introduction of ufshcd_dme_configure_adapt() refactored out
+> duplication from the Mediatek and Qualcomm drivers.
+> 
+> Both these implementations had the logic of:
+>     gear_tx == UFS_HS_G4 => PA_INITIAL_ADAPT
+>     gear_tx != UFS_HS_G4 => PA_NO_ADAPT
+> 
+> [...]
 
-On Tue, Nov 17, 2020 at 09:59:06PM +0100, Linus Walleij wrote:
-> Hi Nobuhiro,
-> 
-> On Thu, Nov 12, 2020 at 12:42 AM Nobuhiro Iwamatsu
-> <nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
-> 
-> > Add the GPIO driver for Toshiba Visconti ARM SoCs.
-> >
-> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> 
-> I just noticed this:
-> 
-> > +config GPIO_VISCONTI
-> > +       tristate "Toshiba Visconti GPIO support"
-> > +       depends on ARCH_VISCONTI || COMPILE_TEST
-> > +       depends on OF_GPIO
-> > +       select GPIOLIB_IRQCHIP
-> > +       help
-> > +         Say yes here to support GPIO on Tohisba Visconti.
-> 
-> Add:
-> select GPIO_GENERIC
+Applied to 5.11/scsi-queue, thanks!
 
-OK, I will add this.
+[1/1] scsi: ufs: Adjust logic in common ADAPT helper
+      https://git.kernel.org/mkp/scsi/c/66df79ccbc2f
 
-> 
-> Then all of these:
-> 
-> > +static int visconti_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> > +static void visconti_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
-> > +static int visconti_gpio_get_dir(struct gpio_chip *chip, unsigned int offset)
-> > +static int visconti_gpio_dir_in(struct gpio_chip *chip, unsigned int offset)
-> > +static int visconti_gpio_dir_out(struct gpio_chip *chip, unsigned int offset, int value)
-> 
-> Can be implemented by the genric MMIO GPIO library.
-
-I see. I will update using generic MMIO GPIO library.
-
-> 
-> > +       gpio_chip = &priv->gpio_chip;
-> > +       gpio_chip->label = name;
-> > +       gpio_chip->owner = THIS_MODULE;
-> > +       gpio_chip->parent = dev;
-> > +       gpio_chip->request = gpiochip_generic_request;
-> > +       gpio_chip->free = gpiochip_generic_free;
-> > +       gpio_chip->get = visconti_gpio_get;
-> > +       gpio_chip->set = visconti_gpio_set;
-> > +       gpio_chip->get_direction = visconti_gpio_get_dir;
-> > +       gpio_chip->direction_input = visconti_gpio_dir_in;
-> > +       gpio_chip->direction_output = visconti_gpio_dir_out;
-> > +       gpio_chip->base = 0;
-> > +       gpio_chip->ngpio = VISCONTI_GPIO_NR;
-> > +       gpio_chip->irq.init_valid_mask = visconti_init_irq_valid_mask;
-> 
-> Initialized the generic helpers using the addresses of the
-> GPIO registers here by a call to bgpio_init().
-> 
-> Check this driver for an example:
-> drivers/gpio/gpio-ftgpio010.c
-> 
-> If you get uncertain about the arguments to bgpio_init()
-> check drivers/gpio/gpio-mmio.c, there is kerneldoc for the
-> function.
-> 
-> By doing this you get implementations of gpio_[get|set]_multiple()
-> for free.
-
-
-Thanks for your suggestion.
-I see. I will check these and update.
-
-
-> 
-> Yours,
-> Linus Walleij
-
-Best regards,
-  Nobuhiro
+-- 
+Martin K. Petersen	Oracle Linux Engineering
