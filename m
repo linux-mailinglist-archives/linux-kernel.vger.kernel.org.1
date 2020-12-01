@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BB02C9A7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5652C9C52
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387889AbgLAI6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:58:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58602 "EHLO mail.kernel.org"
+        id S2390290AbgLAJRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:17:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387685AbgLAI41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:56:27 -0500
+        id S2389973AbgLAJMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:12:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86B3022241;
-        Tue,  1 Dec 2020 08:56:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C8CC20770;
+        Tue,  1 Dec 2020 09:11:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812972;
-        bh=nvfC2AaiqXlne3luo+MKVTs7FVIBIkt5U5Pts3tq6eI=;
+        s=korg; t=1606813914;
+        bh=FhqQS2u0/63zjcqvidtXMWwRMP1Bl4MOoao9DUasiYU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZqJsvJkw4QixHFx8hh1wFQRxiPyXeBUmV4NuBTF9m8MnIK7ybq+YS3gqza/KN8Bt
-         kDf5M8zruQebsyuVvGdN5NkxWeITtBHL1b/lVgHrG8Vol8h9kndSEcn2WOxRHdkUy3
-         Gy4zrtEHPGxWCSRZxcKZiPqJNT9+6GhH3rjG/QhM=
+        b=tqUlBb11z23g5UbpwoRq1qPMshRCq8/cl8xnh393Vdcdn8nVjzmA8u5Vindo2ylu7
+         RRGzfN8mliHYvj4Q10AAI5ZQC0/VEWLDpZlA15XXasaMjq/KRm7EQPQR9WqWcoWmHr
+         9KMBsCyKRveQcjPH/7TA7Zg9jfSqvIcj6t+lG+jk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Mark Brown <broonie@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 39/42] regulator: avoid resolve_supply() infinite recursion
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 102/152] powerpc/64s: Fix allnoconfig build since uaccess flush
 Date:   Tue,  1 Dec 2020 09:53:37 +0100
-Message-Id: <20201201084645.740577510@linuxfoundation.org>
+Message-Id: <20201201084725.217651682@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Michał Mirosław" <mirq-linux@rere.qmqm.pl>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
 
-commit 4b639e254d3d4f15ee4ff2b890a447204cfbeea9 upstream
+[ Upstream commit b6b79dd53082db11070b4368d85dd6699ff0b063 ]
 
-When a regulator's name equals its supply's name the
-regulator_resolve_supply() recurses indefinitely. Add a check
-so that debugging the problem is easier. The "fixed" commit
-just exposed the problem.
+Using DECLARE_STATIC_KEY_FALSE needs linux/jump_table.h.
 
-Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
-Cc: stable@vger.kernel.org
-Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # stpmic1
-Link: https://lore.kernel.org/r/c6171057cfc0896f950c4d8cb82df0f9f1b89ad9.1605226675.git.mirq-linux@rere.qmqm.pl
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Otherwise the build fails with eg:
+
+  arch/powerpc/include/asm/book3s/64/kup-radix.h:66:1: warning: data definition has no type or storage class
+     66 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
+
+Fixes: 9a32a7e78bd0 ("powerpc/64s: flush L1D after user accesses")
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+[mpe: Massage change log]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201123184016.693fe464@canb.auug.org.au
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/core.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/powerpc/include/asm/book3s/64/kup-radix.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1550,6 +1550,12 @@ static int regulator_resolve_supply(stru
- 		}
- 	}
+diff --git a/arch/powerpc/include/asm/book3s/64/kup-radix.h b/arch/powerpc/include/asm/book3s/64/kup-radix.h
+index 28716e2f13e31..a39e2d193fdc1 100644
+--- a/arch/powerpc/include/asm/book3s/64/kup-radix.h
++++ b/arch/powerpc/include/asm/book3s/64/kup-radix.h
+@@ -63,6 +63,8 @@
  
-+	if (r == rdev) {
-+		dev_err(dev, "Supply for %s (%s) resolved to itself\n",
-+			rdev->desc->name, rdev->supply_name);
-+		return -EINVAL;
-+	}
+ #else /* !__ASSEMBLY__ */
+ 
++#include <linux/jump_label.h>
 +
- 	/* Recursively resolve the supply of the supply */
- 	ret = regulator_resolve_supply(r);
- 	if (ret < 0) {
+ DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
+ 
+ #ifdef CONFIG_PPC_KUAP
+-- 
+2.27.0
+
 
 
