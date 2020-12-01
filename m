@@ -2,126 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005AD2CAE5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2074D2CAE5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 22:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729183AbgLAV1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 16:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725967AbgLAV1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 16:27:48 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B30C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 13:27:07 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id b12so2149558pjl.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 13:27:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=V+/ciNKNBVSxZCplHKMLdjwlLpX/qeh2rzRXvgYylIk=;
-        b=hNjrfGwqBx3QzKDk1BMPJpys6yHH/Ow5wyuyQ/AnZdv6K4HhchhmrzvV26qLHqGZEk
-         hcoZy6FKT+T+lGt6UxsSAFjKCCYVOtcbKna6Vf29AUHEHI5JN1scjAOQLovekc+D7FJv
-         k06PHX3gBciak5OZ0UxfDdlYCz5SHcDuB4olk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=V+/ciNKNBVSxZCplHKMLdjwlLpX/qeh2rzRXvgYylIk=;
-        b=seIt4Qtpc0PEro6D2D55R0+PyofeXu5W1AS/Kxkmf87JzuKbMJeHM0gyj5ogIWmPwA
-         JnnEDctcLecDaazyqhypsrvoXgm8bBLcu3ka0w96eEBBJDYEUPpbSvkJPLTXyc2w+YnP
-         MvOSnmCqeIKDYIXjFYVdOAj/qsJ0EAOjdQagGese22UOcwlyfIfmSAqIrnPP0bAW9UKn
-         +q2+dWhFhgTRnZQ3xxbYPr+AbsgPakfmuoa7TuWJUnBF25HZ5uoi5SnwQH+ML/70/Xfh
-         r0eMkyEilE2nLUXKiT7AUyUUPw0hxeChdpfa3cvi4Uezm1ngbyCalHZ5T3JTMH7bjIO9
-         +5Lw==
-X-Gm-Message-State: AOAM532Jkfxvt/Q1Ty3ekRDd6VIUUqMGoCnN+0g+EPuJDnuf7i7NS+Fo
-        0w2ZiiQW1du4X856Zh+N+YT1jw==
-X-Google-Smtp-Source: ABdhPJw5yj53ZR3QLDDz51zvJ0bcJIWvdtfK6BBYzjYoKCTvtuzo5lWYGIzOYfal2816cj8aj14jUQ==
-X-Received: by 2002:a17:902:ee03:b029:da:689f:337e with SMTP id z3-20020a170902ee03b02900da689f337emr4443914plb.52.1606858027455;
-        Tue, 01 Dec 2020 13:27:07 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f17sm661590pfk.70.2020.12.01.13.27.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 13:27:06 -0800 (PST)
-Date:   Tue, 1 Dec 2020 13:27:05 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Sargun Dhillon <sargun@sargun.me>, Alban Crequy <alban@kinvolk.io>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, jannh@google.com
-Subject: Re: SECCOMP_IOCTL_NOTIF_ADDFD race condition
-Message-ID: <202012011322.26DCBC64F2@keescook>
-References: <CADZs7q4sw71iNHmV8EOOXhUKJMORPzF7thraxZYddTZsxta-KQ@mail.gmail.com>
- <20201130232009.GC38675@cisco>
- <20201201124105.GB103125@cisco>
- <20201201130824.GA27822@ircssh-2.c.rugged-nimbus-611.internal>
- <20201201131334.GC103125@cisco>
+        id S2387678AbgLAV2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 16:28:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgLAV2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 16:28:46 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 903E420870;
+        Tue,  1 Dec 2020 21:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606858085;
+        bh=jydMEXFzO2t7+Ckqr+Txcfmmvphc90YJ7puBAL7qT2g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nWeVMLcStfE7SiK55mRRUlPOIopGrLWwUwpF6yOo/TkHyPd6hOZ0mDwpHL1HFm459
+         vrhD8GWAQ4U2gaXC1J3++fW3Bmas8OIxiXPakhwyW4QZZjHWE7gZQQxzVaGrl3oAxm
+         zS0sn0zf66wWg3S6hprcUqxHbdRRYpRJAPfSw2fc=
+Date:   Tue, 1 Dec 2020 21:27:58 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
+Subject: Re: [PATCH 6/8] lazy tlb: shoot lazies, a non-refcounting lazy tlb
+ option
+Message-ID: <20201201212758.GA28300@willie-the-truck>
+References: <20201128160141.1003903-1-npiggin@gmail.com>
+ <20201128160141.1003903-7-npiggin@gmail.com>
+ <CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com>
+ <CALCETrWBtCfD+jZ3S+O8FK-HFPODuhbDEbbfWvS=-iPATNFAOA@mail.gmail.com>
+ <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201201131334.GC103125@cisco>
+In-Reply-To: <CALCETrXAR_9EGaOF8ymVkZycxgZkYk0dR+NjEpTfVzdcS3sOVw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 08:13:34AM -0500, Tycho Andersen wrote:
-> On Tue, Dec 01, 2020 at 01:08:25PM +0000, Sargun Dhillon wrote:
-> > On Tue, Dec 01, 2020 at 07:41:05AM -0500, Tycho Andersen wrote:
-> > > On Mon, Nov 30, 2020 at 06:20:09PM -0500, Tycho Andersen wrote:
-> > > > Idea 1 sounds best to me, but maybe that's because it's the way I
-> > > > originally did the fd support that never landed :)
-> > > > 
-> > > > But here's an Idea 4: we add a way to remotely close an fd (I don't
-> > > > see that the current infra can do this, but perhaps I didn't look hard
-> > > > enough), and then when you get ENOENT you have to close the fd. Of
-> > > > course, this can't be via seccomp, so maybe it's even more racy.
-> > > 
-> > > Or better yet: what if the kernel closed everything it had added via
-> > > ADDFD if it didn't get a valid response from the supervisor? Then
-> > > everyone gets this bug fixed for free.
-> > > 
-> > > Tycho
-> > > _______________________________________________
-> > > Containers mailing list
-> > > Containers@lists.linux-foundation.org
-> > > https://lists.linuxfoundation.org/mailman/listinfo/containers
-> > 
-> > This doesn't solve the problem universally because of the (Go) preemption 
-> > problem. Unless we can guarantee that the supervisor can always handle the 
-> > request in fewer than 10ms, or if it implements resumption behaviour. I know 
-> > that resumption behaviour is a requirement no matter what, but the easier we can 
-> > make it to implement resumption, the better chance we are giving users to get 
-> > this right.
+On Mon, Nov 30, 2020 at 10:31:51AM -0800, Andy Lutomirski wrote:
+> other arch folk: there's some background here:
 > 
-> Doesn't automatic cleanup of fds make things easier? I'm not sure I
-> understand the argument.
+> https://lkml.kernel.org/r/CALCETrVXUbe8LfNn-Qs+DzrOQaiw+sFUg1J047yByV31SaTOZw@mail.gmail.com
+> 
+> On Sun, Nov 29, 2020 at 12:16 PM Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > On Sat, Nov 28, 2020 at 7:54 PM Andy Lutomirski <luto@kernel.org> wrote:
+> > >
+> > > On Sat, Nov 28, 2020 at 8:02 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+> > > >
+> > > > On big systems, the mm refcount can become highly contented when doing
+> > > > a lot of context switching with threaded applications (particularly
+> > > > switching between the idle thread and an application thread).
+> > > >
+> > > > Abandoning lazy tlb slows switching down quite a bit in the important
+> > > > user->idle->user cases, so so instead implement a non-refcounted scheme
+> > > > that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
+> > > > any remaining lazy ones.
+> > > >
+> > > > Shootdown IPIs are some concern, but they have not been observed to be
+> > > > a big problem with this scheme (the powerpc implementation generated
+> > > > 314 additional interrupts on a 144 CPU system during a kernel compile).
+> > > > There are a number of strategies that could be employed to reduce IPIs
+> > > > if they turn out to be a problem for some workload.
+> > >
+> > > I'm still wondering whether we can do even better.
+> > >
+> >
+> > Hold on a sec.. __mmput() unmaps VMAs, frees pagetables, and flushes
+> > the TLB.  On x86, this will shoot down all lazies as long as even a
+> > single pagetable was freed.  (Or at least it will if we don't have a
+> > serious bug, but the code seems okay.  We'll hit pmd_free_tlb, which
+> > sets tlb->freed_tables, which will trigger the IPI.)  So, on
+> > architectures like x86, the shootdown approach should be free.  The
+> > only way it ought to have any excess IPIs is if we have CPUs in
+> > mm_cpumask() that don't need IPI to free pagetables, which could
+> > happen on paravirt.
+> 
+> Indeed, on x86, we do this:
+> 
+> [   11.558844]  flush_tlb_mm_range.cold+0x18/0x1d
+> [   11.559905]  tlb_finish_mmu+0x10e/0x1a0
+> [   11.561068]  exit_mmap+0xc8/0x1a0
+> [   11.561932]  mmput+0x29/0xd0
+> [   11.562688]  do_exit+0x316/0xa90
+> [   11.563588]  do_group_exit+0x34/0xb0
+> [   11.564476]  __x64_sys_exit_group+0xf/0x10
+> [   11.565512]  do_syscall_64+0x34/0x50
+> 
+> and we have info->freed_tables set.
+> 
+> What are the architectures that have large systems like?
+> 
+> x86: we already zap lazies, so it should cost basically nothing to do
+> a little loop at the end of __mmput() to make sure that no lazies are
+> left.  If we care about paravirt performance, we could implement one
+> of the optimizations I mentioned above to fix up the refcounts instead
+> of sending an IPI to any remaining lazies.
+> 
+> arm64: AFAICT arm64's flush uses magic arm64 hardware support for
+> remote flushes, so any lazy mm references will still exist after
+> exit_mmap().  (arm64 uses lazy TLB, right?)  So this is kind of like
+> the x86 paravirt case.  Are there large enough arm64 systems that any
+> of this matters?
 
-I doubt Al would ever allow the "cleanup" approach: his observation was
-that the instant a file has been added to the fdtable, it's not possible
-to "unwind" that ever, since it could be cloned away, etc, etc.
+Yes, there are large arm64 systems where performance of TLB invalidation
+matters, but they're either niche (supercomputers) or not readily available
+(NUMA boxes).
 
-> I agree it doesn't fix the problem of uncooperative userspace.
+But anyway, we blow away the TLB for everybody in tlb_finish_mmu() after
+freeing the page-tables. We have an optimisation to avoid flushing if
+we're just unmapping leaf entries when the mm is going away, but we don't
+have a choice once we get to actually reclaiming the page-tables.
 
-IIUC, I see two issues:
+One thing I probably should mention, though, is that we don't maintain
+mm_cpumask() because we're not able to benefit from it and the atomic
+update is a waste of time.
 
-- a slow monitor might cause a child to loop forever retrying the same
-  interrupted syscall.
-
-- a syscall-interrupted process may have had an fd added that it has no
-  idea about.
-
-The former problem seems like a userspace issue. :P But, to help, yeah, is
-signal blocking best? Either explicit (at filter apply time) or implicit
-(all user_notif-triggering syscalls get all signals blocks automatically)?
-
-For the latter problem, I think we need to get back to Tycho's original
-method: add fd and finish syscall in a single action. I can't see any
-other way to get around the need for atomicity...
-
--- 
-Kees Cook
+Will
