@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645432C99FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8012C9A22
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgLAIyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:54:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57212 "EHLO mail.kernel.org"
+        id S2387476AbgLAIze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:55:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726007AbgLAIyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:54:15 -0500
+        id S1728436AbgLAIzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F5BF21D46;
-        Tue,  1 Dec 2020 08:53:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06B932224F;
+        Tue,  1 Dec 2020 08:55:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812814;
-        bh=WCRf3vdgQMhlXJVvz8HgSAXkzSUShC8o8bRwQCEAJVE=;
+        s=korg; t=1606812909;
+        bh=SJYafd3C/pKn40vSHC+K3HdHzZuGcSMU5uHNVlTq7EY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ttHB6Mm50rRzXVXmAkOTTxnIREPYSrPaqHTUH5MXrsHQekR3q/O4rQnjADoxoo2/f
-         enuBbyTPUn6BqCDN4KMU2UbJIW3RYbaTAGN3f5xd6ovpsWFH5O3aprEFPYfYpo1OdT
-         uoRKAb+c/0jskVW/HMOX2pFpYRQef01/p9+FX6m8=
+        b=d1hzi95vr/EcE6W6YXVW2+J7gJWNwTNwEeQv10R5MbuwIaCyx6TWevIAPCGq9etaj
+         e79LxINkvLt2J2ZpPly+12Hg2nq3c4lwSRRZWihsE9TxJq4MFsMILvf8GvZE15VAxF
+         1N6gbc3WymvjVXX2Xbu3mOmjZ/aol6+z/H08WckA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lee Duncan <lduncan@suse.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 10/24] scsi: libiscsi: Fix NOP race condition
+Subject: [PATCH 4.9 18/42] scsi: libiscsi: Fix NOP race condition
 Date:   Tue,  1 Dec 2020 09:53:16 +0100
-Message-Id: <20201201084638.260744766@linuxfoundation.org>
+Message-Id: <20201201084643.372582131@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084637.754785180@linuxfoundation.org>
-References: <20201201084637.754785180@linuxfoundation.org>
+In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
+References: <20201201084642.194933793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -76,7 +76,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 18 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index b4fbcf4cade8f..36e415487fe53 100644
+index c4336b01db23c..a84b473d4a08b 100644
 --- a/drivers/scsi/libiscsi.c
 +++ b/drivers/scsi/libiscsi.c
 @@ -570,8 +570,8 @@ static void iscsi_complete_task(struct iscsi_task *task, int state)
