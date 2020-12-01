@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339012C9BFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142B42C9AD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390171AbgLAJNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:13:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52196 "EHLO mail.kernel.org"
+        id S2388566AbgLAJBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:01:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390158AbgLAJNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:13:47 -0500
+        id S2388548AbgLAJBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:01:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA97C221FD;
-        Tue,  1 Dec 2020 09:13:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB96322210;
+        Tue,  1 Dec 2020 09:01:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813987;
-        bh=tDeKhy4Ja2H7eQ9JtPqG9LWEKq3Lr5meVQCI1lW2YdQ=;
+        s=korg; t=1606813269;
+        bh=VZg6N3ayIBhkMKKfe/qqktCx5SudqBMvXksK5X/sIDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IiODEa1EWQFvY1ZTp9vFrnSf53nvaMHlmwyr5ySLcDhDCKER09ktW/0vbTrvNzY39
-         4QRRH5WNYqiRau0d8q8msr+CJ1KkeipJYZtDaMqsNQLJ01jFoTjEVHHmpSArffaETk
-         j3CHjQpiV6kLAPiiLYpSyivzU2ttWDJ+AxxAJM6Y=
+        b=get3T5L/GFprkpUzdbrx5TSYqKe1leg7HzAJQXPpI3KZucTTlsQqBJTLnBFjSSX0L
+         5mRj4tsGyGZczAJiE5csv4XhhRIsSJjBdCjhdCqrYwhxGRo7nSZSzrupBcVj3Jz5Vd
+         ZlP55vip+0MsNKgTceFcFiRB6kj3yBieQVOjsFf0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        stable@vger.kernel.org, Mike Cui <mikecui@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Shay Agroskin <shayagr@amazon.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 110/152] nfc: s3fwrn5: use signed integer for parsing GPIO numbers
+Subject: [PATCH 4.19 40/57] net: ena: set initial DMA width to avoid intel iommu issue
 Date:   Tue,  1 Dec 2020 09:53:45 +0100
-Message-Id: <20201201084726.265251952@linuxfoundation.org>
+Message-Id: <20201201084651.064191359@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Shay Agroskin <shayagr@amazon.com>
 
-[ Upstream commit d8f0a86795c69f5b697f7d9e5274c124da93c92d ]
+[ Upstream commit 09323b3bca95181c0da79daebc8b0603e500f573 ]
 
-GPIOs - as returned by of_get_named_gpio() and used by the gpiolib - are
-signed integers, where negative number indicates error.  The return
-value of of_get_named_gpio() should not be assigned to an unsigned int
-because in case of !CONFIG_GPIOLIB such number would be a valid GPIO.
+The ENA driver uses the readless mechanism, which uses DMA, to find
+out what the DMA mask is supposed to be.
 
-Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC Chip")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20201123162351.209100-1-krzk@kernel.org
+If DMA is used without setting the dma_mask first, it causes the
+Intel IOMMU driver to think that ENA is a 32-bit device and therefore
+disables IOMMU passthrough permanently.
+
+This patch sets the dma_mask to be ENA_MAX_PHYS_ADDR_SIZE_BITS=48
+before readless initialization in
+ena_device_init()->ena_com_mmio_reg_read_request_init(),
+which is large enough to workaround the intel_iommu issue.
+
+DMA mask is set again to the correct value after it's received from the
+device after readless is initialized.
+
+The patch also changes the driver to use dma_set_mask_and_coherent()
+function instead of the two pci_set_dma_mask() and
+pci_set_consistent_dma_mask() ones. Both methods achieve the same
+effect.
+
+Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
+Signed-off-by: Mike Cui <mikecui@amazon.com>
+Signed-off-by: Arthur Kiyanovski <akiyano@amazon.com>
+Signed-off-by: Shay Agroskin <shayagr@amazon.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nfc/s3fwrn5/i2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
-index b4eb926d220ac..d7ecff0b1c662 100644
---- a/drivers/nfc/s3fwrn5/i2c.c
-+++ b/drivers/nfc/s3fwrn5/i2c.c
-@@ -26,8 +26,8 @@ struct s3fwrn5_i2c_phy {
- 	struct i2c_client *i2c_dev;
- 	struct nci_dev *ndev;
+diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+index 3c3222e2dcfcf..9aea4cf19d0c9 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
++++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+@@ -2433,16 +2433,9 @@ static int ena_device_init(struct ena_com_dev *ena_dev, struct pci_dev *pdev,
+ 		goto err_mmio_read_less;
+ 	}
  
--	unsigned int gpio_en;
--	unsigned int gpio_fw_wake;
-+	int gpio_en;
-+	int gpio_fw_wake;
+-	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
++	rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(dma_width));
+ 	if (rc) {
+-		dev_err(dev, "pci_set_dma_mask failed 0x%x\n", rc);
+-		goto err_mmio_read_less;
+-	}
+-
+-	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
+-	if (rc) {
+-		dev_err(dev, "err_pci_set_consistent_dma_mask failed 0x%x\n",
+-			rc);
++		dev_err(dev, "dma_set_mask_and_coherent failed %d\n", rc);
+ 		goto err_mmio_read_less;
+ 	}
  
- 	struct mutex mutex;
+@@ -3183,6 +3176,12 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		return rc;
+ 	}
  
++	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(ENA_MAX_PHYS_ADDR_SIZE_BITS));
++	if (rc) {
++		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed %d\n", rc);
++		goto err_disable_device;
++	}
++
+ 	pci_set_master(pdev);
+ 
+ 	ena_dev = vzalloc(sizeof(*ena_dev));
 -- 
 2.27.0
 
