@@ -2,94 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3512CA328
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FF62CA346
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391009AbgLAMt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:49:28 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8483 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390896AbgLAMt1 (ORCPT
+        id S1728696AbgLAM5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727116AbgLAM5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:49:27 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ClhjP0vyDzhdBJ;
-        Tue,  1 Dec 2020 20:48:25 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 1 Dec 2020 20:48:34 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] drm/v3d: fix reference leak when pm_runtime_get_sync fails
-Date:   Tue, 1 Dec 2020 20:56:32 +0800
-Message-ID: <20201201125632.142636-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 1 Dec 2020 07:57:38 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41DFAC061A4B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 04:56:52 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id v14so2606327wml.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:56:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+e54grMGH+3x/X56AP2qTQeH5OWhU1Fo6l1imoZcFiA=;
+        b=q5ZyriwEe3J/eFk8Vn+yKFgDuUFOWx4hX7wSZgVazYXvVWPT1h/fPwARvvxom+tRs5
+         7BUB9Te/ks9+jJoPR0KmKVNtpOv6Bw0TGV2swvHt5/QNR/RETRrjVyCbJj8eU4qt9FCm
+         f2BIaJQycoZqrWcJQMhddMnfM9Z22ZCbHfC9fqvs6h7JW/aqaHxIZwl9ioFXDQnt4dXz
+         UD4+OgmWHZ0niTxzBwFJBRe8yLdeWNQj8Ujw5jYZMjvCy8VgO8ONBqCHzgQp+6APm75v
+         pcEzVH7nm3g1i41r07OirPSXj9w2Cm/A4dEKhgDZqHFQ+S+lMhjyiujCItXhZojqQKgU
+         DJWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+e54grMGH+3x/X56AP2qTQeH5OWhU1Fo6l1imoZcFiA=;
+        b=M3Ri1iiIsLKCAWD/p3OGAx9HHeJg35aSEzvPH9FEOn7ffXB3ica36Q7CZAEggK71Nb
+         VCP1tKr9XmnCPPUanPltRaGZUoNp0q7w/+ZVBrqb6sYlguyXj5oEhyuugpRfz8owckk0
+         DksVW4+GDdBTk7WaLpQmZ8NbaUX3yJPbpWgLmsA0sqFtx7F7WgBChHtmzfwuP5QbnfIH
+         jAd8SQnzJNpJTY7k1K/nt6MNVs36J5JjXlLS6i3o/Sy3SX/L6Q92v+wdkga1VqPmIRyk
+         RLzEhz41W+I9SYvPZFL9c47QgVoI/lkVxN8o2bXmMdmQ+GuxWh4oXVndQfir/H7RjFJJ
+         jkyQ==
+X-Gm-Message-State: AOAM531D3Rb53VNcFrpzggG+XJWEJEWLj99VLRHzqBVpOGVv+zIW8/bv
+        25+i3WNz1LMRdnzUwE3gvCzU9g==
+X-Google-Smtp-Source: ABdhPJyuSsCeTIVAfNFzmw/CBCJqCRxgpiA4F6h0YkauNZ7Pp5uLQ32w3lRdBmm+0WLkkGD190K1Qw==
+X-Received: by 2002:a1c:f617:: with SMTP id w23mr2595979wmc.52.1606827407331;
+        Tue, 01 Dec 2020 04:56:47 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id y130sm3074687wmc.22.2020.12.01.04.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 04:56:46 -0800 (PST)
+Date:   Tue, 1 Dec 2020 12:56:42 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v2 bpf-next 12/13] bpf: Add tests for new BPF atomic
+ operations
+Message-ID: <20201201125642.GH2114905@google.com>
+References: <20201127175738.1085417-1-jackmanb@google.com>
+ <20201127175738.1085417-13-jackmanb@google.com>
+ <1e1656a9-6f0e-f17e-176c-37d996641e9a@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1e1656a9-6f0e-f17e-176c-37d996641e9a@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PM reference count is not expected to be incremented on
-return in functions v3d_get_param_ioctl and v3d_job_init.
+On Mon, Nov 30, 2020 at 07:55:02PM -0800, Yonghong Song wrote:
+> On 11/27/20 9:57 AM, Brendan Jackman wrote:
+[...]
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index 3d5940cd110d..5eadfd09037d 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -228,6 +228,12 @@ IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
+> >   			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
+> >   MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+> > +# Determine if Clang supports BPF arch v4, and therefore atomics.
+> > +CLANG_SUPPORTS_V4=$(if $(findstring v4,$(shell $(CLANG) --target=bpf -mcpu=? 2>&1)),true,)
+> > +ifeq ($(CLANG_SUPPORTS_V4),true)
+> > +	CFLAGS += -DENABLE_ATOMICS_TESTS
+> > +endif
+> > +
+> >   CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+> >   BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
+> >   	     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)			\
+> > @@ -250,7 +256,9 @@ define CLANG_BPF_BUILD_RULE
+> >   	$(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
+> >   	$(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm			\
+> >   		-c $1 -o - || echo "BPF obj compilation failed") | 	\
+> > -	$(LLC) -mattr=dwarfris -march=bpf -mcpu=v3 $4 -filetype=obj -o $2
+> > +	$(LLC) -mattr=dwarfris -march=bpf				\
+> > +		-mcpu=$(if $(CLANG_SUPPORTS_V4),v4,v3)			\
+> > +		$4 -filetype=obj -o $2
+> >   endef
+> >   # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
+> >   define CLANG_NOALU32_BPF_BUILD_RULE
+> > @@ -391,7 +399,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
+> >   TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
+> >   		       $(wildcard progs/btf_dump_test_case_*.c)
+> >   TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+> > -TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+> > +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) $(if $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)
+> 
+> If the compiler indeed supports cpu v4 (i.e., atomic insns),
+> -DENABLE_ATOMICS_TESTS will be added to TRUNNER_BPF_FLAGS and
+> eventually -DENABLE_ATOMICS_TESTS is also available for
+> no-alu32 test and this will cause compilation error.
+> 
+> I did the following hack to workaround the issue, i.e., only adds
+> the definition to default (alu32) test run.
+> 
+> index 5eadfd09037d..3d1320fd93eb 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -230,9 +230,6 @@ MENDIAN=$(if
+> $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+> 
+>  # Determine if Clang supports BPF arch v4, and therefore atomics.
+>  CLANG_SUPPORTS_V4=$(if $(findstring v4,$(shell $(CLANG) --target=bpf
+> -mcpu=? 2>&1)),true,)
+> -ifeq ($(CLANG_SUPPORTS_V4),true)
+> -       CFLAGS += -DENABLE_ATOMICS_TESTS
+> -endif
+> 
+>  CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+>  BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                  \
+> @@ -255,6 +252,7 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
+>  define CLANG_BPF_BUILD_RULE
+>         $(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
+>         $(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm                     \
+> +               $(if $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)      \
+>                 -c $1 -o - || echo "BPF obj compilation failed") |      \
+>         $(LLC) -mattr=dwarfris -march=bpf                               \
+>                 -mcpu=$(if $(CLANG_SUPPORTS_V4),v4,v3)                  \
+> @@ -399,7 +397,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c
+> trace_helpers.c      \
+>  TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read                          \
+>                        $(wildcard progs/btf_dump_test_case_*.c)
+>  TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+> -TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) $(if
+> $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)
+> +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+>  TRUNNER_BPF_LDFLAGS := -mattr=+alu32
+>  $(eval $(call DEFINE_TEST_RUNNER,test_progs))
 
-However, pm_runtime_get_sync will increment the PM reference
-count even failed. Forgetting to putting operation will result
-in a reference leak here.
+Ah, good point. I think your "hack" actually improves the overall result
+anyway since it avoids the akward global mutation of CFLAGS. Thanks!
 
-Replace it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+I wonder if we should actually have Clang define a built-in macro to say
+that the atomics are supported?
 
-Fixes: 57692c94dcbe ("drm/v3d: Introduce a new DRM driver for Broadcom V3D V3.x+")
-Fixes: 935f3d88434b ("drm/v3d: Make sure the GPU is on when measuring clocks.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/gpu/drm/v3d/v3d_debugfs.c | 4 ++--
- drivers/gpu/drm/v3d/v3d_gem.c     | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/atomics_test.c b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
+> > new file mode 100644
+> > index 000000000000..8ecc0392fdf9
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
+> > @@ -0,0 +1,329 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <test_progs.h>
+> > +
+> > +#ifdef ENABLE_ATOMICS_TESTS
+> > +
+> > +#include "atomics_test.skel.h"
+> > +
+> > +static void test_add(void)
+> [...]
+> > +
+> > +#endif /* ENABLE_ATOMICS_TESTS */
+> > diff --git a/tools/testing/selftests/bpf/progs/atomics_test.c b/tools/testing/selftests/bpf/progs/atomics_test.c
+[...]
+> > +__u64 xor64_value = (0x110ull << 32);
+> > +__u64 xor64_result = 0;
+> > +__u32 xor32_value = 0x110;
+> > +__u32 xor32_result = 0;
+> > +SEC("fentry/bpf_fentry_test1")
+> > +int BPF_PROG(xor, int a)
+> > +{
+> > +	xor64_result = __sync_fetch_and_xor(&xor64_value, 0x011ull << 32);
+> > +	xor32_result = __sync_fetch_and_xor(&xor32_value, 0x011);
+> > +
+> > +	return 0;
+> > +}
+> 
+> All above __sync_fetch_and_{add, sub, and, or, xor} produces a return
+> value used later. To test atomic_<op> instructions, it will be good if
+> you can add some tests which ignores the return value.
 
-diff --git a/drivers/gpu/drm/v3d/v3d_debugfs.c b/drivers/gpu/drm/v3d/v3d_debugfs.c
-index e76b24bb8..91ceed774 100644
---- a/drivers/gpu/drm/v3d/v3d_debugfs.c
-+++ b/drivers/gpu/drm/v3d/v3d_debugfs.c
-@@ -132,7 +132,7 @@ static int v3d_v3d_debugfs_ident(struct seq_file *m, void *unused)
- 	u32 ident0, ident1, ident2, ident3, cores;
- 	int ret, core;
- 
--	ret = pm_runtime_get_sync(v3d->drm.dev);
-+	ret = pm_runtime_resume_and_get(v3d->drm.dev);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -219,7 +219,7 @@ static int v3d_measure_clock(struct seq_file *m, void *unused)
- 	int measure_ms = 1000;
- 	int ret;
- 
--	ret = pm_runtime_get_sync(v3d->drm.dev);
-+	ret = pm_runtime_resume_and_get(v3d->drm.dev);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/drivers/gpu/drm/v3d/v3d_gem.c b/drivers/gpu/drm/v3d/v3d_gem.c
-index 182c58652..765683569 100644
---- a/drivers/gpu/drm/v3d/v3d_gem.c
-+++ b/drivers/gpu/drm/v3d/v3d_gem.c
-@@ -439,7 +439,7 @@ v3d_job_init(struct v3d_dev *v3d, struct drm_file *file_priv,
- 	job->v3d = v3d;
- 	job->free = free;
- 
--	ret = pm_runtime_get_sync(v3d->drm.dev);
-+	ret = pm_runtime_resume_and_get(v3d->drm.dev);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.23.0
-
+Good idea - adding an extra case to each prog. This won't assert that
+LLVM is generating "optimal" code (without BPF_FETCH) but we can at
+least get some confidence we aren't generating total garbage.
