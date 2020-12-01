@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F722C9BD2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2FC2C9A9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389969AbgLAJM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:12:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50570 "EHLO mail.kernel.org"
+        id S2388121AbgLAI7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 03:59:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389951AbgLAJMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:12:22 -0500
+        id S2388057AbgLAI7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:59:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91587206C1;
-        Tue,  1 Dec 2020 09:11:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 963322222E;
+        Tue,  1 Dec 2020 08:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813902;
-        bh=2Lda2s5qRujP4rJ0QhXfwzqsZAzpkjdyz4RzNF1pkXM=;
+        s=korg; t=1606813105;
+        bh=JUOFd22DVgRIQGtUWwgaGyH/QHsn4SiS35LQzHEuxRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TFGk41a1GUH4/B/WTcspvV52H+k7sRbwskYifp3VewXP4+S0NBboW2soUwkDCg/NB
-         8F5nXJXlqEy2ThXH6S83Zr3RDxMiaL5hf4Y6WOTa/C1+tkUbWz5SaDvYAcYhNoZLq1
-         v7ksNmfFu4ZMzj1j+g8qGfRR3TtVpgJGl+ZqfIwQ=
+        b=RPJIfS+6CYYz1Lka5JDyGZopfn8G40SYG027vKdDq6KsfFsPef+GCpkpJ/mfSs6Qu
+         k8D2dDqk6+tED1p/eA8n3B9ZHcar18LwFvSnXOQ27aiAdk09eUasOMdR0TnHeMEiGc
+         U6fZYhGBCrvDlPYE90tzKFsRw+a6wN/wm0w9kT40=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, CK Hu <ck.hu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Bilal Wasim <bilal.wasim@imgtec.com>,
+        stable@vger.kernel.org, Mike Cui <mikecui@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 098/152] drm/mediatek: dsi: Modify horizontal front/back porch byte formula
-Date:   Tue,  1 Dec 2020 09:53:33 +0100
-Message-Id: <20201201084724.700660997@linuxfoundation.org>
+Subject: [PATCH 4.14 35/50] net: ena: set initial DMA width to avoid intel iommu issue
+Date:   Tue,  1 Dec 2020 09:53:34 +0100
+Message-Id: <20201201084649.364603007@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
-References: <20201201084711.707195422@linuxfoundation.org>
+In-Reply-To: <20201201084644.803812112@linuxfoundation.org>
+References: <20201201084644.803812112@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,111 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: CK Hu <ck.hu@mediatek.com>
+From: Shay Agroskin <shayagr@amazon.com>
 
-[ Upstream commit 487778f8d22fcdebb6436f0a5f96484ffa237b0b ]
+[ Upstream commit 09323b3bca95181c0da79daebc8b0603e500f573 ]
 
-In the patch to be fixed, horizontal_backporch_byte become too large
-for some panel, so roll back that patch. For small hfp or hbp panel,
-using vm->hfront_porch + vm->hback_porch to calculate
-horizontal_backporch_byte would make it negtive, so
-use horizontal_backporch_byte itself to make it positive.
+The ENA driver uses the readless mechanism, which uses DMA, to find
+out what the DMA mask is supposed to be.
 
-Fixes: 35bf948f1edb ("drm/mediatek: dsi: Fix scrolling of panel with small hfp or hbp")
+If DMA is used without setting the dma_mask first, it causes the
+Intel IOMMU driver to think that ENA is a 32-bit device and therefore
+disables IOMMU passthrough permanently.
 
-Signed-off-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Tested-by: Bilal Wasim <bilal.wasim@imgtec.com>
+This patch sets the dma_mask to be ENA_MAX_PHYS_ADDR_SIZE_BITS=48
+before readless initialization in
+ena_device_init()->ena_com_mmio_reg_read_request_init(),
+which is large enough to workaround the intel_iommu issue.
+
+DMA mask is set again to the correct value after it's received from the
+device after readless is initialized.
+
+The patch also changes the driver to use dma_set_mask_and_coherent()
+function instead of the two pci_set_dma_mask() and
+pci_set_consistent_dma_mask() ones. Both methods achieve the same
+effect.
+
+Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
+Signed-off-by: Mike Cui <mikecui@amazon.com>
+Signed-off-by: Arthur Kiyanovski <akiyano@amazon.com>
+Signed-off-by: Shay Agroskin <shayagr@amazon.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_dsi.c | 61 +++++++++++-------------------
- 1 file changed, 22 insertions(+), 39 deletions(-)
+ drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 80b7a082e8740..d6e0a29ea6b28 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -444,7 +444,10 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi *dsi)
- 	u32 horizontal_sync_active_byte;
- 	u32 horizontal_backporch_byte;
- 	u32 horizontal_frontporch_byte;
-+	u32 horizontal_front_back_byte;
-+	u32 data_phy_cycles_byte;
- 	u32 dsi_tmp_buf_bpp, data_phy_cycles;
-+	u32 delta;
- 	struct mtk_phy_timing *timing = &dsi->phy_timing;
- 
- 	struct videomode *vm = &dsi->vm;
-@@ -466,50 +469,30 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi *dsi)
- 	horizontal_sync_active_byte = (vm->hsync_len * dsi_tmp_buf_bpp - 10);
- 
- 	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE)
--		horizontal_backporch_byte = vm->hback_porch * dsi_tmp_buf_bpp;
-+		horizontal_backporch_byte = vm->hback_porch * dsi_tmp_buf_bpp - 10;
- 	else
- 		horizontal_backporch_byte = (vm->hback_porch + vm->hsync_len) *
--					    dsi_tmp_buf_bpp;
-+					    dsi_tmp_buf_bpp - 10;
- 
- 	data_phy_cycles = timing->lpx + timing->da_hs_prepare +
--			  timing->da_hs_zero + timing->da_hs_exit;
--
--	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) {
--		if ((vm->hfront_porch + vm->hback_porch) * dsi_tmp_buf_bpp >
--		    data_phy_cycles * dsi->lanes + 18) {
--			horizontal_frontporch_byte =
--				vm->hfront_porch * dsi_tmp_buf_bpp -
--				(data_phy_cycles * dsi->lanes + 18) *
--				vm->hfront_porch /
--				(vm->hfront_porch + vm->hback_porch);
--
--			horizontal_backporch_byte =
--				horizontal_backporch_byte -
--				(data_phy_cycles * dsi->lanes + 18) *
--				vm->hback_porch /
--				(vm->hfront_porch + vm->hback_porch);
--		} else {
--			DRM_WARN("HFP less than d-phy, FPS will under 60Hz\n");
--			horizontal_frontporch_byte = vm->hfront_porch *
--						     dsi_tmp_buf_bpp;
--		}
-+			  timing->da_hs_zero + timing->da_hs_exit + 3;
-+
-+	delta = dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST ? 18 : 12;
-+
-+	horizontal_frontporch_byte = vm->hfront_porch * dsi_tmp_buf_bpp;
-+	horizontal_front_back_byte = horizontal_frontporch_byte + horizontal_backporch_byte;
-+	data_phy_cycles_byte = data_phy_cycles * dsi->lanes + delta;
-+
-+	if (horizontal_front_back_byte > data_phy_cycles_byte) {
-+		horizontal_frontporch_byte -= data_phy_cycles_byte *
-+					      horizontal_frontporch_byte /
-+					      horizontal_front_back_byte;
-+
-+		horizontal_backporch_byte -= data_phy_cycles_byte *
-+					     horizontal_backporch_byte /
-+					     horizontal_front_back_byte;
- 	} else {
--		if ((vm->hfront_porch + vm->hback_porch) * dsi_tmp_buf_bpp >
--		    data_phy_cycles * dsi->lanes + 12) {
--			horizontal_frontporch_byte =
--				vm->hfront_porch * dsi_tmp_buf_bpp -
--				(data_phy_cycles * dsi->lanes + 12) *
--				vm->hfront_porch /
--				(vm->hfront_porch + vm->hback_porch);
--			horizontal_backporch_byte = horizontal_backporch_byte -
--				(data_phy_cycles * dsi->lanes + 12) *
--				vm->hback_porch /
--				(vm->hfront_porch + vm->hback_porch);
--		} else {
--			DRM_WARN("HFP less than d-phy, FPS will under 60Hz\n");
--			horizontal_frontporch_byte = vm->hfront_porch *
--						     dsi_tmp_buf_bpp;
--		}
-+		DRM_WARN("HFP + HBP less than d-phy, FPS will under 60Hz\n");
+diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+index d9ece9ac6f53c..938170b91f85e 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
++++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+@@ -2474,16 +2474,9 @@ static int ena_device_init(struct ena_com_dev *ena_dev, struct pci_dev *pdev,
+ 		goto err_mmio_read_less;
  	}
  
- 	writel(horizontal_sync_active_byte, dsi->regs + DSI_HSA_WC);
+-	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
++	rc = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(dma_width));
+ 	if (rc) {
+-		dev_err(dev, "pci_set_dma_mask failed 0x%x\n", rc);
+-		goto err_mmio_read_less;
+-	}
+-
+-	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
+-	if (rc) {
+-		dev_err(dev, "err_pci_set_consistent_dma_mask failed 0x%x\n",
+-			rc);
++		dev_err(dev, "dma_set_mask_and_coherent failed %d\n", rc);
+ 		goto err_mmio_read_less;
+ 	}
+ 
+@@ -3141,6 +3134,12 @@ static int ena_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		return rc;
+ 	}
+ 
++	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(ENA_MAX_PHYS_ADDR_SIZE_BITS));
++	if (rc) {
++		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed %d\n", rc);
++		goto err_disable_device;
++	}
++
+ 	pci_set_master(pdev);
+ 
+ 	ena_dev = vzalloc(sizeof(*ena_dev));
 -- 
 2.27.0
 
