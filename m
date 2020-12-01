@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EE22C9D01
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 811102C9DC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389251AbgLAJIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:08:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43818 "EHLO mail.kernel.org"
+        id S2390503AbgLAJ1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:27:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388888AbgLAJG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:06:56 -0500
+        id S2387827AbgLAJDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:03:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D71020656;
-        Tue,  1 Dec 2020 09:06:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C646206CA;
+        Tue,  1 Dec 2020 09:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813575;
-        bh=eYLZ2RtVDb4ffQcW9oBSH3pzI9Tev54mpCfvfSnia5U=;
+        s=korg; t=1606813333;
+        bh=nCOWN4ju3k0F0BzYwvtXKy7Pa7wAwwjvqnJrIiWoCt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SYZpcZDB11eeML31wbxQEG7FGPvsT9tpxhqNrFsner6ZmKU14d6vhEhdaWgRxFckO
-         P+YqALVQCsZIopd51xGhDuYNOA9JwwHI3VnrRPemohopDaYK6TrIrjpT3wZBAxVgLG
-         2JHUXas3QateFPOw9dZweiPgMxludHsO3+sGYMNQ=
+        b=Jej4x636DbAeUfwn4Q4CeV9OS1ZsExdV1IeF4WTcU6P9cSsRzkRTtZufR1jSIo0xx
+         NGG8VWGrHQLqu4rxGG+IZHy/UebJvlJfB3+RwDLECHl4fzAkpjED9BqhYfia3CZqjT
+         f2hu07cr5gTB0sHt/48MPOO/2d+46Fh4wRjD6u9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
-        Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>,
-        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 59/98] ibmvnic: notify peers when failover and migration happen
-Date:   Tue,  1 Dec 2020 09:53:36 +0100
-Message-Id: <20201201084657.981073634@linuxfoundation.org>
+Subject: [PATCH 4.19 32/57] bnxt_en: fix error return code in bnxt_init_one()
+Date:   Tue,  1 Dec 2020 09:53:37 +0100
+Message-Id: <20201201084650.710521476@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
-References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 98025bce3a6200a0c4637272a33b5913928ba5b8 ]
+[ Upstream commit b5f796b62c98cd8c219c4b788ecb6e1218e648cb ]
 
-Commit 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
-excluded the failover case for notify call because it said
-netdev_notify_peers() can cause network traffic to stall or halt.
-Current testing does not show network traffic stall
-or halt because of the notify call for failover event.
-netdev_notify_peers may be used when a device wants to inform the
-rest of the network about some sort of a reconfiguration
-such as failover or migration.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-It is unnecessary to call that in other events like
-FATAL, NON_FATAL, CHANGE_PARAM, and TIMEOUT resets
-since in those scenarios the hardware does not change.
-If the driver must do a hard reset, it is necessary to notify peers.
-
-Fixes: 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
-Suggested-by: Brian King <brking@linux.vnet.ibm.com>
-Suggested-by: Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>
-Signed-off-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
+Fixes: c213eae8d3cd ("bnxt_en: Improve VF/PF link change logic.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+Link: https://lore.kernel.org/r/1605701851-20270-1-git-send-email-zhangchangzhong@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 8d9e95c2725fb..717f793455056 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -1994,7 +1994,8 @@ static int do_reset(struct ibmvnic_adapter *adapter,
- 	for (i = 0; i < adapter->req_rx_queues; i++)
- 		napi_schedule(&adapter->napi[i]);
- 
--	if (adapter->reset_reason != VNIC_RESET_FAILOVER) {
-+	if (adapter->reset_reason == VNIC_RESET_FAILOVER ||
-+	    adapter->reset_reason == VNIC_RESET_MOBILITY) {
- 		call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
- 		call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
- 	}
-@@ -2067,6 +2068,9 @@ static int do_hard_reset(struct ibmvnic_adapter *adapter,
- 	if (rc)
- 		return IBMVNIC_OPEN_FAILED;
- 
-+	call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
-+	call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
-+
- 	return 0;
- }
- 
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 01d28ede1fb20..50732ab2c2bc9 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -9120,6 +9120,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 				create_singlethread_workqueue("bnxt_pf_wq");
+ 			if (!bnxt_pf_wq) {
+ 				dev_err(&pdev->dev, "Unable to create workqueue.\n");
++				rc = -ENOMEM;
+ 				goto init_err_pci_clean;
+ 			}
+ 		}
 -- 
 2.27.0
 
