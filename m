@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C612C9A67
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77F92C9ADA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgLAI5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:57:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60496 "EHLO mail.kernel.org"
+        id S2388603AbgLAJBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:01:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387785AbgLAI5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 03:57:06 -0500
+        id S1729172AbgLAJBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 04:01:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFFB12225A;
-        Tue,  1 Dec 2020 08:56:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DFD6217A0;
+        Tue,  1 Dec 2020 09:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812980;
-        bh=nMcV0TF/rDiiyT2nMQ2/33+20aLpple7nWMURFyN7HI=;
+        s=korg; t=1606813257;
+        bh=ZpkPbHABkPSdlvDPzsLQTFnY64e5kI/7Iuz5Ie22OKg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pzwjzw3uKm6khlKK6mTrzk5OqrMlaEOzr23kCJ+7oWFUXxhtB7hUBxyaIWgutQZpR
-         ridvNypLf6SsAiGgLsCKWmaWtV6gaxzGoiaiJjx+8vqYZ6cYNUXyJoMi9Dup0WfWwB
-         NE5vZW7/1ybP7JWlxSqDBZUHXDg6hGtqX70ewufU=
+        b=jkIt1kbMn+0EgEiX59NViqJ+t3PHTdyW0HC80oBLHadUhgm35Gf1oJxG5Z5ZS3i5K
+         8q+WNpNwbe9jTahyRYmzofwKn8n/ZMUy8GpwVDEXag/hPzfBATarGhPcpb2V2F3VnR
+         4jp9S7dyqSdroAU7J7mC1Tn08fE8YcNCIh1W4PLU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Chalikiopoulos <bugzilla.kernel.org@mrtoasted.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 42/42] USB: core: Fix regression in Hercules audio card
-Date:   Tue,  1 Dec 2020 09:53:40 +0100
-Message-Id: <20201201084646.170521635@linuxfoundation.org>
+        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 36/57] cxgb4: fix the panic caused by non smac rewrite
+Date:   Tue,  1 Dec 2020 09:53:41 +0100
+Message-Id: <20201201084650.893433854@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
-References: <20201201084642.194933793@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Raju Rangoju <rajur@chelsio.com>
 
-commit 184eead057cc7e803558269babc1f2cfb9113ad1 upstream
+[ Upstream commit bff453921ae105a8dbbad0ed7dd5f5ce424536e7 ]
 
-Commit 3e4f8e21c4f2 ("USB: core: fix check for duplicate endpoints")
-aimed to make the USB stack more reliable by detecting and skipping
-over endpoints that are duplicated between interfaces.  This caused a
-regression for a Hercules audio card (reported as Bugzilla #208357),
-which contains such non-compliant duplications.  Although the
-duplications are harmless, skipping the valid endpoints prevented the
-device from working.
+SMT entry is allocated only when loopback Source MAC
+rewriting is requested. Accessing SMT entry for non
+smac rewrite cases results in kernel panic.
 
-This patch fixes the regression by adding ENDPOINT_IGNORE quirks for
-the Hercules card, telling the kernel to ignore the invalid duplicate
-endpoints and thereby allowing the valid endpoints to be used as
-intended.
+Fix the panic caused by non smac rewrite
 
-Fixes: 3e4f8e21c4f2 ("USB: core: fix check for duplicate endpoints")
-CC: <stable@vger.kernel.org>
-Reported-by: Alexander Chalikiopoulos <bugzilla.kernel.org@mrtoasted.com>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20201119170040.GA576844@rowland.harvard.edu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[sudip: use usb_endpoint_blacklist and USB_QUIRK_ENDPOINT_BLACKLIST]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 937d84205884 ("cxgb4: set up filter action after rewrites")
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
+Link: https://lore.kernel.org/r/20201118143213.13319-1-rajur@chelsio.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/quirks.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -195,6 +195,10 @@ static const struct usb_device_id usb_qu
- 	/* Guillemot Webcam Hercules Dualpix Exchange*/
- 	{ USB_DEVICE(0x06f8, 0x3005), .driver_info = USB_QUIRK_RESET_RESUME },
- 
-+	/* Guillemot Hercules DJ Console audio card (BZ 208357) */
-+	{ USB_DEVICE(0x06f8, 0xb000), .driver_info =
-+			USB_QUIRK_ENDPOINT_BLACKLIST },
-+
- 	/* Midiman M-Audio Keystation 88es */
- 	{ USB_DEVICE(0x0763, 0x0192), .driver_info = USB_QUIRK_RESET_RESUME },
- 
-@@ -351,6 +355,8 @@ static const struct usb_device_id usb_am
-  * Matched for devices with USB_QUIRK_ENDPOINT_BLACKLIST.
-  */
- static const struct usb_device_id usb_endpoint_blacklist[] = {
-+	{ USB_DEVICE_INTERFACE_NUMBER(0x06f8, 0xb000, 5), .driver_info = 0x01 },
-+	{ USB_DEVICE_INTERFACE_NUMBER(0x06f8, 0xb000, 5), .driver_info = 0x81 },
- 	{ }
- };
- 
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+index a62c96001761b..9160b44c68bbf 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+@@ -626,7 +626,8 @@ int set_filter_wr(struct adapter *adapter, int fidx)
+ 		 FW_FILTER_WR_OVLAN_VLD_V(f->fs.val.ovlan_vld) |
+ 		 FW_FILTER_WR_IVLAN_VLDM_V(f->fs.mask.ivlan_vld) |
+ 		 FW_FILTER_WR_OVLAN_VLDM_V(f->fs.mask.ovlan_vld));
+-	fwr->smac_sel = f->smt->idx;
++	if (f->fs.newsmac)
++		fwr->smac_sel = f->smt->idx;
+ 	fwr->rx_chan_rx_rpl_iq =
+ 		htons(FW_FILTER_WR_RX_CHAN_V(0) |
+ 		      FW_FILTER_WR_RX_RPL_IQ_V(adapter->sge.fw_evtq.abs_id));
+-- 
+2.27.0
+
 
 
