@@ -2,153 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3830D2C9E19
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA1B2C9D7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgLAJcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:32:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41234 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727744AbgLAJcT (ORCPT
+        id S2388695AbgLAJYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:24:08 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8223 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729570AbgLAJYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 04:32:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606815052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LxAP0pseEc/fzAjf0tBaAneqtXVx1hiX6RUzZ9uBk5E=;
-        b=C4Dl4fq1UUeDEO0i7gAPhfxVWL2vIyQRpmWs5Phn4pQs2mmR9ntBnrdpHRR1Ova+N93vgm
-        iPSjcWBS2wK9GY02nGZkUQWQ6TtH21WB7vsxOK9jcyZ9H0lPWs5wOdg+hcviDQ1hxLGumu
-        kO0jmmemfvFWOH3GLnlswymtzT0Aja4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-STe-exarPCWFEk57_JlpZg-1; Tue, 01 Dec 2020 04:30:50 -0500
-X-MC-Unique: STe-exarPCWFEk57_JlpZg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04251100F341;
-        Tue,  1 Dec 2020 09:30:49 +0000 (UTC)
-Received: from [10.36.114.206] (ovpn-114-206.ams2.redhat.com [10.36.114.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1B8CF60BE5;
-        Tue,  1 Dec 2020 09:30:43 +0000 (UTC)
-Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
- on reads
-To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20201130230603.46187-1-peterx@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <956a2acb-7272-bcf8-dc88-dcd1856b28f2@redhat.com>
-Date:   Tue, 1 Dec 2020 10:30:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 04:24:05 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Clc8C4SMkzkj9j;
+        Tue,  1 Dec 2020 17:22:51 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Dec 2020 17:23:18 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Michal Simek <michal.simek@xilinx.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH 1/8] i2c: cadence: fix reference leak when pm_runtime_get_sync fails
+Date:   Tue, 1 Dec 2020 17:31:17 +0800
+Message-ID: <20201201093117.112900-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201201092924.112461-1-miaoqinglang@huawei.com>
+References: <20201201092924.112461-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20201130230603.46187-1-peterx@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.12.20 00:06, Peter Xu wrote:
-> Faulting around for reads are in most cases helpful for the performance so that
-> continuous memory accesses may avoid another trip of page fault.  However it
-> may not always work as expected.
-> 
-> For example, userfaultfd registered regions may not be the best candidate for
-> pre-faults around the reads.
-> 
-> For missing mode uffds, fault around does not help because if the page cache
-> existed, then the page should be there already.  If the page cache is not
-> there, nothing else we can do, either.  If the fault-around code is destined to
-> be helpless for userfault-missing vmas, then ideally we can skip it.
-> 
-> For wr-protected mode uffds, errornously fault in those pages around could lead
-> to threads accessing the pages without uffd server's awareness.  For example,
-> when punching holes on uffd-wp registered shmem regions, we'll first try to
-> unmap all the pages before evicting the page cache but without locking the
-> page (please refer to shmem_fallocate(), where unmap_mapping_range() is called
-> before shmem_truncate_range()).  When fault-around happens near a hole being
-> punched, we might errornously fault in the "holes" right before it will be
-> punched.  Then there's a small window before the page cache was finally
-> dropped, and after the page will be writable again (NOTE: the uffd-wp protect
-> information is totally lost due to the pre-unmap in shmem_fallocate(), so the
-> page can be writable within the small window).  That's severe data loss.
-> 
-> Let's grant the userspace full control of the uffd-registered ranges, rather
-> than trying to do the tricks.
-> 
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Reviewed-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
-> 
-> v2:
-> - use userfaultfd_armed() directly [Mike]
-> 
-> Note that since no file-backed uffd-wp support is there yet upstream, so the
-> uffd-wp check is actually not really functioning.  However since we have all
-> the necessary uffd-wp concepts already upstream, maybe it's better to do it
-> once and for all.
-> 
-> This patch comes from debugging a data loss issue when working on the uffd-wp
-> support on shmem/hugetlbfs.  I posted this out for early review and comments,
-> but also because it should already start to benefit missing mode userfaultfd to
-> avoid trying to fault around on reads.
-> ---
->  mm/memory.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index eeae590e526a..59b2be22565e 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3933,6 +3933,23 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
->  	int off;
->  	vm_fault_t ret = 0;
->  
-> +	/*
-> +	 * Be extremely careful with uffd-armed regions.
-> +	 *
-> +	 * For missing mode uffds, fault around does not help because if the
-> +	 * page cache existed, then the page should be there already.  If the
-> +	 * page cache is not there, nothing else we can do either.
-> +	 *
-> +	 * For wr-protected mode uffds, errornously fault in those pages around
-> +	 * could lead to threads accessing the pages without uffd server's
-> +	 * awareness, finally it could cause ghostly data corruption.
-> +	 *
-> +	 * The idea is that, every single page of uffd regions should be
-> +	 * governed by the userspace on which page to fault in.
-> +	 */
-> +	if (unlikely(userfaultfd_armed(vmf->vma)))
-> +		return 0;
-> +
->  	nr_pages = READ_ONCE(fault_around_bytes) >> PAGE_SHIFT;
->  	mask = ~(nr_pages * PAGE_SIZE - 1) & PAGE_MASK;
->  
-> 
+The PM reference count is not expected to be incremented on
+return in functions cdns_i2c_master_xfer and cdns_reg_slave.
 
-Thanks for the clarifying comment.
+However, pm_runtime_get_sync will increment pm usage counter
+even failed. Forgetting to putting operation will result in a
+reference leak here.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Replace it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
+Fixes: 7fa32329ca03 ("i2c: cadence: Move to sensible power management")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ drivers/i2c/busses/i2c-cadence.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index e4b7f2a95..e8eae8725 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
+@@ -789,7 +789,7 @@ static int cdns_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+ 	bool change_role = false;
+ #endif
+ 
+-	ret = pm_runtime_get_sync(id->dev);
++	ret = pm_runtime_resume_and_get(id->dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -911,7 +911,7 @@ static int cdns_reg_slave(struct i2c_client *slave)
+ 	if (slave->flags & I2C_CLIENT_TEN)
+ 		return -EAFNOSUPPORT;
+ 
+-	ret = pm_runtime_get_sync(id->dev);
++	ret = pm_runtime_resume_and_get(id->dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
-Thanks,
-
-David / dhildenb
+2.23.0
 
