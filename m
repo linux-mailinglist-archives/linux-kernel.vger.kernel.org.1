@@ -2,64 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360742CA99E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043A42CA9A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 18:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730897AbgLAR2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 12:28:53 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:56782 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727826AbgLAR2x (ORCPT
+        id S2389109AbgLAR3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 12:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731143AbgLAR3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:28:53 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606843691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=27ELMoHJXn3b8+hiqsrg9icIzbuPOs5y3FOlQUsqIB4=;
-        b=cWQpemZ9a8kYbaab9vBsrF70DINP/sl7/f536Z967AZUolItnvqS+Rna1p+C+P4ZuzA2RV
-        nMcN9Vk7VL3DkpMeX6IKyDSIoy4XrmQRr8MqSSkNek4YQVmJn/BB3cVfkWENovAqEiaZVd
-        TGsAaj0/Dbejlotam3E50tZlCu2cANP0dgfvu/2BPoM9E1A152PyIv2piLVPI01TpxtpGd
-        7PLg3aKf7+EigclyQn5WNC0JOyLrHKUqrKrIdwyqlglFTyl+kFJoNF3BEYvsNhfLcYvLAT
-        6c2Zs+sHe17eErelFMTtQDoDWk+fxyQ46zNIJI3n7xin7+9ZqV/n7hJZKKeZcQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606843691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=27ELMoHJXn3b8+hiqsrg9icIzbuPOs5y3FOlQUsqIB4=;
-        b=Nux9htAOFg3I46sIoyYEyXO8aK0gYSHbKoJ1s9kXYsRo4VvFd/2RkgaLkF9b1UceOUt6Fc
-        MWQAmeay6zHUoRAg==
-To:     John Garry <john.garry@huawei.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, lenb@kernel.org, rjw@rjwysocki.net,
-        gregkh@linuxfoundation.org, maz@kernel.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, linux-acpi@vger.kernel.org, dwagner@suse.de
-Subject: Re: [PATCH v4 1/5] genirq/affinity: Add irq_update_affinity_desc()
-In-Reply-To: <22315d74-0696-85ef-882c-85961cfb4f32@huawei.com>
-References: <1606757759-6076-1-git-send-email-john.garry@huawei.com> <1606757759-6076-2-git-send-email-john.garry@huawei.com> <87y2iih1pv.fsf@nanos.tec.linutronix.de> <22315d74-0696-85ef-882c-85961cfb4f32@huawei.com>
-Date:   Tue, 01 Dec 2020 18:28:10 +0100
-Message-ID: <87pn3tfnbp.fsf@nanos.tec.linutronix.de>
+        Tue, 1 Dec 2020 12:29:12 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84FEC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 09:28:26 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id k3so2390212otp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 09:28:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TQyDhRIJ7rEiN9hCk9WyxKUDIyuozNAVVNkVc8YrpXg=;
+        b=HfuFhzV/ccCro+uCbOb/y50FQGd5wN4ICHnvajiWVk0nS0pZiS+AOSFCnDHG7PnRCa
+         GEox+dpy6qHL+erQkJ2IQLymTJ6UQECBqBn5BvhP7dbdM0wD5uLSEmIYpiNlFrDQ827v
+         jMOmW+I724aOht3pb+uWjMxOQRMrdGoRi1HBBi9hfK2ymeetdRiogM10SAQnKMbzIm0G
+         UsPT43p69dvtYbW3lCG+44I27of1q2IDNftLwQWY6AsqBeGi7Ci9v08C0oNx5g8eVL+E
+         y23fVimIgWEuF98Q/cOVWI/lqISILVUdDAFTu7TGq0FjEU+RkKrtkNH54u6DYZxd0OL8
+         +N6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TQyDhRIJ7rEiN9hCk9WyxKUDIyuozNAVVNkVc8YrpXg=;
+        b=S6OUR2nfwIPl4hn56Zks260kHgyQHzljbOo+d6UgYdVhXpwjw6CN0Cnh5EPvYZZEPO
+         XQKx4tFIXtkAaEN8MpqQ5d9m67kpgy+jfMSr5L1a2u5ydQbB785RMSpZ9P1yOgJ0tzWH
+         EiW4dxVNR6IFWTSY3if5KBVoPoHhCvHPUKzEH6CekuINsHnpYnyHUTlRJaRMN5jPZnZB
+         UAMQvPIW6SL5Jg6A34LvJfObYjjyh8EGa1JtVjh8YQRPfWNkpCz26tKGgMyTiRzCGg+h
+         c6GUb1dpcRKUhizFIU9/QNrNazIuMjhHF7cmDI5CeuRt5ZHqJWkkQ2IG7FqM2FRzHzDy
+         BbRA==
+X-Gm-Message-State: AOAM531AvluB+BrXj3KkDuX/cDyt+1CLJ+PqnpOdKyEMeAgLBWcSKz9J
+        tlib20tIHMlei3OeQIVIz9i01X2X1uCvJA==
+X-Google-Smtp-Source: ABdhPJyUjovjQasEJ8gL40gzaNNC8d5vbgNE/y2i5fRr/dA851rZ+zDqg+lrEeDCBXhCwBTr76kNkA==
+X-Received: by 2002:a05:6830:1af7:: with SMTP id c23mr2591590otd.358.1606843705684;
+        Tue, 01 Dec 2020 09:28:25 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g2sm78160ooh.39.2020.12.01.09.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 09:28:25 -0800 (PST)
+Date:   Tue, 1 Dec 2020 11:28:23 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
+Message-ID: <X8Z9N2Yu8xiyPRmj@builder.lan>
+References: <20201116143432.15809-1-srinivas.kandagatla@linaro.org>
+ <20201116143432.15809-3-srinivas.kandagatla@linaro.org>
+ <X8WSucFKyROFJ7gF@builder.lan>
+ <ec14afaa-8660-03ac-fbf9-79ff37889de3@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ec14afaa-8660-03ac-fbf9-79ff37889de3@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01 2020 at 15:22, John Garry wrote:
-> /*
->   * There are certain limitations on when it may be used - attempts to 
-> use it for when the kernel is configured for generic IRQ reservation 
-> mode (in config GENERIC_IRQ_RESERVATION_MODE) will fail, as it may 
-> conflict with managed/non-managed interrupt accounting. In addition, 
-> attempts to use it on an interrupt which is already started or which has 
-> already been configured as managed will also fail, as these mean invalid 
-> init state or double init.
->
-> ...
->
-> Let me know if not good, if not I'll post again soon.
+On Tue 01 Dec 04:01 CST 2020, Srinivas Kandagatla wrote:
 
-LGTM
+> Many thanks for review Bjorn,
+> 
+> 
+> On 01/12/2020 00:47, Bjorn Andersson wrote:
+> > On Mon 16 Nov 08:34 CST 2020, Srinivas Kandagatla wrote:
+> > 
+> > > Add initial pinctrl driver to support pin configuration for
+> > > LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
+> > > on SM8250.
+> > > 
+> > > This IP is an additional pin control block for Audio Pins on top the
+> > > existing SoC Top level pin-controller.
+> > > Hardware setup looks like:
+> > > 
+> > > TLMM GPIO[146 - 159] --> LPASS LPI GPIO [0 - 13]
+> > > 
+> > 
+> > Iiuc the LPI TLMM block is just "another pinmux/pinconf block" found in
+> > these SoCs, with the additional magic that the 14 pads are muxed with
+> > some of the TLMM pins - to allow the system integrator to choose how
+> > many pins the LPI should have access to.
+> > 
+> > I also believe this is what the "egpio" bit in the TLMM registers are
+> > used for (i.e. egpio = route to LPI, egpio = 1 route to TLMM), so we
+> > should need to add support for toggling this bit in the TLMM as well
+> > (which I think we should do as a pinconf in the pinctrl-msm).
+> 
+> Yes, we should add egpio function to these pins in main TLMM pinctrl!
+> 
+
+I was thinking about abusing the pinconf system, but reading you
+sentence makes me feel that expressing it as a "function" and adding a
+special case handling in msm_pinmux_set_mux() would actually make things
+much cleaner to the outside.
+
+i.e. we would then end up with something in DT like:
+
+	pin-is-normal-tlmm-pin {
+		pins = "gpio146";
+		function = "gpio";
+	};
+
+and
+
+	pin-routed-to-lpi-pin {
+		pins = "gpio146";
+		function = "egpio";
+	};
+
+Only "drawback" I can see is that we're inverting the chip's meaning of
+"egpio" (i.e. active means route-to-tlmm in the hardware).
+
+> > 
+> > > This pin controller has some similarities compared to Top level
+> > > msm SoC Pin controller like 'each pin belongs to a single group'
+> > > and so on. However this one is intended to control only audio
+> > > pins in particular, which can not be configured/touched by the
+> > > Top level SoC pin controller except setting them as gpios.
+[..]
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+[..]
+> > > +	LPI_MUX_qua_mi2s_sclk,
+> > > +	LPI_MUX_swr_tx_data1,
+> > 
+> > As there's no single pin that can be both data1 and data2 I think you
+> > should have a single group for swr_tx_data and use this function for
+> > both swr_tx_data pins. Or perhaps even just have one for swr or swr_tx.
+> > 
+> > (This is nice when you're writing DT later on)
+> 
+> I did think about this, but we have a rx_data2 pin in different function
+> compared to other rx data pins.
+> 
+> The reason to keep it as it is :
+> 1> as this will bring in an additional complexity to the code
+
+For each pin lpi_gpio_set_mux() will be invoked and you'd be searching
+for the index (i) among that pins .funcs. So it doesn't matter that
+looking up a particular function results in different register values
+for different pins, it's already dealt with.
+
+> 2> we have these represented exactly as what hw data sheet mentions it!
+> 
+
+That is true, but the result is that you have to write 2 states in the
+DT to get your 2 pins to switch to the particular function. By grouping
+them you could do:
+
+	data-pins {
+		pins = "gpio1", "gpio2";
+		function = "swr_tx_data";
+	};
+
+
+We do this quite extensively for the TLMM (pinctrl-msm) because it
+results in cleaner DT.
+
+> > 
+> > > +	LPI_MUX_qua_mi2s_ws,
+[..]
+> > > +static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
+> > > +	.tlmm_reg_offset = 0x1000,
+> > 
+> > Do we have any platform in sight where this is not 0x1000? Could we just
+> > make a define out of it?
+> Am not 100% sure ATM, But I wanted to keep this flexible as these offsets in
+> downstream were part of device tree for some reason, so having offset here
+> for particular compatible made more sense for me!
+> 
+
+Downtream does indeed favor "flexible" code. I tend to prefer a #define
+until we actually need the flexibility...
+
+Regards,
+Bjorn
