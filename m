@@ -2,98 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033152CACFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2EC2CAD01
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730598AbgLAUGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729538AbgLAUGD (ORCPT
+        id S2404377AbgLAUIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:08:11 -0500
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:38054 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727450AbgLAUIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:06:03 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC9BC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 12:05:16 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id a9so6955048lfh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:05:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HEphcGQwY2jeNYDME47hDdQV9bR2WcuThTyY8CTMagA=;
-        b=f+XordXx1HtHQauAu4wnySGZ7GOsfsrQOPdsZpcQHvfL87zHN51ik0PwYfToHQidR0
-         PlZ/E4mqzBriHmbzSkQser0B1m99iGnRC3rEB7nXytmUcWTvmQp/DGH5GienWzwN/RKd
-         ej/bdilwW2TBGDr+jCbzKtRZ0888o0ynwCvig=
+        Tue, 1 Dec 2020 15:08:10 -0500
+Received: by mail-ej1-f67.google.com with SMTP id a16so6882133ejj.5;
+        Tue, 01 Dec 2020 12:07:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HEphcGQwY2jeNYDME47hDdQV9bR2WcuThTyY8CTMagA=;
-        b=VkzU0walLwV80VM8JTM6q57eyTGnHh2ukyTD2LrtWBpRz93jab+HIhUDAY0fTaSJ7Q
-         0DrvultgFnAqNeiOX+7dJC5KQxd7sQeKN0fCiFkyC0j7B6/FGbfjkf/U1vFAWT9XJlKr
-         1Om/Yx5U3i9jjBgbcay1zV7RsvZ53of2Gujbyx6mY75kJoZakoV6SHDLhE35FL9hjRhz
-         O1mDFwe8l4z0DQOa4e7CruJgjjll9DOspDKVtjlIhIaRl7TQQf/rHtAtsFV+28mRYQHu
-         E5Fu7cAeCH11PSd4Jmy5Bcek5sDoHpBLNgy1dalkDhUcPf3iXCJVlN+wha9fTOMkLN4X
-         iAAA==
-X-Gm-Message-State: AOAM532xX3nKL/e/ukie1dKV2lAFOueWRQA1t+Vj2zt7l0SbaYgebMsN
-        AQs4b9CF+hs+CUEV5klDXzhAppK7ChPu6g==
-X-Google-Smtp-Source: ABdhPJxrCfIuMibK4V3ZjpQwOFPMKpSx1j5aqOSRDibodXDNxqvYYWTRxGkp1+GvnfdOjPzVHzxsKQ==
-X-Received: by 2002:a05:6512:3237:: with SMTP id f23mr1939769lfe.6.1606853114389;
-        Tue, 01 Dec 2020 12:05:14 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id s23sm72764ljs.75.2020.12.01.12.05.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 12:05:13 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id d8so6974214lfa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 12:05:13 -0800 (PST)
-X-Received: by 2002:a19:5003:: with SMTP id e3mr1997442lfb.148.1606853112635;
- Tue, 01 Dec 2020 12:05:12 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o8OpMIpKsvTP+ao76T3f62qpT21Ac6Cs3TQoq3094Zc=;
+        b=P8mANsRRp6HF4fvCFXGvFUPxx9YpzxAqR7WouCMGIY7a94OPI1O2pJujIhfByHnm27
+         evu/tRmylhgi1HOghsJWiDfk4eUjpAph2N3SrfkP/nvW4KBq/AdAnugJ+Hsk4C/toxew
+         1qT8RTR7N5+7rPbvDtIyyvFe3VCcU64TL71yiCyjdrrhOx0myczCv0VtquBr1J2YWIFC
+         GczZLKR5pq/BBV3MESFdGx61J5P4yC1B/knGQUtS32UTSvPfl1ChjBacy+cb4lmnZIbU
+         Scy0M+mRpBRxMRFjmR1Y0kBZeW0PZ9bs5zt9Z3mz0dMrb7bOPz1BVhPdfVeRpMlrSyWB
+         AgZg==
+X-Gm-Message-State: AOAM533ffen631trtoL2j3NhljyQcs3ax9dVr3DB/tAQim15rmoD2jN/
+        Swp3qPYr0Lv70KF+oz0Nj2dFhkB0r0c=
+X-Google-Smtp-Source: ABdhPJza6eg+oPJXQ5ReF6xIUHNqwcfSXWPMj952gZlGgpNUU+Gspt9SH0D1dl7xx52uuqb0E4/0BQ==
+X-Received: by 2002:a17:906:c0d1:: with SMTP id bn17mr5003733ejb.114.1606853248214;
+        Tue, 01 Dec 2020 12:07:28 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id s15sm391164edj.75.2020.12.01.12.07.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 12:07:27 -0800 (PST)
+Date:   Tue, 1 Dec 2020 22:07:25 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH v4 net-next 1/4] dt-bindings: net: nfc: s3fwrn5: Support
+ a UART interface
+Message-ID: <20201201200725.GB2435@kozik-lap>
+References: <1606830628-10236-1-git-send-email-bongsu.jeon@samsung.com>
+ <1606830628-10236-2-git-send-email-bongsu.jeon@samsung.com>
 MIME-Version: 1.0
-References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com> <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
-In-Reply-To: <05a0f4fd-7f62-8fbc-378d-886ccd5b3f11@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 1 Dec 2020 12:04:56 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgOu9vgUfOSsjO3hHHxGDn4BKhitC_8XCfgmGKiiSm_ag@mail.gmail.com>
-Message-ID: <CAHk-=wgOu9vgUfOSsjO3hHHxGDn4BKhitC_8XCfgmGKiiSm_ag@mail.gmail.com>
-Subject: Re: [PATCH 2/2] statx: move STATX_ATTR_DAX attribute handling to filesystems
-To:     Eric Sandeen <sandeen@redhat.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Xiaoli Feng <xifeng@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1606830628-10236-2-git-send-email-bongsu.jeon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 8:59 AM Eric Sandeen <sandeen@redhat.com> wrote:
->
-> It's a bit odd to set STATX_ATTR_DAX into the statx attributes in the VFS;
-> while the VFS can detect the current DAX state, it is the filesystem which
-> actually sets S_DAX on the inode, and the filesystem is the place that
-> knows whether DAX is something that the "filesystem actually supports" [1]
-> so that the statx attributes_mask can be properly set.
->
-> So, move STATX_ATTR_DAX attribute setting to the individual dax-capable
-> filesystems, and update the attributes_mask there as well.
+On Tue, Dec 01, 2020 at 10:50:25PM +0900, Bongsu Jeon wrote:
+> From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> 
+> Since S3FWRN82 NFC Chip, The UART interface can be used.
+> S3FWRN82 supports I2C and UART interface.
+> 
+> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+> ---
+>  .../bindings/net/nfc/samsung,s3fwrn5.yaml          | 32 ++++++++++++++++++++--
+>  1 file changed, 29 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+> index cb0b8a5..cc5f9a1 100644
+> --- a/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+> +++ b/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+> @@ -12,7 +12,10 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    const: samsung,s3fwrn5-i2c
+> +    items:
 
-I'm not really understanding the logic behind this.
+This still has items but it should be a simple enum.
 
-The whole IS_DAX(inode) thing exists in various places outside the
-low-level filesystem, why shouldn't stat() do this?
+> +      - enum:
+> +          - samsung,s3fwrn5-i2c
+> +          - samsung,s3fwrn82
+>  
+>    en-gpios:
+>      maxItems: 1
+> @@ -47,10 +50,19 @@ additionalProperties: false
+>  required:
+>    - compatible
+>    - en-gpios
+> -  - interrupts
+> -  - reg
+>    - wake-gpios
+>  
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: samsung,s3fwrn5-i2c
+> +    then:
+> +      required:
+> +        - interrupts
+> +        - reg
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/gpio/gpio.h>
+> @@ -71,3 +83,17 @@ examples:
+>              wake-gpios = <&gpj0 2 GPIO_ACTIVE_HIGH>;
+>          };
+>      };
+> +  # UART example on Raspberry Pi
+> +  - |
+> +    uart0 {
+> +        status = "okay";
+> +
+> +        nfc {
+> +            compatible = "samsung,s3fwrn82";
+> +
+> +            en-gpios = <&gpio 20 0>;
+> +            wake-gpios = <&gpio 16 0>;
 
-If IS_DAX() is incorrect, then we have much bigger problems than some
-stat results. We have core functions like generic_file_read_iter() etc
-all making actual behavioral judgements on IS_DAX().
+Use GPIO flags like in example above.
 
-And if IS_DAX() is correct, then why shouldn't this just be done in
-generic code? Why move it to every individual filesystem?
-
-               Linus
+Best regards,
+Krzysztof
