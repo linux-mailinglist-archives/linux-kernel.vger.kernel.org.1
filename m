@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BAE2C9A35
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAE82C9A32
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 09:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387645AbgLAI4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 03:56:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387623AbgLAI4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387624AbgLAI4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 1 Dec 2020 03:56:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387591AbgLAIzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 03:55:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0B2D22240;
-        Tue,  1 Dec 2020 08:55:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3B89206D8;
+        Tue,  1 Dec 2020 08:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606812916;
-        bh=PafrNWpG+TEnx4jbgTMkwOsHLqQSrlIKwwQLcNNOb8A=;
+        s=korg; t=1606812936;
+        bh=ML0MJyV/L1jpRCdYMNccYQa3xrhWVP+pUjMBTDVU/TE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WuK3FvNhxZuRj+xlxRnfXlOZcTvPDrlcQAMyBbEHf6deTJ57uPMyXEcvKJxJBzeLv
-         3YfIAWJfgn23ZlbNPaQCqNQPXZUh9eoTZGdRtDIlhYXcCR9uEEBy80sWxjGw/wTfxR
-         dyHViTL+pV7yTtNyWtZ4b7Anw61/lg2kTTjIx+Qk=
+        b=brl0sHAExqf83FlIMw71LCzwtybuLG3mnnt++PF1BLJS3H+aRM8mdQiW5CFimIqry
+         PranMmwUAzZJPS7IeKdAALDBj1bbkj6/Kj8LIzYPpX3wdFSXmpjC+3WlWIpeQraNlM
+         0VqRRWLIUCsoiebQMCPlVaeFKF2AeaVoMCoKSjU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 02/42] mm/userfaultfd: do not access vma->vm_mm after calling handle_userfault()
-Date:   Tue,  1 Dec 2020 09:53:00 +0100
-Message-Id: <20201201084642.286801037@linuxfoundation.org>
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.9 03/42] btrfs: fix lockdep splat when reading qgroup config on mount
+Date:   Tue,  1 Dec 2020 09:53:01 +0100
+Message-Id: <20201201084642.338225206@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084642.194933793@linuxfoundation.org>
 References: <20201201084642.194933793@linuxfoundation.org>
@@ -47,158 +42,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit bfe8cc1db02ab243c62780f17fc57f65bde0afe1 upstream.
+commit 3d05cad3c357a2b749912914356072b38435edfa upstream.
 
-Alexander reported a syzkaller / KASAN finding on s390, see below for
-complete output.
+Lockdep reported the following splat when running test btrfs/190 from
+fstests:
 
-In do_huge_pmd_anonymous_page(), the pre-allocated pagetable will be
-freed in some cases.  In the case of userfaultfd_missing(), this will
-happen after calling handle_userfault(), which might have released the
-mmap_lock.  Therefore, the following pte_free(vma->vm_mm, pgtable) will
-access an unstable vma->vm_mm, which could have been freed or re-used
-already.
+  [ 9482.126098] ======================================================
+  [ 9482.126184] WARNING: possible circular locking dependency detected
+  [ 9482.126281] 5.10.0-rc4-btrfs-next-73 #1 Not tainted
+  [ 9482.126365] ------------------------------------------------------
+  [ 9482.126456] mount/24187 is trying to acquire lock:
+  [ 9482.126534] ffffa0c869a7dac0 (&fs_info->qgroup_rescan_lock){+.+.}-{3:3}, at: qgroup_rescan_init+0x43/0xf0 [btrfs]
+  [ 9482.126647]
+		 but task is already holding lock:
+  [ 9482.126777] ffffa0c892ebd3a0 (btrfs-quota-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x27/0x120 [btrfs]
+  [ 9482.126886]
+		 which lock already depends on the new lock.
 
-For all architectures other than s390 this will go w/o any negative
-impact, because pte_free() simply frees the page and ignores the
-passed-in mm.  The implementation for SPARC32 would also access
-mm->page_table_lock for pte_free(), but there is no THP support in
-SPARC32, so the buggy code path will not be used there.
+  [ 9482.127078]
+		 the existing dependency chain (in reverse order) is:
+  [ 9482.127213]
+		 -> #1 (btrfs-quota-00){++++}-{3:3}:
+  [ 9482.127366]        lock_acquire+0xd8/0x490
+  [ 9482.127436]        down_read_nested+0x45/0x220
+  [ 9482.127528]        __btrfs_tree_read_lock+0x27/0x120 [btrfs]
+  [ 9482.127613]        btrfs_read_lock_root_node+0x41/0x130 [btrfs]
+  [ 9482.127702]        btrfs_search_slot+0x514/0xc30 [btrfs]
+  [ 9482.127788]        update_qgroup_status_item+0x72/0x140 [btrfs]
+  [ 9482.127877]        btrfs_qgroup_rescan_worker+0xde/0x680 [btrfs]
+  [ 9482.127964]        btrfs_work_helper+0xf1/0x600 [btrfs]
+  [ 9482.128039]        process_one_work+0x24e/0x5e0
+  [ 9482.128110]        worker_thread+0x50/0x3b0
+  [ 9482.128181]        kthread+0x153/0x170
+  [ 9482.128256]        ret_from_fork+0x22/0x30
+  [ 9482.128327]
+		 -> #0 (&fs_info->qgroup_rescan_lock){+.+.}-{3:3}:
+  [ 9482.128464]        check_prev_add+0x91/0xc60
+  [ 9482.128551]        __lock_acquire+0x1740/0x3110
+  [ 9482.128623]        lock_acquire+0xd8/0x490
+  [ 9482.130029]        __mutex_lock+0xa3/0xb30
+  [ 9482.130590]        qgroup_rescan_init+0x43/0xf0 [btrfs]
+  [ 9482.131577]        btrfs_read_qgroup_config+0x43a/0x550 [btrfs]
+  [ 9482.132175]        open_ctree+0x1228/0x18a0 [btrfs]
+  [ 9482.132756]        btrfs_mount_root.cold+0x13/0xed [btrfs]
+  [ 9482.133325]        legacy_get_tree+0x30/0x60
+  [ 9482.133866]        vfs_get_tree+0x28/0xe0
+  [ 9482.134392]        fc_mount+0xe/0x40
+  [ 9482.134908]        vfs_kern_mount.part.0+0x71/0x90
+  [ 9482.135428]        btrfs_mount+0x13b/0x3e0 [btrfs]
+  [ 9482.135942]        legacy_get_tree+0x30/0x60
+  [ 9482.136444]        vfs_get_tree+0x28/0xe0
+  [ 9482.136949]        path_mount+0x2d7/0xa70
+  [ 9482.137438]        do_mount+0x75/0x90
+  [ 9482.137923]        __x64_sys_mount+0x8e/0xd0
+  [ 9482.138400]        do_syscall_64+0x33/0x80
+  [ 9482.138873]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  [ 9482.139346]
+		 other info that might help us debug this:
 
-For s390, the mm->context.pgtable_list is being used to maintain the 2K
-pagetable fragments, and operating on an already freed or even re-used
-mm could result in various more or less subtle bugs due to list /
-pagetable corruption.
+  [ 9482.140735]  Possible unsafe locking scenario:
 
-Fix this by calling pte_free() before handle_userfault(), similar to how
-it is already done in __do_huge_pmd_anonymous_page() for the WRITE /
-non-huge_zero_page case.
+  [ 9482.141594]        CPU0                    CPU1
+  [ 9482.142011]        ----                    ----
+  [ 9482.142411]   lock(btrfs-quota-00);
+  [ 9482.142806]                                lock(&fs_info->qgroup_rescan_lock);
+  [ 9482.143216]                                lock(btrfs-quota-00);
+  [ 9482.143629]   lock(&fs_info->qgroup_rescan_lock);
+  [ 9482.144056]
+		  *** DEADLOCK ***
 
-Commit 6b251fc96cf2c ("userfaultfd: call handle_userfault() for
-userfaultfd_missing() faults") actually introduced both, the
-do_huge_pmd_anonymous_page() and also __do_huge_pmd_anonymous_page()
-changes wrt to calling handle_userfault(), but only in the latter case
-it put the pte_free() before calling handle_userfault().
+  [ 9482.145242] 2 locks held by mount/24187:
+  [ 9482.145637]  #0: ffffa0c8411c40e8 (&type->s_umount_key#44/1){+.+.}-{3:3}, at: alloc_super+0xb9/0x400
+  [ 9482.146061]  #1: ffffa0c892ebd3a0 (btrfs-quota-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x27/0x120 [btrfs]
+  [ 9482.146509]
+		 stack backtrace:
+  [ 9482.147350] CPU: 1 PID: 24187 Comm: mount Not tainted 5.10.0-rc4-btrfs-next-73 #1
+  [ 9482.147788] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+  [ 9482.148709] Call Trace:
+  [ 9482.149169]  dump_stack+0x8d/0xb5
+  [ 9482.149628]  check_noncircular+0xff/0x110
+  [ 9482.150090]  check_prev_add+0x91/0xc60
+  [ 9482.150561]  ? kvm_clock_read+0x14/0x30
+  [ 9482.151017]  ? kvm_sched_clock_read+0x5/0x10
+  [ 9482.151470]  __lock_acquire+0x1740/0x3110
+  [ 9482.151941]  ? __btrfs_tree_read_lock+0x27/0x120 [btrfs]
+  [ 9482.152402]  lock_acquire+0xd8/0x490
+  [ 9482.152887]  ? qgroup_rescan_init+0x43/0xf0 [btrfs]
+  [ 9482.153354]  __mutex_lock+0xa3/0xb30
+  [ 9482.153826]  ? qgroup_rescan_init+0x43/0xf0 [btrfs]
+  [ 9482.154301]  ? qgroup_rescan_init+0x43/0xf0 [btrfs]
+  [ 9482.154768]  ? qgroup_rescan_init+0x43/0xf0 [btrfs]
+  [ 9482.155226]  qgroup_rescan_init+0x43/0xf0 [btrfs]
+  [ 9482.155690]  btrfs_read_qgroup_config+0x43a/0x550 [btrfs]
+  [ 9482.156160]  open_ctree+0x1228/0x18a0 [btrfs]
+  [ 9482.156643]  btrfs_mount_root.cold+0x13/0xed [btrfs]
+  [ 9482.157108]  ? rcu_read_lock_sched_held+0x5d/0x90
+  [ 9482.157567]  ? kfree+0x31f/0x3e0
+  [ 9482.158030]  legacy_get_tree+0x30/0x60
+  [ 9482.158489]  vfs_get_tree+0x28/0xe0
+  [ 9482.158947]  fc_mount+0xe/0x40
+  [ 9482.159403]  vfs_kern_mount.part.0+0x71/0x90
+  [ 9482.159875]  btrfs_mount+0x13b/0x3e0 [btrfs]
+  [ 9482.160335]  ? rcu_read_lock_sched_held+0x5d/0x90
+  [ 9482.160805]  ? kfree+0x31f/0x3e0
+  [ 9482.161260]  ? legacy_get_tree+0x30/0x60
+  [ 9482.161714]  legacy_get_tree+0x30/0x60
+  [ 9482.162166]  vfs_get_tree+0x28/0xe0
+  [ 9482.162616]  path_mount+0x2d7/0xa70
+  [ 9482.163070]  do_mount+0x75/0x90
+  [ 9482.163525]  __x64_sys_mount+0x8e/0xd0
+  [ 9482.163986]  do_syscall_64+0x33/0x80
+  [ 9482.164437]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  [ 9482.164902] RIP: 0033:0x7f51e907caaa
 
-  BUG: KASAN: use-after-free in do_huge_pmd_anonymous_page+0xcda/0xd90 mm/huge_memory.c:744
-  Read of size 8 at addr 00000000962d6988 by task syz-executor.0/9334
+This happens because at btrfs_read_qgroup_config() we can call
+qgroup_rescan_init() while holding a read lock on a quota btree leaf,
+acquired by the previous call to btrfs_search_slot_for_read(), and
+qgroup_rescan_init() acquires the mutex qgroup_rescan_lock.
 
-  CPU: 1 PID: 9334 Comm: syz-executor.0 Not tainted 5.10.0-rc1-syzkaller-07083-g4c9720875573 #0
-  Hardware name: IBM 3906 M04 701 (KVM/Linux)
-  Call Trace:
-    do_huge_pmd_anonymous_page+0xcda/0xd90 mm/huge_memory.c:744
-    create_huge_pmd mm/memory.c:4256 [inline]
-    __handle_mm_fault+0xe6e/0x1068 mm/memory.c:4480
-    handle_mm_fault+0x288/0x748 mm/memory.c:4607
-    do_exception+0x394/0xae0 arch/s390/mm/fault.c:479
-    do_dat_exception+0x34/0x80 arch/s390/mm/fault.c:567
-    pgm_check_handler+0x1da/0x22c arch/s390/kernel/entry.S:706
-    copy_from_user_mvcos arch/s390/lib/uaccess.c:111 [inline]
-    raw_copy_from_user+0x3a/0x88 arch/s390/lib/uaccess.c:174
-    _copy_from_user+0x48/0xa8 lib/usercopy.c:16
-    copy_from_user include/linux/uaccess.h:192 [inline]
-    __do_sys_sigaltstack kernel/signal.c:4064 [inline]
-    __s390x_sys_sigaltstack+0xc8/0x240 kernel/signal.c:4060
-    system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
+A qgroup rescan worker does the opposite: it acquires the mutex
+qgroup_rescan_lock, at btrfs_qgroup_rescan_worker(), and then tries to
+update the qgroup status item in the quota btree through the call to
+update_qgroup_status_item(). This inversion of locking order
+between the qgroup_rescan_lock mutex and quota btree locks causes the
+splat.
 
-  Allocated by task 9334:
-    slab_alloc_node mm/slub.c:2891 [inline]
-    slab_alloc mm/slub.c:2899 [inline]
-    kmem_cache_alloc+0x118/0x348 mm/slub.c:2904
-    vm_area_dup+0x9c/0x2b8 kernel/fork.c:356
-    __split_vma+0xba/0x560 mm/mmap.c:2742
-    split_vma+0xca/0x108 mm/mmap.c:2800
-    mlock_fixup+0x4ae/0x600 mm/mlock.c:550
-    apply_vma_lock_flags+0x2c6/0x398 mm/mlock.c:619
-    do_mlock+0x1aa/0x718 mm/mlock.c:711
-    __do_sys_mlock2 mm/mlock.c:738 [inline]
-    __s390x_sys_mlock2+0x86/0xa8 mm/mlock.c:728
-    system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
+Fix this simply by releasing and freeing the path before calling
+qgroup_rescan_init() at btrfs_read_qgroup_config().
 
-  Freed by task 9333:
-    slab_free mm/slub.c:3142 [inline]
-    kmem_cache_free+0x7c/0x4b8 mm/slub.c:3158
-    __vma_adjust+0x7b2/0x2508 mm/mmap.c:960
-    vma_merge+0x87e/0xce0 mm/mmap.c:1209
-    userfaultfd_release+0x412/0x6b8 fs/userfaultfd.c:868
-    __fput+0x22c/0x7a8 fs/file_table.c:281
-    task_work_run+0x200/0x320 kernel/task_work.c:151
-    tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-    do_notify_resume+0x100/0x148 arch/s390/kernel/signal.c:538
-    system_call+0xe6/0x28c arch/s390/kernel/entry.S:416
-
-  The buggy address belongs to the object at 00000000962d6948 which belongs to the cache vm_area_struct of size 200
-  The buggy address is located 64 bytes inside of 200-byte region [00000000962d6948, 00000000962d6a10)
-  The buggy address belongs to the page: page:00000000313a09fe refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x962d6 flags: 0x3ffff00000000200(slab)
-  raw: 3ffff00000000200 000040000257e080 0000000c0000000c 000000008020ba00
-  raw: 0000000000000000 000f001e00000000 ffffffff00000001 0000000096959501
-  page dumped because: kasan: bad access detected
-  page->mem_cgroup:0000000096959501
-
-  Memory state around the buggy address:
-   00000000962d6880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   00000000962d6900: 00 fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb
-  >00000000962d6980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                        ^
-   00000000962d6a00: fb fb fc fc fc fc fc fc fc fc 00 00 00 00 00 00
-   00000000962d6a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  ==================================================================
-
-Changes for v4.9 stable:
-  - Make it apply w/o
-    * Commit 4cf58924951ef ("mm: treewide: remove unused address argument
-      from pte_alloc functions")
-    * Commit 2b7403035459c ("mm: Change return type int to vm_fault_t for
-      fault handlers")
-    * Commit 82b0f8c39a386 ("mm: join struct fault_env and vm_fault")
-
-Fixes: 6b251fc96cf2c ("userfaultfd: call handle_userfault() for userfaultfd_missing() faults")
-Reported-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: <stable@vger.kernel.org>	[4.3+]
-Link: https://lkml.kernel.org/r/20201110190329.11920-1-gerald.schaefer@linux.ibm.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -661,7 +661,6 @@ int do_huge_pmd_anonymous_page(struct fa
- 			transparent_hugepage_use_zero_page()) {
- 		pgtable_t pgtable;
- 		struct page *zero_page;
--		bool set;
- 		int ret;
- 		pgtable = pte_alloc_one(vma->vm_mm, haddr);
- 		if (unlikely(!pgtable))
-@@ -674,22 +673,21 @@ int do_huge_pmd_anonymous_page(struct fa
- 		}
- 		fe->ptl = pmd_lock(vma->vm_mm, fe->pmd);
- 		ret = 0;
--		set = false;
- 		if (pmd_none(*fe->pmd)) {
- 			if (userfaultfd_missing(vma)) {
- 				spin_unlock(fe->ptl);
-+				pte_free(vma->vm_mm, pgtable);
- 				ret = handle_userfault(fe, VM_UFFD_MISSING);
- 				VM_BUG_ON(ret & VM_FAULT_FALLBACK);
- 			} else {
- 				set_huge_zero_page(pgtable, vma->vm_mm, vma,
- 						   haddr, fe->pmd, zero_page);
- 				spin_unlock(fe->ptl);
--				set = true;
- 			}
--		} else
-+		} else {
- 			spin_unlock(fe->ptl);
--		if (!set)
- 			pte_free(vma->vm_mm, pgtable);
-+		}
- 		return ret;
+
+---
+ fs/btrfs/qgroup.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -461,13 +461,13 @@ next2:
+ 			break;
  	}
- 	gfp = alloc_hugepage_direct_gfpmask(vma);
+ out:
++	btrfs_free_path(path);
+ 	fs_info->qgroup_flags |= flags;
+ 	if (!(fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_ON))
+ 		clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
+ 	else if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN &&
+ 		 ret >= 0)
+ 		ret = qgroup_rescan_init(fs_info, rescan_progress, 0);
+-	btrfs_free_path(path);
+ 
+ 	if (ret < 0) {
+ 		ulist_free(fs_info->qgroup_ulist);
 
 
