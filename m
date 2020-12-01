@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2352C9493
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0FB2C949E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 02:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389239AbgLABUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Nov 2020 20:20:09 -0500
-Received: from mga04.intel.com ([192.55.52.120]:22830 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728932AbgLABUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:20:09 -0500
-IronPort-SDR: GC6mnQRZdXI+SwddVEKYduUN/aFSyKe3GbfPi/J27nGV4pLsUP+Bf3KMvcDSmBJT34qC8SSWcE
- 8t9PAtp8f++A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="170177455"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="170177455"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 17:19:28 -0800
-IronPort-SDR: 0mj4k8xHOEc7kaYnDBIfwvuFreMJRA6EqTktv3jNhc8ZMeQ+ltM69Kba3vm4JjIj/2xahgAlIw
- XUKCNkJi/79Q==
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="314771314"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 17:19:24 -0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        "Neftin, Sasha" <sasha.neftin@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Brandt, Todd E" <todd.e.brandt@intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH 2/2][v3] e1000e: Remove the runtime suspend restriction on CNP+
-Date:   Tue,  1 Dec 2020 09:22:09 +0800
-Message-Id: <aa62fe21ecafaff167f57e86192be70ee8914738.1606757180.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1606757180.git.yu.c.chen@intel.com>
-References: <cover.1606757180.git.yu.c.chen@intel.com>
+        id S1731105AbgLABXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Nov 2020 20:23:46 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8890 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729106AbgLABXq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:23:46 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4ClPV70wFkz768H;
+        Tue,  1 Dec 2020 09:22:39 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Dec 2020 09:23:00 +0800
+Subject: Re: [PATCH] gpio: zynq: fix reference leak in zynq_gpio functions
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20201127094445.121232-1-miaoqinglang@huawei.com>
+ <CAMpxmJXxibU_i__GnCOktxPct9drrLKvf4Oo6jpXrhiJWt7QZA@mail.gmail.com>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <c540ead8-0d05-86d8-681c-9003600355ce@huawei.com>
+Date:   Tue, 1 Dec 2020 09:23:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAMpxmJXxibU_i__GnCOktxPct9drrLKvf4Oo6jpXrhiJWt7QZA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although there is platform issue of runtime suspend support
-on CNP, it would be more flexible to let the user decide whether
-to disable runtime or not because:
-1. This can be done in userspace via
-   echo on > /sys/devices/pci0000\:00/0000\:00\:1f.d/power/control
-2. More and more NICs would support runtime suspend, disabling the
-   runtime suspend on them by default would impact the validation.
 
-Only disable runtime suspend on CNP in case of any user space regression.
 
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- drivers/net/ethernet/intel/e1000e/netdev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-index b210bba3f20a..d06435267dc8 100644
---- a/drivers/net/ethernet/intel/e1000e/netdev.c
-+++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-@@ -7674,7 +7674,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_SMART_PREPARE);
- 
--	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
-+	if (pci_dev_run_wake(pdev) && hw->mac.type != e1000_pch_cnp)
- 		pm_runtime_put_noidle(&pdev->dev);
- 
- 	return 0;
--- 
-2.17.1
-
+在 2020/12/1 0:44, Bartosz Golaszewski 写道:
+> On Fri, Nov 27, 2020 at 10:40 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>>
+>> pm_runtime_get_sync will increment pm usage counter even it
+>> failed. Forgetting to putting operation will result in a
+>> reference leak here.
+>>
+>> A new function pm_runtime_resume_and_get is introduced in
+>> [0] to keep usage counter balanced. So We fix the reference
+>> leak by replacing it with new funtion.
+>>
+>> [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
+> 
+> Is this upstream yet?
+> 
+> Bartosz
+> .
+Yep, it's introduced in v5.10-rc5
+> 
