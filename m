@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598752C9CE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F052C9CE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 10:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388226AbgLAJFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 04:05:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40836 "EHLO mail.kernel.org"
+        id S1729410AbgLAJFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 04:05:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388716AbgLAJDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388717AbgLAJDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Dec 2020 04:03:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DC5F2067D;
-        Tue,  1 Dec 2020 09:02:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D41D221EB;
+        Tue,  1 Dec 2020 09:03:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606813377;
-        bh=k5DVzzqjaDSJoLUEeJg5gBxnwWjkgZXI9Cmyy6Ji0BI=;
+        s=korg; t=1606813382;
+        bh=smWrW7jtuEGxhavobo93b5wPppjfIIUm9uSE0B+0cYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UwuZ2gLU6vYA2qfpS1cdbAEhgjdusfsh+WLijXqmGIBnNtFPvCnDQRwEip1cg4nBF
-         h0gcvHK0cOPl3ISrpypQDKJd9hp0E7i69p5QxwR2mBNW2fZ9xY0pft4T1seVQzHbQY
-         dNuK8Cj12IGW9YMmpjjhgurAw2f4EgscrasMCVRY=
+        b=aBeect+oikRIKr45xegeN0s4QX839JjucDvZbdyHDLXSKDW4UBkrLIzUoIXhhsSiQ
+         v/dgV+ztfg9XY6Gv2eBCFJhteYuZMCu2MyH8GWdR8USUXE08UcX+cohIV1qpZL5Ad1
+         jcdCr5tXXJELrP8fHzjBdknlZXAdpwkOGsTaJtuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [PATCH 5.4 19/98] arm64: pgtable: Fix pte_accessible()
-Date:   Tue,  1 Dec 2020 09:52:56 +0100
-Message-Id: <20201201084655.160489931@linuxfoundation.org>
+Subject: [PATCH 5.4 20/98] arm64: pgtable: Ensure dirty bit is preserved across pte_wrprotect()
+Date:   Tue,  1 Dec 2020 09:52:57 +0100
+Message-Id: <20201201084655.262207086@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
 References: <20201201084652.827177826@linuxfoundation.org>
@@ -46,57 +44,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Will Deacon <will@kernel.org>
 
-commit 07509e10dcc77627f8b6a57381e878fe269958d3 upstream.
+commit ff1712f953e27f0b0718762ec17d0adb15c9fd0b upstream.
 
-pte_accessible() is used by ptep_clear_flush() to figure out whether TLB
-invalidation is necessary when unmapping pages for reclaim. Although our
-implementation is correct according to the architecture, returning true
-only for valid, young ptes in the absence of racing page-table
-modifications, this is in fact flawed due to lazy invalidation of old
-ptes in ptep_clear_flush_young() where we elide the expensive DSB
-instruction for completing the TLB invalidation.
+With hardware dirty bit management, calling pte_wrprotect() on a writable,
+dirty PTE will lose the dirty state and return a read-only, clean entry.
 
-Rather than penalise the aging path, adjust pte_accessible() to return
-true for any valid pte, even if the access flag is cleared.
+Move the logic from ptep_set_wrprotect() into pte_wrprotect() to ensure that
+the dirty bit is preserved for writable entries, as this is required for
+soft-dirty bit management if we enable it in the future.
 
 Cc: <stable@vger.kernel.org>
-Fixes: 76c714be0e5e ("arm64: pgtable: implement pte_accessible()")
-Reported-by: Yu Zhao <yuzhao@google.com>
-Acked-by: Yu Zhao <yuzhao@google.com>
-Reviewed-by: Minchan Kim <minchan@kernel.org>
+Fixes: 2f4b829c625e ("arm64: Add support for hardware updates of the access and dirty pte bits")
 Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Link: https://lore.kernel.org/r/20201120143557.6715-2-will@kernel.org
+Link: https://lore.kernel.org/r/20201120143557.6715-3-will@kernel.org
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/include/asm/pgtable.h |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/pgtable.h |   27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -98,8 +98,6 @@ extern unsigned long empty_zero_page[PAG
- #define pte_valid(pte)		(!!(pte_val(pte) & PTE_VALID))
- #define pte_valid_not_user(pte) \
- 	((pte_val(pte) & (PTE_VALID | PTE_USER)) == PTE_VALID)
--#define pte_valid_young(pte) \
--	((pte_val(pte) & (PTE_VALID | PTE_AF)) == (PTE_VALID | PTE_AF))
- #define pte_valid_user(pte) \
- 	((pte_val(pte) & (PTE_VALID | PTE_USER)) == (PTE_VALID | PTE_USER))
+@@ -136,13 +136,6 @@ static inline pte_t set_pte_bit(pte_t pt
+ 	return pte;
+ }
  
-@@ -107,9 +105,12 @@ extern unsigned long empty_zero_page[PAG
-  * Could the pte be present in the TLB? We must check mm_tlb_flush_pending
-  * so that we don't erroneously return false for pages that have been
-  * remapped as PROT_NONE but are yet to be flushed from the TLB.
-+ * Note that we can't make any assumptions based on the state of the access
-+ * flag, since ptep_clear_flush_young() elides a DSB when invalidating the
-+ * TLB.
-  */
- #define pte_accessible(mm, pte)	\
--	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid_young(pte))
-+	(mm_tlb_flush_pending(mm) ? pte_present(pte) : pte_valid(pte))
+-static inline pte_t pte_wrprotect(pte_t pte)
+-{
+-	pte = clear_pte_bit(pte, __pgprot(PTE_WRITE));
+-	pte = set_pte_bit(pte, __pgprot(PTE_RDONLY));
+-	return pte;
+-}
+-
+ static inline pte_t pte_mkwrite(pte_t pte)
+ {
+ 	pte = set_pte_bit(pte, __pgprot(PTE_WRITE));
+@@ -168,6 +161,20 @@ static inline pte_t pte_mkdirty(pte_t pt
+ 	return pte;
+ }
  
- /*
-  * p??_access_permitted() is true for valid user mappings (subject to the
++static inline pte_t pte_wrprotect(pte_t pte)
++{
++	/*
++	 * If hardware-dirty (PTE_WRITE/DBM bit set and PTE_RDONLY
++	 * clear), set the PTE_DIRTY bit.
++	 */
++	if (pte_hw_dirty(pte))
++		pte = pte_mkdirty(pte);
++
++	pte = clear_pte_bit(pte, __pgprot(PTE_WRITE));
++	pte = set_pte_bit(pte, __pgprot(PTE_RDONLY));
++	return pte;
++}
++
+ static inline pte_t pte_mkold(pte_t pte)
+ {
+ 	return clear_pte_bit(pte, __pgprot(PTE_AF));
+@@ -783,12 +790,6 @@ static inline void ptep_set_wrprotect(st
+ 	pte = READ_ONCE(*ptep);
+ 	do {
+ 		old_pte = pte;
+-		/*
+-		 * If hardware-dirty (PTE_WRITE/DBM bit set and PTE_RDONLY
+-		 * clear), set the PTE_DIRTY bit.
+-		 */
+-		if (pte_hw_dirty(pte))
+-			pte = pte_mkdirty(pte);
+ 		pte = pte_wrprotect(pte);
+ 		pte_val(pte) = cmpxchg_relaxed(&pte_val(*ptep),
+ 					       pte_val(old_pte), pte_val(pte));
 
 
