@@ -2,141 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885742CA87E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9202CA8C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgLAQnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:43:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52028 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726981AbgLAQnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:43:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2CC2AAC2F;
-        Tue,  1 Dec 2020 16:42:29 +0000 (UTC)
-Subject: Re: [PATCH] bcache: fix panic due to cache_set is null
-To:     Yi Li <yilikernel@gmail.com>, Yi Li <yili@winhong.com>
-Cc:     kent.overstreet@gmail.com, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guo Chao <guochao@winhong.com>
-References: <20201130112137.587437-1-yili@winhong.com>
- <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <b838b790-e1e3-d644-2b1c-5de02a10669f@suse.de>
-Date:   Wed, 2 Dec 2020 00:42:25 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        id S2404028AbgLAQu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:50:29 -0500
+Received: from a2.mail.mailgun.net ([198.61.254.61]:39777 "EHLO
+        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390658AbgLAQu2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:50:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606841402; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=J4NInOiSsOXx9djpu9n6TUdGlG96H46ZcKWid9CcFaU=; b=p2g3RSqn1vGGlPbZYyQ8B7jcNSCgaJ1puTV5yFwm3EHjSy/sfPOUjRc0M7LGicLg3oAt8A6Z
+ 1W15ycGINaw9JtQfGo1X/1xn7CUKdj3u+/8JPtYQSc/7JGQ7UmpmAtVibWz3HgyT74/8PUhW
+ YfbJJz9MFXEHUTQBh28IgMUhPPg=
+X-Mailgun-Sending-Ip: 198.61.254.61
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fc672b451762b1886ea4ded (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Dec 2020 16:43:32
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 531DCC43460; Tue,  1 Dec 2020 16:43:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D80AC433ED;
+        Tue,  1 Dec 2020 16:43:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9D80AC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v2] scsi: ufs: Remove pre-defined initial voltage values
+ of device powers
+To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, avri.altman@wdc.com,
+        alim.akhtar@samsung.com, jejb@linux.ibm.com
+Cc:     beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
+        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nguyenb@codeaurora.org, bjorn.andersson@linaro.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com
+References: <20201201065114.1001-1-stanley.chu@mediatek.com>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <1ad24257-70cd-b16a-6ad4-c6705189a0e6@codeaurora.org>
+Date:   Tue, 1 Dec 2020 08:43:27 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <CAJfdMYDnDJXFVfEECtQ9-E4F9kfsF035PH+x3kaVn6PPSYCydA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201201065114.1001-1-stanley.chu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 12:35 PM, Yi Li wrote:
-> sorry, This patch will cause deadlock, i will check and redo it.
-
-Can you try latest upstream kernel firstly ? Before spending more time
-on the fix.
-
-If I remember correctly, when cancel_writeback_rate_update_dwork() is
-not timed out, the cache set memory won't be freed before the
-writeback_rate_update worker terminates. It is possible that I miss
-something in the code, but I suggest to test with a kernel after v5.3,
-and better a v5.8+ kernel.
-
-Coly Li
-
+On 11/30/2020 10:51 PM, Stanley Chu wrote:
+> UFS specficication allows different VCC configurations for UFS devices,
+> for example,
+> 	(1). 2.70V - 3.60V (Activated by default in UFS core driver)
+> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
+>                            device tree)
+> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
 > 
-> On 11/30/20, Yi Li <yili@winhong.com> wrote:
->> bcache_device_detach will release the cache_set after hotunplug cache
->> disk. update_writeback_rate should check validate of cache_set.
->>
->>   IP: [<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
->>   PGD 879620067 PUD 8755d3067 PMD 0
->>   Oops: 0000 [#1] SMP
->>   CPU: 8 PID: 1005702 Comm: kworker/8:0 Tainted: G 4.4.0+10 #1
->>   Hardware name: Intel BIOS SE5C610.86B.01.01.0021.032120170601 03/21/2017
->>   Workqueue: events update_writeback_rate [bcache]
->>   task: ffff8808786f3800 ti: ffff88077082c000 task.ti: ffff88077082c000
->>   RIP: e030:[<ffffffffa03730c9>] update_writeback_rate+0x59/0x3a0 [bcache]
->>   RSP: e02b:ffff88077082fde0  EFLAGS: 00010202
->>   RAX: 0000000000000018 RBX: ffff8808047f0b08 RCX: 0000000000000000
->>   RDX: 0000000000000001 RSI: ffff88088170dab8 RDI: ffff88088170dab8
->>   RBP: ffff88077082fe18 R08: 000000000000000a R09: 0000000000000000
->>   R10: 0000000000000000 R11: 0000000000017bc8 R12: 0000000000000000
->>   R13: ffff8808047f0000 R14: 0000000000000200 R15: ffff8808047f0b08
->>   FS:  00007f157b6d6700(0000) GS:ffff880881700000(0000)
->> knlGS:0000000000000000
->>   CS:  e033 DS: 0000 ES: 0000 CR0: 0000000080050033
->>   CR2: 0000000000000368 CR3: 0000000875c05000 CR4: 0000000000040660
->>   Stack:
->>    0000000000000001 0000000000007ff0 ffff88085ff600c0 ffff880881714e80
->>    ffff880881719500 0000000000000200 ffff8808047f0b08 ffff88077082fe60
->>    ffffffff81088c0c 0000000081714e80 0000000000000000 ffff880881714e80
->>   Call Trace:
->>    [<ffffffff81088c0c>] process_one_work+0x1fc/0x3b0
->>    [<ffffffff81089575>] worker_thread+0x2a5/0x470
->>    [<ffffffff815a2f58>] ? __schedule+0x648/0x870
->>    [<ffffffff810892d0>] ? rescuer_thread+0x300/0x300
->>    [<ffffffff8108e3d5>] kthread+0xd5/0xe0
->>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
->>    [<ffffffff815a704f>] ret_from_fork+0x3f/0x70
->>    [<ffffffff8108e300>] ? kthread_stop+0x110/0x110
->>
->> Reported-by: Guo Chao <guochao@winhong.com>
->> Signed-off-by: Guo Chao <guochao@winhong.com>
->> Signed-off-by: Yi Li <yili@winhong.com>
->> ---
->>  drivers/md/bcache/writeback.c | 12 +++++++++++-
->>  1 file changed, 11 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
->> index 3c74996978da..186c4c6e1607 100644
->> --- a/drivers/md/bcache/writeback.c
->> +++ b/drivers/md/bcache/writeback.c
->> @@ -175,7 +175,15 @@ static void update_writeback_rate(struct work_struct
->> *work)
->>  	struct cached_dev *dc = container_of(to_delayed_work(work),
->>  					     struct cached_dev,
->>  					     writeback_rate_update);
->> -	struct cache_set *c = dc->disk.c;
->> +	struct cache_set *c = NULL;
->> +
->> +	mutex_lock(&bch_register_lock);
->> +	c = dc->disk.c;
->> +
->> +	if (c == NULL) {
->> +		mutex_unlock(&bch_register_lock);
->> +		return;
->> +	}
->>
->>  	/*
->>  	 * should check BCACHE_DEV_RATE_DW_RUNNING before calling
->> @@ -194,6 +202,7 @@ static void update_writeback_rate(struct work_struct
->> *work)
->>  		clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
->>  		/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
->>  		smp_mb__after_atomic();
->> +		mutex_unlock(&bch_register_lock);
->>  		return;
->>  	}
->>
->> @@ -230,6 +239,7 @@ static void update_writeback_rate(struct work_struct
->> *work)
->>  	clear_bit(BCACHE_DEV_RATE_DW_RUNNING, &dc->disk.flags);
->>  	/* paired with where BCACHE_DEV_RATE_DW_RUNNING is tested */
->>  	smp_mb__after_atomic();
->> +	mutex_unlock(&bch_register_lock);
->>  }
->>
->>  static unsigned int writeback_delay(struct cached_dev *dc,
->> --
->> 2.25.3
->>
->>
->>
->>
+> With the introduction of UFS 3.x products, an issue is happening that
+> UFS driver will use wrong "min_uV-max_uV" values to configure the
+> voltage of VCC regulator on UFU 3.x products with the configuration (3)
+> used.
+> 
+> To solve this issue, we simply remove pre-defined initial VCC voltage
+> values in UFS core driver with below reasons,
+> 
+> 1. UFS specifications do not define how to detect the VCC configuration
+>     supported by attached device.
+> 
+> 2. Device tree already supports standard regulator properties.
+> 
+> Therefore VCC voltage shall be defined correctly in device tree, and
+> shall not changed by UFS driver. What UFS driver needs to do is simply
+> enable or disable the VCC regulator only.
+> 
+> Similar change is applied to VCCQ and VCCQ2 as well.
+> 
+> Note that we keep struct ufs_vreg unchanged. This is allow vendors to
+> configure proper min_uV and max_uV of any regulators to make
+> regulator_set_voltage() works during regulator toggling flow.
+> Without specific vendor configurations, min_uV and max_uV will be NULL
+> by default and UFS core driver will enable or disable the regulator
+> only without adjusting its voltage.
+> 
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
 
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+
+>   drivers/scsi/ufs/ufshcd-pltfrm.c | 16 ----------------
+>   1 file changed, 16 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> index a6f76399b3ae..09e2f04bf4f6 100644
+> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> @@ -133,22 +133,6 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+>   		vreg->max_uA = 0;
+>   	}
+>   
+> -	if (!strcmp(name, "vcc")) {
+> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
+> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
+> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
+> -		} else {
+> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+> -		}
+> -	} else if (!strcmp(name, "vccq")) {
+> -		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
+> -		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
+> -	} else if (!strcmp(name, "vccq2")) {
+> -		vreg->min_uV = UFS_VREG_VCCQ2_MIN_UV;
+> -		vreg->max_uV = UFS_VREG_VCCQ2_MAX_UV;
+> -	}
+> -
+>   	goto out;
+>   
+>   out:
+> 
+
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
