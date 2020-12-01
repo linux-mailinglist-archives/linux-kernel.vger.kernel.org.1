@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F732CACED
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C518D2CACF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 21:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404440AbgLAUA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 15:00:58 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:37813 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404423AbgLAUA4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 15:00:56 -0500
-Received: by mail-ej1-f68.google.com with SMTP id f9so6822916ejw.4;
-        Tue, 01 Dec 2020 12:00:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ry+p3Xlkjcxyj00Ax2Z1EhprSHrtPidMwJQr8rkF5ns=;
-        b=khrwjoMHxDxOV4YjYigU0Z9ZGILx1RrjsNU9yNqbq1rnUADt4ePuYnt0T6f6siR2jl
-         oXVBQW8G7ZJDrNLpbcfT4PALXuhW24SY5ZgBk/S5kWqCMZD6qpV1tZNIwRhP3rdTaopd
-         VgN8koL/3XSgj4d+YCUefRjz/Ylqe6i/3Ibg4pFqajB+qVbiUSjZUAVWEobl4JKkPY86
-         TADcot5+d9vOBrk5ISlGX9RPHqt7xWhkshNlRcpAgQFykvolY1D1uW9UTVN1R/1cPWZO
-         Sybk/5hlCK2mVDp8slRZq4xOSDEI2AOvEUZQzS5fXjDJH3VGEs1EVkaoAZl2nEAW5YzO
-         aNfA==
-X-Gm-Message-State: AOAM531GsJtZMUn+SUaXcabBvR/T7KR5rf55KZj93AEoc/kT+5VYBkrG
-        5cY2R1qeur77o0Acc6Llsro=
-X-Google-Smtp-Source: ABdhPJxvhAFpsLjqu/qb302C5p6pab4WLoUi1KWyb0QrYtwTHdVg719GPW0wfOVQiyrhpw5ohvr6gg==
-X-Received: by 2002:a17:906:c289:: with SMTP id r9mr4502048ejz.311.1606852814447;
-        Tue, 01 Dec 2020 12:00:14 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y6sm344321ejl.15.2020.12.01.12.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 12:00:13 -0800 (PST)
-Date:   Tue, 1 Dec 2020 22:00:11 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
-        Marian Mihailescu <mihailescu2m@gmail.com>,
-        Markus Reichl <m.reichl@fivetechno.de>
-Subject: Re: [PATCH] phy: samsung: Fix build break in USB2 PHY driver for
- Exynos5420 SoCs
-Message-ID: <20201201200011.GA2435@kozik-lap>
-References: <CGME20201201170918eucas1p2a34ca6e90ec710400a7a5d7121197d85@eucas1p2.samsung.com>
- <20201201170905.16153-1-m.szyprowski@samsung.com>
+        id S1730537AbgLAUDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 15:03:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726148AbgLAUDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 15:03:51 -0500
+Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A8CF20870;
+        Tue,  1 Dec 2020 20:03:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606852990;
+        bh=R/5sRgPj5z1/r8MnP/GGJtHNIk5Okfj54rbhBybQYYw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wm8LtrmndYrzGaYf94/+DlonpVKgx26OfaHM5v73wfNsCOQcjVEkodC3l2irf6GTt
+         /xu0gsPSCcAg9p8W4Q8qMd6t8rhCEkJZV+mngqny1Xa3SEQ/HodVl9xmcv1W04ZvUr
+         p2iwEij3JSC6fxxR8j2DgtsSSngTvn5Lh+UsBwB0=
+Date:   Tue, 1 Dec 2020 12:03:02 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     Hemant Kumar <hemantk@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bbhatt@codeaurora.org, loic.poulain@linaro.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
+Message-ID: <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
+References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+        <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201201170905.16153-1-m.szyprowski@samsung.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 06:09:05PM +0100, Marek Szyprowski wrote:
-> Exynos5420 variant of USB2 PHY is handled by the same code as the
-> Exynos5250 one. Introducing a separate Kconfig symbol for it was an
-> over-engineering, which turned out to cause build break for certain
-> configurations:
+On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:
+> On 12/1/2020 12:29 PM, Jakub Kicinski wrote:
+> > On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:  
+> >> This patch series adds support for UCI driver. UCI driver enables userspace
+> >> clients to communicate to external MHI devices like modem and WLAN. UCI driver
+> >> probe creates standard character device file nodes for userspace clients to
+> >> perform open, read, write, poll and release file operations. These file
+> >> operations call MHI core layer APIs to perform data transfer using MHI bus
+> >> to communicate with MHI device. Patch is tested using arm64 based platform.  
+> > 
+> > Wait, I thought this was for modems.
+> > 
+> > Why do WLAN devices need to communicate with user space?
+> >   
 > 
-> ERROR: modpost: "exynos5420_usb2_phy_config" [drivers/phy/samsung/phy-exynos-usb2.ko] undefined!
-> 
-> Fix this by removing PHY_EXYNOS5420_USB2 symbol and using
-> PHY_EXYNOS5250_USB2 also for Exynos5420 SoCs.
-> 
-> Reported-by: Markus Reichl <m.reichl@fivetechno.de>
-> Fixes: 81b534f7e9b2 ("phy: samsung: Add support for the Exynos5420 variant of the USB2 PHY")
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
-> Vinod: this a fix to the patch merged yesterday. If you want me to resend
-> a fixed initial patch, let me know.
-> ---
->  drivers/phy/samsung/Kconfig            | 7 +------
->  drivers/phy/samsung/phy-samsung-usb2.c | 2 --
->  2 files changed, 1 insertion(+), 8 deletions(-)
-> 
+> Why does it matter what type of device it is?  Are modems somehow unique 
+> in that they are the only type of device that userspace is allowed to 
+> interact with?
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Yes modems are traditionally highly weird and require some serial
+device dance I don't even know about.
 
-Best regards,
-Krzysztof
+We have proper interfaces in Linux for configuring WiFi which work
+across vendors. Having char device access to WiFi would be a step 
+back.
+
+> However, I'll bite.  Once such usecase would be QMI.  QMI is a generic 
+> messaging protocol, and is not strictly limited to the unique operations 
+> of a modem.
+> 
+> Another usecase would be Sahara - a custom file transfer protocol used 
+> for uploading firmware images, and downloading crashdumps.
+
+Thanks, I was asking for use cases, not which proprietary vendor
+protocol you can implement over it.
+
+None of the use cases you mention here should require a direct FW -
+user space backdoor for WLAN.
+
+> Off the top of my head, this driver is useful for modems, wlan, and AI 
+> accelerators.
+
+And other Qualcomm products are available as well :/
+
+Kernel is supposed to create abstract interfaces for user space to
+utilize. I will never understand why kernel is expected to be in
+business of shipping this sort of vendor backdoors :/
