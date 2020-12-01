@@ -2,155 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC7D2CA8D4
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4492CA8D5
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 17:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390881AbgLAQx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 11:53:58 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:28908 "EHLO pegase1.c-s.fr"
+        id S2390977AbgLAQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 11:54:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728229AbgLAQx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 11:53:58 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Clp7s63DZz9v400;
-        Tue,  1 Dec 2020 17:53:13 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id wq3KDCIGPUsp; Tue,  1 Dec 2020 17:53:13 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Clp7s52ZQz9v3yy;
-        Tue,  1 Dec 2020 17:53:13 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 161398B7BD;
-        Tue,  1 Dec 2020 17:53:15 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 7Dn2a6jQZQ1y; Tue,  1 Dec 2020 17:53:14 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A77558B7B7;
-        Tue,  1 Dec 2020 17:53:08 +0100 (CET)
-Subject: Re: [PATCH v9 2/6] kasan: allow architectures to provide an outline
- readiness check
-To:     Daniel Axtens <dja@axtens.net>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        kasan-dev@googlegroups.com, christophe.leroy@c-s.fr,
-        aneesh.kumar@linux.ibm.com, bsingharora@gmail.com
-Cc:     "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>
-References: <20201201161632.1234753-1-dja@axtens.net>
- <20201201161632.1234753-3-dja@axtens.net>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <bc92b30f-f087-ced6-cf00-a62370eae733@csgroup.eu>
-Date:   Tue, 1 Dec 2020 17:53:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2390913AbgLAQyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 11:54:02 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9499C2076C;
+        Tue,  1 Dec 2020 16:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606841601;
+        bh=TEWdhOtpWAceOHta5XtZgvrih2TxouGP6j2ld6oWDIA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sA7nWhnq1J9mvA2xnC0pCu/QajRgdODor0lroauRGA3A9kzUqOYldlp6VBONWMeGm
+         ZR9QL3ffnTKMI3lUnPfnElSwZvf6uf/cw8M922XOCfc4mKgpnNHNuWjpX3Q3ubiLIe
+         /s5SIXH5Rm/G7CJxDWMcP/Gm0VFcCOXwO28Dq7Zg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 2FCBD35225C2; Tue,  1 Dec 2020 08:53:21 -0800 (PST)
+Date:   Tue, 1 Dec 2020 08:53:21 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+Message-ID: <20201201165321.GG1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <yt9dh7p78d8l.fsf@linux.ibm.com>
+ <yt9dpn3v3u1m.fsf@linux.ibm.com>
+ <20201130125211.GN2414@hirez.programming.kicks-ass.net>
+ <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
+ <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
+ <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
+ <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
+ <20201201110724.GL3092@hirez.programming.kicks-ass.net>
+ <20201201144644.GF1437@paulmck-ThinkPad-P72>
+ <20201201145519.GY2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20201201161632.1234753-3-dja@axtens.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201145519.GY2414@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 01, 2020 at 03:55:19PM +0100, Peter Zijlstra wrote:
+> On Tue, Dec 01, 2020 at 06:46:44AM -0800, Paul E. McKenney wrote:
+> 
+> > > So after having talked to Sven a bit, the thing that is happening, is
+> > > that this is the one place where we take interrupts with RCU being
+> > > disabled. Normally RCU is watching and all is well, except during idle.
+> > 
+> > Isn't interrupt entry supposed to invoke rcu_irq_enter() at some point?
+> > Or did this fall victim to recent optimizations?
+> 
+> It does, but the problem is that s390 is still using
+> trace_hardirqs_off(), which calls into tracing before RCU is enabled.
+> 
+> The entry order between lockdep, rcu and tracing is critical.
+> 
+> You can't call into tracing without RCU running,
+> you can't call into RCU without lockdep setup,
+> you can't call the (old) lockdep setup without landing in tracing.
 
+Whew!  ;-)
 
-Le 01/12/2020 à 17:16, Daniel Axtens a écrit :
-> Allow architectures to define a kasan_arch_is_ready() hook that bails
-> out of any function that's about to touch the shadow unless the arch
-> says that it is ready for the memory to be accessed. This is fairly
-> uninvasive and should have a negligible performance penalty.
-> 
-> This will only work in outline mode, so an arch must specify
-> HAVE_ARCH_NO_KASAN_INLINE if it requires this.
-> 
-> Cc: Balbir Singh <bsingharora@gmail.com>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-
-Did I signed that off one day ? I can't remember.
-
-Please update my email address, and maybe change it to a Suggested-by: ? I think the first 
-Signed-off-by: has to be the author of the patch.
-
-> Signed-off-by: Daniel Axtens <dja@axtens.net>
-> 
-> --
-> 
-> I discuss the justfication for this later in the series. Also,
-> both previous RFCs for ppc64 - by 2 different people - have
-> needed this trick! See:
->   - https://lore.kernel.org/patchwork/patch/592820/ # ppc64 hash series
->   - https://patchwork.ozlabs.org/patch/795211/      # ppc radix series
-> ---
->   include/linux/kasan.h |  4 ++++
->   mm/kasan/common.c     | 10 ++++++++++
->   mm/kasan/generic.c    |  3 +++
->   3 files changed, 17 insertions(+)
-> 
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 30d343b4a40a..3df66fdf6662 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -20,6 +20,10 @@ struct kunit_kasan_expectation {
->   	bool report_found;
->   };
->   
-> +#ifndef kasan_arch_is_ready
-> +static inline bool kasan_arch_is_ready(void)	{ return true; }
-> +#endif
-> +
->   extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
->   extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
->   extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 950fd372a07e..ba7744d3e319 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -117,6 +117,9 @@ void kasan_poison_shadow(const void *address, size_t size, u8 value)
->   {
->   	void *shadow_start, *shadow_end;
->   
-> +	if (!kasan_arch_is_ready())
-> +		return;
-> +
->   	/*
->   	 * Perform shadow offset calculation based on untagged address, as
->   	 * some of the callers (e.g. kasan_poison_object_data) pass tagged
-> @@ -134,6 +137,9 @@ void kasan_unpoison_shadow(const void *address, size_t size)
->   {
->   	u8 tag = get_tag(address);
->   
-> +	if (!kasan_arch_is_ready())
-> +		return;
-> +
->   	/*
->   	 * Perform shadow offset calculation based on untagged address, as
->   	 * some of the callers (e.g. kasan_unpoison_object_data) pass tagged
-> @@ -406,6 +412,10 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
->   	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
->   		return false;
->   
-> +	/* We can't read the shadow byte if the arch isn't ready */
-> +	if (!kasan_arch_is_ready())
-> +		return false;
-> +
->   	shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(object));
->   	if (shadow_invalid(tag, shadow_byte)) {
->   		kasan_report_invalid_free(tagged_object, ip);
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index 248264b9cb76..e87404026b2b 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -169,6 +169,9 @@ static __always_inline bool check_memory_region_inline(unsigned long addr,
->   						size_t size, bool write,
->   						unsigned long ret_ip)
->   {
-> +	if (!kasan_arch_is_ready())
-> +		return true;
-> +
->   	if (unlikely(size == 0))
->   		return true;
->   
-> 
+							Thanx, Paul
