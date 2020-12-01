@@ -2,101 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECED2CA221
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB142CA236
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Dec 2020 13:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728531AbgLAMJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 07:09:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24051 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727813AbgLAMJH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 07:09:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606824460;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PXfc/kqkacP1UiqS7nvKt7QqE8tU45M98d6kX6CKfRY=;
-        b=dGQXU55HFWtwAM1XWDqS48zAdfz+Q9yNytlel86KShSs25y049xBYDVKXn+q/hz5h75Xw9
-        Y0kZBbn7HMPk4K7bojIeLldJPO2ra/DNsCeUdb2wFWsShQCtzKeRRKzd+TnUT0pJmwWYXT
-        1jTtHcNSzJlfNQprsG2EYj4A8glXVtw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-BDSoaGo2PcOHoT5oPOzE-g-1; Tue, 01 Dec 2020 07:07:39 -0500
-X-MC-Unique: BDSoaGo2PcOHoT5oPOzE-g-1
-Received: by mail-ej1-f72.google.com with SMTP id g18so1130185eje.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 04:07:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PXfc/kqkacP1UiqS7nvKt7QqE8tU45M98d6kX6CKfRY=;
-        b=LznGfXWEjegI9BlQoejbgyCMoLYYyxMrhUGQ0MnDFX2Cx6tlJOl/bksr6vshp6+Vdk
-         /upWCkcdKRjvGEUHeMwLwhKpR8qNS6gLpRkf0NpTFRMiJ9zOcgAjc52ootXyds2eiJ7i
-         +3Af72P6WDujJq8X9gj0QppMGyzNlXQQE3yle6KjPKlhfMya6hazXVwFx684plQ/BPvb
-         KGPtjb5ElCLPoKVGJ62cWP4qAgZCPFEs8e22ATW35VZqkH9NOON0UtRE9G6bL2nPxLAK
-         88BowroZgw7MADfbQOfmaHLw7nOBD7i5JBwqZf2penslLuC32TCaL/mB7IS2RGgJ6aXB
-         r/Xg==
-X-Gm-Message-State: AOAM5301wcaEm8sl/P7s663/Ajq9gB+XQv9QfVxekIvJgmN8OvE5TGgt
-        YNfN6d2nJjA3Cb/FmpszoBQ5nfJqU4dx4iItfL7LmVtPBKYsn2nbkmzlU4EDL8qJZ3ksjpJddma
-        RJoAs534eXYcsHGomfIwL8QTh
-X-Received: by 2002:aa7:c403:: with SMTP id j3mr2619818edq.217.1606824457750;
-        Tue, 01 Dec 2020 04:07:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx1DxtyPC6a1zqrYWrdj42DEWp1B5nUpOxzqYzTrKSPNVvFKMo0ahsqcxwarIESgnaxjNMXjQ==
-X-Received: by 2002:aa7:c403:: with SMTP id j3mr2619797edq.217.1606824457604;
-        Tue, 01 Dec 2020 04:07:37 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u19sm750026ejg.16.2020.12.01.04.07.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Dec 2020 04:07:36 -0800 (PST)
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Nikos Tsironis <ntsironis@arrikto.com>
-References: <20201201084647.751612010@linuxfoundation.org>
- <20201201084648.690944071@linuxfoundation.org>
- <d29c4b25-33f6-8d99-7a45-8f4e06f5ade6@redhat.com>
- <X8YThgeaonYhB6zi@kroah.com>
- <fe3fa32b-fc84-9e81-80e0-cb19889fc042@redhat.com>
- <X8YY2qW3RQqzmmBl@kroah.com>
- <d3311713-013b-003c-248b-22ebf1e45c7c@redhat.com>
- <X8YlUlSXLH5/RckV@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 4.19 08/57] KVM: x86: Fix split-irqchip vs interrupt
- injection window request
-Message-ID: <41931e4a-45a5-5ef2-317d-a2a5ae649357@redhat.com>
-Date:   Tue, 1 Dec 2020 13:07:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730850AbgLAMKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 07:10:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730755AbgLAMKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 07:10:37 -0500
+Received: from mail.kernel.org (ip5f5ad5d9.dynamic.kabel-deutschland.de [95.90.213.217])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66E8D221FD;
+        Tue,  1 Dec 2020 12:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606824555;
+        bh=CKU7nFOSsbN/XW/BnFcmO1V7GANr6/4MKPOejaVqscI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eqagvTWutTLcVFzb95Ciee9q0qDa5UFPbM5AAbFexOp5sfH7FAIDQn0oGeWvCXuev
+         TL7qtQMzvXDryh4IscT9uizp2JYQMu8M7zg6S2cpSqSmJfU9hbX12hd/de4h/liUaU
+         ksZGda6OQGzAGoKB9pYow+AqPj198CvdI0OsA+3E=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kk4T2-00DGcs-P1; Tue, 01 Dec 2020 13:09:12 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Ben Segall <bsegall@google.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Mel Gorman <mgorman@suse.de>, Mike Rapoport <rppt@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Gong <richard.gong@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Drewry <wad@chromium.org>, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org
+Subject: [PATCH v5 00/16]Fix several bad kernel-doc markups
+Date:   Tue,  1 Dec 2020 13:08:53 +0100
+Message-Id: <cover.1606823973.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <X8YlUlSXLH5/RckV@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/20 12:13, Greg Kroah-Hartman wrote:
-> If you look at the section onhttps://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> that starts with "Additionally, some patches..." it will show that you
-> can add "#" comments on the cc: stable line to let me know pre-requsite
-> commits if you know them, and want to do that in the future.
+Kernel-doc has always be limited to a probably bad documented
+rule:
 
-Yeah, I guess that one applies even if it was submitted in the same pull 
-request.  I have used it in the past but not for patches that were 
-submitted in the same pull request, so in this case I should have marked 
-patch 2 like this:
+The kernel-doc markups should appear *imediatelly before* the
+function or data structure that it documents.
 
-Cc: stable@vger.kernel.org # 4.4.x: 123456: kvm: patch 1 in the series
-Cc: stable@vger.kernel.org # 4.4.x
+On other words, if a C file would contain something like this:
 
-instead of marking both patches with just "Cc: stable".  Upstream commit 
-fcb3a1ab79904d54499db77017793ccca665eb7e is one case in which Rafael did 
-this.
+	/**
+	 * foo - function foo
+	 * @args: foo args
+	 */
+	static inline void bar(int args);
 
-Paolo
+	/**
+	 * bar - function bar
+	 * @args: foo args
+	 */
+	static inline void foo(void *args);
+
+
+The output (in ReST format) will be:
+
+	.. c:function:: void bar (int args)
+
+	   function foo
+
+	**Parameters**
+
+	``int args``
+	  foo args
+
+
+	.. c:function:: void foo (void *args)
+
+	   function bar
+
+	**Parameters**
+
+	``void *args``
+	  foo args
+
+Which is clearly a wrong result.  Before this changeset, 
+not even a warning is produced on such cases.
+
+As placing such markups just before the documented
+data is a common practice, on most cases this is fine.
+
+However, as patches touch things, identifiers may be
+renamed, and people may forget to update the kernel-doc
+markups to follow such changes.
+
+This has been happening for quite a while, as there are
+lots of files with kernel-doc problems.
+
+This series address those issues and add a file at the
+end that will enforce that the identifier will match the
+kernel-doc markup, avoiding this problem from
+keep happening as time goes by.
+
+This series is based on current upstream tree.
+
+@maintainers: feel free to pick the patches and
+apply them directly on your trees, as all patches on 
+this series are independent from the other ones.
+
+--
+
+v5:
+  - The completion.h patch was replaced by another one which drops
+    an obsolete macro;
+  - Some typos got fixed and review tags got added;
+  - Dropped patches that were already merged at linux-next.
+
+v4:
+
+  - Patches got rebased and got some acks.
+
+Mauro Carvalho Chehab (16):
+  HSI: fix a kernel-doc markup
+  IB: fix kernel-doc markups
+  parport: fix a kernel-doc markup
+  rapidio: fix kernel-doc a markup
+  fs: fix kernel-doc markups
+  pstore/zone: fix a kernel-doc markup
+  completion: drop init_completion define
+  firmware: stratix10-svc: fix kernel-doc markups
+  connector: fix a kernel-doc markup
+  lib/crc7: fix a kernel-doc markup
+  memblock: fix kernel-doc markups
+  w1: fix a kernel-doc markup
+  sched: fix kernel-doc markup
+  selftests: kselftest_harness.h: partially fix kernel-doc markups
+  refcount.h: fix a kernel-doc markup
+  scripts: kernel-doc: validate kernel-doc markup with the actual names
+
+ drivers/hsi/hsi_core.c                        |  2 +-
+ drivers/infiniband/core/cm.c                  |  5 +-
+ drivers/infiniband/core/cq.c                  |  4 +-
+ drivers/infiniband/core/iwpm_util.h           |  2 +-
+ drivers/infiniband/core/sa_query.c            |  3 +-
+ drivers/infiniband/core/verbs.c               |  4 +-
+ drivers/infiniband/sw/rdmavt/ah.c             |  2 +-
+ drivers/infiniband/sw/rdmavt/mcast.c          | 12 ++--
+ drivers/infiniband/sw/rdmavt/qp.c             |  8 +--
+ drivers/infiniband/ulp/iser/iscsi_iser.c      |  2 +-
+ .../infiniband/ulp/opa_vnic/opa_vnic_encap.h  |  2 +-
+ .../ulp/opa_vnic/opa_vnic_vema_iface.c        |  2 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.h         |  2 +-
+ drivers/parport/share.c                       |  2 +-
+ drivers/rapidio/rio.c                         |  2 +-
+ fs/dcache.c                                   | 72 +++++++++----------
+ fs/inode.c                                    |  4 +-
+ fs/pstore/zone.c                              |  2 +-
+ fs/seq_file.c                                 |  5 +-
+ fs/super.c                                    | 12 ++--
+ include/linux/completion.h                    |  5 +-
+ include/linux/connector.h                     |  2 +-
+ .../firmware/intel/stratix10-svc-client.h     | 10 +--
+ include/linux/memblock.h                      |  4 +-
+ include/linux/parport.h                       | 31 ++++++++
+ include/linux/refcount.h                      |  2 +-
+ include/linux/w1.h                            |  2 +-
+ include/rdma/ib_verbs.h                       | 11 +++
+ kernel/sched/core.c                           | 16 ++---
+ kernel/sched/fair.c                           |  2 +-
+ lib/crc7.c                                    |  2 +-
+ scripts/kernel-doc                            | 62 +++++++++++-----
+ tools/testing/selftests/kselftest_harness.h   | 22 +++---
+ 33 files changed, 197 insertions(+), 123 deletions(-)
+
+-- 
+2.28.0
+
 
