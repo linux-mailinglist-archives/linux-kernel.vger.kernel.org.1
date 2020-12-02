@@ -2,123 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492B52CB88B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1F72CB8A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388162AbgLBJTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:19:14 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:42330 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388132AbgLBJTM (ORCPT
+        id S1729209AbgLBJWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:22:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40803 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729107AbgLBJWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:19:12 -0500
-X-UUID: 4be2a8abb52d42e0ac6dff359f83e27b-20201202
-X-UUID: 4be2a8abb52d42e0ac6dff359f83e27b-20201202
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2054784308; Wed, 02 Dec 2020 17:18:28 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 2 Dec 2020 17:18:19 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 2 Dec 2020 17:18:19 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v3] scsi: ufs: Remove pre-defined initial voltage values of device powers
-Date:   Wed, 2 Dec 2020 17:18:19 +0800
-Message-ID: <20201202091819.22363-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 2 Dec 2020 04:22:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606900841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sQQdBNNqgVntbNPasbENMCveCDK2DYJNqimJozaTDkQ=;
+        b=W1jx7M5pFW9zxHs9TTQSEdOPHpgq7w6waR/cYvR7NUdnrGnZzpIqYKTILju2HsCt3P4HKg
+        fTgZPOGcAjny1EbCoXGciNRZiEo8tUcN+Ma9pkh762jhrJLnMhpu+QzbqkLsBd5YI2dHZF
+        nSW0fHQVePW8mIDuKgxEDZbNFaMJ90Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-J1BxoSlzNnGLzDY8zAafEg-1; Wed, 02 Dec 2020 04:20:39 -0500
+X-MC-Unique: J1BxoSlzNnGLzDY8zAafEg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C79CA858190;
+        Wed,  2 Dec 2020 09:20:37 +0000 (UTC)
+Received: from [10.36.113.108] (ovpn-113-108.ams2.redhat.com [10.36.113.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7476D19C47;
+        Wed,  2 Dec 2020 09:20:36 +0000 (UTC)
+Subject: Re: [RFC V2 1/3] mm/hotplug: Prevalidate the address range being
+ added with platform
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
+ <1606706992-26656-2-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <864c701a-4391-f768-1b95-1992e21835a2@redhat.com>
+Date:   Wed, 2 Dec 2020 10:20:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <1606706992-26656-2-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UFS specficication allows different VCC configurations for UFS devices,
-for example,
-	(1). 2.70V - 3.60V (Activated by default in UFS core driver)
-	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
-                          device tree)
-	(3). 2.40V - 2.70V (Supported since UFS 3.x)
+On 30.11.20 04:29, Anshuman Khandual wrote:
+> This introduces memhp_range_allowed() which can be called in various memory
+> hotplug paths to prevalidate the address range which is being added, with
+> the platform. Then memhp_range_allowed() calls memhp_get_pluggable_range()
+> which provides applicable address range depending on whether linear mapping
+> is required or not. For ranges that require linear mapping, it calls a new
+> arch callback arch_get_mappable_range() which the platform can override. So
+> the new callback, in turn provides the platform an opportunity to configure
+> acceptable memory hotplug address ranges in case there are constraints.
+> 
+> This mechanism will help prevent platform specific errors deep down during
+> hotplug calls. This drops now redundant check_hotplug_memory_addressable()
+> check in __add_pages().
+> 
 
-With the introduction of UFS 3.x products, an issue is happening that
-UFS driver will use wrong "min_uV-max_uV" values to configure the
-voltage of VCC regulator on UFU 3.x products with the configuration (3)
-used.
 
-To solve this issue, we simply remove pre-defined initial VCC voltage
-values in UFS core driver with below reasons,
+[...]
 
-1. UFS specifications do not define how to detect the VCC configuration
-   supported by attached device.
+>  /*
+>   * Reasonably generic function for adding memory.  It is
+>   * expected that archs that support memory hotplug will
+> @@ -317,10 +304,6 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
+>  	if (WARN_ON_ONCE(!params->pgprot.pgprot))
+>  		return -EINVAL;
+>  
+> -	err = check_hotplug_memory_addressable(pfn, nr_pages);
+> -	if (err)
+> -		return err;
+> -
 
-2. Device tree already supports standard regulator properties.
+I was wondering if we should add a VM_BUG_ON(!memhp_range_allowed())
+here to make it clearer that callers are expected to check that first.
+Maybe an other places as well (e.g., arch code where we remove the
+original checks)
 
-Therefore VCC voltage shall be defined correctly in device tree, and
-shall not changed by UFS driver. What UFS driver needs to do is simply
-enable or disable the VCC regulator only.
+[...]
 
-Similar change is applied to VCCQ and VCCQ2 as well.
 
-Note that we keep struct ufs_vreg unchanged. This allows vendors to
-configure proper min_uV and max_uV of any regulators to make
-regulator_set_voltage() works during regulator toggling flow in the
-future. Without specific vendor configurations, min_uV and max_uV will
-be NULL by default and UFS core driver will enable or disable the
-regulator only without adjusting its voltage.
+>  #endif /* CONFIG_MEMORY_HOTREMOVE */
+> diff --git a/mm/memremap.c b/mm/memremap.c
+> index 16b2fb482da1..26c1825756cc 100644
+> --- a/mm/memremap.c
+> +++ b/mm/memremap.c
+> @@ -185,6 +185,7 @@ static void dev_pagemap_percpu_release(struct percpu_ref *ref)
+>  static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>  		int range_id, int nid)
+>  {
+> +	const bool is_private = pgmap->type == MEMORY_DEVICE_PRIVATE;
+>  	struct range *range = &pgmap->ranges[range_id];
+>  	struct dev_pagemap *conflict_pgmap;
+>  	int error, is_ram;
+> @@ -230,6 +231,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>  	if (error)
+>  		goto err_pfn_remap;
+>  
+> +	if (!memhp_range_allowed(range->start, range_len(range), !is_private))
+> +		goto err_pfn_remap;
+> +
+>  	mem_hotplug_begin();
+>  
+>  	/*
+> @@ -243,7 +247,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+>  	 * the CPU, we do want the linear mapping and thus use
+>  	 * arch_add_memory().
+>  	 */
+> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
+> +	if (is_private) {
+>  		error = add_pages(nid, PHYS_PFN(range->start),
+>  				PHYS_PFN(range_len(range)), params);
+>  	} else {
+> 
 
-Acked-by: Avri Altman <avri.altman@wdc.com>
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd-pltfrm.c | 19 -------------------
- 1 file changed, 19 deletions(-)
+In general, LGTM.
 
-diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-index 0619cfbfbdbb..1a69949a4ea1 100644
---- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-+++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-@@ -134,25 +134,6 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
- 		dev_info(dev, "%s: unable to find %s\n", __func__, prop_name);
- 		vreg->max_uA = 0;
- 	}
--
--	if (!strcmp(name, "vcc")) {
--		if (of_property_read_bool(np, "vcc-supply-1p8")) {
--			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
--			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
--		} else {
--			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
--			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
--		}
--	} else if (!strcmp(name, "vccq")) {
--		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
--		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
--	} else if (!strcmp(name, "vccq2")) {
--		vreg->min_uV = UFS_VREG_VCCQ2_MIN_UV;
--		vreg->max_uV = UFS_VREG_VCCQ2_MAX_UV;
--	}
--
--	goto out;
--
- out:
- 	if (!ret)
- 		*out_vreg = vreg;
 -- 
-2.18.0
+Thanks,
+
+David / dhildenb
 
