@@ -2,622 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC10A2CC85C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4652CC85F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgLBUyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727395AbgLBUyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:54:20 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E37AC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:53:40 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id 4so1807646plk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:53:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AKSmXXeXFeN7ejezYL0YjI+uHvyPOnE8Nf7p/BnjGqs=;
-        b=XFsLWCjJIexscquJ+fOSYzEVcRB6+7qS998YoIldxjugTzQtruw9ARO1brlWIz/SkI
-         KplF6E9wuntYGLJ+M2che0crlU8L+/jHMJzkCxOKDQnmmRpYngc+lDYgOyz+u9e6TcLG
-         f7M2Eq31I+J4kkqqVRU6VU080z7E7iNEZXy6kxnTSYfn6Nt9uf+V+AaMjQ/iFjTFY7Bo
-         8YXqqtae1fgXqH8mgfw/xc/dlzksjSsePAJlknjKi2znZbuDFE6DgZTJAHZIarM9jSyv
-         T/7PjkXSmLFYcjKy69SqjDw7HjHAu8rp5e4cF0fDA6PNR5cN3e3qMMgKWJn9BZWpi5UX
-         aPTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AKSmXXeXFeN7ejezYL0YjI+uHvyPOnE8Nf7p/BnjGqs=;
-        b=t5AXLzkNv4Bvm/GWqw0OxsiSEqORi9Krk9pGaWhElFd3Zx+1f+Usw6FklxV+LuEt6+
-         cysYr9C7JLPBMjVLY5VltbHr+fHDNgJTyQ7aV4Byb4b0T4Tx/njTAebTJWgNOnwYrho8
-         Pg4s6Ndh6MxYomF4A1Bzz3lpoTLlbq2hqZbwGxi5uu0FDuNOz4dFaVJ2Sr0e7BSzngNo
-         sbdIC9EzZOKRv6hS1/wWILpMVmmUl0SXhGu89FrKnJr126PeWyETgTd3dYR2JdkT+ctm
-         f7TyU0sTkIBaqzoaZXYnR79b45m2lZnNvwyO2MJZXFhxQnqChNSuJEQtsP/rfMgaX2be
-         scbA==
-X-Gm-Message-State: AOAM530sIC6AvM+DyWMkewK7nCET41yqzN7THxWH5Hi7yShekSc+TpRh
-        ydfHzzjIScbZ2MFPXCCEm9fVHg==
-X-Google-Smtp-Source: ABdhPJziK229vr5c64qgMgRSiozOspC+doTGHC3ferf5FlchHu9fDyhKdXx8njXRc6EAk2yEm5tevg==
-X-Received: by 2002:a17:90a:cce:: with SMTP id 14mr1567788pjt.163.1606942419370;
-        Wed, 02 Dec 2020 12:53:39 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id m4sm622489pfd.203.2020.12.02.12.53.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 12:53:38 -0800 (PST)
-Date:   Wed, 2 Dec 2020 13:53:36 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, s-anna@ti.com,
-        linux-remoteproc@vger.kernel.org, robh+dt@kernel.org,
-        lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, praneeth@ti.com,
-        rogerq@ti.com
-Subject: Re: [PATCH v2 2/6] remoteproc/pru: Add a PRU remoteproc driver
-Message-ID: <20201202205336.GD1282360@xps15>
-References: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org>
- <20201119140850.12268-3-grzegorz.jaszczyk@linaro.org>
- <20201201225436.GB1240310@xps15>
+        id S1729969AbgLBUyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:54:39 -0500
+Received: from mga03.intel.com ([134.134.136.65]:7542 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726162AbgLBUyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:54:38 -0500
+IronPort-SDR: rAnQ5v3upY41eV4ZVtN3O+cL7KOa/QmMQW6uQ0zZde3eIzDYLHsWl9bMVm9RHhKJGNLLB9jhMR
+ QEzYvQtM2vvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173183934"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="173183934"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 12:53:56 -0800
+IronPort-SDR: qxmx6vrOOkruWtoLpYUVEHwb6fk3GqnGUc3X3GEkVfhBWehmstgMYrXRW6o6pOQ91grVivoLNC
+ LFOUHnjIGXuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="361559032"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga008.jf.intel.com with ESMTP; 02 Dec 2020 12:53:56 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 2 Dec 2020 12:53:56 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 2 Dec 2020 12:53:56 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 2 Dec 2020 12:53:55 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BONS4yYoVC/0EsJ5oWL9uhby3I60Z++fWdH1+iTT+R1lKiLxsdnA97MZcsYvt0FMvj8UXuT8SSaokI3jVOe7EHKAhI7E0FRLCpZgeU9NlflwNvKy4mdkPfpXG/y5U+Qdowtb35iAgLoIeEZQ90FxTojak0KEaJSr8kCkWqDzln0FcF4iUMieXXPP2X9303/d7sIZNBdC8EQeQ635w62F34zJPayQNG7t/tevRBtKNk5I11q6b6mTDQfDpSzMQJDYFilDBfH+EvxsOfLoD7kKGQeK1cR/GF9LsOCl2bZf8amiqZlplW5f4i4A5hyhQF5yjyKlNSzTTEynHQSJjF43wQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YVH3AHuNFg6LKYIEZxMFz83L43w5BBX8SG7mvWp49a4=;
+ b=ZjUQsqUA47Ym7YEZcqNOXTXyXl1pxphHfEr4vQgZ3lLVZ22IHwnfJwIcBXJw0Y4KWiYEqsmDyrax99/4VnXayuHCx4SOYHS8otETK7hpXKNINDY+JOKYZS1EIPSpmySSWMs8esU+kfhaIGOxjCeLsp0d74Sf+o2/KLencfT0Vlz6yVJmETvzTpu4h2m9cGoeZYjNxuVxlPX5tevfJ3bX5FDbUCjLYgdPqWbJWW8q+G5NsAalaJ7m0Pe6x6ywp3kAcu48bsOIiV7Jo9Azf6ifPOjD/1ar46fESxnbwmoZlv1Yw6kKeGaVRjMzpZaTJpk677wRmPFEQ/Pb6F8yePvzRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YVH3AHuNFg6LKYIEZxMFz83L43w5BBX8SG7mvWp49a4=;
+ b=eyf4pGQYmtoYSbUGuXEQOWYkFOEVRvaHRGPC1ibxuxDhuHLGbNB6g6/BSkNFRijIjvkGHinH5Ci7lwbOGpGJn/KdnYD/sf40P/BlBLZc0bsfg2jNwgdbQ1yuAhE9yHjw02SDeurW4IbYK1XVg1r0iAj6e4zrW1gpko51xkC0D0U=
+Received: from BN6PR1101MB2243.namprd11.prod.outlook.com
+ (2603:10b6:405:50::16) by BN7PR11MB2723.namprd11.prod.outlook.com
+ (2603:10b6:406:b9::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Wed, 2 Dec
+ 2020 20:53:54 +0000
+Received: from BN6PR1101MB2243.namprd11.prod.outlook.com
+ ([fe80::bcaa:2da8:af5e:4b51]) by BN6PR1101MB2243.namprd11.prod.outlook.com
+ ([fe80::bcaa:2da8:af5e:4b51%11]) with mapi id 15.20.3611.031; Wed, 2 Dec 2020
+ 20:53:54 +0000
+From:   "Kelley, Sean V" <sean.v.kelley@intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "xerces.zhao@gmail.com" <xerces.zhao@gmail.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
+        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 10/15] PCI/ERR: Limit AER resets in pcie_do_recovery()
+Thread-Topic: [PATCH v12 10/15] PCI/ERR: Limit AER resets in
+ pcie_do_recovery()
+Thread-Index: AQHWv5rIZhXHzDUE4UiIgzOenVpmfKnWYYcAgAAIFgCAASKhAIAJmc2AgABLoQCAAumagA==
+Date:   Wed, 2 Dec 2020 20:53:54 +0000
+Message-ID: <56F6F057-83B5-4CC0-AF32-E548FBAAD25D@intel.com>
+References: <20201201002516.GA1130192@bjorn-Precision-5520>
+In-Reply-To: <20201201002516.GA1130192@bjorn-Precision-5520>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.20.0.2.21)
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [24.20.148.49]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c2c74ff7-eec5-4135-3548-08d897046186
+x-ms-traffictypediagnostic: BN7PR11MB2723:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN7PR11MB2723D43B7A2D59C2993EF128B2F30@BN7PR11MB2723.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: I4z2HxwKGz71pyC3sCJV8f6qKqelzpBO/RBfvrWSRID93S8baOtN8hbq5pn30qVXAT5YQM1ZWvEC+HzF+zN9DhnY1d2T7brpseE8JH3fjLx2Z+kbHH/sxZcov7HsE9i87BzAtCMfV4LCb42x5OQJwVDPZIqvCZPpVfiYslPSp+U8BMeHpKKYMMpMRcbQnv9gN9yFuD1ajDN/DSFAydy2ok+4gWeK38vhJBpQyj4+oA6u1CuBqH6AdLJRZ59x01caVXv/tvTSKnJh0Ms6gc+NSOHsX9VWD7g30oQko0jOBary/mhKRdBJed3/CHTz5wQZlb/XsQ43QTmoDuAmJbEl4spDnipH30+QG8dshosh/1FV6qrjl/Iv1RsipKYc+vNyQapBgQsbRKzYE0KP+ccUesPeuXWKi8y1GznMoPQe9TR7evidhMqjQJbexQ4P855ZeIAy5JnfdvaYkqE0iq4JuQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR1101MB2243.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(376002)(346002)(39860400002)(8936002)(8676002)(26005)(6916009)(186003)(2616005)(6506007)(53546011)(30864003)(6512007)(6486002)(83380400001)(71200400001)(91956017)(2906002)(33656002)(86362001)(54906003)(316002)(4326008)(76116006)(478600001)(966005)(5660300002)(36756003)(64756008)(66946007)(66556008)(66446008)(66476007)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?aHliaFJiMTBzcm85MTk2WUU2bm53VVd4bEthMlgzZ2RYMjh0YlBUd2d6MFJr?=
+ =?utf-8?B?bDJlaWhsZ2k0MlhubDBhUlg2TXphK0dMdjdhZ2lJWDR5Rmk2VEZ2VjRnQ0RQ?=
+ =?utf-8?B?RER0Uk14bE5WQmlMK1RhU3BhcmVUWXp4bnFKaCszbGllNjZqYWlSZFMwWVlF?=
+ =?utf-8?B?TWpkYlpXeGlUai91TlZINGNWa2YxQ3hJb3hoaU9oT1lyVnAwb0VUQ3FlS2Vs?=
+ =?utf-8?B?UGVJSU1pWG9CcGZ3QTIzM2xTTFRTcHRyWUtLUUN3S1d4Y2w0SnZkbjdKdzVM?=
+ =?utf-8?B?V0JOQk1WZnhCdTlTY0U1MGJ5aWFlOXJCaXdyRkNtUk9mZHhXSWRZcFpaUnQz?=
+ =?utf-8?B?V00vdW9PaG9TOHFQZ3pLVnlRS0tWeWlVZkRhR0FNQnFQeitzNlBsbEhSeXNm?=
+ =?utf-8?B?Y1NsU0pheWZlbWZMcHZaSUZlaHQvT0ovRFN5UFJDUlVEZU5HbmhuMnpDS1N5?=
+ =?utf-8?B?Vjgvc0hZbjZnbEp5MTFSWjNkdnRoY1hMM3dLQjNNQUtJQ0NRUHJiMU9JQ1Ba?=
+ =?utf-8?B?QlNlbXZHZEErMXVqT0cwSUhYNEdOeGtjVGsxZTBZaHBtZmF4SlYvNnE0VG90?=
+ =?utf-8?B?Qm1vRzBZYUhtVnFVUTBpUkV2NlQyV2RsQllrcENBMnRTazVSbExsRmpCeExQ?=
+ =?utf-8?B?THhpWnFRUDdrcTJQMVUwdWc1aXFjdlhQUmZRMFRqVjMybUtUaEYzbElyWERr?=
+ =?utf-8?B?ZzlpSEw0WVluckRJbzdzTGhhdHdLSkc4MUU0Vys0U09iUlo2Q0hYVGRpVnh3?=
+ =?utf-8?B?U2ZlQ1pKS0xUbGJmNnFGTk5yN0hvelhLaDl2cDdYT0tmLzBWcUs0SnEwam1u?=
+ =?utf-8?B?emZNa2piUXVBbGJtOGxsWCtOdmFnS05LSlRETjFNaDduSC9pUEhZUktGVnFC?=
+ =?utf-8?B?eUtQSGNOeXdpT2Jzbk8xaWYxeSs5cUNzVTZSSmZVNmR5TzcycHVSTi9XRDh1?=
+ =?utf-8?B?enZna1hYZEJXeHF2MlNlYXJnN1ZUOXRqMmRHNmdQNEtVdkdVVHlFYVpmVFBs?=
+ =?utf-8?B?eC9CVVk0dUkvL0JQQ1B5TEMzSGdUaDFXTmJNODhnVjRaNFh0dHN5azZoa3Fq?=
+ =?utf-8?B?b01oRGp3RTF0YW03U3VBMnF2WTcvWFFWZENheWlNWlVqTEYwVERVdkxWdWQ3?=
+ =?utf-8?B?VHhLS0FVUktUMSswd0pYN1Z0TmcrUFQxM1hveERsUUJBc2tkNDVTWFVVZ1Q1?=
+ =?utf-8?B?eHBIRU9ZdnFGTXNvcGNORituVk5SRkFPVFB1Wk9KS2hna09BUHlCWTh5VDh0?=
+ =?utf-8?B?S1V1UHIvMzl1YU5OYWlTSHVNMmVWYmdXcFcxT1dJMjRhbVFyTmhTd0pQbE0r?=
+ =?utf-8?Q?eEJ6vxc7ubhKlhnWXnaQ9Gi7faVYqFC2fX?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <84C0E0A20108AE4082651F4543B8808E@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201225436.GB1240310@xps15>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR1101MB2243.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2c74ff7-eec5-4135-3548-08d897046186
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2020 20:53:54.2604
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EzjPNnjlinjBNFTgdsFtk4e4Zmg9sDm9lVYBwC1l0mOHVaobG6lw4QV6WSg/XH9ZzawKGVRIuWey+5UzAVYNng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR11MB2723
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 03:54:36PM -0700, Mathieu Poirier wrote:
-> Hi Grzeg,
-> 
-> I have started to review this set - comments will come over the next few days.
-> 
-> See below for a start. 
-> 
-> On Thu, Nov 19, 2020 at 03:08:46PM +0100, Grzegorz Jaszczyk wrote:
-> > From: Suman Anna <s-anna@ti.com>
-> > 
-> > The Programmable Real-Time Unit Subsystem (PRUSS) consists of
-> > dual 32-bit RISC cores (Programmable Real-Time Units, or PRUs)
-> > for program execution. This patch adds a remoteproc platform
-> > driver for managing the individual PRU RISC cores life cycle.
-> > 
-> > The PRUs do not have a unified address space (have an Instruction
-> > RAM and a primary Data RAM at both 0x0). The PRU remoteproc driver
-> > therefore uses a custom remoteproc core ELF loader ops. The added
-> > .da_to_va ops is only used to provide translations for the PRU
-> > Data RAMs. This remoteproc driver does not have support for error
-> > recovery and system suspend/resume features. Different compatibles
-> > are used to allow providing scalability for instance-specific device
-> > data if needed. The driver uses a default firmware-name retrieved
-> > from device-tree for each PRU core, and the firmwares are expected
-> > to be present in the standard Linux firmware search paths. They can
-> > also be adjusted by userspace if required through the sysfs interface
-> > provided by the remoteproc core.
-> > 
-> > The PRU remoteproc driver uses a client-driven boot methodology: it
-> > does _not_ support auto-boot so that the PRU load and boot is dictated
-> > by the corresponding client drivers for achieving various usecases.
-> > This allows flexibility for the client drivers or applications to set
-> > a firmware name (if needed) based on their desired functionality and
-> > boot the PRU. The sysfs bind and unbind attributes have also been
-> > suppressed so that the PRU devices cannot be unbound and thereby
-> > shutdown a PRU from underneath a PRU client driver.
-> > 
-> > The driver currently supports the AM335x, AM437x, AM57xx and 66AK2G
-> > SoCs, and support for other TI SoCs will be added in subsequent
-> > patches.
-> > 
-> > Co-developed-by: Andrew F. Davis <afd@ti.com>
-> > Signed-off-by: Andrew F. Davis <afd@ti.com>
-> > Signed-off-by: Suman Anna <s-anna@ti.com>
-> > Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > ---
-> > v1->v2:
-> > - Use PRU_IRAM_ADDR_MASK definition instead of raw 0x3ffff.
-> > - Convert 'len' argument from int to size_t type in all *da_to_va.
-> > - Return 0 in case of missing .resource_table for pru_rproc_parse_fw()
-> >   (move the logic from patch #3 where it was corrected).
-> > ---
-> >  drivers/remoteproc/Kconfig     |  12 +
-> >  drivers/remoteproc/Makefile    |   1 +
-> >  drivers/remoteproc/pru_rproc.c | 435 +++++++++++++++++++++++++++++++++
-> >  3 files changed, 448 insertions(+)
-> >  create mode 100644 drivers/remoteproc/pru_rproc.c
-> > 
-> > diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-> > index d99548fb5dde..3e3865a7cd78 100644
-> > --- a/drivers/remoteproc/Kconfig
-> > +++ b/drivers/remoteproc/Kconfig
-> > @@ -125,6 +125,18 @@ config KEYSTONE_REMOTEPROC
-> >  	  It's safe to say N here if you're not interested in the Keystone
-> >  	  DSPs or just want to use a bare minimum kernel.
-> >  
-> > +config PRU_REMOTEPROC
-> > +	tristate "TI PRU remoteproc support"
-> > +	depends on TI_PRUSS
-> > +	default TI_PRUSS
-> > +	help
-> > +	  Support for TI PRU remote processors present within a PRU-ICSS
-> > +	  subsystem via the remote processor framework.
-> > +
-> > +	  Say Y or M here to support the Programmable Realtime Unit (PRU)
-> > +	  processors on various TI SoCs. It's safe to say N here if you're
-> > +	  not interested in the PRU or if you are unsure.
-> > +
-> >  config QCOM_PIL_INFO
-> >  	tristate
-> >  
-> > diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-> > index da2ace4ec86c..bb26c9e4ef9c 100644
-> > --- a/drivers/remoteproc/Makefile
-> > +++ b/drivers/remoteproc/Makefile
-> > @@ -18,6 +18,7 @@ obj-$(CONFIG_OMAP_REMOTEPROC)		+= omap_remoteproc.o
-> >  obj-$(CONFIG_WKUP_M3_RPROC)		+= wkup_m3_rproc.o
-> >  obj-$(CONFIG_DA8XX_REMOTEPROC)		+= da8xx_remoteproc.o
-> >  obj-$(CONFIG_KEYSTONE_REMOTEPROC)	+= keystone_remoteproc.o
-> > +obj-$(CONFIG_PRU_REMOTEPROC)		+= pru_rproc.o
-> >  obj-$(CONFIG_QCOM_PIL_INFO)		+= qcom_pil_info.o
-> >  obj-$(CONFIG_QCOM_RPROC_COMMON)		+= qcom_common.o
-> >  obj-$(CONFIG_QCOM_Q6V5_COMMON)		+= qcom_q6v5.o
-> > diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-> > new file mode 100644
-> > index 000000000000..b686f19f9b1a
-> > --- /dev/null
-> > +++ b/drivers/remoteproc/pru_rproc.c
-> > @@ -0,0 +1,435 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * PRU-ICSS remoteproc driver for various TI SoCs
-> > + *
-> > + * Copyright (C) 2014-2020 Texas Instruments Incorporated - https://www.ti.com/
-> > + *
-> > + * Author(s):
-> > + *	Suman Anna <s-anna@ti.com>
-> > + *	Andrew F. Davis <afd@ti.com>
-> > + *	Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org> for Texas Instruments
-> > + */
-> > +
-> > +#include <linux/bitops.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of_device.h>
-> > +#include <linux/pruss_driver.h>
-> > +#include <linux/remoteproc.h>
-> > +
-> > +#include "remoteproc_internal.h"
-> > +#include "remoteproc_elf_helpers.h"
-> > +
-> > +/* PRU_ICSS_PRU_CTRL registers */
-> > +#define PRU_CTRL_CTRL		0x0000
-> > +#define PRU_CTRL_STS		0x0004
-> > +
-> > +/* CTRL register bit-fields */
-> > +#define CTRL_CTRL_SOFT_RST_N	BIT(0)
-> > +#define CTRL_CTRL_EN		BIT(1)
-> > +#define CTRL_CTRL_SLEEPING	BIT(2)
-> > +#define CTRL_CTRL_CTR_EN	BIT(3)
-> > +#define CTRL_CTRL_SINGLE_STEP	BIT(8)
-> > +#define CTRL_CTRL_RUNSTATE	BIT(15)
-> > +
-> > +/* PRU Core IRAM address masks */
-> > +#define PRU_IRAM_ADDR_MASK	0x3ffff
-> > +#define PRU0_IRAM_ADDR_MASK	0x34000
-> > +#define PRU1_IRAM_ADDR_MASK	0x38000
-> > +
-> > +/* PRU device addresses for various type of PRU RAMs */
-> > +#define PRU_IRAM_DA	0	/* Instruction RAM */
-> > +#define PRU_PDRAM_DA	0	/* Primary Data RAM */
-> > +#define PRU_SDRAM_DA	0x2000	/* Secondary Data RAM */
-> > +#define PRU_SHRDRAM_DA	0x10000 /* Shared Data RAM */
-> > +
-> > +/**
-> > + * enum pru_iomem - PRU core memory/register range identifiers
-> > + *
-> > + * @PRU_IOMEM_IRAM: PRU Instruction RAM range
-> > + * @PRU_IOMEM_CTRL: PRU Control register range
-> > + * @PRU_IOMEM_DEBUG: PRU Debug register range
-> > + * @PRU_IOMEM_MAX: just keep this one at the end
-> > + */
-> > +enum pru_iomem {
-> > +	PRU_IOMEM_IRAM = 0,
-> > +	PRU_IOMEM_CTRL,
-> > +	PRU_IOMEM_DEBUG,
-> > +	PRU_IOMEM_MAX,
-> > +};
-> > +
-> > +/**
-> > + * struct pru_rproc - PRU remoteproc structure
-> > + * @id: id of the PRU core within the PRUSS
-> > + * @dev: PRU core device pointer
-> > + * @pruss: back-reference to parent PRUSS structure
-> > + * @rproc: remoteproc pointer for this PRU core
-> > + * @mem_regions: data for each of the PRU memory regions
-> > + * @fw_name: name of firmware image used during loading
-> > + */
-> > +struct pru_rproc {
-> > +	int id;
-> > +	struct device *dev;
-> > +	struct pruss *pruss;
-> > +	struct rproc *rproc;
-> > +	struct pruss_mem_region mem_regions[PRU_IOMEM_MAX];
-> > +	const char *fw_name;
-> > +};
-> > +
-> > +static inline u32 pru_control_read_reg(struct pru_rproc *pru, unsigned int reg)
-> > +{
-> > +	return readl_relaxed(pru->mem_regions[PRU_IOMEM_CTRL].va + reg);
-> > +}
-> > +
-> > +static inline
-> > +void pru_control_write_reg(struct pru_rproc *pru, unsigned int reg, u32 val)
-> > +{
-> > +	writel_relaxed(val, pru->mem_regions[PRU_IOMEM_CTRL].va + reg);
-> > +}
-> > +
-> > +static int pru_rproc_start(struct rproc *rproc)
-> > +{
-> > +	struct device *dev = &rproc->dev;
-> > +	struct pru_rproc *pru = rproc->priv;
-> > +	u32 val;
-> > +
-> > +	dev_dbg(dev, "starting PRU%d: entry-point = 0x%llx\n",
-> > +		pru->id, (rproc->bootaddr >> 2));
-> > +
-> > +	val = CTRL_CTRL_EN | ((rproc->bootaddr >> 2) << 16);
-> > +	pru_control_write_reg(pru, PRU_CTRL_CTRL, val);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int pru_rproc_stop(struct rproc *rproc)
-> > +{
-> > +	struct device *dev = &rproc->dev;
-> > +	struct pru_rproc *pru = rproc->priv;
-> > +	u32 val;
-> > +
-> > +	dev_dbg(dev, "stopping PRU%d\n", pru->id);
-> > +
-> > +	val = pru_control_read_reg(pru, PRU_CTRL_CTRL);
-> > +	val &= ~CTRL_CTRL_EN;
-> > +	pru_control_write_reg(pru, PRU_CTRL_CTRL, val);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/*
-> > + * Convert PRU device address (data spaces only) to kernel virtual address.
-> > + *
-> > + * Each PRU has access to all data memories within the PRUSS, accessible at
-> > + * different ranges. So, look through both its primary and secondary Data
-> > + * RAMs as well as any shared Data RAM to convert a PRU device address to
-> > + * kernel virtual address. Data RAM0 is primary Data RAM for PRU0 and Data
-> > + * RAM1 is primary Data RAM for PRU1.
-> > + */
-> > +static void *pru_d_da_to_va(struct pru_rproc *pru, u32 da, size_t len)
-> > +{
-> > +	struct pruss_mem_region dram0, dram1, shrd_ram;
-> > +	struct pruss *pruss = pru->pruss;
-> > +	u32 offset;
-> > +	void *va = NULL;
-> > +
-> > +	if (len == 0)
-> > +		return NULL;
-> > +
-> > +	dram0 = pruss->mem_regions[PRUSS_MEM_DRAM0];
-> > +	dram1 = pruss->mem_regions[PRUSS_MEM_DRAM1];
-> > +	/* PRU1 has its local RAM addresses reversed */
-> > +	if (pru->id == 1)
-> > +		swap(dram0, dram1);
-> > +	shrd_ram = pruss->mem_regions[PRUSS_MEM_SHRD_RAM2];
-> > +
-> > +	if (da >= PRU_PDRAM_DA && da + len <= PRU_PDRAM_DA + dram0.size) {
-> > +		offset = da - PRU_PDRAM_DA;
-> > +		va = (__force void *)(dram0.va + offset);
-> > +	} else if (da >= PRU_SDRAM_DA &&
-> > +		   da + len <= PRU_SDRAM_DA + dram1.size) {
-> > +		offset = da - PRU_SDRAM_DA;
-> > +		va = (__force void *)(dram1.va + offset);
-> > +	} else if (da >= PRU_SHRDRAM_DA &&
-> > +		   da + len <= PRU_SHRDRAM_DA + shrd_ram.size) {
-> > +		offset = da - PRU_SHRDRAM_DA;
-> > +		va = (__force void *)(shrd_ram.va + offset);
-> > +	}
-> > +
-> > +	return va;
-> > +}
-> > +
-> > +/*
-> > + * Convert PRU device address (instruction space) to kernel virtual address.
-> > + *
-> > + * A PRU does not have an unified address space. Each PRU has its very own
-> > + * private Instruction RAM, and its device address is identical to that of
-> > + * its primary Data RAM device address.
-> > + */
-> > +static void *pru_i_da_to_va(struct pru_rproc *pru, u32 da, size_t len)
-> > +{
-> > +	u32 offset;
-> > +	void *va = NULL;
-> > +
-> > +	if (len == 0)
-> > +		return NULL;
-> > +
-> > +	if (da >= PRU_IRAM_DA &&
-> > +	    da + len <= PRU_IRAM_DA + pru->mem_regions[PRU_IOMEM_IRAM].size) {
-> > +		offset = da - PRU_IRAM_DA;
-> > +		va = (__force void *)(pru->mem_regions[PRU_IOMEM_IRAM].va +
-> > +				      offset);
-> > +	}
-> > +
-> > +	return va;
-> > +}
-> > +
-> > +/*
-> > + * Provide address translations for only PRU Data RAMs through the remoteproc
-> > + * core for any PRU client drivers. The PRU Instruction RAM access is restricted
-> > + * only to the PRU loader code.
-> > + */
-> > +static void *pru_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len)
-> > +{
-> > +	struct pru_rproc *pru = rproc->priv;
-> > +
-> > +	return pru_d_da_to_va(pru, da, len);
-> > +}
-> > +
-> > +/* PRU-specific address translator used by PRU loader. */
-> > +static void *pru_da_to_va(struct rproc *rproc, u64 da, size_t len, bool is_iram)
-> > +{
-> > +	struct pru_rproc *pru = rproc->priv;
-> > +	void *va;
-> > +
-> > +	if (is_iram)
-> > +		va = pru_i_da_to_va(pru, da, len);
-> > +	else
-> > +		va = pru_d_da_to_va(pru, da, len);
-> > +
-> > +	return va;
-> > +}
-> > +
-> > +static struct rproc_ops pru_rproc_ops = {
-> > +	.start		= pru_rproc_start,
-> > +	.stop		= pru_rproc_stop,
-> > +	.da_to_va	= pru_rproc_da_to_va,
-> > +};
-> > +
-> > +static int
-> > +pru_rproc_load_elf_segments(struct rproc *rproc, const struct firmware *fw)
-> > +{
-> > +	struct device *dev = &rproc->dev;
-> > +	struct elf32_hdr *ehdr;
-> > +	struct elf32_phdr *phdr;
-> > +	int i, ret = 0;
-> > +	const u8 *elf_data = fw->data;
-> > +
-> > +	ehdr = (struct elf32_hdr *)elf_data;
-> > +	phdr = (struct elf32_phdr *)(elf_data + ehdr->e_phoff);
-> > +
-> > +	/* go through the available ELF segments */
-> > +	for (i = 0; i < ehdr->e_phnum; i++, phdr++) {
-> > +		u32 da = phdr->p_paddr;
-> > +		u32 memsz = phdr->p_memsz;
-> > +		u32 filesz = phdr->p_filesz;
-> > +		u32 offset = phdr->p_offset;
-> > +		bool is_iram;
-> > +		void *ptr;
-> > +
-> > +		if (phdr->p_type != PT_LOAD)
-> > +			continue;
-> > +
-> > +		dev_dbg(dev, "phdr: type %d da 0x%x memsz 0x%x filesz 0x%x\n",
-> > +			phdr->p_type, da, memsz, filesz);
-> > +
-> > +		if (filesz > memsz) {
-> > +			dev_err(dev, "bad phdr filesz 0x%x memsz 0x%x\n",
-> > +				filesz, memsz);
-> > +			ret = -EINVAL;
-> > +			break;
-> > +		}
-> > +
-> > +		if (offset + filesz > fw->size) {
-> > +			dev_err(dev, "truncated fw: need 0x%x avail 0x%zx\n",
-> > +				offset + filesz, fw->size);
-> > +			ret = -EINVAL;
-> > +			break;
-> > +		}
-> > +
-> > +		/* grab the kernel address for this device address */
-> > +		is_iram = phdr->p_flags & PF_X;
-> > +		ptr = pru_da_to_va(rproc, da, memsz, is_iram);
-> > +		if (!ptr) {
-> > +			dev_err(dev, "bad phdr da 0x%x mem 0x%x\n", da, memsz);
-> > +			ret = -EINVAL;
-> > +			break;
-> > +		}
-> > +
-> > +		/* skip the memzero logic performed by remoteproc ELF loader */
-> > +		if (!phdr->p_filesz)
-> > +			continue;
-> 
-> I don't see the need to do all this if phdr->p_filesz is not valid.  I would move
-> this below the check for PT_LOAD above.  Otherwise people are looking for some
-> kind of hidden logic when there isn't any.  The comment should probably go
-> after the memcpy().
-
-... and thinking futher on this, it would be nice to know why the memory isn't
-zero'ed out when a discrepency exists between the segment size in memory and the
-segment size in the image.  Right now all we know is that it isn't done.
-
-> 
-> I am running out of time for today and will continue tomorrow.
-> 
-> > +
-> > +		memcpy(ptr, elf_data + phdr->p_offset, filesz);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/*
-> > + * Use a custom parse_fw callback function for dealing with PRU firmware
-> > + * specific sections.
-> > + */
-> > +static int pru_rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* load optional rsc table */
-> > +	ret = rproc_elf_load_rsc_table(rproc, fw);
-> > +	if (ret == -EINVAL)
-> > +		dev_dbg(&rproc->dev, "no resource table found for this fw\n");
-> > +	else if (ret)
-> > +		return ret;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/*
-> > + * Compute PRU id based on the IRAM addresses. The PRU IRAMs are
-> > + * always at a particular offset within the PRUSS address space.
-> > + */
-> > +static int pru_rproc_set_id(struct pru_rproc *pru)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	switch (pru->mem_regions[PRU_IOMEM_IRAM].pa & PRU_IRAM_ADDR_MASK) {
-> > +	case PRU0_IRAM_ADDR_MASK:
-> > +		pru->id = 0;
-> > +		break;
-> > +	case PRU1_IRAM_ADDR_MASK:
-> > +		pru->id = 1;
-> > +		break;
-> > +	default:
-> > +		ret = -EINVAL;
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int pru_rproc_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	struct device_node *np = dev->of_node;
-> > +	struct platform_device *ppdev = to_platform_device(dev->parent);
-> > +	struct pru_rproc *pru;
-> > +	const char *fw_name;
-> > +	struct rproc *rproc = NULL;
-> > +	struct resource *res;
-> > +	int i, ret;
-> > +	const char *mem_names[PRU_IOMEM_MAX] = { "iram", "control", "debug" };
-> > +
-> > +	ret = of_property_read_string(np, "firmware-name", &fw_name);
-> > +	if (ret) {
-> > +		dev_err(dev, "unable to retrieve firmware-name %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	rproc = devm_rproc_alloc(dev, pdev->name, &pru_rproc_ops, fw_name,
-> > +				 sizeof(*pru));
-> > +	if (!rproc) {
-> > +		dev_err(dev, "rproc_alloc failed\n");
-> > +		return -ENOMEM;
-> > +	}
-> > +	/* use a custom load function to deal with PRU-specific quirks */
-> > +	rproc->ops->load = pru_rproc_load_elf_segments;
-> > +
-> > +	/* use a custom parse function to deal with PRU-specific resources */
-> > +	rproc->ops->parse_fw = pru_rproc_parse_fw;
-> > +
-> > +	/* error recovery is not supported for PRUs */
-> > +	rproc->recovery_disabled = true;
-> > +
-> > +	/*
-> > +	 * rproc_add will auto-boot the processor normally, but this is not
-> > +	 * desired with PRU client driven boot-flow methodology. A PRU
-> > +	 * application/client driver will boot the corresponding PRU
-> > +	 * remote-processor as part of its state machine either through the
-> > +	 * remoteproc sysfs interface or through the equivalent kernel API.
-> > +	 */
-> > +	rproc->auto_boot = false;
-> > +
-> > +	pru = rproc->priv;
-> > +	pru->dev = dev;
-> > +	pru->pruss = platform_get_drvdata(ppdev);
-> > +	pru->rproc = rproc;
-> > +	pru->fw_name = fw_name;
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(mem_names); i++) {
-> > +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> > +						   mem_names[i]);
-> > +		pru->mem_regions[i].va = devm_ioremap_resource(dev, res);
-> > +		if (IS_ERR(pru->mem_regions[i].va)) {
-> > +			dev_err(dev, "failed to parse and map memory resource %d %s\n",
-> > +				i, mem_names[i]);
-> > +			ret = PTR_ERR(pru->mem_regions[i].va);
-> > +			return ret;
-> > +		}
-> > +		pru->mem_regions[i].pa = res->start;
-> > +		pru->mem_regions[i].size = resource_size(res);
-> > +
-> > +		dev_dbg(dev, "memory %8s: pa %pa size 0x%zx va %pK\n",
-> > +			mem_names[i], &pru->mem_regions[i].pa,
-> > +			pru->mem_regions[i].size, pru->mem_regions[i].va);
-> > +	}
-> > +
-> > +	ret = pru_rproc_set_id(pru);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	platform_set_drvdata(pdev, rproc);
-> > +
-> > +	ret = devm_rproc_add(dev, pru->rproc);
-> > +	if (ret) {
-> > +		dev_err(dev, "rproc_add failed: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	dev_dbg(dev, "PRU rproc node %pOF probed successfully\n", np);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int pru_rproc_remove(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	struct rproc *rproc = platform_get_drvdata(pdev);
-> > +
-> > +	dev_dbg(dev, "%s: removing rproc %s\n", __func__, rproc->name);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct of_device_id pru_rproc_match[] = {
-> > +	{ .compatible = "ti,am3356-pru", },
-> > +	{ .compatible = "ti,am4376-pru", },
-> > +	{ .compatible = "ti,am5728-pru", },
-> > +	{ .compatible = "ti,k2g-pru",    },
-> > +	{},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, pru_rproc_match);
-> > +
-> > +static struct platform_driver pru_rproc_driver = {
-> > +	.driver = {
-> > +		.name   = "pru-rproc",
-> > +		.of_match_table = pru_rproc_match,
-> > +		.suppress_bind_attrs = true,
-> > +	},
-> > +	.probe  = pru_rproc_probe,
-> > +	.remove = pru_rproc_remove,
-> > +};
-> > +module_platform_driver(pru_rproc_driver);
-> > +
-> > +MODULE_AUTHOR("Suman Anna <s-anna@ti.com>");
-> > +MODULE_AUTHOR("Andrew F. Davis <afd@ti.com>");
-> > +MODULE_AUTHOR("Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>");
-> > +MODULE_DESCRIPTION("PRU-ICSS Remote Processor Driver");
-> > +MODULE_LICENSE("GPL v2");
-> > -- 
-> > 2.29.0
-> > 
+SGkgQmpvcm4sDQoNCg0KPiBPbiBOb3YgMzAsIDIwMjAsIGF0IDQ6MjUgUE0sIEJqb3JuIEhlbGdh
+YXMgPGhlbGdhYXNAa2VybmVsLm9yZz4gd3JvdGU6DQo+IA0KPiBPbiBNb24sIE5vdiAzMCwgMjAy
+MCBhdCAwNzo1NDozN1BNICswMDAwLCBLZWxsZXksIFNlYW4gViB3cm90ZToNCj4+PiBPbiBOb3Yg
+MjQsIDIwMjAsIGF0IDk6MTcgQU0sIEJqb3JuIEhlbGdhYXMgPGhlbGdhYXNAa2VybmVsLm9yZz4g
+d3JvdGU6DQo+Pj4gT24gTW9uLCBOb3YgMjMsIDIwMjAgYXQgMTE6NTc6MzVQTSArMDAwMCwgS2Vs
+bGV5LCBTZWFuIFYgd3JvdGU6DQo+Pj4+PiBPbiBOb3YgMjMsIDIwMjAsIGF0IDM6MjggUE0sIEJq
+b3JuIEhlbGdhYXMgPGhlbGdhYXNAa2VybmVsLm9yZz4gd3JvdGU6DQo+Pj4+PiBPbiBGcmksIE5v
+diAyMCwgMjAyMCBhdCAwNDoxMDozMVBNIC0wODAwLCBTZWFuIFYgS2VsbGV5IHdyb3RlOg0KPj4+
+Pj4+IEluIHNvbWUgY2FzZXMgYSBicmlkZ2UgbWF5IG5vdCBleGlzdCBhcyB0aGUgaGFyZHdhcmUg
+Y29udHJvbGxpbmcgbWF5IGJlDQo+Pj4+Pj4gaGFuZGxlZCBvbmx5IGJ5IGZpcm13YXJlIGFuZCBz
+byBpcyBub3QgdmlzaWJsZSB0byB0aGUgT1MuIFRoaXMgc2NlbmFyaW8gaXMNCj4+Pj4+PiBhbHNv
+IHBvc3NpYmxlIGluIGZ1dHVyZSB1c2UgY2FzZXMgaW52b2x2aW5nIG5vbi1uYXRpdmUgdXNlIG9m
+IFJDRUNzIGJ5DQo+Pj4+Pj4gZmlybXdhcmUuDQo+Pj4+Pj4gDQo+Pj4+Pj4gRXhwbGljaXRseSBh
+cHBseSBjb25kaXRpb25hbCBsb2dpYyBhcm91bmQgdGhlc2UgcmVzZXRzIGJ5IGxpbWl0aW5nIHRo
+ZW0gdG8NCj4+Pj4+PiBSb290IFBvcnRzIGFuZCBEb3duc3RyZWFtIFBvcnRzLg0KPj4+Pj4gDQo+
+Pj4+PiBDYW4geW91IGhlbHAgbWUgdW5kZXJzdGFuZCB0aGlzPyAgVGhlIHN1YmplY3Qgc2F5cyAi
+TGltaXQgQUVSIHJlc2V0cyINCj4+Pj4+IGFuZCBoZXJlIHlvdSBzYXkgImxpbWl0IHRoZW0gdG8g
+UlBzIGFuZCBEUHMiLCBidXQgaXQncyBub3QgY29tcGxldGVseQ0KPj4+Pj4gb2J2aW91cyBob3cg
+dGhlIHJlc2V0cyBhcmUgYmVpbmcgbGltaXRlZCwgaS5lLiwgdGhlIHBhdGNoIGRvZXNuJ3QgYWRk
+DQo+Pj4+PiBhbnl0aGluZyBsaWtlOg0KPj4+Pj4gDQo+Pj4+PiArICBpZiAodHlwZSA9PSBQQ0lf
+RVhQX1RZUEVfUk9PVF9QT1JUIHx8DQo+Pj4+PiArICAgICAgdHlwZSA9PSBQQ0lfRVhQX1RZUEVf
+RE9XTlNUUkVBTSkNCj4+Pj4+ICAgIHJlc2V0X3N1Ym9yZGluYXRlcyhicmlkZ2UpOw0KPj4+Pj4g
+DQo+Pj4+PiBJdCAqZG9lcyogYWRkIGNoZWNrcyBhcm91bmQgcGNpZV9jbGVhcl9kZXZpY2Vfc3Rh
+dHVzKCksIGJ1dCB0aGF0IGFsc28NCj4+Pj4+IGluY2x1ZGVzIFJDX0VDLiAgQW5kIHRoYXQncyBu
+b3QgYSByZXNldCwgc28gSSBkb24ndCB0aGluayB0aGF0J3MNCj4+Pj4+IGV4cGxpY2l0bHkgbWVu
+dGlvbmVkIGluIHRoZSBjb21taXQgbG9nLg0KPj4+PiANCj4+Pj4gVGhlIHN1YmplY3Qgc2hvdWxk
+IGhhdmUgcmVmZXJyZWQgdG8gdGhlIGNsZWFyaW5nIG9mIHRoZSBkZXZpY2Ugc3RhdHVzIHJhdGhl
+ciB0aGFuIHJlc2V0cy4NCj4+Pj4gSXQgb3JpZ2luYWxseSBjYW1lIGZyb20gdGhpcyBzaW1wbGVy
+IHBhdGNoIGluIHdoaWNoIEkgbWFkZSB1c2Ugb2YgcmVzZXQgaW5zdGVhZCBvZiBjbGVhcjoNCj4+
+Pj4gDQo+Pj4+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXBjaS8yMDIwMTAwMjE4NDcz
+NS4xMjI5MjIwLTgtc2VhbnZrLmRldkBvcmVnb250cmFja3Mub3JnLw0KPj4+PiANCj4+Pj4gU28g
+YSByZXBocmFzZSBvZiBjbGVhcmluZyBpbiBwbGFjZSBvZiByZXNldHMgd291bGQgYmUgbW9yZSBh
+cHByb3ByaWF0ZS4NCj4+Pj4gDQo+Pj4+IFRoZW4gd2UgYWRkZWQgdGhlIG5vdGlvbiBvZiBicmlk
+Z2Vz4oCmYmVsb3cNCj4+Pj4gDQo+Pj4+PiANCj4+Pj4+IEFsc28gc2VlIHRoZSBxdWVzdGlvbiBi
+ZWxvdy4NCj4+Pj4+IA0KPj4+Pj4+IExpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAy
+MDEwMDIxODQ3MzUuMTIyOTIyMC04LXNlYW52ay5kZXZAb3JlZ29udHJhY2tzLm9yZw0KPj4+Pj4+
+IFNpZ25lZC1vZmYtYnk6IFNlYW4gViBLZWxsZXkgPHNlYW4udi5rZWxsZXlAaW50ZWwuY29tPg0K
+Pj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5jb20+
+DQo+Pj4+Pj4gQWNrZWQtYnk6IEpvbmF0aGFuIENhbWVyb24gPEpvbmF0aGFuLkNhbWVyb25AaHVh
+d2VpLmNvbT4NCj4+Pj4+PiAtLS0NCj4+Pj4+PiBkcml2ZXJzL3BjaS9wY2llL2Vyci5jIHwgMzEg
+KysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLQ0KPj4+Pj4+IDEgZmlsZSBjaGFuZ2VkLCAy
+NSBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPj4+Pj4+IA0KPj4+Pj4+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL3BjaS9wY2llL2Vyci5jIGIvZHJpdmVycy9wY2kvcGNpZS9lcnIuYw0KPj4+
+Pj4+IGluZGV4IDhiNTNhZWNkYjQzZC4uNzg4M2M5NzkxNTYyIDEwMDY0NA0KPj4+Pj4+IC0tLSBh
+L2RyaXZlcnMvcGNpL3BjaWUvZXJyLmMNCj4+Pj4+PiArKysgYi9kcml2ZXJzL3BjaS9wY2llL2Vy
+ci5jDQo+Pj4+Pj4gQEAgLTE0OCwxMyArMTQ4LDE3IEBAIHN0YXRpYyBpbnQgcmVwb3J0X3Jlc3Vt
+ZShzdHJ1Y3QgcGNpX2RldiAqZGV2LCB2b2lkICpkYXRhKQ0KPj4+Pj4+IA0KPj4+Pj4+IC8qKg0K
+Pj4+Pj4+ICogcGNpX3dhbGtfYnJpZGdlIC0gd2FsayBicmlkZ2VzIHBvdGVudGlhbGx5IEFFUiBh
+ZmZlY3RlZA0KPj4+Pj4+IC0gKiBAYnJpZGdlOglicmlkZ2Ugd2hpY2ggbWF5IGJlIGEgUG9ydA0K
+Pj4+Pj4+ICsgKiBAYnJpZGdlOglicmlkZ2Ugd2hpY2ggbWF5IGJlIGEgUG9ydCwgYW4gUkNFQyB3
+aXRoIGFzc29jaWF0ZWQgUkNpRVBzLA0KPj4+Pj4+ICsgKgkJb3IgYW4gUkNpRVAgYXNzb2NpYXRl
+ZCB3aXRoIGFuIFJDRUMNCj4+Pj4+PiAqIEBjYjoJCWNhbGxiYWNrIHRvIGJlIGNhbGxlZCBmb3Ig
+ZWFjaCBkZXZpY2UgZm91bmQNCj4+Pj4+PiAqIEB1c2VyZGF0YToJYXJiaXRyYXJ5IHBvaW50ZXIg
+dG8gYmUgcGFzc2VkIHRvIGNhbGxiYWNrDQo+Pj4+Pj4gKg0KPj4+Pj4+ICogSWYgdGhlIGRldmlj
+ZSBwcm92aWRlZCBpcyBhIGJyaWRnZSwgd2FsayB0aGUgc3Vib3JkaW5hdGUgYnVzLCBpbmNsdWRp
+bmcNCj4+Pj4+PiAqIGFueSBicmlkZ2VkIGRldmljZXMgb24gYnVzZXMgdW5kZXIgdGhpcyBidXMu
+ICBDYWxsIHRoZSBwcm92aWRlZCBjYWxsYmFjaw0KPj4+Pj4+ICogb24gZWFjaCBkZXZpY2UgZm91
+bmQuDQo+Pj4+Pj4gKyAqDQo+Pj4+Pj4gKyAqIElmIHRoZSBkZXZpY2UgcHJvdmlkZWQgaGFzIG5v
+IHN1Ym9yZGluYXRlIGJ1cywgY2FsbCB0aGUgY2FsbGJhY2sgb24gdGhlDQo+Pj4+Pj4gKyAqIGRl
+dmljZSBpdHNlbGYuDQo+Pj4+Pj4gKi8NCj4+Pj4+PiBzdGF0aWMgdm9pZCBwY2lfd2Fsa19icmlk
+Z2Uoc3RydWN0IHBjaV9kZXYgKmJyaWRnZSwNCj4+Pj4+PiAJCQkgICAgaW50ICgqY2IpKHN0cnVj
+dCBwY2lfZGV2ICosIHZvaWQgKiksDQo+Pj4+Pj4gQEAgLTE2Miw2ICsxNjYsOCBAQCBzdGF0aWMg
+dm9pZCBwY2lfd2Fsa19icmlkZ2Uoc3RydWN0IHBjaV9kZXYgKmJyaWRnZSwNCj4+Pj4+PiB7DQo+
+Pj4+Pj4gCWlmIChicmlkZ2UtPnN1Ym9yZGluYXRlKQ0KPj4+Pj4+IAkJcGNpX3dhbGtfYnVzKGJy
+aWRnZS0+c3Vib3JkaW5hdGUsIGNiLCB1c2VyZGF0YSk7DQo+Pj4+Pj4gKwllbHNlDQo+Pj4+Pj4g
+KwkJY2IoYnJpZGdlLCB1c2VyZGF0YSk7DQo+Pj4+Pj4gfQ0KPj4+Pj4+IA0KPj4+Pj4+IHBjaV9l
+cnNfcmVzdWx0X3QgcGNpZV9kb19yZWNvdmVyeShzdHJ1Y3QgcGNpX2RldiAqZGV2LA0KPj4+Pj4+
+IEBAIC0xNzQsMTAgKzE4MCwxMyBAQCBwY2lfZXJzX3Jlc3VsdF90IHBjaWVfZG9fcmVjb3Zlcnko
+c3RydWN0IHBjaV9kZXYgKmRldiwNCj4+Pj4+PiANCj4+Pj4+PiAJLyoNCj4+Pj4+PiAJICogRXJy
+b3IgcmVjb3ZlcnkgcnVucyBvbiBhbGwgc3Vib3JkaW5hdGVzIG9mIHRoZSBicmlkZ2UuICBJZiB0
+aGUNCj4+Pj4+PiAtCSAqIGJyaWRnZSBkZXRlY3RlZCB0aGUgZXJyb3IsIGl0IGlzIGNsZWFyZWQg
+YXQgdGhlIGVuZC4NCj4+Pj4+PiArCSAqIGJyaWRnZSBkZXRlY3RlZCB0aGUgZXJyb3IsIGl0IGlz
+IGNsZWFyZWQgYXQgdGhlIGVuZC4gIEZvciBSQ2lFUHMNCj4+Pj4+PiArCSAqIHdlIHNob3VsZCBy
+ZXNldCBqdXN0IHRoZSBSQ2lFUCBpdHNlbGYuDQo+Pj4+Pj4gCSAqLw0KPj4+Pj4+IAlpZiAodHlw
+ZSA9PSBQQ0lfRVhQX1RZUEVfUk9PVF9QT1JUIHx8DQo+Pj4+Pj4gLQkgICAgdHlwZSA9PSBQQ0lf
+RVhQX1RZUEVfRE9XTlNUUkVBTSkNCj4+Pj4+PiArCSAgICB0eXBlID09IFBDSV9FWFBfVFlQRV9E
+T1dOU1RSRUFNIHx8DQo+Pj4+Pj4gKwkgICAgdHlwZSA9PSBQQ0lfRVhQX1RZUEVfUkNfRUMgfHwN
+Cj4+Pj4+PiArCSAgICB0eXBlID09IFBDSV9FWFBfVFlQRV9SQ19FTkQpDQo+Pj4+Pj4gCQlicmlk
+Z2UgPSBkZXY7DQo+Pj4+Pj4gCWVsc2UNCj4+Pj4+PiAJCWJyaWRnZSA9IHBjaV91cHN0cmVhbV9i
+cmlkZ2UoZGV2KTsNCj4+Pj4+PiBAQCAtMTg1LDYgKzE5NCwxMiBAQCBwY2lfZXJzX3Jlc3VsdF90
+IHBjaWVfZG9fcmVjb3Zlcnkoc3RydWN0IHBjaV9kZXYgKmRldiwNCj4+Pj4+PiAJcGNpX2RiZyhi
+cmlkZ2UsICJicm9hZGNhc3QgZXJyb3JfZGV0ZWN0ZWQgbWVzc2FnZVxuIik7DQo+Pj4+Pj4gCWlm
+IChzdGF0ZSA9PSBwY2lfY2hhbm5lbF9pb19mcm96ZW4pIHsNCj4+Pj4+PiAJCXBjaV93YWxrX2Jy
+aWRnZShicmlkZ2UsIHJlcG9ydF9mcm96ZW5fZGV0ZWN0ZWQsICZzdGF0dXMpOw0KPj4+Pj4+ICsJ
+CWlmICh0eXBlID09IFBDSV9FWFBfVFlQRV9SQ19FTkQpIHsNCj4+Pj4+PiArCQkJcGNpX3dhcm4o
+ZGV2LCAic3Vib3JkaW5hdGUgZGV2aWNlIHJlc2V0IG5vdCBwb3NzaWJsZSBmb3IgUkNpRVBcbiIp
+Ow0KPj4+Pj4+ICsJCQlzdGF0dXMgPSBQQ0lfRVJTX1JFU1VMVF9OT05FOw0KPj4+Pj4+ICsJCQln
+b3RvIGZhaWxlZDsNCj4+Pj4+PiArCQl9DQo+Pj4+Pj4gKw0KPj4+Pj4+IAkJc3RhdHVzID0gcmVz
+ZXRfc3Vib3JkaW5hdGVzKGJyaWRnZSk7DQo+Pj4+Pj4gCQlpZiAoc3RhdHVzICE9IFBDSV9FUlNf
+UkVTVUxUX1JFQ09WRVJFRCkgew0KPj4+Pj4+IAkJCXBjaV93YXJuKGJyaWRnZSwgInN1Ym9yZGlu
+YXRlIGRldmljZSByZXNldCBmYWlsZWRcbiIpOw0KPj4+Pj4+IEBAIC0yMTcsOSArMjMyLDEzIEBA
+IHBjaV9lcnNfcmVzdWx0X3QgcGNpZV9kb19yZWNvdmVyeShzdHJ1Y3QgcGNpX2RldiAqZGV2LA0K
+Pj4+Pj4+IAlwY2lfZGJnKGJyaWRnZSwgImJyb2FkY2FzdCByZXN1bWUgbWVzc2FnZVxuIik7DQo+
+Pj4+Pj4gCXBjaV93YWxrX2JyaWRnZShicmlkZ2UsIHJlcG9ydF9yZXN1bWUsICZzdGF0dXMpOw0K
+Pj4+Pj4+IA0KPj4+Pj4+IC0JaWYgKHBjaWVfYWVyX2lzX25hdGl2ZShicmlkZ2UpKQ0KPj4+Pj4+
+IC0JCXBjaWVfY2xlYXJfZGV2aWNlX3N0YXR1cyhicmlkZ2UpOw0KPj4+Pj4+IC0JcGNpX2Flcl9j
+bGVhcl9ub25mYXRhbF9zdGF0dXMoYnJpZGdlKTsNCj4+Pj4+PiArCWlmICh0eXBlID09IFBDSV9F
+WFBfVFlQRV9ST09UX1BPUlQgfHwNCj4+Pj4+PiArCSAgICB0eXBlID09IFBDSV9FWFBfVFlQRV9E
+T1dOU1RSRUFNIHx8DQo+Pj4+Pj4gKwkgICAgdHlwZSA9PSBQQ0lfRVhQX1RZUEVfUkNfRUMpIHsN
+Cj4+Pj4+PiArCQlpZiAocGNpZV9hZXJfaXNfbmF0aXZlKGJyaWRnZSkpDQo+Pj4+Pj4gKwkJCXBj
+aWVfY2xlYXJfZGV2aWNlX3N0YXR1cyhicmlkZ2UpOw0KPj4+Pj4+ICsJCXBjaV9hZXJfY2xlYXJf
+bm9uZmF0YWxfc3RhdHVzKGJyaWRnZSk7DQo+Pj4+PiANCj4+Pj4+IFRoaXMgaXMgaGFyZCB0byB1
+bmRlcnN0YW5kIGJlY2F1c2UgInR5cGUiIGlzIGZyb20gImRldiIsIGJ1dCAiYnJpZGdlIg0KPj4+
+Pj4gaXMgbm90IG5lY2Vzc2FyaWx5IHRoZSBzYW1lIGRldmljZS4gIFNob3VsZCBpdCBiZSB0aGlz
+Pw0KPj4+Pj4gDQo+Pj4+PiB0eXBlID0gcGNpX3BjaWVfdHlwZShicmlkZ2UpOw0KPj4+Pj4gaWYg
+KHR5cGUgPT0gUENJX0VYUF9UWVBFX1JPT1RfUE9SVCB8fA0KPj4+Pj4gICAgLi4uKQ0KPj4+PiAN
+Cj4+Pj4gQ29ycmVjdCwgaXQgd291bGQgYmUgYmV0dGVyIGlmIHRoZSB0eXBlIHdhcyBiYXNlZCBv
+biB0aGUg4oCYYnJpZGdl4oCZLg0KPj4+IA0KPj4+IE9LLiAgVGhpcyBpcyBzaW1pbGFyIHRvDQo+
+Pj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtcGNpLzIwMjAxMDAyMTg0NzM1LjEyMjky
+MjAtOC1zZWFudmsuZGV2QG9yZWdvbnRyYWNrcy5vcmcvLA0KPj4+IHdoaWNoIHlvdSBjaXRlZCBh
+Ym92ZSBleGNlcHQgZm9yIHRoZSBicmlkZ2UvZGV2IHF1ZXN0aW9uIGFuZCB0aGUNCj4+PiBhZGRp
+dGlvbiBoZXJlIG9mIFJDX0VDLg0KPj4+IA0KPj4+IEkgdHJpZWQgdG8gc3BsaXQgdGhhdCBiYWNr
+IGludG8gaXRzIG93biBwYXRjaCBhbmQgc3RhcnRlZCB3aXRoIHRoZQ0KPj4+IGNvbW1pdCBtZXNz
+YWdlIGZyb20gdGhhdCBwYXRjaC4gIEJ1dCBJIGdvdCBzdHVjayBvbiB0aGUgY29tbWl0DQo+Pj4g
+bWVzc2FnZS4gIEkgZ290IGFzIGZhciBhczoNCj4+PiANCj4+PiBJbiBzb21lIGNhc2VzIGFuIGVy
+cm9yIG1heSBiZSByZXBvcnRlZCBieSBhIGRldmljZSBub3QgdmlzaWJsZSB0bw0KPj4+IHRoZSBP
+UywgZS5nLiwgaWYgZmlybXdhcmUgbWFuYWdlcyB0aGUgZGV2aWNlIGFuZCBwYXNzZXMgZXJyb3IN
+Cj4+PiBpbmZvcm1hdGlvbiB0byB0aGUgT1MgdmlhIEFDUEkgQVBFSS4NCj4+PiANCj4+PiBCdXQg
+SSBzdGlsbCBjYW4ndCBxdWl0ZSBjb25uZWN0IHRoYXQgdG8gdGhlIHBhdGNoLiAgImJyaWRnZSIg
+aXMNCj4+PiBjbGVhcmx5IGEgZGV2aWNlIHZpc2libGUgdG8gTGludXguDQo+Pj4gDQo+Pj4gSSBn
+dWVzcyB3ZSdyZSB0cnlpbmcgdG8gYXNzZXJ0IHRoYXQgaWYgImJyaWRnZSIgaXMgbm90IGEgUm9v
+dCBQb3J0LA0KPj4+IERvd25zdHJlYW0gUG9ydCwgb3IgUkNFQywgd2Ugc2hvdWxkbid0IGNsZWFy
+IHRoZSBlcnJvciBzdGF0dXMgYmVjYXVzZSANCj4+PiB0aGUgZXJyb3IgY2FtZSBmcm9tIGEgZGV2
+aWNlIExpbnV4IGRvZXNuJ3Qga25vdyBhYm91dC4gIEJ1dCBJIHRoaW5rDQo+Pj4gImJyaWRnZSIg
+aXMgKmFsd2F5cyogZWl0aGVyIGEgUm9vdCBQb3J0IG9yIGEgRG93bnN0cmVhbSBQb3J0Og0KPj4g
+DQo+PiBUaGF04oCZcyB1bHRpbWF0ZWx5IHdoYXQgd2UgYXJlIHRyeWluZyB0byBkby4NCj4+IA0K
+Pj4+IGlmICh0eXBlID09IFBDSV9FWFBfVFlQRV9ST09UX1BPUlQgfHwNCj4+PiAgICAgdHlwZSA9
+PSBQQ0lfRVhQX1RZUEVfRE9XTlNUUkVBTSkNCj4+PiAJICBicmlkZ2UgPSBkZXY7DQo+Pj4gZWxz
+ZQ0KPj4+IAkgIGJyaWRnZSA9IHBjaV91cHN0cmVhbV9icmlkZ2UoZGV2KTsNCj4+PiANCj4+PiBw
+Y2lfdXBzdHJlYW1fYnJpZGdlKCkgcmV0dXJucyBlaXRoZXIgTlVMTCAoaW4gd2hpY2ggY2FzZSBw
+cmV2aW91cyB1c2VzDQo+Pj4gZGVyZWZlcmVuY2UgYSBOVUxMIHBvaW50ZXIpLCBvciBkZXYtPmJ1
+cy0+c2VsZiwgd2hpY2ggaXMgYWx3YXlzIGEgUm9vdA0KPj4+IFBvcnQsIFN3aXRjaCBEb3duc3Ry
+ZWFtIFBvcnQsIG9yIFN3aXRjaCBVcHN0cmVhbSBQb3J0IChvciBOVUxMIGZvciB0aGUNCj4+PiBz
+cGVjaWFsIGNhc2Ugb2YgVkZzKS4NCj4+IA0KPj4gSW4gdGhlIHBhc3QgcmVjYWxsIHdlIHdlcmUg
+YXVnbWVudGluZyBpdCB3aXRoIGJyaWRnZSA9IGRldi0+cmNlYyBmb3INCj4+IFJDX0VORC4gIEJ1
+dCB3ZSB3ZXJlIGFibGUgdG8gcmVsb2NhdGUgdGhlIGhhbmRsaW5nIGluDQo+PiBhZXJfcm9vdF9y
+ZXNldCgpLg0KPj4gDQo+PiBTbyBpbiB0aGlzIHBhdGNoIC0gd2UgYWRkIHRoZSBjb25kaXRpb25h
+bHMgYmVjYXVzZSBSQ19FTkQgaXMgYmVpbmcNCj4+IHBhc3NlZCBpbiBhZGRpdGlvbiB0byBSQ19F
+Qy4NCj4+IA0KPj4gCWlmICh0eXBlID09IFBDSV9FWFBfVFlQRV9ST09UX1BPUlQgfHwNCj4+IA0K
+Pj4gLQkgICAgdHlwZSA9PSBQQ0lfRVhQX1RZUEVfRE9XTlNUUkVBTSkNCj4+IA0KPj4gKwkgICAg
+dHlwZSA9PSBQQ0lfRVhQX1RZUEVfRE9XTlNUUkVBTSB8fA0KPj4gKwkgICAgdHlwZSA9PSBQQ0lf
+RVhQX1RZUEVfUkNfRUMgfHwNCj4+ICsJICAgIHR5cGUgPT0gUENJX0VYUF9UWVBFX1JDX0VORCkN
+Cj4+IA0KPj4gCQlicmlkZ2UgPSBkZXY7DQo+PiAJZWxzZQ0KPj4gCQlicmlkZ2UgPSBwY2lfdXBz
+dHJlYW1fYnJpZGdlKGRldik7DQo+PiANCj4+IFNvIHdlIG5lZWQgdG8gY2hlY2sgZm9yIFJQLCBE
+UywgYW5kIFJDX0VDDQo+PiANCj4+IEBAIC0yMTcsOSArMjMyLDEzIEBAIHBjaV9lcnNfcmVzdWx0
+X3QgcGNpZV9kb19yZWNvdmVyeShzdHJ1Y3QgcGNpX2RldiAqZGV2LA0KPj4gDQo+PiAJcGNpX2Ri
+ZyhicmlkZ2UsICJicm9hZGNhc3QgcmVzdW1lIG1lc3NhZ2VcbiIpOw0KPj4gCXBjaV93YWxrX2Jy
+aWRnZShicmlkZ2UsIHJlcG9ydF9yZXN1bWUsICZzdGF0dXMpOw0KPj4gDQo+PiANCj4+IC0JaWYg
+KHBjaWVfYWVyX2lzX25hdGl2ZShicmlkZ2UpKQ0KPj4gLQkJcGNpZV9jbGVhcl9kZXZpY2Vfc3Rh
+dHVzKGJyaWRnZSk7DQo+PiAtCXBjaV9hZXJfY2xlYXJfbm9uZmF0YWxfc3RhdHVzKGJyaWRnZSk7
+DQo+PiANCj4+ICsJaWYgKHR5cGUgPT0gUENJX0VYUF9UWVBFX1JPT1RfUE9SVCB8fA0KPj4gKwkg
+ICAgdHlwZSA9PSBQQ0lfRVhQX1RZUEVfRE9XTlNUUkVBTSB8fA0KPj4gKwkgICAgdHlwZSA9PSBQ
+Q0lfRVhQX1RZUEVfUkNfRUMpIHsNCj4+ICsJCWlmIChwY2llX2Flcl9pc19uYXRpdmUoYnJpZGdl
+KSkNCj4+ICsJCQlwY2llX2NsZWFyX2RldmljZV9zdGF0dXMoYnJpZGdlKTsNCj4+ICsJCXBjaV9h
+ZXJfY2xlYXJfbm9uZmF0YWxfc3RhdHVzKGJyaWRnZSk7DQo+PiArCX0NCj4+IA0KPj4gQnJlYWtp
+bmcgb3V0IGEgc2VwYXJhdGUgcGF0Y2ggd291bGQgYmUgdW5uZWNlc3NhcnkgYXMgeW91IGNvcnJl
+Y3RseQ0KPj4gcG9pbnQgb3V0IHRoYXQgaXTigJlzIG9ubHkgZ29pbmcgdG8gYmUgYW4gUlAgb3Ig
+RFMgYmVmb3JlIHRoaXMgcGF0Y2guDQo+IA0KPiBTdGlsbCB0cnlpbmcgdG8gc29ydCB0aGlzIG91
+dCBpbiBteSBoZWFkLCBzbyBoYWxmLWJha2VkIHF1ZXN0aW9ucw0KPiBiZWZvcmUgSSBxdWl0IGZv
+ciB0aGUgZGF5OiBXZSBjYWxsIHBjaWVfZG9fcmVjb3ZlcnkoKSBpbiBmb3VyIHBhdGhzOg0KPiBB
+RVIsIEFQRUksIERQQywgYW5kIEVEUiwgYW5kIEknbSB0cnlpbmcgdG8gdW5kZXJzdGFuZCB3aGF0
+ICJkZXYiIHdlDQo+IHBhc3MgaW4gYWxsIHRob3NlIGNhc2VzLg0KPiANCj4gRm9yIERQQywgSSB0
+aGluayAiZGV2IiBtdXN0IGJlIGEgZG93bnN0cmVhbSBwb3J0IHRoYXQgdHJpZ2dlcmVkIERQQywN
+Cj4gYW5kIGl0cyBzZWNvbmRhcnkgbGluayBpcyBkaXNhYmxlZC4gIFRoZSBkZXZpY2UgYW5kIGFu
+eSBzaWJsaW5ncyBoYXZlDQo+IGFscmVhZHkgYmVlbiByZXNldCBieSB0aGUgbGluayBnb2luZyBk
+b3duLiAgV2Ugd2FudCB0byBjbGVhciBBRVINCj4gc3RhdHVzIGluIGRvd25zdHJlYW0gZGV2aWNl
+KHMpIGFmdGVyIHRoZXkgY29tZSBiYWNrIHVwICh0aGUgQUVSIHN0YXR1cw0KPiBiaXRzIGFyZSBz
+dGlja3ksIHNvIHRoZXkncmUgbm90IGNsZWFyZWQgYnkgdGhlIHJlc2V0KSwgYW5kIHRoZSBBRVIN
+Cj4gc3RhdHVzIGluIHRoZSBkb3duc3RyZWFtIHBvcnQuDQo+IA0KPiBJIHRoaW5rIEVEUiBpcyB0
+aGUgc2FtZSBhcyBEUEM/DQo+IA0KPiBGb3IgQUVSLCBJIHRoaW5rICJkZXYiIHdpbGwgdHlwaWNh
+bGx5IChtYXliZSBhbHdheXM/KSBiZSB0aGUgZGV2aWNlDQo+IHRoYXQgZGV0ZWN0ZWQgdGhlIGVy
+cm9yIGFuZCBsb2dnZWQgaXQgaW4gaXRzIEFFUiBDYXBhYmlsaXR5LCBub3QgdGhlDQo+IFJvb3Qg
+UG9ydCBvciBSQ0VDIHRoYXQgZ2VuZXJhdGVkIHRoZSBpbnRlcnJ1cHQuICBXZSB3YW50IHRvIHJl
+c2V0DQo+ICJkZXYiIGFuZCBhbnkgc2libGluZ3MsIGNsZWFyIEFFUiBzdGF0dXMgaW4gImRldiIs
+IGFuZCBjbGVhciBBRVINCj4gc3RhdHVzIGluIHRoZSBSb290IFBvcnQgb3IgUkNFQy4NCj4gDQo+
+IEZvciBBUEVJLCBJIGFzc3VtZSAiZGV2IiBpcyB0eXBpY2FsbHkgdGhlIGRldmljZSB0aGF0IGRl
+dGVjdGVkIHRoZQ0KPiBlcnJvciwgYW5kIHdlIHdhbnQgdG8gcmVzZXQgaXQgYW5kIGFueSBzaWJs
+aW5ncy4gIEZpcm13YXJlIGhhcyBhbHJlYWR5DQo+IHJlYWQgdGhlIEFFUiBzdGF0dXMgZm9yICJk
+ZXYiLCBhbmQgSSBhc3N1bWUgZmlybXdhcmUgYWxzbyBjbGVhcnMgaXQuDQo+IEkgYXNzdW1lIGZp
+cm13YXJlIGlzIGFsc28gcmVzcG9uc2libGUgZm9yIGNsZWFyaW5nIEFFUiBzdGF0dXMgaW4gdGhl
+DQo+IFJvb3QgUG9ydCwgUkNFQywgb3Igbm9uLWFyY2hpdGVjdGVkIGRldmljZSB0aGF0IGdlbmVy
+YXRlZCB0aGUNCj4gaW50ZXJydXB0Lg0KPiANCj4gSXQgc2VlbXMgbGlrZSB0aGVyZSBhcmUgYmFz
+aWNhbGx5IHR3byBkZXZpY2VzIG9mIGludGVyZXN0IGluDQo+IHBjaWVfZG9fcmVjb3ZlcnkoKTog
+dGhlIGVuZHBvaW50IHdoZXJlIHdlIGhhdmUgdG8gY2FsbCB0aGUgZHJpdmVyDQo+IGVycm9yIHJl
+Y292ZXJ5LCBhbmQgdGhlIHBvcnQgdGhhdCBnZW5lcmF0ZWQgdGhlIGludGVycnVwdC4gIEkgd29u
+ZGVyDQo+IGlmIHRoaXMgd291bGQgbWFrZSBtb3JlIHNlbnNlIGlmIHRoZSBjYWxsZXIgcGFzc2Vk
+IGJvdGggb2YgdGhlbSBpbg0KPiBleHBsaWNpdGx5IGluc3RlYWQgb2YgaGF2aW5nIHBjaWVfZG9f
+cmVjb3ZlcnkoKSBjaGVjayB0aGUgdHlwZSBvZg0KPiAiZGV2IiBhbmQgdHJ5IHRvIGZpZ3VyZSB0
+aGluZ3Mgb3V0IGFmdGVyIHRoZSBmYWN0Lg0KDQpPbiB0aGlzIGxhc3QgcG9pbnQgSSB3YW50ZWQg
+dG8gYWRkIHRoYXQgdGhpcyBpcyBhIHBvc3NpYmlsaXR5IHRoYXQgY291bGQgcHJvdmlkZSBhIGNs
+ZWFyZXIgZGlzdGluY3Rpb24sDQplc3BlY2lhbGx5IHdoZXJlIGFjdGlvbnMgbmVlZCB0byBiZSB0
+YWtlbiBvciBub3QgdGFrZW4gYXMgYSBwYXJ0IG9mIHBjaWVfZG9fcmVjb3ZlcnkoKSwgaS5lLiwg
+YnJpZGdlIHZlcnN1cyBkZXYuDQpJbiB0aGlzIHBhdGNoIHNlcmllcyB3ZSBoYXZlIHRha2VuIHN0
+ZXBzIHRvIG1pbmltaXplIHRoZSBuZWVkIGZvciB0aGUgZGlzdGluY3Rpb24gYnkgcHVzaGluZyB0
+aGUNCmF3YXJlbmVzcyBpbnRvIHRoZSBkcml2ZXLigJlzIGVycm9yIHJlY292ZXJ5IHJvdXRpbmUs
+IGkuZS4sIGRldi0+cmNlYy4gIEEgZnV0dXJlIGV2b2x1dGlvbiBhZnRlciB0aGlzIHNlcmllcw0K
+Y291bGQgbGVhZCB0byBib3RoIGRldmljZXMgb2YgaW50ZXJlc3QgYmVpbmcgcGFzc2VkIGV4cGxp
+Y2l0bHkgZm9yIHRoZSBsYXJnZXIgc2NvcGUgRURSL0RQQy9BRVIvZXRjLg0KDQpUaGFua3MsDQoN
+ClNlYW4NCg0KDQoNCj4gDQo+IEJqb3JuDQoNCg==
