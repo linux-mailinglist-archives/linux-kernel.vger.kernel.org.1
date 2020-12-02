@@ -2,126 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3801A2CB4AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6032CB4B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgLBFr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 00:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
+        id S1728571AbgLBFtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 00:49:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbgLBFr1 (ORCPT
+        with ESMTP id S1727450AbgLBFtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 00:47:27 -0500
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23417C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 21:46:47 -0800 (PST)
-Received: by mail-vk1-xa42.google.com with SMTP id m6so147844vkl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 21:46:47 -0800 (PST)
+        Wed, 2 Dec 2020 00:49:31 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D03C0613CF;
+        Tue,  1 Dec 2020 21:48:50 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id t6so1700729lfl.13;
+        Tue, 01 Dec 2020 21:48:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zIYg3wn3IiOAwIUjN3HHnL/xxZ7BzmV6ArGGQCieAHY=;
-        b=bON2yGnfCiyS2deASK7lq7vUUxyZx+TcNqxyx0Y2lzXGXaJk2/GGL6wVTlpf746M17
-         ewSfrj7S9dsZKHz9EXsFml/ZRzW3ibKt2hylTzUrhiQailV3BSYLijuRVIlNThE7Ss7H
-         KnWN0tGzIrPrfvFAOAvf+8FI8ABAECA3BAv1o2Nf8hdcpJnE2U+4ENVHLDfsMJ2syTzS
-         iaGmOfE/X9XwWP/ylcYRN5sQKiXL7/ZHlVEs4e0tCksSkzjQe+RVz9j9FQbs4OUZPc8T
-         CR1MgHpyNAn/FzhGrLr7gcE7qYAYqX3l4Q2HISPXD2rjqVZX7wjj378ggI/rHdDvjDb8
-         F84w==
+        bh=qNDxyrqIGgFLv57oHNLRb1qMbcd3Zb2laVpkQBPvLOA=;
+        b=iN+bP8C3kNaCEQaMZWryt4Vx44HH8j8Iv31TpO4sZ5OkQP8bfbyA+1czyK0oRclazO
+         Jq2TUY5MxAcAi7+udumMyuMidTUEMdiQufSkNKFjDjbD6+8vuQiov3rUYGXFfZsuI3HC
+         0lT112wBOGS/AbnixLIrmu53BsvGrry/pWlvvK9jqprIB2r0tIQzPkgZDiyZ/sjO4PQU
+         i4JMwjvgDiMtHAKQ6Ca7tu6osPnOpJXj+ssYgdeajFD0LWubbit+X9ipVtVO6m1UJ5dj
+         3tZ27WcdKmFh6zjRme9X3OeyXatt0jKVA8yDD3J+XmQPF86rWJjT252LIFdLzyoOjVFQ
+         ohqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zIYg3wn3IiOAwIUjN3HHnL/xxZ7BzmV6ArGGQCieAHY=;
-        b=EIcAIbW/pDTsFRr329eyuicoczT+QVRK9a8lJocyEznzdK1EDY6/gBhhwPFcGG5QP5
-         QBaJukTE5lJcW1UilRpDWf9Sb/N9a4YtMOz8DXLw0K/GzO2MFGyISwOJux9Wqj+0Zkj7
-         Pwf3doshusbZcaGs5XJ9tNt2X4fQKCnCYqESQjJWzVZ9is0UVUna38ufQdLp8xZ+rs5l
-         8Xv5Jy3UUzTQSxXasS0PEOxAYJt8TbG/zWS/qJwRg/k4UVhjESrpQYk7cMX9Pm3M/f9G
-         G3GcaCqCA794BZnKBbFnwDxd/gDj0IEXDl8llZeHoXcvTbPk0K2YN2VhKZSiyL+RboJK
-         mdBQ==
-X-Gm-Message-State: AOAM531FSmaLhTAEfUg9GjmhI6MxH8s7gvsmUI91QMloLsqpyIXRSBSE
-        9IzN6xkGPFZXrEz5BylPp4ihJATpVtshnnlhYLXqww==
-X-Google-Smtp-Source: ABdhPJyfTarblbQWXQ2D0gqGJIM068ljJFblRKN2s+iu0HTYtaH2RdablEmO5KmOvdnbvJUKStvPOuGuLcyF9JZVZE8=
-X-Received: by 2002:a1f:36d4:: with SMTP id d203mr580407vka.22.1606888005927;
- Tue, 01 Dec 2020 21:46:45 -0800 (PST)
+        bh=qNDxyrqIGgFLv57oHNLRb1qMbcd3Zb2laVpkQBPvLOA=;
+        b=okOjatD1Zv7f5s4tM8840svRSzHgU2eIEYCoLzDMGSGtSN7bBpSMH9MjcBnALET0+Q
+         dHfzoZ5ns9QxKITc7WKhhbQCZjdGs944zaXzGBKkZLhLF9xDYAI0Tou7gJloACZZuSg4
+         Aw9BdwMTP3CCHHIr/PIVGfXql0w5bFGSzVkYiEDJByQUKlHPSQe9IL8+wUpqlErua7tc
+         oZNFbxCjvmvW27goea1n3lH0VqP++j5zCPzz4Wuyd0gL/32JKwaPUy1plUodbpgOHNAX
+         1nV285LonJZYfXhvrhiIONmTu9SNOd/Tr8kWzQ26dtOhdlYNY2GLv8wZ+nlziSn8QuRO
+         KW7Q==
+X-Gm-Message-State: AOAM531KnJy5PyWAcw/m0ojsT9XdB2rvIzeQdZisJBRcFaigMc2dalmx
+        9uYcVw+ZFa+pM+97SOU9Jixt2b9Wz2oG6uz+2gU=
+X-Google-Smtp-Source: ABdhPJxXRs8Gf5dbTVdeV6GA86m4KRy3D59UGd8vRybMqbZrbufcbaqimTIshfDoG5SZtnER0xwGhM7Eu6eFLlcTlUw=
+X-Received: by 2002:a05:6512:3384:: with SMTP id h4mr479941lfg.554.1606888127993;
+ Tue, 01 Dec 2020 21:48:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <20201130120130.GF24563@willie-the-truck> <202012010929.3788AF5@keescook> <CAK7LNASQPOGohtUyzBM6n54pzpLN35kDXC7VbvWzX8QWUmqq9g@mail.gmail.com>
-In-Reply-To: <CAK7LNASQPOGohtUyzBM6n54pzpLN35kDXC7VbvWzX8QWUmqq9g@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 1 Dec 2020 21:46:33 -0800
-Message-ID: <CABCJKuf6=nqsUFYc5m91x_H44ojBjoE+BqZr81D8T6xRhWTiEg@mail.gmail.com>
-Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
+References: <20201127175738.1085417-1-jackmanb@google.com> <20201127175738.1085417-3-jackmanb@google.com>
+ <20201129011405.vai66tyexpphpacb@ast-mbp> <20201201121249.GA2114905@google.com>
+In-Reply-To: <20201201121249.GA2114905@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 1 Dec 2020 21:48:36 -0800
+Message-ID: <CAADnVQK63=5XyGxMVe1xuLmQ6NZ5LtCHSVizOUtd1iZ=z747OQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 02/13] bpf: x86: Factor out emission of REX byte
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 6:43 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Tue, Dec 1, 2020 at 4:12 AM Brendan Jackman <jackmanb@google.com> wrote:
 >
-> On Wed, Dec 2, 2020 at 2:31 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Mon, Nov 30, 2020 at 12:01:31PM +0000, Will Deacon wrote:
-> > > Hi Sami,
+> On Sat, Nov 28, 2020 at 05:14:05PM -0800, Alexei Starovoitov wrote:
+> > On Fri, Nov 27, 2020 at 05:57:27PM +0000, Brendan Jackman wrote:
+> > > The JIT case for encoding atomic ops is about to get more
+> > > complicated. In order to make the review & resulting code easier,
+> > > let's factor out some shared helpers.
 > > >
-> > > On Wed, Nov 18, 2020 at 02:07:14PM -0800, Sami Tolvanen wrote:
-> > > > This patch series adds support for building the kernel with Clang's
-> > > > Link Time Optimization (LTO). In addition to performance, the primary
-> > > > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI) to
-> > > > be used in the kernel. Google has shipped millions of Pixel devices
-> > > > running three major kernel versions with LTO+CFI since 2018.
-> > > >
-> > > > Most of the patches are build system changes for handling LLVM bitcode,
-> > > > which Clang produces with LTO instead of ELF object files, postponing
-> > > > ELF processing until a later stage, and ensuring initcall ordering.
-> > > >
-> > > > Note that v7 brings back arm64 support as Will has now staged the
-> > > > prerequisite memory ordering patches [1], and drops x86_64 while we work
-> > > > on fixing the remaining objtool warnings [2].
+> > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > > ---
+> > >  arch/x86/net/bpf_jit_comp.c | 39 ++++++++++++++++++++++---------------
+> > >  1 file changed, 23 insertions(+), 16 deletions(-)
 > > >
-> > > Sounds like you're going to post a v8, but that's the plan for merging
-> > > that? The arm64 parts look pretty good to me now.
+> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > > index 94b17bd30e00..a839c1a54276 100644
+> > > --- a/arch/x86/net/bpf_jit_comp.c
+> > > +++ b/arch/x86/net/bpf_jit_comp.c
+> > > @@ -702,6 +702,21 @@ static void emit_modrm_dstoff(u8 **pprog, u32 r1, u32 r2, int off)
+> > >     *pprog = prog;
+> > >  }
+> > >
+> > > +/*
+> > > + * Emit a REX byte if it will be necessary to address these registers
 > >
-> > I haven't seen Masahiro comment on this in a while, so given the review
-> > history and its use (for years now) in Android, I will carry v8 (assuming
-> > all is fine with it) it in -next unless there are objections.
+> > What is "REX byte" ?
+> > May be rename it to maybe_emit_mod() ?
 >
+> Er, this is the REX prefix as described in
+> https://wiki.osdev.org/X86-64_Instruction_Encoding#REX_prefix
 >
-> What I dislike about this implementation is
-> it cannot drop any unreachable function/data.
-> (and it is completely different from GCC LTO)
->
-> This is not real LTO.
+> Would maybe_emit_mod be accurate? In my mind "mod" is a field in the
+> ModR/M byte which comes _after_ the opcode. Before developing this
+> patchset I knew almost nothing about x86, so maybe I'm missing something
+> about the general terminology?
 
-I'm not sure I understand your concern. LTO cannot drop functions or
-data from vmlinux.o that may be referenced externally. However, with
-CONFIG_LD_DEAD_CODE_DATA_ELIMINATION, the linker certainly can drop
-unused functions and data when linking vmlinux, and there's no reason
-this option can't be used together with LTO. In fact, Pixel 3 does
-enable this option, but in our experience, there isn't much unused
-code or data to remove, so later devices no longer use it.
-
-There's technically no reason why we couldn't postpone LTO until we
-link vmlinux instead, and thus allow the linker to possibly remove
-more unused code without the help of --gc-sections, but at least with
-the current build process, that would involve performing the slow LTO
-link step multiple times, which isn't worth it when we can get the
-performance benefits (and CFI) already when linking vmlinux.o with
-LTO.
-
-Sami
+I wrote the JIT without looking into the manual and without studying
+the terminology.
+Why? Because it was not necessary. I still don't see a reason why
+that obscure terminology needs to be brought in into the code.
+'mod' to me is a 'modifier'. Nothing to do with intel's modrm thing.
