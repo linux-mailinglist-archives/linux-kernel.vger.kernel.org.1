@@ -2,184 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6A62CC2C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C506B2CC2CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730752AbgLBQva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:51:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
+        id S2387436AbgLBQw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727227AbgLBQv3 (ORCPT
+        with ESMTP id S1726003AbgLBQw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:51:29 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA54C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:50:49 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id q3so1433870pgr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:50:49 -0800 (PST)
+        Wed, 2 Dec 2020 11:52:58 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA59C0613CF;
+        Wed,  2 Dec 2020 08:52:18 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id q16so4657498edv.10;
+        Wed, 02 Dec 2020 08:52:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=feImpssPWUbfU8stpcwf/DzW88O+SodsSpT27Ehwdio=;
-        b=qH5x5r1r40YrVG+ZBNQX1Rben9WTXlo9pDKQiloMce/rpeBLVkVcMYnmX5ZXJkgFuH
-         wrmyTXWuvbYiL87t3ER8fFlkgABtCBP6GgLUCFJKZSGR/2u0mPNMJ8TRb8VE7DKWu3yS
-         83ADppMlQOoJ5wimnz9XlLsRPPDzIL27Aaasp2wSOs18dFynGogSsjFZhTGE/iOU7YgI
-         /njB9XX31Xy/PL3D/GDdQaMQcp8xiQ35/7Y3fQYs1rmHJhqxlA5UPsNdLiASMwfyYG8n
-         7FdzON25IgKQkFX1wTr2t2pbA9yGDsI9BrXfRT29sW9HSS7fRzrw0k3K1naLIf+Q7hI2
-         nw1g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LiNmU7BMmDbZPdUfzJLb+NEIQsKFVUYnEPByABPW0ZM=;
+        b=IfPgSMZfwDqavuC8jGBVPewwZ215U5oWF1yh+yB1tbL46TGnujBNcAEUZXCl8drhZm
+         CI0qxg22j8qOBB77ckWzYearund6wrFkIeHS9RGJsXf33xzer+zY7Rlw8ggXwdmXI+kg
+         hn/scJvsWSy3q1+VV4AXGvxrKCIIZgNQ/pDEySfQfjOP6TEi9CRBXjJjFFXvCuLT4mt1
+         KeW8WWbL8rCuArtbwV/6BDvbL4lUpvjCY1aXWTp5vuv+gyN8GfbITfLt0lMS4hDkZn8k
+         KnTwVWQWBInB04D2a2DSlQF2qxb0iTmmWs3sAjH7PS4mdM6eBC9VHE/mOKyoelF3Fw/w
+         PQbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=feImpssPWUbfU8stpcwf/DzW88O+SodsSpT27Ehwdio=;
-        b=YY/wTAeCzUKQQltPucQSjQIVgbLXpbELEjibKC7mXUfWr3FvjLeQYOEZmCSDkkvHJs
-         NcQ0SVTvISaLyw/MDAoAg1mbTe+fnqeX3F2hq8BkG3FdM8ny2gjPcJV/YI0Vb+DLCf9e
-         gb+pYlw7r32GLvkThtG9pLeEKl64oLXLBtM5G6vZcU5aV9s3skM6G6W83h9HJgn+KQYz
-         roNSew1drU26+BTM+4iUE9J7a2q/qeRMy6v7PhWlsfLliJMk2qhcoFEFKY3kQdA4gaDk
-         cYMkd7qmlcMRL2TeRa/1XCAcriyuM8WlwbPLoRgmaKXBg4KAO6NiC8fN6nCg7zbHJ6Ov
-         nFHQ==
-X-Gm-Message-State: AOAM5336wFAMLTTS1dp1456V+1b35+CyYRc342kjHkcU9yztxQBtmwNt
-        BmEqRCLMH2jFmDa8ECrcggvi
-X-Google-Smtp-Source: ABdhPJx/KDmjglpN+tKSiKunsMr0GeDS0d4s1yyJ9InNXBjN9oYGX8Q8Ku5skEWzm9GWmgj14/SHZA==
-X-Received: by 2002:a65:684d:: with SMTP id q13mr656279pgt.372.1606927848642;
-        Wed, 02 Dec 2020 08:50:48 -0800 (PST)
-Received: from thinkpad ([2409:4072:100:69b9:b5fe:d7f9:67a:4196])
-        by smtp.gmail.com with ESMTPSA id k4sm331423pfg.174.2020.12.02.08.50.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 08:50:47 -0800 (PST)
-Date:   Wed, 2 Dec 2020 22:20:40 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [GIT PULL] MHI changes for v5.11
-Message-ID: <20201202165040.GC3033@thinkpad>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LiNmU7BMmDbZPdUfzJLb+NEIQsKFVUYnEPByABPW0ZM=;
+        b=QPt+sbNDwdZyi0vuUF0/W5ktkGdK9/QZ8+MET7x5fwm2QYxn//jaeMBBg+JEANRjFk
+         3qOvWjKD4AeL5oNFtGzbskZmNK9oA9aOgOgKMC/HF5IUX/EQ4BnuzMrb17GIUFRfIc21
+         dpSRM/zrf3zgkkLwXNlBAYTGF8N7/lRavcXug+33psWNeCiJ7P0FmkwgMsUvypWxfuLU
+         A8aoJE0XqHPadKfQT6S0AhoB88NuxRT9/Q5+Bumh+Uro95reBGYdcxttXyF+fUT2vGd6
+         x2LjR3jZtbEtHrEao/Yctog1Xbhpvg2D6Yy4PH2i8eR+Q/VcRQpRzv2EiSTbvkg+1mLo
+         FD3A==
+X-Gm-Message-State: AOAM5300fUq+zP2cxWRdgukGZVgyBAUZf0PFT0n1QDRuAE8gb/50mIYA
+        aUwJGU02FJ/RRinLpGpP5rxkPWHlkWMohe9LwDs=
+X-Google-Smtp-Source: ABdhPJzMXyscgUl8ikyyLBp+w8GDUWOZlaeYQdw2CkdV2SoX4eAzCRdXY3pw42ByLCebhS8W8Kl/hBmLlbOBMcUN0u0=
+X-Received: by 2002:a05:6402:1c8a:: with SMTP id cy10mr792361edb.151.1606927937103;
+ Wed, 02 Dec 2020 08:52:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201201212553.52164-1-shy828301@gmail.com> <CALvZod7wPdiS5Gyqa9d-CeAYhZ1nS=0+ANu4-CZxzOje-VJHHw@mail.gmail.com>
+In-Reply-To: <CALvZod7wPdiS5Gyqa9d-CeAYhZ1nS=0+ANu4-CZxzOje-VJHHw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 2 Dec 2020 08:52:05 -0800
+Message-ID: <CAHbLzkoLdnexMEt0Qvs0WoXrMGeFp68G6aWbLzwgJ9Uf1n6xzg@mail.gmail.com>
+Subject: Re: [v3 PATCH] mm: list_lru: set shrinker map bit when child nr_items
+ is not zero
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wed, Dec 2, 2020 at 7:01 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Tue, Dec 1, 2020 at 1:25 PM Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > When investigating a slab cache bloat problem, significant amount of
+> > negative dentry cache was seen, but confusingly they neither got shrunk
+> > by reclaimer (the host has very tight memory) nor be shrunk by dropping
+> > cache.  The vmcore shows there are over 14M negative dentry objects on lru,
+> > but tracing result shows they were even not scanned at all.  The further
+> > investigation shows the memcg's vfs shrinker_map bit is not set.  So the
+> > reclaimer or dropping cache just skip calling vfs shrinker.  So we have
+> > to reboot the hosts to get the memory back.
+> >
+> > I didn't manage to come up with a reproducer in test environment, and the
+> > problem can't be reproduced after rebooting.  But it seems there is race
+> > between shrinker map bit clear and reparenting by code inspection.  The
+> > hypothesis is elaborated as below.
+> >
+> > The memcg hierarchy on our production environment looks like:
+> >                 root
+> >                /    \
+> >           system   user
+> >
+> > The main workloads are running under user slice's children, and it creates
+> > and removes memcg frequently.  So reparenting happens very often under user
+> > slice, but no task is under user slice directly.
+> >
+> > So with the frequent reparenting and tight memory pressure, the below
+> > hypothetical race condition may happen:
+> >
+> >        CPU A                            CPU B
+> > reparent
+> >     dst->nr_items == 0
+> >                                  shrinker:
+> >                                      total_objects == 0
+> >     add src->nr_items to dst
+> >     set_bit
+> >                                      retrun SHRINK_EMPTY
+>
+> return
+>
+> >                                      clear_bit
+> > child memcg offline
+> >     replace child's kmemcg_id to
+>
+> with
+>
+> >     parent's (in memcg_offline_kmem())
+> >                                   list_lru_del() between shrinker runs
+> >                                      see parent's kmemcg_id
+> >                                      dec dst->nr_items
+> > reparent again
+> >     dst->nr_items may go negative
+> >     due to concurrent list_lru_del()
+> >
+> >                                  The second run of shrinker:
+> >                                      read nr_items without any
+> >                                      synchronization, so it may
+> >                                      see intermediate negative
+> >                                      nr_items then total_objects
+> >                                      may return 0 conincidently
+>
+> coincidently
+>
+> >
+> >                                      keep the bit cleared
+> >     dst->nr_items != 0
+> >     skip set_bit
+> >     add scr->nr_item to dst
+> >
+> > After this point dst->nr_item may never go zero, so reparenting will not
+> > set shrinker_map bit anymore.  And since there is no task under user
+> > slice directly, so no new object will be added to its lru to set the
+> > shrinker map bit either.  That bit is kept cleared forever.
+> >
+> > How does list_lru_del() race with reparenting?  It is because
+> > reparenting replaces childen's kmemcg_id to parent's without protecting
+>
+> children's
+>
+> > from nlru->lock, so list_lru_del() may see parent's kmemcg_id but
+> > actually deleting items from child's lru, but dec'ing parent's nr_items,
+> > so the parent's nr_items may go negative as commit
+> > 2788cf0c401c268b4819c5407493a8769b7007aa ("memcg: reparent list_lrus and
+> > free kmemcg_id on css offline") says.
+> >
+> > Since it is impossible that dst->nr_items goes negative and
+> > src->nr_items goes zero at the same time, so it seems we could set the
+> > shrinker map bit iff src->nr_items != 0.  We could synchronize
+> > list_lru_count_one() and reparenting with nlru->lock, but it seems
+> > checking src->nr_items in reparenting is the simplest and avoids lock
+> > contention.
+> >
+> > Fixes: fae91d6d8be5 ("mm/list_lru.c: set bit in memcg shrinker bitmap on first list_lru item appearance")
+> > Suggested-by: Roman Gushchin <guro@fb.com>
+> > Reviewed-by: Roman Gushchin <guro@fb.com>
+> > Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> > Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
+> > Cc: Shakeel Butt <shakeelb@google.com>
+> > Cc: <stable@vger.kernel.org> v4.19+
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Here is the MHI pull request for v5.11 cycle. The reason for doing pull request
-this time is because of the immutable branch which gets merged for handling
-networking and MHI changes.
-
-Details are in the signed tag, please consider merging!
-
-Thanks,
-Mani
-
----
-
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git tags/mhi-for-v5.11
-
-for you to fetch changes up to 4ea6fa2cb921cb17812501a27c3761037d64a217:
-
-  mhi: pci_generic: Fix implicit conversion warning (2020-12-02 14:29:17 +0530)
-
-----------------------------------------------------------------
-MHI patches for v5.11
-
-Here is the MHI patch set for v5.11. Most of the patches are cleanups and fixes
-but there are some noticeable changes too:
-
-1. Loic finally removed the auto-start option from the channel parameters of the
-MHI controller. It is the duty of the client drivers like qrtr to start/stop the
-channels when required, so we decided to remove this option. As a side effect,
-we changed the qrtr driver to start the channels during its probe and removed
-the auto-start option from ath11k controller.
-
-**NOTE** Since these changes spawns both MHI and networking trees, the patches
-are maintained in an immutable branch [1] and pulled into both mhi-next and
-ath11k-next branches. The networking patches got acks from ath11k and networking
-maintainers as well.
-
-2. Loic added a generic MHI pci controller driver. This driver will be used by
-the PCI based Qualcomm modems like SDX55 and exposes channels such as QMI,
-IP_HW0, IPCR etc...
-
-3. Loic fixed the MHI device hierarchy by maintaining the correct parent child
-relationships. Earlier all MHI devices lived in the same level under the parent
-device like PCIe. But now, the MHI devices belonging to channels will become the
-children of controller MHI device.
-
-4. Finally Loic also improved the MHI device naming by using indexed names such
-as mhi0, mhi1, etc... This will break the userspace applications depending on
-the old naming convention but since the only one user so far is Jeff Hugo's AI
-accelerator apps, we decided to make this change now itself with his agreement.
-
-5. Bhaumik fixed the qrtr driver by stopping the channels during remove. This
-patch also got ack from networking maintainer and we decided to take it through
-MHI tree (via immutable branch) since we already had a qrtr change.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git/log/?h=mhi-ath11k-immutable
-
-----------------------------------------------------------------
-Bhaumik Bhatt (20):
-      bus: mhi: core: Remove double locking from mhi_driver_remove()
-      bus: mhi: core: Remove unnecessary counter from mhi_firmware_copy()
-      bus: mhi: core: Add missing EXPORT_SYMBOL for mhi_get_mhi_state()
-      bus: mhi: core: Expose mhi_get_exec_env() API for controllers
-      bus: mhi: core: Remove unused mhi_fw_load_worker() declaration
-      bus: mhi: core: Rename RDDM download function to use proper words
-      bus: mhi: core: Skip RDDM download for unknown execution environment
-      bus: mhi: core: Use appropriate names for firmware load functions
-      bus: mhi: core: Move to using high priority workqueue
-      bus: mhi: core: Skip device wake in error or shutdown states
-      bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
-      bus: mhi: core: Prevent sending multiple RDDM entry callbacks
-      bus: mhi: core: Move to an error state on any firmware load failure
-      bus: mhi: core: Use appropriate label in firmware load handler API
-      bus: mhi: core: Move to an error state on mission mode failure
-      bus: mhi: core: Check for IRQ availability during registration
-      bus: mhi: core: Separate system error and power down handling
-      bus: mhi: core: Mark and maintain device states early on after power down
-      bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
-      net: qrtr: Unprepare MHI channels during remove
-
-Carl Yin (1):
-      bus: mhi: core: Fix null pointer access when parsing MHI configuration
-
-Dan Carpenter (1):
-      bus: mhi: core: Fix error handling in mhi_register_controller()
-
-Jeffrey Hugo (1):
-      bus: mhi: core: fix potential operator-precedence with BHI macros
-
-Loic Poulain (7):
-      bus: mhi: Remove auto-start option
-      net: qrtr: Start MHI channels during init
-      bus: mhi: Add MHI PCI support for WWAN modems
-      bus: mhi: Fix channel close issue on driver remove
-      bus: mhi: core: Indexed MHI controller name
-      bus: mhi: core: Fix device hierarchy
-      mhi: pci_generic: Fix implicit conversion warning
-
-Manivannan Sadhasivam (1):
-      Merge branch 'mhi-ath11k-immutable' into mhi-next
-
- drivers/bus/mhi/Kconfig               |   9 ++
- drivers/bus/mhi/Makefile              |   4 +
- drivers/bus/mhi/core/boot.c           |  75 ++++++++-------
- drivers/bus/mhi/core/debugfs.c        |   4 +-
- drivers/bus/mhi/core/init.c           |  73 +++++++++------
- drivers/bus/mhi/core/internal.h       |   7 +-
- drivers/bus/mhi/core/main.c           |  16 ++--
- drivers/bus/mhi/core/pm.c             | 238 ++++++++++++++++++++++++++++++++++-------------
- drivers/bus/mhi/pci_generic.c         | 345 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath11k/mhi.c |   4 -
- include/linux/mhi.h                   |  18 +++-
- net/qrtr/mhi.c                        |   6 ++
- 12 files changed, 653 insertions(+), 146 deletions(-)
- create mode 100644 drivers/bus/mhi/pci_generic.c
+Thanks for finding those spelling errors. Will fix in v4.
