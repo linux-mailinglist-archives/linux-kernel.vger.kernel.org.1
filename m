@@ -2,93 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AD52CC1C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8842CC1C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730645AbgLBQJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:09:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727678AbgLBQJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:09:34 -0500
-Date:   Wed, 2 Dec 2020 16:08:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606925334;
-        bh=SMOZs4KWCFhUFelF2nFn3dSKK/3uWlQNtrXQxM1GSFU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IIvmcKTCr7A9yv6jcfchaxPeaZqQL9EbWkWuhQjD2SxCqO03A+5lioR7PcLqkCgfP
-         ocCptkp9EhuP0tqbWJ3/JIMw2QkXFfQuzH14pJ8s9XbTU6iSBta0alWHuKEpGH0Nva
-         5nJowwVcpgoM1VvOpW+4+eR7PYTcC99w2NTQfDgg=
-From:   Mark Brown <broonie@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Liao, Bard" <bard.liao@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "hui.wang@canonical.com" <hui.wang@canonical.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "jank@cadence.com" <jank@cadence.com>,
-        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
-Subject: Re: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
-Message-ID: <20201202160824.GH5560@sirena.org.uk>
-References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
- <DM6PR11MB4074311B4E0B70F24383E754FFF40@DM6PR11MB4074.namprd11.prod.outlook.com>
- <20201201041138.GY8403@vkoul-mobl>
- <e9478e45-2a24-05f9-eb56-5905d54ab6a4@linux.intel.com>
- <20201201145322.GG5239@sirena.org.uk>
- <20201202071405.GG8403@vkoul-mobl>
+        id S2388991AbgLBQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:10:09 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:58511 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727678AbgLBQKI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:10:08 -0500
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 23E8520002;
+        Wed,  2 Dec 2020 16:09:20 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 17:09:20 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 13/19] media: sunxi: Add support for the A31 MIPI
+ CSI-2 controller
+Message-ID: <X8e8MNc5WYnpKTyy@aptenodytes>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-14-paul.kocialkowski@bootlin.com>
+ <20201201122038.bxk3vu2w3mg43ayq@gilmour>
+ <X8eoX+M650sMXqpx@aptenodytes>
+ <20201202154818.bf72m2firemyc5ve@gilmour>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jRdC2OsRnuV8iIl8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="NYHUWLtOMJokL+dM"
 Content-Disposition: inline
-In-Reply-To: <20201202071405.GG8403@vkoul-mobl>
-X-Cookie: Sauron is alive in Argentina!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201202154818.bf72m2firemyc5ve@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---jRdC2OsRnuV8iIl8
-Content-Type: text/plain; charset=us-ascii
+--NYHUWLtOMJokL+dM
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 02, 2020 at 12:44:05PM +0530, Vinod Koul wrote:
+Hi,
 
->   Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+On Wed 02 Dec 20, 16:48, Maxime Ripard wrote:
+> On Wed, Dec 02, 2020 at 03:44:47PM +0100, Paul Kocialkowski wrote:
+> > > > +static int __maybe_unused sun6i_mipi_csi2_suspend(struct device *d=
+ev)
+> > > > +{
+> > > > +	struct sun6i_mipi_csi2_dev *cdev =3D dev_get_drvdata(dev);
+> > > > +
+> > > > +	clk_disable_unprepare(cdev->clk_mod);
+> > > > +	clk_disable_unprepare(cdev->clk_bus);
+> > > > +	reset_control_assert(cdev->reset);
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static int __maybe_unused sun6i_mipi_csi2_resume(struct device *de=
+v)
+> > > > +{
+> > > > +	struct sun6i_mipi_csi2_dev *cdev =3D dev_get_drvdata(dev);
+> > > > +	int ret;
+> > > > +
+> > > > +	ret =3D reset_control_deassert(cdev->reset);
+> > > > +	if (ret) {
+> > > > +		dev_err(cdev->dev, "failed to deassert reset\n");
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	ret =3D clk_prepare_enable(cdev->clk_bus);
+> > > > +	if (ret) {
+> > > > +		dev_err(cdev->dev, "failed to enable bus clock\n");
+> > > > +		goto error_reset;
+> > > > +	}
+> > > > +
+> > > > +	ret =3D clk_prepare_enable(cdev->clk_mod);
+> > > > +	if (ret) {
+> > > > +		dev_err(cdev->dev, "failed to enable module clock\n");
+> > > > +		goto error_clk_bus;
+> > > > +	}
+> > > > +
+> > > > +	return 0;
+> > > > +
+> > > > +error_clk_bus:
+> > > > +	clk_disable_unprepare(cdev->clk_bus);
+> > > > +
+> > > > +error_reset:
+> > > > +	reset_control_assert(cdev->reset);
+> > > > +
+> > > > +	return ret;
+> > > > +}
+> > >=20
+> > > I'm guessing you set the __maybe_unused attribute because you're using
+> > > SET_RUNTIME_PM_OPS, but what would happen if runtime_pm isn't selecte=
+d?
+> > > It looks like you don't handle that case.
+> >=20
+> > Indeed, __maybe_unused is because of the conditional definition of
+> > SET_RUNTIME_PM_OPS. If CONFIG_PM is not selected, then I guess the cont=
+roller
+> > wouldn't be powered and wouldn't work. So I should definitely add a Kco=
+nfig
+> > dependency on PM then, right?
 >=20
-> are available in the Git repository at:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/=
-soundwire-for-asoc-5.11
->=20
-> for you to fetch changes up to b7cab9be7c16128a0de21ed7ae67211838813437:
->=20
->   soundwire: SDCA: detect sdca_cascade interrupt (2020-11-24 14:09:31 +05=
-30)
+> There's two ways we can do it. What you suggested is one, the other is
+> to have something like our SPI driver to call directly the resume
+> function if there's no runtime pm support.
 
-Pulled in, thanks.
+Understood! I think I'll stick to depending on PM (unless you prefer not to)
+but it's good to know.
 
---jRdC2OsRnuV8iIl8
+Cheers,
+
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--NYHUWLtOMJokL+dM
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/Hu/cACgkQJNaLcl1U
-h9CZVQf/VyX8InS9fyMv9fL3qL4IplBUxFs3X9fZ0WNOlJCZbvgR7RVTqbPiQ190
-eWYCzrj3yJUms/PeITGoTW83BAqPx8v428eEL8H3oRSiw9L/k6fhY90UQKGR4nvm
-4vSMD1hZFTI16vKY7Hx+6xymYKKXIMBKqJe11xnbMjyeVQGbuXKouHcBTX3eibCi
-IZn4IDBs7PSal//yPj2yzu81DQSbKCleeT/aD5uCAL6UnFcn1IMUZcfeUvcDrp7r
-oZH8XYjTlNyfsZ8WglyY6AawbuZe2icL2KbWx2y1O3ebey0bQVsUryFWRz7vNLu9
-OuF3gtaVjaypTH+fExmNsxtEYDST1Q==
-=KTtm
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/HvDAACgkQ3cLmz3+f
+v9Fm8AgAiWV6aebhuxeTBIhOQywJt0bWH442ibCI6O2W3BO1aBzn5le48//KHOBW
+3KuGiKTjL4guqfc4fNKG+moEqOai8v11MAVAz8ii/74l0WyN4LYUFwrKRJzGwS0J
+KQw/ldQxF5u8pYMGxaderBmACdscPzBoTvQZuVshEnRlQ9qKUHIsDa6CGieDQqIs
+9GNj9KiG/mWBV/AAYRwvllA3QW/EQJo3zbNs7wAAMMtOebNwSfh6P9peh8/memFn
+3MOHDAbEKAHKUWimARCMBhOQRGnQf3/wjBif0L7iebN4FUYqyl8cN5iOCwGVwfgs
+iFi3TSt1u9r0cUsE5yzDwsR6UZBipA==
+=TddM
 -----END PGP SIGNATURE-----
 
---jRdC2OsRnuV8iIl8--
+--NYHUWLtOMJokL+dM--
