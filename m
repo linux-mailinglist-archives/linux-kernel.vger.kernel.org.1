@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78722CC7F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92452CC812
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729242AbgLBUko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:40:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgLBUkn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:40:43 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A8CC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:39:57 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id v1so1698465pjr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:39:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=72m1KMe+AJCSmimUFUDpNwMkVlKd/noy7/CxGMLAfU8=;
-        b=wRmvCng7eaScdkobRQXOhNLwhalOoVmjpyk7RBBDGo7mYDFyeWfQZr5LMb/eCueYxQ
-         w6hyM31vnB0n+q8A5rCNMQlHLJ7WzJQ1GX2Uwbe7TX54ETPkuQ3yzE32QiBWl3qVIt0t
-         geT6t4wl13+UmxP9xC8Krmcl6MO9YxgkbDhMg1O9/fdZPQUnFasmHpn+IYtWtJ17JPaz
-         n1CQ9x7c8m6nhW9So4Y4ab8CAIKlhb7lXi7iYkffpdHjy3pDrDiwezIkE1UO/nqpHqqN
-         kJX2UtI1CC5f4SZWICp5lL33sQQz9zhhVPblAYqSI5Zt0A3O+fQEob3cAbXf7Mgd+B3p
-         yg5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=72m1KMe+AJCSmimUFUDpNwMkVlKd/noy7/CxGMLAfU8=;
-        b=GriTfCIWIw+vN1VVvorhqkp6R4oTAMGMThi8I9kyP6xe4fTuUzVn97IV3nM8laFzvS
-         WvsyTUO8MQrIRu/KDSahfPrAU5js86oJm+okQylTYvSJ9GFQ0fIC87jSruiMF+LZagc6
-         CiLOTuTGJXd2gw2sm5wIgwO+mYWMLGr5fUz8c2HYBKG6q5hUscUYJrNh2CXSzQmRP/Se
-         ZjURFoKvcRIltoxNnk+mkNdRpbHb9/Ml3WcBgVkHt5eprru37Bg5HVHqKMMxcXovQqOl
-         VXB+iGjji3+QkQ36+Vo01r4krQyNbNC6GrvcYGS/nTID0Mi4IIJVQGKyuGC05plSHoqH
-         niVQ==
-X-Gm-Message-State: AOAM533W5pFGR2QJOrNATLnfrBgKeBOhHAmhzadsmu7rLD32CgearRl8
-        WO2vrefYJFXvc5l4A9m+zYtLhQ==
-X-Google-Smtp-Source: ABdhPJw1cf0Z0S+7c/CMu2PeYxZmjqPUIZ3StipYqhj626oWKNPBJamixRQCT6VwF3HhZLku5/KtlQ==
-X-Received: by 2002:a17:902:9689:b029:d8:e310:2fa2 with SMTP id n9-20020a1709029689b02900d8e3102fa2mr4130256plp.42.1606941597224;
-        Wed, 02 Dec 2020 12:39:57 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id z22sm624604pfn.153.2020.12.02.12.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 12:39:56 -0800 (PST)
-Date:   Wed, 2 Dec 2020 13:39:54 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/8] rpmsg: Make RPMSG name service modular
-Message-ID: <20201202203954.GC1282360@xps15>
-References: <20201120214245.172963-1-mathieu.poirier@linaro.org>
- <20201123160610.GA19108@ubuntu>
- <20201202110555.GA65230@ubuntu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202110555.GA65230@ubuntu>
+        id S2388134AbgLBUmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:42:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:50434 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388068AbgLBUmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:42:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A313113E;
+        Wed,  2 Dec 2020 12:41:10 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5284E3F575;
+        Wed,  2 Dec 2020 12:41:08 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH v3 22/37] reset: reset-scmi: port driver to the new scmi_reset_proto_ops interface
+Date:   Wed,  2 Dec 2020 20:39:54 +0000
+Message-Id: <20201202204009.32073-23-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201202204009.32073-1-cristian.marussi@arm.com>
+References: <20201202204009.32073-1-cristian.marussi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
+Port driver to the new SCMI Reset interface based on protocol handles
+and common devm_get_ops().
 
-On Wed, Dec 02, 2020 at 12:05:55PM +0100, Guennadi Liakhovetski wrote:
-> Hi Mathieu,
-> 
-> I'd like to resume reviewing and begin upstreaming of the next steps of 
-> my Audio DSP Virtualisation work, based on this your patch set. How 
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ drivers/reset/reset-scmi.c | 33 ++++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 13 deletions(-)
 
-I'm all for it too.
+diff --git a/drivers/reset/reset-scmi.c b/drivers/reset/reset-scmi.c
+index 8d3a858e3b19..ec77d40e64ad 100644
+--- a/drivers/reset/reset-scmi.c
++++ b/drivers/reset/reset-scmi.c
+@@ -2,7 +2,7 @@
+ /*
+  * ARM System Control and Management Interface (ARM SCMI) reset driver
+  *
+- * Copyright (C) 2019 ARM Ltd.
++ * Copyright (C) 2019-2020 ARM Ltd.
+  */
+ 
+ #include <linux/module.h>
+@@ -11,18 +11,20 @@
+ #include <linux/reset-controller.h>
+ #include <linux/scmi_protocol.h>
+ 
++static const struct scmi_reset_proto_ops *reset_ops;
++
+ /**
+  * struct scmi_reset_data - reset controller information structure
+  * @rcdev: reset controller entity
+- * @handle: ARM SCMI handle used for communication with system controller
++ * @ph: ARM SCMI protocol handle used for communication with system controller
+  */
+ struct scmi_reset_data {
+ 	struct reset_controller_dev rcdev;
+-	const struct scmi_handle *handle;
++	const struct scmi_protocol_handle *ph;
+ };
+ 
+ #define to_scmi_reset_data(p)	container_of((p), struct scmi_reset_data, rcdev)
+-#define to_scmi_handle(p)	(to_scmi_reset_data(p)->handle)
++#define to_scmi_handle(p)	(to_scmi_reset_data(p)->ph)
+ 
+ /**
+  * scmi_reset_assert() - assert device reset
+@@ -37,9 +39,9 @@ struct scmi_reset_data {
+ static int
+ scmi_reset_assert(struct reset_controller_dev *rcdev, unsigned long id)
+ {
+-	const struct scmi_handle *handle = to_scmi_handle(rcdev);
++	const struct scmi_protocol_handle *ph = to_scmi_handle(rcdev);
+ 
+-	return handle->reset_ops->assert(handle, id);
++	return reset_ops->assert(ph, id);
+ }
+ 
+ /**
+@@ -55,9 +57,9 @@ scmi_reset_assert(struct reset_controller_dev *rcdev, unsigned long id)
+ static int
+ scmi_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
+ {
+-	const struct scmi_handle *handle = to_scmi_handle(rcdev);
++	const struct scmi_protocol_handle *ph = to_scmi_handle(rcdev);
+ 
+-	return handle->reset_ops->deassert(handle, id);
++	return reset_ops->deassert(ph, id);
+ }
+ 
+ /**
+@@ -73,9 +75,9 @@ scmi_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
+ static int
+ scmi_reset_reset(struct reset_controller_dev *rcdev, unsigned long id)
+ {
+-	const struct scmi_handle *handle = to_scmi_handle(rcdev);
++	const struct scmi_protocol_handle *ph = to_scmi_handle(rcdev);
+ 
+-	return handle->reset_ops->reset(handle, id);
++	return reset_ops->reset(ph, id);
+ }
+ 
+ static const struct reset_control_ops scmi_reset_ops = {
+@@ -90,10 +92,15 @@ static int scmi_reset_probe(struct scmi_device *sdev)
+ 	struct device *dev = &sdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	const struct scmi_handle *handle = sdev->handle;
++	struct scmi_protocol_handle *ph;
+ 
+-	if (!handle || !handle->reset_ops)
++	if (!handle)
+ 		return -ENODEV;
+ 
++	reset_ops = handle->devm_get_ops(sdev, SCMI_PROTOCOL_RESET, &ph);
++	if (IS_ERR(reset_ops))
++		return PTR_ERR(reset_ops);
++
+ 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+ 		return -ENOMEM;
+@@ -101,8 +108,8 @@ static int scmi_reset_probe(struct scmi_device *sdev)
+ 	data->rcdev.ops = &scmi_reset_ops;
+ 	data->rcdev.owner = THIS_MODULE;
+ 	data->rcdev.of_node = np;
+-	data->rcdev.nr_resets = handle->reset_ops->num_domains_get(handle);
+-	data->handle = handle;
++	data->rcdev.nr_resets = reset_ops->num_domains_get(ph);
++	data->ph = ph;
+ 
+ 	return devm_reset_controller_register(dev, &data->rcdev);
+ }
+-- 
+2.17.1
 
-> confident are we that it's going to be upstreamed in its present form? 
-> What's the plan to push it to "next?"
-> 
-
-I thought we were pretty unanimous that something like what Kishon did was the
-way to go.  
-
-> Thanks
-> Guennadi
-> 
-> On Mon, Nov 23, 2020 at 05:06:10PM +0100, Guennadi Liakhovetski wrote:
-> > Hi Mathieu,
-> > 
-> > Thanks for bringing all the stuff together and for polishing it!
-> > 
-> > For the entire series:
-> > 
-> > Tested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> > 
-> > Thanks
-> > Guennadi
-> > 
-> > On Fri, Nov 20, 2020 at 02:42:37PM -0700, Mathieu Poirier wrote:
-> > > This revision addresses comments received from the previous revision,
-> > > i.e V6.  Please see details below.
-> > > 
-> > > It starts by making the RPMSG protocol transport agnostic by
-> > > moving the headers it uses to generic types and using those in the
-> > > current implementation.  From there it re-uses the work that Arnaud
-> > > published[1] to make the name service modular.
-> > > 
-> > > Tested on stm32mp157 with the RPMSG client sample application.  Applies
-> > > cleanly on rpmsg-next.
-> > > 
-> > > Thanks,
-> > > Mathieu
-> > > 
-> > > [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
-> > > 
-> > > -------
-> > > New for V7:
-> > > - Fixed error path in rpmsg_probe() as reported by Guennadi
-> > > 
-> > > Arnaud Pouliquen (4):
-> > >   rpmsg: virtio: Rename rpmsg_create_channel
-> > >   rpmsg: core: Add channel creation internal API
-> > >   rpmsg: virtio: Add rpmsg channel device ops
-> > >   rpmsg: Turn name service into a stand alone driver
-> > > 
-> > > Mathieu Poirier (4):
-> > >   rpmsg: Introduce __rpmsg{16|32|64} types
-> > >   rpmsg: virtio: Move from virtio to rpmsg byte conversion
-> > >   rpmsg: Move structure rpmsg_ns_msg to header file
-> > >   rpmsg: Make rpmsg_{register|unregister}_device() public
-> > > 
-> > >  drivers/rpmsg/Kconfig            |   9 ++
-> > >  drivers/rpmsg/Makefile           |   1 +
-> > >  drivers/rpmsg/rpmsg_core.c       |  44 ++++++++
-> > >  drivers/rpmsg/rpmsg_internal.h   |  14 ++-
-> > >  drivers/rpmsg/rpmsg_ns.c         | 126 +++++++++++++++++++++
-> > >  drivers/rpmsg/virtio_rpmsg_bus.c | 186 +++++++++++--------------------
-> > >  include/linux/rpmsg.h            |  63 ++++++++++-
-> > >  include/linux/rpmsg/byteorder.h  |  67 +++++++++++
-> > >  include/linux/rpmsg/ns.h         |  45 ++++++++
-> > >  include/uapi/linux/rpmsg_types.h |  11 ++
-> > >  10 files changed, 439 insertions(+), 127 deletions(-)
-> > >  create mode 100644 drivers/rpmsg/rpmsg_ns.c
-> > >  create mode 100644 include/linux/rpmsg/byteorder.h
-> > >  create mode 100644 include/linux/rpmsg/ns.h
-> > >  create mode 100644 include/uapi/linux/rpmsg_types.h
-> > > 
-> > > -- 
-> > > 2.25.1
-> > > 
