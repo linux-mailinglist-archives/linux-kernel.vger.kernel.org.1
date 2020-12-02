@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355802CB414
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F822CB424
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgLBEvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 23:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S1728363AbgLBE7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 23:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgLBEvm (ORCPT
+        with ESMTP id S1727744AbgLBE7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 23:51:42 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A42C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:51:02 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id s18so351668oih.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 20:51:02 -0800 (PST)
+        Tue, 1 Dec 2020 23:59:16 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79763C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:58:36 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id f8so83829oou.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 20:58:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=O8OlWUcn7I2y85PlZGoSs1/3GiW9RLGsL8QEgM5BfWE=;
-        b=FXUUlYedBtzyDH/d8h7WkSI6z5K7ONVtUmD50lnitII7od9wmCKWDBDDmBA4B0F+Oz
-         oK28SXXD3fWXb20EGgvYx4h/ICtB/0l9uMvWV4G3MYfSsgtwS408Tb/x2vS+DuoSz9VJ
-         KR507+R/820UCCnxopotLc0df90dq9x9IwuaNdjsJLKzD40HsI9qs2h7nbVeN9EtYYW/
-         ojTP9qmSmLo7fzO8xehOqtJOz4Pflj0tcJXRtp6VnpCOLGrHtR/be5MLpmW+8ilfLKUn
-         hEVoeySrvb227JZMd8Pq6STMkcBKw9MNbWZXUKSPOsx36TVLBenrUmzaNUrE9ZpX6cm4
-         m+TA==
+        bh=QWSWScHcCDQ+nf3XiCuO3EwbF43AA8xuLuIZCopOA6Y=;
+        b=d2YO1ZemNG3BELxBdB7W5jvqFs4Wbi7zhb943W+E+hukOOI5MPN3T8NRoMIufppimo
+         xIASON5mHSNUdNb2+Tw2xbizrf1vG0esnzFICG/DW2m7wtkGY5JOzV8CEdH1JMl1LXuk
+         FRoJAm2UfK5YrWn6PPDZxrrcrd0HIpxJAdwnNoqA1Js4kupMC7LaWo5uEKV9tIKeP1lY
+         V9BjrWHjat85xt+3x9ByZjJyK4EWCjADs2oYRsWaGGVcc3nAGgiRzM81G1MUEbXg9E06
+         S62+h6WoQ7uZ137ydfe+O+hi+xLbdsflFCfyJ6PTthtiMXxfKBB4lq5mFurOrIneq5fK
+         k2Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=O8OlWUcn7I2y85PlZGoSs1/3GiW9RLGsL8QEgM5BfWE=;
-        b=G/PqQZ0TjkN8SgU0oKgc5BwXvI6kKuNIXAtZfEqN/QzeYYq8enM01Y0G+lT0flY5RS
-         OhAw29k74sM8gaKpbQiAdSJV9vAb8eM4MKAKMuMNXOZ8N4R0YP5mWImjpYL2qYCvnFqj
-         LqYaK6rioRfvtG8WGhUllKISGrHla0ziJXA4ENQvQMMtqYjABIrNVIR+xuize8CvDnEW
-         n8RXOWuN03uIOPeAEOYJUYyu0wS/XQKsQbS/oquFTY5L1NqHt4nHoZgs9g61UVNQ4DfL
-         ATBhxk/7ngpmmo53HHjcUesrSBJQU7BJ5ligoV8Y1ne+cYllOcndKW0eCPoEvoQyP6B6
-         BpQw==
-X-Gm-Message-State: AOAM531Y8DMcTFxGE68VatmzUCVM6Qb6qEKb31gA18TV2BDMIkrgl32E
-        tJ0vgwAU5Wgpr+eK3DaP5od0hHrrWXiTwQyf3DcthQ==
-X-Google-Smtp-Source: ABdhPJwCAstSm0B5FLMvJw8Ny2PlCdnlSfjUssiJQvc4+IR8JjAHAoTcwUOB4BarcTls2i+qyc0JrNadbJXIX3ACKN8=
-X-Received: by 2002:aca:809:: with SMTP id 9mr462435oii.13.1606884661546; Tue,
- 01 Dec 2020 20:51:01 -0800 (PST)
+        bh=QWSWScHcCDQ+nf3XiCuO3EwbF43AA8xuLuIZCopOA6Y=;
+        b=SNtG+dVYGr2umQ3u1lJmSStNPotTqED+Em15Skc+Ehjo9RFRrjWVk7HEYGt03mFBz3
+         rE4gtrHrSBnoC8rRU+eucCjVQIrRkcpV74/Ple7Mg/gHtkCQCQzZ4EQApkIGR/TmjA0b
+         FFbz1ZZqPxdQel6Et0NqSYfSKqwHQE07NuBbVIHTV4qV89W/AyjwotBw9WnUcZL6kW5N
+         iwgRrEG5BdA+sEGUez3fJzaT5MCEPth9oovv0bwevCvAUizshgTDtgUv38bm8zDdSVbG
+         XgWpDpSmgLYQR5JqaAjcCVtFzrfxHY8xZyMiUeo8u8Dw5ddn1QCdRb1td+7GcOXTFUV3
+         TZug==
+X-Gm-Message-State: AOAM5317AtXOvZabwAilCR13wW1pO1sK4pp3sM6P5EQSJ3qwNDxUbHwW
+        k9Kdvck17PI7Zk2fDtdgBTzkaCvuYx34VGUa/R44WA==
+X-Google-Smtp-Source: ABdhPJzqWLJAiCdsr6Wc0FF/Pql/EsJ7mI8JD2WoYCrSTszxlO6kVq9xojVggmA+IMYhcn1eljVqHKYhp1V91Mib10w=
+X-Received: by 2002:a4a:9502:: with SMTP id m2mr413982ooi.93.1606885115613;
+ Tue, 01 Dec 2020 20:58:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20201201084711.707195422@linuxfoundation.org>
-In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+References: <20201201084652.827177826@linuxfoundation.org>
+In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
 From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 2 Dec 2020 10:20:50 +0530
-Message-ID: <CA+G9fYsjnhqak8Bf+YXqqdZchVC+Rc3S=WiD2cBKu7qX_95scw@mail.gmail.com>
-Subject: Re: [PATCH 5.9 000/152] 5.9.12-rc1 review
+Date:   Wed, 2 Dec 2020 10:28:23 +0530
+Message-ID: <CA+G9fYv_PwCRakrQbiXLOEsmQzKT7KWPZL3UVMDGna1xEpwQ2g@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/98] 5.4.81-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
@@ -65,11 +65,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 at 14:38, Greg Kroah-Hartman
+On Tue, 1 Dec 2020 at 14:34, Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> This is the start of the stable review cycle for the 5.9.12 release.
-> There are 152 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 5.4.81 release.
+> There are 98 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
@@ -78,10 +78,10 @@ On Tue, 1 Dec 2020 at 14:38, Greg Kroah-Hartman
 >
 > The whole patch series can be found in one patch at:
 >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.9.12-rc1.gz
+5.4.81-rc1.gz
 > or in the git tree and branch at:
 >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.9.y
+-rc.git linux-5.4.y
 > and the diffstat can be found below.
 >
 > thanks,
@@ -93,32 +93,23 @@ No regressions on arm64, arm, x86_64, and i386.
 
 Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-NOTE:
-BUG: Invalid wait context on arm64 db410c device.
-This is an intermittent issue seen while booting and while running kselftes=
-ts.
-https://lore.kernel.org/stable/CA+G9fYupbQK02Yor=3DU-80JEdkwacZ7bi3RKt3+D=
-=3De+qZ-o0uCA@mail.gmail.com/
-https://lore.kernel.org/stable/CA+G9fYsk54r9Re4E9BWpqsoxLjpCvxRKFWRgdiKVcPo=
-YE5z0Hw@mail.gmail.com/
-
 Summary
 ------------------------------------------------------------------------
 
-kernel: 5.9.12-rc1
+kernel: 5.4.81-rc1
 git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
 le-rc.git
-git branch: linux-5.9.y
-git commit: fb49ad2107f4b740257c84ec2991fc6afb447f53
-git describe: v5.9.11-153-gfb49ad2107f4
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
-y/build/v5.9.11-153-gfb49ad2107f4
+git branch: linux-5.4.y
+git commit: 89a0528bfd8df49c50fda873ffb8cfeea5a2898b
+git describe: v5.4.80-99-g89a0528bfd8d
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.80-99-g89a0528bfd8d
 
-No regressions (compared to build v5.9.11)
+No regressions (compared to build v5.4.80)
 
-No fixes (compared to build v5.9.11)
+No fixes (compared to build v5.4.80)
 
-Ran 53637 total tests in the following environments and test suites.
+Ran 47231 total tests in the following environments and test suites.
 
 Environments
 --------------
@@ -138,7 +129,6 @@ Environments
 - qemu-arm-clang
 - qemu-arm64-clang
 - qemu-arm64-kasan
-- qemu-i386-clang
 - qemu-x86_64-clang
 - qemu-x86_64-kasan
 - qemu_arm
@@ -161,9 +151,10 @@ Test Suites
 * linux-log-parser
 * igt-gpu-tools
 * install-android-platform-tools-r2600
+* kselftest
 * libhugetlbfs
 * ltp-cap_bounds-tests
-* ltp-commands-tests
+* ltp-controllers-tests
 * ltp-cpuhotplug-tests
 * ltp-crypto-tests
 * ltp-cve-tests
@@ -173,27 +164,25 @@ Test Suites
 * ltp-fs_bind-tests
 * ltp-fs_perms_simple-tests
 * ltp-fsx-tests
+* ltp-hugetlb-tests
 * ltp-io-tests
 * ltp-ipc-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-commands-tests
+* ltp-containers-tests
 * ltp-math-tests
 * ltp-nptl-tests
 * ltp-pty-tests
 * ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-containers-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-sched-tests
 * network-basic-tests
-* kselftest
-* ltp-controllers-tests
+* ltp-fs-tests
 * ltp-open-posix-tests
+* ltp-syscalls-tests
 * kvm-unit-tests
-* kunit
 * kselftest-vsyscall-mode-native
 * kselftest-vsyscall-mode-none
 
