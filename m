@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F8B2CC8F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 571EC2CC8EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgLBV3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:29:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43300 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727756AbgLBV3r (ORCPT
+        id S2387753AbgLBV3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgLBV3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:29:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606944501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=R3y59cFkBFhJHLAJHRUlQeF2BXj1DNnEUxvigbFgejc=;
-        b=UvzX68gGrTgtbZv94Eh6wQDuLJC83s8kiDsCUBELJXWIhBGanMOzoxrL0Gx0JrexdUxPSQ
-        VGItzBsnoYKz0HXiSnZgmfuUArhSm7JRCafFgatfIc7aDAWQtaApwzuaTJHxVs1SjsxVmA
-        6zkrcMNfQpbmGW2aHvcs2xUu5evwyho=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-L4iFa866OxKYHKgCGjl4Wg-1; Wed, 02 Dec 2020 16:28:19 -0500
-X-MC-Unique: L4iFa866OxKYHKgCGjl4Wg-1
-Received: by mail-qk1-f197.google.com with SMTP id 202so127913qkl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 13:28:19 -0800 (PST)
+        Wed, 2 Dec 2020 16:29:38 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBF7C0613D6;
+        Wed,  2 Dec 2020 13:28:57 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id s9so69447ljo.11;
+        Wed, 02 Dec 2020 13:28:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5XxPc3chLSDUNv3JWhSZI6yuRR4/U1OgJnqTGaagloE=;
+        b=D8/7JkieV7O7uvLtVcAzL+wIMniFiyKVdeCJY9CRDiOzumSNZJPXRHxgrn4EIXzTg8
+         MaPq5BmxvXx5Las/rLGgT6t5AIUC4LZphF5yniGht66nAVoacoc4a1G0Pkuo1BoVohWa
+         3Ab2/SIj5qN/U/7MJdND1QCQi/7h9fdK9Dbq2bSLIltGw368pbY8vmiGLW2mLlw1qglz
+         tbYtr5T/Zv3dx6k21rlazfL47g9JcgS1XBx5iC5FeTnNeIyk/HY0Tjo5XQ+rYF4/LXEk
+         kmatHvuGIsSRWXP0cJF5QIUw1J6w6jhQJickgKXMPWzq/M5rUX2z74KrlkJIeHDU2s3R
+         14ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=R3y59cFkBFhJHLAJHRUlQeF2BXj1DNnEUxvigbFgejc=;
-        b=SGlSSVHhw9fY8vTJ79B2JzA0zJTRUUc58WKc03ZG68WjKWyAeJGpQpQrGGMElcM/lA
-         7XcRYhlYHf4Xn+rqaIcJxEQKSkZCa7IVh8ibguPzRKD7fYc4O7l2qsOk1NikWIfaWUSs
-         A851cEraBoM6Y9nyLp4b7EN9dpAsiOcS81EPfkVoWCkauuY7ebzuxFrV/Jw3Yb9E5Gxi
-         z4JwPh7SEWGagAysUTvSlswoWtbyuMFHNmB8D5mK4q+vRDYdS9B8DOPuLZFVQJ74ZnPe
-         rDvSS0cOqpaaKyQEtoGpDRnIEuEdPQ8eohhFsiIMcv2au5n2VfCkgA0EPAXbfARWdVT1
-         +29g==
-X-Gm-Message-State: AOAM531lVJ7ZuXmb/woIAipfsUMSTVfsIJe4mcUj/EmHvsFhV5ByqiQx
-        tVSn70THkO/FnnBAN54AJliGnE+z8/0YqJU2Sc+BOj/DR+Llpmzr/2ldzFlA1RcYLJdsNA9acii
-        gxKMB/gVoQZsaNwFEXPcdb0ae
-X-Received: by 2002:aed:308a:: with SMTP id 10mr141327qtf.312.1606944498913;
-        Wed, 02 Dec 2020 13:28:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxMQAv9tZIsxapcS/KocPHAZTfaCE23GVIln0P+rFylEHpjwCBMxSLkJjYKU3ZJT2kBE1904g==
-X-Received: by 2002:aed:308a:: with SMTP id 10mr141308qtf.312.1606944498652;
-        Wed, 02 Dec 2020 13:28:18 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q20sm2873760qke.0.2020.12.02.13.28.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 13:28:17 -0800 (PST)
-From:   trix@redhat.com
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v2] bpf: remove trailing semicolon in macro definition
-Date:   Wed,  2 Dec 2020 13:28:10 -0800
-Message-Id: <20201202212810.3774614-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5XxPc3chLSDUNv3JWhSZI6yuRR4/U1OgJnqTGaagloE=;
+        b=EDGVXQ9wOmNaEHTEW147AI4+SI7darEALVS5zQ5vdUxgMpgWMffWcOIVeovRIAD9h/
+         enS+qnaBEVrHNYzbWH8cQEjDOjTmtoUHQ2D843CsAIFSCxklwJIfY+BR8xD7CWdQey06
+         UcZZqrh8ZNylQXkW58tCo8ECLXlq6Ay/e2m+cKtgrD22dULuZWaMxFyEZNYo8JxfvAsy
+         j0Fu6dYt5zWAosJttXnINRtCj2C8l4le75wmnCYs4r3xft6rLqthZUp8crKTcPobmsq3
+         FWMzLtK5nwDV/jSptiOjx2L6j2qaSpmpL6eJ82Zeyf1QygWbj0Va5CYmaqUcOQJGdhbM
+         3KVQ==
+X-Gm-Message-State: AOAM533hqgYRgtX1qgRKbxpxF1qPozZRji+QX5mjqhXlXQrmA7WWHm93
+        9JDh3bfDY0anjsq2VGjqVUg=
+X-Google-Smtp-Source: ABdhPJxgyr4kAy1RMo17xWfFqHcx1e6XFhqRmcr1tNyKq+pGOsciL9vMgmoSwRX9ecNVe2j1TV7cRQ==
+X-Received: by 2002:a05:651c:2005:: with SMTP id s5mr2148512ljo.36.1606944535669;
+        Wed, 02 Dec 2020 13:28:55 -0800 (PST)
+Received: from [192.168.1.39] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id y65sm844738lfa.289.2020.12.02.13.28.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 13:28:54 -0800 (PST)
+Subject: Re: [PATCH] mm/vmalloc: randomize vmalloc() allocations
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+References: <20201201214547.9721-1-toiwoton@gmail.com>
+ <20201202185334.GG11935@casper.infradead.org>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <ddfe379a-915b-fca8-d191-e60e059e2dae@gmail.com>
+Date:   Wed, 2 Dec 2020 23:28:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201202185334.GG11935@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On 2.12.2020 20.53, Matthew Wilcox wrote:
+> On Tue, Dec 01, 2020 at 11:45:47PM +0200, Topi Miettinen wrote:
+>> +	/* Randomize allocation */
+>> +	if (randomize_vmalloc) {
+>> +		voffset = get_random_long() & (roundup_pow_of_two(vend - vstart) - 1);
+>> +		voffset = PAGE_ALIGN(voffset);
+>> +		if (voffset + size > vend - vstart)
+>> +			voffset = vend - vstart - size;
+>> +	} else
+>> +		voffset = 0;
+>> +
+>>   	/*
+>>   	 * If an allocation fails, the "vend" address is
+>>   	 * returned. Therefore trigger the overflow path.
+>>   	 */
+>> -	addr = __alloc_vmap_area(size, align, vstart, vend);
+>> +	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
+>>   	spin_unlock(&free_vmap_area_lock);
+> 
+> What if there isn't any free address space between vstart+voffset and
+> vend, but there is free address space between vstart and voffset?
+> Seems like we should add:
+> 
+> 	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
+> +	if (!addr)
+> +		addr = __alloc_vmap_area(size, align, vstart, vend);
+> 	spin_unlock(&free_vmap_area_lock);
+> 
 
-The macro use will already have a semicolon.
-Clean up escaped newlines
+How about:
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
-v2: more macros fixed, escaped newlines cleaned
----
- include/trace/events/xdp.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
++	if (!addr)
++		addr = __alloc_vmap_area(size, align, vstart, vstart + voffset + size);
+	spin_unlock(&free_vmap_area_lock);
 
-diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-index cd24e8a59529..76a97176ab81 100644
---- a/include/trace/events/xdp.h
-+++ b/include/trace/events/xdp.h
-@@ -145,17 +145,17 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
- 	TP_ARGS(dev, xdp, tgt, err, map, index)
- );
- 
--#define _trace_xdp_redirect(dev, xdp, to)		\
--	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to);
-+#define _trace_xdp_redirect(dev, xdp, to)				\
-+	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
- 
--#define _trace_xdp_redirect_err(dev, xdp, to, err)	\
--	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to);
-+#define _trace_xdp_redirect_err(dev, xdp, to, err)			\
-+	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to)
- 
- #define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
--	 trace_xdp_redirect(dev, xdp, to, 0, map, index);
-+	 trace_xdp_redirect(dev, xdp, to, 0, map, index)
- 
- #define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
--	 trace_xdp_redirect_err(dev, xdp, to, err, map, index);
-+	 trace_xdp_redirect_err(dev, xdp, to, err, map, index)
- 
- /* not used anymore, but kept around so as not to break old programs */
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map,
--- 
-2.18.4
+That way the search would not be redone for the area that was already 
+checked and rejected.
 
+Perhaps my previous patch for mmap() etc. randomization could also 
+search towards higher addresses instead of trying random addresses five 
+times in case of clashes.
+
+-Topi
