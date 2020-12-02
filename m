@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609992CB57B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA382CB581
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387607AbgLBHDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:03:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
+        id S2387635AbgLBHDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:03:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387511AbgLBHDb (ORCPT
+        with ESMTP id S1728039AbgLBHDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:03:31 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC64C0613CF;
-        Tue,  1 Dec 2020 23:02:51 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id v11so357336qtq.12;
-        Tue, 01 Dec 2020 23:02:51 -0800 (PST)
+        Wed, 2 Dec 2020 02:03:54 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F49C0613D4;
+        Tue,  1 Dec 2020 23:03:13 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id e25so4170446wme.0;
+        Tue, 01 Dec 2020 23:03:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K/LW+Nm7CzY8OBZABUof+7+4pClm6pGGCifwBOr9FSo=;
-        b=nml25srvIDgKr6LK5pmS34VajNkmFjkz00YZSGgbSDcrSP95OpRfV4p43e7K12yNQ8
-         K0tG/d4v6e6xYCWAWdcu504tuMzyM9sOXQ7dicvJwlJkVAcUjz80FdAAMxnDNcn3YhNj
-         M+JDjHRebHX5h/mHmSEt97z54+MDB4ZlKFIh4=
+        bh=bDEuBbvyO4m/aOrUkaJX+zPA0wyOJV04lKgxRyULzKk=;
+        b=A6BUjlpprQbeCgO38tGePMxU/Z1DUnKDpLCzWSzeQ0RGCJdGE/3r5PvCnFphFaQ2xh
+         tDCvBR746a2dKj2EAxnxREr3JcK8TxI5yNCyl3OZCh55A1FIF0uFzelAP12Ac9/kvJlE
+         /L6GyTDevzH1wgU556itNQNzn4aVf3MKDRQlXz9B3JO2OETcFPNRd6HtB8R6XJqz77Ju
+         fcFRTXHncSbhfYQWAXvw1F0iGHVLc0Ya6SE8zLDusdLVJ1yqL6mUVLQ2W67jD/RNNsX+
+         NIddsi04HxMAhXdADHvRU8MaPlTY/u+y3KD6Bkvj1PyP48dKYl2cM1ba2EBVeU0PubKG
+         RrVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K/LW+Nm7CzY8OBZABUof+7+4pClm6pGGCifwBOr9FSo=;
-        b=Cgy6DWxfRYmHQW0nhZUKM/iM/wvLoi1ADAZ23I/sm4w/ppBrvDOSW+bMjtFpP47TtW
-         zUBthH+7yoOvpLQoDr1I0rSLnn2RhLhrrrFpQflt/s9uIoEU06MjPgwdD29g6PfRK7Bs
-         FnH0+6BM5VWR8vC0yotsdnPAeOBb0OzbL0aKO/d0004hhj5vawfEO6OPby3t2tM/HpRq
-         jvIxiLPUIUZMDVnX6LFg0HjCkkOcFG2urG4/dJ8czKLjhzA6u+J6J7I94Dbs9eb+9MQg
-         +8mEoHson6uCfVBEtp3jNvaDi5xeplA/FFgXH7sh++WgMc6oyCLc+nFyvOaASpl86Ean
-         Py3g==
-X-Gm-Message-State: AOAM533zR6Ptg6tldPa0EmAQ1JHKq+GObSewqOcAxy5VZdLViFpJCnAr
-        jQjsBNvLolki0i63zu0kuKV4N9bHoI/ILyVz2/0=
-X-Google-Smtp-Source: ABdhPJzO8P9uYlPvdQcAIvJtcX07Y7BQWFF26rgVDS0nYTsEGEzjj1FFaVdSjTQ44wpFZcDyzJ5EkJjcaZ2Mh3e8Pxc=
-X-Received: by 2002:aed:38c8:: with SMTP id k66mr1234725qte.385.1606892570752;
- Tue, 01 Dec 2020 23:02:50 -0800 (PST)
+        bh=bDEuBbvyO4m/aOrUkaJX+zPA0wyOJV04lKgxRyULzKk=;
+        b=rjBo2L26ZbyKwlNsEFTMnP39H94BQLFovj6bwKLfdA50hBJ6Bix7lx0WdN/6EzvL4U
+         XaAYkN5lArXOm73CYEKn4EggDFhT+sZYtO2HDwS3nkHefnj7opSiqwRgKRE3zFbQuZbL
+         rWllbMkBKeofC4/dh1yDLvH8K4JSUC32Y/LAguW83FEv3PEMps2GM/S5QmLM3TctrfJO
+         cpKzv5rSmXX1X0CMtCXeNAC7iu1Hc3BMDryhWYMwmyzAIdWyzAGz8EWomZKXf5b1dSLh
+         X1rZxpTALItyFF7Gdd8gG+Kq/03dJYj27NLkNqkbDNHiaYjE4FWFHd/CUz0xSFdiQWpd
+         Z6vg==
+X-Gm-Message-State: AOAM530rU+T3TpGr2GkH+9nYeLzibndI2AnwIQSnFnBMDx+nx3KjFLve
+        +IIwpK0SrLMjfFselQHkLtpdrnEfYopLSoMnABY=
+X-Google-Smtp-Source: ABdhPJzR5Hixme4SzNzsQ2hgFB6L6n6Q9R6GuEyMpXhKkYTMG1qgDfVOBUYf8cxNABWF0W6J/c1yoZEjHvlkG/FP5jU=
+X-Received: by 2002:a05:600c:21ce:: with SMTP id x14mr1446848wmj.27.1606892592410;
+ Tue, 01 Dec 2020 23:03:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202063612.21241-1-troy_lee@aspeedtech.com> <20201202063612.21241-2-troy_lee@aspeedtech.com>
-In-Reply-To: <20201202063612.21241-2-troy_lee@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 2 Dec 2020 07:02:38 +0000
-Message-ID: <CACPK8XeMdz70aH59zR1GjD6+r+68Y46qhreTw0AG7bzctCtxCg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] ARM: dts: aspeed: Add AST2600 edac into common devicetree
-To:     Troy Lee <troy_lee@aspeedtech.com>
-Cc:     Stefan Schaeckeler <sschaeck@cisco.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rrichter@marvell.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>,
-        leetroy@gmail.com, Ryan Chen <ryan_chen@aspeedtech.com>
+References: <X8c6vpapJDYI2eWI@mwanda>
+In-Reply-To: <X8c6vpapJDYI2eWI@mwanda>
+From:   Sunil Kovvuri <sunil.kovvuri@gmail.com>
+Date:   Wed, 2 Dec 2020 12:33:00 +0530
+Message-ID: <CA+sq2Ceo3z1KAuOfZYsmRMHw4dHcnrRLtkRmALNHvj3=tRJKtA@mail.gmail.com>
+Subject: Re: [PATCH net-next] octeontx2-af: debugfs: delete dead code
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 at 06:37, Troy Lee <troy_lee@aspeedtech.com> wrote:
+On Wed, Dec 2, 2020 at 12:28 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
 >
-> Adding Aspeed AST2600 edac node into common devicetree.
+> These debugfs never return NULL so all this code will never be run.
 >
-> Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
-
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
+> In the normal case, (and in this case particularly), the debugfs
+> functions are not supposed to be checked for errors so all this error
+> checking code can be safely deleted.
+>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  arch/arm/boot/dts/aspeed-g6.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-> index 97ca743363d7..fb144515f397 100644
-> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
-> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-> @@ -69,6 +69,12 @@
->                 always-on;
->         };
->
-> +       edac: sdram@1e6e0000 {
-> +               compatible = "aspeed,ast2600-sdram-edac", "syscon";
-> +               reg = <0x1e6e0000 0x174>;
-> +               interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
-> +       };
-> +
->         ahb {
->                 compatible = "simple-bus";
->                 #address-cells = <1>;
-> --
-> 2.17.1
->
+
+Thanks for the changes.
