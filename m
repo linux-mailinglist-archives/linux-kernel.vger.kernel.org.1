@@ -2,132 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EE32CC219
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C732CC221
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730741AbgLBQVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:21:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728684AbgLBQV3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:21:29 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB08C0613CF;
-        Wed,  2 Dec 2020 08:20:49 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id cm17so4580252edb.4;
-        Wed, 02 Dec 2020 08:20:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dI1RHkvQaSBX5qOFtycNYJvfRIgKHUtPrAqe3IZTHWw=;
-        b=WpFymUi0ht5lCIIzD6xuOVgJYxIYPpqQQsEronvp6Jz9hUpv9g6LytJQgbeEsIHgf4
-         5V+jFwJYqtEIy2ovI/MPbRoau23uqQACRPOSTBDnOws0ic5v1W2hwImKI0FIEx0cGwoH
-         DiKXLjGpkQcEIhDVouMhNssvqEjwjflgCo7ok31MeidWpcPDkFOkK9F/1QDUVGm9LajT
-         sCuyC/hk2CfbJalr1dUDBDHn1ykkJ0hYbbcQupwP4hbQluCk/vAY7M0D1X0evHHWxWyv
-         wqG3sqswtTX5ViWbbh/z8VIoVEg7I7BUo+KwaJPubZhXIHYtuUNtwPLBU7KC2hnZTNxO
-         3Y/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dI1RHkvQaSBX5qOFtycNYJvfRIgKHUtPrAqe3IZTHWw=;
-        b=p1osqig1JL85OxItrpqY2J+8IOffYRs/9zfevh8Nuu91Y1vNX4+SFxUBXF2eK5AaGO
-         ChMynoIRDyF08nIkHDH/7XJhFa9wESA44eTYmlIXp1yCNjxiPVSwlvDbb7DNtP+O5xB8
-         8edBQEz6UNU1+MBY8rsYXK1q6ljRtUAUMNTRiN64JY3qrIQ5iYnyb8ndLGxQbWkb9RRy
-         rzoPFOPLVV8xg483X/T2LlTrq9sSKpseoYDb7fCsez6wk/hQGJ8UrQ5MKLhfjqhH3ogJ
-         quPM8ZV8coSD1cIF98mvO+vHbKcGVl/5wQPpPZOVyD0Tp6MEzJwTjBka3V7t6ejp5JaN
-         VmPQ==
-X-Gm-Message-State: AOAM530wKcdy1p0vD+Hm6jTzAWQkuMpo5emMqtz/ZBdqSW9NFO28MZkJ
-        18kCk4KkR7o7ptHpjlMAg1g=
-X-Google-Smtp-Source: ABdhPJyWE++cqGiYmP227BjM8rqHPVpC27I4ZglCjwfBwKTWhW7p1wo4qfDLoa9r7bk416QqMSsK3g==
-X-Received: by 2002:a05:6402:1c04:: with SMTP id ck4mr669937edb.320.1606926048004;
-        Wed, 02 Dec 2020 08:20:48 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id b15sm284729edv.85.2020.12.02.08.20.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Dec 2020 08:20:47 -0800 (PST)
-Message-ID: <30767ee7973670b86bff61d1d7b2044f17640b75.camel@gmail.com>
-Subject: Re: [PATCH 1/3] scsi: ufs: Add "wb_on" sysfs node to control WB
- on/off
-From:   Bean Huo <huobean@gmail.com>
-To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 02 Dec 2020 17:20:45 +0100
-In-Reply-To: <2a380908-3eb4-2cdc-4156-03e8946ffd88@codeaurora.org>
-References: <20201130181143.5739-1-huobean@gmail.com>
-         <20201130181143.5739-2-huobean@gmail.com>
-         <2a380908-3eb4-2cdc-4156-03e8946ffd88@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S2389051AbgLBQXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:23:00 -0500
+Received: from mga03.intel.com ([134.134.136.65]:44494 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389016AbgLBQW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:22:59 -0500
+IronPort-SDR: 5mh4z9xwl+b2zFZQ7rkp3agojTTeqadwR0zUV9xSrTn0Snc7EUxuVayjgcw5Du7ucMRpq6Zvqw
+ GZwGOtodSG/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173140268"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="173140268"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:22:16 -0800
+IronPort-SDR: Era7pDZzgxbiaJpQIAK5imL4NHLKAQ/4FwHkMmx1lAR9MtAJkXNHgqqo1XehrVMUKUtykaI1w6
+ juZiarijiT2g==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="335612597"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:22:15 -0800
+Date:   Wed, 2 Dec 2020 08:22:15 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
+        sashal@kernel.org, tyhicks@linux.microsoft.com,
+        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
+        rostedt@goodmis.org, mingo@redhat.com, jgg@ziepe.ca,
+        peterz@infradead.org, mgorman@suse.de, willy@infradead.org,
+        rientjes@google.com, jhubbard@nvidia.com
+Subject: Re: [PATCH 1/6] mm/gup: perform check_dax_vmas only when FS_DAX is
+ enabled
+Message-ID: <20201202162215.GS1161629@iweiny-DESK2.sc.intel.com>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201202052330.474592-2-pasha.tatashin@soleen.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202052330.474592-2-pasha.tatashin@soleen.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-30 at 15:19 -0800, Asutosh Das (asd) wrote:
-> > +             return -EINVAL;
-> > +
-> > +     pm_runtime_get_sync(hba->dev);
-> > +     res = ufshcd_wb_ctrl(hba, wb_enable);
+On Wed, Dec 02, 2020 at 12:23:25AM -0500, Pavel Tatashin wrote:
+> There is no need to check_dax_vmas() and run through the npage loop of
+> pinned pages if FS_DAX is not enabled.
 > 
-> Say, a platform supports clock-scaling and this bit is toggled.
-> The control goes into ufshcd_wb_ctrl for both this sysfs and 
-> clock-scaling contexts. The clock-scaling context passes all checks
-> and 
-> blocks on waiting for this wb control to be disabled and then tries
-> to 
-> enable wb when it's already disabled. Perhaps that's a race there?
+> Add a stub check_dax_vmas() function for no-FS_DAX case.
 
-Hi Asutosh
-Appreciate your review.
-There is only inconsistent problem between clock-scaling and sysfs,
-since hba->dev_cmd.lock can garantee there is only one can change
-fWriteBoosterEn. But this is only happening on user willfully wants to
-control WB through sysfs even they know the platform supports clock-
-scaling.
+This looks like a good idea.
 
-Since this is for the platform which doesn't support clock-scaling, I
-think based on your comments, it should be acceptable for you like
-this: 
+> 
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> ---
+>  mm/gup.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 98eb8e6d2609..cdb8b9eeb016 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1568,6 +1568,7 @@ struct page *get_dump_page(unsigned long addr)
+>  #endif /* CONFIG_ELF_CORE */
+>  
+>  #if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
 
+In addition, I think it would make a lot of sense to clean up this config as
+well like this:
 
-+static ssize_t wb_on_store(struct device *dev, struct device_attribute
-*attr,
-+                          const char *buf, size_t count)
+08:20:10 > git di
+diff --git a/mm/gup.c b/mm/gup.c
+index 102877ed77a4..92cfda220aeb 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1567,7 +1567,7 @@ struct page *get_dump_page(unsigned long addr)
+ }
+ #endif /* CONFIG_ELF_CORE */
+ 
+-#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
++#ifdef CONFIG_FS_DAX
+ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+ {
+        long i;
+@@ -1586,6 +1586,12 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+        }
+        return false;
+ }
++#else
++static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
 +{
-+       struct ufs_hba *hba = dev_get_drvdata(dev);
-+       unsigned int wb_enable;
-+       ssize_t res;
-+
-+       if (ufshcd_is_clkscaling_supported(hba)) {
-+          dev_err(dev, "supports dynamic clk scaling, control WB
-+                       through sysfs is not allowed!");
-+          return -EOPNOTSUPP;
-+       } 
-+       if (!ufshcd_is_wb_allowed(hba))
-+               return -EOPNOTSUPP;
-+
-+       if (kstrtouint(buf, 0, &wb_enable))
-+               return -EINVAL;
-+
-+       if (wb_enable != 0 && wb_enable != 1)
-+               return -EINVAL;
-+
-+       pm_runtime_get_sync(hba->dev);
-+       res = ufshcd_wb_ctrl(hba, wb_enable);
-+       pm_runtime_put_sync(hba->dev);
-+
-+       return res < 0 ? res : count;
++       return false;
 +}
++#endif /* CONFIG_FS_DAX */
+ 
+ #ifdef CONFIG_CMA
+ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+@@ -1691,6 +1697,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ }
+ #endif /* CONFIG_CMA */
+ 
++#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
+ /*
+  * __gup_longterm_locked() is a wrapper for __get_user_pages_locked which
+  * allows us to process the FOLL_LONGTERM flag.
 
-thanks,
-Bean
 
+That makes it more clear what is going on with __gup_longterm_locked() and
+places both CMA and FS_DAX code within their own blocks.
 
+Ira
+
+> +#ifdef CONFIG_FS_DAX
+>  static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+>  {
+>  	long i;
+> @@ -1586,6 +1587,12 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+>  	}
+>  	return false;
+>  }
+> +#else
+> +static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+> +{
+> +	return false;
+> +}
+> +#endif
+>  
+>  #ifdef CONFIG_CMA
+>  static long check_and_migrate_cma_pages(struct mm_struct *mm,
+> -- 
+> 2.25.1
+> 
+> 
