@@ -2,352 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F422B2CC978
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB772CC97A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgLBWS6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 17:18:58 -0500
-Received: from aposti.net ([89.234.176.197]:36994 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725929AbgLBWS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:18:57 -0500
-Date:   Wed, 02 Dec 2020 22:18:01 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 3/4] clk: Ingenic: Add missing clocks for Ingenic SoCs.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Message-Id: <1MGQKQ.5HYB5MK5YO192@crapouillou.net>
-In-Reply-To: <20201125172618.112707-4-zhouyanjie@wanyeetech.com>
-References: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
-        <20201125172618.112707-4-zhouyanjie@wanyeetech.com>
+        id S1728120AbgLBWTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:19:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgLBWTk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 17:19:40 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8628C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:18:59 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id cm17so5747034edb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:18:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w+aMhLNq1eUvJgs6SrXO/85+NlnOMnHMly+a+tezdWo=;
+        b=HPJA4fYkHsnGkMC38cJgmAaOkXQnXM7Tr2VwPCocQTaDxASqYUke/Fqpj05G/YnlzB
+         eHjvakUlyg5TxEe8gQLzL6E/XyUCaJfwC73kuzkg4wnMHDBK1SkrK7e+jem3Pob/XwIG
+         poKK8UNtA0Z7LVsNu90uC06K6mM2IjFoeDybs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w+aMhLNq1eUvJgs6SrXO/85+NlnOMnHMly+a+tezdWo=;
+        b=cgx+la/+eGwkdjkhav7aP/b71buP2RrOncCUuWxtLUifrzaARk9Jom+2a7tqSFY2wd
+         KaSfHU6HLjNbdSX2MxRv47gs9IZx2VYMsCQcuivvl6lBXXPtyn6jqefm4EIDMN0TsixQ
+         XgbLJaiuTWfVcz8clHCcyfRcGs5uPbbudeK4qCxfLQzFedRJr80HKSqW5rc6PiDyYaaQ
+         lqckbUkir7ZQDfhFDKB3F82Yn6VTkTJs3lryB9PeIBtiHM+47Pa0EPXcDSib8IJ8j/El
+         mtWdNBrliS+d3lgiJ2T0DykdMn5GdPxKi9yCToWvcxd4qOYoRKwoIlYM6wPZS/nX2r0h
+         Hx5A==
+X-Gm-Message-State: AOAM533KkP3PJ7gyezNbqNms+7BrAJCC1NWF9k2O9KzkNjICNTgYGyi2
+        uVTYOtmltkT9+KiEWGM+Eu1sTz2Be9YEig==
+X-Google-Smtp-Source: ABdhPJw58L4Z6r46I2rGqCmjFjBRf/booznFAjQhWtQDoE6A3iLYKnmF52hWNz5IRIcqHQaaEDhMEA==
+X-Received: by 2002:a05:6402:949:: with SMTP id h9mr141753edz.301.1606947538315;
+        Wed, 02 Dec 2020 14:18:58 -0800 (PST)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id u23sm738645ejy.87.2020.12.02.14.18.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 14:18:57 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id lt17so454980ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:18:56 -0800 (PST)
+X-Received: by 2002:a17:906:5847:: with SMTP id h7mr1817692ejs.124.1606947536600;
+ Wed, 02 Dec 2020 14:18:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20201202214935.1114381-1-swboyd@chromium.org>
+In-Reply-To: <20201202214935.1114381-1-swboyd@chromium.org>
+From:   Alexandru M Stan <amstan@chromium.org>
+Date:   Wed, 2 Dec 2020 14:18:20 -0800
+X-Gmail-Original-Message-ID: <CAHNYxRwMD4XahHXWW9z7b=VCOEsdPe5Df4CohNwmBy_ijWJ62g@mail.gmail.com>
+Message-ID: <CAHNYxRwMD4XahHXWW9z7b=VCOEsdPe5Df4CohNwmBy_ijWJ62g@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Use the new method of gpio CS control
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        Akash Asthana <akashast@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On Wed, Dec 2, 2020 at 1:49 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Let's set the 'use_gpio_descriptors' field so that we use the new way of
+> requesting the CS GPIOs in the core. This allows us to avoid having to
+> configure the CS pins in "output" mode with an 'output-enable' pinctrl
+> setting.
+>
+> Cc: Akash Asthana <akashast@codeaurora.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Acked-by: Alexandru M Stan <amstan@chromium.org>
+I meant this as a joke in chat. It doesn't really mean anything in any capacity.
 
-Le jeu. 26 nov. 2020 à 1:26, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add CIM, AIC, DMIC clocks for the X1000 SoC, and CIM, AIC, DMIC, I2S
-> clocks for the X1830 SoC from Ingenic.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  drivers/clk/ingenic/x1000-cgu.c |  19 ++++
->  drivers/clk/ingenic/x1830-cgu.c | 189 
-> +++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 207 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/ingenic/x1000-cgu.c 
-> b/drivers/clk/ingenic/x1000-cgu.c
-> index 9aa20b5..d340bcd 100644
-> --- a/drivers/clk/ingenic/x1000-cgu.c
-> +++ b/drivers/clk/ingenic/x1000-cgu.c
-> @@ -360,6 +360,13 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.mux = { CGU_REG_SSICDR, 30, 1 },
->  	},
-> 
-> +	[X1000_CLK_CIM] = {
-> +		"cim", CGU_CLK_MUX | CGU_CLK_DIV,
-> +		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
-> +		.mux = { CGU_REG_CIMCDR, 31, 1 },
-> +		.div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
-> +	},
-> +
->  	[X1000_CLK_EXCLK_DIV512] = {
->  		"exclk_div512", CGU_CLK_FIXDIV,
->  		.parents = { X1000_CLK_EXCLK },
-> @@ -411,6 +418,12 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR, 9 },
->  	},
-> 
-> +	[X1000_CLK_AIC] = {
-> +		"aic", CGU_CLK_GATE,
-> +		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-> +		.gate = { CGU_REG_CLKGR, 11 },
-> +	},
-> +
->  	[X1000_CLK_UART0] = {
->  		"uart0", CGU_CLK_GATE,
->  		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-> @@ -429,6 +442,12 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR, 16 },
->  	},
-> 
-> +	[X1000_CLK_DMIC] = {
-> +		"dmic", CGU_CLK_GATE,
-> +		.parents = { X1000_CLK_PCLK, -1, -1, -1 },
-> +		.gate = { CGU_REG_CLKGR, 17 },
-> +	},
-> +
->  	[X1000_CLK_TCU] = {
->  		"tcu", CGU_CLK_GATE,
->  		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-> diff --git a/drivers/clk/ingenic/x1830-cgu.c 
-> b/drivers/clk/ingenic/x1830-cgu.c
-> index 950aee2..e76e82c 100644
-> --- a/drivers/clk/ingenic/x1830-cgu.c
-> +++ b/drivers/clk/ingenic/x1830-cgu.c
-> @@ -52,6 +52,15 @@
->  #define USBPCR_SIDDQ		BIT(21)
->  #define USBPCR_OTG_DISABLE	BIT(20)
-> 
-> +/* bits within the I2SCDR register */
-> +#define I2SCDR_I2PCS_SHIFT	30
-> +#define I2SCDR_I2PCS_MASK	(0x3 << I2SCDR_I2PCS_SHIFT)
-> +#define I2SCDR_I2SDIV_M_SHIFT	20
-> +#define I2SCDR_I2SDIV_M_MASK	(0x1ff << I2SCDR_I2SDIV_M_SHIFT)
-> +#define I2SCDR_I2SDIV_N_SHIFT	0
-> +#define I2SCDR_I2SDIV_N_MASK	(0xfffff << I2SCDR_I2SDIV_N_SHIFT)
-> +#define I2SCDR_CE_I2S		BIT(29)
-> +
->  static struct ingenic_cgu *cgu;
-> 
->  static int x1830_usb_phy_enable(struct clk_hw *hw)
-> @@ -89,6 +98,157 @@ static const struct clk_ops x1830_otg_phy_ops = {
->  	.is_enabled	= x1830_usb_phy_is_enabled,
->  };
-> 
-> +static u8 x1830_i2s_get_parent(struct clk_hw *hw)
-> +{
-> +	u32 i2scdr;
-> +
-> +	i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return (i2scdr & I2SCDR_I2PCS_MASK) >> I2SCDR_I2PCS_SHIFT;
-> +}
-> +
-> +static int x1830_i2s_set_parent(struct clk_hw *hw, u8 idx)
-> +{
-> +	writel(idx << I2SCDR_I2PCS_SHIFT, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned long x1830_i2s_recalc_rate(struct clk_hw *hw,
-> +						unsigned long parent_rate)
-> +{
-> +	unsigned m, n;
-> +	u32 i2scdr;
-> +
-> +	i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	m = (i2scdr & I2SCDR_I2SDIV_M_MASK) >> I2SCDR_I2SDIV_M_SHIFT;
-> +	n = (i2scdr & I2SCDR_I2SDIV_N_MASK) >> I2SCDR_I2SDIV_N_SHIFT;
-> +
-> +	return div_u64((u64)parent_rate * m, n);
-
- From what I can see here, your i2s clock is a PLL. You can probably 
-use CGU_CLK_PLL, with od_bits = od_max = 0 (you'll need to remove the 
-second BUG_ON() in ingenic_pll_recalc_rate).
-
-Cheers,
--Paul
-
-> +}
-> +
-> +static unsigned long x1830_i2s_calc(unsigned long rate, unsigned 
-> long parent_rate,
-> +						unsigned *pm, unsigned *pn)
-> +{
-> +	u64 curr_delta, curr_m, curr_n, delta, m, n;
-> +
-> +	if ((parent_rate % rate == 0) && ((parent_rate / rate) > 1)) {
-> +		m = 1;
-> +		n = parent_rate / rate;
-> +		goto out;
-> +	}
-> +
-> +	delta = rate;
-> +
-> +	/*
-> +	 * The length of M is 9 bits, its value must be between 1 and 511.
-> +	 * The length of N is 20 bits, its value must be between 2 and 
-> 1048575,
-> +	 * and must not be less than 2 times of the value of M.
-> +	 */
-> +	for (curr_m = 511; curr_m >= 1; curr_m--) {
-> +		curr_n = parent_rate * curr_m;
-> +		curr_delta = do_div(curr_n, rate);
-> +
-> +		if (curr_n < 2 * curr_m || curr_n > 1048575)
-> +			continue;
-> +
-> +		if (curr_delta == 0)
-> +			break;
-> +
-> +		if (curr_delta < delta) {
-> +			m = curr_m;
-> +			n = curr_n;
-> +			delta = curr_delta;
-> +		}
-> +	}
-> +
-> +out:
-> +	if (pm)
-> +		*pm = m;
-> +	if (pn)
-> +		*pn = n;
-> +
-> +	return div_u64((u64)parent_rate * m, n);
-> +}
-> +
-> +static long x1830_i2s_round_rate(struct clk_hw *hw, unsigned long 
-> req_rate,
-> +						unsigned long *prate)
-> +{
-> +	return x1830_i2s_calc(req_rate, *prate, NULL, NULL);
-> +}
-> +
-> +static int x1830_i2s_set_rate(struct clk_hw *hw, unsigned long 
-> req_rate,
-> +						unsigned long parent_rate)
-> +{
-> +	unsigned long rate;
-> +	unsigned m, n;
-> +	u32 ctl;
-> +
-> +	/*
-> +	 * The parent clock rate of I2S must not be lower than 2 times
-> +	 * of the target clock rate.
-> +	 */
-> +	if (parent_rate < 2 * req_rate)
-> +		return -EINVAL;
-> +
-> +	rate = x1830_i2s_calc(req_rate, parent_rate, &m, &n);
-> +	if (rate != req_rate)
-> +		pr_info("%s: request I2S rate %luHz, actual %luHz\n", __func__,
-> +			req_rate, rate);
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl &= ~I2SCDR_I2SDIV_M_MASK;
-> +	ctl |= m << I2SCDR_I2SDIV_M_SHIFT;
-> +	ctl &= ~I2SCDR_I2SDIV_N_MASK;
-> +	ctl |= n << I2SCDR_I2SDIV_N_SHIFT;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return 0;
-> +}
-> +
-> +static int x1830_i2s_enable(struct clk_hw *hw)
-> +{
-> +	u32 ctl;
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl |= I2SCDR_CE_I2S;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return 0;
-> +}
-> +
-> +static void x1830_i2s_disable(struct clk_hw *hw)
-> +{
-> +	u32 ctl;
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl &= ~I2SCDR_CE_I2S;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +}
-> +
-> +static int x1830_i2s_is_enabled(struct clk_hw *hw)
-> +{
-> +	u32 ctl;
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return !!(ctl & I2SCDR_CE_I2S);
-> +}
-> +
-> +static const struct clk_ops x1830_i2s_ops = {
-> +	.get_parent = x1830_i2s_get_parent,
-> +	.set_parent = x1830_i2s_set_parent,
-> +
-> +	.recalc_rate = x1830_i2s_recalc_rate,
-> +	.round_rate = x1830_i2s_round_rate,
-> +	.set_rate = x1830_i2s_set_rate,
-> +
-> +	.enable = x1830_i2s_enable,
-> +	.disable = x1830_i2s_disable,
-> +	.is_enabled = x1830_i2s_is_enabled,
-> +};
-> +
->  static const s8 pll_od_encoding[64] = {
->  	0x0, 0x1,  -1, 0x2,  -1,  -1,  -1, 0x3,
->  	 -1,  -1,  -1,  -1,  -1,  -1,  -1, 0x4,
-> @@ -201,7 +361,7 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		},
->  	},
-> 
-> -	/* Custom (SoC-specific) OTG PHY */
-> +	/* Custom (SoC-specific) */
-> 
->  	[X1830_CLK_OTGPHY] = {
->  		"otg_phy", CGU_CLK_CUSTOM,
-> @@ -209,6 +369,13 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		.custom = { &x1830_otg_phy_ops },
->  	},
-> 
-> +	[X1830_CLK_I2S] = {
-> +		"i2s", CGU_CLK_CUSTOM,
-> +		.parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
-> +					 X1830_CLK_VPLL, X1830_CLK_EPLL },
-> +		.custom = { &x1830_i2s_ops },
-> +	},
-> +
->  	/* Muxes & dividers */
-> 
->  	[X1830_CLK_SCLKA] = {
-> @@ -329,6 +496,14 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		.mux = { CGU_REG_SSICDR, 29, 1 },
->  	},
-> 
-> +	[X1830_CLK_CIM] = {
-> +		"cim", CGU_CLK_MUX | CGU_CLK_DIV,
-> +		.parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
-> +					 X1830_CLK_VPLL, X1830_CLK_EPLL },
-> +		.mux = { CGU_REG_CIMCDR, 30, 2 },
-> +		.div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
-> +	},
-> +
->  	[X1830_CLK_EXCLK_DIV512] = {
->  		"exclk_div512", CGU_CLK_FIXDIV,
->  		.parents = { X1830_CLK_EXCLK },
-> @@ -386,6 +561,18 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR0, 9 },
->  	},
-> 
-> +	[X1830_CLK_AIC] = {
-> +		"aic", CGU_CLK_GATE,
-> +		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-> +		.gate = { CGU_REG_CLKGR0, 11 },
-> +	},
-> +
-> +	[X1830_CLK_DMIC] = {
-> +		"dmic", CGU_CLK_GATE,
-> +		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-> +		.gate = { CGU_REG_CLKGR0, 12 },
-> +	},
-> +
->  	[X1830_CLK_UART0] = {
->  		"uart0", CGU_CLK_GATE,
->  		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
+>  drivers/spi/spi-geni-qcom.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+> index 25810a7eef10..c4c88984abc9 100644
+> --- a/drivers/spi/spi-geni-qcom.c
+> +++ b/drivers/spi/spi-geni-qcom.c
+> @@ -636,6 +636,7 @@ static int spi_geni_probe(struct platform_device *pdev)
+>         spi->auto_runtime_pm = true;
+>         spi->handle_err = handle_fifo_timeout;
+>         spi->set_cs = spi_geni_set_cs;
+> +       spi->use_gpio_descriptors = true;
+>
+>         init_completion(&mas->cs_done);
+>         init_completion(&mas->cancel_done);
+>
+> base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
 > --
-> 2.7.4
-> 
+> https://chromeos.dev
+>
 
+Unfortunately this patch makes my cros-ec (the main EC that used to
+work even before my debugging) also fail to probe:
+[    0.839533] cros-ec-spi spi6.0: EC failed to respond in time
+[    1.040453] cros-ec-spi spi6.0: EC failed to respond in time
+[    1.040852] cros-ec-spi spi6.0: Cannot identify the EC: error -110
+[    1.040855] cros-ec-spi spi6.0: cannot register EC, fallback to spidev
+[    1.040942] cros-ec-spi: probe of spi6.0 failed with error -110
 
+I wasn't closely looking at this part closely when I was using my
+other spi port with spidev, so this is why I haven't noticed it
+before.
+Doug suggests this might be a polarity issue. More scoping to be had.
+
+On the other hand my gpioinfo output is better with this patch:
+       line  86: "AP_SPI_FP_MISO" unused input active-high
+       line  87: "AP_SPI_FP_MOSI" unused input active-high
+       line  88: "AP_SPI_FP_CLK" unused input active-high
+       line  89: "AP_SPI_FP_CS_L" "spi10 CS0" output active-low [used]
+
+Previously they were:
+       line  86: "AP_SPI_FP_MISO" unused input active-high
+       line  87: "AP_SPI_FP_MOSI" unused input active-high
+       line  88: "AP_SPI_FP_CLK" unused input active-high
+       line  89: "AP_SPI_FP_CS_L" unused output active-high
+
+But I'm still disappointed the rest of the pins (CLK MISO MOSI) are
+still "unused", but I was told that's just an artifact of those pins
+not being gpios (but remuxed to spi).
+
+Alexandru Stan (amstan)
