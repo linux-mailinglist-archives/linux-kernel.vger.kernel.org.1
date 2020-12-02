@@ -2,135 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5681D2CB23F
+	by mail.lfdr.de (Postfix) with ESMTP id C37682CB240
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgLBBXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 20:23:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727731AbgLBBXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:23:23 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82BF8221E2;
-        Wed,  2 Dec 2020 01:22:41 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 20:22:39 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [GIT PULL] bootconfig: Always use little endian for size and
- checksum
-Message-ID: <20201201202239.5618b84c@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727960AbgLBBY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 20:24:26 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8548 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727593AbgLBBY0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 20:24:26 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cm1SQ0g6jzhl1s;
+        Wed,  2 Dec 2020 09:23:18 +0800 (CST)
+Received: from [10.174.178.52] (10.174.178.52) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 2 Dec 2020 09:23:37 +0800
+Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
+ earlier
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+CC:     <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>
+References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
+ <20201130161850.34bcfc8a@gandalf.local.home>
+ <20201202083253.9dbc76704149261e131345bf@kernel.org>
+From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Message-ID: <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
+Date:   Wed, 2 Dec 2020 09:23:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201202083253.9dbc76704149261e131345bf@kernel.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.52]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi steve, Masami,
 
-Linus,
+Thanks for your works, i will check code again and modify properly 
+according to steve's suggestion.
 
-Have bootconfig size and checksum be little endian
+-- ShaoBo
 
-In case the bootconfig is created on one kind of endian machine, and then
-read on the other kind of endian kernel, the size and checksum will be
-incorrect. Instead, have both the size and checksum always be little
-endian and have the tool and the kernel convert it from little endian to
-or from the host endian.
-
-
-Please pull the latest trace-v5.10-rc6-bootconfig tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.10-rc6-bootconfig
-
-Tag SHA1: 35eb7b93d6ded6c1540d799c7118497e2e2f4531
-Head SHA1: 05227490c5f0f1bbd3693a7a70b3fb5b09d2a996
-
-
-Masami Hiramatsu (3):
-      bootconfig: Load size and checksum in the footer as le32
-      tools/bootconfig: Store size and checksum in footer as le32
-      docs: bootconfig: Add the endianness of fields
-
-----
- Documentation/admin-guide/bootconfig.rst | 4 +++-
- init/main.c                              | 4 ++--
- tools/bootconfig/main.c                  | 7 +++++--
- 3 files changed, 10 insertions(+), 5 deletions(-)
----------------------------
-diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-index 363599683784..9b90efcc3a35 100644
---- a/Documentation/admin-guide/bootconfig.rst
-+++ b/Documentation/admin-guide/bootconfig.rst
-@@ -140,7 +140,9 @@ Since the boot configuration file is loaded with initrd, it will be added
- to the end of the initrd (initramfs) image file with padding, size,
- checksum and 12-byte magic word as below.
- 
--[initrd][bootconfig][padding][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+[initrd][bootconfig][padding][size(le32)][checksum(le32)][#BOOTCONFIG\n]
-+
-+The size and checksum fields are unsigned 32bit little endian value.
- 
- When the boot configuration is added to the initrd image, the total
- file size is aligned to 4 bytes. To fill the gap, null characters
-diff --git a/init/main.c b/init/main.c
-index 20baced721ad..32b2a8affafd 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -288,8 +288,8 @@ static void * __init get_boot_config_from_initrd(u32 *_size, u32 *_csum)
- 
- found:
- 	hdr = (u32 *)(data - 8);
--	size = hdr[0];
--	csum = hdr[1];
-+	size = le32_to_cpu(hdr[0]);
-+	csum = le32_to_cpu(hdr[1]);
- 
- 	data = ((void *)hdr) - size;
- 	if ((unsigned long)data < initrd_start) {
-diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index 4a445b6304bb..7362bef1a368 100644
---- a/tools/bootconfig/main.c
-+++ b/tools/bootconfig/main.c
-@@ -10,6 +10,7 @@
- #include <unistd.h>
- #include <string.h>
- #include <errno.h>
-+#include <endian.h>
- 
- #include <linux/kernel.h>
- #include <linux/bootconfig.h>
-@@ -183,9 +184,11 @@ static int load_xbc_from_initrd(int fd, char **buf)
- 
- 	if (read(fd, &size, sizeof(u32)) < 0)
- 		return pr_errno("Failed to read size", -errno);
-+	size = le32toh(size);
- 
- 	if (read(fd, &csum, sizeof(u32)) < 0)
- 		return pr_errno("Failed to read checksum", -errno);
-+	csum = le32toh(csum);
- 
- 	/* Wrong size error  */
- 	if (stat.st_size < size + 8 + BOOTCONFIG_MAGIC_LEN) {
-@@ -407,10 +410,10 @@ static int apply_xbc(const char *path, const char *xbc_path)
- 
- 	/* Add a footer */
- 	p = data + size;
--	*(u32 *)p = size;
-+	*(u32 *)p = htole32(size);
- 	p += sizeof(u32);
- 
--	*(u32 *)p = csum;
-+	*(u32 *)p = htole32(csum);
- 	p += sizeof(u32);
- 
- 	memcpy(p, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
+ÔÚ 2020/12/2 7:32, Masami Hiramatsu Ð´µÀ:
+> On Mon, 30 Nov 2020 16:18:50 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+>> Masami,
+>>
+>> Can you review this patch, and also, should this go to -rc and stable?
+>>
+>> -- Steve
+> Thanks for ping me!
+>
+>> On Tue, 24 Nov 2020 19:57:19 +0800
+>> Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
+>>
+>>> Our system encountered a re-init error when re-registering same kretprobe,
+>>> where the kretprobe_instance in rp->free_instances is illegally accessed
+>>> after re-init.
+> Ah, OK. Anyway if re-register happens on kretprobe, it must lose instances
+> on the list before checking re-register in register_kprobe().
+> So the idea looks good to me.
+>
+>
+>>> Implementation to avoid re-registration has been introduced for kprobe
+>>> before, but lags for register_kretprobe(). We must check if kprobe has
+>>> been re-registered before re-initializing kretprobe, otherwise it will
+>>> destroy the data struct of kretprobe registered, which can lead to memory
+>>> leak, system crash, also some unexpected behaviors.
+>>>
+>>> we use check_kprobe_rereg() to check if kprobe has been re-registered
+>>> before calling register_kretprobe(), for giving a warning message and
+>>> terminate registration process.
+>>>
+>>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+>>> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
+>>> ---
+>>>   kernel/kprobes.c | 8 ++++++++
+>>>   1 file changed, 8 insertions(+)
+>>>
+>>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+>>> index 41fdbb7953c6..7f54a70136f3 100644
+>>> --- a/kernel/kprobes.c
+>>> +++ b/kernel/kprobes.c
+>>> @@ -2117,6 +2117,14 @@ int register_kretprobe(struct kretprobe *rp)
+>>>   		}
+>>>   	}
+>>>   
+>>> +	/*
+>>> +	 * Return error if it's being re-registered,
+>>> +	 * also give a warning message to the developer.
+>>> +	 */
+>>> +	ret = check_kprobe_rereg(&rp->kp);
+>>> +	if (WARN_ON(ret))
+>>> +		return ret;
+> If you call this here, you must make sure kprobe_addr() is called on rp->kp.
+> But if kretprobe_blacklist_size == 0, kprobe_addr() is not called before
+> this check. So it should be in between kprobe_on_func_entry() and
+> kretprobe_blacklist_size check, like this
+>
+> 	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+> 		return -EINVAL;
+>
+> 	addr = kprobe_addr(&rp->kp);
+> 	if (IS_ERR(addr))
+> 		return PTR_ERR(addr);
+> 	rp->kp.addr = addr;
+>
+> 	ret = check_kprobe_rereg(&rp->kp);
+> 	if (WARN_ON(ret))
+> 		return ret;
+>
+>          if (kretprobe_blacklist_size) {
+> 		for (i = 0; > > +	ret = check_kprobe_rereg(&rp->kp);
+>
+>
+> Thank you,
+>
+>
