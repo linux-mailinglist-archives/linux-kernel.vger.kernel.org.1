@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF852CC81A
+	by mail.lfdr.de (Postfix) with ESMTP id BA77F2CC81B
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388349AbgLBUmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:42:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:50418 "EHLO foss.arm.com"
+        id S2388401AbgLBUmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:42:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:50434 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728985AbgLBUmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:42:38 -0500
+        id S1728337AbgLBUmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:42:40 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C150D161B;
-        Wed,  2 Dec 2020 12:41:41 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BAAE1650;
+        Wed,  2 Dec 2020 12:41:44 -0800 (PST)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D45DF3F575;
-        Wed,  2 Dec 2020 12:41:39 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07BDD3F575;
+        Wed,  2 Dec 2020 12:41:41 -0800 (PST)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
@@ -25,9 +25,9 @@ Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
         thara.gopinath@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com,
         Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v3 36/37] firmware: arm_scmi: add protocol modularization support
-Date:   Wed,  2 Dec 2020 20:40:08 +0000
-Message-Id: <20201202204009.32073-37-cristian.marussi@arm.com>
+Subject: [PATCH v3 37/37] firmware: arm_scmi: add dynamic scmi devices creation
+Date:   Wed,  2 Dec 2020 20:40:09 +0000
+Message-Id: <20201202204009.32073-38-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201202204009.32073-1-cristian.marussi@arm.com>
 References: <20201202204009.32073-1-cristian.marussi@arm.com>
@@ -35,285 +35,407 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend SCMI protocols accounting mechanism to address possible module
-usage and add the support to possibly define new protocols as loadable
-modules.
+Having added the support for SCMI protocols as modules in order to let
+vendors extend the SCMI core with their own additions it seems odd to
+then force SCMI drivers built on top to use a static device table to
+declare their devices since this way any new SCMI drivers addition
+would need the core SCMI device table to be updated too.
 
-Keep Standard protocols built into the SCMI core.
+Remove the static core device table and let SCMI drivers to simply declare
+which device/protocol pair they need at initialization time: the core will
+then take care to generate such devices dynamically during platform
+initialization or at module loading time, as long as the requested
+underlying protocol is defined in the DT.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/base.c    |  2 ++
- drivers/firmware/arm_scmi/bus.c     | 11 ++++++++++-
- drivers/firmware/arm_scmi/clock.c   |  2 ++
- drivers/firmware/arm_scmi/common.h  |  4 ++++
- drivers/firmware/arm_scmi/driver.c  |  5 ++++-
- drivers/firmware/arm_scmi/perf.c    |  2 ++
- drivers/firmware/arm_scmi/power.c   |  2 ++
- drivers/firmware/arm_scmi/reset.c   |  2 ++
- drivers/firmware/arm_scmi/sensors.c |  2 ++
- drivers/firmware/arm_scmi/system.c  |  2 ++
- include/linux/scmi_protocol.h       | 12 ++++++++++++
- 11 files changed, 44 insertions(+), 2 deletions(-)
+ drivers/firmware/arm_scmi/bus.c    |  30 +++++
+ drivers/firmware/arm_scmi/common.h |   5 +
+ drivers/firmware/arm_scmi/driver.c | 208 ++++++++++++++++++++++++-----
+ 3 files changed, 210 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
-index f2d10c5a55ae..b70d741f8465 100644
---- a/drivers/firmware/arm_scmi/base.c
-+++ b/drivers/firmware/arm_scmi/base.c
-@@ -7,6 +7,7 @@
- 
- #define pr_fmt(fmt) "SCMI Notifications BASE - " fmt
- 
-+#include <linux/module.h>
- #include <linux/scmi_protocol.h>
- 
- #include "common.h"
-@@ -373,6 +374,7 @@ static int scmi_base_protocol_init(const struct scmi_protocol_handle *ph)
- 
- static const struct scmi_protocol scmi_base = {
- 	.id = SCMI_PROTOCOL_BASE,
-+	.owner = NULL,
- 	.init_instance = &scmi_base_protocol_init,
- 	.ops = NULL,
- 	.events = &base_protocol_events,
 diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
-index 9fbf618b9c4b..88e5057f4e85 100644
+index 88e5057f4e85..88149a46e6d9 100644
 --- a/drivers/firmware/arm_scmi/bus.c
 +++ b/drivers/firmware/arm_scmi/bus.c
-@@ -56,7 +56,7 @@ const struct scmi_protocol *scmi_get_protocol(int protocol_id)
- 	const struct scmi_protocol *proto;
- 
- 	proto = idr_find(&scmi_available_protocols, protocol_id);
--	if (!proto) {
-+	if (!proto || !try_module_get(proto->owner)) {
- 		pr_warn("SCMI Protocol 0x%x not found!\n", protocol_id);
- 		return NULL;
- 	}
-@@ -66,6 +66,15 @@ const struct scmi_protocol *scmi_get_protocol(int protocol_id)
- 	return proto;
+@@ -51,6 +51,31 @@ static int scmi_dev_match(struct device *dev, struct device_driver *drv)
+ 	return 0;
  }
  
-+void scmi_put_protocol(int protocol_id)
++static int scmi_match_by_id_table(struct device *dev, void *data)
 +{
-+	const struct scmi_protocol *proto;
++	struct scmi_device *sdev = to_scmi_dev(dev);
++	struct scmi_device_id *id_table = data;
 +
-+	proto = idr_find(&scmi_available_protocols, protocol_id);
-+	if (proto)
-+		module_put(proto->owner);
++	return sdev->protocol_id == id_table->protocol_id &&
++		!strcmp(sdev->name, id_table->name);
 +}
 +
- static int scmi_dev_probe(struct device *dev)
++struct scmi_device *scmi_find_child_dev(struct device *parent,
++					int prot_id, const char *name)
++{
++	struct scmi_device_id id_table;
++	struct device *dev;
++
++	id_table.protocol_id = prot_id;
++	id_table.name = name;
++
++	dev = device_find_child(parent, &id_table, scmi_match_by_id_table);
++	if (!dev)
++		return NULL;
++
++	return to_scmi_dev(dev);
++}
++
+ const struct scmi_protocol *scmi_get_protocol(int protocol_id)
  {
- 	struct scmi_driver *scmi_drv = to_scmi_driver(dev->driver);
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index a0a6593f464f..bd364d3a56d2 100644
---- a/drivers/firmware/arm_scmi/clock.c
-+++ b/drivers/firmware/arm_scmi/clock.c
-@@ -5,6 +5,7 @@
-  * Copyright (C) 2018-2020 ARM Ltd.
-  */
+ 	const struct scmi_protocol *proto;
+@@ -114,6 +139,10 @@ int scmi_driver_register(struct scmi_driver *driver, struct module *owner,
+ {
+ 	int retval;
  
-+#include <linux/module.h>
- #include <linux/sort.h>
++	retval = scmi_request_protocol_device(driver->id_table);
++	if (retval)
++		return retval;
++
+ 	driver->driver.bus = &scmi_bus_type;
+ 	driver->driver.name = driver->name;
+ 	driver->driver.owner = owner;
+@@ -130,6 +159,7 @@ EXPORT_SYMBOL_GPL(scmi_driver_register);
+ void scmi_driver_unregister(struct scmi_driver *driver)
+ {
+ 	driver_unregister(&driver->driver);
++	scmi_unrequest_protocol_device(driver->id_table);
+ }
+ EXPORT_SYMBOL_GPL(scmi_driver_unregister);
  
- #include "common.h"
-@@ -367,6 +368,7 @@ static int scmi_clock_protocol_init(const struct scmi_protocol_handle *ph)
- 
- static const struct scmi_protocol scmi_clock = {
- 	.id = SCMI_PROTOCOL_CLOCK,
-+	.owner = THIS_MODULE,
- 	.init_instance = &scmi_clock_protocol_init,
- 	.ops = &clk_proto_ops,
- };
 diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index 5fb64182610a..1e2046c61d43 100644
+index 1e2046c61d43..9a0519db4865 100644
 --- a/drivers/firmware/arm_scmi/common.h
 +++ b/drivers/firmware/arm_scmi/common.h
-@@ -14,6 +14,7 @@
- #include <linux/device.h>
- #include <linux/errno.h>
- #include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/scmi_protocol.h>
- #include <linux/types.h>
+@@ -307,6 +307,11 @@ struct scmi_transport_ops {
+ 	bool (*poll_done)(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer);
+ };
  
-@@ -214,6 +215,7 @@ typedef int (*scmi_prot_init_ph_fn_t)(const struct scmi_protocol_handle *);
++int scmi_request_protocol_device(const struct scmi_device_id *id_table);
++void scmi_unrequest_protocol_device(const struct scmi_device_id *id_table);
++struct scmi_device *scmi_find_child_dev(struct device *parent,
++					int prot_id, const char *name);
++
  /**
-  * struct scmi_protocol  - Protocol descriptor
-  * @id: Protocol ID.
-+ * @owner: Module reference if any.
-  * @init_instance: Mandatory protocol initialization function.
-  * @deinit_instance: Optional protocol de-initialization function.
-  * @ops: Optional reference to the operations provided by the protocol and
-@@ -222,6 +224,7 @@ typedef int (*scmi_prot_init_ph_fn_t)(const struct scmi_protocol_handle *);
-  */
- struct scmi_protocol {
- 	const u8				id;
-+	struct module				*owner;
- 	const scmi_prot_init_ph_fn_t		init_instance;
- 	const scmi_prot_init_ph_fn_t		deinit_instance;
- 	const void				*ops;
-@@ -255,6 +258,7 @@ void __exit scmi_##name##_unregister(void) \
- }
- 
- const struct scmi_protocol *scmi_get_protocol(int protocol_id);
-+void scmi_put_protocol(int protocol_id);
- 
- int scmi_acquire_protocol(const struct scmi_handle *handle, u8 protocol_id);
- void scmi_release_protocol(const struct scmi_handle *handle, u8 protocol_id);
+  * struct scmi_desc - Description of SoC integration
+  *
 diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index a0a6a3d1d239..4b68952e49db 100644
+index 4b68952e49db..e26a2afeee6e 100644
 --- a/drivers/firmware/arm_scmi/driver.c
 +++ b/drivers/firmware/arm_scmi/driver.c
-@@ -677,7 +677,7 @@ scmi_get_protocol_instance(const struct scmi_handle *handle, u8 protocol_id)
- 		/* Fail if protocol not registered on bus */
- 		proto = scmi_get_protocol(protocol_id);
- 		if (!proto) {
--			ret = -ENODEV;
-+			ret = -EPROBE_DEFER;
- 			goto out;
+@@ -56,6 +56,14 @@ static DEFINE_MUTEX(scmi_list_mutex);
+ /* Track the unique id for the transfers for debug & profiling purpose */
+ static atomic_t transfer_last_id;
+ 
++static DEFINE_IDR(scmi_requested_devices);
++static DEFINE_MUTEX(scmi_requested_devices_mutex);
++
++struct scmi_requested_dev {
++	const struct scmi_device_id *id_table;
++	struct scmi_requested_dev *next;
++};
++
+ /**
+  * struct scmi_xfers_info - Structure to manage transfer information
+  *
+@@ -113,6 +121,8 @@ struct scmi_protocol_instance {
+  * @protocols_mtx: A mutex to protect protocols instances initialization.
+  * @protocols_imp: List of protocols implemented, currently maximum of
+  *	MAX_PROTOCOLS_IMP elements allocated by the base protocol
++ * @active_protocols: IDR storing device_nodes for protocols actually defined
++ *		      in the DT and confirmed as implemented by fw.
+  * @notify_priv: Pointer to private data structure specific to notifications.
+  * @node: List head
+  * @users: Number of users of this instance
+@@ -130,6 +140,7 @@ struct scmi_info {
+ 	/* Ensure mutual exclusive access to protocols instance array */
+ 	struct mutex protocols_mtx;
+ 	u8 *protocols_imp;
++	struct idr active_protocols;
+ 	void *notify_priv;
+ 	struct list_head node;
+ 	int users;
+@@ -929,6 +940,13 @@ static void scmi_devm_put_protocol_ops(struct scmi_device *sdev, u8 protocol_id)
+ 	WARN_ON(ret);
+ }
+ 
++static inline
++struct scmi_handle *scmi_handle_get_from_info(struct scmi_info *info)
++{
++	info->users++;
++	return &info->handle;
++}
++
+ /**
+  * scmi_handle_get() - Get the SCMI handle for a device
+  *
+@@ -950,8 +968,7 @@ struct scmi_handle *scmi_handle_get(struct device *dev)
+ 	list_for_each(p, &scmi_list) {
+ 		info = list_entry(p, struct scmi_info, node);
+ 		if (dev->parent == info->dev) {
+-			handle = &info->handle;
+-			info->users++;
++			handle = scmi_handle_get_from_info(info);
+ 			break;
+ 		}
+ 	}
+@@ -1094,63 +1111,173 @@ scmi_txrx_setup(struct scmi_info *info, struct device *dev, int prot_id)
+ 	return ret;
+ }
+ 
+-static inline void
+-scmi_create_protocol_device(struct device_node *np, struct scmi_info *info,
+-			    int prot_id, const char *name)
++static inline struct scmi_device *
++scmi_get_protocol_device(struct device_node *np, struct scmi_info *info,
++			 int prot_id, const char *name)
+ {
+ 	struct scmi_device *sdev;
+ 
++	/* Already created for this parent SCMI instance ? */
++	sdev = scmi_find_child_dev(info->dev, prot_id, name);
++	if (sdev)
++		return sdev;
++
++	pr_debug("Creating SCMI device (%s) for protocol %x\n", name, prot_id);
++
+ 	sdev = scmi_device_create(np, info->dev, prot_id, name);
+ 	if (!sdev) {
+ 		dev_err(info->dev, "failed to create %d protocol device\n",
+ 			prot_id);
+-		return;
++		return NULL;
+ 	}
+ 
+ 	if (scmi_txrx_setup(info, &sdev->dev, prot_id)) {
+ 		dev_err(&sdev->dev, "failed to setup transport\n");
+ 		scmi_device_destroy(sdev);
+-		return;
++		return NULL;
+ 	}
+ 
+-	/* setup handle now as the transport is ready */
+-	scmi_set_handle(sdev);
++	return sdev;
+ }
+ 
+-#define MAX_SCMI_DEV_PER_PROTOCOL	2
+-struct scmi_prot_devnames {
+-	int protocol_id;
+-	char *names[MAX_SCMI_DEV_PER_PROTOCOL];
+-};
++static void
++scmi_create_protocol_device(struct device_node *np, struct scmi_info *info,
++			    int prot_id, const char *name)
++{
++	struct scmi_device *sdev;
+ 
+-static struct scmi_prot_devnames devnames[] = {
+-	{ SCMI_PROTOCOL_POWER,  { "genpd" },},
+-	{ SCMI_PROTOCOL_SYSTEM, { "syspower" },},
+-	{ SCMI_PROTOCOL_PERF,   { "cpufreq" },},
+-	{ SCMI_PROTOCOL_CLOCK,  { "clocks" },},
+-	{ SCMI_PROTOCOL_SENSOR, { "hwmon" },},
+-	{ SCMI_PROTOCOL_RESET,  { "reset" },},
+-	{ SCMI_PROTOCOL_VOLTAGE,  { "regulator" },},
+-};
++	sdev = scmi_get_protocol_device(np, info, prot_id, name);
++	if (!sdev)
++		return;
++
++	/* setup handle now as the transport is ready */
++	scmi_set_handle(sdev);
++}
+ 
+ static inline void
+ scmi_create_protocol_devices(struct device_node *np, struct scmi_info *info,
+ 			     int prot_id)
+ {
+-	int loop, cnt;
++	struct scmi_requested_dev *rdev;
+ 
+-	for (loop = 0; loop < ARRAY_SIZE(devnames); loop++) {
+-		if (devnames[loop].protocol_id != prot_id)
+-			continue;
++	rdev = idr_find(&scmi_requested_devices, prot_id);
++	if (!rdev)
++		return;
++
++	for (; rdev; rdev = rdev->next)
++		scmi_create_protocol_device(np, info, prot_id,
++					    rdev->id_table->name);
++}
+ 
+-		for (cnt = 0; cnt < ARRAY_SIZE(devnames[loop].names); cnt++) {
+-			const char *name = devnames[loop].names[cnt];
++int scmi_request_protocol_device(const struct scmi_device_id *id_table)
++{
++	int ret = 0;
++	unsigned int id = 0;
++	struct scmi_requested_dev *rdev, *prev = NULL;
++	struct scmi_info *info;
+ 
+-			if (name)
+-				scmi_create_protocol_device(np, info, prot_id,
+-							    name);
++	pr_debug("Requesting SCMI device (%s) for protocol %x\n",
++		 id_table->name, id_table->protocol_id);
++
++	mutex_lock(&scmi_requested_devices_mutex);
++	/* Search for any equaly named device ... fails if found */
++	idr_for_each_entry(&scmi_requested_devices, rdev, id) {
++		if (rdev->id_table->protocol_id == id_table->protocol_id)
++			prev = rdev;
++		for (; rdev; rdev = rdev->next) {
++			if (!strcmp(rdev->id_table->name, id_table->name)) {
++				pr_err("Ignoring duplicate request [%d] %s\n",
++				       rdev->id_table->protocol_id,
++				       rdev->id_table->name);
++				ret = -EINVAL;
++				goto out;
++			}
+ 		}
+ 	}
++
++	rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
++	if (!rdev) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	rdev->id_table = id_table;
++
++	/* Append the new requested device table to the proper protocol chain */
++	if (!prev) {
++		ret = idr_alloc(&scmi_requested_devices, (void *)rdev,
++				rdev->id_table->protocol_id,
++				rdev->id_table->protocol_id + 1, GFP_KERNEL);
++		if (ret != rdev->id_table->protocol_id) {
++			pr_err("Failed to save SCMI device - ret:%d\n", ret);
++			kfree(rdev);
++			ret = -EINVAL;
++			goto out;
++		}
++		ret = 0;
++	} else {
++		prev->next = rdev;
++	}
++
++	/* Create requested device for each already initialized SCMI instance */
++	mutex_lock(&scmi_list_mutex);
++	list_for_each_entry(info, &scmi_list, node) {
++		struct device_node *child;
++
++		child = idr_find(&info->active_protocols,
++				 id_table->protocol_id);
++		if (child) {
++			struct scmi_device *sdev;
++
++			sdev = scmi_get_protocol_device(child, info,
++							id_table->protocol_id,
++							id_table->name);
++			/* Set handle if not already set (device existed) */
++			if (sdev && !sdev->handle)
++				sdev->handle = scmi_handle_get_from_info(info);
++		} else {
++			dev_err(info->dev,
++				"Failed. SCMI protocol %d not active.\n",
++				id_table->protocol_id);
++		}
++	}
++	mutex_unlock(&scmi_list_mutex);
++
++out:
++	mutex_unlock(&scmi_requested_devices_mutex);
++
++	return ret;
++}
++
++void scmi_unrequest_protocol_device(const struct scmi_device_id *id_table)
++{
++	struct scmi_requested_dev *rdev, *prev, *head;
++
++	pr_debug("Unrequesting SCMI device (%s) for protocol %x\n",
++		 id_table->name, id_table->protocol_id);
++
++	rdev = idr_find(&scmi_requested_devices, id_table->protocol_id);
++	if (!rdev)
++		return;
++
++	head = rdev;
++	for (prev = rdev; rdev; prev = rdev, rdev = rdev->next)
++		if (!strcmp(rdev->id_table->name, id_table->name))
++			break;
++
++	if (rdev) {
++		if (rdev == head) {
++			head = rdev->next;
++			if (head)
++				idr_replace(&scmi_requested_devices, head,
++					    rdev->id_table->protocol_id);
++			else
++				idr_remove(&scmi_requested_devices,
++					   rdev->id_table->protocol_id);
++		} else {
++			prev->next = rdev->next;
++		}
++		kfree(rdev);
++	}
+ }
+ 
+ static int scmi_probe(struct platform_device *pdev)
+@@ -1175,6 +1302,7 @@ static int scmi_probe(struct platform_device *pdev)
+ 	INIT_LIST_HEAD(&info->node);
+ 	idr_init(&info->protocols);
+ 	mutex_init(&info->protocols_mtx);
++	idr_init(&info->active_protocols);
+ 
+ 	platform_set_drvdata(pdev, info);
+ 	idr_init(&info->tx_idr);
+@@ -1229,6 +1357,15 @@ static int scmi_probe(struct platform_device *pdev)
+ 			continue;
  		}
  
-@@ -722,6 +722,7 @@ scmi_get_protocol_instance(const struct scmi_handle *handle, u8 protocol_id)
- 	return pi;
++		ret = idr_alloc(&info->active_protocols, child,
++				prot_id, prot_id + 1, GFP_KERNEL);
++		if (ret != prot_id) {
++			dev_err(dev, "SCMI protocol %d already activated. Skip\n",
++				prot_id);
++			continue;
++		}
++
++		of_node_get(child);
+ 		scmi_create_protocol_devices(child, info, prot_id);
+ 	}
  
- clean:
-+	scmi_put_protocol(protocol_id);
- 	devres_release_group(handle->dev, gid);
- out:
+@@ -1242,9 +1379,10 @@ void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id)
+ 
+ static int scmi_remove(struct platform_device *pdev)
+ {
+-	int ret = 0;
++	int ret = 0, id;
+ 	struct scmi_info *info = platform_get_drvdata(pdev);
+ 	struct idr *idr = &info->tx_idr;
++	struct device_node *child;
+ 
+ 	scmi_notification_exit(&info->handle);
+ 
+@@ -1262,6 +1400,10 @@ static int scmi_remove(struct platform_device *pdev)
+ 	idr_destroy(&info->protocols);
  	mutex_unlock(&info->protocols_mtx);
-@@ -772,6 +773,8 @@ void scmi_release_protocol(const struct scmi_handle *handle, u8 protocol_id)
  
- 		idr_remove(&info->protocols, protocol_id);
- 
-+		scmi_put_protocol(protocol_id);
++	idr_for_each_entry(&info->active_protocols, child, id)
++		of_node_put(child);
++	idr_destroy(&info->active_protocols);
 +
- 		devres_release_group(handle->dev, gid);
- 		dev_dbg(handle->dev, "De-Initialized protocol: 0x%X\n",
- 			protocol_id);
-diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-index 49a33fc1c319..f0e717b9830c 100644
---- a/drivers/firmware/arm_scmi/perf.c
-+++ b/drivers/firmware/arm_scmi/perf.c
-@@ -11,6 +11,7 @@
- #include <linux/of.h>
- #include <linux/io.h>
- #include <linux/io-64-nonatomic-hi-lo.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
- #include <linux/scmi_protocol.h>
-@@ -901,6 +902,7 @@ static int scmi_perf_protocol_init(const struct scmi_protocol_handle *ph)
- 
- static const struct scmi_protocol scmi_perf = {
- 	.id = SCMI_PROTOCOL_PERF,
-+	.owner = THIS_MODULE,
- 	.init_instance = &scmi_perf_protocol_init,
- 	.ops = &perf_proto_ops,
- 	.events = &perf_protocol_events,
-diff --git a/drivers/firmware/arm_scmi/power.c b/drivers/firmware/arm_scmi/power.c
-index 3e453d9bcbc8..70d366ed37e6 100644
---- a/drivers/firmware/arm_scmi/power.c
-+++ b/drivers/firmware/arm_scmi/power.c
-@@ -7,6 +7,7 @@
- 
- #define pr_fmt(fmt) "SCMI Notifications POWER - " fmt
- 
-+#include <linux/module.h>
- #include <linux/scmi_protocol.h>
- 
- #include "common.h"
-@@ -312,6 +313,7 @@ static int scmi_power_protocol_init(const struct scmi_protocol_handle *ph)
- 
- static const struct scmi_protocol scmi_power = {
- 	.id = SCMI_PROTOCOL_POWER,
-+	.owner = THIS_MODULE,
- 	.init_instance = &scmi_power_protocol_init,
- 	.ops = &power_proto_ops,
- 	.events = &power_protocol_events,
-diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
-index bd28d4e9664d..b26686dd8526 100644
---- a/drivers/firmware/arm_scmi/reset.c
-+++ b/drivers/firmware/arm_scmi/reset.c
-@@ -7,6 +7,7 @@
- 
- #define pr_fmt(fmt) "SCMI Notifications RESET - " fmt
- 
-+#include <linux/module.h>
- #include <linux/scmi_protocol.h>
- 
- #include "common.h"
-@@ -324,6 +325,7 @@ static int scmi_reset_protocol_init(const struct scmi_protocol_handle *ph)
- 
- static const struct scmi_protocol scmi_reset = {
- 	.id = SCMI_PROTOCOL_RESET,
-+	.owner = THIS_MODULE,
- 	.init_instance = &scmi_reset_protocol_init,
- 	.ops = &reset_proto_ops,
- 	.events = &reset_protocol_events,
-diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-index edc08d9f8daa..903fcdb57d4a 100644
---- a/drivers/firmware/arm_scmi/sensors.c
-+++ b/drivers/firmware/arm_scmi/sensors.c
-@@ -8,6 +8,7 @@
- #define pr_fmt(fmt) "SCMI Notifications SENSOR - " fmt
- 
- #include <linux/bitfield.h>
-+#include <linux/module.h>
- #include <linux/scmi_protocol.h>
- 
- #include "common.h"
-@@ -990,6 +991,7 @@ static int scmi_sensors_protocol_init(const struct scmi_protocol_handle *ph)
- 
- static const struct scmi_protocol scmi_sensors = {
- 	.id = SCMI_PROTOCOL_SENSOR,
-+	.owner = THIS_MODULE,
- 	.init_instance = &scmi_sensors_protocol_init,
- 	.ops = &sensor_proto_ops,
- 	.events = &sensor_protocol_events,
-diff --git a/drivers/firmware/arm_scmi/system.c b/drivers/firmware/arm_scmi/system.c
-index 97ad20a51d72..a68bad27688f 100644
---- a/drivers/firmware/arm_scmi/system.c
-+++ b/drivers/firmware/arm_scmi/system.c
-@@ -7,6 +7,7 @@
- 
- #define pr_fmt(fmt) "SCMI Notifications SYSTEM - " fmt
- 
-+#include <linux/module.h>
- #include <linux/scmi_protocol.h>
- 
- #include "common.h"
-@@ -130,6 +131,7 @@ static int scmi_system_protocol_init(const struct scmi_protocol_handle *ph)
- 
- static const struct scmi_protocol scmi_system = {
- 	.id = SCMI_PROTOCOL_SYSTEM,
-+	.owner = THIS_MODULE,
- 	.init_instance = &scmi_system_protocol_init,
- 	.ops = NULL,
- 	.events = &system_protocol_events,
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 82611f564c66..343131e68697 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -708,6 +708,18 @@ static inline void scmi_driver_unregister(struct scmi_driver *driver) {}
- #define module_scmi_driver(__scmi_driver)	\
- 	module_driver(__scmi_driver, scmi_register, scmi_unregister)
- 
-+/**
-+ * module_scmi_protocol() - Helper macro for registering a scmi protocol
-+ * @__scmi_protocol: scmi_protocol structure
-+ *
-+ * Helper macro for scmi drivers to set up proper module init / exit
-+ * functions.  Replaces module_init() and module_exit() and keeps people from
-+ * printing pointless things to the kernel log when their driver is loaded.
-+ */
-+#define module_scmi_protocol(__scmi_protocol)	\
-+	module_driver(__scmi_protocol,		\
-+		      scmi_protocol_register, scmi_protocol_unregister)
-+
- struct scmi_protocol;
- int scmi_protocol_register(const struct scmi_protocol *proto);
- void scmi_protocol_unregister(const struct scmi_protocol *proto);
+ 	/* Safe to free channels since no more users */
+ 	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
+ 	idr_destroy(&info->tx_idr);
 -- 
 2.17.1
 
