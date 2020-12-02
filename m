@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CFF2CB5D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5352CB5D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387567AbgLBHjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:39:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
+        id S2387628AbgLBHjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:39:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387533AbgLBHjn (ORCPT
+        with ESMTP id S2387533AbgLBHjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:39:43 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAC8C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:39:02 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id ga15so1996915ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 23:39:02 -0800 (PST)
+        Wed, 2 Dec 2020 02:39:44 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1662AC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:39:04 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id ga15so1997088ejb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 23:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mPSb3LIXJz9yjgJuLrgI8qtwWP2+jAOV2L+weq9SiGc=;
-        b=1qcWbxe3PwuoM4G/LqobEBCACzqr7bqIiRseFwkSh8f3G28rPFSXqlM/eWggABlxJ1
-         N/MwazYOIzkccw9wRp7nZ66lZWmfoDhHKCxyTO95rPZOv4QwF78l2LdILilJOJ7AUktN
-         LBqL/0CHIhoz0woKY+hNwhVsTVlYEK9QlZ+MbHKLVLikYpioVuBzxU2WRor+8IYkJR5s
-         cLqnfSrCUt2idTGuwgU4/lMALi5iZ3nx0fCulKoYxfqUkU6gSVaqqCS4cjsShnmneMST
-         omC4b7nZbNaPvmIAcd8uP7iZAUzfW4EqXnUGvE/w1Eu3L54h67PEVdTB9RlGXfKO0jFk
-         hY8g==
+        bh=zn1WORb+fwgcTwpy2Ku70Wdb1cJFmwbuu6lag/0wEvU=;
+        b=JYTj2gN4gm2x2fsPv/LfZBb9oN5E8pVZWQSlDFbnWPn+dagamy2pYUTN//S1KhtQNW
+         ApUn9kg8UIv2tnWStyiSDraStlAMZQ5IkWZVULaAmbGhOmrjj9MzWaeGf6JkbEbwarsB
+         uXXghk47c2Xhb+fWZyfxHok7B+ZsW6Zzh59EqocMxSTupzbmyr3rkb8tqj4Uk6wnqxMv
+         BAzRlRQA7AoSYYE2f5gT5kVv/EiAfOJwgGJimTJv3fIfpK9LJlVvvjhNZZeA7M/ZtlNC
+         NODP/JQPs8Zj9MEkF5Ddsu1pzTLs/7FuCb5xn7ETDPGZN4pF1+djMb9pBLI0M1SZE+U5
+         ioNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=mPSb3LIXJz9yjgJuLrgI8qtwWP2+jAOV2L+weq9SiGc=;
-        b=WqMFj4whJWaPEKknVX4Esz019SbdvwEe2/OFNWVA0IbVT8jCu4LAXRMhohJBRedyBX
-         14QfCAdztxHvHA5bXEbcTjcXtWlbhvcXwb1IfzRzlNUV0B0IDowjIyNgp9i8Lv4cO/ho
-         le60xtvJHv6RK6cOYEfwdO5De0jZG1sRQ1TGlx3Z53+aqNDchHitfPVOFTNnXQKsRnAr
-         ilHov4d8qNknhhwwE+ykyrLHFF0P04DiyGFS0l3OSoSEsdFETHTNVkI46Hd0hBi+S6QJ
-         kaYGVacR41YaEsdLr95hBvbLoOj75oRZWuSiY2B6REXGe/CXiAZF7FK/PTDwhVXdgQ1Y
-         B2Yw==
-X-Gm-Message-State: AOAM533jibOIMhjV9gwWTaQWCKjB/WZc1EikWFDupW+79gw0BpFLIGHR
-        heWoQVoanAc75bX/0xgEBqtdRBaHsiqt/CHl
-X-Google-Smtp-Source: ABdhPJyUnEbYEgWI4g5iaY+v4XaJ40wBO5Eq1lpSY2XyT8na+eiyqDtEtscqx4djZP79FMi2Di5rhQ==
-X-Received: by 2002:a17:906:710b:: with SMTP id x11mr1139536ejj.433.1606894740930;
-        Tue, 01 Dec 2020 23:39:00 -0800 (PST)
+        bh=zn1WORb+fwgcTwpy2Ku70Wdb1cJFmwbuu6lag/0wEvU=;
+        b=IlviuQDjLeNWzlKEL38W7OJQgC+AQu51LowwpakD+C9P/SCN2PEBsMbNvwlUlmjGMs
+         72VwOtq82/lvjoFZ/dU5r+IvMXq3ZPD9p3VqJ1VOsNrN0XOTr1xU4UxSWwEuFJN/sdWY
+         uXMRJ2PCC/OL3pdkaYX6SxS8GylVi8dltl93HT2hIo5IStCSunj9oEN++qiZulGhaacx
+         Jrxg15BqdWaIfXGTlkDpUqLtin//pPYN2xWV8k8KUhmxE6kLcLCEkmJhOWAoipmifDtW
+         x6nEmbKN0bP6CS3q63GcL66P5i5QRh2sitHnxFjlZeHO1f2GZCwJ8le7s+j2JFMzBayf
+         XnIQ==
+X-Gm-Message-State: AOAM531S83nL0gH+UngMA9sR31UC1wxtUHMvwDaZQKaZArwOJ7UP9CBO
+        ETOJdEVkG3Ea4JJ+V167+w3gPiHnsP++5L9U
+X-Google-Smtp-Source: ABdhPJxrWTRmiF3m/XYc+4HpOYp0GasuSwCTTsb1YoszLSEXsDPS/x/oEMYW69btRoX/JbiHefS6Tg==
+X-Received: by 2002:a17:906:edc4:: with SMTP id sb4mr1074061ejb.21.1606894742567;
+        Tue, 01 Dec 2020 23:39:02 -0800 (PST)
 Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id u1sm538945edf.65.2020.12.01.23.39.00
+        by smtp.gmail.com with ESMTPSA id pk19sm527580ejb.32.2020.12.01.23.39.01
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Dec 2020 23:39:00 -0800 (PST)
+        Tue, 01 Dec 2020 23:39:02 -0800 (PST)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
@@ -57,9 +57,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rajan Vaja <rajan.vaja@xilinx.com>,
         Tejas Patel <tejas.patel@xilinx.com>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 2/3] firmware: xilinx: Add a blank line after function declaration
-Date:   Wed,  2 Dec 2020 08:38:49 +0100
-Message-Id: <7b6007e05f6c01214861a37f198cd5bee62a4d3e.1606894725.git.michal.simek@xilinx.com>
+Subject: [PATCH v2 3/3] firmware: xilinx: Properly align function parameter
+Date:   Wed,  2 Dec 2020 08:38:50 +0100
+Message-Id: <00ed9fcb94a6c22eff1fe8afdea46b2764a8687d.1606894725.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1606894725.git.michal.simek@xilinx.com>
 References: <cover.1606894725.git.michal.simek@xilinx.com>
@@ -69,202 +69,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix all these issues which are also reported by checkpatch --strict.
+Fix parameters alignment reported by checkpatch --strict.
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
-(no changes since v1)
+Changes in v2:
+- keep variable name and type on the same line - reported by Joe Perches
 
- include/linux/firmware/xlnx-zynqmp.h | 34 ++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ include/linux/firmware/xlnx-zynqmp.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 0db9005782d6..0e7e72650ed3 100644
+index 0e7e72650ed3..edc2977b26d9 100644
 --- a/include/linux/firmware/xlnx-zynqmp.h
 +++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -363,107 +363,132 @@ static inline struct zynqmp_eemi_ops *zynqmp_pm_get_eemi_ops(void)
- {
- 	return ERR_PTR(-ENODEV);
+@@ -456,7 +456,7 @@ static inline int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
  }
-+
- static inline int zynqmp_pm_get_api_version(u32 *version)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_get_chipid(u32 *idcode, u32 *version)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_query_data(struct zynqmp_pm_query_data qdata,
- 				       u32 *out)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_enable(u32 clock_id)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_disable(u32 clock_id)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_getstate(u32 clock_id, u32 *state)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_setdivider(u32 clock_id, u32 divider)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_getdivider(u32 clock_id, u32 *divider)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_setrate(u32 clock_id, u64 rate)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_getrate(u32 clock_id, u64 *rate)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_setparent(u32 clock_id, u32 parent_id)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_clock_getparent(u32 clock_id, u32 *parent_id)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_set_pll_frac_mode(u32 clk_id, u32 mode)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_get_pll_frac_mode(u32 clk_id, u32 *mode)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_set_pll_frac_data(u32 clk_id, u32 data)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_get_pll_frac_data(u32 clk_id, u32 *data)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_set_sd_tapdelay(u32 node_id, u32 type, u32 value)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
- {
- 	return -ENODEV;
- }
-+
+ 
  static inline int zynqmp_pm_reset_assert(const enum zynqmp_pm_reset reset,
- 			   const enum zynqmp_pm_reset_action assert_flag)
+-			   const enum zynqmp_pm_reset_action assert_flag)
++					 const enum zynqmp_pm_reset_action assert_flag)
  {
  	return -ENODEV;
  }
-+
- static inline int zynqmp_pm_reset_get_status(const enum zynqmp_pm_reset reset,
- 					     u32 *status)
- {
- 	return -ENODEV;
+@@ -490,9 +490,9 @@ static inline int zynqmp_pm_release_node(const u32 node)
  }
-+
- static inline int zynqmp_pm_init_finalize(void)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_set_suspend_mode(u32 mode)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_request_node(const u32 node, const u32 capabilities,
- 					 const u32 qos,
- 					 const enum zynqmp_pm_request_ack ack)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_release_node(const u32 node)
- {
- 	return -ENODEV;
- }
-+
+ 
  static inline int zynqmp_pm_set_requirement(const u32 node,
- 					const u32 capabilities,
- 					const u32 qos,
-@@ -471,39 +496,48 @@ static inline int zynqmp_pm_set_requirement(const u32 node,
+-					const u32 capabilities,
+-					const u32 qos,
+-					const enum zynqmp_pm_request_ack ack)
++					    const u32 capabilities,
++					    const u32 qos,
++					    const enum zynqmp_pm_request_ack ack)
  {
  	return -ENODEV;
  }
-+
- static inline int zynqmp_pm_aes_engine(const u64 address, u32 *out)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_fpga_load(const u64 address, const u32 size,
- 				      const u32 flags)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_fpga_get_status(u32 *value)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_write_ggs(u32 index, u32 value)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_read_ggs(u32 index, u32 *value)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_write_pggs(u32 index, u32 value)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_read_pggs(u32 index, u32 *value)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_system_shutdown(const u32 type, const u32 subtype)
- {
- 	return -ENODEV;
- }
-+
- static inline int zynqmp_pm_set_boot_health_status(u32 value)
- {
- 	return -ENODEV;
 -- 
 2.29.2
 
