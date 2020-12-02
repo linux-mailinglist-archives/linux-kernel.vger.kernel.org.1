@@ -2,115 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383CA2CB912
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2D22CB921
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388221AbgLBJix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388208AbgLBJiw (ORCPT
+        id S2388318AbgLBJje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:39:34 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:32818 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388224AbgLBJjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:38:52 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF854C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:38:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Dq7RRhfsaifNT5HQEIdoQ3pAx7LiGBMZUX+onUtH7Ow=; b=Q1vJayOBieNfo5tgaOUkU+WX+g
-        eY0H7I0U475tuHObpiXU2GkdJAGDmZKfOU4m7rjr5B9gsBxFQyK01T3YPi4irsJZ2Iud9MEW+E1c3
-        V0XGjqDtoEPvcb6UhKmYFGNT8VHjCGrgCEVW9yADWf+UEEoVHSrwFk5W2F58tAdar8FlhAAALhXBg
-        qfN8qMKnn9CPZLqtbL4VBXxHNDry8Bbpn5sMkBhSW86ZamwIVVeQkx27yXdizcqW9LwVwJqpgyHMC
-        gjU6XPPYlzJnh7/WWDdHSxmZ5kBfPWdgsinKFAVWD3laRtGSAyWIPLoy7WGQuc9dMIdBkt2gdHLQ5
-        6WlE5hlQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkOaN-0004iB-3W; Wed, 02 Dec 2020 09:38:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BC14430018A;
-        Wed,  2 Dec 2020 10:38:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A78412C8A802B; Wed,  2 Dec 2020 10:38:05 +0100 (CET)
-Date:   Wed, 2 Dec 2020 10:38:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
+        Wed, 2 Dec 2020 04:39:10 -0500
+Date:   Wed, 02 Dec 2020 09:38:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606901907;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ezKbXJ1yIidyCH1EniAMx2ljpJDYSQEezEku9OErR4=;
+        b=koG0K/109IsoIj2+N/c+dL2glh0+wnOTPFETnfdLUcluUey6EjASgOVgevEb9oopLZJwPH
+        zLfnam5ZvHcgNgDLd99AvMTrgG3sts4wOiYVQEz1Jxysa4VLdYjmAS7yHGLfiBnNg8lq6l
+        i3cvXUv/owwk0ttQYC65OGpZqWAo9E/Xc6y98oHNCLla4j2ieaOHZOqZGitSckV7P48gXL
+        EcBaKu/csMkoIzmMkR+0Sj439mGUCSAxb6vrqPiIVMUy60YXQbfRwDOQHwDfQInPY+HUvj
+        ncz5BtEEaWhTRh1Emq29Vh2KNwrTG0Lb82DMabVgWLmHetOeskmQEoLiGmKt2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606901907;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ezKbXJ1yIidyCH1EniAMx2ljpJDYSQEezEku9OErR4=;
+        b=ZzVq8uZa6NzxhzAWgvAJedhGGfRSbdoP3jjZpDepMVHYLQK/QS00doooDXrJ2oyriORW8h
+        KPlOT/1jSchdfVDA==
+From:   "tip-bot2 for Sven Schnelle" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/entry] entry: Add syscall_exit_to_user_mode_work()
 Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201202093805.GB3040@hirez.programming.kicks-ass.net>
-References: <160665707945.2808.5384034634184489471.tglx@nanos>
- <160665708065.2808.15317906761841446715.tglx@nanos>
- <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
- <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
- <yt9dh7p78d8l.fsf@linux.ibm.com>
- <yt9dpn3v3u1m.fsf@linux.ibm.com>
- <20201130125211.GN2414@hirez.programming.kicks-ass.net>
- <20201130130315.GJ3092@hirez.programming.kicks-ass.net>
- <20201202075427.GA5838@osiris>
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201201142755.31931-6-svens@linux.ibm.com>
+References: <20201201142755.31931-6-svens@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202075427.GA5838@osiris>
+Message-ID: <160690190640.3364.10751265538936902967.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 08:54:27AM +0100, Heiko Carstens wrote:
-> > > But but but...
-> > > 
-> > >   do_idle()			# IRQs on
-> > >     local_irq_disable();	# IRQs off
-> > >     defaul_idle_call()	# IRQs off
-> > 	lockdep_hardirqs_on();	# IRQs off, but lockdep things they're on
-> > >       arch_cpu_idle()		# IRQs off
-> > >         enabled_wait()	# IRQs off
-> > > 	  raw_local_save()	# still off
-> > > 	  psw_idle()		# very much off
-> > > 	    ext_int_handler	# get an interrupt ?!?!
-> > 	      rcu_irq_enter()	# lockdep thinks IRQs are on <- FAIL
-> > 
-> > I can't much read s390 assembler, but ext_int_handler() has a
-> > TRACE_IRQS_OFF, which would be sufficient to re-align the lockdep state
-> > with the actual state, but there's some condition before it, what's that
-> > test and is that right?
-> 
-> After digging a bit into our asm code: no, it is not right, and only
-> for psw_idle() it is wrong.
-> 
-> What happens with the current code:
-> 
-> - default_idle_call() calls lockdep_hardirqs_on() before calling into
->   arch_cpu_idle()
+The following commit has been merged into the core/entry branch of tip:
 
-Correct.
+Commit-ID:     1568b5540b3e6ff3fe43a2cf889cb777cf8149fc
+Gitweb:        https://git.kernel.org/tip/1568b5540b3e6ff3fe43a2cf889cb777cf8149fc
+Author:        Sven Schnelle <svens@linux.ibm.com>
+AuthorDate:    Tue, 01 Dec 2020 15:27:55 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 02 Dec 2020 10:32:18 +01:00
 
-> - our arch_cpu_idle() calls psw_idle() which enables irqs. the irq
->   handler will call/use the SWITCH_ASYNC macro which clears the
->   interrupt enabled bits in the old program status word (_only_ for
->   psw_idle)
+entry: Add syscall_exit_to_user_mode_work()
 
-This is the condition at 0: that compares r13 to psw_idle_exit?
+This is the same as syscall_exit_to_user_mode() but without calling
+exit_to_user_mode(). This can be used if there is an architectural reason
+to avoid the combo function, e.g. restarting a syscall without returning to
+userspace. Before returning to user space the caller has to invoke
+exit_to_user_mode().
 
-> - this again causes the interrupt handler to _not_ call TRACE_IRQS_OFF
->   and therefore lockdep thinks interrupts are enabled within the
->   interrupt handler
-> 
-> So I guess my patch which I sent yesterday evening should fix all that
-> mess
+[ tglx: Amended comments ]
 
-Yes, afaict it does the right thing. Exceptions should call
-TRACE_IRQS_OFF unconditionally, since the hardware will disable
-interrupts upon taking an exception, irrespective of what the previous
-context had.
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201201142755.31931-6-svens@linux.ibm.com
 
-On exception return the previous IRQ state is inspected and lockdep is
-changed to match (except for NMIs, which either are ignored by lockdep
-or need a little bit of extra care).
+---
+ include/linux/entry-common.h | 20 ++++++++++++++++++++
+ kernel/entry/common.c        | 14 ++++++++++++--
+ 2 files changed, 32 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index e370be8..7c581a4 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -316,10 +316,26 @@ static inline void arch_syscall_exit_tracehook(struct pt_regs *regs, bool step)
+  * is not suitable as the last step before returning to userspace. Must be
+  * invoked with interrupts disabled and the caller must be
+  * non-instrumentable.
++ * The caller has to invoke syscall_exit_to_user_mode_work() before this.
+  */
+ void exit_to_user_mode(void);
+ 
+ /**
++ * syscall_exit_to_user_mode_work - Handle work before returning to user mode
++ * @regs:	Pointer to currents pt_regs
++ *
++ * Same as step 1 and 2 of syscall_exit_to_user_mode() but without calling
++ * exit_to_user_mode() to perform the final transition to user mode.
++ *
++ * Calling convention is the same as for syscall_exit_to_user_mode() and it
++ * returns with all work handled and interrupts disabled. The caller must
++ * invoke exit_to_user_mode() before actually switching to user mode to
++ * make the final state transitions. Interrupts must stay disabled between
++ * return from this function and the invocation of exit_to_user_mode().
++ */
++void syscall_exit_to_user_mode_work(struct pt_regs *regs);
++
++/**
+  * syscall_exit_to_user_mode - Handle work before returning to user mode
+  * @regs:	Pointer to currents pt_regs
+  *
+@@ -343,6 +359,10 @@ void exit_to_user_mode(void);
+  *
+  *  3) Final transition (lockdep, tracing, context tracking, RCU), i.e. the
+  *     functionality in exit_to_user_mode().
++ *
++ * This is a combination of syscall_exit_to_user_mode_work() (1,2) and
++ * exit_to_user_mode(). This function is preferred unless there is a
++ * compelling architectural reason to use the seperate functions.
+  */
+ void syscall_exit_to_user_mode(struct pt_regs *regs);
+ 
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 48d30ce..d6b7393 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -282,12 +282,22 @@ static void syscall_exit_to_user_mode_prepare(struct pt_regs *regs)
+ 		syscall_exit_work(regs, work);
+ }
+ 
+-__visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
++static __always_inline void __syscall_exit_to_user_mode_work(struct pt_regs *regs)
+ {
+-	instrumentation_begin();
+ 	syscall_exit_to_user_mode_prepare(regs);
+ 	local_irq_disable_exit_to_user();
+ 	exit_to_user_mode_prepare(regs);
++}
++
++void syscall_exit_to_user_mode_work(struct pt_regs *regs)
++{
++	__syscall_exit_to_user_mode_work(regs);
++}
++
++__visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
++{
++	instrumentation_begin();
++	__syscall_exit_to_user_mode_work(regs);
+ 	instrumentation_end();
+ 	__exit_to_user_mode();
+ }
