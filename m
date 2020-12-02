@@ -2,170 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56532CB3FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4972CB400
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgLBEma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 23:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        id S1728308AbgLBEqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 23:46:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728345AbgLBEm3 (ORCPT
+        with ESMTP id S1725902AbgLBEqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 23:42:29 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE82C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:41:49 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id z21so1277286lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 20:41:49 -0800 (PST)
+        Tue, 1 Dec 2020 23:46:36 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF13C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:45:56 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id l20so76513oot.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 20:45:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=odGT0RvX5AAcrJBCMT9wkKt9QjC6rMyy8QdGLZvY3r0=;
-        b=CxS0vDT6Aaj83B+TkWH6A+EWAlxsHaHy/JogU2tC/P2RRxxkmUC+Pp3Baqo4jQo6m4
-         EjLEXnf20hVWY6sv0xOEV0HLlO4RAgULP8cDCHzzJ4x4tNUwWB3XfoHLubtryBMkiZQD
-         ZRUlJf1l0SMMM3IrbMr9dwBzO8+7lDReAGs8kyO3wTswNLUMjtiFBBX05/kb/0lb36/Q
-         9Z4wjeqdN/bMuhpeFMlvnDNGPCPE1vI92au5t7Z5793kiy0zbZPW03m4hGDgoyul+d/E
-         iuV7cPkKIY93AYw6bSiliJkkTytU1+9VA1pBtucO7RNmhkQks9ymrmwQBnboowznNPvs
-         cHhg==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=8KxEb62cuyYX7rvTRZibtFXDnRArB2vZulPU2/YsgyU=;
+        b=mjK5r9lgi0VXMpyEjYjVTmljkOoabcD9SQLiTNEF4Gu9XcsQheS2yarSgso9DMqufn
+         YM6UU6Nf/HN37zBcz+WCyVy2pyOpYu93+SNBV8KwLFcj0nZ9vHkfQIQRaNyak1cUUPaF
+         2y1onfVSzKfucVV5lFPxUPV3qaIFJG2uC9DxnTA7w4rMptfuNBjeXA5LRk+MXvHnAsHR
+         pZK0HXBuNZvL/SCH7fgmO7ca4zEknMd5Mcc0k3fW2J5EW8C5rpdth7skEidHw5HWP6Wg
+         uY/6yx8FTWYflhuxqDfbpXDXpSBzrr4YEJ9zo1qQLYWOO/CaIheBBJVR1IjvNb53TKpi
+         vK6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=odGT0RvX5AAcrJBCMT9wkKt9QjC6rMyy8QdGLZvY3r0=;
-        b=tIoIYBh1f2vEu6OAXTwvhYQxoCAYl7b/tbg3qCvGLoyrTRH1OdHksihmG7345fIiOs
-         FsvsfH9WaJ5e0jFhWcuTlOaOkYIBDk5uWd5daIkjrhQkIIPWCkHJeZg3h9yYKwNgf1Wk
-         TJhFYtRQy8WUp8Sny0hnrTwIgZmbiDEKz/VWvjh3HJ+w1+ITvu9s5b265COCgv//c4Oy
-         YSzL2E9YI86SK8kaFiEOS1N+IZK92pg2zTEFan0qlLhdPigKBjj6bzYDdXYOX+bm48/N
-         OWLRbc0HZ2rQ9OP41U5YGLFoN+1CqtnzIP6TN6RpTajQUr35QWb3YJbcnFkDA/YJKDui
-         i4sg==
-X-Gm-Message-State: AOAM5319nM1ZJwWJDUYAE/IJLDKrsfgnyMMKbzwozdes17V51SFCbNnx
-        cngu10LS2B5rX5Q55log+xXGY81xEinMXPzB+dm9HA==
-X-Google-Smtp-Source: ABdhPJyLGoC2gwqfsd8POy9xXzLNMDB/P4TOaOjrNIlJA7Wdv7YjlVn8ouSprJJz4Jqi7j+NNpOLBrIcTCJfSNQdE1s=
-X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr401301lfg.167.1606884107480;
- Tue, 01 Dec 2020 20:41:47 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=8KxEb62cuyYX7rvTRZibtFXDnRArB2vZulPU2/YsgyU=;
+        b=UVssOve8cFqmjLaVDshzbNldt/6A0IQB/q20hXq0pt7FOLKyHLwgzSxUgS4p6jolGQ
+         WVuKCIG1e/0HRECMQRSwyGWmPIbbXD91CgZxer/VALQcILW0QkNb2V9b5bJ9JkwvVCl+
+         Wye03QOV0HkWXSJGn3uLIqpVzRKsv0uAP8vufIswuTYpZfiz6n5V/mQK0fQ0sOFHqeUK
+         7p/FL/NtLOUBRmzizIEtAaOSG942G8WdndWnxgFtc3WkD2XlUkjWfjW8kfL9ZmE9zpwq
+         AxX6NecExityFEMQGAshlPmjZuARzpqOPRuU+L2RelzHUaXsnrlLccTQxq/FJiyDSO9R
+         Iz0w==
+X-Gm-Message-State: AOAM5321YxKtZLiM8CJkAe0aQPFTWt0sNLbBZcBdNcUOt9XyKjqZAmfb
+        F6jiTo14RXk96qHM3zoAM8NDQ5FS1n71UQbpcnDFNQ==
+X-Google-Smtp-Source: ABdhPJzZVvvOHzXb8bSwzhSrV4k6EGJHttBxXh62TaUQwvHkDaaWkKmfbu8XOQDyZia1N9DGzRG0x2Fpl6VhhgwjhV4=
+X-Received: by 2002:a4a:abc9:: with SMTP id o9mr416695oon.1.1606884355665;
+ Tue, 01 Dec 2020 20:45:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130233242.78413-1-dlatypov@google.com> <20201130233242.78413-2-dlatypov@google.com>
- <CABVgOSmX3foOr6XJhQ_goYabFEg8qNYoQ+5O7JPRW=gLmh=OQA@mail.gmail.com> <CAGS_qxpW=Q=x8WAR3WWhtYnJc+K43kpDw680x+6go1cAjW6oUQ@mail.gmail.com>
-In-Reply-To: <CAGS_qxpW=Q=x8WAR3WWhtYnJc+K43kpDw680x+6go1cAjW6oUQ@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 2 Dec 2020 12:41:35 +0800
-Message-ID: <CABVgOSnH0gz7z5JhRCGyG1wg0zDDBTLoSUCoB-gWMeXLgVTo2w@mail.gmail.com>
-Subject: Re: [PATCH 2/5] kunit: tool: fix unit test so it can run from
- non-root dir
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 2 Dec 2020 10:15:44 +0530
+Message-ID: <CA+G9fYupbQK02Yor=U-80JEdkwacZ7bi3RKt3+D=e+qZ-o0uCA@mail.gmail.com>
+Subject: [arm64] db410c: BUG: Invalid wait context
+To:     linux-stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        lkft-triage@lists.linaro.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 3:00 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Mon, Nov 30, 2020 at 11:33 PM David Gow <davidgow@google.com> wrote:
-> >
-> > On Tue, Dec 1, 2020 at 7:33 AM Daniel Latypov <dlatypov@google.com> wrote:
-> > >
-> > > get_absolute_path() makes an attempt to allow for this.
-> > > But that doesn't work as soon as os.chdir() gets called.
-> >
-> > Can we explain why this doesn't work? It's because the test_data/
-> > files are accessed with relative paths, so chdir breaks access to
-> > them, right?
->
-> Correct.
-> Because it actually returns a relative path.
->
-> (I forgot that I called out that get_absolute_path() gives relative
-> paths in the last patch, and not this one. I can update the commit
-> desc if we want a v2 of this)
->
-> >
-> > >
-> > > So make it so that os.chdir() does nothing to avoid this.
-> > >
-> > > Note: mock.patch.object() doesn't seem to work in setUpModule(), hence
-> > > the introduction of a new base class instead.
-> > >
-> > > Fixes: 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside kernel tree")
-> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > > ---
-> >
-> > I don't like this: disabling a real system call seems like overkill to
-> > work around a path issue like this.
-> >
-> > Wouldn't it be better to either:
-> > (a) stop kunit_tool from needing to chdir entirely; or
->
-> a) is doable, but would require plumbing cwd=get_kernel_root_path() to
-> all the subprocess calls to make, etc.
-> I'm not sure fixing a internal test-only issue necessarily justifies
-> taking that path instead of the easier "just add a chdir" we opted for
-> in 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside
-> kernel tree").
->
-> > (b) have get_absolute_path() / test_data_path() produce an absolute path.
-> >
-> > The latter really seems like the most sensible approach: have the
-> > script read its own path and read files relative to that.
->
-> b) is not that simple, sadly.
->
-> Say I invoke
-> $ python3 kunit_tool_test.py
-> then __file__ = kunit_tool_test.py.
->
-> So __file__ is a relative path, but the code assumed it was an
-> absolute one and any change of directory breaks things.
-> Working around that would require something like caching the result of
-> os.path.abspath(__file__) somewhere.
+While running kselftests on arm64 db410c platform "BUG: Invalid wait context"
+noticed at different runs this specific platform running stable-rc 5.9.12-rc1.
 
-So, to clarify, __file__ is a relative path based on the cwd when the
-script is initially run, right?
+While running these two test cases we have noticed this BUG and not easily
+reproducible.
 
-In any case, caching the result of os.path.abspath(__file__) seems
-like the most sensible solution to me. There's global state anyway
-(the current directory), we might as well have it in an explicit
-variable, IMHO.
->
-> I can see the point about not mocking out something like os.chdir().
-> But on the other hand, do we have any other legitimate reason to call
-> it besides that one place in kunit.py?
-> If we do have something that relies on doing an os.chdir(), it should
-> ideally notice that it didn't work and manifest in a unit test failure
-> somehow.
+# selftests: bpf: test_xdp_redirect.sh
+# selftests: net: ip6_gre_headroom.sh
 
-Certainly there doesn't seem to be any other need to chdir() in
-kunit_tool at the moment, but I could see us doing so when adding
-other features. More to the point, if both kunit.py and
-kunit_tool_test.py rely on or manipulate the current directory as part
-of their state, that seems like it's asking for some trouble down the
-line.
+[  245.694901] kauditd_printk_skb: 100 callbacks suppressed
+[  245.694913] audit: type=1334 audit(251.699:25757): prog-id=12883 op=LOAD
+[  245.735658] audit: type=1334 audit(251.743:25758): prog-id=12884 op=LOAD
+[  245.801299] audit: type=1334 audit(251.807:25759): prog-id=12885 op=LOAD
+[  245.832034] audit: type=1334 audit(251.839:25760): prog-id=12886 op=LOAD
+[  245.888601]
+[  245.888631] =============================
+[  245.889156] [ BUG: Invalid wait context ]
+[  245.893071] 5.9.12-rc1 #1 Tainted: G        W
+[  245.897056] -----------------------------
+[  245.902091] pool/1279 is trying to lock:
+[  245.906083] ffff000032fc1218
+(&child->perf_event_mutex){+.+.}-{3:3}, at:
+perf_event_exit_task+0x34/0x3a8
+[  245.910085] other info that might help us debug this:
+[  245.919539] context-{4:4}
+[  245.924484] 1 lock held by pool/1279:
+[  245.927087]  #0: ffff8000127819b8 (rcu_read_lock){....}-{1:2}, at:
+dput+0x54/0x460
+[  245.930739] stack backtrace:
+[  245.938203] CPU: 1 PID: 1279 Comm: pool Tainted: G        W
+5.9.12-rc1 #1
+[  245.941243] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[  245.948621] Call trace:
+[  245.955390]  dump_backtrace+0x0/0x1f8
+[  245.957560]  show_stack+0x2c/0x38
+[  245.961382]  dump_stack+0xec/0x158
+[  245.964679]  __lock_acquire+0x59c/0x15c8
+[  245.967978]  lock_acquire+0x124/0x4d0
+[  245.972058]  __mutex_lock+0xa4/0x970
+[  245.975615]  mutex_lock_nested+0x54/0x70
+[  245.979261]  perf_event_exit_task+0x34/0x3a8
+[  245.983168]  do_exit+0x394/0xad8
+[  245.987420]  do_group_exit+0x4c/0xa8
+[  245.990633]  get_signal+0x16c/0xb40
+[  245.994193]  do_notify_resume+0x2ec/0x678
+[  245.997404]  work_pending+0x8/0x200
 
-If we use an absolute path for the test data, that's something that
-seems unlikely to ever need further changes or cause issues.
->
-> Alternatively, we could make get_kernel_root_path() return ""/None to
-> avoid the chdir call.
-> kunit.py:       if get_kernel_root_path():
-> kunit.py:               os.chdir(get_kernel_root_path())
->
-> There'd be no adverse affects atm for stubbing that out, and I don't forsee any.
-> But if we want to be even safer, then perhaps we have
->
-> def chdir_to_kernel_root():
->    ...
->
-> and mock out just that func in the unit test?
+and BUG in an other run,
 
-I'd be okay with this, even if I'd prefer us to use an absolute path
-for the test_data as well. Having something like this might even give
-us the opportunity to verify that we're actually trying to change to
-the kernel directory in cases where we need to, but that seems like
-it's out-of-scope for a simple fix.
+[ 1012.068407] audit: type=1700 audit(1018.803:25886): dev=eth0 prom=0
+old_prom=256 auid=4294967295 uid=0 gid=0 ses=4294967295
+[ 1012.250561] IPv6: ADDRCONF(NETDEV_CHANGE): swp1: link becomes ready
+[ 1012.251298] IPv6: ADDRCONF(NETDEV_CHANGE): h1: link becomes ready
+[ 1012.252559]
+[ 1012.261892] =============================
+[ 1012.263453] [ BUG: Invalid wait context ]
+[ 1012.267363] 5.9.12-rc1 #1 Tainted: G        W
+[ 1012.271354] -----------------------------
+[ 1012.276389] systemd/454 is trying to lock:
+[ 1012.280381] ffff00003985a918 (&mm->mmap_lock){++++}-{3:3}, at:
+__might_fault+0x60/0xa8
+[ 1012.284378] other info that might help us debug this:
+[ 1012.292275] context-{4:4}
+[ 1012.297396] 1 lock held by systemd/454:
+[ 1012.299997]  #0: ffff8000127d1f38 (rcu_read_lock){....}-{1:2}, at:
+path_init+0x40/0x718
+[ 1012.303649] stack backtrace:
+[ 1012.311638] CPU: 2 PID: 454 Comm: systemd Tainted: G        W
+  5.9.12-rc1 #1
+[ 1012.314760] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[ 1012.322139] Call trace:
+[ 1012.329084]  dump_backtrace+0x0/0x1f8
+[ 1012.331254]  show_stack+0x2c/0x38
+[ 1012.335075]  dump_stack+0xec/0x158
+[ 1012.338371]  __lock_acquire+0x59c/0x15c8
+[ 1012.341672]  lock_acquire+0x124/0x4d0
+[ 1012.345751]  __might_fault+0x84/0xa8
+[ 1012.349311]  cp_new_stat+0x114/0x1b8
+[ 1012.352956]  __do_sys_newfstat+0x44/0x70
+[ 1012.356513]  __arm64_sys_newfstat+0x24/0x30
+[ 1012.358652] IPv6: ADDRCONF(NETDEV_CHANGE): swp3: link becomes ready
+[ 1012.360424]  el0_svc_common.constprop.3+0x7c/0x198
+[ 1012.370575]  do_el0_svc+0x34/0xa0
+[ 1012.375437]  el0_sync_handler+0x16c/0x210
+[ 1012.378824]  el0_sync+0x140/0x180
 
--- David
+
+Full test log links,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.11-153-gfb49ad2107f4/testrun/3516257/suite/linux-log-parser/test/check-kernel-bug-1997042/log
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.11-153-gfb49ad2107f4/testrun/3515038/suite/linux-log-parser/test/check-kernel-bug-1996797/log
+
+metadata:
+  git branch: linux-5.9.y
+  git commit: fb49ad2107f4b740257c84ec2991fc6afb447f53
+  git describe: v5.9.11-153-gfb49ad2107f4
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-stable-rc-5.9/44/config
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
