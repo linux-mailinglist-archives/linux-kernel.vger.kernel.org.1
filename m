@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACB72CC2DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C732CC2E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730501AbgLBQ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37336 "EHLO
+        id S1730754AbgLBQ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:58:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728226AbgLBQ5j (ORCPT
+        with ESMTP id S1728661AbgLBQ6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:57:39 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9182BC061A4C
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:56:26 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id l11so1641164pfc.16
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:56:26 -0800 (PST)
+        Wed, 2 Dec 2020 11:58:20 -0500
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE47EC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:57:12 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id t142so511645oot.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:57:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=yv6jkOMVVu0NxKOBrd1YDUszNsTB64/IwLRfmacssjI=;
-        b=PYM0+hMcoAZzkNbTQczmz7arAkA+YVllnBBKhKWWKcmGpJ1QOp4hhVjf43FBFF9n6S
-         ydt8GpmEiSx3PU3+n3Eyjhwwf+3dMLLhl1PkXWbtsAfrW5xaCyJ6WW3WaAWLN6mbLW6+
-         RbSPcHO8RyA92KQcn6J8wBjeuR/aMgUvBM9Qy7VHdvXL7R0a50xEFYy3Gntb6PUwBqMp
-         NzzfOxvE+LMZNEdaUVBle9ELmAWhwVunHUDUYPYnRxoDGIVwcbSZ5Uea8zfJXuNduU9O
-         cNBb62fOlNKhk+WmmrjwgVj5iHO2LPT7TIUWg8MZbxoejwZ70AMTh19mArWU9SWEX0Ia
-         VPZQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IKhZCXxnh9Gr8c+y0PLwVDYCIRPAiDoBN92awWJ4Pgk=;
+        b=MQ/qXwYFdc7FPet0cFzu8iQTEovVyZNX9T9uZFpSw6YhdI7OQQEAlwuuOjEX4qlJRI
+         hAhvGdGEvQgzfW4ZfWWjAQtYwh4oh1XPQeq9zyUVwzpw/L81Qie+W0yu835ArhjPMkG+
+         RSkVsTkWtsuXP1bUqeh5blHrwCwtbyByXnM9k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=yv6jkOMVVu0NxKOBrd1YDUszNsTB64/IwLRfmacssjI=;
-        b=Gxuyz5Z0RTs0s7v4CoN4FWPuGNwCd67ECrEjfsz+3nqAZnG2/uupKOVDJGYRSyQ7Ry
-         jYdkkhiS4M5Ie5BHUEVvZhc286uE7QlL1Ra0oTY8qHW8PSpxhglbPLP+TvZRsW7VCLB0
-         DlchDrGdue6ZIoNTkOctcpGpwtdqOdeNLWFSuk3a1aSx71lp2izvvfrslN3CSfFlZ1+q
-         s577Yk3hUskaUcCyJxfpjbjt4oLjUr34pKBY6JYg2TfjH7039ttgv3MD2P6ZMREjEQ7U
-         WomqInWsdGkL7P3NILYy3w9D0ca+biPdmwC3pK7x0u7tCDpZdMVu4JRZBZG08qICN0OH
-         sz2Q==
-X-Gm-Message-State: AOAM5334HfkhodeWXX1bSqHmW5avygYqV+RNdMGEYgvWN/00WZvn5/Hl
-        p4S+lXo+9ycrtuEQrdzIqUs5oQ900w==
-X-Google-Smtp-Source: ABdhPJyuIA9Ylj0TkFWNUHgFriBZBpWCAwLq6S5wNq15FbwF2qPUczwByvyTGLSSlK1zs2GHSt2GKMIKPg==
-Sender: "kunyi via sendgmr" <kunyi@kunyi0.svl.corp.google.com>
-X-Received: from kunyi0.svl.corp.google.com ([2620:15c:2c5:3:9657:a5ff:fef2:53bd])
- (user=kunyi job=sendgmr) by 2002:a17:90a:67cf:: with SMTP id
- g15mr723285pjm.24.1606928186050; Wed, 02 Dec 2020 08:56:26 -0800 (PST)
-Date:   Wed,  2 Dec 2020 08:56:01 -0800
-In-Reply-To: <20201202165601.1532213-1-kunyi@google.com>
-Message-Id: <20201202165601.1532213-4-kunyi@google.com>
-Mime-Version: 1.0
-References: <20201202165601.1532213-1-kunyi@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH linux hwmon-next v4 3/3] dt-bindings: (hwmon/sbtsi_tmep) Add
- SB-TSI hwmon driver bindings
-From:   Kun Yi <kunyi@google.com>
-To:     jdelvare@suse.com, linux@roeck-us.net, robh+dt@kernel.org,
-        mark.rutland@arm.com, supreeth.venkatesh@amd.com
-Cc:     Kun Yi <kunyi@google.com>, openbmc@lists.ozlabs.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IKhZCXxnh9Gr8c+y0PLwVDYCIRPAiDoBN92awWJ4Pgk=;
+        b=YFLke8wxdHnpOO2GiZsJIJ7zFENqHqUCMQCOdM0sJSeF6uib/AFav/3u/YFUoFZ2cT
+         w5fH60mei2ivb6Si4tW/mw1YUvLMXg1MxCiIcfjTTMaOXCsDQwFqApsULiJXoDOi4hAe
+         Ohlal777iWkJ2tvwkM3v1teI5UOPWhU1qDy585gKSwAaQdM2k8ttd8IL0Q1izX8MzTxp
+         hR4Y7tmhPKjaGxaQE1kJLSvhs3LCMUcmcfwWEcEdmRTLtG/je994qNU4BGzWX1DQHycC
+         oAkFN7e+Sf/b+vEcUsbk/sGJFXrJHYl5ire2iOSnTu3HoExSAu2V0eNE2zsPupo6NCSR
+         AfIA==
+X-Gm-Message-State: AOAM532zfFKgDsh9Vc8mAZiOK9Q6tB6DwUPYUYjmyyeSTt0Fo8OEhJjc
+        qU88pzH7xGO8rJMnR4dclwuVFA==
+X-Google-Smtp-Source: ABdhPJz5+BS97kEJVi1ml86jmoZoKYcSDfBwXBfGqmS6yM/YPrT2BXkcGFp/hRUDPdI86mTpssAF1Q==
+X-Received: by 2002:a4a:d21a:: with SMTP id c26mr2392045oos.68.1606928232091;
+        Wed, 02 Dec 2020 08:57:12 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id a4sm479616oot.6.2020.12.02.08.57.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 08:57:11 -0800 (PST)
+Subject: Re: [PATCH 5.9 000/152] 5.9.12-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20201201084711.707195422@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <53ca0c70-8cb2-68ea-25df-07a26318e4e3@linuxfoundation.org>
+Date:   Wed, 2 Dec 2020 09:57:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201201084711.707195422@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document device tree bindings for AMD SB-TSI emulated temperature
-sensor.
+On 12/1/20 1:51 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.12 release.
+> There are 152 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 03 Dec 2020 08:46:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Kun Yi <kunyi@google.com>
----
- .../devicetree/bindings/hwmon/amd,sbtsi.yaml  | 54 +++++++++++++++++++
- 1 file changed, 54 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
+Compiled and booted on my test system. No dmesg regressions.
 
-diff --git a/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml b/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
-new file mode 100644
-index 000000000000..446b09f1ce94
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
-@@ -0,0 +1,54 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/amd,sbtsi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: >
-+  Sideband interface Temperature Sensor Interface (SB-TSI) compliant
-+  AMD SoC temperature device
-+
-+maintainers:
-+  - Kun Yi <kunyi@google.com>
-+  - Supreeth Venkatesh <supreeth.venkatesh@amd.com>
-+
-+description: |
-+  SB Temperature Sensor Interface (SB-TSI) is an SMBus compatible
-+  interface that reports AMD SoC's Ttcl (normalized temperature),
-+  and resembles a typical 8-pin remote temperature sensor's I2C interface
-+  to BMC. The emulated thermal sensor can report temperatures in increments
-+  of 0.125 degrees, ranging from 0 to 255.875.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - amd,sbtsi
-+
-+  reg:
-+    maxItems: 1
-+    description: |
-+      I2C bus address of the device as specified in Section 6.3.1 of the
-+      SoC register reference. The SB-TSI address is normally 98h for socket
-+      0 and 90h for socket 1, but it could vary based on hardware address
-+      select pins.
-+      \[open source SoC register reference\]
-+        https://www.amd.com/system/files/TechDocs/56255_OSRR.pdf
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        sbtsi@4c {
-+                compatible = "amd,sbtsi";
-+                reg = <0x4c>;
-+        };
-+    };
-+...
--- 
-2.29.2.454.gaff20da3a2-goog
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
+thanks,
+-- Shuah
