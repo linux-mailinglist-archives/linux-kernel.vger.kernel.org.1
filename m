@@ -2,112 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995912CBC91
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13082CBCA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729786AbgLBMN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:13:28 -0500
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:48131 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729417AbgLBMN0 (ORCPT
+        id S2388817AbgLBMOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:14:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388796AbgLBMOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:13:26 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id kQzukDkjPN7XgkQzyksu9k; Wed, 02 Dec 2020 13:12:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1606911163; bh=DXYdVBRGF7jseXC2uIu1D/EW5oYWr4Xwp42Udd5MRQo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=lazDUd2DAPzPkZtaQRXBN5+8kMAmNhR22MxqsPtEq2mJR0JOoDkrVJ0xY0ofM5I0a
-         64ZcC33c1U/+e55p4rNqHZ1K5uuyNcLmRpYtJpJVM5b6uAyJxZ1X1gtFrgMOb6W2ta
-         LHpbHySKI1mXGD4kcK8szkC5tGlhSdPispJ5i1fPqPe2TftyUIlySR+Chv7kzNaVph
-         mkNY9dgv97gkTCqT4QZv+C6FXx7IMFRo8PhsXqUnWdKP6hkebxhRroIKwRNphP7XcU
-         KylPvlodp4LMqRwcAUod2CnPdPYKx81SKpfyvXOhnG3dwDZxYmh0Hk9aiRns7Jt8xg
-         H2mxNxLWcuhBg==
-Subject: Re: [PATCH v5 09/10] media: Avoid parsing quantization and huffman
- tables
-To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
-        mchehab@kernel.org, shawnguo@kernel.org, robh+dt@kernel.org,
-        p.zabel@pengutronix.de
-Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
-        daniel.baluta@nxp.com, robert.chiras@nxp.com,
-        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, ezequiel@collabora.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        dafna.hirschfeld@collabora.com,
-        Mirela Rabulea <mirela.rabulea@nxp.com>
-References: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
- <20201112030557.8540-10-mirela.rabulea@oss.nxp.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <48b58168-662c-3e4d-2e5d-1f2a14b239fe@xs4all.nl>
-Date:   Wed, 2 Dec 2020 13:12:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 2 Dec 2020 07:14:42 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42939C061A54
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:13:39 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id t7so641825pfh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 04:13:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aN+C5XQENQZ7PtixMGe2RSKK4cDKAHrNU44ZbK6c5Dk=;
+        b=ewhJM7VVfBbiLXxcqR7Tye3PJM4h8qQjh6o9MQsaOtT9f05QDssdDlYXitidwdeL/E
+         lU6DWVx4rAGo71BaKxCKI7b5W03O/vZXHJymRswJj4C916cLhJw9p3rbq3TsuEvut2nz
+         4N4MFoSl8oOivG2IhbEgrpTY0D33I8/1dUQ3s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aN+C5XQENQZ7PtixMGe2RSKK4cDKAHrNU44ZbK6c5Dk=;
+        b=o8dA84EY1qk4NeWWLbl/KaQoo35Y/AaVeRpGZG+j3SaHtJqzIZxaCQ/ySUrknskXx7
+         kbws8sxwtoRcrHAEJ0pfxfZ60ooK6VyVhNXnZo+eoUylXI02QcVaXkN8OB4Rq/47Of4y
+         No/1Zpm+L6IPL4EcLLnighVX2COq/I//WcqZQHgvKIYa8CGcZrQ2LLwS0JNCV9nSUV4W
+         V5NjjFVZ3XG7SU3q6+lQG+cMqi8l5byvyCnC9q3n3CCJs2M+d3w92hGFiqZ+t4tSCSBb
+         q6PJqCQNmHEZzTx+1PY5LkBfmkoSkWQAlBK8acH5NQaME/agDI/gI+Tml0qjGBiYn/KV
+         pF3Q==
+X-Gm-Message-State: AOAM532glHm49RI4d7RzmmcaxvCrbZhF8cr9lhLVE0vtA561aeNWLY/b
+        HKW8byWay8qt1ewKKBg60eT/UUAl7gFINdEo
+X-Google-Smtp-Source: ABdhPJwLkTswKg8iQSMiDQUwVTnUkSFCv5sXMPRyt/MFmbeETyDC9KDGXoY5GXjYK8ny6CIiQBSKRQ==
+X-Received: by 2002:a63:b554:: with SMTP id u20mr825574pgo.249.1606911218794;
+        Wed, 02 Dec 2020 04:13:38 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:c00a:a884:fd53:e9ba:b313:1b1d])
+        by smtp.gmail.com with ESMTPSA id b37sm1951315pgl.31.2020.12.02.04.13.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 04:13:37 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     Matteo Lisi <matteo.lisi@engicam.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH 08/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
+Date:   Wed,  2 Dec 2020 17:42:39 +0530
+Message-Id: <20201202121241.109952-9-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201202121241.109952-1-jagan@amarulasolutions.com>
+References: <20201202121241.109952-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-In-Reply-To: <20201112030557.8540-10-mirela.rabulea@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfL5ydNRTlwziOBecZqjZrR9p9r/iDoZaLXFz3otr+eKw/MSd6Kbnsne5FgZEhL4d5PsTho93Wk0LQRL9GtEA0EVb4tu/MS9dQ8bQwyTaAjTqfbqcEwP+
- KbA0yMjtPnBAvRMNJCjL4/OZqNYbXUFlAImjLIQT9VjwqYwJmMOvnFmhshkGnGGqckK7oo2GjRKejAxqNFhEA7YHG2qJnx3Pq3buXvEi//2ZV7wC57uc7V4I
- NtdQD8uzQYRzIRXUdWOZ4qIwhDBI1iACEAmooW7JaVPqtLwwU26GsGt9pikUApr8FIScDJSkV3IvSfw1UOo51nUQstCOaOGMN0iSSRpWla5hpem3LxlYl44W
- pf5iI7Ef1qQHmDhw9d22OKV0YuUOFXdZhfqTOb9iCJe4UKUQ600P5+8cLScS8uj0Dml8MG69Vw0W/HnN+6tXrkchv41DvoePKYACjHKiHPZR8U8HYH2lKVEV
- phKq0GbLDl+RBkHPJ6JMkdUk+IuncuiDD1o6IGuQQ8BJRDdeSrBBSOjoTlZ0WOd4as+4vpctxWF2HuXeCVa8yAAchoU+92p0WY4DwSCs+l/bgfT7lRuEvxGZ
- 5pYjwpDbjSRWoOpWdpBHCsMGld23Itchp0DYpGhYKnMGpSYEfhLYlQ+vm2xm8QYsgkGmuaGmPS+iInp/7eHpHTm/koiAZCx6OSqWYR16qXFESUoENhBAKLav
- F5TMsk2qflM9JiOWvVZu2l1gKxr4Q4vFWt5RxD+cvWpEB62T/UEQNCSBHWrAUWeX9kFsWjhrWv51azuRpCLUD/VMEkf84NKy6lliz11Lc3YRODlnh83yiQvw
- Ehq7aubitDh7z6PAay5/n05J7wd4e+wgAKU5+N95pq8+oimAJyzeoP90acRQHcf1mYpcMzL/nBRNtUQp7CQLt6O8HjWeSlfohVWh1h5cm+TUccUEPRebFo0o
- /Vuwig==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/2020 04:05, Mirela Rabulea (OSS) wrote:
-> From: Mirela Rabulea <mirela.rabulea@nxp.com>
-> 
-> These are optional in struct v4l2_jpeg_header, so do not parse if
-> not requested, save some time.
-> 
-> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
-> ---
->  drivers/media/v4l2-core/v4l2-jpeg.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-jpeg.c b/drivers/media/v4l2-core/v4l2-jpeg.c
-> index d77e04083d57..7576cd0ce6b9 100644
-> --- a/drivers/media/v4l2-core/v4l2-jpeg.c
-> +++ b/drivers/media/v4l2-core/v4l2-jpeg.c
-> @@ -307,6 +307,9 @@ static int jpeg_parse_quantization_tables(struct jpeg_stream *stream,
->  {
->  	int len = jpeg_get_word_be(stream);
->  
-> +	if (!tables)
-> +		return 0;
-> +
+i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
 
-It feels more natural to check for a non-NULL out->quantization_tables
-or non-NULL out->huffman_tables pointer in v4l2_jpeg_parse_header()
-rather than in these low-level functions. It's weird to have this check here.
+C.TOUCH 2.0 is a general purpose carrier board with capacitive
+touch interface support.
 
-Regards,
+i.Core MX8M Mini needs to mount on top of this Carrier board for
+creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
 
-	Hans
+Add support for it.
 
->  	if (len < 0)
->  		return len;
->  	/* Lq = 2 + n * 65 (for baseline DCT), n >= 1 */
-> @@ -361,6 +364,9 @@ static int jpeg_parse_huffman_tables(struct jpeg_stream *stream,
->  	int mt;
->  	int len = jpeg_get_word_be(stream);
->  
-> +	if (!tables)
-> +		return 0;
-> +
->  	if (len < 0)
->  		return len;
->  	/* Table B.5 - Huffman table specification parameter sizes and values */
-> 
+Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+ arch/arm64/boot/dts/freescale/Makefile        |  1 +
+ .../imx8mm-engicam-icore-mx8mm-ctouch2.dts    | 21 +++++++++++++++++++
+ 2 files changed, 22 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 4369d783dade..8191db4c64fa 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -30,6 +30,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
+ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
+ 
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-engicam-icore-mx8mm-ctouch2.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-engicam-icore-mx8mm-edimm2.2.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
+new file mode 100644
+index 000000000000..aa3c03ad3109
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 NXP
++ * Copyright (c) 2019 Engicam srl
++ * Copyright (c) 2020 Amarula Solutions(India)
++ */
++
++/dts-v1/;
++#include "imx8mm.dtsi"
++#include "imx8mm-engicam-ctouch2.dtsi"
++#include "imx8mm-engicam-icore-mx8mm.dtsi"
++
++/ {
++	model = "Engicam i.Core MX8M Mini C.TOUCH 2.0";
++	compatible = "engicam,icore-mx8mm-ctouch2", "engicam,icore-mx8mm",
++		     "fsl,imx8mm";
++
++	chosen {
++		stdout-path = &uart2;
++	};
++};
+-- 
+2.25.1
 
