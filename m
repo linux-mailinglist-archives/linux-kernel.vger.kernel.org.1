@@ -2,56 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1472CC6CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEE32CC6C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729213AbgLBThm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:37:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgLBThl (ORCPT
+        id S1730873AbgLBTiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:38:15 -0500
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:36246 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726733AbgLBTiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:37:41 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1665AC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:37:01 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id x16so6148224ejj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:37:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dsg8o/7HSlbmxxW3Nfzw1kNdj67cIjZj4QxmLIvtS30=;
-        b=MCXCP5Geq/ayh+LIkc+cblIrU6LHzGY67087bQkAj1Q1+QCou6YAW2DMA8+s981wDr
-         M8XQWmg4x7d8hphfsWcUCx+4rUK/q4trdBDKUbx0m0Dt5FCfYqgPwptBjoX1dPj8E+R2
-         /EHufrwUJDBah38HRZyD+9n+Hp0KpNrqwgBdA=
+        Wed, 2 Dec 2020 14:38:14 -0500
+Received: by mail-ej1-f50.google.com with SMTP id lt17so6207476ejb.3;
+        Wed, 02 Dec 2020 11:37:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dsg8o/7HSlbmxxW3Nfzw1kNdj67cIjZj4QxmLIvtS30=;
-        b=KaOyKrSRbSN+cLeTRrx0Pxm1Uus9tAaWuZW4K7qPzvsRnA4AKitwIHbEgO0Y4jGPg1
-         cq/ycdWqLisVXjiDOyVJIFcOyBJTqokUBVSvo0WTV5BmTE6GeRguKk2QSCAXDiBH9gNu
-         v3nc1pQrq5Yn+U5/XocOit9G5n0K72WU/bXjirkSmYBbP5es9x7fVmacfXousWpoAKLL
-         lNALAO/gQN0PKzJDzK/5hUvjHVxwfny0r0nqDwChWwJHhZ/gt+spD3Gh0YCsns1pBzoh
-         eY/S48gqLtQpY6xVGSPDM5YV/gftoYNr3+e/zbaP2VGTwa+33hhdBFslIR1e6/pQy5so
-         /A2g==
-X-Gm-Message-State: AOAM531DIhI2SlPZ+L5X+kKIZtNwW5xsVlwW1GCdSrAr2WlRI4dwxTGR
-        cWsFl8j4JlAb7uhW8E12P4YaqhiGarlnkH4J7PVgpg==
-X-Google-Smtp-Source: ABdhPJzFr67BNPb6L+Ep9+wqiy0ABK7f40A3jQ7Jhr1hafa6NvBdftTzk2KVnGTT1Bh1zFqZgBYPRG+jbtS9VdkHqH4=
-X-Received: by 2002:a17:906:1481:: with SMTP id x1mr1333983ejc.186.1606937819640;
- Wed, 02 Dec 2020 11:36:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-9-jagan@amarulasolutions.com> <20201202174538.GH3490@kozik-lap>
- <CAMty3ZCv1pBLbXQWbLGqTd+rYPw6L_SbugA5rNdAc8jeWqc6Jg@mail.gmail.com> <20201202192542.GA85884@kozik-lap>
-In-Reply-To: <20201202192542.GA85884@kozik-lap>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Thu, 3 Dec 2020 01:06:48 +0530
-Message-ID: <CAMty3ZBg6b_Zw=xRzmGQqaygW__0sA6E6MRKVmCoMT=BN6wRwA@mail.gmail.com>
-Subject: Re: [PATCH 08/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
- C.TOUCH 2.0
-To:     Krzysztof Kozlowski <krzk@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sqcmkOFuCaTHVbXHjOOh4znxdETiilgokDAWKjVlhTs=;
+        b=dKTfdAmt1Y2X7fhkg8+jQKOHYAHFJI7FrL1Y974dhtIGmPwK+cAACZk0LcaBNRWOPL
+         InhjxyuNFyLupU+1DrbX4eTh4sTsqQ1k4XFC/ydl4PsABNPwMBmo/axHUZ5YqR/nxyal
+         H53s6jKryU51FQp73SjB+7Q12LDUxkqclpkO7YFkY6p+KQU6dqnO2nevtcxOLZ5y5CYt
+         pG4ZHmCiKeEvORb2P5A+UzformbOZH2kMe7wlFa+/RqB4b50+EbEDeKe4ZMXgCvqvhg3
+         EgRKhvtTnEd9ke7VCN3qVhFN6MPHSKS+XTrR/oCL9GQljA3fBHuN7zSy0trdLtMAofJZ
+         mG4w==
+X-Gm-Message-State: AOAM532DQTfnxnRYZ4X3pUO/nvRMGXdV6Bdt0ZA62jkF0Jqhj5XZtjx+
+        vw3Rn6cPz7OTn55WD6aXd10=
+X-Google-Smtp-Source: ABdhPJwAsksTvdSbHVxbr54BasGj2CDw87QofabD7Y4VuiI9Aq32e705fsdkmsvafdkPlyS+qLaO+A==
+X-Received: by 2002:a17:906:8151:: with SMTP id z17mr1382726ejw.48.1606937846532;
+        Wed, 02 Dec 2020 11:37:26 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n17sm532613ejh.49.2020.12.02.11.37.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 11:37:25 -0800 (PST)
+Date:   Wed, 2 Dec 2020 21:37:24 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jagan Teki <jagan@amarulasolutions.com>
 Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Li Yang <leoyang.li@nxp.com>,
         Fabio Estevam <festevam@gmail.com>,
@@ -61,159 +46,65 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         NXP Linux Team <linux-imx@nxp.com>,
         linux-amarula <linux-amarula@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 04/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
+ SOM
+Message-ID: <20201202193724.GB85884@kozik-lap>
+References: <20201202121241.109952-1-jagan@amarulasolutions.com>
+ <20201202121241.109952-5-jagan@amarulasolutions.com>
+ <20201202173405.GD3490@kozik-lap>
+ <CAMty3ZDg-7J9zk14Y-L1LBJsVnoK7KvposzBNnDP7gRdR3NHEQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMty3ZDg-7J9zk14Y-L1LBJsVnoK7KvposzBNnDP7gRdR3NHEQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 12:55 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Thu, Dec 03, 2020 at 12:50:37AM +0530, Jagan Teki wrote:
-> > Hi Krzysztof,
+On Thu, Dec 03, 2020 at 01:00:59AM +0530, Jagan Teki wrote:
+> Hi Krzysztof,
+> 
+> On Wed, Dec 2, 2020 at 11:04 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 > >
-> > On Wed, Dec 2, 2020 at 11:15 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > On Wed, Dec 02, 2020 at 05:42:35PM +0530, Jagan Teki wrote:
+> > > i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
+> >
+> > s/SOM/SoM/
+> >
 > > >
-> > > On Wed, Dec 02, 2020 at 05:42:39PM +0530, Jagan Teki wrote:
-> > > > i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
-> > > >
-> > > > C.TOUCH 2.0 is a general purpose carrier board with capacitive
-> > > > touch interface support.
-> > > >
-> > > > i.Core MX8M Mini needs to mount on top of this Carrier board for
-> > > > creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
-> > > >
-> > > > Add support for it.
-> > > >
-> > > > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> > > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> > > > ---
-> > > >  arch/arm64/boot/dts/freescale/Makefile        |  1 +
-> > > >  .../imx8mm-engicam-icore-mx8mm-ctouch2.dts    | 21 +++++++++++++++++++
-> > > >  2 files changed, 22 insertions(+)
-> > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
-> > > >
-> > > > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> > > > index 4369d783dade..8191db4c64fa 100644
-> > > > --- a/arch/arm64/boot/dts/freescale/Makefile
-> > > > +++ b/arch/arm64/boot/dts/freescale/Makefile
-> > > > @@ -30,6 +30,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
-> > > >  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
-> > > >
-> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
-> > > > +dtb-$(CONFIG_ARCH_MXC) += imx8mm-engicam-icore-mx8mm-ctouch2.dtb
-> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-engicam-icore-mx8mm-edimm2.2.dtb
-> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
-> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
-> > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
-> > > > new file mode 100644
-> > > > index 000000000000..aa3c03ad3109
-> > > > --- /dev/null
-> > > > +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-ctouch2.dts
-> > > > @@ -0,0 +1,21 @@
-> > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > > > +/*
-> > > > + * Copyright (c) 2019 NXP
-> > > > + * Copyright (c) 2019 Engicam srl
-> > > > + * Copyright (c) 2020 Amarula Solutions(India)
-> > > > + */
-> > > > +
-> > > > +/dts-v1/;
-> > > > +#include "imx8mm.dtsi"
+> > > General features:
+> > > - NXP i.MX8MM
+> >
+> > i.MX 8M Mini
+> > as named by NXP:
+> > https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-processors/i-mx-8m-mini-arm-cortex-a53-cortex-m4-audio-voice-video:i.MX8MMINI
+> >
+> > > - Up to 2GB LDDR4
+> > > - 8/16GB eMMC
+> > > - Gigabit Ethernet
+> > > - USB 2.0 Host/OTG
+> > > - PCIe Gen2 interface
+> > > - I2S
+> > > - MIPI DSI to LVDS
+> > > - rest of i.MX8MM features
+> >
+> > Ditto
+> >
 > > >
-> > > You have multiple DTSI files to only include one DTSI. I was trying to
-> > > follow the logic here but I failed...
+> > > i.Core MX8M Mini needs to mount on top of Engicam baseboards for
+> > > creating complete platform boards.
 > > >
-> > > This is ctouch, so it should include SoM, which you call icore. But it
-> > > also includes ctouch2 which *only* includes common DTSI. It's then
-> > > exactly the same as starter kit which includes edimm (which includes
-> > > common) and icore.
+> > > Possible baseboards are,
+> > > - EDIMM2.2
+> > > - C.TOUCH 2.0
 > >
-> > I hope you have checked the cover letter where I have mentioned all
-> > the combinations.
-> >
-> > 1. SoM, Starter Kit, Carrier Board, Open Frame are three different hardware.
-> >
-> > 2. i.Core MX8M Mini is SoM
-> >
-> > 3. EDIMM 2.2 is Starter Kit
-> >
-> > 4. C.TOUCH 2.0 is Carrier board
-> >
-> > 5. 10"1 Open Frame board for LVDS
-> >
-> > The combination of respective hardware mounting is,
-> >
-> > 1. SOM+Starter Kitt => i.Core MX8M Mini EDIMM 2.2 Starter Kit
-> >
-> > 2. SOM+C.TOUCH 2.0 => i.Core MX8M Mini C.TOUCH 2.0 Carrier board
-> >
-> > 3. SOM+C.TOUCH 2.0+10.1" OF => i.Core MX8M Mini C.TOUCH 2.0 10.1" Open
-> > Frame board
->
-> It does not explain why you created 3 empty DTSI and 2 empty DTS files.
->
-> >
-> > About the bindings, (please check the
-> > arch/arm64/boot/dts/rockchip/px30-engicam-*), It's been discussed
-> > before with Rob for these boards bindings.
->
-> Refer to my specific comments about bindings.
->
-> >
-> > To, compare with what we have described with rockchip
-> >
-> > SoM binding,
-> > - engicam,icore-mx8mm is binding for i.Core MX8M Mini SoM
-> > - engicam,px30-core is binding for PX30.Core SoM
-> >
-> > EDIMM 2.2 is Starter Kit binding,
-> > - engicam,icore-mx8mm-edimm2.2 is binding for EDIMM 2.2 is Starter Kit
-> > in i.MX8MM
-> > - engicam,px30-core-edimm2.2 is binding for EDIMM 2.2 is Starter Kit in PX30
-> >
-> > C.TOUCH 2.0 is Carrier board binding,
-> > - engicam,icore-mx8mm-ctouch2 is binding for C.TOUCH 2.0 is Carrier
-> > board in i.MX8MM
-> > - engicam,px30-core-ctouch2 is binding for C.TOUCH 2.0 is Carrier board in PX30
-> >
-> > C.TOUCH 2.0 10"1 OF binding,
-> > - engicam,icore-mx8mm-ctouch2-of10 is binding for C.TOUCH 2.0 10"1 in imx8MM
-> > - engicam,px30-core-ctouch2-of10 for C.TOUCH 2.0 10"1 in PX30
-> >
-> > So, there are 3 board combinations of which each board has a binding
-> > of SoM and respective carrier binding like i.Core MX8M Mini EDIMM 2.2
-> > Starter Kit has
-> > "engicam,icore-mx8mm-edimm2.2", "engicam,icore-mx8mm"
-> > "engicam,icore-mx8mm-ctouch2", "engicam,icore-mx8mm"
-> > "engicam,icore-mx8mm-ctouch2-of10", "engicam,icore-mx8mm"
-> >
-> > Some of the DTS files are using the engicam-common.dtsi nodes and for
-> > ie reason those are empty and some need to have lvds display node
-> > which is still underworking.
->
-> Therefore add them when you have any contents for these DTS files.
->
-> >
-> > Hope this information helpful. Let me know for further inputs.
->
-> Thanks for the information but it was not much helpful. It does not
-> answer at all why you have so many empty files, why you include
-> imx8mm.dtsi not in the SoM but somewhere else.
+> > Don't describe baseboards. You add here only SoM.
+> 
+> It's just information on how this SoM is being used. Let me know any
+> issues while explaining the combinations being used here.
 
-Sorry, I have missed it.
+Don't describe baseboards. No point to blow up description. Include only
+information relevant to this patch.
 
-All these three carrier board dtsi files,
-
-imx8mm-engicam-edimm2.2.dtsi
-imx8mm-engicam-icore-mx8mm-ctouch2.dts
-imx8mm-engicam-icore-mx8mm-ctouch2-of10.dts
-
-are included imx8mm-engicam-common.dtsi. ie is the reason these are empty.
-
-And I agree with your point of adding whenever it ready. I will drop
-display related carrier imx8mm-engicam-icore-mx8mm-ctouch2-of10.dts
-when DSI, LVDS ready, and update on next versions.
-
-Thanks for the review.
-
-Jagan.
+Best regards,
+Krzysztof
