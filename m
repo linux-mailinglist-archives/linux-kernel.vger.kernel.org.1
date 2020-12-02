@@ -2,180 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258C62CC7AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FD92CC7A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgLBUX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:23:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
+        id S1728988AbgLBUVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:21:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728814AbgLBUX2 (ORCPT
+        with ESMTP id S1727003AbgLBUVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:23:28 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC43AC0613D6;
-        Wed,  2 Dec 2020 12:22:48 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id r9so1661680pjl.5;
-        Wed, 02 Dec 2020 12:22:48 -0800 (PST)
+        Wed, 2 Dec 2020 15:21:34 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62F1C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:20:53 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id g19so1365295qvy.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:20:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jPXLgrfmPsVossgPwOVXqHGCtH2YsRf8UcPWK89e/XE=;
-        b=c17HjQZoRSkabFcQ4upzoWsYEn2nhGmFpVMHiOWRalYsFPACNwPPlFHfRqr55n1ifW
-         UIbf93b6R4dwdO/1sf1rOV1GFKBOduB4JyTWTYqkpkMr2k22teMqdR4+8cI+A1Xf+D2d
-         yejUZ1H8KRnenqf603ZtkoJrhm+SiFOvH80nPnS+ngZUT0kThG9j9+fH1Qnsr6MlptDf
-         0dZch+3qT+ebRiq3Qkg6r2MonVxgBYEXmxkarId8LsLmhv/3nzTeapzeuZs8ChORAnMZ
-         WwgpkmAUzoNwyLhfvQ/lGRDDKg2sQNFFVAc7apcQrLmjRb2wyHRF7uhh1+K6blqtJYAL
-         8Vuw==
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=aj7zikfociwcKr6VGphiYIZ8rc665LBf4u7f617m8kE=;
+        b=n/zZJtm7n5sa6dwUDkqyAEHqr/PViZlkWneUEVRRE9J7qlT6SEGJmJvmqUdDW+JR+T
+         s+cD1eXzNCyKAoElzdabttMfDbV7qG8GcwMTm12kwHRGuTHsWtZ+mia3KD1Tg534QKyT
+         OopetEiPDs0dU8/pSCwxnWUxa5s3RmsH6gP97z/3GeGmfwq0RM8i7l4NuzKcVVNuRxMM
+         +z3ovi+Ukh56I3ih9IYGzuMW6byxrQbgKjfjg1GfPeAG/xmpWIPQzuZldmWuCqOjXrZ9
+         /fxLSzgdoIgG1XKR9V6TpIocayT5u6dLnhhixywPtHfOLAzOQqxKrEURZQ6/zQqHN5eB
+         Ezrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jPXLgrfmPsVossgPwOVXqHGCtH2YsRf8UcPWK89e/XE=;
-        b=YKBp+bTapsE0sCxkuON+ZifWSo/Yab38n0Ow2CrE2020kTz98HgvmVG7DfU66EqoLu
-         gcLaO4cT8DrZI+Mhl9quYGOwJ7cxrB5xaRPZjDsZZl5z4gsREtJzw9OoUxC0TL9AmJQu
-         DB/mtziYUmai+sbzt904inoTmEVT12cDQao+uH0mnc7751l2kqMen3DCh8EjkbqeTwYB
-         C1f31xIVPoHOvMe/tcUVn08NVAsNslEsCZTHrzzcjxLO3SeHVtHw68OF7mw0QnCoCGzt
-         /FP+4W1DbPsZqeBB6gRXrY63d4BX9OKtLNtGtuGgrMN58FSLDSEnlDlQbBBJqS+VKK4Z
-         QLBw==
-X-Gm-Message-State: AOAM532r3hkILeusLqXeYEDoU3IcC3Gbex7lhNIKm5TyTqloVth3Hcbz
-        tti7iiCm2adzCRr+t69HG24=
-X-Google-Smtp-Source: ABdhPJxyoo5uUzNVQaIgO+msO41uuAmT3ThpDEhUjZBbVx2SqAjC19UkpnvYRwGuaCRaSQqQYxOxaQ==
-X-Received: by 2002:a17:902:7c8d:b029:da:625c:8218 with SMTP id y13-20020a1709027c8db02900da625c8218mr4161472pll.26.1606940568169;
-        Wed, 02 Dec 2020 12:22:48 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id 143sm593457pfc.119.2020.12.02.12.22.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Dec 2020 12:22:47 -0800 (PST)
-Date:   Wed, 2 Dec 2020 12:19:56 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ASoC: fsl: Add imx-hdmi machine driver
-Message-ID: <20201202201955.GB1498@Asurada-Nvidia>
-References: <1606455021-18882-1-git-send-email-shengjiu.wang@nxp.com>
- <1606455021-18882-2-git-send-email-shengjiu.wang@nxp.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:in-reply-to;
+        bh=aj7zikfociwcKr6VGphiYIZ8rc665LBf4u7f617m8kE=;
+        b=WWJWPbb75JqZJsBpEcDBQeULoOsFa3awCDju7bt2IL6hz4ywQvEruJ71Cgqn3CeOaW
+         5Cprrj+8Rap+PSx5tVHA/R/WA3r+E9qx8Z+ez4VynBc/j90AhvKKuvmvVnksSVmXysKK
+         gZ3lB9Eozbv7K02OqTqVAKooWPsjnlG2Q5Iac+EmcqHr6CdrFtCSQIs8xRqBu6tJlyUW
+         UEtj7+7AUTcvfvR5NT2GVK5kspGFxuXVZMTTQeqdeND1Vw8tdpZy+flk6EKv5PqLSRvA
+         RABK6E+UdlxIBgji/I9vuUSfMdl6Ui0/oXAdJ7PPxiJwQuCjshnNNmvyBCtr2dS0iPlH
+         J50w==
+X-Gm-Message-State: AOAM531TVkzeV2r3d9nqeVbVTPKa0rjrWEgqyC0Gy8Smd8nDKTWR0gfa
+        CqcmPQAnRFGJvPXKgQnXQVA=
+X-Google-Smtp-Source: ABdhPJz7smZ4bg9M3d7RHvZOaE7BxC09JYYiK8er2jAUeG9o73jqv6IzmdWlxeHZ+hZk9lrN8zPRGA==
+X-Received: by 2002:a0c:a992:: with SMTP id a18mr4320506qvb.21.1606940452966;
+        Wed, 02 Dec 2020 12:20:52 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:8dbd])
+        by smtp.gmail.com with ESMTPSA id v15sm2739138qti.92.2020.12.02.12.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 12:20:52 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 2 Dec 2020 15:20:24 -0500
+From:   "tj@kernel.org" <tj@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH rfc] workqueue: honour cond_resched() more effectively.
+Message-ID: <X8f3CBeHAJwl8Dx4@mtj.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1606455021-18882-2-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87ima1ndwz.fsf@notabene.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 01:30:21PM +0800, Shengjiu Wang wrote:
-> The driver is initially designed for sound card using HDMI
-> interface on i.MX platform. There is internal HDMI IP or
-> external HDMI modules connect with SAI or AUD2HTX interface.
-> It supports both transmitter and receiver devices.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/fsl/Kconfig    |  12 ++
->  sound/soc/fsl/Makefile   |   2 +
->  sound/soc/fsl/imx-hdmi.c | 235 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 249 insertions(+)
->  create mode 100644 sound/soc/fsl/imx-hdmi.c
+Hello, Neil.
 
-> diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
-> new file mode 100644
-> index 000000000000..ac164514b1b2
-> --- /dev/null
-> +++ b/sound/soc/fsl/imx-hdmi.c
+(cc'ing Lai)
 
-> +static int imx_hdmi_hw_params(struct snd_pcm_substream *substream,
-> +			      struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct imx_hdmi_data *data = snd_soc_card_get_drvdata(rtd->card);
-> +	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +	struct snd_soc_card *card = rtd->card;
-> +	struct device *dev = card->dev;
-> +	int ret;
-> +
-> +	/* set cpu DAI configuration */
-> +	ret = snd_soc_dai_set_sysclk(cpu_dai, data->cpu_priv.sysclk_id[tx],
-> +				     8 * data->cpu_priv.slot_width * params_rate(params),
+On Fri, Nov 20, 2020 at 10:07:56AM +1100, NeilBrown wrote:
+> If the workqueue maintainers are unmovable in the position that a
+> CM-workitem must not use excessive CPU ever, and so must not call
+> cond_resched(), then I can take that back to the NFS maintainers and
 
-Looks like fixed 2 slots being used, judging by the set_tdm_slot
-call below. Then...why "8 *"? Probably need a line of comments?
+Oh, that's not my position at all. I'm completely movable and am pretty sure
+Lai would be too.
 
-> +				     tx ? SND_SOC_CLOCK_OUT : SND_SOC_CLOCK_IN);
-> +	if (ret && ret != -ENOTSUPP) {
-> +		dev_err(dev, "failed to set cpu sysclk: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0, 2, data->cpu_priv.slot_width);
+> negotiate different workqueue settings.  But as I've said, I think this
+> is requiring the decision to be made in a place that is not well
+> positioned to make it.
 
-May have a local variable to cache slot_width.
+Very true. A lot of the current workqueue code is a result of gradual
+evolution and has a lot of historical cruft. Things like CPU_INTENSIVE or
+long_wq were introduced partly to facilitate existing users to CM workqueue
+and definitely are silly interfaces as you mentioned in another reply.
 
-> +static int imx_hdmi_probe(struct platform_device *pdev)
+I can see two directions:
 
-> +	data->dai.name = "i.MX HDMI";
-> +	data->dai.stream_name = "i.MX HDMI";
-> +	data->dai.cpus->dai_name = dev_name(&cpu_pdev->dev);
-> +	data->dai.platforms->of_node = cpu_np;
-> +	data->dai.ops = &imx_hdmi_ops;
-> +	data->dai.playback_only = true;
-> +	data->dai.capture_only = false;
-> +	data->dai.init = imx_hdmi_init;
-> +
-> +
-> +	if (of_property_read_bool(np, "hdmi-out")) {
-> +		data->dai.playback_only = true;
-> +		data->dai.capture_only = false;
-> +		data->dai.codecs->dai_name = "i2s-hifi";
-> +		data->dai.codecs->name = "hdmi-audio-codec.1";
-> +		data->dai.dai_fmt = data->dai_fmt |
-> +				    SND_SOC_DAIFMT_NB_NF |
-> +				    SND_SOC_DAIFMT_CBS_CFS;
-> +	}
-> +
-> +	if (of_property_read_bool(np, "hdmi-in")) {
-> +		data->dai.playback_only = false;
-> +		data->dai.capture_only = true;
-> +		data->dai.codecs->dai_name = "i2s-hifi";
-> +		data->dai.codecs->name = "hdmi-audio-codec.2";
-> +		data->dai.dai_fmt = data->dai_fmt |
-> +				    SND_SOC_DAIFMT_NB_NF |
-> +				    SND_SOC_DAIFMT_CBM_CFM;
-> +	}
-> +
-> +	if ((data->dai.playback_only && data->dai.capture_only) ||
-> +	    (!data->dai.playback_only && !data->dai.capture_only)) {
-> +		dev_err(&pdev->dev, "Wrongly enable HDMI DAI link\n");
-> +		goto fail;
-> +	}
+1. Keeping things mostly as-is - leave the selection of the specific
+   workqueue type to users. We can improve things by adding debug / sanity
+   checks to surfaces issues more proactively, adding more documentation and
+   cleaning up old cruft.
 
-Seems that this condition check can never be true, given that:
-1. By default: playback_only=true && capture_only=false
-2. Conditionally overwritten: playback_only=true && capture_only=false
-3. Conditionally overwritten: playback_only=false && capture_only=true
+2. Make things properly dynamic. By default, let workqueue core decide what
+   type of execution constraints are gonna be applied and dynamically adjust
+   according to the behavior of specific workqueues or work items. e.g. it
+   can start most work items CM per-cpu by default and then release them as
+   unbound when its cpu consumption exceeds certain threshold.
 
-If I understand it correctly, probably should be something like:
-	bool hdmi_out = of_property_read_bool(np, "hdmi-out");
-	bool hdmi_in = of_property_read_bool(np, "hdmi-in");
+#1 is easier. #2 is definitely more attractive long term but would need a
+lot of careful work. I was suggesting towards #1 mostly because it's a safer
+/ easier direction but if you wanna explore #2, please be my guest.
 
-	if ((hdmi_out && hdmi_in) || (!hdmi_out || !hdmi_in))
-		// "Invalid HDMI DAI link"; goto fail;
+Thank you.
 
-	if (hdmi_out) {
-		// ...
-	} else if (hdmi_in) {
-		// ...
-	} else // No need of this line if two properties are exclusive
-
-> +	data->card.num_links = 1;
-> +	data->card.dai_link = &data->dai;
-> +
-> +	platform_set_drvdata(pdev, &data->card);
-
-Why pass card pointer?
+-- 
+tejun
