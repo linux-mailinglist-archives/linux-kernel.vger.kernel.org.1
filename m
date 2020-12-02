@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8911F2CB96C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702DF2CB96F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388514AbgLBJoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
+        id S2388523AbgLBJoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388505AbgLBJoR (ORCPT
+        with ESMTP id S2388507AbgLBJoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Dec 2020 04:44:17 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFC7C08ED7E
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:43:33 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id w6so906198pfu.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:43:33 -0800 (PST)
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0AFC094240
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:43:38 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id b12so684257pjl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:43:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=piBK26WWTtM+MfbHLM9kzA+YwSLGGZPEJLMRCXt48HI=;
-        b=Aweua2qvLI3vaGm2ogi1Ow8Aw954ahXaedQDSNlLz8Fb/qcv4oqHM+xvCR7KWxXr3U
-         XcYy9hxRjZs4iDKq9GRsoOxWGsRmvFvKSwhyP+PNWEkoLknXp56P16MiqmC5v6WckZ51
-         TT+ueBy7NXTQRciXCLeXtgKd6vPS0Xi+jAGoMi9oAXK+0BVz3/qHqsn+gElkG7AMKx4N
-         7ze7DY2fWTmeE6+ESkJj2W7Ab+FF2I/GV4MjnR2FKqbsf0ZL5ZNhsskf7LYF6MBtG3Yv
-         COFwNwYvcGdUfn/xk59XsOTL1PucwjUABO8vAg/xI9nFkm/GB52Xuf+P+9xdN2L2otG5
-         yEBg==
+        bh=w1qiZN/4S+9EMfWyy+8/u8wFtLnh3UkIHeGY4tC9U34=;
+        b=zjf7dqj9hi2/BvOyAMs9XQ39ZYbjNabsET/QZakL/4MpzRgj4wOZg0CsnlY2V1y+8+
+         m6JdzUQ8cnT4nm6CRs0q/PvTx/hIouMTTtNNuteE6fa8q5chTEVplfFDwA9ki2gZTYjG
+         wO0pcULhGhzHM+bpqqM5p7zg3xzJFjkux5IhRcTrQaPTbn8salQyrWvtQR6jBhfvxo21
+         i7gkC9F5QnjH6PhHTzXB0EmpoSJ33brqRVYwD2bvpmnASLxnBBVVM/FkvWAgOQu9NTWP
+         44YvYTMHjG9N/KKWru3yuxxv952M/FHimSsCkpC96vyjvPxZTAbQhoFRy7ZSDsS/63Bb
+         wmaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=piBK26WWTtM+MfbHLM9kzA+YwSLGGZPEJLMRCXt48HI=;
-        b=iFSRo0b2+ogEhViALcrmV2PlazxL2S0JR5M3Dk0EIOe8yLrSpo8o6q/ciDEBLOX5Gl
-         TAlHTUt5y9KjBpwVWe+l+Fwcxg8lBRdoycXExtZlRN/PYgfcpnnWT8MKGkx2ZLJ9A4o2
-         jVS7zmGNwSubMbrRFO38kqb7Ire6mo0z10H0zus3+/Y1RcOOCnz9g69mk5k77wDPtlmY
-         D0XbaQQB+dzeWao1teqLv2rUjsYTzQRa0BqvWoDPX8Rwviw54WizHSr/pO/58EzZ1YiY
-         lMRi62xiZUwJ2jZHa3m+gunu+2uVYFOFqSUefmas+96XgmXBVUEzJWF5LJUYycsI4Cyc
-         5KMQ==
-X-Gm-Message-State: AOAM530NkyjWuGnXhm8iYz1Oypn5ozwQ7TlRkJ9PpaJv0dJ45LskCysp
-        ThrFjU/jQpRQwa9uZpMaP4vZ
-X-Google-Smtp-Source: ABdhPJwNug3EG9T0Jw4vlAJDEk5T00dVv1Ji8xIVuSOrhEb1dQMAQejUYleKScmrEc5F53/v9aF9sg==
-X-Received: by 2002:a63:5941:: with SMTP id j1mr1918512pgm.59.1606902213344;
-        Wed, 02 Dec 2020 01:43:33 -0800 (PST)
+        bh=w1qiZN/4S+9EMfWyy+8/u8wFtLnh3UkIHeGY4tC9U34=;
+        b=UX1bGQyzJT4rN/NSL87ZJytabLqjp1Y3SzEwsWsn2od4GI0psXIuw60GA9z15Zz8DQ
+         hdZQtkekyqC/tw8EVXEuB7SDRAtWQJ6BUpE3MQsCV2q6ZRsXzSOeE+XH3r6MUnN2m1QH
+         04nxWGsEDhEnsvqFigOoJ1V/IzYU6mJ/WohyETqkMMfZ+Cz6PK6RS/12cJGk8jIUMn25
+         c8L1hxNngauRWqKTGtrBVG0D8yrQyr4ZF8WHJbCbZ1pSSpbmD/lE4COyt01ED0XcUCfv
+         5gX6wE2Rg/SonmfkO6iO2TMaTHMiMGLfKJvbXYcDtkDTLb4HATSFRamLvBx9M9e8jcLf
+         keKQ==
+X-Gm-Message-State: AOAM5336GThPejRp3RHRhrx3BN3HNxbjcDFdG3peWzPuARt+cRGW4NYG
+        qhatDkzioIZIdIIFAc4FrekX
+X-Google-Smtp-Source: ABdhPJyUBGZf0zRq1kYDq+2EEadjYlqpqZtoOsS/Zsiz+hnhGsAtvcAxzpqSIiWsZ37rks2CxK9JfA==
+X-Received: by 2002:a17:902:b783:b029:da:6567:f244 with SMTP id e3-20020a170902b783b02900da6567f244mr1811669pls.45.1606902217527;
+        Wed, 02 Dec 2020 01:43:37 -0800 (PST)
 Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.43.29
+        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.43.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 01:43:32 -0800 (PST)
+        Wed, 02 Dec 2020 01:43:36 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
         linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
         linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 17/29] bus: mhi: core: Prevent sending multiple RDDM entry callbacks
-Date:   Wed,  2 Dec 2020 15:11:47 +0530
-Message-Id: <20201202094159.107075-18-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 18/29] bus: mhi: core: Move to an error state on any firmware load failure
+Date:   Wed,  2 Dec 2020 15:11:48 +0530
+Message-Id: <20201202094159.107075-19-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
 References: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
@@ -68,36 +68,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-If an mhi_power_down() is initiated after the device has entered
-RDDM and a status callback was provided for it, it is possible
-that another BHI interrupt fires while waiting for the MHI
-RESET to be cleared. If that happens, MHI host would have moved
-a "disabled" execution environment and the check to allow sending
-an RDDM status callback will pass when it is should not. Add a
-check to see if MHI is in an active state before proceeding.
+Move MHI to a firmware download error state for a failure to find
+the firmware files or to load SBL or EBL image using BHI/BHIe. This
+helps detect an error state sooner and shortens the wait for a
+synchronous power up timeout.
 
 Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/bus/mhi/core/main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/bus/mhi/core/boot.c | 35 ++++++++++++++++++++---------------
+ 1 file changed, 20 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index 91f8b8d05a62..4eb93d8bea1d 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -401,6 +401,10 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
+diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+index 2d7752cd9ccc..7b57bb9a3080 100644
+--- a/drivers/bus/mhi/core/boot.c
++++ b/drivers/bus/mhi/core/boot.c
+@@ -428,13 +428,13 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+ 						     !mhi_cntrl->seg_len))) {
+ 		dev_err(dev,
+ 			"No firmware image defined or !sbl_size || !seg_len\n");
+-		return;
++		goto error_fw_load;
+ 	}
  
- 	 /* If device supports RDDM don't bother processing SYS error */
- 	if (mhi_cntrl->rddm_image) {
-+		/* host may be performing a device power down already */
-+		if (!mhi_is_active(mhi_cntrl))
-+			goto exit_intvec;
+ 	ret = request_firmware(&firmware, fw_name, dev);
+ 	if (ret) {
+ 		dev_err(dev, "Error loading firmware: %d\n", ret);
+-		return;
++		goto error_fw_load;
+ 	}
+ 
+ 	size = (mhi_cntrl->fbc_download) ? mhi_cntrl->sbl_size : firmware->size;
+@@ -446,7 +446,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+ 	buf = mhi_alloc_coherent(mhi_cntrl, size, &dma_addr, GFP_KERNEL);
+ 	if (!buf) {
+ 		release_firmware(firmware);
+-		return;
++		goto error_fw_load;
+ 	}
+ 
+ 	/* Download image using BHI */
+@@ -454,17 +454,17 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+ 	ret = mhi_fw_load_bhi(mhi_cntrl, dma_addr, size);
+ 	mhi_free_coherent(mhi_cntrl, size, buf, dma_addr);
+ 
+-	if (!mhi_cntrl->fbc_download || ret || mhi_cntrl->ee == MHI_EE_EDL)
+-		release_firmware(firmware);
+-
+ 	/* Error or in EDL mode, we're done */
+ 	if (ret) {
+ 		dev_err(dev, "MHI did not load image over BHI, ret: %d\n", ret);
+-		return;
++		release_firmware(firmware);
++		goto error_fw_load;
+ 	}
+ 
+-	if (mhi_cntrl->ee == MHI_EE_EDL)
++	if (mhi_cntrl->ee == MHI_EE_EDL) {
++		release_firmware(firmware);
+ 		return;
++	}
+ 
+ 	write_lock_irq(&mhi_cntrl->pm_lock);
+ 	mhi_cntrl->dev_state = MHI_STATE_RESET;
+@@ -477,13 +477,17 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+ 	if (mhi_cntrl->fbc_download) {
+ 		ret = mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->fbc_image,
+ 					   firmware->size);
+-		if (ret)
+-			goto error_alloc_fw_table;
++		if (ret) {
++			release_firmware(firmware);
++			goto error_fw_load;
++		}
+ 
+ 		/* Load the firmware into BHIE vec table */
+ 		mhi_firmware_copy(mhi_cntrl, firmware, mhi_cntrl->fbc_image);
+ 	}
+ 
++	release_firmware(firmware);
 +
- 		if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
- 			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
- 			wake_up_all(&mhi_cntrl->state_event);
+ fw_load_ee_pthru:
+ 	/* Transitioning into MHI RESET->READY state */
+ 	ret = mhi_ready_state_transition(mhi_cntrl);
+@@ -512,11 +516,11 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+ 	ret = mhi_fw_load_bhie(mhi_cntrl,
+ 			       /* Vector table is the last entry */
+ 			       &image_info->mhi_buf[image_info->entries - 1]);
+-	if (ret)
++	if (ret) {
+ 		dev_err(dev, "MHI did not load image over BHIe, ret: %d\n",
+ 			ret);
+-
+-	release_firmware(firmware);
++		goto error_fw_load;
++	}
+ 
+ 	return;
+ 
+@@ -524,6 +528,7 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+ 	mhi_free_bhie_table(mhi_cntrl, mhi_cntrl->fbc_image);
+ 	mhi_cntrl->fbc_image = NULL;
+ 
+-error_alloc_fw_table:
+-	release_firmware(firmware);
++error_fw_load:
++	mhi_cntrl->pm_state = MHI_PM_FW_DL_ERR;
++	wake_up_all(&mhi_cntrl->state_event);
+ }
 -- 
 2.25.1
 
