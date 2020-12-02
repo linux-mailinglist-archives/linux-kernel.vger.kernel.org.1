@@ -2,156 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A992CC861
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B832CC869
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729335AbgLBUzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:55:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        id S2387838AbgLBU4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728159AbgLBUzB (ORCPT
+        with ESMTP id S1729953AbgLBU4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:55:01 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3B6C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:54:20 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id v11so2113779qtq.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:54:20 -0800 (PST)
+        Wed, 2 Dec 2020 15:56:36 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71783C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:55:50 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id c198so56155wmd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:55:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LJ26q0n10bl+7oiAlsJxQE/h29ZkG7NqJxeeT+DRUvg=;
-        b=d3Ero40D15RLJlIIy6qIO+xEB3IrtJb9QhUFwMJG3mpVZsiPbQAVqBnr+YgeoWLGZ7
-         aFjjB1mjdP76e4ahLe85Orspkqyfy5R2OZSogrqj5LPIMBHytOQN0KeVFDAPl3gh2CE2
-         gZxvRf8epSA5wFwfbLaxG+nMZ6J3AaLbq7mHbcx0gWbway39qJsr3ndJiFykUk3keKf7
-         5wdme6rhMyXyfk7sajyOxAyHfSm/suyigiQRTf1sRb1e7ZJqXaJ9tUBlEGkVFh4oNV1Y
-         bYuyPe9azu91sfPWQH6FWQ7Klsrj6R7E2/TDyZl2n27MDQAmJtP/3v9cHDAL+lwzc1RZ
-         Hj9Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KN099bxLQhgifyNEOADiiqRwquEtb1Hbzl77WS/Xn1U=;
+        b=XPC4NMc6m3VStODiVmfKoVX3ab+XWxwMJSvdYKg35u+gHLMMMCDhMQmoMqraL5x1g4
+         9ozuXHK9XFInMMIi3zQqqo5v0IZgPaaMJVf9gNwUaf3ln1CPf7nGQuHzTkCQ6braFHeP
+         lGd5RPNEWoW3N4Kr2lQK1ikekxjRoX5sySmrQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LJ26q0n10bl+7oiAlsJxQE/h29ZkG7NqJxeeT+DRUvg=;
-        b=gIDvvFyq/27XV0YinYo94dXpywEKGc5xoo4ZeLoWALaE69MlY6vKH4lkTpJyVuE6ue
-         vBwNmqDI20dLAEo3150whRAJ1Rqb6OM/RiGP/GlwC+FEpTOi8/cprdhxirITrZqeEQtw
-         FzU2r1a6LCUSpaTmu/7Z3Pq/9KTC0zi1bKit01loJUFKs67+qBObO/9ZbxR5mEPKqiP8
-         RhGbbfjXunR43MuQdKIDrXmlp+tz1oha0EXfL7FnMfln+grBrDSSbR+mij/GKgW5uuTg
-         nx0cz3IkZUdBLNoUATj2W2iIJkOg16ylAy3fQkTAV9LsEgj6Mi9OE9ULMIwDd0wJqAK+
-         botQ==
-X-Gm-Message-State: AOAM533lrZsHvy0RNeTZLTzMAeZ1vrpcle2ONxtXUpjqDLNe/nISRlCY
-        hEQePFNNLRZpcvBaapVY8X/oGA==
-X-Google-Smtp-Source: ABdhPJwWPrIlE8G+pEcFlsPtdh9GPf202UtddfGPSQ819+PVbQlQHTf5Puz/SUv5YDUzO9xTnmh26Q==
-X-Received: by 2002:aed:38c8:: with SMTP id k66mr4537800qte.385.1606942460006;
-        Wed, 02 Dec 2020 12:54:20 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id u15sm2791457qkj.122.2020.12.02.12.54.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KN099bxLQhgifyNEOADiiqRwquEtb1Hbzl77WS/Xn1U=;
+        b=o5JCk8+kVx1pTs1WPdH8HJ67Wln8pmSsZZUz0RAIYv4nfMoEcfnPSRq72Wv0rZXZba
+         fnjQMekmvlk57jkHnLi6t32tS1clrFNjEZ9HLjLpnRUULnm3gqwgv+EyjjBU7g1rgiW4
+         KvALiXHs7OK/RPKhJ/pDjr2CkivJPN0t3f6KfWekeWYEZ4TGVFRuOpL8LnulixO/Xst+
+         S0298BGxYyKwRyqslDsAhGGS6WrTgIiIIntV9YaEFDODGmhS0uAswLvkQQdNJok31MXl
+         cskkw5V9Qq1ULl2m71yvrgi3TAeKaAQEgCFTLpjmrLFYpkvwusa+X+WaAPmKykgutgPX
+         31Og==
+X-Gm-Message-State: AOAM533GtlpKb434cQHzTgW9/n1pplg6F/y9juPkAG2Cv6p9J2YSJ0q6
+        ILHnjkx8+nxhu2E/I+nBRUR84g==
+X-Google-Smtp-Source: ABdhPJw9YhSpaYoFITJG6Bog7n8gMa29ti0mUIZURTGlbCe4fpS4xj3X4lpj9jk849k/3x3zTUAg+g==
+X-Received: by 2002:a7b:cb82:: with SMTP id m2mr4881281wmi.75.1606942549154;
+        Wed, 02 Dec 2020 12:55:49 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
+        by smtp.gmail.com with ESMTPSA id d2sm3438486wrn.43.2020.12.02.12.55.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 12:54:19 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kkZ8k-005Chy-RC; Wed, 02 Dec 2020 16:54:18 -0400
-Date:   Wed, 2 Dec 2020 16:54:18 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201202205418.GN5487@ziepe.ca>
-References: <20201201143835.2054508-1-mlichvar@redhat.com>
- <20201201161224.GF5487@ziepe.ca>
- <20201201171420.GN1900232@localhost>
- <20201201173540.GH5487@ziepe.ca>
- <87mtywe2zu.fsf@nanos.tec.linutronix.de>
- <20201202162723.GJ5487@ziepe.ca>
- <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
+        Wed, 02 Dec 2020 12:55:48 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+X-Google-Original-From: Florent Revest <revest@google.com>
+To:     bpf@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
+        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        KP Singh <kpsingh@google.com>
+Subject: [PATCH bpf-next v4 1/6] net: Remove the err argument from sock_from_file
+Date:   Wed,  2 Dec 2020 21:55:22 +0100
+Message-Id: <20201202205527.984965-1-revest@google.com>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6uwdnfn.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 08:21:00PM +0100, Thomas Gleixner wrote:
-> On Wed, Dec 02 2020 at 12:27, Jason Gunthorpe wrote:
-> > On Wed, Dec 02, 2020 at 02:44:53PM +0100, Thomas Gleixner wrote:
-> >>  	if (IS_ENABLED(CONFIG_GENERIC_CMOS_UPDATE) ||
-> >>  	    IS_ENABLED(CONFIG_RTC_SYSTOHC))
-> >> -		queue_delayed_work(system_power_efficient_wq, &sync_work, 0);
-> >> +		queue_work(system_power_efficient_wq, &sync_work);
-> >
-> > As Miroslav noted, probably the right thing to do here is to reset the
-> > hrtimer and remove the sync_work? I think this code was to expedite an
-> > RTC sync when NTP fixes the clock on boot.
-> 
-> This has two purposes:
-> 
->      1) Initiating the update on boot once ntp is synced.
-> 
->      2) Reinitiating the sync after ntp lost sync and the work did not
->         reschedule itself because it observed !ntp_synced().
-> 
-> In both cases it's highly unlikely that the write actually happens when
-> the work is queued because do_adjtimex() would have to be exactly around
-> the valid update window.
+Currently, the sock_from_file prototype takes an "err" pointer that is
+either not set or set to -ENOTSOCK IFF the returned socket is NULL. This
+makes the error redundant and it is ignored by a few callers.
 
-Yes
+This patch simplifies the API by letting callers deduce the error based
+on whether the returned socket is NULL or not.
 
-> So it will not write immediately. It will run through at least one
-> retry.
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Florent Revest <revest@google.com>
+Reviewed-by: KP Singh <kpsingh@google.com>
+---
+ fs/eventpoll.c               |  3 +--
+ fs/io_uring.c                | 16 ++++++++--------
+ include/linux/net.h          |  2 +-
+ net/core/netclassid_cgroup.c |  3 +--
+ net/core/netprio_cgroup.c    |  3 +--
+ net/core/sock.c              |  8 +-------
+ net/socket.c                 | 27 ++++++++++++++++-----------
+ 7 files changed, 29 insertions(+), 33 deletions(-)
 
-Right, bascially this is scheduling a WQ to do sched_sync_hw_clock()
-which will only call hrtimer_start() - seems like jsut calling
-hrtimer_start instead of queue_work above would be equivilant
-
-> I don't think the timer should be canceled if the ntp_synced() state did
-> not change. Otherwise every do_adtimex() call will cancel/restart
-> it, which does not make sense. Lemme stare at it some more.
-
-That makes sense, being conditional on the STA_UNSYNC prior to doing
-any hrtimer_start seems OK?
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index 73c346e503d7..19499b7bb82c 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -416,12 +416,11 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
+ 	unsigned int napi_id;
+ 	struct socket *sock;
+ 	struct sock *sk;
+-	int err;
  
-> > Also x86 needs a touch, it already has RTC lib, no idea why it also
-> > provides this old path too
-> 
-> Because nobody had the stomach and/or cycles to touch it :)
-
-Hahaha yes.. I vaugely remember looking at this once..
-
-Lets see:
-
-arch/x86/kernel/kvmclock.c:     x86_platform.set_wallclock = kvm_set_wallclock;
-arch/x86/kernel/x86_init.c:             x86_platform.set_wallclock = set_rtc_noop;
-arch/x86/xen/time.c:            x86_platform.set_wallclock = xen_set_wallclock;
-arch/x86/xen/time.c:    x86_platform.set_wallclock = xen_set_wallclock;
-  All returns -ENODEV/EINVAL
-
-arch/x86/kernel/x86_init.c:     .set_wallclock                  = mach_set_rtc_mmss,
-  This is already rtclib under drivers/rtc/rtc-mc146818-lib.c
+ 	if (!net_busy_loop_on())
+ 		return;
  
-  I suppose the issue here is the rtclib driver only binds via PNP and
-  very old x86 systems won't have the PNP tables? It seems doable to
-  check for a PNP device after late init and manually create a
-  platform_device for the RTC
+-	sock = sock_from_file(epi->ffd.file, &err);
++	sock = sock_from_file(epi->ffd.file);
+ 	if (!sock)
+ 		return;
+ 
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 8018c7076b25..ace99b15cbd3 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4341,9 +4341,9 @@ static int io_sendmsg(struct io_kiocb *req, bool force_nonblock,
+ 	unsigned flags;
+ 	int ret;
+ 
+-	sock = sock_from_file(req->file, &ret);
++	sock = sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+ 
+ 	if (req->async_data) {
+ 		kmsg = req->async_data;
+@@ -4390,9 +4390,9 @@ static int io_send(struct io_kiocb *req, bool force_nonblock,
+ 	unsigned flags;
+ 	int ret;
+ 
+-	sock = sock_from_file(req->file, &ret);
++	sock = sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+ 
+ 	ret = import_single_range(WRITE, sr->buf, sr->len, &iov, &msg.msg_iter);
+ 	if (unlikely(ret))
+@@ -4569,9 +4569,9 @@ static int io_recvmsg(struct io_kiocb *req, bool force_nonblock,
+ 	unsigned flags;
+ 	int ret, cflags = 0;
+ 
+-	sock = sock_from_file(req->file, &ret);
++	sock = sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+ 
+ 	if (req->async_data) {
+ 		kmsg = req->async_data;
+@@ -4632,9 +4632,9 @@ static int io_recv(struct io_kiocb *req, bool force_nonblock,
+ 	unsigned flags;
+ 	int ret, cflags = 0;
+ 
+-	sock = sock_from_file(req->file, &ret);
++	sock = sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+ 
+ 	if (req->flags & REQ_F_BUFFER_SELECT) {
+ 		kbuf = io_recv_buffer_select(req, !force_nonblock);
+diff --git a/include/linux/net.h b/include/linux/net.h
+index 0dcd51feef02..9e2324efc26a 100644
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -240,7 +240,7 @@ int sock_sendmsg(struct socket *sock, struct msghdr *msg);
+ int sock_recvmsg(struct socket *sock, struct msghdr *msg, int flags);
+ struct file *sock_alloc_file(struct socket *sock, int flags, const char *dname);
+ struct socket *sockfd_lookup(int fd, int *err);
+-struct socket *sock_from_file(struct file *file, int *err);
++struct socket *sock_from_file(struct file *file);
+ #define		     sockfd_put(sock) fput(sock->file)
+ int net_ratelimit(void);
+ 
+diff --git a/net/core/netclassid_cgroup.c b/net/core/netclassid_cgroup.c
+index 41b24cd31562..b49c57d35a88 100644
+--- a/net/core/netclassid_cgroup.c
++++ b/net/core/netclassid_cgroup.c
+@@ -68,9 +68,8 @@ struct update_classid_context {
+ 
+ static int update_classid_sock(const void *v, struct file *file, unsigned n)
+ {
+-	int err;
+ 	struct update_classid_context *ctx = (void *)v;
+-	struct socket *sock = sock_from_file(file, &err);
++	struct socket *sock = sock_from_file(file);
+ 
+ 	if (sock) {
+ 		spin_lock(&cgroup_sk_update_lock);
+diff --git a/net/core/netprio_cgroup.c b/net/core/netprio_cgroup.c
+index 9bd4cab7d510..99a431c56f23 100644
+--- a/net/core/netprio_cgroup.c
++++ b/net/core/netprio_cgroup.c
+@@ -220,8 +220,7 @@ static ssize_t write_priomap(struct kernfs_open_file *of,
+ 
+ static int update_netprio(const void *v, struct file *file, unsigned n)
+ {
+-	int err;
+-	struct socket *sock = sock_from_file(file, &err);
++	struct socket *sock = sock_from_file(file);
+ 	if (sock) {
+ 		spin_lock(&cgroup_sk_update_lock);
+ 		sock_cgroup_set_prioidx(&sock->sk->sk_cgrp_data,
+diff --git a/net/core/sock.c b/net/core/sock.c
+index d422a6808405..eb55cf79bb24 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2827,14 +2827,8 @@ EXPORT_SYMBOL(sock_no_mmap);
+ void __receive_sock(struct file *file)
+ {
+ 	struct socket *sock;
+-	int error;
+ 
+-	/*
+-	 * The resulting value of "error" is ignored here since we only
+-	 * need to take action when the file is a socket and testing
+-	 * "sock" for NULL is sufficient.
+-	 */
+-	sock = sock_from_file(file, &error);
++	sock = sock_from_file(file);
+ 	if (sock) {
+ 		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
+ 		sock_update_classid(&sock->sk->sk_cgrp_data);
+diff --git a/net/socket.c b/net/socket.c
+index 6e6cccc2104f..c799d9652a2c 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -445,17 +445,15 @@ static int sock_map_fd(struct socket *sock, int flags)
+ /**
+  *	sock_from_file - Return the &socket bounded to @file.
+  *	@file: file
+- *	@err: pointer to an error code return
+  *
+- *	On failure returns %NULL and assigns -ENOTSOCK to @err.
++ *	On failure returns %NULL.
+  */
+ 
+-struct socket *sock_from_file(struct file *file, int *err)
++struct socket *sock_from_file(struct file *file)
+ {
+ 	if (file->f_op == &socket_file_ops)
+ 		return file->private_data;	/* set in sock_map_fd */
+ 
+-	*err = -ENOTSOCK;
+ 	return NULL;
+ }
+ EXPORT_SYMBOL(sock_from_file);
+@@ -484,9 +482,11 @@ struct socket *sockfd_lookup(int fd, int *err)
+ 		return NULL;
+ 	}
+ 
+-	sock = sock_from_file(file, err);
+-	if (!sock)
++	sock = sock_from_file(file);
++	if (!sock) {
++		*err = -ENOTSOCK;
+ 		fput(file);
++	}
+ 	return sock;
+ }
+ EXPORT_SYMBOL(sockfd_lookup);
+@@ -498,11 +498,12 @@ static struct socket *sockfd_lookup_light(int fd, int *err, int *fput_needed)
+ 
+ 	*err = -EBADF;
+ 	if (f.file) {
+-		sock = sock_from_file(f.file, err);
++		sock = sock_from_file(f.file);
+ 		if (likely(sock)) {
+ 			*fput_needed = f.flags & FDPUT_FPUT;
+ 			return sock;
+ 		}
++		*err = -ENOTSOCK;
+ 		fdput(f);
+ 	}
+ 	return NULL;
+@@ -1715,9 +1716,11 @@ int __sys_accept4_file(struct file *file, unsigned file_flags,
+ 	if (SOCK_NONBLOCK != O_NONBLOCK && (flags & SOCK_NONBLOCK))
+ 		flags = (flags & ~SOCK_NONBLOCK) | O_NONBLOCK;
+ 
+-	sock = sock_from_file(file, &err);
+-	if (!sock)
++	sock = sock_from_file(file);
++	if (!sock) {
++		err = -ENOTSOCK;
+ 		goto out;
++	}
+ 
+ 	err = -ENFILE;
+ 	newsock = sock_alloc();
+@@ -1840,9 +1843,11 @@ int __sys_connect_file(struct file *file, struct sockaddr_storage *address,
+ 	struct socket *sock;
+ 	int err;
+ 
+-	sock = sock_from_file(file, &err);
+-	if (!sock)
++	sock = sock_from_file(file);
++	if (!sock) {
++		err = -ENOTSOCK;
+ 		goto out;
++	}
+ 
+ 	err =
+ 	    security_socket_connect(sock, (struct sockaddr *)address, addrlen);
+-- 
+2.29.2.454.gaff20da3a2-goog
 
-arch/x86/platform/intel-mid/intel_mid_vrtc.c:   x86_platform.set_wallclock = vrtc_set_mmss;
-  This is also already in rtclib under rtc-mrst.c, and this is already
-  wired to create the rtc platform device during init
-
-So it is very close now to be able to delete all this for x86. Do you
-know of something I've missed?
-
-> > I wonder if the cmos path could be killed off under the dead HW
-> > principle?
-> 
-> Unfortunately that code path is not that dead on x86. You need to fix
-> all the (ab)users first. :)
-
-Assuming x86 can be resolved as above, that leaves two 20 year old MIPS
-platforms and the PPC list from before. ARM is gone compared to last
-time I looked! Progress :)
-
-Thanks,
-Jason
