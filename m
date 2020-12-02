@@ -2,258 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3F42CB314
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 04:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E3A2CB307
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 04:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgLBDBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 22:01:19 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:58238 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgLBDBT (ORCPT
+        id S1728193AbgLBDAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 22:00:52 -0500
+Received: from a2.mail.mailgun.net ([198.61.254.61]:30053 "EHLO
+        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728142AbgLBDAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 22:01:19 -0500
-X-Greylist: delayed 1020 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Dec 2020 22:01:16 EST
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 0B230FY3010208;
-        Wed, 2 Dec 2020 12:00:15 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0B230FY3010208
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1606878015;
-        bh=bae6OEGZccYsxihZZpKD9adLEYkbdiNBF+1eXUN2gTY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ucq+5afygNO9hVQg++YTDfIDVKEk9+zsLqE7JR393hi9krpQH7+bD0C8aAZMbFmbD
-         +OQ6i7CaMieOFlBqrS/SEBYvAqJ/sjzzA7xRxAnMD8SreXyM6oIIu95dQT2MpZC18o
-         /aL1rtTky94Z4HhsecQUfuTaFwt1lE5aXFKUMJk9+BuVy23J+24XI9rKKo704REfSC
-         ZwV31dws3Vzgm2VpY6w1pRGgf95MDOba6Pqu2Iaewf6pcIqiHur6dMHnyE05yF57ku
-         lCNFUdVMBhb2FZXQYnBu4ly7hRUR1xuEzi721w7dxVMmjU9ecGBkflNSyZ6BEnOHJZ
-         yxSDheoiBcWDQ==
-X-Nifty-SrcIP: [209.85.216.49]
-Received: by mail-pj1-f49.google.com with SMTP id r9so159179pjl.5;
-        Tue, 01 Dec 2020 19:00:15 -0800 (PST)
-X-Gm-Message-State: AOAM532CoO99HKXq66jG6xT/3zNCsJ3RBIsCC9F9Ma9oD4ll3cRNvzIS
-        j+84q+4YirXgfyw2X7VjUyFd/VrrEA7HulEfdGw=
-X-Google-Smtp-Source: ABdhPJxtoS2uIcM+4LbPLIZn8Kx+Yzfzjaw/Yg6CiGuVAmShSIC5gq9eCcR8svHa50umwklx7CPEGfnalqUCBoqVvvQ=
-X-Received: by 2002:a17:902:bc86:b029:da:9da4:3092 with SMTP id
- bb6-20020a170902bc86b02900da9da43092mr549251plb.71.1606878014719; Tue, 01 Dec
- 2020 19:00:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com> <20201201213707.541432-3-samitolvanen@google.com>
-In-Reply-To: <20201201213707.541432-3-samitolvanen@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 2 Dec 2020 11:59:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASMh1KysAB4+gU7_iuTW+5GT2_yMDevwpLwx0iqjxwmWw@mail.gmail.com>
-Message-ID: <CAK7LNASMh1KysAB4+gU7_iuTW+5GT2_yMDevwpLwx0iqjxwmWw@mail.gmail.com>
-Subject: Re: [PATCH v8 02/16] kbuild: add support for Clang LTO
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 1 Dec 2020 22:00:51 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606878031; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=s36RCpEcM7pSVf19iSpKHtugwFtAcpauQl4nt09fUIs=; b=MMx0EErFvsHjgvvq4PHaL52A9bm5hldoad8r4096IPzleL4MxTBWgcpE92YHSATSXAusJA40
+ bR/WDlmJyze7DjhBm9wc5lkAbQwc6Ct+niiFCL/iD4uTuHo/PGH+xNX+tT/OOeeWoZpYjwoc
+ //FBA7lg4f30NbhaXMLjXsly/Mw=
+X-Mailgun-Sending-Ip: 198.61.254.61
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5fc7032f51762b18867966a0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 02:59:59
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8BE9AC43464; Wed,  2 Dec 2020 02:59:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47081C433C6;
+        Wed,  2 Dec 2020 02:59:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 47081C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v14 0/4] userspace MHI client interface driver
+Date:   Tue,  1 Dec 2020 18:59:47 -0800
+Message-Id: <1606877991-26368-1-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 6:37 AM 'Sami Tolvanen' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> This change adds build system support for Clang's Link Time
-> Optimization (LTO). With -flto, instead of ELF object files, Clang
-> produces LLVM bitcode, which is compiled into native code at link
-> time, allowing the final binary to be optimized globally. For more
-> details, see:
->
->   https://llvm.org/docs/LinkTimeOptimization.html
->
-> The Kconfig option CONFIG_LTO_CLANG is implemented as a choice,
-> which defaults to LTO being disabled. To use LTO, the architecture
-> must select ARCH_SUPPORTS_LTO_CLANG and support:
->
->   - compiling with Clang,
->   - compiling inline assembly with Clang's integrated assembler,
->   - and linking with LLD.
->
-> While using full LTO results in the best runtime performance, the
-> compilation is not scalable in time or memory. CONFIG_THINLTO
-> enables ThinLTO, which allows parallel optimization and faster
-> incremental builds. ThinLTO is used by default if the architecture
-> also selects ARCH_SUPPORTS_THINLTO:
->
->   https://clang.llvm.org/docs/ThinLTO.html
->
-> To enable LTO, LLVM tools must be used to handle bitcode files. The
-> easiest way is to pass the LLVM=1 option to make:
->
->   $ make LLVM=1 defconfig
->   $ scripts/config -e LTO_CLANG
->   $ make LLVM=1
->
-> Alternatively, at least the following LLVM tools must be used:
->
->   CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm
->
-> To prepare for LTO support with other compilers, common parts are
-> gated behind the CONFIG_LTO option, and LTO can be disabled for
-> specific files by filtering out CC_FLAGS_LTO.
->
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
->  Makefile                          | 19 ++++++-
->  arch/Kconfig                      | 88 +++++++++++++++++++++++++++++++
->  include/asm-generic/vmlinux.lds.h | 11 ++--
->  scripts/Makefile.build            |  9 +++-
->  scripts/Makefile.modfinal         |  9 +++-
->  scripts/Makefile.modpost          | 21 +++++++-
->  scripts/link-vmlinux.sh           | 32 ++++++++---
->  7 files changed, 171 insertions(+), 18 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 16b7f0890e75..f5cac2428efc 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -891,6 +891,21 @@ KBUILD_CFLAGS      += $(CC_FLAGS_SCS)
->  export CC_FLAGS_SCS
->  endif
->
-> +ifdef CONFIG_LTO_CLANG
-> +ifdef CONFIG_LTO_CLANG_THIN
-> +CC_FLAGS_LTO   += -flto=thin -fsplit-lto-unit
-> +KBUILD_LDFLAGS += --thinlto-cache-dir=$(extmod-prefix).thinlto-cache
-> +else
-> +CC_FLAGS_LTO   += -flto
-> +endif
-> +CC_FLAGS_LTO   += -fvisibility=default
-> +endif
-> +
-> +ifdef CONFIG_LTO
-> +KBUILD_CFLAGS  += $(CC_FLAGS_LTO)
-> +export CC_FLAGS_LTO
-> +endif
-> +
->  ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_32B
->  KBUILD_CFLAGS += -falign-functions=32
->  endif
-> @@ -1471,7 +1486,7 @@ MRPROPER_FILES += include/config include/generated          \
->                   *.spec
->
->  # Directories & files removed with 'make distclean'
-> -DISTCLEAN_FILES += tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS
-> +DISTCLEAN_FILES += tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS .thinlto-cache
->
->  # clean - Delete most, but leave enough to build external modules
->  #
-> @@ -1717,7 +1732,7 @@ PHONY += compile_commands.json
->
->  clean-dirs := $(KBUILD_EXTMOD)
->  clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers $(KBUILD_EXTMOD)/modules.nsdeps \
-> -       $(KBUILD_EXTMOD)/compile_commands.json
-> +       $(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
->
->  PHONY += help
->  help:
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 56b6ccc0e32d..30907b554451 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -598,6 +598,94 @@ config SHADOW_CALL_STACK
->           reading and writing arbitrary memory may be able to locate them
->           and hijack control flow by modifying the stacks.
->
-> +config LTO
-> +       bool
-> +       help
-> +         Selected if the kernel will be built using the compiler's LTO feature.
-> +
-> +config LTO_CLANG
-> +       bool
-> +       select LTO
-> +       help
-> +         Selected if the kernel will be built using Clang's LTO feature.
-> +
-> +config ARCH_SUPPORTS_LTO_CLANG
-> +       bool
-> +       help
-> +         An architecture should select this option if it supports:
-> +         - compiling with Clang,
-> +         - compiling inline assembly with Clang's integrated assembler,
-> +         - and linking with LLD.
-> +
-> +config ARCH_SUPPORTS_LTO_CLANG_THIN
-> +       bool
-> +       help
-> +         An architecture should select this option if it can support Clang's
-> +         ThinLTO mode.
-> +
-> +config HAS_LTO_CLANG
-> +       def_bool y
-> +       # Clang >= 11: https://github.com/ClangBuiltLinux/linux/issues/510
-> +       depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD
-> +       depends on $(success,$(NM) --help | head -n 1 | grep -qi llvm)
-> +       depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
-> +       depends on ARCH_SUPPORTS_LTO_CLANG
-> +       depends on !FTRACE_MCOUNT_USE_RECORDMCOUNT
-> +       depends on !KASAN
-> +       depends on !GCOV_KERNEL
-> +       depends on !MODVERSIONS
-> +       help
-> +         The compiler and Kconfig options support building with Clang's
-> +         LTO.
-> +
-> +choice
-> +       prompt "Link Time Optimization (LTO)"
-> +       default LTO_NONE
-> +       help
-> +         This option enables Link Time Optimization (LTO), which allows the
-> +         compiler to optimize binaries globally.
-> +
-> +         If unsure, select LTO_NONE. Note that LTO is very resource-intensive
-> +         so it's disabled by default.
-> +
-> +config LTO_NONE
-> +       bool "None"
-> +       help
-> +         Build the kernel normally, without Link Time Optimization (LTO).
-> +
-> +config LTO_CLANG_FULL
-> +       bool "Clang Full LTO (EXPERIMENTAL)"
-> +       depends on HAS_LTO_CLANG
-> +       select LTO_CLANG
-> +       help
-> +          This option enables Clang's full Link Time Optimization (LTO), which
-> +          allows the compiler to optimize the kernel globally. If you enable
-> +          this option, the compiler generates LLVM bitcode instead of ELF
-> +          object files, and the actual compilation from bitcode happens at
-> +          the LTO link step, which may take several minutes depending on the
-> +          kernel configuration. More information can be found from LLVM's
-> +          documentation:
-> +
-> +           https://llvm.org/docs/LinkTimeOptimization.html
-> +
+This patch series adds support for UCI driver. UCI driver enables userspace
+clients to communicate to external MHI devices like modem and WLAN. UCI driver
+probe creates standard character device file nodes for userspace clients to
+perform open, read, write, poll and release file operations. These file
+operations call MHI core layer APIs to perform data transfer using MHI bus
+to communicate with MHI device. Patch is tested using arm64 and x86 based
+platform.
 
-This help document is misleading.
-People who read the document would misunderstand how great this feature would.
+V14:
+- Fixed device file node format to /dev/<mhi_dev_name> instead of
+  /dev/mhi_<mhi_dev_name> because "mhi" is already part of mhi device name.
+  For example old format: /dev/mhi_mhi0_QMI new format: /dev/mhi0_QMI.
+- Updated MHI documentation to reflect index mhi controller name in
+  QMI usage example.
 
-This should be added in the commit log and Kconfig help:
+V13:
+- Removed LOOPBACK channel from mhi_device_id table from this patch series.
+  Pushing a new patch series to add support for LOOPBACK channel and the user
+  space test application. Also removed the description from kernel documentation.
+- Added QMI channel to mhi_device_id table. QMI channel has existing libqmi
+  support from user space.
+- Updated kernel Documentation for QMI channel and provided external reference
+  for libqmi.
+- Updated device file node name by appending mhi device name only, which already
+  includes mhi controller device name.
 
-            In contrast to the example in the documentation, Clang LTO
-            for the kernel cannot remove any unreachable function or data.
-            In fact, this results in even bigger vmlinux and modules.
+V12:
+- Added loopback test driver under selftest/drivers/mhi. Updated kernel
+  documentation for the usage of the loopback test application.
+- Addressed review comments for renaming variable names, updated inline
+  comments and removed two redundant dev_dbg.
 
+V11:
+- Fixed review comments for UCI documentation by expanding TLAs and rewording
+  some sentences.
 
+V10:
+- Replaced mutex_lock with mutex_lock_interruptible in read() and write() file
+  ops call back.
 
+V9:
+- Renamed dl_lock to dl_pending _lock and pending list to dl_pending for
+  clarity.
+- Used read lock to protect cur_buf.
+- Change transfer status check logic and only consider 0 and -EOVERFLOW as
+  only success.
+- Added __int to module init function.
+- Print channel name instead of minor number upon successful probe.
+
+V8:
+- Fixed kernel test robot compilation error by changing %lu to %zu for
+  size_t.
+- Replaced uci with UCI in Kconfig, commit text, and comments in driver
+  code.
+- Fixed minor style related comments.
+
+V7:
+- Decoupled uci device and uci channel objects. uci device is
+  associated with device file node. uci channel is associated
+  with MHI channels. uci device refers to uci channel to perform
+  MHI channel operations for device file operations like read()
+  and write(). uci device increments its reference count for
+  every open(). uci device calls mhi_uci_dev_start_chan() to start
+  the MHI channel. uci channel object is tracking number of times
+  MHI channel is referred. This allows to keep the MHI channel in
+  start state until last release() is called. After that uci channel
+  reference count goes to 0 and uci channel clean up is performed
+  which stops the MHI channel. After the last call to release() if
+  driver is removed uci reference count becomes 0 and uci object is
+  cleaned up.
+- Use separate uci channel read and write lock to fine grain locking
+  between reader and writer.
+- Use uci device lock to synchronize open, release and driver remove.
+- Optimize for downlink only or uplink only UCI device.
+
+V6:
+- Moved uci.c to mhi directory.
+- Updated Kconfig to add module information.
+- Updated Makefile to rename uci object file name as mhi_uci
+- Removed kref for open count
+
+V5:
+- Removed mhi_uci_drv structure.
+- Used idr instead of creating global list of uci devices.
+- Used kref instead of local ref counting for uci device and
+  open count.
+- Removed unlikely macro.
+
+V4:
+- Fix locking to protect proper struct members.
+- Updated documentation describing uci client driver use cases.
+- Fixed uci ref counting in mhi_uci_open for error case.
+- Addressed style related review comments.
+
+V3: Added documentation for MHI UCI driver.
+
+V2:
+- Added mutex lock to prevent multiple readers to access same
+- mhi buffer which can result into use after free.
+
+Hemant Kumar (4):
+  bus: mhi: core: Add helper API to return number of free TREs
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
+  docs: Add documentation for userspace client interface
+  bus: mhi: Add userspace client interface driver
+
+ Documentation/mhi/index.rst     |   1 +
+ Documentation/mhi/uci.rst       |  94 ++++++
+ drivers/bus/mhi/Kconfig         |  13 +
+ drivers/bus/mhi/Makefile        |   3 +
+ drivers/bus/mhi/core/internal.h |   1 -
+ drivers/bus/mhi/core/main.c     |  12 +
+ drivers/bus/mhi/uci.c           | 664 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mhi.h             |  12 +
+ 8 files changed, 799 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/mhi/uci.rst
+ create mode 100644 drivers/bus/mhi/uci.c
 
 -- 
-Best Regards
-Masahiro Yamada
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
