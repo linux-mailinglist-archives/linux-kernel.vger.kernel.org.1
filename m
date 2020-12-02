@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0483C2CB957
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C80422CB966
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388218AbgLBJnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:43:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
+        id S2388458AbgLBJoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:44:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388191AbgLBJnN (ORCPT
+        with ESMTP id S2388227AbgLBJnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:43:13 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E92C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:42:33 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id v3so800215plz.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:42:33 -0800 (PST)
+        Wed, 2 Dec 2020 04:43:51 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B6EC061A47
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:42:37 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id v1so702536pjr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:42:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hhWOGsCeI+HSWEvhDneQIbO6o/toOvKW/eQPadkWVL8=;
-        b=sMHsqd84F90wtO1XKZOardsS6wf+SqJDnu9gf1RtjRGgzhOwjJwULiEWzy4BPtflbi
-         j3kVTr2S5hnz6pOehmu8D6AL7WSyO49VlPjM9cuyvRLa1pidTb+5SSTXQMK4TPRvGlEW
-         +ch9g6ht++BIyDNS3xJC531s+FYDpDrmofUUZl928V1PH6pAwCijER+QPMaybT3vPbi1
-         Wcfkh1QNgPKFl7wAPYzjYom/F9St2PhRZ+OfZ39AeJ7jv5O9Gsr1WUWrsPFsFwp3BKyq
-         f6prqZbWqh6Y9iGd0PgMI+0Vi75aHzHsXGcEupAHlhtjsxXQLrnaMp2Ld/JGNaWzsAqt
-         W0RA==
+        bh=RE5w69On3Eny/j1GWLpJs16JP4zJIqHV3HKQLkmEnls=;
+        b=JPPSNoTRmp/EUqlKK0tgYpFwxrc2r5uK3JCoBu+cCeT+rtSa4GsKf2KYLttB8xNAb/
+         NyZAXoaACHSI9gFMtlnxN+8C52a7YDQapSGExgEosRAAioaQmRgHdwua2u48UiyFUu9c
+         H994PptDsvu2E79UUWTOUWrNxd+e8BJHcTS5uIsXBc0lGsJ5FevHk1FaKI2ik5mwGcPn
+         agEz6TbsxGJ6jm2JUFYqi0vubpE8zqkLAvzZfxuYWQpwwMNxmJEmACFwMtIAF/F3t5uA
+         qqh7bQ3elan9mzomtma6EgtOzWMugcXyS5HwdMN6dJf2nTMM6+3ur3Qsa5YZpkmDzbaO
+         0J3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hhWOGsCeI+HSWEvhDneQIbO6o/toOvKW/eQPadkWVL8=;
-        b=YisHBm6aTAtuiHCNOaCP3MUFuslKlage5cqLfGIJP4hhmp0rDPPDTaLdrd79Ifqoyd
-         /rxxf0Dbr4DYdjARlqX2TirxYFdWhWBv4Eyfj3ElETXdhgN4dUt9U6gg+LOIs2FzUM+s
-         fijL3ErsWT/CZUi38uSRoWqaDCtxeZNgekcgeK1nplBK1Rov7L/3sbhF7iaaWgUUZpOu
-         P/UxYJ/hE9/m1Yts7Gt/S2rn4U79+75nNj5ZsJjAhb1wbDKmW9MkUbjxLOLuSGOIqDvL
-         cemW807XZeGC94AR0qCpC3oY4x4e4g8fGAiuv4Jt9pJVHCPhZ5aGnKugDg6xWOWyCxco
-         H2SQ==
-X-Gm-Message-State: AOAM533dJhuT+ifXKgEZ/2inn19WGBFtlLrQSaj1klpmf8E7fYX+uV4+
-        B8gYRnwi2UP5IH5grrDxD7o+
-X-Google-Smtp-Source: ABdhPJx6hVG6jwueJIqdVK7OGtqBxmIW8BQLR1+MyelZ7sAyf2JOMua3gCMp51gd7FqFvqKIBhKrqQ==
-X-Received: by 2002:a17:902:aa02:b029:da:a2fc:413e with SMTP id be2-20020a170902aa02b02900daa2fc413emr1786374plb.5.1606902152819;
-        Wed, 02 Dec 2020 01:42:32 -0800 (PST)
+        bh=RE5w69On3Eny/j1GWLpJs16JP4zJIqHV3HKQLkmEnls=;
+        b=l3NJ1oIcL0AXcEPvgk1ozkAytBkwfxGVvY1iRd65kzWfS5hnIIBWKod7IdRtwhan9H
+         6aSqegC+dfvkcjNcCKjoQmzQHYa9A0U4PtoMvTPzU4bmxJV7Z9hJT4g9G+fvw/h5YP3P
+         MkK1tj6ZkRdML7/E6rp3EV31tvY01Cy3pb5FQuehDRKygWZ6MvXbF7fizMsBAgx0NCGg
+         P/OdOijcx2Z/afm2G0nQWr7mzRAdKsBXzU4ZxVi7nWEVd4V8CvUQFw1R49A9sTR6b6bs
+         mjD+kFrt9TdNhs9BGXzKFfBJa1CLRH+ajda+k9VUZ9cpVFrxTRSl+EAw4WNh1m6Zm2Xn
+         jM+g==
+X-Gm-Message-State: AOAM5302esNbvdrnKZAYbjBOknqylGdL8n/ubzDh8CLudp+OcnLQLPTe
+        JO8FMCRuGWqmaUbiIEa1h+iz
+X-Google-Smtp-Source: ABdhPJxsCM31MTDonNiC9EKnIYgo5e6CfLQoofYocFx5sTbJDG5Trzhp0G3F2WTegxHHcrLJaINieQ==
+X-Received: by 2002:a17:902:7606:b029:da:246c:5bd8 with SMTP id k6-20020a1709027606b02900da246c5bd8mr1935031pll.27.1606902156684;
+        Wed, 02 Dec 2020 01:42:36 -0800 (PST)
 Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.42.28
+        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.42.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 01:42:31 -0800 (PST)
+        Wed, 02 Dec 2020 01:42:35 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
         linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
         linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 02/29] net: qrtr: Start MHI channels during init
-Date:   Wed,  2 Dec 2020 15:11:32 +0530
-Message-Id: <20201202094159.107075-3-manivannan.sadhasivam@linaro.org>
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 03/29] bus: mhi: core: fix potential operator-precedence with BHI macros
+Date:   Wed,  2 Dec 2020 15:11:33 +0530
+Message-Id: <20201202094159.107075-4-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
 References: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
@@ -67,35 +66,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Jeffrey Hugo <jhugo@codeaurora.org>
 
-Start MHI device channels so that transfers can be performed.
-The MHI stack does not auto-start channels anymore.
+The BHI_MSMHWID and BHI_OEMPKHASH macros take a value 'n' which is
+a BHI register index. If 'n' is an expression rather than a simple
+value, there can be an operator precedence issue which can result
+in the incorrect calculation of the register offset. Adding
+parentheses around the macro parameter can prevent such issues.
 
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Acked-by: David S. Miller <davem@davemloft.net>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- net/qrtr/mhi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/bus/mhi/core/internal.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-index ff0c41467fc1..7100f0bac4c6 100644
---- a/net/qrtr/mhi.c
-+++ b/net/qrtr/mhi.c
-@@ -76,6 +76,11 @@ static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
- 	struct qrtr_mhi_dev *qdev;
- 	int rc;
- 
-+	/* start channels */
-+	rc = mhi_prepare_for_transfer(mhi_dev);
-+	if (rc)
-+		return rc;
-+
- 	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
- 	if (!qdev)
- 		return -ENOMEM;
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 7989269ddd96..78e4e84d6743 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -153,8 +153,8 @@ extern struct bus_type mhi_bus_type;
+ #define BHI_SERIALNU (0x40)
+ #define BHI_SBLANTIROLLVER (0x44)
+ #define BHI_NUMSEG (0x48)
+-#define BHI_MSMHWID(n) (0x4C + (0x4 * n))
+-#define BHI_OEMPKHASH(n) (0x64 + (0x4 * n))
++#define BHI_MSMHWID(n) (0x4C + (0x4 * (n)))
++#define BHI_OEMPKHASH(n) (0x64 + (0x4 * (n)))
+ #define BHI_RSVD5 (0xC4)
+ #define BHI_STATUS_MASK (0xC0000000)
+ #define BHI_STATUS_SHIFT (30)
 -- 
 2.25.1
 
