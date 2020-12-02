@@ -2,214 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0932CB1F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7EE2CB205
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgLBA7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727605AbgLBA7T (ORCPT
+        id S1727931AbgLBBFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 20:05:08 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11912 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726556AbgLBBFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:59:19 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AD8C061A04;
-        Tue,  1 Dec 2020 16:58:10 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id 10so68899ybx.9;
-        Tue, 01 Dec 2020 16:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EkXu9Ed2ybTkQIgVvwvasBTjLGza95sliHnsICJRQMI=;
-        b=H3MZYH5k6FkItSFWwohnA37oe/t/5Wsaj4sdmB77XBqgQeDarK7aw1Po4m3Cd4VGHr
-         vUs0deTQbBTsEQiPxBSpMIV1U2r2S7AqodqaHWdPJN054Aw9ZwyCj+ufHOHUsGmu+Vlv
-         I3C4vE0jekW6ZkwRBeC5nLqU78mQhN2wYzTLXYQksxLfj+JoVq+GWWxnj65vji2yOKq1
-         4FercnoPjt9cNdcLZIGA0ByWR3Y82Pzz9mp6ssLze/BJJ3/rNQgEa6aajGZeQudjBeZz
-         85cYDYsrQx0UX+TmeY8oyX6FBldeKbv5vlTLcR7anaX+qlyXUoFKFZpBcL4CIzBlZJIC
-         fmfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EkXu9Ed2ybTkQIgVvwvasBTjLGza95sliHnsICJRQMI=;
-        b=g3cEZBg7RMlJAnxKv28yfXzOspvJCIEGmowWkgML0u58gDtnRdITP/8dy7yTz9AAXF
-         EFQRfyB67xjIRBm3Oyh8tWGvK5NHbe1b98rliPxwKKj36AUb2khu1Jq0kpNcuYAIaTUv
-         imDISyMi4nK02jC2s6qbD0YTcDOG4camkxSRSwO96APGNUZPDVWp+H/cDJkkj3ye6PDn
-         gwhrBtHBypd0URIhJqHaGhR+AoCyuQmrbzXDI37F0uOM5vucX8/iDV/x7mUfOD/0N2Ca
-         n7XLl4dkZ5XMuOq5ud4Z27OQ4bxydrOrWfdd/WlK+llaRuEnqos6wW08veVZ2cIcKAiE
-         oAnw==
-X-Gm-Message-State: AOAM530Q8aTeEASwzuD3INyFvsFST1gKHzBBR6QbEVVFoQEiTdnOgLnB
-        njKGNWtT0wfDCL9ZREffFd24oypsOsbWxeIbbOWbi/85esw=
-X-Google-Smtp-Source: ABdhPJwY+6CigAXZX+nJC0LAa7eq3iVaNZOpXH+UfMu4jd1PQoFZEPb4Mv305HMDsPvjUB2RBiZwRedhRFCmJFTeSgo=
-X-Received: by 2002:a25:3d7:: with SMTP id 206mr102999ybd.27.1606870690253;
- Tue, 01 Dec 2020 16:58:10 -0800 (PST)
+        Tue, 1 Dec 2020 20:05:08 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B212i04074437;
+        Tue, 1 Dec 2020 20:04:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=quLqGqXAl/PPgl+TuyjYAEjbjck4OUuu3Qk2jmO0lrg=;
+ b=WS5/H5YXiO+7XfvRKuF7envEBEJT4i4LSIHloAtjWZuS/T8R2maNSylmG/h+nTeb0WkI
+ uMPEu1dZSlZWFNN0Ifj6KMqOPrEcdvzVJWxGP36iCcmXmoGXQwtgTEzZmFrw9YBYaTWQ
+ 96zAPUO0VdxSZH9Ngbvdb9vtl6ciA10BpGHnnAOFtmKsvqtFSbQ45yGe39MFifQNEN3d
+ MtPo1R3mKQmn/fPW0BwxH+83QbyUBayXf+W3KwUcnriYKah7bHXbYAGwNwb15LDcZZyq
+ YjgD88y+ZN3gAcH3D9ql3jpp+U579tyNUxIeF8xfMCBit+pqm5zZU0RFxSin7k1ZENnB EA== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355jjh8wq9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 20:04:21 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B20f5DJ016199;
+        Wed, 2 Dec 2020 00:53:34 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma01wdc.us.ibm.com with ESMTP id 355vrfhrdb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 00:53:34 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B20rN334391456
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 00:53:23 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 03D777805C;
+        Wed,  2 Dec 2020 00:53:33 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 915E478060;
+        Wed,  2 Dec 2020 00:53:32 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 00:53:32 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Brian King <brking@linux.vnet.ibm.com>
+Subject: [PATCH v2 03/17] ibmvfc: add Subordinate CRQ definitions
+Date:   Tue,  1 Dec 2020 18:53:15 -0600
+Message-Id: <20201202005329.4538-4-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201202005329.4538-1-tyreld@linux.ibm.com>
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
 MIME-Version: 1.0
-References: <20201126165748.1748417-1-revest@google.com> <20201126165748.1748417-2-revest@google.com>
-In-Reply-To: <20201126165748.1748417-2-revest@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 16:57:59 -0800
-Message-ID: <CAEf4Bzauq=fRxPWRQq6wk9f_LGR6iayr96Fg-hzVB2gL6Pm8=Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add bpf_kallsyms_lookup test
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_12:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1
+ lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 8:59 AM Florent Revest <revest@chromium.org> wrote:
->
-> This piggybacks on the existing "ksyms" test because this test also
-> relies on a __ksym symbol and requires CONFIG_KALLSYMS.
->
-> Signed-off-by: Florent Revest <revest@google.com>
-> ---
->  tools/testing/selftests/bpf/config            |  1 +
->  .../testing/selftests/bpf/prog_tests/ksyms.c  | 46 ++++++++++++++++++-
->  .../bpf/progs/test_kallsyms_lookup.c          | 38 +++++++++++++++
->  3 files changed, 84 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
->
-> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> index 365bf9771b07..791a46e5d013 100644
-> --- a/tools/testing/selftests/bpf/config
-> +++ b/tools/testing/selftests/bpf/config
-> @@ -43,3 +43,4 @@ CONFIG_IMA=y
->  CONFIG_SECURITYFS=y
->  CONFIG_IMA_WRITE_POLICY=y
->  CONFIG_IMA_READ_POLICY=y
-> +CONFIG_KALLSYMS=y
+Subordinate Command Response Queues (Sub CRQ) are used in conjunction
+with the primary CRQ when more than one queue is needed by the virtual
+IO adapter. Recent phyp firmware versions support Sub CRQ's with ibmvfc
+adapters. This feature is a prerequisite for supporting multiple
+hardware backed submission queues in the vfc adapter.
 
-it's already a requirement, but good to codify it ;)
+The Sub CRQ command element differs from the standard CRQ in that it is
+32bytes long as opposed to 16bytes for the latter. Despite this extra
+16bytes the ibmvfc protocol will use the original CRQ command element
+mapped to the first 16bytes of the Sub CRQ element initially.
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms.c b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> index b295969b263b..0478b67a92ae 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> @@ -3,11 +3,12 @@
->
->  #include <test_progs.h>
->  #include "test_ksyms.skel.h"
-> +#include "test_kallsyms_lookup.skel.h"
->  #include <sys/stat.h>
->
->  static int duration;
->
-> -void test_ksyms(void)
-> +void test_ksyms_variables(void)
+Add definitions for the Sub CRQ command element and queue.
 
-now it should be static
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
+---
+ drivers/scsi/ibmvscsi/ibmvfc.h | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
->  {
->         const char *btf_path = "/sys/kernel/btf/vmlinux";
->         struct test_ksyms *skel;
-> @@ -59,3 +60,46 @@ void test_ksyms(void)
->  cleanup:
->         test_ksyms__destroy(skel);
->  }
-> +
-> +void test_kallsyms_lookup(void)
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
+index e095daada70e..b3cd35cbf067 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.h
++++ b/drivers/scsi/ibmvscsi/ibmvfc.h
+@@ -656,6 +656,29 @@ struct ibmvfc_crq_queue {
+ 	dma_addr_t msg_token;
+ };
+ 
++struct ibmvfc_sub_crq {
++	struct ibmvfc_crq crq;
++	__be64 reserved[2];
++} __packed __aligned(8);
++
++struct ibmvfc_sub_queue {
++	struct ibmvfc_sub_crq *msgs;
++	dma_addr_t msg_token;
++	int size, cur;
++	struct ibmvfc_host *vhost;
++	unsigned long cookie;
++	unsigned long vios_cookie;
++	unsigned long hw_irq;
++	unsigned long irq;
++	unsigned long hwq_id;
++	char name[32];
++};
++
++struct ibmvfc_scsi_channels {
++	struct ibmvfc_sub_queue *scrqs;
++	unsigned int active_queues;
++};
++
+ enum ibmvfc_ae_link_state {
+ 	IBMVFC_AE_LS_LINK_UP		= 0x01,
+ 	IBMVFC_AE_LS_LINK_BOUNCED	= 0x02,
+-- 
+2.27.0
 
-static
-
-> +{
-> +       struct test_kallsyms_lookup *skel;
-> +       int err;
-> +
-> +       skel = test_kallsyms_lookup__open_and_load();
-> +       if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
-> +               return;
-> +
-> +       err = test_kallsyms_lookup__attach(skel);
-> +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-> +               goto cleanup;
-> +
-> +       /* trigger tracepoint */
-> +       usleep(1);
-> +
-> +       CHECK(strcmp(skel->bss->name, "schedule"), "name",
-> +             "got \"%s\", exp \"schedule\"\n", skel->bss->name);
-
-there is ASSERT_STREQ() that does this nicely and succinctly
-
-
-> +       CHECK(strcmp(skel->bss->name_truncated, "sched"), "name_truncated",
-> +             "got \"%s\", exp \"sched\"\n", skel->bss->name_truncated);
-> +       CHECK(strcmp(skel->bss->name_invalid, ""), "name_invalid",
-> +             "got \"%s\", exp \"\"\n", skel->bss->name_invalid);
-> +       CHECK(strcmp(skel->bss->module_name, ""), "module_name",
-> +             "got \"%s\", exp \"\"\n", skel->bss->module_name);
-> +       CHECK(skel->bss->schedule_ret != 9, "schedule_ret",
-> +             "got %d, exp 0\n", skel->bss->schedule_ret);
-> +       CHECK(skel->bss->sched_ret != 9, "sched_ret",
-> +             "got %d, exp 0\n", skel->bss->sched_ret);
-> +       CHECK(skel->bss->invalid_ret != -EINVAL, "invalid_ret",
-> +             "got %d, exp %d\n", skel->bss->invalid_ret, -EINVAL);
-> +
-> +cleanup:
-> +       test_kallsyms_lookup__destroy(skel);
-> +}
-> +
-> +void test_ksyms(void)
-> +{
-> +       if (test__start_subtest("ksyms_variables"))
-> +               test_ksyms_variables();
-> +       if (test__start_subtest("kallsyms_lookup"))
-> +               test_kallsyms_lookup();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c b/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
-> new file mode 100644
-> index 000000000000..4f15f1527ab4
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Google LLC. */
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +extern const void schedule __ksym;
-> +
-> +#define SYMBOL_NAME_LEN                        10
-> +char name[SYMBOL_NAME_LEN];
-> +char name_invalid[SYMBOL_NAME_LEN];
-> +
-> +#define SYMBOL_TRUNCATED_NAME_LEN      6
-> +char name_truncated[SYMBOL_TRUNCATED_NAME_LEN];
-> +
-> +#define MODULE_NAME_LEN                        64
-> +char module_name[MODULE_NAME_LEN];
-> +
-> +long schedule_ret;
-> +long sched_ret;
-> +long invalid_ret;
-
-= 0 or = {} for all the variables
-
-> +
-> +SEC("raw_tp/sys_enter")
-> +int handler(const void *ctx)
-> +{
-> +       schedule_ret = bpf_kallsyms_lookup((__u64)&schedule,
-> +                                          name, SYMBOL_NAME_LEN,
-> +                                          module_name, MODULE_NAME_LEN);
-> +       invalid_ret = bpf_kallsyms_lookup(0,
-> +                                         name_invalid, SYMBOL_NAME_LEN,
-> +                                         module_name, MODULE_NAME_LEN);
-> +       sched_ret = bpf_kallsyms_lookup((__u64)&schedule, name_truncated,
-> +                                       SYMBOL_TRUNCATED_NAME_LEN,
-> +                                       module_name, MODULE_NAME_LEN);
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.29.2.454.gaff20da3a2-goog
->
