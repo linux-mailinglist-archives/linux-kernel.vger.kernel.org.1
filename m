@@ -2,172 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9F52CBAB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CBE2CBAB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbgLBKjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgLBKjc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:39:32 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B1CC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 02:38:52 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id z9so650240qtn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:38:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=mV1p8/cTOhIl3icxdE2Ji4asKgGKkxP3UCtu80k0nyo=;
-        b=UjRyf8L5N8FlEvvIhnEPinYHqNCi+199anr9DfIoruwBYEkVRmRP6vAOb/RYKvM9hf
-         /DdcK/j55C1ccbYoDSHutChOt8ete5Xob1swGWjJgfYbQ07Xl58iBOFW+vIYy04AoSCI
-         XT+pbXMyNGzGLuip39gqrfuwnPOkskGwugQR3vaFvDuBeix3X+wZlfJ2O9NWuEnsP6Gh
-         l0FDXJahwnLmy3OT0KVcvNzM8GtDkQYlS7/rK1Wer6sIDRbysMtPUXtI5SJdues/RN5p
-         9KHkQhESglsSjiqtvI8/GMz+7BXe/x/EjR2uZOVbTpRkaxmepHY4l3pfu9oz48bbaGDG
-         5XqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mV1p8/cTOhIl3icxdE2Ji4asKgGKkxP3UCtu80k0nyo=;
-        b=fgVLBtfwM8v/jfIwnXRABqsx9dv3R8OWwGZbWuCne6oF7dBxxk/nDlLRJIyIE8cckj
-         0K5B42g83FxJFZ5rU5O4JwuRMIyeP1yrCfhwvPFbsxF6L/yfOIS+1QSX79JF7KOQGYFX
-         jmwEFEP3gfl/BaU+Gs2ICioAM1L2JQixWKo9A8f+OcM1k6fKKJegMEw3cpgM+E60XyMR
-         rd3VRjhKbaESpVVkDjQVj79jZCA6W1zLLN4+DoofpnRec1T8GdkoxbgAJ+P2N+3gFhFU
-         J8HgFPs8i4WCy77D3615oLs9XlmQMDS8yBSN8VJr9oE0hDBLCAzE7LWRrLS4CFFyfKS8
-         W3mA==
-X-Gm-Message-State: AOAM533fSkeYbJG4NvL/9HAV1gBEk1b3aas7L4c2vIJWxkOYK7w1kHPB
-        8TVTwxyk0b8kaZ83bqmLdbI=
-X-Google-Smtp-Source: ABdhPJwPcicd8p1UGpJazg/IWR6VTClzi2r6wxqVrHNtm/+xAz2MmAY98nCXJ3WzeQgsBdmcBZASCw==
-X-Received: by 2002:ac8:5994:: with SMTP id e20mr1893949qte.219.1606905531360;
-        Wed, 02 Dec 2020 02:38:51 -0800 (PST)
-Received: from localhost.localdomain ([177.194.72.74])
-        by smtp.gmail.com with ESMTPSA id b186sm1248725qkc.111.2020.12.02.02.38.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 02:38:50 -0800 (PST)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     p.zabel@pengutronix.de
-Cc:     mchehab@kernel.org, linux-kernel@vger.kernel.org,
-        hverkuil-cisco@xs4all.nl, Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2] media: coda: Convert the driver to DT-only
-Date:   Wed,  2 Dec 2020 07:35:52 -0300
-Message-Id: <20201202103552.19162-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729457AbgLBKhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:37:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728490AbgLBKhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:37:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606905397; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lxwrvvx9Rff81V9XwGlv00GuptOBu9ZX7xD68G/OcaM=;
+        b=epiNnRqO3OKMKKZazuNkpWrQODJ1onBAkZq2ij8ThpdMHwFCyHOWzG8VGlJnL208Rye4bu
+        O44IPFCh4liFOB4RlSC4a14ifyC94ZUInuvGDTiIr6vJdbIpEyotFFw6T2PZqkDsfWP1CA
+        LLLbp4zczeeLK+S55kWKeH59xfBVVUc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2ADB5ACB5;
+        Wed,  2 Dec 2020 10:36:37 +0000 (UTC)
+Subject: Re: [PATCH] xen: remove trailing semicolon in macro definition
+To:     trix@redhat.com, boris.ostrovsky@oracle.com,
+        sstabellini@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com
+Cc:     x86@kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+References: <20201127160707.2622061-1-trix@redhat.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <3c0d78dd-b9d8-0f80-98bb-680248fc9b99@suse.com>
+Date:   Wed, 2 Dec 2020 11:36:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201127160707.2622061-1-trix@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="YNqqUgVH3u7yUvmoDsd4aqCpnG2L0pwwo"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 5.10-rc1 i.MX is a devicetree-only platform, so simplify the code
-by removing the unused non-DT support.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--YNqqUgVH3u7yUvmoDsd4aqCpnG2L0pwwo
+Content-Type: multipart/mixed; boundary="25zRNclcpurKruKefRf7bJ6B7KJ20d3Ty";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: trix@redhat.com, boris.ostrovsky@oracle.com, sstabellini@kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com
+Cc: x86@kernel.org, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <3c0d78dd-b9d8-0f80-98bb-680248fc9b99@suse.com>
+Subject: Re: [PATCH] xen: remove trailing semicolon in macro definition
+References: <20201127160707.2622061-1-trix@redhat.com>
+In-Reply-To: <20201127160707.2622061-1-trix@redhat.com>
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
-Changes since v1:
-- Drop include/linux/platform_data/media/coda.h and pdata - Hans
+--25zRNclcpurKruKefRf7bJ6B7KJ20d3Ty
+Content-Type: multipart/mixed;
+ boundary="------------4B2B39EDD71E8B73392BA0C4"
+Content-Language: en-US
 
- drivers/media/platform/coda/coda-common.c | 27 ++---------------------
- include/linux/platform_data/media/coda.h  | 14 ------------
- 2 files changed, 2 insertions(+), 39 deletions(-)
- delete mode 100644 include/linux/platform_data/media/coda.h
+This is a multi-part message in MIME format.
+--------------4B2B39EDD71E8B73392BA0C4
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
-index d30eafea701d..995e95272e51 100644
---- a/drivers/media/platform/coda/coda-common.c
-+++ b/drivers/media/platform/coda/coda-common.c
-@@ -25,7 +25,6 @@
- #include <linux/slab.h>
- #include <linux/videodev2.h>
- #include <linux/of.h>
--#include <linux/platform_data/media/coda.h>
- #include <linux/ratelimit.h>
- #include <linux/reset.h>
- 
-@@ -3102,13 +3101,6 @@ static const struct coda_devtype coda_devdata[] = {
- 	},
- };
- 
--static const struct platform_device_id coda_platform_ids[] = {
--	{ .name = "coda-imx27", .driver_data = CODA_IMX27 },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(platform, coda_platform_ids);
--
--#ifdef CONFIG_OF
- static const struct of_device_id coda_dt_ids[] = {
- 	{ .compatible = "fsl,imx27-vpu", .data = &coda_devdata[CODA_IMX27] },
- 	{ .compatible = "fsl,imx51-vpu", .data = &coda_devdata[CODA_IMX51] },
-@@ -3118,14 +3110,9 @@ static const struct of_device_id coda_dt_ids[] = {
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, coda_dt_ids);
--#endif
- 
- static int coda_probe(struct platform_device *pdev)
- {
--	const struct of_device_id *of_id =
--			of_match_device(of_match_ptr(coda_dt_ids), &pdev->dev);
--	const struct platform_device_id *pdev_id;
--	struct coda_platform_data *pdata = pdev->dev.platform_data;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct gen_pool *pool;
- 	struct coda_dev *dev;
-@@ -3135,14 +3122,7 @@ static int coda_probe(struct platform_device *pdev)
- 	if (!dev)
- 		return -ENOMEM;
- 
--	pdev_id = of_id ? of_id->data : platform_get_device_id(pdev);
--
--	if (of_id)
--		dev->devtype = of_id->data;
--	else if (pdev_id)
--		dev->devtype = &coda_devdata[pdev_id->driver_data];
--	else
--		return -EINVAL;
-+	dev->devtype = of_device_get_match_data(&pdev->dev);
- 
- 	dev->dev = &pdev->dev;
- 	dev->clk_per = devm_clk_get(&pdev->dev, "per");
-@@ -3200,10 +3180,8 @@ static int coda_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* Get IRAM pool from device tree or platform data */
-+	/* Get IRAM pool from device tree */
- 	pool = of_gen_pool_get(np, "iram", 0);
--	if (!pool && pdata)
--		pool = gen_pool_get(pdata->iram_dev, NULL);
- 	if (!pool) {
- 		dev_err(&pdev->dev, "iram pool not available\n");
- 		return -ENOMEM;
-@@ -3342,7 +3320,6 @@ static struct platform_driver coda_driver = {
- 		.of_match_table = of_match_ptr(coda_dt_ids),
- 		.pm	= &coda_pm_ops,
- 	},
--	.id_table = coda_platform_ids,
- };
- 
- module_platform_driver(coda_driver);
-diff --git a/include/linux/platform_data/media/coda.h b/include/linux/platform_data/media/coda.h
-deleted file mode 100644
-index 293b61b60c9d..000000000000
---- a/include/linux/platform_data/media/coda.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Copyright (C) 2013 Philipp Zabel, Pengutronix
-- */
--#ifndef PLATFORM_CODA_H
--#define PLATFORM_CODA_H
--
--struct device;
--
--struct coda_platform_data {
--	struct device *iram_dev;
--};
--
--#endif
--- 
-2.17.1
+On 27.11.20 17:07, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+>=20
+> The macro use will already have a semicolon.
+>=20
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+--------------4B2B39EDD71E8B73392BA0C4
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------4B2B39EDD71E8B73392BA0C4--
+
+--25zRNclcpurKruKefRf7bJ6B7KJ20d3Ty--
+
+--YNqqUgVH3u7yUvmoDsd4aqCpnG2L0pwwo
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/HbjQFAwAAAAAACgkQsN6d1ii/Ey9q
+ygf/SgFCZg1YowmATZyRWnic7FXKS/1Cb/ushTbHPxzvmgaUs8t8320iZdW78n9fVHPwKghFNGZK
+xXNtHkP6UHDAJ2dLzy4gMTEhP2aqDJhRkLIHX7BsJg1H7piRYUOj7ymiFVtft+0Vzl31+KyAUDUi
+M7Lsa0g81cvJ8E5KZnbG4ustRUgan9u3/qxT2glejbcuais21uFaUG5tKWklem5YWES/kYkrrhbx
+D2yX7pgazkAN4g1CkRuOya3if8SOFk+mty4OGhqpxDjhxxgqKHg6Mm2OWsI87BR0KDqNgc1dhupC
+Gm4mk+NubQZJBiYPNlBMmsWk+EFYtFoVLkaTdH6jWQ==
+=lM4K
+-----END PGP SIGNATURE-----
+
+--YNqqUgVH3u7yUvmoDsd4aqCpnG2L0pwwo--
