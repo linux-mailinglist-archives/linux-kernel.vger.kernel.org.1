@@ -2,79 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA382CB581
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A682CB585
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387635AbgLBHDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:03:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728039AbgLBHDy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:03:54 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F49C0613D4;
-        Tue,  1 Dec 2020 23:03:13 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id e25so4170446wme.0;
-        Tue, 01 Dec 2020 23:03:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bDEuBbvyO4m/aOrUkaJX+zPA0wyOJV04lKgxRyULzKk=;
-        b=A6BUjlpprQbeCgO38tGePMxU/Z1DUnKDpLCzWSzeQ0RGCJdGE/3r5PvCnFphFaQ2xh
-         tDCvBR746a2dKj2EAxnxREr3JcK8TxI5yNCyl3OZCh55A1FIF0uFzelAP12Ac9/kvJlE
-         /L6GyTDevzH1wgU556itNQNzn4aVf3MKDRQlXz9B3JO2OETcFPNRd6HtB8R6XJqz77Ju
-         fcFRTXHncSbhfYQWAXvw1F0iGHVLc0Ya6SE8zLDusdLVJ1yqL6mUVLQ2W67jD/RNNsX+
-         NIddsi04HxMAhXdADHvRU8MaPlTY/u+y3KD6Bkvj1PyP48dKYl2cM1ba2EBVeU0PubKG
-         RrVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bDEuBbvyO4m/aOrUkaJX+zPA0wyOJV04lKgxRyULzKk=;
-        b=rjBo2L26ZbyKwlNsEFTMnP39H94BQLFovj6bwKLfdA50hBJ6Bix7lx0WdN/6EzvL4U
-         XaAYkN5lArXOm73CYEKn4EggDFhT+sZYtO2HDwS3nkHefnj7opSiqwRgKRE3zFbQuZbL
-         rWllbMkBKeofC4/dh1yDLvH8K4JSUC32Y/LAguW83FEv3PEMps2GM/S5QmLM3TctrfJO
-         cpKzv5rSmXX1X0CMtCXeNAC7iu1Hc3BMDryhWYMwmyzAIdWyzAGz8EWomZKXf5b1dSLh
-         X1rZxpTALItyFF7Gdd8gG+Kq/03dJYj27NLkNqkbDNHiaYjE4FWFHd/CUz0xSFdiQWpd
-         Z6vg==
-X-Gm-Message-State: AOAM530rU+T3TpGr2GkH+9nYeLzibndI2AnwIQSnFnBMDx+nx3KjFLve
-        +IIwpK0SrLMjfFselQHkLtpdrnEfYopLSoMnABY=
-X-Google-Smtp-Source: ABdhPJzR5Hixme4SzNzsQ2hgFB6L6n6Q9R6GuEyMpXhKkYTMG1qgDfVOBUYf8cxNABWF0W6J/c1yoZEjHvlkG/FP5jU=
-X-Received: by 2002:a05:600c:21ce:: with SMTP id x14mr1446848wmj.27.1606892592410;
- Tue, 01 Dec 2020 23:03:12 -0800 (PST)
+        id S1728739AbgLBHGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:06:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgLBHGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:06:11 -0500
+Date:   Wed, 2 Dec 2020 12:35:25 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606892730;
+        bh=9qn0NrdWjruLyUWQ7XKn10OO1oc80uMd+sP+D93H81M=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DJFWp43l5knvrzrbXohnGTBjFN3K0dhOwNm9OA0KVjY6VFFkklgG084t9jnxbsenx
+         YhF35Siizh0PChYwdRZj3mX6nKjUov0N0QW9BCv+ohpNqLZKOpquVpnLLDEj+wyot7
+         UPcCBUiCXm7Q1unL8flLC5wOF4bpSZUrYGrd/rSw=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
+        Marian Mihailescu <mihailescu2m@gmail.com>,
+        Markus Reichl <m.reichl@fivetechno.de>
+Subject: Re: [PATCH v2] phy: samsung: Merge Kconfig for Exynos5420 and
+ Exynos5250
+Message-ID: <20201202070525.GF8403@vkoul-mobl>
+References: <CGME20201202064807eucas1p124fbd6237538e9ba01c7981891e7a082@eucas1p1.samsung.com>
+ <20201202064759.24300-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-References: <X8c6vpapJDYI2eWI@mwanda>
-In-Reply-To: <X8c6vpapJDYI2eWI@mwanda>
-From:   Sunil Kovvuri <sunil.kovvuri@gmail.com>
-Date:   Wed, 2 Dec 2020 12:33:00 +0530
-Message-ID: <CA+sq2Ceo3z1KAuOfZYsmRMHw4dHcnrRLtkRmALNHvj3=tRJKtA@mail.gmail.com>
-Subject: Re: [PATCH net-next] octeontx2-af: debugfs: delete dead code
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202064759.24300-1-m.szyprowski@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 12:28 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> These debugfs never return NULL so all this code will never be run.
->
-> In the normal case, (and in this case particularly), the debugfs
-> functions are not supposed to be checked for errors so all this error
-> checking code can be safely deleted.
->
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
+On 02-12-20, 07:47, Marek Szyprowski wrote:
+> Exynos5420 variant of USB2 PHY is handled by the same code as the
+> Exynos5250 one. Introducing a separate Kconfig symbol for it was an
+> over-engineering, which turned out to cause build break for certain
+> configurations:
+> 
+> ERROR: modpost: "exynos5420_usb2_phy_config" [drivers/phy/samsung/phy-exynos-usb2.ko] undefined!
+> 
+> Fix this by removing PHY_EXYNOS5420_USB2 symbol and using
+> PHY_EXYNOS5250_USB2 also for Exynos5420 SoCs.
 
-Thanks for the changes.
+Applied, thanks
+
+-- 
+~Vinod
