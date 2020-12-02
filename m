@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAC82CC6EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9432CC6F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389599AbgLBTp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:45:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
+        id S2387980AbgLBTtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:49:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728940AbgLBTp1 (ORCPT
+        with ESMTP id S2387658AbgLBTtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:45:27 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F246DC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:44:40 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id t8so3188046iov.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:44:40 -0800 (PST)
+        Wed, 2 Dec 2020 14:49:06 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27989C0613CF;
+        Wed,  2 Dec 2020 11:48:26 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id p21so968632pjv.0;
+        Wed, 02 Dec 2020 11:48:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QyEPDAytTEl0uopebdyNHFfe+27dQnLC51NhV3dnBlQ=;
-        b=OBM1e4X4T5ctyaC99rN18qygJBuxT+Na4CBNEK0YrhauMduyrFTBQhoBjaEMQ9gkgP
-         RJDGNWlQZUoeYB18Zc8lohe07PWMzXOXi36725jdFTsya/BtObnqro1yRkyJ+pPO4K4m
-         2Key7R6FaAFR5VWNEtq5Q8UX8qafo/GEDz6cEwX68EMT3OyNwoakm1ExLrjmVVqzAkX5
-         TeGUe2RLSQvwYYvowut5+1w4CA2CMErINS9xnd5OutfEFUpKZ1U5Rb+h7ImZFTFCrloo
-         BhBk8q6z//pFqFhMRW75a30MgVsZ0ZSTKti8GAxpWsA4PNnPv6iHFpneacE6hFIqcjsz
-         uJPQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dnQQ0ZO/6p33z1swbZoImrPF097nMjWL47oIMo++/1Y=;
+        b=onJj8ipStbxkxO1WMW4vx6wNj6v6na0K0VYBNmFQ/TgoUyd1X+QuhKWOM9Q2hUY4uH
+         PI37PA+QRy74rDEnFaGWxAzDOBo/WwymM51gZXXQOIeAvykEhSD9kByS6NDbeDQOB0gB
+         dlSeHl0n0tNFnc/5e9QnxMwqAgMeviGwIfyu1tYVbluA5Ss8u/LWXKPoAaERlFD6mzv6
+         y0iRo9mnNUd1x93YRZ/L1vC1OMPIef0qOKvWcNYnRo7seGzgbAUkxIabKOFy7bf+dKKu
+         reBPVovWJfqqzr4y5seDB6W6wi5zyl6DyaNJ9ZUbn3blZQP7AEpNJYLMolGv8hzQiGdQ
+         UItA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QyEPDAytTEl0uopebdyNHFfe+27dQnLC51NhV3dnBlQ=;
-        b=lpAwqzNOLRW5u8Y5EKsnbToNO0CTK1o8tKRJKHJLPt5g+wlqByLcguPANJ4i2+cAAV
-         z8A4vEy5cOderVRIIYQ0EJ+xi6CHkmWyyVoRXy5sIuT74z4SkDh+YIu7XeERM88DCB7C
-         NR/w56SaYfmckYkIrNcfeqlQThvdrF6j1IH0PQR+aCYTAgN1qArfQwoPzuofX+INkN6E
-         esEGmUoN9bqY8agUbDa68ZQb1HVycjlfY0Io1iyuyUHuMJ6D4N4aqCmyBC2pIrwTGrQv
-         wNXRDtgz4iKSav4aHE4QxcmbHp3Jg9lbIrzJBrKuL9pVBbcN7OnBOtmmXtkAxqo6N8YA
-         7dsA==
-X-Gm-Message-State: AOAM532hLAMcnto7vaARdLL0k9J7YKLkMW5/Rtzt2adc4Z2LmZar8rc2
-        qIy2S5jEq0MtTGKDbzmhp4dF/A==
-X-Google-Smtp-Source: ABdhPJz8UN2fY5APc9Sjo+vvBdGu2jQKXfD20JyDILa/0y1RXXAbuPmiCHQzcqnjlgbJWrFl1+onVg==
-X-Received: by 2002:a6b:3118:: with SMTP id j24mr3303413ioa.171.1606938280197;
-        Wed, 02 Dec 2020 11:44:40 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id z18sm1157219ilb.26.2020.12.02.11.44.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 11:44:39 -0800 (PST)
-Subject: Re: [PATCH] blk-throttle: don't check whether or not lower limit is
- valid if CONFIG_BLK_DEV_THROTTLING_LOW is off
-To:     Yu Kuai <yukuai3@huawei.com>, tj@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        zhangxiaoxu5@huawei.com
-References: <20201126031834.40807-1-yukuai3@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <51844d83-3447-cf0f-bde2-d368f5f43f5a@kernel.dk>
-Date:   Wed, 2 Dec 2020 12:44:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dnQQ0ZO/6p33z1swbZoImrPF097nMjWL47oIMo++/1Y=;
+        b=jTnf/r68TCZsuXXLjP2BMUWTlJypXsZlkkyu0WVPRj0+ayJX2RHVE3mGzAMlZJhL0h
+         Wcayuo3UdezPJe41Ly3GsoqG2WSil/fsjPz8nQCvx+Xk/JLptqVEk3iUlCtfDYzgdpsA
+         6JFB1p5NDXa39CmO7KwUh0P6F0vBXe7wHXv0DDiWK+nryalbtGxmSCH73V60UYgUvkU7
+         jOdT1ejKW/JYYUlhZAqCY1U84E06irRO5MQ/HnOGLo9kkqbUbHaP7GQvzwrmyHB4rtC3
+         fbKs/ST6WF1rc6ogj4lrmZ8p0Cs1dfWBv8gGpVAYWl0SFKRy/6ccDVYi60dw4DvylYLF
+         g59Q==
+X-Gm-Message-State: AOAM530iD5PhC+i8Qeb1Rk/rM0a5RktvaMht6bxqHYyWoOsl0n1Mhkzz
+        oiqiOGVW/bvJt3etI+Xpcfo=
+X-Google-Smtp-Source: ABdhPJynOsl/9mtFMTtbS3krXbaXRE8MqaHaMr7m3r88/8eYsCbneJHJzz+ir6n8gXwRYSd8V2dkSg==
+X-Received: by 2002:a17:902:ee53:b029:da:4c68:2795 with SMTP id 19-20020a170902ee53b02900da4c682795mr4119802plo.7.1606938505659;
+        Wed, 02 Dec 2020 11:48:25 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id i10sm547720pfk.206.2020.12.02.11.48.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 02 Dec 2020 11:48:25 -0800 (PST)
+Date:   Wed, 2 Dec 2020 11:45:31 -0800
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] ASoC: fsl-asoc-card: Add support for si476x codec
+Message-ID: <20201202194530.GA1498@Asurada-Nvidia>
+References: <1606708668-28786-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20201126031834.40807-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606708668-28786-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/20 8:18 PM, Yu Kuai wrote:
-> blk_throtl_update_limit_valid() will search for descendants to see if
-> 'LIMIT_LOW' of bps/iops and READ/WRITE is nonzero. However, they're always
-> zero if CONFIG_BLK_DEV_THROTTLING_LOW is not set, furthermore, a lot of
-> time will be wasted to iterate descendants.
+On Mon, Nov 30, 2020 at 11:57:47AM +0800, Shengjiu Wang wrote:
+> The si476x codec is used for FM radio function on i.MX6
+> auto board, it only supports recording function.
 > 
-> Thus do nothing in blk_throtl_update_limit_valid() in such situation.
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Applied, thanks.
-
--- 
-Jens Axboe
-
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
