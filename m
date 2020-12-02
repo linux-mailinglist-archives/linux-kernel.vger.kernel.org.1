@@ -2,140 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0D82CC98F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88F22CC993
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387528AbgLBWXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 17:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387477AbgLBWXU (ORCPT
+        id S1728364AbgLBWYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:24:41 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35810 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726805AbgLBWYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:23:20 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568D1C061A04
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:22:34 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id f190so654527wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:22:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LRXtGtQx0V38uULFsTPi/qjTFIKnBLoKo8MU7obqjyU=;
-        b=E06twwEMJ8K66tEsIJl1OyT2WbCBwVJRU0XbGlu1c/FOLMDuP3vUOkSGVgbowqMHOz
-         N/4X85VeDi4KiWUjgpqymbeiDaMUoRzV48Eq9g6JsAEv+32InsBV2CRj2jV/MoiKqSQ2
-         J1k9Dl5ovU1lCA1ZFl+VcjBnSq6njDdIMb5a3t3k73L1v9Dt0xnPktb/3UaBxVIQiN2x
-         iJpCeEnGOrC2rH0JJj4JE8/PRR6tH6bf9c3CWqBJLgYWi+w7saeego0T/SEHOyP9uFyw
-         MDD9uWQYGrfCSc0VYP4Qh7tw2WDIeKsVigxQLadb+LtQp+nuwqzhrtooTwahCxvqUTRU
-         ahMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LRXtGtQx0V38uULFsTPi/qjTFIKnBLoKo8MU7obqjyU=;
-        b=KWp2/iF1Kz6iHKJO1WmxB1gQQQ7/Pbbj1gVAcyjTZe1n/pMtPA2lDTVBmLYYE1S7J8
-         KFpKI7mS/MyTBn1pUjSv8AuX8AqguqtcgpbBiZa4cT7l97KoFix6i6SnRIGBOu8PXWHc
-         g/80VwUq97I5XT4wVo/4WR8fAJPkxWMmeIlxVnbvBnYffB9tjulOTswdi7FC1vVIcjg/
-         ll795x7fToFDCxsrB/0G7HcUEXV+HUHhR81a9E6A8w70CUh1Ie3M3Sl5UrtzZZlkyEUw
-         oa0/06RSBwJ/1+rASxsbZSrE5tpi8sfrc7D2JFUSzGBUfT9Hyf5CBC+g/KqRNV9dEvUn
-         /DyA==
-X-Gm-Message-State: AOAM531VCP9XGoGIwms+rhZ5eNaerT6BiLWMIALO5gGxWZ2+1Ob8+3+c
-        0f49UvxiJ/rNqxdw1LeLpIHqtA==
-X-Google-Smtp-Source: ABdhPJxEXBGOGhTXe1z3x/CCv0w83dkticJSyr3zsDqEThZZ1//azfGM8xR1Q0czXAwVi3/x/sHB+A==
-X-Received: by 2002:a7b:ca47:: with SMTP id m7mr104009wml.33.1606947752953;
-        Wed, 02 Dec 2020 14:22:32 -0800 (PST)
-Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:1c7d:2d7a:9709:b9a2])
-        by smtp.gmail.com with ESMTPSA id s8sm63672wrn.33.2020.12.02.14.22.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 14:22:32 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org
-Cc:     Peter Kaestle <peter@piie.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org (open list:ACER ASPIRE ONE
-        TEMPERATURE AND FAN DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] platform/x86/drivers/acerhdf: Check the interval value when it is set
-Date:   Wed,  2 Dec 2020 23:22:12 +0100
-Message-Id: <20201202222212.2313242-2-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201202222212.2313242-1-daniel.lezcano@linaro.org>
-References: <20201202222212.2313242-1-daniel.lezcano@linaro.org>
+        Wed, 2 Dec 2020 17:24:40 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2M7H6L005628;
+        Wed, 2 Dec 2020 17:23:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vvJP7L7GD/TH5OrH89ahdxx8wfusIaynLjZJNNPzjc8=;
+ b=tJAomaqkFRyaqJmGmZMV2+v+YTTB3jQOzOu4z8/N5Yh+fg5W3j41JrCYWE4d/BG7d5fE
+ T5DjSkD0FrLGVcwK2LadqHnkhU6u3AX1rnr/Lnr6qPkHWG5Sycy5pfSg9YfJ0qFNes07
+ RFZlvU2lYeF+sXeD1XVt903SIFSA/X91YNjUil+l2Fyvy0p9+JpzO0QdqwrJ2tD/hHCp
+ /0EfAM4INfLfIWlUiNM+GUCW9oHfC5jB0eU/7l4+APDIal5AiBiOXRvgRO6796pEMMHA
+ fvyCJ2HzTxRL/X6Kx3wLw+hyqqtFS/dbaPI9TSXXhMyfO/S2rdsEwv7LTDNXbiyPfRgq dQ== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 356jdqa1km-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 17:23:52 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2MIbC4012953;
+        Wed, 2 Dec 2020 22:23:52 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma03dal.us.ibm.com with ESMTP id 353e69mpqr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 22:23:52 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2MNpGv65339864
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 22:23:51 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8563D112064;
+        Wed,  2 Dec 2020 22:23:51 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4A803112062;
+        Wed,  2 Dec 2020 22:23:50 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 22:23:49 +0000 (GMT)
+Subject: Re: [PATCH v2 04/17] ibmvfc: add alloc/dealloc routines for SCSI
+ Sub-CRQ Channels
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-5-tyreld@linux.ibm.com>
+ <f0b848d3-0a39-dd95-e4a2-b303c12ed0dd@linux.vnet.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <6f9dc1e8-76fe-0251-3e43-edf7da93eb82@linux.ibm.com>
+Date:   Wed, 2 Dec 2020 14:23:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f0b848d3-0a39-dd95-e4a2-b303c12ed0dd@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_13:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2 bulkscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ clxscore=1015 malwarescore=0 mlxscore=0 impostorscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the code checks the interval value when the temperature is
-read which is bad for two reasons:
+On 12/2/20 7:25 AM, Brian King wrote:
+> On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+>> +static int ibmvfc_register_scsi_channel(struct ibmvfc_host *vhost,
+>> +				  int index)
+>> +{
+>> +	struct device *dev = vhost->dev;
+>> +	struct vio_dev *vdev = to_vio_dev(dev);
+>> +	struct ibmvfc_sub_queue *scrq = &vhost->scsi_scrqs.scrqs[index];
+>> +	int rc = -ENOMEM;
+>> +
+>> +	ENTER;
+>> +
+>> +	scrq->msgs = (struct ibmvfc_sub_crq *)get_zeroed_page(GFP_KERNEL);
+>> +	if (!scrq->msgs)
+>> +		return rc;
+>> +
+>> +	scrq->size = PAGE_SIZE / sizeof(*scrq->msgs);
+>> +	scrq->msg_token = dma_map_single(dev, scrq->msgs, PAGE_SIZE,
+>> +					 DMA_BIDIRECTIONAL);
+>> +
+>> +	if (dma_mapping_error(dev, scrq->msg_token))
+>> +		goto dma_map_failed;
+>> +
+>> +	rc = h_reg_sub_crq(vdev->unit_address, scrq->msg_token, PAGE_SIZE,
+>> +			   &scrq->cookie, &scrq->hw_irq);
+>> +
+>> +	if (rc) {
+>> +		dev_warn(dev, "Error registering sub-crq: %d\n", rc);
+>> +		dev_warn(dev, "Firmware may not support MQ\n");
+> 
+> Will this now get logged everywhere this new driver runs if the firmware
+> does not support sub CRQs? Is there something better that could be done
+> here to only log this for a true error and not just because a new driver
+> is running with an older firmware release?
 
- - checking and setting the interval in the get_temp callback is
-   inaccurate and awful, that can be done when changing the value.
+I suppose we can guess if the rc is H_PARAMETER that sub-crqs are probably not
+supported and do a dev_warn_once() for the no MQ support message. H_PARAMETER
+could mean other things though so we still need to log the failure in my opinion.
 
- - Changing the thermal zone structure internals is an abuse of the
-   exported structure, moreover no lock is taken here.
+-Tyrel
 
-The goal of this patch is to solve the first item by using the 'set'
-function called when changing the interval. The check is done there
-and removed from the get_temp function. If the thermal zone was not
-initialized yet, the interval is not updated in this case as that will
-happen in the init function when registering the thermal zone device.
-
-I don't have any hardware to test the changes.
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/platform/x86/acerhdf.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/platform/x86/acerhdf.c b/drivers/platform/x86/acerhdf.c
-index 19fc8ff2225c..084005841d56 100644
---- a/drivers/platform/x86/acerhdf.c
-+++ b/drivers/platform/x86/acerhdf.c
-@@ -334,7 +334,10 @@ static void acerhdf_check_param(struct thermal_zone_device *thermal)
- 		}
- 		if (verbose)
- 			pr_notice("interval changed to: %d\n", interval);
--		thermal->polling_delay = interval*1000;
-+
-+		if (thermal)
-+			thermal->polling_delay = interval*1000;
-+
- 		prev_interval = interval;
- 	}
- }
-@@ -349,8 +352,6 @@ static int acerhdf_get_ec_temp(struct thermal_zone_device *thermal, int *t)
- {
- 	int temp, err = 0;
- 
--	acerhdf_check_param(thermal);
--
- 	err = acerhdf_get_temp(&temp);
- 	if (err)
- 		return err;
-@@ -823,8 +824,19 @@ MODULE_ALIAS("dmi:*:*Acer*:pnExtensa*5420*:");
- module_init(acerhdf_init);
- module_exit(acerhdf_exit);
- 
-+int interval_set_uint(const char *val, const struct kernel_param *kp)
-+{
-+	ret = param_set_uint(val, kp);
-+	if (ret)
-+		return ret;
-+
-+	acerhdf_check_param(thz_dev);
-+
-+	return 0;
-+}
-+
- static const struct kernel_param_ops interval_ops = {
--	.set = param_set_uint,
-+	.set = interval_set_uint,
- 	.get = param_get_uint,
- };
- 
--- 
-2.25.1
+> 
+>> +		goto reg_failed;
+>> +	}
+>> +
+>> +	scrq->hwq_id = index;
+>> +	scrq->vhost = vhost;
+>> +
+>> +	LEAVE;
+>> +	return 0;
+>> +
+>> +reg_failed:
+>> +	dma_unmap_single(dev, scrq->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+>> +dma_map_failed:
+>> +	free_page((unsigned long)scrq->msgs);
+>> +	LEAVE;
+>> +	return rc;
+>> +}
+>> +
+> 
+> 
+> 
 
