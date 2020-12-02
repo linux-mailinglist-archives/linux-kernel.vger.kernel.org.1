@@ -2,169 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7A62CC649
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD7D2CC63D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389735AbgLBTK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:10:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389706AbgLBTK2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:10:28 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D3FC061A04
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:09:05 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id z29so2930801ybi.23
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:09:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=d9ODsGy71UxS1scEvGTz4NCozRGDYn/BsJFydzZu0V0=;
-        b=dm5FdKlSIuxUi4iLenNKFWMujqwqankdTmdkODUJuiHoLawGQEiQYIlCsPA196Zy5s
-         rJ03obABD3u8Q3lABqlHBI08yEr3pL8Hwdv1f+NnXPVmFwdZn0VdbbpsxCKacL58cOsf
-         2K9qn3WjkeW/Vxhz6Z3LMNidcFYPXIh/q8TfQ8aBjP4Cgb+LmgppN4kyjCuo0Gp6ZZ9u
-         3fuLgKBkULfSfv42PD05FLsXvhPJGUSSex8Sk2qXGJgjhARC6jrne1bB09543UR464Kr
-         Y1nO8tsaSexhUXeMwgV8AVn9NlC53AwAtGqznDMKxTRRTr0hEuzel7fqh67UJxVi+Aw4
-         D8vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=d9ODsGy71UxS1scEvGTz4NCozRGDYn/BsJFydzZu0V0=;
-        b=T5lFMfpaAiqqHMqUi3SvwtDrrSzwzOL/1JT2nce1683SaveH/sql6HrmzLkggyN9uK
-         PKXiyaORcuenUGlkWbJeFufCGc/BKHKdjSfD56cIz6pflRK5/qV/d9+K+dVPjKHUfMEF
-         dYvRvt++e9udL78tFIeQcVqBDcXSxM5JbKDvGkCI58WsEmNohozOxL6H9k8N3y3kP/VG
-         q7cqRhYcSO12scQsFWwcd+lYvKrEFkXZqB3TRjMFLQ6PyupzT6U/uI+HxPEzDzqd5FTv
-         lM2EOSuCE1/A4SrAeQ9ZIapmril+Dp3llP/pN/F3y0ThP2i6BerJzIN1FOkxIix7yPtn
-         /uOQ==
-X-Gm-Message-State: AOAM531UslhiZ4P6ruXHMX2oFcFxneYskbWgkQIKlXteoER32qnPKRsy
-        EIQxaaQcGFqj3GinPtnjf+KgQcmEzs8LXg==
-X-Google-Smtp-Source: ABdhPJwmsBhISZbu0nVZxEfBTeDWYTD4iqql23LY1CiDCmUOfcfU0O8RYn2iUSu71C7BW1OylAiUFpjYE9ItZA==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a25:d251:: with SMTP id
- j78mr5578186ybg.193.1606936145223; Wed, 02 Dec 2020 11:09:05 -0800 (PST)
-Date:   Wed,  2 Dec 2020 11:08:23 -0800
-In-Reply-To: <20201202190824.1309398-1-dlatypov@google.com>
-Message-Id: <20201202190824.1309398-3-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20201202190824.1309398-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH v2 3/4] kunit: tool: use `with open()` in unit test
-From:   Daniel Latypov <dlatypov@google.com>
-To:     davidgow@google.com
-Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2388008AbgLBTJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:09:05 -0500
+Received: from mga17.intel.com ([192.55.52.151]:61679 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387903AbgLBTJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 14:09:04 -0500
+IronPort-SDR: dM0aalbomC9lGso5ntFj/HhyJzzmC65AYAdW5PXY9aMARhkwnsxcjmF8jFAaJcUKpNFUtLglyb
+ mNLwDl5NE+Zw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152896828"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="152896828"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 11:08:24 -0800
+IronPort-SDR: Pn7PR1q2vyNNtb1xcBo84dZUOJATQ6hphYnIzz9KfetaopaxKskSh0JNaV0ixDi6BBEu5awPIP
+ 1MHWwYSK21Rw==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="539809156"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 11:08:23 -0800
+Date:   Wed, 2 Dec 2020 11:08:23 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Eric Sandeen <sandeen@sandeen.net>
+Cc:     fstests@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Eric Sandeen <sandeen@redhat.com>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [RFC PATCH] common/rc: Fix _check_s_dax() for kernel 5.10
+Message-ID: <20201202190823.GV1161629@iweiny-DESK2.sc.intel.com>
+References: <20201202160701.1458658-1-ira.weiny@intel.com>
+ <b131a2a6-f02f-9a91-4de1-01a77b76577a@sandeen.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b131a2a6-f02f-9a91-4de1-01a77b76577a@sandeen.net>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The use of manual open() and .close() calls seems to be an attempt to
-keep the contents in scope.
-But Python doesn't restrict variables like that, so we can introduce new
-variables inside of a `with` and use them outside.
+On Wed, Dec 02, 2020 at 11:10:50AM -0600, Eric Sandeen wrote:
+> On 12/2/20 10:07 AM, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > There is a conflict with the user visible statx bits 'mount root' and
+> > 'dax'.  The kernel is shifting the dax bit.[1]
+> > 
+> > Adjust _check_s_dax() to use the new bit.
+> > 
+> > [1] https://lore.kernel.org/lkml/3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com/
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > ---
+> > 
+> > I'm not seeing an easy way to check for kernel version.  It seems like that is
+> > the right thing to do.  So do I need to do that by hand or is that something
+> > xfstests does not worry about?
+> 
+> xfstests gets used on distro kernels too, so relying on kernel version isn't
+> really something we can use to make determinations like this, unfortunately.
+> 
+> Probably the best we can do is hope that the change makes it to stable and
+> distro kernels quickly, and the old flag fades into obscurity.
+> 
+> Maybe worth a comment in the test mentioning the SNAFU, though, for anyone
+> investigating it when it fails on older kernels?
 
-Do so to make the code more Pythonic.
+Good idea.
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit_tool_test.py | 33 +++++++++++---------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+> 
+> > Ira
+> > 
+> > ---
+> >  common/rc | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/common/rc b/common/rc
+> > index b5a504e0dcb4..3d45e233954f 100644
+> > --- a/common/rc
+> > +++ b/common/rc
+> > @@ -3222,9 +3222,9 @@ _check_s_dax()
+> >  
+> >  	local attributes=$($XFS_IO_PROG -c 'statx -r' $target | awk '/stat.attributes / { print $3 }')
+> >  	if [ $exp_s_dax -eq 0 ]; then
+> > -		(( attributes & 0x2000 )) && echo "$target has unexpected S_DAX flag"
+> > +		(( attributes & 0x00200000 )) && echo "$target has unexpected S_DAX flag"
+> >  	else
+> > -		(( attributes & 0x2000 )) || echo "$target doesn't have expected S_DAX flag"
+> > +		(( attributes & 0x00200000 )) || echo "$target doesn't have expected S_DAX flag"
+> 
+> I suppose you could add a test for 0x2000 in this failure case, and echo "Is your kernel missing
+> commit xxxxxx?" as another hint.
 
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 3a74e5612cf9..cf160914bc55 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -100,15 +100,14 @@ class KUnitParserTest(unittest.TestCase):
- 	def test_output_isolated_correctly(self):
- 		log_path = get_absolute_path(
- 			'test_data/test_output_isolated_correctly.log')
--		file = open(log_path)
--		result = kunit_parser.isolate_kunit_output(file.readlines())
-+		with open(log_path) as file:
-+			result = kunit_parser.isolate_kunit_output(file.readlines())
- 		self.assertContains('TAP version 14', result)
- 		self.assertContains('	# Subtest: example', result)
- 		self.assertContains('	1..2', result)
- 		self.assertContains('	ok 1 - example_simple_test', result)
- 		self.assertContains('	ok 2 - example_mock_test', result)
- 		self.assertContains('ok 1 - example', result)
--		file.close()
- 
- 	def test_output_with_prefix_isolated_correctly(self):
- 		log_path = get_absolute_path(
-@@ -143,42 +142,39 @@ class KUnitParserTest(unittest.TestCase):
- 	def test_parse_successful_test_log(self):
- 		all_passed_log = get_absolute_path(
- 			'test_data/test_is_test_passed-all_passed.log')
--		file = open(all_passed_log)
--		result = kunit_parser.parse_run_tests(file.readlines())
-+		with open(all_passed_log) as file:
-+			result = kunit_parser.parse_run_tests(file.readlines())
- 		self.assertEqual(
- 			kunit_parser.TestStatus.SUCCESS,
- 			result.status)
--		file.close()
- 
- 	def test_parse_failed_test_log(self):
- 		failed_log = get_absolute_path(
- 			'test_data/test_is_test_passed-failure.log')
--		file = open(failed_log)
--		result = kunit_parser.parse_run_tests(file.readlines())
-+		with open(failed_log) as file:
-+			result = kunit_parser.parse_run_tests(file.readlines())
- 		self.assertEqual(
- 			kunit_parser.TestStatus.FAILURE,
- 			result.status)
--		file.close()
- 
- 	def test_no_tests(self):
- 		empty_log = get_absolute_path(
- 			'test_data/test_is_test_passed-no_tests_run.log')
--		file = open(empty_log)
--		result = kunit_parser.parse_run_tests(
--			kunit_parser.isolate_kunit_output(file.readlines()))
-+		with open(empty_log) as file:
-+			result = kunit_parser.parse_run_tests(
-+				kunit_parser.isolate_kunit_output(file.readlines()))
- 		self.assertEqual(0, len(result.suites))
- 		self.assertEqual(
- 			kunit_parser.TestStatus.NO_TESTS,
- 			result.status)
--		file.close()
- 
- 	def test_no_kunit_output(self):
- 		crash_log = get_absolute_path(
- 			'test_data/test_insufficient_memory.log')
--		file = open(crash_log)
- 		print_mock = mock.patch('builtins.print').start()
--		result = kunit_parser.parse_run_tests(
--			kunit_parser.isolate_kunit_output(file.readlines()))
-+		with open(crash_log) as file:
-+			result = kunit_parser.parse_run_tests(
-+				kunit_parser.isolate_kunit_output(file.readlines()))
- 		print_mock.assert_any_call(StrContains('no tests run!'))
- 		print_mock.stop()
- 		file.close()
-@@ -186,12 +182,11 @@ class KUnitParserTest(unittest.TestCase):
- 	def test_crashed_test(self):
- 		crashed_log = get_absolute_path(
- 			'test_data/test_is_test_passed-crash.log')
--		file = open(crashed_log)
--		result = kunit_parser.parse_run_tests(file.readlines())
-+		with open(crashed_log) as file:
-+			result = kunit_parser.parse_run_tests(file.readlines())
- 		self.assertEqual(
- 			kunit_parser.TestStatus.TEST_CRASHED,
- 			result.status)
--		file.close()
- 
- 	def test_ignores_prefix_printk_time(self):
- 		prefix_log = get_absolute_path(
--- 
-2.29.2.576.ga3fc446d84-goog
+Yea, I think that is ok since the test should not be running on any root mount
+points.
 
+V2 will come after the patch is merged.
+
+Ira
