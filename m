@@ -2,175 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BB22CBA7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6DE2CBA83
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388552AbgLBKY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:24:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:35404 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388463AbgLBKY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:24:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BF551042;
-        Wed,  2 Dec 2020 02:23:41 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E1AA63F66B;
-        Wed,  2 Dec 2020 02:23:40 -0800 (PST)
-Date:   Wed, 2 Dec 2020 10:23:39 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, daniel.lezcano@linaro.org,
-        orjan.eide@arm.com, robh@kernel.org,
-        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
-        airlied@linux.ie, daniel@ffwll.ch
-Subject: Re: [PATCH v2 2/5] thermal: devfreq_cooling: get a copy of device
- status
-Message-ID: <20201202102339.GB9486@arm.com>
-References: <20201118120358.17150-1-lukasz.luba@arm.com>
- <20201118120358.17150-3-lukasz.luba@arm.com>
+        id S1729424AbgLBKZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:25:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729393AbgLBKZf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:25:35 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744F5C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 02:24:49 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id y16so2882141ljk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:24:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FqgZBuyriKFHscfCKzWnYdcmG7dmWWESxzGWiLiHppY=;
+        b=JVWBNXyC0QeCaKMX16uuRxGVMsXFILjSBYoCPCJ+kahnp3X5gzwhziPhpWn478WqNh
+         YLgQGNkk2MfSolO4QwgTJn0INTag0vsigSNSVSB8IZIexg+BK4u2O+DOuFNsJLOFHfeU
+         SSP+/BWtvPejS8RG5ZORi83TUT9GtRs0SzIS8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FqgZBuyriKFHscfCKzWnYdcmG7dmWWESxzGWiLiHppY=;
+        b=R/aWaMjERALDtH231ATggItmaPcDWz+ZXqx0mYbhxaFWnPJOA18UgUVlLID+Updeyg
+         J6EcrCXZvhPsIAxN/DwJjXLL0GI9NmaoRQjFM3OvEi1kf1rU/HyVId2A7KXoC9iLevP4
+         UxC8qEpbzNwBakPeLYWRh3Y3BGIGgB7Y7IDWNMaUMmv5obhnyS/Tk6F1ji0B+LewMXiP
+         KrkGvjXXScJOCOLbvWeV2WqSmmwUcUVBVC+aUSCLIh/u5Qq4BpwMfMnRmBJQeffdF+xs
+         uDlUyilKPJgARe0BP7o/rIqDRV5HxrE9/QLJZ3udSIm9VB340Nn3J6+tgb+/YZtGgp9I
+         rmBw==
+X-Gm-Message-State: AOAM530kvkSOkLwMvlio9Pd2+KAQ6zcCMBkOn2Lj/xAjjGWqS33ST7Df
+        T2RShxCQhOzxjyVA2YeZIWXKMe3nMNt1hJgT
+X-Google-Smtp-Source: ABdhPJyphF0T+fjcSx/Js5sZryT96FMR/GKtwMWiK96ofEcItA+7Ul74+SqzFYjfGgcMdBwQhLkTWw==
+X-Received: by 2002:a2e:964b:: with SMTP id z11mr880136ljh.236.1606904687449;
+        Wed, 02 Dec 2020 02:24:47 -0800 (PST)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id w11sm339815lfl.33.2020.12.02.02.24.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 02:24:47 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id d8so3730942lfa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:24:46 -0800 (PST)
+X-Received: by 2002:ac2:5e8d:: with SMTP id b13mr905826lfq.246.1606904686164;
+ Wed, 02 Dec 2020 02:24:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118120358.17150-3-lukasz.luba@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201202053424.3286774-1-acourbot@chromium.org>
+In-Reply-To: <20201202053424.3286774-1-acourbot@chromium.org>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Wed, 2 Dec 2020 19:24:33 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MXt4uL+VgxQs6ynf5LKae657QXmrjw6XYnL0vg_zuuDsw@mail.gmail.com>
+Message-ID: <CAPBb6MXt4uL+VgxQs6ynf5LKae657QXmrjw6XYnL0vg_zuuDsw@mail.gmail.com>
+Subject: Re: [PATCH] media: venus: preserve DRC state across seeks
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 18 Nov 2020 at 12:03:55 (+0000), Lukasz Luba wrote:
-> Devfreq cooling needs to now the correct status of the device in order
-> to operate. Do not rely on Devfreq last_status which might be a stale data
-> and get more up-to-date values of the load.
-> 
-> Devfreq framework can change the device status in the background. To
-> mitigate this situation make a copy of the status structure and use it
-> for internal calculations.
-> 
-> In addition this patch adds normalization function, which also makes sure
-> that whatever data comes from the device, it is in a sane range.
-> 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+On Wed, Dec 2, 2020 at 2:34 PM Alexandre Courbot <acourbot@chromium.org> wrote:
+>
+> DRC events can happen virtually at anytime, including when we are
+> starting a seek. Should this happen, we must make sure to return to the
+> DRC state, otherwise the firmware will expect buffers of the new
+> resolution whereas userspace will still work with the old one.
+>
+> Returning to the DRC state upon resume for seeking makes sure that the
+> client will get the DRC event and will reallocate the buffers to fit the
+> firmware's expectations.
+
+Oops, please ignore as this seems to depend on another patch... I will
+repost once I can figure out the correct dependency chain, unless
+Stanimir can find a better way to handle DRC during seek and flush.
+
+>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 > ---
->  drivers/thermal/devfreq_cooling.c | 52 +++++++++++++++++++++++++------
->  1 file changed, 43 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-> index 659c0143c9f0..925523694462 100644
-> --- a/drivers/thermal/devfreq_cooling.c
-> +++ b/drivers/thermal/devfreq_cooling.c
-> @@ -227,20 +227,46 @@ static inline unsigned long get_total_power(struct devfreq_cooling_device *dfc,
->  							       voltage);
->  }
->  
-> +static void _normalize_load(struct devfreq_dev_status *status)
-> +{
-> +	/* Make some space if needed */
-> +	if (status->busy_time > 0xffff) {
-> +		status->busy_time >>= 10;
-> +		status->total_time >>= 10;
-> +	}
-> +
-> +	if (status->busy_time > status->total_time)
-> +		status->busy_time = status->total_time;
-> +
-> +	status->busy_time *= 100;
-> +	status->busy_time /= status->total_time ? : 1;
-> +
-> +	/* Avoid division by 0 */
-> +	status->busy_time = status->busy_time ? : 1;
-> +	status->total_time = 100;
-> +}
->  
->  static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cdev,
->  					       u32 *power)
->  {
->  	struct devfreq_cooling_device *dfc = cdev->devdata;
->  	struct devfreq *df = dfc->devfreq;
-> -	struct devfreq_dev_status *status = &df->last_status;
-> +	struct devfreq_dev_status status;
->  	unsigned long state;
-> -	unsigned long freq = status->current_frequency;
-> +	unsigned long freq;
->  	unsigned long voltage;
->  	u32 dyn_power = 0;
->  	u32 static_power = 0;
->  	int res;
->  
-> +	mutex_lock(&df->lock);
-> +	res = df->profile->get_dev_status(df->dev.parent, &status);
-> +	mutex_unlock(&df->lock);
-> +	if (res)
-> +		return res;
-> +
-> +	freq = status.current_frequency;
-> +
->  	state = freq_get_state(dfc, freq);
->  	if (state == THERMAL_CSTATE_INVALID) {
->  		res = -EAGAIN;
-> @@ -268,16 +294,18 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
->  	} else {
->  		dyn_power = dfc->power_table[state];
->  
-> +		_normalize_load(&status);
-> +
->  		/* Scale dynamic power for utilization */
-> -		dyn_power *= status->busy_time;
-> -		dyn_power /= status->total_time;
-> +		dyn_power *= status.busy_time;
-> +		dyn_power /= status.total_time;
->  		/* Get static power */
->  		static_power = get_static_power(dfc, freq);
->  
->  		*power = dyn_power + static_power;
->  	}
->  
-> -	trace_thermal_power_devfreq_get_power(cdev, status, freq, *power);
-> +	trace_thermal_power_devfreq_get_power(cdev, &status, freq, *power);
->  
->  	return 0;
->  fail:
-> @@ -309,14 +337,20 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
->  {
->  	struct devfreq_cooling_device *dfc = cdev->devdata;
->  	struct devfreq *df = dfc->devfreq;
-> -	struct devfreq_dev_status *status = &df->last_status;
-> -	unsigned long freq = status->current_frequency;
-> +	struct devfreq_dev_status status;
->  	unsigned long busy_time;
-> +	unsigned long freq;
->  	s32 dyn_power;
->  	u32 static_power;
->  	s32 est_power;
->  	int i;
->  
-> +	mutex_lock(&df->lock);
-> +	status = df->last_status;
-> +	mutex_unlock(&df->lock);
-> +
-> +	freq = status.current_frequency;
-> +
->  	if (dfc->power_ops->get_real_power) {
->  		/* Scale for resource utilization */
->  		est_power = power * dfc->res_util;
-> @@ -328,8 +362,8 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
->  		dyn_power = dyn_power > 0 ? dyn_power : 0;
->  
->  		/* Scale dynamic power for utilization */
-> -		busy_time = status->busy_time ?: 1;
-> -		est_power = (dyn_power * status->total_time) / busy_time;
-> +		busy_time = status.busy_time ?: 1;
-> +		est_power = (dyn_power * status.total_time) / busy_time;
->  	}
->  
->  	/*
-> -- 
-> 2.17.1
-> 
-
-Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-
-Thanks,
-Ionela.
+>  drivers/media/platform/qcom/venus/vdec.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 8488411204c3..e3d0df7fd765 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -972,7 +972,10 @@ static int vdec_start_output(struct venus_inst *inst)
+>
+>         if (inst->codec_state == VENUS_DEC_STATE_SEEK) {
+>                 ret = venus_helper_process_initial_out_bufs(inst);
+> -               inst->codec_state = VENUS_DEC_STATE_DECODING;
+> +               if (inst->next_buf_last)
+> +                       inst->codec_state = VENUS_DEC_STATE_DRC;
+> +               else
+> +                       inst->codec_state = VENUS_DEC_STATE_DECODING;
+>                 goto done;
+>         }
+>
+> @@ -1077,8 +1080,10 @@ static int vdec_stop_capture(struct venus_inst *inst)
+>                 ret = hfi_session_flush(inst, HFI_FLUSH_ALL, true);
+>                 fallthrough;
+>         case VENUS_DEC_STATE_DRAIN:
+> -               vdec_cancel_dst_buffers(inst);
+>                 inst->codec_state = VENUS_DEC_STATE_STOPPED;
+> +               fallthrough;
+> +       case VENUS_DEC_STATE_SEEK:
+> +               vdec_cancel_dst_buffers(inst);
+>                 break;
+>         case VENUS_DEC_STATE_DRC:
+>                 WARN_ON(1);
+> @@ -1102,6 +1107,7 @@ static int vdec_stop_output(struct venus_inst *inst)
+>         case VENUS_DEC_STATE_DECODING:
+>         case VENUS_DEC_STATE_DRAIN:
+>         case VENUS_DEC_STATE_STOPPED:
+> +       case VENUS_DEC_STATE_DRC:
+>                 ret = hfi_session_flush(inst, HFI_FLUSH_ALL, true);
+>                 inst->codec_state = VENUS_DEC_STATE_SEEK;
+>                 break;
+> @@ -1371,6 +1377,7 @@ static void vdec_event_change(struct venus_inst *inst,
+>                         dev_dbg(dev, VDBGH "flush output error %d\n", ret);
+>         }
+>
+> +       inst->next_buf_last = true;
+>         inst->reconfig = true;
+>         v4l2_event_queue_fh(&inst->fh, &ev);
+>         wake_up(&inst->reconf_wait);
+> --
+> 2.29.2.454.gaff20da3a2-goog
+>
