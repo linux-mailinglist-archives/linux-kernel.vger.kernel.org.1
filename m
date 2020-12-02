@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921F42CBEC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FE22CBEE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388668AbgLBNzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:55:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
+        id S1727057AbgLBOAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgLBNzI (ORCPT
+        with ESMTP id S1726071AbgLBOAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:55:08 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59A5C0613CF;
-        Wed,  2 Dec 2020 05:54:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BPF0p8LwieotIqQ8Se3apv9Pv1/DdLdEpA/PB50rgWE=; b=eZh2zF8eJPaRth8HUFz0TGpx8F
-        52xnoX1GPcWv2V550kvu6crFKf4puciDYEltqg33ZKqsG0KioGTAf/tgro8L9LKpHWrsHsTFpJtd5
-        AaMLzwy2gn6WGJcAXK2wNHxarxbzENK9QRPqW2SG4vsvOL8hYKKMwGDWMPKpbykmLL5Q1ssaj7rtU
-        NYQuWjGiZRfPZ9CvefK+9e6X4QbK+ohuXNGJZMVNHCh1i4GGbM/7oBn8L15EXB7tTatqMPNOa4mDm
-        XcenqB8C5CSejKZ7tChuYSM+tWCqonRBkLZ9Wj2JjX5rV4UZwmzGekVtjzxFvZ77U/JJG03t5wd3p
-        KERx78jg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkSaM-0001t5-RK; Wed, 02 Dec 2020 13:54:23 +0000
-Date:   Wed, 2 Dec 2020 13:54:22 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
-        willy@infradead.org, david@redhat.com, iamjoonsoo.kim@lge.com,
-        vbabka@suse.cz, surenb@google.com, pullip.cho@samsung.com,
-        joaodias@google.com, hridya@google.com, sumit.semwal@linaro.org,
-        john.stultz@linaro.org, Brian.Starkey@arm.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        robh@kernel.org, christian.koenig@amd.com,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v2 4/4] dma-buf: heaps: add chunk heap to dmabuf heaps
-Message-ID: <20201202135422.GB5902@infradead.org>
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-5-minchan@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201175144.3996569-5-minchan@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Wed, 2 Dec 2020 09:00:49 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE113C0613CF;
+        Wed,  2 Dec 2020 06:00:08 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id p5so1597654iln.8;
+        Wed, 02 Dec 2020 06:00:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=pfHsg9e+X34bhemFp+mjjumsO+YWi6aCD6ygR2azqNE=;
+        b=CH17/dsR0AOfrENBkIF7C+kVbcOiFobmt9ZjHdNiJKVQITe2VudIcgjXVlWgqn1vGE
+         yCtAwBL7nwynGcb7Sc6Fa/6JgxfCrY2rZWHuFTUm+uM0jh8W1oiEk3BXm3kszJvsPSuT
+         1CvwXYEVcsdnS8BIB+qNm07mnyJe2jl0wrE01qNeJjAOsIwN0Yaj2gStOPmyJUZRWxI8
+         jUCrRAgRDqFzPolUspl9OdYqhGXdSD6agBvpLRZE1cUJdqMc9TQK5gzyFUzL7xcVjQvX
+         T2tS8zfF48SARhqUOX8uv9HlN9sCFkf4tj+Tcn2yLTgDAVd8se07YYWG0m52xHLFatwY
+         HWSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pfHsg9e+X34bhemFp+mjjumsO+YWi6aCD6ygR2azqNE=;
+        b=azum0sLxpjhkhKuw1wWv9Z/Vk7Sd5/C148Sxy7o/z5DAdmeUCW5atLnNhjlFYKHnjL
+         hHbyiPosHUN+9DCeAnWGwMvdEK1MhdzOae6jBgnMUu/qlT7Qs5b4hxb/ZtXP1XUVTVao
+         uUXK4sHhT+f4BkKPZ5oZwoCWRyiucL2RNXsNF6UWIKCTTCNPA2F5XtGH3kn6MM6A4TVk
+         +LA0tAyaE9D2e7hU/BylSzLQv3rgnW3CO+8Gu1wju6oAtffJKa+3yN0B0KAcUwKglqUr
+         lEXAcY+h3/t8XyaQwAwkB+jyT9vwpBFBlVTxu0G5HLRb5pyTb6qgQpgJgCEU0d3P3jZ4
+         Y9Bw==
+X-Gm-Message-State: AOAM530cxBe06XDaUBQh3vJ0DM7cMHcmDk1qcH7ofNxEBzvq5cVupIxB
+        H8NqB1fKzW846UTWV0TvbDd7pvpwtQw=
+X-Google-Smtp-Source: ABdhPJyGikIswzOlSp9HcsiUcCcatf6bbswTc/TEswQDEvN56gnzEJUAzr9j6dw3KJ6mkZEfOGAYdw==
+X-Received: by 2002:a92:98db:: with SMTP id a88mr2474401ill.106.1606917607502;
+        Wed, 02 Dec 2020 06:00:07 -0800 (PST)
+Received: from aford-OptiPlex-7050.logicpd.com ([174.46.170.158])
+        by smtp.gmail.com with ESMTPSA id y3sm1189750ilc.2.2020.12.02.06.00.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 06:00:06 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mm-beacon: Fix WiFi Pinmuxing
+Date:   Wed,  2 Dec 2020 07:59:50 -0600
+Message-Id: <20201202135950.22164-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 09:51:44AM -0800, Minchan Kim wrote:
-> From: Hyesoo Yu <hyesoo.yu@samsung.com>
-> 
-> This patch supports chunk heap that allocates the buffers that
-> arranged into a list a fixed size chunks taken from CMA.
-> 
-> The chunk heap doesn't use heap-helper although it can remove
-> duplicated code since heap-helper is under deprecated process.[1]
-> 
-> NOTE: This patch only adds the default CMA heap to allocate chunk
-> pages. We will add another CMA memory regions to the dmabuf heaps
-> interface with a later patch (which requires a dt binding)
+The WiFi chip is capable of communication at SDR104 speeds, and
+the pinmux was configured to support this, but the sdhc1 controller
+didn't properly reference the pinmux.  Enable 100Mhz and 200MHz pinmux
+as was originally intended.
 
-This new heap seems to largely duplicate the exsting cma_heap.c
-file.  Why can't you reuse the code and allow creating different
-heaps with different chunk sizes or max numbers of segments?
+Fixes: 593816fa2f35 ("arm64: dts: imx: Add Beacon i.MX8m-Mini development kit")
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-> +config DMABUF_HEAPS_CHUNK_ORDER
-> +	int "Chunk page order for dmabuf chunk heap"
-> +	default 4
-> +	depends on DMABUF_HEAPS_CHUNK
-> +	help
-> +	  Set page order of fixed chunk size to allocate from CMA.
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+index 6de86a4f0ec4..90fd15e95798 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+@@ -217,8 +217,10 @@
+ &usdhc1 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+ 	pinctrl-0 = <&pinctrl_usdhc1>;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
+ 	bus-width = <4>;
+ 	non-removable;
+ 	cap-power-off-card;
+-- 
+2.17.1
 
-Using a config option for this is just broken.  It needs to be runtime
-or at very least boot time / DT controllable.
-
-> + * ION Memory Allocator chunk heap exporter
-
-This comment seems wrong.
