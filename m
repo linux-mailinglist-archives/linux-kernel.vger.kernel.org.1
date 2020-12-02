@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39AA2CC20A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3FD2CC20E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730706AbgLBQTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:19:22 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:49598 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730691AbgLBQTU (ORCPT
+        id S1730724AbgLBQTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730711AbgLBQTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:19:20 -0500
+        Wed, 2 Dec 2020 11:19:35 -0500
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC892C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:18:55 -0800 (PST)
+Received: by mail-vk1-xa43.google.com with SMTP id s135so521157vkh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:18:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1606925960; x=1638461960;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=UA/GV23Ara3zyMQ0u3USDM/10j9wKCrlivLcATUot3U=;
-  b=EBygBne9uzSyp56C6UVsS1+Y7JQkMP83SyEnfaqu5mO9a0gJsgVnhJ1s
-   yZN+iIxZUtKZX1NK/OjvDY/7SwWmJvr2WF2b9UmXKVG2e07l2bOC0tTyZ
-   GVtuuT91LXYlykmDhq3X5Gkog7P90nnQcf/ipS+EsvzqhcxU/UPr2jb84
-   8=;
-X-IronPort-AV: E=Sophos;i="5.78,387,1599523200"; 
-   d="scan'208";a="67213731"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 02 Dec 2020 16:18:33 +0000
-Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id AB120C1B3B;
-        Wed,  2 Dec 2020 16:18:29 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.252) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 2 Dec 2020 16:18:24 +0000
-Subject: Re: [PATCH net-next v1 0/3] vsock: Add flag field in the vsock
- address
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20201201152505.19445-1-andraprs@amazon.com>
- <20201202133754.2ek2wgutkujkvxaf@steredhat>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <d5c55d2e-5dc3-96f2-2333-37e778c761ae@amazon.com>
-Date:   Wed, 2 Dec 2020 18:18:15 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K37eg33TEYHBPIc9hdERySXaT7ddLk31VnYDOJlDBsg=;
+        b=Qh43GnRo7YfF7QXgCietAKT8+vkZPBqYJF1+My0HDqIs9rZIo8YSN5dPnKbhJt35/O
+         Bk92brV0mfpexLTOm4P1D2e/jzzHq0aEycI6SbiBHQ4W9TdRZzRMWRILKTnT50xTSA2i
+         iPs17ztWvUY6GyDcrTIIhpbuNNzPUr9ojKwfs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K37eg33TEYHBPIc9hdERySXaT7ddLk31VnYDOJlDBsg=;
+        b=AUAH3Drcz+z0oGJZViNl4wZdSF6fJmS5vvSkrYPE4QshDGjtwN2XNFgbAtbftaFBbK
+         6b25se3CVW2U1iSpJz9LgL2s99/jvYgWu9sPP+HLMPQhlq3D2RaDFFJn6OmjEwE3BhnE
+         9Cg9AToyaD3V/nAyKRDLZE53Asq0SGk/Pbm/AT3zWR2UXjR/2z9USgiODTaPxC6g47VC
+         KXrRMx1Txh7io5nBSVLoRVDAgpEeiZy5k3oyjIQ3vodvDiflhtmKRwdCCv/lzWOYzqbs
+         6AUendDdNwIdwOAz2bxWHE+u4EgpE/j2it45IZH79e+wYeQJg+ppVRADXDcSWmB5exJ0
+         t42g==
+X-Gm-Message-State: AOAM5305DRQ8Mxutmq19fIYV40GF9pSCRmTBslUs7Ux2YEkA+PM+e0sO
+        XkOctIz8ugvElBsBs4wa1VXBZ1h2UW5qP/Kyns3ykA==
+X-Google-Smtp-Source: ABdhPJyTxGZ9z1k1i/Ix1wYvY05DOpOo2yBinjoa08BbT+ejSo+v8144fC3Nldom8dhjeZdLqBssK9ANee91fT78mH4=
+X-Received: by 2002:a1f:e7c2:: with SMTP id e185mr2204229vkh.23.1606925934724;
+ Wed, 02 Dec 2020 08:18:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201202133754.2ek2wgutkujkvxaf@steredhat>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.252]
-X-ClientProxiedBy: EX13D04UWB004.ant.amazon.com (10.43.161.103) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com> <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 2 Dec 2020 17:18:43 +0100
+Message-ID: <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
+Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Eric Sandeen <sandeen@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwMi8xMi8yMDIwIDE1OjM3LCBTdGVmYW5vIEdhcnphcmVsbGEgd3JvdGU6Cj4KPiBIaSBB
-bmRyYSwKPgo+IE9uIFR1ZSwgRGVjIDAxLCAyMDIwIGF0IDA1OjI1OjAyUE0gKzAyMDAsIEFuZHJh
-IFBhcmFzY2hpdiB3cm90ZToKPj4gdnNvY2sgZW5hYmxlcyBjb21tdW5pY2F0aW9uIGJldHdlZW4g
-dmlydHVhbCBtYWNoaW5lcyBhbmQgdGhlIGhvc3QgCj4+IHRoZXkgYXJlCj4+IHJ1bm5pbmcgb24u
-IE5lc3RlZCBWTXMgY2FuIGJlIHNldHVwIHRvIHVzZSB2c29jayBjaGFubmVscywgYXMgdGhlIG11
-bHRpCj4+IHRyYW5zcG9ydCBzdXBwb3J0IGhhcyBiZWVuIGF2YWlsYWJsZSBpbiB0aGUgbWFpbmxp
-bmUgc2luY2UgdGhlIHY1LjUgCj4+IExpbnV4IGtlcm5lbAo+PiBoYXMgYmVlbiByZWxlYXNlZC4K
-Pj4KPj4gSW1wbGljaXRseSwgaWYgbm8gaG9zdC0+Z3Vlc3QgdnNvY2sgdHJhbnNwb3J0IGlzIGxv
-YWRlZCwgYWxsIHRoZSAKPj4gdnNvY2sgcGFja2V0cwo+PiBhcmUgZm9yd2FyZGVkIHRvIHRoZSBo
-b3N0LiBUaGlzIGJlaGF2aW9yIGNhbiBiZSB1c2VkIHRvIHNldHVwIAo+PiBjb21tdW5pY2F0aW9u
-Cj4+IGNoYW5uZWxzIGJldHdlZW4gc2libGluZyBWTXMgdGhhdCBhcmUgcnVubmluZyBvbiB0aGUg
-c2FtZSBob3N0LiBPbmUgCj4+IGV4YW1wbGUgY2FuCj4+IGJlIHRoZSB2c29jayBjaGFubmVscyB0
-aGF0IGNhbiBiZSBlc3RhYmxpc2hlZCB3aXRoaW4gQVdTIE5pdHJvIEVuY2xhdmVzCj4+IChzZWUg
-RG9jdW1lbnRhdGlvbi92aXJ0L25lX292ZXJ2aWV3LnJzdCkuCj4+Cj4+IFRvIGJlIGFibGUgdG8g
-ZXhwbGljaXRseSBtYXJrIGEgY29ubmVjdGlvbiBhcyBiZWluZyB1c2VkIGZvciBhIAo+PiBjZXJ0
-YWluIHVzZSBjYXNlLAo+PiBhZGQgYSBmbGFnIGZpZWxkIGluIHRoZSB2c29jayBhZGRyZXNzIGRh
-dGEgc3RydWN0dXJlLiBUaGUgCj4+ICJzdm1fcmVzZXJ2ZWQxIiBmaWVsZAo+PiBoYXMgYmVlbiBy
-ZXB1cnBvc2VkIHRvIGJlIHRoZSBmbGFnIGZpZWxkLiBUaGUgdmFsdWUgb2YgdGhlIGZsYWcgd2ls
-bCAKPj4gdGhlbiBiZQo+PiB0YWtlbiBpbnRvIGNvbnNpZGVyYXRpb24gd2hlbiB0aGUgdnNvY2sg
-dHJhbnNwb3J0IGlzIGFzc2lnbmVkLgo+Pgo+PiBUaGlzIHdheSBjYW4gZGlzdGluZ3Vpc2ggYmV0
-d2VlbiBuZXN0ZWQgVk1zIC8gbG9jYWwgY29tbXVuaWNhdGlvbiBhbmQgCj4+IHNpYmxpbmcKPj4g
-Vk1zIHVzZSBjYXNlcy4gQW5kIGNhbiBhbHNvIHNldHVwIG9uZSBvciBtb3JlIHR5cGVzIG9mIGNv
-bW11bmljYXRpb24gCj4+IGF0IHRoZSBzYW1lCj4+IHRpbWUuCj4+Cj4KPiBBbm90aGVyIHRoaW5n
-IHdvcnRoIG1lbnRpb25pbmcgaXMgdGhhdCBmb3Igbm93IGl0IGlzIG5vdCBzdXBwb3J0ZWQgaW4K
-PiB2aG9zdC12c29jaywgc2luY2Ugd2UgYXJlIGRpc2NhcmRpbmcgZXZlcnkgcGFja2V0IG5vdCBh
-ZGRyZXNzZWQgdG8gdGhlCj4gaG9zdC4KClJpZ2h0LCB0aGFua3MgZm9yIHRoZSBmb2xsb3ctdXAu
-Cgo+Cj4gV2hhdCB3ZSBzaG91bGQgZG8gd291bGQgYmU6Cj4gLSBhZGQgYSBuZXcgSU9DVEwgdG8g
-dmhvc3QtdnNvY2sgdG8gZW5hYmxlIHNpYmxpbmcgY29tbXVuaWNhdGlvbiwgYnkKPiDCoCBkZWZh
-dWx0IEknZCBsaWtlIHRvIGxlYXZlIGl0IGRpc2FibGVkCj4KPiAtIGFsbG93IHNpYmxpbmcgZm9y
-d2FyZGluZyBvbmx5IGlmIGJvdGggZ3Vlc3RzIGhhdmUgc2libGluZwo+IMKgIGNvbW11bmljYXRp
-b24gZW5hYmxlZCBhbmQgd2Ugc2hvdWxkIGltcGxlbWVudCBzb21lIGtpbmQgb2YgZmlsdGVyaW5n
-Cj4gwqAgb3IgbmV0d29yayBuYW1lc3BhY2Ugc3VwcG9ydCB0byBhbGxvdyB0aGUgY29tbXVuaWNh
-dGlvbiBvbmx5IGJldHdlZW4gYQo+IMKgIHN1YnNldCBvZiBWTXMKPgo+Cj4gRG8geW91IGhhdmUg
-cGxhbnMgdG8gd29yayBvbiBpdD8KCk5vcGUsIG5vdCB5ZXQuIEJ1dCBJIGNhbiB0YWtlIHNvbWUg
-dGltZSBpbiB0aGUgc2Vjb25kIHBhcnQgb2YgRGVjZW1iZXIgLyAKYmVnaW5uaW5nIG9mIEphbnVh
-cnkgZm9yIHRoaXMuIEFuZCB3ZSBjYW4gY2F0Y2ggdXAgaW4gdGhlIG1lYW50aW1lIGlmIAp0aGVy
-ZSBpcyBzb21ldGhpbmcgYmxvY2tpbmcgb3IgbW9yZSBjbGFyaWZpY2F0aW9ucyBhcmUgbmVlZGVk
-IHRvIG1ha2UgaXQgCndvcmsuCgpUaGFua3MsCkFuZHJhCgo+Cj4KPiBPdGhlcndpc2UgSSBwdXQg
-aXQgaW4gbXkgdG8tZG8gbGlzdCBhbmQgaG9wZSBJIGhhdmUgdGltZSB0byBkbyBpdCAobWF5YmUK
-PiBuZXh0IG1vbnRoKS4KPgo+IFRoYW5rcywKPiBTdGVmYW5vCj4KCgoKCkFtYXpvbiBEZXZlbG9w
-bWVudCBDZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNmLiBM
-YXphciBTdHJlZXQsIFVCQzUsIGZsb29yIDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUsIFJv
-bWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIvMjYy
-MS8yMDA1Lgo=
+On Wed, Dec 2, 2020 at 5:03 PM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Tue, Dec 01, 2020 at 05:21:40PM -0600, Eric Sandeen wrote:
+> > [*] Note: This needs to be merged as soon as possible as it's introducing an incompatible UAPI change...
+> >
+> > STATX_ATTR_MOUNT_ROOT and STATX_ATTR_DAX got merged with the same value,
+> > so one of them needs fixing. Move STATX_ATTR_DAX.
+> >
+> > While we're in here, clarify the value-matching scheme for some of the
+> > attributes, and explain why the value for DAX does not match.
+> >
+> > Fixes: 80340fe3605c ("statx: add mount_root")
+> > Fixes: 712b2698e4c0 ("fs/stat: Define DAX statx attribute")
+> > Reported-by: David Howells <dhowells@redhat.com>
+> > Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+> > Reviewed-by: David Howells <dhowells@redhat.com>
+>
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
+Stable cc also?
+
+Cc: <stable@vger.kernel.org> # 5.8
+
+Thanks,
+Miklos
