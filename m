@@ -2,122 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F352CC3F8
+	by mail.lfdr.de (Postfix) with ESMTP id B03FC2CC3F9
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730789AbgLBRjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:39:01 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:40475 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgLBRjB (ORCPT
+        id S1730812AbgLBRjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:39:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgLBRjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:39:01 -0500
-Received: by mail-ed1-f67.google.com with SMTP id d18so4850000edt.7;
-        Wed, 02 Dec 2020 09:38:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8nI+6gnsqA0IBuGLzSn2crkcyrZrwcKzwQx02XE2RqY=;
-        b=WH4I4OwtEMU4Qs22y1pKfiqIgiqSnh2JxrrMydK+snC0yRKd7NDS5Sh5luhThYTrU3
-         JVmThH4E7Ass20jnYYh5lPlnlcki/Qhom930nBh1qblO0nIrAjoYHBfZK1pvxhvaHzsL
-         TwsW1CWl1NjespQUjmdhyBHOACcynVe9etTUCuvX5y/9MZRiVW4NqnSbfxD2VBHGZg+V
-         0cuFkUXgvV/WJzfIkW5H2uOv0Nu5fAEabQtrFtMQ4AwfKxw140FJn5S+peuJOSNcbf8b
-         lXdg+2q9ylyfDD9KNV6dArySd6XnjNNVMNQL0tTbAfQKn+l00rAAAMvWWseO95Rbu/Fb
-         nZcA==
-X-Gm-Message-State: AOAM533x/7BAvr8hOxy7s4Gtd97mEf1MSKhRU7aeH7lYZ6McX8LrTrhV
-        7vLDufpIX3k353hIYt/DQwM=
-X-Google-Smtp-Source: ABdhPJxqi50UI8aLSgEmGsBtJDWUOzEayK9dobVLiJzYbWqPzNM3fIkbreMmbb/vpGeMA6cPWJugpg==
-X-Received: by 2002:a50:e68a:: with SMTP id z10mr1089522edm.66.1606930692913;
-        Wed, 02 Dec 2020 09:38:12 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id 91sm505977edy.45.2020.12.02.09.38.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 09:38:11 -0800 (PST)
-Date:   Wed, 2 Dec 2020 19:38:09 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH 05/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
- EDIMM2.2 Starter Kit
-Message-ID: <20201202173809.GE3490@kozik-lap>
-References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-6-jagan@amarulasolutions.com>
+        Wed, 2 Dec 2020 12:39:15 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03937C0613D4;
+        Wed,  2 Dec 2020 09:38:35 -0800 (PST)
+Received: from zn.tnic (p200300ec2f161b00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1b00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 92A581EC0445;
+        Wed,  2 Dec 2020 18:38:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606930713;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TOj/CbJQozLlgEpZDfi9IAgrGve3UT6kEWc9dUDAvrs=;
+        b=pVYkiLvCjPRAyGBJicax/qGhEzgb0oC6n55ApDLBwvajD/q9T7jPZIM7lxFXhtnLPSA7l5
+        UoL3KY/i11gK4jBdjEHR79lr3Kac8qpPkdmvOPyVInmwfyLgb0EPezIW/oZsrX8bXYIA6v
+        jltxwnp51mCmufWXj1Eb7mQJJWVwTus=
+Date:   Wed, 2 Dec 2020 18:38:29 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/sgx: Initialize "ret" in sgx_ioc_enclave_add_pages()
+Message-ID: <20201202173829.GG2951@zn.tnic>
+References: <20201202162200.88941-1-jarkko@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201202121241.109952-6-jagan@amarulasolutions.com>
+In-Reply-To: <20201202162200.88941-1-jarkko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 05:42:36PM +0530, Jagan Teki wrote:
-> i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
-> 
-> EDIMM2.2 Starter Kit is an EDIMM 2.2 Form Factor Capacitive
-> Evaluation Board from Engicam.
-> 
-> i.Core MX8M Mini needs to mount on top of this Evaluation board for
-> creating complete i.Core MX8M Mini EDIMM2.2 Starter Kit.
-> 
-> Add support for it.
-> 
-> Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |  1 +
->  .../imx8mm-engicam-icore-mx8mm-edimm2.2.dts   | 21 +++++++++++++++++++
->  2 files changed, 22 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-edimm2.2.dts
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 6f0777ee6cd6..4369d783dade 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -30,6 +30,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
->  dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
->  
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
-> +dtb-$(CONFIG_ARCH_MXC) += imx8mm-engicam-icore-mx8mm-edimm2.2.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dtb
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-edimm2.2.dts b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-edimm2.2.dts
-> new file mode 100644
-> index 000000000000..a8afc0998fcd
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-icore-mx8mm-edimm2.2.dts
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2019 NXP
-> + * Copyright (c) 2019 Engicam srl
-> + * Copyright (c) 2020 Amarula Solutions(India)
-> + */
-> +
-> +/dts-v1/;
-> +#include "imx8mm.dtsi"
+On Wed, Dec 02, 2020 at 06:22:00PM +0200, Jarkko Sakkinen wrote:
+> Initialize "ret" to zero as otherwise a zero length address range will
+> leave it uninitialized.
 
-imx8mm should be included in the SoM, not here. It's really wrong that
-you override some nodes in imx8mm-engicam-icore-mx8mm.dtsi which do not
-exist there (not included).
+That length is:
 
-> +#include "imx8mm-engicam-edimm2.2.dtsi"
-> +#include "imx8mm-engicam-icore-mx8mm.dtsi"
-> +
-> +/ {
-> +	model = "Engicam i.Core MX8M Mini EDIMM2.2 Starter Kit";
-> +	compatible = "engicam,icore-mx8mm-edimm2.2", "engicam,icore-mx8mm",
+ * @length:     length of the data (multiple of the page size)
 
-This won't validate against your own bindings. Please fix either the DTS
-or the bindings. Then run dtbs_check.
+I think we wanna fail this even earlier when it wants to add data of
+length 0 because that sounds nonsensical to me. Or is there some use
+case for zero-length data?
 
-Best regards,
-Krzysztof
+Btw, pls CC lkml on patch submissions.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
