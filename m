@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8612CB269
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246C22CB26D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgLBBjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 20:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
+        id S1728012AbgLBBkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 20:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727660AbgLBBjJ (ORCPT
+        with ESMTP id S1727660AbgLBBkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:39:09 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2080EC0613D4;
-        Tue,  1 Dec 2020 17:38:29 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id s8so125713yba.13;
-        Tue, 01 Dec 2020 17:38:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k0tPoBlU4NKyR6gcj3vy9nGS+9uhhqNqZLS5gO66TK0=;
-        b=W8z9s7y0Ua26sqELm+h84HFNCk1fsBqzDiglnalhsMtYstzFt55bJ17IxbHXTX7+Kq
-         B9q9NLbVB8WRAd9f4Go49EwJBs6YUyHtjWhZUXrwODxAUOUqAMr1MEmI5GeSgyxKqiVZ
-         d1uqSQJIVifxysC3KEKM9MavXJOK0y2xFuJ1TLkWGDhaBervLJZATW3vhcNcV/idtCYO
-         TEf4v7GKcP25LVw8K3eO4Z9nKkc1K+5m1rsSZMmBNKfjPlADDwe1bxmur9yvATVQjE1Q
-         tjhn49s7nC/obLXny/wfi5uYC8jh1ZFp/FcoL/bxMd7wVDzDQCpBtu8HJIC6PDjWvEk0
-         QQ2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k0tPoBlU4NKyR6gcj3vy9nGS+9uhhqNqZLS5gO66TK0=;
-        b=GrhxSptPhvlmQ96XWGl953v0d+dZxbVohT/918QMArQvYmimpAmCn+5Hdf50sihZdP
-         gIQRRB1Bn/hyW3IRxdNBfiyDTI2ZGz9ghbl4OYQ9r+eQ3fMompReq83EJMUIC9r6vUm5
-         puz4TB5nppGw0mHn4Nq9GqpNNtDO9BSNsJHXo3HneRfKCR8b1wPUODQXEKHcy/yZuXBd
-         //m7O0ne2H23+VACBpixdGLghhwA/gAuWnmuzfYv45DqfU/0WPNpEvzaJCTFeIjOcHqu
-         CLJZ34qNwRZb/D51qK9Sc+9Zc2HocHAh1J/GE+o5mPcUTcdMw8FJmPQSLmgfInT2/qUF
-         3t7A==
-X-Gm-Message-State: AOAM533fgCKJsALvKihtaXLKEynFhosDLJct7qjTWzdm3/EhzrbZ/Je1
-        C5RNGOQs7g7JUZkx6dtCn4JkLO86k0fYe73C//M=
-X-Google-Smtp-Source: ABdhPJzeFyn2AWeUIV6sKJUOxmAyHPcJ6Fed2FalTuZWQdaMu2TmwUpAeG1hc+OQuNGV+0ySqbJ9QvjUlAfqBNY7IcI=
-X-Received: by 2002:a25:585:: with SMTP id 127mr240609ybf.425.1606873108487;
- Tue, 01 Dec 2020 17:38:28 -0800 (PST)
+        Tue, 1 Dec 2020 20:40:23 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0742EC0613CF;
+        Tue,  1 Dec 2020 17:39:43 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cm1qJ0lBrz9sVx;
+        Wed,  2 Dec 2020 12:39:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606873181;
+        bh=CgMKVXTfncw4rcc7e6P6TYV2cbXW2lIpkNw+DDQDDwE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GRbPXN+RroJKCFeEV3DMniFjRlCE+Or0APIasUmQTXRYWUSUKoVdZwK8+tsMjOAxR
+         2KHOvdwDVynilhcq+hY3LDVWf/kAg7zz6q4uQ69UwUqOAPlslc3W2A7LBCmIkxU2uf
+         We5uE1OY7wyinEKF8l5Ni9hNkSSHg9lgYTiJOpLO38Ux6qs1jMOuZCcKShPjvRirO5
+         xT3xbmcFyKHEPYS5m/5ROR8B0sM4MVnqRTFOco3BHvOf2jolkjzMHD+vytIYZbW5gc
+         ajOhSodbs4/eXaLVjdgAbBWDHYaPWjiqLrk4nmzmK9iJxhjU8E1hRzu40LjHeQ60+6
+         66zP2QB88xR+w==
+Date:   Wed, 2 Dec 2020 12:39:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jassi Brar <jaswinder.singh@linaro.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the mailbox tree
+Message-ID: <20201202123939.4a9e7549@canb.auug.org.au>
 MIME-Version: 1.0
-References: <HKAPR02MB429180E153A7547C20F17915E0F40@HKAPR02MB4291.apcprd02.prod.outlook.com>
-In-Reply-To: <HKAPR02MB429180E153A7547C20F17915E0F40@HKAPR02MB4291.apcprd02.prod.outlook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 17:38:17 -0800
-Message-ID: <CAEf4BzY1Q7XZVMheN-e78HCO=M74frFM1d6h56-ChTNrDhNMUw@mail.gmail.com>
-Subject: Re: [PATCH] tools/bpf: Return the appropriate error value
-To:     =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
-Cc:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/7.K6NmFNZ7lbpzpGjwpI8ze";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 7:06 PM =E5=BD=AD=E6=B5=A9(Richard) <richard.peng@o=
-ppo.com> wrote:
->
-> Compile times error:
-> "Error: failed to load BTF from /mnt/linux/vmlinux: No such file or direc=
-tory".
-> This file "/mnt/linux/vmlinux" actually exists, but only because CONFIG_D=
-EBUG_INFO_BTF
-> is not configured with this error.
->
-> Signed-off-by: Peng Hao <richard.peng@oppo.com>
-> ---
->  tools/lib/bpf/btf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 231b07203e3d..228f508fbd04 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -865,7 +865,7 @@ struct btf *btf__parse_elf(const char *path, struct b=
-tf_ext **btf_ext)
->         err =3D 0;
->
->         if (!btf_data) {
-> -               err =3D -ENOENT;
-> +               err =3D -EPROTO;
+--Sig_/7.K6NmFNZ7lbpzpGjwpI8ze
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-ENOENT as related to "no .BTF section found"... EPROTO would make
-sense as well, but I don't think we need to really change anything.
-"Protocol error" isn't very meaningful either...
+Hi all,
 
+In commit
 
->                 goto done;
->         }
->         btf =3D btf__new(btf_data->d_buf, btf_data->d_size);
-> --
-> 2.18.4
+  983df5f2699f ("samples/ftrace: Mark my_tramp[12]? global")
+
+Fixes tag
+
+  Fixes: 9d907f1ae80b8 ("ftrace/samples: Add a sample module that implement=
+s modify_ftrace_direct()")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+
+Maybe you meant
+
+Fixes: 9d907f1ae80b ("samples/ftrace: Fix asm function ELF annotations")
+
+or
+
+Fixes: ae0cc3b7e7f5 ("ftrace/samples: Add a sample module that implements m=
+odify_ftrace_direct()")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7.K6NmFNZ7lbpzpGjwpI8ze
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/G8FsACgkQAVBC80lX
+0GzmNgf9GSqMPPpR8GrNwdoU3GDvfTleFVsx+Jxn1C5VrAQ2mgQPGQFfRA2qLzFa
+/xlVChcZmZOyqoDkQMMpUW4UqqGm18CHUTDrbt35xp4Gl/Benqyhm9NZJ/601AEp
+DCeVec/L4MvpsujyA50IS8BbAg0fBhGeIlpjpao4HM28oUS0NtcW10g8xRq+imvr
+rUIUpuNuVnM8lRnD/wVCBr6hag7Ujmnrif+GVTPE1HYdrNkptffSC1APHh/MJiYS
++/enjwHNgzlsHDbfTeavHeHs7Fv7tMeNBjzNkM6FVeWKXmqi0I8+1jDje2SXpsMR
+6vKdNxCaQoi+zrVZb3yU3AhQu98mag==
+=uWfR
+-----END PGP SIGNATURE-----
+
+--Sig_/7.K6NmFNZ7lbpzpGjwpI8ze--
