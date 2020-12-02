@@ -2,206 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A1D2CB884
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492B52CB88B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388070AbgLBJS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:18:57 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2326 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387658AbgLBJS5 (ORCPT
+        id S2388162AbgLBJTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:19:14 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:42330 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388132AbgLBJTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:18:57 -0500
-Received: from dggeme706-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CmCzX0D7fz13KpP;
-        Wed,  2 Dec 2020 17:17:28 +0800 (CST)
-Received: from [10.174.60.228] (10.174.60.228) by
- dggeme706-chm.china.huawei.com (10.1.199.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 2 Dec 2020 17:18:12 +0800
-Subject: Re: [PATCH] PCI: Add pci reset quirk for Huawei Intelligent NIC
- virtual function
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Yinshi (Stone)" <yin.yinshi@huawei.com>,
-        "Wangxiaoyun (Cloud)" <cloud.wangxiaoyun@huawei.com>,
-        zengweiliang zengweiliang <zengweiliang.zengweiliang@huawei.com>,
-        "Chenlizhong (IT Chip)" <chenlizhong@huawei.com>
-References: <20201128061825.2629-1-chiqijun@huawei.com>
- <20201128232919.GA929748@bjorn-Precision-5520>
- <20201130084622.0b71d526@w520.home>
-From:   Chiqijun <chiqijun@huawei.com>
-Message-ID: <9232bf61-8906-0848-8078-a2c6b6a78864@huawei.com>
-Date:   Wed, 2 Dec 2020 17:18:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Wed, 2 Dec 2020 04:19:12 -0500
+X-UUID: 4be2a8abb52d42e0ac6dff359f83e27b-20201202
+X-UUID: 4be2a8abb52d42e0ac6dff359f83e27b-20201202
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2054784308; Wed, 02 Dec 2020 17:18:28 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 2 Dec 2020 17:18:19 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 2 Dec 2020 17:18:19 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v3] scsi: ufs: Remove pre-defined initial voltage values of device powers
+Date:   Wed, 2 Dec 2020 17:18:19 +0800
+Message-ID: <20201202091819.22363-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20201130084622.0b71d526@w520.home>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.60.228]
-X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
- dggeme706-chm.china.huawei.com (10.1.199.102)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+UFS specficication allows different VCC configurations for UFS devices,
+for example,
+	(1). 2.70V - 3.60V (Activated by default in UFS core driver)
+	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
+                          device tree)
+	(3). 2.40V - 2.70V (Supported since UFS 3.x)
 
+With the introduction of UFS 3.x products, an issue is happening that
+UFS driver will use wrong "min_uV-max_uV" values to configure the
+voltage of VCC regulator on UFU 3.x products with the configuration (3)
+used.
 
-On 2020/11/30 23:46, Alex Williamson wrote:
-> On Sat, 28 Nov 2020 17:29:19 -0600
-> Bjorn Helgaas <helgaas@kernel.org> wrote:
-> 
->> [+cc Alex]
->>
->> On Sat, Nov 28, 2020 at 02:18:25PM +0800, Chiqijun wrote:
->>> When multiple VFs do FLR at the same time, the firmware is
->>> processed serially, resulting in some VF FLRs being delayed more
->>> than 100ms, when the virtual machine restarts and the device
->>> driver is loaded, the firmware is doing the corresponding VF
->>> FLR, causing the driver to fail to load.
->>>
->>> To solve this problem, add host and firmware status synchronization
->>> during FLR.
->>
->> Is this because the Huawei Intelligent NIC isn't following the spec,
->> or is it because Linux isn't correctly waiting for the FLR to
->> complete?
-> 
-> Seems like a spec compliance issue, I don't recall anything in the spec
-> about coordinating FLR between VFs.
+To solve this issue, we simply remove pre-defined initial VCC voltage
+values in UFS core driver with below reasons,
 
-The spec stipulates that the FLR time of a single VF does not exceed 
-100ms, but when multiple VMs are reset concurrently in Linux, there will 
-be multiple VF parallel FLRs, VF of Huawei Intelligent NIC
-  FLR will exceed 100ms in this case.
+1. UFS specifications do not define how to detect the VCC configuration
+   supported by attached device.
 
->   
->> If this is a Huawei Intelligent NIC defect, is there documentation
->> somewhere (errata) that you can reference?  Will it be fixed in future
->> designs, so we don't have to add future Device IDs to the quirk?
->>
->>> Signed-off-by: Chiqijun <chiqijun@huawei.com>
->>> ---
->>>   drivers/pci/quirks.c | 67 ++++++++++++++++++++++++++++++++++++++++++++
->>>   1 file changed, 67 insertions(+)
->>>
->>> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
->>> index f70692ac79c5..bd6236ea9064 100644
->>> --- a/drivers/pci/quirks.c
->>> +++ b/drivers/pci/quirks.c
->>> @@ -3912,6 +3912,71 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
->>>   	return 0;
->>>   }
->>>   
->>> +#define PCI_DEVICE_ID_HINIC_VF  0x375E
->>> +#define HINIC_VF_FLR_TYPE       0x1000
->>> +#define HINIC_VF_OP             0xE80
->>> +#define HINIC_OPERATION_TIMEOUT 15000
->>> +
->>> +/* Device-specific reset method for Huawei Intelligent NIC virtual functions */
->>> +static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
->>> +{
->>> +	unsigned long timeout;
->>> +	void __iomem *bar;
->>> +	u16 old_command;
->>> +	u32 val;
->>> +
->>> +	if (probe)
->>> +		return 0;
->>> +
->>> +	bar = pci_iomap(pdev, 0, 0);
->>> +	if (!bar)
->>> +		return -ENOTTY;
->>> +
->>> +	pci_read_config_word(pdev, PCI_COMMAND, &old_command);
->>> +
->>> +	/*
->>> +	 * FLR cap bit bit30, FLR ACK bit: bit18, to avoid big-endian conversion
->>> +	 * the big-endian bit6, bit10 is directly operated here
->>> +	 */
->>> +	val = readl(bar + HINIC_VF_FLR_TYPE);
->>> +	if (!(val & (1UL << 6))) {
->>> +		pci_iounmap(pdev, bar);
->>> +		return -ENOTTY;
->>> +	}
-> 
-> 
-> I don't know exactly what this is testing, but it seems like a
-> feature/capability test that can fail, why is it not done as part of
-> the probe?  Can we define bit 6 with a macro?  Same for bit 10 in the
-> VF op register below.
+2. Device tree already supports standard regulator properties.
 
-The firmware of Huawei Intelligent NIC does not support this feature in 
-the old version. here is the reading ability to determine whether the 
-firmware supports it.
-In the next patch, I will add a comment here and replace bit 6 and bit 
-10 with macro definitions.
+Therefore VCC voltage shall be defined correctly in device tree, and
+shall not changed by UFS driver. What UFS driver needs to do is simply
+enable or disable the VCC regulator only.
 
-> 
->>> +
->>> +	val = readl(bar + HINIC_VF_OP);
->>> +	val = val | (1UL << 10);
->>> +	writel(val, bar + HINIC_VF_OP);
->>> +
->>> +	/* Perform the actual device function reset */
->>> +	pcie_flr(pdev);
->>> +
->>> +	pci_write_config_word(pdev, PCI_COMMAND,
->>> +			      old_command | PCI_COMMAND_MEMORY);
->>> +
->>> +	/* Waiting for device reset complete */
->>> +	timeout = jiffies + msecs_to_jiffies(HINIC_OPERATION_TIMEOUT);
-> 
-> Yikes, 15s timeout!
+Similar change is applied to VCCQ and VCCQ2 as well.
 
-Huawei Intelligent NIC supports a maximum of 496 VFs, so the total 
-timeout period is set to 15s, which will not reach the timeout time 
-under normal circumstances.
+Note that we keep struct ufs_vreg unchanged. This allows vendors to
+configure proper min_uV and max_uV of any regulators to make
+regulator_set_voltage() works during regulator toggling flow in the
+future. Without specific vendor configurations, min_uV and max_uV will
+be NULL by default and UFS core driver will enable or disable the
+regulator only without adjusting its voltage.
 
-> 
->>> +	do {
->>> +		val = readl(bar + HINIC_VF_OP);
->>> +		if (!(val & (1UL << 10)))
->>> +			goto reset_complete;
->>> +		msleep(20);
->>> +	} while (time_before(jiffies, timeout));
->>> +
->>> +	val = readl(bar + HINIC_VF_OP);
->>> +	if (!(val & (1UL << 10)))
->>> +		goto reset_complete;
->>> +
->>> +	pci_warn(pdev, "Reset dev timeout, flr ack reg: %x\n",
->>> +		 be32_to_cpu(val));
->>> +
->>> +reset_complete:
->>> +	pci_write_config_word(pdev, PCI_COMMAND, old_command);
->>> +	pci_iounmap(pdev, bar);
->>> +
->>> +	return 0;
->>> +}
->>> +
->>>   static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
->>>   	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82599_SFP_VF,
->>>   		 reset_intel_82599_sfp_virtfn },
->>> @@ -3923,6 +3988,8 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
->>>   	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
->>>   	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
->>>   		reset_chelsio_generic_dev },
->>> +	{ PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_HINIC_VF,
->>> +		reset_hinic_vf_dev },
->>>   	{ 0 }
->>>   };
->>>   
->>> -- 
->>> 2.17.1
->>>    
->>
-> 
-> .
-> 
+Acked-by: Avri Altman <avri.altman@wdc.com>
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+---
+ drivers/scsi/ufs/ufshcd-pltfrm.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+index 0619cfbfbdbb..1a69949a4ea1 100644
+--- a/drivers/scsi/ufs/ufshcd-pltfrm.c
++++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+@@ -134,25 +134,6 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+ 		dev_info(dev, "%s: unable to find %s\n", __func__, prop_name);
+ 		vreg->max_uA = 0;
+ 	}
+-
+-	if (!strcmp(name, "vcc")) {
+-		if (of_property_read_bool(np, "vcc-supply-1p8")) {
+-			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
+-			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
+-		} else {
+-			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+-			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+-		}
+-	} else if (!strcmp(name, "vccq")) {
+-		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
+-		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
+-	} else if (!strcmp(name, "vccq2")) {
+-		vreg->min_uV = UFS_VREG_VCCQ2_MIN_UV;
+-		vreg->max_uV = UFS_VREG_VCCQ2_MAX_UV;
+-	}
+-
+-	goto out;
+-
+ out:
+ 	if (!ret)
+ 		*out_vreg = vreg;
+-- 
+2.18.0
+
