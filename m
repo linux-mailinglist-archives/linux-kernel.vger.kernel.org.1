@@ -2,136 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA192CC16D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC48E2CC170
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730542AbgLBP5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:57:16 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63462 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726178AbgLBP5Q (ORCPT
+        id S1728338AbgLBP5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:57:42 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:37101 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725979AbgLBP5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:57:16 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2Fl0ml193613;
-        Wed, 2 Dec 2020 10:56:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=fIq6N6+4QBCiz2UKO/SQtbQHbwq6LD6ldQZR4ZK3QTI=;
- b=aavXsClQxhArBCvfFzXz/xw+WEd9m8mXLqqc5igYp3SCP77oM6HRvU6rT7Mk6a1pEelT
- XSwzynBIzD5d2EaO/8NVg+4jFYgtzeAqDYm4dKs0S503ZIbQP3aaUV8FfN5nm8Iyhqdk
- AKQ1ChHbpU1BNvzYMn2WdQiTujhl1Z3Ku1zrbihlK4HBt0+s4F6nOy3ID2PhNsV6J44L
- 8/WTg91GOO6mtvGmivpcEbOaPPuIxlQOuZh/6q0BOIOc/MG7lyawNDiZEh9FX1Qr24nE
- 1S97NugYN830a46+659tbatNg7SgeKmgFwXgHwL3LDESRESy+Tfoyz6gOyzoUgDJJl+v vw== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3568cwceuy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 10:56:29 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FXScf011719;
-        Wed, 2 Dec 2020 15:56:28 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma04wdc.us.ibm.com with ESMTP id 354ysujjwx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 15:56:28 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2FuSNI7340768
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 15:56:28 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0973BAE05C;
-        Wed,  2 Dec 2020 15:56:28 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 35E8AAE05F;
-        Wed,  2 Dec 2020 15:56:27 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 15:56:27 +0000 (GMT)
-Subject: Re: [PATCH v2 06/17] ibmvfc: add handlers to drain and complete
- Sub-CRQ responses
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
- <20201202005329.4538-7-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <8a3c6a0b-ebf5-581a-e3e9-748c09373d92@linux.vnet.ibm.com>
-Date:   Wed, 2 Dec 2020 09:56:26 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 10:57:42 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1C4B458033F;
+        Wed,  2 Dec 2020 10:56:56 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 02 Dec 2020 10:56:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=voFpRetlbBwCZg41ULNXnGM0fG4
+        XnIsMUrQNMwOslPo=; b=NwWbuoPEJcB2DbUf4340sNGSVyhJY4TMAa88T6asSGn
+        QShwv6H4WeXjv+7G9yrla94szKX9qiSvroFxa3iS4wPDuUNY4yBbEbfuZT1ztA7v
+        H7hL2SiLBjHU92Cxdx0QKDV6xcnJ3ZbDXHoDjLT28zIYS4lW1T/4hp/UXKwrWqTv
+        BYgw+kpr597ttygKX9Ab7DQzg9Xwg0NcX29s7Yek2rWZCUtzTHfhjdCZfxNAKPlq
+        LM3i782MKNHS7lO1i/iHbUNMVwY9R7pmiqdKxIHzNH1k9H/QM0PQJrn0WQJAxEhp
+        bM6qMUOw9hqYmRwRiSouX1WrBCPDDJXOaHBoKki9oSw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=voFpRe
+        tlbBwCZg41ULNXnGM0fG4XnIsMUrQNMwOslPo=; b=BD5Y/qG9bYresDqqUmyxRY
+        JOd3xGakUnrn1r8jCeeJ/MSc9aRW3K+fU4X/I/ed+wc26RK/5n+5fVzEt9zGZO0b
+        U/qkpzIbvFrFV7/gE/U7Zz+J7ka4LtPi/bjcFGAo8hYg003Sx7xwaJDLkc8vCslc
+        l6IjYBSbl8e1X+G+NTlNZcGWtjNYDZUv1HqXv5+iJhFzeaZcOqaCvohsBhv1wGqa
+        WT8BGq5DuW5d2s/I2FBDvVGvDrUR9r9HGp9SQMbqxwliT5AyVwPCu2EpnMKziAzJ
+        UPKcWWcQi+sTCNoY03i+sZgONZOLpHD2Bm8/fo9nuklJ7AISBnYrYYJiW0fmX7vQ
+        ==
+X-ME-Sender: <xms:RbnHX7MBOlBqApGWTn15ZBbeOk-EHGhKdy2iL1PZeIIQuxG0SHYvgg>
+    <xme:RbnHX80Gn3sbeUKV6MGG-DCTAoX68PWz22YEx5EhnK25_gremkLCXaZI0squAMBYa
+    4RrQw6N8SBTtz9Lc_g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:RbnHX3OUX5hoOfx1J1l_TpqD6NUjm7C4kAjJtR3cqp6cuss-xPDmbg>
+    <xmx:RbnHX82Q6MFweVL6rVSP_ENHsIIYbghGGUHucvmvvJrBHucCwkrHIg>
+    <xmx:RbnHX-GVSCgen8noxQom0G-4cOma9ob5bDhCSk5PQeiT3GIWUfIVlg>
+    <xmx:SLnHX32knjC-lSJPrAJzHUkErUOP-KkqHQyat_TsfA0MR7QwGRxn2g>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1C40B240059;
+        Wed,  2 Dec 2020 10:56:53 -0500 (EST)
+Date:   Wed, 2 Dec 2020 16:56:51 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yangtao Li <frank@allwinnertech.com>,
+        linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH 5/8] clk: sunxi-ng: Add support for the Allwinner H616 CCU
+Message-ID: <20201202155651.vgbkrrrxlw55yq7x@gilmour>
+References: <20201202135409.13683-1-andre.przywara@arm.com>
+ <20201202135409.13683-6-andre.przywara@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201202005329.4538-7-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 clxscore=1015 adultscore=0 priorityscore=1501
- suspectscore=2 mlxlogscore=999 impostorscore=0 mlxscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020093
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ynofnaw5enhpd4at"
+Content-Disposition: inline
+In-Reply-To: <20201202135409.13683-6-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
-> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
-> +{
-> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
-> +	unsigned long flags;
-> +
-> +	switch (crq->valid) {
-> +	case IBMVFC_CRQ_CMD_RSP:
-> +		break;
-> +	case IBMVFC_CRQ_XPORT_EVENT:
-> +		return;
-> +	default:
-> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
-> +		return;
-> +	}
-> +
-> +	/* The only kind of payload CRQs we should get are responses to
-> +	 * things we send. Make sure this response is to something we
-> +	 * actually sent
-> +	 */
-> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
-> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
-> +			crq->ioba);
-> +		return;
-> +	}
-> +
-> +	if (unlikely(atomic_read(&evt->free))) {
-> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
-> +			crq->ioba);
-> +		return;
-> +	}
-> +
-> +	spin_lock_irqsave(vhost->host->host_lock, flags);
-> +	del_timer(&evt->timer);
-> +	list_del(&evt->queue);
-> +	ibmvfc_trc_end(evt);
 
-Another thought here... If you are going through ibmvfc_purge_requests at the same time
-as this code, you could check the free bit above, then have ibmvfc_purge_requests
-put the event on the free queue and call scsi_done, then you come down and get the host
-lock here, remove the command from the free list, and call the done function again,
-which could result in a double completion to the scsi layer.
+--ynofnaw5enhpd4at
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think you need to grab the host lock before you check the free bit to avoid this race.
+Hi
 
-> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> +	evt->done(evt);
-> +}
-> +
+On Wed, Dec 02, 2020 at 01:54:06PM +0000, Andre Przywara wrote:
+> While the clocks are fairly similar to the H6, many differ in tiny
+> details, so a separate clock driver seems indicated.
+>=20
+> Derived from the H6 clock driver, and adjusted according to the manual.
+>=20
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
+The patch itself looks ok, but there's a bunch of checkpatch warning
+you'll want to fix.
 
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+Maxime
 
+--ynofnaw5enhpd4at
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e5QwAKCRDj7w1vZxhR
+xaeDAP0VXbK3/zS+gC9m2/thTZDBih7mPelLmESXwK8URJQS7QEAl3yzyzqpWNGk
+hkZe4Ua2yIFWQsZNw996qUTnSVnFmg8=
+=02s5
+-----END PGP SIGNATURE-----
+
+--ynofnaw5enhpd4at--
