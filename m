@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC44E2CC890
+	by mail.lfdr.de (Postfix) with ESMTP id 3975B2CC88F
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387720AbgLBVEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:04:22 -0500
-Received: from vps-vb.mhejs.net ([37.28.154.113]:44310 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729373AbgLBVEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:04:22 -0500
-X-Greylist: delayed 1671 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 16:04:20 EST
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1kkYqj-0004aI-SE; Wed, 02 Dec 2020 21:35:41 +0100
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: kvm/set_memory_region_test: Fix race in move region test
-Date:   Wed,  2 Dec 2020 21:35:36 +0100
-Message-Id: <0fdddb94bb0e31b7da129a809a308d91c10c0b5e.1606941224.git.maciej.szmigiero@oracle.com>
-X-Mailer: git-send-email 2.29.1
+        id S1728975AbgLBVEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:04:05 -0500
+Received: from smtprelay0159.hostedemail.com ([216.40.44.159]:50868 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726318AbgLBVEE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 16:04:04 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id B7ABA837F24C;
+        Wed,  2 Dec 2020 21:03:23 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2902:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:4321:5007:7514:7875:7903:8957:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12555:12740:12895:12986:13069:13095:13255:13311:13357:13439:13894:14181:14659:14721:21080:21433:21451:21611:21627:21660:21740:21939:30054:30070:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: kick66_3f163df273b6
+X-Filterd-Recvd-Size: 2574
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  2 Dec 2020 21:03:22 +0000 (UTC)
+Message-ID: <51225354b2a533250dad967ef413aaa4f41dfd66.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: add warning for lines starting with a
+ '#' in commit log
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Date:   Wed, 02 Dec 2020 13:03:21 -0800
+In-Reply-To: <20201202205740.127986-1-dwaipayanray1@gmail.com>
+References: <20201202205740.127986-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+On Thu, 2020-12-03 at 02:27 +0530, Dwaipayan Ray wrote:
+> Commit log lines starting with '#' are dropped by git as comments.
+> Add a check to emit a warning for these lines.
+> 
+> Also add a --fix option to insert a space before the leading '#' in
+> such lines.
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Suggested-by: Peilin Ye <yepeilin.cs@gmail.com>
+> Tested-by: Peilin Ye <yepeilin.cs@gmail.com>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 
-The current memory region move test correctly handles the situation that
-the second (realigning) memslot move operation would temporarily trigger
-MMIO until it completes, however it does not handle the case in which the
-first (misaligning) move operation does this, too.
-This results in false test assertions in case it does so.
+Acked-by: Joe Perches <joe@perches.com>
 
-Fix this by handling temporary MMIO from the first memslot move operation
-in the test guest code, too.
+> ---
+> Changes in v3:
+> - Modify commit message for more clarity
+> - Modify warning message
+> - Modify --fix option to substitute single space instead of tab
+> 
+> Changes in v2:
+> - Modify warning message and type
+> - Style fixes
+> 
+>  scripts/checkpatch.pl | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index e8c1ed0b1fad..7940889877ba 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -2966,6 +2966,15 @@ sub process {
+>  			$commit_log_possible_stack_dump = 0;
+>  		}
+>  
+> 
+> +# Check for lines starting with a #
+> +		if ($in_commit_log && $line =~ /^#/) {
+> +			if (WARN("COMMIT_COMMENT_SYMBOL",
+> +				 "Commit log lines starting with '#' are dropped by git as comments\n" . $herecurr) &&
+> +			    $fix) {
+> +				$fixed[$fixlinenr] =~ s/^/ /;
+> +			}
+> +		}
+> +
+>  # Check for git id commit length and improperly formed commit descriptions
+>  		if ($in_commit_log && !$commit_log_possible_stack_dump &&
+>  		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
 
-Fixes: 8a0639fe9201 ("KVM: sefltests: Add explicit synchronization to move mem region test")
-Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
----
-    The race is pretty hard to trigger on the current KVM memslot code,
-    to trigger it reliably an extra delay in memslot move op is needed:
-    --- a/virt/kvm/kvm_main.c
-    +++ b/virt/kvm/kvm_main.c
-    @@ -1173,7 +1173,7 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
-    
-            return slots;
-     }
-    -
-    +#include <linux/delay.h>
-     static int kvm_set_memslot(struct kvm *kvm,
-                               const struct kvm_userspace_memory_region *mem,
-                               struct kvm_memory_slot *old,
-    @@ -1212,6 +1212,8 @@ static int kvm_set_memslot(struct kvm *kvm,
-                     *      - kvm_is_visible_gfn (mmu_check_root)
-                     */
-                    kvm_arch_flush_shadow_memslot(kvm, slot);
-    +
-    +               if (change == KVM_MR_MOVE) mdelay(100);
-            }
-    
-            r = kvm_arch_prepare_memory_region(kvm, new, mem, change);
 
- .../selftests/kvm/set_memory_region_test.c      | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index b3ece55a2da6..6f441dd9f33c 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -156,14 +156,23 @@ static void guest_code_move_memory_region(void)
- 	GUEST_SYNC(0);
- 
- 	/*
--	 * Spin until the memory region is moved to a misaligned address.  This
--	 * may or may not trigger MMIO, as the window where the memslot is
--	 * invalid is quite small.
-+	 * Spin until the memory region starts getting moved to a
-+	 * misaligned address.
-+	 * Every region move may or may not trigger MMIO, as the
-+	 * window where the memslot is invalid is usually quite small.
- 	 */
- 	val = guest_spin_on_val(0);
- 	GUEST_ASSERT_1(val == 1 || val == MMIO_VAL, val);
- 
--	/* Spin until the memory region is realigned. */
-+	/* Spin until the misaligning memory region move completes. */
-+	val = guest_spin_on_val(MMIO_VAL);
-+	GUEST_ASSERT_1(val == 1 || val == 0, val);
-+
-+	/* Spin until the memory region starts to get re-aligned. */
-+	val = guest_spin_on_val(0);
-+	GUEST_ASSERT_1(val == 1 || val == MMIO_VAL, val);
-+
-+	/* Spin until the re-aligning memory region move completes. */
- 	val = guest_spin_on_val(MMIO_VAL);
- 	GUEST_ASSERT_1(val == 1, val);
- 
