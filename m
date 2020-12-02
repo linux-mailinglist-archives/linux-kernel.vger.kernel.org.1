@@ -2,125 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047F52CC583
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 038AD2CC58C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730976AbgLBSmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:42:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
+        id S1731030AbgLBSmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:42:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729000AbgLBSmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:42:31 -0500
-Date:   Wed, 2 Dec 2020 19:41:46 +0100
+        id S1730984AbgLBSmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:42:50 -0500
+Date:   Wed, 2 Dec 2020 10:42:07 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606934510;
-        bh=IdHO9crye5Pq4ZzNzj+5lDg4CcmcdaRnon6qOKi2JCA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L0P7vrSlguRUG4ZsKsyWG7Q9ftzv3ZIvuKvbnLxv5fLrf5UbfCU3sypKPb5yPCrx4
-         e0XZ9RTbE/YOyjYAEdg8fNQRQPKoYehoe1iBVYMGhZonUsaRD51+1cbiNmb8Oq4hWE
-         lw6LWcQWjQgpgJv2mLujFmik2Zysb3FUMfs0Z1ndL4ApkuhSUHBeTqITmxl3DAgWEO
-         T4MoKjZcJYrcI+pSEJywZ4hx+qMKoO+8llLYOHMCRp4HcwppeddmIlLIp/Vdej4l8X
-         oX0sLBg/7f6DKUHOXLnsSJkgpG9L5f7YJqyd6cMjgIuSwT5OO3oitKHz8Zvhe2s5x8
-         5S9diMnUMiu8g==
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: aardvark: Update comment about disabling link
- training
-Message-ID: <20201202184146.4dz6eh6uupz7gwpa@pali>
-References: <20200924084618.12442-1-pali@kernel.org>
- <20200924151106.GA2319992@bjorn-Precision-5520>
- <20200924152232.ecoxpmxdc5iyrz76@pali>
- <20201011172149.x7crspugv2xne6ui@pali>
- <20201129231741.yfhf3y42mfnbp4xb@pali>
- <20201130105200.GA16758@e121166-lin.cambridge.arm.com>
+        s=k20201202; t=1606934529;
+        bh=TUhxmjNvPAHZb7ZkOEBJWUIjDFgH0P8rv9sT0BwbcyU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N0RwhivJOvhcmcWMr0ee+jK9gSGV0JhVGh4nRTZmardGcVBmAP7wqDKmGeqnIroYf
+         pgfEuSv2iQAY2jkzNuSXODN6SmdqIpwAPP0Za6WAYIY5SpgVBcKVcUof9DTXmUCjHV
+         S9C/MXRc/lpGbjqbDf5fqoIvl8O87V4gvYRXahShF2oqHy3mpRULqpul0aluAjuGyp
+         zov4zHYl0rt3FiR6Wj8EZCRlFjNCqrvU2QyClm4Q1Q6apmKJfD/TnInTv4rffik2IV
+         pnjrUrZllX5vJKaqxQohpI2JRFIZnSW0s0eggKB8ZocAehhMEBT9oju0Fkx6LIqdSE
+         9DOLjF7uZkt+Q==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 2/2] net: dsa: qca: ar9331: export stats64
+Message-ID: <20201202104207.697cfdbb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201202140904.24748-3-o.rempel@pengutronix.de>
+References: <20201202140904.24748-1-o.rempel@pengutronix.de>
+        <20201202140904.24748-3-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201130105200.GA16758@e121166-lin.cambridge.arm.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 30 November 2020 10:52:00 Lorenzo Pieralisi wrote:
-> On Mon, Nov 30, 2020 at 12:17:41AM +0100, Pali Rohár wrote:
-> > On Sunday 11 October 2020 19:21:49 Pali Rohár wrote:
-> > > On Thursday 24 September 2020 17:22:32 Pali Rohár wrote:
-> > > > On Thursday 24 September 2020 10:11:06 Bjorn Helgaas wrote:
-> > > > > On Thu, Sep 24, 2020 at 10:46:18AM +0200, Pali Rohár wrote:
-> > > > > > It is not HW bug or workaround for some cards but it is requirement by PCI
-> > > > > > Express spec. After fundamental reset is needed 100ms delay prior enabling
-> > > > > > link training. So update comment in code to reflect this requirement.
-> > > > > > 
-> > > > > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > > > > ---
-> > > > > >  drivers/pci/controller/pci-aardvark.c | 7 ++++++-
-> > > > > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > > > > > index 50ab6d7519ae..19b9b79226e5 100644
-> > > > > > --- a/drivers/pci/controller/pci-aardvark.c
-> > > > > > +++ b/drivers/pci/controller/pci-aardvark.c
-> > > > > > @@ -259,7 +259,12 @@ static void advk_pcie_issue_perst(struct advk_pcie *pcie)
-> > > > > >  	if (!pcie->reset_gpio)
-> > > > > >  		return;
-> > > > > >  
-> > > > > > -	/* PERST does not work for some cards when link training is enabled */
-> > > > > > +	/*
-> > > > > > +	 * As required by PCI Express spec a delay for at least 100ms after
-> > > > > > +	 * de-asserting PERST# signal is needed before link training is enabled.
-> > > > > > +	 * So ensure that link training is disabled prior de-asserting PERST#
-> > > > > > +	 * signal to fulfill that PCI Express spec requirement.
-> > > > > 
-> > > > > Can you please include the spec citation here?  In the PCIe base spec,
-> > > > > PERST# is only mentioned in PCIe r5.0, sec 6.6.1, and I don't see the
-> > > > > connection there to 100ms between de-assert of PERST# and enabling
-> > > > > link training.
-> > > > 
-> > > > Hello! I copied this "comment" from other place in pci-aardvark.c where
-> > > > that timeout 100ms is already applied. Timeout with explanation comment
-> > > > was introduced in following commit:
-> > > > 
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f4c7d053d7f7
-> > > > 
-> > > > Here are links to discussions about that patch:
-> > > > 
-> > > > https://lore.kernel.org/linux-pci/20190313213752.1246-1-repk@triplefau.lt/T/#u
-> > > > https://lore.kernel.org/linux-pci/20190522213351.21366-2-repk@triplefau.lt/T/#u
-> > > 
-> > > Bjorn or Lorenzo, do you need something else for this patch? It just
-> > > updates comment and basically clarify why PERST does not work for some
-> > > cards when link training is enabled.
-> > 
-> > PING?
+On Wed,  2 Dec 2020 15:09:04 +0100 Oleksij Rempel wrote:
+> Add stats support for the ar9331 switch.
 > 
-> Apologies, I marked it as "changes requested" following Bjorn's reply.
-> Would you mind please adding a link to the relevant PCI specs in the
-> comment ?
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Of course, no problem. I will copy reference to PCI spec as Remi wrote
-it in linked email, to the comment in source code.
-
-> I understood you copied the comment, it is worth adding that link to all
-> of them if you don't mind, it can be a preparation patch if you wish.
-> 
-> Thanks,
-> Lorenzo
-> 
-> > > > > Sec 6.1.1 does talk about 100ms before sending config requests (for
-> > > > > ports that support <= 5 GT/s), and 100ms after link training completes
-> > > > > (for ports that support > 5 GT/s).
-> > > > > 
-> > > > > Maybe there's more language in a form-factor spec or something?
-> > > > > 
-> > > > > > +	 */
-> > > > > >  	reg = advk_readl(pcie, PCIE_CORE_CTRL0_REG);
-> > > > > >  	reg &= ~LINK_TRAINING_EN;
-> > > > > >  	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
-> > > > > > -- 
-> > > > > > 2.20.1
-> > > > > > 
+Ah, I missed the v3 (like most reviewers it seems :)).
+The sleeping in ndo_get_stats64 question applies.
