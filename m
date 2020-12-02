@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695C22CCA98
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783AD2CCA96
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728637AbgLBXlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:41:42 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:24011 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgLBXll (ORCPT
+        id S1727434AbgLBXlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:41:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgLBXle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:41:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606952481; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=0WKk5xDjofv388J2WnbQdKBLVyRfY397LKch54vy5Yk=; b=jquvAgT0ppTn6qx3USsGfpviqDmMhep70st66A+Rp3Bt7MqLcAAktjr8TKTn2NoxJ/UOXebF
- DMUAtgrPCbHnHdfWBNpGWimMio1cwxRGAbl9onJEfWtjBdLia+SNBr2D1eULRQekAb1G8qzX
- xZXhloyBDcFrYWSq1UGXCrLfTag=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fc82605875646f1e98536d9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 23:40:53
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 38451C43463; Wed,  2 Dec 2020 23:40:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76050C433C6;
-        Wed,  2 Dec 2020 23:40:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 76050C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v3 7/7] bus: mhi: Improve documentation on channel transfer setup APIs
-Date:   Wed,  2 Dec 2020 15:40:38 -0800
-Message-Id: <1606952438-15321-8-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606952438-15321-1-git-send-email-bbhatt@codeaurora.org>
-References: <1606952438-15321-1-git-send-email-bbhatt@codeaurora.org>
+        Wed, 2 Dec 2020 18:41:34 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B9DC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 15:40:54 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id v92so325701ybi.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 15:40:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xQR0dYvXVVGwuf8cwqhcQDfB3WAV48KDjEpeGO4rQDg=;
+        b=fsgNr5p20rJll8RVZi04Pinsq2mLl5Gxq0js9O8A/+nGsntq8WKJjZzEMvF551ifYn
+         faKKI8qUOosRn65yaqMenGJbWkdlROgMkFyqttdKFW1k582DWUzi0jjuYuK+lBITDtgT
+         SlP54tHrtSc4Eaw1qufSC0v2fwzl8SkRLYTW3aERtN2DxbNswyh29SwBaVpOCvFbOvo+
+         /Kit/WxfB7F2CT63JkmXlA5gTPl4jCntkUpWxkVRebrIDw47y1eSpbBWiVGcFs7TpRjL
+         GEtP4oLKRmkKwCCyAbNl7UZwKQg/vOqhE/B0q/uniKWuo2Hch2k/Fu+62byTNH018ept
+         5YBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xQR0dYvXVVGwuf8cwqhcQDfB3WAV48KDjEpeGO4rQDg=;
+        b=pXMwk0goEQUczpLRPGesSYc77b4AbdgTc5vdMi6M/4FjyeEGK4wZ3ENCRq3d6limra
+         6uiVCWzJemnXTcUc5RNT8XKSWS4ApOtScxcLK6t5wuzC81LR0FKDoYnfPIvCzhlm+gji
+         C0ee6ucy31WCvJF5Y7IuwkvF9IARFLBuwi/CFn3O+1gbej0z3dAdt1SsNunZOSvIjXee
+         fZ+XyPW3MHixr4WjikvCHvDVNm7HsvktrJ57r1Bt0CXZR0UoOvutpDeCkdjMjmZBHEBO
+         LBykyXuCTEytEJJCoyrHWfzqpz7F0Jm+1vh27QnADhMnDLx81vEYYzw6UyuA4c9IeyrI
+         erqg==
+X-Gm-Message-State: AOAM530GIMK3mTI5YeexxfjZ2ds22CAGQ4IhxGPsycS0AobWlm6NKGGA
+        sNqeeF0ntGPi2m8pgyLwvn42GAxEg1Rp1mzbaFfRKw==
+X-Google-Smtp-Source: ABdhPJyqKwInHzRRHo8LQDLzdRDzTGiSRQDr957cvQSh72nCX2L4OLlp3gZy4/fC6N/B/qsor/WbAY8WBAD4nqfh2rE=
+X-Received: by 2002:a25:32c9:: with SMTP id y192mr805732yby.211.1606952453178;
+ Wed, 02 Dec 2020 15:40:53 -0800 (PST)
+MIME-Version: 1.0
+References: <20201202150205.35750-1-namhyung@kernel.org> <20201202192828.GG1363814@tassilo.jf.intel.com>
+ <CABPqkBR5nCfn756Wb8xQEb9Xse+UQPAbGy969cP4sxO78-Nq4g@mail.gmail.com> <20201202224239.GJ1363814@tassilo.jf.intel.com>
+In-Reply-To: <20201202224239.GJ1363814@tassilo.jf.intel.com>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Wed, 2 Dec 2020 15:40:42 -0800
+Message-ID: <CABPqkBRsS2+gT-792uYq+U84LJepDjY=wwiLku6mtVhgd8mEEA@mail.gmail.com>
+Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mhi_prepare_for_transfer() and mhi_unprepare_from_transfer()
-APIs could use better explanation, especially with the addition
-of two new APIs to start and stop the transfers on channels. Add
-better set of information for those APIs.
-
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- include/linux/mhi.h | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index 35779a0..bd229da 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -692,13 +692,35 @@ int mhi_device_get_sync(struct mhi_device *mhi_dev);
- void mhi_device_put(struct mhi_device *mhi_dev);
- 
- /**
-- * mhi_prepare_for_transfer - Setup channel for data transfer
-+ * mhi_prepare_for_transfer - Setup UL and DL channels for data transfer.
-+ *                            Allocate and initialize the channel context and
-+ *                            also issue the START channel command to both
-+ *                            channels. Channels can be started only if both
-+ *                            host and device execution environments match and
-+ *                            channels are in a DISABLED state. Calling the
-+ *                            mhi_start_transfer() function is not required
-+ *                            afterwards as channels are already started. This
-+ *                            function also initializes the channel context
-+ *                            whereas mhi_start_transfer() can only be used to
-+ *                            issue the start channel command once the context
-+ *                            is setup.
-  * @mhi_dev: Device associated with the channels
-  */
- int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
- 
- /**
-- * mhi_unprepare_from_transfer - Unprepare the channels
-+ * mhi_unprepare_from_transfer - Reset UL and DL channels for data transfer.
-+ *                               Issue the RESET channel command and let the
-+ *                               device clean-up the context so no incoming
-+ *                               transfers are seen on the host. Free memory
-+ *                               associated with the context on host. If device
-+ *                               is unresponsive, only perform a host side
-+ *                               clean-up. Channels can be reset only if both
-+ *                               host and device execution environments match
-+ *                               and channels are in an ENABLED, STOPPED or
-+ *                               SUSPENDED state. Calling mhi_stop_transfer() is
-+ *                               not required before calling this function as it
-+ *                               will only stop transfers, not reset channels.
-  * @mhi_dev: Device associated with the channels
-  */
- void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+On Wed, Dec 2, 2020 at 2:42 PM Andi Kleen <ak@linux.intel.com> wrote:
+>
+> On Wed, Dec 02, 2020 at 11:47:25AM -0800, Stephane Eranian wrote:
+> > On Wed, Dec 2, 2020 at 11:28 AM Andi Kleen <ak@linux.intel.com> wrote:
+> > >
+> > > > +     prev_cgrp = task_css_check(prev, perf_event_cgrp_id, 1)->cgroup;
+> > > > +     next_cgrp = task_css_check(next, perf_event_cgrp_id, 1)->cgroup;
+> > > > +
+> > > > +     if (prev_cgrp != next_cgrp)
+> > > > +             perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
+> > >
+> > > Seems to be the perf cgroup only, not all cgroups.
+> > > That's a big difference and needs to be documented properly.
+> > >
+> > We care about the all-cgroup case.
+>
+> Then it's not correct I think. You need a different hook point.
+>
+I realize that ;-(
