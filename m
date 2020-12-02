@@ -2,145 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3EC2CB1AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6009D2CB1AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbgLBAqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:46:35 -0500
-Received: from mail-dm6nam11on2122.outbound.protection.outlook.com ([40.107.223.122]:20512
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726166AbgLBAqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:46:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cpMieP8siIZ7t3Wr4ZK4bdgHS+vQ74/gIddsEOERS2VEywYAjQ9rRmy2AN6BQheC1mPzHYUQpIGxjm8W15+ZAXlmua6AwNinGlDo7FGmbv3WtVfwBC9wlU4OB62BYvXVvIxhtYQXJbzYqUC0iicPWDMnWtikdePDN0npusXd5oIbqrIlG/idpXAVa/SMxwWdZ+yIFyTlEZAn1qv3J0TloL3BSc4B943YtZieJfoEWRsrDsGxqQF1c799koqwwR6LrqB9OpZ7W7xB+L7sbi6IiUGa40I1OG7JQOTWWM6w3/trNvp8GO/cRqIdAWc0nygdPxwI9IFCjwlutQq3UcRlkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G1lUvbVFd4EDgnL303NeS42m1FG9ugZoed0DgZiGWhY=;
- b=ZuI1WikAC6coHQDTGqENuqiS0YkLLbiZT87QKcQy8ZTwnZ8AEffCfP2r6Ttk2k/yqp27sHGF3OWW99cp2ZXurHEydHR+kwRbe4h7W4xhjpUeS8V/AqqaNp7TgpLKvRNqnLa5QhPR9RoI2kCiynwESikpdpkRqhY+r7MUuQJGc/+D6FPqUjNKa64kiDM2uanGqCQW56URng47814tAOEnpApP0il/9XMnrgjge35+gBf0G2C1IpO/w4G3qwi9oUir68odB4kJ15jrDdHcwK+GLvYQ+ogkcPRHaxhsd8sa6pWs00AKE5RQ26PhwGt9nMG33v3C2PXgjcV0IeNlrV9E1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G1lUvbVFd4EDgnL303NeS42m1FG9ugZoed0DgZiGWhY=;
- b=HSXYOkQNbSVzBvOSt2/lqS3X1v1e/fY4lCnHTGrAk+zbpwdHkAb1/BXmEUGt2D8RGwNF+Oz7T+Etz3QS4PKZeajJVaQ424AhcaExHS0plZb9kljvPlTXjmHAIJwxaYrRGgzfbixA0GtEmSVGQcA1ACcD3g0TsNDOtFPNq3SSpSU=
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none
- header.from=microsoft.com;
-Received: from (2603:10b6:404:94::8) by
- BN7PR21MB1650.namprd21.prod.outlook.com (2603:10b6:406:aa::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.2; Wed, 2 Dec 2020 00:45:45 +0000
-Received: from BN6PR21MB0162.namprd21.prod.outlook.com
- ([fe80::1557:a785:28fe:ea8e]) by BN6PR21MB0162.namprd21.prod.outlook.com
- ([fe80::1557:a785:28fe:ea8e%10]) with mapi id 15.20.3654.003; Wed, 2 Dec 2020
- 00:45:45 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     tglx@linutronix.de, dwmw@amazon.co.uk, x86@kernel.org,
-        decui@microsoft.com, mikelley@microsoft.com,
-        linux-hyperv@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Tianyu.Lan@microsoft.com,
-        vkuznets@redhat.com, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org
-Subject: [PATCH] iommu/hyper-v: Fix panic on a host without the 15-bit APIC ID support
-Date:   Tue,  1 Dec 2020 16:45:10 -0800
-Message-Id: <20201202004510.1818-1-decui@microsoft.com>
-X-Mailer: git-send-email 2.17.1
-Reply-To: decui@microsoft.com
-Content-Type: text/plain
-X-Originating-IP: [2001:4898:80e8:f:4c3e:c9f9:faf8:28fb]
-X-ClientProxiedBy: MWHPR18CA0029.namprd18.prod.outlook.com
- (2603:10b6:320:31::15) To BN6PR21MB0162.namprd21.prod.outlook.com
- (2603:10b6:404:94::8)
+        id S1727474AbgLBAr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:47:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726342AbgLBAr4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 19:47:56 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1665C0613D4;
+        Tue,  1 Dec 2020 16:47:15 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id o71so75940ybc.2;
+        Tue, 01 Dec 2020 16:47:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SJeLVcFat+Qs+TQ7dZto7FFoIhroDE/w9I3+5NbVPgE=;
+        b=AzrsG5Xxa3YH60Z0gVBDcnvKMykw37uMbG+PN2+lPN5OvpkuDkH/0sIPboPBVC6UUS
+         DZO5s6BwHmDhBpmUVJPFYUUOgCiywHMUCH3Xer5zcAfvwMJvpOP8WK6AeP0KecRbDEVJ
+         o9oT3gumqfHC7M7M8xkCo1+0+nTlgmLwpS273UhUpXiMUW12A8rmy5Wvw2tYuqPXEKCy
+         YMBP+AXUwvgOJ+2KFaaoekpsPTQQHLHHw9Kep77D4SqxhfxqwzXUOjAtMbGLbTkPPbdB
+         bE2c6d7DDuryfrAJ9aWRiPNuacFbrf6vW+3LvqkTD0YyH8ThbOVJk4zkkujUrKXe/aG9
+         IUeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SJeLVcFat+Qs+TQ7dZto7FFoIhroDE/w9I3+5NbVPgE=;
+        b=kHReslDviq3WtbU7x3++NSYUVKTIjGkOcMCiPmzfM9Ojhk4JQT8lX37hf5X3y5UJo5
+         5RKUIf/qLYIf1+xPCDNBCAA1W/DtO1/r9N3iSdc8RwoizePLPPe3/y6GzVpJA4S6JUNk
+         8YNT5BWjK21Q/1E1ezeRUicd3KgJtGB4PMNpq2uBJdoBmUVI0KN/6wPPkOMIRaqWeTF9
+         xnKH4Ww8pdvHW9Z7stDfKQGQ+JZPXPkq9E6DGZzdFi6nGzNlR+1NxBDgdCfvu/sA7DA5
+         oNCQwa86uZWzeQX2W3o/HeDvzFQ6P7s1ViAG4qMRnWK+BROIK9u0h20UBn7zuxuvYoKR
+         DCtQ==
+X-Gm-Message-State: AOAM532an3/bHDOsHNbVpUflge8eD2mIAhhdnTdv97ZAFFn/ZvCyWlHi
+        G7p21UPmGZmiOEyml9lh1cs4bl9Cy25zoAqqyu8=
+X-Google-Smtp-Source: ABdhPJwqC61zyy61z3Ag/st93e2QIDv4EwqwjPKltoaXErmVVFdf4gvZUsNNh03YeJaDkJUIbvC5ECdStjkL38EMkd0=
+X-Received: by 2002:a25:df82:: with SMTP id w124mr49725ybg.347.1606870035133;
+ Tue, 01 Dec 2020 16:47:15 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from decui-u1804.corp.microsoft.com (2001:4898:80e8:f:4c3e:c9f9:faf8:28fb) by MWHPR18CA0029.namprd18.prod.outlook.com (2603:10b6:320:31::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Wed, 2 Dec 2020 00:45:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 848db6bf-d3fb-4c60-fec7-08d8965b9aab
-X-MS-TrafficTypeDiagnostic: BN7PR21MB1650:
-X-MS-Exchange-Transport-Forked: True
-X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-X-Microsoft-Antispam-PRVS: <BN7PR21MB1650A927DD24C4E70C1E6739BFF31@BN7PR21MB1650.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9eLIu1pSXQs2GSZeac696oib8qezu6mcvn0+J+PTQqysotJmaFGMQyQy/8VN3IYF3lfUtAQLdfObbisjIYrNTFTYz8zSU4/2xGb4l1FSZwm9Qt/AjHgjJvG5rpMB5eiPPREybVGXdZw8ZhgFwvdrISR6A3UdTIwKMCYgKZEijflX1MUYE1Y5Nan/lsz96ZDmVqI4HHTSnjE3Pu44KyoqUyBQ3ONkXE1ZTYpdTHH6L/EifxY/EWxhH3IL/KzEx4gdl6xwWnCDTrs2T+Inqgxde4DH4bjLU2wymKXP5grpCqCeevia4eMmAtBXMF9XX1ScFL0g9eUiQSvJ9/jiWYQtDg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR21MB0162.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(366004)(39860400002)(396003)(478600001)(10290500003)(6486002)(2616005)(316002)(8936002)(2906002)(8676002)(4326008)(1076003)(36756003)(7696005)(5660300002)(3450700001)(52116002)(83380400001)(6666004)(82960400001)(16526019)(66556008)(66476007)(82950400001)(186003)(66946007)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?urFaNB3VRrkl1pcnaMWFjpZQfRQhp7nA243LrnDEckf+Ss49mEz9hV/GGsao?=
- =?us-ascii?Q?ePIaGvIZthiGSJlCwUCiS5399k1HuLduOGPwXiy8f0ZLykHwBuLYKuHoA4pc?=
- =?us-ascii?Q?wthUol4XAI7GPqv3PpJO7nr1Gt3E1B5xiVE6YCpRYh8yTaxApO4zubgTw5Yq?=
- =?us-ascii?Q?pMOptlGufXZZY84D0LBKBWsjeiOR/P/K9PZE9t9tCzZVwmKZaevexfm/B/UD?=
- =?us-ascii?Q?XcSG4pegAjYwalGitNtZq2J6o6BjRBDrlRPQydXv2NWCWttqdRsIFtgXzTkh?=
- =?us-ascii?Q?zNvnfshrPo+ZD8Tt3lSaf1z6tfeBgPszwskWJ0vT7xg1Wdox6gbdlxBvXcqE?=
- =?us-ascii?Q?zs2obIr5bdZpJQhk1trHqUmxF7SimnhJ4LWct397F9bKQQtviVH7eI8CXzht?=
- =?us-ascii?Q?Qm5aJ0VCmOEgtqXcv9ho/3xqoZdmWDRSIXng+zMGAYFf3GJE6irMgMqWE4x+?=
- =?us-ascii?Q?dXYmSmKT5xDDVnkMSIzpH8ZWSMCjgz11CqEZv2rMOi09bWBIsLmSiSHqTSUt?=
- =?us-ascii?Q?IzGMF8vm2kb1ApQtQI7Wgz+UxfAyDH0dMKG33UL9RQC+82TKVD4wuv746Ku6?=
- =?us-ascii?Q?mgsyP4sxKfwhXEEkKEHclxf6sSxVejtf0s958V/urnon7Tz7l6EWBu1bmwMf?=
- =?us-ascii?Q?NHwFSYVaLKQYFxa+tlNCL+yxfA5/Jt1fswfmXWjWBkrQyFbK8WvQ69Bywf2i?=
- =?us-ascii?Q?vovm+mWT5RQxUakTTGSvqyEwb9FDE7qWFgnPcRSv87IW/6GycbcqiaMJWlt+?=
- =?us-ascii?Q?EvttCkAXfcjujkbYD9uSoDjykH721S8jnF154zalk7wCTI2QDhbpSUw/dd0z?=
- =?us-ascii?Q?EO/N07/frLzrlgOOFlSfvNaWpujPdnpb2GsKWZpbRJs6OWw+L/sUPjRkP9Fw?=
- =?us-ascii?Q?xImCbSf6gqHQoINYehQwoWIWt54vImv8KLokAoNBzN72NVjiyc+KzCwnPElO?=
- =?us-ascii?Q?jLRp47z2xYFz+cF8DJsm9Lm9Gzgcb1tUfiyDPqp673YIyYgly7ZKzFWXTlNy?=
- =?us-ascii?Q?BW1SSFRokCPV1MReYOTXCKKKMi4vmrUVFeXAPZBh39kryD+LRhvKXBOygis1?=
- =?us-ascii?Q?/fOESoGh?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR21MB0162.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 00:45:45.1159
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-Network-Message-Id: 848db6bf-d3fb-4c60-fec7-08d8965b9aab
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5cIYQOxWh9SK88IpRFemX6japHUq1hDVFiJAAR0mijBO0WNh2O9+dYjFyoa7UM7tM/VYkHeH2uWmoN8iv9315Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR21MB1650
+References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+ <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+In-Reply-To: <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Dec 2020 16:47:04 -0800
+Message-ID: <CAEf4BzZsG+6VNwBxLfnycjeQinZwMka+gqawBdQMEuvTSfWhsQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     Yonghong Song <yhs@fb.com>, Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit f36a74b9345a itself is good, but it causes a panic in a
-Linux VM that runs on a Hyper-V host that doesn't have the 15-bit
-Extended APIC ID support:
-    kernel BUG at arch/x86/kernel/apic/io_apic.c:2408!
+On Fri, Nov 27, 2020 at 3:20 AM KP Singh <kpsingh@chromium.org> wrote:
+>
+> On Fri, Nov 27, 2020 at 8:35 AM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 11/26/20 8:57 AM, Florent Revest wrote:
+> > > This helper exposes the kallsyms_lookup function to eBPF tracing
+> > > programs. This can be used to retrieve the name of the symbol at an
+> > > address. For example, when hooking into nf_register_net_hook, one can
+> > > audit the name of the registered netfilter hook and potentially also
+> > > the name of the module in which the symbol is located.
+> > >
+> > > Signed-off-by: Florent Revest <revest@google.com>
+> > > ---
+> > >   include/uapi/linux/bpf.h       | 16 +++++++++++++
+> > >   kernel/trace/bpf_trace.c       | 41 ++++++++++++++++++++++++++++++++++
+> > >   tools/include/uapi/linux/bpf.h | 16 +++++++++++++
+> > >   3 files changed, 73 insertions(+)
+> > >
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index c3458ec1f30a..670998635eac 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -3817,6 +3817,21 @@ union bpf_attr {
+> > >    *          The **hash_algo** is returned on success,
+> > >    *          **-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
+> > >    *          invalid arguments are passed.
+> > > + *
+> > > + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
+> > > + *   Description
+> > > + *           Uses kallsyms to write the name of the symbol at *address*
+> > > + *           into *symbol* of size *symbol_sz*. This is guaranteed to be
+> > > + *           zero terminated.
+> > > + *           If the symbol is in a module, up to *module_size* bytes of
+> > > + *           the module name is written in *module*. This is also
+> > > + *           guaranteed to be zero-terminated. Note: a module name
+> > > + *           is always shorter than 64 bytes.
+> > > + *   Return
+> > > + *           On success, the strictly positive length of the full symbol
+> > > + *           name, If this is greater than *symbol_size*, the written
+> > > + *           symbol is truncated.
+> > > + *           On error, a negative value.
+> > >    */
+> > >   #define __BPF_FUNC_MAPPER(FN)               \
+> > >       FN(unspec),                     \
+> > > @@ -3981,6 +3996,7 @@ union bpf_attr {
+> > >       FN(bprm_opts_set),              \
+> > >       FN(ktime_get_coarse_ns),        \
+> > >       FN(ima_inode_hash),             \
+> > > +     FN(kallsyms_lookup),    \
+> > >       /* */
+> > >
+> > >   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > > index d255bc9b2bfa..9d86e20c2b13 100644
+> > > --- a/kernel/trace/bpf_trace.c
+> > > +++ b/kernel/trace/bpf_trace.c
+> > > @@ -17,6 +17,7 @@
+> > >   #include <linux/error-injection.h>
+> > >   #include <linux/btf_ids.h>
+> > >   #include <linux/bpf_lsm.h>
+> > > +#include <linux/kallsyms.h>
+> > >
+> > >   #include <net/bpf_sk_storage.h>
+> > >
+> > > @@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+> > >       .arg5_type      = ARG_ANYTHING,
+> > >   };
+> > >
+> > > +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
+> > > +        char *, module, u32, module_size)
+> > > +{
+> > > +     char buffer[KSYM_SYMBOL_LEN];
+> > > +     unsigned long offset, size;
+> > > +     const char *name;
+> > > +     char *modname;
+> > > +     long ret;
+> > > +
+> > > +     name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
+> > > +     if (!name)
+> > > +             return -EINVAL;
+> > > +
+> > > +     ret = strlen(name) + 1;
+> > > +     if (symbol_size) {
+> > > +             strncpy(symbol, name, symbol_size);
+> > > +             symbol[symbol_size - 1] = '\0';
+> > > +     }
+> > > +
+> > > +     if (modname && module_size) {
+> > > +             strncpy(module, modname, module_size);
+> > > +             module[module_size - 1] = '\0';
+> >
+> > In this case, module name may be truncated and user did not get any
+> > indication from return value. In the helper description, it is mentioned
+> > that module name currently is most 64 bytes. But from UAPI perspective,
+> > it may be still good to return something to let user know the name
+> > is truncated.
+> >
+> > I do not know what is the best way to do this. One suggestion is
+> > to break it into two helpers, one for symbol name and another
+>
+> I think it would be slightly preferable to have one helper though.
+> maybe something like bpf_get_symbol_info (better names anyone? :))
 
-This happens because the Hyper-V ioapic_ir_domain (which is defined in
-drivers/iommu/hyperv-iommu.c) can not be found. Fix the panic by
-properly claiming the only I/O APIC emulated by Hyper-V.
+bpf_ksym_resolve()?
 
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Fixes: f36a74b9345a ("x86/ioapic: Use I/O-APIC ID for finding irqdomain, not index")
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
----
- drivers/iommu/hyperv-iommu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-
-This patch is for the tip.git tree's x86/apic branch.
-
-diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
-index 9438daa24fdb..1d21a0b5f724 100644
---- a/drivers/iommu/hyperv-iommu.c
-+++ b/drivers/iommu/hyperv-iommu.c
-@@ -105,8 +105,8 @@ static int hyperv_irq_remapping_select(struct irq_domain *d,
- 				       struct irq_fwspec *fwspec,
- 				       enum irq_domain_bus_token bus_token)
- {
--	/* Claim only the first (and only) I/OAPIC */
--	return x86_fwspec_is_ioapic(fwspec) && fwspec->param[0] == 0;
-+	/* Claim the only I/O APIC emulated by Hyper-V */
-+	return x86_fwspec_is_ioapic(fwspec);
- }
- 
- static const struct irq_domain_ops hyperv_ir_domain_ops = {
-
-base-commit: d1adcfbb520c43c10fc22fcdccdd4204e014fb53
--- 
-2.27.0
-
+> with flags to get the module name or the symbol name depending
+> on the flag?
+>
+> > for module name. What is the use cases people want to get both
+> > symbol name and module name and is it common?
+>
+> The use case would be to disambiguate symbols in the
+> kernel from the ones from a kernel module. Similar to what
+> /proc/kallsyms does:
+>
+> T cpufreq_gov_powersave_init [cpufreq_powersave]
+>
+> >
+> > > +     }
+> > > +
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
+> > > +     .func           = bpf_kallsyms_lookup,
+> > > +     .gpl_only       = false,
+> > > +     .ret_type       = RET_INTEGER,
+> > > +     .arg1_type      = ARG_ANYTHING,
+> > > +     .arg2_type      = ARG_PTR_TO_MEM,
+> > ARG_PTR_TO_UNINIT_MEM?
+> >
+> > > +     .arg3_type      = ARG_CONST_SIZE,
+> > ARG_CONST_SIZE_OR_ZERO? This is especially true for current format
+> > which tries to return both symbol name and module name and
+> > user may just want to do one of them.
+> >
+> > > +     .arg4_type      = ARG_PTR_TO_MEM,
+> > ARG_PTR_TO_UNINIT_MEM?
+> >
+> > > +     .arg5_type      = ARG_CONST_SIZE,
+> > ARG_CONST_SIZE_OR_ZERO?
+> >
+> > > +};
+> > > +
+> > >   const struct bpf_func_proto *
+> > >   bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> > >   {
+> > > @@ -1356,6 +1395,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> > >               return &bpf_per_cpu_ptr_proto;
+> > >       case BPF_FUNC_bpf_this_cpu_ptr:
+> > >               return &bpf_this_cpu_ptr_proto;
+> > > +     case BPF_FUNC_kallsyms_lookup:
+> > > +             return &bpf_kallsyms_lookup_proto;
+> > >       default:
+> > >               return NULL;
+> > >       }
+> > [...]
