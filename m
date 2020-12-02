@@ -2,210 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FDA2CBA0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019722CBA0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388241AbgLBKCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:02:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387427AbgLBKCw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:02:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606903285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xfNSj/g+nonq0OZosWf2zSc7yUS9oiX/UR3lecdLm1w=;
-        b=cz39VW6lnzPFjXE4OwXRuhFVv23ZuzOG6mZDHTWSY7a0jz73oxKTrEq7akcksoQCFshbfL
-        cI1yOV9/XHRS2pj/GvtKxBPdV7Ew+LibizkyxjWtD5JsoAhyL6f1ENj1lqEVSY++gTgizg
-        nwYyrg8iW3jMPfp/wfcs+dmbwuALlXw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-42t4AdnTMXiyxnuzQXADHA-1; Wed, 02 Dec 2020 05:01:21 -0500
-X-MC-Unique: 42t4AdnTMXiyxnuzQXADHA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74466185E48B;
-        Wed,  2 Dec 2020 10:01:20 +0000 (UTC)
-Received: from holly.tpb.lab.eng.brq.redhat.com (holly.tpb.lab.eng.brq.redhat.com [10.43.134.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 177095C1BD;
-        Wed,  2 Dec 2020 10:01:18 +0000 (UTC)
-From:   Miroslav Lichvar <mlichvar@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: [PATCHv2] rtc: adapt allowed RTC update error
-Date:   Wed,  2 Dec 2020 11:01:18 +0100
-Message-Id: <20201202100118.2093139-1-mlichvar@redhat.com>
-In-Reply-To: <20201201173540.GH5487@ziepe.ca>
-References: <20201201173540.GH5487@ziepe.ca>
+        id S2388251AbgLBKDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:03:47 -0500
+Received: from mga06.intel.com ([134.134.136.31]:1618 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728459AbgLBKDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:03:46 -0500
+IronPort-SDR: angwQw4erWzHOSU1JuRt9Ofti2/5DspywMFAB1l2YRFERl6xdTku3aGocoJOJCM7/98adi/7E5
+ HzqGzooja/AA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="234597640"
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="234597640"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 02:03:06 -0800
+IronPort-SDR: eAiAzJHSnbXmVT2WuyLLmJcRQlcHNGWfNOgfRroj4SgaQ4SmowaSkzWF2Vtus1jxVInR+A95+q
+ bNIghGoZ+oxA==
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="335498293"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 02:03:04 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kkOzV-00BU0V-MK; Wed, 02 Dec 2020 12:04:05 +0200
+Date:   Wed, 2 Dec 2020 12:04:05 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Luo Jiaxing <luojiaxing@huawei.com>
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v1 1/3] gpio: gpio-hisi: Add HiSilicon GPIO support
+Message-ID: <20201202100405.GY4077@smile.fi.intel.com>
+References: <1606901543-8957-1-git-send-email-luojiaxing@huawei.com>
+ <1606901543-8957-2-git-send-email-luojiaxing@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606901543-8957-2-git-send-email-luojiaxing@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the system clock is marked as synchronized via adjtimex(), the
-kernel is expected to copy the system time to the RTC every 11 minutes.
+On Wed, Dec 02, 2020 at 05:32:21PM +0800, Luo Jiaxing wrote:
+> This GPIO driver is for HiSilicon's ARM SoC.
+> 
+> HiSilicon's GPIO controller support double-edge interrupt and multi-core
+> concurrent access.
+> 
+> ACPI table example for this GPIO controller:
+> Device (GPO0)
+> {
+> 	Name (_HID, "HISI0184")
+> 	Device (PRTA)
+> 	{
+> 		Name (_ADR, Zero)
+> 		Name (_UID, Zero)
+> 		Name (_DSD, Package (0x01)
+> 		{
+> 			Package (0x02)
+> 			{
+> 				"hisi-ngpio",
 
-There are reports that it doesn't always work reliably. It seems the
-current requirement for the RTC update to happen within 5 ticks of the
-target time in some cases can consistently fail for hours or even days.
+Can it be standard property?
+Please, fix firmware.
 
-It is better to set the RTC with a larger error than let it drift for
-too long.
+> 				0x20
+> 			}
+> 		})
+> 	}
+> }
 
-Instead of increasing the constant again, use a static variable to count
-the checks and with each failed check increase the allowed error by one
-jiffie. Reset the counter when the check finally succeeds. This will
-allow the RTC update to keep good accuracy if it can happen in the first
-few attempts and it will not take more than a minute if the timing is
-consistently bad for any reason.
+...
 
-Signed-off-by: Miroslav Lichvar <mlichvar@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Prarit Bhargava <prarit@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
----
+> +config GPIO_HISI
+> +	tristate "HISILICON GPIO controller driver"
 
-Notes:
-    v2:
-    - moved the static variable to callers in ntp.c
+> +	depends on (ARM64 && ACPI) || COMPILE_TEST
 
- drivers/rtc/systohc.c |  6 ++++--
- include/linux/rtc.h   | 14 +++++++++-----
- kernel/time/ntp.c     |  9 +++++++--
- 3 files changed, 20 insertions(+), 9 deletions(-)
+This is wrong. (Homework to understand why. Also see below)
 
-diff --git a/drivers/rtc/systohc.c b/drivers/rtc/systohc.c
-index 8b70f0520e13..0777f590cdae 100644
---- a/drivers/rtc/systohc.c
-+++ b/drivers/rtc/systohc.c
-@@ -5,6 +5,7 @@
- /**
-  * rtc_set_ntp_time - Save NTP synchronized time to the RTC
-  * @now: Current time of day
-+ * @attempt: Number of previous failures used to adjust allowed error
-  * @target_nsec: pointer for desired now->tv_nsec value
-  *
-  * Replacement for the NTP platform function update_persistent_clock64
-@@ -18,7 +19,8 @@
-  *
-  * If temporary failure is indicated the caller should try again 'soon'
-  */
--int rtc_set_ntp_time(struct timespec64 now, unsigned long *target_nsec)
-+int rtc_set_ntp_time(struct timespec64 now, unsigned int attempt,
-+		     unsigned long *target_nsec)
- {
- 	struct rtc_device *rtc;
- 	struct rtc_time tm;
-@@ -44,7 +46,7 @@ int rtc_set_ntp_time(struct timespec64 now, unsigned long *target_nsec)
- 	 * it does not we update target_nsec and return EPROTO to make the ntp
- 	 * code try again later.
- 	 */
--	ok = rtc_tv_nsec_ok(rtc->set_offset_nsec, &to_set, &now);
-+	ok = rtc_tv_nsec_ok(rtc->set_offset_nsec, attempt, &to_set, &now);
- 	if (!ok) {
- 		err = -EPROTO;
- 		goto out_close;
-diff --git a/include/linux/rtc.h b/include/linux/rtc.h
-index 22d1575e4991..9f3326b43620 100644
---- a/include/linux/rtc.h
-+++ b/include/linux/rtc.h
-@@ -165,7 +165,8 @@ int __rtc_register_device(struct module *owner, struct rtc_device *rtc);
- 
- extern int rtc_read_time(struct rtc_device *rtc, struct rtc_time *tm);
- extern int rtc_set_time(struct rtc_device *rtc, struct rtc_time *tm);
--extern int rtc_set_ntp_time(struct timespec64 now, unsigned long *target_nsec);
-+extern int rtc_set_ntp_time(struct timespec64 now, unsigned int attempt,
-+				unsigned long *target_nsec);
- int __rtc_read_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm);
- extern int rtc_read_alarm(struct rtc_device *rtc,
- 			struct rtc_wkalrm *alrm);
-@@ -213,24 +214,27 @@ static inline bool is_leap_year(unsigned int year)
-  * a zero in tv_nsecs, such that:
-  *    to_set - set_delay_nsec == now +/- FUZZ
-  *
-+ * The allowed error starts at 5 jiffies on the first attempt and is increased
-+ * with each failed attempt to make sure the RTC will be set at some point,
-+ * even if the timing is consistently inaccurate.
-  */
- static inline bool rtc_tv_nsec_ok(s64 set_offset_nsec,
-+				  unsigned int attempt,
- 				  struct timespec64 *to_set,
- 				  const struct timespec64 *now)
- {
--	/* Allowed error in tv_nsec, arbitarily set to 5 jiffies in ns. */
--	const unsigned long TIME_SET_NSEC_FUZZ = TICK_NSEC * 5;
-+	unsigned long time_set_nsec_fuzz = (5 + attempt) * TICK_NSEC;
- 	struct timespec64 delay = {.tv_sec = 0,
- 				   .tv_nsec = set_offset_nsec};
- 
- 	*to_set = timespec64_add(*now, delay);
- 
--	if (to_set->tv_nsec < TIME_SET_NSEC_FUZZ) {
-+	if (to_set->tv_nsec < time_set_nsec_fuzz) {
- 		to_set->tv_nsec = 0;
- 		return true;
- 	}
- 
--	if (to_set->tv_nsec > NSEC_PER_SEC - TIME_SET_NSEC_FUZZ) {
-+	if (to_set->tv_nsec > NSEC_PER_SEC - time_set_nsec_fuzz) {
- 		to_set->tv_sec++;
- 		to_set->tv_nsec = 0;
- 		return true;
-diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
-index 069ca78fb0bf..893bc7ed7845 100644
---- a/kernel/time/ntp.c
-+++ b/kernel/time/ntp.c
-@@ -531,6 +531,7 @@ static void sched_sync_hw_clock(struct timespec64 now,
- 
- static void sync_rtc_clock(void)
- {
-+	static unsigned int attempt;
- 	unsigned long target_nsec;
- 	struct timespec64 adjust, now;
- 	int rc;
-@@ -548,9 +549,11 @@ static void sync_rtc_clock(void)
- 	 * The current RTC in use will provide the target_nsec it wants to be
- 	 * called at, and does rtc_tv_nsec_ok internally.
- 	 */
--	rc = rtc_set_ntp_time(adjust, &target_nsec);
-+	rc = rtc_set_ntp_time(adjust, attempt++, &target_nsec);
- 	if (rc == -ENODEV)
- 		return;
-+	if (rc != -EPROTO)
-+		attempt = 0;
- 
- 	sched_sync_hw_clock(now, target_nsec, rc);
- }
-@@ -564,6 +567,7 @@ int __weak update_persistent_clock64(struct timespec64 now64)
- 
- static bool sync_cmos_clock(void)
- {
-+	static unsigned int attempt;
- 	static bool no_cmos;
- 	struct timespec64 now;
- 	struct timespec64 adjust;
-@@ -585,7 +589,8 @@ static bool sync_cmos_clock(void)
- 	 * implement this legacy API.
- 	 */
- 	ktime_get_real_ts64(&now);
--	if (rtc_tv_nsec_ok(-1 * target_nsec, &adjust, &now)) {
-+	if (rtc_tv_nsec_ok(-1 * target_nsec, attempt++, &adjust, &now)) {
-+		attempt = 0;
- 		if (persistent_clock_is_local)
- 			adjust.tv_sec -= (sys_tz.tz_minuteswest * 60);
- 		rc = update_persistent_clock64(adjust);
+> +	select GPIO_GENERIC
+> +	select GENERIC_IRQ_CHIP
+> +	help
+> +	  Say Y or M here to build support for the HiSilicon GPIO controller driver
+> +	  GPIO block.
+> +	  This controller support double-edge interrupt and multi-core concurrent
+> +	  access.
+
+No module name?
+
+...
+
+> +/*
+> + * Copyright (c) 2020 HiSilicon Limited.
+> + */
+
+One line.
+
+...
+
+> +#include <linux/acpi.h>
+
+Don't see user of it (but see above and below as well).
+At the same time missed mod_devicetable.h.
+
+> +#include <linux/gpio/driver.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+
+...
+
+> +#include "gpiolib.h"
+
+> +#include "gpiolib-acpi.h"
+
+Any user of this?
+
+...
+
+> +#define HISI_GPIO_SWPORT_DR_SET_WX	0x0
+	...
+> +#define HISI_GPIO_INT_DEDGE_SET		0xb0
+	...
+> +#define HISI_GPIO_REG_MAX	0x100
+
+Use fixed width for register offsets, like:
+	0x000
+	...
+	0x0b0
+	...
+	0x100
+
+...
+
+> +struct hisi_gpio {
+> +	struct device		*dev;
+> +	void __iomem		*reg_base;
+> +	unsigned int		pin_num;
+
+> +	struct gpio_chip	chip;
+
+Moving this to be a first member of the struct will make corresponding
+container_of() no-op.
+
+> +	struct irq_chip		irq_chip;
+> +	int			irq;
+> +};
+
+...
+
+> +	unsigned long mask = BIT(off);
+
+No need to have temporary variable. Use directly BIT(off) which fits into 80.
+
+> +
+> +	if (debounce)
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_DEBOUNCE_SET_WX, mask);
+> +	else
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_DEBOUNCE_CLR_WX, mask);
+
+...
+
+> +	switch (config_para) {
+> +	case PIN_CONFIG_INPUT_DEBOUNCE:
+> +		config_arg = pinconf_to_config_argument(config);
+> +		hisi_gpio_set_debounce(chip, offset, config_arg);
+
+> +		break;
+
+Move...
+
+> +	default:
+> +		return -ENOTSUPP;
+> +	}
+> +
+> +	return 0;
+
+...this above.
+
+...
+
+> +	/* Return 0 if output, 1 if input */
+
+Useless comment.
+
+...
+
+> +static int hisi_gpio_irq_set_type(struct irq_data *d, u32 type)
+> +{
+> +	struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
+> +	unsigned int mask = BIT(irqd_to_hwirq(d));
+> +
+> +	switch (type) {
+> +	case IRQ_TYPE_EDGE_BOTH:
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INT_DEDGE_SET, mask);
+> +		break;
+> +	case IRQ_TYPE_EDGE_RISING:
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INTTYPE_EDGE_SET_WX, mask);
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INT_POLARITY_SET_WX, mask);
+> +		break;
+> +	case IRQ_TYPE_EDGE_FALLING:
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INTTYPE_EDGE_SET_WX, mask);
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INT_POLARITY_CLR_WX, mask);
+> +		break;
+> +	case IRQ_TYPE_LEVEL_HIGH:
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INTTYPE_EDGE_CLR_WX, mask);
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INT_POLARITY_SET_WX, mask);
+> +		break;
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INTTYPE_EDGE_CLR_WX, mask);
+> +		hisi_gpio_write_reg(chip, HISI_GPIO_INT_POLARITY_CLR_WX, mask);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	/*
+> +	 * The dual-edge interrupt and other interrupt's registers do not
+> +	 * take effect at the same time. The registers of the two-edge
+> +	 * interrupts have higher priorities, the configuration of
+> +	 * the dual-edge interrupts must be disabled before the configuration
+> +	 * of other kind of interrupts.
+> +	 */
+
+This comment sounds like below should be moved before switch-case. Can you elaborate?
+
+> +	if (type != IRQ_TYPE_EDGE_BOTH) {
+> +		unsigned int both = hisi_gpio_read_reg(chip, HISI_GPIO_INT_DEDGE_ST);
+> +
+> +		if (both & mask)
+> +			hisi_gpio_write_reg(chip, HISI_GPIO_INT_DEDGE_CLR, mask);
+> +	}
+> +
+> +	if (type & IRQ_TYPE_LEVEL_MASK)
+> +		irq_set_handler_locked(d, handle_level_irq);
+> +	else if (type & IRQ_TYPE_EDGE_BOTH)
+> +		irq_set_handler_locked(d, handle_edge_irq);
+> +
+> +	return 0;
+> +}
+
+...
+
+> +	while (irq_msk) {
+> +		int hwirq = fls(irq_msk) - 1;
+
+> +		irq_msk &= ~BIT(hwirq);
+> +	}
+
+NIH of for_each_set_bit().
+
+...
+
+> +	res = bgpio_init(&hisi_gpio->chip, hisi_gpio->dev, HISI_GPIO_REG_SIZE, dat, set,
+> +			 clr, NULL, NULL, 0);
+> +	if (res) {
+> +		dev_err(dev, "failed to init\n");
+> +		return res;
+> +	}
+
+Wondering if you can use regmap GPIO.
+
+...
+
+> +static struct platform_driver hisi_gpio_driver = {
+> +	.driver		= {
+> +		.name	= HISI_GPIO_DRIVER_NAME,
+
+> +		.acpi_match_table = ACPI_PTR(hisi_gpio_acpi_match),
+
+This is wrong. If you use COMPILE_TEST the ACPI_PTR in !ACPI case is no op.
+Compiler will warn you about unused variable. Have you compile tested it in
+such conditions?
+
+Hint: remove ACPI_PTR(). In 99% this macro shouldn't be used.
+
+> +	},
+> +	.probe		= hisi_gpio_probe,
+> +};
+
+> +
+
+Redundant blank line.
+
+> +module_platform_driver(hisi_gpio_driver);
+
 -- 
-2.26.2
+With Best Regards,
+Andy Shevchenko
+
 
