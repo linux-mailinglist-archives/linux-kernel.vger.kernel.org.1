@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AAE2CB218
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3662CB219
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgLBBJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 20:09:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S1727699AbgLBBKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 20:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727676AbgLBBJm (ORCPT
+        with ESMTP id S1726903AbgLBBKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:09:42 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494EDC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 17:08:56 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id s63so25699pgc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 17:08:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ltLpeaxsolQPncFM8sGYWmfl/tK1nPLTaUTVm/mA5BE=;
-        b=wApgbcd8u6gO1J0ik8J/8fQ6zRw+KUw8p0JlvaE9zlEB0CkataSmoW3aHSRLcRoRN6
-         On9jYY7GBEN4j2uY36KIHuOP+HXHG4kzK7eL7tCamzOOITQ7M9CSbj3CCFQgx2mAjyMT
-         akcayOY8U2YzrhI2zmI5MjAB2KeOxpPZ/H1w8ahGqbyFdwHNGwez8nMfy+KAI8xXwAg8
-         O7/b3lhmsq2m7cHdAI/sqThS6DA+MG/RgS868OmeAM4YSZMjUv/meNm6hfB8SXtElU0d
-         inArEgjEg+RBbhuHHX+HNmGCATIAqq6M/MnM4ycH0KcWqgRyNkU+i70EpEoYGVgqU6He
-         0aSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ltLpeaxsolQPncFM8sGYWmfl/tK1nPLTaUTVm/mA5BE=;
-        b=tbfBY9bDydCpayqqpAMQi2sqU7YCnd/Sk8k0olsDVu38svEfne3j1HCSvg9wwNi7pX
-         L35oYQwslo4ZR8TqIy8g0U2fFVT4q8A5bqo0w97qRwyJ+ot6E1zYjOTLkVwgWaUjBIxw
-         GnJGoVMoiVRvh3/Q/zTvgN14ezP/iGqV+ktCCX/G9mY3ZGPw8hHHhAYU0TIsZ+k1Wrt9
-         qVA+hc7d9r2kAR8I2IqLNUOaISt+tBHnX0wwWq9NqZZRSCMXounTJNlpV1Yubtzin67q
-         pRHnLAGVUkQmNvctrlC3okbcfG0pkDeuFW6lzJyvPONqnrBY7d48tQuHp0flDl/tGXUM
-         BiXA==
-X-Gm-Message-State: AOAM5307ntF+3L0COX0NyxdfXY5jM7dpDd2VZOp51Dq6l2N+lMBOZQiz
-        34AtFFy3uyYUqLO8JT1JTXQcqA==
-X-Google-Smtp-Source: ABdhPJx1XvBkLRcpSj5vH9kuUQzLJZ2S0VxjM6GUhPnPj7ToUg/6uUgoU1BTX4bv7WbCbY+jrgUH7g==
-X-Received: by 2002:a63:a62:: with SMTP id z34mr302597pgk.193.1606871335639;
-        Tue, 01 Dec 2020 17:08:55 -0800 (PST)
-Received: from google.com ([100.117.212.88])
-        by smtp.gmail.com with ESMTPSA id f17sm137871pfk.70.2020.12.01.17.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 17:08:54 -0800 (PST)
-Date:   Tue, 1 Dec 2020 17:08:50 -0800
-From:   =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>
-Subject: Re: [PATCH v2 3/4] Kbuild: make DWARF version a choice
-Message-ID: <20201202010850.jibrjpyu6xgkff5p@google.com>
-References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
- <20201104005343.4192504-1-ndesaulniers@google.com>
- <20201104005343.4192504-4-ndesaulniers@google.com>
- <CAK7LNAT5MQqUddv+QbFu5ToLBK3eUPArHSBR=5AOS3ONtMqKaw@mail.gmail.com>
- <CAFP8O3Ki9HoqcV450fn29fBOWAbmuGAdB6USLz8pGsW4Vzf7sg@mail.gmail.com>
- <CAK7LNAS_hxevOS7hKxepyCBVU-4j87Yf5Y8DB6mFq+4xuaz3AA@mail.gmail.com>
- <20201201093253.GJ2672@gate.crashing.org>
+        Tue, 1 Dec 2020 20:10:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB55C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 17:09:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=GLS29JPliofdLClDLIcf/EjxRzDsiF9nerluyizgtuo=; b=nW+s9po3Z7UDGR5/Eq137VKbvP
+        i+P+unnI2oRphD4NjgwgeKLrldBbiIYvQIUfotliPLPbgjyP6D6CjgY13i4CDerEvW5RggWOg/Hiw
+        tvo5pfaXZEp9hTj5moNuTLBJOFJC0db9AnErrTVidHo5a517R2xzZcwrSMT1YpzhhmRlAzcm9UvrD
+        m6ucI4pEimy4x+hLo8o2NByME/Fk0j6efPHTYpl7NwPG87QJVv0L9xWg7Wu3HztuKeTcEvGQo9Cxr
+        mB/p7sPsLBXCZS96xHvl8/RUoMWQcD8gYlXl6J3ifvJQsxYg8kj7y94YzMo1p8b36dh1zuXeC6bBq
+        H3NM/k/w==;
+Received: from [2601:1c0:6280:3f0::1494] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkGeH-0000Qn-Su; Wed, 02 Dec 2020 01:09:40 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Hugh Dickins <hughd@google.com>,
+        Chris Down <chris@chrisdown.name>
+Subject: [PATCH] tmpfs: fix Documentation nits
+Date:   Tue,  1 Dec 2020 17:09:34 -0800
+Message-Id: <20201202010934.18566-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201201093253.GJ2672@gate.crashing.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-01, Segher Boessenkool wrote:
->On Tue, Dec 01, 2020 at 12:38:16PM +0900, Masahiro Yamada wrote:
->> > We can bump -Wa,-gdwarf-2 to -Wa,-gdwarf-3 since GNU actually emits
->> > DWARF v3 DW_AT_ranges (see
->> > https://sourceware.org/bugzilla/show_bug.cgi?id=26850 )
->> > This can avoid the `warning: DWARF2 only supports one section per
->> > compilation unit` warning for Clang.
->
->That warning should be "there can be only one section with executable
->code per translation unit", or similar.
->
->> I am not a DWARF spec expert.
->
->Neither am I.
->
->> Please teach me.
->>
->> In my understanding, "DWARF2 only supports one section ..."
->> is warned only when building .S files with LLVM_IAS=1
->
->.S files are simply run through the C preprocessor first, and then given
->to the assembler.  The only difference there should be wrt debug info is
->you could have some macros that expand to assembler debug statements.
->
->> If this is due to the limitation of DWARF v2, why is it OK to
->> build .c files with LLVM_IAS?
->
->The compiler can of course make sure not to use certain constructs in
->its generated assembler code, while the assembler will have to swallow
->whatever the user wrote.
->
+Fix a typo, punctuation, use uppercase for CPUs, and limit
+tmpfs to keeping only its files in virtual memory (phrasing).
 
-These are all correct. You can use `llvm-dwarfdump a.o` to dump a .o file.
-It has one DW_TAG_compile_unit. If the translation unit has a single
-contiguous address range, the assembler can emit a pair of
-DW_AT_low_pc/DW_AT_high_pc (available in DWARF v2). In the case of
-multiple executable sections, it is not guaranteed that in the final
-linked image the sections will be contiguous, so the assembler has to
-assume there may be non-contiguous address ranges and use DW_AT_ranges.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Chris Down <chris@chrisdown.name>
+---
+ Documentation/filesystems/tmpfs.rst |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Unfortunately DW_AT_ranges was introduced in DWARF v3 and technically
-not available in DWARF v2. But GNU as ignores this and emits
-DW_AT_ranges anyway (this is probably fine - like using a GNU extension).
-
-If -Wa,-gdwarf-2 -> -Wa,-gdwarf-3 can eliminate the LLVM integrated
-assembler's warning, we should do it. If people think -Wa,-gdwarf-2 is
-not useful and want to delete it, I'll be happier. Whether it is
-necessary to use -Wa,-gdwarf-2/-Wa,-gdwarf-5? Personally I would think
-this is unnecessary, but I won't mind if people don't mind the
-additional complexity in Makefile. (I implemented the -gdwarf-5 address
-range stuff for the integrated assembler).
+--- linux-next-20201201.orig/Documentation/filesystems/tmpfs.rst
++++ linux-next-20201201/Documentation/filesystems/tmpfs.rst
+@@ -4,7 +4,7 @@
+ Tmpfs
+ =====
+ 
+-Tmpfs is a file system which keeps all files in virtual memory.
++Tmpfs is a file system which keeps all of its files in virtual memory.
+ 
+ 
+ Everything in tmpfs is temporary in the sense that no files will be
+@@ -35,7 +35,7 @@ tmpfs has the following uses:
+    memory.
+ 
+    This mount does not depend on CONFIG_TMPFS. If CONFIG_TMPFS is not
+-   set, the user visible part of tmpfs is not build. But the internal
++   set, the user visible part of tmpfs is not built. But the internal
+    mechanisms are always present.
+ 
+ 2) glibc 2.2 and above expects tmpfs to be mounted at /dev/shm for
+@@ -50,7 +50,7 @@ tmpfs has the following uses:
+    This mount is _not_ needed for SYSV shared memory. The internal
+    mount is used for that. (In the 2.3 kernel versions it was
+    necessary to mount the predecessor of tmpfs (shm fs) to use SYSV
+-   shared memory)
++   shared memory.)
+ 
+ 3) Some people (including me) find it very convenient to mount it
+    e.g. on /tmp and /var/tmp and have a big swap partition. And now
+@@ -83,7 +83,7 @@ If nr_blocks=0 (or size=0), blocks will
+ if nr_inodes=0, inodes will not be limited.  It is generally unwise to
+ mount with such options, since it allows any user with write access to
+ use up all the memory on the machine; but enhances the scalability of
+-that instance in a system with many cpus making intensive use of it.
++that instance in a system with many CPUs making intensive use of it.
+ 
+ 
+ tmpfs has a mount option to set the NUMA memory allocation policy for
