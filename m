@@ -2,197 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1139E2CBA50
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCED62CBA4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729417AbgLBKPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:15:18 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:56581 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727623AbgLBKPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:15:17 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201202101425euoutp02b70d6009f25ac7399b144b96418db465~M3rvZdphc1121611216euoutp025;
-        Wed,  2 Dec 2020 10:14:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201202101425euoutp02b70d6009f25ac7399b144b96418db465~M3rvZdphc1121611216euoutp025
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1606904065;
-        bh=Mhxdc+RzUSvcSCv//OZka0Ay0RwlIDIhuS+44sjTf7k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S5tTCk+bwGR4HPBAm1p1ps0hLEYME5vyTt39oc2Vr8q99JGDnGmZ1NCRZmTDcBy5n
-         3IAHXtqPeA2RACpf2NuqwbNW16lwaTVZlA36T1yCgEYa4YEAbWSLcQ0piQJteQpGl/
-         7T6EfcdiLbpKT4WeTsVOxFcAwUrtIY+BBcoyj7EI=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201202101425eucas1p1e1e9584730137c6dcfec9b6dde55239d~M3rvIyUP71416114161eucas1p1_;
-        Wed,  2 Dec 2020 10:14:25 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 34.79.44805.10967CF5; Wed,  2
-        Dec 2020 10:14:25 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201202101424eucas1p103b713a5fe6faae36ce32180570c46c4~M3rujVEJd2988729887eucas1p1e;
-        Wed,  2 Dec 2020 10:14:24 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201202101424eusmtrp105fbc6ba246abf42114737ed8e163b0d~M3ruirw6H1847018470eusmtrp1S;
-        Wed,  2 Dec 2020 10:14:24 +0000 (GMT)
-X-AuditID: cbfec7f4-b37ff7000000af05-bd-5fc7690142d6
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 24.62.16282.00967CF5; Wed,  2
-        Dec 2020 10:14:24 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201202101424eusmtip1a77e8cad8f71f5e611c47bcda6822d67~M3ruSbrc11249712497eusmtip1S;
-        Wed,  2 Dec 2020 10:14:24 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     "Krzysztof Kozlowski" <krzk@kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] hwrng: exynos - fix reference leak in
- exynos_trng_probe
-Date:   Wed, 02 Dec 2020 11:14:10 +0100
-In-Reply-To: <20201130130118.51339-1-miaoqinglang@huawei.com> (Qinglang
-        Miao's message of "Mon, 30 Nov 2020 21:01:18 +0800")
-Message-ID: <dleftjczzsecr1.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1729397AbgLBKPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:15:12 -0500
+Received: from verein.lst.de ([213.95.11.211]:53496 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727623AbgLBKPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:15:11 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2A56B67373; Wed,  2 Dec 2020 11:14:27 +0100 (CET)
+Date:   Wed, 2 Dec 2020 11:14:26 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private
+ memory
+Message-ID: <20201202101426.GC7597@lst.de>
+References: <20201106005147.20113-1-rcampbell@nvidia.com> <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de> <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com> <20201109091415.GC28918@lst.de> <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBKsWRmVeSWpSXmKPExsWy7djPc7qMmcfjDY7cYbE4f34Du8Wmx9dY
-        Le7f+8lkcXnXHDaLGef3MVkcbPV0YPNoOfKW1WPTqk42j81L6j0+b5ILYInisklJzcksSy3S
-        t0vgyuiZtZm9YIN4xeKpvewNjG+Euxg5OSQETCTOrPjI3sXIxSEksIJR4sC0OawQzhcg5+ZZ
-        qMxnRolbtx6zwbT833GKBSKxnFFiWetzKOc5o8SmPTOB+jk42AT0JNaujQBpEBHQlmi52Q02
-        iVlgP6NE94t/YJOEBQIllpy/zgpiswioSqzbd5sJpJdToE5i9mFfkDCvgLnEz/XLwUpEBSwl
-        try4zw4RF5Q4OfMJC4jNLJArMfP8G0aQ+RICLzgk/n1/DTZHQsBFYs4tPoijhSVeHd/CDmHL
-        SJye3MMCUVIvMXmSGURrD6PEtjk/WCBqrCXunPsF9bCjxJe1EG9JCPBJ3HgrCLGWT2LStunM
-        EGFeiY42IYhqFYl1/XugpkhJ9L5awQhR4iGxd3Y6JKAmMEo8PTqFdQKjwiwkz8xC8swsoBZm
-        AU2J9bv0IcLaEssWvmaGsG0l1q17z7KAkXUVo3hqaXFuemqxUV5quV5xYm5xaV66XnJ+7iZG
-        YAI6/e/4lx2My1991DvEyMTBeIhRBaj50YbVFxilWPLy81KVRHhZ/h2JF+JNSaysSi3Kjy8q
-        zUktPsQozcGiJM6btGVNvJBAemJJanZqakFqEUyWiYNTqoFJRGTxLvfdXIZaUvcYT2ZdlOU+
-        pLaX5bqd4QstPq5KVvcXK67Lx0yJyD6kZ8jiUCkYxR5x/LZPcPjHqQs4dszuaDDk6LKe0l9z
-        ZAND8a965TqljpebbqYrZe099WzPgr9XfDtPlbOdaA/k3GuYeHLRPTcn2Tsvbk9mSu6Y+y/r
-        YLRylufVVw7vpm2YPuvyXuP/R2brPgoyjNfSsGt3UVBoPbj7UnfAk30vdExXKeQLTjm75F2d
-        5Vtllm9LHx85el1x7y7xRV+vLSl45dRd3+aqLXpjG0ebe9nplh1v4yb/Zp9XtcHqd6fSry+/
-        GcSNZlw6XWAa9kz8yv3O2JXzDl/s+shQnGDygCdr4v3FljpdSizFGYmGWsxFxYkAlWwmz7sD
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsVy+t/xu7oMmcfjDS6cl7A4f34Du8Wmx9dY
-        Le7f+8lkcXnXHDaLGef3MVkcbPV0YPNoOfKW1WPTqk42j81L6j0+b5ILYInSsynKLy1JVcjI
-        Ly6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy+iZtZm9YIN4xeKpvewN
-        jG+Euxg5OSQETCT+7zjF0sXIxSEksJRRYtmuWYxdjBxACSmJlXPTIWqEJf5c62KDqHnKKHH0
-        /H92kBo2AT2JtWsjQGpEBLQlWm52s4PUMAvsYZToXvOIGaRGWMBf4u1mT5AaIQEbiTkXpjKC
-        2CwCqhLr9t1mAinhFKiT2PeAHSTMK2Au8XP9clYQW1TAUmLLi/tQcUGJkzOfsIDYzALZEl9X
-        P2eewCgwC0lqFpLULKCpzAKaEut36UOEtSWWLXzNDGHbSqxb955lASPrKkaR1NLi3PTcYiO9
-        4sTc4tK8dL3k/NxNjMDo2Xbs55YdjCtffdQ7xMjEwXiIUQWo89GG1RcYpVjy8vNSlUR4Wf4d
-        iRfiTUmsrEotyo8vKs1JLT7EaAr02URmKdHkfGBc55XEG5oZmBqamFkamFqaGSuJ85ocWRMv
-        JJCeWJKanZpakFoE08fEwSnVwJRkWLL0qWzuMr5P8yU+F3Avcs8qv/OcXeJfi1nsu90XmIK/
-        /P0e9sZ52yG9c0orPFamyHj+kepaejzA+MavxCOPDtzSO9944Z2W0YyMa9q2okwzEg09NllW
-        XVxw8LNV3Bve/LN8e7pyPl25uPOr4d87fevtG0uvcJX/ydq714134enFdxmUC+sDxe+YZ7N8
-        ec7+7Ojn7T4eh7b1TZ12UDqF+2ihy0KjnYeuxr5M37NuWs7uw8yy2XLhIkVp29oT2G2lPof1
-        /bhmKC/vMTez4eo+hvOCnFNa9yiI2mVZ8CwUNum02Nb08s1z6wn135muctfHcmZqmBmta3M5
-        ePfh6VaXox36DbW9s/dqsrwTL1NiKc5INNRiLipOBAAwKvXBMwMAAA==
-X-CMS-MailID: 20201202101424eucas1p103b713a5fe6faae36ce32180570c46c4
-X-Msg-Generator: CA
-X-RootMTR: 20201202101424eucas1p103b713a5fe6faae36ce32180570c46c4
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201202101424eucas1p103b713a5fe6faae36ce32180570c46c4
-References: <20201130130118.51339-1-miaoqinglang@huawei.com>
-        <CGME20201202101424eucas1p103b713a5fe6faae36ce32180570c46c4@eucas1p1.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+[adding a few of the usual suspects]
 
-It was <2020-11-30 pon 21:01>, when Qinglang Miao wrote:
-> pm_runtime_get_sync will increment pm usage counter even
-> failed. Forgetting to putting operation will result in a
-> reference leak here.
+On Wed, Nov 11, 2020 at 03:38:42PM -0800, Ralph Campbell wrote:
+> There are 4 types of ZONE_DEVICE struct pages:
+> MEMORY_DEVICE_PRIVATE, MEMORY_DEVICE_FS_DAX, MEMORY_DEVICE_GENERIC, and
+> MEMORY_DEVICE_PCI_P2PDMA.
 >
-> Replace it with pm_runtime_resume_and_get to keep usage
-> counter balanced. I remove err_clock label at the same.
+> Currently, memremap_pages() allocates struct pages for a physical address range
+> with a page_ref_count(page) of one and increments the pgmap->ref per CPU
+> reference count by the number of pages created since each ZONE_DEVICE struct
+> page has a pointer to the pgmap.
 >
-> Fixes: 6cd225cc5d8a ("hwrng: exynos - add Samsung Exynos True RNG driver")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Suggested-by: Lukasz Stelmach <l.stelmach@samsung.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  v2: remobe useless label as Lukasz suggested.
-
-That is good too, but I meant using pm_runtime_resume_and_get() in
-exynos_trng_resume() too. Please take a look at that function.
-
+> The struct pages are not freed until memunmap_pages() is called which
+> calls put_page() which calls put_dev_pagemap() which releases a reference to
+> pgmap->ref. memunmap_pages() blocks waiting for pgmap->ref reference count
+> to be zero. As far as I can tell, the put_page() in memunmap_pages() has to
+> be the *last* put_page() (see MEMORY_DEVICE_PCI_P2PDMA).
+> My RFC [1] breaks this put_page() -> put_dev_pagemap() connection so that
+> the struct page reference count can go to zero and back to non-zero without
+> changing the pgmap->ref reference count.
 >
->  drivers/char/hw_random/exynos-trng.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+> Q1: Is that safe? Is there some code that depends on put_page() dropping
+> the pgmap->ref reference count as part of memunmap_pages()?
+> My testing of [1] seems OK but I'm sure there are lots of cases I didn't test.
+
+It should be safe, but the audit you've done is important to make sure
+we do not miss anything important.
+
+> MEMORY_DEVICE_PCI_P2PDMA:
+> Struct pages are created in pci_p2pdma_add_resource() and represent device
+> memory accessible by PCIe bar address space. Memory is allocated with
+> pci_alloc_p2pmem() based on a byte length but the gen_pool_alloc_owner()
+> call will allocate memory in a minimum of PAGE_SIZE units.
+> Reference counting is +1 per *allocation* on the pgmap->ref reference count.
+> Note that this is not +1 per page which is what put_page() expects. So
+> currently, a get_page()/put_page() works OK because the page reference count
+> only goes 1->2 and 2->1. If it went to zero, the pgmap->ref reference count
+> would be incorrect if the allocation size was greater than one page.
 >
-> diff --git a/drivers/char/hw_random/exynos-trng.c b/drivers/char/hw_rando=
-m/exynos-trng.c
-> index 8e1fe3f8d..ffebb72e4 100644
-> --- a/drivers/char/hw_random/exynos-trng.c
-> +++ b/drivers/char/hw_random/exynos-trng.c
-> @@ -132,7 +132,7 @@ static int exynos_trng_probe(struct platform_device *=
-pdev)
->  		return PTR_ERR(trng->mem);
->=20=20
->  	pm_runtime_enable(&pdev->dev);
-> -	ret =3D pm_runtime_get_sync(&pdev->dev);
-> +	ret =3D pm_runtime_resume_and_get(&pdev->dev);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev, "Could not get runtime PM.\n");
->  		goto err_pm_get;
-> @@ -142,13 +142,13 @@ static int exynos_trng_probe(struct platform_device=
- *pdev)
->  	if (IS_ERR(trng->clk)) {
->  		ret =3D PTR_ERR(trng->clk);
->  		dev_err(&pdev->dev, "Could not get clock.\n");
-> -		goto err_clock;
-> +		goto err_pm_get;
->  	}
->=20=20
->  	ret =3D clk_prepare_enable(trng->clk);
->  	if (ret) {
->  		dev_err(&pdev->dev, "Could not enable the clk.\n");
-> -		goto err_clock;
-> +		goto err_pm_get;
->  	}
->=20=20
->  	ret =3D devm_hwrng_register(&pdev->dev, &trng->rng);
-> @@ -164,9 +164,6 @@ static int exynos_trng_probe(struct platform_device *=
-pdev)
->  err_register:
->  	clk_disable_unprepare(trng->clk);
->=20=20
-> -err_clock:
-> -	pm_runtime_put_sync(&pdev->dev);
-> -
->  err_pm_get:
->  	pm_runtime_disable(&pdev->dev);
+> I see pci_alloc_p2pmem() is called by nvme_alloc_sq_cmds() and
+> pci_p2pmem_alloc_sgl() to create a command queue and a struct scatterlist *.
+> Looks like sg_page(sg) returns the ZONE_DEVICE struct page of the scatterlist.
+> There are a huge number of places sg_page() is called so it is hard to tell
+> whether or not get_page()/put_page() is ever called on MEMORY_DEVICE_PCI_P2PDMA
+> pages.
 
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
+Nothing should call get_page/put_page on them, as they are not treated
+as refcountable memory.  More importantly nothing is allowed to keep
+a reference longer than the time of the I/O.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+> pci_p2pmem_virt_to_bus() will return the physical address and I guess
+> pfn_to_page(physaddr >> PAGE_SHIFT) could return the struct page.
+>
+> Since there is a clear allocation/free, pci_alloc_p2pmem() can probably be
+> modified to increment/decrement the MEMORY_DEVICE_PCI_P2PDMA struct page
+> reference count. Or maybe just leave it at one like it is now.
 
------BEGIN PGP SIGNATURE-----
+And yes, doing that is probably a sensible safe guard.
 
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl/HaPIACgkQsK4enJil
-gBD+uQf8D9x1XK5zm+GHPDtFS0L7rBggFvKmJhqXqVoDhLFX4QFJZO9M7MsDwUPT
-FqPOYA5nmHr0m/YfqEFGhKnF89eJv9us+PkBGfm0YjAHUmbwBeb5Mp1TH6zJ2v2n
-FWsHenglG6gRY6I4V1p1caRBtbtzgxadequIluMDBlZqM7bdbhGD1WDZ+P+y92wP
-nBO/FECD2S6S5m0St7pUEsK+ZpXtvn2bo9UgvNx2ZCKe9T4yNwJCpdLyeQSKxdnZ
-RYesge7F9MeJiex6/BrUMYlYXmWSu+SzDHBgGJdHUm3egHN86SR0NkWxRwSxcyux
-uRWLL7UcmConTpEac3QaCN1mlB0pYw==
-=IU3L
------END PGP SIGNATURE-----
---=-=-=--
+> MEMORY_DEVICE_FS_DAX:
+> Struct pages are created in pmem_attach_disk() and virtio_fs_setup_dax() with
+> an initial reference count of one.
+> The problem I see is that there are 3 states that are important:
+> a) memory is free and not allocated to any file (page_ref_count() == 0).
+> b) memory is allocated to a file and in the page cache (page_ref_count() == 1).
+> c) some gup() or I/O has a reference even after calling unmap_mapping_pages()
+>    (page_ref_count() > 1). ext4_break_layouts() basically waits until the
+>    page_ref_count() == 1 with put_page() calling wake_up_var(&page->_refcount)
+>    to wake up ext4_break_layouts().
+> The current code doesn't seem to distinguish (a) and (b). If we want to use
+> the 0->1 reference count to signal (c), then the page cache would have hold
+> entries with a page_ref_count() == 0 which doesn't match the general page cache
+
+I think the sensible model here is to grab a reference when it is
+added to the page cache.  That is exactly how normal system memory pages
+work.
