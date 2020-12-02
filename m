@@ -2,201 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760FE2CB7BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7532CB7C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387946AbgLBIty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:49:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
+        id S2387632AbgLBIun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:50:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387914AbgLBIty (ORCPT
+        with ESMTP id S2387722AbgLBIum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:49:54 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE1EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 00:49:13 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id e25so5464678wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:49:13 -0800 (PST)
+        Wed, 2 Dec 2020 03:50:42 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72223C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 00:50:02 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id d17so2460445ejy.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:50:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=j19GKyry5tuRdKFRzYIexOe7SbGmMibu4GAAw/XxItM=;
-        b=a0ZVGGxMZqbRLcIgLri87RcR/pZvLWtvFcJnaCvnJvn4d19HI7fgDub1UDn9FJUPyD
-         dQj2V4PAMLsUHyJHQ3xX8zZYCzi6sBz6g2ROup1SUGrBkj8Bd78Ux8RN8RFZSuXlaYPk
-         NWQRXjTHRHseUcBgbWsgOta0Xmg9upYVrsEnelJrIelEIKg31ktfNWZwnNUzQF2djsNh
-         BQiq94h0h32XeXSmLc/vpYoeTZaVgqp3hC3/16YH+sIF48aj4XKA/2SgCn1oaCXfcmTv
-         pbA6ffy0Zl1W/xXSwkCA2WwXgdSMPhK+04kQyXXbS8NxpKwiXpplpgMI512OH1V5ZKcU
-         s1xw==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lGQxU4smDX12ciBTdGM0u5QnLY7pZDLRsh2d6WxdLj4=;
+        b=iR1FDnQLqeGi9h3b4ydgVKH+wqFxdW3ToSn0JbeVWoBc9csAWHNmVQGElBwr1oLvpz
+         asmJiulvDDNswro3F7DGewO0s6QqElhrUhY4bCwqMbkcXc8xhK8dykM4qrpsVVfefac3
+         afaC5haErcVCGTkM5YYzvUR6myyhwbho7qd4IE6XS03zJFNfU/9G+r2TFPMYyQyx3nvD
+         9Zx+o7ie1lJ9+fWPNDMBGFwpeOqpq0S1uQ8xVXNIWGBa8I00YjYe45yJQ0mXbh1p6I10
+         jcUnce/DjcatGjJirhK5cswDAbDle8Fi/sLe+J4RBNdehhrnCokv3oI8vBJe+Wk6mQr1
+         fa6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=j19GKyry5tuRdKFRzYIexOe7SbGmMibu4GAAw/XxItM=;
-        b=TvHrn8nA4Gh1/+RAtOeLQ3P0qTyEYmkpM09wfbOILuNfr7B8PSRO1DO9BYwMmqJWV6
-         4KSoBLpVkvQ/ke9wl8ySKFVz1sDesheuNJZg2bPXcFsgZhX4ge+eXEj16PAqp+0u7mU/
-         BlsRJ/3IDV0ypl2iBmMlKyMXTLhjM23zH2iCtPgb78QNvufFbpwiSbWHD3QadF9DkMRY
-         ezNoVAAEWaBlsqiMhpE/jdvDT6PI8QnW9oZgoB6JoNYC1poe6lDCT0AgUTmwWBbd+Ouj
-         TyCPKsPEjyYlERIvTbatXqBt+sPqBkv5xqd2aRrflJFbZECI+iTI6rGQWRAp6EdMiT/A
-         zWZA==
-X-Gm-Message-State: AOAM5338C8dTSkn0so/0nETl6J1cvfoazYMqJE+HJcPgXp9XrJT+ZL9E
-        v7N6/n8Nc/6neJWkakLvsl2yVEShBDSyl30Q
-X-Google-Smtp-Source: ABdhPJw6v+SMgDlNtdz/dKvA09A5uJTYLhfUFoDXtNTOstIitHBjaxH2tdopoJgg80NCeRT3jpEtTA==
-X-Received: by 2002:a1c:e10b:: with SMTP id y11mr1954151wmg.65.1606898952395;
-        Wed, 02 Dec 2020 00:49:12 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id b14sm1194792wrx.35.2020.12.02.00.49.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 00:49:11 -0800 (PST)
-Date:   Wed, 2 Dec 2020 08:49:09 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, cy_huang <cy_huang@richtek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] mfd: rt4831: Adds support for Richtek RT4831 MFD
- core
-Message-ID: <20201202084909.GI4801@dell>
-References: <1604286803-20698-1-git-send-email-u0084500@gmail.com>
- <20201125164207.GD4716@dell>
- <CADiBU3_bgx-K_zxzKCSL8w=meZu3cA3uWoC-3QVsBAuNJW1uiw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lGQxU4smDX12ciBTdGM0u5QnLY7pZDLRsh2d6WxdLj4=;
+        b=Gtp/Zrg0ElvuhxhmZlC6NtEb/rA97ACMLcQx/5T9Sv0y5Vtc4t38KFZ/HBOD+cjrLP
+         RUVZ45/jG/+GQPKmaoQbbHbBqAm8zg8oB2JeEP0QhVIRB/9BjeiO6dNnZoiQJJaYiobD
+         p/DN//GlD6I3O7KbyMKXKD8B0PmAUqfRAvabgi85dEh228B5LebtTgd4SGy67cXTlZrq
+         +Kjx7O8j6DzL/3+hzjt9VoJxQkmYrYNHDjm/O7ChpKCzGKYxeFHOKb73g0Nb5yPLpumE
+         O+TqDRutxhKRUYzqXB+8qE0j5lrP9QMT2M7aXSDDXFauBfYtpRtAhCCVw6I+dJd7w0yY
+         TTKA==
+X-Gm-Message-State: AOAM530EIgab7uIBo2pPGud1lIBuIbNvpsd3RuCdiSqmDeIkDdOngBvC
+        jGA/Xb42p9cEfppRIKNLdfPqY7rurkfYC7DjYc79ZA==
+X-Google-Smtp-Source: ABdhPJwhZcZHLPK/OTQxaZiCfcGmM8ZvtDS5GjOo3YE6HIDLyrPWM6ofYoH4ZaI5fu462fSc4leThNOXk1bFo/2g54g=
+X-Received: by 2002:a17:906:edb2:: with SMTP id sa18mr1273603ejb.264.1606899001140;
+ Wed, 02 Dec 2020 00:50:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADiBU3_bgx-K_zxzKCSL8w=meZu3cA3uWoC-3QVsBAuNJW1uiw@mail.gmail.com>
+References: <CAPcyv4isen63tJ7q02rvVuu_Rm6QPdT0Bu-P_HJ2zePMySFNNg@mail.gmail.com>
+ <20201201022412.GG4327@casper.infradead.org> <CAPcyv4j7wtjOSg8vL5q0PPjWdaknY-PC7m9x-Q1R_YL5dhE+bQ@mail.gmail.com>
+ <20201201204900.GC11935@casper.infradead.org> <CAPcyv4jNVroYmirzKw_=CsEixOEACdL3M1Wc4xjd_TFv3h+o8Q@mail.gmail.com>
+ <20201202034308.GD11935@casper.infradead.org> <CAPcyv4jk2-6hRZAC+=-wuXwFyYK9uKiRX=pVc0Q0UeB9yc=y1w@mail.gmail.com>
+In-Reply-To: <CAPcyv4jk2-6hRZAC+=-wuXwFyYK9uKiRX=pVc0Q0UeB9yc=y1w@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 2 Dec 2020 00:49:57 -0800
+Message-ID: <CAPcyv4hxuzn9k-W_+iBsa=evL-FGijWyaxkyFLohUTqCCoJAig@mail.gmail.com>
+Subject: Re: mapcount corruption regression
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Shutemov, Kirill" <kirill.shutemov@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yi Zhang <yi.zhang@redhat.com>, Toshi Kani <toshi.kani@hpe.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Dec 2020, ChiYuan Huang wrote:
-
-> Lee Jones <lee.jones@linaro.org> 於 2020年11月26日 週四 上午12:42寫道：
+On Tue, Dec 1, 2020 at 9:07 PM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> On Tue, Dec 1, 2020 at 7:43 PM Matthew Wilcox <willy@infradead.org> wrote:
 > >
-> > On Mon, 02 Nov 2020, cy_huang wrote:
-> >
-> > > From: ChiYuan Huang <cy_huang@richtek.com>
+> > On Tue, Dec 01, 2020 at 06:28:45PM -0800, Dan Williams wrote:
+> > > On Tue, Dec 1, 2020 at 12:49 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > >
+> > > > On Tue, Dec 01, 2020 at 12:42:39PM -0800, Dan Williams wrote:
+> > > > > On Mon, Nov 30, 2020 at 6:24 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > >
+> > > > > > On Mon, Nov 30, 2020 at 05:20:25PM -0800, Dan Williams wrote:
+> > > > > > > Kirill, Willy, compound page experts,
+> > > > > > >
+> > > > > > > I am seeking some debug ideas about the following splat:
+> > > > > > >
+> > > > > > > BUG: Bad page state in process lt-pmem-ns  pfn:121a12
+> > > > > > > page:0000000051ef73f7 refcount:0 mapcount:-1024
+> > > > > > > mapping:0000000000000000 index:0x0 pfn:0x121a12
+> > > > > >
+> > > > > > Mapcount of -1024 is the signature of:
+> > > > > >
+> > > > > > #define PG_guard        0x00000400
+> > > > >
+> > > > > Oh, thanks for that. I overlooked how mapcount is overloaded. Although
+> > > > > in v5.10-rc4 that value is:
+> > > > >
+> > > > > #define PG_table        0x00000400
+> > > >
+> > > > Ah, I was looking at -next, where Roman renumbered it.
+> > > >
+> > > > I know UML had a problem where it was not clearing PG_table, but you
+> > > > seem to be running on bare metal.  SuperH did too, but again, you're
+> > > > not using SuperH.
+> > > >
+> > > > > >
+> > > > > > (the bits are inverted, so this turns into 0xfffffbff which is reported
+> > > > > > as -1024)
+> > > > > >
+> > > > > > I assume you have debug_pagealloc enabled?
+> > > > >
+> > > > > Added it, but no extra spew. I'll dig a bit more on how PG_table is
+> > > > > not being cleared in this case.
+> > > >
+> > > > I only asked about debug_pagealloc because that sets PG_guard.  Since
+> > > > the problem is actually PG_table, it's not relevant.
 > > >
-> > > Adds support Richtek RT4831 MFD core.
-> > > RT4831 includes backlight and DSV part that can provode display panel
-> > > for postive and negative voltage and WLED driving.
+> > > As a shot in the dark I reverted:
 > > >
-> > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > ---
-> > >  drivers/mfd/Kconfig       |  11 +++++
-> > >  drivers/mfd/Makefile      |   1 +
-> > >  drivers/mfd/rt4831-core.c | 119 ++++++++++++++++++++++++++++++++++++++++++++++
-> > >  3 files changed, 131 insertions(+)
-> > >  create mode 100644 drivers/mfd/rt4831-core.c
+> > >     b2b29d6d0119 mm: account PMD tables like PTE tables
 > > >
-> > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > index 8b99a13..a22f002 100644
-> > > --- a/drivers/mfd/Kconfig
-> > > +++ b/drivers/mfd/Kconfig
-> > > @@ -1088,6 +1088,17 @@ config MFD_RDC321X
-> > >         southbridge which provides access to GPIOs and Watchdog using the
-> > >         southbridge PCI device configuration space.
-> > >
-> > > +config MFD_RT4831
-> > > +     tristate "Richtek RT4831 WLED and DSV IC"
+> > > ...and the test passed.
 > >
-> > Please expand on WLED and DSV.
-> >
-> > This is documentation and should leave nothing to the imagination.
-> >
-> Rewrite to "Richtek RT4831 four channel WLED and display bias
-> voltage", is it okay?
+> > That's not really surprising ... you're still freeing PMD tables without
+> > calling the destructor, which means that you're leaking ptlocks on
+> > configs that can't embed the ptlock in the struct page.
+>
+> Ok, so potentially this new tracking is highlighting a long standing
+> bug that was previously silent. That would explain the ambiguous
+> bisect results.
+>
+> > I suppose it shows that you're leaking a PMD table rather than a PTE
+> > table, so that might help track it down.  Checking for PG_table in
+> > free_unref_page() and calling show_stack() will probably help more.
+>
+> Will do.
 
-I had to look-up WLED, but I guess it's okay.
+Thanks for the pointers Willy this fix below tests ok and looks
+correct to me given the history:
 
-"Display Bias Voltage"
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index dfd82f51ba66..7ed99314dcdf 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -829,6 +829,7 @@ int pud_free_pmd_page(pud_t *pud, unsigned long addr)
+        }
 
-> > > +     depends on I2C
-> > > +     select MFD_CORE
-> > > +     select REGMAP_I2C
-> > > +     help
-> > > +       This enables support for the Richtek RT4831.
-> > > +       RT4831 includes WLED driver and DisplayBias voltage(+/-) regulator.
-> > > +       It's common used to provide the display power and to drive the
-> > > +       display backlight WLED.
-> >
-> > Please don't line-wrap unnecessarily.
-> >
-> > Please re-work the last sentence, as it doesn't quite make sense.
-> >
-> Rewrite the whole sentence like as below
-> "This enables support for the Richtek RT4831. It includes 4 channel
-> WLED driving and Display Bias voltage output. It's commonly used to
-> provide the LCD power and to drive LCD backlight."
+        free_page((unsigned long)pmd_sv);
++       pgtable_pmd_page_dtor(virt_to_page(pmd));
+        free_page((unsigned long)pmd);
 
-"Display Bias Voltage"
+        return 1;
 
-"provide power to the LCD display"
+In 2013 Kirill noticed that he missed a pmd page table free site:
 
-[...]
+    c283610e44ec x86, mm: do not leak page->ptl for pmd page tables
 
-> > > +static int rt4831_probe(struct i2c_client *client)
-> > > +{
-> > > +     struct gpio_desc *enable;
-> > > +     struct regmap *regmap;
-> > > +     unsigned int val;
-> > > +     int ret;
-> > > +
-> > > +     enable = devm_gpiod_get_optional(&client->dev, "enable", GPIOD_OUT_HIGH);
-> > > +     if (IS_ERR(enable)) {
-> > > +             dev_err(&client->dev, "Failed to get chip enable gpio\n");
-> >
-> > "Failed to get 'enable' GPIO chip"
-> >
-> May I remove "chip" word? It seems redundant.
-> "Failed to get 'enable' GPIO" is better.
-> Because 'enable' is a physical input pin for RT4831.
+In 2018 Toshi added a new pmd page table free site without the destructor:
 
-Sounds good.
+    28ee90fe6048 x86/mm: implement free pmd/pte page interfaces
 
-[...]
+In 2020 Willy adds PG_table accounting that flags the missing
+pgtable_pmd_page_dtor()
 
-> > > +static int rt4831_remove(struct i2c_client *client)
-> > > +{
-> > > +     struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
-> > > +
-> > > +     /* Make sure all off before module removal */
-> >
-> > "Disable all <thing your disabling> are disabled before ..."
-
-This should have said:
-
-  "Ensure all <thing your disabling> are disabled before ..."
-
-> May I rewrite it to "Configure WLED driving and DSV output all to be
-> disabled before MFD module removal"?
-
-You don't need to mention MFD or modules here since we know how the
-Device Driver model works and what .remove() does.
-
-What about:
-
-  "Disable WLED and DSV outputs"
-
-> > > +     return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
-> > > +}
-> > > +
-> > > +static void rt4831_shutdown(struct i2c_client *client)
-> > > +{
-> > > +     struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
-> > > +
-> > > +     /* Make sure all off before machine shutdown */
-> >
-> > As above.
-> >
-> like as above ".... before 'machine shutdown'
-
-  "Disable WLED and DSV outputs"
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Yi, I would appreciate a confirmation that the fix works for you.
