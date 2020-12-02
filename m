@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F415F2CC39C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97072CC3A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389264AbgLBRZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:25:01 -0500
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:42681 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgLBRZA (ORCPT
+        id S2389276AbgLBR1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:27:00 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:36238 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbgLBR1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:25:00 -0500
-Received: by mail-ej1-f67.google.com with SMTP id d17so5522435ejy.9;
-        Wed, 02 Dec 2020 09:24:44 -0800 (PST)
+        Wed, 2 Dec 2020 12:27:00 -0500
+Received: by mail-ed1-f66.google.com with SMTP id j14so4847620edy.3;
+        Wed, 02 Dec 2020 09:26:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2sc0ZAAHRXcUf7Jh+rsNeKSeZviDs3vmfEzs+OIFiiE=;
-        b=V1KWV55Iiro17IqgdgblA9Q8kDtLdvzu7aNavF4Yf26TuHk15kv3VwneQwKZ5VzrbP
-         unt0OyO24InpsdL2jnN5xly4//4AhiJ1UjjdJx19yMwcqbgUUYiReaTME/W3xfdt+hoW
-         9yxeaw6a74Yf68VT5tD89zApm8WFuPUf/4WYSCW1VnJUJk3JbMmrLX7NCsTAOx1BDj/+
-         9jz5MOY85aL1OuCotaSJ6Gqoj7FWiFTFLp/sewnN+Wh2k1tswu3gEO0O0C6eq6foxdmy
-         FZpL5n6RuqtbuSm9+a3+/kIDmZnnrd2anZf01Ju0m0MwxWpC+9eaFd5c1bwzcTxTCVml
-         0zPw==
-X-Gm-Message-State: AOAM533P3JGs1qTqiDSigOK3obf+1F4iL48mb4rWiRUu/eIV1oEz8u/r
-        bwbPIVrUg6hM6gCK9D0tckw=
-X-Google-Smtp-Source: ABdhPJzVhSOKgnz6Ebn5c+ICMB7IhdOUHlT2xetEKRPDWEIhfu6sKNBDNyRQEJ8saucFsF/uW0FF4Q==
-X-Received: by 2002:a17:906:451:: with SMTP id e17mr794669eja.228.1606929858528;
-        Wed, 02 Dec 2020 09:24:18 -0800 (PST)
+        bh=NZKppA2o4fStxdLjfjRZ7S2o2vOkpaIWjvkic2iBJ2o=;
+        b=AwcE/gYjH38mF2/KXK02FQph+wbp26OW2IHamNKYTevRQ+HvvmSHIV+/wjgx4oamTW
+         DrCH/XyQnUUCgOXbyHqUlIL1FqDTlKJ8eLh9EmRCQ5HWErhMtF5IIszLtLRrJNHY1m9H
+         buhyFTDTw6lL5jwL2NO3Q5G4o6enNeiJuA+MDYTHoP4L1665fL8N77nSalWIdzayAmdf
+         lpVl9FlHUcpqDw/jU/oV9nrczDG7TJOXLJs83Si418BNSNYjWzXpAt8Uc6JE9ZiqzcBI
+         JyaY7oeAiYdpAMRSKXXDz9i0lxahSY0Pa0SLUm36bbE/XCZmstt8avCS7CSJyJg960aX
+         OzGQ==
+X-Gm-Message-State: AOAM530HYyDV278soBsf3/ajh6Izwl7WlHuagnFIWv4iAJhVc7TpdnTH
+        BH+WOhv6qdkuC76y1E66iq0=
+X-Google-Smtp-Source: ABdhPJxdaORGvlxmB1auKltfPkpySKQVxtcRpIMsn7/rGJ5juA54CQrEQkeOpggkaJPTCfdgu/9sUg==
+X-Received: by 2002:a50:998d:: with SMTP id m13mr982165edb.143.1606929972528;
+        Wed, 02 Dec 2020 09:26:12 -0800 (PST)
 Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id ch30sm441460edb.8.2020.12.02.09.24.17
+        by smtp.googlemail.com with ESMTPSA id g9sm405995edw.67.2020.12.02.09.26.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 09:24:17 -0800 (PST)
-Date:   Wed, 2 Dec 2020 19:24:16 +0200
+        Wed, 02 Dec 2020 09:26:11 -0800 (PST)
+Date:   Wed, 2 Dec 2020 19:26:10 +0200
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Jagan Teki <jagan@amarulasolutions.com>
 Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
@@ -45,31 +45,100 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
         NXP Linux Team <linux-imx@nxp.com>,
         linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH 07/10] dt-bindings: arm: fsl: Add Engicam i.Core MX8M
- Mini C.TOUCH 2.0
-Message-ID: <20201202172416.GB3490@kozik-lap>
+Subject: Re: [PATCH 03/10] arm64: dts: imx: Add Engicam EDIMM2.2 Starter Kit
+Message-ID: <20201202172610.GC3490@kozik-lap>
 References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-8-jagan@amarulasolutions.com>
+ <20201202121241.109952-4-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201202121241.109952-8-jagan@amarulasolutions.com>
+In-Reply-To: <20201202121241.109952-4-jagan@amarulasolutions.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 05:42:38PM +0530, Jagan Teki wrote:
-> i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
+On Wed, Dec 02, 2020 at 05:42:34PM +0530, Jagan Teki wrote:
+> Engicam EDIMM2.2 Starter Kit is an EDIMM 2.2 Form Factor Capacitive
+> Evaluation Board.
 > 
-> C.TOUCH 2.0 is a general purpose carrier board with capacitive
-> touch interface support.
+> Genaral features:
+> - LCD 7" C.Touch
+> - microSD slot
+> - Ethernet 1Gb
+> - Wifi/BT
+> - 2x LVDS Full HD interfaces
+> - 3x USB 2.0
+> - 1x USB 3.0
+> - HDMI Out
+> - Mini PCIe
+> - MIPI CSI
+> - 2x CAN
+> - Audio Out
 > 
-> i.Core MX8M Mini needs to mount on top of this Carrier board for
-> creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
+> SOM's like i.Core MX8M Mini needs to mount on top of this Evaluation
+> board for creating complete i.Core MX8M Mini EDIMM2.2 Starter Kit.
+> 
+> Add support for it.
+> 
+> Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+>  .../dts/freescale/imx8mm-engicam-common.dtsi  | 24 +++++++++++++++++++
+>  .../freescale/imx8mm-engicam-edimm2.2.dtsi    |  7 ++++++
+>  2 files changed, 31 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi
+> new file mode 100644
+> index 000000000000..67c1a3fe26bc
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-common.dtsi
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2020 Engicam srl
+> + * Copyright (c) 2020 Amarula Solutions(India)
+> + */
+> +
+> +&uart2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart2>;
+> +	status = "okay";
+> +};
+> +
+> +/* SD */
+> +&usdhc1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_usdhc1>, <&pinctrl_usdhc1_gpio>;
+> +	cd-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+> +	max-frequency = <50000000>;
+> +	bus-width = <4>;
+> +	no-1-8-v;
+> +	pm-ignore-notify;
+> +	keep-power-in-suspend;
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
+> new file mode 100644
+> index 000000000000..294df07289a2
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
+> @@ -0,0 +1,7 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2020 Engicam srl
+> + * Copyright (c) 2020 Amarula Solutions(India)
+> + */
+> +
+> +#include "imx8mm-engicam-common.dtsi"
 
-This should be squashed with previous one. You basically add support for
-both similar boards so there is no reason to split the bindings change
-into two.
+A DTSI file only with UART and SD. You mentioned several features in the
+commit msg but none of them are implemented here. There aren't even
+CPUs... Maybe this is only a problem of your patch ordering but as of
+now - this looks like bogus/empty DTSI which should not be in its own
+commit.
 
 Best regards,
 Krzysztof
+
