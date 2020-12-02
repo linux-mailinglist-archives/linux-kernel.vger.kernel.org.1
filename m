@@ -2,146 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4A22CC40F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBCA2CC40A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730903AbgLBRmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:42:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23750 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728887AbgLBRmz (ORCPT
+        id S1730889AbgLBRmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728522AbgLBRmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:42:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606930887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G7B1+xUQA10jAaTU9sWL9sXhMiWq13XLMmFdb9OfvHA=;
-        b=DgNVcja9KxxGlUys39pFXwP7Exk5OpQ748yiHGCUZ8QpeeHxOOE9q4jzGLboZVH7AriZjY
-        csMDiq47/dZOEFSarHM1jdvnCHCIRkp9kObni/F3B1o0K4LhXfiak4Pwx/OmWuYeh5rKNh
-        riFiCQPzm34ZZvVvcRdGiXkuByQJ0wU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-u6CG5yrwOfaxtzIUbYSbag-1; Wed, 02 Dec 2020 12:41:26 -0500
-X-MC-Unique: u6CG5yrwOfaxtzIUbYSbag-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65AA6185E486;
-        Wed,  2 Dec 2020 17:41:24 +0000 (UTC)
-Received: from ceranb (unknown [10.40.192.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 623FF19C48;
-        Wed,  2 Dec 2020 17:41:19 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 18:41:18 +0100
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     Jarod Wilson <jarod@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [PATCH net v2] bonding: fix feature flag setting at init time
-Message-ID: <20201202184118.20920a33@ceranb>
-In-Reply-To: <20201202173053.13800-1-jarod@redhat.com>
-References: <20201123031716.6179-1-jarod@redhat.com>
-        <20201202173053.13800-1-jarod@redhat.com>
+        Wed, 2 Dec 2020 12:42:44 -0500
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA2EC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 09:42:04 -0800 (PST)
+Received: by mail-vk1-xa43.google.com with SMTP id v5so580889vkn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 09:42:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1x85fibtNgk8eCqEQNDAdM4H9CAeQh2Tw033sLE9au0=;
+        b=k17fYGcwuvMZ1Z8sW8ED5NcNXVNtT2pFk45+2PoxoQU8LXfOr6AYnwMnP48duoDTOX
+         KkETXo8kz86TN9x3hgA72/j3TAPJcyMySF/dKg3fqDLhxHHqn0b6mMjJvCX9YFgXcZSE
+         meXC9GzKinsBSDUgRWYmV1DBRcJbE7gisVkLs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1x85fibtNgk8eCqEQNDAdM4H9CAeQh2Tw033sLE9au0=;
+        b=PjBY7JP9pWJm0Ax69pBBKTtP+4K8bYvAs8XaALMuVByjhKvA1U1VmIfOD1hwIu/eMx
+         7o5RUSJxlNxLotfxIgX7iGGSbGycGQs9gUcTu6Ys8mmEEpv0v6WYEqDLveTSXlysiD+v
+         riKprPe+99yMwUXvC0hAq+WSrjE9ykh1C84zoZsjxvwiVDIQYEvLUs7uJUJ96NtSDMCm
+         JsP3Kln9BB4XcZJZXjKUhUmTs+L/Pnd9QNTA0HlP2tQIV1FzomSvlZrnWwrpjw2rzD5l
+         T6fK91syjMz1Qgpn1HTzN1XKeBo/ehs8SRTT52R46QnVhmSg4H74lOgAMrFNy4YuffQi
+         ILhA==
+X-Gm-Message-State: AOAM533Qi5e5ZNnSuJXrWbw+VSo1DC/33BFtY0xfJeqJxhn83wybOvZM
+        eKLM3nlt8WaM0baSoETxkREdSXsaev+k0bRPEYG+fA==
+X-Google-Smtp-Source: ABdhPJwTheLKPeYlIrrssTfR1rpgEOPwTCjeb+0/mDlt+DYvNW/fgwgzHLBBS7di/GI9wgwe9tiBOAwzgf9hYJ07zfU=
+X-Received: by 2002:a1f:b245:: with SMTP id b66mr2625951vkf.3.1606930923918;
+ Wed, 02 Dec 2020 09:42:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com>
+ <20201202160049.GD1447340@iweiny-DESK2.sc.intel.com> <CAJfpegt6w4h28VLctpaH46r2pkbcUNJ4pUhwUqZ-zbrOrXPEEQ@mail.gmail.com>
+ <641397.1606926232@warthog.procyon.org.uk>
+In-Reply-To: <641397.1606926232@warthog.procyon.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 2 Dec 2020 18:41:43 +0100
+Message-ID: <CAJfpegsQxi+_ttNshHu5MP+uLn3px9+nZRoTLTxh9-xwU8s1yg@mail.gmail.com>
+Subject: Re: [PATCH V2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
+To:     David Howells <dhowells@redhat.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Eric Sandeen <sandeen@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  2 Dec 2020 12:30:53 -0500
-Jarod Wilson <jarod@redhat.com> wrote:
+On Wed, Dec 2, 2020 at 5:24 PM David Howells <dhowells@redhat.com> wrote:
+>
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> > Stable cc also?
+> >
+> > Cc: <stable@vger.kernel.org> # 5.8
+>
+> That seems to be unnecessary, provided there's a Fixes: tag.
 
-> Don't try to adjust XFRM support flags if the bond device isn't yet
-> registered. Bad things can currently happen when netdev_change_features()
-> is called without having wanted_features fully filled in yet. Basically,
-> this code was racing against register_netdevice() filling in
-> wanted_features, and when it got there first, the empty wanted_features
-> led to features also getting emptied out, which was definitely not the
-> intended behavior, so prevent that from happening.
-> 
-> Originally, I'd hoped to stop adjusting wanted_features at all in the
-> bonding driver, as it's documented as being something only the network
-> core should touch, but we actually do need to do this to properly update
-> both the features and wanted_features fields when changing the bond type,
-> or we get to a situation where ethtool sees:
-> 
->     esp-hw-offload: off [requested on]
-> 
-> I do think we should be using netdev_update_features instead of
-> netdev_change_features here though, so we only send notifiers when the
-> features actually changed.
-> 
-> v2: rework based on further testing and suggestions from ivecera
-> 
-> Fixes: a3b658cfb664 ("bonding: allow xfrm offload setup post-module-load")
-> Reported-by: Ivan Vecera <ivecera@redhat.com>
-> Suggested-by: Ivan Vecera <ivecera@redhat.com>
-> Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-> Cc: Veaceslav Falico <vfalico@gmail.com>
-> Cc: Andy Gospodarek <andy@greyhouse.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Thomas Davis <tadavis@lbl.gov>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Jarod Wilson <jarod@redhat.com>
-> ---
->  drivers/net/bonding/bond_main.c    | 10 ++++------
->  drivers/net/bonding/bond_options.c |  6 +++++-
->  2 files changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index e0880a3840d7..5fe5232cc3f3 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -4746,15 +4746,13 @@ void bond_setup(struct net_device *bond_dev)
->  				NETIF_F_HW_VLAN_CTAG_FILTER;
->  
->  	bond_dev->hw_features |= NETIF_F_GSO_ENCAP_ALL;
-> -#ifdef CONFIG_XFRM_OFFLOAD
-> -	bond_dev->hw_features |= BOND_XFRM_FEATURES;
-> -#endif /* CONFIG_XFRM_OFFLOAD */
->  	bond_dev->features |= bond_dev->hw_features;
->  	bond_dev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_STAG_TX;
->  #ifdef CONFIG_XFRM_OFFLOAD
-> -	/* Disable XFRM features if this isn't an active-backup config */
-> -	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP)
-> -		bond_dev->features &= ~BOND_XFRM_FEATURES;
-> +	bond_dev->hw_features |= BOND_XFRM_FEATURES;
-> +	/* Only enable XFRM features if this is an active-backup config */
-> +	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
-> +		bond_dev->features |= BOND_XFRM_FEATURES;
->  #endif /* CONFIG_XFRM_OFFLOAD */
->  }
->  
-> diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
-> index 9abfaae1c6f7..19205cfac751 100644
-> --- a/drivers/net/bonding/bond_options.c
-> +++ b/drivers/net/bonding/bond_options.c
-> @@ -768,11 +768,15 @@ static int bond_option_mode_set(struct bonding *bond,
->  		bond->params.tlb_dynamic_lb = 1;
->  
->  #ifdef CONFIG_XFRM_OFFLOAD
-> +	if (bond->dev->reg_state != NETREG_REGISTERED)
-> +		goto noreg;
-> +
->  	if (newval->value == BOND_MODE_ACTIVEBACKUP)
->  		bond->dev->wanted_features |= BOND_XFRM_FEATURES;
->  	else
->  		bond->dev->wanted_features &= ~BOND_XFRM_FEATURES;
-> -	netdev_change_features(bond->dev);
-> +	netdev_update_features(bond->dev);
-> +noreg:
->  #endif /* CONFIG_XFRM_OFFLOAD */
->  
->  	/* don't cache arp_validate between modes */
+Is it?
 
-Tested-by: Ivan Vecera <ivecera@redhat.com>
+Fixes: means it fixes a patch, Cc: stable means it needs to be
+included in stable kernels.  The two are not necessarily the same.
 
+Greg?
+
+Thanks,
+Miklos
