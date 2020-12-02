@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64392CB972
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88AA2CB98D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388538AbgLBJo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
+        id S2388661AbgLBJpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728708AbgLBJoZ (ORCPT
+        with ESMTP id S2388534AbgLBJo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:44:25 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7200C09424B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:43:45 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id l23so680089pjg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:43:45 -0800 (PST)
+        Wed, 2 Dec 2020 04:44:27 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4C4C061A04
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:43:49 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 131so881481pfb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:43:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aCsmJ1k49Ua8PjKSNyR1qR4vjZ+Bg7VpSSpGmvdAxP4=;
-        b=iURQzayB6DZcAa6cIYUASPN9FTCA/rrz22OrT9v/7F9lTCleMF4QmpQWCJKUdxeYb6
-         VZVXrz/e0pPSGKvrnswS0l3+fv9vvB/kLMUK4IekhjY9lNBv3o5dHs76bIXg4bZ6S348
-         l5Dq0b2z4bRJ6UigcPOdRLyow/h4T9Q4nLJOfaFNYiGp6gmYAKN9ukGjhQYimcsJE4WM
-         TGU5Gmda75k6nJgeQ9PBfFweTYEBGbnWMls4tQ5Vvy5+ybAZ/lUB/Sw5Ioj7hmfKxbhX
-         TPYpWhKWBlmn7MOZ0KwIPSDVummw0SjctlVWN73UojBkgVsCNdmUJxFV3wvS8bAPowx+
-         zp0w==
+        bh=UJzmIzhninA4VTeT0eWcsBnXmToO3ytXqgYb0lUnRM4=;
+        b=TBqpLwrcJRgnSxjt1FUXwny6S57FDRh0MuxFiVRxDZZ3XWs+RvuzKSQnrNJEPoqoIU
+         Zss8u7OOsaHx3H/qNM1rpPWT2k9J+6OnOytmhSzbatmv9xySy8nWhZSAhWw6GmVWGT7Z
+         ZmxSHKd7KsHj+Lge04kNQo4LHKk9FzWp0CXQWQyWuwCGXNpVHzua3viEQbZpcnO+Sgb9
+         Zt6aj6yA0PYEx5CmX2Eu8olVpdEDx1kyEi1ANanf5QnMso8p6dXPIcql+//zansga8RA
+         76RHUuyM3j3t8rSPwb+djCb8++Ae3zoql3P1GrIfl0ExN4rY+kd+cHcJMTjDGmHdRBHj
+         sLuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aCsmJ1k49Ua8PjKSNyR1qR4vjZ+Bg7VpSSpGmvdAxP4=;
-        b=gsMFkb33Y9QnmlDYyk5aMDXgW1CGyyMfM1VNwsEj6DaU8bXFQFB9Jf1hBcAJXV824W
-         Tgvl4PCA7WguBaOgegM5aBGpTCETo2zHKXWLB7Ezsg8VvcViHEr6KqcOyyPF9U8ZyKXp
-         SHrpERT+x85rJ27zVpgn8WKHvkA1VR+bUK34bFM23gKXjXWa9SImPAmtoS4HcHwXrF92
-         zgIqPgUwZJifcDgDmMO0B1jvRLwbrULzX2tRsQJAk1np/oJN4gWyeiDczZDmniSs3TbA
-         SqEDuK2rHNDF99fpRXhmwkacZLlYIXqQ785j0eKS2xx5jAGH3qjH2oylrudz4zOVvYnE
-         pkpA==
-X-Gm-Message-State: AOAM531nGEGHT9+2M9FgJQjeBGsui0WHZHdJUCptYhnzrUpmwdPSk8x8
-        dPKWGdpX6A/8Vt9NAvp4Fk43
-X-Google-Smtp-Source: ABdhPJyNpOygX8eW+/DYizhm4A7Zc6qNs9dxEOdUDzXeLw9H4ncoSp6qvX5OPpnzTZDEY2TcPMxEvg==
-X-Received: by 2002:a17:90a:7d0c:: with SMTP id g12mr1588052pjl.77.1606902225327;
-        Wed, 02 Dec 2020 01:43:45 -0800 (PST)
+        bh=UJzmIzhninA4VTeT0eWcsBnXmToO3ytXqgYb0lUnRM4=;
+        b=OqTnwseF/5HuW5YpJUYS4q3aHDKjMswQwT+todyIredvyNQBt172XT8WK6PaPJa9uO
+         0yYkp10kfGKwZhWu0VRZfZjsxP0hGZ64FApIo+wNbdWJWTGK4hTtF674ezi/1XnsqlC9
+         H8qvuynUlsL4tuEskKhqqme+29X2rS5Vdz6qGc2HUhkiRXgZNlm17eIRgAN8bDlAw6JZ
+         t321xb0U5MfVKacxJh0S4R00E4N11bxefEs8b1Bp08nU29riqSlLVeLKK/MxQ7MR/XEJ
+         s6VmAcxtND00F2inntGtaG1lhHXpkY2DO041Zh5TPlumxUns2gbFkgdcmKz6a4GzNtFi
+         wDgQ==
+X-Gm-Message-State: AOAM531WIbL9IhPSe+rl/x7HCCVZFBEP5SrzJdoGjVl+/llVszBClPWR
+        2YDh+3hZA75XE/WwSIwFb99z
+X-Google-Smtp-Source: ABdhPJw9/3JHya+m3dR/FeXuS15wR6fafVMoNeG1dVA7RSrp57B5AVBMNawOUMEnLCWDeeYd4Yb5Jw==
+X-Received: by 2002:a05:6a00:892:b029:19c:7b0e:19ea with SMTP id q18-20020a056a000892b029019c7b0e19eamr1814314pfj.5.1606902229225;
+        Wed, 02 Dec 2020 01:43:49 -0800 (PST)
 Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.43.41
+        by smtp.gmail.com with ESMTPSA id bg8sm1393990pjb.52.2020.12.02.01.43.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 01:43:44 -0800 (PST)
+        Wed, 02 Dec 2020 01:43:48 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
         linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
         linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 20/29] bus: mhi: core: Move to an error state on mission mode failure
-Date:   Wed,  2 Dec 2020 15:11:50 +0530
-Message-Id: <20201202094159.107075-21-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 21/29] bus: mhi: core: Check for IRQ availability during registration
+Date:   Wed,  2 Dec 2020 15:11:51 +0530
+Message-Id: <20201202094159.107075-22-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
 References: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
@@ -68,40 +68,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-If the host receives a mission mode event and by the time it can get
-to processing it, the register accesses fail implying a connectivity
-error, MHI should move to an error state. This helps avoid longer wait
-times from a synchronous power up perspective and accurately reflects
-the MHI execution environment and power management states.
+Current design allows a controller to register with MHI successfully
+without the need to have any IRQs available for use. If no IRQs are
+available, power up requests to MHI can fail after a successful
+registration with MHI. Improve the design by checking for the number
+of IRQs available sooner within the mhi_regsiter_controller() API as
+it is required to be specified by the controller.
 
 Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/bus/mhi/core/pm.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/bus/mhi/core/init.c | 2 +-
+ drivers/bus/mhi/core/pm.c   | 3 ---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 877e40c86801..2534f1c9c153 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -858,7 +858,7 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 
+ 	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
+ 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
+-	    !mhi_cntrl->write_reg)
++	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs)
+ 		return -EINVAL;
+ 
+ 	ret = parse_config(mhi_cntrl, config);
 diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 029919647002..06adea2580d2 100644
+index 06adea2580d2..1d04e401b67f 100644
 --- a/drivers/bus/mhi/core/pm.c
 +++ b/drivers/bus/mhi/core/pm.c
-@@ -383,10 +383,14 @@ static int mhi_pm_mission_mode_transition(struct mhi_controller *mhi_cntrl)
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 	if (MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state))
- 		mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
--	write_unlock_irq(&mhi_cntrl->pm_lock);
+@@ -926,9 +926,6 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
  
--	if (!MHI_IN_MISSION_MODE(mhi_cntrl->ee))
-+	if (!MHI_IN_MISSION_MODE(mhi_cntrl->ee)) {
-+		mhi_cntrl->pm_state = MHI_PM_LD_ERR_FATAL_DETECT;
-+		write_unlock_irq(&mhi_cntrl->pm_lock);
-+		wake_up_all(&mhi_cntrl->state_event);
- 		return -EIO;
-+	}
-+	write_unlock_irq(&mhi_cntrl->pm_lock);
+ 	dev_info(dev, "Requested to power ON\n");
  
- 	wake_up_all(&mhi_cntrl->state_event);
- 
+-	if (mhi_cntrl->nr_irqs < 1)
+-		return -EINVAL;
+-
+ 	/* Supply default wake routines if not provided by controller driver */
+ 	if (!mhi_cntrl->wake_get || !mhi_cntrl->wake_put ||
+ 	    !mhi_cntrl->wake_toggle) {
 -- 
 2.25.1
 
