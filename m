@@ -2,67 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D372CCA95
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854EE2CCAA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgLBXki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:40:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60170 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725899AbgLBXki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:40:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606952352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iOY+ua6LPPG5oekDwz+/gTzCdxqCxzuOLrGK0RqQFSU=;
-        b=jJDRum2v5fRDSyQhLSX4KYlSXTUj9bdKCAi8/HPfPLb5LhMBhl8GalaIqjJB2m4kTKJPql
-        Rp1oPL9k3q72TrBEXpEeSaMP3xHimEYmiuMvqe/V7HOTR+sIUm2kD8izs/A4jP7T3b3FXA
-        V1srqPDH/7/tSGNRVYOVAywxhybZyfc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-3NaYKUlPNz-6W4_an8MlkA-1; Wed, 02 Dec 2020 18:39:08 -0500
-X-MC-Unique: 3NaYKUlPNz-6W4_an8MlkA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729183AbgLBXl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:41:59 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:11550 "EHLO m42-5.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729147AbgLBXl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 18:41:58 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606952499; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ML0k+1w1cdrfiotHpg1TRWJI765NDUhymPNfbEq4eJU=; b=ftbYOYq2WesCs97kjtBC5f00YcL9uSmhCx7r2G/WnZ7IGGsLgcXlSKc2AmP2XaOk7YOkp7Sa
+ wwCL4F8ZbLi+ijQ5ksDEcPYrOByEpLRJKIITGmpeLdc/YkVxmF2bOfxlHYo1wEsQ34h9jvjx
+ tgBJpxdMvVlVO4wzcjBmb+yG7Y0=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fc8260107535c81bad66131 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 23:40:49
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4AE22C43462; Wed,  2 Dec 2020 23:40:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6BB7809DC3;
-        Wed,  2 Dec 2020 23:39:07 +0000 (UTC)
-Received: from ovpn-66-132.rdu2.redhat.com (unknown [10.10.67.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EDDA60854;
-        Wed,  2 Dec 2020 23:39:07 +0000 (UTC)
-Message-ID: <9d854812b07d8a7516274ea47739158c34cfce08.camel@redhat.com>
-Subject: Re: [PATCH] mm/swapfile: Do not sleep with a spin lock held
-From:   Qian Cai <qcai@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date:   Wed, 02 Dec 2020 18:39:06 -0500
-In-Reply-To: <20201202151556.01077710acf79f6fd2ba8287@linux-foundation.org>
-References: <20201202151549.10350-1-qcai@redhat.com>
-         <20201202151556.01077710acf79f6fd2ba8287@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 561D0C433ED;
+        Wed,  2 Dec 2020 23:40:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 561D0C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v3 0/7] Updates to MHI channel handling
+Date:   Wed,  2 Dec 2020 15:40:31 -0800
+Message-Id: <1606952438-15321-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-02 at 15:15 -0800, Andrew Morton wrote:
-> On Wed,  2 Dec 2020 10:15:49 -0500 Qian Cai <qcai@redhat.com> wrote:
-> 
-> > We can't call kvfree() with a spin lock held, so defer it.
-> > 
-> 
-> Fixes: 873d7bcfd066 ("mm/swapfile.c: use kvzalloc for swap_info_struct
-> allocatio
-> n")
-> 
-> Do you think it's worth a cc:stable?  IOW, is this known to ever
-> produce a warning?
+MHI specification shows a state machine with support for STOP channel command
+and the validity of certain state transitions. MHI host currently does not
+provide any mechanism to stop a channel and restart it without resetting it.
+There are also times when the device moves on to a different execution
+environment while client drivers on the host are unaware of it and still
+attempt to reset the channels facing unnecessary timeouts.
 
-Yes, it did trigger a might_sleep() warning.
+This series addresses the above areas to provide support for stopping an MHI
+channel, resuming it back, improved documentation and improving upon channel
+state machine handling in general.
+
+This set of patches was tested on arm64 architecture.
+
+v3:
+-Updated documentation for channel transfer APIs to highlight differences
+-Create separate patch for "allowing channel to be disabled from stopped state"
+
+v2:
+-Renamed the newly introduced APIs to mhi_start_transfer() / mhi_stop_transfer()
+-Added improved documentation to avoid confusion with the new APIs
+-Removed the __ prefix from mhi_unprepare_channel() API for consistency.
+
+Bhaumik Bhatt (7):
+  bus: mhi: core: Allow receiving a STOP channel command response
+  bus: mhi: core: Allow channel to be disabled from stopped state
+  bus: mhi: core: Improvements to the channel handling state machine
+  bus: mhi: core: Add support to stop or start channel data transfers
+  bus: mhi: core: Check execution environment for channel before issuing
+    reset
+  bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+  bus: mhi: Improve documentation on channel transfer setup APIs
+
+ drivers/bus/mhi/core/init.c     |   9 +-
+ drivers/bus/mhi/core/internal.h |  12 +++
+ drivers/bus/mhi/core/main.c     | 229 +++++++++++++++++++++++++++-------------
+ include/linux/mhi.h             |  45 +++++++-
+ 4 files changed, 220 insertions(+), 75 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
