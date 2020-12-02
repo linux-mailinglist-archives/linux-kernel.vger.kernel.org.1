@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13BC2CBBB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715A62CBBAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729676AbgLBLkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:40:39 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:40703 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727650AbgLBLke (ORCPT
+        id S1729667AbgLBLki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:40:38 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:39033 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727664AbgLBLke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Dec 2020 06:40:34 -0500
-Received: by mail-lj1-f195.google.com with SMTP id y10so3201837ljc.7;
+Received: by mail-lj1-f193.google.com with SMTP id o24so3201811ljj.6;
         Wed, 02 Dec 2020 03:40:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eioTLuh9qMD02dGo7kd70kPRax33tNEMYOnayXuoEQw=;
-        b=JEsJTJ7HgMwoalHv+9t1mJQEvFR4miRs3ZN18+Nw6D6dtop7N9eADkj7H4yBmAUVKM
-         x0beFwZF+eWhmPkM6F1SV46Xy6Yw0pRx743I2VdztlMYeyj5icGuDsnNUSSciwjvV+CU
-         6dxT1schanz48ryV1YZ+8hksR13hJcwLOp33tuAcLdgnuP7vfXeHOtgs1blVjKxpQmKT
-         fL6NBKO15XO/TgcCLFuiZR7NS4MkCWkR6xYCwJ6aUotcogaZjMTN9smBMbpyBDqRHNUM
-         4sgDV/hPL6A9/C9OVaMyZFx53EeFz3sS+1AMjkeKuieKulck/aAVN2ucMwQBiyUgqDzn
-         WdXA==
-X-Gm-Message-State: AOAM533bZtshmcVRQCqC9IEn4Li+og7BO2AMJgdaIV3zBcvxQ8FLZCjF
-        DegyYPB8sXL4TxvCO/uOaW9FRbju0ApjAg==
-X-Google-Smtp-Source: ABdhPJz5D+PQ6DzPdL9r9JsL4vg/TaoTkfaha5it7UuZ/g1kY3PSanEghj7QtwQsdePnLdQX45iFlw==
-X-Received: by 2002:a05:651c:3cf:: with SMTP id f15mr980595ljp.118.1606909191641;
-        Wed, 02 Dec 2020 03:39:51 -0800 (PST)
+        bh=F2ypKkOamjttQVwgv5mmaq3G5mJZylZwjPDQAwTLqx0=;
+        b=OCqyoGj3zOuaMij0txoIVDfogxzH8fw5l7ZbDy27UgjQAsmwTRhA6pBVNg/ZyD0ttq
+         db4t1Ap0Ie+/2Tb+JxCDEDVqmgT9zVmXCqt0+Hsfe04FOoYC97Z9mkwAuuChB1vHSc/D
+         Xfizjo22JAFp6KppEqqgvuNkETQJyUtaPQ7Q8GkeMK6nGt9aNoy45bjH6MVZtXsB3Oe9
+         6W8PRmPqzsQIUTMGOiP5DPhwWIY25fzAs+7DsmMfXvo8SAyfUBIsTkmRD+Axt9mtf9Wc
+         E0CR4la9HimMMP0//pN0FLXiCzKD+VRw2ZCdkSg5+HDMS7tfBtkfzmUsQoEN26JVo6Rb
+         NEEA==
+X-Gm-Message-State: AOAM530fOOCLSkaN0eZ/3kTf319Jpu21PkRsLUi86lf83U9HmdKIfCgR
+        rOKAcIxWLT706xI7L7dxAEEGqcMCmXBj+Q==
+X-Google-Smtp-Source: ABdhPJyplTPn0nJsn80Zygl/EROVP3j8GB/CsH5P3t3301AG3y96QvioJWYVnT0U2BVwCRI4+l60RA==
+X-Received: by 2002:a2e:99d7:: with SMTP id l23mr973603ljj.303.1606909192214;
+        Wed, 02 Dec 2020 03:39:52 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id a11sm403184ljp.21.2020.12.02.03.39.47
+        by smtp.gmail.com with ESMTPSA id s20sm401932ljg.15.2020.12.02.03.39.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 02 Dec 2020 03:39:49 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kkQUd-00073D-52; Wed, 02 Dec 2020 12:40:19 +0100
+        id 1kkQUd-00073I-8a; Wed, 02 Dec 2020 12:40:19 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>,
         "Mychaela N . Falconia" <falcon@freecalypso.org>,
         linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 6/7] USB: serial: ftdi_sio: pass port to quirk port_probe functions
-Date:   Wed,  2 Dec 2020 12:39:41 +0100
-Message-Id: <20201202113942.27024-7-johan@kernel.org>
+Subject: [PATCH v2 7/7] USB: serial: ftdi_sio: add support for FreeCalypso DUART28C adapter
+Date:   Wed,  2 Dec 2020 12:39:42 +0100
+Message-Id: <20201202113942.27024-8-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201202113942.27024-1-johan@kernel.org>
 References: <20201202113942.27024-1-johan@kernel.org>
@@ -57,83 +57,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Mychaela N. Falconia" <falcon@freecalypso.org>
 
-The original code passed only the pointer to the ftdi_private struct
-to quirk port_probe functions.  However, some quirks may need to be
-applied conditionally only to some channels of a multichannel FT2232x
-or FT4232H device, and if a given quirk's port_probe function needs
-to figure out which channel of a multichannel device is currently
-being considered, it needs access to the port pointer passed to the
-ftdi_sio_port_probe() function, so it can traverse USB data structures
-from there.
+FreeCalypso DUART28C is an FT2232D-based USB to dual UART adapter
+with a special quirk: Channel B RTS and DTR outputs (BDBUS2 and BDBUS4
+on the chip) have been repurposed to drive PWON and RESET controls
+on Calypso targets.  The circuit is wired such that BDBUS[24] high
+(RTS/DTR inactive) is the normal state with Iota VRPC controls
+NOT activated, whereas BDBUS[24] low (RTS or DTR active) turn ON
+the corresponding open drain control signal drivers.
+
+A special ftdi_sio driver quirk is needed in order to suppress
+automatic assertion of DTR & RTS on device open: this device's
+special PWON and RESET control drivers MUST NOT be activated
+when the port is ordinarily opened for plain serial communication,
+instead they must only be activated when a special userspace
+application explicitly requests such activation with a TIOCMBIS ioctl.
+These special userspace applications are responsible for making the
+needed pulse with a TIOCMBIS, delay, TIOCMBIC sequence.
+
+The special quirk is conditionalized on the DUART28C adapter's custom
+USB ID, and is further limited to FT2232D Channel B only: Channel A
+is wired normally, with the chip's ADBUS2 and ADBUS4 outputs
+actually being RTS and DTR rather than something else.
 
 Signed-off-by: Mychaela N. Falconia <falcon@freecalypso.org>
+[johan: reimplement using new NORDY flag, trim quirk comment]
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/serial/ftdi_sio.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/usb/serial/ftdi_sio.c     | 22 ++++++++++++++++++++++
+ drivers/usb/serial/ftdi_sio_ids.h |  1 +
+ 2 files changed, 23 insertions(+)
 
 diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
-index e0f4c3d9649c..b69032c9ec2b 100644
+index b69032c9ec2b..1ba34ffe3a25 100644
 --- a/drivers/usb/serial/ftdi_sio.c
 +++ b/drivers/usb/serial/ftdi_sio.c
-@@ -88,15 +88,15 @@ struct ftdi_private {
- struct ftdi_sio_quirk {
- 	int (*probe)(struct usb_serial *);
- 	/* Special settings for probed ports. */
--	void (*port_probe)(struct ftdi_private *);
-+	void (*port_probe)(struct usb_serial_port *);
- };
- 
- static int   ftdi_jtag_probe(struct usb_serial *serial);
- static int   ftdi_NDI_device_setup(struct usb_serial *serial);
- static int   ftdi_stmclite_probe(struct usb_serial *serial);
+@@ -97,6 +97,7 @@ static int   ftdi_stmclite_probe(struct usb_serial *serial);
  static int   ftdi_8u2232c_probe(struct usb_serial *serial);
--static void  ftdi_USB_UIRT_setup(struct ftdi_private *priv);
--static void  ftdi_HE_TIRA1_setup(struct ftdi_private *priv);
-+static void  ftdi_USB_UIRT_setup(struct usb_serial_port *port);
-+static void  ftdi_HE_TIRA1_setup(struct usb_serial_port *port);
+ static void  ftdi_USB_UIRT_setup(struct usb_serial_port *port);
+ static void  ftdi_HE_TIRA1_setup(struct usb_serial_port *port);
++static void  ftdi_duart28c_setup(struct usb_serial_port *port);
  
  static const struct ftdi_sio_quirk ftdi_jtag_quirk = {
  	.probe	= ftdi_jtag_probe,
-@@ -2252,11 +2252,11 @@ static int ftdi_sio_port_probe(struct usb_serial_port *port)
+@@ -122,6 +123,10 @@ static const struct ftdi_sio_quirk ftdi_8u2232c_quirk = {
+ 	.probe	= ftdi_8u2232c_probe,
+ };
  
- 	mutex_init(&priv->cfg_lock);
- 
--	if (quirk && quirk->port_probe)
--		quirk->port_probe(priv);
--
- 	usb_set_serial_port_data(port, priv);
- 
-+	if (quirk && quirk->port_probe)
-+		quirk->port_probe(port);
++static const struct ftdi_sio_quirk ftdi_duart28c_quirk = {
++	.port_probe = ftdi_duart28c_setup,
++};
 +
- 	ftdi_determine_type(port);
- 	ftdi_set_max_packet_size(port);
- 	if (read_latency_timer(port) < 0)
-@@ -2277,8 +2277,10 @@ static int ftdi_sio_port_probe(struct usb_serial_port *port)
- /* Setup for the USB-UIRT device, which requires hardwired
-  * baudrate (38400 gets mapped to 312500) */
- /* Called from usbserial:serial_probe */
--static void ftdi_USB_UIRT_setup(struct ftdi_private *priv)
-+static void ftdi_USB_UIRT_setup(struct usb_serial_port *port)
+ /*
+  * The 8U232AM has the same API as the sio except for:
+  * - it can support MUCH higher baudrates; up to:
+@@ -1042,6 +1047,8 @@ static const struct usb_device_id id_table_combined[] = {
+ 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_FALCONIA_JTAG_UNBUF_PID),
+ 		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
++	{ USB_DEVICE(FTDI_VID, FTDI_FALCONIA_DUART28C_PID),
++		.driver_info = (kernel_ulong_t)&ftdi_duart28c_quirk },
+ 	{ }					/* Terminating entry */
+ };
+ 
+@@ -2386,6 +2393,21 @@ static int ftdi_stmclite_probe(struct usb_serial *serial)
+ 	return 0;
+ }
+ 
++/*
++ * FreeCalypso DUART28C is an FT2232D-based USB to dual UART adapter
++ * with a special quirk: Channel B RTS and DTR outputs (BDBUS2 and BDBUS4
++ * on the chip) have been repurposed to drive PWON and RESET controls.
++ */
++static void ftdi_duart28c_setup(struct usb_serial_port *port)
++{
++	struct usb_serial *serial = port->serial;
++	struct usb_interface *intf = serial->interface;
++	int ifnum = intf->cur_altsetting->desc.bInterfaceNumber;
++
++	if (ifnum == 1)
++		tty_port_set_nordy(&port->port, true);
++}
++
+ static int ftdi_sio_port_remove(struct usb_serial_port *port)
  {
-+	struct ftdi_private *priv = usb_get_serial_port_data(port);
-+
- 	priv->flags |= ASYNC_SPD_CUST;
- 	priv->custom_divisor = 77;
- 	priv->force_baud = 38400;
-@@ -2287,8 +2289,10 @@ static void ftdi_USB_UIRT_setup(struct ftdi_private *priv)
- /* Setup for the HE-TIRA1 device, which requires hardwired
-  * baudrate (38400 gets mapped to 100000) and RTS-CTS enabled.  */
+ 	struct ftdi_private *priv = usb_get_serial_port_data(port);
+diff --git a/drivers/usb/serial/ftdi_sio_ids.h b/drivers/usb/serial/ftdi_sio_ids.h
+index 3d47c6d72256..3081b8916a0a 100644
+--- a/drivers/usb/serial/ftdi_sio_ids.h
++++ b/drivers/usb/serial/ftdi_sio_ids.h
+@@ -45,6 +45,7 @@
+  */
+ #define FTDI_FALCONIA_JTAG_BUF_PID	0x7150
+ #define FTDI_FALCONIA_JTAG_UNBUF_PID	0x7151
++#define FTDI_FALCONIA_DUART28C_PID	0x7152
  
--static void ftdi_HE_TIRA1_setup(struct ftdi_private *priv)
-+static void ftdi_HE_TIRA1_setup(struct usb_serial_port *port)
- {
-+	struct ftdi_private *priv = usb_get_serial_port_data(port);
-+
- 	priv->flags |= ASYNC_SPD_CUST;
- 	priv->custom_divisor = 240;
- 	priv->force_baud = 38400;
+ /* Sienna Serial Interface by Secyourit GmbH */
+ #define FTDI_SIENNA_PID		0x8348
 -- 
 2.26.2
 
