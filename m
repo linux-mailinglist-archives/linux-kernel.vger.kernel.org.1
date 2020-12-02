@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEE32CC6C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BF12CC6CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730873AbgLBTiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:38:15 -0500
-Received: from mail-ej1-f50.google.com ([209.85.218.50]:36246 "EHLO
-        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726733AbgLBTiO (ORCPT
+        id S1731142AbgLBTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:38:49 -0500
+Received: from a2.mail.mailgun.net ([198.61.254.61]:25353 "EHLO
+        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726390AbgLBTis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:38:14 -0500
-Received: by mail-ej1-f50.google.com with SMTP id lt17so6207476ejb.3;
-        Wed, 02 Dec 2020 11:37:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sqcmkOFuCaTHVbXHjOOh4znxdETiilgokDAWKjVlhTs=;
-        b=dKTfdAmt1Y2X7fhkg8+jQKOHYAHFJI7FrL1Y974dhtIGmPwK+cAACZk0LcaBNRWOPL
-         InhjxyuNFyLupU+1DrbX4eTh4sTsqQ1k4XFC/ydl4PsABNPwMBmo/axHUZ5YqR/nxyal
-         H53s6jKryU51FQp73SjB+7Q12LDUxkqclpkO7YFkY6p+KQU6dqnO2nevtcxOLZ5y5CYt
-         pG4ZHmCiKeEvORb2P5A+UzformbOZH2kMe7wlFa+/RqB4b50+EbEDeKe4ZMXgCvqvhg3
-         EgRKhvtTnEd9ke7VCN3qVhFN6MPHSKS+XTrR/oCL9GQljA3fBHuN7zSy0trdLtMAofJZ
-         mG4w==
-X-Gm-Message-State: AOAM532DQTfnxnRYZ4X3pUO/nvRMGXdV6Bdt0ZA62jkF0Jqhj5XZtjx+
-        vw3Rn6cPz7OTn55WD6aXd10=
-X-Google-Smtp-Source: ABdhPJwAsksTvdSbHVxbr54BasGj2CDw87QofabD7Y4VuiI9Aq32e705fsdkmsvafdkPlyS+qLaO+A==
-X-Received: by 2002:a17:906:8151:: with SMTP id z17mr1382726ejw.48.1606937846532;
-        Wed, 02 Dec 2020 11:37:26 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n17sm532613ejh.49.2020.12.02.11.37.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 11:37:25 -0800 (PST)
-Date:   Wed, 2 Dec 2020 21:37:24 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>
-Subject: Re: [PATCH 04/10] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
- SOM
-Message-ID: <20201202193724.GB85884@kozik-lap>
-References: <20201202121241.109952-1-jagan@amarulasolutions.com>
- <20201202121241.109952-5-jagan@amarulasolutions.com>
- <20201202173405.GD3490@kozik-lap>
- <CAMty3ZDg-7J9zk14Y-L1LBJsVnoK7KvposzBNnDP7gRdR3NHEQ@mail.gmail.com>
+        Wed, 2 Dec 2020 14:38:48 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606937904; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=gnxvhxq0IsErSHIBkGSB2VThQNskx+qCESrEk9JokaQ=;
+ b=bYQedLT3XmG9IJS9DSbVH9oS0w6DzLdjyRrxrh2b/+Lf0sMbOndvzSST6owOzfp9UZ3INlXD
+ nzBWGjQG9gTXuiIDNepYeEptZtezMartcH+im7cASW4xGOrdG0qO9jUksp1sL6u1eVGfgNB4
+ +yMNAWlrzIru8/rXDH6nHFzWAgI=
+X-Mailgun-Sending-Ip: 198.61.254.61
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fc7ed15265512b1b2b401bc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 19:37:57
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BB21EC43468; Wed,  2 Dec 2020 19:37:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0E8C6C43460;
+        Wed,  2 Dec 2020 19:37:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0E8C6C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMty3ZDg-7J9zk14Y-L1LBJsVnoK7KvposzBNnDP7gRdR3NHEQ@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v3] brcmfmac: expose firmware config files through modinfo
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201124120018.31358-1-matthias.bgg@kernel.org>
+References: <20201124120018.31358-1-matthias.bgg@kernel.org>
+To:     matthias.bgg@kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>, hdegoede@redhat.com,
+        =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Chung-Hsien Hsu <stanley.hsu@cypress.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Double Lo <double.lo@cypress.com>,
+        Frank Kao <frank.kao@cypress.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        netdev@vger.kernel.org,
+        =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Matthias Brugger <mbrugger@suse.com>, digetx@gmail.com,
+        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Amar Shankar <amsr@cypress.com>, brcm80211-dev-list@cypress.com
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201202193756.BB21EC43468@smtp.codeaurora.org>
+Date:   Wed,  2 Dec 2020 19:37:56 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 01:00:59AM +0530, Jagan Teki wrote:
-> Hi Krzysztof,
-> 
-> On Wed, Dec 2, 2020 at 11:04 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >
-> > On Wed, Dec 02, 2020 at 05:42:35PM +0530, Jagan Teki wrote:
-> > > i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
-> >
-> > s/SOM/SoM/
-> >
-> > >
-> > > General features:
-> > > - NXP i.MX8MM
-> >
-> > i.MX 8M Mini
-> > as named by NXP:
-> > https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-processors/i-mx-8m-mini-arm-cortex-a53-cortex-m4-audio-voice-video:i.MX8MMINI
-> >
-> > > - Up to 2GB LDDR4
-> > > - 8/16GB eMMC
-> > > - Gigabit Ethernet
-> > > - USB 2.0 Host/OTG
-> > > - PCIe Gen2 interface
-> > > - I2S
-> > > - MIPI DSI to LVDS
-> > > - rest of i.MX8MM features
-> >
-> > Ditto
-> >
-> > >
-> > > i.Core MX8M Mini needs to mount on top of Engicam baseboards for
-> > > creating complete platform boards.
-> > >
-> > > Possible baseboards are,
-> > > - EDIMM2.2
-> > > - C.TOUCH 2.0
-> >
-> > Don't describe baseboards. You add here only SoM.
-> 
-> It's just information on how this SoM is being used. Let me know any
-> issues while explaining the combinations being used here.
+matthias.bgg@kernel.org wrote:
 
-Don't describe baseboards. No point to blow up description. Include only
-information relevant to this patch.
+> From: Matthias Brugger <mbrugger@suse.com>
+> 
+> Apart from a firmware binary the chip needs a config file used by the
+> FW. Add the config files to modinfo so that they can be read by
+> userspace.
+> 
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Best regards,
-Krzysztof
+Patch applied to wireless-drivers-next.git, thanks.
+
+75729e110e68 brcmfmac: expose firmware config files through modinfo
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201124120018.31358-1-matthias.bgg@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
