@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD33D2CBD54
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 216612CBD57
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729848AbgLBMu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:50:57 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2389 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727639AbgLBMu5 (ORCPT
+        id S2387561AbgLBMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727832AbgLBMvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:50:57 -0500
-Received: from dggeme706-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CmJhP5YQxz50gv;
-        Wed,  2 Dec 2020 20:49:41 +0800 (CST)
-Received: from [10.174.186.123] (10.174.186.123) by
- dggeme706-chm.china.huawei.com (10.1.199.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 2 Dec 2020 20:50:14 +0800
-Subject: Re: [PATCH v2 0/3] Fix several bugs in KVM stage 2 translation
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Will Deacon <will@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        <jiangkunkun@huawei.com>, <wangjingyi11@huawei.com>,
-        <lushenming@huawei.com>
-References: <20201201201034.116760-1-wangyanan55@huawei.com>
- <20201201205948.GA28178@willie-the-truck>
- <74540986-6197-34bc-cd53-850472091ee3@huawei.com>
- <616980dcddd5c7e832c1068f6fa91449@kernel.org>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <b9cf36df-dc1f-5d40-0341-cfa573c9ecd9@huawei.com>
-Date:   Wed, 2 Dec 2020 20:50:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 07:51:22 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A33C0613CF;
+        Wed,  2 Dec 2020 04:50:41 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id o71so1506403ybc.2;
+        Wed, 02 Dec 2020 04:50:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wZOsnLsRD15EE78n8bQEf+aUkvjzCWrGeOD2j6m7n7M=;
+        b=Pz5K1LSqrNHi9j26JaHRbiUG9fIgZ88xbsQOpQuqNaY6to0gMZKA3gZJQkUb0wH5DZ
+         m49l97B/Sqo285TY12ocrdpvuF1+g3C5wyRcsbz5oUmKsqn2e3S3KkpISid+6Jy9TPZJ
+         Yhi5380lJNF1O7HhBn1xvlehBO23pu1N+bhGYtju8XUuq3mjQtYO7rQGT3bt/wyhJYu2
+         nmqwt7PmuQulhc96znbjOdtX+q3UrUnUYeqP4ZRdx3XdbsSwYDKeQGZVsWKY8+j3ePUW
+         6FnR5bBGkAJxjBXXLZqpT5MNdDiJQM0xvHspl+LDp7RWfzuVkEt8IC16/vlbOKXzJ2tq
+         tkiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wZOsnLsRD15EE78n8bQEf+aUkvjzCWrGeOD2j6m7n7M=;
+        b=CmnNCMK67ydFsLA9BbYpFkJWXZoCHcqteHJmXxia+CbPGuDS2zvdFQEn/hX9wCxOCH
+         bumwxa6Hh/jHeRw00dtgKM390Sq3yu4JhdJobYNit8kdoLZmVY2ck7oRpf5iuLF33Hnz
+         ZXUt97vkWxGzwvEmmqugNOBAeSQ+cBkzE2/gTT01f4hTqclQoQZIHxXtGusYWMeo9qUO
+         dS14rc6cU8FfkO6ytou2QlmCeYTKsprHENm0MtulM4LjADqcEls2Mh398WnHr9PMg+ud
+         d4+1J+6MQz643X3mu37CbBPRgSat9jGGTQMAtd640FRs9ueWx7KGAWXg2gvZj+hL6ucp
+         FH5g==
+X-Gm-Message-State: AOAM5303PgBxLJNP0G4Mgv/DpeBv/GmpWmkwiHFcLWzzqrtFbuXcQmb9
+        fxWr94Lfl+vrDcQUZXxLgSvLNMY+OPbFEl/yMZM=
+X-Google-Smtp-Source: ABdhPJz8aVFXdWixZUHiWQB00VKrKgXW70L2NcuTpGtmUg1BcqQkFiV8/vapf4IM/PFZ+z2SfEViZMUjxnQAlGcdtd8=
+X-Received: by 2002:a25:df55:: with SMTP id w82mr3065596ybg.135.1606913441319;
+ Wed, 02 Dec 2020 04:50:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <616980dcddd5c7e832c1068f6fa91449@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.186.123]
-X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
- dggeme706-chm.china.huawei.com (10.1.199.102)
-X-CFilter-Loop: Reflected
+References: <20201128193335.219395-1-masahiroy@kernel.org>
+In-Reply-To: <20201128193335.219395-1-masahiroy@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 2 Dec 2020 13:50:30 +0100
+Message-ID: <CANiq72=WanQ0sqL14D3Keu0hT3L5GXBSV-znU5C9hhC1gjs=wA@mail.gmail.com>
+Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Nov 28, 2020 at 8:34 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
+>
+> A lot of warn_unused_result warnings existed in 2006, but until now
+> they have been fixed thanks to people doing allmodconfig tests.
+>
+> Our goal is to always enable __must_check where appropriate, so this
+> CONFIG option is no longer needed.
+>
+> I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
+>
+>     # CONFIG_ENABLE_MUST_CHECK is not set
+>
+> I did not touch them for now since it would be a big churn. If arch
+> maintainers want to clean them up, please go ahead.
+>
+> While I was here, I also moved __must_check to compiler_attributes.h
+> from compiler_types.h
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-On 2020/12/2 20:23, Marc Zyngier wrote:
-> Hi Yanan,
->
-> [...]
->
->> BTW: there are two more things below that I want to talk about.
->>
->> 1.  Recently, I have been focusing on the ARMv8.4-TTRem feature which
->> is aimed at changing block size in stage 2 mapping.
->>
->> I have a plan to implement this feature for stage 2 translation when
->> splitting a block into tables or merging tables into a block.
->>
->> This feature supports changing block size without performing
->> *break-before-make*, which might have some improvement on performance.
->>
->> What do you think about this?
->
-> It would be interesting if you can demonstrate some significant
-> performance improvements compared to the same workload with BBM.
->
-> I'm not completely convinced this would change much, given that
-> it is only when moving from a table to a block mapping that you
-> can elide BBM when the support level is 1 or 2. As far as I can
-> tell, this only happens in the "stop logging" case.
->
-> Is that something that happens often enough to justify the added
-> complexity? Having to handle TLB Conflict Abort is annoying, for
-> example.
+Picked this new version with the Acks etc., plus I moved it within
+compiler_attributes.h to keep it sorted (it's sorted by the second
+column, rather than the first).
 
-I will take more consideration about the necessity  and maybe some tests
+Thanks a lot!
 
-on the performance will be made later.
-
-
-Thanks,
-
-
-Yanan
-
->
->> 2. Given that the issues we discussed before were found in practice
->> when guest state changes from dirty logging to dirty logging canceled.
->>
->> I could add a test file testing on this case to selftests/ or kvm unit
->> tests/, if it's necessary.
->
-> That would be awesome, and I'd be very grateful if you did. It is the
-> second time we break this exact case, and having a reliable way to
-> verify it would definitely help.
->
-> Thanks,
->
->         M.
+Cheers,
+Miguel
