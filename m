@@ -2,167 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB82A2CBB60
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C042CBB61
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgLBLRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:17:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:36542 "EHLO foss.arm.com"
+        id S1727451AbgLBLRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:17:47 -0500
+Received: from foss.arm.com ([217.140.110.172]:36564 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLBLRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:17:01 -0500
+        id S1725918AbgLBLRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 06:17:46 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19045101E;
-        Wed,  2 Dec 2020 03:16:15 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.23.201])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E59873F66B;
-        Wed,  2 Dec 2020 03:16:12 -0800 (PST)
-Date:   Wed, 2 Dec 2020 11:16:05 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201202111605.GA63790@C02TD0UTHF1T.local>
-References: <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
- <20201201110724.GL3092@hirez.programming.kicks-ass.net>
- <20201201144644.GF1437@paulmck-ThinkPad-P72>
- <20201201145519.GY2414@hirez.programming.kicks-ass.net>
- <20201201181506.GM3092@hirez.programming.kicks-ass.net>
- <20201201185737.GA93208@C02TD0UTHF1T.local>
- <20201201191441.GW3040@hirez.programming.kicks-ass.net>
- <20201201191856.GD8316@osiris>
- <20201202092116.GA3040@hirez.programming.kicks-ass.net>
- <20201202105649.GB6202@osiris>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F55B1042;
+        Wed,  2 Dec 2020 03:17:01 -0800 (PST)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD5973F66B;
+        Wed,  2 Dec 2020 03:16:59 -0800 (PST)
+Subject: Re: [PATCH V2 1/2] mm/debug_vm_pgtable/basic: Add validation for
+ dirtiness after write protect
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        christophe.leroy@csgroup.eu, gerald.schaefer@linux.ibm.com,
+        vgupta@synopsys.com, paul.walmsley@sifive.com
+References: <1606825169-5229-1-git-send-email-anshuman.khandual@arm.com>
+ <1606825169-5229-2-git-send-email-anshuman.khandual@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <5d07e798-aa91-ec00-36af-108ff0b19709@arm.com>
+Date:   Wed, 2 Dec 2020 11:16:54 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202105649.GB6202@osiris>
+In-Reply-To: <1606825169-5229-2-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:56:49AM +0100, Heiko Carstens wrote:
-> From 7bd86fb3eb039a4163281472ca79b9158e726526 Mon Sep 17 00:00:00 2001
-> From: Heiko Carstens <hca@linux.ibm.com>
-> Date: Wed, 2 Dec 2020 11:46:01 +0100
-> Subject: [PATCH] s390: fix irq state tracing
+On 01/12/2020 12:19, Anshuman Khandual wrote:
+> This adds validation tests for dirtiness after write protect conversion for
+> each page table level. There are two new separate test types involved here.
 > 
-> With commit 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs
-> tracing") common code calls arch_cpu_idle() with a lockdep state that
-> tells irqs are on.
+> The first test ensures that a given page table entry does not become dirty
+> after pxx_wrprotect(). This is important for platforms like arm64 which
+> transfers and drops the hardware dirty bit (!PTE_RDONLY) to the software
+> dirty bit while making it an write protected one. This test ensures that
+> no fresh page table entry could be created with hardware dirty bit set.
+> The second test ensures that a given page table entry always preserve the
+> dirty information across pxx_wrprotect().
 > 
-> This doesn't work very well for s390: psw_idle() will enable interrupts
-> to wait for an interrupt. As soon as an interrupt occurs the interrupt
-> handler will verify if the old context was psw_idle(). If that is the
-> case the interrupt enablement bits in the old program status word will
-> be cleared.
+> This adds two previously missing PUD level basic tests and while here fixes
+> pxx_wrprotect() related typos in the documentation file.
 > 
-> A subsequent test in both the external as well as the io interrupt
-> handler checks if in the old context interrupts were enabled. Due to
-> the above patching of the old program status word it is assumed the
-> old context had interrupts disabled, and therefore a call to
-> TRACE_IRQS_OFF (aka trace_hardirqs_off_caller) is skipped. Which in
-> turn makes lockdep incorrectly "think" that interrupts are enabled
-> within the interrupt handler.
-> 
-> Fix this by unconditionally calling TRACE_IRQS_OFF when entering
-> interrupt handlers. Also call unconditionally TRACE_IRQS_ON when
-> leaving interrupts handlers.
-> 
-> This leaves the special psw_idle() case, which now returns with
-> interrupts disabled, but has an "irqs on" lockdep state. So callers of
-> psw_idle() must adjust the state on their own, if required. This is
-> currently only __udelay_disabled().
-> 
-> Fixes: 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs tracing")
-> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-
-FWIW, this makes sense to me from what I had to chase on the arm64 side,
-and this seems happy atop v5.10-rc6 with all the lockdep and RCU debug
-options enabled when booting to userspace under QEMU.
-
-Thanks,
-Mark.
-
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->  arch/s390/kernel/entry.S | 15 ---------------
->  arch/s390/lib/delay.c    |  5 ++---
->  2 files changed, 2 insertions(+), 18 deletions(-)
+>   Documentation/vm/arch_pgtable_helpers.rst |  8 ++---
+>   mm/debug_vm_pgtable.c                     | 42 +++++++++++++++++++++++
+>   2 files changed, 46 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-> index 26bb0603c5a1..92beb1444644 100644
-> --- a/arch/s390/kernel/entry.S
-> +++ b/arch/s390/kernel/entry.S
-> @@ -763,12 +763,7 @@ ENTRY(io_int_handler)
->  	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
->  	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
->  	jo	.Lio_restore
-> -#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
-> -	tmhh	%r8,0x300
-> -	jz	1f
->  	TRACE_IRQS_OFF
-> -1:
-> -#endif
->  	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
->  .Lio_loop:
->  	lgr	%r2,%r11		# pass pointer to pt_regs
-> @@ -791,12 +786,7 @@ ENTRY(io_int_handler)
->  	TSTMSK	__LC_CPU_FLAGS,_CIF_WORK
->  	jnz	.Lio_work
->  .Lio_restore:
-> -#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
-> -	tm	__PT_PSW(%r11),3
-> -	jno	0f
->  	TRACE_IRQS_ON
-> -0:
-> -#endif
->  	mvc	__LC_RETURN_PSW(16),__PT_PSW(%r11)
->  	tm	__PT_PSW+1(%r11),0x01	# returning to user ?
->  	jno	.Lio_exit_kernel
-> @@ -976,12 +966,7 @@ ENTRY(ext_int_handler)
->  	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
->  	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
->  	jo	.Lio_restore
-> -#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
-> -	tmhh	%r8,0x300
-> -	jz	1f
->  	TRACE_IRQS_OFF
-> -1:
-> -#endif
->  	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
->  	lgr	%r2,%r11		# pass pointer to pt_regs
->  	lghi	%r3,EXT_INTERRUPT
-> diff --git a/arch/s390/lib/delay.c b/arch/s390/lib/delay.c
-> index daca7bad66de..8c0c68e7770e 100644
-> --- a/arch/s390/lib/delay.c
-> +++ b/arch/s390/lib/delay.c
-> @@ -33,7 +33,7 @@ EXPORT_SYMBOL(__delay);
->  
->  static void __udelay_disabled(unsigned long long usecs)
->  {
-> -	unsigned long cr0, cr0_new, psw_mask, flags;
-> +	unsigned long cr0, cr0_new, psw_mask;
->  	struct s390_idle_data idle;
->  	u64 end;
->  
-> @@ -45,9 +45,8 @@ static void __udelay_disabled(unsigned long long usecs)
->  	psw_mask = __extract_psw() | PSW_MASK_EXT | PSW_MASK_WAIT;
->  	set_clock_comparator(end);
->  	set_cpu_flag(CIF_IGNORE_IRQ);
-> -	local_irq_save(flags);
->  	psw_idle(&idle, psw_mask);
-> -	local_irq_restore(flags);
-> +	trace_hardirqs_off();
->  	clear_cpu_flag(CIF_IGNORE_IRQ);
->  	set_clock_comparator(S390_lowcore.clock_comparator);
->  	__ctl_load(cr0, 0, 0);
-> -- 
-> 2.17.1
+> diff --git a/Documentation/vm/arch_pgtable_helpers.rst b/Documentation/vm/arch_pgtable_helpers.rst
+> index f3591ee3aaa8..552567d863b8 100644
+> --- a/Documentation/vm/arch_pgtable_helpers.rst
+> +++ b/Documentation/vm/arch_pgtable_helpers.rst
+> @@ -50,7 +50,7 @@ PTE Page Table Helpers
+>   +---------------------------+--------------------------------------------------+
+>   | pte_mkwrite               | Creates a writable PTE                           |
+>   +---------------------------+--------------------------------------------------+
+> -| pte_mkwrprotect           | Creates a write protected PTE                    |
+> +| pte_wrprotect             | Creates a write protected PTE                    |
+>   +---------------------------+--------------------------------------------------+
+>   | pte_mkspecial             | Creates a special PTE                            |
+>   +---------------------------+--------------------------------------------------+
+> @@ -120,7 +120,7 @@ PMD Page Table Helpers
+>   +---------------------------+--------------------------------------------------+
+>   | pmd_mkwrite               | Creates a writable PMD                           |
+>   +---------------------------+--------------------------------------------------+
+> -| pmd_mkwrprotect           | Creates a write protected PMD                    |
+> +| pmd_wrprotect             | Creates a write protected PMD                    |
+>   +---------------------------+--------------------------------------------------+
+>   | pmd_mkspecial             | Creates a special PMD                            |
+>   +---------------------------+--------------------------------------------------+
+> @@ -186,7 +186,7 @@ PUD Page Table Helpers
+>   +---------------------------+--------------------------------------------------+
+>   | pud_mkwrite               | Creates a writable PUD                           |
+>   +---------------------------+--------------------------------------------------+
+> -| pud_mkwrprotect           | Creates a write protected PUD                    |
+> +| pud_wrprotect             | Creates a write protected PUD                    |
+>   +---------------------------+--------------------------------------------------+
+>   | pud_mkdevmap              | Creates a ZONE_DEVICE mapped PUD                 |
+>   +---------------------------+--------------------------------------------------+
+> @@ -224,7 +224,7 @@ HugeTLB Page Table Helpers
+>   +---------------------------+--------------------------------------------------+
+>   | huge_pte_mkwrite          | Creates a writable HugeTLB                       |
+>   +---------------------------+--------------------------------------------------+
+> -| huge_pte_mkwrprotect      | Creates a write protected HugeTLB                |
+> +| huge_pte_wrprotect        | Creates a write protected HugeTLB                |
+>   +---------------------------+--------------------------------------------------+
+>   | huge_ptep_get_and_clear   | Clears a HugeTLB                                 |
+>   +---------------------------+--------------------------------------------------+
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index c05d9dcf7891..c6fffea54522 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -63,6 +63,17 @@ static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
+>   	pte_t pte = pfn_pte(pfn, prot);
+>   
+>   	pr_debug("Validating PTE basic\n");
+> +
+> +	/*
+> +	 * This test needs to execute right after the given page
+> +	 * table entry is created with pfn_pte() to make sure that
+> +	 * protection_map[idx] does not have the dirty bit enabled
+> +	 * from the beginning. This is particularly important for
+> +	 * platforms like arm64 where (!PTE_RDONLY) indicate dirty
+> +	 * bit being set.
+> +	 */
+
+Unless I'm seriously mistaken this comment is misleading - the likes of 
+pte_wrprotect() take the PTE *by value* and return the modified version. 
+So none of these tests actually modify the variable 'pte'. So there 
+shouldn't actually be any restrictions on the ordering.
+
+Or am I missing something?
+
+Steve
+
+> +	WARN_ON(pte_dirty(pte_wrprotect(pte)));
+> +
+>   	WARN_ON(!pte_same(pte, pte));
+>   	WARN_ON(!pte_young(pte_mkyoung(pte_mkold(pte))));
+>   	WARN_ON(!pte_dirty(pte_mkdirty(pte_mkclean(pte))));
+> @@ -70,6 +81,8 @@ static void __init pte_basic_tests(unsigned long pfn, pgprot_t prot)
+>   	WARN_ON(pte_young(pte_mkold(pte_mkyoung(pte))));
+>   	WARN_ON(pte_dirty(pte_mkclean(pte_mkdirty(pte))));
+>   	WARN_ON(pte_write(pte_wrprotect(pte_mkwrite(pte))));
+> +	WARN_ON(pte_dirty(pte_wrprotect(pte_mkclean(pte))));
+> +	WARN_ON(!pte_dirty(pte_wrprotect(pte_mkdirty(pte))));
+>   }
+>   
+>   static void __init pte_advanced_tests(struct mm_struct *mm,
+> @@ -137,6 +150,18 @@ static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
+>   		return;
+>   
+>   	pr_debug("Validating PMD basic\n");
+> +
+> +	/*
+> +	 * This test needs to execute right after the given page
+> +	 * table entry is created with pfn_pmd() to make sure that
+> +	 * protection_map[idx] does not have the dirty bit enabled
+> +	 * from the beginning. This is particularly important for
+> +	 * platforms like arm64 where (!PTE_RDONLY) indicate dirty
+> +	 * bit being set.
+> +	 */
+> +	WARN_ON(pmd_dirty(pmd_wrprotect(pmd)));
+> +
+> +
+>   	WARN_ON(!pmd_same(pmd, pmd));
+>   	WARN_ON(!pmd_young(pmd_mkyoung(pmd_mkold(pmd))));
+>   	WARN_ON(!pmd_dirty(pmd_mkdirty(pmd_mkclean(pmd))));
+> @@ -144,6 +169,8 @@ static void __init pmd_basic_tests(unsigned long pfn, pgprot_t prot)
+>   	WARN_ON(pmd_young(pmd_mkold(pmd_mkyoung(pmd))));
+>   	WARN_ON(pmd_dirty(pmd_mkclean(pmd_mkdirty(pmd))));
+>   	WARN_ON(pmd_write(pmd_wrprotect(pmd_mkwrite(pmd))));
+> +	WARN_ON(pmd_dirty(pmd_wrprotect(pmd_mkclean(pmd))));
+> +	WARN_ON(!pmd_dirty(pmd_wrprotect(pmd_mkdirty(pmd))));
+>   	/*
+>   	 * A huge page does not point to next level page table
+>   	 * entry. Hence this must qualify as pmd_bad().
+> @@ -257,11 +284,26 @@ static void __init pud_basic_tests(unsigned long pfn, pgprot_t prot)
+>   		return;
+>   
+>   	pr_debug("Validating PUD basic\n");
+> +
+> +	/*
+> +	 * This test needs to execute right after the given page
+> +	 * table entry is created with pfn_pud() to make sure that
+> +	 * protection_map[idx] does not have the dirty bit enabled
+> +	 * from the beginning. This is particularly important for
+> +	 * platforms like arm64 where (!PTE_RDONLY) indicate dirty
+> +	 * bit being set.
+> +	 */
+> +	WARN_ON(pud_dirty(pud_wrprotect(pud)));
+> +
+>   	WARN_ON(!pud_same(pud, pud));
+>   	WARN_ON(!pud_young(pud_mkyoung(pud_mkold(pud))));
+> +	WARN_ON(!pud_dirty(pud_mkdirty(pud_mkclean(pud))));
+> +	WARN_ON(pud_dirty(pud_mkclean(pud_mkdirty(pud))));
+>   	WARN_ON(!pud_write(pud_mkwrite(pud_wrprotect(pud))));
+>   	WARN_ON(pud_write(pud_wrprotect(pud_mkwrite(pud))));
+>   	WARN_ON(pud_young(pud_mkold(pud_mkyoung(pud))));
+> +	WARN_ON(pud_dirty(pud_wrprotect(pud_mkclean(pud))));
+> +	WARN_ON(!pud_dirty(pud_wrprotect(pud_mkdirty(pud))));
+>   
+>   	if (mm_pmd_folded(mm))
+>   		return;
 > 
+
