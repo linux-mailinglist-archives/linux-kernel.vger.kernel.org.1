@@ -2,133 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B4F2CC5E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06A02CC5F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389546AbgLBSv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:51:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42978 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726996AbgLBSv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:51:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606935069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MrETXDccj16ROSTdsfK+oPYaF1D5OYkdWel8AMipPuI=;
-        b=mldBlNabsf0QaJu/CnF2j9hJEHWdLf0HS7pnsoixlHjRLEzPOm3JkdjDMxhO0yDnmX+Rvx
-        e5H8PPKB48ggBsg81uckMgOgu9MdOZA4L5+ZYkaoLLa2Oz2uQBhq2EPJWMA9f0H8fmlPyB
-        n8Hz/FztB29TDZwkdexmfmG2waIh+NQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2725FACF9;
-        Wed,  2 Dec 2020 18:51:09 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 19:51:07 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
-        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
-        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
-Message-ID: <20201202185107.GW17338@dhcp22.suse.cz>
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-3-minchan@kernel.org>
- <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
- <20201202154915.GU17338@dhcp22.suse.cz>
- <X8e9tSwcsrEsAv1O@google.com>
- <20201202164834.GV17338@dhcp22.suse.cz>
- <X8fU1ddmsSfuV6sD@google.com>
+        id S2389661AbgLBSwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387805AbgLBSwl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:52:41 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF63C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:51:55 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id q13so6351868lfr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:51:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uCMRWJFHgW0epDmnZ3QZT3N00+SWcEpcWOZCRs/w+/Q=;
+        b=BgeVDYkgUd3FtfoBxcBxfhoLaDwKbwMlfZDnj8LU8hy5khXtx6UnsnK55wR8xgxbu9
+         rOIEqZl98VeqvIlqRhAbVkJRsxzuY3ciDcfQXO/YJ+7oOf7gA2ghOZX6DFLzuStvJD5u
+         INb+Nsqo+DkNYSuINFNITtPAiGUlLwLuC7NWrReICLZ7KsDW14AUaTMwUy0pFPSXwEM/
+         am42OH91QT5EcBo7jKX4diYfLJ5JlMb7RuajKnNKHjoS2zZfoPtuh4BzVVrdgQv9Ccdc
+         HsyoBo/YhJfPE6QzIUKK2EcgOcOgP/EAx/kWYMoIplS+Zih8Hb7ecE7qfE+kCCF2sI6+
+         Q35g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uCMRWJFHgW0epDmnZ3QZT3N00+SWcEpcWOZCRs/w+/Q=;
+        b=nyGnNTjZ40a+5jh0nOTKiaXLwdnqrRu0Bael+UIBA6bYuNuU0f8AWJ7uXjwGmBAdf2
+         EB5/1sJhVxJBmMI6R233dzkRNh+r6STrpGSU9QOo4zNOC+3eK92bJj6+9De6xE2oyaJD
+         5HU3jUdt+gzAE84El4YWTRRi31HWPrYS4fa6VXenaPpQuPmcakHxBEjPscFeg+9cvYYk
+         W6IXpBMcWM7FQ2zyyVB4jxdALHP9Zk6gFOYlNFpuAG07fXDBIw4zH8+tANwq7Rj60s+M
+         RciM7hpJtk7HfEOutLQFMoQlUTx/nTgbC2XNhkWHci2M4AaRz/GS9+opNopyt6DNRkzw
+         edVQ==
+X-Gm-Message-State: AOAM532dr6+K0igev/c/uSE9TJ5BQq3lVFS5k1vRsOurpS6DsE+AE2EN
+        GdnRA4PtbXXSgMOPQhzl/Kc7KN/ddl6veVC0
+X-Google-Smtp-Source: ABdhPJx/tUZbr/lJ1lUD7HYMEzn6WHkSqY94xkZWmEGzXgjf+VUa7NZMiEeFAEj+ZCS4mCzSiIQC1Q==
+X-Received: by 2002:a19:3c2:: with SMTP id 185mr1955420lfd.403.1606935113021;
+        Wed, 02 Dec 2020 10:51:53 -0800 (PST)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id y134sm666365lff.162.2020.12.02.10.51.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 10:51:52 -0800 (PST)
+From:   Marcin Wojtas <mw@semihalf.com>
+To:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+Cc:     ulf.hansson@linaro.org, huziji@marvell.com,
+        adrian.hunter@intel.com, jaz@semihalf.com, tn@semihalf.com,
+        ard.biesheuvel@arm.com, kostap@marvell.com,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: [PATCH v3 0/4] sdhci-xenon ACPI support
+Date:   Wed,  2 Dec 2020 19:51:14 +0100
+Message-Id: <20201202185118.29076-1-mw@semihalf.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8fU1ddmsSfuV6sD@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-12-20 09:54:29, Minchan Kim wrote:
-> On Wed, Dec 02, 2020 at 05:48:34PM +0100, Michal Hocko wrote:
-> > On Wed 02-12-20 08:15:49, Minchan Kim wrote:
-> > > On Wed, Dec 02, 2020 at 04:49:15PM +0100, Michal Hocko wrote:
-> > [...]
-> > > > Well, what I can see is that this new interface is an antipatern to our
-> > > > allocation routines. We tend to control allocations by gfp mask yet you
-> > > > are introducing a bool parameter to make something faster... What that
-> > > > really means is rather arbitrary. Would it make more sense to teach
-> > > > cma_alloc resp. alloc_contig_range to recognize GFP_NOWAIT, GFP_NORETRY resp.
-> > > > GFP_RETRY_MAYFAIL instead?
-> > > 
-> > > If we use cma_alloc, that interface requires "allocate one big memory
-> > > chunk". IOW, return value is just struct page and expected that the page
-> > > is a big contiguos memory. That means it couldn't have a hole in the
-> > > range.
-> > > However the idea here, what we asked is much smaller chunk rather
-> > > than a big contiguous memory so we could skip some of pages if they are
-> > > randomly pinned(long-term/short-term whatever) and search other pages
-> > > in the CMA area to avoid long stall. Thus, it couldn't work with exising
-> > > cma_alloc API with simple gfp_mak.
-> > 
-> > I really do not see that as something really alient to the cma_alloc
-> > interface. All you should care about, really, is what size of the object
-> > you want and how hard the system should try. If you have a problem with
-> > an internal implementation of CMA and how it chooses a range and deal
-> > with pinned pages then it should be addressed inside the CMA allocator.
-> > I suspect that you are effectivelly trying to workaround those problems
-> > by a side implementation with a slightly different API. Or maybe I still
-> > do not follow the actual problem.
-> >  
-> > > > I am not deeply familiar with the cma allocator so sorry for a
-> > > > potentially stupid question. Why does a bulk interface performs better
-> > > > than repeated calls to cma_alloc? Is this because a failure would help
-> > > > to move on to the next pfn range while a repeated call would have to
-> > > > deal with the same range?
-> > > 
-> > > Yub, true with other overheads(e.g., migration retrial, waiting writeback
-> > > PCP/LRU draining IPI)
-> > 
-> > Why cannot this be implemented in the cma_alloc layer? I mean you can
-> > cache failed cases and optimize the proper pfn range search.
-> 
-> So do you suggest this?
-> 
-> enum cma_alloc_mode {
-> 	CMA_ALLOC_NORMAL,
-> 	CMA_ALLOC_FAIL_FAST,
-> };
-> 
-> struct page *cma_alloc(struct cma *cma, size_t count, unsigned int
-> 	align, enum cma_alloc_mode mode);
-> 
-> >From now on, cma_alloc will keep last failed pfn and then start to
-> search from the next pfn for both CMA_ALLOC_NORMAL and
-> CMA_ALLOC_FAIL_FAST if requested size from the cached pfn is okay
-> within CMA area and then wraparound it couldn't find right pages
-> from the cached pfn. Othewise, the cached pfn will reset to the zero
-> so that it starts the search from the 0. I like the idea since it's
-> general improvement, I think.
+Hi,
 
-Yes something like that. There are more options to be clever here - e.g.
-track ranges etc. but I am not sure this is worth the complexity.
+The third version of the sdhci-xenon ACPI support
+addresses a comment regarding clk_disable_unprepare
+dependency on DT.
 
-> Furthemore, With CMA_ALLOC_FAIL_FAST, it could avoid several overheads
-> at the cost of sacrificing allocation success ratio like GFP_NORETRY.
+The MacchiatoBin firmware for testing can be obtained from:
+https://drive.google.com/file/d/1Y8BhyaCrksQgT_GPfpqqiYHpQ41kP8Kp
 
-I am still not sure a specific flag is a good interface. Really can this
-be gfp_mask instead?
+Changelog:
+v2->v3
+  * Call clk_disable_unprepare unconditionally.
+  * Add Adrian's Acked-by to all patches.
 
-> I think that would solve the issue with making the API more flexible.
-> Before diving into it, I'd like to confirm we are on same page.
-> Please correct me if I misunderstood.
+v1->v2
+  * Split single commit to 4
+  * Use device_match_data and dedicated ACPI ID's per controller
+    variant
 
-I am not sure you are still thinking about a bulk interface.
+
+Marcin Wojtas (4):
+  mmc: sdhci-xenon: use match data for controllers variants
+  mmc: sdhci-xenon: switch to device_* API
+  mmc: sdhci-xenon: use clk only with DT
+  mmc: sdhci-xenon: introduce ACPI support
+
+ drivers/mmc/host/sdhci-xenon.h     |  12 ++-
+ drivers/mmc/host/sdhci-xenon-phy.c |  40 ++++----
+ drivers/mmc/host/sdhci-xenon.c     | 101 +++++++++++++-------
+ 3 files changed, 97 insertions(+), 56 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.29.0
+
