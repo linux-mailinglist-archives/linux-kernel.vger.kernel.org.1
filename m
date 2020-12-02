@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2922CBFD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C660B2CBFD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729945AbgLBOeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727460AbgLBOeg (ORCPT
+        id S1730205AbgLBOfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:35:50 -0500
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:57681 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726071AbgLBOft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:34:36 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6069C0613CF;
-        Wed,  2 Dec 2020 06:33:56 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id s2so1211975plr.9;
-        Wed, 02 Dec 2020 06:33:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jhLHY8QyPomX7+8QgezYScCBuMVKGE89dP75ZvcTbfc=;
-        b=F9kyCqSTHzWUx3lx1szktgRdzLO+BcxE6M6k4y0VpLoM7XYhauT0UljblhVwgoZb30
-         cdk2QtA92ZQHfrnAgHUkfb9mryKbPBSsDiLX8KJGgLNrFlmu+Oo+VorC7a1Ur/EXW9Lu
-         h2CUUfrmV5DZ0+x60HsowW6GqEPi1rd6mrJ7sVIKytUnYDr6O2BMwVylEvl9lau4aupE
-         TkPsjkPY6HTOUQ9zsy6HNWFCtCkQuitYL3kGRU4gbDx9O1tNJBoxrVwTe8QCoSa7YYpk
-         /1T/+CTtto9jx7OZRBBaKXYYh7DX4s7Pwyg0BAmB5ze5N6ersPBpNNY5DBPHW6avJaXF
-         TG5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jhLHY8QyPomX7+8QgezYScCBuMVKGE89dP75ZvcTbfc=;
-        b=U87d+l/YpBo4MTIUrAd1yYbpqgSYwZQRBpB6dStPOt4BcFzgwhQ4cmHjjGKaLo7oJh
-         UOROy1nfm8ncycJAz16w1yZHZyA/LxKo81BYwYDHsORpa1U24lY5CfSPDwlz6xHNo9ZC
-         VgDn4fZecRuZG0TOXb5/oRryHwO/rtAz1DcRwCubF4nSZ92aVqc72nrGHXXK21k64CA3
-         AsSkgxBV0ScRUpSnfluFuNEpRu2L3Q0aWqljX2bghq0O+rqHk3Gg+zI/zb99x8s4X99J
-         +uzBqyyOC7WdwGuurfTPmKNQe2y8O8ular4V6KgtUT3EPgJ5rBVZ+ZyKLRvydLtbm2lQ
-         DCfA==
-X-Gm-Message-State: AOAM532AV0nHQ34BlxqO6FZ/Sn2p4289qVqs/PfS+8mNk2dYIzSt+Vpp
-        WfALid3bmUBKv4FJcn1KXgcD5WLwK0hYsg4sVEE=
-X-Google-Smtp-Source: ABdhPJxr6QfkVhUs2mGtVIPIaJI9K8ykKYv5YXpKR2u2KXqwXr1SyRSCcN4uXm8kfnu0qKCboU8lwMl8FTALOvHpYtA=
-X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id
- v3-20020a170902b7c3b02900da76bc2aa9mr2889382plz.21.1606919635935; Wed, 02 Dec
- 2020 06:33:55 -0800 (PST)
+        Wed, 2 Dec 2020 09:35:49 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id kTDhkEkxiN7XgkTDkktWZQ; Wed, 02 Dec 2020 15:35:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1606919706; bh=fh8vXt7wHNbCxu6ykXYAavndPHeJvk9VILjQnHShEFA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=KgbqiPCRbb4OHX60zqLwum0x/0xSyjmCDHD46BaaZI0hm3+Wv9QNp+oKmkSvyNzSP
+         IaDrHmWP1boiXe1KenIZjH+4KlUHyRHJo4D874h5hyRnapFOlFfI9MM9PIR0Zthwru
+         ndNPsBuUCvP7jdLWMVdrMPYlPqfcIalV3/PtNwikZxG9t+XO9pfC/NbzsfRvJReexm
+         iBddXCKoiTKWATFLJgy+p+jpgUnCziVLQ/KBiIuLyjcl7A1ki/0naJ2bVtTMCsOy3g
+         pLcpJsNIxxq67jakaeZQqdALVHY5v74HHewICefF6CBCnkuyn4qA//fzYKFHGsGAzj
+         yQR3krgjWr0ZQ==
+Subject: Re: [PATCH v3 0/6] ARM: dts: sun8i: v3s: Enable video decoder
+To:     Martin Cerveny <m.cerveny@computer.org>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20201116125617.7597-1-m.cerveny@computer.org>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <1266873e-fe8f-d021-9d45-0baa38e32d31@xs4all.nl>
+Date:   Wed, 2 Dec 2020 15:35:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
- <CAPDyKFrg5ur3iTp-dAoVqV5fiFgcmt01j9R7z3_i=tqhWW3WNg@mail.gmail.com>
- <20201202122520.GD4077@smile.fi.intel.com> <CAPDyKFra1+HPGYjG30LkuPxPyN8mQaZan4+AFLKf7_gvd979PA@mail.gmail.com>
- <CAHp75VeXxPoNqJVQojDC1G3gzJUJEiJs2UOm6kob71Aqa_7v2w@mail.gmail.com> <CAPDyKFpfadG2-JPA1PC5Sx1_eM39AQUQTVj=m26Gu_=GQmjicA@mail.gmail.com>
-In-Reply-To: <CAPDyKFpfadG2-JPA1PC5Sx1_eM39AQUQTVj=m26Gu_=GQmjicA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 2 Dec 2020 16:34:44 +0200
-Message-ID: <CAHp75Vf66eWnJFom66oZZnZ4Rcw0VF0QkGWgM5Mm40mTVt6i4A@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Mark Gross <mgross@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201116125617.7597-1-m.cerveny@computer.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKR+fVSTqZQ9ETYlJsohtz44JkYTfKbMjH4fxpTnpM4lRtLIPUmpUyH43J8Y6tdt4a6CFI9TQe4YqZpf2OvrmjuoH14gdj6mjhFaRn1iyasnjc0vQuXC
+ GYJY5etmYjhxjxBl0MIbHFoePwaCbr4gd6f9il5k9DK7D/SregCzz2q+8Sd3jdr3LhoqQ19E5U186vp8kam4zDdErEMxdqG9oyIfu/Q5uoef+knX5ms4Lzpt
+ myl14X96sBTogHjL75oPC0XwFYfBa9qD724PSHOHNp2CGggDJYLTscPzPYVuOFLRRYB4lWFIqxLpW7mr34BoE6jMiZWCT1kpLts/z8b44or+1E9Qg0RI/E2m
+ k337RuaaKaoB2+fiNtKSc4wsohixuZoRilBJ5NmkITSyWpRB+o73Of2KSgI7XMhD6eXC+IAwn0o+pwrqOhkIH45371j+6GVvdszzIdlhA/Pcs6jDEym1SR/P
+ 2aYu1xPiHsap+xvgOc2mKP6O1iT1/6/MW/VqWjEk2P/f+MdZmbjJMYAtdjv98BfJYr++MLXM01HbHKGMGFxiKWwP/gF0p01GZI0hQ/eDmaHQ08udrJLDmiyr
+ rB8DKxSE0kyClfHBS9Q+c9XpTNb/m5lZ65waecVEhVWzoDOL2GxeI5EKMgzI4XquqxZY41DXlFUV75/5bY5hkjPttH6HORjDG6bYPhXq9ehTkiTtzSFOe+MH
+ bo2h+SVYO9s=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 4:10 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> On Wed, 2 Dec 2020 at 14:09, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Wed, Dec 2, 2020 at 2:44 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+Hi Martin, Maxime,
 
-...
+On 16/11/2020 13:56, Martin Cerveny wrote:
+> First patch extends cedrus capability to all decoders
+> because V3s missing MPEG2 decoder.
+> 
+> Next two patches add system control node (SRAM C1) and 
+> next three patches add support for Cedrus VPU.
 
-> > My point is that it may be *not* a pin control at all.
->
-> Sorry, but I don't quite follow, what is *not* a pinctrl?
->
-> According to the information I have received from the previous
-> discussions [1], it's clear to me that the ARM SMC call ends up
-> changing settings for the I/O-pads. Or did I get that wrong?
+I've picked up patches 1, 4 and 5 for the media subsystem.
+Maxime, can you pick up the other three?
 
-I'm discussing the possible implication of the solution (faking pin
-control) you are proposing.
-In this case we know that it's a pin control *under the hood of IPC*
-(!) but in another hardware generation it may be, for example,custom
-voltage regulator.
+Thanks!
 
-What you are proposing seems to me suboptimal and actually lying about
-hardware. Because we do not have direct access to control this pad.
-What we have is an IPC to firmware. And it's not our business what is
-under the hood.
+	Hans
 
-It seems it was a mistake to talk about these details in the first
-place because it brings more confusion about hardware. So, consider
-that it's not a pin control from OS perspective, but a firmware magic.
+> 
+> Tested on "Lichee Zero" V3s platform with testing LCD patch
+> ( https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e )
+> and V4L2 raw API testing utility (updated to v5.10)
+> ( https://github.com/mcerveny/v4l2-request-test ):
+> - enabled LCD (DRM dual VI and sigle UI planes)
+> - added RGB panel
+> - enabled PWM
+> - need additional patch https://git.linuxtv.org/media_tree.git/commit/?h=fixes&id=9ac924b98728c3733c91c6c59fc410827d0da49f
+> 
+> There is low memory on V3s (64MB) and maximum must be available to CMA:
+> - CONFIG_CMA_SIZE_MBYTES=28
+> - add swap to swapout other processes
+> - decrease buffers in v4l2-request-test (.buffers_count from 16 to 8)
+> 
+> Only H.264 decoder working - MPEG and H.265 unsupported by V3s,
+> JPEG/MJPEG still unimplemented, encoder unimplemented
+> 
+> best regards,
+> Martin
+> 
+> Changes since v2:
+> - updated/rebased to https://git.linuxtv.org/hverkuil/media_tree.git/?h=for-v5.11e
+> - some parts of patches implemeted by others
+> - updated R40
+> Changes since v1:
+> - patch 0005 rename
+> - added testing description
+> 
+> Martin Cerveny (6):
+>   media: cedrus: Register all codecs as capability
+>   dt-bindings: sram: allwinner,sun4i-a10-system-control: Add V3s
+>     compatibles
+>   ARM: dts: sun8i: v3s: Add node for system control
+>   media: cedrus: Add support for V3s
+>   dt-bindings: media: cedrus: Add V3s compatible
+>   ARM: dts: sun8i: v3s: Add video engine node
+> 
+>  .../allwinner,sun4i-a10-video-engine.yaml     |  1 +
+>  .../allwinner,sun4i-a10-system-control.yaml   |  3 ++
+>  arch/arm/boot/dts/sun8i-v3s.dtsi              | 24 ++++++++++++++
+>  drivers/staging/media/sunxi/cedrus/cedrus.c   | 32 +++++++++++++++++--
+>  drivers/staging/media/sunxi/cedrus/cedrus.h   |  2 ++
+>  .../staging/media/sunxi/cedrus/cedrus_video.c |  2 ++
+>  6 files changed, 62 insertions(+), 2 deletions(-)
+> 
 
--- 
-With Best Regards,
-Andy Shevchenko
