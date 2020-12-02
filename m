@@ -2,69 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C992CC1CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2C02CC1F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388972AbgLBQLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:11:38 -0500
-Received: from mailoutvs5.siol.net ([185.57.226.196]:43698 "EHLO mail.siol.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726507AbgLBQLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:11:38 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id A022E520516;
-        Wed,  2 Dec 2020 17:10:54 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id hmIEAFM6fW50; Wed,  2 Dec 2020 17:10:54 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 50050520F6E;
-        Wed,  2 Dec 2020 17:10:54 +0100 (CET)
-Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 8F76E520516;
-        Wed,  2 Dec 2020 17:10:51 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Andre Przywara <andre.przywara@arm.com>
-Cc:     Icenowy Zheng <icenowy@aosc.xyz>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        Andre Przywara <andre.przywara@arm.com>
-Subject: Re: [PATCH 1/8] clk: sunxi-ng: h6: Fix clock divider range on some clocks
-Date:   Wed, 02 Dec 2020 17:17:03 +0100
-Message-ID: <2017247.PyFJg3gf1G@kista>
-In-Reply-To: <20201202135409.13683-2-andre.przywara@arm.com>
-References: <20201202135409.13683-1-andre.przywara@arm.com> <20201202135409.13683-2-andre.przywara@arm.com>
+        id S1730673AbgLBQSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:18:48 -0500
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:53998 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728503AbgLBQSr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:18:47 -0500
+Received: from pps.filterd (m0170393.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2G2kHM020078;
+        Wed, 2 Dec 2020 11:18:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=smtpout1; bh=KKtMcRRuRaa2iQTACw2ISjeqc+9U7fbuIz2AU7EVIX4=;
+ b=RSwfAinnEjKSdhouTovNqDIZFP4gK+1vPNV2VFLLUTPIpyZP05TTayCgXr5lHcUdJagr
+ +yrQXxUpUi4BxXoZXcC9C4eZSX0qOYJxL/HlxNg7TFOio0LSiEm7PDq7qNQZjnsrOM7R
+ I8kJTbHLi4jGw/NgGt4txftDGJe8jfPAQysSwF6Uv/zARjfPyZW0BHe8kYy8g9m9OSRl
+ pBNcYD6eDBgC5DJ8RFk5UT/LRHCS/yELMBxggmThrqdNILkPBm1f/M8PeWh4VFaxOQvm
+ mc0Nk5u1XIxeNqPmSIzZRj495Q51FRk35A/VdghN1U8TxRSSnGrYNTHAFLDxlDDPOrf8 Dw== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 353jrq0n53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 11:18:06 -0500
+Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2GDDaS114781;
+        Wed, 2 Dec 2020 11:18:05 -0500
+Received: from ausxippc110.us.dell.com (AUSXIPPC110.us.dell.com [143.166.85.200])
+        by mx0a-00154901.pphosted.com with ESMTP id 3565vm86w5-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Dec 2020 11:18:05 -0500
+X-LoopCount0: from 10.173.37.130
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.78,387,1599541200"; 
+   d="scan'208";a="1013735359"
+From:   Mario Limonciello <mario.limonciello@dell.com>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org
+Cc:     linux-kernel@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Netfin <sasha.neftin@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        David Miller <davem@davemloft.net>, darcari@redhat.com,
+        Yijun.Shen@dell.com, Perry.Yuan@dell.com,
+        Mario Limonciello <mario.limonciello@dell.com>
+Subject: [PATCH v2 0/5] Improve s0ix flows for systems i219LM
+Date:   Wed,  2 Dec 2020 10:17:43 -0600
+Message-Id: <20201202161748.128938-1-mario.limonciello@dell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ impostorscore=0 clxscore=1015 bulkscore=0 adultscore=0 mlxlogscore=732
+ lowpriorityscore=0 mlxscore=0 spamscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020096
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 malwarescore=0 mlxlogscore=844 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012020096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 02. december 2020 ob 14:54:02 CET je Andre Przywara napisal(a):
-> While comparing clocks between the H6 and H616, some of the M factor
-> ranges were found to be wrong: the manual says they are only covering
-> two bits [1:0], but our code had "5" in the number-of-bits field.
-> 
-> By writing 0xff into that register in U-Boot and via FEL, it could be
-> confirmed that bits [4:2] are indeed masked off, so the manual is right.
-> 
-> Change to number of bits in the affected clock's description.
-> 
-> Fixes: 524353ea480b ("clk: sunxi-ng: add support for the Allwinner H6 CCU")
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+commit e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
+disabled s0ix flows for systems that have various incarnations of the
+i219-LM ethernet controller.  This was done because of some regressions
+caused by an earlier
+commit 632fbd5eb5b0e ("e1000e: fix S0ix flows for cable connected case")
+with i219-LM controller.
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Performing suspend to idle with these ethernet controllers requires a properly
+configured system.  To make enabling such systems easier, this patch
+series allows turning on using ethtool.
 
-Best regards,
-Jernej
+The flows have also been confirmed to be configured correctly on Dell's Latitude
+and Precision CML systems containing the i219-LM controller, when the kernel also
+contains the fix for s0i3.2 entry previously submitted here:
+https://marc.info/?l=linux-netdev&m=160677194809564&w=2
 
+Patches 3 and 4 will turn the behavior on by default for Dell's CML systems.
+Patch 5 allows accessing the value of the flags via ethtool to tell if the
+heuristics have turned on s0ix flows, as well as for development purposes
+to determine if a system should be added to the heuristics list.
+
+Changes from v1 to v2:
+ - Directly incorporate Vitaly's dependency patch in the series
+ - Split out s0ix code into it's own file
+ - Adjust from DMI matching to PCI subsystem vendor ID/device matching
+ - Remove module parameter and sysfs, use ethtool flag instead.
+ - Export s0ix flag to ethtool private flags
+ - Include more people and lists directly in this submission chain.
+
+Mario Limonciello (4):
+  e1000e: Move all s0ix related code into it's own source file
+  e1000e: Add Dell's Comet Lake systems into s0ix heuristics
+  e1000e: Add more Dell CML systems into s0ix heuristics
+  e1000e: Export adapter flags to ethtool
+
+Vitaly Lifshits (1):
+  e1000e: fix S0ix flow to allow S0i3.2 subset entry
+
+ drivers/net/ethernet/intel/e1000e/Makefile  |   2 +-
+ drivers/net/ethernet/intel/e1000e/e1000.h   |   4 +
+ drivers/net/ethernet/intel/e1000e/ethtool.c |  23 ++
+ drivers/net/ethernet/intel/e1000e/netdev.c  | 272 +----------------
+ drivers/net/ethernet/intel/e1000e/s0ix.c    | 308 ++++++++++++++++++++
+ 5 files changed, 341 insertions(+), 268 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/e1000e/s0ix.c
+
+--
+2.25.1
 
