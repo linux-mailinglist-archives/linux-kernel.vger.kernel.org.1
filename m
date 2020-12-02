@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58102CC90F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27572CC93A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgLBVrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:47:13 -0500
-Received: from mga12.intel.com ([192.55.52.136]:35055 "EHLO mga12.intel.com"
+        id S1726986AbgLBV4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:56:34 -0500
+Received: from hex.unseen.dk ([212.237.101.44]:36754 "EHLO hex.unseen.dk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726646AbgLBVrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:47:12 -0500
-IronPort-SDR: d5tK3cdokoC6yc2tGvy2mpAu6eMaUmzsPGvCwwxn+BY+eInw+2mikHo9PWv8IxtsIYRZm0j/Zh
- jytjM1UMS7HQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152346583"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="152346583"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 13:46:32 -0800
-IronPort-SDR: 63r2hOH28lGBrb5+aNs8JtEfc3rF5jVDNVCmUbmcxKHQ/Cjrr2iCKMsMUYShTiJvbihV7WLpvX
- lZxC9VHeIrSw==
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="481714327"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 13:46:31 -0800
-From:   ira.weiny@intel.com
-To:     fstests@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Eric Sandeen <sandeen@redhat.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH V2] common/rc: Fix _check_s_dax()
-Date:   Wed,  2 Dec 2020 13:46:29 -0800
-Message-Id: <20201202214629.1563760-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20201202214145.1563433-1-ira.weiny@intel.com>
-References: <20201202214145.1563433-1-ira.weiny@intel.com>
+        id S1726082AbgLBV4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 16:56:33 -0500
+X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 16:56:32 EST
+Received: from localhost (localhost [127.0.0.1])
+        by hex.unseen.dk (Postfix) with ESMTP id 990DB11DA3FB;
+        Wed,  2 Dec 2020 22:46:35 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at unseen.dk
+Received: from hex.unseen.dk ([127.0.0.1])
+        by localhost (hex.unseen [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6qEBB2FyEDon; Wed,  2 Dec 2020 22:46:35 +0100 (CET)
+Received: from bsjohnson.unseen (unknown [10.0.0.72])
+        by hex.unseen.dk (Postfix) with ESMTPSA id C6CAB11DA3FA;
+        Wed,  2 Dec 2020 22:46:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=unseen.dk; s=hex;
+        t=1606945594; bh=T/UwXSueSuSau4pzwxws5vR3ydYacy3jwNWkonR3tgs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O2c/oWEE+T7M6AXFOgHq9hZh3aQ4kYAU8lbaVFC8rMZBvSYqdcMBd+2736JX9ckIC
+         U7k2KJzlsfmsC/SN0mus4oAWVcvBoCkH+fEII008a7XslTtFYtgk9bRm23u+OIbbwi
+         iSv/Kjra5/iIDMnUhaWvZJf0rrdsgBy6q6YwoHNo=
+From:   =?UTF-8?q?Dennis=20Skovborg=20J=C3=B8rgensen?= <dennis@unseen.dk>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, devel@driverdev.osuosl.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/vc04_services/bcm2835-audio: Parenthesize alsa2chip macro
+Date:   Wed,  2 Dec 2020 22:46:31 +0100
+Message-Id: <20201202214634.186858-1-dennis@unseen.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Add parenthesis around the alsa2chip macro to remove a checkpatch error.
 
-There is a conflict with the user visible statx bits 'mount root' and
-'dax'.  The kernel is changing the dax bit to correct this conflict.[1]
-
-Adjust _check_s_dax() to use the new bit.  Because DAX tests do not run
-on root mounts, STATX_ATTR_MOUNT_ROOT should always be 0, therefore we
-can allow either bit to indicate DAX and cover any kernel which may be
-running.
-
-[1] https://lore.kernel.org/lkml/3e28d2c7-fbe5-298a-13ba-dcd8fd504666@redhat.com/
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Dennis Skovborg Jørgensen <dennis@unseen.dk>
 ---
+ drivers/staging/vc04_services/bcm2835-audio/bcm2835.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes for V2:
-	Fix bad indentation whitespace.
-
- common/rc | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/common/rc b/common/rc
-index b5a504e0dcb4..9418f7bc8dab 100644
---- a/common/rc
-+++ b/common/rc
-@@ -3221,10 +3221,23 @@ _check_s_dax()
- 	local exp_s_dax=$2
+diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
+index 1b36475872d6..51066ac8eea5 100644
+--- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
++++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
+@@ -22,7 +22,7 @@ enum {
+ /* macros for alsa2chip and chip2alsa, instead of functions */
  
- 	local attributes=$($XFS_IO_PROG -c 'statx -r' $target | awk '/stat.attributes / { print $3 }')
--	if [ $exp_s_dax -eq 0 ]; then
--		(( attributes & 0x2000 )) && echo "$target has unexpected S_DAX flag"
-+
-+	# The attribute bit value, STATX_ATTR_DAX (0x2000), conflicted with
-+	# STATX_ATTR_MOUNT_ROOT.  Therefore, STATX_ATTR_DAX was changed to
-+	# 0x00200000.
-+	#
-+	# Because DAX tests do not run on root mounts, STATX_ATTR_MOUNT_ROOT
-+	# should always be 0, therefore we can allow either bit to indicate DAX
-+	# and cover any kernel which may be running.
-+
-+	if [ $(( attributes & 0x00200000 )) -ne 0 ] || [ $(( attributes & 0x2000 )) -ne 0 ]; then
-+		if [ $exp_s_dax -eq 0 ]; then
-+			echo "$target has unexpected S_DAX flag"
-+		fi
- 	else
--		(( attributes & 0x2000 )) || echo "$target doesn't have expected S_DAX flag"
-+		if [ $exp_s_dax -ne 0 ]; then
-+			echo "$target doesn't have expected S_DAX flag"
-+		fi
- 	fi
- }
+ // convert alsa to chip volume (defined as macro rather than function call)
+-#define alsa2chip(vol) (uint)(-(((vol) << 8) / 100))
++#define alsa2chip(vol) ((uint)(-(((vol) << 8) / 100)))
  
+ // convert chip to alsa volume
+ #define chip2alsa(vol) -(((vol) * 100) >> 8)
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.29.2
 
