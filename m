@@ -2,87 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EED2CC185
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE692CC18A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730599AbgLBQA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:00:58 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35034 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727106AbgLBQA6 (ORCPT
+        id S1730618AbgLBQBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727106AbgLBQBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:00:58 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FlHsm131084;
-        Wed, 2 Dec 2020 11:00:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ix5xI4eV4ktS+Si1szwX06PnD5N08iIL8loUbC9USd4=;
- b=nsB7YB15ipQBreJGZkiwN0XbG2LBNzH2DL294GudnK0QelGbvRwXCuvCHtrd5Bt/+5MG
- pCbWiL/it9FIaG0UHc9psoqReFqXkaB2l9xOpPMfuOu8gVivfrww0IG6uKEYQHPTnHdd
- OnzuDBI75KOZFom7PNwNRFrt0vqbugUR8GolykImVtvvZE2jIXt3tjOl7YKe7nTt2sq/
- AFqTRrMCa5jAMhPgavMkjd+fE31Th0NO07z4uk/12lOSpPPuWpLSRSGEeiUyWTWqhsRC
- u0VHWHwiDEQ535xzPZiQh1XM45gxas/ATDc4RxUl9r3zr3SPqBEb3xmTu2vk/uNBt6Bs Zg== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355sr5vdan-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 11:00:10 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FWWEP004650;
-        Wed, 2 Dec 2020 16:00:09 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 353e69hvgm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 16:00:09 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2G09Yl40960468
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 16:00:09 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F105FAE064;
-        Wed,  2 Dec 2020 16:00:08 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23A5AAE066;
-        Wed,  2 Dec 2020 16:00:08 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 16:00:07 +0000 (GMT)
-Subject: Re: [PATCH v2 14/17] ibmvfc: add cancel mad initialization helper
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
- <20201202005329.4538-15-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <fdcd6adf-be55-7319-e98b-5d5217fa2410@linux.vnet.ibm.com>
-Date:   Wed, 2 Dec 2020 10:00:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 11:01:16 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6CAC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:00:29 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id 7so5175627ejm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:00:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1d9v9FbmrBLfRTd9F4a7mgdLXbSqWogwPCBXl7Mzc/E=;
+        b=cMVqAU1juZXBXpExYQanZKHwWr7HaCYrQPV5M4kfl1N5tD3R03ZARLtLI5Aq6DRAya
+         qigzgDQWETI47kuEkAJU7AZkbHS0GCp8Xn3vY9MmzKL/lVUtm2cUNOYMU3/2o0DjA7Yn
+         9akAMUIxm2DjcYd3Lcxdj55/iRaTqHG/Py19c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1d9v9FbmrBLfRTd9F4a7mgdLXbSqWogwPCBXl7Mzc/E=;
+        b=sDwIfWlLe0qL38DgH9VcftrihnkxKb/PkS9EpKXAZUeGT381I8VwifArxvpBH6/gdh
+         8P+HLksfXIu8iGMCc1kuUVwXSkGoQzSY81BxXr7g6MZUu/3jQXJg1yRyPyBQuLyPfk7a
+         U/8GxnVCY0Zp46FGUiutJMuX+IDNIYRt09uk4TLLt2BbMXXFozwkF2+E0sNbiUdUhB8m
+         Yb68E0xIcu09j7CP1DhYbrxKT7LrjUofoBlHzk9LGjrYlwqsYJlAVY4GOM1ZgE0WoiQ2
+         tIGq61hdcQYXC9GvnF3T0a/2Vt669lrG7d99bEH9w2Wj8YAYsTDyZ6Y66mSJh6rSK7eb
+         XkHw==
+X-Gm-Message-State: AOAM5305esO6pG4Xr4lxyYCkEdeR4M5lnWhKDAygvQEc9/bHVfJUxXFL
+        76bIYD5FUNk3pH4OG7tZvSiJkhksl1p0Kg==
+X-Google-Smtp-Source: ABdhPJwrdh4Jn98ndA5YWoS2racWVpCpEuG+KGUqF5+Hs16V+D0eXhfpZNy7X4bk4j+mD9wxPnBmFg==
+X-Received: by 2002:a17:906:4bc6:: with SMTP id x6mr467220ejv.4.1606924826796;
+        Wed, 02 Dec 2020 08:00:26 -0800 (PST)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id i8sm212501eds.72.2020.12.02.08.00.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 08:00:26 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id ck29so4469488edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:00:25 -0800 (PST)
+X-Received: by 2002:aa7:ce94:: with SMTP id y20mr513212edv.361.1606924824683;
+ Wed, 02 Dec 2020 08:00:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201202005329.4538-15-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 mlxscore=0
- mlxlogscore=999 phishscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020095
+References: <20201027084612.528301-1-victording@google.com> <CAPDyKFo=jA84Zr9AM7sXR_VxpGsi9n-aGJJMRcY7uFBcRWrf4g@mail.gmail.com>
+In-Reply-To: <CAPDyKFo=jA84Zr9AM7sXR_VxpGsi9n-aGJJMRcY7uFBcRWrf4g@mail.gmail.com>
+From:   Raul Rangel <rrangel@chromium.org>
+Date:   Wed, 2 Dec 2020 09:00:13 -0700
+X-Gmail-Original-Message-ID: <CAHQZ30DNK6aWy_XTtOAv9J39qdyvp57HZG=jk3d99fuOsbf4eg@mail.gmail.com>
+Message-ID: <CAHQZ30DNK6aWy_XTtOAv9J39qdyvp57HZG=jk3d99fuOsbf4eg@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci-acpi: AMDI0040: Allow changing HS200/HS400
+ driver strength
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Victor Ding <victording@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
+Thanks Victor and Ulf!
 
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+On Tue, Oct 27, 2020 at 7:42 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Tue, 27 Oct 2020 at 09:46, Victor Ding <victording@google.com> wrote:
+> >
+> > From: Raul E Rangel <rrangel@chromium.org>
+> >
+> > This change will allow platform designers better control over signal
+> > integrity by allowing them to tune the HS200 and HS400 driver strengths.
+> >
+> > The driver strength was previously hard coded to A to solve boot
+> > problems with certain platforms. This driver strength does not
+> > universally apply to all platforms so we need a knob to adjust it.
+> >
+> > All older platforms currently have the SDR104 preset hard coded to A in
+> > the firmware. This means that switching from the hard coded value in
+> > the kernel to reading the SDR104 preset is a no-op for these platforms.
+> > Newer platforms will have properly set presets. So this change will
+> > support both new and old platforms.
+> >
+> > Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+> > Signed-off-by: Victor Ding <victording@google.com>
+>
+> Applied for next, thanks!
+>
+> Note that I amended the patch to fix the white-space issue, as pointed
+> out by Adrian.
+>
+> Kind regards
+> Uffe
+>
+>
+> >
+> > ---
+> >
+> > Changes in v2:
+> > By Victor Ding <victording@google.com>
+> >  - Rebased the patch by using FIELD_GET for preset value bit masks.
+> >  - (No functional changes).
+> >
+> > The original patch was developed by Raul E Rangel.
+> > https://patchwork.kernel.org/project/linux-mmc/patch/20200928154718.2.Ic6b6031366f090393d00a53fd69e1ada31ceb29e@changeid/
+> >
+> >  drivers/mmc/host/sdhci-acpi.c | 39 ++++++++++++++++++++++++++++++++---
+> >  1 file changed, 36 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
+> > index 54205e3be9e8..225cb34cf1b9 100644
+> > --- a/drivers/mmc/host/sdhci-acpi.c
+> > +++ b/drivers/mmc/host/sdhci-acpi.c
+> > @@ -5,6 +5,7 @@
+> >   * Copyright (c) 2012, Intel Corporation.
+> >   */
+> >
+> > +#include <linux/bitfield.h>
+> >  #include <linux/init.h>
+> >  #include <linux/export.h>
+> >  #include <linux/module.h>
+> > @@ -545,10 +546,42 @@ struct amd_sdhci_host {
+> >
+> >  static int amd_select_drive_strength(struct mmc_card *card,
+> >                                      unsigned int max_dtr, int host_drv,
+> > -                                    int card_drv, int *drv_type)
+> > +                                    int card_drv, int *host_driver_strength)
+> >  {
+> > -       *drv_type = MMC_SET_DRIVER_TYPE_A;
+> > -       return MMC_SET_DRIVER_TYPE_A;
+> > +       struct sdhci_host *host = mmc_priv(card->host);
+> > +       u16 preset, preset_driver_strength;
+> > +
+> > +       /*
+> > +        * This method is only called by mmc_select_hs200 so we only need to
+> > +        * read from the HS200 (SDR104) preset register.
+> > +        *
+> > +        * Firmware that has "invalid/default" presets return a driver strength
+> > +        * of A. This matches the previously hard coded value.
+> > +        */
+> > +       preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR104);
+> > +       preset_driver_strength = FIELD_GET(SDHCI_PRESET_DRV_MASK, preset);
+> > +
+> > +       /*
+> > +        * We want the controller driver strength to match the card's driver
+> > +        * strength so they have similar rise/fall times.
+> > +        *
+> > +        * The controller driver strength set by this method is sticky for all
+> > +        * timings after this method is called. This unfortunately means that
+> > +        * while HS400 tuning is in progress we end up with mismatched driver
+> > +        * strengths between the controller and the card. HS400 tuning requires
+> > +        * switching from HS400->DDR52->HS->HS200->HS400. So the driver mismatch
+> > +        * happens while in DDR52 and HS modes. This has not been observed to
+> > +        * cause problems. Enabling presets would fix this issue.
+> > +        */
+> > +       *host_driver_strength = preset_driver_strength;
+> > +
+> > +       /*
+> > +        * The resulting card driver strength is only set when switching the
+> > +        * card's timing to HS200 or HS400. The card will use the default driver
+> > +        * strength (B) for any other mode.
+> > +        */
+> > +       return preset_driver_strength;
+> > +
+> >  }
+> >
+> >  static void sdhci_acpi_amd_hs400_dll(struct sdhci_host *host, bool enable)
+> > --
+> > 2.29.0.rc2.309.g374f81d7ae-goog
+> >
