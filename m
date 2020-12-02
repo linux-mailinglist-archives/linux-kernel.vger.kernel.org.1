@@ -2,120 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A89B2CCAB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B562CCAB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgLBXsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:48:32 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:44080 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgLBXsc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:48:32 -0500
-Received: by mail-pg1-f193.google.com with SMTP id t3so241190pgi.11;
-        Wed, 02 Dec 2020 15:48:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9MCH3F/o+4sEvEJKvPluac3+KmlO3HpjwlsRvnFVoIU=;
-        b=qiasvcn/Xz0t8lYrqjrSw6Wc75Ipb2RVCXkd4CopiMaaokYDCt7ENu3CeidV4bUV0d
-         riqKXvdTM52V/L3bbG+Eq/XqKw0D4Vew5e+U9+6kjxN2wRuH9q0GfJuBLP+ALJ1vI473
-         ymMPZZMS6+6VtMKNwwPs9WjoW2fveI4Q5r9YSiiuBOwaPMz0+l3+Kutu2p9gACwQNvqh
-         nCRxo8RHuYFHuWGljdOoIuq3QGfXABJAGpjifloDt0SxojDElTaajiCwYqbHlovoJ/CK
-         7Aeuzm7SaoMcWsHIY9K37rv9dlB+XkCQU88ElT0KLjKXcrZeVF8z6c3n+hGWS6bjrhAo
-         whNA==
-X-Gm-Message-State: AOAM531TpHAfbdr5QHj25doKXxxAb3vdkTrgPfrxiIseKzAoXhhQ6vZr
-        QVL5ONLdSZnmsIWFLEKkSCA=
-X-Google-Smtp-Source: ABdhPJyx3KArNVsdIOw4tHBfTLGb27SJwLzhjrnOF5thu52tE3FfQmsGN+TJPxEEA3Cx3kmDy2q8WQ==
-X-Received: by 2002:a62:293:0:b029:197:96c2:bef6 with SMTP id 141-20020a6202930000b029019796c2bef6mr465584pfc.62.1606952871392;
-        Wed, 02 Dec 2020 15:47:51 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id a81sm169015pfd.178.2020.12.02.15.47.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 15:47:50 -0800 (PST)
-Date:   Wed, 2 Dec 2020 15:47:49 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Sonal Santan <sonals@xilinx.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        Max Zhen <maxz@xilinx.com>, Lizhi Hou <lizhih@xilinx.com>,
-        Michal Simek <michals@xilinx.com>,
-        Stefano Stabellini <stefanos@xilinx.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH Xilinx Alveo 2/8] fpga: xrt: Add UAPI header files
-Message-ID: <X8gnpRgxTeLhBEXd@archbook>
-References: <20201129000040.24777-1-sonals@xilinx.com>
- <20201129000040.24777-3-sonals@xilinx.com>
- <X8XGI7yRAX+xAeqQ@archbook>
- <BY5PR02MB6260A727613D2D8A447B1D26BBF30@BY5PR02MB6260.namprd02.prod.outlook.com>
+        id S1726609AbgLBXtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:49:47 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:31518 "EHLO m42-5.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726099AbgLBXtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 18:49:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606952967; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=MTEGmavrxLv6lYK+Wjv4r9ndrg5kUxABUfket/e/CE0=; b=apYz5zzj9P3cKsiZ7m8qjfbH0PCPy84p/QLgQsMHanfSZJcyhKbaziEcAjkb+9wh7/Zvzy7B
+ wzjyrczUBSB+ehtolFcUQXeanLvACrCQYqnRWRyEo4DKB4OBh2q0SFP/D/AyxEMbs8tYhTtl
+ AEhxPGn3sQJ+wPf9WcoA3fJ3PiM=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fc827ec8ceda75d6e304cab (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 23:49:00
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EED54C43461; Wed,  2 Dec 2020 23:48:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AF31C433C6;
+        Wed,  2 Dec 2020 23:48:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3AF31C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v3 6/7] bus: mhi: core: Remove __ prefix for MHI channel
+ unprepare function
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, loic.poulain@linaro.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+References: <1606952438-15321-1-git-send-email-bbhatt@codeaurora.org>
+ <1606952438-15321-7-git-send-email-bbhatt@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <41f6067a-6779-3185-8a6a-04bf49f20768@codeaurora.org>
+Date:   Wed, 2 Dec 2020 15:48:58 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR02MB6260A727613D2D8A447B1D26BBF30@BY5PR02MB6260.namprd02.prod.outlook.com>
+In-Reply-To: <1606952438-15321-7-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sonal,
 
-On Wed, Dec 02, 2020 at 06:57:11PM +0000, Sonal Santan wrote:
-> Hi Moritz,
+
+On 12/2/20 3:40 PM, Bhaumik Bhatt wrote:
+> The __mhi_unprepare_channel() API does not require the __ prefix.
+> Get rid of it and make the internal function consistent with the
+> other function names.
 > 
-> > -----Original Message-----
-> > From: Moritz Fischer <mdf@kernel.org>
-> > Sent: Monday, November 30, 2020 8:27 PM
-> > To: Sonal Santan <sonals@xilinx.com>
-> > Cc: linux-kernel@vger.kernel.org; linux-fpga@vger.kernel.org; Max Zhen
-> > <maxz@xilinx.com>; Lizhi Hou <lizhih@xilinx.com>; Michal Simek
-> > <michals@xilinx.com>; Stefano Stabellini <stefanos@xilinx.com>;
-> > devicetree@vger.kernel.org
-> > Subject: Re: [PATCH Xilinx Alveo 2/8] fpga: xrt: Add UAPI header files
-> > 
-> > Hi Sonal,
-> > 
-> > On Sat, Nov 28, 2020 at 04:00:34PM -0800, Sonal Santan wrote:
-> > > From: Sonal Santan <sonal.santan@xilinx.com>
-> > >
-> > > Add XRT UAPI header files which describe flash layout, XRT mailbox
-> > > protocol, xclBin/axlf FPGA image container format and XRT management
-> > > physical function driver ioctl interfaces.
-> > >
-> > > flash_xrt_data.h:
-> > > Layout used by XRT to store private data on flash.
-> > >
-> > > mailbox_proto.h:
-> > > Mailbox opcodes and high level data structures representing various
-> > > kinds of information like sensors, clock, etc.
-> > >
-> > > mailbox_transport.h:
-> > > Transport protocol used by mailbox.
-> > >
-> > > xclbin.h:
-> > > Container format used to store compiled FPGA image which includes
-> > > bitstream and metadata.
-> > 
-> > Can these headers be introduced together with the code that uses them as
-> > logical change?
-> > 
-> > I haven't looked too closely, but it helps reviewing if you can break it into
-> > smaller pieces that can stand by themselves.
-> > 
-> 
-> These UAPI header files are used by multiple source files hence I wanted to get 
-> these reviewed separately. However if this is getting in the way, in the next 
-> version of the patch series I would look into arranging the files differently.
-> 
-> You can browse the changes here as well--
-> https://github.com/Xilinx/linux-xoclv2/tree/xrtv2-A
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 
-Please submit the code in the form you want the patches to be applied,
-in this case submit the headers with the code that uses them, and split
-it up in smaller chunks please.
-
-Submitting them as a series in the correct order should provide the
-proper context for reviewers.
-
-Cheers,
-Moritz
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
