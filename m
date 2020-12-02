@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71912CC758
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD642CC75B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389593AbgLBUBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:01:24 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44612 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728914AbgLBUBX (ORCPT
+        id S2389827AbgLBUBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:01:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389621AbgLBUBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:01:23 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2JreDh095338;
-        Wed, 2 Dec 2020 20:00:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=MWzc4cU1jncJjBh7/IzdYkh6gBTDQ3g4PKoAsnasayg=;
- b=HVu35OSuzDoWdQDV/WAQOgqEf9ioeX4rjXKdI8OLM9216bWgXxQ+55FFnX0WTJUu5VZg
- n51/TBQuS6SfmqQg8EAjNAav7jHEpOS5h6waUU17Yu3wOUImE4Aou2HSLKMnlMseXvW4
- sRmsGSoskJY+fdtXvk7lxhHHe2Kftp71uhXhoEwKgL/dKKxGAVEUZ812/ywCrUgTun1D
- iC3AKMYhxsPRVD+xAYWRhQEKHo+fi1f9NPUQ7/MJcY2FCme6+WXQnrWNczNxsxjUXmAO
- pTD6jqFhOwDaliclXFjg9jWdsr8G8JBlvWOFPyUNXhjJxPYjlwQqWF0ExnowaIkIxFoY jQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 353dyqtfu0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Dec 2020 20:00:34 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2JuSFb039346;
-        Wed, 2 Dec 2020 20:00:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 35404pt6vn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Dec 2020 20:00:33 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B2K0TmU028031;
-        Wed, 2 Dec 2020 20:00:29 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Dec 2020 12:00:28 -0800
-Date:   Wed, 2 Dec 2020 23:00:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] pstore: Tidy up an error check
-Message-ID: <20201202200021.GJ2789@kadam>
-References: <X8c4C2q6qaZ8qX6L@mwanda>
- <202012021124.ADBFCE999@keescook>
+        Wed, 2 Dec 2020 15:01:32 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792CEC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:00:52 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id f18so5218865ljg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:00:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zsx3zkwwHEFHc2ZqwiwShQ6Q9mkkL7TrgiVkNITirw0=;
+        b=VRb2YXjb/uGI6m8amqVXlZvc4Z/qToReryNEMQP81G4BPNKMZhAT/oDKwZKl90cpO3
+         +8EtTpFPAOezMTrbgvTftu/hrO2TJ7szYjW5cUDcfWgTsQqfU8YFdXoSXEK/ynzlZLGQ
+         f+Hvf0hX0kHjnSe9BmWOik7JERkLWFaeyjiVw9NfdiTL126U4Lf8/PaXyYbfMWxMAJS7
+         s5m07net2UoO7keFDh3bzg6tLnEgQqQTqnaqCGRiyT4TEhlwkWEwAlozkkB19JFYEb/F
+         jcaVfKpkDUKZaYBgNOu6g3zJgpSPelJK9PuegWMiKWSFriBV+D1f0R3yKDHjuJT3mcOz
+         lqog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zsx3zkwwHEFHc2ZqwiwShQ6Q9mkkL7TrgiVkNITirw0=;
+        b=b0KsSjEnzb7yONVDjrf78zDOqumWv3mPjz9rQsnJRAx7qHCrnLLi+Ye5uTDRqynv/F
+         lAr3n7obQ1gyp2sxp7WoDljc+yvH/N8sxfxhmduTIm7VQFAGMTLgUcHOiqTpYXkmjnhN
+         CGQWt27zBYrpt2lquzsnPcI0F7HuDQIPJ7yeSRWdQ0mfr2UOEp8zXvq6yCvw114kWoL+
+         LmnAny9H6CcYY8CXBr+x7p2Nil2TRYo8BsWJe+KWcCR18RiSCvPHwB9sshHh7ZLZNYjE
+         G3gozsxhi0zoSOTuIV7UfB0/IGJ8SA2Xw/vOZ5pNsmHvG+cRqRQCwhvx///0//iJ8jwr
+         Qcmg==
+X-Gm-Message-State: AOAM530o0DxzCqFAUqtwe/uqPsZWBiL6/ftmwV8R3yFFH4GHwt1dxRYM
+        K1rLtBJvmUyWM2/n2Osu/SlQgOLY597czC864BU=
+X-Google-Smtp-Source: ABdhPJw/Coroj1JS2bEBOE0eyRmria5NjN2KoFfvTq16hjK/y5AEHWSEdYl4eI/kKpcJcTlLiUAeJskMAYy2+88iYj4=
+X-Received: by 2002:a05:651c:cb:: with SMTP id 11mr2025398ljr.159.1606939250839;
+ Wed, 02 Dec 2020 12:00:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202012021124.ADBFCE999@keescook>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020118
+References: <20201202101448.8494-1-dwaipayanray1@gmail.com>
+In-Reply-To: <20201202101448.8494-1-dwaipayanray1@gmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 3 Dec 2020 01:30:23 +0530
+Message-ID: <CABJPP5DSEb5G6G1O1Gvga_E3bT0DftTp6qcgh4RPSKL8cfus-Q@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: add warning for lines starting with a '#' in
+ commit log
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:25:46AM -0800, Kees Cook wrote:
-> On Wed, Dec 02, 2020 at 09:45:31AM +0300, Dan Carpenter wrote:
-> > The crypto_alloc_comp() function never returns NULL, it returns error
-> > pointers on error.
-> > 
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> I replied to an identical patch yesterday, actually:
-> https://lore.kernel.org/lkml/202012011215.B9BF24A6D@keescook/ 
-> 
-> Using IS_ERR_OR_NULL() is more robust, and this isn't fast path, so I'd
-> prefer to keep it that way.
-> 
+On Wed, Dec 2, 2020 at 3:45 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+>
+> Commit log lines starting with a '#' can be dropped by git if
+> the corresponding commit message is reworded by a maintainer.
+> This minor error can be easily avoided if checkpatch warns
+> for the same.
+>
+> Add a new check which emits a warning on finding lines starting
+> with a '#'. Also add a quick fix by adding a tab in front of
+> such lines.
+>
+> Suggested-by: Peilin Ye <yepeilin.cs@gmail.com>
+> Tested-by: Peilin Ye <yepeilin.cs@gmail.com>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> ---
+>  scripts/checkpatch.pl | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index e8c1ed0b1fad..a12edcf4f63a 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -2966,6 +2966,15 @@ sub process {
+>                         $commit_log_possible_stack_dump = 0;
+>                 }
+>
+> +# Check for lines starting with a #
+> +               if ($in_commit_log && $line =~ /^#/) {
+> +                       if (WARN("POSSIBLE_IGNORED_LINE",
+> +                                "Commit log lines starting with a '#' might be dropped by git.\n" . $herecurr)
+> +                           && $fix) {
+> +                               $fixed[$fixlinenr] =~ s/^#/\t#/;
+> +                       }
+> +               }
+> +
+>  # Check for git id commit length and improperly formed commit descriptions
+>                 if ($in_commit_log && !$commit_log_possible_stack_dump &&
+>                     $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
+> --
+> 2.27.0
+>
+Hi,
+This patch may seem trivial but I wanted to send it to you for review
+nevertheless.
 
-The NULL return doesn't make any sense though because crypto_alloc_comp()
-isn't optional...  When a function returns both error pointers and NULLs
-then the NULL is special kind of success.
+Peilin had earlier faced this problem in one of his patches which was
+mainlined. There were some '#define' lines in the commit log. Due to
+some reason the Maintainer had to reword the commit message, and
+ultimately those '#define' lines were lost in the tree that was merged.
 
-	p = get_feature();
+I am not sure if it would be exactly helpful for regular committers but for
+new contributers it might be nice to avoid such a mistake. Do you think
+it deserves inclusion in checkpatch?
 
-If "p" is an error pointer that means an error happened.  If "p" is NULL
-that means the feature is disabled in the .config or whatever.  We can't
-return a valid pointer because the feature doesn't exist but it's also
-not an error so it doesn't return an error pointer.  The code should
-not print a warning, maybe an info level printk at most.  Then the
-driver should continue operating with the feature turned off.
-
-Two of the callers for crypto_alloc_comp() check for error pointers and
-NULL and three only check for error pointers.  It's inconsistent.
-
-regards,
-dan carpenter
-
+Thank you,
+Dwaipayan.
