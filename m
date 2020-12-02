@@ -2,137 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538822CC07E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B36332CC084
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730467AbgLBPNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:13:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727315AbgLBPNb (ORCPT
+        id S1730139AbgLBPOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:14:55 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36674 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726037AbgLBPOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:13:31 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807E0C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:12:51 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id z8so1606535qti.17
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:12:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=QqJF4A6O3nLNI0rY+zC99vFcx7l8dIoUknmC7mSKqg8=;
-        b=EoUHrSr4R3GR5xGAC80j/tthJ4QasodNiPqymZrb2TbeZCSOBgcZaw3ZuXb5E1iW4D
-         6U5i/MDMvREtvkPnSdQ3q0KFk0P6VMAQjzl7WRW3/L/IE6Znw+gGsBaPl5yqtImD6bz1
-         0LyTqnKJP1v5GY/sFmenAORypi/VDub3z/bCRHHEtN2Zwj+JbdyNRoaMojrm+HsY5qqY
-         fbQ+YdATbXbVuNH+ThROrbR/3RbFRNLYpERjNicPg4zxGrm6WxZr/9RYvcx7VnFJxWj0
-         3BghIczMVv9jPaLyZ3UbnTVET0XZYUIG6b1IklJgF7q5UEEYU0jcI0voJgSdq80jWx1m
-         b65Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=QqJF4A6O3nLNI0rY+zC99vFcx7l8dIoUknmC7mSKqg8=;
-        b=pWy+EQg0MURWtTI4buhYTVEI6gSdHGdDsnBiLVQI1wIdSuimFel13JWvnpABDFeND8
-         JAPSuaKab0gwwwL69ZogSbC+9KmQKdSONuLNI3NpZaxrp9dyAhlGGIQbZburMCwFvW0S
-         ZIAiLu4oIKKGgttRTPEl6i9qb33c2bfkYkqHYHZzTFe9SZfvIUcSy/v6JqIVni6La66Q
-         YKBSotuklrSptpsOC693JP6LSpS1NxfSurBX0Hdtc+zLqJqJG/8R8fziCtU6drRlYPyK
-         b8Q1rJqm166UA5/Qh7VgqL+XNiG1LgjQvJtqXKorTyJbZmGfnNv0oAAaPfLcDAMrmnHL
-         dwMw==
-X-Gm-Message-State: AOAM531xsjSPcLyvQK58AB6qZTm3Qbx0NhYZwv+xmZIuO+V0LHfvj33c
-        62OTj9ITosoI32dx+qv4BlWhXQ3o1+kBeRDA1GRa7O+anjjhtkANxW1T3lcZzx07/wzdOOUnLxU
-        SsEwBAwWIdrv1CTyvQR1DiUfz5wM1H7VXtN6gZziR04GXFI8HojiSHym/1ztd3I9TMT0FsBYgcl
-        E=
-X-Google-Smtp-Source: ABdhPJxj+pLFdHPvzJjp52Gin8kva/flBCM86/IzRSD/xVE2U3/ed4vf3OVUg1MiiRKc9usXtPwF5lrGhG500g==
-Sender: "maennich via sendgmr" <maennich@lux.lon.corp.google.com>
-X-Received: from lux.lon.corp.google.com ([2a00:79e0:d:210:7220:84ff:fe09:a3aa])
- (user=maennich job=sendgmr) by 2002:a05:6214:24:: with SMTP id
- b4mr2839664qvr.29.1606921970522; Wed, 02 Dec 2020 07:12:50 -0800 (PST)
-Date:   Wed,  2 Dec 2020 15:12:39 +0000
-Message-Id: <20201202151238.3776616-1-maennich@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH] scripts: merge_config: add strict mode to fail upon any redefinition
-From:   Matthias Maennich <maennich@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, maennich@google.com,
-        linux-kbuild@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 2 Dec 2020 10:14:54 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2F3sED030945;
+        Wed, 2 Dec 2020 10:14:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=h84cSOlopcWusOjL07ba67mQF7/WGrI1uXEh7kzAE08=;
+ b=qeifDUYE5HniSrQnFusY9kJADNIYkZK0mcq75Rc5ldEkn+k14x8dVt7s2ax2gwGdHGd0
+ RCB4max7Cdy9AJ6dY4pqUlWiqbND+IwzKLGrhWrlbdyP7uakSuCcNp05q9GMFD76nM4o
+ oZcYtsP8VeahOZUR8/QOm/Yhcq/JlLwUhKyfQydU8cJJFPC48YOSFtEYF5XJALN6bAiL
+ KudE3hdLDdADMThAZoUF8VyxrfmTICREiavtrS5WWRHDiqdFN7phfrki2oJv8zL4B33B
+ D9mYgUIsnoYbE2xGLCCCGzsI9AXJ9NUGf8ytlxRrdLCK6Z+Qu8u3kXz/HPQt7FIS7q2R MQ== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355vcr4vwn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 10:14:07 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FDUC0018020;
+        Wed, 2 Dec 2020 15:14:06 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma01dal.us.ibm.com with ESMTP id 355rf7j1xc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 15:14:06 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2FE5Fn49742170
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 15:14:05 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3CCDEAE062;
+        Wed,  2 Dec 2020 15:14:05 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5DB94AE066;
+        Wed,  2 Dec 2020 15:14:04 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 15:14:04 +0000 (GMT)
+Subject: Re: [PATCH v2 01/17] ibmvfc: add vhost fields and defaults for MQ
+ enablement
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-2-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <a11c0e6a-cfa6-0dc4-5d34-6fd35ae1f29b@linux.vnet.ibm.com>
+Date:   Wed, 2 Dec 2020 09:14:03 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201202005329.4538-2-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 adultscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When merging configuration fragments, it might be of interest to
-identify mismatches (redefinitions) programmatically. Hence add the
-option -s (strict mode) to instruct merge_config.sh to bail out in
-case any redefinition has been detected.
+On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+> Introduce several new vhost fields for managing MQ state of the adapter
+> as well as initial defaults for MQ enablement.
+> 
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> ---
+>  drivers/scsi/ibmvscsi/ibmvfc.c |  9 ++++++++-
+>  drivers/scsi/ibmvscsi/ibmvfc.h | 13 +++++++++++--
+>  2 files changed, 19 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index 42e4d35e0d35..f1d677a7423d 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -5161,12 +5161,13 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+>  	}
+>  
+>  	shost->transportt = ibmvfc_transport_template;
+> -	shost->can_queue = max_requests;
+> +	shost->can_queue = (max_requests / IBMVFC_SCSI_HW_QUEUES);
 
-With strict mode, warnings are emitted as before, but the script
-terminates with rc=1. If -y is set to define "builtin having
-precedence over modules", fragments are still allowed to set =m (while
-the base config has =y). Strict mode will tolerate that as demotions
-from =y to =m are ignored when setting -y.
+This doesn't look right. can_queue is the SCSI host queue depth, not the MQ queue depth.
 
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Matthias Maennich <maennich@google.com>
----
- scripts/kconfig/merge_config.sh | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+>  	shost->max_lun = max_lun;
+>  	shost->max_id = max_targets;
+>  	shost->max_sectors = IBMVFC_MAX_SECTORS;
+>  	shost->max_cmd_len = IBMVFC_MAX_CDB_LEN;
+>  	shost->unique_id = shost->host_no;
+> +	shost->nr_hw_queues = IBMVFC_SCSI_HW_QUEUES;
+>  
+>  	vhost = shost_priv(shost);
+>  	INIT_LIST_HEAD(&vhost->sent);
 
-diff --git a/scripts/kconfig/merge_config.sh b/scripts/kconfig/merge_config.sh
-index 63c8565206a4..d0b957b20cbf 100755
---- a/scripts/kconfig/merge_config.sh
-+++ b/scripts/kconfig/merge_config.sh
-@@ -28,6 +28,7 @@ usage() {
- 	echo "  -r    list redundant entries when merging fragments"
- 	echo "  -y    make builtin have precedence over modules"
- 	echo "  -O    dir to put generated output files.  Consider setting \$KCONFIG_CONFIG instead."
-+	echo "  -s    strict mode. Fail if the fragment redefines any value."
- 	echo
- 	echo "Used prefix: '$CONFIG_PREFIX'. You can redefine it with \$CONFIG_ environment variable."
- }
-@@ -37,6 +38,7 @@ ALLTARGET=alldefconfig
- WARNREDUN=false
- BUILTIN=false
- OUTPUT=.
-+STRICT=false
- CONFIG_PREFIX=${CONFIG_-CONFIG_}
- 
- while true; do
-@@ -75,6 +77,11 @@ while true; do
- 		shift 2
- 		continue
- 		;;
-+	"-s")
-+		STRICT=true
-+		shift
-+		continue
-+		;;
- 	*)
- 		break
- 		;;
-@@ -141,6 +148,9 @@ for ORIG_MERGE_FILE in $MERGE_LIST ; do
- 			echo Previous  value: $PREV_VAL
- 			echo New value:       $NEW_VAL
- 			echo
-+			if [ "$STRICT" = "true" ]; then
-+				STRICT_MODE_VIOLATED=true
-+			fi
- 		elif [ "$WARNREDUN" = "true" ]; then
- 			echo Value of $CFG is redundant by fragment $ORIG_MERGE_FILE:
- 		fi
-@@ -153,6 +163,11 @@ for ORIG_MERGE_FILE in $MERGE_LIST ; do
- 	cat $MERGE_FILE >> $TMP_FILE
- done
- 
-+if [ "$STRICT_MODE_VIOLATED" = "true" ]; then
-+	echo "The fragment redefined a value and strict mode had been passed."
-+	exit 1
-+fi
-+
- if [ "$RUNMAKE" = "false" ]; then
- 	cp -T -- "$TMP_FILE" "$KCONFIG_CONFIG"
- 	echo "#"
+
+
 -- 
-2.29.2.454.gaff20da3a2-goog
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
