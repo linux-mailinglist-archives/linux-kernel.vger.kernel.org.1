@@ -2,200 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58A32CBF65
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2DF2CBF6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388913AbgLBORd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:17:33 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:32809 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727060AbgLBORd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:17:33 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0F5322001D;
-        Wed,  2 Dec 2020 14:16:44 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 15:16:44 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com
-Subject: Re: [PATCH v2 06/19] dt-bindings: media: sun6i-a31-csi: Add MIPI
- CSI-2 input port
-Message-ID: <X8ehzCjZJ3yC8YtJ@aptenodytes>
-References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
- <20201128142839.517949-7-paul.kocialkowski@bootlin.com>
- <20201201104321.rl3ujt5pjre6xlmm@gilmour>
+        id S1729967AbgLBOTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:19:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:41346 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727245AbgLBOTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 09:19:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 279A430E;
+        Wed,  2 Dec 2020 06:18:29 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.23.201])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FE403F718;
+        Wed,  2 Dec 2020 06:18:24 -0800 (PST)
+Date:   Wed, 2 Dec 2020 14:18:21 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Alex Belits <abelits@marvell.com>
+Cc:     "nitesh@redhat.com" <nitesh@redhat.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        Prasun Kapoor <pkapoor@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "leon@sidebranch.com" <leon@sidebranch.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pauld@redhat.com" <pauld@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 5/9] task_isolation: Add driver-specific hooks
+Message-ID: <20201202141821.GC66958@C02TD0UTHF1T.local>
+References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
+ <6e15fde56203f89ebab0565dc22177f42063ae7c.camel@marvell.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bQSyNp+lgLUEvy9B"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201104321.rl3ujt5pjre6xlmm@gilmour>
+In-Reply-To: <6e15fde56203f89ebab0565dc22177f42063ae7c.camel@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 05:57:42PM +0000, Alex Belits wrote:
+> Some drivers don't call functions that call
+> task_isolation_kernel_enter() in interrupt handlers. Call it
+> directly.
 
---bQSyNp+lgLUEvy9B
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't think putting this in drivers is the right approach. IIUC we
+only need to track user<->kernel transitions, and we can do that within
+the architectural entry code before we ever reach irqchip code. I
+suspect the current approacch is an artifact of that being difficult in
+the old structure of the arch code; recent rework should address that,
+and we can restruecture things further in future.
 
-Hi,
+Thanks,
+Mark.
 
-On Tue 01 Dec 20, 11:43, Maxime Ripard wrote:
-> On Sat, Nov 28, 2020 at 03:28:26PM +0100, Paul Kocialkowski wrote:
-> > The A31 CSI controller supports two distinct input interfaces:
-> > parallel and an external MIPI CSI-2 bridge. The parallel interface
-> > is often connected to a set of hardware pins while the MIPI CSI-2
-> > bridge is an internal FIFO-ish link. As a result, these two inputs
-> > are distinguished as two different ports.
-> >=20
-> > Note that only one of the two may be present on a controller instance.
-> > For example, the V3s has one controller dedicated to MIPI-CSI2 and one
-> > dedicated to parallel.
-> >=20
-> > Update the binding with an explicit ports node that holds two distinct
-> > port nodes: one for parallel input and one for MIPI CSI-2.
-> >=20
-> > This is backward-compatible with the single-port approach that was
-> > previously taken for representing the parallel interface port, which
-> > stays enumerated as fwnode port 0. However, it is now marked as
-> > deprecated and the multi-port approach should be preferred.
-> >=20
-> > Note that additional ports may be added in the future, especially to
-> > support feeding the CSI controller's output to the ISP.
-> >=20
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > ---
-> >  .../media/allwinner,sun6i-a31-csi.yaml        | 86 ++++++++++++++++---
-> >  1 file changed, 73 insertions(+), 13 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6i-a3=
-1-csi.yaml b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-cs=
-i.yaml
-> > index 1fd9b5532a21..3bcee2d44f3c 100644
-> > --- a/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.y=
-aml
-> > +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.y=
-aml
-> > @@ -43,6 +43,7 @@ properties:
-> >    # See ./video-interfaces.txt for details
-> >    port:
-> >      type: object
-> > +    deprecated: true
->=20
-> I'm not sure we want to deprecate it. There's some SoCs with the same
-> controller but without the MIPI-CSI block where this would be completely
-> valid
-
-I think we'll need to deprecate it when adding support for the ISP anyway,
-so I figured we might as well do it now. But I'm okay to postpone this for =
-now.
-
-> >      properties:
-> >        endpoint:
-> > @@ -67,6 +68,59 @@ properties:
-> > =20
-> >      additionalProperties: false
-> > =20
-> > +  ports:
-> > +    type: object
-> > +
-> > +    properties:
-> > +      port@0:
-> > +        type: object
-> > +        description: Parallel input port, connect to a parallel sensor
-> > +
-> > +        properties:
-> > +          reg:
-> > +            const: 0
-> > +
-> > +          endpoint:
-> > +            type: object
-> > +
-> > +            properties:
-> > +              remote-endpoint: true
-> > +
-> > +              bus-width:
-> > +                enum: [ 8, 10, 12, 16 ]
-> > +
-> > +              pclk-sample: true
-> > +              hsync-active: true
-> > +              vsync-active: true
-> > +
-> > +            required:
-> > +              - bus-width
-> > +              - remote-endpoint
-> > +
-> > +        required:
-> > +          - endpoint
-> > +
-> > +        additionalProperties: false
-> > +
-> > +      port@1:
-> > +        type: object
-> > +        description: MIPI CSI-2 bridge input port
-> > +
-> > +        properties:
-> > +          reg:
-> > +            const: 1
-> > +
-> > +          endpoint:
-> > +            type: object
-> > +
-> > +            properties:
-> > +              remote-endpoint: true
-> > +
-> > +            required:
-> > +              - remote-endpoint
-> > +
-> > +        additionalProperties: false
->=20
-> There's a schema for the OF-graph now, you'll want to use it.
-
-I didn't know that, thanks for the tip! Will look into it.
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---bQSyNp+lgLUEvy9B
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/HocwACgkQ3cLmz3+f
-v9GG9Af9H1paVLqMvziqXTI0WNg+VMR5O6DYyo7mI+qYy2k13gShP+emMEuZsLhm
-vSOVR/gIRIotX+0dO2+BOj9ik0+7WiwtAfXdIsUo6kGhHxay1go4E8Xuy5YimqO2
-zMcpf200AlTfTE+1dFfP0Cbujt5wWH0WSYwFL/pbckNDb1TLC6KFJfBIgtN4T9q2
-31Ci4ZtaU1NmOrclYkJTT3eDtzYd4bqgbTScXJ+8gnnrIjRQi8jxEqOJGYj5sx5g
-biJTcl8+INexfPsV6O9c3Jl0QnwjGMp8avD8cjnHVf4SsshhrIklOjAtVxjpAElZ
-zmr7Z4hAcpREkZpZQy5bNeJjzm9gCg==
-=O/vb
------END PGP SIGNATURE-----
-
---bQSyNp+lgLUEvy9B--
+> Signed-off-by: Alex Belits <abelits@marvell.com>
+> ---
+>  drivers/irqchip/irq-armada-370-xp.c | 6 ++++++
+>  drivers/irqchip/irq-gic-v3.c        | 3 +++
+>  drivers/irqchip/irq-gic.c           | 3 +++
+>  drivers/s390/cio/cio.c              | 3 +++
+>  4 files changed, 15 insertions(+)
+> 
+> diff --git a/drivers/irqchip/irq-armada-370-xp.c b/drivers/irqchip/irq-armada-370-xp.c
+> index d7eb2e93db8f..4ac7babe1abe 100644
+> --- a/drivers/irqchip/irq-armada-370-xp.c
+> +++ b/drivers/irqchip/irq-armada-370-xp.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/syscore_ops.h>
+>  #include <linux/msi.h>
+> +#include <linux/isolation.h>
+>  #include <asm/mach/arch.h>
+>  #include <asm/exception.h>
+>  #include <asm/smp_plat.h>
+> @@ -572,6 +573,7 @@ static const struct irq_domain_ops armada_370_xp_mpic_irq_ops = {
+>  static void armada_370_xp_handle_msi_irq(struct pt_regs *regs, bool is_chained)
+>  {
+>  	u32 msimask, msinr;
+> +	int isol_entered = 0;
+>  
+>  	msimask = readl_relaxed(per_cpu_int_base +
+>  				ARMADA_370_XP_IN_DRBEL_CAUSE_OFFS)
+> @@ -588,6 +590,10 @@ static void armada_370_xp_handle_msi_irq(struct pt_regs *regs, bool is_chained)
+>  			continue;
+>  
+>  		if (is_chained) {
+> +			if (!isol_entered) {
+> +				task_isolation_kernel_enter();
+> +				isol_entered = 1;
+> +			}
+>  			irq = irq_find_mapping(armada_370_xp_msi_inner_domain,
+>  					       msinr - PCI_MSI_DOORBELL_START);
+>  			generic_handle_irq(irq);
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 16fecc0febe8..ded26dd4da0f 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/percpu.h>
+>  #include <linux/refcount.h>
+>  #include <linux/slab.h>
+> +#include <linux/isolation.h>
+>  
+>  #include <linux/irqchip.h>
+>  #include <linux/irqchip/arm-gic-common.h>
+> @@ -646,6 +647,8 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
+>  {
+>  	u32 irqnr;
+>  
+> +	task_isolation_kernel_enter();
+> +
+>  	irqnr = gic_read_iar();
+>  
+>  	if (gic_supports_nmi() &&
+> diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+> index 6053245a4754..bb482b4ae218 100644
+> --- a/drivers/irqchip/irq-gic.c
+> +++ b/drivers/irqchip/irq-gic.c
+> @@ -35,6 +35,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/percpu.h>
+>  #include <linux/slab.h>
+> +#include <linux/isolation.h>
+>  #include <linux/irqchip.h>
+>  #include <linux/irqchip/chained_irq.h>
+>  #include <linux/irqchip/arm-gic.h>
+> @@ -337,6 +338,8 @@ static void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
+>  	struct gic_chip_data *gic = &gic_data[0];
+>  	void __iomem *cpu_base = gic_data_cpu_base(gic);
+>  
+> +	task_isolation_kernel_enter();
+> +
+>  	do {
+>  		irqstat = readl_relaxed(cpu_base + GIC_CPU_INTACK);
+>  		irqnr = irqstat & GICC_IAR_INT_ID_MASK;
+> diff --git a/drivers/s390/cio/cio.c b/drivers/s390/cio/cio.c
+> index 6d716db2a46a..beab88881b6d 100644
+> --- a/drivers/s390/cio/cio.c
+> +++ b/drivers/s390/cio/cio.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/kernel_stat.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/irq.h>
+> +#include <linux/isolation.h>
+>  #include <asm/cio.h>
+>  #include <asm/delay.h>
+>  #include <asm/irq.h>
+> @@ -584,6 +585,8 @@ void cio_tsch(struct subchannel *sch)
+>  	struct irb *irb;
+>  	int irq_context;
+>  
+> +	task_isolation_kernel_enter();
+> +
+>  	irb = this_cpu_ptr(&cio_irb);
+>  	/* Store interrupt response block to lowcore. */
+>  	if (tsch(sch->schid, irb) != 0)
+> -- 
+> 2.20.1
+> 
