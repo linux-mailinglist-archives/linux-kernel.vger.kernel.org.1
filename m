@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7E32CC036
+	by mail.lfdr.de (Postfix) with ESMTP id CD3532CC037
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730348AbgLBO7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:59:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
+        id S1730358AbgLBO7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:59:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgLBO7o (ORCPT
+        with ESMTP id S1730329AbgLBO7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:59:44 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A750EC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:59:04 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id l11so1274339plt.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:59:04 -0800 (PST)
+        Wed, 2 Dec 2020 09:59:46 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220BDC0617A7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:59:06 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id b12so1123667pjl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:59:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5G4sCzg9feiGKCRZF2M8EYklEFXuMpffsPhjXjlGSQQ=;
-        b=FQUBtODa7eP4ejGOu6/ZsvTuztMXm50XP4vLgoV2LmsomyV6kqT/IA9/ZvjE8GU2a7
-         YIlP5dOC7kK1HZmNG3ksRmbVvCMmxNtC6gkZ4vGWfO0U4Xpk6K9ma7hAIoVYw7Mv9cYI
-         zHzpIvJr6HZyhkR9ZkBBRee1b57h1gm92gAKDVVc5xAXKptqW3KYVmUayLTewGpEeAJU
-         2M6QAnocUT/1fhGpRnj6Y7la5iiZDePTKdLZx/QHLMALctfhe709FagNuCLXS4rLd1Gx
-         9RYS78mI/pzVy54IrX54rsEtxinf5wKWe9+t/4KJE9zubWMDTgKe6fMuta8P77/0U53i
-         ai7Q==
+        bh=qxSjm0C0NDnoL/IIQUuyyVYhh2eEiAQbNE93rX86LYI=;
+        b=vf14kW9xFVfvlhi7cxHDY1TfyzCLQFFlxSWSLtDtQq21FIqmn02N5trKWTrbMWawew
+         nOinpppX932gtotkEoQZehYpDIOnaTP+AzlfI7ZAKDnYBsEW1fl/sluC7B/+YMEaSstz
+         7w737umIU8NP63VPOfXUGqSctTQfaUenppFcY6h4Qxqr8bpQVrlRYmbIl+ftPf5Ru7AK
+         BB3dVQJdRWsR/ryATnSc8QXyovJQ8IVh+BWZiRCdZ0y1xGKxcaJ/x3bE7pkOniFt5kIw
+         ZYdu4xkCOdK/ERL5lO6BjXDoz66hXuurCfl3E6DrEz+87H2IFlI1MumROkkwlPEuVNd3
+         qGmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5G4sCzg9feiGKCRZF2M8EYklEFXuMpffsPhjXjlGSQQ=;
-        b=LqPnbf929Btwog7tXgjkrIHNjoXu+XpIjtSLbw6cVEvAzN/QmBb2I38pfe879AR0MM
-         3+B3f1aXW+/rd9Vq1+S2BDKANsw9LaLrip1sujfvaWwLBxu44XWDa/SdeAuG8keIfBhZ
-         gk8vJqhqCc3r7XzFTXw3LFoWvmBmChOV5aVXhhHmCnCZY4hSy/X0TjMZ2a5dpwPKbg6l
-         LnHN4z4+2kLexKGYWmBh1xyPcgIoxaNSgP0Yxe1hXRZw5PjpZN9rZsk+8C8YiE3HigIe
-         7cE5g45H2aCLP+ldlGlPLrn6Veq84dOxl/XB6lO0BCckxsD8qo8tM1HEVkQ0CE5V7fS4
-         F3JQ==
-X-Gm-Message-State: AOAM530erissJpm/cYhvPMoAkFe6igvpl3p1ZLxyP1WcLKWoX7ZHucR/
-        FTYgkTEwsviJTohkFMm9k8Y=
-X-Google-Smtp-Source: ABdhPJxYtTDznyv/INjFA+wDDxMs5Em0CoJWXvQYVG7GqkYcZbOov5fpZLt4AfRaMKL38Z+ZGakK6w==
-X-Received: by 2002:a17:902:6b4a:b029:d8:d13d:14f with SMTP id g10-20020a1709026b4ab02900d8d13d014fmr2946758plt.24.1606921144246;
-        Wed, 02 Dec 2020 06:59:04 -0800 (PST)
+        bh=qxSjm0C0NDnoL/IIQUuyyVYhh2eEiAQbNE93rX86LYI=;
+        b=nP5RpFvteNg3NpjCNPPfO/udm0FrGwYwf8G2o4wd36fW95dOUGL6nGZxAYhRTdHdLq
+         1+douzkCynOQCZpzu/ER/g7Uy5n6bPuJU54jEdTO11C+t612/fA2x3g8GN4VPobiWaMk
+         eY4+rkbuR6y6uDWlTXxkZo2WUC6uk+Z28//myeSPWXPlNlFhU1g9llomwyK0rtq3oNax
+         et9w2pYoey/OyTu+oxouUQhbbXesQbXKpvdQeQ4uexaL75IfKUTQG3LszCmQKbGvFO7z
+         cQa2zi4MR4i8sBDrqtyzYdTkA6kMNi4t2VB/oTuPwH2y1uoBLO4l4n91Tv0e8Wtygefh
+         Krjg==
+X-Gm-Message-State: AOAM530Qu+py7JCnGufGkrgxep2k3bS+svkdXLHm53tWQzzriZte+VZe
+        B3LGfoh5i8hdwt24Yh15jEc=
+X-Google-Smtp-Source: ABdhPJzGEO9yrFsha9fbs6byBMkVoAH876bUsIFihNS4WBRN6i+Sx/IJfIbdExRnx5LkS3bHHRkp/Q==
+X-Received: by 2002:a17:90a:9f8e:: with SMTP id o14mr241919pjp.89.1606921145604;
+        Wed, 02 Dec 2020 06:59:05 -0800 (PST)
 Received: from localhost.localdomain (cl-ubuntu-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fee1:602f])
-        by smtp.gmail.com with ESMTPSA id j11sm146826pfe.26.2020.12.02.06.59.02
+        by smtp.gmail.com with ESMTPSA id j11sm146826pfe.26.2020.12.02.06.59.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 06:59:03 -0800 (PST)
+        Wed, 02 Dec 2020 06:59:04 -0800 (PST)
 From:   Fox Chen <foxhlchen@gmail.com>
 To:     gregkh@linuxfoundation.org, tj@kernel.org
 Cc:     Fox Chen <foxhlchen@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] kernfs: replace the mutex in kernfs_iop_permission with a rwlock
-Date:   Wed,  2 Dec 2020 22:58:36 +0800
-Message-Id: <20201202145837.48040-2-foxhlchen@gmail.com>
+Subject: [PATCH 2/2] kernfs: remove mutex in kernfs_dop_revalidate
+Date:   Wed,  2 Dec 2020 22:58:37 +0800
+Message-Id: <20201202145837.48040-3-foxhlchen@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201202145837.48040-1-foxhlchen@gmail.com>
 References: <20201202145837.48040-1-foxhlchen@gmail.com>
@@ -63,90 +63,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A big global mutex in kernfs_iop_permission will significanly drag
-system performance when processes concurrently open files
-on kernfs in Big machines(with >= 16 cpu cores).
+There is a big mutex in kernfs_dop_revalidate which slows down the
+concurrent performance of kernfs.
 
-This patch replace the big mutex with a rwlock specifically for
-protecting kernfs_node->iattribute. So that kernfs_iop_permission
-can perform concurrently.
+Since kernfs_dop_revalidate only does some checks, the lock is
+largely unnecessary. Also, according to kernel filesystem locking
+document:
+https://www.kernel.org/doc/html/latest/filesystems/locking.html
+locking is not in the protocal for d_revalidate operation.
+
+This patch remove this mutex from
+kernfs_dop_revalidate, so kernfs_dop_revalidate
+can run concurrently.
 
 Signed-off-by: Fox Chen <foxhlchen@gmail.com>
 ---
- fs/kernfs/inode.c      | 16 ++++++++--------
- include/linux/kernfs.h |  1 +
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ fs/kernfs/dir.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-index fc2469a20fed..c8c2ea669e6d 100644
---- a/fs/kernfs/inode.c
-+++ b/fs/kernfs/inode.c
-@@ -106,9 +106,9 @@ int kernfs_setattr(struct kernfs_node *kn, const struct iattr *iattr)
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 9aec80b9d7c6..c2267c93f546 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -26,7 +26,6 @@ static DEFINE_SPINLOCK(kernfs_idr_lock);	/* root->ino_idr */
+ 
+ static bool kernfs_active(struct kernfs_node *kn)
  {
- 	int ret;
- 
--	mutex_lock(&kernfs_mutex);
-+	write_lock(&kn->iattr_rwlock);
- 	ret = __kernfs_setattr(kn, iattr);
--	mutex_unlock(&kernfs_mutex);
-+	write_unlock(&kn->iattr_rwlock);
- 	return ret;
+-	lockdep_assert_held(&kernfs_mutex);
+ 	return atomic_read(&kn->active) >= 0;
  }
  
-@@ -121,7 +121,7 @@ int kernfs_iop_setattr(struct dentry *dentry, struct iattr *iattr)
- 	if (!kn)
- 		return -EINVAL;
+@@ -557,10 +556,9 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
  
+ 	/* Always perform fresh lookup for negatives */
+ 	if (d_really_is_negative(dentry))
+-		goto out_bad_unlocked;
++		goto out_bad;
+ 
+ 	kn = kernfs_dentry_node(dentry);
 -	mutex_lock(&kernfs_mutex);
-+	write_lock(&kn->iattr_rwlock);
- 	error = setattr_prepare(dentry, iattr);
- 	if (error)
- 		goto out;
-@@ -134,7 +134,7 @@ int kernfs_iop_setattr(struct dentry *dentry, struct iattr *iattr)
- 	setattr_copy(inode, iattr);
  
- out:
+ 	/* The kernfs node has been deactivated */
+ 	if (!kernfs_active(kn))
+@@ -579,11 +577,8 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
+ 	    kernfs_info(dentry->d_sb)->ns != kn->ns)
+ 		goto out_bad;
+ 
 -	mutex_unlock(&kernfs_mutex);
-+	write_unlock(&kn->iattr_rwlock);
- 	return error;
- }
- 
-@@ -189,9 +189,9 @@ int kernfs_iop_getattr(const struct path *path, struct kstat *stat,
- 	struct inode *inode = d_inode(path->dentry);
- 	struct kernfs_node *kn = inode->i_private;
- 
--	mutex_lock(&kernfs_mutex);
-+	read_lock(&kn->iattr_rwlock);
- 	kernfs_refresh_inode(kn, inode);
+ 	return 1;
+ out_bad:
 -	mutex_unlock(&kernfs_mutex);
-+	read_unlock(&kn->iattr_rwlock);
- 
- 	generic_fillattr(inode, stat);
+-out_bad_unlocked:
  	return 0;
-@@ -281,9 +281,9 @@ int kernfs_iop_permission(struct inode *inode, int mask)
- 
- 	kn = inode->i_private;
- 
--	mutex_lock(&kernfs_mutex);
-+	read_lock(&kn->iattr_rwlock);
- 	kernfs_refresh_inode(kn, inode);
--	mutex_unlock(&kernfs_mutex);
-+	read_unlock(&kn->iattr_rwlock);
- 
- 	return generic_permission(inode, mask);
  }
-diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-index 89f6a4214a70..545cdb39b34b 100644
---- a/include/linux/kernfs.h
-+++ b/include/linux/kernfs.h
-@@ -156,6 +156,7 @@ struct kernfs_node {
- 	unsigned short		flags;
- 	umode_t			mode;
- 	struct kernfs_iattrs	*iattr;
-+	rwlock_t		iattr_rwlock;
- };
  
- /*
+@@ -650,6 +645,8 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
+ 	kn->mode = mode;
+ 	kn->flags = flags;
+ 
++	rwlock_init(&kn->iattr_rwlock);
++
+ 	if (!uid_eq(uid, GLOBAL_ROOT_UID) || !gid_eq(gid, GLOBAL_ROOT_GID)) {
+ 		struct iattr iattr = {
+ 			.ia_valid = ATTR_UID | ATTR_GID,
 -- 
 2.29.2
 
