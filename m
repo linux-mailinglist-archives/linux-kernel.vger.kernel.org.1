@@ -2,95 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4282CC2BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3064E2CC2C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbgLBQtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:49:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51794 "EHLO mx2.suse.de"
+        id S1730493AbgLBQuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:50:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727785AbgLBQtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:49:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606927717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N2XUAvCPND8NVImvXDlyAkUCBlA0TbHg8Xa/9B011RU=;
-        b=RqMHq0Y5pQLLRyCo1l0rA7G4CSyVgecbS6ElJpGH5KS+QBj7pA/mLRfozuAUobYfjg7D4z
-        NJ5JSJJm5w/IciS4cfNvbxYSCgU2JJUrdvj4c+yVhXKbFcKrMZcgFPIlKz7qxeZT1SwvH5
-        nI41n+sv3fGmBrzZftkbgmN6slPN80s=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9F12FAB63;
-        Wed,  2 Dec 2020 16:48:37 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 17:48:34 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
-        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
-        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
-Message-ID: <20201202164834.GV17338@dhcp22.suse.cz>
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-3-minchan@kernel.org>
- <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
- <20201202154915.GU17338@dhcp22.suse.cz>
- <X8e9tSwcsrEsAv1O@google.com>
+        id S1727227AbgLBQuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:50:18 -0500
+Date:   Wed, 2 Dec 2020 18:49:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606927776;
+        bh=lG8psMOaRNzxmyJyuNq9VDxKWQ1gRYRmHSVUGDGFM5I=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OtZ4rewqFpV85xXmS+H9cW9KGGaoJ9NhhKguYiMxy1nES3XGeJQ+zu2gdLhctVyPH
+         VLIXEmfgtll0LcHwQxwiNxOJM32PMlf0kGndTAua40O+7adSnuG3o9XWAo4oivwtSI
+         Shg3Jw4xoi4JEvdvlIAc4jgWTHirJTRWrDq8kNFc=
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jerry Snitselaar <jsnitsel@redhat.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2] tpm_tis: Disable interrupts if interrupt storm
+ detected
+Message-ID: <20201202164931.GA91318@kernel.org>
+References: <20201130232338.106892-1-jsnitsel@redhat.com>
+ <20201201025807.162241-1-jsnitsel@redhat.com>
+ <87czzujjg1.fsf@redhat.com>
+ <878sahmh5w.fsf@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X8e9tSwcsrEsAv1O@google.com>
+In-Reply-To: <878sahmh5w.fsf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-12-20 08:15:49, Minchan Kim wrote:
-> On Wed, Dec 02, 2020 at 04:49:15PM +0100, Michal Hocko wrote:
-[...]
-> > Well, what I can see is that this new interface is an antipatern to our
-> > allocation routines. We tend to control allocations by gfp mask yet you
-> > are introducing a bool parameter to make something faster... What that
-> > really means is rather arbitrary. Would it make more sense to teach
-> > cma_alloc resp. alloc_contig_range to recognize GFP_NOWAIT, GFP_NORETRY resp.
-> > GFP_RETRY_MAYFAIL instead?
+On Tue, Dec 01, 2020 at 12:59:23PM -0700, Jerry Snitselaar wrote:
 > 
-> If we use cma_alloc, that interface requires "allocate one big memory
-> chunk". IOW, return value is just struct page and expected that the page
-> is a big contiguos memory. That means it couldn't have a hole in the
-> range.
-> However the idea here, what we asked is much smaller chunk rather
-> than a big contiguous memory so we could skip some of pages if they are
-> randomly pinned(long-term/short-term whatever) and search other pages
-> in the CMA area to avoid long stall. Thus, it couldn't work with exising
-> cma_alloc API with simple gfp_mak.
-
-I really do not see that as something really alient to the cma_alloc
-interface. All you should care about, really, is what size of the object
-you want and how hard the system should try. If you have a problem with
-an internal implementation of CMA and how it chooses a range and deal
-with pinned pages then it should be addressed inside the CMA allocator.
-I suspect that you are effectivelly trying to workaround those problems
-by a side implementation with a slightly different API. Or maybe I still
-do not follow the actual problem.
- 
-> > I am not deeply familiar with the cma allocator so sorry for a
-> > potentially stupid question. Why does a bulk interface performs better
-> > than repeated calls to cma_alloc? Is this because a failure would help
-> > to move on to the next pfn range while a repeated call would have to
-> > deal with the same range?
+> Jerry Snitselaar @ 2020-11-30 20:26 MST:
 > 
-> Yub, true with other overheads(e.g., migration retrial, waiting writeback
-> PCP/LRU draining IPI)
+> > Jerry Snitselaar @ 2020-11-30 19:58 MST:
+> >
+> >> When enabling the interrupt code for the tpm_tis driver we have
+> >> noticed some systems have a bios issue causing an interrupt storm to
+> >> occur. The issue isn't limited to a single tpm or system manufacturer
+> >> so keeping a denylist of systems with the issue isn't optimal. Instead
+> >> try to detect the problem occurring, disable interrupts, and revert to
+> >> polling when it happens.
+> >>
+> >> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> >> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> >> Cc: Peter Huewe <peterhuewe@gmx.de>
+> >> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+> >> Cc: Matthew Garrett <mjg59@google.com>
+> >> Cc: Hans de Goede <hdegoede@redhat.com>
+> >> Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
+> >> ---
+> >> v2: drop tpm_tis specific workqueue and use just system_wq
+> >>
+> >> drivers/char/tpm/tpm_tis_core.c | 27 +++++++++++++++++++++++++++
+> >>  drivers/char/tpm/tpm_tis_core.h |  2 ++
+> >>  2 files changed, 29 insertions(+)
+> >>
+> >> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> >> index 23b60583928b..72cc8a5a152c 100644
+> >> --- a/drivers/char/tpm/tpm_tis_core.c
+> >> +++ b/drivers/char/tpm/tpm_tis_core.c
+> >> @@ -24,6 +24,8 @@
+> >>  #include <linux/wait.h>
+> >>  #include <linux/acpi.h>
+> >>  #include <linux/freezer.h>
+> >> +#include <linux/workqueue.h>
+> >> +#include <linux/kernel_stat.h>
+> >>  #include "tpm.h"
+> >>  #include "tpm_tis_core.h"
+> >>  
+> >> @@ -745,9 +747,23 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+> >>  {
+> >>  	struct tpm_chip *chip = dev_id;
+> >>  	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> >> +	static bool check_storm = true;
+> >> +	static unsigned int check_start;
+> >>  	u32 interrupt;
+> >>  	int i, rc;
+> >>  
+> >> +	if (unlikely(check_storm)) {
+> >> +		if (!check_start) {
+> >> +			check_start = jiffies_to_msecs(jiffies);
+> >> +		} else if ((kstat_irqs(priv->irq) > 1000) &&
+> >> +			   (jiffies_to_msecs(jiffies) - check_start < 500)) {
+> >> +			check_storm = false;
+> >> +			schedule_work(&priv->storm_work);
+> >> +		} else if (jiffies_to_msecs(jiffies) - check_start >= 500) {
+> >> +			check_storm = false;
+> >> +		}
+> >> +	}
+> >> +
+> >>  	rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
+> >>  	if (rc < 0)
+> >>  		return IRQ_NONE;
+> >> @@ -987,6 +1003,14 @@ static const struct tpm_class_ops tpm_tis = {
+> >>  	.clk_enable = tpm_tis_clkrun_enable,
+> >>  };
+> >>  
+> >> +static void tpm_tis_storm_work(struct work_struct *work)
+> >> +{
+> >> +	struct tpm_tis_data *priv = container_of(work, struct tpm_tis_data, storm_work);
+> >> +
+> >> +	disable_interrupts(priv->chip);
+> >> +	dev_warn(&priv->chip->dev, "Interrupt storm detected, using polling.\n");
+> >> +}
+> >> +
+> >>  int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+> >>  		      const struct tpm_tis_phy_ops *phy_ops,
+> >>  		      acpi_handle acpi_dev_handle)
+> >> @@ -1003,6 +1027,9 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+> >>  	if (IS_ERR(chip))
+> >>  		return PTR_ERR(chip);
+> >>  
+> >> +	priv->chip = chip;
+> >> +	INIT_WORK(&priv->storm_work, tpm_tis_storm_work);
+> >> +
+> >>  #ifdef CONFIG_ACPI
+> >>  	chip->acpi_dev_handle = acpi_dev_handle;
+> >>  #endif
+> >> diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_core.h
+> >> index edeb5dc61c95..5630f294dc0c 100644
+> >> --- a/drivers/char/tpm/tpm_tis_core.h
+> >> +++ b/drivers/char/tpm/tpm_tis_core.h
+> >> @@ -95,6 +95,8 @@ struct tpm_tis_data {
+> >>  	u16 clkrun_enabled;
+> >>  	wait_queue_head_t int_queue;
+> >>  	wait_queue_head_t read_queue;
+> >> +	struct work_struct storm_work;
+> >> +	struct tpm_chip *chip;
+> >>  	const struct tpm_tis_phy_ops *phy_ops;
+> >>  	unsigned short rng_quality;
+> >>  };
+> >
+> > I've tested this with the Intel platform that has an Infineon chip that
+> > I found the other week. It works, but isn't the complete fix. With this
+> > on top of James' patchset I sometimes see the message "Lost Interrupt
+> > waiting for TPM stat", so I guess there needs to be a check in
+> > wait_for_tpm_stat and request_locality to see if interrupts were
+> > disabled when the wait_event_interruptible_timeout call times out.
+> 
+> As kernel test robot pointed out. kstat_irqs isn't visible when tpm_tis
+> builds as a module. It looks like it is only called by kstat_irq_usrs,
+> and that is only by the fs/proc code. I have a patch to export it, but
+> the i915 driver open codes their own version instead of using it. Is
+> there any reason not to export it?
 
-Why cannot this be implemented in the cma_alloc layer? I mean you can
-cache failed cases and optimize the proper pfn range search.
--- 
-Michal Hocko
-SUSE Labs
+If you add a patch that exports it, then for coherency it'd be better to
+also patch i915 driver. Jani?
+
+/Jarkko
