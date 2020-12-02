@@ -2,130 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3532CC037
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FA42CC034
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730358AbgLBO7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:59:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
+        id S1730293AbgLBO7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:59:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730329AbgLBO7q (ORCPT
+        with ESMTP id S1730188AbgLBO7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:59:46 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220BDC0617A7
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:59:06 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id b12so1123667pjl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:59:06 -0800 (PST)
+        Wed, 2 Dec 2020 09:59:20 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF66C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:58:40 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id b9so732820qtr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:58:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qxSjm0C0NDnoL/IIQUuyyVYhh2eEiAQbNE93rX86LYI=;
-        b=vf14kW9xFVfvlhi7cxHDY1TfyzCLQFFlxSWSLtDtQq21FIqmn02N5trKWTrbMWawew
-         nOinpppX932gtotkEoQZehYpDIOnaTP+AzlfI7ZAKDnYBsEW1fl/sluC7B/+YMEaSstz
-         7w737umIU8NP63VPOfXUGqSctTQfaUenppFcY6h4Qxqr8bpQVrlRYmbIl+ftPf5Ru7AK
-         BB3dVQJdRWsR/ryATnSc8QXyovJQ8IVh+BWZiRCdZ0y1xGKxcaJ/x3bE7pkOniFt5kIw
-         ZYdu4xkCOdK/ERL5lO6BjXDoz66hXuurCfl3E6DrEz+87H2IFlI1MumROkkwlPEuVNd3
-         qGmQ==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=whqXWYmOB1+m54upaJ/UI9RN0nxLkJ8G2r08RqRYHWY=;
+        b=xDBOAIrSxKf/yK+plcqX1iD6LdL5dUUNjLpYwj4GbjtD6CbuW6LsxiK6i2XNgVQJ6I
+         aw0iJza4wZFKMH+qGG/MSf5rnPkYsChiv/SziBl4vboAF7sFR2oe0OeRnof/GFAITl63
+         p3KwB8DRumeZY58u4gcvPdYtfNnwYzBaOqepY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qxSjm0C0NDnoL/IIQUuyyVYhh2eEiAQbNE93rX86LYI=;
-        b=nP5RpFvteNg3NpjCNPPfO/udm0FrGwYwf8G2o4wd36fW95dOUGL6nGZxAYhRTdHdLq
-         1+douzkCynOQCZpzu/ER/g7Uy5n6bPuJU54jEdTO11C+t612/fA2x3g8GN4VPobiWaMk
-         eY4+rkbuR6y6uDWlTXxkZo2WUC6uk+Z28//myeSPWXPlNlFhU1g9llomwyK0rtq3oNax
-         et9w2pYoey/OyTu+oxouUQhbbXesQbXKpvdQeQ4uexaL75IfKUTQG3LszCmQKbGvFO7z
-         cQa2zi4MR4i8sBDrqtyzYdTkA6kMNi4t2VB/oTuPwH2y1uoBLO4l4n91Tv0e8Wtygefh
-         Krjg==
-X-Gm-Message-State: AOAM530Qu+py7JCnGufGkrgxep2k3bS+svkdXLHm53tWQzzriZte+VZe
-        B3LGfoh5i8hdwt24Yh15jEc=
-X-Google-Smtp-Source: ABdhPJzGEO9yrFsha9fbs6byBMkVoAH876bUsIFihNS4WBRN6i+Sx/IJfIbdExRnx5LkS3bHHRkp/Q==
-X-Received: by 2002:a17:90a:9f8e:: with SMTP id o14mr241919pjp.89.1606921145604;
-        Wed, 02 Dec 2020 06:59:05 -0800 (PST)
-Received: from localhost.localdomain (cl-ubuntu-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fee1:602f])
-        by smtp.gmail.com with ESMTPSA id j11sm146826pfe.26.2020.12.02.06.59.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=whqXWYmOB1+m54upaJ/UI9RN0nxLkJ8G2r08RqRYHWY=;
+        b=Stw4W2aR+hA+dr7YzuvsNTsIP/kMW+SnJsnQpjSOmFLF/9bM5dysLBeVVRW3aCDhVb
+         uCm50hfVni5QKe6/T6vsxMG8swEqCYlZWqOMV3Zxnso+eVMYQCula1IqCK+DmPAnycwq
+         vC/0zOCHaJ8u3NstuxwRZAAu2oW+K+eVsNuKZTXBFJvFLpZ6cKkdxTVfjz/PsqjiGoee
+         Q7BsP4Z29oOVgf3bvqLPhOV7Pn4paR8Bcj5OIm+rJNI4gkohV1sf0hfbwd3qPeK5noad
+         h8pqcspC8i5hVhV/dFie3KWUx4mhxHVM/PVhPyEP9m5cGQyByQuU14pLh72k92/ZzUic
+         TfIg==
+X-Gm-Message-State: AOAM533w6Oi88iS+WTavmK5//7vtnObAEmkHx8eEDWo5ndiB3emDwQMw
+        y/Ju+yc7lHJcz5YWgmA/fX8xyvOyH60V9A==
+X-Google-Smtp-Source: ABdhPJz/x2jviDQciX/1jpnvwxt7DMUwArzDSwOotoS3boTx0vT5dEAOXl0HLKUxTUY3jPTb4UUugw==
+X-Received: by 2002:ac8:6a16:: with SMTP id t22mr2918795qtr.304.1606921119526;
+        Wed, 02 Dec 2020 06:58:39 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id o125sm2069065qke.56.2020.12.02.06.58.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 06:59:04 -0800 (PST)
-From:   Fox Chen <foxhlchen@gmail.com>
-To:     gregkh@linuxfoundation.org, tj@kernel.org
-Cc:     Fox Chen <foxhlchen@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kernfs: remove mutex in kernfs_dop_revalidate
-Date:   Wed,  2 Dec 2020 22:58:37 +0800
-Message-Id: <20201202145837.48040-3-foxhlchen@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201202145837.48040-1-foxhlchen@gmail.com>
-References: <20201202145837.48040-1-foxhlchen@gmail.com>
+        Wed, 02 Dec 2020 06:58:38 -0800 (PST)
+Date:   Wed, 2 Dec 2020 09:58:38 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
+Message-ID: <20201202145838.GA949146@google.com>
+References: <20201118201335.GR1437@paulmck-ThinkPad-P72>
+ <20201119035222.GA18458@paulmck-ThinkPad-P72>
+ <20201119035613.GA18816@paulmck-ThinkPad-P72>
+ <20201119183252.GA812262@google.com>
+ <20201119192241.GZ1437@paulmck-ThinkPad-P72>
+ <CAEXW_YSRQ+r_CjFOOEZ38BBRpkhjs5UbpfhGCzA8=XywEU0u8Q@mail.gmail.com>
+ <20201119201615.GA1437@paulmck-ThinkPad-P72>
+ <20201119204221.GB812262@google.com>
+ <CAEXW_YSHVzzm=fLtamB=K5tjiwUNrYK76MxqfW2w0MJKO5LsTw@mail.gmail.com>
+ <20201202042143.GK1437@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202042143.GK1437@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a big mutex in kernfs_dop_revalidate which slows down the
-concurrent performance of kernfs.
+On Tue, Dec 01, 2020 at 08:21:43PM -0800, Paul E. McKenney wrote:
+> On Tue, Dec 01, 2020 at 05:26:32PM -0500, Joel Fernandes wrote:
+> > On Thu, Nov 19, 2020 at 3:42 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > >
+> > > On Thu, Nov 19, 2020 at 12:16:15PM -0800, Paul E. McKenney wrote:
+> > > > On Thu, Nov 19, 2020 at 02:44:35PM -0500, Joel Fernandes wrote:
+> > > > > On Thu, Nov 19, 2020 at 2:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > > > > > > On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
+> > > > > > > > > > > After rcu_do_batch(), add a check for whether the seglen counts went to
+> > > > > > > > > > > zero if the list was indeed empty.
+> > > > > > > > > > >
+> > > > > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > > > > > >
+> > > > > > > > > > Queued for testing and further review, thank you!
+> > > > > > > > >
+> > > > > > > > > FYI, the second of the two checks triggered in all four one-hour runs of
+> > > > > > > > > TREE01, all four one-hour runs of TREE04, and one of the four one-hour
+> > > > > > > > > runs of TREE07.  This one:
+> > > > > > > > >
+> > > > > > > > > WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > > > > > > > >
+> > > > > > > > > That is, there are callbacks in the list, but the sum of the segment
+> > > > > > > > > counts is nevertheless zero.  The ->nocb_lock is held.
+> > > > > > > > >
+> > > > > > > > > Thoughts?
+> > > > > > > >
+> > > > > > > > FWIW, TREE01 reproduces it very quickly compared to the other two
+> > > > > > > > scenarios, on all four run, within five minutes.
+> > > > > > >
+> > > > > > > So far for TREE01, I traced it down to an rcu_barrier happening so it could
+> > > > > > > be related to some interaction with rcu_barrier() (Just a guess).
+> > > > > >
+> > > > > > Well, rcu_barrier() and srcu_barrier() are the only users of
+> > > > > > rcu_segcblist_entrain(), if that helps.  Your modification to that
+> > > > > > function looks plausible to me, but the system's opinion always overrules
+> > > > > > mine.  ;-)
+> > > > >
+> > > > > Right. Does anything the bypass code standout? That happens during
+> > > > > rcu_barrier() as well, and it messes with the lengths.
+> > > >
+> > > > In theory, rcu_barrier_func() flushes the bypass before doing the
+> > > > entrain, and does the rcu_segcblist_entrain() afterwards.
+> > > >
+> > > > Ah, and that is the issue.  If ->cblist is empty and ->nocb_bypass
+> > > > is not, then ->cblist length will be nonzero, and none of the
+> > > > segments will be nonzero.
+> > > >
+> > > > So you need something like this for that second WARN, correct?
+> > > >
+> > > >       WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
+> > > >                    rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > 
+> > Just started to look into it again. If the &rdp->cblist is empty, that
+> > means the bypass list could not have been used (Since per comments on
+> > rcu_nocb_try_bypass() , the bypass list is in use only when the cblist
+> > is non-empty). So the cblist was non empty, then the segment counts
+> > should not sum to 0.  So I don't think that explains it. Anyway, I
+> > will try the new version of your warning in case there is something
+> > about bypass lists that I'm missing.
+> 
+> Good point.  I really did see failures, though.  Do they show up for
+> you?
 
-Since kernfs_dop_revalidate only does some checks, the lock is
-largely unnecessary. Also, according to kernel filesystem locking
-document:
-https://www.kernel.org/doc/html/latest/filesystems/locking.html
-locking is not in the protocal for d_revalidate operation.
+Yeah I do see failures. Once I change the warning as below, the failures go
+away though. So looks like indeed a segcblist can be empty when the bypass
+list has something in it?  If you agree, could you change the warning to as
+below? The tests failing before all pass 1 hour rcutorture testing now
+(TREE01, TREE04 and TREE07).
 
-This patch remove this mutex from
-kernfs_dop_revalidate, so kernfs_dop_revalidate
-can run concurrently.
+---8<-----------------------
 
-Signed-off-by: Fox Chen <foxhlchen@gmail.com>
----
- fs/kernfs/dir.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 9aec80b9d7c6..c2267c93f546 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -26,7 +26,6 @@ static DEFINE_SPINLOCK(kernfs_idr_lock);	/* root->ino_idr */
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 91e35b521e51..3cd92b7df8ac 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2554,7 +2554,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+ 		     count != 0 && rcu_segcblist_empty(&rdp->cblist));
+ 	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
+-	WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
++	WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
++		     rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
  
- static bool kernfs_active(struct kernfs_node *kn)
- {
--	lockdep_assert_held(&kernfs_mutex);
- 	return atomic_read(&kn->active) >= 0;
- }
+ 	rcu_nocb_unlock_irqrestore(rdp, flags);
  
-@@ -557,10 +556,9 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
- 
- 	/* Always perform fresh lookup for negatives */
- 	if (d_really_is_negative(dentry))
--		goto out_bad_unlocked;
-+		goto out_bad;
- 
- 	kn = kernfs_dentry_node(dentry);
--	mutex_lock(&kernfs_mutex);
- 
- 	/* The kernfs node has been deactivated */
- 	if (!kernfs_active(kn))
-@@ -579,11 +577,8 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
- 	    kernfs_info(dentry->d_sb)->ns != kn->ns)
- 		goto out_bad;
- 
--	mutex_unlock(&kernfs_mutex);
- 	return 1;
- out_bad:
--	mutex_unlock(&kernfs_mutex);
--out_bad_unlocked:
- 	return 0;
- }
- 
-@@ -650,6 +645,8 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
- 	kn->mode = mode;
- 	kn->flags = flags;
- 
-+	rwlock_init(&kn->iattr_rwlock);
-+
- 	if (!uid_eq(uid, GLOBAL_ROOT_UID) || !gid_eq(gid, GLOBAL_ROOT_GID)) {
- 		struct iattr iattr = {
- 			.ia_valid = ATTR_UID | ATTR_GID,
 -- 
-2.29.2
+2.29.2.454.gaff20da3a2-goog
 
