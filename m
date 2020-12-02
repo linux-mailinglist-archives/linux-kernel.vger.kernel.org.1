@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A74F2CB99C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A6F2CB9A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729019AbgLBJqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgLBJq3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:46:29 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40071C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:45:49 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id d18so2903944edt.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:45:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dAzfm1GPRmqmkkKCelIOFgT4CWV7j2OzoUKEFgOroWw=;
-        b=Tgu/dQWLG7lUvAVYc/Qt+C6zK6ZEcWGuLwgfwY+PayGbyOwrL/t6wN+RH6+CISgGT0
-         mwGcrHRX4JOmf2H9t/79JLs7qc5tSsTl/e5z+LJd8yis+MOMJ5FPj+4Hqnng96v8htD4
-         Z9hTGWnp4q4kpaY7BOIbL0kjBHx2HwlhNVvq1SMi1mOWEYdwvtTBjurLv19lWG+Pi4r/
-         ib9MTD2elJ/vutaBipPQTPaPPZPRuYUIMp0QWHx3ZSo9rEwygag/5IOSddn5gNS6W5Q1
-         wdJOaDq6/D1Zyz46Q2lchJYvPhKMdfEbPU6H04PLuHUXweKD1sjpta5PytP+nRpv7Rgl
-         n8DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dAzfm1GPRmqmkkKCelIOFgT4CWV7j2OzoUKEFgOroWw=;
-        b=SevO9n6ZPH+u0pBMrd1+odWpforAREVkw30K0FpEjDBji8kgFRqKiI6QPwhUuhwRAT
-         7rD2KB8xNELwII6ZclzSS1HdWp7g+s3khu0IrJijleNBeephbCibrepThK4RosfG4Cev
-         m9a9W6iU8mIs3lYJZvFbVyaQMYIrB7AvrFEOdZibpMtJchob4TpVoFJQWbEakjftCfUN
-         B49iNq1uArm7uxBaDXxR89yAJfxJee1IS9gZgruvR1hDI4lTCgWeD+CNOvhZRR32MO/o
-         yTGFTqOeEcaD6VELNM5bwvbQgUubV8hoq51KBANy8UcNV8MOxfPhahtpmBx08g4F44gY
-         mEzA==
-X-Gm-Message-State: AOAM530Dc4oPyEedASKeZULP7jG4jAihutfCJ2aZeTB2weP6jHGRVfRn
-        QI8w5DOzBoy8yocQkQVMMEU3vHEzbZsI7lxJztuMmQ==
-X-Google-Smtp-Source: ABdhPJyHwjHdplSfOvl0jRfKJN8w06y7AZNvDr+NrxjByMV4bOVADMNqjEMcto9Ssqm+Qp3a8AT4toWW+qT2fnpkedU=
-X-Received: by 2002:a05:6402:307c:: with SMTP id bs28mr1782845edb.186.1606902347990;
- Wed, 02 Dec 2020 01:45:47 -0800 (PST)
+        id S2388097AbgLBJsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:48:20 -0500
+Received: from mga02.intel.com ([134.134.136.20]:47109 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387847AbgLBJsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 04:48:20 -0500
+IronPort-SDR: jBQ+scQGYgYA7J1yGbc8TGX2sxz5zAqs6X7dF39bzEpU/BpsI3CX8CXzy9XWVKTyZ3N2010qTK
+ T9vSZ0SaGf5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="160044157"
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="160044157"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 01:46:19 -0800
+IronPort-SDR: fdvpCu4LKJtzIw6OKe18ZEzN2E4Mf7z7aFv8zacZOZQTlNPMdPurke/7A1ibbvXwQSMT0GwKK3
+ KSE/RUnLUc/A==
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="365228059"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 01:46:16 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kkOjF-00BTr4-MB; Wed, 02 Dec 2020 11:47:17 +0200
+Date:   Wed, 2 Dec 2020 11:47:17 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yun Levi <ppbuk5246@gmail.com>
+Cc:     dushistov@mail.ru, arnd@arndb.de, akpm@linux-foundation.org,
+        gustavo@embeddedor.com, vilhelm.gray@gmail.com,
+        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
+        skalluru@marvell.com, yury.norov@gmail.com, jpoimboe@redhat.com,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH] lib/find_bit: Add find_prev_*_bit functions.
+Message-ID: <20201202094717.GX4077@smile.fi.intel.com>
+References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201127094445.121232-1-miaoqinglang@huawei.com>
-In-Reply-To: <20201127094445.121232-1-miaoqinglang@huawei.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 2 Dec 2020 10:45:37 +0100
-Message-ID: <CAMpxmJXww=a3HoKcGvKQ3M2K6kAO0KGfyB9aCKbG+E_F_0iq7A@mail.gmail.com>
-Subject: Re: [PATCH] gpio: zynq: fix reference leak in zynq_gpio functions
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 10:40 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
->
-> pm_runtime_get_sync will increment pm usage counter even it
-> failed. Forgetting to putting operation will result in a
-> reference leak here.
->
-> A new function pm_runtime_resume_and_get is introduced in
-> [0] to keep usage counter balanced. So We fix the reference
-> leak by replacing it with new funtion.
->
-> [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
->
-> Fixes: c2df3de0d07e ("gpio: zynq: properly support runtime PM for GPIO used as interrupts")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/gpio/gpio-zynq.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
-> index 0b5a17ab9..3521c1dc3 100644
-> --- a/drivers/gpio/gpio-zynq.c
-> +++ b/drivers/gpio/gpio-zynq.c
-> @@ -574,7 +574,7 @@ static int zynq_gpio_irq_reqres(struct irq_data *d)
->         struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
->         int ret;
->
-> -       ret = pm_runtime_get_sync(chip->parent);
-> +       ret = pm_runtime_resume_and_get(chip->parent);
->         if (ret < 0)
->                 return ret;
->
-> @@ -942,7 +942,7 @@ static int zynq_gpio_probe(struct platform_device *pdev)
->
->         pm_runtime_set_active(&pdev->dev);
->         pm_runtime_enable(&pdev->dev);
-> -       ret = pm_runtime_get_sync(&pdev->dev);
-> +       ret = pm_runtime_resume_and_get(&pdev->dev);
->         if (ret < 0)
->                 goto err_pm_dis;
->
-> --
-> 2.23.0
->
+On Wed, Dec 02, 2020 at 10:10:09AM +0900, Yun Levi wrote:
+> Inspired find_next_*bit function series, add find_prev_*_bit series.
+> I'm not sure whether it'll be used right now But, I add these functions
+> for future usage.
 
-Applied, thanks!
+This patch has few issues:
+- it has more things than described (should be several patches instead)
+- new functionality can be split logically to couple or more pieces as well
+- it proposes functionality w/o user (dead code)
 
-Bartosz
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
