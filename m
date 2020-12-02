@@ -2,113 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7FE2CC6A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FB52CC6AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731127AbgLBT14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:27:56 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:57504 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731084AbgLBT1z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:27:55 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2JPRwh030640;
-        Wed, 2 Dec 2020 19:27:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=87lthsip4IiiAZqUix6X3fi43G6/rcARtSiR/tLsvKc=;
- b=wXStjpXLJcUtI6M7Xh0JAn4U2a11DuZ6mwBjYn0sUhfa9jTam6sPakywOqRjHaSwURgA
- eV9nD2MW4UNX2APhqnfqDPlsSpA4As+K1r97srGBOAKFwdgiIPHbz2JNseaML9uxCwDo
- oVkwXbYgsVXoN+2XrwEePQUtYBSwCx9ZCx0DCk8CYcDrtI0DIYOLfeMTokBfnEKVkzNg
- 1PHC7Ryod+jpzHzBy3SEfxVCHfGmzyC0mlwia4TptDycTGEYq/mAgb8O/h9Xum/OBBs5
- 5b50w9wBph/zZwIS7gVIgti/34qOYTq++UYWWUG/HZ5ijbbzOXyrqHRYAbam8zIJJnPb aw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 353dyqtb1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Dec 2020 19:27:06 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2JPNqF186528;
-        Wed, 2 Dec 2020 19:27:06 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 3540g09tmh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Dec 2020 19:27:06 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B2JR2xQ012128;
-        Wed, 2 Dec 2020 19:27:02 GMT
-Received: from [20.15.0.202] (/73.88.28.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Dec 2020 11:27:01 -0800
-Subject: Re: [PATCH] scsi: qedi: fix missing destroy_workqueue() on error in
- __qedi_probe
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201109091518.55941-1-miaoqinglang@huawei.com>
-From:   Mike Christie <michael.christie@oracle.com>
-Message-ID: <c359603c-b26a-44f9-fce5-2dc4816b1400@oracle.com>
-Date:   Wed, 2 Dec 2020 13:27:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1729218AbgLBTaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:30:11 -0500
+Received: from mga01.intel.com ([192.55.52.88]:16554 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726148AbgLBTaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 14:30:11 -0500
+IronPort-SDR: Uyfi/dOH0U1JHRGkMft5Ya+cBYlQkUejbFFrVHgFGJMlGvAr2QLu8ya7cDjP7uvkQvMV4Cwn+h
+ 8/QV+TdWyGkw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="191295033"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="191295033"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 11:28:30 -0800
+IronPort-SDR: tJqPkaYET2VK+XwPUQMAf0LvzhTpG/zn5zuMDG/l5JrlZ6Dsks/sl7KlHuqlX4123SiFvvVUCq
+ 3JlIblxC0LlQ==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="550189635"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 11:28:29 -0800
+Date:   Wed, 2 Dec 2020 11:28:28 -0800
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [RFC 1/2] perf core: Add PERF_COUNT_SW_CGROUP_SWITCHES event
+Message-ID: <20201202192828.GG1363814@tassilo.jf.intel.com>
+References: <20201202150205.35750-1-namhyung@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201109091518.55941-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=2
- phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020114
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=2 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020114
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202150205.35750-1-namhyung@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/20 3:15 AM, Qinglang Miao wrote:
-> Add the missing destroy_workqueue() before return from
-> __qedi_probe in the error handling case when fails to
-> create workqueue qedi->offload_thread.
-> 
-> Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/scsi/qedi/qedi_main.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-> index 61fab01d2d52..f5fc7f518f8a 100644
-> --- a/drivers/scsi/qedi/qedi_main.c
-> +++ b/drivers/scsi/qedi/qedi_main.c
-> @@ -2766,7 +2766,7 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
->  			QEDI_ERR(&qedi->dbg_ctx,
->  				 "Unable to start offload thread!\n");
->  			rc = -ENODEV;
-> -			goto free_cid_que;
-> +			goto free_tmf_thread;
->  		}
->  
->  		INIT_DELAYED_WORK(&qedi->recovery_work, qedi_recovery_handler);
-> @@ -2790,6 +2790,8 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
->  
->  	return 0;
->  
-> +free_tmf_thread:
-> +	destroy_workqueue(qedi->tmf_thread);
->  free_cid_que:
->  	qedi_release_cid_que(qedi);
->  free_uio:
-> 
+> +	prev_cgrp = task_css_check(prev, perf_event_cgrp_id, 1)->cgroup;
+> +	next_cgrp = task_css_check(next, perf_event_cgrp_id, 1)->cgroup;
+> +
+> +	if (prev_cgrp != next_cgrp)
+> +		perf_sw_event_sched(PERF_COUNT_SW_CGROUP_SWITCHES, 1, 0);
 
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Seems to be the perf cgroup only, not all cgroups.
+That's a big difference and needs to be documented properly.
+
+Probably would make sense to have two events for both, one for 
+all cgroups and one for perf only.
+
+
+
+-Andi
