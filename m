@@ -2,98 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A17F2CC5EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBF12CC5F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389584AbgLBSwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:52:11 -0500
-Received: from mga04.intel.com ([192.55.52.120]:56541 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729000AbgLBSwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:52:10 -0500
-IronPort-SDR: aiHqgaIgp9BtKoyXKlFVwYb0v5HRmAslhcvHXqkC/XVy+Y8LwR1HL+IAMMktBZCu6by/t9qWKo
- L6Dq5BF6zUUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="170502004"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="170502004"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 10:50:30 -0800
-IronPort-SDR: f5ZeDIycbNzT7S5s+5pjjkfqOQELvXr/smb2b9H4sD2vZZ15lwZmwASAPT9mTVVJTVePb59Oli
- uoHsXSrAdc5Q==
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="335664784"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 10:50:26 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kkXDr-00Ba4b-LT; Wed, 02 Dec 2020 20:51:27 +0200
-Date:   Wed, 2 Dec 2020 20:51:27 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yun Levi <ppbuk5246@gmail.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org
-Subject: Re: your mail
-Message-ID: <20201202185127.GO4077@smile.fi.intel.com>
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com>
- <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
- <20201202173701.GM4077@smile.fi.intel.com>
- <CAM7-yPSWvsySweXSmbvW2hucce8T7BOSkz-eF5t7PJE6zv5tjg@mail.gmail.com>
+        id S2389576AbgLBSyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:54:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387760AbgLBSyK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:54:10 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCEFC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:53:30 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id u21so1809696qtw.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:53:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iFnMmWJa+gzL59L1V90z2bFntM7x08yfzyITaNDP1dQ=;
+        b=DoeoPlUtbTS8Yl226741iKKBAt/wvHDna506b0JhW2rsrMMdV8v9xj/58N47CKj5dO
+         x7s2FXj3zzrvvVylgOOV0bv3MBTk881c415ljZ4gIW/JdhXOnmkF/B7lhBzSimP812TL
+         jnCqyyEEsWeS8sF7drIB2HTySF/cOrA3ucfzvT4oVQ+KP6zgDp1/4DdgaoifN9cYXpmj
+         IGpm3k4WZ2op/Gh9rpRyl1EcIdfGM+yRpML+6lF93P/zYYo7muXnoCDH5t2C1WvQGKw0
+         RQlg+PrFPWd3rmrK9IFM4SwodtSilHFoGe+rf1d8aHogPR9qG5il7NW7dkCDqcHjQYja
+         ZGDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=iFnMmWJa+gzL59L1V90z2bFntM7x08yfzyITaNDP1dQ=;
+        b=M+OMtS1TT0FZd27/2AlE4Oh/GfpYShu14drOK2SxGcRkEFuJLm7tyA502jaggbjZS1
+         shLSkwAX3Z+ACcfjhAEggPKTWRbUbtu0IJQqNDT4PogdPwvIA+0UbYJ+Pe0R0yEhJvET
+         cPuuZSpWXXV0qnNJ9mRkqkNEE/AeiW3tR5TvlHUhxIz2CwfbuYguvh855hAxj4Ly8FNf
+         /NIhPSkI90r6SWDNWD+KAsnYO+zbIiHWxRuEUU8eTZRx0lYZ19gpn2cXoWxVln8L1vhe
+         goIK0smg1jJv3ud8mKsBYR+0LGUz01nVJaK9qlQFcvN2sH3W+0xOuOycHX036GJi98FW
+         m1xQ==
+X-Gm-Message-State: AOAM533ZR1VpBUWTPhR4ksq36Kj8LZf8OxmTiyXjogvHZaR1+8RfpT6k
+        rYtPtK2atfCZpkpdfNzhLdM=
+X-Google-Smtp-Source: ABdhPJzondQHOrxCr1ftrVSVmpYTN6pFwPkl+G2K8hb1UbVLkClhx3ZB40Fka8K2O6d+tLl1OSHPsg==
+X-Received: by 2002:ac8:580c:: with SMTP id g12mr4160635qtg.340.1606935209140;
+        Wed, 02 Dec 2020 10:53:29 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:8dbd])
+        by smtp.gmail.com with ESMTPSA id 72sm2658201qkn.44.2020.12.02.10.53.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 10:53:28 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 2 Dec 2020 13:53:00 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Don <joshdon@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
+        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Oleg Rombakh <olegrom@google.com>
+Subject: Re: [PATCH -tip 26/32] sched: Add a second-level tag for nested
+ CGroup usecase
+Message-ID: <X8fijKlASP4yo8kp@mtj.duckdns.org>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-27-joel@joelfernandes.org>
+ <20201125134237.GZ2414@hirez.programming.kicks-ass.net>
+ <CABk29Nv7+nD1oU9iBhAFAuFoiPM5i7eCOtuG7vuQVcE8+Va=nw@mail.gmail.com>
+ <20201202080211.GD3021@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM7-yPSWvsySweXSmbvW2hucce8T7BOSkz-eF5t7PJE6zv5tjg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201202080211.GD3021@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 03:27:33AM +0900, Yun Levi wrote:
-> On Thu, Dec 3, 2020 at 2:36 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Wed, Dec 02, 2020 at 09:26:05AM -0800, Yury Norov wrote:
+Hello,
 
-...
+On Wed, Dec 02, 2020 at 09:02:11AM +0100, Peter Zijlstra wrote:
+> > the user might only want subsets of {B, C, D, E} to share.  For
+> > instance, the user might only want {B,C} and {D, E} to share.  One way
+> > to solve this would be to allow the user to write the group cookie
+> > directly.  However, this interface would need to be restricted to
+> > privileged users, since otherwise the cookie could be configured to
+> > share with any arbitrary cgroup.  The purpose of the 'color' field is
+> > to expose a portion of the cookie that can be modified by a
+> > non-privileged user in order to achieve this sharing goal.
+> > 
+> > If this doesn't seem like a useful case, I'm happy to drop this patch
+> > from the series to unblock it.
+> 
+> Well, the traditional cgroup way of doing that would be to:
+> 
+>          A
+> 	/ \
+>        T1 T2
+>       / \
+>      B   C
+> 
+> And tag T1 if you want B,C to share.
+> 
+> So me the color thing reads like an end-run around the cgroup hierarchy.
 
-> > Side note: speaking of performance, any plans to fix for_each_*_bit*() for
-> > cases when the nbits is known to be <= BITS_PER_LONG?
-> >
-> > Now it makes an awful code generation (something like few hundred bytes of
-> > code).
++1
 
-> Frankly Speaking, I don't have an idea in now.....
-> Could you share your idea or wisdom?
+and please cc me on cgroup related changes.
 
-Something like (I may be mistaken by names, etc, I'm not a compiler expert,
-and this is in pseudo language, I don't remember all API names by hart,
-just to express the idea) as a rough first step
-
-__builtin_constant(nbits, find_next_set_bit_long, find_next_set_bit)
-
-find_next_set_bit_long()
-{
-	unsigned long v = BIT_LAST_WORD(i);
-	return ffs_long(v);
-}
-
-Same for find_first_set_bit() -> map it to ffs_long().
-
-And I believe it can be optimized more.
+Thanks.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+tejun
