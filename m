@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDF92CC764
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D993B2CC761
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731223AbgLBUDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:03:37 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:38358 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728727AbgLBUDg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731161AbgLBUDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 2 Dec 2020 15:03:36 -0500
-Received: by mail-ej1-f68.google.com with SMTP id a16so6285915ejj.5;
-        Wed, 02 Dec 2020 12:03:20 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728962AbgLBUDf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:03:35 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6AEC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:02:55 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id m9so1773330pgb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:02:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5If13UxZbzUYPYSGlnG6A95GWw+mvTPbOVGEWE9ood8=;
+        b=S/8B7FkJWRKEvk0a7GH8tIaFCBMw11QXU83Q70IW+qUkcvgGZhrhnA/wiiJx9GGIWC
+         xa7kipkkMT0V//SYHvnMYiHkIZwX4iY27bmTtkXYOCR+7YRsOgeiEFOhTv7RrDlkQoJQ
+         DOtmhdccPHT7JYr5Jdt/lJx+iW9h9s4vTY/vQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gjlzdsQdxsXzxqG6DJvmxHw+UJyuiMoRCuyYDA2+xk0=;
-        b=Ghd/GZqfOp2iW49TyIErhxRDeb/EXEP095zjyAU7wTnA2/Xpap477sBWcv5cWcu5qL
-         yMy03pZm+E7R3HmzLvsi+7dQpANmUkB9TinjXuaiGDE0k6dx5JwibYhYTkp2ZwRtRRZD
-         GUMTzzMMWoA0hCT3WNOpuJclnrCKdRbA9S3gG91IhI19Up9XCOPKogFMHgHWtBeOGURO
-         psyMM9kQM/58mvhdak07L2c6XY4DkymXNnZR9XiuBnZ09zOC8m9HlFGztIOQf1zyloEG
-         pVcg8Pye3eSWQi07I2miXmtMKp44SO6AAxtlkhAUCQ5asfB8qnPrM9uW08uoPRFtveA/
-         LjfA==
-X-Gm-Message-State: AOAM533oRebmTpn7Xr8ccYPDJI/dsfhgrT1QSj5kqwntWIidepzA73yW
-        ekcMWbvKgNIW7XUdRHRvSmxhPKUuvpU=
-X-Google-Smtp-Source: ABdhPJwuWU94OcLvUXwn+jRK6vn3OtRrpWj5Uy1y6DoW6DC0AfeyctnUKppfBqu5X/9TjH873J0Bjw==
-X-Received: by 2002:a17:907:6e9:: with SMTP id yh9mr1379758ejb.131.1606939374403;
-        Wed, 02 Dec 2020 12:02:54 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id f7sm566575ejd.13.2020.12.02.12.02.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5If13UxZbzUYPYSGlnG6A95GWw+mvTPbOVGEWE9ood8=;
+        b=ffq7vLlew10234UJLaup58lV0TOVBQPbjRJa3MfN1v1o6dZIIXC2y7lZa1Qlt7pPSA
+         xdTMuSV9WI8EBJpgbtbpODJkluANdljzfAzyvLIbSo+Gx0VQ40rDrRJBaZrvqhv7B1/D
+         qschkDCuk32X7IcgnpT3VoyeqmHwXRf0i9j9PAzM1q8r2cXpE2cbXT6q59IgPRkjb+AT
+         kFxYKpolYxDkdcRwTTfxCZEBfAffGENIuEzh2f6iPDFWBGkhnfbVSzcv3zVF18drj8OU
+         0rznOGupH7dyYX4F66HoC1dqK94lsQ4UghY3HGRDewPApw3VZxmROSRV3QWSOgqSGl1b
+         Qnjw==
+X-Gm-Message-State: AOAM530uiOW9uQ2UULwvdBnjx+8GpVkqeAYCLFexs58cwO/Tuzfzv//5
+        ZPdxOd3q2d/IKv5yIvRVtwEIXw==
+X-Google-Smtp-Source: ABdhPJxgeXdDm3H5w340toK+i1w7gpbZhgH3rIjemTd8uUKoAUMe+wIu04XUiztHHayJ+gJSkakglA==
+X-Received: by 2002:a63:6e45:: with SMTP id j66mr1408847pgc.238.1606939375140;
+        Wed, 02 Dec 2020 12:02:55 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id i4sm483748pgg.67.2020.12.02.12.02.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 12:02:53 -0800 (PST)
-Date:   Wed, 2 Dec 2020 22:02:51 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: arm: samsung: document SMDK2416 board
- binding
-Message-ID: <20201202200251.GA128771@kozik-lap>
-References: <20201117201106.128813-1-krzk@kernel.org>
+        Wed, 02 Dec 2020 12:02:54 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Daniel Campello <campello@chromium.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: [PATCH v3] iio: sx9310: Fix semtech,avg-pos-strength setting when > 16
+Date:   Wed,  2 Dec 2020 12:02:52 -0800
+Message-Id: <20201202200252.986230-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201117201106.128813-1-krzk@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 09:11:03PM +0100, Krzysztof Kozlowski wrote:
-> Add binding for the SMDK2416 board.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  .../devicetree/bindings/arm/samsung/samsung-boards.yaml     | 6 ++++++
->  1 file changed, 6 insertions(+)
+This DT property can be 0, 16, and then 64, but not 32. The math here
+doesn't recognize this slight bump in the power of 2 numbers and
+translates a DT property of 64 into the register value '3' when it
+really should be '2'. Fix it by subtracting one more if the number being
+translated is larger than 31. Also use clamp() because we're here.
 
-Applied.
+Cc: Daniel Campello <campello@chromium.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Gwendal Grignou <gwendal@chromium.org>
+Cc: Evan Green <evgreen@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
 
-Best regards,
-Krzysztof
+Changes from v2 (https://lore.kernel.org/r/20201120182944.543428-1-swboyd@chromium.org):                                                                                                         
+ * Use clamp()
+ * Add comment to clarify
+
+Changes from v1 (https://lore.kernel.org/r/20201120073842.3232458-1-swboyd@chromium.org):                                                                                                         
+ * Changed ternary to consider 17 to 31 as the same as 16   
+
+ drivers/iio/proximity/sx9310.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
+index a2f820997afc..0e6863e4d384 100644
+--- a/drivers/iio/proximity/sx9310.c
++++ b/drivers/iio/proximity/sx9310.c
+@@ -1305,7 +1305,8 @@ sx9310_get_default_reg(struct sx9310_data *data, int i,
+ 		if (ret)
+ 			break;
+ 
+-		pos = min(max(ilog2(pos), 3), 10) - 3;
++		/* Powers of 2, except for a gap between 16 and 64 */
++		pos = clamp(ilog2(pos), 3, 11) - (pos >= 32 ? 4 : 3);
+ 		reg_def->def &= ~SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK;
+ 		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK,
+ 					   pos);
+
+base-commit: 5b19ca2c78a0838976064c0347e46a2c859b541d
+-- 
+https://chromeos.dev
 
