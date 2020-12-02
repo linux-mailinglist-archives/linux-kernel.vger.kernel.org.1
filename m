@@ -2,169 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DE82CB1B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31B82CB1C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727553AbgLBAto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:49:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727517AbgLBAto (ORCPT
+        id S1727685AbgLBAya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:54:30 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27202 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727415AbgLBAy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:49:44 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C679C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 16:48:58 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id t8so98134pfg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 16:48:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/fKv5F3ku6dAz8MDwjdtM8xp8kuRZkZb5KHj4LO7twk=;
-        b=JjxyvsIhCZGCexZjHjW3/q4SZm2S1po42f5rWBYNZpknOcEv/4ukHAd7dYoOcLbu08
-         v9lir0vGgCrDfr3g4PJPmBdnSX9AtilLwAKcoLMpetkmp8Bhe+z4QXdSRWLcWS0Tqf70
-         Xl3eKVOJ2k93ikHIJdW1ZLWQ5nevzaKciUV1A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/fKv5F3ku6dAz8MDwjdtM8xp8kuRZkZb5KHj4LO7twk=;
-        b=Rt8W9JLDdMViM9t0jLOdsbC2lOuoIYWUSjvWAE0uJpDF3/6YImPN4NamfRldNWjIsd
-         FNej3+pJyp0GwSs+Btt3kun7Kkfq5TCtydalhWwM9Ji/jf6eCdtY7dBD7NdRQW4i2Gmw
-         w1tLsjJchXOYrnqoDmxOSav+spLCn+Sp1m451O1vznyQNgbYRWs5x9XRmE4FMzHCMsYL
-         jhuQVrtIpzl/eku7zNE+crlucozOXQZfiYa/GvIYPI2FCvuuVTclAhmxKqCO9t+XwGiv
-         hWbU6t5xCaPV+kPI44zFDTGU7bfzv7Cnvfe8nGXzVMXQqGIF2FfUpTgThtPpNbzcwRZc
-         b2kA==
-X-Gm-Message-State: AOAM533Uyd25Qr+4lKu8qlQGOQiCztZxQAwrBOaq+gjQckdDPv9t9091
-        w4l56GFIT8nZHNC/sSiLEl4VTA==
-X-Google-Smtp-Source: ABdhPJxPo4FcPctt9GYJiUhuxfJKkE2jzZbWtQgZ4zmCr6jeE52ztB/bGQ6fwSzhNexVjYTI2+X2Vw==
-X-Received: by 2002:a62:78d3:0:b029:198:ad8:7d05 with SMTP id t202-20020a6278d30000b02901980ad87d05mr90210pfc.18.1606870137646;
-        Tue, 01 Dec 2020 16:48:57 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f5sm83328pgg.74.2020.12.01.16.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 16:48:56 -0800 (PST)
-Date:   Tue, 1 Dec 2020 16:48:55 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     akpm@linux-foundation.org, bp@alien8.de, coreteam@netfilter.org,
-        syzbot <syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com>,
-        davem@davemloft.net, gustavoars@kernel.org, hpa@zytor.com,
-        john.stultz@linaro.org, kaber@trash.net, kadlec@blackhole.kfki.hu,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, torvalds@linux-foundation.org,
-        wang.yi59@zte.com.cn, x86@kernel.org
-Subject: Re: UBSAN: array-index-out-of-bounds in arch_uprobe_analyze_insn
-Message-ID: <202012011616.DFBE3FC5BC@keescook>
-References: <00000000000082559e05afc6b97a@google.com>
- <0000000000002cd54805afdf483f@google.com>
+        Tue, 1 Dec 2020 19:54:29 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B20VkX6139457;
+        Tue, 1 Dec 2020 19:53:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=pcL5VReTU0J7QsDxX1hP9luUG3IKmWM81Cxa6JZMWUo=;
+ b=X0o54C5lllA36z63LhqUoSNX/dZD+udxFQtZJpnkxH6Wsu/oH/dAMSwVLom+dxuHUz9M
+ XekVq4lF3zzrJSecbXVJo36gg8zHQjMnwCmswLvn4OdKjOB1UT8IQSPSJh7byoFx79YM
+ bgNpoA1vWjZMHyZbIaA4UmSF9HgOmZMvi0qz49Z4LvQF4xMaHCIYASha6VEpAj8ZTjWQ
+ Mtm5uZkBCgckPL5kI87cm8G5uPyyAsYSCmDRyel1XI4q5EMBCvWbazZgjGM1w3b0EmE5
+ NQkEMvdB16CTcDvQLKPM39a0ZyGHgUdRd9z1299enfMYoP01ii6NwR7U0MNF8NmYVm7X xA== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355d9duy0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Dec 2020 19:53:33 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B20cNaH028142;
+        Wed, 2 Dec 2020 00:53:33 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma03dal.us.ibm.com with ESMTP id 353e69beer-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 00:53:32 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B20rV4T17432992
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 00:53:31 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B37E78063;
+        Wed,  2 Dec 2020 00:53:31 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F21117805C;
+        Wed,  2 Dec 2020 00:53:30 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 00:53:30 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v2 00/17] ibmvfc: initial MQ development
+Date:   Tue,  1 Dec 2020 18:53:12 -0600
+Message-Id: <20201202005329.4538-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000002cd54805afdf483f@google.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_12:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999
+ clxscore=1015 mlxscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ adultscore=0 suspectscore=3 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012010142
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Recent updates in pHyp Firmware and VIOS releases provide new infrastructure
+towards enabling Subordinate Command Response Queues (Sub-CRQs) such that each
+Sub-CRQ is a channel backed by an actual hardware queue in the FC stack on the
+partner VIOS. Sub-CRQs are registered with the firmware via hypercalls and then
+negotiated with the VIOS via new Management Datagrams (MADs) for channel setup.
 
-There appears to be a problem with prefix counting for the instruction
-decoder. It looks like insn_get_prefixes() isn't keeping "nb" and "nbytes"
-in sync correctly:
+This initial implementation adds the necessary Sub-CRQ framework and implements
+the new MADs for negotiating and assigning a set of Sub-CRQs to associated VIOS
+HW backed channels. The event pool and locking still leverages the legacy single
+queue implementation, and as such lock contention is problematic when increasing
+the number of queues. However, this initial work demonstrates a 1.2x factor
+increase in IOPs when configured with two HW queues despite lock contention.
 
-        while (inat_is_legacy_prefix(attr)) {
-                /* Skip if same prefix */
-                for (i = 0; i < nb; i++)
-                        if (prefixes->bytes[i] == b)
-                                goto found;
-                if (nb == 4)
-                        /* Invalid instruction */
-                        break;
-                prefixes->bytes[nb++] = b;
-		...
-found:
-                prefixes->nbytes++;
-                insn->next_byte++;
-                lb = b;
-                b = peek_next(insn_byte_t, insn);
-                attr = inat_get_opcode_attribute(b);
-        }
+changes in v2:
+* Patch 4: NULL'd scsi_scrq reference after deallocation [brking]
+* Patch 6: Added switch case to handle XPORT event [brking]
+* Patch 9: fixed ibmvfc_event leak and double free [brking]
+* added support for cancel command with MQ
+* added parameter toggles for MQ settings
 
-(nbytes is incremented on repeated prefixes, but "nb" isn't)
+Tyrel Datwyler (17):
+  ibmvfc: add vhost fields and defaults for MQ enablement
+  ibmvfc: define hcall wrapper for registering a Sub-CRQ
+  ibmvfc: add Subordinate CRQ definitions
+  ibmvfc: add alloc/dealloc routines for SCSI Sub-CRQ Channels
+  ibmvfc: add Sub-CRQ IRQ enable/disable routine
+  ibmvfc: add handlers to drain and complete Sub-CRQ responses
+  ibmvfc: define Sub-CRQ interrupt handler routine
+  ibmvfc: map/request irq and register Sub-CRQ interrupt handler
+  ibmvfc: implement channel enquiry and setup commands
+  ibmvfc: advertise client support for using hardware channels
+  ibmvfc: set and track hw queue in ibmvfc_event struct
+  ibmvfc: send commands down HW Sub-CRQ when channelized
+  ibmvfc: register Sub-CRQ handles with VIOS during channel setup
+  ibmvfc: add cancel mad initialization helper
+  ibmvfc: send Cancel MAD down each hw scsi channel
+  ibmvfc: enable MQ and set reasonable defaults
+  ibmvfc: provide modules parameters for MQ settings
 
-However, it looks like nbytes is used as an offset:
-
-static inline int insn_offset_rex_prefix(struct insn *insn)
-{
-        return insn->prefixes.nbytes;
-}
-static inline int insn_offset_vex_prefix(struct insn *insn)
-{
-        return insn_offset_rex_prefix(insn) + insn->rex_prefix.nbytes;
-}
-
-Which means everything that iterates over prefixes.bytes[] is buggy,
-since they may be trying to read past the end of the array:
-
-$ git grep -A3 -E '< .*prefixes(\.|->)nbytes'
-boot/compressed/sev-es.c:       for (i = 0; i < insn->prefixes.nbytes; i++) {
-boot/compressed/sev-es.c-               insn_byte_t p =
-insn->prefixes.bytes[i];
-boot/compressed/sev-es.c-
-boot/compressed/sev-es.c-               if (p == 0xf2 || p == 0xf3)
---
-kernel/uprobes.c:       for (i = 0; i < insn->prefixes.nbytes; i++) {
-kernel/uprobes.c-               insn_attr_t attr;
-kernel/uprobes.c-
-kernel/uprobes.c-               attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
---
-kernel/uprobes.c:       for (i = 0; i < insn->prefixes.nbytes; i++) {
-kernel/uprobes.c-               if (insn->prefixes.bytes[i] == 0x66)
-kernel/uprobes.c-                       return -ENOTSUPP;
-kernel/uprobes.c-       }
---
-lib/insn-eval.c:        for (i = 0; i < insn->prefixes.nbytes; i++) {
-lib/insn-eval.c-                insn_byte_t p = insn->prefixes.bytes[i];
-lib/insn-eval.c-
-lib/insn-eval.c-                if (p == 0xf2 || p == 0xf3)
---
-lib/insn-eval.c:        for (i = 0; i < insn->prefixes.nbytes; i++) {
-lib/insn-eval.c-                insn_attr_t attr;
-lib/insn-eval.c-
-lib/insn-eval.c-                attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
-
-I don't see a clear way to fix this.
-
--Kees
-
-On Mon, Sep 21, 2020 at 09:20:07PM -0700, syzbot wrote:
-> syzbot has bisected this issue to:
-> 
-> commit 4b2bd5fec007a4fd3fc82474b9199af25013de4c
-> Author: John Stultz <john.stultz@linaro.org>
-> Date:   Sat Oct 8 00:02:33 2016 +0000
-> 
->     proc: fix timerslack_ns CAP_SYS_NICE check when adjusting self
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1697348d900000
-> start commit:   325d0eab Merge branch 'akpm' (patches from Andrew)
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1597348d900000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1197348d900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9b64b619f10f19d19a7c
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1573a8ad900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164ee6c5900000
-> 
-> Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-> Fixes: 4b2bd5fec007 ("proc: fix timerslack_ns CAP_SYS_NICE check when adjusting self")
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+ drivers/scsi/ibmvscsi/ibmvfc.c | 706 +++++++++++++++++++++++++++++----
+ drivers/scsi/ibmvscsi/ibmvfc.h |  41 +-
+ 2 files changed, 675 insertions(+), 72 deletions(-)
 
 -- 
-Kees Cook
+2.27.0
+
