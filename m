@@ -2,310 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BE92CC103
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0232B2CC104
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgLBPhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:37:43 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:54207 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726921AbgLBPhn (ORCPT
+        id S1730501AbgLBPiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728261AbgLBPh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:37:43 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id CA480C0009;
-        Wed,  2 Dec 2020 15:36:59 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 16:36:59 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v7 2/3] drm: Add support for the LogiCVC display
- controller
-Message-ID: <X8e0mwSnhVZBUcU2@aptenodytes>
-References: <20201102155308.142691-1-paul.kocialkowski@bootlin.com>
- <20201102155308.142691-3-paul.kocialkowski@bootlin.com>
- <20201104212221.GA5588@ravnborg.org>
+        Wed, 2 Dec 2020 10:37:59 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAA2C0613CF;
+        Wed,  2 Dec 2020 07:37:18 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id f23so5049229ejk.2;
+        Wed, 02 Dec 2020 07:37:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WXVdNum5aCsi+xpDAEKp6eQg6/NaKHf/om7tKOnDBFM=;
+        b=iURZkBK/Ga5ZV1Rku6aiTwucrB0Rp0yGK9YG9PlbL7cMv/cOEaV2vBt7dZi9IaJjEz
+         1CyDSzr4TZ83x1Rxv5WVoqelKOtvtZCoe2tIj/NsJSf1W3Ru16JS12n0Bh1iFRYtgfmE
+         JHTHVgUWPNxNjvBnRBEG6PUI5Cx8CfpyuLv/aCEVjCtN4Arj0Krm7TvZRpfQJnu/e6T0
+         n3bf03Wi8KdpHfek4UzsoMg+wbkVUM0ZqLcI0CqtZjl8kVlNrSRjPGKM1KC/0uV3Suam
+         SBEPb+xtUcv2sw6o7SWOgqhd78YDQKPGiGHr4LeoyOU6XUiMxbuZho/3DvioVwTfXYA5
+         R7tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WXVdNum5aCsi+xpDAEKp6eQg6/NaKHf/om7tKOnDBFM=;
+        b=qe6zQM1aS7P5supF+/ZO6DmKamqaZJwMiWzzGjIvyrvjodx7LAFje176COSR6lYVRq
+         dipxfCgN9fT75l24NypjlgTc53tfYP/1JGos5Oal6Fj0YITgN12+Tmxzq4ceyLQv8j/p
+         WNBgOPvoKj2Ot9GOWQblUi2Tcifs81tboIghDNWDHpf3C8Y2v/3fSeaTqWjFnaPYeKHJ
+         SwY1JONt0hXkRoIHKHGoFjSV93GPUmz63k0XX874g1DyjkL7UjnVctj8liAbdKTCXJVs
+         9vglGu2z5pkE2XxlY3p23ruNVGgATwRlgew2pg4qXQXB1E8jMmH3QEy6JUixuNihrVP+
+         Xshw==
+X-Gm-Message-State: AOAM532bbgnlLKP5gMsS2NSDtd0f4evG9waFgC3ffUBhS3KAANjvR1lo
+        pYzWECAJ3dl8DVYKhBQ+GsY=
+X-Google-Smtp-Source: ABdhPJx+nmE7a2UsJp94TWOrJ2VJvCj/6AK9Qu45dEc1Vhm9jsM3zOFtLgDPtNx+kS2cK91adUAL3g==
+X-Received: by 2002:a17:906:7c45:: with SMTP id g5mr326380ejp.502.1606923437262;
+        Wed, 02 Dec 2020 07:37:17 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id n14sm201181edw.38.2020.12.02.07.37.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 07:37:16 -0800 (PST)
+Date:   Wed, 2 Dec 2020 17:37:15 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] net: dsa: qca: ar9331: export stats64
+Message-ID: <20201202153715.f54tsktvvjr3bwxv@skbuf>
+References: <20201202120712.6212-1-o.rempel@pengutronix.de>
+ <20201202120712.6212-3-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2Xz4AXsuSr8pfC7G"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104212221.GA5588@ravnborg.org>
+In-Reply-To: <20201202120712.6212-3-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 02, 2020 at 01:07:12PM +0100, Oleksij Rempel wrote:
+> Add stats support for the ar9331 switch.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
 
---2Xz4AXsuSr8pfC7G
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+With Andrew's feedback applied:
 
-Hi Sam,
-
-On Wed 04 Nov 20, 22:22, Sam Ravnborg wrote:
-> Hi Paul.
->=20
-> A few comments in the following. I did not find time to read all of the
-> driver.
-
-Thanks for taking a look at the driver!
-
->=20
-> 	Sam
->=20
-> On Mon, Nov 02, 2020 at 04:53:07PM +0100, Paul Kocialkowski wrote:
-> > Introduces a driver for the LogiCVC display controller, a programmable
-> > logic controller optimized for use in Xilinx Zynq-7000 SoCs and other
-> > Xilinx FPGAs. The controller is mostly configured at logic synthesis
-> > time so only a subset of configuration is left for the driver to
-> > handle.
-> >=20
-> > The following features are implemented and tested:
-> > - LVDS 4-bit interface;
-> > - RGB565 pixel formats;
-> > - Multiple layers and hardware composition;
-> > - Layer-wide alpha mode;
-> >=20
-> > The following features are implemented but untested:
-> > - Other RGB pixel formats;
-> > - Layer framebuffer configuration for version 4;
-> > - Lowest-layer used as background color;
-> > - Per-pixel alpha mode.
-> >=20
-> > The following features are not implemented:
-> > - YUV pixel formats;
-> > - DVI, LVDS 3-bit, ITU656 and camera link interfaces;
-> > - External parallel input for layer;
-> > - Color-keying;
-> > - LUT-based alpha modes.
-> >=20
-> > Additional implementation-specific notes:
-> > - Panels are only enabled after the first page flip to avoid flashing a
-> >   white screen.
-> > - Depth used in context of the LogiCVC driver only counts color compone=
-nts
-> >   to match the definition of the synthesis parameters.
-> >=20
-> > Support is implemented for both version 3 and 4 of the controller.
-> >=20
-> > With version 3, framebuffers are stored in a dedicated contiguous
-> > memory area, with a base address hardcoded for each layer. This requires
-> > using a dedicated CMA pool registered at the base address and tweaking a
-> > few offset-related registers to try to use any buffer allocated from
-> > the pool. This is done on a best-effort basis to have the hardware cope
-> > with the DRM framebuffer allocation model and there is no guarantee
-> > that each buffer allocated by GEM CMA can be used for any layer.
-> > In particular, buffers allocated below the base address for a layer are
-> > guaranteed not to be configurable for that layer. See the implementatio=
-n of
-> > logicvc_layer_buffer_find_setup for specifics.
-> >=20
-> > Version 4 allows configuring each buffer address directly, which
-> > guarantees that any buffer can be configured.
-> >=20
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > Reviewed-by: Maxime Ripard <mripard@kernel.org>
-> > ---
-> >  MAINTAINERS                                 |   6 +
-> >  drivers/gpu/drm/Kconfig                     |   2 +
-> >  drivers/gpu/drm/Makefile                    |   1 +
-> >  drivers/gpu/drm/logicvc/Kconfig             |   9 +
-> >  drivers/gpu/drm/logicvc/Makefile            |   4 +
-> >  drivers/gpu/drm/logicvc/logicvc_crtc.c      | 277 +++++++++
-> >  drivers/gpu/drm/logicvc/logicvc_crtc.h      |  21 +
-> >  drivers/gpu/drm/logicvc/logicvc_drm.c       | 472 +++++++++++++++
-> >  drivers/gpu/drm/logicvc/logicvc_drm.h       |  64 ++
-> >  drivers/gpu/drm/logicvc/logicvc_interface.c | 224 +++++++
-> >  drivers/gpu/drm/logicvc/logicvc_interface.h |  30 +
-> >  drivers/gpu/drm/logicvc/logicvc_layer.c     | 615 ++++++++++++++++++++
-> >  drivers/gpu/drm/logicvc/logicvc_layer.h     |  64 ++
-> >  drivers/gpu/drm/logicvc/logicvc_mode.c      | 101 ++++
-> >  drivers/gpu/drm/logicvc/logicvc_mode.h      |  15 +
-> >  drivers/gpu/drm/logicvc/logicvc_of.c        | 197 +++++++
-> >  drivers/gpu/drm/logicvc/logicvc_of.h        |  46 ++
-> >  drivers/gpu/drm/logicvc/logicvc_regs.h      |  88 +++
-> >  18 files changed, 2236 insertions(+)
-> >  create mode 100644 drivers/gpu/drm/logicvc/Kconfig
-> >  create mode 100644 drivers/gpu/drm/logicvc/Makefile
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_crtc.c
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_crtc.h
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_drm.c
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_drm.h
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_interface.c
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_interface.h
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_layer.c
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_layer.h
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_mode.c
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_mode.h
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_of.c
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_of.h
-> >  create mode 100644 drivers/gpu/drm/logicvc/logicvc_regs.h
-> >=20
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 71e29dc0ab9d..9c4c5edef0ba 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -5522,6 +5522,12 @@ S:	Orphan / Obsolete
-> >  F:	drivers/gpu/drm/i810/
-> >  F:	include/uapi/drm/i810_drm.h
-> > =20
-> > +DRM DRIVER FOR LOGICVC DISPLAY CONTROLLER
-> > +M:	Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > +T:	git git://anongit.freedesktop.org/drm/drm-misc
-> > +S:	Supported
-> > +F:	drivers/gpu/drm/logicvc/
-> > +
-> >  DRM DRIVER FOR LVDS PANELS
-> >  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >  L:	dri-devel@lists.freedesktop.org
-> > diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> > index 64376dd298ed..7b280056207f 100644
-> > --- a/drivers/gpu/drm/Kconfig
-> > +++ b/drivers/gpu/drm/Kconfig
-> > @@ -352,6 +352,8 @@ source "drivers/gpu/drm/arc/Kconfig"
-> > =20
-> >  source "drivers/gpu/drm/hisilicon/Kconfig"
-> > =20
-> > +source "drivers/gpu/drm/logicvc/Kconfig"
-> > +
-> >  source "drivers/gpu/drm/mediatek/Kconfig"
-> > =20
-> >  source "drivers/gpu/drm/zte/Kconfig"
-> > diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-> > index 81569009f884..29fbb7cd9570 100644
-> > --- a/drivers/gpu/drm/Makefile
-> > +++ b/drivers/gpu/drm/Makefile
-> > @@ -102,6 +102,7 @@ obj-$(CONFIG_DRM_STM) +=3D stm/
-> >  obj-$(CONFIG_DRM_STI) +=3D sti/
-> >  obj-y 			+=3D imx/
-> >  obj-$(CONFIG_DRM_INGENIC) +=3D ingenic/
-> > +obj-$(CONFIG_DRM_LOGICVC) +=3D logicvc/
-> >  obj-$(CONFIG_DRM_MEDIATEK) +=3D mediatek/
-> >  obj-$(CONFIG_DRM_MESON)	+=3D meson/
-> >  obj-y			+=3D i2c/
-> > diff --git a/drivers/gpu/drm/logicvc/Kconfig b/drivers/gpu/drm/logicvc/=
-Kconfig
-> > new file mode 100644
-> > index 000000000000..300b2be07385
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/logicvc/Kconfig
-> > @@ -0,0 +1,9 @@
-> > +config DRM_LOGICVC
-> > +	tristate "LogiCVC DRM"
-> > +	depends on DRM
-> > +	depends on OF || COMPILE_TEST
-> > +	select DRM_KMS_HELPER
-> > +	select DRM_KMS_CMA_HELPER
-> > +	select DRM_GEM_CMA_HELPER
-> > +	help
-> > +	  DRM display driver for the logiCVC programmable logic block from Xy=
-lon
-> > diff --git a/drivers/gpu/drm/logicvc/Makefile b/drivers/gpu/drm/logicvc=
-/Makefile
-> > new file mode 100644
-> > index 000000000000..c09531fbd6ad
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/logicvc/Makefile
-> > @@ -0,0 +1,4 @@
-> > +logicvc-drm-y +=3D logicvc_crtc.o logicvc_drm.o logicvc_interface.o \
-> > +		 logicvc_layer.o logicvc_mode.o logicvc_of.o
-> > +
-> Even after maintaining kbuild for several years and reading far too many
-> Makefile I still dislike the use of '\' to break long assignments.
->=20
-> logicvc-drm-y :=3D logicvc_crtc.o
-> logicvc-drm-y +=3D logicvc_drm.o
-> logicvc-drm-y +=3D logicvc_interface.o
-> logicvc-drm-y +=3D logicvc_layer.o
-> logicvc-drm-y +=3D logicvc_mode.o
-> logicvc-drm-y +=3D logicvc_of.o
->=20
-> Or if this is too much repeated the shorter:
-> logicvc-drm-y :=3D logicvc_crtc.o logicvc_drm.o logicvc_interface.o
-> logicvc-drm-y +=3D logicvc_layer.o logicvc_mode.o logicvc_of.o
->=20
-> Also note that the first stement is an assingnment and not an addition.
->=20
-> It is a personal thing - so feel free to ignore.
-
-I agree that it looks ugly and starting with +=3D doesn't really make sense.
-But personally, I find that repeating the variable name doesn't look quite
-nice either. I think I'll settle for something like:
-
-logicvc-drm-y =3D logicvc_crtc.o \
-		logicvc_drm.o \
-		...
-		logicvc_of.o
->=20
-> > +obj-$(CONFIG_DRM_LOGICVC) +=3D logicvc-drm.o
-> > diff --git a/drivers/gpu/drm/logicvc/logicvc_crtc.c b/drivers/gpu/drm/l=
-ogicvc/logicvc_crtc.c
-> > new file mode 100644
-> > index 000000000000..75e6a47a7724
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/logicvc/logicvc_crtc.c
-> > @@ -0,0 +1,277 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Copyright (C) 2019 Bootlin
-> > + * Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > + */
-> > +
-> ...
->=20
->  +
-> > +int logicvc_crtc_init(struct logicvc_drm *logicvc)
-> > +{
-> > +	struct drm_device *drm_dev =3D &logicvc->drm_dev;
-> > +	struct device *dev =3D drm_dev->dev;
-> > +	struct device_node *of_node =3D dev->of_node;
-> > +	struct logicvc_crtc *crtc;
-> > +	struct logicvc_layer *layer_primary;
-> > +	int ret;
-> > +
-> > +	crtc =3D devm_kzalloc(dev, sizeof(*crtc), GFP_KERNEL);
-> > +	if (!crtc)
-> > +		return -ENOMEM;
-> > +
-> > +	layer_primary =3D logicvc_layer_get_primary(logicvc);
-> > +	if (!layer_primary) {
-> > +		DRM_ERROR("Failed to get primary layer\n");
-> > +		return -EINVAL;
-> > +	}
-> Please use drm_err(logicvc->drm, "...") and friends all over the file.
-> DRM_DEV_ERROR() and friends are deprecated.
-> If you have no drm_device use whatever.
-
-Understood, I'll change that in the next revision!
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---2Xz4AXsuSr8pfC7G
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/HtJsACgkQ3cLmz3+f
-v9FQDgf/fZpfvWdvgx3Tm9BVP4vHB4lWjs4uxfn2wWWfJYpvh/uJ6j8a/Z9y+BxH
-V7Dgt44xakQhnYa5D1Y8B+3gtRb+aSlwV1bzErc4pRv0Hb/Ld1zeN23Ic8Kf+7I9
-YOrKntMHEunF4QB+CMO0n0yEvQLubl/wWt2Y0SDhS0hvE5bWEMJn1mT+JByhpZYL
-BxMHpUPYAoi3HEnYhm/IJ1sEEk4GIiOa4mn/qZ4LO2PQvNc9WpCAC4iGyrW7xOMU
-a6sGcXcUSyjl2M8I4DhqAe7efcK/e9clRXMxG5HS9vcw6Y36TkAiyiDiMiKKBlPt
-kvlwDl6NWSwGwJUj3nmh8xWbUC727Q==
-=zAa+
------END PGP SIGNATURE-----
-
---2Xz4AXsuSr8pfC7G--
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
