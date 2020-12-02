@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BF82CBD44
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3852CBD46
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729786AbgLBMqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:46:37 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:23584 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727183AbgLBMqg (ORCPT
+        id S1729839AbgLBMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:47:57 -0500
+Received: from mout.kundenserver.de ([212.227.17.13]:36391 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727531AbgLBMr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:46:36 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B2CWtXH011749;
-        Wed, 2 Dec 2020 13:45:44 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=xMWvV8cjy7DCeGalzwJPa1w7rXpBTfmXiMBkDq6EFWQ=;
- b=2k87gMtIOSFqJo6H+dp2YriBNjuXn//AzY+H0L/YMQvemqGy2GNbrN1QMo/a3wEFXCWF
- nPKP2pc43x4S6Bp8hcB2Zg+IpaENGuBDIfBwlURw7gRA0o1E+LrWFGqhIgAVHBAIEUow
- dZvnc4Nrf/NSYMvcpqGXj0HUXOrZoRbkupF8+BIRkINfdi0tv+UAI0AUQvdTTn++JQmR
- 5iS3oEQmtyhdJgTti2RqwJbc0CzuyC3gkGb3MKZ3nnsFdE5b1TeeRZlZmjMOoSXrGE14
- g8EAbAeGbER6ZbpwLOnJgi5B06SUYZtOmhPsmD+bd3w1HNTKxLF/MYcBq+BYby3YYkuw 1w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 355w3cbg9g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 13:45:44 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 85861100034;
-        Wed,  2 Dec 2020 13:45:42 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 70FEF2A4D74;
-        Wed,  2 Dec 2020 13:45:42 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Dec 2020 13:45:42
- +0100
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To:     <lee.jones@linaro.org>, <robh+dt@kernel.org>
-CC:     <alexandre.torgue@st.com>, <fabrice.gasnier@st.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dt-bindings: mfd: fix stm32 timers example
-Date:   Wed, 2 Dec 2020 13:45:14 +0100
-Message-ID: <1606913114-25693-1-git-send-email-fabrice.gasnier@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_06:2020-11-30,2020-12-02 signatures=0
+        Wed, 2 Dec 2020 07:47:56 -0500
+Received: from orion.localdomain ([77.7.48.174]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1N33AR-1k3DzE0tCf-013NEE; Wed, 02 Dec 2020 13:45:17 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org
+Subject: [PATCH] net: 8021q: use netdev_info() instead of pr_info()
+Date:   Wed,  2 Dec 2020 13:45:15 +0100
+Message-Id: <20201202124515.24110-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:Ev0LCPSlNfr1RQglGncq5UuBZUinOsQbC525n0A9w2SclTZR3Y4
+ i7lb4jN7Wn4voh7k8n8S7sAcD942f3fCPdPthlaE4b6Dtf9CBCP9cmkTW+taPaVUgRoFnAf
+ WVX4KjAT744ifJKKsW8lk9GxNo2tde4kRibrPDDVyWfc/tKgKs//rcrCXz4BngJz9EiS5YY
+ sesQCqXX8Qf8GVDBUgdtQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6rINA4B8yB8=:Mwr64lwY5k8J3FhY/TulIw
+ bG3uWh1qLZb20RN/zoQilRKZv9h0GLDRstKDHM9Rice6lO2q30IPO2cw9zTprVYpDgkbDoxN/
+ 1iaUV7Hx9BWTJvQ18KSup1/3jALCZMsCIGo8z+pEtv+5qgcQR1NqhX/5XMhaAnfW10Pluhb1R
+ UmD8BWvqp5/8uYzTdyZk+iWWeKOzrlxuOADbuiAmwUU7enjuqSS7aO3v2r1kkxONumtErN01J
+ aEoWqGG40FCyN0iqNx6hlrhAKqr9fpLQFoiBudTX34SzK2Zo2Rsy5whoTQkZ5L/fZSufWTQ8o
+ YgTICSQ1ChTeP1fbfzCo+dwm3Z7YNihaQZam6ZFcMU9ah/WhVyuP7mhCTC0tdwVTvbajYGHxF
+ Z52/xrImA5pd5ByN56vJZ8tl+t0XwT4sS8OJ6xjcqZSSJxfiE3iBTrXtuetTF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The stm32 timers example name should match the pattern timer@. Also,
-the example is based on stm32mp1 timer 2, so the identifier should be
-'1' instead of '0' (e.g. timer 1).
+Use netdev_info() instead of pr_info() for more consistent log output.
 
-Fixes: bfbcbf88f9db ("dt-bindings: timer: Convert stm32 timer bindings to json-schema")
-
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Enrico Weigelt <info@metux.net>
 ---
- Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/8021q/vlan.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-index f212fc6..0f16c88 100644
---- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-+++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-@@ -131,7 +131,7 @@ additionalProperties: false
- examples:
-   - |
-     #include <dt-bindings/clock/stm32mp1-clks.h>
--    timers2: timers@40000000 {
-+    timers2: timer@40000000 {
-       #address-cells = <1>;
-       #size-cells = <0>;
-       compatible = "st,stm32-timers";
-@@ -149,9 +149,9 @@ examples:
-         #pwm-cells = <3>;
-         st,breakinput = <0 1 5>;
-       };
--      timer@0 {
-+      timer@1 {
-         compatible = "st,stm32-timer-trigger";
--        reg = <0>;
-+        reg = <1>;
-       };
-       counter {
-         compatible = "st,stm32-timer-counter";
+diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+index f292e0267bb9..d3a6f4ffdaef 100644
+--- a/net/8021q/vlan.c
++++ b/net/8021q/vlan.c
+@@ -132,7 +132,7 @@ int vlan_check_real_dev(struct net_device *real_dev,
+ 	const char *name = real_dev->name;
+ 
+ 	if (real_dev->features & NETIF_F_VLAN_CHALLENGED) {
+-		pr_info("VLANs not supported on %s\n", name);
++		netdev_info(real_dev, "VLANs not supported on %s\n", name);
+ 		NL_SET_ERR_MSG_MOD(extack, "VLANs not supported on device");
+ 		return -EOPNOTSUPP;
+ 	}
+@@ -385,7 +385,7 @@ static int vlan_device_event(struct notifier_block *unused, unsigned long event,
+ 
+ 	if ((event == NETDEV_UP) &&
+ 	    (dev->features & NETIF_F_HW_VLAN_CTAG_FILTER)) {
+-		pr_info("adding VLAN 0 to HW filter on device %s\n",
++		netdev_info(dev, "adding VLAN 0 to HW filter on device %s\n",
+ 			dev->name);
+ 		vlan_vid_add(dev, htons(ETH_P_8021Q), 0);
+ 	}
 -- 
-2.7.4
+2.11.0
 
