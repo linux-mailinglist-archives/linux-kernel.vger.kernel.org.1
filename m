@@ -2,300 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE3A2CB528
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75152CB52E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgLBGkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 01:40:49 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8489 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgLBGks (ORCPT
+        id S1728717AbgLBGll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 01:41:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgLBGlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:40:48 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cm8TY6L6jzhglk;
-        Wed,  2 Dec 2020 14:39:45 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 2 Dec 2020
- 14:40:04 +0800
-Subject: Re: [f2fs-dev] [PATCH v2 2/2] f2fs: add F2FS_IOC_DECOMPRESS_FILE and
- F2FS_IOC_COMPRESS_FILE
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Daeho Jeong <daehojeong@google.com>
-References: <20201201040803.3590442-1-daeho43@gmail.com>
- <20201201040803.3590442-2-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <b60eeb13-225a-55dd-42bd-2ca197b0d416@huawei.com>
-Date:   Wed, 2 Dec 2020 14:40:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Wed, 2 Dec 2020 01:41:40 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65295C0613CF;
+        Tue,  1 Dec 2020 22:41:00 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id 1so363203qka.0;
+        Tue, 01 Dec 2020 22:41:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VsQG66ogMkwZdKFQkQN61BxKHgVwTX3yIoCFi8hjgmk=;
+        b=TmhU1G/civwSH2xVNR+wd8Tc38tSsSF/BEjXVOgCrgkDAX3yAgSHDI6iOmol8viFZ/
+         V/LgV2Esto9D7YRAwpElOZDJN1nrefaMvZX1UfX2m68TLwwHjnvJc3AaXzRZ4duxgwt3
+         oR4vtgwTOqk4ox6BrNdB15Fb/ud2oGwVdk7Sw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VsQG66ogMkwZdKFQkQN61BxKHgVwTX3yIoCFi8hjgmk=;
+        b=ZpguY7Vleqk4C1ovta0eBnHi9aoDWixO0M9X+rAecFJNevE9k2y2D7oDNFvaO5HXPo
+         ieTmC/GQXPrnmpcQ3MbVxLHXxnkSr5eklL7bebg9bNHkHN9W49rJR3O4+KLZT/XsdWku
+         R7+X9wF3ZtV+D7P2VeyKSqWOG0vO1Jk12x7hqhRoLSJ0R0Wlzml/m3i0rUrhfFkOUcrK
+         Lwq8r9Y6jeIC2OSt/+VqV2o+WsRqWsS3j6kAJNfHdJOXUtR3z80sg5zBl/52Lbj/r9Vt
+         WvmJstjz6Z+TYW1BWAD2mVRj9I9nEbJGNCWLNvI25Qb4Hsy5X8vRb9rB4HtkDHkjJG1T
+         JEDQ==
+X-Gm-Message-State: AOAM533F+XLj5rJxpHPEu1cbMmHZ5wQ9Nk9VwgixSVcaaWbMt0beiESY
+        j3aGmDD0SFnFz6CfVxZG4b5zr7KrG68O98GIs6I=
+X-Google-Smtp-Source: ABdhPJyHhjBvQ5jmIJOnO5MBEjtcEXfCH94HEH1dTW3C/wpL1Eixxs2Byoua6rHNv4K98W/gOC+5oELpg7lvVLVbCkc=
+X-Received: by 2002:a37:6805:: with SMTP id d5mr1164392qkc.66.1606891259402;
+ Tue, 01 Dec 2020 22:40:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201201040803.3590442-2-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+References: <20201202063612.21241-1-troy_lee@aspeedtech.com>
+In-Reply-To: <20201202063612.21241-1-troy_lee@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 2 Dec 2020 06:40:47 +0000
+Message-ID: <CACPK8XfySi5=r4e__djHg-LtFqhV7j+-Pp+t4zevro=KK0eBig@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: edac: aspeed-sdram-edac: Add
+ ast2400/ast2600 support
+To:     Troy Lee <troy_lee@aspeedtech.com>
+Cc:     Stefan Schaeckeler <sschaeck@cisco.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rrichter@marvell.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>,
+        leetroy@gmail.com, Ryan Chen <ryan_chen@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/1 12:08, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Added two ioctl to decompress/compress explicitly the compression
-> enabled file in "compress_mode=user" mount option.
-> 
-> Using these two ioctls, the users can make a control of compression
-> and decompression of their files.
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+On Wed, 2 Dec 2020 at 06:37, Troy Lee <troy_lee@aspeedtech.com> wrote:
+>
+> Adding Aspeed AST2400 and AST2600 binding for edac driver.
+>
+> Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
+
+Acked-by: Joel Stanley <joel@jms.id.au>
+
 > ---
-> v2: reformed codes based on comments and put gradual flush routine
-> ---
->   fs/f2fs/file.c            | 185 ++++++++++++++++++++++++++++++++++++++
->   include/uapi/linux/f2fs.h |   2 +
->   2 files changed, 187 insertions(+)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index be8db06aca27..300355fe25f0 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -4026,6 +4026,185 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
->   	return ret;
->   }
->   
-> +static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
-> +{
-> +	DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, page_idx);
-> +	struct address_space *mapping = inode->i_mapping;
-> +	struct page *page;
-> +	pgoff_t redirty_idx = page_idx;
-> +	int i, page_len = 0, ret = 0;
-> +
-> +	page_cache_ra_unbounded(&ractl, len, 0);
-> +
-> +	for (i = 0; i < len; i++, page_idx++) {
-> +		page = read_cache_page(mapping, page_idx, NULL, NULL);
-> +		if (IS_ERR(page)) {
-> +			ret = PTR_ERR(page);
-> +			break;
-> +		}
-> +		page_len++;
-> +	}
-> +
-> +	for (i = 0; i < page_len; i++, redirty_idx++) {
-> +		page = find_lock_page(mapping, redirty_idx);
-> +		if (!page)
-> +			ret = -ENOENT;
-> +		set_page_dirty(page);
-> +		f2fs_put_page(page, 1);
-> +		f2fs_put_page(page, 0);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int f2fs_ioc_decompress_file(struct file *filp, unsigned long arg)
-> +{
-> +	struct inode *inode = file_inode(filp);
-> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> +	struct f2fs_inode_info *fi = F2FS_I(inode);
-> +	pgoff_t page_idx = 0, last_idx;
-> +	unsigned int blk_per_seg = sbi->blocks_per_seg, dirtied = 0;
-> +	int cluster_size = F2FS_I(inode)->i_cluster_size;
-> +	int count, ret;
-> +
-> +	if (!f2fs_sb_has_compression(sbi) ||
-> +			F2FS_OPTION(sbi).compress_mode != COMPR_MODE_USER)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (!(filp->f_mode & FMODE_WRITE))
-> +		return -EBADF;
-> +
-> +	if (!f2fs_compressed_file(inode))
-> +		return -EINVAL;
-> +
-> +	if (!f2fs_is_compress_backend_ready(inode))
-> +		return -ENOPKG;
-
-Oh, it looks there will be a race case with f2fs_ioc_set_compress_option(),
-it needs to relocate this condition under inode lock.
-
-In all other places, it will return -EOPNOTSUPP, how about keeping in line with
-them?
-
-> +
-> +	f2fs_balance_fs(F2FS_I_SB(inode), true);
-> +
-> +	file_start_write(filp);
-> +	inode_lock(inode);
-> +
-> +	if (f2fs_is_mmap_file(inode)) {
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
-> +	if (ret)
-> +		goto out;
-> +
-> +	if (!atomic_read(&fi->i_compr_blocks))
-> +		goto out;
-> +
-> +	last_idx = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-> +
-> +	count = last_idx - page_idx;
-> +	while (count) {
-> +		int len = min(cluster_size, count);
-> +
-> +		ret = redirty_blocks(inode, page_idx, len);
-> +		if (ret < 0)
-> +			break;
-> +
-> +		count -= len;
-> +		page_idx += len;
-> +		dirtied += len;
-
-use get_dirty_pages(inode) will be a little bit more accurate? as kworker is
-running to writeback dirty pages in background.
-
-> +		if (dirtied >= blk_per_seg) {
-> +			filemap_fdatawrite(inode->i_mapping);
-> +			dirtied = 0;
-> +		}
-> +	}
-> +
-> +	if (!ret)
-> +		ret = filemap_write_and_wait_range(inode->i_mapping, 0,
-> +							LLONG_MAX);
-> +
-> +	if (ret)
-> +		f2fs_warn(sbi, "%s: The file might be partially decompressed "
-> +				"(errno=%d). Please delete the file.\n",
-> +				__func__, ret);
-> +out:
-> +	inode_unlock(inode);
-> +	file_end_write(filp);
-> +
-> +	return ret;
-> +}
-> +
-> +static int f2fs_ioc_compress_file(struct file *filp, unsigned long arg)
-> +{
-> +	struct inode *inode = file_inode(filp);
-> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> +	pgoff_t page_idx = 0, last_idx;
-> +	unsigned int blk_per_seg = sbi->blocks_per_seg, dirtied = 0;
-> +	int cluster_size = F2FS_I(inode)->i_cluster_size;
-> +	int count, ret;
-> +
-> +	if (!f2fs_sb_has_compression(sbi) ||
-> +			F2FS_OPTION(sbi).compress_mode != COMPR_MODE_USER)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (!(filp->f_mode & FMODE_WRITE))
-> +		return -EBADF;
-> +
-> +	if (!f2fs_compressed_file(inode))
-> +		return -EINVAL;
-> +
-> +	if (!f2fs_is_compress_backend_ready(inode))
-> +		return -ENOPKG;
-
-Ditto,
-
-> +
-> +	f2fs_balance_fs(F2FS_I_SB(inode), true);
-> +
-> +	file_start_write(filp);
-> +	inode_lock(inode);
-> +
-> +	if (f2fs_is_mmap_file(inode)) {
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
-> +	if (ret)
-> +		goto out;
-> +
-> +	set_inode_flag(inode, FI_ENABLE_COMPRESS);
-> +
-> +	last_idx = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-> +
-> +	count = last_idx - page_idx;
-> +	while (count) {
-> +		int len = min(cluster_size, count);
-> +
-> +		ret = redirty_blocks(inode, page_idx, len);
-> +		if (ret < 0)
-> +			break;
-> +
-> +		count -= len;
-> +		page_idx += len;
-> +		dirtied += len;
-
-Ditto,
-
-> +		if (dirtied >= blk_per_seg) {
-> +			filemap_fdatawrite(inode->i_mapping);
-> +			dirtied = 0;
-> +		}
-> +	}
-> +
-> +	if (!ret)
-> +		ret = filemap_write_and_wait_range(inode->i_mapping, 0,
-> +							LLONG_MAX);
-> +
-> +	clear_inode_flag(inode, FI_ENABLE_COMPRESS);
-> +
-> +	if (ret)
-> +		f2fs_warn(sbi, "%s: The file might be partially compressed "
-> +				"(errno=%d). Please delete the file.\n",
-> +				__func__, ret);
-> +out:
-> +	inode_unlock(inode);
-> +	file_end_write(filp);
-> +
-> +	return ret;
-> +}
-> +
->   static long __f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->   {
->   	switch (cmd) {
-> @@ -4113,6 +4292,10 @@ static long __f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->   		return f2fs_ioc_get_compress_option(filp, arg);
->   	case F2FS_IOC_SET_COMPRESS_OPTION:
->   		return f2fs_ioc_set_compress_option(filp, arg);
-> +	case F2FS_IOC_DECOMPRESS_FILE:
-> +		return f2fs_ioc_decompress_file(filp, arg);
-> +	case F2FS_IOC_COMPRESS_FILE:
-> +		return f2fs_ioc_compress_file(filp, arg);
->   	default:
->   		return -ENOTTY;
->   	}
-> @@ -4352,6 +4535,8 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->   	case F2FS_IOC_SEC_TRIM_FILE:
->   	case F2FS_IOC_GET_COMPRESS_OPTION:
->   	case F2FS_IOC_SET_COMPRESS_OPTION:
-> +	case F2FS_IOC_DECOMPRESS_FILE:
-> +	case F2FS_IOC_COMPRESS_FILE:
->   		break;
->   	default:
->   		return -ENOIOCTLCMD;
-> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
-> index f00199a2e38b..352a822d4370 100644
-> --- a/include/uapi/linux/f2fs.h
-> +++ b/include/uapi/linux/f2fs.h
-> @@ -40,6 +40,8 @@
->   						struct f2fs_comp_option)
->   #define F2FS_IOC_SET_COMPRESS_OPTION	_IOW(F2FS_IOCTL_MAGIC, 22,	\
->   						struct f2fs_comp_option)
-> +#define F2FS_IOC_DECOMPRESS_FILE	_IO(F2FS_IOCTL_MAGIC, 23)
-> +#define F2FS_IOC_COMPRESS_FILE		_IO(F2FS_IOCTL_MAGIC, 24)
->   
->   /*
->    * should be same as XFS_IOC_GOINGDOWN.
-> 
+>  .../devicetree/bindings/edac/aspeed-sdram-edac.txt       | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt b/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
+> index 6a0f3d90d682..8ca9e0a049d8 100644
+> --- a/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
+> +++ b/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
+> @@ -1,6 +1,6 @@
+> -Aspeed AST2500 SoC EDAC node
+> +Aspeed BMC SoC EDAC node
+>
+> -The Aspeed AST2500 SoC supports DDR3 and DDR4 memory with and without ECC (error
+> +The Aspeed BMC SoC supports DDR3 and DDR4 memory with and without ECC (error
+>  correction check).
+>
+>  The memory controller supports SECDED (single bit error correction, double bit
+> @@ -11,7 +11,10 @@ Note, the bootloader must configure ECC mode in the memory controller.
+>
+>
+>  Required properties:
+> -- compatible: should be "aspeed,ast2500-sdram-edac"
+> +- compatible: should be one of
+> +       - "aspeed,ast2400-sdram-edac"
+> +       - "aspeed,ast2500-sdram-edac"
+> +       - "aspeed,ast2600-sdram-edac"
+>  - reg:        sdram controller register set should be <0x1e6e0000 0x174>
+>  - interrupts: should be AVIC interrupt #0
+>
+> --
+> 2.17.1
+>
