@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970022CC533
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C15A2CC537
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387835AbgLBSbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgLBSbn (ORCPT
+        id S2389358AbgLBScP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:32:15 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:36258 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729032AbgLBScO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:31:43 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8423FC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:30:57 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id x24so1782607pfn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:30:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dhu0y36YrMVMaqCIBmDd4/g2nz0PBTxsfK5aIIP2g1A=;
-        b=VtPTQMR4jtXGflrx3/rVw/rmlMSkFDj4rjwbT6YMTGzrW7pCU2q4OI7w/xrwqe+RQx
-         DKjcdYwi6VHJwWPtd9imSRe3lBgkrIMcUcQ2QADBVJ31NrOkpiZCZITF/0aFOsJwo7CJ
-         uGHSNbB6ReRY4qsqcfBgXknpaJe+IA/K767VioWXHBUESkEUHqiB/zzRQcq70eFk5+Cc
-         Xop2y5Fq4geLedJWZ/lmiMdHS7fcW0fYhAoDdv4S0XKmyYhcQP8WBLUpiVSfbF5VFcg+
-         1AwuVXdz/AGNDQW55vOQkaNRQzc5lBo1tWx6VPRfznux6FpNwmHF56aIixADB5Rfx6zP
-         kGsw==
+        Wed, 2 Dec 2020 13:32:14 -0500
+Received: by mail-ot1-f51.google.com with SMTP id y24so2565115otk.3;
+        Wed, 02 Dec 2020 10:31:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=dhu0y36YrMVMaqCIBmDd4/g2nz0PBTxsfK5aIIP2g1A=;
-        b=XcpDxwtoElE/PIf/XWYRCrzT2kQsUAbUBmuZYm3+94g176Drlecp4JMPZfcQElRRTT
-         WPPnUOP5zLOl8G3WX0Qq2fUE3s3Lm6KvQ5Wc2+vsoN//LRK8jBzingpJ/WjC1SrAlAhD
-         8EGmyxtV2ujwg697w50veL8gWXM8OxuNyeSfmkH/Ry+9WrugI9ElR6Qd2IItJLu/+vxg
-         FzvMneJarYG2WfmzKUe3yjB9KCr4psqp6A9RZ7gBpP3fLT3r+yT+GLbS9M4VF61OXLZv
-         ZkqV4FX9B6U30Xy/MzQXwgAIN0Sy+MvHBpF5BxDEAO7K44LhoS0ieuUrG6OsCsJmTYvn
-         GgVA==
-X-Gm-Message-State: AOAM533fbGizqHww4KoyzDqPBX8fq9fRR85gcRPSu3M7Oq+A4+w5ohbY
-        w1PuGASRiu3WC1PHqehEDqI=
-X-Google-Smtp-Source: ABdhPJxyuChm6ZlTgOgmUuuyWGzkTc4HRQKmNPb6bwVEDKEX6dVavLARWsOHOWBkyAUZQyAZLb0m0A==
-X-Received: by 2002:a63:f60e:: with SMTP id m14mr1076364pgh.148.1606933856979;
-        Wed, 02 Dec 2020 10:30:56 -0800 (PST)
-Received: from localhost.localdomain ([2409:4063:4e14:4867:9984:8aed:2f75:bf22])
-        by smtp.googlemail.com with ESMTPSA id s17sm429716pge.37.2020.12.02.10.30.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 10:30:56 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH -mmots] checkpatch: add fix for non-standard signature - co-authored-by
-Date:   Thu,  3 Dec 2020 00:00:45 +0530
-Message-Id: <20201202183045.9309-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <280235acc0e91365f3fd3b5be5a5244eced1ff61.camel@perches.com>
-References: <280235acc0e91365f3fd3b5be5a5244eced1ff61.camel@perches.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B4i9VFRUD3xARLzYQEJLNB6JhqamFut8iCJ5lNpUlk4=;
+        b=iYEerzja10ZQZBFr4aeAtdJwMq8T6CEiRCZQmgbpdOKYkmL7c9QT5ydgasOnWyRSUD
+         TLm4xZ5pqJx6g3DAWBmBCGJaukgCYMRExm4gR93XN8T8xp3epZpwg2elGWJJBRpzGnHE
+         7o7h47DLAhuh+USumGlFdOVYmio3mX8kgdJn6CC3Eyo3eibNsKZu2s5ghSj5u0RSHCEH
+         CEAGHM72ELT6TejXuJLVEWK+R37n7YqaxEImurO0ORy3dOtLe8ZuobFKBjym+UcewL4S
+         HJVRCtxC1VADpEoRdy4lMXKfCztdAq7QQ6sxW7aZyXvIAcL4WcFeGRkBRAwsYL+doo0Q
+         xUjA==
+X-Gm-Message-State: AOAM5304FLkz2YyJmxl0tBvrjOOxUYaWL/5WrWnsPBThMnNsJZgk2z4C
+        hATrUPso/+mGPKGWftnLMQh7q3b+34s8IMJk4PE=
+X-Google-Smtp-Source: ABdhPJxpvRp8VsnzKDL27mVBm4pcDuSz96iERvdj7q3h3vU8KuTGbZbDzV61PT2USI8W+btbuSQjQw8l/wqoA9qDaTM=
+X-Received: by 2002:a9d:745a:: with SMTP id p26mr2455710otk.206.1606933893884;
+ Wed, 02 Dec 2020 10:31:33 -0800 (PST)
+MIME-Version: 1.0
+References: <87blkbx1gt.fsf@gmx.net> <87imdp5r80.fsf@rub.de>
+ <20200811132955.wbt55ns7bu5mxouq@linutronix.de> <CAJZ5v0h+n9VCz5=VixVbe_b=ZbTU3D=46stGhE9z7Y7yaUMJzw@mail.gmail.com>
+ <20200811152551.dmfw46urecbmeklr@linutronix.de> <87ft8tayic.fsf@gmx.net>
+ <20200811184902.2fm4eyprmpkfon2j@linutronix.de> <20201006214927.4nsqtfji4fdv3oed@linutronix.de>
+ <3fc9074b-c153-8446-0289-1e4dfab395eb@intel.com> <20201026172057.h5toqoobiyhc4g3g@linutronix.de>
+ <20201202180350.kwmgfzkom7v7bzjg@linutronix.de>
+In-Reply-To: <20201202180350.kwmgfzkom7v7bzjg@linutronix.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 2 Dec 2020 19:31:21 +0100
+Message-ID: <CAJZ5v0j86pX_a4bSLP=sobLoYhfQYV9dWL8HHf2941kXgND79g@mail.gmail.com>
+Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephen Berman <stephen.berman@gmx.net>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
-non-standard signatures.
+On Wed, Dec 2, 2020 at 7:03 PM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2020-10-26 18:20:59 [+0100], To Rafael J. Wysocki wrote:
+> > > > > > Done as Bug 208877.
+> > > > Rafael, do you have any suggestions?
+> > >
+> > > I've lost track of this sorry.
+> > >
+> > > I have ideas, let me get back to this next week.
+> >
+> > :)
+>
+> Rafael, any update? If you outline an idea or so then I may be able to
+> form a patch out of it. Otherwise I have no idea how to fix this - other
+> than telling the driver to not poll in smaller intervals than
+> 30secs.
 
-An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
-non-standard signatures, 43 are due to the use of 'Co-authored-by'
-tag, which may seem correct, but is not standard.
-
-The standard signature equivalent for 'Co-authored-by' is
-'Co-developed-by'.
-
-Provide a fix by suggesting users with this signature alternative and
-replacing.
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- scripts/checkpatch.pl | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 4a026926139f..fc036d545d2d 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2832,6 +2832,9 @@ sub process {
- 
- 			if ($sign_off !~ /$signature_tags/) {
- 				my $suggested_signature = find_standard_signature($sign_off);
-+				if ($sign_off =~ /co-authored-by:/i) {
-+					$suggested_signature = "Co-developed-by:";
-+				}
- 				if ($suggested_signature eq "") {
- 					WARN("BAD_SIGN_OFF",
- 					     "Non-standard signature: $sign_off\n" . $herecurr);
--- 
-2.17.1
-
+The idea, roughly speaking, is to limit the number of outstanding work
+items in the queue (basically, if there's a notification occurring
+before the previous one can be handled, there is no need to queue up
+another work item for it).
