@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90192CCA71
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AC82CCA78
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:23:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729147AbgLBXTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:19:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726708AbgLBXTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:19:42 -0500
-Date:   Wed, 2 Dec 2020 17:18:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606951141;
-        bh=FZ7CRM5O5yFAaY/TWEVrh2Y0rLGcnVO58PrxIl7NIE4=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=bRYu2rxutO5MLiHWMyAu5rOvehFmkEU9z41twDBwS/+zDtLRr05aSlJYzBtUgacc7
-         XZtQ0a1mFW6g2PHcZsAbdyZG9y/gpLYKKK9+QoNVAlNfPunA9p/yG7U/LNk6R8+P2k
-         qJZO3RQqay2hxoPgrRSPF/0oQeu1RxWVvWP8wpD4bMyJrQGXp/CjP7Fdt++IU+1ai9
-         F241qmftM4HZCjl3pw8cmNzumvoai+ElFxyip6avV8RxRQxf/rSyuAUDJ6as3d/rD5
-         /I3eeDJq17p2gLlCV/1bPBgpMnLrE40mJmjwhCvYA9n24EpO1LDQaENT37L1EoLOEh
-         zs6OUC8o9wXaQ==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH v12 07/15] PCI/ERR: Use "bridge" for clarity in
- pcie_do_recovery()
-Message-ID: <20201202231859.GA1484005@bjorn-Precision-5520>
+        id S1727996AbgLBXXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:23:19 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:33570 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgLBXXS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 18:23:18 -0500
+Received: by mail-wr1-f65.google.com with SMTP id u12so6899wrt.0;
+        Wed, 02 Dec 2020 15:23:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=vhazsnwkBN4W5bW7O942iWaDDf+hT2e4BRRd7kmtCxk=;
+        b=cn5d/9u0iBmN3qrU1cIgrFmALe0gWqS8hrs2Tx2XU5STLG5N0ZEdF46eHIk/ERImkh
+         9CnKUIBN1Ojd042sT5AVO1NumdDCMwbV/s3xhTEt85L8tz3muMB6zCH1lz8RHSdDnf/f
+         +F7lrJE4oF5CfNfGAyooP3PiTMNTM624nMQ6fCxX9Ze7oJXswICqSBRfOK+cbPo7AzdU
+         1m/ib3Hdqw7RQNT36CKe16l8Zy84veThPkYyuKPyIoefR7sVcveB5l4y/p3TzGHIQPbg
+         O03oXCibkGzlRUHfk6zkgTkYsgpfDpCJpOBb/qP1SX9/dFF5IxEIUnungAYEwjMypJ2a
+         Rlkw==
+X-Gm-Message-State: AOAM5334PZb0JYCi7MdnMYvH/+coMd7auVaTod9mfqXcTa7x0kYamR+5
+        vadJbpZf2BYI3ocTV5GF/bY=
+X-Google-Smtp-Source: ABdhPJwfx0KMkyXddeSfYgQzOOwxcl+ncL7oFhNmZQjEMNEOFs7rbcaWlo6BLSvWqXcN6wzzmZ4Abw==
+X-Received: by 2002:adf:a495:: with SMTP id g21mr422743wrb.213.1606951356855;
+        Wed, 02 Dec 2020 15:22:36 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id 90sm207272wrl.60.2020.12.02.15.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 15:22:36 -0800 (PST)
+Date:   Wed, 2 Dec 2020 23:22:34 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        sameo@linux.intel.com, robert.bradford@intel.com,
+        sebastien.boeuf@intel.com
+Subject: Re: [PATCH v3 00/17] Introducing Linux root partition support for
+ Microsoft Hypervisor
+Message-ID: <20201202232234.5buzu5wysiaro3hc@liuwe-devbox-debian-v2>
+References: <20201124170744.112180-1-wei.liu@kernel.org>
+ <227127cf-bfea-4a06-fcbc-f6c46102e9e6@metux.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201121001036.8560-8-sean.v.kelley@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <227127cf-bfea-4a06-fcbc-f6c46102e9e6@metux.net>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:10:28PM -0800, Sean V Kelley wrote:
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 7a5af873d8bc..46a5b84f8842 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -151,24 +151,27 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev))
->  {
->  	int type = pci_pcie_type(dev);
-> -	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
-> +	struct pci_dev *bridge;
->  	struct pci_bus *bus;
-> +	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
->  
->  	/*
-> -	 * Error recovery runs on all subordinates of the first downstream port.
-> -	 * If the downstream port detected the error, it is cleared at the end.
-> +	 * Error recovery runs on all subordinates of the bridge.  If the
-> +	 * bridge detected the error, it is cleared at the end.
->  	 */
->  	if (!(type == PCI_EXP_TYPE_ROOT_PORT ||
->  	      type == PCI_EXP_TYPE_DOWNSTREAM))
-> -		dev = pci_upstream_bridge(dev);
-> -	bus = dev->subordinate;
-> +		bridge = pci_upstream_bridge(dev);
-> +	else
-> +		bridge = dev;
+On Wed, Dec 02, 2020 at 08:51:38PM +0100, Enrico Weigelt, metux IT consult wrote:
+> On 24.11.20 18:07, Wei Liu wrote:
+> 
+> Hi,
+> 
+> > There will be a subsequent patch series to provide a
+> > device node (/dev/mshv) such that userspace programs can create and run virtual
+> > machines. 
+> 
+> Any chance of using the already existing /dev/kvm interface ?
+> 
 
-I think there's a bug here even before your series.  We started with:
+I don't follow. Do you mean reusing /dev/kvm but with a different set of
+APIs underneath? I don't think that will work.
 
-  pcie_do_recovery(struct pci_dev *dev, ..., pci_ers_result_t (*reset_link)())
-  {
-    if (!(pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
-	  pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM))
-      dev = dev->bus->self;
-    ...
-    reset_link(dev);
+In any case, the first version of /dev/mshv was posted a few days ago
+[0].  While we've chosen to follow closely KVM's model, Microsoft
+Hypervisor has its own APIs.
 
-so if we called pcie_do_recovery() with an Endpoint, we set "dev" to
-the upstream bridge, either a Root Port or a Switch Downstream Port,
-which we then pass on to reset_link().  For native AER and APEI,
-that's aer_root_reset(), which assumes it gets a Root Port.
+Wei.
 
-If we pass a Switch Downstream Port, aer_root_reset() writes to the
-*switch port's* PCI_ERR_ROOT_COMMAND and PCI_ERR_ROOT_STATUS, which
-are reserved since it's not a Root Port or an RCEC.
+0: https://lore.kernel.org/linux-hyperv/1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com/
 
-The writes probably don't *break* anything since those registers are
-reserved, but they also don't disable the interrupt or clear the Root
-Error Status.
-
-Bjorn
+> --mtx
+> 
+> -- 
+> ---
+> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+> GPG/PGP-Schlüssel zu.
+> ---
+> Enrico Weigelt, metux IT consult
+> Free software and Linux embedded engineering
+> info@metux.net -- +49-151-27565287
