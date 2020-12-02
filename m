@@ -2,206 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50542CCAB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84ABC2CCAB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729248AbgLBXpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:45:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45602 "EHLO mail.kernel.org"
+        id S1728023AbgLBXsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:48:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726137AbgLBXpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:45:09 -0500
-Date:   Wed, 2 Dec 2020 17:44:25 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606952667;
-        bh=Hjr4DVBreL8iEXDK9CP4F8iXSxkY9+dL8DDsHRnTOqA=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=sY0zHtuQx4D6hXnv6zX+xhhHzrsUhLC+wjpbjI8wuEmGXY75DnVw45q19V1QqNccJ
-         n0b/U8j1n+/7yHvkvYaGbYWh3KtlnhaLliJwyXPG7kTLCxGwfDAt/4j3tzT0/cAZGR
-         j51amvYVkj+6e/Xl2vsX3mj4C5/F0MwwM+cfvuePmvLG9vD0p9kCRzuAoH2HqGYvq/
-         kcaFholIbCAbWZpKyDwZS4RoIIPy2+99tyHlcz3UDIacUMMMG8qbbPKTv7fH/IzJo3
-         l0txHUN9APvhZAzzJ/N6FgHqiIHO7cgZgg2OBGuSnnbLvJ8w6B3grs4TGtwkpYdi2U
-         +lXr6ib9wHcCQ==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v12 12/15] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Message-ID: <20201202234425.GA1486740@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121001036.8560-13-sean.v.kelley@intel.com>
+        id S1726958AbgLBXsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 18:48:18 -0500
+Date:   Wed, 2 Dec 2020 15:47:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1606952857;
+        bh=9u2sLsqA/pgqgw1aASdJJWXFrLINqvAmzHh0/6/9ogo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KGKt739KlwoUynzZmZtSCcV9nJh3WdbCt28K/PjS2aATmTdqX4KrUcbs+Ues9BUGG
+         s5j32+z0hgdCndbzXWGbdl7kFu5dhH03Pg2eIwM3ogjo75yCEFJ1rvJUflEFLN8+3n
+         9BeEpoh99RcfbSeyj2j+y357sAqBk5OxNHV+zhU0=
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: refactor initialization of stuct page for holes in
+ memory layout
+Message-Id: <20201202154736.5799e01b4c27a75b98e863fc@linux-foundation.org>
+In-Reply-To: <20201201181502.2340-1-rppt@kernel.org>
+References: <20201201181502.2340-1-rppt@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:10:33PM -0800, Sean V Kelley wrote:
-> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Tue,  1 Dec 2020 20:15:02 +0200 Mike Rapoport <rppt@kernel.org> wrote:
+
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> When attempting error recovery for an RCiEP associated with an RCEC device,
-> there needs to be a way to update the Root Error Status, the Uncorrectable
-> Error Status and the Uncorrectable Error Severity of the parent RCEC.  In
-> some non-native cases in which there is no OS-visible device associated
-> with the RCiEP, there is nothing to act upon as the firmware is acting
-> before the OS.
+> There could be struct pages that are not backed by actual physical memory.
+> This can happen when the actual memory bank is not a multiple of
+> SECTION_SIZE or when an architecture does not register memory holes
+> reserved by the firmware as memblock.memory.
 > 
-> Add handling for the linked RCEC in AER/ERR while taking into account
-> non-native cases.
+> Such pages are currently initialized using init_unavailable_mem() function
+> that iterated through PFNs in holes in memblock.memory and if there is a
+> struct page corresponding to a PFN, the fields if this page are set to
+> default values and it is marked as Reserved.
 > 
-> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Link: https://lore.kernel.org/r/20201002184735.1229220-12-seanvk.dev@oregontracks.org
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
->  drivers/pci/pcie/aer.c | 46 +++++++++++++++++++++++++++++++-----------
->  drivers/pci/pcie/err.c | 20 +++++++++---------
->  2 files changed, 44 insertions(+), 22 deletions(-)
+> init_unavailable_mem() does not take into account zone and node the page
+> belongs to and sets both zone and node links in struct page to zero.
 > 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 0ba0b47ae751..51389a6ee4ca 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1358,29 +1358,51 @@ static int aer_probe(struct pcie_device *dev)
->   */
->  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->  {
-> -	int aer = dev->aer_cap;
-> +	int type = pci_pcie_type(dev);
-> +	struct pci_dev *root;
-> +	int aer = 0;
-> +	int rc = 0;
->  	u32 reg32;
-> -	int rc;
->  
-> -	if (pcie_aer_is_native(dev)) {
-> +	if (type == PCI_EXP_TYPE_RC_END)
-> +		/*
-> +		 * The reset should only clear the Root Error Status
-> +		 * of the RCEC. Only perform this for the
-> +		 * native case, i.e., an RCEC is present.
-> +		 */
-> +		root = dev->rcec;
-> +	else
-> +		root = dev;
-> +
-> +	if (root)
-> +		aer = dev->aer_cap;
-> +
-> +	if ((aer) && pcie_aer_is_native(dev)) {
->  		/* Disable Root's interrupt in response to error messages */
-> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->  		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
->  	}
->  
-> -	rc = pci_bus_error_reset(dev);
-> -	pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-> +	if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
-> +		if (pcie_has_flr(dev)) {
-> +			rc = pcie_flr(dev);
-> +			pci_info(dev, "has been reset (%d)\n", rc);
-
-Maybe:
-
-  +             } else {
-  +                     rc = -ENOTTY;
-  +                     pci_info(dev, "not reset (no FLR support)\n");
-
-Or do we want to pretend the device was reset and return
-PCI_ERS_RESULT_RECOVERED?
-
-> +	} else {
-> +		rc = pci_bus_error_reset(dev);
-> +		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-> +	}
->  
-> -	if (pcie_aer_is_native(dev)) {
-> +	if ((aer) && pcie_aer_is_native(dev)) {
->  		/* Clear Root Error Status */
-> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
-> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
->  
->  		/* Enable Root Port's interrupt in response to error messages */
-> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->  		reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
-> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
->  	}
->  
->  	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 7883c9791562..cbc5abfe767b 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -148,10 +148,10 @@ static int report_resume(struct pci_dev *dev, void *data)
->  
->  /**
->   * pci_walk_bridge - walk bridges potentially AER affected
-> - * @bridge:	bridge which may be a Port, an RCEC with associated RCiEPs,
-> - *		or an RCiEP associated with an RCEC
-> - * @cb:		callback to be called for each device found
-> - * @userdata:	arbitrary pointer to be passed to callback
-> + * @bridge   bridge which may be an RCEC with associated RCiEPs,
-> + *           or a Port.
-> + * @cb       callback to be called for each device found
-> + * @userdata arbitrary pointer to be passed to callback.
->   *
->   * If the device provided is a bridge, walk the subordinate bus, including
->   * any bridged devices on buses under this bus.  Call the provided callback
-> @@ -164,8 +164,14 @@ static void pci_walk_bridge(struct pci_dev *bridge,
->  			    int (*cb)(struct pci_dev *, void *),
->  			    void *userdata)
->  {
-> +	/*
-> +	 * In a non-native case where there is no OS-visible reporting
-> +	 * device the bridge will be NULL, i.e., no RCEC, no Downstream Port.
-
-I don't quite understand this comment.  I see that in the non-native
-case, the reporting device may not be OS-visible.  But I don't
-understand why the comment is *here*.
-
-If "bridge" can be NULL here, we should test that before dereferencing
-"bridge->subordinate".
-
->  	if (bridge->subordinate)
->  		pci_walk_bus(bridge->subordinate, cb, userdata);
-> +	else if (bridge->rcec)
-> +		cb(bridge->rcec, userdata);
-
-And I don't understand what's going on here.  In this case, I *think*
-"bridge" is an RCiEP and "bridge->rcec" is the related RCEC, so it
-looks like we'll call report_frozen_detected(), report_mmio_enabled(),
-etc for the RCEC driver.  I would think we'd want the RCiEP driver.
-
-Sorry if I'm missing the obvious.
-
->  	else
->  		cb(bridge, userdata);
->  }
-> @@ -194,12 +200,6 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	pci_dbg(bridge, "broadcast error_detected message\n");
->  	if (state == pci_channel_io_frozen) {
->  		pci_walk_bridge(bridge, report_frozen_detected, &status);
-> -		if (type == PCI_EXP_TYPE_RC_END) {
-> -			pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
-> -			status = PCI_ERS_RESULT_NONE;
-> -			goto failed;
-> -		}
-> -
->  		status = reset_subordinates(bridge);
->  		if (status != PCI_ERS_RESULT_RECOVERED) {
->  			pci_warn(bridge, "subordinate device reset failed\n");
-> -- 
-> 2.29.2
+> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> instance in a configuration below:
 > 
+> 	# grep -A1 E820 /proc/iomem
+> 	7a17b000-7a216fff : Unknown E820 type
+> 	7a217000-7bffffff : System RAM
+> 
+> unset zone link in struct page will trigger
+> 
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+
+That sounds pretty serious.
+
+> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link in
+> struct page) in the same pageblock.
+> 
+> Interleave initialization of pages that correspond to holes with the
+> initialization of memory map, so that zone and node information will be
+> properly set on such pages.
+> 
+
+Should this be backported to -stable?  If so, do we have a suitable Fixes:?
