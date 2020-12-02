@@ -2,217 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5079C2CC133
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5182CC137
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387852AbgLBPqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:46:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgLBPqo (ORCPT
+        id S2388926AbgLBPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:46:52 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:44481 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387985AbgLBPqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:46:44 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FFAC0613CF;
-        Wed,  2 Dec 2020 07:46:04 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id y16so4328559ljk.1;
-        Wed, 02 Dec 2020 07:46:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0qZccW6T6RuJI8Ln1DnE0GJjDxXS9vOlbJ0Zgj3L1EI=;
-        b=dv1TDWvtBCJdUGLNTuqA8mM6Y4IBH76JWIqo+SfveVlcDUwS3YRv1weIVpmyuMJLxl
-         EF4VHQZZvPhdd/WOWGlLosmo0DMOfOl8skIlVx2Hj5nEPmB/EcxpIhiHf7uX3stMtmhi
-         vf2YicWgdNL0VxOcNrhExm6JtIfSnd5V86qEPtxfVRtFQkXWZlbMpg33jSF7TK6WBTTp
-         JfAF5/0l5CnaTymeoVhNDD9G5vjDPHulIwPscNfXnQfoj/2YyvWh9q8wFv5mSXCdxgSe
-         fGz9k6wT0LvOblF5rGn2z9qU27rmOd3VsCvJ7YLnkCY3M7D36c1f4oOO2Dgr4J5GhldH
-         gcaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0qZccW6T6RuJI8Ln1DnE0GJjDxXS9vOlbJ0Zgj3L1EI=;
-        b=jQDS8YoFh9wZpXup5qTjj50Rjf5ZPK5lb1IvBZIkR9GJEZk1mmJHqPvms1hAGfI0Da
-         wIVO6Qd9q0yUqn112X4zCpH+NJHkRmDuW2qTjt062AJ/0YHy3g5vYgdbCbv4BJ/yzkue
-         e6LzAlzOO1FunRz3MZcYCJ+xAuVL+7QnK/3Okgmx/8cOg7xw5YOG07OJQFytrUbq7kEy
-         xYHk67uXG14bwUqKTXF0yWrJWMls8M+VXt9Vxt7ZglkGKMihEsbGskeVZeUdZa1sLBtP
-         nVt1y9wWLmmMdwQePN0RN99FO7qvoeP9DOUtONdwCf5jcp+E6t1eu/6CUQgRUWMIfeBM
-         KO7w==
-X-Gm-Message-State: AOAM530ReTO/Nx/5PeRP0Wn8twwdzsvubFTjyZ9e0Y03op9AfJZQeRms
-        YlkqQB8V4W/K33ZyVIApAcgiXIEYYV5RwKNHJDpecMNQ
-X-Google-Smtp-Source: ABdhPJzSiqjwu2NsgZZx/PKcI/qKFtjxlox/dqwxihcJhYlEdF5+SC2i56NuzURCyevi+g5L+GLAhHHvXkaI/YerAzE=
-X-Received: by 2002:a2e:b1c9:: with SMTP id e9mr1450197lja.283.1606923962771;
- Wed, 02 Dec 2020 07:46:02 -0800 (PST)
+        Wed, 2 Dec 2020 10:46:51 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 3DE115802E3;
+        Wed,  2 Dec 2020 10:46:05 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 02 Dec 2020 10:46:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=jRoUn1Nixmx8fV7/eiqUN6Tsxsg
+        78St+eJ4PgOBSguI=; b=TQt9wzTEpAomumtEVyYfhBOFAMhYofunpmo1MYB5ub2
+        mygYpWsC8enY2HvcSTrkSd4kho0hsgZbPDmWPkwBNTji/y5p7pGWgXwXoWLCQql6
+        cgS7v/2fedN8fj99I/JEF0BuO4XrMRKCPl86BVk3aPzAzT/CWhTKFK0ZXnWX2jQX
+        8CDdFM7OVTyvvwnS22/bH67qUYbh4efacDPeGvP+5QC6ZLCJINM9WwLLDzYg3zyQ
+        rr9FwWd3Uk0UT3yqzOq1u8CQxFA/PhonDE7b6HM/BAuOPjQkBAhDQzQYEQEF/Fiz
+        vlqPsFvOipJbglqukQLaGUndk9cqsglBAk9G8ipAy6g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jRoUn1
+        Nixmx8fV7/eiqUN6Tsxsg78St+eJ4PgOBSguI=; b=S7b+9A+BK+bXFoLMxHcUCK
+        2ml/FqmbCjgSCQ9lUP16UtpeBuFflkv0aVlTfRQANUmf5sQmH9FrwnH2/XYvQGYl
+        j7j/+NwdtpOTU3FjR5rnRSuFTcQxVdrxZ0GtiafXh0XkRK2iLRtN5KgW3fe4fUGL
+        v6ZFrkkQ1aZe7beWfpnxnEb4ir4lvXvq4K9mwkInDtOw75DQ7tgqJ4t4Ly5GBNYP
+        SxEJt9WF/MysoAs+Gtk41hOvThUw82c4zhmTpShEQgqRzwKgEY+VJ5nvCz/Oxote
+        srw0OhNwnN704qXyqf51YnYxMqB2R2ki/77k/+qP/P+FQdlCH9a9GgfVkppWn4PQ
+        ==
+X-ME-Sender: <xms:urbHX7mweWR1qljBr_MExWUkdMRV0tmFycoSy-4iG7shpRNcYcPjkA>
+    <xme:urbHX-2QGL3MuSS6ysrC0KGAkvZclRLfNn08313yojQTwbmq2USutfe5ngPBYww0n
+    6zPMrrDN7J34lD9fqs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:urbHXxr7hq23eyK4HjadMXO7LlCY7uZVKhxqtnSUl-C0vBVuO3yI9Q>
+    <xmx:urbHXzmy7XQptpb2dVlgOp4l5d4xu9j9yP6iWT_47cXcDlUhVw4GJw>
+    <xmx:urbHX53cI05xHEVa_C_yRehMj6z3E2UgIWfHhH589jZvxQOIrflKaw>
+    <xmx:vbbHX482dsQIV9UiOVhgqRglb05zjpF5PLwLRAdB2fu23SuK7Wk7Ow>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 69B94240059;
+        Wed,  2 Dec 2020 10:46:02 -0500 (EST)
+Date:   Wed, 2 Dec 2020 16:46:01 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 09/19] ARM: dts: sunxi: h3/h5: Add CSI controller port
+ for parallel input
+Message-ID: <20201202154601.ws7wrx6msrp3u4pd@gilmour>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-10-paul.kocialkowski@bootlin.com>
+ <20201201121405.at4pwxon56ecwrx6@gilmour>
+ <X8escb4SZXEpiR0n@aptenodytes>
 MIME-Version: 1.0
-References: <1604286803-20698-1-git-send-email-u0084500@gmail.com>
- <20201125164207.GD4716@dell> <CADiBU3_bgx-K_zxzKCSL8w=meZu3cA3uWoC-3QVsBAuNJW1uiw@mail.gmail.com>
- <20201202084909.GI4801@dell>
-In-Reply-To: <20201202084909.GI4801@dell>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Wed, 2 Dec 2020 23:45:50 +0800
-Message-ID: <CADiBU3-XYVPjfrVFq_K3GBHviPd-tKuPp6W5EDcUvywsN5ODwA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] mfd: rt4831: Adds support for Richtek RT4831 MFD core
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, cy_huang <cy_huang@richtek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="btrg2f6ei6hzo3fh"
+Content-Disposition: inline
+In-Reply-To: <X8escb4SZXEpiR0n@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B412=E6=9C=882=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:49=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Wed, 02 Dec 2020, ChiYuan Huang wrote:
->
-> > Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8826=
-=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8812:42=E5=AF=AB=E9=81=93=EF=
-=BC=9A
-> > >
-> > > On Mon, 02 Nov 2020, cy_huang wrote:
-> > >
-> > > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > > >
-> > > > Adds support Richtek RT4831 MFD core.
-> > > > RT4831 includes backlight and DSV part that can provode display pan=
-el
-> > > > for postive and negative voltage and WLED driving.
-> > > >
-> > > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > > ---
-> > > >  drivers/mfd/Kconfig       |  11 +++++
-> > > >  drivers/mfd/Makefile      |   1 +
-> > > >  drivers/mfd/rt4831-core.c | 119 ++++++++++++++++++++++++++++++++++=
-++++++++++++
-> > > >  3 files changed, 131 insertions(+)
-> > > >  create mode 100644 drivers/mfd/rt4831-core.c
-> > > >
-> > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > > index 8b99a13..a22f002 100644
-> > > > --- a/drivers/mfd/Kconfig
-> > > > +++ b/drivers/mfd/Kconfig
-> > > > @@ -1088,6 +1088,17 @@ config MFD_RDC321X
-> > > >         southbridge which provides access to GPIOs and Watchdog usi=
-ng the
-> > > >         southbridge PCI device configuration space.
-> > > >
-> > > > +config MFD_RT4831
-> > > > +     tristate "Richtek RT4831 WLED and DSV IC"
-> > >
-> > > Please expand on WLED and DSV.
-> > >
-> > > This is documentation and should leave nothing to the imagination.
-> > >
-> > Rewrite to "Richtek RT4831 four channel WLED and display bias
-> > voltage", is it okay?
->
-> I had to look-up WLED, but I guess it's okay.
->
-> "Display Bias Voltage"
->
-OK, I'll change this line to
-"Richtek RT4831 fource channel WLED and Display Bias Voltage"
-> > > > +     depends on I2C
-> > > > +     select MFD_CORE
-> > > > +     select REGMAP_I2C
-> > > > +     help
-> > > > +       This enables support for the Richtek RT4831.
-> > > > +       RT4831 includes WLED driver and DisplayBias voltage(+/-) re=
-gulator.
-> > > > +       It's common used to provide the display power and to drive =
-the
-> > > > +       display backlight WLED.
-> > >
-> > > Please don't line-wrap unnecessarily.
-> > >
-> > > Please re-work the last sentence, as it doesn't quite make sense.
-> > >
-> > Rewrite the whole sentence like as below
-> > "This enables support for the Richtek RT4831. It includes 4 channel
-> > WLED driving and Display Bias voltage output. It's commonly used to
-> > provide the LCD power and to drive LCD backlight."
->
-> "Display Bias Voltage"
->
-> "provide power to the LCD display"
->
-Thanks. looks better
-> [...]
->
-> > > > +static int rt4831_probe(struct i2c_client *client)
-> > > > +{
-> > > > +     struct gpio_desc *enable;
-> > > > +     struct regmap *regmap;
-> > > > +     unsigned int val;
-> > > > +     int ret;
-> > > > +
-> > > > +     enable =3D devm_gpiod_get_optional(&client->dev, "enable", GP=
-IOD_OUT_HIGH);
-> > > > +     if (IS_ERR(enable)) {
-> > > > +             dev_err(&client->dev, "Failed to get chip enable gpio=
-\n");
-> > >
-> > > "Failed to get 'enable' GPIO chip"
-> > >
-> > May I remove "chip" word? It seems redundant.
-> > "Failed to get 'enable' GPIO" is better.
-> > Because 'enable' is a physical input pin for RT4831.
->
-> Sounds good.
->
-> [...]
->
-> > > > +static int rt4831_remove(struct i2c_client *client)
-> > > > +{
-> > > > +     struct regmap *regmap =3D dev_get_regmap(&client->dev, NULL);
-> > > > +
-> > > > +     /* Make sure all off before module removal */
-> > >
-> > > "Disable all <thing your disabling> are disabled before ..."
->
-> This should have said:
->
->   "Ensure all <thing your disabling> are disabled before ..."
->
-> > May I rewrite it to "Configure WLED driving and DSV output all to be
-> > disabled before MFD module removal"?
->
-> You don't need to mention MFD or modules here since we know how the
-> Device Driver model works and what .remove() does.
->
-> What about:
->
->   "Disable WLED and DSV outputs"
-Do you mean that only keep this comment line is better? NO more
-redundant description like "before ....".
-If yes, I'll only leave  the comment like as you said in remove/shutdown op=
-s.
-> > > > +     return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_R=
-ESET_MASK, RT4831_RESET_MASK);
-> > > > +}
-> > > > +
-> > > > +static void rt4831_shutdown(struct i2c_client *client)
-> > > > +{
-> > > > +     struct regmap *regmap =3D dev_get_regmap(&client->dev, NULL);
-> > > > +
-> > > > +     /* Make sure all off before machine shutdown */
-> > >
-> > > As above.
-> > >
-> > like as above ".... before 'machine shutdown'
->
->   "Disable WLED and DSV outputs"
-Same as above.
 
-Thanks for all the suggestion.
-If any misunderstanding, please kindly let me know.
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+--btrg2f6ei6hzo3fh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Dec 02, 2020 at 04:02:09PM +0100, Paul Kocialkowski wrote:
+> Hi,
+>=20
+> On Tue 01 Dec 20, 13:14, Maxime Ripard wrote:
+> > On Sat, Nov 28, 2020 at 03:28:29PM +0100, Paul Kocialkowski wrote:
+> > > Since the CSI controller binding is getting a bit more complex due
+> > > to the addition of MIPI CSI-2 bridge support, make the ports node
+> > > explicit with the parallel port.
+> > >=20
+> > > This way, it's clear that the controller only supports parallel
+> > > interface input and there's no confusion about the port number.
+> > >=20
+> > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > ---
+> > >  arch/arm/boot/dts/sunxi-h3-h5.dtsi | 9 +++++++++
+> > >  1 file changed, 9 insertions(+)
+> > >=20
+> > > diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/s=
+unxi-h3-h5.dtsi
+> > > index 9be13378d4df..02b698cace6a 100644
+> > > --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> > > +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> > > @@ -803,6 +803,15 @@ csi: camera@1cb0000 {
+> > >  			pinctrl-names =3D "default";
+> > >  			pinctrl-0 =3D <&csi_pins>;
+> > >  			status =3D "disabled";
+> > > +
+> > > +			ports {
+> > > +				#address-cells =3D <1>;
+> > > +				#size-cells =3D <0>;
+> > > +
+> > > +				csi_in_parallel: port@0 {
+> > > +					reg =3D <0>;
+> > > +				};
+> > > +			};
+> > >  		};
+> >=20
+> > This will create a DTC warning, since port@0 is the only node, and is
+> > equivalent to port
+>=20
+> I'm not seeing the warning when running dtbs_check.
+
+Some are silenced by the Linux build system. You can pass W=3D1 to your
+make command line enable all of them.
+
+> More generally, why is it a problem that there's only one node defined?
+>=20
+> One issue that I did see is that the port node doesn't have an endpoint
+> here, so I will remove the requirement to have an endpoint in the bindings
+> documentation to allow this kind of definition.
+
+We definitely want to have the endpoint required. If the CSI node is
+disabled, the error should be ignored by the dt-validate tool though
+
+Maxime
+
+--btrg2f6ei6hzo3fh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e2uQAKCRDj7w1vZxhR
+xYE3AP4u/RvuwgGW7PW013WC31Z7iECgCdFpXbQBo4FZEKym5wEAuygTLOqYLNTZ
+3TelATfMdZXOAbQq9j+JnNSVltFQLAk=
+=/zNa
+-----END PGP SIGNATURE-----
+
+--btrg2f6ei6hzo3fh--
