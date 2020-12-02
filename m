@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252772CBC2F
+	by mail.lfdr.de (Postfix) with ESMTP id 9150C2CBC30
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgLBL62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:58:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37738 "EHLO mail.kernel.org"
+        id S1726737AbgLBL6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:58:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726005AbgLBL61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:58:27 -0500
+        id S1726005AbgLBL6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 06:58:31 -0500
 From:   Frederic Weisbecker <frederic@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -25,53 +25,87 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
         Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 0/5] irq: Reorder time handling against HARDIRQ_OFFSET on IRQ entry v3
-Date:   Wed,  2 Dec 2020 12:57:27 +0100
-Message-Id: <20201202115732.27827-1-frederic@kernel.org>
+Subject: [PATCH 1/5] sched/cputime: Remove symbol exports from IRQ time accounting
+Date:   Wed,  2 Dec 2020 12:57:28 +0100
+Message-Id: <20201202115732.27827-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201202115732.27827-1-frederic@kernel.org>
+References: <20201202115732.27827-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+account_irq_enter_time() and account_irq_exit_time() are not called
+from modules. EXPORT_SYMBOL_GPL() can be safely removed from the IRQ
+cputime accounting functions called from there.
 
-Slightly different design this time. As per Peter and Thomas reviews and
-suggestions, use the following layout:
-
-  account_softirq_enter() -> irqtime_account_irq(curr, SOFTIRQ_OFFSET);
-  account_softirq_exit()  -> irqtime_account_irq(curr, 0);
-  account_hardirq_enter() -> irqtime_account_irq(curr, HARDIRQ_OFFSET);
-  account_hardirq_exit()  -> irqtime_account_irq(curr, 0);
-
-So now the preempt count offset is substracted in the cputime dispatch
-function and the resulting code is better consolidated.
-
-git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-	irq/core-v3
-
-HEAD: 24a2d6c76759bd4496cbdcd365012c821a984eec
-
-Thanks,
-	Frederic
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
 ---
+ arch/s390/kernel/vtime.c | 10 +++++-----
+ kernel/sched/cputime.c   |  2 --
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
-Frederic Weisbecker (5):
-      sched/cputime: Remove symbol exports from IRQ time accounting
-      s390/vtime: Use the generic IRQ entry accounting
-      sched/vtime: Consolidate IRQ time accounting
-      irqtime: Move irqtime entry accounting after irq offset incrementation
-      irq: Call tick_irq_enter() inside HARDIRQ_OFFSET
+diff --git a/arch/s390/kernel/vtime.c b/arch/s390/kernel/vtime.c
+index 8df10d3c8f6c..f9f2a11958a5 100644
+--- a/arch/s390/kernel/vtime.c
++++ b/arch/s390/kernel/vtime.c
+@@ -226,7 +226,7 @@ void vtime_flush(struct task_struct *tsk)
+  * Update process times based on virtual cpu times stored by entry.S
+  * to the lowcore fields user_timer, system_timer & steal_clock.
+  */
+-void vtime_account_irq_enter(struct task_struct *tsk)
++void vtime_account_kernel(struct task_struct *tsk)
+ {
+ 	u64 timer;
+ 
+@@ -245,12 +245,12 @@ void vtime_account_irq_enter(struct task_struct *tsk)
+ 
+ 	virt_timer_forward(timer);
+ }
+-EXPORT_SYMBOL_GPL(vtime_account_irq_enter);
+-
+-void vtime_account_kernel(struct task_struct *tsk)
+-__attribute__((alias("vtime_account_irq_enter")));
+ EXPORT_SYMBOL_GPL(vtime_account_kernel);
+ 
++void vtime_account_irq_enter(struct task_struct *tsk)
++__attribute__((alias("vtime_account_kernel")));
++
++
+ /*
+  * Sorted add to a list. List is linear searched until first bigger
+  * element is found.
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 5a55d2300452..61ce9f9bf0a3 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -71,7 +71,6 @@ void irqtime_account_irq(struct task_struct *curr)
+ 	else if (in_serving_softirq() && curr != this_cpu_ksoftirqd())
+ 		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
+ }
+-EXPORT_SYMBOL_GPL(irqtime_account_irq);
+ 
+ static u64 irqtime_tick_accounted(u64 maxtime)
+ {
+@@ -434,7 +433,6 @@ void vtime_account_irq_enter(struct task_struct *tsk)
+ 	else
+ 		vtime_account_kernel(tsk);
+ }
+-EXPORT_SYMBOL_GPL(vtime_account_irq_enter);
+ #endif /* __ARCH_HAS_VTIME_ACCOUNT */
+ 
+ void cputime_adjust(struct task_cputime *curr, struct prev_cputime *prev,
+-- 
+2.25.1
 
-
- arch/Kconfig                  |  7 +++++-
- arch/ia64/kernel/time.c       | 20 ++++++++++++----
- arch/powerpc/kernel/time.c    | 56 ++++++++++++++++++++++++++++++-------------
- arch/s390/Kconfig             |  1 +
- arch/s390/include/asm/vtime.h |  1 -
- arch/s390/kernel/vtime.c      | 51 +++++++++++++++++++++++++--------------
- include/linux/hardirq.h       |  4 ++--
- include/linux/vtime.h         | 42 +++++++++++++++++++-------------
- kernel/sched/cputime.c        | 36 +++++++++++++---------------
- kernel/softirq.c              | 20 +++++++---------
- 10 files changed, 148 insertions(+), 90 deletions(-)
