@@ -2,122 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3007C2CBCBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D8D2CBCCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729857AbgLBMQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:16:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:37766 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729843AbgLBMQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:16:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34FC7101E;
-        Wed,  2 Dec 2020 04:15:58 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E52D3F718;
-        Wed,  2 Dec 2020 04:15:56 -0800 (PST)
-Subject: Re: [RFC V2 1/3] mm/hotplug: Prevalidate the address range being
- added with platform
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
- <1606706992-26656-2-git-send-email-anshuman.khandual@arm.com>
- <864c701a-4391-f768-1b95-1992e21835a2@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <349f7b33-cd5b-4240-e7c0-d8ad39c8ba71@arm.com>
-Date:   Wed, 2 Dec 2020 17:45:39 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <864c701a-4391-f768-1b95-1992e21835a2@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729891AbgLBMSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:18:37 -0500
+Received: from mout.kundenserver.de ([212.227.126.130]:32851 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726881AbgLBMSg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 07:18:36 -0500
+Received: from orion.localdomain ([77.7.48.174]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MJV9M-1kV75Q0XNo-00JsFP; Wed, 02 Dec 2020 13:15:56 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        benh@kernel.crashing.org, paulus@samba.org,
+        linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] drivers: char: tpm: remove unneeded MODULE_VERSION() usage
+Date:   Wed,  2 Dec 2020 13:15:53 +0100
+Message-Id: <20201202121553.9383-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:S6jGKntch7TnNIvjw5HeYSwa3cdu9ChH6KIdjiN8Aw6I10nMGVT
+ TfxVfBy1k7mv46B8Dyrm80CAJCZqiQzdUJlFmeCNabr0Yole0YWL1/NssfqGPj25DwI+gDj
+ axY/uaskxTMUnwAA/4I8jGIBD5qbYDx2YnkpBrrX7YVWCj1EqbEgOxsztP6dEwhqkIaNs9W
+ dv4rRCeBj25UrBA2tthTA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1FdbRDQJofQ=:4P+X4mrrTmi5GX6ObomhZ1
+ MZ/jKta9twQOXBklTXSMoDO/Z/D3xZtZLzUU19BZxf8UAPldSdnh9da4xIE3t1/uGReSjOCGz
+ kEs2HeMiAzXjS3rOg6idRdVa0gIK55msLcyGHWdOIgnBF0eLbUhFKBIuurzK699pFDkLCdxVT
+ YlpdOzqLlPwQwHg0O8P41vznDzybuat5+F8gXZqsWj2vUBNJCWcWPWD7eslKj94UqpbuOy+e/
+ 3USLs+PVMOozbri5MbE6kbAkb+rTwYlthmRwwNXVKldMrjP6nKzebKii8w/JQYuSfzXYJ1iH9
+ hD/rag3PQcqYpyuvQmLvqFG49fH2Wf1LV1gbiTaUfGwduG5J4E1Qrnc/x/JuTqzV5TQmW6gyn
+ uDrSZ8ClNOH3m8q/wg4m6Dw8FXxHIcySf3arg4wDixCDzZbRfJTnCC0DfM0qz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove MODULE_VERSION(), as it isn't needed at all: the only version
+making sense is the kernel version.
 
-On 12/2/20 2:50 PM, David Hildenbrand wrote:
-> On 30.11.20 04:29, Anshuman Khandual wrote:
->> This introduces memhp_range_allowed() which can be called in various memory
->> hotplug paths to prevalidate the address range which is being added, with
->> the platform. Then memhp_range_allowed() calls memhp_get_pluggable_range()
->> which provides applicable address range depending on whether linear mapping
->> is required or not. For ranges that require linear mapping, it calls a new
->> arch callback arch_get_mappable_range() which the platform can override. So
->> the new callback, in turn provides the platform an opportunity to configure
->> acceptable memory hotplug address ranges in case there are constraints.
->>
->> This mechanism will help prevent platform specific errors deep down during
->> hotplug calls. This drops now redundant check_hotplug_memory_addressable()
->> check in __add_pages().
->>
-> 
-> 
-> [...]
-> 
->>  /*
->>   * Reasonably generic function for adding memory.  It is
->>   * expected that archs that support memory hotplug will
->> @@ -317,10 +304,6 @@ int __ref __add_pages(int nid, unsigned long pfn, unsigned long nr_pages,
->>  	if (WARN_ON_ONCE(!params->pgprot.pgprot))
->>  		return -EINVAL;
->>  
->> -	err = check_hotplug_memory_addressable(pfn, nr_pages);
->> -	if (err)
->> -		return err;
->> -
-> 
-> I was wondering if we should add a VM_BUG_ON(!memhp_range_allowed())
-> here to make it clearer that callers are expected to check that first.
-> Maybe an other places as well (e.g., arch code where we remove the
-> original checks)
+Link: https://lkml.org/lkml/2017/11/22/480
 
-Makes sense, will add them.
+Signed-off-by: Enrico Weigelt <info@metux.net>
+---
+ drivers/char/tpm/st33zp24/i2c.c      | 1 -
+ drivers/char/tpm/st33zp24/spi.c      | 1 -
+ drivers/char/tpm/st33zp24/st33zp24.c | 1 -
+ drivers/char/tpm/tpm-interface.c     | 1 -
+ drivers/char/tpm/tpm_atmel.c         | 1 -
+ drivers/char/tpm/tpm_crb.c           | 1 -
+ drivers/char/tpm/tpm_i2c_infineon.c  | 1 -
+ drivers/char/tpm/tpm_ibmvtpm.c       | 1 -
+ drivers/char/tpm/tpm_infineon.c      | 1 -
+ drivers/char/tpm/tpm_nsc.c           | 1 -
+ drivers/char/tpm/tpm_tis.c           | 1 -
+ drivers/char/tpm/tpm_tis_core.c      | 1 -
+ drivers/char/tpm/tpm_vtpm_proxy.c    | 1 -
+ 13 files changed, 13 deletions(-)
 
-> 
-> [...]
-> 
-> 
->>  #endif /* CONFIG_MEMORY_HOTREMOVE */
->> diff --git a/mm/memremap.c b/mm/memremap.c
->> index 16b2fb482da1..26c1825756cc 100644
->> --- a/mm/memremap.c
->> +++ b/mm/memremap.c
->> @@ -185,6 +185,7 @@ static void dev_pagemap_percpu_release(struct percpu_ref *ref)
->>  static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->>  		int range_id, int nid)
->>  {
->> +	const bool is_private = pgmap->type == MEMORY_DEVICE_PRIVATE;
->>  	struct range *range = &pgmap->ranges[range_id];
->>  	struct dev_pagemap *conflict_pgmap;
->>  	int error, is_ram;
->> @@ -230,6 +231,9 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->>  	if (error)
->>  		goto err_pfn_remap;
->>  
->> +	if (!memhp_range_allowed(range->start, range_len(range), !is_private))
->> +		goto err_pfn_remap;
->> +
->>  	mem_hotplug_begin();
->>  
->>  	/*
->> @@ -243,7 +247,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
->>  	 * the CPU, we do want the linear mapping and thus use
->>  	 * arch_add_memory().
->>  	 */
->> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
->> +	if (is_private) {
->>  		error = add_pages(nid, PHYS_PFN(range->start),
->>  				PHYS_PFN(range_len(range)), params);
->>  	} else {
->>
-> 
-> In general, LGTM.
-> 
+diff --git a/drivers/char/tpm/st33zp24/i2c.c b/drivers/char/tpm/st33zp24/i2c.c
+index 7c617edff4ca..7ed9829cacc4 100644
+--- a/drivers/char/tpm/st33zp24/i2c.c
++++ b/drivers/char/tpm/st33zp24/i2c.c
+@@ -313,5 +313,4 @@ module_i2c_driver(st33zp24_i2c_driver);
+ 
+ MODULE_AUTHOR("TPM support (TPMsupport@list.st.com)");
+ MODULE_DESCRIPTION("STM TPM 1.2 I2C ST33 Driver");
+-MODULE_VERSION("1.3.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/st33zp24/spi.c b/drivers/char/tpm/st33zp24/spi.c
+index a75dafd39445..147efea4eb05 100644
+--- a/drivers/char/tpm/st33zp24/spi.c
++++ b/drivers/char/tpm/st33zp24/spi.c
+@@ -430,5 +430,4 @@ module_spi_driver(st33zp24_spi_driver);
+ 
+ MODULE_AUTHOR("TPM support (TPMsupport@list.st.com)");
+ MODULE_DESCRIPTION("STM TPM 1.2 SPI ST33 Driver");
+-MODULE_VERSION("1.3.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/st33zp24/st33zp24.c b/drivers/char/tpm/st33zp24/st33zp24.c
+index 4ec10ab5e576..e0f1a5828993 100644
+--- a/drivers/char/tpm/st33zp24/st33zp24.c
++++ b/drivers/char/tpm/st33zp24/st33zp24.c
+@@ -646,5 +646,4 @@ EXPORT_SYMBOL(st33zp24_pm_resume);
+ 
+ MODULE_AUTHOR("TPM support (TPMsupport@list.st.com)");
+ MODULE_DESCRIPTION("ST33ZP24 TPM 1.2 driver");
+-MODULE_VERSION("1.3.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
+index 1621ce818705..dfdc68b8bf88 100644
+--- a/drivers/char/tpm/tpm-interface.c
++++ b/drivers/char/tpm/tpm-interface.c
+@@ -514,5 +514,4 @@ module_exit(tpm_exit);
+ 
+ MODULE_AUTHOR("Leendert van Doorn (leendert@watson.ibm.com)");
+ MODULE_DESCRIPTION("TPM Driver");
+-MODULE_VERSION("2.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_atmel.c b/drivers/char/tpm/tpm_atmel.c
+index 54a6750a6757..35bf249cc95a 100644
+--- a/drivers/char/tpm/tpm_atmel.c
++++ b/drivers/char/tpm/tpm_atmel.c
+@@ -231,5 +231,4 @@ module_exit(cleanup_atmel);
+ 
+ MODULE_AUTHOR("Leendert van Doorn (leendert@watson.ibm.com)");
+ MODULE_DESCRIPTION("TPM Driver");
+-MODULE_VERSION("2.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
+index a9dcf31eadd2..3e72b7b99cce 100644
+--- a/drivers/char/tpm/tpm_crb.c
++++ b/drivers/char/tpm/tpm_crb.c
+@@ -748,5 +748,4 @@ static struct acpi_driver crb_acpi_driver = {
+ module_acpi_driver(crb_acpi_driver);
+ MODULE_AUTHOR("Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>");
+ MODULE_DESCRIPTION("TPM2 Driver");
+-MODULE_VERSION("0.1");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_i2c_infineon.c b/drivers/char/tpm/tpm_i2c_infineon.c
+index a19d32cb4e94..8920b7c19fcb 100644
+--- a/drivers/char/tpm/tpm_i2c_infineon.c
++++ b/drivers/char/tpm/tpm_i2c_infineon.c
+@@ -731,5 +731,4 @@ static struct i2c_driver tpm_tis_i2c_driver = {
+ module_i2c_driver(tpm_tis_i2c_driver);
+ MODULE_AUTHOR("Peter Huewe <peter.huewe@infineon.com>");
+ MODULE_DESCRIPTION("TPM TIS I2C Infineon Driver");
+-MODULE_VERSION("2.2.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
+index 994385bf37c0..5b04d113f634 100644
+--- a/drivers/char/tpm/tpm_ibmvtpm.c
++++ b/drivers/char/tpm/tpm_ibmvtpm.c
+@@ -750,5 +750,4 @@ module_exit(ibmvtpm_module_exit);
+ 
+ MODULE_AUTHOR("adlai@us.ibm.com");
+ MODULE_DESCRIPTION("IBM vTPM Driver");
+-MODULE_VERSION("1.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_infineon.c b/drivers/char/tpm/tpm_infineon.c
+index 9c924a1440a9..8a58966c5c9b 100644
+--- a/drivers/char/tpm/tpm_infineon.c
++++ b/drivers/char/tpm/tpm_infineon.c
+@@ -621,5 +621,4 @@ module_pnp_driver(tpm_inf_pnp_driver);
+ 
+ MODULE_AUTHOR("Marcel Selhorst <tpmdd@sirrix.com>");
+ MODULE_DESCRIPTION("Driver for Infineon TPM SLD 9630 TT 1.1 / SLB 9635 TT 1.2");
+-MODULE_VERSION("1.9.2");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_nsc.c b/drivers/char/tpm/tpm_nsc.c
+index 038701d48351..6ab2fe7e8782 100644
+--- a/drivers/char/tpm/tpm_nsc.c
++++ b/drivers/char/tpm/tpm_nsc.c
+@@ -412,5 +412,4 @@ module_exit(cleanup_nsc);
+ 
+ MODULE_AUTHOR("Leendert van Doorn (leendert@watson.ibm.com)");
+ MODULE_DESCRIPTION("TPM Driver");
+-MODULE_VERSION("2.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+index 4ed6e660273a..3074235b405d 100644
+--- a/drivers/char/tpm/tpm_tis.c
++++ b/drivers/char/tpm/tpm_tis.c
+@@ -429,5 +429,4 @@ module_init(init_tis);
+ module_exit(cleanup_tis);
+ MODULE_AUTHOR("Leendert van Doorn (leendert@watson.ibm.com)");
+ MODULE_DESCRIPTION("TPM Driver");
+-MODULE_VERSION("2.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index 92c51c6cfd1b..20f4b2c7ea52 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -1164,5 +1164,4 @@ EXPORT_SYMBOL_GPL(tpm_tis_resume);
+ 
+ MODULE_AUTHOR("Leendert van Doorn (leendert@watson.ibm.com)");
+ MODULE_DESCRIPTION("TPM Driver");
+-MODULE_VERSION("2.0");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
+index 91c772e38bb5..18f14162d1c1 100644
+--- a/drivers/char/tpm/tpm_vtpm_proxy.c
++++ b/drivers/char/tpm/tpm_vtpm_proxy.c
+@@ -729,5 +729,4 @@ module_exit(vtpm_module_exit);
+ 
+ MODULE_AUTHOR("Stefan Berger (stefanb@us.ibm.com)");
+ MODULE_DESCRIPTION("vTPM Driver");
+-MODULE_VERSION("0.1");
+ MODULE_LICENSE("GPL");
+-- 
+2.11.0
 
-Okay
