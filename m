@@ -2,186 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002152CC1E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CDD2CC1EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389004AbgLBQQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:16:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        id S2389045AbgLBQQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728439AbgLBQQd (ORCPT
+        with ESMTP id S2387401AbgLBQQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:16:33 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE57FC0613CF;
-        Wed,  2 Dec 2020 08:15:53 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id f1so915021plt.12;
-        Wed, 02 Dec 2020 08:15:53 -0800 (PST)
+        Wed, 2 Dec 2020 11:16:58 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED835C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:16:17 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id u12so4665253wrt.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pAngUE8Pe2deMqEX1v1jJzfLaheheDOemXLQHNVKgZ8=;
-        b=HWFWH2/HDVru79H6DBIAlEm4IZp1wlvIrd/vGfdezPoMTqHu5hnBAAwtdeJspmxABQ
-         qoNPlUVAhoNr4xEMZunUBGf534rPClmej+rzygPzQPc90Z9Ith1a+D0vZhp72ypFRvX6
-         +uHD5SMGwu7klm6jqGz61Qn0JpqLSSdimeL6MaNg99lsKKdPhlMeeJE+qbOxrt7dZ88c
-         d3rqG6xiaoVZFl+2GX0NiLfn4ZwZ6iyylguUCTeEjJldD8ACvdBFM6jzNQFzSsEs/ypB
-         rp/y8KRdBfe7eDsMfQgqIPtm5WegZ0oovHg9Z3zFgp9f4eVYbENYctarSg49xTOflrXA
-         DdyQ==
+        d=essensium.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Hu9KgoIfbByheWddhHSVotGIyHUSFkyJms4K0ds5aD0=;
+        b=duHzaQafKzr5OTS8xQc4UKF+O16r6//Zkv/JpJsy0o7VxwEEUT8+IWj4TO10nqgswF
+         Ih+P38JSJtHoTW0zzQOL/9cc1Cacsd7o+DpWNh97yoJ6D4OJrmVyY+kUy1Y6cVchMinw
+         HcjwTwAIrjWU24ATr2uePZ1ZyApOexopLIHGU8u2GGUdbxM3H1LfEkIbQT/EnAIMZGYI
+         4vUndHy7anJ0b/ZbhRxVs2858+BmhrLaMoZlKZt2zI0NPDiVw/doq0VTLXR1Ic2ODuR1
+         1LBJp+VQN+7tzrkeKHCpPG3ex+swrUCU17OY4P+FeP49NwPnX3QDEtXTXiKqcqzNXXVh
+         TE0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=pAngUE8Pe2deMqEX1v1jJzfLaheheDOemXLQHNVKgZ8=;
-        b=JfK0+v8BcZ3c/v5uP4LK3TuR8DJo2vfZ0azmOGgwBhJRFsdceiopk/euDK4dwPN1MZ
-         YLeJU8TZQu8JCrh2w23DYix6rMCimKcD1mCdm8FZ/qMTuXuxyjuyaQ4yv62cJx6gGK+I
-         0H1TxkCqj880IFezZyvuxterXKQmA1JF7Kh3N1/YZeRRBX0Ldr1oia4BNZTEhCwCaq4u
-         jioMQ8aHm97GmAZkLjod+R3yhhunhwLUjlwX3MQzrLWFtjS+/8zthokT8+BZf8kzbHuH
-         sxnotoike1ZtiSYqXquW2qp9mpJ+VHRyvhhys4hY1E1DGmZn82cZ9a6Tba8+nJxZdwji
-         P0VQ==
-X-Gm-Message-State: AOAM533Fdi1b7UzdrLiGssz1MgzH1M646dxvEwlZJYiRiByCo8SD4XbY
-        CC1Mp3o+9oJdIVi6VU9i9sbYSrS9W7o=
-X-Google-Smtp-Source: ABdhPJzHwADqwgWxJBxLebV+WXJ3wruJCxUN+m+GZcb0aHNYPdKMbdIY0m8AH+LOySrZQzu5BiUGZw==
-X-Received: by 2002:a17:902:7d94:b029:da:53c:f7cb with SMTP id a20-20020a1709027d94b02900da053cf7cbmr3124699plm.69.1606925753163;
-        Wed, 02 Dec 2020 08:15:53 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id u6sm260518pfb.197.2020.12.02.08.15.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Hu9KgoIfbByheWddhHSVotGIyHUSFkyJms4K0ds5aD0=;
+        b=eVoTsV9HK4ADas5KL4+zaas0VSOYhPTxGMhT50Tfgerl5A826dJFnu2M7msnK0F9MW
+         SXDfrf+xPXD12BDBIARqmTm+HT7zxnpX8APfnj0s64ue+QlYp+GyyBLQe/WU6Iw+AorY
+         31P/QJxM4r+jvEy4shLnD2+yTfJbsafOd1DmB71FN+hAjlgZjBVW8RYziOsbhDzweUQb
+         SSbt7b5WS7VnHgdKN3ITif7FB7KsGMNfIjZN3JOxsalAOLpZ+ogtOhWA3uwBeqc14hMS
+         kHFfRgVzRhbIbws9YQBSrMfxmIo+NcsFxnUCtQLc+pXEFazFh8TvuUBiWAu1hODj36Ky
+         Ks/A==
+X-Gm-Message-State: AOAM533Hn4tjKHewJBg9bIGoFrFnCimdHKkpTePBo6BWrjO/hG5eGfvy
+        2u2TQvoSlzEhmxJ/xPHYGCAujQ==
+X-Google-Smtp-Source: ABdhPJxzSnB7af/+kMCcoZgVsY0bVgy+9L0dUEwD440EDyJGJnNdc8d/Ao73PBYXXUa/4hPZ486dVg==
+X-Received: by 2002:a5d:620a:: with SMTP id y10mr4403497wru.236.1606925776527;
+        Wed, 02 Dec 2020 08:16:16 -0800 (PST)
+Received: from belels006.local.ess-mail.com (ip-188-118-3-185.reverse.destiny.be. [188.118.3.185])
+        by smtp.gmail.com with ESMTPSA id s4sm2644505wru.56.2020.12.02.08.16.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 08:15:52 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 2 Dec 2020 08:15:49 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
-        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
-        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
-Message-ID: <X8e9tSwcsrEsAv1O@google.com>
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-3-minchan@kernel.org>
- <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
- <20201202154915.GU17338@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202154915.GU17338@dhcp22.suse.cz>
+        Wed, 02 Dec 2020 08:16:15 -0800 (PST)
+From:   Patrick Havelange <patrick.havelange@essensium.com>
+To:     Madalin Bucur <madalin.bucur@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Patrick Havelange <patrick.havelange@essensium.com>
+Subject: [PATCH 1/4] net: freescale/fman: Split the main resource region reservation
+Date:   Wed,  2 Dec 2020 17:15:57 +0100
+Message-Id: <20201202161600.23738-1-patrick.havelange@essensium.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 04:49:15PM +0100, Michal Hocko wrote:
-> On Wed 02-12-20 10:14:41, David Hildenbrand wrote:
-> > On 01.12.20 18:51, Minchan Kim wrote:
-> > > There is a need for special HW to require bulk allocation of
-> > > high-order pages. For example, 4800 * order-4 pages, which
-> > > would be minimum, sometimes, it requires more.
-> > > 
-> > > To meet the requirement, a option reserves 300M CMA area and
-> > > requests the whole 300M contiguous memory. However, it doesn't
-> > > work if even one of those pages in the range is long-term pinned
-> > > directly or indirectly. The other option is to ask higher-order
-> > 
-> > My latest knowledge is that pages in the CMA area are never long term
-> > pinned.
-> > 
-> > https://lore.kernel.org/lkml/20201123090129.GD27488@dhcp22.suse.cz/
-> > 
-> > "gup already tries to deal with long term pins on CMA regions and migrate
-> > to a non CMA region. Have a look at __gup_longterm_locked."
-> > 
-> > We should rather identify ways how that is still possible and get rid of
-> > them.
-> > 
-> > 
-> > Now, short-term pinnings and PCP are other issues where
-> > alloc_contig_range() could be improved (e.g., in contrast to a FAST
-> > mode, a HARD mode which temporarily disables the PCP, ...).
-> 
-> Agreed!
-> 
-> > > size (e.g., 2M) than requested order(64K) repeatedly until driver
-> > > could gather necessary amount of memory. Basically, this approach
-> > > makes the allocation very slow due to cma_alloc's function
-> > > slowness and it could be stuck on one of the pageblocks if it
-> > > encounters unmigratable page.
-> > > 
-> > > To solve the issue, this patch introduces cma_alloc_bulk.
-> > > 
-> > > 	int cma_alloc_bulk(struct cma *cma, unsigned int align,
-> > > 		bool fast, unsigned int order, size_t nr_requests,
-> > > 		struct page **page_array, size_t *nr_allocated);
-> > > 
-> > > Most parameters are same with cma_alloc but it additionally passes
-> > > vector array to store allocated memory. What's different with cma_alloc
-> > > is it will skip pageblocks without waiting/stopping if it has unmovable
-> > > page so that API continues to scan other pageblocks to find requested
-> > > order page.
-> > > 
-> > > cma_alloc_bulk is best effort approach in that it skips some pageblocks
-> > > if they have unmovable pages unlike cma_alloc. It doesn't need to be
-> > > perfect from the beginning at the cost of performance. Thus, the API
-> > > takes "bool fast parameter" which is propagated into alloc_contig_range to
-> > > avoid significat overhead functions to inrecase CMA allocation success
-> > > ratio(e.g., migration retrial, PCP, LRU draining per pageblock)
-> > > at the cost of less allocation success ratio. If the caller couldn't
-> > > allocate enough, they could call it with "false" to increase success ratio
-> > > if they are okay to expense the overhead for the success ratio.
-> > 
-> > Just so I understand what the idea is:
-> > 
-> > alloc_contig_range() sometimes fails on CMA regions when trying to
-> > allocate big chunks (e.g., 300M). Instead of tackling that issue, you
-> > rather allocate plenty of small chunks, and make these small allocations
-> > fail faster/ make the allocations less reliable. Correct?
-> > 
-> > I don't really have a strong opinion on that. Giving up fast rather than
-> > trying for longer sounds like a useful thing to have - but I wonder if
-> > it's strictly necessary for the use case you describe.
-> > 
-> > I'd like to hear Michals opinion on that.
-> 
-> Well, what I can see is that this new interface is an antipatern to our
-> allocation routines. We tend to control allocations by gfp mask yet you
-> are introducing a bool parameter to make something faster... What that
-> really means is rather arbitrary. Would it make more sense to teach
-> cma_alloc resp. alloc_contig_range to recognize GFP_NOWAIT, GFP_NORETRY resp.
-> GFP_RETRY_MAYFAIL instead?
+The main fman driver is only using some parts of the fman memory
+region.
+Split the reservation of the main region in 2, so that the other
+regions that will be used by fman-port and fman-mac drivers can
+be reserved properly and not be in conflict with the main fman
+reservation.
 
-If we use cma_alloc, that interface requires "allocate one big memory
-chunk". IOW, return value is just struct page and expected that the page
-is a big contiguos memory. That means it couldn't have a hole in the
-range. However the idea here, what we asked is much smaller chunk rather
-than a big contiguous memory so we could skip some of pages if they are
-randomly pinned(long-term/short-term whatever) and search other pages
-in the CMA area to avoid long stall. Thus, it couldn't work with exising
-cma_alloc API with simple gfp_mak.
+Signed-off-by: Patrick Havelange <patrick.havelange@essensium.com>
+---
+ drivers/net/ethernet/freescale/fman/fman.c | 103 +++++++++++++--------
+ drivers/net/ethernet/freescale/fman/fman.h |   9 +-
+ 2 files changed, 69 insertions(+), 43 deletions(-)
 
-> 
-> I am not deeply familiar with the cma allocator so sorry for a
-> potentially stupid question. Why does a bulk interface performs better
-> than repeated calls to cma_alloc? Is this because a failure would help
-> to move on to the next pfn range while a repeated call would have to
-> deal with the same range?
+diff --git a/drivers/net/ethernet/freescale/fman/fman.c b/drivers/net/ethernet/freescale/fman/fman.c
+index ce0a121580f6..2e85209d560d 100644
+--- a/drivers/net/ethernet/freescale/fman/fman.c
++++ b/drivers/net/ethernet/freescale/fman/fman.c
+@@ -58,12 +58,15 @@
+ /* Modules registers offsets */
+ #define BMI_OFFSET		0x00080000
+ #define QMI_OFFSET		0x00080400
+-#define KG_OFFSET		0x000C1000
+-#define DMA_OFFSET		0x000C2000
+-#define FPM_OFFSET		0x000C3000
+-#define IMEM_OFFSET		0x000C4000
+-#define HWP_OFFSET		0x000C7000
+-#define CGP_OFFSET		0x000DB000
++#define SIZE_REGION_0		0x00081000
++#define POL_OFFSET		0x000C0000
++#define KG_OFFSET_FROM_POL	0x00001000
++#define DMA_OFFSET_FROM_POL	0x00002000
++#define FPM_OFFSET_FROM_POL	0x00003000
++#define IMEM_OFFSET_FROM_POL	0x00004000
++#define HWP_OFFSET_FROM_POL	0x00007000
++#define CGP_OFFSET_FROM_POL	0x0001B000
++#define SIZE_REGION_FROM_POL	0x00020000
+ 
+ /* Exceptions bit map */
+ #define EX_DMA_BUS_ERROR		0x80000000
+@@ -1433,7 +1436,7 @@ static int clear_iram(struct fman *fman)
+ 	struct fman_iram_regs __iomem *iram;
+ 	int i, count;
+ 
+-	iram = fman->base_addr + IMEM_OFFSET;
++	iram = fman->base_addr_pol + IMEM_OFFSET_FROM_POL;
+ 
+ 	/* Enable the auto-increment */
+ 	iowrite32be(IRAM_IADD_AIE, &iram->iadd);
+@@ -1710,11 +1713,8 @@ static int set_num_of_open_dmas(struct fman *fman, u8 port_id,
+ 
+ static int fman_config(struct fman *fman)
+ {
+-	void __iomem *base_addr;
+ 	int err;
+ 
+-	base_addr = fman->dts_params.base_addr;
+-
+ 	fman->state = kzalloc(sizeof(*fman->state), GFP_KERNEL);
+ 	if (!fman->state)
+ 		goto err_fm_state;
+@@ -1740,13 +1740,14 @@ static int fman_config(struct fman *fman)
+ 	fman->state->res = fman->dts_params.res;
+ 	fman->exception_cb = fman_exceptions;
+ 	fman->bus_error_cb = fman_bus_error;
+-	fman->fpm_regs = base_addr + FPM_OFFSET;
+-	fman->bmi_regs = base_addr + BMI_OFFSET;
+-	fman->qmi_regs = base_addr + QMI_OFFSET;
+-	fman->dma_regs = base_addr + DMA_OFFSET;
+-	fman->hwp_regs = base_addr + HWP_OFFSET;
+-	fman->kg_regs = base_addr + KG_OFFSET;
+-	fman->base_addr = base_addr;
++	fman->fpm_regs = fman->dts_params.base_addr_pol + FPM_OFFSET_FROM_POL;
++	fman->bmi_regs = fman->dts_params.base_addr_0 + BMI_OFFSET;
++	fman->qmi_regs = fman->dts_params.base_addr_0 + QMI_OFFSET;
++	fman->dma_regs = fman->dts_params.base_addr_pol + DMA_OFFSET_FROM_POL;
++	fman->hwp_regs = fman->dts_params.base_addr_pol + HWP_OFFSET_FROM_POL;
++	fman->kg_regs = fman->dts_params.base_addr_pol + KG_OFFSET_FROM_POL;
++	fman->base_addr_0 = fman->dts_params.base_addr_0;
++	fman->base_addr_pol = fman->dts_params.base_addr_pol;
+ 
+ 	spin_lock_init(&fman->spinlock);
+ 	fman_defconfig(fman->cfg);
+@@ -1937,8 +1938,8 @@ static int fman_init(struct fman *fman)
+ 		fman->state->exceptions &= ~FMAN_EX_QMI_SINGLE_ECC;
+ 
+ 	/* clear CPG */
+-	memset_io((void __iomem *)(fman->base_addr + CGP_OFFSET), 0,
+-		  fman->state->fm_port_num_of_cg);
++	memset_io((void __iomem *)(fman->base_addr_pol + CGP_OFFSET_FROM_POL),
++		  0, fman->state->fm_port_num_of_cg);
+ 
+ 	/* Save LIODN info before FMan reset
+ 	 * Skipping non-existent port 0 (i = 1)
+@@ -2717,13 +2718,11 @@ static struct fman *read_dts_node(struct platform_device *of_dev)
+ {
+ 	struct fman *fman;
+ 	struct device_node *fm_node, *muram_node;
+-	struct resource *res;
++	struct resource *tmp_res, *main_res;
+ 	u32 val, range[2];
+ 	int err, irq;
+ 	struct clk *clk;
+ 	u32 clk_rate;
+-	phys_addr_t phys_base_addr;
+-	resource_size_t mem_size;
+ 
+ 	fman = kzalloc(sizeof(*fman), GFP_KERNEL);
+ 	if (!fman)
+@@ -2740,34 +2739,31 @@ static struct fman *read_dts_node(struct platform_device *of_dev)
+ 	fman->dts_params.id = (u8)val;
+ 
+ 	/* Get the FM interrupt */
+-	res = platform_get_resource(of_dev, IORESOURCE_IRQ, 0);
+-	if (!res) {
++	tmp_res = platform_get_resource(of_dev, IORESOURCE_IRQ, 0);
++	if (!tmp_res) {
+ 		dev_err(&of_dev->dev, "%s: Can't get FMan IRQ resource\n",
+ 			__func__);
+ 		goto fman_node_put;
+ 	}
+-	irq = res->start;
++	irq = tmp_res->start;
+ 
+ 	/* Get the FM error interrupt */
+-	res = platform_get_resource(of_dev, IORESOURCE_IRQ, 1);
+-	if (!res) {
++	tmp_res = platform_get_resource(of_dev, IORESOURCE_IRQ, 1);
++	if (!tmp_res) {
+ 		dev_err(&of_dev->dev, "%s: Can't get FMan Error IRQ resource\n",
+ 			__func__);
+ 		goto fman_node_put;
+ 	}
+-	fman->dts_params.err_irq = res->start;
++	fman->dts_params.err_irq = tmp_res->start;
+ 
+ 	/* Get the FM address */
+-	res = platform_get_resource(of_dev, IORESOURCE_MEM, 0);
+-	if (!res) {
++	main_res = platform_get_resource(of_dev, IORESOURCE_MEM, 0);
++	if (!main_res) {
+ 		dev_err(&of_dev->dev, "%s: Can't get FMan memory resource\n",
+ 			__func__);
+ 		goto fman_node_put;
+ 	}
+ 
+-	phys_base_addr = res->start;
+-	mem_size = resource_size(res);
+-
+ 	clk = of_clk_get(fm_node, 0);
+ 	if (IS_ERR(clk)) {
+ 		dev_err(&of_dev->dev, "%s: Failed to get FM%d clock structure\n",
+@@ -2832,22 +2828,47 @@ static struct fman *read_dts_node(struct platform_device *of_dev)
+ 		}
+ 	}
+ 
+-	fman->dts_params.res =
+-		devm_request_mem_region(&of_dev->dev, phys_base_addr,
+-					mem_size, "fman");
+-	if (!fman->dts_params.res) {
+-		dev_err(&of_dev->dev, "%s: request_mem_region() failed\n",
++	err = devm_request_resource(&of_dev->dev, &iomem_resource, main_res);
++	if (err) {
++		dev_err(&of_dev->dev, "%s: devm_request_resource() failed\n",
++			__func__);
++		goto fman_free;
++	}
++
++	fman->dts_params.res = main_res;
++
++	tmp_res = devm_request_mem_region(&of_dev->dev, main_res->start,
++					  SIZE_REGION_0, "fman");
++	if (!tmp_res) {
++		dev_err(&of_dev->dev, "%s: devm_request_mem_region() failed\n",
+ 			__func__);
+ 		goto fman_free;
+ 	}
+ 
+-	fman->dts_params.base_addr =
+-		devm_ioremap(&of_dev->dev, phys_base_addr, mem_size);
+-	if (!fman->dts_params.base_addr) {
++	fman->dts_params.base_addr_0 =
++		devm_ioremap(&of_dev->dev, tmp_res->start,
++			     resource_size(tmp_res));
++	if (!fman->dts_params.base_addr_0) {
+ 		dev_err(&of_dev->dev, "%s: devm_ioremap() failed\n", __func__);
+ 		goto fman_free;
+ 	}
+ 
++	tmp_res = devm_request_mem_region(&of_dev->dev,
++					  main_res->start + POL_OFFSET,
++					  SIZE_REGION_FROM_POL, "fman");
++	if (!tmp_res) {
++		dev_err(&of_dev->dev, "%s: devm_request_mem_region() failed\n",
++			__func__);
++		goto fman_free;
++	}
++
++	fman->dts_params.base_addr_pol =
++		devm_ioremap(&of_dev->dev, tmp_res->start,
++			     resource_size(tmp_res));
++	if (!fman->dts_params.base_addr_pol) {
++		dev_err(&of_dev->dev, "%s: devm_ioremap() failed\n", __func__);
++		goto fman_free;
++	}
+ 	fman->dev = &of_dev->dev;
+ 
+ 	err = of_platform_populate(fm_node, NULL, NULL, &of_dev->dev);
+diff --git a/drivers/net/ethernet/freescale/fman/fman.h b/drivers/net/ethernet/freescale/fman/fman.h
+index f2ede1360f03..e6b339c57230 100644
+--- a/drivers/net/ethernet/freescale/fman/fman.h
++++ b/drivers/net/ethernet/freescale/fman/fman.h
+@@ -306,7 +306,11 @@ typedef irqreturn_t (fman_bus_error_cb)(struct fman *fman, u8 port_id,
+ 
+ /* Structure that holds information received from device tree */
+ struct fman_dts_params {
+-	void __iomem *base_addr;                /* FMan virtual address */
++	void __iomem *base_addr_0;              /* FMan virtual address */
++	void __iomem *base_addr_pol;            /* FMan virtual address
++						 * second region starting at
++						 * policer offset
++						 */
+ 	struct resource *res;                   /* FMan memory resource */
+ 	u8 id;                                  /* FMan ID */
+ 
+@@ -322,7 +326,8 @@ struct fman_dts_params {
+ 
+ struct fman {
+ 	struct device *dev;
+-	void __iomem *base_addr;
++	void __iomem *base_addr_0;
++	void __iomem *base_addr_pol;
+ 	struct fman_intr_src intr_mng[FMAN_EV_CNT];
+ 
+ 	struct fman_fpm_regs __iomem *fpm_regs;
+-- 
+2.17.1
 
-Yub, true with other overheads(e.g., migration retrial, waiting writeback
-PCP/LRU draining IPI)
-
-> 
-> > > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > > ---
-> > >  include/linux/cma.h |   5 ++
-> > >  include/linux/gfp.h |   2 +
-> > >  mm/cma.c            | 126 ++++++++++++++++++++++++++++++++++++++++++--
-> > >  mm/page_alloc.c     |  19 ++++---
-> > >  4 files changed, 140 insertions(+), 12 deletions(-)
-> > > 
-> -- 
-> Michal Hocko
-> SUSE Labs
