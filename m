@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF472CBB3B
+	by mail.lfdr.de (Postfix) with ESMTP id 78D362CBB3C
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgLBLIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:08:00 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:45282 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725885AbgLBLIA (ORCPT
+        id S1727386AbgLBLJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:09:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726603AbgLBLJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:08:00 -0500
-X-UUID: ea2c6cffd1b341a0951db0824db34afc-20201202
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=760UWcQjn2gcgFpRL7UilO2rZNCmADv37JpOgMvIh4Y=;
-        b=rh/upvV2O4pXoF3EAQfOfa23iCqIJa/hWBP+Mf5WIF22nVXhd0ftJaoVGpPlSLdNjlGJNeF2fYGN6ddXIXKrJ46VZ1IFJMJke9taw0MIT9bnOBAqKKaL9byIXnoz3J8AD2SIeryMabdmvIAJa7w3ZjSw3yTIJ9rpHrD4915VECo=;
-X-UUID: ea2c6cffd1b341a0951db0824db34afc-20201202
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <crystal.guo@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1074444903; Wed, 02 Dec 2020 19:07:14 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Dec
- 2020 19:06:41 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 2 Dec 2020 19:06:40 +0800
-Message-ID: <1606907202.14806.65.camel@mhfsdcap03>
-Subject: Re: [v6, 3/3] reset-controller: ti: force the write operation when
- assert or deassert
-From:   Crystal Guo <crystal.guo@mediatek.com>
-To:     Ikjoon Jang <ikjn@chromium.org>
-CC:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Yong Liang =?UTF-8?Q?=28=E6=A2=81=E5=8B=87=29?= 
-        <Yong.Liang@mediatek.com>,
-        Stanley Chu =?UTF-8?Q?=28=E6=9C=B1=E5=8E=9F=E9=99=9E=29?= 
-        <stanley.chu@mediatek.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
-        <seiya.wang@mediatek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fan Chen =?UTF-8?Q?=28=E9=99=B3=E5=87=A1=29?= 
-        <fan.chen@mediatek.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        Yingjoe Chen =?UTF-8?Q?=28=E9=99=B3=E8=8B=B1=E6=B4=B2=29?= 
-        <Yingjoe.Chen@mediatek.com>, "s-anna@ti.com" <s-anna@ti.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 2 Dec 2020 19:06:42 +0800
-In-Reply-To: <20201130111340.GA3042402@chromium.org>
-References: <20200930022159.5559-1-crystal.guo@mediatek.com>
-         <20200930022159.5559-4-crystal.guo@mediatek.com>
-         <20201130111340.GA3042402@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 30A9654AF1CD9EA4FBA4BE9BFA52EA70554F9FC4BBB7FB01E220F307C0ED74462000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 2 Dec 2020 06:09:32 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF55DC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 03:08:51 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id l1so3332347wrb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 03:08:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=AhN8VnnxsPwYIhG0xpPOPolapNC7nTNchT/tIDEYUxQ=;
+        b=oe+cFmFNydVXspmjL1nXuukXUFbWFk0kDJNytpICL0M6T+gAzaI4DuJlFoDWwXODVL
+         QrcNL4KbvS0WqFr6QM+1RN0vNxYV7Lmx6x2DGHIgIaJN5n72mmaSGyUbImWJ26iJH92u
+         jzqYefHOyH59dqoSgm3SkvqhAtE6+GMOMjudFbmH+9bhAkU/frY857t2ndcefEXxmS71
+         BQ/ASrlpd2p5o6J34FsL3PjYGQgHLXwv4YCbH/BsK81ioehv9/XhvBOXh4orsRaOIXxk
+         ycWwuSme05XYQqgQfD1k3rpjujTLsS7JSkftAgbwu9fh8/YQt4u0eYfzgi1OVTedpSoP
+         LgTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AhN8VnnxsPwYIhG0xpPOPolapNC7nTNchT/tIDEYUxQ=;
+        b=b3hKvdC8eCcatYlwOZWMyT1pvB5rCWyGLQIdetWSDiQc5cA9rW2xMBYzEF++xSBvKJ
+         9xlsN7nnrI3VodbmEatsLl395ALpcXiJJWcAsGoBhVADbJrrLUjF0t/VzxwcCAMlzOqZ
+         7ZwH5+9plI2HyLG4eoxfzEag5W3Pn1F1DQPzVOxHopbsEsGfU/2cviBYOR7IBOldQn8y
+         +GQK6aMasIUWQBMqZlxxnrU7w89TkYun5fpb5ZtmZafinNKAUJcXrrQeG0tDwkpm8L4M
+         baJZoOb1VTNgaxZQMpuQ1drjLxAaMm9E6KVxYGK2ndJ1th/TMJydaiXYhkBO4Zu4cgnw
+         krwg==
+X-Gm-Message-State: AOAM5311WDw0zmRt7UCjkL54WITn1A7Jo3W6FK4/2Hu1cGoPNz/iQnjq
+        vJ6RAcMJ7URImKMJnp/pxDU=
+X-Google-Smtp-Source: ABdhPJzpyOSGbx+vWZ8DCFxAOkX0Ba9skJHgohXvL+KIseVKFJdLFXD7kdwaxe723gihUJtGewXjCA==
+X-Received: by 2002:a5d:69d1:: with SMTP id s17mr2813008wrw.104.1606907330456;
+        Wed, 02 Dec 2020 03:08:50 -0800 (PST)
+Received: from rum-mikhail-dt.world.mentorg.com (nat-rum.mentorg.com. [139.181.33.34])
+        by smtp.gmail.com with ESMTPSA id 35sm1639225wro.71.2020.12.02.03.08.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 03:08:49 -0800 (PST)
+From:   mdurnev@gmail.com
+X-Google-Original-From: mikhail_durnev@mentor.com
+To:     kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     mikhail_durnev@mentor.com
+Subject: [PATCH v0] ASoC: rsnd: core: Check convert rate in rsnd_hw_params
+Date:   Wed,  2 Dec 2020 21:08:06 +1000
+Message-Id: <1606907286-32104-1-git-send-email-mikhail_durnev@mentor.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTExLTMwIGF0IDE5OjEzICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
-T24gV2VkLCBTZXAgMzAsIDIwMjAgYXQgMTA6MjE6NTlBTSArMDgwMCwgQ3J5c3RhbCBHdW8gd3Jv
-dGU6DQo+ID4gRm9yY2UgdGhlIHdyaXRlIG9wZXJhdGlvbiBpbiBjYXNlIHRoZSByZWFkIGFscmVh
-ZHkgaGFwcGVucw0KPiA+IHRvIHJldHVybiB0aGUgY29ycmVjdCB2YWx1ZS4NCj4gPiANCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBDcnlzdGFsIEd1byA8Y3J5c3RhbC5ndW9AbWVkaWF0ZWsuY29tPg0KPiA+
-IC0tLQ0KPiA+ICBkcml2ZXJzL3Jlc2V0L3Jlc2V0LXRpLXN5c2Nvbi5jIHwgNCArKy0tDQo+ID4g
-IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4gDQo+
-ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcmVzZXQvcmVzZXQtdGktc3lzY29uLmMgYi9kcml2ZXJz
-L3Jlc2V0L3Jlc2V0LXRpLXN5c2Nvbi5jDQo+ID4gaW5kZXggNWQxZjgzMDZjZDRmLi5jMzQzOTRm
-MWU5ZTIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9yZXNldC9yZXNldC10aS1zeXNjb24uYw0K
-PiA+ICsrKyBiL2RyaXZlcnMvcmVzZXQvcmVzZXQtdGktc3lzY29uLmMNCj4gPiBAQCAtOTcsNyAr
-OTcsNyBAQCBzdGF0aWMgaW50IHRpX3N5c2Nvbl9yZXNldF9hc3NlcnQoc3RydWN0IHJlc2V0X2Nv
-bnRyb2xsZXJfZGV2ICpyY2RldiwNCj4gPiAgCW1hc2sgPSBCSVQoY29udHJvbC0+YXNzZXJ0X2Jp
-dCk7DQo+ID4gIAl2YWx1ZSA9IChjb250cm9sLT5mbGFncyAmIEFTU0VSVF9TRVQpID8gbWFzayA6
-IDB4MDsNCj4gPiAgDQo+ID4gLQlyZXR1cm4gcmVnbWFwX3VwZGF0ZV9iaXRzKGRhdGEtPnJlZ21h
-cCwgY29udHJvbC0+YXNzZXJ0X29mZnNldCwgbWFzaywgdmFsdWUpOw0KPiA+ICsJcmV0dXJuIHJl
-Z21hcF93cml0ZV9iaXRzKGRhdGEtPnJlZ21hcCwgY29udHJvbC0+YXNzZXJ0X29mZnNldCwgbWFz
-aywgdmFsdWUpOw0KPiA+ICB9DQo+IA0KPiBJIGRvbid0IHRoaW5rIHRoZXJlIGFyZSBubyByZXNl
-dCBjb250cm9sbGVycyB3aXRoIGNhY2hlZCByZWdtYXAsDQo+IHRodXMgSSBkb24ndCB0aGluayB0
-aGlzIGlzIG5lZWRlZC4NCj4gQXJlIHRoZXJlIGFueSBzcGVjaWZpYyByZWFzb25zIGJlaGluZCB0
-aGlzLCB3aGF0IEkndmUgbWlzc2VkIGhlcmU/DQo+IA0KPiBXZSBuZWVkIHRvIGJlIHN1cmUgdGhh
-dCBhbGwgb3RoZXIgZGV2aWNlcyB1c2luZyB0aGlzIGRyaXZlcg0KPiBzaG91bGQgaGF2ZSBubyBz
-aWRlIGVmZmVjdHMgb24gd3JpdGUuDQo+IA0KPiBJIGNhbiB0aGluayBvZiBhIHdlaXJkIGNvbnRy
-b2xsZXIgZG9pbmcgdW53YW50ZWQgdGhpbmdzIGludGVybmFsbHkNCj4gb24gZXZlcnkgd3JpdGUg
-ZGlzcmVnYXJkaW5nIHRoZSBjdXJyZW50IHN0YXRlLiAob3IgaXMgdGhpcyBvdmVybHkNCj4gcGFy
-YW5vaWQ/KQ0KPiANClRoZSBzcGVjaWZpYyByZWFzb24gaXMgdGhhdCwgdGhlIGNsZWFyIGJpdCBt
-YXkga2VlcCB0aGUgc2FtZSB2YWx1ZSB3aXRoDQp0aGUgc2V0IGJpdCwgYnV0IHRoZSBjbGVhciBv
-cGVyYXRpb24gY2FuIGJlIG9ubHkgYmUgY29tcGxldGVkIGJ5IHdyaXRpbmcNCjEgdG8gdGhlIGNs
-ZWFyIGJpdCwgbm90IGp1c3Qgd2l0aCB0aGUgY3VycmVudCBmYWtlIHN0YXRlICIxIi4NCg0KPiA+
-ICANCj4gPiAgLyoqDQo+ID4gQEAgLTEyOCw3ICsxMjgsNyBAQCBzdGF0aWMgaW50IHRpX3N5c2Nv
-bl9yZXNldF9kZWFzc2VydChzdHJ1Y3QgcmVzZXRfY29udHJvbGxlcl9kZXYgKnJjZGV2LA0KPiA+
-ICAJbWFzayA9IEJJVChjb250cm9sLT5kZWFzc2VydF9iaXQpOw0KPiA+ICAJdmFsdWUgPSAoY29u
-dHJvbC0+ZmxhZ3MgJiBERUFTU0VSVF9TRVQpID8gbWFzayA6IDB4MDsNCj4gPiAgDQo+ID4gLQly
-ZXR1cm4gcmVnbWFwX3VwZGF0ZV9iaXRzKGRhdGEtPnJlZ21hcCwgY29udHJvbC0+ZGVhc3NlcnRf
-b2Zmc2V0LCBtYXNrLCB2YWx1ZSk7DQo+ID4gKwlyZXR1cm4gcmVnbWFwX3dyaXRlX2JpdHMoZGF0
-YS0+cmVnbWFwLCBjb250cm9sLT5kZWFzc2VydF9vZmZzZXQsIG1hc2ssIHZhbHVlKTsNCj4gPiAg
-fQ0KPiA+ICANCj4gPiAgLyoqDQoNCg==
+From: Mikhail Durnev <mikhail_durnev@mentor.com>
+
+snd_pcm_hw_params_set_rate_near can return incorrect sample rate in
+some cases, e.g. when the backend output rate is set to some value higher
+than 48000 Hz and the input rate is 8000 Hz. So passing the value returned
+by snd_pcm_hw_params_set_rate_near to snd_pcm_hw_params will result in
+"FSO/FSI ratio error" and playing no audio at all while the userland
+is not properly notified about the issue.
+
+If SRC is unable to convert the requested sample rate to the sample rate
+the backend is using, then the requested sample rate should be adjusted in
+rsnd_hw_params. The userland will be notified about that change in the
+returned hw_params structure.
+
+Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
+---
+ sound/soc/sh/rcar/core.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 66 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 6e670b3..8ca3fb7 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1428,8 +1428,73 @@ static int rsnd_hw_params(struct snd_soc_component *component,
+ 		}
+ 		if (io->converted_chan)
+ 			dev_dbg(dev, "convert channels = %d\n", io->converted_chan);
+-		if (io->converted_rate)
++		if (io->converted_rate) {
+ 			dev_dbg(dev, "convert rate     = %d\n", io->converted_rate);
++
++			/*
++			 * SRC supports convert rates from params_rate(hw_params)/k_down
++			 * to params_rate(hw_params)*k_up, where k_up is always 6, and
++			 * k_down depends on number of channels and SRC unit.
++			 * So all SRC units can upsample audio up to 6 times regardless
++			 * its number of channels. And all SRC units can downsample
++			 * 2 channel audio up to 6 times too.
++			 */
++			int k_up = 6;
++			int k_down = 6;
++			int channel;
++			struct rsnd_mod *src_mod = rsnd_io_to_mod_src(io);
++
++			channel = io->converted_chan ? io->converted_chan : fe_channel;
++
++			switch (rsnd_mod_id(src_mod)) {
++			/*
++			 * SRC0 can downsample 4, 6 and 8 channel audio up to 4 times.
++			 * SRC1, SRC3 and SRC4 can downsample 4 channel audio
++			 * up to 4 times.
++			 * SRC1, SRC3 and SRC4 can downsample 6 and 8 channel audio
++			 * no more than twice.
++			 */
++			case 1:
++			case 3:
++			case 4:
++				if (channel > 4) {
++					k_down = 2;
++					break;
++				}
++			case 0:
++				if (channel > 2)
++					k_down = 4;
++				break;
++
++			/* Other SRC units do not support more than 2 channels */
++			default:
++				if (channel > 2)
++					return -EINVAL;
++			}
++
++			if (params_rate(hw_params) > io->converted_rate * k_down) {
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
++					io->converted_rate * k_down;
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
++					io->converted_rate * k_down;
++				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
++			} else if (params_rate(hw_params) * k_up < io->converted_rate) {
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
++					(io->converted_rate + k_up - 1) / k_up;
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
++					(io->converted_rate + k_up - 1) / k_up;
++				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
++			}
++
++			/*
++			 * TBD: Max SRC input and output rates also depend on number
++			 * of channels and SRC unit:
++			 * SRC1, SRC3 and SRC4 do not support more than 128kHz
++			 * for 6 channel and 96kHz for 8 channel audio.
++			 * Perhaps this function should return EINVAL if the input or
++			 * the output rate exceeds the limitation.
++			 */
++		}
+ 	}
+ 
+ 	return rsnd_dai_call(hw_params, io, substream, hw_params);
+-- 
+2.7.4
 
