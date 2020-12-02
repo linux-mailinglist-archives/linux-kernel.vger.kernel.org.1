@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8A12CC1EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2E32CC1F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389055AbgLBQRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:17:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
+        id S2389068AbgLBQRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387401AbgLBQQ7 (ORCPT
+        with ESMTP id S2389060AbgLBQRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:16:59 -0500
+        Wed, 2 Dec 2020 11:17:14 -0500
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC36DC0617A7
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:16:18 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id s8so4591881wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:16:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE460C061A04
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:16:19 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 23so4585270wrc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:16:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=essensium.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=32wijpVRZam48n6WcEbTQm6X2gRK0yzC2hG6Y0Y2+Lk=;
-        b=PlyX+bAbaCJ+ViZ3xFGoPUhiuB+2K2BHJQpYjSn9xuCgAlXPdGx9ck4kZMLiKNqYPw
-         4YOSSXkVExGyKM71Um3KGpNbXs0B7shbuN5VRCT349Vd89LzeWx78sobdQxuea2b3LDY
-         lIO2LXf0l1cgInR6lZnW/HDihBMsku+m/dB+0DLs3Lo1Nn5cyCkOVOs4cOo7zWiAfYYm
-         J+tArr0vo9cKRrLuI+5D/rEA7Q7rPFtx+ENisJL+tn0YEit3M+xHE8NXY9VVkzWDbMbP
-         O3ZjN7YhhUX9o2b04DH+eiMt6fix3aRcHgtU7miug3d1EF/lCG8mc5YDQZF2V3ufGBS1
-         aXLw==
+        bh=7cVseWE6MIn0vIOshUQxsts71GrP62tJMM0vJ2mEO6M=;
+        b=JPMZDn1Q25wUvfxd5NHJUlgs/Y8PdFBXa/MVT0UhCfSDQfXICkj59GPnUm3wuozxG4
+         UZ+ZjahG2yZHm8StlaVRYK+lgGj/uTSVF8EBVRoTLCOHYONUqktFbinfdcfvMPQXiXQB
+         Fs/eqX57ZpU+WU2wHITndg3sXuIWc4YBUenchkoNPvGD2AAsu1/8l/FCFYUm9odgVGLB
+         1AfmO8klAYMdu9+BdSrjmcI3CIVaAAT8apQZTdlJLyYB01vOUnvKTTP+/L78HE6DkqK5
+         VI7i96lWnrmSvyHdZXoSxtRgLstxqO9zW0eXwVVgC98IXrcdCdAPPnBjWDYATo89qwDL
+         4WbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=32wijpVRZam48n6WcEbTQm6X2gRK0yzC2hG6Y0Y2+Lk=;
-        b=C6c+TbBelBVIzmesQMXP70EHv36AMlI/JpYOzS+ITQlXsnKQoGY+s5BTjGPI4eEagA
-         VDABKneAU9amrDnAVj6+skXYnxP91q8GqSgccIPkRXjz9KXL6iewsFlMEymF/ITWlicp
-         rNnYiB3EyDXA96f74p5sOM1hQhbSoFaOxX4up1PXP2xBPq9dRiaPnzT2rATmgd4vADoB
-         HuJghSzMsFN0lVS65mEF7KfOYSW9Eg0etcCI2EPgx+WduiCjapD6Mx90zx/Mhx8IegCF
-         XbSQ/rs5EHzzO5/DA5Keh11zbYEMLb2EdRfhvMYQFFh8FPWcpmWbPN43LzyN45TIGGkp
-         +36A==
-X-Gm-Message-State: AOAM533/0MO8Upo24ZUwyjUcJ+GsYgOPs4AB8ss6R4Vop8aj5eCTiVdu
-        iutCo5yUmJN0nZN7EVYu789PVA==
-X-Google-Smtp-Source: ABdhPJxE5Lx04xyZanZUDA81AWi0NhR2YFRrdwcY6RR+G2YIKZDWA9D5NJ+ziv0L9zugYHw5s6vs0Q==
-X-Received: by 2002:adf:eb91:: with SMTP id t17mr4358566wrn.330.1606925777480;
-        Wed, 02 Dec 2020 08:16:17 -0800 (PST)
+        bh=7cVseWE6MIn0vIOshUQxsts71GrP62tJMM0vJ2mEO6M=;
+        b=pHgVvLw2eEc9CXAe2jFmWfbLh5o7k9c0YkBEWo0T518LYLZdHfbLxhAvtk1w6NbKAn
+         jGPcM3DAenW0Izs2KN6PnIh7mkCMl7/uayHqJClR1BQEJPL93upVFm7e0R4tTk5j5ZU6
+         jPkefX8gij88btyMeaJ8RNST6+6O2CPyPPvTTgbn3XN3ixaDIfRafRXdfSNOOv0QMV2l
+         OL+tp3b85lbp5xTAfwQnMCUc+hJcSa1eDCdPfBn1lyWGayXTUacORTxzr/R8/LGA/qAN
+         S0DycGSQQ4aLClg1BModcvDTA0TSwkiWUokFz1WJ5lIzEfKM+W9bKnG6Y63HgJDth5xP
+         ePoQ==
+X-Gm-Message-State: AOAM530ARNM/tglsV3tVJGNiV23MvaOZgEV91WnBqn3CXdNC0V/hVvzz
+        85Y+Vm7PK2q/iOTiV5Kw6fdULA==
+X-Google-Smtp-Source: ABdhPJwSjZL1OPGRCTWiQOlBQXtYSorpd0ICSpOhAQ4VJl5WT02dgUIr5pavqow6fS4l9GahL/u1/Q==
+X-Received: by 2002:adf:e44d:: with SMTP id t13mr4422657wrm.144.1606925778652;
+        Wed, 02 Dec 2020 08:16:18 -0800 (PST)
 Received: from belels006.local.ess-mail.com (ip-188-118-3-185.reverse.destiny.be. [188.118.3.185])
-        by smtp.gmail.com with ESMTPSA id s4sm2644505wru.56.2020.12.02.08.16.16
+        by smtp.gmail.com with ESMTPSA id s4sm2644505wru.56.2020.12.02.08.16.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 08:16:16 -0800 (PST)
+        Wed, 02 Dec 2020 08:16:17 -0800 (PST)
 From:   Patrick Havelange <patrick.havelange@essensium.com>
 To:     Madalin Bucur <madalin.bucur@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Patrick Havelange <patrick.havelange@essensium.com>
-Subject: [PATCH 2/4] net: freescale/fman-port: remove direct use of __devm_request_region
-Date:   Wed,  2 Dec 2020 17:15:58 +0100
-Message-Id: <20201202161600.23738-2-patrick.havelange@essensium.com>
+Subject: [PATCH 3/4] net: freescale/fman-mac: remove direct use of __devm_request_region
+Date:   Wed,  2 Dec 2020 17:15:59 +0100
+Message-Id: <20201202161600.23738-3-patrick.havelange@essensium.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201202161600.23738-1-patrick.havelange@essensium.com>
 References: <20201202161600.23738-1-patrick.havelange@essensium.com>
@@ -63,71 +63,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver was directly calling __devm_request_region with a specific
-resource on the stack as parameter. This is invalid as
-__devm_request_region expects the given resource passed as parameter
-to live longer than the call itself, as the pointer to the resource
-will be stored inside the internal struct used by the devres
-management.
-
-In addition to this issue, a related bug has been found by kmemleak
-with this trace :
-unreferenced object 0xc0000001efc01880 (size 64):
-  comm "swapper/0", pid 1, jiffies 4294669078 (age 3620.536s)
-  hex dump (first 32 bytes):
-    00 00 00 0f fe 4a c0 00 00 00 00 0f fe 4a cf ff  .....J.......J..
-    c0 00 00 00 00 ee 9d 98 00 00 00 00 80 00 02 00  ................
-  backtrace:
-    [<c000000000078874>] .alloc_resource+0xb8/0xe0
-    [<c000000000079b50>] .__request_region+0x70/0x1c4
-    [<c00000000007a010>] .__devm_request_region+0x8c/0x138
-    [<c0000000006e0dc8>] .fman_port_probe+0x170/0x420
-    [<c0000000005cecb8>] .platform_drv_probe+0x84/0x108
-    [<c0000000005cc620>] .driver_probe_device+0x2c4/0x394
-    [<c0000000005cc814>] .__driver_attach+0x124/0x128
-    [<c0000000005c9ad4>] .bus_for_each_dev+0xb4/0x110
-    [<c0000000005cca1c>] .driver_attach+0x34/0x4c
-    [<c0000000005ca9b0>] .bus_add_driver+0x264/0x2a4
-    [<c0000000005cd9e0>] .driver_register+0x94/0x160
-    [<c0000000005cfea4>] .__platform_driver_register+0x60/0x7c
-    [<c000000000f86a00>] .fman_port_load+0x28/0x64
-    [<c000000000f4106c>] .do_one_initcall+0xd4/0x1a8
-    [<c000000000f412fc>] .kernel_init_freeable+0x1bc/0x2a4
-    [<c00000000000180c>] .kernel_init+0x24/0x138
-
-Indeed, the new resource (created in __request_region) will be linked
-to the given resource living on the stack, which will end its lifetime
-after the function calling __devm_request_region has finished.
-Meaning the new resource allocated is no longer reachable.
-
-Now that the main fman driver is no longer reserving the region
-used by fman-port, this previous hack is no longer needed
-and we can use the regular call to devm_request_mem_region instead,
-solving those bugs at the same time.
+Since the main fman driver is no longer reserving the complete fman
+memory region, it is no longer needed to use a custom call to
+__devm_request_region, so replace it with devm_request_mem_region
 
 Signed-off-by: Patrick Havelange <patrick.havelange@essensium.com>
 ---
- drivers/net/ethernet/freescale/fman/fman_port.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/freescale/fman/mac.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/fman/fman_port.c b/drivers/net/ethernet/freescale/fman/fman_port.c
-index d9baac0dbc7d..354974939d9d 100644
---- a/drivers/net/ethernet/freescale/fman/fman_port.c
-+++ b/drivers/net/ethernet/freescale/fman/fman_port.c
-@@ -1878,10 +1878,10 @@ static int fman_port_probe(struct platform_device *of_dev)
+diff --git a/drivers/net/ethernet/freescale/fman/mac.c b/drivers/net/ethernet/freescale/fman/mac.c
+index 901749a7a318..35ca33335aed 100644
+--- a/drivers/net/ethernet/freescale/fman/mac.c
++++ b/drivers/net/ethernet/freescale/fman/mac.c
+@@ -690,12 +690,10 @@ static int mac_probe(struct platform_device *_of_dev)
+ 		goto _return_of_get_parent;
+ 	}
  
- 	of_node_put(port_node);
- 
--	dev_res = __devm_request_region(port->dev, &res, res.start,
--					resource_size(&res), "fman-port");
-+	dev_res = devm_request_mem_region(port->dev, res.start,
-+					  resource_size(&res), "fman-port");
- 	if (!dev_res) {
--		dev_err(port->dev, "%s: __devm_request_region() failed\n",
-+		dev_err(port->dev, "%s: devm_request_mem_region() failed\n",
- 			__func__);
- 		err = -EINVAL;
- 		goto free_port;
+-	mac_dev->res = __devm_request_region(dev,
+-					     fman_get_mem_region(priv->fman),
+-					     res.start, resource_size(&res),
+-					     "mac");
++	mac_dev->res = devm_request_mem_region(dev, res.start,
++					       resource_size(&res), "mac");
+ 	if (!mac_dev->res) {
+-		dev_err(dev, "__devm_request_mem_region(mac) failed\n");
++		dev_err(dev, "devm_request_mem_region(mac) failed\n");
+ 		err = -EBUSY;
+ 		goto _return_of_get_parent;
+ 	}
 -- 
 2.17.1
 
