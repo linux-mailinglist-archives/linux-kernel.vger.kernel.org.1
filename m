@@ -2,58 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500032CC9CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C738C2CC9AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgLBWnv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 17:43:51 -0500
-Received: from piie.net ([80.82.223.85]:45304 "EHLO piie.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728934AbgLBWnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:43:50 -0500
-X-Greylist: delayed 620 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 17:43:50 EST
-Received: from mail.piie.net (_gateway [172.17.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
-        (Client did not present a certificate)
-        by piie.net (Postfix) with ESMTPSA id 541412A18F0;
-        Wed,  2 Dec 2020 23:32:48 +0100 (CET)
+        id S1728637AbgLBWfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:35:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726518AbgLBWfd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 17:35:33 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252B7C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:34:53 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i38so163181pgb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:34:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yj9uJKclERcz+3dgssLnxEsO561b5XP4e0V1kaqzzHU=;
+        b=DeLWj512JCeqOATOifyLs3tV6W2ShtE1ozKCsCMSU6b/dQCrePNDDDeloHg6HKDTOn
+         1tXXfhZpOM/qfpu/4uKGDZMdpt5+G1ACRIweOcs/IRUi1XkMbPofQLszlPUQOXU20LIa
+         Mx+8bJ0ThXdxQoCDmjayo7oGrdsQBjuo4jxBM5pE5LAc9xLqX+4aelFrlcETUey4cPYf
+         hmyloKX82XTEqwlYl+6VSFyn/0LCFwvTILiXeQeA3DO6PpzpRTalSglVTGDaojWaoh6w
+         +nrj9HgM0DemgHvCXLIJZAWbPpx3SFiT199P0bSAaXdge0N4Jj5mWI0x97sLV553ptbE
+         h3zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yj9uJKclERcz+3dgssLnxEsO561b5XP4e0V1kaqzzHU=;
+        b=ManvQl2w9uxk9Z2kwL58bMBPtSp3U1RDRktTdK+P78z6c8KHvfpVU3MyeNcsYzlV5f
+         lrdArYvjzntsebQijrLMEgA+eCD5GcUENY1pWqlkYNUoZOZG+zZye6O0sn3wIRykujCx
+         wdbVe3rvlaFo9ACTtWBfhOJZbZMli2xUHsWuOEVsAGc5MlxqOIj/rDkn5C/w+qzYOIpQ
+         bkzN2l/ILhJ5YgrgTjmPCdovJm7UVtAOjhMnTa9i3s51nu6FI+o4+MS5F+rxqv7E/KIo
+         gg/e4hKVtD4/Fjrd0/vyR4pb9qIwbCc7m5HgmZUnXGPU1qmkrbqYUt/q7/6On8+nk5H5
+         w4Jw==
+X-Gm-Message-State: AOAM531PnpasLOqMCTjopXa5BCrVLQjj0g+nPmLRiw/p4XNvp2qN+ny7
+        AgPuJvaidD5LW7i7BRUyIw+J1w7C/uDO5flV4740PA==
+X-Google-Smtp-Source: ABdhPJwk9EgW3Fj29T0FZY+jliaMst7k9i/OfQ+jUCLl2350gsCT+2SSH1KV/nTldfxvpeHL5TQcjXv3gozBbabP5u4=
+X-Received: by 2002:a63:3247:: with SMTP id y68mr437000pgy.10.1606948492350;
+ Wed, 02 Dec 2020 14:34:52 -0800 (PST)
 MIME-Version: 1.0
-Date:   Wed, 02 Dec 2020 22:32:48 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: RainLoop/1.14.0
-From:   "=?utf-8?B?UGV0ZXIgS8Okc3RsZQ==?=" <peter@piie.net>
-Message-ID: <d702f364c3bd1b31858ef5bd6d714867@piie.net>
-Subject: Re: [PATCH 2/2] platform/x86/drivers/acerhdf: Check the interval
- value when it is set
-To:     "Daniel Lezcano" <daniel.lezcano@linaro.org>
-Cc:     "Hans de Goede" <hdegoede@redhat.com>,
-        "Mark Gross" <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201202222212.2313242-2-daniel.lezcano@linaro.org>
-References: <20201202222212.2313242-2-daniel.lezcano@linaro.org>
- <20201202222212.2313242-1-daniel.lezcano@linaro.org>
+References: <20201107075550.2244055-1-ndesaulniers@google.com>
+ <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+ <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com> <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
+In-Reply-To: <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 2 Dec 2020 14:34:40 -0800
+Message-ID: <CAKwvOdkv6W_dTLVowEBu0uV6oSxwW8F+U__qAsmk7vop6U8tpw@mail.gmail.com>
+Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
+To:     Joe Perches <joe@perches.com>, Tom Rix <trix@redhat.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2. Dezember 2020 23:22, "Daniel Lezcano" <daniel.lezcano@linaro.org> schrieb:
+On Tue, Nov 10, 2020 at 2:04 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Tue, 2020-11-10 at 14:00 -0800, Nick Desaulniers wrote:
+>
+> > Yeah, we could go through and remove %h and %hh to solve this, too, right?
+>
+> Yup.
+>
+> I think one of the checkpatch improvement mentees is adding
+> some suggestion and I hope an automated fix mechanism for that.
+>
+> https://lore.kernel.org/lkml/5e3265c241602bb54286fbaae9222070daa4768e.camel@perches.com/
 
-> Currently the code checks the interval value when the temperature is
-> read which is bad for two reasons:
-> 
-> - checking and setting the interval in the get_temp callback is
-> inaccurate and awful, that can be done when changing the value.
-> 
-> - Changing the thermal zone structure internals is an abuse of the
-> exported structure, moreover no lock is taken here.
-> 
-> The goal of this patch is to solve the first item by using the 'set'
-> function called when changing the interval. The check is done there
-> and removed from the get_temp function. If the thermal zone was not
-> initialized yet, the interval is not updated in this case as that will
-> happen in the init function when registering the thermal zone device.
-> 
-> I don't have any hardware to test the changes.
++ Tom, who's been looking at leveraging clang-tidy to automate such
+treewide mechanical changes.
+ex. https://reviews.llvm.org/D91789
 
-Thanks for this patch, I'll test it in upcoming days.
+See also commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging
+use of unnecessary %h[xudi] and %hh[xudi]") for a concise summary of
+related context.
+-- 
+Thanks,
+~Nick Desaulniers
