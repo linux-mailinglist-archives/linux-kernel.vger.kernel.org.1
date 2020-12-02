@@ -2,162 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA40B2CBF50
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B558F2CBF59
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388931AbgLBONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:13:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
+        id S1730293AbgLBOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:16:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388913AbgLBONp (ORCPT
+        with ESMTP id S1730230AbgLBOQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:13:45 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D830DC0613CF;
-        Wed,  2 Dec 2020 06:13:05 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id y7so1308126pfq.11;
-        Wed, 02 Dec 2020 06:13:05 -0800 (PST)
+        Wed, 2 Dec 2020 09:16:27 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B633C0613D4;
+        Wed,  2 Dec 2020 06:15:41 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id d5so1081762qtn.0;
+        Wed, 02 Dec 2020 06:15:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:in-reply-to:references:user-agent:date
-         :message-id:mime-version;
-        bh=AqItRk7mnZdsZA6csT1tLYDrY8hNeqLdGWBbN7B9gGY=;
-        b=CDuPN3jMkzAvFsf6wKUEy7vd7dfYDs8SG6IU2Ve+YHEDOGlrx+h0NpxrHmx4Na3fI4
-         WJMloAcjfZSDb9mDOXHFFHVhEAgCaLoYr7BaMF/neXMlFXmEYsr02XAD2kHwQlrYscDm
-         70O55hzbypg7MnXzchF/3y1dvdtIU8OzGPB3YW4K2koPIPuBaOF6QOIy9FIbtjLHtuUt
-         4uEL/0L5OAWOsFNLsC9KxJPmCTHoIxSd7Syxcy4qKGuHYpAM5Hhp+AtpwC4gW0AxjgFV
-         W4+KKQYgacq9ZcVR0LqHFVjYF4eRployEIbzf+Y9n482siGTIQZpuxgpLJsQUjuJZrB1
-         F6bQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=JO5G/IkG6GgPh3ghyr43j2FVouwU32gJN/Z35d3g1/g=;
+        b=ocw9Po0rQLS9w8cOPfIUJoA23zi1yY7lunB+qRmwbjj7zkJdWBXpZ4kvTNPvOBG5Ec
+         Ko4TTJzA7A0bK/yHbHdSdO+ouwlZITLm+jg+ZO+g+UNF1p3iH8UITqiiIvg60g18l0aH
+         02evKYq0oAspTBNH1NDcIxW01L2pB4x6Gb2JPnMqu7HODb0xp0/uQsE+cFUi8/5RRDVe
+         C2vMAAJvb+BS1O9SPuNwPu/R1pUNhcaOcHLLmJc2W8vMRWOu6Awk1I5lWwo6wkZ7T2rm
+         XdkkQpNF5qhQ49WTjbg0tlfkFWdwc24McHt/xqW8jB3x6/Xsf6fwcW7PW2uKnHkyKqeq
+         ublQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references
-         :user-agent:date:message-id:mime-version;
-        bh=AqItRk7mnZdsZA6csT1tLYDrY8hNeqLdGWBbN7B9gGY=;
-        b=NqD9LLLgMmMeFSp1epfIy8+4hFWFEY3qLJ2xjGyApkVEsYnQ9CKrjSmpImEHqMmEl+
-         BfKqh2FGqCgALSZwxvHj3217URlCc3WyUqpE95lC6IpoOLiGWPnVjDyeEqlOE+OB/mrw
-         fM3immHQluSg1RyXNw2HXOoTpd4kfpSBQnuZKdMiYkb5xq1Sw1JifqrHg/xs2t967gkm
-         HWxFRksGJyfRan2FJoi4CQhx4KE711rOEEtxyokFwT/535P2L419GOgE6PUM3yEv8H/a
-         oj4Oh+VJ2vJjNQLuk43rEHY2YBL7A+GSy9FDeaLyx21f9oLiuogTbJuzv1TMfIkbz9eH
-         ++og==
-X-Gm-Message-State: AOAM530BXLGw5jhtSxpSv7QDuS50/N82/KngRTJTYNb+GJNUkECpQWa8
-        K0AAgdT7ZqnSIvZK3L8OBvc=
-X-Google-Smtp-Source: ABdhPJxMzOjHybLV+EnkqdJv9Yp2s8o0k1dUanMG3LkNfz4c+1eF+WOgszMHUR8aWjw42HDUhf3rgw==
-X-Received: by 2002:a63:283:: with SMTP id 125mr81772pgc.282.1606918385338;
-        Wed, 02 Dec 2020 06:13:05 -0800 (PST)
-Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
-        by smtp.gmail.com with ESMTPSA id y19sm15637pfp.211.2020.12.02.06.13.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JO5G/IkG6GgPh3ghyr43j2FVouwU32gJN/Z35d3g1/g=;
+        b=P72XkkUwRCS/SOCw51UOkxa0Wf4FW1/jqpUONewBgWFRbIXYLEZJPtrp5DEdK95HU5
+         FwAmxZZHslwhEjv6dzpBBpgoJ1lhi5lLytOfTs7azOVs3OgHmVyvULC4EueaLuoM7bUq
+         bClgY39NfdOxRn4enY+Ny5tVmynAE/pAAk9LIlmH9AenbNh3mVjyBjb/osHdN2foyQo8
+         hA9XDHzy9hIxfLo5J10T6e/J5OSfsmAz28CdxmaKGJd/FT2C6H/mDawn4VHr1Mo/fvaR
+         QTZI0Ys7CTzIuWpLXYAd87hLWPYG9StSaUq+jJvmHL0X9+XYpOR2cnnd2GQWMr4+Yuw+
+         IGdA==
+X-Gm-Message-State: AOAM530uHxabXHJGeil6XbBuc5AL43cxRI3+h2TdYw3BFqyUsW2/w4LA
+        1ojq1+qmcgg1Kzdz7/shVGA=
+X-Google-Smtp-Source: ABdhPJy8By0l+UMxGhj61GjcBko/xRKvQNeNOtG5KwPxxHHneaQG6eE5WQZtdwGQn4R6UygG4L80Fg==
+X-Received: by 2002:ac8:120c:: with SMTP id x12mr2749121qti.1.1606918540477;
+        Wed, 02 Dec 2020 06:15:40 -0800 (PST)
+Received: from localhost.localdomain ([177.194.72.74])
+        by smtp.gmail.com with ESMTPSA id v5sm1671168qkf.133.2020.12.02.06.15.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 06:13:04 -0800 (PST)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     rjw@rjwysocki.net, wei.huang2@amd.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [RFC PATCH 3/4] x86/cpu: amd: Define processor families
-In-Reply-To: <20201130140018.GC6019@zn.tnic> (Borislav Petkov's message of
-        "Mon, 30 Nov 2020 15:00:18 +0100")
-References: <20201125144847.3920-1-punitagrawal@gmail.com>
-        <20201125144847.3920-4-punitagrawal@gmail.com>
-        <20201130140018.GC6019@zn.tnic>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Wed, 02 Dec 2020 23:13:02 +0900
-Message-ID: <87pn3s2t5d.fsf@stealth>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 02 Dec 2020 06:15:39 -0800 (PST)
+From:   Fabio Estevam <festevam@gmail.com>
+To:     p.zabel@pengutronix.de
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        hverkuil-cisco@xs4all.nl, andy.shevchenko@gmail.com,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v4] media: coda: Convert the driver to DT-only
+Date:   Wed,  2 Dec 2020 11:13:26 -0300
+Message-Id: <20201202141326.32645-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
+Since 5.10-rc1 i.MX is a devicetree-only platform, so simplify the code
+by removing the unused non-DT support.
 
-Borislav Petkov <bp@alien8.de> writes:
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+Changes since v3:
+- Add a explicit OF dependency - Andy
 
-> On Wed, Nov 25, 2020 at 11:48:46PM +0900, Punit Agrawal wrote:
->> So far, the AMD processor identifier (family, models, stepping) are
->> referred to by raw values making it easy to make mistakes. It is also
->> harder to read and maintain. Additionally, these values are also being
->> used in subsystems outside the arch code where not everybody maybe be
->> as familiar with the processor identifiers.
->> 
->> As a first step towards improving the status quo, add macros for the
->> AMD processor families and propagate them through the existing
->> cpu_device_id.h header used for this purpose.
->> 
->> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Borislav Petkov <bp@alien8.de>
->> Cc: x86@kernel.org
->> ---
->>  arch/x86/include/asm/amd-family.h    | 18 ++++++++++++++++++
->>  arch/x86/include/asm/cpu_device_id.h |  2 ++
->>  2 files changed, 20 insertions(+)
->>  create mode 100644 arch/x86/include/asm/amd-family.h
->> 
->> diff --git a/arch/x86/include/asm/amd-family.h b/arch/x86/include/asm/amd-family.h
->> new file mode 100644
->> index 000000000000..dff4d13b8e74
->> --- /dev/null
->> +++ b/arch/x86/include/asm/amd-family.h
->> @@ -0,0 +1,18 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef _ASM_X86_AMD_FAMILY_H
->> +#define _ASM_X86_AMD_FAMILY_H
->> +
->> +#define AMD_FAM_K5			0x04
->> +#define AMD_FAM_K6			0x05
->> +#define AMD_FAM_K7			0x06
->> +#define AMD_FAM_K8			0x0F
->> +#define AMD_FAM_K10			0x10
->
-> Fam 0x10 is Greyhound and a lot more core names. I'd let the AMD folks
-> on Cc say what they wanna call it but I don't think K10 was used
-> anywhere except outside of AMD. :)
+ drivers/media/platform/Kconfig            |  2 +-
+ drivers/media/platform/coda/coda-common.c | 27 ++---------------------
+ include/linux/platform_data/media/coda.h  | 14 ------------
+ 3 files changed, 3 insertions(+), 40 deletions(-)
+ delete mode 100644 include/linux/platform_data/media/coda.h
 
-Didn't realize the core was internal only. There are a couple of
-instances where the family does shows up arch/x86/kernel/cpu/amd.c so
-atleast some of the patches did make it upstream.
-
->> +#define AMD_FAM_K8_K10_HYBRID		0x11
->
-> That was called Griffin so AMD_FAM_GRIFFIN I guess. If not used anywhere
-> in the tree, no need to add the define.
-
-I haven't looked to deeply but there's one instance in
-arch/x86/kernel/cpu/amd.c - though I wonder if that could be re-written
-to rely on a hardware / firmware interface instead.
-
-> Same holds true for the rest of the defines - add them only when
-> they're used.
-
-Makes sense - I will follow your suggestion in the next version.
-
->> +#define AMD_FAM_LLANO			0x12
->> +#define AMD_FAM_BOBCAT			0x14
->> +#define AMD_FAM_BULLDOZER		0x15
->> +#define AMD_FAM_JAGUAR			0x16
->> +#define AMD_FAM_ZEN			0x17
->
-> ZEN2 is also 0x17 but different models so this is where the family
-> matching scheme doesn't work - you'd need the models too.
-
-Yes, I wasn't sure the best way to handle this so went with the earlier
-generation name. I think for such cases, something that looks at the
-cpuinfo_x86 structure and decides the family / generation is probably
-the way to go.
-
-> 0x18 is HYGON
-
-I missed this one. I'll add it to the list.
-
-Thanks for the review and your comments. I'll wait a bit to see if
-there's any further feedback.
-
-Cheers,
-Punit
-
-[...]
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index ffffef2267f4..9fdbfea06087 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -201,7 +201,7 @@ if V4L_MEM2MEM_DRIVERS
+ 
+ config VIDEO_CODA
+ 	tristate "Chips&Media Coda multi-standard codec IP"
+-	depends on VIDEO_DEV && VIDEO_V4L2 && (ARCH_MXC || COMPILE_TEST)
++	depends on VIDEO_DEV && VIDEO_V4L2 && OF && (ARCH_MXC || COMPILE_TEST)
+ 	select SRAM
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select VIDEOBUF2_VMALLOC
+diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
+index d30eafea701d..995e95272e51 100644
+--- a/drivers/media/platform/coda/coda-common.c
++++ b/drivers/media/platform/coda/coda-common.c
+@@ -25,7 +25,6 @@
+ #include <linux/slab.h>
+ #include <linux/videodev2.h>
+ #include <linux/of.h>
+-#include <linux/platform_data/media/coda.h>
+ #include <linux/ratelimit.h>
+ #include <linux/reset.h>
+ 
+@@ -3102,13 +3101,6 @@ static const struct coda_devtype coda_devdata[] = {
+ 	},
+ };
+ 
+-static const struct platform_device_id coda_platform_ids[] = {
+-	{ .name = "coda-imx27", .driver_data = CODA_IMX27 },
+-	{ /* sentinel */ }
+-};
+-MODULE_DEVICE_TABLE(platform, coda_platform_ids);
+-
+-#ifdef CONFIG_OF
+ static const struct of_device_id coda_dt_ids[] = {
+ 	{ .compatible = "fsl,imx27-vpu", .data = &coda_devdata[CODA_IMX27] },
+ 	{ .compatible = "fsl,imx51-vpu", .data = &coda_devdata[CODA_IMX51] },
+@@ -3118,14 +3110,9 @@ static const struct of_device_id coda_dt_ids[] = {
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, coda_dt_ids);
+-#endif
+ 
+ static int coda_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *of_id =
+-			of_match_device(of_match_ptr(coda_dt_ids), &pdev->dev);
+-	const struct platform_device_id *pdev_id;
+-	struct coda_platform_data *pdata = pdev->dev.platform_data;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct gen_pool *pool;
+ 	struct coda_dev *dev;
+@@ -3135,14 +3122,7 @@ static int coda_probe(struct platform_device *pdev)
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+-	pdev_id = of_id ? of_id->data : platform_get_device_id(pdev);
+-
+-	if (of_id)
+-		dev->devtype = of_id->data;
+-	else if (pdev_id)
+-		dev->devtype = &coda_devdata[pdev_id->driver_data];
+-	else
+-		return -EINVAL;
++	dev->devtype = of_device_get_match_data(&pdev->dev);
+ 
+ 	dev->dev = &pdev->dev;
+ 	dev->clk_per = devm_clk_get(&pdev->dev, "per");
+@@ -3200,10 +3180,8 @@ static int coda_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	/* Get IRAM pool from device tree or platform data */
++	/* Get IRAM pool from device tree */
+ 	pool = of_gen_pool_get(np, "iram", 0);
+-	if (!pool && pdata)
+-		pool = gen_pool_get(pdata->iram_dev, NULL);
+ 	if (!pool) {
+ 		dev_err(&pdev->dev, "iram pool not available\n");
+ 		return -ENOMEM;
+@@ -3342,7 +3320,6 @@ static struct platform_driver coda_driver = {
+ 		.of_match_table = of_match_ptr(coda_dt_ids),
+ 		.pm	= &coda_pm_ops,
+ 	},
+-	.id_table = coda_platform_ids,
+ };
+ 
+ module_platform_driver(coda_driver);
+diff --git a/include/linux/platform_data/media/coda.h b/include/linux/platform_data/media/coda.h
+deleted file mode 100644
+index 293b61b60c9d..000000000000
+--- a/include/linux/platform_data/media/coda.h
++++ /dev/null
+@@ -1,14 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * Copyright (C) 2013 Philipp Zabel, Pengutronix
+- */
+-#ifndef PLATFORM_CODA_H
+-#define PLATFORM_CODA_H
+-
+-struct device;
+-
+-struct coda_platform_data {
+-	struct device *iram_dev;
+-};
+-
+-#endif
+-- 
+2.17.1
 
