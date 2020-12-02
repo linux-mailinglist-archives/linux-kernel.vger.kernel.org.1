@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364C52CB5FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456B32CB602
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgLBHzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
+        id S1728849AbgLBH4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:56:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgLBHzW (ORCPT
+        with ESMTP id S1726148AbgLBH4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:55:22 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5210C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:54:41 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id j205so2630326lfj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 23:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=3aAsZ2DvxQWqwAeuu3A9lbKYdi94zyNtdd9iOUDQD3M=;
-        b=BUgnFnlajbu5Z8ZRJEBlJi7X3sqSo8Z7uhDcr1UPwRktUL1HZBSSv8j5trpgssUndY
-         VR5Hwdh09NWnRYHclNkaVRWnFnqWMrW6KwGCKOBnY91w8wC9YJVV7SVBYWk3H/tbvdJh
-         vCG3U7EmB4FqAQH/ffbP93dvTuzfmeto79Ui+/ot/QAVNoT5xSgx3OZJSnizwDtrE/bm
-         2E8H6IdcHRck9KjG2w2vcwMVG77YJpFNbmJMNJBSfMMr3CUBxfrn3oIYRg8ul2DeU+3O
-         c4qHBAMs9K8LXlSlOAe0/CkgrVDQA0Kr5ZyEO3uE9ebamnG5X3iqZXJpQzc03XDrp33h
-         bMJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=3aAsZ2DvxQWqwAeuu3A9lbKYdi94zyNtdd9iOUDQD3M=;
-        b=CRBOr1PhZBUAKMKcy1w7DqUNK8W67S5o6AdoJxmwiiH0vhLIycs0Hu8cslJEHNls+w
-         /ZuXxFUvV1XvOEzll2TXo8sAK+qmZRveMLv+hpFJw/ygTMsybnmuH1K7N6SfFmhWg0Cg
-         8l3VbFg0/iyuBdIzCpQrGSQKND012psOZuqRy+c6CiR57jIHm1KgM6Rtkr4fCQp0ukSH
-         dhuuV82JsVJt9zB21MflgwYoNrbs2qXqxmOeYPWxMR62XQ87CGczs5d9sTDW6zzNs2vx
-         +AR0Nz6iPIPgwWm6wyvww5g66xkkINS7/b91cmtC+lYjv9Qqc9tTQ8PsvIrGj+MfdkrF
-         SYjA==
-X-Gm-Message-State: AOAM531TeFfG8ah8DWk8qS4izltELk/+Vf8yNJ/lSG/tS6bXVyR3wFnR
-        m8vgIk6kMDEShUektIr+AtKnnLyskf8=
-X-Google-Smtp-Source: ABdhPJx49UJK0EO97EEvIZUaxhzQhYpuEvN+NvQZa4VmRvPiSfY6QTkbMxRzXV7MVvXAxdEKzVHj5w==
-X-Received: by 2002:a19:be85:: with SMTP id o127mr663690lff.356.1606895679968;
-        Tue, 01 Dec 2020 23:54:39 -0800 (PST)
-Received: from spblnx124 ([185.204.20.3])
-        by smtp.gmail.com with ESMTPSA id x24sm244113lfc.303.2020.12.01.23.54.39
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 01 Dec 2020 23:54:39 -0800 (PST)
-Date:   Wed, 2 Dec 2020 10:54:38 +0300
-From:   Andrew Klychkov <andrew.a.klychkov@gmail.com>
-To:     corbet@lwn.net
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: fix typos found in process, dev-tools, and
- doc-guide subdirectories
-Message-ID: <20201202075438.GA35516@spblnx124.lan>
+        Wed, 2 Dec 2020 02:56:38 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815EAC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:55:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H2WKhUPCiAxV/zU7tZhzPn1+a6z3ubuLC4c5dn/7IRU=; b=vs1BP9UTQMUUZlKTDWcpx5f2bM
+        pduXMgG84yVwYMuR441VDta3T/GqywmDq0DamKT1KzE4+9L/BBjk6L2XyxcpOhPoqnGiiiMM6OoHJ
+        7sYo3gjx4QfrojS1v5bnqjmtmoNc52HMkm3utbb/UPP//WKeZlfdq0Wm5liHJyEJvkWac2MYnOZoE
+        bAvFH0dwW6lq1viGg1fR76SjZ/1vh8xgo+cy9PjlM4A60eyULasexKz18F/DPX4btWHKW5fYHitsN
+        Fbt3bqq2g9YuXL+gzs2XtxzY03V6sTTSowkdhFNM6w/cBmBoumbwyOoHF7q8/Uojz45JCfNyr0J2y
+        7Dti8I3A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkMyX-0001eI-2S; Wed, 02 Dec 2020 07:54:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BED23305C10;
+        Wed,  2 Dec 2020 08:54:47 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 956A02C83017B; Wed,  2 Dec 2020 08:54:47 +0100 (CET)
+Date:   Wed, 2 Dec 2020 08:54:47 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>, chris.hyser@oracle.com,
+        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Oleg Rombakh <olegrom@google.com>
+Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
+ cookie on fork
+Message-ID: <20201202075447.GC3021@hirez.programming.kicks-ass.net>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-23-joel@joelfernandes.org>
+ <20201125111014.GS2414@hirez.programming.kicks-ass.net>
+ <20201201192028.GA222419@google.com>
+ <20201201193451.GY3040@hirez.programming.kicks-ass.net>
+ <CABk29NvoymPokXpoLkFZPDXDM0DoCVOJNTy9qVVQsaTgcBcJNg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CABk29NvoymPokXpoLkFZPDXDM0DoCVOJNTy9qVVQsaTgcBcJNg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix four typos in kcov.rst, sphinx.rst, clang-format.rst, and embargoed-hardware-issues.rst
+On Tue, Dec 01, 2020 at 10:36:18PM -0800, Josh Don wrote:
+> On Tue, Dec 1, 2020 at 11:35 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > So I don't think that later patch is right... That is, it works, but
+> > afaict it's massive overkill.
+> >
+> >         COOKIE_CMP_RETURN(task_cookie);
+> >         COOKIE_CMP_RETURN(group_cookie);
+> >         COOKIE_CMP_RETURN(color);
+> >
+> > So if task_cookie matches, we consider group_cookie, if that matches we
+> > consider color.
+> >
+> > Now, afaict that's semantically exactly the same as just using the
+> > narrowest cookie. That is, use the task cookie if there is, and then,
+> > walking the cgroup hierarchy (up) pick the first cgroup cookie.
+> >
+> > (I don't understand the color thing, but lets have that discussion in
+> > that subthread)
+> >
+> > Which means you only need a single active cookie field.
+> >
+> > IOW, you're just making things complicated and expensive.
+> >
+> 
+> For the per-task interface, I believe we still want to prevent two
+> tasks that share a task cookie from sharing an overall cookie if they
+> are in two separately tagged groups (Joel please correct me if I'm
+> mistaken there). That's why in Joel's older patch, the overall cookie
+> was a combination of the task and group cookies.  My concern about
+> that was the potential cookie collision.
 
-Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
----
- Documentation/dev-tools/kcov.rst                    | 2 +-
- Documentation/doc-guide/sphinx.rst                  | 2 +-
- Documentation/process/clang-format.rst              | 2 +-
- Documentation/process/embargoed-hardware-issues.rst | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
-index 8548b0b..d2c4c27e 100644
---- a/Documentation/dev-tools/kcov.rst
-+++ b/Documentation/dev-tools/kcov.rst
-@@ -243,7 +243,7 @@ handles as they don't belong to a particular subsystem. The bytes 4-7 are
- currently reserved and must be zero. In the future the number of bytes
- used for the subsystem or handle ids might be increased.
- 
--When a particular userspace proccess collects coverage via a common
-+When a particular userspace process collects coverage via a common
- handle, kcov will collect coverage for each code section that is annotated
- to use the common handle obtained as kcov_handle from the current
- task_struct. However non common handles allow to collect coverage
-diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/sphinx.rst
-index 896478b..2fb2ff2 100644
---- a/Documentation/doc-guide/sphinx.rst
-+++ b/Documentation/doc-guide/sphinx.rst
-@@ -375,7 +375,7 @@ image format use SVG (:ref:`svg_image_example`)::
- 
-    SVG image example
- 
--The kernel figure (and image) directive support **DOT** formated files, see
-+The kernel figure (and image) directive support **DOT** formatted files, see
- 
- * DOT: http://graphviz.org/pdf/dotguide.pdf
- * Graphviz: http://www.graphviz.org/content/dot-language
-diff --git a/Documentation/process/clang-format.rst b/Documentation/process/clang-format.rst
-index 82676e5..1d089a8 100644
---- a/Documentation/process/clang-format.rst
-+++ b/Documentation/process/clang-format.rst
-@@ -97,7 +97,7 @@ it can be very useful.
- 
- There are integrations for many popular text editors. For some of them,
- like vim, emacs, BBEdit and Visual Studio you can find support built-in.
--For instructions, read the appropiate section at:
-+For instructions, read the appropriate section at:
- 
-     https://clang.llvm.org/docs/ClangFormat.html
- 
-diff --git a/Documentation/process/embargoed-hardware-issues.rst b/Documentation/process/embargoed-hardware-issues.rst
-index 43cdc67..6f8f36e 100644
---- a/Documentation/process/embargoed-hardware-issues.rst
-+++ b/Documentation/process/embargoed-hardware-issues.rst
-@@ -152,7 +152,7 @@ The disclosing party should provide a list of contacts for all other
- entities who have already been, or should be, informed about the issue.
- This serves several purposes:
- 
-- - The list of disclosed entities allows communication accross the
-+ - The list of disclosed entities allows communication across the
-    industry, e.g. other OS vendors, HW vendors, etc.
- 
-  - The disclosed entities can be contacted to name experts who should
--- 
-1.8.3.1
-
+Then disallow sharing a task cookie when the tasks are in different
+cgroups or disallow cgroup movement when they share a cookie.
