@@ -2,72 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABACC2CB214
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AAE2CB218
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgLBBID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 20:08:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726556AbgLBBIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:08:02 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06FB420BED;
-        Wed,  2 Dec 2020 01:07:17 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 20:07:15 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Tejun Heo <tj@kernel.org>, Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
- in tracepoints
-Message-ID: <20201201200715.6171d39b@oasis.local.home>
-In-Reply-To: <CALvZod6qpbEX+kp_gh5O4U1-kc+DfoG4DnGoWMvVnuXUOTLBBg@mail.gmail.com>
-References: <20201130233504.3725241-1-axelrasmussen@google.com>
-        <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com>
-        <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
-        <xr93lfehl8al.fsf@gthelen.svl.corp.google.com>
-        <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
-        <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
-        <CALvZod5CpPhvzB99VZTc33Sb5YCbJNHFe3k33k+HwNfJvJbpJQ@mail.gmail.com>
-        <CAJHvVcjBErccEwNjuDqzsrbuzSmJva7uknZKhtBwWfs9_t4zTg@mail.gmail.com>
-        <CALvZod6qpbEX+kp_gh5O4U1-kc+DfoG4DnGoWMvVnuXUOTLBBg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727978AbgLBBJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 20:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727676AbgLBBJm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 20:09:42 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494EDC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 17:08:56 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id s63so25699pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 17:08:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ltLpeaxsolQPncFM8sGYWmfl/tK1nPLTaUTVm/mA5BE=;
+        b=wApgbcd8u6gO1J0ik8J/8fQ6zRw+KUw8p0JlvaE9zlEB0CkataSmoW3aHSRLcRoRN6
+         On9jYY7GBEN4j2uY36KIHuOP+HXHG4kzK7eL7tCamzOOITQ7M9CSbj3CCFQgx2mAjyMT
+         akcayOY8U2YzrhI2zmI5MjAB2KeOxpPZ/H1w8ahGqbyFdwHNGwez8nMfy+KAI8xXwAg8
+         O7/b3lhmsq2m7cHdAI/sqThS6DA+MG/RgS868OmeAM4YSZMjUv/meNm6hfB8SXtElU0d
+         inArEgjEg+RBbhuHHX+HNmGCATIAqq6M/MnM4ycH0KcWqgRyNkU+i70EpEoYGVgqU6He
+         0aSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ltLpeaxsolQPncFM8sGYWmfl/tK1nPLTaUTVm/mA5BE=;
+        b=tbfBY9bDydCpayqqpAMQi2sqU7YCnd/Sk8k0olsDVu38svEfne3j1HCSvg9wwNi7pX
+         L35oYQwslo4ZR8TqIy8g0U2fFVT4q8A5bqo0w97qRwyJ+ot6E1zYjOTLkVwgWaUjBIxw
+         GnJGoVMoiVRvh3/Q/zTvgN14ezP/iGqV+ktCCX/G9mY3ZGPw8hHHhAYU0TIsZ+k1Wrt9
+         qVA+hc7d9r2kAR8I2IqLNUOaISt+tBHnX0wwWq9NqZZRSCMXounTJNlpV1Yubtzin67q
+         pRHnLAGVUkQmNvctrlC3okbcfG0pkDeuFW6lzJyvPONqnrBY7d48tQuHp0flDl/tGXUM
+         BiXA==
+X-Gm-Message-State: AOAM5307ntF+3L0COX0NyxdfXY5jM7dpDd2VZOp51Dq6l2N+lMBOZQiz
+        34AtFFy3uyYUqLO8JT1JTXQcqA==
+X-Google-Smtp-Source: ABdhPJx1XvBkLRcpSj5vH9kuUQzLJZ2S0VxjM6GUhPnPj7ToUg/6uUgoU1BTX4bv7WbCbY+jrgUH7g==
+X-Received: by 2002:a63:a62:: with SMTP id z34mr302597pgk.193.1606871335639;
+        Tue, 01 Dec 2020 17:08:55 -0800 (PST)
+Received: from google.com ([100.117.212.88])
+        by smtp.gmail.com with ESMTPSA id f17sm137871pfk.70.2020.12.01.17.08.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 17:08:54 -0800 (PST)
+Date:   Tue, 1 Dec 2020 17:08:50 -0800
+From:   =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Alistair Delva <adelva@google.com>
+Subject: Re: [PATCH v2 3/4] Kbuild: make DWARF version a choice
+Message-ID: <20201202010850.jibrjpyu6xgkff5p@google.com>
+References: <CAK7LNAST0Ma4bGGOA_HATzYAmRhZG=x_X=8p_9dKGX7bYc2FMA@mail.gmail.com>
+ <20201104005343.4192504-1-ndesaulniers@google.com>
+ <20201104005343.4192504-4-ndesaulniers@google.com>
+ <CAK7LNAT5MQqUddv+QbFu5ToLBK3eUPArHSBR=5AOS3ONtMqKaw@mail.gmail.com>
+ <CAFP8O3Ki9HoqcV450fn29fBOWAbmuGAdB6USLz8pGsW4Vzf7sg@mail.gmail.com>
+ <CAK7LNAS_hxevOS7hKxepyCBVU-4j87Yf5Y8DB6mFq+4xuaz3AA@mail.gmail.com>
+ <20201201093253.GJ2672@gate.crashing.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201201093253.GJ2672@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 16:36:32 -0800
-Shakeel Butt <shakeelb@google.com> wrote:
+On 2020-12-01, Segher Boessenkool wrote:
+>On Tue, Dec 01, 2020 at 12:38:16PM +0900, Masahiro Yamada wrote:
+>> > We can bump -Wa,-gdwarf-2 to -Wa,-gdwarf-3 since GNU actually emits
+>> > DWARF v3 DW_AT_ranges (see
+>> > https://sourceware.org/bugzilla/show_bug.cgi?id=26850 )
+>> > This can avoid the `warning: DWARF2 only supports one section per
+>> > compilation unit` warning for Clang.
+>
+>That warning should be "there can be only one section with executable
+>code per translation unit", or similar.
+>
+>> I am not a DWARF spec expert.
+>
+>Neither am I.
+>
+>> Please teach me.
+>>
+>> In my understanding, "DWARF2 only supports one section ..."
+>> is warned only when building .S files with LLVM_IAS=1
+>
+>.S files are simply run through the C preprocessor first, and then given
+>to the assembler.  The only difference there should be wrt debug info is
+>you could have some macros that expand to assembler debug statements.
+>
+>> If this is due to the limitation of DWARF v2, why is it OK to
+>> build .c files with LLVM_IAS?
+>
+>The compiler can of course make sure not to use certain constructs in
+>its generated assembler code, while the assembler will have to swallow
+>whatever the user wrote.
+>
 
-> SGTM but note that usually Andrew squash all the patches into one
-> before sending to Linus. If you plan to replace the path buffer with
-> integer IDs then no need to spend time fixing buffer related bug.
+These are all correct. You can use `llvm-dwarfdump a.o` to dump a .o file.
+It has one DW_TAG_compile_unit. If the translation unit has a single
+contiguous address range, the assembler can emit a pair of
+DW_AT_low_pc/DW_AT_high_pc (available in DWARF v2). In the case of
+multiple executable sections, it is not guaranteed that in the final
+linked image the sections will be contiguous, so the assembler has to
+assume there may be non-contiguous address ranges and use DW_AT_ranges.
 
-I don't think Andrew squashes all the patches. I believe he sends Linus
-a patch series.
+Unfortunately DW_AT_ranges was introduced in DWARF v3 and technically
+not available in DWARF v2. But GNU as ignores this and emits
+DW_AT_ranges anyway (this is probably fine - like using a GNU extension).
 
-Andrew?
-
--- Steve
+If -Wa,-gdwarf-2 -> -Wa,-gdwarf-3 can eliminate the LLVM integrated
+assembler's warning, we should do it. If people think -Wa,-gdwarf-2 is
+not useful and want to delete it, I'll be happier. Whether it is
+necessary to use -Wa,-gdwarf-2/-Wa,-gdwarf-5? Personally I would think
+this is unnecessary, but I won't mind if people don't mind the
+additional complexity in Makefile. (I implemented the -gdwarf-5 address
+range stuff for the integrated assembler).
