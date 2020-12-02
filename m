@@ -2,103 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CF92CB590
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C66812CB593
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgLBHN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgLBHN0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:13:26 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A03C0613CF;
-        Tue,  1 Dec 2020 23:12:46 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id u2so613397pls.10;
-        Tue, 01 Dec 2020 23:12:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=ya+0u8oPqKce5WddvEwrQ5QUESHFPHjBSXzdciQAiSg=;
-        b=oJkuYre15ItUH3uiytzTvI1fFm1DG6GG6D2TqWyjB5ddSDMva5f5RJetckeiTDvHQ+
-         OGVdu33ohScQl5hmzhlEaqsmw+IjRPUbGNnhHqIuc11lwx9bSyNYYLSGaHWFPksbLPcJ
-         Bubib2ummhxJonw4bFv2brG/dQKxgS9tXCpPg921MPqb+gYJtBD9yo1roMNEIAGZ+QTg
-         2oYaDntyyrKnTTcKujwpHdZ5io/lf+Xy/wokhnHLRKZhhB+66rd23+j5wRKVZTclfdwF
-         iv8qpO59tj5pM0kOWpFCYBOXcEUn2FdOHoHmb98Fd1Tu87oVMN9p96OLBUAkoa3B8fSK
-         EVzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=ya+0u8oPqKce5WddvEwrQ5QUESHFPHjBSXzdciQAiSg=;
-        b=da3OgdnH5R2L0Di+tEj8IlmdKkMzOwvF/Ba9HYjEl1QO1WQEwBq+7zCbaco1Vw4jwR
-         bC0vlkOk+ExjngJB+gBuA7O2BGG2a8DogIdAd85U5H6MyDGx7LLhv2OdVdKzHorL7Xe8
-         sqc+pjzstUzBhQrkjMBT2IPDIR16M1gcBupjtNNHR+uZpiaq0GtUa2eYDGknWx4VIcER
-         EaDkWjd1Suxb7brQOTRWwy7mJG4yQE/3gnJUg9YJePgEGO5SEAnWoqL7rhq73+3EmHki
-         bfAx6FbI9irzTizM3W9ZqQaTNBZ5jYVUQW7xh9yeTwWIbOMJLpQ8U3ihP390hze65Vmq
-         1Ygw==
-X-Gm-Message-State: AOAM531h0U90k/Vg782scGVBc7XCtinyQh1HpkfDG2c9k+dxR4YtYxbq
-        rThMnMejSU+cej0IKeInv4l+Ws6QruTSQg==
-X-Google-Smtp-Source: ABdhPJxFlSWiJUnyMAbdS77a6OqK9xSZe2X2wwa/cT4W47hkn0BlkITY9J3HdtHjl/w7hvyxb6UFUw==
-X-Received: by 2002:a17:90a:bb91:: with SMTP id v17mr1111477pjr.231.1606893165171;
-        Tue, 01 Dec 2020 23:12:45 -0800 (PST)
-Received: from ?IPv6:2601:647:4700:9b2:2c16:d412:96a3:80fc? ([2601:647:4700:9b2:2c16:d412:96a3:80fc])
-        by smtp.gmail.com with ESMTPSA id e23sm1111590pfd.64.2020.12.01.23.12.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Dec 2020 23:12:43 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [RFC PATCH 11/13] fs/userfaultfd: complete write asynchronously
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20201129004548.1619714-12-namit@vmware.com>
-Date:   Tue, 1 Dec 2020 23:12:42 -0800
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <8405A413-239A-47E8-9D46-B6060EF86A68@gmail.com>
-References: <20201129004548.1619714-1-namit@vmware.com>
- <20201129004548.1619714-12-namit@vmware.com>
-To:     linux-fsdevel@vger.kernel.org
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        id S2387520AbgLBHOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:14:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728767AbgLBHOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:14:51 -0500
+Date:   Wed, 2 Dec 2020 12:44:05 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606893250;
+        bh=bZBa2d1ifgYO1IKstjWq161xhJX/TZBr4/AVkE/SnYI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qGyH40FgRMBCX7U2RVOKKAW+zUcdPBi2P9UESPAnuHqV+pp5U1mHsvcPHPqX77UbE
+         rIgMbor+3loIZKUtpXddVDepXC0XlzcoGR8Iv5WftpPgPVKlmqKYa739TjAEAMyE5h
+         02Cs0PxFYocWQrcDruFeNBGVd/Rh6tV4SDfE/pjs=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "Liao, Bard" <bard.liao@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "hui.wang@canonical.com" <hui.wang@canonical.com>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "jank@cadence.com" <jank@cadence.com>,
+        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
+Subject: Re: [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
+Message-ID: <20201202071405.GG8403@vkoul-mobl>
+References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
+ <DM6PR11MB4074311B4E0B70F24383E754FFF40@DM6PR11MB4074.namprd11.prod.outlook.com>
+ <20201201041138.GY8403@vkoul-mobl>
+ <e9478e45-2a24-05f9-eb56-5905d54ab6a4@linux.intel.com>
+ <20201201145322.GG5239@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8GpibOaaTibBMecb"
+Content-Disposition: inline
+In-Reply-To: <20201201145322.GG5239@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Nov 28, 2020, at 4:45 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
-> 
-> From: Nadav Amit <namit@vmware.com>
-> 
-> Userfaultfd writes can now be used for copy/zeroing. When using iouring
-> with userfaultfd, performing the copying/zeroing on the faulting thread
-> instead of the handler/iouring thread has several advantages:
-> 
-> (1) The data of the faulting thread will be available on the local
-> caches, which would make subsequent memory accesses faster.
-> 
-> (2) find_vma() would be able to use the vma-cache, which cannot be done
-> from a different process or io-uring kernel thread.
-> 
-> (3) The page is more likely to be allocated on the correct NUMA node.
-> 
-> To do so, userfaultfd work queue structs are extended to hold the
-> information that is required for the faulting thread to copy/zero. The
-> handler wakes one of the faulting threads to perform the copy/zero and
-> that thread wakes the other threads after the zero/copy is done.
 
-I noticed some bugs of mine in this patch, but more importantly I realized
-that the there may be a more performant solution to do the copying on the
-faulting thread - without async-writes.
+--8GpibOaaTibBMecb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please do not review this patch and the next one (12/13).
+Hi Mark,=20
 
-Feedback for the rest of the series is of course welcomed.
+On 01-12-20, 14:53, Mark Brown wrote:
+> On Tue, Dec 01, 2020 at 08:35:42AM -0600, Pierre-Louis Bossart wrote:
+> > On 11/30/20 10:11 PM, Vinod Koul wrote:
+>=20
+> > > I see Mark has already applied 1-3 ..
+>=20
+> > Sorry, I thought Mark had reversed the entire series.
+>=20
+> Yeah, I just backed out the one change for the driver.
+>=20
+> > Vinod, would you mind providing a tag for Mark then? The following comm=
+it is
+> > needed to compile:
+>=20
+> > b7cab9be7c161 ('soundwire: SDCA: detect sdca_cascade interrupt')
+>=20
+> That'd work, looks like there's only one fix patch it's based off.
 
-Regards,
-Nadav
+I have created the tag, please pull:
+
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-for-asoc-5.11
+
+for you to fetch changes up to b7cab9be7c16128a0de21ed7ae67211838813437:
+
+  soundwire: SDCA: detect sdca_cascade interrupt (2020-11-24 14:09:31 +0530)
+
+----------------------------------------------------------------
+soundwire-for-asoc-5.11
+
+Tag for asoc to resolve build dependency with commit b7cab9be7c16
+("soundwire: SDCA: detect sdca_cascade interrupt")
+
+----------------------------------------------------------------
+Pierre-Louis Bossart (1):
+      soundwire: SDCA: detect sdca_cascade interrupt
+
+Srinivas Kandagatla (1):
+      soundwire: Fix DEBUG_LOCKS_WARN_ON for uninitialized attribute
+
+ drivers/soundwire/bus.c             | 28 +++++++++++++++++++++++++++-
+ drivers/soundwire/sysfs_slave_dpn.c |  1 +
+ include/linux/soundwire/sdw.h       |  4 ++++
+ 3 files changed, 32 insertions(+), 1 deletion(-)
+
+--=20
+~Vinod
+
+--8GpibOaaTibBMecb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl/HPr0ACgkQfBQHDyUj
+g0fOXhAAtHuTdezJjLa1sw3J5N1SoRFserwjvAimvV87MVRgeKA9StiT7w/cn9lT
+U/aGhOiSmIETd/Q6r+011DCDkbmsh2MmQOeytyBEz1rPZuT3KKXcun7swOJETZES
+nz7wFwt2evjm9/uSmyVfJOskH5QHXKDLyYnMHC92Edpw8UJ8hIn+hmmv62o23zoo
+B5ZKVaLuHKpArNfDhQVfl+bALN8Ev5mRDqkoFUAaP7TfXPP/er0RwR8TsseXTKri
+k3mExh2PY4DG2rLT7CY/I3lZwNEDc1B7JxTyJ4oZZO5Gx1S5JYID+uUDpyLskxCS
+/E07eTFoFUA5MZRWDrAn8OkqVU7v9s7qs08kEHfSawPkpmAwkEjCbIwjZ+nji3fM
+pODnZ+Uy1nuYkqEMpwn7PgULcdC9lW+YiF7016U7x6EsH7m7MPS+s0G340jPwS1N
+HzDzLtydUTEv+uDzUQKYfE2qfhndHYARj6H+NLZEFJj0R885prLOfhoXknwv0g3f
+VlW8Swd8nflDLbg2Uu1eP+p5vHi5w8K9u1ZaPzgmsImm0m514hgclegz5azZPYQu
+MLrL5ycCbYQcXMlC91pGsfx8M5OnohS/1NAjMypnrBaaaf+pHcSI/gJrJCoa5hJP
+AKn1bCxGStbFS6X37zXvb2SuDdVgQ5qgi5N4vb53fYnef4u1msY=
+=841k
+-----END PGP SIGNATURE-----
+
+--8GpibOaaTibBMecb--
