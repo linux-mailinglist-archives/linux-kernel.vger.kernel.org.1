@@ -2,160 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E83D2CC147
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C27812CC14C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730512AbgLBPt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:49:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgLBPt0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:49:26 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFA3C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:48:40 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 3so9304644wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:48:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:subject:in-reply-to:message-id:date
-         :mime-version;
-        bh=aK2Yejuziy9XYpoRYVV6bzgJz5NlgVPwFHDuLLWc9Ug=;
-        b=Bdjc1UwJwZGMSn7TM4F4sOv7ZcNypjDjFExNtcI88V83srE3qggHvizPjaeCEbaucL
-         +aB/EW09iqQSYC720eeWbk9D2YyMm1mBOk8eFTM7tSacgqqupB3LtwiQRJN1/eP10hDI
-         VaRZZ/fodJW9tcsrcSaWEP/slWcVW1cGBa3WzSnuKPIahMzbqPSjzmcmSWNzT8PyobRi
-         fQ2WA7OH+P3F3Df8ulVSNXFLyrDpYBHe8nH4ijdrPjZwi/q1CqQmFoDN5h+FeQHXi6iL
-         i/kUNrbmoCltJYPmzaJu/Np1q3WAURywvJ/VtHXp4hGtsiYzwD8tWJJ9XXGmiiJoL8jl
-         iW7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=aK2Yejuziy9XYpoRYVV6bzgJz5NlgVPwFHDuLLWc9Ug=;
-        b=GwsRm5jdlCZDVMsF6fbDLZkFjfQKnO1QHLfg2007ID5VfGlxBsvnhR0E0+yWFXKgY8
-         XrJEbm9PEyUTZl3fdNiwOspJOUjM2Go+V9GJQudV6D9Pr71baTseoY4Y3q3gUGhYvqSq
-         ifRXy7Kf5hMngNprYYoD+lB7m27WxdmXs0M0TIj59yu1GnmRaDuYFdfEBfhVouhNfOY1
-         o5czxaNFeCxUKymqZiGIQQrf+LQ8EuQLkhVTKZXGCahzWJDoTZ4wEF9xUPY6pSx3/mtl
-         jUNqYYG9hVVCOgiXxUOeXqY7a1atU8sOpKZUt0VmE0czICMpJt715ZgW56TSW7tXOH76
-         N+Jw==
-X-Gm-Message-State: AOAM5320S5m1eMubmgSUY97F8R23MaID2uUwHdFoDbliiANQqHgPpdDO
-        zNyUzi4OVAfxjACdX+W2JodXJA==
-X-Google-Smtp-Source: ABdhPJz8kyT3Q+GAhoeJvRzlTWJN6+74jd9rSGhZ+vv9wugh+iaHMt7J2oHuytEnrxiyIiI1z63VYg==
-X-Received: by 2002:a7b:ca47:: with SMTP id m7mr3774131wml.33.1606924118881;
-        Wed, 02 Dec 2020 07:48:38 -0800 (PST)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id l8sm2630263wmf.35.2020.12.02.07.48.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 07:48:38 -0800 (PST)
-References: <20201116062031.11233-1-christianshewitt@gmail.com>
- <20201116062031.11233-4-christianshewitt@gmail.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] arm64: dts: meson: add audio playback to
- khadas-vim2
-In-reply-to: <20201116062031.11233-4-christianshewitt@gmail.com>
-Message-ID: <1jk0u0p5t6.fsf@starbuckisacylon.baylibre.com>
-Date:   Wed, 02 Dec 2020 16:48:37 +0100
+        id S2388954AbgLBPuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:50:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39310 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728595AbgLBPuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:50:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606924157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V1KqfNMEjdlZsnYnQmgAnUaEY1GwwPYLnd99eAVp8b4=;
+        b=fKwrBBEDmhVAvUaO6fxirS7JT8ThxUTv4HY3C4TBI1h+aBVM/LDtp67SW97aXfBwBnyV53
+        MMpiIOxnpPk5DvB1sN3zGW3u2XSz6h2JoexIiArmA6ruyq0ct5XX3YINS1FTNuZKmLfQi8
+        Nc+OqUpsq0mjhCv8/Gu9fZuDzeT9yJE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D6A99AB63;
+        Wed,  2 Dec 2020 15:49:16 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 16:49:15 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
+        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
+        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
+        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org,
+        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
+Message-ID: <20201202154915.GU17338@dhcp22.suse.cz>
+References: <20201201175144.3996569-1-minchan@kernel.org>
+ <20201201175144.3996569-3-minchan@kernel.org>
+ <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 02-12-20 10:14:41, David Hildenbrand wrote:
+> On 01.12.20 18:51, Minchan Kim wrote:
+> > There is a need for special HW to require bulk allocation of
+> > high-order pages. For example, 4800 * order-4 pages, which
+> > would be minimum, sometimes, it requires more.
+> > 
+> > To meet the requirement, a option reserves 300M CMA area and
+> > requests the whole 300M contiguous memory. However, it doesn't
+> > work if even one of those pages in the range is long-term pinned
+> > directly or indirectly. The other option is to ask higher-order
+> 
+> My latest knowledge is that pages in the CMA area are never long term
+> pinned.
+> 
+> https://lore.kernel.org/lkml/20201123090129.GD27488@dhcp22.suse.cz/
+> 
+> "gup already tries to deal with long term pins on CMA regions and migrate
+> to a non CMA region. Have a look at __gup_longterm_locked."
+> 
+> We should rather identify ways how that is still possible and get rid of
+> them.
+> 
+> 
+> Now, short-term pinnings and PCP are other issues where
+> alloc_contig_range() could be improved (e.g., in contrast to a FAST
+> mode, a HARD mode which temporarily disables the PCP, ...).
 
-On Mon 16 Nov 2020 at 07:20, Christian Hewitt <christianshewitt@gmail.com> wrote:
+Agreed!
 
-> Add initial audio support limited to HDMI i2s.
->
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> ---
->  .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 44 +++++++++++++++++--
->  1 file changed, 41 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> index bff8ec2c1c70..d4734220443c 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> @@ -7,9 +7,9 @@
->  
->  /dts-v1/;
->  
-> -#include <dt-bindings/input/input.h>
-> -
->  #include "meson-gxm.dtsi"
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/sound/meson-aiu.h>
+> > size (e.g., 2M) than requested order(64K) repeatedly until driver
+> > could gather necessary amount of memory. Basically, this approach
+> > makes the allocation very slow due to cma_alloc's function
+> > slowness and it could be stuck on one of the pageblocks if it
+> > encounters unmigratable page.
+> > 
+> > To solve the issue, this patch introduces cma_alloc_bulk.
+> > 
+> > 	int cma_alloc_bulk(struct cma *cma, unsigned int align,
+> > 		bool fast, unsigned int order, size_t nr_requests,
+> > 		struct page **page_array, size_t *nr_allocated);
+> > 
+> > Most parameters are same with cma_alloc but it additionally passes
+> > vector array to store allocated memory. What's different with cma_alloc
+> > is it will skip pageblocks without waiting/stopping if it has unmovable
+> > page so that API continues to scan other pageblocks to find requested
+> > order page.
+> > 
+> > cma_alloc_bulk is best effort approach in that it skips some pageblocks
+> > if they have unmovable pages unlike cma_alloc. It doesn't need to be
+> > perfect from the beginning at the cost of performance. Thus, the API
+> > takes "bool fast parameter" which is propagated into alloc_contig_range to
+> > avoid significat overhead functions to inrecase CMA allocation success
+> > ratio(e.g., migration retrial, PCP, LRU draining per pageblock)
+> > at the cost of less allocation success ratio. If the caller couldn't
+> > allocate enough, they could call it with "false" to increase success ratio
+> > if they are okay to expense the overhead for the success ratio.
+> 
+> Just so I understand what the idea is:
+> 
+> alloc_contig_range() sometimes fails on CMA regions when trying to
+> allocate big chunks (e.g., 300M). Instead of tackling that issue, you
+> rather allocate plenty of small chunks, and make these small allocations
+> fail faster/ make the allocations less reliable. Correct?
+> 
+> I don't really have a strong opinion on that. Giving up fast rather than
+> trying for longer sounds like a useful thing to have - but I wonder if
+> it's strictly necessary for the use case you describe.
+> 
+> I'd like to hear Michals opinion on that.
 
-It's ok to do clean up or refactoring but it should not be done silently
-or mixed with something unrelated
+Well, what I can see is that this new interface is an antipatern to our
+allocation routines. We tend to control allocations by gfp mask yet you
+are introducing a bool parameter to make something faster... What that
+really means is rather arbitrary. Would it make more sense to teach
+cma_alloc resp. alloc_contig_range to recognize GFP_NOWAIT, GFP_NORETRY resp.
+GFP_RETRY_MAYFAIL instead?
 
-Same in the previous patch
+I am not deeply familiar with the cma allocator so sorry for a
+potentially stupid question. Why does a bulk interface performs better
+than repeated calls to cma_alloc? Is this because a failure would help
+to move on to the next pfn range while a repeated call would have to
+deal with the same range?
 
->  
->  / {
->  	compatible = "khadas,vim2", "amlogic,s912", "amlogic,meson-gxm";
-> @@ -145,6 +145,45 @@
->  		clock-frequency = <32768>;
->  		pwms = <&pwm_ef 0 30518 0>; /* PWM_E at 32.768KHz */
->  	};
-> +
-> +	sound {
-> +		compatible = "amlogic,gx-sound-card";
-> +		model = "GXM-KHADAS-VIM2";
-> +		assigned-clocks = <&clkc CLKID_MPLL0>,
-> +				  <&clkc CLKID_MPLL1>,
-> +				  <&clkc CLKID_MPLL2>;
-> +		assigned-clock-parents = <0>, <0>, <0>;
-> +		assigned-clock-rates = <294912000>,
-> +				       <270950400>,
-> +				       <393216000>;
-> +		status = "okay";
-> +
-> +		dai-link-0 {
-> +			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
-> +		};
-> +
-> +		dai-link-1 {
-> +			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
-> +			dai-format = "i2s";
-> +			mclk-fs = <256>;
-> +
-> +			codec-0 {
-> +				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
-> +			};
-> +		};
-> +
-> +		dai-link-2 {
-> +			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
-> +
-> +			codec-0 {
-> +				sound-dai = <&hdmi_tx>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&aiu {
-> +	status = "okay";
->  };
->  
->  &cec_AO {
-> @@ -154,7 +193,6 @@
->  	hdmi-phandle = <&hdmi_tx>;
->  };
->  
-> -
-
-Same here
-
->  &cpu_cooling_maps {
->  	map0 {
->  		cooling-device = <&gpio_fan THERMAL_NO_LIMIT 1>;
-
+> > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > ---
+> >  include/linux/cma.h |   5 ++
+> >  include/linux/gfp.h |   2 +
+> >  mm/cma.c            | 126 ++++++++++++++++++++++++++++++++++++++++++--
+> >  mm/page_alloc.c     |  19 ++++---
+> >  4 files changed, 140 insertions(+), 12 deletions(-)
+> > 
+-- 
+Michal Hocko
+SUSE Labs
