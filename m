@@ -2,147 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EDC2CC0C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250BF2CC0C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgLBPZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:25:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725962AbgLBPZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:25:45 -0500
-Date:   Wed, 2 Dec 2020 07:25:03 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606922704;
-        bh=M+CFICUDJwLUUez721Zick06gs3zdFQf3OD7+kJZf+I=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Sl8lzJG5NotbcMfdLHmiCkMHe0sfEJHguCpPbAQJWRtAiDc/qgLNr3Twb5vSFzs7z
-         bPNTi04qu7yZWabvGCDqLnFPomPQr1S0SXX1x1tNabmB7fNuDOHIlYT8v9eSTadpY/
-         CTpGYIJkub6P6WWsp8AqvOR3KXXo3/PJPlzzRi+I=
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
-Message-ID: <20201202152503.GL1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201119035222.GA18458@paulmck-ThinkPad-P72>
- <20201119035613.GA18816@paulmck-ThinkPad-P72>
- <20201119183252.GA812262@google.com>
- <20201119192241.GZ1437@paulmck-ThinkPad-P72>
- <CAEXW_YSRQ+r_CjFOOEZ38BBRpkhjs5UbpfhGCzA8=XywEU0u8Q@mail.gmail.com>
- <20201119201615.GA1437@paulmck-ThinkPad-P72>
- <20201119204221.GB812262@google.com>
- <CAEXW_YSHVzzm=fLtamB=K5tjiwUNrYK76MxqfW2w0MJKO5LsTw@mail.gmail.com>
- <20201202042143.GK1437@paulmck-ThinkPad-P72>
- <20201202145838.GA949146@google.com>
+        id S1730335AbgLBP0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:26:06 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49640 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725962AbgLBP0G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:26:06 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FOc2V097506;
+        Wed, 2 Dec 2020 10:25:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=G6Bm7w0HyTqomHLyXwVFkBJZZrNbr36wA4aMwyCpd9A=;
+ b=GsG25H/AQJ/l4YTYkHGSC8Al9nWs6NFzUxFewcp4WkLRXkkg2dB29TIy7drjBxWU+FYh
+ 8nEnXP01gt2lpUqfCCXtUfbG3W5sOOebqDUy4tJajL1Jiys5pgwS6R2lSvQfawab648j
+ fqxkx3FbPmpdDjm8bj90045vgo9hzRkIT1302BifVJwJfDJDubTjVYfik1c9xXtJkoiD
+ 3Vu1/J0lNTFfhzXEQXCQswDqFpvSjxu+bod3DcmG0KVwf5iiTnWMLK9wqpgxFQJlx4Xh
+ rO9hDlVnGtBIoF3R1n61tiO//MnGbL8pit5Y8yFgouImuxLWlQbVGJ7e2V6xpzzmVrBb Cw== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 356ceu2gxu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 10:25:20 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FDReb019645;
+        Wed, 2 Dec 2020 15:25:19 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma04wdc.us.ibm.com with ESMTP id 354ysujcqp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 15:25:19 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2FPJqR15401504
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 15:25:19 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22EDFAE05C;
+        Wed,  2 Dec 2020 15:25:19 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4FAF9AE063;
+        Wed,  2 Dec 2020 15:25:18 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 15:25:18 +0000 (GMT)
+Subject: Re: [PATCH v2 04/17] ibmvfc: add alloc/dealloc routines for SCSI
+ Sub-CRQ Channels
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-5-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <f0b848d3-0a39-dd95-e4a2-b303c12ed0dd@linux.vnet.ibm.com>
+Date:   Wed, 2 Dec 2020 09:25:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202145838.GA949146@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201202005329.4538-5-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ suspectscore=2 bulkscore=0 phishscore=0 adultscore=0 malwarescore=0
+ spamscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:58:38AM -0500, Joel Fernandes wrote:
-> On Tue, Dec 01, 2020 at 08:21:43PM -0800, Paul E. McKenney wrote:
-> > On Tue, Dec 01, 2020 at 05:26:32PM -0500, Joel Fernandes wrote:
-> > > On Thu, Nov 19, 2020 at 3:42 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > On Thu, Nov 19, 2020 at 12:16:15PM -0800, Paul E. McKenney wrote:
-> > > > > On Thu, Nov 19, 2020 at 02:44:35PM -0500, Joel Fernandes wrote:
-> > > > > > On Thu, Nov 19, 2020 at 2:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > > > > > > On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
-> > > > > > > > > > > > After rcu_do_batch(), add a check for whether the seglen counts went to
-> > > > > > > > > > > > zero if the list was indeed empty.
-> > > > > > > > > > > >
-> > > > > > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > > > > > > >
-> > > > > > > > > > > Queued for testing and further review, thank you!
-> > > > > > > > > >
-> > > > > > > > > > FYI, the second of the two checks triggered in all four one-hour runs of
-> > > > > > > > > > TREE01, all four one-hour runs of TREE04, and one of the four one-hour
-> > > > > > > > > > runs of TREE07.  This one:
-> > > > > > > > > >
-> > > > > > > > > > WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
-> > > > > > > > > >
-> > > > > > > > > > That is, there are callbacks in the list, but the sum of the segment
-> > > > > > > > > > counts is nevertheless zero.  The ->nocb_lock is held.
-> > > > > > > > > >
-> > > > > > > > > > Thoughts?
-> > > > > > > > >
-> > > > > > > > > FWIW, TREE01 reproduces it very quickly compared to the other two
-> > > > > > > > > scenarios, on all four run, within five minutes.
-> > > > > > > >
-> > > > > > > > So far for TREE01, I traced it down to an rcu_barrier happening so it could
-> > > > > > > > be related to some interaction with rcu_barrier() (Just a guess).
-> > > > > > >
-> > > > > > > Well, rcu_barrier() and srcu_barrier() are the only users of
-> > > > > > > rcu_segcblist_entrain(), if that helps.  Your modification to that
-> > > > > > > function looks plausible to me, but the system's opinion always overrules
-> > > > > > > mine.  ;-)
-> > > > > >
-> > > > > > Right. Does anything the bypass code standout? That happens during
-> > > > > > rcu_barrier() as well, and it messes with the lengths.
-> > > > >
-> > > > > In theory, rcu_barrier_func() flushes the bypass before doing the
-> > > > > entrain, and does the rcu_segcblist_entrain() afterwards.
-> > > > >
-> > > > > Ah, and that is the issue.  If ->cblist is empty and ->nocb_bypass
-> > > > > is not, then ->cblist length will be nonzero, and none of the
-> > > > > segments will be nonzero.
-> > > > >
-> > > > > So you need something like this for that second WARN, correct?
-> > > > >
-> > > > >       WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
-> > > > >                    rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
-> > > 
-> > > Just started to look into it again. If the &rdp->cblist is empty, that
-> > > means the bypass list could not have been used (Since per comments on
-> > > rcu_nocb_try_bypass() , the bypass list is in use only when the cblist
-> > > is non-empty). So the cblist was non empty, then the segment counts
-> > > should not sum to 0.  So I don't think that explains it. Anyway, I
-> > > will try the new version of your warning in case there is something
-> > > about bypass lists that I'm missing.
-> > 
-> > Good point.  I really did see failures, though.  Do they show up for
-> > you?
-> 
-> Yeah I do see failures. Once I change the warning as below, the failures go
-> away though. So looks like indeed a segcblist can be empty when the bypass
-> list has something in it?  If you agree, could you change the warning to as
-> below? The tests failing before all pass 1 hour rcutorture testing now
-> (TREE01, TREE04 and TREE07).
+On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+> +static int ibmvfc_register_scsi_channel(struct ibmvfc_host *vhost,
+> +				  int index)
+> +{
+> +	struct device *dev = vhost->dev;
+> +	struct vio_dev *vdev = to_vio_dev(dev);
+> +	struct ibmvfc_sub_queue *scrq = &vhost->scsi_scrqs.scrqs[index];
+> +	int rc = -ENOMEM;
+> +
+> +	ENTER;
+> +
+> +	scrq->msgs = (struct ibmvfc_sub_crq *)get_zeroed_page(GFP_KERNEL);
+> +	if (!scrq->msgs)
+> +		return rc;
+> +
+> +	scrq->size = PAGE_SIZE / sizeof(*scrq->msgs);
+> +	scrq->msg_token = dma_map_single(dev, scrq->msgs, PAGE_SIZE,
+> +					 DMA_BIDIRECTIONAL);
+> +
+> +	if (dma_mapping_error(dev, scrq->msg_token))
+> +		goto dma_map_failed;
+> +
+> +	rc = h_reg_sub_crq(vdev->unit_address, scrq->msg_token, PAGE_SIZE,
+> +			   &scrq->cookie, &scrq->hw_irq);
+> +
+> +	if (rc) {
+> +		dev_warn(dev, "Error registering sub-crq: %d\n", rc);
+> +		dev_warn(dev, "Firmware may not support MQ\n");
 
-I agree with the fix, which should not be too surprising.  ;-)
+Will this now get logged everywhere this new driver runs if the firmware
+does not support sub CRQs? Is there something better that could be done
+here to only log this for a true error and not just because a new driver
+is running with an older firmware release?
 
-But can you tell me how you can have a non-zero count while all the
-segment counts sum to zero?  Yes, you told me why nothing should be
-placed in the bypass list while cblist is empty.  Is that really the
-only way this state can be entered?
+> +		goto reg_failed;
+> +	}
+> +
+> +	scrq->hwq_id = index;
+> +	scrq->vhost = vhost;
+> +
+> +	LEAVE;
+> +	return 0;
+> +
+> +reg_failed:
+> +	dma_unmap_single(dev, scrq->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+> +dma_map_failed:
+> +	free_page((unsigned long)scrq->msgs);
+> +	LEAVE;
+> +	return rc;
+> +}
+> +
 
-							Thanx, Paul
 
-> ---8<-----------------------
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 91e35b521e51..3cd92b7df8ac 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2554,7 +2554,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  	WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
->  		     count != 0 && rcu_segcblist_empty(&rdp->cblist));
->  	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
-> -	WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
-> +	WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
-> +		     rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
->  
->  	rcu_nocb_unlock_irqrestore(rdp, flags);
->  
-> -- 
-> 2.29.2.454.gaff20da3a2-goog
-> 
+
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
+
