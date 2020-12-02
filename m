@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9662CB3E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB812CB3E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgLBEV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 23:21:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727375AbgLBEV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 23:21:58 -0500
-Date:   Wed, 2 Dec 2020 09:51:12 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606882877;
-        bh=0MX7CoibYwcelRM52XLtvuAv3gqF6aXGWnyw7knX294=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c9MF51dsqMfjDFqmA7eT47Io5h22+qX5+QyI/LGeTXdeeOAWQMgajwaG9OEv/NOJm
-         ayaD4s0+fVgdr/U1EOpJn3onueXyxayo8AEx258Td1pfLRIDCBUUKy+H7G4Rw5KtOa
-         5UjMVIh7cvUbxO87UsRBUqogBmAqnz9WGDA9Julo=
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
-        Marian Mihailescu <mihailescu2m@gmail.com>,
-        Markus Reichl <m.reichl@fivetechno.de>
-Subject: Re: [PATCH] phy: samsung: Fix build break in USB2 PHY driver for
- Exynos5420 SoCs
-Message-ID: <20201202042112.GD8403@vkoul-mobl>
-References: <CGME20201201170918eucas1p2a34ca6e90ec710400a7a5d7121197d85@eucas1p2.samsung.com>
- <20201201170905.16153-1-m.szyprowski@samsung.com>
+        id S1728380AbgLBEWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 23:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726810AbgLBEWH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 23:22:07 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7873AC0613CF;
+        Tue,  1 Dec 2020 20:21:27 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id ms7so265869pjb.4;
+        Tue, 01 Dec 2020 20:21:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p54tA3Lh3qw5So+dcm5tNyopOVZr/DLkJyUNEV6tO9o=;
+        b=LMnJyfctexJAuMIUke4jgBIAem+9sVrKh+vo3s3684SWnoMoJO2xeS8G3jzxXl39AV
+         D6jAwkwAHRZe/jdIjYFhhOAxUG5Nwlyg6g3MH2gLI0cnWY5GuZ/wGx3fA8iAuYe7PXpj
+         WVXZHMSgCxQvTNtyP/pPYN80cBcWKbL3GoVUjWQMop979Vr1oRkeokmgqX6TkuVcRgn0
+         0uVjyOs/4eqhQeynHqFZECN7D7oNONyXt/eSKJ7if5C4SJiyeH99VmucQKYwewcEaW1i
+         qkui7AgwcAj3g5sHaBof5tMCc25z3AjtadbNWip94A/kQvPNDNd4pIbjzq9NEh3m38Se
+         hsyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p54tA3Lh3qw5So+dcm5tNyopOVZr/DLkJyUNEV6tO9o=;
+        b=k3VaGpFCTBHSk4YmtLsCgS0raVNmgoGOt8CLm9IR0fgQH9MqOvGnewWmd3C+QtUQJ0
+         zezL2byq5UVvBUKmR5FlRnAhXlCyEJTTVX7gh9KdXKKsamb1x6ACTaG5A2EJsIs1+4NR
+         DXI8J2MZ2I8cChndodWvK+JcDNfZl54l6EiGhLs9sCcCUZu0VFI6cxuXHv9rLjSbYOZ5
+         wlp0D99CpbpD7yn92U/kgw6smzMKJkFkmNuADMp7MiCmwi2IeeESk1wsgvZkuztStZtP
+         ZF5TovudncWGPi160gxBlhwoqVpztWDOVmIDT/h+bw0fWgbDqaN71XuT9i0NwrXizoHP
+         Ir9A==
+X-Gm-Message-State: AOAM531Vpx1iXXsqY83vMGmAmgWw9GRnCz4T8/LwdbWr3a+ZLgQfszWg
+        iJ+x363HvolXkeeqepSwJEs=
+X-Google-Smtp-Source: ABdhPJxn31eckifthLwsRg2hL2izLl2wR2myRosOg/r3h/C4dih/qs9kA/Qi23NyS/9sdC+arQHGAQ==
+X-Received: by 2002:a17:902:a415:b029:d9:ef8:afa1 with SMTP id p21-20020a170902a415b02900d90ef8afa1mr830554plq.66.1606882887032;
+        Tue, 01 Dec 2020 20:21:27 -0800 (PST)
+Received: from [192.168.86.81] ([106.51.140.48])
+        by smtp.gmail.com with ESMTPSA id x28sm461455pfr.186.2020.12.01.20.21.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Dec 2020 20:21:26 -0800 (PST)
+Subject: Re: [PATCH v3] lib: Convert test_hexdump.c to KUnit
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20201201071632.68471-1-98.arpi@gmail.com>
+ <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+Message-ID: <e10ef8d3-f22b-db10-3784-c94ee425af46@gmail.com>
+Date:   Wed, 2 Dec 2020 09:51:19 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201170905.16153-1-m.szyprowski@samsung.com>
+In-Reply-To: <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-12-20, 18:09, Marek Szyprowski wrote:
-> Exynos5420 variant of USB2 PHY is handled by the same code as the
-> Exynos5250 one. Introducing a separate Kconfig symbol for it was an
-> over-engineering, which turned out to cause build break for certain
-> configurations:
+On 01/12/20 4:36 pm, Andy Shevchenko wrote:
+> On Tue, Dec 1, 2020 at 9:21 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>> Convert test lib/test_hexdump.c to KUnit. More information about
+>> KUnit can be found at:
+>> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+>> KUnit provides a common framework for unit tests in the kernel.
+>> KUnit and kselftest are standardizing around KTAP, converting this
+>> test to KUnit makes this test output in KTAP which we are trying to
+>> make the standard test result format for the kernel.
 > 
-> ERROR: modpost: "exynos5420_usb2_phy_config" [drivers/phy/samsung/phy-exynos-usb2.ko] undefined!
+> Below doesn't suit commit message, perhaps adding it after '---' line
+> would be good. In the commit message you can choose one failed case
+> followed by all OK and show the difference.
 > 
-> Fix this by removing PHY_EXYNOS5420_USB2 symbol and using
-> PHY_EXYNOS5250_USB2 also for Exynos5420 SoCs.
+
+Okay, I will make this change.
+
+>> I ran both the original and converted tests as is to produce the
+>> output for success of the test in the two cases. I also ran these
+>> tests with a small modification to show the difference in the output
+>> for failure of the test in both cases. The modification I made is:
+>>  static const char * const test_data_4_le[] __initconst = {
+>> -       "7bdb32be", "b293180a", "24c4ba70", "9b34837d",
+>> +       "7bdb32be", "b293180a", "24c4ba70", "9b3483d",
+>>
+>> The difference in outputs can be seen here:
+>> https://gist.github.com/arpi-r/38f53a3c65692bf684a6bf3453884b6e
 > 
-> Reported-by: Markus Reichl <m.reichl@fivetechno.de>
-> Fixes: 81b534f7e9b2 ("phy: samsung: Add support for the Exynos5420 variant of the USB2 PHY")
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
-> Vinod: this a fix to the patch merged yesterday. If you want me to resend
-> a fixed initial patch, let me know.
-
-The fix is just fine :)
-
-Although the patch subject line is not. It is supposed to talk about the
-change done and not the effect.
-
-Maybe "Merge kconfig for Exynos5420 and Exynos5250" would make better
-sense
-
-> ---
->  drivers/phy/samsung/Kconfig            | 7 +------
->  drivers/phy/samsung/phy-samsung-usb2.c | 2 --
->  2 files changed, 1 insertion(+), 8 deletions(-)
+> Looks pretty much good, what I'm sad to see is the absence of the test
+> statistics. Any ideas if we can get it back?
 > 
-> diff --git a/drivers/phy/samsung/Kconfig b/drivers/phy/samsung/Kconfig
-> index 0f51d3bf38cc..e20d2fcc9fe7 100644
-> --- a/drivers/phy/samsung/Kconfig
-> +++ b/drivers/phy/samsung/Kconfig
-> @@ -64,12 +64,7 @@ config PHY_EXYNOS4X12_USB2
->  config PHY_EXYNOS5250_USB2
->  	bool
->  	depends on PHY_SAMSUNG_USB2
-> -	default SOC_EXYNOS5250
-> -
-> -config PHY_EXYNOS5420_USB2
-> -	bool
-> -	depends on PHY_SAMSUNG_USB2
-> -	default SOC_EXYNOS5420
-> +	default SOC_EXYNOS5250 || SOC_EXYNOS5420
->  
->  config PHY_S5PV210_USB2
->  	bool "Support for S5PV210"
-> diff --git a/drivers/phy/samsung/phy-samsung-usb2.c b/drivers/phy/samsung/phy-samsung-usb2.c
-> index 3908153f2ce5..ec2befabeea6 100644
-> --- a/drivers/phy/samsung/phy-samsung-usb2.c
-> +++ b/drivers/phy/samsung/phy-samsung-usb2.c
-> @@ -127,8 +127,6 @@ static const struct of_device_id samsung_usb2_phy_of_match[] = {
->  		.compatible = "samsung,exynos5250-usb2-phy",
->  		.data = &exynos5250_usb2_phy_config,
->  	},
-> -#endif
-> -#ifdef CONFIG_PHY_EXYNOS5420_USB2
->  	{
->  		.compatible = "samsung,exynos5420-usb2-phy",
->  		.data = &exynos5420_usb2_phy_config,
-> -- 
-> 2.17.1
 
--- 
-~Vinod
+I could again include variable total_tests as was in the original test.
+Would that be fine?
+
+Thanks!
