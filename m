@@ -2,253 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1EC2CB1CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BE32CB1DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 01:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgLBAyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 19:54:35 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25086 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727720AbgLBAyd (ORCPT
+        id S1727938AbgLBA4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 19:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727922AbgLBA4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:54:33 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B20Vm4F104648;
-        Tue, 1 Dec 2020 19:53:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=qeyBQu4NUfGkcBIyowy51V2tBDo7DmWJZkWgy4EMFq8=;
- b=hG4qguGokrQ6wDEYv/YS/Y9OO46Z4ayQmxHn+qYrUQpJqkjM/6E5PX2CEueK03Fcc8Y3
- niFlqnS9qLmoieMG0/8W6vI7l5El1I/KWvwpkxavyWDI1NSL7+VpKtHC2gwfWvhAcMyO
- eAl0GXE4hGGK2ACf0LqTg/Qw14JIr5rrz/ZYWM0ckobsRZPwzsOhqZcRzlqgdtmQJEh5
- Fs087C/u8Jqn6l9xDMdzxD9zAfJfNwYa3ai8axEVn0bubOjo1t2q+tj4YCqE9uRXkvfb
- p5myDRoMNCJRdrH3Oz/PHvPY0XcrEdd1kqLmdiIClAVWbS1lG+atYPRwAs/zlNvZ7c5y hg== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 355jpx3ngb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Dec 2020 19:53:41 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B20cDq3006736;
-        Wed, 2 Dec 2020 00:53:41 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma02wdc.us.ibm.com with ESMTP id 353e694e5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 00:53:41 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B20rUNS9765492
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 00:53:30 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB66A7805C;
-        Wed,  2 Dec 2020 00:53:39 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 658997805E;
-        Wed,  2 Dec 2020 00:53:39 +0000 (GMT)
-Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 00:53:39 +0000 (GMT)
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
-Subject: [PATCH v2 17/17] ibmvfc: provide modules parameters for MQ settings
-Date:   Tue,  1 Dec 2020 18:53:29 -0600
-Message-Id: <20201202005329.4538-18-tyreld@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201202005329.4538-1-tyreld@linux.ibm.com>
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+        Tue, 1 Dec 2020 19:56:06 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DBAC0613CF;
+        Tue,  1 Dec 2020 16:55:26 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id x2so55322ybt.11;
+        Tue, 01 Dec 2020 16:55:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BtOPT5jltF4CVLDPPnaNo7rmidfqmNUIx0/PN3QHp2M=;
+        b=WX2myt5gM6vWrdPHfVZHnVP4VShRjz+ZY0kRNBqShcXt/1eQKKmOuPujmMidioy82B
+         4hfV0WwyLVVUP0Yseh2c8kNFn2qrlnuk1uhWr9zLBis2L0De+Bmx8hfxwEVObnRni1aS
+         r2hNM3ceWCmPk5tH8rhWgbBhRwZMkxnThAha/ZS1gYyA9nKFavZUMhE6WWHZoxIb9+B9
+         Crq4+PdCqp+4mbhMaKy24NHz/6bVgED4je7m7KaRmXepzhT17hRxWZa26UBq6hUynj8G
+         W+VVXKRYUdz/1le4cN52vuGrB6USdgSgycSDr7O2WE/iYaSdX8ND2B6YhbF/cp7BH725
+         9/HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BtOPT5jltF4CVLDPPnaNo7rmidfqmNUIx0/PN3QHp2M=;
+        b=hfTheSJDOPragEXHOb9lP42djH5/sX4ISc96nz69DPDgUtriGVBJIMxybTlqsEQzpV
+         0HPvzOSsEne0HwBshO2TrkHA8WpQ2ol74SbZ7nHPfUpUFODTwnjMURh0zxngT7JoE/8+
+         GzYz7m4E9h5kWpVdOfbc7VtHsI04yTlmXz9uHVsmhCuHGES2B3vaoRXQA/ZfTZ9yy57V
+         8WrOD+TosPY4pVTJ1/yZvy/0Jcc+1IXqZkAZeT2wfOrztYKKi2Xe0YmXmTGGOstA3Prr
+         58bxCmUFS90gf8S4jgw6+oSnZxz7DrDND3QPYMya9zBGlaCQstmdT+Jxm1/kE9UgvjRr
+         6DqQ==
+X-Gm-Message-State: AOAM532l1v1B4YAywDC4xQPHrj6FgcP6oDnsCwAR9tMjBdTSwluK6hNC
+        qEk2cxP2HZ89+bn2uh1M+Bh/Ew2db2v1krRjgW8=
+X-Google-Smtp-Source: ABdhPJy3gBFqXQtWj/HvRoosWfu+pAZZ88j+2BESAL0eQjvgm9bkfHfcwH4ZasTnZnuy3OBgcSh8UuRhF7VUaxFgU/8=
+X-Received: by 2002:a25:df82:: with SMTP id w124mr87572ybg.347.1606870525716;
+ Tue, 01 Dec 2020 16:55:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-01_12:2020-11-30,2020-12-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 suspectscore=1 bulkscore=0 spamscore=0
- adultscore=0 impostorscore=0 mlxlogscore=999 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012010142
+References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+ <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com> <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
+In-Reply-To: <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Dec 2020 16:55:14 -0800
+Message-ID: <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+To:     Yonghong Song <yhs@fb.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the various module parameter toggles for adjusting the MQ
-characteristics at boot/load time as well as a device attribute for
-changing the client scsi channel request amount.
+On Fri, Nov 27, 2020 at 8:09 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 11/27/20 3:20 AM, KP Singh wrote:
+> > On Fri, Nov 27, 2020 at 8:35 AM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >>
+> >>
+> >> On 11/26/20 8:57 AM, Florent Revest wrote:
+> >>> This helper exposes the kallsyms_lookup function to eBPF tracing
+> >>> programs. This can be used to retrieve the name of the symbol at an
+> >>> address. For example, when hooking into nf_register_net_hook, one can
+> >>> audit the name of the registered netfilter hook and potentially also
+> >>> the name of the module in which the symbol is located.
+> >>>
+> >>> Signed-off-by: Florent Revest <revest@google.com>
+> >>> ---
+> >>>    include/uapi/linux/bpf.h       | 16 +++++++++++++
+> >>>    kernel/trace/bpf_trace.c       | 41 ++++++++++++++++++++++++++++++++++
+> >>>    tools/include/uapi/linux/bpf.h | 16 +++++++++++++
+> >>>    3 files changed, 73 insertions(+)
+> >>>
+> >>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >>> index c3458ec1f30a..670998635eac 100644
+> >>> --- a/include/uapi/linux/bpf.h
+> >>> +++ b/include/uapi/linux/bpf.h
+> >>> @@ -3817,6 +3817,21 @@ union bpf_attr {
+> >>>     *          The **hash_algo** is returned on success,
+> >>>     *          **-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
+> >>>     *          invalid arguments are passed.
+> >>> + *
+> >>> + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
+> >>> + *   Description
+> >>> + *           Uses kallsyms to write the name of the symbol at *address*
+> >>> + *           into *symbol* of size *symbol_sz*. This is guaranteed to be
+> >>> + *           zero terminated.
+> >>> + *           If the symbol is in a module, up to *module_size* bytes of
+> >>> + *           the module name is written in *module*. This is also
+> >>> + *           guaranteed to be zero-terminated. Note: a module name
+> >>> + *           is always shorter than 64 bytes.
+> >>> + *   Return
+> >>> + *           On success, the strictly positive length of the full symbol
+> >>> + *           name, If this is greater than *symbol_size*, the written
+> >>> + *           symbol is truncated.
+> >>> + *           On error, a negative value.
+> >>>     */
+> >>>    #define __BPF_FUNC_MAPPER(FN)               \
+> >>>        FN(unspec),                     \
+> >>> @@ -3981,6 +3996,7 @@ union bpf_attr {
+> >>>        FN(bprm_opts_set),              \
+> >>>        FN(ktime_get_coarse_ns),        \
+> >>>        FN(ima_inode_hash),             \
+> >>> +     FN(kallsyms_lookup),    \
+> >>>        /* */
+> >>>
+> >>>    /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> >>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> >>> index d255bc9b2bfa..9d86e20c2b13 100644
+> >>> --- a/kernel/trace/bpf_trace.c
+> >>> +++ b/kernel/trace/bpf_trace.c
+> >>> @@ -17,6 +17,7 @@
+> >>>    #include <linux/error-injection.h>
+> >>>    #include <linux/btf_ids.h>
+> >>>    #include <linux/bpf_lsm.h>
+> >>> +#include <linux/kallsyms.h>
+> >>>
+> >>>    #include <net/bpf_sk_storage.h>
+> >>>
+> >>> @@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+> >>>        .arg5_type      = ARG_ANYTHING,
+> >>>    };
+> >>>
+> >>> +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
+> >>> +        char *, module, u32, module_size)
+> >>> +{
+> >>> +     char buffer[KSYM_SYMBOL_LEN];
+> >>> +     unsigned long offset, size;
+> >>> +     const char *name;
+> >>> +     char *modname;
+> >>> +     long ret;
+> >>> +
+> >>> +     name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
+> >>> +     if (!name)
+> >>> +             return -EINVAL;
+> >>> +
+> >>> +     ret = strlen(name) + 1;
+> >>> +     if (symbol_size) {
+> >>> +             strncpy(symbol, name, symbol_size);
+> >>> +             symbol[symbol_size - 1] = '\0';
+> >>> +     }
+> >>> +
+> >>> +     if (modname && module_size) {
+> >>> +             strncpy(module, modname, module_size);
+> >>> +             module[module_size - 1] = '\0';
+> >>
+> >> In this case, module name may be truncated and user did not get any
+> >> indication from return value. In the helper description, it is mentioned
+> >> that module name currently is most 64 bytes. But from UAPI perspective,
+> >> it may be still good to return something to let user know the name
+> >> is truncated.
+> >>
+> >> I do not know what is the best way to do this. One suggestion is
+> >> to break it into two helpers, one for symbol name and another
+> >
+> > I think it would be slightly preferable to have one helper though.
+> > maybe something like bpf_get_symbol_info (better names anyone? :))
+> > with flags to get the module name or the symbol name depending
+> > on the flag?
+>
+> This works even better. Previously I am thinking if we have two helpers,
+> we can add flags for each of them for future extension. But we
+> can certainly have just one helper with flags to indicate
+> whether this is for module name or for symbol name or something else.
+>
+> The buffer can be something like
+>     union bpf_ksymbol_info {
+>        char   module_name[];
+>        char   symbol_name[];
+>        ...
+>     }
+> and flags will indicate what information user wants.
 
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 75 +++++++++++++++++++++++++++++-----
- 1 file changed, 65 insertions(+), 10 deletions(-)
+one more thing that might be useful to resolve to the symbol's "base
+address". E.g., if we have IP inside the function, this would resolve
+to the start of the function, sort of "canonical" symbol address. Type
+of ksym is another "characteristic" which could be returned (as a
+single char?)
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 97e8eed04b01..bc7c2dcd902c 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -40,6 +40,12 @@ static unsigned int disc_threads = IBMVFC_MAX_DISC_THREADS;
- static unsigned int ibmvfc_debug = IBMVFC_DEBUG;
- static unsigned int log_level = IBMVFC_DEFAULT_LOG_LEVEL;
- static unsigned int cls3_error = IBMVFC_CLS3_ERROR;
-+static unsigned int mq_enabled = IBMVFC_MQ;
-+static unsigned int nr_scsi_hw_queues = IBMVFC_SCSI_HW_QUEUES;
-+static unsigned int nr_scsi_channels = IBMVFC_SCSI_CHANNELS;
-+static unsigned int mig_channels_only = IBMVFC_MIG_NO_SUB_TO_CRQ;
-+static unsigned int mig_no_less_channels = IBMVFC_MIG_NO_N_TO_M;
-+
- static LIST_HEAD(ibmvfc_head);
- static DEFINE_SPINLOCK(ibmvfc_driver_lock);
- static struct scsi_transport_template *ibmvfc_transport_template;
-@@ -49,6 +55,22 @@ MODULE_AUTHOR("Brian King <brking@linux.vnet.ibm.com>");
- MODULE_LICENSE("GPL");
- MODULE_VERSION(IBMVFC_DRIVER_VERSION);
- 
-+module_param_named(mq, mq_enabled, uint, S_IRUGO);
-+MODULE_PARM_DESC(mq, "Enable multiqueue support. "
-+		 "[Default=" __stringify(IBMVFC_MQ) "]");
-+module_param_named(scsi_host_queues, nr_scsi_hw_queues, uint, S_IRUGO);
-+MODULE_PARM_DESC(scsi_host_queues, "Number of SCSI Host submission queues. "
-+		 "[Default=" __stringify(IBMVFC_SCSI_HW_QUEUES) "]");
-+module_param_named(scsi_hw_channels, nr_scsi_channels, uint, S_IRUGO);
-+MODULE_PARM_DESC(scsi_hw_channels, "Number of hw scsi channels to request. "
-+		 "[Default=" __stringify(IBMVFC_SCSI_CHANNELS) "]");
-+module_param_named(mig_channels_only, mig_channels_only, uint, S_IRUGO | S_IWUSR);
-+MODULE_PARM_DESC(mig_channels_only, "Prevent migration to non-channelized system. "
-+		 "[Default=" __stringify(IBMVFC_MIG_NO_SUB_TO_CRQ) "]");
-+module_param_named(mig_no_less_channels, mig_no_less_channels, uint, S_IRUGO | S_IWUSR);
-+MODULE_PARM_DESC(mig_no_less_channels, "Prevent migration to system with less channels. "
-+		 "[Default=" __stringify(IBMVFC_MIG_NO_N_TO_M) "]");
-+
- module_param_named(init_timeout, init_timeout, uint, S_IRUGO | S_IWUSR);
- MODULE_PARM_DESC(init_timeout, "Initialization timeout in seconds. "
- 		 "[Default=" __stringify(IBMVFC_INIT_TIMEOUT) "]");
-@@ -823,7 +845,7 @@ static int ibmvfc_reset_crq(struct ibmvfc_host *vhost)
- 	crq->cur = 0;
- 
- 	if (vhost->scsi_scrqs.scrqs) {
--		for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++) {
-+		for (i = 0; i < nr_scsi_hw_queues; i++) {
- 			scrq = &vhost->scsi_scrqs.scrqs[i];
- 			memset(scrq->msgs, 0, PAGE_SIZE);
- 			scrq->cur = 0;
-@@ -3228,6 +3250,36 @@ static ssize_t ibmvfc_store_log_level(struct device *dev,
- 	return strlen(buf);
- }
- 
-+static ssize_t ibmvfc_show_scsi_channels(struct device *dev,
-+					 struct device_attribute *attr, char *buf)
-+{
-+	struct Scsi_Host *shost = class_to_shost(dev);
-+	struct ibmvfc_host *vhost = shost_priv(shost);
-+	unsigned long flags = 0;
-+	int len;
-+
-+	spin_lock_irqsave(shost->host_lock, flags);
-+	len = snprintf(buf, PAGE_SIZE, "%d\n", vhost->client_scsi_channels);
-+	spin_unlock_irqrestore(shost->host_lock, flags);
-+	return len;
-+}
-+
-+static ssize_t ibmvfc_store_scsi_channels(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf, size_t count)
-+{
-+	struct Scsi_Host *shost = class_to_shost(dev);
-+	struct ibmvfc_host *vhost = shost_priv(shost);
-+	unsigned long flags = 0;
-+	unsigned int channels;
-+
-+	spin_lock_irqsave(shost->host_lock, flags);
-+	channels = simple_strtoul(buf, NULL, 10);
-+	vhost->client_scsi_channels = min(channels, nr_scsi_hw_queues);
-+	spin_unlock_irqrestore(shost->host_lock, flags);
-+	return strlen(buf);
-+}
-+
- static DEVICE_ATTR(partition_name, S_IRUGO, ibmvfc_show_host_partition_name, NULL);
- static DEVICE_ATTR(device_name, S_IRUGO, ibmvfc_show_host_device_name, NULL);
- static DEVICE_ATTR(port_loc_code, S_IRUGO, ibmvfc_show_host_loc_code, NULL);
-@@ -3236,6 +3288,8 @@ static DEVICE_ATTR(npiv_version, S_IRUGO, ibmvfc_show_host_npiv_version, NULL);
- static DEVICE_ATTR(capabilities, S_IRUGO, ibmvfc_show_host_capabilities, NULL);
- static DEVICE_ATTR(log_level, S_IRUGO | S_IWUSR,
- 		   ibmvfc_show_log_level, ibmvfc_store_log_level);
-+static DEVICE_ATTR(nr_scsi_channels, S_IRUGO | S_IWUSR,
-+		   ibmvfc_show_scsi_channels, ibmvfc_store_scsi_channels);
- 
- #ifdef CONFIG_SCSI_IBMVFC_TRACE
- /**
-@@ -3292,6 +3346,7 @@ static struct device_attribute *ibmvfc_attrs[] = {
- 	&dev_attr_npiv_version,
- 	&dev_attr_capabilities,
- 	&dev_attr_log_level,
-+	&dev_attr_nr_scsi_channels,
- 	NULL
- };
- 
-@@ -4676,9 +4731,9 @@ static void ibmvfc_channel_enquiry(struct ibmvfc_host *vhost)
- 	mad->common.opcode = cpu_to_be32(IBMVFC_CHANNEL_ENQUIRY);
- 	mad->common.length = cpu_to_be16(sizeof(*mad));
- 
--	if (IBMVFC_MIG_NO_SUB_TO_CRQ)
-+	if (mig_channels_only)
- 		mad->flags |= cpu_to_be32(IBMVFC_NO_CHANNELS_TO_CRQ_SUPPORT);
--	if (IBMVFC_MIG_NO_N_TO_M)
-+	if (mig_no_less_channels)
- 		mad->flags |= cpu_to_be32(IBMVFC_NO_N_TO_M_CHANNELS_SUPPORT);
- 
- 	ibmvfc_set_host_action(vhost, IBMVFC_HOST_ACTION_INIT_WAIT);
-@@ -5416,13 +5471,13 @@ static int ibmvfc_init_sub_crqs(struct ibmvfc_host *vhost)
- 
- 	ENTER;
- 
--	vhost->scsi_scrqs.scrqs = kcalloc(IBMVFC_SCSI_HW_QUEUES,
-+	vhost->scsi_scrqs.scrqs = kcalloc(nr_scsi_hw_queues,
- 					  sizeof(*vhost->scsi_scrqs.scrqs),
- 					  GFP_KERNEL);
- 	if (!vhost->scsi_scrqs.scrqs)
- 		return -1;
- 
--	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++) {
-+	for (i = 0; i < nr_scsi_hw_queues; i++) {
- 		if (ibmvfc_register_scsi_channel(vhost, i)) {
- 			for (j = i; j > 0; j--)
- 				ibmvfc_deregister_scsi_channel(vhost, j - 1);
-@@ -5446,7 +5501,7 @@ static void ibmvfc_release_sub_crqs(struct ibmvfc_host *vhost)
- 	if (!vhost->scsi_scrqs.scrqs)
- 		return;
- 
--	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++)
-+	for (i = 0; i < nr_scsi_hw_queues; i++)
- 		ibmvfc_deregister_scsi_channel(vhost, i);
- 
- 	kfree(vhost->scsi_scrqs.scrqs);
-@@ -5658,13 +5713,13 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 	}
- 
- 	shost->transportt = ibmvfc_transport_template;
--	shost->can_queue = (max_requests / IBMVFC_SCSI_HW_QUEUES);
-+	shost->can_queue = (max_requests / nr_scsi_hw_queues);
- 	shost->max_lun = max_lun;
- 	shost->max_id = max_targets;
- 	shost->max_sectors = IBMVFC_MAX_SECTORS;
- 	shost->max_cmd_len = IBMVFC_MAX_CDB_LEN;
- 	shost->unique_id = shost->host_no;
--	shost->nr_hw_queues = IBMVFC_SCSI_HW_QUEUES;
-+	shost->nr_hw_queues = nr_scsi_hw_queues;
- 
- 	vhost = shost_priv(shost);
- 	INIT_LIST_HEAD(&vhost->sent);
-@@ -5677,8 +5732,8 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 	vhost->log_level = log_level;
- 	vhost->task_set = 1;
- 
--	vhost->mq_enabled = IBMVFC_MQ;
--	vhost->client_scsi_channels = IBMVFC_SCSI_CHANNELS;
-+	vhost->mq_enabled = mq_enabled;
-+	vhost->client_scsi_channels = min(nr_scsi_hw_queues, nr_scsi_channels);
- 	vhost->using_channels = 0;
- 	vhost->do_enquiry = 1;
- 
--- 
-2.27.0
+I wouldn't define bpf_ksymbol_info, though. Just depending on the
+flag, specify what kind of memory layou (e.g., for strings -
+zero-terminated string, for address - 8 byte numbers, etc). That way
+we can also allow fetching multiple things together, they would just
+be laid out one after another in memory.
 
+E.g.:
+
+char buf[256];
+int err = bpf_ksym_resolve(<addr>, BPF_KSYM_NAME | BPF_KSYM_MODNAME |
+BPF_KSYM_BASE_ADDR, buf, sizeof(buf));
+
+if (err == -E2BIG)
+  /* need bigger buffer, but all the data up to truncation point is filled in */
+else
+  /* err has exact number of bytes used, including zero terminator(s) */
+  /* data is laid out as
+"cpufreq_gov_powersave_init\0cpufreq_powersave\0\x12\x23\x45\x56\x12\x23\x45\x56"
+*/
+
+
+>
+> >
+> >> for module name. What is the use cases people want to get both
+> >> symbol name and module name and is it common?
+> >
+> > The use case would be to disambiguate symbols in the
+> > kernel from the ones from a kernel module. Similar to what
+> > /proc/kallsyms does:
+> >
+> > T cpufreq_gov_powersave_init [cpufreq_powersave]
+> >
+> >>
+> >>> +     }
+> >>> +
+> >>> +     return ret;
+> >>> +}
+> >>> +
+> >>> +const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
+> >>> +     .func           = bpf_kallsyms_lookup,
+> >>> +     .gpl_only       = false,
+> >>> +     .ret_type       = RET_INTEGER,
+> >>> +     .arg1_type      = ARG_ANYTHING,
+> >>> +     .arg2_type      = ARG_PTR_TO_MEM,
+> >> ARG_PTR_TO_UNINIT_MEM?
+> >>
+> >>> +     .arg3_type      = ARG_CONST_SIZE,
+> >> ARG_CONST_SIZE_OR_ZERO? This is especially true for current format
+> >> which tries to return both symbol name and module name and
+> >> user may just want to do one of them.
+> >>
+> >>> +     .arg4_type      = ARG_PTR_TO_MEM,
+> >> ARG_PTR_TO_UNINIT_MEM?
+> >>
+> >>> +     .arg5_type      = ARG_CONST_SIZE,
+> >> ARG_CONST_SIZE_OR_ZERO?
+> >>
+> >>> +};
+> >>> +
+> >>>    const struct bpf_func_proto *
+> >>>    bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >>>    {
+> >>> @@ -1356,6 +1395,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >>>                return &bpf_per_cpu_ptr_proto;
+> >>>        case BPF_FUNC_bpf_this_cpu_ptr:
+> >>>                return &bpf_this_cpu_ptr_proto;
+> >>> +     case BPF_FUNC_kallsyms_lookup:
+> >>> +             return &bpf_kallsyms_lookup_proto;
+> >>>        default:
+> >>>                return NULL;
+> >>>        }
+> >> [...]
