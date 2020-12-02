@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A362CC65D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7D62CC665
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgLBTPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:15:33 -0500
-Received: from smtprelay0007.hostedemail.com ([216.40.44.7]:55188 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726213AbgLBTPd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:15:33 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 3D95518224D6B;
-        Wed,  2 Dec 2020 19:14:52 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3874:4321:4605:5007:6120:7875:10004:10128:10400:10848:11232:11658:11914:12048:12297:12740:12760:12895:13069:13311:13357:13439:13972:14096:14097:14659:14721:14819:21080:21433:21611:21627:21939:30003:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: map52_230a82a273b5
-X-Filterd-Recvd-Size: 2515
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  2 Dec 2020 19:14:50 +0000 (UTC)
-Message-ID: <fa4e75fa79a89b20f903364acc604cf0796b5421.camel@perches.com>
-Subject: Re: [RFC PATCH] checkpatch: correctly detect lines of help text
-From:   Joe Perches <joe@perches.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Nicolai Fischer <nicolai.fischer@fau.de>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Cc:     apw@canonical.com, johannes.czekay@fau.de,
-        linux-kernel@i4.cs.fau.de
-Date:   Wed, 02 Dec 2020 11:14:49 -0800
-In-Reply-To: <16f0bfd4-61ca-48d8-c9ab-10bfc9a233ad@infradead.org>
-References: <133ac827-c0d2-c5c7-39d8-7d2c17de7c76@fau.de>
-         <8436bc4191d92af283ea6aa7ca450e36da653e2e.camel@perches.com>
-         <16f0bfd4-61ca-48d8-c9ab-10bfc9a233ad@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1728891AbgLBTR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:17:27 -0500
+Received: from mga12.intel.com ([192.55.52.136]:21267 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgLBTR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 14:17:27 -0500
+IronPort-SDR: lAjN+e6r5fPIsEWcnhkITLsgvRDowoq2ruRM8373uAdLyYCoEEMZ+6IYD4k758yGbxZGz+rUs5
+ 1hksupy36zZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152325602"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="152325602"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 11:15:45 -0800
+IronPort-SDR: Uh9yPqqdb4FzpskxN5HT0WaSIXe9PqQXfA5nynZbX9f5Z2JvtIH00ewQxt3HoY8gLq3jlEN511
+ c3HRr8V8jrZA==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="550185358"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.140])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 11:15:45 -0800
+Date:   Wed, 2 Dec 2020 11:17:01 -0800 (PST)
+From:   matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@rhweight-WRK1
+To:     "Wu, Hao" <hao.wu@intel.com>
+cc:     "Xu, Yilun" <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>
+Subject: RE: [PATCH v3 2/2] fpga: dfl: look for vendor specific capability
+In-Reply-To: <DM6PR11MB38199A96C6871F1B041694BD85F30@DM6PR11MB3819.namprd11.prod.outlook.com>
+Message-ID: <alpine.DEB.2.22.394.2012021110010.1157625@rhweight-WRK1>
+References: <20201124155658.700976-1-matthew.gerlach@linux.intel.com> <20201124155658.700976-3-matthew.gerlach@linux.intel.com> <DM6PR11MB38191D8C5E27E6E04B8DAA1A85F70@DM6PR11MB3819.namprd11.prod.outlook.com> <alpine.DEB.2.22.394.2011301614040.1050045@rhweight-WRK1>
+ <X8aR36hGoV9SsPDw@archbook> <20201202020003.GB22103@yilunxu-OptiPlex-7050> <DM6PR11MB38199A96C6871F1B041694BD85F30@DM6PR11MB3819.namprd11.prod.outlook.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-02 at 10:59 -0800, Randy Dunlap wrote:
-> On 12/2/20 10:54 AM, Joe Perches wrote:
-[]
-> > Indentation can vary in the help blocks.  For instance:
-> > 
-> > arch/Kconfig:   help
-> > arch/Kconfig-     Functions will have the stack-protector canary logic added in>
-> > arch/Kconfig-     of the following conditions:
-> > arch/Kconfig-
-> > arch/Kconfig-     - local variable's address used as part of the right hand sid>
-> > arch/Kconfig-       assignment or function argument
-> > arch/Kconfig-     - local variable is an array (or union containing an array),
-> > arch/Kconfig-       regardless of array type or length
-> > arch/Kconfig-     - uses register local variables
-> > arch/Kconfig-
-> > 
-> > This doesn't allow blank lines for multi-paragraph help text either.
-> > 
-> > I think keyword parsing is necessary and some false positives are
-> > inevitable as the parsing logic in a line-by-line analyzer will
-> > always be incomplete.
-> 
-> There are also large hunks of block/Kconfig and drivers/hid/Kconfig
-> that don't use any indentation for help text...
-> in case that matters here.
 
-Maybe a wholesale conversion of Kconfig help text could be done moving
-any help block not already as the last entry to be the last entry and
-indenting any paragraph help text not already indented 2 extra spaces.
 
-Should be reasonably scriptable given the parser logic available in
-scripts/kconfig/.
+On Wed, 2 Dec 2020, Wu, Hao wrote:
 
-Something akin to the scripts/parse-maintainers.pl script.
+>>>>>
+>>>>>> +		}
+>>>>>> +
+>>>>>> +		offset = dfl_res & PCI_VNDR_DFLS_RES_OFF_MASK;
+>>>>>> +		if (offset >= len) {
+>>>>>> +			dev_err(&pcidev->dev, "%s bad
+>> offset %u >= %pa\n",
+>>>>>> +				__func__, offset, &len);
+>>>>>> +			return -EINVAL;
+>>>>>> +		}
+>>>>>> +
+>>>>>> +		dev_dbg(&pcidev->dev, "%s BAR %d offset 0x%x\n",
+>>>>>> __func__, bar, offset);
+>>>>>> +
+>>>>>> +		len -= offset;
+>>>>>> +
+>>>>>> +		start = pci_resource_start(pcidev, bar) + offset;
+>>>>>> +
+>>>>>> +		dfl_fpga_enum_info_add_dfl(info, start, len);
+>>>>>
+>>>>> That means everytime, we pass [start, endofbar] region to dfl core
+>>>>> for enumeration, if there are multiple DFLs in one bar, then each range
+>>>>> ends at the same endofbar, it seems fine as enumeration can be done
+>>>>> one by one, but ideally the best case is that this capability can provide
+>>>>> end address or size too, right? It is possible that information can be
+>>>>> added to the capability as well? then we don't have such limitation.
+>>>>>
+>>>>> Hao
+>>>>
+>>>> I am not sure having more than one DFL in a bar serves any purpose over
+>> a
+>>>> single DFL.  Regardless, I think the consistency of just having Offset/BIR
+>>>> in the VSEC is better than adding more infomation that has little or no
+>>>> added value.
+>>>
+>>> Agreed. Can't you just link the DFLs in that case?
+>>
+>> I didn't see the value of more DFLs in one bar either. So I think we'd better
+>> document it.
+>
+> Yes, it needs to be documented well, otherwise users may have their own
+> choices, e.g. link 100 queues together by modify DFH registers of the
+> queues one by one, or just have them done together in the VSEC. I am not
+> sure which one is the easier way for logic developer, but at least we need to
+> document what driver can support.
+>
+> Thanks
+> Hao
+>
 
+I will update the documentation to clarify the basis of the rule of one 
+DFL per bar.  Since we have a clearly stated rule, we can enforce the rule 
+in the code and perform more error checking.
+
+>>
+>> Thanks,
+>> Yilun
+>
