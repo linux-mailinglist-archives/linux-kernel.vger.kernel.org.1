@@ -2,76 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A90A2CC557
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D552CC57B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730963AbgLBSk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:40:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728656AbgLBSkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:40:25 -0500
-Date:   Wed, 2 Dec 2020 10:39:37 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1606934384;
-        bh=LJXaf2fvlrkEU24yHJod1IUh7+QkKVM4tLvbdSWB/ug=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JfSXeHG4MHd46ywV1sz04P7JjpqeNCEseCzbOBUrHlAg9FDcU9aoO6H73F/uGZmr9
-         7HxTGDZAzkaShYRED4l9kpXP39XsIMtjUuVwMWUZ43xx43TodCGtfQd0ZeJd5CTcMu
-         a4/2O1JeLU35nUGim/WTV1L5BcNNUk5K7MyP5yji8mu9cGi9IazMWry57AwPCKBbLR
-         QvG6SWTtvExsxTtHBXuJ6NbQthx1cX5bKKlnVwD4hcp/FjF1iIenFBpkNG6Yi6Irz4
-         9b2VDPw0oSRdn71aHQNWMsC2IpvCAapCKlPsB33Gr+CQim1jV4CbiyECLcoWs/UPkq
-         qXgm4ljKGm5eg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20201202103937.137e587b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201202120712.6212-3-o.rempel@pengutronix.de>
-References: <20201202120712.6212-1-o.rempel@pengutronix.de>
-        <20201202120712.6212-3-o.rempel@pengutronix.de>
+        id S2387653AbgLBSle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:41:34 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57688 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726104AbgLBSld (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:41:33 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2IXv0o135382;
+        Wed, 2 Dec 2020 13:40:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=L69NYuLhU3uOuWNgUvbNXLJASVglg/Pd6mCXYVJf3RI=;
+ b=n9c4Mh9IuKKx/pYdlxPCERQ3SGQmBr8rnSq8jDCHYfKyLrjCixS9aUUJ2Hx+Osg3C5gs
+ sdEjhEFvkfFHJP8Ev93YBWczcV0PRfixy09Lkrl1ueRImhX8rkbbmHlotQBXDuivAdMJ
+ eSZh70vAELXN9wS+/6aqboUX9ZwLZD8dt4FnACjhkL2NR9i7817Uu9AmaBcghqd99sgQ
+ K4cQSYRt1HVf2AckGg3TH/4rkYtQYrjTsjD5dr/W3PpvPHRc6Jtd/8PhjiTjhBXrBz7H
+ 7+NzI+KYf5tdvaWphc+3mFiaizLCpm8CR4ZP3j7fTwpOVSmU3EnU/Bc5farB09jBzUoP pQ== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355sr60ydw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 13:40:47 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2IRU7W031477;
+        Wed, 2 Dec 2020 18:40:46 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma04wdc.us.ibm.com with ESMTP id 354ysukkp8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 18:40:46 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2IekZ231916538
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 18:40:46 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 54ED6124054;
+        Wed,  2 Dec 2020 18:40:46 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81E39124052;
+        Wed,  2 Dec 2020 18:40:45 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 18:40:45 +0000 (GMT)
+Subject: Re: [PATCH v2 17/17] ibmvfc: provide modules parameters for MQ
+ settings
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-18-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <e2343b78-5be3-da2d-b2bc-ccb0a75c61ae@linux.vnet.ibm.com>
+Date:   Wed, 2 Dec 2020 12:40:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201202005329.4538-18-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_10:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  2 Dec 2020 13:07:12 +0100 Oleksij Rempel wrote:
-> +static void ar9331_read_stats(struct ar9331_sw_port *port)
-> +{
-> +	mutex_lock(&port->lock);
+On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+> +module_param_named(mig_channels_only, mig_channels_only, uint, S_IRUGO | S_IWUSR);
+> +MODULE_PARM_DESC(mig_channels_only, "Prevent migration to non-channelized system. "
+> +		 "[Default=" __stringify(IBMVFC_MIG_NO_SUB_TO_CRQ) "]");
+> +module_param_named(mig_no_less_channels, mig_no_less_channels, uint, S_IRUGO | S_IWUSR);
+> +MODULE_PARM_DESC(mig_no_less_channels, "Prevent migration to system with less channels. "
+> +		 "[Default=" __stringify(IBMVFC_MIG_NO_N_TO_M) "]");
 
-> +	mutex_unlock(&port->lock);
-> +}
+Both of these are writeable, but it doesn't look like you do any re-negotiation
+with the VIOS for these changed settings to take effect if someone changes
+them at runtime.
 
-> +static void ar9331_get_stats64(struct dsa_switch *ds, int port,
-> +			       struct rtnl_link_stats64 *s)
-> +{
-> +	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> +	struct ar9331_sw_port *p = &priv->port[port];
 > +
-> +	ar9331_read_stats(p);
+>  module_param_named(init_timeout, init_timeout, uint, S_IRUGO | S_IWUSR);
+>  MODULE_PARM_DESC(init_timeout, "Initialization timeout in seconds. "
+>  		 "[Default=" __stringify(IBMVFC_INIT_TIMEOUT) "]");
 
+> @@ -3228,6 +3250,36 @@ static ssize_t ibmvfc_store_log_level(struct device *dev,
+>  	return strlen(buf);
+>  }
+>  
+> +static ssize_t ibmvfc_show_scsi_channels(struct device *dev,
+> +					 struct device_attribute *attr, char *buf)
+> +{
+> +	struct Scsi_Host *shost = class_to_shost(dev);
+> +	struct ibmvfc_host *vhost = shost_priv(shost);
+> +	unsigned long flags = 0;
+> +	int len;
+> +
+> +	spin_lock_irqsave(shost->host_lock, flags);
+> +	len = snprintf(buf, PAGE_SIZE, "%d\n", vhost->client_scsi_channels);
+> +	spin_unlock_irqrestore(shost->host_lock, flags);
+> +	return len;
 > +}
 > +
->  static const struct dsa_switch_ops ar9331_sw_ops = {
+> +static ssize_t ibmvfc_store_scsi_channels(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 const char *buf, size_t count)
+> +{
+> +	struct Scsi_Host *shost = class_to_shost(dev);
+> +	struct ibmvfc_host *vhost = shost_priv(shost);
+> +	unsigned long flags = 0;
+> +	unsigned int channels;
+> +
+> +	spin_lock_irqsave(shost->host_lock, flags);
+> +	channels = simple_strtoul(buf, NULL, 10);
+> +	vhost->client_scsi_channels = min(channels, nr_scsi_hw_queues);
 
-> +	.get_stats64		= ar9331_get_stats64,
->  };
+Don't we need to do a LIP here for this new setting to go into effect?
 
-You can't take sleeping locks from .ndo_get_stats64.
+> +	spin_unlock_irqrestore(shost->host_lock, flags);
+> +	return strlen(buf);
+> +}
+> +
+>  static DEVICE_ATTR(partition_name, S_IRUGO, ibmvfc_show_host_partition_name, NULL);
+>  static DEVICE_ATTR(device_name, S_IRUGO, ibmvfc_show_host_device_name, NULL);
+>  static DEVICE_ATTR(port_loc_code, S_IRUGO, ibmvfc_show_host_loc_code, NULL);
 
-Also regmap may sleep?
 
-+	ret = regmap_read(priv->regmap, reg, &val);
 
-Am I missing something?
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
+
