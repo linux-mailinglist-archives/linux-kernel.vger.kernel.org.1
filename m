@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5CA2CC479
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF162CC480
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387578AbgLBSCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:02:02 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:53828 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727454AbgLBSCB (ORCPT
+        id S2387662AbgLBSEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:04:34 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35398 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727108AbgLBSEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:02:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=PNgBCQ8XfFmn9D3DM+iYXdqG+oFaCFQKqsKGuaozXnM=; b=I/z1+NEbS5rhAEcJyNoJdYZjKX
-        GF2BGYAtWOziMnVigqzE1eUHMglwIZi+OmM1AakjZs+Hsd+bzWcf+PlXB/NIrTjj2GlCUoWYRDZcR
-        zPrHxLOH3/uzMbPUwi8F4aVw+xFx1S2W8X9T3V8IPnUoy56PN4haxXE8+yqphc/TCQmKcb8g8ZBDB
-        dFrTJvFFcAG2SkWwRdgs6sezejN5wBuhZoRuXG/ncxXX65UP6Ef8E3zQkSlkTF4IEVKC8dcAdHVlK
-        +xQADBoG7nV0lmFg7pnNxU24eHo65/Fy8AJIsfGoESJY8P6Q+68xlKurQ45l25yeVq2/CtZ28awXH
-        iDej8pIw==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kkWRD-0003mr-EY; Wed, 02 Dec 2020 11:01:12 -0700
-To:     Christoph Hellwig <hch@lst.de>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
-References: <20201106005147.20113-1-rcampbell@nvidia.com>
- <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de>
- <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com>
- <20201109091415.GC28918@lst.de>
- <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com>
- <20201202101426.GC7597@lst.de>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <7229bb21-7bf7-4989-e7cf-210834190693@deltatee.com>
-Date:   Wed, 2 Dec 2020 11:01:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 2 Dec 2020 13:04:33 -0500
+Date:   Wed, 2 Dec 2020 19:03:50 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606932231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=69HDRjllqiet1yJkOQfILNR3Yl0QreV5unRuZHTw+Ms=;
+        b=IuN+w+oTk58nFLIeVhRUFendcdB7o2FQa+14qO9U7uEEaxd/jmKNFJ2ASoU0WB6jKif84H
+        9x9fsIYPWUUtpP/rJE6sR+cu9gU0POCJ+0W6/A0vlAu7J6Cz1nkGetCjQBGTp1XjdZqeoz
+        H9uKDQdQDl/aB4vEBEzWAu9zaKshwK27/QbpcLJ0zZFn8KkOERPv23yA6KKvvoGlhdGAr5
+        B09Hl0ZUsDIyirpA1kYh3SZ/b9R7MbnqXEnRn37z8ogpTT43AqgVx+4frN6gGTRtIAeO65
+        uLRDCgbUrrWEKWoE+IkfxzCd0v4hzppXjVjE2WXaE8/CEENa1TMX4SGPJ+sRxg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606932231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=69HDRjllqiet1yJkOQfILNR3Yl0QreV5unRuZHTw+Ms=;
+        b=8Bh62S06OE1HY80q3dlD5PvFWvJlABr6HpttWBR2+MgwKFVRMYzgiNig6kyJ2UWZXjzkt+
+        nfxyklgOmXMn6dCw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephen Berman <stephen.berman@gmx.net>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
+Message-ID: <20201202180350.kwmgfzkom7v7bzjg@linutronix.de>
+References: <87blkbx1gt.fsf@gmx.net>
+ <87imdp5r80.fsf@rub.de>
+ <20200811132955.wbt55ns7bu5mxouq@linutronix.de>
+ <CAJZ5v0h+n9VCz5=VixVbe_b=ZbTU3D=46stGhE9z7Y7yaUMJzw@mail.gmail.com>
+ <20200811152551.dmfw46urecbmeklr@linutronix.de>
+ <87ft8tayic.fsf@gmx.net>
+ <20200811184902.2fm4eyprmpkfon2j@linutronix.de>
+ <20201006214927.4nsqtfji4fdv3oed@linutronix.de>
+ <3fc9074b-c153-8446-0289-1e4dfab395eb@intel.com>
+ <20201026172057.h5toqoobiyhc4g3g@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201202101426.GC7597@lst.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org, dan.j.williams@intel.com, akpm@linux-foundation.org, shuah@kernel.org, bskeggs@redhat.com, yang.shi@linux.alibaba.com, kirill.shutemov@linux.intel.com, ziy@nvidia.com, bharata@linux.ibm.com, jgg@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com, jglisse@redhat.com, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, nouveau@lists.freedesktop.org, linux-mm@kvack.org, rcampbell@nvidia.com, hch@lst.de
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_FREE,NICE_REPLY_A autolearn=no autolearn_force=no version=3.4.2
-Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private memory
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Disposition: inline
+In-Reply-To: <20201026172057.h5toqoobiyhc4g3g@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-12-02 3:14 a.m., Christoph Hellwig wrote:>>
-MEMORY_DEVICE_PCI_P2PDMA:
->> Struct pages are created in pci_p2pdma_add_resource() and represent device
->> memory accessible by PCIe bar address space. Memory is allocated with
->> pci_alloc_p2pmem() based on a byte length but the gen_pool_alloc_owner()
->> call will allocate memory in a minimum of PAGE_SIZE units.
->> Reference counting is +1 per *allocation* on the pgmap->ref reference count.
->> Note that this is not +1 per page which is what put_page() expects. So
->> currently, a get_page()/put_page() works OK because the page reference count
->> only goes 1->2 and 2->1. If it went to zero, the pgmap->ref reference count
->> would be incorrect if the allocation size was greater than one page.
->>
->> I see pci_alloc_p2pmem() is called by nvme_alloc_sq_cmds() and
->> pci_p2pmem_alloc_sgl() to create a command queue and a struct scatterlist *.
->> Looks like sg_page(sg) returns the ZONE_DEVICE struct page of the scatterlist.
->> There are a huge number of places sg_page() is called so it is hard to tell
->> whether or not get_page()/put_page() is ever called on MEMORY_DEVICE_PCI_P2PDMA
->> pages.
+On 2020-10-26 18:20:59 [+0100], To Rafael J. Wysocki wrote:
+> > > > > Done as Bug 208877.
+> > > Rafael, do you have any suggestions?
+> > 
+> > I've lost track of this sorry.
+> > 
+> > I have ideas, let me get back to this next week.
 > 
-> Nothing should call get_page/put_page on them, as they are not treated
-> as refcountable memory.  More importantly nothing is allowed to keep
-> a reference longer than the time of the I/O.
+> :)
 
-Yes, right now this is safe, as Christoph notes there are no places
-where these should be got/put.
+Rafael, any update? If you outline an idea or so then I may be able to
+form a patch out of it. Otherwise I have no idea how to fix this - other
+than telling the driver to not poll in smaller intervals than
+30secs.
 
-But eventually we'll need to change how pci_alloc_p2pmem() works to take
-references on the actual pages and allow freeing individual pages,
-similar to what you suggest. This is one of the issues Jason pointed out
-in my last RFC to try to pass these pages through GUP.
-
-Logan
+> > Cheers!
+> 
+Sebastian
