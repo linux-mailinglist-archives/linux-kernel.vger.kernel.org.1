@@ -2,329 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17092CBE67
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6172CBE73
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729648AbgLBNeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:34:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:39776 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727398AbgLBNen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:34:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E083E30E;
-        Wed,  2 Dec 2020 05:33:56 -0800 (PST)
-Received: from [10.57.0.85] (unknown [10.57.0.85])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DCB93F718;
-        Wed,  2 Dec 2020 05:33:54 -0800 (PST)
-Subject: Re: [PATCH v4 2/4] Documentation/powercap/dtpm: Add documentation for
- dtpm
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rjw@rjwysocki.net, ulf.hansson@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-References: <20201201192801.27607-1-daniel.lezcano@linaro.org>
- <20201201192801.27607-3-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <c91e66b0-c880-93a3-3587-cae6bd6bd2c5@arm.com>
-Date:   Wed, 2 Dec 2020 13:33:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20201201192801.27607-3-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1729945AbgLBNgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:36:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32591 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727096AbgLBNgc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 08:36:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606916105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IUNhvEsHyr+W6ta/75nQ/HuPXfM1ypWOzhwwE2ms5js=;
+        b=BVmMVAb/qotz2Qza4VEA/ydA1TRd09y9g4P4RuxaGZybt5wkdYYhFWFYARuwgI2254DcjZ
+        8DnCIhoon08tOfAYTsvuu7MjqPiDI5I1oxBWY7T9T1dItLC/n5f6/H1u1XWwVPjzY5/5Ug
+        WOulNNvbhAVVHg/PcBF9pkDSXelgQ6w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-4Q8D0UXVOi6CcuFILuUWjQ-1; Wed, 02 Dec 2020 08:35:00 -0500
+X-MC-Unique: 4Q8D0UXVOi6CcuFILuUWjQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78DED190D341;
+        Wed,  2 Dec 2020 13:34:59 +0000 (UTC)
+Received: from ovpn-66-132.rdu2.redhat.com (unknown [10.10.67.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 456675D9C6;
+        Wed,  2 Dec 2020 13:34:58 +0000 (UTC)
+Message-ID: <1ba3d19ab0629e549519fb94b73cabb0b392fb2a.camel@redhat.com>
+Subject: Re: [PATCH 0/7] HWPoison: Refactor get page interface
+From:   Qian Cai <qcai@redhat.com>
+To:     Oscar Salvador <osalvador@suse.de>, akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 02 Dec 2020 08:34:57 -0500
+In-Reply-To: <20201119105716.5962-1-osalvador@suse.de>
+References: <20201119105716.5962-1-osalvador@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-Only small issues found. The output build looks OK. The content LGTM.
-
-On 12/1/20 7:27 PM, Daniel Lezcano wrote:
-> The dynamic thermal and power management is a technique to dynamically
-> adjust the power consumption of different devices in order to ensure a
-> global thermal constraint.
+On Thu, 2020-11-19 at 11:57 +0100, Oscar Salvador wrote:
+> Hi,
 > 
-> An userspace daemon is usually monitoring the temperature and the
-> power to take immediate action on the device.
+> following up on previous fix-ups an refactors, this patchset simplifies
+> the get page interface and removes the MF_COUNT_INCREASED trick we have
+> for soft offline.
+
+Well, the madvise() EIO is back. I don't understand why we can't test it on a
+NUMA system before posting this over and over again.
+
+# git clone https://e.coding.net/cailca/linux/mm
+# cd mm; make
+# ./ranbug 1 
+- start: migrate_huge_offline
+- use NUMA nodes 0,3.
+- mmap and free 8388608 bytes hugepages on node 0
+- mmap and free 8388608 bytes hugepages on node 3
+madvise: Input/output error
+
+[ 1270.054919][ T7497] Soft offlining pfn 0x1958e00 at process virtual address 0x7f7d9ca00000
+[ 1270.067318][ T7497] Soft offlining pfn 0x18d0600 at process virtual address 0x7f7d9c800000
+[ 1270.078856][ T7497] Soft offlining pfn 0x1ac800 at process virtual address 0x7f7d9ca00000
+[ 1270.091268][ T7497] Soft offlining pfn 0x1e10a00 at process virtual address 0x7f7d9c800000
+[ 1270.101946][ T7497] Soft offlining pfn 0x18c800 at process virtual address 0x7f7d9ca00000
+[ 1270.111678][ T7497] soft offline: 0x18c800: hugepage isolation failed: 0, page count 2, type bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.126133][ T7497] Soft offlining pfn 0x18b5400 at process virtual address 0x7f7d9c800000
+[ 1270.136581][ T7497] Soft offlining pfn 0x211c00 at process virtual address 0x7f7d9ca00000
+[ 1270.146214][ T7497] soft offline: 0x211c00: hugepage isolation failed: 0, page count 2, type bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.160624][ T7497] Soft offlining pfn 0x19bee00 at process virtual address 0x7f7d9c800000
+[ 1270.170896][ T7497] Soft offlining pfn 0x1e21a00 at process virtual address 0x7f7d9ca00000
+[ 1270.185011][ T7497] Soft offlining pfn 0x1fd1200 at process virtual address 0x7f7d9c800000
+[ 1270.195341][ T7497] Soft offlining pfn 0x1882400 at process virtual address 0x7f7d9ca00000
+[ 1270.480593][ T7497] Soft offlining pfn 0x18bc000 at process virtual address 0x7f7d9c800000
+[ 1270.491961][ T7497] soft offline: 0x18bc000: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.506018][ T7497] Soft offlining pfn 0x1e76a00 at process virtual address 0x7f7d9c800000
+[ 1270.590266][ T7497] Soft offlining pfn 0x1b3c00 at process virtual address 0x7f7d9ca00000
+[ 1270.600207][ T7497] soft offline: 0x1b3c00: hugepage isolation failed: 0, page count 2, type bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.614316][ T7497] Soft offlining pfn 0x1882600 at process virtual address 0x7f7d9c800000
+[ 1270.662427][ T7497] Soft offlining pfn 0x1b3c00 at process virtual address 0x7f7d9ca00000
+[ 1270.744249][ T7497] Soft offlining pfn 0x18bc000 at process virtual address 0x7f7d9c800000
+[ 1270.754314][ T7497] Soft offlining pfn 0x18d1200 at process virtual address 0x7f7d9ca00000
+[ 1270.765204][ T7497] soft offline: 0x18d1200: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.816653][ T7497] Soft offlining pfn 0x18d0400 at process virtual address 0x7f7d9c800000
+[ 1270.827049][ T7497] Soft offlining pfn 0x18d1200 at process virtual address 0x7f7d9ca00000
+[ 1270.837997][ T7497] soft offline: 0x18d1200: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.852156][ T7497] Soft offlining pfn 0x186ca00 at process virtual address 0x7f7d9c800000
+[ 1270.862350][ T7497] Soft offlining pfn 0x18d1200 at process virtual address 0x7f7d9ca00000
+[ 1270.872922][ T7497] soft offline: 0x18d1200: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.887133][ T7497] Soft offlining pfn 0x18ac200 at process virtual address 0x7f7d9c800000
+[ 1270.897450][ T7497] Soft offlining pfn 0x211c00 at process virtual address 0x7f7d9ca00000
+[ 1270.907416][ T7497] soft offline: 0x211c00: hugepage isolation failed: 0, page count 2, type bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.921365][ T7497] Soft offlining pfn 0x1e1cc00 at process virtual address 0x7f7d9c800000
+[ 1270.931700][ T7497] Soft offlining pfn 0x18c800 at process virtual address 0x7f7d9ca00000
+[ 1270.941580][ T7497] soft offline: 0x18c800: hugepage isolation failed: 0, page count 2, type bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.955649][ T7497] Soft offlining pfn 0x1e6ae00 at process virtual address 0x7f7d9c800000
+[ 1270.966063][ T7497] Soft offlining pfn 0x211c00 at process virtual address 0x7f7d9ca00000
+[ 1270.975965][ T7497] soft offline: 0x211c00: hugepage isolation failed: 0, page count 2, type bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1270.990059][ T7497] Soft offlining pfn 0x1e72e00 at process virtual address 0x7f7d9c800000
+[ 1271.000323][ T7497] Soft offlining pfn 0x18d1200 at process virtual address 0x7f7d9ca00000
+[ 1271.011006][ T7497] soft offline: 0x18d1200: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1271.025152][ T7497] Soft offlining pfn 0x1e22200 at process virtual address 0x7f7d9c800000
+[ 1271.035395][ T7497] Soft offlining pfn 0x18d1200 at process virtual address 0x7f7d9ca00000
+[ 1271.045916][ T7497] soft offline: 0x18d1200: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1271.060159][ T7497] Soft offlining pfn 0x1e6fe00 at process virtual address 0x7f7d9c800000
+[ 1271.070695][ T7497] Soft offlining pfn 0x18c800 at process virtual address 0x7f7d9ca00000
+[ 1271.080596][ T7497] soft offline: 0x18c800: hugepage isolation failed: 0, page count 2, type bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1271.094725][ T7497] Soft offlining pfn 0x1968200 at process virtual address 0x7f7d9c800000
+[ 1271.105006][ T7497] Soft offlining pfn 0x18d1200 at process virtual address 0x7f7d9ca00000
+[ 1271.115567][ T7497] soft offline: 0x18d1200: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1271.129775][ T7497] Soft offlining pfn 0x1e1ae00 at process virtual address 0x7f7d9c800000
+[ 1271.140285][ T7497] Soft offlining pfn 0x18c800 at process virtual address 0x7f7d9ca00000
+[ 1271.150185][ T7497] soft offline: 0x18c800: hugepage isolation failed: 0, page count 2, type bfffc[ 1271.468115][ T7497] Soft offlining pfn 0x1de4600 at process virtual address 0x7f7d9c800000
+[ 1271.479348][ T7497] Soft offlining pfn 0x145e00 at process virtual address 0x7f7d9ca00000
+[ 1271.489928][ T7497] soft offline: 0x145e00: hugepage isolation 1271.538433][ T7497] Soft offlining pfn 0x1fae00 at process virtual address 0x7f7d9c800000
+[ 1271.548880][ T7497] Soft offlining pfn 0x1995e00 at process virtual address 0x7f7d9ca00000
+[ 1271.558877][ T7497] soft offline: 0x1995e00: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1271.573055][ T7497] Soft offlining pfn 0x221e00 at process virtual address 0x7f7d9c800000
+[ 1271.583453][ T7497] Soft offlining pfn 0x1901800 at process virtual address 0x7f7d9ca00000
+[ 1271.593440][ T7497] soft offline: 0x1901800: hugepage isolation failed: 0, page count 2, type 3bfffc00001000e (referenced|uptodate|dirty|head)
+[ 1271.610005][ T7497] Soft offlining pfn 0x232400 at process virtual address 0x7f7d9c800000
+[ 1271.620439][ T7497] Soft offlinin[ 1272.005890][ T7497] Soft offlining pfn 0x230e00 at process virtual address 0x7f7d9c800000
+[ 1272.017226][ T7497] Soft offlining pfn 0x185fe00 at process virtual address 0x7f7d9ca00000
+[ 1272.029194][ T7497] Soft offlining pfn 0x1f1400 at process virtual address 0x7f7d9c800000
+[ 1272.040088][ T7497] Soft offlining pfn 0x1f9e00 at process virtual address 0x7f7d9ca00000
+[ 1272.052415][ T7497] Soft offlining pfn 0x1885a00 at process virtual address 0x7f7d9c800000
+[ 1272.062510][ T7497] Soft offlining pfn 0x18b6000 at process virtual address 0x7f7d9ca00000
+[ 1272.071931][ T7497] soft_offline_page: 0x18b6000: unknown page type: 3bfffc000000000 ((%pG?))
+
 > 
-> The DTPM framework provides an unified API to userspace to act on the
-> power.
+> Please, note that this patchset is on top of [1] and [2].
 > 
-> Document this framework.
+> This patchset does three things:
 > 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Ram Chandrasekar <rkumbako@codeaurora.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   Documentation/power/index.rst         |   1 +
->   Documentation/power/powercap/dtpm.rst | 210 ++++++++++++++++++++++++++
->   2 files changed, 211 insertions(+)
->   create mode 100644 Documentation/power/powercap/dtpm.rst
+>  1) Drops MF_COUNT_INCREASED trick
+>  2) Refactors get page interface
+>  3) Places a common entry for grabbin a page from both hard offline
+>     and soft offline guarded by zone_pcp_{disable/enable}, so we do not
+>     have to drain pcplists by ourself and retry again.
 > 
-> diff --git a/Documentation/power/index.rst b/Documentation/power/index.rst
-> index ced8a8007434..a0f5244fb427 100644
-> --- a/Documentation/power/index.rst
-> +++ b/Documentation/power/index.rst
-> @@ -30,6 +30,7 @@ Power Management
->       userland-swsusp
->   
->       powercap/powercap
-> +    powercap/dtpm
->   
->       regulator/consumer
->       regulator/design
-> diff --git a/Documentation/power/powercap/dtpm.rst b/Documentation/power/powercap/dtpm.rst
-> new file mode 100644
-> index 000000000000..ca095ef4b887
-> --- /dev/null
-> +++ b/Documentation/power/powercap/dtpm.rst
-> @@ -0,0 +1,210 @@
-
-Probably missing SPDX?
-
-.. SPDX-License-Identifier: GPL-2.0-only
-
-> +==========================================
-> +Dynamic Thermal Power Management framework
-> +==========================================
-> +
-> +On the embedded world, the complexity of the SoC leads to an
-> +increasing number of hotspots which need to be monitored and mitigated
-> +as a whole in order to prevent the temperature to go above the
-> +normative and legally stated 'skin temperature'.
-> +
-> +Another aspect is to sustain the performance for a given power budget,
-> +for example virtual reality where the user can feel dizziness if the
-> +performance is capped while a big CPU is processing something else. Or
-> +reduce the battery charging because the dissipated power is too high
-> +compared with the power consumed by other devices.
-> +
-> +The userspace is the most adequate place to dynamically act on the
-
-I have compared with PowerCap description and they use 'user space'.
-I am not an expert in grammar, but maybe DTPM should also use it.
-
-> +different devices by limiting their power given an application
-> +profile: it has the knowledge of the platform.
-> +
-> +The Dynamic Thermal Power Management (DTPM) is a technique acting on
-> +the device power by limiting and/or balancing a power budget among
-> +different devices.
-> +
-> +The DTPM framework provides an unified interface to act on the
-> +device power.
-> +
-> +Overview
-> +========
-> +
-> +The DTPM framework relies on the powercap framework to create the
-> +powercap entries in the sysfs directory and implement the backend
-> +driver to do the connection with the power manageable device.
-> +
-> +The DTPM is a tree representation describing the power constraints
-> +shared between devices, not their physical positions.
-> +
-> +The nodes of the tree are a virtual description aggregating the power
-> +characteristics of the children nodes and their power limitations.
-> +
-> +The leaves of the tree are the real power manageable devices.
-> +
-> +For instance::
-> +
-> +  SoC
-> +   |
-> +   `-- pkg
-> +	|
-> +	|-- pd0 (cpu0-3)
-> +	|
-> +	`-- pd1 (cpu4-5)
-> +
-> +The pkg power will be the sum of pd0 and pd1 power numbers::
-> +
-> +  SoC (400mW - 3100mW)
-> +   |
-> +   `-- pkg (400mW - 3100mW)
-> +	|
-> +	|-- pd0 (100mW - 700mW)
-> +	|
-> +	`-- pd1 (300mW - 2400mW)
-> +
-> +When the nodes are inserted in the tree, their power characteristics are propagated to the parents::
-> +
-> +  SoC (600mW - 5900mW)
-> +   |
-> +   |-- pkg (400mW - 3100mW)
-> +   |    |
-> +   |    |-- pd0 (100mW - 700mW)
-> +   |    |
-> +   |    `-- pd1 (300mW - 2400mW)
-> +   |
-> +   `-- pd2 (200mW - 2800mW)
-> +
-> +Each node have a weight on a 2^10 basis reflecting the percentage of power consumption along the siblings::
-> +
-> +  SoC (w=1024)
-> +   |
-> +   |-- pkg (w=538)
-> +   |    |
-> +   |    |-- pd0 (w=231)
-> +   |    |
-> +   |    `-- pd1 (w=794)
-> +   |
-> +   `-- pd2 (w=486)
-> +
-> +   Note the sum of weights at the same level are equal to 1024.
-
-This sentence landed inside the rectangle with the tree above. Just
-pointing out, because I don't know if it was by design or not.
-
-> +
-> +When a power limitation is applied to a node, then it is distributed along the children given their weights. For example, if we set a power limitation of 3200mW at the 'SoC' root node, the resulting tree will be::
-> +
-> +  SoC (w=1024) <--- power_limit = 3200mW
-> +   |
-> +   |-- pkg (w=538) --> power_limit = 1681mW
-> +   |    |
-> +   |    |-- pd0 (w=231) --> power_limit = 378mW
-> +   |    |
-> +   |    `-- pd1 (w=794) --> power_limit = 1303mW
-> +   |
-> +   `-- pd2 (w=486) --> power_limit = 1519mW
-> +
-> +
-> +Flat description
-> +----------------
-> +
-> +A root node is created and it is the parent of all the nodes. This
-> +description is the simplest one and it is supposed to give to
-> +userspace a flat representation of all the devices supporting the
-> +power limitation without any power limitation distribution.
-> +
-> +Hierarchical description
-> +------------------------
-> +
-> +The different devices supporting the power limitation are represented
-> +hierarchically. There is one root node, all intermediate nodes are
-> +grouping the child nodes which can be intermediate nodes also or real
-> +devices.
-> +
-> +The intermediate nodes aggregate the power information and allows to
-> +set the power limit given the weight of the nodes.
-> +
-> +Userspace API
-> +=============
-> +
-> +As stated in the overview, the DTPM framework is built on top of the
-> +powercap framework. Thus the sysfs interface is the same, please refer
-> +to the powercap documentation for further details.
-> +
-> + * power_uw: Instantaneous power consumption. If the node is an
-> +   intermediate node, then the power consumption will be the sum of all
-> +   children power consumption.
-> +
-> + * max_power_range_uw: The power range resulting of the maximum power
-> +   minus the minimum power.
-> +
-> + * name: The name of the node. This is implementation dependant. Even
-
-s/dependant/dependent/
-
-> +   if it is not recommended for the userspace, several nodes can have
-> +   the same name.
-> +
-> + * constraint_X_name: The name of the constraint.
-> +
-> + * constraint_X_max_power_uw: The maximum power limit to be applicable
-> +   to the node.
-> +
-> + * constraint_X_power_limit_uw: The power limit to be applied to the
-> +   node. If the value contained in constraint_X_max_power_uw is set,
-> +   the constraint will be removed.
-> +
-> + * constraint_X_time_window_us: The meaning of this file will depend
-> +   on the constraint number.
-> +
-> +Constraints
-> +-----------
-> +
-> + * Constraint 0: The power limitation is immediately applied, without
-> +   limitation in time.
-> +
-> +Kernel API
-> +==========
-> +
-> +Overview
-> +--------
-> +
-> +The DTPM framework has no power limiting backend support. It is
-> +generic and provides a set of API to let the different drivers to
-> +implement the backend part for the power limitation and create a the
-
-s/a the/the/
-
-> +power constraints tree.
-> +
-> +It is up to the platform to provide the initialization function to
-> +allocate and link the different nodes of the tree.
-> +
-> +A special macro has the role of declaring a node and the corresponding
-> +initialization function via a description structure. This one contains
-> +an optional parent field allowing to hook different devices to an
-> +already existing tree at boot time.
-> +
-> +For instance::
-> +
-> +	struct dtpm_descr my_descr = {
-> +		.name = "my_name",
-> +		.init = my_init_func,
-> +	};
-> +
-> +	DTPM_DECLARE(my_descr);
-> +
-> +The nodes of the DTPM tree are described with dtpm structure. The
-> +steps to add a new power limitable device is done in three steps:
-> +
-> + * Allocate the dtpm node
-> + * Set the power number of the dtpm node
-> + * Register the dtpm node
-> +
-> +The registration of the dtpm node is done with the powercap
-> +ops. Basically, it must implements the callbacks to get and set the
-> +power and the limit.
-> +
-> +Alternatively, if the node to be inserted is an intermediate one, then
-> +a simple function to insert it as a future parent is available.
-> +
-> +If a device has its power characteristics changing, then the tree must
-> +be updated with the new power numbers and weights.
-> +
-> +Nomenclature
-> +------------
-> +
-> + * dtpm_alloc() : Allocate and initialize a dtpm structure
-> +
-> + * dtpm_register() : Add the dtpm node to the tree
-> +
-> + * dtpm_unregister() : Remove the dtpm node from the tree
-> +
-> + * dtpm_update_power() : Update the power characteristics of the dtpm node
+> Note that the MF_COUNT_INCREASED trick was left because if get_hwpoison_page
+> races with put_page (e.g:)
+> 
+> CPU0                         CPU1
+> put_page (refcount decremented to 0)
+>  __put_single_page
+>   free_unref_page
+>    free_unref_page_prepare
+>     free_pcp_prepare
+>      free_pages_prepare                           soft_offline_page
+>      :page->flags &= ~PAGE_FLAGS_CHECK_AT_PREP     get_any_page
+>                             			    get_hwpoison_page
+>    free_unref_page_commit
+>     free_one_page
+>      __free_one_page (place it in buddy)
+> 
+> get_hwpoison_page sees that page has a refcount of 0, but since it was not
+> placed
+> in buddy yet we cannot really handle it.
+> We now have a sort of maximum passes in get_any_page, so in case we race
+> with either an allocation or a put_page, we retry again.
+> 
+> After an off-list discussion with Naoya, he agreed to proceed.
+> 
+> [1] https://patchwork.kernel.org/project/linux-mm/list/?series=364009
+> [2] https://patchwork.kernel.org/project/linux-mm/list/?series=381903
+> 
+> Naoya Horiguchi (3):
+>   mm,madvise: call soft_offline_page() without MF_COUNT_INCREASED
+>   mm,hwpoison: remove MF_COUNT_INCREASED
+>   mm,hwpoison: remove flag argument from soft offline functions
+> 
+> Oscar Salvador (4):
+>   mm,hwpoison: Refactor get_any_page
+>   mm,hwpoison: Drop pfn parameter
+>   mm,hwpoison: Disable pcplists before grabbing a refcount
+>   mm,hwpoison: Remove drain_all_pages from shake_page
+> 
+>  drivers/base/memory.c |   2 +-
+>  include/linux/mm.h    |   9 +--
+>  mm/madvise.c          |  19 +++--
+>  mm/memory-failure.c   | 168 +++++++++++++++++-------------------------
+>  4 files changed, 85 insertions(+), 113 deletions(-)
 > 
 
-When you fix these small issues, feel free to add:
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Regards,
-Lukasz
