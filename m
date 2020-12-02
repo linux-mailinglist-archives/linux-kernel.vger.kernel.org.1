@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E5D2CBA32
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4332CBA47
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388542AbgLBKJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:09:40 -0500
-Received: from verein.lst.de ([213.95.11.211]:53455 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388089AbgLBKJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:09:40 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4A8C467373; Wed,  2 Dec 2020 11:08:55 +0100 (CET)
-Date:   Wed, 2 Dec 2020 11:08:54 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Ralph Campbell <rcampbell@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        nouveau@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roger Pau Monne <roger.pau@citrix.com>
-Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private
- memory
-Message-ID: <20201202100854.GB7597@lst.de>
-References: <20201106005147.20113-1-rcampbell@nvidia.com> <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de> <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com> <20201109091415.GC28918@lst.de> <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com> <20201120200133.GH917484@nvidia.com>
+        id S1729380AbgLBKPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:15:01 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:26120 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727623AbgLBKPA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:15:00 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 0B2A9qI9086422;
+        Wed, 2 Dec 2020 18:09:52 +0800 (GMT-8)
+        (envelope-from troy_lee@aspeedtech.com)
+Received: from TroyLee-PC.localdomain (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Dec
+ 2020 18:12:21 +0800
+From:   Troy Lee <troy_lee@aspeedtech.com>
+To:     Stefan Schaeckeler <sschaeck@cisco.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "Borislav Petkov" <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>
+CC:     <leetroy@gmail.com>, <troy_lee@aspeedtech.com>,
+        <ryan_chen@aspeedtech.com>
+Subject: [PATCH v3 1/3] dt-bindings: edac: aspeed-sdram-edac: Add ast2400/ast2600 support
+Date:   Wed, 2 Dec 2020 18:12:16 +0800
+Message-ID: <20201202101218.18393-1-troy_lee@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120200133.GH917484@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 0B2A9qI9086422
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:01:33PM -0400, Jason Gunthorpe wrote:
-> On Wed, Nov 11, 2020 at 03:38:42PM -0800, Ralph Campbell wrote:
-> 
-> > MEMORY_DEVICE_GENERIC:
-> > Struct pages are created in dev_dax_probe() and represent non-volatile memory.
-> > The device can be mmap()'ed which calls dax_mmap() which sets
-> > vma->vm_flags | VM_HUGEPAGE.
-> > A CPU page fault will result in a PTE, PMD, or PUD sized page
-> > (but not compound) to be inserted by vmf_insert_mixed() which will call either
-> > insert_pfn() or insert_page().
-> > Neither insert_pfn() nor insert_page() increments the page reference
-> > count.
-> 
-> But why was this done? It seems very strange to put a pfn with a
-> struct page into a VMA and then deliberately not take the refcount for
-> the duration of that pfn being in the VMA?
-> 
-> What prevents memunmap_pages() from progressing while VMAs still point
-> at the memory?
+Adding Aspeed AST2400 and AST2600 binding for edac driver.
 
-Agreed.  Adding Roger who added MEMORY_DEVICE_GENERIC and the only
-user.
+Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
+---
+ .../devicetree/bindings/edac/aspeed-sdram-edac.txt       | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> > I think just leaving the page reference count at one is better than trying
-> > to use the mmu_interval_notifier or changing vmf_insert_mixed() and
-> > invalidations of pfn_t_devmap(pfn) to adjust the page reference count.
-> 
-> Why so? The entire point of getting struct page's for this stuff was
-> to be able to follow the struct page flow. I never did learn a reason
-> why there is devmap stuff all over the place in the page table code...
+diff --git a/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt b/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
+index 6a0f3d90d682..8ca9e0a049d8 100644
+--- a/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
++++ b/Documentation/devicetree/bindings/edac/aspeed-sdram-edac.txt
+@@ -1,6 +1,6 @@
+-Aspeed AST2500 SoC EDAC node
++Aspeed BMC SoC EDAC node
+ 
+-The Aspeed AST2500 SoC supports DDR3 and DDR4 memory with and without ECC (error
++The Aspeed BMC SoC supports DDR3 and DDR4 memory with and without ECC (error
+ correction check).
+ 
+ The memory controller supports SECDED (single bit error correction, double bit
+@@ -11,7 +11,10 @@ Note, the bootloader must configure ECC mode in the memory controller.
+ 
+ 
+ Required properties:
+-- compatible: should be "aspeed,ast2500-sdram-edac"
++- compatible: should be one of
++	- "aspeed,ast2400-sdram-edac"
++	- "aspeed,ast2500-sdram-edac"
++	- "aspeed,ast2600-sdram-edac"
+ - reg:        sdram controller register set should be <0x1e6e0000 0x174>
+ - interrupts: should be AVIC interrupt #0
+ 
+-- 
+2.17.1
 
-Exactly.
