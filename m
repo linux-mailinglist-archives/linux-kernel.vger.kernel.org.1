@@ -2,144 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075632CB29D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC7C2CB2A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728090AbgLBCFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 21:05:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
+        id S1728110AbgLBCGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 21:06:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727941AbgLBCFm (ORCPT
+        with ESMTP id S1727353AbgLBCGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 21:05:42 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7485FC0613CF;
-        Tue,  1 Dec 2020 18:05:02 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id v92so206898ybi.4;
-        Tue, 01 Dec 2020 18:05:02 -0800 (PST)
+        Tue, 1 Dec 2020 21:06:17 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7DFC0613D4;
+        Tue,  1 Dec 2020 18:05:31 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id z136so345300iof.3;
+        Tue, 01 Dec 2020 18:05:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hgxbXV9qhOchZOi+op1XMneUAlJ/ttmy4OGLuSMcgHo=;
-        b=C+ieUmEycsl9NIrqHrxBqMbhxY4wPTRVv8VdEUawYoGB3nB+qchFY3UeZ1FKuvFcQl
-         Q8O2b3uiMczypDrsfXThykp76duFZNtkrlSROZr2oSaZWd80FyvkEBHbUj5+IQ2p64M8
-         eR8aj7QeauqMpFiU7xMKRtq+9pWWQ6LOv3Gzmber4g6vIyuLDVxRjiNb2DJxP5xeeX9U
-         xzqtOwtG4pDDnNYg5iFzNONJONqqGYfRt/nnswWmI5FNB9bTmSdEjiu7anmlClAW40FK
-         dsE1MIm7aH4+DyiLDss8aaEB7MrAOsnYAG9TABVlMBrPe4X/jzUAVHLyDhsoB9TGwCoo
-         4xng==
+        bh=Xn/Qw79sid0CoEVHDkLbIFMzaVFtjxbXx36teEBnLoI=;
+        b=paOIrkW0zg1FoI9vN2C7U4MdtX5+gTwqaIk/ATMhY18+RhWyEayz0NPodug3sfGHRj
+         VFGcGrTVy+xJg8QZGmepTK9MTJfAQ5ONxy6UeoUb8ok8hfrri5riYCh+ojU6ztfLWlS+
+         aacQj8ctDT52HNdoj6qQyWfGyKZd9XDFqDaKCBnLFFgf9OPsU0OZaYv0gOwKUIxwHOvG
+         VAzuE9vveHnQGa08sjXdlLSQ1GOaM3tGzLwRdpzc+6BhYct1AD5nJ4E5F2rIswCG0zn6
+         NvhfMEnzmHBBQ3P/tq5czN3JpRWVYnAek8xrt5x+PLc3Ou5zkoU+cZMPrkEXIAugl5ve
+         nzBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hgxbXV9qhOchZOi+op1XMneUAlJ/ttmy4OGLuSMcgHo=;
-        b=SaV1daRtyZCC8QfZWp9pND+8C9CT8fwfxM1GPnVaVOWvYdsch5ZZdmVG/vf6K+FxBp
-         HBrdbmFcyujRUDA5hat6kaZj1/PXOdFYU+rT0LRa2rf0UK942xwMIRlGH6oaTRHZsYyn
-         u6DLcVZp+lZEEyoaqQHiplzhJz+drOwZ1gnj+3reQwKB6YH6509jIWYUYkMz6saw6bVq
-         f2xLb/PXMep2hRJ6thF7spII6gVuCI0eSuDOueXGnQpXgwlD9ERZD9RqIoYyox012AHw
-         SsVy9NMJ4FzSslyACmWIT9tZkmx/EfRlpO3x+LVzJT/xDcO+f9uBQpA0I8wzPg9UhYOu
-         eyuw==
-X-Gm-Message-State: AOAM53280pMgwVhm0lJ1gg4pj+fV1huwI06Yr+uoe0BUKeOgv2yZVpQJ
-        8oR0qiDVmRb7/E6Q6tslHAe0Qs1GH19N6QS32M8=
-X-Google-Smtp-Source: ABdhPJxfbPM/JV4Ltlgn4bPymfnQnksoPYz/dnGJv3O7jvHMcVbr7hTQ1gxbN+mX/pd7v5uFC0FXGdodneOKnh30xzg=
-X-Received: by 2002:a25:7717:: with SMTP id s23mr485353ybc.459.1606874701636;
- Tue, 01 Dec 2020 18:05:01 -0800 (PST)
+        bh=Xn/Qw79sid0CoEVHDkLbIFMzaVFtjxbXx36teEBnLoI=;
+        b=SCPsDOLyKaNwm+Ype+lVQp+dlJunS0B4MmY1isJc3UdomVhC97hRNBKD9Bfhmngv8+
+         XhaArogxOlWXZezzCzD740ApM5edl+7E0rS0RdpGN+6Vke7VpdCrUtlH/hJn5ld6Tfhh
+         dzwL/KimySpEyNd32dEIOWflxoaL+h+ixKBM3suf/JTu9PHrMc711ss5xtHlDkSQfVlA
+         Z4p0dDuhU4kS/iUAIsfUxMjTYCWBYnpYRYvi5UZrievJG0SGg4u8kHjnTimVFFWlBPnY
+         LfVVPC/Q6Y6WS3kyxf1lxcIeGM0RaZfEPGF4QK7R1N/jGKHHETJrca6asX2QCKFHOfBR
+         lvxQ==
+X-Gm-Message-State: AOAM5327VlNsL61KAErG18hDM0K5SO0dME/4KBiXlThFD5mBjswN6YJn
+        m475gzTW25/doR99tMTmbV/8O231OIUmH3todx0=
+X-Google-Smtp-Source: ABdhPJxZ32qfJO+y9gnoFEEKoXbNcSkk4dLviSHgqRNEq3YBPypBrkgA+TFyfP8+Yk0TtSZRj7XCRUuEkSeMS5V0STU=
+X-Received: by 2002:a6b:c582:: with SMTP id v124mr175469iof.13.1606874729998;
+ Tue, 01 Dec 2020 18:05:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201201144418.35045-1-kuniyu@amazon.co.jp> <20201201144418.35045-7-kuniyu@amazon.co.jp>
-In-Reply-To: <20201201144418.35045-7-kuniyu@amazon.co.jp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 18:04:50 -0800
-Message-ID: <CAEf4Bza2K9zPqPWTFp+yUN+najdjqY-sNtZ7T5=V=s66bqDavg@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 06/11] bpf: Introduce two attach types for BPF_PROG_TYPE_SK_REUSEPORT.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        osa-contribution-log@amazon.com, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20201201115416.26515-1-laoar.shao@gmail.com> <20201201115416.26515-5-laoar.shao@gmail.com>
+ <20201201124614.GU3306@suse.de>
+In-Reply-To: <20201201124614.GU3306@suse.de>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 2 Dec 2020 10:04:54 +0800
+Message-ID: <CALOAHbD0g=UPFcutNn3Decn4iRSgU4sfewtSKJqUXxBs203YAw@mail.gmail.com>
+Subject: Re: [PATCH 4/6] sched: make schedstats helpers independent of fair
+ sched class
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, bristot@redhat.com,
+        jun qian <qianjun.kernel@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 6:49 AM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+On Tue, Dec 1, 2020 at 8:46 PM Mel Gorman <mgorman@suse.de> wrote:
 >
-> This commit adds new bpf_attach_type for BPF_PROG_TYPE_SK_REUSEPORT to
-> check if the attached eBPF program is capable of migrating sockets.
+> On Tue, Dec 01, 2020 at 07:54:14PM +0800, Yafang Shao wrote:
+> > The original prototype of the schedstats helpers are
+> >
+> > update_stats_wait_*(struct cfs_rq *cfs_rq, struct sched_entity *se)
+> >
+> > The cfs_rq in these helpers is used to get the rq_clock, and the se is
+> > used to get the struct sched_statistics and the struct task_struct. In
+> > order to make these helpers available by all sched classes, we can pass
+> > the rq, sched_statistics and task_struct directly.
+> >
+> > Then the new helpers are
+> >
+> > update_stats_wait_*(struct rq *rq, struct task_struct *p,
+> >                   struct sched_statistics *stats)
+> >
+> > which are independent of fair sched class.
+> >
+> > To avoid vmlinux growing too large or introducing ovehead when
+> > !schedstat_enabled(), some new helpers after schedstat_enabled() are also
+> > introduced, Suggested by Mel. These helpers are in sched/stats.c,
+> >
+> > __update_stats_wait_*(struct rq *rq, struct task_struct *p,
+> >                     struct sched_statistics *stats)
+> >
+> > Cc: Mel Gorman <mgorman@suse.de>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 >
-> When the eBPF program is attached, the kernel runs it for socket migration
-> only if the expected_attach_type is BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
-> The kernel will change the behaviour depending on the returned value:
+> Think it's ok, it's mostly code shuffling. I'd have been happier if
+> there was evidence showing a before/after comparison of the sched stats
+> for something simple like "perf bench sched pipe" and a clear statement
+> of no functional change as well as a comparison of the vmlinux files but
+> I think it's ok so;
 >
->   - SK_PASS with selected_sk, select it as a new listener
->   - SK_PASS with selected_sk NULL, fall back to the random selection
->   - SK_DROP, cancel the migration
->
-> Link: https://lore.kernel.org/netdev/20201123003828.xjpjdtk4ygl6tg6h@kafai-mbp.dhcp.thefacebook.com/
-> Suggested-by: Martin KaFai Lau <kafai@fb.com>
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> ---
->  include/uapi/linux/bpf.h       | 2 ++
->  kernel/bpf/syscall.c           | 8 ++++++++
->  tools/include/uapi/linux/bpf.h | 2 ++
->  3 files changed, 12 insertions(+)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 85278deff439..cfc207ae7782 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -241,6 +241,8 @@ enum bpf_attach_type {
->         BPF_XDP_CPUMAP,
->         BPF_SK_LOOKUP,
->         BPF_XDP,
-> +       BPF_SK_REUSEPORT_SELECT,
-> +       BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
->         __MAX_BPF_ATTACH_TYPE
->  };
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index f3fe9f53f93c..a0796a8de5ea 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2036,6 +2036,14 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
->                 if (expected_attach_type == BPF_SK_LOOKUP)
->                         return 0;
->                 return -EINVAL;
-> +       case BPF_PROG_TYPE_SK_REUSEPORT:
-> +               switch (expected_attach_type) {
-> +               case BPF_SK_REUSEPORT_SELECT:
-> +               case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE:
-> +                       return 0;
-> +               default:
-> +                       return -EINVAL;
-> +               }
 
-this is a kernel regression, previously expected_attach_type wasn't
-enforced, so user-space could have provided any number without an
-error.
+Thanks for the review, I will do the comparison as you suggested.
 
->         case BPF_PROG_TYPE_EXT:
->                 if (expected_attach_type)
->                         return -EINVAL;
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 85278deff439..cfc207ae7782 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -241,6 +241,8 @@ enum bpf_attach_type {
->         BPF_XDP_CPUMAP,
->         BPF_SK_LOOKUP,
->         BPF_XDP,
-> +       BPF_SK_REUSEPORT_SELECT,
-> +       BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
->         __MAX_BPF_ATTACH_TYPE
->  };
+> Acked-by: Mel Gorman <mgorman@suse.de>
+>
+
+Thanks!
+
+> I didn't look at the rt.c parts
 >
 > --
-> 2.17.2 (Apple Git-113)
->
+> Mel Gorman
+> SUSE Labs
+
+
+
+-- 
+Thanks
+Yafang
