@@ -2,120 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36332CC084
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2072CC085
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730139AbgLBPOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:14:55 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36674 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726037AbgLBPOy (ORCPT
+        id S1730355AbgLBPPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:15:18 -0500
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:40667 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728295AbgLBPPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:14:54 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2F3sED030945;
-        Wed, 2 Dec 2020 10:14:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=h84cSOlopcWusOjL07ba67mQF7/WGrI1uXEh7kzAE08=;
- b=qeifDUYE5HniSrQnFusY9kJADNIYkZK0mcq75Rc5ldEkn+k14x8dVt7s2ax2gwGdHGd0
- RCB4max7Cdy9AJ6dY4pqUlWiqbND+IwzKLGrhWrlbdyP7uakSuCcNp05q9GMFD76nM4o
- oZcYtsP8VeahOZUR8/QOm/Yhcq/JlLwUhKyfQydU8cJJFPC48YOSFtEYF5XJALN6bAiL
- KudE3hdLDdADMThAZoUF8VyxrfmTICREiavtrS5WWRHDiqdFN7phfrki2oJv8zL4B33B
- D9mYgUIsnoYbE2xGLCCCGzsI9AXJ9NUGf8ytlxRrdLCK6Z+Qu8u3kXz/HPQt7FIS7q2R MQ== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355vcr4vwn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 10:14:07 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FDUC0018020;
-        Wed, 2 Dec 2020 15:14:06 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma01dal.us.ibm.com with ESMTP id 355rf7j1xc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 15:14:06 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2FE5Fn49742170
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 15:14:05 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CCDEAE062;
-        Wed,  2 Dec 2020 15:14:05 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5DB94AE066;
-        Wed,  2 Dec 2020 15:14:04 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 15:14:04 +0000 (GMT)
-Subject: Re: [PATCH v2 01/17] ibmvfc: add vhost fields and defaults for MQ
- enablement
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
- <20201202005329.4538-2-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <a11c0e6a-cfa6-0dc4-5d34-6fd35ae1f29b@linux.vnet.ibm.com>
-Date:   Wed, 2 Dec 2020 09:14:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 10:15:17 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id kTpvkF2vwN7XgkTpyktj1V; Wed, 02 Dec 2020 16:14:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1606922075; bh=ueykLDCb0hQH4lDcG1w/8WkuuuVBuvMx5BwvzcpsdSo=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=l0OGNwufxgHhKEZKfYeQ8h7HR+4+Dq/7AE1MtQel6eoevcZ4oS8HPU10WiW7gHH7y
+         InGKl9D1mm+xKl5AyxrjIm+sG4c9UrlkqcNg+GSdKKJ4TDbflNA7pVR5PjVq9mLLD5
+         QRr6hEIvU/rg3GR710opAtfMW7G1MJL7usZl9W+GQJpvaM1kTrw2L7TH/tkxZ3bjiu
+         82TzvpLKszv9SkRFFhw69YXpDAcRl3mRNJ7xgoCFWK7XSpKSl+rDX+3Ktx8NnRU0Qm
+         q3Vg6HBHFi7/3wxcR1VyhWB3uizBt7Dafd4jZ73awZGcXPwIhsEatL2nS5imj8/Wyf
+         US9vt0UzwOfVQ==
+Subject: Re: [PATCH v3 2/4] media: meson: Add M2M driver for the Amlogic GE2D
+ Accelerator Unit
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201117084440.578540-1-narmstrong@baylibre.com>
+ <20201117084440.578540-3-narmstrong@baylibre.com>
+ <3ce8d325-9d6d-9327-b019-65aad3fb1e64@xs4all.nl>
+ <81cd2c1b-cfc9-0167-0e72-9f47b0887369@baylibre.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <540b95ef-5815-d400-9214-87667c3b3777@xs4all.nl>
+Date:   Wed, 2 Dec 2020 16:14:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201202005329.4538-2-tyreld@linux.ibm.com>
+In-Reply-To: <81cd2c1b-cfc9-0167-0e72-9f47b0887369@baylibre.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020089
+X-CMAE-Envelope: MS4xfM1UTrabwKVYI0PKqptLiQZMzq8cjf0fI/VmLxBbpPj4BVN1/RMgAETOTQOcA1DxrZQ87i6MNqpG2mfWGR6hDLCjDUEE4a3g9/+4hE4oS/V4gyjI5PCm
+ Ro2DSD5C6xy4QDoO9h7FvaUgexpHxIVXZEYpLZVH+mZT0YxRiqldQVX6b3VoSQQjJadjpw1gU0vX/RbtQKMLlBuqI+nZ/lLW4T8BpjwAUXh7aJrX0P+IzmYe
+ vCFGTbp5s4ayiEyrZisz5Wub6dExFNp4ZCc6Ewprf2vzfcQHCx4YWMFdEGK+vJM3+4EvYlu/XOxJy6m3OsHNmLs3OciKha0fVJ5OKMTKveG8sYjcuxLzL2q8
+ dBEuv8hGGw1wrdsOLWO8lUiNonONdA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
-> Introduce several new vhost fields for managing MQ state of the adapter
-> as well as initial defaults for MQ enablement.
+On 02/12/2020 15:56, Neil Armstrong wrote:
+> Hi Hans,
 > 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c |  9 ++++++++-
->  drivers/scsi/ibmvscsi/ibmvfc.h | 13 +++++++++++--
->  2 files changed, 19 insertions(+), 3 deletions(-)
+> On 02/12/2020 13:40, Hans Verkuil wrote:
+>> On 17/11/2020 09:44, Neil Armstrong wrote:
+>>> The GE2D is a 2D accelerator with various features like configurable blitter
+>>> with alpha blending, frame rotation, scaling, format conversion and colorspace
+>>> conversion.
+>>>
+>>> The driver implements a Memory2Memory VB2 V4L2 streaming device permitting:
+>>> - 0, 90, 180, 270deg rotation
+>>> - horizontal/vertical flipping
+>>> - source cropping
+>>> - destination compositing
+>>> - 32bit/24bit/16bit format conversion
+>>>
+>>> This adds the support for the GE2D version found in the AXG SoCs Family.
+>>>
+>>> The missing features are:
+>>> - Source scaling
+>>> - Colorspace conversion
+>>> - Advanced alpha blending & blitting options
+>>>
+>>> Is passes v4l2-compliance SHA: ea16a7ef13a902793a5c2626b0cefc4d956147f3, 64 bits, 64-bit time_t
+>>>
+>>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>>> ---
+>>>  drivers/media/platform/Kconfig                |   13 +
+>>>  drivers/media/platform/Makefile               |    2 +
+>>>  drivers/media/platform/meson/ge2d/Makefile    |    3 +
+>>>  drivers/media/platform/meson/ge2d/ge2d-regs.h |  360 ++++++
+>>>  drivers/media/platform/meson/ge2d/ge2d.c      | 1091 +++++++++++++++++
+>>>  5 files changed, 1469 insertions(+)
+>>>  create mode 100644 drivers/media/platform/meson/ge2d/Makefile
+>>>  create mode 100644 drivers/media/platform/meson/ge2d/ge2d-regs.h
+>>>  create mode 100644 drivers/media/platform/meson/ge2d/ge2d.c
+>>>
 > 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index 42e4d35e0d35..f1d677a7423d 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -5161,12 +5161,13 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
->  	}
->  
->  	shost->transportt = ibmvfc_transport_template;
-> -	shost->can_queue = max_requests;
-> +	shost->can_queue = (max_requests / IBMVFC_SCSI_HW_QUEUES);
+> [...]
+> 
+>>> +
+>>> +#define DEFAULT_WIDTH	100
+>>> +#define DEFAULT_HEIGHT	100
+>>
+>> That's a weird default value. I would expect to see some multiple of 8 here.
+> 
+> Sure, whatever the HW is quite flexible, I took 100x100 from the other 2D accelerator drivers actually.
+> 
+> [...]
+> 
+>>> +
+>>> +static void ge2d_stop_streaming(struct vb2_queue *vq)
+>>> +{
+>>> +	struct ge2d_ctx *ctx = vb2_get_drv_priv(vq);
+>>> +	struct vb2_v4l2_buffer *vbuf;
+>>> +
+>>> +	if (V4L2_TYPE_IS_OUTPUT(vq->type))
+>>> +		ctx->streamon_out = false;
+>>> +	else
+>>> +		ctx->streamon_cap = false;
+>>
+>> Do you need streamon_out/cap? Can't you use vb2_start_streaming_called() instead?
+> 
+> Indeed, I'll switch to vb2_start_streaming_called & co.
+> 
+> [...]
+> 
+>>> +
+>>> +static int vidioc_try_fmt_out(struct file *file, void *priv, struct v4l2_format *f)
+>>> +{
+>>> +	const struct ge2d_fmt *fmt = find_fmt(f);
+>>> +
+>>> +	f->fmt.pix.field = V4L2_FIELD_NONE;
+>>> +	f->fmt.pix.pixelformat = fmt->fourcc;
+>>> +
+>>> +	if (f->fmt.pix.width > MAX_WIDTH)
+>>> +		f->fmt.pix.width = MAX_WIDTH;
+>>> +	if (f->fmt.pix.height > MAX_HEIGHT)
+>>> +		f->fmt.pix.height = MAX_HEIGHT;
+>>> +
+>>> +	if (f->fmt.pix.width < 0)
+>>> +		f->fmt.pix.width = 0;
+>>> +	if (f->fmt.pix.height < 0)
+>>> +		f->fmt.pix.height = 0;
+>>
+>> width and height are unsigned, so this check is not needed.
+> 
+> Ok
+> 
+> [...]
+> 
+>>> +
+>>> +static int ge2d_s_ctrl(struct v4l2_ctrl *ctrl)
+>>> +{
+>>> +	struct ge2d_ctx *ctx = container_of(ctrl->handler, struct ge2d_ctx,
+>>> +					   ctrl_handler);
+>>> +	struct v4l2_pix_format fmt;
+>>> +	struct vb2_queue *vq;
+>>> +	unsigned long flags;
+>>> +
+>>> +	spin_lock_irqsave(&ctx->ge2d->ctrl_lock, flags);
+>>> +	switch (ctrl->id) {
+>>> +	case V4L2_CID_HFLIP:
+>>> +		ctx->hflip = ctrl->val;
+>>> +		break;
+>>> +	case V4L2_CID_VFLIP:
+>>> +		ctx->vflip = ctrl->val;
+>>> +		break;
+>>> +	case V4L2_CID_ROTATE:
+>>> +		vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
+>>> +		if (vb2_is_busy(vq))
+>>> +			return -EBUSY;
+>>
+>> This doesn't call spin_unlock_irqrestore()!
+>>
+>> Do you need the spinlock at all? This function is already called with a mutex
+>> for ctrl->handler held. It's unusual to see a spinlock here.
+> 
+> Is device_run also called with ctrl->handler held ?
+> 
+> The spinlock is used to protect against concurrent re-config & run.
 
-This doesn't look right. can_queue is the SCSI host queue depth, not the MQ queue depth.
+Ah, I see. I think it would help to add some more comments.
 
->  	shost->max_lun = max_lun;
->  	shost->max_id = max_targets;
->  	shost->max_sectors = IBMVFC_MAX_SECTORS;
->  	shost->max_cmd_len = IBMVFC_MAX_CDB_LEN;
->  	shost->unique_id = shost->host_no;
-> +	shost->nr_hw_queues = IBMVFC_SCSI_HW_QUEUES;
->  
->  	vhost = shost_priv(shost);
->  	INIT_LIST_HEAD(&vhost->sent);
+BTW, do you need to save the irq state? This function definitely can't
+be called from interrupt context, and I suspect that's also true of the
+other place where this spinlock is used.
 
+> 
+> [...]
+> 
+>>> +
+>>> +	platform_set_drvdata(pdev, ge2d);
+>>> +	ge2d->m2m_dev = v4l2_m2m_init(&ge2d_m2m_ops);
+>>> +	if (IS_ERR(ge2d->m2m_dev)) {
+>>> +		v4l2_err(&ge2d->v4l2_dev, "Failed to init mem2mem device\n");
+>>> +		ret = PTR_ERR(ge2d->m2m_dev);
+>>> +		goto unreg_video_dev;
+>>
+>> This should be goto rel_vdev.
+>>
+>>> +	}
+>>> +
+>>> +	ret = video_register_device(vfd, VFL_TYPE_VIDEO, -1);
+>>> +	if (ret) {
+>>> +		v4l2_err(&ge2d->v4l2_dev, "Failed to register video device\n");
+>>> +		goto rel_vdev;
+>>> +	}
+>>> +
+>>> +	v4l2_info(&ge2d->v4l2_dev, "Registered %s as /dev/%s\n",
+>>> +		  vfd->name, video_device_node_name(vfd));
+>>> +
+>>> +	return 0;
+>>> +
+>>> +rel_vdev:
+>>> +	video_device_release(vfd);
+>>> +unreg_video_dev:
+>>> +	video_unregister_device(ge2d->vfd);
+>>
+>> This makes no sense. If video_register_device() fails, then you
+>> call video_device_release(vfd), not video_unregister_device().
+>>
+>> Just drop these two lines.
+> 
+> ok
+> 
+>>
+>>> +unreg_v4l2_dev:
+>>> +	v4l2_device_unregister(&ge2d->v4l2_dev);
+>>> +disable_clks:
+>>> +	clk_disable_unprepare(ge2d->clk);
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static int ge2d_remove(struct platform_device *pdev)
+>>> +{
+>>> +	struct meson_ge2d *ge2d = platform_get_drvdata(pdev);
+>>> +
+>>> +	v4l2_m2m_release(ge2d->m2m_dev);
+>>> +	video_unregister_device(ge2d->vfd);
+>>> +	v4l2_device_unregister(&ge2d->v4l2_dev);
+>>> +
+>>> +	clk_disable_unprepare(ge2d->clk);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static const struct of_device_id meson_ge2d_match[] = {
+>>> +	{
+>>> +		.compatible = "amlogic,axg-ge2d",
+>>> +	},
+>>> +	{},
+>>> +};
+>>> +
+>>> +MODULE_DEVICE_TABLE(of, meson_ge2d_match);
+>>> +
+>>> +static struct platform_driver ge2d_drv = {
+>>> +	.probe = ge2d_probe,
+>>> +	.remove = ge2d_remove,
+>>> +	.driver = {
+>>> +		.name = "meson-ge2d",
+>>> +		.of_match_table = meson_ge2d_match,
+>>> +	},
+>>> +};
+>>> +
+>>> +module_platform_driver(ge2d_drv);
+>>> +
+>>> +MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
+>>> +MODULE_DESCRIPTION("Amlogic 2D Graphic Acceleration Unit");
+>>> +MODULE_LICENSE("GPL");
+>>>
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+> 
+> Thanks,
+> Neil
+> 
 
+Regards,
 
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+	Hans
