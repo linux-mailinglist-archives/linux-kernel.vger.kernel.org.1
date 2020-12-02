@@ -2,89 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759772CBA16
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6A32CBA19
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388560AbgLBKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388535AbgLBKFV (ORCPT
+        id S1729344AbgLBKGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:06:05 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:45639 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728701AbgLBKGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:05:21 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C001CC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 02:04:40 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id lt17so3079905ejb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:04:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k2wK+SflPRbjYVi77tMFczNFaefq/+v7eYCY6aqL0Dk=;
-        b=bVO0rlUvIw1AdYtEvq7dl8VyY+qyie7H/qPxoruOvWHpd/77weF9FvlLWaD9YFfhgy
-         QAOrQMvhAaApkQ4whj92STIDXdMQCyC+DZZV5hBUg4n/El62LpF6f6J3gSz9ORevu2wF
-         i/TBCT02fWq2q47FXfhhPYhiJiRDtGyVFMHTA=
+        Wed, 2 Dec 2020 05:06:03 -0500
+Received: by mail-il1-f197.google.com with SMTP id x10so923308ilq.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:05:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k2wK+SflPRbjYVi77tMFczNFaefq/+v7eYCY6aqL0Dk=;
-        b=iz8P/kErqDmg/SpuQu0tHw7Fdt+5tHtoT5CwQ5BPNuVHCU1amuKRUHQMuCGy6N4RD+
-         Mj4grj2MMQOW01Nj59bW9IKAEsTTMB9eNZg69AR2+t0cj/xOW8ZOt0DNz86cPuondWX/
-         xqyUqf7LTe+3bzhG5gLTM7yZ8Ywt/VRaGAMp243M/PpeoN7nBv//Fxsu3yg9H8fcQUdj
-         +7TblbPqdxjNEAdFKItY7LaHOIqZIuZZ50SkL0SR/LMSeB2mtvZlTqOGQLfQE5/+QLDy
-         w0f7aP+W2Zq9Ab2FP4Sivgk+gMT383bfMWbFgTyTwtdLk3FA0g2M155VK21kYcIs+qhZ
-         tMUQ==
-X-Gm-Message-State: AOAM533RBw2DAR23SGfrAnf3P/Y70mm2qKDbV9VddvFxVQSOe4jx+5hp
-        t2IUhqcBc/d/z22De9aov6FcDg==
-X-Google-Smtp-Source: ABdhPJzpkAGir7ziC7QC+svpkAEpoRzlwaxlnYLvzym46j0cacf2e+dFT8ttvmImRsG9XVUvX213Zg==
-X-Received: by 2002:a17:906:a1cb:: with SMTP id bx11mr1509253ejb.508.1606903479488;
-        Wed, 02 Dec 2020 02:04:39 -0800 (PST)
-Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id pk19sm806705ejb.32.2020.12.02.02.04.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 02:04:38 -0800 (PST)
-Subject: Re: [PATCH] lib/find_bit: Add find_prev_*_bit functions.
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yun Levi <ppbuk5246@gmail.com>
-Cc:     dushistov@mail.ru, arnd@arndb.de, akpm@linux-foundation.org,
-        gustavo@embeddedor.com, vilhelm.gray@gmail.com,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, yury.norov@gmail.com, jpoimboe@redhat.com,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
-Date:   Wed, 2 Dec 2020 11:04:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=O8RtAbzcSSTDxjcEMF5CfzqbJfEiDGNZZoY0KVn/1T0=;
+        b=npf00PnVM+QsEatgodG+aBAycClLSJoIY4pM92YqtFEB1kfR0Gb7YKYwag4MDme7oN
+         SaS76KBLxJASQ7MASzNe+4jC0gfcIoRiE/BH4hgbD9NQPac0ZF4CMtb3V/ZbRd8WCG+L
+         wXNewon6rtLeU9W78eIYRGfXDZejcc/CNU6tCD+8H2NulqmhIQBrm3Pb2xpdW9+I2cn+
+         yVBQHZ4+dirnCSOcjVf+CLst8NGzytFN05W9WDAtllIV26fQ9ODLA+WUfYvyaUVv34Ot
+         f4Ie9QBndTj2jXeL/wR3V57lTN/mZhHwd8YWLSBrIwGJF+yWuFwuu04RcKfYMc5q79oL
+         x8eg==
+X-Gm-Message-State: AOAM531d2NLCx4MKOkWX1+eOoQ4RK6swcgWZkuI84VOtt7oFb9k6gmkL
+        l5vccW7hhABPbbrYMYAPDqqm9wV2eBAtL2CPdWSsL3AqpZCi
+X-Google-Smtp-Source: ABdhPJwX5bfGqmJZJTx1CKf+Gj31Bf/rg1E9WhEp/D+oWJghr5aG1ZL6Pl6B1FZ5CgJGK+qf0MlV8c9EiDso7/oaDVeh6yPB3i6k
 MIME-Version: 1.0
-In-Reply-To: <20201202094717.GX4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:f88:: with SMTP id v8mr1662162ilo.270.1606903522038;
+ Wed, 02 Dec 2020 02:05:22 -0800 (PST)
+Date:   Wed, 02 Dec 2020 02:05:22 -0800
+In-Reply-To: <0000000000001750e305b52c8d02@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009e9aee05b5786171@google.com>
+Subject: Re: KMSAN: uninit-value in validate_beacon_head
+From:   syzbot <syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, johannes@sipsolutions.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/12/2020 10.47, Andy Shevchenko wrote:
-> On Wed, Dec 02, 2020 at 10:10:09AM +0900, Yun Levi wrote:
->> Inspired find_next_*bit function series, add find_prev_*_bit series.
->> I'm not sure whether it'll be used right now But, I add these functions
->> for future usage.
-> 
-> This patch has few issues:
-> - it has more things than described (should be several patches instead)
-> - new functionality can be split logically to couple or more pieces as well
-> - it proposes functionality w/o user (dead code)
+syzbot has found a reproducer for the following issue on:
 
-Yeah, the last point means it can't be applied - please submit it again
-if and when you have an actual use case. And I'll add
+HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=153d4607500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=eef728deea880383
+dashboard link: https://syzkaller.appspot.com/bug?extid=72b99dcf4607e8c770f3
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c1cec3500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160b6cd3500000
 
-- it lacks extension of the bitmap test module to cover the new
-functions (that also wants to be a separate patch).
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+72b99dcf4607e8c770f3@syzkaller.appspotmail.com
 
-Rasmus
+=====================================================
+BUG: KMSAN: uninit-value in validate_beacon_head+0x51e/0x5c0 net/wireless/nl80211.c:225
+CPU: 0 PID: 8275 Comm: syz-executor237 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ validate_beacon_head+0x51e/0x5c0 net/wireless/nl80211.c:225
+ validate_nla lib/nlattr.c:544 [inline]
+ __nla_validate_parse+0x241a/0x4e00 lib/nlattr.c:588
+ __nla_parse+0x141/0x150 lib/nlattr.c:685
+ __nlmsg_parse include/net/netlink.h:733 [inline]
+ nlmsg_parse_deprecated include/net/netlink.h:772 [inline]
+ nl80211_prepare_wdev_dump+0x6fd/0xbb0 net/wireless/nl80211.c:891
+ nl80211_dump_station+0x143/0x740 net/wireless/nl80211.c:5810
+ netlink_dump+0xb92/0x1670 net/netlink/af_netlink.c:2268
+ __netlink_dump_start+0xcf1/0xea0 net/netlink/af_netlink.c:2373
+ genl_family_rcv_msg_dumpit net/netlink/genetlink.c:697 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:780 [inline]
+ genl_rcv_msg+0xff0/0x1610 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x70a/0x820 net/netlink/af_netlink.c:2494
+ genl_rcv+0x63/0x80 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x11da/0x14b0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x173c/0x1840 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x6d5/0x830 net/socket.c:2440
+ __do_sys_sendmsg net/socket.c:2449 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2447
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2447
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4418a9
+Code: e8 fc a9 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 06 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe906479e8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004418a9
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000003
+RBP: 00000000006cc018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402430
+R13: 00000000004024c0 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8d/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2906 [inline]
+ __kmalloc_node_track_caller+0xc61/0x15f0 mm/slub.c:4512
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x309/0xae0 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1094 [inline]
+ netlink_alloc_large_skb net/netlink/af_netlink.c:1176 [inline]
+ netlink_sendmsg+0xdb8/0x1840 net/netlink/af_netlink.c:1894
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x6d5/0x830 net/socket.c:2440
+ __do_sys_sendmsg net/socket.c:2449 [inline]
+ __se_sys_sendmsg+0x97/0xb0 net/socket.c:2447
+ __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2447
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
+
