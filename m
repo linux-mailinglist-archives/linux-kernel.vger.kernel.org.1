@@ -2,174 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD352CC144
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E83D2CC147
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730497AbgLBPtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:49:08 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33165 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727677AbgLBPtI (ORCPT
+        id S1730512AbgLBPt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:49:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgLBPt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:49:08 -0500
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DFCA0580332;
-        Wed,  2 Dec 2020 10:48:21 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Wed, 02 Dec 2020 10:48:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=uz5tx6JJZjQqRBY1wNhOnZvzzfm
-        C/Lfn/oSOwP2IkT8=; b=Z3pWWe9FSw50pShNnh4c7pQV/o2Gg0E1ADAczlTSMn5
-        qjjMftjnfqlZ6X99WP7By8v1UydluJiVE3idiPJte5wulTVPLtQ7fRN3EfsVImlV
-        SsgomEyE6vf8tgDSu32m0U2yguzqmOOEhaSEIQ8ZZcUYPkLcImqpOF990inWdV9I
-        npSB+bNDS21WYK7FSuOthFRFC9ABjyEkOSsF5o+2bryBXKnKj2P+75+I7NVaDgDf
-        ELYXaBRPWr7+3wWzcbi1auITTDoXQCTW2yvfmVkwStNnlWCcnvVcF/mcBA2SGb9u
-        WpwkTQxcFewvo8oog/+StttyZVuF2P+unDC4ASyqe7Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=uz5tx6
-        JJZjQqRBY1wNhOnZvzzfmC/Lfn/oSOwP2IkT8=; b=Xq6cywrRM5HSQp9rRf29V2
-        w1sPoPUakfLix8M1JdprS/Jxt8aXInmyUkoxhzqyXzU9S5JJsHHlrOpfJMdzdHkR
-        +/UySKhVaOUJdb9qMHHRzy3XSseyTVPEr/s+SYi0gKnxP7Z+JSIWc7VqcXkvMFFZ
-        MsS6onf6SPTEdBZGglLb5Kk7wHnys6KXz9nN1Gf9cWap2UmcuFMgTyRjW1YrfqHH
-        U4m9PGIjVKqubZLd6xV3MgX0UuytHz1A7Srb9DydmTFs74IbVX3kcmmfPODja43G
-        qntePIFr3c3l1yx2W08tVYy8OMRVhFzsLnN04PEJ0/gy+BKfDCJebWwIkHWmyvwg
-        ==
-X-ME-Sender: <xms:Q7fHX963KcXgoTuiNX4nObysjv7ItUz5S-lsbt0HbkyOtzMerpny8Q>
-    <xme:Q7fHXx5-y9Vq-QwXXLW3Okn8RahCNj_HSeb010NK_vXLCoiNjvoVGB6YiTKnWKvnI
-    T_-kIRdEDV2uB7WOV4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Q7fHX5e0hZDW8fBBYxUnRkCYn1JcIeUEiYdkIRomGrWaVeXtKnNCAQ>
-    <xmx:Q7fHX1Ccge-lPO2wbq36lHMq7sthC8k3fZT3ij0LUtbOyZwtoJBkBw>
-    <xmx:Q7fHX8-joJNh5fkpKbIw2aKuNhb1aDSH1z33sv918ZvyzLUrgGMdQQ>
-    <xmx:RbfHX2YWxqMm1yOkSKXdh9n2RCPvbRE93BjJ1U-dAPsZ5lKRVnP6sA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 66015108005B;
-        Wed,  2 Dec 2020 10:48:19 -0500 (EST)
-Date:   Wed, 2 Dec 2020 16:48:18 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com
-Subject: Re: [PATCH v2 13/19] media: sunxi: Add support for the A31 MIPI
- CSI-2 controller
-Message-ID: <20201202154818.bf72m2firemyc5ve@gilmour>
-References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
- <20201128142839.517949-14-paul.kocialkowski@bootlin.com>
- <20201201122038.bxk3vu2w3mg43ayq@gilmour>
- <X8eoX+M650sMXqpx@aptenodytes>
+        Wed, 2 Dec 2020 10:49:26 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFA3C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:48:40 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 3so9304644wmg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:48:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:subject:in-reply-to:message-id:date
+         :mime-version;
+        bh=aK2Yejuziy9XYpoRYVV6bzgJz5NlgVPwFHDuLLWc9Ug=;
+        b=Bdjc1UwJwZGMSn7TM4F4sOv7ZcNypjDjFExNtcI88V83srE3qggHvizPjaeCEbaucL
+         +aB/EW09iqQSYC720eeWbk9D2YyMm1mBOk8eFTM7tSacgqqupB3LtwiQRJN1/eP10hDI
+         VaRZZ/fodJW9tcsrcSaWEP/slWcVW1cGBa3WzSnuKPIahMzbqPSjzmcmSWNzT8PyobRi
+         fQ2WA7OH+P3F3Df8ulVSNXFLyrDpYBHe8nH4ijdrPjZwi/q1CqQmFoDN5h+FeQHXi6iL
+         i/kUNrbmoCltJYPmzaJu/Np1q3WAURywvJ/VtHXp4hGtsiYzwD8tWJJ9XXGmiiJoL8jl
+         iW7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=aK2Yejuziy9XYpoRYVV6bzgJz5NlgVPwFHDuLLWc9Ug=;
+        b=GwsRm5jdlCZDVMsF6fbDLZkFjfQKnO1QHLfg2007ID5VfGlxBsvnhR0E0+yWFXKgY8
+         XrJEbm9PEyUTZl3fdNiwOspJOUjM2Go+V9GJQudV6D9Pr71baTseoY4Y3q3gUGhYvqSq
+         ifRXy7Kf5hMngNprYYoD+lB7m27WxdmXs0M0TIj59yu1GnmRaDuYFdfEBfhVouhNfOY1
+         o5czxaNFeCxUKymqZiGIQQrf+LQ8EuQLkhVTKZXGCahzWJDoTZ4wEF9xUPY6pSx3/mtl
+         jUNqYYG9hVVCOgiXxUOeXqY7a1atU8sOpKZUt0VmE0czICMpJt715ZgW56TSW7tXOH76
+         N+Jw==
+X-Gm-Message-State: AOAM5320S5m1eMubmgSUY97F8R23MaID2uUwHdFoDbliiANQqHgPpdDO
+        zNyUzi4OVAfxjACdX+W2JodXJA==
+X-Google-Smtp-Source: ABdhPJz8kyT3Q+GAhoeJvRzlTWJN6+74jd9rSGhZ+vv9wugh+iaHMt7J2oHuytEnrxiyIiI1z63VYg==
+X-Received: by 2002:a7b:ca47:: with SMTP id m7mr3774131wml.33.1606924118881;
+        Wed, 02 Dec 2020 07:48:38 -0800 (PST)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id l8sm2630263wmf.35.2020.12.02.07.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 07:48:38 -0800 (PST)
+References: <20201116062031.11233-1-christianshewitt@gmail.com>
+ <20201116062031.11233-4-christianshewitt@gmail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/7] arm64: dts: meson: add audio playback to
+ khadas-vim2
+In-reply-to: <20201116062031.11233-4-christianshewitt@gmail.com>
+Message-ID: <1jk0u0p5t6.fsf@starbuckisacylon.baylibre.com>
+Date:   Wed, 02 Dec 2020 16:48:37 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kkjqa5btqozg6oqw"
-Content-Disposition: inline
-In-Reply-To: <X8eoX+M650sMXqpx@aptenodytes>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---kkjqa5btqozg6oqw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon 16 Nov 2020 at 07:20, Christian Hewitt <christianshewitt@gmail.com> wrote:
 
-On Wed, Dec 02, 2020 at 03:44:47PM +0100, Paul Kocialkowski wrote:
-> > > +static int __maybe_unused sun6i_mipi_csi2_suspend(struct device *dev)
-> > > +{
-> > > +	struct sun6i_mipi_csi2_dev *cdev =3D dev_get_drvdata(dev);
-> > > +
-> > > +	clk_disable_unprepare(cdev->clk_mod);
-> > > +	clk_disable_unprepare(cdev->clk_bus);
-> > > +	reset_control_assert(cdev->reset);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int __maybe_unused sun6i_mipi_csi2_resume(struct device *dev)
-> > > +{
-> > > +	struct sun6i_mipi_csi2_dev *cdev =3D dev_get_drvdata(dev);
-> > > +	int ret;
-> > > +
-> > > +	ret =3D reset_control_deassert(cdev->reset);
-> > > +	if (ret) {
-> > > +		dev_err(cdev->dev, "failed to deassert reset\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret =3D clk_prepare_enable(cdev->clk_bus);
-> > > +	if (ret) {
-> > > +		dev_err(cdev->dev, "failed to enable bus clock\n");
-> > > +		goto error_reset;
-> > > +	}
-> > > +
-> > > +	ret =3D clk_prepare_enable(cdev->clk_mod);
-> > > +	if (ret) {
-> > > +		dev_err(cdev->dev, "failed to enable module clock\n");
-> > > +		goto error_clk_bus;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +
-> > > +error_clk_bus:
-> > > +	clk_disable_unprepare(cdev->clk_bus);
-> > > +
-> > > +error_reset:
-> > > +	reset_control_assert(cdev->reset);
-> > > +
-> > > +	return ret;
-> > > +}
-> >=20
-> > I'm guessing you set the __maybe_unused attribute because you're using
-> > SET_RUNTIME_PM_OPS, but what would happen if runtime_pm isn't selected?
-> > It looks like you don't handle that case.
->=20
-> Indeed, __maybe_unused is because of the conditional definition of
-> SET_RUNTIME_PM_OPS. If CONFIG_PM is not selected, then I guess the contro=
-ller
-> wouldn't be powered and wouldn't work. So I should definitely add a Kconf=
-ig
-> dependency on PM then, right?
+> Add initial audio support limited to HDMI i2s.
+>
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+> ---
+>  .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 44 +++++++++++++++++--
+>  1 file changed, 41 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> index bff8ec2c1c70..d4734220443c 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> @@ -7,9 +7,9 @@
+>  
+>  /dts-v1/;
+>  
+> -#include <dt-bindings/input/input.h>
+> -
+>  #include "meson-gxm.dtsi"
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/sound/meson-aiu.h>
 
-There's two ways we can do it. What you suggested is one, the other is
-to have something like our SPI driver to call directly the resume
-function if there's no runtime pm support.
+It's ok to do clean up or refactoring but it should not be done silently
+or mixed with something unrelated
 
-Maxime
+Same in the previous patch
 
---kkjqa5btqozg6oqw
-Content-Type: application/pgp-signature; name="signature.asc"
+>  
+>  / {
+>  	compatible = "khadas,vim2", "amlogic,s912", "amlogic,meson-gxm";
+> @@ -145,6 +145,45 @@
+>  		clock-frequency = <32768>;
+>  		pwms = <&pwm_ef 0 30518 0>; /* PWM_E at 32.768KHz */
+>  	};
+> +
+> +	sound {
+> +		compatible = "amlogic,gx-sound-card";
+> +		model = "GXM-KHADAS-VIM2";
+> +		assigned-clocks = <&clkc CLKID_MPLL0>,
+> +				  <&clkc CLKID_MPLL1>,
+> +				  <&clkc CLKID_MPLL2>;
+> +		assigned-clock-parents = <0>, <0>, <0>;
+> +		assigned-clock-rates = <294912000>,
+> +				       <270950400>,
+> +				       <393216000>;
+> +		status = "okay";
+> +
+> +		dai-link-0 {
+> +			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
+> +		};
+> +
+> +		dai-link-1 {
+> +			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
+> +			dai-format = "i2s";
+> +			mclk-fs = <256>;
+> +
+> +			codec-0 {
+> +				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
+> +			};
+> +		};
+> +
+> +		dai-link-2 {
+> +			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
+> +
+> +			codec-0 {
+> +				sound-dai = <&hdmi_tx>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&aiu {
+> +	status = "okay";
+>  };
+>  
+>  &cec_AO {
+> @@ -154,7 +193,6 @@
+>  	hdmi-phandle = <&hdmi_tx>;
+>  };
+>  
+> -
 
------BEGIN PGP SIGNATURE-----
+Same here
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e3QgAKCRDj7w1vZxhR
-xTh1AP9duiS3skBTouB0HbqCTA8nOkx0lRrOPWEGWu+5e8k5VgEA0QgCH0eQIVFH
-JiC/huo/36twoas2fjPbzkTE/g2VhQw=
-=EZvC
------END PGP SIGNATURE-----
+>  &cpu_cooling_maps {
+>  	map0 {
+>  		cooling-device = <&gpio_fan THERMAL_NO_LIMIT 1>;
 
---kkjqa5btqozg6oqw--
