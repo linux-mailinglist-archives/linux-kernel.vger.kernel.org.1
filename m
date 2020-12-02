@@ -2,105 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BE72CB3F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56532CB3FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 05:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgLBEj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 23:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36276 "EHLO
+        id S1728363AbgLBEma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 23:42:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgLBEj2 (ORCPT
+        with ESMTP id S1728345AbgLBEm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 23:39:28 -0500
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CA7C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:38:42 -0800 (PST)
-Received: by mail-oo1-xc43.google.com with SMTP id h10so68539ooi.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 20:38:42 -0800 (PST)
+        Tue, 1 Dec 2020 23:42:29 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE82C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 20:41:49 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id z21so1277286lfe.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 20:41:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x1J3oNmVed248Yr9F5ZYzVm9O5TAhAVtwD5WiYXieTM=;
-        b=F+AKOO9pCQYn+/ifh4mIPLaNGJeZOmCjEmugX5tFpb9lYUHnjS2it5tO/q/+wG1ydu
-         lFRspQVR9vHZESpQp704H+GmCG6Y2dZNpC1V7geaJ6Sfias1JxAVnZZ3nwM+nVKiHdFO
-         jUJwHca8YVoRdcIbitwfD4fXb0kyD/4fFBouah6Qm8FkQF/3HrfJZiiOjyFvybA/KTh3
-         iRTj4CoX9so9c979DLUpbErKqUIzfmFPW5oALfrik8Ff3DIukUryeeQH7C8NOPQW+PN9
-         Gm6mhb/OT63IgVcQdbaUJIrPMqzAtxn3Lx72SKmAq2Kq/OUlrmqpwRnikidNZsieZTfU
-         lusg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=odGT0RvX5AAcrJBCMT9wkKt9QjC6rMyy8QdGLZvY3r0=;
+        b=CxS0vDT6Aaj83B+TkWH6A+EWAlxsHaHy/JogU2tC/P2RRxxkmUC+Pp3Baqo4jQo6m4
+         EjLEXnf20hVWY6sv0xOEV0HLlO4RAgULP8cDCHzzJ4x4tNUwWB3XfoHLubtryBMkiZQD
+         ZRUlJf1l0SMMM3IrbMr9dwBzO8+7lDReAGs8kyO3wTswNLUMjtiFBBX05/kb/0lb36/Q
+         9Z4wjeqdN/bMuhpeFMlvnDNGPCPE1vI92au5t7Z5793kiy0zbZPW03m4hGDgoyul+d/E
+         iuV7cPkKIY93AYw6bSiliJkkTytU1+9VA1pBtucO7RNmhkQks9ymrmwQBnboowznNPvs
+         cHhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x1J3oNmVed248Yr9F5ZYzVm9O5TAhAVtwD5WiYXieTM=;
-        b=qyKm5ngwNntP6c5Tws+lSgEp9PEkt/hPvgNmFXwm8AtH/k9lsZdOICweMwQDvhYq7O
-         32k5OMXcPzthFXYDTI7ysp9oTZAvLwgZvotfTYAfBO/XPkwIWULKMCIMpd3TSuSxL6Lr
-         iIQLH7yKIUbKZvBS/y4qFXx6mkJIjQCvzcnDQYjsgP8VoXCkPNqoIodRc4GWz+K9SygE
-         kTUnIsgdLxYPwXQNzpI+/DKPQQzBsST9MihRiXnpt08v0ucPZ7cPFyoRPg5lgW5yBK87
-         n64nD7EMh5kwX9u3zsKnuDabOXlMOEYEfHbTjvrvXwkDZKOLxWMpATuzxcfdN5mXMaR7
-         aBBw==
-X-Gm-Message-State: AOAM5334bmHfg2cUIQ5nHE9wiJ7qj19Fm5WpLLTU7srVXzXGM9lRBRJW
-        GzflHd0cIzXno+rjD1Oi9uqSdg==
-X-Google-Smtp-Source: ABdhPJx3n5GPkA/PmFkRvvmtFHgXXxzuijf/+FpB+95yB2JyUbQkL9apmio7/pw3Zua14/43WG0sig==
-X-Received: by 2002:a05:6820:351:: with SMTP id m17mr405037ooe.36.1606883921962;
-        Tue, 01 Dec 2020 20:38:41 -0800 (PST)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y18sm122944ooj.20.2020.12.01.20.38.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 20:38:41 -0800 (PST)
-Date:   Tue, 1 Dec 2020 22:38:39 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
-Message-ID: <20201202043839.GL807@yoga>
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
- <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=odGT0RvX5AAcrJBCMT9wkKt9QjC6rMyy8QdGLZvY3r0=;
+        b=tIoIYBh1f2vEu6OAXTwvhYQxoCAYl7b/tbg3qCvGLoyrTRH1OdHksihmG7345fIiOs
+         FsvsfH9WaJ5e0jFhWcuTlOaOkYIBDk5uWd5daIkjrhQkIIPWCkHJeZg3h9yYKwNgf1Wk
+         TJhFYtRQy8WUp8Sny0hnrTwIgZmbiDEKz/VWvjh3HJ+w1+ITvu9s5b265COCgv//c4Oy
+         YSzL2E9YI86SK8kaFiEOS1N+IZK92pg2zTEFan0qlLhdPigKBjj6bzYDdXYOX+bm48/N
+         OWLRbc0HZ2rQ9OP41U5YGLFoN+1CqtnzIP6TN6RpTajQUr35QWb3YJbcnFkDA/YJKDui
+         i4sg==
+X-Gm-Message-State: AOAM5319nM1ZJwWJDUYAE/IJLDKrsfgnyMMKbzwozdes17V51SFCbNnx
+        cngu10LS2B5rX5Q55log+xXGY81xEinMXPzB+dm9HA==
+X-Google-Smtp-Source: ABdhPJyLGoC2gwqfsd8POy9xXzLNMDB/P4TOaOjrNIlJA7Wdv7YjlVn8ouSprJJz4Jqi7j+NNpOLBrIcTCJfSNQdE1s=
+X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr401301lfg.167.1606884107480;
+ Tue, 01 Dec 2020 20:41:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+References: <20201130233242.78413-1-dlatypov@google.com> <20201130233242.78413-2-dlatypov@google.com>
+ <CABVgOSmX3foOr6XJhQ_goYabFEg8qNYoQ+5O7JPRW=gLmh=OQA@mail.gmail.com> <CAGS_qxpW=Q=x8WAR3WWhtYnJc+K43kpDw680x+6go1cAjW6oUQ@mail.gmail.com>
+In-Reply-To: <CAGS_qxpW=Q=x8WAR3WWhtYnJc+K43kpDw680x+6go1cAjW6oUQ@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 2 Dec 2020 12:41:35 +0800
+Message-ID: <CABVgOSnH0gz7z5JhRCGyG1wg0zDDBTLoSUCoB-gWMeXLgVTo2w@mail.gmail.com>
+Subject: Re: [PATCH 2/5] kunit: tool: fix unit test so it can run from
+ non-root dir
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01 Dec 13:29 CST 2020, Jakub Kicinski wrote:
+On Wed, Dec 2, 2020 at 3:00 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Mon, Nov 30, 2020 at 11:33 PM David Gow <davidgow@google.com> wrote:
+> >
+> > On Tue, Dec 1, 2020 at 7:33 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > >
+> > > get_absolute_path() makes an attempt to allow for this.
+> > > But that doesn't work as soon as os.chdir() gets called.
+> >
+> > Can we explain why this doesn't work? It's because the test_data/
+> > files are accessed with relative paths, so chdir breaks access to
+> > them, right?
+>
+> Correct.
+> Because it actually returns a relative path.
+>
+> (I forgot that I called out that get_absolute_path() gives relative
+> paths in the last patch, and not this one. I can update the commit
+> desc if we want a v2 of this)
+>
+> >
+> > >
+> > > So make it so that os.chdir() does nothing to avoid this.
+> > >
+> > > Note: mock.patch.object() doesn't seem to work in setUpModule(), hence
+> > > the introduction of a new base class instead.
+> > >
+> > > Fixes: 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside kernel tree")
+> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > > ---
+> >
+> > I don't like this: disabling a real system call seems like overkill to
+> > work around a path issue like this.
+> >
+> > Wouldn't it be better to either:
+> > (a) stop kunit_tool from needing to chdir entirely; or
+>
+> a) is doable, but would require plumbing cwd=get_kernel_root_path() to
+> all the subprocess calls to make, etc.
+> I'm not sure fixing a internal test-only issue necessarily justifies
+> taking that path instead of the easier "just add a chdir" we opted for
+> in 5578d008d9e0 ("kunit: tool: fix running kunit_tool from outside
+> kernel tree").
+>
+> > (b) have get_absolute_path() / test_data_path() produce an absolute path.
+> >
+> > The latter really seems like the most sensible approach: have the
+> > script read its own path and read files relative to that.
+>
+> b) is not that simple, sadly.
+>
+> Say I invoke
+> $ python3 kunit_tool_test.py
+> then __file__ = kunit_tool_test.py.
+>
+> So __file__ is a relative path, but the code assumed it was an
+> absolute one and any change of directory breaks things.
+> Working around that would require something like caching the result of
+> os.path.abspath(__file__) somewhere.
 
-> On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:
-> > This patch series adds support for UCI driver. UCI driver enables userspace
-> > clients to communicate to external MHI devices like modem and WLAN. UCI driver
-> > probe creates standard character device file nodes for userspace clients to
-> > perform open, read, write, poll and release file operations. These file
-> > operations call MHI core layer APIs to perform data transfer using MHI bus
-> > to communicate with MHI device. Patch is tested using arm64 based platform.
-> 
-> Wait, I thought this was for modems.
-> 
+So, to clarify, __file__ is a relative path based on the cwd when the
+script is initially run, right?
 
-No, this allows exposing particular channels from any type of MHI
-devices.
+In any case, caching the result of os.path.abspath(__file__) seems
+like the most sensible solution to me. There's global state anyway
+(the current directory), we might as well have it in an explicit
+variable, IMHO.
+>
+> I can see the point about not mocking out something like os.chdir().
+> But on the other hand, do we have any other legitimate reason to call
+> it besides that one place in kunit.py?
+> If we do have something that relies on doing an os.chdir(), it should
+> ideally notice that it didn't work and manifest in a unit test failure
+> somehow.
 
-For modems there is a legacy control path that uses UCI. But data
-traffic, (non-legacy) modem control signals and e.g the bearer of GPS
-data uses in-kernel drivers that are already in place.
+Certainly there doesn't seem to be any other need to chdir() in
+kunit_tool at the moment, but I could see us doing so when adding
+other features. More to the point, if both kunit.py and
+kunit_tool_test.py rely on or manipulate the current directory as part
+of their state, that seems like it's asking for some trouble down the
+line.
 
-> Why do WLAN devices need to communicate with user space?
+If we use an absolute path for the test data, that's something that
+seems unlikely to ever need further changes or cause issues.
+>
+> Alternatively, we could make get_kernel_root_path() return ""/None to
+> avoid the chdir call.
+> kunit.py:       if get_kernel_root_path():
+> kunit.py:               os.chdir(get_kernel_root_path())
+>
+> There'd be no adverse affects atm for stubbing that out, and I don't forsee any.
+> But if we want to be even safer, then perhaps we have
+>
+> def chdir_to_kernel_root():
+>    ...
+>
+> and mock out just that func in the unit test?
 
-They normally don't, all WLAN operations are dealt with within the
-kernel. The use case that comes to mind for UCI when it comes to WiFi
-products is to avoid implementing the Qualcomm debug (diag) protocol in
-the kernel.
+I'd be okay with this, even if I'd prefer us to use an absolute path
+for the test_data as well. Having something like this might even give
+us the opportunity to verify that we're actually trying to change to
+the kernel directory in cases where we need to, but that seems like
+it's out-of-scope for a simple fix.
 
-
-As such I think saying that it can be used to communicate with modem or
-WLAN devices is misleading. Because while it could be done, it is only
-used for dealing with optional side-band services on such products - not
-the actual WiFi and modem functionality.
-
-Regards,
-Bjorn
+-- David
