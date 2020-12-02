@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A7D2CC346
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC5B2CC348
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387615AbgLBRRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:17:18 -0500
-Received: from smtprelay0019.hostedemail.com ([216.40.44.19]:40802 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727641AbgLBRRS (ORCPT
+        id S2388899AbgLBRRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:17:23 -0500
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:37493 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387637AbgLBRRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:17:18 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 5E9C318029136;
-        Wed,  2 Dec 2020 17:16:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:7903:10004:10400:11026:11232:11473:11658:11914:12043:12050:12109:12297:12438:12740:12895:13069:13163:13229:13311:13357:13439:13894:14181:14659:14721:21080:21324:21611:21627:21990:30054:30062:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: gate97_4517256273b4
-X-Filterd-Recvd-Size: 2256
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  2 Dec 2020 17:16:36 +0000 (UTC)
-Message-ID: <280235acc0e91365f3fd3b5be5a5244eced1ff61.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add fix for non-standard signature -
- co-authored-by
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Wed, 02 Dec 2020 09:16:35 -0800
-In-Reply-To: <20201202090828.12934-1-yashsri421@gmail.com>
-References: <ceb3ffcdae151d6ea1d7f1a45bf61b3d2a1c183c.camel@perches.com>
-         <20201202090828.12934-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 2 Dec 2020 12:17:23 -0500
+Received: by mail-ed1-f68.google.com with SMTP id cm17so4803333edb.4;
+        Wed, 02 Dec 2020 09:17:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+UAanY5PNunboQWAira1n5v88pFyvRSB0kuWX0KJKy8=;
+        b=mIrLAL5wiqgeClY6enko6Hba0NK3BA9N3li98QdBNZNxzG9f9/sIFqEersaEWGoi8Z
+         hwovisYLAiFIW1ti4rsW15RS68BjfaxOt/5pz0IoWTY7zqDOz37k/CXTmVYyzmcfYex/
+         UeHQi1LCm/dZIvBfFmvxT2jAUaB60TsfS2aP8HkI8ECuoLVpiJxWS0TQimKvPBUUL/A6
+         LwB/+IfAycmlepObwwWTbIgZJ9ivvLZVwuhVCRF0iwZWFoHQU8cm6dJPHsYyomz/Ap2N
+         rqsnqVzUEbiDJo4WgVgRhjng2oFzDK3dgPqlG7+Br+EFs9pmhIuciWA0/HpTgZaO4gFH
+         Er4w==
+X-Gm-Message-State: AOAM532xpmzh7hUqqQge4NY4ud6TFs0Ryfy0nXRuPH6Hji7g8G6BxSi4
+        uLCYhslScr65DVbzzTTNKyXDX4+sSNA=
+X-Google-Smtp-Source: ABdhPJw6F9Z2HCezk2gyTIqGZ20AJAmWFUFXLwWo7OZP94BHm5G2cz934XVMG/oAoSjGQJpBMXZ9fw==
+X-Received: by 2002:aa7:dc5a:: with SMTP id g26mr948538edu.35.1606929401213;
+        Wed, 02 Dec 2020 09:16:41 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n1sm349851ejb.2.2020.12.02.09.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 09:16:40 -0800 (PST)
+Date:   Wed, 2 Dec 2020 19:16:38 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH v5 net-next 1/4] dt-bindings: net: nfc: s3fwrn5: Support
+ a UART interface
+Message-ID: <20201202171638.GA2778@kozik-lap>
+References: <1606909661-3814-1-git-send-email-bongsu.jeon@samsung.com>
+ <1606909661-3814-2-git-send-email-bongsu.jeon@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1606909661-3814-2-git-send-email-bongsu.jeon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-02 at 14:38 +0530, Aditya Srivastava wrote:
-> Currently, checkpatch.pl warns for BAD_SIGN_OFF on the usage of
-> non-standard signatures.
+On Wed, Dec 02, 2020 at 08:47:38PM +0900, Bongsu Jeon wrote:
+> From: Bongsu Jeon <bongsu.jeon@samsung.com>
 > 
-> An evaluation on v4.13..v5.8 showed that out of 539 warnings due to
-> non-standard signatures, 43 are due to the use of 'Co-authored-by'
-> tag, which may seem correct, but is not standard.
+> Since S3FWRN82 NFC Chip, The UART interface can be used.
+> S3FWRN82 supports I2C and UART interface.
 > 
-> The standard signature equivalent for 'Co-authored-by' is
-> 'Co-developed-by'.
+> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+> ---
+>  .../bindings/net/nfc/samsung,s3fwrn5.yaml          | 31 +++++++++++++++++++---
+>  1 file changed, 28 insertions(+), 3 deletions(-)
 > 
-> Provide a fix by suggesting users with this signature alternative and
-> replacing.
 
-This doesn't apply to either today's linux or -next.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-It is dependent on a patch that is only in Andrew Morton's mmots.
-Your patch subject should show that in the brackets.
-Something like:
-
-[PATCH -mmots] checkpatch: etc...
-
-Adding --fix options to the obvious spelling typos in these signature
-by-lines tags are a different case but I think this is a relatively low
-value patch as I don't believe these tags should be limited in this way.
-
-Maybe Andrew likes it.
-
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -2832,6 +2832,9 @@ sub process {
->  
-> 
->  			if ($sign_off !~ /$signature_tags/) {
->  				my $suggested_signature = find_standard_signature($sign_off);
-> +				if ($sign_off =~ /co-authored-by:/i) {
-> +					$suggested_signature = "Co-developed-by:";
-> +				}
-
-
+Best regards,
+Krzysztof
