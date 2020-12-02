@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F6E2CB576
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5B32CB575
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387584AbgLBHDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:03:22 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44051 "EHLO mga11.intel.com"
+        id S2387573AbgLBHDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:03:20 -0500
+Received: from mga11.intel.com ([192.55.52.93]:44047 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387511AbgLBHDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:03:21 -0500
-IronPort-SDR: dSh0a4i0un78DEYoXidV93Z6O6tmkdPpw8jrB2LfPFR/tCpgCAmUSHhLjoyXJYWjvOURUQUwuj
- K789pe6dfeUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="169461814"
+        id S2387511AbgLBHDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:03:20 -0500
+IronPort-SDR: g7L4R4e6Z63snvCw+9f/hhsrYtzcp0046OLalpluV8XNop3wA7ICckOJjPKL7H5c4vxQ+fC3Ya
+ kY3uFo+Xpb/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="169461815"
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="169461814"
+   d="scan'208";a="169461815"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 23:02:35 -0800
-IronPort-SDR: F5FL9BWhP9/jksfU/Tyf6FI/3KwHtZ08oEhhaeXhVKcp+A4P729DoD7m0DVlEx0gZMRVCDrANs
- /FieEoC1Jwqg==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 23:02:37 -0800
+IronPort-SDR: mGwBjKhELaVG0zSR+6Of1Ip3CH812qCUQ2s0ZkvHk3oLquttH1FXsacFriy0TSRhHmJMja39RA
+ JMr+HRBhAx0A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="481429997"
+   d="scan'208";a="481430011"
 Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
-  by orsmga004.jf.intel.com with ESMTP; 01 Dec 2020 23:02:32 -0800
+  by orsmga004.jf.intel.com with ESMTP; 01 Dec 2020 23:02:35 -0800
 From:   muhammad.husaini.zulkifli@intel.com
 To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
         michal.simek@xilinx.com, linux-mmc@vger.kernel.org,
@@ -35,72 +35,157 @@ Cc:     andriy.shevchenko@intel.com,
         lakshmi.bai.raja.subramanian@intel.com,
         wan.ahmad.zainie.wan.mohamad@intel.com,
         muhammad.husaini.zulkifli@intel.com, mgross@linux.intel.com
-Subject: [PATCH v6 0/4] mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
-Date:   Wed,  2 Dec 2020 23:02:00 +0800
-Message-Id: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
+Subject: [PATCH v6 1/4] mmc: sdhci-of-arasan: Add structure device pointer in probe func
+Date:   Wed,  2 Dec 2020 23:02:01 +0800
+Message-Id: <20201202150205.20150-2-muhammad.husaini.zulkifli@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
+References: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-Hello
+Add struct device *dev in probe func() so that it can widely use in
+probe to make code more readable.
 
-This patch series adds UHS-1 Support for Keem Bay SOC.
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Reviewed-by: mark gross <mgross@linux.intel.com>
+---
+ drivers/mmc/host/sdhci-of-arasan.c | 38 +++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-Patch 1 : Add struct device *dev in probe func(),so that dev pointer can be widely use in probe to make code more readable.
-Patch 2 : Export function to be use by device driver to configure voltage rail output.
-Patch 3 : Defined the DT binding to support the UHS-1 operation.
-Patch 4 : Gives an overview of how voltage operations happen to support UHS-1 mode for Keem Bay SOC.
-
-All of these patches was tested with Keem Bay evaluation module board.
-
-Kindly help to review this patch set.
-
-Thank you.
-
-Changes since v5:
-- Restructured voltage operation for io bus line in one function and added comments in sdhci-of-arasan.c.
-- Use gpio regulator modelling for expander pins.
-- Add DT Bindings for phys, vmmc and vqmmc supplies.
-- Renamed func name and added comments for firmware header files.
-- Update commit message for each patchs to describe what goes on.
-
-Changes since v4:
-- Fixed comment by Andy and Sudeep on first patch.
-- Add Acked-by tag.
-- Fixed comment by Michal and Andy on the third patch to replace current users of &pdev->dev.
-
-Changes since v3:
-- Add Dt bindings for uhs gpio.
-- Fixed comment by Michal and Sudeep on header file for the macro and error code.
-- Fixed comment by Andy and created 1 new patch to separate the struc dev pointer in probe func.
-- Fixed comment by Michal in arasan controller code.
-
-Changes since v2:
-- Removed Document DT Bindings for Keembay Firmware.
-- Removed Firmware Driver to handle ATF Service call.
-- Add header file to handle API function for device driver to communicate with Arm Trusted Firmware.
-
-Changes since v1:
-- Add Document DT Bindings for Keembay Firmware.
-- Created Firmware Driver to handle ATF Service call.
-- Provide API for arasan driver for sd card voltage changes.
-
-
-Muhammad Husaini Zulkifli (4):
-  mmc: sdhci-of-arasan: Add structure device pointer in probe func
-  firmware: keembay: Add support for Trusted Firmware Service call
-  dt-bindings: mmc: Add phys, vmmc and vqmmc supplies for Keem Bay SOC
-  mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
-
- .../devicetree/bindings/mmc/arasan,sdhci.yaml |   6 +-
- drivers/mmc/host/sdhci-of-arasan.c            | 282 ++++++++++++++++--
- include/linux/firmware/intel/keembay.h        |  54 ++++
- 3 files changed, 322 insertions(+), 20 deletions(-)
- create mode 100644 include/linux/firmware/intel/keembay.h
-
---
+diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+index d25a4b50c2f3..196e3d65277e 100644
+--- a/drivers/mmc/host/sdhci-of-arasan.c
++++ b/drivers/mmc/host/sdhci-of-arasan.c
+@@ -1508,9 +1508,10 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 	struct sdhci_pltfm_host *pltfm_host;
+ 	struct sdhci_arasan_data *sdhci_arasan;
+ 	struct device_node *np = pdev->dev.of_node;
++	struct device *dev = &pdev->dev;
+ 	const struct sdhci_arasan_of_data *data;
+ 
+-	match = of_match_node(sdhci_arasan_of_match, pdev->dev.of_node);
++	match = of_match_node(sdhci_arasan_of_match, dev->of_node);
+ 	data = match->data;
+ 	host = sdhci_pltfm_init(pdev, data->pdata, sizeof(*sdhci_arasan));
+ 
+@@ -1524,42 +1525,42 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 	sdhci_arasan->soc_ctl_map = data->soc_ctl_map;
+ 	sdhci_arasan->clk_ops = data->clk_ops;
+ 
+-	node = of_parse_phandle(pdev->dev.of_node, "arasan,soc-ctl-syscon", 0);
++	node = of_parse_phandle(dev->of_node, "arasan,soc-ctl-syscon", 0);
+ 	if (node) {
+ 		sdhci_arasan->soc_ctl_base = syscon_node_to_regmap(node);
+ 		of_node_put(node);
+ 
+ 		if (IS_ERR(sdhci_arasan->soc_ctl_base)) {
+-			ret = dev_err_probe(&pdev->dev,
++			ret = dev_err_probe(dev,
+ 					    PTR_ERR(sdhci_arasan->soc_ctl_base),
+ 					    "Can't get syscon\n");
+ 			goto err_pltfm_free;
+ 		}
+ 	}
+ 
+-	sdhci_arasan->clk_ahb = devm_clk_get(&pdev->dev, "clk_ahb");
++	sdhci_arasan->clk_ahb = devm_clk_get(dev, "clk_ahb");
+ 	if (IS_ERR(sdhci_arasan->clk_ahb)) {
+-		dev_err(&pdev->dev, "clk_ahb clock not found.\n");
++		dev_err(dev, "clk_ahb clock not found.\n");
+ 		ret = PTR_ERR(sdhci_arasan->clk_ahb);
+ 		goto err_pltfm_free;
+ 	}
+ 
+-	clk_xin = devm_clk_get(&pdev->dev, "clk_xin");
++	clk_xin = devm_clk_get(dev, "clk_xin");
+ 	if (IS_ERR(clk_xin)) {
+-		dev_err(&pdev->dev, "clk_xin clock not found.\n");
++		dev_err(dev, "clk_xin clock not found.\n");
+ 		ret = PTR_ERR(clk_xin);
+ 		goto err_pltfm_free;
+ 	}
+ 
+ 	ret = clk_prepare_enable(sdhci_arasan->clk_ahb);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "Unable to enable AHB clock.\n");
++		dev_err(dev, "Unable to enable AHB clock.\n");
+ 		goto err_pltfm_free;
+ 	}
+ 
+ 	ret = clk_prepare_enable(clk_xin);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "Unable to enable SD clock.\n");
++		dev_err(dev, "Unable to enable SD clock.\n");
+ 		goto clk_dis_ahb;
+ 	}
+ 
+@@ -1573,7 +1574,7 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 
+ 	pltfm_host->clk = clk_xin;
+ 
+-	if (of_device_is_compatible(pdev->dev.of_node,
++	if (of_device_is_compatible(dev->of_node,
+ 				    "rockchip,rk3399-sdhci-5.1"))
+ 		sdhci_arasan_update_clockmultiplier(host, 0x0);
+ 
+@@ -1588,7 +1589,7 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 
+ 	sdhci_arasan_update_baseclkfreq(host);
+ 
+-	ret = sdhci_arasan_register_sdclk(sdhci_arasan, clk_xin, &pdev->dev);
++	ret = sdhci_arasan_register_sdclk(sdhci_arasan, clk_xin, dev);
+ 	if (ret)
+ 		goto clk_disable_all;
+ 
+@@ -1597,29 +1598,28 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 			arasan_zynqmp_execute_tuning;
+ 	}
+ 
+-	arasan_dt_parse_clk_phases(&pdev->dev, &sdhci_arasan->clk_data);
++	arasan_dt_parse_clk_phases(dev, &sdhci_arasan->clk_data);
+ 
+ 	ret = mmc_of_parse(host->mmc);
+ 	if (ret) {
+ 		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "parsing dt failed (%d)\n", ret);
++			dev_err(dev, "parsing dt failed (%d)\n", ret);
+ 		goto unreg_clk;
+ 	}
+ 
+ 	sdhci_arasan->phy = ERR_PTR(-ENODEV);
+-	if (of_device_is_compatible(pdev->dev.of_node,
++	if (of_device_is_compatible(dev->of_node,
+ 				    "arasan,sdhci-5.1")) {
+-		sdhci_arasan->phy = devm_phy_get(&pdev->dev,
+-						 "phy_arasan");
++		sdhci_arasan->phy = devm_phy_get(dev, "phy_arasan");
+ 		if (IS_ERR(sdhci_arasan->phy)) {
+ 			ret = PTR_ERR(sdhci_arasan->phy);
+-			dev_err(&pdev->dev, "No phy for arasan,sdhci-5.1.\n");
++			dev_err(dev, "No phy for arasan,sdhci-5.1.\n");
+ 			goto unreg_clk;
+ 		}
+ 
+ 		ret = phy_init(sdhci_arasan->phy);
+ 		if (ret < 0) {
+-			dev_err(&pdev->dev, "phy_init err.\n");
++			dev_err(dev, "phy_init err.\n");
+ 			goto unreg_clk;
+ 		}
+ 
+@@ -1644,7 +1644,7 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 	if (!IS_ERR(sdhci_arasan->phy))
+ 		phy_exit(sdhci_arasan->phy);
+ unreg_clk:
+-	sdhci_arasan_unregister_sdclk(&pdev->dev);
++	sdhci_arasan_unregister_sdclk(dev);
+ clk_disable_all:
+ 	clk_disable_unprepare(clk_xin);
+ clk_dis_ahb:
+-- 
 2.17.1
 
