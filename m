@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8CB2CC509
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37F22CC513
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730870AbgLBS1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:27:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726485AbgLBS1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:27:10 -0500
-Date:   Wed, 2 Dec 2020 19:27:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606933589;
-        bh=33LDAly2Dj/xO+/mODEE4euBaaporynFszCc7VfbE8Q=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CzGmMFjEHM0Ih+UGrq/zGCXeSnuptqugEKn6M3dBKrgb+2hqgCW+MyncKFHTVRLQK
-         e0SuGSk6k8BWYkNsbOhpWuTuqPIY4GZv7FzP2fumwVVhmQGaEogXxi1s3X3qtTAnvU
-         V1jr59szae3uVRwkjWUYhp6bHpxCWu/I5tBXxfaY=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     tj@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] kernfs: remove mutex in kernfs_dop_revalidate
-Message-ID: <X8fcmiEgJUeW6jqR@kroah.com>
-References: <20201202145837.48040-1-foxhlchen@gmail.com>
- <20201202145837.48040-3-foxhlchen@gmail.com>
+        id S2389377AbgLBS2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:28:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730976AbgLBS23 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:28:29 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A03C0617A7;
+        Wed,  2 Dec 2020 10:27:49 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id x4so1587783pln.8;
+        Wed, 02 Dec 2020 10:27:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zvp2Z7uKK5PPjiIE9UzxqFK/LcqQo3ZGRbQdLWMTrqs=;
+        b=vQtKypllp/ZZ0qsyFl+L1bdVT8aToTf0+8odd+XSapcKWxc5LUWAr4l3jkmZ4vhQOW
+         KN7rORAMQob3HKpAq9Bo/WslPYsUTtUae9QaKYOJffWRQqfbndIMK3TpSU35pwR5iTD4
+         TsnDUEvpS8m5tQkWYi2rdtAsknL5ro5v4cAqgmX72mN/HT819mvMJnK8e0mh6JNV6Maj
+         2NsjjVMtDssxfgCYKk3P2Eqp9uvihVqFSXIBowtndIoItqCBuTdOMlxlD1s57LlUvnCI
+         qRKvscIQ16bRuTecy7wqTbfkB45/nvW14IB3Y5Iv2MzVJdc7BX/EYEctNRmDkqjzVpMx
+         +8tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zvp2Z7uKK5PPjiIE9UzxqFK/LcqQo3ZGRbQdLWMTrqs=;
+        b=YghJIf3mmjVUWMxHyOIAClbMA6j3kkdAqgXkoUCu+3smnke1hOutoYV/+Q7qVff70I
+         hHyYqaBaW1O3ZBAYjdTAhacOYHNIaHp4pNblbRL4LWpD/UiZJeG74HIuueLOsDIDhk7W
+         ezoVESVf3gkKY0YSmc+0voryzJL7kDfmqEZObzgupuV2FFuI8NC7o84c91CPBATp602K
+         lc9JaHQy/qBVY/qbQHAr5fqMsdTd4Dmx3jmQpF+7HjevjC4BPCzUT3AdThRBWhAt4XFe
+         Ht93ACP0ypMrbX3LMngfujxh/0XA2Q7nOj2+3O+RNVqnIVm6zSdYaO0WGO0h0mG+IwK6
+         IkUg==
+X-Gm-Message-State: AOAM5336W+4oXnzopxL/Pm+dZg1mJnmaMPDgjI0eHhHrLi2A+ZOLNUuz
+        QFviuvc6AIsR44jMBWJsSXU=
+X-Google-Smtp-Source: ABdhPJwbRBqa8Oz+BOZml8FzyUoa1O4bjuenGRS20w3xqULuzoR4981HLWGbv0U06BXH5Qa8LXKx0g==
+X-Received: by 2002:a17:90a:19d5:: with SMTP id 21mr1047317pjj.187.1606933668614;
+        Wed, 02 Dec 2020 10:27:48 -0800 (PST)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id c6sm396906pgl.38.2020.12.02.10.27.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 10:27:47 -0800 (PST)
+From:   Yang Shi <shy828301@gmail.com>
+To:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
+        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
+        akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/9] mm: vmscan: use nid from shrink_control for tracepoint
+Date:   Wed,  2 Dec 2020 10:27:18 -0800
+Message-Id: <20201202182725.265020-3-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201202182725.265020-1-shy828301@gmail.com>
+References: <20201202182725.265020-1-shy828301@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202145837.48040-3-foxhlchen@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 10:58:37PM +0800, Fox Chen wrote:
-> There is a big mutex in kernfs_dop_revalidate which slows down the
-> concurrent performance of kernfs.
-> 
-> Since kernfs_dop_revalidate only does some checks, the lock is
-> largely unnecessary. Also, according to kernel filesystem locking
-> document:
-> https://www.kernel.org/doc/html/latest/filesystems/locking.html
-> locking is not in the protocal for d_revalidate operation.
-> 
-> This patch remove this mutex from
-> kernfs_dop_revalidate, so kernfs_dop_revalidate
-> can run concurrently.
-> 
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-> ---
->  fs/kernfs/dir.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> index 9aec80b9d7c6..c2267c93f546 100644
-> --- a/fs/kernfs/dir.c
-> +++ b/fs/kernfs/dir.c
-> @@ -26,7 +26,6 @@ static DEFINE_SPINLOCK(kernfs_idr_lock);	/* root->ino_idr */
->  
->  static bool kernfs_active(struct kernfs_node *kn)
->  {
-> -	lockdep_assert_held(&kernfs_mutex);
->  	return atomic_read(&kn->active) >= 0;
->  }
->  
-> @@ -557,10 +556,9 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
->  
->  	/* Always perform fresh lookup for negatives */
->  	if (d_really_is_negative(dentry))
-> -		goto out_bad_unlocked;
-> +		goto out_bad;
->  
->  	kn = kernfs_dentry_node(dentry);
-> -	mutex_lock(&kernfs_mutex);
->  
->  	/* The kernfs node has been deactivated */
->  	if (!kernfs_active(kn))
-> @@ -579,11 +577,8 @@ static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
->  	    kernfs_info(dentry->d_sb)->ns != kn->ns)
->  		goto out_bad;
->  
-> -	mutex_unlock(&kernfs_mutex);
->  	return 1;
->  out_bad:
-> -	mutex_unlock(&kernfs_mutex);
-> -out_bad_unlocked:
->  	return 0;
->  }
->  
-> @@ -650,6 +645,8 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
->  	kn->mode = mode;
->  	kn->flags = flags;
->  
-> +	rwlock_init(&kn->iattr_rwlock);
+The tracepoint's nid should show what node the shrink happens on, the start tracepoint
+uses nid from shrinkctl, but the nid might be set to 0 before end tracepoint if the
+shrinker is not NUMA aware, so the traceing log may show the shrink happens on one
+node but end up on the other node.  It seems confusing.  And the following patch
+will remove using nid directly in do_shrink_slab(), this patch also helps cleanup
+the code.
 
-Ah, now you initialize this, it should go into patch 1, right? :)
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+---
+ mm/vmscan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 7d6186a07daf..457ce04eebf2 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -533,7 +533,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+ 	new_nr = atomic_long_add_return(next_deferred,
+ 					&shrinker->nr_deferred[nid]);
+ 
+-	trace_mm_shrink_slab_end(shrinker, nid, freed, nr, new_nr, total_scan);
++	trace_mm_shrink_slab_end(shrinker, shrinkctl->nid, freed, nr, new_nr, total_scan);
+ 	return freed;
+ }
+ 
+-- 
+2.26.2
+
