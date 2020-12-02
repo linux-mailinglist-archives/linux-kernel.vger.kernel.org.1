@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873052CB47C
+	by mail.lfdr.de (Postfix) with ESMTP id F2F062CB47D
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgLBFYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 00:24:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
+        id S1728528AbgLBFYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 00:24:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726803AbgLBFYP (ORCPT
+        with ESMTP id S1726803AbgLBFYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 00:24:15 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B968EC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 21:23:34 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id n4so209194iow.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 21:23:34 -0800 (PST)
+        Wed, 2 Dec 2020 00:24:17 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A35BC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 21:23:37 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id o8so692006ioh.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 21:23:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=G1qM8sn/PNUsKgov3fcts2bNWeaJFWZuYxDyQQdoPaU=;
-        b=E+JmodwvLXtS3HzMx5uUUdr9evCBFddX1/mT4cTGtkBDMN4txdrJxo49+sPXZ76eQI
-         AMqybXNpmJlYOqeQutvS7qSMwtVmxkcs5Hd2Qt28zG2uQBy5LP6nFPXa6N2fBiOs9KRQ
-         U5JZdqFbw3UCCboY2vxXkKkB2ZRyp7yHd5s0HwRXX3EF9N6G+jD5+1GkSD8nR1gUgthV
-         9FDEFN5bcOaOZluCZqnFerEQd65Yo9p0L0S1nrXtPL6Ew7uGtFvuvnLwFpQ5hdj/8FuP
-         quzeLw+sIdw5N3Whz+7z4LG1RTnW9S+ZNVSv0loBzQBfdE9BSyyeM1ScdJLUXgxlq/+X
-         8zKA==
+        bh=trxUS4hTsq7Vgn0OaEdGU2Oamf0jSdRBNQtCZpSo+v4=;
+        b=dpF7Ja/wYE+ogPzGSNyV+WbT29ucR4KcbNWmSptBcV9kXTAN4dVUUACorYiyR+EX33
+         6J9k9N+pATTjMFVtECRNH8htHRIQFTIH7WA3hKIS+jCvV59iC6M+5cj0c6YPGnaiL0XL
+         7OjRq6g4vcsQFkJjtku5SlbDIMF08JSxkvPagRMv6EpnGPuN6wBWjt/8YtwzGWscTlSn
+         HzW88rVcNP54tJxXahg8pJ2ujf/Htag82Qohw0RkcLxKCNMCc1jBLC6Tvg7LDnk1P3CL
+         piWlohaWnneDLnt8R1fXI0iNc0N2RRoxQW5DGW055OZ/P540ruDVY0+6ehybpETzlXmV
+         clVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G1qM8sn/PNUsKgov3fcts2bNWeaJFWZuYxDyQQdoPaU=;
-        b=k9dHc84DoL9GcNfBtjWyaBvf4RX+jYJ/3KKOTCyT5Bg4eMgQxxWLKPO1if6tZeWJJl
-         By6TJ1yr+lpDI9++Eakw3iH00hSLKNpq1Z02Pdw7xRJQf/80FLHCE1N+sAX2JAHgz6QT
-         +gv6ADQmVxq+QfR506MV+o14va+EdN+jBX/TMZq4p7iTxOZbhh+ubAOJtQmpN0EZReFZ
-         BNCKNN1WDNZzGG5JzSGg5E7GAyLofFgx1f3TtOl35MHtca7E26SEa/Kb0nbR4/wSILdV
-         4Nvao4iytfbX7aind5VWu5/9LXaxcu9/WjL/7fDZR1fDPpDc1A0zb39RDRVnwhp9tei3
-         4Mbw==
-X-Gm-Message-State: AOAM530Hs/HrO7QursCNxlCQdxbHvE+IP9p7g4SXj/Xn+6XaLMD2ZYFY
-        ePmSnL3F596XqudhGPf9iRJ4jA==
-X-Google-Smtp-Source: ABdhPJyTeCJGMPTSatfRIvKFhVE4cfcNJgoEt1DAlqwMczmrxgfiYWBN4c0lqMTlAikPG9fS+lfeVA==
-X-Received: by 2002:a02:c7c1:: with SMTP id s1mr715694jao.94.1606886614168;
-        Tue, 01 Dec 2020 21:23:34 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=trxUS4hTsq7Vgn0OaEdGU2Oamf0jSdRBNQtCZpSo+v4=;
+        b=haHNdxbToAEby3S06xS5WEE9uZSPx5/bf6twsAaAIFDwZvRrC8cBwhylcQix28fUMb
+         zm7nRHw2maQiF1Ge9YJO/fa+eNJe62v3JWo4nUhqHqRCjGSY13mjRPSx5BkePD0L0sQU
+         jYahjtUzRik7jKqoW1ZvoIKfTWpHtsTwmyNb6cQKaB9QATV5iF7d9dB+cKpPSXFZ4WBF
+         Yk/c9h7kRFx7z/SVWxiDikhFxUbKiHXEbGfBa2nwKGngkNiwlsO6l4HP8BEMqsCs+kZa
+         HjklSLJw4ef1fLap7XDis8mnV90JhAoXe30l0oFanflY+mUiub9r7zFhI21yGXm6EFgG
+         Z69Q==
+X-Gm-Message-State: AOAM533HUMzDiziyrJXydafPkHoSWatyFJbGWiwP1g5rojY4a9gzVgqR
+        AXhhh+/AgfflIxyot1TLVQG0Ug==
+X-Google-Smtp-Source: ABdhPJyiNldo5SwgJL3dxm7RfCbXMwfB+m64ZQwFTAvl7q0/UDnGvqjF07LmaClRp7jSh3OZF4a7rg==
+X-Received: by 2002:a6b:760e:: with SMTP id g14mr628341iom.136.1606886616474;
+        Tue, 01 Dec 2020 21:23:36 -0800 (PST)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id m19sm295938ila.81.2020.12.01.21.23.31
+        by smtp.gmail.com with ESMTPSA id m19sm295938ila.81.2020.12.01.21.23.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 21:23:33 -0800 (PST)
+        Tue, 01 Dec 2020 21:23:35 -0800 (PST)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
@@ -57,53 +57,53 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
         jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
         willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com
-Subject: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
-Date:   Wed,  2 Dec 2020 00:23:24 -0500
-Message-Id: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+Subject: [PATCH 1/6] mm/gup: perform check_dax_vmas only when FS_DAX is enabled
+Date:   Wed,  2 Dec 2020 00:23:25 -0500
+Message-Id: <20201202052330.474592-2-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When page is pinned it cannot be moved and its physical address stays
-the same until pages is unpinned.
+There is no need to check_dax_vmas() and run through the npage loop of
+pinned pages if FS_DAX is not enabled.
 
-This is useful functionality to allows userland to implementation DMA
-access. For example, it is used by vfio in vfio_pin_pages().
+Add a stub check_dax_vmas() function for no-FS_DAX case.
 
-However, this functionality breaks memory hotplug/hotremove assumptions
-that pages in ZONE_MOVABLE can always be migrated.
+Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+---
+ mm/gup.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-This patch series fixes this issue by forcing new allocations during
-page pinning to omit ZONE_MOVABLE, and also to migrate any existing
-pages from ZONE_MOVABLE during pinning.
-
-It uses the same scheme logic that is currently used by CMA, and extends
-the functionality for all allocations.
-
-For more information read the discussion [1] about this problem.
-
-[1] https://lore.kernel.org/lkml/CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com/
-
-Pavel Tatashin (6):
-  mm/gup: perform check_dax_vmas only when FS_DAX is enabled
-  mm/gup: don't pin migrated cma pages in movable zone
-  mm/gup: make __gup_longterm_locked common
-  mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_NOMOVABLE
-  mm: honor PF_MEMALLOC_NOMOVABLE for all allocations
-  mm/gup: migrate pinned pages out of movable zone
-
- include/linux/migrate.h        |  1 +
- include/linux/sched.h          |  2 +-
- include/linux/sched/mm.h       | 21 +++------
- include/trace/events/migrate.h |  3 +-
- mm/gup.c                       | 82 +++++++++++++---------------------
- mm/hugetlb.c                   |  4 +-
- mm/page_alloc.c                | 26 ++++++-----
- 7 files changed, 58 insertions(+), 81 deletions(-)
-
+diff --git a/mm/gup.c b/mm/gup.c
+index 98eb8e6d2609..cdb8b9eeb016 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1568,6 +1568,7 @@ struct page *get_dump_page(unsigned long addr)
+ #endif /* CONFIG_ELF_CORE */
+ 
+ #if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
++#ifdef CONFIG_FS_DAX
+ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+ {
+ 	long i;
+@@ -1586,6 +1587,12 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
+ 	}
+ 	return false;
+ }
++#else
++static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
++{
++	return false;
++}
++#endif
+ 
+ #ifdef CONFIG_CMA
+ static long check_and_migrate_cma_pages(struct mm_struct *mm,
 -- 
 2.25.1
 
