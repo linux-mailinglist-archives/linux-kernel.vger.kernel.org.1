@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3838F2CC51B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04C02CC51A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389455AbgLBS2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:28:48 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:53868 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389447AbgLBS2r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:28:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606933702; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=0Yojjsqx1Zc13osDLIGhsE8pvvq8XrNhxySyf/S6H98=;
- b=HSBz13gApNEmOc2xID7MRzMOz96p83DnDdngFyyexRch3lmTq4a7ASthNAwMSTNu4J0Ic3HQ
- DThgUz/TzIcXckCwbrnlssKm8G6eszFexVH3itcKSPBmMH5pQ/eUSf+5ayRHyUjq+sk6vrJF
- sth4ERguZ3jJbmMoIAEvol2HacQ=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fc7dcc62ef3e1355ff9e666 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 18:28:22
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 37D46C43464; Wed,  2 Dec 2020 18:28:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0205C43460;
-        Wed,  2 Dec 2020 18:28:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D0205C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S2389445AbgLBS2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:28:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389417AbgLBS2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 13:28:43 -0500
+Date:   Wed, 2 Dec 2020 19:29:12 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1606933683;
+        bh=djKBr+k0zdd49EoaBtuwC9mnSXlOnntgTk2YtxofPnA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sfKJqIepmWOa5OQrWeeLXZP5O/ZoS1Cz6wChtaIuU/2imkxtJFCks85r7itCdid/F
+         1oXizAEPQzV+Zgv/jsECUJ24Ap6feEWxTgH5PbbY/J4yb7chedwGik8YP3cog/q7wi
+         rB1QQgHRlKrvQyShKYwHsXj2atmS3TZLbe273BfY=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fox Chen <foxhlchen@gmail.com>
+Cc:     tj@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] kernfs: speed up concurrency performance
+Message-ID: <X8fc+LYtRkPa6ZGg@kroah.com>
+References: <20201202145837.48040-1-foxhlchen@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v3] ath10k: Fix the parsing error in service available
- event
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
-References: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
-        dianders@chromium.org, briannorris@chromium.org,
-        Rakesh Pillai <pillair@codeaurora.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201202182822.37D46C43464@smtp.codeaurora.org>
-Date:   Wed,  2 Dec 2020 18:28:22 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202145837.48040-1-foxhlchen@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rakesh Pillai <pillair@codeaurora.org> wrote:
-
-> The wmi service available event has been
-> extended to contain extra 128 bit for new services
-> to be indicated by firmware.
+On Wed, Dec 02, 2020 at 10:58:35PM +0800, Fox Chen wrote:
+> Hello,
 > 
-> Currently the presence of any optional TLVs in
-> the wmi service available event leads to a parsing
-> error with the below error message:
-> ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
+> kernfs is an important facillity to support pseudo file systems and cgroup. 
+> Currently, with a global mutex, reading files concurrently from kernfs (e.g. /sys) 
+> is very slow.
 > 
-> The wmi service available event parsing should
-> not return error for the newly added optional TLV.
-> Fix this parsing for service available event message.
+> This problem is reported by Brice Goglin on thread:
+> Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+> https://lore.kernel.org/lkml/X60dvJoT4fURcnsF@kroah.com/
 > 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00720-QCAHLSWMTPL-1
+> I independently comfirmed this on a 96-core AWS c5.metal server.
+> Do open+read+write on /sys/devices/system/cpu/cpu15/topology/core_id 1000 times.
+> With a single thread it takes ~2.5 us for each open+read+close.
+> With one thread per core, 96 threads running simultaneously takes 540 us 
+> for each of the same operation (without much variation) -- 200x slower than the 
+> single thread one. 
 > 
-> Fixes: cea19a6ce8bf ("ath10k: add WMI_SERVICE_AVAILABLE_EVENT support")
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> The problem can only be observed in large machines (>=16 cores).
+> The more cores you have the slower it can be.
+> 
+> Perf shows that CPUs spend most of the time (>80%) waiting on mutex locks in 
+> kernfs_iop_permission and kernfs_dop_revalidate.
+> 
+> This patchset contains the following 2 patches:
+> 0001-kernfs-replace-the-mutex-in-kernfs_iop_permission-wi.patch
+> 0002-kernfs-remove-mutex-in-kernfs_dop_revalidate.patch
+> 
+> 0001 replace the mutex lock in kernfs_iop_permission with a new rwlock and 
+> 0002 removes the mutex lock in kernfs_dop_revalidate.
+> 
+> After applying this patchset, the multi-thread performance becomes linear with 
+> the fastest one at ~30 us to the worst at ~150 us, very similar as I tested it
+> on a normal ext4 file system with fastest one at ~20 us to slowest at ~100 us. 
+> And I believe that is largely due to spin_locks in filesystems which are normal.
+> 
+> Although it's still slower than single thread, users can benefit from this 
+> patchset, especially ones working on HPC realm with lots of cpu cores and want to
+> fetch system information from sysfs.
 
-Patch applied to ath-next branch of ath.git, thanks.
+Does this mean that the changes slow down the single-threaded case?  Or
+that it's just not as good as the speed of a single-threaded access?
 
-c7cee9c0f499 ath10k: Fix the parsing error in service available event
+But anyway, thanks so much for looking into this, it should help the
+crazy systems out today, which means the normal systems in 5 years will
+really appreciate this :)
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1605501291-23040-1-git-send-email-pillair@codeaurora.org/
+Some minor comments on the individual patches follow...
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+thanks,
 
+greg k-h
