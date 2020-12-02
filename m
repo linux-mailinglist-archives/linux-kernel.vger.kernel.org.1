@@ -2,192 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCC42CB5F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAD02CB5F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbgLBHyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:54:20 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:53493 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726148AbgLBHyU (ORCPT
+        id S1728805AbgLBHx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:53:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgLBHx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:54:20 -0500
-X-UUID: 4d191b8f57ed483bafda945ab8e28ebc-20201202
-X-UUID: 4d191b8f57ed483bafda945ab8e28ebc-20201202
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1547161469; Wed, 02 Dec 2020 15:53:31 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 2 Dec 2020 15:53:30 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 2 Dec 2020 15:53:30 +0800
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicholas Tang <nicholas.tang@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Subject: [PATCH v3 1/1] kasan: fix object remain in offline per-cpu quarantine
-Date:   Wed, 2 Dec 2020 15:53:05 +0800
-Message-ID: <1606895585-17382-2-git-send-email-Kuan-Ying.Lee@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1606895585-17382-1-git-send-email-Kuan-Ying.Lee@mediatek.com>
-References: <1606895585-17382-1-git-send-email-Kuan-Ying.Lee@mediatek.com>
+        Wed, 2 Dec 2020 02:53:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5B8C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:53:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Eb18uoulS729HQE6Dd/opwsLMg4DEMIq77IfE1DI53k=; b=ShXIYCyKqz3+HVKcHuuF0fGLIm
+        nZdss7rQSfyWkEoIepvE6VL3CQ/38OtLstsuAjtG4baAwJRYakZp657fJRSKf57vrCTee1bLDUNFA
+        1ySe/zzEv6YIpqlB0Kj1BRXOTWtDMZO12xKA4/W07x56URHm6Y1+tJyJ8jWfGVy7lZEla5YrxTZyE
+        e2nhDz+UefmeadUbpbMs+8ToJYlbz1V2Vr1K6mtvBtMeRsamUFCBxiZHkJhrZw1Z/Tmks99aSypgH
+        R98XYbClFzt1LCRQBZbYMiwAENIa0OVYXC2Ckk1F0FpuCw98ThExi6qICJFgRZTZ9NBltmsmm/fD8
+        nc2HHeHw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkMwo-0003cR-Uw; Wed, 02 Dec 2020 07:53:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9AD7A3059DD;
+        Wed,  2 Dec 2020 08:53:07 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8C0402C830179; Wed,  2 Dec 2020 08:53:07 +0100 (CET)
+Date:   Wed, 2 Dec 2020 08:53:07 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+Message-ID: <20201202075307.GZ3040@hirez.programming.kicks-ass.net>
+References: <160665707945.2808.5384034634184489471.tglx@nanos>
+ <160665708065.2808.15317906761841446715.tglx@nanos>
+ <CAHk-=wi3o-wwFVbAXb7YZZViDBsZ_yMVqyOAEZsx5qcskLsOcg@mail.gmail.com>
+ <20201130075651.GJ2414@hirez.programming.kicks-ass.net>
+ <CAHk-=whPM9Ng6OsNGy==6F6WqEqLFo3kVwS1Hs063woxah5Z5g@mail.gmail.com>
+ <20201201073906.GP2414@hirez.programming.kicks-ass.net>
+ <20201201075633.GK3092@hirez.programming.kicks-ass.net>
+ <CAHk-=wgTsvLivVr05CbfUEUv+maq+qyvsfXTA0W278f_JbJciw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgTsvLivVr05CbfUEUv+maq+qyvsfXTA0W278f_JbJciw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We hit this issue in our internal test.
-When enabling generic kasan, a kfree()'d object is put into per-cpu
-quarantine first. If the cpu goes offline, object still remains in
-the per-cpu quarantine. If we call kmem_cache_destroy() now, slub
-will report "Objects remaining" error.
+On Tue, Dec 01, 2020 at 11:45:25AM -0800, Linus Torvalds wrote:
+> On Mon, Nov 30, 2020 at 11:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > So even if an architecture needs to enable interrupts on idle, we need
+> > it disabled again when coming out. So we might as well have the arch
+> > idle routine then be: STI; HLT; CLI; because then architectures than can
+> > idle with interrupts disabled can avoid mucking about with the interrupt
+> > state entirely.
+> 
+> But that's not what the code is doing.
+> 
+> Go look at it.
+> 
+> It does sti;hlt;cli;pushf;cli;sti.
+> 
+> All for no good reason - because the code is structured so that even
+> if all the tracking and lockdep is disabled, the pointless "let's
+> protect the tracking from interrupts" is still there.
+> 
+> See what I am complaining about?
 
-[   74.982625] =============================================================================
-[   74.983380] BUG test_module_slab (Not tainted): Objects remaining in test_module_slab on __kmem_cache_shutdown()
-[   74.984145] -----------------------------------------------------------------------------
-[   74.984145]
-[   74.984883] Disabling lock debugging due to kernel taint
-[   74.985561] INFO: Slab 0x(____ptrval____) objects=34 used=1 fp=0x(____ptrval____) flags=0x2ffff00000010200
-[   74.986638] CPU: 3 PID: 176 Comm: cat Tainted: G    B             5.10.0-rc1-00007-g4525c8781ec0-dirty #10
-[   74.987262] Hardware name: linux,dummy-virt (DT)
-[   74.987606] Call trace:
-[   74.987924]  dump_backtrace+0x0/0x2b0
-[   74.988296]  show_stack+0x18/0x68
-[   74.988698]  dump_stack+0xfc/0x168
-[   74.989030]  slab_err+0xac/0xd4
-[   74.989346]  __kmem_cache_shutdown+0x1e4/0x3c8
-[   74.989779]  kmem_cache_destroy+0x68/0x130
-[   74.990176]  test_version_show+0x84/0xf0
-[   74.990679]  module_attr_show+0x40/0x60
-[   74.991218]  sysfs_kf_seq_show+0x128/0x1c0
-[   74.991656]  kernfs_seq_show+0xa0/0xb8
-[   74.992059]  seq_read+0x1f0/0x7e8
-[   74.992415]  kernfs_fop_read+0x70/0x338
-[   74.993051]  vfs_read+0xe4/0x250
-[   74.993498]  ksys_read+0xc8/0x180
-[   74.993825]  __arm64_sys_read+0x44/0x58
-[   74.994203]  el0_svc_common.constprop.0+0xac/0x228
-[   74.994708]  do_el0_svc+0x38/0xa0
-[   74.995088]  el0_sync_handler+0x170/0x178
-[   74.995497]  el0_sync+0x174/0x180
-[   74.996050] INFO: Object 0x(____ptrval____) @offset=15848
-[   74.996752] INFO: Allocated in test_version_show+0x98/0xf0 age=8188 cpu=6 pid=172
-[   75.000802]  stack_trace_save+0x9c/0xd0
-[   75.002420]  set_track+0x64/0xf0
-[   75.002770]  alloc_debug_processing+0x104/0x1a0
-[   75.003171]  ___slab_alloc+0x628/0x648
-[   75.004213]  __slab_alloc.isra.0+0x2c/0x58
-[   75.004757]  kmem_cache_alloc+0x560/0x588
-[   75.005376]  test_version_show+0x98/0xf0
-[   75.005756]  module_attr_show+0x40/0x60
-[   75.007035]  sysfs_kf_seq_show+0x128/0x1c0
-[   75.007433]  kernfs_seq_show+0xa0/0xb8
-[   75.007800]  seq_read+0x1f0/0x7e8
-[   75.008128]  kernfs_fop_read+0x70/0x338
-[   75.008507]  vfs_read+0xe4/0x250
-[   75.008990]  ksys_read+0xc8/0x180
-[   75.009462]  __arm64_sys_read+0x44/0x58
-[   75.010085]  el0_svc_common.constprop.0+0xac/0x228
-[   75.011006] kmem_cache_destroy test_module_slab: Slab cache still has objects
+Absolutely.
 
-Register a cpu hotplug function to remove all objects in the offline
-per-cpu quarantine when cpu is going offline. Set a per-cpu variable
-to indicate this cpu is offline.
+  default_idle()
+    arch_cpu_idle()
+      sti; hlt;
+    cli;
+    rcu_idle_exit()
+      pushf;
+      cli;
+      rcu_eqs_exit(false);
+      popf;
+    sti;
 
-Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-Reported-by: Guangye Yang <guangye.yang@mediatek.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
----
- mm/kasan/quarantine.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+is what it currently looks like, and that's completely insane, no
+argument.
 
-diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-index 4c5375810449..cac7c617df72 100644
---- a/mm/kasan/quarantine.c
-+++ b/mm/kasan/quarantine.c
-@@ -29,6 +29,7 @@
- #include <linux/srcu.h>
- #include <linux/string.h>
- #include <linux/types.h>
-+#include <linux/cpuhotplug.h>
- 
- #include "../slab.h"
- #include "kasan.h"
-@@ -43,6 +44,7 @@ struct qlist_head {
- 	struct qlist_node *head;
- 	struct qlist_node *tail;
- 	size_t bytes;
-+	bool offline;
- };
- 
- #define QLIST_INIT { NULL, NULL, 0 }
-@@ -188,6 +190,11 @@ void quarantine_put(struct kasan_free_meta *info, struct kmem_cache *cache)
- 	local_irq_save(flags);
- 
- 	q = this_cpu_ptr(&cpu_quarantine);
-+	if (q->offline) {
-+		qlink_free(&info->quarantine_link, cache);
-+		local_irq_restore(flags);
-+		return;
-+	}
- 	qlist_put(q, &info->quarantine_link, cache->size);
- 	if (unlikely(q->bytes > QUARANTINE_PERCPU_SIZE)) {
- 		qlist_move_all(q, &temp);
-@@ -328,3 +335,36 @@ void quarantine_remove_cache(struct kmem_cache *cache)
- 
- 	synchronize_srcu(&remove_cache_srcu);
- }
-+
-+static int kasan_cpu_online(unsigned int cpu)
-+{
-+	this_cpu_ptr(&cpu_quarantine)->offline = false;
-+	return 0;
-+}
-+
-+static int kasan_cpu_offline(unsigned int cpu)
-+{
-+	struct qlist_head *q;
-+
-+	q = this_cpu_ptr(&cpu_quarantine);
-+	/* Ensure the ordering between the writing to q->offline and
-+	 * qlist_free_all. Otherwise, cpu_quarantine may be corrupted
-+	 * by interrupt.
-+	 */
-+	WRITE_ONCE(q->offline, true);
-+	barrier();
-+	qlist_free_all(q, NULL);
-+	return 0;
-+}
-+
-+static int __init kasan_cpu_quarantine_init(void)
-+{
-+	int ret = 0;
-+
-+	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "mm/kasan:online",
-+				kasan_cpu_online, kasan_cpu_offline);
-+	if (ret < 0)
-+		pr_err("kasan cpu quarantine register failed [%d]\n", ret);
-+	return ret;
-+}
-+late_initcall(kasan_cpu_quarantine_init);
--- 
-2.18.0
+What I would like to end up with is:
+
+  default_idle()
+    arch_cpu_idle()
+      sti; hlt; cli
+    rcu_idle_exit()
+      rcu_eqs_exit(false);
+    sti;
+
+Which would allow architectures that can idle with IRQs disabled to do
+so. But that needs a little more work:
+
+ - make arch_cpu_idle() IRQ invariant (we enter and exit with IRQs off)
+ - make cpuidle drivers do similar
+ - audit all rcu_idle_exit() callers and remove save/restore
 
