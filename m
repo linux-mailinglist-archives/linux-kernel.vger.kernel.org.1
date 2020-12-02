@@ -2,216 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BCC2CC3C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 459D92CC3CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389295AbgLBR26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:28:58 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:46479 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389133AbgLBR26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:28:58 -0500
-Received: from [192.168.0.2] (ip5f5ae87a.dynamic.kabel-deutschland.de [95.90.232.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 27ADB20647B6E;
-        Wed,  2 Dec 2020 18:28:14 +0100 (CET)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-From:   Donald Buczek <buczek@molgen.mpg.de>
-To:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+raid@molgen.mpg.de
-References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
- <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
- <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
-Message-ID: <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
-Date:   Wed, 2 Dec 2020 18:28:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2389329AbgLBR33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389093AbgLBR32 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:29:28 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938E0C0613D4;
+        Wed,  2 Dec 2020 09:28:48 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id r20so1404183pjp.1;
+        Wed, 02 Dec 2020 09:28:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ryyYawzS2MjebmkZYtVtHUp0Y0QlBniiFC9GtFM7sjg=;
+        b=tw6vFMWheYBfBRyRmb/SeKnKrLSaBPqhiconFsvZKlXVrMdZlJFHppDrTxWf3LfQBI
+         KeTRTk9piziD0Wf/l9FS8rbKTAMdp2gPym0voKW8jDVYNw32QTCBe7VAswbgNtST5CeK
+         dlzkMG1OZwOKB/fQTN2F+RBoLqdn0ZX3m2PuVeKK0xUjpEQYLclgu7y+4nSDgpFm27+k
+         q8zF07LNbsiAz55wdEekmg/3/lLd5NgiT/DEmso4SGjlk15Ena7r7QvJ3FIC/z/ZQEP6
+         5wUOEc5ix2+sPVRZDPzA2HLya0iJQyGHrq7uAuYvS5dKkpbZ1977xELBU7KIuYBoknsr
+         9Mew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ryyYawzS2MjebmkZYtVtHUp0Y0QlBniiFC9GtFM7sjg=;
+        b=Qxc5XnoT9x3tfF9hdZX/2V/lpXtyayKUYslNgaDsW+3yFByHG8Ao9BNIfQqnwdrFE6
+         QiiAxMd6/ribDSHo4udUaxKxRRY281rGEvsUWjlm3nGaAizn5orkCBCVpd3paJD3c1HI
+         TIecRy7M9g822f85b7qIZm2y2gpxwzeJJCWH/NFBX3wyj81RCxioGf7lzqphiJkgJAoI
+         JRqV6xYZl3dXfPNTizQHSVBpKLCLe7xolzDmYuGl+e6B8Ussn5NJWfgFgAyX4NtbLtAe
+         AwPEOqLQ5w4vD0dprb/H0rqERVIilXqL/SFH35piLrXe2YewENCbyN7C0/KCvB3FGd1e
+         0kkQ==
+X-Gm-Message-State: AOAM5331n/crBjOm41Elt12pG5f69toJaRmPJbAVf/J8ZRcBRImBS2XX
+        Xccd4T5HPpkIql34I/JPfLg=
+X-Google-Smtp-Source: ABdhPJw8MqBDwX4imfBfsfRPEoXVNfaDQOekjDj2tbT/zgjQRFtXp5d5bCHcfX9TqM9WVEsMk++rKA==
+X-Received: by 2002:a17:902:b7c3:b029:da:74c3:427 with SMTP id v3-20020a170902b7c3b02900da74c30427mr3497294plz.38.1606930128158;
+        Wed, 02 Dec 2020 09:28:48 -0800 (PST)
+Received: from [10.230.28.242] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g3sm383218pfr.145.2020.12.02.09.28.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 09:28:47 -0800 (PST)
+Subject: Re: [PATCH v5 03/11] clk: bcm: rpi: Release firmware handle on unbind
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org
+Cc:     f.fainelli@gmail.com, linux-pwm@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        wahrenst@gmx.net, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
+        andy.shevchenko@gmail.com,
+        Michael Turquette <mturquette@baylibre.com>
+References: <20201123183833.18750-1-nsaenzjulienne@suse.de>
+ <20201123183833.18750-4-nsaenzjulienne@suse.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <2b9340b0-fdf8-7d9f-0770-495991c359c1@gmail.com>
+Date:   Wed, 2 Dec 2020 09:28:43 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201123183833.18750-4-nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Guoqing,
-
-unfortunately the patch didn't fix the problem (unless I messed it up with my logging). This is what I used:
-
-     --- a/drivers/md/md.c
-     +++ b/drivers/md/md.c
-     @@ -9305,6 +9305,14 @@ void md_check_recovery(struct mddev *mddev)
-                             clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
-                             goto unlock;
-                     }
-     +               if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
-     +                   (!test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
-     +                    test_bit(MD_RECOVERY_CHECK, &mddev->recovery))) {
-     +                       /* resync/recovery still happening */
-     +                       pr_info("md: XXX BUGFIX applied\n");
-     +                       clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
-     +                       goto unlock;
-     +               }
-                     if (mddev->sync_thread) {
-                             md_reap_sync_thread(mddev);
-                             goto unlock;
-
-With pausing and continuing the check four times an hour, I could trigger the problem after about 48 hours. This time, the other device (md0) has locked up on `echo idle > /sys/devices/virtual/block/md0/md/sync_action` , while the check of md1 is still ongoing:
-
-     Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4] [multipath]
-     md1 : active raid6 sdk[0] sdj[15] sdi[14] sdh[13] sdg[12] sdf[11] sde[10] sdd[9] sdc[8] sdr[7] sdq[6] sdp[5] sdo[4] sdn[3] sdm[2] sdl[1]
-           109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
-           [=>...................]  check =  8.5% (666852112/7813894144) finish=1271.2min speed=93701K/sec
-           bitmap: 0/59 pages [0KB], 65536KB chunk
-     
-     md0 : active raid6 sds[0] sdah[15] sdag[16] sdaf[13] sdae[12] sdad[11] sdac[10] sdab[9] sdaa[8] sdz[7] sdy[6] sdx[17] sdw[4] sdv[3] sdu[2] sdt[1]
-           109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
-           [>....................]  check =  0.2% (19510348/7813894144) finish=253779.6min speed=511K/sec
-           bitmap: 0/59 pages [0KB], 65536KB chunk
-
-after 1 minute:
-
-     Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4] [multipath]
-     md1 : active raid6 sdk[0] sdj[15] sdi[14] sdh[13] sdg[12] sdf[11] sde[10] sdd[9] sdc[8] sdr[7] sdq[6] sdp[5] sdo[4] sdn[3] sdm[2] sdl[1]
-           109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
-           [=>...................]  check =  8.6% (674914560/7813894144) finish=941.1min speed=126418K/sec
-           bitmap: 0/59 pages [0KB], 65536KB chunk
-     
-     md0 : active raid6 sds[0] sdah[15] sdag[16] sdaf[13] sdae[12] sdad[11] sdac[10] sdab[9] sdaa[8] sdz[7] sdy[6] sdx[17] sdw[4] sdv[3] sdu[2] sdt[1]
-           109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
-           [>....................]  check =  0.2% (19510348/7813894144) finish=256805.0min speed=505K/sec
-           bitmap: 0/59 pages [0KB], 65536KB chunk
-
-A data point, I didn't mention in my previous mail, is that the mdX_resync thread is not gone when the problem occurs:
-
-     buczek@done:/scratch/local/linux (v5.10-rc6-mpi)$ ps -Af|fgrep [md
-     root       134     2  0 Nov30 ?        00:00:00 [md]
-     root      1321     2 27 Nov30 ?        12:57:14 [md0_raid6]
-     root      1454     2 26 Nov30 ?        12:37:23 [md1_raid6]
-     root      5845     2  0 16:20 ?        00:00:30 [md0_resync]
-     root      5855     2 13 16:20 ?        00:14:11 [md1_resync]
-     buczek    9880  9072  0 18:05 pts/0    00:00:00 grep -F [md
-     
-     buczek@done:/scratch/local/linux (v5.10-rc6-mpi)$ sudo cat /proc/5845/stack
-     [<0>] md_bitmap_cond_end_sync+0x12d/0x170
-     [<0>] raid5_sync_request+0x24b/0x390
-     [<0>] md_do_sync+0xb41/0x1030
-     [<0>] md_thread+0x122/0x160
-     [<0>] kthread+0x118/0x130
-     [<0>] ret_from_fork+0x1f/0x30
-
-I guess, md_bitmap_cond_end_sync+0x12d is the `wait_event(bitmap->mddev->recovery_wait,atomic_read(&bitmap->mddev->recovery_active) == 0);` in md-bitmap.c.
-
-Donald
 
 
-On 01.12.20 10:29, Donald Buczek wrote:
-> Am 30.11.20 um 03:06 schrieb Guoqing Jiang:
->>
->>
->> On 11/28/20 13:25, Donald Buczek wrote:
->>> Dear Linux mdraid people,
->>>
->>> we are using raid6 on several servers. Occasionally we had failures, where a mdX_raid6 process seems to go into a busy loop and all I/O to the md device blocks. We've seen this on various kernel versions.
->>>
->>> The last time this happened (in this case with Linux 5.10.0-rc4), I took some data.
->>>
->>> The triggering event seems to be the md_check cron job trying to pause the ongoing check operation in the morning with
->>>
->>>      echo idle > /sys/devices/virtual/block/md1/md/sync_action
->>>
->>> This doesn't complete. Here's /proc/stack of this process:
->>>
->>>      root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# ps -fp 23333
->>>      UID        PID  PPID  C STIME TTY          TIME CMD
->>>      root     23333 23331  0 02:00 ?        00:00:00 /bin/bash /usr/bin/mdcheck --continue --duration 06:00
->>>      root@done:~/linux_problems/mdX_raid6_looping/2020-11-27# cat /proc/23333/stack
->>>      [<0>] kthread_stop+0x6e/0x150
->>>      [<0>] md_unregister_thread+0x3e/0x70
->>>      [<0>] md_reap_sync_thread+0x1f/0x1e0
->>>      [<0>] action_store+0x141/0x2b0
->>>      [<0>] md_attr_store+0x71/0xb0
->>>      [<0>] kernfs_fop_write+0x113/0x1a0
->>>      [<0>] vfs_write+0xbc/0x250
->>>      [<0>] ksys_write+0xa1/0xe0
->>>      [<0>] do_syscall_64+0x33/0x40
->>>      [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>>
->>> Note, that md0 has been paused successfully just before.
->>
->> What is the personality of md0? Is it also raid6?
+On 11/23/2020 10:38 AM, Nicolas Saenz Julienne wrote:
+> Use devm_rpi_firmware_get() so as to make sure we release RPi's firmware
+> interface when unbinding the device.
 > 
-> Yes.
-> 
->>
->>>
->>>      2020-11-27T02:00:01+01:00 done CROND[23333]: (root) CMD (/usr/bin/mdcheck --continue --duration "06:00")
->>>      2020-11-27T02:00:01+01:00 done root: mdcheck continue checking /dev/md0 from 10623180920
->>>      2020-11-27T02:00:01.382994+01:00 done kernel: [378596.606381] md: data-check of RAID array md0
->>>      2020-11-27T02:00:01+01:00 done root: mdcheck continue checking /dev/md1 from 11582849320
->>>      2020-11-27T02:00:01.437999+01:00 done kernel: [378596.661559] md: data-check of RAID array md1
->>>      2020-11-27T06:00:01.842003+01:00 done kernel: [392996.625147] md: md0: data-check interrupted.
->>>      2020-11-27T06:00:02+01:00 done root: pause checking /dev/md0 at 13351127680
->>>      2020-11-27T06:00:02.338989+01:00 done kernel: [392997.122520] md: md1: data-check interrupted.
->>>      [ nothing related following.... ]
->>>
->>> After that, we see md1_raid6 in a busy loop:
->>>
->>>      PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
->>>      2376 root     20   0       0      0      0 R 100.0  0.0   1387:38 md1_raid6
->>
->> Seems the reap sync thread was trying to stop md1_raid6 while md1_raid6 was triggered again and again.
->>
->>>
->>> Also, all processes doing I/O do the md device block.
->>>
->>> This is /proc/mdstat:
->>>
->>>      Personalities : [linear] [raid0] [raid1] [raid6] [raid5] [raid4] [multipath]
->>>      md1 : active raid6 sdk[0] sdj[15] sdi[14] sdh[13] sdg[12] sdf[11] sde[10] sdd[9] sdc[8] sdr[7] sdq[6] sdp[5] sdo[4] sdn[3] sdm[2] sdl[1]
->>>            109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
->>>            [==================>..]  check = 94.0% (7350290348/7813894144) finish=57189.3min speed=135K/sec
->>>            bitmap: 0/59 pages [0KB], 65536KB chunk
->>>      md0 : active raid6 sds[0] sdah[15] sdag[16] sdaf[13] sdae[12] sdad[11] sdac[10] sdab[9] sdaa[8] sdz[7] sdy[6] sdx[17] sdw[4] sdv[3] sdu[2] sdt[1]
->>>            109394518016 blocks super 1.2 level 6, 512k chunk, algorithm 2 [16/16] [UUUUUUUUUUUUUUUU]
->>>            bitmap: 0/59 pages [0KB], 65536KB chunk
->>>
->>
->> So the RECOVERY_CHECK flag should be set, not sure if the simple changes
->> helps, but you may give it a try.
-> 
-> Thanks. I've copied the original condition block to execute before the modified one and added some logging to it to see, if the change actually triggers. I will pause and unpause the check frequently on a busy machine to get this code executed more often.
-> 
-> Best
->    Donald
-> 
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 98bac4f..e2697d0 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -9300,7 +9300,8 @@ void md_check_recovery(struct mddev *mddev)
->>                          md_update_sb(mddev, 0);
->>
->>                  if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) &&
->> -                   !test_bit(MD_RECOVERY_DONE, &mddev->recovery)) {
->> +                   (!test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
->> +                    test_bit(MD_RECOVERY_CHECK, &mddev->recovery))) {
->>                          /* resync/recovery still happening */
->>                          clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->>                          goto unlock;
->>
->> Thanks,
->> Guoqing
-> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
+Florian
