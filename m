@@ -2,167 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6772CC3FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8099D2CC3FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387711AbgLBRkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:40:10 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:33140 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730836AbgLBRkK (ORCPT
+        id S1730853AbgLBRk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:40:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17972 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728585AbgLBRk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:40:10 -0500
-Received: by mail-ot1-f66.google.com with SMTP id b18so1800308ots.0;
-        Wed, 02 Dec 2020 09:39:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tka6NXMWUhwZ2GkXMJAmEqAo04rklmyCqGj4K23JgnI=;
-        b=FkLehLuH9/PjQ0nCEkZUbnWdQRLgHQQt4RNLcrdTSoMcctVVuhGkR6pbmNYvS+kOAi
-         DsWt/DKthZcaLcsJQbvICriecYK3V0C2MFym7afnkAGX6A4yKyh5o0cOOHVBeyTCoWxm
-         6yiByAW2OUgjzAo0SPZiVF1z994hfwuw2GtVHzT/MPlt9L0lFm8ucv2aFHz0teJ7jxKE
-         P306JWDpAg4cEAe0ZKMVtM4NGRhTiOHtZBQEyfhWhYOSXfzU7nj4h5xLzjeF15LBCyCK
-         Q9Ab/sReJKWy8dXp4Q7PM2gS3wGa3XMf1PKbFsLkWE/3O7T4G4DMc5WTNQixqkOhx+5V
-         QcpA==
-X-Gm-Message-State: AOAM530dTaz6TB1wZLy28zBCt3OK2YzIODfUeXF5chWLmXANSc1V8uii
-        uOUFLaYw7lUTxA4Jf1nNT322yuztU0aBsXnSSS4=
-X-Google-Smtp-Source: ABdhPJzswQBe3taBRqg9cPGNfgA/yb5tM2YE6VWyUuG4TbTtslSxpWyFKAJDKYHYVC9IyMIIwcO5z5OZXPaSttfI0Po=
-X-Received: by 2002:a9d:171a:: with SMTP id i26mr2672660ota.260.1606930768936;
- Wed, 02 Dec 2020 09:39:28 -0800 (PST)
+        Wed, 2 Dec 2020 12:40:27 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2HXEO9077312;
+        Wed, 2 Dec 2020 12:39:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=kNpV886y/44gEnyUQ9hjZixG4MKvwQNJQidOK9zGcZw=;
+ b=l9ZjxZnvgN9qM+IP5IataK6p71X0VvaCXImpJpvW/EQ5GFu8TylNACs7u/AKPDkZzGkN
+ lngdjXa1JUctoj9TEDAH73aDR/mpFqzcW9XKJnb2KMN5iuNTHROcvaaAW3hcXwi2asJA
+ Y9GrCqn3zGRccX9jB49vwUohzzCfIPar3Blbr5BszeE9xfSXsMofnRnYQ2rxgdw29oAC
+ H8NeQUYCyJnd+gKMxR/GKfq/brXQgpi5kXSWE6oua5gMDeslO6/TE71noSkWLE8/h5+j
+ 8oq71yG1Jx4am+M9+tHVWm36y76UwNnysjHNyp76QPrHkElWOoXlvqwGqgTI/lJJ53/1 KQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355sr5yga5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 12:39:32 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B2HXtdE079052;
+        Wed, 2 Dec 2020 12:39:32 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355sr5yg97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 12:39:32 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2HcZ3A024666;
+        Wed, 2 Dec 2020 17:39:29 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 35693xgatg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 17:39:29 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2HdRTT6619868
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 17:39:27 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DEFFA4040;
+        Wed,  2 Dec 2020 17:39:27 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 214B4A404D;
+        Wed,  2 Dec 2020 17:39:26 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.50.18])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  2 Dec 2020 17:39:25 +0000 (GMT)
+Date:   Wed, 2 Dec 2020 19:39:23 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
+ pageblock_skip on reserved pages
+Message-ID: <20201202173923.GM123287@linux.ibm.com>
+References: <35F8AADA-6CAA-4BD6-A4CF-6F29B3F402A4@redhat.com>
+ <X76iatgBErQH5El4@redhat.com>
+ <a4cc62ba-8066-3e9c-cead-98cd74d313dd@redhat.com>
+ <20201125210414.GO123287@linux.ibm.com>
+ <X77OyM8utmWcq1Di@redhat.com>
+ <20201126093602.GQ123287@linux.ibm.com>
+ <3bb709a7-6100-aa5c-4125-7ed80c6d9643@redhat.com>
+ <20201126174601.GT123287@linux.ibm.com>
+ <20201129123257.GY123287@linux.ibm.com>
+ <X8bjgw5LPAZrSrwp@redhat.com>
 MIME-Version: 1.0
-References: <1817571.2o5Kk4Ohv2@kreacher> <2174134.tL5yAn4CWt@kreacher> <000901d6c8c3$fa8386f0$ef8a94d0$@net>
-In-Reply-To: <000901d6c8c3$fa8386f0$ef8a94d0$@net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 2 Dec 2020 18:39:14 +0100
-Message-ID: <CAJZ5v0ghoOs=TwBTMNUk_A_8CwO5wzpwHUjyUwAdajMQpeUoqg@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/2] cpufreq: Add special-purpose fast-switching
- callback for drivers
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Giovanni Gherdovich <ggherdovich@suse.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8bjgw5LPAZrSrwp@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_10:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 4:59 PM Doug Smythies <dsmythies@telus.net> wrote:
->
-> Hi Rafael,
->
-> On 2020.11.30 10:37 Rafael J. Wysocki wrote:
->
-> > First off, some cpufreq drivers (eg. intel_pstate) can pass hints
-> > beyond the current target frequency to the hardware and there are no
-> > provisions for doing that in the cpufreq framework.  In particular,
-> > today the driver has to assume that it should allow the frequency to
->
-> Forgot the important "not":
+Hello Andrea,
 
-Right, thanks for noticing that!
+On Tue, Dec 01, 2020 at 07:44:51PM -0500, Andrea Arcangeli wrote:
+> Hello Mike,
+> 
+> On Sun, Nov 29, 2020 at 02:32:57PM +0200, Mike Rapoport wrote:
+> > Hello Andrea,
+> > 
+> > On Thu, Nov 26, 2020 at 07:46:05PM +0200, Mike Rapoport wrote:
+> > > On Thu, Nov 26, 2020 at 11:05:14AM +0100, David Hildenbrand wrote:
+> > > 
+> > > Let's try to merge init_unavailable_memory() into memmap_init().
+> > > Than it'll be able to set zone/nid for those nasty pfns that BIOS
+> > > decided to keep to itself, like in Andrea's case and will also take care
+> > > of struct pages that do not really have a frame in DRAM, but are there
+> > > because of arbitrary section size.
+> > 
+> > Did you have a chance to check if this solves your issue?
+> > If yes, I'll resend this as a formal patch.
+> 
+> I tested the patch you sent, but it doesn't seem to boot. Reverting it
+> booted.
 
-> today the driver has to assume that it should allow not the frequency to
->
-> > fall below the one requested by the governor (or the required capacity
-> > may not be provided) which may not be the case and which may lead to
-> > excessive energy usage in some scenarios.
-> >
-> > Second, the hints passed by these drivers to the hardware neeed not
->
-> s/neeed/need
+Hmm, do you have any logs? It worked on my box and with various memory
+configurations in qemu.
 
-Yup, thanks!
+> Also I noticed leaving pages uninitialized already happened before and
+> was fixed in 124049decbb121ec32742c94fb5d9d6bed8f24d8 where literally
+> all holes were registered in memblock_reserve() by hand to workaround
+> this very same defect in memblock callee we're fixing again.
+>
+> Then it was lifted in 9fd61bc95130d4971568b89c9548b5e0a4e18e0e since
+> the memblock was supposed to be able to initialize all pages.
 
-> ...
->
-> O.K. this is good.
->
-> The problem with my basic CPU frequency verses load test with the
-> schedutil governor is that it is always so oscillatory it is pretty
-> much not possible to conclude anything. So I re-worked the test
-> to look at Processor Package Power load instead.
->
-> In a previous e-mail [1] I had reported the power differences
-> for one periodic load at one frequency, as a (apparently cherry picked)
-> example. Quoted:
->
-> > schedutil governor:
-> > acpi-cpufreq: good
-> > intel_cpufreq hwp: bad    <<<<< Now good, with this patch set.
+I still that think both 124049decbb1 ("x86/e820: put !E820_TYPE_RAM
+regions into memblock.reserved") and 9fd61bc95130 ("Revert "x86/e820:
+put !E820_TYPE_RAM regions into memblock.reserved") are band aids and
+they do not address the root cause but rather try to workaround it.
 
-OK, great!
+The problem is that we have no proper way to initialize struct pages
+corresponding to holes. The holes can appear in case when the memory is
+not a multiple of SECTION_SIZE and, at least on x86, in case BIOS
+reserves pages and they are not E820_TYPE_RAM.
 
-> > intel_cpufreq no hwp: good
-> > ...
-> > periodic workflow at 347 hertz.
-> > ~36% load at 4.60 GHz (where hwp operates)
-> > ~55% load at 3.2 GHz (where no hwp operates)
-> >
-> > intel_cpufreq hwp: 9.6 processor package watts. 45.8 watts on the mains to the computer.
-> > intel_cpufreq no hwp: ~6 processor package watts. ~41 watts on the mains to the computer. (noisy)
->
-> So this time, I only have power/energy data, and a relatively easy way to compress all 12,000
-> samples into some concise summary is to simply find the average power for the entire experiment:
->
-> Legend:
-> hwp: Kernel 5.10-rc6, HWP enabled; intel_cpufreq; schedutil (always)
-> rjw: Kernel 5.10-rc6 + this patch set, HWP enabled; intel_cpu-freq; schedutil
-> no-hwp: Kernel 5.10-rc6, HWP disabled; intel_cpu-freq; schedutil
-> acpi-cpufreq: Kernel 5.10-rc6, HWP disabled; acpi-cpufreq; schedutil
->
-> load work/sleep frequency: 73 Hertz:
-> hwp: Average: 12.00822 watts
-> rjw: Average: 10.18089 watts
-> no-hwp: Average: 10.21947 watts
-> acpi-cpufreq: Average:  9.06585 watts
->
-> load work/sleep frequency: 113 Hertz:
->
-> hwp: Average: 12.01056
-> rjw: Average: 10.12303
-> no-hwp: Average: 10.08228
-> acpi-cpufreq: Average:  9.02215
->
-> load work/sleep frequency: 211 Hertz:
->
-> hwp: Average: 12.16067
-> rjw: Average: 10.24413
-> no-hwp: Average: 10.12463
-> acpi-cpufreq: Average:  9.19175
->
-> load work/sleep frequency: 347 Hertz:
->
-> hwp: Average: 12.34169
-> rjw: Average: 10.79980
-> no-hwp: Average: 10.57296
-> acpi-cpufreq: Average:  9.84709
->
-> load work/sleep frequency: 401 Hertz:
->
-> hwp: Average: 12.42562
-> rjw: Average: 11.12465
-> no-hwp: Average: 11.24203
-> acpi-cpufreq: Average: 10.78670
->
-> [1] https://marc.info/?l=linux-pm&m=159769839401767&w=2
->
-> My tests results graphs:
-> Note: I have to code the web site, or I get hammered by bots.
-> Note: it is .com only because it was less expensive than .org
-> 73 Hertz:
-> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su73/
-> 113 Hertz:
-> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su113/
-> 211 Hertz:
-> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su211/
-> 347 Hertz:
-> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su347/
-> 401 Hertz:
-> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su401/
+The first case is not much of a problem, as I doubt there are still
+systems that have not MAX_ORDER aligned memory banks, so the "trailing"
+pages in semi-empty section will never be used by the page allocator.
 
-Thanks for the data, this is encouraging!
+The BIOS case, however is more problematic as it creates holes inside
+MAX_ORDER aligned pageblocks.
+
+Pushing the pages in such holes in and out of memblock.reserved won't
+really help because they are not in memblock.memory while most
+calculations during initialization of page allocator and memory map use
+memblock.memory and iterate over it.
+
+As these holes do not seem to appear on zone/node boundaries, we do not
+see reports about wrong zone/node sizing because of the holes.
+
+I believe that the proper solution would be to have all the memory
+reserved by the firmware added to memblock.memory, like all other
+architectures do, but I'm not sure if we can easily and reliably
+determine what of E820 reserved types are actually backed by RAM.
+So this is not feasible as a short term solution.
+
+My patch [1], though, is an immediate improvement and I think it's worth
+trying to fix off-by-one's that prevent your system from booting.
+
+[1] https://lore.kernel.org/lkml/20201201181502.2340-1-rppt@kernel.org
+
+> Since this seems the second time this happens, I'd suggest to change
+> the graceful pfn, 0,0 initialization to memset(page, 0xff,
+> sizeof(struct page)) too like we mentioned earlier and then have at
+> least a DEBUG_SOMETHING=y to search for struct pages with all 1 in
+> page->flags to ensure the boot stage worked right so perhaps there's a
+> graceful notification at boot before a VM_BUG_ON triggers later. The
+> page struct validation could be done based on DEBUG_VM=y too since it
+> won't cause any runtime cost post boot.
+>
+> Thanks,
+> Andrea
+> 
+
+-- 
+Sincerely yours,
+Mike.
