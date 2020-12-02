@@ -2,184 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183682CBBCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92ED12CBBD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgLBLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:46:57 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:43696 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgLBLq5 (ORCPT
+        id S1729724AbgLBLsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:48:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgLBLsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:46:57 -0500
-Received: by mail-ot1-f65.google.com with SMTP id f12so1321338oto.10;
-        Wed, 02 Dec 2020 03:46:35 -0800 (PST)
+        Wed, 2 Dec 2020 06:48:22 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE794C0613CF;
+        Wed,  2 Dec 2020 03:47:56 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w16so924082pga.9;
+        Wed, 02 Dec 2020 03:47:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=91aj9edY77hTt39KhpEZSPjKyf9MNh9XT2J/er9ipzg=;
+        b=EZR9E0bgDgWC0etCy8AykgZf4yg9d1q/QNSsUz52oU9csexLmcGiMLbnzBtG2pWJWF
+         +Q7h2qXwkUU79wxOwtoB4oeYOLkbrNmhVc9+/UyQKDDD59vZJMMZs8VFxgWRYYB1yCXN
+         j4iUS7fW+e3iCsSF3A1uBPY6QMSFhAS8nP8xJjWK1GJuYcusG8jIvKhSFyO0i+MP7LgG
+         /866WU6Tr+CDSNNbAj/pEjS4qGB0SPNEgaNdQlwAEeUyaLGvgEJvUNzP11sGidLIJ4AB
+         BKEmI5n0wgpBu939mN8jPHAea7ZqzEzyrsMRnOvGlwRjcAsPiNUh4/j1TU2DUdnf5SjO
+         ZfIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wY5+FPr0JumqKQLNGVglKvtcRgToANWbF/y1ZsXODnY=;
-        b=eI3GrgI5QnNCIRT28L4L5tntUtW4IAk177ZFMWNgqHSAsgjBvj0gc9hAHAS+0PfxM/
-         Bbu4e0JQrLrmVhbXaMGzIg536a+3btvVmJxvOdtMcTpIq8YlnSR8cjIm9WzSs+Tt20mU
-         yZbTDk4r9CI/NOS4TctVJHQLtO6F0alcL5lU8VqQNtE7z2aVF5dyeKfg7dUIZOcQcXQe
-         UxCS3R4WsrlYirB+zlQ/11hqeVVyjzyZdGz5Wki07CTOFOGIeNg24pJXUyTORiPC17VV
-         H5TYsUOVedjf2ovCgKuC32OT7MdkOOXC796qUOc/mNbhPqJf/gYcBSZyn5sOhwnoMAoU
-         p66A==
-X-Gm-Message-State: AOAM531eD81wTYBQAUqEaFpUnk3jXYnfaNssPOefE6du88rmODpvMzxr
-        bqQOGvFZKg1/KzwHjHihVYQkiKg/UUFVG1v0Vx9Xx1JWlnQ=
-X-Google-Smtp-Source: ABdhPJydIJia7HpSXbE2uB/RZzjy8q2/skrADm1OvKUYvjFKPf1hJxMSj1FDUuY84YyJyaaKhLZdv/+AIczAW2LPZLQ=
-X-Received: by 2002:a05:6830:2385:: with SMTP id l5mr1432188ots.321.1606909570220;
- Wed, 02 Dec 2020 03:46:10 -0800 (PST)
-MIME-Version: 1.0
-References: <CAEGmHFFjV2UKm3L1G5JF6Ve47L1-aKBAGrCxN3pPX1HO9R-aUg@mail.gmail.com>
- <CAJZ5v0hqU-qiM8ddYUT_u0Lm3RNM19gNcXye_s5v3DeCHr7mZQ@mail.gmail.com>
- <CAEGmHFFxxOxNBjut68azQ5eMh71J+ysJeX9SOak6WwNetuJnwA@mail.gmail.com>
- <CAJZ5v0j_XWiJyd4zyyuUf41WDEcu5TEo5tT7cYXi8FFqXpBzfA@mail.gmail.com>
- <CAEGmHFE6EfUQ-RE+sXEppOGKxPJ3i9hUSWUDPAGXDjxYm0P_kw@mail.gmail.com> <CAEGmHFF22xg70hZ-jmL5-RnC+PZPXwsT=dHcQbh7SaEOLDpPXA@mail.gmail.com>
-In-Reply-To: <CAEGmHFF22xg70hZ-jmL5-RnC+PZPXwsT=dHcQbh7SaEOLDpPXA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 2 Dec 2020 12:45:58 +0100
-Message-ID: <CAJZ5v0jAFyGekZ4Qboihucxpbufos7=PYdghDWXNFNYHriO2zw@mail.gmail.com>
-Subject: Re: [RFC] ACPI PM during kernel poweroff/reboot
-To:     Furquan Shaikh <furquan@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Aaron Durbin <adurbin@google.com>,
-        Duncan Laurie <dlaurie@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=91aj9edY77hTt39KhpEZSPjKyf9MNh9XT2J/er9ipzg=;
+        b=F7KX0m3vlGqAM/DBstqnOkwBk7MQguWafhVXwMzEWLn1VF3N7j+QsZzLnYa4oP2h7d
+         lrL4zRSKnf8WkQstnSbREwmRE833SeNfihSlw4PbenYbCv/Q7ULf3LbvFCnlJE/ZZfIH
+         GefYuOa7OabarGhDcc2+MftGoCi6+SYsHJvH3BCO1vnQqK+4/GRn+as2eQ31kAsIe60U
+         3mpQGIJkMrZtTWsPI6wjPdy/KtXQPdK2/I9PQjpWXL5kvBvhKWeKM7xZzmX2qopfaonn
+         giyo+77JLDeKpIsz16qibKLoBrQmrCxkOo0qDELp5E7bP7x+d4QCpEH4EpkIpkU6Dq8A
+         yWxA==
+X-Gm-Message-State: AOAM530vS7r9H/B/ycDvDw+c2Ayy9cKD1a+RPuIH2jvP3hwhLZhjli5V
+        bTAx+KBqSprh73lLlpY5Ip1KCmuoKsM=
+X-Google-Smtp-Source: ABdhPJw6SuIwNlvL71go4Pdz71/9jVaJMw3SD7ij3mF7r4stN98PhXQS7CXU//7s3ABIopmsvoX0vQ==
+X-Received: by 2002:a65:6891:: with SMTP id e17mr231710pgt.410.1606909676495;
+        Wed, 02 Dec 2020 03:47:56 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id q18sm2108806pfs.150.2020.12.02.03.47.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 03:47:55 -0800 (PST)
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+X-Google-Original-From: Bongsu Jeon
+To:     krzk@kernel.org
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH v5 net-next 0/4] nfc: s3fwrn5: Support a UART interface
+Date:   Wed,  2 Dec 2020 20:47:37 +0900
+Message-Id: <1606909661-3814-1-git-send-email-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 10:38 PM Furquan Shaikh <furquan@google.com> wrote:
->
-> On Wed, Nov 25, 2020 at 10:29 AM Furquan Shaikh <furquan@google.com> wrote:
-> >
-> > On Wed, Nov 25, 2020 at 9:51 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > >
-> > > On Wed, Nov 25, 2020 at 6:43 PM Furquan Shaikh <furquan@google.com> wrote:
-> > > >
-> > > > On Wed, Nov 25, 2020 at 8:39 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > > >
-> > > > > On Thu, Nov 12, 2020 at 8:19 PM Furquan Shaikh <furquan@google.com> wrote:
-> > > > > >
-> > > > > > On x86 Chromebooks, we have observed this issue for a long time now -
-> > > > > > when the system is powered off or rebooted, ACPI PM is not invoked and
-> > > > > > this results in PowerResource _OFF methods not being invoked for any
-> > > > > > of the devices. The _OFF methods are invoked correctly in case of
-> > > > > > suspend-to-idle (S0ix) and suspend-to-memory(S3). However, they do not
-> > > > > > get invoked when `poweroff` or `reboot` are triggered.
-> > > > > >
-> > > > > > One of the differences between suspend, hibernate and shutdown paths
-> > > > > > in Linux kernel is that the shutdown path does not use the typical
-> > > > > > device PM phases (prepare, freeze/suspend, poweroff) as used by
-> > > > > > suspend/hibernate. Instead the shutdown path makes use of
-> > > > > > .shutdown_pre() and .shutdown() callbacks.
-> > > > > >
-> > > > > > If I understand correctly, .shutdown() has been around for a long time
-> > > > > > and existed even before the PM callbacks were added. Thus,
-> > > > > > pm->poweroff() and .shutdown() are supposed to be analogous and
-> > > > > > consistent in the behavior.
-> > > > >
-> > > > > Well, not quite.
-> > > > >
-> > > > > ->shutdown() is expected to be a lightweight operation also suitable
-> > > > > for kexec() and similar situations where ->poweroff() may not work.
-> > > > >
-> > > > > > This is why runtime PM is disallowed by
-> > > > > > device_shutdown() before it calls .shutdown() (i.e. to keep behavior
-> > > > > > consistent for both paths). However, in practice, there are
-> > > > > > differences in behavior for the pm->poweroff() and .shutdown() paths
-> > > > > > since the shutdown path does not execute any PM domain operations.
-> > > > >
-> > > > > That's correct.
-> > > > >
-> > > > > > Because of this difference in behavior, shutdown path never invokes
-> > > > > > ACPI PM and thus the ACPI PowerResources are not turned off when the
-> > > > > > system is rebooted or powered off (sleep S5). On Chromebooks, it is
-> > > > > > critical to run the _OFF methods for poweroff/reboot in order to
-> > > > > > ensure that the device power off sequencing requirements are met.
-> > > > > > Currently, these requirements are violated which impact the
-> > > > > > reliability of devices over the lifetime of the platform.
-> > > > > >
-> > > > > > There are a few ways in which this can be addressed:
-> > > > > >
-> > > > > > 1. Similar to the case of hibernation, a new
-> > > > > > PMSG_POWEROFF/PM_EVENT_POWEROFF can be introduced to invoke device
-> > > > > > power management phases using `dpm_suspend_start(PMSG_POWEROFF)` and
-> > > > > > `dpm_suspend_end(PMSG_POWEROFF)`. However, as the shutdown path uses
-> > > > > > the class/bus/driver .shutdown() callbacks, adding dpm phases for
-> > > > > > poweroff complicates the order of operations. If the dpm phases are
-> > > > > > run before .shutdown() callbacks, then it will result in the callbacks
-> > > > > > accessing devices after they are powered off. If the .shutdown()
-> > > > > > callbacks are run before dpm phases, then the pm->poweroff() calls are
-> > > > > > made after the device shutdown is done. Since .shutdown() and
-> > > > > > pm->poweroff() are supposed to be analogous, having both calls in the
-> > > > > > shutdown path is not only redundant but also results in incorrect
-> > > > > > behavior.
-> > > > > >
-> > > > > > 2. Another option is to update device_shutdown() to make
-> > > > > > pm_domain.poweroff calls after the class/bus/driver .shutdown() is
-> > > > > > done. However, this suffers from the same problem as #1 above i.e. it
-> > > > > > is redundant and creates conflicting order of operations.
-> > > > > >
-> > > > > > 3. Third possible solution is to detach the device from the PM domain
-> > > > > > after it is shutdown. Currently, device drivers perform a detach
-> > > > > > operation only when the device is removed. However, in case of
-> > > > > > poweroff/reboot as the device is already shutdown, detaching PM domain
-> > > > > > will give it the opportunity to ensure that any power resources are
-> > > > > > correctly turned off before the system shuts down.
-> > > > >
-> > > > > 4. Make Chromebooks call something like hibernation_platform_enter()
-> > > > > on S5 entries (including reboot).
-> > > >
-> > > > Actually, Chromebooks do not support S4 and hence CONFIG_HIBERNATION.
-> > >
-> > > This doesn't matter.  The ->poweroff callbacks can still be used by
-> > > them (of course, that part of the current hibernation support code
-> > > needs to be put under a more general Kconfig option for that, but this
-> > > is a technical detail).
-> >
-> > Ah I see what you are saying. Just to be sure I understand this
-> > correctly. Is this what you are thinking:
-> > 1. Extract hibernation_platform_enter() and any other helpers required
-> > to trigger the PM phases for shutdown into a separate unit controlled
-> > by a more general Kconfig.
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-Yes in general, but maybe not hibernation_platform_enter() as a whole,
-because it contains hibernation-specific code.
+S3FWRN82 is the Samsung's NFC chip that supports the UART communication.
+Before adding the UART driver module, I did refactoring the s3fwrn5_i2c module 
+to reuse the common blocks.
 
-> > 2. Add a new Kconfig that enables support for performing PM phases
-> > during the poweroff/reboot phases.
+1/4 is the dt bindings for the RN82 UART interface.
+2/4..3/4 are refactoring the s3fwrn5_i2c module.
+4/4 is the UART driver module implementation.
 
-Yes.
+ChangeLog:
+ v5:
+   1/4
+    - remove the 'items' of the compatible property.
+    - change the GPIO flags.
+ v4:
+   1/4
+    - change 'oneOf' to 'items'.
+    - fix the indentation.
+   2/4
+    - add the ACK tag.
+   4/4
+    - remove the of_match_ptr macro.
+ v3:
+   3/4
+    - move the phy_common object to s3fwrn.ko to avoid duplication.
+    - include the header files to include everything which is used inside.
+    - wrap the lines.
+   4/4
+    - remove the kfree(phy) because of duplicated free.
+    - use the phy_common blocks.
+    - wrap lines properly.
+ v2:
+   1/4
+    - change the compatible name.
+    - change the const to enum for compatible.
+    - change the node name to nfc.
+   3/4
+    - remove the common function's definition in common header file.
+    - make the common phy_common.c file to define the common function.
+    - wrap the lines.
+    - change the Header guard.
+    - remove the unused common function.
 
-> > 3. Based on this new Kconfig selection, LINUX_REBOOT_CMD_RESTART,
-> > LINUX_REBOOT_CMD_HALT, LINUX_REBOOT_CMD_POWER_OFF will be updated to
-> > use the new paths instead of the current lightweight calls.
+Bongsu Jeon (4):
+  dt-bindings: net: nfc: s3fwrn5: Support a UART interface
+  nfc: s3fwrn5: reduce the EN_WAIT_TIME
+  nfc: s3fwrn5: extract the common phy blocks
+  nfc: s3fwrn5: Support a UART interface
 
-Maybe not always, but depending on the platform or similar.
+ .../bindings/net/nfc/samsung,s3fwrn5.yaml          |  31 +++-
+ drivers/nfc/s3fwrn5/Kconfig                        |  12 ++
+ drivers/nfc/s3fwrn5/Makefile                       |   4 +-
+ drivers/nfc/s3fwrn5/i2c.c                          | 117 ++++--------
+ drivers/nfc/s3fwrn5/phy_common.c                   |  75 ++++++++
+ drivers/nfc/s3fwrn5/phy_common.h                   |  37 ++++
+ drivers/nfc/s3fwrn5/uart.c                         | 196 +++++++++++++++++++++
+ 7 files changed, 390 insertions(+), 82 deletions(-)
+ create mode 100644 drivers/nfc/s3fwrn5/phy_common.c
+ create mode 100644 drivers/nfc/s3fwrn5/phy_common.h
+ create mode 100644 drivers/nfc/s3fwrn5/uart.c
 
-> I am currently exploring this approach to see how the components need
-> to be organized to make use of hibernation_platform_enter by more than
-> just the hibernation path. Please let me know if the above summary
-> doesn't align with your suggestion.
->
-> Meanwhile, I have also sent out a formal patch for detaching the PM
-> domain: https://lore.kernel.org/linux-acpi/20201201213019.1558738-1-furquan@google.com/T/#u
-> to ensure that this addresses the issue with ACPI PM domain.
+-- 
+1.9.1
 
-OK, so let's see what the response to it will be.
-
-> I will continue working on the above suggestion as well, but it might
-> take some time for me to get a good understanding of the current paths
-> and to cleanly implement the support for PM phases during
-> poweroff/reboot cases.
-
-Sure, please take your time!
-
-Thanks a lot for working on this!
