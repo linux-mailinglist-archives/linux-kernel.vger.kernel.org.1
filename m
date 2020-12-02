@@ -2,256 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC0B2CB5D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1478C2CB5D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728785AbgLBHhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:37:25 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:51550 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgLBHhZ (ORCPT
+        id S1728805AbgLBHig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgLBHif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:37:25 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606894626; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=zn9zKUogHkTpu4hqDPdgxv9s4TFFHlGGfE+xtDidB9c=;
- b=H5lW6p7lfelPEOjacKIV7KLAZgPmO1TaM7lA3FQ+Euueg2dU0O6UQi1Pbe92ruzewHl2zNvw
- mwZBtk9e0sMlzFjxObwsUzfX7d/r+1q/+xim2ZT0O+jZhW1bGEaorpMGHWcr8uhWU9PpZ1pt
- D+69lVBbq2PgYIMeXZyniWW6lZ4=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fc74401265512b1b2a82d06 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 07:36:33
- GMT
-Sender: nguyenb=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5DECAC43462; Wed,  2 Dec 2020 07:36:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nguyenb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 727A0C433ED;
-        Wed,  2 Dec 2020 07:36:31 +0000 (UTC)
+        Wed, 2 Dec 2020 02:38:35 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2736C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 23:37:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6xnHv3rphSgn53P0PGZrL9LpkhU6UXxRnGNCvw7gTzk=; b=idFCyg6LfMt3hn5VKrEXtVVzpd
+        Yvi3O7UHlH7ExZqzoT7ZQh67Gq0orMtwktcKRmDAHSr3d749P/Y/moGSBrr7Zq41/GUSestGTPujr
+        2Brq8TOqtesfnpzuc4k/aBFqx+XT03oRHyA1lIiJsztVWTytVWcsSzKwEI9xidNAEkng=;
+Received: from p200300ccff0883001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff08:8300:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kkMhv-0000qo-RF; Wed, 02 Dec 2020 08:37:48 +0100
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kkMhv-0002Vv-Ig; Wed, 02 Dec 2020 08:37:47 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, peng.fan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH] ARM: imx_v6_v7_defconfig: enable power driver of RN5T618 PMIC family
+Date:   Wed,  2 Dec 2020 08:37:39 +0100
+Message-Id: <20201202073739.9619-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 01 Dec 2020 23:36:31 -0800
-From:   nguyenb@quicinc.com
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        beanhuo@micron.com, cang@codeaurora.org, matthias.bgg@gmail.com,
-        bvanassche@acm.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, kuohong.wang@mediatek.com,
-        peter.wang@mediatek.com, chun-hung.wu@mediatek.com,
-        andy.teng@mediatek.com, chaotian.jing@mediatek.com,
-        cc.chou@mediatek.com, jiajie.hao@mediatek.com,
-        alice.chao@mediatek.com
-Subject: Re: [RFC PATCH v1] scsi: ufs: Remove pre-defined initial VCC voltage
- values
-In-Reply-To: <1606805690.23925.29.camel@mtkswgap22>
-References: <20201130091610.2752-1-stanley.chu@mediatek.com>
- <568660cd-80e6-1b8f-d426-4614c9159ff4@codeaurora.org>
- <X8V83T+Tx6teNLOR@builder.lan>
- <4335d590-0506-d920-8e7f-f0f0372780f9@codeaurora.org>
- <1606785904.23925.25.camel@mtkswgap22>
- <d998857a-1744-a8bb-1a3e-77166c171f37@codeaurora.org>
- <1606805690.23925.29.camel@mtkswgap22>
-Message-ID: <66ec58decfa1a0096cf5ed34560655ee@quicinc.com>
-X-Sender: nguyenb@quicinc.com
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-30 22:54, Stanley Chu wrote:
-> Hi Asutosh,
-> 
-> On Mon, 2020-11-30 at 19:07 -0800, Asutosh Das (asd) wrote:
->> On 11/30/2020 5:25 PM, Stanley Chu wrote:
->> > On Mon, 2020-11-30 at 15:54 -0800, Asutosh Das (asd) wrote:
->> >> On 11/30/2020 3:14 PM, Bjorn Andersson wrote:
->> >>> On Mon 30 Nov 16:51 CST 2020, Asutosh Das (asd) wrote:
->> >>>
->> >>>> On 11/30/2020 1:16 AM, Stanley Chu wrote:
->> >>>>> UFS specficication allows different VCC configurations for UFS devices,
->> >>>>> for example,
->> >>>>> 	(1). 2.70V - 3.60V (By default)
->> >>>>> 	(2). 1.70V - 1.95V (Activated if "vcc-supply-1p8" is declared in
->> >>>>>                              device tree)
->> >>>>> 	(3). 2.40V - 2.70V (Supported since UFS 3.x)
->> >>>>>
->> >>>>> With the introduction of UFS 3.x products, an issue is happening that
->> >>>>> UFS driver will use wrong "min_uV/max_uV" configuration to toggle VCC
->> >>>>> regulator on UFU 3.x products with VCC configuration (3) used.
->> >>>>>
->> >>>>> To solve this issue, we simply remove pre-defined initial VCC voltage
->> >>>>> values in UFS driver with below reasons,
->> >>>>>
->> >>>>> 1. UFS specifications do not define how to detect the VCC configuration
->> >>>>>       supported by attached device.
->> >>>>>
->> >>>>> 2. Device tree already supports standard regulator properties.
->> >>>>>
->> >>>>> Therefore VCC voltage shall be defined correctly in device tree, and
->> >>>>> shall not be changed by UFS driver. What UFS driver needs to do is simply
->> >>>>> enabling or disabling the VCC regulator only.
->> >>>>>
->> >>>>> This is a RFC conceptional patch. Please help review this and feel
->> >>>>> free to feedback any ideas. Once this concept is accepted, and then
->> >>>>> I would post a more completed patch series to fix this issue.
->> >>>>>
->> >>>>> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
->> >>>>> ---
->> >>>>>     drivers/scsi/ufs/ufshcd-pltfrm.c | 10 +---------
->> >>>>>     1 file changed, 1 insertion(+), 9 deletions(-)
->> >>>>>
->> >>>>> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
->> >>>>> index a6f76399b3ae..3965be03c136 100644
->> >>>>> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
->> >>>>> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
->> >>>>> @@ -133,15 +133,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
->> >>>>>     		vreg->max_uA = 0;
->> >>>>>     	}
->> >>>>> -	if (!strcmp(name, "vcc")) {
->> >>>>> -		if (of_property_read_bool(np, "vcc-supply-1p8")) {
->> >>>>> -			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
->> >>>>> -			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
->> >>>>> -		} else {
->> >>>>> -			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
->> >>>>> -			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
->> >>>>> -		}
->> >>>>> -	} else if (!strcmp(name, "vccq")) {
->> >>>>> +	if (!strcmp(name, "vccq")) {
->> >>>>>     		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
->> >>>>>     		vreg->max_uV = UFS_VREG_VCCQ_MAX_UV;
->> >>>>>     	} else if (!strcmp(name, "vccq2")) {
->> >>>>>
->> >>>>
->> >>>> Hi Stanley
->> >>>>
->> >>>> Thanks for the patch. Bao (nguyenb) was also working towards something
->> >>>> similar.
->> >>>> Would it be possible for you to take into account the scenario in which the
->> >>>> same platform supports both 2.x and 3.x UFS devices?
->> >>>>
->> >>>> These've different voltage requirements, 2.4v-3.6v.
->> >>>> I'm not sure if standard dts regulator properties can support this.
->> >>>>
->> >>>
->> >>> What is the actual voltage requirement for these devices and how does
->> >>> the software know what voltage to pick in this range?
->> >>>
->> >>> Regards,
->> >>> Bjorn
->> >>>
->> >>>> -asd
->> >>>>
->> >>>>
->> >>>> --
->> >>>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> >>>> Linux Foundation Collaborative Project
->> >>
->> >> For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v), the
->> >> voltage requirements (Vcc) are 2.4v-3.6v. The software initializes the
->> >> ufs device at 2.95v & reads the version and if the device is 3.x, it may
->> >> do the following:
->> >> - Set the device power mode to SLEEP
->> >> - Disable the Vcc
->> >> - Enable the Vcc and set it to 2.5v
->> >> - Set the device power mode to ACTIVE
->> >>
->> >> All of the above may be done at HS-G1 & moved to max supported gear
->> >> based on the device version, perhaps?
->> >
->> > Hi Asutosh,
->> >
->> > Thanks for sharing this idea.
->> >
->> > 1. I did not see above flow defined in UFS specifications, please
->> > correct me if I was wrong.
->> >
->> > 2. For above flow, the concern is that I am not sure if all devices
->> > supporting VCC (2.4v - 2.7v) can accept higher voltage, say 2.95v, for
->> > version detection.
->> >
->> > 3. For version detection, another concern is that I am not sure if all
->> > 3.x devices support VCC (2.4v - 2.7v) only, or in other words, I am not
->> > sure if all 2.x devices support VCC (2.7v - 3.6v) only. The above rule
->> > will break any devices not obeying this "conventions".
->> >
->> > For platforms that support both 2.x (2.7v-3.6v) and 3.x (2.4v-2.7v),
->> >
->> > It would be good for UFS drivers detecting the correct voltage if the
->> > protocol is well-defined in specifications. Until that day, any
->> > "non-standard" way may be better implemented in vendor's ops?
->> >
->> > If the vop concept works on your platform, we could still keep struct
->> > ufs_vreg and allow vendors to configure proper min_uV and max_uV to make
->> > regulator_set_voltage() works during VCC toggling flow. Without specific
->> > vendor configurations, min_uV and max_uV would be NULL by default and
->> > UFS core driver will only enable/disasble VCC regulator only without
->> > adjusting its voltage.
->> >
->> 
->> I think this would work. Do you plan to implement this?
->> If not, I can take this up. Please let me know.
-> 
-> Thanks for the understanding and support.
-> 
-> I would like to re-post this patch to simply removing the pre-defined
-> initial values of all device powers.
-> 
-> For vop idea supporting the voltage detection way, could you please 
-> take
-> it up since this would be better to fit what you need for fixing this
-> issue?
-> 
-> Thanks,
-> Stanley Chu
-While we are on this topic, another similar concern is how to set the 
-UFS's regulators loading to Low Power Mode (LPM).
-Currently, the UFS_VREG_LPM_LOAD_UA is hardcoded to 1mA in the driver, 
-and it is invoked by the ufshcd_config_vreg_lpm().
-However, for some platforms, to put the regulators into LPM mode, it may 
-be a different value than 1mA.
-Should we be using ufs_vreg's min_uA in the ufshcd_config_vreg_lpm() 
-instead of using the hardcoded value?
-And the ufs_vreg's min_uA value would be parsed by the vendor's code?
-We can post a proposal if this sounds ok.
+There is a driver now for the power supply and fuel gauge functionality
+of that chip family, so enable them, since they are used by various
+i.MX6 boards, especially ebook-readers.
 
-Regards,
-Bao
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ arch/arm/configs/imx_v6_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> 
->> 
->> > Maybe one possible another idea is to decide the correct voltage and
->> > configure regulator properly before kernel?
->> >
->> > Thanks,
->> > Stanley Chu
->> >
->> >>
->> >> Am open to other ideas though.
->> >>
->> >> -asd
->> >>
->> >
->> 
->> -asd
->> 
->> 
+diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+index 221f5c340c86..70928cc48939 100644
+--- a/arch/arm/configs/imx_v6_v7_defconfig
++++ b/arch/arm/configs/imx_v6_v7_defconfig
+@@ -222,6 +222,7 @@ CONFIG_POWER_RESET=y
+ CONFIG_POWER_RESET_SYSCON=y
+ CONFIG_POWER_RESET_SYSCON_POWEROFF=y
+ CONFIG_POWER_SUPPLY=y
++CONFIG_RN5T618_POWER=m
+ CONFIG_SENSORS_MC13783_ADC=y
+ CONFIG_SENSORS_GPIO_FAN=y
+ CONFIG_SENSORS_IIO_HWMON=y
+-- 
+2.20.1
+
