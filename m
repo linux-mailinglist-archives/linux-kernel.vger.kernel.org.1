@@ -2,371 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D12F2CC1B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C242CC1B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388979AbgLBQHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:07:53 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:36383 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388964AbgLBQHw (ORCPT
+        id S1730455AbgLBQIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:08:13 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:63443 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726507AbgLBQIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:07:52 -0500
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8B196580324;
-        Wed,  2 Dec 2020 11:07:05 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 02 Dec 2020 11:07:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=SzXxlSkSGRoREDq69ZxNmxNcJlR
-        p/+f9IrMRRTQgKgA=; b=GvlPW0keYnkFohqdzp9M1e/lDFnqqj5wFXv5QRaydKM
-        e9TuNVzwrdOhMlG6q06BmjxQdgoNv1uGW7JjzRvXioungZf16H38NYjBgPJXLA1J
-        Xlk6GDiSXOny3HxDxxhnZFTkxDW0rdfa6inncO98IMa7aNpGSUt+4SxEZQRegm5B
-        zNYr2mhoCHqR6csPObeh9ZOlIMbo/Q+Rm4mh8qqAJ5D+a3kA09Cc5JxNu2VU66sR
-        1409NWFbTIsHL+nGDvH/EiOuZa3mRh6jprfdWa+he5UN7UZ/kHSZ2DcQLjG+6rxz
-        a0Oa09AIRHFYze3KCeOfxDF1C++xH2xL12DESMXXSAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=SzXxlS
-        kSGRoREDq69ZxNmxNcJlRp/+f9IrMRRTQgKgA=; b=f8L6x6tJ6iQR8n4IQ5BAyh
-        eDkUCLXpowxyYCLRl0kjkhsX8iUb1NwozafjnkTnqBHwY3ETuQuolN3/gHMKil/O
-        NUnGJWErM3ZCeiTj7Uf2+bOKcKpjcOER0GY93xihedJ5unGHpN0Ep6OnH4WwiFBO
-        v+SHeohBLCNRpVfn3BmEk9C0CXGbDtmZmGVnbhiR8PGn8aNhr3hwkpufvjtFRcnd
-        YMkGbdHC15Cepx6Nd5BkIHJa4+cV01nDTAuot2x+G24rydqYyzgAz++q+SZ7q/gy
-        N95aQiRvVjnAsycaAWtWc5pL5+nphXO8EijHsbCVK+vQlNZuJeQq+NbZSzhTobUw
-        ==
-X-ME-Sender: <xms:p7vHXy_kbA5O_z--wfUc45MGQGCsTvxt3Ftlz7fp5vv39GDSjjTZXQ>
-    <xme:p7vHX8KX9MMiMxkZRVrRBCCV4vbTShHlua3QsdfRp_hRWJg5YngqnQFaIFGEEq3EQ
-    vIGBKbBon1z3XnX3D4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnheptdfggfelgeehieeuieegfefgueduudefheffhfejleekheefjeevveegueel
-    ueefnecuffhomhgrihhnpehlihhnuhigqdhsuhhngihirdhorhhgnecukfhppeeltddrke
-    elrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:p7vHX3k366BXrnsoB7HCqLal4z1to8ZdXMNoOvAG8fEC4Fa6S5sxLw>
-    <xmx:p7vHXwNodHFQnpDUknp-HlNFfNKSPg2An9ZV0CDLgiPLkoHj3905rg>
-    <xmx:p7vHX93h83tHPrl993pqVR4-L2fTUDHv9jA29MG2klFOUe4jhblUSA>
-    <xmx:qbvHX7HkufcEH5Vk79cYS6EaDDpm1vuGf1JdCyj9vRPEDPAv0Xo2Aw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 63B57240061;
-        Wed,  2 Dec 2020 11:07:03 -0500 (EST)
-Date:   Wed, 2 Dec 2020 17:07:02 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Wed, 2 Dec 2020 11:08:12 -0500
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id F23DA24000B;
+        Wed,  2 Dec 2020 16:07:23 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 17:07:23 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 8/8] arm64: dts: allwinner: Add OrangePi Zero 2 .dts
-Message-ID: <20201202160702.rdigwtcv3avil4n3@gilmour>
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-9-andre.przywara@arm.com>
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 07/19] media: sun6i-csi: Add support for MIPI CSI-2
+ bridge input
+Message-ID: <X8e7u3smOjzFluy5@aptenodytes>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-8-paul.kocialkowski@bootlin.com>
+ <20201201121241.cyafjhot45puusfc@gilmour>
+ <X8eiXxYw1iHKbdDV@aptenodytes>
+ <20201202154053.3fcxiift2uyqnjvp@gilmour>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ojkz43yurbxnyb2s"
+        protocol="application/pgp-signature"; boundary="B6QLXucSOn8pJf1x"
 Content-Disposition: inline
-In-Reply-To: <20201202135409.13683-9-andre.przywara@arm.com>
+In-Reply-To: <20201202154053.3fcxiift2uyqnjvp@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ojkz43yurbxnyb2s
-Content-Type: text/plain; charset=us-ascii
+--B6QLXucSOn8pJf1x
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 02, 2020 at 01:54:09PM +0000, Andre Przywara wrote:
-> The OrangePi Zero 2 is a development board with the new H616 SoC.
+Hi,
+
+On Wed 02 Dec 20, 16:40, Maxime Ripard wrote:
+> On Wed, Dec 02, 2020 at 03:19:11PM +0100, Paul Kocialkowski wrote:
+> > Hi,
+> >=20
+> > On Tue 01 Dec 20, 13:12, Maxime Ripard wrote:
+> > > Hi,
+> > >=20
+> > > On Sat, Nov 28, 2020 at 03:28:27PM +0100, Paul Kocialkowski wrote:
+> > > > The A31 CSI controller supports a MIPI CSI-2 bridge input, which has
+> > > > its own dedicated port in the fwnode graph.
+> > > >=20
+> > > > Support for this input is added with this change:
+> > > > - two pads are defined for the media entity instead of one
+> > > >   and only one needs to be connected at a time;
+> > > > - the pads currently match the fwnode graph representation;
+> > > > - links are created between our pads and the subdevs for each
+> > > >   interface and are no longer immutable so that userspace can select
+> > > >   which interface to use in case both are bound to a subdev;
+> > > > - fwnode endpoints are parsed and stored for each interface;
+> > > > - the active subdev (and fwnode endpoint) is retrieved when validat=
+ing
+> > > >   the media link at stream on time and cleared at stream off;
+> > > > - an error is raised if both links are active at the same time;
+> > > > - the MIPI interface bit is set if the MIPI CSI-2 bridge endpoint is
+> > > >   active.
+> > > >=20
+> > > > In the future, the media entity representation might evolve to:
+> > > > - distinguish the internal parallel bridge and data formatter;
+> > > > - represent each of the 4 internal channels that can exist between
+> > > >   the parallel bridge (for BT656 time-multiplex) and MIPI CSI-2
+> > > >   (internal channels can be mapped to virtual channels);
+> > > > - connect the controller's output to the ISP instead of its
+> > > >   DMA engine.
+> > > >=20
+> > > > Finally note that the MIPI CSI-2 bridges should not be linked in
+> > > > the fwnode graph unless they have a sensor subdev attached.
+> > >=20
+> > > I'll leave most of the review to Laurent and Sakari, but I'm not quite
+> > > sure what you meant in the last paragraph. Did you mean that the
+> > > MIPI-CSI controller in the Allwinner SoC should only be linked if it =
+has
+> > > a sensor attached, or did you mean that any MIPI-CSI2 bridge cannot be
+> > > attached to the controller?
+> >=20
+> > So the use of plural was a mistake and your first understanding is the =
+correct
+> > one: if the bridge is linked to the CSI controller in the OF graph but =
+the
+> > bridge doesn't have a sensor attached, the CSI controller driver will f=
+ail
+> > to probe, as far as I could see.
 >=20
-> It features the usual connectors used on those small boards, and comes
-> with the AXP305, which seems to be compatible with the AXP805.
->=20
-> For more details see: http://linux-sunxi.org/Xunlong_Orange_Pi_Zero2
->=20
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
->  .../allwinner/sun50i-h616-orangepi-zero2.dts  | 228 ++++++++++++++++++
->  2 files changed, 229 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-ze=
-ro2.dts
->=20
-> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts=
-/allwinner/Makefile
-> index 211d1e9d4701..0cf8299b1ce7 100644
-> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> @@ -35,3 +35,4 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-orangepi-one-pl=
-us.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-pine-h64.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-pine-h64-model-b.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-tanix-tx6.dtb
-> +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-orangepi-zero2.dtb
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts=
- b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
-> new file mode 100644
-> index 000000000000..814f5b4fec7c
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
-> @@ -0,0 +1,228 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> +/*
-> + * Copyright (C) 2020 Arm Ltd.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sun50i-h616.dtsi"
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +/ {
-> +	model =3D "OrangePi Zero2";
-> +	compatible =3D "xunlong,orangepi-zero2", "allwinner,sun50i-h616";
+> I'm not sure it's reasonable to not link it in the DTSI then, we'll want
+> to reduce as much the boilerplate from the board DTS as possible, and
+> the MIPI-CSI controller is always there anyway. However, we should
+> definitely have it disabled if there's no sensor, which should solve
+> your probe issue
 
-This needs to be documented too
+Ah yes there's a good chance that it will solve it.
+I'll try that and get back to you!
 
-> +	aliases {
-> +		ethernet0 =3D &emac0;
-> +		serial0 =3D &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path =3D "serial0:115200n8";
-> +	};
-> +
-> +	leds {
-> +		compatible =3D "gpio-leds";
-> +
-> +		power {
-> +			label =3D "orangepi:red:power";
-> +			gpios =3D <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13 */
-> +			default-state =3D "on";
-> +		};
-> +
-> +		status {
-> +			label =3D "orangepi:green:status";
-> +			gpios =3D <&pio 2 12 GPIO_ACTIVE_HIGH>; /* PC12 */
-> +		};
+Cheers,
 
-Those node names don't follow the led binding convention
+Paul
 
-> +	};
-> +
-> +	reg_vcc5v: vcc5v {
-> +		/* board wide 5V supply directly from the USB-C socket */
-> +		compatible =3D "regulator-fixed";
-> +		regulator-name =3D "vcc-5v";
-> +		regulator-min-microvolt =3D <5000000>;
-> +		regulator-max-microvolt =3D <5000000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_usb1_vbus: usb1-vbus {
-> +		compatible =3D "regulator-fixed";
-> +		regulator-name =3D "usb1-vbus";
-> +		regulator-min-microvolt =3D <5000000>;
-> +		regulator-max-microvolt =3D <5000000>;
-> +		enable-active-high;
-> +		gpio =3D <&pio 2 16 GPIO_ACTIVE_HIGH>; /* PC16 */
-> +		status =3D "okay";
-> +	};
-> +};
-> +
-> +&ehci0 {
-> +	status =3D "okay";
-> +};
-> +
-> +&ehci1 {
-> +	status =3D "okay";
-> +};
-> +
-> +/* USB 2 & 3 are on headers only. */
-> +
-> +&emac0 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&ext_rgmii_pins>;
-> +	phy-mode =3D "rgmii";
-> +	phy-handle =3D <&ext_rgmii_phy>;
-> +	phy-supply =3D <&reg_dcdce>;
-> +	allwinner,rx-delay-ps =3D <3100>;
-> +	allwinner,tx-delay-ps =3D <700>;
-> +	status =3D "okay";
-> +};
-> +
-> +&mdio {
-> +	ext_rgmii_phy: ethernet-phy@1 {
-> +		compatible =3D "ethernet-phy-ieee802.3-c22";
-> +		reg =3D <1>;
-> +	};
-> +};
-> +
-> +&mmc0 {
-> +	vmmc-supply =3D <&reg_dcdce>;
-> +	cd-gpios =3D <&pio 5 6 GPIO_ACTIVE_LOW>;	/* PF6 */
-> +	bus-width =3D <4>;
-> +	status =3D "okay";
-> +};
-> +
-> +&ohci0 {
-> +	status =3D "okay";
-> +};
-> +
-> +&ohci1 {
-> +	status =3D "okay";
-> +};
-> +
-> +&r_i2c {
-> +	status =3D "okay";
-> +
-> +	axp305: pmic@36 {
-> +		compatible =3D "x-powers,axp305", "x-powers,axp805",
-> +			     "x-powers,axp806";
-> +		reg =3D <0x36>;
-> +
-> +		/* dummy interrupt to appease the driver for now */
-> +		interrupts =3D <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-controller;
-> +		#interrupt-cells =3D <1>;
-> +
-> +		x-powers,self-working-mode;
-> +		vina-supply =3D <&reg_vcc5v>;
-> +		vinb-supply =3D <&reg_vcc5v>;
-> +		vinc-supply =3D <&reg_vcc5v>;
-> +		vind-supply =3D <&reg_vcc5v>;
-> +		vine-supply =3D <&reg_vcc5v>;
-> +		aldoin-supply =3D <&reg_vcc5v>;
-> +		bldoin-supply =3D <&reg_vcc5v>;
-> +		cldoin-supply =3D <&reg_vcc5v>;
-> +
-> +		regulators {
-> +			reg_aldo1: aldo1 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt =3D <3300000>;
-> +				regulator-max-microvolt =3D <3300000>;
-> +				regulator-name =3D "vcc-sys";
-> +			};
-> +
-> +			reg_aldo2: aldo2 {
-> +				regulator-min-microvolt =3D <3300000>;
-> +				regulator-max-microvolt =3D <3300000>;
-> +				regulator-name =3D "vcc3v3-ext";
-> +			};
-> +
-> +			reg_aldo3: aldo3 {
-> +				regulator-min-microvolt =3D <3300000>;
-> +				regulator-max-microvolt =3D <3300000>;
-> +				regulator-name =3D "vcc3v3-ext2";
-> +			};
-> +
-> +			reg_bldo1: bldo1 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt =3D <1800000>;
-> +				regulator-max-microvolt =3D <1800000>;
-> +				regulator-name =3D "vcc1v8";
-> +			};
-> +
-> +			bldo2 {
-> +				/* unused */
-> +			};
-> +
-> +			bldo3 {
-> +				/* unused */
-> +			};
-> +
-> +			bldo4 {
-> +				/* unused */
-> +			};
-> +
-> +			cldo1 {
-> +				/* reserved */
-> +			};
-> +
-> +			cldo2 {
-> +				/* unused */
-> +			};
-> +
-> +			cldo3 {
-> +				/* unused */
-> +			};
-> +
-> +			reg_dcdca: dcdca {
-> +				regulator-always-on;
-> +				regulator-min-microvolt =3D <810000>;
-> +				regulator-max-microvolt =3D <1080000>;
-> +				regulator-name =3D "vdd-cpu";
-> +			};
-> +
-> +			reg_dcdcc: dcdcc {
-> +				regulator-always-on;
-> +				regulator-min-microvolt =3D <810000>;
-> +				regulator-max-microvolt =3D <1080000>;
-> +				regulator-name =3D "vdd-gpu-sys";
-> +			};
-> +
-> +			reg_dcdcd: dcdcd {
-> +				regulator-always-on;
-> +				regulator-min-microvolt =3D <1500000>;
-> +				regulator-max-microvolt =3D <1500000>;
-> +				regulator-name =3D "vdd-dram";
-> +			};
-> +
-> +			reg_dcdce: dcdce {
-> +				regulator-boot-on;
-> +				regulator-min-microvolt =3D <3300000>;
-> +				regulator-max-microvolt =3D <3300000>;
-> +				regulator-name =3D "vcc-eth-mmc";
-> +			};
-> +
-> +			sw {
-> +				/* unused */
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&uart0 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&uart0_ph_pins>;
-> +	status =3D "okay";
-> +};
-> +
-> +&usbotg {
-> +	dr_mode =3D "otg";
-> +	status =3D "okay";
-> +};
-> +
-> +&usbphy {
-> +	usb0_vbus-supply =3D <&reg_vcc5v>;
-> +	usb1_vbus-supply =3D <&reg_usb1_vbus>;
-> +	status =3D "okay";
-> +};
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
-Did you really test it as OTG without an ID pin?
-
-Maxime
-
---ojkz43yurbxnyb2s
+--B6QLXucSOn8pJf1x
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e7pgAKCRDj7w1vZxhR
-xQXUAPsFzoqoyDf7aiuBs1ku7UiwOihJhTCOFtwIHEViZJyFdAEAsULp7pKIrnQI
-AQGGRy0l/xXJ2dxl1GU057sjUoA1DwM=
-=Sg00
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/Hu7sACgkQ3cLmz3+f
+v9EBKwf9FlOPkn4I/QP73y0XTYCJul68SVmMn85aeJ6iIqaVWGXtkRMM7ILKodOu
+aZY8NnE4BjULBapZ1fJOvD+1WfCfjpc31gGtHtmdAc22Yev2PBLbIKtegSnR9O2x
+mMPTTkupiw+lCZjZjFqLn5gQEnSJm44I7dZa5bz3kHWM0cgNl2upzQtKBRf4iLCt
+bYktWtnpkUNvBGjFtQOI1/8VSiXpdJerFN+qOSIDmbXmp87CNqr6iLzE2CDrJc4g
+/eSo/Ot7bGmVK59c1Av4ZXSkJ034dhhA9c0sXST+8boRDIr6Cnl7/zuh/dXsEj4p
+aWJ9/KOEC0dyIoJGjtmPNu1IAzSi0w==
+=Bj4d
 -----END PGP SIGNATURE-----
 
---ojkz43yurbxnyb2s--
+--B6QLXucSOn8pJf1x--
