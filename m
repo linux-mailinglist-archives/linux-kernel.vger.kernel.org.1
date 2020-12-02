@@ -2,534 +2,444 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB302CB44B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 645742CB450
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbgLBFUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 00:20:44 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:60286 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726228AbgLBFUo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 00:20:44 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B255TcY194972;
-        Wed, 2 Dec 2020 05:19:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=nzpIOmReDUKMlG2lhhF3JsJuycrwPw8krJ0kN8yBnvE=;
- b=yjCu3ZE+PVxJi8QyzpiPD37UndCvY61hUfKOS54cPUFdryDO82sMnN5GGQzZhxmKMIAo
- NXCIgNZPgSFNrnRMm3mROCZdAxYq9hFOd7t86N48Dk9wRwLV/pIf6BqK3g7wHjYAawmy
- 1tz/HeGk1Oxha+eHGPwJjpK9T32dfT60uLcAcDiH37fKo++UU7igzc+rlFBzBP3WCQYn
- IHEAs7NPiSRZ4NT0hSHKm21hSWRE79gChDf5YfopmBUbyyvM6sUQjPrfCWQopRuhgQUZ
- KNbJqmhCNw3KBPh68fXwqq5nv+LfAmYXNVObkPvIdhDVQcvoCxSK9AmDEXmKQL753+jc gg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 353c2axcb8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Dec 2020 05:19:39 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B251Mx0076988;
-        Wed, 2 Dec 2020 05:19:39 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3540fy2994-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Dec 2020 05:19:38 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B25Ja8k029723;
-        Wed, 2 Dec 2020 05:19:37 GMT
-Received: from [192.168.0.108] (/70.36.60.91)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Dec 2020 21:19:36 -0800
-Subject: Re: [PATCH RFC 02/39] KVM: x86/xen: intercept xen hypercalls if
- enabled
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
- <20190220201609.28290-3-joao.m.martins@oracle.com>
- <b56f763e6bf29a65a11b7a36c4d7bfa79b2ec1b2.camel@infradead.org>
-From:   Ankur Arora <ankur.a.arora@oracle.com>
-Message-ID: <240b82b3-9621-8b08-6d37-75da6a61b3ce@oracle.com>
-Date:   Tue, 1 Dec 2020 21:19:34 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <b56f763e6bf29a65a11b7a36c4d7bfa79b2ec1b2.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1728508AbgLBFWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 00:22:53 -0500
+Received: from mga09.intel.com ([134.134.136.24]:16203 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgLBFWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 00:22:53 -0500
+IronPort-SDR: 71g2VhOWdKxOLVWEzuAqS2COeXevpWAbzWJUVU1sgyuOKyYcaGOILee+TOJgy9BGGtnlM8lpZH
+ icI8VDL/Hu1w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="173115011"
+X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
+   d="scan'208";a="173115011"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 21:22:02 -0800
+IronPort-SDR: XMVBev2PZwUl8yfwZO0REj2+XoMYS4GyyauvKnGusEB8MXMNtvbcncAINz6WQc4/6lHDbJOKon
+ rWBhIdlzXumA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
+   d="scan'208";a="367867923"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Dec 2020 21:22:02 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 1 Dec 2020 21:22:01 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 1 Dec 2020 21:22:01 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 1 Dec 2020 21:22:00 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Thg+PvAWV6Rfxhl7lNpiA/Elri7/yDSTyVPPfeGV5XTOXX/Z/rDw65bmg/h2aUL6e+IOqfIL9nLa3UEXs1mfQVG8Ev024As4YdLMh0J1iVdyYTBdLin/ZHQL4iOcuD9YwyqqM8hL8a4yBolbRz0ClUoted8WOfDtS7zp/DhKZILTDao68POBOUjWI7Odqg6HFI1RLuBzGAMKAFyk0cLm1DpGjqWfZeemiQ764ep1cC/oTxrWQYc8hKkuDpRFU0iK4b73KC2NFTfHNBhDp/dhmozxh60f71OUbr2H8xX3W4XvBIvlRFOLNgrllkLsk9ikVtmHtL9saupAxq9exO1PHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eiICI7828dziubYl8u7BStRMGwVdEqIaYdRmPTe262k=;
+ b=IxtI4J0NSP49blhGhNf780lzrI+DY5UyEfH4mGu1W45sH4ybT28yKEszzKoEGsyOfv5KyEerWUju4IWbPrqdVpkRLOUKJaKtzMDsqhSZX5dffvjBTSTpCcFtNt1BXTfBlE4X6rNG1MPVxniflew3wMjYOTktgqtWzcExswM6oTDrdjTV+ear5S9DHmPTciNZbR4vXYcnkFFckQ1rqK9vJq3pX28KMgtSBcl5cwNu4oEPBA7HV202ASjiS+ytMbifXnnWk3sZ9GJiVpjT+KGMJnFWsaQsWcuUHKZhRUts2dvRaIZLpxZY0ycMtweRFZvnSYAjDZUxBTN5ALvZILRVdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eiICI7828dziubYl8u7BStRMGwVdEqIaYdRmPTe262k=;
+ b=KPP4By1ZgRklSOCDvQ+L8kROhtWn2uMAvES5rO1B3iLPjp6zWYn8j2tm/n/qpuyjBUurVmN7y6JLt0ETHuWXuqXo8+qv1EM/DfcNkNvuOjzGy780khfd4OknIWofP7gh8nVD7J+xfYuYRuCPHjasfpgn9pYIeafo1vw8fXdLWDQ=
+Received: from SN6PR11MB3421.namprd11.prod.outlook.com (2603:10b6:805:cd::27)
+ by SN6PR11MB2878.namprd11.prod.outlook.com (2603:10b6:805:56::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Wed, 2 Dec
+ 2020 05:21:58 +0000
+Received: from SN6PR11MB3421.namprd11.prod.outlook.com
+ ([fe80::a975:345b:8dcc:50ff]) by SN6PR11MB3421.namprd11.prod.outlook.com
+ ([fe80::a975:345b:8dcc:50ff%6]) with mapi id 15.20.3611.025; Wed, 2 Dec 2020
+ 05:21:58 +0000
+From:   "Surendrakumar Upadhyay, TejaskumarX" 
+        <tejaskumarx.surendrakumar.upadhyay@intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Jesse Barnes <jsbarnes@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "De Marchi, Lucas" <lucas.demarchi@intel.com>,
+        "Roper, Matthew D" <matthew.d.roper@intel.com>,
+        "Pandey, Hariom" <hariom.pandey@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>
+Subject: RE: [PATCH] x86/gpu: add JSL stolen memory support
+Thread-Topic: [PATCH] x86/gpu: add JSL stolen memory support
+Thread-Index: AQHWstDzxN2Pwg+4lUqs/o8gwa6wpqm5S1QAgABL34CAAUSNAIATRwMAgABjNQCAABWMgIAArfUAgACitgCAAC1YAIAQi95ggABnAACAAmNxkA==
+Date:   Wed, 2 Dec 2020 05:21:58 +0000
+Message-ID: <SN6PR11MB3421F97AA179145AA86369B6DFF30@SN6PR11MB3421.namprd11.prod.outlook.com>
+References: <SN6PR11MB34217B7C62F1587D417F8608DFF50@SN6PR11MB3421.namprd11.prod.outlook.com>
+ <20201130165114.GA1086333@bjorn-Precision-5520>
+In-Reply-To: <20201130165114.GA1086333@bjorn-Precision-5520>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020031
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012020031
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [42.106.7.4]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d069b356-135c-4263-dbaf-08d896823103
+x-ms-traffictypediagnostic: SN6PR11MB2878:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB28789A3F851F20B40A54724BDFF30@SN6PR11MB2878.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oQrMwbTnVN9JPNXewQWdEOUVfPh8ChnKl5A0kx69HPB+WIP1gYfFFkiUGRDlnxh68x8399vuu/KjQNcSSfm6223Eq6FoEXKNOQA9MbVt0j24vYvPOgtkkjYC6gkGhRWDqNy+zj2KDFbQCfc0VBO2QdcxdBiIU9E2ZzVcSGdvWF5IAGrt9Ea/rDrdYFWuK2L3WPcwmxJjDXXjXkuUDciFl1d30PWo7ioUwKT04Cm8Fll+nTCgsd87AwAiAcx8UEqfIY1fwxQtKnuQ/vjmHSXv4fyOIU0vSYm/Fk7uv78XC4kyMwnJYyxf112eEsEyjgUgD9u8WvRzzTxT1gYvjMCVo0R9+4OtZ7Ja0XVojdbRI5/0TFnricZlZ1pMbMNWmBMAovbx9YiW69vjoSfEY7NZ5Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3421.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(136003)(366004)(6916009)(83380400001)(7416002)(71200400001)(7696005)(316002)(6506007)(186003)(26005)(52536014)(5660300002)(30864003)(55016002)(966005)(9686003)(76116006)(53546011)(66476007)(54906003)(8676002)(8936002)(4326008)(66556008)(2906002)(64756008)(66446008)(478600001)(33656002)(86362001)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?B0RkaWxK/NGdCDEBVfu3TqhyzNxB+VR+6viWOcL7h1cCbE7g9PqE0Gc02p7V?=
+ =?us-ascii?Q?kEpNAS/HHW0frEkyiv8dg8q0K1Ml3H0qLlILyW97h3E3M9axUK4oBzoi3Q/P?=
+ =?us-ascii?Q?X2V2AUOPfDn5ZDt6EDidzX9asHAjAC2aohFsw5tne3rHgbTTT/RBVPHHXNsp?=
+ =?us-ascii?Q?RcXKXvNtIxfkQorEImY6N628n/m03r3iBDPpIzrjMuWzeszOsrmItXOlmZf2?=
+ =?us-ascii?Q?Obw2Ba520iIqOhmvVdK6k/pz3/yPeM5h0TFgNy/9i13+dkrTfpisLLJZa9Un?=
+ =?us-ascii?Q?4iXmeLrRN6O6Vek0qxrNhNdLlyH0sNrTN7uqcJegD6U6vYBIwJVz6cMs1pvl?=
+ =?us-ascii?Q?AkewbYTw6QVQXDMrX4OxI85TqFIP9hqjUWEG5YiJwIbU26Z5pQviMFTpKz7V?=
+ =?us-ascii?Q?Yz3Er/smZlrQMYme9Q4+YVzb4+8RYeuVTtmRHi8zkPGHD5iVsKGbPbJ4c1DB?=
+ =?us-ascii?Q?btvTVJ9O9wJRetlWQ7hlSMdP9c745XYlUagh8gexmxVlWcbUL94YkDU80BGh?=
+ =?us-ascii?Q?E1Xj/kiX7lT868D/j3YGUXJq8/Z6ts7ScZ1ZPLGfRmVb2zzeTiQo2MCURYBt?=
+ =?us-ascii?Q?t4NaDF/AghSNFCpo2ab8EsI7RxLlYwL2l6GIFi2wH++P24CBG6FdPvQen0fP?=
+ =?us-ascii?Q?DmZS6KbDeeIqHFzr5AJHCqd8qi0EPoxtp0XElfwABoIfmUDS7/9oqzXHXeNA?=
+ =?us-ascii?Q?+GGFZupjzNlqRnAE46D390BqGYJ+6w1XhpoxZGaZnXMFOK1v0dxd2M3/a5ul?=
+ =?us-ascii?Q?G7PC3WiPUfeV9XgCPO9uKaZbNIppno+vPhTBoQvK+I6QTTnZMkq4EVS8PUPN?=
+ =?us-ascii?Q?Npa9pul/H7HJN8qglEnAL6b4GZ2Wo+R+THELFhNE3/7zrXSuDY9doVBsQnlA?=
+ =?us-ascii?Q?hzlMMt1I4zvlGrQIv2cC2KHgmhCBgLnjtozum7A0SF3spCF5ukxI96D6A68w?=
+ =?us-ascii?Q?4jNma4uWt/gHHn5K0+79SmKtd82dKSAtgBpp7u9yPI0=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3421.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d069b356-135c-4263-dbaf-08d896823103
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2020 05:21:58.3427
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SfR2LMDMRJnE+q07DnbbcndKjtokQW+8bK8xMwiihchnTIRowEab+pH+ys0udiKNuSdc//KmGB/ec2TnvK6r0/8nfWq0i3usTuR8lviRRpCxxUSii7pAgFxV/bzUG5QUaHvgluVjndNZmLVPkKaqMQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2878
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-01 1:48 a.m., David Woodhouse wrote:
-> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
->> Add a new exit reason for emulator to handle Xen hypercalls.
->> Albeit these are injected only if guest has initialized the Xen
->> hypercall page
-> 
-> I've reworked this a little.
-> 
-> I didn't like the inconsistency of allowing userspace to provide the
-> hypercall pages even though the ABI is now defined by the kernel and it
-> *has* to be VMCALL/VMMCALL.
-> 
-> So I switched it to generate the hypercall page directly from the
-> kernel, just like we do for the Hyper-V hypercall page.
-> 
-> I introduced a new flag in the xen_hvm_config struct to enable this
-> behaviour, and advertised it in the KVM_CAP_XEN_HVM return value.
-> 
-> I also added the cpl and support for 6-argument hypercalls, and made it
-> check the guest RIP when completing the call as discussed (although I
-> still think that probably ought to be a generic thing).
-> 
-> I adjusted the test case from my version of the patch, and added
-> support for actually testing the hypercall page MSR.
-> 
-> https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/xenpv
-> 
-> I'll go through and rebase your patch series at least up to patch 16
-> and collect them in that tree, then probably post them for real once
-> I've got everything working locally.
-> 
-> 
-> =======================
->  From c037c329c8867b219afe2100e383c62e9db7b06d Mon Sep 17 00:00:00 2001
-> From: Joao Martins <joao.m.martins@oracle.com>
-> Date: Wed, 13 Jun 2018 09:55:44 -0400
-> Subject: [PATCH] KVM: x86/xen: intercept xen hypercalls if enabled
-> 
-> Add a new exit reason for emulator to handle Xen hypercalls.
-> 
-> Since this means KVM owns the ABI, dispense with the facility for the
-> VMM to provide its own copy of the hypercall pages; just fill them in
-> directly using VMCALL/VMMCALL as we do for the Hyper-V hypercall page.
-> 
-> This behaviour is enabled by a new INTERCEPT_HCALL flag in the
-> KVM_XEN_HVM_CONFIG ioctl structure, and advertised by the same flag
-> being returned from the KVM_CAP_XEN_HVM check.
-> 
-> Add a test case and shift xen_hvm_config() to the nascent xen.c while
-> we're at it.
-> 
-> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->   arch/x86/include/asm/kvm_host.h               |   6 +
->   arch/x86/kvm/Makefile                         |   2 +-
->   arch/x86/kvm/trace.h                          |  36 +++++
->   arch/x86/kvm/x86.c                            |  46 +++---
->   arch/x86/kvm/xen.c                            | 140 ++++++++++++++++++
->   arch/x86/kvm/xen.h                            |  21 +++
->   include/uapi/linux/kvm.h                      |  19 +++
->   tools/testing/selftests/kvm/Makefile          |   1 +
->   tools/testing/selftests/kvm/lib/kvm_util.c    |   1 +
->   .../selftests/kvm/x86_64/xen_vmcall_test.c    | 123 +++++++++++++++
->   10 files changed, 365 insertions(+), 30 deletions(-)
->   create mode 100644 arch/x86/kvm/xen.c
->   create mode 100644 arch/x86/kvm/xen.h
->   create mode 100644 tools/testing/selftests/kvm/x86_64/xen_vmcall_test.c
-> 
+Yes it fails all the tests which are allocating from this stolen memory bun=
+ch. For example IGT tests like " igt@kms_frontbuffer_tracking@-[fbc|fbcpsr]=
+.* | igt@kms_fbcon_fbt@fbc.* " are failing as they totally depend to work o=
+n stolen memory.
 
-> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-> new file mode 100644
-> index 000000000000..6400a4bc8480
-> --- /dev/null
-> +++ b/arch/x86/kvm/xen.c
-> @@ -0,0 +1,140 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright © 2019 Oracle and/or its affiliates. All rights reserved.
-> + * Copyright © 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-> + *
-> + * KVM Xen emulation
-> + */
-> +
-> +#include "x86.h"
-> +#include "xen.h"
-> +
-> +#include <linux/kvm_host.h>
-> +
-> +#include <trace/events/kvm.h>
-> +
-> +#include "trace.h"
-> +
-> +int kvm_xen_hvm_config(struct kvm_vcpu *vcpu, u64 data)
-> +	{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	u32 page_num = data & ~PAGE_MASK;
-> +	u64 page_addr = data & PAGE_MASK;
-> +
-> +	/*
-> +	 * If Xen hypercall intercept is enabled, fill the hypercall
-> +	 * page with VMCALL/VMMCALL instructions since that's what
-> +	 * we catch. Else the VMM has provided the hypercall pages
-> +	 * with instructions of its own choosing, so use those.
-> +	 */
-> +	if (kvm_xen_hypercall_enabled(kvm)) {
-> +		u8 instructions[32];
-> +		int i;
-> +
-> +		if (page_num)
-> +			return 1;
-> +
-> +		/* mov imm32, %eax */
-> +		instructions[0] = 0xb8;
-> +
-> +		/* vmcall / vmmcall */
-> +		kvm_x86_ops.patch_hypercall(vcpu, instructions + 5);
-> +
-> +		/* ret */
-> +		instructions[8] = 0xc3;
-> +
-> +		/* int3 to pad */
-> +		memset(instructions + 9, 0xcc, sizeof(instructions) - 9);
-> +
-> +		for (i = 0; i < PAGE_SIZE / sizeof(instructions); i++) {
-> +			*(u32 *)&instructions[1] = i;
-> +			if (kvm_vcpu_write_guest(vcpu,
-> +						 page_addr + (i * sizeof(instructions)),
-> +						 instructions, sizeof(instructions)))
-> +				return 1;
-> +		}
+Thanks,
+Tejas
 
-HYPERVISOR_iret isn't supported on 64bit so should be ud2 instead.
-
-
-Ankur
-
-> +	} else {
-> +		int lm = is_long_mode(vcpu);
-> +		u8 *blob_addr = lm ? (u8 *)(long)kvm->arch.xen_hvm_config.blob_addr_64
-> +				   : (u8 *)(long)kvm->arch.xen_hvm_config.blob_addr_32;
-> +		u8 blob_size = lm ? kvm->arch.xen_hvm_config.blob_size_64
-> +				  : kvm->arch.xen_hvm_config.blob_size_32;
-> +		u8 *page;
-> +
-> +		if (page_num >= blob_size)
-> +			return 1;
-> +
-> +		page = memdup_user(blob_addr + (page_num * PAGE_SIZE), PAGE_SIZE);
-> +		if (IS_ERR(page))
-> +			return PTR_ERR(page);
-> +
-> +		if (kvm_vcpu_write_guest(vcpu, page_addr, page, PAGE_SIZE)) {
-> +			kfree(page);
-> +			return 1;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int kvm_xen_hypercall_set_result(struct kvm_vcpu *vcpu, u64 result)
-> +{
-> +	kvm_rax_write(vcpu, result);
-> +	return kvm_skip_emulated_instruction(vcpu);
-> +}
-> +
-> +static int kvm_xen_hypercall_complete_userspace(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_run *run = vcpu->run;
-> +
-> +	if (unlikely(!kvm_is_linear_rip(vcpu, vcpu->arch.xen.hypercall_rip)))
-> +		return 1;
-> +
-> +	return kvm_xen_hypercall_set_result(vcpu, run->xen.u.hcall.result);
-> +}
-> +
-> +int kvm_xen_hypercall(struct kvm_vcpu *vcpu)
-> +{
-> +	bool longmode;
-> +	u64 input, params[6];
-> +
-> +	input = (u64)kvm_register_read(vcpu, VCPU_REGS_RAX);
-> +
-> +	longmode = is_64_bit_mode(vcpu);
-> +	if (!longmode) {
-> +		params[0] = (u32)kvm_rbx_read(vcpu);
-> +		params[1] = (u32)kvm_rcx_read(vcpu);
-> +		params[2] = (u32)kvm_rdx_read(vcpu);
-> +		params[3] = (u32)kvm_rsi_read(vcpu);
-> +		params[4] = (u32)kvm_rdi_read(vcpu);
-> +		params[5] = (u32)kvm_rbp_read(vcpu);
-> +	}
-> +#ifdef CONFIG_X86_64
-> +	else {
-> +		params[0] = (u64)kvm_rdi_read(vcpu);
-> +		params[1] = (u64)kvm_rsi_read(vcpu);
-> +		params[2] = (u64)kvm_rdx_read(vcpu);
-> +		params[3] = (u64)kvm_r10_read(vcpu);
-> +		params[4] = (u64)kvm_r8_read(vcpu);
-> +		params[5] = (u64)kvm_r9_read(vcpu);
-> +	}
-> +#endif
-> +	trace_kvm_xen_hypercall(input, params[0], params[1], params[2],
-> +				params[3], params[4], params[5]);
-> +
-> +	vcpu->run->exit_reason = KVM_EXIT_XEN;
-> +	vcpu->run->xen.type = KVM_EXIT_XEN_HCALL;
-> +	vcpu->run->xen.u.hcall.longmode = longmode;
-> +	vcpu->run->xen.u.hcall.cpl = kvm_x86_ops.get_cpl(vcpu);
-> +	vcpu->run->xen.u.hcall.input = input;
-> +	vcpu->run->xen.u.hcall.params[0] = params[0];
-> +	vcpu->run->xen.u.hcall.params[1] = params[1];
-> +	vcpu->run->xen.u.hcall.params[2] = params[2];
-> +	vcpu->run->xen.u.hcall.params[3] = params[3];
-> +	vcpu->run->xen.u.hcall.params[4] = params[4];
-> +	vcpu->run->xen.u.hcall.params[5] = params[5];
-> +	vcpu->arch.xen.hypercall_rip = kvm_get_linear_rip(vcpu);
-> +	vcpu->arch.complete_userspace_io =
-> +		kvm_xen_hypercall_complete_userspace;
-> +
-> +	return 0;
-> +}
-> diff --git a/arch/x86/kvm/xen.h b/arch/x86/kvm/xen.h
-> new file mode 100644
-> index 000000000000..81e12f716d2e
-> --- /dev/null
-> +++ b/arch/x86/kvm/xen.h
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright © 2019 Oracle and/or its affiliates. All rights reserved.
-> + * Copyright © 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-> + *
-> + * KVM Xen emulation
-> + */
-> +
-> +#ifndef __ARCH_X86_KVM_XEN_H__
-> +#define __ARCH_X86_KVM_XEN_H__
-> +
-> +int kvm_xen_hypercall(struct kvm_vcpu *vcpu);
-> +int kvm_xen_hvm_config(struct kvm_vcpu *vcpu, u64 data);
-> +
-> +static inline bool kvm_xen_hypercall_enabled(struct kvm *kvm)
-> +{
-> +	return kvm->arch.xen_hvm_config.flags &
-> +		KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL;
-> +}
-> +
-> +#endif /* __ARCH_X86_KVM_XEN_H__ */
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index ca41220b40b8..00221fe56994 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -216,6 +216,20 @@ struct kvm_hyperv_exit {
->   	} u;
->   };
->   
-> +struct kvm_xen_exit {
-> +#define KVM_EXIT_XEN_HCALL          1
-> +	__u32 type;
-> +	union {
-> +		struct {
-> +			__u32 longmode;
-> +			__u32 cpl;
-> +			__u64 input;
-> +			__u64 result;
-> +			__u64 params[6];
-> +		} hcall;
-> +	} u;
-> +};
-> +
->   #define KVM_S390_GET_SKEYS_NONE   1
->   #define KVM_S390_SKEYS_MAX        1048576
->   
-> @@ -250,6 +264,7 @@ struct kvm_hyperv_exit {
->   #define KVM_EXIT_ARM_NISV         28
->   #define KVM_EXIT_X86_RDMSR        29
->   #define KVM_EXIT_X86_WRMSR        30
-> +#define KVM_EXIT_XEN              31
->   
->   /* For KVM_EXIT_INTERNAL_ERROR */
->   /* Emulate instruction failed. */
-> @@ -426,6 +441,8 @@ struct kvm_run {
->   			__u32 index; /* kernel -> user */
->   			__u64 data; /* kernel <-> user */
->   		} msr;
-> +		/* KVM_EXIT_XEN */
-> +		struct kvm_xen_exit xen;
->   		/* Fix the size of the union. */
->   		char padding[256];
->   	};
-> @@ -1126,6 +1143,8 @@ struct kvm_x86_mce {
->   #endif
->   
->   #ifdef KVM_CAP_XEN_HVM
-> +#define KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL	(1 << 1)
-> +
->   struct kvm_xen_hvm_config {
->   	__u32 flags;
->   	__u32 msr;
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 3d14ef77755e..d94abec627e6 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -59,6 +59,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/xss_msr_test
->   TEST_GEN_PROGS_x86_64 += x86_64/debug_regs
->   TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
->   TEST_GEN_PROGS_x86_64 += x86_64/user_msr_test
-> +TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
->   TEST_GEN_PROGS_x86_64 += demand_paging_test
->   TEST_GEN_PROGS_x86_64 += dirty_log_test
->   TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index 126c6727a6b0..6e96ae47d28c 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -1654,6 +1654,7 @@ static struct exit_reason {
->   	{KVM_EXIT_INTERNAL_ERROR, "INTERNAL_ERROR"},
->   	{KVM_EXIT_OSI, "OSI"},
->   	{KVM_EXIT_PAPR_HCALL, "PAPR_HCALL"},
-> +	{KVM_EXIT_XEN, "XEN"},
->   #ifdef KVM_EXIT_MEMORY_NOT_PRESENT
->   	{KVM_EXIT_MEMORY_NOT_PRESENT, "MEMORY_NOT_PRESENT"},
->   #endif
-> diff --git a/tools/testing/selftests/kvm/x86_64/xen_vmcall_test.c b/tools/testing/selftests/kvm/x86_64/xen_vmcall_test.c
-> new file mode 100644
-> index 000000000000..3f1dd93626e5
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/x86_64/xen_vmcall_test.c
-> @@ -0,0 +1,123 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * svm_vmcall_test
-> + *
-> + * Copyright © 2020 Amazon.com, Inc. or its affiliates.
-> + *
-> + * Userspace hypercall testing
-> + */
-> +
-> +#include "test_util.h"
-> +#include "kvm_util.h"
-> +#include "processor.h"
-> +
-> +#define VCPU_ID		5
-> +
-> +#define HCALL_REGION_GPA	0xc0000000ULL
-> +#define HCALL_REGION_SLOT	10
-> +
-> +static struct kvm_vm *vm;
-> +
-> +#define INPUTVALUE 17
-> +#define ARGVALUE(x) (0xdeadbeef5a5a0000UL + x)
-> +#define RETVALUE 0xcafef00dfbfbffffUL
-> +
-> +#define XEN_HYPERCALL_MSR 0x40000000
-> +
-> +static void guest_code(void)
-> +{
-> +	unsigned long rax = INPUTVALUE;
-> +	unsigned long rdi = ARGVALUE(1);
-> +	unsigned long rsi = ARGVALUE(2);
-> +	unsigned long rdx = ARGVALUE(3);
-> +	register unsigned long r10 __asm__("r10") = ARGVALUE(4);
-> +	register unsigned long r8 __asm__("r8") = ARGVALUE(5);
-> +	register unsigned long r9 __asm__("r9") = ARGVALUE(6);
-> +
-> +	/* First a direct invocation of 'vmcall' */
-> +	__asm__ __volatile__("vmcall" :
-> +			     "=a"(rax) :
-> +			     "a"(rax), "D"(rdi), "S"(rsi), "d"(rdx),
-> +			     "r"(r10), "r"(r8), "r"(r9));
-> +	GUEST_ASSERT(rax == RETVALUE);
-> +
-> +	/* Now fill in the hypercall page */
-> +	__asm__ __volatile__("wrmsr" : : "c" (XEN_HYPERCALL_MSR),
-> +			     "a" (HCALL_REGION_GPA & 0xffffffff),
-> +			     "d" (HCALL_REGION_GPA >> 32));
-> +
-> +	/* And invoke the same hypercall that way */
-> +	__asm__ __volatile__("call *%1" : "=a"(rax) :
-> +			     "r"(HCALL_REGION_GPA + INPUTVALUE * 32),
-> +			     "a"(rax), "D"(rdi), "S"(rsi), "d"(rdx),
-> +			     "r"(r10), "r"(r8), "r"(r9));
-> +	GUEST_ASSERT(rax == RETVALUE);
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	if (!(kvm_check_cap(KVM_CAP_XEN_HVM) &
-> +	      KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL) ) {
-> +		print_skip("KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL not available");
-> +		exit(KSFT_SKIP);
-> +	}
-> +
-> +	vm = vm_create_default(VCPU_ID, 0, (void *) guest_code);
-> +	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
-> +
-> +	struct kvm_xen_hvm_config hvmc = {
-> +		.flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL,
-> +		.msr = XEN_HYPERCALL_MSR,
-> +	};
-> +	vm_ioctl(vm, KVM_XEN_HVM_CONFIG, &hvmc);
-> +
-> +	/* Map a region for the hypercall page */
-> +	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-> +                                    HCALL_REGION_GPA, HCALL_REGION_SLOT,
-> +				    getpagesize(), 0);
-> +	virt_map(vm, HCALL_REGION_GPA, HCALL_REGION_GPA, 1, 0);
-> +
-> +	for (;;) {
-> +		volatile struct kvm_run *run = vcpu_state(vm, VCPU_ID);
-> +		struct ucall uc;
-> +
-> +		vcpu_run(vm, VCPU_ID);
-> +
-> +		if (run->exit_reason == KVM_EXIT_XEN) {
-> +			ASSERT_EQ(run->xen.type, KVM_EXIT_XEN_HCALL);
-> +			ASSERT_EQ(run->xen.u.hcall.cpl, 0);
-> +			ASSERT_EQ(run->xen.u.hcall.longmode, 1);
-> +			ASSERT_EQ(run->xen.u.hcall.input, INPUTVALUE);
-> +			ASSERT_EQ(run->xen.u.hcall.params[0], ARGVALUE(1));
-> +			ASSERT_EQ(run->xen.u.hcall.params[1], ARGVALUE(2));
-> +			ASSERT_EQ(run->xen.u.hcall.params[2], ARGVALUE(3));
-> +			ASSERT_EQ(run->xen.u.hcall.params[3], ARGVALUE(4));
-> +			ASSERT_EQ(run->xen.u.hcall.params[4], ARGVALUE(5));
-> +			ASSERT_EQ(run->xen.u.hcall.params[5], ARGVALUE(6));
-> +			run->xen.u.hcall.result = RETVALUE;
-> +			continue;
-> +		}
-> +
-> +		TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
-> +			    "Got exit_reason other than KVM_EXIT_IO: %u (%s)\n",
-> +			    run->exit_reason,
-> +			    exit_reason_str(run->exit_reason));
-> +
-> +		switch (get_ucall(vm, VCPU_ID, &uc)) {
-> +		case UCALL_ABORT:
-> +			TEST_FAIL("%s", (const char *)uc.args[0]);
-> +			/* NOT REACHED */
-> +		case UCALL_SYNC:
-> +			break;
-> +		case UCALL_DONE:
-> +			goto done;
-> +		default:
-> +			TEST_FAIL("Unknown ucall 0x%lx.", uc.cmd);
-> +		}
-> +	}
-> +done:
-> +	kvm_vm_free(vm);
-> +	return 0;
-> +}
-> 
+> -----Original Message-----
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: 30 November 2020 22:21
+> To: Surendrakumar Upadhyay, TejaskumarX
+> <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> Cc: Jesse Barnes <jsbarnes@google.com>; Daniel Vetter <daniel@ffwll.ch>;
+> Joonas Lahtinen <joonas.lahtinen@linux.intel.com>; Linux PCI <linux-
+> pci@vger.kernel.org>; Linux Kernel Mailing List <linux-
+> kernel@vger.kernel.org>; X86 ML <x86@kernel.org>; Borislav Petkov
+> <bp@alien8.de>; De Marchi, Lucas <lucas.demarchi@intel.com>; Roper,
+> Matthew D <matthew.d.roper@intel.com>; Pandey, Hariom
+> <hariom.pandey@intel.com>; Jani Nikula <jani.nikula@linux.intel.com>; Viv=
+i,
+> Rodrigo <rodrigo.vivi@intel.com>; David Airlie <airlied@linux.ie>
+> Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
+>=20
+> On Mon, Nov 30, 2020 at 10:44:14AM +0000, Surendrakumar Upadhyay,
+> TejaskumarX wrote:
+> > Hi All,
+> >
+> > Are we merging this patch in?
+>=20
+> Does it fix something?  If something is broken without this patch, can we
+> collect information about exactly what is broken and how it fails?
+>=20
+> But I don't object if somebody else wants to apply this.
+>=20
+> > > -----Original Message-----
+> > > From: Jesse Barnes <jsbarnes@google.com>
+> > > Sent: 20 November 2020 03:32
+> > > To: Bjorn Helgaas <helgaas@kernel.org>
+> > > Cc: Daniel Vetter <daniel@ffwll.ch>; Joonas Lahtinen
+> > > <joonas.lahtinen@linux.intel.com>; Surendrakumar Upadhyay,
+> > > TejaskumarX <tejaskumarx.surendrakumar.upadhyay@intel.com>; Linux
+> > > PCI <linux- pci@vger.kernel.org>; Linux Kernel Mailing List <linux-
+> > > kernel@vger.kernel.org>; X86 ML <x86@kernel.org>; Borislav Petkov
+> > > <bp@alien8.de>; De Marchi, Lucas <lucas.demarchi@intel.com>; Roper,
+> > > Matthew D <matthew.d.roper@intel.com>; Pandey, Hariom
+> > > <hariom.pandey@intel.com>; Jani Nikula
+> > > <jani.nikula@linux.intel.com>; Vivi, Rodrigo
+> > > <rodrigo.vivi@intel.com>; David Airlie <airlied@linux.ie>
+> > > Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
+> > >
+> > > On Thu, Nov 19, 2020 at 11:19 AM Bjorn Helgaas <helgaas@kernel.org>
+> > > wrote:
+> > > >
+> > > > [+cc Jesse]
+> > > >
+> > > > On Thu, Nov 19, 2020 at 10:37:10AM +0100, Daniel Vetter wrote:
+> > > > > On Thu, Nov 19, 2020 at 12:14 AM Bjorn Helgaas
+> > > > > <helgaas@kernel.org>
+> > > wrote:
+> > > > > > On Wed, Nov 18, 2020 at 10:57:26PM +0100, Daniel Vetter wrote:
+> > > > > > > On Wed, Nov 18, 2020 at 5:02 PM Bjorn Helgaas
+> > > <helgaas@kernel.org> wrote:
+> > > > > > > > On Fri, Nov 06, 2020 at 10:39:16AM +0100, Daniel Vetter wro=
+te:
+> > > > > > > > > On Thu, Nov 5, 2020 at 3:17 PM Bjorn Helgaas
+> > > <helgaas@kernel.org> wrote:
+> > > > > > > > > > On Thu, Nov 05, 2020 at 11:46:06AM +0200, Joonas
+> > > > > > > > > > Lahtinen
+> > > wrote:
+> > > > > > > > > > > Quoting Bjorn Helgaas (2020-11-04 19:35:56)
+> > > > > > > > > > > > [+cc Jani, Joonas, Rodrigo, David, Daniel]
+> > > > > > > > > > > >
+> > > > > > > > > > > > On Wed, Nov 04, 2020 at 05:35:06PM +0530, Tejas
+> > > > > > > > > > > > Upadhyay
+> > > wrote:
+> > > > > > > > > > > > > JSL re-uses the same stolen memory as ICL and EHL=
+.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+> > > > > > > > > > > > > Cc: Matt Roper <matthew.d.roper@intel.com>
+> > > > > > > > > > > > > Signed-off-by: Tejas Upadhyay
+> > > > > > > > > > > > > <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> > > > > > > > > > > >
+> > > > > > > > > > > > I don't plan to do anything with this since
+> > > > > > > > > > > > previous similar patches have gone through some
+> > > > > > > > > > > > other tree, so this is
+> > > just kibitzing.
+> > > > > > > > > > > >
+> > > > > > > > > > > > But the fact that we have this long list of Intel
+> > > > > > > > > > > > devices [1] that constantly needs updates [2] is a
+> > > > > > > > > > > > hint that
+> > > something is wrong.
+> > > > > > > > > > >
+> > > > > > > > > > > We add an entry for every new integrated graphics
+> > > > > > > > > > > platform. Once the platform is added, there have not
+> > > > > > > > > > > been
+> > > changes lately.
+> > > > > > > > > > >
+> > > > > > > > > > > > IIUC the general idea is that we need to discover
+> > > > > > > > > > > > Intel gfx memory by looking at device-dependent
+> > > > > > > > > > > > config
+> > > space and add it to the E820 map.
+> > > > > > > > > > > > Apparently the quirks discover this via PCI config
+> > > > > > > > > > > > registers like I830_ESMRAMC, I845_ESMRAMC, etc,
+> > > > > > > > > > > > and tell the driver about it via the global
+> > > "intel_graphics_stolen_res"?
+> > > > > > > > > > >
+> > > > > > > > > > > We discover what is called the graphics data stolen
+> > > > > > > > > > > memory. It is regular system memory range that is
+> > > > > > > > > > > not CPU accessible. It is accessible by the integrate=
+d
+> graphics only.
+> > > > > > > > > > >
+> > > > > > > > > > > See:
+> > > > > > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torv
+> > > > > > > > > > > alds
+> > > > > > > > > > > /linux.git/commit/arch/x86/kernel/early-quirks.c?h=3D=
+v
+> > > > > > > > > > > 5.10
+> > > > > > > > > > > -rc2&id=3D814c5f1f52a4beb3710317022acd6ad34fc0b6b9
+> > > > > > > > > > >
+> > > > > > > > > > > > That's not the way this should work.  There should
+> > > > > > > > > > > > some generic, non device-dependent PCI or ACPI
+> > > > > > > > > > > > method to discover the memory used, or at least
+> > > > > > > > > > > > some way to do it in
+> > > the driver instead of early arch code.
+> > > > > > > > > > >
+> > > > > > > > > > > It's used by the early BIOS/UEFI code to set up
+> > > > > > > > > > > initial
+> > > framebuffer.
+> > > > > > > > > > > Even if i915 driver is never loaded, the memory
+> > > > > > > > > > > ranges still need to be fixed. They source of the
+> > > > > > > > > > > problem is that the OEM BIOS which are not under our
+> > > > > > > > > > > control get the
+> > > programming wrong.
+> > > > > > > > > > >
+> > > > > > > > > > > We used to detect the memory region size again at
+> > > > > > > > > > > i915 initialization but wanted to eliminate the code
+> > > > > > > > > > > duplication and resulting subtle bugs that caused.
+> > > > > > > > > > > Conclusion back then was that storing the struct
+> > > > > > > > > > > resource in
+> > > memory is the best trade-off.
+> > > > > > > > > > >
+> > > > > > > > > > > > How is this *supposed* to work?  Is there
+> > > > > > > > > > > > something we can do in E820 or other resource
+> > > > > > > > > > > > management that would
+> > > make this easier?
+> > > > > > > > > > >
+> > > > > > > > > > > The code was added around Haswell (HSW) device
+> > > > > > > > > > > generation to mitigate bugs in BIOS. It is
+> > > > > > > > > > > traditionally hard to get all OEMs to fix their BIOS
+> > > > > > > > > > > when things work for Windows. It's only later years
+> > > > > > > > > > > when some laptop models
+> > > are intended to be sold with Linux.
+> > > > > > > > > > >
+> > > > > > > > > > > The alternative would be to get all the OEM to fix
+> > > > > > > > > > > their BIOS for Linux, but that is not very realistic
+> > > > > > > > > > > given past experiences. So it seems a better choice
+> > > > > > > > > > > to to add new line per platform generation to make
+> > > > > > > > > > > sure the users can
+> > > boot to Linux.
+> > > > > > > > > >
+> > > > > > > > > > How does Windows do this?  Do they have to add similar
+> > > > > > > > > > code for each new platform?
+> > > > > > > > >
+> > > > > > > > > Windows is chicken and doesn't move any mmio bar around
+> > > > > > > > > on its
+> > > own.
+> > > > > > > > > Except if the bios explicitly told it somehow (e.g. for
+> > > > > > > > > the 64bit bar stuff amd recently announced for windows,
+> > > > > > > > > that linux supports since years by moving the bar). So
+> > > > > > > > > except if you want to preemptively disable the pci code
+> > > > > > > > > that does this anytime there's an intel gpu, this is what=
+ we
+> have to do.
+> > > > > > > >
+> > > > > > > > I think Windows *does* move BARs (they use the more
+> > > > > > > > generic terminology of "rebalancing PNP resources") in
+> > > > > > > > some cases [3,4].  Of course, I'm pretty sure Windows will
+> > > > > > > > only assign PCI resources inside the windows advertised in
+> > > > > > > > the host bridge
+> > > _CRS.
+> > > > > > > >
+> > > > > > > > Linux *used* to ignore that host bridge _CRS and could set
+> > > > > > > > BARs to addresses that appeared available but were in fact
+> > > > > > > > used by the platform somehow.  But Linux has been paying
+> > > > > > > > attention to host bridge _CRS for a long time now, so it
+> > > > > > > > should also only assign resources inside those windows.
+> > > > > > >
+> > > > > > > If this behaviour is newer than the addition of these quirks
+> > > > > > > then yeah they're probably not needed anymore, and we can
+> > > > > > > move all this back into the driver. Do you have the commit
+> > > > > > > when pci core started observing _CRS on the host bridge?
+> > > > > >
+> > > > > > I think the most relevant commit is this:
+> > > > > >
+> > > > > >   2010-02-23 7bc5e3f2be32 ("x86/PCI: use host bridge _CRS info
+> > > > > > by default on 2008 and newer machines")
+> > > > > >
+> > > > > > but the earliest quirk I found is over three years later:
+> > > > > >
+> > > > > >   2013-07-26 814c5f1f52a4 ("x86: add early quirk for reserving
+> > > > > > Intel graphics stolen memory v5")
+> > > > > >
+> > > > > > So there must be something else going on.  814c5f1f52a4
+> > > > > > mentions a couple bug reports.  The dmesg from 66726 [5] shows
+> > > > > > that we *are* observing the host bridge _CRS, but Linux just
+> > > > > > used the BIOS configuration without changing anything:
+> > > > > >
+> > > > > >   BIOS-e820: [mem 0x000000007f49_f000-0x000000007f5f_ffff]
+> usable
+> > > > > >   BIOS-e820: [mem 0x00000000fec0_0000-0x00000000fec0_0fff]
+> > > reserved
+> > > > > >   PCI: Using host bridge windows from ACPI; if necessary, use
+> > > "pci=3Dnocrs" and report a bug
+> > > > > >   ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+> > > > > >   pci_bus 0000:00: root bus resource [mem 0x7f70_0000-0xffff_ff=
+ff]
+> > > > > >   pci 0000:00:1c.0: PCI bridge to [bus 01]
+> > > > > >   pci 0000:00:1c.0:   bridge window [io  0x1000-0x1fff]
+> > > > > >   pci 0000:00:1c.0:   bridge window [mem 0xfe90_0000-0xfe9f_fff=
+f]
+> > > > > >   pci 0000:00:1c.0:   bridge window [mem 0x7f70_0000-0x7f8f_fff=
+f
+> 64bit
+> > > pref]
+> > > > > >   pci 0000:01:00.0: [1814:3090] type 00 class 0x028000
+> > > > > >   pci 0000:01:00.0: reg 10: [mem 0xfe90_0000-0xfe90_ffff]
+> > > > > >   [drm:i915_stolen_to_physical] *ERROR* conflict detected with
+> > > > > > stolen region: [0x7f80_0000 - 0x8000_0000]
+> > > > > >
+> > > > > > So the BIOS programmed the 00:1c.0 bridge prefetchable window
+> > > > > > to [mem 0x7f70_0000-0x7f8f_ffff], and i915 thinks that's a conf=
+lict.
+> > > > > >
+> > > > > > On this system, there are no PCI BARs in that range.  01:00.0
+> > > > > > looks like a Ralink RT3090 Wireless 802.11n device that only
+> > > > > > has a non-prefetchable BAR at [mem 0xfe90_0000-0xfe90_ffff].
+> > > > > >
+> > > > > > I don't know the details of the conflict.  IIUC, Joonas said
+> > > > > > the stolen memory is accessible only by the integrated
+> > > > > > graphics, not by the CPU.  The bridge window is CPU
+> > > > > > accessible, of course, and the [mem 0x7f70_0000-0x7f8f_ffff]
+> > > > > > range contains the addresses the CPU uses for programmed I/O to
+> BARs below the bridge.
+> > > > > >
+> > > > > > The graphics accesses sound like they would be DMA in the
+> > > > > > *bus* address space, which is frequently, but not always,
+> > > > > > identical to the CPU address space.
+> > > > >
+> > > > > So apparently on some platforms the conflict is harmless because
+> > > > > the BIOS puts BARs and stuff over it from boot-up, and things wor=
+k:
+> > > > > 0b6d24c01932 ("drm/i915: Don't complain about stolen conflicts
+> > > > > on
+> > > > > gen3") But we also had conflict reports on other machines.
+> > > >
+> > > > The bug reports mentioned in 814c5f1f52a4 ("x86: add early quirk
+> > > > for reserving Intel graphics stolen memory v5") and 0b6d24c01932
+> > > > ("drm/i915: Don't complain about stolen conflicts on gen3") seem
+> > > > to be basically complaints about the *message*, not anything
+> > > > that's actually broken.
+> > > >
+> > > > Jesse's comment [6]:
+> > > >
+> > > >   Given the decode priority on our GMCHs, it's fine if the regions
+> > > >   overlap.  However it doesn't look like there's a nice way to dete=
+ct
+> > > >   it.  In this case, part of the range occupied by the stolen space=
+ is
+> > > >   simply "reserved" per the E820, but the rest of it is under the b=
+us
+> > > >   0 range (which kind of makes sense too).
+> > > >
+> > > > sounds relevant but I don't know enough to interpret it.  I added
+> > > > Jesse in case he wants to comment.
+> > > >
+> > > > > GPU does all its access with CPU address space (after the iommu,
+> > > > > which is entirely integrated). So I'm not sure whether we've
+> > > > > seen something go boom or whether reserving that resource was
+> > > > > just precaution in
+> > > > > eaba1b8f3379 ("drm/i915: Verify that our stolen memory doesn't
+> > > > > conflict"), it's all a bit way back in history.
+> > > > >
+> > > > > So really not sure what to do here or what the risks are.
+> > > >
+> > > > I'm not either.  Seems like we're not really converging on
+> > > > anything useful we can do at this point.  The only thing I can
+> > > > think of would be to collect data about actual failures (not just w=
+arning
+> messages).
+> > > > That might lead to something we could improve in the future.
+> > >
+> > > I don't have any brilliant ideas here unfortunately.  Maybe it's
+> > > worth talking to some of the Windows folks internally to see how
+> > > these ranges are handled these days and matching it?  Historically
+> > > this has been an area fraught with danger because getting things
+> > > wrong can lead to corruption of various kinds or boot hangs.
+> > >
+> > > Jesse
