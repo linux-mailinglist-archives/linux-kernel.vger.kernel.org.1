@@ -2,141 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4202CC7DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB662CC7E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgLBUdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgLBUdE (ORCPT
+        id S1730052AbgLBUdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:33:32 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21050 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729712AbgLBUdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:33:04 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651FDC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:32:24 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id o1so5494662wrx.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:32:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ArIFLNBSlJoptv1NLBX8RCWaznOMpzj84NJClOoUcF8=;
-        b=G0CtFsHun/dE8SSNtH7NxfhkCWLQmuZ6mNkABiVQ5wQi6se/ypQU3NMZLz2lJlqXHn
-         vz5oDZZlAOqH5t47URdf5IrkzkyevG+F5YCBKFnlrWrSq+3YG06WDHHOKI/K7YDzfVRE
-         nfaT5cpgVL5dxqsHF/YZA/82YzAVfUKHhAGQI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ArIFLNBSlJoptv1NLBX8RCWaznOMpzj84NJClOoUcF8=;
-        b=iKXDql0rkz/w1bpfqk45Nw8nIevJdcat57FBHFlknFy3iLzQi2AAGWfOay5UZw/JVT
-         cxtxHT5TqwNbO/zIlItH9u7u3wdH5nkVMs/aaTBOpGh9e1NdE8vvm1K2YFY4o0L+JZQU
-         ahZNlUnOkjz2Ql753RhXXZK08Xr82kI5iSHrlXMrla3zrsVevyznj2gFF4aAN9Znjz9a
-         UF2VzMwwzwzXykDOnEFAH4fbTQ3sYl08s76bwcxD2YJ+0+FfD5t8/oz8dm961MB7pZnz
-         HkMhnlQ7s4ffz3evohyvJRqOtjLL6zCczjiD0oAguI/oOE7pfd8LxbfjL97IvzOlDU2s
-         htLA==
-X-Gm-Message-State: AOAM533TCsAUa1xcM/QeIpIX09g9r7emCtBJb77AWmeUj7chgSV8ic6F
-        lw//2iLl0U+uca6gi7ni6+mv3w==
-X-Google-Smtp-Source: ABdhPJwFn0cMmM9TtBd5VsGLgIsh0lp6ft09CuQ3DjfdGheaYY6uRRYDX3R/PMhp4EvYEpYANDBH3g==
-X-Received: by 2002:adf:e6c8:: with SMTP id y8mr5622939wrm.414.1606941142955;
-        Wed, 02 Dec 2020 12:32:22 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id b14sm3426327wrq.47.2020.12.02.12.32.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 12:32:22 -0800 (PST)
-Message-ID: <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-From:   Florent Revest <revest@chromium.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 02 Dec 2020 21:32:21 +0100
-In-Reply-To: <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
-References: <20201126165748.1748417-1-revest@google.com>
-         <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
-         <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
-         <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
-         <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Wed, 2 Dec 2020 15:33:31 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2KVwBA130825;
+        Wed, 2 Dec 2020 15:32:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=7k64mIQiHaWy//PZEHcOuqC7YfTe5Wp86SAsalsGFaI=;
+ b=rN+M6x+LlMC8bCMdbdoM2WvFtpCPRZzBTx7BP4asjjkokc01+1K/lRQSMP7ZPFCjo4yN
+ N/2RYqkAcC9qCD+CwpB73aOJwncBnIiGWh5ZCosszqrjqmKEpRNsm2k5cvgGfildYYmc
+ rTMB/cv0lejPpqu5zLu8XpQ/Tm7bf092666Gs5Yd7iMwiWfmlVS6G+33m3SD/OiVeLm+
+ 8tsWd+ZVDisIDZJl0wMckruFUGsnhh5qXz3PYbVD7Qece8PxZn5KbGGZrd8oPn+iPDlM
+ 0BczSZ2LKl6btAnj8sc6xg6uhTf0EhlN4ZriCpjkRVqtfXMST2LVATmXg1BuPQcoKwjm JA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3563qcaxbp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 15:32:41 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B2KWfsF133876;
+        Wed, 2 Dec 2020 15:32:41 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3563qcaxas-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 15:32:41 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2KSDbJ001956;
+        Wed, 2 Dec 2020 20:32:38 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 35693xgefb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 20:32:38 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2KWaHp22413764
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 20:32:36 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B711A4059;
+        Wed,  2 Dec 2020 20:32:36 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 26841A404D;
+        Wed,  2 Dec 2020 20:32:35 +0000 (GMT)
+Received: from osiris (unknown [9.171.12.240])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  2 Dec 2020 20:32:35 +0000 (GMT)
+Date:   Wed, 2 Dec 2020 21:32:33 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [RFC V2 3/3] s390/mm: Define arch_get_mappable_range()
+Message-ID: <20201202203233.GB11274@osiris>
+References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
+ <1606706992-26656-4-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606706992-26656-4-git-send-email-anshuman.khandual@arm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_12:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=5
+ priorityscore=1501 adultscore=0 clxscore=1011 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 mlxlogscore=880 spamscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-01 at 16:55 -0800, Andrii Nakryiko wrote:
-> On Fri, Nov 27, 2020 at 8:09 AM Yonghong Song <yhs@fb.com> wrote:
-> > 
-> > 
-> > On 11/27/20 3:20 AM, KP Singh wrote:
-> > > On Fri, Nov 27, 2020 at 8:35 AM Yonghong Song <yhs@fb.com> wrote:
-> > > > 
-> > > > In this case, module name may be truncated and user did not get
-> > > > any indication from return value. In the helper description, it
-> > > > is mentioned that module name currently is most 64 bytes. But
-> > > > from UAPI perspective, it may be still good to return something
-> > > > to let user know the name is truncated.
-> > > > 
-> > > > I do not know what is the best way to do this. One suggestion
-> > > > is to break it into two helpers, one for symbol name and
-> > > > another
-> > > 
-> > > I think it would be slightly preferable to have one helper
-> > > though. maybe something like bpf_get_symbol_info (better names
-> > > anyone? :)) with flags to get the module name or the symbol name
-> > > depending
-> > > on the flag?
-> > 
-> > This works even better. Previously I am thinking if we have two
-> > helpers,
-> > we can add flags for each of them for future extension. But we
-> > can certainly have just one helper with flags to indicate
-> > whether this is for module name or for symbol name or something
-> > else.
-> > 
-> > The buffer can be something like
-> >     union bpf_ksymbol_info {
-> >        char   module_name[];
-> >        char   symbol_name[];
-> >        ...
-> >     }
-> > and flags will indicate what information user wants.
+On Mon, Nov 30, 2020 at 08:59:52AM +0530, Anshuman Khandual wrote:
+> This overrides arch_get_mappabble_range() on s390 platform and drops now
+> redundant similar check in vmem_add_mapping(). This compensates by adding
+> a new check __segment_load() to preserve the existing functionality.
 > 
-> one more thing that might be useful to resolve to the symbol's "base
-> address". E.g., if we have IP inside the function, this would resolve
-> to the start of the function, sort of "canonical" symbol address.
-> Type of ksym is another "characteristic" which could be returned (as
-> a single char?)
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/s390/mm/extmem.c |  5 +++++
+>  arch/s390/mm/vmem.c   | 13 +++++++++----
+>  2 files changed, 14 insertions(+), 4 deletions(-)
 > 
-> I wouldn't define bpf_ksymbol_info, though. Just depending on the
-> flag, specify what kind of memory layou (e.g., for strings -
-> zero-terminated string, for address - 8 byte numbers, etc). That way
-> we can also allow fetching multiple things together, they would just
-> be laid out one after another in memory.
-> 
-> E.g.:
-> 
-> char buf[256];
-> int err = bpf_ksym_resolve(<addr>, BPF_KSYM_NAME | BPF_KSYM_MODNAME |
-> BPF_KSYM_BASE_ADDR, buf, sizeof(buf));
-> 
-> if (err == -E2BIG)
->   /* need bigger buffer, but all the data up to truncation point is
-> filled in */
-> else
->   /* err has exact number of bytes used, including zero terminator(s)
-> */
->   /* data is laid out as
-> "cpufreq_gov_powersave_init\0cpufreq_powersave\0\x12\x23\x45\x56\x12\
-> x23\x45\x56"
-> */
+> diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
+> index 5060956b8e7d..cc055a78f7b6 100644
+> --- a/arch/s390/mm/extmem.c
+> +++ b/arch/s390/mm/extmem.c
+> @@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
+>  		goto out_free_resource;
+>  	}
+>  
+> +	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
+> +		rc = -ERANGE;
+> +		goto out_resource;
+> +	}
+> +
+>  	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
+>  	if (rc)
+>  		goto out_resource;
+> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
+> index b239f2ba93b0..06dddcc0ce06 100644
+> --- a/arch/s390/mm/vmem.c
+> +++ b/arch/s390/mm/vmem.c
+> @@ -532,14 +532,19 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
+>  	mutex_unlock(&vmem_mutex);
+>  }
+>  
+> +struct range arch_get_mappable_range(void)
+> +{
+> +	struct range memhp_range;
+> +
+> +	memhp_range.start = 0;
+> +	memhp_range.end =  VMEM_MAX_PHYS;
+> +	return memhp_range;
+> +}
+> +
+>  int vmem_add_mapping(unsigned long start, unsigned long size)
+>  {
+>  	int ret;
+>  
+> -	if (start + size > VMEM_MAX_PHYS ||
+> -	    start + size < start)
+> -		return -ERANGE;
+> -
 
-Great idea! I like that, thanks for the suggestion :) 
-
+I really fail to see how this could be considered an improvement for
+s390. Especially I do not like that the (central) range check is now
+moved to the caller (__segment_load). Which would mean potential
+additional future callers would have to duplicate that code as well.
