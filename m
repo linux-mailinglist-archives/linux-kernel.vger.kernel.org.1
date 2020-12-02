@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F582CC8F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9296D2CC902
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729969AbgLBVcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:32:10 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:44618 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729462AbgLBVcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:32:10 -0500
-Received: by mail-il1-f200.google.com with SMTP id j8so2679799ilr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 13:31:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ff9eT4IKjr/d9+CBTJN/vpEU1i32CgUXCqFZBYyDY8s=;
-        b=AadkbX1HxOVPOceYN0gR/iYB1PQOtKHBDxEmBcwyZr8VL5wH4QAdwxYCbvhio3UZnJ
-         xQvuGi0N+B/tFwoV7Zdcv0tKmWxL6bZ1D4y8uz/g1vDpo18CAtz77hW6LxBabjMHzF9m
-         bYwELzidWwyMICuEZeODkAOLZIVYps2tvleYxwAwMeOnaMn2eoH0Yg/DlYlCRdDp7rBU
-         Zhx9LsrLn3EJ1E6THWfjW1fH06QXdxoamH/6qVIrBSY4zMV3bM1px5RkHOO9eE3I/16F
-         0ec2zjOxiQbTj85YxV1FMZkkkBB2dd5VUDdPJJX8DF5+viRRfCkrbJerw8NJrEI2BliA
-         vCvw==
-X-Gm-Message-State: AOAM5310ag8moL5glrYvZ1C1W7zaFDqlR1buUwtLWByxy0NJDDK5SVpH
-        0LNTKYtbpNVMdnDr3xyvE8akXo9sqJBeSs1F8SnGfqPXyN3e
-X-Google-Smtp-Source: ABdhPJzLPKCTXPDvGdMkc1xtq05W2K1aWKZ9XhR7Fl/yf6dEmfPi+8unQRDokx5O/cfB2niOhhm2ZsC2f43gkNfS/TE+DPEjFzeM
+        id S1728145AbgLBVjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:39:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgLBVjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 16:39:22 -0500
+Date:   Wed, 2 Dec 2020 22:38:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606945121;
+        bh=iIe1gAuOR+SptbL3N66ii+6qlvJFb69mEQmMW1jiGJs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lbE4eyUqy9auVcbmUNHu6bXtCp4Nx8zY7KzZHrNvoPptdpDpHRZe0GZ8ysaeObwY2
+         u0TDtCHjiAphWjDPHLYU+8j+T0kJcu7qp0QsDZOL01Lv99tR4Emrc47YKVflhF4k88
+         CwnNYlmqujnUoZrWS2FVXBptV8+17SujlshfAlHOO79fOrE6f5sfPjsr1vXnULK4mK
+         GVxkvxdQiZIv8kgJzTikHum6g+OSB0X4C/q3S7WbMrvS9u8Aad67+BRK8qifYeZJ4H
+         3dq60dALAL4zERtz07y3z50bSlXqn6xnW3dJQFraMWep19JlgC2d9vg1IDqMuamQJ4
+         KANKTGlH19Jsg==
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 01/16] HSI: fix a kernel-doc markup
+Message-ID: <20201202213838.5wgnkb4zgw3mynuj@earth.universe>
+References: <cover.1606823973.git.mchehab+huawei@kernel.org>
+ <a921e2212afc39f562a8015104e107665ca495da.1606823973.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:b681:: with SMTP id i1mr153616jam.10.1606944683171;
- Wed, 02 Dec 2020 13:31:23 -0800 (PST)
-Date:   Wed, 02 Dec 2020 13:31:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000003a2e105b581f7b9@google.com>
-Subject: WARNING in create_io_worker
-From:   syzbot <syzbot+fa13b30255540662f825@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sngbhji54ilx3bah"
+Content-Disposition: inline
+In-Reply-To: <a921e2212afc39f562a8015104e107665ca495da.1606823973.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--sngbhji54ilx3bah
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    c84e1efa Merge tag 'asm-generic-fixes-5.10-2' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a43395500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d1e98d0b97781e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=fa13b30255540662f825
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Hi,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+On Tue, Dec 01, 2020 at 01:08:54PM +0100, Mauro Carvalho Chehab wrote:
+> A function has a different name between their prototype
+> and its kernel-doc markup.
+>=20
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fa13b30255540662f825@syzkaller.appspotmail.com
+Thanks, queued to HSI tree.
 
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 10595 at include/linux/cpumask.h:137 rcu_read_unlock include/linux/rcupdate.h:696 [inline]
-WARNING: CPU: 3 PID: 10595 at include/linux/cpumask.h:137 ttwu_stat kernel/sched/core.c:2441 [inline]
-WARNING: CPU: 3 PID: 10595 at include/linux/cpumask.h:137 try_to_wake_up+0xef6/0x1330 kernel/sched/core.c:2984
-Modules linked in:
-CPU: 3 PID: 10595 Comm: io_wq_manager Not tainted 5.10.0-rc5-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:tryqemu-system-x86_64: warning: guest updated active QH
-Code: 80 3d 93 2a 8c 0b 00 0f 84 f1 00 00 00 e8 82 80 10 00 48 c7 c6 d9 6d 4c 81 48 c7 c7 e0 77 33 8b e8 0f b7 09 00 e9 15 f9 ff ff <0f> 0b e9 65 f4 ff ff 4c 89 ff 48 89 4c 24 08 e8 b6 51 ff ff 48 8b
-RSP: 0018:ffffc90004b4fd50 EFLAGS: 00010002
-RAX: dffffc0000000000 RBX: 1ffff92000969faf RCX: ffff88806dc24778
-RDX: 1ffff1100db848ee RSI: ffffffff83b63fcb RDI: 0000000000000006
-RBP: ffff88806dc24400 R08: ffff88806dc24410 R09: ffffffff8cecc98f
-R10: 0000000000000040 R11: 0000000000000000 R12: 0000000000000202
-R13: ffff88806dc24c38 R14: 0000000000000008 R15: ffff88806dc24770
-FS:  0000000000000000(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000339da98 CR3: 0000000020a7e000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- create_io_worker+0x590/0x8d0 fs/io-wq.c:720
- io_wq_manager+0x16b/0xb80 fs/io-wq.c:785
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+-- Sebastian
 
+> [...]
+>  /**
+> - * hsi_unregister_port - Unregister an HSI port
+> + * hsi_port_unregister_clients - Unregister an HSI port
+>   * @port: The HSI port to unregister
+>   */
+>  void hsi_port_unregister_clients(struct hsi_port *port)
+>  {
+>  	device_for_each_child(&port->device, NULL, hsi_remove_client);
+>  }
+>  EXPORT_SYMBOL_GPL(hsi_port_unregister_clients);
+> [...]
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+--sngbhji54ilx3bah
+Content-Type: application/pgp-signature; name="signature.asc"
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/ICVYACgkQ2O7X88g7
++ppNlQ/+IRn74BUBYU0emWmvMLRfs16uihIAP1WRsqNKZG9Gp05a15HpAsHtqGRD
+nDuEKoYMv4gYuFha8O8+yBNs9aKNkT+RYsnDPEE9kcFZOQU38oixKhuLFQW2BzPr
+YPxu61i/sHZsq7q6GkRjzfYksNHOUUAIFMePFzelvClIaNLOmQARe7Kh2/M7+sXS
+q6hxLH/zozwgbV+dq5tIIC84L9MBS6auuoY0YL4Ql1c2cfZylQY8vj2qqqrQjmyP
+m3xegxHlH0o7DmhcpqDfw/nlwDrFu5Y/if/TFKeH90iG9pkLzZdKbizUylcrNkJ6
+uVA9S8zjIDF7dC2d7gxzJyIaM7UzX9e8l4gpRDTU9uJlhfxH5E1GXgD+ooZXXHto
+U3Vak4pebO8usIUI9dALjWqRsyOT9/yy7WD9+GzO+StLeI2+IvVSkb+9AibO6qP4
+q/lsXSg86PlMf1GrxXTRjrJ0u2m8CY2kPU1FOEkz6xHBb2PBRbVEt/9lP5RhII6q
+lXlnyud6CjbW2M8aL7+Ijzad92RDFMTggLEP/JvX8eP0PzAMYr9iF3KYVkE6QXvc
+jN4Rv8kntcso+mLIeMgxoaC1pINlZF72fgYfr2HK/pEB4DP3Ciq4v9QGgXiLZx2J
+9Nqa041efc2widIqXB5FPeTD0FWlEgXVBjBVM7HqvdNEEoLjdkE=
+=WWQE
+-----END PGP SIGNATURE-----
+
+--sngbhji54ilx3bah--
