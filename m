@@ -2,210 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A162CC9EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 857E52CC9FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgLBWwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 17:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        id S1728000AbgLBWxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:53:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgLBWwA (ORCPT
+        with ESMTP id S1727557AbgLBWxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:52:00 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB8EC0613D6;
-        Wed,  2 Dec 2020 14:51:20 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id a6so705702wmc.2;
-        Wed, 02 Dec 2020 14:51:20 -0800 (PST)
+        Wed, 2 Dec 2020 17:53:49 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BC1C061A4D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:52:56 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id o7so9412pjj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:52:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JlZW5TDu5jAoSGgUpIKIdqJkT/tu5xUY/rPMts9/Lgw=;
-        b=I99JFfgzw5zVRQwJP7I3tfgDOQe/3u+NYs890iN5pwTZ76QFf0lVYCfWX0Alpsmhrf
-         xOhLYT21gNMMS/ROcpHS9xPo5DktFqACshbhZxgs/rRI1P6CibXViMCDkqYitADY2EzQ
-         QSWvHU4yXh1z2pUFYKLUf+4p5Jg1hdLdbvRN4++U8hkyjNU+zZmOvhLQFpCX13I+rmHa
-         aKumgzfthm3ynap63xIdo6TQAn6S7ZOopevH0PSs5w/NSnwXLESOgQ2yYvIeTtFySL/g
-         Z6lnon43kfz6RgqwmvzH6YPXpfJuUGeQxkwe8tbf0m2YsbXadi+6d7Ky+X5+PIK1rPU8
-         yDiw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w13vKkQO9QCP0aR5R9Nv4FOw9sZU+DjLBFqmX3t26s8=;
+        b=rxIMvrsLz416YTkoh8oP0XwIZGWM+lG9YJHHqWJFZPAJfdeUMvP8RjKlfZq98Rtmoj
+         51XR5TMkAuVUmfbpRWeUYX2kReToKwMJxeCDaQAD4wb5BBQ0YDsOsp2MZViotWu9SI0X
+         WYaing/GdzvYBEdsc7YEhc1/eVjqn58Lq2HNaKlwDFLykzFGKRaBJifz1RKFCWORX67N
+         QqpxoNgr1sMlhz0EOwRyFVFgilPv7b58VK8xZ9L1w6ZREg/iO+rECdVjZ+SPYpk3mtv5
+         n5AWnXd9VZw9D/DC4Ps2r8qIYENdVpJpYlEEmCS8ymJK3QZlqa5Q0FD0/c2TZbobCLnq
+         GdGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JlZW5TDu5jAoSGgUpIKIdqJkT/tu5xUY/rPMts9/Lgw=;
-        b=ERFk5uyJsinX6RfewDOdMgwmBXNYY5oHLP7SrChlATqK/L/YANjnzCAaKQeVSnHsso
-         zF3Q5Fw3IiRdJ/WYzgtCQfpMmKcizrvtsmjmJ7b9AzztazF6q7vl1dccSEp/2lsg0y5Q
-         ZB5LjwJ/lZ6MpKOHZeWeYnM+zdTaLalxpUFtr5x0rhxbyEFklEyMPmtFYUrBM/JngzvW
-         1txfxPxwOhpReS4A8MZfoZR6TaoKx1SLuyaZIK/iJl1TCRf/U9WaHnxspPuGXRF3Mctp
-         BRJ4A07m3Vax68QHSn8HS5y3keRsOOVvUxuNBleNfqDl9L3rHDbGW+Ug6psVFt2MNj8t
-         Aj6A==
-X-Gm-Message-State: AOAM532CSVPB3spMikV7KxelV8Szvft/MQur6kPa+VpkjfK+0SVtTxAl
-        E9rcGv2kHnAQJ8hj8Fwow5eIpscMCJDMwTcm6yY=
-X-Google-Smtp-Source: ABdhPJwK+p2rlDn7QnwnrlQli03/5Ecgz1Qa/J80GxKWa1mr26aBriD5/aTEfk5kJm8Smhu6kYvu33ezKhfPrVYB2Hg=
-X-Received: by 2002:a7b:cc13:: with SMTP id f19mr203554wmh.44.1606949478753;
- Wed, 02 Dec 2020 14:51:18 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w13vKkQO9QCP0aR5R9Nv4FOw9sZU+DjLBFqmX3t26s8=;
+        b=BJUsPbbSQ/bJbAO39ZlGMKE1DJR8kkXWTqHBFZEmCOYKncn9wMVMPnZ1QisaZgeU4k
+         lIuvQQLH7RK8nJatUEBljjFjo8T1CObDRkEIi2IXAWMiNAnYUrLYCvhMpAxZaq9BZa9R
+         Ii8LqDMjgTS/ida9jexBG+aEz7Lgao66SwUNqm26KTjgBZozOUF6ZYw/Ag+fhbr6nmeN
+         0J/k20u94A/KKFojZIz2CobEhpyeDZblYTh91+Ls/QxXjHujCO9fQxT9/6paQiLBfMwt
+         fIZMqNu7OsxT5ELu0vw8RXhI7eTFFuIK52Xo9R7uWXXHtZjn3NOWT2DcL9rEfvk/c+PK
+         LtQQ==
+X-Gm-Message-State: AOAM532QlHUSY0uvds3kNVaHrIr/GBvScMB0Y1UqkLa+v/8gh9vWIbD+
+        SC9/gUU9HKH8BiH5PYf47r6TOw==
+X-Google-Smtp-Source: ABdhPJxMYQCCb1zJfnzSpLJeB756gwkPBF5cUE4tVCqByyJoHNiQ65qHwLsKgJXa31l+PERlBN+Reg==
+X-Received: by 2002:a17:902:9307:b029:d9:d097:fd6c with SMTP id bc7-20020a1709029307b02900d9d097fd6cmr302473plb.10.1606949576165;
+        Wed, 02 Dec 2020 14:52:56 -0800 (PST)
+Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
+        by smtp.gmail.com with ESMTPSA id z22sm119458pfn.153.2020.12.02.14.52.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 14:52:55 -0800 (PST)
+Date:   Wed, 2 Dec 2020 22:52:51 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v7 1/8] block: ensure bios are not split in middle of
+ crypto data unit
+Message-ID: <X8gaw4ouQQFd9unN@google.com>
+References: <20201117140708.1068688-1-satyat@google.com>
+ <20201117140708.1068688-2-satyat@google.com>
+ <X7RdS2cINwFkl/MN@sol.localdomain>
+ <20201118003815.GA1155188@google.com>
+ <X77W05O8Pl8t0gPi@sol.localdomain>
 MIME-Version: 1.0
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com> <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
- <CAAH8bW-jUeFVU-0OrJzK-MuGgKJgZv38RZugEQzFRJHSXFRRDA@mail.gmail.com>
- <CAM7-yPRBPP6SFzdmwWF5Y99g+aWcp=OY9Uvp-5h1MSDPmsORNw@mail.gmail.com> <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com>
-In-Reply-To: <CAAH8bW-+XnNsd9p3xZ1utmyY24gaBa0ko4tngBii4T+2cMkcYg@mail.gmail.com>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Thu, 3 Dec 2020 07:51:07 +0900
-Message-ID: <CAM7-yPQCWj6rOyLEgOqF3HGkFV1WKtqyVhEtDbS3HW=2A-HuBA@mail.gmail.com>
-Subject: 
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com, joseph.qi@linux.alibaba.com,
-        skalluru@marvell.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X77W05O8Pl8t0gPi@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 6:26 AM Yury Norov <yury.norov@gmail.com> wrote:
->
-> On Wed, Dec 2, 2020 at 10:22 AM Yun Levi <ppbuk5246@gmail.com> wrote:
-> >
-> > On Thu, Dec 3, 2020 at 2:26 AM Yury Norov <yury.norov@gmail.com> wrote:
-> >
-> > > Also look at lib/find_bit_benchmark.c
-> > Thanks. I'll see.
-> >
-> > > We need find_next_*_bit() because find_first_*_bit() can start searching only at word-aligned
-> > > bits. In the case of find_last_*_bit(), we can start at any bit. So, if my understanding is correct,
-> > > for the purpose of reverse traversing we can go with already existing find_last_bit(),
-> >
-> > Thank you. I haven't thought that way.
-> > But I think if we implement reverse traversing using find_last_bit(),
-> > we have a problem.
-> > Suppose the last bit 0, 1, 2, is set.
-> > If we start
-> >     find_last_bit(bitmap, 3) ==> return 2;
-> >     find_last_bit(bitmap, 2) ==> return 1;
-> >     find_last_bit(bitmap, 1) ==> return 0;
-> >     find_last_bit(bitmap, 0) ===> return 0? // here we couldn't
-> > distinguish size 0 input or 0 is set
->
-> If you traverse backward and reach bit #0, you're done. No need to continue.
-I think the case when I consider the this macro like
+On Wed, Nov 25, 2020 at 02:12:35PM -0800, Eric Biggers wrote:
+> On Wed, Nov 18, 2020 at 12:38:15AM +0000, Satya Tangirala wrote:
+> > > > +/**
+> > > > + * update_aligned_sectors_and_segs() - Ensures that *@aligned_sectors is aligned
+> > > > + *				       to @bio_sectors_alignment, and that
+> > > > + *				       *@aligned_segs is the value of nsegs
+> > > > + *				       when sectors reached/first exceeded that
+> > > > + *				       value of *@aligned_sectors.
+> > > > + *
+> > > > + * @nsegs: [in] The current number of segs
+> > > > + * @sectors: [in] The current number of sectors
+> > > > + * @aligned_segs: [in,out] The number of segments that make up @aligned_sectors
+> > > > + * @aligned_sectors: [in,out] The largest number of sectors <= @sectors that is
+> > > > + *		     aligned to @sectors
+> > > > + * @bio_sectors_alignment: [in] The alignment requirement for the number of
+> > > > + *			  sectors
+> > > > + *
+> > > > + * Updates *@aligned_sectors to the largest number <= @sectors that is also a
+> > > > + * multiple of @bio_sectors_alignment. This is done by updating *@aligned_sectors
+> > > > + * whenever @sectors is at least @bio_sectors_alignment more than
+> > > > + * *@aligned_sectors, since that means we can increment *@aligned_sectors while
+> > > > + * still keeping it aligned to @bio_sectors_alignment and also keeping it <=
+> > > > + * @sectors. *@aligned_segs is updated to the value of nsegs when @sectors first
+> > > > + * reaches/exceeds any value that causes *@aligned_sectors to be updated.
+> > > > + */
+> > > > +static inline void update_aligned_sectors_and_segs(const unsigned int nsegs,
+> > > > +						   const unsigned int sectors,
+> > > > +						   unsigned int *aligned_segs,
+> > > > +				unsigned int *aligned_sectors,
+> > > > +				const unsigned int bio_sectors_alignment)
+> > > > +{
+> > > > +	if (sectors - *aligned_sectors < bio_sectors_alignment)
+> > > > +		return;
+> > > > +	*aligned_sectors = round_down(sectors, bio_sectors_alignment);
+> > > > +	*aligned_segs = nsegs;
+> > > > +}
+> > > > +
+> > > >  /**
+> > > >   * bvec_split_segs - verify whether or not a bvec should be split in the middle
+> > > >   * @q:        [in] request queue associated with the bio associated with @bv
+> > > > @@ -195,9 +232,12 @@ static inline unsigned get_max_segment_size(const struct request_queue *q,
+> > > >   * the block driver.
+> > > >   */
+> > > >  static bool bvec_split_segs(const struct request_queue *q,
+> > > > -			    const struct bio_vec *bv, unsigned *nsegs,
+> > > > -			    unsigned *sectors, unsigned max_segs,
+> > > > -			    unsigned max_sectors)
+> > > > +			    const struct bio_vec *bv, unsigned int *nsegs,
+> > > > +			    unsigned int *sectors, unsigned int *aligned_segs,
+> > > > +			    unsigned int *aligned_sectors,
+> > > > +			    unsigned int bio_sectors_alignment,
+> > > > +			    unsigned int max_segs,
+> > > > +			    unsigned int max_sectors)
+> > > >  {
+> > > >  	unsigned max_len = (min(max_sectors, UINT_MAX >> 9) - *sectors) << 9;
+> > > >  	unsigned len = min(bv->bv_len, max_len);
+> > > > @@ -211,6 +251,11 @@ static bool bvec_split_segs(const struct request_queue *q,
+> > > >  
+> > > >  		(*nsegs)++;
+> > > >  		total_len += seg_size;
+> > > > +		update_aligned_sectors_and_segs(*nsegs,
+> > > > +						*sectors + (total_len >> 9),
+> > > > +						aligned_segs,
+> > > > +						aligned_sectors,
+> > > > +						bio_sectors_alignment);
+> > > >  		len -= seg_size;
+> > > >  
+> > > >  		if ((bv->bv_offset + total_len) & queue_virt_boundary(q))
+> > > > @@ -235,6 +280,8 @@ static bool bvec_split_segs(const struct request_queue *q,
+> > > >   * following is guaranteed for the cloned bio:
+> > > >   * - That it has at most get_max_io_size(@q, @bio) sectors.
+> > > >   * - That it has at most queue_max_segments(@q) segments.
+> > > > + * - That the number of sectors in the returned bio is aligned to
+> > > > + *   blk_crypto_bio_sectors_alignment(@bio)
+> > > >   *
+> > > >   * Except for discard requests the cloned bio will point at the bi_io_vec of
+> > > >   * the original bio. It is the responsibility of the caller to ensure that the
+> > > > @@ -252,6 +299,9 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
+> > > >  	unsigned nsegs = 0, sectors = 0;
+> > > >  	const unsigned max_sectors = get_max_io_size(q, bio);
+> > > >  	const unsigned max_segs = queue_max_segments(q);
+> > > > +	const unsigned int bio_sectors_alignment =
+> > > > +					blk_crypto_bio_sectors_alignment(bio);
+> > > > +	unsigned int aligned_segs = 0, aligned_sectors = 0;
+> > > >  
+> > > >  	bio_for_each_bvec(bv, bio, iter) {
+> > > >  		/*
+> > > > @@ -266,8 +316,14 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
+> > > >  		    bv.bv_offset + bv.bv_len <= PAGE_SIZE) {
+> > > >  			nsegs++;
+> > > >  			sectors += bv.bv_len >> 9;
+> > > > -		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors, max_segs,
+> > > > -					 max_sectors)) {
+> > > > +			update_aligned_sectors_and_segs(nsegs, sectors,
+> > > > +							&aligned_segs,
+> > > > +							&aligned_sectors,
+> > > > +							bio_sectors_alignment);
+> > > > +		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors,
+> > > > +					   &aligned_segs, &aligned_sectors,
+> > > > +					   bio_sectors_alignment, max_segs,
+> > > > +					   max_sectors)) {
+> > > >  			goto split;
+> > > >  		}
+> > > >  
+> > > > @@ -275,11 +331,24 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
+> > > >  		bvprvp = &bvprv;
+> > > >  	}
+> > > >  
+> > > > +	/*
+> > > > +	 * The input bio's number of sectors is assumed to be aligned to
+> > > > +	 * bio_sectors_alignment. If that's the case, then this function should
+> > > > +	 * ensure that aligned_segs == nsegs and aligned_sectors == sectors if
+> > > > +	 * the bio is not going to be split.
+> > > > +	 */
+> > > > +	WARN_ON(aligned_segs != nsegs || aligned_sectors != sectors);
+> > > >  	*segs = nsegs;
+> > > >  	return NULL;
+> > > >  split:
+> > > > -	*segs = nsegs;
+> > > > -	return bio_split(bio, sectors, GFP_NOIO, bs);
+> > > > +	*segs = aligned_segs;
+> > > > +	if (WARN_ON(aligned_sectors == 0))
+> > > > +		goto err;
+> > > > +	return bio_split(bio, aligned_sectors, GFP_NOIO, bs);
+> > > > +err:
+> > > > +	bio->bi_status = BLK_STS_IOERR;
+> > > > +	bio_endio(bio);
+> > > > +	return bio;
+> > > >  }
+> > > 
+> > > This part is pretty complex.  Are you sure it's needed?  How was alignment to
+> > > logical_block_size ensured before?
+> > > 
+> > Afaict, alignment to logical_block_size (lbs) is done by assuming that
+> > bv->bv_len is always lbs aligned (among other things). Is that not the
+> > case?
+> 
+> I believe that's the case; bvecs are logical_block_size aligned.
+> 
+> So the new thing (with data_unit_size > logical_block_size) is that
+> bvec boundaries aren't necessarily valid split points anymore.
+> 
+> > 
+> > If it is the case, that's what we're trying to avoid with this patch (we
+> > want to be able to submit bios that have 2 bvecs that together make up a
+> > single crypto data unit, for example). And this is complex because
+> > multiple segments could "add up" to make up a single crypto data unit,
+> > but this function's job is to limit both the number of segments *and*
+> > the number of sectors - so when ensuring that the number of sectors is
+> > aligned to crypto data unit size, we also want the smallest number of
+> > segments that can make up that aligned number of sectors.
+> 
+> Does the number of physical segments that is calculated have to be exact, or
+> could it be a slight overestimate?  If the purpose of the calculation is just to
+> size scatterlists and to avoid exceeding the hardware limit on the number of
+> physical segments (and at a quick glance that seems to be the purpose, though I
+> didn't look at everything), it seems that a slight overestimate would be okay.
+> 
+> If so, couldn't the number of sectors could simply be rounded down to
+> blk_crypto_bio_sectors_alignment(bio) when blk_bio_segment_split() actually
+> calls bio_split()?  That would be much simpler; why doesn't that work?
+> 
+I was assuming we'd prefer the better bound, but yeah it would be much
+simpler if an overestimate was alright.
 
-#define for_each_clear_bit_reverse(bit, addr, size)
-    for ((bit) = find_last_zero_bit((addr), (size))
-          (bit) < (size);
-          (bit) = find_prev_zero_bit((addr), (size), (bit)))
-
-If we implement the above macro only with find_last_zero_bit,
-I think there is no way without adding any additional variable to finish loop.
-But I don't want to add additional variable to sustain same format
-with for_each_clear_bit,
-That's why i decide to implement find_prev_*_bit series.
-
-I don't know it's correct thinking or biased. Am I wrong?
-
->
-> >
-> > and the for_each traverse routine prevent above case by returning size
-> > (nbits) using find_next_bit.
-> > So, for compatibility and the same expected return value like next traversing,
-> > I think we need to find_prev_*_bit routine. if my understanding is correct.
-> >
-> >
-> > >  I think this patch has some good catches. We definitely need to implement
-> > > find_last_zero_bit(), as it is used by fs/ufs, and their local implementation is not optimal.
-> > >
-> > > We also should consider adding reverse traversing macros based on find_last_*_bit(),
-> > > if there are proposed users.
-> >
-> > Not only this, I think 'steal_from_bitmap_to_front' can be improved
-> > using ffind_prev_zero_bit
-> > like
-> >
-> > diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> > index af0013d3df63..9debb9707390 100644
-> > --- a/fs/btrfs/free-space-cache.c
-> > +++ b/fs/btrfs/free-space-cache.c
-> > @@ -2372,7 +2372,6 @@ static bool steal_from_bitmap_to_front(struct
-> > btrfs_free_space_ctl *ctl,
-> >   u64 bitmap_offset;
-> >   unsigned long i;
-> >   unsigned long j;
-> > - unsigned long prev_j;
-> >   u64 bytes;
-> >
-> >   bitmap_offset = offset_to_bitmap(ctl, info->offset);
-> > @@ -2388,20 +2387,15 @@ static bool steal_from_bitmap_to_front(struct
-> > btrfs_free_space_ctl *ctl,
-> >   return false;
-> >
-> >   i = offset_to_bit(bitmap->offset, ctl->unit, info->offset) - 1;
-> > - j = 0;
-> > - prev_j = (unsigned long)-1;
-> > - for_each_clear_bit_from(j, bitmap->bitmap, BITS_PER_BITMAP) {
-> > - if (j > i)
-> > - break;
-> > - prev_j = j;
-> > - }
-> > - if (prev_j == i)
-> > + j = find_prev_zero_bit(bitmap->bitmap, BITS_PER_BITMAP, i);
->
-> This one may be implemented with find_last_zero_bit() as well:
->
-> unsigned log j = find_last_zero_bit(bitmap, BITS_PER_BITMAP);
-> if (j <= i || j >= BITS_PER_BITMAP)
->         return false;
->
-Actually, in that code, we don't need to check the bit after i.
-Originally, if my understanding is correct, former code tries to find
-the last 0 bit before i.
-and if all bits are fully set before i, it use next one as i + 1
-
-that's why i think the if condition should be
-   if (j >= i)
-
-But above condition couldn't the discern the case when all bits are
-fully set before i.
-Also, I think we don't need to check the bit after i and In this case,
-find_prev_zero_bit which
-specifies the start point is clear to show the meaning of the code.
-
-
-> I believe the latter version is better because find_last_*_bit() is simpler in
-> implementation (and partially exists), has less parameters, and therefore
-> simpler for users, and doesn't introduce functionality duplication.
->
-> The only consideration I can imagine to advocate find_prev*() is the performance
-> advantage in the scenario when we know for sure that first N bits of
-> bitmap are all
-> set/clear, and we can bypass traversing that area. But again, in this
-> case we can pass the
-> bitmap address with the appropriate offset, and stay with find_last_*()
->
-> > +
-> > + if (j == i)
-> >   return false;
-> >
-> > - if (prev_j == (unsigned long)-1)
-> > + if (j == BITS_PER_BITMAP)
-> >   bytes = (i + 1) * ctl->unit;
-> >   else
-> > - bytes = (i - prev_j) * ctl->unit;
-> > + bytes = (i - j) * ctl->unit;
-> >
-> >   info->offset -= bytes;
-> >   info->bytes += bytes;
-> >
-> > Thanks.
-> >
-> > HTH
-> > Levi.
-
-Thanks but
+I'll look through the users of that estimate to try to gauge better
+whether overestimating is ok to do (although if someone can already
+authoritatively say that it's ok/not ok to overestimate, that would be
+awesome too :)).
+> - Eric
