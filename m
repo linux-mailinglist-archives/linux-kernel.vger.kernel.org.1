@@ -2,102 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435B22CBF39
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0576D2CBF3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730205AbgLBOLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:11:52 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:34811 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728194AbgLBOLv (ORCPT
+        id S1730264AbgLBOMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:12:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730211AbgLBOMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:11:51 -0500
-Received: by mail-wr1-f68.google.com with SMTP id k14so4142842wrn.1;
-        Wed, 02 Dec 2020 06:11:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VFmvo9qAPDBPuqmhfbmjzQYI5Z9eFTcq3dsoBi3Wl9w=;
-        b=QCOmxSWOTiFtxi3oURXsJazbEgKZ6uL+LCQOY3XTsCmJOONtUSVxa39+uWo5Oi82pz
-         ZhfdNl3+XubxZGAXnzkmUkng34O1O3KkLOybvxr/BQo/5TcqlpWO59I2FI82RqveNoDZ
-         geNUDn0tn5S2VrYqYGMrvc7qgtcbVHMzzHEO/mjkh06AHfgEEFu8RHV2pDtgDZRItqkG
-         276qT5BmxhrrpmJ/H0XibbPWcZALV0WpUqLIxRD4tV6ei8bsRWy6ihWuLZ8sHwSgDHsJ
-         hfDylvt1yesGJ5uGT53RE3rM2XUz9SQfLNg8liLdxvBaq9fhuphXYtbUws4V+pG7tpyB
-         Re+Q==
-X-Gm-Message-State: AOAM531Chkm/PyeXT9QMR9WgS0Bsl3W15EKJuuGk87GAkG7Q+Kr6ehBF
-        fnCQiMKYk+LR4cQKcvCRWOU=
-X-Google-Smtp-Source: ABdhPJyjPIEmj2CHj7Ial9lkzZOaHh/npZJoOOgmYWKnG5gPqCZZMyjNJ/pf2mX44pIPPdRc5CbI6Q==
-X-Received: by 2002:a5d:6783:: with SMTP id v3mr3689699wru.45.1606918269807;
-        Wed, 02 Dec 2020 06:11:09 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id q17sm2565999wro.36.2020.12.02.06.11.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 06:11:09 -0800 (PST)
-Date:   Wed, 2 Dec 2020 14:11:07 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v3 16/17] x86/ioapic: export a few functions and data
- structures via io_apic.h
-Message-ID: <20201202141107.covsx4ugipuyl6he@liuwe-devbox-debian-v2>
-References: <20201124170744.112180-1-wei.liu@kernel.org>
- <20201124170744.112180-17-wei.liu@kernel.org>
- <CAHp75Vew+yjUkcfSx33KjhPLriH6wrYWixAtn9mASRFqe4+c+Q@mail.gmail.com>
+        Wed, 2 Dec 2020 09:12:44 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DABC0613D6;
+        Wed,  2 Dec 2020 06:12:04 -0800 (PST)
+Date:   Wed, 02 Dec 2020 14:12:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606918322;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WPxgew5A6guAqUSSJf4UurbV1iqa02ULtuLbNrRRjs0=;
+        b=uLTGeXSFUY6zjoxteo2I+QaQ42qrkfCzeRD5jWVyMlrsjXiR6fIj+VLdxs736WfPBwbXkZ
+        wDQ6PQIzw9V9r87tamMOPJ4IMwYia/BKt7cTvDz/oM5FY2CP+pP4G+z5bJBFN+GD7yawnd
+        Eeyeipars7kOjd7KNPc69wC0/OCE34XY2+O63d2h0rte8A54RPUdzHBU6akvA9eanNsj7F
+        pACim58NuJS4OBnLUAjfWXu229JxiGvRt4HfXevaDRu7pcF1by+uThKRiuGMJyRy2YbL9I
+        RAgcxiFu2lL+jvVHVb9j/0/FhckbcHCLdgXFwJ4MrS9lQgGtuH1pOLXNaYcBwA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606918322;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WPxgew5A6guAqUSSJf4UurbV1iqa02ULtuLbNrRRjs0=;
+        b=/hbuwHM36SIqirK508Ltv2wWCjlCmA7l+rVTVEsi2MTQCl1vcFVkHBlyjyycJT/meyQSm0
+        LmV/n9XKsA+9nYAA==
+From:   "tip-bot2 for Sven Schnelle" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/entry] entry_Add_enter_from_user_mode_wrapper
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201201142755.31931-4-svens@linux.ibm.com>
+References: <20201201142755.31931-4-svens@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vew+yjUkcfSx33KjhPLriH6wrYWixAtn9mASRFqe4+c+Q@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Message-ID: <160691832190.3364.4719149142476327785.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 12:26:12PM +0200, Andy Shevchenko wrote:
-> On Wed, Nov 25, 2020 at 1:46 AM Wei Liu <wei.liu@kernel.org> wrote:
-> >
-> > We are about to implement an irqchip for IO-APIC when Linux runs as root
-> > on Microsoft Hypervisor. At the same time we would like to reuse
-> > existing code as much as possible.
-> >
-> > Move mp_chip_data to io_apic.h and make a few helper functions
-> > non-static.
-> 
-> > +struct mp_chip_data {
-> > +       struct list_head irq_2_pin;
-> > +       struct IO_APIC_route_entry entry;
-> > +       int trigger;
-> > +       int polarity;
-> > +       u32 count;
-> > +       bool isa_irq;
-> > +};
-> 
-> Since I see only this patch I am puzzled why you need to have this in
-> the header?
-> Maybe a couple of words in the commit message to elaborate?
+The following commit has been merged into the core/entry branch of tip:
 
-Andy, does the following answer your question?
+Commit-ID:     96e2fbccd0fc806364a964fdf072bfc858a66109
+Gitweb:        https://git.kernel.org/tip/96e2fbccd0fc806364a964fdf072bfc858a66109
+Author:        Sven Schnelle <svens@linux.ibm.com>
+AuthorDate:    Tue, 01 Dec 2020 15:27:53 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 02 Dec 2020 15:07:57 +01:00
 
-"The chip_data stashed in IO-APIC's irq chip is mp_chip_data.  The
-implementation of Microsoft Hypevisor's IO-APIC irqdomain would like to
-manipulate that data structure, so move it to io_apic.h as well."
+entry_Add_enter_from_user_mode_wrapper
 
-If that's good enough, I can add it to the commit message.
+To be called from architecture specific code if the combo interfaces are
+not suitable. It simply calls __enter_from_user_mode(). This way
+__enter_from_user_mode will still be inlined because it is declared static
+__always_inline.
 
-Wei.
+[ tglx: Amend comments and move it to a different location in the header ]
+
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201201142755.31931-4-svens@linux.ibm.com
+
+---
+ include/linux/entry-common.h | 24 +++++++++++++++++++++++-
+ kernel/entry/common.c        | 16 ++++++----------
+ 2 files changed, 29 insertions(+), 11 deletions(-)
+
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index a6e98b4..da60980 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -102,6 +102,27 @@ static inline __must_check int arch_syscall_enter_tracehook(struct pt_regs *regs
+ #endif
+ 
+ /**
++ * enter_from_user_mode - Establish state when coming from user mode
++ *
++ * Syscall/interrupt entry disables interrupts, but user mode is traced as
++ * interrupts enabled. Also with NO_HZ_FULL RCU might be idle.
++ *
++ * 1) Tell lockdep that interrupts are disabled
++ * 2) Invoke context tracking if enabled to reactivate RCU
++ * 3) Trace interrupts off state
++ *
++ * Invoked from architecture specific syscall entry code with interrupts
++ * disabled. The calling code has to be non-instrumentable. When the
++ * function returns all state is correct and interrupts are still
++ * disabled. The subsequent functions can be instrumented.
++ *
++ * This is invoked when there is architecture specific functionality to be
++ * done between establishing state and enabling interrupts. The caller must
++ * enable interrupts before invoking syscall_enter_from_user_mode_work().
++ */
++void enter_from_user_mode(struct pt_regs *regs);
++
++/**
+  * syscall_enter_from_user_mode_prepare - Establish state and enable interrupts
+  * @regs:	Pointer to currents pt_regs
+  *
+@@ -110,7 +131,8 @@ static inline __must_check int arch_syscall_enter_tracehook(struct pt_regs *regs
+  * function returns all state is correct, interrupts are enabled and the
+  * subsequent functions can be instrumented.
+  *
+- * This handles lockdep, RCU (context tracking) and tracing state.
++ * This handles lockdep, RCU (context tracking) and tracing state, i.e.
++ * the functionality provided by enter_from_user_mode().
+  *
+  * This is invoked when there is extra architecture specific functionality
+  * to be done between establishing state and handling user mode entry work.
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index dff07b4..17b1e03 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -10,16 +10,7 @@
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/syscalls.h>
+ 
+-/**
+- * __enter_from_user_mode - Establish state when coming from user mode
+- *
+- * Syscall/interrupt entry disables interrupts, but user mode is traced as
+- * interrupts enabled. Also with NO_HZ_FULL RCU might be idle.
+- *
+- * 1) Tell lockdep that interrupts are disabled
+- * 2) Invoke context tracking if enabled to reactivate RCU
+- * 3) Trace interrupts off state
+- */
++/* See comment for enter_from_user_mode() in entry-common.h */
+ static __always_inline void __enter_from_user_mode(struct pt_regs *regs)
+ {
+ 	arch_check_user_regs(regs);
+@@ -33,6 +24,11 @@ static __always_inline void __enter_from_user_mode(struct pt_regs *regs)
+ 	instrumentation_end();
+ }
+ 
++void noinstr enter_from_user_mode(struct pt_regs *regs)
++{
++	__enter_from_user_mode(regs);
++}
++
+ static inline void syscall_enter_audit(struct pt_regs *regs, long syscall)
+ {
+ 	if (unlikely(audit_context())) {
