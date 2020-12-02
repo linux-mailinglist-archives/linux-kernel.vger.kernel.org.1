@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5E02CB533
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384FB2CB539
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728649AbgLBGo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 01:44:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:59208 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728212AbgLBGo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:44:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D93530E;
-        Tue,  1 Dec 2020 22:44:12 -0800 (PST)
-Received: from [10.163.83.48] (unknown [10.163.83.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F3E8B3F718;
-        Tue,  1 Dec 2020 22:44:07 -0800 (PST)
-Subject: Re: [RFC V2 0/3] mm/hotplug: Pre-validate the address range with
- platform
-To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <7ffb5199-1b39-3f35-32cd-b59f71cc00c5@arm.com>
-Date:   Wed, 2 Dec 2020 12:14:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728720AbgLBGqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 01:46:37 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:41172 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728629AbgLBGqg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 01:46:36 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B26PMR4141582;
+        Wed, 2 Dec 2020 06:45:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=tar26mco4FLDQKq0VgON1HN/qAhgxk4k9zgSvINewiI=;
+ b=pAEZyTq1F7ltfbdIzl1sZRgocTWUqkzluzgsDyuPlE4gEdZXo8EFUVsvIqkZthvcyoDf
+ orBeyacWPdNdZR39AaWgoXM5torc065SHY1Mg9UIT6UlxCCANuIxIVzEs9uN7F87l1/v
+ PpP/jsvIctqefsLLSJ2ZxKkmveWGZxeSj0OasryOGq2YgAyYzZ7gHUMcQnuyFVPE62ix
+ ZfAlVAOp7X3evQvl5I6GLec9Rqyn5HdBHTDwbUfuUQDJvrHjdRgkZzDVfvqdV/ZSYGHH
+ ixy7xIABkejAjSvWwVxJ82JECMqmjUUNDmXn2Yv7I2SaHb+g2DmVUuG+mdREugFNklPm tA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 353dyqph96-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Dec 2020 06:45:44 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B26QIru004916;
+        Wed, 2 Dec 2020 06:45:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 3540atp7b3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Dec 2020 06:45:44 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B26jdpl021459;
+        Wed, 2 Dec 2020 06:45:39 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Dec 2020 22:45:38 -0800
+Date:   Wed, 2 Dec 2020 09:45:31 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] pstore: Tidy up an error check
+Message-ID: <X8c4C2q6qaZ8qX6L@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020039
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The crypto_alloc_comp() function never returns NULL, it returns error
+pointers on error.
 
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ fs/pstore/platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 11/30/20 8:59 AM, Anshuman Khandual wrote:
-> This series adds a mechanism allowing platforms to weigh in and prevalidate
-> incoming address range before proceeding further with the memory hotplug.
-> This helps prevent potential platform errors for the given address range,
-> down the hotplug call chain, which inevitably fails the hotplug itself.
-> 
-> This mechanism was suggested by David Hildenbrand during another discussion
-> with respect to a memory hotplug fix on arm64 platform.
-> 
-> https://lore.kernel.org/linux-arm-kernel/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
-> 
-> This mechanism focuses on the addressibility aspect and not [sub] section
-> alignment aspect. Hence check_hotplug_memory_range() and check_pfn_span()
-> have been left unchanged. Wondering if all these can still be unified in
-> an expanded memhp_range_allowed() check, that can be called from multiple
-> memory hot add and remove paths.
-> 
-> This series applies on v5.10-rc6 and has been slightly tested on arm64.
-> But looking for some early feedback here.
-> 
-> Changes in RFC V2:
-> 
-> Incorporated all review feedbacks from David.
-> 
-> - Added additional range check in __segment_load() on s390 which was lost
-> - Changed is_private init in pagemap_range()
-> - Moved the framework into mm/memory_hotplug.c
-> - Made arch_get_addressable_range() a __weak function
-> - Renamed arch_get_addressable_range() as arch_get_mappable_range()
-> - Callback arch_get_mappable_range() only handles range requiring linear mapping
-> - Merged multiple memhp_range_allowed() checks in register_memory_resource()
-> - Replaced WARN() with pr_warn() in memhp_range_allowed()
-> - Replaced error return code ERANGE with E2BIG
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index 36714df37d5d..b7a2a2a31dee 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -315,7 +315,7 @@ static void allocate_buf_for_compression(void)
+ 	}
+ 
+ 	ctx = crypto_alloc_comp(zbackend->name, 0, 0);
+-	if (IS_ERR_OR_NULL(ctx)) {
++	if (IS_ERR(ctx)) {
+ 		kfree(buf);
+ 		pr_err("crypto_alloc_comp('%s') failed: %ld\n", zbackend->name,
+ 		       PTR_ERR(ctx));
+-- 
+2.29.2
 
-There is one build failure with MEMORY_HOTPLUG=y and MEMORY_HOTREMOVE=n.
-There are warnings on arm64 and s390 platforms when built with W=1 due
-to lack of prototypes required with -Wmissing-prototypes. I have fixed
-all these problems for the next iteration when there is broad agreement
-on the overall approach.
