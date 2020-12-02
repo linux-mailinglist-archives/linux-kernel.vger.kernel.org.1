@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E612CB7C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7AB2CB7C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387975AbgLBIvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:51:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36632 "EHLO mail.kernel.org"
+        id S2387990AbgLBIwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:52:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387721AbgLBIvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:51:51 -0500
+        id S2387721AbgLBIwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 03:52:02 -0500
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
@@ -24,9 +24,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
         Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] x86/sev-es: Fix not using prefixes.nbytes for loop over prefixes.bytes
-Date:   Wed,  2 Dec 2020 17:51:04 +0900
-Message-Id: <160689906460.3084105.3134729514028168934.stgit@devnote2>
+Subject: [PATCH 2/3] x86/uprobes: Fix not using prefixes.nbytes for loop over prefixes.bytes
+Date:   Wed,  2 Dec 2020 17:51:16 +0900
+Message-Id: <160689907597.3084105.18019089399087866918.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <160689905099.3084105.7880450206184269465.stgit@devnote2>
 References: <160689905099.3084105.7880450206184269465.stgit@devnote2>
@@ -43,24 +43,34 @@ insn.prefixes.bytes[] when a same prefix is repeated, we have to
 check whether the insn.prefixes.bytes[i] != 0 and i < 4 instead
 of insn.prefixes.nbytes.
 
-Fixes: 25189d08e516 ("x86/sev-es: Add support for handling IOIO exceptions")
+Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
+Cc: stable@vger.kernel.org
 Reported-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/x86/boot/compressed/sev-es.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/uprobes.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index 954cb2702e23..6a7a3027c9ac 100644
---- a/arch/x86/boot/compressed/sev-es.c
-+++ b/arch/x86/boot/compressed/sev-es.c
-@@ -36,7 +36,7 @@ static bool insn_has_rep_prefix(struct insn *insn)
- 
- 	insn_get_prefixes(insn);
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 3fdaa042823d..bb3ea3705b99 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -257,7 +257,7 @@ static bool is_prefix_bad(struct insn *insn)
+ {
+ 	int i;
  
 -	for (i = 0; i < insn->prefixes.nbytes; i++) {
 +	for (i = 0; insn->prefixes.bytes[i] && i < 4; i++) {
- 		insn_byte_t p = insn->prefixes.bytes[i];
+ 		insn_attr_t attr;
  
- 		if (p == 0xf2 || p == 0xf3)
+ 		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
+@@ -746,7 +746,7 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+ 	 * Intel and AMD behavior differ in 64-bit mode: Intel ignores 66 prefix.
+ 	 * No one uses these insns, reject any branch insns with such prefix.
+ 	 */
+-	for (i = 0; i < insn->prefixes.nbytes; i++) {
++	for (i = 0; insn->prefixes.bytes[i] && i < 4; i++) {
+ 		if (insn->prefixes.bytes[i] == 0x66)
+ 			return -ENOTSUPP;
+ 	}
 
