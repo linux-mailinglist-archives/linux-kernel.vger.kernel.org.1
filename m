@@ -2,288 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431262CB2A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1F22CB2AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgLBCHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 21:07:13 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8488 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727353AbgLBCHN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 21:07:13 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cm2Pv2hnHzhlcJ;
-        Wed,  2 Dec 2020 10:06:11 +0800 (CST)
-Received: from [127.0.0.1] (10.57.60.129) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Wed, 2 Dec 2020
- 10:06:24 +0800
-Subject: Re: [PATCH drm/hisilicon v2 1/4] drm/hisilicon: Assgin local variable
- to drm_device
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <kraxel@redhat.com>,
-        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>
-References: <1606823754-52451-1-git-send-email-tiantao6@hisilicon.com>
- <1606823754-52451-2-git-send-email-tiantao6@hisilicon.com>
- <fc644426-67db-7128-5f73-8630373ab0e8@suse.de>
- <3f235e08-bb58-be41-8e92-ccd2dfd68b33@huawei.com>
- <389548c9-772c-d86b-700e-032f7d7bde1f@suse.de>
- <51e7e774-6795-8eeb-6701-b1cccc4c6199@huawei.com>
- <5093b12f-11e8-0cf0-d9e7-7ec9b52e364d@suse.de>
-From:   "tiantao (H)" <tiantao6@huawei.com>
-Message-ID: <9cd5daa7-c934-c834-f2f6-f9b7f7e6b590@huawei.com>
-Date:   Wed, 2 Dec 2020 10:06:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728069AbgLBCOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 21:14:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727353AbgLBCOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 21:14:01 -0500
+Date:   Tue, 1 Dec 2020 18:13:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606875201;
+        bh=ie0BsMb3jjIKlAJ/vjltbOgdzImfWHE3oCw8CU6F4ek=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Z9iWUGmp06RyOi1Vc5GpmICkIoIfk/iTu+38PSABQxzl6iGDOGzmLvEGFpB0vPGNq
+         3CYxOoaBGolf+YNwXetNqRYt1243itVPYNA7OKUAlZ3H+aQ89eAqklxrN8QnyHMgoT
+         8R2b84K2t7NA0U8/A1Vw3NALSM44Y7/pn3Ijk4j0=
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, evgreen@chromium.org, cpratapa@codeaurora.org,
+        bjorn.andersson@linaro.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/2] net: ipa: add support for inline checksum
+ offload
+Message-ID: <20201201181319.41091a37@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201201004143.27569-3-elder@linaro.org>
+References: <20201201004143.27569-1-elder@linaro.org>
+        <20201201004143.27569-3-elder@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <5093b12f-11e8-0cf0-d9e7-7ec9b52e364d@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.57.60.129]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 30 Nov 2020 18:41:43 -0600 Alex Elder wrote:
+> Starting with IPA v4.5, IP payload checksum offload is implemented
+> differently.
+> 
+> Prior to v4.5, the IPA hardware appends an rmnet_map_dl_csum_trailer
+> structure to each packet if checksum offload is enabled in the
+> download direction (modem->AP).  In the upload direction (AP->modem)
+> a rmnet_map_ul_csum_header structure is prepended before each sent
+> packet.
+> 
+> Starting with IPA v4.5, checksum offload is implemented using a
+> single new rmnet_map_v5_csum_header structure which sits between
+> the QMAP header and the packet data.  The same header structure
+> is used in both directions.
+> 
+> The new header contains a header type (CSUM_OFFLOAD); a checksum
+> flag; and a flag indicating whether any other headers follow this
+> one.  The checksum flag indicates whether the hardware should
+> compute (and insert) the checksum on a sent packet.  On a received
+> packet the checksum flag indicates whether the hardware confirms the
+> checksum value in the payload is correct.
+> 
+> To function, the rmnet driver must also add support for this new
+> "inline" checksum offload.  The changes implementing this will be
+> submitted soon.
 
+We don't usually merge half of a feature. Why not wait until all
+support is in place?
 
-在 2020/12/1 21:44, Thomas Zimmermann 写道:
-> Hi
-> 
-> Am 01.12.20 um 14:05 schrieb tiantao (H):
->>
->>
->> 在 2020/12/1 20:36, Thomas Zimmermann 写道:
->>> Hi
->>>
->>> Am 01.12.20 um 13:26 schrieb tiantao (H):
->>>>
->>>>
->>>> 在 2020/12/1 20:17, Thomas Zimmermann 写道:
->>>>> Hi
->>>>>
->>>>> Am 01.12.20 um 12:55 schrieb Tian Tao:
->>>>>> Assign local variable to struct drm_device *dev because they are
->>>>>> used multiple times within a function.
->>>>>>
->>>>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->>>>>> ---
->>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
->>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 30 
->>>>>> ++++++++++++------------
->>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +-
->>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
->>>>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 ++++---
->>>>>>   5 files changed, 23 insertions(+), 21 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c 
->>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>>>>> index ea962ac..096eea9 100644
->>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
->>>>>> @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs 
->>>>>> hibmc_crtc_helper_funcs = {
->>>>>>   int hibmc_de_init(struct hibmc_drm_private *priv)
->>>>>>   {
->>>>>> -    struct drm_device *dev = priv->dev;
->>>>>> +    struct drm_device *dev = &priv->dev;
->>>>>>       struct drm_crtc *crtc = &priv->crtc;
->>>>>>       struct drm_plane *plane = &priv->primary_plane;
->>>>>>       int ret;
->>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c 
->>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>>>>> index d845657..dd9fadc 100644
->>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
->>>>>> @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops = {
->>>>>>   static int hibmc_kms_init(struct hibmc_drm_private *priv)
->>>>>>   {
->>>>>> +    struct drm_device *dev = &priv->dev;
->>>>>>       int ret;
->>>>>> -    drm_mode_config_init(priv->dev);
->>>>>> +    drm_mode_config_init(dev);
->>>>>>       priv->mode_config_initialized = true;
->>>>>> -    priv->dev->mode_config.min_width = 0;
->>>>>> -    priv->dev->mode_config.min_height = 0;
->>>>>> -    priv->dev->mode_config.max_width = 1920;
->>>>>> -    priv->dev->mode_config.max_height = 1200;
->>>>>> +    dev->mode_config.min_width = 0;
->>>>>> +    dev->mode_config.min_height = 0;
->>>>>> +    dev->mode_config.max_width = 1920;
->>>>>> +    dev->mode_config.max_height = 1200;
->>>>>> -    priv->dev->mode_config.fb_base = priv->fb_base;
->>>>>> -    priv->dev->mode_config.preferred_depth = 32;
->>>>>> -    priv->dev->mode_config.prefer_shadow = 1;
->>>>>> +    dev->mode_config.fb_base = priv->fb_base;
->>>>>> +    dev->mode_config.preferred_depth = 32;
->>>>>> +    dev->mode_config.prefer_shadow = 1;
->>>>>> -    priv->dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
->>>>>> +    dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
->>>>>>       ret = hibmc_de_init(priv);
->>>>>>       if (ret) {
->>>>>> -        drm_err(priv->dev, "failed to init de: %d\n", ret);
->>>>>> +        drm_err(dev, "failed to init de: %d\n", ret);
->>>>>>           return ret;
->>>>>>       }
->>>>>>       ret = hibmc_vdac_init(priv);
->>>>>>       if (ret) {
->>>>>> -        drm_err(priv->dev, "failed to init vdac: %d\n", ret);
->>>>>> +        drm_err(dev, "failed to init vdac: %d\n", ret);
->>>>>>           return ret;
->>>>>>       }
->>>>>> @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct 
->>>>>> hibmc_drm_private *priv)
->>>>>>   static void hibmc_kms_fini(struct hibmc_drm_private *priv)
->>>>>>   {
->>>>>>       if (priv->mode_config_initialized) {
->>>>>> -        drm_mode_config_cleanup(priv->dev);
->>>>>> +        drm_mode_config_cleanup(&priv->dev);
->>>>>>           priv->mode_config_initialized = false;
->>>>>>       }
->>>>>>   }
->>>>>> @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct 
->>>>>> hibmc_drm_private *priv)
->>>>>>   static int hibmc_hw_map(struct hibmc_drm_private *priv)
->>>>>>   {
->>>>>> -    struct drm_device *dev = priv->dev;
->>>>>> +    struct drm_device *dev = &priv->dev;
->>>>>>       struct pci_dev *pdev = dev->pdev;
->>>>>>       resource_size_t addr, size, ioaddr, iosize;
->>>>>> @@ -258,7 +259,7 @@ static int hibmc_unload(struct drm_device *dev)
->>>>>>   static int hibmc_load(struct drm_device *dev)
->>>>>>   {
->>>>>> -    struct hibmc_drm_private *priv;
->>>>>> +    struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
->>>>>>       int ret;
->>>>>>       priv = drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->>>>>> @@ -267,7 +268,6 @@ static int hibmc_load(struct drm_device *dev)
->>>>>>           return -ENOMEM;
->>>>>>       }
->>>>>>       dev->dev_private = priv;
->>>>>> -    priv->dev = dev;
->>>>>
->>>>> I'm sure this either does not build or does not work. There's a 
->>>>> call to drm_dev_alloc(), which initialized the DRM device. You need 
->>>>> to assign the returned device here. The embedding of dev only work 
->>>>> after you switched to devm_drm_dev_alloc() in the next patch.
->>>>>
->>>>> For the patch at hand, just keep struct hibmc_drm_private.dev as a 
->>>>> pointer and you should be fine.
->>>>>
->>>> Changing drm_device *dev to drm_device dev and using 
->>>> devm_drm_dev_alloc does not easily split into two patches.
->>>> The patch does not compile well on its own, but it will compile fine 
->>>> with patch #2.
->>>> Can patch #1 and patch #2 be combined into a single patch,just like V1.
->>>
->>> Most of the code in this patch does
->>>
->>>    struct drm_device *dev = &priv->dev;
->>>
->>> to get dev as a local variable. Why don't you do
->>>
->>>    struct drm_device *dev = priv->dev;
->>>
->>> ?
->>>
->>> That's all that's really needed.
->>
->> +    priv = devm_drm_dev_alloc(&pdev->dev, &hibmc_driver,
->> +                  struct hibmc_drm_private, dev);
->> devm_drm_dev_alloc function requires parameter 4, dev must be a 
->> non-pointer for it to work. so had to change dev in the 
->> hibmc_drm_private  to non-pointer.
->> This is also the reason to change drm_device *dev to drm_device dev.
-> 
-> Yes, but that's what patch 2 is about. Patch 1 is about simplifying 
-> these pointer dereferences into local variables. For this, all you need is
-> 
->      struct drm_device *dev = priv->dev;
-I'm sorry, I still don't understand what you mean.The latest code on the 
-drm branch looks like this "struct drm_device *dev = priv->dev;"
-If I change the dev of hibmc_drm_private to local variables, I won't be 
-able to assign it like this "struct drm_device *dev = priv->dev;", right?
-> 
-> In patch 2, these lines are then changed to
-> 
->      struct drm_device *dev = &priv->dev;
-> 
-> That makes 2 self-contained patches.
-> 
-> Best regards
-> Thomas
-> 
->>>
->>> Best regards
->>> Thomas
->>>
->>>>> Best regards
->>>>> Thomas
->>>>>
->>>>>>       ret = hibmc_hw_init(priv);
->>>>>>       if (ret)
->>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h 
->>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>>>>> index f310a83..e35353a 100644
->>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>>>>> @@ -37,7 +37,7 @@ struct hibmc_drm_private {
->>>>>>       resource_size_t  fb_size;
->>>>>>       /* drm */
->>>>>> -    struct drm_device  *dev;
->>>>>> +    struct drm_device dev;
->>>>>>       struct drm_plane primary_plane;
->>>>>>       struct drm_crtc crtc;
->>>>>>       struct drm_encoder encoder;
->>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c 
->>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>>>>> index 74e26c2..d35548d 100644
->>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
->>>>>> @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs 
->>>>>> hibmc_encoder_funcs = {
->>>>>>   int hibmc_vdac_init(struct hibmc_drm_private *priv)
->>>>>>   {
->>>>>> -    struct drm_device *dev = priv->dev;
->>>>>> +    struct drm_device *dev = &priv->dev;
->>>>>>       struct hibmc_connector *hibmc_connector = &priv->connector;
->>>>>>       struct drm_encoder *encoder = &priv->encoder;
->>>>>>       struct drm_connector *connector = &hibmc_connector->base;
->>>>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c 
->>>>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>>>>> index 602ece1..e84fb81 100644
->>>>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>>>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
->>>>>> @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
->>>>>>   {
->>>>>>       struct drm_vram_mm *vmm;
->>>>>>       int ret;
->>>>>> -    struct drm_device *dev = hibmc->dev;
->>>>>> +    struct drm_device *dev = &hibmc->dev;
->>>>>>       vmm = drm_vram_helper_alloc_mm(dev,
->>>>>>                          pci_resource_start(dev->pdev, 0),
->>>>>> @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private 
->>>>>> *hibmc)
->>>>>>   void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
->>>>>>   {
->>>>>> -    if (!hibmc->dev->vram_mm)
->>>>>> +    struct drm_device *dev = &hibmc->dev;
->>>>>> +
->>>>>> +    if (!dev->vram_mm)
->>>>>>           return;
->>>>>> -    drm_vram_helper_release_mm(hibmc->dev);
->>>>>> +    drm_vram_helper_release_mm(dev);
->>>>>>   }
->>>>>>   int hibmc_dumb_create(struct drm_file *file, struct drm_device 
->>>>>> *dev,
->>>>>>
->>>>>
->>>>
->>>
->>
-> 
+Do I understand right that it's rmnet that will push the csum header?
+This change seems to only reserve space for it and request the feature
+at init..
 
+> diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+> index 27f543b6780b1..1a4749f7f03e6 100644
+> --- a/drivers/net/ipa/ipa_endpoint.c
+> +++ b/drivers/net/ipa/ipa_endpoint.c
+> @@ -434,33 +434,63 @@ int ipa_endpoint_modem_exception_reset_all(struct ipa *ipa)
+>  static void ipa_endpoint_init_cfg(struct ipa_endpoint *endpoint)
+>  {
+>  	u32 offset = IPA_REG_ENDP_INIT_CFG_N_OFFSET(endpoint->endpoint_id);
+> +	enum ipa_cs_offload_en enabled;
+>  	u32 val = 0;
+>  
+>  	/* FRAG_OFFLOAD_EN is 0 */
+>  	if (endpoint->data->checksum) {
+> +		enum ipa_version version = endpoint->ipa->version;
+> +
+>  		if (endpoint->toward_ipa) {
+>  			u32 checksum_offset;
+>  
+> -			val |= u32_encode_bits(IPA_CS_OFFLOAD_UL,
+> -					       CS_OFFLOAD_EN_FMASK);
+>  			/* Checksum header offset is in 4-byte units */
+>  			checksum_offset = sizeof(struct rmnet_map_header);
+>  			checksum_offset /= sizeof(u32);
+>  			val |= u32_encode_bits(checksum_offset,
+>  					       CS_METADATA_HDR_OFFSET_FMASK);
+> +
+> +			enabled = version < IPA_VERSION_4_5
+> +					? IPA_CS_OFFLOAD_UL
+> +					: IPA_CS_OFFLOAD_INLINE;
+>  		} else {
+> -			val |= u32_encode_bits(IPA_CS_OFFLOAD_DL,
+> -					       CS_OFFLOAD_EN_FMASK);
+> +			enabled = version < IPA_VERSION_4_5
+> +					? IPA_CS_OFFLOAD_DL
+> +					: IPA_CS_OFFLOAD_INLINE;
+>  		}
+>  	} else {
+> -		val |= u32_encode_bits(IPA_CS_OFFLOAD_NONE,
+> -				       CS_OFFLOAD_EN_FMASK);
+> +		enabled = IPA_CS_OFFLOAD_NONE;
+>  	}
+> +	val |= u32_encode_bits(enabled, CS_OFFLOAD_EN_FMASK);
+>  	/* CS_GEN_QMB_MASTER_SEL is 0 */
+>  
+>  	iowrite32(val, endpoint->ipa->reg_virt + offset);
+>  }
+>  
+> +static u32
+> +ipa_qmap_header_size(enum ipa_version version, struct ipa_endpoint *endpoint)
+> +{
+> +	u32 header_size = sizeof(struct rmnet_map_header);
+> +
+> +	/* ipa_assert(endpoint->data->qmap); */
+> +
+> +	/* We might supply a checksum header after the QMAP header */
+> +	if (endpoint->data->checksum) {
+> +		if (version < IPA_VERSION_4_5) {
+> +			size_t size = sizeof(struct rmnet_map_ul_csum_header);
+> +
+> +			/* Checksum header inserted for AP TX endpoints */
+> +			if (endpoint->toward_ipa)
+> +				header_size += size;
+> +		} else {
+> +			/* Checksum header is used in both directions */
+> +			header_size += sizeof(struct rmnet_map_v5_csum_header);
+> +		}
+> +	}
+> +
+> +	return header_size;
+> +}
