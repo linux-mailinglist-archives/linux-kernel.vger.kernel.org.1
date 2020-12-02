@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7C12CC120
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C18E2CC129
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388137AbgLBPnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:43:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726465AbgLBPnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:43:19 -0500
-Date:   Wed, 2 Dec 2020 16:42:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606923758;
-        bh=aUhNkuH56LOzxnKy8d+V6aU/Q/OZ8AX+U6/MUs5PM1o=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WD0K9J57H+NE0nC5DJVX2hRHlL1KNIwbrRNwXchdb0UfE/1saZXIMxGRhEZXrKm3g
-         h3Nn/9aH53asLvG/jmg/nodeqkQ7IAh8szN0Skl7Tp3+9EC2yCYFENuKvq+TLazH/j
-         cFKJUL+f99BN6rfDjofdrAwjFT1rjM/wTXKnY3kQ=
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        sricharan@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH] i2c: qup: Fix error return code in
- qup_i2c_bam_schedule_desc()
-Message-ID: <20201202154235.GA13425@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Zhihao Cheng <chengzhihao1@huawei.com>, agross@kernel.org,
-        bjorn.andersson@linaro.org, sricharan@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-References: <20201116141058.2365043-1-chengzhihao1@huawei.com>
+        id S1727126AbgLBPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:45:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727415AbgLBPpU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:45:20 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC182C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:44:39 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id c198so8506525wmd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:44:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/UHxwpIgzVzreRL98GaE+Nf+yyIwRliZkCO7QwUCEgs=;
+        b=gp6qawBNxj20UMCB0qKbqw35Nh7dgu1epXjabfxPkvif2E6O8pV9qsix7Swhk16rgA
+         7U8GXJzUXnwfKVqYUjOLrtRQrSChgE7vZnpjBYWcRpilLM2szXRG69gSh5qpxe+GDMQ9
+         KDwdufKg3mdvIsTbFSBlskjEK0inIAModCfOxYOJpbqCX4Nt9eX7sJN2jICQ5ByfPXTx
+         629pV2SxxiGkQCnmoA6E0i5XXYqDAJ3dQVWYMse12jjHf8G5E/9mMCEcUCiMne2eCFIS
+         97aq1mVCe4qraq5zC1HtXSTmf47MvJ2/dkbIQdZ2PEPjc9OFMWBuVoSbVniM6Z9RX8/T
+         sOCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/UHxwpIgzVzreRL98GaE+Nf+yyIwRliZkCO7QwUCEgs=;
+        b=dhfqBwqyul7iRpo7vlL+AYVqEQfpTxGy4Xb6pkvthIYKyUMMycKNgC+bWeZyeAX0Nx
+         sbDSHQ24CT/oR8h/JBWLxQh9P1K0tC5ioVWfiFE0u7FcAN6Eg0wp0eC9yX2zoljmlJBr
+         PIMWEZ330xIEhGxaOW8YjCecJuyi7d3qsY9BzB6LWo5fWi/iyTPL4pxMGOjoXgHOrH3K
+         8hNaQv2qTEBc6CtOroXs6FF1cSBATBJuu1qDVcMLZaLgbLACF0srSi8Xt7vcoG+URzCL
+         wunP3If/eGqCnMXaa3/eWscAhdJP3i6GRd2zftf0qBEQW8NaXBlSHCN3ni6G7XsHAeMl
+         ad6g==
+X-Gm-Message-State: AOAM531YGSN4S0AVOxo3MDoB3UePvvEToZPGlKXiYg2M+kGkUwlP9De6
+        jn7MrJFdTZnYPAzMgBpCd6K37A==
+X-Google-Smtp-Source: ABdhPJzjZbg91HBzD7xhdNYxZfeVt0A22RkKuj4c+xnN4xgU/POWZiYJcdkezzLJU++VssNAnOmuew==
+X-Received: by 2002:a1c:ddd5:: with SMTP id u204mr3724239wmg.174.1606923878152;
+        Wed, 02 Dec 2020 07:44:38 -0800 (PST)
+Received: from google.com ([2a01:4b00:8523:2d03:5ddd:b7c5:e3c9:e87a])
+        by smtp.gmail.com with ESMTPSA id y7sm2620731wrp.3.2020.12.02.07.44.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 07:44:37 -0800 (PST)
+Date:   Wed, 2 Dec 2020 15:44:35 +0000
+From:   David Brazdil <dbrazdil@google.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     kvmarm@lists.cs.columbia.edu, Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 03/23] arm64: Make cpu_logical_map() take unsigned int
+Message-ID: <20201202154435.qpr7ow53xra3xjkd@google.com>
+References: <20201126155421.14901-1-dbrazdil@google.com>
+ <20201126155421.14901-4-dbrazdil@google.com>
+ <20201126172838.GD38486@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116141058.2365043-1-chengzhihao1@huawei.com>
+In-Reply-To: <20201126172838.GD38486@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 26, 2020 at 05:28:38PM +0000, Mark Rutland wrote:
+> On Thu, Nov 26, 2020 at 03:54:01PM +0000, David Brazdil wrote:
+> > CPU index should never be negative. Change the signature of
+> > (set_)cpu_logical_map to take an unsigned int.
+> > 
+> > Signed-off-by: David Brazdil <dbrazdil@google.com>
+> 
+> Is there a function problem here, or is this just cleanup from
+> inspection?
+> 
+> Core code including the cpuhp_*() callbacks uses an int, so if there's a
+> strong justification to change this, it suggests there's some treewide
+> cleanup that should be done.
+> 
+> I don't have strong feelings on the matter, but I'd like to understand
+> the rationale.
 
---ZPt4rx8FFjLCG7dd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, it's a mess. Marc and I felt that using a uint was less error-prone wrt
+bounds checks. If this gets an int, it still works and only checking the upper
+bound is required. Does that make sense?
 
-On Mon, Nov 16, 2020 at 10:10:58PM +0800, Zhihao Cheng wrote:
-> Fix to return the error code from qup_i2c_change_state()
-> instaed of 0 in qup_i2c_bam_schedule_desc().
->=20
-> Fixes: fbf9921f8b35d9b2 ("i2c: qup: Fix error handling")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+David
 
-Applied to for-current, thanks!
-
-
---ZPt4rx8FFjLCG7dd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/HteoACgkQFA3kzBSg
-KbYUpw//aaOCAfpGYH0kZiqPABqobS+1lx9rRp3Vakdiv6JkFccrshdD6si9mlMU
-zKa+yaxYYA7PQ4oczNcKk4Tl+IrcEEY+p9jVCbrXewd1TpYhTCMzJYWqChGKiTE2
-oGI2oGzwCMu5VoRyWBfxe/cyZyGSJF3VlYBmmRPVSNN3KSK54dUArjzgK8Y/nWSn
-lYU8cJ+XuroJBbsBsIrwxtneAH9IJ9w2jSXtze6xrwTbAdXtduelM7kEnUFPexoZ
-3scF+PryMvynxZ+9yFY18njACCwTsJa3WFp8ZuVzwG7StLEs1Mnc6JGnBKVeHEoj
-Z8IrUMCMnK/8tl0aXhYGLZma53hH5bapRWKJMObP4gAUao9shuBYbqmptpJB1hrU
-zgqqxyWSwQ9Rp595QI2G7WHQVXm3k2k4ptWITp587CxBb6T4V5I/4IXnJ3w3mNKM
-vt5Z/ih8x3mZaYOdrTOpXQJt52ZEbgSjyNl7hQhUrtCsH2bmHwtVbS3QY3QJZEFH
-IWG79zjc7yQfWH7Al01VBX6GNyO6EWyL/MR8LP7uWRbDLTWmIgtrAcVpCJy8uK+w
-/NjvDYlj7QbhiCbq2RpuRtuz/8Y8kqEMi1Id7nYrDLsQmUp1IqNhuH9lC3wte7KY
-vuGfFf7rLTMzHEuHOOSSMKGLY9DEIEadYUyaP54+2Ep9sd/67hQ=
-=9RPF
------END PGP SIGNATURE-----
-
---ZPt4rx8FFjLCG7dd--
