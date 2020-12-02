@@ -2,94 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9072CB257
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FDE2CB266
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgLBB3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 20:29:14 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:10354 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727748AbgLBB3N (ORCPT
+        id S1727870AbgLBBjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 20:39:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727096AbgLBBjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:29:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
-  s=amazon201209; t=1606872553; x=1638408553;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:mime-version:content-transfer-encoding:subject;
-  bh=6uQon/BDh41ppN5GvD7f9z1OblxFV9nsodeQ2f7UCM8=;
-  b=Ps+iLDMBLNv7A0TkILhrm2jqUixnXKMm5F87GTSfgEyH6/K01T4XWLNx
-   cXwIk0VWOJoxQMoxoF2n/Ep5jt0gb6VWK5ZTy+E+j/k2WX3jQ+Ir+b1T2
-   uDKEi4YxEKtCX+GwfdjD+ceTvpA/9kmyqu1rwVfODZUGVsj4Amx6fxIpH
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.78,385,1599523200"; 
-   d="scan'208";a="69920108"
-Subject: Re: [PATCH] iommu/hyper-v: Fix panic on a host without the 15-bit APIC ID
- support
-Thread-Topic: [PATCH] iommu/hyper-v: Fix panic on a host without the 15-bit APIC ID support
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 02 Dec 2020 01:28:25 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 6B7FBA02E2;
-        Wed,  2 Dec 2020 01:28:21 +0000 (UTC)
-Received: from EX13D08UEE002.ant.amazon.com (10.43.62.92) by
- EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 2 Dec 2020 01:28:20 +0000
-Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
- EX13D08UEE002.ant.amazon.com (10.43.62.92) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 2 Dec 2020 01:28:20 +0000
-Received: from EX13D08UEE001.ant.amazon.com ([10.43.62.126]) by
- EX13D08UEE001.ant.amazon.com ([10.43.62.126]) with mapi id 15.00.1497.006;
- Wed, 2 Dec 2020 01:28:20 +0000
-From:   "Woodhouse, David" <dwmw@amazon.co.uk>
-To:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "decui@microsoft.com" <decui@microsoft.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-CC:     "sthemmin@microsoft.com" <sthemmin@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Tianyu.Lan@microsoft.com" <Tianyu.Lan@microsoft.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-Thread-Index: AQHWyESU8Wh/35CKPEa9TIPiCA4xtanjBEuA
-Date:   Wed, 2 Dec 2020 01:28:20 +0000
-Message-ID: <eba320d980578ff37685967f8cafa5cf3ecb48e2.camel@amazon.co.uk>
-References: <20201202004510.1818-1-decui@microsoft.com>
-In-Reply-To: <20201202004510.1818-1-decui@microsoft.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.161.174]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A329C9F40A52B649A5E7C2D7B41E30A1@amazon.com>
+        Tue, 1 Dec 2020 20:39:01 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCB5C0613CF;
+        Tue,  1 Dec 2020 17:38:21 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cm1nk12lyz9sVl;
+        Wed,  2 Dec 2020 12:38:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606873099;
+        bh=SbDrqvHmNU+7sLlQ9flvOc2UKJ3kLdEy5wt51QQ+3DY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fhcmCTOoHg3PrG5J06IrIgyy3nmG863Ke3dEyNoW0YvbY3UnCVBqq/uekuCBzqIF8
+         yswQEUYSfQzmFhYi90W3MvFCR46w5t74uEJn9HdDFMwWWWrLKBx0XDdxE0/ivAiQkG
+         M9vehRFo/31P2SzVo0SAPyhbTUpjNMeNslY3QjdOaPNQsnX4zejgDKkNduWZXEtyRn
+         tUalso9Ox7usdBY+Bh2Utzjsdu2l3bnJbI/AnaMucxQS59rc8siqqXWpmpdzW7TOFz
+         F/4H8KePLIgOJ9vdUhM+7RjG1GIsNk0oAYJ7OypDDoKFooIfbHupb64GUT9nMUcc8l
+         opkrU5+FZHYcA==
+Date:   Wed, 2 Dec 2020 12:38:16 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20201202123816.5f3a9743@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/wa_Yzs8HfPUZ7fGukU2BnR2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTAxIGF0IDE2OjQ1IC0wODAwLCBEZXh1YW4gQ3VpIHdyb3RlOg0KPiBU
-aGUgY29tbWl0IGYzNmE3NGI5MzQ1YSBpdHNlbGYgaXMgZ29vZCwgYnV0IGl0IGNhdXNlcyBhIHBh
-bmljIGluIGENCj4gTGludXggVk0gdGhhdCBydW5zIG9uIGEgSHlwZXItViBob3N0IHRoYXQgZG9l
-c24ndCBoYXZlIHRoZSAxNS1iaXQNCj4gRXh0ZW5kZWQgQVBJQyBJRCBzdXBwb3J0Og0KPiAgICAg
-a2VybmVsIEJVRyBhdCBhcmNoL3g4Ni9rZXJuZWwvYXBpYy9pb19hcGljLmM6MjQwOCENCj4gDQo+
-IFRoaXMgaGFwcGVucyBiZWNhdXNlIHRoZSBIeXBlci1WIGlvYXBpY19pcl9kb21haW4gKHdoaWNo
-IGlzIGRlZmluZWQgaW4NCj4gZHJpdmVycy9pb21tdS9oeXBlcnYtaW9tbXUuYykgY2FuIG5vdCBi
-ZSBmb3VuZC4gRml4IHRoZSBwYW5pYyBieQ0KPiBwcm9wZXJseSBjbGFpbWluZyB0aGUgb25seSBJ
-L08gQVBJQyBlbXVsYXRlZCBieSBIeXBlci1WLg0KPiANCj4gQ2M6IERhdmlkIFdvb2Rob3VzZSA8
-ZHdtd0BhbWF6b24uY28udWs+DQo+IENjOiBWaXRhbHkgS3V6bmV0c292IDx2a3V6bmV0c0ByZWRo
-YXQuY29tPg0KPiBGaXhlczogZjM2YTc0YjkzNDVhICgieDg2L2lvYXBpYzogVXNlIEkvTy1BUElD
-IElEIGZvciBmaW5kaW5nIGlycWRvbWFpbiwgbm90IGluZGV4IikNCj4gU2lnbmVkLW9mZi1ieTog
-RGV4dWFuIEN1aSA8ZGVjdWlAbWljcm9zb2Z0LmNvbT4NCg0KT29wcywgYXBvbG9naWVzIGZvciBt
-aXNzaW5nIHRoYXQuDQoNClJldmlld2VkLWJ5OiBEYXZpZCBXb29kaG91c2UgPGR3bXdAYW1hem9u
-LmNvLnVrPg0KCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRyZSAoTG9uZG9uKSBMdGQuIFJlZ2lz
-dGVyZWQgaW4gRW5nbGFuZCBhbmQgV2FsZXMgd2l0aCByZWdpc3RyYXRpb24gbnVtYmVyIDA0NTQz
-MjMyIHdpdGggaXRzIHJlZ2lzdGVyZWQgb2ZmaWNlIGF0IDEgUHJpbmNpcGFsIFBsYWNlLCBXb3Jz
-aGlwIFN0cmVldCwgTG9uZG9uIEVDMkEgMkZBLCBVbml0ZWQgS2luZ2RvbS4KCgo=
+--Sig_/wa_Yzs8HfPUZ7fGukU2BnR2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+After merging the net-next tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+net/core/xdp.c: In function 'xdp_return_frame_bulk':
+net/core/xdp.c:417:3: error: too few arguments to function '__xdp_return'
+  417 |   __xdp_return(xdpf->data, &xdpf->mem, false);
+      |   ^~~~~~~~~~~~
+net/core/xdp.c:340:13: note: declared here
+  340 | static void __xdp_return(void *data, struct xdp_mem_info *mem, bool=
+ napi_direct,
+      |             ^~~~~~~~~~~~
+
+Caused by commit
+
+  8965398713d8 ("net: xdp: Introduce bulking for xdp tx return path")
+
+interacting with commit
+
+  ed1182dc004d ("xdp: Handle MEM_TYPE_XSK_BUFF_POOL correctly in xdp_return=
+_buff()")
+
+from the bpf tree.
+
+I applied the following merge fix patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 2 Dec 2020 12:33:14 +1100
+Subject: [PATCH] fix up for "xdp: Handle MEM_TYPE_XSK_BUFF_POOL correctly in
+ xdp_return_buff()"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ net/core/xdp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index f2cdacd81d43..3100f9711eae 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -414,7 +414,7 @@ void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+ 	struct xdp_mem_allocator *xa;
+=20
+ 	if (mem->type !=3D MEM_TYPE_PAGE_POOL) {
+-		__xdp_return(xdpf->data, &xdpf->mem, false);
++		__xdp_return(xdpf->data, &xdpf->mem, false, NULL);
+ 		return;
+ 	}
+=20
+--=20
+2.29.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/wa_Yzs8HfPUZ7fGukU2BnR2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/G8AgACgkQAVBC80lX
+0GzoKAf/VhBLkVMWK5Qbkyv2cKPJUXYFJser/bUO+Q3divBH99kXtddLdlVPoFon
+vZSljGFn9Sy52v0Zy99jALhXiLjvfNJZ2kSiSIy9qnB+Oc8cUpo+XBy+x0XL6sHQ
+KCb0xPlfTrmkKANBKbtxnxaPbXkR4+qdYXIGsWCKn89MGvcV/Y+SqQISed3JlS4Y
+3N9epBK3YNWRti//EwAhNbzjMsPRnGNVWcV0Zsr6ir5uiBMpa1/zS05zajOhFOxa
+eDpbO8Fko3ZrPUkQfhX/gXT25oG7Ot4xMH5/N6ZG/sKaG9LB9xr7UND6MXIuUyKz
+vDuEc6NYd6QXdQtmiQIHiLgdgWVSRA==
+=q/7e
+-----END PGP SIGNATURE-----
+
+--Sig_/wa_Yzs8HfPUZ7fGukU2BnR2--
