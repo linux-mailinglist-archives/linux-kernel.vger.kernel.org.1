@@ -2,150 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB7C2CBC2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F802CBC29
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388202AbgLBL5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:57:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729405AbgLBL5o (ORCPT
+        id S1729387AbgLBL5i convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 06:57:38 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2192 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726442AbgLBL5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:57:44 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEF9C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 03:57:04 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id d8so1561396ioc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 03:57:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cCeY5T30/ZjfSVbte8zrwF6m9bsYxmhw2op2/i/S+hk=;
-        b=Vww9jv/7xYol0/yx+O5GXuPAjYE2ZK/2iu17yCICQIn377EmVBPj8bX5D9plVX/P83
-         rgNm91r0jdTwNPhnp8hedFn8xMrxOiSg/wqN0k7NPUUQzwNfgG6nn7KqGB6v4cs4GEhV
-         xJRqXiPl3uvHdHab7AoVGaLmctWo3hLJ5UXNkmvYvC9QN9JC9qKKM8zZn8pr/8Kwrav3
-         1PkWHopunycNfFqxbgpViqHN4L2ik82TvdZiKsPFSmkbmR9in2KJmVt+GmJLrj+078QJ
-         KYZP84XuQ/Uiold75a7RaZN9i47OWwNjXyzyKwYpjMwR+VgDXTiwu/GpCNdf1mHfq/yU
-         A2GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cCeY5T30/ZjfSVbte8zrwF6m9bsYxmhw2op2/i/S+hk=;
-        b=s1MWdcbaIjMXjlqt8dV5+4z4jABItcftFXOdwzmUf/2hoH4vxsy2Q+fiqzOicTRB5k
-         IvKyxspbXlup8tKgmWcnfRAVlA0r95oicw8vzLRpuGRHP5flAvDN3sPxxSOJQn5fLkW9
-         SRHuwFgWyEsnw3pw1lcGj6zl5vxqlnO7CQ4Q/Blt2D0qk1yyh9L7guYXpDr1ARVklW3e
-         wviCjKNLIo5XqY1hOC9XqigqH/HcKcXfhE0Z6mT+WYKpHWf9egcsQO6l6PzzZa655+a5
-         7ziSBQOBuYIHv2XyXQWs5trA0OHFPiJFHAu1DJS5znk+LyvJ1mbx4yjmm1pfJNi1Pgs8
-         gihQ==
-X-Gm-Message-State: AOAM532tYv8wsz1woeuhw2/oQB+nr+FKw4xjYbdKRixJawG81x20P74e
-        dNMVq3qZFHog2rgsfgz79+nyU8kDINegdGCJbAvesg==
-X-Google-Smtp-Source: ABdhPJxwGXgWYmXQR1g64OoUroc8Iz4Bfn87HawyehbTd3kJCuBl+zB57hM5RAFqyDTtU6bYsCzS5wufzk2x4I8L0UY=
-X-Received: by 2002:a02:354a:: with SMTP id y10mr1818092jae.126.1606910223366;
- Wed, 02 Dec 2020 03:57:03 -0800 (PST)
+        Wed, 2 Dec 2020 06:57:38 -0500
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CmHTJ0gSgz67GZG;
+        Wed,  2 Dec 2020 19:55:00 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 2 Dec 2020 12:56:55 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2106.002;
+ Wed, 2 Dec 2020 12:56:55 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
+Subject: RE: [PATCH v3 04/11] ima: Move ima_reset_appraise_flags() call to
+ post hooks
+Thread-Topic: [PATCH v3 04/11] ima: Move ima_reset_appraise_flags() call to
+ post hooks
+Thread-Index: AQHWuAxk5SBMtTsknkm2+R4w/QyBPKnj0s2g
+Date:   Wed, 2 Dec 2020 11:56:55 +0000
+Message-ID: <a401e63a91114daba2037e2b0083101f@huawei.com>
+References: <20201111092302.1589-1-roberto.sassu@huawei.com>
+ <20201111092302.1589-5-roberto.sassu@huawei.com>
+In-Reply-To: <20201111092302.1589-5-roberto.sassu@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.96.108]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20201201071632.68471-1-98.arpi@gmail.com> <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
- <e10ef8d3-f22b-db10-3784-c94ee425af46@gmail.com> <20201202094408.GW4077@smile.fi.intel.com>
-In-Reply-To: <20201202094408.GW4077@smile.fi.intel.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 2 Dec 2020 19:56:51 +0800
-Message-ID: <CABVgOS=hrfma2Yq=h2vqOoH1Mz4xSyfDbgkM9EHvMFk=HJkcnQ@mail.gmail.com>
-Subject: Re: [PATCH v3] lib: Convert test_hexdump.c to KUnit
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 6:06 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Wed, Dec 02, 2020 at 09:51:19AM +0530, Arpitha Raghunandan wrote:
-> > On 01/12/20 4:36 pm, Andy Shevchenko wrote:
-> > > On Tue, Dec 1, 2020 at 9:21 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> ...
->
-> > >> I ran both the original and converted tests as is to produce the
-> > >> output for success of the test in the two cases. I also ran these
-> > >> tests with a small modification to show the difference in the output
-> > >> for failure of the test in both cases. The modification I made is:
-> > >>  static const char * const test_data_4_le[] __initconst = {
-> > >> -       "7bdb32be", "b293180a", "24c4ba70", "9b34837d",
-> > >> +       "7bdb32be", "b293180a", "24c4ba70", "9b3483d",
-> > >>
-> > >> The difference in outputs can be seen here:
-> > >> https://gist.github.com/arpi-r/38f53a3c65692bf684a6bf3453884b6e
-> > >
-> > > Looks pretty much good, what I'm sad to see is the absence of the test
-> > > statistics. Any ideas if we can get it back?
-> > >
-> >
-> > I could again include variable total_tests as was in the original test.
-> > Would that be fine?
->
-> What I;m talking about is the output. How it will be implemented (using the
-> same variable or differently) is up to you. So the point is I want to see the
-> statistics of success/total at the end.
->
-> I think this should be done in KUNIT rather than in the individual test cases.
+> From: Roberto Sassu
+> Sent: Wednesday, November 11, 2020 10:23 AM
+> ima_inode_setxattr() and ima_inode_removexattr() hooks are called
+> before an
+> operation is performed. Thus, ima_reset_appraise_flags() should not be
+> called there, as flags might be unnecessarily reset if the operation is
+> denied.
+> 
+> This patch introduces the post hooks ima_inode_post_setxattr() and
+> ima_inode_post_removexattr(), removes ima_inode_removexattr() and
+> adds the
+> call to ima_reset_appraise_flags() in the new functions.
 
-I tend to agree here that this really is something for KUnit. At the
-moment, the tools/testing/kunit/kunit.py script will parse the kernel
-log and generate these sorts of statistics. I know that needing to run
-it through a script might seem like a step backwards, but there's no
-formal place for statistics in the KTAP specification[1] being worked
-on to standardise kselftest/kunit output formats. Note that there are
-other parsers for TAP-like formats which are being used with KUnit
-results, so systems like LAVA could also sum up these statistics. It's
-also possible, as Arpitha alluded to, to have the test dump them out
-as a comment.
+Removing ima_inode_removexattr() is not correct. We should still prevent
+that security.ima is removed when CAP_SYS_ADMIN is not set. I will fix
+this in the next version.
 
-This won't actually work for this test as-is, though, as the KUnit
-version is running as a single giant test case (so KUnit believes that
-1/1 tests have passed, rather than having any more-detailed
-statistics). It looks like there are a few ways to split it up a bit
-which would make it neater (a test each for the for() loops in
-test_hexdump_init() seems sensible to me), but at the moment, there's
-not really a way of programmatically generating test cases which KUnit
-then counts
+Roberto
 
-The "Parameterised Tests"[2] work Arpitha has been working on ought to
-go some way to helping here, though it won't solve this completely in
-this initial version. The problem there is that parameterised tests
-are not reported individually in a way the kunit.py parser can report
-cleanly, yet, so it'll still only be counted as one test until that's
-changed (though, at least, that shouldn't require any test-specific
-work).
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
 
-My suggestion for the ultimate state of the test would be:
-- Split up the test into separate KUnit tests for the different
-"categories" of tests: (e.g., test_hexdump_set,
-test_hexdump_overflow_set_ascii, etc)
-- Replace the for loops in test_hexdump_init() with parameters, so
-that KUnit is aware of the original runs.
-- Once KUnit and the tooling supports it, these will be reported as
-subtests. (In the meantime, the results will be listed individually,
-commented out)
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  fs/xattr.c                            |  2 ++
+>  include/linux/ima.h                   | 19 +++++++++++++++----
+>  security/integrity/ima/ima_appraise.c | 22 +++++++++++++++-------
+>  security/security.c                   |  4 +---
+>  4 files changed, 33 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/xattr.c b/fs/xattr.c
+> index cd7a563e8bcd..149b8cf5f99f 100644
+> --- a/fs/xattr.c
+> +++ b/fs/xattr.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/namei.h>
+>  #include <linux/security.h>
+>  #include <linux/evm.h>
+> +#include <linux/ima.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/export.h>
+>  #include <linux/fsnotify.h>
+> @@ -474,6 +475,7 @@ __vfs_removexattr_locked(struct dentry *dentry,
+> const char *name,
+> 
+>  	if (!error) {
+>  		fsnotify_xattr(dentry);
+> +		ima_inode_post_removexattr(dentry, name);
+>  		evm_inode_post_removexattr(dentry, name);
+>  	}
+> 
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index ac3d82f962f2..19a775fa2ba5 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -150,7 +150,12 @@ extern bool is_ima_appraise_enabled(void);
+>  extern void ima_inode_post_setattr(struct dentry *dentry);
+>  extern int ima_inode_setxattr(struct dentry *dentry, const char
+> *xattr_name,
+>  		       const void *xattr_value, size_t xattr_value_len);
+> -extern int ima_inode_removexattr(struct dentry *dentry, const char
+> *xattr_name);
+> +extern void ima_inode_post_setxattr(struct dentry *dentry,
+> +				    const char *xattr_name,
+> +				    const void *xattr_value,
+> +				    size_t xattr_value_len);
+> +extern void ima_inode_post_removexattr(struct dentry *dentry,
+> +				       const char *xattr_name);
+>  #else
+>  static inline bool is_ima_appraise_enabled(void)
+>  {
+> @@ -170,10 +175,16 @@ static inline int ima_inode_setxattr(struct dentry
+> *dentry,
+>  	return 0;
+>  }
+> 
+> -static inline int ima_inode_removexattr(struct dentry *dentry,
+> -					const char *xattr_name)
+> +static inline void ima_inode_post_setxattr(struct dentry *dentry,
+> +					   const char *xattr_name,
+> +					   const void *xattr_value,
+> +					   size_t xattr_value_len)
+> +{
+> +}
+> +
+> +static inline void ima_inode_post_removexattr(struct dentry *dentry,
+> +					      const char *xattr_name)
+>  {
+> -	return 0;
+>  }
+>  #endif /* CONFIG_IMA_APPRAISE */
+> 
+> diff --git a/security/integrity/ima/ima_appraise.c
+> b/security/integrity/ima/ima_appraise.c
+> index 8361941ee0a1..77c01f50425e 100644
+> --- a/security/integrity/ima/ima_appraise.c
+> +++ b/security/integrity/ima/ima_appraise.c
+> @@ -574,21 +574,29 @@ int ima_inode_setxattr(struct dentry *dentry,
+> const char *xattr_name,
+>  	if (result == 1) {
+>  		if (!xattr_value_len || (xvalue->type >= IMA_XATTR_LAST))
+>  			return -EINVAL;
+> -		ima_reset_appraise_flags(d_backing_inode(dentry),
+> -			xvalue->type == EVM_IMA_XATTR_DIGSIG);
+>  		result = 0;
+>  	}
+>  	return result;
+>  }
+> 
+> -int ima_inode_removexattr(struct dentry *dentry, const char *xattr_name)
+> +void ima_inode_post_setxattr(struct dentry *dentry, const char
+> *xattr_name,
+> +			     const void *xattr_value, size_t xattr_value_len)
+> +{
+> +	const struct evm_ima_xattr_data *xvalue = xattr_value;
+> +	int result;
+> +
+> +	result = ima_protect_xattr(dentry, xattr_name, xattr_value,
+> +				   xattr_value_len);
+> +	if (result == 1)
+> +		ima_reset_appraise_flags(d_backing_inode(dentry),
+> +			xvalue->type == EVM_IMA_XATTR_DIGSIG);
+> +}
+> +
+> +void ima_inode_post_removexattr(struct dentry *dentry, const char
+> *xattr_name)
+>  {
+>  	int result;
+> 
+>  	result = ima_protect_xattr(dentry, xattr_name, NULL, 0);
+> -	if (result == 1) {
+> +	if (result == 1)
+>  		ima_reset_appraise_flags(d_backing_inode(dentry), 0);
+> -		result = 0;
+> -	}
+> -	return result;
+>  }
+> diff --git a/security/security.c b/security/security.c
+> index a28045dc9e7f..fc43f45938b4 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1309,6 +1309,7 @@ void security_inode_post_setxattr(struct dentry
+> *dentry, const char *name,
+>  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>  		return;
+>  	call_void_hook(inode_post_setxattr, dentry, name, value, size,
+> flags);
+> +	ima_inode_post_setxattr(dentry, name, value, size);
+>  	evm_inode_post_setxattr(dentry, name, value, size);
+>  }
+> 
+> @@ -1339,9 +1340,6 @@ int security_inode_removexattr(struct dentry
+> *dentry, const char *name)
+>  	ret = call_int_hook(inode_removexattr, 1, dentry, name);
+>  	if (ret == 1)
+>  		ret = cap_inode_removexattr(dentry, name);
+> -	if (ret)
+> -		return ret;
+> -	ret = ima_inode_removexattr(dentry, name);
+>  	if (ret)
+>  		return ret;
+>  	return evm_inode_removexattr(dentry, name);
+> --
+> 2.27.GIT
 
-Of course, it'll take a while before all of those KUnit pieces are in
-place. I personally think that a good compromise would be to just do
-the first of these for now, which would make kunit_tool give at least
-a 4/4 rather than 1/1 result. Then, once the parameterised testing
-work is merged (and perhaps the tooling fixes are finished), the tests
-could be updated to take advantage of that.
-
-Cheres,
--- David
-
-[1]: https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/
-[2]: https://lore.kernel.org/linux-kselftest/20201116054035.211498-1-98.arpi@gmail.com/
