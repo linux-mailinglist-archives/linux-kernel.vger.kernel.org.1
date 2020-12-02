@@ -2,142 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDED2CB8A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF782CB8AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbgLBJWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:22:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
+        id S1729267AbgLBJXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:23:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729120AbgLBJWH (ORCPT
+        with ESMTP id S1728238AbgLBJXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:22:07 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB61C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:21:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2rFcSRuZVvEch9aYPi7pOkDWiBpD4eppOVgEsD2/az4=; b=Jt+ZX7bbz7Oowba4Sts2LEHA6B
-        ZD2RVUwVFtstKpb5TesHgPli/NAm3UrxUQBYBIP5gn8HOWLH+UxezCx/Q1pDf6CXpZSbCBieXX1Zl
-        OL7w3aMhwaogf5bz/oRL7gv1xvAJRV8nuorEZ4DMUX3buaqVJh75dWBNO0GoMS3z10X863xD2Tkgf
-        6ou2VYSAJtKx7loJuGoyre/qMbgc9/ODcOT3veg+txZfnqVtoSAq1H0u6WCln9Bdp5yEQNJzCFGBG
-        RzP8M15AheNn2bNNXmrsULDSiiMRMm2kzrk1yinKUKXKkmY89tsCXwy5LJBC59WVvzCXWJQ5LedQU
-        GjINtmBw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkOK8-00022E-7u; Wed, 02 Dec 2020 09:21:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 947A03059DD;
-        Wed,  2 Dec 2020 10:21:16 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 803E12C87A73E; Wed,  2 Dec 2020 10:21:16 +0100 (CET)
-Date:   Wed, 2 Dec 2020 10:21:16 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201202092116.GA3040@hirez.programming.kicks-ass.net>
-References: <CAHk-=whSdxfCW3YpoZafPaCD_DQsuxFWMKLyYFsdGWL2wu9haQ@mail.gmail.com>
- <dcdb13e3-36a0-031d-6ec3-3ab5ee4a69cb@de.ibm.com>
- <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
- <20201201110724.GL3092@hirez.programming.kicks-ass.net>
- <20201201144644.GF1437@paulmck-ThinkPad-P72>
- <20201201145519.GY2414@hirez.programming.kicks-ass.net>
- <20201201181506.GM3092@hirez.programming.kicks-ass.net>
- <20201201185737.GA93208@C02TD0UTHF1T.local>
- <20201201191441.GW3040@hirez.programming.kicks-ass.net>
- <20201201191856.GD8316@osiris>
+        Wed, 2 Dec 2020 04:23:22 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A42C0613D4;
+        Wed,  2 Dec 2020 01:22:36 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id k14so2728705wrn.1;
+        Wed, 02 Dec 2020 01:22:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZwrjU6762QSJwiWh0r8/mVMOyaJCyDaBwDy1dg3d6Is=;
+        b=BBa+/wYaigbPVikShx/N9TYS3+S8E6FW3coJHXiUOFz2RFdhVF+ZVIm7Htrt8//kfe
+         7+gkNYAoxad3xbeivbEuhUQZRFTrDtcps9Usn0XHPmiXxfnKvoBhEy28GSkqambtabzS
+         qKpJSqq/2pEo/P0y+X54ulGylWlb1fhitPLQeCIGMkHxg50zKk3Sx/W9+IoLR9DmD6dZ
+         l2EyNA0MExEmMAk8Rym0E89OcioCIy4ryg1ZCWZxFNi8SKP/yevuoKVLbxGlMy0rj/9r
+         LZ/UlvLS/ZMQEd/Aarl57kQujQXwQ3hDSMSTCsKM90L60PUx28WYGus1BfZdO0OZ2Q36
+         DhnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZwrjU6762QSJwiWh0r8/mVMOyaJCyDaBwDy1dg3d6Is=;
+        b=GMkr6/xWNg91WddU7mIW28NLGqLXru0Ea8oF6mIEBX62Zu6kLsZLDgwVRXIDqI1kOD
+         Bq/Dn8Ua4RGY9fYm1L313GEtNB1LUairyajkEXWJue3FLKFZSI6nI38UD9N6Tr1VJkQw
+         Qgo607ERAIdwp1uH1IjO7LYpyIkz/3fHlx+wfQIFYcH7AFNQp4r1HjiI8ifLWM5Iqcgj
+         Ny3uZaQlRlWGSlOCPziU8oc+P/84JrR2DliM0R+CFGc8Rg/KSi1h36YIelc+iEfRirUD
+         MkTLbRmtsC8R7aSnjKe+G9vG437Nehgb9qhpdJMUnUs8IQocbqIz1skoseZkaurB3MDM
+         OYPQ==
+X-Gm-Message-State: AOAM533gwEQJIz+BgQAVuR/7R/CryV3r8oHB2VWeB4KBkfuXe6blKRHw
+        VYuZ5TEOB7+4Nc72LiQwiEAX/fBAWYWmCg==
+X-Google-Smtp-Source: ABdhPJxwnwXt20YrRHzg9cLM1lQNBJ6tLPQlYKRtVv5ZPXbPVDACngcnWlB6WqxmtOuW08Mr2lggoA==
+X-Received: by 2002:adf:93e6:: with SMTP id 93mr2177456wrp.197.1606900954124;
+        Wed, 02 Dec 2020 01:22:34 -0800 (PST)
+Received: from andrea.corp.microsoft.com (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
+        by smtp.gmail.com with ESMTPSA id e27sm1535936wrc.9.2020.12.02.01.22.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 01:22:33 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Subject: [PATCH v2 0/7] Drivers: hv: vmbus: More VMBus-hardening changes
+Date:   Wed,  2 Dec 2020 10:22:07 +0100
+Message-Id: <20201202092214.13520-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201191856.GD8316@osiris>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 08:18:56PM +0100, Heiko Carstens wrote:
+Hi all,
 
-> Is there a reason why this should be considered broken?
+This is v2 of [1], integrating feedback from Juan and Wei and adding
+patch 4/7 (after Juan's suggestion).  Changelogs are in the patches.
 
-AFAICT this is good.
+Thanks,
+  Andrea
 
-> diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-> index 26bb0603c5a1..92beb1444644 100644
-> --- a/arch/s390/kernel/entry.S
-> +++ b/arch/s390/kernel/entry.S
-> @@ -763,12 +763,7 @@ ENTRY(io_int_handler)
->  	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
->  	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
->  	jo	.Lio_restore
-> -#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
-> -	tmhh	%r8,0x300
-> -	jz	1f
->  	TRACE_IRQS_OFF
-> -1:
-> -#endif
->  	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
->  .Lio_loop:
->  	lgr	%r2,%r11		# pass pointer to pt_regs
-> @@ -791,12 +786,7 @@ ENTRY(io_int_handler)
->  	TSTMSK	__LC_CPU_FLAGS,_CIF_WORK
->  	jnz	.Lio_work
->  .Lio_restore:
-> -#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
-> -	tm	__PT_PSW(%r11),3
-> -	jno	0f
->  	TRACE_IRQS_ON
-> -0:
-> -#endif
->  	mvc	__LC_RETURN_PSW(16),__PT_PSW(%r11)
->  	tm	__PT_PSW+1(%r11),0x01	# returning to user ?
->  	jno	.Lio_exit_kernel
-> @@ -976,12 +966,7 @@ ENTRY(ext_int_handler)
->  	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
->  	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
->  	jo	.Lio_restore
-> -#if IS_ENABLED(CONFIG_TRACE_IRQFLAGS)
-> -	tmhh	%r8,0x300
-> -	jz	1f
->  	TRACE_IRQS_OFF
-> -1:
-> -#endif
->  	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
->  	lgr	%r2,%r11		# pass pointer to pt_regs
->  	lghi	%r3,EXT_INTERRUPT
+[1] https://lkml.kernel.org/r/20201118143649.108465-1-parri.andrea@gmail.com
 
-OK, so with a little help from s390/PoO and Sven, the code removed skips
-the TRACE_IRQS_OFF when IRQs were enabled in the old PSW (the previous
-context).
+Andrea Parri (Microsoft) (7):
+  Drivers: hv: vmbus: Initialize memory to be sent to the host
+  Drivers: hv: vmbus: Avoid double fetch of msgtype in
+    vmbus_on_msg_dpc()
+  Drivers: hv: vmbus: Avoid double fetch of payload_size in
+    vmbus_on_msg_dpc()
+  Drivers: hv: vmbus: Copy the hv_message object in vmbus_on_msg_dpc()
+  Drivers: hv: vmbus: Avoid use-after-free in vmbus_onoffer_rescind()
+  Drivers: hv: vmbus: Resolve race condition in vmbus_onoffer_rescind()
+  Drivers: hv: vmbus: Do not allow overwriting
+    vmbus_connection.channels[]
 
-That sounds entirely the right thing. Irrespective of what the previous
-IRQ state was, the current state is off.
+ drivers/hv/channel.c      |  4 +--
+ drivers/hv/channel_mgmt.c | 53 +++++++++++++++++++++++++++------------
+ drivers/hv/hyperv_vmbus.h |  2 +-
+ drivers/hv/vmbus_drv.c    | 43 ++++++++++++++++++-------------
+ include/linux/hyperv.h    |  1 +
+ 5 files changed, 67 insertions(+), 36 deletions(-)
 
-> diff --git a/arch/s390/kernel/idle.c b/arch/s390/kernel/idle.c
-> index 2b85096964f8..5bd8c1044d09 100644
-> --- a/arch/s390/kernel/idle.c
-> +++ b/arch/s390/kernel/idle.c
-> @@ -123,7 +123,6 @@ void arch_cpu_idle_enter(void)
->  void arch_cpu_idle(void)
->  {
->  	enabled_wait();
-> -	raw_local_irq_enable();
->  }
-
-Currently arch_cpu_idle() is defined as to return with IRQs enabled,
-however, the very first thing we do when we return is
-raw_local_irq_disable(), so this change is harmless.
-
-It is also the direction I've been arguing for elsewhere in this thread.
-So I'm certainly not complaining.
+-- 
+2.25.1
 
