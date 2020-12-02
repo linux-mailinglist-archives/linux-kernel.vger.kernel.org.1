@@ -2,76 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292482CB202
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E0E2CB212
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgLBBDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 20:03:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59698 "EHLO
+        id S1727818AbgLBBHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 20:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgLBBDK (ORCPT
+        with ESMTP id S1726556AbgLBBHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:03:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8390CC0613CF;
-        Tue,  1 Dec 2020 17:02:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=CnZlcJ2NJuUYVP4Jp6vy9aksSEdE5MotOzqos0MteEY=; b=BUdr7GD8HsLc9m6HVRB4ATPMEz
-        huoj+5e3VLs4OLQ6y5VaPfOkH/IKjbOcjUvpulwhKCzscn4JQ/MxqT+UmAZ9/bsAN5HnryoBiZ5z5
-        k8IPITKsrzKc1j1ns0iHmcUy7V521OTsLMr+vsvOSSWPpEP0G/duan/w/0m4z6j4kE2sqr0ua6aOm
-        tbGAws3jEE30zwM9bl+brGuF6ixG1yQSeiF/fjdT4qOXzJADA5beXveeqfUpNDjBEvlM4Xd11IlGJ
-        LCsBPJOLiVYgmkzCA6TUgxwFH6fOB1zbG9tOTX8BnZKjz947gGkHuhNKV+G5MyA5cyK9A5Se/6HVm
-        oBe29Kcg==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkGXF-0008Sb-3Y; Wed, 02 Dec 2020 01:02:28 +0000
-Subject: Re: [PATCH] gconfig: avoid use of hard coded colors for rows
-To:     Ebrahim Byagowi <ebrahim@gnu.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201123213314.GA25149@gnu.org> <20201123215143.GA21824@gnu.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <67b44d49-d23c-fab0-e165-cc84817562af@infradead.org>
-Date:   Tue, 1 Dec 2020 17:02:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 1 Dec 2020 20:07:34 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B26C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 17:06:48 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id z24so162518oto.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 17:06:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TzeqoxtSCwOZivYVrn0z0SfSqZzaISmAjmKpXvYn4l8=;
+        b=Cq+cR4c3OVPQaxrFJOVz30dXDnWjBJhnqGAs7L4dBRSGcXSq1EGarExWt50WSDI+jU
+         wERxtHTA1hQ1kfv+jxVNjegv7iBnwOOgEtK4Utc/9KOPLX0e/7Cl0OISHVFMTmSiKlO9
+         X5e5kvkstbdL6D7TtAXRuTh8EMFeKWr2adcrpUf/YILoB3Aw8JrPQbS+x3Mld6M/8k9h
+         /4sxuqAmsdt989NxClZRE2Nvh3iRmZcCl5iNBMiTrGSb4IQiDbqhBcxyvFvNE+ecLrWZ
+         FQl2EVg2FvzdPMsvQb6U25FTNMeEQy1UhbS9FmNVReC/sZEr95iO34DYQPSPrgo1FLR8
+         ahww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TzeqoxtSCwOZivYVrn0z0SfSqZzaISmAjmKpXvYn4l8=;
+        b=shAILvbH+ORaEfrE3r5RMHvD2Z46RNPMVxntItlBm8H2eX7kzy8fGL017xl1sP86LY
+         4LgDtbL0s7zTeazEmrfB3juvmFTPOihb8GUI2wNfSM1r1gMp6q0iNfo2TnCKM5X2N+Ar
+         offUki2z/PwzlvuP6s6MV+cr1p1F1FpPwm0JyerhRDAUuZ2KSI0asNZS96J573jNV4bR
+         02IooS6DXGjS5xZE7PKZ0Pa4G0NKP7h7wirgCWbzAn2yPr580CZvmw3655A+krxfdD1M
+         7YEBDdJS9NqqPlO4gR0FNqfjy4lJKWTK+gzeP1WXiwcdMd1EpUX3gNy6yRz3CdO3SO6+
+         IX4w==
+X-Gm-Message-State: AOAM531dbchHlBeMunsVjsu4UmRsy1beqYmOd9Ea4oXfx5um3stC837+
+        fJss6s3DDncaZABZrH3sisa6H37mW3lASQ==
+X-Google-Smtp-Source: ABdhPJzW0j1aFxBws0ERK/8CeaFHALeC03HBtEzgnq+tJMwDS0p6UG67m1ITDLHOt9ZWR9XKJq46RQ==
+X-Received: by 2002:a9d:323:: with SMTP id 32mr136962otv.309.1606871207574;
+        Tue, 01 Dec 2020 17:06:47 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w70sm17223oiw.29.2020.12.01.17.06.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 17:06:46 -0800 (PST)
+Date:   Tue, 1 Dec 2020 19:06:45 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: db845c: Enable gpi_dma0 node
+Message-ID: <X8bopaei69fbdcSs@builder.lan>
+References: <20201201042520.2116271-1-vkoul@kernel.org>
+ <20201201042520.2116271-2-vkoul@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201123215143.GA21824@gnu.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201201042520.2116271-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/20 1:51 PM, Ebrahim Byagowi wrote:
-> Not an important thing of course just that I was unable to
-> use gconfig on my system with a theme dark is set like [1]
-> and this turns it into [2] without noticable change to the
-> light theme.
+On Mon 30 Nov 22:25 CST 2020, Vinod Koul wrote:
+
+> gpi_dma0 can be used for spi and i2c transfers on db845c, so enable it
 > 
-> I had hit this minor issue also in the past but decided to
-> fix it this time.
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> This isn't the best possible approach as now we have we have
-> a GdkColor -> gchar * -> GdkColor round trip, yet wanted to
-> keep the change small and maybe go for a larger change later
-> if it worths it.
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> index 7cc236575ee2..0653468f26ce 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> @@ -418,6 +418,10 @@ &gcc {
+>  			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>;
+>  };
+>  
+> +&gpi_dma0 {
+> +	status = "okay";
+> +};
+> +
+
+But you're only enabling the gpi, you don't have anything wired to it,
+so why enable it?
+
+I took a look downstream and they have all the i2c and spi nodes with
+their dmas filled out - and the two gpis enabled at all times
+(sdm845.dtsi). Can/should we do the same?
+
+Regards,
+Bjorn
+
+>  &gpu {
+>  	zap-shader {
+>  		memory-region = <&gpu_mem>;
+> -- 
+> 2.26.2
 > 
-> Hope you find it useful also.
-> 
->   [1]: https://i.imgur.com/MJfIkup.png
->   [2]: https://i.imgur.com/lgvod9V.png
-
-Hi,
-
-AFAIK, this makes one known gconfig user.
-I was hoping that we could remove it...
-
-
--- 
-~Randy
-
