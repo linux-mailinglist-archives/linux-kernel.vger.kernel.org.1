@@ -2,131 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E0C2CC396
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0172CC379
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389251AbgLBRXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:23:51 -0500
-Received: from a2.mail.mailgun.net ([198.61.254.61]:28191 "EHLO
-        a2.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389244AbgLBRXv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:23:51 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606929812; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=XCbGtFpkxfX04IDxYSYPabTaVb2FLbxMGt+XuP7RsZE=; b=IR2P9FFWSEUsTpyIUnVH4Glh3ivPFE3eNhESALIr4vQcApmt1EQFe14Cg+78ktJjZ7nvc0+P
- y8gNktioAlUq5pNRXo9rb+JShxT98/MKS6rAdy8EA4pn8j9jwzWLw0q/FgYcimS+HbM1iXEr
- ZIZkpmi/qWKFjnCNFuvlCGAJKGo=
-X-Mailgun-Sending-Ip: 198.61.254.61
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fc7cd7107535c81bab9cb96 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 17:22:57
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0A69AC43467; Wed,  2 Dec 2020 17:22:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 379CFC43461;
-        Wed,  2 Dec 2020 17:22:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 379CFC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: [PATCH v5 2/2] ASoC: qcom: Add support for playback recover after resume
-Date:   Wed,  2 Dec 2020 22:52:28 +0530
-Message-Id: <1606929748-16828-3-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1606929748-16828-1-git-send-email-srivasam@codeaurora.org>
-References: <1606929748-16828-1-git-send-email-srivasam@codeaurora.org>
+        id S2389098AbgLBRWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:22:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:45626 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388999AbgLBRWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:22:53 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71A541396;
+        Wed,  2 Dec 2020 09:22:07 -0800 (PST)
+Received: from ubuntu.arm.com (unknown [10.57.34.77])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 37F543F575;
+        Wed,  2 Dec 2020 09:22:05 -0800 (PST)
+From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com
+Cc:     daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com, nicola.mazzucato@arm.com
+Subject: [PATCH v4 0/4] CPUFreq: Add support for opp-sharing cpus
+Date:   Wed,  2 Dec 2020 17:23:52 +0000
+Message-Id: <20201202172356.10508-1-nicola.mazzucato@arm.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support playback continuation after hard suspend(bypass powerd)
-and resume do regcache sync with component driver pm ops.
+Hi All,
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Tested-by: Steev Klimaszewski <steev@kali.org>
----
- sound/soc/qcom/lpass-platform.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+In this V4 posting I have fixed suggestions on opp/of and have added the
+implementation for scmi-cpufreq driver.
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 0e71899..12764a8 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -827,6 +827,39 @@ static void lpass_platform_pcm_free(struct snd_soc_component *component,
- 	}
- }
- 
-+static int lpass_platform_pcmops_suspend(struct snd_soc_component *component)
-+{
-+	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
-+	struct regmap *map;
-+	unsigned int dai_id = component->id;
-+
-+	if (dai_id == LPASS_DP_RX)
-+		map = drvdata->hdmiif_map;
-+	else
-+		map = drvdata->lpaif_map;
-+
-+	regcache_cache_only(map, true);
-+	regcache_mark_dirty(map);
-+
-+	return 0;
-+}
-+
-+static int lpass_platform_pcmops_resume(struct snd_soc_component *component)
-+{
-+	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
-+	struct regmap *map;
-+	unsigned int dai_id = component->id;
-+
-+	if (dai_id == LPASS_DP_RX)
-+		map = drvdata->hdmiif_map;
-+	else
-+		map = drvdata->lpaif_map;
-+
-+	regcache_cache_only(map, false);
-+	return regcache_sync(map);
-+}
-+
-+
- static const struct snd_soc_component_driver lpass_component_driver = {
- 	.name		= DRV_NAME,
- 	.open		= lpass_platform_pcmops_open,
-@@ -839,6 +872,8 @@ static const struct snd_soc_component_driver lpass_component_driver = {
- 	.mmap		= lpass_platform_pcmops_mmap,
- 	.pcm_construct	= lpass_platform_pcm_new,
- 	.pcm_destruct	= lpass_platform_pcm_free,
-+	.suspend		= lpass_platform_pcmops_suspend,
-+	.resume			= lpass_platform_pcmops_resume,
- 
- };
- 
+This is to support systems where exposed cpu performance controls are more
+fine-grained that the platform's ability to scale cpus independently.
+
+[v4]
+  * Remove unconditional set of opp_table->shared_opp to exclusive
+  * Add implementation for scmi-cpufreq
+  * Change subject
+
+These patches are on top of:
+next-20201201 + Lukasz Luba's patches (waiting for Rafael) [1]
+
+[v3]
+  * Remove proposal for new 'cpu-performance-dependencies' as we instead
+    can reuse the opp table.
+  * Update documentation for devicetree/bindings/opp
+  * Minor changes within opp to support empty opp table
+  * Rework the RFC by adding a second proposal
+
+[v2]
+  * Fix errors when running make dt_binding_check
+  * Improve commit message description for the dt-binding
+  * Add RFC for implementation in cpufreq-core and one of its
+    drivers.
+
+Nicola Mazzucato (3):
+  dt-bindings/opp: Update documentation for opp-shared
+  opp/of: Allow empty opp-table with opp-shared
+  scmi-cpufreq: get opp_shared_cpus from opp-v2 for EM
+
+Sudeep Holla (1):
+  cpufreq: blacklist Arm Vexpress platforms in cpufreq-dt-platdev
+
+ Documentation/devicetree/bindings/opp/opp.txt | 53 +++++++++++++++++++
+ drivers/cpufreq/cpufreq-dt-platdev.c          |  2 +
+ drivers/cpufreq/scmi-cpufreq.c                | 51 ++++++++++++------
+ drivers/opp/of.c                              |  7 ++-
+ 4 files changed, 95 insertions(+), 18 deletions(-)
+
+[1] https://lore.kernel.org/linux-pm/20201124104346.27167-1-lukasz.luba@arm.com/
+
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.27.0
 
