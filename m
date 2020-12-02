@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF112CC68F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABE32CC68C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389746AbgLBTYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:24:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35842 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729212AbgLBTXy (ORCPT
+        id S2388094AbgLBTXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:23:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731046AbgLBTXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Dec 2020 14:23:54 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9961C0613D4;
+        Wed,  2 Dec 2020 11:23:13 -0800 (PST)
 Date:   Wed, 02 Dec 2020 19:23:11 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1606936992;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=B8XJ9h1TijQvfijyamQEM7Xp5vz0MghIfETP+SgoG5s=;
-        b=vs9NXd2H21lrSNQ/24f0AFnGfzpcbsjpHQZfJq/CZtOombuYCeYX9tg+TcDqkHlTlR9qwC
-        xBFN1w3To+hlFlIq6abqyrxbVHb0bgF2nb0lERfSgRLpu8tXZFpbwwczX3JOw6xkgKT1dh
-        DIVx+cn6KcZn3xpZmNd0WTRoGNp+nGJr7cws0avbFC7ZT5FycgAJ6my52LZPg11cIwYrYb
-        02HCJUbUT0cArg+zw8Pp3/fR9xtkZ7O42sxvwAX03IstZCIWYC9PaTSO3cVmGibANeBp6g
-        qKma1vGp1PMzi+WuE/NiOoBDoWFCtdWRBLdxCXjfbAkSYVW5870TqjvJLICTIg==
+        bh=2uYSbI4ZrX/oqDz1/qeQFW85NAzMp5fhWbgXeAc7gtg=;
+        b=aiX4WKGkJgQA6LZzBOLkUGss6JO72UKE3Yf+SBzlMC4QDt8+c0MfZOKy6Zms3DPNp2rBGS
+        ixy11QcNZegWFaPN/90Z9jbcwkfjpa2izo2XKNrYEkf67NMzXjTLk2fKxXh3erartBY6JR
+        PQIEQbBm+kyL/vB6cIc/YbB3qI+33+SQLBRCXVGt5ts1Kpy7Ka4ZezltipD9Boe3FTyCc5
+        9vjZjSZX85OmqtMT65Yb5/u+cTGSs3k6cqQtjeYwWWNKYUc34UjbTOyl8M6qoMQwkNFaY7
+        +/xbRJ1Fk50zpO2pw4wQWWDYvKBb5oad75z0HmuiswPNT+WVbU8FLSeja7tTKA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606936992;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=B8XJ9h1TijQvfijyamQEM7Xp5vz0MghIfETP+SgoG5s=;
-        b=Gy3ieVL4oelNUa6ChjvJ8ZVnchPhuzHoqIxhBWoqRI+oxLCZBf79IG8xrRwsM2utWhlJCL
-        wk+eCw2yXn1npWBg==
+        bh=2uYSbI4ZrX/oqDz1/qeQFW85NAzMp5fhWbgXeAc7gtg=;
+        b=67rsERRmjgEQp67OI28NHad90Sg+K2+1j+rbBaeOHUrs1Bo9in6xrQtkLM3T6AF9XDhBcY
+        sXmHNrRlkkHL3SAQ==
 From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] s390/vtime: Use the generic IRQ entry accounting
+Subject: [tip: irq/core] sched/vtime: Consolidate IRQ time accounting
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201202115732.27827-3-frederic@kernel.org>
-References: <20201202115732.27827-3-frederic@kernel.org>
+In-Reply-To: <20201202115732.27827-4-frederic@kernel.org>
+References: <20201202115732.27827-4-frederic@kernel.org>
 MIME-Version: 1.0
-Message-ID: <160693699179.3364.7706377815520047436.tip-bot2@tip-bot2>
+Message-ID: <160693699155.3364.7611985849129250624.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,129 +61,306 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     2b91ec9f551b56751cde48792f1c0a1130358844
-Gitweb:        https://git.kernel.org/tip/2b91ec9f551b56751cde48792f1c0a1130358844
+Commit-ID:     8a6a5920d3286eb0eae9f36a4ec4fc9df511eccb
+Gitweb:        https://git.kernel.org/tip/8a6a5920d3286eb0eae9f36a4ec4fc9df511eccb
 Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Wed, 02 Dec 2020 12:57:29 +01:00
+AuthorDate:    Wed, 02 Dec 2020 12:57:30 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 02 Dec 2020 20:20:04 +01:00
+CommitterDate: Wed, 02 Dec 2020 20:20:05 +01:00
 
-s390/vtime: Use the generic IRQ entry accounting
+sched/vtime: Consolidate IRQ time accounting
 
-s390 has its own version of IRQ entry accounting because it doesn't
-account the idle time the same way the other architectures do. Only
-the actual idle sleep time is accounted as idle time, the rest of the
-idle task execution is accounted as system time.
+The 3 architectures implementing CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+all have their own version of irq time accounting that dispatch the
+cputime to the appropriate index: hardirq, softirq, system, idle,
+guest... from an all-in-one function.
 
-Make the generic IRQ entry accounting aware of architectures that have
-their own way of accounting idle time and convert s390 to use it.
-
-This prepares s390 to get involved in further consolidations of IRQ
-time accounting.
+Instead of having these ad-hoc versions, move the cputime destination
+dispatch decision to the core code and leave only the actual per-index
+cputime accounting to the architecture.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201202115732.27827-3-frederic@kernel.org
+Link: https://lore.kernel.org/r/20201202115732.27827-4-frederic@kernel.org
 
 ---
- arch/Kconfig                  |  7 ++++++-
- arch/s390/Kconfig             |  1 +
- arch/s390/include/asm/vtime.h |  1 -
- arch/s390/kernel/vtime.c      |  4 ----
- kernel/sched/cputime.c        | 13 ++-----------
- 5 files changed, 9 insertions(+), 17 deletions(-)
+ arch/ia64/kernel/time.c    | 20 +++++++++----
+ arch/powerpc/kernel/time.c | 56 ++++++++++++++++++++++++++-----------
+ arch/s390/kernel/vtime.c   | 45 +++++++++++++++++++++---------
+ include/linux/vtime.h      | 16 ++++-------
+ kernel/sched/cputime.c     | 13 ++++++---
+ 5 files changed, 102 insertions(+), 48 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56b6ccc..0f151b4 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -627,6 +627,12 @@ config HAVE_TIF_NOHZ
- config HAVE_VIRT_CPU_ACCOUNTING
- 	bool
+diff --git a/arch/ia64/kernel/time.c b/arch/ia64/kernel/time.c
+index 7abc5f3..733e0e3 100644
+--- a/arch/ia64/kernel/time.c
++++ b/arch/ia64/kernel/time.c
+@@ -138,12 +138,8 @@ void vtime_account_kernel(struct task_struct *tsk)
+ 	struct thread_info *ti = task_thread_info(tsk);
+ 	__u64 stime = vtime_delta(tsk);
  
-+config HAVE_VIRT_CPU_ACCOUNTING_IDLE
-+	bool
-+	help
-+	  Architecture has its own way to account idle CPU time and therefore
-+	  doesn't implement vtime_account_idle().
+-	if ((tsk->flags & PF_VCPU) && !irq_count())
++	if (tsk->flags & PF_VCPU)
+ 		ti->gtime += stime;
+-	else if (hardirq_count())
+-		ti->hardirq_time += stime;
+-	else if (in_serving_softirq())
+-		ti->softirq_time += stime;
+ 	else
+ 		ti->stime += stime;
+ }
+@@ -156,6 +152,20 @@ void vtime_account_idle(struct task_struct *tsk)
+ 	ti->idle_time += vtime_delta(tsk);
+ }
+ 
++void vtime_account_softirq(struct task_struct *tsk)
++{
++	struct thread_info *ti = task_thread_info(tsk);
 +
- config ARCH_HAS_SCALED_CPUTIME
- 	bool
++	ti->softirq_time += vtime_delta(tsk);
++}
++
++void vtime_account_hardirq(struct task_struct *tsk)
++{
++	struct thread_info *ti = task_thread_info(tsk);
++
++	ti->hardirq_time += vtime_delta(tsk);
++}
++
+ #endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
  
-@@ -641,7 +647,6 @@ config HAVE_VIRT_CPU_ACCOUNTING_GEN
- 	  some 32-bit arches may require multiple accesses, so proper
- 	  locking is needed to protect against concurrent accesses.
+ static irqreturn_t
+diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+index 74efe46..cf3f8db 100644
+--- a/arch/powerpc/kernel/time.c
++++ b/arch/powerpc/kernel/time.c
+@@ -311,12 +311,11 @@ static unsigned long vtime_delta_scaled(struct cpu_accounting_data *acct,
+ 	return stime_scaled;
+ }
  
+-static unsigned long vtime_delta(struct task_struct *tsk,
++static unsigned long vtime_delta(struct cpu_accounting_data *acct,
+ 				 unsigned long *stime_scaled,
+ 				 unsigned long *steal_time)
+ {
+ 	unsigned long now, stime;
+-	struct cpu_accounting_data *acct = get_accounting(tsk);
+ 
+ 	WARN_ON_ONCE(!irqs_disabled());
+ 
+@@ -331,29 +330,30 @@ static unsigned long vtime_delta(struct task_struct *tsk,
+ 	return stime;
+ }
+ 
++static void vtime_delta_kernel(struct cpu_accounting_data *acct,
++			       unsigned long *stime, unsigned long *stime_scaled)
++{
++	unsigned long steal_time;
++
++	*stime = vtime_delta(acct, stime_scaled, &steal_time);
++	*stime -= min(*stime, steal_time);
++	acct->steal_time += steal_time;
++}
++
+ void vtime_account_kernel(struct task_struct *tsk)
+ {
+-	unsigned long stime, stime_scaled, steal_time;
+ 	struct cpu_accounting_data *acct = get_accounting(tsk);
++	unsigned long stime, stime_scaled;
+ 
+-	stime = vtime_delta(tsk, &stime_scaled, &steal_time);
 -
- config HAVE_IRQ_TIME_ACCOUNTING
- 	bool
- 	help
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 4a2a12b..6f1fdcd 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -181,6 +181,7 @@ config S390
- 	select HAVE_RSEQ
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
-+	select HAVE_VIRT_CPU_ACCOUNTING_IDLE
- 	select IOMMU_HELPER		if PCI
- 	select IOMMU_SUPPORT		if PCI
- 	select MODULES_USE_ELF_RELA
-diff --git a/arch/s390/include/asm/vtime.h b/arch/s390/include/asm/vtime.h
-index 3622d4e..fac6a67 100644
---- a/arch/s390/include/asm/vtime.h
-+++ b/arch/s390/include/asm/vtime.h
-@@ -2,7 +2,6 @@
- #ifndef _S390_VTIME_H
- #define _S390_VTIME_H
+-	stime -= min(stime, steal_time);
+-	acct->steal_time += steal_time;
++	vtime_delta_kernel(acct, &stime, &stime_scaled);
  
--#define __ARCH_HAS_VTIME_ACCOUNT
- #define __ARCH_HAS_VTIME_TASK_SWITCH
+-	if ((tsk->flags & PF_VCPU) && !irq_count()) {
++	if (tsk->flags & PF_VCPU) {
+ 		acct->gtime += stime;
+ #ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
+ 		acct->utime_scaled += stime_scaled;
+ #endif
+ 	} else {
+-		if (hardirq_count())
+-			acct->hardirq_time += stime;
+-		else if (in_serving_softirq())
+-			acct->softirq_time += stime;
+-		else
+-			acct->stime += stime;
+-
++		acct->stime += stime;
+ #ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
+ 		acct->stime_scaled += stime_scaled;
+ #endif
+@@ -366,10 +366,34 @@ void vtime_account_idle(struct task_struct *tsk)
+ 	unsigned long stime, stime_scaled, steal_time;
+ 	struct cpu_accounting_data *acct = get_accounting(tsk);
  
- #endif /* _S390_VTIME_H */
+-	stime = vtime_delta(tsk, &stime_scaled, &steal_time);
++	stime = vtime_delta(acct, &stime_scaled, &steal_time);
+ 	acct->idle_time += stime + steal_time;
+ }
+ 
++static void vtime_account_irq_field(struct cpu_accounting_data *acct,
++				    unsigned long *field)
++{
++	unsigned long stime, stime_scaled;
++
++	vtime_delta_kernel(acct, &stime, &stime_scaled);
++	*field += stime;
++#ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
++	acct->stime_scaled += stime_scaled;
++#endif
++}
++
++void vtime_account_softirq(struct task_struct *tsk)
++{
++	struct cpu_accounting_data *acct = get_accounting(tsk);
++	vtime_account_irq_field(acct, &acct->softirq_time);
++}
++
++void vtime_account_hardirq(struct task_struct *tsk)
++{
++	struct cpu_accounting_data *acct = get_accounting(tsk);
++	vtime_account_irq_field(acct, &acct->hardirq_time);
++}
++
+ static void vtime_flush_scaled(struct task_struct *tsk,
+ 			       struct cpu_accounting_data *acct)
+ {
 diff --git a/arch/s390/kernel/vtime.c b/arch/s390/kernel/vtime.c
-index f9f2a11..ebd8e56 100644
+index ebd8e56..5aaa2ca 100644
 --- a/arch/s390/kernel/vtime.c
 +++ b/arch/s390/kernel/vtime.c
-@@ -247,10 +247,6 @@ void vtime_account_kernel(struct task_struct *tsk)
+@@ -222,31 +222,50 @@ void vtime_flush(struct task_struct *tsk)
+ 	S390_lowcore.avg_steal_timer = avg_steal;
+ }
+ 
++static u64 vtime_delta(void)
++{
++	u64 timer = S390_lowcore.last_update_timer;
++
++	S390_lowcore.last_update_timer = get_vtimer();
++
++	return timer - S390_lowcore.last_update_timer;
++}
++
+ /*
+  * Update process times based on virtual cpu times stored by entry.S
+  * to the lowcore fields user_timer, system_timer & steal_clock.
+  */
+ void vtime_account_kernel(struct task_struct *tsk)
+ {
+-	u64 timer;
+-
+-	timer = S390_lowcore.last_update_timer;
+-	S390_lowcore.last_update_timer = get_vtimer();
+-	timer -= S390_lowcore.last_update_timer;
++	u64 delta = vtime_delta();
+ 
+-	if ((tsk->flags & PF_VCPU) && (irq_count() == 0))
+-		S390_lowcore.guest_timer += timer;
+-	else if (hardirq_count())
+-		S390_lowcore.hardirq_timer += timer;
+-	else if (in_serving_softirq())
+-		S390_lowcore.softirq_timer += timer;
++	if (tsk->flags & PF_VCPU)
++		S390_lowcore.guest_timer += delta;
+ 	else
+-		S390_lowcore.system_timer += timer;
++		S390_lowcore.system_timer += delta;
+ 
+-	virt_timer_forward(timer);
++	virt_timer_forward(delta);
  }
  EXPORT_SYMBOL_GPL(vtime_account_kernel);
  
--void vtime_account_irq_enter(struct task_struct *tsk)
--__attribute__((alias("vtime_account_kernel")));
--
--
++void vtime_account_softirq(struct task_struct *tsk)
++{
++	u64 delta = vtime_delta();
++
++	S390_lowcore.softirq_timer += delta;
++
++	virt_timer_forward(delta);
++}
++
++void vtime_account_hardirq(struct task_struct *tsk)
++{
++	u64 delta = vtime_delta();
++
++	S390_lowcore.hardirq_timer += delta;
++
++	virt_timer_forward(delta);
++}
++
  /*
   * Sorted add to a list. List is linear searched until first bigger
   * element is found.
+diff --git a/include/linux/vtime.h b/include/linux/vtime.h
+index 2cdeca0..6c98674 100644
+--- a/include/linux/vtime.h
++++ b/include/linux/vtime.h
+@@ -83,16 +83,12 @@ static inline void vtime_init_idle(struct task_struct *tsk, int cpu) { }
+ #endif
+ 
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+-extern void vtime_account_irq_enter(struct task_struct *tsk);
+-static inline void vtime_account_irq_exit(struct task_struct *tsk)
+-{
+-	/* On hard|softirq exit we always account to hard|softirq cputime */
+-	vtime_account_kernel(tsk);
+-}
++extern void vtime_account_irq(struct task_struct *tsk);
++extern void vtime_account_softirq(struct task_struct *tsk);
++extern void vtime_account_hardirq(struct task_struct *tsk);
+ extern void vtime_flush(struct task_struct *tsk);
+ #else /* !CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
+-static inline void vtime_account_irq_enter(struct task_struct *tsk) { }
+-static inline void vtime_account_irq_exit(struct task_struct *tsk) { }
++static inline void vtime_account_irq(struct task_struct *tsk) { }
+ static inline void vtime_flush(struct task_struct *tsk) { }
+ #endif
+ 
+@@ -105,13 +101,13 @@ static inline void irqtime_account_irq(struct task_struct *tsk) { }
+ 
+ static inline void account_irq_enter_time(struct task_struct *tsk)
+ {
+-	vtime_account_irq_enter(tsk);
++	vtime_account_irq(tsk);
+ 	irqtime_account_irq(tsk);
+ }
+ 
+ static inline void account_irq_exit_time(struct task_struct *tsk)
+ {
+-	vtime_account_irq_exit(tsk);
++	vtime_account_irq(tsk);
+ 	irqtime_account_irq(tsk);
+ }
+ 
 diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index 61ce9f9..2783162 100644
+index 2783162..02163d4 100644
 --- a/kernel/sched/cputime.c
 +++ b/kernel/sched/cputime.c
-@@ -417,23 +417,14 @@ void vtime_task_switch(struct task_struct *prev)
+@@ -417,13 +417,18 @@ void vtime_task_switch(struct task_struct *prev)
  }
  # endif
  
--/*
-- * Archs that account the whole time spent in the idle task
-- * (outside irq) as idle time can rely on this and just implement
-- * vtime_account_kernel() and vtime_account_idle(). Archs that
-- * have other meaning of the idle time (s390 only includes the
-- * time spent by the CPU when it's in low power mode) must override
-- * vtime_account().
-- */
--#ifndef __ARCH_HAS_VTIME_ACCOUNT
- void vtime_account_irq_enter(struct task_struct *tsk)
+-void vtime_account_irq_enter(struct task_struct *tsk)
++void vtime_account_irq(struct task_struct *tsk)
  {
--	if (!in_interrupt() && is_idle_task(tsk))
-+	if (!IS_ENABLED(CONFIG_HAVE_VIRT_CPU_ACCOUNTING_IDLE) &&
-+	    !in_interrupt() && is_idle_task(tsk))
+-	if (!IS_ENABLED(CONFIG_HAVE_VIRT_CPU_ACCOUNTING_IDLE) &&
+-	    !in_interrupt() && is_idle_task(tsk))
++	if (hardirq_count()) {
++		vtime_account_hardirq(tsk);
++	} else if (in_serving_softirq()) {
++		vtime_account_softirq(tsk);
++	} else if (!IS_ENABLED(CONFIG_HAVE_VIRT_CPU_ACCOUNTING_IDLE) &&
++		   is_idle_task(tsk)) {
  		vtime_account_idle(tsk);
- 	else
+-	else
++	} else {
  		vtime_account_kernel(tsk);
++	}
  }
--#endif /* __ARCH_HAS_VTIME_ACCOUNT */
  
  void cputime_adjust(struct task_cputime *curr, struct prev_cputime *prev,
- 		    u64 *ut, u64 *st)
