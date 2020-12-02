@@ -2,158 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEF72CB58D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1402CB594
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728629AbgLBHMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:12:00 -0500
-Received: from mail-eopbgr00105.outbound.protection.outlook.com ([40.107.0.105]:36930
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725912AbgLBHMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:12:00 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cZKWx6zvCNY4ly2RtbAyw//wRfxHHoNRknxMULiJeEuirieNjgBAK62aOf69KYN58NrUe5OLLc8u1V9NnGl7QEfvidPZYw7EtmbTjWBA45pOzDpcg5l3aDbgwgP0QlQp31NYPdbbrOyCCvkSX2Ppuf3wkvVa/VQ7MTgOUh1ULa8m3s8wIILfcbQpWOoL85V0MNbnghMIhY2fGU2CmGrGfd2QLEma45NnCvcf5lRMxw+Iae6unh0lsOUPamXr1Qr+KtrzXEWV+ucwTv1XGNMFCjljod9XaDvjOpphSwrsznJXLHElPKmXmuWnZZumxAoDxn6laNp3NsvUOvJfDuoiig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h9Ff4uluzavrBanx+ZMKSgz0DRRyVzNpX56BZOKaD1E=;
- b=l1/NSZtV4LkxAspRuLmpO760PtTkGP6Htsrn54tn+BmqB7zRmrmeXhtnW7iSa7uAnwtnpwclOQ/m9mL/MYhhBeLvpiPjuyBVKAo0hXfGeE3v+/LWG6J5ayModmkvvZNFE001Pce8VnEPoEGg8a8WscC83PnxCT74jNygcoz/SykEcz5r39396MTVotPWz4hMqJFEsNVvmmbJxzEBw3k0UyLFtcwYBkG9gJDQVqp4yf4eMPIt+OV6LO1/DKOu8bs1XcUkKPV6L1eLueq4dgAfGyxZ9qvinHiFt3ey8zUjNCn0PGpsiVUx7UMfxgPFRsC5svQOvkTt1/TcoY5mbfdHow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
- header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h9Ff4uluzavrBanx+ZMKSgz0DRRyVzNpX56BZOKaD1E=;
- b=GNWHt+EUq2ffW3UfUbHsyRBjVYzlVCg2tLuvTARSdf5Rp7R3nEERU9nZtcaHJk0LjHWYmALTFRG/WNekQGzjR8rLVWrg05/8V3119oF9dfOMEM4ClOxxJXJZ03jDN0XoCpiDsweEwF8sB0o4gJvKOUDwWRY9YJsjFPZk7aJwtHc=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none
- header.from=leica-geosystems.com;
-Received: from DB6PR0602MB2886.eurprd06.prod.outlook.com (2603:10a6:4:9b::11)
- by DB8PR06MB6234.eurprd06.prod.outlook.com (2603:10a6:10:10f::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Wed, 2 Dec
- 2020 07:11:11 +0000
-Received: from DB6PR0602MB2886.eurprd06.prod.outlook.com
- ([fe80::49c3:4b5b:289c:d62c]) by DB6PR0602MB2886.eurprd06.prod.outlook.com
- ([fe80::49c3:4b5b:289c:d62c%12]) with mapi id 15.20.3611.025; Wed, 2 Dec 2020
- 07:11:11 +0000
-From:   Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-To:     jens.wiklander@linaro.org, op-tee@lists.trustedfirmware.org,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH] optee: extend normal memory check to also write-through
-Date:   Wed,  2 Dec 2020 07:10:57 +0000
-Message-Id: <20201202071057.4877-1-andrey.zhizhikin@leica-geosystems.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [193.8.40.112]
-X-ClientProxiedBy: ZR0P278CA0037.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:1d::6) To DB6PR0602MB2886.eurprd06.prod.outlook.com
- (2603:10a6:4:9b::11)
+        id S1728792AbgLBHO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:14:57 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:13741 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728105AbgLBHO5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:14:57 -0500
+X-IronPort-AV: E=Sophos;i="5.78,385,1599494400"; 
+   d="scan'208";a="101976775"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 02 Dec 2020 15:14:10 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 11B374CE5CF5;
+        Wed,  2 Dec 2020 15:14:06 +0800 (CST)
+Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
+ (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Dec
+ 2020 15:14:05 +0800
+Subject: Re: [RFC PATCH v2 0/6] fsdax: introduce fs query to support reflink
+To:     Dave Chinner <david@fromorbit.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <hch@lst.de>, <song@kernel.org>, <rgoldwyn@suse.de>,
+        <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
+References: <20201123004116.2453-1-ruansy.fnst@cn.fujitsu.com>
+ <20201129224723.GG2842436@dread.disaster.area>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <e0aa187f-e124-1ddc-0f5a-6a8c41a3dc66@cn.fujitsu.com>
+Date:   Wed, 2 Dec 2020 15:12:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aherlnxbspsrv01.lgs-net.com (193.8.40.112) by ZR0P278CA0037.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:1d::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Wed, 2 Dec 2020 07:11:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 85f97660-a0c5-4266-b312-08d8969172af
-X-MS-TrafficTypeDiagnostic: DB8PR06MB6234:
-X-Microsoft-Antispam-PRVS: <DB8PR06MB62340FAAB36A00EC19F18B01A6F30@DB8PR06MB6234.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xkhkH2KDes4EMcI1W17BrskGOdZczqCOg/xvDKibJSE/LHSW3ds/DeSNlHK3tL7xsWawdeVy+6HhGq4S1yHsKLPJSDnlTXWYs8oDj/XoBaNxj533tRPa3ujaFPZMb4wqYShDlxGCMG3+MFUU7r29XmNte8faM8iQV21qsgUHEevaBIl3KGoWjJHaltHEWKymt+/TsHa1Ajil6NEi/WNn+Y9ra6kMEFFbOXh+y783pMiAAMtNb5qSKRjdH7X5vN8usQwPuc3fPOI5LvoMASyY+Fw0cFUle+0tI0+7zY0HlM4lLu8BLeaHKqoVlS0h9rylUh5hHqqEDxw9NutiTLXzTiyV6yFC1jy9mtezO7UzCs65ld5oUcwhL6h3cxCeK8J+hLYIQp//mSnQQ4A94AcYfQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0602MB2886.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(6506007)(2906002)(1076003)(186003)(2616005)(8936002)(966005)(956004)(5660300002)(6666004)(26005)(86362001)(52116002)(6512007)(83380400001)(478600001)(16526019)(66556008)(8676002)(6486002)(66946007)(66476007)(36756003)(316002)(44832011)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?HToZMWI259zZRvtyiplWqupQxx65XF/TJF4EjiAyl/uoU8ZmbT2sC6LCVNEX?=
- =?us-ascii?Q?Uny9xJnKc7ecyY9m5HZtFmAlTSU30y/wq9LXW/J6T7hQNkUMjsjkCXNBLyXw?=
- =?us-ascii?Q?pfUI96ip6e+7VG3tsjO2gGlieD24TTsj0j2njlCr4XeuQlXKWO2NZMLK3Imw?=
- =?us-ascii?Q?YRJlZLH5gnHt7v+h/Yr6M8I14KIwB7dBunQLZnC0uFHHpSTRa1nah0A85ceT?=
- =?us-ascii?Q?lB9ZX77RyEnEJ+FViQfvwjo4k9S3Q3iOMnCOqhRpbdvElk1jkQOJY8d2fxtl?=
- =?us-ascii?Q?FcbSr4cWQEw/SDJ4YQfg75mGHpmjPZHw7RaDOJ/bXSKNyrJEzW9TvC39rm2T?=
- =?us-ascii?Q?AZ6ke5uTioqSNBSY4pAxNa5UiE0Z0aof69yUtahYgfQP7WPaOpGdXfLrAYLh?=
- =?us-ascii?Q?LIFPIoYBr6m6hW0ruoYOx83wVPwchJN08PR8eU5qM7UOXPYdrQrZPmmjS97i?=
- =?us-ascii?Q?WIT5bj1zREQR4Nt5Ge9CBhxSEsCDRIW1nOiDffMdDlv10DSNJpQXziH/4Xg6?=
- =?us-ascii?Q?k44YMuoY7/gZrGje2ErSLQ8iii8JUaYmbGeBmTho908fJTTeLfUsDIgsDRYE?=
- =?us-ascii?Q?vGoOmu+lQy9MK6KOuaOyFkIoYore0aFPuQziPAUiHl8BHrN3pJgs+DSl3VAX?=
- =?us-ascii?Q?JRAV29ZLgRcDxY02KdeAzSr6ROHsTRuPXW/QYB6gvEd9SDtU3CkXjCKpI6bV?=
- =?us-ascii?Q?yA95J+UYF0VOqsyO6LM4lL61+Q5bVeOebYEEPtjmgH2kXNjpto8cwqEl+6mF?=
- =?us-ascii?Q?eETwR0aDAP4z94RP6GWxU4erSp3E0jU3EGPzgWEKr3CJHPLJwKmVig/2Cil6?=
- =?us-ascii?Q?NSgC0nXbZwD5jYcAte19xQy/hK5zkJDsidYrANyq2uVqHzQ1dnSMI0uh3Km5?=
- =?us-ascii?Q?ZaKQQjjmL6cIfp9OYjHb7qYa4VsNDhJKEqzyBUTgPzQQpzOnsWH7Fwe56gD8?=
- =?us-ascii?Q?b6Q2uu2ou2VVmo/jFEnSkwYn+5pqKSrIoUF1HtwFAxzJbFahArnVhtIRM7zr?=
- =?us-ascii?Q?zPbr?=
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85f97660-a0c5-4266-b312-08d8969172af
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0602MB2886.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 07:11:11.4335
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: noE13jn8lkytckTME+Rlyo/vbQjvubBxb8lXM2uhljQvxgQaZqcGG0623JWrA1sv+DBT2JPmkybxSodF0tkGWgoRfH5gkFnUuqk1D+z9p88=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR06MB6234
+In-Reply-To: <20201129224723.GG2842436@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: 11B374CE5CF5.A2628
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARMv7 Architecture Reference Manual [1] section A3.5.5 details Normal
-memory type, together with cacheability attributes that could be applied
-to memory regions defined as "Normal memory".
+Hi Dave,
 
-Section B2.1.2 of the Architecture Reference Manual [1] also provides
-details regarding the Memory attributes that could be assigned to
-particular memory regions, which includes the descrption of cacheability
-attributes and cache allocation hints.
+On 2020/11/30 上午6:47, Dave Chinner wrote:
+> On Mon, Nov 23, 2020 at 08:41:10AM +0800, Shiyang Ruan wrote:
+>> 
+>> The call trace is like this:
+>>   memory_failure()
+>>     pgmap->ops->memory_failure()   => pmem_pgmap_memory_failure()
+>>      gendisk->fops->block_lost()   => pmem_block_lost() or
+>>                                           md_blk_block_lost()
+>>       sb->s_ops->storage_lost()    => xfs_fs_storage_lost()
+>>        xfs_rmap_query_range()
+>>         xfs_storage_lost_helper()
+>>          mf_recover_controller->recover_fn => \
+>>                              memory_failure_dev_pagemap_kill_procs()
+>>
+>> The collect_procs() and kill_procs() are moved into a callback which
+>> is passed from memory_failure() to xfs_storage_lost_helper().  So we
+>> can call it when a file assocaited is found, instead of creating a
+>> file list and iterate it.
+>>
+>> The fsdax & reflink support for XFS is not contained in this patchset.
+> 
+> This looks promising - the overall architecture is a lot more
+> generic and less dependent on knowing about memory, dax or memory
+> failures. A few comments that I think would further improve
+> understanding the patchset and the implementation:
 
-Memory type and cacheability attributes forms 2 separate definitions,
-where cacheability attributes defines a mechanism of coherency control
-rather than the type of memory itself.
+Thanks for your kindly comment.  It gives me confidence.
 
-In other words: Normal memory type can be configured with several
-combination of cacheability attributes, namely:
-- Write-Through (WT)
-- Write-Back (WB) followed by cache allocation hint:
-  - Write-Allocate
-  - No Write-Allocate (also known as Read-Allocate)
+> 
+> - the order of the patches is inverted. It should start with a
+>    single patch introducing the mf_recover_controller structure for
+>    callbacks, then introduce pgmap->ops->memory_failure, then
+>    ->block_lost, then the pmem and md implementations of ->block
+>    list, then ->storage_lost and the XFS implementations of
+>    ->storage_lost.
 
-Those types are mapped in the kernel to corresponding macros:
-- Write-Through: L_PTE_MT_WRITETHROUGH
-- Write-Back Write-Allocate: L_PTE_MT_WRITEALLOC
-- Write-Back Read-Allocate: L_PTE_MT_WRITEBACK
+Yes, it will be easier to understand the patchset in this order.
 
-Current implementation of the op-tee driver takes in account only 2 last
-memory region types, while performing a check if the memory block is
-allocated as "Normal memory", leaving Write-Through allocations to be
-not considered.
+But I have something unsure: for example, I introduce ->memory_failure() 
+firstly, but the implementation of ->memory_failure() needs to call 
+->block_lost() which is supposed to be introduced in the next patch. So, 
+I am not sure the code is supposed to be what in the implementation of 
+->memory_failure() in pmem?  To avoid this situation, I committed the 
+patches in the inverted order: lowest level first, then its caller, and 
+then caller's caller.
 
-Extend verification mechanism to include also Normal memory regios,
-which are designated with Write-Through cacheability attributes.
+I am trying to sort out the order.  How about this:
+  Patch i.
+    Introduce ->memory_failure()
+       - just introduce interface, without implementation
+  Patch i++.
+    Introduce ->block_lost()
+       - introduce interface and implement ->memory_failure()
+          in pmem, so that it can call ->block_lost()
+  Patch i++.
+    (similar with above, skip...)
 
-Link: [1]: https://developer.arm.com/documentation/ddi0406/cd
-Fixes: 853735e40424 ("optee: add writeback to valid memory type")
-Cc: stable@vger.kernel.org
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
----
- drivers/tee/optee/call.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> - I think the names "block_lost" and "storage_lost" are misleading.
+>    It's more like a "media failure" or a general "data corruption"
+>    event at a specific physical location. The data may not be "lost"
+>    but only damaged, so we might be able to recover from it without
+>    "losing" anything. Hence I think they could be better named,
+>    perhaps just "->corrupt_range"
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index c981757ba0d4..8da27d02a2d6 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -535,7 +535,8 @@ static bool is_normal_memory(pgprot_t p)
- {
- #if defined(CONFIG_ARM)
- 	return (((pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEALLOC) ||
--		((pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEBACK));
-+		((pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITEBACK) ||
-+		((pgprot_val(p) & L_PTE_MT_MASK) == L_PTE_MT_WRITETHROUGH));
- #elif defined(CONFIG_ARM64)
- 	return (pgprot_val(p) & PTE_ATTRINDX_MASK) == PTE_ATTRINDX(MT_NORMAL);
- #else
+'corrupt' sounds better.  (I'm not good at naming functions...)
+
+> 
+> - need to pass a {offset,len} pair through the chain, not just a
+>    single offset. This will allow other types of devices to report
+>    different ranges of failures, from a single sector to an entire
+>    device.
+
+Yes, it's better to add the length.  I restrictively thought that 
+memory-failure on pmem should affect one single page at one time.
+
+> 
+> - I'm not sure that passing the mf_recover_controller structure
+>    through the corruption event chain is the right thing to do here.
+>    A block device could generate this storage failure callback if it
+>    detects an unrecoverable error (e.g. during a MD media scrub or
+>    rebuild/resilver failure) and in that case we don't have PFNs or
+>    memory device failure functions to perform.
+> 
+>    IOWs, I think the action that is taken needs to be independent of
+>    the source that generated the error. Even for a pmem device, we
+>    can be using the page cache, so it may be possible to recover the
+>    pmem error by writing the cached page (if it exists) back over the
+>    pmem.
+> 
+>    Hence I think that the recover function probably needs to be moved
+>    to the address space ops, because what we do to recover from the
+>    error is going to be dependent on type of mapping the filesystem
+>    is using. If it's a DAX mapping, we call back into a generic DAX
+>    function that does the vma walk and process kill functions. If it
+>    is a page cache mapping, then if the page is cached then we can
+>    try to re-write it to disk to fix the bad data, otherwise we treat
+>    it like a writeback error and report it on the next
+>    write/fsync/close operation done on that file.
+> 
+>    This gets rid of the mf_recover_controller altogether and allows
+>    the interface to be used by any sort of block device for any sort
+>    of bottom-up reporting of media/device failures.
+
+Moving the recover function to the address_space ops looks a better 
+idea. But I think that the error handler for page cache mapping is 
+finished well in memory-failure.  The memory-failure is also reused to 
+handles anonymous page.  If we move the recover function to 
+address_space ops, I think we also need to refactor the existing handler 
+for page cache mapping, which may affect anonymous page handling.  This 
+makes me confused...
+
+
+I rewrote the call trace:
+memory_failure()
+  * dax mapping case
+  pgmap->ops->memory_failure()          =>
+                                    pmem_pgmap_memory_failure()
+   gendisk->fops->block_corrupt_range() =>
+                                    - pmem_block_corrupt_range()
+                                    - md_blk_block_corrupt_range()
+    sb->s_ops->storage_currupt_range()  =>
+                                    xfs_fs_storage_corrupt_range()
+     xfs_rmap_query_range()
+      xfs_storage_lost_helper()
+       mapping->a_ops->corrupt_range()  =>
+                                    xfs_dax_aops.xfs_dax_corrupt_range
+        memory_failure_dev_pagemap_kill_procs()
+
+  * page cache mapping case
+  mapping->a_ops->corrupt_range()       =>
+                                    xfs_address_space_operations.xfs_xxx
+   memory_failure_generic_kill_procs()
+
+It's rough and not completed yet.  Hope for your comment.
+
 -- 
-2.17.1
+Thanks,
+Ruan Shiyang.
+
+> 
+> Cheers,
+> 
+> Dave.
+> 
+
 
