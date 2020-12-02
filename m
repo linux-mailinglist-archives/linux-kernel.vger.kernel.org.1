@@ -2,126 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C183D2CC6E8
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0A12CC6E7
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388189AbgLBTo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387728AbgLBTo3 (ORCPT
+        id S2388013AbgLBToO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:44:14 -0500
+Received: from mail.efficios.com ([167.114.26.124]:35830 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387728AbgLBToN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:44:29 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B76AC061A04
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:43:22 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id n10so1566373pgv.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:43:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=YF75IQFrFR9lc2ZpHVjvfB/8yVqBDhiF67vZoco548s=;
-        b=LK3B5kyjjLKre8Q41VpprzisQIomIq7nujK/DzxZsHoT512B7QLHbcAnbYIsUKWjgi
-         CO9WtY8HBBXOGtXf9KXYEKriygyrVIWCfSQut06JRUYoLOFi3rMzh3L2v1wjBNlG+DwM
-         Mzntr6IyFG4QQQ8E9XdanTAF0FrDNFeqQzqSJB4ciF4GU72puXbS5LBZx22OLmA9ZZ8d
-         zzCgTD+drGKhwPxzk5GywpndFrxU6lOMuFRlh1xlZ+ZY5NovP0k5IWCho/QIOop0eiRx
-         hvQ2jTr0S/uHls2gkO/f9h3kDnMHB50lv12qqQhtNcm6ywg6jluVntdc6dOUmEqs+nxk
-         78mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=YF75IQFrFR9lc2ZpHVjvfB/8yVqBDhiF67vZoco548s=;
-        b=OTIfehv25xl1O2mCTjHb4DRxIgNz8RZElUL9oedChahyCGdh7B0bANGRY0bcFeTYHy
-         iUgj11WMHYFlxXUoExzr5FC1/WqyJQl2hXklXMdQ9RqIB24FRVKm+0l/cBVfpjoZ9cF2
-         VAs0O9U1JVTuoEZBVxU1NfXOsYvKIZNal0vRPf9Im+UL/IibHDDQ+/ZnqXx4gncmjN78
-         KwlmBwXoxMtKrA1Pdo5jy+rPiTddTmwRupGc0QXygDzF9oO89vJFjIrweXrxvr3fFdv3
-         p8Cbd+IuEMSNPQdaNCNMbcLvDdxFI4gvcEARAXA7vJjrbZ+rZSWvyomW6haNosBtdPIj
-         Z5KA==
-X-Gm-Message-State: AOAM533jwlZOQn9L99idP9Q7orizbf9hxjcOcPpNBB3+0q65K/wXFs+U
-        IBwDtEm/0bDn4T3oEDoUVdVv5w==
-X-Google-Smtp-Source: ABdhPJy+6yvDuPZXIu59qKejZBIOViQDc5/g+qVZE3j+nWEBfBEyvwpguYLMYq2oqrCn2uEL2Ni+rQ==
-X-Received: by 2002:a63:4:: with SMTP id 4mr1243367pga.443.1606938202063;
-        Wed, 02 Dec 2020 11:43:22 -0800 (PST)
-Received: from [192.168.1.9] ([171.49.174.71])
-        by smtp.gmail.com with ESMTPSA id u24sm598229pfm.81.2020.12.02.11.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 11:43:21 -0800 (PST)
-Message-ID: <3d513cec41d7eb223240741bdbcffe7af3a49c18.camel@rajagiritech.edu.in>
-Subject: [PROBLEM] drivers:hid  2 memory leaks suspected
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     linux-input@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-Date:   Thu, 03 Dec 2020 01:13:18 +0530
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        Wed, 2 Dec 2020 14:44:13 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 85A1B2958A0;
+        Wed,  2 Dec 2020 14:43:32 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id LMQl0FbQ0MwZ; Wed,  2 Dec 2020 14:43:32 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 320CF29598B;
+        Wed,  2 Dec 2020 14:43:32 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 320CF29598B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1606938212;
+        bh=ogheDfKtXNTDNHhK32MxcfwuxxfxJsU42z+GpqPElTc=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=RBHXCKKMEgXXw1xvhiAdyiNdsqDmyn0AUgnT/2Ex8LyYKGY78L+HkHaenafTrWeSy
+         myKVZe6L97RLDwSjPu7nYE+goo4eiZZaYh1nRLey5BPFp8WeQhXZJQ74MzjtavoR94
+         fMkqHM9Qp6s/daxiWuU99NOBgM9QzhPJZga7TS0J3gY1sgr6/4fZHPrrO298d0CYhW
+         tP9AwingvjbhbPOYwWBMhAsOiDImiLEmW7b2+Xec7KpFfuQu+3trtcJtMDJoTq+6JM
+         /L3oVadZwUZbvaPTq0YCxitafsgSShTRqInkxGLrJoWMqguarkTVKlluUe5Em3LTav
+         IWgPEsotKkiQQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id rEmeOrRFCK1m; Wed,  2 Dec 2020 14:43:32 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 27CDE2956F7;
+        Wed,  2 Dec 2020 14:43:32 -0500 (EST)
+Date:   Wed, 2 Dec 2020 14:43:32 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86 <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anton Blanchard <anton@ozlabs.org>,
+        stable <stable@vger.kernel.org>
+Message-ID: <1515215436.71.1606938212130.JavaMail.zimbra@efficios.com>
+In-Reply-To: <6d4c8ff7300c72fd4d44ee5755bd149359f2661a.1606923183.git.luto@kernel.org>
+References: <cover.1606923183.git.luto@kernel.org> <6d4c8ff7300c72fd4d44ee5755bd149359f2661a.1606923183.git.luto@kernel.org>
+Subject: Re: [PATCH v2 3/4] membarrier: Explicitly sync remote cores when
+ SYNC_CORE is requested
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3980 (ZimbraWebClient - FF83 (Linux)/8.8.15_GA_3975)
+Thread-Topic: membarrier: Explicitly sync remote cores when SYNC_CORE is requested
+Thread-Index: e/tbmxOQ2nZ95dGLmHykVXHQTDm2nQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello,
+----- On Dec 2, 2020, at 10:35 AM, Andy Lutomirski luto@kernel.org wrote:
 
-2 new suspected  memory leaks. 
+> membarrier() does not explicitly sync_core() remote CPUs; instead, it
+> relies on the assumption that an IPI will result in a core sync.  On
+> x86, I think this may be true in practice, but it's not architecturally
+> reliable.  In particular, the SDM and APM do not appear to guarantee
+> that interrupt delivery is serializing.  While IRET does serialize, IPI
+> return can schedule, thereby switching to another task in the same mm
+> that was sleeping in a syscall.  The new task could then SYSRET back to
+> usermode without ever executing IRET.
+> 
+> Make this more robust by explicitly calling sync_core_before_usermode()
+> on remote cores.  (This also helps people who search the kernel tree for
+> instances of sync_core() and sync_core_before_usermode() -- one might be
+> surprised that the core membarrier code doesn't currently show up in a
+> such a search.)
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-$sudo cat /sys/kernel/debug/kmemleak
-[sudo] password for jeffrin:
-unreferenced object 0xffff88813128bee0 (size 16):
-comm "irq/109-ELAN130", pid 152, jiffies 4294931163 (age 9576.624s)
-hex dump (first 16 bytes):
-04 03 08 0a eb 03 24 e7 01 80 13 44 00 00 00 00 ......$....D....
-backtrace:
-[<00000000eff80361>] kmemdup+0x1a/0x40
-[<00000000552197bd>] hidraw_report_event+0xbc/0x190 [hid]
-[<00000000a102ccd5>] hid_report_raw_event+0x70a/0x790 [hid]
-[<00000000b1b8f73f>] hid_input_report+0x1b4/0x210 [hid]
-[<00000000e0f74a09>] i2c_hid_irq+0x164/0x1e0 [i2c_hid]
-[<00000000a79c6ce4>] irq_thread_fn+0x40/0xb0
-[<0000000037a84810>] irq_thread+0x23d/0x330
-[<0000000009e057aa>] kthread+0x1cd/0x1f0
-[<000000005e7b7b46>] ret_from_fork+0x22/0x30
-unreferenced object 0xffff88813128b640 (size 16):
-comm "irq/109-ELAN130", pid 152, jiffies 4294931165 (age 9576.616s)
-hex dump (first 16 bytes):
-04 03 02 0a ee 03 74 e7 01 80 13 44 00 00 00 00 ......t....D....
-backtrace:
-[<00000000eff80361>] kmemdup+0x1a/0x40
-[<00000000552197bd>] hidraw_report_event+0xbc/0x190 [hid]
-[<00000000a102ccd5>] hid_report_raw_event+0x70a/0x790 [hid]
-[<00000000b1b8f73f>] hid_input_report+0x1b4/0x210 [hid]
-[<00000000e0f74a09>] i2c_hid_irq+0x164/0x1e0 [i2c_hid]
-[<00000000a79c6ce4>] irq_thread_fn+0x40/0xb0
-[<0000000037a84810>] irq_thread+0x23d/0x330
-[<0000000009e057aa>] kthread+0x1cd/0x1f0
-[<000000005e7b7b46>] ret_from_fork+0x22/0x30
-$
-
-
-[ Details about System ].
-
-Linux debian 5.10.0-rc6 #4 SMP Wed Dec 2 02:49:21 IST 2020 x86_64
-GNU/Linux
-
-GNU C 10
-GNU Make 4.3
-Binutils 2.35.1
-Util-linux 2.36.1
-Mount 2.36.1
-Bison 3.7.3
-Flex 2.6.4
-Dynamic linker (ldd) 2.31
-Procps 3.3.16
-Kbd 2.3.0
-Console-tools 2.3.0
-Sh-utils 8.32
-Udev 246
-
-Reported-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+> ---
+> kernel/sched/membarrier.c | 18 ++++++++++++++++++
+> 1 file changed, 18 insertions(+)
+> 
+> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+> index 6251d3d12abe..01538b31f27e 100644
+> --- a/kernel/sched/membarrier.c
+> +++ b/kernel/sched/membarrier.c
+> @@ -166,6 +166,23 @@ static void ipi_mb(void *info)
+> 	smp_mb();	/* IPIs should be serializing but paranoid. */
+> }
+> 
+> +static void ipi_sync_core(void *info)
+> +{
+> +	/*
+> +	 * The smp_mb() in membarrier after all the IPIs is supposed to
+> +	 * ensure that memory on remote CPUs that occur before the IPI
+> +	 * become visible to membarrier()'s caller -- see scenario B in
+> +	 * the big comment at the top of this file.
+> +	 *
+> +	 * A sync_core() would provide this guarantee, but
+> +	 * sync_core_before_usermode() might end up being deferred until
+> +	 * after membarrier()'s smp_mb().
+> +	 */
+> +	smp_mb();	/* IPIs should be serializing but paranoid. */
+> +
+> +	sync_core_before_usermode();
+> +}
+> +
+> static void ipi_rseq(void *info)
+> {
+> 	/*
+> @@ -301,6 +318,7 @@ static int membarrier_private_expedited(int flags, int
+> cpu_id)
+> 		if (!(atomic_read(&mm->membarrier_state) &
+> 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
+> 			return -EPERM;
+> +		ipi_func = ipi_sync_core;
+> 	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
+> 		if (!IS_ENABLED(CONFIG_RSEQ))
+> 			return -EINVAL;
+> --
+> 2.28.0
 
 -- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
