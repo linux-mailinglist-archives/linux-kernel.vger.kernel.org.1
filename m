@@ -2,97 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246C22CB26D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82A72CB276
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 02:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgLBBkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 20:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727660AbgLBBkX (ORCPT
+        id S1727879AbgLBBsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 20:48:16 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8550 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgLBBsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:40:23 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0742EC0613CF;
-        Tue,  1 Dec 2020 17:39:43 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cm1qJ0lBrz9sVx;
-        Wed,  2 Dec 2020 12:39:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606873181;
-        bh=CgMKVXTfncw4rcc7e6P6TYV2cbXW2lIpkNw+DDQDDwE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GRbPXN+RroJKCFeEV3DMniFjRlCE+Or0APIasUmQTXRYWUSUKoVdZwK8+tsMjOAxR
-         2KHOvdwDVynilhcq+hY3LDVWf/kAg7zz6q4uQ69UwUqOAPlslc3W2A7LBCmIkxU2uf
-         We5uE1OY7wyinEKF8l5Ni9hNkSSHg9lgYTiJOpLO38Ux6qs1jMOuZCcKShPjvRirO5
-         xT3xbmcFyKHEPYS5m/5ROR8B0sM4MVnqRTFOco3BHvOf2jolkjzMHD+vytIYZbW5gc
-         ajOhSodbs4/eXaLVjdgAbBWDHYaPWjiqLrk4nmzmK9iJxhjU8E1hRzu40LjHeQ60+6
-         66zP2QB88xR+w==
-Date:   Wed, 2 Dec 2020 12:39:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jassi Brar <jaswinder.singh@linaro.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the mailbox tree
-Message-ID: <20201202123939.4a9e7549@canb.auug.org.au>
+        Tue, 1 Dec 2020 20:48:16 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cm1zq6NYNzhl3K;
+        Wed,  2 Dec 2020 09:47:03 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 2 Dec 2020
+ 09:47:25 +0800
+Subject: Re: [f2fs-dev] [PATCH 4/4] f2fs: remove buffer_head which has 32bits
+ limit
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-team@android.com>
+CC:     Light Hsieh <Light.Hsieh@mediatek.com>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201126022416.3068426-1-jaegeuk@kernel.org>
+ <20201126022416.3068426-4-jaegeuk@kernel.org>
+ <20201201040924.GB3858797@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <7ce64222-cda4-6ad5-9246-c176998b79bb@huawei.com>
+Date:   Wed, 2 Dec 2020 09:47:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7.K6NmFNZ7lbpzpGjwpI8ze";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201201040924.GB3858797@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7.K6NmFNZ7lbpzpGjwpI8ze
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020/12/1 12:09, Jaegeuk Kim wrote:
+> On 11/25, Jaegeuk Kim wrote:
+>> This patch removes buffer_head dependency when getting block addresses.
+>> Light reported there's a 32bit issue in f2fs_fiemap where map_bh.b_size is
+>> 32bits while len is 64bits given by user. This will give wrong length to
+>> f2fs_map_block.
+>>
+>> Reported-by: Light Hsieh <Light.Hsieh@mediatek.com>
+>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-Hi all,
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-In commit
-
-  983df5f2699f ("samples/ftrace: Mark my_tramp[12]? global")
-
-Fixes tag
-
-  Fixes: 9d907f1ae80b8 ("ftrace/samples: Add a sample module that implement=
-s modify_ftrace_direct()")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-
-Maybe you meant
-
-Fixes: 9d907f1ae80b ("samples/ftrace: Fix asm function ELF annotations")
-
-or
-
-Fixes: ae0cc3b7e7f5 ("ftrace/samples: Add a sample module that implements m=
-odify_ftrace_direct()")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7.K6NmFNZ7lbpzpGjwpI8ze
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/G8FsACgkQAVBC80lX
-0GzmNgf9GSqMPPpR8GrNwdoU3GDvfTleFVsx+Jxn1C5VrAQ2mgQPGQFfRA2qLzFa
-/xlVChcZmZOyqoDkQMMpUW4UqqGm18CHUTDrbt35xp4Gl/Benqyhm9NZJ/601AEp
-DCeVec/L4MvpsujyA50IS8BbAg0fBhGeIlpjpao4HM28oUS0NtcW10g8xRq+imvr
-rUIUpuNuVnM8lRnD/wVCBr6hag7Ujmnrif+GVTPE1HYdrNkptffSC1APHh/MJiYS
-+/enjwHNgzlsHDbfTeavHeHs7Fv7tMeNBjzNkM6FVeWKXmqi0I8+1jDje2SXpsMR
-6vKdNxCaQoi+zrVZb3yU3AhQu98mag==
-=uWfR
------END PGP SIGNATURE-----
-
---Sig_/7.K6NmFNZ7lbpzpGjwpI8ze--
+Thanks,
