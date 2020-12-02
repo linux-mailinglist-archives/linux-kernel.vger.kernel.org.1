@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC48E2CC170
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4A52CC1A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgLBP5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:57:42 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:37101 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725979AbgLBP5m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:57:42 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1C4B458033F;
-        Wed,  2 Dec 2020 10:56:56 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 02 Dec 2020 10:56:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=voFpRetlbBwCZg41ULNXnGM0fG4
-        XnIsMUrQNMwOslPo=; b=NwWbuoPEJcB2DbUf4340sNGSVyhJY4TMAa88T6asSGn
-        QShwv6H4WeXjv+7G9yrla94szKX9qiSvroFxa3iS4wPDuUNY4yBbEbfuZT1ztA7v
-        H7hL2SiLBjHU92Cxdx0QKDV6xcnJ3ZbDXHoDjLT28zIYS4lW1T/4hp/UXKwrWqTv
-        BYgw+kpr597ttygKX9Ab7DQzg9Xwg0NcX29s7Yek2rWZCUtzTHfhjdCZfxNAKPlq
-        LM3i782MKNHS7lO1i/iHbUNMVwY9R7pmiqdKxIHzNH1k9H/QM0PQJrn0WQJAxEhp
-        bM6qMUOw9hqYmRwRiSouX1WrBCPDDJXOaHBoKki9oSw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=voFpRe
-        tlbBwCZg41ULNXnGM0fG4XnIsMUrQNMwOslPo=; b=BD5Y/qG9bYresDqqUmyxRY
-        JOd3xGakUnrn1r8jCeeJ/MSc9aRW3K+fU4X/I/ed+wc26RK/5n+5fVzEt9zGZO0b
-        U/qkpzIbvFrFV7/gE/U7Zz+J7ka4LtPi/bjcFGAo8hYg003Sx7xwaJDLkc8vCslc
-        l6IjYBSbl8e1X+G+NTlNZcGWtjNYDZUv1HqXv5+iJhFzeaZcOqaCvohsBhv1wGqa
-        WT8BGq5DuW5d2s/I2FBDvVGvDrUR9r9HGp9SQMbqxwliT5AyVwPCu2EpnMKziAzJ
-        UPKcWWcQi+sTCNoY03i+sZgONZOLpHD2Bm8/fo9nuklJ7AISBnYrYYJiW0fmX7vQ
-        ==
-X-ME-Sender: <xms:RbnHX7MBOlBqApGWTn15ZBbeOk-EHGhKdy2iL1PZeIIQuxG0SHYvgg>
-    <xme:RbnHX80Gn3sbeUKV6MGG-DCTAoX68PWz22YEx5EhnK25_gremkLCXaZI0squAMBYa
-    4RrQw6N8SBTtz9Lc_g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:RbnHX3OUX5hoOfx1J1l_TpqD6NUjm7C4kAjJtR3cqp6cuss-xPDmbg>
-    <xmx:RbnHX82Q6MFweVL6rVSP_ENHsIIYbghGGUHucvmvvJrBHucCwkrHIg>
-    <xmx:RbnHX-GVSCgen8noxQom0G-4cOma9ob5bDhCSk5PQeiT3GIWUfIVlg>
-    <xmx:SLnHX32knjC-lSJPrAJzHUkErUOP-KkqHQyat_TsfA0MR7QwGRxn2g>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1C40B240059;
-        Wed,  2 Dec 2020 10:56:53 -0500 (EST)
-Date:   Wed, 2 Dec 2020 16:56:51 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH 5/8] clk: sunxi-ng: Add support for the Allwinner H616 CCU
-Message-ID: <20201202155651.vgbkrrrxlw55yq7x@gilmour>
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-6-andre.przywara@arm.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ynofnaw5enhpd4at"
-Content-Disposition: inline
-In-Reply-To: <20201202135409.13683-6-andre.przywara@arm.com>
+        id S1726935AbgLBQF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:05:26 -0500
+Received: from m12-11.163.com ([220.181.12.11]:33272 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgLBQFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:05:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=O/npw76o0ufcvrM12h
+        s+GrdXAyvpH9W3tDvavR6Ud6g=; b=ERuAvlWnyd++pzrek4C1fgeis89FnF4V1w
+        l+nBO/jYFTAxWCqwHLNaB6X5+4k6qIxbMSj4Xa2zWPqfKRBnXADTCAaFKjIG6XIn
+        M+P0mGleLazGu5rZhcqT8kAFS+c6vUamL0b/gVQm3a1lHJBD3ANwEj7XyuNAW1PD
+        F1amx8bVE=
+Received: from localhost.localdomain (unknown [36.170.33.20])
+        by smtp7 (Coremail) with SMTP id C8CowAAHB58Jt8df6eEzBg--.12951S2;
+        Wed, 02 Dec 2020 23:47:22 +0800 (CST)
+From:   carver4lio@163.com
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Hailong Liu <carver4lio@163.com>,
+        Hailong Liu <liu.hailong6@zte.com.cn>
+Subject: [PATCH] mm:remove the unuseful  else after a return
+Date:   Wed,  2 Dec 2020 23:47:20 +0800
+Message-Id: <20201202154720.115162-1-carver4lio@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: C8CowAAHB58Jt8df6eEzBg--.12951S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruw1xur4fCw43GF1ruw1fCrg_yoWfZFbEkF
+        yIvFsrKrs8CFyfGFy2ya42qrZ7A39Y9rsrWF98tr43t345Gr4kXFyDZa1fXrWqvFWxGas8
+        Cr1jvFWfuryYyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUU-VyDUUUUU==
+X-Originating-IP: [36.170.33.20]
+X-CM-SenderInfo: xfdu4v3uuox0i6rwjhhfrp/xtbCnwvsnVzmVVedRgABsH
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Hailong Liu <carver4lio@163.com>
 
---ynofnaw5enhpd4at
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The *else* is not useful after a *return* in __lock_page_or_retry().
 
-Hi
+Signed-off-by: Hailong Liu<liu.hailong6@zte.com.cn>
+---
+ mm/filemap.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-On Wed, Dec 02, 2020 at 01:54:06PM +0000, Andre Przywara wrote:
-> While the clocks are fairly similar to the H6, many differ in tiny
-> details, so a separate clock driver seems indicated.
->=20
-> Derived from the H6 clock driver, and adjusted according to the manual.
->=20
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 0b2067b3c..55e6ad1b0 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1583,19 +1583,19 @@ int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
+ 		else
+ 			wait_on_page_locked(page);
+ 		return 0;
+-	} else {
+-		if (flags & FAULT_FLAG_KILLABLE) {
+-			int ret;
+-
+-			ret = __lock_page_killable(page);
+-			if (ret) {
+-				mmap_read_unlock(mm);
+-				return 0;
+-			}
+-		} else
+-			__lock_page(page);
+-		return 1;
+ 	}
++	if (flags & FAULT_FLAG_KILLABLE) {
++		int ret;
++
++		ret = __lock_page_killable(page);
++		if (ret) {
++			mmap_read_unlock(mm);
++			return 0;
++		}
++	} else
++		__lock_page(page);
++	return 1;
++
+ }
+ 
+ /**
+-- 
+2.17.1
 
-The patch itself looks ok, but there's a bunch of checkpatch warning
-you'll want to fix.
-
-Maxime
-
---ynofnaw5enhpd4at
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e5QwAKCRDj7w1vZxhR
-xaeDAP0VXbK3/zS+gC9m2/thTZDBih7mPelLmESXwK8URJQS7QEAl3yzyzqpWNGk
-hkZe4Ua2yIFWQsZNw996qUTnSVnFmg8=
-=02s5
------END PGP SIGNATURE-----
-
---ynofnaw5enhpd4at--
