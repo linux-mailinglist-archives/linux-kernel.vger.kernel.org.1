@@ -2,132 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C512CBEA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DFB2CBEAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgLBNrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:47:11 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16724 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727991AbgLBNrK (ORCPT
+        id S1727245AbgLBNuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:50:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37091 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726023AbgLBNuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:47:10 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2DVmLP083465;
-        Wed, 2 Dec 2020 08:46:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=CPYBV9GU6OHg3eIE8AyprEnCWEvhvhy00L9x6GkTAEk=;
- b=eCGF4LX5ox5URpf3Clex7PnKp5RNNLfRhlEiBTiQeBHFRTc4Dgkc/LfTOs9bMNj6xEHc
- RDlR94XsCqVhEgckKzayxesOd/uSsfLs74ydio7K9VlMuEH73pcpRy1E1yShFG2LEeHQ
- 891Pcdflq5uxwGRBm3sg8xHV+iS7e8x90grqPs0spAXgCkTi5zY/JKBb2CM5CcA80HIf
- ymTrYkpZ3yAqbOc3jhngRadYsIJsy3+cr3tnFsLae4A1sEe4THt/C/AvpyynmTs7LqQX
- 2mr6jxHeln0QlevxVthEs4l1q+l7f+Biyr7OXByVplmJo/VzwIIGwU/MxnVpiL7bnKdz cw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3567ypqrf8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 08:46:11 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2DgTE6029966;
-        Wed, 2 Dec 2020 13:46:09 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 35693xg53g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 13:46:09 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2Dk6Dc3473994
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 13:46:06 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 62C2E4C05E;
-        Wed,  2 Dec 2020 13:46:06 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 094F94C040;
-        Wed,  2 Dec 2020 13:46:06 +0000 (GMT)
-Received: from osiris (unknown [9.171.20.32])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  2 Dec 2020 13:46:05 +0000 (GMT)
-Date:   Wed, 2 Dec 2020 14:46:04 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
-Message-ID: <20201202134604.GC6202@osiris>
-References: <20201201110724.GL3092@hirez.programming.kicks-ass.net>
- <20201201144644.GF1437@paulmck-ThinkPad-P72>
- <20201201145519.GY2414@hirez.programming.kicks-ass.net>
- <20201201181506.GM3092@hirez.programming.kicks-ass.net>
- <20201201185737.GA93208@C02TD0UTHF1T.local>
- <20201201191441.GW3040@hirez.programming.kicks-ass.net>
- <20201201191856.GD8316@osiris>
- <20201202092116.GA3040@hirez.programming.kicks-ass.net>
- <20201202105649.GB6202@osiris>
- <20201202111605.GA63790@C02TD0UTHF1T.local>
+        Wed, 2 Dec 2020 08:50:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606916917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vHedmF2t1mThnVS41kBW1jt04b9cWe1xOcXAMd+DJ5o=;
+        b=RV4A8yhDnB9db/iyH3LdLDYs1ZYyQFdWcbBWSWk8vw25U+AHaHRhLGom5CzX9ufywUu/qE
+        eI5LAzyVBAvohyIFmrsPKTGEr6CxHzUR6ppanQkPcd4TDXE/l2MVAKMLDeGaOZ8RfvtIeA
+        sgiQisdLBuecj7XooGSaKnNV3szSu70=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-U_64aH1OPsKIZpMUDYYixA-1; Wed, 02 Dec 2020 08:48:33 -0500
+X-MC-Unique: U_64aH1OPsKIZpMUDYYixA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79CD31006C97;
+        Wed,  2 Dec 2020 13:48:32 +0000 (UTC)
+Received: from [10.72.12.105] (ovpn-12-105.pek2.redhat.com [10.72.12.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DC9DD60BFA;
+        Wed,  2 Dec 2020 13:48:26 +0000 (UTC)
+Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
+To:     "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
+Cc:     Cindy Lu <lulu@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201129150505-mutt-send-email-mst@kernel.org>
+ <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130035147-mutt-send-email-mst@kernel.org>
+ <20201130092759.GB99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130043050-mutt-send-email-mst@kernel.org>
+ <CACLfguXB+SzocLppNtrTZwKPFsshS8TLVe8_iFJxgjT-cFpSzA@mail.gmail.com>
+ <20201130103142-mutt-send-email-mst@kernel.org>
+ <CACLfguWDFgJUJTJik1obvv-vzacRwgkfsN=-Uouu+K9dAKFE+A@mail.gmail.com>
+ <e52b94b6-42a8-1270-1e10-d1905ccae598@redhat.com>
+ <20201202055714.GA224423@mtl-vdi-166.wap.labs.mlnx>
+ <20201202041518-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3e32ef6d-83c9-5866-30e5-f6eeacd5044d@redhat.com>
+Date:   Wed, 2 Dec 2020 21:48:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202111605.GA63790@C02TD0UTHF1T.local>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_06:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- suspectscore=1 phishscore=0 mlxlogscore=279 bulkscore=0 impostorscore=0
- adultscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020078
+In-Reply-To: <20201202041518-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:16:05AM +0000, Mark Rutland wrote:
-> On Wed, Dec 02, 2020 at 11:56:49AM +0100, Heiko Carstens wrote:
-> > From 7bd86fb3eb039a4163281472ca79b9158e726526 Mon Sep 17 00:00:00 2001
-> > From: Heiko Carstens <hca@linux.ibm.com>
-> > Date: Wed, 2 Dec 2020 11:46:01 +0100
-> > Subject: [PATCH] s390: fix irq state tracing
-> > 
-> > With commit 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs
-> > tracing") common code calls arch_cpu_idle() with a lockdep state that
-> > tells irqs are on.
-> > 
-> > This doesn't work very well for s390: psw_idle() will enable interrupts
-> > to wait for an interrupt. As soon as an interrupt occurs the interrupt
-> > handler will verify if the old context was psw_idle(). If that is the
-> > case the interrupt enablement bits in the old program status word will
-> > be cleared.
-> > 
-> > A subsequent test in both the external as well as the io interrupt
-> > handler checks if in the old context interrupts were enabled. Due to
-> > the above patching of the old program status word it is assumed the
-> > old context had interrupts disabled, and therefore a call to
-> > TRACE_IRQS_OFF (aka trace_hardirqs_off_caller) is skipped. Which in
-> > turn makes lockdep incorrectly "think" that interrupts are enabled
-> > within the interrupt handler.
-> > 
-> > Fix this by unconditionally calling TRACE_IRQS_OFF when entering
-> > interrupt handlers. Also call unconditionally TRACE_IRQS_ON when
-> > leaving interrupts handlers.
-> > 
-> > This leaves the special psw_idle() case, which now returns with
-> > interrupts disabled, but has an "irqs on" lockdep state. So callers of
-> > psw_idle() must adjust the state on their own, if required. This is
-> > currently only __udelay_disabled().
-> > 
-> > Fixes: 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs tracing")
-> > Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-> 
-> FWIW, this makes sense to me from what I had to chase on the arm64 side,
-> and this seems happy atop v5.10-rc6 with all the lockdep and RCU debug
-> options enabled when booting to userspace under QEMU.
-> 
-> Thanks,
-> Mark.
 
-Thanks a lot for having a look and testing this!
+On 2020/12/2 下午5:23, Michael S. Tsirkin wrote:
+> On Wed, Dec 02, 2020 at 07:57:14AM +0200, Eli Cohen wrote:
+>> On Wed, Dec 02, 2020 at 12:18:36PM +0800, Jason Wang wrote:
+>>> On 2020/12/1 下午5:23, Cindy Lu wrote:
+>>>> On Mon, Nov 30, 2020 at 11:33 PM Michael S. Tsirkin<mst@redhat.com>  wrote:
+>>>>> On Mon, Nov 30, 2020 at 06:41:45PM +0800, Cindy Lu wrote:
+>>>>>> On Mon, Nov 30, 2020 at 5:33 PM Michael S. Tsirkin<mst@redhat.com>  wrote:
+>>>>>>> On Mon, Nov 30, 2020 at 11:27:59AM +0200, Eli Cohen wrote:
+>>>>>>>> On Mon, Nov 30, 2020 at 04:00:51AM -0500, Michael S. Tsirkin wrote:
+>>>>>>>>> On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen wrote:
+>>>>>>>>>> On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wrote:
+>>>>>>>>>>> On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
+>>>>>>>>>>>> We should not try to use the VF MAC address as that is used by the
+>>>>>>>>>>>> regular (e.g. mlx5_core) NIC implementation. Instead, use a random
+>>>>>>>>>>>> generated MAC address.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Suggested by: Cindy Lu<lulu@redhat.com>
+>>>>>>>>>>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+>>>>>>>>>>>> Signed-off-by: Eli Cohen<elic@nvidia.com>
+>>>>>>>>>>> I didn't realise it's possible to use VF in two ways
+>>>>>>>>>>> with and without vdpa.
+>>>>>>>>>> Using a VF you can create quite a few resources, e.g. send queues
+>>>>>>>>>> recieve queues, virtio_net queues etc. So you can possibly create
+>>>>>>>>>> several instances of vdpa net devices and nic net devices.
+>>>>>>>>>>
+>>>>>>>>>>> Could you include a bit more description on the failure
+>>>>>>>>>>> mode?
+>>>>>>>>>> Well, using the MAC address of the nic vport is wrong since that is the
+>>>>>>>>>> MAC of the regular NIC implementation of mlx5_core.
+>>>>>>>>> Right but ATM it doesn't coexist with vdpa so what's the problem?
+>>>>>>>>>
+>>>>>>>> This call is wrong:  mlx5_query_nic_vport_mac_address()
+>>>>>>>>
+>>>>>>>>>>> Is switching to a random mac for such an unusual
+>>>>>>>>>>> configuration really justified?
+>>>>>>>>>> Since I can't use the NIC's MAC address, I have two options:
+>>>>>>>>>> 1. To get the MAC address as was chosen by the user administering the
+>>>>>>>>>>      NIC. This should invoke the set_config callback. Unfortunately this
+>>>>>>>>>>      is not implemented yet.
+>>>>>>>>>>
+>>>>>>>>>> 2. Use a random MAC address. This is OK since if (1) is implemented it
+>>>>>>>>>>      can always override this random configuration.
+>>>>>>>>>>
+>>>>>>>>>>> It looks like changing a MAC could break some guests,
+>>>>>>>>>>> can it not?
+>>>>>>>>>>>
+>>>>>>>>>> No, it will not. The current version of mlx5 VDPA does not allow regular
+>>>>>>>>>> NIC driver and VDPA to co-exist. I have patches ready that enable that
+>>>>>>>>>> from steering point of view. I will post them here once other patches on
+>>>>>>>>>> which they depend will be merged.
+>>>>>>>>>>
+>>>>>>>>>> https://patchwork.ozlabs.org/project/netdev/patch/20201120230339.651609-12-saeedm@nvidia.com/
+>>>>>>>>> Could you be more explicit on the following points:
+>>>>>>>>> - which configuration is broken ATM (as in, two device have identical
+>>>>>>>>>     macs? any other issues)?
+>>>>>>>> The only wrong thing is the call to  mlx5_query_nic_vport_mac_address().
+>>>>>>>> It's not breaking anything yet is wrong. The random MAC address setting
+>>>>>>>> is required for the steering patches.
+>>>>>>> Okay so I'm not sure the Fixes tag at least is appropriate if it's a
+>>>>>>> dependency of a new feature.
+>>>>>>>
+>>>>>>>>> - why won't device MAC change from guest point of view?
+>>>>>>>>>
+>>>>>>>> It's lack of implementation in qemu as far as I know.
+>>>>>>> Sorry not sure I understand. What's not implemented in QEMU?
+>>>>>>>
+>>>>>> HI Michael, there are some bug in qemu to set_config, this will fix in future,
+>>>>>> But this patch is still needed, because without this patch the mlx
+>>>>>> driver will give an 0 mac address to qemu
+>>>>>> and qemu will overwrite the default mac address.  This will cause traffic down.
+>>>>> Hmm the patch description says VF mac address, not 0 address. Confused.
+>>>>> If there's no mac we can clear VIRTIO_NET_F_MAC and have guest
+>>>>> use a random value ...
+>>> I'm not sure this can work for all types of vDPA (e.g it could not be a
+>>> learning bridge in the swtich).
+>>>
+>>>
+>>>> hi Michael，
+>>>> I have tried as your suggestion, seems even remove the
+>>>> VIRTIO_NET_F_MAC the qemu will still call get_cinfig and overwrite the
+>>>> default address in  VM,
+>>> This looks a bug in qemu, in guest driver we had:
+>>>
+>>>      /* Configuration may specify what MAC to use.  Otherwise random. */
+>>>      if (virtio_has_feature(vdev, VIRTIO_NET_F_MAC))
+>>>          virtio_cread_bytes(vdev,
+>>>                     offsetof(struct virtio_net_config, mac),
+>>>                     dev->dev_addr, dev->addr_len);
+>>>      else
+>>>          eth_hw_addr_random(dev);
+>>>
+>>>
+>>>> this process is like
+>>>> vdpa _init -->qemu call get_config ->mlx driver will give  an mac
+>>>> address with all 0-->
+>>>> qemu will not check this mac address and use it --> overwrite the mac
+>>>> address in qemu
+>>>>
+>>>> So for my understanding there are several method to fix this problem
+>>>>
+>>>> 1, qemu check the mac address, if the mac address is all 0, qemu will
+>>>> ignore it and set the random mac address to mlx driver.
+>>> So my understanding is that, if mac address is all 0, vDPA parent should not
+>>> advertise VIRTIO_NET_F_MAC. And qemu should emulate this feature as you did:
+>> Thinking it over, at least in mlx5, I should always advertise
+>> VIRTIO_NET_F_MAC and set a non zero MAC value. The source of the MAC can
+>> be either randomly generated value by mlx5_vdpa or by a management tool.
+>> This is important becauase we should not let the VM modify the MAC. If
+>> we do it can set a MAC value identical to the mlx5 NIC driver and can
+>> kidnap traffic that was not destined to it.
+>>
+>> In addition, when VIRTIO_NET_F_MAC is published, attempts to change the
+>> MAC address from the VM should result in error.
+> That is not what the spec says though.
+> VIRTIO_NET_F_MAC only says whether mac is valid in the config space.
+> Whether guest can control that depends on VIRTIO_NET_F_CTRL_MAC_ADDR:
+>
+> 	The VIRTIO_NET_CTRL_MAC_ADDR_SET command is used to set the default MAC address which rx
+> 	filtering accepts (and if VIRTIO_NET_F_MAC_ADDR has been negotiated, this will be reflected in mac in
+> 	config space).
+> 	The command-specific-data for VIRTIO_NET_CTRL_MAC_ADDR_SET is the 6-byte MAC address.
+
+
+Consider VIRTIO_NET_CTRL_MAC_ADDR_SET is not supported now. What Eli 
+proposed here should work?
+
+Thanks
+
+
+>
+>
+>
+>
+
