@@ -2,130 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEC02CB439
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97F52CB43D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 06:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgLBFII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 00:08:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        id S1728288AbgLBFMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 00:12:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgLBFIH (ORCPT
+        with ESMTP id S1725902AbgLBFMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 00:08:07 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276E4C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 21:07:27 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id jx16so910290ejb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 21:07:27 -0800 (PST)
+        Wed, 2 Dec 2020 00:12:36 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEF6C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Dec 2020 21:11:50 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id f12so552691oto.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Dec 2020 21:11:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KwNZsFRA/IYGRcCT2QHYfNwg6PsGCIWZOBcgb5DDj88=;
-        b=gueikS+aDT27nyPzPyzkwYn1k3AuHzdfALOFE07LukUrb2sb/ctSsjJhidsFcEMaCm
-         gYKAbv8txSy41RAkcLddla+GjCPUv3xaJLTF/hg6J7s2OBWVIx4aWZUtuNXolHUgAcOC
-         j4JETcEyYEEloJVXYLbImTzYYPV3CS0B27bycb5eE8HFygnMwcbqZuW3uCZ9L17k2JDQ
-         gPt5CX/HOx09bJvyYwA4cipDB96S+/og5gEdJcu16JoTXuCiFjR6t7B/YXqIw/4CMU4K
-         Bey6XI70dVU7zez0+E1OoBhRYwm1q4Ida/9ZI5c+606mM8Fm5WcSQogYwlT3hEVg/vMt
-         ncNg==
+         :cc:content-transfer-encoding;
+        bh=T6tK09CTMF8DpkdCu4eHvVSCjrhIKh1EGtQIJ5HMvFI=;
+        b=N+fXQKTWhXfnFHo0kLh2BTfHeig2UuNuLOVya2mk+YpycQCXqhWTGDavk8piTdzpwV
+         Nfdf9O98/U/+cAKkl6y+urAIMDIyXP/kHUQVfSMeO2sIxLKteaa1XNsX9+Hqzoq9Q8a4
+         rznsDqzIhhZGeDyC5KFu0XHgmoxaGWPO32ZsfHYS88tlIRelFA6gt8dmfgyOlbfCwmkN
+         8RkHdR0OS0CfFbrh7+cxMOT0S2OTfO7pP88UJovhw5k62kqDancJD2XjkCosIHuUGe5w
+         +/xN9lCkqih0HxRJRvrjlvrhpz9Oh7kakJQrNQjynl3mQs7VDtQWsvgmT0RTvbBAyG1K
+         h7Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KwNZsFRA/IYGRcCT2QHYfNwg6PsGCIWZOBcgb5DDj88=;
-        b=r4/hfHLD2rHndADUo0usO6G9uatI1V0H79aBadXD9aXRg1A6gN5V4No4N2KqeNLXCC
-         8564ELQRT51J47O67Hk3AbBy3lGEjnQ05CkNxH8oQ/zVGGu8VE5djvI7FHcW0W0HQ7vD
-         EQSBaPCLyIPhAZqhJIOKce7aTgmzXQo+wqosv2chD8nhEdXEM+vhpZv+YUi82Hj0gGFN
-         L1deG1AXZDVnOcRYZxADXVqMKlrV8PjGZh+TfF8m+Y+rr1vulUGRI3btSmW8PzMMt/co
-         09MHIOOzpHFMIu9Gc8xPXpnieB3k5qvRkwA84qnchRbIHTE8cUexM+famvxa5IpAFCx9
-         VF1w==
-X-Gm-Message-State: AOAM533Q3JU2l3K30II5nIbCvPLRiCAZGckTiW36kKxIodj9KRg0SthQ
-        utpaMWI/6IYXazCXt15teZmD/g8rV1Tf5Rwc6QkLqg==
-X-Google-Smtp-Source: ABdhPJwxvS7rb7CChYsxSarjfQNmQlqikNgrYtFAORWl/FJzy4zu8qlhsn1pLIhxzClr1QxUZ5ykdF9PH/vyWHnxS5A=
-X-Received: by 2002:a17:906:c51:: with SMTP id t17mr679087ejf.523.1606885645772;
- Tue, 01 Dec 2020 21:07:25 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=T6tK09CTMF8DpkdCu4eHvVSCjrhIKh1EGtQIJ5HMvFI=;
+        b=LJAnPOk4HSzjVqMlFnhp8YjqETx+3drSRblc0FTU99q/YCvgCZptsIfoc5lrq9PRRM
+         l+WSHMpvEYJgZFpQ/rO0hZr6Nv53gj4iIQ/2PKgBPVrNAzO7/uUDTaCJR0PItpwKOXco
+         sRS98bsmzuZx+c056K5m81nXFo2L+1GdFPfyMRh1k1V7Mlm1n9ZLLdPhlgvgUxFPQnVg
+         8J6iufOEaRLEYA/TMg2W4SYB8prmg3FDWdFOtNdkZeAfzpSm2ALgJc3oRWohp4Ye37xI
+         dJWiiitBG2OTCgheQzjk2s0y6gckPyuAwlssXCaAsaS5+Kct8d87YE3VghpYYC2JlfMB
+         P89A==
+X-Gm-Message-State: AOAM532AJul+/v39f2mTtUpRw1BXCRPlkiyox1wygTTJ5ET7jlCHsBXn
+        vshCgmusW5/2pVGrHTpAJNGwOWwkjgqXis8HejlZNA==
+X-Google-Smtp-Source: ABdhPJwfkY+m8eJBbpnNWZpTnReC5yYiV4sW6rUw5oG5NV4PFZXCGpZzUgJ3COv7IgN1whI5GvhXanZBbsP8EMVWYfY=
+X-Received: by 2002:a05:6830:12d5:: with SMTP id a21mr640726otq.281.1606885910020;
+ Tue, 01 Dec 2020 21:11:50 -0800 (PST)
 MIME-Version: 1.0
-References: <CAPcyv4isen63tJ7q02rvVuu_Rm6QPdT0Bu-P_HJ2zePMySFNNg@mail.gmail.com>
- <20201201022412.GG4327@casper.infradead.org> <CAPcyv4j7wtjOSg8vL5q0PPjWdaknY-PC7m9x-Q1R_YL5dhE+bQ@mail.gmail.com>
- <20201201204900.GC11935@casper.infradead.org> <CAPcyv4jNVroYmirzKw_=CsEixOEACdL3M1Wc4xjd_TFv3h+o8Q@mail.gmail.com>
- <20201202034308.GD11935@casper.infradead.org>
-In-Reply-To: <20201202034308.GD11935@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 1 Dec 2020 21:07:22 -0800
-Message-ID: <CAPcyv4jk2-6hRZAC+=-wuXwFyYK9uKiRX=pVc0Q0UeB9yc=y1w@mail.gmail.com>
-Subject: Re: mapcount corruption regression
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Shutemov, Kirill" <kirill.shutemov@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yi Zhang <yi.zhang@redhat.com>
+References: <20201201084647.751612010@linuxfoundation.org>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 2 Dec 2020 10:41:38 +0530
+Message-ID: <CA+G9fYuu+F0tGukW_SwHi7BUWoEe0bezWr9h2v2bwUpjNh+2vA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/57] 4.19.161-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 7:43 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, 1 Dec 2020 at 14:31, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Tue, Dec 01, 2020 at 06:28:45PM -0800, Dan Williams wrote:
-> > On Tue, Dec 1, 2020 at 12:49 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Tue, Dec 01, 2020 at 12:42:39PM -0800, Dan Williams wrote:
-> > > > On Mon, Nov 30, 2020 at 6:24 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > > >
-> > > > > On Mon, Nov 30, 2020 at 05:20:25PM -0800, Dan Williams wrote:
-> > > > > > Kirill, Willy, compound page experts,
-> > > > > >
-> > > > > > I am seeking some debug ideas about the following splat:
-> > > > > >
-> > > > > > BUG: Bad page state in process lt-pmem-ns  pfn:121a12
-> > > > > > page:0000000051ef73f7 refcount:0 mapcount:-1024
-> > > > > > mapping:0000000000000000 index:0x0 pfn:0x121a12
-> > > > >
-> > > > > Mapcount of -1024 is the signature of:
-> > > > >
-> > > > > #define PG_guard        0x00000400
-> > > >
-> > > > Oh, thanks for that. I overlooked how mapcount is overloaded. Although
-> > > > in v5.10-rc4 that value is:
-> > > >
-> > > > #define PG_table        0x00000400
-> > >
-> > > Ah, I was looking at -next, where Roman renumbered it.
-> > >
-> > > I know UML had a problem where it was not clearing PG_table, but you
-> > > seem to be running on bare metal.  SuperH did too, but again, you're
-> > > not using SuperH.
-> > >
-> > > > >
-> > > > > (the bits are inverted, so this turns into 0xfffffbff which is reported
-> > > > > as -1024)
-> > > > >
-> > > > > I assume you have debug_pagealloc enabled?
-> > > >
-> > > > Added it, but no extra spew. I'll dig a bit more on how PG_table is
-> > > > not being cleared in this case.
-> > >
-> > > I only asked about debug_pagealloc because that sets PG_guard.  Since
-> > > the problem is actually PG_table, it's not relevant.
-> >
-> > As a shot in the dark I reverted:
-> >
-> >     b2b29d6d0119 mm: account PMD tables like PTE tables
-> >
-> > ...and the test passed.
+> This is the start of the stable review cycle for the 4.19.161 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> That's not really surprising ... you're still freeing PMD tables without
-> calling the destructor, which means that you're leaking ptlocks on
-> configs that can't embed the ptlock in the struct page.
+> Responses should be made by Thu, 03 Dec 2020 08:46:29 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.161-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Ok, so potentially this new tracking is highlighting a long standing
-bug that was previously silent. That would explain the ambiguous
-bisect results.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> I suppose it shows that you're leaking a PMD table rather than a PTE
-> table, so that might help track it down.  Checking for PG_table in
-> free_unref_page() and calling show_stack() will probably help more.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Will do.
+NOTE:
+While running CPU hotplug testing on arm64 db410c device the following
+kernel warning was noticed on linux stable-rc 4.19 branch several times.
+WARNING: kernel/workqueue.c:4762 workqueue_online_cpu+0x18c/0x428
+https://lore.kernel.org/stable/CA+G9fYu+KK=3Dhm1AmQ78GCCgQTwsRCzyA6WHYR68oz=
+ZBzp7USiA@mail.gmail.com/
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.161-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 8d3deb1adb93c5d5ff713e5cf5026cacd87a9404
+git describe: v4.19.160-58-g8d3deb1adb93
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.160-58-g8d3deb1adb93
+
+No regressions (compared to build v4.19.160)
+
+No fixes (compared to build v4.19.160)
+
+Ran 46759 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
