@@ -2,80 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4910A2CC889
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317842CC88B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729835AbgLBU74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:59:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727189AbgLBU7z (ORCPT
+        id S2387492AbgLBVAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:00:19 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36354 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgLBVAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:59:55 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51765C0613D6;
-        Wed,  2 Dec 2020 12:59:15 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CmWYF1Wd8z9sT5;
-        Thu,  3 Dec 2020 07:59:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606942753;
-        bh=xyCfUDDpG5o9AnIu8sKo445PfWngxdTS6OFx++8xEVU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RQ05OpUF2Th5NrmYMaEiLWibz5FybRgTWOIXzWVscoyraaPtoJN0aYKdSbKOVmzYT
-         rAyCN7IwTSwS+TuHpYUEazlQAAY6cPw3HVyUOY+VOwGj3W7X0iEq+dBk+u/9pUkzSG
-         wnVClt3NMC8envR5gDRRupN9jATyIL/cZkrArGHiwHc5FrE4x32T3UlDXG8unuGz0T
-         cLlXjbXSdZBUtLczvxUvtWi7yWxqmb3NosQMOLEU9vR0d4/HAOC+eVzLBrGuD8jaKY
-         cqPO09rg12GW+vyoNMFE3zcv9ZS0mdy4sM1o5LeYia3sF0X2th6/pMn9dwTMQQHxSK
-         oVTz8UUnMHD3A==
-Date:   Thu, 3 Dec 2020 07:59:11 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the pidfd tree
-Message-ID: <20201203075911.7ac53b76@canb.auug.org.au>
+        Wed, 2 Dec 2020 16:00:18 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606942776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=taIfbIJFc06Wgj9BGKuuNGwAkjIFWbU5Zsh2o+YzsmA=;
+        b=00QEUXqAFNKpQ6+e5uJM2FH3qEVe0kNWxdqkxUkLsnTRW/qVHm1WpHVM6DJZ7AbBHK7Iq+
+        VZ0r7sqvRZf+RuX5goBhbvpl6tPmBYq2/xH0QOMaOns/pFLWlJu1kb4QYH0xcNfaBvg37Z
+        kQ7eGTdfLZDwwTSy+ua1m9NCWv5czucLn3fPEm6b7nmbb/Zi/d10RP/+Lr9BXo5GF9C2Ab
+        QAAZdYC0TQF2BaOftCBFZ7h7Bpa8nXYNGlb5Nte0xgQ4UBZWyJVjApKZOePqnCUlWheC65
+        g4Fu2piPzfV+H2VoWvsznG7A37log5bbPogZj15C10Rlo+Y8SAMWWgQppa1IEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606942776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=taIfbIJFc06Wgj9BGKuuNGwAkjIFWbU5Zsh2o+YzsmA=;
+        b=cMkLtZVB5OpYFgq8AsudqRSf7/MtS1a5WgE9/jZBaicoWs3bRSxi47qMfD0fNNZXsGFuAE
+        yoi1PV6wXF0hsABg==
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: crypto: sun4i-ss: error with kmap
+In-Reply-To: <20201202195501.GA29296@Red>
+References: <20201201130102.GA23461@Red> <87ft4phcyx.fsf@nanos.tec.linutronix.de> <20201201135252.GA9584@Red> <87y2ihfw6z.fsf@nanos.tec.linutronix.de> <20201201144529.GA6786@Red> <87v9dlfthf.fsf@nanos.tec.linutronix.de> <20201202195501.GA29296@Red>
+Date:   Wed, 02 Dec 2020 21:59:36 +0100
+Message-ID: <877dpzexfr.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/me8aMNfQdY0d3tE.7rzTq=h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/me8aMNfQdY0d3tE.7rzTq=h
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Dec 02 2020 at 20:55, Corentin Labbe wrote:
+> On Tue, Dec 01, 2020 at 04:15:08PM +0100, Thomas Gleixner wrote:
+>
+> The result could be seen at http://kernel.montjoie.ovh/129768.log
+> The log is 9Mb, but the ftrace dump seems not terminated, tell me if you need more.
 
-Hi all,
+Correct, the interesting entries right before the crash are missing. Can
+you try to make the trace buffers smaller or wait longer before
+terminating the thing?
 
-Commits
+16k buffer size per CPU should be completely sufficient. That should
+give us roughly the last 100 entries per CPU.
 
-  440ec82ebed2 ("selftests: openat2: add RESOLVE_ conflict test")
-  295983402a1a ("openat2: reject RESOLVE_BENEATH|RESOLVE_IN_ROOT")
+'trace_buf_size=16k'
 
-are missing a Signed-off-by from their committers.
+is the command line option for that.
 
---=20
-Cheers,
-Stephen Rothwell
+Thanks,
 
---Sig_/me8aMNfQdY0d3tE.7rzTq=h
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+        tglx
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/IAB8ACgkQAVBC80lX
-0GzD2Qf9HgVfstPUS7SA6GG1/cXqe269rUdHzZeyL7jlLvzJ8s0jDnVcXRYAKjpp
-5Su7yL1O3rCMSvcoRNc8OjV4iDTjdt9h936rMvcwx0ed5d4sejXXFbfHyT2h3be9
-N5WNzh08dusj472Xn5syI4ddBg1qOh8yck4ppjzItCU4zehIOnvPxJ1NxjTcjBS4
-smACt2FIqLbfKe1zU1Ts1DRaAKe1aVW/fzVD1o67gZ8aGrMH4AyZE5TT8Nlq3DSX
-AWrtGtk+7IegLTGq1F8Zf+ftMfH3YC0RHkngdo8Kw+HLiQbhpQ0aQFAsR+w2bu5Y
-EsXWmmoENNl7tpTm/uqOw2jcFiBMCw==
-=2w+Q
------END PGP SIGNATURE-----
 
---Sig_/me8aMNfQdY0d3tE.7rzTq=h--
