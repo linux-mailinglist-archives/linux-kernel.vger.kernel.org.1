@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649302CBFD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2922CBFD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgLBOfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:35:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50419 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726071AbgLBOff (ORCPT
+        id S1729945AbgLBOeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727460AbgLBOeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:35:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606919648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0EkevmCLQ1GX33E9KXRD3p8BSpTHh3E7pEzchj2FWow=;
-        b=PcH/w7Q5z45LiEl6kAK/on4/tFn8m4LcHsBywo/9C3rj7wqRl9rgQoxRtroWX0yp7monEr
-        nftUt1hrEE2fDEXsQ9/GrUq00nWE08qGfWdG6JD6AQPbxr5wBkIlAoVS3Gas+PY0Y5Hbv9
-        bhxpk7QhJssq3bxddVPsJqZTejV8BpA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-82-OXLcuBxbOca-YDdOQG16zw-1; Wed, 02 Dec 2020 09:34:06 -0500
-X-MC-Unique: OXLcuBxbOca-YDdOQG16zw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95C91100E324;
-        Wed,  2 Dec 2020 14:34:05 +0000 (UTC)
-Received: from localhost (ovpn-114-255.ams2.redhat.com [10.36.114.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B72D5C1D0;
-        Wed,  2 Dec 2020 14:33:57 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 14:33:56 +0000
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Justin He <Justin.He@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
- vfio_pin_pages_remote()
-Message-ID: <20201202143356.GK655829@stefanha-x1.localdomain>
-References: <20201119142737.17574-1-justin.he@arm.com>
- <20201124181228.GA276043@xz-x1>
- <AM6PR08MB32245E7F990955395B44CE6BF7FA0@AM6PR08MB3224.eurprd08.prod.outlook.com>
- <20201125155711.GA6489@xz-x1>
+        Wed, 2 Dec 2020 09:34:36 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6069C0613CF;
+        Wed,  2 Dec 2020 06:33:56 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id s2so1211975plr.9;
+        Wed, 02 Dec 2020 06:33:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jhLHY8QyPomX7+8QgezYScCBuMVKGE89dP75ZvcTbfc=;
+        b=F9kyCqSTHzWUx3lx1szktgRdzLO+BcxE6M6k4y0VpLoM7XYhauT0UljblhVwgoZb30
+         cdk2QtA92ZQHfrnAgHUkfb9mryKbPBSsDiLX8KJGgLNrFlmu+Oo+VorC7a1Ur/EXW9Lu
+         h2CUUfrmV5DZ0+x60HsowW6GqEPi1rd6mrJ7sVIKytUnYDr6O2BMwVylEvl9lau4aupE
+         TkPsjkPY6HTOUQ9zsy6HNWFCtCkQuitYL3kGRU4gbDx9O1tNJBoxrVwTe8QCoSa7YYpk
+         /1T/+CTtto9jx7OZRBBaKXYYh7DX4s7Pwyg0BAmB5ze5N6ersPBpNNY5DBPHW6avJaXF
+         TG5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jhLHY8QyPomX7+8QgezYScCBuMVKGE89dP75ZvcTbfc=;
+        b=U87d+l/YpBo4MTIUrAd1yYbpqgSYwZQRBpB6dStPOt4BcFzgwhQ4cmHjjGKaLo7oJh
+         UOROy1nfm8ncycJAz16w1yZHZyA/LxKo81BYwYDHsORpa1U24lY5CfSPDwlz6xHNo9ZC
+         VgDn4fZecRuZG0TOXb5/oRryHwO/rtAz1DcRwCubF4nSZ92aVqc72nrGHXXK21k64CA3
+         AsSkgxBV0ScRUpSnfluFuNEpRu2L3Q0aWqljX2bghq0O+rqHk3Gg+zI/zb99x8s4X99J
+         +uzBqyyOC7WdwGuurfTPmKNQe2y8O8ular4V6KgtUT3EPgJ5rBVZ+ZyKLRvydLtbm2lQ
+         DCfA==
+X-Gm-Message-State: AOAM532AV0nHQ34BlxqO6FZ/Sn2p4289qVqs/PfS+8mNk2dYIzSt+Vpp
+        WfALid3bmUBKv4FJcn1KXgcD5WLwK0hYsg4sVEE=
+X-Google-Smtp-Source: ABdhPJxr6QfkVhUs2mGtVIPIaJI9K8ykKYv5YXpKR2u2KXqwXr1SyRSCcN4uXm8kfnu0qKCboU8lwMl8FTALOvHpYtA=
+X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id
+ v3-20020a170902b7c3b02900da76bc2aa9mr2889382plz.21.1606919635935; Wed, 02 Dec
+ 2020 06:33:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201125155711.GA6489@xz-x1>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qDymnuGqqhW10CwH"
-Content-Disposition: inline
+References: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
+ <CAPDyKFrg5ur3iTp-dAoVqV5fiFgcmt01j9R7z3_i=tqhWW3WNg@mail.gmail.com>
+ <20201202122520.GD4077@smile.fi.intel.com> <CAPDyKFra1+HPGYjG30LkuPxPyN8mQaZan4+AFLKf7_gvd979PA@mail.gmail.com>
+ <CAHp75VeXxPoNqJVQojDC1G3gzJUJEiJs2UOm6kob71Aqa_7v2w@mail.gmail.com> <CAPDyKFpfadG2-JPA1PC5Sx1_eM39AQUQTVj=m26Gu_=GQmjicA@mail.gmail.com>
+In-Reply-To: <CAPDyKFpfadG2-JPA1PC5Sx1_eM39AQUQTVj=m26Gu_=GQmjicA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 2 Dec 2020 16:34:44 +0200
+Message-ID: <CAHp75Vf66eWnJFom66oZZnZ4Rcw0VF0QkGWgM5Mm40mTVt6i4A@mail.gmail.com>
+Subject: Re: [PATCH v6 0/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Mark Gross <mgross@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---qDymnuGqqhW10CwH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Dec 2, 2020 at 4:10 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> On Wed, 2 Dec 2020 at 14:09, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Wed, Dec 2, 2020 at 2:44 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-On Wed, Nov 25, 2020 at 10:57:11AM -0500, Peter Xu wrote:
-> On Wed, Nov 25, 2020 at 01:05:25AM +0000, Justin He wrote:
-> > > I'd appreciate if you could explain why vfio needs to dma map some
-> > > PROT_NONE
-> >=20
-> > Virtiofs will map a PROT_NONE cache window region firstly, then remap t=
-he sub
-> > region of that cache window with read or write permission. I guess this=
- might
-> > be an security concern. Just CC virtiofs expert Stefan to answer it mor=
-e accurately.
->=20
-> Yep.  Since my previous sentence was cut off, I'll rephrase: I was thinki=
-ng
-> whether qemu can do vfio maps only until it remaps the PROT_NONE regions =
-into
-> PROT_READ|PROT_WRITE ones, rather than trying to map dma pages upon PROT_=
-NONE.
+...
 
-Userspace processes sometimes use PROT_NONE to reserve virtual address
-space. That way future mmap(NULL, ...) calls will not accidentally
-allocate an address from the reserved range.
+> > My point is that it may be *not* a pin control at all.
+>
+> Sorry, but I don't quite follow, what is *not* a pinctrl?
+>
+> According to the information I have received from the previous
+> discussions [1], it's clear to me that the ARM SMC call ends up
+> changing settings for the I/O-pads. Or did I get that wrong?
 
-virtio-fs needs to do this because the DAX window mappings change at
-runtime. Initially the entire DAX window is just reserved using
-PROT_NONE. When it's time to mmap a portion of a file into the DAX
-window an mmap(fixed_addr, ...) call will be made.
+I'm discussing the possible implication of the solution (faking pin
+control) you are proposing.
+In this case we know that it's a pin control *under the hood of IPC*
+(!) but in another hardware generation it may be, for example,custom
+voltage regulator.
 
-Stefan
+What you are proposing seems to me suboptimal and actually lying about
+hardware. Because we do not have direct access to control this pad.
+What we have is an IPC to firmware. And it's not our business what is
+under the hood.
 
---qDymnuGqqhW10CwH
-Content-Type: application/pgp-signature; name="signature.asc"
+It seems it was a mistake to talk about these details in the first
+place because it brings more confusion about hardware. So, consider
+that it's not a pin control from OS perspective, but a firmware magic.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl/HpdQACgkQnKSrs4Gr
-c8gPrggAonKj8u861YBXdwmd9ewmkx/VVa0WqmIb9BHstu+ZJU4vEPWSCLs6Ztk3
-JlIeWhuwfvHWLRcEL7iki0ON0jgsV4076axu8aFvl0NsKWQk2TTIA3VwUiWh76Li
-Qy18X6LEEaR6UAJVgp1mQTG8oQzYQwvirdJSwWUSydq0SmhXPNHFeuRGxmmtcTIR
-9JzPk8VIqzddHqEnAHcFUTCE40830cm4oaSq1nesTpqwkuv9nx0tBmE4xj26TONM
-pTEHitIJKZIgxh6ZeDDAizwiRZp4l6DMuEb0vxiNsrBaddhe5sIoa7DwGgiXn0Ps
-ImXZKCwuxOieIb+HAIyjmwe3fIjctQ==
-=P7/h
------END PGP SIGNATURE-----
-
---qDymnuGqqhW10CwH--
-
+-- 
+With Best Regards,
+Andy Shevchenko
