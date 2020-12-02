@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571EC2CC8EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F582CC8F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387753AbgLBV3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgLBV3i (ORCPT
+        id S1729969AbgLBVcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:32:10 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:44618 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729462AbgLBVcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:29:38 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBF7C0613D6;
-        Wed,  2 Dec 2020 13:28:57 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id s9so69447ljo.11;
-        Wed, 02 Dec 2020 13:28:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5XxPc3chLSDUNv3JWhSZI6yuRR4/U1OgJnqTGaagloE=;
-        b=D8/7JkieV7O7uvLtVcAzL+wIMniFiyKVdeCJY9CRDiOzumSNZJPXRHxgrn4EIXzTg8
-         MaPq5BmxvXx5Las/rLGgT6t5AIUC4LZphF5yniGht66nAVoacoc4a1G0Pkuo1BoVohWa
-         3Ab2/SIj5qN/U/7MJdND1QCQi/7h9fdK9Dbq2bSLIltGw368pbY8vmiGLW2mLlw1qglz
-         tbYtr5T/Zv3dx6k21rlazfL47g9JcgS1XBx5iC5FeTnNeIyk/HY0Tjo5XQ+rYF4/LXEk
-         kmatHvuGIsSRWXP0cJF5QIUw1J6w6jhQJickgKXMPWzq/M5rUX2z74KrlkJIeHDU2s3R
-         14ng==
+        Wed, 2 Dec 2020 16:32:10 -0500
+Received: by mail-il1-f200.google.com with SMTP id j8so2679799ilr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 13:31:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5XxPc3chLSDUNv3JWhSZI6yuRR4/U1OgJnqTGaagloE=;
-        b=EDGVXQ9wOmNaEHTEW147AI4+SI7darEALVS5zQ5vdUxgMpgWMffWcOIVeovRIAD9h/
-         enS+qnaBEVrHNYzbWH8cQEjDOjTmtoUHQ2D843CsAIFSCxklwJIfY+BR8xD7CWdQey06
-         UcZZqrh8ZNylQXkW58tCo8ECLXlq6Ay/e2m+cKtgrD22dULuZWaMxFyEZNYo8JxfvAsy
-         j0Fu6dYt5zWAosJttXnINRtCj2C8l4le75wmnCYs4r3xft6rLqthZUp8crKTcPobmsq3
-         FWMzLtK5nwDV/jSptiOjx2L6j2qaSpmpL6eJ82Zeyf1QygWbj0Va5CYmaqUcOQJGdhbM
-         3KVQ==
-X-Gm-Message-State: AOAM533hqgYRgtX1qgRKbxpxF1qPozZRji+QX5mjqhXlXQrmA7WWHm93
-        9JDh3bfDY0anjsq2VGjqVUg=
-X-Google-Smtp-Source: ABdhPJxgyr4kAy1RMo17xWfFqHcx1e6XFhqRmcr1tNyKq+pGOsciL9vMgmoSwRX9ecNVe2j1TV7cRQ==
-X-Received: by 2002:a05:651c:2005:: with SMTP id s5mr2148512ljo.36.1606944535669;
-        Wed, 02 Dec 2020 13:28:55 -0800 (PST)
-Received: from [192.168.1.39] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id y65sm844738lfa.289.2020.12.02.13.28.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 13:28:54 -0800 (PST)
-Subject: Re: [PATCH] mm/vmalloc: randomize vmalloc() allocations
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20201201214547.9721-1-toiwoton@gmail.com>
- <20201202185334.GG11935@casper.infradead.org>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <ddfe379a-915b-fca8-d191-e60e059e2dae@gmail.com>
-Date:   Wed, 2 Dec 2020 23:28:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Ff9eT4IKjr/d9+CBTJN/vpEU1i32CgUXCqFZBYyDY8s=;
+        b=AadkbX1HxOVPOceYN0gR/iYB1PQOtKHBDxEmBcwyZr8VL5wH4QAdwxYCbvhio3UZnJ
+         xQvuGi0N+B/tFwoV7Zdcv0tKmWxL6bZ1D4y8uz/g1vDpo18CAtz77hW6LxBabjMHzF9m
+         bYwELzidWwyMICuEZeODkAOLZIVYps2tvleYxwAwMeOnaMn2eoH0Yg/DlYlCRdDp7rBU
+         Zhx9LsrLn3EJ1E6THWfjW1fH06QXdxoamH/6qVIrBSY4zMV3bM1px5RkHOO9eE3I/16F
+         0ec2zjOxiQbTj85YxV1FMZkkkBB2dd5VUDdPJJX8DF5+viRRfCkrbJerw8NJrEI2BliA
+         vCvw==
+X-Gm-Message-State: AOAM5310ag8moL5glrYvZ1C1W7zaFDqlR1buUwtLWByxy0NJDDK5SVpH
+        0LNTKYtbpNVMdnDr3xyvE8akXo9sqJBeSs1F8SnGfqPXyN3e
+X-Google-Smtp-Source: ABdhPJzLPKCTXPDvGdMkc1xtq05W2K1aWKZ9XhR7Fl/yf6dEmfPi+8unQRDokx5O/cfB2niOhhm2ZsC2f43gkNfS/TE+DPEjFzeM
 MIME-Version: 1.0
-In-Reply-To: <20201202185334.GG11935@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:b681:: with SMTP id i1mr153616jam.10.1606944683171;
+ Wed, 02 Dec 2020 13:31:23 -0800 (PST)
+Date:   Wed, 02 Dec 2020 13:31:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000003a2e105b581f7b9@google.com>
+Subject: WARNING in create_io_worker
+From:   syzbot <syzbot+fa13b30255540662f825@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.12.2020 20.53, Matthew Wilcox wrote:
-> On Tue, Dec 01, 2020 at 11:45:47PM +0200, Topi Miettinen wrote:
->> +	/* Randomize allocation */
->> +	if (randomize_vmalloc) {
->> +		voffset = get_random_long() & (roundup_pow_of_two(vend - vstart) - 1);
->> +		voffset = PAGE_ALIGN(voffset);
->> +		if (voffset + size > vend - vstart)
->> +			voffset = vend - vstart - size;
->> +	} else
->> +		voffset = 0;
->> +
->>   	/*
->>   	 * If an allocation fails, the "vend" address is
->>   	 * returned. Therefore trigger the overflow path.
->>   	 */
->> -	addr = __alloc_vmap_area(size, align, vstart, vend);
->> +	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
->>   	spin_unlock(&free_vmap_area_lock);
-> 
-> What if there isn't any free address space between vstart+voffset and
-> vend, but there is free address space between vstart and voffset?
-> Seems like we should add:
-> 
-> 	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
-> +	if (!addr)
-> +		addr = __alloc_vmap_area(size, align, vstart, vend);
-> 	spin_unlock(&free_vmap_area_lock);
-> 
+Hello,
 
-How about:
+syzbot found the following issue on:
 
-	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
-+	if (!addr)
-+		addr = __alloc_vmap_area(size, align, vstart, vstart + voffset + size);
-	spin_unlock(&free_vmap_area_lock);
+HEAD commit:    c84e1efa Merge tag 'asm-generic-fixes-5.10-2' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a43395500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d1e98d0b97781e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=fa13b30255540662f825
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-That way the search would not be redone for the area that was already 
-checked and rejected.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Perhaps my previous patch for mmap() etc. randomization could also 
-search towards higher addresses instead of trying random addresses five 
-times in case of clashes.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fa13b30255540662f825@syzkaller.appspotmail.com
 
--Topi
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 10595 at include/linux/cpumask.h:137 rcu_read_unlock include/linux/rcupdate.h:696 [inline]
+WARNING: CPU: 3 PID: 10595 at include/linux/cpumask.h:137 ttwu_stat kernel/sched/core.c:2441 [inline]
+WARNING: CPU: 3 PID: 10595 at include/linux/cpumask.h:137 try_to_wake_up+0xef6/0x1330 kernel/sched/core.c:2984
+Modules linked in:
+CPU: 3 PID: 10595 Comm: io_wq_manager Not tainted 5.10.0-rc5-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:tryqemu-system-x86_64: warning: guest updated active QH
+Code: 80 3d 93 2a 8c 0b 00 0f 84 f1 00 00 00 e8 82 80 10 00 48 c7 c6 d9 6d 4c 81 48 c7 c7 e0 77 33 8b e8 0f b7 09 00 e9 15 f9 ff ff <0f> 0b e9 65 f4 ff ff 4c 89 ff 48 89 4c 24 08 e8 b6 51 ff ff 48 8b
+RSP: 0018:ffffc90004b4fd50 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 1ffff92000969faf RCX: ffff88806dc24778
+RDX: 1ffff1100db848ee RSI: ffffffff83b63fcb RDI: 0000000000000006
+RBP: ffff88806dc24400 R08: ffff88806dc24410 R09: ffffffff8cecc98f
+R10: 0000000000000040 R11: 0000000000000000 R12: 0000000000000202
+R13: ffff88806dc24c38 R14: 0000000000000008 R15: ffff88806dc24770
+FS:  0000000000000000(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000339da98 CR3: 0000000020a7e000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ create_io_worker+0x590/0x8d0 fs/io-wq.c:720
+ io_wq_manager+0x16b/0xb80 fs/io-wq.c:785
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
