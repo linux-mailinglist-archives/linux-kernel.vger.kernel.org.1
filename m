@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660762CBCB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 835E62CBCC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388816AbgLBMOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:14:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34139 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729817AbgLBMOs (ORCPT
+        id S1729876AbgLBMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgLBMRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:14:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606911202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s8wBO6q+/ydbMfM2l/hjFLTpTgfds0h6kmbDEEyONUA=;
-        b=i4QGIi8Fpyn26hcGpzQzEqb41SlTV2i+kl3Xlrzsk8pQ3aLsKcvltKbOvmPThsWzK6Ubyh
-        OleeQclqeemZy+erGy8bab/luxtyByT3vaQ6Rcvjx/SwZF9a+tlOkHeCzaSG8yjJ3AChcM
-        axGtTW9GAG71fxnwL+yIgQ/3kBb9HBY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-nSDIcSL6NXKa3yJL-JiLyw-1; Wed, 02 Dec 2020 07:13:19 -0500
-X-MC-Unique: nSDIcSL6NXKa3yJL-JiLyw-1
-Received: by mail-ej1-f69.google.com with SMTP id u10so2866484ejy.18
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 04:13:19 -0800 (PST)
+        Wed, 2 Dec 2020 07:17:15 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0615AC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:16:36 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id iq13so911711pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 04:16:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0D0YvfFeRVroyy8DOM8jNI9C4k7vyQ+vFDUfvEXQRIw=;
+        b=pZfhUnAfhJIC6/Dv5lxitZ9cKXI7bpi1N7AHDZuXk5iD1odIfF+g8ifMX49reRjF99
+         yLEwUP6xyJa0nYkrqHO91vMYQ0XAv/FNqFSpBKoRgkUEIaxAezWlS9w7l1dzjubGclHz
+         ThKFQZj7svmOUlI0TdwlQFxJqtLyJL8U5k8/hNqr/2y9OXXb/sFzwZi/Q8k5LSWxGNqG
+         qLYgioFTLRmCw5DxE2volAw4/zrCDm+38iAqBgx7OE56INmP/Ga0CGzxUAxMMxQl5750
+         sA7qPKmbiVH9tN0Hi/Oa6rm0yp0xRwGe3VrMmaVeLVrF2NOS+g5K8NvQLuwSa7TZc4TS
+         d/uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=s8wBO6q+/ydbMfM2l/hjFLTpTgfds0h6kmbDEEyONUA=;
-        b=KCD6NAC0Zr/rMxNeFISW/AMi0yDfYUAxa9JDnd3heozTxuruwJ3rjycidyuXH/hwdR
-         p0jRsDzA5TYu/ohu3ri+BZ6P1WiDPZJOMXdn5qVxfuDS8DHmFo51awNI6JCwyt8w/Kcg
-         bmKVL9xTCPcyUo1AEiNey4Yl3VClUu1bPIKmpxeyGBv/mpBg2KcMAR14xaIisP5KfDY7
-         tH289vu1Sg7zZCxRyv1yhC+SWYIBDxT/79x8MW1KmKbcYTa3AqFi+vAtnw0jzNXFsTud
-         PubDqbIu6ztftr080NDPuA4y9DEEM4Kpeb8UMRqWP4uBL0csfCnYwfkNtxrlxf4LX0KX
-         pAjg==
-X-Gm-Message-State: AOAM530upkcGOoYfpL1ZNBNtccfzm9g5HPEhaweeN2hcwmDoikoqWGNN
-        1AanPdaQ0UlfZM2meD9Hx6w+JtjhPK+MzSoOvEPO1UCD+9wVPmDlqFdsPUqxG2NCR9bilE+1nm3
-        /OIL4tz+QMUpzZfIwcETVJhdNN7M21mkcknldQMQLTNCwQON7h16AmBnJKGug8vVoBEW5WTvuIM
-        7A
-X-Received: by 2002:a17:907:94c6:: with SMTP id dn6mr2015616ejc.13.1606911198419;
-        Wed, 02 Dec 2020 04:13:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxjcf2/jAVd/t5xTW/xEbxoPnYk9GfgCvwh3DT7GD0BwB22NZEO16T4jtdxLCGGhpZ9PtQtGQ==
-X-Received: by 2002:a17:907:94c6:: with SMTP id dn6mr2015594ejc.13.1606911198176;
-        Wed, 02 Dec 2020 04:13:18 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id u23sm1053845ejy.87.2020.12.02.04.13.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 04:13:17 -0800 (PST)
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: remove trailing semicolon in
- macro definition
-To:     trix@redhat.com, ibm-acpi@hmh.eng.br, mgross@linux.intel.com
-Cc:     ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201127181024.2771890-1-trix@redhat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d83d3fe4-5999-b8d4-2b52-961313662e46@redhat.com>
-Date:   Wed, 2 Dec 2020 13:13:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        bh=0D0YvfFeRVroyy8DOM8jNI9C4k7vyQ+vFDUfvEXQRIw=;
+        b=Fo0IuaCcjt81OO5IMt9a1v48qbZWTvyyjc4oYA5OM4uwWv62oA6Zi6pgSh4knNN+ya
+         I9srM2Ir65xwVyDyTEh+n5/pXvi+Y2rUOmCf/6M54WXDufmCjOefDQp4t8KaweRKQBbN
+         3hJRrZFNl+XMvyfKZ9f5mpZEnzc0ck8IcQZ0Q6GoyiHmmU/FlSWzo60UKUuHBA0vQtbt
+         E+Sd49lN/YGPc9vtP7ez3DVoeQ0amsO4VoOf4nWu+ardnU1N7sg2LzBG6cZUzu35MFNg
+         u9Gb1R6XHsiFNyFbtjRSsRmNvP6JsB91dhZMr0j4QnAibwIZc6IEox5pgeaovyaKb8Ar
+         2f/g==
+X-Gm-Message-State: AOAM532Od/4EmN91iMe6prxW7xEQyz2QrTPd69jYWuggjiJJ/vvdbGIe
+        f+IonbdTObHeQjMhthUEfpHjIoF9ByGM9ZLZ
+X-Google-Smtp-Source: ABdhPJwEcQ4LPF+w2bx+8qB8eyH1ySMsXXOgJG55j8ylaLQmmrGHP7+W2ehYLVoe0ItPybgrsHJf3g==
+X-Received: by 2002:a17:902:bc81:b029:d8:ef30:b518 with SMTP id bb1-20020a170902bc81b02900d8ef30b518mr2274981plb.81.1606911395581;
+        Wed, 02 Dec 2020 04:16:35 -0800 (PST)
+Received: from localhost.localdomain ([103.136.221.70])
+        by smtp.gmail.com with ESMTPSA id 77sm2348479pfv.16.2020.12.02.04.16.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 04:16:35 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm/memcontrol: make the slab calculation consistent
+Date:   Wed,  2 Dec 2020 20:14:34 +0800
+Message-Id: <20201202121434.75099-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-In-Reply-To: <20201127181024.2771890-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Although the ratio of the slab is one, we also should read the ratio
+from the related memory_stats instead of hard-coding. And the local
+variable of size is already the value of slab_unreclaimable. So we
+do not need to read again. Simplify the code here.
 
-On 11/27/20 7:10 PM, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> The macro use will already have a semicolon.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/memcontrol.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-> ---
->  drivers/platform/x86/thinkpad_acpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index 36d9594bca7f..5bbb378d1a37 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -1025,7 +1025,7 @@ static struct attribute_set *create_attr_set(unsigned int max_members,
->  }
->  
->  #define destroy_attr_set(_set) \
-> -	kfree(_set);
-> +	kfree(_set)
->  
->  /* not multi-threaded safe, use it in a single thread per set */
->  static int add_to_attr_set(struct attribute_set *s, struct attribute *attr)
-> 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 9922f1510956..03a9c64560f6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1545,12 +1545,22 @@ static int __init memory_stats_init(void)
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
++		switch (memory_stats[i].idx) {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-		if (memory_stats[i].idx == NR_ANON_THPS ||
+-		    memory_stats[i].idx == NR_FILE_THPS ||
+-		    memory_stats[i].idx == NR_SHMEM_THPS)
++		case NR_ANON_THPS:
++		case NR_FILE_THPS:
++		case NR_SHMEM_THPS:
+ 			memory_stats[i].ratio = HPAGE_PMD_SIZE;
++			break;
+ #endif
++		case NR_SLAB_UNRECLAIMABLE_B:
++			VM_BUG_ON(i < 1);
++			VM_BUG_ON(memory_stats[i - 1].idx != NR_SLAB_RECLAIMABLE_B);
++			break;
++		default:
++			break;
++		}
++
+ 		VM_BUG_ON(!memory_stats[i].ratio);
+ 		VM_BUG_ON(memory_stats[i].idx >= MEMCG_NR_STAT);
+ 	}
+@@ -1587,8 +1597,10 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+ 		seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
+ 
+ 		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
+-			size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
+-			       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
++			int idx = i - 1;
++
++			size += memcg_page_state(memcg, memory_stats[idx].idx) *
++				memory_stats[idx].ratio;
+ 			seq_buf_printf(&s, "slab %llu\n", size);
+ 		}
+ 	}
+-- 
+2.11.0
 
