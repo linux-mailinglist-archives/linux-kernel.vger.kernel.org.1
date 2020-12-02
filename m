@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15232CC095
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FA32CC092
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgLBPSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728311AbgLBPSV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:18:21 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE5AC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:17:41 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id k10so8187305wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:17:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/Y0icDYJYLrdu3OvNT2zbeWx1FJTPoSGg3Tnj6XiwU8=;
-        b=VXfZGFFIRGghiRfwkfLU6LjjuaGkoM0dXtgtToMQOQGac7F/THkCEtiQ6ewmDPKzec
-         OhGMo+Tt8mKiI+GoJ4KnA6VvnE5Nk17d21chMbar5bSntCGEJScEE/pCobqA0SUHA8kF
-         ObF2NjaHNDnUXbY68SIlQkHzXdQrwYqG6Sx/NnxfZy2GOryrvLamtNwgvwBfSt+tvuaO
-         uFCtW4tNEzot+PNEunvKCfj/rj+VzPJspWDGi6eG4lI8A86p+5rTBYOuH41hekiij5vD
-         U6QV9DkO1DrOelysBnQAPY4XYQSZL9eKtGnbF2qaaIBum3OUYypLwjybFaoXW3v7WGr7
-         ANnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/Y0icDYJYLrdu3OvNT2zbeWx1FJTPoSGg3Tnj6XiwU8=;
-        b=GoxfUc8AoqIoOV1uKFyVqRPsbABJKwGCMaHN2N1d4jpdvR53rF1PWjmtAgBCjGrr5N
-         uTI9VTaqooIqv8NLPgJnzSNTh2iPJujkIx2MQLcTXuqAc1m9AhIKPA0nrX8AT3VJ5zSj
-         +1GKveNc2MTOYTnGLrY3BQYY2GmkpiQbX4QPmQSshljX2xt4rQUmNasMNDsxqCs+zU2c
-         k+AS+GgXg1hUBSN4D33w9NluMymDr2Sde+6gqh8+VcCEErKhKDxqUY0AmD6/MyFVhICX
-         BJfEe6Pa7eu2QZLPXMtgFAlAri6fHUWed4P47FqUsbb1fxMvDmrxQhYGq03benN9S2Eu
-         O74g==
-X-Gm-Message-State: AOAM531Cfe+Sh4rMO5zdyTy45VgVWS3LvjWxGdN6AiUAlw70udgPioj7
-        TZyxoeVI9QO1ZMwoCRmH7PNF4vfkyikD56Es
-X-Google-Smtp-Source: ABdhPJyDm/rnIbajp48WsCqoLs4JXvHjzYC6BKhHYgu8qMCchv5bPI8dTXLQ5qVdhyA6kSiPyXNS/g==
-X-Received: by 2002:a1c:2681:: with SMTP id m123mr3552375wmm.114.1606922259452;
-        Wed, 02 Dec 2020 07:17:39 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id j14sm2473154wrs.49.2020.12.02.07.17.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Dec 2020 07:17:38 -0800 (PST)
-Subject: Re: [PATCH v5 2/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201201142830.13152-1-srinivas.kandagatla@linaro.org>
- <20201201142830.13152-3-srinivas.kandagatla@linaro.org>
- <X8ad9lw73ZKsqXKT@builder.lan>
- <c7f8e95d-21aa-b723-2b6e-0420cb400025@linaro.org>
-Message-ID: <50411940-ded8-d5cc-c373-f1bbad2c02fe@linaro.org>
-Date:   Wed, 2 Dec 2020 15:17:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728172AbgLBPR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:17:57 -0500
+Received: from mga14.intel.com ([192.55.52.115]:17872 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726037AbgLBPR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:17:57 -0500
+IronPort-SDR: 6ga+xZjdBOBHsuJQtaOfcu6YVPSB43Sv8CacLLYJNoe82tgo8No1HFy8BoLBmHSMoGpB0vYGio
+ YsLiHOOihIIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="172248150"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="172248150"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:17:16 -0800
+IronPort-SDR: lQjhoa4rlFFBhKMBX7uKfJeK3w1ffejEELjEVz36IdY+vd5HEezdP9lCjZSbo80pcNKKTWu79z
+ lWZYmP6Kw1Rg==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="550096338"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:17:01 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kkTtK-00BXLU-L0; Wed, 02 Dec 2020 17:18:02 +0200
+Date:   Wed, 2 Dec 2020 17:18:02 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v3 16/17] x86/ioapic: export a few functions and data
+ structures via io_apic.h
+Message-ID: <20201202151802.GI4077@smile.fi.intel.com>
+References: <20201124170744.112180-1-wei.liu@kernel.org>
+ <20201124170744.112180-17-wei.liu@kernel.org>
+ <CAHp75Vew+yjUkcfSx33KjhPLriH6wrYWixAtn9mASRFqe4+c+Q@mail.gmail.com>
+ <20201202141107.covsx4ugipuyl6he@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-In-Reply-To: <c7f8e95d-21aa-b723-2b6e-0420cb400025@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202141107.covsx4ugipuyl6he@liuwe-devbox-debian-v2>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 02/12/2020 09:56, Srinivas Kandagatla wrote:
->>> +        case PIN_CONFIG_SLEW_RATE:
->>> +            if (arg > LPI_SLEW_RATE_MAX) {
->>> +                dev_err(pctldev->dev, "invalid slew rate %u for pin: 
->>> %d\n",
->>> +                    arg, group);
->>> +                return -EINVAL;
->>> +            }
->>> +
->>> +            slew_offset = g->slew_offset;
->>> +            if (slew_offset == NO_SLEW)
->>> +                break;
->>> +
->>> +            mutex_lock(&pctrl->slew_access_lock);
->>> +            sval = ioread32(pctrl->slew_base + LPI_SLEW_RATE_CTL_REG);
->>> +
->>> +            for (i = 0; i < LPI_SLEW_BITS_SIZE; i++) {
->>> +                assign_bit(slew_offset, &sval, arg & 0x01);
->>> +                slew_offset++;
->>> +                arg = arg >> 1;
->>> +            }
->>
->> Isn't this loop just the same as
->>
->>     FIELD_SET(3 << slew_offset, arg & 3, sval)
-
-None of FIELD_* or replace_bits apis will work here, as the mask passed 
-to those macros should be a constant #define. Passing variable to them 
-in mask will result in compile error!
-
-mask in this case is retrieved at runtime.
-
-I think we should live with the existing code unless there is a strong 
-reason for it to change! Or a better alternative.
-
-
---srini
-
-
+On Wed, Dec 02, 2020 at 02:11:07PM +0000, Wei Liu wrote:
+> On Wed, Nov 25, 2020 at 12:26:12PM +0200, Andy Shevchenko wrote:
+> > On Wed, Nov 25, 2020 at 1:46 AM Wei Liu <wei.liu@kernel.org> wrote:
+> > >
+> > > We are about to implement an irqchip for IO-APIC when Linux runs as root
+> > > on Microsoft Hypervisor. At the same time we would like to reuse
+> > > existing code as much as possible.
+> > >
+> > > Move mp_chip_data to io_apic.h and make a few helper functions
+> > > non-static.
+> > 
+> > > +struct mp_chip_data {
+> > > +       struct list_head irq_2_pin;
+> > > +       struct IO_APIC_route_entry entry;
+> > > +       int trigger;
+> > > +       int polarity;
+> > > +       u32 count;
+> > > +       bool isa_irq;
+> > > +};
+> > 
+> > Since I see only this patch I am puzzled why you need to have this in
+> > the header?
+> > Maybe a couple of words in the commit message to elaborate?
 > 
+> Andy, does the following answer your question?
+> 
+> "The chip_data stashed in IO-APIC's irq chip is mp_chip_data.  The
+> implementation of Microsoft Hypevisor's IO-APIC irqdomain would like to
+> manipulate that data structure, so move it to io_apic.h as well."
 
-> This will not work FIELD_SET will not clear any bits wich are already 
-> set! assing_bit will work, but we could do better by adding slew_mask 
-> per pin rather than slew_offset which should allow us to use 
-> replace_bits straight away.
+At least it sheds some light, thanks.
+
+> If that's good enough, I can add it to the commit message.
+
+It's good for a starter, but I think you have to wait for what Thomas and other
+related people can say.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
