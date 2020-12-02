@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92782CC796
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B0B2CC79D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbgLBUOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:14:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730845AbgLBUOj (ORCPT
+        id S2388090AbgLBUSP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 15:18:15 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:54630 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387412AbgLBUSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:14:39 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA75C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:13:53 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id s27so6739422lfp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:13:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JwDuNvESJRp4+4wFGB9eXTmw8LHatjPDAWUGnhDNQM0=;
-        b=KUyCsmBcx+HvkQ1kf35woQhB1Qz1x70+qy7RY097/niHceovj20Z+xZSCDSq+d4F++
-         YpHeiGGOgTuzGdTQONHv8+VtQ2144XQJw7ZA7Y2d4NhdhvP3uoSPeAUXSszMArwHx+4A
-         2ou/o0cFxCawwIMqypcafgKaRFutrW3QJ9Od8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JwDuNvESJRp4+4wFGB9eXTmw8LHatjPDAWUGnhDNQM0=;
-        b=LEBJVzE9FksML/3cR2ctopPjWQ9+q6dDDQAHoW9PDZr1MuwUIwHsJHrOEm1M9ok3ra
-         Wi8vMY5HC0KiuFWKtjsicrZT7KCk7HSAG+gEPod/Sbf5YkoT/Sc6kh0ok0MD3rYee7CQ
-         See1mC6tTrzIn0kIDx0J277NfrZ/HKmKqzw352BNdMzBm0AVttj1zkrGGBywwEvMeAK2
-         iTriJKh/hcUbeFlufZ2Os5nZzlDDhJ90UAuoCrhJ1zcRdgZaQYILCCTGXxqVMLF8Trsw
-         Yfxk3EjeGOAeraGY1fzyi5Tp4EQfiSJlq2TPqwF0kXV6O/c2R447KYCdXTH4R/U1pVN/
-         rrIQ==
-X-Gm-Message-State: AOAM531Lg4igbDdUN6buViWnL3cmMKLImOMp5I9AGNXCP6dIknWwtUOl
-        1UHjVMvQh5pNzeGcGEp3NgL4iFKhG8QKLw==
-X-Google-Smtp-Source: ABdhPJxXLNpX0n5s65gl9gSzc37lT0orKC1RMTjwiuGMndydCpV4sXzJvtw2d+66YcG2zMsa1rThfw==
-X-Received: by 2002:a19:702:: with SMTP id 2mr1883592lfh.347.1606940031399;
-        Wed, 02 Dec 2020 12:13:51 -0800 (PST)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id x2sm753903lfc.177.2020.12.02.12.13.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 12:13:48 -0800 (PST)
-Received: by mail-lj1-f176.google.com with SMTP id t22so5326825ljk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:13:48 -0800 (PST)
-X-Received: by 2002:a2e:7f13:: with SMTP id a19mr2003590ljd.70.1606940027777;
- Wed, 02 Dec 2020 12:13:47 -0800 (PST)
+        Wed, 2 Dec 2020 15:18:14 -0500
+Received: from 1.general.jvosburgh.uk.vpn ([10.172.196.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1kkYZ6-0001rP-14; Wed, 02 Dec 2020 20:17:28 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 657595FEE8; Wed,  2 Dec 2020 12:17:26 -0800 (PST)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 5F9249FAB0;
+        Wed,  2 Dec 2020 12:17:26 -0800 (PST)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ivan Vecera <ivecera@redhat.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH net v2] bonding: fix feature flag setting at init time
+In-reply-to: <CAKfmpSez1UYLG5nGYbMsRALGpEyXnwJcoFJV_7vALgpG3Xotcw@mail.gmail.com>
+References: <20201123031716.6179-1-jarod@redhat.com> <20201202173053.13800-1-jarod@redhat.com> <14711.1606931728@famine> <CAKfmpSez1UYLG5nGYbMsRALGpEyXnwJcoFJV_7vALgpG3Xotcw@mail.gmail.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Wed, 02 Dec 2020 14:23:00 -0500."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-References: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
- <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
- <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com>
- <CAHk-=winw=9xh6SmFJPZgi8ngVR-ECTA-kDAAU3DEPLMoUrzVA@mail.gmail.com>
- <CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com>
- <CAK7LNAQtABssBH2LGThgv-F3_aSrz9Hd-ra9Yyu4-FFzY1nsUw@mail.gmail.com>
- <CAHk-=whK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig=+vnw@mail.gmail.com> <CAK7LNAQGHjLYteCt+8BXSY-5CB0gaO1JtHY-SpPFrfdchoHKrQ@mail.gmail.com>
-In-Reply-To: <CAK7LNAQGHjLYteCt+8BXSY-5CB0gaO1JtHY-SpPFrfdchoHKrQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 2 Dec 2020 12:13:31 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whfP8CBZGVKzuES9wU2BKTEdUTUhMMW-G90vxdMR8Zi0w@mail.gmail.com>
-Message-ID: <CAHk-=whfP8CBZGVKzuES9wU2BKTEdUTUhMMW-G90vxdMR8Zi0w@mail.gmail.com>
-Subject: Re: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Emese Revfy <re.emese@gmail.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <21152.1606940246.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Wed, 02 Dec 2020 12:17:26 -0800
+Message-ID: <21153.1606940246@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 4:54 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+Jarod Wilson <jarod@redhat.com> wrote:
+
+>On Wed, Dec 2, 2020 at 12:55 PM Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
+>>
+>> Jarod Wilson <jarod@redhat.com> wrote:
+>>
+>> >Don't try to adjust XFRM support flags if the bond device isn't yet
+>> >registered. Bad things can currently happen when netdev_change_features()
+>> >is called without having wanted_features fully filled in yet. Basically,
+>> >this code was racing against register_netdevice() filling in
+>> >wanted_features, and when it got there first, the empty wanted_features
+>> >led to features also getting emptied out, which was definitely not the
+>> >intended behavior, so prevent that from happening.
+>>
+>>         Is this an actual race?  Reading Ivan's prior message, it sounds
+>> like it's an ordering problem (in that bond_newlink calls
+>> register_netdevice after bond_changelink).
 >
-> Just a nit:
-> Now that the test code does not include any header,
-> you can also delete
-> "-I $srctree/gcc-plugins -I $gccplugins_dir/include"
+>Sorry, yeah, this is not actually a race condition, just an ordering
+>issue, bond_check_params() gets called at init time, which leads to
+>bond_option_mode_set() being called, and does so prior to
+>bond_create() running, which is where we actually call
+>register_netdevice().
 
-Ahh,m yes.
+	So this only happens if there's a "mode" module parameter?  That
+doesn't sound like the call path that Ivan described (coming in via
+bond_newlink).
 
-It sounds like we might be able to delete the build test entirely if
-we just always expect to have a recent enough gcc.
+	-J
 
-Testing the headers for existence would presumably still be needed,
-just to verify "do we have plugin support installed at all".
+>>         The change to bond_option_mode_set tests against reg_state, so
+>> presumably it wants to skip the first(?) time through, before the
+>> register_netdevice call; is that right?
+>
+>Correct. Later on, when the bonding driver is already loaded, and
+>parameter changes are made, bond_option_mode_set() gets called and if
+>the mode changes to or from active-backup, we do need/want this code
+>to run to update wanted and features flags properly.
+>
+>
+>-- 
+>Jarod Wilson
+>jarod@redhat.com
 
-But I'm not planning on applying this directly - I find the config
-overhead to be a bit annoying, but it's not like it is _objectively_
-really a problem. More of a personal hangup ;)
-
-        Linus
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
