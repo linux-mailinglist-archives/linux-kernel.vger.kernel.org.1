@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651022CC2EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 405842CC2EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387536AbgLBQ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:59:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
+        id S2387439AbgLBRB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387516AbgLBQ7R (ORCPT
+        with ESMTP id S1727913AbgLBRB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:59:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E4CC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:58:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ICIwPScTyOPZq1IRDrxDK6jQadAjeRRdxNuGb4ptO54=; b=hEra2LQkMd7pHsBhc94ZlRee+N
-        r+MbLw+7AOyVtZRHp1hllkiEmuTAXk44X3AR8e06WG//oBn9OiI7Pv17og3jl/RMDrnO4RbKK4PK0
-        J4TzmMbpnFgpZeExrgRzmpd8YMgmpFwC8ehkHhmEdS1rY5uE9yS3z0PSh2r8iPlrKwSI9nE5tR44Q
-        xxUAedGKzoyE/4VFObMrMjFSjmUmYWpgnsWKcDQr0hRVzq3LU2BPLqlFLQ894jf9YIgudG20ET4PA
-        pLMawVi0FwaKfgMAiPRejOcDIxfFRN085PhzLXOAZqio9EaR0H2lkQjHeC0JVLMf/HaPIUaJb6vtY
-        L5GlGLvA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkVSY-0005Kk-F9; Wed, 02 Dec 2020 16:58:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0D637305E21;
-        Wed,  2 Dec 2020 17:58:29 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E2A59201BAA71; Wed,  2 Dec 2020 17:58:28 +0100 (CET)
-Date:   Wed, 2 Dec 2020 17:58:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
-        lenb@kernel.org, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com, ionela.voinescu@arm.com,
-        qperret@google.com, viresh.kumar@linaro.org
-Subject: Re: [RFC] Documentation/scheduler/schedutil.txt
-Message-ID: <20201202165828.GC2414@hirez.programming.kicks-ass.net>
-References: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
- <20201202141835.GY3306@suse.de>
- <20201202155452.GK3021@hirez.programming.kicks-ass.net>
- <20201202164531.GA3306@suse.de>
+        Wed, 2 Dec 2020 12:01:28 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A568CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 09:00:48 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id 81so928939ioc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 09:00:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Zi/zixdoKqZ5PZb1aIHLR28SpFiihzwMb6piblktrQw=;
+        b=HIau1xgRR1/X5EcyJP5u8dGtaXPfOgFwqw0m0FKLX4W1UGsK2tlb/Aavhl8TdXn0B/
+         HJ/+hirCkiEg6nQZSRQQ6MApupeTK/QoO9cHIpCkU3+KpIyL8SBpB3i9+6zQhtKaXe9v
+         gMq/j+7MNDmFegK0ond7LWovpkeipLRJt4IN0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Zi/zixdoKqZ5PZb1aIHLR28SpFiihzwMb6piblktrQw=;
+        b=Uidq1HOaYbzl1zEqlkao9oXlle6N0VGznzxySHn6qOy6t+Bwga+rQsi9C13Sfmw07j
+         aW7KVGWrXs3jj492VpNW+x2Ge6qL1ou5WtD364BOczHleod5UGMv8k1tFP5xh8L4egwf
+         xT4ScMQ5ijNMklKbo2uXdZm5xrtlBYTqn9mbCZTCnFbDQimEk/nVbf91W6rYyL908hH7
+         xCC/ZOiQEkUi6ZyTYV7OA+u3a7SNZnZ4ZRap/UWebNmAlLmeNqV7czUWWqgdhf7wQQg9
+         zeFrtS6GaxzOmyOMH+Scsc/Lin3P0j8WnRpBvJzkLlSWdr8s6Cy3DMxoAGNb8W8CT12h
+         6Ysg==
+X-Gm-Message-State: AOAM531j9UBXP+COXwFFiYaFmIlJ7fOPYKAGBJs0bnbpMy3tGv6nX6uj
+        0QuOYo2/NCGM7euz1HBZOpCeQg==
+X-Google-Smtp-Source: ABdhPJydLO8fJWbuOihHhhBgHzR4sKjLhh2HKkGrb7dlrYZgoa2Nb0AKTJD29Cj/LAQIgx/s1nQs9Q==
+X-Received: by 2002:a6b:2b97:: with SMTP id r145mr2755619ior.6.1606928448086;
+        Wed, 02 Dec 2020 09:00:48 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s17sm1337822ilj.25.2020.12.02.09.00.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 09:00:47 -0800 (PST)
+Subject: Re: [PATCH 4.19 00/57] 4.19.161-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20201201084647.751612010@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <83f1147b-c4bd-1595-b13f-c08f28bcec03@linuxfoundation.org>
+Date:   Wed, 2 Dec 2020 10:00:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202164531.GA3306@suse.de>
+In-Reply-To: <20201201084647.751612010@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 04:45:31PM +0000, Mel Gorman wrote:
-
-> > > It's less obvious what the consequence is unless the reader manages to
-> > > tie the IO-wait comment in "Schedutil / DVFS" to this section.
-> > 
-> > I'm not entirely sure I follow. The purpose of UTIL_EST is to avoid
-> > ramp-up issues and isn't related to IO-wait boosting.
-> > 
+On 12/1/20 1:53 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.161 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I mixed up the example. Historically io-wait boosting was one way of
-> avoiding DVFS ramp-up issues but now that I reread it, it's best to leave
-> it general like you already have in your current version.
+> Responses should be made by Thu, 03 Dec 2020 08:46:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.161-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-So IO-wait boosting is an interesting case; as it captures something not
-present in the rest of the model, namely interaction.
+Compiled and booted on my test system. No dmesg regressions.
 
-There's also that series of patches that does the cpu/gpu interaction
-thing.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-It would be worth expanding on it, but I didn't have it in me to dig
-through the archives to get a coherent description of the current state
-of things. Something left todo later...
+thanks,
+-- Shuah
+
