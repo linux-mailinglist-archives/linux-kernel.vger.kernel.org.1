@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F292CB95D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A74F2CB99C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388257AbgLBJnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:43:52 -0500
-Received: from mga18.intel.com ([134.134.136.126]:51489 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388226AbgLBJnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:43:51 -0500
-IronPort-SDR: 6VtFn2QjPXAA5Hzr+ubgtWbZqgmgvaFSMUM5AmL9UzcuoI6I5FOHrcFqljQIUwGW70QUjcxWKs
- f1RIIl8TKv7g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="160758355"
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="160758355"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 01:43:08 -0800
-IronPort-SDR: PUay8JE6CyCYGQ6OEqTbAITVx1PocfHXw7Y+ZE7N83/IJBWZY2mgXSVQMEs3J47Ae/ZqgTCjZT
- PE1macl5QL+Q==
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="316040233"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 01:43:06 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1kkOgC-00BToQ-4M; Wed, 02 Dec 2020 11:44:08 +0200
-Date:   Wed, 2 Dec 2020 11:44:08 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kunit-dev@googlegroups.com,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v3] lib: Convert test_hexdump.c to KUnit
-Message-ID: <20201202094408.GW4077@smile.fi.intel.com>
-References: <20201201071632.68471-1-98.arpi@gmail.com>
- <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
- <e10ef8d3-f22b-db10-3784-c94ee425af46@gmail.com>
+        id S1729019AbgLBJqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:46:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726708AbgLBJq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 04:46:29 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40071C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 01:45:49 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id d18so2903944edt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:45:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dAzfm1GPRmqmkkKCelIOFgT4CWV7j2OzoUKEFgOroWw=;
+        b=Tgu/dQWLG7lUvAVYc/Qt+C6zK6ZEcWGuLwgfwY+PayGbyOwrL/t6wN+RH6+CISgGT0
+         mwGcrHRX4JOmf2H9t/79JLs7qc5tSsTl/e5z+LJd8yis+MOMJ5FPj+4Hqnng96v8htD4
+         Z9hTGWnp4q4kpaY7BOIbL0kjBHx2HwlhNVvq1SMi1mOWEYdwvtTBjurLv19lWG+Pi4r/
+         ib9MTD2elJ/vutaBipPQTPaPPZPRuYUIMp0QWHx3ZSo9rEwygag/5IOSddn5gNS6W5Q1
+         wdJOaDq6/D1Zyz46Q2lchJYvPhKMdfEbPU6H04PLuHUXweKD1sjpta5PytP+nRpv7Rgl
+         n8DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dAzfm1GPRmqmkkKCelIOFgT4CWV7j2OzoUKEFgOroWw=;
+        b=SevO9n6ZPH+u0pBMrd1+odWpforAREVkw30K0FpEjDBji8kgFRqKiI6QPwhUuhwRAT
+         7rD2KB8xNELwII6ZclzSS1HdWp7g+s3khu0IrJijleNBeephbCibrepThK4RosfG4Cev
+         m9a9W6iU8mIs3lYJZvFbVyaQMYIrB7AvrFEOdZibpMtJchob4TpVoFJQWbEakjftCfUN
+         B49iNq1uArm7uxBaDXxR89yAJfxJee1IS9gZgruvR1hDI4lTCgWeD+CNOvhZRR32MO/o
+         yTGFTqOeEcaD6VELNM5bwvbQgUubV8hoq51KBANy8UcNV8MOxfPhahtpmBx08g4F44gY
+         mEzA==
+X-Gm-Message-State: AOAM530Dc4oPyEedASKeZULP7jG4jAihutfCJ2aZeTB2weP6jHGRVfRn
+        QI8w5DOzBoy8yocQkQVMMEU3vHEzbZsI7lxJztuMmQ==
+X-Google-Smtp-Source: ABdhPJyHwjHdplSfOvl0jRfKJN8w06y7AZNvDr+NrxjByMV4bOVADMNqjEMcto9Ssqm+Qp3a8AT4toWW+qT2fnpkedU=
+X-Received: by 2002:a05:6402:307c:: with SMTP id bs28mr1782845edb.186.1606902347990;
+ Wed, 02 Dec 2020 01:45:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e10ef8d3-f22b-db10-3784-c94ee425af46@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201127094445.121232-1-miaoqinglang@huawei.com>
+In-Reply-To: <20201127094445.121232-1-miaoqinglang@huawei.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 2 Dec 2020 10:45:37 +0100
+Message-ID: <CAMpxmJXww=a3HoKcGvKQ3M2K6kAO0KGfyB9aCKbG+E_F_0iq7A@mail.gmail.com>
+Subject: Re: [PATCH] gpio: zynq: fix reference leak in zynq_gpio functions
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:51:19AM +0530, Arpitha Raghunandan wrote:
-> On 01/12/20 4:36 pm, Andy Shevchenko wrote:
-> > On Tue, Dec 1, 2020 at 9:21 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+On Fri, Nov 27, 2020 at 10:40 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>
+> pm_runtime_get_sync will increment pm usage counter even it
+> failed. Forgetting to putting operation will result in a
+> reference leak here.
+>
+> A new function pm_runtime_resume_and_get is introduced in
+> [0] to keep usage counter balanced. So We fix the reference
+> leak by replacing it with new funtion.
+>
+> [0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
+>
+> Fixes: c2df3de0d07e ("gpio: zynq: properly support runtime PM for GPIO used as interrupts")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/gpio/gpio-zynq.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
+> index 0b5a17ab9..3521c1dc3 100644
+> --- a/drivers/gpio/gpio-zynq.c
+> +++ b/drivers/gpio/gpio-zynq.c
+> @@ -574,7 +574,7 @@ static int zynq_gpio_irq_reqres(struct irq_data *d)
+>         struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
+>         int ret;
+>
+> -       ret = pm_runtime_get_sync(chip->parent);
+> +       ret = pm_runtime_resume_and_get(chip->parent);
+>         if (ret < 0)
+>                 return ret;
+>
+> @@ -942,7 +942,7 @@ static int zynq_gpio_probe(struct platform_device *pdev)
+>
+>         pm_runtime_set_active(&pdev->dev);
+>         pm_runtime_enable(&pdev->dev);
+> -       ret = pm_runtime_get_sync(&pdev->dev);
+> +       ret = pm_runtime_resume_and_get(&pdev->dev);
+>         if (ret < 0)
+>                 goto err_pm_dis;
+>
+> --
+> 2.23.0
+>
 
-...
+Applied, thanks!
 
-> >> I ran both the original and converted tests as is to produce the
-> >> output for success of the test in the two cases. I also ran these
-> >> tests with a small modification to show the difference in the output
-> >> for failure of the test in both cases. The modification I made is:
-> >>  static const char * const test_data_4_le[] __initconst = {
-> >> -       "7bdb32be", "b293180a", "24c4ba70", "9b34837d",
-> >> +       "7bdb32be", "b293180a", "24c4ba70", "9b3483d",
-> >>
-> >> The difference in outputs can be seen here:
-> >> https://gist.github.com/arpi-r/38f53a3c65692bf684a6bf3453884b6e
-> > 
-> > Looks pretty much good, what I'm sad to see is the absence of the test
-> > statistics. Any ideas if we can get it back?
-> > 
-> 
-> I could again include variable total_tests as was in the original test.
-> Would that be fine?
-
-What I;m talking about is the output. How it will be implemented (using the
-same variable or differently) is up to you. So the point is I want to see the
-statistics of success/total at the end.
-
-I think this should be done in KUNIT rather than in the individual test cases.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Bartosz
