@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD90B2CBF57
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFEA2CBF56
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730216AbgLBOPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        id S1730117AbgLBOPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:15:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728942AbgLBOPr (ORCPT
+        with ESMTP id S1728942AbgLBOPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:15:47 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EE3C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:15:00 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id f23so4591685ejk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:15:00 -0800 (PST)
+        Wed, 2 Dec 2020 09:15:45 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBF9C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:15:05 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id f5so1643773ilj.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:15:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+2HhTD5jTn+vklEh4aL5/wMsPXq9tv2fr1AHIakSbyA=;
-        b=rblOepbVJChntb5pg5cBLGVX3v5Npt5ASjgefyud4GisFo2yFRCTCLQcnHLv57iJZy
-         FZjtA/ifq/EDkjfS0l3JHXPmP2cdOXhs+QN6ZKrucHFvH2GJSJlAzf1Rwm1aqfc5zCCc
-         EFzyofbZFHOb/XGKTWCoy1oj+Z6t36qZziiighBXILmtEKnXff210NjSvUZfOgLY9Acb
-         mXwf8UhknA358OtTYehSJdZwuX7AFRj75iv+wdDPi7xXGWvD+NUxyftJkMqQCmlwbpIc
-         FQDXqe9nJY8S0gg6I7VBEmVgYmYH1yWmE/86lDoFae28hkw97olHAQ3fZjM8bAKfWRsr
-         BdcQ==
+        bh=Z4tstK0yqPb2/7JG4Zvyh0/BHtCKh0NvGTuUjF86KO8=;
+        b=hi0ZCu9a/qhdCc/pSu+owQ9WlAOD9fALklksTCXzjDJta5mR5asDZqsMf4LYrp1xhk
+         NQVP4eFXo7nt5IOjz5bMVcOMzrgzUKbME0kK4NoTr5itiCUCe3elSS4DjeP1p1pTfYDN
+         sjYXyXVo9JEd49AegFuR50gvoZiYdClbcPKKnEQZaPuOfWwn80kDHS0P/aSbbO5N+Brl
+         i7cfu/14F0wXK1W4oQj33c+ow+rXmmHJSqSgq1wiTYpw4rAa1lX8C7YFxZwCHtbULIV6
+         2rfvpLhd+okSPKxLXZgfe4qyn0iToCc/TuTZ0MtTdt+utL1M3HVkdr6aNBw/Yfc4Fu7M
+         Bd+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=+2HhTD5jTn+vklEh4aL5/wMsPXq9tv2fr1AHIakSbyA=;
-        b=TJnOT4xqUkxYsaTDaThixSTb0iL9hCWWOQQTiC/zAvm8GX7hET+lgunIML3DiVZZFp
-         xLxmB/XYb2syEKjpWrZ7/o1SDkA34tnsSdWzYx1OEiHH8BY2D+mi2pLPwygp799OzCOK
-         tVD3s65OZBbkGPTVSIKyBdoqZiE1lRxqMr6VuKqHGhZkm5FtrGhZ53ptMHGPvhWZe3i4
-         JBFoqbRjqUg4L0Ik3Q+0PY1pwcyco753D9+L6XLTSBiE7woKrTxOMNAfBeZGtM4FoA1t
-         JPj3hNcKIshSTuo9mekH5TuRCC54uTTYxYuhwRpMVt0lreuDhyzaIFOwuQfmYR5EUqni
-         k3cQ==
-X-Gm-Message-State: AOAM532h6XzcUU1sEMM9qqU0oUyG7exOB6mxZ8f9EHue1spwJWZXWGsD
-        XY8vUK74WI5kwmYh1vhCEt1bNb2F4d+cOQVf
-X-Google-Smtp-Source: ABdhPJxnHneDF4S7sioqi9JTCEQu+HKLJ0bOri7kp9DYkz53zZhgEMxhLu+jj3lvj4omuauMDnAt8w==
-X-Received: by 2002:a17:906:22c7:: with SMTP id q7mr2526176eja.486.1606918499010;
-        Wed, 02 Dec 2020 06:14:59 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id e19sm20742edr.61.2020.12.02.06.14.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Dec 2020 06:14:58 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] arm64: dts: zynqmp: Add address-cells property to interrupt controllers
-Date:   Wed,  2 Dec 2020 15:14:57 +0100
-Message-Id: <e4f54ddce33b79a783aa7c76e0dc6e9787933610.1606918493.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.29.2
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z4tstK0yqPb2/7JG4Zvyh0/BHtCKh0NvGTuUjF86KO8=;
+        b=e380DJ7rZYRfrAlWFJJ6DeQubYeq0rod0MBDeSyBNq6xi6AzYCx4WaQCC4OQB/RGcv
+         RF48q+UhebNZNmu7drs0nYAD10zcZ6S2LwJvffYlH9WM0NW8o4PCB+PpS7IapgBfYiK1
+         s8Ms7t6VGVU/GiN3gd6EjlxuuEq3Z7tPAy2/Jk++YmAN0CeXbPVUp70cQOHKX47ZDjOd
+         EcrFBDj1+Uw76Ov9wkbD5SwHsgZ9HXbTuNWNkwWFFO72PTaz5FQa6ZlkTwAdE8mMxzWV
+         tuOUJYG0cUSSeTu7/SsoycMPGzwWiRdPZg6vDJyvCJKjKHS6plMecZmDf3+GDtel/S3v
+         XeQw==
+X-Gm-Message-State: AOAM532viCk2pAf7SOUwhLVgolVElonp3XYok3+X7YpqsuxK5WTouuVw
+        Ngb175/WUvr4HId6PtT+U9AP9Q==
+X-Google-Smtp-Source: ABdhPJyqpvXdZVu3cyMSHDhHV4Q0ygSPRGs9U4eTo0CySNT0sdCtks1N5D9pZJ1GkPbNPd2JzxOXfQ==
+X-Received: by 2002:a92:ab02:: with SMTP id v2mr2507769ilh.184.1606918504945;
+        Wed, 02 Dec 2020 06:15:04 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id e18sm1209151ilc.52.2020.12.02.06.15.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 06:15:04 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     jonathanh@nvidia.com, evgreen@chromium.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 net-next] net: ipa: fix build-time bug in ipa_hardware_config_qsb()
+Date:   Wed,  2 Dec 2020 08:15:02 -0600
+Message-Id: <20201202141502.21265-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 3eb619b2f7d8 ("scripts/dtc: Update to upstream version
-v1.6.0-11-g9d7888cbf19c") updated dtc version which also contained DTC
-commit
-"81e0919a3e21 checks: Add interrupt provider test"
-where reasons for this checking are mentioned as
-"A missing #address-cells property is less critical, but creates
-ambiguities when used in interrupt-map properties, so warn about this as
-well now."
+Jon Hunter reported observing a build bug in the IPA driver:
+  https://lore.kernel.org/netdev/5b5d9d40-94d5-5dad-b861-fd9bef8260e2@nvidia.com
 
-That's why add address-cells property to gic and gpio nodes to get rid of
-this warning.
+The problem is that the QMB0 max read value set for IPA v4.5 (16) is
+too large to fit in the 4-bit field.
 
-CC: Andre Przywara <andre.przywara@arm.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+The actual value we want is 0, which requests that the hardware use
+the maximum it is capable of.
+
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Alex Elder <elder@linaro.org>
 ---
+v2: Got confirmation that 0 is the desired value to use (with comment).
 
-I was grepping DTSes in the kernel and most of them list it as 0.
-In gicv3 case where its node is added it needs to be filled property that's
-why also non 0 values are there.
-Definitely please let me know if 0 is not the right value here.
+ drivers/net/ipa/ipa_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Based on https://lore.kernel.org/r/cover.1606917949.git.michal.simek@xilinx.com/
-
----
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 14a2e69cf98b..5b2051ac6965 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -368,6 +368,7 @@ fpd_dma_chan8: dma@fd570000 {
- 
- 		gic: interrupt-controller@f9010000 {
- 			compatible = "arm,gic-400";
-+			#address-cells = <0>;
- 			#interrupt-cells = <3>;
- 			reg = <0x0 0xf9010000 0x0 0x10000>,
- 			      <0x0 0xf9020000 0x0 0x20000>,
-@@ -574,6 +575,7 @@ gem3: ethernet@ff0e0000 {
- 		gpio: gpio@ff0a0000 {
- 			compatible = "xlnx,zynqmp-gpio-1.0";
- 			status = "disabled";
-+			#address-cells = <0>;
- 			#gpio-cells = <0x2>;
- 			gpio-controller;
- 			interrupt-parent = <&gic>;
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index d0768452c15cf..84bb8ae927252 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -288,7 +288,7 @@ static void ipa_hardware_config_qsb(struct ipa *ipa)
+ 		max1 = 0;		/* PCIe not present */
+ 		break;
+ 	case IPA_VERSION_4_5:
+-		max0 = 16;
++		max0 = 0;		/* No limit (hardware maximum) */
+ 		break;
+ 	}
+ 	val = u32_encode_bits(max0, GEN_QMB_0_MAX_READS_FMASK);
 -- 
-2.29.2
+2.20.1
 
