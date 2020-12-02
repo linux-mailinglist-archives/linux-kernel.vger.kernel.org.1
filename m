@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF162CC480
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CF12CC482
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387662AbgLBSEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:04:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35398 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727108AbgLBSEd (ORCPT
+        id S1728814AbgLBSFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:05:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727454AbgLBSFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:04:33 -0500
-Date:   Wed, 2 Dec 2020 19:03:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606932231;
+        Wed, 2 Dec 2020 13:05:42 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8507FC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:05:02 -0800 (PST)
+Received: from zn.tnic (p200300ec2f161b00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1b00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E9EF21EC04D6;
+        Wed,  2 Dec 2020 19:05:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1606932301;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=69HDRjllqiet1yJkOQfILNR3Yl0QreV5unRuZHTw+Ms=;
-        b=IuN+w+oTk58nFLIeVhRUFendcdB7o2FQa+14qO9U7uEEaxd/jmKNFJ2ASoU0WB6jKif84H
-        9x9fsIYPWUUtpP/rJE6sR+cu9gU0POCJ+0W6/A0vlAu7J6Cz1nkGetCjQBGTp1XjdZqeoz
-        H9uKDQdQDl/aB4vEBEzWAu9zaKshwK27/QbpcLJ0zZFn8KkOERPv23yA6KKvvoGlhdGAr5
-        B09Hl0ZUsDIyirpA1kYh3SZ/b9R7MbnqXEnRn37z8ogpTT43AqgVx+4frN6gGTRtIAeO65
-        uLRDCgbUrrWEKWoE+IkfxzCd0v4hzppXjVjE2WXaE8/CEENa1TMX4SGPJ+sRxg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606932231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=69HDRjllqiet1yJkOQfILNR3Yl0QreV5unRuZHTw+Ms=;
-        b=8Bh62S06OE1HY80q3dlD5PvFWvJlABr6HpttWBR2+MgwKFVRMYzgiNig6kyJ2UWZXjzkt+
-        nfxyklgOmXMn6dCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephen Berman <stephen.berman@gmx.net>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
-Message-ID: <20201202180350.kwmgfzkom7v7bzjg@linutronix.de>
-References: <87blkbx1gt.fsf@gmx.net>
- <87imdp5r80.fsf@rub.de>
- <20200811132955.wbt55ns7bu5mxouq@linutronix.de>
- <CAJZ5v0h+n9VCz5=VixVbe_b=ZbTU3D=46stGhE9z7Y7yaUMJzw@mail.gmail.com>
- <20200811152551.dmfw46urecbmeklr@linutronix.de>
- <87ft8tayic.fsf@gmx.net>
- <20200811184902.2fm4eyprmpkfon2j@linutronix.de>
- <20201006214927.4nsqtfji4fdv3oed@linutronix.de>
- <3fc9074b-c153-8446-0289-1e4dfab395eb@intel.com>
- <20201026172057.h5toqoobiyhc4g3g@linutronix.de>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TE/OHmqT8H79QFUkFqfZpqHgm6sL6Er/QHxIG08YOvs=;
+        b=Lt95ZAietdiaN+EX4738+KleeNMsD1BTxd979xsP3J6hW1i7w3xjnAy/cYxdgA2WsbqbaI
+        rKF88mEp2+JHkQbWr2CEyhAzUL8m3DZE1RbF/pSpILclcy5CkyGgMGVoOUjee57OuWgFcK
+        6h3i/W1wSRS/SPW6lifjufD9dY60veg=
+Date:   Wed, 2 Dec 2020 19:04:56 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v0 00/19] x86/insn: Add an insn_decode() API
+Message-ID: <20201202180456.GH2951@zn.tnic>
+References: <20201124101952.7909-1-bp@alien8.de>
+ <20201124174647.GI4009@zn.tnic>
+ <CALCETrXXuUmM6LPj36h2KLw5zuKUPnmrACcOq2-8XfXzWXQt7Q@mail.gmail.com>
+ <20201129175005.7e07a9f799e888ffd5f4ed67@kernel.org>
+ <20201130134442.GB6019@zn.tnic>
+ <20201201022145.48201fe165a28cb0e1f042ae@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201026172057.h5toqoobiyhc4g3g@linutronix.de>
+In-Reply-To: <20201201022145.48201fe165a28cb0e1f042ae@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-26 18:20:59 [+0100], To Rafael J. Wysocki wrote:
-> > > > > Done as Bug 208877.
-> > > Rafael, do you have any suggestions?
-> > 
-> > I've lost track of this sorry.
-> > 
-> > I have ideas, let me get back to this next week.
-> 
-> :)
+On Tue, Dec 01, 2020 at 02:21:45AM +0900, Masami Hiramatsu wrote:
+> Because it overruns the buffer. Maybe -E2BIG/ENODATA or any other
+> error (except for -EINVAL) is OK :)
 
-Rafael, any update? If you outline an idea or so then I may be able to
-form a patch out of it. Otherwise I have no idea how to fix this - other
-than telling the driver to not poll in smaller intervals than
-30secs.
+ENODATA it is. :)
 
-> > Cheers!
-> 
-Sebastian
+And propagating that error value is easy because the err_out: labels are
+all coming from the validate_next() error path so we basically know that
+the buffer has ended.
+
+./insn_sanity: Success: decoded and checked 10000 random instructions with 0 errors (seed:0x7bdfa56e)
+insn buffer:
+0x48 0xcf 0x48 0x83 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 0x90 
+supplied buf size: 15, ret 0
+supplied buf size: 2, ret 0
+supplied buf size: 3, ret 0
+supplied buf size: 4, ret 0
+insn_decode: entry
+insn_decode: will get_length
+insn_get_immediate: getting immediate
+insn_get_displacement: getting displacement
+insn_get_sib: getting sib
+insn_get_modrm: entry
+insn_get_opcode: entry
+insn_get_prefixes: entry, prefixes->got: 0
+insn_get_prefixes: 1
+insn_get_prefixes: REX
+insn_get_prefixes: VEX
+insn_get_prefixes: validate_next: 0
+insn_get_prefixes: insn->next_byte: 0x7ffc211eb661, insn->end_kaddr: 0x7ffc211eb661
+insn_get_prefixes: errored out
+supplied buf size: 1, ret -61
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
