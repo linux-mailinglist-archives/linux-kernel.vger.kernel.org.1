@@ -2,252 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3332D2CC4A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5A52CC4A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389303AbgLBSJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:09:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
+        id S2389283AbgLBSJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389249AbgLBSJk (ORCPT
+        with ESMTP id S2389249AbgLBSJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:09:40 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AA5C08C5F2
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:08:00 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id l1so5025696wrb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:08:00 -0800 (PST)
+        Wed, 2 Dec 2020 13:09:30 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0680C061A54;
+        Wed,  2 Dec 2020 10:07:59 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id 128so1417149vsw.10;
+        Wed, 02 Dec 2020 10:07:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KNwBh5Oi//J2Be7LIJjV0b/+HNUbYnjVRXKUnYFcgws=;
-        b=M23B4Idvf4R9I2mTXqkuRiffExFxPJzSnsO0ztMVTMwuIgumwn6JLkI9Bz6PRa6e86
-         QSyVdAOME43qSqmlEl3PQ7LQrbz1h/fJujoTvAWCdYgRE/lpcg+7Z6eJ7WipseTZy0Bd
-         gnNiD33grSx6CG2XxpKH12aLwE/bmjXCTimXwc4mlHgwflfpHoN29NdoAyaCO3T6gCtS
-         nCRpncL6fnO3PAvFZhLJS9KEnPmzaOIkjeJ/oFUe1DKWXDjkj6Uoe7dbVtlWmsA/1Et2
-         FwRFzfF+A5lnLQGyjD4NAD31GCPrNdSOApShhCcZIVy82v2FOzJbBUsy6L74KbQlh0t2
-         PJEQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=pK0yJ+C90ne66IyKxcSzqFDurNlO0mJMG/RO4XxWw0Y=;
+        b=TvNT14OrcPuwvmdbS+bnJGjR5W9zvIXsCVpkLUDLf/cWk0FnXOPEKdJ3u0A8t2DRdr
+         KkqHjznZPolIsYGgxGDhnJHLtfD06pDxH9vcvhZxdhJOFkvi6VyuNiog3W/DAlBV9gXk
+         uOJF7wa7EMFVsKw/TCr4dGc+MYDwCSGq8wQ1fhif4O8QPcb39GriVbv/LRfIEHO8J/Em
+         ptMCrPkvHp4mycvLrt1z0GW8gTRA7Kk+2JazzVBpF0mEciVXemRXb1A0Aw69YSRyoIxs
+         LstQh99YiutzySnVdQLdEw/iheqk//sI2CMmQCcIPRvCtE1frdBTpEKKLxXVh5yCp7SY
+         s5IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KNwBh5Oi//J2Be7LIJjV0b/+HNUbYnjVRXKUnYFcgws=;
-        b=XAunL3eIUqD1nVEDRs15X+qPgBaW9Q1cv1uFRhkm67iFQONjoDzXk9kvB2aZ/pFBPe
-         N3ZW1G7cN1BR/8HQKlAG23XVMRjv1B6YDCfpZLj4D0jACd1OPI1X2bGnlER83wtyUzAQ
-         lMqt+WUQnbBocd9/XO3+lN6ihuYkYG2CqnQUQfxW/ZnMI+SztPOD9nd9XxsuYeZ7+cAZ
-         gsJaL1k110A+bfOLrZBWaArWzSSlnH7ciYZVmvNaYg8OcTA5PDAVwo80J6lF4pUkMRZN
-         I+c4CsL/pqY8unuc0lTH88amTu9dHiY5Xw0lSP2uhLKrxiXh67dvgS0sAB9sMX1leO19
-         5YjA==
-X-Gm-Message-State: AOAM531KK1rl1RWnh23NW3Kzv1w+Fea3xiycAQBX5voHWOQuG/K20/kv
-        ysJ1oFHY2r01j/XC1vL04w/UxQ==
-X-Google-Smtp-Source: ABdhPJxW7ACqll1VfNJl6wS8dgps8ICPjpYYUy8BXaGNxAPi73N8yjZTjHdceTIKtiO8Jt+l8pBAUQ==
-X-Received: by 2002:adf:916e:: with SMTP id j101mr4842869wrj.55.1606932479522;
-        Wed, 02 Dec 2020 10:07:59 -0800 (PST)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id a18sm3004404wrr.20.2020.12.02.10.07.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 10:07:58 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH v2 6/6] arm64: dts: qcom: qrb5165-rb5: Add Audio support
-Date:   Wed,  2 Dec 2020 18:07:41 +0000
-Message-Id: <20201202180741.16386-7-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201202180741.16386-1-srinivas.kandagatla@linaro.org>
-References: <20201202180741.16386-1-srinivas.kandagatla@linaro.org>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=pK0yJ+C90ne66IyKxcSzqFDurNlO0mJMG/RO4XxWw0Y=;
+        b=EzEjX+EecgOFMeGBxQQc+9/9J4tdRyY2mrFtLlCzwUG3OwwhRov5u1bY7YV+8oRuOG
+         MHZIC/wqvLck0d/bbSzZpKiwKsuqhJly4WQoIVkOLBUUjVBznmfxj8U8DvqndZY0GY+D
+         cdnkUBrzWMhwaM8nbK0eVhERxcsnpZYXY18wnNabR8EzZ8wszRyaZ+ECAR/EQNhvYGj2
+         JxuazFVtNTDyBVCNaP95O+nxEVluKCClX2MC6inTlvWGd/Qpj0wX5gn+JXjfkdbyvkVh
+         UEMlv43LrZzfHeQjWQhz4JdYL1Mu7VYVC7SDg5gsjwH1j3k/LA3p8PSsu2zYGVR3nKnq
+         CPqg==
+X-Gm-Message-State: AOAM532f6O4uwWDo012Zka36An43JJ5jswNJ0z0wJDAE+LxFazFw6at2
+        6NiZbGvYK77ADDTMJYJI6eef7eOTjaNObnEr+Y8=
+X-Google-Smtp-Source: ABdhPJyWQYHuGNBUG9LA2eJTjQu2rFFwTk0chIB6hIBOXvu31uqgmQRvsh4rt8v6Ym+FX4X9dLLRJ0j5AdTWtifRcZQ=
+X-Received: by 2002:a67:f601:: with SMTP id k1mr2764150vso.46.1606932479046;
+ Wed, 02 Dec 2020 10:07:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab0:6ecb:0:0:0:0:0 with HTTP; Wed, 2 Dec 2020 10:07:58 -0800 (PST)
+In-Reply-To: <20201202113942.27024-1-johan@kernel.org>
+References: <20201202113942.27024-1-johan@kernel.org>
+From:   Mychaela Falconia <mychaela.falconia@gmail.com>
+Date:   Wed, 2 Dec 2020 10:07:58 -0800
+Message-ID: <CA+uuBqZ-EnsOU-UiufXo+oxmrgM3=2eu9C_50tpBHLKjcfxdgg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add support for two WSA881X smart speakers attached via Soundwire
-and a DMIC0 on the main board.
+On 12/2/20, Johan Hovold <johan@kernel.org> wrote:
+> Also let me know if you prefer to hold this off for 5.12. The change is
+> minimal, self-contained and low-risk, but it is a new interface and late
+> in the release cycle as Andy pointed out.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 121 +++++++++++++++++++++++
- arch/arm64/boot/dts/qcom/sm8250.dtsi     |   3 +
- 2 files changed, 124 insertions(+)
+Hold off for 5.12? Did you perhaps mean 5.11? I understand how this
+change may be too late for 5.10, but surely it can go into 5.11 merge
+window, why hold off for 5.12?
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index ce22d4fa383e..475542afecea 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -7,6 +7,8 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include <dt-bindings/sound/qcom,q6afe.h>
-+#include <dt-bindings/sound/qcom,q6asm.h>
- #include "sm8250.dtsi"
- #include "pm8150.dtsi"
- #include "pm8150b.dtsi"
-@@ -120,6 +122,11 @@
- 	};
- };
- 
-+&adsp {
-+	status = "okay";
-+	firmware-name = "qcom/sm8250/adsp.mbn";
-+};
-+
- &apps_rsc {
- 	pm8009-rpmh-regulators {
- 		compatible = "qcom,pm8009-rpmh-regulators";
-@@ -483,6 +490,35 @@
- 	status = "okay";
- };
- 
-+&q6afedai {
-+	qi2s@16 {
-+		reg = <16>;
-+		qcom,sd-lines = <0 1 2 3>;
-+	};
-+};
-+
-+/* TERT I2S Uses 1 I2S SD Lines for audio on LT9611 HDMI Bridge */
-+&q6afedai {
-+	qi2s@20 {
-+		reg = <20>;
-+		qcom,sd-lines = <0>;
-+	};
-+};
-+
-+&q6asmdai {
-+	dai@0 {
-+		reg = <0>;
-+	};
-+
-+	dai@1 {
-+		reg = <1>;
-+	};
-+
-+	dai@2 {
-+		reg = <2>;
-+	};
-+};
-+
- &sdhc_2 {
- 	status = "okay";
- 	pinctrl-names = "default";
-@@ -497,6 +533,84 @@
- 	no-emmc;
- };
- 
-+&swr0 {
-+	left_spkr: wsa8810-left{
-+		compatible = "sdw10217211000";
-+		reg = <0 3>;
-+		powerdown-gpios = <&tlmm 130 GPIO_ACTIVE_HIGH>;
-+		#thermal-sensor-cells = <0>;
-+		sound-name-prefix = "SpkrLeft";
-+		#sound-dai-cells = <0>;
-+	};
-+
-+	right_spkr: wsa8810-right{
-+		compatible = "sdw10217211000";
-+		reg = <0 4>;
-+		powerdown-gpios = <&tlmm 130 GPIO_ACTIVE_HIGH>;
-+		#thermal-sensor-cells = <0>;
-+		sound-name-prefix = "SpkrRight";
-+		#sound-dai-cells = <0>;
-+	};
-+};
-+
-+&sound {
-+	compatible = "qcom,qrb5165-rb5-sndcard";
-+	pinctrl-0 = <&tert_mi2s_active>;
-+	pinctrl-names = "default";
-+	model = "Qualcomm-RB5-WSA8815-Speakers-DMIC0";
-+	audio-routing =
-+		"SpkrLeft IN", "WSA_SPK1 OUT",
-+		"SpkrRight IN", "WSA_SPK2 OUT",
-+		"VA DMIC0", "vdd-micb",
-+                "VA DMIC1", "vdd-micb",
-+		"MM_DL1",  "MultiMedia1 Playback",
-+		"MultiMedia3 Capture", "MM_UL3";
-+
-+	mm1-dai-link {
-+		link-name = "MultiMedia1";
-+		cpu {
-+			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
-+		};
-+	};
-+
-+	mm3-dai-link {
-+		link-name = "MultiMedia3";
-+		cpu {
-+			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
-+		};
-+	};
-+
-+	dma-dai-link {
-+		link-name = "WSA Playback";
-+		cpu {
-+			sound-dai = <&q6afedai WSA_CODEC_DMA_RX_0>;
-+		};
-+
-+		platform {
-+			sound-dai = <&q6routing>;
-+		};
-+
-+		codec {
-+			sound-dai = <&left_spkr>, <&right_spkr>, <&swr0 0>, <&wsamacro 0>;
-+		};
-+	};
-+
-+	va-dai-link {
-+		link-name = "VA Capture";
-+		cpu {
-+			sound-dai = <&q6afedai VA_CODEC_DMA_TX_0>;
-+		};
-+
-+		platform {
-+			sound-dai = <&q6routing>;
-+		};
-+
-+		codec {
-+			sound-dai = <&vamacro 0>;
-+		};
-+	};
-+};
-+
- /* CAN */
- &spi0 {
- 	status = "okay";
-@@ -792,3 +906,10 @@
- 	vdda-phy-supply = <&vreg_l9a_1p2>;
- 	vdda-pll-supply = <&vreg_l18a_0p92>;
- };
-+
-+&vamacro {
-+	pinctrl-0 = <&dmic01_active>;
-+	pinctrl-names = "default";
-+	vdd-micb-supply = <&vreg_s4a_1p8>;
-+	qcom,dmic-sample-rate = <600000>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 51cffdae631c..336a4efab0b4 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -1561,6 +1561,9 @@
- 			};
- 		};
- 
-+		sound: sound {
-+		};
-+
- 		usb_1_hsphy: phy@88e3000 {
- 			compatible = "qcom,sm8250-usb-hs-phy",
- 				     "qcom,usb-snps-hs-7nm-phy";
--- 
-2.21.0
-
+M~
