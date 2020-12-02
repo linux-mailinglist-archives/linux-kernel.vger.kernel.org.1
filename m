@@ -2,195 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781522CBF24
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2CE2CBF23
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389020AbgLBOKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:10:14 -0500
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:14755 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389011AbgLBOKN (ORCPT
+        id S2388999AbgLBOKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:10:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388989AbgLBOKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:10:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606918212; x=1638454212;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=C30ENq3xnNGNTpXTE04W76mr0TERGoYqyVlpPlDvCfo=;
-  b=NLoICA/ZWFzDq/TTC6SCxY+sNRHaxQ3vOSRwOS0MvCSsy1kSCmVun40l
-   x9YKccQRihfa1tsiaJzTVNLEReJBElc6gm2X+udQqSO9wAklIY8uOHZzX
-   9S0eXwWku9xCVMXzhotbc4KLpFhixYwFFsrB7xb4LcYsLWydWY+1v7Am8
-   Y9vVBl3E8U6ocf7icSYjEaU/z9Y4BQuQUyajpZAj7D/PUoZCKPr5GyrsV
-   caBCll7zMg8tS6Kjt1ZEE0NSEr9aMPohEgPVpDXZedWBJXT/eN5nC+ssg
-   GvLypofGg3JR0OdUq2YWgMV6vvRsNVjQxacw03r2woUE0UTFX4jRuE43e
-   Q==;
-IronPort-SDR: O+mgS+0U3adoP/lt3DH2Vao5UUnuTo+INhC5Ou0FLZwnUGBVfOIePb8ccq7h9cao/qKmDn62Gc
- tmDQ366W1bJrsdC399TXWRm+JbHjUCr3wxh6FBWON919aNzsKRb8EnglPMOo2yBFW+/dwjaIcz
- L+PjroR3CBoUKCtgBhBF1MBSgsrP7Jp609Ci1fOx6Dg3O8l581rEg3B/E+UA6mjba8hcIauU+/
- kGbA1jZA35lFO8kXztF8RRJHl83mCE7NThsKyZ0Uvjr0BPe1ILX6/fN0erNFnrSI5pHZtl8aGw
- A08=
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="105845985"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Dec 2020 07:09:07 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 2 Dec 2020 07:09:05 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Wed, 2 Dec 2020 07:09:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VovlEv7ZlMyZBlgaoc3jcVGXC0Kf8N2LSraAhL+wM3uHKln7zYuURIeIaMz2G7dAN3sYavaRisOuMcsB2MqLkh2D33VUT1sa5h3sh8hENNCxjpjebWsZM94p8wWAqpI6zvxARag+QNE6ESLczAPGc8U//l25wCrxGrvw6GDqaE7e2rPZZaQT9zIkNw5nZS6Y1gl/Ui9N4lsLR0wCNg5mAz4fappTICj3oQNj1187CR4mHWYq9EJYj5v9Y/Qlf1edgg5h499+v4C+d82WqeQNeXqpPsVe/twtZcgXMJ/1lnXANTqyPR+GQmaTxw+clqhIqOj8JqSjRK8GWZ2Q65ijvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C30ENq3xnNGNTpXTE04W76mr0TERGoYqyVlpPlDvCfo=;
- b=TaYLJOMZZfIyP5nxXsDmOxoEjvPnLHq6zqCoomPSVzO2OiM7H/ydI+CP3ep167edzlrnKvaduoJNFzHtbvqs3PjkXtAtqmMljCvSQ51rkbNXretwsqYk+hy/pE+uob8RCmTFssLRCqTf5xuLuDfOrvrWHMQwEoj44QvBERDAUP4MAQrRIXiJS1a5HaDIXgdnMF40sMJnkObEEPWwAuZYzzljDKVENsD9ck7styp5SEFkSksUrQveYxZxHi/AlJr1fikQwgNYg2CK98W8ew411Vsia86NYb9kK6z8j4GgXykDBqERFsJrQEj75nvDBC0hVfQvFQf8/BFZYnJh+OvSKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C30ENq3xnNGNTpXTE04W76mr0TERGoYqyVlpPlDvCfo=;
- b=JCupKYa4Q+e/1UNRNB9n4J4fPaC3ld4nq3KlFxEvifp+54qNSYeU/eNmXIA8xJgVwKE9JA5+ksOKvHHERImOmOemm7i2H2KWakFBBUXixxxseuZwIvmId+0djdlLuq+7rQhUYkTTSdRPvfJSH4VfcPil/b+NnSKwEaDjgcdvdNk=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SN6PR11MB3021.namprd11.prod.outlook.com (2603:10b6:805:d1::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.31; Wed, 2 Dec
- 2020 14:09:03 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::6903:3212:cc9e:761]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::6903:3212:cc9e:761%7]) with mapi id 15.20.3632.017; Wed, 2 Dec 2020
- 14:09:03 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <michael@walle.cc>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v6 5/5] mtd: spi-nor: keep lock bits if they are
- non-volatile
-Thread-Topic: [PATCH v6 5/5] mtd: spi-nor: keep lock bits if they are
- non-volatile
-Thread-Index: AQHWxW+nmejBYVo+OESi/M9WLE7bHw==
-Date:   Wed, 2 Dec 2020 14:09:03 +0000
-Message-ID: <b490ed3a-c3ac-7fa6-cab1-161a74b15fe4@microchip.com>
-References: <20201126202614.5710-1-michael@walle.cc>
- <20201126202614.5710-6-michael@walle.cc>
- <432b31a7-2560-3b83-44d2-aa82c2e322ae@microchip.com>
- <46c99138eb6ce251bc741d358388c219@walle.cc>
- <8e0a6a20-2779-9397-eedf-02518b4a0e5a@microchip.com>
- <fe04f234584c2f459e865955b0d09303@walle.cc>
-In-Reply-To: <fe04f234584c2f459e865955b0d09303@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [79.115.63.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9d45eae0-3a46-44b3-c4aa-08d896cbd2cf
-x-ms-traffictypediagnostic: SN6PR11MB3021:
-x-microsoft-antispam-prvs: <SN6PR11MB3021020D494309A3DE1C9276F0F30@SN6PR11MB3021.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yUXyRg5vsGG9Bg3XvJnHGXDECkmM+GwwHx1/v60PnssOx9hzjFhnQw0YET9srVkNINS8OKa2Gov6jm9Hs8Bmml6nKs+Wdn/+LDQsFXcSLJMPqPrHxxMiJBWIceVMKEO7KXX4gKFYX3GcfHvPykERwQvW62IQ3Wp1FCU/i84DUlk8iPFV1UK9PzXy4dC2UXoH+5hBs2opNMawziPGOENV3GN8SHjt7dRSTA57LNqiIBSg/Im6Va+c6MtWvgwIZrPzYzMMw0nbzC9TxCgn08nnWfzzq8SRK7CSJA7pk8LlXAz/Yr/2Zgm3oC2afpQPjNdsesB0n7i+wA/fhEJFVXM/3Gxl1mf2NhI27YJjX2Z8Ebb2yUSSP7oU34SRlGBf0az53vQxiQ3f1GqAXtmeHhzDrtajNZIHGeIk7CeV5F+iX3w=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(39860400002)(396003)(366004)(186003)(6506007)(6916009)(53546011)(2906002)(4326008)(6512007)(86362001)(83380400001)(36756003)(31686004)(316002)(5660300002)(2616005)(54906003)(26005)(8936002)(66446008)(76116006)(66946007)(64756008)(66556008)(478600001)(66476007)(71200400001)(8676002)(6486002)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?NjFvNmtZMU5EdWw2dG56SEFQNDNFWnovaVdacDJZUy9aNDFteWxJbk5ROU0w?=
- =?utf-8?B?SEdRbkJ4c2FMdGNOWEplb0VuS2YwT1o2aE9tRFZ4dC9hcXpwU21oKzJZaWVE?=
- =?utf-8?B?Y0d3VTNkaDIxY0JHTEJlcXpJSGlNeTNoSlJtdmhjU2paVERBSld5alc3cVoy?=
- =?utf-8?B?Q0dBL1RMZHR5eU9UTWJoUGJrckJ1QXJISjRld3Jqc25KZVVWMUZHNGFrVTU3?=
- =?utf-8?B?dTBIaUoxQ2Z6eUM3K0VaeUEzWmJyK2VoWEpGREpLRElkVGpLTzhDV01wVVJZ?=
- =?utf-8?B?OXk2czNiNzJHYVd3WmdRNWtma01IS3FIQnZrb0JNMnVJYmkrUE1NaXErZml6?=
- =?utf-8?B?Z1dDempDclptR250dG5GV2ZueEVWWjgrc3dsTnVnV2ZiWW1pZjQ5WUVjVUQ5?=
- =?utf-8?B?RlJVVFhDeTV1MkRVN3BTaUM1TDhoV2szRGJ3U3ZyN29jSFNjZEh2ZGtTU1Rn?=
- =?utf-8?B?VFNpSGdGZTZtWmlQRGZ3ZHlkMG1hQ2JQcXViSG1Kb1NjdGNHYjc5YzFmYlBy?=
- =?utf-8?B?RUVaZU1PeFV0MjlITTkzeTQ4aXVVTGJpYXVWbTFQbTR3d2xBblk5NEVaOFFr?=
- =?utf-8?B?cHZHQmZjUG9ISkNsSzBER1U4UE5sbEJzVXM1ck01UjNkWTZRMFpVM2JLUWpv?=
- =?utf-8?B?cU12Nzh4UWp1MEVXbHVxOVB3dEpwbW9Qa3lVTFhjQkFORjQzRTROaTUrYmUw?=
- =?utf-8?B?RStNaXY3TGVkV2lhTHRHR2FncEJRaDFpMkJMOG9NaEdIVE1tTlQrMkx5c3I3?=
- =?utf-8?B?bFRvUkZZcVZpNWZ5blIzTjVjeHJ5SWYweS84bnl3L1VGZEcwWHFGaWtyYWhM?=
- =?utf-8?B?RHU1QTdZb21hbkFObnJqRzR3bngrcEU3UWNZVnYwdEgrZy9ZSXBTZ1lwTkZ4?=
- =?utf-8?B?YkhLNHZjcFVrNlZPYUV4Vk0yNG1jVmlhNllDZnE5dllIdndRVGp6bG1kNExv?=
- =?utf-8?B?dURmYlNMOUxoQzVOZXhBRHltbGU2ejRNbTFKbGNCU0lvQ3JIVWJOODJ3N3BL?=
- =?utf-8?B?cjRJSFBjcTR5cElNejZITFVXWm10cVArMkRKR09LcDlZWGV3c3oxck11d24z?=
- =?utf-8?B?Y2ZLQkc2bk9zemVNenBYZUJGaXNDc2RPWjlmc1BrUlplWnNuTjV5WkRLS0Mx?=
- =?utf-8?B?WXgwQ1NmekVONTd0THlraFNXNVZhUys0UDR6bEdTZ3hYSDdDbGhlZHlMSXFV?=
- =?utf-8?B?WURPNGVBQ01ST040YTdmOUkvTUhIb2hmTXg5L0pSOGRsbFg2UjVWdFl2WmdF?=
- =?utf-8?B?TlJjWkVjeXAwWGhDeHdacWpTTmd3TlZLWGcwdDV0bmVjWEIxY01ldjdPS1Jl?=
- =?utf-8?Q?507i+LUhb1a6I=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F9C5E56C4D1E18419DC6E4BE3F95A827@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 2 Dec 2020 09:10:03 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D48C061A04
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:09:12 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kkSoc-0005oJ-Hn; Wed, 02 Dec 2020 15:09:06 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kkSob-0006SL-LC; Wed, 02 Dec 2020 15:09:05 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v3 net-next 2/2] net: dsa: qca: ar9331: export stats64
+Date:   Wed,  2 Dec 2020 15:09:04 +0100
+Message-Id: <20201202140904.24748-3-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201202140904.24748-1-o.rempel@pengutronix.de>
+References: <20201202140904.24748-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d45eae0-3a46-44b3-c4aa-08d896cbd2cf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2020 14:09:03.1637
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: c58T4ZYqFgu+q//vvKdlvI8H2U/rop9c5AHvwbrVk/tPlBzhMvc0PAxmvj75S/6fDeoswPuHNWnTSjMTf2gVzwSMZSxBMngm9u2PjjQWjhA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3021
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTIvMi8yMCAxOjI1IFBNLCBNaWNoYWVsIFdhbGxlIHdyb3RlOg0KPiBFWFRFUk5BTCBFTUFJ
-TDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93
-IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IEFtIDIwMjAtMTItMDIgMTI6MTAsIHNjaHJpZWIg
-VHVkb3IuQW1iYXJ1c0BtaWNyb2NoaXAuY29tOg0KPj4gT24gMTEvMzAvMjAgNDozOCBQTSwgTWlj
-aGFlbCBXYWxsZSB3cm90ZToNCj4gWy4uXQ0KPj4+Pj4gK8KgwqDCoMKgwqDCoMKgICogaW5kaWNh
-dGVkIGJ5IFNOT1JfRl9XUF9JU19WT0xBVElMRS4NCj4+Pj4+ICvCoMKgwqDCoMKgwqDCoCAqLw0K
-Pj4+Pj4gK8KgwqDCoMKgwqDCoCBpZiAoSVNfRU5BQkxFRChDT05GSUdfTVREX1NQSV9OT1JfV1Bf
-RElTQUJMRSkgfHwNCj4+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoCAoSVNfRU5BQkxFRChDT05G
-SUdfTVREX1NQSV9OT1JfV1BfRElTQUJMRV9PTl9WT0xBVElMRSkNCj4+Pj4+ICYmDQo+Pj4+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBub3ItPmZsYWdzICYgU05PUl9GX1dQX0lTX1ZPTEFUSUxF
-KSkgew0KPj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZXJyID0gc3BpX25vcl91
-bmxvY2tfYWxsKG5vcik7DQo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAo
-ZXJyKSB7DQo+Pj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgZGV2X2Vycihub3ItPmRldiwgIkZhaWxlZCB0byB1bmxvY2sgdGhlDQo+Pj4+PiBlbnRpcmUN
-Cj4+Pj4+IGZsYXNoIG1lbW9yeSBhcnJheVxuIik7DQo+Pj4+DQo+Pj4+IGRldl9kYmcgZm9yIGxv
-dyBsZXZlbCBpbmZvDQo+Pj4NCj4+PiBJcyB0aGlzIGxvdyBsZXZlbCBpbmZvIG9yIGFuIGFjdHVh
-bCBlcnJvcj8gV2hpY2ggcmFpc2VzIHRoZSBxdWVzdGlvbjoNCj4+PiBzaG91bGQgc3BpX25vcl91
-bmxvY2tfYWxsKCkgaW4gY2FzZSBTV1JEIGNvdWxkbid0IGJlIGNsZWFyZWQgYW5kIHRodXMNCj4+
-PiBzaG91bGQgYWxsIHRoZSBzcGlfbm9yX2luaXQgZmFpbCBvZiB0aGlzPyBPciBzaG91bGQgaXQg
-cmF0aGVyIGJlIGENCj4+DQo+PiB5ZXMsIGl0IHNob3VsZCwgYmVjYXVzZSB0aGUgZmxhc2ggd2ls
-bCBub3Qgd29yayBhcyBleHBlY3RlZC9yZXF1ZXN0ZWQuDQo+IA0KPiBPbmUgY291bnRlcmFyZ3Vt
-ZW50OiB0YWtlIG91ciBzbDI4IGJvYXJkLCBpdCBoYXMgYSBoYXJkd2FyZQ0KPiB3cml0ZS1wcm90
-ZWN0ZWQNCj4gU1BJIGZsYXNoLiBJdCBhY3R1YWxseSB3b3JrcyByaWdodCBub3cgYmVjYXVzZSB0
-aGUgd3JpdGVfc3JfYW5kX2NoZWNrKCkNCj4gZG9lc24ndCB3b3JrIGFzIGludGVuZGVkIGFuZCBk
-b2Vzbid0IGNoZWNrIHdoYXQgaXMgd3JpdHRlbi4gU28gaWYgeW91J2QNCj4gZml4IHRoYXQgKGFu
-ZCB0aGVzZSBjaGFuZ2VzIHdvdWxkIGJlIGJhY2twb3J0ZWQgdG8gdGhlIHN0YWJsZSB0cmVlcyks
-DQo+IHlvdSdkDQo+IGJhc2ljYWxseSBicmVhayBzcGktbm9yIG9uIHRoZXNlIGJvYXJkcy4gQW5k
-IHRoaXMgX211c3RfIGJlIHRoZSBjYXNlIGZvcg0KPiBhbGwgYm9hcmRzIHdoaWNoIGFyZSBhY3R1
-YWxseSB1c2luZyAoaGFyZC0gb3Igc29md2FyZSkgd3JpdGUtcHJvdGVjdGlvbi4NCj4gVGhhdCBp
-cyB0aGUgb25seSB3YXkgd3JpdGUtcHJvdGVjdGlvbiBtYWtlcyBzZW5zZSBwcmlvciB0byB0aGlz
-IHBhdGNoDQo+IHNlcmllcy4gQmVjYXVzZSBsaW51eCB3aWxsIGhhcHBpbHkgdW5sb2NrIGV2ZXJ5
-IGZsYXNoIG9uIHN0YXJ0dXAuDQo+IFRoZXJlZm9yZSwNCj4gdGhlIGhhcmR3YXJlIHdyaXRlIHBy
-b3RlY3Rpb24gaXMgdGhlIG9ubHkgbWVhc3VyZSBhZ2FpbnN0IHRoaXMuDQo+IA0KDQpJIHNlZS4g
-SWYgV1AjIGlzIGFzc2VydGVkLCBzcGlfbm9yX3VubG9ja19hbGwoKSB3b3VsZCBmYWlsIGFuZCB3
-b3VsZCBzdG9wDQp0aGUgZXhlY3V0aW9uLiBPbmUgY2FuIGF2b2lkIHRoZSBmYWlsIGJ5IGNob29z
-aW5nIE1URF9TUElfTk9SX1NXUF9LRUVQLA0KYnV0IHRoYXQgd291bGQgbm90IGJlIGJhY2t3YXJk
-IGNvbXBhdGlibGUuIEhhdmluZyBpbiBtaW5kIHRoYXQgaW4gdGhlDQpwYXN0IHRoZSB1bmxvY2sg
-YWxsIHdhcyBqdXN0IGEgemVybyB3cml0dGVuIHRvIFNSLCB3aXRob3V0IGNoZWNraW5nIGlmDQp0
-aGUgd3JpdGUgd2FzIHN1Y2Nlc3NmdWwsIEkgd291bGQgbm93IHNheSB0aGF0IHlvdXIgcHJvcG9z
-YWwgd2l0aCB0aGUNCnNvZnQgZXJyb3IgaWYgZmFpci4gRXZlbiBpZiB3cml0ZXMgYW5kIGVyYXNl
-cyB3aWxsIG5vdCB3b3JrIGluIGNhc2UgV1AjDQppcyBhc3NlcnRlZCwgd2Ugd291bGQgYXQgbGVh
-c3QgbGV0IHVzZXJzIGRvIHJlYWRzLiBUaGUgd3JpdGVzIGFuZCBlcmFzZXMNCnByb2JsZW1zIHdv
-dWxkIGJlIGNhdWdodCB3aGVuIGVuYWJsaW5nIHRoZSBkZWJ1ZyB0cmFjZXMuIFNvIHBsZWFzZSBn
-bw0KYWhlYWQgYW5kIHByaW50IGp1c3QgYSBkZXZfZGJnIHdoZW4gc3BpX25vcl91bmxvY2tfYWxs
-KCkgZmFpbHMsIHdpdGhvdXQNCnN0b3BwaW5nIHRoZSBleGVjdXRpb24uDQoNCkNoZWVycywNCnRh
-DQo=
+Add stats support for the ar9331 switch.
+
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/dsa/qca/ar9331.c | 248 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 247 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
+index e24a99031b80..48c81996e807 100644
+--- a/drivers/net/dsa/qca/ar9331.c
++++ b/drivers/net/dsa/qca/ar9331.c
+@@ -101,6 +101,57 @@
+ 	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
+ 	 AR9331_SW_PORT_STATUS_SPEED_M)
+ 
++/* MIB registers */
++#define AR9331_MIB_COUNTER(x)			(0x20000 + ((x) * 0x100))
++
++#define AR9331_PORT_MIB_rxbroad(_port)		(AR9331_MIB_COUNTER(_port) + 0x00)
++#define AR9331_PORT_MIB_rxpause(_port)		(AR9331_MIB_COUNTER(_port) + 0x04)
++#define AR9331_PORT_MIB_rxmulti(_port)		(AR9331_MIB_COUNTER(_port) + 0x08)
++#define AR9331_PORT_MIB_rxfcserr(_port)		(AR9331_MIB_COUNTER(_port) + 0x0c)
++#define AR9331_PORT_MIB_rxalignerr(_port)	(AR9331_MIB_COUNTER(_port) + 0x10)
++#define AR9331_PORT_MIB_rxrunt(_port)		(AR9331_MIB_COUNTER(_port) + 0x14)
++#define AR9331_PORT_MIB_rxfragment(_port)	(AR9331_MIB_COUNTER(_port) + 0x18)
++#define AR9331_PORT_MIB_rx64byte(_port)		(AR9331_MIB_COUNTER(_port) + 0x1c)
++#define AR9331_PORT_MIB_rx128byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x20)
++#define AR9331_PORT_MIB_rx256byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x24)
++#define AR9331_PORT_MIB_rx512byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x28)
++#define AR9331_PORT_MIB_rx1024byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x2c)
++#define AR9331_PORT_MIB_rx1518byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x30)
++#define AR9331_PORT_MIB_rxmaxbyte(_port)	(AR9331_MIB_COUNTER(_port) + 0x34)
++#define AR9331_PORT_MIB_rxtoolong(_port)	(AR9331_MIB_COUNTER(_port) + 0x38)
++
++/* 64 bit counter */
++#define AR9331_PORT_MIB_rxgoodbyte(_port)	(AR9331_MIB_COUNTER(_port) + 0x3c)
++
++/* 64 bit counter */
++#define AR9331_PORT_MIB_rxbadbyte(_port)	(AR9331_MIB_COUNTER(_port) + 0x44)
++
++#define AR9331_PORT_MIB_rxoverflow(_port)	(AR9331_MIB_COUNTER(_port) + 0x4c)
++#define AR9331_PORT_MIB_filtered(_port)		(AR9331_MIB_COUNTER(_port) + 0x50)
++#define AR9331_PORT_MIB_txbroad(_port)		(AR9331_MIB_COUNTER(_port) + 0x54)
++#define AR9331_PORT_MIB_txpause(_port)		(AR9331_MIB_COUNTER(_port) + 0x58)
++#define AR9331_PORT_MIB_txmulti(_port)		(AR9331_MIB_COUNTER(_port) + 0x5c)
++#define AR9331_PORT_MIB_txunderrun(_port)	(AR9331_MIB_COUNTER(_port) + 0x60)
++#define AR9331_PORT_MIB_tx64byte(_port)		(AR9331_MIB_COUNTER(_port) + 0x64)
++#define AR9331_PORT_MIB_tx128byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x68)
++#define AR9331_PORT_MIB_tx256byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x6c)
++#define AR9331_PORT_MIB_tx512byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x70)
++#define AR9331_PORT_MIB_tx1024byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x74)
++#define AR9331_PORT_MIB_tx1518byte(_port)	(AR9331_MIB_COUNTER(_port) + 0x78)
++#define AR9331_PORT_MIB_txmaxbyte(_port)	(AR9331_MIB_COUNTER(_port) + 0x7c)
++#define AR9331_PORT_MIB_txoversize(_port)	(AR9331_MIB_COUNTER(_port) + 0x80)
++
++/* 64 bit counter */
++#define AR9331_PORT_MIB_txbyte(_port)		(AR9331_MIB_COUNTER(_port) + 0x84)
++
++#define AR9331_PORT_MIB_txcollision(_port)	(AR9331_MIB_COUNTER(_port) + 0x8c)
++#define AR9331_PORT_MIB_txabortcol(_port)	(AR9331_MIB_COUNTER(_port) + 0x90)
++#define AR9331_PORT_MIB_txmulticol(_port)	(AR9331_MIB_COUNTER(_port) + 0x94)
++#define AR9331_PORT_MIB_txsinglecol(_port)	(AR9331_MIB_COUNTER(_port) + 0x98)
++#define AR9331_PORT_MIB_txexcdefer(_port)	(AR9331_MIB_COUNTER(_port) + 0x9c)
++#define AR9331_PORT_MIB_txdefer(_port)		(AR9331_MIB_COUNTER(_port) + 0xa0)
++#define AR9331_PORT_MIB_txlatecol(_port)	(AR9331_MIB_COUNTER(_port) + 0xa4)
++
+ /* Phy bypass mode
+  * ------------------------------------------------------------------------
+  * Bit:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |14 |15 |
+@@ -154,6 +205,59 @@
+ #define AR9331_SW_MDIO_POLL_SLEEP_US		1
+ #define AR9331_SW_MDIO_POLL_TIMEOUT_US		20
+ 
++#define STATS_INTERVAL_JIFFIES			(100 * HZ)
++
++struct ar9331_sw_stats {
++	u64 rxbroad;
++	u64 rxpause;
++	u64 rxmulti;
++	u64 rxfcserr;
++	u64 rxalignerr;
++	u64 rxrunt;
++	u64 rxfragment;
++	u64 rx64byte;
++	u64 rx128byte;
++	u64 rx256byte;
++	u64 rx512byte;
++	u64 rx1024byte;
++	u64 rx1518byte;
++	u64 rxmaxbyte;
++	u64 rxtoolong;
++	u64 rxgoodbyte;
++	u64 rxbadbyte;
++	u64 rxoverflow;
++	u64 filtered;
++	u64 txbroad;
++	u64 txpause;
++	u64 txmulti;
++	u64 txunderrun;
++	u64 tx64byte;
++	u64 tx128byte;
++	u64 tx256byte;
++	u64 tx512byte;
++	u64 tx1024byte;
++	u64 tx1518byte;
++	u64 txmaxbyte;
++	u64 txoversize;
++	u64 txbyte;
++	u64 txcollision;
++	u64 txabortcol;
++	u64 txmulticol;
++	u64 txsinglecol;
++	u64 txexcdefer;
++	u64 txdefer;
++	u64 txlatecol;
++};
++
++struct ar9331_sw_priv;
++struct ar9331_sw_port {
++	int idx;
++	struct ar9331_sw_priv *priv;
++	struct delayed_work mib_read;
++	struct ar9331_sw_stats stats;
++	struct mutex lock;		/* stats access */
++};
++
+ struct ar9331_sw_priv {
+ 	struct device *dev;
+ 	struct dsa_switch ds;
+@@ -163,6 +267,7 @@ struct ar9331_sw_priv {
+ 	struct mii_bus *sbus; /* mdio slave */
+ 	struct regmap *regmap;
+ 	struct reset_control *sw_reset;
++	struct ar9331_sw_port port[AR9331_SW_PORTS];
+ };
+ 
+ /* Warning: switch reset will reset last AR9331_SW_MDIO_PHY_MODE_PAGE request
+@@ -422,6 +527,7 @@ static void ar9331_sw_phylink_mac_link_down(struct dsa_switch *ds, int port,
+ 					    phy_interface_t interface)
+ {
+ 	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
++	struct ar9331_sw_port *p = &priv->port[port];
+ 	struct regmap *regmap = priv->regmap;
+ 	int ret;
+ 
+@@ -429,6 +535,8 @@ static void ar9331_sw_phylink_mac_link_down(struct dsa_switch *ds, int port,
+ 				 AR9331_SW_PORT_STATUS_MAC_MASK, 0);
+ 	if (ret)
+ 		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
++
++	cancel_delayed_work_sync(&p->mib_read);
+ }
+ 
+ static void ar9331_sw_phylink_mac_link_up(struct dsa_switch *ds, int port,
+@@ -439,10 +547,13 @@ static void ar9331_sw_phylink_mac_link_up(struct dsa_switch *ds, int port,
+ 					  bool tx_pause, bool rx_pause)
+ {
+ 	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
++	struct ar9331_sw_port *p = &priv->port[port];
+ 	struct regmap *regmap = priv->regmap;
+ 	u32 val;
+ 	int ret;
+ 
++	schedule_delayed_work(&p->mib_read, 0);
++
+ 	val = AR9331_SW_PORT_STATUS_MAC_MASK;
+ 	switch (speed) {
+ 	case SPEED_1000:
+@@ -475,6 +586,124 @@ static void ar9331_sw_phylink_mac_link_up(struct dsa_switch *ds, int port,
+ 		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+ }
+ 
++static u32 ar9331_stat_get_val(const struct ar9331_sw_priv *priv, u32 reg)
++{
++	u32 val;
++	int ret;
++
++	ret = regmap_read(priv->regmap, reg, &val);
++	if (ret) {
++		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
++		return 0;
++	}
++
++	return val;
++}
++
++#define AR9331_READ_STATS(_port, _reg) \
++{ \
++	const struct ar9331_sw_priv *priv = _port->priv; \
++	struct ar9331_sw_stats *s = &_port->stats; \
++	int idx = _port->idx; \
++\
++	s->_reg += ar9331_stat_get_val(priv, AR9331_PORT_MIB_##_reg(idx)); \
++}
++
++static void ar9331_read_stats(struct ar9331_sw_port *port)
++{
++	mutex_lock(&port->lock);
++
++	AR9331_READ_STATS(port, rxbroad);
++	AR9331_READ_STATS(port, rxpause);
++	AR9331_READ_STATS(port, rxmulti);
++	AR9331_READ_STATS(port, rxfcserr);
++	AR9331_READ_STATS(port, rxalignerr);
++	AR9331_READ_STATS(port, rxrunt);
++	AR9331_READ_STATS(port, rxfragment);
++	AR9331_READ_STATS(port, rx64byte);
++	AR9331_READ_STATS(port, rx128byte);
++	AR9331_READ_STATS(port, rx256byte);
++	AR9331_READ_STATS(port, rx512byte);
++	AR9331_READ_STATS(port, rx1024byte);
++	AR9331_READ_STATS(port, rx1518byte);
++	AR9331_READ_STATS(port, rxmaxbyte);
++	AR9331_READ_STATS(port, rxtoolong);
++	AR9331_READ_STATS(port, rxgoodbyte);
++	AR9331_READ_STATS(port, rxbadbyte);
++	AR9331_READ_STATS(port, rxoverflow);
++	AR9331_READ_STATS(port, filtered);
++	AR9331_READ_STATS(port, txbroad);
++	AR9331_READ_STATS(port, txpause);
++	AR9331_READ_STATS(port, txmulti);
++	AR9331_READ_STATS(port, txunderrun);
++	AR9331_READ_STATS(port, tx64byte);
++	AR9331_READ_STATS(port, tx128byte);
++	AR9331_READ_STATS(port, tx256byte);
++	AR9331_READ_STATS(port, tx512byte);
++	AR9331_READ_STATS(port, tx1024byte);
++	AR9331_READ_STATS(port, tx1518byte);
++	AR9331_READ_STATS(port, txmaxbyte);
++	AR9331_READ_STATS(port, txoversize);
++	AR9331_READ_STATS(port, txbyte);
++	AR9331_READ_STATS(port, txcollision);
++	AR9331_READ_STATS(port, txabortcol);
++	AR9331_READ_STATS(port, txmulticol);
++	AR9331_READ_STATS(port, txsinglecol);
++	AR9331_READ_STATS(port, txexcdefer);
++	AR9331_READ_STATS(port, txdefer);
++	AR9331_READ_STATS(port, txlatecol);
++
++	mutex_unlock(&port->lock);
++}
++
++static void ar9331_stats_update(struct ar9331_sw_port *port,
++				struct rtnl_link_stats64 *stats)
++{
++	struct ar9331_sw_stats *s = &port->stats;
++
++	stats->rx_packets = s->rxbroad + s->rxmulti + s->rx64byte +
++		s->rx128byte + s->rx256byte + s->rx512byte + s->rx1024byte +
++		s->rx1518byte + s->rxmaxbyte;
++	stats->tx_packets = s->txbroad + s->txmulti + s->tx64byte +
++		s->tx128byte + s->tx256byte + s->tx512byte + s->tx1024byte +
++		s->tx1518byte + s->txmaxbyte;
++	stats->rx_bytes = s->rxgoodbyte;
++	stats->tx_bytes = s->txbyte;
++	stats->rx_errors = s->rxfcserr + s->rxalignerr + s->rxrunt +
++		s->rxfragment + s->rxoverflow;
++	stats->tx_errors = s->txoversize;
++	stats->multicast = s->rxmulti;
++	stats->collisions = s->txcollision;
++	stats->rx_length_errors = s->rxrunt + s->rxfragment + s->rxtoolong;
++	stats->rx_crc_errors = s->rxfcserr + s->rxalignerr + s->rxfragment;
++	stats->rx_frame_errors = s->rxalignerr;
++	stats->rx_missed_errors = s->rxoverflow;
++	stats->tx_aborted_errors = s->txabortcol;
++	stats->tx_fifo_errors = s->txunderrun;
++	stats->tx_window_errors = s->txlatecol;
++	stats->rx_nohandler = s->filtered;
++}
++
++static void ar9331_do_stats_poll(struct work_struct *work)
++{
++	struct ar9331_sw_port *port = container_of(work, struct ar9331_sw_port,
++						   mib_read.work);
++
++	ar9331_read_stats(port);
++
++	schedule_delayed_work(&port->mib_read, STATS_INTERVAL_JIFFIES);
++}
++
++static void ar9331_get_stats64(struct dsa_switch *ds, int port,
++			       struct rtnl_link_stats64 *s)
++{
++	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
++	struct ar9331_sw_port *p = &priv->port[port];
++
++	ar9331_read_stats(p);
++	ar9331_stats_update(p, s);
++}
++
+ static const struct dsa_switch_ops ar9331_sw_ops = {
+ 	.get_tag_protocol	= ar9331_sw_get_tag_protocol,
+ 	.setup			= ar9331_sw_setup,
+@@ -483,6 +712,7 @@ static const struct dsa_switch_ops ar9331_sw_ops = {
+ 	.phylink_mac_config	= ar9331_sw_phylink_mac_config,
+ 	.phylink_mac_link_down	= ar9331_sw_phylink_mac_link_down,
+ 	.phylink_mac_link_up	= ar9331_sw_phylink_mac_link_up,
++	.get_stats64		= ar9331_get_stats64,
+ };
+ 
+ static irqreturn_t ar9331_sw_irq(int irq, void *data)
+@@ -781,7 +1011,7 @@ static int ar9331_sw_probe(struct mdio_device *mdiodev)
+ {
+ 	struct ar9331_sw_priv *priv;
+ 	struct dsa_switch *ds;
+-	int ret;
++	int ret, i;
+ 
+ 	priv = devm_kzalloc(&mdiodev->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -816,6 +1046,15 @@ static int ar9331_sw_probe(struct mdio_device *mdiodev)
+ 	ds->ops = &priv->ops;
+ 	dev_set_drvdata(&mdiodev->dev, priv);
+ 
++	for (i = 0; i < ARRAY_SIZE(priv->port); i++) {
++		struct ar9331_sw_port *port = &priv->port[i];
++
++		port->idx = i;
++		port->priv = priv;
++		mutex_init(&port->lock);
++		INIT_DELAYED_WORK(&port->mib_read, ar9331_do_stats_poll);
++	}
++
+ 	ret = dsa_register_switch(ds);
+ 	if (ret)
+ 		goto err_remove_irq;
+@@ -831,6 +1070,13 @@ static int ar9331_sw_probe(struct mdio_device *mdiodev)
+ static void ar9331_sw_remove(struct mdio_device *mdiodev)
+ {
+ 	struct ar9331_sw_priv *priv = dev_get_drvdata(&mdiodev->dev);
++	unsigned int i;
++
++	for (i = 0; i < ARRAY_SIZE(priv->port); i++) {
++		struct ar9331_sw_port *port = &priv->port[i];
++
++		cancel_delayed_work_sync(&port->mib_read);
++	}
+ 
+ 	irq_domain_remove(priv->irqdomain);
+ 	mdiobus_unregister(priv->mbus);
+-- 
+2.29.2
+
