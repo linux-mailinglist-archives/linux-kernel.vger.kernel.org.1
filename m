@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A592CC0DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6307B2CC0E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730379AbgLBPbZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Dec 2020 10:31:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgLBPbZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:31:25 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49189C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:30:45 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kkU5U-0000Zf-Vi; Wed, 02 Dec 2020 16:30:36 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kkU5U-0000Ip-Bv; Wed, 02 Dec 2020 16:30:36 +0100
-Message-ID: <d92689dfb92dfa0812f19cc5ed04ec308b9efde3.camel@pengutronix.de>
-Subject: Re: [PATCH v5 09/10] media: Avoid parsing quantization and huffman
- tables
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
-        mchehab@kernel.org, shawnguo@kernel.org, robh+dt@kernel.org
-Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
-        daniel.baluta@nxp.com, robert.chiras@nxp.com,
-        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, ezequiel@collabora.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        dafna.hirschfeld@collabora.com,
-        Mirela Rabulea <mirela.rabulea@nxp.com>
-Date:   Wed, 02 Dec 2020 16:30:36 +0100
-In-Reply-To: <48b58168-662c-3e4d-2e5d-1f2a14b239fe@xs4all.nl>
-References: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
-         <20201112030557.8540-10-mirela.rabulea@oss.nxp.com>
-         <48b58168-662c-3e4d-2e5d-1f2a14b239fe@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1730443AbgLBPb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:31:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726088AbgLBPb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:31:57 -0500
+Date:   Wed, 2 Dec 2020 16:31:13 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606923076;
+        bh=4VuGyn84oOsN2fMeDdIHrqZQusWZiW7KJN6Mumj/b/E=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=piRJGjDu8txP/cWnq+Sd+9SQJSBOGDC8fewMHuVhD+UalHSVTp3tFsXaAhduFx9fD
+         PKQugzaXTGuTYtks8Rldx18y5b6N+9+XQ4kVkeDNw9IwUKuIpAdJ/OVUxTu2Fg+Uvh
+         +cveDe8ojQ7++PKC8HhYF6xEDA54p5I5eb+WU1Cg=
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Ajay Gupta <ajayg@nvidia.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v1] i2c: nvidia-gpu: drop empty stub for runtime pm
+Message-ID: <20201202153113.GF874@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Ajay Gupta <ajayg@nvidia.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+References: <20201107082151.58239-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wchHw8dVAp53YPj8"
+Content-Disposition: inline
+In-Reply-To: <20201107082151.58239-1-vaibhavgupta40@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-02 at 13:12 +0100, Hans Verkuil wrote:
-> On 12/11/2020 04:05, Mirela Rabulea (OSS) wrote:
-> > From: Mirela Rabulea <mirela.rabulea@nxp.com>
-> > 
-> > These are optional in struct v4l2_jpeg_header, so do not parse if
-> > not requested, save some time.
-> > 
-> > Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
-> > ---
-> >  drivers/media/v4l2-core/v4l2-jpeg.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/media/v4l2-core/v4l2-jpeg.c b/drivers/media/v4l2-core/v4l2-jpeg.c
-> > index d77e04083d57..7576cd0ce6b9 100644
-> > --- a/drivers/media/v4l2-core/v4l2-jpeg.c
-> > +++ b/drivers/media/v4l2-core/v4l2-jpeg.c
-> > @@ -307,6 +307,9 @@ static int jpeg_parse_quantization_tables(struct jpeg_stream *stream,
-> >  {
-> >  	int len = jpeg_get_word_be(stream);
-> >  
-> > +	if (!tables)
-> > +		return 0;
-> > +
-> 
-> It feels more natural to check for a non-NULL out->quantization_tables
-> or non-NULL out->huffman_tables pointer in v4l2_jpeg_parse_header()
-> rather than in these low-level functions. It's weird to have this check here.
 
-Ah, now I get it.
+--wchHw8dVAp53YPj8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, if you want to skip the entire DQT for performance reasons, it is
-probably better to just call jpeg_skip_segment() instead of
-jpeg_parse_quantization_table(). Otherwise the next jpeg_next_marker has
-to scan the whole quantization table for segment markers.
+On Sat, Nov 07, 2020 at 01:51:51PM +0530, Vaibhav Gupta wrote:
+> After the commit c5eb1190074c ("PCI / PM: Allow runtime PM without callba=
+ck
+> functions") we no more need empty stubs for runtime-pm to work.
+>=20
+> The driver has no device specific task(s) for .suspend() . The stub was
+> placed just for runtime-pm, which can be dropped now.
+>=20
+> Reported-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 
-regards
-Philipp
+Applied to for-next, thanks!
+
+
+--wchHw8dVAp53YPj8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/Hs0EACgkQFA3kzBSg
+KbZjJRAAlTj05bFsjhp2ZE6URRYK44l3P7fz8tEG9Ba8/SrY7f23aRs/lDusTqiJ
+lzL9KZDd5cJ7iH3SQXTn0adpoYCnqVTX5eqOCD8VkwyqRBKMI9u+7yOvL94+16XW
+2r542vmiNfNP7Km+DhqwxUnejz2sIEe/Se+aKgAdrAVztcwlpq5v4C+TgDDRRWYH
+n9uDEB/zjBwE4RDJ+Vpmz9pk1QmiuHNoJR1/pMvS2ccxf3PzypfthfAYbE6f5inz
+peWlZc9eF+AdTIsuoSGMPsflnHWU7J7KI6nS6VnW/I62IfAxopGawnfv/Mkz+kBa
+8YJfEPOhFMZkT3f1Jl9eGFf48OBIkLhRJsA+VlnzUmwzx5opI5QCVITW5zHbKVkZ
+VAz+Duf2Ze0ob9MG4QLYL7iReJFmNpruGPKb8rtftbp0CBl6AAPXW7GGEp/sJF8c
+yRdtH9R9LXMChBLXQ3BUNXT8SZt1TH+GdJV+OpUg+bA3md9mSGteuUxGkNdRLGCw
+XVk1GimTJnmRU5m7FTggZIR2rY9RRcKWmFKUKwblkANkg+ucXbjVhElhdFVAtzU9
+2IKQ5q2BaitXQ6NajlLBjjcjAs8ocsapDfK62e1cLUOfSHRm3DrHOufbP5CpXe4c
+4SSvqmJH9L9CCuXfAJl8RGOfEyUoKeEC3OcotfRG+YUqv3p4xpo=
+=DpHr
+-----END PGP SIGNATURE-----
+
+--wchHw8dVAp53YPj8--
