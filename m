@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3848B2CBBA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E532CBBAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgLBLkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:40:31 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:44535 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgLBLkb (ORCPT
+        id S1729656AbgLBLki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:40:38 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:36566 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728381AbgLBLkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:40:31 -0500
-Received: by mail-lj1-f196.google.com with SMTP id s9so3164518ljo.11;
-        Wed, 02 Dec 2020 03:40:13 -0800 (PST)
+        Wed, 2 Dec 2020 06:40:37 -0500
+Received: by mail-lf1-f67.google.com with SMTP id v14so4164867lfo.3;
+        Wed, 02 Dec 2020 03:40:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GXBq8+fXGiepnC5zHNH6qlr+czrZ3uLyy0ohWtOyg1I=;
-        b=gkCK17WvC4UcblgAWLMeXGkrmImsTUJV2rgf3yHAbQBndkKhrykH4l0BhiNzZOULde
-         Jq1gKeWFfwD/zkM8WxO7sb7pH2hs4hdF7RbZS8J0J10rDppJv52Dh2y/w8patyulapou
-         GddHc/uA84FsaINN/hWTSp0zHqnklmiryhsLpHf2yQMSOesovyZS4FJ9fLAZrnasmZvl
-         vFblPHURlA1PubMrWd6QTJCTosiK2ce+AynUCbKlqoE5bp4HnoILzfIJ3YYt9rJZcMru
-         LearzvuHuJCc1EWL7M2M4uxJ9elnCh/71SfvPE7MgexlLDkYqXBIl4UG5EqLngHpeZT4
-         6N0w==
-X-Gm-Message-State: AOAM530tpk3+CFCzWqmw5yVFsPbQFkDpsvl3YRGQ0pu3YrDcKr+jEdNm
-        PwqplWYJbRYYxh+JY8D2oo14zoM/S0m5rA==
-X-Google-Smtp-Source: ABdhPJy2t3xX2Rtq9FJfKsAY8Eo6EMBOPARqfLMGnWr2/EuzEHjXYB8EJxT7wa6D6IdcvLbZojERvQ==
-X-Received: by 2002:a05:651c:321:: with SMTP id b1mr957464ljp.387.1606909188051;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Qh172KviYxa9zp9+o3L4Po4UyIe5hNPQfMlxTZlddTg=;
+        b=cFD3bSXVoBcOe3UDCQEXB9HMMyzavhkudtAmLKt+4TDbFstwHuuUXHxwtPn0O3lpxA
+         K3A/KH/PdU8leRWYhEE7YKg8/ELpuSsHgx7bVJVZ7OyGIhUglziW2Mfexqo4fRm3bMLC
+         vSg7v8KRE20V52ftKcMY4TkB+37qphVX8JM+6lDJOF8oSSY9s7FxxEe991jOYMDHz3Ur
+         J4a5QeN6lJ5GavvQW3xXjAaVHpmQkLRus5zkLBxOk9W8wEAY7D9WrpVmsug/6v53S3qa
+         cJjwKpwIz0HDT1+b6oM6DnK3pBC/zC9v5kcHc+ap293/WwbhN8oxmeeojTLdnT9MXgBq
+         9uTw==
+X-Gm-Message-State: AOAM532F/AZEX2eCm2ncO0LyRH5wfUAYp95gVTOHuoLAKIv8sPcoKsT0
+        rY5UDHZNEI6ZSFIgee34Zms=
+X-Google-Smtp-Source: ABdhPJwoVdp8m2G7eivVLWdlKmMT+Mkq9450XQZv3A0x9keCOk8Do2wAIMeotyIiIlPfZDcI8vM4Mg==
+X-Received: by 2002:ac2:5087:: with SMTP id f7mr1174426lfm.369.1606909188621;
         Wed, 02 Dec 2020 03:39:48 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id r1sm398356ljg.20.2020.12.02.03.39.47
+        by smtp.gmail.com with ESMTPSA id r66sm379960lff.265.2020.12.02.03.39.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 02 Dec 2020 03:39:47 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kkQUc-00072k-Go; Wed, 02 Dec 2020 12:40:18 +0100
+        id 1kkQUc-00072n-LD; Wed, 02 Dec 2020 12:40:18 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>,
         "Mychaela N . Falconia" <falcon@freecalypso.org>,
         linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
-Date:   Wed,  2 Dec 2020 12:39:35 +0100
-Message-Id: <20201202113942.27024-1-johan@kernel.org>
+Subject: [PATCH v2 1/7] tty: use assign_bit() in port-flag accessors
+Date:   Wed,  2 Dec 2020 12:39:36 +0100
+Message-Id: <20201202113942.27024-2-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201202113942.27024-1-johan@kernel.org>
+References: <20201202113942.27024-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds a new NORDY port flag to suppress raising the
-modem-control lines on open to signal DTE readiness.
+Use the new assign_bit() wrapper in the port-flag accessors instead of
+open coding.
 
-This can be used to implement a NORDY termios control flag to complement
-HUPCL, which controls lowering of the modem-control lines on final
-close.
+Suggested-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ include/linux/tty.h | 30 ++++++------------------------
+ 1 file changed, 6 insertions(+), 24 deletions(-)
 
-Initially drivers can export the flag through sysfs, which also allows
-control over the lines on first open. Such an interface is implemented
-for serial core and USB serial.
-
-The motivation for this is to allow for applications where the DTR and
-RTS lines are used for non-standard purposes (e.g. generating power-on
-and reset pulses) to open the port without undesirable side effects.
-
-The final patches enables this flag by default for such a USB serial
-device.
-
-Other examples include HAM-radio devices where DTR and RTS is used for
-push-to-talk and continuous-wave control and various Arduino boards
-which are reset on open unless a jumper is physically removed.
-
-Greg, are you ok we me taking this through my tree? I'm planning on some
-follow ups to the ftdi driver and the tty/serial changes are fairly
-self-contained.
-
-Also let me know if you prefer to hold this off for 5.12. The change is
-minimal, self-contained and low-risk, but it is a new interface and late
-in the release cycle as Andy pointed out.
-
-Johan
-
-
-Changes in v2
- - use assign_bit() in port-flag accessors (Jiri)
- - use const parameters in port-flag accessors (Jiri)
- - use kstrtobool() in attribute store (Andy, Greg)
- - fix "used" typo in commit messages (Andy)
- - use bool constant with port-flag accessor in ftdi quirk (Jiri)
- - add Mychaela's Reviewed-by tag to patch 3/7
- - mention a few more example applications in the cover letter
-
-v1
- - https://lore.kernel.org/r/20201130153742.9163-1-johan@kernel.org
-
-
-Johan Hovold (5):
-  tty: use assign_bit() in port-flag accessors
-  tty: use const parameters in port-flag accessors
-  tty: add port flag to suppress ready signalling on open
-  serial: core: add sysfs attribute to suppress ready signalling on open
-  USB: serial: add sysfs attribute to suppress ready signalling on open
-
-Mychaela N. Falconia (2):
-  USB: serial: ftdi_sio: pass port to quirk port_probe functions
-  USB: serial: ftdi_sio: add support for FreeCalypso DUART28C adapter
-
- Documentation/ABI/testing/sysfs-tty |  7 ++++
- drivers/tty/serial/serial_core.c    | 26 ++++++++++++++
- drivers/tty/tty_port.c              |  2 +-
- drivers/usb/serial/bus.c            | 35 +++++++++++++++++--
- drivers/usb/serial/ftdi_sio.c       | 42 ++++++++++++++++++-----
- drivers/usb/serial/ftdi_sio_ids.h   |  1 +
- include/linux/tty.h                 | 53 +++++++++++++----------------
- 7 files changed, 125 insertions(+), 41 deletions(-)
-
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index a99e9b8e4e31..eca7fd5e9fd0 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -612,10 +612,7 @@ static inline bool tty_port_cts_enabled(struct tty_port *port)
+ 
+ static inline void tty_port_set_cts_flow(struct tty_port *port, bool val)
+ {
+-	if (val)
+-		set_bit(TTY_PORT_CTS_FLOW, &port->iflags);
+-	else
+-		clear_bit(TTY_PORT_CTS_FLOW, &port->iflags);
++	assign_bit(TTY_PORT_CTS_FLOW, &port->iflags, val);
+ }
+ 
+ static inline bool tty_port_active(struct tty_port *port)
+@@ -625,10 +622,7 @@ static inline bool tty_port_active(struct tty_port *port)
+ 
+ static inline void tty_port_set_active(struct tty_port *port, bool val)
+ {
+-	if (val)
+-		set_bit(TTY_PORT_ACTIVE, &port->iflags);
+-	else
+-		clear_bit(TTY_PORT_ACTIVE, &port->iflags);
++	assign_bit(TTY_PORT_ACTIVE, &port->iflags, val);
+ }
+ 
+ static inline bool tty_port_check_carrier(struct tty_port *port)
+@@ -638,10 +632,7 @@ static inline bool tty_port_check_carrier(struct tty_port *port)
+ 
+ static inline void tty_port_set_check_carrier(struct tty_port *port, bool val)
+ {
+-	if (val)
+-		set_bit(TTY_PORT_CHECK_CD, &port->iflags);
+-	else
+-		clear_bit(TTY_PORT_CHECK_CD, &port->iflags);
++	assign_bit(TTY_PORT_CHECK_CD, &port->iflags, val);
+ }
+ 
+ static inline bool tty_port_suspended(struct tty_port *port)
+@@ -651,10 +642,7 @@ static inline bool tty_port_suspended(struct tty_port *port)
+ 
+ static inline void tty_port_set_suspended(struct tty_port *port, bool val)
+ {
+-	if (val)
+-		set_bit(TTY_PORT_SUSPENDED, &port->iflags);
+-	else
+-		clear_bit(TTY_PORT_SUSPENDED, &port->iflags);
++	assign_bit(TTY_PORT_SUSPENDED, &port->iflags, val);
+ }
+ 
+ static inline bool tty_port_initialized(struct tty_port *port)
+@@ -664,10 +652,7 @@ static inline bool tty_port_initialized(struct tty_port *port)
+ 
+ static inline void tty_port_set_initialized(struct tty_port *port, bool val)
+ {
+-	if (val)
+-		set_bit(TTY_PORT_INITIALIZED, &port->iflags);
+-	else
+-		clear_bit(TTY_PORT_INITIALIZED, &port->iflags);
++	assign_bit(TTY_PORT_INITIALIZED, &port->iflags, val);
+ }
+ 
+ static inline bool tty_port_kopened(struct tty_port *port)
+@@ -677,10 +662,7 @@ static inline bool tty_port_kopened(struct tty_port *port)
+ 
+ static inline void tty_port_set_kopened(struct tty_port *port, bool val)
+ {
+-	if (val)
+-		set_bit(TTY_PORT_KOPENED, &port->iflags);
+-	else
+-		clear_bit(TTY_PORT_KOPENED, &port->iflags);
++	assign_bit(TTY_PORT_KOPENED, &port->iflags, val);
+ }
+ 
+ extern struct tty_struct *tty_port_tty_get(struct tty_port *port);
 -- 
 2.26.2
 
