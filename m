@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362AA2CB5F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255CE2CB5F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728857AbgLBHwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:52:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgLBHwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:52:16 -0500
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH] media: vidtv: fix kernel-doc markups
-Date:   Wed,  2 Dec 2020 08:51:28 +0100
-Message-Id: <7d86a4c4aa112f87149ba4e247fcf8904153884c.1606895475.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1728868AbgLBHyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:54:12 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42113 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726157AbgLBHyL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:54:11 -0500
+X-UUID: a885dc096bc1489ea0ccbfb7beaf2d2e-20201202
+X-UUID: a885dc096bc1489ea0ccbfb7beaf2d2e-20201202
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <kuan-ying.lee@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 775296454; Wed, 02 Dec 2020 15:53:29 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 2 Dec 2020 15:53:27 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 2 Dec 2020 15:53:27 +0800
+From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicholas Tang <nicholas.tang@mediatek.com>,
+        Miles Chen <miles.chen@mediatek.com>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Subject: [PATCH v3 0/1] Fix object remain in offline per-cpu quarantine
+Date:   Wed, 2 Dec 2020 15:53:04 +0800
+Message-ID: <1606895585-17382-1-git-send-email-Kuan-Ying.Lee@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some functions has a different name between their prototypes
-and the corresponding kernel-doc markups.
+This patch fixes object remain in the offline per-cpu quarantine as
+describe below.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/test-drivers/vidtv/vidtv_psi.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Free objects will get into per-cpu quarantine if enable generic KASAN.
+If a cpu is offline and users use kmem_cache_destroy, kernel will detect
+objects still remain in the offline per-cpu quarantine and report error.
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.h b/drivers/media/test-drivers/vidtv/vidtv_psi.h
-index 340c9fb8d583..6651cc91bda1 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_psi.h
-+++ b/drivers/media/test-drivers/vidtv/vidtv_psi.h
-@@ -420,7 +420,7 @@ void vidtv_psi_desc_assign(struct vidtv_psi_desc **to,
- 			   struct vidtv_psi_desc *desc);
- 
- /**
-- * vidtv_psi_pmt_desc_assign - Assigns a descriptor loop at some point in a PMT section.
-+ * vidtv_pmt_desc_assign - Assigns a descriptor loop at some point in a PMT section.
-  * @pmt: The PMT section that will contain the descriptor loop
-  * @to: Where in the PMT to assign this descriptor loop to
-  * @desc: The descriptor loop that will be assigned.
-@@ -434,7 +434,7 @@ void vidtv_pmt_desc_assign(struct vidtv_psi_table_pmt *pmt,
- 			   struct vidtv_psi_desc *desc);
- 
- /**
-- * vidtv_psi_sdt_desc_assign - Assigns a descriptor loop at some point in a SDT.
-+ * vidtv_sdt_desc_assign - Assigns a descriptor loop at some point in a SDT.
-  * @sdt: The SDT that will contain the descriptor loop
-  * @to: Where in the PMT to assign this descriptor loop to
-  * @desc: The descriptor loop that will be assigned.
-@@ -474,7 +474,7 @@ void vidtv_psi_pmt_stream_assign(struct vidtv_psi_table_pmt *pmt,
- struct vidtv_psi_desc *vidtv_psi_desc_clone(struct vidtv_psi_desc *desc);
- 
- /**
-- * vidtv_psi_create_sec_for_each_pat_entry - Create a PMT section for each
-+ * vidtv_psi_pmt_create_sec_for_each_pat_entry - Create a PMT section for each
-  * program found in the PAT
-  * @pat: The PAT to look for programs.
-  * @pcr_pid: packet ID for the PCR to be used for the program described in this
+Register a cpu hotplug function to remove all objects in the offline
+per-cpu quarantine when cpu is going offline. Set a per-cpu variable
+to indicate this cpu is offline.
+
+Changes since v3:
+ - Add a barrier to ensure the ordering
+ - Rename the init function
+
+Changes since v2:
+ - Thanks for Dmitry suggestion
+ - Remove unnecessary code
+ - Put offline variable into cpu_quarantine
+ - Use single qlist_free_all call instead of iteration over all slabs
+ - Add bug reporter in commit message
+
+Kuan-Ying Lee (1):
+  kasan: fix object remain in offline per-cpu quarantine
+
+ mm/kasan/quarantine.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
 -- 
-2.28.0
+2.18.0
 
