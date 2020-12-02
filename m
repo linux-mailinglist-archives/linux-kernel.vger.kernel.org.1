@@ -2,151 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4772CC5FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463B62CC5FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389721AbgLBSyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387903AbgLBSyw (ORCPT
+        id S2389725AbgLBSzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:55:08 -0500
+Received: from smtprelay0071.hostedemail.com ([216.40.44.71]:48634 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387828AbgLBSzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:54:52 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327FEC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:54:12 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id j13so1471856pjz.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:54:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b0+bgE4T7KwQd0o1rvb3kJK3SimQlgs22CmXZhVLCKg=;
-        b=QROM0g6hLow6GZ7V4UDEra8QnuXAyNQydFYd8tPdysSPgI/afRnHzMYcjQDJs2MPB5
-         4FHG2f99kdxwjDywXRoVakgANSW9WNU9vfancQ5ol/JYM0ZhkZcqC6lujqrqP2v+MmPf
-         J2cFUpIzUbXWhObQk0kvkRk5lgSkJmlLPa0ho=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b0+bgE4T7KwQd0o1rvb3kJK3SimQlgs22CmXZhVLCKg=;
-        b=kNbczXUSscM6Y1IhhG/AQMBgZIbw7GGkpQAGqNZfX0icxYfluqhch3lYPkbE5gEq8w
-         JXW4Kqz6o8ct4KpJR7aRMM5UUWzMiLrsVocdYRXW3ts/2F8j13HRc4Donb4/hoL2rdOu
-         H/O+eRIhlUxPMd1mcyRjjhEoXe9iAklZgsKFbhklVwBfQqiTyWYyB1ap6Fz6d6aJ/A5g
-         X6YMP624bXqh/wEidD1oI0exLQLScnPs/jfs7IPse6CTaoIbmikWPRRsB5LQs5ibPnLT
-         SgvxnyaL7sWMSgjvp9yyV8PSHs1YNbhin9CfEowjXJs3s4QwgauTVBevVkmb/mFh51yR
-         Nk0Q==
-X-Gm-Message-State: AOAM531MByKp0DCsj3cMp8doxX+2c17YV4vj0NaC5/yS8wxQYDq6t4jG
-        1O9U5tSf/y6MF1jFgl1CpVI+Bg==
-X-Google-Smtp-Source: ABdhPJyXCkgyp1gKYUQlD8LDgoMFvwqHsxFF5beeKPp+ajldaiiTSe5K5j/sXDeIE9XjSAHHC0sgfQ==
-X-Received: by 2002:a17:902:b207:b029:d8:fdf3:af30 with SMTP id t7-20020a170902b207b02900d8fdf3af30mr3838177plr.31.1606935251732;
-        Wed, 02 Dec 2020 10:54:11 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z17sm346946pjn.46.2020.12.02.10.54.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 10:54:10 -0800 (PST)
-Date:   Wed, 2 Dec 2020 10:54:09 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
-Message-ID: <202012021042.A76E8F06@keescook>
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <20201130120130.GF24563@willie-the-truck>
- <202012010929.3788AF5@keescook>
- <CAK7LNASQPOGohtUyzBM6n54pzpLN35kDXC7VbvWzX8QWUmqq9g@mail.gmail.com>
+        Wed, 2 Dec 2020 13:55:08 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BB1771800CA77;
+        Wed,  2 Dec 2020 18:54:26 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1544:1593:1594:1605:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2691:2693:2731:2828:2908:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3868:3870:3871:3872:4321:4605:4641:5007:6119:6120:7514:7875:7903:8784:10004:10848:11232:11233:11658:11914:12043:12262:12295:12297:12346:12438:12555:12679:12740:12895:13095:13439:13894:13972:14096:14097:14181:14659:14721:21080:21365:21433:21451:21611:21627:21740:21939:30003:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:12,LUA_SUMMARY:none
+X-HE-Tag: scarf55_4906404273b5
+X-Filterd-Recvd-Size: 4847
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  2 Dec 2020 18:54:25 +0000 (UTC)
+Message-ID: <8436bc4191d92af283ea6aa7ca450e36da653e2e.camel@perches.com>
+Subject: Re: [RFC PATCH] checkpatch: correctly detect lines of help text
+From:   Joe Perches <joe@perches.com>
+To:     Nicolai Fischer <nicolai.fischer@fau.de>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Cc:     apw@canonical.com, johannes.czekay@fau.de,
+        linux-kernel@i4.cs.fau.de
+Date:   Wed, 02 Dec 2020 10:54:24 -0800
+In-Reply-To: <133ac827-c0d2-c5c7-39d8-7d2c17de7c76@fau.de>
+References: <133ac827-c0d2-c5c7-39d8-7d2c17de7c76@fau.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNASQPOGohtUyzBM6n54pzpLN35kDXC7VbvWzX8QWUmqq9g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:42:21AM +0900, Masahiro Yamada wrote:
-> On Wed, Dec 2, 2020 at 2:31 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Mon, Nov 30, 2020 at 12:01:31PM +0000, Will Deacon wrote:
-> > > Hi Sami,
-> > >
-> > > On Wed, Nov 18, 2020 at 02:07:14PM -0800, Sami Tolvanen wrote:
-> > > > This patch series adds support for building the kernel with Clang's
-> > > > Link Time Optimization (LTO). In addition to performance, the primary
-> > > > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI) to
-> > > > be used in the kernel. Google has shipped millions of Pixel devices
-> > > > running three major kernel versions with LTO+CFI since 2018.
-> > > >
-> > > > Most of the patches are build system changes for handling LLVM bitcode,
-> > > > which Clang produces with LTO instead of ELF object files, postponing
-> > > > ELF processing until a later stage, and ensuring initcall ordering.
-> > > >
-> > > > Note that v7 brings back arm64 support as Will has now staged the
-> > > > prerequisite memory ordering patches [1], and drops x86_64 while we work
-> > > > on fixing the remaining objtool warnings [2].
-> > >
-> > > Sounds like you're going to post a v8, but that's the plan for merging
-> > > that? The arm64 parts look pretty good to me now.
-> >
-> > I haven't seen Masahiro comment on this in a while, so given the review
-> > history and its use (for years now) in Android, I will carry v8 (assuming
-> > all is fine with it) it in -next unless there are objections.
+On Wed, 2020-12-02 at 19:27 +0100, Nicolai Fischer wrote:
+> Currently, checkpatch uses keywords to determine the end
+> of a Kconfig help message which leads to false positives:
 > 
+> 1) if a line of the help text starts with any of the keywords, e.g. if:
 > 
-> What I dislike about this implementation is
-> it cannot drop any unreachable function/data.
-> (and it is completely different from GCC LTO)
-
-This seems to be an orthogonal concern: the kernel doesn't have GCC LTO
-support either (though much of Sami's work is required for GCC LTO too).
-
-> This is not real LTO.
-
-I don't know what you're defining as "real LTO", but this is, very much,
-Link Time Optimization: the compiler has access to the entire code at
-once, and it is therefore in a position to perform many manipulations to
-the code. As Sami mentioned, perhaps you're thinking specifically of
-dead code elimination? That's a specific optimization.
-
-> [thread[1] merging]
-> This help document is misleading.
-> People who read the document would misunderstand how great this feature would.
+> +config FOO
+> +	help
+> +	  help text
+> +	  if condition
+> +	  previous line causes warning
+> +	  last line.
 > 
-> This should be added in the commit log and Kconfig help:
+> 2) if the help attribute is not specified last, checkpatch counts
+> other attributes like depends on towards the line count:
 > 
->            In contrast to the example in the documentation, Clang LTO
->            for the kernel cannot remove any unreachable function or data.
->            In fact, this results in even bigger vmlinux and modules.
+> +config FOO
+> +	help
+> +	bool "no help message, but passes checkpatch"
+> +	default n
+> +	depends on SYSFS
+> +	depends on MULTIUSER
 
-Which LTO passes are happening, how optimization are being performed,
-etc, are endlessly tunable, but we can't work on that tuning without
-the infrastructure to perform an LTO build in the first place. We need
-to land the support, and go from there. As written, it works very well
-for arm64 (which is what v8 targets specifically) and the results have
-been running on millions of Android phones for years now. If further
-tuning needs to happen for other architectures, config combinations, etc,
-those can and will be developed. (For example, x86 is around the corner,
-once some false positive warnings from objtool get hammered out, etc.)
+Perhaps it'd be better to create a new warning when the help text
+block is not the last block of the config section.  Maybe warn when
+a blank line or endif is not the separator to the next keyword.
+Maybe warn when the next line after help is not indented 2 more
+spaces than the help line.
 
-I still want this in -next so we can build on it and improve it -- it
-has been stuck in limbo for too long.
+> This patch fixes this behavior by using the indentation to determine
+> the end of the help message.
 
--Kees
+This probably won't work, see below:
 
-[1] https://lore.kernel.org/kernel-hardening/CAK7LNASMh1KysAB4+gU7_iuTW+5GT2_yMDevwpLwx0iqjxwmWw@mail.gmail.com/
+> The code responsible for counting the lines of the help message
+> seems overly complicated and we could rewrite it entirely
+> in order to be more clear and compact if requested.
 
--- 
-Kees Cook
+Yes please.
+
+> This could potentially be addressed in the warning message,
+> though we are happy for any input on this.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3234,6 +3234,7 @@ sub process {
+>  			my $f;
+>  			my $is_start = 0;
+>  			my $is_end = 0;
+> +			my $help_indent;
+>  			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
+>  				$f = $lines[$ln - 1];
+>  				$cnt-- if ($lines[$ln - 1] !~ /^-/);
+> @@ -3245,7 +3246,12 @@ sub process {
+>  				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
+>  					$is_start = 1;
+>  				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
+
+I believe all the '---help---' lines have been converted to just 'help'
+so the '(?:---)?' bits here could be removed.
+
+See:
+
+commit 22a4ac026c15eba961883ed8466cb341e0447de1
+Author: Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed Jun 17 12:02:20 2020 +0900
+
+    Revert "checkpatch: kconfig: prefer 'help' over '---help---'"
+    
+    This reverts commit 84af7a6194e493fae312a2b7fa5a3b51f76d9282.
+    
+    The conversion is done.
+    
+    Cc: Ulf Magnusson <ulfalizer@gmail.com>
+    Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+> @@ -3253,14 +3259,13 @@ sub process {
+>  				$f =~ s/^\s+//;
+>  				next if ($f =~ /^$/);
+>  
+> 
+> -				# This only checks context lines in the patch
+> -				# and so hopefully shouldn't trigger false
+> -				# positives, even though some of these are
+> -				# common words in help texts
+> -				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
+> -						  if|endif|menu|endmenu|source)\b/x) {
+> -					$is_end = 1;
+> -					last;
+> +				# Help text ends if a line has a smaller indentation
+> +				# than the first line of the message
+> +				if (defined $help_indent) {
+> +					if ($lines[$ln - 1] !~ /^\+$help_indent\S+/) {
+> +						$is_end = 1;
+> +						last;
+> +					}
+
+Indentation can vary in the help blocks.  For instance:
+
+arch/Kconfig:   help
+arch/Kconfig-     Functions will have the stack-protector canary logic added in>
+arch/Kconfig-     of the following conditions:
+arch/Kconfig-
+arch/Kconfig-     - local variable's address used as part of the right hand sid>
+arch/Kconfig-       assignment or function argument
+arch/Kconfig-     - local variable is an array (or union containing an array),
+arch/Kconfig-       regardless of array type or length
+arch/Kconfig-     - uses register local variables
+arch/Kconfig-
+
+This doesn't allow blank lines for multi-paragraph help text either.
+
+I think keyword parsing is necessary and some false positives are
+inevitable as the parsing logic in a line-by-line analyzer will
+always be incomplete.
+
+
