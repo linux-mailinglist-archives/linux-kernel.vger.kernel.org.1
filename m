@@ -2,145 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D552CC57B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C23A22CC57E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387653AbgLBSle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:41:34 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57688 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726104AbgLBSld (ORCPT
+        id S1729130AbgLBSmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgLBSmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:41:33 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2IXv0o135382;
-        Wed, 2 Dec 2020 13:40:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=L69NYuLhU3uOuWNgUvbNXLJASVglg/Pd6mCXYVJf3RI=;
- b=n9c4Mh9IuKKx/pYdlxPCERQ3SGQmBr8rnSq8jDCHYfKyLrjCixS9aUUJ2Hx+Osg3C5gs
- sdEjhEFvkfFHJP8Ev93YBWczcV0PRfixy09Lkrl1ueRImhX8rkbbmHlotQBXDuivAdMJ
- eSZh70vAELXN9wS+/6aqboUX9ZwLZD8dt4FnACjhkL2NR9i7817Uu9AmaBcghqd99sgQ
- K4cQSYRt1HVf2AckGg3TH/4rkYtQYrjTsjD5dr/W3PpvPHRc6Jtd/8PhjiTjhBXrBz7H
- 7+NzI+KYf5tdvaWphc+3mFiaizLCpm8CR4ZP3j7fTwpOVSmU3EnU/Bc5farB09jBzUoP pQ== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 355sr60ydw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 13:40:47 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2IRU7W031477;
-        Wed, 2 Dec 2020 18:40:46 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma04wdc.us.ibm.com with ESMTP id 354ysukkp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 18:40:46 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2IekZ231916538
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 18:40:46 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 54ED6124054;
-        Wed,  2 Dec 2020 18:40:46 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 81E39124052;
-        Wed,  2 Dec 2020 18:40:45 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 18:40:45 +0000 (GMT)
-Subject: Re: [PATCH v2 17/17] ibmvfc: provide modules parameters for MQ
- settings
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
- <20201202005329.4538-18-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <e2343b78-5be3-da2d-b2bc-ccb0a75c61ae@linux.vnet.ibm.com>
-Date:   Wed, 2 Dec 2020 12:40:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 2 Dec 2020 13:42:08 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCF9C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:41:28 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id e7so5158313wrv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:41:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e1Z0+ryeRyyzeQLn6jGhUYGvGo5ZwSh+Fr7aG6B2ob4=;
+        b=uGQ3UqtkSS7C/9Ig5EagS0UZtcKog6tYN0YJ626ZVKEoUo01ksdAhL62U2BxgB5dZg
+         rKCLi4m9XeDs/EVYQVjrjSkppckrQyzq1uXhbodHw/LtotYn5WhiljcYpg28ij4XDQo7
+         OSdj5eDzaFH9msYoZn7Z6yudMw6tKQHBtH7xHOsqC4bKN1o5QG7ieDpwai3tdBZiHSDA
+         dn27L6K5sICUVX7LIEqbXYPZOzt9obFHGSxSaBJkYVYVhvggHwdhf8/r6EZpjifRJ3wp
+         uFf5r+AlBEcTPVpofHwdMXXwAzsaSQMTW86s2Up8AIuC3yWifBI2drM9MxYFcrEADztu
+         ONVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e1Z0+ryeRyyzeQLn6jGhUYGvGo5ZwSh+Fr7aG6B2ob4=;
+        b=iVXaQ+gHZ+YwNTrDSPTZSZb7mWRLLJT8wUZ371uE3bNfDOCSD7k9INJHAO3xPrDnso
+         TSfa/d4T2UmR0nAnJhamuoA9n+ERpG/8l8bhSgVof4XLKrhLnCVn/wQeTc1kvxgfHl9U
+         4yhi4i2/rxFThWjTuGXVLrlcPtrT9k9lLs5NMzeONRtkOdtFHswZ6NHPi1etFSiuKpd8
+         kOkkQhoP1e6djcDASXsPT9+zTIyEif5PkTR0HAT/cq0UMmqXC4JqH49r58lrIBYJF3Bp
+         VUd3StozDt3s6PRri01+JUkQxob9ZiEYVSnUmhijwOD0YLioiL+G1X3jMnBRDlu6Tq1m
+         OE7A==
+X-Gm-Message-State: AOAM531cO1qOemKVVCqkKLDHYgVx/Y+8+HirPQ2dlkvbEM9l4tQiNV0a
+        mp998qFNLEEB50sODcBGSbWArA==
+X-Google-Smtp-Source: ABdhPJx1w9Za4oKqZXg2Dy1UhvQI3Eu7AdD4tn4vLTpLkNPqMykN/lsubM91TR4YxORoVI+J/7iZTQ==
+X-Received: by 2002:adf:fd0e:: with SMTP id e14mr4975271wrr.119.1606934486886;
+        Wed, 02 Dec 2020 10:41:26 -0800 (PST)
+Received: from localhost ([2a01:4b00:8523:2d03:5ddd:b7c5:e3c9:e87a])
+        by smtp.gmail.com with ESMTPSA id l23sm2800059wmh.40.2020.12.02.10.41.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 10:41:25 -0800 (PST)
+From:   David Brazdil <dbrazdil@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v4 00/26] Opt-in always-on nVHE hypervisor
+Date:   Wed,  2 Dec 2020 18:40:56 +0000
+Message-Id: <20201202184122.26046-1-dbrazdil@google.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201202005329.4538-18-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_10:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 mlxscore=0
- mlxlogscore=999 phishscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020109
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
-> +module_param_named(mig_channels_only, mig_channels_only, uint, S_IRUGO | S_IWUSR);
-> +MODULE_PARM_DESC(mig_channels_only, "Prevent migration to non-channelized system. "
-> +		 "[Default=" __stringify(IBMVFC_MIG_NO_SUB_TO_CRQ) "]");
-> +module_param_named(mig_no_less_channels, mig_no_less_channels, uint, S_IRUGO | S_IWUSR);
-> +MODULE_PARM_DESC(mig_no_less_channels, "Prevent migration to system with less channels. "
-> +		 "[Default=" __stringify(IBMVFC_MIG_NO_N_TO_M) "]");
+As we progress towards being able to keep guest state private to the
+host running nVHE hypervisor, this series allows the hypervisor to
+install itself on newly booted CPUs before the host is allowed to run
+on them.
 
-Both of these are writeable, but it doesn't look like you do any re-negotiation
-with the VIOS for these changed settings to take effect if someone changes
-them at runtime.
+All functionality described below is opt-in, guarded by an early param
+'kvm-arm.mode=protected'. Future patches specific to the new protected
+mode should be hidden behind the same param.
 
-> +
->  module_param_named(init_timeout, init_timeout, uint, S_IRUGO | S_IWUSR);
->  MODULE_PARM_DESC(init_timeout, "Initialization timeout in seconds. "
->  		 "[Default=" __stringify(IBMVFC_INIT_TIMEOUT) "]");
+The hypervisor starts trapping host SMCs and intercepting host's PSCI
+calls which boot CPUs. It replaces the host's entry point with its own,
+initializes the EL2 state of the new CPU and installs the nVHE hyp vector
+before ERETing to the host's entry point.
 
-> @@ -3228,6 +3250,36 @@ static ssize_t ibmvfc_store_log_level(struct device *dev,
->  	return strlen(buf);
->  }
->  
-> +static ssize_t ibmvfc_show_scsi_channels(struct device *dev,
-> +					 struct device_attribute *attr, char *buf)
-> +{
-> +	struct Scsi_Host *shost = class_to_shost(dev);
-> +	struct ibmvfc_host *vhost = shost_priv(shost);
-> +	unsigned long flags = 0;
-> +	int len;
-> +
-> +	spin_lock_irqsave(shost->host_lock, flags);
-> +	len = snprintf(buf, PAGE_SIZE, "%d\n", vhost->client_scsi_channels);
-> +	spin_unlock_irqrestore(shost->host_lock, flags);
-> +	return len;
-> +}
-> +
-> +static ssize_t ibmvfc_store_scsi_channels(struct device *dev,
-> +					 struct device_attribute *attr,
-> +					 const char *buf, size_t count)
-> +{
-> +	struct Scsi_Host *shost = class_to_shost(dev);
-> +	struct ibmvfc_host *vhost = shost_priv(shost);
-> +	unsigned long flags = 0;
-> +	unsigned int channels;
-> +
-> +	spin_lock_irqsave(shost->host_lock, flags);
-> +	channels = simple_strtoul(buf, NULL, 10);
-> +	vhost->client_scsi_channels = min(channels, nr_scsi_hw_queues);
+The kernel checks new cores' features against the finalized system
+capabilities. To avoid the need to move this code/data to EL2, the
+implementation only allows to boot cores that were online at the time of
+KVM initialization and therefore had been checked already.
 
-Don't we need to do a LIP here for this new setting to go into effect?
+Other PSCI SMCs are forwarded to EL3, though only the known set of SMCs
+implemented in the kernel is allowed. Non-PSCI SMCs are also forwarded
+to EL3. Future changes will need to ensure the safety of all SMCs wrt.
+protected guests.
 
-> +	spin_unlock_irqrestore(shost->host_lock, flags);
-> +	return strlen(buf);
-> +}
-> +
->  static DEVICE_ATTR(partition_name, S_IRUGO, ibmvfc_show_host_partition_name, NULL);
->  static DEVICE_ATTR(device_name, S_IRUGO, ibmvfc_show_host_device_name, NULL);
->  static DEVICE_ATTR(port_loc_code, S_IRUGO, ibmvfc_show_host_loc_code, NULL);
+The host is still allowed to reset EL2 back to the stub vector, eg. for
+hibernation or kexec, but will not disable nVHE when there are no VMs.
 
+Tested on Rock Pi 4B, based on kvmarm/queue, itself on top of 5.10-rc4.
 
+Patches also available at:
+    https://android-kvm.googlesource.com/linux topic/psci-on-master_v4
 
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+changes since v3:
+  * generic 'kvm-arm.mode' kernel param instead of 'kvm-arm.protected'
+  * implement SYSTEM_SUSPEND
+  * refactor PSCI driver to expose fn IDs more cleanly
+  * init MAIR_EL2, TCR_EL2 from nVHE params struct
 
+changes since v2:
+  * avoid non-spec error in CPU_SUSPEND
+  * refuse to init without PSCI
+  * compute hyp VA args of hyp-init in hyp instead of using params struct
+  * use hyp_symbol_addr in per-cpu calls
+  * simplify memory.h/sysreg.h includes
+  * rebase on kvmarm/queue, use trap handler args macros
+
+changes since v1:
+  * early param sets a capability instead of a static key
+  * assume SMCCC v1.2 for host SMC forwarding
+  * fix reserved SMC ID range for PSCI
+  * split init_el2_state into smaller macros, move to el2_setup.h
+  * many small cleanups
+
+changes since RFC:
+  * add early param to make features opt-in
+  * simplify CPU_ON/SUSPEND implementation
+  * replace spinlocks with CAS atomic
+  * make cpu_logical_map ro_after_init
+
+David Brazdil (26):
+  kvm: arm64: Add kvm-arm.mode early kernel parameter
+  kvm: arm64: Add ARM64_KVM_PROTECTED_MODE CPU capability
+  psci: Support psci_ops.get_version for v0.1
+  psci: Split functions to v0.1 and v0.2+ variants
+  psci: Replace psci_function_id array with a struct
+  psci: Add accessor for psci_0_1_function_ids
+  arm64: Make cpu_logical_map() take unsigned int
+  arm64: Extract parts of el2_setup into a macro
+  kvm: arm64: Remove vector_ptr param of hyp-init
+  kvm: arm64: Move hyp-init params to a per-CPU struct
+  kvm: arm64: Init MAIR/TCR_EL2 from params struct
+  kvm: arm64: Add .hyp.data..ro_after_init ELF section
+  kvm: arm64: Support per_cpu_ptr in nVHE hyp code
+  kvm: arm64: Create nVHE copy of cpu_logical_map
+  kvm: arm64: Add SMC handler in nVHE EL2
+  kvm: arm64: Bootstrap PSCI SMC handler in nVHE EL2
+  kvm: arm64: Add offset for hyp VA <-> PA conversion
+  kvm: arm64: Forward safe PSCI SMCs coming from host
+  kvm: arm64: Extract __do_hyp_init into a helper function
+  kvm: arm64: Add function to enter host from KVM nVHE hyp code
+  kvm: arm64: Intercept host's CPU_ON SMCs
+  kvm: arm64: Intercept host's CPU_SUSPEND PSCI SMCs
+  kvm: arm64: Intercept host's SYSTEM_SUSPEND PSCI SMCs
+  kvm: arm64: Keep nVHE EL2 vector installed
+  kvm: arm64: Trap host SMCs in protected mode
+  kvm: arm64: Fix EL2 mode availability checks
+
+ .../admin-guide/kernel-parameters.txt         |  10 +
+ arch/arm64/include/asm/cpucaps.h              |   3 +-
+ arch/arm64/include/asm/el2_setup.h            | 182 ++++++++++
+ arch/arm64/include/asm/kvm_arm.h              |   1 +
+ arch/arm64/include/asm/kvm_asm.h              |  10 +-
+ arch/arm64/include/asm/kvm_host.h             |  10 +
+ arch/arm64/include/asm/kvm_hyp.h              |   4 +-
+ arch/arm64/include/asm/kvm_mmu.h              |  24 ++
+ arch/arm64/include/asm/percpu.h               |   6 +
+ arch/arm64/include/asm/sections.h             |   1 +
+ arch/arm64/include/asm/smp.h                  |   4 +-
+ arch/arm64/include/asm/virt.h                 |  26 ++
+ arch/arm64/kernel/asm-offsets.c               |   5 +
+ arch/arm64/kernel/cpufeature.c                |  22 ++
+ arch/arm64/kernel/head.S                      | 144 +-------
+ arch/arm64/kernel/image-vars.h                |   6 +-
+ arch/arm64/kernel/setup.c                     |   2 +-
+ arch/arm64/kernel/vmlinux.lds.S               |  10 +
+ arch/arm64/kvm/arm.c                          | 139 +++++++-
+ .../arm64/kvm/hyp/include/nvhe/trap_handler.h |  18 +
+ arch/arm64/kvm/hyp/nvhe/Makefile              |   3 +-
+ arch/arm64/kvm/hyp/nvhe/host.S                |  47 +++
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S            | 152 +++++---
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  45 ++-
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c             |  40 +++
+ arch/arm64/kvm/hyp/nvhe/hyp.lds.S             |   1 +
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c          | 324 ++++++++++++++++++
+ arch/arm64/kvm/hyp/nvhe/switch.c              |   5 +-
+ arch/arm64/kvm/va_layout.c                    |  30 +-
+ drivers/firmware/psci/psci.c                  | 126 ++++---
+ include/linux/psci.h                          |   9 +
+ 31 files changed, 1150 insertions(+), 259 deletions(-)
+ create mode 100644 arch/arm64/include/asm/el2_setup.h
+ create mode 100644 arch/arm64/kvm/hyp/include/nvhe/trap_handler.h
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/psci-relay.c
+
+--
+2.29.2.454.gaff20da3a2-goog
