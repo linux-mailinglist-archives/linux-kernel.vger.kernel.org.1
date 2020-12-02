@@ -2,167 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5182CC137
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74E82CC148
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388926AbgLBPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:46:52 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:44481 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387985AbgLBPqv (ORCPT
+        id S2388936AbgLBPtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:49:40 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1140 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728608AbgLBPtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:46:51 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3DE115802E3;
-        Wed,  2 Dec 2020 10:46:05 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 02 Dec 2020 10:46:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=jRoUn1Nixmx8fV7/eiqUN6Tsxsg
-        78St+eJ4PgOBSguI=; b=TQt9wzTEpAomumtEVyYfhBOFAMhYofunpmo1MYB5ub2
-        mygYpWsC8enY2HvcSTrkSd4kho0hsgZbPDmWPkwBNTji/y5p7pGWgXwXoWLCQql6
-        cgS7v/2fedN8fj99I/JEF0BuO4XrMRKCPl86BVk3aPzAzT/CWhTKFK0ZXnWX2jQX
-        8CDdFM7OVTyvvwnS22/bH67qUYbh4efacDPeGvP+5QC6ZLCJINM9WwLLDzYg3zyQ
-        rr9FwWd3Uk0UT3yqzOq1u8CQxFA/PhonDE7b6HM/BAuOPjQkBAhDQzQYEQEF/Fiz
-        vlqPsFvOipJbglqukQLaGUndk9cqsglBAk9G8ipAy6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jRoUn1
-        Nixmx8fV7/eiqUN6Tsxsg78St+eJ4PgOBSguI=; b=S7b+9A+BK+bXFoLMxHcUCK
-        2ml/FqmbCjgSCQ9lUP16UtpeBuFflkv0aVlTfRQANUmf5sQmH9FrwnH2/XYvQGYl
-        j7j/+NwdtpOTU3FjR5rnRSuFTcQxVdrxZ0GtiafXh0XkRK2iLRtN5KgW3fe4fUGL
-        v6ZFrkkQ1aZe7beWfpnxnEb4ir4lvXvq4K9mwkInDtOw75DQ7tgqJ4t4Ly5GBNYP
-        SxEJt9WF/MysoAs+Gtk41hOvThUw82c4zhmTpShEQgqRzwKgEY+VJ5nvCz/Oxote
-        srw0OhNwnN704qXyqf51YnYxMqB2R2ki/77k/+qP/P+FQdlCH9a9GgfVkppWn4PQ
-        ==
-X-ME-Sender: <xms:urbHX7mweWR1qljBr_MExWUkdMRV0tmFycoSy-4iG7shpRNcYcPjkA>
-    <xme:urbHX-2QGL3MuSS6ysrC0KGAkvZclRLfNn08313yojQTwbmq2USutfe5ngPBYww0n
-    6zPMrrDN7J34lD9fqs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:urbHXxr7hq23eyK4HjadMXO7LlCY7uZVKhxqtnSUl-C0vBVuO3yI9Q>
-    <xmx:urbHXzmy7XQptpb2dVlgOp4l5d4xu9j9yP6iWT_47cXcDlUhVw4GJw>
-    <xmx:urbHX53cI05xHEVa_C_yRehMj6z3E2UgIWfHhH589jZvxQOIrflKaw>
-    <xmx:vbbHX482dsQIV9UiOVhgqRglb05zjpF5PLwLRAdB2fu23SuK7Wk7Ow>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 69B94240059;
-        Wed,  2 Dec 2020 10:46:02 -0500 (EST)
-Date:   Wed, 2 Dec 2020 16:46:01 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com
-Subject: Re: [PATCH v2 09/19] ARM: dts: sunxi: h3/h5: Add CSI controller port
- for parallel input
-Message-ID: <20201202154601.ws7wrx6msrp3u4pd@gilmour>
-References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
- <20201128142839.517949-10-paul.kocialkowski@bootlin.com>
- <20201201121405.at4pwxon56ecwrx6@gilmour>
- <X8escb4SZXEpiR0n@aptenodytes>
+        Wed, 2 Dec 2020 10:49:39 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2Fl2B5096554;
+        Wed, 2 Dec 2020 10:48:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=fBPxYPgsvkf+CoxdCEVMZ5J+rf844SeLR5d894vr+Sg=;
+ b=Si+pIbKuCX8jk9NuW50eMeIB/D8bRlBHt+BdnHD9AwH3dFBqWYFew17XpCiqG3YWX/zd
+ WjNsgUex326033rrEkN9+CAZm9ELj4YP2jSmocIgfDZUFPHKVtcYSkErNQxVtt0KZcRU
+ tMhevjY23AVduUF39zKTyreIWZIRTnuuQwXBHGWmr30UfrKRMsQjynyRMtgOimGEas4O
+ f824XllSrLpr+qlUqc+PqcJSyyxFcvt4oB9/XSwsjVWk5IjWZHEKaC1n9hWfjjMZ2vTj
+ cHJtn6wzXjh4pgZIA6/N574lramrKoA1JP8PgTdoiDRLBXdnm2T5zw4Yuxo9W2Mz1E7Z LQ== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 355y6d8skp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 10:48:16 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2FYud1021218;
+        Wed, 2 Dec 2020 15:48:16 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma01wdc.us.ibm.com with ESMTP id 355vrfqwyx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Dec 2020 15:48:16 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2Fl0345505756
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Dec 2020 15:47:00 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 607E9AE064;
+        Wed,  2 Dec 2020 15:47:00 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 857B4AE05F;
+        Wed,  2 Dec 2020 15:46:59 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.78.151])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Dec 2020 15:46:59 +0000 (GMT)
+Subject: Re: [PATCH v2 06/17] ibmvfc: add handlers to drain and complete
+ Sub-CRQ responses
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-7-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <32b08be7-4c1e-a572-c70c-1f182f1d0259@linux.vnet.ibm.com>
+Date:   Wed, 2 Dec 2020 09:46:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="btrg2f6ei6hzo3fh"
-Content-Disposition: inline
-In-Reply-To: <X8escb4SZXEpiR0n@aptenodytes>
+In-Reply-To: <20201202005329.4538-7-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_08:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 suspectscore=2 priorityscore=1501 clxscore=1015 adultscore=0
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012020095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+> The logic for iterating over the Sub-CRQ responses is similiar to that
+> of the primary CRQ. Add the necessary handlers for processing those
+> responses.
+> 
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> ---
+>  drivers/scsi/ibmvscsi/ibmvfc.c | 77 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+> 
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index 97f00fefa809..e9da3f60c793 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -3381,6 +3381,83 @@ static int ibmvfc_toggle_scrq_irq(struct ibmvfc_sub_queue *scrq, int enable)
+>  	return rc;
+>  }
+>  
+> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
+> +{
+> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
+> +	unsigned long flags;
+> +
+> +	switch (crq->valid) {
+> +	case IBMVFC_CRQ_CMD_RSP:
+> +		break;
+> +	case IBMVFC_CRQ_XPORT_EVENT:
+> +		return;
+> +	default:
+> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
+> +		return;
+> +	}
+> +
+> +	/* The only kind of payload CRQs we should get are responses to
+> +	 * things we send. Make sure this response is to something we
+> +	 * actually sent
+> +	 */
+> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
+> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
+> +			crq->ioba);
+> +		return;
+> +	}
+> +
+> +	if (unlikely(atomic_read(&evt->free))) {
+> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
+> +			crq->ioba);
+> +		return;
+> +	}
+> +
+> +	spin_lock_irqsave(vhost->host->host_lock, flags);
+> +	del_timer(&evt->timer);
+> +	list_del(&evt->queue);
+> +	ibmvfc_trc_end(evt);
+> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
+> +	evt->done(evt);
+> +}
+> +
+> +static struct ibmvfc_crq *ibmvfc_next_scrq(struct ibmvfc_sub_queue *scrq)
+> +{
+> +	struct ibmvfc_crq *crq;
+> +
+> +	crq = &scrq->msgs[scrq->cur].crq;
+> +	if (crq->valid & 0x80) {
+> +		if (++scrq->cur == scrq->size)
 
---btrg2f6ei6hzo3fh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You are incrementing the cur pointer without any locks held. Although
+unlikely, could you also be in ibmvfc_reset_crq in another thread?
+If so, you'd have a subtle race condition here where the cur pointer could
+be read, then ibmvfc_reset_crq writes it to zero, then this thread
+writes it to a non zero value, which would then cause you to be out of
+sync with the VIOS as to where the cur pointer is.
 
-On Wed, Dec 02, 2020 at 04:02:09PM +0100, Paul Kocialkowski wrote:
-> Hi,
->=20
-> On Tue 01 Dec 20, 13:14, Maxime Ripard wrote:
-> > On Sat, Nov 28, 2020 at 03:28:29PM +0100, Paul Kocialkowski wrote:
-> > > Since the CSI controller binding is getting a bit more complex due
-> > > to the addition of MIPI CSI-2 bridge support, make the ports node
-> > > explicit with the parallel port.
-> > >=20
-> > > This way, it's clear that the controller only supports parallel
-> > > interface input and there's no confusion about the port number.
-> > >=20
-> > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > > ---
-> > >  arch/arm/boot/dts/sunxi-h3-h5.dtsi | 9 +++++++++
-> > >  1 file changed, 9 insertions(+)
-> > >=20
-> > > diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/s=
-unxi-h3-h5.dtsi
-> > > index 9be13378d4df..02b698cace6a 100644
-> > > --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-> > > +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-> > > @@ -803,6 +803,15 @@ csi: camera@1cb0000 {
-> > >  			pinctrl-names =3D "default";
-> > >  			pinctrl-0 =3D <&csi_pins>;
-> > >  			status =3D "disabled";
-> > > +
-> > > +			ports {
-> > > +				#address-cells =3D <1>;
-> > > +				#size-cells =3D <0>;
-> > > +
-> > > +				csi_in_parallel: port@0 {
-> > > +					reg =3D <0>;
-> > > +				};
-> > > +			};
-> > >  		};
-> >=20
-> > This will create a DTC warning, since port@0 is the only node, and is
-> > equivalent to port
->=20
-> I'm not seeing the warning when running dtbs_check.
+> +			scrq->cur = 0;
+> +		rmb();
+> +	} else
+> +		crq = NULL;
+> +
+> +	return crq;
+> +}
+> +
 
-Some are silenced by the Linux build system. You can pass W=3D1 to your
-make command line enable all of them.
 
-> More generally, why is it a problem that there's only one node defined?
->=20
-> One issue that I did see is that the port node doesn't have an endpoint
-> here, so I will remove the requirement to have an endpoint in the bindings
-> documentation to allow this kind of definition.
 
-We definitely want to have the endpoint required. If the CSI node is
-disabled, the error should be ignored by the dt-validate tool though
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
-Maxime
-
---btrg2f6ei6hzo3fh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e2uQAKCRDj7w1vZxhR
-xYE3AP4u/RvuwgGW7PW013WC31Z7iECgCdFpXbQBo4FZEKym5wEAuygTLOqYLNTZ
-3TelATfMdZXOAbQq9j+JnNSVltFQLAk=
-=/zNa
------END PGP SIGNATURE-----
-
---btrg2f6ei6hzo3fh--
