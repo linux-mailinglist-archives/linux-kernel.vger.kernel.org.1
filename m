@@ -2,198 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1167D2CBD48
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169162CBD4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729865AbgLBMsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:48:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55166 "EHLO
+        id S1729901AbgLBMtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729806AbgLBMsI (ORCPT
+        with ESMTP id S1727743AbgLBMti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:48:08 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B21DC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:47:27 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kkRXX-0003JT-4L; Wed, 02 Dec 2020 13:47:23 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:fdcb:9941:7509:5481] (unknown [IPv6:2a03:f580:87bc:d400:fdcb:9941:7509:5481])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 88C8A5A1A21;
-        Wed,  2 Dec 2020 12:47:21 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] net: dsa: qca: ar9331: export stats64
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-mips@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20201202120712.6212-1-o.rempel@pengutronix.de>
- <20201202120712.6212-3-o.rempel@pengutronix.de>
- <d3f790c6-d84c-f1bd-df6e-912ab64cce8c@pengutronix.de>
- <20201202124317.vehujtj2fdur2ed2@pengutronix.de>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <f80ea68e-9515-0d4e-b2e3-1ae9e8296cd0@pengutronix.de>
-Date:   Wed, 2 Dec 2020 13:47:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 2 Dec 2020 07:49:38 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A2EC0613CF;
+        Wed,  2 Dec 2020 04:48:57 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1335031D;
+        Wed,  2 Dec 2020 13:48:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1606913336;
+        bh=hEXBL65wsKMpoxqhRlC0JgpfzMG124QF1pk1LDmzaE8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L0T/EkypqD2YvTs10qu7uWmmrC2uttPectWXso0DbWpalELGRri0X7fyU2R5o3Iqf
+         Fy+G42bQQPJnQ9jH0T9hXkCoMvOBf5NTijP8Gk9qPgy7mW0Uddr/0pC65AH2IFqWSv
+         eCviVQi/vHvBuWgjaYi2LemP4BMjYim+q3/iIqrY=
+Date:   Wed, 2 Dec 2020 14:48:47 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
+Message-ID: <20201202124847.GG4486@pendragon.ideasonboard.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-19-djrscally@gmail.com>
+ <20201130200719.GB4077@smile.fi.intel.com>
+ <8a1b0f5b-1289-256b-b25d-cf8af43bdc84@gmail.com>
+ <20201201185417.GL4077@smile.fi.intel.com>
+ <20201201185548.GV4569@pendragon.ideasonboard.com>
+ <20201201190523.GO4077@smile.fi.intel.com>
+ <20201201190638.GZ4569@pendragon.ideasonboard.com>
+ <20201201192137.GR4077@smile.fi.intel.com>
+ <4831d44a-5bcc-8cf3-964c-c7dca6827458@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201202124317.vehujtj2fdur2ed2@pengutronix.de>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="yqoY4DhwVdWmGnvuSUzLJcMmxlC1XyzP5"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4831d44a-5bcc-8cf3-964c-c7dca6827458@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---yqoY4DhwVdWmGnvuSUzLJcMmxlC1XyzP5
-Content-Type: multipart/mixed; boundary="ELDSsYxouK1b603L4AP6U2LqdLxl6O2go";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- linux-mips@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
- "David S. Miller" <davem@davemloft.net>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, netdev@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, Vladimir Oltean <olteanv@gmail.com>,
- Vivien Didelot <vivien.didelot@gmail.com>, linux-kernel@vger.kernel.org
-Message-ID: <f80ea68e-9515-0d4e-b2e3-1ae9e8296cd0@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] net: dsa: qca: ar9331: export stats64
-References: <20201202120712.6212-1-o.rempel@pengutronix.de>
- <20201202120712.6212-3-o.rempel@pengutronix.de>
- <d3f790c6-d84c-f1bd-df6e-912ab64cce8c@pengutronix.de>
- <20201202124317.vehujtj2fdur2ed2@pengutronix.de>
-In-Reply-To: <20201202124317.vehujtj2fdur2ed2@pengutronix.de>
+Hi Hans,
 
---ELDSsYxouK1b603L4AP6U2LqdLxl6O2go
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 01, 2020 at 09:34:58PM +0100, Hans de Goede wrote:
+> On 12/1/20 8:21 PM, Andy Shevchenko wrote:
+> > On Tue, Dec 01, 2020 at 09:06:38PM +0200, Laurent Pinchart wrote:
+> >> On Tue, Dec 01, 2020 at 09:05:23PM +0200, Andy Shevchenko wrote:
+> >>> On Tue, Dec 01, 2020 at 08:55:48PM +0200, Laurent Pinchart wrote:
+> >>>> On Tue, Dec 01, 2020 at 08:54:17PM +0200, Andy Shevchenko wrote:
+> >>>>> On Tue, Dec 01, 2020 at 08:30:03AM +0000, Dan Scally wrote:
+> >>>>>> On 30/11/2020 20:07, Andy Shevchenko wrote:
+> >>>
+> >>> ...
+> >>>
+> >>>>>>>> +static struct int3472_sensor_regulator_map int3472_sensor_regulator_maps[] = {
+> >>>>>>>> +	{ "GNDF140809R", 2, miix_510_ov2680 },
+> >>>>>>>> +	{ "YHCU", 2, surface_go2_ov5693 },
+> >>>>>>>> +	{ "MSHW0070", 2, surface_book_ov5693 },
+> >>>>>>>> +};
+> >>>>>>>
+> >>>>>>> Hmm... Usual way is to use DMI for that. I'm not sure above will not give us
+> >>>>>>> false positive matches.
+> >>>>>>
+> >>>>>> I considered DMI too, no problem to switch to that if it's a better choice.
+> >>>>>
+> >>>>> I prefer DMI as it's a standard way to describe platform quirks in x86 world.
+> >>>>
+> >>>> Do you think the Windows driver would use DMI ?
+> >>>
+> >>> Linux is using DMI for quirks.
+> >>>
+> >>>> That seems quite
+> >>>> unlikely to me, given how they would have to release a new driver binary
+> >>>> for every machine. I'm pretty sure that a different mechanism is used to
+> >>>> identify camera integration, and I think it would make sense to follow
+> >>>> the same approach. That would allow us to avoid large tables of DMI
+> >>>> identifiers that would need to be constently updated, potentially making
+> >>>> user experience better.
+> >>>
+> >>> All Surface family can be matched in a way as Apple machines [1].
+> >>>
+> >>> [1]: https://lkml.org/lkml/2020/4/15/1198
+> >>
+> >> But not all Surface machines necessarily have the same camera
+> >> architecture. My point is that there seems to be identifiers reported in
+> >> ACPI for the exact purpose of identifying the camera architecture. If we
+> >> used DMI instead, we would have to handle each machine individually.
+> > 
+> > With help of DMI we may narrow down the search.
+> > 
+> > But again, we are talking about uncertainity. It may be your way (a lot of
+> > platforms that have different settings), or mine (only a few with more or less
+> > standard sets of settings).
+> > 
+> > DMI is simply standard in Linux (people usually easier can grep for quirks for
+> > a specific platform).
+> > 
+> > I would rather ask Hans' opinion since he has quite an expertise with DMI for
+> > good and bad.
+> 
+> So generally there are 2 ways how things like this can go:
+> 
+> 1) There is sufficient information in the ACPI table and we use data from the
+> ACPI tables
+> 
+> 2) There is unsufficient info in the ACPI tables (or we don't know how to
+> get / interpret the data) and we use DMI quirks
 
-On 12/2/20 1:43 PM, Oleksij Rempel wrote:
->>> +struct ar9331_sw_priv;
->>> +struct ar9331_sw_port {
->>> +	int idx;
->>> +	struct ar9331_sw_priv *priv;
->>> +	struct delayed_work mib_read;
->>> +	struct ar9331_sw_stats stats;
->>> +	struct mutex lock;		/* stats access */
->>
->> What does the lock protect? It's only used a single time.
->=20
-> The ar9331_read_stats() function is called from two different contests:=
+And this specific case I believe there is sufficient data in the ACPI
+tables, as I don't believe the Windows driver uses DMI quirks, or comes
+in the form of machine-specific binaries. We however don't know how to
+interpret all the data, but that should hopefully get better over time
+(especially as we'll get more data points, with ACPI dumps from machines
+whose schematics have leaked).
 
-> from worker over ar9331_do_stats_poll() and from user space over
-> ar9331_get_stats64().
->=20
-> The mutex lock should prevent a race in the read modify write operation=
-s
-> for in the stats->*
+> Although we do often also use a combination, getting what we can from ACPI,
+> combined with a set of defaults for what we cannot get from ACPI
+> based on what reference designs use (IOW what most devices seem to have
+> copy and pasted). Combined with DMI quirks for when the defaults do not
+> work (which is quite often).
+> 
+> Depending on if "not working because of wrong defaults" has bad side effects,
+> another option is also to only allow the driver to load on devices which
+> have the necessary info provided through a DMI match.
 
-Makes sense!
+Right now there shouldn't be bad side effects, but in the future we'll
+need to setup a PMIC whose output voltages can be controlled, and
+getting it wrong would be very bad. For that I'll definitely vote for
+DMI match to start with, but I don't think that precludes using data
+from ACPI. We could just prevent the driver from loading if the machine
+isn't whitelisted in DMI matches, and still use ACPI data.
 
-Marc
+> I hope this helps.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+-- 
+Regards,
 
-
---ELDSsYxouK1b603L4AP6U2LqdLxl6O2go--
-
---yqoY4DhwVdWmGnvuSUzLJcMmxlC1XyzP5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/HjNUACgkQqclaivrt
-76niYAf/e9i8v8MhBciuim83hotubw8PZqqQDW0Dc9xlTlJY0nEqj8JOiTpxs0QR
-RX0AZwthBG7SQH2/YhNC9tSdyNFm1NvXg5jTu81snx2Hsg361QBRZt1FyiD1cOEz
-S+mkInRCasDjzeFlMKXojIrsymGVI1m97e5oeAUqSqx6hdGbFXUdVC5LVtDT5ELJ
-5fJeA3Vdax4J/5zsUWLpbVdncQVTD+y0vsPKQeDxgO53Yv0S3D48gd5YsryHqKos
-uaIIv/JOpnvaRR/g/csp52ErYW8Pk9sXxGXeZEV9h0du9ssqheDSbkcmB6qRvEWN
-tShuIFG1+6v+0cLjdp6YOhK4Iepvag==
-=+oFQ
------END PGP SIGNATURE-----
-
---yqoY4DhwVdWmGnvuSUzLJcMmxlC1XyzP5--
+Laurent Pinchart
