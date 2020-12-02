@@ -2,147 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A478A2CC741
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1332CC745
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389878AbgLBTxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:53:55 -0500
-Received: from mail-dm6nam12on2112.outbound.protection.outlook.com ([40.107.243.112]:28865
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389461AbgLBTxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:53:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dyDShpub7Fo1Nf1kpUl4mk3dC0oYbV+xv6l2VFH2l2TvjQ43D5LrkL1ArcScu5eTyLP5WHszJJGb9UXwACgSU1mf01VHHSYimhGIYp9pAUBdJm61UhePDVRx8Rh+6SW7nGCAlCH184DSPi7ry4/7/5AFnc/GAOTUNY+qhTreNEg7SYj3paT99sDFxvnJo2rzewKpHU/v3t8UCJY+8VgCYCU111YzEMxxXTPaNciqdrl19xjSXVtlBNP1DvXJEXOGnFxXEk5OuRwfoMV3v9T9r5hc0wppI9qt/rpELUb/L2DDAPShpY1nKjCertGORuEXKDGVSLWqfzcS12ezG46lqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OFD/Mhmm1G5KOwxwxyFlnLamxvpImAnKCcktl6A0i0g=;
- b=TuPNB+CyTECFZhfJRjVLZ02wEfFhpnJXNRM+h9T5wkIlM/I/Dp6lILuiBJSpys683NtG0oNpKlFfj6IKymWUZOpM3hAO10SctJS4j1GYpvfpvqhFyVi9kPK8e6dsW4wfuvKhncsCwGTLNBNCFdUocubIBRgX+PUlA6o+rmQzbobB2Daegtqpt7Fk44I/JXJHKvbFHKoXUxSR2GhcqDiguZN6OvFKs3uK5bEHWZ6yjIKUg0Vhrbl5nMaK6J22dZBgY1fOh5FXeX131CbI//e6htvUCG6p0zs5S0pjgAj1A9mkO3dCGyziEiWo4GmEtPPAFluzvWlROSAvRYuUKBu7ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OFD/Mhmm1G5KOwxwxyFlnLamxvpImAnKCcktl6A0i0g=;
- b=M2dYDsJagSRVSaHkL0aijn5FH7kcsDoTia5tGh/OVir4Dm8q74SARUic6vtxk6AA6itjLidxl0VJ54/kgJ7HpeA3dOUtWViSiCKov4RdRQgFoerod+Urb0ehTRTrLbIX5NOG+FE6SjqDX3VeTnpJdX8VYnyqhi2aZP2bDtV5u6s=
-Received: from (2603:10b6:300:77::17) by
- MW4PR21MB1924.namprd21.prod.outlook.com (2603:10b6:303:7e::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.2; Wed, 2 Dec 2020 19:53:04 +0000
-Received: from MWHPR21MB0863.namprd21.prod.outlook.com
- ([fe80::9de4:6549:6890:b7ba]) by MWHPR21MB0863.namprd21.prod.outlook.com
- ([fe80::9de4:6549:6890:b7ba%5]) with mapi id 15.20.3654.002; Wed, 2 Dec 2020
- 19:53:04 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        vkuznets <vkuznets@redhat.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-Subject: RE: [PATCH] iommu/hyper-v: Fix panic on a host without the 15-bit
- APIC ID support
-Thread-Topic: [PATCH] iommu/hyper-v: Fix panic on a host without the 15-bit
- APIC ID support
-Thread-Index: AQHWyJFnhI2DigaJq0ylxsLVtcyCgankN98w
-Date:   Wed, 2 Dec 2020 19:53:03 +0000
-Message-ID: <MWHPR21MB0863B35957EE6D2869B379ACBFF31@MWHPR21MB0863.namprd21.prod.outlook.com>
-References: <20201202004510.1818-1-decui@microsoft.com>
- <87wny0edko.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87wny0edko.fsf@nanos.tec.linutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=fba6cec8-7120-4ab7-ab29-04123cb4a7bf;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-02T19:51:19Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:600:a280:7f70:50f3:6377:2ff1:3ac2]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bba54fee-ab03-4da7-69fc-08d896fbe1c1
-x-ms-traffictypediagnostic: MW4PR21MB1924:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MW4PR21MB1924E5C96A249EF87FE78D69BFF31@MW4PR21MB1924.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2276;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qm+XNVR5Y1io9f3pF5vZS7Q+ZRgKLqXx32Uw6mhikSKZ3MeE7vtsddiaOQLQfgQ6VDzkXrQHUvj+Cu8u7DVm5Ur7rXPzeIsOZCHzLeCLZBV5mc9ySmvnOjWdHTs/8MatRp7cbuBi+frTt7D1FcnI+oVQD9giU+FSy8Y0iHhSgO3KLB0PsI0SOv/+pfedd6+JrJo2EZAet2Tg2jZ5AVHDMpNJT2kZ2MBBwy9IHKMhYtrMIoGOW/80715BuUb/oWkQ8dNZqkWQw9wnk9c7K86VVQ08SQkgXoHgPUHrXPmzZ3ERycCUWZrLhwhYKDW7aMnEIm7KN02/qImqgMMhploSaQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB0863.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(136003)(396003)(346002)(186003)(54906003)(110136005)(478600001)(82960400001)(316002)(82950400001)(33656002)(5660300002)(4326008)(10290500003)(8676002)(6506007)(66946007)(7696005)(52536014)(66446008)(8990500004)(76116006)(86362001)(66476007)(66556008)(64756008)(8936002)(55016002)(2906002)(9686003)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?VtephnWGOBvGt0hYaBuSkMKe7Oiz0YCEBesabIWFUeFWMqKqxLHt4Lrjead+?=
- =?us-ascii?Q?Jb1DoxBTnk4Canp1DDACs8BjObWgitU5SXkUJs5yAwBxHpOxpw3RkxOX4DP5?=
- =?us-ascii?Q?Uvk3Ab3gMDD1ilrykTe0hTbDSrbGBs0w+tl+0aLkv/P8dtUXQ8eksyaoXcE3?=
- =?us-ascii?Q?iQnAO8VXeNjOkEHjD6MWFRKsQyLVMTmewvZSYKCGSTSDyDDb5VbI/lsk8bWe?=
- =?us-ascii?Q?jdAxEPF6GLXXb7MrO7ybQpTJwm9juFee8pf2ShJS5MsLfgpL3C8iXrL2YtAo?=
- =?us-ascii?Q?Ko/JNT9cwku6BPdUDyHOMa8ZEAKsSV1wMc0efs2G4TtVu4dYftMWiZs4cBAX?=
- =?us-ascii?Q?94OSpkRwBFwrk2Vnj3vMfewaKmG5gOGbpubjSe1Jx0D1tPDetW0UHEsW80GS?=
- =?us-ascii?Q?05gJBA5bG2YOIdS87+29FQRGb3UHnQuxO8QdDKa9Py/kYRknCQaUYC463Ash?=
- =?us-ascii?Q?2ypGNgWT8UaO1C3iOVuREYa1mhtmuCqljzxdmp3ERUWEewkWHcSJxXJhbZeA?=
- =?us-ascii?Q?ju28o/oQM8XkhtOtlLLBMCR0HkJN3Fh7OCB2ImwtqkXmS5J7HvZKt2Dz8KNi?=
- =?us-ascii?Q?zZbP6/0dxsfK7O6JcS2Urx6y2T87tqyNJ3JwAUuHH3jF44ST2Z3yXPVD7fmF?=
- =?us-ascii?Q?TL9bPdOI38iGQkjgbaKI4nDrn3EnfrDZ/CdOSAAYA3hdOGx+kOa9V0ZZqBpo?=
- =?us-ascii?Q?UFbnNzs4Ij6gb+fqckSGiYf20zFs3kdy13MolksJ4d9KBdo7JtngzAjYXO/g?=
- =?us-ascii?Q?taP1Ae5NFHkoP6LwNaoVfTZogMWbRsGszyHBaCRgV6bUf38DzIj7DKzz3+1f?=
- =?us-ascii?Q?xaqS1ISIjrFawvlb7nCFuq1XST4F9QzjgSKww1KgkTk3zcnJeUDnQ5XICFKU?=
- =?us-ascii?Q?nlKTYz2rjba5ChvHz1haj8ivzGBWQlYa9cMDTry4qkRzmJm5c0jJ/EdeF71n?=
- =?us-ascii?Q?gnrgUqE/R+dPNqGcwsPUxhi0rp2CwbRtPcv0vi5iXTYqkL3QIn8t71COusxZ?=
- =?us-ascii?Q?jbAnzknKTS/nsrY6eD7Dys46RZR7gAziyL6eDLjtvZQbbBA=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729279AbgLBTzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:55:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgLBTzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 14:55:46 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F007C0613CF;
+        Wed,  2 Dec 2020 11:55:06 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id i2so5387640wrs.4;
+        Wed, 02 Dec 2020 11:55:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aNoM4IqXq01bkYqDeaXvKaD1icGKLJmAsZsYIC/EEjw=;
+        b=ng8PX7be85fBIRDsqYE2zkD2KjoUUeYc3nYCTOsEBVAJgWXQ0EekJzJgDH1HvMJ58j
+         Cd80zkjNPVpvceNPjFfhIAB2str7ZUgMPKnEO51TgO1CGDgo9LgprsveY9uDos85Wi2M
+         pJwtqo/ecUIbBcQz63XmF8c5ZP6jpT+JWwYv4k7bKX1pxW806yXYJmNsAV0TIzadjcv8
+         JsuVuzHJFDjZP8P4ISkLkZ+1vih8nbcOSh3gkf6r9cWGiHGsv47TLqgOkSL414hwGcao
+         Ab23pYG/DdAUuFMJKhwhc27kQN+5KdFIcs+XDjyOH2XKp/AG4FcomOnjj6SOzoysQs+x
+         KsUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aNoM4IqXq01bkYqDeaXvKaD1icGKLJmAsZsYIC/EEjw=;
+        b=jm8St4hYjcEMdkNGg+NyDKdYzj5v/8K0ZDm0/swfEsn10dosr5vuYM00LgnFRMPtPk
+         Ln4dk5idatMOIu3Li+ALefMh7tneIgTCYj3DuheRI530xwDGH1oAvDq1fI2HDe3YzHJp
+         27jDDWH0wC+tuDtoX08JSGIGwkXl4cbAqYfJOYj79jdymiDabWhee1lZr0rS7LpIrJaK
+         Zu7qkMqZgPIFNCTuhtdCkXG6pTv7N458EGcbvd6il4beIODe8df7Jc/Mr8l22Fk/eapG
+         KLMgePFx804BVrlzTDnNJzvO8CZr8G2FXNd4XFsVdUQtwwb8aH0YXWtesZcJEri7GwSQ
+         fUWw==
+X-Gm-Message-State: AOAM530L06MnLfpGqUb6CT2MCJGrHsrUMiwACHUchhg+UNyQWmdrOYo2
+        57MAirPESfzmMr6sW2oryCA=
+X-Google-Smtp-Source: ABdhPJwqHIvBAF/G9nJcz8Xpe9GT5cHM1NQLRanGpFHTUuVOnBsdr0JkdgVIjMsZpZ5B6JhN+dvajA==
+X-Received: by 2002:adf:ec0d:: with SMTP id x13mr5482267wrn.207.1606938904915;
+        Wed, 02 Dec 2020 11:55:04 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id i11sm3277356wro.85.2020.12.02.11.55.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 11:55:04 -0800 (PST)
+Date:   Wed, 2 Dec 2020 20:55:01 +0100
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: crypto: sun4i-ss: error with kmap
+Message-ID: <20201202195501.GA29296@Red>
+References: <20201201130102.GA23461@Red>
+ <87ft4phcyx.fsf@nanos.tec.linutronix.de>
+ <20201201135252.GA9584@Red>
+ <87y2ihfw6z.fsf@nanos.tec.linutronix.de>
+ <20201201144529.GA6786@Red>
+ <87v9dlfthf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB0863.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bba54fee-ab03-4da7-69fc-08d896fbe1c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2020 19:53:03.9762
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NQcPQikcgjiPRbq2F31//MCSSknmVUyE6Voke6gh8GsIQDF3bF2oYRpYVYbqvmDLagDMHVzxRwlzuETxzD8TDg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1924
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v9dlfthf.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Sent: Wednesday, December 2, 2020 1:56 AM
->=20
-> On Tue, Dec 01 2020 at 16:45, Dexuan Cui wrote:
-> > The commit f36a74b9345a itself is good, but it causes a panic in a
-> > Linux VM that runs on a Hyper-V host that doesn't have the 15-bit
-> > Extended APIC ID support:
-> >     kernel BUG at arch/x86/kernel/apic/io_apic.c:2408!
->=20
-> This has nothing to do with the 15bit APIC ID support, really.
->=20
-> The point is that the select() function only matches when I/O APIC ID is
-> 0, which is not guaranteed. That's independent of the 15bit extended
-> APIC ID feature. But the I/O-APIC ID is irrelevant on hyperv because
-> there is only one.
->=20
-> > This happens because the Hyper-V ioapic_ir_domain (which is defined in
-> > drivers/iommu/hyperv-iommu.c) can not be found. Fix the panic by
-> > properly claiming the only I/O APIC emulated by Hyper-V.
->=20
-> We don't fix a panic. We fix a bug in the code :)
->=20
-> I'll amend the changelog.
->=20
+On Tue, Dec 01, 2020 at 04:15:08PM +0100, Thomas Gleixner wrote:
+> On Tue, Dec 01 2020 at 15:45, Corentin Labbe wrote:
+> > On Tue, Dec 01, 2020 at 03:16:36PM +0100, Thomas Gleixner wrote:
+> > In fact the warn was a bit later so I added:
+> >        preempt_disable();
+> >         idx = arch_kmap_local_unmap_idx(kmap_local_idx(), addr);
+> > -       WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
+> > +       if (WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx)))
+> > +               pr_err("kunmap_local: vaddr %lx\n", (unsigned long) vaddr);
+> >  
+> >         arch_kmap_local_pre_unmap(addr);
+> >         pte_clear(&init_mm, addr, kmap_pte - idx);
+> >
+> > and this give kunmap_local: vaddr ffefe000
+> 
+> which looks like a valid one.
+> 
+> Can you apply the patch below and add 'ftrace_dump_on_oops' on the
+> command line or enable it in /proc/sys/kernel/ftrace_dump_on_oops before
+> starting the test.
+> 
+> That should spill out the trace after crashing.
+> 
 > Thanks,
->=20
+> 
 >         tglx
+> ---
+> diff --git a/mm/highmem.c b/mm/highmem.c
+> index b49364a306b8..461fe2c26107 100644
+> --- a/mm/highmem.c
+> +++ b/mm/highmem.c
+> @@ -485,6 +485,7 @@ static inline bool kmap_high_unmap_local(unsigned long vaddr)
+>  {
+>  #ifdef ARCH_NEEDS_KMAP_HIGH_GET
+>  	if (vaddr >= PKMAP_ADDR(0) && vaddr < PKMAP_ADDR(LAST_PKMAP)) {
+> +		trace_printk("kunmap_high: %lx\n", vaddr);
+>  		kunmap_high(pte_page(pkmap_page_table[PKMAP_NR(vaddr)]));
+>  		return true;
+>  	}
+> @@ -520,6 +521,7 @@ void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot)
+>  	preempt_disable();
+>  	idx = arch_kmap_local_map_idx(kmap_local_idx_push(), pfn);
+>  	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+> +	trace_printk("kmap_local_pfn: %d %lx\n", idx, (unsigned long) vaddr);
+>  	BUG_ON(!pte_none(*(kmap_pte - idx)));
+>  	pteval = pfn_pte(pfn, prot);
+>  	set_pte_at(&init_mm, vaddr, kmap_pte - idx, pteval);
+> @@ -545,8 +547,10 @@ void *__kmap_local_page_prot(struct page *page, pgprot_t prot)
+>  
+>  	/* Try kmap_high_get() if architecture has it enabled */
+>  	kmap = arch_kmap_local_high_get(page);
+> -	if (kmap)
+> +	if (kmap) {
+> +		trace_printk("kmap_local_high_get: %lx\n", (unsigned long) kmap);
+>  		return kmap;
+> +	}
+>  
+>  	return __kmap_local_pfn_prot(page_to_pfn(page), prot);
+>  }
+> @@ -578,6 +582,7 @@ void kunmap_local_indexed(void *vaddr)
+>  
+>  	preempt_disable();
+>  	idx = arch_kmap_local_unmap_idx(kmap_local_idx(), addr);
+> +	trace_printk("kunmap_local: %i %lx\n", idx, (unsigned long) vaddr);
+>  	WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
+>  
+>  	arch_kmap_local_pre_unmap(addr);
+> 
 
-Thank you for reworking the commit log, tglx!
+The result could be seen at http://kernel.montjoie.ovh/129768.log
+The log is 9Mb, but the ftrace dump seems not terminated, tell me if you need more.
 
-Dexuan
+Regards
