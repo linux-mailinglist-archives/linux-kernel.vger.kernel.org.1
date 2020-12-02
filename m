@@ -2,129 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA0A2CC244
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2C12CC247
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730689AbgLBQ2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:28:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
+        id S1730731AbgLBQaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:30:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgLBQ2G (ORCPT
+        with ESMTP id S1726871AbgLBQaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:28:06 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E12C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:27:26 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id ec16so967632qvb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:27:26 -0800 (PST)
+        Wed, 2 Dec 2020 11:30:04 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B00BC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 08:29:18 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id r2so1418670pls.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 08:29:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=3gltbreYKBIlS9Ge6wtx4Q+7SD7PPTvbQ5ovSIMTdMI=;
-        b=YmswynVF9QX1jI3frNpvbk0X8O2AsyxMdsE4qsO9M4vwORfQyjicPjb+1ytiDNESio
-         BIDUcqJAmYutyyN2jhIAU0ag6k+uVSocaNZEdAWG1uV5Tc46MyS5tH6iW3q2AHoZ1wzn
-         g/gj4kDTTu7YqvPze+sIJyB3kWruJ1vNZPa7pcFlkLSKhy3RT9j4eN2Q0mDGFFREDSVN
-         FoKFpsaIjjPy8ElMjV0HZYJExhkEBvmLfKNJbZ68jyM0Ou4YIuvm3wkE4g8sXWpL68ip
-         Ai8VV0hDHD41YeONdRkWvkMi5xpvzJuLPpzIvoGRc93Zv5f+zqpkEcCflWt3gBqgWYRA
-         NLgg==
+        bh=uXYlmVHYdw9bJqtaDtjoHGPwzeOmsZaC7koT0MCGsSw=;
+        b=lKF/G47kFnGsaMNRc04XrX3fP7tFGm0zi/9ZNVqqzTAUJAjuokW1/3Zp56Jsmlvont
+         Clh0j5zXiAg5muRILgWcaLxXXFnWXfs37VqmtIqw+zsKafNBbkHe9+C56yVJo1Op+afB
+         k6CMPKIuNoICWFWEKJQMo0XCt0xxde+gbfO7OCWp0Io2JQbgelhLa9C7kck+TPteo9JW
+         I4xYJxSZaBOQFR0ZDIpnzBrgnw0sMVpczxlGvBMe4RP+hDS3lT2ZAPU3J+y1ujTGvYcs
+         FNd0HcIdNcntkK+v04KQP5csQRvkpD/vVL9i4YD2nDIxaU+tGVqkc6wvTmTEdrW5M0Iz
+         ZcyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3gltbreYKBIlS9Ge6wtx4Q+7SD7PPTvbQ5ovSIMTdMI=;
-        b=hnlDj+Rl0zth+rveH5bnWpirmKK41Erp/I9cvQr6pTQkG4uctB3wMoCBb6cARt+1i5
-         esaG/lvQCDp3482I5NrjLLLSvolI4rcZqer/MZclwVP0/cw+UjGnO9MM1i1h0bj8AF2V
-         hXxKBTWo2vEVfD/b4Qc7KNjwdimRpUq08Fu/qU75HG7YYpJ8DZEXmiPQHdCceUe5AOX5
-         tKIXDgpCA0XrNm6yZBWycgthyT+HotMNGcLqCZJPABSWIt81f42pGQgXazyrMOZExROy
-         qVuBig/Wtqm/v4umazog2ca+anMWCGqtbO5jeY4rv9qRWXUfzv6rPcUo39erGRT3iEBk
-         HZ7g==
-X-Gm-Message-State: AOAM531po+9bOY8KsXx7bpPramqzij2KN519uAV9Q2eq4MsUTf6QpnJO
-        lhQ8g/NesybX9vDdON0Mw3sagg==
-X-Google-Smtp-Source: ABdhPJwLFH6taaoXGbOdkGN845TC5mEF4Mollvx/oit6SqLICdAba5TXS4mPtvkNNJuK+aPYB/N17Q==
-X-Received: by 2002:a0c:b508:: with SMTP id d8mr3598269qve.8.1606926445581;
-        Wed, 02 Dec 2020 08:27:25 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 14sm2232201qkk.128.2020.12.02.08.27.24
+        bh=uXYlmVHYdw9bJqtaDtjoHGPwzeOmsZaC7koT0MCGsSw=;
+        b=Bq8W9eAsgDBhDn4Svx6dXGwniBWHoetcXGg1Yyd0caUWY+ddHkHNR/oT8QzDaJCtye
+         qlfqx8OEoHTj3X0/gIF6WGqIidkQNmG+QmO7kE+Bs3O/BetjD+aXPgs/mxHK0UR0uDBi
+         UgngbBcZKnNut4QQ2ih5477bp2T1InAcgUdpwNwXw+B1XBN9cwAjAvZVTkxSvwxx2kWu
+         4Ssku67gMcd8TLItqdfep6Tl3OU36aHFHeN4K2UZ7qWdiVu20+M7NUs9TjcqpLddsjcr
+         OALvz+lm/U5Tk9jy4cWgQFLMr+Q1/fmNadh249CqK0E7hpKCQrVgW9rGg6kQx+3YUpZ0
+         DMig==
+X-Gm-Message-State: AOAM531uMaK3LWiERSHdXkI6D0wtvaWV60ML/Oxb8GZJs7n9lXS6/7+b
+        37VGlzmuA1N/wnDvcrsIr9Er
+X-Google-Smtp-Source: ABdhPJy2N9geEmBvYivnWSjBLUoBrwgqmFGFfgHnsJHlPVIJUL/jcLf1wDEiqNYLWLxktQ30IkIBsw==
+X-Received: by 2002:a17:902:9690:b029:d9:c94a:339 with SMTP id n16-20020a1709029690b02900d9c94a0339mr3248216plp.27.1606926557507;
+        Wed, 02 Dec 2020 08:29:17 -0800 (PST)
+Received: from thinkpad ([2409:4072:100:69b9:b5fe:d7f9:67a:4196])
+        by smtp.gmail.com with ESMTPSA id b13sm311787pfo.15.2020.12.02.08.29.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 08:27:24 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kkUyR-0056gQ-US; Wed, 02 Dec 2020 12:27:23 -0400
-Date:   Wed, 2 Dec 2020 12:27:23 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Miroslav Lichvar <mlichvar@redhat.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201202162723.GJ5487@ziepe.ca>
-References: <20201201143835.2054508-1-mlichvar@redhat.com>
- <20201201161224.GF5487@ziepe.ca>
- <20201201171420.GN1900232@localhost>
- <20201201173540.GH5487@ziepe.ca>
- <87mtywe2zu.fsf@nanos.tec.linutronix.de>
+        Wed, 02 Dec 2020 08:29:16 -0800 (PST)
+Date:   Wed, 2 Dec 2020 21:59:10 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org
+Subject: Re: [PATCH 00/29] MHI changes for v5.11
+Message-ID: <20201202162910.GB3033@thinkpad>
+References: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87mtywe2zu.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201202094159.107075-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 02:44:53PM +0100, Thomas Gleixner wrote:
+Hi Greg,
 
-> So if this ends up in level #1 then again the chance is pretty low that
-> the expiry time is aligned to the the level period. If this works then
-> it only works by chance.
-
-Yes, I always thought it was timer wheel related, but at least in my
-testing long ago it seemed reliable at the short timeout. Maybe I had
-a lucky hz value.
- 
-> > This seems like a more fundamental problem someplace else in the
-> > kernel.
+On Wed, Dec 02, 2020 at 03:11:30PM +0530, Manivannan Sadhasivam wrote:
+> Hi Greg,
 > 
-> I don't think so. :)
+> Here is the MHI patch series for v5.11. It was a busy cycle for us and so far we
+> have accumulated almost 29 patches. Most of the patches are cleanups and fixes
+> but there are some noticeable changes too:
 > 
-> Something like the completely untested below should make this reliable
-> and only needs to retry when the work is running late (busy machine),
-> but the wakeup will be on time or at max 1 jiffie off when high
-> resolution timers are not available or disabled.
+> 1. Loic finally removed the auto-start option from the channel parameters of the
+> MHI controller. It is the duty of the client drivers like qrtr to start/stop the
+> channels when required, so we decided to remove this option. As a side effect,
+> we changed the qrtr driver to start the channels during its probe and removed
+> the auto-start option from ath11k controller.
+> 
+> **NOTE** Since these changes spawns both MHI and networking trees, the patches
+> are maintained in an immutable branch [1] and pulled into both mhi-next and
+> ath11k-next branches. The networking patches got acks from ath11k and networking
+> maintainers as well.
+> 
 
-This seems like the right approach
+Sigh... this is not going to work for patches in email form due to the immutable
+branch. I will send a pull request this time.
 
-> @@ -629,7 +618,7 @@ void ntp_notify_cmos_timer(void)
->  
->  	if (IS_ENABLED(CONFIG_GENERIC_CMOS_UPDATE) ||
->  	    IS_ENABLED(CONFIG_RTC_SYSTOHC))
-> -		queue_delayed_work(system_power_efficient_wq, &sync_work, 0);
-> +		queue_work(system_power_efficient_wq, &sync_work);
+Please ignore this series.
 
-As Miroslav noted, probably the right thing to do here is to reset the
-hrtimer and remove the sync_work? I think this code was to expedite an
-RTC sync when NTP fixes the clock on boot.
+Thanks,
+Mani
 
-IIRC this was made somewhat messy due to the dual path with rtclib and
-old cmos.
-
-It would be very nice to kill the cmos path, things are better
-now.. But PPC still has a long way to go:
-
-arch/powerpc/platforms/52xx/efika.c:    .set_rtc_time           = rtas_set_rtc_time,
-arch/powerpc/platforms/8xx/mpc86xads_setup.c:   .set_rtc_time           = mpc8xx_set_rtc_time,
-arch/powerpc/platforms/8xx/tqm8xx_setup.c:      .set_rtc_time           = mpc8xx_set_rtc_time,
-arch/powerpc/platforms/cell/setup.c:    .set_rtc_time           = rtas_set_rtc_time,
-arch/powerpc/platforms/chrp/setup.c:            ppc_md.set_rtc_time     = rtas_set_rtc_time;
-arch/powerpc/platforms/chrp/setup.c:    .set_rtc_time           = chrp_set_rtc_time,
-arch/powerpc/platforms/maple/setup.c:   .set_rtc_time           = maple_set_rtc_time,
-arch/powerpc/platforms/powermac/setup.c:        .set_rtc_time           = pmac_set_rtc_time,
-arch/powerpc/platforms/pseries/setup.c: .set_rtc_time           = rtas_set_rtc_time,
-
-Also x86 needs a touch, it already has RTC lib, no idea why it also
-provides this old path too
-
-I wonder if the cmos path could be killed off under the dead HW
-principle?
-
-Jason
+> 2. Loic added a generic MHI pci controller driver. This driver will be used by
+> the PCI based Qualcomm modems like SDX55 and exposes channels such as QMI,
+> IP_HW0, IPCR etc...
+> 
+> 3. Loic fixed the MHI device hierarchy by maintaining the correct parent child
+> relationships. Earlier all MHI devices lived in the same level under the parent
+> device like PCIe. But now, the MHI devices belonging to channels will become the
+> children of controller MHI device.
+> 
+> 4. Finally Loic also improved the MHI device naming by using indexed names such
+> as mhi0, mhi1, etc... This will break the userspace applications depending on
+> the old naming convention but since the only one user so far is Jeff Hugo's AI
+> accelerator apps, we decided to make this change now itself with his agreement.
+> 
+> 5. Bhaumik fixed the qrtr driver by stopping the channels during remove. This
+> patch also got ack from networking maintainer and we decided to take it through
+> MHI tree (via immutable branch) since we already had a qrtr change.
+> 
+> Please consider applying!
+> 
+> Thanks,
+> Mani
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git/log/?h=mhi-ath11k-immutable
+> 
+> Bhaumik Bhatt (19):
+>   bus: mhi: core: Remove unnecessary counter from mhi_firmware_copy()
+>   bus: mhi: core: Add missing EXPORT_SYMBOL for mhi_get_mhi_state()
+>   bus: mhi: core: Expose mhi_get_exec_env() API for controllers
+>   bus: mhi: core: Remove unused mhi_fw_load_worker() declaration
+>   bus: mhi: core: Rename RDDM download function to use proper words
+>   bus: mhi: core: Skip RDDM download for unknown execution environment
+>   bus: mhi: core: Use appropriate names for firmware load functions
+>   bus: mhi: core: Move to using high priority workqueue
+>   bus: mhi: core: Skip device wake in error or shutdown states
+>   bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+>   bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+>   bus: mhi: core: Move to an error state on any firmware load failure
+>   bus: mhi: core: Use appropriate label in firmware load handler API
+>   bus: mhi: core: Move to an error state on mission mode failure
+>   bus: mhi: core: Check for IRQ availability during registration
+>   bus: mhi: core: Separate system error and power down handling
+>   bus: mhi: core: Mark and maintain device states early on after power
+>     down
+>   bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
+>   net: qrtr: Unprepare MHI channels during remove
+> 
+> Carl Yin (1):
+>   bus: mhi: core: Fix null pointer access when parsing MHI configuration
+> 
+> Dan Carpenter (1):
+>   bus: mhi: core: Fix error handling in mhi_register_controller()
+> 
+> Jeffrey Hugo (1):
+>   bus: mhi: core: fix potential operator-precedence with BHI macros
+> 
+> Loic Poulain (7):
+>   bus: mhi: Remove auto-start option
+>   net: qrtr: Start MHI channels during init
+>   bus: mhi: Add MHI PCI support for WWAN modems
+>   bus: mhi: Fix channel close issue on driver remove
+>   bus: mhi: core: Indexed MHI controller name
+>   bus: mhi: core: Fix device hierarchy
+>   mhi: pci_generic: Fix implicit conversion warning
+> 
+> -- 
+> 2.25.1
+> 
