@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8B52CBCF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0332CBCFA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729984AbgLBMYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:24:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52640 "EHLO mail.kernel.org"
+        id S2387527AbgLBMZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:25:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727178AbgLBMY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:24:29 -0500
-X-Gm-Message-State: AOAM5332nu8oqb9AUF/wU4smTGw+zRxL5LunjezBxuIe0+WhBpP2O1iu
-        gCqISMUsTbCGJ7/35AQny9XiEJUNrJ+l2syF3SU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606911828;
-        bh=oa7UfaUP3+xFmxloS25xR2K5dpFVJxrXIk+MwfRXBZY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kMYogxUxKcXGs8GpKM6ZF0u8wOqW40HJn37gmHCJ05psgxxLAWTqbWZG3VVd3lb5h
-         BT6eP1XaVpPlfZtkGeith70uOCd+7pFPBR5AvF5ah9Br2QX/wqk+SYAsxXAuqWpet6
-         ngzACC+1cd6PJF6hT572GomlYn5YFUWQ9rpzsbO4=
-X-Google-Smtp-Source: ABdhPJyC/BitHigFIbOKUBueddX1xbZID1vUveQ/Aj0NJNpD8QfuK7AsqevTSakwULDKnR7Term8eac0hqFIyj83LOs=
-X-Received: by 2002:a05:6402:31b6:: with SMTP id dj22mr2256983edb.348.1606911826521;
- Wed, 02 Dec 2020 04:23:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201123932.12312-1-martin.kepplinger@puri.sm>
- <20201201123932.12312-8-martin.kepplinger@puri.sm> <cb498c2c-e052-390a-c64a-2be44d1d2b42@linaro.org>
- <a2c0fae4-13c5-9114-876f-bc324138e6cc@puri.sm> <20201202080321.GB6087@kozik-lap>
- <CAJKOXPcAbmugB9k-1Ldo=Q1J0CbOcxMtgC005w=DmWukThVcWA@mail.gmail.com> <226e76a8-011e-ece5-d8fa-b52dbc81787b@puri.sm>
-In-Reply-To: <226e76a8-011e-ece5-d8fa-b52dbc81787b@puri.sm>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 2 Dec 2020 14:23:34 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPc6BEw3A+pO9HOK4h59jZ2_TEfKcz79f7PbkPhJdPhE_w@mail.gmail.com>
-Message-ID: <CAJKOXPc6BEw3A+pO9HOK4h59jZ2_TEfKcz79f7PbkPhJdPhE_w@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] arm64: defconfig: Enable interconnect for imx8mq
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>, robh@kernel.org,
-        shawnguo@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
-        will@kernel.org, cdleonard@gmail.com, kernel@pengutronix.de,
-        linux-imx@nxp.com, kernel@puri.sm, devicetree@vger.kernel.org,
+        id S1726134AbgLBMZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 07:25:27 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03C34221FE;
+        Wed,  2 Dec 2020 12:24:47 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kkRBc-00FKdk-2e; Wed, 02 Dec 2020 12:24:44 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Gavin Shan <gshan@redhat.com>,
         linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Yanan Wang <wangyanan55@huawei.com>
+Cc:     yuzenghui@huawei.com, jiangkunkun@huawei.com,
+        lushenming@huawei.com, wanghaibin.wang@huawei.com,
+        zhukeqian1@huawei.com, yezengruan@huawei.com,
+        wangjingyi11@huawei.com
+Subject: Re: [PATCH v2 0/3] Fix several bugs in KVM stage 2 translation
+Date:   Wed,  2 Dec 2020 12:24:38 +0000
+Message-Id: <160691185017.266917.9856801601483446789.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201201201034.116760-1-wangyanan55@huawei.com>
+References: <20201201201034.116760-1-wangyanan55@huawei.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: gshan@redhat.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, julien.thierry.kdev@gmail.com, james.morse@arm.com, linux-kernel@vger.kernel.org, suzuki.poulose@arm.com, will@kernel.org, qperret@google.com, wangyanan55@huawei.com, yuzenghui@huawei.com, jiangkunkun@huawei.com, lushenming@huawei.com, wanghaibin.wang@huawei.com, zhukeqian1@huawei.com, yezengruan@huawei.com, wangjingyi11@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 at 13:30, Martin Kepplinger
-<martin.kepplinger@puri.sm> wrote:
-> >>>>> -CONFIG_INTERCONNECT=y
-> >>>>
-> >>>> Why are you removing this line?
-> >>>
-> >>> savedefconfig removes it. INTERCONNECT_IMX below depends on it.
-> >>
-> >> It's save to remove it as other Interconnect options are directly
-> >> dependant.
-> >
-> > Ugh, my bad, it is not allowed to remove it. My review was too fast.
-> > INTERCONNECT_IMX depends on it, so the INTERCONNECT must stay,
-> >
-> > It is selected by TEGRA_MC which is independent here, so you should keep it.
-> >
->
-> thanks for reviewing! Just to be clear: We're talking about defconfig,
-> so if I keep INTERCONNECT that means that I do `make savedefconfig`
-> which removes it (it's of course still enabled, just redundant in
-> defconfig output), and then *manually* add INTERCONNECT. That would
-> indicate that there's a Kconfig bug.
+On Wed, 2 Dec 2020 04:10:31 +0800, Yanan Wang wrote:
+> When installing a new pte entry or updating an old valid entry in stage 2
+> translation, we use get_page()/put_page() to record page_count of the page-table
+> pages. PATCH 1/3 aims to fix incorrect use of get_page()/put_page() in stage 2,
+> which might make page-table pages unable to be freed when unmapping a range.
+> 
+> When dirty logging of a guest with hugepages is finished, we should merge tables
+> back into a block entry if adjustment of huge mapping is found necessary.
+> In addition to installing the block entry, we should not only free the non-huge
+> page-table pages but also invalidate all the TLB entries of non-huge mappings for
+> the block. PATCH 2/3 adds enough TLBI when merging tables into a block entry.
+> 
+> [...]
 
-I don't get the point. You should not send the savedefconfig output as
-is, without any adjustments and checks. You can run savedefconfig
-because it nicely puts your entries in the proper place, but it's not
-a bug  that it removes features which we *want to keep*. Where is a
-bug in Kconfig?
+Applied to kvm-arm64/fixes-5.10, thanks!
 
-Best regards,
-Krzysztof
+[1/3] KVM: arm64: Fix memory leak on stage2 update of a valid PTE
+      commit: 5c646b7e1d8bcb12317426287c516dfa4c5171c2
+[2/3] KVM: arm64: Fix handling of merging tables into a block entry
+      commit: 3a0b870e3448302ca2ba703bea1b79b61c3f33c6
+[3/3] KVM: arm64: Add usage of stage 2 fault lookup level in user_mem_abort()
+      commit: 7d894834a305568a0168c55d4729216f5f8cb4e6
+
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
