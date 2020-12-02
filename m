@@ -2,228 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603EF2CBADE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CFD2CBAE9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388733AbgLBKoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:44:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729500AbgLBKoq (ORCPT
+        id S1729526AbgLBKrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:47:14 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:47074 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729514AbgLBKrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:44:46 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07CFC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 02:43:59 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id j21so1190369otp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:43:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9QLz5An3VwdrOS0On7n3zMhkM8iyrpXF4RrWtNNC2nQ=;
-        b=YeNFvvcrLu+QyOFwERkqOiZyxAu2OSzJFeqVq2zqgsVJI47I/YyPZ3MGa48MADUGMw
-         pU+0JUmXzMov/8DZCYY74Fuiu2JslaSSghEEYDihOK9IibYSVPbOPheHtRbMZawrlINy
-         xaAB1LF3O3VGiRg5K09+3+E5OpeWlZ7kuTME7gcteIJ3SWPxb9RFui2xA3sg1+IZLmLw
-         kta68kLjb+GNiJYBufU6WR7RVCXeveim0cNGaX5RZ5c4az4p8HDsxyDU9c0nejvRXKa2
-         7hCq+/qA/63czc+7JxkICCvE3DRiNroliAh+GCR+I1A0qL48PNMs4AOy3rgzqiRBah1A
-         yf1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9QLz5An3VwdrOS0On7n3zMhkM8iyrpXF4RrWtNNC2nQ=;
-        b=n+abe6L2K5gQyErOYAW+VVk31gi8Ks7tRnD3RXwHZ9dWi8Zp1/urzHWZp+zNPUbJxM
-         ybUrsRU17nAXAvWf7GS8QYMwpww5NmjZHQ6efnuRVSUc+r7Nr4I7PuhtIjck+IyNZICO
-         B+YBFMZNeNtCt9CPFY3LBTUR+MLQVKrXM4MqkSyPCqCF+iIANSItKc9StmnIKVVc6nsa
-         p9nh/U2CAZxersuZDD/vaI1UDUAWZMUK6LjuFfZu+Z+d2eeZQjKjqVVDj2i5sFxbhjDn
-         oR0SGY/BaLBeVD7K/4S+q6FlX2X2id1wjdtL/wIsxm1F2Zy/FZxcMzfGYMfXz8cJz+Kt
-         nOxQ==
-X-Gm-Message-State: AOAM532sJBuj0xJznLCqTZswaIH/JeTlLNMyU3wnZZAWFyakAipLpyJA
-        Js/PLu97mDslYw61aul5IW4sSDe/+KWZg+JRQ7bL8pGqwPFsY5IZ
-X-Google-Smtp-Source: ABdhPJwxL1OzJVnVfNZmSBpClLDif2edIi+wqSZRxCHBo0D5BEuuofkUgl4ThazR8DxEm7tRDU1T581F4Yni8XBqOHc=
-X-Received: by 2002:a9d:6f0a:: with SMTP id n10mr1376770otq.268.1606905839217;
- Wed, 02 Dec 2020 02:43:59 -0800 (PST)
+        Wed, 2 Dec 2020 05:47:13 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2AixNW072970;
+        Wed, 2 Dec 2020 10:46:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=wwhr47586+/6Fpo43Hc7ftI6vWuRmnMUsfbm3tDnCB4=;
+ b=oFxRdXh4Zvbgyzs83YZP1YFbXgu/SHQNxfa1KhL6Kmk+m+hOpCEn4J/DwTkUAw4iHUQK
+ fC7Xln2u+2ylqsaPPG4jSOjgwrm3lvuFvG0wiekSHCFwM3EXCmBjMY+lYX6x6SVkgVtD
+ xHQ9WBju9CO63NBMum9NuN8XvLDSLrdT/Cf1U1v8dGEyrC4jl/ZP7njMGA7Hq2px5iSA
+ h9TYLZkXyAvYU+JLMw0UUdW4oxdUnWBH+1szuiBeaMBj2qSNl6FLzWIyO61pRPdidQy7
+ n9ZHsh5Hrq/gmkmzZZmX1NnRFdS0dCJbNe2y4Vhg5ihkO5fbaoicj1dvESjrq7pgQLBx /w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 353c2aypeg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Dec 2020 10:46:12 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B2AaXOY130396;
+        Wed, 2 Dec 2020 10:44:12 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 35404p4qj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Dec 2020 10:44:12 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B2Ai7ko032261;
+        Wed, 2 Dec 2020 10:44:08 GMT
+Received: from [10.175.181.158] (/10.175.181.158)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Dec 2020 02:44:07 -0800
+Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
+To:     Ankur Arora <ankur.a.arora@oracle.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+ <20190220201609.28290-4-joao.m.martins@oracle.com>
+ <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
+ <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <896dc984-fa71-8f2f-d12b-458294f5f706@oracle.com>
+Date:   Wed, 2 Dec 2020 10:44:03 +0000
 MIME-Version: 1.0
-References: <20201202071057.4877-1-andrey.zhizhikin@leica-geosystems.com>
- <CAHUa44HuNPmWufnxzqGLrwJqLxTkjCivYGaHvukEkk6nOd1r3g@mail.gmail.com> <AM6PR06MB4691764C8ABBF608837557D7A6F30@AM6PR06MB4691.eurprd06.prod.outlook.com>
-In-Reply-To: <AM6PR06MB4691764C8ABBF608837557D7A6F30@AM6PR06MB4691.eurprd06.prod.outlook.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 2 Dec 2020 11:43:48 +0100
-Message-ID: <CAHUa44GLP0JZPnX9Z1b6rNkzMttBWRvOo7QLuySmAmqCQFvpdg@mail.gmail.com>
-Subject: Re: [PATCH] optee: extend normal memory check to also write-through
-To:     ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
-Cc:     "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020062
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9822 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012020063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 10:41 AM ZHIZHIKIN Andrey
-<andrey.zhizhikin@leica-geosystems.com> wrote:
->
-> Hello Jens,
->
-> > -----Original Message-----
-> > From: Jens Wiklander <jens.wiklander@linaro.org>
-> > Sent: Wednesday, December 2, 2020 9:07 AM
-> > To: ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
-> > Cc: op-tee@lists.trustedfirmware.org; Linux Kernel Mailing List <linux-
-> > kernel@vger.kernel.org>; stable@vger.kernel.org
-> > Subject: Re: [PATCH] optee: extend normal memory check to also write-th=
-rough
-> >
-> > This email is not from Hexagon=E2=80=99s Office 365 instance. Please be=
- careful while
-> > clicking links, opening attachments, or replying to this email.
-> >
-> >
-> > Hi Andrey,
-> >
-> > On Wed, Dec 2, 2020 at 8:11 AM Andrey Zhizhikin <andrey.zhizhikin@leica=
--
-> > geosystems.com> wrote:
-> > >
-> > > ARMv7 Architecture Reference Manual [1] section A3.5.5 details Normal
-> > > memory type, together with cacheability attributes that could be
-> > > applied to memory regions defined as "Normal memory".
-> > >
-> > > Section B2.1.2 of the Architecture Reference Manual [1] also provides
-> > > details regarding the Memory attributes that could be assigned to
-> > > particular memory regions, which includes the descrption of
-> > > cacheability attributes and cache allocation hints.
-> > >
-> > > Memory type and cacheability attributes forms 2 separate definitions,
-> > > where cacheability attributes defines a mechanism of coherency contro=
-l
-> > > rather than the type of memory itself.
-> > >
-> > > In other words: Normal memory type can be configured with several
-> > > combination of cacheability attributes, namely:
-> > > - Write-Through (WT)
-> > > - Write-Back (WB) followed by cache allocation hint:
-> > >   - Write-Allocate
-> > >   - No Write-Allocate (also known as Read-Allocate)
-> > >
-> > > Those types are mapped in the kernel to corresponding macros:
-> > > - Write-Through: L_PTE_MT_WRITETHROUGH
-> > > - Write-Back Write-Allocate: L_PTE_MT_WRITEALLOC
-> > > - Write-Back Read-Allocate: L_PTE_MT_WRITEBACK
-> > >
-> > > Current implementation of the op-tee driver takes in account only 2
-> > > last memory region types, while performing a check if the memory bloc=
-k
-> > > is allocated as "Normal memory", leaving Write-Through allocations to
-> > > be not considered.
-> > >
-> > > Extend verification mechanism to include also Normal memory regios,
-> > > which are designated with Write-Through cacheability attributes.
-> >
-> > Are you trying to fix a real error with this or are you just trying to =
-cover all cases? I
-> > suspect the latter since you'd likely have coherency problems with OP-T=
-EE in
-> > Secure world if you used Write-Through instead.
->
-> Yes, this aims to provide consistency in detection which memory blocks ca=
-n be identified
-> as Normal memory in ARMv7 architecture.
+[late response - was on holiday yesterday]
 
-I think you're missing the purpose of this internal function. It's
-there to check that the memory is mapped in a way compatible with what
-OP-TEE is using in Secure world.
+On 12/2/20 12:40 AM, Ankur Arora wrote:
+> On 2020-12-01 5:07 a.m., David Woodhouse wrote:
+>> On Wed, 2019-02-20 at 20:15 +0000, Joao Martins wrote:
+>>> +static int kvm_xen_shared_info_init(struct kvm *kvm, gfn_t gfn)
+>>> +{
+>>> +       struct shared_info *shared_info;
+>>> +       struct page *page;
+>>> +
+>>> +       page = gfn_to_page(kvm, gfn);
+>>> +       if (is_error_page(page))
+>>> +               return -EINVAL;
+>>> +
+>>> +       kvm->arch.xen.shinfo_addr = gfn;
+>>> +
+>>> +       shared_info = page_to_virt(page);
+>>> +       memset(shared_info, 0, sizeof(struct shared_info));
+>>> +       kvm->arch.xen.shinfo = shared_info;
+>>> +       return 0;
+>>> +}
+>>> +
+>>
+>> Hm.
+>>
+>> How come we get to pin the page and directly dereference it every time,
+>> while kvm_setup_pvclock_page() has to use kvm_write_guest_cached()
+>> instead?
+> 
+> So looking at my WIP trees from the time, this is something that
+> we went back and forth on as well with using just a pinned page or a
+> persistent kvm_vcpu_map().
+> 
+> I remember distinguishing shared_info/vcpu_info from kvm_setup_pvclock_page()
+> as shared_info is created early and is not expected to change during the
+> lifetime of the guest which didn't seem true for MSR_KVM_SYSTEM_TIME (or
+> MSR_KVM_STEAL_TIME) so that would either need to do a kvm_vcpu_map()
+> kvm_vcpu_unmap() dance or do some kind of synchronization.
+> 
+> That said, I don't think this code explicitly disallows any updates
+> to shared_info.
+> 
+>>
+>> If that was allowed, wouldn't it have been a much simpler fix for
+>> CVE-2019-3016? What am I missing?
+> 
+> Agreed.
+> 
+> Perhaps, Paolo can chime in with why KVM never uses pinned page
+> and always prefers to do cached mappings instead?
+> 
+Part of the CVE fix to not use cached versions.
 
->
-> WT coherency control and (especially) observability behavior is described=
- in section A3.5.5 of the
-> ARMv7 RefMan, where it is stated that write operations performed on WT me=
-mory locations
-> are guaranteed to be visible to all observers inside and outside of cache=
- level.
->
-> As the Write-Through (WT) provides a better coherency control, it does ma=
-ke sense to include it
-> into the verification performed by is_normal_memory() in order to provide=
- a possibility for
-> future implementations to mitigate issues and select appropriate cache al=
-location attributes
-> for memory blocks used.
->
-> > Correct me if I'm wrong, but "Write-Back Write-Allocate" and "Write-Bac=
-k Read-Allocate"
-> > are both compatible with each other as the "Allocate" part is just a hi=
-nt.
->
-> Correct, "Allocate" just designates the cache allocation hint. "Write-Bac=
-k Read-Allocate" should
-> actually be read as "Write-Back no Write-Allocate", with " Write-Allocate=
-" being a hint. But since
-> this is controlled by a TEX[0] - this hint is handled separately by L_PTE=
-_MT_WRITEBACK and
-> L_PTE_MT_WRITEALLOC macros.
+It's not a longterm pin of the page unlike we try to do here (partly due to the nature
+of the pages we are mapping) but we still we map the gpa, RMW the steal time struct, and
+then unmap the page.
 
-B3.11.3 in the spec requires cache maintenance when changing from
-Write-Back to Write-Through and vice versa, and we can't do that in
-this design.
+See record_steal_time() -- but more specifically commit b043138246 ("x86/KVM: Make sure
+KVM_VCPU_FLUSH_TLB flag is not missed").
 
-Cheers,
-Jens
+But I am not sure it's a good idea to follow the same as record_steal_time() given that
+this is a fairly sensitive code path for event channels.
 
->
-> >
-> > Cheers,
-> > Jens
-> >
-> > >
-> > > Link: [1]:
-> > > https://eur02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fd=
-eve
-> > >
-> > loper.arm.com%2Fdocumentation%2Fddi0406%2Fcd&amp;data=3D04%7C01%7C%7
-> > Ca40
-> > >
-> > ffd35912f4fe3d97308d896993b87%7C1b16ab3eb8f64fe39f3e2db7fe549f6a%7C0%
-> > 7
-> > >
-> > C1%7C637424932169074654%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
-> > MDAiLC
-> > >
-> > JQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=3Dc0jK2gT
-> > m
-> > > qrAyo0%2Ffr07t%2Fg5NbPdm4dh7Rl7alNWlaQc%3D&amp;reserved=3D0
-> > > Fixes: 853735e40424 ("optee: add writeback to valid memory type")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Andrey Zhizhikin
-> > > <andrey.zhizhikin@leica-geosystems.com>
-> > > ---
-> > >  drivers/tee/optee/call.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c inde=
-x
-> > > c981757ba0d4..8da27d02a2d6 100644
-> > > --- a/drivers/tee/optee/call.c
-> > > +++ b/drivers/tee/optee/call.c
-> > > @@ -535,7 +535,8 @@ static bool is_normal_memory(pgprot_t p)  {  #if
-> > > defined(CONFIG_ARM)
-> > >         return (((pgprot_val(p) & L_PTE_MT_MASK) =3D=3D L_PTE_MT_WRIT=
-EALLOC)
-> > ||
-> > > -               ((pgprot_val(p) & L_PTE_MT_MASK) =3D=3D L_PTE_MT_WRIT=
-EBACK));
-> > > +               ((pgprot_val(p) & L_PTE_MT_MASK) =3D=3D L_PTE_MT_WRIT=
-EBACK) ||
-> > > +               ((pgprot_val(p) & L_PTE_MT_MASK) =3D=3D
-> > > + L_PTE_MT_WRITETHROUGH));
-> > >  #elif defined(CONFIG_ARM64)
-> > >         return (pgprot_val(p) & PTE_ATTRINDX_MASK) =3D=3D
-> > > PTE_ATTRINDX(MT_NORMAL);  #else
-> > > --
-> > > 2.17.1
-> > >
->
-> Regards,
-> Andrey
+>>
+>> Should I rework these to use kvm_write_guest_cached()?
+> 
+> kvm_vcpu_map() would be better. The event channel logic does RMW operations
+> on shared_info->vcpu_info.
+> 
+Indeed, yes.
+
+Ankur IIRC, we saw missed event channels notifications when we were using the
+{write,read}_cached() version of the patch.
+
+But I can't remember the reason it was due to, either the evtchn_pending or the mask
+word -- which would make it not inject an upcall.
+
+	Joao
