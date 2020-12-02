@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEFB2CB928
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C24632CB932
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388359AbgLBJjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:39:45 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:32896 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388254AbgLBJjM (ORCPT
+        id S2388404AbgLBJj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:39:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388306AbgLBJjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:39:12 -0500
+        Wed, 2 Dec 2020 04:39:32 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4462C061A04;
+        Wed,  2 Dec 2020 01:38:30 -0800 (PST)
 Date:   Wed, 02 Dec 2020 09:38:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1606901907;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=coBmj4sUTKrc6ptgVatYltZ9ldaaQl5TSVPSlhCiFeA=;
-        b=Zu10GsMSz0Fd5U3Bklo1qulc2rZz4+XRcSC5H0sldZ88Uk2+iqf+/3sy9GjxVyI5pwz2qO
-        3Xh/ILBfzcTzlgVgMRTBJ12U/aH494/5QrojtHsuoW4zU7UUvs/ElDe9hYRepq3KzSc/wt
-        uUrIJmtjPKzDyIcrBicDPpp1GARkMWB2AspfVuxOtb68o/u5bFUDR6eDNDdC+d3B6LTU1h
-        I93vSTeDIdIIGOZxKRxXB+FEHTcFODxKZdO4cI+Yis2ilyl9BmJzt5YWpckNrn0ACBnBSY
-        OxM9WiZ5hzoiZYWjlxBx9SineS35xBACF99l0w4wWB40vcX4Ic6LSHTmPE6Mfw==
+        bh=wsHpIuiMTu4+QIRvWstrS7Hk6Kd96fP03TOC58lsLT8=;
+        b=GWgy8ddbh/wuDbgj1TWEp2IQ1B31pe1cSQ+YPPkkSeyB96sk6JG336arhZITuGgUdEA2OS
+        SfNBS2obKYIUXOcJiA+f+U873ol4VdoKuV8tBVkLw9EKE1k8OfXxTRFmOUQhWpNWPgP15x
+        tyAIx4s8xC9ZkpC1hFYOT0Yrw5GcwA5HjF6HFjmvdQZwxJSGC2U94KXae8MZE2EhyqY6GI
+        EGxBv/JHhdcwUOA/75ZWwKica00IcljbZ1ReFjRjDaIrcuKaQHkLIHR+mMM3MPilMv/4ao
+        w+3aDPBI9wxQ6VkBCkONCyzfQIxebeiNieOkRWJM6u4skB/qGNxU78bY0LY/tw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606901907;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,24 +36,24 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=coBmj4sUTKrc6ptgVatYltZ9ldaaQl5TSVPSlhCiFeA=;
-        b=vQcWVxUqb21gcDQ0G5wmtHvtdrrV7KLQaNOTiBmA4L3TzgfsbeXy6msOISc55LqaOmi7tk
-        j+c4CR8oF/Z4qLDg==
+        bh=wsHpIuiMTu4+QIRvWstrS7Hk6Kd96fP03TOC58lsLT8=;
+        b=Q6P7RJhTBzi1v2AhzeWQWuFWkm9rNjjqzMJha7boXluYkUGoQL1KX3t74cLCvmxwlZNsTt
+        X3+W/RJazIlv3tBg==
 From:   "tip-bot2 for Gabriel Krisman Bertazi" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/entry] docs: Document Syscall User Dispatch
+Subject: [tip: core/entry] selftests: Add benchmark for syscall user dispatch
 Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Kees Cook <keescook@chromium.org>,
         Andy Lutomirski <luto@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201127193238.821364-8-krisman@collabora.com>
-References: <20201127193238.821364-8-krisman@collabora.com>
+In-Reply-To: <20201127193238.821364-7-krisman@collabora.com>
+References: <20201127193238.821364-7-krisman@collabora.com>
 MIME-Version: 1.0
-Message-ID: <160690190729.3364.13950001456811503542.tip-bot2@tip-bot2>
+Message-ID: <160690190739.3364.9180080569226915332.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,137 +64,261 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/entry branch of tip:
 
-Commit-ID:     a4cff1161486c47a5d303f913d5d2fcba26cc553
-Gitweb:        https://git.kernel.org/tip/a4cff1161486c47a5d303f913d5d2fcba26cc553
+Commit-ID:     3e8df777fbf4531a4ec740aae991090baed27856
+Gitweb:        https://git.kernel.org/tip/3e8df777fbf4531a4ec740aae991090baed27856
 Author:        Gabriel Krisman Bertazi <krisman@collabora.com>
-AuthorDate:    Fri, 27 Nov 2020 14:32:38 -05:00
+AuthorDate:    Fri, 27 Nov 2020 14:32:37 -05:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 02 Dec 2020 10:32:17 +01:00
 
-docs: Document Syscall User Dispatch
+selftests: Add benchmark for syscall user dispatch
 
-Explain the interface, provide some background and security notes.
+This is the patch I'm using to evaluate the impact syscall user dispatch
+has on native syscall (syscalls not redirected to userspace) when
+enabled for the process and submiting syscalls though the unblocked
+dispatch selector. It works by running a step to define a baseline of
+the cost of executing sysinfo, then enabling SUD, and rerunning that
+step.
 
-[ tglx: Add note about non-visibility, add it to the index and fix the
-  	kerneldoc warning ] 
+On my test machine, an AMD Ryzen 5 1500X, I have the following results
+with the latest version of syscall user dispatch patches.
+
+root@olga:~# syscall_user_dispatch/sud_benchmark
+  Calibrating test set to last ~5 seconds...
+  test iterations = 37500000
+  Avg syscall time 134ns.
+  Caught sys_ff00
+  trapped_call_count 1, native_call_count 0.
+  Avg syscall time 147ns.
+  Interception overhead: 9.7% (+13ns).
 
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Reviewed-by: Andy Lutomirski <luto@kernel.org>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20201127193238.821364-8-krisman@collabora.com
----
- Documentation/admin-guide/index.rst                 |  1 +-
- Documentation/admin-guide/syscall-user-dispatch.rst | 90 ++++++++++++-
- 2 files changed, 91 insertions(+)
- create mode 100644 Documentation/admin-guide/syscall-user-dispatch.rst
+Link: https://lore.kernel.org/r/20201127193238.821364-7-krisman@collabora.com
 
-diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
-index 4e0c4ae..b29d3c1 100644
---- a/Documentation/admin-guide/index.rst
-+++ b/Documentation/admin-guide/index.rst
-@@ -111,6 +111,7 @@ configure specific aspects of kernel behavior to your liking.
-    rtc
-    serial-console
-    svga
-+   syscall-user-dispatch
-    sysrq
-    thunderbolt
-    ufs
-diff --git a/Documentation/admin-guide/syscall-user-dispatch.rst b/Documentation/admin-guide/syscall-user-dispatch.rst
+---
+ tools/testing/selftests/syscall_user_dispatch/Makefile        |   2 +-
+ tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c | 200 +++++++-
+ 2 files changed, 201 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
+
+diff --git a/tools/testing/selftests/syscall_user_dispatch/Makefile b/tools/testing/selftests/syscall_user_dispatch/Makefile
+index 8e15fa4..03c1202 100644
+--- a/tools/testing/selftests/syscall_user_dispatch/Makefile
++++ b/tools/testing/selftests/syscall_user_dispatch/Makefile
+@@ -5,5 +5,5 @@ LINUX_HDR_PATH = $(INSTALL_HDR_PATH)/include/
+ 
+ CFLAGS += -Wall -I$(LINUX_HDR_PATH)
+ 
+-TEST_GEN_PROGS := sud_test
++TEST_GEN_PROGS := sud_test sud_benchmark
+ include ../lib.mk
+diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
 new file mode 100644
-index 0000000..a380d65
+index 0000000..6689f11
 --- /dev/null
-+++ b/Documentation/admin-guide/syscall-user-dispatch.rst
-@@ -0,0 +1,90 @@
-+.. SPDX-License-Identifier: GPL-2.0
++++ b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
+@@ -0,0 +1,200 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2020 Collabora Ltd.
++ *
++ * Benchmark and test syscall user dispatch
++ */
 +
-+=====================
-+Syscall User Dispatch
-+=====================
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <signal.h>
++#include <errno.h>
++#include <time.h>
++#include <sys/time.h>
++#include <unistd.h>
++#include <sys/sysinfo.h>
++#include <sys/prctl.h>
++#include <sys/syscall.h>
 +
-+Background
-+----------
++#ifndef PR_SET_SYSCALL_USER_DISPATCH
++# define PR_SET_SYSCALL_USER_DISPATCH	59
++# define PR_SYS_DISPATCH_OFF	0
++# define PR_SYS_DISPATCH_ON	1
++#endif
 +
-+Compatibility layers like Wine need a way to efficiently emulate system
-+calls of only a part of their process - the part that has the
-+incompatible code - while being able to execute native syscalls without
-+a high performance penalty on the native part of the process.  Seccomp
-+falls short on this task, since it has limited support to efficiently
-+filter syscalls based on memory regions, and it doesn't support removing
-+filters.  Therefore a new mechanism is necessary.
++#ifdef __NR_syscalls
++# define MAGIC_SYSCALL_1 (__NR_syscalls + 1) /* Bad Linux syscall number */
++#else
++# define MAGIC_SYSCALL_1 (0xff00)  /* Bad Linux syscall number */
++#endif
 +
-+Syscall User Dispatch brings the filtering of the syscall dispatcher
-+address back to userspace.  The application is in control of a flip
-+switch, indicating the current personality of the process.  A
-+multiple-personality application can then flip the switch without
-+invoking the kernel, when crossing the compatibility layer API
-+boundaries, to enable/disable the syscall redirection and execute
-+syscalls directly (disabled) or send them to be emulated in userspace
-+through a SIGSYS.
++/*
++ * To test returning from a sigsys with selector blocked, the test
++ * requires some per-architecture support (i.e. knowledge about the
++ * signal trampoline address).  On i386, we know it is on the vdso, and
++ * a small trampoline is open-coded for x86_64.  Other architectures
++ * that have a trampoline in the vdso will support TEST_BLOCKED_RETURN
++ * out of the box, but don't enable them until they support syscall user
++ * dispatch.
++ */
++#if defined(__x86_64__) || defined(__i386__)
++#define TEST_BLOCKED_RETURN
++#endif
 +
-+The goal of this design is to provide very quick compatibility layer
-+boundary crosses, which is achieved by not executing a syscall to change
-+personality every time the compatibility layer executes.  Instead, a
-+userspace memory region exposed to the kernel indicates the current
-+personality, and the application simply modifies that variable to
-+configure the mechanism.
++#ifdef __x86_64__
++void* (syscall_dispatcher_start)(void);
++void* (syscall_dispatcher_end)(void);
++#else
++unsigned long syscall_dispatcher_start = 0;
++unsigned long syscall_dispatcher_end = 0;
++#endif
 +
-+There is a relatively high cost associated with handling signals on most
-+architectures, like x86, but at least for Wine, syscalls issued by
-+native Windows code are currently not known to be a performance problem,
-+since they are quite rare, at least for modern gaming applications.
++unsigned long trapped_call_count = 0;
++unsigned long native_call_count = 0;
 +
-+Since this mechanism is designed to capture syscalls issued by
-+non-native applications, it must function on syscalls whose invocation
-+ABI is completely unexpected to Linux.  Syscall User Dispatch, therefore
-+doesn't rely on any of the syscall ABI to make the filtering.  It uses
-+only the syscall dispatcher address and the userspace key.
++char selector;
++#define SYSCALL_BLOCK   (selector = PR_SYS_DISPATCH_ON)
++#define SYSCALL_UNBLOCK (selector = PR_SYS_DISPATCH_OFF)
 +
-+As the ABI of these intercepted syscalls is unknown to Linux, these
-+syscalls are not instrumentable via ptrace or the syscall tracepoints.
++#define CALIBRATION_STEP 100000
++#define CALIBRATE_TO_SECS 5
++int factor;
 +
-+Interface
-+---------
++static double one_sysinfo_step(void)
++{
++	struct timespec t1, t2;
++	int i;
++	struct sysinfo info;
 +
-+A thread can setup this mechanism on supported kernels by executing the
-+following prctl:
++	clock_gettime(CLOCK_MONOTONIC, &t1);
++	for (i = 0; i < CALIBRATION_STEP; i++)
++		sysinfo(&info);
++	clock_gettime(CLOCK_MONOTONIC, &t2);
++	return (t2.tv_sec - t1.tv_sec) + 1.0e-9 * (t2.tv_nsec - t1.tv_nsec);
++}
 +
-+  prctl(PR_SET_SYSCALL_USER_DISPATCH, <op>, <offset>, <length>, [selector])
++static void calibrate_set(void)
++{
++	double elapsed = 0;
 +
-+<op> is either PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF, to enable and
-+disable the mechanism globally for that thread.  When
-+PR_SYS_DISPATCH_OFF is used, the other fields must be zero.
++	printf("Calibrating test set to last ~%d seconds...\n", CALIBRATE_TO_SECS);
 +
-+[<offset>, <offset>+<length>) delimit a memory region interval
-+from which syscalls are always executed directly, regardless of the
-+userspace selector.  This provides a fast path for the C library, which
-+includes the most common syscall dispatchers in the native code
-+applications, and also provides a way for the signal handler to return
-+without triggering a nested SIGSYS on (rt\_)sigreturn.  Users of this
-+interface should make sure that at least the signal trampoline code is
-+included in this region. In addition, for syscalls that implement the
-+trampoline code on the vDSO, that trampoline is never intercepted.
++	while (elapsed < 1) {
++		elapsed += one_sysinfo_step();
++		factor += CALIBRATE_TO_SECS;
++	}
 +
-+[selector] is a pointer to a char-sized region in the process memory
-+region, that provides a quick way to enable disable syscall redirection
-+thread-wide, without the need to invoke the kernel directly.  selector
-+can be set to PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF.  Any other
-+value should terminate the program with a SIGSYS.
++	printf("test iterations = %d\n", CALIBRATION_STEP * factor);
++}
 +
-+Security Notes
-+--------------
++static double perf_syscall(void)
++{
++	unsigned int i;
++	double partial = 0;
 +
-+Syscall User Dispatch provides functionality for compatibility layers to
-+quickly capture system calls issued by a non-native part of the
-+application, while not impacting the Linux native regions of the
-+process.  It is not a mechanism for sandboxing system calls, and it
-+should not be seen as a security mechanism, since it is trivial for a
-+malicious application to subvert the mechanism by jumping to an allowed
-+dispatcher region prior to executing the syscall, or to discover the
-+address and modify the selector value.  If the use case requires any
-+kind of security sandboxing, Seccomp should be used instead.
++	for (i = 0; i < factor; ++i)
++		partial += one_sysinfo_step()/(CALIBRATION_STEP*factor);
++	return partial;
++}
 +
-+Any fork or exec of the existing process resets the mechanism to
-+PR_SYS_DISPATCH_OFF.
++static void handle_sigsys(int sig, siginfo_t *info, void *ucontext)
++{
++	char buf[1024];
++	int len;
++
++	SYSCALL_UNBLOCK;
++
++	/* printf and friends are not signal-safe. */
++	len = snprintf(buf, 1024, "Caught sys_%x\n", info->si_syscall);
++	write(1, buf, len);
++
++	if (info->si_syscall == MAGIC_SYSCALL_1)
++		trapped_call_count++;
++	else
++		native_call_count++;
++
++#ifdef TEST_BLOCKED_RETURN
++	SYSCALL_BLOCK;
++#endif
++
++#ifdef __x86_64__
++	__asm__ volatile("movq $0xf, %rax");
++	__asm__ volatile("leaveq");
++	__asm__ volatile("add $0x8, %rsp");
++	__asm__ volatile("syscall_dispatcher_start:");
++	__asm__ volatile("syscall");
++	__asm__ volatile("nop"); /* Landing pad within dispatcher area */
++	__asm__ volatile("syscall_dispatcher_end:");
++#endif
++
++}
++
++int main(void)
++{
++	struct sigaction act;
++	double time1, time2;
++	int ret;
++	sigset_t mask;
++
++	memset(&act, 0, sizeof(act));
++	sigemptyset(&mask);
++
++	act.sa_sigaction = handle_sigsys;
++	act.sa_flags = SA_SIGINFO;
++	act.sa_mask = mask;
++
++	calibrate_set();
++
++	time1 = perf_syscall();
++	printf("Avg syscall time %.0lfns.\n", time1 * 1.0e9);
++
++	ret = sigaction(SIGSYS, &act, NULL);
++	if (ret) {
++		perror("Error sigaction:");
++		exit(-1);
++	}
++
++	fprintf(stderr, "Enabling syscall trapping.\n");
++
++	if (prctl(PR_SET_SYSCALL_USER_DISPATCH, PR_SYS_DISPATCH_ON,
++		  syscall_dispatcher_start,
++		  (syscall_dispatcher_end - syscall_dispatcher_start + 1),
++		  &selector)) {
++		perror("prctl failed\n");
++		exit(-1);
++	}
++
++	SYSCALL_BLOCK;
++	syscall(MAGIC_SYSCALL_1);
++
++#ifdef TEST_BLOCKED_RETURN
++	if (selector == PR_SYS_DISPATCH_OFF) {
++		fprintf(stderr, "Failed to return with selector blocked.\n");
++		exit(-1);
++	}
++#endif
++
++	SYSCALL_UNBLOCK;
++
++	if (!trapped_call_count) {
++		fprintf(stderr, "syscall trapping does not work.\n");
++		exit(-1);
++	}
++
++	time2 = perf_syscall();
++
++	if (native_call_count) {
++		perror("syscall trapping intercepted more syscalls than expected\n");
++		exit(-1);
++	}
++
++	printf("trapped_call_count %lu, native_call_count %lu.\n",
++	       trapped_call_count, native_call_count);
++	printf("Avg syscall time %.0lfns.\n", time2 * 1.0e9);
++	printf("Interception overhead: %.1lf%% (+%.0lfns).\n",
++	       100.0 * (time2 / time1 - 1.0), 1.0e9 * (time2 - time1));
++	return 0;
++
++}
