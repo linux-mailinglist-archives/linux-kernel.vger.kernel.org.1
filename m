@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B95E2CB578
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF18C2CB57E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387595AbgLBHDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:03:24 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44053 "EHLO mga11.intel.com"
+        id S2387619AbgLBHDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:03:36 -0500
+Received: from mga11.intel.com ([192.55.52.93]:44047 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387511AbgLBHDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:03:23 -0500
-IronPort-SDR: gi3F/nHIkVLVGvxzwGKumLfWf1ijjD3JdGFA+/BDFLmILerdpCaMuKUkqGQft75Ye1BT616/UY
- /hQIjy7fHreQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="169461819"
+        id S2387511AbgLBHDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:03:35 -0500
+IronPort-SDR: Mc7Nl/POy9nrzbNOdLoSU3QpfVkcwxiqa438y2UerZTXTFdZ7FUOHH32Y9nN8v9uWNdF+LNWYR
+ W6dBt7lfyAnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="169461823"
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="169461819"
+   d="scan'208";a="169461823"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 23:02:40 -0800
-IronPort-SDR: xGCi6diPNCBrGM35qkldCzqGw+ThAG9oKKVcLhKfCinmU4DENwHx9uBRVI+YMEwOty3TCYAgVY
- aEJKlbsDk4fA==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 23:02:43 -0800
+IronPort-SDR: 2JyL6Se+Ry3+cd4u2KnjN4S7t39Sxq8PBtnbkkq4AAZShMaHs1O1SaQ+VVI6T4mRNl8IZhiIDU
+ SzE/FT8JvtZQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="481430026"
+   d="scan'208";a="481430040"
 Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
-  by orsmga004.jf.intel.com with ESMTP; 01 Dec 2020 23:02:38 -0800
+  by orsmga004.jf.intel.com with ESMTP; 01 Dec 2020 23:02:40 -0800
 From:   muhammad.husaini.zulkifli@intel.com
 To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
         michal.simek@xilinx.com, linux-mmc@vger.kernel.org,
@@ -35,9 +35,9 @@ Cc:     andriy.shevchenko@intel.com,
         lakshmi.bai.raja.subramanian@intel.com,
         wan.ahmad.zainie.wan.mohamad@intel.com,
         muhammad.husaini.zulkifli@intel.com, mgross@linux.intel.com
-Subject: [PATCH v6 2/4] firmware: keembay: Add support for Trusted Firmware Service call
-Date:   Wed,  2 Dec 2020 23:02:02 +0800
-Message-Id: <20201202150205.20150-3-muhammad.husaini.zulkifli@intel.com>
+Subject: [PATCH v6 3/4] dt-bindings: mmc: Add phys, vmmc and vqmmc supplies for Keem Bay SOC
+Date:   Wed,  2 Dec 2020 23:02:03 +0800
+Message-Id: <20201202150205.20150-4-muhammad.husaini.zulkifli@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
 References: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
@@ -47,77 +47,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-Export inline function to encapsulate AON_CFG1 for controling the
-I/O Rail supplied voltage levels which communicate with Trusted Firmware.
+Add DT bindings of vmmc and vqmmc supplies of regulator and phys for
+the phandle of sd0_phy which contain additional property for
+otap delay and sel_clk_buffer.
 
 Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-Acked-by: Michal Simek <michal.simek@xilinx.com>
-Acked-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- include/linux/firmware/intel/keembay.h | 54 ++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
- create mode 100644 include/linux/firmware/intel/keembay.h
+ Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/firmware/intel/keembay.h b/include/linux/firmware/intel/keembay.h
-new file mode 100644
-index 000000000000..b5e3e490807e
---- /dev/null
-+++ b/include/linux/firmware/intel/keembay.h
-@@ -0,0 +1,54 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ *  Intel Keembay SOC Firmware API Layer
-+ *
-+ *  Copyright (C) 2020, Intel Corporation
-+ *
-+ *  Author: Muhammad Husaini Zulkifli <Muhammad.Husaini.Zulkifli@intel.com>
-+ */
-+
-+#ifndef __FIRMWARE_KEEMBAY_SMC_H__
-+#define __FIRMWARE_KEEMBAY_SMC_H__
-+
-+#include <linux/arm-smccc.h>
-+
-+/*
-+ * This file defines an API function that can be called by a device driver in order to
-+ * communicate with Trusted Firmware - A profile(TF-A) or Trusted Firmware - M profile (TF-M).
-+ */
-+
-+#define KEEMBAY_SET_1V8_IO_RAIL	1
-+#define KEEMBAY_SET_3V3_IO_RAIL	0
-+
-+#define IOV_1V8			1800000
-+#define IOV_3V3			3300000
-+
-+#define ARM_SMCCC_SIP_KEEMBAY_SET_SD_VOLTAGE		\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,		\
-+			   ARM_SMCCC_SMC_32,		\
-+			   ARM_SMCCC_OWNER_SIP,		\
-+			   0xFF26)
-+
-+#if IS_ENABLED(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)
-+/*
-+ * Voltage applied on the IO Rail is controlled from the Always On Register using specific
-+ * bits in AON_CGF1 register. This is a secure register. Keem Bay SOC cannot exposed this
-+ * register address to the outside world.
-+ */
-+static inline int keembay_io_rail_supplied_voltage(int volt)
-+{
-+	struct arm_smccc_res res;
-+
-+	arm_smccc_1_1_invoke(ARM_SMCCC_SIP_KEEMBAY_SET_SD_VOLTAGE, volt, &res);
-+	if ((int)res.a0 < 0)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+#else
-+static inline int keembay_io_rail_supplied_voltage(int volt)
-+{
-+	return -ENODEV;
-+}
-+#endif
-+#endif /* __FIRMWARE_KEEMBAY_SMC_H__ */
+diff --git a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+index 0753289fba84..0cbfdd840889 100644
+--- a/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
++++ b/Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml
+@@ -83,7 +83,7 @@ properties:
+       - const: intel,keembay-sdhci-5.1-sd       # Intel Keem Bay SD controller
+         description:
+           For this device it is strongly suggested to include
+-          arasan,soc-ctl-syscon.
++          arasan,soc-ctl-syscon, phys, vmmc-supply and vqmmc-supply.
+       - const: intel,keembay-sdhci-5.1-sdio     # Intel Keem Bay SDIO controller
+         description:
+           For this device it is strongly suggested to include
+@@ -299,5 +299,9 @@ examples:
+           clock-names = "clk_xin", "clk_ahb";
+           clocks = <&scmi_clk KEEM_BAY_PSS_AUX_SD0>,
+                    <&scmi_clk KEEM_BAY_PSS_SD0>;
++          phys = <&sd0_phy>;
++          phy-names = "phy_arasan";
+           arasan,soc-ctl-syscon = <&sd0_phy_syscon>;
++          vmmc-supply = <&reg_sd0_vcc>;
++          vqmmc-supply = <&reg_sd0_vqcc>;
+     };
 -- 
 2.17.1
 
