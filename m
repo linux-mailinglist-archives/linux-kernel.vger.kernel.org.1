@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28842CC8CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A462CC8D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729425AbgLBVUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:20:14 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:44113 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726671AbgLBVUN (ORCPT
+        id S1730289AbgLBVUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 16:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726471AbgLBVUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:20:13 -0500
-Received: (qmail 1069741 invoked by uid 1000); 2 Dec 2020 16:19:32 -0500
-Date:   Wed, 2 Dec 2020 16:19:32 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     syzbot <syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com>,
-        Thierry Escande <thierry.escande@collabora.com>
-Cc:     eli.billauer@gmail.com, gregkh@linuxfoundation.org,
-        gustavoars@kernel.org, ingrassia@epigenesys.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tiwai@suse.de
-Subject: Re: WARNING in port100_send_frame_async/usb_submit_urb
-Message-ID: <20201202211932.GD1062758@rowland.harvard.edu>
-References: <000000000000bab70f05b563a6cc@google.com>
+        Wed, 2 Dec 2020 16:20:42 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48F6C0613D6;
+        Wed,  2 Dec 2020 13:20:01 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id k4so2178013qtj.10;
+        Wed, 02 Dec 2020 13:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=99Y7wB6PwhBW9HGShktQMrV6OKqAm5XRMWuYeiHOpak=;
+        b=BqzZHtMDKJpRPAQBquh46oC1vWNiD4dwoerDNazlU1w0YLUyXjUsoAlSewXGHZ4DPr
+         BPdkF0+l0vZHy3gZ3qTZg70oaSFUrLBUvj8qHjQKIWi178mTmlAkXt/HD1mo+/SlAjeC
+         7LhN+sBo6jS5Vlg0Lj149TfVnBXPwx402/q/w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=99Y7wB6PwhBW9HGShktQMrV6OKqAm5XRMWuYeiHOpak=;
+        b=ZGkwaKtKEWOqKLG1C9l7A3FAK3ET4FbIwHA2g7vKG7sDVO8Ps8v6+hYAh/TNdUtO+V
+         YTLue/CNSe6rjC2pfeyCp2OU3rKQ7WbPhCmbEi64o7FdLpnjD7dvHqf8nsn00TLFGBCt
+         7+BGULRb7IhSeIx5rPx1kagZk8Ignhod8HXJ7aWU4L+OSlnX1X1GIRitK27XSwnIFwmX
+         W0px8+34G9wiyml6ee8gYWyrStFw+HwDBfeOYxodXBnh/hDlsRjMk/XtrwJFjecDKmBw
+         bKRNqFoGf8uqnYDoTgArbDCGQcS1wH1mRm68Y+jKMIYN3PJFNzp8PmZ8PViE7v9tq/hL
+         elaQ==
+X-Gm-Message-State: AOAM531PgyBUuuJwXlT62vFHOHwHs8Kp2HWUxjx0s8Oa9xveRzOP22F5
+        5FyMMenTFnCUZb/M8ZBFXzPJj0dFUNl6fLpAi6DmAfQsOZk=
+X-Google-Smtp-Source: ABdhPJxIBl1u25BODd0tJolB1/liAW5YH4mGsYbeA+xrKq+OgjhUxHxZBjU+lV+Jfj2+NJdO5pwPenyT7U5LiMfTUPU=
+X-Received: by 2002:aed:2f64:: with SMTP id l91mr63647qtd.363.1606944000942;
+ Wed, 02 Dec 2020 13:20:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000bab70f05b563a6cc@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201103072202.24705-1-chin-ting_kuo@aspeedtech.com> <160683107674.35139.14509237313835347013.b4-ty@kernel.org>
+In-Reply-To: <160683107674.35139.14509237313835347013.b4-ty@kernel.org>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 2 Dec 2020 21:19:47 +0000
+Message-ID: <CACPK8Xe4TcRVBnZL7vtqGq1PTe5NEx1k4hvk4FDeYgJQ9HALFg@mail.gmail.com>
+Subject: Re: [v2 0/4] Porting ASPEED FMC/SPI memory controller driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Boris Brezillon <bbrezillon@kernel.org>,
+        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:21:27AM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    c84e1efa Merge tag 'asm-generic-fixes-5.10-2' of git://git..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14a98565500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
-> dashboard link: https://syzkaller.appspot.com/bug?extid=dbec6695a6565a9c6bc0
-> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c607f1500000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com
-> 
-> usb 1-1: string descriptor 0 read error: -32
-> ------------[ cut here ]------------
-> URB 000000005c26bc1e submitted while active
-> WARNING: CPU: 0 PID: 5 at drivers/usb/core/urb.c:378 usb_submit_urb+0xf57/0x1510 drivers/usb/core/urb.c:378
-> Modules linked in:
-> CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: usb_hub_wq hub_event
-> RIP: 0010:usb_submit_urb+0xf57/0x1510 drivers/usb/core/urb.c:378
-> Code: 5c 41 5d 41 5e 41 5f 5d e9 76 5b ff ff e8 f1 e8 04 fc c6 05 25 0e 8b 07 01 48 c7 c7 a0 b7 5b 8a 4c 89 e6 31 c0 e8 89 07 d5 fb <0f> 0b e9 20 f1 ff ff e8 cd e8 04 fc eb 05 e8 c6 e8 04 fc bb a6 ff
-> RSP: 0018:ffffc90000ca6ec8 EFLAGS: 00010246
-> RAX: cf72e284cb303700 RBX: ffff888021723708 RCX: ffff888011108000
-> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> RBP: 0000000000000cc0 R08: ffffffff815d29f2 R09: ffffed1017383ffc
-> R10: ffffed1017383ffc R11: 0000000000000000 R12: ffff888021723700
-> R13: dffffc0000000000 R14: ffff888012cfa458 R15: 1ffff1100259f489
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000056157313d160 CR3: 000000001e22c000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  port100_send_frame_async+0x1ea/0x390 drivers/nfc/port100.c:780
->  port100_send_cmd_async+0x6c7/0x950 drivers/nfc/port100.c:876
->  port100_send_cmd_sync drivers/nfc/port100.c:916 [inline]
->  port100_set_command_type drivers/nfc/port100.c:987 [inline]
->  port100_probe+0xd4f/0x1600 drivers/nfc/port100.c:1567
+On Tue, 1 Dec 2020 at 13:58, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, 3 Nov 2020 15:21:58 +0800, Chin-Ting Kuo wrote:
+> > This patch series aims to porting ASPEED FMC/SPI memory controller
+> > driver with spi-mem interface. Adjust device tree setting of SPI NOR
+> > flash in order to fit real AST2600 EVB and new SPI memory controller
+> > driver. Also, this patch has been verified on AST2600-A1 EVB.
+> >
+> > v2: Fix sparse warnings reported by kernel test robot <lkp@intel.com>.
+> >
+> > [...]
+>
+> Applied to
+>
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I don't understand this driver very well.  It looks like the problem 
-stems from the fact that port100_send_frame_async() submits two URBs, 
-but port100_send_cmd_sync() only waits for one of them to complete.  The 
-other URB may then still be active when the driver tries to reuse it.
+Really? Or is there a bug in one of your scripts :)
 
-Maybe someone who's more familiar with the port100 driver can fix the 
-problem.
+Cheers,
 
-Alan Stern
+Joel
+
+>
+> Thanks!
+>
+> [1/2] dt-bindings: spi: Add binding file for ASPEED FMC/SPI memory controller
+>       (no commit info)
+> [2/2] spi: aspeed: Add ASPEED FMC/SPI memory controller driver
+>       (no commit info)
+>
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+>
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+>
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+>
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+>
+> Thanks,
+> Mark
