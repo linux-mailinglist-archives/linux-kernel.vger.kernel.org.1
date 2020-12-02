@@ -2,338 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5DA2CBB18
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C46B2CBB1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729512AbgLBKxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:53:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
+        id S2388174AbgLBKzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:55:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbgLBKxt (ORCPT
+        with ESMTP id S1729502AbgLBKzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:53:49 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1738FC0613D6;
-        Wed,  2 Dec 2020 02:53:09 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a6so5938007wmc.2;
-        Wed, 02 Dec 2020 02:53:09 -0800 (PST)
+        Wed, 2 Dec 2020 05:55:00 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3065C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 02:54:19 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id k12so326263uae.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 02:54:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=PsFUmTaOQZlSVbX9UVznGeylxoTW+qZTJpXZ8JcvTiQ=;
-        b=LqGjKu+eZtBbYNFdEXbEkpAvwNuNuwk3OdCYCP2xOgN8m6TYU8NpkNc1s9YQOt5zdu
-         RVkaUTnSOGQJbHh6hzA1W+Yy9DEfWiEaJZjXw4h8t9Tr7rnG4DXSxjjnClmq1Xil2jPK
-         u2R56ERNx1n33YxG7sSHJWkbWjvG/MKCMx24tcv26wFabueZrd1NRFIYAThTrwmxW1jV
-         qNAxFJ5sfpF4Bz0qH/Sy1BrLNEB/1zGj2vmEPb9Sak1JsJFAwsBjaC5c6E0qSCt3ReXs
-         RyIIwInTx+diRDE8hXExThuxDdjNpb0jkeNIPYpFmTtFoDda491zk51mebYfzOsoTlOl
-         xW0g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3AO6wTcW0VKva/E9cCl1XzsWI4FnSxYu14wq7bMOwrs=;
+        b=jJzyK8qKF4PqraOHQbgbbSS4ZFk8uVvJeG5z1cqZDE5GUF0veD5IetBtJhYZUITTpv
+         NLGjgmD5JKWmaMzyt+yJoaTs2dQiWmRfw3n3Dk/Uojm2ZSG4zI5FInZBsgRDdZsa3zu9
+         ziPdnTm1/KMenBSqIJ7UJb8xpAikYNe1wdNeCG55Ckh7rCyGVpEv2vbtCjBr5un34tko
+         2HDceWNZIadaa6WNn+ly8ET//zneEGG7xdWjxzyVOZol9gpEYJ4qd5fkUK2M8WqAQG1k
+         mk99YaNaLGsry7ODmkDqI1kU6RMI5EYTSriQLDgv360SSWARZCQ0OTyWkQaYOY6LOU1y
+         WSVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=PsFUmTaOQZlSVbX9UVznGeylxoTW+qZTJpXZ8JcvTiQ=;
-        b=L5GCS3b5jqt7Zo2c6ym3RgEiqO0OhUpjhYzIyLbW4ZewfLr1RY6DtxQvqFwJyTS8r0
-         9Z4eEn1G+AcRWoKCMPyC7dw2m2evSawwcztc3TX5C8w7TlSmSizcqSStwbhGAGiwcUfM
-         3xGi0avLsDrUcX9izIt9CPkXQE32n/3FaNXx7QLC5b0rYvwTDo2viPi/4+DpxE05A2U9
-         S7rInFUtqgNUtm/E/s7Cnjy74NzVrOrAkNlxJUmIL7ieJ5UHMdq3j8KGGClUgXoQ1lSM
-         nzm4mnbdqPVTtp+T5nhiIpOvm14zEUEKQSHjjRyi+aG2mR7+BMY338lioMNyNAaUmE60
-         gwxg==
-X-Gm-Message-State: AOAM533+NX81ex0apdfQihCZ8xMS4mkImW134fgP1+YlPFfqRWBSo754
-        GWM1T01Lc4M2I3Zly/bP9bM=
-X-Google-Smtp-Source: ABdhPJxC60Dih/sFYKs2x1da6TQ7bVGfG9KopzFUTP8Sfer1/k4Myd0r7HRRDHePABMzwqJ4NKUEBQ==
-X-Received: by 2002:a1c:e445:: with SMTP id b66mr2488447wmh.187.1606906387678;
-        Wed, 02 Dec 2020 02:53:07 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.80])
-        by smtp.gmail.com with ESMTPSA id h98sm1800199wrh.69.2020.12.02.02.53.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 02:53:07 -0800 (PST)
-Subject: Re: [PATCH 13/18] ipu3-cio2: Add functionality allowing software_node
- connections to sensors on platforms designed for Windows
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-14-djrscally@gmail.com>
- <20201130170955.GN14465@pendragon.ideasonboard.com>
- <b5cc6bbd-f679-7023-fde0-de2acb65a3c2@gmail.com>
- <20201201223053.GB4569@pendragon.ideasonboard.com>
- <20201202103851.GC852@paasikivi.fi.intel.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <cb68e265-0e6c-4079-e835-f004e6a46dfb@gmail.com>
-Date:   Wed, 2 Dec 2020 10:53:05 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3AO6wTcW0VKva/E9cCl1XzsWI4FnSxYu14wq7bMOwrs=;
+        b=VM1RRShWoG6xjaDq5uslHc4eriNKjw2C32xhhruv9hGN0p8HuVv241Tdu0APK/Oca/
+         KB/sgAL4H225XMRasIm2N8zgzJvKlMG5SC8p9S42Y/gAAPyZpf8Clkmmnew95GWDrhol
+         Xtp5Ai7i7p2/J6w5XScC/oOqMd6HtGtPpQGEr/A/P6Bij9KfVn/WcjOXubUBhUGR8Khy
+         kohN/L0s1bDTCA8Eq81GUaTeI4Zxx8zwaqRdrClZthU28xzsVv7LDdv7xxlrcpENQOsv
+         MsvGwfpZ1YPKXcXZSNSeyyRR93qqXYwIGnSidR5B1308q4ZLegJFWEQYzE/m8T2YgfRs
+         vYPA==
+X-Gm-Message-State: AOAM5329o1q9zi/3mhs1FUG3bkzmUeijewB4yiBcToxE0sLUDdsUvL3g
+        SZy2NmJxDYxLLZKXlzfnX5AYootDvoh2ihLKJHGdqQ==
+X-Google-Smtp-Source: ABdhPJyfka2hDgmvrtlvdOv2ihNfujrV30WPtKeHP+7dTYNTjAsDAqGZF/E5PvPLLwSEMo6Cgs1d2ZnlYTB+Ge09Jfs=
+X-Received: by 2002:ab0:60b1:: with SMTP id f17mr940652uam.104.1606906458917;
+ Wed, 02 Dec 2020 02:54:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201202103851.GC852@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
+In-Reply-To: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 2 Dec 2020 11:53:42 +0100
+Message-ID: <CAPDyKFrg5ur3iTp-dAoVqV5fiFgcmt01j9R7z3_i=tqhWW3WNg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        mgross@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 02/12/2020 10:38, Sakari Ailus wrote:
-> Hi Laurent,
+On Wed, 2 Dec 2020 at 08:02, <muhammad.husaini.zulkifli@intel.com> wrote:
 >
-> On Wed, Dec 02, 2020 at 12:30:53AM +0200, Laurent Pinchart wrote:
->> Hi Daniel,
->>
->> On Tue, Dec 01, 2020 at 10:08:25PM +0000, Dan Scally wrote:
->>> On 30/11/2020 17:09, Laurent Pinchart wrote:
->>>> On Mon, Nov 30, 2020 at 01:31:24PM +0000, Daniel Scally wrote:
->>>>> Currently on platforms designed for Windows, connections between CIO2 and
->>>>> sensors are not properly defined in DSDT. This patch extends the ipu3-cio2
->>>>> driver to compensate by building software_node connections, parsing the
->>>>> connection properties from the sensor's SSDB buffer.
->>>>>
->>>>> Suggested-by: Jordan Hand <jorhand@linux.microsoft.com>
->>>>> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->>>>> ---
->>>>> Changes since RFC v3:
->>>>>
->>>>> 	- Removed almost all global variables, dynamically allocated
->>>>> 	the cio2_bridge structure, plus a bunch of associated changes
->>>>> 	like 
->>>>> 	- Added a new function to ipu3-cio2-main.c to check for an 
->>>>> 	existing fwnode_graph before calling cio2_bridge_init()
->>>>> 	- Prefixed cio2_bridge_ to any variables and functions that
->>>>> 	lacked it
->>>>> 	- Assigned the new fwnode directly to the sensor's ACPI device
->>>>> 	fwnode as secondary. This removes the requirement to delay until
->>>>> 	the I2C devices are instantiated before ipu3-cio2 can probe, but
->>>>> 	it has a side effect, which is that those devices then grab a ref
->>>>> 	to the new software_node. This effectively prevents us from
->>>>> 	unloading the driver, because we can't free the memory that they
->>>>> 	live in whilst the device holds a reference to them. The work
->>>>> 	around at the moment is to _not_ unregister the software_nodes
->>>>> 	when ipu3-cio2 is unloaded; this becomes a one-time 'patch', that
->>>>> 	is simply skipped if the module is reloaded.
->>>>> 	- Moved the sensor's SSDB struct to be a member of cio2_sensor
->>>>> 	- Replaced ints with unsigned ints where appropriate
->>>>> 	- Iterated over all ACPI devices of a matching _HID rather than
->>>>> 	just the first to ensure we handle a device with multiple sensors
->>>>> 	of the same model.
->>>>>
->>>>>  MAINTAINERS                                   |   1 +
->>>>>  drivers/media/pci/intel/ipu3/Kconfig          |  18 ++
->>>>>  drivers/media/pci/intel/ipu3/Makefile         |   1 +
->>>>>  drivers/media/pci/intel/ipu3/cio2-bridge.c    | 260 ++++++++++++++++++
->>>>>  drivers/media/pci/intel/ipu3/cio2-bridge.h    | 108 ++++++++
->>>>>  drivers/media/pci/intel/ipu3/ipu3-cio2-main.c |  27 ++
->>>>>  drivers/media/pci/intel/ipu3/ipu3-cio2.h      |   6 +
->>>>>  7 files changed, 421 insertions(+)
->>>>>  create mode 100644 drivers/media/pci/intel/ipu3/cio2-bridge.c
->>>>>  create mode 100644 drivers/media/pci/intel/ipu3/cio2-bridge.h
->>>>>
->>>>> diff --git a/MAINTAINERS b/MAINTAINERS
->>>>> index 9702b886d6a4..188559a0a610 100644
->>>>> --- a/MAINTAINERS
->>>>> +++ b/MAINTAINERS
->>>>> @@ -8927,6 +8927,7 @@ INTEL IPU3 CSI-2 CIO2 DRIVER
->>>>>  M:	Yong Zhi <yong.zhi@intel.com>
->>>>>  M:	Sakari Ailus <sakari.ailus@linux.intel.com>
->>>>>  M:	Bingbu Cao <bingbu.cao@intel.com>
->>>>> +M:	Dan Scally <djrscally@gmail.com>
->>>>>  R:	Tianshu Qiu <tian.shu.qiu@intel.com>
->>>>>  L:	linux-media@vger.kernel.org
->>>>>  S:	Maintained
->>>>> diff --git a/drivers/media/pci/intel/ipu3/Kconfig b/drivers/media/pci/intel/ipu3/Kconfig
->>>>> index 82d7f17e6a02..2b3350d042be 100644
->>>>> --- a/drivers/media/pci/intel/ipu3/Kconfig
->>>>> +++ b/drivers/media/pci/intel/ipu3/Kconfig
->>>>> @@ -16,3 +16,21 @@ config VIDEO_IPU3_CIO2
->>>>>  	  Say Y or M here if you have a Skylake/Kaby Lake SoC with MIPI CSI-2
->>>>>  	  connected camera.
->>>>>  	  The module will be called ipu3-cio2.
->>>>> +
->>>>> +config CIO2_BRIDGE
->>>>> +	bool "IPU3 CIO2 Sensors Bridge"
->>>>> +	depends on VIDEO_IPU3_CIO2
->>>>> +	help
->>>>> +	  This extension provides an API for the ipu3-cio2 driver to create
->>>>> +	  connections to cameras that are hidden in SSDB buffer in ACPI. It
->>>>> +	  can be used to enable support for cameras in detachable / hybrid
->>>>> +	  devices that ship with Windows.
->>>>> +
->>>>> +	  Say Y here if your device is a detachable / hybrid laptop that comes
->>>>> +	  with Windows installed by the OEM, for example:
->>>>> +
->>>>> +	  	- Microsoft Surface models (except Surface Pro 3)
->>>>> +		- The Lenovo Miix line (for example the 510, 520, 710 and 720)
->>>>> +		- Dell 7285
->>>>> +
->>>>> +	  If in doubt, say N here.
->>>>> diff --git a/drivers/media/pci/intel/ipu3/Makefile b/drivers/media/pci/intel/ipu3/Makefile
->>>>> index 429d516452e4..933777e6ea8a 100644
->>>>> --- a/drivers/media/pci/intel/ipu3/Makefile
->>>>> +++ b/drivers/media/pci/intel/ipu3/Makefile
->>>>> @@ -2,3 +2,4 @@
->>>>>  obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2.o
->>>>>  
->>>>>  ipu3-cio2-y += ipu3-cio2-main.o
->>>>> +ipu3-cio2-$(CONFIG_CIO2_BRIDGE) += cio2-bridge.o
->>>>> diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
->>>>> new file mode 100644
->>>>> index 000000000000..fd3f8ba07274
->>>>> --- /dev/null
->>>>> +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
->>>>> @@ -0,0 +1,260 @@
->>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>> +/* Author: Dan Scally <djrscally@gmail.com> */
->>>> Could you please add a blank line here ?
->>> Yes
->>>
->>>>> +#include <linux/acpi.h>
->>>>> +#include <linux/device.h>
->>>>> +#include <linux/i2c.h>
->>>> Is this header needed ?
->>>>
->>>>> +#include <linux/kernel.h>
->>>>> +#include <linux/module.h>
->>>> And this one ?
->>>>
->>>>> +#include <linux/pci.h>
->>>>> +#include <linux/property.h>
->>>>> +#include <media/v4l2-subdev.h>
->>>> And this one ?
->>> Ah yes - bit sloppy, they're orphaned from earlier versions, sorry about
->>> that.
->>>
->>>>> +
->>>>> +#include "cio2-bridge.h"
->>>>> +
->>>>> +/*
->>>>> + * Extend this array with ACPI Hardware ID's of devices known to be working.
->>>>> + * Do not add a HID for a sensor that is not actually supported.
->>>>> + */
->>>>> +static const char * const cio2_supported_devices[] = {
->>>> Maybe cio2_supported_sensors ?
->>> Sure
->>>
->>>>> +	"INT33BE",
->>>>> +	"OVTI2680",
->>>>> +};
->>>>> +
->>>>> +static int cio2_bridge_read_acpi_buffer(struct acpi_device *adev, char *id,
->>>>> +					void *data, u32 size)
->>>>> +{
->>>>> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->>>>> +	union acpi_object *obj;
->>>>> +	acpi_status status;
->>>>> +	int ret;
->>>>> +
->>>>> +	status = acpi_evaluate_object(adev->handle, id, NULL, &buffer);
->>>>> +	if (ACPI_FAILURE(status))
->>>>> +		return -ENODEV;
->>>>> +
->>>>> +	obj = buffer.pointer;
->>>>> +	if (!obj) {
->>>>> +		dev_err(&adev->dev, "Couldn't locate ACPI buffer\n");
->>>>> +		return -ENODEV;
->>>>> +	}
->>>>> +
->>>>> +	if (obj->type != ACPI_TYPE_BUFFER) {
->>>>> +		dev_err(&adev->dev, "Not an ACPI buffer\n");
->>>>> +		ret = -ENODEV;
->>>>> +		goto out_free_buff;
->>>>> +	}
->>>>> +
->>>>> +	if (obj->buffer.length > size) {
->>>>> +		dev_err(&adev->dev, "Given buffer is too small\n");
->>>>> +		ret = -EINVAL;
->>>>> +		goto out_free_buff;
->>>>> +	}
->>>>> +
->>>>> +	memcpy(data, obj->buffer.pointer, obj->buffer.length);
->>>>> +	ret = obj->buffer.length;
->>>>> +
->>>>> +out_free_buff:
->>>>> +	kfree(buffer.pointer);
->>>>> +	return ret;
->>>>> +}
->>>>> +
->>>>> +static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
->>>>> +{
->>>>> +	strcpy(sensor->prop_names.clock_frequency, "clock-frequency");
->>>>> +	strcpy(sensor->prop_names.rotation, "rotation");
->>>>> +	strcpy(sensor->prop_names.bus_type, "bus-type");
->>>>> +	strcpy(sensor->prop_names.data_lanes, "data-lanes");
->>>>> +	strcpy(sensor->prop_names.remote_endpoint, "remote-endpoint");
->>>> This is a bit fragile, as there's no len check. How about the following
->>>> ?
->>>> static const struct cio2_property_names prop_names = {
->>>> 	.clock_frequency = "clock-frequency",
->>>> 	.rotation = "rotation",
->>>> 	.bus_type = "bus-type",
->>>> 	.data_lanes = "data-lanes",
->>>> 	.remote_endpoint = "remote-endpoint",
->>>> };
->>>>
->>>> static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
->>>> {
->>>> 	sensor->prop_names = prop_names;
->>>> }
->>>>
->>>> This shoudl generate a compilation warning if the string is too long.
->>>>
->>>> You could even inline that line in
->>>> cio2_bridge_create_fwnode_properties().
->>> Yes, I like that, thanks - I'll make the change.
->>>
->>>>> +}
->>>>> +
->>>>> +static void cio2_bridge_create_fwnode_properties(struct cio2_sensor *sensor)
->>>>> +{
->>>>> +	unsigned int i;
->>>>> +
->>>>> +	cio2_bridge_init_property_names(sensor);
->>>>> +
->>>>> +	for (i = 0; i < 4; i++)
->>>>> +		sensor->data_lanes[i] = i + 1;
->>>> Is there no provision in the SSDB for data lane remapping ?
->>> Sorry; don't follow what you mean by data lane remapping here.
->> Some CSI-2 receivers can remap data lanes. The routing inside the SoC
->> from the data lane input pins to the PHYs is configurable. This makes
->> board design easier as you can route the data lanes to any of the
->> inputs. That's why the data lanes DT property is a list of lane numbers
->> instead of a number of lanes. I'm actually not sure if the CIO2 supports
->> this.
-> To my knowledge it does not. Only the number of lanes allocated to
-> different ports matters.
+> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 >
-So nothing to change here then I think?
->>>>> @@ -0,0 +1,108 @@
->>>>> +/* SPDX-License-Identifier: GPL-2.0 */
->>>>> +/* Author: Dan Scally <djrscally@gmail.com> */
->>>>> +#ifndef __CIO2_BRIDGE_H
->>>>> +#define __CIO2_BRIDGE_H
->>>>> +
->>>>> +#include <linux/property.h>
->>>>> +
->>>>> +#define CIO2_HID				"INT343E"
->>>>> +#define CIO2_NUM_PORTS			  4
->>>> There are a few rogue spaces before '4'.
->>> Argh, thanks, this is the curse of using VS code on multiple machines...
->> I recommend vim ;-)
-> What is VS code? Very Serious Code?
+> Hello
+>
+> This patch series adds UHS-1 Support for Keem Bay SOC.
+>
+> Patch 1 : Add struct device *dev in probe func(),so that dev pointer can be widely use in probe to make code more readable.
+> Patch 2 : Export function to be use by device driver to configure voltage rail output.
+> Patch 3 : Defined the DT binding to support the UHS-1 operation.
+> Patch 4 : Gives an overview of how voltage operations happen to support UHS-1 mode for Keem Bay SOC.
+>
+> All of these patches was tested with Keem Bay evaluation module board.
+>
+> Kindly help to review this patch set.
 
-Visual Studio Code - it has some nice features, but the
-facepalm-to-productivity ratio is a bit high.
+This version looks a lot better to me, but I am still requesting you
+to model the pinctrl correctly. I don't see a reason not to, but I may
+have overlooked some things.
 
-> I can recommend Emacs; that could help, too.
+Would you mind to re-submit to include the gpio/pinctlr list and the
+maintainers, to get their opinion.
+
+Kind regards
+Uffe
+
+>
+> Thank you.
+>
+> Changes since v5:
+> - Restructured voltage operation for io bus line in one function and added comments in sdhci-of-arasan.c.
+> - Use gpio regulator modelling for expander pins.
+> - Add DT Bindings for phys, vmmc and vqmmc supplies.
+> - Renamed func name and added comments for firmware header files.
+> - Update commit message for each patchs to describe what goes on.
+>
+> Changes since v4:
+> - Fixed comment by Andy and Sudeep on first patch.
+> - Add Acked-by tag.
+> - Fixed comment by Michal and Andy on the third patch to replace current users of &pdev->dev.
+>
+> Changes since v3:
+> - Add Dt bindings for uhs gpio.
+> - Fixed comment by Michal and Sudeep on header file for the macro and error code.
+> - Fixed comment by Andy and created 1 new patch to separate the struc dev pointer in probe func.
+> - Fixed comment by Michal in arasan controller code.
+>
+> Changes since v2:
+> - Removed Document DT Bindings for Keembay Firmware.
+> - Removed Firmware Driver to handle ATF Service call.
+> - Add header file to handle API function for device driver to communicate with Arm Trusted Firmware.
+>
+> Changes since v1:
+> - Add Document DT Bindings for Keembay Firmware.
+> - Created Firmware Driver to handle ATF Service call.
+> - Provide API for arasan driver for sd card voltage changes.
+>
+>
+> Muhammad Husaini Zulkifli (4):
+>   mmc: sdhci-of-arasan: Add structure device pointer in probe func
+>   firmware: keembay: Add support for Trusted Firmware Service call
+>   dt-bindings: mmc: Add phys, vmmc and vqmmc supplies for Keem Bay SOC
+>   mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+>
+>  .../devicetree/bindings/mmc/arasan,sdhci.yaml |   6 +-
+>  drivers/mmc/host/sdhci-of-arasan.c            | 282 ++++++++++++++++--
+>  include/linux/firmware/intel/keembay.h        |  54 ++++
+>  3 files changed, 322 insertions(+), 20 deletions(-)
+>  create mode 100644 include/linux/firmware/intel/keembay.h
+>
+> --
+> 2.17.1
+>
