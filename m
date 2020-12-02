@@ -2,234 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318332CB790
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9B72CB794
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387909AbgLBIop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgLBIoo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:44:44 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFC1C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 00:44:03 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id u19so2960021lfr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:44:03 -0800 (PST)
+        id S1728940AbgLBIqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:46:02 -0500
+Received: from mail-bn8nam12on2045.outbound.protection.outlook.com ([40.107.237.45]:58049
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726669AbgLBIqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 03:46:01 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kWQ8F5ftmqOYtEHS0hxMWV2VcfC1p5YiPLEXCI6XJMcprsbLjz7JJmv8NmSVKpVSIyvNZfA/elYFEmnXX4VzJiOIu9nWJpZ7IoR2nR4h9wx24KxX7Zxo5VhOMErPGcIgoLQQfpIfrLRFqguHJqxq+aTdoyS7PtqXyLyb2OKJOi6EgZrwD8vSw6o3sL5RvWIT/tl3csszRNIS2jal/twpYUTbQK0YlHeyg2/n0TFRYuTVa7hrc0Itvz6SqU19BmTZ4gQAGe+klVIPg1hlFms6ZnWBGbEtdRIUQuC6c/xcrGzh+elqrx0ZQNQwb4tVYU6DJqKOC/A+VS8Bbx1agmFa/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1GNN1qPnenFEQR940Eqq0s5ZOzLnqLNnvL87h3qdNug=;
+ b=jE8WoznvXT1RXHVvjyiiwutAkVCsucLuO7wBudYW7sedQCQtwmpTXSSRMEntiB0CDE36G3gwU6NnpiH6OcdbnaeY7GxvYBVxpLvdmag3VzG2dimpUnskH731/mJaBYBaPNnu7pHfX37yT9YHmQwyFARf77oa5j5CkLYE6eTIGcq9c6KF9vfZxm5sqdicHo/qNrUG5jzOluVypkbNRp1lS/Sd5nlgJPWQTA63zaOgvdU/S6o/yAzNfs7ZDfzPztU1J70lzVoyXWxiXR8FLDgWwUtEPcYdeq+Yw+EWQZuLHykbk2Y2XD6quLDcjfWqBHBFgWcu3o7qNBEj6d5pTM6xHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=e4esWlqPfsUi8TgFUtImaHunhN+ShXo2n7GzFvpxIiU=;
-        b=Y4tqQvgITwA0PMHAX/9keLwkdkZ44qjKhBT+8C7ZLvSv5QZYDuLIGZYXZWYYp+tAlB
-         my5D7Exms3SPrcdGuIoz3lZgtqN1XApPY1F3s5jizC73nHizjawGIORUAZHskAx5/SEC
-         Q+p5mRtJQSdlt4aq1kay/ih9atWqoy0tCryGCSYHyvj19PdAlMyEBbFWWEdvw5gh/3Zm
-         U6rMb6buUquWku81clQVKdtVGR/k+rxSRRaCxKn26q7IpL4eweII4YBYfh3aTcjEcMTk
-         IuDa99TSmmefpZM+KV02xSGN7373d3QBOsCk5G6IQOico60d+4iK8MsiZ5uzM0BNbvk7
-         rFiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=e4esWlqPfsUi8TgFUtImaHunhN+ShXo2n7GzFvpxIiU=;
-        b=aRzEapafDKLMtINF+NcJQKbTAnDqGos2nCkWU8lrJw0G38CtD28ZpWJK5EY5VNdDCa
-         tZD507rxi1eUT9vyJuH1rsLiB/SoHw7lr0bqiGccKkq4jt8hOa4kl/Jr+P+9DVz/7nNi
-         pIOJK33x0WQ3k3CXilXgsGLubn8C92+jshgQ62yhYj1eJl1UrR1wUHyZvfER7HO8FR6O
-         fFZkyblUJs5kv8xTmLgvYfyi1WCvveGqtKd7MUX7HB5o8PExiOItwEuZiMEb1L7DZ+oM
-         r96WOPyqWfMOEEtjqrla3Mp+whN13Kw06nFrVdcOIdG1PN4lPHakJ6QmW0nTYX9HjT6+
-         VRpA==
-X-Gm-Message-State: AOAM532FMeO9+ijBdl5cpCvTXzqcchNXddU6n+50Yf0+IkEyccbMigWV
-        DfSDYG+ULr8o+CGr6ZCmEr95JN0CZtU=
-X-Google-Smtp-Source: ABdhPJxxZGfePIgPQ8ount6jv1Jr95jNn3c24lsIbi5MrKlD5scT4RqDOz7KMREuZWIopHq6iF2Apg==
-X-Received: by 2002:a19:4a55:: with SMTP id x82mr782188lfa.241.1606898641658;
-        Wed, 02 Dec 2020 00:44:01 -0800 (PST)
-Received: from spblnx124 ([185.204.20.3])
-        by smtp.gmail.com with ESMTPSA id u11sm276955lfq.142.2020.12.02.00.44.00
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 02 Dec 2020 00:44:01 -0800 (PST)
-Date:   Wed, 2 Dec 2020 11:44:00 +0300
-From:   Andrew Klychkov <andrew.a.klychkov@gmail.com>
-To:     corbet@lwn.net
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: fix typos found in admin-guide subdirectory
-Message-ID: <20201202084400.GA38345@spblnx124.lan>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1GNN1qPnenFEQR940Eqq0s5ZOzLnqLNnvL87h3qdNug=;
+ b=CSoYv+68MOQsi+44Vzpk7oPdpHvxiNpRKGhLRFf4PagEax0mGlaEjYGTNLNIHT855PXbGt/x5JwgkZSprao7VHB+aeNofXkEqUuFXL928RGvCKjvROapAGapBbJuzEq51z1deJRcCcHzd3P71PC4H5JH+OnNHyC+J1BvFurCGtw=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2578.namprd12.prod.outlook.com (2603:10b6:207:49::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Wed, 2 Dec
+ 2020 08:45:07 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::1ccc:8a9a:45d3:dd31]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::1ccc:8a9a:45d3:dd31%7]) with mapi id 15.20.3611.025; Wed, 2 Dec 2020
+ 08:45:07 +0000
+Subject: Re: [PATCH 2/2] drm: amdgpu: fix a kernel-doc markup
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Mihir Bhogilal Patel <Mihir.Patel@amd.com>,
+        Nirmoy Das <nirmoy.aiemd@gmail.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>
+References: <cover.1606897462.git.mchehab+huawei@kernel.org>
+ <65bae21ebb9de534483b282fb091d4526cff0be8.1606897462.git.mchehab+huawei@kernel.org>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <21d4e623-4250-454f-67ff-658da99cf26d@amd.com>
+Date:   Wed, 2 Dec 2020 09:45:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <65bae21ebb9de534483b282fb091d4526cff0be8.1606897462.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM8P192CA0030.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21b::35) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM8P192CA0030.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:21b::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Wed, 2 Dec 2020 08:45:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4de8c102-4fd4-48e7-a926-08d8969e9222
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2578:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB2578EC67CE945DBE671F007A83F30@BL0PR12MB2578.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2tOHTjHPdLlzjAkOhbtrSyUhMNYfWS8pGUFgbquuWgbZmVl/rM8gTPnXoFqKlHDgHvr+pubhMwsX/8yIJ27K1anDAcTZAEBgvbGi6K3i3JveF1wKGzbce9xKeRbYB53+NS13g+Rdum8Me3kDPsJKxabnstXe4Q17eme83PNoLseU7PA34b69FGgqf5sRyR+a+d7sTK73j5ZHBlgvEeHB4CHeNcvJVsPA2eMipSN+YHDZJKqdsURTRkAs8V/a2PXbgNJSCGNGpkjhewwhG8RtSP751w5bLbSfoV8MTcVD4BFf8JXVFjqSdKF8xzHOlyU/MaTpAWjrFvD3WW0w0SUkSYHJypbysBo6sVE8ymYVE+5tJwsQsq6YBoB3XXjnOLYTtg5/Dzq2P6MVVckfUjdlFrteWpOui5uEfRZiZ1CGiZU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39860400002)(136003)(396003)(54906003)(31686004)(4326008)(2616005)(316002)(7416002)(16526019)(186003)(66556008)(52116002)(31696002)(36756003)(2906002)(478600001)(110136005)(86362001)(66946007)(6486002)(8936002)(6666004)(66476007)(83380400001)(66574015)(5660300002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eDF4b09DUk03TU9taVltcUVUdnJXaURtVEtvWEpMOUJuWmptU2hVQy8zSmRy?=
+ =?utf-8?B?ZzhkUVM1Tks1Q3p0RGI1MGNQQTlJcEVmQWd6QVE0Q3d6cWJnSnBFR2tSRnJy?=
+ =?utf-8?B?bkFrdGtyb2hZanNlY3R6NkkvVVIzbi9oRVZwdmxhallJd2JzY2JWTnhkS0lP?=
+ =?utf-8?B?RHU2VWJYaCsxK3Q5QTZZSTVzMXFYMkZBb3NlbEtZZFBKN1VSQU8rYXRJMFZw?=
+ =?utf-8?B?NzkzWm0rbjFzNXZwWFZmSG9Cb0JlWlZmVmNad0UrbXNOb1hQVTNPY3B4MUE5?=
+ =?utf-8?B?UDNGdDByb3VvYnhacGpYSjdVVjBOMFhzNjlnREx0VVAzeVlZYXVLWmdPRUVM?=
+ =?utf-8?B?VG83eVBlQUF4K0FiOW9FSWhhZCtvWVBhNTQyRmlhY0Z6WlcvbUVlM0xzSy93?=
+ =?utf-8?B?TUxxWEliclp0cHlwYlhIWkhocW5Sc1dkZHJpbUdmNXBCYUhVSjZUYjlqQTA2?=
+ =?utf-8?B?a3VxUVcvUFVLem9jMTNQdzhxS1dpblJYRkZtV1JyeFE3T3ZGWkt2ajlDMEZu?=
+ =?utf-8?B?ajhIVjZIV2NnYmdocHVXcmMrRFFwMGlnKzg3cnhpNC9IQTJoUzlEVmx0YzFm?=
+ =?utf-8?B?SHR3NWFxbXpKeUFBYVZsUXhGQWx5dDd5YXl3NkpoaGRPVWtCMXRsb3FYNk9N?=
+ =?utf-8?B?cWJybjRqd3o3U2c3a3ByQzJIMlRxNk96RVZzcVFBWVVvT0lHL1ZZWG92bTRZ?=
+ =?utf-8?B?THM1U0tHcnBzSFhKNjRrcnY3UXpBSlJEQlRSSmZ0SGxYQnNTYTRCaVhid2dz?=
+ =?utf-8?B?K3FmZmlwbzhkMElQc2FLRmNndWQyTzdZaGpCRlMrU1FvTnZJVStiK3YzaFNC?=
+ =?utf-8?B?L25pOUwxQ1VLeFZlcU5HRzUrN09rcU1lSnFJOElmVGsrZG1kUEtCT1ZBU1FN?=
+ =?utf-8?B?UmJmaDJyTk5Zamdya2I3eUZPOTdEbDlKcjJVdjdnaDNQYUJWc1NOaDJtVnNj?=
+ =?utf-8?B?UXl0LytXSGlUSGw3TzFncjNic1RGbnlDaUp3Z3dzMGd0ZlFkdmd2WHVjc2lm?=
+ =?utf-8?B?WGsvNGtOYVZjOUk5TzdUdVIzVWZlelkyWUZFMXJRaEVmZ3JOLzVZYmJIZEZK?=
+ =?utf-8?B?c3EwMmdRcncvWjZueHhmSm9uQVl4UG0xZlh3bi9OVS9haUI2VzkxaUdpMkNy?=
+ =?utf-8?B?WEo2dS9VUjdING9OMk5JL0Q0Y0I0dExyaFpWWDZ5eG91UUxNMTd3ZG1aNEhq?=
+ =?utf-8?B?NFNqT1dDeFNweW5Gd0hIcE1Pc1JWYWx1QllpcVNCeVpqNDRBMDJ5RnZiSlM1?=
+ =?utf-8?B?QzJ5MXRWd3JURXFFWjFOTUFRVXhleTY4Zm0rUDN2RzVCQXc1TC9HQWh4VnFX?=
+ =?utf-8?B?ajJiUnM0ZFlZM21nTlQySnplNmtsMi9FTGtncUs2eFozdlI3blFoZzhEUkJX?=
+ =?utf-8?B?N2pkOVdzMG12eHNwV20zc1FWcGZrVkwxaFh4VE0vTmVUc3RabDhDZldZRVY3?=
+ =?utf-8?Q?N40q64Ub?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4de8c102-4fd4-48e7-a926-08d8969e9222
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2020 08:45:07.5398
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: em390tUmV7Pgtqnu4xTAtlXUSIKw2xFcmlDoObUEiApzgpQxLK2i9ffhgfM9TtQ6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2578
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix thirteen typos in cppc_sysfs.rst, binderfs.rst, binfmt-misc.rst,
-paride.rst, zram.rst, bug-hunting.rst, introduction.rst, usage.rst,
-dm-crypt.rst
+Am 02.12.20 um 09:27 schrieb Mauro Carvalho Chehab:
+> The function name at kernel-doc markup doesn't match the name
+> of the function:
+>
+> 	drivers/gpu/drm/amd/amdgpu/amdgpu_object.c:1534: warning: expecting prototype for amdgpu_debugfs_print_bo_info(). Prototype was for amdgpu_bo_print_info() instead
+>
+> Fix it.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
----
- Documentation/admin-guide/acpi/cppc_sysfs.rst        | 4 ++--
- Documentation/admin-guide/binderfs.rst               | 2 +-
- Documentation/admin-guide/binfmt-misc.rst            | 2 +-
- Documentation/admin-guide/blockdev/paride.rst        | 2 +-
- Documentation/admin-guide/blockdev/zram.rst          | 2 +-
- Documentation/admin-guide/bug-hunting.rst            | 2 +-
- Documentation/admin-guide/cifs/introduction.rst      | 2 +-
- Documentation/admin-guide/cifs/usage.rst             | 6 +++---
- Documentation/admin-guide/device-mapper/dm-crypt.rst | 4 ++--
- 9 files changed, 13 insertions(+), 13 deletions(-)
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-diff --git a/Documentation/admin-guide/acpi/cppc_sysfs.rst b/Documentation/admin-guide/acpi/cppc_sysfs.rst
-index a4b99af..fccf221 100644
---- a/Documentation/admin-guide/acpi/cppc_sysfs.rst
-+++ b/Documentation/admin-guide/acpi/cppc_sysfs.rst
-@@ -8,7 +8,7 @@ CPPC
- ====
- 
- CPPC defined in the ACPI spec describes a mechanism for the OS to manage the
--performance of a logical processor on a contigious and abstract performance
-+performance of a logical processor on a contiguous and abstract performance
- scale. CPPC exposes a set of registers to describe abstract performance scale,
- to request performance levels and to measure per-cpu delivered performance.
- 
-@@ -45,7 +45,7 @@ for each cpu X::
- * lowest_freq : CPU frequency corresponding to lowest_perf (in MHz).
- * nominal_freq : CPU frequency corresponding to nominal_perf (in MHz).
-   The above frequencies should only be used to report processor performance in
--  freqency instead of abstract scale. These values should not be used for any
-+  frequency instead of abstract scale. These values should not be used for any
-   functional decisions.
- 
- * feedback_ctrs : Includes both Reference and delivered performance counter.
-diff --git a/Documentation/admin-guide/binderfs.rst b/Documentation/admin-guide/binderfs.rst
-index 8243af9..199d843 100644
---- a/Documentation/admin-guide/binderfs.rst
-+++ b/Documentation/admin-guide/binderfs.rst
-@@ -70,5 +70,5 @@ Deleting binder Devices
- Binderfs binder devices can be deleted via `unlink() <unlink_>`_.  This means
- that the `rm() <rm_>`_ tool can be used to delete them. Note that the
- ``binder-control`` device cannot be deleted since this would make the binderfs
--instance unuseable.  The ``binder-control`` device will be deleted when the
-+instance unusable.  The ``binder-control`` device will be deleted when the
- binderfs instance is unmounted and all references to it have been dropped.
-diff --git a/Documentation/admin-guide/binfmt-misc.rst b/Documentation/admin-guide/binfmt-misc.rst
-index 7a86413..287d54c 100644
---- a/Documentation/admin-guide/binfmt-misc.rst
-+++ b/Documentation/admin-guide/binfmt-misc.rst
-@@ -43,7 +43,7 @@ Here is what the fields mean:
- - ``mask``
-    is an (optional, defaults to all 0xff) mask. You can mask out some
-    bits from matching by supplying a string like magic and as long as magic.
--   The mask is anded with the byte sequence of the file. Note that you must
-+   The mask is ended with the byte sequence of the file. Note that you must
-    escape any NUL bytes; parsing halts at the first one. Ignored when using
-    filename extension matching.
- - ``interpreter``
-diff --git a/Documentation/admin-guide/blockdev/paride.rst b/Documentation/admin-guide/blockdev/paride.rst
-index 87b4278..e1ce90a 100644
---- a/Documentation/admin-guide/blockdev/paride.rst
-+++ b/Documentation/admin-guide/blockdev/paride.rst
-@@ -220,7 +220,7 @@ example::
- Finally, you can load high-level drivers for each kind of device that
- you have connected.  By default, each driver will autoprobe for a single
- device, but you can support up to four similar devices by giving their
--individual co-ordinates when you load the driver.
-+individual coordinates when you load the driver.
- 
- For example, if you had two no-name CD-ROM drives both using the
- KingByte KBIC-951A adapter, one on port 0x378 and the other on 0x3bc
-diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
-index a6fd1f9..9093228 100644
---- a/Documentation/admin-guide/blockdev/zram.rst
-+++ b/Documentation/admin-guide/blockdev/zram.rst
-@@ -360,7 +360,7 @@ like below::
- 		/sys/block/zram0/writeback_limit.
- 	$ echo 1 > /sys/block/zram0/writeback_limit_enable
- 
--If admins want to allow further write again once the bugdet is exhausted,
-+If admins want to allow further write again once the budget is exhausted,
- he could do it like below::
- 
- 	$ echo $((400<<MB_SHIFT>>4K_SHIFT)) > \
-diff --git a/Documentation/admin-guide/bug-hunting.rst b/Documentation/admin-guide/bug-hunting.rst
-index f7c80f4..95299b0 100644
---- a/Documentation/admin-guide/bug-hunting.rst
-+++ b/Documentation/admin-guide/bug-hunting.rst
-@@ -263,7 +263,7 @@ Please notice that it will point to:
- 
- - The last developers that touched the source code (if this is done inside
-   a git tree). On the above example, Tejun and Bhaktipriya (in this
--  specific case, none really envolved on the development of this file);
-+  specific case, none really involved on the development of this file);
- - The driver maintainer (Hans Verkuil);
- - The subsystem maintainer (Mauro Carvalho Chehab);
- - The driver and/or subsystem mailing list (linux-media@vger.kernel.org);
-diff --git a/Documentation/admin-guide/cifs/introduction.rst b/Documentation/admin-guide/cifs/introduction.rst
-index 0b98f67..cc2851d 100644
---- a/Documentation/admin-guide/cifs/introduction.rst
-+++ b/Documentation/admin-guide/cifs/introduction.rst
-@@ -9,7 +9,7 @@ Introduction
-   PC operating systems. New and improved versions of CIFS are now
-   called SMB2 and SMB3. Use of SMB3 (and later, including SMB3.1.1)
-   is strongly preferred over using older dialects like CIFS due to
--  security reaasons. All modern dialects, including the most recent,
-+  security reasons. All modern dialects, including the most recent,
-   SMB3.1.1 are supported by the CIFS VFS module. The SMB3 protocol
-   is implemented and supported by all major file servers
-   such as all modern versions of Windows (including Windows 2016
-diff --git a/Documentation/admin-guide/cifs/usage.rst b/Documentation/admin-guide/cifs/usage.rst
-index 7b32d50..baeb5c8 100644
---- a/Documentation/admin-guide/cifs/usage.rst
-+++ b/Documentation/admin-guide/cifs/usage.rst
-@@ -115,7 +115,7 @@ later source tree in docs/manpages/mount.cifs.8
- Allowing User Unmounts
- ======================
- 
--To permit users to ummount directories that they have user mounted (see above),
-+To permit users to unmount directories that they have user mounted (see above),
- the utility umount.cifs may be used.  It may be invoked directly, or if
- umount.cifs is placed in /sbin, umount can invoke the cifs umount helper
- (at least for most versions of the umount utility) for umount of cifs
-@@ -197,7 +197,7 @@ that is ignored by local server applications and non-cifs clients and that will
- not be traversed by the Samba server).  This is opaque to the Linux client
- application using the cifs vfs. Absolute symlinks will work to Samba 3.0.5 or
- later, but only for remote clients using the CIFS Unix extensions, and will
--be invisbile to Windows clients and typically will not affect local
-+be invisibile to Windows clients and typically will not affect local
- applications running on the same server as Samba.
- 
- Use instructions
-@@ -267,7 +267,7 @@ would be forbidden for Windows/CIFS semantics) as long as the server is
- configured for Unix Extensions (and the client has not disabled
- /proc/fs/cifs/LinuxExtensionsEnabled). In addition the mount option
- ``mapposix`` can be used on CIFS (vers=1.0) to force the mapping of
--illegal Windows/NTFS/SMB characters to a remap range (this mount parm
-+illegal Windows/NTFS/SMB characters to a remap range (this mount parameter
- is the default for SMB3). This remap (``mapposix``) range is also
- compatible with Mac (and "Services for Mac" on some older Windows).
- 
-diff --git a/Documentation/admin-guide/device-mapper/dm-crypt.rst b/Documentation/admin-guide/device-mapper/dm-crypt.rst
-index bc28a95..1a6753b 100644
---- a/Documentation/admin-guide/device-mapper/dm-crypt.rst
-+++ b/Documentation/admin-guide/device-mapper/dm-crypt.rst
-@@ -46,7 +46,7 @@ Parameters::
-         capi:authenc(hmac(sha256),xts(aes))-random
-         capi:rfc7539(chacha20,poly1305)-random
- 
--    The /proc/crypto contains a list of curently loaded crypto modes.
-+    The /proc/crypto contains a list of currently loaded crypto modes.
- 
- <key>
-     Key used for encryption. It is encoded either as a hexadecimal number
-@@ -92,7 +92,7 @@ Parameters::
- 
- <#opt_params>
-     Number of optional parameters. If there are no optional parameters,
--    the optional paramaters section can be skipped or #opt_params can be zero.
-+    the optional parameters section can be skipped or #opt_params can be zero.
-     Otherwise #opt_params is the number of following arguments.
- 
-     Example of optional parameters section:
--- 
-1.8.3.1
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> index c6c9723d3d8a..fd7a93c32235 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> @@ -1518,7 +1518,7 @@ uint32_t amdgpu_bo_get_preferred_pin_domain(struct amdgpu_device *adev,
+>   	} while (0)
+>   
+>   /**
+> - * amdgpu_debugfs_print_bo_info - print BO info in debugfs file
+> + * amdgpu_bo_print_info - print BO info in debugfs file
+>    *
+>    * @id: Index or Id of the BO
+>    * @bo: Requested BO for printing info
 
