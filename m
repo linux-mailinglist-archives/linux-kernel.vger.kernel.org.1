@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7562CC9E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDD92CC9C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 23:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387570AbgLBWrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 17:47:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgLBWrM (ORCPT
+        id S1728889AbgLBWmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 17:42:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726802AbgLBWmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 17:47:12 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E60C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 14:46:32 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id o144so204016ybg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 14:46:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=IIxg209gF2HmcDmIfCti2CITWbBgmANl1tS9JOtM/5U=;
-        b=VkArJcQmdYMjQ8w3gfZvfQV2YDqYCUOQ6rSxk8sYJyCOzSEGIQcmJYJYZZsg5D16Vn
-         1RzCtdAHzW9rosgW8WjR6xj+ftciNDTW19uQ4YRjsdNJGA2oOYJs0cLzmRV9x6oOY/zC
-         uX1qxqvcWYOObGSQpys2tcnkz37ZfoLOf9fiZv3ZnIqs5m4Ezh1iwySB7R1dTkgWhO4e
-         GAH1rQeXltcPRouIyvZeUIivIBT7FSWlSGLDiB6u5b2ppQmLtMQNSQSLX4/ygpT91b9n
-         9Fey05ody2M67J/QPge1AuoZqXHJqQ4Kf3262Nyn98dok3qY7iQ2sco3GOky4Nl3Y9HI
-         WOzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=IIxg209gF2HmcDmIfCti2CITWbBgmANl1tS9JOtM/5U=;
-        b=r9eAdCDxlTNAR4D58oyvNIyUO1z58Bur1FBfc9DxMlAoAfaaQPas1aulOOVaFa/Vvf
-         t+ZRoCm5a7w3rLxwMoBCQuOA0F0uW6Mwi5AA+DeTb5HtNtoKorawYKCxlmkWLz3jHXWd
-         SKcBDwbqzE+MeMYTCI62fBvZjYV4QEG9IL2ulPa50f/zFb54hYjQwgWcBf0CqcQdUknj
-         Te6/zg9nLblUGhZm9NG2RlbtoPphKAVRBvvsUP8jKciMBfRY9kMfZRJqWqsNAApzrDWv
-         D46HswzA8f5n77ltn3Wl/hwyPDg6EsgfJk9jI8vpizqZbCrwvV/dTBgE6s6fT0BbXUGq
-         SHdw==
-X-Gm-Message-State: AOAM531Zs54DaWKKk6PQlI457yYZYyhslBZwsH7g6UNChtBNpzMof6UW
-        K9qdqfiJCcjY+iHmuyY2QUF+iz59tJ6c9g==
-X-Google-Smtp-Source: ABdhPJzxJf6nNp8vI4/lnSI0sb8Bwwx6yGSy2pISFbJlqBPxUjzyR0jvVIlPwpD+yP2+rJZ1SjVy9Q==
-X-Received: by 2002:a9d:68c3:: with SMTP id i3mr64477oto.31.1606948668257;
-        Wed, 02 Dec 2020 14:37:48 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id e8sm33488oti.76.2020.12.02.14.37.47
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 02 Dec 2020 14:37:47 -0800 (PST)
-Date:   Wed, 2 Dec 2020 14:37:33 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrea Arcangeli <aarcange@redhat.com>
-cc:     Peter Xu <peterx@redhat.com>, Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
- on reads
-In-Reply-To: <X8bZk3jTGU8QyJWc@redhat.com>
-Message-ID: <alpine.LSU.2.11.2012021410260.4989@eggly.anvils>
-References: <20201130230603.46187-1-peterx@redhat.com> <20201201125927.GB11935@casper.infradead.org> <20201201223033.GG3277@xz-x1> <X8bZk3jTGU8QyJWc@redhat.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Wed, 2 Dec 2020 17:42:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606948888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0hFEYOz9SQEO5g/Hxds9W0B7cSaL5INIcyasu2Z9rU0=;
+        b=fp+mB/KJPz1fYUiWHiCwYhRRgWMe+cUWpNlT42Z6i7dt9lfYSypEJQKbNaNpUWtB52bFu0
+        /CfAmo80ghjO6542bvBEFAbLq4AJN410mqPOaxogVRTSQv601gNZF+OaMcIRVWJb39G92E
+        bSyc7TDKuXSq2F6+a7FZAnGidmuNX2I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-ccHfYQ8gOzWm5WGlXMYClA-1; Wed, 02 Dec 2020 17:38:05 -0500
+X-MC-Unique: ccHfYQ8gOzWm5WGlXMYClA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6C1339388;
+        Wed,  2 Dec 2020 22:38:03 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-12-67.pek2.redhat.com [10.72.12.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 30E2E19C44;
+        Wed,  2 Dec 2020 22:37:59 +0000 (UTC)
+Subject: Re: mapcount corruption regression
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     "Shutemov, Kirill" <kirill.shutemov@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Toshi Kani <toshi.kani@hpe.com>
+References: <CAPcyv4isen63tJ7q02rvVuu_Rm6QPdT0Bu-P_HJ2zePMySFNNg@mail.gmail.com>
+ <20201201022412.GG4327@casper.infradead.org>
+ <CAPcyv4j7wtjOSg8vL5q0PPjWdaknY-PC7m9x-Q1R_YL5dhE+bQ@mail.gmail.com>
+ <20201201204900.GC11935@casper.infradead.org>
+ <CAPcyv4jNVroYmirzKw_=CsEixOEACdL3M1Wc4xjd_TFv3h+o8Q@mail.gmail.com>
+ <20201202034308.GD11935@casper.infradead.org>
+ <CAPcyv4jk2-6hRZAC+=-wuXwFyYK9uKiRX=pVc0Q0UeB9yc=y1w@mail.gmail.com>
+ <CAPcyv4hxuzn9k-W_+iBsa=evL-FGijWyaxkyFLohUTqCCoJAig@mail.gmail.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Message-ID: <709287b1-dedf-3bff-e46a-8aa19ad774fb@redhat.com>
+Date:   Thu, 3 Dec 2020 06:37:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <CAPcyv4hxuzn9k-W_+iBsa=evL-FGijWyaxkyFLohUTqCCoJAig@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020, Andrea Arcangeli wrote:
-> 
-> Any suggestions on how to have the per-vaddr per-mm _PAGE_UFFD_WP bit
-> survive the pte invalidates in a way that remains associated to a
-> certain vaddr in a single mm (so it can shoot itself in the foot if it
-> wants, but it can't interfere with all other mm sharing the shmem
-> file) would be welcome...
+Hi Dan
+> diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+> index dfd82f51ba66..7ed99314dcdf 100644
+> --- a/arch/x86/mm/pgtable.c
+> +++ b/arch/x86/mm/pgtable.c
+> @@ -829,6 +829,7 @@ int pud_free_pmd_page(pud_t *pud, unsigned long addr)
+>          }
+>
+>          free_page((unsigned long)pmd_sv);
+> +       pgtable_pmd_page_dtor(virt_to_page(pmd));
+>          free_page((unsigned long)pmd);
+>
+>          return 1;
+>
+> In 2013 Kirill noticed that he missed a pmd page table free site:
+>
+>      c283610e44ec x86, mm: do not leak page->ptl for pmd page tables
+>
+> In 2018 Toshi added a new pmd page table free site without the destructor:
+>
+>      28ee90fe6048 x86/mm: implement free pmd/pte page interfaces
+>
+> In 2020 Willy adds PG_table accounting that flags the missing
+> pgtable_pmd_page_dtor()
+>
+> Yi, I would appreciate a confirmation that the fix works for you.
+>
+I applied the patch to v5.10-rc3 ~ v5.10-rc6, and cannot reproduce this 
+issue with my regression test now, feel free to add:
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
 
-I think it has to be a new variety of swap-like non_swap_entry() pte,
-see include/linux/swapops.h.  Anything else would be more troublesome.
 
-Search for non_swap_entry and for migration_entry, to find places that 
-might need to learn about this new variety.
+Thanks
+Yi
 
-IIUC you only need a single value, no need to carve out another whole
-swp_type: could probably be swp_offset 0 of any swp_type other than 0.
-
-Note that fork's copy_page_range() does not "copy ptes where a page
-fault will fill them correctly", so would in effect put a pte_none
-into the child where the parent has this uffd_wp entry.  I don't know
-anything about uffd versus fork, whether that would pose a problem.
-
-Hugh
