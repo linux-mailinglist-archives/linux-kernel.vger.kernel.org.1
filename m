@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6FE2CBF3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A5B2CBF45
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730238AbgLBOMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:12:45 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34282 "EHLO
+        id S1730295AbgLBOM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:12:56 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:34288 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728214AbgLBOMn (ORCPT
+        with ESMTP id S1728985AbgLBOMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:12:43 -0500
+        Wed, 2 Dec 2020 09:12:44 -0500
 Date:   Wed, 02 Dec 2020 14:12:01 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1606918322;
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AUM2gaFkcDESZlL/Zs/AAuoicx/U5PFmtLiqQr58+Q4=;
-        b=xW6QX1POm9lnYSPByR9vy7mZkSbEoDJSsa2hG+Qd4pPyPv9hmNaii78vnaBtSctKdeqyBJ
-        JAX8Msim+0ifEAcKt51Zd3wbd9mZ936g2OHe/gL0x300m0mHHNeeJLcsII1+IQ7rsntdnZ
-        jRrJnXsr2Hib2h6LBfXZW0cR9fptIVxMz71+YWnURV04DfvUBWVH/bPc6BaSUkkbXz0d0/
-        GFN9OBZq+ljLl9BcsZa/L6cpLmh32NHJuWqOWvDNWKUSn0Kf23ude+Yzfjbx8rHY+pSfJa
-        71zI04bQxaWwyM+JNyBUBLlrqPSVu+Py9QiRYnDpGA8SJTtaChDNkHFRNW6Lbw==
+        bh=n6YFDwP6lIoktyqrNaRVmRIALPM3X/wJI36jX7Ro66I=;
+        b=IxZJHRyl3mRm2O9OYtJVTsXIJ5mPoJswhUhf9WwIo+5CQlextK2jKdhPWMF7hTXlIfsCNU
+        0or7/XWM4VbiAAa62XyC/7o8sejols8x87vdPlVysvHpPV5Sq8hYfm0zKO6wjMhwlWOKG0
+        Yh5t2pdyZzY9Y3pQaelRZ6swJwO//S9h3117TxFytTVuuwFz2PbxnUNIpcsry4YlZIuSYg
+        IsV2mJkphc9Gj8/bXXCgXM1s7zpJTYuHRjtte1nqgc2wBYYdbTzjz5G4wcLr0oe7Wzix5P
+        OqAuBtcTEUVHpwd6y2/D/DBnwZWLkIgsdqFdbn/OP22jMmYMbicROFzWJj5GrQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606918322;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AUM2gaFkcDESZlL/Zs/AAuoicx/U5PFmtLiqQr58+Q4=;
-        b=h/L0Fac2V8Aqe1w66sE1MItVACRTzpPRYxkGhy9IG/GZZVzDidYfjMx8B2dAyLuwDpLr8U
-        EikAoKtJnz2LJjBA==
+        bh=n6YFDwP6lIoktyqrNaRVmRIALPM3X/wJI36jX7Ro66I=;
+        b=8oIOu9444IEkCgUVjeCA7/3S1xWMdhqLSyyTepO5VYVHqLz5+jU8MJEWVjcho0o/bO46tU
+        zJElW2lYFT+6rcCA==
 From:   "tip-bot2 for Sven Schnelle" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/entry] entry: Add syscall_exit_to_user_mode_work()
+Subject: [tip: core/entry] entry: Add exit_to_user_mode() wrapper
 Cc:     Sven Schnelle <svens@linux.ibm.com>,
         Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201201142755.31931-6-svens@linux.ibm.com>
-References: <20201201142755.31931-6-svens@linux.ibm.com>
+In-Reply-To: <20201201142755.31931-5-svens@linux.ibm.com>
+References: <20201201142755.31931-5-svens@linux.ibm.com>
 MIME-Version: 1.0
-Message-ID: <160691832132.3364.8915064201324508166.tip-bot2@tip-bot2>
+Message-ID: <160691832163.3364.8835271497998687338.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,100 +58,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/entry branch of tip:
 
-Commit-ID:     c6156e1da633f241e132eaea3b676d674376d770
-Gitweb:        https://git.kernel.org/tip/c6156e1da633f241e132eaea3b676d674376d770
+Commit-ID:     310de1a678b2184c078c593dae343cb79c807f8d
+Gitweb:        https://git.kernel.org/tip/310de1a678b2184c078c593dae343cb79c807f8d
 Author:        Sven Schnelle <svens@linux.ibm.com>
-AuthorDate:    Tue, 01 Dec 2020 15:27:55 +01:00
+AuthorDate:    Tue, 01 Dec 2020 15:27:54 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 02 Dec 2020 15:07:58 +01:00
+CommitterDate: Wed, 02 Dec 2020 15:07:57 +01:00
 
-entry: Add syscall_exit_to_user_mode_work()
+entry: Add exit_to_user_mode() wrapper
 
-This is the same as syscall_exit_to_user_mode() but without calling
-exit_to_user_mode(). This can be used if there is an architectural reason
-to avoid the combo function, e.g. restarting a syscall without returning to
-userspace. Before returning to user space the caller has to invoke
-exit_to_user_mode().
+Called from architecture specific code when syscall_exit_to_user_mode() is
+not suitable. It simply calls __exit_to_user_mode().
 
-[ tglx: Amended comments ]
+This way __exit_to_user_mode() can still be inlined because it is declared
+static __always_inline.
+
+[ tglx: Amended comments and moved it to a different place in the header ]
 
 Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201201142755.31931-6-svens@linux.ibm.com
+Link: https://lore.kernel.org/r/20201201142755.31931-5-svens@linux.ibm.com
 
 ---
- include/linux/entry-common.h | 20 ++++++++++++++++++++
- kernel/entry/common.c        | 14 ++++++++++++--
- 2 files changed, 32 insertions(+), 2 deletions(-)
+ include/linux/entry-common.h | 23 +++++++++++++++++++++--
+ kernel/entry/common.c        | 18 ++++++------------
+ 2 files changed, 27 insertions(+), 14 deletions(-)
 
 diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index e370be8..7c581a4 100644
+index da60980..e370be8 100644
 --- a/include/linux/entry-common.h
 +++ b/include/linux/entry-common.h
-@@ -316,10 +316,26 @@ static inline void arch_syscall_exit_tracehook(struct pt_regs *regs, bool step)
-  * is not suitable as the last step before returning to userspace. Must be
-  * invoked with interrupts disabled and the caller must be
-  * non-instrumentable.
-+ * The caller has to invoke syscall_exit_to_user_mode_work() before this.
-  */
- void exit_to_user_mode(void);
+@@ -301,6 +301,25 @@ static inline void arch_syscall_exit_tracehook(struct pt_regs *regs, bool step)
+ #endif
  
  /**
-+ * syscall_exit_to_user_mode_work - Handle work before returning to user mode
-+ * @regs:	Pointer to currents pt_regs
++ * exit_to_user_mode - Fixup state when exiting to user mode
 + *
-+ * Same as step 1 and 2 of syscall_exit_to_user_mode() but without calling
-+ * exit_to_user_mode() to perform the final transition to user mode.
++ * Syscall/interrupt exit enables interrupts, but the kernel state is
++ * interrupts disabled when this is invoked. Also tell RCU about it.
 + *
-+ * Calling convention is the same as for syscall_exit_to_user_mode() and it
-+ * returns with all work handled and interrupts disabled. The caller must
-+ * invoke exit_to_user_mode() before actually switching to user mode to
-+ * make the final state transitions. Interrupts must stay disabled between
-+ * return from this function and the invocation of exit_to_user_mode().
++ * 1) Trace interrupts on state
++ * 2) Invoke context tracking if enabled to adjust RCU state
++ * 3) Invoke architecture specific last minute exit code, e.g. speculation
++ *    mitigations, etc.: arch_exit_to_user_mode()
++ * 4) Tell lockdep that interrupts are enabled
++ *
++ * Invoked from architecture specific code when syscall_exit_to_user_mode()
++ * is not suitable as the last step before returning to userspace. Must be
++ * invoked with interrupts disabled and the caller must be
++ * non-instrumentable.
 + */
-+void syscall_exit_to_user_mode_work(struct pt_regs *regs);
++void exit_to_user_mode(void);
 +
 +/**
   * syscall_exit_to_user_mode - Handle work before returning to user mode
   * @regs:	Pointer to currents pt_regs
   *
-@@ -343,6 +359,10 @@ void exit_to_user_mode(void);
+@@ -322,8 +341,8 @@ static inline void arch_syscall_exit_tracehook(struct pt_regs *regs, bool step)
+  *	- Architecture specific one time work arch_exit_to_user_mode_prepare()
+  *	- Address limit and lockdep checks
   *
-  *  3) Final transition (lockdep, tracing, context tracking, RCU), i.e. the
-  *     functionality in exit_to_user_mode().
-+ *
-+ * This is a combination of syscall_exit_to_user_mode_work() (1,2) and
-+ * exit_to_user_mode(). This function is preferred unless there is a
-+ * compelling architectural reason to use the seperate functions.
+- *  3) Final transition (lockdep, tracing, context tracking, RCU). Invokes
+- *     arch_exit_to_user_mode() to handle e.g. speculation mitigations
++ *  3) Final transition (lockdep, tracing, context tracking, RCU), i.e. the
++ *     functionality in exit_to_user_mode().
   */
  void syscall_exit_to_user_mode(struct pt_regs *regs);
  
 diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 48d30ce..d6b7393 100644
+index 17b1e03..48d30ce 100644
 --- a/kernel/entry/common.c
 +++ b/kernel/entry/common.c
-@@ -282,12 +282,22 @@ static void syscall_exit_to_user_mode_prepare(struct pt_regs *regs)
- 		syscall_exit_work(regs, work);
+@@ -117,18 +117,7 @@ noinstr void syscall_enter_from_user_mode_prepare(struct pt_regs *regs)
+ 	instrumentation_end();
  }
  
--__visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
-+static __always_inline void __syscall_exit_to_user_mode_work(struct pt_regs *regs)
+-/**
+- * __exit_to_user_mode - Fixup state when exiting to user mode
+- *
+- * Syscall/interupt exit enables interrupts, but the kernel state is
+- * interrupts disabled when this is invoked. Also tell RCU about it.
+- *
+- * 1) Trace interrupts on state
+- * 2) Invoke context tracking if enabled to adjust RCU state
+- * 3) Invoke architecture specific last minute exit code, e.g. speculation
+- *    mitigations, etc.
+- * 4) Tell lockdep that interrupts are enabled
+- */
++/* See comment for exit_to_user_mode() in entry-common.h */
+ static __always_inline void __exit_to_user_mode(void)
  {
--	instrumentation_begin();
- 	syscall_exit_to_user_mode_prepare(regs);
- 	local_irq_disable_exit_to_user();
- 	exit_to_user_mode_prepare(regs);
-+}
-+
-+void syscall_exit_to_user_mode_work(struct pt_regs *regs)
-+{
-+	__syscall_exit_to_user_mode_work(regs);
-+}
-+
-+__visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
-+{
-+	instrumentation_begin();
-+	__syscall_exit_to_user_mode_work(regs);
- 	instrumentation_end();
- 	__exit_to_user_mode();
+ 	instrumentation_begin();
+@@ -141,6 +130,11 @@ static __always_inline void __exit_to_user_mode(void)
+ 	lockdep_hardirqs_on(CALLER_ADDR0);
  }
+ 
++void noinstr exit_to_user_mode(void)
++{
++	__exit_to_user_mode();
++}
++
+ /* Workaround to allow gradual conversion of architecture code */
+ void __weak arch_do_signal_or_restart(struct pt_regs *regs, bool has_signal) { }
+ 
