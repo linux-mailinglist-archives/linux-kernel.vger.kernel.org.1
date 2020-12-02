@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE1E2CBAC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EDE2CBADB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388611AbgLBKky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:40:54 -0500
-Received: from elvis.franken.de ([193.175.24.41]:43109 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729412AbgLBKky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:40:54 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kkPYR-0001YK-00; Wed, 02 Dec 2020 11:40:11 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 54174C02B7; Wed,  2 Dec 2020 11:39:43 +0100 (CET)
-Date:   Wed, 2 Dec 2020 11:39:43 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jinyang He <hejinyang@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: KASLR: Fix sync_icache() trapped in loop when
- synci_step is zero
-Message-ID: <20201202103943.GA9065@alpha.franken.de>
-References: <1606878005-11427-1-git-send-email-hejinyang@loongson.cn>
+        id S1729474AbgLBKod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLBKob (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:44:31 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BECDC0613CF;
+        Wed,  2 Dec 2020 02:43:51 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id r127so1158279yba.10;
+        Wed, 02 Dec 2020 02:43:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9DFjZAdrwyZk2YQ7OkLyRHwrSQpCncG9hZ9zBWhHgDs=;
+        b=QIAwqiQ3gUySWZAon+96z2Ae9kQK44KBS3BjTABbfgEKg/sDjKNpA6BZKS6Ps1WjA9
+         KQsZJ4nFJo7+1yhSL2zBmjWLVE/QF87ObQCKkj6XXKLuXn37YeKfgyL0nIJ66nsmEqlm
+         HgFqjYKCDA/RWTgjnvckXczJGJVmPWSBLtItAsaOyw7mUyKOHD4DbuKzzr7kL1xyOyYx
+         maaB430hfG+3FClPEQ/xI6UGw9YzRdcFL3HQrrItcmP/PSlv++yKqIQ5ZaCPJnR9HjVs
+         UUuSywkxsAZ0OoA+sf13P9ie45F45Z6Q8vrMD+dAxfGmOiV8nDkM485Gy4PwPtryW1zb
+         rmbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9DFjZAdrwyZk2YQ7OkLyRHwrSQpCncG9hZ9zBWhHgDs=;
+        b=PbWNldiYMk6OHQ1QxNI8sibRgzHyGgH08vfs9OVpDdPTi6YKhTilfI8g9xb8+iCDQu
+         gXUTC1ZCFikuyxkt52l4r+MiWvPkTMogGctc8GWenL0qiKtxICeYsAUYABlAbwflWpKd
+         CXWimPZcToeSvelyxKM8JKN8piWFC+1L7BYS5yV3xY2FujSmBRG4lbK6vZ3NrIn2jNNO
+         oElpfjRAv24OsZBNMm5dwAq/pLIZljcyvv7T+WluBqr0xkzdIS7YB3824gxYnvrNgBaq
+         Poqs547rWwbjtcq6YaerBdA5Ho5VHDyeNA5x2pVXM7xHIZWkJBqXZBSqc59DDAHQixXF
+         oAiA==
+X-Gm-Message-State: AOAM532jy6XRxlRyKHwSj3dB2VeHEl4Jd94WKyqkiL32SW/DM7g4btER
+        jclY75r42pOXiGUQ5cAfRD+70ANJOI1QlrXyL0J8JGg7FzUIMD5PByU=
+X-Google-Smtp-Source: ABdhPJz8v6Ej1xn7oEpvOSGtJ0kNYG3CoGEc8UoAwv1aFk2K7PXt92btzvd9mqyFZfcZkr9mx0yrlLEw6aVO3eOXjpk=
+X-Received: by 2002:a5b:149:: with SMTP id c9mr2369419ybp.3.1606905830376;
+ Wed, 02 Dec 2020 02:43:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1606878005-11427-1-git-send-email-hejinyang@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201027204226.26906-1-pboris@amazon.com> <CAHhKpQ7v_nPwBx2czk7rVXK3ZrmsZrAkcxDFOgq0ABTOVc7iSA@mail.gmail.com>
+In-Reply-To: <CAHhKpQ7v_nPwBx2czk7rVXK3ZrmsZrAkcxDFOgq0ABTOVc7iSA@mail.gmail.com>
+From:   Shyam Prasad N <nspmangalore@gmail.com>
+Date:   Wed, 2 Dec 2020 16:13:39 +0530
+Message-ID: <CANT5p=q2YvkEOEa4bS=-nbPOc9Xwa=4gnc09csCcszMmMjYSPg@mail.gmail.com>
+Subject: Re: [PATCH] Add support for getting and setting SACLs
+To:     Boris Protopopov <boris.v.protopopov@gmail.com>
+Cc:     Boris Protopopov <pboris@amazon.com>,
+        Steve French <sfrench@samba.org>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 11:00:05AM +0800, Jinyang He wrote:
-> Reading synci_step by using rdhwr instruction may return zero if no cache
-> need be synchronized. On the one hand, to make sure all load operation and
-> store operation finished we do __sync() for every platform. On the other
-> hand, some platform need operate synci one time although step is zero.
+Hi Boris,
 
-Should this be someting like: Avoid endless loop, if no synci is needed ?
+At a high level, the changes look good to me. Will go through the
+changes in more detail tomorrow morning.
 
-> diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-> index 57bdd276..47aeb33 100644
-> --- a/arch/mips/kernel/relocate.c
-> +++ b/arch/mips/kernel/relocate.c
-> @@ -64,7 +64,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
->  			: "r" (kbase));
->  
->  		kbase += step;
-> -	} while (kbase < kend);
-> +	} while (step && kbase < kend);
+On a related note, we may need more test coverage in this area.
+Can you please share your testing output against your changes?
+Or even better, if you can contribute some xfstests for this use case:
+https://wiki.samba.org/index.php/Xfstesting-cifs
 
-why not do a
+Regards,
+Shyam
 
-	if (step == 0)
-		return;
+On Wed, Dec 2, 2020 at 12:24 AM Boris Protopopov
+<boris.v.protopopov@gmail.com> wrote:
+>
+> Hello,
+> I am checking in to see if anyone had a chance to take a look at this
+> patch. I would appreciate any feedback.
+> Thanks!
+>
+> On Tue, Oct 27, 2020 at 5:01 PM Boris Protopopov via samba-technical
+> <samba-technical@lists.samba.org> wrote:
+> >
+> > Add SYSTEM_SECURITY access flag and use with smb2 when opening
+> > files for getting/setting SACLs. Add "system.cifs_ntsd_full"
+> > extended attribute to allow user-space access to the functionality.
+> > Avoid multiple server calls when setting owner, DACL, and SACL.
+> >
+> > Signed-off-by: Boris Protopopov <pboris@amazon.com>
+> > ---
+> ...
 
-before entering the loop ? According to MIPS32PRA no synci is needed,
-if stepi value is zero.
 
-Thomas.
-
-PS: Does anybody know a reason, why this code doesn't use an old fashioned
-dache/icache flushing, which might be slower but would work also on
-legecy cores ?
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+-Shyam
