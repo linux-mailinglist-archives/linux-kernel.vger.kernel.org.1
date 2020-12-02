@@ -2,93 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8143F2CB29A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1192CB295
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 03:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgLBCF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Dec 2020 21:05:27 -0500
-Received: from mga18.intel.com ([134.134.136.126]:12596 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727941AbgLBCF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Dec 2020 21:05:27 -0500
-IronPort-SDR: wbn+5yo2l6S8Y75RZSo6elGDSmpAph7lldN6mldgsUoNZOvKqTSwcg1WpAj9c2eCyWJbfsYyqq
- s9K2sZ05RzbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="160710050"
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="160710050"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 18:04:35 -0800
-IronPort-SDR: WRuwfisFSEEiOt8jq1p1m8Z0fSCjGEh3qBAHm+NTa4mbKgfnHv/rO7NxRHXeV2MUmx8gd6hlwB
- QFC0vFvY7w9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="365073732"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Dec 2020 18:04:32 -0800
-Date:   Wed, 2 Dec 2020 10:00:03 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     matthew.gerlach@linux.intel.com, "Wu, Hao" <hao.wu@intel.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>
-Subject: Re: [PATCH v3 2/2] fpga: dfl: look for vendor specific capability
-Message-ID: <20201202020003.GB22103@yilunxu-OptiPlex-7050>
-References: <20201124155658.700976-1-matthew.gerlach@linux.intel.com>
- <20201124155658.700976-3-matthew.gerlach@linux.intel.com>
- <DM6PR11MB38191D8C5E27E6E04B8DAA1A85F70@DM6PR11MB3819.namprd11.prod.outlook.com>
- <alpine.DEB.2.22.394.2011301614040.1050045@rhweight-WRK1>
- <X8aR36hGoV9SsPDw@archbook>
+        id S1728028AbgLBCBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Dec 2020 21:01:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgLBCBO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Dec 2020 21:01:14 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB92AC0613CF;
+        Tue,  1 Dec 2020 18:00:33 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id 10so180735ybx.9;
+        Tue, 01 Dec 2020 18:00:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OzlqzYwMGreBv2oDESxm1K09u8pamlF0uEL/bsIrwOk=;
+        b=caLv9SaEiAadNVS2Q+cCFkO4hDcxjkTWnu1S0Cpc894zLEfMiwblhEtw9Rzj+ofK6b
+         bySqn/7CNaHEod2sVhliiqmcHVWSQVj8malNmXjo73De1cl1eDfaZ3NfYiBZCRYeKnWm
+         vWiMxmFhGgqVlCJrV+wCt/I0NVpC/Me72dtQTIdR98FNL4IHpIX7oYw6/XYCIfaIOPng
+         1qU+/tE/aLA0I878rjyJvR68ZOTuOq5bM3fRgwsquh4IO4C1fTliEzabDO5gpcMKv1G9
+         EN6wYEIZx8uDBTtRkk33QLY2aOyhmMPcwtcw4nXJoCUTjAYbiQ/CYx8ZGlTcEAIPph5Q
+         ZiCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OzlqzYwMGreBv2oDESxm1K09u8pamlF0uEL/bsIrwOk=;
+        b=dntdnQRhFEJ1DG2gok2pbmm9tT8++eBpxbZHZYE+aFvbZeZs9L4SwootaXIR+DOpWb
+         y6owzaky+qiAeYU0fO3O/mEL7hMjOPp6mbW6FKGPXdy/3q7HSG8ejiLWqzR61kxz3qpQ
+         hJ7LbY7d/Wj9tDwxJkvtLly+5DlhyRaEINxmlekkrxbLHieediozkwSsE7et+Lt0CagW
+         qRCBXX7HcAexrh/sWvKmOHsLBLmQBHULGGBcqb77MQyjgJcBXQNNuNTpMnJhsrrYu3gM
+         6g+XJmtZEgLzqNnKOE6nEzbmbiGGF7oR9ag9/+jhX4Y+9IicyTCzWYNq3hmzzKAmiWnu
+         Jxlw==
+X-Gm-Message-State: AOAM533tCywtJwf28DQ8NOg9PAUYdff36c7LJo0q4Sl+fML6a/uYfjCg
+        ef+XpYTBlZ9fDwCtm7sTTZMrmUdI1uM0h10MouA=
+X-Google-Smtp-Source: ABdhPJyCJ8bfLh0JjtXoJGiMA3/oes2qWrwVrOG2uicnNXdmDmYN1CvCkfqWOCUD5j14o2xo9AIKaK9S17WXK5VJb5E=
+X-Received: by 2002:a25:df8e:: with SMTP id w136mr364608ybg.230.1606874432918;
+ Tue, 01 Dec 2020 18:00:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8aR36hGoV9SsPDw@archbook>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201127175738.1085417-1-jackmanb@google.com> <829353e6-d90a-a91a-418b-3c2556061cda@fb.com>
+ <20201129014000.3z6eua5pcz3jxmtk@ast-mbp> <b3903adc-59c6-816f-6512-2225c28f47f5@fb.com>
+ <4fa9f8cf-aaf8-a63c-e0ca-7d4c83b01578@fb.com>
+In-Reply-To: <4fa9f8cf-aaf8-a63c-e0ca-7d4c83b01578@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Dec 2020 18:00:22 -0800
+Message-ID: <CAEf4BzYc=c_2xCMFAE6RjMCHKWJj2euP2B21y-jfvsNzPVkhpQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/13] Atomics for eBPF
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > 
-> > > > +		}
-> > > > +
-> > > > +		offset = dfl_res & PCI_VNDR_DFLS_RES_OFF_MASK;
-> > > > +		if (offset >= len) {
-> > > > +			dev_err(&pcidev->dev, "%s bad offset %u >= %pa\n",
-> > > > +				__func__, offset, &len);
-> > > > +			return -EINVAL;
-> > > > +		}
-> > > > +
-> > > > +		dev_dbg(&pcidev->dev, "%s BAR %d offset 0x%x\n",
-> > > > __func__, bar, offset);
-> > > > +
-> > > > +		len -= offset;
-> > > > +
-> > > > +		start = pci_resource_start(pcidev, bar) + offset;
-> > > > +
-> > > > +		dfl_fpga_enum_info_add_dfl(info, start, len);
-> > > 
-> > > That means everytime, we pass [start, endofbar] region to dfl core
-> > > for enumeration, if there are multiple DFLs in one bar, then each range
-> > > ends at the same endofbar, it seems fine as enumeration can be done
-> > > one by one, but ideally the best case is that this capability can provide
-> > > end address or size too, right? It is possible that information can be
-> > > added to the capability as well? then we don't have such limitation.
-> > > 
-> > > Hao
-> > 
-> > I am not sure having more than one DFL in a bar serves any purpose over a
-> > single DFL.  Regardless, I think the consistency of just having Offset/BIR
-> > in the VSEC is better than adding more infomation that has little or no
-> > added value.
-> 
-> Agreed. Can't you just link the DFLs in that case?
+On Mon, Nov 30, 2020 at 7:51 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 11/30/20 9:22 AM, Yonghong Song wrote:
+> >
+> >
+> > On 11/28/20 5:40 PM, Alexei Starovoitov wrote:
+> >> On Fri, Nov 27, 2020 at 09:53:05PM -0800, Yonghong Song wrote:
+> >>>
+> >>>
+> >>> On 11/27/20 9:57 AM, Brendan Jackman wrote:
+> >>>> Status of the patches
+> >>>> =====================
+> >>>>
+> >>>> Thanks for the reviews! Differences from v1->v2 [1]:
+> >>>>
+> >>>> * Fixed mistakes in the netronome driver
+> >>>>
+> >>>> * Addd sub, add, or, xor operations
+> >>>>
+> >>>> * The above led to some refactors to keep things readable. (Maybe I
+> >>>>     should have just waited until I'd implemented these before starting
+> >>>>     the review...)
+> >>>>
+> >>>> * Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
+> >>>>     include the BPF_FETCH flag
+> >>>>
+> >>>> * Added a bit of documentation. Suggestions welcome for more places
+> >>>>     to dump this info...
+> >>>>
+> >>>> The prog_test that's added depends on Clang/LLVM features added by
+> >>>> Yonghong in
+> >>>> https://reviews.llvm.org/D72184
+> >>>>
+> >>>> This only includes a JIT implementation for x86_64 - I don't plan to
+> >>>> implement JIT support myself for other architectures.
+> >>>>
+> >>>> Operations
+> >>>> ==========
+> >>>>
+> >>>> This patchset adds atomic operations to the eBPF instruction set. The
+> >>>> use-case that motivated this work was a trivial and efficient way to
+> >>>> generate globally-unique cookies in BPF progs, but I think it's
+> >>>> obvious that these features are pretty widely applicable.  The
+> >>>> instructions that are added here can be summarised with this list of
+> >>>> kernel operations:
+> >>>>
+> >>>> * atomic[64]_[fetch_]add
+> >>>> * atomic[64]_[fetch_]sub
+> >>>> * atomic[64]_[fetch_]and
+> >>>> * atomic[64]_[fetch_]or
+> >>>
+> >>> * atomic[64]_[fetch_]xor
+> >>>
+> >>>> * atomic[64]_xchg
+> >>>> * atomic[64]_cmpxchg
+> >>>
+> >>> Thanks. Overall looks good to me but I did not check carefully
+> >>> on jit part as I am not an expert in x64 assembly...
+> >>>
+> >>> This patch also introduced atomic[64]_{sub,and,or,xor}, similar to
+> >>> xadd. I am not sure whether it is necessary. For one thing,
+> >>> users can just use atomic[64]_fetch_{sub,and,or,xor} to ignore
+> >>> return value and they will achieve the same result, right?
+> >>>  From llvm side, there is no ready-to-use gcc builtin matching
+> >>> atomic[64]_{sub,and,or,xor} which does not have return values.
+> >>> If we go this route, we will need to invent additional bpf
+> >>> specific builtins.
+> >>
+> >> I think bpf specific builtins are overkill.
+> >> As you said the users can use atomic_fetch_xor() and ignore
+> >> return value. I think llvm backend should be smart enough to use
+> >> BPF_ATOMIC | BPF_XOR insn without BPF_FETCH bit in such case.
+> >> But if it's too cumbersome to do at the moment we skip this
+> >> optimization for now.
+> >
+> > We can initially all have BPF_FETCH bit as at that point we do not
+> > have def-use chain. Later on we can add a
+> > machine ssa IR phase and check whether the result of, say
+> > atomic_fetch_or(), is used or not. If not, we can change the
+> > instruction to atomic_or.
+>
+> Just implemented what we discussed above in llvm:
+>    https://reviews.llvm.org/D72184
+> main change:
+>    1. atomic_fetch_sub (and later atomic_sub) is gone. llvm will
+>       transparently transforms it to negation followed by
+>       atomic_fetch_add or atomic_add (xadd). Kernel can remove
+>       atomic_fetch_sub/atomic_sub insns.
+>    2. added new instructions for atomic_{and, or, xor}.
+>    3. for gcc builtin e.g., __sync_fetch_and_or(), if return
+>       value is used, atomic_fetch_or will be generated. Otherwise,
+>       atomic_or will be generated.
 
-I didn't see the value of more DFLs in one bar either. So I think we'd better
-document it.
+Great, this means that all existing valid uses of
+__sync_fetch_and_add() will generate BPF_XADD instructions and will
+work on old kernels, right?
 
-Thanks,
-Yilun
+If that's the case, do we still need cpu=v4? The new instructions are
+*only* going to be generated if the user uses previously unsupported
+__sync_fetch_xxx() intrinsics. So, in effect, the user consciously
+opts into using new BPF instructions. cpu=v4 seems like an unnecessary
+tautology then?
