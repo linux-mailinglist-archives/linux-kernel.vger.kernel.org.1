@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D85C2CC88C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4910A2CC889
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731228AbgLBVBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 16:01:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42309 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730798AbgLBVBJ (ORCPT
+        id S1729835AbgLBU74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:59:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727189AbgLBU7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 16:01:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606942782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+vREiEPZRIjTwsNkTSi1a+k2IWXR/FPdIg8I6gi4lcI=;
-        b=QibGCLgW+O5sTZBqYFhGeSC9dsRFNmFFTOH9qLNEHljBCKooOBx1tiISfUo0eguU8WJmeX
-        0WfJLvzfZvQutFHeP1paqS8ir3Y2wD8grzMhyL1XXRnJ+BcOsI97HvF7kB5ZGPA4LtBio/
-        I1zQl1cDnp9h1N3QGa2Jy/YbU1sDCGQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-QTsGKSVoPYq-A0NoWPK3Rw-1; Wed, 02 Dec 2020 15:59:41 -0500
-X-MC-Unique: QTsGKSVoPYq-A0NoWPK3Rw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 2 Dec 2020 15:59:55 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51765C0613D6;
+        Wed,  2 Dec 2020 12:59:15 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 634B980364B;
-        Wed,  2 Dec 2020 20:58:42 +0000 (UTC)
-Received: from max.home.com (unknown [10.40.192.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3AEDF19D7C;
-        Wed,  2 Dec 2020 20:58:41 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] gfs2 fixes for 5.10-rc5
-Date:   Wed,  2 Dec 2020 21:58:39 +0100
-Message-Id: <20201202205839.843476-1-agruenba@redhat.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CmWYF1Wd8z9sT5;
+        Thu,  3 Dec 2020 07:59:12 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1606942753;
+        bh=xyCfUDDpG5o9AnIu8sKo445PfWngxdTS6OFx++8xEVU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RQ05OpUF2Th5NrmYMaEiLWibz5FybRgTWOIXzWVscoyraaPtoJN0aYKdSbKOVmzYT
+         rAyCN7IwTSwS+TuHpYUEazlQAAY6cPw3HVyUOY+VOwGj3W7X0iEq+dBk+u/9pUkzSG
+         wnVClt3NMC8envR5gDRRupN9jATyIL/cZkrArGHiwHc5FrE4x32T3UlDXG8unuGz0T
+         cLlXjbXSdZBUtLczvxUvtWi7yWxqmb3NosQMOLEU9vR0d4/HAOC+eVzLBrGuD8jaKY
+         cqPO09rg12GW+vyoNMFE3zcv9ZS0mdy4sM1o5LeYia3sF0X2th6/pMn9dwTMQQHxSK
+         oVTz8UUnMHD3A==
+Date:   Thu, 3 Dec 2020 07:59:11 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <christian@brauner.io>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the pidfd tree
+Message-ID: <20201203075911.7ac53b76@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: multipart/signed; boundary="Sig_/me8aMNfQdY0d3tE.7rzTq=h";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/me8aMNfQdY0d3tE.7rzTq=h
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-please consider pulling the following additional gfs2 fixes.
+Hi all,
 
-Thanks,
-Andreas
+Commits
 
-The following changes since commit 418baf2c28f3473039f2f7377760bd8f6897ae18:
+  440ec82ebed2 ("selftests: openat2: add RESOLVE_ conflict test")
+  295983402a1a ("openat2: reject RESOLVE_BENEATH|RESOLVE_IN_ROOT")
 
-  Linux 5.10-rc5 (2020-11-22 15:36:08 -0800)
+are missing a Signed-off-by from their committers.
 
-are available in the Git repository at:
+--=20
+Cheers,
+Stephen Rothwell
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.10-rc5-fixes
+--Sig_/me8aMNfQdY0d3tE.7rzTq=h
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-for you to fetch changes up to dd0ecf544125639e54056d851e4887dbb94b6d2f:
+-----BEGIN PGP SIGNATURE-----
 
-  gfs2: Fix deadlock between gfs2_{create_inode,inode_lookup} and delete_work_func (2020-12-01 00:21:10 +0100)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/IAB8ACgkQAVBC80lX
+0GzD2Qf9HgVfstPUS7SA6GG1/cXqe269rUdHzZeyL7jlLvzJ8s0jDnVcXRYAKjpp
+5Su7yL1O3rCMSvcoRNc8OjV4iDTjdt9h936rMvcwx0ed5d4sejXXFbfHyT2h3be9
+N5WNzh08dusj472Xn5syI4ddBg1qOh8yck4ppjzItCU4zehIOnvPxJ1NxjTcjBS4
+smACt2FIqLbfKe1zU1Ts1DRaAKe1aVW/fzVD1o67gZ8aGrMH4AyZE5TT8Nlq3DSX
+AWrtGtk+7IegLTGq1F8Zf+ftMfH3YC0RHkngdo8Kw+HLiQbhpQ0aQFAsR+w2bu5Y
+EsXWmmoENNl7tpTm/uqOw2jcFiBMCw==
+=2w+Q
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Various gfs2 fixes
-
-----------------------------------------------------------------
-Alexander Aring (2):
-      gfs2: Fix deadlock dumping resource group glocks
-      gfs2: set lockdep subclass for iopen glocks
-
-Andreas Gruenbacher (2):
-      gfs2: Upgrade shared glocks for atime updates
-      gfs2: Fix deadlock between gfs2_{create_inode,inode_lookup} and delete_work_func
-
-Bob Peterson (2):
-      gfs2: check for empty rgrp tree in gfs2_ri_update
-      gfs2: Don't freeze the file system during unmount
-
- fs/gfs2/glock.c  |  1 +
- fs/gfs2/glops.c  |  6 ++++--
- fs/gfs2/incore.h |  1 +
- fs/gfs2/inode.c  | 42 ++++++++++++++++++++++++++++++++----------
- fs/gfs2/rgrp.c   |  4 ++++
- 5 files changed, 42 insertions(+), 12 deletions(-)
-
+--Sig_/me8aMNfQdY0d3tE.7rzTq=h--
