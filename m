@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68222CC6E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C183D2CC6E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387943AbgLBTmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:42:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
+        id S2388189AbgLBTo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387813AbgLBTmn (ORCPT
+        with ESMTP id S2387728AbgLBTo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:42:43 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC84EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:42:03 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id x15so1712300pll.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:42:03 -0800 (PST)
+        Wed, 2 Dec 2020 14:44:29 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B76AC061A04
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 11:43:22 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id n10so1566373pgv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 11:43:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:user-agent:mime-version
          :content-transfer-encoding;
-        bh=SvAOwNmdYOyvWyeZNvhCHF3LfAeECMn+7Hjxf8t9J1s=;
-        b=gy5HC6qBf/rWcUZ+Sfh2GojdKYh6AT8Qn8XNz6FddLTBmperuqZBINYxPGGm5YMZ+j
-         ZHDi08zxvW46Iz8DM0/m+BYiNaI66+LvjzI/psYk9xrcQ18GispzE8jnBfUaHKivggpm
-         oAKu0xwGvWjVUYB1Xcqc+We5XNs0O6l7tXTNY=
+        bh=YF75IQFrFR9lc2ZpHVjvfB/8yVqBDhiF67vZoco548s=;
+        b=LK3B5kyjjLKre8Q41VpprzisQIomIq7nujK/DzxZsHoT512B7QLHbcAnbYIsUKWjgi
+         CO9WtY8HBBXOGtXf9KXYEKriygyrVIWCfSQut06JRUYoLOFi3rMzh3L2v1wjBNlG+DwM
+         Mzntr6IyFG4QQQ8E9XdanTAF0FrDNFeqQzqSJB4ciF4GU72puXbS5LBZx22OLmA9ZZ8d
+         zzCgTD+drGKhwPxzk5GywpndFrxU6lOMuFRlh1xlZ+ZY5NovP0k5IWCho/QIOop0eiRx
+         hvQ2jTr0S/uHls2gkO/f9h3kDnMHB50lv12qqQhtNcm6ywg6jluVntdc6dOUmEqs+nxk
+         78mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SvAOwNmdYOyvWyeZNvhCHF3LfAeECMn+7Hjxf8t9J1s=;
-        b=iUZMtHaZlawWgswK66KcTdtrL+NVfyGOG77o3eIE8qTIxxIRjbcIGTn+sgdiBbhQbO
-         vFKnX/fOk+9/JWmuq4LyvsflGVNsttRs0CURT/0uLyuIvbBVS/7BJz0cjwAnqhANQBj/
-         E2GaHeRBZGEZ4hJnRjrjcR6EhkYRVpJR9Yh/WoxqpSpU489VmR4bqb+bud+vGlxNBtiP
-         6X8DybHCPS+rhFk/jN5+Vr3wZIY0M+HfH9w7FSVB/WEfJ1CbhxIOeGntSNFYYI7KA4Tt
-         fsnsLIfg/3geEZfsRuagOEnUgY/dAPosSlMI+y+gfwumD/6oW4VOYaD+GThPJrtgO2sF
-         OjOQ==
-X-Gm-Message-State: AOAM532WeXCtUvA1/56JafuUZuQQiM4SjnskH2UkxYzPUi8UmBq3YCBA
-        ehVzIptGIpE/jeo6+xg6AHZfmU1X8/SQ+GbU
-X-Google-Smtp-Source: ABdhPJz/ypCRmZpZn10dvtf0gS7cDmUuFl+cXXnBdfkjX46iVD+PSRCN3jFiPvr7mwh4dijXo12CYg==
-X-Received: by 2002:a17:90a:bf88:: with SMTP id d8mr1399908pjs.102.1606938123289;
-        Wed, 02 Dec 2020 11:42:03 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:c00a:a884:29ad:2220:8aff:e226])
-        by smtp.gmail.com with ESMTPSA id o29sm576496pfp.66.2020.12.02.11.42.00
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=YF75IQFrFR9lc2ZpHVjvfB/8yVqBDhiF67vZoco548s=;
+        b=OTIfehv25xl1O2mCTjHb4DRxIgNz8RZElUL9oedChahyCGdh7B0bANGRY0bcFeTYHy
+         iUgj11WMHYFlxXUoExzr5FC1/WqyJQl2hXklXMdQ9RqIB24FRVKm+0l/cBVfpjoZ9cF2
+         VAs0O9U1JVTuoEZBVxU1NfXOsYvKIZNal0vRPf9Im+UL/IibHDDQ+/ZnqXx4gncmjN78
+         KwlmBwXoxMtKrA1Pdo5jy+rPiTddTmwRupGc0QXygDzF9oO89vJFjIrweXrxvr3fFdv3
+         p8Cbd+IuEMSNPQdaNCNMbcLvDdxFI4gvcEARAXA7vJjrbZ+rZSWvyomW6haNosBtdPIj
+         Z5KA==
+X-Gm-Message-State: AOAM533jwlZOQn9L99idP9Q7orizbf9hxjcOcPpNBB3+0q65K/wXFs+U
+        IBwDtEm/0bDn4T3oEDoUVdVv5w==
+X-Google-Smtp-Source: ABdhPJy+6yvDuPZXIu59qKejZBIOViQDc5/g+qVZE3j+nWEBfBEyvwpguYLMYq2oqrCn2uEL2Ni+rQ==
+X-Received: by 2002:a63:4:: with SMTP id 4mr1243367pga.443.1606938202063;
+        Wed, 02 Dec 2020 11:43:22 -0800 (PST)
+Received: from [192.168.1.9] ([171.49.174.71])
+        by smtp.gmail.com with ESMTPSA id u24sm598229pfm.81.2020.12.02.11.43.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 11:42:02 -0800 (PST)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH v2] arm64: defconfig: Enable REGULATOR_PF8X00
-Date:   Thu,  3 Dec 2020 01:11:49 +0530
-Message-Id: <20201202194149.180058-1-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 02 Dec 2020 11:43:21 -0800 (PST)
+Message-ID: <3d513cec41d7eb223240741bdbcffe7af3a49c18.camel@rajagiritech.edu.in>
+Subject: [PROBLEM] drivers:hid  2 memory leaks suspected
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Date:   Thu, 03 Dec 2020 01:13:18 +0530
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable PF8X00 regulator driver by default as it used in some of 
-i.MX8MM hardware platforms like Engicam i.Core MX8M Mini SoM.
+hello,
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
----
-Changes for v2:
-- update the commit message.
+2 new suspected  memory leaks. 
 
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 867cc4a5f00f..b070ecf61fdf 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -594,6 +594,7 @@ CONFIG_REGULATOR_HI655X=y
- CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8973=y
- CONFIG_REGULATOR_PCA9450=y
-+CONFIG_REGULATOR_PF8X00=y
- CONFIG_REGULATOR_PFUZE100=y
- CONFIG_REGULATOR_PWM=y
- CONFIG_REGULATOR_QCOM_RPMH=y
+$sudo cat /sys/kernel/debug/kmemleak
+[sudo] password for jeffrin:
+unreferenced object 0xffff88813128bee0 (size 16):
+comm "irq/109-ELAN130", pid 152, jiffies 4294931163 (age 9576.624s)
+hex dump (first 16 bytes):
+04 03 08 0a eb 03 24 e7 01 80 13 44 00 00 00 00 ......$....D....
+backtrace:
+[<00000000eff80361>] kmemdup+0x1a/0x40
+[<00000000552197bd>] hidraw_report_event+0xbc/0x190 [hid]
+[<00000000a102ccd5>] hid_report_raw_event+0x70a/0x790 [hid]
+[<00000000b1b8f73f>] hid_input_report+0x1b4/0x210 [hid]
+[<00000000e0f74a09>] i2c_hid_irq+0x164/0x1e0 [i2c_hid]
+[<00000000a79c6ce4>] irq_thread_fn+0x40/0xb0
+[<0000000037a84810>] irq_thread+0x23d/0x330
+[<0000000009e057aa>] kthread+0x1cd/0x1f0
+[<000000005e7b7b46>] ret_from_fork+0x22/0x30
+unreferenced object 0xffff88813128b640 (size 16):
+comm "irq/109-ELAN130", pid 152, jiffies 4294931165 (age 9576.616s)
+hex dump (first 16 bytes):
+04 03 02 0a ee 03 74 e7 01 80 13 44 00 00 00 00 ......t....D....
+backtrace:
+[<00000000eff80361>] kmemdup+0x1a/0x40
+[<00000000552197bd>] hidraw_report_event+0xbc/0x190 [hid]
+[<00000000a102ccd5>] hid_report_raw_event+0x70a/0x790 [hid]
+[<00000000b1b8f73f>] hid_input_report+0x1b4/0x210 [hid]
+[<00000000e0f74a09>] i2c_hid_irq+0x164/0x1e0 [i2c_hid]
+[<00000000a79c6ce4>] irq_thread_fn+0x40/0xb0
+[<0000000037a84810>] irq_thread+0x23d/0x330
+[<0000000009e057aa>] kthread+0x1cd/0x1f0
+[<000000005e7b7b46>] ret_from_fork+0x22/0x30
+$
+
+
+[ Details about System ].
+
+Linux debian 5.10.0-rc6 #4 SMP Wed Dec 2 02:49:21 IST 2020 x86_64
+GNU/Linux
+
+GNU C 10
+GNU Make 4.3
+Binutils 2.35.1
+Util-linux 2.36.1
+Mount 2.36.1
+Bison 3.7.3
+Flex 2.6.4
+Dynamic linker (ldd) 2.31
+Procps 3.3.16
+Kbd 2.3.0
+Console-tools 2.3.0
+Sh-utils 8.32
+Udev 246
+
+Reported-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+
 -- 
-2.25.1
+software engineer
+rajagiri school of engineering and technology - autonomous
 
