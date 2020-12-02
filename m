@@ -2,113 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632722CC00D
+	by mail.lfdr.de (Postfix) with ESMTP id D1C6E2CC00E
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730139AbgLBOtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:49:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57408 "EHLO mx2.suse.de"
+        id S1730314AbgLBOtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:49:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57596 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727019AbgLBOtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:49:02 -0500
+        id S1728138AbgLBOtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 09:49:09 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606920502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3lIaTsxjFMYIQNxaeePaL9KbT8jUcnLCx8Gz61GRcM0=;
+        b=XOAmE0X3npWKI/lGX5ZljwuqsxujpMp1fMK3dbXVafCTHYiZ2VJ/DLYR1nM+U9EG/I6l49
+        ehM7jGwsJ87A3LNKHTX7omn9BagHn4Y7FxixMA7iZCSEuvmw6LVRG/sQVlE0asBQxR8OD9
+        DXnRFMWgZMKiNwxugfX0pYJWvdhzSbU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37470AC6A;
-        Wed,  2 Dec 2020 14:48:21 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 14:48:18 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        kernel test robot <rong.a.chen@intel.com>,
-        0day robot <lkp@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        Aubrey Li <aubrey.li@intel.com>, yu.c.chen@intel.com
-Subject: Re: [sched/fair] 8d86968ac3: netperf.Throughput_tps -29.5% regression
-Message-ID: <20201202144818.GZ3306@suse.de>
-References: <20201125090923.GA3723@shao2-debian>
- <6fef3fc7-be18-92e5-c622-add6decb88c4@linux.intel.com>
- <20201126121351.GJ3371@techsingularity.net>
- <b45171de-cb74-bf35-91bf-967dbd5567d1@linux.intel.com>
+        by mx2.suse.de (Postfix) with ESMTP id 6B1CCACC3;
+        Wed,  2 Dec 2020 14:48:22 +0000 (UTC)
+Subject: Re: [PATCH v2 04/12] x86/xen: drop USERGS_SYSRET64 paravirt call
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, peterz@infradead.org,
+        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-5-jgross@suse.com> <20201202123235.GD2951@zn.tnic>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <6be0d1a5-0079-5d90-0c38-85fe4471f1b8@suse.com>
+Date:   Wed, 2 Dec 2020 15:48:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <b45171de-cb74-bf35-91bf-967dbd5567d1@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201202123235.GD2951@zn.tnic>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="jJ9PpTcxy9lmYsonXHC7Yx0WUyHQN3ZlP"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 10:29:59PM +0800, Li, Aubrey wrote:
-> > If the idle mask is not getting cleared then select_idle_cpu() is
-> > probably returning immediately. select_idle_core() is almost certainly
-> > failing so that just leaves select_idle_smt() to find a potentially idle
-> > CPU. That's a limited search space so tasks may be getting stacked and
-> > missing CPUs that are idling for short periods.
-> 
-> Vincent suggested we decouple idle cpumask from short idle(stop tick) and
-> set it every time the CPU enters idle, I'll make this change in V6.
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jJ9PpTcxy9lmYsonXHC7Yx0WUyHQN3ZlP
+Content-Type: multipart/mixed; boundary="cx6HqDKbye5TwFIy5c3ypsnchRBmnlgeh";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ peterz@infradead.org, luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Deep Shah <sdeep@vmware.com>, "VMware, Inc." <pv-drivers@vmware.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <6be0d1a5-0079-5d90-0c38-85fe4471f1b8@suse.com>
+Subject: Re: [PATCH v2 04/12] x86/xen: drop USERGS_SYSRET64 paravirt call
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-5-jgross@suse.com> <20201202123235.GD2951@zn.tnic>
+In-Reply-To: <20201202123235.GD2951@zn.tnic>
 
-As a heads-up, I'm trying to prepare a series that alters the time
-complexity in general of select_idle_sibling(). It would tie into what
-you are doing with the idle cpumask tracking but would use it as a hint
-for CPUs to search first. It's still a WIP but I'm hoping to post
-something tomorrow. It would not replace your patch, just alter it a bit
-in terms of what happens just before select_idle_cpu().
+--cx6HqDKbye5TwFIy5c3ypsnchRBmnlgeh
+Content-Type: multipart/mixed;
+ boundary="------------50989C0C7D65F3525DF0B3D1"
+Content-Language: en-US
 
-> > 
-> > On the flip side, I expect cases like hackbench to benefit because it
-> > can saturate a machine to such a degree that select_idle_cpu() is a waste
-> > of time.
-> 
-> Yes, I believe that's also why I saw uperf/netperf improvement at high
-> load levels.
-> 
+This is a multi-part message in MIME format.
+--------------50989C0C7D65F3525DF0B3D1
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, hackbench is a case where SIS_AVG_CPU shines even though it does
-not help other cases. It throttles the search. In the series I'm working
-on right now, I simply kill SIS_AVG_CPU but might incorporate something
-like it into SIS_PROP as the last patch of the series as an RFC.
+On 02.12.20 13:32, Borislav Petkov wrote:
+> On Fri, Nov 20, 2020 at 12:46:22PM +0100, Juergen Gross wrote:
+>> @@ -123,12 +115,15 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, =
+SYM_L_GLOBAL)
+>>   	 * Try to use SYSRET instead of IRET if we're returning to
+>>   	 * a completely clean 64-bit userspace context.  If we're not,
+>>   	 * go to the slow exit path.
+>> +	 * In the Xen PV case we must use iret anyway.
+>>   	 */
+>> -	movq	RCX(%rsp), %rcx
+>> -	movq	RIP(%rsp), %r11
+>>  =20
+>> -	cmpq	%rcx, %r11	/* SYSRET requires RCX =3D=3D RIP */
+>> -	jne	swapgs_restore_regs_and_return_to_usermode
+>> +	ALTERNATIVE __stringify( \
+>> +		movq	RCX(%rsp), %rcx; \
+>> +		movq	RIP(%rsp), %r11; \
+>> +		cmpq	%rcx, %r11;	/* SYSRET requires RCX =3D=3D RIP */ \
+>> +		jne	swapgs_restore_regs_and_return_to_usermode), \
+>> +	"jmp	swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+>=20
+> Why such a big ALTERNATIVE when you can simply do:
+>=20
+>          /*
+>           * Try to use SYSRET instead of IRET if we're returning to
+>           * a completely clean 64-bit userspace context.  If we're not,=
 
-> > 
-> > That said, I haven't followed the different versions closely. I know v5
-> > got a lot of feedback so will take a closer look at v6. Fundamentally
-> > though I expect that using the idle mask will be a mixed bag. At low
-> > utilisation or over-saturation, it'll be a benefit. At the point where
-> > the machine is almost fully busy, some workloads will benefit (lightly
-> > communicating workloads that occasionally migrate) and others will not
-> > (ping-pong workloads looking for CPUs that are idle for very brief
-> > periods).
-> 
-> Do you have any interested workload [matrix] I can do the measurement?
-> 
+>           * go to the slow exit path.
+>           * In the Xen PV case we must use iret anyway.
+>           */
+>          ALTERNATIVE "", "jmp swapgs_restore_regs_and_return_to_usermod=
+e", X86_FEATURE_XENPV
+>=20
+>          movq    RCX(%rsp), %rcx;
+>          movq    RIP(%rsp), %r11;
+>          cmpq    %rcx, %r11;     /* SYSRET requires RCX =3D=3D RIP */ \=
 
-Usually I go with a battery of tests from mmtests instead of one or two
-specifically to have a mix of wakeup timing, communication patterns and
-degrees of utilisation. The downside is that they take ages to run.
+>          jne     swapgs_restore_regs_and_return_to_usermode
+>=20
+> ?
+>=20
 
-> > It's tricky enough that it might benefit from a sched_feat() check that
-> > is default true so it gets tested. For regressions that show up, it'll
-> > be easy enough to ask for the feature to be disabled to see if it fixes
-> > it. Over time, that might give an idea of exactly what sort of workloads
-> > benefit and what suffers.
-> 
-> Okay, I'll add a sched_feat() for this feature.
-> 
+I wanted to avoid the additional NOPs for the bare metal case.
 
-If the series I'm preparing works out ok and your patch can be integrated,
-the sched_feat() may not be necessary because your patch would further
-reduce time complexity without worrying about when the information
-gets reset.
+If you don't mind them I can do as you are suggesting.
 
--- 
-Mel Gorman
-SUSE Labs
+
+Juergen
+
+--------------50989C0C7D65F3525DF0B3D1
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------50989C0C7D65F3525DF0B3D1--
+
+--cx6HqDKbye5TwFIy5c3ypsnchRBmnlgeh--
+
+--jJ9PpTcxy9lmYsonXHC7Yx0WUyHQN3ZlP
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/HqTUFAwAAAAAACgkQsN6d1ii/Ey+4
+gQf9EFMoWpLKjzw2BVbyD0hiQapRVGseNvB3GqQFjKeRF2cYKO3pdXTP/8/gguKxLu2hewzYnjiK
+7bUt7DNePDKIodhyA2PpUNexvDcOkPWFU2gvJLPAeIfFIknZnDCwQRsSlPX0qysGcH+ukEwwNthY
+u98BK1NtYIgkdzADu7TB94cXYCIRKhFYZZ81I3TY11Lj7KpTgv1RYb8+JEW8M7m02x9k2FGi9QcU
+1ZLJFfVF9djamKm+jymofOLtyE83uoAJcQqjxpMrLH/GhavwLB4x0hiVCDDB3+xoGK6GRPLeVayL
+2CjIsvIXdDbHXTAHQ/Cy80yJzLbeK95XQp91LaS4Yw==
+=Lxwk
+-----END PGP SIGNATURE-----
+
+--jJ9PpTcxy9lmYsonXHC7Yx0WUyHQN3ZlP--
