@@ -2,96 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0819F2CB7B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6992CB7B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387865AbgLBIsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:48:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgLBIsg (ORCPT
+        id S2387883AbgLBItp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:49:45 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58774 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726814AbgLBIto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:48:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B3FC0613CF;
-        Wed,  2 Dec 2020 00:47:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CVfOdWh+yCP6h1F0F6Of76KYCDkJveNNCxoXWjniDQ8=; b=e7DptqrforPKS+KzFh7cyuGU1W
-        2FiwYJVlbozwB6UUNloOzV4jlkH4tBq0v/zasHMMZ/BQBM5hNHZK+rxCh+01H4IR7rlyVso0AUGRq
-        NkJuYXEV+Ol+tq8ukVcBghP1zDn1ibZlgeLhsJcGh0YJMLZF2QKe4SkagSTnbMvnBppCmcvYx36gQ
-        WMRZZFAVGP0lIG6UcbLOy2i7py227429EA7sw6NBgYucoytYH9gZt/4XjOSzwoz0jtTN9Jp0I9MXA
-        ne6yiO2hY1o06RlxADSY3TIq+ENmblMwUXvD9+QC8tqYCND3c6jza/N1jKC6jC7v7Suo+rFGxS8+F
-        J+ImQ3ww==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkNni-0007Rp-PY; Wed, 02 Dec 2020 08:47:50 +0000
-Date:   Wed, 2 Dec 2020 08:47:50 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux MM <linux-mm@kvack.org>, Will Deacon <will@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>, Meelis Roos <mroos@linux.ee>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-Message-ID: <20201202084750.GA28341@infradead.org>
-References: <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
- <20201201102901.GF557259@kernel.org>
- <e3d5d791-8e4f-afcc-944c-24f66f329bd7@physik.fu-berlin.de>
- <20201201121033.GG557259@kernel.org>
- <49a2022c-f106-55ec-9390-41307a056517@physik.fu-berlin.de>
- <20201201135623.GA751215@kernel.org>
- <59351dbb-96cc-93b2-f2ec-b8968e935845@kernel.dk>
- <CAMuHMdWRc8W7U0LKyH9u1hdMuN515PCZiTEJ12FrDaCx-eTdaQ@mail.gmail.com>
- <20201202084326.GA26573@infradead.org>
- <20201202084628.GE751215@kernel.org>
+        Wed, 2 Dec 2020 03:49:44 -0500
+X-UUID: 2e873bc0e0ed48fca6459f821cdb2a8d-20201202
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=J+p7100q/+E3KI6T29sI3GeFvL+A9jcdok4BLN/F3Q0=;
+        b=ECU/RGR5DnHJrXJFtS2jk/43vrkt9J1YF/h6rxw+mgVWUbCiLpnwRBk4M1rImfVyHiQspcE8EFrOc8GJKcg7MlRX4y0hXaJEHibcbCs3ZtpoaLJobam2LOS68nWBHE8r474RmaIDiz+oZ9jfDadhXlaVUxiAugGQosaba9OLZJE=;
+X-UUID: 2e873bc0e0ed48fca6459f821cdb2a8d-20201202
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1648069929; Wed, 02 Dec 2020 16:48:56 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 2 Dec 2020 16:48:54 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 2 Dec 2020 16:48:55 +0800
+Message-ID: <1606898935.23925.40.camel@mtkswgap22>
+Subject: Re: [PATCH V5 2/3] scsi: ufs: Fix a race condition between
+ ufshcd_abort and eh_work
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
+        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
+        <saravanak@google.com>, <salyzyn@google.com>,
+        "Alim Akhtar" <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 2 Dec 2020 16:48:55 +0800
+In-Reply-To: <1606897475-16907-3-git-send-email-cang@codeaurora.org>
+References: <1606897475-16907-1-git-send-email-cang@codeaurora.org>
+         <1606897475-16907-3-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202084628.GE751215@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 10:46:28AM +0200, Mike Rapoport wrote:
-> On Wed, Dec 02, 2020 at 08:43:26AM +0000, Christoph Hellwig wrote:
-> > On Tue, Dec 01, 2020 at 04:33:01PM +0100, Geert Uytterhoeven wrote:
-> > > > That's a lot of typos in that patch... I wonder why the buildbot hasn't
-> > > > complained about this. Thanks for fixing this up! I'm going to fold this
-> > > > into the original to avoid the breakage.
-> > > 
-> > > Does lkp@intel.com do ia64 builds? Yes, it builds zx1_defconfig.
-> > 
-> > I've never got results.  Which is annoying, as debian doesn't ship an
-> > ia64 cross toolchain either, and I can't find any pre-built one that
-> > works for me.
-> 
-> Arnd publishes a bunch of cross compilers here:
-> 
-> https://mirrors.edge.kernel.org/pub/tools/crosstool/
+SGkgQ2FuLA0KDQpPbiBXZWQsIDIwMjAtMTItMDIgYXQgMDA6MjQgLTA4MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IEluIGN1cnJlbnQgdGFzayBhYm9ydCByb3V0aW5lLCBpZiB0YXNrIGFib3J0IGhhcHBl
+bnMgdG8gdGhlIGRldmljZSBXLUxVLA0KPiB0aGUgY29kZSBkaXJlY3RseSBqdW1wcyB0byB1ZnNo
+Y2RfZWhfaG9zdF9yZXNldF9oYW5kbGVyKCkgdG8gcGVyZm9ybSBhDQo+IGZ1bGwgcmVzZXQgYW5k
+IHJlc3RvcmUgdGhlbiByZXR1cm5zIEZBSUwgb3IgU1VDQ0VTUy4gQ29tbWFuZHMgc2VudCB0byB0
+aGUNCj4gZGV2aWNlIFctTFUgYXJlIG1vc3QgbGlrZWx5IHRoZSBTU1UgY21kcyBzZW50IGR1cmlu
+ZyBVRlMgUE0gb3BlcmF0aW9ucy4gSWYNCj4gc3VjaCBTU1UgY21kIGVudGVycyB0YXNrIGFib3J0
+IHJvdXRpbmUsIHdoZW4gdWZzaGNkX2VoX2hvc3RfcmVzZXRfaGFuZGxlcigpDQo+IGZsdXNoZXMg
+ZWhfd29yaywgaXQgd2lsbCBnZXQgc3R1Y2sgdGhlcmUgc2luY2UgZXJyX2hhbmRsZXIgaXMgc2Vy
+aWFsaXplZA0KPiB3aXRoIFBNIG9wZXJhdGlvbnMuDQo+IA0KPiBJbiBvcmRlciB0byB1bmJsb2Nr
+IGFib3ZlIGNhbGwgcGF0aCwgd2UgbWVyZWx5IGNsZWFuIHVwIHRoZSBscmIgdGFrZW4gYnkNCj4g
+dGhpcyBjbWQsIHF1ZXVlIHRoZSBlaF93b3JrIGFuZCByZXR1cm4gU1VDQ0VTUy4gT25jZSB0aGUg
+Y21kIGlzIGFib3J0ZWQsDQo+IHRoZSBQTSBvcGVyYXRpb24gd2hpY2ggc2VuZHMgb3V0IHRoZSBj
+bWQganVzdCBlcnJvcnMgb3V0LCB0aGVuIGVycl9oYW5kbGVyDQo+IHNoYWxsIGJlIGFibGUgdG8g
+cHJvY2VlZCB3aXRoIHRoZSBmdWxsIHJlc2V0IGFuZCByZXN0b3JlLg0KPiANCj4gSW4gdGhpcyBz
+Y2VuYXJpbywgdGhlIGNtZCBpcyBhYm9ydGVkIGV2ZW4gYmVmb3JlIGl0IGlzIGFjdHVhbGx5IGNs
+ZWFyZWQgYnkNCj4gSFcsIHNldCB0aGUgbHJiLT5pbl91c2UgZmxhZyB0byBwcmV2ZW50IHN1YnNl
+cXVlbnQgY21kcywgaW5jbHVkaW5nIFNDU0kNCj4gY21kcyBhbmQgZGV2IGNtZHMsIGZyb20gdGFr
+aW5nIHRoZSBscmIgcmVsZWFzZWQgZnJvbSBhYm9ydC4gVGhlIGZsYWcgc2hhbGwNCj4gZXZldHVh
+bGx5IGJlIGNsZWFyZWQgaW4gX191ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsKCkgaW52b2tlZCBi
+eSB0aGUgZnVsbA0KPiByZXNldCBhbmQgcmVzdG9yZSBmcm9tIGVycl9oYW5kbGVyLg0KPiANCj4g
+UmV2aWV3ZWQtYnk6IEFzdXRvc2ggRGFzIDxhc3V0b3NoZEBjb2RlYXVyb3JhLm9yZz4NCj4gU2ln
+bmVkLW9mZi1ieTogQ2FuIEd1byA8Y2FuZ0Bjb2RlYXVyb3JhLm9yZz4NCj4gLS0tDQo+ICBkcml2
+ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIHwgNTUgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrLS0tLS0tLS0tLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmggfCAgMiArKw0K
+PiAgMiBmaWxlcyBjaGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkNCj4g
+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3Np
+L3Vmcy91ZnNoY2QuYw0KPiBpbmRleCBmMGJiM2ZjLi5mYTkwZTE1IDEwMDY0NA0KPiAtLS0gYS9k
+cml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNk
+LmMNCj4gQEAgLTI1MzksNiArMjUzOSwxNCBAQCBzdGF0aWMgaW50IHVmc2hjZF9xdWV1ZWNvbW1h
+bmQoc3RydWN0IFNjc2lfSG9zdCAqaG9zdCwgc3RydWN0IHNjc2lfY21uZCAqY21kKQ0KPiAgCQko
+aGJhLT5jbGtfZ2F0aW5nLnN0YXRlICE9IENMS1NfT04pKTsNCj4gIA0KPiAgCWxyYnAgPSAmaGJh
+LT5scmJbdGFnXTsNCj4gKwlpZiAodW5saWtlbHkobHJicC0+aW5fdXNlKSkgew0KPiArCQlpZiAo
+aGJhLT5wbV9vcF9pbl9wcm9ncmVzcykNCj4gKwkJCXNldF9ob3N0X2J5dGUoY21kLCBESURfQkFE
+X1RBUkdFVCk7DQo+ICsJCWVsc2UNCj4gKwkJCWVyciA9IFNDU0lfTUxRVUVVRV9IT1NUX0JVU1k7
+DQo+ICsJCXVmc2hjZF9yZWxlYXNlKGhiYSk7DQo+ICsJCWdvdG8gb3V0Ow0KPiArCX0NCj4gIA0K
+PiAgCVdBUk5fT04obHJicC0+Y21kKTsNCj4gIAlscmJwLT5jbWQgPSBjbWQ7DQo+IEBAIC0yNzgx
+LDYgKzI3ODksMTEgQEAgc3RhdGljIGludCB1ZnNoY2RfZXhlY19kZXZfY21kKHN0cnVjdCB1ZnNf
+aGJhICpoYmEsDQo+ICANCj4gIAlpbml0X2NvbXBsZXRpb24oJndhaXQpOw0KPiAgCWxyYnAgPSAm
+aGJhLT5scmJbdGFnXTsNCj4gKwlpZiAodW5saWtlbHkobHJicC0+aW5fdXNlKSkgew0KPiArCQll
+cnIgPSAtRUJVU1k7DQo+ICsJCWdvdG8gb3V0Ow0KPiArCX0NCj4gKw0KPiAgCVdBUk5fT04obHJi
+cC0+Y21kKTsNCj4gIAllcnIgPSB1ZnNoY2RfY29tcG9zZV9kZXZfY21kKGhiYSwgbHJicCwgY21k
+X3R5cGUsIHRhZyk7DQo+ICAJaWYgKHVubGlrZWx5KGVycikpDQo+IEBAIC0yNzk3LDYgKzI4MTAs
+NyBAQCBzdGF0aWMgaW50IHVmc2hjZF9leGVjX2Rldl9jbWQoc3RydWN0IHVmc19oYmEgKmhiYSwN
+Cj4gIA0KPiAgCWVyciA9IHVmc2hjZF93YWl0X2Zvcl9kZXZfY21kKGhiYSwgbHJicCwgdGltZW91
+dCk7DQo+ICANCj4gK291dDoNCj4gIAl1ZnNoY2RfYWRkX3F1ZXJ5X3VwaXVfdHJhY2UoaGJhLCB0
+YWcsDQo+ICAJCQllcnIgPyAicXVlcnlfY29tcGxldGVfZXJyIiA6ICJxdWVyeV9jb21wbGV0ZSIp
+Ow0KPiAgDQo+IEBAIC00OTMyLDYgKzQ5NDYsNyBAQCBzdGF0aWMgdm9pZCBfX3Vmc2hjZF90cmFu
+c2Zlcl9yZXFfY29tcGwoc3RydWN0IHVmc19oYmEgKmhiYSwNCj4gIA0KPiAgCWZvcl9lYWNoX3Nl
+dF9iaXQoaW5kZXgsICZjb21wbGV0ZWRfcmVxcywgaGJhLT5udXRycykgew0KPiAgCQlscmJwID0g
+JmhiYS0+bHJiW2luZGV4XTsNCj4gKwkJbHJicC0+aW5fdXNlID0gZmFsc2U7DQo+ICAJCWxyYnAt
+PmNvbXBsX3RpbWVfc3RhbXAgPSBrdGltZV9nZXQoKTsNCj4gIAkJY21kID0gbHJicC0+Y21kOw0K
+PiAgCQlpZiAoY21kKSB7DQo+IEBAIC02Mzc0LDggKzYzODksMTIgQEAgc3RhdGljIGludCB1ZnNo
+Y2RfaXNzdWVfZGV2bWFuX3VwaXVfY21kKHN0cnVjdCB1ZnNfaGJhICpoYmEsDQo+ICANCj4gIAlp
+bml0X2NvbXBsZXRpb24oJndhaXQpOw0KPiAgCWxyYnAgPSAmaGJhLT5scmJbdGFnXTsNCj4gLQlX
+QVJOX09OKGxyYnAtPmNtZCk7DQo+ICsJaWYgKHVubGlrZWx5KGxyYnAtPmluX3VzZSkpIHsNCj4g
+KwkJZXJyID0gLUVCVVNZOw0KPiArCQlnb3RvIG91dDsNCj4gKwl9DQo+ICANCj4gKwlXQVJOX09O
+KGxyYnAtPmNtZCk7DQo+ICAJbHJicC0+Y21kID0gTlVMTDsNCj4gIAlscmJwLT5zZW5zZV9idWZm
+bGVuID0gMDsNCj4gIAlscmJwLT5zZW5zZV9idWZmZXIgPSBOVUxMOw0KPiBAQCAtNjQ0Nyw2ICs2
+NDY2LDcgQEAgc3RhdGljIGludCB1ZnNoY2RfaXNzdWVfZGV2bWFuX3VwaXVfY21kKHN0cnVjdCB1
+ZnNfaGJhICpoYmEsDQo+ICAJCX0NCj4gIAl9DQo+ICANCj4gK291dDoNCj4gIAlibGtfcHV0X3Jl
+cXVlc3QocmVxKTsNCj4gIG91dF91bmxvY2s6DQo+ICAJdXBfcmVhZCgmaGJhLT5jbGtfc2NhbGlu
+Z19sb2NrKTsNCj4gQEAgLTY2OTYsMTYgKzY3MTYsNiBAQCBzdGF0aWMgaW50IHVmc2hjZF9hYm9y
+dChzdHJ1Y3Qgc2NzaV9jbW5kICpjbWQpDQo+ICAJCUJVRygpOw0KPiAgCX0NCj4gIA0KPiAtCS8q
+DQo+IC0JICogVGFzayBhYm9ydCB0byB0aGUgZGV2aWNlIFctTFVOIGlzIGlsbGVnYWwuIFdoZW4g
+dGhpcyBjb21tYW5kDQo+IC0JICogd2lsbCBmYWlsLCBkdWUgdG8gc3BlYyB2aW9sYXRpb24sIHNj
+c2kgZXJyIGhhbmRsaW5nIG5leHQgc3RlcA0KPiAtCSAqIHdpbGwgYmUgdG8gc2VuZCBMVSByZXNl
+dCB3aGljaCwgYWdhaW4sIGlzIGEgc3BlYyB2aW9sYXRpb24uDQo+IC0JICogVG8gYXZvaWQgdGhl
+c2UgdW5uZWNlc3NhcnkvaWxsZWdhbCBzdGVwIHdlIHNraXAgdG8gdGhlIGxhc3QgZXJyb3INCj4g
+LQkgKiBoYW5kbGluZyBzdGFnZTogcmVzZXQgYW5kIHJlc3RvcmUuDQo+IC0JICovDQo+IC0JaWYg
+KGxyYnAtPmx1biA9PSBVRlNfVVBJVV9VRlNfREVWSUNFX1dMVU4pDQo+IC0JCXJldHVybiB1ZnNo
+Y2RfZWhfaG9zdF9yZXNldF9oYW5kbGVyKGNtZCk7DQo+IC0NCj4gIAl1ZnNoY2RfaG9sZChoYmEs
+IGZhbHNlKTsNCj4gIAlyZWcgPSB1ZnNoY2RfcmVhZGwoaGJhLCBSRUdfVVRQX1RSQU5TRkVSX1JF
+UV9ET09SX0JFTEwpOw0KPiAgCS8qIElmIGNvbW1hbmQgaXMgYWxyZWFkeSBhYm9ydGVkL2NvbXBs
+ZXRlZCwgcmV0dXJuIFNVQ0NFU1MgKi8NCj4gQEAgLTY3MjYsNyArNjczNiw3IEBAIHN0YXRpYyBp
+bnQgdWZzaGNkX2Fib3J0KHN0cnVjdCBzY3NpX2NtbmQgKmNtZCkNCj4gIAkgKiB0byByZWR1Y2Ug
+cmVwZWF0ZWQgcHJpbnRvdXRzLiBGb3Igb3RoZXIgYWJvcnRlZCByZXF1ZXN0cyBvbmx5IHByaW50
+DQo+ICAJICogYmFzaWMgZGV0YWlscy4NCj4gIAkgKi8NCj4gLQlzY3NpX3ByaW50X2NvbW1hbmQo
+aGJhLT5scmJbdGFnXS5jbWQpOw0KPiArCXNjc2lfcHJpbnRfY29tbWFuZChjbWQpOw0KPiAgCWlm
+ICghaGJhLT5yZXFfYWJvcnRfY291bnQpIHsNCj4gIAkJdWZzaGNkX3VwZGF0ZV9yZWdfaGlzdCgm
+aGJhLT51ZnNfc3RhdHMudGFza19hYm9ydCwgMCk7DQo+ICAJCXVmc2hjZF9wcmludF9ob3N0X3Jl
+Z3MoaGJhKTsNCj4gQEAgLTY3NDUsNiArNjc1NSwyNyBAQCBzdGF0aWMgaW50IHVmc2hjZF9hYm9y
+dChzdHJ1Y3Qgc2NzaV9jbW5kICpjbWQpDQo+ICAJCWdvdG8gY2xlYW51cDsNCj4gIAl9DQo+ICAN
+Cj4gKwkvKg0KPiArCSAqIFRhc2sgYWJvcnQgdG8gdGhlIGRldmljZSBXLUxVTiBpcyBpbGxlZ2Fs
+LiBXaGVuIHRoaXMgY29tbWFuZA0KPiArCSAqIHdpbGwgZmFpbCwgZHVlIHRvIHNwZWMgdmlvbGF0
+aW9uLCBzY3NpIGVyciBoYW5kbGluZyBuZXh0IHN0ZXANCj4gKwkgKiB3aWxsIGJlIHRvIHNlbmQg
+TFUgcmVzZXQgd2hpY2gsIGFnYWluLCBpcyBhIHNwZWMgdmlvbGF0aW9uLg0KPiArCSAqIFRvIGF2
+b2lkIHRoZXNlIHVubmVjZXNzYXJ5L2lsbGVnYWwgc3RlcHMsIGZpcnN0IHdlIGNsZWFuIHVwDQo+
+ICsJICogdGhlIGxyYiB0YWtlbiBieSB0aGlzIGNtZCBhbmQgbWFyayB0aGUgbHJiIGFzIGluX3Vz
+ZSwgdGhlbg0KPiArCSAqIHF1ZXVlIHRoZSBlaF93b3JrIGFuZCBiYWlsLg0KPiArCSAqLw0KPiAr
+CWlmIChscmJwLT5sdW4gPT0gVUZTX1VQSVVfVUZTX0RFVklDRV9XTFVOKSB7DQo+ICsJCXNwaW5f
+bG9ja19pcnFzYXZlKGhvc3QtPmhvc3RfbG9jaywgZmxhZ3MpOw0KPiArCQlpZiAobHJicC0+Y21k
+KSB7DQo+ICsJCQlfX3Vmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwoaGJhLCAoMVVMIDw8IHRhZykp
+Ow0KDQpUaGUgdGltZWQgb3V0ICJ0YWciIGlzIGNsZWFyZWQgb25jZSBoZXJlLg0KDQo+ICsJCQlf
+X3NldF9iaXQodGFnLCAmaGJhLT5vdXRzdGFuZGluZ19yZXFzKTsNCj4gKwkJCWxyYnAtPmluX3Vz
+ZSA9IHRydWU7DQo+ICsJCQloYmEtPmZvcmNlX3Jlc2V0ID0gdHJ1ZTsNCj4gKwkJCXVmc2hjZF9z
+Y2hlZHVsZV9laF93b3JrKGhiYSk7DQoNClRoZSBzYW1lICJ0YWciIHdvdWxkIGJlIGNsZWFyZWQg
+YWdhaW4gaW4gZXJyb3IgaGFuZGxlciB3aXRoDQpfX3Vmc2hjZF90cmFuc2Zlcl9yZXFfY29tcGwo
+KS4NCg0KSW4gX191ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsLCBoYmEtPmNsa19zY2FsaW5nLmFj
+dGl2ZV9yZXFzIHdpbGwgYmUNCmRlY3JlYXNlZCBpZiBjbGstc2NhbGluZyBpcyBzdXBwb3J0ZWQg
+YXMgYmVsb3csDQoNCglpZiAodWZzaGNkX2lzX2Nsa3NjYWxpbmdfc3VwcG9ydGVkKGhiYSkpDQoJ
+CWhiYS0+Y2xrX3NjYWxpbmcuYWN0aXZlX3JlcXMtLTsNCg0KV2lsbCBiZSB0aGUgaGJhLT5jbGtf
+c2NhbGluZy5hY3RpdmVfcmVxcyB2YWx1ZSBiZWNvbWUgYWJub3JtYWwgYnkgdGhpcw0KZmxvdz8N
+Cg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0KPiArCQl9DQo+ICsJCXNwaW5fdW5sb2NrX2lycXJl
+c3RvcmUoaG9zdC0+aG9zdF9sb2NrLCBmbGFncyk7DQo+ICsJCWdvdG8gb3V0Ow0KPiArCX0NCj4g
+Kw0KPiAgCS8qIFNraXAgdGFzayBhYm9ydCBpbiBjYXNlIHByZXZpb3VzIGFib3J0cyBmYWlsZWQg
+YW5kIHJlcG9ydCBmYWlsdXJlICovDQo+ICAJaWYgKGxyYnAtPnJlcV9hYm9ydF9za2lwKQ0KPiAg
+CQllcnIgPSAtRUlPOw0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaCBi
+L2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmgNCj4gaW5kZXggMWU2ODBiZi4uNjZlNTMzOCAxMDA2
+NDQNCj4gLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaA0KPiArKysgYi9kcml2ZXJzL3Nj
+c2kvdWZzL3Vmc2hjZC5oDQo+IEBAIC0xNjMsNiArMTYzLDcgQEAgc3RydWN0IHVmc19wbV9sdmxf
+c3RhdGVzIHsNCj4gICAqIEBjcnlwdG9fa2V5X3Nsb3Q6IHRoZSBrZXkgc2xvdCB0byB1c2UgZm9y
+IGlubGluZSBjcnlwdG8gKC0xIGlmIG5vbmUpDQo+ICAgKiBAZGF0YV91bml0X251bTogdGhlIGRh
+dGEgdW5pdCBudW1iZXIgZm9yIHRoZSBmaXJzdCBibG9jayBmb3IgaW5saW5lIGNyeXB0bw0KPiAg
+ICogQHJlcV9hYm9ydF9za2lwOiBza2lwIHJlcXVlc3QgYWJvcnQgdGFzayBmbGFnDQo+ICsgKiBA
+aW5fdXNlOiBpbmRpY2F0ZXMgdGhhdCB0aGlzIGxyYiBpcyBzdGlsbCBpbiB1c2UNCj4gICAqLw0K
+PiAgc3RydWN0IHVmc2hjZF9scmIgew0KPiAgCXN0cnVjdCB1dHBfdHJhbnNmZXJfcmVxX2Rlc2Mg
+KnV0cl9kZXNjcmlwdG9yX3B0cjsNCj4gQEAgLTE5Miw2ICsxOTMsNyBAQCBzdHJ1Y3QgdWZzaGNk
+X2xyYiB7DQo+ICAjZW5kaWYNCj4gIA0KPiAgCWJvb2wgcmVxX2Fib3J0X3NraXA7DQo+ICsJYm9v
+bCBpbl91c2U7DQo+ICB9Ow0KPiAgDQo+ICAvKioNCg0K
 
-This is my source for those architectures where debian doesn't ship
-cross compilers.  I'm stuck with mostly gcc 7/8 so I'm glad to see there
-have been some major updates.
