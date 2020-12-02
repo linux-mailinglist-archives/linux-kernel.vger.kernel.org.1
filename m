@@ -2,187 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B558F2CBF59
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C232CBF53
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730293AbgLBOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
+        id S1728017AbgLBOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:15:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730230AbgLBOQ1 (ORCPT
+        with ESMTP id S1726071AbgLBOPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:16:27 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B633C0613D4;
-        Wed,  2 Dec 2020 06:15:41 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id d5so1081762qtn.0;
-        Wed, 02 Dec 2020 06:15:41 -0800 (PST)
+        Wed, 2 Dec 2020 09:15:24 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC575C0613D4;
+        Wed,  2 Dec 2020 06:14:43 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id o1so4140974wrx.7;
+        Wed, 02 Dec 2020 06:14:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=JO5G/IkG6GgPh3ghyr43j2FVouwU32gJN/Z35d3g1/g=;
-        b=ocw9Po0rQLS9w8cOPfIUJoA23zi1yY7lunB+qRmwbjj7zkJdWBXpZ4kvTNPvOBG5Ec
-         Ko4TTJzA7A0bK/yHbHdSdO+ouwlZITLm+jg+ZO+g+UNF1p3iH8UITqiiIvg60g18l0aH
-         02evKYq0oAspTBNH1NDcIxW01L2pB4x6Gb2JPnMqu7HODb0xp0/uQsE+cFUi8/5RRDVe
-         C2vMAAJvb+BS1O9SPuNwPu/R1pUNhcaOcHLLmJc2W8vMRWOu6Awk1I5lWwo6wkZ7T2rm
-         XdkkQpNF5qhQ49WTjbg0tlfkFWdwc24McHt/xqW8jB3x6/Xsf6fwcW7PW2uKnHkyKqeq
-         ublQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Y09Yc6Gy3QraLOEdgVpi1+sbCU87xyp9KMOciYZdYPA=;
+        b=LNF0QjiPxwKDMiRR+dopQBjFpbGq4dzE9u/irqWJu5T5XzfQbwmo9n9PGB7Mo7HtCo
+         3It45M6Rm1BkVuNDDaukQ85737dlDJfVSMQT9Ofmw2rSWYZI+59dp17Zsv4Ao9UdFkCT
+         j9nMQ/LJ06ItQ0+0q0DS3siV822j3qLalfmQGki93R/JJUrIr8ayLEqOkUhRioPpjZi6
+         qdJnjtF7tAiWk3iNkEgxFYgS1BT2KVo5WUFVGFqfKdbrnovwGikOo57zfFq+1ZGBv6ZK
+         EPWO6Ql9DrcBlc4n+NhNvfKvRtR81MnHJBr7rhk5cM+agph5kRdl5Ixj332dzHz5K5aV
+         hwvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JO5G/IkG6GgPh3ghyr43j2FVouwU32gJN/Z35d3g1/g=;
-        b=P72XkkUwRCS/SOCw51UOkxa0Wf4FW1/jqpUONewBgWFRbIXYLEZJPtrp5DEdK95HU5
-         FwAmxZZHslwhEjv6dzpBBpgoJ1lhi5lLytOfTs7azOVs3OgHmVyvULC4EueaLuoM7bUq
-         bClgY39NfdOxRn4enY+Ny5tVmynAE/pAAk9LIlmH9AenbNh3mVjyBjb/osHdN2foyQo8
-         hA9XDHzy9hIxfLo5J10T6e/J5OSfsmAz28CdxmaKGJd/FT2C6H/mDawn4VHr1Mo/fvaR
-         QTZI0Ys7CTzIuWpLXYAd87hLWPYG9StSaUq+jJvmHL0X9+XYpOR2cnnd2GQWMr4+Yuw+
-         IGdA==
-X-Gm-Message-State: AOAM530uHxabXHJGeil6XbBuc5AL43cxRI3+h2TdYw3BFqyUsW2/w4LA
-        1ojq1+qmcgg1Kzdz7/shVGA=
-X-Google-Smtp-Source: ABdhPJy8By0l+UMxGhj61GjcBko/xRKvQNeNOtG5KwPxxHHneaQG6eE5WQZtdwGQn4R6UygG4L80Fg==
-X-Received: by 2002:ac8:120c:: with SMTP id x12mr2749121qti.1.1606918540477;
-        Wed, 02 Dec 2020 06:15:40 -0800 (PST)
-Received: from localhost.localdomain ([177.194.72.74])
-        by smtp.gmail.com with ESMTPSA id v5sm1671168qkf.133.2020.12.02.06.15.37
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y09Yc6Gy3QraLOEdgVpi1+sbCU87xyp9KMOciYZdYPA=;
+        b=EQCd0FlKvs6B1T+y8XBvZbCzhTns8bevogl3WTDx/o9EgoLRW0DdMByhKCoZTla13u
+         Bw5T4LRaKM4OFOBR24Vl1N00OP+f4kS/2G1bsnQEJQDaARdf6+88840gQnKNXwjJ0Mvx
+         EZ/9IXyY/a8/D5QTl0WkEbpvFU6gbSPkIOWYwd9UIqtiiUPGPQ+droH1UxocK3GhqTc8
+         oIKVz8EJh3A2GLYrgdHFaKWqmyj/QPoZrac+mAJSrnhCXYmTLnYKXOag7ncprNwr2B0Y
+         v4Sy4JN5ewD79uXteQFhTuQRJQR7FAJ4pNle7usxCw08JDekd+ShlqpHFz8AMBN6hXvY
+         MtAA==
+X-Gm-Message-State: AOAM532UHl+htfOlk5zKpFmo/V/AKRzL+oLMXvKDntpSo9ujFlv+TArO
+        OB+6tB1YhyTyKYu7mRUanIY=
+X-Google-Smtp-Source: ABdhPJzvfSW63NIYgCI5jR4y00vXV9+cKa8GVNmTDBb9hfiIlPMuaihyZaPr6TcAC+oiCi4K4g7T6Q==
+X-Received: by 2002:a05:6000:82:: with SMTP id m2mr3707931wrx.314.1606918482270;
+        Wed, 02 Dec 2020 06:14:42 -0800 (PST)
+Received: from andrea (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
+        by smtp.gmail.com with ESMTPSA id o2sm2247428wrq.37.2020.12.02.06.14.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 06:15:39 -0800 (PST)
-From:   Fabio Estevam <festevam@gmail.com>
-To:     p.zabel@pengutronix.de
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        hverkuil-cisco@xs4all.nl, andy.shevchenko@gmail.com,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v4] media: coda: Convert the driver to DT-only
-Date:   Wed,  2 Dec 2020 11:13:26 -0300
-Message-Id: <20201202141326.32645-1-festevam@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 02 Dec 2020 06:14:41 -0800 (PST)
+Date:   Wed, 2 Dec 2020 15:14:33 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>
+Subject: Re: [PATCH v2 2/7] Drivers: hv: vmbus: Avoid double fetch of msgtype
+ in vmbus_on_msg_dpc()
+Message-ID: <20201202141433.GA24359@andrea>
+References: <20201202092214.13520-1-parri.andrea@gmail.com>
+ <20201202092214.13520-3-parri.andrea@gmail.com>
+ <20201202122254.zjhu3cfcq3zwvmvu@liuwe-devbox-debian-v2>
+ <20201202133716.GA22763@andrea>
+ <20201202134004.5tgrbyijrhvwwmk2@liuwe-devbox-debian-v2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202134004.5tgrbyijrhvwwmk2@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 5.10-rc1 i.MX is a devicetree-only platform, so simplify the code
-by removing the unused non-DT support.
+On Wed, Dec 02, 2020 at 01:40:04PM +0000, Wei Liu wrote:
+> On Wed, Dec 02, 2020 at 02:37:16PM +0100, Andrea Parri wrote:
+> > > > @@ -1072,12 +1073,19 @@ void vmbus_on_msg_dpc(unsigned long data)
+> > > >  		/* no msg */
+> > > >  		return;
+> > > >  
+> > > > +	/*
+> > > > +	 * The hv_message object is in memory shared with the host.  The host
+> > > > +	 * could erroneously or maliciously modify such object.  Make sure to
+> > > > +	 * validate its fields and avoid double fetches whenever feasible.
+> > > > +	 */
+> > > > +
+> > > >  	hdr = (struct vmbus_channel_message_header *)msg->u.payload;
+> > > > +	msgtype = hdr->msgtype;
+> > > 
+> > > Should READ_ONCE be used here?
+> > 
+> > I think it should.  Thank you for pointing this out.
+> 
+> Glad I can help.
+> 
+> The same comment applies to other patches as well, of course.
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
-Changes since v3:
-- Add a explicit OF dependency - Andy
+(As discussed offline/for reference:) I can spot a similar case in
+patch #3; however, #4 is supposed to make that access 'non-shared'.
 
- drivers/media/platform/Kconfig            |  2 +-
- drivers/media/platform/coda/coda-common.c | 27 ++---------------------
- include/linux/platform_data/media/coda.h  | 14 ------------
- 3 files changed, 3 insertions(+), 40 deletions(-)
- delete mode 100644 include/linux/platform_data/media/coda.h
+I should probably just squash patches #3 and #4; I'll try to do so
+in v3...
 
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index ffffef2267f4..9fdbfea06087 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -201,7 +201,7 @@ if V4L_MEM2MEM_DRIVERS
- 
- config VIDEO_CODA
- 	tristate "Chips&Media Coda multi-standard codec IP"
--	depends on VIDEO_DEV && VIDEO_V4L2 && (ARCH_MXC || COMPILE_TEST)
-+	depends on VIDEO_DEV && VIDEO_V4L2 && OF && (ARCH_MXC || COMPILE_TEST)
- 	select SRAM
- 	select VIDEOBUF2_DMA_CONTIG
- 	select VIDEOBUF2_VMALLOC
-diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
-index d30eafea701d..995e95272e51 100644
---- a/drivers/media/platform/coda/coda-common.c
-+++ b/drivers/media/platform/coda/coda-common.c
-@@ -25,7 +25,6 @@
- #include <linux/slab.h>
- #include <linux/videodev2.h>
- #include <linux/of.h>
--#include <linux/platform_data/media/coda.h>
- #include <linux/ratelimit.h>
- #include <linux/reset.h>
- 
-@@ -3102,13 +3101,6 @@ static const struct coda_devtype coda_devdata[] = {
- 	},
- };
- 
--static const struct platform_device_id coda_platform_ids[] = {
--	{ .name = "coda-imx27", .driver_data = CODA_IMX27 },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(platform, coda_platform_ids);
--
--#ifdef CONFIG_OF
- static const struct of_device_id coda_dt_ids[] = {
- 	{ .compatible = "fsl,imx27-vpu", .data = &coda_devdata[CODA_IMX27] },
- 	{ .compatible = "fsl,imx51-vpu", .data = &coda_devdata[CODA_IMX51] },
-@@ -3118,14 +3110,9 @@ static const struct of_device_id coda_dt_ids[] = {
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, coda_dt_ids);
--#endif
- 
- static int coda_probe(struct platform_device *pdev)
- {
--	const struct of_device_id *of_id =
--			of_match_device(of_match_ptr(coda_dt_ids), &pdev->dev);
--	const struct platform_device_id *pdev_id;
--	struct coda_platform_data *pdata = pdev->dev.platform_data;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct gen_pool *pool;
- 	struct coda_dev *dev;
-@@ -3135,14 +3122,7 @@ static int coda_probe(struct platform_device *pdev)
- 	if (!dev)
- 		return -ENOMEM;
- 
--	pdev_id = of_id ? of_id->data : platform_get_device_id(pdev);
--
--	if (of_id)
--		dev->devtype = of_id->data;
--	else if (pdev_id)
--		dev->devtype = &coda_devdata[pdev_id->driver_data];
--	else
--		return -EINVAL;
-+	dev->devtype = of_device_get_match_data(&pdev->dev);
- 
- 	dev->dev = &pdev->dev;
- 	dev->clk_per = devm_clk_get(&pdev->dev, "per");
-@@ -3200,10 +3180,8 @@ static int coda_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* Get IRAM pool from device tree or platform data */
-+	/* Get IRAM pool from device tree */
- 	pool = of_gen_pool_get(np, "iram", 0);
--	if (!pool && pdata)
--		pool = gen_pool_get(pdata->iram_dev, NULL);
- 	if (!pool) {
- 		dev_err(&pdev->dev, "iram pool not available\n");
- 		return -ENOMEM;
-@@ -3342,7 +3320,6 @@ static struct platform_driver coda_driver = {
- 		.of_match_table = of_match_ptr(coda_dt_ids),
- 		.pm	= &coda_pm_ops,
- 	},
--	.id_table = coda_platform_ids,
- };
- 
- module_platform_driver(coda_driver);
-diff --git a/include/linux/platform_data/media/coda.h b/include/linux/platform_data/media/coda.h
-deleted file mode 100644
-index 293b61b60c9d..000000000000
---- a/include/linux/platform_data/media/coda.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Copyright (C) 2013 Philipp Zabel, Pengutronix
-- */
--#ifndef PLATFORM_CODA_H
--#define PLATFORM_CODA_H
--
--struct device;
--
--struct coda_platform_data {
--	struct device *iram_dev;
--};
--
--#endif
--- 
-2.17.1
-
+Thanks,
+  Andrea
