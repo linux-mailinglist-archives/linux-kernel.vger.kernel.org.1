@@ -2,174 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622AE2CC13C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD352CC144
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgLBPsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:48:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728544AbgLBPsY (ORCPT
+        id S1730497AbgLBPtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:49:08 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33165 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727677AbgLBPtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:48:24 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897A3C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:47:43 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id p8so4512306wrx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:47:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hZCo1m8g7QPYnEX3m7SsmQm546vtQp+mN348j0Xkt6I=;
-        b=WozaPSMeOVI9euTVFOarywGpxKAPZvKOXOEWQtvyps7gdpv6liS1NZR50dH857phu2
-         Y1bMq0kgHUwjXNWnESQfr3PxIZEMqAohaQBnW3/nd5DWWL0S8YiX4k2whD+N+KHoeFop
-         17/44eB5Xm0ZftGesDSIUrNQbgxc63hr9WR9P18dHP2Yda+6R4cQEaB0jjNIxAR/g1W8
-         CXSxIStqcYpyTXP8aiLtE9H/hTG0YMbcil0gG63TyDzHxLfKpu8LoaL2NjmbWB8Bx3hS
-         YTce5kYBVLCHvO2X2wSEbN2x3JqL4Li+z851OEp0eKF9dELEArBV1erCImBwUK+G++v5
-         dmcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hZCo1m8g7QPYnEX3m7SsmQm546vtQp+mN348j0Xkt6I=;
-        b=iyM3qFOE1A9zDvjc06s6zVc7QhaVZbtYkEMVQVHCDXg2+8yVWRZJ0n3/HOLFhm9/8E
-         OE+J/w/8rPrJ+usAhD7FVcI1CoN4JAE7DRF9WyrOaGYKtlzHxYnBYjwspviqqWB/6esu
-         xduWfezmXBkQ9YaLhXPTqX2c/tZ2KQ4ldpU4KCrSWPREPV3mPgHauNl3mSKrnxEwEJeF
-         NDIaW3owH78JALvgTZ409YI3sqHWldgVDDWoWIirhBurEGwm/b7dfRbCahnO8IUX+fo9
-         SgaMvlwL6S9FOQUii00w2mrw6WmvEQEgronFidBFvfYOI9SyZZNs/Q3C1XsYjgyv3+tM
-         3Z+w==
-X-Gm-Message-State: AOAM533f6pnbs/TzOIYPlVk+ReOn0qC8Du2UX+vfwtvLC5lrVjIKQ2CS
-        jHuEwW+13aSTIDxv6Kv9wwUMdpq57Q3AkKLe
-X-Google-Smtp-Source: ABdhPJzPDRn6F8yI8MQnEqRIUcKoTyE96fFWrfcQlIjRGQGvsOzW1c+R+URB/NtEvglv2Rk0vXYh+w==
-X-Received: by 2002:adf:f102:: with SMTP id r2mr4198893wro.315.1606924061942;
-        Wed, 02 Dec 2020 07:47:41 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id r13sm2444950wrs.6.2020.12.02.07.47.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Dec 2020 07:47:41 -0800 (PST)
-Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8250: add apr and its services
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201201153706.13450-1-srinivas.kandagatla@linaro.org>
- <20201201153706.13450-2-srinivas.kandagatla@linaro.org>
- <X8aYkxFMf+dzNRNt@builder.lan>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <6cbf6754-56bc-c35a-038e-08903c2e09d2@linaro.org>
-Date:   Wed, 2 Dec 2020 15:47:40 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 2 Dec 2020 10:49:08 -0500
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailnew.nyi.internal (Postfix) with ESMTP id DFCA0580332;
+        Wed,  2 Dec 2020 10:48:21 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Wed, 02 Dec 2020 10:48:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=uz5tx6JJZjQqRBY1wNhOnZvzzfm
+        C/Lfn/oSOwP2IkT8=; b=Z3pWWe9FSw50pShNnh4c7pQV/o2Gg0E1ADAczlTSMn5
+        qjjMftjnfqlZ6X99WP7By8v1UydluJiVE3idiPJte5wulTVPLtQ7fRN3EfsVImlV
+        SsgomEyE6vf8tgDSu32m0U2yguzqmOOEhaSEIQ8ZZcUYPkLcImqpOF990inWdV9I
+        npSB+bNDS21WYK7FSuOthFRFC9ABjyEkOSsF5o+2bryBXKnKj2P+75+I7NVaDgDf
+        ELYXaBRPWr7+3wWzcbi1auITTDoXQCTW2yvfmVkwStNnlWCcnvVcF/mcBA2SGb9u
+        WpwkTQxcFewvo8oog/+StttyZVuF2P+unDC4ASyqe7Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=uz5tx6
+        JJZjQqRBY1wNhOnZvzzfmC/Lfn/oSOwP2IkT8=; b=Xq6cywrRM5HSQp9rRf29V2
+        w1sPoPUakfLix8M1JdprS/Jxt8aXInmyUkoxhzqyXzU9S5JJsHHlrOpfJMdzdHkR
+        +/UySKhVaOUJdb9qMHHRzy3XSseyTVPEr/s+SYi0gKnxP7Z+JSIWc7VqcXkvMFFZ
+        MsS6onf6SPTEdBZGglLb5Kk7wHnys6KXz9nN1Gf9cWap2UmcuFMgTyRjW1YrfqHH
+        U4m9PGIjVKqubZLd6xV3MgX0UuytHz1A7Srb9DydmTFs74IbVX3kcmmfPODja43G
+        qntePIFr3c3l1yx2W08tVYy8OMRVhFzsLnN04PEJ0/gy+BKfDCJebWwIkHWmyvwg
+        ==
+X-ME-Sender: <xms:Q7fHX963KcXgoTuiNX4nObysjv7ItUz5S-lsbt0HbkyOtzMerpny8Q>
+    <xme:Q7fHXx5-y9Vq-QwXXLW3Okn8RahCNj_HSeb010NK_vXLCoiNjvoVGB6YiTKnWKvnI
+    T_-kIRdEDV2uB7WOV4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:Q7fHX5e0hZDW8fBBYxUnRkCYn1JcIeUEiYdkIRomGrWaVeXtKnNCAQ>
+    <xmx:Q7fHX1Ccge-lPO2wbq36lHMq7sthC8k3fZT3ij0LUtbOyZwtoJBkBw>
+    <xmx:Q7fHX8-joJNh5fkpKbIw2aKuNhb1aDSH1z33sv918ZvyzLUrgGMdQQ>
+    <xmx:RbfHX2YWxqMm1yOkSKXdh9n2RCPvbRE93BjJ1U-dAPsZ5lKRVnP6sA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 66015108005B;
+        Wed,  2 Dec 2020 10:48:19 -0500 (EST)
+Date:   Wed, 2 Dec 2020 16:48:18 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 13/19] media: sunxi: Add support for the A31 MIPI
+ CSI-2 controller
+Message-ID: <20201202154818.bf72m2firemyc5ve@gilmour>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-14-paul.kocialkowski@bootlin.com>
+ <20201201122038.bxk3vu2w3mg43ayq@gilmour>
+ <X8eoX+M650sMXqpx@aptenodytes>
 MIME-Version: 1.0
-In-Reply-To: <X8aYkxFMf+dzNRNt@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kkjqa5btqozg6oqw"
+Content-Disposition: inline
+In-Reply-To: <X8eoX+M650sMXqpx@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many thanks Bjorn for review,
 
-On 01/12/2020 19:25, Bjorn Andersson wrote:
-> On Tue 01 Dec 09:37 CST 2020, Srinivas Kandagatla wrote:
-> 
->> Add apr node and its associated services required for audio on RB5.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sm8250.dtsi | 56 ++++++++++++++++++++++++++++
->>   1 file changed, 56 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> index 65acd1f381eb..3b4e98b13d36 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> @@ -11,6 +11,8 @@
->>   #include <dt-bindings/mailbox/qcom-ipcc.h>
->>   #include <dt-bindings/power/qcom-aoss-qmp.h>
->>   #include <dt-bindings/power/qcom-rpmpd.h>
->> +#include <dt-bindings/soc/qcom,apr.h>
->> +#include <dt-bindings/sound/qcom,q6afe.h>
-> 
-> Please move this line one step down to maintain the alphabetical sort
-> order.
+--kkjqa5btqozg6oqw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I agree with all the comments on this patch as well as other patches, 
-will send v2 with those fixed!
+On Wed, Dec 02, 2020 at 03:44:47PM +0100, Paul Kocialkowski wrote:
+> > > +static int __maybe_unused sun6i_mipi_csi2_suspend(struct device *dev)
+> > > +{
+> > > +	struct sun6i_mipi_csi2_dev *cdev =3D dev_get_drvdata(dev);
+> > > +
+> > > +	clk_disable_unprepare(cdev->clk_mod);
+> > > +	clk_disable_unprepare(cdev->clk_bus);
+> > > +	reset_control_assert(cdev->reset);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int __maybe_unused sun6i_mipi_csi2_resume(struct device *dev)
+> > > +{
+> > > +	struct sun6i_mipi_csi2_dev *cdev =3D dev_get_drvdata(dev);
+> > > +	int ret;
+> > > +
+> > > +	ret =3D reset_control_deassert(cdev->reset);
+> > > +	if (ret) {
+> > > +		dev_err(cdev->dev, "failed to deassert reset\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	ret =3D clk_prepare_enable(cdev->clk_bus);
+> > > +	if (ret) {
+> > > +		dev_err(cdev->dev, "failed to enable bus clock\n");
+> > > +		goto error_reset;
+> > > +	}
+> > > +
+> > > +	ret =3D clk_prepare_enable(cdev->clk_mod);
+> > > +	if (ret) {
+> > > +		dev_err(cdev->dev, "failed to enable module clock\n");
+> > > +		goto error_clk_bus;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +
+> > > +error_clk_bus:
+> > > +	clk_disable_unprepare(cdev->clk_bus);
+> > > +
+> > > +error_reset:
+> > > +	reset_control_assert(cdev->reset);
+> > > +
+> > > +	return ret;
+> > > +}
+> >=20
+> > I'm guessing you set the __maybe_unused attribute because you're using
+> > SET_RUNTIME_PM_OPS, but what would happen if runtime_pm isn't selected?
+> > It looks like you don't handle that case.
+>=20
+> Indeed, __maybe_unused is because of the conditional definition of
+> SET_RUNTIME_PM_OPS. If CONFIG_PM is not selected, then I guess the contro=
+ller
+> wouldn't be powered and wouldn't work. So I should definitely add a Kconf=
+ig
+> dependency on PM then, right?
 
-Thanks,
-srini
-> 
-> Thanks,
-> Bjorn
-> 
->>   #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->>   #include <dt-bindings/thermal/thermal.h>
->>   
->> @@ -2620,6 +2622,60 @@
->>   				label = "lpass";
->>   				qcom,remote-pid = <2>;
->>   
->> +				apr {
->> +					compatible = "qcom,apr-v2";
->> +					qcom,glink-channels = "apr_audio_svc";
->> +					qcom,apr-domain = <APR_DOMAIN_ADSP>;
->> +					#address-cells = <1>;
->> +					#size-cells = <0>;
->> +
->> +					apr-service@3 {
->> +						reg = <APR_SVC_ADSP_CORE>;
->> +						compatible = "qcom,q6core";
->> +						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
->> +					};
->> +
->> +					q6afe: apr-service@4 {
->> +						compatible = "qcom,q6afe";
->> +						reg = <APR_SVC_AFE>;
->> +						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
->> +						q6afedai: dais {
->> +							compatible = "qcom,q6afe-dais";
->> +							#address-cells = <1>;
->> +							#size-cells = <0>;
->> +							#sound-dai-cells = <1>;
->> +						};
->> +
->> +						q6afecc: cc {
->> +							compatible = "qcom,q6afe-clocks";
->> +							#clock-cells = <2>;
->> +						};
->> +					};
->> +
->> +					q6asm: apr-service@7 {
->> +						compatible = "qcom,q6asm";
->> +						reg = <APR_SVC_ASM>;
->> +						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
->> +						q6asmdai: dais {
->> +							compatible = "qcom,q6asm-dais";
->> +							#address-cells = <1>;
->> +							#size-cells = <0>;
->> +							#sound-dai-cells = <1>;
->> +							iommus = <&apps_smmu 0x1801 0x0>;
->> +						};
->> +					};
->> +
->> +					q6adm: apr-service@8 {
->> +						compatible = "qcom,q6adm";
->> +						reg = <APR_SVC_ADM>;
->> +						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
->> +						q6routing: routing {
->> +							compatible = "qcom,q6adm-routing";
->> +							#sound-dai-cells = <0>;
->> +						};
->> +					};
->> +				};
->> +
->>   				fastrpc {
->>   					compatible = "qcom,fastrpc";
->>   					qcom,glink-channels = "fastrpcglink-apps-dsp";
->> -- 
->> 2.21.0
->>
+There's two ways we can do it. What you suggested is one, the other is
+to have something like our SPI driver to call directly the resume
+function if there's no runtime pm support.
+
+Maxime
+
+--kkjqa5btqozg6oqw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e3QgAKCRDj7w1vZxhR
+xTh1AP9duiS3skBTouB0HbqCTA8nOkx0lRrOPWEGWu+5e8k5VgEA0QgCH0eQIVFH
+JiC/huo/36twoas2fjPbzkTE/g2VhQw=
+=EZvC
+-----END PGP SIGNATURE-----
+
+--kkjqa5btqozg6oqw--
