@@ -2,208 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7962CB8B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54402CB8BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388188AbgLBJXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 04:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387839AbgLBJXe (ORCPT
+        id S1729276AbgLBJYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:24:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34996 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725933AbgLBJYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 04:23:34 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FC0C061A48;
-        Wed,  2 Dec 2020 01:22:53 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id k14so2730517wrn.1;
-        Wed, 02 Dec 2020 01:22:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tGTKpRtEDgTWjjR0ZDasoiR9oQMKeKQBkQsRzcL3XPY=;
-        b=L3cAB0l/DmuJ2nD1KkeIY0TyjgmWOgYo95waNaQ29HbAeEzBGFElLnsgJZeYxcs8eL
-         DiyJ1r96WlqSTCarCkFz5W66wKdhbr/kl5nLwVBubJaXrtJ/jTgN/DwnM/u7jtpGSip3
-         ursRedaABghf70vYqFjKkMgKxrdAndtXsQ6yeYLNpRa5+A/WpIoFkg5+vQhN59CSPgfY
-         i93gqDdp6LzAM2KzJ5ob1vTC0LMpoT5KwxBEnGnSy7kmMcZMhs75SCHwjqkWl+dWNxBk
-         tk7jJ/JEyNmcdhfdVw0MlWY0TSPo0LTiFCegM5znOtVvEyT+ZmejP8dpPM0DgP7bteF3
-         60vQ==
+        Wed, 2 Dec 2020 04:24:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606900999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0aZ1JXSOGr3F029oxNT6iT6cI6Gbdl6ZOd26DcQSOUk=;
+        b=GYwwhMoIl1oJ9D2hyxO+1lLi0UOhM8bsWEexvMJugov3cCdwmC2Ym8MoPH4tmywzJ9rJkS
+        wH7H+f44wOam2l9EpGhnrumJgUEs9DOcNSInrGfbm7cZVNd8OZ6XUbkD2WuIQFEk+UGd0v
+        CBJ7xTNRz5MMfIUb9896KkNst1Witxg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-9j5Aj7tbPqObutYb_KW4Ag-1; Wed, 02 Dec 2020 04:23:15 -0500
+X-MC-Unique: 9j5Aj7tbPqObutYb_KW4Ag-1
+Received: by mail-wm1-f72.google.com with SMTP id o203so2392330wmo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 01:23:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tGTKpRtEDgTWjjR0ZDasoiR9oQMKeKQBkQsRzcL3XPY=;
-        b=DciYFp46t7srn3m5OqTdtUYSWarGLa9JwkEOsF3BEvet9TIzZrllewFECIaaOzHD+p
-         D+zTznsrzARucoNKWX/AA+TVqILVD4ljYzULRTGZ5BBVKFqH41tIUnZ6hxTnYbk3maTj
-         z6SNIYF8k97a6AhMoNV8NHegV9315abevwebIrCPY+N7mdfEGi3MhmA3MJNn/8+K4Fjr
-         8FNyIRTp95gpIo0ZTCp2fN2BbYIoW3QDOALsFoDZU4snAiUCI+5JB0rs9GN6ayhEOwhE
-         o9yZrNLZSBqaNiaPL8TmYlD/ltHegFoKjwNXwVeVpe0agZ60MekaCmnedtRUFQ+Vhqjy
-         uiSg==
-X-Gm-Message-State: AOAM531Gr6Rdj1BzQ2rgM5VxoJcAvv5FP7SZaYXDlHX+iVA3rQcbE6Ws
-        7FSAprLaZn3Z/mVr1f4QF40d/lKr2/+ZJA==
-X-Google-Smtp-Source: ABdhPJzKXNZZrdMhtDG2FqZMp4mGgavL3L+5tkWwuSzm5NeZTuSLPEhxgRgExPpyDS+3euo3Xcbwcw==
-X-Received: by 2002:a05:6000:120c:: with SMTP id e12mr2160654wrx.59.1606900971896;
-        Wed, 02 Dec 2020 01:22:51 -0800 (PST)
-Received: from andrea.corp.microsoft.com (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
-        by smtp.gmail.com with ESMTPSA id e27sm1535936wrc.9.2020.12.02.01.22.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0aZ1JXSOGr3F029oxNT6iT6cI6Gbdl6ZOd26DcQSOUk=;
+        b=la5BV5ydvdbx4awNkgcJX1H82XwGX78sNkU+pUHmL+OQwuXp/LBsdc79n4DpL0+LFB
+         Euz72LQCGRwopRhO6LvgvuY6rWzTtiKdCFqexCvCyOn0VXsWMuQk9oiCwkXFCRHdfW09
+         swKkvLkuLe6O1V9bMryq6xnZHZBqFFXyTWQSX611rhVT8NH5uicAm8KiXXksLMDFSvoG
+         xsqbE3wcJAhGpaXGvs7Ha7m9hnR/KHuXYAz/Z9P7+Foiz+7IlNTvkVysfT9xz9MgG0oG
+         q2THiYMLPA2WeAnoyxwZUnXvllnZodXGW/i1IctnNDjpJ5U1xwlBvXw6Dts88dMsfWM4
+         xPcQ==
+X-Gm-Message-State: AOAM533wxq9EpNPKnG2W6ZpzUE3i28OIMwfzQ+XnQEH6gnjSGlSyBB+5
+        jC2wykncxaO7QTW/HecH+CDHjxALK3T/1gsIfIQmNaQK98aaN5TitM9TXApLzhpJKpzdcg02FGD
+        PMWV7sMqGbKanJ3utqGdRP3gh
+X-Received: by 2002:a1c:4604:: with SMTP id t4mr2014699wma.17.1606900994474;
+        Wed, 02 Dec 2020 01:23:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy6uCrYmhNCjCFZsfapUjM6u+S2GgCXjCo2JKYgBy2pqylz4vSLSQTatSD/aa+GZCN2UlNovQ==
+X-Received: by 2002:a1c:4604:: with SMTP id t4mr2014679wma.17.1606900994190;
+        Wed, 02 Dec 2020 01:23:14 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id 9sm1248512wmo.34.2020.12.02.01.23.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 01:22:51 -0800 (PST)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Subject: [PATCH v2 7/7] Drivers: hv: vmbus: Do not allow overwriting vmbus_connection.channels[]
-Date:   Wed,  2 Dec 2020 10:22:14 +0100
-Message-Id: <20201202092214.13520-8-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201202092214.13520-1-parri.andrea@gmail.com>
-References: <20201202092214.13520-1-parri.andrea@gmail.com>
+        Wed, 02 Dec 2020 01:23:13 -0800 (PST)
+Date:   Wed, 2 Dec 2020 04:23:11 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Jason Wang <jasowang@redhat.com>, Cindy Lu <lulu@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
+Message-ID: <20201202041518-mutt-send-email-mst@kernel.org>
+References: <20201129150505-mutt-send-email-mst@kernel.org>
+ <20201130062746.GA99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130035147-mutt-send-email-mst@kernel.org>
+ <20201130092759.GB99449@mtl-vdi-166.wap.labs.mlnx>
+ <20201130043050-mutt-send-email-mst@kernel.org>
+ <CACLfguXB+SzocLppNtrTZwKPFsshS8TLVe8_iFJxgjT-cFpSzA@mail.gmail.com>
+ <20201130103142-mutt-send-email-mst@kernel.org>
+ <CACLfguWDFgJUJTJik1obvv-vzacRwgkfsN=-Uouu+K9dAKFE+A@mail.gmail.com>
+ <e52b94b6-42a8-1270-1e10-d1905ccae598@redhat.com>
+ <20201202055714.GA224423@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201202055714.GA224423@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, vmbus_onoffer() and vmbus_process_offer() are not validating
-whether a given entry in the vmbus_connection.channels[] array is empty
-before filling the entry with a call of vmbus_channel_map_relid().  An
-erroneous or malicious host could rely on this to leak channel objects.
-Do not allow overwriting an entry vmbus_connection.channels[].
+On Wed, Dec 02, 2020 at 07:57:14AM +0200, Eli Cohen wrote:
+> On Wed, Dec 02, 2020 at 12:18:36PM +0800, Jason Wang wrote:
+> > 
+> > On 2020/12/1 下午5:23, Cindy Lu wrote:
+> > > On Mon, Nov 30, 2020 at 11:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > On Mon, Nov 30, 2020 at 06:41:45PM +0800, Cindy Lu wrote:
+> > > > > On Mon, Nov 30, 2020 at 5:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > > On Mon, Nov 30, 2020 at 11:27:59AM +0200, Eli Cohen wrote:
+> > > > > > > On Mon, Nov 30, 2020 at 04:00:51AM -0500, Michael S. Tsirkin wrote:
+> > > > > > > > On Mon, Nov 30, 2020 at 08:27:46AM +0200, Eli Cohen wrote:
+> > > > > > > > > On Sun, Nov 29, 2020 at 03:08:22PM -0500, Michael S. Tsirkin wrote:
+> > > > > > > > > > On Sun, Nov 29, 2020 at 08:43:51AM +0200, Eli Cohen wrote:
+> > > > > > > > > > > We should not try to use the VF MAC address as that is used by the
+> > > > > > > > > > > regular (e.g. mlx5_core) NIC implementation. Instead, use a random
+> > > > > > > > > > > generated MAC address.
+> > > > > > > > > > > 
+> > > > > > > > > > > Suggested by: Cindy Lu <lulu@redhat.com>
+> > > > > > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > > > > > > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > > > > > > I didn't realise it's possible to use VF in two ways
+> > > > > > > > > > with and without vdpa.
+> > > > > > > > > Using a VF you can create quite a few resources, e.g. send queues
+> > > > > > > > > recieve queues, virtio_net queues etc. So you can possibly create
+> > > > > > > > > several instances of vdpa net devices and nic net devices.
+> > > > > > > > > 
+> > > > > > > > > > Could you include a bit more description on the failure
+> > > > > > > > > > mode?
+> > > > > > > > > Well, using the MAC address of the nic vport is wrong since that is the
+> > > > > > > > > MAC of the regular NIC implementation of mlx5_core.
+> > > > > > > > Right but ATM it doesn't coexist with vdpa so what's the problem?
+> > > > > > > > 
+> > > > > > > This call is wrong:  mlx5_query_nic_vport_mac_address()
+> > > > > > > 
+> > > > > > > > > > Is switching to a random mac for such an unusual
+> > > > > > > > > > configuration really justified?
+> > > > > > > > > Since I can't use the NIC's MAC address, I have two options:
+> > > > > > > > > 1. To get the MAC address as was chosen by the user administering the
+> > > > > > > > >     NIC. This should invoke the set_config callback. Unfortunately this
+> > > > > > > > >     is not implemented yet.
+> > > > > > > > > 
+> > > > > > > > > 2. Use a random MAC address. This is OK since if (1) is implemented it
+> > > > > > > > >     can always override this random configuration.
+> > > > > > > > > 
+> > > > > > > > > > It looks like changing a MAC could break some guests,
+> > > > > > > > > > can it not?
+> > > > > > > > > > 
+> > > > > > > > > No, it will not. The current version of mlx5 VDPA does not allow regular
+> > > > > > > > > NIC driver and VDPA to co-exist. I have patches ready that enable that
+> > > > > > > > > from steering point of view. I will post them here once other patches on
+> > > > > > > > > which they depend will be merged.
+> > > > > > > > > 
+> > > > > > > > > https://patchwork.ozlabs.org/project/netdev/patch/20201120230339.651609-12-saeedm@nvidia.com/
+> > > > > > > > Could you be more explicit on the following points:
+> > > > > > > > - which configuration is broken ATM (as in, two device have identical
+> > > > > > > >    macs? any other issues)?
+> > > > > > > The only wrong thing is the call to  mlx5_query_nic_vport_mac_address().
+> > > > > > > It's not breaking anything yet is wrong. The random MAC address setting
+> > > > > > > is required for the steering patches.
+> > > > > > Okay so I'm not sure the Fixes tag at least is appropriate if it's a
+> > > > > > dependency of a new feature.
+> > > > > > 
+> > > > > > > > - why won't device MAC change from guest point of view?
+> > > > > > > > 
+> > > > > > > It's lack of implementation in qemu as far as I know.
+> > > > > > Sorry not sure I understand. What's not implemented in QEMU?
+> > > > > > 
+> > > > > HI Michael, there are some bug in qemu to set_config, this will fix in future,
+> > > > > But this patch is still needed, because without this patch the mlx
+> > > > > driver will give an 0 mac address to qemu
+> > > > > and qemu will overwrite the default mac address.  This will cause traffic down.
+> > > > Hmm the patch description says VF mac address, not 0 address. Confused.
+> > > > If there's no mac we can clear VIRTIO_NET_F_MAC and have guest
+> > > > use a random value ...
+> > 
+> > 
+> > I'm not sure this can work for all types of vDPA (e.g it could not be a
+> > learning bridge in the swtich).
+> > 
+> > 
+> > > > 
+> > > hi Michael，
+> > > I have tried as your suggestion, seems even remove the
+> > > VIRTIO_NET_F_MAC the qemu will still call get_cinfig and overwrite the
+> > > default address in  VM,
+> > 
+> > 
+> > This looks a bug in qemu, in guest driver we had:
+> > 
+> >     /* Configuration may specify what MAC to use.  Otherwise random. */
+> >     if (virtio_has_feature(vdev, VIRTIO_NET_F_MAC))
+> >         virtio_cread_bytes(vdev,
+> >                    offsetof(struct virtio_net_config, mac),
+> >                    dev->dev_addr, dev->addr_len);
+> >     else
+> >         eth_hw_addr_random(dev);
+> > 
+> > 
+> > > this process is like
+> > > vdpa _init -->qemu call get_config ->mlx driver will give  an mac
+> > > address with all 0-->
+> > > qemu will not check this mac address and use it --> overwrite the mac
+> > > address in qemu
+> > > 
+> > > So for my understanding there are several method to fix this problem
+> > > 
+> > > 1, qemu check the mac address, if the mac address is all 0, qemu will
+> > > ignore it and set the random mac address to mlx driver.
+> > 
+> > 
+> > So my understanding is that, if mac address is all 0, vDPA parent should not
+> > advertise VIRTIO_NET_F_MAC. And qemu should emulate this feature as you did:
+> 
+> Thinking it over, at least in mlx5, I should always advertise
+> VIRTIO_NET_F_MAC and set a non zero MAC value. The source of the MAC can
+> be either randomly generated value by mlx5_vdpa or by a management tool.
+> This is important becauase we should not let the VM modify the MAC. If
+> we do it can set a MAC value identical to the mlx5 NIC driver and can
+> kidnap traffic that was not destined to it.
+> 
+> In addition, when VIRTIO_NET_F_MAC is published, attempts to change the
+> MAC address from the VM should result in error.
 
-Reported-by: Juan Vazquez <juvazq@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
----
-Changes since v1:
-  - Don't corrupt oldchannel if offer->child_relid is invalid
+That is not what the spec says though.
+VIRTIO_NET_F_MAC only says whether mac is valid in the config space.
+Whether guest can control that depends on VIRTIO_NET_F_CTRL_MAC_ADDR:
 
- drivers/hv/channel_mgmt.c | 38 ++++++++++++++++++++++++--------------
- drivers/hv/hyperv_vmbus.h |  2 +-
- 2 files changed, 25 insertions(+), 15 deletions(-)
+	The VIRTIO_NET_CTRL_MAC_ADDR_SET command is used to set the default MAC address which rx
+	filtering accepts (and if VIRTIO_NET_F_MAC_ADDR has been negotiated, this will be reflected in mac in
+	config space).
+	The command-specific-data for VIRTIO_NET_CTRL_MAC_ADDR_SET is the 6-byte MAC address.
 
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index 68950a1e4b638..f91d476dfe381 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -354,10 +354,12 @@ static void free_channel(struct vmbus_channel *channel)
- 	kobject_put(&channel->kobj);
- }
- 
--void vmbus_channel_map_relid(struct vmbus_channel *channel)
-+int vmbus_channel_map_relid(struct vmbus_channel *channel)
- {
--	if (WARN_ON(channel->offermsg.child_relid >= MAX_CHANNEL_RELIDS))
--		return;
-+	u32 relid = channel->offermsg.child_relid;
-+
-+	if (WARN_ON(relid >= MAX_CHANNEL_RELIDS || vmbus_connection.channels[relid] != NULL))
-+		return -EINVAL;
- 	/*
- 	 * The mapping of the channel's relid is visible from the CPUs that
- 	 * execute vmbus_chan_sched() by the time that vmbus_chan_sched() will
-@@ -383,18 +385,17 @@ void vmbus_channel_map_relid(struct vmbus_channel *channel)
- 	 *      of the VMBus driver and vmbus_chan_sched() can not run before
- 	 *      vmbus_bus_resume() has completed execution (cf. resume_noirq).
- 	 */
--	smp_store_mb(
--		vmbus_connection.channels[channel->offermsg.child_relid],
--		channel);
-+	smp_store_mb(vmbus_connection.channels[relid], channel);
-+	return 0;
- }
- 
- void vmbus_channel_unmap_relid(struct vmbus_channel *channel)
- {
--	if (WARN_ON(channel->offermsg.child_relid >= MAX_CHANNEL_RELIDS))
-+	u32 relid = channel->offermsg.child_relid;
-+
-+	if (WARN_ON(relid >= MAX_CHANNEL_RELIDS))
- 		return;
--	WRITE_ONCE(
--		vmbus_connection.channels[channel->offermsg.child_relid],
--		NULL);
-+	WRITE_ONCE(vmbus_connection.channels[relid], NULL);
- }
- 
- static void vmbus_release_relid(u32 relid)
-@@ -601,6 +602,12 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 	 */
- 	atomic_dec(&vmbus_connection.offer_in_progress);
- 
-+	if (vmbus_channel_map_relid(newchannel)) {
-+		mutex_unlock(&vmbus_connection.channel_mutex);
-+		kfree(newchannel);
-+		return;
-+	}
-+
- 	list_for_each_entry(channel, &vmbus_connection.chn_list, listentry) {
- 		if (guid_equal(&channel->offermsg.offer.if_type,
- 			       &newchannel->offermsg.offer.if_type) &&
-@@ -619,6 +626,7 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 		 * Check to see if this is a valid sub-channel.
- 		 */
- 		if (newchannel->offermsg.offer.sub_channel_index == 0) {
-+			vmbus_channel_unmap_relid(newchannel);
- 			mutex_unlock(&vmbus_connection.channel_mutex);
- 			/*
- 			 * Don't call free_channel(), because newchannel->kobj
-@@ -635,8 +643,6 @@ static void vmbus_process_offer(struct vmbus_channel *newchannel)
- 		list_add_tail(&newchannel->sc_list, &channel->sc_list);
- 	}
- 
--	vmbus_channel_map_relid(newchannel);
--
- 	mutex_unlock(&vmbus_connection.channel_mutex);
- 	cpus_read_unlock();
- 
-@@ -920,6 +926,8 @@ static void vmbus_onoffer(struct vmbus_channel_message_header *hdr)
- 	oldchannel = find_primary_channel_by_offer(offer);
- 
- 	if (oldchannel != NULL) {
-+		u32 relid = offer->child_relid;
-+
- 		/*
- 		 * We're resuming from hibernation: all the sub-channel and
- 		 * hv_sock channels we had before the hibernation should have
-@@ -954,8 +962,10 @@ static void vmbus_onoffer(struct vmbus_channel_message_header *hdr)
- 		atomic_dec(&vmbus_connection.offer_in_progress);
- 
- 		WARN_ON(oldchannel->offermsg.child_relid != INVALID_RELID);
-+		if (WARN_ON(vmbus_connection.channels[relid] != NULL))
-+			return;
- 		/* Fix up the relid. */
--		oldchannel->offermsg.child_relid = offer->child_relid;
-+		oldchannel->offermsg.child_relid = relid;
- 
- 		offer_sz = sizeof(*offer);
- 		if (memcmp(offer, &oldchannel->offermsg, offer_sz) != 0) {
-@@ -967,7 +977,7 @@ static void vmbus_onoffer(struct vmbus_channel_message_header *hdr)
- 			 * reoffers the device upon resume.
- 			 */
- 			pr_debug("vmbus offer changed: relid=%d\n",
--				 offer->child_relid);
-+				 relid);
- 
- 			print_hex_dump_debug("Old vmbus offer: ",
- 					     DUMP_PREFIX_OFFSET, 16, 4,
-diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
-index e2064bf2b557d..89d7b95b3bdad 100644
---- a/drivers/hv/hyperv_vmbus.h
-+++ b/drivers/hv/hyperv_vmbus.h
-@@ -338,7 +338,7 @@ int vmbus_add_channel_kobj(struct hv_device *device_obj,
- 
- void vmbus_remove_channel_attr_group(struct vmbus_channel *channel);
- 
--void vmbus_channel_map_relid(struct vmbus_channel *channel);
-+int vmbus_channel_map_relid(struct vmbus_channel *channel);
- void vmbus_channel_unmap_relid(struct vmbus_channel *channel);
- 
- struct vmbus_channel *relid2channel(u32 relid);
--- 
-2.25.1
+
+
+
+> 
+> > 
+> > 1) get a random mac
+> > 2) advertise VIRTIO_NET_F_MAC
+> > 3) set the random mac to vDPA through set_config
+> > 4) advertise the random mac to emulated config to guest
+> > 
+> > 
+> > > 2. mlx driver checks the mac address and if this mac is 0, return fail
+> > > to qemu, but this need to change the UAPI.
+> > 
+> > 
+> > uAPI is probably fine since ioctl can fail.  We can change the to allow the
+> > set_config to fail but virito spec doesn't have a way to advertise the error
+> > in this case. Anyway, the driver only risk itself for setting a wrong value,
+> > so we're probably fine.
+> > 
+> > Thanks
+> > 
+> > 
+> > > 3. mlx driver it shelf should get an correct mac address while it init.
+> > > 4. add check in qemu get_config function  , if there is not F_MAC Then
+> > > ignore the mac address from mlx driver
+> > > 
+> > > not sure which method is more suitable ?
+> > > 
+> > > Thanks
+> > > Cindy
+> > > 
+> > > 
+> > > 
+> > > > > > > > > > > ---
+> > > > > > > > > > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +----
+> > > > > > > > > > >   1 file changed, 1 insertion(+), 4 deletions(-)
+> > > > > > > > > > > 
+> > > > > > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > > > index 1fa6fcac8299..80d06d958b8b 100644
+> > > > > > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > > > @@ -1955,10 +1955,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
+> > > > > > > > > > >        if (err)
+> > > > > > > > > > >                goto err_mtu;
+> > > > > > > > > > > 
+> > > > > > > > > > > -     err = mlx5_query_nic_vport_mac_address(mdev, 0, 0, config->mac);
+> > > > > > > > > > > -     if (err)
+> > > > > > > > > > > -             goto err_mtu;
+> > > > > > > > > > > -
+> > > > > > > > > > > +     eth_random_addr(config->mac);
+> > > > > > > > > > >        mvdev->vdev.dma_dev = mdev->device;
+> > > > > > > > > > >        err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
+> > > > > > > > > > >        if (err)
+> > > > > > > > > > > --
+> > > > > > > > > > > 2.26.2
+> > 
 
