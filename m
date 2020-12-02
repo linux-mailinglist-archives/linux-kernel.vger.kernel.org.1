@@ -2,107 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A900B2CC3FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6772CC3FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730841AbgLBRkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:40:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728512AbgLBRkH (ORCPT
+        id S2387711AbgLBRkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:40:10 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:33140 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730836AbgLBRkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:40:07 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1A2C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 09:39:21 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id q5so1990569qkc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 09:39:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HGDDLpBXGNMg0LMolwGSeuNTRKQu3sxPBzrkwGCeCV8=;
-        b=CRYaomH7zz71puhu+kMqSSkTSmpZpb22SXX5agzTtcAHK1XuFkv+sNcPwRLDiwl2iM
-         DfK1bjPEBfr0ijAj6unk6UgTBqtmzcb03mc4FIaY+nY90iBKR9TvdydueKinRTsGXL9n
-         Utg8gB+vKZI0s4mrOkISQRbWqcwoXQl4QmShDUcMqFD9wl4B8rhSrpXkBHcOWBn9qHSJ
-         M4AO+sMAjut7KO1iiZfzbTCSArhL3+Z/Uuxx6SmE+LWoJiKlvgS0GoD6Yl0pQuCz9cKP
-         dx82Gho0fL5FYiIqfMSe1/yMkq4KIBIFSpdgfkdtJRKMalxCmsiyPimVr/wvIrtr/VPc
-         VPog==
+        Wed, 2 Dec 2020 12:40:10 -0500
+Received: by mail-ot1-f66.google.com with SMTP id b18so1800308ots.0;
+        Wed, 02 Dec 2020 09:39:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HGDDLpBXGNMg0LMolwGSeuNTRKQu3sxPBzrkwGCeCV8=;
-        b=EMePZJ7sGdVTGqIU5bccI/MgpaYseed6VNVsyN8aH/LWDr9izEkOY8Kr0pkF+SQf16
-         QPadlmO249zYAhZ/G+1Q/Y6L0iUT+t8z3ZLkkVfb9LZFUK1c8p2DxhDvmJe56tOVYqM2
-         cu3G55zUnnyuShHk4cPm3DRlk17wIOUhdibBnzfahTnjWYyypI+PuXvkg2YH6MfwP8bS
-         20KE/E2eRmlMksCa6NKtgxdcV/tUH4Rc+xDAR9J6qwQpy7X/s3FessKqYzih0B7MTcWm
-         AiuGx/nd+XXbTcXWpoDpq4i9O9WAkUvFd6Y0F+wyQ/0/kssIGo6DBLO8Vhd87zunT9ug
-         03+Q==
-X-Gm-Message-State: AOAM533Slpg3T056QnyOZPkLyQZrfK8ZeGn6KbOHC9AkvsLI+VcYRxAw
-        91xHkpstGV2Wbl4/HP4jGAZtD8QE6JV3qR5ej3kU2A==
-X-Google-Smtp-Source: ABdhPJwJ5CP3xL/u9S7A6l5zYggC8BATzFrYqGlpBxtoUWCKus+HAwcGQ++rLe76lb1hP8z3tEnbzJDsjMi1CtyP/aE=
-X-Received: by 2002:a37:4acb:: with SMTP id x194mr3593249qka.295.1606930760481;
- Wed, 02 Dec 2020 09:39:20 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=Tka6NXMWUhwZ2GkXMJAmEqAo04rklmyCqGj4K23JgnI=;
+        b=FkLehLuH9/PjQ0nCEkZUbnWdQRLgHQQt4RNLcrdTSoMcctVVuhGkR6pbmNYvS+kOAi
+         DsWt/DKthZcaLcsJQbvICriecYK3V0C2MFym7afnkAGX6A4yKyh5o0cOOHVBeyTCoWxm
+         6yiByAW2OUgjzAo0SPZiVF1z994hfwuw2GtVHzT/MPlt9L0lFm8ucv2aFHz0teJ7jxKE
+         P306JWDpAg4cEAe0ZKMVtM4NGRhTiOHtZBQEyfhWhYOSXfzU7nj4h5xLzjeF15LBCyCK
+         Q9Ab/sReJKWy8dXp4Q7PM2gS3wGa3XMf1PKbFsLkWE/3O7T4G4DMc5WTNQixqkOhx+5V
+         QcpA==
+X-Gm-Message-State: AOAM530dTaz6TB1wZLy28zBCt3OK2YzIODfUeXF5chWLmXANSc1V8uii
+        uOUFLaYw7lUTxA4Jf1nNT322yuztU0aBsXnSSS4=
+X-Google-Smtp-Source: ABdhPJzswQBe3taBRqg9cPGNfgA/yb5tM2YE6VWyUuG4TbTtslSxpWyFKAJDKYHYVC9IyMIIwcO5z5OZXPaSttfI0Po=
+X-Received: by 2002:a9d:171a:: with SMTP id i26mr2672660ota.260.1606930768936;
+ Wed, 02 Dec 2020 09:39:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20201120032639.24386-1-mw@semihalf.com> <5b5a1367-2632-2754-bc8b-7d57d0205232@intel.com>
-In-Reply-To: <5b5a1367-2632-2754-bc8b-7d57d0205232@intel.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Wed, 2 Dec 2020 18:39:09 +0100
-Message-ID: <CAPv3WKeQ27kUDE8Z4c7BWKBBX_CJRJe-t2TmHJ1ArTXX2V_PKA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] sdhci-xenon ACPI support
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Ziji Hu <huziji@marvell.com>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>,
-        Kostya Porotchkin <kostap@marvell.com>
+References: <1817571.2o5Kk4Ohv2@kreacher> <2174134.tL5yAn4CWt@kreacher> <000901d6c8c3$fa8386f0$ef8a94d0$@net>
+In-Reply-To: <000901d6c8c3$fa8386f0$ef8a94d0$@net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 2 Dec 2020 18:39:14 +0100
+Message-ID: <CAJZ5v0ghoOs=TwBTMNUk_A_8CwO5wzpwHUjyUwAdajMQpeUoqg@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/2] cpufreq: Add special-purpose fast-switching
+ callback for drivers
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Giovanni Gherdovich <ggherdovich@suse.com>,
+        Linux PM <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C5=9Br., 2 gru 2020 o 09:30 Adrian Hunter <adrian.hunter@intel.com> napisa=
-=C5=82(a):
+On Wed, Dec 2, 2020 at 4:59 PM Doug Smythies <dsmythies@telus.net> wrote:
 >
-> On 20/11/20 5:26 am, Marcin Wojtas wrote:
-> > Hi,
-> >
-> > The second version of the sdhci-xenon ACPI support
-> > is now split into 4 patches instead of a single one.
-> > There are minor functional differencse - match_data
-> > introduction and using dedicated ACPI ID per
-> > controller variant.
-> >
-> > The MacchiatoBin firmware for testing can be obtained from:
-> > https://drive.google.com/file/d/1Y8BhyaCrksQgT_GPfpqqiYHpQ41kP8Kp
-> >
-> > Changelog:
-> > v1->v2
-> >   * Split single commit to 4
-> >   * Use device_match_data and dedicated ACPI ID's per controller
-> >     variant
-> >
-> > Marcin Wojtas (4):
-> >   mmc: sdhci-xenon: use match data for controllers variants
-> >   mmc: sdhci-xenon: switch to device_* API
-> >   mmc: sdhci-xenon: use clk only with DT
-> >   mmc: sdhci-xenon: introduce ACPI support
-> >
-> >  drivers/mmc/host/sdhci-xenon.h     |  12 +-
-> >  drivers/mmc/host/sdhci-xenon-phy.c |  40 ++++---
-> >  drivers/mmc/host/sdhci-xenon.c     | 120 +++++++++++++-------
-> >  3 files changed, 110 insertions(+), 62 deletions(-)
-> >
+> Hi Rafael,
 >
-> Not withstanding Ulf's comments:
+> On 2020.11.30 10:37 Rafael J. Wysocki wrote:
 >
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> > First off, some cpufreq drivers (eg. intel_pstate) can pass hints
+> > beyond the current target frequency to the hardware and there are no
+> > provisions for doing that in the cpufreq framework.  In particular,
+> > today the driver has to assume that it should allow the frequency to
+>
+> Forgot the important "not":
 
-Thank you, I will push v3 right away.
+Right, thanks for noticing that!
 
-Best regards,
-Marcin
+> today the driver has to assume that it should allow not the frequency to
+>
+> > fall below the one requested by the governor (or the required capacity
+> > may not be provided) which may not be the case and which may lead to
+> > excessive energy usage in some scenarios.
+> >
+> > Second, the hints passed by these drivers to the hardware neeed not
+>
+> s/neeed/need
+
+Yup, thanks!
+
+> ...
+>
+> O.K. this is good.
+>
+> The problem with my basic CPU frequency verses load test with the
+> schedutil governor is that it is always so oscillatory it is pretty
+> much not possible to conclude anything. So I re-worked the test
+> to look at Processor Package Power load instead.
+>
+> In a previous e-mail [1] I had reported the power differences
+> for one periodic load at one frequency, as a (apparently cherry picked)
+> example. Quoted:
+>
+> > schedutil governor:
+> > acpi-cpufreq: good
+> > intel_cpufreq hwp: bad    <<<<< Now good, with this patch set.
+
+OK, great!
+
+> > intel_cpufreq no hwp: good
+> > ...
+> > periodic workflow at 347 hertz.
+> > ~36% load at 4.60 GHz (where hwp operates)
+> > ~55% load at 3.2 GHz (where no hwp operates)
+> >
+> > intel_cpufreq hwp: 9.6 processor package watts. 45.8 watts on the mains to the computer.
+> > intel_cpufreq no hwp: ~6 processor package watts. ~41 watts on the mains to the computer. (noisy)
+>
+> So this time, I only have power/energy data, and a relatively easy way to compress all 12,000
+> samples into some concise summary is to simply find the average power for the entire experiment:
+>
+> Legend:
+> hwp: Kernel 5.10-rc6, HWP enabled; intel_cpufreq; schedutil (always)
+> rjw: Kernel 5.10-rc6 + this patch set, HWP enabled; intel_cpu-freq; schedutil
+> no-hwp: Kernel 5.10-rc6, HWP disabled; intel_cpu-freq; schedutil
+> acpi-cpufreq: Kernel 5.10-rc6, HWP disabled; acpi-cpufreq; schedutil
+>
+> load work/sleep frequency: 73 Hertz:
+> hwp: Average: 12.00822 watts
+> rjw: Average: 10.18089 watts
+> no-hwp: Average: 10.21947 watts
+> acpi-cpufreq: Average:  9.06585 watts
+>
+> load work/sleep frequency: 113 Hertz:
+>
+> hwp: Average: 12.01056
+> rjw: Average: 10.12303
+> no-hwp: Average: 10.08228
+> acpi-cpufreq: Average:  9.02215
+>
+> load work/sleep frequency: 211 Hertz:
+>
+> hwp: Average: 12.16067
+> rjw: Average: 10.24413
+> no-hwp: Average: 10.12463
+> acpi-cpufreq: Average:  9.19175
+>
+> load work/sleep frequency: 347 Hertz:
+>
+> hwp: Average: 12.34169
+> rjw: Average: 10.79980
+> no-hwp: Average: 10.57296
+> acpi-cpufreq: Average:  9.84709
+>
+> load work/sleep frequency: 401 Hertz:
+>
+> hwp: Average: 12.42562
+> rjw: Average: 11.12465
+> no-hwp: Average: 11.24203
+> acpi-cpufreq: Average: 10.78670
+>
+> [1] https://marc.info/?l=linux-pm&m=159769839401767&w=2
+>
+> My tests results graphs:
+> Note: I have to code the web site, or I get hammered by bots.
+> Note: it is .com only because it was less expensive than .org
+> 73 Hertz:
+> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su73/
+> 113 Hertz:
+> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su113/
+> 211 Hertz:
+> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su211/
+> 347 Hertz:
+> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su347/
+> 401 Hertz:
+> Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su401/
+
+Thanks for the data, this is encouraging!
