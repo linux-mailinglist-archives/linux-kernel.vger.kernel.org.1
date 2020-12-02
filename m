@@ -2,107 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39EB2CCA7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9D12CCA87
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729015AbgLBXYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        id S1728098AbgLBX33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728862AbgLBXYv (ORCPT
+        with ESMTP id S1726745AbgLBX32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:24:51 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06549C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 15:24:11 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id r24so7403563lfm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 15:24:10 -0800 (PST)
+        Wed, 2 Dec 2020 18:29:28 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5873C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 15:28:48 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id m9so241117pgb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 15:28:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=krM5ZtArJDh4CBdMqAGvzuDAxuZaaWPVN3dbTakwoQA=;
-        b=rW70B6hJvfsQzem9DjSh5wXLcOFYSU1woEDzJDe+sxe/DK7kyOs4BekSpMmQdoqloC
-         jII3L3g/91M0Il5/MoHlo5S1zYd1n0wjyH20YW2AQgoZERWxzDAIUjM2zu0cUwwT+a1w
-         viw4Aq0NPxeNj4A/P0AQ6mKnU59maVXiyq/Tg8WiOnxWpJ6h2GxjUkv53DcRPMqy40au
-         KVuTreXa3FHXocfjD9aI2HkDh7bkptBrrD/MQaKzGjktMHr3/gdoRjhw8eVZdfKB5lR0
-         6R8Hy2YixzwGYH9GIRFDetJa8BTgN0xLRWFJWkdRp7tUhR7hxOYqcDCmSAm3MlvYmM/P
-         nPbg==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=8pWp0SPCJ1XCZyPVveVZNUF1OKkzpTtMQOSE9/M77g4=;
+        b=bQAAzkO9ynlaSTKshCmW97hrKIoo0JqVWDL4kT0k3xJcu45mPAG8jgzadm2D/vRXkY
+         62rMlkELSeOseUuWiljXs2Q9bm7sKezVx9dULNvmzooAumZNPioKQG2sF5bPQgbQn6Cp
+         aiGWb9S7HXPxYi3vsF1ZWki8QtKsVQbBX7pdc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=krM5ZtArJDh4CBdMqAGvzuDAxuZaaWPVN3dbTakwoQA=;
-        b=oCqGADGO6i0s04j1kWgPPzXH+cTrUc3o+JBc9nEUfMQs9xongoazLo0iklLEAzo7mM
-         R/1l7qxzS4Vdw83R6u9IMtmuWteMDhn7RzyDZ48/xSS0+uaPfC+uRqjrid2lHBvfo4Pb
-         qWBXxlcSHYnn23X/76KKXHatCI2VvReMHm8reNZYP3VDURXBZW/B8pSOPebGf9+V+d81
-         QFVNatSZsBgMk353RjE7CeJV/Wu4J+KQxnu6pn/KX2IEV7GD3A2pV8668C7skW0HiIeW
-         6wjYqUP3R9MM2UhLha7O2qPRyEzb656ya1fZUZOI6/W3Z+tderRJVksUDPmTxiPQNdrG
-         mjaA==
-X-Gm-Message-State: AOAM533+ZEwmymDs7a7m6+qE0v+9Xq6ZEm3wp1QEmmAlePavJv/ujpMH
-        SE3YkuwoPrzJ/BKX6MKG1nA/20Rgqv/87P1dp1FNrw==
-X-Google-Smtp-Source: ABdhPJxEYAINYZmZJ8fCk9T3f9H7hIO21axcvhlNaEHyk4FC9gVxHTTZh/IgVa5ILT91KDY0+vhFH1bSsRswiwCQl3I=
-X-Received: by 2002:a19:be4a:: with SMTP id o71mr167981lff.494.1606951449214;
- Wed, 02 Dec 2020 15:24:09 -0800 (PST)
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=8pWp0SPCJ1XCZyPVveVZNUF1OKkzpTtMQOSE9/M77g4=;
+        b=kmSL5ePZo6llijL8VW/ZN7/TfzA18Pbmt0g0kq3g9rFUIsM680Qm4e3k0T4TykFEtP
+         icbxtcU6sCJLCb5uYDvaWtmk3/2+WuQH0qFGCDVnY/vI49F1vwvNaS41w5q11Zwv0Lc4
+         IE/Wi6hQSpphpqodNreLSebvZ68mkkR/e6/XwTfPSffMVlmSoW6CMgBHModXQru8w+R3
+         krQD8sMcKpH7pl4QVrheOe2c726b8IhRBuulH4MMdtCCREnXP3FQvKnpEG0pZrPLUxwp
+         PYIneX3H5R0t/yDhWQcPjFNR4wChOvncgI9swKs6rn9KT9HXlAgNc9bWEl+xmMiCxHht
+         W49A==
+X-Gm-Message-State: AOAM530wbXHt1lK1Qr+H9hC0kkb8brZRhor6IQL0sG6ul60zqtGQkxw3
+        UUd1MpWdg3gy+nEtngKyNjON/A==
+X-Google-Smtp-Source: ABdhPJy3xZ3+XY/j3Fsbn4p0el59YjSVkKj3fLWs5fKu5+SYCItehaFYbnCFpE+3GubMxiaqj9DSpQ==
+X-Received: by 2002:a65:6891:: with SMTP id e17mr567267pgt.410.1606951728200;
+        Wed, 02 Dec 2020 15:28:48 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id n127sm151383pfd.143.2020.12.02.15.28.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 15:28:47 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201130233504.3725241-1-axelrasmussen@google.com>
- <CALvZod42+o7naLOkpo9Jngmhru-aR4K6RCuTk7TukCikAYrDbQ@mail.gmail.com>
- <CAJHvVcgtoyJ_C0L=KByb8UbZm6x_RtCTnznYA1HwmdzX4Y=mHw@mail.gmail.com>
- <xr93lfehl8al.fsf@gthelen.svl.corp.google.com> <CALvZod4j9fFpGRfkios1ef0D5qhyw3XA_VSVm0k__RuMG1Qhwg@mail.gmail.com>
- <CAJHvVchcm_HLd1RaibCZDZi27_2CVCwUWDX515dvnPPyTpHBHw@mail.gmail.com>
- <CALvZod5CpPhvzB99VZTc33Sb5YCbJNHFe3k33k+HwNfJvJbpJQ@mail.gmail.com> <X8fkVcfztQtX2dRT@mtj.duckdns.org>
-In-Reply-To: <X8fkVcfztQtX2dRT@mtj.duckdns.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 2 Dec 2020 15:23:57 -0800
-Message-ID: <CALvZod4ZroEOwbiZ5aKTd28d1tva0YLWfLZTF-N-xXd_40rUsA@mail.gmail.com>
-Subject: Re: [PATCH] mm: mmap_lock: fix use-after-free race and css ref leak
- in tracepoints
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAHNYxRwMD4XahHXWW9z7b=VCOEsdPe5Df4CohNwmBy_ijWJ62g@mail.gmail.com>
+References: <20201202214935.1114381-1-swboyd@chromium.org> <CAHNYxRwMD4XahHXWW9z7b=VCOEsdPe5Df4CohNwmBy_ijWJ62g@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Use the new method of gpio CS control
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        Akash Asthana <akashast@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+To:     Alexandru M Stan <amstan@chromium.org>
+Date:   Wed, 02 Dec 2020 15:28:45 -0800
+Message-ID: <160695172591.2717324.17788035024164242534@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 11:01 AM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, Dec 01, 2020 at 12:53:46PM -0800, Shakeel Butt wrote:
-> > The writeback tracepoint in include/trace/events/writeback.h is
-> > already using the cgroup IDs. Actually it used to use cgroup_path but
-> > converted to cgroup_ino.
+Quoting Alexandru M Stan (2020-12-02 14:18:20)
+> On Wed, Dec 2, 2020 at 1:49 PM Stephen Boyd <swboyd@chromium.org> wrote:
 > >
-> > Tejun, how do you use these tracepoints?
->
+> > Let's set the 'use_gpio_descriptors' field so that we use the new way of
+> > requesting the CS GPIOs in the core. This allows us to avoid having to
+> > configure the CS pins in "output" mode with an 'output-enable' pinctrl
+> > setting.
+> >
+> > Cc: Akash Asthana <akashast@codeaurora.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > Acked-by: Alexandru M Stan <amstan@chromium.org>
+> I meant this as a joke in chat. It doesn't really mean anything in any ca=
+pacity.
 
-Thanks Tejun, I really appreciate the example you provided. I do have one query.
+Sorry! It can be removed when applying.
 
-> There've been some changes to cgroup ids recently and now cgroup id, ino and
-> its file_handle are all compatible. On 64bit ino machines, they're all the
-> same and won't be reused. On 32bit ino machines, the lower 32bit of full id
-> is used as ino. ino may be reused but not the full 64bit id.
+>=20
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >  drivers/spi/spi-geni-qcom.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+> > index 25810a7eef10..c4c88984abc9 100644
+> > --- a/drivers/spi/spi-geni-qcom.c
+> > +++ b/drivers/spi/spi-geni-qcom.c
+> > @@ -636,6 +636,7 @@ static int spi_geni_probe(struct platform_device *p=
+dev)
+> >         spi->auto_runtime_pm =3D true;
+> >         spi->handle_err =3D handle_fifo_timeout;
+> >         spi->set_cs =3D spi_geni_set_cs;
+> > +       spi->use_gpio_descriptors =3D true;
+> >
+> >         init_completion(&mas->cs_done);
+> >         init_completion(&mas->cancel_done);
+> >
+> > base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
+> > --
+> > https://chromeos.dev
+> >
+>=20
+> Unfortunately this patch makes my cros-ec (the main EC that used to
+> work even before my debugging) also fail to probe:
+> [    0.839533] cros-ec-spi spi6.0: EC failed to respond in time
+> [    1.040453] cros-ec-spi spi6.0: EC failed to respond in time
+> [    1.040852] cros-ec-spi spi6.0: Cannot identify the EC: error -110
+> [    1.040855] cros-ec-spi spi6.0: cannot register EC, fallback to spidev
+> [    1.040942] cros-ec-spi: probe of spi6.0 failed with error -110
+>=20
+> I wasn't closely looking at this part closely when I was using my
+> other spi port with spidev, so this is why I haven't noticed it
+> before.
+> Doug suggests this might be a polarity issue. More scoping to be had.
+>=20
 
-__kernfs_new_node() is using idr_alloc_cyclic() which will return
-32bit ID. If I am understanding this correctly the full ID is
-generated similarly for 32bit and 64bit machines but for 64bit
-machines the whole ID is inode number while on 32bit machines the
-lower 32bits contains the inode number. Is that correct?
+Ah I see. It looks like the cs-gpios polarity is wrong for the DTS on
+sc7180. That's a patch that Doug has sent in for the qcom tree, commit
+37dd4b777942 ("arm64: dts: qcom: sc7180: Provide pinconf for SPI to use
+GPIO for CS") and it is pending for the next release (v5.11). Doug says
+he will send in a fix for the DTS side, but this patch is still "good"
+as far as I can tell. It moves us to use gpio descriptors and also finds
+bugs like this in the DTS file that we would have missed otherwise
+because the legacy mode doesn't look at the polarity flags in DT.
