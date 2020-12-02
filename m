@@ -2,120 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6188F2CC131
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5079C2CC133
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgLBPqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:46:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25938 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726307AbgLBPqm (ORCPT
+        id S2387852AbgLBPqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:46:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgLBPqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:46:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606923916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rYeojU2BV32koHjOp1T69U+yIm9pG6hdZwR2k7JADHk=;
-        b=ZevwB4CH244ZL5zLGCLK+zRgLfaEBCxm11S9i1Dqp3kC1JXLC0qt8gyvI9xvGp5FgO2QrM
-        k9L6bE2dV6Mkgc8pWBoIP7NLfIYO+5kLxR6UkhNO5sbum2Xy8jAWd6tZ5T9ECtt3eWmU5d
-        5Lz2HQFbA5ReSBMDd2e37B84LBIGu/4=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-5qLib_7XO8WbdKpY8Yr0xA-1; Wed, 02 Dec 2020 10:45:15 -0500
-X-MC-Unique: 5qLib_7XO8WbdKpY8Yr0xA-1
-Received: by mail-qv1-f71.google.com with SMTP id o16so1503069qvq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:45:14 -0800 (PST)
+        Wed, 2 Dec 2020 10:46:44 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FFAC0613CF;
+        Wed,  2 Dec 2020 07:46:04 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id y16so4328559ljk.1;
+        Wed, 02 Dec 2020 07:46:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0qZccW6T6RuJI8Ln1DnE0GJjDxXS9vOlbJ0Zgj3L1EI=;
+        b=dv1TDWvtBCJdUGLNTuqA8mM6Y4IBH76JWIqo+SfveVlcDUwS3YRv1weIVpmyuMJLxl
+         EF4VHQZZvPhdd/WOWGlLosmo0DMOfOl8skIlVx2Hj5nEPmB/EcxpIhiHf7uX3stMtmhi
+         vf2YicWgdNL0VxOcNrhExm6JtIfSnd5V86qEPtxfVRtFQkXWZlbMpg33jSF7TK6WBTTp
+         JfAF5/0l5CnaTymeoVhNDD9G5vjDPHulIwPscNfXnQfoj/2YyvWh9q8wFv5mSXCdxgSe
+         fGz9k6wT0LvOblF5rGn2z9qU27rmOd3VsCvJ7YLnkCY3M7D36c1f4oOO2Dgr4J5GhldH
+         gcaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rYeojU2BV32koHjOp1T69U+yIm9pG6hdZwR2k7JADHk=;
-        b=cQkVIUhvHJUZ6hhdGfmnNsltwVVlVLQiJ/oDpVjcOj7kpnEGsVLKH8RDxJLVx7tv71
-         5UEEcIck/zYrI7TEzwvd3NL741TJSVfb24nvWK0kJjBuksnh5cFk4UNo0QGWO55YX4LY
-         2uhm1qR5ISoLi8LTBVHhMfrwCnGOohLjWEsbjeCkLR3Hfd7Y3LhKAS8PRFaERJICd9f9
-         QMAdV1ARDFcCME9HRBIjFdNg223XjLX2DKIeus++yUY2kJLV2yMd5ELjyXD4d+/I/dGw
-         FG7i4mYTaon8qyiRwZHTbVIRL7UWVJxc/sd/bbKjsaMAEL7zVSG4dtwGdMENpf2gVd+f
-         RSVQ==
-X-Gm-Message-State: AOAM533kCqcVxHvzXzoBlfdb2Cx9SZfo9R7yv11hD7KmhAa2Acz+kHjC
-        tkzloW9smBDZeeQTYV4UuUT9DB+LXKJHmgIRauwdZ1ovODyIMUp55da6Yy+TANKEv0JJ2U9ACuR
-        Uu8phJO8WippmVfwrL9rO9ZGr
-X-Received: by 2002:a0c:fa4f:: with SMTP id k15mr2997620qvo.62.1606923914282;
-        Wed, 02 Dec 2020 07:45:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx/s7lau9uMMae+1kW9tIhIk49vmBEdT4Fe1z9pgzRuFvs/dTHZvXh5HM5I+aw5aSRZnLJ/ow==
-X-Received: by 2002:a0c:fa4f:: with SMTP id k15mr2997597qvo.62.1606923914031;
-        Wed, 02 Dec 2020 07:45:14 -0800 (PST)
-Received: from xz-x1 ([142.126.94.187])
-        by smtp.gmail.com with ESMTPSA id j17sm1975151qtn.2.2020.12.02.07.45.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 07:45:13 -0800 (PST)
-Date:   Wed, 2 Dec 2020 10:45:11 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     Justin He <Justin.He@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
- vfio_pin_pages_remote()
-Message-ID: <20201202154511.GI3277@xz-x1>
-References: <20201119142737.17574-1-justin.he@arm.com>
- <20201124181228.GA276043@xz-x1>
- <AM6PR08MB32245E7F990955395B44CE6BF7FA0@AM6PR08MB3224.eurprd08.prod.outlook.com>
- <20201125155711.GA6489@xz-x1>
- <20201202143356.GK655829@stefanha-x1.localdomain>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0qZccW6T6RuJI8Ln1DnE0GJjDxXS9vOlbJ0Zgj3L1EI=;
+        b=jQDS8YoFh9wZpXup5qTjj50Rjf5ZPK5lb1IvBZIkR9GJEZk1mmJHqPvms1hAGfI0Da
+         wIVO6Qd9q0yUqn112X4zCpH+NJHkRmDuW2qTjt062AJ/0YHy3g5vYgdbCbv4BJ/yzkue
+         e6LzAlzOO1FunRz3MZcYCJ+xAuVL+7QnK/3Okgmx/8cOg7xw5YOG07OJQFytrUbq7kEy
+         xYHk67uXG14bwUqKTXF0yWrJWMls8M+VXt9Vxt7ZglkGKMihEsbGskeVZeUdZa1sLBtP
+         nVt1y9wWLmmMdwQePN0RN99FO7qvoeP9DOUtONdwCf5jcp+E6t1eu/6CUQgRUWMIfeBM
+         KO7w==
+X-Gm-Message-State: AOAM530ReTO/Nx/5PeRP0Wn8twwdzsvubFTjyZ9e0Y03op9AfJZQeRms
+        YlkqQB8V4W/K33ZyVIApAcgiXIEYYV5RwKNHJDpecMNQ
+X-Google-Smtp-Source: ABdhPJzSiqjwu2NsgZZx/PKcI/qKFtjxlox/dqwxihcJhYlEdF5+SC2i56NuzURCyevi+g5L+GLAhHHvXkaI/YerAzE=
+X-Received: by 2002:a2e:b1c9:: with SMTP id e9mr1450197lja.283.1606923962771;
+ Wed, 02 Dec 2020 07:46:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201202143356.GK655829@stefanha-x1.localdomain>
+References: <1604286803-20698-1-git-send-email-u0084500@gmail.com>
+ <20201125164207.GD4716@dell> <CADiBU3_bgx-K_zxzKCSL8w=meZu3cA3uWoC-3QVsBAuNJW1uiw@mail.gmail.com>
+ <20201202084909.GI4801@dell>
+In-Reply-To: <20201202084909.GI4801@dell>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Wed, 2 Dec 2020 23:45:50 +0800
+Message-ID: <CADiBU3-XYVPjfrVFq_K3GBHviPd-tKuPp6W5EDcUvywsN5ODwA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mfd: rt4831: Adds support for Richtek RT4831 MFD core
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, cy_huang <cy_huang@richtek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Stefan,
+Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B412=E6=9C=882=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:49=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Wed, 02 Dec 2020, ChiYuan Huang wrote:
+>
+> > Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8826=
+=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8812:42=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+> > >
+> > > On Mon, 02 Nov 2020, cy_huang wrote:
+> > >
+> > > > From: ChiYuan Huang <cy_huang@richtek.com>
+> > > >
+> > > > Adds support Richtek RT4831 MFD core.
+> > > > RT4831 includes backlight and DSV part that can provode display pan=
+el
+> > > > for postive and negative voltage and WLED driving.
+> > > >
+> > > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > > > ---
+> > > >  drivers/mfd/Kconfig       |  11 +++++
+> > > >  drivers/mfd/Makefile      |   1 +
+> > > >  drivers/mfd/rt4831-core.c | 119 ++++++++++++++++++++++++++++++++++=
+++++++++++++
+> > > >  3 files changed, 131 insertions(+)
+> > > >  create mode 100644 drivers/mfd/rt4831-core.c
+> > > >
+> > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > > index 8b99a13..a22f002 100644
+> > > > --- a/drivers/mfd/Kconfig
+> > > > +++ b/drivers/mfd/Kconfig
+> > > > @@ -1088,6 +1088,17 @@ config MFD_RDC321X
+> > > >         southbridge which provides access to GPIOs and Watchdog usi=
+ng the
+> > > >         southbridge PCI device configuration space.
+> > > >
+> > > > +config MFD_RT4831
+> > > > +     tristate "Richtek RT4831 WLED and DSV IC"
+> > >
+> > > Please expand on WLED and DSV.
+> > >
+> > > This is documentation and should leave nothing to the imagination.
+> > >
+> > Rewrite to "Richtek RT4831 four channel WLED and display bias
+> > voltage", is it okay?
+>
+> I had to look-up WLED, but I guess it's okay.
+>
+> "Display Bias Voltage"
+>
+OK, I'll change this line to
+"Richtek RT4831 fource channel WLED and Display Bias Voltage"
+> > > > +     depends on I2C
+> > > > +     select MFD_CORE
+> > > > +     select REGMAP_I2C
+> > > > +     help
+> > > > +       This enables support for the Richtek RT4831.
+> > > > +       RT4831 includes WLED driver and DisplayBias voltage(+/-) re=
+gulator.
+> > > > +       It's common used to provide the display power and to drive =
+the
+> > > > +       display backlight WLED.
+> > >
+> > > Please don't line-wrap unnecessarily.
+> > >
+> > > Please re-work the last sentence, as it doesn't quite make sense.
+> > >
+> > Rewrite the whole sentence like as below
+> > "This enables support for the Richtek RT4831. It includes 4 channel
+> > WLED driving and Display Bias voltage output. It's commonly used to
+> > provide the LCD power and to drive LCD backlight."
+>
+> "Display Bias Voltage"
+>
+> "provide power to the LCD display"
+>
+Thanks. looks better
+> [...]
+>
+> > > > +static int rt4831_probe(struct i2c_client *client)
+> > > > +{
+> > > > +     struct gpio_desc *enable;
+> > > > +     struct regmap *regmap;
+> > > > +     unsigned int val;
+> > > > +     int ret;
+> > > > +
+> > > > +     enable =3D devm_gpiod_get_optional(&client->dev, "enable", GP=
+IOD_OUT_HIGH);
+> > > > +     if (IS_ERR(enable)) {
+> > > > +             dev_err(&client->dev, "Failed to get chip enable gpio=
+\n");
+> > >
+> > > "Failed to get 'enable' GPIO chip"
+> > >
+> > May I remove "chip" word? It seems redundant.
+> > "Failed to get 'enable' GPIO" is better.
+> > Because 'enable' is a physical input pin for RT4831.
+>
+> Sounds good.
+>
+> [...]
+>
+> > > > +static int rt4831_remove(struct i2c_client *client)
+> > > > +{
+> > > > +     struct regmap *regmap =3D dev_get_regmap(&client->dev, NULL);
+> > > > +
+> > > > +     /* Make sure all off before module removal */
+> > >
+> > > "Disable all <thing your disabling> are disabled before ..."
+>
+> This should have said:
+>
+>   "Ensure all <thing your disabling> are disabled before ..."
+>
+> > May I rewrite it to "Configure WLED driving and DSV output all to be
+> > disabled before MFD module removal"?
+>
+> You don't need to mention MFD or modules here since we know how the
+> Device Driver model works and what .remove() does.
+>
+> What about:
+>
+>   "Disable WLED and DSV outputs"
+Do you mean that only keep this comment line is better? NO more
+redundant description like "before ....".
+If yes, I'll only leave  the comment like as you said in remove/shutdown op=
+s.
+> > > > +     return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_R=
+ESET_MASK, RT4831_RESET_MASK);
+> > > > +}
+> > > > +
+> > > > +static void rt4831_shutdown(struct i2c_client *client)
+> > > > +{
+> > > > +     struct regmap *regmap =3D dev_get_regmap(&client->dev, NULL);
+> > > > +
+> > > > +     /* Make sure all off before machine shutdown */
+> > >
+> > > As above.
+> > >
+> > like as above ".... before 'machine shutdown'
+>
+>   "Disable WLED and DSV outputs"
+Same as above.
 
-On Wed, Dec 02, 2020 at 02:33:56PM +0000, Stefan Hajnoczi wrote:
-> On Wed, Nov 25, 2020 at 10:57:11AM -0500, Peter Xu wrote:
-> > On Wed, Nov 25, 2020 at 01:05:25AM +0000, Justin He wrote:
-> > > > I'd appreciate if you could explain why vfio needs to dma map some
-> > > > PROT_NONE
-> > > 
-> > > Virtiofs will map a PROT_NONE cache window region firstly, then remap the sub
-> > > region of that cache window with read or write permission. I guess this might
-> > > be an security concern. Just CC virtiofs expert Stefan to answer it more accurately.
-> > 
-> > Yep.  Since my previous sentence was cut off, I'll rephrase: I was thinking
-> > whether qemu can do vfio maps only until it remaps the PROT_NONE regions into
-> > PROT_READ|PROT_WRITE ones, rather than trying to map dma pages upon PROT_NONE.
-> 
-> Userspace processes sometimes use PROT_NONE to reserve virtual address
-> space. That way future mmap(NULL, ...) calls will not accidentally
-> allocate an address from the reserved range.
-> 
-> virtio-fs needs to do this because the DAX window mappings change at
-> runtime. Initially the entire DAX window is just reserved using
-> PROT_NONE. When it's time to mmap a portion of a file into the DAX
-> window an mmap(fixed_addr, ...) call will be made.
-
-Yes I can understand the rational on why the region is reserved.  However IMHO
-the real question is why such reservation behavior should affect qemu memory
-layout, and even further to VFIO mappings.
-
-Note that PROT_NONE should likely mean that there's no backing page at all in
-this case.  Since vfio will pin all the pages before mapping the DMAs, it also
-means that it's at least inefficient, because when we try to map all the
-PROT_NONE pages we'll try to fault in every single page of it, even if they may
-not ever be used.
-
-So I still think this patch is not doing the right thing.  Instead we should
-somehow teach qemu that the virtiofs memory region should only be the size of
-enabled regions (with PROT_READ|PROT_WRITE), rather than the whole reserved
-PROT_NONE region.
-
-Thanks,
-
--- 
-Peter Xu
-
+Thanks for all the suggestion.
+If any misunderstanding, please kindly let me know.
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
