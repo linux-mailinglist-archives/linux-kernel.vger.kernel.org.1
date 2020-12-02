@@ -2,308 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2352CBF35
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C5E2CBF27
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbgLBOLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:11:13 -0500
-Received: from mga01.intel.com ([192.55.52.88]:47594 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728042AbgLBOLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:11:12 -0500
-IronPort-SDR: NaIlv5i/D+tChmxs53GgJbwLZWPaYc0k8pSeNxSuBGlnz17G7I0NM+42IjBLB+6lQWI+nHsm59
- iv8JWUdQd6xQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="191234943"
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="191234943"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 06:09:31 -0800
-IronPort-SDR: RbXpzh6TDSVjHirOx+/lnfkZXlKKLeKM3bnlw/dpJl+Xpj0gvwla09Jujb2q2RnzwBJ/No73Cv
- MiaQtKYsE01g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="373512627"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Dec 2020 06:09:22 -0800
-Subject: Re: [PATCH -tip 14/32] sched: migration changes for core scheduling
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-15-joel@joelfernandes.org>
- <20201122235456.GF110669@balbir-desktop>
- <0b2514ef-6cc3-c1a3-280b-5d9062c80a31@linux.intel.com>
- <20201124154237.GZ3021@hirez.programming.kicks-ass.net>
- <d541b70c-c65f-5bf6-5e71-0b9b35457fae@linux.intel.com>
- <20201125225731.GB163610@balbir-desktop>
- <d9f356dd-be58-b52c-504d-ff46d37c1479@linux.intel.com>
- <20201126083250.GI163610@balbir-desktop>
- <e885eebe-686c-70f7-95b9-17a065fb2764@linux.intel.com>
- <20201130093333.GD473773@balbir-desktop>
- <6cf6c89d-8d33-c11b-1ea9-7d143b89fc2d@linux.intel.com>
-Message-ID: <fc1c7029-b3a2-0005-0efb-f3f3ab8e5568@linux.intel.com>
-Date:   Wed, 2 Dec 2020 22:09:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2389034AbgLBOKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:10:21 -0500
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:59723 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389011AbgLBOKU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 09:10:20 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id kSp0kEZ3PN7XgkSp3ktOxl; Wed, 02 Dec 2020 15:09:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1606918174; bh=8It+mUhWcNhF0vzprQdPV2Le0KNPLwCD1U2+v68bzUo=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=vXCSGQe7jYBcuWZBYxKr7+xUM8qqIvOPES4wii+Mj/wKErDcYpT98eOqP5nLVNl1F
+         +DPLfKDIsbHytSY0smL6jKSr0E9Um8Q0tf3SMHOQy+WApnrhuoB7tnMeLOr5CQkQkv
+         G4ixqlPOy2QOC9axIDZLYzyQrh4saIehyRU+uZHrATWOn0sBmB14MLJzPg9M+0ZSjU
+         9tr6uHCnRHH3kY7HMDeF5kLID3yPxpGGCh8R5Uxg1huU38zxnsUn80ja5tT7l3bztz
+         Lsgm3afZ2/t9H48AJh+Pcc2UpLiLZb11TNl0dyD2LIYYJqxvO1mipVJi7hQAILubld
+         W+FkKGe5cirpw==
+Subject: Re: [PATCH 1/4] v4l2-ctrl: Make display delay and display enable std
+ controls
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Kyungmin Park <kyungmin.park@samsung.com>,
+        Kamil Debski <kamil@wypas.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20201109173541.10016-1-stanimir.varbanov@linaro.org>
+ <20201109173541.10016-2-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <e0a49eb2-f4d0-0532-52e0-5bc58ce85ad9@xs4all.nl>
+Date:   Wed, 2 Dec 2020 15:09:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <6cf6c89d-8d33-c11b-1ea9-7d143b89fc2d@linux.intel.com>
+In-Reply-To: <20201109173541.10016-2-stanimir.varbanov@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfH4z1F2rSCh2o7ovDglbE7I63h5pvR0H4mAQBXX/CsvJ5Ai4XMH7fKhDjKKSS6Wubw6B6axvK3MnaxI+Z5fYdTMVz8rVmsKZhmxMavbwNcupviDfc6vf
+ 4bRzpJBgOGj8aH+6/9Tv/HpValbnVb/TjYR8ASRh2ejbVVLR/JGbrGmvVOaw1yVE8QQ8we3EJyBCzRgZqcAjiK7K22P1TcIWYgMw7epXSl7KW6o/PxVWYZ8F
+ +yz70WxsT+0wgx2qLiQsRpeGOWjAU2FYvgyWcKsE550ZBXhqcdEwhonkJVg3btdO9h+ITaTvMnyfB2syuLBCbtyDho5Unvbh8jMyUxophvHTtjOB8Fffckyy
+ ddhg+CqkQX/qTBR75JGikszM5/awJ4uh9aoGIPL2h1f4s/5X9GO/8dWPoPhLOPX1NOj+iFrEAGlDxxDKQGYOjcCdBzKSbKI71A91YW++Qs5SVoC0e5Nis09Z
+ oDdsquDlsjYoeVRdqzg+1Ov/DgOvLMsfduopx5rZu7FApqHaJC74eairhQmCuws9nGzn8tCNP9wxPJsZUsSvgSWt3X++Pdb0JuvCQA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Balbir,
+On 09/11/2020 18:35, Stanimir Varbanov wrote:
+> Make display delay and display delay enable MFC controls standard v4l
+> controls. This will allow reuse of the controls for other decoder
+> drivers. Also the new proposed controls are now codec agnostic because
+> they could be used for any codec.
+> 
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  .../userspace-api/media/v4l/ext-ctrls-codec.rst   | 15 +++++++++++++++
+>  drivers/media/v4l2-core/v4l2-ctrls.c              |  4 ++++
+>  include/uapi/linux/v4l2-controls.h                |  2 ++
+>  3 files changed, 21 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index ce728c757eaf..82c9cda40270 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -679,6 +679,21 @@ enum v4l2_mpeg_video_frame_skip_mode -
+>      otherwise the decoder expects a single frame in per buffer.
+>      Applicable to the decoder, all codecs.
+>  
+> +``V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY_ENABLE (boolean)``
 
-I still placed the patch embedded in this thread, welcome any comments.
+I'd use _DEC_ instead of _DECODER_.
 
-Thanks,
--Aubrey
-======================================================================
+> +    If the display delay is enabled then the decoder is forced to return
+> +    a CAPTURE buffer (decoded frame) after processing a certain number
+> +    of OUTPUT buffers. The delay can be set through
+> +    ``V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY``. This
+> +    feature can be used for example for generating thumbnails of videos.
+> +    Applicable to the decoder.
 
-From d64455dcaf47329673903a68a9df1151400cdd7a Mon Sep 17 00:00:00 2001
-From: Aubrey Li <aubrey.li@linux.intel.com>
-Date: Wed, 2 Dec 2020 13:53:30 +0000
-Subject: [PATCH] sched: migration changes for core scheduling
+Hmm. Is this: "after processing the first 'display delay' number of OUTPUT buffers."
+Or is this: "every 'display delay' number of OUTPUT buffers."
 
- - Don't migrate if there is a cookie mismatch
-     Load balance tries to move task from busiest CPU to the
-     destination CPU. When core scheduling is enabled, if the
-     task's cookie does not match with the destination CPU's
-     core cookie, this task will be skipped by this CPU. This
-     mitigates the forced idle time on the destination CPU.
+I.e., is it a one-shot thing or a periodical thing?
 
- - Select cookie matched idle CPU
-     In the fast path of task wakeup, select the first cookie matched
-     idle CPU instead of the first idle CPU.
+If it is a one-shot thing, then this should probably be a button type, not
+a boolean.
 
- - Find cookie matched idlest CPU
-     In the slow path of task wakeup, find the idlest CPU whose core
-     cookie matches with task's cookie
+> +
+> +``V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY (integer)``
+> +    Display delay value for decoder. The decoder is forced to
+> +    return a decoded frame after the set 'display delay' number of
+> +    frames. If this number is low it may result in frames returned out
+> +    of display order, in addition the hardware may still be using the
+> +    returned buffer as a reference picture for subsequent frames.
 
- - Don't migrate task if cookie not match
-     For the NUMA load balance, don't migrate task to the CPU whose
-     core cookie does not match with task's cookie
+Can this be 0? And if so, what does that mean?
 
-Cc: Balbir Singh <bsingharora@gmail.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/sched/fair.c  | 33 +++++++++++++++++---
- kernel/sched/sched.h | 71 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 100 insertions(+), 4 deletions(-)
+> +
+>  ``V4L2_CID_MPEG_VIDEO_H264_VUI_SAR_ENABLE (boolean)``
+>      Enable writing sample aspect ratio in the Video Usability
+>      Information. Applicable to the H264 encoder.
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index bd7f330c941c..4a21802e026b 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -874,6 +874,8 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_MPEG_VIDEO_HEADER_MODE:			return "Sequence Header Mode";
+>  	case V4L2_CID_MPEG_VIDEO_MAX_REF_PIC:			return "Max Number of Reference Pics";
+>  	case V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE:		return "Frame Skip Mode";
+> +	case V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY:		return "Display Delay";
+> +	case V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY_ENABLE:	return "Display Delay Enable";
+>  	case V4L2_CID_MPEG_VIDEO_H263_I_FRAME_QP:		return "H263 I-Frame QP Value";
+>  	case V4L2_CID_MPEG_VIDEO_H263_P_FRAME_QP:		return "H263 P-Frame QP Value";
+>  	case V4L2_CID_MPEG_VIDEO_H263_B_FRAME_QP:		return "H263 B-Frame QP Value";
+> @@ -1221,6 +1223,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  	case V4L2_CID_FLASH_READY:
+>  	case V4L2_CID_MPEG_VIDEO_DECODER_MPEG4_DEBLOCK_FILTER:
+>  	case V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE:
+> +	case V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY_ENABLE:
+>  	case V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE:
+>  	case V4L2_CID_MPEG_VIDEO_MB_RC_ENABLE:
+>  	case V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM:
+> @@ -1256,6 +1259,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  		break;
+>  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:
+>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
+> +	case V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY:
+>  		*type = V4L2_CTRL_TYPE_INTEGER;
+>  		break;
+>  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 7035f4fb182c..d6b19f8d0022 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -773,6 +773,8 @@ enum v4l2_mpeg_video_frame_skip_mode {
+>  	V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_LEVEL_LIMIT	= 1,
+>  	V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_BUF_LIMIT	= 2,
+>  };
+> +#define V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY		(V4L2_CID_MPEG_BASE + 647)
+> +#define V4L2_CID_MPEG_VIDEO_DECODER_DISPLAY_DELAY_ENABLE	(V4L2_CID_MPEG_BASE + 648)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index de82f88ba98c..b8657766b660 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1921,6 +1921,13 @@ static void task_numa_find_cpu(struct task_numa_env *env,
- 		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
- 			continue;
- 
-+		/*
-+		 * Skip this cpu if source task's cookie does not match
-+		 * with CPU's core cookie.
-+		 */
-+		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
-+			continue;
-+
- 		env->dst_cpu = cpu;
- 		if (task_numa_compare(env, taskimp, groupimp, maymove))
- 			break;
-@@ -5867,11 +5874,15 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
- 
- 	/* Traverse only the allowed CPUs */
- 	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
-+		struct rq *rq = cpu_rq(i);
-+
-+		if (!sched_core_cookie_match(rq, p))
-+			continue;
-+
- 		if (sched_idle_cpu(i))
- 			return i;
- 
- 		if (available_idle_cpu(i)) {
--			struct rq *rq = cpu_rq(i);
- 			struct cpuidle_state *idle = idle_get_state(rq);
- 			if (idle && idle->exit_latency < min_exit_latency) {
- 				/*
-@@ -6129,7 +6140,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
- 			return -1;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-+
-+		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu) &&
-+		    sched_cpu_cookie_match(cpu_rq(cpu), p))
- 			break;
- 	}
- 
-@@ -7530,8 +7543,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 	 * We do not migrate tasks that are:
- 	 * 1) throttled_lb_pair, or
- 	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
--	 * 3) running (obviously), or
--	 * 4) are cache-hot on their current CPU.
-+	 * 3) task's cookie does not match with this CPU's core cookie
-+	 * 4) running (obviously), or
-+	 * 5) are cache-hot on their current CPU.
- 	 */
- 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
- 		return 0;
-@@ -7566,6 +7580,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
- 		return 0;
- 	}
- 
-+	/*
-+	 * Don't migrate task if the task's cookie does not match
-+	 * with the destination CPU's core cookie.
-+	 */
-+	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
-+		return 0;
-+
- 	/* Record that we found atleast one task that could run on dst_cpu */
- 	env->flags &= ~LBF_ALL_PINNED;
- 
-@@ -8792,6 +8813,10 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 					p->cpus_ptr))
- 			continue;
- 
-+		/* Skip over this group if no cookie matched */
-+		if (!sched_group_cookie_match(cpu_rq(this_cpu), p, group))
-+			continue;
-+
- 		local_group = cpumask_test_cpu(this_cpu,
- 					       sched_group_span(group));
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e72942a9ee11..e1adfffe6e39 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1135,6 +1135,61 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
- 
- bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
- 
-+/*
-+ * Helpers to check if the CPU's core cookie matches with the task's cookie
-+ * when core scheduling is enabled.
-+ * A special case is that the task's cookie always matches with CPU's core
-+ * cookie if the CPU is in an idle core.
-+ */
-+static inline bool sched_cpu_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-+	if (!sched_core_enabled(rq))
-+		return true;
-+
-+	return rq->core->core_cookie == p->core_cookie;
-+}
-+
-+static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	bool idle_core = true;
-+	int cpu;
-+
-+	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-+	if (!sched_core_enabled(rq))
-+		return true;
-+
-+	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
-+		if (!available_idle_cpu(cpu)) {
-+			idle_core = false;
-+			break;
-+		}
-+	}
-+
-+	/*
-+	 * A CPU in an idle core is always the best choice for tasks with
-+	 * cookies.
-+	 */
-+	return idle_core || __cookie_match(rq, p);
-+}
-+
-+static inline bool sched_group_cookie_match(struct rq *rq,
-+					    struct task_struct *p,
-+					    struct sched_group *group)
-+{
-+	int cpu;
-+
-+	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
-+	if (!sched_core_enabled(rq))
-+		return true;
-+
-+	for_each_cpu_and(cpu, sched_group_span(group), p->cpus_ptr) {
-+		if (sched_core_cookie_match(cpu_rq(cpu), p))
-+			return true;
-+	}
-+	return false;
-+}
-+
- extern void queue_core_balance(struct rq *rq);
- 
- #else /* !CONFIG_SCHED_CORE */
-@@ -1153,6 +1208,22 @@ static inline void queue_core_balance(struct rq *rq)
- {
- }
- 
-+static inline bool sched_cpu_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	return true;
-+}
-+
-+static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
-+{
-+	return true;
-+}
-+
-+static inline bool sched_group_cookie_match(struct rq *rq,
-+					    struct task_struct *p,
-+					    struct sched_group *group)
-+{
-+	return true;
-+}
- #endif /* CONFIG_SCHED_CORE */
- 
- #ifdef CONFIG_SCHED_SMT
--- 
-2.17.1
+This will need to be rebased once this PR is merged:
+https://patchwork.linuxtv.org/project/linux-media/patch/d68da172-b251-000f-653d-38a8a4c7b715@xs4all.nl/
 
+>  
+>  /*  MPEG-class control IDs specific to the CX2341x driver as defined by V4L2 */
+>  #define V4L2_CID_MPEG_CX2341X_BASE				(V4L2_CTRL_CLASS_MPEG | 0x1000)
+> 
+
+Regards,
+
+	Hans
