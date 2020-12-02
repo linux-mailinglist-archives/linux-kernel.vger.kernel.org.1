@@ -2,218 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A832CB714
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288472CB72A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387744AbgLBI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:27:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
+        id S1729120AbgLBI2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:28:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgLBI1W (ORCPT
+        with ESMTP id S1729039AbgLBI2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:27:22 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05331C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 00:26:42 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id u4so482757qkk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:26:41 -0800 (PST)
+        Wed, 2 Dec 2020 03:28:04 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F786C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 00:27:23 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id j205so2858281lfj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:27:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FmY534xqIDhl01APeKsQP14KEWKOgWXllxn9uDK2ABs=;
-        b=kQMR5gNi5TDH332Pa7ETOmqwHvBgxezCa03fuaaL/uc+zo4Nqd38tV0R3zThLAmg82
-         wK/EdICSpKUw4nZmM4xqvE2eQYkDMnRWzCYyudxKqW0MWFuZMwsdHx5ChzaBZQU1mMey
-         rZNu7KgPDYyDtPF73ND/TsCvpPRQr9QhJxKTfyMp+dH5uYP9Ct97vJc8RA4iN34zsZZM
-         Zjzlf5y2hbnf9i33EdOzabJ8cEaCy37ekuTpK4gBPkF75M3LfxiMyJVXUQdLkTZ0Z/ky
-         t7otq7kqnvfIrCIL7Q+gBD/DqFOxJYtpIeTne0cjvsdkq1wUof9gjDmxzbCCgku3Qo68
-         DhRA==
+        bh=r6Cy6QGunLOuhnb+QTjz+WWap7JkCYDaCyeJKIsYIV8=;
+        b=bUK1XFEBJ3vBD1CQ+WrbiJKlF0IpjKjSIDSxtCRoTVDLwP8kj9c0ykfRBPSSe+lo1j
+         v3+B+8ceQlVXBB2qQcxoOmW3C1IaYkrO3ITa2EaSGy0xz8tkNpmTbRU0zr56cgNO9ZRn
+         BKFz5gjqMWg0eBw/aM9n1fNIpWUIYMtVRAM2TYkj1gr+0Klj2e5pFFF/MXxgqApvp/uE
+         ZTzVg4ZBKsi542jWOPnpNlKQ7w+H8OKi2We4jLDT6SSf6NEB5+AQ/ZkrNebbLZxkz4GT
+         23Utc/mWUDZvYEPfIPWorgePXAWh7UkMkUSg1FRmEZScr6lNEF57YwyayH+OmMYyZ5Un
+         qDLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FmY534xqIDhl01APeKsQP14KEWKOgWXllxn9uDK2ABs=;
-        b=Yzf30495Tm2A6Sr8SFZzp0CNlWdkGzEmS+QypVgum8djle+7mfOzxKrg/DFxWRK+qn
-         yw85wrAd7MMka1KKH4GQdkxI2ybtJqX4mf4puwN63++cdk0DFOLX4i9R5NLKX5bt5t4/
-         Ljvi0eKKnAUfzFNyqGCWyPNxe7awjyzl8oOkgCS8B1cYtfdNvTQS3F/Fs0D0qlsRyRWS
-         qQQkTtca0RRIMjKNTyedkJtr7+2MfCNV0b6b/L9Ytl/D+XvCbeUOhkUjF6Hw+SaCH6Gq
-         POarPoALxBS557REd/qu1AS3w2rmKgyHoPHAFshvZl34uc0oNTQGLxxOAFHFJlTpyxfb
-         ACNQ==
-X-Gm-Message-State: AOAM5312PBTvdLeyTYgCQo/UOgFtNCz1Pyq2TsTVcMV6XUsu50cqXNvm
-        +AXsoCZjI8onzE5OTZtR9PO3arTWqm0T7wSnZH6AgQ==
-X-Google-Smtp-Source: ABdhPJxhe31Fzd6Gs61++5CHWaoySY80+QpqhG/33P7Dh4HFGzz6Ykis3BleHaY3ujJ4grxJNZhZ5fNZD9On61L5S0I=
-X-Received: by 2002:a05:620a:12e4:: with SMTP id f4mr1370416qkl.265.1606897601009;
- Wed, 02 Dec 2020 00:26:41 -0800 (PST)
+        bh=r6Cy6QGunLOuhnb+QTjz+WWap7JkCYDaCyeJKIsYIV8=;
+        b=o9eI6zudNB5Yf8jQHazAUogKxoRfa4cgbGUaAt7T2MKU70MewZPm1gEe5/83yBmCch
+         ODcNTOVUiSd7MFwfOQkOc5VziEgK34xA+UWuRAmAxKm4cc8PlSFRPXc1ud3/oVIeohzS
+         1Gr3k62BKUXEY6SghSpMFbT6D1/xBUUwkOyBadwXXtfN6Serhn6toNA5W6fU9KAa44CH
+         uE7/W0+q9ZYLmX8XbIffhjfOSOsheVgtO7mrhC1hxF65ZloVGsqz0fnuYHPttjzux3v1
+         yRCD7Jn2WhYEPYQlrvIdTMyvz3RD1jInY4AbdQyhdL7+2QOV6F2GBxmXIucEhsD0SdYO
+         +9Yg==
+X-Gm-Message-State: AOAM532XVI6fsyAr69dMif1Yf061wFXUpZ65VmOrz1doCEnzQUMMfBfS
+        560sUQHfjWkP1UCiL/nRmWsahrh8ifWfY/0gJisYgA==
+X-Google-Smtp-Source: ABdhPJw4kDU73Y7SyJeH8zPnIqECPVD5KdRvcPwdbYNyQK25mNOikX+QVF+h1Lf2ZNfdQPpN3l2zgcOQo0QYXZ6xY3M=
+X-Received: by 2002:a19:cc91:: with SMTP id c139mr835126lfg.31.1606897641948;
+ Wed, 02 Dec 2020 00:27:21 -0800 (PST)
 MIME-Version: 1.0
-References: <1606895585-17382-1-git-send-email-Kuan-Ying.Lee@mediatek.com> <1606895585-17382-2-git-send-email-Kuan-Ying.Lee@mediatek.com>
-In-Reply-To: <1606895585-17382-2-git-send-email-Kuan-Ying.Lee@mediatek.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 2 Dec 2020 09:26:29 +0100
-Message-ID: <CACT4Y+bvo5Hg1OfXYipdWTJPsBtG265X5wtBaVBqhydBwouMkA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] kasan: fix object remain in offline per-cpu quarantine
-To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicholas Tang <nicholas.tang@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org,
-        wsd_upstream <wsd_upstream@mediatek.com>
+References: <20201201025944.18260-1-song.bao.hua@hisilicon.com> <20201201025944.18260-3-song.bao.hua@hisilicon.com>
+In-Reply-To: <20201201025944.18260-3-song.bao.hua@hisilicon.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 2 Dec 2020 09:27:10 +0100
+Message-ID: <CAKfTPtAppZFdku6k3cA=kNYKjU5e7w4A+E3R5_m11z+jy_WCBw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>, xuwei5@huawei.com,
+        prime.zeng@hisilicon.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 8:58 AM Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com> wrote:
+On Tue, 1 Dec 2020 at 04:04, Barry Song <song.bao.hua@hisilicon.com> wrote:
 >
-> We hit this issue in our internal test.
-> When enabling generic kasan, a kfree()'d object is put into per-cpu
-> quarantine first. If the cpu goes offline, object still remains in
-> the per-cpu quarantine. If we call kmem_cache_destroy() now, slub
-> will report "Objects remaining" error.
+> ARM64 server chip Kunpeng 920 has 6 clusters in each NUMA node, and each
+> cluster has 4 cpus. All clusters share L3 cache data, but each cluster
+> has local L3 tag. On the other hand, each clusters will share some
+> internal system bus. This means cache coherence overhead inside one cluster
+> is much less than the overhead across clusters.
 >
-> [   74.982625] =============================================================================
-> [   74.983380] BUG test_module_slab (Not tainted): Objects remaining in test_module_slab on __kmem_cache_shutdown()
-> [   74.984145] -----------------------------------------------------------------------------
-> [   74.984145]
-> [   74.984883] Disabling lock debugging due to kernel taint
-> [   74.985561] INFO: Slab 0x(____ptrval____) objects=34 used=1 fp=0x(____ptrval____) flags=0x2ffff00000010200
-> [   74.986638] CPU: 3 PID: 176 Comm: cat Tainted: G    B             5.10.0-rc1-00007-g4525c8781ec0-dirty #10
-> [   74.987262] Hardware name: linux,dummy-virt (DT)
-> [   74.987606] Call trace:
-> [   74.987924]  dump_backtrace+0x0/0x2b0
-> [   74.988296]  show_stack+0x18/0x68
-> [   74.988698]  dump_stack+0xfc/0x168
-> [   74.989030]  slab_err+0xac/0xd4
-> [   74.989346]  __kmem_cache_shutdown+0x1e4/0x3c8
-> [   74.989779]  kmem_cache_destroy+0x68/0x130
-> [   74.990176]  test_version_show+0x84/0xf0
-> [   74.990679]  module_attr_show+0x40/0x60
-> [   74.991218]  sysfs_kf_seq_show+0x128/0x1c0
-> [   74.991656]  kernfs_seq_show+0xa0/0xb8
-> [   74.992059]  seq_read+0x1f0/0x7e8
-> [   74.992415]  kernfs_fop_read+0x70/0x338
-> [   74.993051]  vfs_read+0xe4/0x250
-> [   74.993498]  ksys_read+0xc8/0x180
-> [   74.993825]  __arm64_sys_read+0x44/0x58
-> [   74.994203]  el0_svc_common.constprop.0+0xac/0x228
-> [   74.994708]  do_el0_svc+0x38/0xa0
-> [   74.995088]  el0_sync_handler+0x170/0x178
-> [   74.995497]  el0_sync+0x174/0x180
-> [   74.996050] INFO: Object 0x(____ptrval____) @offset=15848
-> [   74.996752] INFO: Allocated in test_version_show+0x98/0xf0 age=8188 cpu=6 pid=172
-> [   75.000802]  stack_trace_save+0x9c/0xd0
-> [   75.002420]  set_track+0x64/0xf0
-> [   75.002770]  alloc_debug_processing+0x104/0x1a0
-> [   75.003171]  ___slab_alloc+0x628/0x648
-> [   75.004213]  __slab_alloc.isra.0+0x2c/0x58
-> [   75.004757]  kmem_cache_alloc+0x560/0x588
-> [   75.005376]  test_version_show+0x98/0xf0
-> [   75.005756]  module_attr_show+0x40/0x60
-> [   75.007035]  sysfs_kf_seq_show+0x128/0x1c0
-> [   75.007433]  kernfs_seq_show+0xa0/0xb8
-> [   75.007800]  seq_read+0x1f0/0x7e8
-> [   75.008128]  kernfs_fop_read+0x70/0x338
-> [   75.008507]  vfs_read+0xe4/0x250
-> [   75.008990]  ksys_read+0xc8/0x180
-> [   75.009462]  __arm64_sys_read+0x44/0x58
-> [   75.010085]  el0_svc_common.constprop.0+0xac/0x228
-> [   75.011006] kmem_cache_destroy test_module_slab: Slab cache still has objects
+> +-----------------------------------+                          +---------+
+> |  +------+    +------+            +---------------------------+         |
+> |  | CPU0 |    | cpu1 |             |    +-----------+         |         |
+> |  +------+    +------+             |    |           |         |         |
+> |                                   +----+    L3     |         |         |
+> |  +------+    +------+   cluster   |    |    tag    |         |         |
+> |  | CPU2 |    | CPU3 |             |    |           |         |         |
+> |  +------+    +------+             |    +-----------+         |         |
+> |                                   |                          |         |
+> +-----------------------------------+                          |         |
+> +-----------------------------------+                          |         |
+> |  +------+    +------+             +--------------------------+         |
+> |  |      |    |      |             |    +-----------+         |         |
+> |  +------+    +------+             |    |           |         |         |
+> |                                   |    |    L3     |         |         |
+> |  +------+    +------+             +----+    tag    |         |         |
+> |  |      |    |      |             |    |           |         |         |
+> |  +------+    +------+             |    +-----------+         |         |
+> |                                   |                          |         |
+> +-----------------------------------+                          |   L3    |
+>                                                                |   data  |
+> +-----------------------------------+                          |         |
+> |  +------+    +------+             |    +-----------+         |         |
+> |  |      |    |      |             |    |           |         |         |
+> |  +------+    +------+             +----+    L3     |         |         |
+> |                                   |    |    tag    |         |         |
+> |  +------+    +------+             |    |           |         |         |
+> |  |      |    |      |            ++    +-----------+         |         |
+> |  +------+    +------+            |---------------------------+         |
+> +-----------------------------------|                          |         |
+> +-----------------------------------|                          |         |
+> |  +------+    +------+            +---------------------------+         |
+> |  |      |    |      |             |    +-----------+         |         |
+> |  +------+    +------+             |    |           |         |         |
+> |                                   +----+    L3     |         |         |
+> |  +------+    +------+             |    |    tag    |         |         |
+> |  |      |    |      |             |    |           |         |         |
+> |  +------+    +------+             |    +-----------+         |         |
+> |                                   |                          |         |
+> +-----------------------------------+                          |         |
+> +-----------------------------------+                          |         |
+> |  +------+    +------+             +--------------------------+         |
+> |  |      |    |      |             |   +-----------+          |         |
+> |  +------+    +------+             |   |           |          |         |
+> |                                   |   |    L3     |          |         |
+> |  +------+    +------+             +---+    tag    |          |         |
+> |  |      |    |      |             |   |           |          |         |
+> |  +------+    +------+             |   +-----------+          |         |
+> |                                   |                          |         |
+> +-----------------------------------+                          |         |
+> +-----------------------------------+                         ++         |
+> |  +------+    +------+             +--------------------------+         |
+> |  |      |    |      |             |  +-----------+           |         |
+> |  +------+    +------+             |  |           |           |         |
+> |                                   |  |    L3     |           |         |
+> |  +------+    +------+             +--+    tag    |           |         |
+> |  |      |    |      |             |  |           |           |         |
+> |  +------+    +------+             |  +-----------+           |         |
+> |                                   |                          +---------+
+> +-----------------------------------+
 >
-> Register a cpu hotplug function to remove all objects in the offline
-> per-cpu quarantine when cpu is going offline. Set a per-cpu variable
-> to indicate this cpu is offline.
+> This patch adds the sched_domain for clusters. On kunpeng 920, without
+> this patch, domain0 of cpu0 would be MC for cpu0-cpu23 with
+> min_interval=24, max_interval=48; with this patch, MC becomes domain1,
+> a new domain0 "CL" including cpu0-cpu3 is added with min_interval=4 and
+> max_interval=8.
+> This will affect load balance. For example, without this patch, while cpu0
+> becomes idle, it will pull a task from cpu1-cpu15. With this patch, cpu0
+> will try to pull a task from cpu1-cpu3 first. This will have much less
+> overhead of task migration.
 >
-> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-> Reported-by: Guangye Yang <guangye.yang@mediatek.com>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> On the other hand, while doing WAKE_AFFINE, this patch will try to find
+> a core in the target cluster before scanning the llc domain.
+> This means it will proactively use a core which has better affinity with
+> target core at first.
 
-Looks good to me, thanks.
+Which is at the opposite of what we are usually trying to do in the
+fast wakeup path: trying to minimize resource sharing by finding an
+idle core with all smt idle as an example
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+>
+> Not much benchmark has been done yet. but here is a rough hackbench
+> result.
+> we run the below command with different -g parameter to increase system load
+> by changing g from 1 to 4, for each one of 1-4, we run the benchmark ten times
+> and record the data to get the average time:
+>
+> First, we run hackbench in only one NUMA node(cpu0-cpu23):
+> $ numactl -N 0 hackbench -p -T -l 100000 -g $1
 
+What is your ref tree ? v5.10-rcX or tip/sched/core ?
 
+>
+> g=1 (seen cpu utilization around 50% for each core)
+> Running in threaded mode with 1 groups using 40 file descriptors
+> Each sender will pass 100000 messages of 100 bytes
+> w/o: 7.689 7.485 7.485 7.458 7.524 7.539 7.738 7.693 7.568 7.674=7.5853
+> w/ : 7.516 7.941 7.374 7.963 7.881 7.910 7.420 7.556 7.695 7.441=7.6697
+> performance improvement w/ patch: -1.01%
+>
+> g=2 (seen cpu utilization around 70% for each core)
+> Running in threaded mode with 2 groups using 40 file descriptors
+> Each sender will pass 100000 messages of 100 bytes
+> w/o: 10.127 10.119 10.070 10.196 10.057 10.111 10.045 10.164 10.162 9.955=10.1006
+> w/ : 9.694 9.654 9.612 9.649 9.686 9.734 9.607 9.842 9.690 9.710=9.6878
+> performance improvement w/ patch: 4.08%
+>
+> g=3 (seen cpu utilization around 90% for each core)
+> Running in threaded mode with 3 groups using 40 file descriptors
+> Each sender will pass 100000 messages of 100 bytes
+> w/o: 15.885 15.254 15.932 15.647 16.120 15.878 15.857 15.759 15.674 15.721=15.7727
+> w/ : 14.974 14.657 13.969 14.985 14.728 15.665 15.191 14.995 14.946 14.895=14.9005
+> performance improvement w/ patch: 5.53%
+>
+> g=4
+> Running in threaded mode with 4 groups using 40 file descriptors
+> Each sender will pass 100000 messages of 100 bytes
+> w/o: 20.014 21.025 21.119 21.235 19.767 20.971 20.962 20.914 21.090 21.090=20.8187
+> w/ : 20.331 20.608 20.338 20.445 20.456 20.146 20.693 20.797 21.381 20.452=20.5647
+> performance improvement w/ patch: 1.22%
+>
+> After that, we run the same hackbench in both NUMA nodes(cpu0-cpu47):
+> g=1
+> w/o: 7.351 7.416 7.486 7.358 7.516 7.403 7.413 7.411 7.421 7.454=7.4229
+> w/ : 7.609 7.596 7.647 7.571 7.687 7.571 7.520 7.513 7.530 7.681=7.5925
+> performance improvement by patch: -2.2%
+>
+> g=2
+> w/o: 9.046 9.190 9.053 8.950 9.101 8.930 9.143 8.928 8.905 9.034=9.028
+> w/ : 8.247 8.057 8.258 8.310 8.083 8.201 8.044 8.158 8.382 8.173=8.1913
+> performance improvement by patch: 9.3%
+>
+> g=3
+> w/o: 11.664 11.767 11.277 11.619 12.557 12.760 11.664 12.165 12.235 11.849=11.9557
+> w/ : 9.387 9.461 9.650 9.613 9.591 9.454 9.496 9.716 9.327 9.722=9.5417
+> performance improvement by patch: 20.2%
+>
+> g=4
+> w/o: 17.347 17.299 17.655 18.775 16.707 18.879 17.255 18.356 16.859 18.515=17.7647
+> w/ : 10.416 10.496 10.601 10.318 10.459 10.617 10.510 10.642 10.467 10.401=10.4927
+> performance improvement by patch: 40.9%
+>
+> g=5
+> w/o: 27.805 26.633 24.138 28.086 24.405 27.922 30.043 28.458 31.073 25.819=27.4382
+> w/ : 13.817 13.976 14.166 13.688 14.132 14.095 14.003 13.997 13.954 13.907=13.9735
+> performance improvement by patch: 49.1%
+>
+> It seems the patch can bring a huge increase on hackbench especially when
+> we bind hackbench to all of cpu0-cpu47, comparing to 5.53% while running
+> on single NUMA node(cpu0-cpu23)
+
+Interesting that this patch mainly impacts the numa case
+
+>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 > ---
->  mm/kasan/quarantine.c | 40 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
+>  arch/arm64/Kconfig       |  7 +++++++
+>  arch/arm64/kernel/smp.c  | 17 +++++++++++++++++
+>  include/linux/topology.h |  7 +++++++
+>  kernel/sched/fair.c      | 35 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 66 insertions(+)
 >
-> diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-> index 4c5375810449..cac7c617df72 100644
-> --- a/mm/kasan/quarantine.c
-> +++ b/mm/kasan/quarantine.c
-> @@ -29,6 +29,7 @@
->  #include <linux/srcu.h>
->  #include <linux/string.h>
->  #include <linux/types.h>
-> +#include <linux/cpuhotplug.h>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 6d23283..3583c26 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -938,6 +938,13 @@ config SCHED_MC
+>           making when dealing with multi-core CPU chips at a cost of slightly
+>           increased overhead in some places. If unsure say N here.
 >
->  #include "../slab.h"
->  #include "kasan.h"
-> @@ -43,6 +44,7 @@ struct qlist_head {
->         struct qlist_node *head;
->         struct qlist_node *tail;
->         size_t bytes;
-> +       bool offline;
->  };
+> +config SCHED_CLUSTER
+> +       bool "Cluster scheduler support"
+> +       help
+> +         Cluster scheduler support improves the CPU scheduler's decision
+> +         making when dealing with machines that have clusters(sharing internal
+> +         bus or sharing LLC cache tag). If unsure say N here.
+> +
+>  config SCHED_SMT
+>         bool "SMT scheduler support"
+>         help
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index 355ee9e..5c8f026 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -32,6 +32,7 @@
+>  #include <linux/irq_work.h>
+>  #include <linux/kexec.h>
+>  #include <linux/kvm_host.h>
+> +#include <linux/sched/topology.h>
 >
->  #define QLIST_INIT { NULL, NULL, 0 }
-> @@ -188,6 +190,11 @@ void quarantine_put(struct kasan_free_meta *info, struct kmem_cache *cache)
->         local_irq_save(flags);
->
->         q = this_cpu_ptr(&cpu_quarantine);
-> +       if (q->offline) {
-> +               qlink_free(&info->quarantine_link, cache);
-> +               local_irq_restore(flags);
-> +               return;
-> +       }
->         qlist_put(q, &info->quarantine_link, cache->size);
->         if (unlikely(q->bytes > QUARANTINE_PERCPU_SIZE)) {
->                 qlist_move_all(q, &temp);
-> @@ -328,3 +335,36 @@ void quarantine_remove_cache(struct kmem_cache *cache)
->
->         synchronize_srcu(&remove_cache_srcu);
+>  #include <asm/alternative.h>
+>  #include <asm/atomic.h>
+> @@ -726,6 +727,20 @@ void __init smp_init_cpus(void)
+>         }
 >  }
+>
+> +static struct sched_domain_topology_level arm64_topology[] = {
+> +#ifdef CONFIG_SCHED_SMT
+> +        { cpu_smt_mask, cpu_smt_flags, SD_INIT_NAME(SMT) },
+> +#endif
+> +#ifdef CONFIG_SCHED_CLUSTER
+> +       { cpu_clustergroup_mask, cpu_core_flags, SD_INIT_NAME(CL) },
+> +#endif
+> +#ifdef CONFIG_SCHED_MC
+> +        { cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
+> +#endif
+> +       { cpu_cpu_mask, SD_INIT_NAME(DIE) },
+> +        { NULL, },
+> +};
 > +
-> +static int kasan_cpu_online(unsigned int cpu)
+>  void __init smp_prepare_cpus(unsigned int max_cpus)
+>  {
+>         const struct cpu_operations *ops;
+> @@ -735,6 +750,8 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
+>
+>         init_cpu_topology();
+>
+> +       set_sched_topology(arm64_topology);
+> +
+>         this_cpu = smp_processor_id();
+>         store_cpu_topology(this_cpu);
+>         numa_store_cpu_info(this_cpu);
+> diff --git a/include/linux/topology.h b/include/linux/topology.h
+> index 5f66648..2c823c0 100644
+> --- a/include/linux/topology.h
+> +++ b/include/linux/topology.h
+> @@ -211,6 +211,13 @@ static inline const struct cpumask *cpu_smt_mask(int cpu)
+>  }
+>  #endif
+>
+> +#ifdef CONFIG_SCHED_CLUSTER
+> +static inline const struct cpumask *cpu_cluster_mask(int cpu)
 > +{
-> +       this_cpu_ptr(&cpu_quarantine)->offline = false;
-> +       return 0;
+> +       return topology_cluster_cpumask(cpu);
+> +}
+> +#endif
+> +
+>  static inline const struct cpumask *cpu_cpu_mask(int cpu)
+>  {
+>         return cpumask_of_node(cpu_to_node(cpu));
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1a68a05..ae8ec910 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6106,6 +6106,37 @@ static inline int select_idle_smt(struct task_struct *p, int target)
+>
+>  #endif /* CONFIG_SCHED_SMT */
+>
+> +#ifdef CONFIG_SCHED_CLUSTER
+> +/*
+> + * Scan the local CLUSTER mask for idle CPUs.
+> + */
+> +static int select_idle_cluster(struct task_struct *p, int target)
+> +{
+> +       int cpu;
+> +
+> +       /* right now, no hardware with both cluster and smt to run */
+> +       if (sched_smt_active())
+
+don't use smt static key but a dedicated one if needed
+
+> +               return -1;
+> +
+> +       for_each_cpu_wrap(cpu, cpu_cluster_mask(target), target) {
+> +               if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+> +                       continue;
+> +               if (available_idle_cpu(cpu))
+> +                       return cpu;
+> +       }
+> +
+> +       return -1;
 > +}
 > +
-> +static int kasan_cpu_offline(unsigned int cpu)
-> +{
-> +       struct qlist_head *q;
+> +#else /* CONFIG_SCHED_CLUSTER */
 > +
-> +       q = this_cpu_ptr(&cpu_quarantine);
-> +       /* Ensure the ordering between the writing to q->offline and
-> +        * qlist_free_all. Otherwise, cpu_quarantine may be corrupted
-> +        * by interrupt.
-> +        */
-> +       WRITE_ONCE(q->offline, true);
-> +       barrier();
-> +       qlist_free_all(q, NULL);
-> +       return 0;
+> +static inline int select_idle_cluster(struct task_struct *p, int target)
+> +{
+> +       return -1;
 > +}
 > +
-> +static int __init kasan_cpu_quarantine_init(void)
-> +{
-> +       int ret = 0;
+> +#endif /* CONFIG_SCHED_CLUSTER */
 > +
-> +       ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "mm/kasan:online",
-> +                               kasan_cpu_online, kasan_cpu_offline);
-> +       if (ret < 0)
-> +               pr_err("kasan cpu quarantine register failed [%d]\n", ret);
-> +       return ret;
-> +}
-> +late_initcall(kasan_cpu_quarantine_init);
+>  /*
+>   * Scan the LLC domain for idle CPUs; this is dynamically regulated by
+>   * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
+> @@ -6270,6 +6301,10 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>         if ((unsigned)i < nr_cpumask_bits)
+>                 return i;
+>
+> +       i = select_idle_cluster(p, target);
+> +       if ((unsigned)i < nr_cpumask_bits)
+> +               return i;
+
+This is yet another loop in the fast wake up path.
+
+I'm curious to know which part of this patch really gives the perf improvement ?
+-Is it the new sched domain level with a shorter interval that is then
+used by Load balance to better spread task in the cluster and between
+clusters ?
+-Or this new loop in the wake up path which tries to keep threads in
+the same cluster ? which is at the opposite of the rest of the
+scheduler which tries to spread
+
+Also could the sched_feat(SIS_PROP) impacts significantly your
+topology because it  breaks before looking for all cores in the LLC ?
+And this new loop extends the number of tested core ?
+
+> +
+>         i = select_idle_cpu(p, sd, target);
+>         if ((unsigned)i < nr_cpumask_bits)
+>                 return i;
 > --
-> 2.18.0
+> 2.7.4
+>
