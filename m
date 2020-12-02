@@ -2,127 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726272CC067
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC512CC06B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730402AbgLBPK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:10:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730379AbgLBPK2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:10:28 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACC9C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:09:47 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a6so8121222wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:09:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oOSicCWhNpoN2Xb8hfcdhiDNzylSo2X/NngolxOC8vQ=;
-        b=VDelKcaY4dVlNWOPXMkFf5mSXUkNLpgLiq61inVRo15dob72+uGh1D9f5e4VkqWOzI
-         u0EHXHU0xohcCj4fmAeQeKP3TXa+vjSI8eNdR74HCDe+UHd9U/DGkrpts1l5adsgcqRQ
-         nfawWVLe5huBvNv3/DutS9t31Sr2Xr9Z01YLLlIxupe+KJnOZK9uRi4CROMt46bfcEYk
-         lqZD+9hDlvOIJs67RAEup4JAo8+NuIgARwg97o7VFnRkSVnMbiXA/FV7aVvtTp2ielGk
-         6kScFx954N9zYr98z5jyAfvmvdp4VwaaaudFbytw/6KBilM4p6zn/3BR8b/mdXllr5Sa
-         2png==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oOSicCWhNpoN2Xb8hfcdhiDNzylSo2X/NngolxOC8vQ=;
-        b=Wr2EVvIBkHv15GmhPAI0j3QXHPLCtZOlgIQxRDQsdPW3TiawN4VinbarDIHuHWe8lH
-         75dbzsclUXmNtmyAMOYXj2xpODrQZz2ypGfbJzTLauH+s6AECpa1iED5w4OIhixfFjLv
-         So21upOTHdwnxkir+iYJb2ULUAIZi/d9hpuKT7wQ21dDb19mGdTfHshvtofictoPAwXE
-         ND+U7qDbAGXCMmB5oQk16AyyriDXmdzubMHrlLQOnUNtdj9q5Q3+5dM9BQSg+0HYt60e
-         WlAhyBpoM6V9O0hkRRO8oRBNyH/ouUCboTG6GjFjLhYu8+XQ3+H04+w4D+uXMFbf1oVL
-         LXyA==
-X-Gm-Message-State: AOAM532EvfQlYdEsNcJwp3c8xtG5vESHCCDSNE7FnXLn0VCct3Vkc6St
-        R3YNIC4mbGOnJ8VjTNr54xXeZA==
-X-Google-Smtp-Source: ABdhPJyY6iTjOclycbgMdZR1BJM/NQs428i4F9BST8rtkZMQKzAhUor3EpfauPJw0gENxlNhnY3zKw==
-X-Received: by 2002:a7b:c19a:: with SMTP id y26mr2548794wmi.20.1606921786422;
-        Wed, 02 Dec 2020 07:09:46 -0800 (PST)
-Received: from dell ([91.110.221.235])
-        by smtp.gmail.com with ESMTPSA id s4sm2676916wra.91.2020.12.02.07.09.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 07:09:45 -0800 (PST)
-Date:   Wed, 2 Dec 2020 15:09:43 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v4 3/7] mfd: Add base driver for Netronix embedded
- controller
-Message-ID: <20201202150943.GN4801@dell>
-References: <20201122222739.1455132-1-j.neuschaefer@gmx.net>
- <20201122222739.1455132-4-j.neuschaefer@gmx.net>
- <20201202130520.GL4801@dell>
- <X8ed7stMOGhnZ18T@latitude>
+        id S1730412AbgLBPLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:11:20 -0500
+Received: from sauhun.de ([88.99.104.3]:39638 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727116AbgLBPLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:11:19 -0500
+Received: from localhost (p54b3307e.dip0.t-ipconnect.de [84.179.48.126])
+        by pokefinder.org (Postfix) with ESMTPSA id EC2C92C048D;
+        Wed,  2 Dec 2020 16:10:36 +0100 (CET)
+Date:   Wed, 2 Dec 2020 16:10:33 +0100
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Biwen Li <biwen.li@oss.nxp.com>
+Cc:     leoyang.li@nxp.com, linux@rempel-privat.de, kernel@pengutronix.de,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        aisheng.dong@nxp.com, xiaoning.wang@nxp.com,
+        o.rempel@pengutronix.de, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
+        xiaobo.xie@nxp.com, linux-arm-kernel@lists.infradead.org,
+        Biwen Li <biwen.li@nxp.com>
+Subject: Re: [v10] i2c: imx: support slave mode for imx I2C driver
+Message-ID: <20201202151033.GC874@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Biwen Li <biwen.li@oss.nxp.com>, leoyang.li@nxp.com,
+        linux@rempel-privat.de, kernel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com, aisheng.dong@nxp.com,
+        xiaoning.wang@nxp.com, o.rempel@pengutronix.de,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
+        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
+References: <20201111113255.28710-1-biwen.li@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pvezYHf7grwyp3Bc"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X8ed7stMOGhnZ18T@latitude>
+In-Reply-To: <20201111113255.28710-1-biwen.li@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Dec 2020, Jonathan Neuschäfer wrote:
 
-> On Wed, Dec 02, 2020 at 01:05:20PM +0000, Lee Jones wrote:
-> > On Sun, 22 Nov 2020, Jonathan Neuschäfer wrote:
-> [...]
-> > > +	/* Bail out if we encounter an unknown firmware version */
-> > > +	switch (version) {
-> > > +	case 0xd726: /* found in Kobo Aura */
-> > 
-> > No magic numbers.
-> > 
-> > Please submit a subsequent patch to define this.
-> 
-> Will do.
-> 
-> But I don't think I'll be able to give it a more meaningful name than
-> NTXEC_VERSION_D726. I don't have a good overview of which versions
-> appear in which devices. "0xd726 found in Kobo Aura" only means that;
-> I don't know if it's the only version used in the Kobo Aura, and I don't
-> know if the Kobo Aura is the only device where it is used.
+--pvezYHf7grwyp3Bc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Defines are not set in stone.
+On Wed, Nov 11, 2020 at 07:32:55PM +0800, Biwen Li wrote:
+> From: Biwen Li <biwen.li@nxp.com>
+>=20
+> The patch supports slave mode for imx I2C driver
+>=20
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
 
-They can evolve over time as more is known.
+Applied to for-next, thanks!
 
-NTXEC_KOBO_AURA would be fine for now.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--pvezYHf7grwyp3Bc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/HrmkACgkQFA3kzBSg
+KbZEfxAAl1iWtO5noD8COrXpKQWBIikoqVi0aJecrofcx3BGcdPBzJlQdOZfEYe0
+Ffn+qgyh6dyaU0CUQ/l6fYUJkNszo2RV03PafqmyOD26i0okfj6WqpY5GhhvJjK1
+ZUEgMN5QVQ+emzwH7WpqXQqIHFHfjs2/ZblvsmiXh5KPwqRiBohSH5e/VDeHEuZQ
+nzK4MErP60YAq380Xn9SzRaEH2gVsiwz4JUaQ/GGCGfBc25CNiTNqi/zYsNuEGNf
+jsD72pDwKXE9pJGU/h4nQX7wn3S8OFOtjZjGA0UwuZnMlrZ/rjbASkKSjH1GfSkJ
+eXavFGWFXIUFzAdnBClTgZFj10dYCBdFPE33GXsAsjbRTJblUl7h7Bjw3yOHj/QX
+kJOmCx2KxPhjB1YrpIfn0ne0xM8o9DfTJs5rXnPBgx/8jSwwnYsil31BmjN8pW6X
+j8fLdnzmaDLeL5qBYmnWQNvkWZnemAOt8uu5LSBBXp3Ng9Seb1UgzZpGsZBzdzke
+Al7h0pvB9zliIIuVxLxf0/Bif9o1a2LA856p39uTEoIeGvQs0M3kIihIp0UFIys0
+hLWVd7FiNpLnwhUUjA2oc8SB/vx9f93flVM0ws9gmD01XPfdxn2G9h4JU/PpooZM
+gObfLJ04IUT+NCUwkGyEleJmykgTZf0OmnYyLZ0hcVpItHNLd70=
+=WiAj
+-----END PGP SIGNATURE-----
+
+--pvezYHf7grwyp3Bc--
