@@ -2,237 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DDF2CBCFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4032CBCFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727502AbgLBM11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:27:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
+        id S1729280AbgLBM2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726641AbgLBM10 (ORCPT
+        with ESMTP id S1726883AbgLBM2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:27:26 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C77C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:26:46 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id u12so3739173wrt.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 04:26:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WLjWRpA24o/J+NmnU4L/KlmfVuGp+NEmDYUcuK8XM7A=;
-        b=BfcuG6+gutWCVGivWC2TZBxKRUcN1RBX/6oWDTbDWWbwfg/79A6OjtqDnIG6AkgAxn
-         KWbPKGV+jtmo+ix/ijU2LuSYyhO/h9IjhZI19jcOlJmvdiBXtVXGRhsOnzphKQ8au8O7
-         KbpRXLBmnrQQcDw7d7obXJDJWpmZ5/owFf9U/q3eqe8HouMmZNp3kWfIaES2s3LpU6Cr
-         yS29pVuAfDd3sX7g8jnlP/NkYPhZBX3MYhC6ocU7Hxr+Twe/l5AzT8haRPGvqnKRxs6Z
-         v98d2WsSaclsI/L8AZjXmmYM16RW2kppS6vqUS9n+6eaiomliCa9S3O+0izpxPxRH4rm
-         2Mtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WLjWRpA24o/J+NmnU4L/KlmfVuGp+NEmDYUcuK8XM7A=;
-        b=JU5qCibNLafwi5aY1SQvOE56SB0uOh6qX59VKAnVBRCHmUgD6SDVXoK/dPOBFAD1Ei
-         781WmVfVGLS1laMKpigtrOscLSS2v64ZTU6vFLL7zzipIMUxPwIEPo/PwvyjZsD6QFxA
-         k1pkzDaIT9vOxZxofshSDg4+QjcPN/0tU2LRCzFPmYNS5qJEzhS9+YpmprJh5KeZvFbK
-         MGORvXkxBlKnL4AcF4Sfq6VEr59brFwf3kw7MMM70bJ8cjSzYVFuGQHlPjxLSRkoJZp7
-         0kxvRsDKAH3DPetrV1yh1NgxQ8bv2csCMcOl3T1kGlnmtEgakNIyylIRnbFdVyCw4RTR
-         jfRA==
-X-Gm-Message-State: AOAM533nnADvY5yQYTwclYEBwDmXC6oWE0oMzbMFQY5MOv3DyBNH6acu
-        g2k7k9VxhlbDKn6Oo1Mh1VblpA==
-X-Google-Smtp-Source: ABdhPJzMH2m2X+CTGSzQHQ4YyXagby6Lmq9rlIi8skK4D5sjKD8reVVacPqenhl9LmzkDBu6j0AvRQ==
-X-Received: by 2002:a5d:56cb:: with SMTP id m11mr3212623wrw.346.1606912004487;
-        Wed, 02 Dec 2020 04:26:44 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id c9sm1840684wrp.73.2020.12.02.04.26.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 04:26:43 -0800 (PST)
-Date:   Wed, 2 Dec 2020 12:26:40 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 bpf-next 12/13] bpf: Add tests for new BPF atomic
- operations
-Message-ID: <20201202122640.GA49766@google.com>
-References: <20201127175738.1085417-1-jackmanb@google.com>
- <20201127175738.1085417-13-jackmanb@google.com>
- <CAEf4BzaAgtPazgOUQYnN9eV+TqPLtK0JTd14j5QmzeNXPZ+seQ@mail.gmail.com>
+        Wed, 2 Dec 2020 07:28:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499E4C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:27:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7WH0kv+LfkLHJaqQQ0H5sk5+tTeHFM9URpx9/ubjxw0=; b=VYThr8uZf2g1Oa5NTsmPaFI/Xn
+        uVr8TBCXbAJVe2ecnyv2ABHQvHAYLOFYKzG2/f5IfDhQWzWxatJMtD0MkLX8qgKikKZE5xVELqKQt
+        AlIiyrhJDDAHImqWyq/Md3mLT8RdGKZlD/Q0eOMtYGYsFft0BjtDEmjP0QHldp0v1kHBQ9LqgbiuX
+        KMI3VIg1xCwW5NO7683KkfP2gMeKddlt2XXLHgqemrpqkkYRji5/wulQbdw9/kch/PJVKOXEZ0Z5i
+        LBakgEMfgRZtacQdP7dswNGLpV8cagVbW0vIRB/kI1IIjL7+sgDan37Pv9VvbQudYnIAZQjDLYZ8Y
+        zPp/Gf4g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkREO-00052S-H9; Wed, 02 Dec 2020 12:27:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A07A0305815;
+        Wed,  2 Dec 2020 13:27:34 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 893EE2143477A; Wed,  2 Dec 2020 13:27:34 +0100 (CET)
+Date:   Wed, 2 Dec 2020 13:27:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] locking/urgent for v5.10-rc6
+Message-ID: <20201202122734.GH3021@hirez.programming.kicks-ass.net>
+References: <20201201080734.GQ2414@hirez.programming.kicks-ass.net>
+ <20201201110724.GL3092@hirez.programming.kicks-ass.net>
+ <20201201144644.GF1437@paulmck-ThinkPad-P72>
+ <20201201145519.GY2414@hirez.programming.kicks-ass.net>
+ <20201201181506.GM3092@hirez.programming.kicks-ass.net>
+ <20201201185737.GA93208@C02TD0UTHF1T.local>
+ <20201201191441.GW3040@hirez.programming.kicks-ass.net>
+ <20201201191856.GD8316@osiris>
+ <20201202092116.GA3040@hirez.programming.kicks-ass.net>
+ <20201202105649.GB6202@osiris>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaAgtPazgOUQYnN9eV+TqPLtK0JTd14j5QmzeNXPZ+seQ@mail.gmail.com>
+In-Reply-To: <20201202105649.GB6202@osiris>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 06:22:50PM -0800, Andrii Nakryiko wrote:
-> On Fri, Nov 27, 2020 at 10:01 AM Brendan Jackman <jackmanb@google.com> wrote:
-[...]
-> > +
-> > +static void test_xchg(void)
-> > +{
-> > +       struct atomics_test *atomics_skel = NULL;
+On Wed, Dec 02, 2020 at 11:56:49AM +0100, Heiko Carstens wrote:
+> From 7bd86fb3eb039a4163281472ca79b9158e726526 Mon Sep 17 00:00:00 2001
+> From: Heiko Carstens <hca@linux.ibm.com>
+> Date: Wed, 2 Dec 2020 11:46:01 +0100
+> Subject: [PATCH] s390: fix irq state tracing
 > 
-> nit: = NULL is unnecessary
-[...[
-> > +       CHECK(atomics_skel->data->xchg32_value != 2, "xchg32_value",
-> > +             "32bit xchg left unexpected value (got %d want 2)\n",
-> > +             atomics_skel->data->xchg32_value);
-> > +       CHECK(atomics_skel->bss->xchg32_result != 1, "xchg_result",
-> > +             "32bit xchg returned bad result (got %d want 1)\n",
-> > +             atomics_skel->bss->xchg32_result);
+> With commit 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs
+> tracing") common code calls arch_cpu_idle() with a lockdep state that
+> tells irqs are on.
 > 
-> ASSERT_EQ() is less verbose.
+> This doesn't work very well for s390: psw_idle() will enable interrupts
+> to wait for an interrupt. As soon as an interrupt occurs the interrupt
+> handler will verify if the old context was psw_idle(). If that is the
+> case the interrupt enablement bits in the old program status word will
+> be cleared.
 > 
-> > +
-> > +cleanup:
-> > +       atomics_test__destroy(atomics_skel);
-> > +}
-> > +
-> > +void test_atomics_test(void)
-> > +{
+> A subsequent test in both the external as well as the io interrupt
+> handler checks if in the old context interrupts were enabled. Due to
+> the above patching of the old program status word it is assumed the
+> old context had interrupts disabled, and therefore a call to
+> TRACE_IRQS_OFF (aka trace_hardirqs_off_caller) is skipped. Which in
+> turn makes lockdep incorrectly "think" that interrupts are enabled
+> within the interrupt handler.
 > 
-> why the gigantic #ifdef/#else block if you could do the check here,
-> skip and exit?
+> Fix this by unconditionally calling TRACE_IRQS_OFF when entering
+> interrupt handlers. Also call unconditionally TRACE_IRQS_ON when
+> leaving interrupts handlers.
 > 
-> > +       test_add();
-> > +       test_sub();
-> > +       test_and();
-> > +       test_or();
-> > +       test_xor();
-> > +       test_cmpxchg();
-> > +       test_xchg();
+> This leaves the special psw_idle() case, which now returns with
+> interrupts disabled, but has an "irqs on" lockdep state. So callers of
+> psw_idle() must adjust the state on their own, if required. This is
+> currently only __udelay_disabled().
 > 
-> 
-> please model these as sub-tests, it will be easier to debug, if anything
-> 
-> > +}
-> > +
-> > +#else /* ENABLE_ATOMICS_TESTS */
-> > +
-> > +void test_atomics_test(void)
-> > +{
-> > +       printf("%s:SKIP:no ENABLE_ATOMICS_TEST (missing Clang BPF atomics support)",
-> > +              __func__);
-> > +       test__skip();
-> > +}
-> > +
-> > +#endif /* ENABLE_ATOMICS_TESTS */
-> > diff --git a/tools/testing/selftests/bpf/progs/atomics_test.c b/tools/testing/selftests/bpf/progs/atomics_test.c
-> > new file mode 100644
-> > index 000000000000..3139b00937e5
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/atomics_test.c
-> > @@ -0,0 +1,124 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +#ifdef ENABLE_ATOMICS_TESTS
-> > +
-> > +__u64 add64_value = 1;
-> > +__u64 add64_result = 0;
-> > +__u32 add32_value = 1;
-> > +__u32 add32_result = 0;
-> > +__u64 add_stack_value_copy = 0;
-> > +__u64 add_stack_result = 0;
-> 
-> empty line here
-> 
-> > +SEC("fentry/bpf_fentry_test1")
-> > +int BPF_PROG(add, int a)
-> > +{
-> > +       __u64 add_stack_value = 1;
-> > +
-> > +       add64_result = __sync_fetch_and_add(&add64_value, 2);
-> > +       add32_result = __sync_fetch_and_add(&add32_value, 2);
-> > +       add_stack_result = __sync_fetch_and_add(&add_stack_value, 2);
-> > +       add_stack_value_copy = add_stack_value;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +__s64 sub64_value = 1;
-> > +__s64 sub64_result = 0;
-> > +__s32 sub32_value = 1;
-> > +__s32 sub32_result = 0;
-> > +__s64 sub_stack_value_copy = 0;
-> > +__s64 sub_stack_result = 0;
-> 
-> same
-> 
-> > +SEC("fentry/bpf_fentry_test1")
-> > +int BPF_PROG(sub, int a)
-> > +{
-> > +       __u64 sub_stack_value = 1;
-> > +
-> > +       sub64_result = __sync_fetch_and_sub(&sub64_value, 2);
-> > +       sub32_result = __sync_fetch_and_sub(&sub32_value, 2);
-> > +       sub_stack_result = __sync_fetch_and_sub(&sub_stack_value, 2);
-> > +       sub_stack_value_copy = sub_stack_value;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +__u64 and64_value = (0x110ull << 32);
-> > +__u64 and64_result = 0;
-> > +__u32 and32_value = 0x110;
-> > +__u32 and32_result = 0;
-> 
-> yep
-> 
-> > +SEC("fentry/bpf_fentry_test1")
-> > +int BPF_PROG(and, int a)
-> > +{
-> > +
-> > +       and64_result = __sync_fetch_and_and(&and64_value, 0x011ull << 32);
-> > +       and32_result = __sync_fetch_and_and(&and32_value, 0x011);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +__u64 or64_value = (0x110ull << 32);
-> > +__u64 or64_result = 0;
-> > +__u32 or32_value = 0x110;
-> > +__u32 or32_result = 0;
-> 
-> here too
-> 
-> > +SEC("fentry/bpf_fentry_test1")
-> > +int BPF_PROG(or, int a)
-> > +{
-> > +       or64_result = __sync_fetch_and_or(&or64_value, 0x011ull << 32);
-> > +       or32_result = __sync_fetch_and_or(&or32_value, 0x011);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +__u64 xor64_value = (0x110ull << 32);
-> > +__u64 xor64_result = 0;
-> > +__u32 xor32_value = 0x110;
-> > +__u32 xor32_result = 0;
-> 
-> you get the idea... How often do you define global variables in
-> user-space code right next to the function without an extra line
-> between them?..
-> 
-[...]
-> > +       cmpxchg64_result_succeed = __sync_val_compare_and_swap(
-> > +               &cmpxchg64_value, 1, 2);
-> > +
-> > +       cmpxchg32_result_fail = __sync_val_compare_and_swap(
-> > +               &cmpxchg32_value, 0, 3);
-> > +       cmpxchg32_result_succeed = __sync_val_compare_and_swap(
-> > +               &cmpxchg32_value, 1, 2);
-> 
-> single lines are fine here and much more readable
+> Fixes: 58c644ba512c ("sched/idle: Fix arch_cpu_idle() vs tracing")
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 
-Thanks, ack to all comments.
+Thanks for sorting this Heiko!
+
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
