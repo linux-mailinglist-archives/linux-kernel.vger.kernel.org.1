@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977CB2CC36C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F642CC357
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 18:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389084AbgLBRVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 12:21:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728704AbgLBRU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:20:58 -0500
-From:   Mark Brown <broonie@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     tiwai@suse.de, bard.liao@intel.com,
-        ranjani.sridharan@linux.intel.com, sanyog.r.kale@intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        vinod.koul@linaro.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, rander.wang@linux.intel.com
-In-Reply-To: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
-References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: (subset) [PATCH v2 0/5] regmap/SoundWire/ASoC: Add SoundWire SDCA support
-Message-Id: <160692956495.33960.17128508922677938348.b4-ty@kernel.org>
-Date:   Wed, 02 Dec 2020 17:19:24 +0000
+        id S1730782AbgLBRUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 12:20:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730573AbgLBRUL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:20:11 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0221C0613CF;
+        Wed,  2 Dec 2020 09:19:31 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t37so1474849pga.7;
+        Wed, 02 Dec 2020 09:19:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lb1TixJdDgHpz8VRboBx5x4l5NaR15Ck5CwsssBAGFk=;
+        b=qFyVfFIdKGzxlIXV8iBnn8r33OIZOD4LqVq++WA88m1MBaKJid7qKd25uHpsbypTyj
+         o95OOQqFYWwTaxjmhm49ZsemuZiG2zeEGSaggF4r2Ao6v3jIE4LGskn4ZxwdhmEbVuc7
+         +42h++TVAsSnfF3ntkrPjU6qP+bLZPdRutF26brfIXQZ21WyItU7czgMb9MA2jRTVP+/
+         otZOntbcwKOHVNoc/LbHq/ALhFDbVJE63JzDCSXAue5OStRaRetijDTMRZdy8nA1Px6T
+         lbZD5C7eVRyunV/zP1B+Fv8Ux1divEtSpt4C8kxnRASJorGFfCQJN9ltAecge8MomaB6
+         4yYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lb1TixJdDgHpz8VRboBx5x4l5NaR15Ck5CwsssBAGFk=;
+        b=NvtiVs+fCunj/6i5Q5u6H8VWVYhPVgCW22A/9FmYr2XXYYVdR8zFJov4zuhNcbrYaw
+         J6WdVSetinO7ziNuGTtJFtpBizCtMJtmWXzng2WytgRez2C4eW79WH4KLcpFOy9dUaxh
+         bni4M0Pm/7eS3qpBxi+QPhh7sJW43/I2SkSPuFxkX9r8aSBI47mXq8ye+Cq5Um9XextU
+         N2CcgJR8bFSFJoM0NQQG2zDB+Cu03RRfKunXMWuUwOhuo5ThSz0esn9u0JRdokTI9Xdm
+         XAV9BDu26YlLP/UZTCmcV9b519hK4APx2035YOJB0fGuPbLL4HQaCAFq1Ckqc960fT01
+         FVMA==
+X-Gm-Message-State: AOAM531x+OvuiMXONrX01If5LXPQD5+Gsxj994Wdn8YPml5U+tTFRBO4
+        rrMwbjbz4beiCnXj3eJXXFNwtbytdGg=
+X-Google-Smtp-Source: ABdhPJzfr7hYqKg1Q7LET0QkF+1UOe12/eVTDyIwig8JByRQ5H+mEsvJe9HXsWuGOZp/qA/aPmDwkw==
+X-Received: by 2002:aa7:9387:0:b029:18b:42dd:41c with SMTP id t7-20020aa793870000b029018b42dd041cmr3554296pfe.60.1606929570781;
+        Wed, 02 Dec 2020 09:19:30 -0800 (PST)
+Received: from [10.230.28.242] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id u6sm359059pfb.197.2020.12.02.09.19.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 09:19:29 -0800 (PST)
+Subject: Re: [PATCH v3 net-next 1/2] net: dsa: add optional stats64 support
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+References: <20201202140904.24748-1-o.rempel@pengutronix.de>
+ <20201202140904.24748-2-o.rempel@pengutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <222e8546-2bf2-fe0b-871d-7866ed87b54e@gmail.com>
+Date:   Wed, 2 Dec 2020 09:19:27 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201202140904.24748-2-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Nov 2020 22:40:15 +0800, Bard Liao wrote:
-> The MIPI SoundWire Device Class standard will define audio functionality
-> beyond the scope of the existing SoundWire 1.2 standard, which is limited
-> to the bus and interface.
+
+
+On 12/2/2020 6:09 AM, Oleksij Rempel wrote:
+> Allow DSA drivers to export stats64
 > 
-> The description is inspired by the USB Audio Class, with "functions",
-> "entities", "control selectors", "audio clusters". The main difference
-> with the USB Audio class is that the devices are typically on a motherboard
-> and descriptors stored in platform firmware instead of being retrieved
-> from the device.
-> 
-> [...]
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[3/5] ASoC/SoundWire: rt715-sdca: First version of rt715 sdw sdca codec driver
-      commit: 6f4a038b99677f4db737841b81b9d45ed4b54966
-[4/5] ASoC/SoundWire: rt1316: Add RT1316 SDCA vendor-specific driver
-      (no commit info)
-[5/5] ASoC/SoundWire: rt711-sdca: Add RT711 SDCA vendor-specific driver
-      (no commit info)
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
