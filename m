@@ -2,125 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33002CB738
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4882CB73B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387883AbgLBIav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:30:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
+        id S2387702AbgLBIbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:31:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387526AbgLBIau (ORCPT
+        with ESMTP id S1728040AbgLBIbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:30:50 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACFBC0613D4;
-        Wed,  2 Dec 2020 00:30:10 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id 7so2399040ejm.0;
-        Wed, 02 Dec 2020 00:30:09 -0800 (PST)
+        Wed, 2 Dec 2020 03:31:32 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20DEC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 00:30:51 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 64so2335844wra.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 00:30:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MOr64WR7JFh8O6zNoSvDJ/dxwL5S48zFZviyd6WC91U=;
-        b=IdFVuOEzP1UAX1qbacan+RDDK2HPWdWW+uKPz5xMiXD8BrBdZyaBWurby6ulSX3FSM
-         Sd2D2MZ+RJyzLsf59s1tTiJ7GgHpZsIJT2aqiZzENw5+NzLIKsvTvEu63yi60hSdL7iH
-         jJRuoQ1tzzsAHfEq9jfcT/p9H0Qj1Ps69GZpNCOzWqO9bmxivYwkjZEZDPeXZhiPCW1X
-         sG5F1TQF+MZuiw7kxeGNrD5ctg8U7N91rLjY/LXOn5Yyl9jADe/JZAsi5HFcA7rFIDSb
-         gykybnUCwp2zkHSpuBd8tmgHGMSXQ1VWblo65+PwYk0eWMIg8vOhnGtVVU4onE1jFMBe
-         GfEA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Kv+7l2chK3BDjDnrtSuCO/Ck4S1sGg64eXnd1CzKhps=;
+        b=AKiVlBIw7lV2r7P6+t8eXrk+RruD40E4KsMsjbXCT7d4yvmZeQELxlFvPGLWzXoNyB
+         dXTIwrg8HCDixjPQHUVMZg2olQqxJqby+PVHSSp/Jdfv5H77LBui53/MjH1suRb8iTTn
+         CXWkZWpEriGODimAugLGIXasU5fN8H69SwShT775YqYA031ZTxP61XD9U7bPkMsKjdAx
+         S3djC5tqHqdMhbg4jdoVdxqEa/HYbRDzdapCYG9QtDcSV+tcP6dnmT6C6Jn93jNsCQ3Z
+         KSAjADi0Kq+vnBdecB8pqkxEJPQy6OOFrLXp10YMgnf6JWFrTPG8PeOhQg73PEtq6i4V
+         8PPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MOr64WR7JFh8O6zNoSvDJ/dxwL5S48zFZviyd6WC91U=;
-        b=lkqqHAzMeKh//yZSqm1AcghkpL2gusaVaf73gmIn9Y31zb/8tqUzwZHAG9239Hb1it
-         5Q/DuQWeJTpxN1TnsWYTBCh7xw/gYnZnXgCRmtPVZbSmybwRFALmD0WLdUibR2jgSkNO
-         ntJedunzsfJF7cvpKflztHshidrKF3qeG+43mn2eKaS8VMaopaT41nMw5frxLU4KW31O
-         v4DNR9GbMC8CBfycJo0jVaPZqEzExF15d8YMIQpzj0bC6jjVzaivffvgFuZpQ+OjrL7F
-         OCQ+jxeYKeiO4aTqDNi6ycdcxbB6javX6mPeCRcFyvAuD2UUrgxv0pZyfWETQAMQzNrJ
-         czEA==
-X-Gm-Message-State: AOAM532qJr7RG/6WCuw2rflNwECsbMmEPeaiP42NzN0d02NLXouzjMe8
-        1/aZSrUEaQMUehUbnr1eltuIsW2Nz5PnUc1cWAE=
-X-Google-Smtp-Source: ABdhPJyRsn8F0ekuoReb0bu4eiYLt4n3UgNR7w1ghBcz65//gOpSDr+Z68bjAUScjfVTmjnqIQRXB44LXSR8nb15Zf4=
-X-Received: by 2002:a17:906:6693:: with SMTP id z19mr1249325ejo.376.1606897808576;
- Wed, 02 Dec 2020 00:30:08 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Kv+7l2chK3BDjDnrtSuCO/Ck4S1sGg64eXnd1CzKhps=;
+        b=pDMrbGjuMgpy0v2UiGDIVju3ytyPecGv/go8V3HdWpVu0r0+QVnDyZTNOOsTtjQSJ+
+         ZNr9Go9whG7DCwF148KjSa3INCn3yaBuAAwzrSnvnQlgOMPQxyGOqGBWLH/0LltEGgTx
+         ikiGou2rpNUgxrPhQSFfarlFvcRAFPzoshC1tJk9FyhKW8bMGDCf+kiS3WRaXizIJZuS
+         01FnqChCQA5Gf4JbGHlnHwESWXr7Z922P5V+1w93C3aCwacTPbebXBFVGOT6inZxe0s8
+         tsGiBO1USFcWZP1SWGZtWLkgmzJkoK+AMToFbjoXrZmxgF6FJeyD7xN6iqza+C1lf6is
+         37IQ==
+X-Gm-Message-State: AOAM530bdaeCwFxpRFms6cfXXv/QsKIL+zSfsS/VZZQ5EHQNaKASUwW6
+        ZAJht2zUF1hEpkNMRBrYOaeUrQ==
+X-Google-Smtp-Source: ABdhPJxUCOA7Ml/qtcsFPYTWfqTbF9TcbPWFseID+uwXx3JSyoZS/hh+UxfWNTvRJS1rhae6lp9RFg==
+X-Received: by 2002:a5d:6150:: with SMTP id y16mr1867103wrt.107.1606897850296;
+        Wed, 02 Dec 2020 00:30:50 -0800 (PST)
+Received: from MacBook-Pro.local ([212.45.64.13])
+        by smtp.googlemail.com with ESMTPSA id g25sm1108762wmk.5.2020.12.02.00.30.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 00:30:49 -0800 (PST)
+Subject: Re: [PATCH v2 6/7] arm64: defconfig: updates for 5.10
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>, robh@kernel.org,
+        shawnguo@kernel.org, festevam@gmail.com, catalin.marinas@arm.com,
+        will@kernel.org, cdleonard@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20201201123932.12312-1-martin.kepplinger@puri.sm>
+ <20201201123932.12312-7-martin.kepplinger@puri.sm>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Message-ID: <fc53a7e0-c94a-b67a-38f3-cd5770159479@linaro.org>
+Date:   Wed, 2 Dec 2020 10:30:48 +0200
 MIME-Version: 1.0
-References: <20201201053949.143175-1-selvakuma.s1@samsung.com>
- <CGME20201201054106epcas5p486fa3f85f6ba5568f6df85c2660b2e3e@epcas5p4.samsung.com>
- <20201201053949.143175-3-selvakuma.s1@samsung.com> <20201201151628.GA27728@redsun51.ssa.fujisawa.hgst.com>
-In-Reply-To: <20201201151628.GA27728@redsun51.ssa.fujisawa.hgst.com>
-From:   Selva Jove <selvajove@gmail.com>
-Date:   Wed, 2 Dec 2020 13:59:57 +0530
-Message-ID: <CAHqX9vYLtpjWKu1otDWnSTM=MF+oMpFxSqLZvTZRcmp68LgCcQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] nvme: add simple copy support
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
-        linux-nvme@lists.infradead.org, axboe@kernel.dk,
-        Damien Le Moal <damien.lemoal@wdc.com>, hch@lst.de,
-        sagi@grimberg.me, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nj.shetty@samsung.com,
-        joshi.k@samsung.com, javier.gonz@samsung.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201201123932.12312-7-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 8:46 PM Keith Busch <kbusch@kernel.org> wrote:
->
-> On Tue, Dec 01, 2020 at 11:09:49AM +0530, SelvaKumar S wrote:
-> > +static void nvme_config_copy(struct gendisk *disk, struct nvme_ns *ns,
-> > +                                    struct nvme_id_ns *id)
-> > +{
-> > +     struct nvme_ctrl *ctrl = ns->ctrl;
-> > +     struct request_queue *queue = disk->queue;
-> > +
-> > +     if (!(ctrl->oncs & NVME_CTRL_ONCS_COPY)) {
-> > +             queue->limits.max_copy_sectors = 0;
-> > +             blk_queue_flag_clear(QUEUE_FLAG_COPY, queue);
-> > +             return;
-> > +     }
-> > +
-> > +     /* setting copy limits */
-> > +     ns->mcl = le64_to_cpu(id->mcl);
-> > +     ns->mssrl = le32_to_cpu(id->mssrl);
-> > +     ns->msrc = id->msrc;
->
-> These are not used anywhere outside this function, so there's no need to
-> add members to the struct.
+Hi Martin,
 
-Sure. Will remove these entries from nvme_ns.
+On 1.12.20 14:39, Martin Kepplinger wrote:
+> Include the defconfig updates for v5.10 that shouldn't change the
+> config itself at all.
+ >
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> ---
+>   arch/arm64/configs/defconfig | 82 +++++++++++-------------------------
+>   1 file changed, 24 insertions(+), 58 deletions(-)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 867cc4a5f00f..1fed16950a7c 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+[..]
+>   CONFIG_INTERCONNECT=y
+>   CONFIG_INTERCONNECT_QCOM=y
+>   CONFIG_INTERCONNECT_QCOM_MSM8916=m
+> -CONFIG_INTERCONNECT_QCOM_OSM_L3=m
 
->
-> > +     if (blk_queue_flag_test_and_set(QUEUE_FLAG_COPY, queue))
-> > +             return;
->
-> The queue limits are not necessarily the same each time we're called to
-> update the disk info, so this return shouldn't be here.
->
+Why are you removing this? Other boards are using it. I am actually
+failing to understand this patch. Maybe it was meant to be sort of
+cleanup, but such cleanups are usually done by the maintainers after
+the merge window, as they lead to multiple conflicts with other patches.
+I would suggest to just drop this patch.
 
-Makes sense.
+Thanks,
+Georgi
 
-> > +
-> > +     queue->limits.max_copy_sectors = ns->mcl * (1 << (ns->lba_shift - 9));
-> > +     queue->limits.max_copy_range_sectors = ns->mssrl *
-> > +             (1 << (ns->lba_shift - 9));
-> > +     queue->limits.max_copy_nr_ranges = ns->msrc + 1;
-> > +}
->
-> <>
->
-> > @@ -2045,6 +2133,7 @@ static void nvme_update_disk_info(struct gendisk *disk,
-> >       set_capacity_and_notify(disk, capacity);
-> >
-> >       nvme_config_discard(disk, ns);
-> > +     nvme_config_copy(disk, ns, id);
-> >       nvme_config_write_zeroes(disk, ns);
-> >
-> >       if (id->nsattr & NVME_NS_ATTR_RO)
-> > @@ -3014,6 +3103,7 @@ int nvme_init_identify(struct nvme_ctrl *ctrl)
-> >       ctrl->oaes = le32_to_cpu(id->oaes);
-> >       ctrl->wctemp = le16_to_cpu(id->wctemp);
-> >       ctrl->cctemp = le16_to_cpu(id->cctemp);
-> > +     ctrl->ocfs = le32_to_cpu(id->ocfs);
->
-> ocfs is not used anywhere.
+>   CONFIG_INTERCONNECT_QCOM_SDM845=m
+>   CONFIG_INTERCONNECT_QCOM_SM8150=m
+>   CONFIG_INTERCONNECT_QCOM_SM8250=m
+> @@ -1075,7 +1043,6 @@ CONFIG_CUSE=m
+>   CONFIG_OVERLAY_FS=m
+>   CONFIG_VFAT_FS=y
+>   CONFIG_HUGETLBFS=y
+> -CONFIG_CONFIGFS_FS=y
+>   CONFIG_EFIVAR_FS=y
+>   CONFIG_SQUASHFS=y
+>   CONFIG_NFS_FS=y
+> @@ -1098,7 +1065,6 @@ CONFIG_CRYPTO_DEV_CCREE=m
+>   CONFIG_CRYPTO_DEV_HISI_SEC2=m
+>   CONFIG_CRYPTO_DEV_HISI_ZIP=m
+>   CONFIG_CRYPTO_DEV_HISI_HPRE=m
+> -CONFIG_CRYPTO_DEV_HISI_TRNG=m
+>   CONFIG_CMA_SIZE_MBYTES=32
+>   CONFIG_PRINTK_TIME=y
+>   CONFIG_DEBUG_INFO=y
+> 
+
