@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361512CBA2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E5D2CBA32
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388471AbgLBKIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:08:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387847AbgLBKIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:08:22 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1209CC0613D6;
-        Wed,  2 Dec 2020 02:07:42 -0800 (PST)
-Received: from zn.tnic (p200300ec2f161b005f182bceb5dadd19.dip0.t-ipconnect.de [IPv6:2003:ec:2f16:1b00:5f18:2bce:b5da:dd19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6473A1EC03CF;
-        Wed,  2 Dec 2020 11:07:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1606903660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=YqhsvDALzL4/TeJ0/3F849dB/uyrKUaeeus7UR7foE8=;
-        b=rlObo3Wqdrf/U/lwZ5AVn2SHSK4wd3k+h2dmPb20AFx3AMWlH8g3PW4Wm+wqBAyUywE42j
-        UtgwhTZ9IuCpdmcGLGuLI4n4aN6cq7QIC42QGUey0uOhzi2+oEAiq2EgieiZBF1t1OT4Ol
-        bM5H+XmNGBJ03hifx7/NXxk0A1pXIRA=
-Date:   Wed, 2 Dec 2020 11:07:35 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 1/2] asm: sgx.h: fix a typo on a kernel-doc markup
-Message-ID: <20201202100735.GA2951@zn.tnic>
-References: <cover.1606897462.git.mchehab+huawei@kernel.org>
- <ca11a4540d981cbd5f026b6cbc8931aa55654e00.1606897462.git.mchehab+huawei@kernel.org>
+        id S2388542AbgLBKJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:09:40 -0500
+Received: from verein.lst.de ([213.95.11.211]:53455 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388089AbgLBKJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:09:40 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4A8C467373; Wed,  2 Dec 2020 11:08:55 +0100 (CET)
+Date:   Wed, 2 Dec 2020 11:08:54 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Ralph Campbell <rcampbell@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roger Pau Monne <roger.pau@citrix.com>
+Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private
+ memory
+Message-ID: <20201202100854.GB7597@lst.de>
+References: <20201106005147.20113-1-rcampbell@nvidia.com> <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de> <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com> <20201109091415.GC28918@lst.de> <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com> <20201120200133.GH917484@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ca11a4540d981cbd5f026b6cbc8931aa55654e00.1606897462.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20201120200133.GH917484@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:27:14AM +0100, Mauro Carvalho Chehab wrote:
-> As warned by kernel-doc:
-> 	arch/x86/include/uapi/asm/sgx.h:19: warning: expecting prototype for enum sgx_epage_flags. Prototype was for enum sgx_page_flags instead
+On Fri, Nov 20, 2020 at 04:01:33PM -0400, Jason Gunthorpe wrote:
+> On Wed, Nov 11, 2020 at 03:38:42PM -0800, Ralph Campbell wrote:
 > 
-> There is a typo at the kernel-doc markup:
+> > MEMORY_DEVICE_GENERIC:
+> > Struct pages are created in dev_dax_probe() and represent non-volatile memory.
+> > The device can be mmap()'ed which calls dax_mmap() which sets
+> > vma->vm_flags | VM_HUGEPAGE.
+> > A CPU page fault will result in a PTE, PMD, or PUD sized page
+> > (but not compound) to be inserted by vmf_insert_mixed() which will call either
+> > insert_pfn() or insert_page().
+> > Neither insert_pfn() nor insert_page() increments the page reference
+> > count.
 > 
-> 	sgx_epage_flags -> sgx_page_flags
+> But why was this done? It seems very strange to put a pfn with a
+> struct page into a VMA and then deliberately not take the refcount for
+> the duration of that pfn being in the VMA?
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  arch/x86/include/uapi/asm/sgx.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-> index 791e45334a4a..9034f3007c4e 100644
-> --- a/arch/x86/include/uapi/asm/sgx.h
-> +++ b/arch/x86/include/uapi/asm/sgx.h
-> @@ -9,7 +9,7 @@
->  #include <linux/ioctl.h>
->  
->  /**
-> - * enum sgx_epage_flags - page control flags
-> + * enum sgx_page_flags - page control flags
->   * %SGX_PAGE_MEASURE:	Measure the page contents with a sequence of
->   *			ENCLS[EEXTEND] operations.
->   */
-> -- 
+> What prevents memunmap_pages() from progressing while VMAs still point
+> at the memory?
 
-Acked-by: Borislav Petkov <bp@suse.de>
+Agreed.  Adding Roger who added MEMORY_DEVICE_GENERIC and the only
+user.
 
--- 
-Regards/Gruss,
-    Boris.
+> > I think just leaving the page reference count at one is better than trying
+> > to use the mmu_interval_notifier or changing vmf_insert_mixed() and
+> > invalidations of pfn_t_devmap(pfn) to adjust the page reference count.
+> 
+> Why so? The entire point of getting struct page's for this stuff was
+> to be able to follow the struct page flow. I never did learn a reason
+> why there is devmap stuff all over the place in the page table code...
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Exactly.
