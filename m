@@ -2,72 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EB22CC05D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78F42CC063
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgLBPJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:09:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44277 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727724AbgLBPJB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:09:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606921655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q5xJvg4nvjjgZQmxkhKVMRdu9M0gEjHhA3AT4X447g0=;
-        b=VlC36XSJDtxp0jocD8K842LI4G9nV+T073oMBm25Kjs98iAuGGm7UIbAF2LN5GZKPbpy5X
-        ljBFTrxxS+ZwqmjEqm3ImPZ+koqGpTAIQP8is4+6hy8LULSch3Wc1qWQ5yqkaid1BpEF9+
-        RJ+6iJfvvpSy4K+QTvGPmf/6GU/Gk34=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-Bmuk68WSPjizgwxYJ3FhNg-1; Wed, 02 Dec 2020 10:07:29 -0500
-X-MC-Unique: Bmuk68WSPjizgwxYJ3FhNg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 565048558E7;
-        Wed,  2 Dec 2020 15:07:28 +0000 (UTC)
-Received: from localhost (holly.tpb.lab.eng.brq.redhat.com [10.43.134.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2AFCC5D705;
-        Wed,  2 Dec 2020 15:07:27 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 16:07:25 +0100
-From:   Miroslav Lichvar <mlichvar@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>
-Subject: Re: [PATCH] rtc: adapt allowed RTC update error
-Message-ID: <20201202150725.GA2231584@localhost>
-References: <20201201143835.2054508-1-mlichvar@redhat.com>
- <20201201161224.GF5487@ziepe.ca>
- <20201201171420.GN1900232@localhost>
- <20201201173540.GH5487@ziepe.ca>
- <87mtywe2zu.fsf@nanos.tec.linutronix.de>
+        id S1730248AbgLBPJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:09:58 -0500
+Received: from mga12.intel.com ([192.55.52.136]:60605 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726037AbgLBPJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:09:57 -0500
+IronPort-SDR: jIE/WsanMF8LPqJP8MBPXPZdifXUgkKfxwNSnye46i0mUuAdIp4y0DneRnHBJvhcBc96sdDp7L
+ BBXDhwWNwc5Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152283041"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="152283041"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:08:07 -0800
+IronPort-SDR: xP/V59ok5Czz+RC4Cc5aVvYbHAalo79w6UhpIC2KSi/fNABaDfWpq+rZ1R94m7lLvoQiV0Bebc
+ 7DvWCDM0X6/A==
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="345900989"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:07:57 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kkTkY-00BXG1-Ay; Wed, 02 Dec 2020 17:08:58 +0200
+Date:   Wed, 2 Dec 2020 17:08:58 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
+Message-ID: <20201202150858.GF4077@smile.fi.intel.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-19-djrscally@gmail.com>
+ <20201130200719.GB4077@smile.fi.intel.com>
+ <20201130233232.GD25713@pendragon.ideasonboard.com>
+ <20201201155513.GB852@paasikivi.fi.intel.com>
+ <20201201183758.GE3085@pendragon.ideasonboard.com>
+ <20201202110956.GD852@paasikivi.fi.intel.com>
+ <20201202124228.GF4486@pendragon.ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87mtywe2zu.fsf@nanos.tec.linutronix.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201202124228.GF4486@pendragon.ideasonboard.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 02:44:53PM +0100, Thomas Gleixner wrote:
-> Something like the completely untested below should make this reliable
-> and only needs to retry when the work is running late (busy machine),
-> but the wakeup will be on time or at max 1 jiffie off when high
-> resolution timers are not available or disabled.
+On Wed, Dec 02, 2020 at 02:42:28PM +0200, Laurent Pinchart wrote:
+> On Wed, Dec 02, 2020 at 01:09:56PM +0200, Sakari Ailus wrote:
+> > On Tue, Dec 01, 2020 at 08:37:58PM +0200, Laurent Pinchart wrote:
 
-It seems to work nicely. In my test most of the updates succeeded on
-the first attempt hitting the right tick, the rest succeeding on the
-second attempt. Only when the clock was set to run 10% faster, it
-needed few more attempts to converge to the target time.
+...
 
-Thanks,
+> I think we should consider ACPI to be a hack in the first place :-)
+
+I feel that about DT (and all chaos around it) but it's not a topic here.
+
+> > Could this be just one more platform device for each of the three cases (or
+> > one for the two latter; I'm not quite sure yet)?
+> 
+> Using MFD for this seems a bit overkill to me. I won't care much as I
+> won't maintain those drivers, but the current situation is complex
+> enough, it was hard for me to understand how things worked. Adding yet
+> another layer with another platform device won't make it any simpler.
+> 
+> If we want to split this in two, I'd rather have a tps68470 driver on
+> one side, without ACPI op region support, but registering regulators,
+> GPIOs and clocks (without using separate drivers and devices for these
+> three features), and an INT3472 driver on the other side, with all the
+> ACPI glue and hacks. The tps68470 code could possibly even be structured
+> in such a way that it would be used as a library by the INT3472 driver
+> instead of requiring a separate platform device.
+
+I'm afraid TPS68470 is MFD in hardware and its representation in the MFD is
+fine. What we need is to move IN3472 pieces out from it.
+
+And I agree with your proposal in general.
+
+> > The GPIO regulator case is relatively safe, but the real PMICs require
+> > regulator voltage control as well as enabling and disabling the regulators.
+> > That probably requires either schematics or checking the register values at
+> > runtime on Windows (i.e. finding out which system you're dealing with, at
+> > runtime).
 
 -- 
-Miroslav Lichvar
+With Best Regards,
+Andy Shevchenko
+
 
