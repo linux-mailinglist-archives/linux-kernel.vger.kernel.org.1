@@ -2,263 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60972CC2B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A302CC2B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 17:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728586AbgLBQrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 11:47:32 -0500
-Received: from mga01.intel.com ([192.55.52.88]:64533 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726525AbgLBQrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 11:47:32 -0500
-IronPort-SDR: TVXfLiyWqDtRJw0V5353Jw3LlCwLgUoK94O0agcgqA26z3UuLRGAAXWGLRrmAp1xclRMvMoWGt
- WuQ7T6otvJuA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="191265740"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="191265740"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 08:46:51 -0800
-IronPort-SDR: ITmUTCZhK+qEsizipt/YmVg39JA81MnlhCvAQsaV7WF81ZLPDoagRe0nf+9C6aFNBDCW/4QCc2
- eDh6xtL8N9qw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="550127523"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga005.jf.intel.com with ESMTP; 02 Dec 2020 08:46:49 -0800
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 2 Dec 2020 08:46:45 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 2 Dec 2020 08:46:43 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 2 Dec 2020 08:46:43 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.104)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Wed, 2 Dec 2020 08:46:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k60bWMGrS/SR+VzR/1zhBrYSQGR3AvHUk9VvuLWLQgBKKZ8e5PLX/bUuIVwSWZQZtpJLiJDwuSUWSiknEzfBlX+U+KgfJNQfxJ6/WZLBmnQNLUMBtl+Re+cVER56yytAYxU1FtObgvOL9hMvOIyJ2hT7rMXGv3dWIjLJVtOMKxe3C1zlzOEvEjYrzNbvTELtvpHLVDJEYtZF1/8UdGlfl4eYUni/qKbkjwwcfgqZnwjnFBbNwwJUZQr3rpUVEeaXGoS0XoGvUWcAi308HfYxf0DZBwrbmwCl0T4jIPWlygMJSVvTJwiEoCGiDcVAT/iblq35iboQ5qgCiOmmji92Wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jCvEGkY2RkYj+RZUrT6kNhECmfYsjilS9mrppyGpvfM=;
- b=jFfGyuFFMsmspejzEz5L3/v2RJhXBFZTX8cuf9vrpCR+ydt3eaoGr+jFnsLwwYfK+B7smSKIb9zlOjMEX2fAUq8KatU7bFOmSd4TPBKye/DVjF0R++uD4Nk0CU1as2vMaTSWcnBvXJnOQ2E9pc8Om2Q0Woaa1dDjSZ3wSe658J79Yrb9nnGkDWsg46V10xUTq9nVULMspkC05XFIkqvPKoS4pGpciG7J4hvIKJ/9MScyPqjLE4dIfeGLQ7FhvdAxJIanlhWrDyjA+sQMlvINBAttVFAbUaNq0PSytbXFBrkgAEFPCSntUo2NxrfwI6zJxA5iVBzcP483BFDAmB8Bzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jCvEGkY2RkYj+RZUrT6kNhECmfYsjilS9mrppyGpvfM=;
- b=NTu3Xgtk0Mk0/wvqevmqmBbGFl3DkEN6bFRfVSTg01JCpRNEyUehOqA2wtOFT+qZebJegx7KmqjyZMNWhE+BjC0tqbDp0MfAlzdlSB/dNwdJZPT7vVOtfZ3bJ24h/fN5EjpAT6nm/93NvUbrnffBWrK7Hko9jwBK03dJc17jiec=
-Received: from CY4PR11MB1781.namprd11.prod.outlook.com (2603:10b6:903:124::13)
- by CY4PR1101MB2198.namprd11.prod.outlook.com (2603:10b6:910:1d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Wed, 2 Dec
- 2020 16:46:41 +0000
-Received: from CY4PR11MB1781.namprd11.prod.outlook.com
- ([fe80::8135:848d:4e4:8f26]) by CY4PR11MB1781.namprd11.prod.outlook.com
- ([fe80::8135:848d:4e4:8f26%4]) with mapi id 15.20.3611.031; Wed, 2 Dec 2020
- 16:46:41 +0000
-From:   "Thokala, Srikanth" <srikanth.thokala@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>
-CC:     "markgross@kernel.org" <markgross@kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>, "bp@suse.de" <bp@suse.de>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "leonard.crestez@nxp.com" <leonard.crestez@nxp.com>,
-        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "peng.fan@nxp.com" <peng.fan@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 09/22] misc: xlink-pcie: lh: Add core communication logic
-Thread-Topic: [PATCH 09/22] misc: xlink-pcie: lh: Add core communication logic
-Thread-Index: AQHWyDJT4s0PQTkyOUypKya3kV+KRKnjVXAAgACtfKA=
-Date:   Wed, 2 Dec 2020 16:46:41 +0000
-Message-ID: <CY4PR11MB1781C8BAD8C2B4641EC445F985F30@CY4PR11MB1781.namprd11.prod.outlook.com>
-References: <20201201223511.65542-1-mgross@linux.intel.com>
- <20201201223511.65542-10-mgross@linux.intel.com> <X8cxpqf7MMCNacqm@kroah.com>
-In-Reply-To: <X8cxpqf7MMCNacqm@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=intel.com;
-x-originating-ip: [171.76.107.214]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 538ff2b8-b6f3-4913-15d0-08d896e1d89d
-x-ms-traffictypediagnostic: CY4PR1101MB2198:
-x-microsoft-antispam-prvs: <CY4PR1101MB21985A149EE045CC56A1476085F30@CY4PR1101MB2198.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2657;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vXDvU5Hw6w0lld1ucMsCOHBkVBkL5uUhGl8KD8RTojviyTGw4F39diP1Ew6JZMIaqCqNKI+n74UggbgKkiU+vWL1m3l4MIWv7FCPATS+cnmgnJ+HOJNi0GyYhz/Jt//KlxJwcTU2b/ETD4ACN2Fnli3WAGBYIRHn5r609v7xwqHuzGRnDq+uJeOWot2yU3UWGzRY+w9R9hUs/h2dm1Yde2wjioqmSgLOTmDzVyjDtsso+JfDwMlCbb8FlcFri9Hv3kZPt3cAaWWw45Uv4soxX4Nt7VRsgiawCJowGOcx+cx4D9sXjjBCpTfB8qGwa/XLIKNaFvdMwu1/riLuxnpm5A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB1781.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(366004)(346002)(8676002)(76116006)(66446008)(9686003)(7416002)(55016002)(53546011)(33656002)(2906002)(6506007)(66946007)(64756008)(186003)(316002)(66476007)(5660300002)(4326008)(26005)(478600001)(66556008)(71200400001)(7696005)(86362001)(8936002)(54906003)(52536014)(110136005)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?LObIc1qT0m086SFwwiSUFAaAR3elO37XyxHkfdLaO0m5Y9PLwqt1pImaxI9I?=
- =?us-ascii?Q?w44PRtBrMxESMuFumQZzd9OKKETEbmtGjyp8YHyZ/cm8q8SVYtuq1iNAzRQU?=
- =?us-ascii?Q?OOISc1iOGB01PJDKgBTpdQWimkD7WUtpRyEAS4m2eY+0GY8ITAmCjHKbsirD?=
- =?us-ascii?Q?9tf5rbP9bSkNS+3v5Z9yoDLEsN2zXCvSmynLotWeCdS4HlzGMkfIdcnHKRm0?=
- =?us-ascii?Q?D4SsJG6dmwWlfg6agiAgr/LVwg1t49GBSIFRJ+e7gWC4gmOxv7iDvEedIPnr?=
- =?us-ascii?Q?I5do5UBaEdf4V9zpXOKN04r4xouPq7kUmmyU342kbDtbYinIif4ND7YxBWi4?=
- =?us-ascii?Q?+y4gSuF/81knB0zlGHsHSTncFGOXHWTtUUFK6G8UuWSD0I+eJdaA0NpHnScz?=
- =?us-ascii?Q?pPwZQggVtS6Q6LUQL9H4QyoCQR4QTLrI6Up8FE3y6i5YKTzP+nlMCjcT6dyb?=
- =?us-ascii?Q?h2d4bYa9RGTWwpNf0QtyRTRwizxaUicv3C96wdCj0A2diGJn3cTNOx0CnS07?=
- =?us-ascii?Q?ktYBSIOSPM5iiwwRvzDp1steuTHzAUoT57DPZaaQIa1aHcFK+QWHOcXdaKPG?=
- =?us-ascii?Q?G9BYxoled8dTx/ipc0AglAk9K++1tFZ5/RerwNrhCbqnh4KUnf9ed7CMi5Mt?=
- =?us-ascii?Q?/oA4cAdkpYWVwAn4e7ynqZwRZtGzSuSxruimMHDtLJhO+UzHIF9IAAilPFeG?=
- =?us-ascii?Q?uDX+eTKMENjJ+DKSpn7UEGarqekl8ArBZKQLWO4NKaNAvD0UvGeiYndf4oVK?=
- =?us-ascii?Q?JxxORAC0zVJBVSnS+QUKHbAe67uQAD74CF3JmqYSoCt17fd2gI7tHYZ9DqzU?=
- =?us-ascii?Q?iRe0U/yAc36u9NpPj9GNBZRTdXuihP+Xeo4RKJbTDcaPdYNVWTxprXEX/cZJ?=
- =?us-ascii?Q?/Aff0rjJB10bEZ6c1a8HwaDlAwX+Jvw9h6jcqiBiDZFfqF0n6CFpqUh8ou1g?=
- =?us-ascii?Q?NnhIcf8u4CYntZycDyMmj+GZnf5SIyWBZHeauRK2/ck=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB1781.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 538ff2b8-b6f3-4913-15d0-08d896e1d89d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2020 16:46:41.7817
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: o5i0GsDHLvVJhvZOy03QWm0cLwnKjK6ivGKKJjuOPo/I/kN5ahhbNcCIVjxQTR1KaHq25d9sYdzXmMGiyW4dvnO41PtVVcL4m5jM4qXFtOY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2198
-X-OriginatorOrg: intel.com
+        id S1730628AbgLBQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 11:48:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728654AbgLBQsB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 11:48:01 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F44C0613CF;
+        Wed,  2 Dec 2020 08:47:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=K8O1LT7aEdvP8ZF4rdGLyQoWXKiQHxVK9Mp0Dmd3oZc=; b=sOp+rvpCb48IB3smxK0BNaIVaW
+        9JYopgCKnyzgvzZ9VZX6YAaaH3GDTmb73lN0nIW8N2yTPIfOlfPMl4EPSDHRccloT4cQQ+xRCx9gA
+        xRf7jxACEAsqc5889PbAzVe2lLeBwA8Oz8GMZJtK49shAZaZa4k8GMghti0sWkp+mOY6nqY2c8nWw
+        yOTCQbG7GZCcP3AXJtBBkBcanMqUMVOLCQ8XtrSAOCbTTiDhtTB6N0yYgOkQT4zxDJ3AQphnj8Z5p
+        FB78EVmc4t+QWG7a9F5PfmNIth6VFWtBWFUFVLYC99MnI90DQ/8vBpvXkLZMzYt1bGyCMPhklT9Vs
+        4dmit+Uw==;
+Received: from 54-240-197-235.amazon.com ([54.240.197.235] helo=u3832b3a9db3152.ant.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kkVHT-0006Pj-FH; Wed, 02 Dec 2020 16:47:03 +0000
+Message-ID: <4ad0d157c5c7317a660cd8d65b535d3232f9249d.camel@infradead.org>
+Subject: Re: [PATCH RFC 10/39] KVM: x86/xen: support upcall vector
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Joao Martins <joao.m.martins@oracle.com>,
+        Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Radim =?UTF-8?Q?Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 02 Dec 2020 16:47:00 +0000
+In-Reply-To: <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com>
+References: <20190220201609.28290-1-joao.m.martins@oracle.com>
+         <20190220201609.28290-11-joao.m.martins@oracle.com>
+         <71753a370cd6f9dd147427634284073b78679fa6.camel@infradead.org>
+         <53baeaa7-0fed-d22c-7767-09ae885d13a0@oracle.com>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-MynpSOGfQk2K65aZ7T/y"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Wednesday, December 2, 2020 11:48 AM
-> To: mgross@linux.intel.com
-> Cc: markgross@kernel.org; arnd@arndb.de; bp@suse.de;
-> damien.lemoal@wdc.com; dragan.cvetic@xilinx.com; corbet@lwn.net;
-> leonard.crestez@nxp.com; palmerdabbelt@google.com;
-> paul.walmsley@sifive.com; peng.fan@nxp.com; robh+dt@kernel.org;
-> shawnguo@kernel.org; linux-kernel@vger.kernel.org; Thokala, Srikanth
-> <srikanth.thokala@intel.com>
-> Subject: Re: [PATCH 09/22] misc: xlink-pcie: lh: Add core communication
-> logic
->=20
-> On Tue, Dec 01, 2020 at 02:34:58PM -0800, mgross@linux.intel.com wrote:
-> > From: Srikanth Thokala <srikanth.thokala@intel.com>
-> >
-> > Add logic to establish communication with the remote host which is
-> through
-> > ring buffer management and MSI/Doorbell interrupts
-> >
-> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> > Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
-> > ---
-> >  drivers/misc/xlink-pcie/local_host/Makefile |   2 +
-> >  drivers/misc/xlink-pcie/local_host/core.c   | 894 ++++++++++++++++++++
-> >  drivers/misc/xlink-pcie/local_host/core.h   | 247 ++++++
-> >  drivers/misc/xlink-pcie/local_host/epf.c    | 116 ++-
-> >  drivers/misc/xlink-pcie/local_host/epf.h    |  26 +
-> >  drivers/misc/xlink-pcie/local_host/util.c   | 375 ++++++++
-> >  drivers/misc/xlink-pcie/local_host/util.h   |  70 ++
-> >  drivers/misc/xlink-pcie/local_host/xpcie.h  |  65 ++
-> >  include/linux/xlink_drv_inf.h               |  60 ++
-> >  9 files changed, 1847 insertions(+), 8 deletions(-)
-> >  create mode 100644 drivers/misc/xlink-pcie/local_host/core.c
-> >  create mode 100644 drivers/misc/xlink-pcie/local_host/core.h
-> >  create mode 100644 drivers/misc/xlink-pcie/local_host/util.c
-> >  create mode 100644 drivers/misc/xlink-pcie/local_host/util.h
-> >  create mode 100644 include/linux/xlink_drv_inf.h
-> >
-> > diff --git a/drivers/misc/xlink-pcie/local_host/Makefile
-> b/drivers/misc/xlink-pcie/local_host/Makefile
-> > index 54fc118e2dd1..28761751d43b 100644
-> > --- a/drivers/misc/xlink-pcie/local_host/Makefile
-> > +++ b/drivers/misc/xlink-pcie/local_host/Makefile
-> > @@ -1,3 +1,5 @@
-> >  obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) +=3D mxlk_ep.o
-> >  mxlk_ep-objs :=3D epf.o
-> >  mxlk_ep-objs +=3D dma.o
-> > +mxlk_ep-objs +=3D core.o
-> > +mxlk_ep-objs +=3D util.o
-> > diff --git a/drivers/misc/xlink-pcie/local_host/core.c
-> b/drivers/misc/xlink-pcie/local_host/core.c
-> > new file mode 100644
-> > index 000000000000..aecaaa783153
-> > --- /dev/null
-> > +++ b/drivers/misc/xlink-pcie/local_host/core.c
-> > @@ -0,0 +1,894 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> >
-> +/***********************************************************************=
-*
-> *****
-> > + *
-> > + * Intel Keem Bay XLink PCIe Driver
-> > + *
-> > + * Copyright (C) 2020 Intel Corporation
-> > + *
-> > +
-> *************************************************************************=
-*
-> **/
-> > +
-> > +#include <linux/of_reserved_mem.h>
-> > +
-> > +#include "epf.h"
-> > +#include "core.h"
-> > +#include "util.h"
-> > +
-> > +static struct xpcie *global_xpcie;
-> > +
-> > +static int rx_pool_size =3D SZ_32M;
-> > +module_param(rx_pool_size, int, 0664);
-> > +MODULE_PARM_DESC(rx_pool_size, "receiving pool size (default 32 MiB)")=
-;
-> > +
-> > +static int tx_pool_size =3D SZ_32M;
-> > +module_param(tx_pool_size, int, 0664);
-> > +MODULE_PARM_DESC(tx_pool_size, "transmitting pool size (default 32
-> MiB)");
-> > +
-> > +static int fragment_size =3D XPCIE_FRAGMENT_SIZE;
-> > +module_param(fragment_size, int, 0664);
-> > +MODULE_PARM_DESC(fragment_size, "transfer descriptor size (default 128
-> KiB)");
-> > +
-> > +static bool tx_pool_coherent =3D true;
-> > +module_param(tx_pool_coherent, bool, 0664);
-> > +MODULE_PARM_DESC(tx_pool_coherent,
-> > +		 "transmitting pool using coherent memory (default true)");
-> > +
-> > +static bool rx_pool_coherent;
-> > +module_param(rx_pool_coherent, bool, 0664);
-> > +MODULE_PARM_DESC(rx_pool_coherent,
-> > +		 "receiving pool using coherent memory (default false)");
->=20
-> This isn't the 1990's anymore.  Please make these dynamic such that they
-> are never needed (the code figures out the best values), or on some
-> per-device basis using configfs or sysfs.
+--=-MynpSOGfQk2K65aZ7T/y
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Sure, I will fix it in my v2.
-
-thanks!
-Srikanth
-=20
-> thanks,
+On Wed, 2020-12-02 at 13:12 +0000, Joao Martins wrote:
+> On 12/2/20 11:17 AM, David Woodhouse wrote:
+> > I might be more inclined to go for a model where the kernel handles the
+> > evtchn_pending/evtchn_mask for us. What would go into the irq routing
+> > table is { vcpu, port# } which get passed to kvm_xen_evtchn_send().
+> >=20
 >=20
-> greg k-h
+> But passing port to the routing and handling the sending of events wouldn=
+'t it lead to
+> unnecessary handling of event channels which aren't handled by the kernel=
+, compared to
+> just injecting caring about the upcall?
+
+Well, I'm generally in favour of *not* doing things in the kernel that
+don't need to be there.
+
+But if the kernel is going to short-circuit the IPIs and VIRQs, then
+it's already going to have to handle the evtchn_pending/evtchn_mask
+bitmaps, and actually injecting interrupts.
+
+Given that it has to have that functionality anyway, it seems saner to
+let the kernel have full control over it and to just expose
+'evtchn_send' to userspace.
+
+The alternative is to have userspace trying to play along with the
+atomic handling of those bitmasks too, and injecting events through
+KVM_INTERRUPT/KVM_SIGNAL_MSI in parallel to the kernel doing so. That
+seems like *more* complexity, not less.
+
+> I wanted to mention the GSI callback method too, but wasn't enterily sure=
+ if eventfd was
+> enough.
+
+That actually works quite nicely even for userspace irqchip.
+
+Forgetting Xen for the moment... my model for userspace I/OAPIC with
+interrupt remapping is that during normal runtime, the irqfd is
+assigned and things all work and we can even have IRQ posting for
+eventfds which came from VFIO.=20
+
+When the IOMMU invalidates an IRQ translation, all it does is
+*deassign* the irqfd from the KVM IRQ. So the next time that eventfd
+fires, it's caught in the userspace event loop instead. Userspace can
+then retranslate through the IOMMU and reassign the irqfd for next
+time.
+
+So, back to Xen. As things stand with just the hypercall+shinfo patches
+I've already rebased, we have enough to do fully functional Xen
+hosting. The event channels are slow but it *can* be done entirely in
+userspace =E2=80=94 handling *all* the hypercalls, and delivering interrupt=
+s to
+the guest in whatever mode is required.
+
+Event channels are a very important optimisation though. For the VMM
+API I think we should follow the Xen model, mixing the domain-wide and
+per-vCPU configuration. It's the best way to faithfully model the
+behaviour a true Xen guest would experience.
+
+So KVM_XEN_ATTR_TYPE_CALLBACK_VIA can be used to set one of
+ =E2=80=A2 HVMIRQ_callback_vector, taking a vector#
+ =E2=80=A2 HVMIRQ_callback_gsi for the in-kernel irqchip, taking a GSI#
+
+And *maybe* in a later patch it could also handle
+ =E2=80=A2 HVMIRQ_callback_gsi for split-irqchip, taking an eventfd
+ =E2=80=A2 HVMIRQ_callback_pci_intx, taking an eventfd (or a pair, for EOI?=
+)
+
+I don't know if the latter two really make sense. After all the
+argument for handling IPI/VIRQ in kernel kind of falls over if we have
+to bounce out to userspace anyway. So it *only* makes sense if those
+eventfds actually end up wired *through* userspace to a KVM IRQFD as I
+described for the IOMMU stuff.
+
+
+In addition to that per-domain setup, we'd also have a per-vCPU
+KVM_XEN_ATTR_TYPE_VCPU_CALLBACK_VECTOR which takes {vCPU, vector}.
+
+
+
+--=-MynpSOGfQk2K65aZ7T/y
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MjAyMTY0NzAwWjAvBgkqhkiG9w0BCQQxIgQgC5wS3Oizt6UsdxQXFA7XG8mkgPIEOgVatVjnjVtP
+OT4wgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAI2pzbIS1CUN30zl7OtHhCIq27qqv78g3GbEAl2L2nE7pljIDtBV0gevvzOFwdY+
+8JHVYbyg9YC8OBJVGYOkVxLoivzqFxLBzhTpoHYe2hvcCBCrno+pe0Qr1p8vAOSOPdUZTnauagaQ
+qjKHexsdt4UTvwELzKImT1ZzHIL9en2tne86gmd87YYe9M3jXxsEaRx6XRV4WpTNZB0FxcBEm+Uj
+mn7RoMmzAnEnmmzoy8deWoeQLzKEKFcoM5k6ws9lRZyQT1aVC2iGgbLNGRbDNPChBqifYTgExcWg
+dQEdHQyS+ruSBMYpSyAVur4yIuAj/83pcFvizzIzoB2xWcgjHF8AAAAAAAA=
+
+
+--=-MynpSOGfQk2K65aZ7T/y--
+
