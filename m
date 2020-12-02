@@ -2,106 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C232CBF53
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD90B2CBF57
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 15:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgLBOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 09:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
+        id S1730216AbgLBOPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 09:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726071AbgLBOPY (ORCPT
+        with ESMTP id S1728942AbgLBOPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 09:15:24 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC575C0613D4;
-        Wed,  2 Dec 2020 06:14:43 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id o1so4140974wrx.7;
-        Wed, 02 Dec 2020 06:14:43 -0800 (PST)
+        Wed, 2 Dec 2020 09:15:47 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EE3C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 06:15:00 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id f23so4591685ejk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 06:15:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y09Yc6Gy3QraLOEdgVpi1+sbCU87xyp9KMOciYZdYPA=;
-        b=LNF0QjiPxwKDMiRR+dopQBjFpbGq4dzE9u/irqWJu5T5XzfQbwmo9n9PGB7Mo7HtCo
-         3It45M6Rm1BkVuNDDaukQ85737dlDJfVSMQT9Ofmw2rSWYZI+59dp17Zsv4Ao9UdFkCT
-         j9nMQ/LJ06ItQ0+0q0DS3siV822j3qLalfmQGki93R/JJUrIr8ayLEqOkUhRioPpjZi6
-         qdJnjtF7tAiWk3iNkEgxFYgS1BT2KVo5WUFVGFqfKdbrnovwGikOo57zfFq+1ZGBv6ZK
-         EPWO6Ql9DrcBlc4n+NhNvfKvRtR81MnHJBr7rhk5cM+agph5kRdl5Ixj332dzHz5K5aV
-         hwvw==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+2HhTD5jTn+vklEh4aL5/wMsPXq9tv2fr1AHIakSbyA=;
+        b=rblOepbVJChntb5pg5cBLGVX3v5Npt5ASjgefyud4GisFo2yFRCTCLQcnHLv57iJZy
+         FZjtA/ifq/EDkjfS0l3JHXPmP2cdOXhs+QN6ZKrucHFvH2GJSJlAzf1Rwm1aqfc5zCCc
+         EFzyofbZFHOb/XGKTWCoy1oj+Z6t36qZziiighBXILmtEKnXff210NjSvUZfOgLY9Acb
+         mXwf8UhknA358OtTYehSJdZwuX7AFRj75iv+wdDPi7xXGWvD+NUxyftJkMqQCmlwbpIc
+         FQDXqe9nJY8S0gg6I7VBEmVgYmYH1yWmE/86lDoFae28hkw97olHAQ3fZjM8bAKfWRsr
+         BdcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y09Yc6Gy3QraLOEdgVpi1+sbCU87xyp9KMOciYZdYPA=;
-        b=EQCd0FlKvs6B1T+y8XBvZbCzhTns8bevogl3WTDx/o9EgoLRW0DdMByhKCoZTla13u
-         Bw5T4LRaKM4OFOBR24Vl1N00OP+f4kS/2G1bsnQEJQDaARdf6+88840gQnKNXwjJ0Mvx
-         EZ/9IXyY/a8/D5QTl0WkEbpvFU6gbSPkIOWYwd9UIqtiiUPGPQ+droH1UxocK3GhqTc8
-         oIKVz8EJh3A2GLYrgdHFaKWqmyj/QPoZrac+mAJSrnhCXYmTLnYKXOag7ncprNwr2B0Y
-         v4Sy4JN5ewD79uXteQFhTuQRJQR7FAJ4pNle7usxCw08JDekd+ShlqpHFz8AMBN6hXvY
-         MtAA==
-X-Gm-Message-State: AOAM532UHl+htfOlk5zKpFmo/V/AKRzL+oLMXvKDntpSo9ujFlv+TArO
-        OB+6tB1YhyTyKYu7mRUanIY=
-X-Google-Smtp-Source: ABdhPJzvfSW63NIYgCI5jR4y00vXV9+cKa8GVNmTDBb9hfiIlPMuaihyZaPr6TcAC+oiCi4K4g7T6Q==
-X-Received: by 2002:a05:6000:82:: with SMTP id m2mr3707931wrx.314.1606918482270;
-        Wed, 02 Dec 2020 06:14:42 -0800 (PST)
-Received: from andrea (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
-        by smtp.gmail.com with ESMTPSA id o2sm2247428wrq.37.2020.12.02.06.14.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 06:14:41 -0800 (PST)
-Date:   Wed, 2 Dec 2020 15:14:33 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>
-Subject: Re: [PATCH v2 2/7] Drivers: hv: vmbus: Avoid double fetch of msgtype
- in vmbus_on_msg_dpc()
-Message-ID: <20201202141433.GA24359@andrea>
-References: <20201202092214.13520-1-parri.andrea@gmail.com>
- <20201202092214.13520-3-parri.andrea@gmail.com>
- <20201202122254.zjhu3cfcq3zwvmvu@liuwe-devbox-debian-v2>
- <20201202133716.GA22763@andrea>
- <20201202134004.5tgrbyijrhvwwmk2@liuwe-devbox-debian-v2>
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=+2HhTD5jTn+vklEh4aL5/wMsPXq9tv2fr1AHIakSbyA=;
+        b=TJnOT4xqUkxYsaTDaThixSTb0iL9hCWWOQQTiC/zAvm8GX7hET+lgunIML3DiVZZFp
+         xLxmB/XYb2syEKjpWrZ7/o1SDkA34tnsSdWzYx1OEiHH8BY2D+mi2pLPwygp799OzCOK
+         tVD3s65OZBbkGPTVSIKyBdoqZiE1lRxqMr6VuKqHGhZkm5FtrGhZ53ptMHGPvhWZe3i4
+         JBFoqbRjqUg4L0Ik3Q+0PY1pwcyco753D9+L6XLTSBiE7woKrTxOMNAfBeZGtM4FoA1t
+         JPj3hNcKIshSTuo9mekH5TuRCC54uTTYxYuhwRpMVt0lreuDhyzaIFOwuQfmYR5EUqni
+         k3cQ==
+X-Gm-Message-State: AOAM532h6XzcUU1sEMM9qqU0oUyG7exOB6mxZ8f9EHue1spwJWZXWGsD
+        XY8vUK74WI5kwmYh1vhCEt1bNb2F4d+cOQVf
+X-Google-Smtp-Source: ABdhPJxnHneDF4S7sioqi9JTCEQu+HKLJ0bOri7kp9DYkz53zZhgEMxhLu+jj3lvj4omuauMDnAt8w==
+X-Received: by 2002:a17:906:22c7:: with SMTP id q7mr2526176eja.486.1606918499010;
+        Wed, 02 Dec 2020 06:14:59 -0800 (PST)
+Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id e19sm20742edr.61.2020.12.02.06.14.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 02 Dec 2020 06:14:58 -0800 (PST)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Kalyani Akula <kalyani.akula@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] arm64: dts: zynqmp: Add address-cells property to interrupt controllers
+Date:   Wed,  2 Dec 2020 15:14:57 +0100
+Message-Id: <e4f54ddce33b79a783aa7c76e0dc6e9787933610.1606918493.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202134004.5tgrbyijrhvwwmk2@liuwe-devbox-debian-v2>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 01:40:04PM +0000, Wei Liu wrote:
-> On Wed, Dec 02, 2020 at 02:37:16PM +0100, Andrea Parri wrote:
-> > > > @@ -1072,12 +1073,19 @@ void vmbus_on_msg_dpc(unsigned long data)
-> > > >  		/* no msg */
-> > > >  		return;
-> > > >  
-> > > > +	/*
-> > > > +	 * The hv_message object is in memory shared with the host.  The host
-> > > > +	 * could erroneously or maliciously modify such object.  Make sure to
-> > > > +	 * validate its fields and avoid double fetches whenever feasible.
-> > > > +	 */
-> > > > +
-> > > >  	hdr = (struct vmbus_channel_message_header *)msg->u.payload;
-> > > > +	msgtype = hdr->msgtype;
-> > > 
-> > > Should READ_ONCE be used here?
-> > 
-> > I think it should.  Thank you for pointing this out.
-> 
-> Glad I can help.
-> 
-> The same comment applies to other patches as well, of course.
+The commit 3eb619b2f7d8 ("scripts/dtc: Update to upstream version
+v1.6.0-11-g9d7888cbf19c") updated dtc version which also contained DTC
+commit
+"81e0919a3e21 checks: Add interrupt provider test"
+where reasons for this checking are mentioned as
+"A missing #address-cells property is less critical, but creates
+ambiguities when used in interrupt-map properties, so warn about this as
+well now."
 
-(As discussed offline/for reference:) I can spot a similar case in
-patch #3; however, #4 is supposed to make that access 'non-shared'.
+That's why add address-cells property to gic and gpio nodes to get rid of
+this warning.
 
-I should probably just squash patches #3 and #4; I'll try to do so
-in v3...
+CC: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
-Thanks,
-  Andrea
+I was grepping DTSes in the kernel and most of them list it as 0.
+In gicv3 case where its node is added it needs to be filled property that's
+why also non 0 values are there.
+Definitely please let me know if 0 is not the right value here.
+
+Based on https://lore.kernel.org/r/cover.1606917949.git.michal.simek@xilinx.com/
+
+---
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+index 14a2e69cf98b..5b2051ac6965 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
++++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+@@ -368,6 +368,7 @@ fpd_dma_chan8: dma@fd570000 {
+ 
+ 		gic: interrupt-controller@f9010000 {
+ 			compatible = "arm,gic-400";
++			#address-cells = <0>;
+ 			#interrupt-cells = <3>;
+ 			reg = <0x0 0xf9010000 0x0 0x10000>,
+ 			      <0x0 0xf9020000 0x0 0x20000>,
+@@ -574,6 +575,7 @@ gem3: ethernet@ff0e0000 {
+ 		gpio: gpio@ff0a0000 {
+ 			compatible = "xlnx,zynqmp-gpio-1.0";
+ 			status = "disabled";
++			#address-cells = <0>;
+ 			#gpio-cells = <0x2>;
+ 			gpio-controller;
+ 			interrupt-parent = <&gic>;
+-- 
+2.29.2
+
