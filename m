@@ -2,95 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B80B2CC10D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653F32CC119
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730530AbgLBPin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:38:43 -0500
-Received: from mga03.intel.com ([134.134.136.65]:39502 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727699AbgLBPim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:38:42 -0500
-IronPort-SDR: awMpY4ry1V1+L8ZkH09QbH3MXispx3mbQlfMLQtb3yoSOZrliD7gj4ho99Cc7T/Dlgi0ih8JsH
- sdeCMwFOu1Ig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="173132249"
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="173132249"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:38:00 -0800
-IronPort-SDR: ug/EuDJ5RuAzG+MVKRDo3eqBUamL0BzqxYq9Qqm+l+QXBJOeXqOgDlDaGzOi+kNFnWnZKrFvpA
- Tx6DOD6g1mcQ==
-X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
-   d="scan'208";a="550104523"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:37:57 -0800
-Date:   Wed, 2 Dec 2020 23:40:46 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        "Neftin, Sasha" <sasha.neftin@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Brandt, Todd E" <todd.e.brandt@intel.com>
-Subject: Re: [PATCH 1/2][v3] e1000e: Leverage direct_complete to speed up
- s2ram
-Message-ID: <20201202154046.GA17693@chenyu-office.sh.intel.com>
-References: <cover.1606757180.git.yu.c.chen@intel.com>
- <b8896b7748e516e9c440ab22e582e30f1389776c.1606757180.git.yu.c.chen@intel.com>
- <DF79FD96-31E6-4D9A-BF0D-40B7FC563C0B@canonical.com>
+        id S2387461AbgLBPmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:42:05 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:47801 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728308AbgLBPmF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:42:05 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 458EC580387;
+        Wed,  2 Dec 2020 10:40:58 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 02 Dec 2020 10:40:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=9Gmw2R9k0ECc5QddBoAVCGV1sXx
+        zmzO4YbJmiIaU4YY=; b=XTaU5h2f3WAixKnXCS97j2KVWpPWFVh0YhT+m4Nj3CM
+        d8fTiUZiwPxy0O5RDJhyFigFAz8sZz+tbotDWcC+lmTl53Ikj9hzxkoHOvZx4Hdg
+        FHl+5ybpwHd/CInVL1bT07psyo33xntHw9gOTFFJX3XlcgTC7hIttoxNqcv+uUeo
+        LZQPJSK/VNUNsS9C/ou1MotSZMMX0hGIUtSeitIqp/teQgRTE1jozqWsg2tNM+Vn
+        USR1udlNMb86zaufmPt12VFdaaCvyfDp4yC4U8VFzxXM7WpMW7JKENwMOH/bGpX3
+        WtGeRMbpE+ekTaVlvtl49Bm8G884l6R2RuIACX1pO4w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9Gmw2R
+        9k0ECc5QddBoAVCGV1sXxzmzO4YbJmiIaU4YY=; b=GObBsEcZzgssNLZ33qx0AJ
+        GhlgBV+VE8PDXxHuIwxRZtWVbtBsMqOVYwL3HUiCeUs7vY8qYe7eEgG24NXTJrw5
+        eJgCZirNGC/0NxuBWDfYbSsxr1R9Xq00iLJEo3mFb51sjeL9PGDCc09ibc4NbLEd
+        0KooxPvuwHzHE0LxBpGNgx7SCw9X4xddpdRZbhog0DNe1o2WVVFV9AoU8bzzO1NL
+        UW3xSz6z9XM5YMvkD0pfQlzsIhp4ctFCnj2JwxMvQpMw4wAqOGvL5a3BMOQT1teW
+        JwGpgNnv8qyoHrp5w/jg0fLjmzY+6Be9L1HWOP9B78yeu9+bujjcrxCKZT4ofyvQ
+        ==
+X-ME-Sender: <xms:h7XHX6UQeHQEadhXHmWiua1blbeGIYoHmrlI6pKlv80Kx1hkp7LMPg>
+    <xme:h7XHX2lwJSwaWT89wtGtST6xjt8rJR0k4ZT9_TbTo--YaWK9DUy5suydVTxsCrBMk
+    anmTROWQ3BZ2g3drAE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeigedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:h7XHX-aKGxXIfGlJvn1_Dysw-33py4S0qYrfKro6R7oq7vEmSSYZww>
+    <xmx:h7XHXxU0cICtGIQXx-YSPouGHbBpvLURwrA__hpjab2MreoNnOw4Xw>
+    <xmx:h7XHX0nPMPTgDlfrW0B3kohd_CznI66BouVVJPEjF-NshJcMO-eEzw>
+    <xmx:irXHX6vQYPWX-0wHB404TnSZkkQOuwK3QpEq_uaXgxrSibT3kK1dOw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D6D14108005B;
+        Wed,  2 Dec 2020 10:40:54 -0500 (EST)
+Date:   Wed, 2 Dec 2020 16:40:53 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 07/19] media: sun6i-csi: Add support for MIPI CSI-2
+ bridge input
+Message-ID: <20201202154053.3fcxiift2uyqnjvp@gilmour>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-8-paul.kocialkowski@bootlin.com>
+ <20201201121241.cyafjhot45puusfc@gilmour>
+ <X8eiXxYw1iHKbdDV@aptenodytes>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="45hcbhhgcfnzxspi"
 Content-Disposition: inline
-In-Reply-To: <DF79FD96-31E6-4D9A-BF0D-40B7FC563C0B@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <X8eiXxYw1iHKbdDV@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kai-Heng,
-On Wed, Dec 02, 2020 at 09:06:19PM +0800, Kai-Heng Feng wrote:
-> > ---
-> > v2: Added test data and some commit log revise(Paul Menzel)
-> >    Only skip the suspend/resume if the NIC is not a wake up device specified
-> >    by the user(Kai-Heng Feng)
-> > v3: Leverage direct complete mechanism to skip all hooks(Kai-Heng Feng)
-> > ---
-> > 
-> > -	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
-> > +	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_SMART_PREPARE);
-> 
-> This isn't required for pci_pm_prepare() to use driver's .prepare callback.
->
-pci_pm_prepare() is likely to return 1 even if driver's prepare() return 0,
-when DPM_FLAG_SMART_PREPARE is not set, which might cause prblems:
-if (!error && dev_pm_test_driver_flags(dev, DPM_FLAG_SMART_PREPARE))
-	return 0;
-> > 
-> > 	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
-> > 		pm_runtime_put_noidle(&pdev->dev);
-> > @@ -7890,6 +7897,7 @@ MODULE_DEVICE_TABLE(pci, e1000_pci_tbl);
-> > 
-> > static const struct dev_pm_ops e1000_pm_ops = {
-> > #ifdef CONFIG_PM_SLEEP
-> > +	.prepare	= e1000e_pm_prepare,
-> 
-> How do we make sure a link change happened in S3 can be detect after resume, without a .complete callback which ask device to runtime resume?
-> 
-The pm core's device_complete() has already done that pm_runtime_put() in the end.
 
-Just talked to Rafael and he might also give some feedbacks later.
+--45hcbhhgcfnzxspi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
-Chenyu
-> Kai-Heng
-> 
-> 
+On Wed, Dec 02, 2020 at 03:19:11PM +0100, Paul Kocialkowski wrote:
+> Hi,
+>=20
+> On Tue 01 Dec 20, 13:12, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Sat, Nov 28, 2020 at 03:28:27PM +0100, Paul Kocialkowski wrote:
+> > > The A31 CSI controller supports a MIPI CSI-2 bridge input, which has
+> > > its own dedicated port in the fwnode graph.
+> > >=20
+> > > Support for this input is added with this change:
+> > > - two pads are defined for the media entity instead of one
+> > >   and only one needs to be connected at a time;
+> > > - the pads currently match the fwnode graph representation;
+> > > - links are created between our pads and the subdevs for each
+> > >   interface and are no longer immutable so that userspace can select
+> > >   which interface to use in case both are bound to a subdev;
+> > > - fwnode endpoints are parsed and stored for each interface;
+> > > - the active subdev (and fwnode endpoint) is retrieved when validating
+> > >   the media link at stream on time and cleared at stream off;
+> > > - an error is raised if both links are active at the same time;
+> > > - the MIPI interface bit is set if the MIPI CSI-2 bridge endpoint is
+> > >   active.
+> > >=20
+> > > In the future, the media entity representation might evolve to:
+> > > - distinguish the internal parallel bridge and data formatter;
+> > > - represent each of the 4 internal channels that can exist between
+> > >   the parallel bridge (for BT656 time-multiplex) and MIPI CSI-2
+> > >   (internal channels can be mapped to virtual channels);
+> > > - connect the controller's output to the ISP instead of its
+> > >   DMA engine.
+> > >=20
+> > > Finally note that the MIPI CSI-2 bridges should not be linked in
+> > > the fwnode graph unless they have a sensor subdev attached.
+> >=20
+> > I'll leave most of the review to Laurent and Sakari, but I'm not quite
+> > sure what you meant in the last paragraph. Did you mean that the
+> > MIPI-CSI controller in the Allwinner SoC should only be linked if it has
+> > a sensor attached, or did you mean that any MIPI-CSI2 bridge cannot be
+> > attached to the controller?
+>=20
+> So the use of plural was a mistake and your first understanding is the co=
+rrect
+> one: if the bridge is linked to the CSI controller in the OF graph but the
+> bridge doesn't have a sensor attached, the CSI controller driver will fail
+> to probe, as far as I could see.
+
+I'm not sure it's reasonable to not link it in the DTSI then, we'll want
+to reduce as much the boilerplate from the board DTS as possible, and
+the MIPI-CSI controller is always there anyway. However, we should
+definitely have it disabled if there's no sensor, which should solve
+your probe issue
+
+Maxime
+
+--45hcbhhgcfnzxspi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX8e1hQAKCRDj7w1vZxhR
+xUmfAQDrnEGoBdbQg8pcpjrHuleZtMVcXIe+BVlxHlRQPOZFXwEAjruXhWd67Q5L
+aw25nh4z4WBzD8T8dUj7t5A/R28hows=
+=crGk
+-----END PGP SIGNATURE-----
+
+--45hcbhhgcfnzxspi--
