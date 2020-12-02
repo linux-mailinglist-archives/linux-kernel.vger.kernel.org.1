@@ -2,194 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C902CB5C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F6E2CB576
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgLBH3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:29:08 -0500
-Received: from mga04.intel.com ([192.55.52.120]:55567 "EHLO mga04.intel.com"
+        id S2387584AbgLBHDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:03:22 -0500
+Received: from mga11.intel.com ([192.55.52.93]:44051 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgLBH3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:29:07 -0500
-IronPort-SDR: gDseQ8CfVFOtB1bxI5x9RCQ0NUlvsh3e7x6gT5SiF/1Hk0u7vYzIWIxe6HRP+BW/T05G7Z4ITH
- w2GnI1vTsU9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="170401378"
+        id S2387511AbgLBHDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 02:03:21 -0500
+IronPort-SDR: dSh0a4i0un78DEYoXidV93Z6O6tmkdPpw8jrB2LfPFR/tCpgCAmUSHhLjoyXJYWjvOURUQUwuj
+ K789pe6dfeUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="169461814"
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="170401378"
+   d="scan'208";a="169461814"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 23:28:24 -0800
-IronPort-SDR: 7mH0seCdsPXuu1tpBvetF0AtVMclhkS9y/i5PE+CsBlmPzxRD6uDZdryccNVE+q4d5pznRMog2
- uxwpGceSrZVg==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 23:02:35 -0800
+IronPort-SDR: F5FL9BWhP9/jksfU/Tyf6FI/3KwHtZ08oEhhaeXhVKcp+A4P729DoD7m0DVlEx0gZMRVCDrANs
+ /FieEoC1Jwqg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="549934606"
-Received: from qwu16-mobl1.ccr.corp.intel.com ([10.255.30.201])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 23:28:21 -0800
-Message-ID: <bd5b97f89ab2887543fc262348d1c7cafcaae536.camel@intel.com>
-Subject: Re: [PATCH] x86/PCI: Convert force_disable_hpet() to standard quirk
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Feng Tang <feng.tang@intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        len.brown@intel.com
-Date:   Wed, 02 Dec 2020 15:28:18 +0800
-In-Reply-To: <87eekairc0.fsf@nanos.tec.linutronix.de>
-References: <20201119181904.149129-1-helgaas@kernel.org>
-         <87v9dtk3j4.fsf@nanos.tec.linutronix.de>
-         <20201126012421.GA92582@shbuild999.sh.intel.com>
-         <87eekfk8bd.fsf@nanos.tec.linutronix.de>
-         <20201127061131.GB105524@shbuild999.sh.intel.com>
-         <87eekairc0.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="481429997"
+Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
+  by orsmga004.jf.intel.com with ESMTP; 01 Dec 2020 23:02:32 -0800
+From:   muhammad.husaini.zulkifli@intel.com
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        michal.simek@xilinx.com, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     andriy.shevchenko@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com,
+        muhammad.husaini.zulkifli@intel.com, mgross@linux.intel.com
+Subject: [PATCH v6 0/4] mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+Date:   Wed,  2 Dec 2020 23:02:00 +0800
+Message-Id: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-30 at 20:21 +0100, Thomas Gleixner wrote:
-> Feng,
-> 
-> On Fri, Nov 27 2020 at 14:11, Feng Tang wrote:
-> > On Fri, Nov 27, 2020 at 12:27:34AM +0100, Thomas Gleixner wrote:
-> > > On Thu, Nov 26 2020 at 09:24, Feng Tang wrote:
-> > > Yes, that can happen. But OTOH, we should start to think about
-> > > the
-> > > requirements for using the TSC watchdog.
+From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-My original proposal is to disable jiffies and refined-jiffies as the
-clocksource watchdog, because they are not reliable and it's better to
-use clocksource that has a hardware counter as watchdog, like the patch
-below, which I didn't sent out for upstream.
+Hello
 
-From cf9ce0ecab8851a3745edcad92e072022af3dbd9 Mon Sep 17 00:00:00 2001
-From: Zhang Rui <rui.zhang@intel.com>
-Date: Fri, 19 Jun 2020 22:03:23 +0800
-Subject: [RFC PATCH] time/clocksource: do not use refined-jiffies as watchdog
+This patch series adds UHS-1 Support for Keem Bay SOC.
 
-On IA platforms, if HPET is disabled, either via x86 early-quirks, or
-via kernel commandline, refined-jiffies will be used as clocksource
-watchdog in early boot phase, before acpi_pm timer registered.
+Patch 1 : Add struct device *dev in probe func(),so that dev pointer can be widely use in probe to make code more readable.
+Patch 2 : Export function to be use by device driver to configure voltage rail output.
+Patch 3 : Defined the DT binding to support the UHS-1 operation.
+Patch 4 : Gives an overview of how voltage operations happen to support UHS-1 mode for Keem Bay SOC.
 
-This is not a problem if jiffies are accurate.
-But in some cases, for example, when serial console is enabled, it may
-take several milliseconds to write to the console, with irq disabled,
-frequently. Thus many ticks may become longer than it should be.
+All of these patches was tested with Keem Bay evaluation module board.
 
-Using refined-jiffies as watchdog in this case breaks the system because
-a) duration calculated by refined-jiffies watchdog is always consistent
-   with the watchdog timeout issued using add_timer(), say, around 500ms.
-b) duration calculated by the running clocksource, usually TSC on IA
-   platforms, reflects the real time cost, which may be much larger.
-This results in the running clocksource being disabled erroneously.
+Kindly help to review this patch set.
 
-This is reproduced on ICL because HPET is disabled in x86 early-quirks,
-and also reproduced on a KBL and a WHL platform when HPET is disabled
-via command line.
+Thank you.
 
-BTW, commit fd329f276eca
-("x86/mtrr: Skip cache flushes on CPUs with cache self-snooping") is
-another example that refined-jiffies causes the same problem when ticks
-become slow for some other reason.
+Changes since v5:
+- Restructured voltage operation for io bus line in one function and added comments in sdhci-of-arasan.c.
+- Use gpio regulator modelling for expander pins.
+- Add DT Bindings for phys, vmmc and vqmmc supplies.
+- Renamed func name and added comments for firmware header files.
+- Update commit message for each patchs to describe what goes on.
 
-IMO, the right solution is to only use hardware clocksource as watchdog.
-Then even if ticks are slow, both the running clocksource and the watchdog
-returns real time cost, and they still match.
+Changes since v4:
+- Fixed comment by Andy and Sudeep on first patch.
+- Add Acked-by tag.
+- Fixed comment by Michal and Andy on the third patch to replace current users of &pdev->dev.
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
----
- kernel/time/clocksource.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes since v3:
+- Add Dt bindings for uhs gpio.
+- Fixed comment by Michal and Sudeep on header file for the macro and error code.
+- Fixed comment by Andy and created 1 new patch to separate the struc dev pointer in probe func.
+- Fixed comment by Michal in arasan controller code.
 
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 02441ead3c3b..e7e703858fa6 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -364,6 +364,10 @@ static void clocksource_select_watchdog(bool fallback)
- 		watchdog = NULL;
- 
- 	list_for_each_entry(cs, &clocksource_list, list) {
-+		/* Do not use refined-jiffies as clocksource watchdog */
-+		if (cs->rating <= 2)
-+			continue;
-+
- 		/* cs is a clocksource to be watched. */
- 		if (cs->flags & CLOCK_SOURCE_MUST_VERIFY)
- 			continue;
--- 
+Changes since v2:
+- Removed Document DT Bindings for Keembay Firmware.
+- Removed Firmware Driver to handle ATF Service call.
+- Add header file to handle API function for device driver to communicate with Arm Trusted Firmware.
+
+Changes since v1:
+- Add Document DT Bindings for Keembay Firmware.
+- Created Firmware Driver to handle ATF Service call.
+- Provide API for arasan driver for sd card voltage changes.
+
+
+Muhammad Husaini Zulkifli (4):
+  mmc: sdhci-of-arasan: Add structure device pointer in probe func
+  firmware: keembay: Add support for Trusted Firmware Service call
+  dt-bindings: mmc: Add phys, vmmc and vqmmc supplies for Keem Bay SOC
+  mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+
+ .../devicetree/bindings/mmc/arasan,sdhci.yaml |   6 +-
+ drivers/mmc/host/sdhci-of-arasan.c            | 282 ++++++++++++++++--
+ include/linux/firmware/intel/keembay.h        |  54 ++++
+ 3 files changed, 322 insertions(+), 20 deletions(-)
+ create mode 100644 include/linux/firmware/intel/keembay.h
+
+--
 2.17.1
-
-> > > 
-> > > I'm inclined to lift that requirement when the CPU has:
-> > > 
-> > >     1) X86_FEATURE_CONSTANT_TSC
-> > >     2) X86_FEATURE_NONSTOP_TSC
-> > >     3) X86_FEATURE_NONSTOP_TSC_S3
-> > 
-> > IIUC, this feature exists for several generations of Atom
-> > platforms,
-> > and it is always coupled with 1) and 2), so it could be skipped for
-> > the checking.
-> 
-> Yes, we can ignore that bit as it's not widely available and not
-> required to solve the problem.
-> 
-> > >     4) X86_FEATURE_TSC_ADJUST
-> > >     
-> > >     5) At max. 4 sockets
-> > > 
-Should we consider some other corner cases like TSC is not used as
-clocksource? refined_jiffies watchdog can break any other hardware
-clocksource when it becomes inaccurate.
-
-> > > The only reason I hate to disable HPET upfront at least during
-> > > boot is
-> > > that HPET is the best mechanism for the refined TSC calibration.
-> > > PMTIMER
-> > > sucks because it's slow and wraps around pretty quick.
-> > > 
-> > > So we could do the following even on platforms where HPET stops
-> > > in some
-> > > magic PC? state:
-> > > 
-> > >   - Register it during early boot as clocksource
-> > > 
-> > >   - Prevent the enablement as clockevent and the chardev hpet
-> > > timer muck
-> > > 
-> > >   - Prevent the magic PC? state up to the point where the refined
-> > >     TSC calibration is finished.
-> > > 
-> > >   - Unregister it once the TSC has taken over as system
-> > > clocksource and
-> > >     enable the magic PC? state in which HPET gets disfunctional.
-> > 
-
-On the other side, for ICL, the HPET problem is observed on early
-samples, and I didn't reproduce the problem on new ones I have.
-But I need to confirm internally if it is safe to re-enable it first.
-
-thanks,
-rui
-> > This looks reasonable to me. 
-> > 
-> > I have thought about lowering the hpet rating to lower than
-> > PMTIMER, so it
-> > still contributes in early boot phase, and fades out after PMTIMER
-> > is
-> > initialised.
-> 
-> Not a good idea. pm_timer is initialized before the refined
-> calibration
-> finishes.
-> 
-> Thanks,
-> 
->         tglx
 
