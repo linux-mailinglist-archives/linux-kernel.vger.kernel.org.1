@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106682CB76A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DAB2CB76C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 09:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbgLBImf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:42:35 -0500
-Received: from mga12.intel.com ([192.55.52.136]:24950 "EHLO mga12.intel.com"
+        id S1729070AbgLBImm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 03:42:42 -0500
+Received: from mga05.intel.com ([192.55.52.43]:38598 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgLBImf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:42:35 -0500
-IronPort-SDR: 4Mlm/twtnX4rtrbqp6AZfYxLHU0oojMxqwkkLPiOa6nKfmlYDpsYFXGxChN4i5oov2hgd1b3rL
- 3z9AM64MSREA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152235504"
+        id S1728474AbgLBImm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 03:42:42 -0500
+IronPort-SDR: 2lqq1Ha2e/3N9RAFtOdQsO9nQ4gZ9Qy/yY2moDfBnh3WN80Bgd0fpYcP5b5btK+qfhO4p/9biX
+ U6kxcfynhpig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="257690205"
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="152235504"
+   d="scan'208";a="257690205"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 00:41:53 -0800
-IronPort-SDR: LJ11Ez1yMAVLVaW888IlI6jeKjyUrGEf9Y2jPs8318HjLnHtZ7u4RVaSa/R8ekA54KxhqiAans
- /eTEJDjd0bgg==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 00:42:00 -0800
+IronPort-SDR: oiC+pNCg4eNwKUkUQPVSHxxOm2V6epy9CEkkDVs9YhwkNo3rMRi/+BfR0rZYnES6Q6l78F2EOu
+ 458rYveRULKQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="481463353"
+   d="scan'208";a="315261479"
 Received: from lkp-server01.sh.intel.com (HELO 54133fc185c3) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 02 Dec 2020 00:41:52 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 02 Dec 2020 00:41:53 -0800
 Received: from kbuild by 54133fc185c3 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kkNhv-000023-Nw; Wed, 02 Dec 2020 08:41:51 +0000
-Date:   Wed, 02 Dec 2020 16:41:26 +0800
+        id 1kkNhw-00002B-13; Wed, 02 Dec 2020 08:41:52 +0000
+Date:   Wed, 02 Dec 2020 16:41:28 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/build] BUILD SUCCESS
- 2838307b019dfec0c309c4e8e589658736cff4c9
-Message-ID: <5fc75336.eTwpB5V2zPcthxTT%lkp@intel.com>
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ fae3a13d2a3d49a89391889808428cf1e72afbd7
+Message-ID: <5fc75338.OOx4aoTSJxDqYbuT%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -45,12 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/build
-branch HEAD: 2838307b019dfec0c309c4e8e589658736cff4c9  x86/build: Remove -m16 workaround for unsupported versions of GCC
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: fae3a13d2a3d49a89391889808428cf1e72afbd7  x86/resctrl: Fix AMD L3 QOS CDP enable/disable
 
 elapsed time: 723m
 
-configs tested: 128
+configs tested: 124
 configs skipped: 62
 
 The following configs have been built successfully.
@@ -83,10 +83,6 @@ ia64                                defconfig
 powerpc                    klondike_defconfig
 mips                     loongson1c_defconfig
 arc                        nsimosci_defconfig
-mips                           gcw0_defconfig
-xtensa                         virt_defconfig
-c6x                        evmc6678_defconfig
-sh                             shx3_defconfig
 mips                  maltasmvp_eva_defconfig
 powerpc                     tqm5200_defconfig
 arc                 nsimosci_hs_smp_defconfig
