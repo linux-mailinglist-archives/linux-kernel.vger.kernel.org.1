@@ -2,90 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1C62CC82A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A0C2CC839
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389425AbgLBUnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:43:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388531AbgLBUnI (ORCPT
+        id S1730948AbgLBUon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:44:43 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54574 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730289AbgLBUom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:43:08 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886BFC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:42:27 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id q13so6822793lfr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F3btiNSHm6jRc+pdBtMLFUAxRzWlf/wPyv3Pzid5Qtc=;
-        b=Z11LEqV8wdrsHfKnZ1gN+6MxuQLN4JBrl/ZQBEaq6vQOuLOGiyyvqkeCcPCYRhQDIv
-         ZPmJT1ekDNw917/6qDlUXjz9Xu/yQOcMPNWuaxXaYoEorXu9QNfEuCP35vSG8m9tWndO
-         8uCAyKVBZS5tHpQHBWAexF8LHzVQcFWUxGxD4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F3btiNSHm6jRc+pdBtMLFUAxRzWlf/wPyv3Pzid5Qtc=;
-        b=oBlTh+pkdHJ5slodRZBiaZtDtYKTWtA3rnf3VqFylc+TC7Cx8ur/qqTFfsY+o/3p0/
-         xoc/YdyM2JEmWOLEUC/KGEbnXjfTur5K+MFjwlygFVvJo46HduD5XOkS94P2nGzmUskz
-         Mz3s9SVI+KwYfpIWf5JVzepfYdLWSrgRI0GSSQ5LJYbH2L/pGUGtw1TlygrZR1/g0vsM
-         pFpTm3Mr6Vw8LJlDwbcjfX9H4NnIhEnypqZPeyuBHIM+C+cm6tANOs0pzKbsoNdMpe8n
-         TG6LB5akNG0tSprvgPzHX/ddpw398m1gxqfe3njxNWa3NkfpT9sHsxclZO2wOHfGHycm
-         e68Q==
-X-Gm-Message-State: AOAM530+dlFoziUCv5yQBJXpwoKOXjvIFcGxtpoTVLc/Rp4uA1Y1bBYQ
-        QTpThXGAhJCB0TAI9k/xz1tLW6MW0LXzEA==
-X-Google-Smtp-Source: ABdhPJwL3swkcXDJlTt+V4w+oCuOgXG5Ukh4wjI3w7AdMq5GILHBdQeH52FpUt/GhvLcE4FMqJ3KCQ==
-X-Received: by 2002:ac2:58d0:: with SMTP id u16mr1995500lfo.527.1606941745627;
-        Wed, 02 Dec 2020 12:42:25 -0800 (PST)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id 201sm809150lfa.190.2020.12.02.12.42.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 12:42:24 -0800 (PST)
-Received: by mail-lf1-f51.google.com with SMTP id s27so6855811lfp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:42:24 -0800 (PST)
-X-Received: by 2002:a19:ed0f:: with SMTP id y15mr1907270lfy.352.1606941744281;
- Wed, 02 Dec 2020 12:42:24 -0800 (PST)
+        Wed, 2 Dec 2020 15:44:42 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id EDE4D1F451E5
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, Duncan Laurie <dlaurie@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: Re: [PATCH v4] char: tpm: add i2c driver for cr50
+In-Reply-To: <20201202170215.GB91318@kernel.org>
+References: <20201202105805.132183-1-adrian.ratiu@collabora.com>
+ <20201202170215.GB91318@kernel.org>
+Date:   Wed, 02 Dec 2020 22:43:51 +0200
+Message-ID: <87ft4oos54.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-References: <e388f379-cd11-a5d2-db82-aa1aa518a582@redhat.com>
- <7027520f-7c79-087e-1d00-743bdefa1a1e@redhat.com> <20201202021633.GA1455219@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20201202021633.GA1455219@iweiny-DESK2.sc.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 2 Dec 2020 12:42:08 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjiU5Fq7aG0-H6QN1ZsK-U3Hw1K310N2z_eCPPDTKeysA@mail.gmail.com>
-Message-ID: <CAHk-=wjiU5Fq7aG0-H6QN1ZsK-U3Hw1K310N2z_eCPPDTKeysA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] uapi: fix statx attribute value overlap for DAX & MOUNT_ROOT
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Eric Sandeen <sandeen@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Xiaoli Feng <xifeng@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 6:16 PM Ira Weiny <ira.weiny@intel.com> wrote:
+On Wed, 02 Dec 2020, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> On Wed, Dec 02, 2020 at 12:58:05PM +0200, Adrian Ratiu wrote: 
+>> From: "dlaurie@chromium.org" <dlaurie@chromium.org>  Add TPM 
+>> 2.0 compatible I2C interface for chips with cr50 firmware. 
+>> The firmware running on the currently supported H1 MCU requires 
+>> a special driver to handle its specific protocol, and this 
+>> makes it unsuitable to use tpm_tis_core_* and instead it must 
+>> implement the underlying TPM protocol similar to the other I2C 
+>> TPM drivers.   - All 4 bytes of status register must be 
+>> read/written at once.  - FIFO and burst count is limited to 63 
+>> and must be drained by AP.  - Provides an interrupt to indicate 
+>> when read response data is ready and when the TPM is finished 
+>> processing write data.   This driver is based on the existing 
+>> infineon I2C TPM driver, which most closely matches the cr50 
+>> i2c protocol behavior.   Cc: Helen Koike 
+>> <helen.koike@collabora.com> Cc: Jarkko Sakkinen 
+>> <jarkko@kernel.org> Cc: Ezequiel Garcia 
+>> <ezequiel@collabora.com> Signed-off-by: Duncan Laurie 
+>> <dlaurie@chromium.org> [swboyd@chromium.org: Depend on i2c even 
+>> if it's a module, replace boilier plate with SPDX tag, drop 
+>> asm/byteorder.h include, simplify return from probe] 
+>> Signed-off-by: Stephen Boyd <swboyd@chromium.org> 
+>> Signed-off-by: Fabien Lahoudere 
+>> <fabien.lahoudere@collabora.com> Signed-off-by: Adrian Ratiu 
+>> <adrian.ratiu@collabora.com> --- Changes in v4: 
+>>   - Replace force_release enum with defines (Jarkko) 
+>>  Changes in v3: 
+>>   - Misc small fixes (typos/renamings, comments, default 
+>>   values) - Moved i2c_write memcpy before lock to minimize 
+>>   critical section (Helen) - Dropped priv->locality because it 
+>>   stored a constant value (Helen) - Many kdoc, function name 
+>>   and style fixes in general (Jarkko) - Kept the force release 
+>>   enum instead of defines or bool (Ezequiel) 
+>>  Changes in v2: 
+>>   - Various small fixes all over (reorder includes, 
+>>   MAX_BUFSIZE, comments, etc) - Reworked return values of 
+>>   i2c_wait_tpm_ready() to fix timeout mis-handling 
+>> so ret == 0 now means success, the wait period jiffies is 
+>> ignored because that number is meaningless and return a proper 
+>> timeout error in case jiffies == 0. 
+>>   - Make i2c default to 1 message per transfer (requested by 
+>>   Helen) - Move -EIO error reporting to transfer function to 
+>>   cleanup transfer() itself 
+>> and its R/W callers 
+>>   - Remove magic value hardcodings and introduce enum 
+>>   force_release. 
+>>  Applies on next-20201201, tested on Chromebook EVE.  --- 
+>>  drivers/char/tpm/Kconfig            |  10 + 
+>>  drivers/char/tpm/Makefile           |   2 + 
+>>  drivers/char/tpm/tpm_tis_i2c_cr50.c | 767 
+>>  ++++++++++++++++++++++++++++ 3 files changed, 779 
+>>  insertions(+) create mode 100644 
+>>  drivers/char/tpm/tpm_tis_i2c_cr50.c 
+>>  diff --git a/drivers/char/tpm/Kconfig 
+>> b/drivers/char/tpm/Kconfig index a18c314da211..4308f9ca7a43 
+>> 100644 --- a/drivers/char/tpm/Kconfig +++ 
+>> b/drivers/char/tpm/Kconfig @@ -86,6 +86,16 @@ config 
+>> TCG_TIS_SYNQUACER 
+>>  	  To compile this driver as a module, choose  M here; the 
+>>  module will be called tpm_tis_synquacer.  
+>> +config TCG_TIS_I2C_CR50 +	tristate "TPM Interface 
+>> Specification 2.0 Interface (I2C - CR50)" +	depends on I2C + 
+>> select TCG_CR50 +	help +	  This is a driver for the Google 
+>> cr50 I2C TPM interface which is a +	  custom microcontroller 
+>> and requires a custom i2c protocol interface +	  to 
+>> handle the limitations of the hardware.  To compile this driver 
+>> +	  as a module, choose M here; the module will be called 
+>> tcg_tis_i2c_cr50.  + 
+>>  config TCG_TIS_I2C_ATMEL tristate "TPM Interface Specification 
+>>  1.2 Interface (I2C - Atmel)" depends on I2C 
+>> diff --git a/drivers/char/tpm/Makefile 
+>> b/drivers/char/tpm/Makefile index 84db4fb3a9c9..66d39ea6bd10 
+>> 100644 --- a/drivers/char/tpm/Makefile +++ 
+>> b/drivers/char/tpm/Makefile @@ -27,6 +27,8 @@ 
+>> obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o 
+>>  tpm_tis_spi-y := tpm_tis_spi_main.o 
+>>  tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += tpm_tis_spi_cr50.o  
+>> +obj-$(CONFIG_TCG_TIS_I2C_CR50) += tpm_tis_i2c_cr50.o + 
+>>  obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o 
+>>  obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o 
+>>  obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o 
+>> diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c 
+>> b/drivers/char/tpm/tpm_tis_i2c_cr50.c new file mode 100644 
+>> index 000000000000..a374853a3b4b --- /dev/null +++ 
+>> b/drivers/char/tpm/tpm_tis_i2c_cr50.c @@ -0,0 +1,767 @@ +// 
+>> SPDX-License-Identifier: GPL-2.0 +/* + * Copyright 2016 Google 
+>> Inc. 
+> 
+> Should be 2020. 
+> 
+>> + * + * Based on Linux Kernel TPM driver by + * Peter Huewe 
+>> <peter.huewe@infineon.com> + * Copyright (C) 2011 Infineon 
+>> Technologies 
+> 
+> Not sure how this was derived. 
 >
-> This will force a change to xfstests at a minimum.  And I do know of users who
-> have been using this value.  But I have gotten inquires about using the feature
-> so there are users out there.
 
-If it's only a few tests that fail, I wouldn't worry about it, and the
-tests should just be updated.
+Indeed I think we should just mention the original author and 
+driver like Infineon driver itself does. Thanks!
+ 
+>> + * + * cr50 is a firmware for H1 secure modules that requires 
+>> special + * handling for the I2C interface.  + * + * - Use an 
+>> interrupt for transaction status instead of hardcoded delays. 
+>> + * - Must use write+wait+read read protocol.  + * - All 4 
+>> bytes of status register must be read/written at once.  + * - 
+>> Burst count max is 63 bytes, and burst count behaves slightly 
+>> differently + *   than other I2C TPMs.  + * - When reading from 
+>> FIFO the full burstcnt must be read instead of just + * 
+>> reading header and determining the remainder.  + */ + +#include 
+>> <linux/acpi.h> +#include <linux/completion.h> +#include 
+>> <linux/i2c.h> +#include <linux/interrupt.h> +#include 
+>> <linux/module.h> +#include <linux/pm.h> +#include 
+>> <linux/slab.h> +#include <linux/wait.h> + +#include 
+>> "tpm_tis_core.h" + +#define TPM_CR50_MAX_BUFSIZE		64 
+>> +#define TPM_CR50_TIMEOUT_SHORT_MS	2	/* Short timeout 
+>> during transactions */ +#define TPM_CR50_TIMEOUT_NOIRQ_MS	20 
+>> /* Timeout for TPM ready without IRQ */ +#define 
+>> TPM_CR50_I2C_DID_VID		0x00281ae0L /* Device and vendor 
+>> ID reg value */ +#define TPM_CR50_I2C_MAX_RETRIES	3	/* 
+>> Max retries due to I2C errors */ +#define 
+>> TPM_CR50_I2C_RETRY_DELAY_LO	55	/* Min usecs between 
+>> retries on I2C */ +#define TPM_CR50_I2C_RETRY_DELAY_HI	65 
+>> /* Max usecs between retries on I2C */ + +#define 
+>> TPM_I2C_ACCESS(l)	(0x0000 | ((l) << 4)) +#define 
+>> TPM_I2C_STS(l)		(0x0001 | ((l) << 4)) +#define 
+>> TPM_I2C_DATA_FIFO(l)	(0x0005 | ((l) << 4)) +#define 
+>> TPM_I2C_DID_VID(l)	(0x0006 | ((l) << 4)) + +#define 
+>> TPM_I2C_CR50_NO_FORCE	0 +#define TPM_I2C_CR50_FORCE	1 
+> 
+> No need for these. 
+> 
+>> + +/** + * struct tpm_i2c_cr50_priv_data - Driver private data. 
+>> + * @irq: Irq number used for this chip.  + *       If irq <= 
+>> 0, then a fixed timeout is used instead of waiting for irq.  + 
+>> * @tpm_ready: Struct used by irq handler to signal R/W 
+>> readiness.  + * @buf: Buffer used for i2c writes, with i2c 
+>> address prepended to content. 
+> 
+> Not properly aligned. 
+> 
+> https://www.kernel.org/doc/Documentation/kernel-doc-nano-HOWTO.txt 
+> 
+>> + */ +struct tpm_i2c_cr50_priv_data { +	int irq; + 
+>> struct completion tpm_ready; +	u8 
+>> buf[TPM_CR50_MAX_BUFSIZE]; +}; + +/** + * 
+>> tpm_cr50_i2c_int_handler() - cr50 interrupt handler.  + * 
+>> @dummy: Unused parameter.  + * @dev_id: TPM chip information. 
+> 
+> This is alignment everywhere. Why the parameter is called 
+> "dev_id" anyway? 
+>
 
-But if there are real user concerns, we may need to have some kind of
-compat code. Because of the whole "no regressions" thing.
+I think it got copied from all the other tpm drivers which use the 
+"dev_id" identifier in the irq handler. In the end it's a void 
+pointer in C, it could be anything. :)
 
-What would the typical failure cases be in practice?
+I will improve the name while at it with the alignments, thanks!
+ 
+>> + * + * The cr50 interrupt handler signals waiting threads that 
+>> the + * interrupt has been asserted. It does not do any 
+>> interrupt triggered + * processing but is instead used to avoid 
+>> fixed delays.  + */ +static irqreturn_t 
+>> tpm_cr50_i2c_int_handler(int dummy, void *dev_id) +{ + 
+>> struct tpm_chip *chip = dev_id; +	struct 
+>> tpm_i2c_cr50_priv_data *priv = dev_get_drvdata(&chip->dev); + + 
+>> complete(&priv->tpm_ready); + +	return IRQ_HANDLED; +} + 
+>> +/** + * tpm_cr50_i2c_wait_tpm_ready() - Wait for tpm to signal 
+>> ready.  + * @chip: TPM chip information.  + * + * Wait for 
+>> completion interrupt if available, otherwise use a fixed + * 
+>> delay for the TPM to be ready.  + * + * Return: 0 for success 
+>> or timeout error number.  + */ +static int 
+>> tpm_cr50_i2c_wait_tpm_ready(struct tpm_chip *chip) +{ + 
+>> struct tpm_i2c_cr50_priv_data *priv = 
+>> dev_get_drvdata(&chip->dev); + +	/* Use a safe fixed delay 
+>> if interrupt is not supported */ +	if (priv->irq <= 0) { + 
+>> msleep(TPM_CR50_TIMEOUT_NOIRQ_MS); +		return 0; +	} 
+>> + +	/* Wait for interrupt to indicate TPM is ready to respond 
+>> */ +	if (!wait_for_completion_timeout(&priv->tpm_ready, + 
+>> msecs_to_jiffies(chip->timeout_a))) { + 
+>> dev_warn(&chip->dev, "Timeout waiting for TPM ready\n"); + 
+>> return -ETIMEDOUT; +	} + +	return 0; +} + +/** + * 
+>> tpm_cr50_i2c_enable_tpm_irq() - Enable TPM irq.  + * @chip: TPM 
+>> chip information.  + */ +static void 
+>> tpm_cr50_i2c_enable_tpm_irq(struct tpm_chip *chip) +{ + 
+>> struct tpm_i2c_cr50_priv_data *priv = 
+>> dev_get_drvdata(&chip->dev); + +	if (priv->irq > 0) { + 
+>> reinit_completion(&priv->tpm_ready); + 
+>> enable_irq(priv->irq); +	} +} + +/** + * 
+>> tpm_cr50_i2c_disable_tpm_irq() - Disable TPM irq.  + * @chip: 
+>> TPM chip information.  + */ +static void 
+>> tpm_cr50_i2c_disable_tpm_irq(struct tpm_chip *chip) +{ + 
+>> struct tpm_i2c_cr50_priv_data *priv = 
+>> dev_get_drvdata(&chip->dev); + +	if (priv->irq > 0) + 
+>> disable_irq(priv->irq); +} + +/** + * 
+>> tpm_cr50_i2c_transfer_message() - Transfer a message over i2c. 
+>> + * @dev: Device information.  + * @adapter: I2C adapter.  + * 
+>> @msg:Mmessage to transfer. 
+> 
+> Alignment etc. 
+> 
+>> + * + * Call unlocked i2c transfer routine with the provided 
+>> parameters and + * retry in case of bus errors.  + * + * 
+>> Return: 0 on success, otherwise negative errno.  + */ +static 
+>> int tpm_cr50_i2c_transfer_message(struct device *dev, + 
+>> struct i2c_adapter *adapter, + 
+>> struct i2c_msg *msg) +{ +	int rc; +	unsigned int try; 
+> 
+> Opposite order would be more readable (reverse christmas tree). 
+> 
+>> + +	for (try = 0; try < TPM_CR50_I2C_MAX_RETRIES; try++) { + 
+>> rc = __i2c_transfer(adapter, msg, 1); +		if (rc == 
+>> 1) +			return 0; /* Successfully transferred the 
+>> message */ +		if (try) + 
+>> dev_warn(dev, "i2c transfer failed (attempt %d/%d): %d\n", + 
+>> try + 1, TPM_CR50_I2C_MAX_RETRIES, rc); + 
+>> usleep_range(TPM_CR50_I2C_RETRY_DELAY_LO, + 
+>> TPM_CR50_I2C_RETRY_DELAY_HI); 
+> 
+> Can be probably put into one line without checkpatch.pl 
+> complaining. 
+> 
+> Giving up at this point.
 
-            Linus
+Thanks for the feedback, will send another version with fixes 
+soon.
+
+Adrian
+
+>
+> /Jarkko
