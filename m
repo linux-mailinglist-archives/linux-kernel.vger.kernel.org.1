@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725B82CC883
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C712CC887
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 22:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388636AbgLBU6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728577AbgLBU6r (ORCPT
+        id S1730327AbgLBU7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:59:05 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2195 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726812AbgLBU7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:58:47 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699C7C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 12:58:07 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id o9so2009010pfd.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 12:58:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kZoiJysIE6nklYevoiw7YQHmFZ3mb7vgfEQBLxTf4ro=;
-        b=LJXmnV5XM5jpdHywKUDKsGnhPXfxmIfvNsdjJvmQmhH8fjI24kw0L9S76iBLvPlJ8q
-         OIUdkKyokkp0ZkuurpO1Q9iRM3TBjAjxbxQ/CZaNBFlInQjxoBfwN3LZn2JJIXqLG4/9
-         miFhaby0srQHvhoFarNyVMkZSB8DlXMlRF+pc5i4KXMuTOCAqMzJuXT9TiO28JJYHnoa
-         r1FaOaNZnfBK3F5kH7UrJoR1H3I9MdJCS1XvtCvTjlrqJjhw/BcX7BCaM4GJj7webxOp
-         qIcfDyT/abVa/zuMkq/V+AiHIdfB/597L+VXblE+2ryiPg97iUrj6iGgn089EQyU1l46
-         Samw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kZoiJysIE6nklYevoiw7YQHmFZ3mb7vgfEQBLxTf4ro=;
-        b=sR5Mrfj2wsub7y+9FI6Ednd8dUoalfXC+gWdzJaWNVqSRVNXsiABDbrkiolOzD6a6E
-         YDKDv19j/zoj5Sjcm2m1FPbwhjQurlATp0LCKx1RE8K7mba7TI/gVNPo9A7iYjM7F7mi
-         QbDWN1c422O1PYE4YOb/0a0siZZ7riApPTaP1iPKygU1MjTOt0mpR8YwbF57IJGqvEVK
-         J58r6zplTbVer48ggiWa+laWURK5zW0SqyMdJ8VSOU/O9+qG/aZKfMn6UW4ImGVpVGbU
-         K7OCyI87UTCfAqmjM48QftHBE7Mup8VH4n3ZJfwVaxmbpag6hPcL206JWl8vD2i7+0i4
-         gmMQ==
-X-Gm-Message-State: AOAM531X3b2CHKIa9M7qPMDm8UN2IQNfx97BGoD/oHtjjAXkovnkDL39
-        dv79WUsWNyteh6pXh6zAaFnorR37yiPE26Rl
-X-Google-Smtp-Source: ABdhPJw0CHfYgivBLWvIxs8tSyC5V2/y4Gh3eDFW+qKjHQWEPfbgBUxn3Mqtm+JaTbSpM2WTj3O7Kg==
-X-Received: by 2002:a62:d11b:0:b029:18b:b3e:95aa with SMTP id z27-20020a62d11b0000b029018b0b3e95aamr3217pfg.3.1606942686814;
-        Wed, 02 Dec 2020 12:58:06 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:9004:6a1b:d60e:9bc5:1ecd:a6f8])
-        by smtp.gmail.com with ESMTPSA id b13sm17614pfo.15.2020.12.02.12.58.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 12:58:05 -0800 (PST)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com, Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH v3] checkpatch: add warning for lines starting with a '#' in commit log
-Date:   Thu,  3 Dec 2020 02:27:40 +0530
-Message-Id: <20201202205740.127986-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 2 Dec 2020 15:59:05 -0500
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CmWSr0bRYz67FYS;
+        Thu,  3 Dec 2020 04:55:24 +0800 (CST)
+Received: from lhreml717-chm.china.huawei.com (10.201.108.68) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 2 Dec 2020 21:58:22 +0100
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml717-chm.china.huawei.com (10.201.108.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Wed, 2 Dec 2020 20:58:21 +0000
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Thu, 3 Dec 2020 04:58:19 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+CC:     Valentin Schneider <valentin.schneider@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Cc: Len Brown" <lenb@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>
+Subject: RE: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+Thread-Topic: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
+Thread-Index: AQHWx46tyJL5OgLpakCat9sEfhhBKKni9KEAgACKRLD//5RWAIAAjDiggAAA9pCAAKpoUA==
+Date:   Wed, 2 Dec 2020 20:58:19 +0000
+Message-ID: <414fbd167b214452b925ac674575f0d6@hisilicon.com>
+References: <20201201025944.18260-1-song.bao.hua@hisilicon.com>
+ <20201201025944.18260-3-song.bao.hua@hisilicon.com>
+ <CAKfTPtAppZFdku6k3cA=kNYKjU5e7w4A+E3R5_m11z+jy_WCBw@mail.gmail.com>
+ <f9d9c6e959e441ec94264891ae90c11d@hisilicon.com>
+ <CAKfTPtDqpQBcjq03cJEKN99XOZdNuV560ja9S-oZzkq7BToR8w@mail.gmail.com>  
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.246]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit log lines starting with '#' are dropped by git as comments.
-Add a check to emit a warning for these lines.
-
-Also add a --fix option to insert a space before the leading '#' in
-such lines.
-
-Suggested-by: Joe Perches <joe@perches.com>
-Suggested-by: Peilin Ye <yepeilin.cs@gmail.com>
-Tested-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
-Changes in v3:
-- Modify commit message for more clarity
-- Modify warning message
-- Modify --fix option to substitute single space instead of tab
-
-Changes in v2:
-- Modify warning message and type
-- Style fixes
-
- scripts/checkpatch.pl | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e8c1ed0b1fad..7940889877ba 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2966,6 +2966,15 @@ sub process {
- 			$commit_log_possible_stack_dump = 0;
- 		}
- 
-+# Check for lines starting with a #
-+		if ($in_commit_log && $line =~ /^#/) {
-+			if (WARN("COMMIT_COMMENT_SYMBOL",
-+				 "Commit log lines starting with '#' are dropped by git as comments\n" . $herecurr) &&
-+			    $fix) {
-+				$fixed[$fixlinenr] =~ s/^/ /;
-+			}
-+		}
-+
- # Check for git id commit length and improperly formed commit descriptions
- 		if ($in_commit_log && !$commit_log_possible_stack_dump &&
- 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
--- 
-2.27.0
-
+PiANCj4gU29ycnkuIFBsZWFzZSBpZ25vcmUgdGhpcy4gSSBhZGRlZCBzb21lIHByaW50ayBoZXJl
+IHdoaWxlIHRlc3RpbmcNCj4gb25lIG51bWEuIFdpbGwgdXBkYXRlIHlvdSB0aGUgZGF0YSBpbiBh
+bm90aGVyIGVtYWlsLg0KDQpSZS10ZXN0ZWQgaW4gb25lIE5VTUEgbm9kZShjcHUwLWNwdTIzKToN
+Cg0KZz0xDQpSdW5uaW5nIGluIHRocmVhZGVkIG1vZGUgd2l0aCAxIGdyb3VwcyB1c2luZyA0MCBm
+aWxlIGRlc2NyaXB0b3JzDQpFYWNoIHNlbmRlciB3aWxsIHBhc3MgMTAwMDAwIG1lc3NhZ2VzIG9m
+IDEwMCBieXRlcw0Kdy9vOiA3LjY4OSA3LjQ4NSA3LjQ4NSA3LjQ1OCA3LjUyNCA3LjUzOSA3Ljcz
+OCA3LjY5MyA3LjU2OCA3LjY3ND03LjU4NTMNCncvIDogNy41MTYgNy45NDEgNy4zNzQgNy45NjMg
+Ny44ODEgNy45MTAgNy40MjAgNy41NTYgNy42OTUgNy40NDE9Ny42Njk3DQp3LyBidXQgZHJvcHBl
+ZCBzZWxlY3RfaWRsZV9jbHVzdGVyOg0KICAgICA3Ljc1MiA3LjczOSA3LjczOSA3LjU3MSA3LjU0
+NSA3LjY4NSA3LjQwNyA3LjU4MCA3LjYwNSA3LjQ4Nz03LjYxMQ0KDQpnPTINClJ1bm5pbmcgaW4g
+dGhyZWFkZWQgbW9kZSB3aXRoIDIgZ3JvdXBzIHVzaW5nIDQwIGZpbGUgZGVzY3JpcHRvcnMNCkVh
+Y2ggc2VuZGVyIHdpbGwgcGFzcyAxMDAwMDAgbWVzc2FnZXMgb2YgMTAwIGJ5dGVzDQp3L286IDEw
+LjEyNyAxMC4xMTkgMTAuMDcwIDEwLjE5NiAxMC4wNTcgMTAuMTExIDEwLjA0NSAxMC4xNjQgMTAu
+MTYyDQo5Ljk1NT0xMC4xMDA2DQp3LyA6IDkuNjk0IDkuNjU0IDkuNjEyIDkuNjQ5IDkuNjg2IDku
+NzM0IDkuNjA3IDkuODQyIDkuNjkwIDkuNzEwPTkuNjg3OA0Kdy8gYnV0IGRyb3BwZWQgc2VsZWN0
+X2lkbGVfY2x1c3RlcjoNCiAgICAgOS44NzcgMTAuMDY5IDkuOTUxIDkuOTE4IDkuOTQ3IDkuNzkw
+IDkuOTA2IDkuODIwIDkuODYzIDkuOTA2PTkuOTA0Nw0KDQpnPTMNClJ1bm5pbmcgaW4gdGhyZWFk
+ZWQgbW9kZSB3aXRoIDMgZ3JvdXBzIHVzaW5nIDQwIGZpbGUgZGVzY3JpcHRvcnMNCkVhY2ggc2Vu
+ZGVyIHdpbGwgcGFzcyAxMDAwMDAgbWVzc2FnZXMgb2YgMTAwIGJ5dGVzDQp3L286IDE1Ljg4NSAx
+NS4yNTQgMTUuOTMyIDE1LjY0NyAxNi4xMjAgMTUuODc4IDE1Ljg1NyAxNS43NTkgMTUuNjc0DQox
+NS43MjE9MTUuNzcyNw0Kdy8gOiAxNC45NzQgMTQuNjU3IDEzLjk2OSAxNC45ODUgMTQuNzI4IDE1
+LjY2NSAxNS4xOTEgMTQuOTk1IDE0Ljk0Ng0KMTQuODk1PTE0LjkwMDUNCncvIGJ1dCBkcm9wcGVk
+IHNlbGVjdF9pZGxlX2NsdXN0ZXI6DQogICAgIDE1LjQwNSAxNS4xNzcgMTUuMzczIDE1LjE4NyAx
+NS40NTAgMTUuNTQwIDE1LjI3OCAxNS42MjggMTUuMjI4IDE1LjMyNT0xNS4zNTkxDQoNCmc9NA0K
+UnVubmluZyBpbiB0aHJlYWRlZCBtb2RlIHdpdGggNCBncm91cHMgdXNpbmcgNDAgZmlsZSBkZXNj
+cmlwdG9ycw0KRWFjaCBzZW5kZXIgd2lsbCBwYXNzIDEwMDAwMCBtZXNzYWdlcyBvZiAxMDAgYnl0
+ZXMNCncvbzogMjAuMDE0IDIxLjAyNSAyMS4xMTkgMjEuMjM1IDE5Ljc2NyAyMC45NzEgMjAuOTYy
+IDIwLjkxNCAyMS4wOTAgMjEuMDkwPTIwLjgxODcNCncvIDogMjAuMzMxIDIwLjYwOCAyMC4zMzgg
+MjAuNDQ1IDIwLjQ1NiAyMC4xNDYgMjAuNjkzIDIwLjc5NyAyMS4zODEgMjAuNDUyPTIwLjU2NDcN
+CncvIGJ1dCBkcm9wcGVkIHNlbGVjdF9pZGxlX2NsdXN0ZXI6DQogICAgIDE5LjgxNCAyMC4xMjYg
+MjAuMjI5IDIwLjM1MCAyMC43NTAgMjAuNDA0IDE5Ljk1NyAxOS44ODggMjAuMjI2IDIwLjU2Mj0y
+MC4yMzA2DQoNClRoYW5rcw0KQmFycnkNCg0K
