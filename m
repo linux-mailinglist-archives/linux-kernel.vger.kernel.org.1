@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160BC2CC046
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B35682CC043
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730396AbgLBPDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgLBPDC (ORCPT
+        id S1730382AbgLBPC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:02:59 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:33349 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727753AbgLBPC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:03:02 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AAEC061A04
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:02:22 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id f17so1231372pge.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:02:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TCNWVU3OO9+0a2PLnvLJqeJ15b3W1+9HfAOGKsoXdvY=;
-        b=R2w5VlCqnUAKCmplTH05qDd0jfpG8yXufUohoN6vsOA/O3G3StNShI30DdZ2mc3Lo1
-         GpWuCAKq0Pj3ou8NZ3TcZZVSquPyOW98vOQh6SBb9qZG+UUajzNBVonxtX3FI461+yPt
-         SswTzNe5G7TBFSg3H+PQmGWCNoajJ2hqBtC/M2XiRnm40zzKZHPnu2IJ9s3Tp1X818rH
-         LfYqqkl1qVu0uMhUf5R57BUk1RusnOjjwvaTefze6dyDAFkRQZap9vuXyDzUy/Nabidc
-         p9dVHdeTy58Pyg4fzwBw8yXeodoQU401GDzUhB8BMO3bsD52vmjW3+PAQyO7dDlaDpxy
-         2BWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=TCNWVU3OO9+0a2PLnvLJqeJ15b3W1+9HfAOGKsoXdvY=;
-        b=eK4zO5q+w1KzsZTY8oFQWVmThWeywGZHCK/hd0w0nmJNyqF5V3G8cvO7TNURPsGGBV
-         oShLvsie3ApkxGHB3kHsmBJetu9QalJFZTVdDzKRWRHNfo0sqaeHgATX5LG0PLshwz3n
-         L4yaBFeWjXBhTU4ij0hdTLcDuwN4l4px8QEpVfdtyOwuVz02tp3zTDYNSZsAbxF8NhRj
-         P32p7+j+SChzl7jRYv/pU+RdGSpI2kDPRshLpA4L4nLEurN2ru8OUxEBAtx9f9JnxLrH
-         aWJglZNOjH3+W43+Y3imbUv+QcO0xWG2eggGiiszlw1C5xgSHJTUB8zTZCh+El0GGcZ9
-         amGw==
-X-Gm-Message-State: AOAM532XnqVBSFOiYqbPyplxpKBar72SZCHhSX4anwUrZw4zPgM/bwAE
-        otP//wsqj7FcxAUEJm9T/zw=
-X-Google-Smtp-Source: ABdhPJxpInJ9PRuAe1FjGAwGjZAtfd5/rLzRtTqBGxdcmgAt+P12EijBSO5COpUfHZd3CvSOhyH3DQ==
-X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id b1-20020aa795010000b02901553b11d5c4mr2896375pfp.76.1606921342353;
-        Wed, 02 Dec 2020 07:02:22 -0800 (PST)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id gz2sm82773pjb.2.2020.12.02.07.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 07:02:21 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [RFC 2/2] perf tools: Add 'cgroup-switches' software event
-Date:   Thu,  3 Dec 2020 00:02:05 +0900
-Message-Id: <20201202150205.35750-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201202150205.35750-1-namhyung@kernel.org>
-References: <20201202150205.35750-1-namhyung@kernel.org>
+        Wed, 2 Dec 2020 10:02:58 -0500
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id CEC1E6000C;
+        Wed,  2 Dec 2020 15:02:09 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 16:02:09 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 09/19] ARM: dts: sunxi: h3/h5: Add CSI controller port
+ for parallel input
+Message-ID: <X8escb4SZXEpiR0n@aptenodytes>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-10-paul.kocialkowski@bootlin.com>
+ <20201201121405.at4pwxon56ecwrx6@gilmour>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rGPkz4GDdv/zCi05"
+Content-Disposition: inline
+In-Reply-To: <20201201121405.at4pwxon56ecwrx6@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It counts how often cgroups are changed actually during the context
-switches.
 
-  # perf stat -a -e context-switches,cgroup-switches -a sleep 1
+--rGPkz4GDdv/zCi05
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   Performance counter stats for 'system wide':
+Hi,
 
-              11,267      context-switches
-              10,950      cgroup-switches
+On Tue 01 Dec 20, 13:14, Maxime Ripard wrote:
+> On Sat, Nov 28, 2020 at 03:28:29PM +0100, Paul Kocialkowski wrote:
+> > Since the CSI controller binding is getting a bit more complex due
+> > to the addition of MIPI CSI-2 bridge support, make the ports node
+> > explicit with the parallel port.
+> >=20
+> > This way, it's clear that the controller only supports parallel
+> > interface input and there's no confusion about the port number.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  arch/arm/boot/dts/sunxi-h3-h5.dtsi | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >=20
+> > diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sun=
+xi-h3-h5.dtsi
+> > index 9be13378d4df..02b698cace6a 100644
+> > --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> > +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> > @@ -803,6 +803,15 @@ csi: camera@1cb0000 {
+> >  			pinctrl-names =3D "default";
+> >  			pinctrl-0 =3D <&csi_pins>;
+> >  			status =3D "disabled";
+> > +
+> > +			ports {
+> > +				#address-cells =3D <1>;
+> > +				#size-cells =3D <0>;
+> > +
+> > +				csi_in_parallel: port@0 {
+> > +					reg =3D <0>;
+> > +				};
+> > +			};
+> >  		};
+>=20
+> This will create a DTC warning, since port@0 is the only node, and is
+> equivalent to port
 
-         1.015634369 seconds time elapsed
+I'm not seeing the warning when running dtbs_check.
+More generally, why is it a problem that there's only one node defined?
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/include/uapi/linux/perf_event.h | 1 +
- tools/perf/util/parse-events.c        | 4 ++++
- tools/perf/util/parse-events.l        | 1 +
- 3 files changed, 6 insertions(+)
+One issue that I did see is that the port node doesn't have an endpoint
+here, so I will remove the requirement to have an endpoint in the bindings
+documentation to allow this kind of definition.
 
-diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-index b95d3c485d27..16559703c49c 100644
---- a/tools/include/uapi/linux/perf_event.h
-+++ b/tools/include/uapi/linux/perf_event.h
-@@ -112,6 +112,7 @@ enum perf_sw_ids {
- 	PERF_COUNT_SW_EMULATION_FAULTS		= 8,
- 	PERF_COUNT_SW_DUMMY			= 9,
- 	PERF_COUNT_SW_BPF_OUTPUT		= 10,
-+	PERF_COUNT_SW_CGROUP_SWITCHES		= 11,
- 
- 	PERF_COUNT_SW_MAX,			/* non-ABI */
- };
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 3b273580fb84..f6a5a099e143 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -145,6 +145,10 @@ struct event_symbol event_symbols_sw[PERF_COUNT_SW_MAX] = {
- 		.symbol = "bpf-output",
- 		.alias  = "",
- 	},
-+	[PERF_COUNT_SW_CGROUP_SWITCHES] = {
-+		.symbol = "cgroup-switches",
-+		.alias  = "",
-+	},
- };
- 
- #define __PERF_EVENT_FIELD(config, name) \
-diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-index 9db5097317f4..88f203bb6fab 100644
---- a/tools/perf/util/parse-events.l
-+++ b/tools/perf/util/parse-events.l
-@@ -347,6 +347,7 @@ emulation-faults				{ return sym(yyscanner, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_EM
- dummy						{ return sym(yyscanner, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_DUMMY); }
- duration_time					{ return tool(yyscanner, PERF_TOOL_DURATION_TIME); }
- bpf-output					{ return sym(yyscanner, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_BPF_OUTPUT); }
-+cgroup-switches					{ return sym(yyscanner, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CGROUP_SWITCHES); }
- 
- 	/*
- 	 * We have to handle the kernel PMU event cycles-ct/cycles-t/mem-loads/mem-stores separately.
--- 
-2.29.2.454.gaff20da3a2-goog
+Cheers,
 
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--rGPkz4GDdv/zCi05
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/HrHEACgkQ3cLmz3+f
+v9ErpAgAl7uJWiiZLPZchWKL6k5dL9UqFnjiKHTANDFz4zNTRp/o32qFhs/5b/dS
+YmQq0RsO+cyvnDxYlcRd1a49EhTeI08dsZtMrAzeLGqrOmxwBNEoJiNASEDRodFP
+MogKS9JER+A8zl3msQDPCDlBRTVwQrQaDbpHBKoF6qQTbWWuG+2/AY/LCr6DFY2X
+GoR7hXqjiJkIzc+49SC2C3mnycLETpJAf7mY3mQkTHdbuKqJCyjglrCPtvLvzxLU
+U5bzjNMc/Lm7X1NP1aOMCHhSJ0yE6/vewMKkceTfm4AUvS48fz2/s78AU2n4rD/U
+ETFlPrmf9vkxA732GCZiTvH9OQWHTA==
+=PFfC
+-----END PGP SIGNATURE-----
+
+--rGPkz4GDdv/zCi05--
