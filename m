@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B369D2CB509
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE75D2CB50F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 07:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgLBGag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 01:30:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLBGaf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:30:35 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FBAC0613CF;
-        Tue,  1 Dec 2020 22:29:55 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728640AbgLBGbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 01:31:50 -0500
+Received: from m42-5.mailgun.net ([69.72.42.5]:51861 "EHLO m42-5.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728037AbgLBGbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 01:31:50 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1606890689; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=N5yCqs3Q0ix9g25K5caB+4a4wuk5yuJaeaiX1thxbUA=; b=UhMI+tXr6Z/ZUndc3aoMSDU74C2dSnzwGXmxY/mYtfrc0MdSCna5JsFsZTr1y1SD1WjiC5aq
+ sRNiiw1nnjrfVGbAtRwpcb7BZiOs8BF5vOdCsBXXcmRpcjOWFcjorlZmrws8QTV5PQh/4eK/
+ Uv76Shl7x8V9RJf4GncEOeR0JEk=
+X-Mailgun-Sending-Ip: 69.72.42.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fc734a40f9adc18c7f5c79f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 06:31:00
+ GMT
+Sender: akashast=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 61F79C43464; Wed,  2 Dec 2020 06:30:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.43.98] (unknown [47.9.70.25])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cm8G74J2kz9sRK;
-        Wed,  2 Dec 2020 17:29:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606890591;
-        bh=QEzqJct+gvjJxU3fGmeZfsHLVO0Oxv9gwEHb+PbIu7c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lufMqhYX0xjyycCxQFpZ9ErOYu3nkcv6K5lt9lmN7Hl11r4hY7ocecjP7ZseI1y5L
-         5JEZ1zIAsw5ZFpgPV4iwBGO1CULw89tdgf6lC8vSFPdNMaaBCLZZnh5TsCIYWklTuN
-         hMr1IowUPZ0F/24RxwmAg4hSIM0rxLZU1jVLZbp8zwrABkO+IU5cvGbIsYna4jpfgN
-         PkZQ3JmFZGAlCvqVnZWmQbkB4/7mVkZrcFSulwp8moR5TZD2iQb1pPa7dOtejczjCo
-         uqbC6kJS6rfVJxRRLixYaX9b1s6Tl3pfH6HL+IX6cVj7JgQM9OsCku6byH20bvEJEK
-         vVaNYLt5HNU3w==
-Date:   Wed, 2 Dec 2020 17:29:49 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: no release today
-Message-ID: <20201202172949.7c99f30a@canb.auug.org.au>
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 33DE9C433C6;
+        Wed,  2 Dec 2020 06:30:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 33DE9C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH] Revert "i2c: qcom-geni: Disable DMA processing on the
+ Lenovo Yoga C630"
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Mukesh Savaliya <msavaliy@codeaurora.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Shawn Guo <shawn.guo@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+References: <20201124185743.401946-1-bjorn.andersson@linaro.org>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <6bcdfdc0-2e41-2eb5-0de3-04e68daaeab5@codeaurora.org>
+Date:   Wed, 2 Dec 2020 12:00:37 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kI/eis3gkQxG3shFm8pCUzQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201124185743.401946-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/kI/eis3gkQxG3shFm8pCUzQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 11/25/2020 12:27 AM, Bjorn Andersson wrote:
+> A combination of recent bug fixes by Doug Anderson and the proper
+> definition of iommu streams means that this hack is no longer needed.
+> Let's clean up the code by reverting '127068abe85b ("i2c: qcom-geni:
+> Disable DMA processing on the Lenovo Yoga C630")'.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Akash Asthana <akashast@codeaurora.org>
 
-There will be no linux-next release today as I have just run out of
-time to finish it.  Normal service will hopefully return tomorrow.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/kI/eis3gkQxG3shFm8pCUzQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/HNF0ACgkQAVBC80lX
-0GxN8wf/TXihRvUvA/2OkHGlUwdrpnp5fbgKHBbj0E+xK23UEpfKWXauBv30IUbi
-PE2Z04dYMCxOCkNxV9G+nesFCW4EPhrZf5meLvHQS3vz22D9DTz95WJt1Sx1Rf4l
-Wb9nrOLE5cyhW8bORSAMvHU/v8fVQHnS5UtExezq+6LfYQohpIB5Yn4G3HQ5mbbK
-PSTfh6M1Lt+lO1fSCiDwI3NQKta+xT7E8RUaI3isDmeHeJ6UI3CGCvaT6U5Ca42g
-RE7z6Xl6xlUjuSb1BL9n0yysxhGO/MS8MmaODyvx1WrNCXqJquBsNZOqmSgI9E4p
-Jvhq+Xq+pU+5H1S/otrA1tkWVdtKpw==
-=7L7+
------END PGP SIGNATURE-----
-
---Sig_/kI/eis3gkQxG3shFm8pCUzQ--
