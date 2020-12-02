@@ -2,251 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781F62CB7F0
+	by mail.lfdr.de (Postfix) with ESMTP id EFD882CB7F1
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 10:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387982AbgLBI75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 03:59:57 -0500
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:2995 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387961AbgLBI75 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 03:59:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1606899596; x=1638435596;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4wWcur5DlsfV0lXw+0GFCRuwJmV24Pfs1EWJ0dKu/e0=;
-  b=SwULJ6tNySlslBi+zL5D0Vql+sKgrhbBFU4sFSrOwo64oWlGQUK5iyfy
-   vLVEuPIxkOc1QnbioazZrMfI4q/Ab6pJ4lxLLEkNbfANmejXt9K+KwWBQ
-   AqfrmaKDuBgeFuSB9h/mjiHYXfjSwydYJhQLkIkQRB3Bm8ArcDVR03oJ1
-   gp0x0BSK+FkhNbYqsN3R9jiHnkrJ5WU9WD3MaiWYL6B3x5um26aAbcF34
-   8718umFJeuB4LR9BpQso6hPiv9sthLvbHJIrm0QNHn7Tev7hfWUnNeY4o
-   x9KtWyiYf/rU1BlHReaqtuXiFRSH/b3cJhZTXAEqmq2D2K8+rkNMfmlun
-   g==;
-IronPort-SDR: q5U6gLx4CEBN2KAufOk1EWi97dBu/2+kfYG6StG7i7Z8vucCkMNhZhibAzzXV/ez1xZAxFNoup
- DauJHg09cB9dTe6D6GurXYVyntLnbd2XWOczd1UNTZw2K0VlsKjCfYpdfe7atD6LDM8khumRcy
- f3Zp3ipp2XKm3oYiI7tk8kuejALLeY6Su413PEtIceoF43XkO8cjldn7ogcrs7ZEAse8upKZrr
- M8h2wACC0kcZuC1woo1DmZAnPRpJZl7KAOX9GEgM1kVlb8B6qj+g39aFTAfMUtvOpe1MtrV8+x
- C3c=
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="105815768"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Dec 2020 01:58:50 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 2 Dec 2020 01:58:50 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 2 Dec 2020 01:58:47 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
-        <perex@perex.cz>, <lars@metafoo.de>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [RFC PATCH] ASoC: pcm_dmaengine: Add support for BE DAIs
-Date:   Wed, 2 Dec 2020 10:58:38 +0200
-Message-ID: <20201202085838.1779525-1-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.27.0
+        id S2388000AbgLBJAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 04:00:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38188 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387961AbgLBJAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 04:00:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 47911ACC2;
+        Wed,  2 Dec 2020 08:59:34 +0000 (UTC)
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <1606898835-40775-1-git-send-email-tiantao6@hisilicon.com>
+ <1606898835-40775-3-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH drm/hisilicon 2/3] drm/irq: Add the new api to install irq
+Message-ID: <0582b2bc-cba5-af9e-3da1-dddc65dc859a@suse.de>
+Date:   Wed, 2 Dec 2020 09:59:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <1606898835-40775-3-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="D2ArB4BjPyH4gDC0vZ4coFadlRx6osh0i"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Considering the bellow scenarios:
-                                                /- Gen DMA engine -\
-       48KHz    ********     *******   44.1KHz  ********     *******     *********
-PCM0 <-FE DAI-> * FE   * <-> * DSP * <-BE DAI-> *      *     *     *     *       *
-                * Ring *     *     *            * Ring * <-> * CPU * <-> * Codec *
-                * buff *     *******            * buff *     * DAI *     * DAI   *
-       44.1KHz  ********                        *      *     *     *     *       *
-PCM1 <--------------------DAI-----------------> *      *     *     *     *       *
-                                                ********     *******     *********
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--D2ArB4BjPyH4gDC0vZ4coFadlRx6osh0i
+Content-Type: multipart/mixed; boundary="dtcKyPVlomp4LMREjCRK4bfjpc1oBkVK4";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <0582b2bc-cba5-af9e-3da1-dddc65dc859a@suse.de>
+Subject: Re: [PATCH drm/hisilicon 2/3] drm/irq: Add the new api to install irq
+References: <1606898835-40775-1-git-send-email-tiantao6@hisilicon.com>
+ <1606898835-40775-3-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1606898835-40775-3-git-send-email-tiantao6@hisilicon.com>
 
-For PCM0, we have two DAI links. The first DAI link is a FE, with a DSP as
-a CPU DAI and a platform driver .The second DAI link is a BE DAI link,
-with separate CPU, codec and platform drivers. We can also notice that
-there are two Ring buffers: the first one used by the DSP to communicate
-with the user-space and the second one used to move data between FE
-(DSP) and BE (CPU).
-PCM1 is a normal DAI link, with a CPU, codec and platform driver. It is
-exactly the previous BE DAI link from PCM0, so the samples from user-space
-are copied directly into the second Ring buffer.
+--dtcKyPVlomp4LMREjCRK4bfjpc1oBkVK4
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-In this scenario, the BE DAI link driver should be the same, since it is
-decided at runtime whether the DAI is a used as a BE or not. The generic
-platform driver needs to be aware of this thing. For the BE case (PCM0),
-some callbacks of the platform driver are not called, hence the
-preallocated buffer is not available. Also, the PCM runtime strcture
-must not be touched, since it should be only used by the FE platform
-driver.
+Hi
 
-With these changes, the generic dmaengine can also be used as a BE
-platform driver.
+Am 02.12.20 um 09:47 schrieb Tian Tao:
+> Add new api devm_drm_irq_install() to register interrupts,
+> no need to call drm_irq_uninstall() when the drm module is removed.
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>   drivers/gpu/drm/drm_irq.c | 35 +++++++++++++++++++++++++++++++++++
+>   include/drm/drm_irq.h     |  2 +-
+>   2 files changed, 36 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_irq.c b/drivers/gpu/drm/drm_irq.c
+> index 09d6e9e..b363dec 100644
+> --- a/drivers/gpu/drm/drm_irq.c
+> +++ b/drivers/gpu/drm/drm_irq.c
+> @@ -214,6 +214,41 @@ int drm_irq_uninstall(struct drm_device *dev)
+>   }
+>   EXPORT_SYMBOL(drm_irq_uninstall);
+>  =20
+> +static void devm_drm_irq_uninstall(void *data)
+> +{
+> +	drm_irq_uninstall(data);
+> +}
+> +
+> +/**
+> + * devm_drm_irq_install - install IRQ handler
+> + * @dev: DRM device
+> + * @irq: IRQ number to install the handler for
+> + *
+> + * devm_drm_irq_install is a  help function of drm_irq_install.
+> + *
+> + * if the driver uses devm_drm_irq_install, there is no need
+> + * to call drm_irq_uninstall when the drm module get unloaded,
+> + * as this will done automagically.
+> + *
+> + * Returns:
+> + * Zero on success or a negative error code on failure.
+> + */
+> +int devm_drm_irq_install(struct drm_device *dev, int irq)
+> +{
+> +	int ret;
+> +
+> +	ret =3D drm_irq_install(dev, irq);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret =3D devm_add_action_or_reset(dev->dev, devm_drm_irq_uninstall, de=
+v);
+> +	if (ret)
+> +		devm_drm_irq_uninstall(dev);
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
+If anything went wrong, devm_add_action_or_reset() will have already=20
+cleaned up for you. [1] So just return the result of=20
+devm_add_action_or_reset().
 
-Hello,
- 
-This patch is more or less incomplete for the described scenario. This
-is because DMAengine's pcm->config is ignored for the BE DAI link, so
-runtime->hw is not updated. Also, since pcm_construct/destruct are not
-called, the DMA channels are allocated only if DT is used.
-Underrun/overrun support would also be a nice to have for the transfers
-involving the buffer allocated for the BE.
-One way to hold trach of these would be to use a substream_be->runtime
-different than the one used for the FE.
+Best regards
+Thomas
 
-Please share your thoughts.
+[1]=20
+https://elixir.bootlin.com/linux/latest/source/include/linux/device.h#L25=
+5
 
- sound/core/pcm_dmaengine.c            | 18 ++++++++++--
- sound/soc/soc-generic-dmaengine-pcm.c | 40 +++++++++++++++++++++++----
- 2 files changed, 50 insertions(+), 8 deletions(-)
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(devm_drm_irq_install);
+> +
+>   #if IS_ENABLED(CONFIG_DRM_LEGACY)
+>   int drm_legacy_irq_control(struct drm_device *dev, void *data,
+>   			   struct drm_file *file_priv)
+> diff --git a/include/drm/drm_irq.h b/include/drm/drm_irq.h
+> index d77f6e6..631b22f 100644
+> --- a/include/drm/drm_irq.h
+> +++ b/include/drm/drm_irq.h
+> @@ -28,5 +28,5 @@ struct drm_device;
+>  =20
+>   int drm_irq_install(struct drm_device *dev, int irq);
+>   int drm_irq_uninstall(struct drm_device *dev);
+> -
+> +int devm_drm_irq_install(struct drm_device *dev, int irq);
+>   #endif
+>=20
 
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 4d059ff2b2e4..5e96bc27628d 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -137,7 +137,9 @@ static void dmaengine_pcm_dma_complete(void *arg)
- 	if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
- 		prtd->pos = 0;
- 
--	snd_pcm_period_elapsed(substream);
-+	/* do no update period for an internal PCM */
-+	if (!substream->pcm->internal)
-+		snd_pcm_period_elapsed(substream);
- }
- 
- static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
-@@ -147,6 +149,7 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
- 	struct dma_async_tx_descriptor *desc;
- 	enum dma_transfer_direction direction;
- 	unsigned long flags = DMA_CTRL_ACK;
-+	dma_addr_t addr;
- 
- 	direction = snd_pcm_substream_to_dma_direction(substream);
- 
-@@ -154,11 +157,15 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
- 		flags |= DMA_PREP_INTERRUPT;
- 
- 	prtd->pos = 0;
-+	if (substream->pcm->internal)
-+		addr = substream->dma_buffer.addr;
-+	else
-+		addr = substream->runtime->dma_addr;
-+
- 	desc = dmaengine_prep_dma_cyclic(chan,
--		substream->runtime->dma_addr,
-+		addr,
- 		snd_pcm_lib_buffer_bytes(substream),
- 		snd_pcm_lib_period_bytes(substream), direction, flags);
--
- 	if (!desc)
- 		return -ENOMEM;
- 
-@@ -315,6 +322,11 @@ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
- 
- 	substream->runtime->private_data = prtd;
- 
-+	if (substream->pcm->internal) {
-+		substream->dma_buffer.dev.type = SNDRV_DMA_TYPE_DEV_IRAM;
-+		substream->dma_buffer.dev.dev = chan->device->dev;
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open);
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 9ef80a48707e..f403849cd1aa 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -97,6 +97,31 @@ static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
- 		if (ret)
- 			return ret;
- 	}
-+	if (!substream->pcm->internal) {
-+		return snd_pcm_lib_malloc_pages(substream,
-+						params_buffer_bytes(params));
-+	}
-+
-+	/* allocate a buffer for BE DAI; for now, the buffer will have the same
-+	 * size as the buffer used by the FE
-+	 */
-+	if (snd_dma_alloc_pages(substream->dma_buffer.dev.type,
-+				substream->dma_buffer.dev.dev,
-+				params_buffer_bytes(params),
-+				&substream->dma_buffer) < 0)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static int dmaengine_pcm_hw_free(struct snd_soc_component *component,
-+				 struct snd_pcm_substream *substream)
-+{
-+	if (!substream->pcm->internal)
-+		return 0;
-+
-+	snd_dma_free_pages(&substream->dma_buffer);
-+	substream->dma_buffer.area = NULL;
- 
- 	return 0;
- }
-@@ -157,9 +182,12 @@ static int dmaengine_pcm_open(struct snd_soc_component *component,
- 	struct dma_chan *chan = pcm->chan[substream->stream];
- 	int ret;
- 
--	ret = dmaengine_pcm_set_runtime_hwparams(component, substream);
--	if (ret)
--		return ret;
-+	/* do not touch runtime if this is an internal PCM */
-+	if (!substream->pcm->internal) {
-+		ret = dmaengine_pcm_set_runtime_hwparams(component, substream);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	return snd_dmaengine_pcm_open(substream, chan);
- }
-@@ -309,7 +337,7 @@ static int dmaengine_copy_user(struct snd_soc_component *component,
- 			channel * (runtime->dma_bytes / runtime->channels);
- 	int ret;
- 
--	if (is_playback)
-+	if (!substream->pcm->internal && is_playback)
- 		if (copy_from_user(dma_ptr, buf, bytes))
- 			return -EFAULT;
- 
-@@ -319,7 +347,7 @@ static int dmaengine_copy_user(struct snd_soc_component *component,
- 			return ret;
- 	}
- 
--	if (!is_playback)
-+	if (!substream->pcm->internal && !is_playback)
- 		if (copy_to_user(buf, dma_ptr, bytes))
- 			return -EFAULT;
- 
-@@ -332,6 +360,7 @@ static const struct snd_soc_component_driver dmaengine_pcm_component = {
- 	.open		= dmaengine_pcm_open,
- 	.close		= dmaengine_pcm_close,
- 	.hw_params	= dmaengine_pcm_hw_params,
-+	.hw_free	= dmaengine_pcm_hw_free,
- 	.trigger	= dmaengine_pcm_trigger,
- 	.pointer	= dmaengine_pcm_pointer,
- 	.pcm_construct	= dmaengine_pcm_new,
-@@ -344,6 +373,7 @@ static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
- 	.close		= dmaengine_pcm_close,
- 	.hw_params	= dmaengine_pcm_hw_params,
- 	.trigger	= dmaengine_pcm_trigger,
-+	.hw_free	= dmaengine_pcm_hw_free,
- 	.pointer	= dmaengine_pcm_pointer,
- 	.copy_user	= dmaengine_copy_user,
- 	.pcm_construct	= dmaengine_pcm_new,
--- 
-2.27.0
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
+
+--dtcKyPVlomp4LMREjCRK4bfjpc1oBkVK4--
+
+--D2ArB4BjPyH4gDC0vZ4coFadlRx6osh0i
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/HV3QFAwAAAAAACgkQlh/E3EQov+Aa
+7Q/8CvfrnS6P1zg9BpA9ogBz2v+5GhfIQ3opWto2b2dVaQMSOeEv2PYPrl9lz14cKqQsActOxSY4
+97qDlQAZYFw3uyMIqFHEUrIqaX0+5rC4xryCtOeo5yo2rqvB9t3gj1lJ1lPBzTqxhXVZoUgFROaK
+d6G+i6ik7nKLBxFULVFcYMivu8IrSD2Y9Qi8ED13AXAQwYSX51OTcNyRSgdSNjKOpPPdw1OBoyqP
+wng29OVeE/qbO5b2Rm5aWHwOXxQeY1MSG4ik4erBoK3X27cj/NrbJUnyXYJf5OYTm1T4zK6cFB9M
+tLSopJsv+gXmH5S1j6nM2k/G8riS9ZDFstt+NwFXxKAb2QjhxGY6xYFUiiJNeFEqAccy5zSWRHFf
+UCnqLJf7d0h2pSvksr7RVPXKZEFprHkEwuUqeBM4EjjE3zwNahpAKv6Bm+JuqeW72UjqU6Iwv+Ki
+nyba/Fcw579VJE6y88X7WBk4+VDbBX3moCBCkc9fRH10hCQIm5K5aemzSZVyu7BERVPz7gYwCVcD
+5TP4NQSTSoBWfTgQS8ignw0Z6Tj72FY3e+htbeDTmMkdWdL1cQH4EQ0at61Vp5bUwJlTO/TZqlZ8
+gGbrk+SEyzGhofpQFvCclP1TxoxsQlVMWK4gBpp2Nnv/wSCRn+GD6vxRmPF0QPcjuX4HQjqA6wuz
+/Xk=
+=BUWM
+-----END PGP SIGNATURE-----
+
+--D2ArB4BjPyH4gDC0vZ4coFadlRx6osh0i--
