@@ -2,63 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C866A2CBBC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C8D2CBBCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 12:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbgLBLpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 06:45:43 -0500
-Received: from stargate.chelsio.com ([12.32.117.8]:63050 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgLBLpm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 06:45:42 -0500
-Received: from localhost (junagarh.blr.asicdesigners.com [10.193.185.238])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 0B2BiQQE017714;
-        Wed, 2 Dec 2020 03:44:28 -0800
-Date:   Wed, 2 Dec 2020 17:14:26 +0530
-From:   Raju Rangoju <rajur@chelsio.com>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, divy@chelsio.com,
-        jgarzik@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] cxgb3: fix error return code in t3_sge_alloc_qset()
-Message-ID: <20201202114424.GA13909@chelsio.com>
-References: <1606902965-1646-1-git-send-email-zhangchangzhong@huawei.com>
+        id S1729624AbgLBLqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 06:46:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34468 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726254AbgLBLqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 06:46:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F3757ACB5;
+        Wed,  2 Dec 2020 11:45:35 +0000 (UTC)
+Date:   Wed, 2 Dec 2020 11:45:33 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
+Subject: Re: [PATCH -V6 RESEND 3/3] NOT kernel/numactl: Support to enable
+ Linux kernel NUMA balancing
+Message-ID: <20201202114533.GX3306@suse.de>
+References: <20201202084234.15797-1-ying.huang@intel.com>
+ <20201202084234.15797-4-ying.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <1606902965-1646-1-git-send-email-zhangchangzhong@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20201202084234.15797-4-ying.huang@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, December 12/02/20, 2020 at 17:56:05 +0800, Zhang Changzhong wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
+On Wed, Dec 02, 2020 at 04:42:34PM +0800, Huang Ying wrote:
+> A new API: numa_set_membind_balancing() is added to libnuma.  It is
+> same as numa_set_membind() except that the Linux kernel NUMA balancing
+> will be enabled for the task if the feature is supported by the
+> kernel.
 > 
-> Fixes: b1fb1f280d09 ("cxgb3 - Fix dma mapping error path")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
+> At the same time, a new option: --balancing (-b) is added to numactl.
+> Which can be used before the memory policy options in the command
+> line.  With it, the Linux kernel NUMA balancing will be enabled for
+> the process if the feature is supported by the kernel.
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> index f3bb22b..109dd8f 100644
+> --- a/numactl.8
+> +++ b/numactl.8
+> @@ -25,6 +25,8 @@ numactl \- Control NUMA policy for processes or shared memory
+>  [
+>  .B \-\-all
+>  ] [
+> +.B \-\-balancing
+> +] [
 
-Acked-by: Raju Rangoju <rajur@chelsio.com>
+--balancing is a bit vague, maybe --balance-bind? The intent is to hint
+that it's specific to MPOL_BIND at this time.
 
->  drivers/net/ethernet/chelsio/cxgb3/sge.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-> index e18e9ce..1cc3c51 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-> @@ -3175,6 +3175,7 @@ int t3_sge_alloc_qset(struct adapter *adapter, unsigned int id, int nports,
->  			  GFP_KERNEL | __GFP_COMP);
->  	if (!avail) {
->  		CH_ALERT(adapter, "free list queue 0 initialization failed\n");
-> +		ret = -ENOMEM;
->  		goto err;
->  	}
->  	if (avail < q->fl[0].size)
-> -- 
-> 2.9.5
-> 
+-- 
+Mel Gorman
+SUSE Labs
