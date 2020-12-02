@@ -2,140 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709692CBDAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA982CBDB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729910AbgLBNDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:03:08 -0500
-Received: from m42-5.mailgun.net ([69.72.42.5]:60584 "EHLO m42-5.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727004AbgLBNDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:03:07 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1606914166; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=qjAu4ARaDSHofzOeaPU7lbpS6oa/GFM40mmufUDX6Cw=; b=UfPfWwuKuD8Cw426JWWRJ5DByUe7F1DnWPSd6GWu1LqdjdH1M/NSgu1Vbfr+ClR7BUqMxCZY
- PnNRirBKWwCICZ2R8/vIjlO2f7lh0ULZRp+DKCWpXH5l3ZES1GKXh37VY0vdj8A2JXccZcdk
- BkApT4ULNow9m1b3Ff1tHXTrYWM=
-X-Mailgun-Sending-Ip: 69.72.42.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fc79076e8c9bf49ade1ccab (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 13:02:46
- GMT
-Sender: sallenki=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C81EFC433C6; Wed,  2 Dec 2020 13:02:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from sallenki-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sallenki)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B405FC43460;
-        Wed,  2 Dec 2020 13:02:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B405FC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sallenki@codeaurora.org
-From:   Sriharsha Allenki <sallenki@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, mgautam@codeaurora.org,
-        Sriharsha Allenki <sallenki@codeaurora.org>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH v2] usb: gadget: Fix spinlock lockup on usb_function_deactivate
-Date:   Wed,  2 Dec 2020 18:32:20 +0530
-Message-Id: <20201202130220.24926-1-sallenki@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S1729912AbgLBNFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:05:23 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:35073 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725973AbgLBNFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 08:05:22 -0500
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 0B2D4Obq026281;
+        Wed, 2 Dec 2020 22:04:25 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 0B2D4Obq026281
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1606914265;
+        bh=euDqDYPAEo8c1mUJZ8sAnipyVBozjo/dK/LH2E/ZnNg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ONsilcmNVaSafGK6T51lZ4URUIrPDczqoDdMj72CU6HGbRa0jUU/5AOsWq5QA6Q4F
+         OMKWsTftrfsJLVaP7sVI3wW1ipGPO0WJNrrl36GbsXwOLnVwsZCVWOf1Vmr+HvYbdV
+         3BQtTraxn6enLN6a8yFebqKfS3RHnSxp9/LYhRqE4Mfu1bd4P6g3SK0XXyAm0gUwAg
+         3Y+OphIhMtZJeoLcXw+yFchOZd5l7XZHLknq2y/PmgE5l3aV1c59KJ1rcyyDrb7U8h
+         L6BtFGhwO2rm60X9tAUy6Vy5+DKdAQPkimsmkIeLQDRQK20DaPAU0FNOu5dYaq4Yqd
+         QSoNfTYhp7amQ==
+X-Nifty-SrcIP: [209.85.215.179]
+Received: by mail-pg1-f179.google.com with SMTP id t37so1038883pga.7;
+        Wed, 02 Dec 2020 05:04:25 -0800 (PST)
+X-Gm-Message-State: AOAM530CLrsHDxF+1Nn+5iFvEeB4R1OE68RTPrnSZguywesWQqB1yPdY
+        v6+sIP6wM2/fj8Xn5DYDrDKXyVONhFFyXP1pVcc=
+X-Google-Smtp-Source: ABdhPJwCzpMRH0jdC7IcItkJ8Sg/5p67zKA8cK34N4+tKICTKOQ/Sa8OrA9ktUc4eHF9ao3tm4BxcPgdiG0AjnJSVvk=
+X-Received: by 2002:aa7:9606:0:b029:198:14c4:4f44 with SMTP id
+ q6-20020aa796060000b029019814c44f44mr2775545pfg.80.1606914264517; Wed, 02 Dec
+ 2020 05:04:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK7LNASn4Si3=YhAPtc06wEqajpU0uBh46-4T10f=cHy=LY2iA@mail.gmail.com>
+ <CAHk-=wihYvkKOcXWPjY7wN13DXbh3k2YX_6JxK_1cQ=krbi9kg@mail.gmail.com>
+ <CAHk-=wi86Eu8Whu66CVu+GVTxbuJG+QNvDuk-hXnWu+5q90Zeg@mail.gmail.com>
+ <CAHk-=winw=9xh6SmFJPZgi8ngVR-ECTA-kDAAU3DEPLMoUrzVA@mail.gmail.com>
+ <CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com>
+ <CAK7LNAQtABssBH2LGThgv-F3_aSrz9Hd-ra9Yyu4-FFzY1nsUw@mail.gmail.com>
+ <CAHk-=whK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig=+vnw@mail.gmail.com> <CAK7LNAQGHjLYteCt+8BXSY-5CB0gaO1JtHY-SpPFrfdchoHKrQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAQGHjLYteCt+8BXSY-5CB0gaO1JtHY-SpPFrfdchoHKrQ@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 2 Dec 2020 22:03:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS_18S9_OasKOaoEW6os3=bYf4wi7fPewfdHyCS2mLsyA@mail.gmail.com>
+Message-ID: <CAK7LNAS_18S9_OasKOaoEW6os3=bYf4wi7fPewfdHyCS2mLsyA@mail.gmail.com>
+Subject: Re: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Emese Revfy <re.emese@gmail.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a spinlock lockup as part of composite_disconnect
-when it tries to acquire cdev->lock as part of usb_gadget_deactivate.
-This is because the usb_gadget_deactivate is called from
-usb_function_deactivate with the same spinlock held.
+On Wed, Dec 2, 2020 at 9:53 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Hi Linus,
+>
+> On Sun, Nov 29, 2020 at 3:28 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Fri, Nov 27, 2020 at 11:05 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > As for the cc1plus cost, I got a similar result.
+> > >
+> > > Running scripts/gcc-plugin.sh directly
+> > > took me 0.5 sec, which is a fourth
+> > > of the allmodconfig run-time.
+> > >
+> > > Actually, I did not know this shell script
+> > > was so expensive to run...
+> >
+> > So it turns out that one reason it's so expensive to run is that it
+> > does a *lot* more than it claims to do.
+> >
+> > It says "we need a c++ compiler that supports the designated
+> > initializer GNU extension", but then it actually includes a header
+> > file from hell, rather than just test designated initializers.
+> >
+> > This patch makes the cc1plus overhead go down a lot. That said, I'm
+> > doubtful we really want gcc plugins at all, considering that the only
+> > real users have all apparently migrated to clang builtin functionality
+> > instead.
+> >
+> >         Linus
+>
+>
+> The attached patch looks OK to me.
+>
+> Just a nit:
+> Now that the test code does not include any header,
+> you can also delete
+> "-I $srctree/gcc-plugins -I $gccplugins_dir/include"
+>
+>
+> If you apply it directly, please feel free to add
+>
+> Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 
-This would result in the below call stack and leads to stall.
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu:     3-...0: (1 GPs behind) idle=162/1/0x4000000000000000
-softirq=10819/10819 fqs=2356
- (detected by 2, t=5252 jiffies, g=20129, q=3770)
- Task dump for CPU 3:
- task:uvc-gadget_wlhe state:R  running task     stack:    0 pid:  674 ppid:
- 636 flags:0x00000202
- Call trace:
-  __switch_to+0xc0/0x170
-  _raw_spin_lock_irqsave+0x84/0xb0
-  composite_disconnect+0x28/0x78
-  configfs_composite_disconnect+0x68/0x70
-  usb_gadget_disconnect+0x10c/0x128
-  usb_gadget_deactivate+0xd4/0x108
-  usb_function_deactivate+0x6c/0x80
-  uvc_function_disconnect+0x20/0x58
-  uvc_v4l2_release+0x30/0x88
-  v4l2_release+0xbc/0xf0
-  __fput+0x7c/0x230
-  ____fput+0x14/0x20
-  task_work_run+0x88/0x140
-  do_notify_resume+0x240/0x6f0
-  work_pending+0x8/0x200
+BTW, gcc plugins are always compiled with g++.
 
-Fix this by doing an unlock on cdev->lock before the usb_gadget_deactivate
-call from usb_function_deactivate.
+Why do we need to compile the following in the first place?
 
-The same lockup can happen in the usb_gadget_activate path. Fix that path
-as well.
+class test {
+public:
+        int test;
+} test = {
+        .test = 1
+};
 
-Reported-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/linux-usb/20201102094936.GA29581@b29397-desktop/
-Tested-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
----
-Changes since v1:
-- Updated commit text to reflect fix in usb_gadget_activate as well
 
- drivers/usb/gadget/composite.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+I think any C++ compiler will succeed
+in compiling such simple code.
 
-diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-index c6d455f2bb92..1a556a628971 100644
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -392,8 +392,11 @@ int usb_function_deactivate(struct usb_function *function)
- 
- 	spin_lock_irqsave(&cdev->lock, flags);
- 
--	if (cdev->deactivations == 0)
-+	if (cdev->deactivations == 0) {
-+		spin_unlock_irqrestore(&cdev->lock, flags);
- 		status = usb_gadget_deactivate(cdev->gadget);
-+		spin_lock_irqsave(&cdev->lock, flags);
-+	}
- 	if (status == 0)
- 		cdev->deactivations++;
- 
-@@ -424,8 +427,11 @@ int usb_function_activate(struct usb_function *function)
- 		status = -EINVAL;
- 	else {
- 		cdev->deactivations--;
--		if (cdev->deactivations == 0)
-+		if (cdev->deactivations == 0) {
-+			spin_unlock_irqrestore(&cdev->lock, flags);
- 			status = usb_gadget_activate(cdev->gadget);
-+			spin_lock_irqsave(&cdev->lock, flags);
-+		}
- 	}
- 
- 	spin_unlock_irqrestore(&cdev->lock, flags);
+
+
+So,
+
+test -e "$gccplugins_dir/include/plugin-version.h"
+
+looks enough to me.
+
+
+
+What is the intention of this compile test?
+
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
-
+Best Regards
+Masahiro Yamada
