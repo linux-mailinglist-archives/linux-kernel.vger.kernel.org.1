@@ -2,110 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCD82CBDF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B40682CBDFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730256AbgLBNJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
+        id S1730049AbgLBNLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:11:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729953AbgLBNJ5 (ORCPT
+        with ESMTP id S1726075AbgLBNLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:09:57 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D5CC0613CF;
-        Wed,  2 Dec 2020 05:09:17 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x24so1215504pfn.6;
-        Wed, 02 Dec 2020 05:09:17 -0800 (PST)
+        Wed, 2 Dec 2020 08:11:15 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59EFC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 05:10:28 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id t22so3643293ljk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 05:10:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1z5RghUm6yb3JSWWMIkAtmUbvFsrsgFkS/6j5bM5Nz0=;
-        b=cQc1Nna3s2K66qgZ0MEK53kPZT2w5huQsS3t5h1U1UW0Y+xL4rYxDIqVHOoqene60z
-         uUpwdu4quEdrmBE8pCdyNyHkQ2bo8ka9TPYZk7Wfzc5eI0VEgVcol9owDkUu3WISbQKv
-         EAfTy1l2FiD7myllfEG8r3zCFfBlQbtFAu+F/VTj0rxSaNHc5ukw71qmbe7GjUwm1e/W
-         cpWNNOoGQ4HbT/tHMJojeQrR5VkXAAHpbXV5EZAljduJa0gPvSPJy9NOE8ZN3Gr0I8Zc
-         uWkJEPI4rBNM2oEkXiFisfn1Re44dThXrA6F/IqGcej3dfrOAjYTYPV1Plu636suXADn
-         ksTA==
+        bh=i4Suf39GCGNNHp9xQ0t7Zvgxat9mlBC6lgDT1pUfxf8=;
+        b=FM8PTyPU6TQTdnznfVQtjDlCFBomkBLOza9aIVUNFobA4LQplmlPkVf91dS+rRDR4g
+         b0DRhOd8uTdbxwVj5LQDZJWGmFHP6gVqF8LzPbDTQlUPTjG5Ega8JUm46ZF8kTCRiTGy
+         E3HBlchayQ+Y+NEq03G2hLtfgXfYIhZWZD7fGTymaQiOnblWT6/AkrIlTUkv8Ukm9Sqn
+         SrPa3h7I7+i+2mWLWFP1PqW8Fmk8EumQcSbFvXWdT2lYsZsYf246ARFDmelfpz1M0aZT
+         GGlAhNPeiLBtONohGTwREA1bVCy0leHymUQyhcdmcVH9mJ5dZXrqoYAgi9+9sd6Ik7E/
+         wsjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1z5RghUm6yb3JSWWMIkAtmUbvFsrsgFkS/6j5bM5Nz0=;
-        b=oGyIQaoUdQ7Kzh9mhNTcJ6s1PrbgfEqT/lLnocESasjrivAwowgbkgRNxKqLmu2qrT
-         geNGnaytv3ceNG2aA6TSBSBDatif8Gj8HMZZLwH8ay9qBetlNMKA0Qszdg7Bx0rBpT8V
-         iD3AmIsER24IRgcil7D2Knq7pjw7Rde84ZS53z0s4CciTiM5xITNRpzSYIWbSCSLZp/C
-         hmH87PqvI0fAqXexq4iQ2Cv3XAP6nC7nZO0tQiFy7WLQKXByBiPlvBR6dfZ+j6DG+8H7
-         BHVSZXPhH3W5yUBhUkXszVp28Ks6RE7ZhNMQEqSqYJ0Wx5eIXchraYDwvf9SD/fvihkL
-         Qywg==
-X-Gm-Message-State: AOAM533FH1zOMsSOUL9kd80aEJLzkUPcfvvywAWHp/IqCE0nTMXkmatA
-        ftPTIzOG1nLdGan895GD5YAHHELnt5XJqYYmrNPSbcAgwI4=
-X-Google-Smtp-Source: ABdhPJx1w9uaqNh+tnBMkkXkuAfuVJPg0wYvh4NwfQg9ye3H+qABWR4bjKvRYKRJwe7+OwYdEebWsNm/vIq7sbGK52I=
-X-Received: by 2002:a62:ae0e:0:b029:198:11b4:6b6b with SMTP id
- q14-20020a62ae0e0000b029019811b46b6bmr2508125pff.73.1606914556601; Wed, 02
- Dec 2020 05:09:16 -0800 (PST)
+        bh=i4Suf39GCGNNHp9xQ0t7Zvgxat9mlBC6lgDT1pUfxf8=;
+        b=XGTOZ6ntDOYgSpBypo8f1/qBp5pwNZk0NG5cV0bP2cYbt44zZBrvwm5xyiXmvz9biD
+         ztMaDZUU7drdHv7i0wiv4Wtux+5CK6li9z8WzPhphwQQY0pkBgBzzJUBzrT3EYwReUS1
+         zHLV/cepS28oPirIvj+tviqj17vQDIkuY6Abk2hz+bKCRzyObJfC7OyjcS4YhbcwPHte
+         SWe6Fp9JB07yv00sUxFVWGk52yU+d2mDRxnGysTp+CNnlHtbS/G5XjxxijCerYogA1bv
+         9KQirKswFXsyEJtN3gvmNZEcmxQeihiY1cmsqtZhqEpmchNxHrDSNu3W1/veWOfakAcv
+         S1RQ==
+X-Gm-Message-State: AOAM531aIk9lp9xW7bo+mEzr2RQCx3H8eh4mlSOjqdQj4lw55XiAkV0o
+        nIHIg3vQArZHsQDnLHYbY00UexLGVd3ANf7VsCN7xw==
+X-Google-Smtp-Source: ABdhPJwZgoE4OEOGPdzSUfpTzinfghQsk702UafbRLuHOuND43/IE/y0+KvW+rUJQDzBKSbq80ZI3CI72rNCNK5My3Y=
+X-Received: by 2002:a2e:9118:: with SMTP id m24mr1133847ljg.363.1606914626899;
+ Wed, 02 Dec 2020 05:10:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202150205.20150-1-muhammad.husaini.zulkifli@intel.com>
- <CAPDyKFrg5ur3iTp-dAoVqV5fiFgcmt01j9R7z3_i=tqhWW3WNg@mail.gmail.com>
- <20201202122520.GD4077@smile.fi.intel.com> <CAPDyKFra1+HPGYjG30LkuPxPyN8mQaZan4+AFLKf7_gvd979PA@mail.gmail.com>
-In-Reply-To: <CAPDyKFra1+HPGYjG30LkuPxPyN8mQaZan4+AFLKf7_gvd979PA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 2 Dec 2020 15:10:05 +0200
-Message-ID: <CAHp75VeXxPoNqJVQojDC1G3gzJUJEiJs2UOm6kob71Aqa_7v2w@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <20201201071632.68471-1-98.arpi@gmail.com> <CAHp75VfV60sRAKkzvbEKW7UEZSiDmNVfd_kB-OOKZRk5MNMeDQ@mail.gmail.com>
+ <e10ef8d3-f22b-db10-3784-c94ee425af46@gmail.com> <20201202094408.GW4077@smile.fi.intel.com>
+ <CABVgOS=hrfma2Yq=h2vqOoH1Mz4xSyfDbgkM9EHvMFk=HJkcnQ@mail.gmail.com> <CAHp75VcSGJ-qVQf9SRj2rTME-_MZ2vM-HB_+LiRVgnkwn1TO=g@mail.gmail.com>
+In-Reply-To: <CAHp75VcSGJ-qVQf9SRj2rTME-_MZ2vM-HB_+LiRVgnkwn1TO=g@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 2 Dec 2020 21:10:14 +0800
+Message-ID: <CABVgOSmy4n_LGwDS7yWfoLftcQzxv6S+iXx9Y=OPcgG2gu0z1w@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: Convert test_hexdump.c to KUnit
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Mark Gross <mgross@linux.intel.com>
+        linux-kernel-mentees@lists.linuxfoundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 2:44 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> On Wed, 2 Dec 2020 at 13:24, Shevchenko, Andriy
-> <andriy.shevchenko@intel.com> wrote:
-> > On Wed, Dec 02, 2020 at 11:53:42AM +0100, Ulf Hansson wrote:
-> > > On Wed, 2 Dec 2020 at 08:02, <muhammad.husaini.zulkifli@intel.com> wrote:
-> >
-> > ...
-> >
-> > > > Kindly help to review this patch set.
+On Wed, Dec 2, 2020 at 8:21 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Wed, Dec 2, 2020 at 1:57 PM David Gow <davidgow@google.com> wrote:
+> > On Wed, Dec 2, 2020 at 6:06 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Wed, Dec 02, 2020 at 09:51:19AM +0530, Arpitha Raghunandan wrote:
+>
+> ...
+>
+> > > What I;m talking about is the output. How it will be implemented (using the
+> > > same variable or differently) is up to you. So the point is I want to see the
+> > > statistics of success/total at the end.
 > > >
-> > > This version looks a lot better to me, but I am still requesting you
-> > > to model the pinctrl correctly. I don't see a reason not to, but I may
-> > > have overlooked some things.
+> > > I think this should be done in KUNIT rather than in the individual test cases.
 > >
-> > I'm wondering why we need to mock up a pin control from something which has no
-> > pin control interface. It's rather communication with firmware that does pin
-> > control under the hood, but it also may be different hardware in the other /
-> > future generations. Would you accept mocking up the same calls over the kernel
-> > as pin control, as something else?
+> > I tend to agree here that this really is something for KUnit. At the
+> > moment, the tools/testing/kunit/kunit.py script will parse the kernel
+> > log and generate these sorts of statistics. I know that needing to run
+> > it through a script might seem like a step backwards, but there's no
+> > formal place for statistics in the KTAP specification[1] being worked
+> > on to standardise kselftest/kunit output formats.
 >
-> Well, my point is that modeling this a pinctrl would keep the mmc
-> driver portable. Additionally, it's very common to manage pinctrls in
-> mmc drivers, so it's not like this is an entirely new thing that I
-> propose.
+> Then it sucks. Fix specification (in a long term) and does it have a
+> comment style of messages that we can have this statistics printed
+> (but maybe not parsed)?
+
+I should clarify: there's nothing in the spec which explicitly defines
+a place for such statistics (nor anything which requires them). There
+are "diagnostic" lines which are not parsed, and so it'd be possible
+to output statistics there. KUnit itself doesn't at present, but
+allows individual tests to log diagnostic lines which could be such
+statistics, particularly in cases like this where the full structure
+of the tests aren't quite exposed to the framework.
+
+
+
+> > Note that there are
+> > other parsers for TAP-like formats which are being used with KUnit
+> > results, so systems like LAVA could also sum up these statistics. It's
+> > also possible, as Arpitha alluded to, to have the test dump them out
+> > as a comment.
 >
-> If/when it turns out that there is a new HW having a different pinctrl
-> interface, it would just mean that we need a new pinctrl driver, but
-> can leave the mmc driver as is.
+> Fine to me.
+>
+> > This won't actually work for this test as-is, though, as the KUnit
+> > version is running as a single giant test case (so KUnit believes that
+> > 1/1 tests have passed, rather than having any more-detailed
+> > statistics). It looks like there are a few ways to split it up a bit
+> > which would make it neater (a test each for the for() loops in
+> > test_hexdump_init() seems sensible to me), but at the moment, there's
+> > not really a way of programmatically generating test cases which KUnit
+> > then counts
+>
+> Fix it, please. We rely on this statistics pretty much.
 
-My point is that it may be *not* a pin control at all.
-And in that case you will need to mock up (what exactly?) and update
-the MMC driver.
+The hope is that the Parameterised Test feature will make this
+possible (though, as mentioned, there are a few other issues around
+then making those statistics available, but we should be able to work
+through those).
 
--- 
-With Best Regards,
-Andy Shevchenko
+It may be a silly question, but what is it that makes these statistics
+useful in this test? Maybe I'm misunderstanding something, but I'd've
+thought that the important things were whether or not _all_ tests had
+passed, and -- if not --- _which_ ones had failed. Is the count of
+failing cases within a test like this really that useful for
+debugging, or is it more for comparing against different versions?
+Either way, we'll try to make sure they're available.
+
+> > The "Parameterised Tests"[2] work Arpitha has been working on ought to
+> > go some way to helping here, though it won't solve this completely in
+> > this initial version. The problem there is that parameterised tests
+> > are not reported individually in a way the kunit.py parser can report
+> > cleanly, yet, so it'll still only be counted as one test until that's
+> > changed (though, at least, that shouldn't require any test-specific
+> > work).
+> >
+> > My suggestion for the ultimate state of the test would be:
+> > - Split up the test into separate KUnit tests for the different
+> > "categories" of tests: (e.g., test_hexdump_set,
+> > test_hexdump_overflow_set_ascii, etc)
+> > - Replace the for loops in test_hexdump_init() with parameters, so
+> > that KUnit is aware of the original runs.
+> > - Once KUnit and the tooling supports it, these will be reported as
+> > subtests. (In the meantime, the results will be listed individually,
+> > commented out)
+>
+> I'm fine as long as we have this information printed to the user.
+
+Okay -- Arpitha: does this seem like a sensible approach to you?
+
+If printing it to the kernel log is really essential, I'll have a look
+into how we can do that in KUnit.
+
+> > Of course, it'll take a while before all of those KUnit pieces are in
+> > place. I personally think that a good compromise would be to just do
+> > the first of these for now, which would make kunit_tool give at least
+> > a 4/4 rather than 1/1 result. Then, once the parameterised testing
+> > work is merged (and perhaps the tooling fixes are finished), the tests
+> > could be updated to take advantage of that.
+>
+> How can we guarantee it will be not forgotten?
+
+Thinking about it further, if we can get the parameterised testing
+stuff in 5.11 as planned, then any tooling/output fixes done later
+would automatically apply. Maybe rather than doing an intermediate
+version with just the first splitting up of tests, we try it with the
+current parameterised test patches, and we can possibly prototype some
+kernel-side statistics reporting which should work. To be honest,
+though, the subtest support on the kunit_tool side is likely to take
+quite a while, so it would be nice to have something (like statistics
+in the kernel log) which ameliorate the problem in the meantime.
+
+I'll have a bit of a play around with the test output and parsing code
+this week and see if there's a simple change that can get us most of
+the way there. I think something should be possible if the test uses
+the Parameterised testing feature.
+
+Cheers,
+-- David
