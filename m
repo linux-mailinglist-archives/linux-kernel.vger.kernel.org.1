@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804B82CC68E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CA52CC68A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 20:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731108AbgLBTXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 14:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729123AbgLBTXx (ORCPT
+        id S2389719AbgLBTX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 14:23:56 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35846 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731038AbgLBTXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:23:53 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DF2C0613CF;
-        Wed,  2 Dec 2020 11:23:13 -0800 (PST)
-Date:   Wed, 02 Dec 2020 19:23:10 -0000
+        Wed, 2 Dec 2020 14:23:55 -0500
+Date:   Wed, 02 Dec 2020 19:23:11 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1606936992;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lxT47pVqs6r9HdJqHgJ+gdb048ASC+VWA1xXaJl/mXk=;
-        b=vFfhFeu1AgLagcUMBxJNCBZi4M1N3RnMiSeXSzSXRbk9pCGOGcPwBM0OpSmkdAf/vTux6k
-        GRkkQXGQJBYxrlNxPEX7LLfoJD3qTn/j9pd2MRpD7KULYn2milCh1NzRtrAeYX49nislEI
-        0bEFhnVSakKP3Dmx7JJuNKehE3JDtpEbjJ5LH59eLNjI61w832AcHWPLe1YT9ToOIDnZDK
-        lv9PngjkF5VwkvRbaksmSjQtnq0IjL/N1fjDdnio7roGHlav1mFzgvukkQc/Wm7y2DM85/
-        oxcg0zXalNoIP+JqcPacnrWXayidKKEdLJiV0CIiWVTS8MXX8gCncf7elajQKA==
+        bh=6qAd6D9egUQRd8Lz4aJAzjmTqITQ+EgcgOrUAVOoMX0=;
+        b=SjAlO3ITGQjeMzEwbj1Pax6BV1AiKa8GqGuleItuzPo28qihEm/BNGfR2ou7VTTU17SnD7
+        KIyEVhJTwWy4n9UeJAP1VAzhsktC04S06bnxOrTWe8v43XWvPCU2BMfbOFTf6wnnA9JIRM
+        IZvzlCJu+F8+JPSgdzxlzI3RRjWuywzcX7rFVidHqNWT81v0ggMHZEpQWGEpI7/s8fH09V
+        kB2gsbcPNLhVDGG1XXlGBdH9HvhWkIZCJmJXCuLZrIxK4BP8JiXOc/CA6uUP1q/H+EKc3l
+        48tn44NzDC94XxKyCkoljSC1zdKzkhzvQGuRdQhSKjnwk1IpfxxWJrJorZYp2w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1606936992;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +33,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lxT47pVqs6r9HdJqHgJ+gdb048ASC+VWA1xXaJl/mXk=;
-        b=o7Zs03Q0BeAvOQdCoHVvH69FRV6LtKgfAxufw6SrLUK1+ZCONg/Oznf/Ehg9XgTyKXcUgE
-        tWEb2jLKqzE+tsBQ==
+        bh=6qAd6D9egUQRd8Lz4aJAzjmTqITQ+EgcgOrUAVOoMX0=;
+        b=kzUdUFIZ3AiBH7++5tmyb1s+8Hk3EaXBu+o2xLcYLtZJvq6yw21H34TaI9TRKqBS3dTvhd
+        +Qx+UxFEBAH1FXDQ==
 From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irq: Call tick_irq_enter() inside HARDIRQ_OFFSET
+Subject: [tip: irq/core] irqtime: Move irqtime entry accounting after irq
+ offset incrementation
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201202115732.27827-6-frederic@kernel.org>
-References: <20201202115732.27827-6-frederic@kernel.org>
+In-Reply-To: <20201202115732.27827-5-frederic@kernel.org>
+References: <20201202115732.27827-5-frederic@kernel.org>
 MIME-Version: 1.0
-Message-ID: <160693699084.3364.1887616358916715412.tip-bot2@tip-bot2>
+Message-ID: <160693699114.3364.3770140200988474994.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,54 +60,215 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     d14ce74f1fb376ccbbc0b05ded477ada51253729
-Gitweb:        https://git.kernel.org/tip/d14ce74f1fb376ccbbc0b05ded477ada51253729
+Commit-ID:     d3759e7184f8f6187e62f8c4e7dcb1f6c47c075a
+Gitweb:        https://git.kernel.org/tip/d3759e7184f8f6187e62f8c4e7dcb1f6c47c075a
 Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Wed, 02 Dec 2020 12:57:32 +01:00
+AuthorDate:    Wed, 02 Dec 2020 12:57:31 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 02 Dec 2020 20:20:05 +01:00
 
-irq: Call tick_irq_enter() inside HARDIRQ_OFFSET
+irqtime: Move irqtime entry accounting after irq offset incrementation
 
-Now that account_hardirq_enter() is called after HARDIRQ_OFFSET has
-been incremented, there is nothing left that prevents us from also
-moving tick_irq_enter() after HARDIRQ_OFFSET is incremented.
+IRQ time entry is currently accounted before HARDIRQ_OFFSET or
+SOFTIRQ_OFFSET are incremented. This is convenient to decide to which
+index the cputime to account is dispatched.
 
-The desired outcome is to remove the nasty hack that prevents softirqs
-from being raised through ksoftirqd instead of the hardirq bottom half.
-Also tick_irq_enter() then becomes appropriately covered by lockdep.
+Unfortunately it prevents tick_irq_enter() from being called under
+HARDIRQ_OFFSET because tick_irq_enter() has to be called before the IRQ
+entry accounting due to the necessary clock catch up. As a result we
+don't benefit from appropriate lockdep coverage on tick_irq_enter().
+
+To prepare for fixing this, move the IRQ entry cputime accounting after
+the preempt offset is incremented. This requires the cputime dispatch
+code to handle the extra offset.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201202115732.27827-6-frederic@kernel.org
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20201202115732.27827-5-frederic@kernel.org
 
 ---
- kernel/softirq.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ include/linux/hardirq.h |  4 ++--
+ include/linux/vtime.h   | 34 ++++++++++++++++++++++++----------
+ kernel/sched/cputime.c  | 18 +++++++++++-------
+ kernel/softirq.c        |  6 +++---
+ 4 files changed, 40 insertions(+), 22 deletions(-)
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index b8f42b3..d5bfd5e 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -377,16 +377,12 @@ restart:
+diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
+index 754f67a..7c9d6a2 100644
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -32,9 +32,9 @@ static __always_inline void rcu_irq_enter_check_tick(void)
   */
- void irq_enter_rcu(void)
+ #define __irq_enter()					\
+ 	do {						\
+-		account_irq_enter_time(current);	\
+ 		preempt_count_add(HARDIRQ_OFFSET);	\
+ 		lockdep_hardirq_enter();		\
++		account_hardirq_enter(current);		\
+ 	} while (0)
+ 
+ /*
+@@ -62,8 +62,8 @@ void irq_enter_rcu(void);
+  */
+ #define __irq_exit()					\
+ 	do {						\
++		account_hardirq_exit(current);		\
+ 		lockdep_hardirq_exit();			\
+-		account_irq_exit_time(current);		\
+ 		preempt_count_sub(HARDIRQ_OFFSET);	\
+ 	} while (0)
+ 
+diff --git a/include/linux/vtime.h b/include/linux/vtime.h
+index 6c98674..041d652 100644
+--- a/include/linux/vtime.h
++++ b/include/linux/vtime.h
+@@ -83,32 +83,46 @@ static inline void vtime_init_idle(struct task_struct *tsk, int cpu) { }
+ #endif
+ 
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+-extern void vtime_account_irq(struct task_struct *tsk);
++extern void vtime_account_irq(struct task_struct *tsk, unsigned int offset);
+ extern void vtime_account_softirq(struct task_struct *tsk);
+ extern void vtime_account_hardirq(struct task_struct *tsk);
+ extern void vtime_flush(struct task_struct *tsk);
+ #else /* !CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
+-static inline void vtime_account_irq(struct task_struct *tsk) { }
++static inline void vtime_account_irq(struct task_struct *tsk, unsigned int offset) { }
++static inline void vtime_account_softirq(struct task_struct *tsk) { }
++static inline void vtime_account_hardirq(struct task_struct *tsk) { }
+ static inline void vtime_flush(struct task_struct *tsk) { }
+ #endif
+ 
+ 
+ #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+-extern void irqtime_account_irq(struct task_struct *tsk);
++extern void irqtime_account_irq(struct task_struct *tsk, unsigned int offset);
+ #else
+-static inline void irqtime_account_irq(struct task_struct *tsk) { }
++static inline void irqtime_account_irq(struct task_struct *tsk, unsigned int offset) { }
+ #endif
+ 
+-static inline void account_irq_enter_time(struct task_struct *tsk)
++static inline void account_softirq_enter(struct task_struct *tsk)
  {
--	if (is_idle_task(current) && !in_interrupt()) {
--		/*
--		 * Prevent raise_softirq from needlessly waking up ksoftirqd
--		 * here, as softirq will be serviced on return from interrupt.
--		 */
--		local_bh_disable();
-+	__irq_enter_raw();
-+
-+	if (is_idle_task(current) && (irq_count() == HARDIRQ_OFFSET))
- 		tick_irq_enter();
--		_local_bh_enable();
--	}
--	__irq_enter();
-+
-+	account_hardirq_enter(current);
+-	vtime_account_irq(tsk);
+-	irqtime_account_irq(tsk);
++	vtime_account_irq(tsk, SOFTIRQ_OFFSET);
++	irqtime_account_irq(tsk, SOFTIRQ_OFFSET);
  }
  
- /**
+-static inline void account_irq_exit_time(struct task_struct *tsk)
++static inline void account_softirq_exit(struct task_struct *tsk)
+ {
+-	vtime_account_irq(tsk);
+-	irqtime_account_irq(tsk);
++	vtime_account_softirq(tsk);
++	irqtime_account_irq(tsk, 0);
++}
++
++static inline void account_hardirq_enter(struct task_struct *tsk)
++{
++	vtime_account_irq(tsk, HARDIRQ_OFFSET);
++	irqtime_account_irq(tsk, HARDIRQ_OFFSET);
++}
++
++static inline void account_hardirq_exit(struct task_struct *tsk)
++{
++	vtime_account_hardirq(tsk);
++	irqtime_account_irq(tsk, 0);
+ }
+ 
+ #endif /* _LINUX_KERNEL_VTIME_H */
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 02163d4..5f61165 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -44,12 +44,13 @@ static void irqtime_account_delta(struct irqtime *irqtime, u64 delta,
+ }
+ 
+ /*
+- * Called before incrementing preempt_count on {soft,}irq_enter
++ * Called after incrementing preempt_count on {soft,}irq_enter
+  * and before decrementing preempt_count on {soft,}irq_exit.
+  */
+-void irqtime_account_irq(struct task_struct *curr)
++void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+ {
+ 	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
++	unsigned int pc;
+ 	s64 delta;
+ 	int cpu;
+ 
+@@ -59,6 +60,7 @@ void irqtime_account_irq(struct task_struct *curr)
+ 	cpu = smp_processor_id();
+ 	delta = sched_clock_cpu(cpu) - irqtime->irq_start_time;
+ 	irqtime->irq_start_time += delta;
++	pc = preempt_count() - offset;
+ 
+ 	/*
+ 	 * We do not account for softirq time from ksoftirqd here.
+@@ -66,9 +68,9 @@ void irqtime_account_irq(struct task_struct *curr)
+ 	 * in that case, so as not to confuse scheduler with a special task
+ 	 * that do not consume any time, but still wants to run.
+ 	 */
+-	if (hardirq_count())
++	if (pc & HARDIRQ_MASK)
+ 		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
+-	else if (in_serving_softirq() && curr != this_cpu_ksoftirqd())
++	else if ((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd())
+ 		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
+ }
+ 
+@@ -417,11 +419,13 @@ void vtime_task_switch(struct task_struct *prev)
+ }
+ # endif
+ 
+-void vtime_account_irq(struct task_struct *tsk)
++void vtime_account_irq(struct task_struct *tsk, unsigned int offset)
+ {
+-	if (hardirq_count()) {
++	unsigned int pc = preempt_count() - offset;
++
++	if (pc & HARDIRQ_OFFSET) {
+ 		vtime_account_hardirq(tsk);
+-	} else if (in_serving_softirq()) {
++	} else if (pc & SOFTIRQ_OFFSET) {
+ 		vtime_account_softirq(tsk);
+ 	} else if (!IS_ENABLED(CONFIG_HAVE_VIRT_CPU_ACCOUNTING_IDLE) &&
+ 		   is_idle_task(tsk)) {
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 617009c..b8f42b3 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -315,10 +315,10 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+ 	current->flags &= ~PF_MEMALLOC;
+ 
+ 	pending = local_softirq_pending();
+-	account_irq_enter_time(current);
+ 
+ 	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
+ 	in_hardirq = lockdep_softirq_start();
++	account_softirq_enter(current);
+ 
+ restart:
+ 	/* Reset the pending bitmask before enabling irqs */
+@@ -365,8 +365,8 @@ restart:
+ 		wakeup_softirqd();
+ 	}
+ 
++	account_softirq_exit(current);
+ 	lockdep_softirq_end(in_hardirq);
+-	account_irq_exit_time(current);
+ 	__local_bh_enable(SOFTIRQ_OFFSET);
+ 	WARN_ON_ONCE(in_interrupt());
+ 	current_restore_flags(old_flags, PF_MEMALLOC);
+@@ -418,7 +418,7 @@ static inline void __irq_exit_rcu(void)
+ #else
+ 	lockdep_assert_irqs_disabled();
+ #endif
+-	account_irq_exit_time(current);
++	account_hardirq_exit(current);
+ 	preempt_count_sub(HARDIRQ_OFFSET);
+ 	if (!in_interrupt() && local_softirq_pending())
+ 		invoke_softirq();
