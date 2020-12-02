@@ -2,143 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4590B2CCAC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F932CCABE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729015AbgLBXyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728637AbgLBXyO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:54:14 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1BFC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 15:53:33 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id c79so83363pfc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 15:53:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nsQ5jLdSfQKhTpSL0ymLOmOqE37WINwXD7J/ZGWWptg=;
-        b=qs68akwBxUNYen/TbMDZh6jcl2NwcHrIH2xzkxhdqFsg/hJ4YSnG8iLbR3lsnb6swr
-         QctlrFJ6XpxeAkQuAZp88C7B33wUO1H1SEP2tWZWba/pkwL7i6oN6dxeLl/9KnSc741a
-         ADMn5sF/tyRB1Rek4KBMXy8dPxWwfs5OqEU/A5IAq6OyikqbUvqcbgWbxfY1t2FOwRTZ
-         L+bp4woIl+sWGir2meFERd5fv51DxzHOqs2jGnSW4tHsd/+yxxZWWqFY43AnQPLn8ffL
-         LKYVDps4fbqyRpRSq+d7FCMszn7srSnzpa1M8vueYHsxR99nSdArZCbF/k1uLhAOlTrl
-         a03g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nsQ5jLdSfQKhTpSL0ymLOmOqE37WINwXD7J/ZGWWptg=;
-        b=R/exiHQjg9cFysXmelQQ2aHkCQlj/B3FRi3hTa89Gkbw0SDw4GbybJVP+Cgkfx7e65
-         hhUkZMhbCPpsYZGwlwSC0t0ecSnY1BlgeSsisAVzDk3umCk+H+HsN3MV6aEcmAFTLHja
-         bC14ml3OGk1Lp0p7azPtuPcByn+ccZIntcDcFfU0mRpbbVxAVmf5HJaWJGB/2KQcSjKY
-         j0JaCSMC8sZS9EorIIY1MZlcX3V26y8V/u7cwagJ2Zh6PRf2JiWe88oF35tySIdMyafk
-         +3eK/3CLo1+4LQgZSx2mHcKZ2b5uSfNYmSkKsMqocvXHIMbwdga30WUlo7wijsHCSjXS
-         1PAA==
-X-Gm-Message-State: AOAM533CtqzOVLc3suFTOneRVDJUDo4tDysN0V+uW0etMLkTs34vQHf2
-        +H1r/GqrzcmKJBgHqP+DKyYgCfiUvgABEoyQCViDgQ==
-X-Google-Smtp-Source: ABdhPJw7Os4qn4J/J3GWLqnMymO8cHSVlhlFWWZdeLtouYkYU5JylntLXKfphckaST8Rr6PSSKOUCNp2HQeSyLZEF54=
-X-Received: by 2002:a65:63d5:: with SMTP id n21mr637055pgv.346.1606953213234;
- Wed, 02 Dec 2020 15:53:33 -0800 (PST)
+        id S1728470AbgLBXxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:53:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727183AbgLBXxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 18:53:49 -0500
+Date:   Wed, 2 Dec 2020 18:53:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606953188;
+        bh=nxraud1so4X4CpHWIt+N3aVKYnhWwVdXg+cr93YJPxs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mW4IzRBUNyPI1MOXlyDTOCV709Gt58pz0xBHvRAQmE8vieFh3hGmezUGpQI7HRkhi
+         cUJttO1Qz22Z6PafhusGZFFqRLLgp3cGhmcbr7uOOL7MitWnCUw8hYWohF/p12ROYO
+         HHzNqICZ+eZ39jwIcluPPgFHFIYkqKHVShnD3MSHmbvkIzIJYmKt346I+uCFB2SsLi
+         WDbqFe7nRF9EU2qd76a8D/oaVJdlPCf1ljR1C8QDQETHHDT6RI8XkMirB6h0+Y6cmU
+         M+VQHj9/4Vet14bkKtE17oqWg60kq9PDaqNEj/NOFyukdnlcP0xkwSzN1Nu3Xrqkh0
+         RX/6Jis2VwtGw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Maurizio Drocco <maurizio.drocco@ibm.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with kernel
+ measurements
+Message-ID: <20201202235307.GX643756@sasha-vm>
+References: <20200708154116.3199728-1-sashal@kernel.org>
+ <20200708154116.3199728-3-sashal@kernel.org>
+ <1594224793.23056.251.camel@linux.ibm.com>
+ <20200709012735.GX2722994@sasha-vm>
+ <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
+ <20201201002157.GT643756@sasha-vm>
+ <02e53ce5fc00a2eaff3cace9c94b8b375dc580ef.camel@linux.ibm.com>
 MIME-Version: 1.0
-References: <20201202211542.1121189-1-axelrasmussen@google.com> <20201202230954.GB108496@xz-x1>
-In-Reply-To: <20201202230954.GB108496@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 2 Dec 2020 15:52:56 -0800
-Message-ID: <CAJHvVch2LJa57-Si2prKa-S3VUPpu3jYxW+3-+tcLMgSXkB69w@mail.gmail.com>
-Subject: Re: [PATCH] userfaultfd: selftests: make __{s,u}64 format specifiers portable
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joe Perches <joe@perches.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Alan Gilbert <dgilbert@redhat.com>,
-        Greg Thelen <gthelen@google.com>,
-        linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <02e53ce5fc00a2eaff3cace9c94b8b375dc580ef.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 3:10 PM Peter Xu <peterx@redhat.com> wrote:
+On Mon, Nov 30, 2020 at 10:13:02PM -0500, Mimi Zohar wrote:
+>On Mon, 2020-11-30 at 19:21 -0500, Sasha Levin wrote:
+>> On Sun, Nov 29, 2020 at 08:17:38AM -0500, Mimi Zohar wrote:
+>> >Hi Sasha,
+>> >
+>> >On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
+>> >> On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
+>> >> >Hi Sasha,
+>> >> >
+>> >> >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
+>> >> >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
+>> >> >>
+>> >> >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
+>> >> >>
+>> >> >> Registers 8-9 are used to store measurements of the kernel and its
+>> >> >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
+>> >> >> should include them in the boot aggregate. Registers 8-9 should be
+>> >> >> only included in non-SHA1 digests to avoid ambiguity.
+>> >> >
+>> >> >Prior to Linux 5.8, the SHA1 template data hashes were padded before
+>> >> >being extended into the TPM.  Support for calculating and extending
+>> >> >the per TPM bank template data digests is only being upstreamed in
+>> >> >Linux 5.8.
+>> >> >
+>> >> >How will attestation servers know whether to include PCRs 8 & 9 in the
+>> >> >the boot_aggregate calculation?  Now, there is a direct relationship
+>> >> >between the template data SHA1 padded digest not including PCRs 8 & 9,
+>> >> >and the new per TPM bank template data digest including them.
+>> >>
+>> >> Got it, I'll drop it then, thank you!
+>> >
+>> >After re-thinking this over, I realized that the attestation server can
+>> >verify the "boot_aggregate" based on the quoted PCRs without knowing
+>> >whether padded SHA1 hashes or per TPM bank hash values were extended
+>> >into the TPM[1], but non-SHA1 boot aggregate values [2] should always
+>> >include PCRs 8 & 9.
+>> >
+>> >Any place commit 6f1a1d103b48 was backported [2], this commit
+>> >20c59ce010f8 ("ima: extend boot_aggregate with kernel measurements")
+>> >should be backported as well.
+>>
+>> Which kernels should it apply to? 5.7 is EOL now, so I looked at 5.4 but
+>> it doesn't apply cleanly there.
 >
-> Hi, Axel,
->
-> Looks mostly good to me, but a few nitpickings below.
->
-> On Wed, Dec 02, 2020 at 01:15:42PM -0800, Axel Rasmussen wrote:
->
-> [...]
->
-> > +static void uffd_error(const char *message, __s64 code)
-> > +{
-> > +     fprintf(stderr, "%s: %" PRId64 "\n", message, (int64_t)code);
-> > +     exit(1);
-> > +}
->
-> IMHO a macro that can take arbitrary parameters would be nicer, but if it
-> satisfy our need, definitely ok too.
->
-> [...]
->
-> > @@ -340,7 +348,8 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
-> >       prms.mode = wp ? UFFDIO_WRITEPROTECT_MODE_WP : 0;
-> >
-> >       if (ioctl(ufd, UFFDIO_WRITEPROTECT, &prms)) {
-> > -             fprintf(stderr, "clear WP failed for address 0x%Lx\n", start);
-> > +             fprintf(stderr, "clear WP failed for address 0x%" PRIx64 "\n",
-> > +                     (uint64_t)start);
-> >               exit(1);
->
-> Is it intended to not use uffd_error() here?
+>For 5.4, both "git cherry-pick" and "git am --3way" for 20c59ce010f8
+>seem to work.
 
-Yes, this is intentional. This particular case prints the value in
-hexadecimal, rather than decimal.
+You're right, I've grabbed it too. Thanks!
 
-(Agree that uffd_error() could be made more general to cover cases
-like this. I opted for the simplest thing which covers all but two
-cases - this one, and one where we "return 1;" instead of "exit(1);" -
-but I don't feel strongly.)
-
->
-> >       }
-> >  }
->
-> [...]
->
-> > @@ -979,26 +981,20 @@ static int __uffdio_zeropage(int ufd, unsigned long offset, bool retry)
-> >       if (ret) {
-> >               /* real retval in ufdio_zeropage.zeropage */
-> >               if (has_zeropage) {
-> > -                     if (uffdio_zeropage.zeropage == -EEXIST) {
-> > -                             fprintf(stderr, "UFFDIO_ZEROPAGE -EEXIST\n");
-> > -                             exit(1);
-> > -                     } else {
-> > -                             fprintf(stderr, "UFFDIO_ZEROPAGE error %Ld\n",
-> > -                                     uffdio_zeropage.zeropage);
-> > -                             exit(1);
-> > -                     }
-> > +                     uffd_error(uffdio_zeropage.zeropage == -EEXIST ?
-> > +                                              "UFFDIO_ZEROPAGE -EEXIST" :
-> > +                                              "UFFDIO_ZEROPAGE error",
->
-> Nit: The indents here are a bit odd..
-
-This is what clang-format yields. Are you thinking it would be better
-to line everything up with the ( in uffd_error( ?
-
-Or, perhaps this case is a good reason to make uffd_error() a variadic
-macro so we can insert "-EEXIST" || "error" with a "%s".
-
->
-> Thanks,
->
-> --
-> Peter Xu
->
+-- 
+Thanks,
+Sasha
