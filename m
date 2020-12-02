@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4602CC5A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F4F2CC597
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 19:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389588AbgLBSnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 13:43:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
+        id S2389470AbgLBSnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 13:43:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389577AbgLBSnc (ORCPT
+        with ESMTP id S2387894AbgLBSnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 13:43:32 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE51CC08E863
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:41:57 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id t4so5091579wrr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:41:57 -0800 (PST)
+        Wed, 2 Dec 2020 13:43:10 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1149CC08E9AA
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 10:42:00 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id c198so10180591wmd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 10:41:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=acdB9myIWDy4DJFolYzOe4SZxoOSmlBPTOQxNwh7fkY=;
-        b=FSAcmlxFDzuSUOeF5TGkNCgmVQmWPU2u0IKkkvgG9Ot1WbCofrNuJYCBmgE3OAlNr+
-         m9Ifb05xO6DRGHvirgILi6saMn/UeeokDDYPbeJbT2J5yM5PY1lXarCs5wZXyPnBKWG6
-         Qb8ilNqTHFiZXKqSaGDxVKb5sblwFv6YMXqYCJaVzMPqJi4n6knBKqcOu+bSLQy+ieAT
-         xFvIh6NMyrZ5lQMaz5O69R1f60gvYLNVcYiRszXQ9cdUbJ9oIN5m6JKUy0nWYZ9L4381
-         3vsc4Yt0IHyOp8an6PNdtYWs78pR1CUJmWEcVQRyw/zVl5H1KkfqmPs8qdGhZvTEWMxh
-         qqXA==
+        bh=X0j+RCoYcy0kA4Cq9TKjA5cl6J4xllDB/E52Sl/VxFI=;
+        b=QcreM1BcCNABhAl7u4JGwSWjJ6gL2zFtNGBBBem5Uz5LSqS20kZNu05BsIN3mdk4kM
+         WmwSgASKeZZf1fSScVelU10Ou/l83oRqNvrWHtKxX57HtR13qLL5HHbTF514eIWpCpMw
+         P0Gy3N3uhn3dqAOv+u3mta3p6YjahXlzn4T7tVKOibfRXgAJf13M/c2ftXFoqM3j22us
+         ffeUS8vBSPDzcOIbAw+5y73xgPZdPgPtA07YEQoX6QjVhtaChsCatVOzVs9MuAzzNIpb
+         ta4/8BaelML3og/7agjZt0z5OZIowiI5vG0V76o+ilQp/3DwYOPyCZFg562dd8fO3tG3
+         ssSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=acdB9myIWDy4DJFolYzOe4SZxoOSmlBPTOQxNwh7fkY=;
-        b=XqJgi5Ja5GJSC3gn4WBJ4KPSdIB1Dbs38aflMJBUmEOUwN5uf5CidM7pRyVRVDyqdk
-         qwPbNp4gK7xlfSQSl9hiWLlHydM1NbLkJ8AGhk3VVv5Sxj/kFCKdbjsP6MR0mDi7xvYi
-         i21RNfKuBaKyeaQCn+3P1KQxbPd3Zui0AWZIxfiVyQXTiZReO15ZiglhIsJhjizf3DwJ
-         dpDPyHYMQRAhusyRd1iFobH5Qdb7X5tH25OTlVbFDXPWCEUTMGM+rYTBRYQc7wcJrHpp
-         GQS/X9cmkAZ7arV2j6swR2zy91YsQcbeHI99XNTARib96bh6WcFTwCfOJxZPzWQo8xud
-         IlFg==
-X-Gm-Message-State: AOAM531eoT+WjbDM0Yw4XzkSCov03y/rIYJgqTvFKt2+EmubS8amQG2M
-        ljbYMRq+6lFZdhVj+gjBmGIZtA==
-X-Google-Smtp-Source: ABdhPJx4KfbBae0aYXZ1tphL0nYMHRF+2etuycKW2nu3ecT8P3h0qcnB4uVGsCCsVoiCM+cwIZCQyA==
-X-Received: by 2002:a5d:4892:: with SMTP id g18mr4992479wrq.365.1606934516331;
-        Wed, 02 Dec 2020 10:41:56 -0800 (PST)
+        bh=X0j+RCoYcy0kA4Cq9TKjA5cl6J4xllDB/E52Sl/VxFI=;
+        b=Kkc7NxiY4eV+6g3wnKmQFN20sat9wuJnsDrzjzCc1R2NrQtdbUvGHKPppLZgP2NIV+
+         mn6z+yoU69XZkvuJZP9wKCzLRQpWtm7g1qJX92lmT7V+B/ufbYkgNzaOoDi69dskytsp
+         M9vMofEy0q9U5ZvJMbb3PPjVYsbKV9fW3vYhmZSWqwXU02XEfxiYf21XvLWswNnFF3VO
+         bpMcDRyV4vAhS4zwidWwmv1hy6Ndjwu2HUP0Lm+7ywRMwzHEuKIJU5AlUh41ZbBZ5O/y
+         gpzO0dNHHgrfUIWPOP3AO9POnenrUikyNzzdStW4biFWQnjPy39eQBTDOfHmOSADUJhb
+         yeKg==
+X-Gm-Message-State: AOAM531OJolNsF6O1kFnS6IGuvWXnVC9RPsgr9L4oHIKXCUey/+3z/9W
+        TFta/paINiYYiUdqaB3E9vnWlg==
+X-Google-Smtp-Source: ABdhPJyPFPIxlkDq4z9qel4Mj/fLalo17OXktP8fnmZlxbaiN1V56nYRoNY5X1VLxACl0aApz+oOfw==
+X-Received: by 2002:a7b:c7c7:: with SMTP id z7mr4615447wmk.48.1606934518563;
+        Wed, 02 Dec 2020 10:41:58 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:5ddd:b7c5:e3c9:e87a])
-        by smtp.gmail.com with ESMTPSA id n9sm2918860wmd.4.2020.12.02.10.41.54
+        by smtp.gmail.com with ESMTPSA id 35sm3086773wro.71.2020.12.02.10.41.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 10:41:55 -0800 (PST)
+        Wed, 02 Dec 2020 10:41:57 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Jonathan Corbet <corbet@lwn.net>,
@@ -63,9 +63,9 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         Sudeep Holla <sudeep.holla@arm.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v4 13/26] kvm: arm64: Support per_cpu_ptr in nVHE hyp code
-Date:   Wed,  2 Dec 2020 18:41:09 +0000
-Message-Id: <20201202184122.26046-14-dbrazdil@google.com>
+Subject: [PATCH v4 14/26] kvm: arm64: Create nVHE copy of cpu_logical_map
+Date:   Wed,  2 Dec 2020 18:41:10 +0000
+Message-Id: <20201202184122.26046-15-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201202184122.26046-1-dbrazdil@google.com>
 References: <20201202184122.26046-1-dbrazdil@google.com>
@@ -75,98 +75,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling with __KVM_NVHE_HYPERVISOR__, redefine per_cpu_offset()
-to __hyp_per_cpu_offset() which looks up the base of the nVHE per-CPU
-region of the given cpu and computes its offset from the
-.hyp.data..percpu section.
+When KVM starts validating host's PSCI requests, it will need to map
+MPIDR back to the CPU ID. To this end, copy cpu_logical_map into nVHE
+hyp memory when KVM is initialized.
 
-This enables use of per_cpu_ptr() helpers in nVHE hyp code. Until now
-only this_cpu_ptr() was supported by setting TPIDR_EL2.
+Only copy the information for CPUs that are online at the point of KVM
+initialization so that KVM rejects CPUs whose features were not checked
+against the finalized capabilities.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/percpu.h   |  6 ++++++
- arch/arm64/kernel/image-vars.h    |  3 +++
- arch/arm64/kvm/hyp/nvhe/Makefile  |  3 ++-
- arch/arm64/kvm/hyp/nvhe/hyp-smp.c | 24 ++++++++++++++++++++++++
- 4 files changed, 35 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+ arch/arm64/kvm/arm.c              | 19 +++++++++++++++++++
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c | 16 ++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
-diff --git a/arch/arm64/include/asm/percpu.h b/arch/arm64/include/asm/percpu.h
-index 1599e17379d8..8f1661603b78 100644
---- a/arch/arm64/include/asm/percpu.h
-+++ b/arch/arm64/include/asm/percpu.h
-@@ -239,6 +239,12 @@ PERCPU_RET_OP(add, add, ldadd)
- #define this_cpu_cmpxchg_8(pcp, o, n)	\
- 	_pcp_protect_return(cmpxchg_relaxed, pcp, o, n)
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 40857cbed3d1..09bb4098502b 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -63,6 +63,8 @@ static bool vgic_present;
+ static DEFINE_PER_CPU(unsigned char, kvm_arm_hardware_enabled);
+ DEFINE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
  
-+#ifdef __KVM_NVHE_HYPERVISOR__
-+extern unsigned long __hyp_per_cpu_offset(unsigned int cpu);
-+#define __per_cpu_offset
-+#define per_cpu_offset(cpu)	__hyp_per_cpu_offset((cpu))
-+#endif
++extern u64 kvm_nvhe_sym(__cpu_logical_map)[NR_CPUS];
 +
- #include <asm-generic/percpu.h>
+ int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_vcpu_exiting_guest_mode(vcpu) == IN_GUEST_MODE;
+@@ -1584,6 +1586,20 @@ static inline void hyp_cpu_pm_exit(void)
+ }
+ #endif
  
- /* Redefine macros for nVHE hyp under DEBUG_PREEMPT to avoid its dependencies. */
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index 08e69faedf6c..39289d75118d 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -99,6 +99,9 @@ KVM_NVHE_ALIAS(gic_nonsecure_priorities);
- KVM_NVHE_ALIAS(__start___kvm_ex_table);
- KVM_NVHE_ALIAS(__stop___kvm_ex_table);
- 
-+/* Array containing bases of nVHE per-CPU memory regions. */
-+KVM_NVHE_ALIAS(kvm_arm_hyp_percpu_base);
-+
- #endif /* CONFIG_KVM */
- 
- #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index 77b8c4e06f2f..cf11f8182756 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -6,7 +6,8 @@
- asflags-y := -D__KVM_NVHE_HYPERVISOR__
- ccflags-y := -D__KVM_NVHE_HYPERVISOR__
- 
--obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o hyp-main.o
-+obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
-+	 hyp-main.o hyp-smp.o
- obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
- 	 ../fpsimd.o ../hyp-entry.o ../exception.o
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-new file mode 100644
-index 000000000000..7b0363b4857f
---- /dev/null
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2020 - Google LLC
-+ * Author: David Brazdil <dbrazdil@google.com>
-+ */
-+
-+#include <asm/kvm_asm.h>
-+#include <asm/kvm_hyp.h>
-+#include <asm/kvm_mmu.h>
-+
-+unsigned long __hyp_per_cpu_offset(unsigned int cpu)
++static void init_cpu_logical_map(void)
 +{
-+	unsigned long *cpu_base_array;
-+	unsigned long this_cpu_base;
-+	unsigned long elf_base;
++	unsigned int cpu;
 +
-+	if (cpu >= ARRAY_SIZE(kvm_arm_hyp_percpu_base))
++	/*
++	 * Copy the MPIDR <-> logical CPU ID mapping to hyp.
++	 * Only copy the set of online CPUs whose features have been chacked
++	 * against the finalized system capabilities. The hypervisor will not
++	 * allow any other CPUs from the `possible` set to boot.
++	 */
++	for_each_online_cpu(cpu)
++		kvm_nvhe_sym(__cpu_logical_map)[cpu] = cpu_logical_map(cpu);
++}
++
+ static int init_common_resources(void)
+ {
+ 	return kvm_set_ipa_limit();
+@@ -1756,6 +1772,9 @@ static int init_hyp_mode(void)
+ 		}
+ 	}
+ 
++	if (is_protected_kvm_enabled())
++		init_cpu_logical_map();
++
+ 	return 0;
+ 
+ out_err:
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+index 7b0363b4857f..cbab0c6246e2 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+@@ -8,6 +8,22 @@
+ #include <asm/kvm_hyp.h>
+ #include <asm/kvm_mmu.h>
+ 
++/*
++ * nVHE copy of data structures tracking available CPU cores.
++ * Only entries for CPUs that were online at KVM init are populated.
++ * Other CPUs should not be allowed to boot because their features were
++ * not checked against the finalized system capabilities.
++ */
++u64 __ro_after_init __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
++
++u64 cpu_logical_map(unsigned int cpu)
++{
++	if (cpu >= ARRAY_SIZE(__cpu_logical_map))
 +		hyp_panic();
 +
-+	cpu_base_array = (unsigned long *)hyp_symbol_addr(kvm_arm_hyp_percpu_base);
-+	this_cpu_base = kern_hyp_va(cpu_base_array[cpu]);
-+	elf_base = (unsigned long)hyp_symbol_addr(__per_cpu_start);
-+	return this_cpu_base - elf_base;
++	return __cpu_logical_map[cpu];
 +}
++
+ unsigned long __hyp_per_cpu_offset(unsigned int cpu)
+ {
+ 	unsigned long *cpu_base_array;
 -- 
 2.29.2.454.gaff20da3a2-goog
 
