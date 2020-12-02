@@ -2,101 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440912CBC69
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A79C2CBC6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 13:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729770AbgLBMHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 07:07:04 -0500
-Received: from mga17.intel.com ([192.55.52.151]:19652 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726589AbgLBMHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:07:04 -0500
-IronPort-SDR: uWgMTO5h/21hAoOB60nguGidrYrbPOS/li1EVOD7NwSHZ1wTPPEGZEOC3B1FH/oncwxCHaYMSV
- YcQmID/5wmhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152831686"
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="152831686"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 04:05:22 -0800
-IronPort-SDR: WI4jymxyNBTSTdCRD76CykCDJfzjFUg7by17rSz/SQFWb8oZWgQ3s4XoOqhvJPMSYi5SmHsrFW
- 1Ol6P4e4fVKQ==
-X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
-   d="scan'208";a="345844066"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 04:05:19 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kkQto-00BVBc-5E; Wed, 02 Dec 2020 14:06:20 +0200
-Date:   Wed, 2 Dec 2020 14:06:20 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yun Levi <ppbuk5246@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>, dushistov@mail.ru,
-        arnd@arndb.de, akpm@linux-foundation.org, gustavo@embeddedor.com,
-        vilhelm.gray@gmail.com, richard.weiyang@linux.alibaba.com,
-        joseph.qi@linux.alibaba.com, skalluru@marvell.com,
-        yury.norov@gmail.com, jpoimboe@redhat.com,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH] lib/find_bit: Add find_prev_*_bit functions.
-Message-ID: <20201202120620.GC4077@smile.fi.intel.com>
-References: <CAM7-yPQcmU3MM66oAHQ6kcEukPFgj074_h-S-S+O53Lrx2yeBg@mail.gmail.com>
- <20201202094717.GX4077@smile.fi.intel.com>
- <c79b08e9-d36a-849e-d023-6fa155043aa9@rasmusvillemoes.dk>
- <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM7-yPTsy+wJO8oQ7srjiXk+VjFFSUdJfdnVx9Ma_H8jJJnZKA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1727341AbgLBMH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 07:07:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726928AbgLBMH6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 07:07:58 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF1DC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 04:07:18 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id s8so3585021wrw.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 04:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=N0N1NFLUe7mxMhyhl9qWKG4HrWaDY+W8Cz0CyGfPy4Y=;
+        b=hSy6vvc42xNZgz4wWHl4kIJ+4OtfVSy0bjNkPEsCHY7lkrmWhUTff/ezw9mjHlNCKr
+         t+rkZjQqnEiCo5wNH+vr5CldwI8jrVbaAMmnQeTL1q7lHyCx4KDEQsZlY2ZE/Omw9NH/
+         tHC/ZmcGiInHlFExLX5uGdEma5XwrG0JKZgzxTdYn7kDvHTOB5NKE+YYxU9UMAJsPi/1
+         ELCm3Jd8nXlmbb7qnJIUYxnz29vzWVaVt1MF4ORXtIWv1mfi4GFFw5SwhtqfK+xJzXic
+         fEku5zdiQpniSw8ymr+vP1JJjUJvC5JIRAhvdYWBFkO4JFd1Aef0rEf8/W0TgXpPtqOj
+         nh7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=N0N1NFLUe7mxMhyhl9qWKG4HrWaDY+W8Cz0CyGfPy4Y=;
+        b=FanISX4dHUNcgN5KZdxtTUiseenAnualfNyRdg8lxI5NaR3lRpTLkermbgauKHzpZx
+         ujsihKB4z7YtH2oO/2K69Dbqqin/gRqEwW1sBbhaDumc7llhwWqzKK9F8P/nCJFzdOSi
+         BGWEcoH5efaOQQNziGMHH9LDftPyCYjeZp3MUIrEJRa3sq2PVe2B4o3vYySSAaxPr1vl
+         sRoFMeKU918JavhqDQBvgsYLrZ+H/1vNhmXoTHPa1Lf0KhmRnnZkMRoibIQpjkm+XelW
+         MnDSGXR5H7lE6DHzX82+LnG3TmYNZgoTfLkO5IRqUyJOQ8bBywDMEQWBLRk83L4V7/ki
+         pVKA==
+X-Gm-Message-State: AOAM530JNPcivOs+KsfT46a1GskJssyKFI772DapQCukouGhXOxn8uCE
+        ZdDuvVAgisYNd0BAHW7UwG80wQ==
+X-Google-Smtp-Source: ABdhPJx86cxBM9BKeDFB0Z8T50befSXGthi4QGt1wI9arwTytWwW982hrDf9Cob/3fi6dEhpP37FxA==
+X-Received: by 2002:a5d:49ce:: with SMTP id t14mr3036168wrs.75.1606910836890;
+        Wed, 02 Dec 2020 04:07:16 -0800 (PST)
+Received: from localhost.localdomain (lns-bzn-59-82-252-140-184.adsl.proxad.net. [82.252.140.184])
+        by smtp.gmail.com with ESMTPSA id c1sm1755132wml.8.2020.12.02.04.07.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 04:07:16 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
+Cc:     amitk@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH 1/4] thermal/core: Rename passive_delay and polling_delay with units
+Date:   Wed,  2 Dec 2020 13:06:54 +0100
+Message-Id: <20201202120657.1969-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 08:50:24PM +0900, Yun Levi wrote:
-> Thanks for kind advice. But I'm so afraid to have questions below:
-> 
->  > - it proposes functionality w/o user (dead code)
->      Actually, I add these series functions to rewrite some of the
-> resource clean-up routine.
->      A typical case is ethtool_set_per_queue_coalesce 's rollback label.
->      Could this usage be an actual use case?
+Set the scene to directly store the delays under their jiffies
+form. Add to the variable name the 'ms' suffix.
 
-Then create it as a patch in the series and in cover letter (0 message when you
-supply --cover-letter to your `git format-patch ...` command line) mention
-this.
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/thermal/thermal_core.c  | 10 +++++-----
+ drivers/thermal/thermal_of.c    |  8 ++++----
+ drivers/thermal/thermal_sysfs.c |  6 +++---
+ include/linux/thermal.h         |  8 ++++----
+ 4 files changed, 16 insertions(+), 16 deletions(-)
 
->  >- it lacks extension of the bitmap test module to cover the new
->  > functions (that also wants to be a separate patch).
->      I see, then Could I add some of testcase on lib/test_bitops.c for testing?
-
-Sounds good to me. Most important is to have test cases, then we will see which
-test suite is the best fit, but as I said sounds like a good shot.
-
-And please do not top post in replies!
-
-> On Wed, Dec 2, 2020 at 7:04 PM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
-> >
-> > On 02/12/2020 10.47, Andy Shevchenko wrote:
-> > > On Wed, Dec 02, 2020 at 10:10:09AM +0900, Yun Levi wrote:
-> > >> Inspired find_next_*bit function series, add find_prev_*_bit series.
-> > >> I'm not sure whether it'll be used right now But, I add these functions
-> > >> for future usage.
-> > >
-> > > This patch has few issues:
-> > > - it has more things than described (should be several patches instead)
-> > > - new functionality can be split logically to couple or more pieces as well
-> > > - it proposes functionality w/o user (dead code)
-> >
-> > Yeah, the last point means it can't be applied - please submit it again
-> > if and when you have an actual use case. And I'll add
-> >
-> > - it lacks extension of the bitmap test module to cover the new
-> > functions (that also wants to be a separate patch).
-
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 90e38cc199f4..53f55ceca220 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -317,9 +317,9 @@ static void monitor_thermal_zone(struct thermal_zone_device *tz)
+ 	mutex_lock(&tz->lock);
+ 
+ 	if (!stop && tz->passive)
+-		thermal_zone_device_set_polling(tz, tz->passive_delay);
+-	else if (!stop && tz->polling_delay)
+-		thermal_zone_device_set_polling(tz, tz->polling_delay);
++		thermal_zone_device_set_polling(tz, tz->passive_delay_ms);
++	else if (!stop && tz->polling_delay_ms)
++		thermal_zone_device_set_polling(tz, tz->polling_delay_ms);
+ 	else
+ 		thermal_zone_device_set_polling(tz, 0);
+ 
+@@ -1340,8 +1340,8 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 	tz->device.class = &thermal_class;
+ 	tz->devdata = devdata;
+ 	tz->trips = trips;
+-	tz->passive_delay = passive_delay;
+-	tz->polling_delay = polling_delay;
++	tz->passive_delay_ms = passive_delay;
++	tz->polling_delay_ms = polling_delay;
+ 
+ 	/* sys I/F */
+ 	/* Add nodes that are always present via .groups */
+diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+index 69ef12f852b7..ebec4a8a8b5a 100644
+--- a/drivers/thermal/thermal_of.c
++++ b/drivers/thermal/thermal_of.c
+@@ -865,14 +865,14 @@ __init *thermal_of_build_thermal_zone(struct device_node *np)
+ 		pr_err("%pOFn: missing polling-delay-passive property\n", np);
+ 		goto free_tz;
+ 	}
+-	tz->passive_delay = prop;
++	tz->passive_delay_ms = prop;
+ 
+ 	ret = of_property_read_u32(np, "polling-delay", &prop);
+ 	if (ret < 0) {
+ 		pr_err("%pOFn: missing polling-delay property\n", np);
+ 		goto free_tz;
+ 	}
+-	tz->polling_delay = prop;
++	tz->polling_delay_ms = prop;
+ 
+ 	/*
+ 	 * REVIST: for now, the thermal framework supports only
+@@ -1085,8 +1085,8 @@ int __init of_parse_thermal_zones(void)
+ 		zone = thermal_zone_device_register(child->name, tz->ntrips,
+ 						    mask, tz,
+ 						    ops, tzp,
+-						    tz->passive_delay,
+-						    tz->polling_delay);
++						    tz->passive_delay_ms,
++						    tz->polling_delay_ms);
+ 		if (IS_ERR(zone)) {
+ 			pr_err("Failed to build %pOFn zone %ld\n", child,
+ 			       PTR_ERR(zone));
+diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+index 0866e949339b..f465462d8aa1 100644
+--- a/drivers/thermal/thermal_sysfs.c
++++ b/drivers/thermal/thermal_sysfs.c
+@@ -233,12 +233,12 @@ passive_store(struct device *dev, struct device_attribute *attr,
+ 		return -EINVAL;
+ 
+ 	if (state && !tz->forced_passive) {
+-		if (!tz->passive_delay)
+-			tz->passive_delay = 1000;
++		if (!tz->passive_delay_ms)
++			tz->passive_delay_ms = 1000;
+ 		thermal_zone_device_rebind_exception(tz, "Processor",
+ 						     sizeof("Processor"));
+ 	} else if (!state && tz->forced_passive) {
+-		tz->passive_delay = 0;
++		tz->passive_delay_ms = 0;
+ 		thermal_zone_device_unbind_exception(tz, "Processor",
+ 						     sizeof("Processor"));
+ 	}
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index d07ea27e72a9..230d451bf335 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -116,9 +116,9 @@ struct thermal_cooling_device {
+  * @devdata:	private pointer for device private data
+  * @trips:	number of trip points the thermal zone supports
+  * @trips_disabled;	bitmap for disabled trips
+- * @passive_delay:	number of milliseconds to wait between polls when
++ * @passive_delay_ms:	number of milliseconds to wait between polls when
+  *			performing passive cooling.
+- * @polling_delay:	number of milliseconds to wait between polls when
++ * @polling_delay_ms:	number of milliseconds to wait between polls when
+  *			checking whether trip points have been crossed (0 for
+  *			interrupt driven systems)
+  * @temperature:	current temperature.  This is only for core code,
+@@ -159,8 +159,8 @@ struct thermal_zone_device {
+ 	void *devdata;
+ 	int trips;
+ 	unsigned long trips_disabled;	/* bitmap for disabled trips */
+-	int passive_delay;
+-	int polling_delay;
++	int passive_delay_ms;
++	int polling_delay_ms;
+ 	int temperature;
+ 	int last_temperature;
+ 	int emul_temperature;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
