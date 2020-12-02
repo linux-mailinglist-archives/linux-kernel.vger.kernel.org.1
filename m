@@ -2,144 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27812CC14C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 833832CC155
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 16:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388954AbgLBPuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 10:50:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39310 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728595AbgLBPuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:50:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606924157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V1KqfNMEjdlZsnYnQmgAnUaEY1GwwPYLnd99eAVp8b4=;
-        b=fKwrBBEDmhVAvUaO6fxirS7JT8ThxUTv4HY3C4TBI1h+aBVM/LDtp67SW97aXfBwBnyV53
-        MMpiIOxnpPk5DvB1sN3zGW3u2XSz6h2JoexIiArmA6ruyq0ct5XX3YINS1FTNuZKmLfQi8
-        Nc+OqUpsq0mjhCv8/Gu9fZuDzeT9yJE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6A99AB63;
-        Wed,  2 Dec 2020 15:49:16 +0000 (UTC)
-Date:   Wed, 2 Dec 2020 16:49:15 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, hyesoo.yu@samsung.com,
-        willy@infradead.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        surenb@google.com, pullip.cho@samsung.com, joaodias@google.com,
-        hridya@google.com, sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v2 2/4] mm: introduce cma_alloc_bulk API
-Message-ID: <20201202154915.GU17338@dhcp22.suse.cz>
-References: <20201201175144.3996569-1-minchan@kernel.org>
- <20201201175144.3996569-3-minchan@kernel.org>
- <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
+        id S1730539AbgLBPvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 10:51:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728515AbgLBPvo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:51:44 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C762BC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 07:50:57 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id k14so4540416wrn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 07:50:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:subject:in-reply-to:message-id:date
+         :mime-version;
+        bh=RcBu922o3tVfyKdxDqhV9UdiHRuQsNmPY+MJCHp8CME=;
+        b=zwaeYdccAYw13BmDlDmIMQlp3V5gQjWiEy5VGIZcFy//rbw4zSPXfmVDW0OZYrTeZU
+         ShSnbyXslsbm5piPRTfE465wFxkZ8iwlEMwuQPTuXnYZdDzknC6Ksy2dk8PFdJM4hFN1
+         NGtROkkRajRrOHLBJsEGC/3CA3p1T5+cmDCOYKPzEqaNma2U+1y+gt/yVv4DhGieiBp/
+         fhOA9+JPwmcHw7UBB51VYUzhiUXZfHEUWJ+IO7YPEcfKTZCDqY19nygHzUgs0L02RheX
+         Spe4674ENOdTBcvsqIrLsi9okBQwE0mH3XIbLnOVyxjS0h9Rc43UzKkRUbPfKiAV5HTy
+         CO4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=RcBu922o3tVfyKdxDqhV9UdiHRuQsNmPY+MJCHp8CME=;
+        b=ZTFffKyFdEhZYg1VMW5H6O7KvyO39637+78vqWZiWXTG+IEDyweGfj51BDqm88sRiV
+         yC+mXly9eYD0rPbdQpMDVkqM6SZFvup+6gOUGyrHgcH4mGQl3YZonMo7B6DwRvW9x47q
+         tJtfbVESqU8Kt4UVVdStXm+33a2SnDUpAeiJM4Iw1gMuV/Kt7TggQgyq/fIqVAd8ISvk
+         PdRHTKYzJZUUGpovkoNmDQfaD+yjcRXMqlaSYxLbEhxBANi2YvHmnpktgFiYFRs6KJJw
+         ApEdyBJ6NEa4rsowcbTficZ2CQURE6wtZWtj41r6dWKCmsA3dz5DTIDeJB542fO/LPcs
+         Pfog==
+X-Gm-Message-State: AOAM5335t28DXqi3fLeoUJ0ihoz752mxzq+MN4ccYNHAJ2nuS42BUJlc
+        aJcoI+Ggi+qm7T942pcDlYbOZQ==
+X-Google-Smtp-Source: ABdhPJzT4JpcLXQ7BXUtHnOTWmGyrjUJjn3zD+bcX4wh7YDQSdAAMxZscMCQU7d6nB3SoGCefWAcpg==
+X-Received: by 2002:adf:ea45:: with SMTP id j5mr4267671wrn.171.1606924256465;
+        Wed, 02 Dec 2020 07:50:56 -0800 (PST)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id u66sm2557125wmg.2.2020.12.02.07.50.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 07:50:55 -0800 (PST)
+References: <20201116062031.11233-1-christianshewitt@gmail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] arm64: dts: meson: add more GX soundcards
+In-reply-to: <20201116062031.11233-1-christianshewitt@gmail.com>
+Message-ID: <1jh7p4p5pe.fsf@starbuckisacylon.baylibre.com>
+Date:   Wed, 02 Dec 2020 16:50:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f006a4a-c21d-9db3-5493-fb1cc651b0cf@redhat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-12-20 10:14:41, David Hildenbrand wrote:
-> On 01.12.20 18:51, Minchan Kim wrote:
-> > There is a need for special HW to require bulk allocation of
-> > high-order pages. For example, 4800 * order-4 pages, which
-> > would be minimum, sometimes, it requires more.
-> > 
-> > To meet the requirement, a option reserves 300M CMA area and
-> > requests the whole 300M contiguous memory. However, it doesn't
-> > work if even one of those pages in the range is long-term pinned
-> > directly or indirectly. The other option is to ask higher-order
-> 
-> My latest knowledge is that pages in the CMA area are never long term
-> pinned.
-> 
-> https://lore.kernel.org/lkml/20201123090129.GD27488@dhcp22.suse.cz/
-> 
-> "gup already tries to deal with long term pins on CMA regions and migrate
-> to a non CMA region. Have a look at __gup_longterm_locked."
-> 
-> We should rather identify ways how that is still possible and get rid of
-> them.
-> 
-> 
-> Now, short-term pinnings and PCP are other issues where
-> alloc_contig_range() could be improved (e.g., in contrast to a FAST
-> mode, a HARD mode which temporarily disables the PCP, ...).
 
-Agreed!
+On Mon 16 Nov 2020 at 07:20, Christian Hewitt <christianshewitt@gmail.com> wrote:
 
-> > size (e.g., 2M) than requested order(64K) repeatedly until driver
-> > could gather necessary amount of memory. Basically, this approach
-> > makes the allocation very slow due to cma_alloc's function
-> > slowness and it could be stuck on one of the pageblocks if it
-> > encounters unmigratable page.
-> > 
-> > To solve the issue, this patch introduces cma_alloc_bulk.
-> > 
-> > 	int cma_alloc_bulk(struct cma *cma, unsigned int align,
-> > 		bool fast, unsigned int order, size_t nr_requests,
-> > 		struct page **page_array, size_t *nr_allocated);
-> > 
-> > Most parameters are same with cma_alloc but it additionally passes
-> > vector array to store allocated memory. What's different with cma_alloc
-> > is it will skip pageblocks without waiting/stopping if it has unmovable
-> > page so that API continues to scan other pageblocks to find requested
-> > order page.
-> > 
-> > cma_alloc_bulk is best effort approach in that it skips some pageblocks
-> > if they have unmovable pages unlike cma_alloc. It doesn't need to be
-> > perfect from the beginning at the cost of performance. Thus, the API
-> > takes "bool fast parameter" which is propagated into alloc_contig_range to
-> > avoid significat overhead functions to inrecase CMA allocation success
-> > ratio(e.g., migration retrial, PCP, LRU draining per pageblock)
-> > at the cost of less allocation success ratio. If the caller couldn't
-> > allocate enough, they could call it with "false" to increase success ratio
-> > if they are okay to expense the overhead for the success ratio.
-> 
-> Just so I understand what the idea is:
-> 
-> alloc_contig_range() sometimes fails on CMA regions when trying to
-> allocate big chunks (e.g., 300M). Instead of tackling that issue, you
-> rather allocate plenty of small chunks, and make these small allocations
-> fail faster/ make the allocations less reliable. Correct?
-> 
-> I don't really have a strong opinion on that. Giving up fast rather than
-> trying for longer sounds like a useful thing to have - but I wonder if
-> it's strictly necessary for the use case you describe.
-> 
-> I'd like to hear Michals opinion on that.
+> This series adds basic support for LPCM audio over HDMI and S/PDIF
+> to GXBB/GXL/GXM devices that I own and have tested with. Audio can
+> be extended in the future (some devices have DACs and headphone
+> hardware to connect) but this gets the basics working.
+>
+> Changes from v2
+> - Drop p200/p201/p212-s905x/vega-s95 changes
+> - Add khadas-vim(1)
+>
+> Changes from v1
+> - Drop nexbox-a1 and rbox-pro 
+>
+> Christian Hewitt (7):
+>   arm64: dts: meson: add audio playback to a95x
+>   arm64: dts: meson: add audio playback to khadas-vim
+>   arm64: dts: meson: add audio playback to khadas-vim2
+>   arm64: dts: meson: add audio playback to nanopi-k2
+>   arm64: dts: meson: add audio playback to odroid-c2
+>   arm64: dts: meson: add audio playback to wetek-hub
+>   arm64: dts: meson: add audio playback to wetek-play2
+>
+>  .../boot/dts/amlogic/meson-gxbb-nanopi-k2.dts | 40 ++++++++++++
+>  .../dts/amlogic/meson-gxbb-nexbox-a95x.dts    | 40 ++++++++++++
+>  .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 40 ++++++++++++
+>  .../boot/dts/amlogic/meson-gxbb-wetek-hub.dts | 40 ++++++++++++
+>  .../dts/amlogic/meson-gxbb-wetek-play2.dts    | 61 +++++++++++++++++++
+>  .../amlogic/meson-gxl-s905x-khadas-vim.dts    | 43 ++++++++++++-
+>  .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 44 ++++++++++++-
+>  7 files changed, 303 insertions(+), 5 deletions(-)
 
-Well, what I can see is that this new interface is an antipatern to our
-allocation routines. We tend to control allocations by gfp mask yet you
-are introducing a bool parameter to make something faster... What that
-really means is rather arbitrary. Would it make more sense to teach
-cma_alloc resp. alloc_contig_range to recognize GFP_NOWAIT, GFP_NORETRY resp.
-GFP_RETRY_MAYFAIL instead?
+Minor comment on patch 3
+Minus that:
 
-I am not deeply familiar with the cma allocator so sorry for a
-potentially stupid question. Why does a bulk interface performs better
-than repeated calls to cma_alloc? Is this because a failure would help
-to move on to the next pfn range while a repeated call would have to
-deal with the same range?
+Acked-by: Jerome Brunet <jbrunet@baylibre.com>
 
-> > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > ---
-> >  include/linux/cma.h |   5 ++
-> >  include/linux/gfp.h |   2 +
-> >  mm/cma.c            | 126 ++++++++++++++++++++++++++++++++++++++++++--
-> >  mm/page_alloc.c     |  19 ++++---
-> >  4 files changed, 140 insertions(+), 12 deletions(-)
-> > 
--- 
-Michal Hocko
-SUSE Labs
