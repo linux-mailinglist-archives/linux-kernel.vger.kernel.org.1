@@ -2,166 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E812CBA72
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 974672CBA79
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 11:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgLBKV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 05:21:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52926 "EHLO mx2.suse.de"
+        id S2387547AbgLBKYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 05:24:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:35382 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728188AbgLBKV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 05:21:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CCAC3ACC2;
-        Wed,  2 Dec 2020 10:21:14 +0000 (UTC)
-Subject: Re: [PATCH drm/hisilicon v2 2/3] drm/irq: Add the new api to install
- irq
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1606901212-8214-1-git-send-email-tiantao6@hisilicon.com>
- <1606901212-8214-3-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <35960a70-2a8b-0c65-363a-07a97e4a083d@suse.de>
-Date:   Wed, 2 Dec 2020 11:21:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1725885AbgLBKYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 05:24:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C486F30E;
+        Wed,  2 Dec 2020 02:23:14 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62CD93F66B;
+        Wed,  2 Dec 2020 02:23:14 -0800 (PST)
+Date:   Wed, 2 Dec 2020 10:23:12 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, daniel.lezcano@linaro.org,
+        orjan.eide@arm.com, robh@kernel.org,
+        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
+        airlied@linux.ie, daniel@ffwll.ch
+Subject: Re: [PATCH v2 1/5] thermal: devfreq_cooling: change tracing function
+ and arguments
+Message-ID: <20201202102312.GA9486@arm.com>
+References: <20201118120358.17150-1-lukasz.luba@arm.com>
+ <20201118120358.17150-2-lukasz.luba@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1606901212-8214-3-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="YqPrIC7qzYvV2KRrgnosYvntFvi3uTV7K"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118120358.17150-2-lukasz.luba@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---YqPrIC7qzYvV2KRrgnosYvntFvi3uTV7K
-Content-Type: multipart/mixed; boundary="9GodstmtASbiFkqeCjEQCqdvflcDgAAe1";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <35960a70-2a8b-0c65-363a-07a97e4a083d@suse.de>
-Subject: Re: [PATCH drm/hisilicon v2 2/3] drm/irq: Add the new api to install
- irq
-References: <1606901212-8214-1-git-send-email-tiantao6@hisilicon.com>
- <1606901212-8214-3-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1606901212-8214-3-git-send-email-tiantao6@hisilicon.com>
-
---9GodstmtASbiFkqeCjEQCqdvflcDgAAe1
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-Am 02.12.20 um 10:26 schrieb Tian Tao:
-> Add new api devm_drm_irq_install() to register interrupts,
-> no need to call drm_irq_uninstall() when the drm module is removed.
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-
+On Wednesday 18 Nov 2020 at 12:03:54 (+0000), Lukasz Luba wrote:
+> Prepare for deleting the static and dynamic power calculation and clean
+> the trace function. These two fields are going to be removed in the next
+> changes.
+> 
+> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org> # for tracing code
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 > ---
->   drivers/gpu/drm/drm_irq.c | 32 ++++++++++++++++++++++++++++++++
->   include/drm/drm_irq.h     |  2 +-
->   2 files changed, 33 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/drm_irq.c b/drivers/gpu/drm/drm_irq.c
-> index 09d6e9e..803af4b 100644
-> --- a/drivers/gpu/drm/drm_irq.c
-> +++ b/drivers/gpu/drm/drm_irq.c
-> @@ -214,6 +214,38 @@ int drm_irq_uninstall(struct drm_device *dev)
->   }
->   EXPORT_SYMBOL(drm_irq_uninstall);
->  =20
-> +static void devm_drm_irq_uninstall(void *data)
-> +{
-> +	drm_irq_uninstall(data);
-> +}
-> +
-> +/**
-> + * devm_drm_irq_install - install IRQ handler
-> + * @dev: DRM device
-> + * @irq: IRQ number to install the handler for
-> + *
-> + * devm_drm_irq_install is a  help function of drm_irq_install.
-> + *
-> + * if the driver uses devm_drm_irq_install, there is no need
-> + * to call drm_irq_uninstall when the drm module get unloaded,
-> + * as this will done automagically.
-> + *
-> + * Returns:
-> + * Zero on success or a negative error code on failure.
-> + */
-> +int devm_drm_irq_install(struct drm_device *dev, int irq)
-> +{
-> +	int ret;
-> +
-> +	ret =3D drm_irq_install(dev, irq);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev->dev,
-> +					devm_drm_irq_uninstall, dev);
-> +}
-> +EXPORT_SYMBOL(devm_drm_irq_install);
-> +
->   #if IS_ENABLED(CONFIG_DRM_LEGACY)
->   int drm_legacy_irq_control(struct drm_device *dev, void *data,
->   			   struct drm_file *file_priv)
-> diff --git a/include/drm/drm_irq.h b/include/drm/drm_irq.h
-> index d77f6e6..631b22f 100644
-> --- a/include/drm/drm_irq.h
-> +++ b/include/drm/drm_irq.h
-> @@ -28,5 +28,5 @@ struct drm_device;
->  =20
->   int drm_irq_install(struct drm_device *dev, int irq);
->   int drm_irq_uninstall(struct drm_device *dev);
-> -
-> +int devm_drm_irq_install(struct drm_device *dev, int irq);
->   #endif
->=20
+>  drivers/thermal/devfreq_cooling.c |  3 +--
+>  include/trace/events/thermal.h    | 19 +++++++++----------
+>  2 files changed, 10 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+> index dfab49a67252..659c0143c9f0 100644
+> --- a/drivers/thermal/devfreq_cooling.c
+> +++ b/drivers/thermal/devfreq_cooling.c
+> @@ -277,8 +277,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
+>  		*power = dyn_power + static_power;
+>  	}
+>  
+> -	trace_thermal_power_devfreq_get_power(cdev, status, freq, dyn_power,
+> -					      static_power, *power);
+> +	trace_thermal_power_devfreq_get_power(cdev, status, freq, *power);
+>  
+>  	return 0;
+>  fail:
+> diff --git a/include/trace/events/thermal.h b/include/trace/events/thermal.h
+> index 135e5421f003..8a5f04888abd 100644
+> --- a/include/trace/events/thermal.h
+> +++ b/include/trace/events/thermal.h
+> @@ -153,31 +153,30 @@ TRACE_EVENT(thermal_power_cpu_limit,
+>  TRACE_EVENT(thermal_power_devfreq_get_power,
+>  	TP_PROTO(struct thermal_cooling_device *cdev,
+>  		 struct devfreq_dev_status *status, unsigned long freq,
+> -		u32 dynamic_power, u32 static_power, u32 power),
+> +		u32 power),
+>  
+> -	TP_ARGS(cdev, status,  freq, dynamic_power, static_power, power),
+> +	TP_ARGS(cdev, status,  freq, power),
+>  
+>  	TP_STRUCT__entry(
+>  		__string(type,         cdev->type    )
+>  		__field(unsigned long, freq          )
+> -		__field(u32,           load          )
+> -		__field(u32,           dynamic_power )
+> -		__field(u32,           static_power  )
+> +		__field(u32,           busy_time)
+> +		__field(u32,           total_time)
+>  		__field(u32,           power)
+>  	),
+>  
+>  	TP_fast_assign(
+>  		__assign_str(type, cdev->type);
+>  		__entry->freq = freq;
+> -		__entry->load = (100 * status->busy_time) / status->total_time;
+> -		__entry->dynamic_power = dynamic_power;
+> -		__entry->static_power = static_power;
+> +		__entry->busy_time = status->busy_time;
+> +		__entry->total_time = status->total_time;
+>  		__entry->power = power;
+>  	),
+>  
+> -	TP_printk("type=%s freq=%lu load=%u dynamic_power=%u static_power=%u power=%u",
+> +	TP_printk("type=%s freq=%lu load=%u power=%u",
+>  		__get_str(type), __entry->freq,
+> -		__entry->load, __entry->dynamic_power, __entry->static_power,
+> +		__entry->total_time == 0 ? 0 :
+> +			(100 * __entry->busy_time) / __entry->total_time,
+>  		__entry->power)
+>  );
+>  
+> -- 
+> 2.17.1
+> 
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
 
-
---9GodstmtASbiFkqeCjEQCqdvflcDgAAe1--
-
---YqPrIC7qzYvV2KRrgnosYvntFvi3uTV7K
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/HapkFAwAAAAAACgkQlh/E3EQov+CO
-aBAAiDWlTUZnACdAdqcF17cstOEpnthqezMnwV5ktnsrzo5+gV1GGB0fqy6Ub5zuHSa2UKZiYB4y
-udQ0wVeNBWT4Wv7VYzoPsYFO7qpJ3ps/GHXyBVR4482ZRGDbp80ECwZBDnLcJn6F+0jyNOFdzXaI
-avTdNSp8ZGxKrUCgO8NL4uT2h/AF3HL6Na/WdJicr60MFd0hGAKGN0TkTOAwu+TR4uUrBUjSXzjH
-tTfgZObmIxaSiEykTVoFpzqBcMHz2IyC3N9kCvXCGQY5LRhlFMkXYqWz+X+uHIcOJNbOaiGPEO+q
-EJ6aEWRTk1zijPpUlH//RLfbhgFdsMHpBWN2DT8hOreho8Yu9eq7/QxYWu4iLxJ08PJ/vLCJ+PKi
-v5ZyzIJOB/AhEK6lQCmHfYcI0oPCzDs700s4w0RoU9NTyGUYw5ZWX2EDQ4qJmnB6wOFDACb/M2bo
-yCXKfAPjnBRDk5sW2ouVNysqGncFXJJHBN1mLEjFSbzuNAKjTRPmCBcZYcZpbOLVM+DW9acQjFn4
-aD10y5sN6BR2n8Q8zNyWeR9+A4axoxE4gjPhl3ADPIrL2hAqcXVaLQQLU1tJfYH+L6FqBjUP5Exe
-NYHS9BpBWF272mPHUyuOJIKPAx6eYQEA0yERmy5EcEbPbbZUl0+LsThPtIPoHjTmRSuYhPEdDsxa
-Xt4=
-=2NbS
------END PGP SIGNATURE-----
-
---YqPrIC7qzYvV2KRrgnosYvntFvi3uTV7K--
+Regards,
+Ionela.
