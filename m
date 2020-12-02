@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C957E2CC784
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A3D2CC782
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 21:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbgLBULQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 15:11:16 -0500
-Received: from smtprelay0248.hostedemail.com ([216.40.44.248]:40246 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729186AbgLBULQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:11:16 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id D1CEE181D337B;
-        Wed,  2 Dec 2020 20:10:34 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:968:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2693:2828:2902:2911:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4184:4250:4321:4419:4425:4605:5007:7514:7652:7903:8957:10004:10400:10848:11026:11232:11473:11658:11783:11914:12043:12297:12438:12555:12663:12740:12895:13095:13439:13618:13894:14096:14097:14180:14181:14659:14721:21060:21080:21324:21433:21451:21627:21660:21740:21809:21939:30054:30070:30080:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: teeth55_5c01c8d273b5
-X-Filterd-Recvd-Size: 3695
-Received: from [192.168.1.142] (unknown [172.58.19.39])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  2 Dec 2020 20:10:33 +0000 (UTC)
-Message-ID: <f6db65a7f3744b35da84d7d4be77b2f89da1102a.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add warning for lines starting with a '#'
- in commit log
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Date:   Wed, 02 Dec 2020 12:10:29 -0800
-In-Reply-To: <CABJPP5DSEb5G6G1O1Gvga_E3bT0DftTp6qcgh4RPSKL8cfus-Q@mail.gmail.com>
-References: <20201202101448.8494-1-dwaipayanray1@gmail.com>
-         <CABJPP5DSEb5G6G1O1Gvga_E3bT0DftTp6qcgh4RPSKL8cfus-Q@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1729176AbgLBULM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 15:11:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727535AbgLBULM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:11:12 -0500
+Date:   Wed, 2 Dec 2020 14:10:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606939831;
+        bh=i8Vnq+pvTHhHj/1IWA3etZDAb0TNeRlQer8PLomWRag=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=XUGocHXmgEyD9+LeXma512Rxjr/oRoaZddwcMN6uut9D2vKacomoXW/lfh2/viOmc
+         u7jzKI0DGX8iB/YimFhyu7rg+Eh4LsHFGtaqxqMqJ1kfRlQZzEMaTw2HdcXQgQp1vT
+         4Ix+tZzvcKXO7ykBwZIa7QKEaGVtL0F6UrEQt27qinrTshhF1+ML3mu5rbvUFaiygG
+         O4Bmn9WYojEL3cV4D/KXyjJQLB3XZol06a1FMbizfoIBOZmX4XhASkyK3Ba/hqcf0C
+         9tHKfcUXM3cCobFeuY0y0EbY1weCqM+0K/MS08ttncCjSRJ7Lfydd4MnyGyQlv7UtX
+         nAj1msYc+CJIA==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mario Limonciello <mario.limonciello@dell.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Netfin <sasha.neftin@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        David Miller <davem@davemloft.net>, darcari@redhat.com,
+        Yijun.Shen@dell.com, Perry.Yuan@dell.com,
+        Vitaly Lifshits <vitaly.lifshits@intel.com>
+Subject: Re: [PATCH v2 1/5] e1000e: fix S0ix flow to allow S0i3.2 subset entry
+Message-ID: <20201202201029.GA1464938@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202161748.128938-2-mario.limonciello@dell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-03 at 01:30 +0530, Dwaipayan Ray wrote:
-> On Wed, Dec 2, 2020 at 3:45 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
-> > 
-> > Commit log lines starting with a '#' can be dropped by git if
-> > the corresponding commit message is reworded by a maintainer.
-> > This minor error can be easily avoided if checkpatch warns
-> > for the same.
-> > 
-> > Add a new check which emits a warning on finding lines starting
-> > with a '#'. Also add a quick fix by adding a tab in front of
-> > such lines.
-> > 
-> > Suggested-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > Tested-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> > ---
-> >  scripts/checkpatch.pl | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > index e8c1ed0b1fad..a12edcf4f63a 100755
-> > --- a/scripts/checkpatch.pl
-> > +++ b/scripts/checkpatch.pl
-> > @@ -2966,6 +2966,15 @@ sub process {
-> >                         $commit_log_possible_stack_dump = 0;
-> >                 }
-> > 
-> > +# Check for lines starting with a #
-> > +               if ($in_commit_log && $line =~ /^#/) {
-> > +                       if (WARN("POSSIBLE_IGNORED_LINE",
-> > +                                "Commit log lines starting with a '#' might be dropped by git.\n" . $herecurr)
-> > +                           && $fix) {
-> > +                               $fixed[$fixlinenr] =~ s/^#/\t#/;
-> > +                       }
-> > +               }
-> > +
-> >  # Check for git id commit length and improperly formed commit descriptions
-> >                 if ($in_commit_log && !$commit_log_possible_stack_dump &&
-> >                     $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
-> > --
-> > 2.27.0
-> > 
-> Hi,
-> This patch may seem trivial but I wanted to send it to you for review
-> nevertheless.
+On Wed, Dec 02, 2020 at 10:17:44AM -0600, Mario Limonciello wrote:
+> From: Vitaly Lifshits <vitaly.lifshits@intel.com>
 > 
-> Peilin had earlier faced this problem in one of his patches which was
-> mainlined. There were some '#define' lines in the commit log. Due to
-> some reason the Maintainer had to reword the commit message, and
-> ultimately those '#define' lines were lost in the tree that was merged.
+> Changed a configuration in the flows to align with
+> architecture requirements to achieve S0i3.2 substate.
+
+I guess this is really talking about requirements of a specific
+CPU/SOC before it will enter S0i3.2?
+
+> Also fixed a typo in the previous commit 632fbd5eb5b0
+> ("e1000e: fix S0ix flows for cable connected case").
+
+Not clear what the typo was, maybe these?
+
+  > -	ew32(FEXTNVM12, mac_data);
+  > +	ew32(FEXTNVM6, mac_data);
+
+  > -	ew32(FEXTNVM12, mac_data);
+  > +	ew32(FEXTNVM6, mac_data);
+
+I would probably have put typo fixes in a separate patch, especially
+since the cover letter mentions regressions related to 632fbd5eb5b0.
+Maybe the commit log for the fix should mention that it's fixing a
+regression, what the regression was, and include a Fixes: tag?  But
+not my circus.
+
+> Signed-off-by: Vitaly Lifshits <vitaly.lifshits@intel.com>
+> Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> ---
+>  drivers/net/ethernet/intel/e1000e/netdev.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> I am not sure if it would be exactly helpful for regular committers but for
-> new contributers it might be nice to avoid such a mistake. Do you think
-> it deserves inclusion in checkpatch?
-
-Even regular committers face this.
-
-Please fix the && $fix so that the && is at EOL and change the
-'might be dropped' to 'will be dropped by git as a comment' and
-remove the period.
-
-"POSSIBLE_IGNORED_LINE" could be something like "COMMIT_COMMENT_SYMBOL".
-
-
+> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> index b30f00891c03..128ab6898070 100644
+> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> @@ -6475,13 +6475,13 @@ static void e1000e_s0ix_entry_flow(struct e1000_adapter *adapter)
+>  
+>  	/* Ungate PGCB clock */
+>  	mac_data = er32(FEXTNVM9);
+> -	mac_data |= BIT(28);
+> +	mac_data &= ~BIT(28);
+>  	ew32(FEXTNVM9, mac_data);
+>  
+>  	/* Enable K1 off to enable mPHY Power Gating */
+>  	mac_data = er32(FEXTNVM6);
+>  	mac_data |= BIT(31);
+> -	ew32(FEXTNVM12, mac_data);
+> +	ew32(FEXTNVM6, mac_data);
+>  
+>  	/* Enable mPHY power gating for any link and speed */
+>  	mac_data = er32(FEXTNVM8);
+> @@ -6525,11 +6525,11 @@ static void e1000e_s0ix_exit_flow(struct e1000_adapter *adapter)
+>  	/* Disable K1 off */
+>  	mac_data = er32(FEXTNVM6);
+>  	mac_data &= ~BIT(31);
+> -	ew32(FEXTNVM12, mac_data);
+> +	ew32(FEXTNVM6, mac_data);
+>  
+>  	/* Disable Ungate PGCB clock */
+>  	mac_data = er32(FEXTNVM9);
+> -	mac_data &= ~BIT(28);
+> +	mac_data |= BIT(28);
+>  	ew32(FEXTNVM9, mac_data);
+>  
+>  	/* Cancel not waking from dynamic
+> -- 
+> 2.25.1
+> 
