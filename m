@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BA42CCAAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1168E2CCAAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Dec 2020 00:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729218AbgLBXnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 18:43:10 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13994 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728186AbgLBXnJ (ORCPT
+        id S2387704AbgLBXmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 18:42:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53499 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728532AbgLBXmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:43:09 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2NYSiJ083175;
-        Wed, 2 Dec 2020 18:42:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=HZLCVTOJklfB/d+YwxQ45wGtBPnDTEIvfKqqNrqkEoU=;
- b=FUiAd3YFKnQMHnmftvsGx9f8XXgHVWDwYDpXLC60mzzP/3spSBfy1GUuurKxBfPGLcy4
- CMQ5Kk54vsGW5eBkf2NWW8w5LVOpkl/7i9fd3iU2iLXBqlKltshw7HqDd9Vgt3I8VdUj
- oQx+PFFPG4r1dq8Tlp7NGBgj4dqj5mBEJrHCz+yKeIgRftNRpbJGhdb7mP2NpMJEyJIe
- qc5xcz7cGsL+bFav7tTNlE3Sk1OMWK5fMiATbhA5bnLsKqvFznRTI3GG/yfHUsQcRU49
- qOA+9meiXLD9kfcikfkJ3dCOOHMZkMacCChbDzlZpjfJYZ5oyRQa8y0I6Wp18jJaOnkM OQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 356jg83p03-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 18:42:28 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B2NbRJn094468;
-        Wed, 2 Dec 2020 18:42:27 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 356jg83nyr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 18:42:27 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B2NXDdT019938;
-        Wed, 2 Dec 2020 23:42:26 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma01wdc.us.ibm.com with ESMTP id 355vrfu3me-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Dec 2020 23:42:26 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B2NfBQ29175708
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Dec 2020 23:41:11 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 653DD112065;
-        Wed,  2 Dec 2020 23:41:11 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C9190112061;
-        Wed,  2 Dec 2020 23:41:10 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com.com (unknown [9.85.195.249])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Dec 2020 23:41:10 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
-        Tony Krowiak <akrowiak@linux.ibm.com>
-Subject: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM pointer invalidated
-Date:   Wed,  2 Dec 2020 18:41:01 -0500
-Message-Id: <20201202234101.32169-1-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
+        Wed, 2 Dec 2020 18:42:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606952484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cMp1kqJBklpxD4W8M6D/zDEhMsXVo1j/mRssWp3lW6A=;
+        b=E8i7MTXHmWJHOlJld/6k6e04vcvIzp/RC6d2ji5fIlvbwzRp7Xt2AUGm/kCl+iyzwi3gYa
+        TY7Pt/NBf3Sb0XIImVZ/6RU3kfAjvKQrEL+90lYOqSRKR4YvIpUWg02PJ2vIc7M0HC0fpF
+        58cLzDKGc/CvEjmG8reFTtu5LBxy4+o=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-Cf_N3YNfNcevlmKC2o51lQ-1; Wed, 02 Dec 2020 18:41:20 -0500
+X-MC-Unique: Cf_N3YNfNcevlmKC2o51lQ-1
+Received: by mail-qt1-f197.google.com with SMTP id d9so141451qtr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 15:41:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cMp1kqJBklpxD4W8M6D/zDEhMsXVo1j/mRssWp3lW6A=;
+        b=kuCR34GsQrt8RkL0aKBlxdOrsdrQ9AFp7Dc6zPgm+AI6Pahi30qNx4I/pwXPKpKy3e
+         qZ+pWBLVYv3gF7K//1jsDPYTXorBQ9DsFdqcnvagmYWl4WXHEPdv0kpuRmDhQTYiHFGr
+         V2TrIXESSUULmCSVBIS2rzkhE11S0d9PGhEs1md0kk84pOBVxjZDElg4MuPjqb4U8JJy
+         69Sw0OSS/ecdDJ9GQLDBbKUqTct6i30xFHj8/VuROK5lttiSl/RJ6iQi8ZeBwAndgaNy
+         vnhRI23vdlvklrFbrpDzZhzeD+OihXOVH4hCmAlPN0/pZBv/dEMgwC34yj7+AwXawMY2
+         3TNg==
+X-Gm-Message-State: AOAM532YNvaRv2FbxjQz7mfkLILxg4DBWjfc6iR6Ug4SExq1nMgkrrzg
+        ukyXJwXKuVDub72kh+6DIs7Jg0LFTtp24T5L5RYoJ8WMBqdrzKhYFdIubJXuCmnivx42VII8LBh
+        2qoB9mE8CyIK1dQK3NO8ApuoH
+X-Received: by 2002:a05:620a:95d:: with SMTP id w29mr248167qkw.147.1606952480314;
+        Wed, 02 Dec 2020 15:41:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxKaVGTRtF16E8PGvNy2jvo2y+ClJpMXjk2QfrIJLp4FYin344GYLYLvL4cDtW5S+SEnLPSOw==
+X-Received: by 2002:a05:620a:95d:: with SMTP id w29mr248151qkw.147.1606952480111;
+        Wed, 02 Dec 2020 15:41:20 -0800 (PST)
+Received: from xz-x1 ([142.126.94.187])
+        by smtp.gmail.com with ESMTPSA id z125sm241884qke.18.2020.12.02.15.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 15:41:19 -0800 (PST)
+Date:   Wed, 2 Dec 2020 18:41:17 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2] mm: Don't fault around userfaultfd-registered regions
+ on reads
+Message-ID: <20201202234117.GD108496@xz-x1>
+References: <20201130230603.46187-1-peterx@redhat.com>
+ <20201201125927.GB11935@casper.infradead.org>
+ <20201201223033.GG3277@xz-x1>
+ <X8bZk3jTGU8QyJWc@redhat.com>
+ <alpine.LSU.2.11.2012021410260.4989@eggly.anvils>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-02_14:2020-11-30,2020-12-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- spamscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
- malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0 phishscore=0
- suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012020146
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2012021410260.4989@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vfio_ap device driver registers a group notifier with VFIO when the
-file descriptor for a VFIO mediated device for a KVM guest is opened to
-receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
-event). When the KVM pointer is set, the vfio_ap driver stashes the pointer
-and calls the kvm_get_kvm() function to increment its reference counter.
-When the notifier is called to make notification that the KVM pointer has
-been set to NULL, the driver should clean up any resources associated with
-the KVM pointer and decrement its reference counter. The current
-implementation does not take care of this clean up.
+On Wed, Dec 02, 2020 at 02:37:33PM -0800, Hugh Dickins wrote:
+> On Tue, 1 Dec 2020, Andrea Arcangeli wrote:
+> > 
+> > Any suggestions on how to have the per-vaddr per-mm _PAGE_UFFD_WP bit
+> > survive the pte invalidates in a way that remains associated to a
+> > certain vaddr in a single mm (so it can shoot itself in the foot if it
+> > wants, but it can't interfere with all other mm sharing the shmem
+> > file) would be welcome...
+> 
+> I think it has to be a new variety of swap-like non_swap_entry() pte,
+> see include/linux/swapops.h.  Anything else would be more troublesome.
+> 
+> Search for non_swap_entry and for migration_entry, to find places that 
+> might need to learn about this new variety.
+> 
+> IIUC you only need a single value, no need to carve out another whole
+> swp_type: could probably be swp_offset 0 of any swp_type other than 0.
+> 
+> Note that fork's copy_page_range() does not "copy ptes where a page
+> fault will fill them correctly", so would in effect put a pte_none
+> into the child where the parent has this uffd_wp entry.  I don't know
+> anything about uffd versus fork, whether that would pose a problem.
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
----
- drivers/s390/crypto/vfio_ap_ops.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+Thanks for the idea, Hugh!
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index e0bde8518745..eeb9c9130756 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -1083,6 +1083,17 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
- 	return NOTIFY_DONE;
- }
- 
-+static void vfio_ap_mdev_put_kvm(struct ap_matrix_mdev *matrix_mdev)
-+{
-+	if (matrix_mdev->kvm) {
-+		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-+		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-+		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-+		kvm_put_kvm(matrix_mdev->kvm);
-+		matrix_mdev->kvm = NULL;
-+	}
-+}
-+
- static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
- 				       unsigned long action, void *data)
- {
-@@ -1095,7 +1106,7 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
- 	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
- 
- 	if (!data) {
--		matrix_mdev->kvm = NULL;
-+		vfio_ap_mdev_put_kvm(matrix_mdev);
- 		return NOTIFY_OK;
- 	}
- 
-@@ -1222,13 +1233,7 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
- 	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
- 
- 	mutex_lock(&matrix_dev->lock);
--	if (matrix_mdev->kvm) {
--		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
--		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
--		vfio_ap_mdev_reset_queues(mdev);
--		kvm_put_kvm(matrix_mdev->kvm);
--		matrix_mdev->kvm = NULL;
--	}
-+	vfio_ap_mdev_put_kvm(matrix_mdev);
- 	mutex_unlock(&matrix_dev->lock);
- 
- 	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+I thought about something similar today, but instead of swap entries, I was
+thinking about constantly filling in a pte with a value of "_PAGE_PROTNONE |
+_PAGE_UFFD_WP" when e.g. we'd like to zap a page with shmem+uffd-wp. I feel
+like the fundamental idea is similar - we can somehow keep the pte with uffd-wp
+information even if zapped/swapped-out, so as long as the shmem access will
+fruther trap into the fault handler, then we can operate on that pte and read
+that information out, like recover that pte into a normal pte (with swap/page
+cache, and vma/addr information, we'll be able to) and then we can retry the
+fault.
+
+Thanks,
+
 -- 
-2.21.1
+Peter Xu
 
