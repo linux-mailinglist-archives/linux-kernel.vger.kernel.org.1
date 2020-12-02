@@ -2,389 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8702CB56C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE052CB572
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 08:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgLBHAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 02:00:24 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:37158 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbgLBHAX (ORCPT
+        id S2387556AbgLBHCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 02:02:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgLBHCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 02:00:23 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0B26x2DW1031983, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb01.realtek.com.tw[172.21.6.94])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0B26x2DW1031983
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 2 Dec 2020 14:59:02 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.36) by
- RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Wed, 2 Dec 2020 14:59:02 +0800
-Received: from localhost (172.22.88.222) by RTEXMBS01.realtek.com.tw
- (172.21.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 2 Dec 2020
- 14:59:02 +0800
-From:   <ricky_wu@realtek.com>
-To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
-        <bhelgaas@google.com>, <ricky_wu@realtek.com>,
-        <vaibhavgupta40@gmail.com>, <kdlnx@doth.eu>,
-        <ulf.hansson@linaro.org>, <linus.walleij@linaro.org>,
-        <lee.jones@linaro.org>, <dianders@chromium.org>,
-        <linux-mmc@vger.kernel.org>, <wsa+renesas@sang-engineering.com>,
-        <keitasuzuki.park@sslab.ics.keio.ac.jp>, <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 4/4] misc: rtsx: rts5249 support runtime PM
-Date:   Wed, 2 Dec 2020 14:58:57 +0800
-Message-ID: <20201202065857.19412-1-ricky_wu@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 2 Dec 2020 02:02:31 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27281C0613CF;
+        Tue,  1 Dec 2020 23:01:45 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id dm12so269738qvb.3;
+        Tue, 01 Dec 2020 23:01:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MA2zJo9bj/EIZzJG0XmMx/IZDBJAL5UetxtUGnb1JcE=;
+        b=aBFCXZNYzdc6s0fqQRq03Fap97IXfUONqVQg+WwwECxF143wymeGH5G8zL9AWOZCSZ
+         3scwloDVjjHtmgPlPSgWZdGhGAY+5nUQxQDMQ44aMQDEWts2u7mQ/TKbz6rFL3pQNcjb
+         jWXLMnNqZHtxnkuWGlsg25PRob8WZcqoB24zE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MA2zJo9bj/EIZzJG0XmMx/IZDBJAL5UetxtUGnb1JcE=;
+        b=nb6zQCoR3rW67lMIkbi7JNXMRcUJaqMlYSBeS81GbXTemjaANgtZJBcmY1nXtVktsh
+         dGegOJGlwgdWJ8RKhFXgo37Z4+Jge/UrfOfNKXGwmmIH2MZoWSDVGsoGI8vzpix2n4HG
+         eQo1xAyzskUsJGaPtDhxDiHdINh78cSY3b8krvXby0hA/8308ht5IlSsLHtohvbl0uLG
+         3WtSOCsF1nLWVlVIKDrWl/JFS1Arl9BZJC6G2wW4bVBtZBLrtjuOW9vHcNyeKqzXBtni
+         g+2rXL3eNYJZAmDh1gNUAzhFs7WEPOTkx2cHK2+HQxgaC1oqfV5K81Gr4iZvrWuWfpds
+         sHMw==
+X-Gm-Message-State: AOAM5302qluUTx+28IXYBvF4eLD16b3YvUqPQlK8lRVMdVL1O6ZnR4mS
+        H5UojRgmFIQ2DNRSg28OaJ2u5blx/CJLxk2ILv0=
+X-Google-Smtp-Source: ABdhPJwr1ikAABYLva9tQV6P42ObH2nWpxzGr7QZQK5w1rB8Fb6Ep334b2uhmyLtfItMHk49IniPr/zAGK29uoOqoyg=
+X-Received: by 2002:ad4:5687:: with SMTP id bc7mr1039099qvb.61.1606892503587;
+ Tue, 01 Dec 2020 23:01:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.22.88.222]
-X-ClientProxiedBy: RTEXH365.realtek.com.tw (172.21.6.37) To
- RTEXMBS01.realtek.com.tw (172.21.6.36)
+References: <20201202063612.21241-1-troy_lee@aspeedtech.com> <20201202063612.21241-3-troy_lee@aspeedtech.com>
+In-Reply-To: <20201202063612.21241-3-troy_lee@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 2 Dec 2020 07:01:31 +0000
+Message-ID: <CACPK8XcBTm8-cAPmtswHbYAf2B+PdBiZ2s1XK1UqKA_NQX_-mw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] edac: Supporting AST2400 and AST2600 edac driver
+To:     Troy Lee <troy_lee@aspeedtech.com>
+Cc:     Stefan Schaeckeler <sschaeck@cisco.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rrichter@marvell.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>,
+        leetroy@gmail.com, Ryan Chen <ryan_chen@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricky Wu <ricky_wu@realtek.com>
+On Wed, 2 Dec 2020 at 06:37, Troy Lee <troy_lee@aspeedtech.com> wrote:
+>
+> Adding AST2400 and AST2600 edac driver support.
+>
+> Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
+> ---
+> Change since v1:
+> 1. Removing SoC specific code
+> 2. Changing numerical representation of memory sizing
+> ---
+>  drivers/edac/Kconfig       |   6 +--
+>  drivers/edac/aspeed_edac.c | 103 +++++++++++++++++++++++++++++--------
+>  2 files changed, 85 insertions(+), 24 deletions(-)
+>
+> diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
+> index fc30f2ef9782..8ea70746d0bf 100644
+> --- a/drivers/edac/Kconfig
+> +++ b/drivers/edac/Kconfig
+> @@ -508,10 +508,10 @@ config EDAC_QCOM
+>           health, you should probably say 'Y' here.
+>
+>  config EDAC_ASPEED
+> -       tristate "Aspeed AST 2500 SoC"
+> -       depends on MACH_ASPEED_G5
+> +       tristate "Aspeed AST BMC SoC"
+> +       depends on (MACH_ASPEED_G4 || MACH_ASPEED_G5 || MACH_ASPEED_G6)
 
-rtsx_pcr:
-add callback functions to support runtime PM
-add delay_work to put device to D3 after idle
-over 10 sec
+Change this to ARCH_ASPEED.
 
-rts5249:
-add extra init flow for rtd3 and set rtd3_en from
-config setting
+>         help
+> -         Support for error detection and correction on the Aspeed AST 2500 SoC.
+> +         Support for error detection and correction on the Aspeed AST BMC SoC.
+>
+>           First, ECC must be configured in the bootloader. Then, this driver
+>           will expose error counters via the EDAC kernel framework.
+> diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
+> index fbec28dc661d..b8c8d6a05f91 100644
+> --- a/drivers/edac/aspeed_edac.c
+> +++ b/drivers/edac/aspeed_edac.c
+> @@ -14,12 +14,11 @@
+>  #include <linux/regmap.h>
+>  #include "edac_module.h"
+>
+> -
 
-rtsx_pci_sdmmc:
-child device support autosuspend
+These whitespace cleanups are ok, but can probably go in a different
+patch so they aren't mixed up with the functional changes.
 
-Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
----
- drivers/misc/cardreader/rts5249.c  |  26 +++++--
- drivers/misc/cardreader/rtsx_pcr.c | 106 ++++++++++++++++++++++++++++-
- drivers/misc/cardreader/rtsx_pcr.h |   1 +
- drivers/mmc/host/rtsx_pci_sdmmc.c  |  16 +++++
- include/linux/rtsx_pci.h           |   2 +
- 5 files changed, 145 insertions(+), 6 deletions(-)
+>  #define DRV_NAME "aspeed-edac"
+>
+> -
+>  #define ASPEED_MCR_PROT        0x00 /* protection key register */
+>  #define ASPEED_MCR_CONF        0x04 /* configuration register */
+> +#define ASPEED_MCR_REQ         0x08 /* Graphics Memory Protection register */
+>  #define ASPEED_MCR_INTR_CTRL   0x50 /* interrupt control/status register */
+>  #define ASPEED_MCR_ADDR_UNREC  0x58 /* address of first un-recoverable error */
+>  #define ASPEED_MCR_ADDR_REC    0x5c /* address of last recoverable error */
+> @@ -29,15 +28,17 @@
+>  #define ASPEED_MCR_PROT_PASSWD             0xfc600309
+>  #define ASPEED_MCR_CONF_DRAM_TYPE               BIT(4)
+>  #define ASPEED_MCR_CONF_ECC                     BIT(7)
+> +#define ASPEED_MCR_CONF_DRAM_CTRL_TYPE (BIT(28)|BIT(29)|BIT(30)|BIT(31))
 
-diff --git a/drivers/misc/cardreader/rts5249.c b/drivers/misc/cardreader/rts5249.c
-index b85279f1fc5e..b2676e7f5027 100644
---- a/drivers/misc/cardreader/rts5249.c
-+++ b/drivers/misc/cardreader/rts5249.c
-@@ -73,6 +73,9 @@ static void rtsx_base_fetch_vendor_settings(struct rtsx_pcr *pcr)
- 
- 	pci_read_config_dword(pdev, PCR_SETTING_REG2, &reg);
- 	pcr_dbg(pcr, "Cfg 0x%x: 0x%x\n", PCR_SETTING_REG2, reg);
-+
-+	pcr->rtd3_en = rtsx_reg_to_rtd3_uhsii(reg);
-+
- 	if (rtsx_check_mmc_support(reg))
- 		pcr->extra_caps |= EXTRA_CAPS_NO_MMC;
- 	pcr->sd30_drive_sel_3v3 = rtsx_reg_to_sd30_drive_sel_3v3(reg);
-@@ -278,15 +281,28 @@ static int rts5249_extra_init_hw(struct rtsx_pcr *pcr)
- 
- 	rtsx_pci_send_cmd(pcr, CMD_TIMEOUT_DEF);
- 
--	if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
-+	if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A))
- 		rtsx_pci_write_register(pcr, REG_VREF, PWD_SUSPND_EN, PWD_SUSPND_EN);
--		rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x00);
--		rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x20);
-+
-+	if (pcr->rtd3_en) {
-+		if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
-+			rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x01);
-+			rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x30);
-+		} else {
-+			rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x01);
-+			rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x33);
-+		}
- 	} else {
--		rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x30);
--		rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x00);
-+		if (CHK_PCI_PID(pcr, PID_524A) || CHK_PCI_PID(pcr, PID_525A)) {
-+			rtsx_pci_write_register(pcr, RTS524A_PM_CTRL3, 0x01, 0x00);
-+			rtsx_pci_write_register(pcr, RTS524A_PME_FORCE_CTL, 0x30, 0x20);
-+		} else {
-+			rtsx_pci_write_register(pcr, PME_FORCE_CTL, 0xFF, 0x30);
-+			rtsx_pci_write_register(pcr, PM_CTRL3, 0x01, 0x00);
-+		}
- 	}
- 
-+
- 	/*
- 	 * If u_force_clkreq_0 is enabled, CLKREQ# PIN will be forced
- 	 * to drive low, and we forcibly request clock.
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index 3612063cab09..2700d1997750 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -20,6 +20,8 @@
- #include <linux/rtsx_pci.h>
- #include <linux/mmc/card.h>
- #include <asm/unaligned.h>
-+#include <linux/pm.h>
-+#include <linux/pm_runtime.h>
- 
- #include "rtsx_pcr.h"
- #include "rts5261.h"
-@@ -150,6 +152,12 @@ void rtsx_pci_start_run(struct rtsx_pcr *pcr)
- 	if (pcr->remove_pci)
- 		return;
- 
-+	if (pcr->rtd3_en)
-+		if (pcr->is_runtime_suspended) {
-+			pm_runtime_get(&(pcr->pci->dev));
-+			pcr->is_runtime_suspended = false;
-+		}
-+
- 	if (pcr->state != PDEV_STAT_RUN) {
- 		pcr->state = PDEV_STAT_RUN;
- 		if (pcr->ops->enable_auto_blink)
-@@ -1081,6 +1089,16 @@ static void rtsx_pm_power_saving(struct rtsx_pcr *pcr)
- 	rtsx_comm_pm_power_saving(pcr);
- }
- 
-+static void rtsx_pci_rtd3_work(struct work_struct *work)
-+{
-+	struct delayed_work *dwork = to_delayed_work(work);
-+	struct rtsx_pcr *pcr = container_of(dwork, struct rtsx_pcr, rtd3_work);
-+
-+	pcr_dbg(pcr, "--> %s\n", __func__);
-+	if (!pcr->is_runtime_suspended)
-+		pm_runtime_put(&(pcr->pci->dev));
-+}
-+
- static void rtsx_pci_idle_work(struct work_struct *work)
- {
- 	struct delayed_work *dwork = to_delayed_work(work);
-@@ -1100,6 +1118,9 @@ static void rtsx_pci_idle_work(struct work_struct *work)
- 	rtsx_pm_power_saving(pcr);
- 
- 	mutex_unlock(&pcr->pcr_mutex);
-+
-+	if (pcr->rtd3_en)
-+		mod_delayed_work(system_wq, &pcr->rtd3_work, msecs_to_jiffies(10000));
- }
- 
- static void rtsx_base_force_power_down(struct rtsx_pcr *pcr, u8 pm_state)
-@@ -1579,6 +1600,15 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
- 		rtsx_pcr_cells[i].platform_data = handle;
- 		rtsx_pcr_cells[i].pdata_size = sizeof(*handle);
- 	}
-+
-+	if (pcr->rtd3_en) {
-+		INIT_DELAYED_WORK(&pcr->rtd3_work, rtsx_pci_rtd3_work);
-+		pm_runtime_allow(&pcidev->dev);
-+		pm_runtime_enable(&pcidev->dev);
-+		pcr->is_runtime_suspended = false;
-+	}
-+
-+
- 	ret = mfd_add_devices(&pcidev->dev, pcr->id, rtsx_pcr_cells,
- 			ARRAY_SIZE(rtsx_pcr_cells), NULL, 0, NULL);
- 	if (ret < 0)
-@@ -1616,6 +1646,9 @@ static void rtsx_pci_remove(struct pci_dev *pcidev)
- 	struct pcr_handle *handle = pci_get_drvdata(pcidev);
- 	struct rtsx_pcr *pcr = handle->pcr;
- 
-+	if (pcr->rtd3_en)
-+		pm_runtime_get_noresume(&pcr->pci->dev);
-+
- 	pcr->remove_pci = true;
- 
- 	/* Disable interrupts at the pcr level */
-@@ -1626,6 +1659,8 @@ static void rtsx_pci_remove(struct pci_dev *pcidev)
- 
- 	cancel_delayed_work_sync(&pcr->carddet_work);
- 	cancel_delayed_work_sync(&pcr->idle_work);
-+	if (pcr->rtd3_en)
-+		cancel_delayed_work_sync(&pcr->rtd3_work);
- 
- 	mfd_remove_devices(&pcidev->dev);
- 
-@@ -1643,6 +1678,11 @@ static void rtsx_pci_remove(struct pci_dev *pcidev)
- 	idr_remove(&rtsx_pci_idr, pcr->id);
- 	spin_unlock(&rtsx_pci_lock);
- 
-+	if (pcr->rtd3_en) {
-+		pm_runtime_disable(&pcr->pci->dev);
-+		pm_runtime_put_noidle(&pcr->pci->dev);
-+	}
-+
- 	kfree(pcr->slots);
- 	kfree(pcr);
- 	kfree(handle);
-@@ -1724,13 +1764,77 @@ static void rtsx_pci_shutdown(struct pci_dev *pcidev)
- 		pci_disable_msi(pcr->pci);
- }
- 
-+static int rtsx_pci_runtime_suspend(struct device *device)
-+{
-+	struct pci_dev *pcidev = to_pci_dev(device);
-+	struct pcr_handle *handle;
-+	struct rtsx_pcr *pcr;
-+
-+	handle = pci_get_drvdata(pcidev);
-+	pcr = handle->pcr;
-+	dev_dbg(&(pcidev->dev), "--> %s\n", __func__);
-+
-+	cancel_delayed_work(&pcr->carddet_work);
-+	cancel_delayed_work(&pcr->rtd3_work);
-+	cancel_delayed_work(&pcr->idle_work);
-+
-+	mutex_lock(&pcr->pcr_mutex);
-+	rtsx_pci_power_off(pcr, HOST_ENTER_S3);
-+
-+	free_irq(pcr->irq, (void *)pcr);
-+
-+	mutex_unlock(&pcr->pcr_mutex);
-+
-+	pcr->is_runtime_suspended = true;
-+
-+	return 0;
-+}
-+
-+static int rtsx_pci_runtime_resume(struct device *device)
-+{
-+	struct pci_dev *pcidev = to_pci_dev(device);
-+	struct pcr_handle *handle;
-+	struct rtsx_pcr *pcr;
-+	int ret = 0;
-+
-+	handle = pci_get_drvdata(pcidev);
-+	pcr = handle->pcr;
-+	dev_dbg(&(pcidev->dev), "--> %s\n", __func__);
-+
-+	mutex_lock(&pcr->pcr_mutex);
-+
-+	rtsx_pci_write_register(pcr, HOST_SLEEP_STATE, 0x03, 0x00);
-+	rtsx_pci_acquire_irq(pcr);
-+	synchronize_irq(pcr->irq);
-+
-+	if (pcr->ops->fetch_vendor_settings)
-+		pcr->ops->fetch_vendor_settings(pcr);
-+
-+	rtsx_pci_init_hw(pcr);
-+
-+	if (pcr->slots[RTSX_SD_CARD].p_dev != NULL) {
-+		pcr->slots[RTSX_SD_CARD].card_event(
-+				pcr->slots[RTSX_SD_CARD].p_dev);
-+	}
-+
-+	schedule_delayed_work(&pcr->idle_work, msecs_to_jiffies(200));
-+
-+	mutex_unlock(&pcr->pcr_mutex);
-+	return ret;
-+}
-+
- #else /* CONFIG_PM */
- 
- #define rtsx_pci_shutdown NULL
-+#define rtsx_pci_runtime_suspend NULL
-+#define rtsx_pic_runtime_resume NULL
- 
- #endif /* CONFIG_PM */
- 
--static SIMPLE_DEV_PM_OPS(rtsx_pci_pm_ops, rtsx_pci_suspend, rtsx_pci_resume);
-+static const struct dev_pm_ops rtsx_pci_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(rtsx_pci_suspend, rtsx_pci_resume)
-+	SET_RUNTIME_PM_OPS(rtsx_pci_runtime_suspend, rtsx_pci_runtime_resume, NULL)
-+};
- 
- static struct pci_driver rtsx_pci_driver = {
- 	.name = DRV_NAME_RTSX_PCI,
-diff --git a/drivers/misc/cardreader/rtsx_pcr.h b/drivers/misc/cardreader/rtsx_pcr.h
-index fe5f4ca0f937..daf057c4eea6 100644
---- a/drivers/misc/cardreader/rtsx_pcr.h
-+++ b/drivers/misc/cardreader/rtsx_pcr.h
-@@ -90,6 +90,7 @@ static inline u8 map_sd_drive(int idx)
- 
- #define rtsx_check_mmc_support(reg)		((reg) & 0x10)
- #define rtsx_reg_to_rtd3(reg)				((reg) & 0x02)
-+#define rtsx_reg_to_rtd3_uhsii(reg)				((reg) & 0x04)
- #define rtsx_reg_to_aspm(reg)			(((reg) >> 28) & 0x03)
- #define rtsx_reg_to_sd30_drive_sel_1v8(reg)	(((reg) >> 26) & 0x03)
- #define rtsx_reg_to_sd30_drive_sel_3v3(reg)	(((reg) >> 5) & 0x03)
-diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-index 93be9fa97098..94cdd3b322b5 100644
---- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-+++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-@@ -20,6 +20,7 @@
- #include <linux/mmc/card.h>
- #include <linux/rtsx_pci.h>
- #include <asm/unaligned.h>
-+#include <linux/pm_runtime.h>
- 
- struct realtek_pci_sdmmc {
- 	struct platform_device	*pdev;
-@@ -1343,6 +1344,7 @@ static void init_extra_caps(struct realtek_pci_sdmmc *host)
- static void realtek_init_host(struct realtek_pci_sdmmc *host)
- {
- 	struct mmc_host *mmc = host->mmc;
-+	struct rtsx_pcr *pcr = host->pcr;
- 
- 	mmc->f_min = 250000;
- 	mmc->f_max = 208000000;
-@@ -1350,6 +1352,8 @@ static void realtek_init_host(struct realtek_pci_sdmmc *host)
- 	mmc->caps = MMC_CAP_4_BIT_DATA | MMC_CAP_SD_HIGHSPEED |
- 		MMC_CAP_MMC_HIGHSPEED | MMC_CAP_BUS_WIDTH_TEST |
- 		MMC_CAP_UHS_SDR12 | MMC_CAP_UHS_SDR25;
-+	if (pcr->rtd3_en)
-+		mmc->caps = mmc->caps | MMC_CAP_AGGRESSIVE_PM;
- 	mmc->caps2 = MMC_CAP2_NO_PRESCAN_POWERUP | MMC_CAP2_FULL_PWR_CYCLE;
- 	mmc->max_current_330 = 400;
- 	mmc->max_current_180 = 800;
-@@ -1407,6 +1411,13 @@ static int rtsx_pci_sdmmc_drv_probe(struct platform_device *pdev)
- 
- 	realtek_init_host(host);
- 
-+	if (pcr->rtd3_en) {
-+		pm_runtime_set_autosuspend_delay(&pdev->dev, 5000);
-+		pm_runtime_use_autosuspend(&pdev->dev);
-+		pm_runtime_enable(&pdev->dev);
-+	}
-+
-+
- 	mmc_add_host(mmc);
- 
- 	return 0;
-@@ -1426,6 +1437,11 @@ static int rtsx_pci_sdmmc_drv_remove(struct platform_device *pdev)
- 	pcr->slots[RTSX_SD_CARD].card_event = NULL;
- 	mmc = host->mmc;
- 
-+	if (pcr->rtd3_en) {
-+		pm_runtime_dont_use_autosuspend(&pdev->dev);
-+		pm_runtime_disable(&pdev->dev);
-+	}
-+
- 	cancel_work_sync(&host->work);
- 
- 	mutex_lock(&host->host_mutex);
-diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
-index 745f5e73f99a..f895ccabbe29 100644
---- a/include/linux/rtsx_pci.h
-+++ b/include/linux/rtsx_pci.h
-@@ -1174,6 +1174,7 @@ struct rtsx_pcr {
- 
- 	struct delayed_work		carddet_work;
- 	struct delayed_work		idle_work;
-+	struct delayed_work		rtd3_work;
- 
- 	spinlock_t			lock;
- 	struct mutex			pcr_mutex;
-@@ -1183,6 +1184,7 @@ struct rtsx_pcr {
- 	unsigned int			cur_clock;
- 	bool				remove_pci;
- 	bool				msi_en;
-+	bool				is_runtime_suspended;
- 
- #define EXTRA_CAPS_SD_SDR50		(1 << 0)
- #define EXTRA_CAPS_SD_SDR104		(1 << 1)
--- 
-2.17.1
+We can use GENMASK here:
 
+ GENMASK(31, 28)
+
+>  #define ASPEED_MCR_INTR_CTRL_CLEAR             BIT(31)
+>  #define ASPEED_MCR_INTR_CTRL_CNT_REC   GENMASK(23, 16)
+>  #define ASPEED_MCR_INTR_CTRL_CNT_UNREC GENMASK(15, 12)
+>  #define ASPEED_MCR_INTR_CTRL_ENABLE  (BIT(0) | BIT(1))
+>
+> +#define ASPEED_MCR_CONF_DRAM_CTRL_TYPE_AST2500  0x01
+> +#define ASPEED_MCR_CONF_DRAM_CTRL_TYPE_AST2600  0x03
+>
+>  static struct regmap *aspeed_regmap;
+>
+> -
+>  static int regmap_reg_write(void *context, unsigned int reg, unsigned int val)
+>  {
+>         void __iomem *regs = (void __iomem *)context;
+> @@ -53,7 +54,6 @@ static int regmap_reg_write(void *context, unsigned int reg, unsigned int val)
+>         return 0;
+>  }
+>
+> -
+>  static int regmap_reg_read(void *context, unsigned int reg, unsigned int *val)
+>  {
+>         void __iomem *regs = (void __iomem *)context;
+> @@ -63,6 +63,79 @@ static int regmap_reg_read(void *context, unsigned int reg, unsigned int *val)
+>         return 0;
+>  }
+>
+> +extern void aspeed_sdmc_disable_mem_protection(u8 req)
+> +{
+> +       u32 req_val = 0;
+> +
+> +       regmap_read(aspeed_regmap, ASPEED_MCR_REQ, &req_val);
+> +
+> +       req_val &= ~BIT(req);
+> +
+> +       regmap_write(aspeed_regmap, ASPEED_MCR_REQ, req_val);
+
+This is open coding regmap_update_bits:
+
+  regmap_update_bits(aspeed_regmap, ASPEED_MCR_REQ, BIT(req), BIT(req));
+
+> +}
+> +EXPORT_SYMBOL(aspeed_sdmc_disable_mem_protection);
+
+I don't think any of these functions need to be exported. The same
+comment applies to the functions below this one; you can make them all
+static and drop the extern and the EXPORT_SYMBOL.
+
+> +
+> +static const u32 ast2400_dram_table[] = {
+> +       64 << 20,
+> +       128 << 20,
+> +       256 << 20,
+> +       512 << 20,
+> +};
+> +
+> +static const u32 ast2500_dram_table[] = {
+> +       128 << 20,
+> +       256 << 20,
+> +       512 << 20,
+> +       1024 << 20,
+> +};
+> +
+> +static const u32 ast2600_dram_table[] = {
+> +       256 << 20,
+> +       512 << 20,
+> +       1024 << 20,
+> +       2048 << 20,
+> +};
+> +
+> +extern u32 aspeed_get_dram_size(void)
+> +{
+> +       u32 reg04;
+> +       u32 size;
+> +       u8 type;
+> +
+> +       regmap_read(aspeed_regmap, ASPEED_MCR_CONF, &reg04);
+> +
+> +       type = (reg04 & ASPEED_MCR_CONF_DRAM_CTRL_TYPE) >> 28;
+> +
+> +       if (type == ASPEED_MCR_CONF_DRAM_CTRL_TYPE_AST2600)
+> +               size = ast2600_dram_table[reg04 & 0x3];
+> +       else if (type == ASPEED_MCR_CONF_DRAM_CTRL_TYPE_AST2500)
+> +               size = ast2500_dram_table[reg04 & 0x3];
+> +       else
+> +               size = ast2400_dram_table[reg04 & 0x3];
+> +
+> +       return size;
+> +}
+> +EXPORT_SYMBOL(aspeed_get_dram_size);
+> +
+> +static const u32 aspeed_vga_table[] = {
+> +       8 << 20,
+> +       16 << 20,
+> +       32 << 20,
+> +       64 << 20,
+> +};
+> +
+> +extern u32 aspeed_get_vga_size(void)
+> +{
+> +       u32 reg04;
+> +       u32 size;
+> +
+> +       regmap_read(aspeed_regmap, ASPEED_MCR_CONF, &reg04);
+> +
+> +       size = aspeed_vga_table[((reg04 & 0xC) >> 2)];
+> +       return size;
+
+If you do this:
+
+ return aspeed_vga_table[((reg04 & 0xC) >> 2)]
+
+You can drop 'size'.
+
+> +}
+> +EXPORT_SYMBOL(aspeed_get_vga_size);
+> +
+>  static bool regmap_is_volatile(struct device *dev, unsigned int reg)
+>  {
+>         switch (reg) {
+> @@ -227,7 +300,6 @@ static int config_irq(void *ctx, struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> -
+>  static int init_csrows(struct mem_ctl_info *mci)
+>  {
+>         struct csrow_info *csrow = mci->csrows[0];
+> @@ -239,7 +311,7 @@ static int init_csrows(struct mem_ctl_info *mci)
+>         int rc;
+>
+>         /* retrieve info about physical memory from device tree */
+> -       np = of_find_node_by_path("/memory");
+> +       np = of_find_node_by_name(NULL, "memory");
+>         if (!np) {
+>                 dev_err(mci->pdev, "dt: missing /memory node\n");
+>                 return -ENODEV;
+> @@ -275,14 +347,12 @@ static int init_csrows(struct mem_ctl_info *mci)
+>         return 0;
+>  }
+>
+> -
+>  static int aspeed_probe(struct platform_device *pdev)
+>  {
+>         struct device *dev = &pdev->dev;
+>         struct edac_mc_layer layers[2];
+>         struct mem_ctl_info *mci;
+>         void __iomem *regs;
+> -       u32 reg04;
+>         int rc;
+>
+>         regs = devm_platform_ioremap_resource(pdev, 0);
+> @@ -294,13 +364,6 @@ static int aspeed_probe(struct platform_device *pdev)
+>         if (IS_ERR(aspeed_regmap))
+>                 return PTR_ERR(aspeed_regmap);
+>
+> -       /* bail out if ECC mode is not configured */
+> -       regmap_read(aspeed_regmap, ASPEED_MCR_CONF, &reg04);
+> -       if (!(reg04 & ASPEED_MCR_CONF_ECC)) {
+> -               dev_err(&pdev->dev, "ECC mode is not configured in u-boot\n");
+> -               return -EPERM;
+> -       }
+> -
+>         edac_op_state = EDAC_OPSTATE_INT;
+>
+>         /* allocate & init EDAC MC data structure */
+> @@ -373,12 +436,13 @@ static int aspeed_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> -
+>  static const struct of_device_id aspeed_of_match[] = {
+> +       { .compatible = "aspeed,ast2400-sdram-edac" },
+>         { .compatible = "aspeed,ast2500-sdram-edac" },
+> +       { .compatible = "aspeed,ast2600-sdram-edac" },
+>         {},
+>  };
+> -
+> +MODULE_DEVICE_TABLE(of, aspeed_of_match);
+>
+>  static struct platform_driver aspeed_driver = {
+>         .driver         = {
+> @@ -395,18 +459,15 @@ static int __init aspeed_init(void)
+>         return platform_driver_register(&aspeed_driver);
+>  }
+>
+> -
+>  static void __exit aspeed_exit(void)
+>  {
+>         platform_driver_unregister(&aspeed_driver);
+>  }
+>
+> -
+>  module_init(aspeed_init);
+>  module_exit(aspeed_exit);
+
+Unrelated, you can clean up the above 6 lines with module_platform_driver().
+
+Actually, looking at the kernel tree this was already done in v5.9.
+Please send your next version based on the latest kernel, eg
+v5.10-rc1.
+
+Cheers,
+
+Joel
+
+>
+> -
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Stefan Schaeckeler <sschaeck@cisco.com>");
+> -MODULE_DESCRIPTION("Aspeed AST2500 EDAC driver");
+> +MODULE_DESCRIPTION("Aspeed EDAC driver");
+>  MODULE_VERSION("1.0");
+> --
+> 2.17.1
+>
