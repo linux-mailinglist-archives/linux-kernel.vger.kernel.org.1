@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98C72CBE1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695912CBE24
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Dec 2020 14:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730082AbgLBNUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Dec 2020 08:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
+        id S1727566AbgLBNZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Dec 2020 08:25:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725973AbgLBNUk (ORCPT
+        with ESMTP id S1727274AbgLBNZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Dec 2020 08:20:40 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F69C0613CF;
-        Wed,  2 Dec 2020 05:20:00 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id iq13so1000537pjb.3;
-        Wed, 02 Dec 2020 05:20:00 -0800 (PST)
+        Wed, 2 Dec 2020 08:25:09 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E373DC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Dec 2020 05:24:23 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id v3so1512468ilo.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Dec 2020 05:24:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=taPUUzmWyx71JJ+EyPrlnb1liqlHwH94GdsdOoFOyjs=;
-        b=I9Q3qQbO7ZZ0jhafpTImuGaDyAR388ReHqJDt7wJth2miuZcjcrpUthnmNQTphpQ1g
-         WJNJ78oPCRm9oHImWLxvCq2bWQPZKH3puLQ69x+pHbxrfiECpcdvwUzv3WunGi+S22om
-         oHNMUsTCC4qSwixXo5jQXZvjVKofL+WIuaZ1DslUA8eEwl6AaTuYBwn2Kb+Vbd67tAlT
-         nrqPtm9RdDBFWJLLZ+jOhzU+E7LEfRHlcHkmjSyPKI8GTAXp1F+/XmUg4ssL1tzT92iA
-         2QgYKN8ZIONt8RTOt8x2Fl79c7T0geroX9uHCSvJhEerz1umGa6K9fPv3Rrz/n8GrjDn
-         hLPQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Dv8ZiKgBcnrmHIpIdvmlabal0p64cd22xU1Edp1tW/Q=;
+        b=ScPpKJHfvj+cLFIbyJZHKhcxkLb1V/F1eF8VrmPqvgZNdU4PvfX5CHT2oAM+eYI9ou
+         Tnx43RsMsmqsy/5rAg6/XY38z9Zqf1AmvZ5MI9IPvw+D1mYPuX+h9J/14N9c4FtYBKe6
+         5UhoIjk/+0DWu/zVupOxZyxjVue3QTfKDohfRPwtVfmX8J9Bl2EQ0tBLvvN9+EPPQ/OC
+         IHKi3sw5Jn1KUXW0gF7wR5Bcbn8/7v9iVzrRAgGdLovSyP88Tp2+AcGJDa/XFRS0B4jH
+         o0s5eUyKjYW1fDjvm07vl+sfIopVjAZs+1fVmrrhYatfhInYC0mkfr7F6zjwwJo5uV/S
+         wLSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=taPUUzmWyx71JJ+EyPrlnb1liqlHwH94GdsdOoFOyjs=;
-        b=O4WH6bcMnJSvNX/0WAsk/vEBwr6QW5tXyq5eYLjSI5nnpX7Wy37+l8C3fP/WGx6jq4
-         vbKZABxhvhJ5g4KeWoVH0OvMhGR6heCTcmc5QQ5jzMwIN1g+2Ib7x29VXKJfmutmcsYt
-         y4GVQGvadNSilgqZ9ZavZG1lKYI5iO8TRe5TJ3gZnHhLoiV9S6p0pVdTW+Bs2i1PXg25
-         6W8PPa+SVCShLssJz2YNwGSH6abrHszHQmeIXvzCASWgaNXZuqbO5U5D5s4UCc8V1YnD
-         tXPUFJlRNaa4wDyD/Pn5lJIrRCtYV/hqYBuJMbRUHp4ZkAQO2xLpZo2RjCmQDEauBwCK
-         RYsw==
-X-Gm-Message-State: AOAM532R23fABS3xxfBTtv8FhTtfC+p1gSovHxHx07h8B2pT0TXIaJZh
-        gV+wKG43ZG7vEkLdmWWpnfQ=
-X-Google-Smtp-Source: ABdhPJwU5kOQ5WeBcuxnv2+Y2qYmI4Cuqt40VPsuoq9e0crbwLJa6Py/3qzM75nTtoM5H4lVfXH5QQ==
-X-Received: by 2002:a17:902:d90d:b029:da:5114:7275 with SMTP id c13-20020a170902d90db02900da51147275mr2637399plz.64.1606915199889;
-        Wed, 02 Dec 2020 05:19:59 -0800 (PST)
-Received: from localhost.localdomain ([223.228.6.132])
-        by smtp.gmail.com with ESMTPSA id gp14sm1978287pjb.6.2020.12.02.05.19.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 05:19:59 -0800 (PST)
-From:   Divya Bharathi <divya27392@gmail.com>
-X-Google-Original-From: Divya Bharathi <divya.bharathi@dell.com>
-To:     dvhart@infradead.org, Hans de Goede <hdegoede@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Divya Bharathi <divya.bharathi@dell.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Prasanth KSR <prasanth.ksr@dell.com>
-Subject: [PATCH] platform/x86: dell-wmi-sysman: work around for BIOS bug
-Date:   Wed,  2 Dec 2020 18:49:35 +0530
-Message-Id: <20201202131935.307372-1-divya.bharathi@dell.com>
-X-Mailer: git-send-email 2.25.1
+        bh=Dv8ZiKgBcnrmHIpIdvmlabal0p64cd22xU1Edp1tW/Q=;
+        b=mdGCTTU4/Fu98wzcEwQ2i7HOGV6a5NuIRZY7YHcIWLyGtOah7d55NPJyWckFAGCQ3b
+         0EYNz7JhZrWKPQ7BUPPCtW+5mZS/C4rsfjV6IVRPU0niTLHwUtoFxnj4FW4PBbA0r827
+         gECPudHZzuwirsLYYHIoJ/99xLsS7+qOG1vOlRZUIuK/X5E5jpdVySc00qCxyp6xS1DQ
+         XFIZiEH6RPTDQTKsj/L8gvfmWll76UzxkiVqww584ByuBH8TaKquYYa+MnUmn7bhTHoN
+         OTQoeMW7bql+THC/KPuRAlUpAmfx7vW8DW/MI6y3t40bbCmDhkTBmttEFqCvfpGWEXfr
+         sbMw==
+X-Gm-Message-State: AOAM531a1VM24Meg2u0UdmTMsnIn4u3Yf4jp5rTl/Y8HIAOkofQF5MCw
+        gyzrrjGN54RLYSXmaEzv2WnaEmAxMyFkVQ==
+X-Google-Smtp-Source: ABdhPJyA9HGXtcZqRuPGy5PU3kC1yKYFQgCr0Ya1Q48vab3miN+IIwUyIhQD8EqqZjwczpMEjL10Lw==
+X-Received: by 2002:a92:a154:: with SMTP id v81mr2398764ili.85.1606915462869;
+        Wed, 02 Dec 2020 05:24:22 -0800 (PST)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id u11sm913650iol.51.2020.12.02.05.24.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Dec 2020 05:24:22 -0800 (PST)
+Subject: Re: [PATCH net-next 2/2] net: ipa: add support for inline checksum
+ offload
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, evgreen@chromium.org, cpratapa@codeaurora.org,
+        bjorn.andersson@linaro.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201201004143.27569-1-elder@linaro.org>
+ <20201201004143.27569-3-elder@linaro.org>
+ <20201201181319.41091a37@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <cea6a211-dea3-2eae-4f82-eb07c70115a4@linaro.org>
+Date:   Wed, 2 Dec 2020 07:24:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201201181319.41091a37@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BIOS sets incorrect value (zero) when SET value passed for integer attribute
-with + sign. Added workaround to remove + sign before passing input to BIOS
+On 12/1/20 8:13 PM, Jakub Kicinski wrote:
+>> To function, the rmnet driver must also add support for this new
+>> "inline" checksum offload.  The changes implementing this will be
+>> submitted soon.
+> We don't usually merge half of a feature. Why not wait until all
+> support is in place?
+> 
+> Do I understand right that it's rmnet that will push the csum header?
+> This change seems to only reserve space for it and request the feature
+> at init..
 
-Co-developed-by: Mario Limonciello <mario.limonciello@dell.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
-Co-developed-by: Prasanth KSR <prasanth.ksr@dell.com>
-Signed-off-by: Prasanth KSR <prasanth.ksr@dell.com>
-Signed-off-by: Divya Bharathi <divya.bharathi@dell.com>
----
- drivers/platform/x86/dell-wmi-sysman/int-attributes.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+You are correct.  The IPA hardware needs to be programmed to
+perform the computation and verify that the checksum in the
+header matches what it computes (for AP RX offload), or
+insert it into the header (for AP TX offload).  That's what
+this patch handles.
 
-diff --git a/drivers/platform/x86/dell-wmi-sysman/int-attributes.c b/drivers/platform/x86/dell-wmi-sysman/int-attributes.c
-index ea773d8e8d3a..75aedbb733be 100644
---- a/drivers/platform/x86/dell-wmi-sysman/int-attributes.c
-+++ b/drivers/platform/x86/dell-wmi-sysman/int-attributes.c
-@@ -39,7 +39,7 @@ static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *a
-  * @instance_id: The instance on which input is validated
-  * @buf: Input value
-  */
--static int validate_integer_input(int instance_id, const char *buf)
-+static int validate_integer_input(int instance_id, char *buf)
- {
- 	int in_val;
- 	int ret;
-@@ -51,6 +51,12 @@ static int validate_integer_input(int instance_id, const char *buf)
- 			in_val > wmi_priv.integer_data[instance_id].max_value)
- 		return -EINVAL;
- 
-+	/* workaround for BIOS error.
-+	 * validate input to avoid setting 0 when integer input passed with + sign
-+	 */
-+	if (*buf == '+')
-+		memmove(buf, (buf + 1), strlen(buf + 1) + 1);
-+
- 	return ret;
- }
- 
--- 
-2.25.1
+The RMNet driver is responsible for stripping the offload
+header off on RX, and acting on what it says (i.e., whether
+hardware is able to state the checksum is good).  And on TX
+it inserts an offload header that says what to checksum and
+where to put it in the packet.
 
+It's totally fine not to merge this until we have the whole
+package ready, I understand.  I'll see what I can do to get
+that done quickly.
+
+Thanks Jakub.
+
+					-Alex
